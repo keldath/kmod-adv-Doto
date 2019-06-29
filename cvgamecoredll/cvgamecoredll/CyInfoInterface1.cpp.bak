@@ -538,15 +538,6 @@ void CyInfoPythonInterface1()
 		.def("getPowerBonus", &CvBuildingInfo::getPowerBonus, "int ()")
 		.def("getFreeBonus", &CvBuildingInfo::getFreeBonus, "int ()")
 		.def("getNumFreeBonuses", &CvBuildingInfo::getNumFreeBonuses, "int ()")
-		// < Building Resource Converter Start >
-		.def("isBuildingOutputBonus", &CvBuildingInfo::isRequiredInputBonus, "bool (int i)")
-		.def("getRequiredInputBonusValue", &CvBuildingInfo::getRequiredInputBonusValue, "int (int i)")
-		.def("getRequiredInputBonusCount", &CvBuildingInfo::getRequiredInputBonusCount, "int ()")
-		.def("isBuildingOutputBonus", &CvBuildingInfo::isBuildingOutputBonus, "bool (int i)")
-		.def("getBuildingOutputBonusValues", &CvBuildingInfo::getBuildingOutputBonusValues, "int (int i)")
-		.def("getBuildingOutputBonusCount", &CvBuildingInfo::getBuildingOutputBonusCount, "int ()")
-		// < Building Resource Converter End   >
-
 		.def("getFreeBuildingClass", &CvBuildingInfo::getFreeBuildingClass, "int ()")
 		.def("getFreePromotion", &CvBuildingInfo::getFreePromotion, "int ()")
 		.def("getCivic", &CvBuildingInfo::getCivicOption, "int ()")

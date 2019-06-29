@@ -25314,9 +25314,7 @@ int CvUnitAI::AI_stackOfDoomExtra() const
 	if(ourTeam.getWarPlanCount(WARPLAN_TOTAL) <= 0)
 		mult *= 0.85;
 	r = ::round(mult * r); // </advc.104p>
-	//CHANGED FOR DORO VY F1RPO - KELDATH
-	FAssert(r > 0);
-	return std::max(1, r); // </advc.104p>;
+	return r;
 }
 
 // This function has been significantly modified for K-Mod

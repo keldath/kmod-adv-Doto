@@ -7991,11 +7991,6 @@ m_iNoBonus(NO_BONUS),
 m_iPowerBonus(NO_BONUS),
 m_iFreeBonus(NO_BONUS),
 m_iNumFreeBonuses(0),
-// < Building Resource Converter Start >
-m_paiRequiredInputBonuses(NULL),
-m_paiBuildingOutputBonuses(NULL),
-// < Building Resource Converter End   >
-
 m_iFreeBuildingClass(NO_BUILDINGCLASS),
 m_iFreePromotion(NO_PROMOTION),
 m_iCivicOption(NO_CIVICOPTION),
@@ -8203,11 +8198,6 @@ m_bAnyBonusYieldModifier(false)
 //------------------------------------------------------------------------------------------------------
 CvBuildingInfo::~CvBuildingInfo()
 {
-	// < Building Resource Converter Start >
-	SAFE_DELETE_ARRAY(m_paiRequiredInputBonuses);
-	SAFE_DELETE_ARRAY(m_paiBuildingOutputBonuses);
-	// < Building Resource Converter End   >
-
 	SAFE_DELETE_ARRAY(m_piPrereqAndTechs);
 	SAFE_DELETE_ARRAY(m_piPrereqOrBonuses);
 //	SAFE_DELETE_ARRAY(m_piPrereqOrVicinityBonuses);  //Shqype Vicinity Bonus Add
@@ -8318,71 +8308,6 @@ int CvBuildingInfo::getNumFreeBonuses() const
 {
 	return m_iNumFreeBonuses;
 }
-
-// < Building Resource Converter Start >
-
-bool CvBuildingInfo::isRequiredInputBonus(int iBonus) const
-{
-	FAssertMsg(iBonus < GC.getNumBonusInfos(), "Index out of bounds");
-	FAssertMsg(iBonus > -1, "Index out of bounds");
-
-	return (getRequiredInputBonusValue(iBonus) > 0);
-}
-
-int CvBuildingInfo::getRequiredInputBonusValue(int iBonus) const
-{
-	FAssertMsg(iBonus < GC.getNumBonusInfos(), "Index out of bounds");
-	FAssertMsg(iBonus > -1, "Index out of bounds");
-	return m_paiRequiredInputBonuses ? m_paiRequiredInputBonuses[iBonus] : -1;
-}
-
-int CvBuildingInfo::getRequiredInputBonusCount() const
-{
-	int requiredInputBonusCount = 0;
-	int iI;
-
-	for(iI=0; iI < GC.getNumBonusInfos() ; iI++)
-	{
-		if(getRequiredInputBonusValue(iI) > 0)
-		{
-			requiredInputBonusCount += 1;
-		}
-	}
-
-	return requiredInputBonusCount;
-}
-
-bool CvBuildingInfo::isBuildingOutputBonus(int iBonus) const
-{
-	FAssertMsg(iBonus < GC.getNumBonusInfos(), "Index out of bounds");
-	FAssertMsg(iBonus > -1, "Index out of bounds");
-
-	return (getBuildingOutputBonusValues(iBonus) > 0);
-}
-
-int CvBuildingInfo::getBuildingOutputBonusValues(int iBonus) const
-{
-	FAssertMsg(iBonus < GC.getNumBonusInfos(), "Index out of bounds");
-	FAssertMsg(iBonus > -1, "Index out of bounds");
-	return m_paiBuildingOutputBonuses ? m_paiBuildingOutputBonuses[iBonus] : -1;
-}
-
-int CvBuildingInfo::getBuildingOutputBonusCount() const
-{
-	int buildingOutputBonusCount = 0;
-	int iI;
-
-	for(iI=0; iI < GC.getNumBonusInfos() ; iI++)
-	{
-		if(getBuildingOutputBonusValues(iI) > 0)
-		{
-			buildingOutputBonusCount += 1;
-		}
-	}
-
-	return buildingOutputBonusCount;
-}
-// < Building Resource Converter End   >
 
 int CvBuildingInfo::getFreeBuildingClass() const			
 {
@@ -9485,16 +9410,6 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iPowerBonus);
 	stream->Read(&m_iFreeBonus);
 	stream->Read(&m_iNumFreeBonuses);
-	// < Building Resource Converter Start >	
-	SAFE_DELETE_ARRAY(m_paiRequiredInputBonuses);
-	m_paiRequiredInputBonuses = new int[GC.getNumBonusInfos()];
-	stream->Read(GC.getNumBonusInfos(), m_paiRequiredInputBonuses);
-	
-	SAFE_DELETE_ARRAY(m_paiBuildingOutputBonuses);
-	m_paiBuildingOutputBonuses = new int[GC.getNumBonusInfos()];
-	stream->Read(GC.getNumBonusInfos(), m_paiBuildingOutputBonuses);
-	// < Building Resource Converter End   >
-
 	stream->Read(&m_iFreeBuildingClass);
 	stream->Read(&m_iFreePromotion);
 	stream->Read(&m_iCivicOption);
@@ -9889,11 +9804,6 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iPowerBonus);
 	stream->Write(m_iFreeBonus);
 	stream->Write(m_iNumFreeBonuses);
-	// < Building Resource Converter Start >	
-	stream->Write(GC.getNumBonusInfos(), m_paiRequiredInputBonuses);
-	stream->Write(GC.getNumBonusInfos(), m_paiBuildingOutputBonuses);
-	// < Building Resource Converter End   >
-
 	stream->Write(m_iFreeBuildingClass);
 	stream->Write(m_iFreePromotion);
 	stream->Write(m_iCivicOption);
@@ -10300,11 +10210,6 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(szTextVal, "FreeBonus");
 	m_iFreeBonus = pXML->FindInInfoClass(szTextVal);
 	pXML->GetChildXmlValByName(&m_iNumFreeBonuses, "iNumFreeBonuses");
-
-	// < Building Resource Converter Start >	
-	pXML->SetVariableListTagPair(&m_paiRequiredInputBonuses, "RequiredInputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
-	pXML->SetVariableListTagPair(&m_paiBuildingOutputBonuses, "BuildingOutputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
-	// < Building Resource Converter End   >
 
 	pXML->GetChildXmlValByName(szTextVal, "FreeBuilding");
 	m_iFreeBuildingClass = pXML->FindInInfoClass(szTextVal);

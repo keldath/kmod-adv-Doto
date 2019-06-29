@@ -995,12 +995,6 @@ public:
 	bool isCorporationBonus(BonusTypes eBonus) const;
 	bool isActiveCorporation(CorporationTypes eCorporation) const;
 
-	// < Building Resource Converter Start >
-	void processBuildingBonuses();
-	DllExport int getBuildingOutputBonus(BonusTypes eIndex);														// Exposed to Python
-	void resetBuildingOutputBonuses();
-	// < Building Resource Converter End   >
-
 	int getBuildingProduction(BuildingTypes eIndex) const;							// Exposed to Python
 	void setBuildingProduction(BuildingTypes eIndex, int iNewValue);				// Exposed to Python
 	void changeBuildingProduction(BuildingTypes eIndex, int iChange);				// Exposed to Python
@@ -1478,10 +1472,6 @@ protected:
 	int* m_paiNoBonus;
 	int* m_paiFreeBonus;
 	int* m_paiNumBonuses;
-	// < Building Resource Converter Start >
-	int* m_paiBuildingOutputBonuses;
-	// < Building Resource Converter End   >
-
 	int* m_paiNumCorpProducedBonuses;
 	int* m_paiProjectProduction;
 	int* m_paiBuildingProduction;

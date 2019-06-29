@@ -6534,9 +6534,6 @@ void CvPlot::setPlotCity(CvCity* pNewValue)
 			{
 				getPlotCity()->changeNumBonuses(((BonusTypes)iI), -(pPlotGroup->getNumBonuses((BonusTypes)iI)));
 			}
-			// < Building Resource Converter Start >
-			getPlotCity()->processBuildingBonuses();
-			// < Building Resource Converter End   >
 		}
 	}
 	if (pNewValue != NULL)
@@ -6558,9 +6555,6 @@ void CvPlot::setPlotCity(CvCity* pNewValue)
 			{
 				getPlotCity()->changeNumBonuses(((BonusTypes)iI), pPlotGroup->getNumBonuses((BonusTypes)iI));
 			}
-			// < Building Resource Converter Start >
-			getPlotCity()->processBuildingBonuses();
-			// < Building Resource Converter End   
 		}
 	}
 	updatePlotGroupBonus(true);
@@ -7777,9 +7771,6 @@ void CvPlot::setPlotGroup(PlayerTypes ePlayer, CvPlotGroup* pNewValue)
 					pCity->changeNumBonuses((BonusTypes)iI,
 							-(pOldPlotGroup->getNumBonuses((BonusTypes)iI)));
 				}
-				// < Building Resource Converter Start >
-				pCity->processBuildingBonuses();
-				// < Building Resource Converter End   >
 			}
 		}
 	}
@@ -7800,9 +7791,6 @@ void CvPlot::setPlotGroup(PlayerTypes ePlayer, CvPlotGroup* pNewValue)
 					pCity->changeNumBonuses((BonusTypes)iI,
 							getPlotGroup(ePlayer)->getNumBonuses((BonusTypes)iI));
 				}
-				// < Building Resource Converter Start >
-				pCity->processBuildingBonuses();
-				// < Building Resource Converter End   >
 			}
 		}
 	}

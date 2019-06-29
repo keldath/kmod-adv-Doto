@@ -11196,60 +11196,6 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer, BuildingTyp
 		}
 	}
 
-	// < Building Resource Converter Start >
-	if(kBuilding.getRequiredInputBonusCount() > 0 && GC.getBuildingInfo(eBuilding).getBuildingOutputBonusCount() > 0 )
-	{
-		bool bFirst = true;
-
-		szBuffer.append(NEWLINE);
-		//swprintf(szTempBuffer, L"%cConverts ", gDLL->getSymbolID(BULLET_CHAR));
-		szTempBuffer.Format(L"%cConverts ", gDLL->getSymbolID(BULLET_CHAR));
-		szBuffer.append(szTempBuffer);
-
-		for (iI = 0; iI < GC.getNumBonusInfos(); iI++)
-		{
-
-			if(kBuilding.getRequiredInputBonusValue((BonusTypes)iI) > 0)
-			{
-				if(!bFirst)
-				{
-					//swprintf(szTempBuffer, L", ");
-					szBuffer.append(L", ");
-				}
-
-				//swprintf(szTempBuffer, L"%d <link=literal>%s</link> (%c)", kBuilding.getRequiredInputBonusValue((BonusTypes)iI), GC.getBonusInfo((BonusTypes)iI).getDescription(), GC.getBonusInfo((BonusTypes)iI).getChar());
-				szTempBuffer.Format(L"%d <link=literal>%s</link> (%c)", kBuilding.getRequiredInputBonusValue((BonusTypes)iI), GC.getBonusInfo((BonusTypes)iI).getDescription(), GC.getBonusInfo((BonusTypes)iI).getChar());
-				szBuffer.append(szTempBuffer);
-				bFirst = false;
-			}				
-		}
-
-		//swprintf(szTempBuffer, L" into ");
-		szBuffer.append(L" into ");
-		
-		bFirst = true;
-
-		for (iI = 0; iI < GC.getNumBonusInfos(); iI++)
-		{
-
-			if(kBuilding.getBuildingOutputBonusValues((BonusTypes)iI) > 0)
-			{
-				if(!bFirst)
-				{
-					//swprintf(szTempBuffer, L", ");
-					szBuffer.append(L", ");
-				}
-
-				//swprintf(szTempBuffer, L"%d <link=literal>%s</link> (%c)", kBuilding.getBuildingOutputBonusValues((BonusTypes)iI), GC.getBonusInfo((BonusTypes)iI).getDescription(), GC.getBonusInfo((BonusTypes)iI).getChar());
-				szTempBuffer.Format(L"%d <link=literal>%s</link> (%c)", kBuilding.getBuildingOutputBonusValues((BonusTypes)iI), GC.getBonusInfo((BonusTypes)iI).getDescription(), GC.getBonusInfo((BonusTypes)iI).getChar());
-				szBuffer.append(szTempBuffer);
-				bFirst = false;
-			}				
-		}
-	}
-	// < Building Resource Converter End   >
-
-
 	if (kBuilding.getFreeBuildingClass() != NO_BUILDINGCLASS)
 	{
 		BuildingTypes eFreeBuilding;

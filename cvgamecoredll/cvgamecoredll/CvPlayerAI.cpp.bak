@@ -3872,8 +3872,7 @@ short CvPlayerAI::AI_foundValue_bulk(int iX, int iY, const CvFoundSettings& kSet
 					here won't work well for strategic resources. */
 				/*  Don't assume that the bonus is enabled.
 					And the coefficient was 80, halved. */
-				//ADVC CHANGE FROM 40 RO 50.6 - F1RPO - KELDATH
-				int iBonusValue = ::round((AI_bonusVal(eBonus, 1) * 56.5) /
+				int iBonusValue = ::round((AI_bonusVal(eBonus, 1) * 40.0) /
 						(1 + viBonusCount[eBonus]));
 				/*  Note (K-Mod):
 					1. the value of starting bonuses is reduced later.

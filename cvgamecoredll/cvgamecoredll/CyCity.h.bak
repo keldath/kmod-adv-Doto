@@ -414,10 +414,6 @@ public:
 	void changeFreeBonus(int /*BonusTypes*/ eIndex, int iChange);
 	int getNumBonuses(int /*BonusTypes*/ iBonus);
 	bool hasBonus(int /*BonusTypes */ iBonus);
-	// < Building Resource Converter Start >
-	int CyCity::getBuildingOutputBonus(int /*BonusTypes */iBonus);
-	// < Building Resource Converter End   >
-
 	int getBuildingProduction(int /*BuildingTypes*/ iIndex);
 	void setBuildingProduction(int /*BuildingTypes*/ iIndex, int iNewValue);
 	void changeBuildingProduction(int /*BuildingTypes*/ iIndex, int iChange);

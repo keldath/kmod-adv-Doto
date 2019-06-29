@@ -76,10 +76,6 @@ CvCity::CvCity()
 	m_paiNoBonus = NULL;
 	m_paiFreeBonus = NULL;
 	m_paiNumBonuses = NULL;
-	// < Building Resource Converter Start >
-	m_paiBuildingOutputBonuses = NULL;
-	// < Building Resource Converter End   >
-
 	m_paiNumCorpProducedBonuses = NULL;
 	m_paiProjectProduction = NULL;
 	m_paiBuildingProduction = NULL;
@@ -390,10 +386,6 @@ void CvCity::uninit()
 	SAFE_DELETE_ARRAY(m_paiNoBonus);
 	SAFE_DELETE_ARRAY(m_paiFreeBonus);
 	SAFE_DELETE_ARRAY(m_paiNumBonuses);
-	// < Building Resource Converter Start >
-	SAFE_DELETE_ARRAY(m_paiBuildingOutputBonuses);
-	// < Building Resource Converter End   >
-
 	SAFE_DELETE_ARRAY(m_paiNumCorpProducedBonuses);
 	SAFE_DELETE_ARRAY(m_paiProjectProduction);
 	SAFE_DELETE_ARRAY(m_paiBuildingProduction);
@@ -681,19 +673,11 @@ void CvCity::reset(int iID, PlayerTypes eOwner, int iX, int iY, bool bConstructo
 		m_paiNoBonus = new int[GC.getNumBonusInfos()];
 		m_paiFreeBonus = new int[GC.getNumBonusInfos()];
 		m_paiNumBonuses = new int[GC.getNumBonusInfos()];
-		// < Building Resource Converter Start >
-		m_paiBuildingOutputBonuses = new int[GC.getNumBonusInfos()];
-		// < Building Resource Converter End   >
-
 		m_paiNumCorpProducedBonuses = new int[GC.getNumBonusInfos()];
 		for (iI = 0; iI < GC.getNumBonusInfos(); iI++)
 		{
 			m_paiNoBonus[iI] = 0;
 			m_paiFreeBonus[iI] = 0;
-			// < Building Resource Converter Start >
-			m_paiBuildingOutputBonuses[iI] = 0;
-			// < Building Resource Converter End   >
-
 			m_paiNumBonuses[iI] = 0;
 			m_paiNumCorpProducedBonuses[iI] = 0;
 		}
@@ -1140,10 +1124,6 @@ void CvCity::doTurn()
 			chooseProduction(mrUnit, mrBuilding, mrProject, mrOrder >= 0);
 		}
 	} // </advc.004x>
-	// < Building Resource Converter Start >
-	processBuildingBonuses();
-	// < Building Resource Converter End   >
-
 	if (getCultureUpdateTimer() > 0)
 	{
 		changeCultureUpdateTimer(-1);
@@ -4745,11 +4725,6 @@ void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolet
 	}
 
 	updateBuildingCommerce();
-
-	// < Building Resource Converter Start >
-	processBuildingBonuses();
-	// < Building Resource Converter End   >
-
 
 	setLayoutDirty(true);
 }
@@ -12291,126 +12266,6 @@ bool CvCity::isActiveCorporation(CorporationTypes eCorporation) const
 	return false;
 }
 
-// < Building Resource Converter Start >
-
-void CvCity::processBuildingBonuses()
-{
-	int iI, iJ, iBuildingProducedBonusAmount, iTempRequiredInputBonusValue, iCityBonusAmount;
-
-	int iK = 0;
-
-	bool bBuildingProducedBonus = false;
-
-	bool* pabBuildingProcessed = new bool[GC.getNumBuildingInfos()];
-
-	for(iI=0;iI<GC.getNumBuildingInfos();iI++)
-	{
-		pabBuildingProcessed[iI] = false;
-	}
-
-	iBuildingProducedBonusAmount = 99999;
-
-	resetBuildingOutputBonuses();
-
-	for(iK = GC.getNumBuildingInfos();iK >= 0; iK--)
-	{
-		for(iI = 0;iI<GC.getNumBuildingInfos(); iI++)
-		{
-			if(pabBuildingProcessed[iI])
-			{
-				continue;
-			}
-
-			if(getNumBuilding((BuildingTypes)iI) == 0)
-			{
-				pabBuildingProcessed[iI] = true;
-				continue;
-			}
-
-			for(iJ = 0;iJ<GC.getNumBonusInfos();iJ++)
-			{
-				if(!GC.getBuildingInfo((BuildingTypes)iI).isRequiredInputBonus((BonusTypes)iJ))
-				{
-					continue;
-				}
-
-				iCityBonusAmount = getNumBonuses((BonusTypes)iJ);
-
-				if(iCityBonusAmount == 0)
-				{
-					bBuildingProducedBonus = false;
-					break;
-				}
-
-				iTempRequiredInputBonusValue = GC.getBuildingInfo((BuildingTypes)iI).getRequiredInputBonusValue((BonusTypes)iJ);
-
-				if((iCityBonusAmount/iTempRequiredInputBonusValue) == 0)
-				{
-					bBuildingProducedBonus = false;
-					break;
-				}
-
-				if((iCityBonusAmount/iTempRequiredInputBonusValue) < iBuildingProducedBonusAmount)
-				{
-					iBuildingProducedBonusAmount = iCityBonusAmount/iTempRequiredInputBonusValue;
-					bBuildingProducedBonus = true;
-				}
-			}
-
-			if(iBuildingProducedBonusAmount > 0 && bBuildingProducedBonus)
-			{
-				for(iJ = 0;iJ<GC.getNumBonusInfos();iJ++)
-				{
-					if(!GC.getBuildingInfo((BuildingTypes)iI).isBuildingOutputBonus((BonusTypes)iJ))
-					{
-						continue;
-					}
-					m_paiBuildingOutputBonuses[iJ] = iBuildingProducedBonusAmount*GC.getBuildingInfo((BuildingTypes)iI).getBuildingOutputBonusValues((BonusTypes)iJ);
-					changeNumBonuses((BonusTypes)iJ, m_paiBuildingOutputBonuses[iJ]);
-					
-				}
-				pabBuildingProcessed[iI] = true;
-			}
-
-			bBuildingProducedBonus = false;
-			iBuildingProducedBonusAmount = 99999;
-		}
-	}
-	SAFE_DELETE_ARRAY(pabBuildingProcessed);
-}
-
-int CvCity::getBuildingOutputBonus(BonusTypes eIndex)
-{
-	FAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
-	FAssertMsg(eIndex < GC.getNumBonusInfos(), "eIndex expected to be < GC.getNumBonusInfos()");
-	return m_paiBuildingOutputBonuses[eIndex];
-}
-
-void CvCity::resetBuildingOutputBonuses()
-{
-	int iI;
-
-	if(m_paiBuildingOutputBonuses)
-	{
-		for (iI = 0; iI < GC.getNumBonusInfos(); iI++)
-		{
-			if(m_paiBuildingOutputBonuses[iI] != 0){
-				changeNumBonuses((BonusTypes)iI, -m_paiBuildingOutputBonuses[iI]);
-				m_paiBuildingOutputBonuses[iI] = 0;
-			}
-		}
-	}
-	else
-	{
-		m_paiBuildingOutputBonuses = new int[GC.getNumBonusInfos()];
-		for (iI = 0; iI < GC.getNumBonusInfos(); iI++)
-		{
-			m_paiBuildingOutputBonuses[iI] = 0;
-		}
-	}
-}
-// < Building Resource Converter End   >
-
 int CvCity::getBuildingProduction(BuildingTypes eIndex)	const															 
 {
 	FAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
@@ -15601,10 +15456,6 @@ void CvCity::read(FDataStreamBase* pStream)
 	pStream->Read(GC.getNumBonusInfos(), m_paiNoBonus);
 	pStream->Read(GC.getNumBonusInfos(), m_paiFreeBonus);
 	pStream->Read(GC.getNumBonusInfos(), m_paiNumBonuses);
-	// < Building Resource Converter Start >
-	pStream->Read(GC.getNumBonusInfos(), m_paiBuildingOutputBonuses);
-	// < Building Resource Converter End   >
-
 	pStream->Read(GC.getNumBonusInfos(), m_paiNumCorpProducedBonuses);
 	pStream->Read(GC.getNumProjectInfos(), m_paiProjectProduction);
 	pStream->Read(GC.getNumBuildingInfos(), m_paiBuildingProduction);
@@ -15926,10 +15777,6 @@ void CvCity::write(FDataStreamBase* pStream)
 	pStream->Write(GC.getNumBonusInfos(), m_paiNoBonus);
 	pStream->Write(GC.getNumBonusInfos(), m_paiFreeBonus);
 	pStream->Write(GC.getNumBonusInfos(), m_paiNumBonuses);
-	// < Building Resource Converter Start >
-	pStream->Write(GC.getNumBonusInfos(), m_paiBuildingOutputBonuses);
-	// < Building Resource Converter End   >
-
 	pStream->Write(GC.getNumBonusInfos(), m_paiNumCorpProducedBonuses);
 	pStream->Write(GC.getNumProjectInfos(), m_paiProjectProduction);
 	pStream->Write(GC.getNumBuildingInfos(), m_paiBuildingProduction);

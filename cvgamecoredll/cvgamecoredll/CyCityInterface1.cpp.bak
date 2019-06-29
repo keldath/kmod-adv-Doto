@@ -404,10 +404,6 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("changeFreeBonus", &CyCity::changeFreeBonus, "void (int eIndex, int iChange)")
 		.def("getNumBonuses", &CyCity::getNumBonuses, "int (PlayerID)")
 		.def("hasBonus", &CyCity::hasBonus, "bool - (BonusID) - is BonusID connected to the city?")
-		// < Building Resource Converter Start >
-		.def("getBuildingOutputBonus", &CyCity::getBuildingOutputBonus, "int - (BonusID)")
-		// < Building Resource Converter End   >
-
 		.def("getBuildingProduction", &CyCity::getBuildingProduction, "int (BuildingID) - current production towards BuildingID")
 		.def("setBuildingProduction", &CyCity::setBuildingProduction, "void (BuildingID, iNewValue) - set progress towards BuildingID as iNewValue")
 		.def("changeBuildingProduction", &CyCity::changeBuildingProduction, "void (BuildingID, iChange) - adjusts progress towards BuildingID by iChange")

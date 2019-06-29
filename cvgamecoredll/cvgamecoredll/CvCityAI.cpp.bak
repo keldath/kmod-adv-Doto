@@ -1455,9 +1455,7 @@ void CvCityAI::AI_chooseProduction()
 		{
 			if (3*AI_getWorkersHave()/2 < AI_getWorkersNeeded() // local
 				// advc.113: used to be RandNum(80)
-				|| g.getSorenRandNum(120, "choose worker 6") > iBestBuildingValue + (iBuildUnitProb + 50)//
-				// advc.113: Divisor was 2 flat; war prep check added.
-				(kTeam.AI_isSneakAttackPreparing() ? 1 : 2))
+				|| g.getSorenRandNum(170, "choose worker 6") > iBestBuildingValue + (iBuildUnitProb + 50)/2)
 			{
 				if (!bChooseWorker && AI_chooseUnit(UNITAI_WORKER))
 				{
@@ -2325,7 +2323,7 @@ void CvCityAI::AI_chooseProduction()
 			// Consider building more land units to invade with
 			int iTrainInvaderChance = iBuildUnitProb + 10;
 
-			iTrainInvaderChance += (bAggressiveAI ? 15 : 0); // advc.019: was ?15:0//RECHANGED FOR DOTO
+			iTrainInvaderChance += (bAggressiveAI ? 8 : 0); // advc.019: was ?15:0
 			iTrainInvaderChance += bTotalWar ? 10 : 0; // K-Mod
 			iTrainInvaderChance /= (bAssaultAssist ? 2 : 1);
 			iTrainInvaderChance /= (bImportantCity ? 2 : 1);
@@ -11240,11 +11238,9 @@ int CvCityAI::AI_experienceWeight()
 	//return ((getProductionExperience() + getDomainFreeExperience(DOMAIN_SEA)) * 2);
 	// K-Mod
 	return 2 * getProductionExperience() + getDomainFreeExperience(DOMAIN_LAND) + getDomainFreeExperience(DOMAIN_SEA)
-			//- 4; /*  advc.017: Barracks are pretty ubiquitous; shouldn't add 6
+			- 4; /*  advc.017: Barracks are pretty ubiquitous; shouldn't add 6
 					 to buildUnitProb. Rather make cities w/o Barracks hesitant
 					 to train units. */
-			//CHANGED FOR DOTO BY F1RPO
-			- std::min(4, 2 * GET_PLAYER(getOwnerINLINE()).getCurrentEra());
 	// K-Mod end
 }
 
@@ -12723,14 +12719,11 @@ void CvCityAI::AI_updateSpecialYieldMultiplier()
 {
 	PROFILE_FUNC();
 	
-
-	int iOldProductionMult = m_aiSpecialYieldMultiplier[YIELD_PRODUCTION]; // advc.121
 	for (int iI = 0; iI < NUM_YIELD_TYPES; iI++)
-	
+	{
 		m_aiSpecialYieldMultiplier[iI] = 0;
+	}
 	
-	
-
 	UnitTypes eProductionUnit = getProductionUnit();
 	if (eProductionUnit != NO_UNIT)
 	{
@@ -12755,9 +12748,6 @@ void CvCityAI::AI_updateSpecialYieldMultiplier()
 		}
 		// K-Mod end
 	}
-	} // <advc.300>
-	if(isBarbarian())
-		return; // </advc.300>
 
 	BuildingTypes eProductionBuilding = getProductionBuilding();
 	if (eProductionBuilding != NO_BUILDING)
@@ -12884,9 +12874,6 @@ void CvCityAI::AI_updateSpecialYieldMultiplier()
 			m_aiSpecialYieldMultiplier[YIELD_PRODUCTION] /= 120;
 		}
 		m_aiSpecialYieldMultiplier[YIELD_PRODUCTION] -= 100;
-		// <advc.121> Inertia, to avoid oscillation (not sure if really a problem).
-		m_aiSpecialYieldMultiplier[YIELD_PRODUCTION] += iOldProductionMult;
-		m_aiSpecialYieldMultiplier[YIELD_PRODUCTION] /= 2; // </advc.121>
 	}
 }
 
