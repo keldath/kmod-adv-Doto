@@ -1455,9 +1455,9 @@ void CvCityAI::AI_chooseProduction()
 		{
 			if (3*AI_getWorkersHave()/2 < AI_getWorkersNeeded() // local
 				// advc.113: used to be RandNum(80)
-				|| g.getSorenRandNum(120, "choose worker 6") > iBestBuildingValue + (iBuildUnitProb + 50)//
+				|| g.getSorenRandNum(120, "choose worker 6") > iBestBuildingValue + (iBuildUnitProb + 50)/
 				// advc.113: Divisor was 2 flat; war prep check added.
-				(kTeam.AI_isSneakAttackPreparing() ? 1 : 2))
+				(GET_TEAM(getTeam()).AI_isSneakAttackPreparing() ? 1 : 2))
 			{
 				if (!bChooseWorker && AI_chooseUnit(UNITAI_WORKER))
 				{
@@ -11240,7 +11240,8 @@ int CvCityAI::AI_experienceWeight()
 	//return ((getProductionExperience() + getDomainFreeExperience(DOMAIN_SEA)) * 2);
 	// K-Mod
 	return 2 * getProductionExperience() + getDomainFreeExperience(DOMAIN_LAND) + getDomainFreeExperience(DOMAIN_SEA)
-			//- 4; /*  advc.017: Barracks are pretty ubiquitous; shouldn't add 6
+			//- 4; 
+				/*  advc.017: Barracks are pretty ubiquitous; shouldn't add 6
 					 to buildUnitProb. Rather make cities w/o Barracks hesitant
 					 to train units. */
 			//CHANGED FOR DOTO BY F1RPO
@@ -12754,7 +12755,6 @@ void CvCityAI::AI_updateSpecialYieldMultiplier()
 			m_aiSpecialYieldMultiplier[YIELD_COMMERCE] -= 25;
 		}
 		// K-Mod end
-	}
 	} // <advc.300>
 	if(isBarbarian())
 		return; // </advc.300>
