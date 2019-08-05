@@ -1,14 +1,11 @@
 #pragma once
 
-// game.h
 
 #ifndef CIV4_INITCORE_H
 #define CIV4_INITCORE_H
 
-/*
-** K-Mod, 8/dec/10, karadoc
-** moved FASSERT_BOUNDS to CvGlobals.h (and modified it)
-*/
+/*  K-Mod, 8/dec/10, karadoc
+	moved FASSERT_BOUNDS to CvGlobals.h (and modified it) */
 
 class CvInitCore
 {
@@ -26,7 +23,7 @@ protected:
 
 	void setDefaults();
 
-	bool checkBounds( int iValue, int iLower, int iUpper ) const;
+	bool checkBounds(int iValue, int iLower, int iUpper) const;
 
 public:
 
@@ -73,14 +70,14 @@ public:
 	const CvWString & getAdminPassword() const	{ return m_szAdminPassword; }
 	DllExport void setAdminPassword(const CvWString & szAdminPassword, bool bEncrypt = true);
 
-	DllExport CvWString getMapScriptName() const;		
+	DllExport CvWString getMapScriptName() const;
 	DllExport void setMapScriptName(const CvWString & szMapScriptName);
 	DllExport bool getWBMapScript() const;
 
 	bool getWBMapNoPlayers() const { return m_bWBMapNoPlayers; }
 	void setWBMapNoPlayers(bool bValue)	{ m_bWBMapNoPlayers = bValue; }
 
-	DllExport WorldSizeTypes getWorldSize() const	{ return m_eWorldSize; }
+	WorldSizeTypes getWorldSize() const	{ return m_eWorldSize; }
 	void setWorldSize(WorldSizeTypes eWorldSize)	{ m_eWorldSize = eWorldSize; }
 	DllExport void setWorldSize(const CvWString & szWorldSize);
 	DllExport const CvWString & getWorldSizeKey(CvWString & szBuffer) const;
@@ -90,7 +87,7 @@ public:
 	DllExport void setClimate(const CvWString & szClimate);
 	DllExport const CvWString & getClimateKey(CvWString & szBuffer) const;
 
-	DllExport SeaLevelTypes getSeaLevel() const	{ return m_eSeaLevel; }
+	SeaLevelTypes getSeaLevel() const	{ return m_eSeaLevel; }
 	void setSeaLevel(SeaLevelTypes eSeaLevel)	{ m_eSeaLevel = eSeaLevel; }
 	DllExport void setSeaLevel(const CvWString & szSeaLevel);
 	DllExport const CvWString & getSeaLevelKey(CvWString & szBuffer) const;
@@ -150,8 +147,7 @@ public:
 	DllExport bool getForceControl(ForceControlTypes eIndex) const;
 	DllExport void setForceControl(ForceControlTypes eIndex, bool bForceControl);
 
-
-	int getGameTurn() const	{ return m_iGameTurn; }
+	inline int getGameTurn() const	{ return m_iGameTurn; } // advc.003b
 	void setGameTurn(int iGameTurn)	{ m_iGameTurn = iGameTurn; }
 
 	int getMaxTurns() const	{ return m_iMaxTurns; }
@@ -177,7 +173,7 @@ public:
 	DllExport unsigned int getMapRandSeed() const	{ return m_uiMapRandSeed; }
 	DllExport void setMapRandSeed(unsigned int uiMapRandSeed)	{ m_uiMapRandSeed = uiMapRandSeed; }
 
-	DllExport PlayerTypes getActivePlayer() const	{ return m_eActivePlayer; }
+	PlayerTypes getActivePlayer() const	{ return m_eActivePlayer; }
 	DllExport void setActivePlayer(PlayerTypes eActivePlayer);
 
 	DllExport GameType getType() const	{ return m_eType; }
@@ -265,7 +261,7 @@ public:
 
 	DllExport const CvString & getXMLCheck(PlayerTypes eID) const;
 	DllExport void setXMLCheck(PlayerTypes eID, const CvString & iXMLCheck);
-									
+
 	DllExport void resetAdvancedStartPoints();
 
 	virtual void read(FDataStreamBase* pStream);
@@ -291,7 +287,7 @@ protected:
 	CvWString m_szGamePassword;
 	CvWString m_szAdminPassword;
 	CvWString m_szMapScriptName;
-	
+
 	bool m_bWBMapNoPlayers;
 
 	// Standard game parameters

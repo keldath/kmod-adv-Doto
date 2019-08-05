@@ -8,6 +8,7 @@
 #include "CvArtFileMgr.h"
 #include "CvGameTextMgr.h"
 #include "CvInfoWater.h"
+#include "CvGameAI.h" // advc.104x
 #include "FVariableSystem.h"
 
 
@@ -18,7 +19,7 @@ bool CvXMLLoadUtility::ReadGlobalDefines(const TCHAR* szXMLFileName, CvCacheObje
 {
 	// advc.003: Handle successful read upfront
 	if (gDLL->cacheRead(cache, szXMLFileName)) {		// src data file name
-		logMsg("Read GobalDefines from cache");
+		logMsg("Read GlobalDefines from cache");
 		return true;
 	}
 
@@ -138,16 +139,12 @@ bool CvXMLLoadUtility::ReadGlobalDefines(const TCHAR* szXMLFileName, CvCacheObje
 			// write global defines info to cache
 			// advc.003i: Disabled
 			/*bool bOk = gDLL->cacheWrite(cache);
-			if (!bOk)
-			{
+			if (!bOk) {
 				char	szMessage[1024];
 				sprintf( szMessage, "Failed writing to global defines cache. \n Current XML file is: %s", GC.getCurrentXMLFile().GetCString());
 				gDLL->MessageBox(szMessage, "XML Caching Error");
 			}
-			else
-			{
-				logMsg("Wrote GlobalDefines to cache");
-			}*/
+			else logMsg("Wrote GlobalDefines to cache");*/
 		}
 	}
 
@@ -192,11 +189,7 @@ bool CvXMLLoadUtility::SetGlobalDefines()
 		return false;
 	}
 
-	/* <advc.009> Load a separate GlobalDefines file. My guess as to the
-	   intended way of doing that: Set modularLoading=1 and name the
-	   configuration file something_GlobalDefines.xml.
-	   I can't get that to work, though, and it appears neither could
-	   the other modders. Hence: hard-coded filenames. */
+	// <advc.009> Load additional GlobalDefines files
 	if(!ReadGlobalDefines("xml\\GlobalDefines_devel.xml", cache))
 		return false;
 	if(!ReadGlobalDefines("xml\\GlobalDefines_advc.xml", cache))
@@ -214,33 +207,13 @@ bool CvXMLLoadUtility::SetGlobalDefines()
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
 
-/************************************************************************************************/
-/* BETTER_BTS_AI_MOD                      02/21/10                                jdog5000      */
-/*                                                                                              */
-/* XML Options                                                                                  */
-/************************************************************************************************/
-	if (!ReadGlobalDefines("xml\\BBAI_Game_Options_GlobalDefines.xml", cache))
-	{
-		//return false;
-	}
+	// BETTER_BTS_AI_MOD, XML Options, 02/21/10, jdog5000: START
+	ReadGlobalDefines("xml\\BBAI_Game_Options_GlobalDefines.xml", cache);
 	// advc.104x: Removed the BBAI prefix from the file name
-	if (!ReadGlobalDefines("xml\\AI_Variables_GlobalDefines.xml", cache))
-	{
-		//return false;
-	}
-
-	if (!ReadGlobalDefines("xml\\TechDiffusion_GlobalDefines.xml", cache))
-	{
-		//return false;
-	}
-
-	if (!ReadGlobalDefines("xml\\LeadFromBehind_GlobalDefines.xml", cache))
-	{
-		//return false;
-	}
-/************************************************************************************************/
-/* BETTER_BTS_AI_MOD                       END                                                  */
-/************************************************************************************************/
+	ReadGlobalDefines("xml\\AI_Variables_GlobalDefines.xml", cache);
+	ReadGlobalDefines("xml\\TechDiffusion_GlobalDefines.xml", cache);
+	ReadGlobalDefines("xml\\LeadFromBehind_GlobalDefines.xml", cache);
+	// BETTER_BTS_AI_MOD: END
 
 	if (gDLL->isModularXMLLoading())
 	{
@@ -307,19 +280,19 @@ bool CvXMLLoadUtility::SetPostGlobalsGlobalDefines()
 		SetGlobalDefine("FROZEN_TERRAIN", szVal);
 		idx = FindInInfoClass(szVal);
 		GC.getDefinesVarSystem()->SetValue("FROZEN_TERRAIN", idx);
-		
+
 		SetGlobalDefine("COLD_TERRAIN", szVal);
 		idx = FindInInfoClass(szVal);
 		GC.getDefinesVarSystem()->SetValue("COLD_TERRAIN", idx);
-		
+
 		SetGlobalDefine("TEMPERATE_TERRAIN", szVal);
 		idx = FindInInfoClass(szVal);
 		GC.getDefinesVarSystem()->SetValue("TEMPERATE_TERRAIN", idx);
-		
+
 		SetGlobalDefine("DRY_TERRAIN", szVal);
 		idx = FindInInfoClass(szVal);
 		GC.getDefinesVarSystem()->SetValue("DRY_TERRAIN", idx);
-		
+
 		SetGlobalDefine("BARREN_TERRAIN", szVal);
 		idx = FindInInfoClass(szVal);
 		GC.getDefinesVarSystem()->SetValue("BARREN_TERRAIN", idx);
@@ -335,8 +308,8 @@ bool CvXMLLoadUtility::SetPostGlobalsGlobalDefines()
 		SetGlobalDefine("WARM_FEATURE", szVal);
 		idx = FindInInfoClass(szVal);
 		GC.getDefinesVarSystem()->SetValue("WARM_FEATURE", idx);
-
 //GWMod end M.A.
+
 		SetGlobalDefine("LAND_IMPROVEMENT", szVal);
 		idx = FindInInfoClass(szVal);
 		GC.getDefinesVarSystem()->SetValue("LAND_IMPROVEMENT", idx);
@@ -348,6 +321,7 @@ bool CvXMLLoadUtility::SetPostGlobalsGlobalDefines()
 		SetGlobalDefine("RUINS_IMPROVEMENT", szVal);
 		idx = FindInInfoClass(szVal);
 		GC.getDefinesVarSystem()->SetValue("RUINS_IMPROVEMENT", idx);
+		GC.setRUINS_IMPROVEMENT(idx); // advc.003b
 
 		SetGlobalDefine("NUKE_FEATURE", szVal);
 		idx = FindInInfoClass(szVal);
@@ -566,7 +540,7 @@ bool CvXMLLoadUtility::LoadGlobalText()
 	if (gDLL->cacheRead(cache)) {
 		logMsg("Read GlobalText from cache");
 		gDLL->destroyCache(cache);
-		return true; 
+		return true;
 	}
 
 	if (!CreateFXml())
@@ -665,16 +639,13 @@ bool CvXMLLoadUtility::LoadGlobalText()
 	// write global text info to cache
 	// advc.003i: Disabled
 	/*bool bOk = gDLL->cacheWrite(cache);
-	if (!bLoaded)
-	{
+	if (!bOk) {
 		char	szMessage[1024];
 		sprintf( szMessage, "Failed writing to Global Text cache. \n Current XML file is: %s", GC.getCurrentXMLFile().GetCString());
 		gDLL->MessageBox(szMessage, "XML Caching Error");
 	}
 	if (bOk)
-	{
-		logMsg("Wrote GlobalText to cache");
-	}*/
+		logMsg("Wrote GlobalText to cache");*/
 
 	gDLL->destroyCache(cache);
 
@@ -883,7 +854,7 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 	UpdateProgressCB("GlobalOther");
 
 	DestroyFXml();
-
+	getWPAI.doXML(); // advc.104x
 	return true;
 }
 
@@ -892,7 +863,7 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 //  FUNCTION:   LoadPostMenuGlobals()
 //
 //  PURPOSE :   loads global xml data which isn't needed for the main menus
-//		this data is loaded as a secodn stage, when the game is launched
+//		this data is loaded as a second stage, when the game is launched
 //
 //------------------------------------------------------------------------------------------------------
 bool CvXMLLoadUtility::LoadPostMenuGlobals()
@@ -964,7 +935,7 @@ bool CvXMLLoadUtility::LoadPostMenuGlobals()
 	// Load the attachable infos
 	LoadGlobalClassInfo(GC.getAttachableInfo(), "CIV4AttachableInfos", "Misc", "Civ4AttachableInfos/AttachableInfos/AttachableInfo", false);
 
-	// Specail Case Diplomacy Info due to double vectored nature and appending of Responses
+	// Special Case Diplomacy Info due to double vectored nature and appending of Responses
 	LoadDiplomacyInfo(GC.getDiplomacyInfo(), "CIV4DiplomacyInfos", "GameInfo", "Civ4DiplomacyInfos/DiplomacyInfos/DiplomacyInfo", &CvDLLUtilityIFaceBase::createDiplomacyInfoCacheObject);
 	// advc.003j:
 	//LoadGlobalClassInfo(GC.getQuestInfo(), "Civ4QuestInfos", "Misc", "Civ4QuestInfos/QuestInfo", false);
@@ -1328,12 +1299,12 @@ void CvXMLLoadUtility::SetGlobalActionInfo()
 void CvXMLLoadUtility::SetGlobalAnimationPathInfo(CvAnimationPathInfo** ppAnimationPathInfo, char* szTagName, int* iNumVals)
 {
 	PROFILE_FUNC();
-	logMsg( "SetGlobalAnimationPathInfo %s\n", szTagName );
+	logMsg("SetGlobalAnimationPathInfo %s\n", szTagName);
 
 	int		i;						// Loop counters
 	CvAnimationPathInfo * pAnimPathInfo = NULL;	// local pointer to the domain info memory
 
-	if ( gDLL->getXMLIFace()->LocateNode(m_pFXml, szTagName ))
+	if (gDLL->getXMLIFace()->LocateNode(m_pFXml, szTagName))
 	{
 		// get the number of times the szTagName tag appears in the xml file
 		*iNumVals = gDLL->getXMLIFace()->NumOfElementsByTagName(m_pFXml,szTagName);
@@ -1365,7 +1336,7 @@ void CvXMLLoadUtility::SetGlobalAnimationPathInfo(CvAnimationPathInfo** ppAnimat
 	// if we didn't find the tag name in the xml then we never set the local pointer to the
 	// newly allocated memory and there for we will FAssert to let people know this most
 	// interesting fact
-	if(!pAnimPathInfo )
+	if(!pAnimPathInfo)
 	{
 		char	szMessage[1024];
 		sprintf( szMessage, "Error finding tag node in SetGlobalAnimationPathInfo function \n Current XML file is: %s", GC.getCurrentXMLFile().GetCString());
@@ -1594,7 +1565,8 @@ void CvXMLLoadUtility::LoadGlobalClassInfo(std::vector<T*>& aInfos,
 		const char* szFileRoot, const char* szFileDirectory,
 		const char* szXmlPath, bool bTwoPass,
 		CvCacheObject* (CvDLLUtilityIFaceBase::*pArgFunction) (const TCHAR*))
-{	pArgFunction= NULL; // advc.003i: Disable XML cache
+{
+	pArgFunction = NULL; // advc.003i: Disable XML cache
 	bool bLoaded = false;
 	bool bWriteCache = true;
 	CvCacheObject* pCache = NULL;
@@ -1648,20 +1620,16 @@ void CvXMLLoadUtility::LoadGlobalClassInfo(std::vector<T*>& aInfos,
 				}
 			}
 			// advc.003i: Disabled
-			/*if (NULL != pArgFunction && bWriteCache)
-			{
+			/*if (NULL != pArgFunction && bWriteCache) {
 				// write info to cache
 				bool bOk = gDLL->cacheWrite(pCache);
-				if (!bOk)
-				{
+				if (!bOk) {
 					char szMessage[1024];
 					sprintf(szMessage, "Failed writing to %s cache. \n Current XML file is: %s", szFileDirectory, GC.getCurrentXMLFile().GetCString());
 					gDLL->MessageBox(szMessage, "XML Caching Error");
 				}
 				if (bOk)
-				{
 					logMsg("Wrote %s to cache", szFileDirectory);
-				}
 			}*/
 		}
 	}
@@ -1727,20 +1695,16 @@ void CvXMLLoadUtility::LoadDiplomacyInfo(std::vector<CvDiplomacyInfo*>& DiploInf
 				}
 			}
 			// advc.003i: Disabled
-			/*if (NULL != pArgFunction && bWriteCache)
-			{
+			/*if (NULL != pArgFunction && bWriteCache) {
 				// write info to cache
 				bool bOk = gDLL->cacheWrite(pCache);
-				if (!bOk)
-				{
+				if (!bOk) {
 					char szMessage[1024];
 					sprintf(szMessage, "Failed writing to %s cache. \n Current XML file is: %s", szFileDirectory, GC.getCurrentXMLFile().GetCString());
 					gDLL->MessageBox(szMessage, "XML Caching Error");
 				}
 				if (bOk)
-				{
 					logMsg("Wrote %s to cache", szFileDirectory);
-				}
 			}*/
 		}
 	}
@@ -2596,7 +2560,7 @@ void CvXMLLoadUtility::SetVariableListTagPairForAudioScripts(int **ppiList, cons
 							if (iIndexVal != -1)
 							{
 								GetNextXmlVal(szTemp);
-								if ( szTemp.GetLength() > 0 )
+								if (szTemp.GetLength() > 0)
 									piList[iIndexVal] = gDLL->getAudioTagIndex(szTemp);
 								else
 									piList[iIndexVal] = -1;
@@ -2669,7 +2633,7 @@ void CvXMLLoadUtility::SetVariableListTagPairForAudioScripts(int **ppiList, cons
 							if (iIndexVal != -1)
 							{
 								GetNextXmlVal(szTemp);
-								if ( szTemp.GetLength() > 0 )
+								if (szTemp.GetLength() > 0)
 									piList[iIndexVal] = gDLL->getAudioTagIndex(szTemp);
 								else
 									piList[iIndexVal] = -1;
