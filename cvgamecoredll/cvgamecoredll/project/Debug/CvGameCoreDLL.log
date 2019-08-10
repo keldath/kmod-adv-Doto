@@ -1,8 +1,8 @@
 ﻿  Building source list
   Running fastdep
-  CyCityInterface2.cpp
+  CvPlayerAI.cpp
+  CvUnitAI.cpp
   Linking DLL
-     Creating library temp_files\Debug\CvGameCoreDLL.lib and object temp_files\Debug\CvGameCoreDLL.exp
   	COPY "temp_files\Debug\CvGameCoreDLL.dll" "Debug\CvGameCoreDLL.dll"
           1 file(s) copied.
   	COPY "Debug\CvGameCoreDLL.dll" "\Assets\."

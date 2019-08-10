@@ -182,7 +182,8 @@
 	<ElementType name="iGlobalSpaceProductionModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iTradeRoutes" content="textOnly" dt:type="int"/>
 	<ElementType name="iCoastalTradeRoutes" content="textOnly" dt:type="int"/>
-	<ElementType name="iGlobalTradeRoutes" content="textOnly" dt:type="int"/>
+	<!-- advc.310: Was iGlobalTradeRoutes; renamed (and semantics changed too). -->
+	<ElementType name="iAreaTradeRoutes" content="textOnly" dt:type="int"/>
 	<ElementType name="iTradeRouteModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iForeignTradeRouteModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iGlobalPopulationChange" content="textOnly" dt:type="int"/>
@@ -415,6 +416,23 @@
 	<ElementType name="GenericBuildingInfos" content="eltOnly">
 		<element type="GenericBuildingInfo" maxOccurs="*"/>
 	</ElementType>
+<!-- lopez bonus converter start-->
+  <ElementType name="iBonusAmount" content="textOnly" dt:type="int"/>
+  <ElementType name="RequiredInputBonus" content="eltOnly">
+    <element type="BonusType"/>
+    <element type="iBonusAmount"/>
+  </ElementType>
+  <ElementType name="BuildingOutputBonus" content="eltOnly">
+    <element type="BonusType"/>
+    <element type="iBonusAmount"/>
+  </ElementType>
+  <ElementType name="RequiredInputBonuses" content="eltOnly">
+    <element type="RequiredInputBonus" minOccurs="0"/>
+  </ElementType>
+  <ElementType name="BuildingOutputBonuses" content="eltOnly">
+    <element type="BuildingOutputBonus" minOccurs="0"/>
+<!-- lopez bonus converter end-->
+  </ElementType>
 	<ElementType name="BuildingInfo" content="eltOnly">
 		<element type="BuildingClass" minOccurs="0"/>
 		<element type="Type"/>
@@ -456,6 +474,10 @@
 		<element type="PowerBonus" minOccurs="0"/>
 		<element type="FreeBonus" minOccurs="0"/>
 		<element type="iNumFreeBonuses" minOccurs="0"/>
+		<!-- lopez bonus converter start-->
+		<element type="RequiredInputBonuses" minOccurs="0"/>
+    	<element type="BuildingOutputBonuses" minOccurs="0"/>
+		<!-- lopez bonus converter end-->	
         <element type="FreeBuilding" minOccurs="0"/>
 		<element type="FreePromotion" minOccurs="0"/>
 		<element type="CivicOption" minOccurs="0"/>
@@ -544,7 +566,8 @@
 		<element type="iGlobalSpaceProductionModifier" minOccurs="0"/>
 		<element type="iTradeRoutes" minOccurs="0"/>
 		<element type="iCoastalTradeRoutes" minOccurs="0"/>
-		<element type="iGlobalTradeRoutes" minOccurs="0"/>
+		<!-- advc.310: was iGlobalTradeRoutes -->
+		<element type="iAreaTradeRoutes" minOccurs="0"/>
 		<element type="iTradeRouteModifier" minOccurs="0"/>
 		<element type="iForeignTradeRouteModifier" minOccurs="0"/>
 		<element type="iGlobalPopulationChange" minOccurs="0"/>

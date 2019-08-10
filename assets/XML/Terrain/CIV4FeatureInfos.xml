@@ -100,7 +100,8 @@ EffectType	Effect that can occur when a unit enters a plot with the feature-->
 			<bRequiresRiverSide>0</bRequiresRiverSide>
 			<bAddsFreshWater>0</bAddsFreshWater>
 			<bImpassable>1</bImpassable>
-			<bNoCity>0</bNoCity>
+			<!-- advc.651: was 0 -->
+			<bNoCity>1</bNoCity>
 			<bNoImprovement>0</bNoImprovement>
 			<bVisibleAlways>0</bVisibleAlways>
 			<bNukeImmune>0</bNukeImmune>
@@ -833,7 +834,8 @@ EffectType	Effect that can occur when a unit enters a plot with the feature-->
 			<bRequiresRiverSide>0</bRequiresRiverSide>
 			<bAddsFreshWater>0</bAddsFreshWater>
 			<bImpassable>0</bImpassable>
-			<bNoCity>0</bNoCity>
+			<!-- advc.651: was 0 -->
+			<bNoCity>1</bNoCity>
 			<!-- dlph.9: was 1 -->
 			<bNoImprovement>0</bNoImprovement>
 			<bVisibleAlways>0</bVisibleAlways>

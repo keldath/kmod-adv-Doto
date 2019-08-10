@@ -1052,8 +1052,9 @@ class TerrainGenerator:
 		self.iDesertBottomPercent = max(0,int(100-iDesertPercent))
 		self.iPlainsTopPercent = 100
 		self.iPlainsBottomPercent = max(0,int(100-iDesertPercent-iPlainsPercent))
-		self.iMountainTopPercent = 75
-		self.iMountainBottomPercent = 60
+		# advc.003: Unused
+		#self.iMountainTopPercent = 75
+		#self.iMountainBottomPercent = 60
 
 		fSnowLatitude += self.gc.getClimateInfo(self.map.getClimate()).getSnowLatitudeChange()
 		fSnowLatitude = min(fSnowLatitude, 1.0)
@@ -1240,7 +1241,7 @@ class FeatureGenerator:
 			
 		if (pPlot.getFeatureType() == FeatureTypes.NO_FEATURE):
 			self.addForestsAtPlot(pPlot, iX, iY, lat)
-
+		
 	def addIceAtPlot(self, pPlot, iX, iY, lat):
 		if pPlot.canHaveFeature(self.featureIce):
 			if (self.map.isWrapX() and not self.map.isWrapY()) and (iY == 0 or iY == self.iGridH - 1):

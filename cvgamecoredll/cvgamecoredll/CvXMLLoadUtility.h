@@ -104,7 +104,11 @@ public:
 				if szName isn't found */
 			bool bMandatory = true,
 			bool bDefault = false);
-	void setAssertMandatory(bool b); // advc.006b
+	/*  advc.006b: Unused for now. Can use this to disable the assertions added to
+		GetChildXmlValByName temporarily, e.g. while loading a CvInfo element that
+		doesn't have tags which are normally mandatory. */
+	void setAssertMandatoryEnabled(bool b);
+	//void setAssertMandatory(bool b); // advc.006b PREV VERSION - KELDATH FROM 096 OF F1
 	// loads an xml file into the FXml variable.  The szFilename parameter has
 	// the m_szXmlPath member variable pre-pended to it to form the full pathname
 	bool LoadCivXml(FXml* pFXml, const TCHAR* szFilename);
@@ -334,9 +338,10 @@ private:
 	CvWString CreateKeyStringFromKBCode(const TCHAR* pszHotKey);
 
 	void orderHotkeyInfo(int** ppiSortedIndex, int* pHotkeyIndex, int iLength);
-	void logMsg(char* format, ... );
-
-	bool m_bAssertMandatory; // advc.006b
+	void logMsg(char* format, ...);
+	// <advc.006b>
+	bool m_bAssertMandatory;
+	static CvString szAssertMsg; // </advc.006b>
 };
 
 #ifdef _USRDLL

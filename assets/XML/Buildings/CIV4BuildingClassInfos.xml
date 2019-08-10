@@ -3,7 +3,34 @@
 <!-- Sid Meier's Civilization 4 -->
 <!-- Copyright Firaxis Games 2005 -->
 <!-- -->
-<!-- Building Class Infos -->
+<!--
+Headers
+These tags typically bracket other tags, sometimes the entire file, and are generally used to specify more than one piece of data.
+Tag Name	Description
+BuildingClassInfo	Main bracket for each entry
+Type	Label that is used for entry in all other XML files
+Text
+Tag Name	Description
+Description	Name of default building for the entry
+DefaultBuilding	The default building used when there is no unique building replacing it
+Integers
+All of these tags have a numerical value. Though it sometimes can be negative, it usually is not.
+Tag Name	Description
+iMaxGlobalInstances	Number of building class that can exist in the world; used for world wonders
+iMaxTeamInstances	Number of building class that can exist in one team
+iMaxPlayerInstances	Number of building class that can exist for a player; used for national wonders
+iExtraPlayerInstances	Number of building class that can be constructed if the limit has already been reached (used to allow the Palace to be moved)
+Boolean
+All of these can either be 1 (on, or true) or 0 (off, or false). Be careful, as you can wind up with a double-negative, which the game will interpret as "True".
+Tag Name	Description
+bNoLimit	Whether there is a limit on the number that can be constructed
+bMonument	Nothing. Unused Tag.
+Lists (Multi-line)
+All List tags consist of an opening/closing tag, which is shown here, and then each entry within it is another tag with the same name as the parent tag, minus the "s" (i.e. singular, rather than plural).
+Tag Name	Description
+VictoryThresholds	Indirectly, sets a buildingclass as a prerequisite for a given victory type. The possible values are either NONE or the ones defined in the GameInfo\Civ4VictoryInfo file. VictoryThresholds is also used in Civ4ProjectInfo file.
+Affects the project success rate (see: iSuccessRate) and the delay rate (see: iVictoryDelayPercent). Indirectly, sets a project as a prerequisite for a given victory type. The possible values are either NONE or the ones defined in the GameInfo\Civ4VictoryInfo file.
+--><!-- Building Class Infos -->
 <Civ4BuildingClassInfos xmlns="x-schema:CIV4BuildingsSchema.xml">
 	<BuildingClassInfos>
 		<BuildingClassInfo>
@@ -1745,6 +1772,18 @@
 			<bNoLimit>0</bNoLimit>
 			<bMonument>0</bMonument>
 			<DefaultBuilding>BUILDING_DRUIDISM_SHRINE</DefaultBuilding>
+			<VictoryThresholds/>
+		</BuildingClassInfo>
+		<BuildingClassInfo>
+			<Type>BUILDINGCLASS_TEST</Type>
+			<Description>TEST</Description>
+			<iMaxGlobalInstances>-1</iMaxGlobalInstances>
+			<iMaxTeamInstances>-1</iMaxTeamInstances>
+			<iMaxPlayerInstances>-1</iMaxPlayerInstances>
+			<iExtraPlayerInstances>0</iExtraPlayerInstances>
+			<bNoLimit>0</bNoLimit>
+			<bMonument>0</bMonument>
+			<DefaultBuilding>BUILDING_TEST</DefaultBuilding>
 			<VictoryThresholds/>
 		</BuildingClassInfo>
 	</BuildingClassInfos>

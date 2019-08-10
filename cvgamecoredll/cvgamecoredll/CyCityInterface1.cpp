@@ -24,7 +24,7 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("createGreatPeople", &CyCity::createGreatPeople, "void (int /*UnitTypes*/ eGreatPersonUnit, bool bIncrementThreshold) - Creates a great person in this city and whether it should increment the threshold to the next level")
 
 		.def("getCityPlotIndex", &CyCity::getCityPlotIndex, "int (CyPlot* pPlot)")
-		.def("getCityIndexPlot", &CyCity::getCityIndexPlot, python::return_value_policy<python::manage_new_object>(), "CyPlot* (int iIndex)")		
+		.def("getCityIndexPlot", &CyCity::getCityIndexPlot, python::return_value_policy<python::manage_new_object>(), "CyPlot* (int iIndex)")
 		.def("canWork", &CyCity::canWork, "bool (CyPlot*) - can the city work the plot?")
 		.def("clearWorkingOverride", &CyCity::clearWorkingOverride, "void (int iIndex)")
 		.def("countNumImprovedPlots", &CyCity::countNumImprovedPlots, "int ()")
@@ -101,7 +101,7 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 
 		.def("canHurry", &CyCity::canHurry, "bool (HurryTypes eHurry, bool bTestVisible = 0) - can player eHurry in this city?")
 		.def("hurry", &CyCity::hurry, "void (HurryTypes eHurry) - forces the city to rush production using eHurry")
-		 // advc.064:
+		// advc.064:
 		.def("getHurryOverflow", &CyCity::getHurryOverflow, "int (HurryTypes eHurry, bool bProduction, bool bIncludeCurrent)")
 		.def("getConscriptUnit", &CyCity::getConscriptUnit, "UnitID () - UnitID for the best unit the city can conscript")
 		.def("getConscriptPopulation", &CyCity::getConscriptPopulation, "int ()")
@@ -138,7 +138,7 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("getWarWearinessPercentAnger", &CyCity::getWarWearinessPercentAnger, "int ()")
 		.def("getLargestCityHappiness", &CyCity::getLargestCityHappiness, "int ()")
 		.def("unhappyLevel", &CyCity::unhappyLevel, "int (int iExtra)")
-		.def("happyLevel", &CyCity::happyLevel, "int ()")	
+		.def("happyLevel", &CyCity::happyLevel, "int ()")
 		.def("angryPopulation", &CyCity::angryPopulation, "int (iExtra) - # of unhappy citizens")
 		.def("totalFreeSpecialists", &CyCity::totalFreeSpecialists)
 		.def("extraFreeSpecialists", &CyCity::extraFreeSpecialists, "int () - # of specialist that are allowed for free")
@@ -454,7 +454,7 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 
 		.def("isWorkingPlotByIndex", &CyCity::isWorkingPlotByIndex, "bool (iIndex) - true if a worker is working this city's plot iIndex")
 		.def("isWorkingPlot", &CyCity::isWorkingPlot, "bool (iIndex) - true if a worker is working this city's pPlot")
-		.def("alterWorkingPlot", &CyCity::alterWorkingPlot, "void (iIndex)")	
+		.def("alterWorkingPlot", &CyCity::alterWorkingPlot, "void (iIndex)")
 		.def("getNumRealBuilding", &CyCity::getNumRealBuilding, "int (BuildingID) - get # real building of this type")
 		.def("setNumRealBuilding", &CyCity::setNumRealBuilding, "(BuildingID, iNum) - Sets number of buildings in this city of BuildingID type")
 		.def("getNumFreeBuilding", &CyCity::getNumFreeBuilding, "int (BuildingID) - # of free Building ID (ie: from a Wonder)")
@@ -479,8 +479,12 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("AI_isEmphasize", &CyCity::AI_isEmphasize, "bool (int iEmphasizeType)")
 		.def("AI_countBestBuilds", &CyCity::AI_countBestBuilds, "int (CyArea* pArea)")
 		.def("AI_cityValue", &CyCity::AI_cityValue, "int ()")
-		//original code from here moved to cycityinterface2.xpp to free up memory for compile
-		//keldath change - with help of f1rpo based off darkluna kekmod.
-		//see added file calls in cvdllpython.cpp
+		// advc.001n:
+		.def("AI_neededFloatingDefenders", &CyCity::AI_neededFloatingDefenders, "int ()")
+
+		.def("getScriptData", &CyCity::getScriptData, "str () - Get stored custom data (via pickle)")
+		.def("setScriptData", &CyCity::setScriptData, "void (str) - Set stored custom data (via pickle)")
+
+		.def("visiblePopulation", &CyCity::visiblePopulation, "int ()")
 		;
 }

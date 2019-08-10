@@ -1,5 +1,6 @@
 #### Civilization 4 SDK Makefile 2.5 ####
 ####  Copyright 2015 Nightinggale    ####
+# (advc: with some modifications; see below)
 #########################################
 #### Civilization 4 SDK Makefile 2.0 ####
 ####  Copyright 2013 Nightinggale    ####
@@ -10,9 +11,10 @@
 
 # advc: Target 'DebugMem' added: an almost-Release build that is less likely than a
 # Debug build to obscure accesses to uninitialized memory.
-# YOURMOD2 and YOURLOGS (see under "Paths"). WX added to GLOBAL_CFLAGS.
+# YOURMOD2 and YOURLOGS (see under "Paths").
 # Internal profiler enabled (FP_PROFILE_ENABLE, USE_INTERNAL_PROFILER).
 # CvGameCoreDLL.rc used only for final release.
+# Removed unused /DCVGAMECOREDLL_EXPORTS from Debug_DEFINES
 # devolution (Erik) has added the target 'Final_Release' with additional optimizations.
 
 ## User setup
@@ -69,7 +71,7 @@ FD="bin\fastdep.exe"
 # BLACKLIST=CvTextScreens
 
 #### DEFINES ####
-Debug_DEFINES=/DWIN32 /D_WINDOWS /D_USRDLL /DCVGAMECOREDLL_EXPORTS /D_DEBUG
+Debug_DEFINES=/DWIN32 /D_WINDOWS /D_USRDLL /D_DEBUG
 Release_DEFINES=/DWIN32 /D_WINDOWS /D_USRDLL /DCVGAMECOREDLL_EXPORTS /DNDEBUG /DFINAL_RELEASE
 ## Optional: Copy the flags above into "Additional options" in NMAKE properties (Configuration Properties)
 ## to make VC++ aware of what is defined and what isn't, which affects the help popup and red lines.
@@ -166,7 +168,7 @@ CUSTOM_LDFLAGS =
 FILE_DEPENDS = $(TEMP_TARGET_FILES)\depends
 
 #### CFLAGS ####
-GLOBAL_CFLAGS=/GR /Gy /W3 /WX /EHsc /Gd /Gm- /Fd"$(Target_PDB)" $(CUSTOM_CFLAGS) $(PROJECT_CFLAGS)
+GLOBAL_CFLAGS=/GR /Gy /W3 /EHsc /Gd /Gm- /Fd"$(Target_PDB)" $(CUSTOM_CFLAGS) $(PROJECT_CFLAGS)
 Debug_CFLAGS=/MD /Zi /Od /RTC1 $(Debug_DEFINES) $(GLOBAL_CFLAGS)
 # (DebugMem: Using Debug_CFLAGS without /D_DEBUG /RTC1 might accomplish largely the same)
 DebugMem_CFLAGS=/MD /O2 /Zi /Oi /G7 $(Release_DEFINES) $(GLOBAL_CFLAGS)
@@ -419,4 +421,3 @@ $(TEMP_TARGET_FILES)\$(BLACKLIST).obj: $(BLACKLIST).cpp
 	@DEL "$*.obj.@"
 
 !ENDIF
-

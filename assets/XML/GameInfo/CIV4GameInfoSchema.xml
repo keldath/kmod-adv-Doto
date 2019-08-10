@@ -336,6 +336,9 @@
 	<ElementType name="iBaseGrowthThresholdPercent" content="textOnly" dt:type="int"/>
 	<!-- advc.251: Modifier for Great Person thresholds -->
 	<ElementType name="iGPThresholdPercent" content="textOnly" dt:type="int"/>
+	<!-- advc.251: Modifier for (human and AI) culture level thresholds
+		 (only "Developing" and above) -->
+	<ElementType name="iCultureLevelPercent" content="textOnly" dt:type="int"/>
 	<ElementType name="iMaxNumCitiesMaintenance" content="textOnly" dt:type="int"/>
 	<ElementType name="iMaxColonyMaintenance" content="textOnly" dt:type="int"/>
 	<ElementType name="iCivicUpkeepPercent" content="textOnly" dt:type="int"/>
@@ -432,6 +435,7 @@
 		<element type="iBuildTimePercent" minOccurs="0"/>
 		<element type="iBaseGrowthThresholdPercent" minOccurs="0"/>
 		<element type="iGPThresholdPercent" minOccurs="0"/>
+		<element type="iCultureLevelPercent" minOccurs="0"/>
 		<!-- advc.251 (end) -->
 		<element type="iResearchPercent" minOccurs="0"/>
 		<!-- advc.251 (start) -->

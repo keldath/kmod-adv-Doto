@@ -554,7 +554,7 @@
 <!-- advc.008c: Another one that needs to be less emphatic -->
 <TEXT>
 	<Tag>TXT_KEY_HINT_15</Tag>
-	<English>Walls and castles help protect your cities in the first half of the game, but after gunpowder, only city culture boosts your defenses.</English>
+	<English>Walls and castles help protect your cities in the first half of the game, but, after gunpowder, only city culture boosts your defenses.</English>
 	<French>Ne n&#233;gligez pas la culture de votre empire. Remparts et ch&#226;teaux ne sont efficaces que jusqu'&#224; l'arriv&#233;e de la poudre &#224; canon, mais une grande influence culturelle am&#233;liore les d&#233;fenses &#224; toutes les &#233;poques.</French>
 	<German>Mauern und Schl&#246;sser sch&#252;tzen Ihre St&#228;dte in der ersten Spielh&#228;lfte, aber nach Erfindung des Schie&#223;pulvers st&#228;rkt nur Kultur den Verteidigungswert Ihrer St&#228;dte.</German>
 	<Italian>Non trascurare la cultura del tuo impero: mura e castelli dureranno soltanto fino alla scoperta della polvere da sparo, ma una grande influenza culturale aumenter&#224; le difese in tutte le epoche.</Italian>
@@ -976,6 +976,30 @@
 	<German>(AdvCiv) Schiffe mit [COLOR_HIGHLIGHT_TEXT]Drill I[COLOR_REVERT] können die Beförderung [COLOR_HIGHLIGHT_TEXT]Blitzkrieg[COLOR_REVERT] erhalten - und damit einen zusätzlichen Angriff pro Runde. Dies kann entscheidend sein, wenn ein Verband feindlicher Transportschiffe auf Ihre Küste zusteuert.</German>
 	<Italian>(AdvCiv) Ships can reach the [COLOR_HIGHLIGHT_TEXT]Blitz[COLOR_REVERT] promotion via [COLOR_HIGHLIGHT_TEXT]Drill I[COLOR_REVERT]. This gives them one extra attack per turn, which can make a great difference when a group of enemy transports has almost reached your shore.</Italian>
 	<Spanish>(AdvCiv) Ships can reach the [COLOR_HIGHLIGHT_TEXT]Blitz[COLOR_REVERT] promotion via [COLOR_HIGHLIGHT_TEXT]Drill I[COLOR_REVERT]. This gives them one extra attack per turn, which can make a great difference when a group of enemy transports has almost reached your shore.</Spanish>
+</TEXT>
+
+<!-- Based on a BUG hint (but it describes BtS behavior); kept their FR and ES
+	 translations. K-Mod removed all but one of the BUG hints. Many of them are
+	 aimed at beginners, others are already covered by my own hints; so this is
+	 the only one that I want to include (in addition to the one in
+	 'K-Mod hints.xml'). -->
+<TEXT>
+	<Tag>TXT_KEY_BUG_HINT_INTERFACE_4</Tag>
+	<English>To cancel the missions of all your Workers, select one of them and click the [COLOR_HIGHLIGHT_TEXT]Cancel Mission[COLOR_REVERT] button while holding down the [ALT] key.</English>
+	<French>Pour annuler tous les ordres des Ouvriers, sélectionnez 1 ouvrier avec des ordres, et en gardant [ALT] enfoncé, cliquez le bouton pour annuler les ordres.</French>
+	<German>Um alle Bautrupp-Missionen abzubrechen, wählen Sie einen einzelnen Bautrupp aus und klicken Sie bei gedrückter [ALT]-Taste auf die "Abbrechen"-Schaltfläche.</German>
+	<Italian>Per cancellare velocemente tutti gli ordini dei lavoratori, selezionane uno che abbia ordini attivi, tieni premuto il tasto [ALT] e clicca il pulsante di cancellazione degli ordini.</Italian>
+	<Spanish>To cancel the missions of all your Workers, select one of them and click the [COLOR_HIGHLIGHT_TEXT]Cancel Mission[COLOR_REVERT] button while holding down the [ALT] key.</Spanish>
+</TEXT>
+
+<!-- advc.130f -->
+<TEXT>
+	<Tag>TXT_KEY_ADVC_HINT_39</Tag>
+	<English>(AdvCiv) Your AI rivals will not consider proposals for a trade embargo so long as you have trades with the target of the embargo. In contrast, you can always tell your vassals to stop trading with any target.</English>
+	<French>(AdvCiv) Your AI rivals will not consider proposals for a trade embargo so long as you have trades with the target of the embargo. In contrast, you can always tell your vassals to stop trading with any target.</French>
+	<German>(AdvCiv) Ihre KI-Gegner lassem sich nicht von einem Handelsembargo überzeugen, solange Sie selbst mit dem Ziel des Embargos Handel treiben. Ihre Vasallen können Sie allerdings jederzeit anweisen, den Handel mit einem Gegner einzustellen.</German>
+	<Italian>(AdvCiv) Your AI rivals will not consider proposals for a trade embargo so long as you have trades with the target of the embargo. In contrast, you can always tell your vassals to stop trading with any target.</Italian>
+	<Spanish>(AdvCiv) Your AI rivals will not consider proposals for a trade embargo so long as you have trades with the target of the embargo. In contrast, you can always tell your vassals to stop trading with any target.</Spanish>
 </TEXT>
 
 </Civ4GameText>
