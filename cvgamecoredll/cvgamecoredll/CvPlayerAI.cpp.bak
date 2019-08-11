@@ -10053,20 +10053,19 @@ PlayerVoteTypes CvPlayerAI::AI_diploVote(const VoteSelectionSubData& kVoteData, 
 		{
 			if (!GC.getVoteInfo(eVote).isForceCivic(iI) || isCivic((CivicTypes)iI))
 				continue;
-//start section here was removed - f1rpo said this is better handled below in the iBestCivicValue
 //this part written by keldath - so ill have a similar condition set for the dune wars code...dunno if its good.
-	//		if (GC.getVoteInfo(eVote).isForceCivic(iI) && !isCivic((CivicTypes)iI))
-	//		{
+			if (GC.getVoteInfo(eVote).isForceCivic(iI) && !isCivic((CivicTypes)iI))
+			{
 				//dune wars - hated civs						//a1021
-	/*					if (GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivic() == (CivicTypes)iI)
+						if (GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivic() == (CivicTypes)iI)
 						{
 							bValid = false;
 							bDefy = true;
 							break;
 						}
-	*/			//dune wars - hated civs					//a1021 end
-	//		}
-//end section here was removed
+				//dune wars - hated civs					//a1021 end
+			}
+
 			CivicTypes eBestCivic = AI_bestCivic((CivicOptionTypes)(GC.getCivicInfo((CivicTypes)iI).getCivicOptionType()));
 			if (eBestCivic == NO_CIVIC || eBestCivic == ((CivicTypes)iI))
 				continue;
@@ -17481,13 +17480,8 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 	{
 		if (iValue > 0)
 		{
-			/*
 			iValue *= 2;
 			iValue /= 3;
-			*/
-			//new values - suggested by f1rpo -0.96- keldath 
-			iValue *= 1;
-			iValue /= 2;
 		}
 	}
 //dune wars - hated civs

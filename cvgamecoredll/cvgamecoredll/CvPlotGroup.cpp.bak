@@ -224,10 +224,8 @@ bool CvPlotGroup::hasBonus(BonusTypes eBonus)
 	return(getNumBonuses(eBonus) > 0);
 }
 
-// < Building Resource Converter Start >
-//f1rpo 096 change - pass a bool to avoid an infinite loop				
-void CvPlotGroup::changeNumBonuses(BonusTypes eBonus, int iChange, bool bUpdateBuildings)
-// < Building Resource Converter End   >
+
+void CvPlotGroup::changeNumBonuses(BonusTypes eBonus, int iChange)
 {
 	FAssertMsg(eBonus >= 0, "eBonus is expected to be non-negative (invalid Index)");
 	FAssertMsg(eBonus < GC.getNumBonusInfos(), "eBonus is expected to be within maximum bounds (invalid Index)");
@@ -252,13 +250,7 @@ void CvPlotGroup::changeNumBonuses(BonusTypes eBonus, int iChange, bool bUpdateB
 		{
 			if (pCity->getOwner() == getOwner())
 			{
-				// < Building Resource Converter Start >
-				//f1rpo 096 change - pass a bool to avoid an infinite loop
-				pCity->changeNumBonuses(eBonus, iChange, bUpdateBuildings);
-				if (bUpdateBuildings) {
-					pCity->processBuildingBonuses();
-				}
-				// < Building Resource Converter End   >
+				pCity->changeNumBonuses(eBonus, iChange);
 			}
 		}
 
@@ -278,6 +270,10 @@ void CvPlotGroup::verifyCityProduction() {
 		CvCity* pCity = m.plotSoren(pPlotNode->m_data.iX, pPlotNode->m_data.iY)->getPlotCity();
 		if (pCity != NULL && pCity->getOwner() == getOwner())
 			pCity->verifyProduction();
+			//not sure if this is a good spot for this code.. keldath for 096
+			// < Building Resource Converter Start >
+			pCity->processBuildingBonuses();
+			// < Building Resource Converter End   >
 		pPlotNode = nextPlotsNode(pPlotNode);
 	}
 } // </advc.064d>

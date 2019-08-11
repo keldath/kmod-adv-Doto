@@ -924,12 +924,7 @@ public:
 
 	int getNumBonuses(BonusTypes eIndex) const;																		// Exposed to Python
 	bool hasBonus(BonusTypes eIndex) const;															// Exposed to Python
-	//< Building Resource Converter Start >
-	//f1rpo 096 - added a var here to pass an param to avoid a loop - keldath
-	void changeNumBonuses(BonusTypes eBonus, int iChange,
-       bool bUpdateBuildings = true);
-	bool isBuildingBonus(BuildingTypes eBonus) const;
-	//< Building Resource Converter End   >
+	void changeNumBonuses(BonusTypes eIndex, int iChange);
 	int countUniqueBonuses() const; // advc.149
 	int getNumCorpProducedBonuses(BonusTypes eIndex) const;
 	bool isCorporationBonus(BonusTypes eBonus) const;

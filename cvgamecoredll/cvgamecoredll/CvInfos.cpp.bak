@@ -2502,8 +2502,7 @@ bool CvPromotionInfo::readPass2(CvXMLLoadUtility* pXML)
 /*
 ** K-Mod, 7/jan/11, karadoc
 */
-	pXML->GetChildXmlValByName(szTextVal, "PromotionPrereqOr3",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "PromotionPrereqOr3");
 	m_iPrereqOrPromotion3 = GC.getInfoTypeForString(szTextVal);
 /*
 ** K-Mod end
@@ -5482,11 +5481,9 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_bNoBadGoodies, "bNoBadGoodies");
 	pXML->GetChildXmlValByName(&m_bOnlyDefensive, "bOnlyDefensive");
 	// advc.315a:
-	pXML->GetChildXmlValByName(&m_bOnlyAttackAnimals, "bOnlyAttackAnimals",
-		false, false); // f1rpo
+	pXML->GetChildXmlValByName(&m_bOnlyAttackAnimals, "bOnlyAttackAnimals");
 	// advc.315b:
-	pXML->GetChildXmlValByName(&m_bOnlyAttackBarbarians, "bOnlyAttackBarbarians",
-		false, false); // f1rpo
+	pXML->GetChildXmlValByName(&m_bOnlyAttackBarbarians, "bOnlyAttackBarbarians");
 	pXML->GetChildXmlValByName(&m_bNoCapture, "bNoCapture");
 	pXML->GetChildXmlValByName(&m_bQuickCombat, "bQuickCombat");
 	pXML->GetChildXmlValByName(&m_bRivalTerritory, "bRivalTerritory");
@@ -5564,22 +5561,18 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 /**																				*/
 /**		CanTrain																*/
 /********************************************************************************/
-	pXML->GetChildXmlValByName(szTextVal, "MaxStartEra",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "MaxStartEra");
 	m_iMaxStartEra = pXML->FindInInfoClass(szTextVal);
 
-	pXML->GetChildXmlValByName(szTextVal, "ForceObsoleteTech",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "ForceObsoleteTech");
 	m_iForceObsoleteTech = pXML->FindInInfoClass(szTextVal);
 	
-	pXML->GetChildXmlValByName(&m_bStateReligion, "bStateReligion", false,
-		false); // f1rpo
-	pXML->GetChildXmlValByName(szTextVal, "PrereqGameOption",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(&m_bStateReligion, "bStateReligion", false);
+
+	pXML->GetChildXmlValByName(szTextVal, "PrereqGameOption");
 	m_iPrereqGameOption = pXML->FindInInfoClass(szTextVal);
 
-	pXML->GetChildXmlValByName(szTextVal, "NotGameOption",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "NotGameOption");
 	m_iNotGameOption = pXML->FindInInfoClass(szTextVal);
 
 //	pXML->SetVariableListTagPair(&m_pbPrereqOrCivics, "PrereqOrCivics", sizeof(GC.getCivicInfo((CivicTypes)0)), GC.getNumCivicInfos());
@@ -10115,12 +10108,10 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 /**																				*/
 /**		CanConstruct															*/
 /********************************************************************************/
-	pXML->GetChildXmlValByName(szTextVal, "PrereqGameOption",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "PrereqGameOption");
 	m_iPrereqGameOption = pXML->FindInInfoClass(szTextVal);
 
-	pXML->GetChildXmlValByName(szTextVal, "NotGameOption",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "NotGameOption");
 	m_iNotGameOption = pXML->FindInInfoClass(szTextVal);
 /********************************************************************************/
 /**		REVDCM									END								*/
@@ -10747,10 +10738,9 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_piBuildingHappinessChanges, "BuildingHappinessChanges", sizeof(GC.getBuildingClassInfo((BuildingClassTypes)0)), GC.getNumBuildingClassInfos());
 
 	// davidlallen: building bonus yield, commerce start
-	pXML->GetChildXmlValByName(szTextVal, "BonusConsumed",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "BonusConsumed");
 	m_iBonusConsumed = pXML->FindInInfoClass(szTextVal);
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "CommerceProduced"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"CommerceProduced"))
 	{
 		pXML->SetCommerce(&m_paiCommerceProduced);
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
@@ -14449,8 +14439,7 @@ bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_bSpreadCultureControl, "bSpreadCultureControl", false);
 	// < JCultureControl Mod End >
 // Deliverator fresh water
-	pXML->GetChildXmlValByName(&m_iAddsFreshWaterInRadius, "iAddsFreshWaterInRadius",
-		-1); // f1rpo
+	pXML->GetChildXmlValByName(&m_iAddsFreshWaterInRadius, "iAddsFreshWaterInRadius");	
 	// Deliverator
 
 	pXML->SetVariableListTagPair(&m_pbTerrainMakesValid, "TerrainMakesValids", sizeof(GC.getTerrainInfo((TerrainTypes)0)), GC.getNumTerrainInfos());
@@ -14584,8 +14573,7 @@ bool CvImprovementInfo::readPass2(CvXMLLoadUtility* pXML)
 	m_iImprovementUpgrade = GC.getInfoTypeForString(szTextVal);
 
     // < JImprovementLimit Mod Start >
-	pXML->GetChildXmlValByName(szTextVal, "ImprovementRequired",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "ImprovementRequired");
 	m_iImprovementRequired = GC.getInfoTypeForString(szTextVal);
     // < JImprovementLimit Mod End >
 
@@ -17319,16 +17307,13 @@ bool CvLeaderHeadInfo::read(CvXMLLoadUtility* pXML)
 	m_iFavoriteCivic = pXML->FindInInfoClass(szTextVal);
 
 	//a1021//dune wars - hated civs
-	pXML->GetChildXmlValByName(szTextVal, "HatedCivic",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "HatedCivic");
 	m_iHatedCivic = pXML->FindInInfoClass(szTextVal);
 	
-	pXML->GetChildXmlValByName(szTextVal, "FavoriteCivilization",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "FavoriteCivilization");
 	m_aszExtraXMLforPass3.push_back(szTextVal);
 	
-	pXML->GetChildXmlValByName(szTextVal, "HatedCivilization",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "HatedCivilization");
 	m_aszExtraXMLforPass3.push_back(szTextVal);	
 	//a1021 end//dune wars - hated civs
 
@@ -18160,11 +18145,9 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iSuccessRate, "iSuccessRate");
 
 	// davidlallen: project civilization and free unit start
-	pXML->GetChildXmlValByName(szTextVal, "CivilizationType",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "CivilizationType");
 	m_iCivilization = pXML->FindInInfoClass(szTextVal);
-	pXML->GetChildXmlValByName(szTextVal, "FreeUnit",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "FreeUnit");
 	m_iFreeUnit = pXML->FindInInfoClass(szTextVal);
 	// davidlallen: project civilization and free unit end
 
@@ -20417,11 +20400,9 @@ bool CvArtInfoUnit::read(CvXMLLoadUtility* pXML)
 
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"AudioRunSounds"))
 	{
-		pXML->GetChildXmlValByName(szTextVal, "AudioRunTypeLoop",
-			""); // f1rpo
+		pXML->GetChildXmlValByName(szTextVal, "AudioRunTypeLoop");
 		m_iRunLoopSoundTag = GC.getFootstepAudioTypeByTag(szTextVal);
-		pXML->GetChildXmlValByName(szTextVal, "AudioRunTypeEnd",
-			""); // f1rpo
+		pXML->GetChildXmlValByName(szTextVal, "AudioRunTypeEnd");
 		m_iRunEndSoundTag = GC.getFootstepAudioTypeByTag(szTextVal);
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
