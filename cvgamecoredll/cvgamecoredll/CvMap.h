@@ -386,19 +386,6 @@ public: // advc.003: made several functions const
 		}
 		return &(m_pMapPlots[plotNum(iX, iY)]);
 	}
-//MOD@VET_Andera412_Blocade_Unit-begin1/1
-//KELDATH UPDATE OF CvPlot* getPlot(int iX, int iY);TO THE BELOW - F1 096 CODE
-	CvPlot* plotExternal(int iX, int iY);
-	__forceinline CvPlot* getPlot(int iX, int iY) const
-	{
-		int iMapX = coordRange(iX, m_iGridWidth, m_bWrapX);
-		int iMapY = coordRange(iY, m_iGridHeight, m_bWrapY);
-		return ((isPlot(iMapX, iMapY)) ? &(m_pMapPlots[plotNum(iMapX, iMapY)]) : NULL);
-	}
-	CvPlot* getPlotSoren(int iX, int iY) /*const*/;//NOT SURE WHY IT CANT BE CONST - KELDATH -96 FIX
-	__forceinline CvPlot* getPlotSoren(int iX, int iY) const
-		{return &(m_pMapPlots[plotNum(iX, iY)]);}
-//MOD@VET_Andera412_Blocade_Unit-end1/1
 	#endif
 	DllExport CvPlot* pointToPlot(float fX, float fY);										// Exposed to Python
 

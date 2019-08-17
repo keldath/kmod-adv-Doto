@@ -858,6 +858,16 @@ class CvEventManager:
 	def onCityBuilt(self, argsList):
 		'City Built'
 		city = argsList[0]
+##keldath free special building on found start.
+		iPlayer = city.getOwner()
+		pPlayer = gc.getPlayer(iPlayer)
+		iBuildingA = gc.getInfoTypeForString("BUILDINGCLASS_CASTIRON")
+		iBuildingB = gc.getCivilizationInfo(pPlayer.getCivilizationType()).getCivilizationBuildings(iBuildingA)
+		#the below is a check if all prereq conditions for the buildings are met -i removed
+		#if city.canConstruct(iBuildingB, True, False, False):
+		#		city.setNumRealBuilding(iBuildingB, 1)
+		city.setNumRealBuilding(iBuildingB, 1)
+##keldath free special building on found end.		
 		if (city.getOwner() == gc.getGame().getActivePlayer()):
 			self.__eventEditCityNameBegin(city, False)	
 		CvUtil.pyPrint('City Built Event: %s' %(city.getName()))

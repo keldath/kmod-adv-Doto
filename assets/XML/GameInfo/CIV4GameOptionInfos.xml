@@ -260,10 +260,10 @@
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_EXTRA_BUILDINGS</Type>
-            <Description>Extra Buildings</Description>
-            <Help>Play With A larger Variety Of Buildings And Wonders</Help>
+            <Description>Extra Bonus</Description>
+            <Help>Units gets more Power with more resources of the same type. Also Requires BUILDING DELETION Game Option</Help>
             <bDefault>0</bDefault>
-            <bVisible>0</bVisible>
+            <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_NO_CORPORATIONS</Type>

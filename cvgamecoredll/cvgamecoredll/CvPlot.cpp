@@ -11229,7 +11229,7 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 						++iX;
 						if (iX != kMap.getGridWidth())
 						{
-							if (kMap.getPlotSoren(iX, iPlotY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+							if (kMap.plotSoren(iX, iPlotY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
 								{return true;}
 						}
 						else
@@ -11237,7 +11237,7 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 							if (kMap.isWrapX())
 							{
 								iX = 0;
-								if (kMap.getPlotSoren(iX, iPlotY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+								if (kMap.plotSoren(iX, iPlotY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
 									{return true;}
 							}
 						}
@@ -11246,7 +11246,7 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 						--iX;
 						if (iX != -1)
 						{
-							if (kMap.getPlotSoren(iX, iPlotY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+							if (kMap.plotSoren(iX, iPlotY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
 								{return true;}
 						}
 						else
@@ -11254,7 +11254,7 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 							if (kMap.isWrapX())
 							{
 								iX += kMap.getGridWidth();
-								if (kMap.getPlotSoren(iX, iPlotY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+								if (kMap.plotSoren(iX, iPlotY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
 									{return true;}
 							}
 						}
@@ -11272,7 +11272,7 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 						++iY;
 						if (iY != kMap.getGridHeight())
 						{
-							if (kMap.getPlotSoren(iPlotX, iY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+							if (kMap.plotSoren(iPlotX, iY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
 								{return true;}
 						}
 						else
@@ -11280,7 +11280,7 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 							if (kMap.isWrapY())
 							{
 								iY = 0;
-								if (kMap.getPlotSoren(iPlotX, iY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+								if (kMap.plotSoren(iPlotX, iY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
 									{return true;}
 							}
 						}
@@ -11288,7 +11288,7 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 						--iY;
 						if (iY != -1)
 						{
-							if (kMap.getPlotSoren(iPlotX, iY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+							if (kMap.plotSoren(iPlotX, iY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
 								{return true;}
 						}
 						else
@@ -11296,14 +11296,14 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 							if (kMap.isWrapY())
 							{
 								iY += kMap.getGridHeight();
-								if (kMap.getPlotSoren(iPlotX, iY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+								if (kMap.plotSoren(iPlotX, iY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
 									{return true;}
 							}
 						}
 					}
 				}
-				else if ((kMap.getPlotSoren(iFromX, iPlotY)->isWithBlocaders(pFromPlot, this, pUnit, isWater())) ||
-						(kMap.getPlotSoren(iPlotX, iFromY)->isWithBlocaders(pFromPlot, this, pUnit, isWater())))
+				else if ((kMap.plotSoren(iFromX, iPlotY)->isWithBlocaders(pFromPlot, this, pUnit, isWater())) ||
+						(kMap.plotSoren(iPlotX, iFromY)->isWithBlocaders(pFromPlot, this, pUnit, isWater())))
 					{return true;}
 			/**	return false;
 	A:

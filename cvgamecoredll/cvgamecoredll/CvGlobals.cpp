@@ -293,6 +293,9 @@ m_bUSE_GET_EXPERIENCE_NEEDED_CALLBACK(false),
 m_bUSE_UNIT_UPGRADE_PRICE_CALLBACK(false),
 m_bUSE_DO_COMBAT_CALLBACK(false),
 // K-Mod end
+//MOD@VET_Andera412_Blocade_Unit-begin1/2
+//m_iBLOCADE_UNIT(0),
+//MOD@VET_Andera412_Blocade_Unit-end1/2
 m_paHints(NULL),
 m_paMainMenus(NULL)
 

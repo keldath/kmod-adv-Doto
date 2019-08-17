@@ -928,17 +928,20 @@ public:
 	//f1rpo 096 - added a var here to pass an param to avoid a loop - keldath
 	void changeNumBonuses(BonusTypes eBonus, int iChange,
        bool bUpdateBuildings = true);
-	bool isBuildingBonus(BuildingTypes eBonus) const;
 	//< Building Resource Converter End   >
 	int countUniqueBonuses() const; // advc.149
 	int getNumCorpProducedBonuses(BonusTypes eIndex) const;
 	bool isCorporationBonus(BonusTypes eBonus) const;
 	bool isActiveCorporation(CorporationTypes eCorporation) const;
-
+	
+	//< Building Resource Converter Start >
+	bool isBuildingBonus(BonusTypes eBonus) const; // f1rpo
+	bool isBuildingBonus(BuildingTypes eBuilding) const; // f1rpo
+	//< Building Resource Converter end >
 	// < Building Resource Converter Start >
 	void processBuildingBonuses();
-	DllExport int getBuildingOutputBonus(BonusTypes eIndex);														// Exposed to Python
-	void resetBuildingOutputBonuses();
+	int getBuildingOutputBonus(BonusTypes eIndex) const;														// Exposed to Python
+	protected: void resetBuildingOutputBonuses(); public:
 	// < Building Resource Converter End   >
 
 	int getBuildingProduction(BuildingTypes eIndex) const;							// Exposed to Python

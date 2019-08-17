@@ -82,13 +82,6 @@ void CvMap::init(CvMapInitData* pInitInfo)
 		for (int iY = 0; iY < getGridHeight(); iY++)
 		{
 			plotSoren(iX, iY)->init(iX, iY);
-//F1RPO - IF YOU SEE THIS - THE LINE ABOVE SHOULD BE COMMENTED OUT? GETPLOTSOREN IS A DIFFERENT FUNC?
-//MOD@VET_Andera412_Blocade_Unit-begin1/2
-			if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
-			{
-				getPlotSoren(iX, iY)->init(iX, iY);
-			}	
-//MOD@VET_Andera412_Blocade_Unit-end1/2	
 		}
 	}
 	calculateAreas();
@@ -1137,18 +1130,6 @@ CvPlot* CvMap::plotExternal(int iX, int iY) const // advc.003f
 	return plot(iX, iY);
 }
 
-//MOD@VET_Andera412_Blocade_Unit-begin2/2
-//KELDATH = CHANGED CvPlot* CvMap::getPlot(int iX, int iY) TO THE BELOW - 096 NEW F1 CODE
-CvPlot* CvMap::plotExternal(int iX, int iY)
-{
-	int iMapX = coordRange(iX, m_iGridWidth, m_bWrapX);
-	int iMapY = coordRange(iY, m_iGridHeight, m_bWrapY);
-	return ((isPlot(iMapX, iMapY)) ? getPlotSoren(iMapX, iMapY) : NULL);
-}
-
-CvPlot* CvMap::getPlotSoren(int iX, int iY) /*const*/ //KELDATH NOT SURE WHY NO CONST
-	{return &(m_pMapPlots[plotNum(iX, iY)]);}
-//MOD@VET_Andera412_Blocade_Unit-end2/2
 
 CvPlot* CvMap::pointToPlot(float fX, float fY)
 {
@@ -1389,7 +1370,6 @@ void CvMap::calculateAreas()
 {
 	PROFILE("CvMap::calculateAreas"); // <advc.030>
 //added by f1 advc to allow peaks to seperate continents
-//REPLACED INLINE - IS THIS OK?
 	if(!GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && GC.getDefineINT("PASSABLE_AREAS") > 0) {
 			/*  Will recalculate from CvGame::setinitialItems once normalization is
 				through. But need preliminary areas because normalization is done

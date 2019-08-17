@@ -1,7 +1,6 @@
 ﻿  Building source list
   Running fastdep
-  CvPlayerAI.cpp
-  CvUnitAI.cpp
+  CvGlobals.cpp
   Linking DLL
   	COPY "temp_files\Debug\CvGameCoreDLL.dll" "Debug\CvGameCoreDLL.dll"
           1 file(s) copied.

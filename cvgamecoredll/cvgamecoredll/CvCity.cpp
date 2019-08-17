@@ -12037,7 +12037,7 @@ void CvCity::resetBuildingOutputBonuses()
    // This branch should not be necessary; memory is allocated in CvCity::reset.
    if (m_paiBuildingOutputBonuses == NULL)
    {
-	   FAssert(m_paiBuildingOutputBonuses != NULL)
+	   FAssert(m_paiBuildingOutputBonuses != NULL);
 	   m_paiBuildingOutputBonuses = new int[GC.getNumBonusInfos()]();
    }
    else

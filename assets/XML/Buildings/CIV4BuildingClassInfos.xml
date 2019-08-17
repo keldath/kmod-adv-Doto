@@ -1774,17 +1774,5 @@ Affects the project success rate (see: iSuccessRate) and the delay rate (see: iV
 			<DefaultBuilding>BUILDING_DRUIDISM_SHRINE</DefaultBuilding>
 			<VictoryThresholds/>
 		</BuildingClassInfo>
-		<BuildingClassInfo>
-			<Type>BUILDINGCLASS_TEST</Type>
-			<Description>TEST</Description>
-			<iMaxGlobalInstances>-1</iMaxGlobalInstances>
-			<iMaxTeamInstances>-1</iMaxTeamInstances>
-			<iMaxPlayerInstances>-1</iMaxPlayerInstances>
-			<iExtraPlayerInstances>0</iExtraPlayerInstances>
-			<bNoLimit>0</bNoLimit>
-			<bMonument>0</bMonument>
-			<DefaultBuilding>BUILDING_TEST</DefaultBuilding>
-			<VictoryThresholds/>
-		</BuildingClassInfo>
 	</BuildingClassInfos>
 </Civ4BuildingClassInfos>
