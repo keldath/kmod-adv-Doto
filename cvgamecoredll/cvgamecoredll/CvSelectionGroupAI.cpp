@@ -630,7 +630,8 @@ void CvSelectionGroupAI::AI_queueGroupAttack(int iX, int iY)
 	m_iGroupAttackY = iY;
 }
 
-bool CvSelectionGroupAI::AI_isControlled()
+//hot fix by f1rpo for expoloerer units
+bool CvSelectionGroupAI::AI_isControlled() const
 {
 	return (!isHuman() || isAutomated());
 }

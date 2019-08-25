@@ -1,9 +1,0 @@
-﻿  Building source list
-  Running fastdep
-  CvGlobals.cpp
-  Linking DLL
-  	COPY "temp_files\Debug\CvGameCoreDLL.dll" "Debug\CvGameCoreDLL.dll"
-          1 file(s) copied.
-  	COPY "Debug\CvGameCoreDLL.dll" "\Assets\."
-  The system cannot find the path specified.
-          0 file(s) copied.

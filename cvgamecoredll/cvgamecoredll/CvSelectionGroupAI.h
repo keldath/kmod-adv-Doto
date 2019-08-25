@@ -49,7 +49,8 @@ public:
 	inline void AI_cancelGroupAttack() { m_bGroupAttack = false; } // K-Mod (made inline)
 	inline bool AI_isGroupAttack() const { return m_bGroupAttack; } // K-Mod (made inline)
 
-	bool AI_isControlled();
+	//f1rpo hotfix for 096 for explorer units - keldath
+	bool AI_isControlled() const;
 	bool AI_isDeclareWar(const CvPlot* pPlot = NULL);
 
 	CvPlot* AI_getMissionAIPlot();
