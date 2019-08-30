@@ -13204,15 +13204,18 @@ DenialTypes CvPlayerAI::AI_bonusTrade(BonusTypes eBonus, PlayerTypes ePlayer,
 		else return NO_DENIAL;
 	} // </advc.037>
 	// Replacing the JOKING clause further up
-	if(kPlayer.isHuman() && iAvailThem <= 0 ? /*  Don't presume value
+	//fix for ai cancellatins  - f1rpo 096 hotfix - keldath
+	if(kPlayer.isHuman() && (iAvailThem + iChange <= 1 ? /*  Don't presume value
 			for human unless human only needs the resource for a corp */
 			(iValueForUs >= iTradeValThresh +
 			/*  bonusVal gives every city equal weight, but early on,
 				it's mostly about the capital, which can grow fast. */
 			std::min(2, (getNumCities() - 1) / 2)) :
 			(3 * iValueForUs >= 2 * iValueForThem ||
-			iValueForThem - iValueForUs < iTradeValThresh ||
-			iValueForUs > iTradeValThresh + 2))
+			//fix for ai cancellatins  - f1rpo 096 hotfix - keldath
+			iValueForThem <= 0 ||
+			(iValueForUs > 0 && iValueForThem - iValueForUs < iTradeValThresh) ||
+			iValueForUs > iTradeValThresh + 2)))
 		return DENIAL_NO_GAIN;
 	// </advc.036>
 	return NO_DENIAL;
@@ -14952,6 +14955,7 @@ void CvPlayerAI::AI_updateNeededExplorers() {
 		// Nothing stored for small areas; AI_neededExplorers will return 0.
 	}
 }
+
 // Body cut and pasted from AI_neededExplorers
 int CvPlayerAI::AI_neededExplorers_bulk(CvArea const* pArea) const {
 
@@ -15011,6 +15015,44 @@ int CvPlayerAI::AI_neededExplorers_bulk(CvArea const* pArea) const {
 	}
 	return iNeeded;
 } // </advc.003b>
+
+/*  <advc.017b> Checks to help CvUnitAI avoid oscillation between UnitAITypes
+	(and to avoid inconsistencies between CvUnitAI and CvCityAI) */
+bool CvPlayerAI::AI_isExcessSeaExplorers(CvArea* pWaterArea, int iChange) const
+{
+	PROFILE_FUNC(); // (AI_totalWaterAreaUnitAIs is expensive)
+
+	if (pWaterArea == NULL)
+	{
+		FAssert(pWaterArea != NULL);
+		return true; // No sea exploration possible then
+	}
+	int iHave = AI_totalWaterAreaUnitAIs(pWaterArea, UNITAI_EXPLORE_SEA) -
+			AI_getNumTrainAIUnits(UNITAI_EXPLORE_SEA);
+	return (pWaterArea == NULL || AI_neededExplorers(pWaterArea) < iHave + iChange);
+}
+
+// Note: only tested for eRole=UNITAI_EXPLORE_SEA
+bool CvPlayerAI::AI_isOutdatedUnit(UnitTypes eUnit, UnitAITypes eRole, CvArea* pArea) const
+{
+	PROFILE_FUNC();
+	int iValue = AI_unitValue(eUnit, eRole, pArea);
+	UnitClassTypes eUnitClass = (UnitClassTypes)GC.getUnitInfo(eUnit).getUnitClassType();
+	for(int i = 0; i < GC.getNumUnitClassInfos(); i++) {
+		UnitClassTypes eLoopUnitClass = (UnitClassTypes)i;
+		if(eLoopUnitClass == eUnitClass ||
+				getUnitClassCount(eLoopUnitClass) <= 0) // Avoid slow canTrain checks
+			continue;
+		UnitTypes eLoopUnit = (UnitTypes)GC.getCivilizationInfo(getCivilizationType()).
+				getCivilizationUnits(eLoopUnitClass);
+		if (eLoopUnit == NO_UNIT)
+			continue;
+		int iLoopValue = AI_unitValue(eLoopUnit, eRole, pArea);
+		if(75 * iLoopValue > 100 * iValue)
+			return true;
+	}
+	return false;
+} // </advc.017b>
 
 // advc.042: Cut and pasted this function from CvPlayer.cpp
 /*  K-Mod. I've rearranged some stuff in this function to fix a couple of minor bugs;
@@ -19743,13 +19785,17 @@ CvPlayerAI::CancelCode CvPlayerAI::AI_checkCancel(CvDeal const& d, PlayerTypes e
 		else return NO_CANCEL;
 	}
 	/*  getTradeDenial will always return DENIAL_JOKING. Instead, call
-		AI_bonusTrade explicitly and tell it that this is about cancelation. */
+		AI_bonusTrade explicitly and tell it that this is about cancellation. */
 	for(pNode = kWeGive.head(); pNode != NULL; pNode = kWeGive.next(pNode)) {
 		TradeData data = pNode->m_data;
 		if(data.m_eItemType != TRADE_RESOURCES)
 			continue;
 		if(AI_bonusTrade((BonusTypes)data.m_iData, ePlayer, 0) != NO_DENIAL)
-			return DO_CANCEL;
+		//fix for ai cancellatins  - f1rpo 096 hotfix - keldath
+		{
+			if (gDealCancelLogLevel > 0) logBBAICancel(d, getID(), L"resource - denial");
+				return DO_CANCEL;
+		}
 	} /* Need to check their DENIAL_JOKING in case they're giving us a resource that
 		 we no longer need */
 	for(pNode = kTheyGive.head(); pNode != NULL; pNode = kTheyGive.next(pNode)) {
