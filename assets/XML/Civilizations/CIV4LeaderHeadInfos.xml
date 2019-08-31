@@ -20596,7 +20596,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iWonderConstructRand>0</iWonderConstructRand>
 			<iBaseAttitude>-1</iBaseAttitude>
 			<iBasePeaceWeight>0</iBasePeaceWeight>
-			<iPeaceWeightRand>2</iPeaceWeightRand>
+			<iPeaceWeightRand>3</iPeaceWeightRand>
 			<iWarmongerRespect>2</iWarmongerRespect>
 			<iEspionageWeight>80</iEspionageWeight>
 			<iRefuseToTalkWarThreshold>10</iRefuseToTalkWarThreshold>
@@ -20611,12 +20611,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iDominationVictoryWeight>30</iDominationVictoryWeight>
 			<iDiplomacyVictoryWeight>25</iDiplomacyVictoryWeight>
 			<!-- BBAI Victory Strategy -->
-			<iMaxWarRand>30</iMaxWarRand>
-			<iMaxWarNearbyPowerRatio>120</iMaxWarNearbyPowerRatio>
+			<iMaxWarRand>50</iMaxWarRand>
+			<iMaxWarNearbyPowerRatio>130</iMaxWarNearbyPowerRatio>
 			<iMaxWarDistantPowerRatio>80</iMaxWarDistantPowerRatio>
 			<iMaxWarMinAdjacentLandPercent>0</iMaxWarMinAdjacentLandPercent>
-			<iLimitedWarRand>30</iLimitedWarRand>
-			<iLimitedWarPowerRatio>120</iLimitedWarPowerRatio>
+			<iLimitedWarRand>40</iLimitedWarRand>
+			<iLimitedWarPowerRatio>130</iLimitedWarPowerRatio>
 			<iDogpileWarRand>25</iDogpileWarRand>
 			<iMakePeaceRand>80</iMakePeaceRand>
 			<iDeclareWarTradeRand>40</iDeclareWarTradeRand>
@@ -20624,8 +20624,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iDemandRebukedWarProb>10</iDemandRebukedWarProb>
 			<iRazeCityProb>50</iRazeCityProb>
 			<iBuildUnitProb>35</iBuildUnitProb>
-			<iBaseAttackOddsChange>5</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>9</iAttackOddsChangeRand>
+			<iBaseAttackOddsChange>4</iBaseAttackOddsChange>
+			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-3</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>

@@ -255,9 +255,11 @@ void CvPlotGroup::changeNumBonuses(BonusTypes eBonus, int iChange, bool bUpdateB
 				// < Building Resource Converter Start >
 				//f1rpo 096 change - pass a bool to avoid an infinite loop
 				pCity->changeNumBonuses(eBonus, iChange, bUpdateBuildings);
-				if (bUpdateBuildings) {
-					pCity->processBuildingBonuses();
-				}
+			//comment out - f1rpo advc - handled by CvCity::changeNumBonuse
+			//keldath
+			//	if (bUpdateBuildings) {
+			//		pCity->processBuildingBonuses();
+			//	}
 				// < Building Resource Converter End   >
 			}
 		}
