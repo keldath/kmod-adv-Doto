@@ -2,6 +2,7 @@
 
 #include "CvGameCoreDLL.h"
 #include "MilitaryBranch.h"
+#include "WarAndPeaceAgent.h"
 #include "CvGameAI.h"
 #include "CvPlayerAI.h"
 
@@ -65,7 +66,7 @@ void MilitaryBranch::updateTypicalUnit() {
 		CvUnitClassInfo const& uci = GC.getUnitClassInfo((UnitClassTypes)i);
 		int nationalLimit = uci.getMaxPlayerInstances();
 		if(nationalLimit >= 0 && nationalLimit <
-				(GC.getGameINLINE().getCurrentEra() + 1) * 4)
+				(GC.getGame().getCurrentEra() + 1) * 4)
 			continue;
 		int instanceCostModifier = uci.getInstanceCostModifier();
 		if(instanceCostModifier > 5)
@@ -110,7 +111,8 @@ void MilitaryBranch::NuclearArsenal::updateTypicalUnit() {
 	for(int i = 0; i < GC.getNumUnitClassInfos(); i++) {
 		UnitTypes ut = (UnitTypes)(GC.getCivilizationInfo(
 				civ.getCivilizationType()).getCivilizationUnits(i));
-		if(ut == NO_UNIT) continue;
+		if(ut == NO_UNIT)
+			continue;
 		CvCity* capital = civ.getCapitalCity();
 		if(capital == NULL || !capital->canTrain(ut))
 			continue;
@@ -320,7 +322,7 @@ double MilitaryBranch::Logistics::unitUtility(CvUnitInfo const& u, double pow) c
 
 double MilitaryBranch::Army::unitPower(CvUnitInfo const& u, bool modify) const {
 
-	// (Include nukes in army )
+	// (Include nukes in army)
 	/*if(u.getNukeRange() >= 0)
 		return -1;*/
 	double r = u.getPowerValue();
@@ -357,8 +359,8 @@ double MilitaryBranch::Fleet::unitPower(CvUnitInfo const& u, bool modify) const 
 	if(modify) {
 		for(int i = 0; i < GC.getNumTerrainInfos(); i++)
 			if(u.getTerrainImpassable(i)) { r /= 2; break; }
-		/* Would like to use CvPlayerAI::AI_unitImpassableCount, but the darn thing
-	       requires a UnitTypes argument */
+		/*  Would like to use CvPlayerAI::AI_unitImpassableCount, but the darn thing
+			requires a UnitTypes argument */
 	}
 	return r;
 }
@@ -466,6 +468,8 @@ bool MilitaryBranch::Army::canTrainSiege() const {
 	for(int i = 0; i < GC.getNumUnitClassInfos(); i++) {
 		UnitTypes ut = (UnitTypes)(GC.getCivilizationInfo(
 				civ.getCivilizationType()).getCivilizationUnits(i));
+		if(ut == NO_UNIT)
+			continue;
 		CvUnitInfo const& u = GC.getUnitInfo(ut);
 		if(((u.getBombardRate() > 0 && u.getDomainType() == DOMAIN_LAND) ||
 				(u.getBombardRate() > 0 && u.getDomainType() == DOMAIN_AIR)) &&
@@ -483,6 +487,8 @@ bool MilitaryBranch::Army::canTrainCollateral() const {
 	for(int i = 0; i < GC.getNumUnitClassInfos(); i++) {
 		UnitTypes ut = (UnitTypes)(GC.getCivilizationInfo(
 				civ.getCivilizationType()).getCivilizationUnits(i));
+		if(ut == NO_UNIT)
+			continue;
 		CvUnitInfo const& u = GC.getUnitInfo(ut);
 		if(u.getCollateralDamage() > 0 &&
 				isValidDomain((DomainTypes)u.getDomainType()) &&

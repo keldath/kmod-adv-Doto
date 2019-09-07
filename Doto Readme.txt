@@ -17,7 +17,7 @@ keldath.
 
 so what inside?
 
-based of Advc 0.95 version with kmod 1.46	.
+based of Advc 0.96 version with kmod 1.46	.
 
 5 unique units per nation
 1 new improvement
@@ -39,7 +39,7 @@ movement on mountains
 influence driven war
 5 new religions
 tech diffusion
-building deition (buildings removed if the conditions are un met from city
+building deletion (buildings removed if the conditions are un met from city
 culture surplus trigger golden age
 fresh water from improvement 
 
@@ -55,6 +55,7 @@ maintance tags for civics and buildings and more
 civ vs civ attitude change
 civic ore req for units
 rev dcm special unit tags - obsolete, max era, buildings and more.
+building bonus converter
 
 disabled code:
 resource vicinity mod

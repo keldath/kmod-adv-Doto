@@ -426,6 +426,9 @@
 		<HintInfo>
 			<Description>TXT_KEY_HINT_73</Description>
 		</HintInfo>
+		<HintInfo>
+			<Description>TXT_KEY_BUG_HINT_INTERFACE_4</Description>
+		</HintInfo>
 <!-- K-Mod hints -->
 		<HintInfo>
 			<Description>TXT_KEY_BUG_HINT_INTERFACE_1</Description>
@@ -667,6 +670,9 @@
 			<Description>TXT_KEY_ADVC_HINT_38</Description>
 		</HintInfo>
 		<HintInfo>
+			<Description>TXT_KEY_ADVC_HINT_39</Description>
+		</HintInfo>
+		<HintInfo>
 			<Description>TXT_KEY_ADVC_HINT_1</Description>
 		</HintInfo>
 		<HintInfo>
@@ -774,6 +780,9 @@
 		</HintInfo>
 		<HintInfo>
 			<Description>TXT_KEY_ADVC_HINT_38</Description>
+		</HintInfo>
+		<HintInfo>
+			<Description>TXT_KEY_ADVC_HINT_39</Description>
 		</HintInfo>
 	</HintInfos>
 </Civ4Hints>

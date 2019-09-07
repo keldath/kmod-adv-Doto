@@ -21,7 +21,7 @@ public:
 	virtual ~CvSelectionGroup();
 
 	DllExport void init(int iID, PlayerTypes eOwner);
-	DllExport void uninit();			
+	DllExport void uninit();
 	DllExport void reset(int iID = 0, PlayerTypes eOwner = NO_PLAYER, bool bConstructorCall = false);
 
 	void kill();
@@ -64,7 +64,7 @@ public:
 	bool isHuman() const; // advc.002i: const																																									// Exposed to Python
 	DllExport bool isBusy();
 	bool isCargoBusy();
-	int baseMoves() const;																																										// Exposed to Python 
+	int baseMoves() const;																																										// Exposed to Python
 	int maxMoves() const; // K-Mod
 	int movesLeft() const; // K-Mod
 	bool isWaiting() const;																																							// Exposed to Python
@@ -86,25 +86,20 @@ public:
 	} // K-Mod. (hack to avoid breaking the DllExport)			advc.003: const
 	bool canMoveOrAttackInto(CvPlot* pPlot, bool bDeclareWar, bool bCheckMoves/* = false (see above) */, bool bAssumeVisible = true) const;
 	bool canMoveThrough(CvPlot* pPlot, bool bDeclareWar = false, bool bAssumeVisible = true) const; // Exposed to Python, K-Mod added bDeclareWar and bAssumeVisible
-	bool canFight();																																										// Exposed to Python 
+	bool canFight();																																										// Exposed to Python
 	bool canDefend();																																										// Exposed to Python
 	bool canBombard(const CvPlot* pPlot);
 	bool visibilityRange();
-/************************************************************************************************/
-/* BETTER_BTS_AI_MOD                      08/19/09                                jdog5000      */
-/*                                                                                              */
-/* General AI                                                                                   */
-/************************************************************************************************/
-	int getBombardTurns( CvCity* pCity ) /* advc.003: */ const;
-	bool isHasPathToAreaPlayerCity( PlayerTypes ePlayer, int iFlags = 0, int iMaxPathTurns = -1 ) /* Erik (CODE1): */ const;
-	bool isHasPathToAreaEnemyCity( bool bIgnoreMinors = true, int iFlags = 0, int iMaxPathTurns = -1 ) /* Erik (CODE2): */ const;
+
+	// BETTER_BTS_AI_MOD, General AI, 08/19/09, jdog5000: START
+	int getBombardTurns(CvCity* pCity) /* advc.003: */ const;
+	bool isHasPathToAreaPlayerCity(PlayerTypes ePlayer, int iFlags = 0, int iMaxPathTurns = -1) /* Erik (CODE1): */ const;
+	bool isHasPathToAreaEnemyCity(bool bIgnoreMinors = true, int iFlags = 0, int iMaxPathTurns = -1) /* Erik (CODE1): */ const;
 	bool isStranded() const; // Note: K-Mod no longer uses the stranded cache. I have a new system.
 	//void invalidateIsStrandedCache(); // deleted by K-Mod
 	//bool calculateIsStranded();
 	bool canMoveAllTerrain() const;
-/************************************************************************************************/
-/* BETTER_BTS_AI_MOD                       END                                                  */
-/************************************************************************************************/
+	// BETTER_BTS_AI_MOD: END
 
 	void unloadAll();
 	bool alwaysInvisible() const;																																							// Exposed to Python
@@ -143,14 +138,14 @@ public:
 	DllExport bool readyToSelect(bool bAny = false);																										// Exposed to Python
 	bool readyToMove(bool bAny = false); // Exposed to Python
 	bool readyToAuto(); // Exposed to Python
-	// K-Mod. (note: I'd make these function const, but it would conflict with some dllexport functions)
-	bool readyForMission();
+	// K-Mod.
+	bool readyForMission(); // (note: I'd make this function const, but it would conflict with some dllexport functions)
 	bool canDoMission(int iMission, int iData1, int iData2, CvPlot* pPlot,
-			bool bTestVisible, bool bCheckMoves) const; // advc.002i: const
+			bool bTestVisible, bool bCheckMoves) /* advc.002i: */ const;
 	// K-Mod end
 
 	int getID() const;																																												// Exposed to Python
-	void setID(int iID);																			
+	void setID(int iID);
 
 	int getMissionTimer() const;
 	void setMissionTimer(int iNewValue);
@@ -161,13 +156,10 @@ public:
 	inline void setForceUpdate(bool bNewValue) { m_bForceUpdate = bNewValue; } // K-Mod made inline
 	// void doForceUpdate(); // K-Mod. (disabled. force update doesn't work the same way anymore.)
 
-	PlayerTypes getOwner() const;																															// Exposed to Python
-#ifdef _USRDLL
-	inline PlayerTypes getOwnerINLINE() const
-	{
-		return m_eOwner;
-	}
-#endif
+	/*PlayerTypes getOwner() const;
+	#ifdef _USRDLL*/ // advc.003f: The EXE doesn't call this, so no need for an external version.
+	inline PlayerTypes getOwner() const { return m_eOwner; }
+	//#endif
 	TeamTypes getTeam() const;																																					// Exposed to Python
 
 	ActivityTypes getActivityType() const;																															// Exposed to Python
@@ -234,8 +226,9 @@ public:
 	virtual void AI_queueGroupAttack(int iX, int iY) = 0;
 	virtual void AI_cancelGroupAttack() = 0;
 	virtual bool AI_isGroupAttack() const = 0; // K-Mod made const
-
-	virtual bool AI_isControlled() = 0;
+	
+	//advc hot fix for explorer units by f1rpo
+	virtual bool AI_isControlled() /* advc.003: */ const = 0;
 	virtual bool AI_isDeclareWar(const CvPlot* pPlot = NULL) = 0;
 	virtual CvPlot* AI_getMissionAIPlot() = 0;
 	virtual bool AI_isForceSeparate() = 0;
@@ -248,16 +241,10 @@ public:
 	virtual CvUnit* AI_ejectBestDefender(CvPlot* pTargetPlot) = 0;
 	virtual void AI_separateNonAI(UnitAITypes eUnitAI) = 0;
 	virtual void AI_separateAI(UnitAITypes eUnitAI) = 0;
-/************************************************************************************************/
-/* BETTER_BTS_AI_MOD                      06/02/09                                jdog5000      */
-/*                                                                                              */
-/* General AI                                                                                   */
-/************************************************************************************************/
+	// BETTER_BTS_AI_MOD, General AI, 06/02/09, jdog5000: START
 	virtual bool AI_separateImpassable() = 0; // K-Mod added bool return value.
 	virtual bool AI_separateEmptyTransports() = 0; // same
-/************************************************************************************************/
-/* BETTER_BTS_AI_MOD                       END                                                  */
-/************************************************************************************************/
+	// BETTER_BTS_AI_MOD: END
 
 	virtual bool AI_isFull() = 0;
 
@@ -300,8 +287,7 @@ protected:
 	void resetBoarded();
 	void getLandCargoGroups(std::vector<CvSelectionGroup*>& r);
 	// </advc.075>
-	bool sentryAlert(
-			bool bUpdateKnownEnemies = false); // advc.004l
+	bool sentryAlert(/*  advc.004l: */ bool bUpdateKnownEnemies = false);
 
 	// <advc.003k>
 	class Data {

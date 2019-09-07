@@ -210,7 +210,8 @@ era trans faster
 			<iBuildPercent>100</iBuildPercent>
 			<iImprovementPercent>100</iImprovementPercent>
 			<iGreatPeoplePercent>100</iGreatPeoplePercent>
-			<iCulturePercent>100</iCulturePercent>
+			<!-- advc.126: was 100 (and was unused) -->
+			<iCulturePercent>80</iCulturePercent>
 			<iAnarchyPercent>40</iAnarchyPercent>
 			<iEventChancePerTurn>4</iEventChancePerTurn>
 			<iSoundtrackSpace>200</iSoundtrackSpace>
@@ -286,7 +287,8 @@ era trans faster
 			<iImprovementPercent>90</iImprovementPercent>
 			<!-- advc.126: was 90 -->
 			<iGreatPeoplePercent>100</iGreatPeoplePercent>
-			<iCulturePercent>90</iCulturePercent>
+			<!-- advc.126: was 90 -->
+			<iCulturePercent>70</iCulturePercent>
 			<iAnarchyPercent>40</iAnarchyPercent>
 			<iEventChancePerTurn>4</iEventChancePerTurn>
 			<iSoundtrackSpace>160</iSoundtrackSpace>
@@ -360,7 +362,8 @@ era trans faster
 			<iImprovementPercent>80</iImprovementPercent>
 			<!-- advc.126: was 80 -->
 			<iGreatPeoplePercent>100</iGreatPeoplePercent>
-			<iCulturePercent>80</iCulturePercent>
+			<!-- advc.126: was 80 -->
+			<iCulturePercent>60</iCulturePercent>
 			<iAnarchyPercent>34</iAnarchyPercent>
 			<iEventChancePerTurn>6</iEventChancePerTurn>
 			<iSoundtrackSpace>120</iSoundtrackSpace>
@@ -425,13 +428,14 @@ era trans faster
 			<iResearchPercent>50</iResearchPercent>
 			<!-- BBAI start: effectively modify cost for all techs from this era.  Default: 18 -->
 			<!-- advc.910: was 20 in K-Mod -->
-			<iTechCostModifier>17</iTechCostModifier>
+			<iTechCostModifier>14</iTechCostModifier>
 			<!-- BBAI end -->
 			<iBuildPercent>70</iBuildPercent>
 			<iImprovementPercent>70</iImprovementPercent>
 			<!-- advc.126: was 70 -->
 			<iGreatPeoplePercent>100</iGreatPeoplePercent>
-			<iCulturePercent>70</iCulturePercent>
+			<!-- advc.126: was 70 -->
+			<iCulturePercent>50</iCulturePercent>
 			<iAnarchyPercent>34</iAnarchyPercent>
 			<iEventChancePerTurn>8</iEventChancePerTurn>
 			<iSoundtrackSpace>80</iSoundtrackSpace>
@@ -493,14 +497,16 @@ era trans faster
 			<iCreatePercent>60</iCreatePercent>
 			<iResearchPercent>40</iResearchPercent>
 			<!-- BBAI start: effectively modify cost for all techs from this era.  Default: 18 -->
-			<!-- advc.910: 18 in K-Mod -->
-			<iTechCostModifier>17</iTechCostModifier>
+			<!-- advc.910: 18 in K-Mod. The historical time line is less of a
+				 concern here, and faster Space victory plays better. -->
+			<iTechCostModifier>7</iTechCostModifier>
 			<!-- BBAI end -->
 			<iBuildPercent>60</iBuildPercent>
 			<iImprovementPercent>60</iImprovementPercent>
 			<!-- advc.126: was 60 -->
 			<iGreatPeoplePercent>100</iGreatPeoplePercent>
-			<iCulturePercent>60</iCulturePercent>
+			<!-- advc.126: was 60 -->
+			<iCulturePercent>50</iCulturePercent>
 			<iAnarchyPercent>34</iAnarchyPercent>
 			<iEventChancePerTurn>10</iEventChancePerTurn>
 			<iSoundtrackSpace>40</iSoundtrackSpace>

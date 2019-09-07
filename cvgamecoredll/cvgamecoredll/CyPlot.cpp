@@ -1,6 +1,6 @@
 //
-// Python wrapper class for CvPlot 
-// 
+// Python wrapper class for CvPlot
+//
 //
 #include "CvGameCoreDLL.h"
 #include "CyPlot.h"
@@ -212,7 +212,7 @@ int CyPlot::getFeatureProduction(int /*BuildTypes*/ eBuild, int /*TeamTypes*/ eT
 CyUnit* CyPlot::getBestDefender(int /*PlayerTypes*/ eOwner, int /*PlayerTypes*/ eAttackingPlayer, CyUnit* pAttacker, bool bTestAtWar, bool bTestPotentialEnemy, bool bTestCanMove)
 {
 	return m_pPlot ? new CyUnit(m_pPlot->getBestDefender((PlayerTypes) eOwner, (PlayerTypes) eAttackingPlayer, pAttacker->getUnit(), bTestAtWar, bTestPotentialEnemy, bTestCanMove)) : NULL;
-}	
+}
 
 CyUnit* CyPlot::getSelectedUnit()
 {
@@ -350,12 +350,12 @@ bool CyPlot::isCity()
 	return m_pPlot ? m_pPlot->isCity() : false;
 }
 
-bool CyPlot::isFriendlyCity(CyUnit* pUnit, bool bCheckImprovement)													
+bool CyPlot::isFriendlyCity(CyUnit* pUnit, bool bCheckImprovement)
 {
 	return m_pPlot ? m_pPlot->isFriendlyCity(*(pUnit->getUnit()), bCheckImprovement) : false;
 }
 
-bool CyPlot::isEnemyCity(CyUnit* pUnit)														
+bool CyPlot::isEnemyCity(CyUnit* pUnit)
 {
 	return m_pPlot ? m_pPlot->isEnemyCity(*(pUnit->getUnit())) : false;
 }
@@ -464,14 +464,14 @@ bool CyPlot::isImpassable()
 	return m_pPlot ? m_pPlot->isImpassable() : false;
 }
 
-int CyPlot::getX() 
+int CyPlot::getX()
 {
-	return m_pPlot ? m_pPlot->getX_INLINE() : -1;
+	return m_pPlot ? m_pPlot->getX() : -1;
 }
 
-int CyPlot::getY() 
+int CyPlot::getY()
 {
-	return m_pPlot ? m_pPlot->getY_INLINE() : -1;
+	return m_pPlot ? m_pPlot->getY() : -1;
 }
 
 bool CyPlot::at(int iX, int iY)
@@ -636,7 +636,7 @@ void CyPlot::setFlagDirty(bool bNewValue)
 
 int CyPlot::getOwner()
 {
-	return m_pPlot ? m_pPlot->getOwnerINLINE() : -1;
+	return m_pPlot ? m_pPlot->getOwner() : -1;
 }
 
 void CyPlot::setOwner(int /*PlayerTypes*/ eNewValue)
@@ -978,12 +978,12 @@ int /*TeamTypes*/ CyPlot::findHighestCultureTeam()
 	return m_pPlot ? m_pPlot->findHighestCultureTeam() : -1;
 }
 
-int CyPlot::calculateCulturePercent(int /*PlayerTypes*/ eIndex)	
+int CyPlot::calculateCulturePercent(int /*PlayerTypes*/ eIndex)
 {
 	return m_pPlot ? m_pPlot->calculateCulturePercent((PlayerTypes)eIndex) : -1;
 }
 
-int CyPlot::calculateTeamCulturePercent(int /*TeamTypes*/ eIndex)	
+int CyPlot::calculateTeamCulturePercent(int /*TeamTypes*/ eIndex)
 {
 	return m_pPlot ? m_pPlot->calculateTeamCulturePercent((TeamTypes)eIndex) : -1;
 }
@@ -1005,22 +1005,22 @@ int CyPlot::countNumAirUnits(int /*TeamTypes*/ eTeam)
 	return m_pPlot ? m_pPlot->countNumAirUnits((TeamTypes)eTeam) : -1;
 }
 
-int CyPlot::getFoundValue(int /*PlayerTypes*/ eIndex)	
+int CyPlot::getFoundValue(int /*PlayerTypes*/ eIndex)
 {
 	return m_pPlot ? m_pPlot->getFoundValue((PlayerTypes)eIndex) : -1;
 }
 
-bool CyPlot::isBestAdjacentFound(int /*PlayerTypes*/ eIndex)	
+bool CyPlot::isBestAdjacentFound(int /*PlayerTypes*/ eIndex)
 {
 	return m_pPlot ? m_pPlot->isBestAdjacentFound((PlayerTypes)eIndex) : false;
 }
 
-int CyPlot::getPlayerCityRadiusCount(int /*PlayerTypes*/ eIndex)	
+int CyPlot::getPlayerCityRadiusCount(int /*PlayerTypes*/ eIndex)
 {
 	return m_pPlot ? m_pPlot->getPlayerCityRadiusCount((PlayerTypes)eIndex) : -1;
 }
 
-bool CyPlot::isPlayerCityRadius(int /*PlayerTypes*/ eIndex)	
+bool CyPlot::isPlayerCityRadius(int /*PlayerTypes*/ eIndex)
 {
 	return m_pPlot ? m_pPlot->isPlayerCityRadius((PlayerTypes)eIndex) : false;
 }
@@ -1077,7 +1077,7 @@ int /* RouteTypes */ CyPlot::getRevealedRouteType(int /*TeamTypes*/ eTeam, bool 
 	return m_pPlot ? m_pPlot->getRevealedRouteType((TeamTypes)eTeam, bDebug) : -1;
 }
 
-int CyPlot::getBuildProgress(int /*BuildTypes*/ eBuild)												
+int CyPlot::getBuildProgress(int /*BuildTypes*/ eBuild)
 {
 	return m_pPlot ? m_pPlot->getBuildProgress((BuildTypes)eBuild) : -1;
 }

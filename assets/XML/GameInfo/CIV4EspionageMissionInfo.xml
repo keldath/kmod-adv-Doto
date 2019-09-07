@@ -2,7 +2,53 @@
 <!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by Alex Mantzaris (Firaxis Games) -->
 <!-- Sid Meier's Civilization 4 -->
 <!-- Copyright Firaxis Games 2005 -->
-<!-- -->
+<!-- 
+
+Tag Name	Description
+Type	The Internal name for the espionage mission
+Description	Refers to a tag in the Civ4GameTextInfos_Objects file that stores the in-game name of the Mission.
+TechPrereq	The Prerequisite tech needed to conduct this mission.
+
+Integers
+All of these tags have a numerical value. Though it sometimes can be negative, it usually is not.
+
+Tag Name	Description
+iBuyCityCostFactor	A percentage that makes the mission cost different amounts, depending on the gamespeed and base mission cost. If successful, the mission will convert the city to the players team. (This tag is not used in BTS, but is fully functional).
+iBuyTechCostFactor	A percentage that adjusts the mission cost based on how much research went into the technology.
+iBuyUnitCostFactor	A percentage that makes the mission cost different amounts, depending on the production cost of the unit. If successful, the mission will convert the unit to the players team.
+iCityInsertCultureAmountFactor	Converts a percentage of the city's culture to your culture. (A value of 5 will convert 5% of the city culture)
+CityInsertCultureCostFactor	Makes the mission cost a certain amount based on the existing culture already in the city.
+iCityPoisonWaterCounter	The number of turns that poisoning the city water will take effect.
+iCityRevoltCounter	The number of turns that the city will be in revolt.
+iCityUnhappinessCounter	The number of turns that formenting unrest will take effect.
+iCost	The Base Espionage Point cost the mission will require
+iCounterespionageNumTurns	The number of turns that the counter espionage modifier applies.
+iCounterespionageMod	A percentage that makes espionage missions carried out by the victim harder. It lasts for the number of counter espionage turns.
+iDestroyBuildingCostFactor	A percentage that makes the mission cost different amounts, depending on the production cost of the building. If successful, the mission will destroy the target. (500 will make the mission cost 5 times the production cost of the building).
+iDestroyProjectCostFactor	A percentage that makes the mission cost different amounts, depending on the production cost of the project. If successful, the mission will destroy the target. (500 will make the mission cost 5 times the production cost of the project)
+iDestroyProductionCostFactor	A percentage that makes the mission cost different amounts, depending on the amount of hammers already invested in the object. If successful, the mission will reset the cities current production.
+iDestroyUnitCostFactor	A percentage that makes the mission cost different amounts, depending on the production cost of the unit. If successful, the mission will destroy the target. (500 will make the mission cost 5 times the production cost of the unit)
+iDifficultyMod	Modifies how difficult the mission is to carry out. (A value of 50 will make the mission 50% more difficult to carry out)
+SwitchCivicCostFactor	A percentage that adjusts the mission cost based on how much the target nation likes the civic.
+iStealTreasureTypes	Steals a percentage of the player's gold. (A value of 100 will steal all of the players gold).
+iSwitchReligionCostFactor	A percentage that adjusts the mission cost based on how much the target nation likes the religion.
+iPlayerAnarchyCounter	The number of turns the target nation will be in anarchy (This tag is not used in BTS, but works).
+iVisibility	Used to turn on city visibility (Only 0 or 1 will have any effect. I don't know why Firaxis didn't make this Boolean.)
+
+Boolean
+All of these can either be 1 (on, or true) or 0 (off, or false). Be careful, as you can wind up with a double-negative, which the game will interpret as "True".
+
+Tag Name	Description
+bIsPassive	Whether the mission needs to be activated by the player, or occurs passively. (Ex: Seeing inside enemy cities with spies)
+bIsTwoPhases	Whether, after selecting the mission, a more in-depth secondary screen needs to appear. (Ex. Sabotaging a building consists of two phases)
+bTargetsCity	If the mission can only be carried out in a city.
+bSelectPlot	If the mission requires a unit to be on a game tile. (Examining foreign countries research is considered a espionage mission and does not require a tile)
+bInvestigateCity	If the mission allows the unit to investigate an enemy city.
+bSeeDemographics	If the mission allows you to see the statistics for the country.
+bNoActiveMissions	If the mission requires no other active missions to be taking place.
+bSeeResearch	If the mission allows you to see the current research progress of the target nation.
+bDestroyImprovement	If the mission destroys the improvement that the spy is on.
+-->
 <!-- EspionageMissionMission Infos -->
 <Civ4EspionageMissionInfo xmlns="x-schema:CIV4GameInfoSchema.xml">
 	<EspionageMissionInfos>

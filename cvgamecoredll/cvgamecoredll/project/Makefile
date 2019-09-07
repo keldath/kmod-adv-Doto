@@ -1,5 +1,6 @@
 #### Civilization 4 SDK Makefile 2.5 ####
 ####  Copyright 2015 Nightinggale    ####
+# (advc: with some modifications; see below)
 #########################################
 #### Civilization 4 SDK Makefile 2.0 ####
 ####  Copyright 2013 Nightinggale    ####
@@ -8,12 +9,24 @@
 ####  Copyright 2010 Danny Daemonic  ####
 #########################################
 
-# advc: Target 'DebugMem' added: an almost-Release build that is less likely than a
-# Debug build to obscure accesses to uninitialized memory.
-# YOURMOD2 and YOURLOGS (see under "Paths"). WX added to GLOBAL_CFLAGS.
-# Internal profiler enabled (FP_PROFILE_ENABLE, USE_INTERNAL_PROFILER).
+# advc (2019):
+# Enabled parallel builds (jom) for the Profile configuration
+#   (now called "Profile-fast") and added a configuration Debug-fast. Both use
+#   precompiled headers through the Z7 option as recommended by billw2015.
+# Target 'DebugMem' added: an almost-Release build that is less likely than a
+#   Debug build to obscure accesses to uninitialized memory.
+# Removed the non-fast Assert configuration. [Parallel builds can make it
+#   difficult to associate error messages with a translation unit; but don't need
+#   a slow version of every config.]
+# YOURMOD2 and YOURLOGS (see under "Paths").
+# PROJECT_Profile_CFLAGS added to Makefile.project. So that the internal profiler
+# can be enabled from there.
 # CvGameCoreDLL.rc used only for final release.
-# devolution (Erik) has added the target 'Final_Release' with additional optimizations.
+# Removed unused /DCVGAMECOREDLL_EXPORTS from Debug_DEFINES
+# devolution (Erik) has added the target 'Final_Release' with
+#   additional optimizations. [There is also a Firaxis define called
+#   FINAL_RELEASE, which merely disables the OutputDebugString function from
+#   debugapi.h. That's used for all non-debug builds.]
 
 ## User setup
 ##
@@ -69,7 +82,7 @@ FD="bin\fastdep.exe"
 # BLACKLIST=CvTextScreens
 
 #### DEFINES ####
-Debug_DEFINES=/DWIN32 /D_WINDOWS /D_USRDLL /DCVGAMECOREDLL_EXPORTS /D_DEBUG
+Debug_DEFINES=/DWIN32 /D_WINDOWS /D_USRDLL /D_DEBUG
 Release_DEFINES=/DWIN32 /D_WINDOWS /D_USRDLL /DCVGAMECOREDLL_EXPORTS /DNDEBUG /DFINAL_RELEASE
 ## Optional: Copy the flags above into "Additional options" in NMAKE properties (Configuration Properties)
 ## to make VC++ aware of what is defined and what isn't, which affects the help popup and red lines.
@@ -94,6 +107,7 @@ CUSTOM_LDFLAGS =
 
 PRECOMPILE_DEPENDENCIES =
 PROJECT_CFLAGS =
+PROJECT_Profile_CFLAGS =
 PROJECT_LDFLAGS =
 SOURCE_DIR =
 
@@ -119,6 +133,8 @@ SUBDIRPATH15 = ../
 !IF [ECHO PROJECT_CFLAGS = >> Makefile.project]
 !ENDIF
 !IF [ECHO PROJECT_LDFLAGS = >> Makefile.project]
+!ENDIF
+!IF [ECHO PROJECT_Profile_CFLAGS = >> Makefile.project]
 !ENDIF
 !IF [ECHO PRECOMPILE_DEPENDENCIES = >> Makefile.project]
 !ENDIF
@@ -166,8 +182,8 @@ CUSTOM_LDFLAGS =
 FILE_DEPENDS = $(TEMP_TARGET_FILES)\depends
 
 #### CFLAGS ####
-GLOBAL_CFLAGS=/GR /Gy /W3 /WX /EHsc /Gd /Gm- /Fd"$(Target_PDB)" $(CUSTOM_CFLAGS) $(PROJECT_CFLAGS)
-Debug_CFLAGS=/MD /Zi /Od /RTC1 $(Debug_DEFINES) $(GLOBAL_CFLAGS)
+GLOBAL_CFLAGS=/GR /Gy /W3 /EHsc /Gd /Gm- /Fd"$(Target_PDB)" $(CUSTOM_CFLAGS) $(PROJECT_CFLAGS)
+Debug_CFLAGS=/MD /Z7 /Od /RTC1 $(Debug_DEFINES) $(GLOBAL_CFLAGS)
 # (DebugMem: Using Debug_CFLAGS without /D_DEBUG /RTC1 might accomplish largely the same)
 DebugMem_CFLAGS=/MD /O2 /Zi /Oi /G7 $(Release_DEFINES) $(GLOBAL_CFLAGS)
 Release_CFLAGS= /MD /O2 /Oy /Oi /G7 $(Release_DEFINES) $(GLOBAL_CFLAGS)
@@ -213,9 +229,6 @@ LIBS = $(PROJECT_LIBS) $(GLOBAL_LIBS)
 
 
 !IF "$(TARGET)" == "Debug"
-!IFNDEF _NMAKE_VER
-!ERROR Jom can't be used on Debug builds
-!ENDIF
 CFLAGS  = $(Debug_CFLAGS)
 LDFLAGS = $(Debug_LDFLAGS)
 LIBS    = $(LIBS) msvcprt.lib
@@ -235,10 +248,7 @@ CFLAGS  = $(Release_CFLAGS) /DFASSERT_ENABLE
 LDFLAGS = $(Release_LDFLAGS)
 !ENDIF
 !IF "$(TARGET)" == "Profile"
-!IFNDEF _NMAKE_VER
-!ERROR Jom can't be used on profile builds
-!ENDIF
-CFLAGS  = $(Release_CFLAGS) /Zi /DFP_PROFILE_ENABLE /DUSE_INTERNAL_PROFILER
+CFLAGS  = $(Release_CFLAGS) $(PROJECT_Profile_CFLAGS) /Z7
 LDFLAGS = $(Debug_LDFLAGS)
 !ENDIF
 !IF "$(TARGET)" == "Final_Release"
@@ -419,4 +429,3 @@ $(TEMP_TARGET_FILES)\$(BLACKLIST).obj: $(BLACKLIST).cpp
 	@DEL "$*.obj.@"
 
 !ENDIF
-

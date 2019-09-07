@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by Alex Mantzaris (Firaxis Games) -->
+<!-- edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by Soren Johnson (Firaxis Games) -->
+<!-- Sid Meier's Civilization 4 -->
+<!-- Copyright Firaxis Games 2005 -->
+<!-- -->
+<!-- Bonus Infos -->
+<!-- WARNING: It is not recommended that you remove Bonuses due to complications with the LSystem -->
+<!-- modding wiki - added by keldath
+Type	The internal name of this Resource.
+Description	A reference to the text files, which contain an entry for this resource.
+Civilopedia	Refers to a tag in the Civ4GameText file which stores the Civilopedia description for the bonus.
+BonusClassType	Used to specify the category of the bonus. Must be a name coming from the file "Civ4BonusClassInfos" where a frequency for each bonus class can be stated.
+ArtDefineTag	Refers to a tag in the Civ4ArtDefines Bonus files
+TechReveal	States which technology enables the resource.
+TechCityTrade	The technology that enables the trading of this resource.
+TechObsolete	The technology that obsoletes the resource
+iAITradeModifier	The number defines how much the AI values the resource, the higher the number, the more the value.
+iAIObjective	Unknown, the value is 0 for all resources
+iHealth	change in healthiness the resource provides
+iHappiness	change in happyness the resource provides
+iPlacementOrder	The order in which bonuses are placed, starting at zero and counting up. All of the zero resources will be placed before proceed to those with iPlacementOrder 1 and so on. If after the higher priority bonuses are placed there are no available squares left, then none of the lower priority bonuses will actually appear.
+iConstAppearance	The chance that the resource will be placed on the map
+iMinAreaSize	Minimum needed size of island or continent to make appear the resource
+iMinLatitude	Minimum distance from equator.
+iMaxLatitude	Maximum distance from equator.
+iPlayer	Approximate occurances per player, in percent (%), so 150 is about 1.5 per player.
+iTilesPer	The fixed number of additional occurances per x tiles, so 120 would mean an additional occurance every 120 tiles existing on the map.
+iMinLandPercent	If a resource can be on land and ocean, this is percantage that will be located on land.
+iUnique	This is the range in tiles that this resource will be unique, all tiles within this radius are invalid for another resource.
+iGroupRange	If non-zero, every time this resource is placed, all tiles within iGroupRange radius have a iGroupRand chance to have this resource.
+iGroupRand	If iGroupRange is non-zero, this is the percentage chance that each tile within iGroupRange radius will contain that resource.
+bArea	if this is set and the map has more than one continent this resource will only be placed on one continent instead of all possible.
+bHills	If the resource may appear only on hills.
+bFlatlands	If the resource may appear only on flat land.
+bNoRiverSide	If the resource can not appear next to a river
+bNormalize	means it is used for starting location normalization (extra resources that are added to even out starting locations)
+Rands	Unknown
+YieldChanges	Defines the change in city yield, using iYield. There are three iYield tags: the first is for food per turn change, the second for hammers per turn, and the third for commerce per turn (e.g. the Palace provides 8 free commerce per turn).
+TerrainBooleans	Defines which terrain types the resource may appear on.
+
+ advc.129: Changed bonus class of Gold, Silver and Gems from "General"
+	 to new class "Precious". -->
+
+<Civ4BonusInfos xmlns="x-schema:ExtraBonus_CIV4TerrainSchema.xml">
+	<BonusInfos>
+		<BonusInfo>
+			<Type>BONUS_CAST_IRON</Type>
+			<Description>Cast Iron</Description>
+			<Civilopedia>Cast Iron</Civilopedia>
+			<BonusClassType>BONUSCLASS_GENERAL</BonusClassType>
+			<ArtDefineTag>ART_DEF_BONUS_IRON</ArtDefineTag>
+			<TechReveal>NONE</TechReveal>
+			<TechCityTrade>NONE</TechCityTrade>
+			<TechObsolete>NONE</TechObsolete>
+			<YieldChanges/>
+			<iAITradeModifier>0</iAITradeModifier>
+			<iAIObjective>0</iAIObjective>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iPlacementOrder>-1</iPlacementOrder>
+			<iConstAppearance>0</iConstAppearance>
+			<iMinAreaSize>-1</iMinAreaSize>
+			<iMinLatitude>0</iMinLatitude>
+			<iMaxLatitude>0</iMaxLatitude>
+			<Rands>
+				<iRandApp1>0</iRandApp1>
+				<iRandApp2>0</iRandApp2>
+				<iRandApp3>0</iRandApp3>
+				<iRandApp4>0</iRandApp4>
+			</Rands>
+			<iPlayer>0</iPlayer>
+			<iTilesPer>0</iTilesPer>
+			<iMinLandPercent>0</iMinLandPercent>
+			<iUnique>0</iUnique>
+			<iGroupRange>0</iGroupRange>
+			<iGroupRand>0</iGroupRand>
+			<bArea>0</bArea>
+			<bHills>0</bHills>
+			<bFlatlands>0</bFlatlands>
+			<bNoRiverSide>0</bNoRiverSide>
+			<bNormalize>0</bNormalize>
+			<TerrainBooleans/>
+			<FeatureBooleans/>
+			<FeatureTerrainBooleans/>
+		</BonusInfo>
+	</BonusInfos>
+</Civ4BonusInfos>

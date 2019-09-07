@@ -22,17 +22,10 @@ public:
 	void AI_separate();
 	void AI_separateNonAI(UnitAITypes eUnitAI);
 	void AI_separateAI(UnitAITypes eUnitAI);
-/************************************************************************************************/
-/* BETTER_BTS_AI_MOD                      06/02/09                                jdog5000      */
-/*                                                                                              */
-/* General AI                                                                                   */
-/************************************************************************************************/
+	// BETTER_BTS_AI_MOD, General AI, 06/02/09, jdog5000, START
 	bool AI_separateImpassable();
 	bool AI_separateEmptyTransports();
-/************************************************************************************************/
-/* BETTER_BTS_AI_MOD                       END                                                  */
-/************************************************************************************************/
-
+	// BETTER_BTS_AI_MOD: END
 
 	bool AI_update();
 
@@ -56,7 +49,8 @@ public:
 	inline void AI_cancelGroupAttack() { m_bGroupAttack = false; } // K-Mod (made inline)
 	inline bool AI_isGroupAttack() const { return m_bGroupAttack; } // K-Mod (made inline)
 
-	bool AI_isControlled();
+	//f1rpo hotfix for 096 for explorer units - keldath
+	bool AI_isControlled() const;
 	bool AI_isDeclareWar(const CvPlot* pPlot = NULL);
 
 	CvPlot* AI_getMissionAIPlot();
@@ -70,7 +64,7 @@ public:
 	CvUnit* AI_ejectBestDefender(CvPlot* pTargetPlot);
 
 	CvUnit* AI_getMissionAIUnit();
-	
+
 	bool AI_isFull();
 
 	void read(FDataStreamBase* pStream);

@@ -80,7 +80,7 @@
 			<Description>TXT_KEY_GAME_OPTION_PICK_RELIGION</Description>
 			<Help>TXT_KEY_GAME_OPTION_PICK_RELIGION_HELP</Help>
 			<bDefault>0</bDefault>
-			<bVisible>1</bVisible>
+			<bVisible>0</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
 			<Type>GAMEOPTION_NO_TECH_TRADING</Type>
@@ -122,7 +122,7 @@
 			<Description>TXT_KEY_GAME_OPTION_ONE_CITY_CHALLENGE</Description>
 			<Help>TXT_KEY_GAME_OPTION_ONE_CITY_CHALLENGE_HELP</Help>
 			<bDefault>0</bDefault>
-			<bVisible>1</bVisible>
+			<bVisible>0</bVisible>
 		</GameOptionInfo>
 		<!-- advc.054: Visible was 1. The AdvCiv DLL makes it visible on the
 			 Custom Scenario screen in any case. -->
@@ -213,35 +213,35 @@
 			<Type>GAMEOPTION_BLOCADE_UNIT</Type>
 			<Description>TXT_KEY_GAME_OPTION_BLOCADE_UNIT</Description>
 			<Help>TXT_KEY_GAME_OPTION_BLOCADE_UNIT_HELP</Help>
-			<bDefault>1</bDefault>
+			<bDefault>0</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
 			<Type>GAMEOPTION_MOUNTAINS</Type>
 			<Description>Mountains in Service</Description>
 			<Help>Peaks can be traveled over and built upon.</Help>
-			<bDefault>1</bDefault>
+			<bDefault>0</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
 			<Type>GAMEOPTION_TECH_DIFFUSION</Type>
 			<Description>Tech Diffusion</Description>
 			<Help>Technology slowly leaks to less technologically advanced civilizations.</Help>
-			<bDefault>1</bDefault>
+			<bDefault>0</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_CULTURE_CONTROL</Type>
             <Description>Culture Control</Description>
             <Help>Allows Forts To have A ranged Culture Around Them</Help>
-            <bDefault>1</bDefault>
+            <bDefault>0</bDefault>
             <bVisible>1</bVisible>
        	</GameOptionInfo>
 		<GameOptionInfo>
 			<Type>GAMEOPTION_INFLUENCE_DRIVEN_WAR</Type>
             <Description>Influence Driven War</Description>
             <Help>Allows Combat To Spread Culture Via Combat</Help>
-			<bDefault>1</bDefault>
+			<bDefault>0</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
@@ -260,8 +260,8 @@
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_EXTRA_BUILDINGS</Type>
-            <Description>Extra Buildings</Description>
-            <Help>Play With A larger Variety Of Buildings And Wonders</Help>
+            <Description>Extra Bonus</Description>
+            <Help>Units gets more Power with more resources of the same type. Also Requires BUILDING DELETION Game Option</Help>
             <bDefault>0</bDefault>
             <bVisible>0</bVisible>
        	</GameOptionInfo>

@@ -2,6 +2,9 @@
 #include "CvGameCoreDLLUndefNew.h"
 #include <new>
 #include "CvDLLInterfaceIFaceBase.h"
+#ifdef USE_INTERNAL_PROFILER
+#include "CvDLLPythonIFaceBase.h"
+#endif
 
 #include <psapi.h>
 /*  advc.mak: This fixes a linker error related to psapi. One can probably also
@@ -37,7 +40,7 @@ void DumpMemUsage(const char* fn, int line)
 
 #ifdef USE_MEMMANAGER // K-Mod. There is a similar #ifdef in the header file, so I assume it's meant to be here as well...
 //
-// operator global new and delete override for gamecore DLL 
+// operator global new and delete override for gamecore DLL
 //
 void *__cdecl operator new(size_t size)
 {
@@ -146,14 +149,14 @@ unsigned int memSize(void* a)
 }
 #endif // K-Mod
 
-BOOL APIENTRY DllMain(HANDLE hModule, 
-					  DWORD  ul_reason_for_call, 
+BOOL APIENTRY DllMain(HANDLE hModule,
+					  DWORD  ul_reason_for_call,
 					  LPVOID lpReserved)
 {
 	switch( ul_reason_for_call ) {
 	case DLL_PROCESS_ATTACH:
 		{
-		// The DLL is being loaded into the virtual address space of the current process as a result of the process starting up 
+		// The DLL is being loaded into the virtual address space of the current process as a result of the process starting up
 		OutputDebugString("DLL_PROCESS_ATTACH\n");
 
 		// set timer precision
@@ -173,7 +176,7 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 		timeEndPeriod(1);
 		break;
 	}
-	
+
 	return TRUE;	// success
 }
 
@@ -413,7 +416,7 @@ bool IFPPythonCall(const char* callerFn, const char* moduleName, const char* fxn
 	//OutputDebugString(CvString::format("Python call to %s::%s [%d]\n", moduleName, fxnName, pythonDepth++).c_str());
 
 	bool result = gDLL->getPythonIFace()->callFunction(moduleName, fxnName, fxnArg);
-	
+
 	//OutputDebugString("...complete\n");
 	pythonDepth--;
 
@@ -427,7 +430,7 @@ bool IFPPythonCall(const char* callerFn, const char* moduleName, const char* fxn
 	//OutputDebugString(CvString::format("Python call to %s::%s [%d]\n", moduleName, fxnName, pythonDepth++).c_str());
 
 	bool bResult = gDLL->getPythonIFace()->callFunction(moduleName, fxnName, fxnArg, result);
-	
+
 	//OutputDebugString("...complete\n");
 	pythonDepth--;
 
@@ -442,7 +445,7 @@ bool IFPPythonCall(const char* callerFn, const char* moduleName, const char* fxn
 	//OutputDebugString(CvString::format("Python call to %s::%s [%d]\n", moduleName, fxnName, pythonDepth++).c_str());
 
 	bool bResult = gDLL->getPythonIFace()->callFunction(moduleName, fxnName, fxnArg, result);
-	
+
 	//OutputDebugString("...complete\n");
 	pythonDepth--;
 
@@ -457,7 +460,7 @@ bool IFPPythonCall(const char* callerFn, const char* moduleName, const char* fxn
 	//OutputDebugString(CvString::format("Python call to %s::%s [%d]\n", moduleName, fxnName, pythonDepth++).c_str());
 
 	bool bResult = gDLL->getPythonIFace()->callFunction(moduleName, fxnName, fxnArg, result);
-	
+
 	//OutputDebugString("...complete\n");
 	pythonDepth--;
 
@@ -472,7 +475,7 @@ bool IFPPythonCall(const char* callerFn, const char* moduleName, const char* fxn
 	//OutputDebugString(CvString::format("Python call to %s::%s [%d]\n", moduleName, fxnName, pythonDepth++).c_str());
 
 	bool result = gDLL->getPythonIFace()->callFunction(moduleName, fxnName, fxnArg, pList);
-	
+
 	//OutputDebugString("...complete\n");
 	pythonDepth--;
 
@@ -487,7 +490,7 @@ bool IFPPythonCall(const char* callerFn, const char* moduleName, const char* fxn
 	//OutputDebugString(CvString::format("Python call to %s::%s [%d]\n", moduleName, fxnName, pythonDepth++).c_str());
 
 	bool result = gDLL->getPythonIFace()->callFunction(moduleName, fxnName, fxnArg, pIntList);
-	
+
 	//OutputDebugString("...complete\n");
 	pythonDepth--;
 
@@ -502,7 +505,7 @@ bool IFPPythonCall(const char* callerFn, const char* moduleName, const char* fxn
 	//OutputDebugString(CvString::format("Python call to %s::%s [%d]\n", moduleName, fxnName, pythonDepth++).c_str());
 
 	bool result = gDLL->getPythonIFace()->callFunction(moduleName, fxnName, fxnArg, pIntList, iListSize);
-	
+
 	//OutputDebugString("...complete\n");
 	pythonDepth--;
 
@@ -517,7 +520,7 @@ bool IFPPythonCall(const char* callerFn, const char* moduleName, const char* fxn
 	//OutputDebugString(CvString::format("Python call to %s::%s [%d]\n", moduleName, fxnName, pythonDepth++).c_str());
 
 	bool result = gDLL->getPythonIFace()->callFunction(moduleName, fxnName, fxnArg, pFloatList);
-	
+
 	//OutputDebugString("...complete\n");
 	pythonDepth--;
 

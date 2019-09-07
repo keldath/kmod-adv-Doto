@@ -2,7 +2,243 @@
 <!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by Alex Mantzaris (Firaxis Games) -->
 <!-- Sid Meier's Civilization 4 -->
 <!-- Copyright Firaxis Games 2005 -->
-<!-- -->
+<!-- 
+
+Tag Name	Description
+LeaderHeadInfo	Main bracket for each entry
+Type	Label that is used throughout all other XML files
+
+Text
+Tag Name	Description
+Description	References the Text which contains the leader name. The text is specified in any of the Assets\XML\Text files.
+Civilopedia	References the Text which contains the civilopedia entry for this leader. The text is specified in any of the Assets\XML\Text files.
+
+Integers
+All of these tags have a numerical value. Though it sometimes can be negative, it usually is not.
+
+Tag Name	Description
+iWonderConstructRand	A factor that determines how likely the AI leader will build world wonders
+(0 less likely; 50 very likely)
+
+iBaseAttitude	The base attitude value the leader has toward everyone else.
+(-1 unfriendly; 2 friendly)
+
+iBasePeaceWeight	The base value for the Peace Weight, which will be added to a random value (see iPeaceWeightRand). The more the Peace Weights are different between two leaders, the more the two leaders will be unfriendly toward each other.
+(0 warmonger; 10 peace lover)
+
+iPeaceWeightRand	The maximum random value for the Peace Weight, which will be added to a base value (see iBasePeaceWeight). The more the Peace Weights are different between two leaders, the more the two leaders will be unfriendly toward each other.
+(3 to everyone)
+
+iWarmongerRespect	Specifies how much relations are affected by warmonger attitudes. Given two leaders and the minimum value of their WarmongerRespect, this bonus applies to both.
+(non warmonger 0; warmonger 2)
+
+iEspionageWeight	Sets how much the AI leader likes espionage (affects both the slider and the overall strategy).
+(50 doesn't like; 150 does like (most leaders are in the range of 90 - 120 but not all))
+
+iRefuseToTalkWarThreshold	A factor that affects how long an AI leader refuses to talk when at war.
+(5 more likely to talk; 12 less likely to talk)
+
+iNoTechTradeThreshold	An AI leader will stop trading a rival any technology, if he realizes that the rival is becoming too advanced, and this happens when the rival has received via trade a certain number of technologies. This value sets the number of technologies.
+(5 stops trading soon; 20 stops trading late (all 5 except Mansa Musa))
+
+iTechTradeKnownPercent	An AI leader will monopoly a technology (refusing to trade it) until the specified percent of rivals have acquired it.
+(0 very likely to share techs; 100 very unlikely to share techs)
+
+iMaxGoldTradePercent	Affects how much of this AI leader's gold will be available for trade.
+(5 less gold; 20 more gold (all 5 except Louis XIV and Mansa Musa))
+
+iMaxGoldPerTurnTradePercent	Affects how much of this AI leader's gold per turn will be available for trade.
+(10 less gold; 15 more gold (most are 10))
+
+iMaxWarRand	A factor that affects how likely an AI leader will start a "total" war.
+(50 very likely; 400 unlikely)
+
+iMaxWarNearbyPowerRatio	Specifies the minimum power ratio (in percent) an AI leader must have with a nearby leader, to consider him a valid target for a "total" war.
+(80 the enemy must be weaker; 130 the enemy may be stronger)
+
+iMaxWarDistantPowerRatio	Specifies the minimum power ratio (in percent) an AI leader must have with a distant leader, to consider him a valid target for a "total" war.
+(30 the enemy must be far weaker; 100 the enemy may be up to as powerful as this leader)
+
+iMaxWarMinAdjacentLandPercent	Affects how much an adjacent rival can be target for a "total" war (specifying how many "adjacent land" tiles must be between the two empires)
+(0 even non adjacent; 4 requires a lot of adjacent land)
+
+iLimitedWarRand	A factor that affects how likely an AI leader will start a "limited" war.
+(40 very likely; 200 unlikely)
+
+iLimitedWarPowerRatio	Specifies the minimum power ratio (in percent) an AI leader must have with a leader, to consider him a valid target for a "limited" war.
+(80 the enemy must be weaker; 130 the enemy may be stronger)
+
+iDogpileWarRand	A factor that affects how likely an AI leader will start a war to "dogpile" an enemy (join an existing war against a common victim).
+(20 very likely; 100 less likely)
+
+iMakePeaceRand	Determines how likely an AI leader will try to stop a war he has started.
+(10 very likely; 120 unlikely)
+
+iDeclareWarTradeRand	Determines how likely an AI leader will try to bring other leaders at war with him against an enemy.
+(40 likely; 60 unlikely)
+
+iDemandRebukedSneakProb	The chance (in percent) an AI leader will start preparing a war against a weaker enemy who denied a request of tribute.
+(0 very unlikely; 100 very likely)
+
+iDemandRebukedWarProb	The chance (in percent) an AI leader will istantly declare war against a weaker enemy who denied a request of tribute. (Note: this tage is not called by the SDK, but by Python: CvDiplomacy).
+(0 very unlikely; 50 likely)
+
+iRazeCityProb	Affects how likely an AI will raze enemy cities.
+(0 unlikely to raze; 75 likely to raze)
+
+iBuildUnitProb	Affects how many units an AI will tend to build.
+(15 very few units; 40 a lot of units)
+
+iBaseAttackOddsChange	Modifies the Attack odd chance, to make an AI think that a battle is more likely to be won, thus having him more likely to attack (without any real effect on the battle). The total modifier is: iBaseAttackOddsChange + rand(0, iAttackOddsChangeRand) + rand(0, iAttackOddsChangeRand)
+(0 (most leaders); 6 (Ragnar, Napoleon))
+
+iAttackOddsChangeRand	Modifies the Attack odd chance, to make an AI think that a battle is more likely to be won, thus having him more likely to attack (without any real effect on the battle). The total modifier is: iBaseAttackOddsChange + rand(0, iAttackOddsChangeRand) + rand(0, iAttackOddsChangeRand)
+(16 for barbarians; 8 for everyone else)
+
+iWorseRankDifferenceAttitudeChange	Affects how much relations between other leaders are affected by the others to be worse in rank.
+(-3 annoyed with the weaker; 1 very tolerant)
+
+iBetterRankDifferenceAttitudeChange	Affects how much relations between other leaders are affected by the others to be better in rank.
+(-1 indifferent; 4 friendly with the stronger)
+
+iCloseBordersAttitudeChange	Affects how much close borders cause tensions with other leaders
+(-4 hates close borders; 0 indifferent (the range used by Firaxis is -4 to -2))
+
+iLostWarAttitudeChange	An attitude modifier used during a war, when the AI leader has lost more battles than his enemy.
+(0 for barbarians; -1 for all the others)
+
+iAtWarAttitudeDivisor	Determines how fast a war builds up a bad attitude toward an enemy.
+(-5 for all; the higher the value, the slower the attitude changes)
+
+iAtWarAttitudeChangeLimit	Sets the maximum value for the bad attitude due to be at war.
+(5 for all)
+
+iAtPeaceAttitudeDivisor	Determines how fast a peace builds up a good attitude toward another leader.
+(60 for all; the higher the value, the slower the attitude changes)
+
+iAtPeaceAttitudeChangeLimit	Sets the maximum value for the good attitude due to be in peace.
+(1 for all; the higher the value, the higher the limit)
+
+iSameReligionAttitudeChange	The base attitude to have the same state religion as another leader.
+(1 for all)
+
+iSameReligionAttitudeDivisor	Determines how fast the same state religion builds up a good attitude toward another leader.
+(10 for all; the higher the value, the slower the attitude changes)
+
+iSameReligionAttitudeChangeLimit	Sets the maximum value for the good attitude due to have the same state religion.
+(1 almost doesn't care of state religion; 7 zealot)
+
+iDifferentReligionAttitudeChange	The base attitude to have a different state religions than another leader.
+(-2 zealot; 0 doesn't care of different religions)
+
+iDifferentReligionAttitudeDivisor	Determines how fast two different state religions builds up a bad attitude toward another leader.
+(-5 for all; the higher the absolute value, the slower the attitude changes)
+
+iDifferentReligionAttitudeChangeLimit	Sets the maximum value for the bad attitude due to have different state religions.
+(-1 to all; the higher the absolute value, the higher the limit)
+
+iBonusTradeAttitudeDivisor	Determines how fast trading bonus resources with another leader builds up a good attitude toward him.
+(50 to all; the higher the value, the slower the attitude changes)
+
+iBonusTradeAttitudeChangeLimit	Sets the maximum value for the good attitude due to trade bonus resources with another leader.
+(2 to all)
+
+iOpenBordersAttitudeDivisor	Determines how fast having open borders builds up a good attitude toward another leader.
+(25 for all; the higher the value, the slower the attitude changes)
+
+iOpenBordersAttitudeChangeLimit	Sets the maximum value for the good attitude due to have open borders with another leader.
+(2 for all)
+
+iDefensivePactAttitudeChangeLimit	Sets the maximum value for the good attitude due to have a defensive pact with another leader.
+(2 for all)
+
+iDefensivePactAttitudeDivisor	Determines how fast having a defensive pact builds up a good attitude toward another leader.
+(12 for all; the higher the value, the slower the attitude changes)
+
+iShareWarAttitudeChange	The base attitude for sharing a war with another leader against a common enemy.
+(1 for all)
+
+iShareWarAttitudeDivisor	Determines how fast sharing a war builds up a good attitude toward another leader.
+(8 for all; the higher the absolute value, the slower the attitude changes)
+
+iShareWarAttitudeChangeLimit	Sets the maximum value for the good attitude due to sharing a war with another leader against a common enemy.
+(2 doesn't care of alliances; 6 trusts his allies)
+
+iFavoriteCivicAttitudeChange	The base attitude for adopting the favorite civic of another leader.
+(1 for all)
+
+iFavoriteCivicAttitudeDivisor	Determines how fast adopting another leader's favorite civic builds up a good attitude toward him.
+(10 for all; the higher the absolute value, the slower the attitude changes)
+
+iFavoriteCivicAttitudeChangeLimit	Sets the maximum value for the good attitude due to adopting the favorite civic of another leader.
+(1 doesn't care of civics; 6 trusts who shares his way of thinking)
+
+iFreedomAppreciation	The bonus attitude for leaders who have given independence to another leader (when a colony is splitted).
+(10 for all)
+
+iVassalPowerModifier	Affects how much a leader can resist before he accepts to be vassal of someone else.
+(-20 easy to capitulate; 50 extremely hard to capitulate)
+
+Lists (Multi-line)
+All List tags consist of an opening/closing tag, which is shown here, and then each entry within it is another tag with the same name as the parent tag, minus the "s" (i.e. singular, rather than plural).
+
+Tag Name	Description
+ContactDelays	How many turns an AI leader must wait before contacting again another leader for a particular reason. The possible values for reasons are defined both in the GlobalTypes.xml file (in the section ContactTypes), and in the SDK.
+(10; 50)
+
+ContactRands	How likely an AI leader may contact another leader for a particular reason. The possible values for reasons are defined both in the GlobalTypes.xml file (in the section ContactTypes), and in the SDK.
+(2 extremely likely; 10000 almost never)
+
+DiplomacyIntroMusicPeace	Specifies the music to be played as intro in diplomacy in each game era, when in peace. Values for eras are defined in the GameInfo\Civ4EraInfos file. Music entries are defined in the Audio\Audio2DScripts.xml file.
+DiplomacyIntroMusicWar	Specifies the music to be played as intro in diplomacy in each game era, when at war. Values for eras are defined in the GameInfo\Civ4EraInfos file. Music entries are defined in the Audio\Audio2DScripts.xml file.
+DiplomacyMusicPeace	Specifies the music to be played in diplomacy in each game era, when in peace. Values for eras are defined in the GameInfo\Civ4EraInfos file. Music entries are defined in the Audio\Audio2DScripts.xml file.
+DiplomacyMusicWar	Specifies the music to be played in diplomacy in each game era, when at war. Values for eras are defined in the GameInfo\Civ4EraInfos file. Music entries are defined in the Audio\Audio2DScripts.xml file.
+Flavors	The list of flavors for this leader, and their weights. Flavors make the leader prefer some aspects (gold, culture, military,...) when choosing technologies, buildings, and so on. Possible values for flavors are defined in the GlobalTypes.xml, in the section FlavorTypes.
+ImprovementWeightModifiers	Modifies the weight for an AI leader to prefer some land improvements. The possible values for ImprovementType are defined in the Terrain\CIV4ImprovementInfos.xml file.
+(20 for each type)
+
+MemoryAttitudePercents	How much past events affect attitude of this leader (in percent). The possible values for event types are defined both in the BasicInfos\CIV4MemoryInfos.xml file, and in the SDK.
+(These are percentages. 100 = +1 attitude, -500 = -5 attitude)
+
+MemoryDecays	How likely is an AI leader to forget past events. The XML value is the denominator of a fractional value. The numorator is randomly generated, between 0 and the XML value. This function is checked for each new turn. If the randomly generated value is 0 that turn, the AI will forget one point for that diplomacy type. This is a binomial distribution.
+For example, setting the value to 20 for "MEMORY_MADE_DEMAND_RECENT" will cause the game to generate a value between 0 and 20, and divide it by 20. If it turns out to be 0/20, the AI will forget a one point of diplomacy for the "You made an arrogant demand!"
+
+NoWarAttitudeProbs	Specifies the chance an AI leader will reconsider a war plan, based on his attitude toward the potential victim.
+(0 will never reconsider; 100 will always reconsider and never declare)
+
+Traits	The list of traits of this leader. The possible values are defined in the Civilizations\CIV4TraitInfos.xml file.
+UnitAIWeightModifiers	Modifies the weight for an AI leader to prefer some unit types. The possible values for UnitAIType are defined in the BasicInfos\CIV4BasicInfos.xml file, in the section UnitAIInfos.
+(100 for each type)
+
+Miscellaneous
+These tags must be included when writing new entries, or the game will crash or otherwise malfunction.
+
+Tag Name	Description
+DemandTributeAttitudeThreshold	An AI leader won't request tribute to a human leader, if he exceeds this attitude. (the AI will consider the human leader's DemandTributeAttitudeThreshold attribute).
+NoGiveHelpAttitudeThreshold	An AI leader may give help to a human leader, if he exceeds this attitude. (the AI will consider the human leader's NoGiveHelpAttitudeThreshold attribute).
+TechRefuseAttitudeThreshold	An AI will refuse to share his technologies, unless the trading partner will exceed this attitude.
+StrategicBonusRefuseAttitudeThreshold	An AI will refuse to trade strategic bonus resources, unless the trading partner will exceed this attitude.
+HappinessBonusRefuseAttitudeThreshold	An AI will refuse to trade happiness bonus resources, unless the trading partner will exceed this attitude.
+HealthBonusRefuseAttitudeThreshold	An AI will refuse to trade health bonus resources, unless the trading partner will exceed this attitude.
+MapRefuseAttitudeThreshold	An AI will refuse to trade his map, unless the trading partner will exceed this attitude.
+DeclareWarRefuseAttitudeThreshold	An AI will refuse to declare war to another leader, unless the trading partner will exceed this attitude.
+DeclareWarThemRefuseAttitudeThreshold	An AI will refuse to declare war to another leader, if the potential target exceeds this attitude.
+StopTradingRefuseAttitudeThreshold	An AI will refuse to stop trading with another leader, unless the trading partner will exceed this attitude.
+StopTradingThemRefuseAttitudeThreshold	An AI will refuse to stop trading with another leader, if the potential target exceeds this attitude.
+AdoptCivicRefuseAttitudeThreshold	An AI will refuse to change his civics, unless the trading partner will exceed this attitude.
+ConvertReligionRefuseAttitudeThreshold	An AI will refuse to change his state religion, unless the trading partner will exceed this attitude.
+OpenBordersRefuseAttitudeThreshold	An AI will refuse to open his borders with another leader, unless the trading partner will exceed this attitude.
+DefensivePactRefuseAttitudeThreshold	An AI will refuse a defensive pact with another leader, unless the trading partner will exceed this attitude.
+PermanentAllianceRefuseAttitudeThreshold	An AI will refuse a permanent alliance with another leader, unless the trading partner will exceed this attitude.
+VassalRefuseAttitudeThreshold	An AI will refuse a to be vassal of another leader, unless the trading partner will exceed this attitude.
+FavoriteCivic	The civic this AI leader prefers. When he is running this civic, he will refuse to switch any civic.
+FavoriteReligion	The religion this AI leader prefers.
+Art
+These tags are directly related to the rendering of art for the entry.
+
+Tag Name	Description
+ArtDefineTag	Reference the graphic set to be used for this leader (his button image, and his animation). The possible values are defined in the Assets\XML\Art\CIV4ArtDefines_Leaderhead.xml file.
+-->
 <!-- Leader Infos and AI Settings -->
 <Civ4LeaderHeadInfos xmlns="x-schema:CIV4CivilizationsSchema.xml">
 	<LeaderHeadInfos>
