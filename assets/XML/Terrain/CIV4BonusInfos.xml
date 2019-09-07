@@ -253,8 +253,8 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<!-- advc.129: was 90 -->
 			<iMaxLatitude>68</iMaxLatitude>
 			<Rands>
-				<iRandApp1>15</iRandApp1>
-				<iRandApp2>15</iRandApp2>
+				<iRandApp1>20</iRandApp1>
+				<iRandApp2>20</iRandApp2>
 				<iRandApp3>0</iRandApp3>
 				<iRandApp4>0</iRandApp4>
 			</Rands>
@@ -311,8 +311,8 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iMinLatitude>0</iMinLatitude>
 			<iMaxLatitude>90</iMaxLatitude>
 			<Rands>
-				<iRandApp1>10</iRandApp1>
-				<iRandApp2>10</iRandApp2>
+				<iRandApp1>15</iRandApp1>
+				<iRandApp2>15</iRandApp2>
 				<iRandApp3>0</iRandApp3>
 				<iRandApp4>0</iRandApp4>
 			</Rands>
@@ -514,7 +514,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 				<iRandApp3>0</iRandApp3>
 				<iRandApp4>0</iRandApp4>
 			</Rands>
-			<iPlayer>50</iPlayer>
+			<iPlayer>65</iPlayer>
 			<iTilesPer>0</iTilesPer>
 			<iMinLandPercent>0</iMinLandPercent>
 			<iUnique>0</iUnique>
@@ -647,7 +647,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<YieldChanges>
 				<iYieldChange>1</iYieldChange>
 				<iYieldChange>0</iYieldChange>
-				<iYieldChange>0</iYieldChange>
+				<iYieldChange>1</iYieldChange>
 			</YieldChanges>
 			<iAITradeModifier>0</iAITradeModifier>
 			<iAIObjective>0</iAIObjective>
@@ -707,7 +707,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<YieldChanges>
 				<iYieldChange>1</iYieldChange>
 				<iYieldChange>0</iYieldChange>
-				<iYieldChange>0</iYieldChange>
+				<iYieldChange>2</iYieldChange>
 			</YieldChanges>
 			<iAITradeModifier>0</iAITradeModifier>
 			<iAIObjective>0</iAIObjective>
@@ -719,8 +719,8 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iMinLatitude>0</iMinLatitude>
 			<iMaxLatitude>50</iMaxLatitude>
 			<Rands>
-				<iRandApp1>25</iRandApp1>
-				<iRandApp2>25</iRandApp2>
+				<iRandApp1>20</iRandApp1>
+				<iRandApp2>20</iRandApp2>
 				<iRandApp3>0</iRandApp3>
 				<iRandApp4>0</iRandApp4>
 			</Rands>
@@ -911,7 +911,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<TechObsolete>NONE</TechObsolete>
 			<YieldChanges>
 				<iYieldChange>1</iYieldChange>
-				<iYieldChange>0</iYieldChange>
+				<iYieldChange>1</iYieldChange>
 				<iYieldChange>0</iYieldChange>
 			</YieldChanges>
 			<iAITradeModifier>0</iAITradeModifier>
@@ -1391,7 +1391,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<YieldChanges>
 				<iYieldChange>0</iYieldChange>
 				<iYieldChange>0</iYieldChange>
-				<iYieldChange>1</iYieldChange>
+				<iYieldChange>2</iYieldChange>
 			</YieldChanges>
 			<iAITradeModifier>0</iAITradeModifier>
 			<iAIObjective>0</iAIObjective>
@@ -1403,12 +1403,12 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iMinLatitude>0</iMinLatitude>
 			<iMaxLatitude>90</iMaxLatitude>
 			<Rands>
-				<iRandApp1>25</iRandApp1>
-				<iRandApp2>25</iRandApp2>
+				<iRandApp1>20</iRandApp1>
+				<iRandApp2>20</iRandApp2>
 				<iRandApp3>0</iRandApp3>
 				<iRandApp4>0</iRandApp4>
 			</Rands>
-			<iPlayer>67</iPlayer>
+			<iPlayer>100</iPlayer>
 			<iTilesPer>0</iTilesPer>
 			<iMinLandPercent>0</iMinLandPercent>
 			<iUnique>0</iUnique>
@@ -1563,7 +1563,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iHealth>0</iHealth>
 			<iHappiness>1</iHappiness>
 			<iPlacementOrder>5</iPlacementOrder>
-			<iConstAppearance>50</iConstAppearance>
+			<iConstAppearance>100</iConstAppearance>
 			<iMinAreaSize>3</iMinAreaSize>
 			<iMinLatitude>0</iMinLatitude>
 			<iMaxLatitude>40</iMaxLatitude>
@@ -1680,7 +1680,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<TechObsolete>NONE</TechObsolete>
 			<YieldChanges>
 				<iYieldChange>0</iYieldChange>
-				<iYieldChange>0</iYieldChange>
+				<iYieldChange>1</iYieldChange>
 				<iYieldChange>1</iYieldChange>
 			</YieldChanges>
 			<iAITradeModifier>0</iAITradeModifier>
@@ -1746,7 +1746,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<YieldChanges>
 				<iYieldChange>0</iYieldChange>
 				<iYieldChange>0</iYieldChange>
-				<iYieldChange>1</iYieldChange>
+				<iYieldChange>2</iYieldChange>
 			</YieldChanges>
 			<iAITradeModifier>0</iAITradeModifier>
 			<iAIObjective>0</iAIObjective>
@@ -2210,7 +2210,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<YieldChanges>
 				<iYieldChange>0</iYieldChange>
 				<iYieldChange>1</iYieldChange>
-				<iYieldChange>0</iYieldChange>
+				<iYieldChange>1</iYieldChange>
 			</YieldChanges>
 			<iAITradeModifier>5</iAITradeModifier>			
 			<iAIObjective>0</iAIObjective>
@@ -2222,8 +2222,8 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iMinLatitude>0</iMinLatitude>
 			<iMaxLatitude>90</iMaxLatitude>
 			<Rands>
-				<iRandApp1>25</iRandApp1>
-				<iRandApp2>25</iRandApp2>
+				<iRandApp1>20</iRandApp1>
+				<iRandApp2>20</iRandApp2>
 				<iRandApp3>0</iRandApp3>
 				<iRandApp4>0</iRandApp4>
 			</Rands>
@@ -2277,8 +2277,8 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			</YieldChanges>
 			<iAITradeModifier>0</iAITradeModifier>			
 			<iAIObjective>0</iAIObjective>
-			<iHealth>-1</iHealth>
-			<iHappiness>0</iHappiness>
+			<iHealth>0</iHealth>
+			<iHappiness>1</iHappiness>
 			<iPlacementOrder>2</iPlacementOrder>
 			<iConstAppearance>100</iConstAppearance>
 			<iMinAreaSize>1</iMinAreaSize>

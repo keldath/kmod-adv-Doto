@@ -650,28 +650,43 @@ void CvMapGenerator::addBonuses()
 		}
 	}
 
-	for (int iOrder = 0; iOrder < GC.getNumBonusInfos(); iOrder++)
+	/*  <advc.129> Only do an iteration for those PlacementOrder numbers that are
+		actually used in the BonusInfos. */
+	std::vector<int> aiOrdinals;
+	for (int i = 0; i < GC.getNumBonusInfos(); i++)
 	{
-		for (int iI = 0; iI < GC.getNumBonusInfos(); iI++)
+		int iOrder = GC.getBonusInfo((BonusTypes)i).getPlacementOrder();
+		if (iOrder >= 0) // The negative ones aren't supposed to be placed at all
+			aiOrdinals.push_back(iOrder);
+	}
+	FAssertMsg(aiOrdinals.size() <= (uint)12, "Shuffling the bonus indices this often might be slow(?)");
+	::removeDuplicates(aiOrdinals);
+	std::sort(aiOrdinals.begin(), aiOrdinals.end());
+	//for (int iOrder = 0; iOrder < GC.getNumBonusInfos(); iOrder++)
+	for (size_t i = 0; i < aiOrdinals.size(); i++)
+	{
+		int iOrder = aiOrdinals[i];	
+		/*  Break ties in the order randomly (perhaps better not to do this though
+			if the assertion above fails) */
+		int* aiShuffledIndices = ::shuffle(GC.getNumBonusInfos(), GC.getGame().getMapRand());
+		for (int j = 0; j < GC.getNumBonusInfos(); j++)
 		{
-			gDLL->callUpdater();
-			if (GC.getBonusInfo((BonusTypes)iI).getPlacementOrder() == iOrder)
+			BonusTypes eBonus = (BonusTypes)aiShuffledIndices[j]; // advc.129
+			//gDLL->callUpdater();
+			if (GC.getBonusInfo(eBonus).getPlacementOrder() != iOrder)
+				continue;
+
+			gDLL->callUpdater(); // advc.003b: Moved down; don't need to update the UI quite so frequently.
+			CyArgsList argsList;
+			argsList.add(eBonus);
+			if (!gDLL->getPythonIFace()->callFunction(gDLL->getPythonIFace()->getMapScriptModule(), "addBonusType", argsList.makeFunctionArgs()) || gDLL->getPythonIFace()->pythonUsingDefaultImpl())
 			{
-				CyArgsList argsList;
-				argsList.add(iI);
-				if (!gDLL->getPythonIFace()->callFunction(gDLL->getPythonIFace()->getMapScriptModule(), "addBonusType", argsList.makeFunctionArgs()) || gDLL->getPythonIFace()->pythonUsingDefaultImpl())
-				{
-					if (GC.getBonusInfo((BonusTypes)iI).isOneArea())
-					{
-						addUniqueBonusType((BonusTypes)iI);
-					}
-					else
-					{
-						addNonUniqueBonusType((BonusTypes)iI);
-					}
-				}
+				if (GC.getBonusInfo(eBonus).isOneArea())
+					addUniqueBonusType(eBonus);
+				else addNonUniqueBonusType(eBonus);
 			}
 		}
+		SAFE_DELETE_ARRAY(aiShuffledIndices); // advc.129
 	}
 }
 
@@ -682,12 +697,15 @@ void CvMapGenerator::addUniqueBonusType(BonusTypes eBonusType)
 	// (But it is now slightly more efficient and easier to read.)
 	std::set<int> areas_tried;
 
-	CvBonusInfo& pBonusInfo = GC.getBonusInfo(eBonusType);
+	CvBonusInfo const& pBonusInfo = GC.getBonusInfo(eBonusType);
 
 	int iBonusCount = calculateNumBonusesToAdd(eBonusType);
 
 	bool bIgnoreLatitude = GC.getGame().pythonIsBonusIgnoreLatitudes();
 
+	// advc.003b: Don't waste time trying to place land resources in the ocean
+	bool bWater = (pBonusInfo.isTerrain(GC.getDefineINT("DEEP_WATER_TERRAIN")) ||
+			pBonusInfo.isTerrain(GC.getDefineINT("SHALLOW_WATER_TERRAIN")));
 	FAssertMsg(pBonusInfo.isOneArea(), "addUniqueBonusType called with non-unique bonus type");
 
 	while (true)
@@ -698,7 +716,9 @@ void CvMapGenerator::addUniqueBonusType(BonusTypes eBonusType)
 		CvArea *pLoopArea = NULL;
 
 		for(pLoopArea = GC.getMap().firstArea(&iLoop); pLoopArea != NULL; pLoopArea = GC.getMap().nextArea(&iLoop))
-		{
+		{	// <advc.003b>
+			if (pLoopArea->isWater() && !bWater)
+				continue; // </advc.003b>
 			if (areas_tried.count(pLoopArea->getID()) == 0)
 			{
 				int iNumUniqueBonusesOnArea = pLoopArea->countNumUniqueBonusTypes() + 1; // number of unique bonuses starting on the area, plus this one
@@ -724,10 +744,10 @@ void CvMapGenerator::addUniqueBonusType(BonusTypes eBonusType)
 		// Place the bonuses:
 
 		CvMap& m = GC.getMap(); // advc.003 (and some stype changes in the following)
-		int* piShuffle = shuffle(m.numPlots(), GC.getGame().getMapRand());
+		int* aiShuffledIndices = shuffle(m.numPlots(), GC.getGame().getMapRand());
 		for (int iI = 0; iI < m.numPlots(); iI++)
 		{
-			CvPlot& kRandPlot = *m.plotByIndex(piShuffle[iI]);
+			CvPlot& kRandPlot = *m.plotByIndex(aiShuffledIndices[iI]);
 
 			if (m.getNumBonuses(eBonusType) >= iBonusCount)
 				break; // We already have enough
@@ -791,7 +811,7 @@ void CvMapGenerator::addUniqueBonusType(BonusTypes eBonusType)
 			} } } } }*/
 
 		}
-		SAFE_DELETE_ARRAY(piShuffle);
+		SAFE_DELETE_ARRAY(aiShuffledIndices);
 	}
 }
 
@@ -801,7 +821,7 @@ void CvMapGenerator::addNonUniqueBonusType(BonusTypes eBonusType)
 	if (iBonusCount == 0)
 		return;
 
-	int* piShuffle = shuffle(GC.getMap().numPlots(), GC.getGame().getMapRand());
+	int *aiShuffledIndices = shuffle(GC.getMap().numPlots(), GC.getGame().getMapRand());
 	// advc.129: Moved into placeGroup
 	//CvBonusInfo& pBonusInfo = GC.getBonusInfo(eBonusType);
 
@@ -810,7 +830,7 @@ void CvMapGenerator::addNonUniqueBonusType(BonusTypes eBonusType)
 	CvPlot* pPlot = NULL;
 	for (int iI = 0; iI < GC.getMap().numPlots(); iI++)
 	{
-		pPlot = GC.getMap().plotByIndex(piShuffle[iI]);
+		pPlot = GC.getMap().plotByIndex(aiShuffledIndices[iI]);
 		if (!canPlaceBonusAt(eBonusType, pPlot->getX(), pPlot->getY(), bIgnoreLatitude))
 			continue; // advc.003
 
@@ -832,7 +852,7 @@ void CvMapGenerator::addNonUniqueBonusType(BonusTypes eBonusType)
 		if (iBonusCount == 0)
 			break;
 	}
-	SAFE_DELETE_ARRAY(piShuffle);
+	SAFE_DELETE_ARRAY(aiShuffledIndices);
 }
 
 
@@ -856,20 +876,20 @@ int CvMapGenerator::placeGroup(BonusTypes eBonusType, CvPlot const& kCenter,
 	int sz = (int)apGroupRange.size();
 	if(sz <= 0)
 		return 0;
-	int* piShuffled = new int[sz];
+	int* aiShuffledIndices = new int[sz];
 	for(int i = 0; i < sz; i++)
-		piShuffled[i] = i;
-	::shuffleArray(piShuffled, sz, GC.getGame().getMapRand());
+		aiShuffledIndices[i] = i;
+	::shuffleArray(aiShuffledIndices, sz, GC.getGame().getMapRand());
 	for(int j = 0; j < sz && iLimit > 0; j++) {
 		int iProb = kBonus.getGroupRand();
 		iProb = ::round(iProb * std::pow(2/3.0, iPlaced));
 		if (GC.getGame().getMapRandNum(100, "addNonUniqueBonusType") < iProb) {
-			apGroupRange[piShuffled[j]]->setBonusType(eBonusType);
+			apGroupRange[aiShuffledIndices[j]]->setBonusType(eBonusType);
 			iLimit--;
 			iPlaced++;
 		}
 	}
-	delete[] piShuffled;
+	delete[] aiShuffledIndices;
 	FAssert(iLimit >= 0);
 	return iPlaced;
 } // </advc.129>
@@ -895,7 +915,7 @@ void CvMapGenerator::addGoodies()
 	}
 
 	int iNumPlots = GC.getMap().numPlots();
-	int* piShuffle = shuffle(iNumPlots, GC.getGame().getMapRand());
+	int* aiShuffledIndices = shuffle(iNumPlots, GC.getGame().getMapRand());
 
 	for (int iI = 0; iI < GC.getNumImprovementInfos(); iI++)
 	{
@@ -904,7 +924,7 @@ void CvMapGenerator::addGoodies()
 			for (int iJ = 0; iJ < iNumPlots; iJ++)
 			{
 				gDLL->callUpdater();
-				CvPlot *pPlot = GC.getMap().plotByIndex(piShuffle[iJ]);
+				CvPlot *pPlot = GC.getMap().plotByIndex(aiShuffledIndices[iJ]);
 				FAssertMsg(pPlot, "pPlot is expected not to be NULL");
 				if (!(pPlot->isWater()))
 				{
@@ -922,7 +942,7 @@ void CvMapGenerator::addGoodies()
 		}
 	}
 
-	SAFE_DELETE_ARRAY(piShuffle);
+	SAFE_DELETE_ARRAY(aiShuffledIndices);
 }
 
 
