@@ -7096,7 +7096,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Quote>TXT_KEY_TECH_WRITING_QUOTE</Quote>
 			<Sound>AS2D_TECH_WRITING</Sound>
 			<SoundMP>AS2D_TECH_MP_WRITING</SoundMP>
-			<Button>,Art/Interface/Buttons/TechTree/Writing.dds,Art/Interface/Buttons/TechTree_Atlas.dds,6,12</Button>
+			<Button>Art/Interface/Buttons/Religions/Egyptian_Mythology.dds</Button>
 		</TechInfo>
 		<TechInfo>
 			<Type>TECH_HELLENISM2</Type>
@@ -7846,8 +7846,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Quote/>
 			<Sound>AS2D_TECH_FUTURE</Sound>
 			<SoundMP>AS2D_TECH_MP_FUTURE</SoundMP>
-			<Button>Art/Interface/Buttons/religions/SHINTO.dds</Button>
-			</TechInfo>
+			<TechButton>Art/Interface/Buttons/TechTree/Judaism.dds</TechButton>
+		</TechInfo>
 		<TechInfo>
 			<Type>TECH_AMONRA_A</Type>
 			<Description>Can Found AmonRa</Description>

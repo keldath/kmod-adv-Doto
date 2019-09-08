@@ -490,7 +490,7 @@
 		 eliminated (by anyone). Recommended: 25 -->
 	<Define>
 		<DefineName>CLOSED_BORDERS_CULTURE_ANGER_MODIFIER</DefineName>
-		<iDefineIntVal>25</iDefineIntVal>
+		<iDefineIntVal>35</iDefineIntVal>
 	</Define>
 
 	<!-- [advc.099]
@@ -597,7 +597,7 @@
 		 Recommended: 0. -->
     <Define>
         <DefineName>BARB_ACTIVITY_ADJUSTMENT</DefineName>
-        <iDefineIntVal>0</iDefineIntVal>
+        <iDefineIntVal>15</iDefineIntVal>
     </Define>
 
 	<!-- [advc.300]

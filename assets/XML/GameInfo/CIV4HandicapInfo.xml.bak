@@ -171,8 +171,8 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.300: was 50 -->
 			<iBarbarianCreationTurnsElapsed>55</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 55 -->
-			<iBarbarianCityCreationTurnsElapsed>60</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>4</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationTurnsElapsed>50</iBarbarianCityCreationTurnsElapsed>
+			<iBarbarianCityCreationProb>5</iBarbarianCityCreationProb>
 			<!-- advc.313: was -70 -->
 			<iAnimalBonus>-60</iAnimalBonus>
 			<iBarbarianBonus>-40</iBarbarianBonus>
@@ -343,8 +343,8 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.300: was 45 -->
 			<iBarbarianCreationTurnsElapsed>50</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 50 -->
-			<iBarbarianCityCreationTurnsElapsed>55</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>5</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationTurnsElapsed>50</iBarbarianCityCreationTurnsElapsed>
+			<iBarbarianCityCreationProb>6</iBarbarianCityCreationProb>
 			<!-- advc.313: was -60 -->
 			<iAnimalBonus>-45</iAnimalBonus>
 			<iBarbarianBonus>-30</iBarbarianBonus>
@@ -490,8 +490,8 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.300: was 40 -->
 			<iBarbarianCreationTurnsElapsed>45</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 45 -->
-			<iBarbarianCityCreationTurnsElapsed>50</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>5</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationTurnsElapsed>45</iBarbarianCityCreationTurnsElapsed>
+			<iBarbarianCityCreationProb>6</iBarbarianCityCreationProb>
 			<!-- advc.313: was -50 -->
 			<iAnimalBonus>-30</iAnimalBonus>
 			<iBarbarianBonus>-20</iBarbarianBonus>
@@ -614,7 +614,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iBarbarianCreationTurnsElapsed>40</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 40 -->
 			<iBarbarianCityCreationTurnsElapsed>45</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>6</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationProb>7</iBarbarianCityCreationProb>
 			<!-- advc.313: was -40 -->
 			<iAnimalBonus>-25</iAnimalBonus>
 			<iBarbarianBonus>-10</iBarbarianBonus>
@@ -732,8 +732,8 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.300: was 30 -->
 			<iBarbarianCreationTurnsElapsed>35</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 35 -->
-			<iBarbarianCityCreationTurnsElapsed>40</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>6</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationTurnsElapsed>35</iBarbarianCityCreationTurnsElapsed>
+			<iBarbarianCityCreationProb>7</iBarbarianCityCreationProb>
 			<!-- advc.313: was -30 -->
 			<iAnimalBonus>-20</iAnimalBonus>
 			<iBarbarianBonus>-5</iBarbarianBonus>
@@ -858,7 +858,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iBarbarianCreationTurnsElapsed>30</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 30 -->
 			<iBarbarianCityCreationTurnsElapsed>35</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>7</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationProb>8</iBarbarianCityCreationProb>
 			<!-- advc.313: was -20 -->
 			<iAnimalBonus>-15</iAnimalBonus>
 			<!-- advc.313: was 0 -->
@@ -1009,7 +1009,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iBarbarianCreationTurnsElapsed>25</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 25 -->
 			<iBarbarianCityCreationTurnsElapsed>30</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>7</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationProb>8</iBarbarianCityCreationProb>
 			<iAnimalBonus>-10</iAnimalBonus>
 			<!-- advc.313: was 0 -->
 			<iBarbarianBonus>-5</iBarbarianBonus>
@@ -1166,7 +1166,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iBarbarianCreationTurnsElapsed>20</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 20 -->
 			<iBarbarianCityCreationTurnsElapsed>25</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>8</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationProb>9</iBarbarianCityCreationProb>
 			<iAnimalBonus>-5</iAnimalBonus>
 			<!-- advc.313: was 0 -->
 			<iBarbarianBonus>-5</iBarbarianBonus>
@@ -1329,7 +1329,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iBarbarianCreationTurnsElapsed>15</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 15 -->
 			<iBarbarianCityCreationTurnsElapsed>25</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>8</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationProb>9</iBarbarianCityCreationProb>
 			<iAnimalBonus>0</iAnimalBonus>
 			<iBarbarianBonus>0</iBarbarianBonus>
 			<!-- advc.313: was -40 -->

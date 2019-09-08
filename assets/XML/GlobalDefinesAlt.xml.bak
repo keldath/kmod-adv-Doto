@@ -28,7 +28,7 @@
 	</Define>
 	<Define>
 		<DefineName>BARBARIAN_FREE_TECH_PERCENT</DefineName>
-		<iDefineIntVal>4</iDefineIntVal> <!-- increased from 3, to compensate for other changes -->
+		<iDefineIntVal>5</iDefineIntVal> <!-- increased from 3, to compensate for other changes -->
 	</Define>
 	<Define>
 		<DefineName>FROZEN_TERRAIN</DefineName>

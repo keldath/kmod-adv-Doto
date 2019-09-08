@@ -33063,7 +33063,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<Civilopedia>TXT_KEY_BUILDING_ODIN_SHRINE_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_BUILDING_ODIN_SHRINE_STRATEGY</Strategy>
 			<Advisor>ADVISOR_RELIGION</Advisor>
-			<ArtDefineTag>ART_DEF_BUILDING_ODIN_SHRINE</ArtDefineTag>
+			<ArtDefineTag>ART_DEF_BUILDING_ODIN_SHRINE/ArtDefineTag>
 			<MovieDefineTag>TXT_KEY_BUILDING_ODIN_SHRINE_PEDIA</MovieDefineTag>
 			<HolyCity>RELIGION_ODIN</HolyCity>
 			<ReligionType>RELIGION_ODIN</ReligionType>

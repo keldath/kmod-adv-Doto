@@ -277,11 +277,11 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iDemandRebukedSneakProb>0</iDemandRebukedSneakProb>
 			<iDemandRebukedWarProb>0</iDemandRebukedWarProb>
 			<iRazeCityProb>10</iRazeCityProb>
-			<iBuildUnitProb>50</iBuildUnitProb>
+			<iBuildUnitProb>60</iBuildUnitProb>
 			<!-- advc.114d: was 0 -->
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
 			<!-- advc.114d: was 16 -->
-			<iAttackOddsChangeRand>18</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>30</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>0</iCloseBordersAttitudeChange>

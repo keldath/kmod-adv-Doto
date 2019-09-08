@@ -10976,34 +10976,6 @@
 			<bInGeneric>1</bInGeneric>
 		</SoundData>
 		<SoundData>
-			<SoundID>SND_BUILD_NORDIC</SoundID>
-			<Filename>Sounds/Nordic/NordicDink</Filename>
-			<LoadType>DYNAMIC_RES</LoadType>
-			<bIsCompressed>1</bIsCompressed>
-			<bInGeneric>1</bInGeneric>
-		</SoundData>
-		<SoundData>
-			<SoundID>SND_BUILD_NORDIC_MOVIE</SoundID>
-			<Filename>Sounds/Nordic/Nordic</Filename>
-			<LoadType>DYNAMIC_RES</LoadType>
-			<bIsCompressed>1</bIsCompressed>
-			<bInGeneric>1</bInGeneric>
-		</SoundData>
-		<SoundData>
-			<SoundID>SND_BUILD_NORDIC_MISSIONARY</SoundID>
-			<Filename>Sounds/Nordic/BuildNordicMissionary</Filename>
-			<LoadType>DYNAMIC_RES</LoadType>
-			<bIsCompressed>1</bIsCompressed>
-			<bInGeneric>1</bInGeneric>
-		</SoundData>
-		<SoundData>
-			<SoundID>SND_NORDIC_MISSIONARY_ACTIVATE</SoundID>
-			<Filename>MSounds/Nordic/NordicMissionaryActivate</Filename>
-			<LoadType>DYNAMIC_RES</LoadType>
-			<bIsCompressed>1</bIsCompressed>
-			<bInGeneric>1</bInGeneric>
-		</SoundData>
-		<SoundData>
 			<SoundID>DIPLO_DAVID_EARLY</SoundID>
 			<Filename>Sounds/Diplomacy/David_ancient</Filename>
 			<LoadType>STREAMED</LoadType>

@@ -482,7 +482,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>35</iBuildUnitProb>
 			<iBaseAttackOddsChange>4</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-2</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>
@@ -1134,7 +1134,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>20</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>3</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -1795,7 +1795,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>
@@ -2452,7 +2452,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>
@@ -3103,7 +3103,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>20</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>4</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-3</iCloseBordersAttitudeChange>
@@ -3749,7 +3749,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>50</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>4</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-2</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -4397,7 +4397,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-2</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>
@@ -5043,7 +5043,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-3</iCloseBordersAttitudeChange>
@@ -5692,7 +5692,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -6346,7 +6346,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -6996,7 +6996,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
 			<!-- advc.005a: was -2 -->
@@ -7650,7 +7650,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-2</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -8305,7 +8305,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>20</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-3</iCloseBordersAttitudeChange>
@@ -8959,7 +8959,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>20</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -9606,7 +9606,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>15</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -10228,7 +10228,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>75</iRazeCityProb>
 			<iBuildUnitProb>35</iBuildUnitProb>
 			<iBaseAttackOddsChange>4</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>
@@ -10874,7 +10874,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>4</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-2</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-3</iCloseBordersAttitudeChange>
@@ -11520,7 +11520,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -12162,7 +12162,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>10</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>4</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-3</iCloseBordersAttitudeChange>
@@ -12812,7 +12812,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>20</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -13469,7 +13469,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>10</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-3</iCloseBordersAttitudeChange>
@@ -14125,7 +14125,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>25</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-3</iCloseBordersAttitudeChange>
@@ -14785,7 +14785,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -15434,7 +15434,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>
@@ -16083,7 +16083,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>35</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-2</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>
@@ -16735,7 +16735,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>25</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>3</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-3</iCloseBordersAttitudeChange>
@@ -17388,7 +17388,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -18037,7 +18037,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-2</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>
@@ -18683,7 +18683,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>4</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -19329,7 +19329,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<!-- advc.005a: was -2 -->
@@ -19979,7 +19979,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>25</iRazeCityProb>
 			<iBuildUnitProb>40</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>3</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -20625,7 +20625,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>50</iRazeCityProb>
 			<iBuildUnitProb>35</iBuildUnitProb>
 			<iBaseAttackOddsChange>4</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-3</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>
@@ -21274,7 +21274,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>40</iBuildUnitProb>
 			<iBaseAttackOddsChange>6</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-3</iCloseBordersAttitudeChange>
@@ -21928,7 +21928,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>10</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -22580,7 +22580,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -23233,7 +23233,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>4</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-2</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-3</iCloseBordersAttitudeChange>
@@ -23894,7 +23894,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>20</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<!-- advc.005a: was -4 -->
@@ -24546,7 +24546,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>20</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -25201,7 +25201,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>50</iRazeCityProb>
 			<iBuildUnitProb>40</iBuildUnitProb>
 			<iBaseAttackOddsChange>6</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -25848,7 +25848,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- advc.005a: was 20 -->
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
 			<!-- advc.005a: was -3 -->
@@ -26509,7 +26509,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-3</iCloseBordersAttitudeChange>
@@ -27165,7 +27165,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>50</iRazeCityProb>
 			<iBuildUnitProb>40</iBuildUnitProb>
 			<iBaseAttackOddsChange>4</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-2</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>
@@ -27804,7 +27804,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>20</iRazeCityProb>
 			<iBuildUnitProb>35</iBuildUnitProb>
 			<iBaseAttackOddsChange>4</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>
@@ -28451,7 +28451,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>25</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-3</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<!-- advc.005a: was -2 -->
@@ -29111,7 +29111,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>5</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -29764,7 +29764,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>25</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-2</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-3</iCloseBordersAttitudeChange>
@@ -30415,7 +30415,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>25</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-3</iCloseBordersAttitudeChange>
@@ -31073,7 +31073,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -31714,7 +31714,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>10</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>3</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -32370,7 +32370,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -33036,7 +33036,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<!-- advc.130c: Swapped the values for WorseRank and
 				 BetterRank -->
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
@@ -33693,7 +33693,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>5</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -34344,7 +34344,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>0</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
@@ -35000,7 +35000,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iRazeCityProb>5</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-2</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
