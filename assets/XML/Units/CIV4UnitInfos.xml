@@ -1252,6 +1252,10 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 					<BuildType>BUILD_POOL</BuildType>
 					<bBuild>1</bBuild>
 				</Build>
+				<Build>
+					<BuildType>BUILD_MOUNT_MINE</BuildType>
+					<bBuild>1</bBuild>
+				</Build>
 			</Builds>
 			<ReligionSpreads/>
 			<CorporationSpreads/>
@@ -1530,6 +1534,10 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				</Build>
 				<Build>
 					<BuildType>BUILD_POOL</BuildType>
+					<bBuild>1</bBuild>
+				</Build>
+				<Build>
+					<BuildType>BUILD_MOUNT_MINE</BuildType>
 					<bBuild>1</bBuild>
 				</Build>
 			</Builds>

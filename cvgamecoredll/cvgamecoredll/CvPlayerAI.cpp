@@ -18797,8 +18797,8 @@ void CvPlayerAI::AI_doCounter()  // advc.003: style changes
 					if(iAvail > 1)
 						exportable += std::min(iAvail - 1, 3);
 				} /* Mean of capBonuses and a multiple of exportable, but
-					 no more than 1.5 times capBonuses. */
-				double weight1 = (capBonuses + std::min(capBonuses * 2,
+					 no more than 1.33 times capBonuses. */
+				double weight1 = (capBonuses + std::min(capBonuses * (5/3.0),
 						2.4 * std::max(bonusVal, exportable))) / 2;
 				/*  Rather than changing attitudeDiv in XML for every leader,
 					do the fine-tuning here. */
@@ -19785,7 +19785,7 @@ CvPlayerAI::CancelCode CvPlayerAI::AI_checkCancel(CvDeal const& d, PlayerTypes e
 		else return NO_CANCEL;
 	}
 	/*  getTradeDenial will always return DENIAL_JOKING. Instead, call
-		AI_bonusTrade explicitly and tell it that this is about cancellation. */
+		AI_bonusTrade explicitly and tell it that this is about cancelation. */
 	for(pNode = kWeGive.head(); pNode != NULL; pNode = kWeGive.next(pNode)) {
 		TradeData data = pNode->m_data;
 		if(data.m_eItemType != TRADE_RESOURCES)
@@ -19794,7 +19794,7 @@ CvPlayerAI::CancelCode CvPlayerAI::AI_checkCancel(CvDeal const& d, PlayerTypes e
 		//fix for ai cancellatins  - f1rpo 096 hotfix - keldath
 		{
 			if (gDealCancelLogLevel > 0) logBBAICancel(d, getID(), L"resource - denial");
-				return DO_CANCEL;
+			return DO_CANCEL;
 		}
 	} /* Need to check their DENIAL_JOKING in case they're giving us a resource that
 		 we no longer need */
@@ -25444,10 +25444,16 @@ int CvPlayerAI::AI_getTotalFloatingDefendersNeeded(CvArea* pArea) const
 	// K-Mod
 	int iDefenders = 1 + iAreaCities + AI_totalAreaUnitAIs(pArea, UNITAI_SETTLE);
 	iDefenders += pArea->getPopulationPerPlayer(getID()) / 7;
-	if (AI_isLandWar(pArea))
-		iDefenders += 1 + (2+GET_TEAM(getTeam()).countEnemyCitiesByArea(pArea))/3;
-	iDefenders *= iCurrentEra + (g.getMaxCityElimination() > 0 ? 3 : 2);
-	iDefenders /= 3;
+	if (AI_isLandWar(pArea) /* advc.107: */ && AI_isFocusWar(pArea))
+	{
+		iDefenders += 1 + (//2
+				/*  advc.107: Want to focus on aggressive build-up while preparing.
+					Can still train some extra defenders once war is imminent. */
+				(!GET_TEAM(getTeam()).AI_isSneakAttackPreparing() ? 0 : 2)
+				+ GET_TEAM(getTeam()).countEnemyCitiesByArea(pArea))/3;
+	}
+	iDefenders *= iCurrentEra + (g.getMaxCityElimination() > 0 ? 5 : 4); // advc.107: was 3:2
+	iDefenders /= 6; // advc.107: was /=3
 	// K-Mod end
 
 	if (pArea->getAreaAIType(getTeam()) == AREAAI_DEFENSIVE)
@@ -25487,8 +25493,12 @@ int CvPlayerAI::AI_getTotalFloatingDefendersNeeded(CvArea* pArea) const
 		}
 	}
 
-	if (AI_getTotalAreaCityThreat(pArea) == 0)
-		iDefenders /= 2;
+	/*if (AI_getTotalAreaCityThreat(pArea) == 0)
+		iDefenders /= 2;*/
+	/*  <advc.107> Faster. Not per-area, but I don't much have confidence in
+		AI_getTotalAreaCityThreat==0 identifying safe areas either. */
+	if (AI_feelsSafe())
+		iDefenders = (2 * iDefenders) / 5; // </advc.107>
 
 	// advc.107: Don't want even more rounding artifacts
 	double mod = 1;
@@ -25499,8 +25509,8 @@ int CvPlayerAI::AI_getTotalFloatingDefendersNeeded(CvArea* pArea) const
 	} /* <advc.107> Fewer defenders on low difficulty, more on high difficulty.
 		 Times 0.95 b/c I don't actually want more defenders on moderately high
 		 difficulty. Replacing the two lines under the Culture victory check. */
-	mod /= ::dRange(trainingModifierFromHandicap() * 0.95, 0.75, 1.5);
-	iDefenders = ::round(mod * iDefenders); // </advc.107>
+	mod /= ::dRange(trainingModifierFromHandicap(), 0.75, 1.5);
+	iDefenders = ::round(0.95 * mod * iDefenders); // </advc.107>
 
 	// BBAI: Removed AI_STRATEGY_GET_BETTER_UNITS reduction, it was reducing defenses twice
 
@@ -25534,12 +25544,18 @@ int CvPlayerAI::AI_getTotalFloatingDefendersNeeded(CvArea* pArea) const
 		/* original BTS code
 		iDefenders = std::min(iDefenders, iAreaCities * iAreaCities - 1);*/
 		// Lessen defensive requirements only if not being attacked locally
-		if (pArea->getAreaAIType(getTeam()) != AREAAI_DEFENSIVE)
-		{	// This may be our first city captured on a large enemy continent, need defenses to scale up based
+		int iUpperBound = iAreaCities * iAreaCities - 1; // advc.107: BtS upper bound
+		if (//pArea->getAreaAIType(getTeam()) != AREAAI_DEFENSIVE
+		// This may be our first city captured on a large enemy continent, need defenses to scale up based
 			// on total number of area cities not just ours
-			iDefenders = std::min(iDefenders, iAreaCities * iAreaCities + pArea->getNumCities() - iAreaCities - 1);
+			// advc.107: Check if we actually have plans to expand our presence
+			pArea->getAreaAIType(getTeam()) == AREAAI_OFFENSIVE || pArea->getAreaAIType(getTeam()) == AREAAI_MASSING)
+		{
+			iUpperBound += pArea->getNumCities() - iAreaCities;
 		}
 		// UNOFFICIAL_PATCH: END
+		// advc.107: Apply an upper bound in any case!
+		iDefenders = std::min(iDefenders, iUpperBound); 
 	}
 
 	return iDefenders;
@@ -27782,7 +27798,9 @@ int CvPlayerAI::AI_getHealthWeight(int iHealth, int iExtraPop, bool bPercent) co
 			double base = -iCurrentHealth / 100.0 - 1 - iExtraPop;
 			if (base > 0)
 				iValue += ::round(std::pow(base, 1.5));
-		}/* original bts code
+		}
+		// </advc.036>
+		/* original bts code
 		if (iCount > 6)
 			break;*/
 	}

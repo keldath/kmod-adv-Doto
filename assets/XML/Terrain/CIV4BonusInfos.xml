@@ -514,7 +514,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 				<iRandApp3>0</iRandApp3>
 				<iRandApp4>0</iRandApp4>
 			</Rands>
-			<iPlayer>65</iPlayer>
+			<iPlayer>85</iPlayer>
 			<iTilesPer>0</iTilesPer>
 			<iMinLandPercent>0</iMinLandPercent>
 			<iUnique>0</iUnique>

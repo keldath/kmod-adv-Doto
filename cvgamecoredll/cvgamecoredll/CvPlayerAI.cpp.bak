@@ -21473,20 +21473,23 @@ bool CvPlayerAI::AI_askHelp(PlayerTypes eHuman) {
 		}
 	}*/
 	if(eBestReceiveTech == NO_TECH)
-		return false;
-	CLinkList<TradeData> theirList;
-	setTradeItem(&item, TRADE_TECHNOLOGIES, eBestReceiveTech);
-	theirList.insertAtEnd(item);
-	AI_changeContactTimer(eHuman, CONTACT_ASK_FOR_HELP,
-			GC.getLeaderHeadInfo(getPersonalityType()).
-			getContactDelay(CONTACT_ASK_FOR_HELP));
-	CvDiploParameters* pDiplo = new CvDiploParameters(getID());
-	pDiplo->setDiploComment((DiploCommentTypes)GC.getInfoTypeForString(
-			"AI_DIPLOCOMMENT_ASK_FOR_HELP"));
-	pDiplo->setAIContact(true);
-	pDiplo->setOurOfferList(theirList);
-	gDLL->beginDiplomacy(pDiplo, eHuman);
-	return true;
+       return false;
+   setTradeItem(&item, TRADE_TECHNOLOGIES, eBestReceiveTech);
+   // <advc.144>
+   if (!GET_PLAYER(eHuman).canTradeItem(getID(), item))
+       return false; // </advc.144>
+   CLinkList<TradeData> theirList;
+   theirList.insertAtEnd(item);
+   AI_changeContactTimer(eHuman, CONTACT_ASK_FOR_HELP,
+           GC.getLeaderHeadInfo(getPersonalityType()).
+           getContactDelay(CONTACT_ASK_FOR_HELP));
+   CvDiploParameters* pDiplo = new CvDiploParameters(getID());
+   pDiplo->setDiploComment((DiploCommentTypes)GC.getInfoTypeForString(
+           "AI_DIPLOCOMMENT_ASK_FOR_HELP"));
+   pDiplo->setAIContact(true);
+   pDiplo->setOurOfferList(theirList);
+   gDLL->beginDiplomacy(pDiplo, eHuman);
+   return true;
 }
 
 // Same conditions ensured by the caller as for the functions above
@@ -27731,10 +27734,12 @@ int CvPlayerAI::AI_getHappinessWeight(int iHappy, int iExtraPop, bool bPercent) 
 		// K-Mod end
 		/*  <advc.036> A little extra when unhappiness is very high because that
 			may lead to good tiles not getting worked. */
-		// Not sure how bPercent works; better exclude that.
-		if(iCurrentHappy < 0 && !bPercent)
-			iValue += ::round(std::pow(-iCurrentHappy/100 - 1.0 - iExtraPop, 1.5));
-		// </advc.036>
+		if (!bPercent) // Not sure how bPercent works; better exclude that.
+		{
+			double base = -iCurrentHappy / 100.0 - 1 - iExtraPop;
+			if (base > 0)
+				iValue += ::round(std::pow(base, 1.5));
+		}
 		/* original bts code - (huh?)
 		if (iCount > 6)
 			break;*/
@@ -27772,11 +27777,12 @@ int CvPlayerAI::AI_getHealthWeight(int iHealth, int iExtraPop, bool bPercent) co
 		// K-Mod end
 		/*  <advc.036> A little extra when health is very poor because that may
 			well lead to population loss and good tiles not getting worked. */
-		// Not sure how bPercent works; better exclude that.
-		if(iCurrentHealth < 0 && !bPercent)
-			iValue += ::round(std::pow(-iCurrentHealth/100 - 1.0 - iExtraPop, 1.5));
-		// </advc.036>
-		/* original bts code
+		if (!bPercent) // Not sure how bPercent works; better exclude that.
+		{
+			double base = -iCurrentHealth / 100.0 - 1 - iExtraPop;
+			if (base > 0)
+				iValue += ::round(std::pow(base, 1.5));
+		}/* original bts code
 		if (iCount > 6)
 			break;*/
 	}

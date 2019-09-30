@@ -1975,7 +1975,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<Civilopedia>TXT_KEY_IMPROVEMENT_CASTLE_PEDIA</Civilopedia>
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_FORT2</ArtDefineTag>
 			<YieldChanges/>
-			<bActsAsCity>0</bActsAsCity>
+			<bActsAsCity>1</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
 			<bPeakMakesValid>0</bPeakMakesValid>
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
@@ -2051,7 +2051,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<Civilopedia>TXT_KEY_IMPROVEMENT_CITADEL_PEDIA</Civilopedia>
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_FORT3</ArtDefineTag>
 			<YieldChanges/>
-			<bActsAsCity>0</bActsAsCity>
+			<bActsAsCity>1</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
 			<bPeakMakesValid>0</bPeakMakesValid>
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
@@ -2208,6 +2208,137 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 						<iYieldChange>1</iYieldChange>
 						<iYieldChange>0</iYieldChange>
 						<iYieldChange>0</iYieldChange>
+					</YieldChanges>
+				</BonusTypeStruct>
+			</BonusTypeStructs>
+			<ImprovementPillage/>
+			<ImprovementUpgrade/>
+			<TechYieldChanges/>
+			<RouteYieldChanges/>
+			<bGraphicalOnly>0</bGraphicalOnly>
+		</ImprovementInfo>
+		<ImprovementInfo>
+			<Type>IMPROVEMENT_MOUNT_MINE</Type>
+			<Description>Mountain Mine</Description>
+			<Civilopedia>Mountain Mine</Civilopedia>
+			<ArtDefineTag>ART_DEF_IMPROVEMENT_MINE</ArtDefineTag>
+			<YieldChanges>
+				<iYieldChange>0</iYieldChange>
+				<iYieldChange>1</iYieldChange>
+				<iYieldChange>1</iYieldChange>
+			</YieldChanges>
+			<bActsAsCity>0</bActsAsCity>
+			<bHillsMakesValid>0</bHillsMakesValid>
+			<bPeakMakesValid>1</bPeakMakesValid>
+			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
+			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>				
+			<bRiverSideMakesValid>0</bRiverSideMakesValid>
+			<bNoFreshWater>0</bNoFreshWater>
+			<bRequiresFlatlands>0</bRequiresFlatlands>
+			<bRequiresRiverSide>0</bRequiresRiverSide>
+			<bRequiresIrrigation>0</bRequiresIrrigation>
+			<bCarriesIrrigation>0</bCarriesIrrigation>
+			<bRequiresFeature>0</bRequiresFeature>
+			<bWater>0</bWater>
+			<bGoody>0</bGoody>
+			<bPermanent>0</bPermanent>
+			<iAdvancedStartCost>24</iAdvancedStartCost>
+			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
+			<iTilesPerGoody>0</iTilesPerGoody>
+			<iGoodyRange>0</iGoodyRange>
+			<iFeatureGrowth>0</iFeatureGrowth>
+			<iUpgradeTime>0</iUpgradeTime>
+			<iAirBombDefense>10</iAirBombDefense>
+			<iDefenseModifier>0</iDefenseModifier>
+			<iHappiness>0</iHappiness>
+			<iPillageGold>15</iPillageGold>
+			<bOutsideBorders>0</bOutsideBorders>
+			<!-- JCultureControl Mod Start -->
+			<bSpreadCultureControl>0</bSpreadCultureControl>
+			<iCultureBorderRange>-1</iCultureBorderRange>
+			<!-- JCultureControl Mod End -->
+			<!-- JImprovementLimit Mod Start -->
+			<iMakesInvalidRange>0</iMakesInvalidRange>
+			<ImprovementRequired/>
+			<!-- JImprovementLimit Mod End -->
+			<TerrainMakesValids/>
+			<FeatureMakesValids/>
+			<BonusTypeStructs>
+				<BonusTypeStruct>
+					<BonusType>BONUS_COAL</BonusType>
+					<bBonusMakesValid>1</bBonusMakesValid>
+					<bBonusTrade>1</bBonusTrade>
+					<iDiscoverRand>50000</iDiscoverRand>
+					<YieldChanges>
+						<iYieldChange>0</iYieldChange>
+						<iYieldChange>0</iYieldChange>
+						<iYieldChange>1</iYieldChange>
+					</YieldChanges>
+				</BonusTypeStruct>
+				<BonusTypeStruct>
+					<BonusType>BONUS_GEMS</BonusType>
+					<bBonusMakesValid>1</bBonusMakesValid>
+					<bBonusTrade>1</bBonusTrade>
+					<iDiscoverRand>20000</iDiscoverRand>
+					<YieldChanges>
+						<iYieldChange>0</iYieldChange>
+						<iYieldChange>0</iYieldChange>
+						<iYieldChange>3</iYieldChange>
+					</YieldChanges>
+				</BonusTypeStruct>
+				<BonusTypeStruct>
+					<BonusType>BONUS_GOLD</BonusType>
+					<bBonusMakesValid>1</bBonusMakesValid>
+					<bBonusTrade>1</bBonusTrade>
+					<iDiscoverRand>20000</iDiscoverRand>
+					<YieldChanges>
+						<iYieldChange>0</iYieldChange>
+						<iYieldChange>0</iYieldChange>
+						<iYieldChange>3</iYieldChange>
+					</YieldChanges>
+				</BonusTypeStruct>
+				<BonusTypeStruct>
+					<BonusType>BONUS_IRON</BonusType>
+					<bBonusMakesValid>1</bBonusMakesValid>
+					<bBonusTrade>1</bBonusTrade>
+					<iDiscoverRand>10000</iDiscoverRand>
+					<YieldChanges>
+						<iYieldChange>0</iYieldChange>
+						<iYieldChange>0</iYieldChange>
+						<iYieldChange>1</iYieldChange>
+					</YieldChanges>
+				</BonusTypeStruct>
+				<BonusTypeStruct>
+					<BonusType>BONUS_SILVER</BonusType>
+					<bBonusMakesValid>1</bBonusMakesValid>
+					<bBonusTrade>1</bBonusTrade>
+					<iDiscoverRand>50000</iDiscoverRand>
+					<YieldChanges>
+						<iYieldChange>0</iYieldChange>
+						<iYieldChange>0</iYieldChange>
+						<iYieldChange>4</iYieldChange>
+					</YieldChanges>
+				</BonusTypeStruct>
+				<BonusTypeStruct>
+					<BonusType>BONUS_URANIUM</BonusType>
+					<bBonusMakesValid>1</bBonusMakesValid>
+					<bBonusTrade>1</bBonusTrade>
+					<iDiscoverRand>20000</iDiscoverRand>
+					<YieldChanges>
+						<iYieldChange>0</iYieldChange>
+						<iYieldChange>0</iYieldChange>
+						<iYieldChange>1</iYieldChange>
+					</YieldChanges>
+				</BonusTypeStruct>
+				<BonusTypeStruct>
+					<BonusType>BONUS_TITANIUM</BonusType>
+					<bBonusMakesValid>1</bBonusMakesValid>
+					<bBonusTrade>1</bBonusTrade>
+					<iDiscoverRand>20000</iDiscoverRand>
+					<YieldChanges>
+						<iYieldChange>0</iYieldChange>
+						<iYieldChange>0</iYieldChange>
+						<iYieldChange>1</iYieldChange>
 					</YieldChanges>
 				</BonusTypeStruct>
 			</BonusTypeStructs>

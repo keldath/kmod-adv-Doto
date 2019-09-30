@@ -4758,7 +4758,7 @@
 			</Buildings>
 			<Units>
 				<Unit>
-					<UnitClassType>UNITCLASS_GALLEON</UnitClassType>
+					<UnitClassType>UNITCLASS_FRIGATE</UnitClassType>
 					<UnitType>UNIT_NETHERLANDS_OOSTINDIEVAARDER</UnitType>
                 </Unit>
 				<Unit>
