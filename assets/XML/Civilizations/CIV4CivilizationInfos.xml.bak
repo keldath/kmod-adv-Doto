@@ -4664,8 +4664,8 @@
 				</DisableTech>
 			</DisableTechs>
 			<ForbiddenReligions>
-				<ForbiddenReligion>
-				<!--	<ReligionName>RELIGION_SHINTO</ReligionName>
+		<!--		<ForbiddenReligion>
+					<ReligionName>RELIGION_SHINTO</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion>
 				<ForbiddenReligion> -->
@@ -5045,8 +5045,8 @@
 				</DisableTech>
 			</DisableTechs>
 			<ForbiddenReligions>
-				<ForbiddenReligion>
-				<!--	<ReligionName>RELIGION_JUDAISM</ReligionName>
+			<!--	<ForbiddenReligion>
+					<ReligionName>RELIGION_JUDAISM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion>
 				<ForbiddenReligion>-->
@@ -5467,8 +5467,8 @@
 				</DisableTech>
 			</DisableTechs>
 			<ForbiddenReligions>
-				<ForbiddenReligion>
-			<!--		<ReligionName>RELIGION_TAOISM</ReligionName>
+			<!--	<ForbiddenReligion>
+					<ReligionName>RELIGION_TAOISM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion>
 				<ForbiddenReligion> -->
@@ -6439,8 +6439,8 @@
 				</DisableTech>
 			</DisableTechs>
 			<ForbiddenReligions>
-				<ForbiddenReligion>
-				<!--	<ReligionName>RELIGION_CONFUCIANISM</ReligionName>
+			<!--	<ForbiddenReligion>
+					<ReligionName>RELIGION_CONFUCIANISM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion>
 				<ForbiddenReligion> -->
@@ -6823,8 +6823,8 @@
 				</DisableTech>
 			</DisableTechs>
 			<ForbiddenReligions>
-				<ForbiddenReligion>
-				<!--	<ReligionName>RELIGION_DRUIDISM</ReligionName>
+			<!--	<ForbiddenReligion>
+					<ReligionName>RELIGION_DRUIDISM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion>
 				<ForbiddenReligion> -->

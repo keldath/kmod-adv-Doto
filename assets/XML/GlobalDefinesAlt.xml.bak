@@ -307,7 +307,7 @@
 	</Define>
 	<Define>
 		<DefineName>CULTURE_GOLDEN_AGE_THRESHOLD</DefineName>
-		<iDefineIntVal>1200</iDefineIntVal>
+		<iDefineIntVal>1000</iDefineIntVal>
 	</Define>
 	<Define>
 	<!-- Unit creates barriers for enemy units movement. blocade mod

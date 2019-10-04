@@ -4835,7 +4835,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Help/>
 			<Strategy>TXT_KEY_TECH_HORSEBACK_RIDING_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
-			<iAIWeight>100</iAIWeight>
+			<iAIWeight>0</iAIWeight>
 			<!-- advc.552: was 10 -->
 			<iAITradeModifier>0</iAITradeModifier>
 			<iCost>250</iCost>

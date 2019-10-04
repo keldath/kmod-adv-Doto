@@ -490,7 +490,7 @@
 		 eliminated (by anyone). Recommended: 25 -->
 	<Define>
 		<DefineName>CLOSED_BORDERS_CULTURE_ANGER_MODIFIER</DefineName>
-		<iDefineIntVal>40</iDefineIntVal>
+		<iDefineIntVal>35</iDefineIntVal>
 	</Define>
 
 	<!-- [advc.099]
@@ -505,7 +505,7 @@
 		 capitulation isn't possible.) -->
 	<Define>
 		<DefineName>AT_WAR_CULTURE_ANGER_MODIFIER</DefineName>
-		<iDefineIntVal>60</iDefineIntVal>
+		<iDefineIntVal>50</iDefineIntVal>
 	</Define>
 
 	<!-- advc.099: Actually a permillage, not a percentage.
@@ -597,7 +597,7 @@
 		 Recommended: 0. -->
     <Define>
         <DefineName>BARB_ACTIVITY_ADJUSTMENT</DefineName>
-        <iDefineIntVal>25</iDefineIntVal>
+        <iDefineIntVal>15</iDefineIntVal>
     </Define>
 
 	<!-- [advc.300]
@@ -662,7 +662,7 @@
 		 evacuate. -->
     <Define>
         <DefineName>AI_EVACUATION_THRESH</DefineName>
-        <iDefineIntVal>125</iDefineIntVal>
+        <iDefineIntVal>150</iDefineIntVal>
     </Define>
 
 	<!-- [advc.136b]
@@ -849,7 +849,7 @@
 		 than it normally would. 0 for BtS behavior; recommended: 25. -->
 	<Define>
 		<DefineName>AI_OFFER_EXTRA_GOLD_PERCENT</DefineName>
-		<iDefineIntVal>20</iDefineIntVal>
+		<iDefineIntVal>25</iDefineIntVal>
 	</Define>
 
 	<!-- [advc.122] To receive a city through trade, a civ needs to have at

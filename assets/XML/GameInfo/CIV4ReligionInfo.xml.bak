@@ -396,7 +396,7 @@
 			<Description>TXT_KEY_RELIGION_ODIN</Description>
 			<Adjective>TXT_KEY_RELIGION_ODIN_ADJECTIVE</Adjective>
 			<Civilopedia>TXT_KEY_RELIGION_ODIN_PEDIA</Civilopedia>
-			<TechPrereq>TECH_HORSEBACK_RIDING</TechPrereq>
+			<TechPrereq>TECH_JUDAISM</TechPrereq>
 			<FreeUnitClass/>
 			<iFreeUnits/>
 			<iSpreadFactor>100</iSpreadFactor>
