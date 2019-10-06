@@ -29297,7 +29297,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<Advisor>ADVISOR_RELIGION</Advisor>
 		    <ArtDefineTag>ART_DEF_BUILDING_ETHIOPIAN_STELE</ArtDefineTag>
 			<MovieDefineTag>NONE</MovieDefineTag>
-			<HolyCity>NONE</HolyCity>
+			<HolyCity>RELIGION_SHINTO</HolyCity>
 			<ReligionType>RELIGION_SHINTO</ReligionType>
 			<StateReligion>RELIGION_SHINTO</StateReligion>
 			<bStateReligion>0</bStateReligion>
@@ -33067,7 +33067,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<MovieDefineTag>TXT_KEY_BUILDING_ODIN_SHRINE_PEDIA</MovieDefineTag>
 			<HolyCity>RELIGION_ODIN</HolyCity>
 			<ReligionType>RELIGION_ODIN</ReligionType>
-			<StateReligion>NONE</StateReligion>
+			<StateReligion>RELIGION_ODIN</StateReligion>
 			<bStateReligion>0</bStateReligion>
 			<PrereqReligion>RELIGION_ODIN</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>

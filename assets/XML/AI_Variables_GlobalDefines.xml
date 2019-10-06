@@ -23,7 +23,7 @@
 	<Define>
 		<!-- The cities we expect to conquer as economical assets. -->
 		<DefineName>UWAI_WEIGHT_GREED_FOR_ASSETS</DefineName>
-		<iDefineIntVal>100</iDefineIntVal>
+		<iDefineIntVal>125</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- The economical value of accepted capitulations. 
@@ -37,13 +37,13 @@
 			 near it can be settled and exploited. Lebensraum if you will (and
 			 in Civ, it actually works).  -->
 		<DefineName>UWAI_WEIGHT_GREED_FOR_SPACE</DefineName>
-		<iDefineIntVal>100</iDefineIntVal>
+		<iDefineIntVal>50</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- Just the value of expected reparations really. Sponsored war is
 			 covered by HIRED_HAND. -->
 		<DefineName>UWAI_WEIGHT_GREED_FOR_CASH</DefineName>
-		<iDefineIntVal>100</iDefineIntVal>
+		<iDefineIntVal>50</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- The satisfaction of seeing our (worst) enemies devastated. -->

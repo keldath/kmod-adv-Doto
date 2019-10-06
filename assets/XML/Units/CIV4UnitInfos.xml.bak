@@ -25388,6 +25388,10 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 					<BuildingType>BUILDING_AMON_RA_SHRINE</BuildingType>
 					<bBuilding>1</bBuilding>
 				</Building>
+				<Building>
+					<BuildingType>BUILDING_ODIN_SHRINE</BuildingType>
+					<bBuilding>1</bBuilding>
+				</Building>
 			</Buildings>
 			<ForceBuildings/>
 			<HolyCity>NONE</HolyCity>

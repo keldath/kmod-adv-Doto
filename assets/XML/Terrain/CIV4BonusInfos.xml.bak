@@ -2285,17 +2285,17 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iMinLatitude>30</iMinLatitude>
 			<iMaxLatitude>80</iMaxLatitude>
 			<Rands>
-				<iRandApp1>15</iRandApp1>
-				<iRandApp2>15</iRandApp2>
+				<iRandApp1>20</iRandApp1>
+				<iRandApp2>20</iRandApp2>
 				<iRandApp3>0</iRandApp3>
 				<iRandApp4>0</iRandApp4>
 			</Rands>
-			<iPlayer>125</iPlayer>
-			<iTilesPer>0</iTilesPer>
+			<iPlayer>100</iPlayer>
+			<iTilesPer>512</iTilesPer>
 			<iMinLandPercent>0</iMinLandPercent>
 			<iUnique>0</iUnique>
 			<iGroupRange>1</iGroupRange>
-			<iGroupRand>25</iGroupRand>
+			<iGroupRand>50</iGroupRand>
 			<bArea>1</bArea>
 			<bHills>0</bHills>
 			<bFlatlands>1</bFlatlands>

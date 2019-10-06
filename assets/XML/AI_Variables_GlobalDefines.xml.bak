@@ -55,7 +55,7 @@
 			 This covers Domination, Conquest and Diplomatic victory; Diplo
 			 victory also factors into ILL_WILL. -->
 		<DefineName>UWAI_WEIGHT_MILITARY_VICTORY</DefineName>
-		<iDefineIntVal>100</iDefineIntVal>
+		<iDefineIntVal>125</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- Protect our partners because we want to continue trading with
@@ -88,7 +88,7 @@
 			 partners, we demonstrate that it's worthwhile to be our partner,
 			 and dangerous to attack our partners. -->
 		<DefineName>UWAI_WEIGHT_FIDELITY</DefineName>
-		<iDefineIntVal>100</iDefineIntVal>
+		<iDefineIntVal>125</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- We continue a war because we've been paid for it. (Or maybe, rather,
@@ -99,7 +99,7 @@
 	<Define>
 		<!-- By conquering cities, we reduce culture pressure on our cities. -->
 		<DefineName>UWAI_WEIGHT_BORDER_DISPUTES</DefineName>
-		<iDefineIntVal>100</iDefineIntVal>
+		<iDefineIntVal>125</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- Fight a joint war for the "mutual struggle" diplo bonus. -->
@@ -109,7 +109,7 @@
 	<Define>
 		<!-- To weaken a civ that we perceive as a long-term military threat. -->
 		<DefineName>UWAI_WEIGHT_PREEMPTIVE_WAR</DefineName>
-		<iDefineIntVal>100</iDefineIntVal>
+		<iDefineIntVal>150</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- Stop civs that we don't like from winning the game, or even civs
@@ -118,7 +118,7 @@
 			 that have gotten ahead in score or that we expect to get ahead
 			 through an ongoing war. -->
 		<DefineName>UWAI_WEIGHT_KING_MAKING</DefineName>
-		<iDefineIntVal>100</iDefineIntVal>
+		<iDefineIntVal>125</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- Our military build-up, lost units and ravages of war. Adjusted
@@ -179,7 +179,7 @@
 		<!-- Discourages early war against humans; not fair when the AI has a
 			 head start. -->
 		<DefineName>UWAI_WEIGHT_FAIR_PLAY</DefineName>
-		<iDefineIntVal>100</iDefineIntVal>
+		<iDefineIntVal>90</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- War as its own purpose. Before this aspect was added, there was too
@@ -226,7 +226,7 @@
 		<!-- Added to the utility threshold for starting a war while already in
 			 a war. Recommended: 10 (or sth. between 0 and 25). -->
 		<DefineName>UWAI_MULTI_WAR_RELUCTANCE</DefineName>
-		<iDefineIntVal>10</iDefineIntVal>
+		<iDefineIntVal>15</iDefineIntVal>
 	</Define>
     <Define>
 		<!-- When computing per-civ power values (which play an important role
@@ -262,7 +262,7 @@
 	<Define>
 		<!-- Minimum stack strength ratio at which AI will attack enemy city it is next to, higher means less suicide.  BTS default: 120 -->
 		<DefineName>BBAI_ATTACK_CITY_STACK_RATIO</DefineName>
-		<iDefineIntVal>125</iDefineIntVal>
+		<iDefineIntVal>115</iDefineIntVal>
 	</Define>
 	<!-- advc.003j: Obsoleted by K-Mod code (CvUnitAI::AI_bombardCity) -->
 	<!-- Minimum attack odds of best attacker for AI to skip bombarding a city

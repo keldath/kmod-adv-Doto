@@ -18474,7 +18474,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iInterceptionProbability>0</iInterceptionProbability>
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
-			<iCollateralDamage>100</iCollateralDamage>
+			<iCollateralDamage>0</iCollateralDamage>
 			<iCollateralDamageLimit>50</iCollateralDamageLimit>
 			<iCollateralDamageMaxUnits>6</iCollateralDamageMaxUnits>
 			<iCityAttack>100</iCityAttack>
@@ -18501,7 +18501,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			</UnitCombatCollateralImmunes>
 			<DomainMods/>
 			<BonusProductionModifiers/>
-			<iBombRate>0</iBombRate>
+			<iBombRate>8</iBombRate>
 			<iBombardRate>16</iBombardRate>
 			<SpecialCargo>NONE</SpecialCargo>
 			<DomainCargo>NONE</DomainCargo>
