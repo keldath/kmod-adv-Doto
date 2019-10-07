@@ -13241,10 +13241,17 @@ bool CvUnit::canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY) const
 	return true;
 }
 
-
+//HEAVILY EDITED BY KELDATH FOR VINCENTZ RANGED AND ADVC COMPATIBILITY
 bool CvUnit::rangeStrike(int iX, int iY)
 {
+	CvUnit* pDefender;
+	CvWString szBuffer;
+	CvCity* pCity;
+	CvPlot* pTargetPlot;
+	int iUnitDamage;
+	int iDamage;
 
+	pTargetPlot = GC.getMap().plot(iX, iY);
 	CvPlot* pPlot = GC.getMap().plot(iX, iY);
 	if (pPlot == NULL) {
 		// advc.003: I don't think this should happen; assertion added.
@@ -13260,7 +13267,7 @@ bool CvUnit::rangeStrike(int iX, int iY)
 		return false;
 	} // UNOFFICIAL_PATCH: END
 
-	CvUnit* pDefender = airStrikeTarget(pPlot);
+	/*CvUnit**/ pDefender = airStrikeTarget(pPlot);
 
 	FAssert(pDefender != NULL);
 	FAssert(pDefender->canDefend());
@@ -13269,13 +13276,37 @@ bool CvUnit::rangeStrike(int iX, int iY)
 	{
 		setMadeAttack(true);
 	}
-	changeMoves(GC.getMOVE_DENOMINATOR());
+//RANGED STRIKE VINCENTZ
+	if (getDomainType() == DOMAIN_LAND)
+	{
+		finishMoves();
+	}
+	else
+	{
+		changeMoves(GC.getMOVE_DENOMINATOR() * GC.getDefineINT("MOVE_MULTIPLIER"));
+	}
 
-	int iDamage = rangeCombatDamage(pDefender);
 
-	int iUnitDamage = std::max(pDefender->getDamage(), std::min((pDefender->getDamage() + iDamage), airCombatLimit()));
-	//Vincentz Rangestrike check airCurrCombatStr
-	//keldath -all the rows here thats marked were vince org - i adapted them to advc
+
+	pCity = pTargetPlot->getPlotCity();
+
+	if (pCity != NULL && (pCity->isBombardable(this)))
+	{
+		pCity->changeDefenseModifier((-bombardRate() * currHitPoints() / maxHitPoints() * 50 + GC.getGame().getSorenRandNum(100, "Bombard - Random")) / 100);
+
+		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_DEFENSES_REDUCED_TO", pCity->getNameKey(), pCity->getDefenseModifier(false), getNameKey());
+		//gDLL->getInterfaceIFace()->addMessage(pCity->getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), pCity->getX(), pCity->getY(), true, true);
+		gDLL->getInterfaceIFace()->addMessage(pCity->getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), pCity->getX(), pCity->getY(), true, true);
+
+		szBuffer = gDLL->getText("TXT_KEY_MISC_ENEMY_DEFENSES_REDUCED_TO", getNameKey(), pCity->getNameKey(), pCity->getDefenseModifier(false));
+		gDLL->getInterfaceIFace()->addMessage(getOwner(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARD", MESSAGE_TYPE_INFO, NULL, (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), pCity->getX(), pCity->getY());
+	}
+	else {
+
+		iDamage = rangeCombatDamage(pDefender) * currHitPoints() / maxHitPoints();
+		iUnitDamage = std::max(pDefender->getDamage(), std::min((pDefender->getDamage() + iDamage), airCombatLimit()));
+		//Vincentz Rangestrike check airCurrCombatStr
+		//keldath -all the rows here thats marked were vince org - i adapted them to advc
 		if (((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) + airBaseCombatStr() * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER") * currHitPoints() / maxHitPoints()) < ((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) + pDefender->baseCombatStr() * pDefender->currHitPoints() / pDefender->maxHitPoints()))
 		{
 			//szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR_MISS", pDefender->getNameKey(), getNameKey());
@@ -13371,17 +13402,17 @@ bool CvUnit::rangeStrike(int iX, int iY)
 		pDefender->getGroup()->setMissionTimer(GC.getMissionInfo(MISSION_RANGE_ATTACK).getTime());*/
 	}
 /*Vincentz Rangestrike Strikeback - keldtah - remove due to the warnig above of oos - i dont care if a unit is vanished after its dead wihout anumation
-	pDefender->getGroup()->setMissionTimer(GC.getMissionInfo(MISSION_RANGE_ATTACK).getTime() + 4);
+		pDefender->getGroup()->setMissionTimer(GC.getMissionInfo(MISSION_RANGE_ATTACK).getTime() + 4);
 	}
-
+*/
 	if (pDefender->isDead())
 	{
 		//szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", getNameKey(), pDefender->getNameKey());
-		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", pDefender->getNameKey(), getNameKey(),
+		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", pDefender->getNameKey(), getNameKey()));
 		gDLL->getInterfaceIFace()->addMessage(getOwner(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, GC.getEraInfo(GC.getGame().getCurrentEra()).getAudioUnitVictoryScript(), MESSAGE_TYPE_INFO, NULL, (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), pPlot->getX(), pPlot->getY());
 		changeExperience(GC.getDefineINT("MIN_EXPERIENCE_PER_COMBAT"));
 	}
-*/
+
 //Vincentz Rangestrike Strikeback --keldath - dunno - i guess the lines are not aligned with advc
 	//	if (pDefender->plotDistance(pPlot->getX(), pPlot->getY(), pTargetPlot->getX(), pTargetPlot->getY()) > airRange())
 	//	if (GC.getDefineINT("RANGESTRIKE_RETURN_FIRE") == 1 && (pDefender->canRangeStrikeAt(pDefender->plot(), this->plot()->getX(), this->plot()->getY())))
