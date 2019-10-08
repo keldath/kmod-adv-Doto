@@ -7072,6 +7072,10 @@
 					<ReligionName>RELIGION_JUDAISM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion>
+				<ForbiddenReligion>
+					<ReligionName>RELIGION_ODIN</ReligionName>
+					<bForbidden>1</bForbidden>
+				</ForbiddenReligion>
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
@@ -7998,6 +8002,10 @@
 				</ForbiddenReligion>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_JUDAISM</ReligionName>
+					<bForbidden>1</bForbidden>
+				</ForbiddenReligion>
+				<ForbiddenReligion>
+					<ReligionName>RELIGION_ODIN</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion>
 			</ForbiddenReligions>

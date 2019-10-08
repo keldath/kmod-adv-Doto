@@ -4,6 +4,54 @@
 <!-- Copyright Firaxis Games 2005 -->
 <!-- -->
 <!-- Religion -->
+<!-- TGA INDEX MUST BE ASCENDING 
+
+Headers
+These tags typically bracket other tags, sometimes the entire file, and are generally used to specify more than one piece of data.
+
+Tag Name	Description
+ReligionInfos	This begins and ends the entire file.
+ReligionInfo	This begins and ends the entry for each religion.
+
+Text
+Tag Name	Description
+Type	The internal name of this religion, as used by the game engine (prefixed with RELIGION_ by default).
+Description	A tag reference to an entry in the text files controlling the language-specific display name of this religion.
+Adjective	A reference to an entry in the text files controlling the adjective for this religion (e.g. Christian, Buddhist, etc.).
+Civilopedia	A tag reference to an entry in the text files containing the Civilopedia's historical text for the religion.
+TechPrereq	The name of the technology that "unlocks" this religion (i.e. allows the first civilization to research this technology to found the given religion).
+FreeUnitClass	In conjunction with iFreeUnits, specifies the type of unit provided for free upon discovery (default is 1 missionary for the founders of Taoism, Christianity, Confucianism, and Islam). This helps the player to spread the religion.
+MovieSound	A reference to an entry in the Audio2DScripts file, containing the sound for this religion's founding video.
+Sound	A reference to an entry in the Audio2DScripts file, containing the sound that is played when a missionary spreads this religion.
+
+Integers
+All of these tags have a numerical value. Though it sometimes can be negative, it usually is not.
+
+Tag Name	Description
+iFreeUnits	Defines how many units of type FreeUnitClass (see above) are provided to the player.
+iSpreadFactor	Unknown exactly. Presumably controls the automatic, natural spread rate of this religion. All default religions have a value of 100.
+iGlobalReligionCommerce	See GlobalReligionCommerces. Increases the gold, beakers, and culture per turn for the religion's shrine by this amount.
+iHolyCityCommerce	See HolyCityCommerces. Increases the gold, beakers, and culture per turn in the holy city by this amount.
+iStateReligionCommerce	See StateReligionCommerces. Increases the gold, beakers, and culture per turn in the religion's cities by this amount.
+
+Lists (Multi-line)
+All List tags consist of an opening/closing tag, which is shown here, and then each entry within it is another tag with the same name as the parent tag, minus the "s" (i.e. singular, rather than plural).
+
+Tag Name	Description
+GlobalReligionCommerces	With the iGlobalReligionCommerce tag, this controls the benefits provided by a religion's shrine to gold, beakers, and culture per turn. Default is +1 gold per turn for each city with the religion.
+HolyCityCommerces	With the iHolyCityCommerce tag, this describes the change in gold, beakers, and culture per turn for the holy city of the given religion. Default is +4 culture per turn.
+StateReligionCommerces	In conjunction with the iStateReligionCommerce tag, this describes the yield in each city for gold, beakers, and culture per turn (in that order). The default is +1 culture per turn if the state religion is present in the city.
+
+Art
+These tags are directly related to the rendering of art for the entry.
+
+Tag Name	Description
+Button	Defines the directory path for the religion's main button (see example text).
+TechButton	Defines the directory path for the image used on the tech tree screen (see example text).
+GenericTechButton	Unclear. Specifies the directory path for the generic tech tree button (see example text).
+MovieFile	Provides the directory path for the founding movie.
+
+-->
 <Civ4ReligionInfo xmlns="x-schema:CIV4GameInfoSchema.xml">
 	<ReligionInfos>
 		<ReligionInfo>
@@ -109,7 +157,7 @@
 			<Civilopedia>TXT_KEY_RELIGION_HINDUISM_PEDIA</Civilopedia>
 			<TechPrereq>TECH_HINDU</TechPrereq>
 			<FreeUnitClass>UNITCLASS_HINDU_MISSIONARY</FreeUnitClass>
-			<iFreeUnits>0</iFreeUnits>
+			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
 			<iTGAIndex>16</iTGAIndex>
 			<GlobalReligionCommerces>
@@ -141,7 +189,7 @@
 			<Civilopedia>TXT_KEY_RELIGION_BUDDHISM_PEDIA</Civilopedia>
 			<TechPrereq>TECH_BUDDAISM</TechPrereq>
 			<FreeUnitClass>UNITCLASS_BUDDHIST_MISSIONARY</FreeUnitClass>
-			<iFreeUnits>0</iFreeUnits>
+			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
 			<iTGAIndex>18</iTGAIndex>
 			<GlobalReligionCommerces>
@@ -232,6 +280,38 @@
 			<Sound>AS2D_BUILD_TAOIST</Sound>
 		</ReligionInfo>
 		<ReligionInfo>
+			<Type>RELIGION_ODIN</Type>
+			<Description>TXT_KEY_RELIGION_ODIN</Description>
+			<Adjective>TXT_KEY_RELIGION_ODIN_ADJECTIVE</Adjective>
+			<Civilopedia>TXT_KEY_RELIGION_ODIN_PEDIA</Civilopedia>
+			<TechPrereq>TECH_HORSEBACK_RIDING</TechPrereq>
+			<FreeUnitClass>UNITCLASS_ODIN_SHAMAN</FreeUnitClass>
+			<iFreeUnits>0</iFreeUnits>
+			<iSpreadFactor>100</iSpreadFactor>
+			<iTGAIndex>68</iTGAIndex>
+			<GlobalReligionCommerces>
+				<iGlobalReligionCommerce>1</iGlobalReligionCommerce>
+				<iGlobalReligionCommerce>0</iGlobalReligionCommerce>
+				<iGlobalReligionCommerce>0</iGlobalReligionCommerce>
+			</GlobalReligionCommerces>
+			<HolyCityCommerces>
+				<iHolyCityCommerce>0</iHolyCityCommerce>
+				<iHolyCityCommerce>0</iHolyCityCommerce>
+				<iHolyCityCommerce>0</iHolyCityCommerce>
+			</HolyCityCommerces>
+			<StateReligionCommerces>
+				<iStateReligionCommerce>0</iStateReligionCommerce>
+				<iStateReligionCommerce>1</iStateReligionCommerce>
+				<iStateReligionCommerce>0</iStateReligionCommerce>
+			</StateReligionCommerces>
+			<Button>Art/Interface/Buttons/Religions/ODIN.dds</Button>
+			<TechButton>Art/Interface/Buttons/Religions/ODIN.dds</TechButton>
+			<GenericTechButton>Art/Interface/Buttons/Religions/ODIN.dds</GenericTechButton>
+			<MovieFile>Art/Movies/Religion/Christianity/Chr_Found.nif</MovieFile>
+			<MovieSound>AS2D_BUILD_NORDIC_MOVIE</MovieSound>
+			<Sound>AS2D_BUILD_NORDIC</Sound>
+		</ReligionInfo>
+		<ReligionInfo>
 			<Type>RELIGION_SHINTO</Type>
 			<Description>Shinto</Description>
 			<Adjective>Shinto</Adjective>
@@ -270,7 +350,7 @@
 			<Civilopedia>Zoroastrianism</Civilopedia>
 			<TechPrereq>TECH_ZOROASTRIANISM2</TechPrereq>
 			<FreeUnitClass>UNITCLASS_ZOROASTRIAN_MISSIONARY</FreeUnitClass>
-			<iFreeUnits>0</iFreeUnits>
+			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
 			<iTGAIndex>101</iTGAIndex>
 			<GlobalReligionCommerces>
@@ -301,8 +381,8 @@
 			<Adjective>Druidism</Adjective>
 			<Civilopedia>Druidism</Civilopedia>
 			<TechPrereq>TECH_DRUIDISM</TechPrereq>
-			<FreeUnitClass>NONE</FreeUnitClass>
-			<iFreeUnits>0</iFreeUnits>			
+			<FreeUnitClass>UNITCLASS_DRUIDISM_MISSIONARY</FreeUnitClass>
+			<iFreeUnits>1</iFreeUnits>			
 			<iSpreadFactor>100</iSpreadFactor>
 			<iTGAIndex>102</iTGAIndex>
 			<GlobalReligionCommerces>
@@ -334,7 +414,7 @@
 			<Civilopedia>Hellenism</Civilopedia>
 			<TechPrereq>TECH_HELLENISM2</TechPrereq>			
 			<FreeUnitClass>UNITCLASS_HELLENIC_MISSIONARY</FreeUnitClass>
-			<iFreeUnits>0</iFreeUnits>
+			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
 			<iTGAIndex>103</iTGAIndex>
 			<GlobalReligionCommerces>
@@ -366,7 +446,7 @@
 			<Civilopedia>Anciant Religion of the Egyptians</Civilopedia>
 			<TechPrereq>TECH_AMONRA</TechPrereq>			
 			<FreeUnitClass>UNITCLASS_AMON_RA_MISSIONARY</FreeUnitClass>
-			<iFreeUnits>0</iFreeUnits>
+			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
 			<iTGAIndex>104</iTGAIndex>
 			<GlobalReligionCommerces>
@@ -390,38 +470,6 @@
 			<MovieFile>Art/Movies/Religion/Taoism/Tao_Found.nif</MovieFile>
 			<MovieSound>AS2D_BUILD_TAOIST_MOVIE</MovieSound>
 			<Sound>AS2D_BUILD_TAOIST</Sound>
-		</ReligionInfo>
-		<ReligionInfo>
-			<Type>RELIGION_ODIN</Type>
-			<Description>TXT_KEY_RELIGION_ODIN</Description>
-			<Adjective>TXT_KEY_RELIGION_ODIN_ADJECTIVE</Adjective>
-			<Civilopedia>TXT_KEY_RELIGION_ODIN_PEDIA</Civilopedia>
-			<TechPrereq>TECH_HORSEBACK_RIDING</TechPrereq>
-			<FreeUnitClass/>
-			<iFreeUnits/>
-			<iSpreadFactor>100</iSpreadFactor>
-			<iTGAIndex>68</iTGAIndex>
-			<GlobalReligionCommerces>
-				<iGlobalReligionCommerce>1</iGlobalReligionCommerce>
-				<iGlobalReligionCommerce>0</iGlobalReligionCommerce>
-				<iGlobalReligionCommerce>0</iGlobalReligionCommerce>
-			</GlobalReligionCommerces>
-			<HolyCityCommerces>
-				<iHolyCityCommerce>0</iHolyCityCommerce>
-				<iHolyCityCommerce>0</iHolyCityCommerce>
-				<iHolyCityCommerce>0</iHolyCityCommerce>
-			</HolyCityCommerces>
-			<StateReligionCommerces>
-				<iStateReligionCommerce>0</iStateReligionCommerce>
-				<iStateReligionCommerce>1</iStateReligionCommerce>
-				<iStateReligionCommerce>0</iStateReligionCommerce>
-			</StateReligionCommerces>
-			<Button>Art/Interface/Buttons/Religions/ODIN.dds</Button>
-			<TechButton/>
-           	<GenericTechButton/>
-			<MovieFile/>
-			<MovieSound>AS2D_BUILD_NORDIC_MOVIE</MovieSound>
-			<Sound>AS2D_BUILD_NORDIC</Sound>
 		</ReligionInfo>
 	</ReligionInfos>
 </Civ4ReligionInfo>
