@@ -15,10 +15,8 @@ Type	The name of the unit; which must be unique.
 UnitInfo	Each different unit's data is enclosed in a seperate tag like this.
 UnitInfos	This begins and ends the file. Everything must go in between these two, or it will not work.
 UniqueNames	Can be used to make the same unit have seperate names. kinda the same as cities. Can either contain text or a text tag
-
 Prerequisites
 These tags must be included when writing new entries, or the game will crash or otherwise malfunction.
-
 Tag Name	Description
 AdvancedStartCost	The cost in points of the unit on Advanced Start.
 AdvancedStartCostIncrease	Affects the cost in points of the unit on Advanced Start.
@@ -37,7 +35,6 @@ ProductionTraits	The leader traits which affect production of this unit, along w
 ReligionType	For units, always NONE.
 StateReligion	If not NONE, the State Religion needed to build this unit.
 TechTypes	Used as a list tag to enclose PrereqTech tags.
-
 Text
 Tag Name	Description
 Advisor	Almost always ADVISOR_MILITARY; the rationale that the game gives for reccomending the unit.
@@ -45,15 +42,13 @@ Civilopedia	As above for the Civiliopedia entry.
 Description	Either text or a key from the text files. The name displayed for the unit.
 Help	Optional. A text that can include some more information to display. The text is specified in any of the Assets\XML\Text files.
 Strategy	As above for the Sid's Tips, also displayed above the Civilopedia entry.
-
 Integers
 All of these tags have a numerical value. Though it sometimes can be negative, it usually is not.
-
 Tag Name	Description
 iAirCombat	The unit's base strength for Air Units.
 iAirCombatLimit	Max amount of damage (in percent) able to be inflicted on enemy units when air striking.
 iAirRange	The range at which an air unit it can operate or the range at which a ground unit can attack.
-iAirUnitCap	The number of air unit capacity slots the unit takes up -- should be 1 for most, if not all, air units.
+iAirUnitCap	The number of air unit capacity slots the unit takes up  should be 1 for most, if not all, air units.
 iAIWeight	The preference given by the AI to this unit, generally for Unique Units.
 iAnimalCombat	The percent bonus that the unit gets against Animals, in attack and defense.
 iAsset	Affects the AI's behaviour towards it in some way.
