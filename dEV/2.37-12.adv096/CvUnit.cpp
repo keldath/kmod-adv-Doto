@@ -13124,7 +13124,7 @@ bool CvUnit::airStrike(CvPlot* pPlot)
 	return true;
 }
 
-bool CvUnit::canRangeStrike() const
+bool CvUnit::canRangeStrike(bool bStrikeBack) const
 {
 	if (getDomainType() == DOMAIN_AIR)
 	{
@@ -13149,15 +13149,13 @@ bool CvUnit::canRangeStrike() const
 		return false;
 	}
 
-	//Vincentz Rangestrike start
-	//VINCE ORG - CHANGED TO ADVC
-	//if (isMadeAttack() && !isBlitz() && (getTeam() == GC.getGame().getActiveTeam()))
-	if (isMadeAllAttacks() && (getTeam() == GC.getGame().getActiveTeam()))
+	//Vincentz Rangestrike start -includes f1rpo fix for recursion loop from strike back
+	if (!bStrikeBack && isMadeAllAttacks())
 	{
 		return false;
 	}
 
-	if ((!canMove() && getMoves() > 0) && (getTeam() == GC.getGame().getActiveTeam()))
+	if (!bStrikeBack && getMoves() > 0 && !canMove())
 	{
 		return false;
 	}
@@ -13170,12 +13168,18 @@ bool CvUnit::canRangeStrike() const
 
 	return true;
 }
-
-bool CvUnit::canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY) const
+//Vincentz Rangestrike start f1rpo fix for oos and reccursion loop from the strike back
+bool CvUnit::canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY , bool bStrikeBack) const
+//Vincentz Rangestrike end
 {
-	if (!canRangeStrike())
+	/*if (!canRangeStrike())
 	{
 		return false;
+	}
+	*/
+	if (!canRangeStrike(bStrikeBack))
+	{
+      return false;
 	}
 
 	CvPlot* pTargetPlot = GC.getMap().plot(iX, iY);
@@ -13266,6 +13270,7 @@ bool CvUnit::rangeStrike(int iX, int iY)
 	{
 		setMadeAttack(true);
 	}
+	//bool bstrikecheck = false;
 //RANGED STRIKE VINCENTZ
 	//keldath notes - i guess if the domain is land - always finish up movement to these units.
 	if (getDomainType() == DOMAIN_LAND)
@@ -13361,7 +13366,9 @@ bool CvUnit::rangeStrike(int iX, int iY)
 	if (GC.getDefineINT("RANGESTRIKE_RETURN_FIRE") == 1)
 	{
 		//keldath notes - this runs over the plot looiking for a unit that can air range strike?
-		if (!pDefender->canRangeStrikeAt(pDefender->plot(), this->plot()->getX(), this->plot()->getY()))
+		//if (!pDefender->canRangeStrikeAt(pDefender->plot(), this->plot()->getX(), this->plot()->getY()))
+		//keldath f1rpo - added boll true to stop infinite re run of the code
+		if (!pDefender->canRangeStrikeAt(pDefender->plot(), getX(), getY(),true))
 		{
 			pDefender = NULL;
 			CLLNode<IDInfo>* pUnitNode = pTargetPlot->headUnitNode();
@@ -13370,7 +13377,9 @@ bool CvUnit::rangeStrike(int iX, int iY)
 				CvUnit* pLoopUnit = ::getUnit(pUnitNode->m_data);
 				pUnitNode = pTargetPlot->nextUnitNode(pUnitNode);
 
-				if (pLoopUnit->canRangeStrikeAt(pLoopUnit->plot(), this->plot()->getX(), this->plot()->getY()))
+				//if (pLoopUnit->canRangeStrikeAt(pLoopUnit->plot(), this->plot()->getX(), this->plot()->getY()))
+				//keldath f1rpo - added boll true to stop infinite re run of the code
+				if (pLoopUnit->canRangeStrikeAt(pLoopUnit->plot(), getX(), getY(),true))
 				{
 					pDefender = pLoopUnit;
 				}

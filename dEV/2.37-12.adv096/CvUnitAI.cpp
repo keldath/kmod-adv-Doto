@@ -15004,7 +15004,9 @@ bool CvUnitAI::AI_rangeAttack(int iRange)
 						//	int iValue = GET_PLAYER(getOwner()).AI_getEnemyPlotStrength(pLoopPlot, 2, false, false);
 						//i dont know if the first car should be plot() or pLoopPlot
 						//im pretty sure about the rest though 
-						int iValue = GET_PLAYER(getOwner()).AI_localAttackStrength(pLoopPlot, NO_TEAM, getDomainType(), 2, false, false, false);
+						//int iValue = GET_PLAYER(getOwner()).AI_localAttackStrength(pLoopPlot, NO_TEAM, getDomainType(), 2, false, false, false);
+						//another change - i think choosing no_domain - will allow ai to attack land to sea also
+						int iValue = GET_PLAYER(getOwner()).AI_localAttackStrength(pLoopPlot, NO_TEAM, NO_DOMAIN, 2, false, false, false);				
 //kedlath - standalone version was with this dunnot what that will do anyway..
 //						iValue += 1000; 
 
