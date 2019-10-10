@@ -43,7 +43,7 @@
 		<!-- Just the value of expected reparations really. Sponsored war is
 			 covered by HIRED_HAND. -->
 		<DefineName>UWAI_WEIGHT_GREED_FOR_CASH</DefineName>
-		<iDefineIntVal>50</iDefineIntVal>
+		<iDefineIntVal>75</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- The satisfaction of seeing our (worst) enemies devastated. -->
@@ -109,7 +109,7 @@
 	<Define>
 		<!-- To weaken a civ that we perceive as a long-term military threat. -->
 		<DefineName>UWAI_WEIGHT_PREEMPTIVE_WAR</DefineName>
-		<iDefineIntVal>150</iDefineIntVal>
+		<iDefineIntVal>125</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- Stop civs that we don't like from winning the game, or even civs
@@ -288,6 +288,6 @@
 	<Define>
 		<!-- Minimum city site value that the AI will consider settling. default: 600. (K-Mod) -->
 		<DefineName>BBAI_MINIMUM_FOUND_VALUE</DefineName>
-		<iDefineIntVal>600</iDefineIntVal>
+		<iDefineIntVal>500</iDefineIntVal>
 	</Define>
 </Civ4Defines>

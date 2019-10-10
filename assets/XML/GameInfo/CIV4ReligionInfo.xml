@@ -59,7 +59,7 @@ MovieFile	Provides the directory path for the founding movie.
 			<Description>TXT_KEY_RELIGION_JUDAISM</Description>
 			<Adjective>TXT_KEY_RELIGION_JUDAISM_ADJECTIVE</Adjective>
 			<Civilopedia>TXT_KEY_RELIGION_JUDAISM_PEDIA</Civilopedia>
-			<TechPrereq>TECH_JUDAISM</TechPrereq>
+			<TechPrereq>TECH_MONOTHEISM</TechPrereq>
 			<FreeUnitClass>UNITCLASS_JEWISH_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
@@ -91,7 +91,7 @@ MovieFile	Provides the directory path for the founding movie.
 			<Description>TXT_KEY_RELIGION_CHRISTIANITY</Description>
 			<Adjective>TXT_KEY_RELIGION_CHRISTIANITY_ADJECTIVE</Adjective>
 			<Civilopedia>TXT_KEY_RELIGION_CHRISTIANITY_PEDIA</Civilopedia>
-			<TechPrereq>TECH_CHRIST</TechPrereq>
+			<TechPrereq>TECH_THEOLOGY</TechPrereq>
 			<FreeUnitClass>UNITCLASS_CHRISTIAN_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
@@ -123,7 +123,7 @@ MovieFile	Provides the directory path for the founding movie.
 			<Description>TXT_KEY_RELIGION_ISLAM</Description>
 			<Adjective>TXT_KEY_RELIGION_ISLAM_ADJECTIVE</Adjective>
 			<Civilopedia>TXT_KEY_RELIGION_ISLAM_PEDIA</Civilopedia>
-			<TechPrereq>TECH_ISLAM</TechPrereq>
+			<TechPrereq>TECH_DIVINE_RIGHT</TechPrereq>
 			<FreeUnitClass>UNITCLASS_ISLAMIC_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
@@ -155,7 +155,7 @@ MovieFile	Provides the directory path for the founding movie.
 			<Description>TXT_KEY_RELIGION_HINDUISM</Description>
 			<Adjective>TXT_KEY_RELIGION_HINDUISM_ADJECTIVE</Adjective>
 			<Civilopedia>TXT_KEY_RELIGION_HINDUISM_PEDIA</Civilopedia>
-			<TechPrereq>TECH_HINDU</TechPrereq>
+			<TechPrereq>TECH_MEDITATION</TechPrereq>
 			<FreeUnitClass>UNITCLASS_HINDU_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
@@ -187,7 +187,7 @@ MovieFile	Provides the directory path for the founding movie.
 			<Description>TXT_KEY_RELIGION_BUDDHISM</Description>
 			<Adjective>TXT_KEY_RELIGION_BUDDHISM_ADJECTIVE</Adjective>
 			<Civilopedia>TXT_KEY_RELIGION_BUDDHISM_PEDIA</Civilopedia>
-			<TechPrereq>TECH_BUDDAISM</TechPrereq>
+			<TechPrereq>TECH_POLYTHEISM</TechPrereq>
 			<FreeUnitClass>UNITCLASS_BUDDHIST_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
@@ -220,7 +220,7 @@ MovieFile	Provides the directory path for the founding movie.
 			<Description>TXT_KEY_RELIGION_CONFUCIANISM</Description>
 			<Adjective>TXT_KEY_RELIGION_CONFUCIANISM_ADJECTIVE</Adjective>
 			<Civilopedia>TXT_KEY_RELIGION_CONFUCIANISM_PEDIA</Civilopedia>
-			<TechPrereq>TECH_CONFUCIANISM</TechPrereq>
+			<TechPrereq>TECH_PHILOSOPHY</TechPrereq>
 			<FreeUnitClass>UNITCLASS_CONFUCIAN_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
@@ -252,7 +252,7 @@ MovieFile	Provides the directory path for the founding movie.
 			<Description>TXT_KEY_RELIGION_TAOISM</Description>
 			<Adjective>TXT_KEY_RELIGION_TAOISM_ADJECTIVE</Adjective>
 			<Civilopedia>TXT_KEY_RELIGION_TAOISM_PEDIA</Civilopedia>
-			<TechPrereq>TECH_TAOISM</TechPrereq>
+			<TechPrereq>TECH_DRAMA</TechPrereq>
 			<FreeUnitClass>UNITCLASS_TAOIST_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
@@ -316,7 +316,7 @@ MovieFile	Provides the directory path for the founding movie.
 			<Description>Shinto</Description>
 			<Adjective>Shinto</Adjective>
 			<Civilopedia>Shinto</Civilopedia>
-			<TechPrereq>TECH_SHINTO</TechPrereq>
+			<TechPrereq>TECH_LITERATURE</TechPrereq>
 			<FreeUnitClass>UNITCLASS_SHINTO_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>	
 			<iSpreadFactor>100</iSpreadFactor>
@@ -348,7 +348,7 @@ MovieFile	Provides the directory path for the founding movie.
 			<Description>Zoroastrianism</Description>
 			<Adjective>Zoroastrianism</Adjective>
 			<Civilopedia>Zoroastrianism</Civilopedia>
-			<TechPrereq>TECH_ZOROASTRIANISM2</TechPrereq>
+			<TechPrereq>TECH_WRITING</TechPrereq>
 			<FreeUnitClass>UNITCLASS_ZOROASTRIAN_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
@@ -380,7 +380,7 @@ MovieFile	Provides the directory path for the founding movie.
 			<Description>Druidism</Description>
 			<Adjective>Druidism</Adjective>
 			<Civilopedia>Druidism</Civilopedia>
-			<TechPrereq>TECH_DRUIDISM</TechPrereq>
+			<TechPrereq>TECH_CALENDAR</TechPrereq>
 			<FreeUnitClass>UNITCLASS_DRUIDISM_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>			
 			<iSpreadFactor>100</iSpreadFactor>
@@ -412,7 +412,7 @@ MovieFile	Provides the directory path for the founding movie.
 			<Description>Hellenism</Description>
 			<Adjective>Hellenism</Adjective>
 			<Civilopedia>Hellenism</Civilopedia>
-			<TechPrereq>TECH_HELLENISM2</TechPrereq>			
+			<TechPrereq>TECH_PAPER</TechPrereq>			
 			<FreeUnitClass>UNITCLASS_HELLENIC_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
@@ -444,7 +444,7 @@ MovieFile	Provides the directory path for the founding movie.
 			<Description>Amun Ra</Description>
 			<Adjective>Amun Ra</Adjective>
 			<Civilopedia>Anciant Religion of the Egyptians</Civilopedia>
-			<TechPrereq>TECH_AMONRA</TechPrereq>			
+			<TechPrereq>TECH_POTTERY</TechPrereq>			
 			<FreeUnitClass>UNITCLASS_AMON_RA_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>

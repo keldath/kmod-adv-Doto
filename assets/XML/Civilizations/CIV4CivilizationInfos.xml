@@ -119,7 +119,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -138,72 +138,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_CHRIST_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_JUDAISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_ISLAM_F</TechType>
 					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_AMONRA_F</TechType>
-					<bFreeTech>1</bFreeTech>-->
 				</FreeTech> 
 			</FreeTechs>
-            <DisableTechs>
-			<DisableTech>
-				<TechType>TECH_ISLAM</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-					<TechType>TECH_HINDU</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_ISLAM</ReligionName>
 					<bForbidden>1</bForbidden>
-			<!--	</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_AMON_RA</ReligionName>
-					<bForbidden>1</bForbidden>-->
 				</ForbiddenReligion>
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -313,7 +256,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -332,38 +275,13 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_ISLAM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_AMONRA_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_JUDAISM_F</TechType>
-					<bFreeTech>1</bFreeTech>-->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_CHRIST_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-				<!--	<ReligionName>RELIGION_JUDAISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion>-->
 					<ReligionName>RELIGION_CHRISTIANITY</ReligionName>
 					<bForbidden>1</bForbidden> 
 				</ForbiddenReligion> 
@@ -467,7 +385,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -486,72 +404,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_HINDU_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_DRUIDISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_ISLAM_F</TechType>
 					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_SHINTO_F</TechType>
-					<bFreeTech>1</bFreeTech>-->
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA_F</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_ISLAM</ReligionName>
 					<bForbidden>1</bForbidden>
-		<!--		</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_SHINTO</ReligionName>
-					<bForbidden>1</bForbidden> -->
 				</ForbiddenReligion>
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -657,7 +518,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -676,72 +537,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_ISLAM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_ZORO_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_DRUIDISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_CHRIST_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_DRUIDISM</ReligionName>
 					<bForbidden>1</bForbidden>
-			<!--	</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_CHRISTIANITY</ReligionName>
-					<bForbidden>1</bForbidden> -->
 				</ForbiddenReligion>
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -851,7 +655,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -870,72 +674,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_AMONRA_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HELLENISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HINDU_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_BUDDHISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_BUDDHISM</ReligionName>
 					<bForbidden>1</bForbidden>
-			<!--	</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_HINDUISM</ReligionName>
-					<bForbidden>1</bForbidden> -->
 				</ForbiddenReligion>
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -1042,7 +789,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -1061,72 +808,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_JUDAISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HELLENISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-		<!--		</FreeTech>
-				<FreeTech>
-					<TechType>TECH_TAOISM_F</TechType>
-					<bFreeTech>1</bFreeTech>-->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_SHINTO_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_SHINTO</ReligionName>
 					<bForbidden>1</bForbidden>
-			<!--	</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_TAOISM</ReligionName>
-					<bForbidden>1</bForbidden> -->
 				</ForbiddenReligion>
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -1237,7 +927,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -1256,70 +946,13 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_DRUIDISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_CHRIST_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HINDU_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_BUDDHISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
-			<ForbiddenReligions>
+            <DisableTechs/>
+				<ForbiddenReligions>
 				<ForbiddenReligion>
-			<!--		<ReligionName>RELIGION_BUDDHISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion> -->
 					<ReligionName>RELIGION_HINDUISM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion> 
@@ -1435,7 +1068,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -1454,72 +1087,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_BUDDAISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_CONFO_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_AMONRA_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_HELLENISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_HELLENISM</ReligionName>
 					<bForbidden>1</bForbidden>
-			<!--	</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_AMON_RA</ReligionName>
-					<bForbidden>1</bForbidden>-->
 				</ForbiddenReligion>
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -1645,7 +1221,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -1664,70 +1240,13 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_AMONRA_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_ISLAM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_TAOISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_CONFUCIANISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
 				</FreeTech>
 			</FreeTechs>
-			<DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+			<DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-			<!--		<ReligionName>RELIGION_CONFUCIANISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion> -->
 					<ReligionName>RELIGION_TAOISM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion> 
@@ -1837,7 +1356,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -1856,72 +1375,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_CHRIST_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_DRUIDISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HINDU_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_AMONRA_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_AMON_RA</ReligionName>
 					<bForbidden>1</bForbidden>
-			<!--	</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_HINDUISM</ReligionName>
-					<bForbidden>1</bForbidden> -->
 				</ForbiddenReligion> 
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -2033,7 +1495,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -2052,70 +1514,13 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_ZORO_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_TAOISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_JUDAISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_DRUIDISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-			<!--		<ReligionName>RELIGION_JUDAISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion>-->
 					<ReligionName>RELIGION_DRUIDISM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion> 
@@ -2223,7 +1628,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -2242,72 +1647,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_CHRIST_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_DRUIDISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HINDU_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_HELLENISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_HELLENISM</ReligionName>
 					<bForbidden>1</bForbidden>
-			<!--	</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_HINDUISM</ReligionName>
-					<bForbidden>1</bForbidden> -->
 				</ForbiddenReligion> 
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -2434,7 +1782,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -2453,70 +1801,13 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_CHRIST_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_DRUIDISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_ISLAM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_SHINTO_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-			<!--		<ReligionName>RELIGION_ISLAM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion>-->
 					<ReligionName>RELIGION_SHINTO</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion> 
@@ -2633,7 +1924,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -2652,72 +1943,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_HELLENISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_DRUIDISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_JUDAISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_ISLAM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_ISLAM</ReligionName>
 					<bForbidden>1</bForbidden>
-			<!--	</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_JUDAISM</ReligionName>
-					<bForbidden>1</bForbidden> -->
 				</ForbiddenReligion> 
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -2833,7 +2067,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -2852,70 +2086,13 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_CHRIST_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_DRUIDISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_HINDU_F</TechType>
 					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_TAOISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-				<!--	<ReligionName>RELIGION_TAOISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion>-->
 					<ReligionName>RELIGION_HINDUISM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion> 
@@ -3017,7 +2194,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -3036,70 +2213,13 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_HINDU_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_SHINTO_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_JUDAISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_ZORO_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-			<!--		<ReligionName>RELIGION_JUDAISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion> -->
 					<ReligionName>RELIGION_ZOROASTRIANISM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion> 
@@ -3264,7 +2384,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -3283,72 +2403,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_HINDU_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_BUDDAISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HELLENISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_ZORO_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_ZOROASTRIANISM</ReligionName>
 					<bForbidden>1</bForbidden>
-			<!--	</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_HELLENISM</ReligionName>
-					<bForbidden>1</bForbidden> -->
 				</ForbiddenReligion> 
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -3453,7 +2516,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -3472,70 +2535,13 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_SHINTO_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_BUDDAISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_ISLAM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_AMONRA_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-			<!--		<ReligionName>RELIGION_ISLAM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion>-->
 					<ReligionName>RELIGION_AMON_RA</ReligionName>
 					<bForbidden>1</bForbidden> 
 				</ForbiddenReligion> 
@@ -3645,7 +2651,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -3664,70 +2670,13 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_SHINTO_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_CONFO_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_BUDDHISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_CHRIST_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-				<!--	<ReligionName>RELIGION_BUDDHISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion>-->
 					<ReligionName>RELIGION_CHRISTIANITY</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion> 
@@ -3825,7 +2774,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -3844,72 +2793,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_SHINTO_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_CONFO_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_AMONRA_F</TechType>
 					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HELLENISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_AMON_RA</ReligionName>
 					<bForbidden>1</bForbidden>
-			<!--	</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_HELLENISM</ReligionName>
-					<bForbidden>1</bForbidden>-->
 				</ForbiddenReligion> 
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -4005,7 +2897,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -4024,72 +2916,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_ISLAM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_AMONRA_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_ZORO_F</TechType>
 					<bFreeTech>1</bFreeTech>
-		<!--		</FreeTech>
-				<FreeTech>
-					<TechType>TECH_DRUIDISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_ZOROASTRIANISM</ReligionName>
 					<bForbidden>1</bForbidden>
-		<!--		</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_DRUIDISM</ReligionName>
-					<bForbidden>1</bForbidden> -->
 				</ForbiddenReligion> 
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -4199,7 +3034,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -4218,64 +3053,11 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_HINDU_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_TAOISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_JUDAISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_BUDDHISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_JUDAISM</ReligionName>
@@ -4382,7 +3164,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -4401,70 +3183,13 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_SHINTO_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_BUDDAISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_CHRIST_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_DRUIDISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-				<!--	<ReligionName>RELIGION_CHRISTIANITY</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion> -->
 					<ReligionName>RELIGION_DRUIDISM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion>
@@ -4586,7 +3311,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -4605,70 +3330,13 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_ZORO_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_BUDDAISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_SHINTO_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_TAOISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-				<!--	<ReligionName>RELIGION_SHINTO</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion> -->
 					<ReligionName>RELIGION_TAOISM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion>
@@ -4781,7 +3449,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -4800,72 +3468,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_CHRIST_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HELLENISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HINDU_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_AMONRA_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_AMON_RA</ReligionName>
 					<bForbidden>1</bForbidden>
-			<!--	</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_HINDUISM</ReligionName>
-					<bForbidden>1</bForbidden> -->
 				</ForbiddenReligion> 
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -4967,7 +3578,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -4986,70 +3597,13 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_AMONRA_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_ISLAM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_BUDDHISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_JUDAISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-				<!--	<ReligionName>RELIGION_JUDAISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion>-->
 					<ReligionName>RELIGION_BUDDHISM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion>
@@ -5190,7 +3744,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -5209,72 +3763,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_ZORO_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_ISLAM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_CONFUCIANISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HELLENISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_CONFUCIANISM</ReligionName>
 					<bForbidden>1</bForbidden>
-		<!--		</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_HELLENISM</ReligionName>
-					<bForbidden>1</bForbidden> -->
 				</ForbiddenReligion>
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -5389,7 +3886,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -5408,70 +3905,13 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_CHRIST_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_DRUIDISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_TAOISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_ISLAM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-			<DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+			<DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-			<!--		<ReligionName>RELIGION_TAOISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion> -->
 					<ReligionName>RELIGION_ISLAM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion>
@@ -5594,7 +4034,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -5613,70 +4053,13 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_CHRIST_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HELLENISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_JUDAISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_BUDDHISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
 				</FreeTech>
 			</FreeTechs>
-			<DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+			<DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-			<!--		<ReligionName>RELIGION_BUDDHISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion>-->
 					<ReligionName>RELIGION_JUDAISM</ReligionName>
 					<bForbidden>1</bForbidden> 
 				</ForbiddenReligion>
@@ -5786,7 +4169,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -5805,72 +4188,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_BUDDAISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_JUDAISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_DRUIDISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_AMONRA_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_DRUIDISM</ReligionName>
 					<bForbidden>1</bForbidden>
-			<!--	</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_AMON_RA</ReligionName>
-					<bForbidden>1</bForbidden> -->
 				</ForbiddenReligion>
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -5985,7 +4311,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -6004,72 +4330,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_CHRIST_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_ISLAM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_AMONRA_F</TechType>
 					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_ZORO_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
 				</FreeTech> 
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_AMON_RA</ReligionName>
 					<bForbidden>1</bForbidden>
-			<!--	</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_ZOROASTRIANISM</ReligionName>
-					<bForbidden>1</bForbidden> -->
 				</ForbiddenReligion> 
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -6172,7 +4441,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -6191,72 +4460,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_CONFO_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_ZORO_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_SHINTO_F</TechType>
 					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_BUDDHISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_SHINTO</ReligionName>
 					<bForbidden>1</bForbidden>
-			<!--	</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_BUDDHISM</ReligionName>
-					<bForbidden>1</bForbidden> -->
 				</ForbiddenReligion>
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -6361,7 +4573,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -6380,70 +4592,13 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_HINDU_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_DRUIDISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_CONFUCIANISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_HELLENISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-				<!--	<ReligionName>RELIGION_CONFUCIANISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion> -->
 					<ReligionName>RELIGION_HELLENISM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion>
@@ -6547,7 +4702,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -6566,72 +4721,15 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_AMONRA_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_JUDAISM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
 					<TechType>TECH_ISLAM_F</TechType>
 					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HINDU_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_ISLAM</ReligionName>
 					<bForbidden>1</bForbidden>
-			<!--	</ForbiddenReligion>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_HINDUISM</ReligionName>
-					<bForbidden>1</bForbidden> -->
 				</ForbiddenReligion>
 			</ForbiddenReligions>
 			<InitialCivics>
@@ -6745,7 +4843,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
+					<iFreeUnits>2</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -6764,71 +4862,14 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_JUDAISM_A</TechType>
+					<TechType>TECH_ISLAM_F</TechType>
 					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_ISLAM_A</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HINDU_F</TechType>
-					<bFreeTech>1</bFreeTech>
-			<!--	</FreeTech>
-				<FreeTech>
-					<TechType>TECH_DRUIDISM_F</TechType>
-					<bFreeTech>1</bFreeTech> -->
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs>
-				<DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+            <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-				<!--	<ReligionName>RELIGION_DRUIDISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-				<ForbiddenReligion> -->
-					<ReligionName>RELIGION_HINDUISM</ReligionName>
+					<ReligionName>RELIGION_ISLAM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion>
 			</ForbiddenReligions>
@@ -6973,56 +5014,7 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-			<DisableTechs>
-				<DisableTech>
-					<TechType>TECH_JUDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CHRIST</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HINDU</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_BUDDAISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ISLAM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_CONFUCIANISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_TAOISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_SHINTO</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_ZOROASTRIANISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_DRUIDISM</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_HELLENISM2</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-                <DisableTech>
-					<TechType>TECH_AMONRA</TechType>
-					<bDisableTech>1</bDisableTech>
-				</DisableTech>
-			</DisableTechs>
+			<DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_AMON_RA</ReligionName>
@@ -7905,56 +5897,7 @@
 			<FreeUnitClasses/>
 			<FreeBuildingClasses/>
 			<FreeTechs/>
-			<DisableTechs>
-			<DisableTech>
-			    <TechType>TECH_JUDAISM</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-			    <TechType>TECH_CHRIST</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-			    <TechType>TECH_BUDDAISM</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-			    <TechType>TECH_HINDU</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-			    <TechType>TECH_HELLENISM2</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-			    <TechType>TECH_ZOROASTRIANISM2</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-			    <TechType>TECH_DRUIDISM</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-			    <TechType>TECH_AMONRA</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-			    <TechType>TECH_ISLAM</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-			    <TechType>TECH_TAOISM</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-			    <TechType>TECH_SHINTO</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			<DisableTech>
-			    <TechType>TECH_CONFUCIANISM</TechType>
-				<bDisableTech>1</bDisableTech>		
-            </DisableTech>
-			</DisableTechs>
+			<DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
 					<ReligionName>RELIGION_AMON_RA</ReligionName>

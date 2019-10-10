@@ -13123,7 +13123,7 @@ bool CvUnit::airStrike(CvPlot* pPlot)
 
 	return true;
 }
-
+//vincentz ranged stike - fqrpo fix for loop call
 bool CvUnit::canRangeStrike(bool bStrikeBack) const
 {
 	if (getDomainType() == DOMAIN_AIR)
@@ -13172,11 +13172,6 @@ bool CvUnit::canRangeStrike(bool bStrikeBack) const
 bool CvUnit::canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY , bool bStrikeBack) const
 //Vincentz Rangestrike end
 {
-	/*if (!canRangeStrike())
-	{
-		return false;
-	}
-	*/
 	if (!canRangeStrike(bStrikeBack))
 	{
       return false;
@@ -13270,7 +13265,6 @@ bool CvUnit::rangeStrike(int iX, int iY)
 	{
 		setMadeAttack(true);
 	}
-	//bool bstrikecheck = false;
 //RANGED STRIKE VINCENTZ
 	//keldath notes - i guess if the domain is land - always finish up movement to these units.
 	if (getDomainType() == DOMAIN_LAND)
@@ -13286,9 +13280,9 @@ bool CvUnit::rangeStrike(int iX, int iY)
 	if (pCity != NULL && (pCity->isBombardable(this)))
 	{
 		pCity->changeDefenseModifier((-bombardRate() * currHitPoints() / maxHitPoints() * 50 + GC.getGame().getSorenRandNum(100, "Bombard - Random")) / 100);
-		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_DEFENSES_REDUCED_TO", pCity->getNameKey(), pCity->getDefenseModifier(false), getNameKey()); 
+		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_DEFENSES_REDUCED_TO", pCity->getNameKey(), pCity->getDefenseModifier(false), getNameKey())); 
 		gDLL->getInterfaceIFace()->addHumanMessage(pCity->getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), pCity->getX(), pCity->getY(), true, true);
-		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_ENEMY_DEFENSES_REDUCED_TO", getNameKey(), pCity->getNameKey(), pCity->getDefenseModifier(false));
+		szBuffer = gDLL->getText("TXT_KEY_MISC_ENEMY_DEFENSES_REDUCED_TO", getNameKey(), pCity->getNameKey(), pCity->getDefenseModifier(false));
 		gDLL->getInterfaceIFace()->addHumanMessage(getOwner(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARD", MESSAGE_TYPE_INFO, NULL, (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), pCity->getX(), pCity->getY());
 	}
 	else {
@@ -13304,7 +13298,7 @@ bool CvUnit::rangeStrike(int iX, int iY)
 			//white icon over defending unit
 			gDLL->getInterfaceIFace()->addHumanMessage(pDefender->getOwner(), false, 0, L"", "AS2D_COMBAT", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pDefender->getX(), pDefender->getY(), true, true);
 
-			CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR_MISS", getNameKey(), pDefender->getNameKey());
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR_MISS", getNameKey(), pDefender->getNameKey());
 			gDLL->getInterfaceIFace()->addHumanMessage(getOwner(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, pDefender->getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), pPlot->getX(), pPlot->getY());
 		}
 		else
@@ -13317,7 +13311,7 @@ bool CvUnit::rangeStrike(int iX, int iY)
 			//white icon over defending unit
 			gDLL->getInterfaceIFace()->addHumanMessage(pDefender->getOwner(), false, 0, L"", "AS2D_COMBAT", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pDefender->getX(), pDefender->getY(), true, true);
 
-			CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR", getNameKey(), pDefender->getNameKey(),
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR", getNameKey(), pDefender->getNameKey(),
 					// advc.004g:
 				    ((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints());// advc.004g:
 			gDLL->getInterfaceIFace()->addHumanMessage(getOwner(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, pDefender->getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), pPlot->getX(), pPlot->getY());
@@ -13356,7 +13350,7 @@ bool CvUnit::rangeStrike(int iX, int iY)
 
 	if (pDefender->isDead())
 	{
-		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", getNameKey(), pDefender->getNameKey());
+		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", getNameKey(), pDefender->getNameKey()));
 		gDLL->getInterfaceIFace()->addHumanMessage(getOwner(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, GC.getEraInfo(GC.getGame().getCurrentEra()).getAudioUnitVictoryScript(), MESSAGE_TYPE_INFO, NULL, (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), pPlot->getX(), pPlot->getY());
 		changeExperience(GC.getDefineINT("MIN_EXPERIENCE_PER_COMBAT"));
 	}
@@ -13393,9 +13387,9 @@ bool CvUnit::rangeStrike(int iX, int iY)
 
 			if (((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) + pDefender->airBaseCombatStr()) * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER") > ((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) + this->baseCombatStr()))
 			{
-				CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR", pDefender->getNameKey(), getNameKey(), (((iUnitDamage - this->getDamage()) * 100) / this->maxHitPoints())); 
+				CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR", pDefender->getNameKey(), getNameKey(), (((iUnitDamage - this->getDamage()) * 100) / this->maxHitPoints()))); 
 				gDLL->getInterfaceIFace()->addHumanMessage(pDefender->getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), this->getX(), this->getY(), true, true);
-				CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR", getNameKey(), pDefender->getNameKey(), (((iUnitDamage - this->getDamage()) * 100) / this->maxHitPoints()));
+				szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR", getNameKey(), pDefender->getNameKey(), (((iUnitDamage - this->getDamage()) * 100) / this->maxHitPoints()));
 				gDLL->getInterfaceIFace()->addHumanMessage(getOwner(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, this->getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), pPlot->getX(), pPlot->getY());
 
 				this->setDamage(iUnitDamage, this->getOwner(), false);
@@ -13405,9 +13399,9 @@ bool CvUnit::rangeStrike(int iX, int iY)
 			}
 			else
 			{
-				CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR_MISS", pDefender->getNameKey(), getNameKey());
+				CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR_MISS", pDefender->getNameKey(), getNameKey()));
 				gDLL->getInterfaceIFace()->addHumanMessage(pDefender->getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), this->getX(), this->getY(), true, true);
-				CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR_MISS", getNameKey(), pDefender->getNameKey());
+				szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR_MISS", getNameKey(), pDefender->getNameKey());
 				gDLL->getInterfaceIFace()->addHumanMessage(getOwner(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, pDefender->getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), pPlot->getX(), pPlot->getY());
 			}
 
