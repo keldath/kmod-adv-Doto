@@ -13289,12 +13289,12 @@ bool CvUnit::rangeStrike(int iX, int iY)
 
 		int iDamage = rangeCombatDamage(pDefender) * currHitPoints() / maxHitPoints();
 		int iUnitDamage = std::max(pDefender->getDamage(), std::min((pDefender->getDamage() + iDamage), airCombatLimit()));
-		
-		if (((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) + airBaseCombatStr() * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER") * currHitPoints() / maxHitPoints()) <= ((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) + pDefender->baseCombatStr() * pDefender->currHitPoints() / pDefender->maxHitPoints()))
+			
+		if (((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) + airBaseCombatStr() * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER") * currHitPoints() / maxHitPoints()) < ((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) + pDefender->baseCombatStr() * pDefender->currHitPoints() / pDefender->maxHitPoints()))
 		{
 			CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR_MISS", pDefender->getNameKey(), getNameKey())); 
 			//red icon over attacking unit
-			gDLL->getInterfaceIFace()->addHumanMessage(pDefender->getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), getX(), getY(), true, true);
+			gDLL->getInterfaceIFace()->addHumanMessage(pDefender->getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), this->getX(), this->getY(), true, true);
 			//white icon over defending unit
 			gDLL->getInterfaceIFace()->addHumanMessage(pDefender->getOwner(), false, 0, L"", "AS2D_COMBAT", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pDefender->getX(), pDefender->getY(), true, true);
 
@@ -13309,7 +13309,7 @@ bool CvUnit::rangeStrike(int iX, int iY)
 					// advc.004g:
 					((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints()));// advc.004g:
 					//red icon over attacking unit
-					gDLL->getInterfaceIFace()->addHumanMessage(pDefender->getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), getX(), getY(), true, true);
+					gDLL->getInterfaceIFace()->addHumanMessage(pDefender->getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), this->getX(), this->getY(), true, true);
 					//white icon over defending unit
 					gDLL->getInterfaceIFace()->addHumanMessage(pDefender->getOwner(), false, 0, L"", "AS2D_COMBAT", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pDefender->getX(), pDefender->getY(), true, true);
 					
@@ -13317,19 +13317,20 @@ bool CvUnit::rangeStrike(int iX, int iY)
 							// advc.004g:
 				    		((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints());// advc.004g:
 					gDLL->getInterfaceIFace()->addHumanMessage(getOwner(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, pDefender->getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), pPlot->getX(), pPlot->getY());
+					
+					collateralCombat(pPlot, pDefender);
+
+					//set damage but don't update entity damage visibility
+					pDefender->setDamage(iUnitDamage, getOwner(), false);
 			}
 			else {
 				CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_ENEMY_MAXIMUM_DAMAGE", pDefender->getNameKey(), getNameKey()));
-				gDLL->getInterfaceIFace()->addHumanMessage(pDefender->getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), getX(), getY(), true, true);
+				gDLL->getInterfaceIFace()->addHumanMessage(pDefender->getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), this->getX(), this->getY(), true, true);
 				szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_MAXIMUM_DAMAGE", getNameKey(), pDefender->getNameKey());
-				gDLL->getInterfaceIFace()->addHumanMessage(getOwner(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, pDefender->getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), pPlot->getX(), pPlot->getY());
+				gDLL->getInterfaceIFace()->addHumanMessage(getOwner(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, pDefender->getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), pDefender->getX(), pDefender->getY());
 	
 			}
-	
-				collateralCombat(pPlot, pDefender);
-
-				//set damage but don't update entity damage visibility
-				pDefender->setDamage(iUnitDamage, getOwner(), false);
+				
 		}
 	}
 
@@ -13386,7 +13387,7 @@ bool CvUnit::rangeStrike(int iX, int iY)
 
 				//if (pLoopUnit->canRangeStrikeAt(pLoopUnit->plot(), this->plot()->getX(), this->plot()->getY()))
 				//keldath f1rpo - added boll true to stop infinite re run of the code
-				if (pLoopUnit->canRangeStrikeAt(pLoopUnit->plot(), getX(), getY(),true))
+				if (pLoopUnit->canRangeStrikeAt(pLoopUnit->plot(), this->plot()->getX(), this->plot()->getY(),true))
 				{
 					pDefender = pLoopUnit;
 				}
