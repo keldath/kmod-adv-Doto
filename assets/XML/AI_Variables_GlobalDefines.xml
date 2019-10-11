@@ -37,7 +37,7 @@
 			 near it can be settled and exploited. Lebensraum if you will (and
 			 in Civ, it actually works).  -->
 		<DefineName>UWAI_WEIGHT_GREED_FOR_SPACE</DefineName>
-		<iDefineIntVal>50</iDefineIntVal>
+		<iDefineIntVal>75</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- Just the value of expected reparations really. Sponsored war is

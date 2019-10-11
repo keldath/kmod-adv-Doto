@@ -70,5 +70,29 @@
 		<Italian>Your %s1_UnitName has returned fire but missed the %s2_EnUName!</Italian>
 		<Spanish>Your %s1_UnitName has returned fire but missed the %s2_EnUName!</Spanish>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_YOU_MAXIMUM_DAMAGE</Tag>
+		<English>Your %s1_UnitName attack on the enemy %s2_EnUName is on Max Damage!</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_ENEMY_MAXIMUM_DAMAGE</Tag>
+		<English>eNEMY %s1_UnitName attack on the enemy %s2_EnUName is on Max Damage!</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_ASTRENGTH</Tag>
+		<English>Ranged Strike: %d1</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_ASTRENGTHSHORT</Tag>
+		<English>R-Strike: %d1</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_AIR_COMBAT</Tag>
+		<English>Air Combat: %d1</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_AIR_COMBATSHORT</Tag>
+		<English>A-Combat: %d1</English>
+	</TEXT>
 
 </Civ4GameText>
