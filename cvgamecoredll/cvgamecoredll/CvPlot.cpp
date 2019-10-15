@@ -2906,7 +2906,23 @@ CvUnit* CvPlot::getBestDefender(PlayerTypes eOwner, PlayerTypes eAttackingPlayer
 					{
 						if (!bTestCanMove || (pLoopUnit->canMove() && !pLoopUnit->isCargo()))
 						{
-							if (pAttacker == NULL || pAttacker->getDomainType() != DOMAIN_AIR || pLoopUnit->getDamage() < pAttacker->airCombatLimit())
+							//if (pAttacker == NULL || pAttacker->getDomainType() != DOMAIN_AIR || pLoopUnit->getDamage() < pAttacker->airCombatLimit())
+							//Vincentz ranged strike = keldath fix for left from behind combat odds - that ignores aircombat limit for land units
+							// i extended the conditions more specificaly for what a defender should be accountable
+							if (pAttacker == NULL 
+								//NONE AIR UNITS WITH AIR ATTACK - WITH AIRCOMBAT LIMIT FILTER
+								|| pAttacker->getDomainType() != DOMAIN_AIR && pLoopUnit->getDamage() < pAttacker->airCombatLimit()
+								//NONE AIR UNITS WITH NO AIR ATTACK
+								|| pAttacker->getDomainType() != DOMAIN_AIR && (pAttacker->airCombatLimit() == 0  || pAttacker->airCombatLimit() == 100) 
+								//NONE AIR UNITS WITH COMBAT LIMIT AND NO AIR ATTACK VALUE
+								|| pAttacker->getDomainType() != DOMAIN_AIR && pLoopUnit->getDamage() < pAttacker->combatLimit() && pAttacker->airBaseCombatStr() == 0
+								//NONE AIR UNITS WITH NO COMBAT LIMIT AND NO AIR ATTACK VALUE
+								|| pAttacker->getDomainType() != DOMAIN_AIR && (pAttacker->combatLimit() == 0 || pAttacker->combatLimit() == 100) && pAttacker->airBaseCombatStr() == 0
+								//AIR UNITS WITH ATTACK LIMIT
+								|| pAttacker->getDomainType() == DOMAIN_AIR && pLoopUnit->getDamage() < pAttacker->airCombatLimit()
+								//AIR UNITS WITH NO ATTACK LIMITS
+								|| pAttacker->getDomainType() == DOMAIN_AIR && (pAttacker->airCombatLimit() == 0  || pAttacker->airCombatLimit() == 100)						
+							)
 							{
 								if (pLoopUnit->isBetterDefenderThan(pBestUnit, pAttacker,
 										&iBestUnitRank, // UncutDragon
@@ -10990,7 +11006,23 @@ bool CvPlot::hasDefender(bool bCheckCanAttack, PlayerTypes eOwner, PlayerTypes e
 					{
 						if (!bTestCanMove || (pLoopUnit->canMove() && !pLoopUnit->isCargo()))
 						{
-							if (pAttacker == NULL || pAttacker->getDomainType() != DOMAIN_AIR || pLoopUnit->getDamage() < pAttacker->airCombatLimit())
+							//if (pAttacker == NULL || pAttacker->getDomainType() != DOMAIN_AIR || pLoopUnit->getDamage() < pAttacker->airCombatLimit())
+							//Vincentz ranged strike = keldath fix for left from behind combat odds - that ignores aircombat limit for land units
+							// i extended the conditions more specificaly for what a defender should be accountable
+							if (pAttacker == NULL 
+								//NONE AIR UNITS WITH AIR ATTACK - WITH AIRCOMBAT LIMIT FILTER
+								|| pAttacker->getDomainType() != DOMAIN_AIR && pLoopUnit->getDamage() < pAttacker->airCombatLimit()
+								//NONE AIR UNITS WITH NO AIR ATTACK
+								|| pAttacker->getDomainType() != DOMAIN_AIR && (pAttacker->airCombatLimit() == 0  || pAttacker->airCombatLimit() == 100) 
+								//NONE AIR UNITS WITH COMBAT LIMIT AND NO AIR ATTACK VALUE
+								|| pAttacker->getDomainType() != DOMAIN_AIR && pLoopUnit->getDamage() < pAttacker->combatLimit() && pAttacker->airBaseCombatStr() == 0
+								//NONE AIR UNITS WITH NO COMBAT LIMIT AND NO AIR ATTACK VALUE
+								|| pAttacker->getDomainType() != DOMAIN_AIR && (pAttacker->combatLimit() == 0 || pAttacker->combatLimit() == 100) && pAttacker->airBaseCombatStr() == 0
+								//AIR UNITS WITH ATTACK LIMIT
+								|| pAttacker->getDomainType() == DOMAIN_AIR && pLoopUnit->getDamage() < pAttacker->airCombatLimit()
+								//AIR UNITS WITH NO ATTACK LIMITS
+								|| pAttacker->getDomainType() == DOMAIN_AIR && (pAttacker->airCombatLimit() == 0  || pAttacker->airCombatLimit() == 100)						
+							)
 							{
 								if (!bCheckCanAttack || pAttacker == NULL || pAttacker->canAttack(*pLoopUnit))
 								{

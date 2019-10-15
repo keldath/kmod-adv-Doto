@@ -1,0 +1,30 @@
+
+Ranged combat system by keldath.
+
+based on VIP - Vincentz original ranged strike code.
+
+affects 
+1.  land or sea units.
+2. units with air range >0 + air combat > 0 
+
+mission types and definitions:
+1. Bombard - Normal vanilla bombard
+- will have random damage factor.
+
+2. ranged strike 
+-will have random damage factor
+-units cannot bombard a city if its has city/building defence
+-if a unit has ignore city/building defence - it will be able to range attack - but without collateral damage.
+
+both missions will end movement.
+cannot commit an attack on an invalid tile that does now meet the conditions above.
+
+
+Air strike and bombard:
+will now have random damage factor.
+
+fix - left from behind - seems if a unit is damaged - it picks it from the stack and not the strongest
+todo -  optional components with game options.
+           option for a ranged attack to first reduce city defense only than attack units (original vip design)
+           somehow make the bombard mission to be ranged , same as air bombard.
+wish - use air strike and air bombard for land / sea units - optimal implementation for ai, existing mechanism.

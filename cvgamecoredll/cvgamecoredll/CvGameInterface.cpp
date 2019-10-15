@@ -36,6 +36,8 @@ void CvGame::updateColoredPlots()
 	CvPlot* pLoopPlot;
 	CvPlot* pBestPlot;
 	CvPlot* pNextBestPlot;
+//keldath adjustment for vincentz ranged strike
+	int iMaxAirRange;
 	int iDX, iDY;
 	int iI;
 
@@ -218,7 +220,9 @@ void CvGame::updateColoredPlots()
 
 		if (pHeadSelectedUnit->getDomainType() == DOMAIN_AIR)
 		{
-			int iMaxAirRange = 0;
+			//keldath adjustment for vincentz ranged strike
+			//int iMaxAirRange = 0;
+			iMaxAirRange = 0;
 
 			pSelectedUnitNode = gDLL->getInterfaceIFace()->headSelectionListNode();
 			while (pSelectedUnitNode != NULL)
@@ -253,28 +257,76 @@ void CvGame::updateColoredPlots()
 				}
 			}
 		}
-		else if(pHeadSelectedUnit->airRange() > 0) //other ranged units
+//Vincentz Rangestrike start
+//(GC.getInterfaceModeInfo((InterfaceModeTypes)GC.getActionInfo(iAction).getInterfaceModeType()).INTERFACEMODE_RANGE_ATTACK)
+//(GC.getInterfaceModeInfo((InterfaceModeTypes)INTERFACEMODE_RANGE_ATTACK)
+		else if (pHeadSelectedUnit->airRange() > 0) //&& (GC.getInterfaceModeInfo(InterfaceModeTypes) == INTERFACEMODE_RANGE_ATTACK))//other ranged units
 		{
-			int iRange = pHeadSelectedUnit->airRange();
-			for (iDX = -(iRange); iDX <= iRange; iDX++)
+			iMaxAirRange = 0;
+
+			pSelectedUnitNode = gDLL->getInterfaceIFace()->headSelectionListNode();
+
+			while (pSelectedUnitNode != NULL)
 			{
-				for (iDY = -(iRange); iDY <= iRange; iDY++)
+				pSelectedUnit = ::getUnit(pSelectedUnitNode->m_data);
+				pSelectedUnitNode = gDLL->getInterfaceIFace()->nextSelectionListNode(pSelectedUnitNode);
+
+				if (pSelectedUnit != NULL)
 				{
-					CvPlot* pTargetPlot = plotXY(pHeadSelectedUnit->getX(), pHeadSelectedUnit->getY(), iDX, iDY);
-					if (pTargetPlot != NULL && pTargetPlot->isVisible(pHeadSelectedUnit->getTeam(), false))
+					iMaxAirRange = std::max(iMaxAirRange, pSelectedUnit->airRange());
+				}
+			}
+//keldath -these two lines are not in the published ranged strike i got it from the master git of vip
+			if ((pHeadSelectedUnit->plot()->isCity(true, pHeadSelectedUnit->getTeam())) && (pHeadSelectedUnit->getDomainType() == DOMAIN_LAND) && (pHeadSelectedUnit->airBaseCombatStr() > 0))
+			{iMaxAirRange += 1;}
+			
+			if (iMaxAirRange > 0)
+			{
+				for (iDX = -(iMaxAirRange); iDX <= iMaxAirRange; iDX++)
+				{
+					for (iDY = -(iMaxAirRange); iDY <= iMaxAirRange; iDY++)
 					{
-						if (plotDistance(pHeadSelectedUnit->getX(), pHeadSelectedUnit->getY(), pTargetPlot->getX(), pTargetPlot->getY()) <= iRange)
+						pLoopPlot = plotXY(pHeadSelectedUnit->getX(), pHeadSelectedUnit->getY(), iDX, iDY);
+
+						if (pLoopPlot != NULL)
 						{
-							if (pHeadSelectedUnit->plot()->canSeePlot(pTargetPlot, pHeadSelectedUnit->getTeam(), iRange, pHeadSelectedUnit->getFacingDirection(true)))
+							if (plotDistance(pHeadSelectedUnit->getX(), pHeadSelectedUnit->getY(), pLoopPlot->getX(), pLoopPlot->getY()) <= iMaxAirRange)
 							{
-								NiColorA color(GC.getColorInfo((ColorTypes)GC.getInfoTypeForString("COLOR_YELLOW")).getColor());
+								NiColorA color(GC.getColorInfo((ColorTypes)GC.getInfoTypeForString("COLOR_RED")).getColor());
 								color.a = 0.5f;
-								gDLL->getEngineIFace()->fillAreaBorderPlot(pTargetPlot->getX(), pTargetPlot->getY(), color, AREA_BORDER_LAYER_RANGED);
+								gDLL->getEngineIFace()->fillAreaBorderPlot(pLoopPlot->getX(), pLoopPlot->getY(), color, AREA_BORDER_LAYER_RANGED);
 							}
 						}
 					}
 				}
 			}
+//Vincentz Rangestrike end
+		
+		
+		
+// Vincentz off		
+//			int iRange = pHeadSelectedUnit->airRange();
+//			for (iDX = -(iRange); iDX <= iRange; iDX++)
+//			{
+//				for (iDY = -(iRange); iDY <= iRange; iDY++)
+//				{
+//					CvPlot* pTargetPlot = plotXY(pHeadSelectedUnit->getX(), pHeadSelectedUnit->getY(), iDX, iDY);
+//
+//					if (pTargetPlot != NULL && pTargetPlot->isVisible(pHeadSelectedUnit->getTeam(), false)) Vincentz
+//					if (pTargetPlot != NULL)
+//					{
+//						if (plotDistance(pHeadSelectedUnit->getX(), pHeadSelectedUnit->getY(), pTargetPlot->getX(), pTargetPlot->getY()) <= iRange)
+//						{
+//							if (pHeadSelectedUnit->plot()->canSeePlot(pTargetPlot, pHeadSelectedUnit->getTeam(), iRange, pHeadSelectedUnit->getFacingDirection(true)))
+//							{
+//								NiColorA color(GC.getColorInfo((ColorTypes)GC.getInfoTypeForString("COLOR_YELLOW")).getColor());
+//								color.a = 0.5f;
+//								gDLL->getEngineIFace()->fillAreaBorderPlot(pTargetPlot->getX(), pTargetPlot->getY(), color, AREA_BORDER_LAYER_RANGED);
+//							}
+//						}
+//					}
+//				}
+//			}
 		}
 
 		FAssert(getActivePlayer() != NO_PLAYER);

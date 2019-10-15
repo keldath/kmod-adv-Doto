@@ -659,8 +659,8 @@ void CvMapGenerator::addBonuses()
 		if (iOrder >= 0) // The negative ones aren't supposed to be placed at all
 			aiOrdinals.push_back(iOrder);
 	}
-	FAssertMsg(aiOrdinals.size() <= (uint)12, "Shuffling the bonus indices this often might be slow(?)");
 	::removeDuplicates(aiOrdinals);
+	FAssertMsg(aiOrdinals.size() <= (uint)12, "Shuffling the bonus indices this often might be slow(?)");
 	std::sort(aiOrdinals.begin(), aiOrdinals.end());
 	//for (int iOrder = 0; iOrder < GC.getNumBonusInfos(); iOrder++)
 	for (size_t i = 0; i < aiOrdinals.size(); i++)

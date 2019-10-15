@@ -39,51 +39,55 @@ class BasicLimitedReligionsEvent:
 		#CyInterface().addMessage(CyGame().getActivePlayer(),True,25,'%s was finished by Player %d' %(PyInfo.TechnologyInfo(iTechType).getDescription(), iPlayer),'AS2D_DISCOVERBONUS',1,'Art/Interface/Buttons/TerrainFeatures/Forest.dds',ColorTypes(8),0,0,False,False)
 		#Check if religious tech
 		bRTech = False
-		if iTechType == gc.getInfoTypeForString("TECH_JUDAISM"):
+		if iTechType == gc.getInfoTypeForString("TECH_MONOTHEISM"):
 			iRelCheck = gc.getInfoTypeForString("RELIGION_JUDAISM")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True
-		if iTechType == gc.getInfoTypeForString("TECH_CHRIST"):
+		if iTechType == gc.getInfoTypeForString("TECH_THEOLOGY"):
 			iRelCheck = gc.getInfoTypeForString("RELIGION_CHRISTIANITY")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True
-		if iTechType == gc.getInfoTypeForString("TECH_ISLAM"):
+		if iTechType == gc.getInfoTypeForString("TECH_DIVINE_RIGHT"):
 			iRelCheck = gc.getInfoTypeForString("RELIGION_ISLAM")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True
-		if iTechType == gc.getInfoTypeForString("TECH_HINDU"):
+		if iTechType == gc.getInfoTypeForString("TECH_MEDITATION"):
 			iRelCheck = gc.getInfoTypeForString("RELIGION_HINDUISM")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True
-		if iTechType == gc.getInfoTypeForString("TECH_BUDDAISM"):
+		if iTechType == gc.getInfoTypeForString("TECH_POLYTHEISM"):
 			iRelCheck = gc.getInfoTypeForString("RELIGION_BUDDHISM")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True
-		if iTechType == gc.getInfoTypeForString("TECH_CONFUCIANISM"):
+		if iTechType == gc.getInfoTypeForString("TECH_PHILOSOPHY"):
 			iRelCheck = gc.getInfoTypeForString("RELIGION_CONFUCIANISM")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True
-		if iTechType == gc.getInfoTypeForString("TECH_TAOISM"):
+		if iTechType == gc.getInfoTypeForString("TECH_DRAMA"):
 			iRelCheck = gc.getInfoTypeForString("RELIGION_TAOISM")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True	
+		if iTechType == gc.getInfoTypeForString("TECH_HORSEBACK_RIDING"):
+			iRelCheck = gc.getInfoTypeForString("RELIGION_ODIN")
+			if not gc.getGame().isReligionSlotTaken(iRelCheck):
+				bRTech = True	
 		if iTechType == gc.getInfoTypeForString("TECH_SHINTO"):
-			iRelCheck = gc.getInfoTypeForString("RELIGION_SHINTO")
+			iRelCheck = gc.getInfoTypeForString("TECH_LITERATURE")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True
-		if iTechType == gc.getInfoTypeForString("TECH_ZOROASTRIANISM2"):
+		if iTechType == gc.getInfoTypeForString("TECH_WRITING"):
 			iRelCheck = gc.getInfoTypeForString("RELIGION_ZOROASTRIANISM")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True
 		if iTechType == gc.getInfoTypeForString("TECH_DRUIDISM"):
-			iRelCheck = gc.getInfoTypeForString("RELIGION_DRUIDISM")
+			iRelCheck = gc.getInfoTypeForString("TECH_CALENDAR")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True
-		if iTechType == gc.getInfoTypeForString("TECH_HELLENISM2"):
+		if iTechType == gc.getInfoTypeForString("TECH_PAPER"):
 			iRelCheck = gc.getInfoTypeForString("RELIGION_HELLENISM")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True
-		if iTechType == gc.getInfoTypeForString("TECH_AMONRA"):
+		if iTechType == gc.getInfoTypeForString("TECH_POTTERY"):
 			iRelCheck = gc.getInfoTypeForString("RELIGION_AMON_RA")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True	

@@ -534,6 +534,15 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 				gDLL->getSymbolID(MOVES_CHAR));
 	} // </advc.069>
 	szString.append(szTempBuffer);
+	//vincentz ranegd strike - KELDATH UI CHANGES
+	if (pUnit->airBaseCombatStr() > 0 && pUnit->baseCombatStr() > 0)
+	{
+		szString.append(gDLL->getText("TXT_KEY_UNIT_AIR_COMBATSHORT", pUnit->airBaseCombatStr()));
+	}
+	if (pUnit->airBaseCombatStr() > 0 && pUnit->baseCombatStr() == 0)
+	{
+		szString.append(gDLL->getText("TXT_KEY_ASTRENGTHSHORT", pUnit->airBaseCombatStr()));
+	}
 
 	if (pUnit->airRange() > 0)
 	{
@@ -9130,8 +9139,10 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 	if (!bCivilopediaText)
 	{
 		szBuffer.append(NEWLINE);
-
-		if (u.getDomainType() == DOMAIN_AIR)
+//Air range for land units -  vincentz ranged strike - keldath addition
+//i changed the way air combat shows - now - it if the strength is 0 - the whole "strength" wont show.
+// instead i created a new entry for - ranged strike
+/*		if (u.getDomainType() == DOMAIN_AIR)
 		{
 			if (u.getAirCombat() > 0)
 			{
@@ -9139,14 +9150,21 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 				szBuffer.append(szTempBuffer);
 			}
 		}
-		else
+*/		//Air range for land units -  vincentz ranged strike - keldath addition
+	/*	if (u.getDomainType() == DOMAIN_LAND && u.getAirCombat() > 0)
 		{
+				szTempBuffer.Format(L"%d%c%d%c, ", u.getCombat(), gDLL->getSymbolID(STRENGTH_CHAR),u.getAirCombat(),gDLL->getSymbolID(STRENGTH_CHAR));
+				szBuffer.append(szTempBuffer);
+		}
+	*/	
+	/*	else
+		{*/
 			if (u.getCombat() > 0)
 			{
 				szTempBuffer.Format(L"%d%c, ", u.getCombat(), gDLL->getSymbolID(STRENGTH_CHAR));
 				szBuffer.append(szTempBuffer);
 			}
-		}
+	/*	}*/
 		// <advc.905b>
 		bool bAllSpeedBonusesAvailable = true;
 		CvCity* pCity = gDLL->getInterfaceIFace()->getHeadSelectedCity();
@@ -9199,6 +9217,18 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 			else szBuffer.append(szSpeedBonuses);
 			szBuffer.append(L")");
 		} // </advc.905b>
+		//Air range for land units -  vincentz ranged strike - keldath addition start
+		if (u.getAirCombat() > 0 && u.getDomainType() == DOMAIN_LAND)
+		{
+			szBuffer.append(L", ");
+			szBuffer.append(gDLL->getText("TXT_KEY_ASTRENGTH", u.getAirCombat()));
+		}
+		if (u.getAirCombat() > 0 && u.getDomainType() == DOMAIN_AIR)
+		{
+			szBuffer.append(L", ");
+			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIR_COMBAT", u.getAirCombat()));
+		}
+		//Air range for land units -  vincentz ranged strike - keldath addition end
 		if (u.getAirRange() > 0)
 		{
 			szBuffer.append(L", ");

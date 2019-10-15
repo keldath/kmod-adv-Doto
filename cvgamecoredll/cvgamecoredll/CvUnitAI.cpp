@@ -1127,6 +1127,13 @@ int CvUnitAI::AI_sacrificeValue(const CvPlot* pPlot) const
 		if (combatLimit() < 100) {
 			iValue *= 150;
 			iValue /= 100;
+// Vincentz Rangeattack keldath - added here, just incase (it was commented out in vincentz
+//also - its not in the stand alone ranged
+//		if (m_pUnitInfo->getAirRange() > 0)
+//		{
+//			iValue = 0;
+//		}
+
 			iValue *= 100;
 			iValue /= std::max(1, combatLimit());
 		} */
@@ -14739,6 +14746,14 @@ bool CvUnitAI::AI_bombardCity()
 	FAssertMsg(pBombardCity != NULL, "BombardCity is not assigned a valid value");
 
 	int iAttackOdds = getGroup()->AI_attackOdds(pBombardCity->plot(), true);
+// Vincentz Rangestrike off 
+// keldath need to imolement this somehow in kmods -  but it wasnt on the org ranged.
+//		int iAttackOdds = getGroup()->AI_attackOdds(pBombardCity->plot(), /*bPotentialEnemy*/ true);
+//		if (iAttackOdds > 95)
+//		{
+//			return false;
+//		}
+// Vincentz Rangestrike end	
 	int iBase = GC.getBBAI_SKIP_BOMBARD_BASE_STACK_RATIO();
 	int iMin = GC.getBBAI_SKIP_BOMBARD_MIN_STACK_RATIO();
 	int iBombardTurns = getGroup()->getBombardTurns(pBombardCity);
@@ -14866,9 +14881,15 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, int iFlags, int iMin
 		for (int iDY = -iSearchRange; iDY <= iSearchRange; iDY++)
 		{
 			CvPlot* pLoopPlot = plotXY(getX(), getY(), iDX, iDY);
-
-			if (pLoopPlot == NULL || !AI_plotValid(pLoopPlot))
+//Vincentz Rangestrike keldath i think the cnaraneg check should com here but in false  -since !AI_plotValid(pLoopPlot) instead of AI_plotValid(pLoopPlot) see marked out comments right below
+			if (pLoopPlot == NULL || !AI_plotValid(pLoopPlot) ||(!canRangeStrike()))
 				continue;
+//keldath i dont know where to stick these
+//noth do not exists on the org
+//Vincentz Rangestrike keldath   - added to none extistant here - nneed to see where to stick this
+//				if (((AI_plotValid(pLoopPlot)) || (canRangeStrike())))
+//Vincentz Rangestrike keldath - also
+//						if (!atPlot(pLoopPlot) && (((bFollow) ? canMoveInto(pLoopPlot, true) : (generatePath(pLoopPlot, 0, true, &iPathTurns) && (iPathTurns <= iRange))) || (canRangeStrike())))
 
 			if (!bAllowCities && pLoopPlot->isCity())
 				continue;
@@ -14879,6 +14900,7 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, int iFlags, int iMin
 			if (bDeclareWar
 				? !pLoopPlot->isVisiblePotentialEnemyUnit(getOwner()) && !(pLoopPlot->isCity() && AI_potentialEnemy(pLoopPlot->getPlotCity()->getTeam(), pLoopPlot))
 				: !pLoopPlot->isVisibleEnemyUnit(this) && !pLoopPlot->isEnemyCity(*this))
+
 			{
 				continue;
 			}
@@ -14893,8 +14915,8 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, int iFlags, int iMin
 			} // </advc.033>
 			if (iEnemyDefenders < iMinStack)
 				continue;
-
-			if (!atPlot(pLoopPlot) && (bFollow ? getGroup()->canMoveOrAttackInto(pLoopPlot, bDeclareWar, true) : generatePath(pLoopPlot, iFlags, true, 0, iRange)))
+//Vincentz Rangestrike- keldath - i think the can range belogs here - see above commented out
+			if (!atPlot(pLoopPlot) && (bFollow ? getGroup()->canMoveOrAttackInto(pLoopPlot, bDeclareWar, true) : generatePath(pLoopPlot, iFlags, true, 0, iRange) || (canRangeStrike())))
 			{
 				// 101 for cities, because that's a better thing to capture.
 				int iOdds = (iEnemyDefenders == 0 ?
@@ -14950,7 +14972,15 @@ bool CvUnitAI::AI_rangeAttack(int iRange)
 		return false;
 	}
 
-	int iSearchRange = AI_searchRange(iRange);
+	//Vincentz Rangestrike
+//keldath - does not exists in the org
+	int iSearchRange = AI_searchRange(iRange) * 5;
+	if (canBombard(plot()))
+	{
+		getGroup()->pushMission(MISSION_BOMBARD);
+		return true;
+	}
+//Vincentz Rangestrike end
 
 	int iBestValue = 0;
 	CvPlot* pBestPlot = NULL;
@@ -14968,7 +14998,17 @@ bool CvUnitAI::AI_rangeAttack(int iRange)
 				{
 					if (!atPlot(pLoopPlot) && canRangeStrikeAt(plot(), pLoopPlot->getX(), pLoopPlot->getY()))
 					{
-						int iValue = getGroup()->AI_attackOdds(pLoopPlot, true);
+//Vincentz Rangestrike keldath - i think...						
+//						int iValue = getGroup()->AI_attackOdds(pLoopPlot, true);					
+//keldath adjusted to kmod advc - i think kmod replaced AI_getEnemyPlotStrength with AI_localAttackStrength
+						//	int iValue = GET_PLAYER(getOwner()).AI_getEnemyPlotStrength(pLoopPlot, 2, false, false);
+						//i dont know if the first car should be plot() or pLoopPlot
+						//im pretty sure about the rest though 
+						//int iValue = GET_PLAYER(getOwner()).AI_localAttackStrength(pLoopPlot, NO_TEAM, getDomainType(), 2, false, false, false);
+						//another change - i think choosing no_domain - will allow ai to attack land to sea also
+						int iValue = GET_PLAYER(getOwner()).AI_localAttackStrength(pLoopPlot, NO_TEAM, NO_DOMAIN, 2, false, false, false);				
+//kedlath - standalone version was with this dunnot what that will do anyway..
+//						iValue += 1000; 
 
 						if (iValue > iBestValue)
 						{
