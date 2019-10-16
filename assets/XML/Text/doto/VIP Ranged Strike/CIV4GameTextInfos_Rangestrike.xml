@@ -84,7 +84,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_ASTRENGTHSHORT</Tag>
-		<English>R-Strike: %d1</English>
+		<English>RC: %d1</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNIT_AIR_COMBAT</Tag>
@@ -92,7 +92,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNIT_AIR_COMBATSHORT</Tag>
-		<English>A-Combat: %d1</English>
+		<English>AC: %d1</English>
 	</TEXT>
 
 </Civ4GameText>

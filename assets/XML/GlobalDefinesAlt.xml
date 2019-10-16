@@ -343,11 +343,11 @@
 		<DefineName>TRUNCATE_ANIMATION_TURNS</DefineName>
 		<iDefineIntVal>14</iDefineIntVal>
 <!-- Vincentz Ranged Strike -->
-<!--	</Define>keldath - not sure thats related-->
+	</Define>
 	<!--CHANCE OF SUCCESFUL BOMBARD -->
-<!--	<Define>
+	<Define>
 		<DefineName>BOMBARD_HIT_CHANCE</DefineName>
-		<iDefineIntVal>50</iDefineIntVal>-->
+		<iDefineIntVal>50</iDefineIntVal>
 	</Define>
 	<!--SIZE OF THE ATTACK-DICE, THE HIGHER, THE LESS AIRSTRENGTH/STRENGHT IS A FACTOR -->
 	<Define>
