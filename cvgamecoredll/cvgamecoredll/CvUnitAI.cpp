@@ -14974,7 +14974,7 @@ bool CvUnitAI::AI_rangeAttack(int iRange)
 
 	//Vincentz Rangestrike
 //keldath - does not exists in the org
-	int iSearchRange = AI_searchRange(iRange) * 5;
+//	int iSearchRange = AI_searchRange(iRange) * 5;
 	if (canBombard(plot()))
 	{
 		getGroup()->pushMission(MISSION_BOMBARD);
@@ -14982,39 +14982,35 @@ bool CvUnitAI::AI_rangeAttack(int iRange)
 	}
 //Vincentz Rangestrike end
 
-	int iBestValue = 0;
+//	int iBestValue = 0;
 	CvPlot* pBestPlot = NULL;
 
-	for (int iDX = -(iSearchRange); iDX <= iSearchRange; iDX++)
+	int iBestValue = 0;
+	int iSearchRange = AI_searchRange(iRange);
+	/*  advc.opt: I don't think MISSION_RANGE_ATTACK will cause the unit to move
+		toward the target. No point in searching beyond the air range then. */
+	iSearchRange = std::min(iSearchRange, airRange());	
+	for (int iDX = -iSearchRange; iDX <= iSearchRange; iDX++)
 	{
 		for (int iDY = -(iSearchRange); iDY <= iSearchRange; iDY++)
 		{
-			CvPlot* pLoopPlot = plotXY(getX(), getY(), iDX, iDY);
+			CvPlot* pLoopPlot = ::plotXY(getX(), getY(), iDX, iDY);
+			if (pLoopPlot == NULL || atPlot(pLoopPlot))
+				continue; // advc
 
-			if (pLoopPlot != NULL)
+			//if (pLoopPlot->isVisibleEnemyUnit(this) || (pLoopPlot->isCity() && AI_potentialEnemy(pLoopPlot->getTeam())))
+			if (pLoopPlot->isVisibleEnemyUnit(this)) // K-Mod
 			{
-				//if (pLoopPlot->isVisibleEnemyUnit(this) || (pLoopPlot->isCity() && AI_potentialEnemy(pLoopPlot->getTeam())))
-				if (pLoopPlot->isVisibleEnemyUnit(this)) // K-Mod
+				if (canRangeStrikeAt(plot(), pLoopPlot->getX(), pLoopPlot->getY()))
 				{
-					if (!atPlot(pLoopPlot) && canRangeStrikeAt(plot(), pLoopPlot->getX(), pLoopPlot->getY()))
-					{
-//Vincentz Rangestrike keldath - i think...						
-//						int iValue = getGroup()->AI_attackOdds(pLoopPlot, true);					
-//keldath adjusted to kmod advc - i think kmod replaced AI_getEnemyPlotStrength with AI_localAttackStrength
-						//	int iValue = GET_PLAYER(getOwner()).AI_getEnemyPlotStrength(pLoopPlot, 2, false, false);
-						//i dont know if the first car should be plot() or pLoopPlot
-						//im pretty sure about the rest though 
-						//int iValue = GET_PLAYER(getOwner()).AI_localAttackStrength(pLoopPlot, NO_TEAM, getDomainType(), 2, false, false, false);
-						//another change - i think choosing no_domain - will allow ai to attack land to sea also
-						int iValue = GET_PLAYER(getOwner()).AI_localAttackStrength(pLoopPlot, NO_TEAM, NO_DOMAIN, 2, false, false, false);				
-//kedlath - standalone version was with this dunnot what that will do anyway..
-//						iValue += 1000; 
-
-						if (iValue > iBestValue)
-						{
-							iBestValue = iValue;
-							pBestPlot = pLoopPlot;
-						}
+					//Vincentz Rangestrike -adapted to advc )changed range to 2 - according to f1rpo - 
+					//no logic in counting up to 2 tiles away from the target stack
+					int iValue = GET_PLAYER(getOwner()).AI_localAttackStrength(pLoopPlot, NO_TEAM, NO_DOMAIN, 0, false, false, false);				
+					//int iValue = AI_getGroup()->AI_attackOdds(pLoopPlot, true);
+					if (iValue > iBestValue)
+					{						
+						iBestValue = iValue;
+						pBestPlot = pLoopPlot;
 					}
 				}
 			}
@@ -15023,7 +15019,7 @@ bool CvUnitAI::AI_rangeAttack(int iRange)
 
 	if (pBestPlot != NULL)
 	{
-		FAssert(!atPlot(pBestPlot));
+		//FAssert(!atPlot(pBestPlot));
 		// K-Mod note: no AI_considerDOW here.
 		getGroup()->pushMission(MISSION_RANGE_ATTACK, pBestPlot->getX(), pBestPlot->getY(), 0);
 		return true;

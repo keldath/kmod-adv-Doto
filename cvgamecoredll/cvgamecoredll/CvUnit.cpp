@@ -5139,7 +5139,8 @@ bool CvUnit::airBomb(int iX, int iY)
 	*/	// Replacing this line: // </advc.004c>
 		//pCity->changeDefenseModifier(-airBombCurrRate());
 		//<advc.004c> added by kel	
-		//Vincentz rangedstrike Randomized Airbomb
+//Vincentz rangedstrike Randomized Airbomb - keldath changes - canceled f1rpo system above
+		// if a unit has ignore city defense - it causes 0 damage when attack.
 		pCity->changeDefenseModifier((-airBombCurrRate() * 50 + GC.getGame().getSorenRandNum(100, "Air Bomb - Random")) / 100);
 
 		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_DEFENSES_REDUCED_TO", pCity->getNameKey(), pCity->getDefenseModifier(false), getNameKey());
@@ -5288,15 +5289,16 @@ bool CvUnit::bombard()
 		//getGroup()->groupDeclareWar(pTargetPlot, true); // Disabled by K-Mod
 		return false;
 	} // <advc.004c>
-/*	bool bIgnore = ignoreBuildingDefense();
-	int iDefWithBuildings = pBombardCity->getDefenseModifier(false);
-	FAssertMsg(iDefWithBuildings > 0 || isHuman(),
-			"The AI shoudn't bombard cities whose def is already 0");
-	int iDefSansBuildings = pBombardCity->getDefenseModifier(true);
+//vincentz ranged strike keldath removed this section - causes 0 damage with thranged system
+//	bool bIgnore = ignoreBuildingDefense();
+//	int iDefWithBuildings = pBombardCity->getDefenseModifier(false);
+//	FAssertMsg(iDefWithBuildings > 0 || isHuman(),
+//			"The AI shoudn't bombard cities whose def is already 0");
+//	int iDefSansBuildings = pBombardCity->getDefenseModifier(true);
 	// </advc.004c>
-*/	int iBombardModifier = 0;
-/*	if (!bIgnore) // advc.004c
-*/		iBombardModifier -= pBombardCity->getBuildingBombardDefense();
+//	int iBombardModifier = 0;
+//	if (!bIgnore) // advc.004c
+//		iBombardModifier -= pBombardCity->getBuildingBombardDefense();
 	// <advc.004c> Same formula as in BtS (except for rounding)
 //	double chg = -(bombardRate() * std::max(0, 100 + iBombardModifier)) / 100.0;
 //	if(bIgnore && iDefSansBuildings > 0) /*  bIgnore doesn't just ignore
@@ -5305,28 +5307,34 @@ bool CvUnit::bombard()
 //		chg *= iDefWithBuildings / (double)iDefSansBuildings;
 //	pBombardCity->changeDefenseModifier(std::min(0, ::round(chg)));
 	// </advc.004c>
-
-	//Vincentz ranged strike Bombard random
-//	int RandomBombardChance = GC.getGameINLINE().getSorenRandNum(100, "RandomHit");
-	int RandomBombardDamage = 50 + GC.getGame().getSorenRandNum(100, "RandomDamage");
-/*	if (RandomBombardChance > (bombardRate() + GC.getDefineINT("BOMBARD_HIT_CHANCE")))
+//Vincentz ranged strike Bombard random	-keldath addition this is vanilla code - instead of f1rpo
+	int iBombardModifier = 0;
+	if (!ignoreBuildingDefense())
 	{
-		CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_MISSED", pBombardCity->getNameKey(), pBombardCity->getDefenseModifier(false), GET_PLAYER(getOwnerINLINE()).getNameKey());
-		gDLL->getInterfaceIFace()->addMessage(pBombardCity->getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), pBombardCity->getX_INLINE(), pBombardCity->getY_INLINE(), true, true);
-
+		iBombardModifier -= pBombardCity->getBuildingBombardDefense();
+	}
+//Vincentz ranged strike Bombard random -keldath addition this is vanilla code - instead of f1rpo
+//Vincentz ranged strike Bombard random
+	int RandomBombardChance = GC.getGame().getSorenRandNum(100, "RandomHit");
+	int RandomBombardDamage = 50 + GC.getGame().getSorenRandNum(100, "RandomDamage");
+	if (RandomBombardChance > (bombardRate() + GC.getDefineINT("BOMBARD_HIT_CHANCE")))
+	{
+		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_MISSED", pBombardCity->getNameKey(), pBombardCity->getDefenseModifier(false), GET_PLAYER(getOwner()).getNameKey())); 
+		gDLL->getInterfaceIFace()->addHumanMessage(pBombardCity->getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), pBombardCity->getX(), pBombardCity->getY(), true, true);
+		
 		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_MISSED_CITY_DEFENSES", getNameKey(), pBombardCity->getNameKey(), pBombardCity->getDefenseModifier(false));
-		gDLL->getInterfaceIFace()->addMessage(getOwnerINLINE(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), pBombardCity->getX_INLINE(), pBombardCity->getY_INLINE());
+		gDLL->getInterfaceIFace()->addHumanMessage(getOwner(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), pBombardCity->getX(), pBombardCity->getY());
 	}
 	else
 	{
-*/
+
 		pBombardCity->changeDefenseModifier(-(bombardRate() * currHitPoints() / maxHitPoints() * RandomBombardDamage * std::max(0, 100 + iBombardModifier)) / (100 * 100));
-/*
-		CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_REDUCED_TO", pBombardCity->getNameKey(), pBombardCity->getDefenseModifier(false), GET_PLAYER(getOwnerINLINE()).getNameKey());
-		gDLL->getInterfaceIFace()->addMessage(pBombardCity->getOwnerINLINE(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), pBombardCity->getX_INLINE(), pBombardCity->getY_INLINE(), true, true);
+
+		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_REDUCED_TO", pBombardCity->getNameKey(), pBombardCity->getDefenseModifier(false), GET_PLAYER(getOwner()).getNameKey())); 
+		gDLL->getInterfaceIFace()->addHumanMessage(pBombardCity->getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), pBombardCity->getX(), pBombardCity->getY(), true, true);
 
 		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_REDUCE_CITY_DEFENSES", getNameKey(), pBombardCity->getNameKey(), pBombardCity->getDefenseModifier(false));
-		gDLL->getInterfaceIFace()->addMessage(getOwnerINLINE(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), pBombardCity->getX_INLINE(), pBombardCity->getY_INLINE());
+		gDLL->getInterfaceIFace()->addHumanMessage(getOwner(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), pBombardCity->getX(), pBombardCity->getY());
 
 		if (RandomBombardDamage > 75)
 		{
@@ -5335,19 +5343,16 @@ bool CvUnit::bombard()
 	}
 
 	setMadeAttack(true);
-	// changeMoves(GC.getMOVE_DENOMINATOR()); Vincentz Bombard extracost
 	if (getDomainType() == DOMAIN_LAND)
 	{
 		finishMoves();
 	}
 	else
 	{
-		changeMoves(GC.getMOVE_DENOMINATOR() * GC.getDefineINT("MOVE_MULTIPLIER"));
+		changeMoves(GC.getMOVE_DENOMINATOR());
 	}
-	*/
-	setMadeAttack(true);
-	changeMoves(GC.getMOVE_DENOMINATOR());
-
+//Vincentz ranged strike Bombard random
+	
 	CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_REDUCED_TO",
 			pBombardCity->getNameKey(), pBombardCity->getDefenseModifier(false),
 			GET_PLAYER(getOwner()).getNameKey());
@@ -5357,6 +5362,8 @@ bool CvUnit::bombard()
 			pBombardCity->getX(), pBombardCity->getY(), true, true);
 	szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_REDUCE_CITY_DEFENSES",
 			getNameKey(), pBombardCity->getNameKey(),
+//Vincentz rangedstrike Randomized Airbomb - keldath changes - canceled f1rpo system above
+// if a unit has ignore city defense - it causes 0 damage when attack.		
 //			pBombardCity->getDefenseModifier(bIgnore)); // advc.004g: arg was false
 			pBombardCity->getDefenseModifier(false));
 	gDLL->getInterfaceIFace()->addHumanMessage(getOwner(),
@@ -13172,7 +13179,7 @@ bool CvUnit::airStrike(CvPlot* pPlot)
 
 	return true;
 }
-//vincentz ranged stike - fqrpo fix for loop call
+//vincentz ranged stike - fqrpo fix for loop call from the strike back
 bool CvUnit::canRangeStrike(bool bStrikeBack) const
 {
 	if (getDomainType() == DOMAIN_AIR)
@@ -13270,6 +13277,16 @@ bool CvUnit::canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY , bool bStrike
 	
 	if (NULL == pDefender)
 	{
+/*		this is from advc i think - keldath or kmod
+		if (pCity != NULL)
+		{
+			//if (!(pCity->isBombardable(this)))
+			if (!pCity->isBombardable(this) )//|| !pCity->isRevealed(getTeam(), false)) // K-Mod
+			{
+				return false;
+			}
+		}
+*/
 		return false;
 	}
 //Vincentz ranged strike - keldath new implementation 
@@ -13316,7 +13333,8 @@ bool CvUnit::rangeStrike(int iX, int iY)
 	if (!canRangeStrikeAt(plot(), iX, iY))
 	{
 				return false;
-	} // UNOFFICIAL_PATCH: END
+	} // UNOFFICIAL_PATCH: END	
+		
 
 	CvUnit* pDefender = airStrikeTarget(pPlot);
 
