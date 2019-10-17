@@ -5353,23 +5353,6 @@ bool CvUnit::bombard()
 	}
 //Vincentz ranged strike Bombard random
 	
-	CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_REDUCED_TO",
-			pBombardCity->getNameKey(), pBombardCity->getDefenseModifier(false),
-			GET_PLAYER(getOwner()).getNameKey());
-	gDLL->getInterfaceIFace()->addHumanMessage(pBombardCity->getOwner(),
-			false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARDED",
-			MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"),
-			pBombardCity->getX(), pBombardCity->getY(), true, true);
-	szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_REDUCE_CITY_DEFENSES",
-			getNameKey(), pBombardCity->getNameKey(),
-//Vincentz rangedstrike Randomized Airbomb - keldath changes - canceled f1rpo system above
-// if a unit has ignore city defense - it causes 0 damage when attack.		
-//			pBombardCity->getDefenseModifier(bIgnore)); // advc.004g: arg was false
-			pBombardCity->getDefenseModifier(false));
-	gDLL->getInterfaceIFace()->addHumanMessage(getOwner(),
-			true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_BOMBARD",
-			MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"),
-			pBombardCity->getX(), pBombardCity->getY());
 
 	if (pPlot->isActiveVisible(false))
 	{
@@ -13345,6 +13328,14 @@ bool CvUnit::rangeStrike(int iX, int iY)
 	{
 		setMadeAttack(true);
 	}
+	///Keldath addition - i want sea units
+	// not to be allowed to carry out both ranged and both
+	// normal attack 0 since ranged attack  - will only finish land units movement below
+	//the land units - are controllable by the above if.	
+	if (getDomainType() == DOMAIN_SEA)
+	{
+		setMadeAttack(true);
+	}							  
 //RANGED STRIKE VINCENTZ
 	//keldath notes - i guess if the domain is land - always finish up movement to these units.
 	if (getDomainType() == DOMAIN_LAND)

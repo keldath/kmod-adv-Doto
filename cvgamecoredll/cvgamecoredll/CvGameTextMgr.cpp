@@ -940,11 +940,28 @@ else
 				szString.append(gDLL->getText("TXT_KEY_UNIT_WITHDRAWL_PROBABILITY", pUnit->withdrawalProbability()));
 			}
 		}
-
+/* original
 		if (pUnit->combatLimit() < GC.getMAX_HIT_POINTS() && pUnit->canAttack())
 		{
 			szString.append(NEWLINE);
 			szString.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT", (100 * pUnit->combatLimit()) / GC.getMAX_HIT_POINTS()));
+		}
+*/
+		//vincentz ranged strike - now will also dispplay aircombat limit for units
+		if ((pUnit->combatLimit() < GC.getMAX_HIT_POINTS()
+			||pUnit->airCombatLimit() < GC.getMAX_HIT_POINTS() )
+			&& !pUnit->isOnlyDefensive())
+		{
+			if(pUnit->airCombatLimit() > 0 && (pUnit->airRange()) > 0 ) 
+			{
+				szString.append(NEWLINE);
+				szString.append(gDLL->getText("TXT_KEY_UNIT_AIRCOMBAT_LIMIT", (100 * pUnit->airCombatLimit()) / GC.getMAX_HIT_POINTS()));
+			}
+			else 
+			{
+				szString.append(NEWLINE);
+				szString.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT", (100 * pUnit->combatLimit()) / GC.getMAX_HIT_POINTS()));
+			} 
 		}
 
 		if (pUnit->collateralDamage() > 0)
@@ -9620,11 +9637,21 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		szBuffer.append(NEWLINE);
 		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_WITHDRAWL_PROBABILITY", u.getWithdrawalProbability()));
 	}
-
-	if (u.getCombatLimit() < GC.getMAX_HIT_POINTS() && u.getCombat() > 0 && !u.isOnlyDefensive())
+	//vincentz ranged strike - now will also dispplay aircombat limit for units
+	if ((u.getCombatLimit() < GC.getMAX_HIT_POINTS() && u.getCombat() > 0 
+		||u.getAirCombatLimit() < GC.getMAX_HIT_POINTS() && u.getAirCombat() > 0 )
+		&& !u.isOnlyDefensive())
 	{
-		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT", (100 * u.getCombatLimit()) / GC.getMAX_HIT_POINTS()));
+		if(u.getAirCombat() > 0 && (u.getAirRange()) > 0 ) 
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIRCOMBAT_LIMIT", (100 * u.getAirCombatLimit()) / GC.getMAX_HIT_POINTS()));
+		}
+		else 
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT", (100 * u.getCombatLimit()) / GC.getMAX_HIT_POINTS()));
+		} 
 	}
 
 	if (u.getCollateralDamage() > 0)
@@ -19025,7 +19052,9 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 	{
 		if (pCity->isVisible(GC.getGame().getActiveTeam(), true))
 		{
+			//keldath show defense even if ignore buidling defense
 			int iDefenseModifier = pCity->getDefenseModifier(GC.getGame().selectionListIgnoreBuildingDefense());
+			//int iDefenseModifier = pCity->getDefenseModifier(1);
 
 			if (iDefenseModifier != 0)
 			{

@@ -1496,7 +1496,8 @@ void CvPlayer::addFreeUnit(UnitTypes eUnit, UnitAITypes eUnitAI)
 
 				for (int iI = 0; iI < NUM_CITY_PLOTS; iI++)
 				{
-					CvPlot* pLoopPlot = plotCity(pStartingPlot->getX(), pStartingPlot->getY(), ((iI + iRandOffset) % NUM_CITY_PLOTS));
+					//place all units on one tile - keldath
+					CvPlot* pLoopPlot = plotCity(pStartingPlot->getX(), pStartingPlot->getY(), iI ); //((iI + iRandOffset) % NUM_CITY_PLOTS));
 
 					if (pLoopPlot != NULL)
 					{
