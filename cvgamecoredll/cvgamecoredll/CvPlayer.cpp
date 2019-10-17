@@ -1496,7 +1496,8 @@ void CvPlayer::addFreeUnit(UnitTypes eUnit, UnitAITypes eUnitAI)
 
 				for (int iI = 0; iI < NUM_CITY_PLOTS; iI++)
 				{
-					CvPlot* pLoopPlot = plotCity(pStartingPlot->getX(), pStartingPlot->getY(), ((iI + iRandOffset) % NUM_CITY_PLOTS));
+					//place all units on one tile - keldath
+					CvPlot* pLoopPlot = plotCity(pStartingPlot->getX(), pStartingPlot->getY(), iI ); //((iI + iRandOffset) % NUM_CITY_PLOTS));
 
 					if (pLoopPlot != NULL)
 					{
@@ -3207,7 +3208,8 @@ void CvPlayer::doTurn()  // advc.003: style changes
 	CvGame& g = GC.getGame();
 	/* <advc.106b> Can't figure out from within CvGame whether it's an AI turn,
 	   need assistance from CvPlayer. */
-	g.setInBetweenTurns(true);
+	if (!g.isMPOption(MPOPTION_SIMULTANEOUS_TURNS))
+		g.setInBetweenTurns(true);
 	if(isHuman() && //getStartOfTurnMessageLimit() >= 0 && // The message should be helpful even if the log doesn't auto-open
 			g.getElapsedGameTurns() > 0 && !m_listGameMessages.empty()) {
 		gDLL->getInterfaceIFace()->addHumanMessage(getID(), false, 0,
@@ -23543,7 +23545,10 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& o
 				/*  Hack: Check if we're expecting a renegotiate-popup from the EXE.
 					Don't want any resources in the canceled deal to be excluded
 					from the trade table. */
-				if(!bValid && !GC.getGame().isInBetweenTurns()) {
+				if(!bValid && !GC.getGame().isInBetweenTurns() &&
+					// Probably too complicated to get this right with simultaneous turns
+					!GC.getGame().isMPOption(MPOPTION_SIMULTANEOUS_TURNS))
+				{
 					for(CLLNode<std::pair<PlayerTypes,BonusTypes> >* pNode =
 							m_cancelingExport.head(); pNode != NULL; pNode =
 							m_cancelingExport.next(pNode)) {
@@ -24753,9 +24758,16 @@ double CvPlayer::estimateYieldRate(YieldTypes eYield, int iSamples) const {
 } // </advc.104>
 
 // <advc.004x>
-void CvPlayer::killAll(ButtonPopupTypes ePopupType, int iData1) {
-
-	if(getID() != GC.getGame().getActivePlayer() || !isHuman())
+void CvPlayer::killAll(ButtonPopupTypes ePopupType, int iData1)
+{
+	CvGame const& g = GC.getGame();
+	if(getID() != g.getActivePlayer() || !isHuman() ||
+			 /* (If outdated non-minimized popups are also a problem, then this
+				check could just be removed; should work alright.) */
+			!isOption(PLAYEROPTION_MINIMIZE_POP_UPS) ||
+			/*  I can't get this to work in network games. The delays introduced by
+				net messages cause popups to appear several times. */
+			g.isNetworkMultiPlayer())
 		return;
 	// Preserve the popups we don't want killed in newQueue
 	std::list<CvPopupInfo*> newQueue;

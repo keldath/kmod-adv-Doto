@@ -1,0 +1,26 @@
+
+Bummped up many bonuses for more perks
+
+changed reseach values in sea level related
+
+changed player handicap - more barbarian cities and unit spawn time
+
+changed player handicap - raised % of war declaration.
+
+raised attack odds by 2 for all leaders - by 12 to barbarians.
+
+change tech modifier for 2 eras 0 was negative value - by f1rpo
+
+fixed religion ra icon
+fixed judaism found icon
+
+added odin religion
+
+todo
+add odin mostary,cathdral, temple
+add 5 religions free for all
+add 2-5 buildings in early era.
+add science bonuses a bit mostly via civics
+fir pyramid python error
+add platy national wonders
+

@@ -533,7 +533,7 @@ class CvEventManager:
 					if loopCity.isHasReligion(iStateReligion):
 						loopCity.changeCulture(iPlayerX, loopCity.getCultureThreshold() /5, true)
 					(loopCity, iter) = pPlayerX.nextCity(iter, false)
-			CyInterface().addImmediateMessage(CyTranslator().getText("TXT_DUOMO_BUILT",(gc.getReligionInfo(iStateReligion).getDescription(),)), None)
+			CyInterface().addImmediateMessage(CyTranslator().getText("TXT_KEY_BUILDING_PYRAMID",(gc.getReligionInfo(iStateReligion).getDescription(),)), None)
 ## The Duomo End ##
 		if ((not gc.getGame().isNetworkMultiPlayer()) and (pCity.getOwner() == gc.getGame().getActivePlayer()) and isWorldWonderClass(gc.getBuildingInfo(iBuildingType).getBuildingClassType())):
 			# If this is a wonder...

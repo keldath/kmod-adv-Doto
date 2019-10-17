@@ -3,128 +3,210 @@
 <!-- Sid Meier's Civilization 4 -->
 <!-- Copyright Firaxis Games 2005 -->
 <!-- -->
-<!--Capture	 Either NONE, or the unit which the unit turns into when captured.
-Class	 The class as defined in CIV4UnitClassInfos.xml. Class is the thing that holds, say, a Swordsman and a Praetorian together; each civilization can only have one of each class.
-Combat	 The combat type, out of UNITCOMBAT_MELEE, UNITCOMBAT_ARCHER, UNITCOMBAT_MOUNTED, UNITCOMBAT_GUN, UNITCOMBAT_SIEGE, UNITCOMBAT_NAVAL, UNITCOMBAT_AIR and UNITCOMBAT_HELICOPTER of the unit - used to determine bonuses in combat & defense.
-Domain	 DOMAIN_ - then AIR, SEA or LAND.
-DefaultUnitAI	 The default way in which the AI uses the unit.
-Invisible	 Either NONE (either meaning not invisible or completely invisible, see below) or INVISIBLE_STEALTH or INVISIBLE_SUBMARINE.
-SeeInvisible	 Either NONE or a category of invisibility above. Means that the unit can see all units with this type of invisibility.
-Special	 Should be NONE unless it comes under a heading in CIV4SpecialUnitInfos.xml; in which case write that.
-Type	 The name of the unit; which must be unique.
-UnitInfo	 Each different unit's data is enclosed in a seperate tag like this.
-UnitInfos	 This begins and ends the file. Everything must go in between these two, or it will not work.
-UniqueNames	 Can be used to make the same unit have seperate names. kinda the same as cities. Can either contain text or a text tag
-AdvancedStartCost	 The cost in points of the unit on Advanced Start.
-AdvancedStartCostIncrease	 Affects the cost in points of the unit on Advanced Start.
-BonusType	 The resource needed to build this unit.
-Flavors	 The 'flavours' of the unit - these relate to leader behavior in the AI.
-HolyCity	 If not NONE, then it is the Holy City needed to build the unit.
-HurryCostModifier	 Impacts the Gold Hurry cost of the unit.
-MinAreaSize	 Minimal number of water squares needed nearby to build sea vessels (20 for all sea units except Work Boats).
-Moves	 The number of movement points that the unit has.
-PrereqBonuses	 Used as a list tag to enclose BonusType tags.
-PrereqBuilding	 Either NONE, or the building needed in a city to build this unit.
-PrereqCorporation	 Either NONE, or the corporation needed in a city to build this unit.
-PrereqReligion	 Either NONE, or the religion needed in a city to build this unit.
-PrereqTech	 Either NONE, or the technology that you need to build this unit.
-ProductionTraits	 The leader traits which affect production of this unit, along with the value.
-ReligionType	 For units, always NONE.
-StateReligion	 If not NONE, the State Religion needed to build this unit.
-TechTypes	 Used as a list tag to enclose PrereqTech tags.
-Advisor	 Almost always ADVISOR_MILITARY; the rationale that the game gives for reccomending the unit.
-Civilopedia	 As above for the Civiliopedia entry.
-Description	 Either text or a key from the text files. The name displayed for the unit.
-Help	 Optional. A text that can include some more information to display. The text is specified in any of the Assets\XML\Text files.
-Strategy	 As above for the Sid's Tips, also displayed above the Civilopedia entry.
-iAirCombat	 The unit's base strength for Air Units.
-iAirCombatLimit	 Max amount of damage (in percent) able to be inflicted on enemy units when air striking.
-iAirRange	 The range at which an air unit it can operate or the range at which a ground unit can attack.
-iAirUnitCap	 The number of air unit capacity slots the unit takes up  should be 1 for most, if not all, air units.
-iAIWeight	 The preference given by the AI to this unit, generally for Unique Units.
-iAnimalCombat	 The percent bonus that the unit gets against Animals, in attack and defense.
-iAsset	 Affects the AI's behaviour towards it in some way.
-iBaseDiscover	 The basic rate at which the unit researches technologies.
-iBaseHurry	 Amount of production in a city the unit can hurry.
-iBaseTrade	 The basic amount of money that the unit makes from a Trade Mission.
-iBombardRate	 The rate at which a unit Bombards a city.
-iBombRate	 The damage that a unit does when carrying out an Air Bomb mission.
-iCargo	 The number of units that the unit can carry.
-iChanceFirstStrikes	 The number of First Strike Chances that the unit has.
-iCityAttack	 The percent bonus that the unit gets when attacking cities.
-iCityDefense	 The percent bonus that the unit gets when defending cities.
-iCollateralDamage	 The amount of collateral damage (in percent) that the unit deals.
-iCollateralDamageLimit	 The maximum amount of collateral damage that the unit can deal.
-iCollateralDamageMaxUnits	 The greatest number of enemy units that the unit can inflict collateral damage on.
-iConscription	 The number of this unit that can be drafted.
-iCombat	 The unit's base strength.
-iCombatLimit	 Percentage that tells how much damage a unit can give out before retreating.
-iCost	 The cost in hammers of the unit.
-iCultureGarrison	 The suppression value of a unit while garrisoned in a rebelling city.
-iDiscoverMultiplier	 Affects the rate at which the unit researches technologies.
-iDropRange	 The range at which the unit can 'jump'/paradrop from a friendly city.
-iEspionagePoints	 Used for Spy Units (ex. Great Spy) - the number of espionage points the unit can generate when infiltrating an enemy city.
-iEvasionProbability	 For air and parachute units; the odds of evading interception.
-iExtraCost	 Affects the upkeep (in gold per turn) of the unit; ex. a value of 1 equals +1 gold per turn cost.
-iFirstStrikes	 The number of automatic First Strikes that the unit has.
-iGreatWorkCulture	 The amount of culture that the unit generates with a Great Work.
-iHillsAttack	 The percent bonus that the unit gets when attacking hills.
-iHillsDefense	 The percent bonus that the unit gets when defending hills.
+<!--Capture	Either NONE, or the unit which the unit turns into when captured.
+Class	The class as defined in CIV4UnitClassInfos.xml. Class is the thing that holds, say, a Swordsman and a Praetorian together; each civilization can only have one of each class.
+Combat	The combat type, out of UNITCOMBAT_MELEE, UNITCOMBAT_ARCHER, UNITCOMBAT_MOUNTED, UNITCOMBAT_GUN, UNITCOMBAT_SIEGE, UNITCOMBAT_NAVAL, UNITCOMBAT_AIR and UNITCOMBAT_HELICOPTER of the unit - used to determine bonuses in combat & defense.
+Domain	DOMAIN_ - then AIR, SEA or LAND.
+DefaultUnitAI	The default way in which the AI uses the unit.
+Invisible	Either NONE (either meaning not invisible or completely invisible, see below) or INVISIBLE_STEALTH or INVISIBLE_SUBMARINE.
+SeeInvisible	Either NONE or a category of invisibility above. Means that the unit can see all units with this type of invisibility.
+Special	Should be NONE unless it comes under a heading in CIV4SpecialUnitInfos.xml; in which case write that.
+Type	The name of the unit; which must be unique.
+UnitInfo	Each different unit's data is enclosed in a seperate tag like this.
+UnitInfos	This begins and ends the file. Everything must go in between these two, or it will not work.
+UniqueNames	Can be used to make the same unit have seperate names. kinda the same as cities. Can either contain text or a text tag
+Prerequisites
+These tags must be included when writing new entries, or the game will crash or otherwise malfunction.
+Tag Name	Description
+AdvancedStartCost	The cost in points of the unit on Advanced Start.
+AdvancedStartCostIncrease	Affects the cost in points of the unit on Advanced Start.
+BonusType	The resource needed to build this unit.
+Flavors	The 'flavours' of the unit - these relate to leader behavior in the AI.
+HolyCity	If not NONE, then it is the Holy City needed to build the unit.
+HurryCostModifier	Impacts the Gold Hurry cost of the unit.
+MinAreaSize	Minimal number of water squares needed nearby to build sea vessels (20 for all sea units except Work Boats).
+Moves	The number of movement points that the unit has.
+PrereqBonuses	Used as a list tag to enclose BonusType tags.
+PrereqBuilding	Either NONE, or the building needed in a city to build this unit.
+PrereqCorporation	Either NONE, or the corporation needed in a city to build this unit.
+PrereqReligion	Either NONE, or the religion needed in a city to build this unit.
+PrereqTech	Either NONE, or the technology that you need to build this unit.
+ProductionTraits	The leader traits which affect production of this unit, along with the value.
+ReligionType	For units, always NONE.
+StateReligion	If not NONE, the State Religion needed to build this unit.
+TechTypes	Used as a list tag to enclose PrereqTech tags.
+Text
+Tag Name	Description
+Advisor	Almost always ADVISOR_MILITARY; the rationale that the game gives for reccomending the unit.
+Civilopedia	As above for the Civiliopedia entry.
+Description	Either text or a key from the text files. The name displayed for the unit.
+Help	Optional. A text that can include some more information to display. The text is specified in any of the Assets\XML\Text files.
+Strategy	As above for the Sid's Tips, also displayed above the Civilopedia entry.
+Integers
+All of these tags have a numerical value. Though it sometimes can be negative, it usually is not.
+Tag Name	Description
+iAirCombat	The unit's base strength for Air Units.
+iAirCombatLimit	Max amount of damage (in percent) able to be inflicted on enemy units when air striking.
+iAirRange	The range at which an air unit it can operate or the range at which a ground unit can attack.
+iAirUnitCap	The number of air unit capacity slots the unit takes up  should be 1 for most, if not all, air units.
+iAIWeight	The preference given by the AI to this unit, generally for Unique Units.
+iAnimalCombat	The percent bonus that the unit gets against Animals, in attack and defense.
+iAsset	Affects the AI's behaviour towards it in some way.
+iBaseDiscover	The basic rate at which the unit researches technologies.
+iBaseHurry	Amount of production in a city the unit can hurry.
+iBaseTrade	The basic amount of money that the unit makes from a Trade Mission.
+iBombardRate	The rate at which a unit Bombards a city.
+iBombRate	The damage that a unit does when carrying out an Air Bomb mission.
+iCargo	The number of units that the unit can carry.
+iChanceFirstStrikes	The number of First Strike Chances that the unit has.
+iCityAttack	The percent bonus that the unit gets when attacking cities.
+iCityDefense	The percent bonus that the unit gets when defending cities.
+iCollateralDamage	The amount of collateral damage (in percent) that the unit deals.
+iCollateralDamageLimit	The maximum amount of collateral damage that the unit can deal.
+iCollateralDamageMaxUnits	The greatest number of enemy units that the unit can inflict collateral damage on.
+iConscription	The number of this unit that can be drafted.
+iCombat	The unit's base strength.
+iCombatLimit	Percentage that tells how much damage a unit can give out before retreating.
+iCost	The cost in hammers of the unit.
+iCultureGarrison	The suppression value of a unit while garrisoned in a rebelling city.
+iDiscoverMultiplier	Affects the rate at which the unit researches technologies.
+iDropRange	The range at which the unit can 'jump'/paradrop from a friendly city.
+iEspionagePoints	Used for Spy Units (ex. Great Spy) - the number of espionage points the unit can generate when infiltrating an enemy city.
+iEvasionProbability	For air and parachute units; the odds of evading interception.
+iExtraCost	Affects the upkeep (in gold per turn) of the unit; ex. a value of 1 equals +1 gold per turn cost.
+iFirstStrikes	The number of automatic First Strikes that the unit has.
+iGreatWorkCulture	The amount of culture that the unit generates with a Great Work.
+iHillsAttack	The percent bonus that the unit gets when attacking hills.
+iHillsDefense	The percent bonus that the unit gets when defending hills.
 iHotKeyPriority	Not sure what this does.
-iHurryMultiplier	 Multiplier of the above.
-iInterceptionProbability	 The percent odds a unit has of intercepting an enemy unit within range trying to carry out an air mission.
-iLeaderExperience	 The amount of experience this unit gives to units in the same stack when leading as a warlord; used for Great Generals.
-iNukeRange	 The range at which the 'nuke' can be launched - missiles only.
-iOrderPriority	 Optional. Not sure what this does.
-iPower	 Affects the amount that the AI factors it into the equation when determining your military power.
-iTradeMultiplier	 Affects the amount of money that the unit makes from a Trade Mission.
-iWithdrawalProb	 The percent withdrawal chance the unit has. Maximum Value is in GlobalDefines.xml
-iWorkRate	 The rate at which the unit improves tiles.
-iXPValueAttack	 The value, in Experience Points, that this unit is worth on the attack.
-iXPValueDefense	 The value, in Experience Points, that this unit is worth on the defense.
-bAltDown	 If 1, the hotkey for this unit must be used with Alt.
-bAlwaysHostile	 Can attack enemy units without declaring war, and can be attacked without triggering a war. All nations treat it as an enemy unit.
-bAnimal	 The unit is an animal; the Barbarian State controls it, it can spring from anywhere and it cannot enter cultural borders.
-bCanMoveImpassible	 If set to 1, the unit can move through impassable terrain; ex. submarines moving through ice, helicopters moving through peaks.
-bCanMoveAllTerrain	 Can move across all terrain.
-bCounterSpy	 Should only be 1 in Vanilla or Warlords; can Perform Counterespionage.
-bCtrlDown	 If 1, the hotkey for this unit must be used with Ctrl.
-bDestroy	 Should only be 1 in Vanilla or Warlords; can Destroy Improvements.
-bFirstStrikeImmune	 Is immune to First Strikes.
-bFlatMovementCost	 Pays a flat movement cost to enter all terrain.
-bFood	 The unit is produced with food as well as hammers; a city does not generate food while building this unit.
-bFound	 Can found a city.
-bGoldenAge	 Counts as a Great Person to start a Golden Age.
-bHiddenNationality	 Bears no marking of nationality.
-bIgnoreBuildingDefense	 Ignores defensive bonuses from enemy buildings, like Walls and Castles.
-bIgnoreTerrainCost	 Ignores movement penalties from terrain.
-bInvestigate	 Should only be 1 in Vanilla or Warlords; can Investigate City.
-bInvisible	 Is invisible to all units.
-bLineOfSight	 Optional. Specifies if the unit can only reveal the content in the tiles in the direction he is facing.
-bMechanized	 Likely affects the sounds played when selecting the unit or issuing it orders (i.e. mechanical noises as opposed to human voices).
+iHurryMultiplier	Multiplier of the above.
+iInterceptionProbability	The percent odds a unit has of intercepting an enemy unit within range trying to carry out an air mission.
+iLeaderExperience	The amount of experience this unit gives to units in the same stack when leading as a warlord; used for Great Generals.
+iNukeRange	The range at which the 'nuke' can be launched - missiles only.
+iOrderPriority	Optional. Not sure what this does.
+iPower	Affects the amount that the AI factors it into the equation when determining your military power.
+iTradeMultiplier	Affects the amount of money that the unit makes from a Trade Mission.
+iWithdrawalProb	The percent withdrawal chance the unit has. Maximum Value is in GlobalDefines.xml
+iWorkRate	The rate at which the unit improves tiles.
+iXPValueAttack	The value, in Experience Points, that this unit is worth on the attack.
+iXPValueDefense	The value, in Experience Points, that this unit is worth on the defense.
+Boolean
+All of these can either be 1 (on, or true) or 0 (off, or false). Be careful, as you can wind up with a double-negative, which the game will interpret as "True".
+
+Tag Name	Description
+bAltDown	If 1, the hotkey for this unit must be used with Alt.
+bAlwaysHostile	Can attack enemy units without declaring war, and can be attacked without triggering a war. All nations treat it as an enemy unit.
+bAnimal	The unit is an animal; the Barbarian State controls it, it can spring from anywhere and it cannot enter cultural borders.
+bCanMoveImpassible	If set to 1, the unit can move through impassable terrain; ex. submarines moving through ice, helicopters moving through peaks.
+bCanMoveAllTerrain	Can move across all terrain.
+bCounterSpy	Should only be 1 in Vanilla or Warlords; can Perform Counterespionage.
+bCtrlDown	If 1, the hotkey for this unit must be used with Ctrl.
+bDestroy	Should only be 1 in Vanilla or Warlords; can Destroy Improvements.
+bFirstStrikeImmune	Is immune to First Strikes.
+bFlatMovementCost	Pays a flat movement cost to enter all terrain.
+bFood	The unit is produced with food as well as hammers; a city does not generate food while building this unit.
+bFound	Can found a city.
+bGoldenAge	Counts as a Great Person to start a Golden Age.
+bHiddenNationality	Bears no marking of nationality.
+bIgnoreBuildingDefense	Ignores defensive bonuses from enemy buildings, like Walls and Castles.
+bIgnoreTerrainCost	Ignores movement penalties from terrain.
+bInvestigate	Should only be 1 in Vanilla or Warlords; can Investigate City.
+bInvisible	Is invisible to all units.
+bLineOfSight	Optional. Specifies if the unit can only reveal the content in the tiles in the direction he is facing.
+bMechanized	Likely affects the sounds played when selecting the unit or issuing it orders (i.e. mechanical noises as opposed to human voices).
 Used for land units in a vehicle, air units, sea units, etc.
-bMilitaryHappiness	 Counts as a Military Unit in the eyes of the rabble; contributes to the "+happy for each military unit in a city" civic modifier.
-bMilitaryProduction	 Counts as a military unit for production bonuses/penalties.
-bMilitarySupport	 Costs money to maintain as part of your military, affected by Pacifism and the like.
-bNoBadGoodies	 When this unit is entering a Tribal Village, the villagers will never be hostile.
-bNoCapture	 This unit cannot capture cities.
-bNoDefensiveBonus	 Does not receive defensive bonuses.
-bNoRevealMap	 If 1, the unit does not reveal any tiles except the one it is currently standing on.
-bNukeInnume	 Takes no damage from nukes.
-bOnlyDefensive	 This unit cannot attack other units.
-bPillage	 Can pillage improvements.
-bQuickCombat	 Always 0 in vanilla BtS; if set to 1, presumably the unit never triggers the camera-angle change and other battle effects when combating another unit.
-bRenderAlways	 Optional. Unknown usage.
-bRenderBelowWater	 Optional. Unknown usage.
-bRivalTerritory	 Can explore rival territory.
-bPrereqBonuses	 Needs the mentioned resources to be built (can be NONE).
-bPrereqReligion	 Needs the mentioned religion to be built (can be NONE).
-bSabotage	 Should only be 1 in Vanilla or Warlords; can Sabotage Production.
-bShiftDown	 If 1, the hotkey for this unit must be used with Shift.
-bSpy	 Is a spy.
-bStealPlans	 Should only be 1 in Vanilla or Warlords; can Steal Plans.
-bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
- -->
+
+bMilitaryHappiness	Counts as a Military Unit in the eyes of the rabble; contributes to the "+happy for each military unit in a city" civic modifier.
+bMilitaryProduction	Counts as a military unit for production bonuses/penalties.
+bMilitarySupport	Costs money to maintain as part of your military, affected by Pacifism and the like.
+bNoBadGoodies	When this unit is entering a Tribal Village, the villagers will never be hostile.
+bNoCapture	This unit cannot capture cities.
+bNoDefensiveBonus	Does not receive defensive bonuses.
+bNoRevealMap	If 1, the unit does not reveal any tiles except the one it is currently standing on.
+bNukeInnume	Takes no damage from nukes.
+bOnlyDefensive	This unit cannot attack other units.
+bPillage	Can pillage improvements.
+bQuickCombat	Always 0 in vanilla BtS; if set to 1, presumably the unit never triggers the camera-angle change and other battle effects when combating another unit.
+bRenderAlways	Optional. Unknown usage.
+bRenderBelowWater	Optional. Unknown usage.
+bRivalTerritory	Can explore rival territory.
+bPrereqBonuses	Needs the mentioned resources to be built (can be NONE).
+bPrereqReligion	Needs the mentioned religion to be built (can be NONE).
+bSabotage	Should only be 1 in Vanilla or Warlords; can Sabotage Production.
+bShiftDown	If 1, the hotkey for this unit must be used with Shift.
+bSpy	Is a spy.
+bStealPlans	Should only be 1 in Vanilla or Warlords; can Steal Plans.
+bSuicide	Kills itself upon attacking, like a Kamikaze in the Defense mod.
+
+Lists (Multi-line)
+All List tags consist of an opening/closing tag, which is shown here, and then each entry within it is another tag with the same name as the parent tag, minus the "s" (i.e. singular, rather than plural).
+
+Tag Name	Description
+Builds	For all the things that the unit can build on tiles; but not wonders that it can build in cities.
+Buildings	The buildings which the unit can construct in a friendly city.
+CorporationSpreads	The Corporations which the unit can spread.
+FlankingStrikes	All unit classes against which the unit gets a Flank Attack.
+ForceBuildings	The buildings the unit can construct in any city regardless of tech, building prerequisites, or other restrictions (ex: could construct a world wonder in multiple cities).
+GreatPeoples	If the unit can settle in a city, put the type of specialist it becomes here.
+NotUnitAIs	As UnitAIs, but for the tasks which the AI will never consider the unit for.
+ReligionSpreads	The religions which the unit can spread.
+UnitClassDefenders	Unit defends first against the specified unitclass(es).
+UnitClassTargets	Unit attacks first against the specified unitclass(es).
+UnitClassUpgrades	The UnitClass(es) to which this unit upgrades.
+UnitCombatDefenders	Unit defends first against the specified unitcombat type(s)
+UnitCombatTargets	Unit attacks first against the specified unitcombat type(s)
+UnitAIs	Inside here go the methods which the AI uses to command this unit. It dictates the roles which the unit is good for.
+Miscellaneous
+Tag Name	Description
+BonusProductionModifiers	Resources that make the unit produce faster.
+DomainCargo	The Domain (AIR, SEA, or LAND) of units that the unit can carry.
+DomainMods	The bonuses/penalties that the unit gets against Air, Sea or Land units.
+FeatureAttacks	Attack bonus(es) that the unit gets when attacking into different features.
+FeatureDefenses	Defense bonus(es) that the unit gets from within different features.
+FeatureImpassables	Used to specify terrain features (Jungle, Forest, etc.) that the unit is unable to enter.
+FeatureNatives	This affects the feature types animals spawn in.
+FreePromotions	The promotions that this unit starts with.
+HotKey	Never used in the original game - it can be used to define a hotkey for the unit.
+LeaderPromotion	Promotion that the unit gives to another unit when attached as a warlord; used in vanilla BtS for Great Generals.
+SpecialCargo	The type of SpecialUnit that the unit can carry.
+TerrainAttacks	Attack bonuses that the unit gets in different terrain.
+TerrainDefenses	Defense bonuses that the unit gets in different terrain.
+TerrainImpassables	Used to specify terrain types (Ocean, Desert, etc.) that the unit is unable to enter.
+TerrainNatives	This affects the terrain types animals spawn in.
+TerrainPassableTechs	With these technologies, the unit can enter the terrain defined in TerrainImpassables.
+UnitClassAttackMods	The percent bonuses/penalties that the unit gets against specific UnitClasses in attack.
+UnitClassDefenseMods	The percent bonuses/penalties that the unit gets against specific UnitClasses in defense.
+UnitCombatCollateralImmunes	The UnitCombat(s) that this unit does not receive collateral damage from.
+UnitCombatMods	The percent bonuses/penalties that the unit gets against different UnitCombat groups.
+
+Art
+These tags are directly related to the rendering of art for the entry.
+
+Tag Name	Description
+EarlyArtDefineTag	From CIV4ArtDefinesUnit - what the unit looks like in-game during the early era(s).
+FormationType	The formation that the unit adopts.
+fMaxSpeed	Not sure what this does. Perhaps the maximum speed at which the unit's animations play?
+fPadTime	Not sure what this does. Perhaps the amount of time (in seconds) inserted between certain animations?
+iGroupSize	The number of models in the unit; ex. 3 for a Warrior unit, 1 for a Jet Fighter unit.
+iMeleeWaveSize	The number of models that engage in melee combat at once. Should never be greater than iGroupSize.
+iRangedWaveSize	The number of models that engage in ranged combat at once. Should never be greater than iGroupSize.
+LateArtDefineTag	From CIV4ArtDefinesUnit - what the unit looks like in-game during the middle era(s).
+MiddleArtDefineTag	From CIV4ArtDefinesUnit - what the unit looks like in-game during the late era(s).
+UnitMeshGroups	The ART_DEF tag for the unit's model/animation/etc information.
+KELDATH NOTES:
+vINCETZ RANGED STRIKE IS DESGINED HERE - 
+SIEGE UNITS FORST TARGET , OTHER SIEGE UNITS
+SIEGE UNITS CAN RETURN FIRE
+ALL SEIGE HAVE 75 COMBAT LIMIT AND 50 AIR LIMIT (TO AVOID RANGED ATTACK TO DESTROY UNITS COMPLETLEY
+COLLATERAL DAMAGE STARTS FROM 25 WITH CATAPULTS
+THESE UNITAI WERE ADDED TO ALL SIEGE UNITS - AS IN VIP
+I GUESS NOW RANGED CAN BE USED FOR ANY PURPOSE.
+ONE NOTE - MAIN UNITAI WAS COUNTER - I LEFT IT AS ARRACK_CITY
+MAYBE IT WOULD BE BETTER TO SET AS UNITAI_ATTACK INSTEAD...
+UNITAI_ATTACK,UNITAI_COLLATERAL,UNITAI_COUNTER,UNITAI_CITY_DEFENSE,
+UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
+			
+-->
 <!-- Unit Infos -->
 <Civ4UnitInfos xmlns="x-schema:CIV4UnitSchema.xml">
 	<UnitInfos>
@@ -1073,7 +1155,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 					<EarlyArtDefineTag>ART_DEF_UNIT_SETTLER_FEMALE</EarlyArtDefineTag>
 				</UnitMeshGroup>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_SETTLER_CHILD</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -1252,6 +1334,10 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 					<BuildType>BUILD_POOL</BuildType>
 					<bBuild>1</bBuild>
 				</Build>
+				<Build>
+					<BuildType>BUILD_MOUNT_MINE</BuildType>
+					<bBuild>1</bBuild>
+				</Build>
 			</Builds>
 			<ReligionSpreads/>
 			<CorporationSpreads/>
@@ -1346,13 +1432,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iAsset>2</iAsset>
 			<iPower>0</iPower>
 			<UnitMeshGroups>
-				<iGroupSize>2</iGroupSize>
+				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
 				<iRangedWaveSize>0</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_WORKER</EarlyArtDefineTag>
 					<LateArtDefineTag>ART_DEF_UNIT_WORKERMODERN</LateArtDefineTag>
 				</UnitMeshGroup>
@@ -1532,6 +1618,10 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 					<BuildType>BUILD_POOL</BuildType>
 					<bBuild>1</bBuild>
 				</Build>
+				<Build>
+					<BuildType>BUILD_MOUNT_MINE</BuildType>
+					<bBuild>1</bBuild>
+				</Build>
 			</Builds>
 			<ReligionSpreads/>
 			<CorporationSpreads/>
@@ -1626,13 +1716,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iAsset>2</iAsset>
 			<iPower>0</iPower>
 			<UnitMeshGroups>
-				<iGroupSize>2</iGroupSize>
+				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
 				<iRangedWaveSize>0</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_INDIAN_FAST_WORKER</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -1808,13 +1898,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iAsset>1</iAsset>
 			<iPower>0</iPower>
 			<UnitMeshGroups>
-				<iGroupSize>2</iGroupSize>
+				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
 				<iRangedWaveSize>0</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_SCOUT</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -1988,13 +2078,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iAsset>2</iAsset>
 			<iPower>2</iPower>
 			<UnitMeshGroups>
-				<iGroupSize>2</iGroupSize>
+				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
 				<iRangedWaveSize>0</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_EXPLORER</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -16727,13 +16817,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iAsset>2</iAsset>
 			<iPower>8</iPower>
 			<UnitMeshGroups>
-				<iGroupSize>2</iGroupSize>
+				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
-				<iRangedWaveSize>2</iRangedWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_WAR_ELEPHANT</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -16952,13 +17042,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iAsset>2</iAsset>
 			<iPower>8</iPower>
 			<UnitMeshGroups>
-				<iGroupSize>2</iGroupSize>
+				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
-				<iRangedWaveSize>2</iRangedWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_KHMER_BALLISTA_ELEPHANT</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -17883,13 +17973,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
 			<!-- advc.315b -->
 			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
-			<bNoCapture>0</bNoCapture>
+			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -17922,7 +18012,16 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -17931,6 +18030,27 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+<!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -17990,7 +18110,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -18009,8 +18129,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<FeaturePassableTechs/>
 			<iCombat>5</iCombat>
 			<iCombatLimit>75</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iAirCombat>5</iAirCombat>
+			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -18019,8 +18139,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>50</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>6</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>25</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -18100,13 +18220,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
 			<!-- advc.315b -->
 			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
-			<bNoCapture>0</bNoCapture>
+			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -18139,7 +18259,16 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -18152,6 +18281,27 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+<!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -18211,7 +18361,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -18230,8 +18380,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<FeaturePassableTechs/>
 			<iCombat>5</iCombat>
 			<iCombatLimit>75</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iAirCombat>5</iAirCombat>
+			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -18240,8 +18390,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>50</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>6</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>30</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -18326,13 +18476,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
 			<!-- advc.315b -->
 			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
-			<bNoCapture>0</bNoCapture>
+			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -18365,7 +18515,16 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -18438,7 +18597,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -18456,9 +18615,9 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>4</iCombat>
-			<iCombatLimit>75</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>100</iCombatLimit>
+			<iAirCombat>4</iAirCombat>
+			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -18466,9 +18625,9 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iInterceptionProbability>0</iInterceptionProbability>
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
-			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>50</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>6</iCollateralDamageMaxUnits>
+			<iCollateralDamage>0</iCollateralDamage>
+			<iCollateralDamageLimit>30</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>4</iCollateralDamageMaxUnits>
 			<iCityAttack>100</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -18549,13 +18708,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
 			<!-- advc.315b -->
 			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
-			<bNoCapture>0</bNoCapture>
+			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -18588,7 +18747,16 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -18597,6 +18765,27 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+<!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -18656,7 +18845,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -18674,9 +18863,9 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>12</iCombat>
-			<iCombatLimit>80</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>75</iCombatLimit>
+			<iAirCombat>12</iAirCombat>
+			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -18685,8 +18874,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>60</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>6</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>40</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>4</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -18749,7 +18938,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<UniqueNames/>
 			<Special>NONE</Special>
 			<Capture>NONE</Capture>
-			<Combat>UNITCOMBAT_SIEGE</Combat>
+			<Combat>UNITCOMBAT_GUN</Combat>
 			<Domain>DOMAIN_LAND</Domain>
 			<DefaultUnitAI>UNITAI_CITY_SPECIAL</DefaultUnitAI>
 			<Invisible>NONE</Invisible>
@@ -18968,13 +19157,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
 			<!-- advc.315b -->
 			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
-			<bNoCapture>0</bNoCapture>
+			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -19007,7 +19196,16 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -19016,6 +19214,27 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+<!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -19075,7 +19294,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -19093,9 +19312,9 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>85</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>75</iCombatLimit>
+			<iAirCombat>18</iAirCombat>
+			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -19104,8 +19323,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>70</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>7</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>45</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>6</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -19147,13 +19366,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iAsset>4</iAsset>
 			<iPower>18</iPower>
 			<UnitMeshGroups>
-				<iGroupSize>2</iGroupSize>
+				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
-				<iRangedWaveSize>2</iRangedWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_ARTILLERY</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -19190,13 +19409,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
 			<!-- advc.315b -->
 			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
-			<bNoCapture>0</bNoCapture>
+			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -19224,7 +19443,16 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -19233,6 +19461,27 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+<!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -19269,7 +19518,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -19288,8 +19537,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<FeaturePassableTechs/>
 			<iCombat>26</iCombat>
 			<iCombatLimit>85</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iAirCombat>26</iAirCombat>
+			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -19298,7 +19547,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>70</iCollateralDamageLimit>
+			<iCollateralDamageLimit>50</iCollateralDamageLimit>
 			<iCollateralDamageMaxUnits>7</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
@@ -19344,8 +19593,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
-				<iRangedWaveSize>2</iRangedWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
 					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_MOBILE_ARTILLERY</EarlyArtDefineTag>
@@ -21466,7 +21715,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<bInvisible>0</bInvisible>
 			<bFirstStrikeImmune>0</bFirstStrikeImmune>
 			<bNoDefensiveBonus>0</bNoDefensiveBonus>
-			<bIgnoreBuildingDefense>1</bIgnoreBuildingDefense>
+			<bIgnoreBuildingDefense>0</bIgnoreBuildingDefense>
 			<bCanMoveImpassable>0</bCanMoveImpassable>
 			<bCanMoveAllTerrain>0</bCanMoveAllTerrain>
 			<bFlatMovementCost>0</bFlatMovementCost>
@@ -21498,7 +21747,12 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				<UnitAI>
 					<UnitAIType>UNITAI_RESERVE_SEA</UnitAIType>
 					<bUnitAI>1</bUnitAI>
+		<!-- I HOPE THIS WILL HELP THE AI USE IT FOR RANGED - IF IT
+			WILL, ILL ADD IT TO MORE SHIPS WITH RANGED -->
 				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI></UnitAI>
 			</UnitAIs>
 			<NotUnitAIs/>
 			<Builds/>
@@ -21572,7 +21826,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>20</iMinAreaSize>
 			<iMoves>3</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -21591,8 +21845,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<FeaturePassableTechs/>
 			<iCombat>10</iCombat>
 			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iAirCombat>10</iAirCombat>
+			<iAirCombatLimit>15</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -22132,7 +22386,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<!-- advc.906: was 0 -->
 			<bFirstStrikeImmune>1</bFirstStrikeImmune>
 			<bNoDefensiveBonus>0</bNoDefensiveBonus>
-			<bIgnoreBuildingDefense>1</bIgnoreBuildingDefense>
+			<bIgnoreBuildingDefense>0</bIgnoreBuildingDefense>
 			<bCanMoveImpassable>0</bCanMoveImpassable>
 			<bCanMoveAllTerrain>0</bCanMoveAllTerrain>
 			<bFlatMovementCost>0</bFlatMovementCost>
@@ -22230,7 +22484,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>20</iMinAreaSize>
 			<iMoves>8</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -22249,8 +22503,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<FeaturePassableTechs/>
 			<iCombat>30</iCombat>
 			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iAirCombat>35</iAirCombat>
+			<iAirCombatLimit>20</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -22426,7 +22680,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>20</iMinAreaSize>
 			<iMoves>6</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -22445,8 +22699,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<FeaturePassableTechs/>
 			<iCombat>40</iCombat>
 			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iAirCombat>45</iAirCombat>
+			<iAirCombatLimit>25</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -22615,7 +22869,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>20</iMinAreaSize>
 			<iMoves>7</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>2</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -22634,8 +22888,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<FeaturePassableTechs/>
 			<iCombat>40</iCombat>
 			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iAirCombat>40</iAirCombat>
+			<iAirCombatLimit>20</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -22739,7 +22993,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<!-- advc.906: was 0 -->
 			<bFirstStrikeImmune>1</bFirstStrikeImmune>
 			<bNoDefensiveBonus>0</bNoDefensiveBonus>
-			<bIgnoreBuildingDefense>1</bIgnoreBuildingDefense>
+			<bIgnoreBuildingDefense>0</bIgnoreBuildingDefense>
 			<bCanMoveImpassable>0</bCanMoveImpassable>
 			<bCanMoveAllTerrain>0</bCanMoveAllTerrain>
 			<bFlatMovementCost>0</bFlatMovementCost>
@@ -22817,7 +23071,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>20</iMinAreaSize>
 			<iMoves>8</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -22837,8 +23091,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<!-- advc.200,advc.906: As in BtS, was 36 in K-Mod. -->
 			<iCombat>30</iCombat>
 			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iAirCombat>40</iAirCombat>
+			<iAirCombatLimit>30</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<!-- advc.906: was 2 -->
@@ -23799,7 +24053,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				<iMeleeWaveSize>1</iMeleeWaveSize>
 				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_AIRSHIP</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -24010,7 +24264,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				<iMeleeWaveSize>1</iMeleeWaveSize>
 				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_FIGHTER</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -25378,6 +25632,10 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				</Building>
 				<Building>
 					<BuildingType>BUILDING_AMON_RA_SHRINE</BuildingType>
+					<bBuilding>1</bBuilding>
+				</Building>
+				<Building>
+					<BuildingType>BUILDING_ODIN_SHRINE</BuildingType>
 					<bBuilding>1</bBuilding>
 				</Building>
 			</Buildings>
@@ -30825,13 +31083,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
 			<!-- advc.315b -->
 			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
-			<bNoCapture>0</bNoCapture>
+			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -30864,7 +31122,16 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -30873,6 +31140,27 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+<!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -30932,7 +31220,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -30950,9 +31238,9 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>85</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>75</iCombatLimit>
+			<iAirCombat>18</iAirCombat>
+			<iAirCombatLimit>55</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -30961,8 +31249,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>75</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>7</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>45</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>5</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -31004,13 +31292,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iAsset>4</iAsset>
 			<iPower>18</iPower>
 			<UnitMeshGroups>
-				<iGroupSize>2</iGroupSize>
+				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
-				<iRangedWaveSize>2</iRangedWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_152MM</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -31067,7 +31355,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<!-- advc.906: was 0 -->
 			<bFirstStrikeImmune>1</bFirstStrikeImmune>
 			<bNoDefensiveBonus>0</bNoDefensiveBonus>
-			<bIgnoreBuildingDefense>1</bIgnoreBuildingDefense>
+			<bIgnoreBuildingDefense>0</bIgnoreBuildingDefense>
 			<bCanMoveImpassable>0</bCanMoveImpassable>
 			<bCanMoveAllTerrain>0</bCanMoveAllTerrain>
 			<bFlatMovementCost>0</bFlatMovementCost>
@@ -31145,7 +31433,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>20</iMinAreaSize>
 			<iMoves>8</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -31165,8 +31453,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<!-- advc.200,advc.906: As in BtS, was 36 in K-Mod. -->
 			<iCombat>30</iCombat>
 			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iAirCombat>40</iAirCombat>
+			<iAirCombatLimit>35</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<!-- advc.906: was 2 -->
@@ -31913,13 +32201,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
 			<!-- advc.315b -->
 			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
-			<bNoCapture>0</bNoCapture>
+			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -31952,7 +32240,16 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -31961,6 +32258,27 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+<!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -32020,7 +32338,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -32038,9 +32356,9 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>12</iCombat>
-			<iCombatLimit>80</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>75</iCombatLimit>
+			<iAirCombat>12</iAirCombat>
+			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -32049,8 +32367,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>80</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>6</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>50</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>5</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -34773,7 +35091,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<!-- advc.906: was 0 -->
 			<bFirstStrikeImmune>1</bFirstStrikeImmune>
 			<bNoDefensiveBonus>0</bNoDefensiveBonus>
-			<bIgnoreBuildingDefense>1</bIgnoreBuildingDefense>
+			<bIgnoreBuildingDefense>0</bIgnoreBuildingDefense>
 			<bCanMoveImpassable>0</bCanMoveImpassable>
 			<bCanMoveAllTerrain>0</bCanMoveAllTerrain>
 			<bFlatMovementCost>0</bFlatMovementCost>
@@ -34871,7 +35189,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>20</iMinAreaSize>
 			<iMoves>8</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -34890,8 +35208,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<FeaturePassableTechs/>
 			<iCombat>31</iCombat>
 			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iAirCombat>35</iAirCombat>
+			<iAirCombatLimit>20</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -35972,7 +36290,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>20</iMinAreaSize>
 			<iMoves>7</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -35991,8 +36309,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<FeaturePassableTechs/>
 			<iCombat>40</iCombat>
 			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iAirCombat>45</iAirCombat>
+			<iAirCombatLimit>25</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -36001,7 +36319,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>40</iCollateralDamage>
-			<iCollateralDamageLimit>50</iCollateralDamageLimit>
+			<iCollateralDamageLimit>45</iCollateralDamageLimit>
 			<iCollateralDamageMaxUnits>4</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
@@ -36250,7 +36568,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				<iMeleeWaveSize>1</iMeleeWaveSize>
 				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_BRISTOL</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -36921,13 +37239,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iAsset>2</iAsset>
 			<iPower>8</iPower>
 			<UnitMeshGroups>
-				<iGroupSize>2</iGroupSize>
+				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
-				<iRangedWaveSize>2</iRangedWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_GIRAFFE</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -37386,11 +37704,11 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<!-- advc.104e: was 20 -->
 			<iPower>22</iPower>
 			<UnitMeshGroups>
-				<iGroupSize>2</iGroupSize>
+				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>		
-				<iMeleeWaveSize>2</iMeleeWaveSize>
-				<iRangedWaveSize>2</iRangedWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
 					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_AMOBILEINFANTRY</EarlyArtDefineTag>
@@ -38059,13 +38377,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iAsset>2</iAsset>
 			<iPower>8</iPower>
 			<UnitMeshGroups>
-				<iGroupSize>2</iGroupSize>
+				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
-				<iRangedWaveSize>2</iRangedWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_HEAVYHORSE</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -40291,7 +40609,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 					<EarlyArtDefineTag>ART_DEF_UNIT_MODERN_INFANTRY</EarlyArtDefineTag>
 				</UnitMeshGroup>
                 <UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_MGRENDIER</EarlyArtDefineTag>
 				</UnitMeshGroup>				
 			</UnitMeshGroups>
@@ -40811,7 +41129,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<!-- advc.906: was 0 -->
 			<bFirstStrikeImmune>1</bFirstStrikeImmune>
 			<bNoDefensiveBonus>0</bNoDefensiveBonus>
-			<bIgnoreBuildingDefense>1</bIgnoreBuildingDefense>
+			<bIgnoreBuildingDefense>0</bIgnoreBuildingDefense>
 			<bCanMoveImpassable>0</bCanMoveImpassable>
 			<bCanMoveAllTerrain>0</bCanMoveAllTerrain>
 			<bFlatMovementCost>0</bFlatMovementCost>
@@ -40909,7 +41227,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>20</iMinAreaSize>
 			<iMoves>8</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -40928,8 +41246,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<FeaturePassableTechs/>
 			<iCombat>30</iCombat>
 			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iAirCombat>35</iAirCombat>
+			<iAirCombatLimit>15</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -42757,13 +43075,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iAsset>2</iAsset>
 			<iPower>8</iPower>
 			<UnitMeshGroups>
-				<iGroupSize>2</iGroupSize>
+				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
-				<iRangedWaveSize>2</iRangedWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_INDIAN_WAR_ELEPHANT</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -43049,7 +43367,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<!-- advc.906: was 0 -->
 			<bFirstStrikeImmune>1</bFirstStrikeImmune>
 			<bNoDefensiveBonus>0</bNoDefensiveBonus>
-			<bIgnoreBuildingDefense>1</bIgnoreBuildingDefense>
+			<bIgnoreBuildingDefense>0</bIgnoreBuildingDefense>
 			<bCanMoveImpassable>0</bCanMoveImpassable>
 			<bCanMoveAllTerrain>0</bCanMoveAllTerrain>
 			<bFlatMovementCost>0</bFlatMovementCost>
@@ -43147,7 +43465,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>20</iMinAreaSize>
 			<iMoves>8</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>2</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -43166,8 +43484,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<FeaturePassableTechs/>
 			<iCombat>30</iCombat>
 			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iAirCombat>40</iAirCombat>
+			<iAirCombatLimit>20</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -44650,13 +44968,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
 			<!-- advc.315b -->
 			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
-			<bNoCapture>0</bNoCapture>
+			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -44689,7 +45007,16 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -44698,6 +45025,27 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+<!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -44757,7 +45105,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -44775,9 +45123,9 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>85</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>75</iCombatLimit>
+			<iAirCombat>18</iAirCombat>
+			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -44786,8 +45134,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>70</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>7</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>40</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>8</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -44829,13 +45177,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iAsset>4</iAsset>
 			<iPower>18</iPower>
 			<UnitMeshGroups>
-				<iGroupSize>2</iGroupSize>
+				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
-				<iRangedWaveSize>2</iRangedWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_M551</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -46906,13 +47254,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
 			<!-- advc.315b -->
 			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
-			<bNoCapture>0</bNoCapture>
+			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -46945,7 +47293,16 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -46954,6 +47311,27 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+<!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -47013,7 +47391,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -47031,9 +47409,9 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>85</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>75</iCombatLimit>
+			<iAirCombat>18</iAirCombat>
+			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -47042,8 +47420,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>70</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>7</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>60</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>4</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -47085,13 +47463,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iAsset>4</iAsset>
 			<iPower>18</iPower>
 			<UnitMeshGroups>
-				<iGroupSize>2</iGroupSize>
+				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
-				<iRangedWaveSize>2</iRangedWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_75MM</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -50486,13 +50864,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
 			<!-- advc.315b -->
 			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
-			<bNoCapture>0</bNoCapture>
+			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -50525,7 +50903,16 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -50534,6 +50921,27 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+<!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -50593,7 +51001,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -50611,9 +51019,9 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>12</iCombat>
-			<iCombatLimit>80</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>75</iCombatLimit>
+			<iAirCombat>12</iAirCombat>
+			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -50622,7 +51030,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>50</iCollateralDamageLimit>
+			<iCollateralDamageLimit>35</iCollateralDamageLimit>
 			<iCollateralDamageMaxUnits>10</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
@@ -50686,7 +51094,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<UniqueNames/>
 			<Special>NONE</Special>
 			<Capture>NONE</Capture>
-			<Combat>UNITCOMBAT_MOUNTED</Combat>
+			<Combat>UNITCOMBAT_MELEE</Combat>
 			<Domain>DOMAIN_LAND</Domain>
 			<DefaultUnitAI>UNITAI_ATTACK</DefaultUnitAI>
 			<Invisible>NONE</Invisible>
@@ -51976,13 +52384,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iAsset>2</iAsset>
 			<iPower>8</iPower>
 			<UnitMeshGroups>
-				<iGroupSize>2</iGroupSize>
+				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
-				<iRangedWaveSize>2</iRangedWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
-					<iRequired>2</iRequired>
+					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_SPIKED_TREMOR</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
@@ -54562,13 +54970,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
 			<!-- advc.315b -->
 			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
-			<bNoCapture>0</bNoCapture>
+			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -54596,7 +55004,16 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -54605,6 +55022,27 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+<!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -54641,7 +55079,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -54659,9 +55097,9 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>26</iCombat>
-			<iCombatLimit>85</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>75</iCombatLimit>
+			<iAirCombat>26</iAirCombat>
+			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -54670,8 +55108,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>50</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>8</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>60</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>4</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -54716,8 +55154,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
-				<iRangedWaveSize>2</iRangedWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
 					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_GVOZ</EarlyArtDefineTag>
@@ -57186,13 +57624,13 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
 			<!-- advc.315b -->
 			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
-			<bNoCapture>0</bNoCapture>
+			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -57220,7 +57658,16 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -57229,6 +57676,27 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+<!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -57265,7 +57733,7 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -57283,9 +57751,9 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>26</iCombat>
-			<iCombatLimit>85</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>75</iCombatLimit>
+			<iAirCombat>26</iAirCombat>
+			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -57294,8 +57762,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>60</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>7</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>65</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>5</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -57340,8 +57808,8 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>2</iMeleeWaveSize>
-				<iRangedWaveSize>2</iRangedWaveSize>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
 					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_TUNGUSKA</EarlyArtDefineTag>
@@ -59561,6 +60029,182 @@ bSuicide	 Kills itself upon attacking, like a Kamikaze in the Defense mod.
 					<bFreePromotion>1</bFreePromotion>
 				</FreePromotion>
 			</FreePromotions>
+			<LeaderPromotion>NONE</LeaderPromotion>
+			<iLeaderExperience>0</iLeaderExperience>
+		</UnitInfo>
+		<UnitInfo>
+			<Class>UNITCLASS_ODIN_SHAMAN</Class>
+			<Type>UNIT_ODIN_SHAMAN</Type>
+			<UniqueNames/>
+			<Special>SPECIALUNIT_PEOPLE</Special>
+			<Capture>NONE</Capture>
+			<Combat>NONE</Combat>
+			<Domain>DOMAIN_LAND</Domain>
+			<DefaultUnitAI>UNITAI_MISSIONARY</DefaultUnitAI>
+			<Invisible>NONE</Invisible>
+			<SeeInvisible>NONE</SeeInvisible>
+			<Description>TXT_KEY_UNIT_ODIN_SHAMAN</Description>
+			<Civilopedia>TXT_KEY_UNIT_SHAMAN_PEDIA</Civilopedia>
+			<Strategy>TXT_KEY_UNIT_SHAMAN_STRATEGY</Strategy>
+			<Advisor>ADVISOR_RELIGION</Advisor>
+			<bAnimal>0</bAnimal>
+			<bFood>0</bFood>
+			<bNoBadGoodies>0</bNoBadGoodies>
+			<bOnlyDefensive>0</bOnlyDefensive>
+			<!-- advc.315a -->
+			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
+			<!-- advc.315b -->
+			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
+			<bNoCapture>0</bNoCapture>
+			<bQuickCombat>0</bQuickCombat>
+			<bRivalTerritory>0</bRivalTerritory>
+			<bMilitaryHappiness>0</bMilitaryHappiness>
+			<bMilitarySupport>0</bMilitarySupport>
+			<bMilitaryProduction>0</bMilitaryProduction>
+			<bPillage>0</bPillage>
+			<bSpy>0</bSpy>
+			<bSabotage>0</bSabotage>
+			<bDestroy>0</bDestroy>
+			<bStealPlans>0</bStealPlans>
+			<bInvestigate>0</bInvestigate>
+			<bCounterSpy>0</bCounterSpy>
+			<bFound>0</bFound>
+			<bGoldenAge>0</bGoldenAge>
+			<bInvisible>0</bInvisible>
+			<bFirstStrikeImmune>0</bFirstStrikeImmune>
+			<bNoDefensiveBonus>0</bNoDefensiveBonus>
+			<bIgnoreBuildingDefense>0</bIgnoreBuildingDefense>
+			<bCanMoveImpassable>0</bCanMoveImpassable>
+			<bCanMoveAllTerrain>0</bCanMoveAllTerrain>
+			<bCanMovePeak>1</bCanMovePeak>			
+			<bFlatMovementCost>0</bFlatMovementCost>
+			<bIgnoreTerrainCost>0</bIgnoreTerrainCost>
+			<bNukeImmune>0</bNukeImmune>
+			<bPrereqBonuses>0</bPrereqBonuses>
+			<bPrereqReligion>0</bPrereqReligion>
+			<bMechanized>0</bMechanized>
+			<bSuicide>0</bSuicide>
+			<bHiddenNationality>0</bHiddenNationality>
+			<bAlwaysHostile>0</bAlwaysHostile>
+			<UnitClassUpgrades/>
+			<UnitClassTargets/>
+			<UnitCombatTargets/>
+			<UnitClassDefenders/>
+			<UnitCombatDefenders/>
+			<FlankingStrikes/>
+			<UnitAIs/>
+			<NotUnitAIs/>
+			<Builds/>
+			<ReligionSpreads>
+				<ReligionSpread>
+					<ReligionType>RELIGION_ODIN</ReligionType>
+					<iReligionSpread>30</iReligionSpread>
+				</ReligionSpread>
+			</ReligionSpreads>
+			<CorporationSpreads/>
+			<GreatPeoples/>
+			<Buildings/>
+			<ForceBuildings/>
+			<HolyCity>NONE</HolyCity>
+			<ReligionType>NONE</ReligionType>
+			<StateReligion>NONE</StateReligion>
+			<PrereqReligion>RELIGION_ODIN</PrereqReligion>
+			<PrereqCorporation>NONE</PrereqCorporation>
+			<PrereqBuilding>NONE</PrereqBuilding>
+			<PrereqTech>NONE</PrereqTech>
+			<TechTypes/>
+			<BonusType>NONE</BonusType>
+			<PrereqBonuses/>
+			<!-- advc.905b -->
+			<SpeedBonuses/>
+			<ProductionTraits/>
+			<Flavors/>
+			<iAIWeight>0</iAIWeight>
+			<iCost>40</iCost>
+			<iHurryCostModifier>0</iHurryCostModifier>
+			<iAdvancedStartCost>-1</iAdvancedStartCost>
+			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
+			<iMinAreaSize>-1</iMinAreaSize>
+			<iMoves>2</iMoves>
+			<bNoRevealMap>0</bNoRevealMap>
+			<iAirRange>0</iAirRange>
+			<iAirUnitCap>0</iAirUnitCap>
+			<iDropRange>0</iDropRange>
+			<iNukeRange>-1</iNukeRange>
+			<iWorkRate>0</iWorkRate>
+			<iBaseDiscover>0</iBaseDiscover>
+			<iDiscoverMultiplier>0</iDiscoverMultiplier>
+			<iBaseHurry>0</iBaseHurry>
+			<iHurryMultiplier>0</iHurryMultiplier>
+			<iBaseTrade>0</iBaseTrade>
+			<iTradeMultiplier>0</iTradeMultiplier>
+			<iGreatWorkCulture>0</iGreatWorkCulture>
+			<iEspionagePoints>0</iEspionagePoints>
+			<TerrainImpassables/>
+			<FeatureImpassables/>
+			<TerrainPassableTechs/>
+			<FeaturePassableTechs/>
+			<iCombat>0</iCombat>
+			<iCombatLimit>0</iCombatLimit>
+			<iAirCombat>0</iAirCombat>
+			<iAirCombatLimit>0</iAirCombatLimit>
+			<iXPValueAttack>0</iXPValueAttack>
+			<iXPValueDefense>0</iXPValueDefense>
+			<iFirstStrikes>0</iFirstStrikes>
+			<iChanceFirstStrikes>0</iChanceFirstStrikes>
+			<iInterceptionProbability>0</iInterceptionProbability>
+			<iEvasionProbability>0</iEvasionProbability>
+			<iWithdrawalProb>0</iWithdrawalProb>
+			<iCollateralDamage>0</iCollateralDamage>
+			<iCollateralDamageLimit>0</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>0</iCollateralDamageMaxUnits>
+			<iCityAttack>0</iCityAttack>
+			<iCityDefense>0</iCityDefense>
+			<iAnimalCombat>0</iAnimalCombat>
+			<!-- advc.315c -->
+			<iBarbarianCombat>0</iBarbarianCombat>
+			<iHillsAttack>0</iHillsAttack>
+			<iHillsDefense>0</iHillsDefense>
+			<TerrainNatives/>
+			<FeatureNatives/>
+			<TerrainAttacks/>
+			<TerrainDefenses/>
+			<FeatureAttacks/>
+			<FeatureDefenses/>
+			<UnitClassAttackMods/>
+			<UnitClassDefenseMods/>
+			<UnitCombatMods/>
+			<UnitCombatCollateralImmunes/>
+			<DomainMods/>
+			<BonusProductionModifiers/>
+			<iBombRate>0</iBombRate>
+			<iBombardRate>0</iBombardRate>
+			<SpecialCargo>NONE</SpecialCargo>
+			<DomainCargo>NONE</DomainCargo>
+			<iCargo>0</iCargo>
+			<iConscription>0</iConscription>
+			<iCultureGarrison>0</iCultureGarrison>
+			<iExtraCost>0</iExtraCost>
+			<iAsset>2</iAsset>
+			<iPower>0</iPower>
+			<UnitMeshGroups>
+				<iGroupSize>1</iGroupSize>
+				<fMaxSpeed>1.75</fMaxSpeed>
+				<fPadTime>1</fPadTime>
+				<iMeleeWaveSize>1</iMeleeWaveSize>
+				<iRangedWaveSize>0</iRangedWaveSize>
+				<UnitMeshGroup>
+					<iRequired>1</iRequired>
+					<EarlyArtDefineTag>ART_DEF_UNIT_ODIN_SHAMAN</EarlyArtDefineTag>
+				</UnitMeshGroup>
+			</UnitMeshGroups>
+			<FormationType>FORMATION_TYPE_DEFAULT</FormationType>
+			<HotKey/>
+			<bAltDown>0</bAltDown>
+			<bShiftDown>0</bShiftDown>
+			<bCtrlDown>0</bCtrlDown>
+			<iHotKeyPriority>0</iHotKeyPriority>
+			<FreePromotions/>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>

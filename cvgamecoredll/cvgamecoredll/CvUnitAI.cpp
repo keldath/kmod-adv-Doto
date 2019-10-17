@@ -1127,6 +1127,13 @@ int CvUnitAI::AI_sacrificeValue(const CvPlot* pPlot) const
 		if (combatLimit() < 100) {
 			iValue *= 150;
 			iValue /= 100;
+// Vincentz Rangeattack keldath - added here, just incase (it was commented out in vincentz
+//also - its not in the stand alone ranged
+//		if (m_pUnitInfo->getAirRange() > 0)
+//		{
+//			iValue = 0;
+//		}
+
 			iValue *= 100;
 			iValue /= std::max(1, combatLimit());
 		} */
@@ -2180,7 +2187,11 @@ void CvUnitAI::AI_barbAttackMove()
 	{
 		return;
 	}
-
+/* ord code instead the below
+if (AI_heal())
+	{
+		return;
+	}*/
 /*****************************************************************************************************/
 /**  Author: TheLadiesOgre                                                                          **/
 /**  Date: 20.10.2009                                                                               **/
@@ -2856,7 +2867,13 @@ void CvUnitAI::AI_paratrooperMove()
 			return;
 		}
 	}
-	
+
+/*
+if (AI_heal())
+	{
+		return;
+	}
+*/	
 /*****************************************************************************************************/
 /**  Author: TheLadiesOgre                                                                          **/
 /**  Date: 20.10.2009                                                                               **/
@@ -3263,6 +3280,13 @@ void CvUnitAI::AI_attackCityMove()
 	{
 		return;
 	}
+
+/*
+if (AI_heal(30, 1))
+	{
+		return;
+	}
+*/
 /*****************************************************************************************************/
 /**  Author: TheLadiesOgre                                                                          **/
 /**  Date: 20.10.2009                                                                               **/
@@ -3449,6 +3473,9 @@ void CvUnitAI::AI_attackCityMove()
 		}
 	}
 
+/*
+
+*/
 /*****************************************************************************************************/
 /**  Author: TheLadiesOgre                                                                          **/
 /**  Date: 20.10.2009                                                                               **/
@@ -5480,6 +5507,9 @@ bool CvUnitAI::AI_greatPersonMove()
 	int iLoop;
 	for (CvCity* pLoopCity = kPlayer.firstCity(&iLoop); pLoopCity != NULL; pLoopCity = kPlayer.nextCity(&iLoop))
 	{
+		// <advc.139>
+		if (!pLoopCity->AI_isSafe())
+			continue; // </advc.139>
 		if (pLoopCity->area() != area())
 			continue; // advc.003
 
@@ -7174,38 +7204,43 @@ void CvUnitAI::AI_exploreSeaMove()
 	// BETTER_BTS_AI_MOD, Naval AI, 10/21/08, Solver & jdog5000: START
 	if (plot()->isCity(true)) //prioritize getting outta there
 	{
-		if (AI_isThreatenedFromLand()) // advc.139: Code moved into subroutine
+		if(AI_isThreatenedFromLand()) // advc.139: Code moved into subroutine
 		{
 			if (!isHuman())
 			{
 				if (AI_anyAttack(1, 60))
+				{
 					return;
+				}
 			}
 
 			if (AI_retreatToCity())
+			{
 				return;
+			}
 
 			if (AI_safety())
+			{
 				return;
+			}
 		}
 	} // BETTER_BTS_AI_MOD: END
+
+	CvArea* pWaterArea = plot()->waterArea();
 
 	if (!isHuman())
 	{
 		if (AI_anyAttack(1, 60))
+		{
 			return;
+		}
 	}
 
 	// (advc.017b: Moved the transform/ scrap block down; try nearby exploration first.)
 
 	if (getDamage() > 0)
 	{
-		if (plot()->getFeatureType() == NO_FEATURE ||
-			GC.getFeatureInfo(plot()->getFeatureType()).getTurnDamage() <= 0)
-		{
-			getGroup()->pushMission(MISSION_HEAL);
-			return;
-		}
+		if ((plot()->getFeatureType() == NO_FEATURE) || (GC.getFeatureInfo(plot()->getFeatureType()).getTurnDamage() == 0))
 
 /*****************************************************************************************************/
 /**  Author: TheLadiesOgre                                                                          **/
@@ -7227,37 +7262,70 @@ void CvUnitAI::AI_exploreSeaMove()
 	if (!isHuman())
 	{
 		if (AI_pillageRange(1))
+		{
 			return;
+		}
 	}
 
 	if (AI_exploreRange(4))
+	{
 		return;
+	}
 
 	if (!isHuman())
 	{
 		if (AI_pillageRange(4))
+		{
 			return;
+		}
 	}
-	// advc.017b: Moved this chunk of code down (and rewrote much of it)
+	// advc.017b: Moved this chunk of code down
 	bool bExcessExplorers = false;
-	// (Would be nice to check plot()->secondWaterArea as well, but that takes extra time.)
-	CvArea* pWaterArea = plot()->waterArea();
 	if (!isHuman() && !isBarbarian()) //XXX move some of this into a function? maybe useful elsewhere
 	{	// <advc.017b>
 		bool bTransform = false;
 		// Don't be too quick to decide that there are too many explorers
 		if(::bernoulliSuccess(0.13, "advc.017b")) {
-			bool bTransform = kOwner.AI_isExcessSeaExplorers(pWaterArea);
+			/*  Be careful not to convert or scrap a unit that CvPlayerAI thinks we need
+				(b/c otherwise cities will keep training explorers and they'll keep
+				getting converted to other AI types) */
+			CvArea* pSecondWaterArea = NULL;
+			if(pWaterArea == NULL)
+				pSecondWaterArea = plot()->secondWaterArea();
+			else FAssert(pWaterArea != NULL);
+			// Subtract explorers still being trained
+			int iInTraining = kOwner.AI_getNumTrainAIUnits(UNITAI_EXPLORE_SEA);
+			bool bTransform = ((pWaterArea == NULL ||
+					kOwner.AI_neededExplorers(pWaterArea) <
+					kOwner.AI_totalWaterAreaUnitAIs(pWaterArea, UNITAI_EXPLORE_SEA) -
+					iInTraining) && (pSecondWaterArea == NULL ||
+					kOwner.AI_neededExplorers(pSecondWaterArea) <
+					kOwner.AI_totalWaterAreaUnitAIs(pSecondWaterArea, UNITAI_EXPLORE_SEA) -
+					kOwner.AI_getNumTrainAIUnits(UNITAI_EXPLORE_SEA)));
 			bExcessExplorers = bTransform;
 		}
 		if(!bTransform &&
 				/*  In the early game, it'll often take a better explorer (Galley
 					vs Work Boat) too long to reach an unexplored area; better to
 					let the outdated explorer continue. */
-				kOwner.getCurrentEra() > 1 &&
-				kOwner.AI_isOutdatedUnit(getUnitType(), UNITAI_EXPLORE_SEA, pWaterArea))
-			bTransform = true;
-		// Moved the obsoletion test; now only required for scrapping
+				kOwner.getCurrentEra() > 1) {
+			int iValue = kOwner.AI_unitValue(getUnitType(), UNITAI_EXPLORE_SEA, pWaterArea);
+			for(int i = 0; i < GC.getNumUnitClassInfos(); i++) {
+				UnitClassTypes eUnitClass = (UnitClassTypes)i;
+				/*  Will eventually build some Caravels as attackers even if
+					explorers are maxed out. Could alternatively check
+					kOwner.canTrain(ut), but that's slightly more expensive. */
+				if(kOwner.getUnitClassCount(eUnitClass) <= 0)
+					continue;
+				UnitTypes eUnit = (UnitTypes)GC.getCivilizationInfo(kOwner.
+						getCivilizationType()).getCivilizationUnits(eUnitClass);
+				int iLoopValue = kOwner.AI_unitValue(eUnit, UNITAI_EXPLORE_SEA, pWaterArea);
+				if(75 * iLoopValue > 100 * iValue) {
+					bTransform = true;
+					break;
+				}
+			}
+		} // Moved the obsoletion test; now only required for scrapping
 		if(bTransform) { // </advc.017b>
 			// <advc.003> Made this more concise (original code deleted)
 			std::vector<UnitAITypes> transformTypes;
@@ -7297,7 +7365,6 @@ void CvUnitAI::AI_exploreSeaMove()
 							kOwner.AI_countUnimprovedBonuses(pWaterArea, plot(), 5) <= 0)
 						continue;
 					AI_setUnitAIType(transformTypes[i]);
-					AI_update();
 					return;
 				}
 			} // </advc.003>
@@ -7312,39 +7379,57 @@ void CvUnitAI::AI_exploreSeaMove()
 	}
 
 	if (AI_explore())
+	{
 		return;
+	}
 
 	if (!isHuman())
 	{
 		if (AI_pillage())
+		{
 			return;
+		}
 	}
 
 	if (!isHuman())
 	{
 		if (AI_travelToUpgradeCity())
-			return;
-
-	}
-
-	if (!isHuman() && AI_getUnitAIType() == UNITAI_EXPLORE_SEA &&
-		pWaterArea != NULL && bExcessExplorers) // advc.017b
-	{
-		if (kOwner.calculateUnitCost() > 0)
 		{
-			scrap();
 			return;
 		}
 	}
 
+	if (!(isHuman()) && (AI_getUnitAIType() == UNITAI_EXPLORE_SEA))
+	{
+		pWaterArea = plot()->waterArea();
+
+		if (pWaterArea != NULL)
+		{
+			if (bExcessExplorers) // advc.017b
+			{
+				if (kOwner.calculateUnitCost() > 0)
+				{
+					scrap();
+					return;
+				}
+			}
+		}
+	}
+
 	if (AI_patrol())
+	{
 		return;
+	}
 
 	if (AI_retreatToCity())
+	{
 		return;
+	}
 
 	if (AI_safety())
+	{
 		return;
+	}
 
 	getGroup()->pushMission(MISSION_SKIP);
 	return;
@@ -8080,7 +8165,7 @@ void CvUnitAI::AI_settlerSeaMove()
 	// BETTER_BTS_AI_MOD, Naval AI, 10/21/08, Solver & jdog5000: START
 	if (plot()->isCity(true))
 	{
-		if (AI_isThreatenedFromLand()) // advc.139: Code moved into subroutine
+		if(AI_isThreatenedFromLand()) // advc.139: Code moved into subroutine
 		{
 			if (bEmpty)
 			{
@@ -8211,8 +8296,7 @@ void CvUnitAI::AI_settlerSeaMove()
 					if (kOwner.AI_unitValue(getUnitType(), UNITAI_ASSAULT_SEA, pWaterArea) > 0)
 					{
 						AI_setUnitAIType(UNITAI_ASSAULT_SEA);
-						//AI_assaultSeaMove();
-						AI_update(); // advc.003u
+						AI_assaultSeaMove();
 						return;
 					}
 				}
@@ -8287,7 +8371,7 @@ void CvUnitAI::AI_settlerSeaMove()
 	if (!getGroup()->hasCargo())
 	{
 		// Rescue stranded non-settlers
-		if (AI_pickupStranded())
+		if(AI_pickupStranded())
 		{
 			return;
 		}
@@ -8347,29 +8431,23 @@ void CvUnitAI::AI_settlerSeaMove()
 						CvArea* pWaterArea = plot()->waterArea();
 						FAssert(pWaterArea != NULL);
 						if (pWaterArea != NULL)
-						{
-							if (kOwner.AI_totalUnitAIs(UNITAI_EXPLORE_SEA) <= 0 &&
-								// <advc.017b>
-								!kOwner.AI_isExcessSeaExplorers(pWaterArea, 1) &&
-								!kOwner.AI_isOutdatedUnit(getUnitType(), UNITAI_EXPLORE_SEA, pWaterArea))
-								// </advc.017b>
+						{	// advc.tmp: Disabled temporarily b/c of possible oscillation between UnitAI_SETTLER_SEA and UNITAI_EXPLORE_SEA
+							/*if (kOwner.AI_totalUnitAIs(UNITAI_EXPLORE_SEA) == 0)
 							{
 								if (kOwner.AI_unitValue(getUnitType(), UNITAI_EXPLORE_SEA, pWaterArea) > 0)
 								{
 									AI_setUnitAIType(UNITAI_EXPLORE_SEA);
-									//AI_exploreSeaMove();
-									AI_update(); // advc.003u
+									AI_exploreSeaMove();
 									return;
 								}
-							}
+							}*/
 
 							if (kOwner.AI_totalUnitAIs(UNITAI_SPY_SEA) == 0)
 							{
 								if (kOwner.AI_unitValue(getUnitType(), UNITAI_SPY_SEA, area()) > 0)
 								{
 									AI_setUnitAIType(UNITAI_SPY_SEA);
-									//AI_spySeaMove();
-									AI_update(); // advc.003u
+									AI_spySeaMove();
 									return;
 								}
 							}
@@ -8379,8 +8457,7 @@ void CvUnitAI::AI_settlerSeaMove()
 								if (kOwner.AI_unitValue(getUnitType(), UNITAI_MISSIONARY_SEA, area()) > 0)
 								{
 									AI_setUnitAIType(UNITAI_MISSIONARY_SEA);
-									//AI_missionarySeaMove();
-									AI_update(); // advc.003u
+									AI_missionarySeaMove();
 									return;
 								}
 							}
@@ -8388,8 +8465,7 @@ void CvUnitAI::AI_settlerSeaMove()
 							if (kOwner.AI_unitValue(getUnitType(), UNITAI_ATTACK_SEA, pWaterArea) > 0)
 							{
 								AI_setUnitAIType(UNITAI_ATTACK_SEA);
-								//AI_attackSeaMove();
-								AI_update(); // advc.003u
+								AI_attackSeaMove();
 								return;
 							}
 						}
@@ -12833,7 +12909,8 @@ bool CvUnitAI::AI_join(int iMaxCount)
 				canEnterArea(*pLoopCity->area())
 				&& AI_plotValid(pLoopCity->plot()))
 		{
-			if (!(pLoopCity->plot()->isVisibleEnemyUnit(this)))
+			//if (!pLoopCity->plot()->isVisibleEnemyUnit(this))
+			if (pLoopCity->AI_isSafe()) // advc.139: ^How could there be an enemy in our city?
 			{
 				if (generatePath(pLoopCity->plot(), MOVE_SAFE_TERRITORY, true))
 				// BETTER_BTS_AI_MOD: END
@@ -12910,7 +12987,8 @@ bool CvUnitAI::AI_construct(int iMaxCount, int iMaxSingleBuildingCount, int iThr
 	{
 		if (AI_plotValid(pLoopCity->plot()) && pLoopCity->area() == area())
 		{
-			if (!pLoopCity->plot()->isVisibleEnemyUnit(this))
+			//if (!pLoopCity->plot()->isVisibleEnemyUnit(this))
+			if (pLoopCity->AI_isSafe()) // advc.139: Replacing the above
 			{
 				//if (GET_PLAYER(getOwner()).AI_plotTargetMissionAIs(pLoopCity->plot(), MISSIONAI_CONSTRUCT, getGroup()) == 0)
 				// above line disabled by K-Mod, because there are different types of buildings to construct...
@@ -14668,6 +14746,14 @@ bool CvUnitAI::AI_bombardCity()
 	FAssertMsg(pBombardCity != NULL, "BombardCity is not assigned a valid value");
 
 	int iAttackOdds = getGroup()->AI_attackOdds(pBombardCity->plot(), true);
+// Vincentz Rangestrike off 
+// keldath need to imolement this somehow in kmods -  but it wasnt on the org ranged.
+//		int iAttackOdds = getGroup()->AI_attackOdds(pBombardCity->plot(), /*bPotentialEnemy*/ true);
+//		if (iAttackOdds > 95)
+//		{
+//			return false;
+//		}
+// Vincentz Rangestrike end	
 	int iBase = GC.getBBAI_SKIP_BOMBARD_BASE_STACK_RATIO();
 	int iMin = GC.getBBAI_SKIP_BOMBARD_MIN_STACK_RATIO();
 	int iBombardTurns = getGroup()->getBombardTurns(pBombardCity);
@@ -14795,9 +14881,15 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, int iFlags, int iMin
 		for (int iDY = -iSearchRange; iDY <= iSearchRange; iDY++)
 		{
 			CvPlot* pLoopPlot = plotXY(getX(), getY(), iDX, iDY);
-
-			if (pLoopPlot == NULL || !AI_plotValid(pLoopPlot))
+//Vincentz Rangestrike keldath i think the cnaraneg check should com here but in false  -since !AI_plotValid(pLoopPlot) instead of AI_plotValid(pLoopPlot) see marked out comments right below
+			if (pLoopPlot == NULL || !AI_plotValid(pLoopPlot) ||(!canRangeStrike()))
 				continue;
+//keldath i dont know where to stick these
+//noth do not exists on the org
+//Vincentz Rangestrike keldath   - added to none extistant here - nneed to see where to stick this
+//				if (((AI_plotValid(pLoopPlot)) || (canRangeStrike())))
+//Vincentz Rangestrike keldath - also
+//						if (!atPlot(pLoopPlot) && (((bFollow) ? canMoveInto(pLoopPlot, true) : (generatePath(pLoopPlot, 0, true, &iPathTurns) && (iPathTurns <= iRange))) || (canRangeStrike())))
 
 			if (!bAllowCities && pLoopPlot->isCity())
 				continue;
@@ -14808,6 +14900,7 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, int iFlags, int iMin
 			if (bDeclareWar
 				? !pLoopPlot->isVisiblePotentialEnemyUnit(getOwner()) && !(pLoopPlot->isCity() && AI_potentialEnemy(pLoopPlot->getPlotCity()->getTeam(), pLoopPlot))
 				: !pLoopPlot->isVisibleEnemyUnit(this) && !pLoopPlot->isEnemyCity(*this))
+
 			{
 				continue;
 			}
@@ -14822,8 +14915,8 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, int iFlags, int iMin
 			} // </advc.033>
 			if (iEnemyDefenders < iMinStack)
 				continue;
-
-			if (!atPlot(pLoopPlot) && (bFollow ? getGroup()->canMoveOrAttackInto(pLoopPlot, bDeclareWar, true) : generatePath(pLoopPlot, iFlags, true, 0, iRange)))
+//Vincentz Rangestrike- keldath - i think the can range belogs here - see above commented out
+			if (!atPlot(pLoopPlot) && (bFollow ? getGroup()->canMoveOrAttackInto(pLoopPlot, bDeclareWar, true) : generatePath(pLoopPlot, iFlags, true, 0, iRange) || (canRangeStrike())))
 			{
 				// 101 for cities, because that's a better thing to capture.
 				int iOdds = (iEnemyDefenders == 0 ?
@@ -14879,31 +14972,45 @@ bool CvUnitAI::AI_rangeAttack(int iRange)
 		return false;
 	}
 
-	int iSearchRange = AI_searchRange(iRange);
+	//Vincentz Rangestrike
+//keldath - does not exists in the org
+//	int iSearchRange = AI_searchRange(iRange) * 5;
+	if (canBombard(plot()))
+	{
+		getGroup()->pushMission(MISSION_BOMBARD);
+		return true;
+	}
+//Vincentz Rangestrike end
 
-	int iBestValue = 0;
+//	int iBestValue = 0;
 	CvPlot* pBestPlot = NULL;
 
-	for (int iDX = -(iSearchRange); iDX <= iSearchRange; iDX++)
+	int iBestValue = 0;
+	int iSearchRange = AI_searchRange(iRange);
+	/*  advc.opt: I don't think MISSION_RANGE_ATTACK will cause the unit to move
+		toward the target. No point in searching beyond the air range then. */
+	iSearchRange = std::min(iSearchRange, airRange());	
+	for (int iDX = -iSearchRange; iDX <= iSearchRange; iDX++)
 	{
 		for (int iDY = -(iSearchRange); iDY <= iSearchRange; iDY++)
 		{
-			CvPlot* pLoopPlot = plotXY(getX(), getY(), iDX, iDY);
+			CvPlot* pLoopPlot = ::plotXY(getX(), getY(), iDX, iDY);
+			if (pLoopPlot == NULL || atPlot(pLoopPlot))
+				continue; // advc
 
-			if (pLoopPlot != NULL)
+			//if (pLoopPlot->isVisibleEnemyUnit(this) || (pLoopPlot->isCity() && AI_potentialEnemy(pLoopPlot->getTeam())))
+			if (pLoopPlot->isVisibleEnemyUnit(this)) // K-Mod
 			{
-				//if (pLoopPlot->isVisibleEnemyUnit(this) || (pLoopPlot->isCity() && AI_potentialEnemy(pLoopPlot->getTeam())))
-				if (pLoopPlot->isVisibleEnemyUnit(this)) // K-Mod
+				if (canRangeStrikeAt(plot(), pLoopPlot->getX(), pLoopPlot->getY()))
 				{
-					if (!atPlot(pLoopPlot) && canRangeStrikeAt(plot(), pLoopPlot->getX(), pLoopPlot->getY()))
-					{
-						int iValue = getGroup()->AI_attackOdds(pLoopPlot, true);
-
-						if (iValue > iBestValue)
-						{
-							iBestValue = iValue;
-							pBestPlot = pLoopPlot;
-						}
+					//Vincentz Rangestrike -adapted to advc )changed range to 2 - according to f1rpo - 
+					//no logic in counting up to 2 tiles away from the target stack
+					int iValue = GET_PLAYER(getOwner()).AI_localAttackStrength(pLoopPlot, NO_TEAM, NO_DOMAIN, 0, false, false, false);				
+					//int iValue = AI_getGroup()->AI_attackOdds(pLoopPlot, true);
+					if (iValue > iBestValue)
+					{						
+						iBestValue = iValue;
+						pBestPlot = pLoopPlot;
 					}
 				}
 			}
@@ -14912,7 +15019,7 @@ bool CvUnitAI::AI_rangeAttack(int iRange)
 
 	if (pBestPlot != NULL)
 	{
-		FAssert(!atPlot(pBestPlot));
+		//FAssert(!atPlot(pBestPlot));
 		// K-Mod note: no AI_considerDOW here.
 		getGroup()->pushMission(MISSION_RANGE_ATTACK, pBestPlot->getX(), pBestPlot->getY(), 0);
 		return true;
@@ -19033,7 +19140,9 @@ BuildTypes CvUnitAI::AI_betterPlotBuild(CvPlot* pPlot, BuildTypes eBuild)  // ad
 				{
 					//mountain code adapted to advc 096 changed iWorkersNeeded to iTargetWorkers
 					//===NM=====Mountain Mod===X=====
-					iValue *= 2 + iTargetWorkers + (((pPlot->isHills() || pPlot->isPeak()) && (iTargetWorkers > 1)) ? 2 * GC.getHILLS_EXTRA_MOVEMENT() : 0);
+					iValue *= 2 + iTargetWorkers + 
+							(((pPlot->isHills() || pPlot->isPeak()) && (iTargetWorkers > 1)) ? 
+							2 * GC.getHILLS_EXTRA_MOVEMENT() : 0);
 				    //===NM=====Mountain Mod===0=====	
 					iValue /= 3;
 				}
