@@ -14441,20 +14441,23 @@ int CvUnit::LFBgetDefenderRank(const CvUnit* pAttacker, int attackType) const
 	//vincentz ranged strike keldath- priototize attackers with air limits.
 	//make sure the defender is valid to the right combat limit type
 	// also - i used getDamage() instead of maxHitPoints()
-	int const iDamage = getDamage();
-	if (attackType == 1) 
+	if (pAttacker != NULL) 
 	{
+		int const iDamage = getDamage();
+		if (attackType == 1) 
+		{
 			if (iDamage >= pAttacker->airCombatLimit()) 
 			{
 					iRank = LFBgetValueAdjustedOdds(iRank, true);
 			}
-	}
-	if (attackType == 0) 
-	{
+		}
+		if (attackType == 0) 
+		{
 			if (iDamage >= pAttacker->combatLimit()) 
 			{
 					iRank = LFBgetValueAdjustedOdds(iRank, true);
 			}
+		}
 	}
 	//if ((pAttacker != NULL) && (maxHitPoints() <= pAttacker->combatLimit()))
 	//	iRank = LFBgetValueAdjustedOdds(iRank, true);
@@ -14491,7 +14494,7 @@ int CvUnit::LFBgetDefenderOdds(const CvUnit* pAttacker, int attackType) const
 	if (bUseAttacker && GC.getLFBUseCombatOdds())
 	{
 		// We start with straight combat odds
-		iDefense = LFBgetDefenderCombatOdds(pAttacker);
+		iDefense = LFBgetDefenderCombatOdds(pAttacker, attackType);
 	} else {
 		// Lacking a real opponent (or if combat odds turned off) fall back on just using strength
 // vincentz ranged strike - keldath addition		
@@ -14718,7 +14721,7 @@ int CvUnit::LFBgetDefenderCombatOdds(const CvUnit* pAttacker, int attackType) co
 	if (attackType == 1) 
 	{
 		iAttackerStrength = pAttacker->airCurrCombatStr(this);
-		iAttackerFirepower =((pAttacker->airMaxCombatStr(this) + iAttackerStrength + 1) / 2);		
+		iAttackerFirepower = ((pAttacker->airMaxCombatStr(this) + pAttacker->airCurrCombatStr(this) + 1) / 2);
 	}
 	if (attackType == 0) 
 	{
@@ -14748,22 +14751,29 @@ int CvUnit::LFBgetDefenderCombatOdds(const CvUnit* pAttacker, int attackType) co
 	// Needed rounds = round_up(health/damage)
 	//////
 	//vincentz ranged strike - using damage .
-	int const iDamage = getDamage();
-	if (attackType == 1) 
+	if (pAttacker != NULL) 
+	{
+		int const iDamage = getDamage();
+		if (attackType == 1) 
 		{
-			if (iDamage >= pAttacker->airCombatLimit()) 
-			{
-					iDefenderHitLimit = maxHitPoints() - pAttacker->airCombatLimit();
-			}
+				iDefenderHitLimit = maxHitPoints() - pAttacker->airCombatLimit();
 		}
 		if (attackType == 0) 
 		{
-			if (iDamage >= pAttacker->combatLimit()) 
-			{
-					iDefenderHitLimit = maxHitPoints() - pAttacker->combatLimit();
-			}
+				iDefenderHitLimit = maxHitPoints() - pAttacker->combatLimit();
+		}
 	}
+	else 
+	{
+		if (attackType == 1) 
+		{
+				iDefenderHitLimit = maxHitPoints() - pAttacker->airCombatLimit();
+		if (attackType == 0) 
+		{
+				iDefenderHitLimit = maxHitPoints() - pAttacker->combatLimit();
+		}
 	
+	}
 
 	//iDefenderHitLimit = maxHitPoints() - pAttacker->combatLimit();
 
