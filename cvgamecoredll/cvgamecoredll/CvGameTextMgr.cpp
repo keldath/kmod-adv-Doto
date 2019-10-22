@@ -950,9 +950,9 @@ else
 		//vincentz ranged strike - now will also dispplay aircombat limit for units
 		if ((pUnit->combatLimit() < GC.getMAX_HIT_POINTS()
 			||pUnit->airCombatLimit() < GC.getMAX_HIT_POINTS() )
-			&& !pUnit->isOnlyDefensive())
+			&& pUnit->canAttack())
 		{
-			if(pUnit->airCombatLimit() > 0 && (pUnit->airRange()) > 0 ) 
+			if(pUnit->airCombatLimit() > 0 && pUnit->airRange() > 0 ) 
 			{
 				szString.append(NEWLINE);
 				szString.append(gDLL->getText("TXT_KEY_UNIT_AIRCOMBAT_LIMIT", (100 * pUnit->airCombatLimit()) / GC.getMAX_HIT_POINTS()));
@@ -19052,9 +19052,7 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 	{
 		if (pCity->isVisible(GC.getGame().getActiveTeam(), true))
 		{
-			//keldath show defense even if ignore buidling defense
 			int iDefenseModifier = pCity->getDefenseModifier(GC.getGame().selectionListIgnoreBuildingDefense());
-			//int iDefenseModifier = pCity->getDefenseModifier(1);
 
 			if (iDefenseModifier != 0)
 			{

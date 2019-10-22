@@ -748,7 +748,7 @@ void CvPlot::updateCenterUnit()
 	{	// <advc.028>
 		CvUnit* pBestDef = getBestDefender(NO_PLAYER, eActivePlayer,
 				gDLL->getInterfaceIFace()->getHeadSelectedUnit(), true,
-				false, false, true); // advc.061
+				false, true); // advc.061
 		if(pBestDef != NULL)
 			setCenterUnit(pBestDef); // </advc.028>
 	} // disabled by K-Mod. I don't think it's relevant whether or not the best defender can move.
@@ -761,7 +761,7 @@ void CvPlot::updateCenterUnit()
 		// <advc.028> Replacing the above
 		CvUnit* pBestDef = getBestDefender(NO_PLAYER, eActivePlayer,
 				gDLL->getInterfaceIFace()->getHeadSelectedUnit(), false,
-				false, false, true); // advc.061
+				false, true); // advc.061
 		if(pBestDef != NULL)
 			setCenterUnit(pBestDef); // </advc.028>
 	}
@@ -771,7 +771,7 @@ void CvPlot::updateCenterUnit()
 		//setCenterUnit(getBestDefender(NO_PLAYER, GC.getGame().getActivePlayer()));
 		// <advc.028> Replacing the above
 		CvUnit* pBestDef = getBestDefender(NO_PLAYER, eActivePlayer, NULL, false,
-				false, false, true); // advc.061
+				false, true); // advc.061
 		if(pBestDef != NULL)
 			setCenterUnit(pBestDef); // </advc.028>
 	}
@@ -2881,9 +2881,19 @@ int CvPlot::getFeatureProduction(BuildTypes eBuild, TeamTypes eTeam, CvCity** pp
 
 
 CvUnit* CvPlot::getBestDefender(PlayerTypes eOwner, PlayerTypes eAttackingPlayer,
-		CvUnit const* pAttacker, bool bTestAtWar, bool bTestPotentialEnemy,
-		bool bTestCanMove, /* advc.028: */ bool bVisible) const
+		CvUnit const* pAttacker, bool bTestEnemy, bool bTestPotentialEnemy,
+	/* advc.028: */ bool bTestVisible,
+	// vincentz ranged strike - keldath addition
+	bool bTestCanAttack, bool bAny,int attackType) const // advc: new params (for CvPlot::hasDefender)
 {
+	// <advc> Ensure consistency of parameters
+	if (pAttacker != NULL)
+	{
+		FAssert(pAttacker->getOwner() == eAttackingPlayer);
+		eAttackingPlayer = pAttacker->getOwner();
+	}
+	// isEnemy implies isPotentialEnemy
+	FAssert(!bTestEnemy || !bTestPotentialEnemy); // </advc>
 	// BETTER_BTS_AI_MOD, Lead From Behind (UncutDragon), 02/21/10, jdog5000
 	int iBestUnitRank = -1;
 	CvUnit* pBestUnit = NULL;
@@ -2893,51 +2903,37 @@ CvUnit* CvPlot::getBestDefender(PlayerTypes eOwner, PlayerTypes eAttackingPlayer
 		CvUnit* pLoopUnit = ::getUnit(pUnitNode->m_data);
 		pUnitNode = nextUnitNode(pUnitNode);
 
-		if ((eOwner == NO_PLAYER) || (pLoopUnit->getOwner() == eOwner))
+		if (eOwner != NO_PLAYER && pLoopUnit->getOwner() != eOwner)
+			continue;
+		if (pLoopUnit->isCargo()) // advc: Was previously only checked with bTestCanMove - i.e. never.
+			continue;
+		// <advc> Moved the other conditions into an auxiliary function
+		if((eAttackingPlayer == NO_PLAYER 
+			 || pLoopUnit->canBeAttackedBy(eAttackingPlayer,
+			pAttacker, bTestEnemy, bTestPotentialEnemy, /* advc.028: */ bTestVisible,
+			// vincentz ranged strike - keldath addition
+			bTestCanAttack,attackType)) //&&unused now - vincentz ranged strike - keldath
+			//pLoopUnit->validCombatLimits(pLoopUnit,pAttacker)
+			)
 		{
-			if(!bVisible || // advc.028
-					eAttackingPlayer == NO_PLAYER ||
-					!pLoopUnit->isInvisible(TEAMID(eAttackingPlayer),
-					true)) // advc.028
-			{
-				if (!bTestAtWar || eAttackingPlayer == NO_PLAYER || pLoopUnit->isEnemy(GET_PLAYER(eAttackingPlayer).getTeam(), this) || (NULL != pAttacker && pAttacker->isEnemy(GET_PLAYER(pLoopUnit->getOwner()).getTeam(), this)))
-				{
-					if (!bTestPotentialEnemy || (eAttackingPlayer == NO_PLAYER) ||  pLoopUnit->isPotentialEnemy(GET_PLAYER(eAttackingPlayer).getTeam(), this) || (NULL != pAttacker && pAttacker->isPotentialEnemy(GET_PLAYER(pLoopUnit->getOwner()).getTeam(), this)))
-					{
-						if (!bTestCanMove || (pLoopUnit->canMove() && !pLoopUnit->isCargo()))
-						{
-							//if (pAttacker == NULL || pAttacker->getDomainType() != DOMAIN_AIR || pLoopUnit->getDamage() < pAttacker->airCombatLimit())
-							//Vincentz ranged strike = keldath fix for left from behind combat odds - that ignores aircombat limit for land units
-							// i extended the conditions more specificaly for what a defender should be accountable
-							if (pAttacker == NULL 
-								//NONE AIR UNITS WITH AIR ATTACK - WITH AIRCOMBAT LIMIT FILTER
-								|| pAttacker->getDomainType() != DOMAIN_AIR && pLoopUnit->getDamage() < pAttacker->airCombatLimit()
-								//NONE AIR UNITS WITH NO AIR ATTACK
-								|| pAttacker->getDomainType() != DOMAIN_AIR && (pAttacker->airCombatLimit() == 0  || pAttacker->airCombatLimit() == 100) 
-								//NONE AIR UNITS WITH COMBAT LIMIT AND NO AIR ATTACK VALUE
-								|| pAttacker->getDomainType() != DOMAIN_AIR && pLoopUnit->getDamage() < pAttacker->combatLimit() && pAttacker->airBaseCombatStr() == 0
-								//NONE AIR UNITS WITH NO COMBAT LIMIT AND NO AIR ATTACK VALUE
-								|| pAttacker->getDomainType() != DOMAIN_AIR && (pAttacker->combatLimit() == 0 || pAttacker->combatLimit() == 100) && pAttacker->airBaseCombatStr() == 0
-								//AIR UNITS WITH ATTACK LIMIT
-								|| pAttacker->getDomainType() == DOMAIN_AIR && pLoopUnit->getDamage() < pAttacker->airCombatLimit()
-								//AIR UNITS WITH NO ATTACK LIMITS
-								|| pAttacker->getDomainType() == DOMAIN_AIR && (pAttacker->airCombatLimit() == 0  || pAttacker->airCombatLimit() == 100)						
-							)
-							{
-								if (pLoopUnit->isBetterDefenderThan(pBestUnit, pAttacker,
-										&iBestUnitRank, // UncutDragon
-										bVisible)) // advc.061
-									pBestUnit = pLoopUnit;
-							}
-						}
-					}
-				}
-			}
+			if (bAny)
+				return pLoopUnit; // </advc>
+			if (pLoopUnit->isBetterDefenderThan(pBestUnit, pAttacker,
+					&iBestUnitRank, // UncutDragon
+					// vincentz ranged strike - keldath addition
+					bTestVisible,attackType)) // advc.061
+				pBestUnit = pLoopUnit;
+		}
+		// vincentz ranged strike - keldath addition
+		else 
+		{
+			continue;	//if theres no valid defender - move on - keldath comment for ranged strike vincentz
 		}
 	}
 	// BETTER_BTS_AI_MOD: END
 	return pBestUnit;
 }
+
 
 CvUnit* CvPlot::getSelectedUnit() const
 {
@@ -10988,57 +10984,13 @@ void CvPlot::killRandomUnit(PlayerTypes eOwner, DomainTypes eDomain) {
 
 
 // BETTER_BTS_AI_MOD, Lead From Behind (UncutDragon), 02/21/10, jdog5000: START
-bool CvPlot::hasDefender(bool bCheckCanAttack, PlayerTypes eOwner, PlayerTypes eAttackingPlayer, const CvUnit* pAttacker, bool bTestAtWar, bool bTestPotentialEnemy, bool bTestCanMove) const
+bool CvPlot::hasDefender(bool bTestCanAttack, PlayerTypes eOwner, PlayerTypes eAttackingPlayer,
+	CvUnit const* pAttacker, bool bTestEnemy, bool bTestPotentialEnemy) const
 {
-	CLLNode<IDInfo>* pUnitNode = headUnitNode();
-	while (pUnitNode != NULL)
-	{
-		CvUnit* pLoopUnit = ::getUnit(pUnitNode->m_data);
-		pUnitNode = nextUnitNode(pUnitNode);
-
-		if ((eOwner == NO_PLAYER) || (pLoopUnit->getOwner() == eOwner))
-		{
-			if ((eAttackingPlayer == NO_PLAYER) || !(pLoopUnit->isInvisible(GET_PLAYER(eAttackingPlayer).getTeam(), false)))
-			{
-				if (!bTestAtWar || eAttackingPlayer == NO_PLAYER || pLoopUnit->isEnemy(GET_PLAYER(eAttackingPlayer).getTeam(), this) || (NULL != pAttacker && pAttacker->isEnemy(GET_PLAYER(pLoopUnit->getOwner()).getTeam(), this)))
-				{
-					if (!bTestPotentialEnemy || (eAttackingPlayer == NO_PLAYER) ||  pLoopUnit->isPotentialEnemy(GET_PLAYER(eAttackingPlayer).getTeam(), this) || (NULL != pAttacker && pAttacker->isPotentialEnemy(GET_PLAYER(pLoopUnit->getOwner()).getTeam(), this)))
-					{
-						if (!bTestCanMove || (pLoopUnit->canMove() && !pLoopUnit->isCargo()))
-						{
-							//if (pAttacker == NULL || pAttacker->getDomainType() != DOMAIN_AIR || pLoopUnit->getDamage() < pAttacker->airCombatLimit())
-							//Vincentz ranged strike = keldath fix for left from behind combat odds - that ignores aircombat limit for land units
-							// i extended the conditions more specificaly for what a defender should be accountable
-							if (pAttacker == NULL 
-								//NONE AIR UNITS WITH AIR ATTACK - WITH AIRCOMBAT LIMIT FILTER
-								|| pAttacker->getDomainType() != DOMAIN_AIR && pLoopUnit->getDamage() < pAttacker->airCombatLimit()
-								//NONE AIR UNITS WITH NO AIR ATTACK
-								|| pAttacker->getDomainType() != DOMAIN_AIR && (pAttacker->airCombatLimit() == 0  || pAttacker->airCombatLimit() == 100) 
-								//NONE AIR UNITS WITH COMBAT LIMIT AND NO AIR ATTACK VALUE
-								|| pAttacker->getDomainType() != DOMAIN_AIR && pLoopUnit->getDamage() < pAttacker->combatLimit() && pAttacker->airBaseCombatStr() == 0
-								//NONE AIR UNITS WITH NO COMBAT LIMIT AND NO AIR ATTACK VALUE
-								|| pAttacker->getDomainType() != DOMAIN_AIR && (pAttacker->combatLimit() == 0 || pAttacker->combatLimit() == 100) && pAttacker->airBaseCombatStr() == 0
-								//AIR UNITS WITH ATTACK LIMIT
-								|| pAttacker->getDomainType() == DOMAIN_AIR && pLoopUnit->getDamage() < pAttacker->airCombatLimit()
-								//AIR UNITS WITH NO ATTACK LIMITS
-								|| pAttacker->getDomainType() == DOMAIN_AIR && (pAttacker->airCombatLimit() == 0  || pAttacker->airCombatLimit() == 100)						
-							)
-							{
-								if (!bCheckCanAttack || pAttacker == NULL || pAttacker->canAttack(*pLoopUnit))
-								{
-									// found a valid defender
-									return true;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	// there are no defenders
-	return false;
+	/*  advc: BBAI had repeated parts of getBestDefender here. To avoid that, I've
+		moved bTestAttack into getBestDefender and gave that function a "bAny" param. */
+	return (getBestDefender(eOwner, eAttackingPlayer, pAttacker, bTestEnemy,
+			bTestPotentialEnemy, false, bTestCanAttack, /*bAny=*/true) != NULL);
 } // BETTER_BTS_AI_MOD: END
 
 // <advc.500a>
