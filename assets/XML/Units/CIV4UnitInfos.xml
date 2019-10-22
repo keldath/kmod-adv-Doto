@@ -193,18 +193,18 @@ iRangedWaveSize	The number of models that engage in ranged combat at once. Shoul
 LateArtDefineTag	From CIV4ArtDefinesUnit - what the unit looks like in-game during the middle era(s).
 MiddleArtDefineTag	From CIV4ArtDefinesUnit - what the unit looks like in-game during the late era(s).
 UnitMeshGroups	The ART_DEF tag for the unit's model/animation/etc information.
+
 KELDATH NOTES:
 vINCETZ RANGED STRIKE IS DESGINED HERE - 
 SIEGE UNITS FORST TARGET , OTHER SIEGE UNITS
 SIEGE UNITS CAN RETURN FIRE
-ALL SEIGE HAVE 75 COMBAT LIMIT AND 50 AIR LIMIT (TO AVOID RANGED ATTACK TO DESTROY UNITS COMPLETLEY
+ALL SEIGE HAVE the same COMBAT LIMIT AND AIR LIMIT 
+	(TO AVOID RANGED ATTACK TO DESTROY UNITS COMPLETLEY and for ai usage properly)
+	MAKE SURE AIR COMBAT AND COMBAT HAVE THE SAME VALUE - FOR AI EVALUATIONS.
+ranged attacks , bombard and air have a random hit chance.
 COLLATERAL DAMAGE STARTS FROM 25 WITH CATAPULTS
-THESE UNITAI WERE ADDED TO ALL SIEGE UNITS - AS IN VIP
-I GUESS NOW RANGED CAN BE USED FOR ANY PURPOSE.
-ONE NOTE - MAIN UNITAI WAS COUNTER - I LEFT IT AS ARRACK_CITY
-MAYBE IT WOULD BE BETTER TO SET AS UNITAI_ATTACK INSTEAD...
-UNITAI_ATTACK,UNITAI_COLLATERAL,UNITAI_COUNTER,UNITAI_CITY_DEFENSE,
-UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
+UNITAI changed - now will used to counter.
+			for now - not using city defense (special should cover it).	
 			
 -->
 <!-- Unit Infos -->
@@ -17958,7 +17958,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 			<Capture>NONE</Capture>
 			<Combat>UNITCOMBAT_SIEGE</Combat>
 			<Domain>DOMAIN_LAND</Domain>
-			<DefaultUnitAI>UNITAI_ATTACK_CITY</DefaultUnitAI>
+			<DefaultUnitAI>UNITAI_COLLATERAL</DefaultUnitAI>
 			<Invisible>NONE</Invisible>
 			<SeeInvisible>NONE</SeeInvisible>
 			<Description>TXT_KEY_UNIT_CATAPULT</Description>
@@ -18032,15 +18032,15 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 <!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
-				</UnitAI>
+		<!--		</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			<!--	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -18048,7 +18048,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -18128,7 +18128,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>5</iCombat>
-			<iCombatLimit>75</iCombatLimit>
+			<iCombatLimit>50</iCombatLimit>
 			<iAirCombat>5</iAirCombat>
 			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
@@ -18278,20 +18278,16 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 				<UnitAI>
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
-				<UnitAI>
-					<UnitAIType>UNITAI_COUNTER</UnitAIType>
-					<bUnitAI>1</bUnitAI>
 <!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
-				</UnitAI>
+		<!--		</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			<!--	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -18299,7 +18295,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -18379,7 +18375,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>5</iCombat>
-			<iCombatLimit>75</iCombatLimit>
+			<iCombatLimit>50</iCombatLimit>
 			<iAirCombat>5</iAirCombat>
 			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
@@ -18615,7 +18611,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>4</iCombat>
-			<iCombatLimit>100</iCombatLimit>
+			<iCombatLimit>50</iCombatLimit>
 			<iAirCombat>4</iAirCombat>
 			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
@@ -18767,15 +18763,15 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 <!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
-				</UnitAI>
+		<!--		</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			<!--	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -18783,7 +18779,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -18863,7 +18859,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>12</iCombat>
-			<iCombatLimit>75</iCombatLimit>
+			<iCombatLimit>50</iCombatLimit>
 			<iAirCombat>12</iAirCombat>
 			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
@@ -19216,15 +19212,15 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 <!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
-				</UnitAI>
+		<!--		</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			<!--	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -19232,7 +19228,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -19312,7 +19308,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>75</iCombatLimit>
+			<iCombatLimit>50</iCombatLimit>
 			<iAirCombat>18</iAirCombat>
 			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
@@ -19463,15 +19459,15 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 <!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
-				</UnitAI>
+		<!--		</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			<!--	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -19479,7 +19475,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -19536,7 +19532,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>26</iCombat>
-			<iCombatLimit>85</iCombatLimit>
+			<iCombatLimit>50</iCombatLimit>
 			<iAirCombat>26</iAirCombat>
 			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
@@ -31142,15 +31138,15 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 <!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
-				</UnitAI>
+		<!--		</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			<!--	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -31158,7 +31154,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -31238,7 +31234,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>75</iCombatLimit>
+			<iCombatLimit>55</iCombatLimit>
 			<iAirCombat>18</iAirCombat>
 			<iAirCombatLimit>55</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
@@ -32260,15 +32256,15 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 <!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
-				</UnitAI>
+		<!--		</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			<!--	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -32276,7 +32272,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -32356,7 +32352,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>12</iCombat>
-			<iCombatLimit>75</iCombatLimit>
+			<iCombatLimit>50</iCombatLimit>
 			<iAirCombat>12</iAirCombat>
 			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
@@ -45027,15 +45023,15 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 <!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
-				</UnitAI>
+		<!--		</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			<!--	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -45043,7 +45039,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -45123,7 +45119,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>75</iCombatLimit>
+			<iCombatLimit>50</iCombatLimit>
 			<iAirCombat>18</iAirCombat>
 			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
@@ -47313,15 +47309,15 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 <!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
-				</UnitAI>
+		<!--		</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			<!--	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -47329,7 +47325,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -47409,7 +47405,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>75</iCombatLimit>
+			<iCombatLimit>50</iCombatLimit>
 			<iAirCombat>18</iAirCombat>
 			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
@@ -50923,15 +50919,15 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 <!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
-				</UnitAI>
+		<!--		</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			<!--	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -50939,7 +50935,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -51019,7 +51015,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>12</iCombat>
-			<iCombatLimit>75</iCombatLimit>
+			<iCombatLimit>50</iCombatLimit>
 			<iAirCombat>12</iAirCombat>
 			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
@@ -55024,15 +55020,15 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 <!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
-				</UnitAI>
+		<!--		</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			<!--	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -55040,7 +55036,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -55097,7 +55093,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>26</iCombat>
-			<iCombatLimit>75</iCombatLimit>
+			<iCombatLimit>50</iCombatLimit>
 			<iAirCombat>26</iAirCombat>
 			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
@@ -57678,15 +57674,15 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 <!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
-				</UnitAI>
+		<!--		</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			<!--	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -57694,7 +57690,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-				</UnitAI>
+			-->	</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -57751,7 +57747,7 @@ UNITAI_CITY_COUNTER,UNITAI_CITY_SPECIAL
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>26</iCombat>
-			<iCombatLimit>75</iCombatLimit>
+			<iCombatLimit>50</iCombatLimit>
 			<iAirCombat>26</iAirCombat>
 			<iAirCombatLimit>50</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>

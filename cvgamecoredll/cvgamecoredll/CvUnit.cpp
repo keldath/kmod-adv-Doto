@@ -1469,8 +1469,9 @@ void CvUnit::updateCombat(bool bQuick)
 			// K-Mod. we need to wait for our turn to attack - so don't bother looking for a defender yet.
 			return;
 		}
-		pDefender = pPlot->getBestDefender(NO_PLAYER, getOwner(), this, true);
-	}
+		// vincentz ranged strike - keldath addition
+		pDefender = pPlot->getBestDefender(NO_PLAYER, getOwner(), this, true/*, NULL, NULL, NULL, NULL, attackType*/);
+	}					
 
 	if (pDefender == NULL)
 	{
@@ -2236,7 +2237,8 @@ void CvUnit::updateFoundingBorder(bool bForceClear) const {
 
 bool CvUnit::isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker,
 		int* pBestDefenderRank, // Lead From Behind by UncutDragon
-		bool bPreferUnowned) const // advc.061
+		// vincentz ranged strike - keldath addition
+		bool bPreferUnowned,int attackType) const // advc.061
 {
 	TeamTypes eAttackerTeam = NO_TEAM;
 	if (NULL != pAttacker)
@@ -2316,8 +2318,9 @@ bool CvUnit::isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttack
 	// To cut down on changes to existing code, we just short-circuit the method
 	// and this point and call our own version instead
 	if (GC.getLFBEnable())
-		return LFBisBetterDefenderThan(pDefender, pAttacker, pBestDefenderRank);
-	// /UncutDragon
+		// vincentz ranged strike - keldath addition
+		return LFBisBetterDefenderThan(pDefender, pAttacker, pBestDefenderRank,attackType);
+	// /UncutDragon					
 
 // advc (comment): Start of legacy BtS code
 	int iOurDefense = currCombatStr(plot(), pAttacker);
@@ -3105,14 +3108,29 @@ bool CvUnit::canMoveInto(const CvPlot* pPlot, bool bAttack, bool bDeclareWar, bo
 	// UNOFFICIAL_PATCH: END
 
 // Vincentz Rangestrike cannot move
-	if (bAttack)
+//keldath 2 changes - 1: optional for both domains 
+//					  2: vincentz made it optional if air combat was smaller than combat.
+//						 i made it to check if theres air combat > 0 only , since now the whole thing is optinal all and all.
+	if (!GC.getGame().isOption(GAMEOPTION_RANGED_LAND_INDIRECT_ATTACK)) 
 	{
-		if (getDomainType() == DOMAIN_LAND && canRangeStrike() && baseCombatStr() <= airBaseCombatStr())
+		if (bAttack)
 		{
-			return false;
+			if (getDomainType() == DOMAIN_LAND && canRangeStrike() && airBaseCombatStr() > 0)//baseCombatStr() <= airBaseCombatStr())
+			{
+				return false;
+			}
 		}
 	}
-		
+	if (!GC.getGame().isOption(GAMEOPTION_RANGED_SEA_INDIRECT_ATTACK)) 
+	{
+		if (bAttack)
+		{
+			if (getDomainType() == DOMAIN_SEA && canRangeStrike() && airBaseCombatStr() > 0) //baseCombatStr() <= airBaseCombatStr())
+			{
+				return false;
+			}
+		}	
+	}
 	if (getDomainType() == DOMAIN_AIR)
 	{
 		if (bAttack)
@@ -5356,7 +5374,8 @@ bool CvUnit::bombard()
 
 	if (pPlot->isActiveVisible(false))
 	{
-		CvUnit *pDefender = pBombardCity->plot()->getBestDefender(NO_PLAYER, getOwner(), this, true);
+		// vincentz ranged strike - keldath addition
+		CvUnit *pDefender = pBombardCity->plot()->getBestDefender(NO_PLAYER, getOwner(), this, true/*, NULL, NULL, NULL, NULL, attackType*/);	
 		// Bombard entity mission
 		CvMissionDefinition kDefiniton;
 		kDefiniton.setMissionTime(GC.getMissionInfo(MISSION_BOMBARD).getTime() * gDLL->getSecsPerTurn());
@@ -9153,6 +9172,101 @@ bool CvUnit::canAttack(const CvUnit& defender) const
 	return true;
 }
 
+// advc: Based on code removed from CvPlot::getBestDefender and CvPlot::hasDefender
+bool CvUnit::canBeAttackedBy(PlayerTypes eAttackingPlayer,
+	CvUnit const* pAttacker, bool bTestEnemy, bool bTestPotentialEnemy,
+	// vincentz ranged strike - keldath addition
+	/* <advc.028> */ bool bTestVisible, /* </advc.028> */ bool bTestCanAttack,int attackType) const
+{
+	FAssert(eAttackingPlayer != NO_PLAYER);
+	if (/* advc.028: */ bTestVisible &&
+			isInvisible(TEAMID(eAttackingPlayer), /* advc.028: */ false))
+		return false;
+	if (bTestEnemy)
+	{
+		if (pAttacker == NULL)
+		{
+			if (!isEnemy(TEAMID(eAttackingPlayer), plot()))
+				return false;
+		}
+		else if (!pAttacker->isEnemy(getTeam(), plot()))
+			return false;
+	}
+	if (bTestPotentialEnemy)
+	{
+		if (pAttacker == NULL)
+		{
+			if (!isPotentialEnemy(TEAMID(eAttackingPlayer), plot()))
+				return false;
+		}
+		else if (!pAttacker->isPotentialEnemy(getTeam(), plot()))
+			return false;
+	}
+	// <advc>
+	if (pAttacker != NULL)
+	{
+		// Moved from CvPlot::hasDefender
+		if (bTestCanAttack && !pAttacker->canAttack(*this))
+			return false;
+		/*  Previously, only the air combat limit was checked here. If either limit
+			isn't reached, then some form of attack is possible. (A land or sea unit
+			with range attack ability could have a regular attack ability in addition.) */
+// vincentz ranged strike - keldath addition		
+		int const iDamage = getDamage();
+		//now uses attacktype to choose the proper combat limit
+		if (attackType == 1) {
+			if (iDamage >= pAttacker->airCombatLimit()) 
+			{
+				return false;
+			}
+		}
+		if (attackType == 0) {
+			if (iDamage >= pAttacker->combatLimit()) 
+			{
+				return false;
+			}
+		}
+	//vincentz ranged strike - canceled by keldath - due to the check of function 		
+	//	if (iDamage >= pAttacker->combatLimit() && iDamage >= pAttacker->airCombatLimit())
+	//		return false;
+	} // </advc>
+	return true;
+}
+
+
+// keldath checker for combat limit before getting a target -its in bestdefender func: 
+//unused for now - using canattackby and attacktype parameter.
+/*bool CvUnit::validCombatLimits(CvUnit const* pDefender, CvUnit const* pAttacker) const
+{
+	 //if attacker is null, then it will just pick a defender under regular rules 
+	//without the null check - there can be a crash on world builder
+	//and invisable units for worker likes -  none combats.
+	if (pAttacker != NULL) 
+	{
+
+		int aAirLimit = pAttacker->airCombatLimit();
+		int dDamage = pDefender->getDamage();
+		int aCombatLimit = pAttacker->combatLimit();
+		int airCombat = pAttacker->airBaseCombatStr();
+	
+		//damage is over the air limit from an attacker with air combat - not allowed
+		if (dDamage >= aAirLimit && airCombat > 0)
+		{
+		return false;
+		}	 
+		//damage is over regular combat limit from an attacker with no air combat = not allowed
+		if (dDamage >= aCombatLimit && airCombat == 0)	
+		{
+			return false;
+		}
+
+		return true;
+	}
+	else {						
+		return true;
+	}
+}
+*/
 bool CvUnit::canDefend(const CvPlot* pPlot) const
 {
 	if(!canFight())
@@ -13067,8 +13181,11 @@ bool CvUnit::interceptTest(const CvPlot* pPlot)
 
 CvUnit* CvUnit::airStrikeTarget(const CvPlot* pPlot) const
 {
-	CvUnit* pDefender = pPlot->getBestDefender(NO_PLAYER, getOwner(), this, true);
-
+	//vincentz ranged strike - keldath variation.	
+	//attackType - since aircombat uses aircombat limit - this param will define which combat limit to use
+	//in the getbest defender. before - the regular combat value was chosen
+	CvUnit* pDefender = pPlot->getBestDefender(NO_PLAYER, getOwner(), this, true, NULL, NULL, NULL, NULL, 1);
+							   				
 	if (pDefender != NULL)
 	{
 		if (!pDefender->isDead())
@@ -13260,16 +13377,6 @@ bool CvUnit::canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY , bool bStrike
 	
 	if (NULL == pDefender)
 	{
-/*		this is from advc i think - keldath or kmod
-		if (pCity != NULL)
-		{
-			//if (!(pCity->isBombardable(this)))
-			if (!pCity->isBombardable(this) )//|| !pCity->isRevealed(getTeam(), false)) // K-Mod
-			{
-				return false;
-			}
-		}
-*/
 		return false;
 	}
 //Vincentz ranged strike - keldath new implementation 
@@ -13324,29 +13431,45 @@ bool CvUnit::rangeStrike(int iX, int iY)
 	FAssert(pDefender != NULL);
 	FAssert(pDefender->canDefend());
 
-	if (GC.getDefineINT("RANGED_ATTACKS_USE_MOVES") == 0)
-	{
-		setMadeAttack(true);
-	}
-	///Keldath addition - i want sea units
-	// not to be allowed to carry out both ranged and both
-	// normal attack 0 since ranged attack  - will only finish land units movement below
-	//the land units - are controllable by the above if.	
-	if (getDomainType() == DOMAIN_SEA)
-	{
-		setMadeAttack(true);
-	}							  
+	//if (GC.getDefineINT("RANGED_ATTACKS_USE_MOVES_LAND") == 0)
+	//if (!GC.getGame().isOption(GAMEOPTION_RANGED_SEA_INDIRECT_ATTACK))
+	//{	
+		if (getDomainType() == DOMAIN_SEA)
+		{
+			setMadeAttack(true);
+		}
+	//}
+	///Keldath addition
+	//originally i wanted sea units to be able ti choose the attack type
+	//if (!GC.getGame().isOption(GAMEOPTION_RANGED_LAND_INDIRECT_ATTACK))
+	//{
+		if (getDomainType() == DOMAIN_LAND)
+		{
+			setMadeAttack(true);
+		}
+	//}							  
 //RANGED STRIKE VINCENTZ
 	//keldath notes - i guess if the domain is land - always finish up movement to these units.
-	if (getDomainType() == DOMAIN_LAND)
+	if (GC.getGame().isOption(GAMEOPTION_RANGED_LAND_END_MOVES))
 	{
-		finishMoves();
+		if (getDomainType() == DOMAIN_LAND)
+		{
+			finishMoves();
+		}
+		else
+		{	changeMoves(GC.getMOVE_DENOMINATOR());
+		}
 	}
-	else
-	{	changeMoves(GC.getMOVE_DENOMINATOR());
+	if (GC.getGame().isOption(GAMEOPTION_RANGED_SEA_END_MOVES))
+	{
+		if (getDomainType() == DOMAIN_SEA)
+		{
+			finishMoves();
+		}
+		else
+		{	changeMoves(GC.getMOVE_DENOMINATOR());
+		}
 	}
-
-	
 //keldath added check for ignore building defense
 /*	CvCity* pCity = pTargetPlot->getPlotCity();//this was a bit below - i mived it to canRangeStrikeAt
 	if (pCity != NULL && (pCity->isBombardable(this)) && !ignoreBuildingDefense())		
@@ -13421,10 +13544,7 @@ bool CvUnit::rangeStrike(int iX, int iY)
 //Vincentz Rangestrike 
 		kDefiniton.setMissionTime(GC.getMissionInfo(MISSION_RANGE_ATTACK).getTime() * gDLL->getSecsPerTurn() + 2);
 //Vincentz Rangestrike
-		
-		
 		kDefiniton.setMissionType(MISSION_RANGE_ATTACK);
-
 		kDefiniton.setUnit(BATTLE_UNIT_ATTACKER, this);
 		kDefiniton.setUnit(BATTLE_UNIT_DEFENDER, pDefender);
 		kDefiniton.setPlot(pDefender->plot());
@@ -13452,7 +13572,8 @@ bool CvUnit::rangeStrike(int iX, int iY)
 
 //Vincentz Rangestrike Strikeback --keldath - dunno - i guess the lines are not aligned with advc
 	//	if (GC.getDefineINT("RANGESTRIKE_RETURN_FIRE") == 1 && (pDefender->canRangeStrikeAt(pDefender->plot(), this->plot()->getX(), this->plot()->getY())))
-	if (GC.getDefineINT("RANGESTRIKE_RETURN_FIRE") == 1)
+	//if (GC.getDefineINT("RANGESTRIKE_RETURN_FIRE") == 1)
+	if (GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATION))		
 	{
 		//keldath notes - this runs over the plot looiking for a unit that can air range strike?
 		//if (!pDefender->canRangeStrikeAt(pDefender->plot(), this->plot()->getX(), this->plot()->getY()))
@@ -14275,19 +14396,23 @@ bool CvUnit::isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttack
 
 // Modified version of best defender code (minus the initial boolean tests,
 // which we still check in the original method)
-bool CvUnit::LFBisBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker, int* pBestDefenderRank) const
+// vincentz ranged strike - keldath addition
+bool CvUnit::LFBisBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker, 
+								int* pBestDefenderRank, int attackType) const
 {
 	// We adjust ranking based on ratio of our adjusted strength compared to twice that of attacker
 	// Effect is if we're over twice as strong as attacker, we increase our ranking
 	// (more likely to be picked as defender) - otherwise, we reduce our ranking (less likely)
 
 	// Get our adjusted rankings based on combat odds
-	int iOurRanking = LFBgetDefenderRank(pAttacker);
+// vincentz ranged strike - keldath addition
+	int iOurRanking = LFBgetDefenderRank(pAttacker, attackType);
 	int iTheirRanking = -1;
 	if (pBestDefenderRank)
 		iTheirRanking = (*pBestDefenderRank);
 	if (iTheirRanking == -1)
-		iTheirRanking = pDefender->LFBgetDefenderRank(pAttacker);
+// vincentz ranged strike - keldath addition
+		iTheirRanking = pDefender->LFBgetDefenderRank(pAttacker, attackType);
 
 	// In case of equal value, fall back on unit cycle order
 	// (K-Mod. _reversed_ unit cycle order, so that inexperienced units defend first.)
@@ -14321,6 +14446,16 @@ int CvUnit::LFBgetAttackerRank(const CvUnit* pDefender, int& iUnadjustedRank) co
 	else
 	{
 		// No defender ... just use strength, but try to make it a number out of 1000
+		// vincentz ranged strike - keldath addition
+/*		if (attackType == 1) 
+		{
+				iUnadjustedRank	= airCurrCombatStr(NULL)/ 5;
+		}
+		if (attackType == 0) 
+		{
+				iUnadjustedRank = currCombatStr(NULL, NULL) / 5;
+		}
+*/		
 		iUnadjustedRank = currCombatStr(NULL, NULL) / 5;
 	}
 
@@ -14328,33 +14463,58 @@ int CvUnit::LFBgetAttackerRank(const CvUnit* pDefender, int& iUnadjustedRank) co
 }
 
 // Get the (adjusted) odds of defender winning to use in deciding best defender
-int CvUnit::LFBgetDefenderRank(const CvUnit* pAttacker) const
+// vincentz ranged strike - keldath addition
+int CvUnit::LFBgetDefenderRank(const CvUnit* pAttacker, int attackType) const
 {
-	int iRank = LFBgetDefenderOdds(pAttacker);
-	// Don't adjust odds for value if attacker is limited in their damage (i.e: no risk of death)
-/*	if ( pAttacker->BaseCombatStr() >= 0 && pAttacker->airBaseCombatStr() > 0) {
-		if ((pAttacker != NULL) && (maxHitPoints() <= pAttacker->airCombatLimit()))
-			iRank = LFBgetValueAdjustedOdds(iRank, true);
+	int iRank = LFBgetDefenderOdds(pAttacker, attackType);
+	//vincentz ranged strike keldath- priototize attackers with air limits.
+	//make sure the defender is valid to the right combat limit type
+	// also - i used getDamage() instead of maxHitPoints()
+	if (pAttacker != NULL) 
+	{
+		int const iDamage = getDamage();
+		if (attackType == 1) 
+		{
+			if (iDamage >= pAttacker->airCombatLimit()) 
+			{
+					iRank = LFBgetValueAdjustedOdds(iRank, true);
+			}
+		}
+		if (attackType == 0) 
+		{
+			if (iDamage >= pAttacker->combatLimit()) 
+			{
+					iRank = LFBgetValueAdjustedOdds(iRank, true);
+			}
+		}
 	}
-	else {
-		if ((pAttacker != NULL) && (maxHitPoints() <= pAttacker->combatLimit()))
-			iRank = LFBgetValueAdjustedOdds(iRank, true);
-	}
-*/	
-	if ((pAttacker != NULL) && (maxHitPoints() <= pAttacker->combatLimit()))
-		iRank = LFBgetValueAdjustedOdds(iRank, true);
+	//if ((pAttacker != NULL) && (maxHitPoints() <= pAttacker->combatLimit()))
+	//	iRank = LFBgetValueAdjustedOdds(iRank, true);
 
 	return iRank;
 }
 
 // Get the unadjusted odds of defender winning (used for both best defender and best attacker)
-int CvUnit::LFBgetDefenderOdds(const CvUnit* pAttacker) const
+// vincentz ranged strike - keldath addition
+int CvUnit::LFBgetDefenderOdds(const CvUnit* pAttacker, int attackType) const
 {
 	// Check if we have a valid attacker
 	bool bUseAttacker = false;
 	int iAttStrength = 0;
 	if (pAttacker)
-		iAttStrength = pAttacker->currCombatStr(NULL, NULL);
+// vincentz ranged strike - keldath addition
+	{
+		if (attackType == 1) 
+		{
+				iAttStrength = pAttacker->airCurrCombatStr(this);
+		}
+		if (attackType == 0) 
+		{
+				iAttStrength = pAttacker->currCombatStr(NULL, NULL);
+		}
+		
+		//iAttStrength = pAttacker->currCombatStr(NULL, NULL);
+	}
 	if (iAttStrength > 0)
 		bUseAttacker = true;
 
@@ -14363,10 +14523,20 @@ int CvUnit::LFBgetDefenderOdds(const CvUnit* pAttacker) const
 	if (bUseAttacker && GC.getLFBUseCombatOdds())
 	{
 		// We start with straight combat odds
-		iDefense = LFBgetDefenderCombatOdds(pAttacker);
+		iDefense = LFBgetDefenderCombatOdds(pAttacker, attackType);
 	} else {
 		// Lacking a real opponent (or if combat odds turned off) fall back on just using strength
-		iDefense = currCombatStr(plot(), pAttacker);
+// vincentz ranged strike - keldath addition		
+		if (attackType == 1) 
+		{
+				iDefense = pAttacker->airCurrCombatStr(this);
+		}
+		if (attackType == 0) 
+		{
+				iDefense = currCombatStr(plot(), pAttacker);
+		}
+		
+		//iDefense = currCombatStr(plot(), pAttacker);
 		if (bUseAttacker)
 		{
 			// Similiar to the standard method, except I reduced the affect (cut it in half) handle attacker
@@ -14558,8 +14728,8 @@ int CvUnit::LFGgetDefensiveValueAdjustment() const
 	return iValue;
 }
 // K-Mod end
-
-int CvUnit::LFBgetDefenderCombatOdds(const CvUnit* pAttacker) const
+// vincentz ranged strike - keldath addition
+int CvUnit::LFBgetDefenderCombatOdds(const CvUnit* pAttacker, int attackType) const
 {
 	int iAttackerStrength;
 	int iAttackerFirepower;
@@ -14576,25 +14746,20 @@ int CvUnit::LFBgetDefenderCombatOdds(const CvUnit* pAttacker) const
 	int iDefenderLowFS;
 	int iDefenderHighFS;
 	int iDefenderHitLimit;
-/*
-	if (pAttacker->airCurrCombatStr(this) > 0 && pAttacker->currCombatStr(this) > 0)
+// vincentz ranged strike - keldath addition
+	if (attackType == 1) 
 	{
 		iAttackerStrength = pAttacker->airCurrCombatStr(this);
-		iAttackerFirepower =((airMaxCombatStr(pAttacker) + iAttackerStrength + 1) / 2);
-		//iDefenderStrength = airCurrCombatStr(pAttacker);
-		iDefenderStrength = currCombatStr(plot(), pAttacker);
-		//iDefenderFirepower = currairFirepower(plot(), pAttacker);
-		iDefenderFirepower = currFirepower(plot(), pAttacker);
+		iAttackerFirepower = ((pAttacker->airMaxCombatStr(this) + pAttacker->airCurrCombatStr(this) + 1) / 2);
 	}
-	else {
+	if (attackType == 0) 
+	{
 		iAttackerStrength = pAttacker->currCombatStr(NULL, NULL);
 		iAttackerFirepower = pAttacker->currFirepower(NULL, NULL);
-		iDefenderStrength = currCombatStr(plot(), pAttacker);
-		iDefenderFirepower = currFirepower(plot(), pAttacker);
 	}
-*/
-	iAttackerStrength = pAttacker->currCombatStr(NULL, NULL);
-	iAttackerFirepower = pAttacker->currFirepower(NULL, NULL);
+
+	//iAttackerStrength = pAttacker->currCombatStr(NULL, NULL);
+	//iAttackerFirepower = pAttacker->currFirepower(NULL, NULL);
 
 	iDefenderStrength = currCombatStr(plot(), pAttacker);
 	iDefenderFirepower = currFirepower(plot(), pAttacker);
@@ -14614,26 +14779,45 @@ int CvUnit::LFBgetDefenderCombatOdds(const CvUnit* pAttacker) const
 	// calculate needed rounds.
 	// Needed rounds = round_up(health/damage)
 	//////
-/*
-	if (pAttacker->airCurrCombatStr(this) > 0 && pAttacker-> airBaseCombatStr() > 0) 
+	//vincentz ranged strike - using damage .
+/*	if (pAttacker != NULL) 
 	{
-		iDefenderHitLimit = maxHitPoints() - pAttacker->airCombatLimit();
+		int const iDamage = getDamage();
+		if (attackType == 1) 
+		{
+		//	if (iDamage >= pAttacker->airCombatLimit()) 
+		//	{
+				iDefenderHitLimit = maxHitPoints() - pAttacker->airCombatLimit();
+		//	}
+		}
+		if (attackType == 0) 
+		{
+		//	if (iDamage >= pAttacker->combatLimit()) 
+		//	{
+				iDefenderHitLimit = maxHitPoints() - pAttacker->combatLimit();
+		//	}
+		}
 	}
 	else 
-	{
-		iDefenderHitLimit = maxHitPoints() - pAttacker->combatLimit();
-	}
-*/	
-/*	if (pAttacker->airCombatLimit() > 0) 
-	{
-		iDefenderHitLimit = maxHitPoints() - pAttacker->airCombatLimit();
-	}
-	else 
-	{
-		iDefenderHitLimit = maxHitPoints() - pAttacker->combatLimit();
-	}
-*/
-	iDefenderHitLimit = maxHitPoints() - pAttacker->combatLimit();
+	{*/
+		if (attackType == 1) 
+		{
+		//	if (maxHitPoints() <= pAttacker->airCombatLimit()) 
+		//	{
+				iDefenderHitLimit = maxHitPoints() - pAttacker->airCombatLimit();
+		//	}
+		}
+		if (attackType == 0) 
+		{
+		//	if (maxHitPoints() <= pAttacker->combatLimit()) 
+		//	{
+				iDefenderHitLimit = maxHitPoints() - pAttacker->combatLimit();
+		//	}
+		}
+	
+/*	}*/
+
+	//iDefenderHitLimit = maxHitPoints() - pAttacker->combatLimit();
 
 	iNeededRoundsAttacker = (std::max(0, currHitPoints() - iDefenderHitLimit) + iDamageToDefender - 1) / iDamageToDefender;
 	iNeededRoundsDefender = (pAttacker->currHitPoints() + iDamageToAttacker - 1) / iDamageToAttacker;
