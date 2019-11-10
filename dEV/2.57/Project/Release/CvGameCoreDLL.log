@@ -1,0 +1,11 @@
+﻿  Building source list
+  Running fastdep
+  CvUnitAI.cpp
+  Linking DLL
+     Creating library temp_files\Release\CvGameCoreDLL.lib and object temp_files\Release\CvGameCoreDLL.exp
+LINK : warning LNK4089: all references to 'KERNEL32.dll' discarded by /OPT:REF
+  	COPY "temp_files\Release\CvGameCoreDLL.dll" "Release\CvGameCoreDLL.dll"
+          1 file(s) copied.
+  	COPY "Release\CvGameCoreDLL.dll" "\Assets\."
+  The system cannot find the path specified.
+          0 file(s) copied.
