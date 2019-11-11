@@ -795,8 +795,19 @@ int CvUnitAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy) const
 	iDamageToUs = std::max(1,((GC.getCOMBAT_DAMAGE() * (iTheirFirepower + iStrengthFactor)) / (iOurFirepower + iStrengthFactor)));
 	iDamageToThem = std::max(1,((GC.getCOMBAT_DAMAGE() * (iOurFirepower + iStrengthFactor)) / (iTheirFirepower + iStrengthFactor)));
 	// BETTER_BTS_AI_MOD: END
-
-	iHitLimitThem = pDefender->maxHitPoints() - combatLimit();
+//keldath check for air combat
+	int therightLimit;
+	if (getDomainType() == DOMAIN_AIR) 
+	{
+			therightLimit = airCombatLimit();
+	}
+	else //(combatLimit() > 0 && baseCombatStr() > 0) 
+	{
+			therightLimit = combatLimit();
+	}
+	//original
+	//iHitLimitThem = pDefender->maxHitPoints() - combatLimit();
+	iHitLimitThem = pDefender->maxHitPoints() - therightLimit;
 
 	iNeededRoundsUs = (std::max(0, pDefender->currHitPoints() - iHitLimitThem) + iDamageToThem - 1) / iDamageToThem;
 	iNeededRoundsThem = (std::max(0, currHitPoints()) + iDamageToUs - 1) / iDamageToUs;
@@ -14252,8 +14263,12 @@ CvCity* CvUnitAI::AI_pickTargetCity(int iFlags, int iMaxPathTurns, bool bHuntBar
 	int iLoadTurns = isEnemy(plot()->getTeam()) ? MAX_INT : -1;
 	KmodPathFinder transport_path;
 	// K-Mod end
-
-	CvCity* pTargetCity = area()->getTargetCity(getOwner());
+//f1rpo master merge - No Barbarian target city when no Barbarian cities in area
+	CvArea const& kArea = *area();
+	CvCity* pTargetCity =  // advc.300:
+			(isBarbarian() && kArea.getCitiesPerPlayer(BARBARIAN_PLAYER) <= 0 ? NULL :
+//changed ai_getTargetCity to getTargetCity - keldath
+			area()->getTargetCity(getOwner()));
 
 	for (int iI = 0; iI < (bHuntBarbs ? MAX_PLAYERS : MAX_CIV_PLAYERS); iI++)
 	{
@@ -14265,14 +14280,15 @@ CvCity* CvUnitAI::AI_pickTargetCity(int iFlags, int iMaxPathTurns, bool bHuntBar
 		for (CvCity* pLoopCity = kTargetPlayer.firstCity(&iLoop); pLoopCity != NULL;
 				pLoopCity = kTargetPlayer.nextCity(&iLoop))
 		{
-			if(!AI_plotValid(pLoopCity->plot()) || pLoopCity->area() != area())
+			if(pLoopCity->area() != area() || !AI_plotValid(pLoopCity->plot()))
 				continue; // advc.003
 			if(!AI_potentialEnemy(kTargetPlayer.getTeam(), pLoopCity->plot()))
 				continue;
+//f1rpo master merge - No Barbarian target city when no Barbarian cities in area - removed the below
 			/*  <advc.300> Assault barbs shouldn't target cities in areas where
-				they already have the upper hand. */
+				they already have the upper hand. 
 			if(isBarbarian() && pLoopCity->area()->getAreaAIType(getTeam()) == AREAAI_ASSAULT)
-				continue; // </advc.300>
+				continue; // </advc.300>*/
 			if (kOwner.AI_deduceCitySite(pLoopCity))
 			{
 				// K-Mod. Look for either a direct land path, or a sea transport path.
@@ -14882,7 +14898,11 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, int iFlags, int iMin
 		{
 			CvPlot* pLoopPlot = plotXY(getX(), getY(), iDX, iDY);
 //Vincentz Rangestrike keldath i think the cnaraneg check should com here but in false  -since !AI_plotValid(pLoopPlot) instead of AI_plotValid(pLoopPlot) see marked out comments right below
-			if (pLoopPlot == NULL || !AI_plotValid(pLoopPlot) ||(!canRangeStrike()))
+//this is a double check for ranged  canRangeStrike() is already checked in the above check - 
+//AI_rangeAttack(iRange)
+//vip implemented it here also - no need
+// f1rpo suggested. 
+			if (pLoopPlot == NULL || /*(*/!AI_plotValid(pLoopPlot) /*&& !canRangeStrike())*/)
 				continue;
 //keldath i dont know where to stick these
 //noth do not exists on the org
@@ -14900,7 +14920,6 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, int iFlags, int iMin
 			if (bDeclareWar
 				? !pLoopPlot->isVisiblePotentialEnemyUnit(getOwner()) && !(pLoopPlot->isCity() && AI_potentialEnemy(pLoopPlot->getPlotCity()->getTeam(), pLoopPlot))
 				: !pLoopPlot->isVisibleEnemyUnit(this) && !pLoopPlot->isEnemyCity(*this))
-
 			{
 				continue;
 			}

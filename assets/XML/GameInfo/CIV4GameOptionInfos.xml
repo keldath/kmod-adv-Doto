@@ -301,19 +301,5 @@
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
        	</GameOptionInfo>
-        <GameOptionInfo>
-            <Type>GAMEOPTION_RANGED_LAND_INDIRECT_ATTACK</Type>
-            <Description>Ranged-Allow Normal Attack (Land)</Description>
-            <Help>If Checked - Allow Land units to perform regular attack in adidtion to ranged(not Recommended).(default off)</Help>
-            <bDefault>0</bDefault>
-            <bVisible>1</bVisible>
-       	</GameOptionInfo>
-        <GameOptionInfo>
-            <Type>GAMEOPTION_RANGED_SEA_INDIRECT_ATTACK</Type>
-            <Description>Ranged-Allow Normal Attack (Sea)</Description>
-            <Help>If Checked - Allow Sea units to perform regular attack in adidtion to ranged(not Recommended).(default on)</Help>
-            <bDefault>1</bDefault>
-            <bVisible>1</bVisible>
-       	</GameOptionInfo>
 	</GameOptionInfos>
 </Civ4GameOptionInfos>

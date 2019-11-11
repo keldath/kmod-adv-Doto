@@ -151,19 +151,16 @@ public:
 		PlayerTypes eAttackingPlayer = NO_PLAYER, const CvUnit* pAttacker = NULL,
 		bool bTestAtWar = false, bool bTestPotentialEnemy = false,
 		// advc.028: Replacing unused bTestCanMove
-		// vincentz ranged strike - keldath addition
-		bool bTestVisible = false,int attackType = 0) const  // <advc> Need some more params
+		bool bTestVisible = false) const  // <advc> Need some more params
 	{
 		return getBestDefender(eOwner, eAttackingPlayer, pAttacker, bTestAtWar,
-				// vincentz ranged strike - keldath addition
-				bTestPotentialEnemy, bTestVisible, false, false,attackType);
+				bTestPotentialEnemy, bTestVisible, false, false);
 	}
 	CvUnit* getBestDefender(PlayerTypes eOwner,
 			PlayerTypes eAttackingPlayer, CvUnit const* pAttacker,
 			bool bTestEnemy, bool bTestPotentialEnemy,
 			bool bTestVisible, // advc.028
-			// vincentz ranged strike - keldath addition
-			bool bTestCanAttack, bool bAny = false,int attackType = 0) const; // </advc>
+			bool bTestCanAttack, bool bAny = false) const; // </advc>
 	// BETTER_BTS_AI_MOD, Lead From Behind (UncutDragon), 02/21/10, jdog5000:
 	bool hasDefender(bool bTestCanAttack, PlayerTypes eOwner, PlayerTypes eAttackingPlayer = NO_PLAYER, const CvUnit* pAttacker = NULL, bool bTestAtWar = false, bool bTestPotentialEnemy = false
 			/*,bool bTestCanMove = false*/) const; // advc: param unused (and doesn't make sense to me)

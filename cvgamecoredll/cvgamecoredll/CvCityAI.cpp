@@ -1523,14 +1523,12 @@ void CvCityAI::AI_chooseProduction()
 			defensiveTypes.push_back(std::make_pair(UNITAI_CITY_DEFENSE, 200));
 			defensiveTypes.push_back(std::make_pair(UNITAI_CITY_COUNTER, 50));
 		}
-
+//f1rpo master merge - Reduce AI probability of training exploration units a little
 		int iOdds = iBuildUnitProb;
 		if (iWarSuccessRating < -50)
-		{
-			iOdds += abs(iWarSuccessRating/3);
-		}
+			iOdds -= iWarSuccessRating / 3;
 		// K-Mod
-		iOdds *= (-iWarSuccessRating+20 + iBestBuildingValue);
+		iOdds *= (-iWarSuccessRating + 20 + iBestBuildingValue);
 		iOdds /= (-iWarSuccessRating + 2 * iBestBuildingValue);
 		// K-Mod end
 		if (bDanger)
@@ -1545,7 +1543,7 @@ void CvCityAI::AI_chooseProduction()
 		}
 	}
 
-	if (!(bDefenseWar && iWarSuccessRating < -50))
+	if (!bDefenseWar && iWarSuccessRating < -50)
 	{
 	/*  K-Mod, 10/sep/10, Karadoc
 		Disabled iExistingWorkers == 0. Changed Pop > 3 to Pop >=3.
@@ -1904,15 +1902,16 @@ void CvCityAI::AI_chooseProduction()
 				}
 			}
 		}
-
+//f1rpo master merge - Reduce AI probability of training exploration units a little
 		if (!bLandWar && !bDanger && !bFinancialTrouble)
 		{
-			if (kPlayer.AI_totalAreaUnitAIs(pArea, UNITAI_EXPLORE) < (kPlayer.AI_neededExplorers(pArea)))
+			int iMissingExplorers = kPlayer.AI_neededExplorers(pArea) -
+					kPlayer.AI_totalAreaUnitAIs(pArea, UNITAI_EXPLORE);
+			if (iMissingExplorers > 0)
 			{
-				if (AI_chooseUnit(UNITAI_EXPLORE))
-				{
+				if (AI_chooseUnit(UNITAI_EXPLORE,
+						34 * iMissingExplorers)) //advc.131: was 100 flat
 					return;
-				}
 			}
 		}
 

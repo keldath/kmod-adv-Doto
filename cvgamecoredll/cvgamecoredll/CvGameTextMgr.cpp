@@ -535,13 +535,13 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 	} // </advc.069>
 	szString.append(szTempBuffer);
 	//vincentz ranegd strike - KELDATH UI CHANGES
-	if (pUnit->airBaseCombatStr() > 0 && pUnit->baseCombatStr() > 0)
+	if (pUnit->getDomainType() == DOMAIN_AIR && pUnit->airRange() > 0 )
 	{
 		szString.append(gDLL->getText("TXT_KEY_UNIT_AIR_COMBATSHORT", pUnit->airBaseCombatStr()));
 	}
-	if (pUnit->airBaseCombatStr() > 0 && pUnit->baseCombatStr() == 0)
+	if (pUnit->airRange() > 0 && pUnit->getDomainType() != DOMAIN_AIR)
 	{
-		szString.append(gDLL->getText("TXT_KEY_ASTRENGTHSHORT", pUnit->airBaseCombatStr()));
+		szString.append(gDLL->getText("TXT_KEY_ASTRENGTHSHORT", pUnit->baseCombatStr()));
 	}
 
 	if (pUnit->airRange() > 0)
@@ -940,15 +940,15 @@ else
 				szString.append(gDLL->getText("TXT_KEY_UNIT_WITHDRAWL_PROBABILITY", pUnit->withdrawalProbability()));
 			}
 		}
-/* original
+// original
 		if (pUnit->combatLimit() < GC.getMAX_HIT_POINTS() && pUnit->canAttack())
 		{
 			szString.append(NEWLINE);
 			szString.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT", (100 * pUnit->combatLimit()) / GC.getMAX_HIT_POINTS()));
 		}
-*/
+
 		//vincentz ranged strike - now will also dispplay aircombat limit for units
-		if ((pUnit->combatLimit() < GC.getMAX_HIT_POINTS()
+	/*	if ((pUnit->combatLimit() < GC.getMAX_HIT_POINTS()
 			||pUnit->airCombatLimit() < GC.getMAX_HIT_POINTS() )
 			&& pUnit->canAttack())
 		{
@@ -963,7 +963,7 @@ else
 				szString.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT", (100 * pUnit->combatLimit()) / GC.getMAX_HIT_POINTS()));
 			} 
 		}
-
+*/
 		if (pUnit->collateralDamage() > 0)
 		{
 			szString.append(NEWLINE);
@@ -4194,7 +4194,7 @@ bool CvGameTextMgr::setCombatPlotHelp(CvWStringBuffer &szString, CvPlot* pPlot)
 
 			szString.append(L' ');//XXX
 			// advc.003: Another batch of repeated modifiers
-			appendPositiveModifiers(szString, pAttacker, pDefender, pPlot);
+			appendPositiveModifiers(szString, pAttacker, pDefender, pPlot, true);
 		}
 
 		szString.append(gDLL->getText("TXT_KEY_COLOR_REVERT"));
@@ -4249,7 +4249,7 @@ bool CvGameTextMgr::setCombatPlotHelp(CvWStringBuffer &szString, CvPlot* pPlot)
 			szString.append(gDLL->getText("TXT_KEY_COMBAT_PLOT_EXTRA_STRENGTH", iModifier));
 		}
 		// advc.003: Same code as in the ACO_enabled branch; use subroutine instead.
-		appendPositiveModifiers(szString, pAttacker, pDefender, pPlot);
+		appendPositiveModifiers(szString, pAttacker, pDefender, pPlot, false);
 
 		if (!(pDefender->immuneToFirstStrikes()))
 		{
@@ -9235,12 +9235,12 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 			szBuffer.append(L")");
 		} // </advc.905b>
 		//Air range for land units -  vincentz ranged strike - keldath addition start
-		if (u.getAirCombat() > 0 && u.getDomainType() == DOMAIN_LAND)
+		if (u.getAirRange() > 0 && u.getDomainType() != DOMAIN_AIR)
 		{
 			szBuffer.append(L", ");
 			szBuffer.append(gDLL->getText("TXT_KEY_ASTRENGTH", u.getAirCombat()));
 		}
-		if (u.getAirCombat() > 0 && u.getDomainType() == DOMAIN_AIR)
+		if (u.getAirRange() > 0 && u.getDomainType() == DOMAIN_AIR)
 		{
 			szBuffer.append(L", ");
 			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIR_COMBAT", u.getAirCombat()));
@@ -9638,21 +9638,16 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_WITHDRAWL_PROBABILITY", u.getWithdrawalProbability()));
 	}
 	//vincentz ranged strike - now will also dispplay aircombat limit for units
-	if ((u.getCombatLimit() < GC.getMAX_HIT_POINTS() && u.getCombat() > 0 
-		||u.getAirCombatLimit() < GC.getMAX_HIT_POINTS() && u.getAirCombat() > 0 )
-		&& !u.isOnlyDefensive())
+	if(u.getDomainType() == DOMAIN_AIR && u.getAirRange() > 0 ) 
 	{
-		if(u.getAirCombat() > 0 && (u.getAirRange()) > 0 ) 
-		{
-			szBuffer.append(NEWLINE);
-			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIRCOMBAT_LIMIT", (100 * u.getAirCombatLimit()) / GC.getMAX_HIT_POINTS()));
-		}
-		else 
-		{
-			szBuffer.append(NEWLINE);
-			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT", (100 * u.getCombatLimit()) / GC.getMAX_HIT_POINTS()));
-		} 
+		szBuffer.append(NEWLINE);
+		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIRCOMBAT_LIMIT", u.getAirCombatLimit()));
 	}
+	else 
+	{
+		szBuffer.append(NEWLINE);
+		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT", (100 * u.getCombatLimit()) / GC.getMAX_HIT_POINTS()));
+	} 
 
 	if (u.getCollateralDamage() > 0)
 	{
@@ -17057,7 +17052,8 @@ void CvGameTextMgr::getWarWearinessString(CvWStringBuffer& szBuffer, PlayerTypes
 	else
 	{
 		const CvPlayer& kTargetPlayer = GET_PLAYER(eTargetPlayer);
-		if (atWar(kPlayer.getTeam(), kTargetPlayer.getTeam()) && (GC.getGame().isDebugMode() || GET_PLAYER(GC.getGame().getActivePlayer()).canSeeDemographics(ePlayer)))
+		if (atWar(kPlayer.getTeam(), kTargetPlayer.getTeam()) &&
+			(GC.getGame().isDebugMode() || GET_PLAYER(GC.getGame().getActivePlayer()).canSeeDemographics(ePlayer)))
 		{
 			iWarWeariness = kPlayer.getModifiedWarWearinessPercentAnger(GET_TEAM(kPlayer.getTeam()).getWarWeariness(kTargetPlayer.getTeam(), true)/100);
 		}
@@ -22005,15 +22001,16 @@ void CvGameTextMgr::appendNegativeModifiers(CvWStringBuffer& szString,
 
 // advc.003: Body cut and pasted from setCombatPlotHelp
 void CvGameTextMgr::appendPositiveModifiers(CvWStringBuffer& szString,
-		CvUnit const* pAttacker, CvUnit const* pDefender, CvPlot const* pPlot) {
+		CvUnit const* pAttacker, CvUnit const* pDefender, CvPlot const* pPlot, bool bNegative) {
 
+	int const iSign = (bNegative ? -1 : 1);
 	int iModifier = pAttacker->unitClassAttackModifier(pDefender->getUnitClassType());
 
 	if (iModifier != 0)
 	{
 		szString.append(NEWLINE);
 		szString.append(gDLL->getText("TXT_KEY_COMBAT_PLOT_MOD_VS_TYPE",
-				-iModifier, GC.getUnitClassInfo(pDefender->getUnitClassType()).
+				iSign * iModifier, GC.getUnitClassInfo(pDefender->getUnitClassType()).
 				getTextKeyWide()));
 	}
 
@@ -22025,7 +22022,7 @@ void CvGameTextMgr::appendPositiveModifiers(CvWStringBuffer& szString,
 		{
 			szString.append(NEWLINE);
 			szString.append(gDLL->getText("TXT_KEY_COMBAT_PLOT_MOD_VS_TYPE",
-					-iModifier, GC.getUnitCombatInfo(
+					iSign * iModifier, GC.getUnitCombatInfo(
 					pDefender->getUnitCombatType()).getTextKeyWide()));
 		}
 	}
@@ -22036,7 +22033,7 @@ void CvGameTextMgr::appendPositiveModifiers(CvWStringBuffer& szString,
 	{
 		szString.append(NEWLINE);
 		szString.append(gDLL->getText("TXT_KEY_COMBAT_PLOT_MOD_VS_TYPE",
-				-iModifier, GC.getDomainInfo(pDefender->getDomainType()).
+				iSign * iModifier, GC.getDomainInfo(pDefender->getDomainType()).
 				getTextKeyWide()));
 	}
 
@@ -22047,7 +22044,8 @@ void CvGameTextMgr::appendPositiveModifiers(CvWStringBuffer& szString,
 		if (iModifier != 0)
 		{
 			szString.append(NEWLINE);
-			szString.append(gDLL->getText("TXT_KEY_COMBAT_PLOT_CITY_MOD", -iModifier));
+			szString.append(gDLL->getText("TXT_KEY_COMBAT_PLOT_CITY_MOD",
+					iSign * iModifier));
 		}
 	}
 
@@ -22058,7 +22056,8 @@ void CvGameTextMgr::appendPositiveModifiers(CvWStringBuffer& szString,
 		if (iModifier != 0)
 		{
 			szString.append(NEWLINE);
-			szString.append(gDLL->getText("TXT_KEY_COMBAT_PLOT_HILLS_MOD", -iModifier));
+			szString.append(gDLL->getText("TXT_KEY_COMBAT_PLOT_HILLS_MOD",
+					iSign * iModifier));
 		}
 	}
 
@@ -22070,7 +22069,7 @@ void CvGameTextMgr::appendPositiveModifiers(CvWStringBuffer& szString,
 		{
 			szString.append(NEWLINE);
 			szString.append(gDLL->getText("TXT_KEY_COMBAT_PLOT_UNIT_MOD",
-					-iModifier, GC.getFeatureInfo(pPlot->getFeatureType()).
+					iSign * iModifier, GC.getFeatureInfo(pPlot->getFeatureType()).
 					getTextKeyWide()));
 		}
 	}
@@ -22082,7 +22081,7 @@ void CvGameTextMgr::appendPositiveModifiers(CvWStringBuffer& szString,
 		{
 			szString.append(NEWLINE);
 			szString.append(gDLL->getText("TXT_KEY_COMBAT_PLOT_UNIT_MOD",
-					-iModifier, GC.getTerrainInfo(pPlot->getTerrainType()).
+					iSign * iModifier, GC.getTerrainInfo(pPlot->getTerrainType()).
 					getTextKeyWide()));
 		}
 	}
@@ -22092,7 +22091,7 @@ void CvGameTextMgr::appendPositiveModifiers(CvWStringBuffer& szString,
 	{
 		szString.append(NEWLINE);
 		szString.append(gDLL->getText("TXT_KEY_COMBAT_KAMIKAZE_MOD",
-				-iModifier));
+				iSign * iModifier));
 	}
 
 	if (pDefender->isAnimal())
@@ -22103,7 +22102,8 @@ void CvGameTextMgr::appendPositiveModifiers(CvWStringBuffer& szString,
 		if (iModifier != 0)
 		{
 			szString.append(NEWLINE);
-			szString.append(gDLL->getText("TXT_KEY_UNIT_ANIMAL_COMBAT_MOD", -iModifier));
+			szString.append(gDLL->getText("TXT_KEY_UNIT_ANIMAL_COMBAT_MOD",
+					iSign * iModifier));
 		}
 	}
 
@@ -22114,7 +22114,7 @@ void CvGameTextMgr::appendPositiveModifiers(CvWStringBuffer& szString,
 		{
 			szString.append(NEWLINE);
 			szString.append(gDLL->getText("TXT_KEY_UNIT_BARBARIAN_COMBAT_MOD",
-					-iModifier));
+					iSign * iModifier));
 		}
 		// <advc.315c> Show modifier from difficulty separately from unit abilities
 		iModifier = GC.getHandicapInfo(
@@ -22130,7 +22130,7 @@ void CvGameTextMgr::appendPositiveModifiers(CvWStringBuffer& szString,
 		{
 			szString.append(NEWLINE);
 			szString.append(gDLL->getText("TXT_KEY_MISC_FROM_HANDICAP",
-					-iModifier));
+					iSign * iModifier));
 		} // </advc.315c>
 	}
 }

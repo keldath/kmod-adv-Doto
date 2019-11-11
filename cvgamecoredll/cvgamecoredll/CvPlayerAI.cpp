@@ -11182,27 +11182,46 @@ bool CvPlayerAI::AI_considerOffer(PlayerTypes ePlayer,
 	} // </advc.705>
 	if (iChange < 0) {
 		//return (iTheirValue * 110 >= iOurValue * 100);
-		// <advc.133> Always 125 in K-Mod
-		int iTolerance = (bHuman ? 145 : 155) - std::min(35, iDealAge);
+		// <advc.133>
+		//f1rpo Revised AI evaluation of ongoing resource trades - keldath add
+		int const iSpeedDivisor = GC.getGameSpeedInfo(g.getGameSpeedType()).getGoldenAgePercent();
+		int iDealAgeAdjusted = std::max(0,
+				((iDealAge - GC.getPEACE_TREATY_LENGTH() / 2) *
+				100) / iSpeedDivisor);
+		// 125 flat in K-Mod, 110 in BtS
+		int iTolerance = std::max(120, 150 - iDealAgeAdjusted);
 		// <advc.155>
 		if(bSameTeam) {
 			if(iTheyReceive < iThreshold)
 				return true;
 			iTolerance = 150;
 		} // </advc.155>
-		if(iTolerance * // </advc.133>
-				iWeReceive >= iTheyReceive * 100) // K-Mod
+		if(iTolerance * iWeReceive >= iTheyReceive * 100)
 			return true;
-		/*  <advc.036> Need to make trades more stable in large games,
-			even to the detriment of the AI. But mustn't cling to a bad deal
-			indefinitely -> randomize it. */
+		// Additional conditions; to avoid bothering human players.
 		if(!bHuman)
 			return false;
-		double prCancel = (0.025 * iTolerance) /
-				(GET_TEAM(kPlayer.getTeam()).getHasMetCivCount() *
-				iTheyReceive / (double)iWeReceive);
-		return (prCancel < ::hash(g.getGameTurn(), getID()));
-		// </advc.036>
+		//f1rpo Revised AI evaluation of ongoing resource trades - keldath add
+		double relativeUnfairness = (iTolerance * iTheyReceive) / (100.0 * std::max(1, iWeReceive));
+		double relativeLoss = (iTheyReceive - iWeReceive) /
+				std::max(1.0, estimateYieldRate(YIELD_COMMERCE));
+		// Reduce frequency of diplo popups in large games
+		double hasMetFactor = 1 / std::pow((double)GET_TEAM(kPlayer.getTeam()).getHasMetCivCount(), 0.8);
+		double const magicScaleFactor = 2;
+		// Randomly delay cancellation b/c trade values might fluctuate
+		double prCancel = magicScaleFactor * relativeUnfairness * relativeLoss * hasMetFactor;
+		// Don't randomly cancel deals that are unimportant and not too unfair
+		if (prCancel < 0.1)
+			return true;
+		// If it's clearly a bad deal, then a random delay could seem strange.
+		if (prCancel > 0.5)
+			return false;
+		// Aim at more long-lasting deals in slow games
+		prCancel = (prCancel * 100) / iSpeedDivisor;
+		/*  (If cancellation were checked more than once per turn,
+			::hash would have to be used instead.) */
+		return !::bernoulliSuccess(prCancel, "advc.036 (cancel)");
+		// </advc.133>
 	}
 	// <advc.136b>
 	else {
@@ -12912,8 +12931,9 @@ int CvPlayerAI::AI_bonusTradeVal(BonusTypes eBonus, PlayerTypes ePlayer, int iCh
 		// I can live with cheating when it comes to strategic bonuses
 		bUseOurBonusVal = (kBonus.getHappiness() + kBonus.getHealth() == 0);
 		// Also don't worry about the value of additional copies (for corps)
-		if(!bUseOurBonusVal && ((getNumAvailableBonuses(eBonus) > 0 && iChange > 0) ||
-				(getNumAvailableBonuses(eBonus) - iChange > 1)))
+//f1rpo master merge - Bugfix: Sign error in AI resource trade evaluation
+		if(!bUseOurBonusVal && getNumAvailableBonuses(eBonus) + iChange >
+				(iChange < 0 ? 0 : 1))
 			bUseOurBonusVal = true;
 		// Otherwise ePlayer needs to know most of the human's territory
 		if(!bUseOurBonusVal) {
@@ -15147,6 +15167,9 @@ int CvPlayerAI::AI_neededWorkers(CvArea* pArea) const
 	CvCity* pLoopCity; int iLoop;
 	// advc.113: Let's focus on the workable bonuses (CvCityAI::AI_getWorkersNeeded)
 	int iCount = AI_countUnimprovedBonuses(pArea);// * 2;
+	// <advc.040> Areas w/o cities are ignored by the loop below
+	if (pArea->getCitiesPerPlayer(getID()) <= 0)
+		iCount *= 2; // </advc.040>
 	for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
 	{
 		if (pLoopCity->getArea() == pArea->getID())
@@ -25545,17 +25568,19 @@ int CvPlayerAI::AI_getTotalFloatingDefendersNeeded(CvArea* pArea) const
 		iDefenders = std::min(iDefenders, iAreaCities * iAreaCities - 1);*/
 		// Lessen defensive requirements only if not being attacked locally
 		int iUpperBound = iAreaCities * iAreaCities - 1; // advc.107: BtS upper bound
-		if (//pArea->getAreaAIType(getTeam()) != AREAAI_DEFENSIVE
-		// This may be our first city captured on a large enemy continent, need defenses to scale up based
-			// on total number of area cities not just ours
-			// advc.107: Check if we actually have plans to expand our presence
-			pArea->getAreaAIType(getTeam()) == AREAAI_OFFENSIVE || pArea->getAreaAIType(getTeam()) == AREAAI_MASSING)
+		// advc.107: Check if we actually have plans to expand our presence
+		if (pArea->getAreaAIType(getTeam()) == AREAAI_OFFENSIVE || pArea->getAreaAIType(getTeam()) == AREAAI_MASSING)
 		{
 			iUpperBound += pArea->getNumCities() - iAreaCities;
 		}
+		if (pArea->getAreaAIType(getTeam()) == AREAAI_DEFENSIVE)
+		{
 		// UNOFFICIAL_PATCH: END
-		// advc.107: Apply an upper bound in any case!
-		iDefenders = std::min(iDefenders, iUpperBound); 
+			/*  <advc.107> Still apply an upper bound in that case.
+				Defending colonies may well be a lost cause. */
+			iUpperBound += 1000 * pArea->getNumCities() / 2;
+		}
+		iDefenders = std::min(iDefenders, iUpperBound); // </advc.107>
 	}
 
 	return iDefenders;

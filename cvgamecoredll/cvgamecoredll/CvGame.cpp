@@ -377,7 +377,8 @@ void CvGame::regenerateMap()
 		m.setRevealedPlots(((TeamTypes)iI), false);
 
 	gDLL->getEngineIFace()->clearSigns();
-
+//f1rpo mergge from hotfix - Cherry-pick: treatment of extra yields
+	m_aPlotExtraYields.clear(); // advc.004j
 	m.erasePlots();
 
 	CvMapGenerator::GetInstance().generateRandomMap();

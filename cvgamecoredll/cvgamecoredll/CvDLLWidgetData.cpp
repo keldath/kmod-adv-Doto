@@ -4984,7 +4984,7 @@ void CvDLLWidgetData::parseFlagHelp(CvWidgetDataStruct &widgetDataStruct, CvWStr
 /*                                                                                              */
 /*                                                                                              */
 /************************************************************************************************/
-	szTempBuffer.Format(L"%S", "KelDath Advc-Kmod Platform");
+	szTempBuffer.Format(L"%S", "KelDath Doto Dll Mod");
 	szBuffer.append(szTempBuffer);
 /************************************************************************************************/
 /* UNOFFICIAL_PATCH                       END                                                   */
@@ -4995,7 +4995,7 @@ void CvDLLWidgetData::parseFlagHelp(CvWidgetDataStruct &widgetDataStruct, CvWStr
 /*                                                                                              */
 /************************************************************************************************/
 	// Add string showing version number
-	szTempBuffer.Format(NEWLINE SETCOLR L"%S" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), "Kmod 1.46-kekmod");
+	szTempBuffer.Format(NEWLINE SETCOLR L"%S" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), "Kmod 1.46b+advc096e++");
 	szBuffer.append(szTempBuffer);
 	szBuffer.append(NEWLINE);
 #ifdef LOG_AI

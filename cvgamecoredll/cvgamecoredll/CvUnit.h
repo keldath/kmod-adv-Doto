@@ -377,10 +377,7 @@ public:
 	// <advc>
 	bool canBeAttackedBy(PlayerTypes eAttackingPlayer,
 			CvUnit const* pAttacker, bool bTestEnemy, bool bTestPotentialEnemy,
-// vincentz ranged strike - keldath addition
-			bool bTestVisible, bool bTestCanAttack,int attackType = 0) const; // </advc>
-	//keldath combat limit checker - vincentz ranged stike
-	//bool validCombatLimits(CvUnit const* pDefender, CvUnit const* pAttacker = NULL) const;																	// Exposed to Python
+			bool bTestVisible, bool bTestCanAttack) const; // </advc>
 	bool canDefend(const CvPlot* pPlot = NULL) const;																	// Exposed to Python
 	bool canSiege(TeamTypes eTeam) const;																							// Exposed to Python
 	bool canCombat() const; // dlph.8
@@ -983,22 +980,17 @@ public:
 	bool isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker,
 	// Lead From Behind (UncutDragon, edited for K-Mod): START
 			int* pBestDefenderRank,
-			bool bPreferUnowned = false,
-// vincentz ranged strike - keldath addition
-			int attackType = 0) const; // advc.061
+			bool bPreferUnowned = false) const; // advc.061
 	virtual void LFBgetBetterAttacker(CvUnit** ppAttacker, const CvPlot* pPlot, bool bPotentialEnemy, int& iAIAttackOdds, int& iAttackerValue) = 0;
 	int LFBgetAttackerRank(const CvUnit* pDefender, int& iUnadjustedRank) const;
-// vincentz ranged strike - keldath addition	
-	int LFBgetDefenderRank(const CvUnit* pAttacker,int attackType = 0) const;
+	int LFBgetDefenderRank(const CvUnit* pAttacker) const;
 //protected: // unprotected by K-Mod. (I want to use the LFB value for some AI stuff)
-// vincentz ranged strike - keldath addition	
-	int LFBgetDefenderOdds(const CvUnit* pAttacker,int attackType=0) const;
+	int LFBgetDefenderOdds(const CvUnit* pAttacker) const;
 	int LFBgetValueAdjustedOdds(int iOdds, bool bDefender) const;
 	int LFBgetRelativeValueRating() const;
 	int LFGgetDefensiveValueAdjustment() const; // K-Mod
-// vincentz ranged strike - keldath addition	
-	bool LFBisBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker, int* pBestDefenderRank, int attackType = 0) const;
-	int LFBgetDefenderCombatOdds(const CvUnit* pAttacker,int attackType=0) const;
+	bool LFBisBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker, int* pBestDefenderRank) const;
+	int LFBgetDefenderCombatOdds(const CvUnit* pAttacker) const;
 	// Lead From Behind: END
 };
 

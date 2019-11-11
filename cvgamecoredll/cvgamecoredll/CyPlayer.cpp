@@ -1984,7 +1984,10 @@ python::tuple CyPlayer::firstCity(bool bRev)
 	CvCity* pvObj = m_pPlayer ? m_pPlayer->firstCity(&iterIn, bRev) : NULL;
 	CyCity* pyObj = pvObj ? new CyCity(pvObj) : NULL;
 	python::tuple tup=python::make_tuple(pyObj, iterIn);
-	delete pyObj;
+	/*  advc.001: m_pPlayer==NULL can't currently happen (it seems), but if it does,
+		pyObj will be NULL. Bugfix adopted from C2C (billw2015). Same for the
+		SAFE_DELETE calls in the other first/next functions below. */
+	SAFE_DELETE(pyObj);
 	return tup;
 }
 
@@ -1994,7 +1997,7 @@ python::tuple CyPlayer::nextCity(int iterIn, bool bRev)
 	CvCity* pvObj = m_pPlayer ? m_pPlayer->nextCity(&iterIn, bRev) : NULL;
 	CyCity* pyObj = pvObj ? new CyCity(pvObj) : NULL;
 	python::tuple tup=python::make_tuple(pyObj, iterIn);
-	delete pyObj;
+	SAFE_DELETE(pyObj);
 	return tup;
 }
 
@@ -2015,7 +2018,7 @@ python::tuple CyPlayer::firstUnit(bool bRev)
 	CvUnit* pvUnit = m_pPlayer ? m_pPlayer->firstUnit(&iterIn, bRev) : NULL;
 	CyUnit* pyUnit = pvUnit ? new CyUnit(pvUnit) : NULL;
 	python::tuple tup=python::make_tuple(pyUnit, iterIn);
-	delete pyUnit;
+	SAFE_DELETE(pyUnit);
 	return tup;
 }
 
@@ -2025,7 +2028,7 @@ python::tuple CyPlayer::nextUnit(int iterIn, bool bRev)
 	CvUnit* pvObj = m_pPlayer ? m_pPlayer->nextUnit(&iterIn, bRev) : NULL;
 	CyUnit* pyObj = pvObj ? new CyUnit(pvObj) : NULL;
 	python::tuple tup=python::make_tuple(pyObj, iterIn);
-	delete pyObj;
+	SAFE_DELETE(pyObj);
 	return tup;
 
 }
@@ -2047,7 +2050,7 @@ python::tuple CyPlayer::firstSelectionGroup(bool bRev)
 	CvSelectionGroup* pvObj = m_pPlayer ? m_pPlayer->firstSelectionGroup(&iterIn, bRev) : NULL;
 	CySelectionGroup* pyObj = pvObj ? new CySelectionGroup(pvObj) : NULL;
 	python::tuple tup=python::make_tuple(pyObj, iterIn);
-	delete pyObj;
+	SAFE_DELETE(pyObj);
 	return tup;
 }
 
@@ -2057,7 +2060,7 @@ python::tuple CyPlayer::nextSelectionGroup(int iterIn, bool bRev)
 	CvSelectionGroup* pvObj = m_pPlayer ? m_pPlayer->nextSelectionGroup(&iterIn, bRev) : NULL;
 	CySelectionGroup* pyObj = pvObj ? new CySelectionGroup(pvObj) : NULL;
 	python::tuple tup=python::make_tuple(pyObj, iterIn);
-	delete pyObj;
+	SAFE_DELETE(pyObj);
 	return tup;
 }
 

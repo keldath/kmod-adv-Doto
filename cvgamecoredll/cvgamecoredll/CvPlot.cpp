@@ -2883,8 +2883,7 @@ int CvPlot::getFeatureProduction(BuildTypes eBuild, TeamTypes eTeam, CvCity** pp
 CvUnit* CvPlot::getBestDefender(PlayerTypes eOwner, PlayerTypes eAttackingPlayer,
 		CvUnit const* pAttacker, bool bTestEnemy, bool bTestPotentialEnemy,
 	/* advc.028: */ bool bTestVisible,
-	// vincentz ranged strike - keldath addition
-	bool bTestCanAttack, bool bAny,int attackType) const // advc: new params (for CvPlot::hasDefender)
+	bool bTestCanAttack, bool bAny) const // advc: new params (for CvPlot::hasDefender)
 {
 	// <advc> Ensure consistency of parameters
 	if (pAttacker != NULL)
@@ -2911,23 +2910,15 @@ CvUnit* CvPlot::getBestDefender(PlayerTypes eOwner, PlayerTypes eAttackingPlayer
 		if((eAttackingPlayer == NO_PLAYER 
 			 || pLoopUnit->canBeAttackedBy(eAttackingPlayer,
 			pAttacker, bTestEnemy, bTestPotentialEnemy, /* advc.028: */ bTestVisible,
-			// vincentz ranged strike - keldath addition
-			bTestCanAttack,attackType)) //&&unused now - vincentz ranged strike - keldath
-			//pLoopUnit->validCombatLimits(pLoopUnit,pAttacker)
+			bTestCanAttack)) 
 			)
 		{
 			if (bAny)
 				return pLoopUnit; // </advc>
 			if (pLoopUnit->isBetterDefenderThan(pBestUnit, pAttacker,
 					&iBestUnitRank, // UncutDragon
-					// vincentz ranged strike - keldath addition
-					bTestVisible,attackType)) // advc.061
+					bTestVisible)) // advc.061
 				pBestUnit = pLoopUnit;
-		}
-		// vincentz ranged strike - keldath addition
-		else 
-		{
-			continue;	//if theres no valid defender - move on - keldath comment for ranged strike vincentz
 		}
 	}
 	// BETTER_BTS_AI_MOD: END
@@ -6594,24 +6585,30 @@ int CvPlot::getYield(YieldTypes eIndex) const
 
 int CvPlot::calculateNatureYield(YieldTypes eYield, TeamTypes eTeam, bool bIgnoreFeature) const
 {
+//changes f1rpo merges from master - Allow mods to make peaks workable through setPlotExtraYield
+	// advc.016: Cut from calculateYield
+	int iYield = GC.getGame().getPlotExtraYield(m_iX, m_iY, eYield);
 	if (isImpassable())
-		return 0;
+	{
+		//return 0;
+		/*  advc.016: Impassable tiles with extra yields can be worked -
+			as in BtS. This allows Python modders to make peaks workable. */
+		return iYield;
+	}
 
-	FAssertMsg(getTerrainType() != NO_TERRAIN, "TerrainType is not assigned a valid value");
-
-	int iYield = GC.getTerrainInfo(getTerrainType()).getYield(eYield);
+	iYield += GC.getTerrainInfo(getTerrainType()).getYield(eYield);
 
 	if (isHills())
 	{
 		iYield += GC.getYieldInfo(eYield).getHillsChange();
 	}
 
-	if (isPeak())
+	else if (isPeak())
 	{
 		iYield += GC.getYieldInfo(eYield).getPeakChange();
 	}
 
-	if (isLake())
+	else if (isLake())
 	{
 		iYield += GC.getYieldInfo(eYield).getLakeChange();
 	}
@@ -6653,8 +6650,7 @@ int CvPlot::calculateNatureYield(YieldTypes eYield, TeamTypes eTeam, bool bIgnor
 			iYield += GC.getFeatureInfo(getFeatureType()).getYieldChange(eYield);
 		}
 	}
-	// advc.016: Cut from calculateYield
-	iYield += GC.getGame().getPlotExtraYield(m_iX, m_iY, eYield);
+
 	return std::max(0, iYield);
 }
 

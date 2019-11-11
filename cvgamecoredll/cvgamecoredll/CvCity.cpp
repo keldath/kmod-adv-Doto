@@ -9899,7 +9899,7 @@ void CvCity::changeNonStateReligionYieldRateModifier(YieldTypes eIndex, int iCha
 }
 // < Civic Infos Plus End   >
 
-int CvCity::getBonusYieldRateModifier(YieldTypes eIndex) const												
+int CvCity::getBonusYieldRateModifier(YieldTypes eIndex) const
 {
 	FAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
 	FAssertMsg(eIndex < NUM_YIELD_TYPES, "eIndex expected to be < NUM_YIELD_TYPES");
