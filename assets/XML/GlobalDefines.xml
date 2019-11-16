@@ -1081,11 +1081,11 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 	</Define>
 	<Define>
 		<DefineName>WW_HIT_BY_NUKE</DefineName>
-		<iDefineIntVal>3</iDefineIntVal>
+		<iDefineIntVal>5</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>WW_ATTACKED_WITH_NUKE</DefineName>
-		<iDefineIntVal>12</iDefineIntVal>
+		<iDefineIntVal>14</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>WW_DECAY_RATE</DefineName>
@@ -1097,7 +1097,7 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 	</Define>
 	<Define>
 		<DefineName>NUKE_FALLOUT_PROB</DefineName>
-		<iDefineIntVal>50</iDefineIntVal>
+		<iDefineIntVal>75</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>NUKE_UNIT_DAMAGE_BASE</DefineName>
@@ -1105,11 +1105,11 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 	</Define>
 	<Define>
 		<DefineName>NUKE_UNIT_DAMAGE_RAND_1</DefineName>
-		<iDefineIntVal>50</iDefineIntVal>
+		<iDefineIntVal>60</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>NUKE_UNIT_DAMAGE_RAND_2</DefineName>
-		<iDefineIntVal>50</iDefineIntVal>
+		<iDefineIntVal>60</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>NUKE_NON_COMBAT_DEATH_THRESHOLD</DefineName>
@@ -1121,7 +1121,7 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 	</Define>
 	<Define>
 		<DefineName>NUKE_POPULATION_DEATH_BASE</DefineName>
-		<iDefineIntVal>30</iDefineIntVal>
+		<iDefineIntVal>40</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>NUKE_POPULATION_DEATH_RAND_1</DefineName>

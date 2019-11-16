@@ -19141,7 +19141,7 @@ UNITAI changed - now will used to counter.
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
 				<iMeleeWaveSize>1</iMeleeWaveSize>
-				<iRangedWaveSize>3</iRangedWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
 					<iRequired>1</iRequired>
 					<EarlyArtDefineTag>ART_DEF_UNIT_MACHINE_GUN</EarlyArtDefineTag>
@@ -52031,7 +52031,7 @@ UNITAI changed - now will used to counter.
 			<bFirstStrikeImmune>0</bFirstStrikeImmune>
 			<bNoDefensiveBonus>1</bNoDefensiveBonus>
 			<bIgnoreBuildingDefense>1</bIgnoreBuildingDefense>
-			<bCanMoveImpassable>0</bCanMoveImpassable>
+			<bCanMoveImpassable>1</bCanMoveImpassable>
 			<bCanMoveAllTerrain>1</bCanMoveAllTerrain>
 			<bCanMovePeak>1</bCanMovePeak>
             <bFlatMovementCost>0</bFlatMovementCost>
