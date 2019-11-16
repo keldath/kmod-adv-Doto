@@ -119,7 +119,7 @@
 			<Description>TXT_KEY_PLAYER_OPTION_LEAVE_FORESTS</Description>
 			<Help>TXT_KEY_PLAYER_OPTION_LEAVE_FORESTS_HELP</Help>
 			<!-- advc.076: was 0 -->
-			<bDefault>0</bDefault>
+			<bDefault>1</bDefault>
 		</PlayerOptionInfo>
 		<PlayerOptionInfo>
 			<Type>PLAYEROPTION_MISSIONARIES_AUTOMATED</Type>

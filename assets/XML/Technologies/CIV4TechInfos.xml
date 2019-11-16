@@ -2211,7 +2211,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Quote>TXT_KEY_TECH_POTTERY_QUOTE</Quote>
 			<Sound>AS2D_TECH_POTTERY</Sound>
 			<SoundMP>AS2D_TECH_MP_POTTERY</SoundMP>
-			<Button>Art/Interface/Buttons/TechTree/Pottery.dds</Button>
+			<Button>,Art/Interface/Buttons/TechTree/Pottery.dds,Art/Interface/Buttons/TechTree_Atlas.dds,8,6</Button>
 		</TechInfo>
 		<TechInfo>
 			<Type>TECH_AESTHETICS</Type>
@@ -4835,7 +4835,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Help/>
 			<Strategy>TXT_KEY_TECH_HORSEBACK_RIDING_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
-			<iAIWeight>100</iAIWeight>
+			<iAIWeight>50</iAIWeight>
 			<!-- advc.552: was 10 -->
 			<iAITradeModifier>0</iAITradeModifier>
 			<iCost>250</iCost>
