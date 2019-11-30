@@ -301,5 +301,12 @@
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
        	</GameOptionInfo>
+        <GameOptionInfo>
+            <Type>GAMEOPTION_RANGED_SEA_ALLOW_REGULAR</Type>
+            <Description>Normal and Ranged Attack  Sea</Description>
+            <Help>If Checked - Sea Units with Ranged Attack willl be able to use either ranged or direct (normal) Combat (default off)</Help>
+            <bDefault>1</bDefault>
+            <bVisible>1</bVisible>
+       	</GameOptionInfo>
 	</GameOptionInfos>
 </Civ4GameOptionInfos>

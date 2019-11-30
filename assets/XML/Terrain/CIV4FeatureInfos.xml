@@ -823,7 +823,7 @@ EffectType	Effect that can occur when a unit enters a plot with the feature-->
 			<iAppearance>0</iAppearance>
 			<iDisappearance>250</iDisappearance>
 			<iGrowth>0</iGrowth>
-			<iTurnDamage>0</iTurnDamage>
+			<iTurnDamage>15</iTurnDamage>
 			<iWarmingDefense>0</iWarmingDefense>
 			<bNoCoast>0</bNoCoast>
 			<bNoRiver>0</bNoRiver>
