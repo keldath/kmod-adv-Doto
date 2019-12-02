@@ -14819,7 +14819,7 @@ bool CvUnitAI::AI_cityAttack(int iRange, int iOddsThreshold, int iFlags, bool bF
 					if (pLoopPlot->isCity() && (bDeclareWar ? AI_potentialEnemy(pLoopPlot->getTeam(), pLoopPlot) : isEnemy(pLoopPlot->getTeam(), pLoopPlot)))
 					{
 						int iPathTurns;
-						if (!atPlot(pLoopPlot) && (bFollow ? canMoveOrAttackInto(pLoopPlot, bDeclareWar) : generatePath(pLoopPlot, iFlags, true, &iPathTurns, iRange)))
+						if (!atPlot(pLoopPlot) && (bFollow ? canMoveOrAttackInto(pLoopPlot, bDeclareWar) : generatePath(pLoopPlot, iFlags, true, &iPathTurns, iRange))|| canRangeStrike())
 						{
 							int iValue = pLoopPlot->getNumVisiblePotentialEnemyDefenders(this) == 0 ? 100 : AI_getWeightedOdds(pLoopPlot, true);
 
@@ -15027,7 +15027,8 @@ bool CvUnitAI::AI_rangeAttack(int iRange)
 				{
 					//Vincentz Rangestrike -adapted to advc )changed range to 2 - according to f1rpo - 
 					//no logic in counting up to 2 tiles away from the target stack
-					int iValue = GET_PLAYER(getOwner()).AI_localAttackStrength(pLoopPlot, NO_TEAM, NO_DOMAIN, 0, false, false, false);				
+					//int iValue = GET_PLAYER(getOwner()).AI_localAttackStrength(pLoopPlot, NO_TEAM, NO_DOMAIN, 0, false, false, false);				
+					int iValue AI_getWeightedOdds(pLoopPlot, false)
 					//int iValue = AI_getGroup()->AI_attackOdds(pLoopPlot, true);
 					if (iValue > iBestValue)
 					{						

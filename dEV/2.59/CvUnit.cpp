@@ -13434,15 +13434,17 @@ bool CvUnit::rangeStrike(int iX, int iY)
 	if (getDomainType() != DOMAIN_AIR)
 	{
 		setMadeAttack(true);
+		finishMoves();
 	}
 /*	else if (getDomainType() == DOMAIN_SEA 
 				&& !GC.getGame().isOption(GAMEOPTION_RANGED_SEA_ALLOW_REGULAR))
 	{	
 		setMadeAttack(true);
-	}*/						  
+	}*/
+							  
 //RANGED STRIKE VINCENTZ
 	//keldath notes - i guess if the domain is land - always finish up movement to these units.
-	if (GC.getGame().isOption(GAMEOPTION_RANGED_LAND_END_MOVES))
+/*	if (GC.getGame().isOption(GAMEOPTION_RANGED_LAND_END_MOVES))
 	{
 		if (getDomainType() == DOMAIN_LAND)
 		{
@@ -13461,7 +13463,7 @@ bool CvUnit::rangeStrike(int iX, int iY)
 		else
 		{	changeMoves(GC.getMOVE_DENOMINATOR());
 		}
-	}
+	}*/
 //keldath added check for ignore building defense
 /*	CvCity* pCity = pTargetPlot->getPlotCity();//this was a bit below - i mived it to canRangeStrikeAt
 	if (pCity != NULL && (pCity->isBombardable(this)) && !ignoreBuildingDefense())		
@@ -13551,12 +13553,6 @@ bool CvUnit::rangeStrike(int iX, int iY)
 				    		((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints());// advc.004g:
 					gDLL->getInterfaceIFace()->addHumanMessage(getOwner(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_COMBAT", MESSAGE_TYPE_INFO, pDefender->getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), pPlot->getX(), pPlot->getY());
 					
-					//keldath addition - if asiege unit can ignore city defence
-					// it will not be able to do collateral damage 
-					// i think its a nice balance.
-					if (!ignoreBuildingDefense()) {
-						collateralCombat(pPlot, pDefender);
-					}
 					//keldath experience for ranged attack i devised some formula to work with the range dice modifier
 					// and i decided that if the random dice number is lower than 30% the dice constant, than give exp
 					//cgange made for 105
@@ -13568,6 +13564,19 @@ bool CvUnit::rangeStrike(int iX, int iY)
 
 					//set damage but don't update entity damage visibility
 					pDefender->setDamage(iUnitDamage, getOwner(), false);
+					
+					//keldath addition - if asiege unit can ignore city defence
+					// it will not be able to do collateral damage 
+					// i think its a nice balance.
+					//105 three things:
+					//if its a city with 0 defense - allow collateral
+					// lets re check who is the best defender now, after the attack.
+					//after damage has been made...
+					if (!ignoreBuildingDefense() || (pBombardCity->getDefenseModifier(false) == 0 && pBombardCity != NULL)) {
+						//collateralCombat(pPlot, pDefender);
+						collateralCombat(pPlot, airStrikeTarget(pPlot));
+					}
+						
 			}
 			else {
 				CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_ENEMY_MAXIMUM_DAMAGE", pDefender->getNameKey(), getNameKey()));
@@ -13612,7 +13621,8 @@ bool CvUnit::rangeStrike(int iX, int iY)
 	if (pDefender->isDead())
 	{
 		//keldath fix - was backwards.
-		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", pDefender->getNameKey(),getNameKey()));
+		//105 - nope old me, it wasnt backwards...
+		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", getNameKey(),pDefender->getNameKey()));
 		gDLL->getInterfaceIFace()->addHumanMessage(getOwner(), true, GC.getEVENT_MESSAGE_TIME(), szBuffer, GC.getEraInfo(GC.getGame().getCurrentEra()).getAudioUnitVictoryScript(), MESSAGE_TYPE_INFO, NULL, (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), pPlot->getX(), pPlot->getY());
 		changeExperience(GC.getDefineINT("MIN_EXPERIENCE_PER_COMBAT"));
 	}
@@ -13667,7 +13677,8 @@ bool CvUnit::rangeStrike(int iX, int iY)
 					if (60 <= (GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random") 
 								/ (GC.getDefineINT("RANGESTRIKE_DICE")+1))*100)
 					{
-						collateralCombat(plot(), this);
+						//added the this-> pointer
+						collateralCombat(this->plot(), this);
 					}
 
 				}
