@@ -286,20 +286,22 @@
             <Help>If checked - when attacking an enemy ranged unit, it will retalliate with counter attack(no collateral damage).</Help>
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
+<!--UNUSED -->
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_SEA_END_MOVES</Type>
             <Description>Ranged-Movement End (Sea)</Description>
             <Help>If Checked - After Sea units Range Strike, it wont be able to move if it have more move points.(default off)</Help>
             <bDefault>0</bDefault>
-            <bVisible>1</bVisible>
+            <bVisible>0</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_LAND_END_MOVES</Type>
             <Description>Ranged-Movement End (Land)</Description>
             <Help>If Checked - After Land units Range Strike, it wont be able to move if it have more move points.(default on)</Help>
-            <bDefault>1</bDefault>
-            <bVisible>1</bVisible>
+            <bDefault>0</bDefault>
+            <bVisible>0</bVisible>
+<!-- END UNUSED -->
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_SEA_ALLOW_REGULAR</Type>

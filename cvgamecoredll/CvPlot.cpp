@@ -6175,7 +6175,8 @@ void CvPlot::setImprovementType(ImprovementTypes eNewValue)
 	if ((NO_IMPROVEMENT != getImprovementType() && GC.getImprovementInfo(getImprovementType()).isActsAsCity()) !=
 		(NO_IMPROVEMENT != eOldImprovement && GC.getImprovementInfo(eOldImprovement).isActsAsCity()))
 	{
-		updatePlotGroup();
+//105 - keldath from advc 097 -Bugfix: Don't verify city production after border expansion
+		updatePlotGroup(/* advc.064d: */ true);
 	}
 
 	if (NO_IMPROVEMENT != eOldImprovement && GC.getImprovementInfo(eOldImprovement).isActsAsCity())
@@ -6248,7 +6249,8 @@ void CvPlot::setRouteType(RouteTypes eNewValue, bool bUpdatePlotGroups)
 	{
 		if (bOldRoute != isRoute())
 		{
-			updatePlotGroup();
+			//105 - keldath from advc 097 -Bugfix: Don't verify city production after border expansion
+			updatePlotGroup(/* advc.064d: */ bOldRoute);
 		}
 	}
 
@@ -7593,17 +7595,21 @@ void CvPlot::setPlotGroup(PlayerTypes ePlayer, CvPlotGroup* pNewValue)
 		updatePlotGroupBonus(true);
 }
 
-
-void CvPlot::updatePlotGroup()
+//105 - keldath from advc 097 -Bugfix: Don't verify city production after border expansion
+//im not sure i merged it currectly though...ill ask f1rpo
+void CvPlot::updatePlotGroup(/* advc.064d: */ bool bVerifyProduction)
 {
 	PROFILE_FUNC();
-
+//105 - keldath from advc 097 -Bugfix: Don't verify city production after border expansion
 	for (int iI = 0; iI < MAX_PLAYERS; ++iI)
 	{
-		if (GET_PLAYER((PlayerTypes)iI).isAlive())
-		{
-			updatePlotGroup((PlayerTypes)iI);
-		}
+		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iI);
+		updatePlotGroup(kPlayer.getID(), /* <advc.064d> */ false);
+		/*  When recalculation of plot groups starts with updatePlotGroup, then
+			bVerifyProduction sometimes interrupts city production prematurely;
+			not sure why exactly. Will have to verify all cities instead. */
+		if (bVerifyProduction && kPlayer.isHuman() && getOwner() == kPlayer.getID())
+			kPlayer.verifyCityProduction(); // </advc.064d>
 	}
 }
 

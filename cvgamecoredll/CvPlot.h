@@ -479,7 +479,8 @@ public:
 	CvPlotGroup* getPlotGroup(PlayerTypes ePlayer) const;
 	CvPlotGroup* getOwnerPlotGroup() const;
 	void setPlotGroup(PlayerTypes ePlayer, CvPlotGroup* pNewValue);
-	void updatePlotGroup();
+//105 - keldath from advc 097 -Bugfix: Don't verify city production after border expansion
+	void updatePlotGroup(/* advc.064d: */ bool bVerifyProduction = false);
 	void updatePlotGroup(PlayerTypes ePlayer, bool bRecalculate = true);
 
 	int getVisibilityCount(TeamTypes eTeam) const;																											// Exposed to Python

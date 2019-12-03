@@ -5378,6 +5378,11 @@ void CvGame::updateActiveVisibility() {
 
 		if(!GC.IsGraphicsInitialized())
 			return;
+//105 keldath from advc 097 - Clear selection before updating center unit after Alt+Z
+		/*  <advc.001> Moved up - clear selection lists before
+		updating the center unit in updateVisibility */
+		gDLL->getInterfaceIFace()->clearSelectedCities();
+		gDLL->getInterfaceIFace()->clearSelectionList(); // </advc.001>
 		GC.getMap().updateFog();
 		GC.getMap().updateVisibility();
 		GC.getMap().updateSymbols();
@@ -5386,9 +5391,6 @@ void CvGame::updateActiveVisibility() {
 		updateUnitEnemyGlow();
 
 		gDLL->getInterfaceIFace()->setEndTurnMessage(false);
-
-		gDLL->getInterfaceIFace()->clearSelectedCities();
-		gDLL->getInterfaceIFace()->clearSelectionList();
 
 		gDLL->getInterfaceIFace()->setDirty(PercentButtons_DIRTY_BIT, true);
 		gDLL->getInterfaceIFace()->setDirty(ResearchButtons_DIRTY_BIT, true);

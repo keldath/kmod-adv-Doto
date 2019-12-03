@@ -106,8 +106,8 @@ void CvPlotGroup::removePlot(CvPlot* pPlot)
 	}
 }
 
-
-void CvPlotGroup::recalculatePlots()
+//105 - keldath from advc 097 -Bugfix: Don't verify city production after border expansion
+void CvPlotGroup::recalculatePlots(/* advc.064d: */ bool bVerifyProduction)
 {
 	PROFILE_FUNC();
 
@@ -191,7 +191,8 @@ void CvPlotGroup::recalculatePlots()
 	// <advc.064d>
 	m_iRecalculating--;
 	FAssert(m_iRecalculating >= 0);
-	if (m_iRecalculating == 0)
+//105 - keldath from advc 097 -Bugfix: Don't verify city production after border expansion
+	if (m_iRecalculating == 0 && bVerifyProduction)
 	{
 		for (size_t i = 0; i < apOldCities.size(); i++)
 			apOldCities[i]->verifyProduction();

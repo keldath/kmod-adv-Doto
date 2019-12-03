@@ -21,7 +21,8 @@ public:
 
 	void addPlot(CvPlot* pPlot);
 	void removePlot(CvPlot* pPlot);
-	void recalculatePlots();
+//105 - keldath from advc 097 -Bugfix: Don't verify city production after border expansion
+	void recalculatePlots(/* advc.064d: */ bool bVerifyProduction = true);
 
 	int getID() const;
 	void setID(int iID);
