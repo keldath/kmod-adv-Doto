@@ -1,5 +1,4 @@
 #include "CvGameCoreDLL.h"
-#include "CyCity.h"
 
 // dlph.34/advc: Added in order to reduce the size of CyCityInterface1.cpp
 
@@ -9,13 +8,6 @@ void CyCityPythonInterface2(python::class_<CyCity>& x)
 
 	x	/*  advc: Arbitrarily moved these from CyCityInterface1.cpp so
 			that nothing breaks if a few more functions are added there. */
-		.def("AI_neededFloatingDefenders", &CyCity::AI_neededFloatingDefenders, "int ()")
-
-		.def("getScriptData", &CyCity::getScriptData, "str () - Get stored custom data (via pickle)")
-		.def("setScriptData", &CyCity::setScriptData, "void (str) - Set stored custom data (via pickle)")
-
-		.def("visiblePopulation", &CyCity::visiblePopulation, "int ()")
-
 		.def("getBuildingYieldChange", &CyCity::getBuildingYieldChange, "int (int /*BuildingClassTypes*/ eBuildingClass, int /*YieldTypes*/ eYield)")
 		.def("setBuildingYieldChange", &CyCity::setBuildingYieldChange, "void (int /*BuildingClassTypes*/ eBuildingClass, int /*YieldTypes*/ eYield, int iChange)")
 		.def("getBuildingCommerceChange", &CyCity::getBuildingCommerceChange, "int (int /*BuildingClassTypes*/ eBuildingClass, int /*CommerceTypes*/ eCommerce)")

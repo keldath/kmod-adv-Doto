@@ -8,8 +8,14 @@
 #define		LINKEDLIST_H
 #pragma		once
 
-template <class tVARTYPE> class CLinkList;
+/*  <advc.003s> Only use this when it's obvious that the body of the loop won't delete
+	a node through some side-effect. */
+// Not yet sure about this. The list objects are often wrapped and thus inaccessible.
+/*#define FOR_EACH_NODE(Type, list, pName) \
+	for (CLLNode<Type> const* pName = list.head(); pName != NULL; pName = list.next(pName))*/
+// </advc.003s>
 
+template <class tVARTYPE> class CLinkList;
 
 template <class tVARTYPE> class CLLNode
 {
@@ -58,23 +64,30 @@ public:
 
 	CLLNode<tVARTYPE>* next(CLLNode<tVARTYPE>* pNode) const;
 	CLLNode<tVARTYPE>* prev(CLLNode<tVARTYPE>* pNode) const;
+	// <advc>
+	CLLNode<tVARTYPE> const* next(CLLNode<tVARTYPE> const* pNode) const;
+	CLLNode<tVARTYPE> const* prev(CLLNode<tVARTYPE> const* pNode) const;
+	static CLLNode<tVARTYPE> const* static_next(CLLNode<tVARTYPE> const* pNode);
+	static CLLNode<tVARTYPE>* static_next(CLLNode<tVARTYPE>* pNode); // </advc>
 
 	CLLNode<tVARTYPE>* nodeNum(int iNum) const;
 
 	void Read( FDataStreamBase* pStream );
 	void Write( FDataStreamBase* pStream ) const;
 
-	int getLength() const
+	// advc.inl: inline keywords added just to make sure ...
+
+	inline int getLength() const
 	{
 		return m_iLength;
 	}
 
-	CLLNode<tVARTYPE>* head() const
+	inline CLLNode<tVARTYPE>* head() const
 	{
 		return m_pHead;
 	}
 
-	CLLNode<tVARTYPE>* tail() const
+	inline CLLNode<tVARTYPE>* tail() const
 	{
 		return m_pTail;
 	}
@@ -361,8 +374,7 @@ inline void CLinkList<tVARTYPE>::moveToEnd(CLLNode<tVARTYPE>* pNode)
 template <class tVARTYPE>
 inline CLLNode<tVARTYPE>* CLinkList<tVARTYPE>::next(CLLNode<tVARTYPE>* pNode) const
 {
-  assert(pNode != NULL);
-
+  //assert(pNode != NULL); // advc.opt: I suspect that this slows assert builds down more than it's worth
   return pNode->m_pNext;
 }
 
@@ -375,6 +387,35 @@ inline CLLNode<tVARTYPE>* CLinkList<tVARTYPE>::prev(CLLNode<tVARTYPE>* pNode) co
 	return pNode->m_pPrev;
 }
 
+// <advc.003s>
+// Safer in 'for' loops (those mustn't remove nodes)
+template <class tVARTYPE>
+inline CLLNode<tVARTYPE> const* CLinkList<tVARTYPE>::next(CLLNode<tVARTYPE> const* pNode) const
+{
+  return pNode->m_pNext;
+}
+
+template <class tVARTYPE>
+inline CLLNode<tVARTYPE> const* CLinkList<tVARTYPE>::prev(CLLNode<tVARTYPE> const* pNode) const
+{
+	return pNode->m_pPrev;
+}
+
+/*  Since the next node doesn't depend on the list at all, let's allow
+	traversal without a list object. */
+template <class tVARTYPE>
+inline CLLNode<tVARTYPE>* CLinkList<tVARTYPE>::static_next(CLLNode<tVARTYPE>* pNode)
+{
+	//assert(pNode != NULL);
+	return pNode->m_pNext;
+}
+
+template <class tVARTYPE>
+inline CLLNode<tVARTYPE> const* CLinkList<tVARTYPE>::static_next(CLLNode<tVARTYPE> const* pNode)
+{
+	return pNode->m_pNext;
+}
+// </advc.003s>
 
 template <class tVARTYPE>
 inline CLLNode<tVARTYPE>* CLinkList<tVARTYPE>::nodeNum(int iNum) const

@@ -3,21 +3,22 @@
 //
 #include "CvGameCoreDLL.h"
 #include "CyCity.h"
-#include "CvCity.h"
-#include "CyPlot.h"
+#include "CvCityAI.h" // advc.003u
 #include "CyArea.h"
-#include "CyUnit.h"
 #include "CvDLLPythonIFaceBase.h"
 
-CyCity::CyCity() : m_pCity(NULL)
+CyCity::CyCity() : m_pCity(NULL) {}
+
+/*  <advc.003u, advc.003y>: The casts can't be helped, but at least they're
+	in a single place. */
+CyCity::CyCity(CvCity* pCity) : m_pCity(pCity == NULL ? NULL : &pCity->AI()) {}
+CyCity::CyCity(CvCityAI* pCity) : m_pCity(pCity) {}
+CyCity::CyCity(CvCity const& kCity) : m_pCity(static_cast<CvCityAI*>(const_cast<CvCity*>(&kCity))) {}
+
+CvCity* CyCity::getCity() // Definition moved from CyCity.h
 {
-
-}
-
-CyCity::CyCity(CvCity* pCity) : m_pCity(pCity)
-{
-
-}
+	return m_pCity;
+} // </advc>
 
 void CyCity::kill()
 {
@@ -50,7 +51,7 @@ int CyCity::getCityPlotIndex(CyPlot* pPlot)
 
 CyPlot* CyCity::getCityIndexPlot(int iIndex)
 {
-	return m_pCity ? new CyPlot(m_pCity->getCityIndexPlot(iIndex)) : NULL;
+	return m_pCity ? new CyPlot(m_pCity->getCityIndexPlot((CityPlotTypes)iIndex)) : NULL;
 }
 
 bool CyCity::canWork(CyPlot* pPlot)
@@ -61,7 +62,7 @@ bool CyCity::canWork(CyPlot* pPlot)
 void CyCity::clearWorkingOverride(int iIndex)
 {
 	if (m_pCity)
-		m_pCity->clearWorkingOverride(iIndex);
+		m_pCity->clearWorkingOverride((CityPlotTypes)iIndex);
 }
 
 int CyCity::countNumImprovedPlots()
@@ -98,24 +99,6 @@ int CyCity::findCommerceRateRank(int /*CommerceTypes*/ eCommerce)
 {
 	return m_pCity ? m_pCity->findCommerceRateRank((CommerceTypes) eCommerce) : -1;
 }
-
-/************************************************************************************************/
-/* REVDCM                                 02/16/10                                phungus420    */
-/*                                                                                              */
-/* CanTrain                                                                                     */
-/************************************************************************************************/
-bool CyCity::isForceObsoleteUnitClassAvailable(int /*UnitTypes*/ eUnitType)
-{
-	return m_pCity ? m_pCity->isForceObsoleteUnitClassAvailable((UnitTypes) eUnitType) : false;
-}
-
-bool CyCity::isPlotTrainable( int /*UnitTypes*/ eUnit, bool bContinue, bool bTestVisible )
-{
-	return m_pCity ? m_pCity->isPlotTrainable((UnitTypes)eUnit, bContinue, bTestVisible) : false;
-}
-/************************************************************************************************/
-/* REVDCM                                  END                                                  */
-/************************************************************************************************/
 
 int /*UnitTypes*/ CyCity::allUpgradesAvailable(int /*UnitTypes*/ eUnitType, int iUpgradeCount)
 {
@@ -246,14 +229,6 @@ int /*ProcessTypes*/ CyCity::getProductionProcess()
 std::wstring CyCity::getProductionName()
 {
 	return m_pCity ? m_pCity->getProductionName() : L"";
-}
-
-int CyCity::getGeneralProductionTurnsLeft()
-{
-	if(m_pCity == NULL)
-		return -1;
-	int r = m_pCity->getGeneralProductionTurnsLeft();
-	return (r == MAX_INT ? -1 : r); // advc.004x
 }
 
 std::wstring CyCity::getProductionNameKey()
@@ -695,7 +670,16 @@ int CyCity::cultureGarrison(int /*PlayerTypes*/ ePlayer)
 {
 	return m_pCity ? m_pCity->cultureGarrison((PlayerTypes)ePlayer) : -1;
 }
+// <advc.ctr>
+float CyCity::revoltProbability()
+{
+	return m_pCity ? static_cast<float>(m_pCity->revoltProbability()) : -1;
+}
 
+bool CyCity::canCultureFlip()
+{
+	return m_pCity ? m_pCity->canCultureFlip() : false;
+} // </advc.ctr>
 int CyCity::getNumBuilding(int /*BuildingTypes*/ iIndex)
 {
 	return m_pCity ? m_pCity->getNumBuilding((BuildingTypes) iIndex) : -1;
@@ -757,11 +741,6 @@ bool CyCity::isConnectedToCapital(int /*PlayerTypes*/ ePlayer)
 {
 	return m_pCity ? m_pCity->isConnectedToCapital((PlayerTypes)ePlayer) : false;
 }
-// <advc.003>
-int CyCity::getArea()
-{
-	return	m_pCity ? m_pCity->getArea() : -1;
-} // </advc.003>
 
 CyArea* CyCity::area()
 {
@@ -804,18 +783,6 @@ void CyCity::changePopulation(int iChange)
 	if (m_pCity)
 		m_pCity->changePopulation(iChange);
 }
-
-/* Population Limit ModComp - Beginning */
-int CyCity::getPopulationLimit()
-{
-	return m_pCity ? m_pCity->getPopulationLimit() : -1;
-}
-
-int CyCity::getPopulationLimitChange()
-{
-	return m_pCity ? m_pCity->getPopulationLimitChange() : -1;
-}
-/* Population Limit ModComp - End */
 
 long CyCity::getRealPopulation()
 {
@@ -1026,12 +993,12 @@ int CyCity::getBuildingBadHealth()
 
 int CyCity::getFeatureGoodHealth()
 {
-	return m_pCity ? m_pCity->getFeatureGoodHealth() : -1;
+	return m_pCity ? m_pCity->getSurroundingGoodHealth() : -1;
 }
 
 int CyCity::getFeatureBadHealth()
 {
-	return m_pCity ? m_pCity->getFeatureBadHealth() : -1;
+	return m_pCity ? m_pCity->getSurroundingBadHealth() : -1;
 }
 
 int CyCity::getBuildingHealth(int /*BuildingTypes*/ eBuilding)
@@ -1096,12 +1063,12 @@ int CyCity::getExtraBuildingBadHappiness()
 
 int CyCity::getFeatureGoodHappiness()
 {
-	return m_pCity ? m_pCity->getFeatureGoodHappiness() : -1;
+	return m_pCity ? m_pCity->getSurroundingGoodHappiness() : -1;
 }
 
 int CyCity::getFeatureBadHappiness()
 {
-	return m_pCity ? m_pCity->getFeatureBadHappiness() : -1;
+	return m_pCity ? m_pCity->getSurroundingBadHappiness() : -1;
 }
 
 int CyCity::getBonusGoodHappiness()
@@ -1205,22 +1172,14 @@ bool CyCity::isNoUnhappiness()
 	return m_pCity ? m_pCity->isNoUnhappiness() : false;
 }
 
-/*
-** K-Mod, 27/dec/10, karadoc
-** replaced NoUnhealthyPopulation with UnhealthyPopulationModifier
-*/
-/* original bts code
-bool CyCity::isNoUnhealthyPopulation()
-{
+/*bool CyCity::isNoUnhealthyPopulation() {
 	return m_pCity ? m_pCity->isNoUnhealthyPopulation() : false;
-}*/
+}*/ // BtS
+// K-Mod, 27/dec/10: replaced with UnhealthyPopulationModifier
 int CyCity::getUnhealthyPopulationModifier()
 {
 	return m_pCity ? m_pCity->getUnhealthyPopulationModifier() : 0;
 }
-/*
-** K-Mod end
-*/
 
 bool CyCity::isBuildingOnlyHealthy()
 {
@@ -1307,17 +1266,12 @@ int CyCity::getForeignTradeRouteModifier()
 	return m_pCity ? m_pCity->getForeignTradeRouteModifier() : -1;
 }
 
-/***
-**** K-Mod, 26/sep/10, Karadoc
-**** Trade culture calculation
-***/
+// K-Mod, 26/sep/10: Trade culture calculation
+// Note: iLevel currently isn't used.
 int CyCity::getTradeCultureRateTimes100(int iLevel) const
 {
-	return m_pCity ? m_pCity->getTradeCultureRateTimes100(iLevel) : 0;
+	return m_pCity ? m_pCity->getTradeCultureRateTimes100() : 0;
 }
-/*
-** K-Mod end
-*/
 
 int CyCity::getBuildingDefense()
 {
@@ -1565,6 +1519,11 @@ int /*CultureLevelTypes*/ CyCity::getCultureLevel()
 {
 	return m_pCity ? m_pCity->getCultureLevel() : NO_CULTURELEVEL;
 }
+// <advc.003y>
+int CyCity::getNumPartisanUnits(int /*PlayerTypes*/ ePartisanPlayer)
+{
+	return (m_pCity ? m_pCity->getNumPartisanUnits((PlayerTypes)ePartisanPlayer) : 0);
+} // </advc.003y>
 
 int CyCity::getCultureThreshold()
 {
@@ -1890,14 +1849,6 @@ int CyCity::getNumBonuses(int /*BonusTypes*/ iBonus)
 	return m_pCity ? m_pCity->getNumBonuses((BonusTypes) iBonus) : -1;
 }
 
-// < Building Resource Converter Start >
-
-int CyCity::getBuildingOutputBonus(int /*BonusTypes */iBonus)
-{
-	return m_pCity ? m_pCity->getBuildingOutputBonus((BonusTypes) iBonus) : -1;
-}
-// < Building Resource Converter End   >
-
 bool CyCity::hasBonus(int /*BonusTypes */iBonus)
 {
 	return m_pCity ? m_pCity->hasBonus((BonusTypes) iBonus) : false;
@@ -2129,7 +2080,7 @@ int CyCity::getEspionageDefenseModifier() const
 
 bool CyCity::isWorkingPlotByIndex(int iIndex)
 {
-	return m_pCity ? m_pCity->isWorkingPlot(iIndex) : false;
+	return m_pCity ? m_pCity->isWorkingPlot((CityPlotTypes)iIndex) : false;
 }
 
 bool CyCity::isWorkingPlot(CyPlot* pPlot)
@@ -2140,7 +2091,7 @@ bool CyCity::isWorkingPlot(CyPlot* pPlot)
 void CyCity::alterWorkingPlot(int iIndex)
 {
 	if (m_pCity)
-		m_pCity->alterWorkingPlot(iIndex);
+		m_pCity->alterWorkingPlot((CityPlotTypes)iIndex);
 }
 
 int CyCity::getNumRealBuilding(int /*BuildingTypes*/ iIndex)

@@ -1,9 +1,9 @@
 
 #include "CvGameCoreDLL.h"
 #include "KmodPathFinder.h"
-#include "CvGameAI.h"
+#include "CvGame.h"
 #include "CvTeamAI.h"
-#include "CvInfos.h"
+#include "CvInfo_Terrain.h"
 #include "CvSelectionGroup.h"
 #include "CvMap.h"
 
@@ -11,9 +11,7 @@ int KmodPathFinder::admissible_scaled_weight = 1;
 int KmodPathFinder::admissible_base_weight = 1;
 
 CvPathSettings::CvPathSettings(const CvSelectionGroup* pGroup, int iFlags, int iMaxPath, int iHW)
-	: pGroup(const_cast<CvSelectionGroup*>(pGroup)), iFlags(iFlags), iMaxPath(iMaxPath), iHeuristicWeight(iHW)
-// I'm really sorry about the const_cast. I can't fix the const-correctness of all the relevant functions,
-// because some of them are dllexports. The original code essentially does the same thing anyway, with void* casts.
+	: pGroup(pGroup), iFlags(iFlags), iMaxPath(iMaxPath), iHeuristicWeight(iHW)
 {
 	// empty. (there use to be something here, but we don't need it anymore.)
 }
@@ -24,7 +22,7 @@ void KmodPathFinder::InitHeuristicWeights()
 	admissible_scaled_weight = GC.getMOVE_DENOMINATOR()/2;
 	for (int r = 0; r < GC.getNumRouteInfos(); r++)
 	{
-		const CvRouteInfo& kInfo = GC.getRouteInfo((RouteTypes)r);
+		const CvRouteInfo& kInfo = GC.getInfo((RouteTypes)r);
 		int iCost = kInfo.getMovementCost();
 		for (int t = 0; t < GC.getNumTechInfos(); t++)
 		{
@@ -77,14 +75,14 @@ bool KmodPathFinder::ValidateNodeMap()
 		map_width = GC.getMap().getGridWidth();
 		map_height = GC.getMap().getGridHeight();
 		//node_data = (FAStarNode*)
-		// <advc.003> According to cppcheck, the above is a "common realloc mistake".
+		// <advc> According to cppcheck, the above is a "common realloc mistake".
 		FAStarNode* new_node_data = static_cast<FAStarNode*>(
 				realloc(node_data, sizeof(*node_data)*map_width*map_height));
 		if(new_node_data == NULL) {
 			free(node_data);
 			FAssertMsg(new_node_data != NULL, "Failed to re-allocate memory");
 		}
-		else node_data = new_node_data; // </advc.003>
+		else node_data = new_node_data; // </advc>
 		end_node = NULL;
 	}
 	return true;
@@ -94,10 +92,10 @@ bool KmodPathFinder::GeneratePath(int x1, int y1, int x2, int y2)
 {
 	PROFILE_FUNC();
 
-	FASSERT_BOUNDS(0, map_width , x1, "GeneratePath");
-	FASSERT_BOUNDS(0, map_height, y1, "GeneratePath");
-	FASSERT_BOUNDS(0, map_width , x2, "GeneratePath");
-	FASSERT_BOUNDS(0, map_height, y2, "GeneratePath");
+	FAssertBounds(0, map_width , x1);
+	FAssertBounds(0, map_height, y1);
+	FAssertBounds(0, map_width , x2);
+	FAssertBounds(0, map_height, y2);
 
 	end_node = NULL;
 
@@ -280,8 +278,8 @@ void KmodPathFinder::Reset()
 
 void KmodPathFinder::AddStartNode()
 {
-	FASSERT_BOUNDS(0, map_width , start_x, "KmodPathFinder::AddStartNode");
-	FASSERT_BOUNDS(0, map_height, start_y, "KmodPathFinder::AddStartNode");
+	FAssertBounds(0, map_width , start_x);
+	FAssertBounds(0, map_height, start_y);
 
 	// add initial node.
 	FAStarNode* start_node = &GetNode(start_x, start_y);

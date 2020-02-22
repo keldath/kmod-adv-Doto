@@ -1,8 +1,5 @@
 #include "CvGameCoreDLL.h"
 #include "CyPlayer.h"
-#include "CyUnit.h"
-#include "CyCity.h"
-#include "CyPlot.h"
 #include "CySelectionGroup.h"
 #include "CyArea.h"
 //# include <boost/python/manage_new_object.hpp>
@@ -71,16 +68,5 @@ void CyPlayerPythonInterface2(python::class_<CyPlayer>& x)
 		.def("setScoreboardExpanded", &CyPlayer::setScoreboardExpanded, "void (bool)")
 		.def("isScoreboardExpanded", &CyPlayer::isScoreboardExpanded, "bool (void)")
 		// </advc.085>
-/************************************************************************************************/
-/* REVDCM                                 09/02/10                                phungus420    */
-/*                                                                                              */
-/* Player Functions  rev dcm adedd tags                                                                           */
-/************************************************************************************************/
-		.def("isBuildingClassRequiredToTrain", &CyPlayer::isBuildingClassRequiredToTrain, "bool ((BuildingClassTypes)iBuildingClass, (UnitTypes)iUnit)")
-/************************************************************************************************/
-/* REVDCM                                  END                                                  */
-/************************************************************************************************/																										// Exposed to Python
-
-/************************************************************************************************/
 		;
 }

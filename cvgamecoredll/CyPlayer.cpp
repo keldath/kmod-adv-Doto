@@ -4,22 +4,17 @@
 
 #include "CvGameCoreDLL.h"
 #include "CyPlayer.h"
-#include "CyUnit.h"
-#include "CyCity.h"
-#include "CyArea.h"
-#include "CyPlot.h"
 #include "CvPlayerAI.h"
-#include "CvMap.h"
+#include "CyArea.h"
 #include "CySelectionGroup.h"
+#include "CvMap.h"
 #include "CvDLLPythonIFaceBase.h"
 
-CyPlayer::CyPlayer() : m_pPlayer(NULL)
-{
-}
-
-CyPlayer::CyPlayer(CvPlayer* pPlayer) : m_pPlayer(pPlayer)
-{
-}
+CyPlayer::CyPlayer() : m_pPlayer(NULL) {}
+CyPlayer::CyPlayer(CvPlayer* pPlayer) : m_pPlayer(
+	pPlayer == NULL ? NULL : &pPlayer->AI()) // advc.003u
+{}
+//CvPlayer* CyPlayer::getPlayer() { return m_pPlayer; } // advc: unused
 
 // CHANGE_PLAYER, 08/27/08. jdog5000:
 void CyPlayer::changeLeader(int /*LeaderHeadTypes*/ eNewLeader)
@@ -49,10 +44,11 @@ bool CyPlayer::startingPlotWithinRange(CyPlot *pPlot, int /*PlayerTypes*/ ePlaye
 {
 	if (m_pPlayer && pPlot != NULL && !pPlot->isNone())
 	{
-		CvPlot *pcvPlot = pPlot->getPlot();
-		if (pPlot)
+		CvPlot* pCvPlot = pPlot->getPlot();
+		//if (pPlot)
+		if (pCvPlot != NULL) // advc.001
 		{
-			return m_pPlayer->startingPlotWithinRange(pcvPlot, (PlayerTypes)ePlayer, iRange, iPass);
+			return m_pPlayer->startingPlotWithinRange(*pCvPlot, (PlayerTypes)ePlayer, iRange, iPass);
 		}
 	}
 	return NULL;
@@ -222,7 +218,7 @@ int CyPlayer::findBestFoundValue()
 
 int CyPlayer::countReligionSpreadUnits(CyArea* pArea, int /*ReligionTypes*/ eReligion)
 {
-	return m_pPlayer ? m_pPlayer->countReligionSpreadUnits(pArea->getArea(), (ReligionTypes) eReligion) : -1;
+	return m_pPlayer ? m_pPlayer->countReligionSpreadUnits(&pArea->getArea(), (ReligionTypes)eReligion) : -1;
 }
 
 int CyPlayer::countNumCoastalCities()
@@ -242,7 +238,7 @@ int CyPlayer::countTotalCulture()
 
 int CyPlayer::countOwnedBonuses(int /*BonusTypes*/ eBonus)
 {
-	return m_pPlayer ? m_pPlayer->countOwnedBonuses((BonusTypes)eBonus) : NO_BONUS;
+	return m_pPlayer ? m_pPlayer->AI().AI_countOwnedBonuses((BonusTypes)eBonus) : NO_BONUS;
 }
 
 int CyPlayer::countUnimprovedBonuses(CyArea* pArea, CyPlot* pFromPlot)
@@ -353,19 +349,19 @@ int CyPlayer::getNumGovernmentCenters()
 
 bool CyPlayer::canRaze(CyCity* pCity)
 {
-	return m_pPlayer ? m_pPlayer->canRaze(pCity->getCity()) : false;
+	return m_pPlayer ? m_pPlayer->canRaze(*pCity->getCity()) : false;
 }
 
 void CyPlayer::raze(CyCity* pCity)
 {
 	if (m_pPlayer)
-		m_pPlayer->raze(pCity->getCity());
+		m_pPlayer->raze(*pCity->getCity());
 }
 
 void CyPlayer::disband(CyCity* pCity)
 {
 	if (m_pPlayer)
-		m_pPlayer->disband(pCity->getCity());
+		m_pPlayer->disband(*pCity->getCity());
 }
 
 bool CyPlayer::canReceiveGoody(CyPlot* pPlot, int /*GoodyTypes*/ iIndex, CyUnit* pUnit)
@@ -1116,18 +1112,6 @@ int CyPlayer::getCityDefenseModifier()
 	return m_pPlayer ? m_pPlayer->getCityDefenseModifier() : -1;
 }
 
-/************************************************************************************************/
-/* REVDCM                                 09/02/10                                phungus420    */
-/*                                                                                              */
-/* Player Functions                                                                             */
-/************************************************************************************************/
-bool CyPlayer::isBuildingClassRequiredToTrain(int /*BuildingClassTypes*/ iBuildingClass, int /*UnitTypes*/ iUnit)
-{
-	return m_pPlayer ? m_pPlayer->isBuildingClassRequiredToTrain((BuildingClassTypes)iBuildingClass, (UnitTypes)iUnit) : false;
-}
-/************************************************************************************************/
-/* REVDCM                                  END                                                  */
-/************************************************************************************************/
 int CyPlayer::getNumNukeUnits()
 {
 	return m_pPlayer ? m_pPlayer->getNumNukeUnits() : -1;
@@ -1220,16 +1204,14 @@ int CyPlayer::getOverflowResearch()
 	return m_pPlayer ? m_pPlayer->getOverflowResearch() : 0;
 }
 
-/* original bts code
-bool CyPlayer::isNoUnhealthyPopulation() {
+/*bool CyPlayer::isNoUnhealthyPopulation() {
 	return m_pPlayer ? m_pPlayer->isNoUnhealthyPopulation() : false;
 }*/
-/*  K-Mod, 27/dec/10, karadoc
-	replaced NoUnhealthyPopulation with UnhealthyPopulationModifier */
+// K-Mod, 27/dec/10: replaced with UnhealthyPopulationModifier
 int CyPlayer::getUnhealthyPopulationModifier()
 {
 	return m_pPlayer ? m_pPlayer->getUnhealthyPopulationModifier() : 0;
-} // K-Mod end
+}
 
 bool CyPlayer::getExpInBorderModifier()
 {
@@ -2117,9 +2099,9 @@ void CyPlayer::AI_updateFoundValues(bool bStartingLoc)
 		m_pPlayer->AI_updateFoundValues(bStartingLoc);
 }
 
-int CyPlayer::AI_foundValue(int iX, int iY, int iMinUnitRange/* = -1*/, bool bStartingLoc/* = false*/)
+int CyPlayer::AI_foundValue(int iX, int iY, int iMinRivalRange/* = -1*/, bool bStartingLoc/* = false*/)
 {
-	return m_pPlayer ? m_pPlayer->AI_foundValue(iX, iY, iMinUnitRange, bStartingLoc) : -1;
+	return m_pPlayer ? m_pPlayer->AI_foundValue(iX, iY, iMinRivalRange, bStartingLoc) : -1;
 }
 
 bool CyPlayer::AI_isFinancialTrouble()
@@ -2147,12 +2129,12 @@ bool CyPlayer::AI_demandRebukedWar(int /*PlayerTypes*/ ePlayer)
 
 AttitudeTypes CyPlayer::AI_getAttitude(int /*PlayerTypes*/ ePlayer)
 {
-	return m_pPlayer ? m_pPlayer->AI_getAttitude((PlayerTypes)ePlayer) : NO_ATTITUDE;
+	return (m_pPlayer == NULL ? NO_ATTITUDE :m_pPlayer->AI_getAttitude((PlayerTypes)ePlayer));
 }
 
 int CyPlayer::AI_unitValue(int /*UnitTypes*/ eUnit, int /*UnitAITypes*/ eUnitAI, CyArea* pArea)
 {
-	return m_pPlayer ? m_pPlayer->AI_unitValue((UnitTypes)eUnit, (UnitAITypes)eUnitAI, pArea->getArea()) : -1;
+	return m_pPlayer ? m_pPlayer->AI_unitValue((UnitTypes)eUnit, (UnitAITypes)eUnitAI, &pArea->getArea()) : -1;
 }
 
 int CyPlayer::AI_civicValue(int /*CivicTypes*/ eCivic)
@@ -2318,8 +2300,14 @@ bool CyPlayer::canSplitEmpire() const
 bool CyPlayer::canSplitArea(int iAreaId) const
 {
 	if (m_pPlayer)
-	{
-		return m_pPlayer->canSplitArea(iAreaId);
+	{	// <advc> Handle the area lookup here
+		CvArea* pArea = GC.getMap().getArea(iAreaId);
+		if (pArea == NULL)
+		{
+			FAssert(pArea != NULL);
+			return false;
+		} // </advc>
+		return m_pPlayer->canSplitArea(*pArea);
 	}
 
 	return false;
@@ -2337,23 +2325,23 @@ void  CyPlayer::forcePeace(int iPlayer)
 }
 
 // <advc.038>
-int CyPlayer::estimateYieldRate(YieldTypes yield) const {
-
+int CyPlayer::estimateYieldRate(YieldTypes yield) const
+{
 	if(m_pPlayer == NULL)
 		return -1;
 	return ::round(m_pPlayer->estimateYieldRate(yield));
 } // </advc.038>
 
 // <advc.210>
-void CyPlayer::checkAlert(int alertId, bool silent) {
-
+void CyPlayer::checkAlert(int alertId, bool silent)
+{
 	if(m_pPlayer != NULL)
 		m_pPlayer->checkAlert(alertId, silent);
 } // </advc.210>
 
 // <advc.210e>
-int CyPlayer::AI_corporationBonusVal(int eBonus) const {
-
+int CyPlayer::AI_corporationBonusVal(int eBonus) const
+{
 	if(m_pPlayer == NULL)
 		return -1;
 	/*  Adding a virtual function CvPlayer::AI_corporationBonusVal causes
@@ -2362,14 +2350,14 @@ int CyPlayer::AI_corporationBonusVal(int eBonus) const {
 } // </advc.210e>
 
 // <advc.085>
-void CyPlayer::setScoreboardExpanded(bool b) {
-
+void CyPlayer::setScoreboardExpanded(bool b)
+{
 	if(m_pPlayer != NULL)
 		m_pPlayer->setScoreboardExpanded(b);
 }
 
-bool CyPlayer::isScoreboardExpanded() const {
-
+bool CyPlayer::isScoreboardExpanded() const
+{
 	if(m_pPlayer == NULL)
 		return false;
 	return m_pPlayer->isScoreboardExpanded();

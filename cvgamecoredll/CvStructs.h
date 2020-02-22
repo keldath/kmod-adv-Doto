@@ -5,8 +5,6 @@
 
 // structs.h
 
-#include "CvString.h"
-
 // <advc.071>
 class CvPlot;
 class CvUnit;
@@ -30,8 +28,16 @@ struct XYCoords
 
 struct IDInfo
 {
+	/*	advc.opt: Default owner changed from NO_PLAYER to Barbarians so that
+		the owner doesn't need to be checked before calling FFreeListTrashArray::getAt. */
+	// advc.inl: inline keyword just to make sure
+	inline IDInfo(PlayerTypes eOwner = BARBARIAN_PLAYER, int iID = FFreeList::INVALID_INDEX) :
+		eOwner(eOwner), iID(iID)
+	{
+		FAssert(iID != FFreeList::INVALID_INDEX || eOwner == BARBARIAN_PLAYER); // advc.test
+	}
+	void validateOwner(); // advc.opt
 
-	IDInfo(PlayerTypes eOwner=NO_PLAYER, int iID=FFreeList::INVALID_INDEX) : eOwner(eOwner), iID(iID) {}
 	PlayerTypes eOwner;
 	int iID;
 
@@ -50,7 +56,8 @@ struct IDInfo
 
 	void reset()
 	{
-		eOwner = NO_PLAYER;
+		//eOwner = NO_PLAYER;
+		eOwner = BARBARIAN_PLAYER; // advc.opt
 		iID = FFreeList::INVALID_INDEX;
 	}
 };
@@ -84,10 +91,15 @@ struct MissionDataLegacy { MissionTypes eMissionType; int iData1; int iData2;
 
 struct TradeData					// Exposed to Python
 {
-	TradeableItems m_eItemType;				//	What type of item is this
-	int m_iData;											//	Any additional data?
-	bool m_bOffering;									//	Is this item up for grabs?
-	bool m_bHidden;										//	Are we hidden?
+	// <advc> To replace global setTradeItem (CvGameCoreUtils)
+	TradeData(TradeableItems eItem = NO_TRADE_ITEM, int iData = -1,
+		bool bOffering = false, bool bHidden = false) :
+		m_eItemType(eItem), m_iData(iData), m_bOffering(bOffering), m_bHidden(bHidden) {}
+	// </advc>
+	TradeableItems m_eItemType;	//	What type of item is this
+	int m_iData;				//	Any additional data?
+	bool m_bOffering;			//	Is this item up for grabs?
+	bool m_bHidden;				//	Are we hidden?
 };
 
 struct EventTriggeredData

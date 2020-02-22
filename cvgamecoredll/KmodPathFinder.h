@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef KMOD_PATHFINDER_H // advc: Include guards (might be needed for fastdep)
+#define KMOD_PATHFINDER_H
+
 #include <vector>
 #include "FAStarNode.h"
 
@@ -9,7 +12,7 @@ struct CvPathSettings
 {
 	CvPathSettings(const CvSelectionGroup* pGroup = 0, int iFlags = 0, int iMaxPath = -1, int iHW = -1);
 
-	CvSelectionGroup* pGroup;
+	CvSelectionGroup const* pGroup;
 	int iFlags;
 	int iMaxPath;
 	int iHeuristicWeight;
@@ -65,3 +68,5 @@ protected:
 	static int admissible_scaled_weight;
 	static int admissible_base_weight;
 };
+
+#endif

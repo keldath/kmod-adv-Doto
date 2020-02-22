@@ -47,17 +47,10 @@
 #define RANDPLOT_WATERSOURCE (0x00000100) // </advc.300>
 
 #ifdef _USRDLL
-/********************************************************************************/
-/**		REVOLUTION_MOD							1/1/08				jdog5000	*/
-/**																				*/
-/**																				*/
-/********************************************************************************/
-//#define MAX_CIV_PLAYERS												(18)
-// Mod next line to change max number of players
-#define MAX_CIV_PLAYERS												(36)
-/********************************************************************************/
-/**		REVOLUTION_MOD							END								*/
-/********************************************************************************/	
+// K-Mod (note): default is 18, some people like 48. They are not compatible.
+/*  advc.056: Scenario (WB) files are now compatible so long as the player ids in the WB file
+	don't exceed MAX_CIV_PLAYERS in the DLL. Savegames are still incompatible. */
+#define MAX_CIV_PLAYERS												(18)
 #else
 #define MAX_CIV_PLAYERS												(CvGlobals::getInstance().getMaxCivPlayers())
 #endif
@@ -83,10 +76,11 @@
 #define INVALID_PLOT_COORD										(-(MAX_INT))	// don't use -1 since that is a valid wrap coordinate
 #define DIRECTION_RADIUS											(1)
 #define DIRECTION_DIAMETER										((DIRECTION_RADIUS * 2) + 1)
-#define NUM_CITY_PLOTS												(21)
-#define CITY_HOME_PLOT												(0)
-#define CITY_PLOTS_RADIUS											(2)
-#define CITY_PLOTS_DIAMETER										((CITY_PLOTS_RADIUS*2) + 1)
+// advc.enum: Moved to CvEnums.h
+/*#define NUM_CITY_PLOTS (21)
+#define CITY_HOME_PLOT    (0)
+#define CITY_PLOTS_RADIUS (2)
+#define CITY_PLOTS_DIAMETER	((CITY_PLOTS_RADIUS*2) + 1)*/
 
 #define GAME_NAME															("Game")
 
@@ -111,8 +105,8 @@
 // BUG - start
 #define DOUBLE_SEPARATOR													L"\n======================="
 // BUG - end
-#define TEXT_COLOR(szColor)										((int)(GC.getColorInfo((ColorTypes)GC.getInfoTypeForString(szColor)).getColor().r * 255)), ((int)(GC.getColorInfo((ColorTypes)GC.getInfoTypeForString(szColor)).getColor().g * 255)), ((int)(GC.getColorInfo((ColorTypes)GC.getInfoTypeForString(szColor)).getColor().b * 255)), ((int)(GC.getColorInfo((ColorTypes)GC.getInfoTypeForString(szColor)).getColor().a * 255))
-// advc.003:  (uses of this macro aren't tagged with "advc")
+#define TEXT_COLOR(szColor)										((int)(GC.getInfo((ColorTypes)GC.getInfoTypeForString(szColor)).getColor().r * 255)), ((int)(GC.getInfo((ColorTypes)GC.getInfoTypeForString(szColor)).getColor().g * 255)), ((int)(GC.getInfo((ColorTypes)GC.getInfoTypeForString(szColor)).getColor().b * 255)), ((int)(GC.getInfo((ColorTypes)GC.getInfoTypeForString(szColor)).getColor().a * 255))
+// advc:  (uses of this macro aren't tagged with "advc")
 #define PLAYER_TEXT_COLOR(kPlayer)								kPlayer.getPlayerTextColorR(), kPlayer.getPlayerTextColorG(), kPlayer.getPlayerTextColorB(), kPlayer.getPlayerTextColorA()
 
 // Version Verification files and folders

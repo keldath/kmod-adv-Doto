@@ -4,20 +4,15 @@
 //
 #include "CvGameCoreDLL.h"
 #include "CyPlot.h"
-#include "CyCity.h"
 #include "CyArea.h"
-#include "CyUnit.h"
 #include "CvPlot.h"
+#include "CvArea.h" // advc: for CvArea::getID
 
-CyPlot::CyPlot(CvPlot* pPlot) : m_pPlot(pPlot)
-{
+CyPlot::CyPlot(CvPlot* pPlot) : m_pPlot(pPlot) {}
+// advc.003y: (see CyCity.cpp)
+CyPlot::CyPlot(CvPlot const& kPlot) : m_pPlot(const_cast<CvPlot*>(&kPlot)) {}
 
-}
-
-CyPlot::CyPlot() : m_pPlot(NULL)
-{
-
-}
+CyPlot::CyPlot() : m_pPlot(NULL) {}
 
 void CyPlot::erase()
 {
@@ -123,15 +118,6 @@ bool CyPlot::isIrrigationAvailable(bool bIgnoreSelf)
 	return m_pPlot ? m_pPlot->isIrrigationAvailable(bIgnoreSelf) : false;
 }
 
-// Deliverator -fresh water
-void CyPlot::changeFreshWaterInRadius(int iChange, int iRadius)
-{
-	if (m_pPlot)
-		m_pPlot->changeFreshWaterInRadius(iChange, iRadius);
-}
-
-// Deliverator
-
 bool CyPlot::isRiverSide()
 {
 	return m_pPlot ? m_pPlot->isRiverSide() : false;
@@ -149,7 +135,13 @@ bool CyPlot::isRiverConnection(int /*DirectionTypes*/ eDirection)
 
 int CyPlot::getNearestLandArea()
 {
-	return m_pPlot ? m_pPlot->getNearestLandArea() : -1;
+	if (m_pPlot == NULL)
+		return -1;
+	// <advc> (The DLL function no longer returns the area id)
+	CvArea* pArea = m_pPlot->getNearestLandArea();
+	if (pArea == NULL)
+		return FFreeList::INVALID_INDEX;
+	return pArea->getID(); // </advc>
 }
 
 CyPlot* CyPlot::getNearestLandPlot()
@@ -176,18 +168,6 @@ bool CyPlot::canHaveImprovement(int /* ImprovementTypes */ eImprovement, int /*T
 {
 	return m_pPlot ? m_pPlot->canHaveImprovement(((ImprovementTypes)eImprovement), ((TeamTypes)eTeam), bPotential) : false;
 }
-
-// < JImprovementLimit Mod Start >
-bool CyPlot::isImprovementInRange(int /* ImprovementTypes */ eImprovement, int iRange, bool bCheckBuildProgress)
-{
-	return m_pPlot ? m_pPlot->isImprovementInRange((ImprovementTypes) eImprovement, iRange, bCheckBuildProgress) : false;
-}
-
-bool CyPlot::isImprovementAncestor(int /* ImprovementTypes */ eImprovement, int /* ImprovementTypes */ eCheckImprovement)
-{
-	return m_pPlot ? m_pPlot->isImprovementAncestor((ImprovementTypes) eImprovement, (ImprovementTypes) eCheckImprovement) : false;
-}
-// < JImprovementLimit Mod End >
 
 bool CyPlot::canBuild(int /*BuildTypes*/ eBuild, int /*PlayerTypes*/ ePlayer, bool bTestVisible)
 {
@@ -395,10 +375,12 @@ int CyPlot::getNumVisibleEnemyDefenders(CyUnit* pUnit)
 	return m_pPlot ? m_pPlot->getNumVisibleEnemyDefenders(pUnit->getUnit()) : -1;
 }
 
-int CyPlot::getNumVisiblePotentialEnemyDefenders(CyUnit* pUnit)
+/*	advc: This is now handled by CvUnitAI::AI_countEnemyDefenders - b/c it's AI code,
+	which shouldn't be exposed to Python. */
+/*int CyPlot::getNumVisiblePotentialEnemyDefenders(CyUnit* pUnit)
 {
 	return m_pPlot ? m_pPlot->getNumVisiblePotentialEnemyDefenders(pUnit->getUnit()) : -1;
-}
+}*/
 
 bool CyPlot::isVisibleEnemyUnit(int /*PlayerTypes*/ ePlayer)
 {
@@ -446,7 +428,7 @@ bool CyPlot::isTradeNetwork(int /*TeamTypes*/ eTeam)
 
 bool CyPlot::isTradeNetworkConnected(CyPlot* pPlot, int /*TeamTypes*/ eTeam)
 {
-	return m_pPlot ? m_pPlot->isTradeNetworkConnected(pPlot->getPlot(), (TeamTypes)eTeam) : false;
+	return m_pPlot ? m_pPlot->isTradeNetworkConnected(*pPlot->getPlot(), (TeamTypes)eTeam) : false;
 }
 
 bool CyPlot::isValidDomainForLocation(CyUnit* pUnit) const
@@ -501,7 +483,7 @@ CyArea* CyPlot::waterArea()
 
 int CyPlot::getArea()
 {
-	return m_pPlot ? m_pPlot->getArea() : -1;
+	return m_pPlot ? m_pPlot->getArea().getID() : -1;
 }
 
 int CyPlot::getUpgradeProgress()
@@ -650,75 +632,6 @@ void CyPlot::setOwnerNoUnitCheck(int /*PlayerTypes*/ eNewValue)
 	if (m_pPlot)
 		m_pPlot->setOwner((PlayerTypes) eNewValue, false, true);
 }
-
-// < JCultureControl Mod Start >
-int CyPlot::getImprovementOwner()
-{
-	return m_pPlot ? m_pPlot->getImprovementOwner() : -1;
-}
-
-void CyPlot::setImprovementOwner(int /*PlayerTypes*/ eNewValue)
-{
-	if (m_pPlot)
-		m_pPlot->setImprovementOwner((PlayerTypes) eNewValue);
-}
-
-int CyPlot::getCultureControl(int /*PlayerTypes*/ eIndex)
-{
-	return m_pPlot ? m_pPlot->getCultureControl((PlayerTypes)eIndex) : -1;
-}
-
-int CyPlot::countTotalCultureControl()
-{
-	return m_pPlot ? m_pPlot->countTotalCultureControl() : -1;
-}
-
-int /*TeamTypes*/ CyPlot::findHighestCultureControlPlayer()
-{
-	return m_pPlot ? m_pPlot->findHighestCultureControlPlayer() : -1;
-}
-
-int CyPlot::calculateCultureControlPercent(int /*PlayerTypes*/ eIndex)
-{
-	return m_pPlot ? m_pPlot->calculateCultureControlPercent((PlayerTypes)eIndex) : -1;
-}
-
-int CyPlot::calculateTeamCultureControlPercent(int /*TeamTypes*/ eIndex)
-{
-	return m_pPlot ? m_pPlot->calculateTeamCultureControlPercent((TeamTypes)eIndex) : -1;
-}
-
-void CyPlot::setCultureControl(int /*PlayerTypes*/ eIndex, int iChange, bool bUpdate)
-{
-	if (m_pPlot)
-		m_pPlot->setCultureControl((PlayerTypes)eIndex, iChange, bUpdate, true);
-}
-
-void CyPlot::changeCultureControl(int /*PlayerTypes*/ eIndex, int iChange, bool bUpdate)
-{
-	if (m_pPlot)
-		m_pPlot->changeCultureControl((PlayerTypes)eIndex, iChange, bUpdate);
-}
-
-void CyPlot::addCultureControl(int /*PlayerTypes*/ ePlayer, int /*ImprovementTypes*/ eImprovement, bool bUpdateInterface)
-{
-	if (m_pPlot)
-		m_pPlot->addCultureControl((PlayerTypes) ePlayer, (ImprovementTypes) eImprovement, bUpdateInterface);
-}
-
-void CyPlot::clearCultureControl(int /*PlayerTypes*/ ePlayer, int /*ImprovementTypes*/ eImprovement, bool bUpdateInterface)
-{
-	if (m_pPlot)
-		m_pPlot->clearCultureControl((PlayerTypes) ePlayer, (ImprovementTypes) eImprovement, bUpdateInterface);
-}
-
-/*void CyPlot::updateCultureControl(int iCenterX, int iCenterY, int iUpdateRange, bool bUpdateInterface)
-{
-	if (m_pPlot)
-		m_pPlot->updateCultureControl(iCenterX, iCenterY, iUpdateRange, bUpdateInterface);
-}*/
-// < JCultureControl Mod End >
-
 PlotTypes CyPlot::getPlotType()
 {
 	return m_pPlot ? m_pPlot->getPlotType() : NO_PLOT;
@@ -969,7 +882,7 @@ int CyPlot::getCulture(int /*PlayerTypes*/ eIndex)
 }
 
 int CyPlot::countTotalCulture()
-{	// advc.003b: was calling CvPlot::countTotalCulture
+{	// advc.opt: was calling CvPlot::countTotalCulture
 	return m_pPlot ? m_pPlot->getTotalCulture() : -1;
 }
 
@@ -1089,14 +1002,16 @@ bool CyPlot::changeBuildProgress(int /*BuildTypes*/ eBuild, int iChange, int /*P
 			(PlayerTypes)ePlayer) : false;
 }
 
-int CyPlot::getCultureRangeCities(int /*PlayerTypes*/ eOwnerIndex, int iRangeIndex)
+int CyPlot::getCultureRangeCities(int eOwnerIndex, int eRangeIndex)
 {
-	return m_pPlot ? m_pPlot->getCultureRangeCities((PlayerTypes) eOwnerIndex, iRangeIndex) : -1;
+	return m_pPlot ? m_pPlot->getCultureRangeCities((PlayerTypes)eOwnerIndex,
+			(CultureLevelTypes)eRangeIndex) : -1;
 }
 
-bool CyPlot::isCultureRangeCity(int /*PlayerTypes*/ eOwnerIndex, int iRangeIndex)
+bool CyPlot::isCultureRangeCity(int eOwnerIndex, int eRangeIndex)
 {
-	return m_pPlot ? m_pPlot->isCultureRangeCity((PlayerTypes) eOwnerIndex, iRangeIndex) : false;
+	return m_pPlot ? m_pPlot->isCultureRangeCity((PlayerTypes) eOwnerIndex,
+		(CultureLevelTypes)eRangeIndex) : false;
 }
 
 int CyPlot::getInvisibleVisibilityCount(int /*TeamTypes*/ eTeam, int /*InvisibleTypes*/ eInvisible)

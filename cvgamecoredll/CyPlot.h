@@ -10,11 +10,13 @@ class CyArea;
 class CvPlot;
 class CyUnit;
 class CyCity;
+
 class CyPlot
 {
 public:
 	CyPlot();
 	DllExport CyPlot(CvPlot*);			// Call from C++
+	CyPlot(CvPlot const&); // advc.003y
 	CvPlot* getPlot() { return m_pPlot; }	// Call from C++
 	void setPlot(CvPlot* p) { m_pPlot=p; }	// Call from C++
 	bool isNone() { return (m_pPlot==NULL); }
@@ -44,12 +46,8 @@ public:
 	bool canHavePotentialIrrigation();
 	bool isIrrigationAvailable(bool bIgnoreSelf);
 
-	// Deliverator
-	void changeFreshWaterInRadius(int iChange, int Radius);
-	// Deliverator	
-	
-	bool isRiverSide();																												
-	bool isRiver();																												
+	bool isRiverSide();
+	bool isRiver();
 	bool isRiverConnection(int /*DirectionTypes*/ eDirection);
 
 	int getNearestLandArea();
@@ -58,10 +56,6 @@ public:
 	int seeThroughLevel();
 	bool canHaveBonus(int /*BonusTypes*/ eBonus, bool bIgnoreLatitude);
 	bool canHaveImprovement(int /* ImprovementTypes */ eImprovement, int /*TeamTypes*/ eTeam, bool bPotential);
-// < JImprovementLimit Mod Start >
-	bool isImprovementInRange(int /* ImprovementTypes */ eImprovement, int iRange, bool bCheckBuildProgress);
-	bool isImprovementAncestor(int /* ImprovementTypes */ eImprovement, int /* ImprovementTypes */ eCheckImprovement);
-	// < JImprovementLimit Mod End >
 	bool canBuild(int /*BuildTypes*/ eBuild, int /*PlayerTypes*/ ePlayer, bool bTestVisible);
 	// advc.251: Param ePlayer added to these two functions
 	int getBuildTime(int /*BuildTypes*/ eBuild, int /*PlayerTypes*/ ePlayer);
@@ -111,7 +105,7 @@ public:
 	bool isVisibleEnemyDefender(CyUnit* pUnit);
 	int getNumDefenders(int /*PlayerTypes*/ ePlayer);
 	int getNumVisibleEnemyDefenders(CyUnit* pUnit);
-	int getNumVisiblePotentialEnemyDefenders(CyUnit* pUnit);
+	//int getNumVisiblePotentialEnemyDefenders(CyUnit* pUnit); // advc: No longer exposed
 	bool isVisibleEnemyUnit(int /*PlayerTypes*/ ePlayer);
 	bool isVisibleOtherUnit(int /*PlayerTypes*/ ePlayer);
 	bool isFighting();
@@ -180,23 +174,6 @@ public:
 	int /*PlayerTypes*/ getOwner();
 	void setOwner(int /*PlayerTypes*/ eNewValue);
 	void setOwnerNoUnitCheck(int /*PlayerTypes*/ eNewValue);
-	// < JCultureControl Mod Start >
-	int /*PlayerTypes*/ getImprovementOwner();
-	void setImprovementOwner(int /*PlayerTypes*/ eNewValue);
-
-	int getCultureControl(int /*PlayerTypes*/ eIndex);
-	int countTotalCultureControl();
-	int /*PlayerTypes*/ findHighestCultureControlPlayer();
-
-	int calculateCultureControlPercent(int /*PlayerTypes*/ eIndex);
-	int calculateTeamCultureControlPercent(int /*TeamTypes*/ eIndex);
-	void setCultureControl(int /*PlayerTypes*/ eIndex, int iNewValue, bool bUpdate);
-	void changeCultureControl(int /*PlayerTypes*/ eIndex, int iChange, bool bUpdate);
-
-	void addCultureControl(int /*PlayerTypes*/ ePlayer, int /*ImprovementTypes*/ eImprovement, bool bUpdateInterface);
-	void clearCultureControl(int /*PlayerTypes*/ ePlayer, int /*ImprovementTypes*/ eImprovement, bool bUpdateInterface);
-	//void updateCultureControl(int iCenterX, int iCenterY, int iUpdateRange, bool bUpdateInterface);
-	// < JCultureControl Mod End >
 	PlotTypes getPlotType();
 	bool isWater();
 	bool isFlatlands();
@@ -272,8 +249,8 @@ public:
 	// advc.251: Last param now ePlayer
 	bool changeBuildProgress(int /*BuildTypes*/ eBuild, int iChange, int /*PlayerTypes*/ ePlayer);
 
-	int getCultureRangeCities(int /*PlayerTypes*/ eOwnerIndex, int iRangeIndex);
-	bool isCultureRangeCity(int /*PlayerTypes*/ eOwnerIndex, int iRangeIndex);
+	int getCultureRangeCities(int /*PlayerTypes*/ eOwnerIndex, /*CultureLevelTypes*/int eRangeIndex);
+	bool isCultureRangeCity(int /*PlayerTypes*/ eOwnerIndex, /*CultureLevelTypes*/int eRangeIndex);
 
 	int getInvisibleVisibilityCount(int /*TeamTypes*/ eTeam, int /*InvisibleTypes*/ eInvisible);
 	bool isInvisibleVisible(int /*TeamTypes*/ eTeam, int /*InvisibleTypes*/ eInvisible);

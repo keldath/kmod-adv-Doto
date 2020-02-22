@@ -1,9 +1,6 @@
 #include "CvGameCoreDLL.h"
-#include "CyPlot.h"
-#include "CyCity.h"
-#include "CyArea.h"
-#include "CyUnit.h"
 #include "CvPlot.h"
+#include "CyArea.h"
 //# include <boost/python/manage_new_object.hpp>
 //# include <boost/python/return_value_policy.hpp>
 
@@ -43,10 +40,6 @@ void CyPlotPythonInterface1(python::class_<CyPlot>& x)
 		.def("canHavePotentialIrrigation", &CyPlot::canHavePotentialIrrigation, "bool ()")
 		.def("isIrrigationAvailable", &CyPlot::isIrrigationAvailable, "bool (bool bIgnoreSelf)")
 
-		// Deliverator
-		.def("changeFreshWaterInRadius", &CyPlot::changeFreshWaterInRadius, "void (int iChange, int iRadius)")	
-		// Deliverator		
-		
 		.def("isRiverSide", &CyPlot::isRiverSide, "bool ()")
 		.def("isRiver", &CyPlot::isRiver, "bool ()")
 		.def("isRiverConnection", &CyPlot::isRiverConnection, "bool (int /*DirectionTypes*/ eDirection)")
@@ -57,10 +50,6 @@ void CyPlotPythonInterface1(python::class_<CyPlot>& x)
 		.def("seeThroughLevel", &CyPlot::seeThroughLevel, "int ()")
 		.def("canHaveBonus", &CyPlot::canHaveBonus, "bool (int /*BonusTypes*/ eBonus, bool bIgnoreLatitude)")
 		.def("canHaveImprovement", &CyPlot::canHaveImprovement, "bool (int (ImprovementTypes) eImprovement, int (TeamTypes) eTeam, bool bPotential)")
-		// < JImprovementLimit Mod Start >
-		.def("isImprovementInRange", &CyPlot::isImprovementInRange, "bool (int /*ImprovementTypes*/ eImprovement, int iRange, bool bCheckBuildProgress)")
-		.def("isImprovementAncestor", &CyPlot::isImprovementAncestor, "bool (int /*ImprovementTypes*/ eImprovement, int /*ImprovementTypes*/ eCheckImprovement)")
-		// < JImprovementLimit Mod End >
 		.def("canBuild", &CyPlot::canBuild, "bool (int (BuildTypes) eBuild, int (PlayerTypes) ePlayer, bool bTestVisible)")
 		// advc.251: ePlayer added to these two
 		.def("getBuildTime", &CyPlot::getBuildTime, "int (int /*BuildTypes*/ eBuild, int /PlayerTypes*/ ePlayer)")
@@ -109,7 +98,8 @@ void CyPlotPythonInterface1(python::class_<CyPlot>& x)
 		.def("isVisibleEnemyDefender", &CyPlot::isVisibleEnemyDefender, "bool (CyUnit* pUnit)")
 		.def("getNumDefenders", &CyPlot::getNumDefenders, "int (int /*PlayerTypes*/ ePlayer)")
 		.def("getNumVisibleEnemyDefenders", &CyPlot::getNumVisibleEnemyDefenders, "int (CyUnit* pUnit)")
-		.def("getNumVisiblePotentialEnemyDefenders", &CyPlot::getNumVisiblePotentialEnemyDefenders, "int (CyUnit* pUnit)")
+		 // advc: No longer exposed
+		//.def("getNumVisiblePotentialEnemyDefenders", &CyPlot::getNumVisiblePotentialEnemyDefenders, "int (CyUnit* pUnit)")
 		.def("isVisibleEnemyUnit", &CyPlot::isVisibleEnemyUnit, "bool (int /*PlayerTypes*/ ePlayer)")
 		.def("isVisibleOtherUnit", &CyPlot::isVisibleOtherUnit, "bool (int /*PlayerTypes*/ ePlayer)")
 		.def("isFighting", &CyPlot::isFighting, "bool ()")
@@ -178,23 +168,6 @@ void CyPlotPythonInterface1(python::class_<CyPlot>& x)
 		.def("getOwner", &CyPlot::getOwner, "int ()")
 		.def("setOwner", &CyPlot::setOwner, "void (int /*PlayerTypes*/ eNewValue)")
 		.def("setOwnerNoUnitCheck", &CyPlot::setOwnerNoUnitCheck, "void (int /*PlayerTypes*/ eNewValue)")
-		// < JCultureControl Mod Start >
-		.def("getImprovementOwner", &CyPlot::getImprovementOwner, "int ()")
-		.def("setImprovementOwner", &CyPlot::setImprovementOwner, "void (int /*PlayerTypes*/ eNewValue)")
-
-		.def("getCultureControl", &CyPlot::getCultureControl, "int (int /*PlayerTypes*/ eIndex)")
-		.def("countTotalCultureControl", &CyPlot::countTotalCultureControl, "int ()")
-		.def("findHighestCultureControlPlayer", &CyPlot::findHighestCultureControlPlayer, "int /*PlayerTypes*/ ()")
-
-		.def("calculateCultureControlPercent", &CyPlot::calculateCultureControlPercent, "int (int /*PlayerTypes*/ eIndex)")
-		.def("calculateTeamCultureControlPercent", &CyPlot::calculateTeamCultureControlPercent, "int (int /*TeamTypes*/ eIndex)")
-		.def("setCultureControl", &CyPlot::setCultureControl, "void (int /*PlayerTypes*/ eIndex, int iNewValue, bool bUpdate)")
-		.def("changeCultureControl", &CyPlot::changeCultureControl, "void (int /*PlayerTypes*/ eIndex, int iChange, bool bUpdate)")
-
-		.def("addCultureControl", &CyPlot::addCultureControl, "void (int /*PlayerTypes*/ ePlayer, int /*ImprovementTypes*/ eImprovement, bool bUpdateInterface)")
-		.def("clearCultureControl", &CyPlot::clearCultureControl, "void (int /*PlayerTypes*/ ePlayer, int /*ImprovementTypes*/ eImprovement, bool bUpdateInterface)")
-		//.def("updateCultureControl", &CyPlot::updateCultureControl, "void (int iCenterX, int iCenterY, int iUpdateRange, bool bUpdateInterface)")
-		// < JCultureControl Mod End >
 		.def("getPlotType", &CyPlot::getPlotType, "int ()")
 		.def("isWater", &CyPlot::isWater, "bool ()")
 		.def("isFlatlands", &CyPlot::isFlatlands, "bool ()")

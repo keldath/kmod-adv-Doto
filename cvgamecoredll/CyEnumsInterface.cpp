@@ -77,7 +77,7 @@ void CyEnumsPythonInterface()
 		;
 
 	python::enum_<PlotStyles>("PlotStyles")
-		.value("PLOT_STYLE_NONE", PLOT_STYLE_NONE)
+		.value("PLOT_STYLE_NONE", NO_PLOT_STYLE) // advc.enum
 		.value("PLOT_STYLE_NUMPAD_1", PLOT_STYLE_NUMPAD_1)
 		.value("PLOT_STYLE_NUMPAD_2", PLOT_STYLE_NUMPAD_2)
 		.value("PLOT_STYLE_NUMPAD_3", PLOT_STYLE_NUMPAD_3)
@@ -423,6 +423,7 @@ void CyEnumsPythonInterface()
 		.value("WIDGET_POWER_RATIO", WIDGET_POWER_RATIO)
 		.value("WIDGET_GOLDEN_AGE", WIDGET_GOLDEN_AGE)
 		.value("WIDGET_ANARCHY", WIDGET_ANARCHY) // </advc.085>
+		.value("WIDGET_CITY_TRADE", WIDGET_CITY_TRADE) // advc.ctr
 		.value("NUM_WIDGET_TYPES", NUM_WIDGET_TYPES)
 		;
 	/*  K-Mod, 5/jan/11, karadoc
@@ -497,7 +498,10 @@ void CyEnumsPythonInterface()
 		.value("WORLDSIZE_STANDARD", WORLDSIZE_STANDARD)
 		.value("WORLDSIZE_LARGE", WORLDSIZE_LARGE)
 		.value("WORLDSIZE_HUGE", WORLDSIZE_HUGE)
-		.value("NUM_WORLDSIZE_TYPES", NUM_WORLDSIZE_TYPES)
+		/*  advc.enum: Don't assume that all sizes are hardcoded.
+			NUM_WORLDSIZE_TYPES is unused in AdvCiv/BtS Python. If it's needed
+			in a mod-mod, one could use WORLDSIZE_HUGE+1. */
+		//.value("NUM_WORLDSIZE_TYPES", NUM_WORLDSIZE_TYPES)
 		;
 
 	python::enum_<TerrainTypes>("TerrainTypes")
@@ -572,27 +576,6 @@ void CyEnumsPythonInterface()
 		.value("GAMEOPTION_NO_ANIMALS", GAMEOPTION_NO_ANIMALS) // advc.309
 		.value("GAMEOPTION_NO_SLAVERY", GAMEOPTION_NO_SLAVERY) // advc.912d
 		.value("NUM_GAMEOPTION_TYPES", NUM_GAMEOPTION_TYPES)
-//MOD@VET_Andera412_Blocade_Unit-begin1/1
-		.value("GAMEOPTION_BLOCADE_UNIT", GAMEOPTION_BLOCADE_UNIT)
-//MOD@VET_Andera412_Blocade_Unit-end1/1
-        .value("GAMEOPTION_MOUNTAINS", GAMEOPTION_MOUNTAINS)//AND Mountain Options
-        .value("GAMEOPTION_TECH_DIFFUSION", GAMEOPTION_TECH_DIFFUSION)//Tech Diffusion Option by Stolenrays
-		.value("GAMEOPTION_CULTURE_CONTROL", GAMEOPTION_CULTURE_CONTROL)//jCULTURE_CONTROL Options
-//Influence Driven War: Added for PIG Mod by PieceOfMind 26/10/09
-		.value("GAMEOPTION_INFLUENCE_DRIVEN_WAR", GAMEOPTION_INFLUENCE_DRIVEN_WAR)
-//Influence Driven War: End Add
-//tholish building deletion
-		.value("GAMEOPTION_BUILDING_DELETION", GAMEOPTION_BUILDING_DELETION)
-		.value("GAMEOPTION_CULTURE_GOLDEN_AGE", GAMEOPTION_CULTURE_GOLDEN_AGE)
-//
-    // bt keldath
-        .value("GAMEOPTION_EXTRA_BUILDINGS", GAMEOPTION_EXTRA_BUILDINGS)
-        .value("GAMEOPTION_NO_CORPORATIONS", GAMEOPTION_NO_CORPORATIONS)
-		.value("GAMEOPTION_NO_POPULATION_LIMIT", GAMEOPTION_NO_POPULATION_LIMIT)
-		.value("GAMEOPTION_RANGED_RETALIATION", GAMEOPTION_RANGED_RETALIATION)
-		.value("GAMEOPTION_RANGED_SEA_COST_MOVES", GAMEOPTION_RANGED_SEA_END_MOVES)
-		.value("GAMEOPTION_RANGED_LAND_COST_MOVES", GAMEOPTION_RANGED_LAND_END_MOVES)
-		.value("GAMEOPTION_RANGED_LAND_COST_MOVES", GAMEOPTION_RANGED_SEA_ALLOW_REGULAR)
 		;
 
 	python::enum_<MultiplayerOptionTypes>("MultiplayerOptionTypes")
@@ -795,7 +778,7 @@ void CyEnumsPythonInterface()
 		.value("VOICETARGET_DIPLO", VOICETARGET_DIPLO)
 		.value("VOICETARGET_TEAM", VOICETARGET_TEAM)
 		.value("VOICETARGET_ALL", VOICETARGET_ALL)
-		.value("NUM_VOICETARGETS", NUM_VOICETARGETS)
+		.value("NUM_VOICETARGETS", NUM_VOICETARGET_TYPES) // advc.enum
 		;
 
 	python::enum_<TeamTypes>("TeamTypes")
@@ -835,7 +818,7 @@ void CyEnumsPythonInterface()
 		.value("TASK_RALLY_PLOT", TASK_RALLY_PLOT)
 		.value("TASK_CLEAR_RALLY_PLOT", TASK_CLEAR_RALLY_PLOT)
 		.value("TASK_LIBERATE", TASK_LIBERATE)
-		.value("TASK_CEDE", TASK_CEDE) // advc.122
+		.value("TASK_CEDE", TASK_CEDE) // advc.ctr
 		.value("NUM_TASK_TYPES", NUM_TASK_TYPES)
 		;
 
@@ -1308,7 +1291,7 @@ void CyEnumsPythonInterface()
 		;
 
 	python::enum_<EntityEventTypes>("EntityEventTypes")
-		.value( "ENTITY_EVENT_NONE", ENTITY_EVENT_NONE )
+		.value( "NO_ENTITY_EVENT_NONE", NO_ENTITYEVENT )
 		;
 
 	python::enum_<AnimationPathTypes>("AnimationPathTypes")
@@ -1336,7 +1319,7 @@ void CyEnumsPythonInterface()
 		;
 
 	python::enum_<AnimationCategoryTypes>("AnimationCategoryTypes")
-		.value("ANIMCAT_NONE", ANIMCAT_NONE)
+		.value("ANIMCAT_NONE", NO_ANIMCAT)
 		;
 
 	python::enum_<CursorTypes>("CursorTypes")

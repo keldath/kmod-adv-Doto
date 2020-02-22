@@ -1,8 +1,5 @@
 #include "CvGameCoreDLL.h"
-#include "CyCity.h"
-#include "CyPlot.h"
 #include "CyArea.h"
-#include "CvInfos.h"
 
 //# include <boost/python/manage_new_object.hpp>
 //# include <boost/python/return_value_policy.hpp>
@@ -36,17 +33,6 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("findYieldRateRank", &CyCity::findYieldRateRank, "int (int /*YieldTypes*/ eYield)")
 		.def("findCommerceRateRank", &CyCity::findCommerceRateRank, "int (int /*CommerceTypes*/ eCommerce)")
 
-/************************************************************************************************/
-/* REVDCM                                 02/16/10                                phungus420    */
-/*                                                                                              */
-/* CanTrain                                                                                     */
-/************************************************************************************************/
-		.def("isForceObsoleteUnitClassAvailable", &CyCity::isForceObsoleteUnitClassAvailable, "bool (int eUnit)")
-		.def("isPlotTrainable", &CyCity::isPlotTrainable, "bool (int eUnit, bool bContinue, bool bTestVisible)")
-/************************************************************************************************/
-/* REVDCM                                  END                                                  */
-/************************************************************************************************/
-
 		.def("allUpgradesAvailable", &CyCity::allUpgradesAvailable, "int UnitTypes (int eUnit, int iUpgradeCount)")
 		.def("isWorldWondersMaxed", &CyCity::isWorldWondersMaxed, "bool ()")
 		.def("isTeamWondersMaxed", &CyCity::isTeamWondersMaxed, "bool ()")
@@ -75,7 +61,6 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("getProductionProject", &CyCity::getProductionProject, "int /*ProjectTypes*/ ()")
 		.def("getProductionProcess", &CyCity::getProductionProcess, "int /*ProcessTypes*/ ()")
 		.def("getProductionName", &CyCity::getProductionName, "str () - description of item that the city is working on")
-		.def("getGeneralProductionTurnsLeft", &CyCity::getGeneralProductionTurnsLeft, "int - # of production turns left for the top order node item in a city...")
 		.def("getProductionNameKey", &CyCity::getProductionNameKey, "str () - description of item that the city is working on")
 		.def("isFoodProduction", &CyCity::isFoodProduction, "bool () - is item under construction being created with food instead of production?")
 		.def("getFirstUnitOrder", &CyCity::getFirstUnitOrder, "int (int /*UnitTypes*/ eUnit)")
@@ -84,7 +69,11 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("isUnitFoodProduction", &CyCity::isUnitFoodProduction, "bool (UnitID) - does UnitID require food to be trained?")
 		.def("getProduction", &CyCity::getProduction, "int () - returns the current production towards whatever is top of this city's OrderQueue")
 		.def("getProductionNeeded", &CyCity::getProductionNeeded, "int () - # of production needed to complete construction")
-		.def("getProductionTurnsLeft", &CyCity::getProductionTurnsLeft, "int () - # of turns remaining until item is completed")
+		// advc: Now just an alias of getProductionTurnsLeft
+		.def("getGeneralProductionTurnsLeft", &CyCity::getProductionTurnsLeft, "int - # of production turns left for the top order node item in a city...")
+		/*  advc: Documentation string said "# of turns remaining until item is completed".
+			Use the one from getGeneralProductionTurnsLeft instead. */
+		.def("getProductionTurnsLeft", &CyCity::getProductionTurnsLeft, "int - # of production turns left for the top order node item in a city...")
 		.def("getUnitProductionTurnsLeft", &CyCity::getUnitProductionTurnsLeft, "int (UnitID, int iNum) - # of turns remaining to complete UnitID")
 		.def("getBuildingProductionTurnsLeft", &CyCity::getBuildingProductionTurnsLeft, "int (BuildingID, int iNum) - # of turns remaining to complete UnitID")
 		.def("getProjectProductionTurnsLeft", &CyCity::getProjectProductionTurnsLeft, "int (int /*ProjectTypes*/ eProject, int iNum)")
@@ -165,6 +154,10 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("cultureDistance", &CyCity::cultureDistance, "int (iDX, iDY) - culture distance")
 		.def("cultureStrength", &CyCity::cultureStrength, "int (ePlayer)")
 		.def("cultureGarrison", &CyCity::cultureGarrison, "int (ePlayer)")
+		// <advc.ctr>
+		.def("revoltProbability", &CyCity::revoltProbability, "float ()")
+		.def("canCultureFlip", &CyCity::canCultureFlip, "bool ()")
+		// </advc.ctr>
 		.def("getNumBuilding", &CyCity::getNumBuilding, "int - (BuildingID) - How many BuildingID does this city have (real or free)?")
 		.def("isHasBuilding", &CyCity::isHasBuilding, "bool (int iBuildingID) - This function actually no longer exists in C++, this is a helper function which hooks up to getNumBuilding() to help mod backwards compatibility")
 		.def("getNumActiveBuilding", &CyCity::getNumActiveBuilding, "bool (BuildingID) - is BuildingID active in the city (present & not obsolete)?")
@@ -176,8 +169,6 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("plot", &CyCity::plot, python::return_value_policy<python::manage_new_object>(), "CyPlot () - returns cities plot instance")
 		.def("isConnectedTo", &CyCity::isConnectedTo, "bool (CyCity*) - is city connected to CyCity* via the Trade Network?")
 		.def("isConnectedToCapital", &CyCity::isConnectedToCapital, "bool (iOwner) - connected to the capital?")
-		// advc.003:
-		.def("getArea", &CyCity::getArea, "int () - returns area id for location of city")
 		.def("area", &CyCity::area, python::return_value_policy<python::manage_new_object>(), "CyArea() () - returns CyArea instance for location of city")
 		.def("waterArea", &CyCity::waterArea, python::return_value_policy<python::manage_new_object>(), "CyArea* ()")
 		.def("getRallyPlot", &CyCity::getRallyPlot, python::return_value_policy<python::manage_new_object>(), "CyPlot () - returns city's rally plot instance")
@@ -187,10 +178,6 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("getPopulation", &CyCity::getPopulation, "int () - total city population")
 		.def("setPopulation", &CyCity::setPopulation, "void (int iNewValue) - sets the city population to iNewValue")
 		.def("changePopulation", &CyCity::changePopulation, "void (int iChange) - adjusts the city population by iChange")
-		/* Population Limit ModComp - Beginning */
-		.def("getPopulationLimit", &CyCity::getPopulationLimit, "int () - PopulationLimit")
-		.def("getPopulationLimitChange", &CyCity::getPopulationLimitChange, "int () - PopulationLimitChange")
-		/* Population Limit ModComp - End */
 		.def("getRealPopulation", &CyCity::getRealPopulation, "int () - total city population in \"real\" numbers")
 		.def("getHighestPopulation", &CyCity::getHighestPopulation, "int () ")
 		.def("setHighestPopulation", &CyCity::setHighestPopulation, "void (iNewValue)")
@@ -334,6 +321,7 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("getPreviousOwner", &CyCity::getPreviousOwner, "int /*PlayerTypes*/ ()")
 		.def("getOriginalOwner", &CyCity::getOriginalOwner, "int /*PlayerTypes*/ ()")
 		.def("getCultureLevel", &CyCity::getCultureLevel, "int /*CultureLevelTypes*/ ()")
+		.def("getNumPartisanUnits", &CyCity::getNumPartisanUnits, "int (int /*PlayerTypes*/)") // advc.003y
 		.def("getCultureThreshold", &CyCity::getCultureThreshold)
 		.def("getSeaPlotYield", &CyCity::getSeaPlotYield, "int (int /*YieldTypes*/) - total YieldType for water plots")
 		.def("getRiverPlotYield", &CyCity::getRiverPlotYield, "int (int /*YieldTypes*/) - total YieldType for river plots")
@@ -404,10 +392,6 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("changeFreeBonus", &CyCity::changeFreeBonus, "void (int eIndex, int iChange)")
 		.def("getNumBonuses", &CyCity::getNumBonuses, "int (PlayerID)")
 		.def("hasBonus", &CyCity::hasBonus, "bool - (BonusID) - is BonusID connected to the city?")
-		// < Building Resource Converter Start >
-		.def("getBuildingOutputBonus", &CyCity::getBuildingOutputBonus, "int - (BonusID)")
-		// < Building Resource Converter End   >
-
 		.def("getBuildingProduction", &CyCity::getBuildingProduction, "int (BuildingID) - current production towards BuildingID")
 		.def("setBuildingProduction", &CyCity::setBuildingProduction, "void (BuildingID, iNewValue) - set progress towards BuildingID as iNewValue")
 		.def("changeBuildingProduction", &CyCity::changeBuildingProduction, "void (BuildingID, iChange) - adjusts progress towards BuildingID by iChange")

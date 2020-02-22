@@ -1,6 +1,6 @@
 #include "CvGameCoreDLL.h"
 #include "CvTalkingHeadMessage.h"
-#include "CvGameAI.h"
+#include "CvGame.h"
 
 CvTalkingHeadMessage::CvTalkingHeadMessage(int iMessageTurn, int iLen, LPCWSTR pszDesc, LPCTSTR pszSound, InterfaceMessageTypes eType, LPCTSTR pszIcon, ColorTypes eColor, int iX, int iY, bool bShowOffScreenArrows, bool bShowOnScreenArrows) :
 	m_iTurn(iMessageTurn),
@@ -18,12 +18,9 @@ CvTalkingHeadMessage::CvTalkingHeadMessage(int iMessageTurn, int iLen, LPCWSTR p
 	m_eTarget(NO_CHATTARGET),
 	m_bShown(false),
 	bSoundPlayed(false) // advc.106b
-{
-}
+{}
 
-CvTalkingHeadMessage::~CvTalkingHeadMessage(void)
-{
-}
+CvTalkingHeadMessage::~CvTalkingHeadMessage(void) {}
 
 
 void CvTalkingHeadMessage::read(FDataStreamBase& stream)
@@ -246,7 +243,8 @@ int CvTalkingHeadMessage::getExpireTurn(/* advc.700: */ bool bHuman)
 	if(bHuman)
 		return iExpireTurn;
 	iExpireTurn = getTurn();
-	switch(m_eMessageType) {
+	switch(m_eMessageType)
+	{
 	case MESSAGE_TYPE_INFO: iExpireTurn += 1; break;
 	case MESSAGE_TYPE_COMBAT_MESSAGE: iExpireTurn += 2; break;
 	case MESSAGE_TYPE_MINOR_EVENT: iExpireTurn += 10; break;

@@ -6,21 +6,20 @@
 // Python wrapper class for CvCity
 //
 
-#include <string>
-# include <boost/python/tuple.hpp>
-namespace python = boost::python;
-
 struct OrderData;
 class CvCity;
 class CyPlot;
 class CyArea;
 class CyUnit;
+
 class CyCity
 {
 public:
 	CyCity();
-	DllExport CyCity(CvCity* pCity);		// Call from C++
-	CvCity* getCity() { return m_pCity;	}	// Call from C++
+	DllExport CyCity(CvCity* pCity); // Call from C++
+	CyCity(CvCityAI* pCity); // advc.003u
+	CyCity(CvCity const& kCity); // advc.003y
+	CvCity* getCity(); // Call from C++  // advc.003u: Definition moved to CyCity.cpp
 	bool isNone() { return (m_pCity==NULL); }
 	void kill();
 
@@ -40,17 +39,6 @@ public:
 	int findBaseYieldRateRank(int /*YieldTypes*/ eYield);
 	int findYieldRateRank(int /*YieldTypes*/ eYield);
 	int findCommerceRateRank(int /*CommerceTypes*/ eCommerce);
-
-/************************************************************************************************/
-/* REVDCM                                 02/16/10                                phungus420    */
-/*                                                                                              */
-/* CanTrain                                                                                     */
-/************************************************************************************************/
-	bool isForceObsoleteUnitClassAvailable(int /*UnitTypes*/ eUnit);
-	bool isPlotTrainable(int /*UnitTypes*/ eUnit, bool bContinue, bool bTestVisible);
-/************************************************************************************************/
-/* REVDCM                                  END                                                  */
-/************************************************************************************************/
 
 	int /*UnitTypes*/ allUpgradesAvailable(int /*UnitTypes*/ eUnit, int iUpgradeCount);
 	bool isWorldWondersMaxed();
@@ -82,7 +70,7 @@ public:
 	int /*ProcessTypes*/ getProductionProcess();
 	std::wstring getProductionName();
 	std::wstring getProductionNameKey();
-	int getGeneralProductionTurnsLeft();
+	//int getGeneralProductionTurnsLeft(); // advc: redundant
 	bool isFoodProduction();
 	int getFirstUnitOrder(int /*UnitTypes*/ eUnit);
 	int getFirstProjectOrder(int /*ProjectTypes*/ eProject);
@@ -171,6 +159,8 @@ public:
 	int cultureDistance(int iDX, int iDY);
 	int cultureStrength(int /*PlayerTypes*/ ePlayer);
 	int cultureGarrison(int /*PlayerTypes*/ ePlayer);
+	float revoltProbability(); // advc.ctr
+	bool canCultureFlip(); // advc.ctr
 	int getNumBuilding(int /*BuildingTypes*/ iIndex);
 	bool isHasBuilding(int /*BuildingTypes*/ iIndex);		// This is a function to help modders out, since it was replaced with getNumBuildings() in the C++
 	int getNumActiveBuilding(int /*BuildingTypes*/ iIndex);
@@ -182,7 +172,6 @@ public:
 	CyPlot* plot();
 	bool isConnectedTo(CyCity* pCity);
 	bool isConnectedToCapital(int /*PlayerTypes*/ ePlayer);
-	int getArea(); // advc.003
 	CyArea* area();
 	CyArea* waterArea();
 	CyPlot* getRallyPlot();
@@ -192,10 +181,6 @@ public:
 	int getPopulation();
 	void setPopulation(int iNewValue);
 	void changePopulation(int iChange);
-	/* Population Limit ModComp - Beginning */
-	int getPopulationLimit();
-	int getPopulationLimitChange();
-	/* Population Limit ModComp - End */
 	long getRealPopulation();
 
 	int getHighestPopulation();
@@ -344,6 +329,7 @@ public:
 	int /*PlayerTypes*/getPreviousOwner();
 	int /*PlayerTypes*/getOriginalOwner();
 	int /*CultureLevelTypes*/ getCultureLevel();
+	int getNumPartisanUnits(int /*PlayerTypes*/ ePartisanPlayer); // advc.003y
 	int getCultureThreshold();
 	int getSeaPlotYield(int /*YieldTypes*/ eIndex);
 	int getRiverPlotYield(int /*YieldTypes*/ eIndex);
@@ -414,10 +400,6 @@ public:
 	void changeFreeBonus(int /*BonusTypes*/ eIndex, int iChange);
 	int getNumBonuses(int /*BonusTypes*/ iBonus);
 	bool hasBonus(int /*BonusTypes */ iBonus);
-	// < Building Resource Converter Start >
-	int CyCity::getBuildingOutputBonus(int /*BonusTypes */iBonus);
-	// < Building Resource Converter End   >
-
 	int getBuildingProduction(int /*BuildingTypes*/ iIndex);
 	void setBuildingProduction(int /*BuildingTypes*/ iIndex, int iNewValue);
 	void changeBuildingProduction(int /*BuildingTypes*/ iIndex, int iChange);
@@ -506,7 +488,7 @@ public:
 	void setScriptData(std::string szNewValue);
 
 private:
-	CvCity* m_pCity;
+	CvCityAI* m_pCity; // advc.003u: was CvCity*
 };
 
 #endif	// CyCity_h

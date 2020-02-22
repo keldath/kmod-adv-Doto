@@ -1,5 +1,5 @@
 #include "CvGameCoreDLL.h"
-#include "CvInfos.h"
+#include "CvInfo_All.h"
 
 //
 // Python interface for info classes (formerly structs)
@@ -10,65 +10,7 @@ void CyInfoPythonInterface3()
 {
 	OutputDebugString("Python Extension Module - CyInfoPythonInterface3\n");
 
-	python::class_<CvYieldInfo, boost::noncopyable, python::bases<CvInfoBase> >("CvYieldInfo")
-		.def("getChar", &CvYieldInfo::getChar, "int ()")
-		.def("getHillsChange", &CvYieldInfo::getHillsChange, "int ()")
-		.def("getPeakChange", &CvYieldInfo::getPeakChange, "int ()")
-		.def("getLakeChange", &CvYieldInfo::getLakeChange, "int ()")
-		.def("getCityChange", &CvYieldInfo::getCityChange, "int ()")
-		.def("getPopulationChangeOffset", &CvYieldInfo::getPopulationChangeOffset, "int ()")
-		.def("getPopulationChangeDivisor", &CvYieldInfo::getPopulationChangeDivisor, "int ()")
-		.def("getMinCity", &CvYieldInfo::getMinCity, "int ()")
-		.def("getTradeModifier", &CvYieldInfo::getTradeModifier, "int ()")
-		.def("getGoldenAgeYield", &CvYieldInfo::getGoldenAgeYield, "int ()")
-		.def("getGoldenAgeYieldThreshold", &CvYieldInfo::getGoldenAgeYieldThreshold, "int ()")
-		.def("getAIWeightPercent", &CvYieldInfo::getAIWeightPercent, "int ()")
-		.def("getColorType", &CvYieldInfo::getColorType, "int ()")
-		;
-	// advc.003e:
-	python::class_<CvTerrainInfo, boost::noncopyable, python::bases<CvInfoBase> >("CvTerrainInfo")
-
-		.def("getMovementCost", &CvTerrainInfo::getMovementCost, "int ()")
-		.def("getSeeFromLevel", &CvTerrainInfo::getSeeFromLevel, "int ()")
-		.def("getSeeThroughLevel", &CvTerrainInfo::getSeeThroughLevel, "int ()")
-		.def("getBuildModifier", &CvTerrainInfo::getBuildModifier, "int ()")
-		.def("getDefenseModifier", &CvTerrainInfo::getDefenseModifier, "int ()")
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 15.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Expose new terrain tags to python                                                **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-		.def("getHealthPercent", &CvTerrainInfo::getHealthPercent, "int ()")
-		.def("getTurnDamage", &CvTerrainInfo::getTurnDamage, "int ()")
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
-
-		.def("isWater", &CvTerrainInfo::isWater, "bool ()")
-		.def("isImpassable", &CvTerrainInfo::isImpassable, "bool ()")
-		.def("isFound", &CvTerrainInfo::isFound, "bool ()")
-		.def("isFoundCoast", &CvTerrainInfo::isFoundCoast, "bool ()")
-		.def("isFoundFreshWater", &CvTerrainInfo::isFoundFreshWater, "bool ()")
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 15.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Expose new terrain tags to python                                                **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-		.def("isRequiresFlatlands", &CvTerrainInfo::isRequiresFlatlands, "bool ()")
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
-
-		// Arrays
-
-		.def("getYield", &CvTerrainInfo::getYield, "int (int i)")
-		.def("getRiverYieldChange", &CvTerrainInfo::getRiverYieldChange, "int (int i)")
-		.def("getHillsYieldChange", &CvTerrainInfo::getHillsYieldChange, "int (int i)")
-		;
+	// advc: CvYieldInfo and CvTerrainInfo interface moved to CyInfoInterface2.cpp
 
 	python::class_<CvInterfaceModeInfo, boost::noncopyable, python::bases<CvInfoBase> >("CvInterfaceModeInfo")
 
@@ -288,16 +230,6 @@ void CyInfoPythonInterface3()
 		.def("getMovieSound", &CvCorporationInfo::getMovieSound, "string ()")
 		.def("getSound", &CvCorporationInfo::getSound, "string ()")
 
-/*************************************************************************************************/
-/** TGA_INDEXATION                          03/25/08                                MRGENIE      */
-/**                                                                                              */
-/** reorganizing the Religion vector by checking the TGAIndex of the xml and placing everything  */
-/** properly                                                                                     */
-/*************************************************************************************************/
-		.def("getTGAIndex", &CvReligionInfo::getTGAIndex, "int ()")
-/*************************************************************************************************/
-/** TGA_INDEXATION                          END                                                  */
-/*************************************************************************************************/
 		// Arrays
 
 		.def("getPrereqBonus", &CvCorporationInfo::getPrereqBonus, "int (int i)")
@@ -325,7 +257,7 @@ void CyInfoPythonInterface3()
 		.def("getCommerceChange", &CvTraitInfo::getCommerceChange, "int (int i)")
 		.def("getCommerceModifier", &CvTraitInfo::getCommerceModifier, "int (int i)")
 
-		.def("isFreePromotion", &CvTraitInfo::isFreePromotion, "int (int i)")
+		.def("isFreePromotion", &CvTraitInfo::isFreePromotion, "bool (int i)")
 		;
 
 	python::class_<CvWorldInfo, boost::noncopyable, python::bases<CvInfoBase> >("CvWorldInfo")
@@ -480,7 +412,7 @@ void CyInfoPythonInterface3()
 		// Arrays
 
 		.def("getSoundtracks", &CvEraInfo::getSoundtracks, "int (int i) -")
-		.def("getCitySoundscapeSciptId", &CvEraInfo::getCitySoundscapeSciptId, "int (int i) -")
+		.def("getCitySoundscapeScriptId", &CvEraInfo::getCitySoundscapeScriptId, "int (int i) -")
 		;
 
 	python::class_<CvColorInfo, boost::noncopyable, python::bases<CvInfoBase> >("CvColorInfo")

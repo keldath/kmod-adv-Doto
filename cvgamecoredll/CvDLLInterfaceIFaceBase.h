@@ -7,9 +7,6 @@
 // abstract class containing CvInterface functions that the DLL needs
 //
 
-
-#include "LinkedList.h"
-
 class CvUnit;
 class CvCity;
 class CvPlot;
@@ -65,6 +62,11 @@ public:
 	virtual int getSymbolID(int iSymbol) = 0;
 	virtual CLLNode<IDInfo>* deleteSelectionListNode(CLLNode<IDInfo>* pNode) = 0;
 	virtual CLLNode<IDInfo>* nextSelectionListNode(CLLNode<IDInfo>* pNode) = 0;
+	// <advc.003s> Workaround for missing const qualifiers
+	inline CLLNode<IDInfo> const* nextSelectionListNode(CLLNode<IDInfo> const* pNode) const
+	{
+		return const_cast<CvDLLInterfaceIFaceBase*>(this)->nextSelectionListNode(const_cast<CLLNode<IDInfo>*>(pNode));
+	} // </advc.003s>
 	virtual int getLengthSelectionList() = 0;
 	virtual CLLNode<IDInfo>* headSelectionListNode() = 0;
 
@@ -76,13 +78,20 @@ public:
 	virtual CvCity* getHeadSelectedCity() = 0;
 	virtual bool isCitySelection() = 0;
 	virtual CLLNode<IDInfo>* nextSelectedCitiesNode(CLLNode<IDInfo>* pNode) = 0;
+	// <advc> Workaround for missing const qualifiers
+	inline CLLNode<IDInfo> const* nextSelectedCitiesNode(CLLNode<IDInfo> const* pNode) const
+	{
+		return const_cast<CvDLLInterfaceIFaceBase*>(this)->nextSelectedCitiesNode(const_cast<CLLNode<IDInfo>*>(pNode));
+	} // </advc>
 	virtual CLLNode<IDInfo>* headSelectedCitiesNode() = 0;
-
-	virtual void addMessage(PlayerTypes ePlayer, bool bForce, int iLength, CvWString szString, LPCTSTR pszSound = NULL,
+	// advc.127: Renamed from "addMessage"; protected.
+protected: virtual void addMessageExternal(PlayerTypes ePlayer, bool bForce, int iLength, CvWString szString, LPCTSTR pszSound = NULL,
 		InterfaceMessageTypes eType = MESSAGE_TYPE_INFO, LPCSTR pszIcon = NULL, ColorTypes eFlashColor = NO_COLOR,
 		int iFlashX = -1, int iFlashY = -1, bool bShowOffScreenArrows = false, bool bShowOnScreenArrows = false) = 0;
+public:
 	// K-Mod - block messages from being send to AI players. (because the game doesn't ever clear AI messages)
-	void addHumanMessage(PlayerTypes ePlayer, bool bForce, int iLength,
+	// advc.127: Renamed from "addHumanMessage"
+	void addMessage(PlayerTypes ePlayer, bool bForce, int iLength,
 			CvWString szString, LPCTSTR pszSound = NULL,
 			InterfaceMessageTypes eType = MESSAGE_TYPE_INFO,
 			LPCSTR pszIcon = NULL, ColorTypes eFlashColor = NO_COLOR,

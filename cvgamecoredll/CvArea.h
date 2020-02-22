@@ -5,19 +5,18 @@
 #ifndef CIV4_AREA_H
 #define CIV4_AREA_H
 
-
 class CvCity;
 class CvPlot;
 
+
 class CvArea
 {
-
 public:
 
-  CvArea();
-  virtual ~CvArea();
+	CvArea();
+	virtual ~CvArea();
 
-  void init(int iID, bool bWater);
+	void init(bool bWater);
 	void uninit();
 	void reset(int iID = 0, bool bWater = false, bool bConstructorCall = false);
 
@@ -57,9 +56,9 @@ public:
 
 	int getUnitsPerPlayer(PlayerTypes eIndex) const;													// Exposed to Python
 	void changeUnitsPerPlayer(PlayerTypes eIndex, int iChange);
-
-	int getAnimalsPerPlayer(PlayerTypes eIndex) const;												// Exposed to Python
-	void changeAnimalsPerPlayer(PlayerTypes eIndex, int iChange);
+	// advc: Unused; removed.
+	/*int getAnimalsPerPlayer(PlayerTypes eIndex) const;												// Exposed to Python
+	void changeAnimalsPerPlayer(PlayerTypes eIndex, int iChange);*/
 
 	int getCitiesPerPlayer(PlayerTypes eIndex,													// Exposed to Python
 			bool bCheckAdjacentCoast = false) const; // advc.030b
@@ -88,8 +87,8 @@ public:
 
 	int getBestFoundValue(PlayerTypes eIndex) const;													// Exposed to Python
 	void setBestFoundValue(PlayerTypes eIndex, int iNewValue);
-
-    //DPII < Maintenance Modifiers >
+	
+	//DPII < Maintenance Modifiers >
     int getMaintenanceModifier(PlayerTypes eIndex) const;
     void changeMaintenanceModifier(PlayerTypes eIndex, int iChange);
 
@@ -120,9 +119,9 @@ public:
 
 	AreaAITypes getAreaAIType(TeamTypes eIndex) const;												// Exposed to Python
 	void setAreaAIType(TeamTypes eIndex, AreaAITypes eNewValue);
-
-	CvCity* getTargetCity(PlayerTypes eIndex) const;													// Exposed to Python
-	void setTargetCity(PlayerTypes eIndex, CvCity* pNewValue);
+	// advc.003u: Renamed these two from get/setTargetCity and changed types to CvCityAI. Target cities are an AI thing.
+	CvCityAI* AI_getTargetCity(PlayerTypes eIndex) const;													// Exposed to Python
+	void AI_setTargetCity(PlayerTypes eIndex, CvCity* pNewValue);
 
 	int getYieldRateModifier(PlayerTypes eIndex1, YieldTypes eIndex2) const;	// Exposed to Python
 	void changeYieldRateModifier(PlayerTypes eIndex1, YieldTypes eIndex2, int iChange);
@@ -135,10 +134,11 @@ public:
 
 	int getNumBonuses(BonusTypes eBonus) const;																// Exposed to Python
 	int getNumTotalBonuses() const;																						// Exposed to Python
+	bool isAnyBonus() const { return m_aiBonuses.hasContent(); } // advc.opt
 	void changeNumBonuses(BonusTypes eBonus, int iChange);
-
-	int getNumImprovements(ImprovementTypes eImprovement) const;							// Exposed to Python
-	void changeNumImprovements(ImprovementTypes eImprovement, int iChange);
+	// advc.opt: No longer used
+	/*int getNumImprovements(ImprovementTypes eImprovement) const;							// Exposed to Python
+	void changeNumImprovements(ImprovementTypes eImprovement, int iChange);*/
 
 protected:
 
@@ -156,46 +156,41 @@ protected:
 	// <advc.030>
 	bool m_bLake;
 	int m_iRepresentativeAreaId;
-	// </advc.030>
-	int* m_aiUnitsPerPlayer;
-	int* m_aiAnimalsPerPlayer;
-	int* m_aiCitiesPerPlayer;
-	int* m_aiPopulationPerPlayer;
-	int* m_aiBuildingGoodHealth;
-	int* m_aiBuildingBadHealth;
-	int* m_aiBuildingHappiness;
-	int* m_aiTradeRoutes; // advc.310
-	int* m_aiFreeSpecialist;
-	int* m_aiPower;
-	int* m_aiBestFoundValue;
-	//DPII < Maintenance Modifiers >
+	// </advc.030>  // <advc.enum> Tbd.: Use <...,short> for all of these?
+	EnumMap<PlayerTypes,int> m_aiUnitsPerPlayer;
+	EnumMap<PlayerTypes,int> m_aiCitiesPerPlayer;
+	EnumMap<PlayerTypes,int> m_aiPopulationPerPlayer;
+	EnumMap<PlayerTypes,int> m_aiBuildingGoodHealth;
+	EnumMap<PlayerTypes,int> m_aiBuildingBadHealth;
+	EnumMap<PlayerTypes,int> m_aiBuildingHappiness;
+	EnumMap<PlayerTypes,int> m_aiTradeRoutes; // advc.310
+	EnumMap<PlayerTypes,int> m_aiFreeSpecialist;
+	EnumMap<PlayerTypes,int> m_aiPower;
+	EnumMap<PlayerTypes,int> m_aiBestFoundValue;
+	//DPII < Maintenance Modifiers 096 style>
 	int* m_aiMaintenanceModifier;
 	int* m_aiHomeAreaMaintenanceModifier;
 	int* m_aiOtherAreaMaintenanceModifier;
 	bool* m_abHomeArea;
 	//DPII < Maintenance Modifiers >
-	int* m_aiNumRevealedTiles;
-	int* m_aiCleanPowerCount;
-	int* m_aiBorderObstacleCount;
-
-	AreaAITypes* m_aeAreaAIType;
+	EnumMap<TeamTypes,int> m_aiNumRevealedTiles;
+	EnumMap<TeamTypes,int> m_aiCleanPowerCount;
+	EnumMap<TeamTypes,int> m_aiBorderObstacleCount;
+	EnumMap<TeamTypes,AreaAITypes> m_aeAreaAIType;
+	EnumMap<BonusTypes,int> m_aiBonuses;
+	//EnumMap<ImprovementTypes,int> m_aiImprovements; // advc.opt: was only used for CvMapGenerator::addGoodies
+	EnumMap2D<PlayerTypes,YieldTypes,short> m_aaiYieldRateModifier;
+	EnumMap2D<PlayerTypes,UnitAITypes,int> m_aaiNumTrainAIUnits;
+	EnumMap2D<PlayerTypes,UnitAITypes,int> m_aaiNumAIUnits; // </advc.enum>
 
 	IDInfo* m_aTargetCities;
 
-	int** m_aaiYieldRateModifier;
-	int** m_aaiNumTrainAIUnits;
-	int** m_aaiNumAIUnits;
-
-	int* m_paiNumBonuses;
-	int* m_paiNumImprovements;
-
 public:
-
 	// for serialization
 	virtual void read(FDataStreamBase* pStream);
 	virtual void write(FDataStreamBase* pStream);
-	// <advc.003f> Inlined. All exposed to Python.
-	inline int  CvArea::getID() const { return m_iID; }
+	// <advc.inl> All exposed to Python. 2x __force for CvArea::canBeEntered.
+	__forceinline int CvArea::getID() const { return m_iID; }
 	inline int  CvArea::getNumTiles() const { return m_iNumTiles; }
 	inline bool CvArea::isLake() const {
 			return m_bLake; // <advc.030> Replacing the line below
@@ -209,11 +204,11 @@ public:
 	inline int  CvArea :: getNumUnits() const { return m_iNumUnits; }
 	inline int  CvArea :: getNumCities() const { return m_iNumCities; }
 	inline int  CvArea :: getNumStartingPlots() const { return m_iNumStartingPlots; }
-	inline bool CvArea :: isWater() const { return m_bWater; }
+	__forceinline bool CvArea :: isWater() const { return m_bWater; }
 	inline int  CvArea :: getNumUnrevealedTiles(TeamTypes eIndex) const {
 		return getNumTiles() - getNumRevealedTiles(eIndex);
 	}
-	// </advc.003f>
+	// </advc.inl>
 };
 
 #endif
