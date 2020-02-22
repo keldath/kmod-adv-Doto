@@ -3792,6 +3792,12 @@ void CvTeam::changeProjectCount(ProjectTypes eIndex, int iChange)  // advc: styl
 		}
 		if (bChangeProduction)
 			kAIMember.AI_makeProductionDirty();
+		//DPII < Maintenance Modifiers >
+        kAIMember.changeMaintenanceModifier(GC.getInfo(eIndex).getGlobalMaintenanceModifier());
+        kAIMember.changeDistanceMaintenanceModifier(GC.getInfo(eIndex).getDistanceMaintenanceModifier());
+        kAIMember.changeNumCitiesMaintenanceModifier(GC.getInfo(eIndex).getNumCitiesMaintenanceModifier());
+        kAIMember.changeConnectedCityMaintenanceModifier(GC.getInfo(eIndex).getConnectedCityMaintenanceModifier());
+        //DPII < Maintenance Modifiers >
 	}
 
 	if (GC.getGame().isFinalInitialized() && !gDLL->GetWorldBuilderMode())

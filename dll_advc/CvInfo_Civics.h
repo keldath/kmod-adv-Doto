@@ -29,6 +29,10 @@ public: // The const functions are exposed to Python except those (to be) added 
 	int getStateReligionGreatPeopleRateModifier() const;
 	int getDistanceMaintenanceModifier() const;
 	int getNumCitiesMaintenanceModifier() const;
+	//DPII < Maintenance Modifiers >
+    DllExport int getHomeAreaMaintenanceModifier() const;
+    DllExport int getOtherAreaMaintenanceModifier() const;
+    //DPII < Maintenance Modifiers >
 	int getCorporationMaintenanceModifier() const;
 	int getExtraHealth() const;
 	int getExtraHappiness() const { return m_iExtraHappiness; } // K-Mod, Exposed to Python
@@ -114,6 +118,10 @@ protected:
 	int m_iStateReligionGreatPeopleRateModifier;
 	int m_iDistanceMaintenanceModifier;
 	int m_iNumCitiesMaintenanceModifier;
+	//DPII < Maintenance Modifiers >
+	int m_iHomeAreaMaintenanceModifier;
+	int m_iOtherAreaMaintenanceModifier;
+	//DPII < Maintenance Modifiers >	
 	int m_iCorporationMaintenanceModifier;
 	int m_iExtraHealth;
 	int m_iExtraHappiness; // K-Mod

@@ -607,6 +607,16 @@ public:
 	int getBuildingOnlyHealthyCount() const;
 	bool isBuildingOnlyHealthy() const;																																				// Exposed to Python
 	void changeBuildingOnlyHealthyCount(int iChange);
+//DPII < Maintenance Modifiers >
+    int getMaintenanceModifier();
+    void changeMaintenanceModifier(int iChange);
+
+    int getCoastalDistanceMaintenanceModifier();
+    void changeCoastalDistanceMaintenanceModifier(int iChange);
+
+    int getConnectedCityMaintenanceModifier();
+    void changeConnectedCityMaintenanceModifier(int iChange);
+//DPII < Maintenance Modifiers >
 
 	int getDistanceMaintenanceModifier() const;																																// Exposed to Python
 	void changeDistanceMaintenanceModifier(int iChange);
@@ -1312,6 +1322,11 @@ protected:  // <advc.210>
 	int m_iUnhealthyPopulationModifier; // K-Mod
 	int m_iExpInBorderModifier;
 	int m_iBuildingOnlyHealthyCount;
+	//DPII < Maintenance Modifiers >
+	int m_iMaintenanceModifier;
+	int m_iCoastalDistanceMaintenanceModifier;
+	int m_iConnectedCityMaintenanceModifier;
+	//DPII < Maintenance Modifiers >
 	int m_iDistanceMaintenanceModifier;
 	int m_iNumCitiesMaintenanceModifier;
 	int m_iCorporationMaintenanceModifier;

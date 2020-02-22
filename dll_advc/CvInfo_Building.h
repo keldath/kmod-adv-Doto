@@ -202,6 +202,15 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 	int getGreatPeopleRateChange() const { return m_iGreatPeopleRateChange; }
 	int getConquestProbability() const { return m_iConquestProbability; }
 	int getMaintenanceModifier() const { return m_iMaintenanceModifier; }
+	//DPII < Maintenance Modifiers >
+	int getGlobalMaintenanceModifier() const;
+    int getAreaMaintenanceModifier() const;
+    int getOtherAreaMaintenanceModifier() const;
+	int getDistanceMaintenanceModifier() const;
+    int getNumCitiesMaintenanceModifier() const;
+    int getCoastalDistanceMaintenanceModifier() const;
+    int getConnectedCityMaintenanceModifier() const;
+	//DPII < Maintenance Modifiers >
 	int getWarWearinessModifier() const { return m_iWarWearinessModifier; }
 	int getGlobalWarWearinessModifier() const { return m_iGlobalWarWearinessModifier; }
 	int getEnemyWarWearinessModifier() const { return m_iEnemyWarWearinessModifier; }
@@ -455,6 +464,15 @@ protected:
 	int m_iGreatPeopleRateChange;
 	int m_iConquestProbability;
 	int m_iMaintenanceModifier;
+	//DPII < Maintenance Modifier >
+	int m_iGlobalMaintenanceModifier;
+	int m_iAreaMaintenanceModifier;
+	int m_iOtherAreaMaintenanceModifier;
+	int m_iDistanceMaintenanceModifier;
+	int m_iNumCitiesMaintenanceModifier;
+	int m_iCoastalDistanceMaintenanceModifier;
+	int m_iConnectedCityMaintenanceModifier;
+	//DPII < Maintenance Modifier >
 	int m_iWarWearinessModifier;
 	int m_iGlobalWarWearinessModifier;
 	int m_iEnemyWarWearinessModifier;
@@ -724,6 +742,12 @@ public: // All const functions are exposed to Python. advc.inl: Most of them inl
 	{
 		return m_iTechShare;
 	}
+	//DPII < Maintenance Modifier >
+    DllExport int getGlobalMaintenanceModifier() const;
+    DllExport int getDistanceMaintenanceModifier() const;
+    DllExport int getNumCitiesMaintenanceModifier() const;
+    DllExport int getConnectedCityMaintenanceModifier() const;
+    //DPII < Maintenance Modifier >
 	int getEveryoneSpecialUnit() const
 	{
 		return m_iEveryoneSpecialUnit;
@@ -774,6 +798,12 @@ protected:
 	int m_iProductionCost;
 	int m_iNukeInterception;
 	int m_iTechShare;
+	//DPII < Maintenance Modifiers >
+	int m_iGlobalMaintenanceModifier;
+	int m_iDistanceMaintenanceModifier;
+	int m_iNumCitiesMaintenanceModifier;
+	int m_iConnectedCityMaintenanceModifier;
+	//DPII < Maintenance Modifiers >
 	int m_iEveryoneSpecialUnit;
 	int m_iEveryoneSpecialBuilding;
 	int m_iVictoryDelayPercent;

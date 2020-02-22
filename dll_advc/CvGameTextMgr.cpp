@@ -8031,6 +8031,32 @@ void CvGameTextMgr::parseCivicInfo(CvWStringBuffer &szHelpText, CivicTypes eCivi
 			szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_NO_MAINT_CORPORATION_MOD", ci.getCorporationMaintenanceModifier()));
 		}
 	}
+//DPII < Maintenance Modifiers >
+	if (ci.getHomeAreaMaintenanceModifier() != 0)
+	{
+		szHelpText.append(NEWLINE);
+	    if (ci.getHomeAreaMaintenanceModifier() <= -100)
+	    {
+	        szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_HOME_AREA_MAINT"));
+	    }
+	    else
+	    {
+	        szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_HOME_AREA_MAINT_MOD", GC.getCivicInfo(eCivic).getHomeAreaMaintenanceModifier()));
+	    }
+	}
+	if (ci.getOtherAreaMaintenanceModifier() != 0)
+	{
+		szHelpText.append(NEWLINE);
+	    if (ci.getOtherAreaMaintenanceModifier() <= -100)
+	    {
+	        szHelpText.append(gDLL->getText("TXT_KEY_OVERSEAS_CITY_MAINT"));
+	    }
+	    else
+	    {
+	        szHelpText.append(gDLL->getText("TXT_KEY_OVERSEAS_CITY_MAINT_MOD", GC.getCivicInfo(eCivic).getOtherAreaMaintenanceModifier()));
+	    }
+	}
+//DPII < Maintenance Modifiers >
 
 	//	Extra Health
 	if (ci.getExtraHealth() != 0)
@@ -8690,6 +8716,11 @@ void CvGameTextMgr::setTechTradeHelp(CvWStringBuffer &szBuffer, TechTypes eTech,
 
 	//	Increases worker build rate...
 	buildWorkerRateString(szBuffer, eTech, true, bPlayerContext);
+
+	//DPII < Maintenance Modifiers >
+    //  Decreases maintenance costs...
+    buildMaintenanceModifiersString(szBuffer, eTech, true, bPlayerContext);
+    //DPII < Maintenance Modifiers >
 
 	//	Trade Routed per city change...
 	buildTradeRouteString(szBuffer, eTech, true, bPlayerContext);
@@ -11193,7 +11224,105 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer, BuildingTyp
 		szBuffer.append(NEWLINE);
 		szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_MAINT_MOD", kBuilding.getMaintenanceModifier()));
 	}
+//DPII < Maintenance Modifiers >
+    if (kBuilding.getGlobalMaintenanceModifier() != 0)
+    {
+        if (kBuilding.getGlobalMaintenanceModifier() <= -100)
+        {
+			szBuffer.append(NEWLINE);
+           szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_GLOBAL_MAINT"));
+        }
+        else
+        {
+			szBuffer.append(NEWLINE);
+           szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_GLOBAL_MAINT_MOD", kBuilding.getGlobalMaintenanceModifier()));
+        }
+    }
 
+	if (kBuilding.getDistanceMaintenanceModifier() != 0)
+	{
+		if (kBuilding.getDistanceMaintenanceModifier() <= -100)
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_DISTANCE_MAINT"));
+		}
+		else
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_DISTANCE_MAINT_MOD", kBuilding.getDistanceMaintenanceModifier()));
+		}
+	}
+
+	if (kBuilding.getNumCitiesMaintenanceModifier() != 0)
+	{
+		if (kBuilding.getNumCitiesMaintenanceModifier() <= -100)
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_NO_MAINT_NUM_CITIES"));
+		}
+		else
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_NO_MAINT_NUM_CITIES_MOD", kBuilding.getNumCitiesMaintenanceModifier()));
+		}
+	}
+
+	if (kBuilding.getCoastalDistanceMaintenanceModifier() != 0)
+	{
+	    if (kBuilding.getCoastalDistanceMaintenanceModifier() <= -100)
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_COASTAL_DISTANCE_MAINT"));
+	    }
+	    else
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_COASTAL_DISTANCE_MAINT_MOD", kBuilding.getCoastalDistanceMaintenanceModifier()));
+	    }
+	}
+
+	if (kBuilding.getConnectedCityMaintenanceModifier() != 0)
+	{
+	    if (kBuilding.getConnectedCityMaintenanceModifier() <= -100)
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_CONNECTED_CITY_MAINT"));
+	    }
+	    else
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_CONNECTED_CITY_MAINT_MOD", kBuilding.getConnectedCityMaintenanceModifier()));
+	    }
+	}
+
+	if (kBuilding.getAreaMaintenanceModifier() != 0)
+	{
+	    if (kBuilding.getAreaMaintenanceModifier() <= -100)
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_CONTINENTAL_CITY_MAINT"));
+	    }
+	    else
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_CONTINENTAL_CITY_MAINT_MOD", kBuilding.getAreaMaintenanceModifier()));
+	    }
+	}
+
+	if (kBuilding.getOtherAreaMaintenanceModifier() != 0)
+	{
+	    if (kBuilding.getOtherAreaMaintenanceModifier() <= -100)
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_OVERSEAS_CITY_MAINT"));
+	    }
+	    else
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_OVERSEAS_CITY_MAINT_MOD", kBuilding.getOtherAreaMaintenanceModifier()));
+	    }
+	}
+    //DPII < Maintenance Modifiers >
 	if (kBuilding.getHurryAngerModifier() != 0)
 	{
 		szBuffer.append(NEWLINE);
@@ -12528,6 +12657,25 @@ void CvGameTextMgr::setProjectHelp(CvWStringBuffer &szBuffer, ProjectTypes eProj
 		szBuffer.append(NEWLINE);
 		szBuffer.append(gDLL->getText("TXT_KEY_PROJECT_TECH_SHARE", kProject.getTechShare()));
 	}
+//DPII < Maintenance Modifiers >
+	if (kProject.getGlobalMaintenanceModifier() != 0)
+	{
+		szBuffer.append(NEWLINE);
+		szBuffer.append(gDLL->getText("TXT_KEY_PROJECT_GLOBAL_MAINT_MOD", kProject.getGlobalMaintenanceModifier()));
+	}
+
+	if (kProject.getDistanceMaintenanceModifier() != 0)
+	{
+		szBuffer.append(NEWLINE);
+		szBuffer.append(gDLL->getText("TXT_KEY_PROJECT_DISTANCE_MAINT_MOD", kProject.getDistanceMaintenanceModifier()));
+	}
+
+	if (kProject.getNumCitiesMaintenanceModifier() != 0)
+	{
+		szBuffer.append(NEWLINE);
+		szBuffer.append(gDLL->getText("TXT_KEY_PROJECT_NUM_CITIES_MAINT_MOD", kProject.getNumCitiesMaintenanceModifier()));
+	}
+//DPII < Maintenance Modifiers >
 
 	if (kProject.isAllowsNukes())
 	{
@@ -21522,3 +21670,64 @@ void CvGameTextMgr::setProductionSpeedHelp(CvWStringBuffer& szBuffer,
 		}
 	}
 } // </advc.004w>
+//DPII < Maintenance Modifiers >
+void CvGameTextMgr::buildMaintenanceModifiersString(CvWStringBuffer &szBuffer, TechTypes eTech, bool bList, bool bPlayerContext)
+{
+    if (GC.getTechInfo(eTech).getMaintenanceModifier() != 0)
+    {
+        if (bList)
+        {
+            szBuffer.append(NEWLINE);
+        }
+        szBuffer.append(gDLL->getText("TXT_KEY_TECH_MAINT_MOD", GC.getTechInfo(eTech).getMaintenanceModifier()));
+    }
+
+    if (GC.getTechInfo(eTech).getDistanceMaintenanceModifier() != 0)
+    {
+        if (bList)
+        {
+            szBuffer.append(NEWLINE);
+        }
+        if (GC.getTechInfo(eTech).getDistanceMaintenanceModifier() <= -100)
+        {
+            szBuffer.append(gDLL->getText("TXT_KEY_TECH_DISTANCE_MAINT"));
+        }
+        else
+        {
+            szBuffer.append(gDLL->getText("TXT_KEY_TECH_DISTANCE_MAINT_MOD", GC.getTechInfo(eTech).getDistanceMaintenanceModifier()));
+        }
+    }
+
+    if (GC.getTechInfo(eTech).getNumCitiesMaintenanceModifier() != 0)
+    {
+        if (bList)
+        {
+            szBuffer.append(NEWLINE);
+        }
+        if (GC.getTechInfo(eTech).getNumCitiesMaintenanceModifier() <= -100)
+        {
+            szBuffer.append(gDLL->getText("TXT_KEY_TECH_NUM_CITIES_MAINT"));
+        }
+        else
+        {
+            szBuffer.append(gDLL->getText("TXT_KEY_TECH_NUM_CITIES_MAINT_MOD", GC.getTechInfo(eTech).getNumCitiesMaintenanceModifier()));
+        }
+    }
+
+	if (GC.getTechInfo(eTech).getCoastalDistanceMaintenanceModifier() != 0)
+	{
+	    if (bList)
+	    {
+	        szBuffer.append(NEWLINE);
+	    }
+	    if (GC.getTechInfo(eTech).getCoastalDistanceMaintenanceModifier() <= -100)
+	    {
+	        szBuffer.append(gDLL->getText("TXT_KEY_COASTAL_DISTANCE_MAINT"));
+	    }
+	    else
+	    {
+	        szBuffer.append(gDLL->getText("TXT_KEY_COASTAL_DISTANCE_MAINT_MOD", GC.getTechInfo(eTech).getCoastalDistanceMaintenanceModifier()));
+	    }
+	}
+}
+//DPII < Maintenance Modifiers >

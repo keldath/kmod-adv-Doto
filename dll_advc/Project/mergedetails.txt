@@ -1,0 +1,37 @@
+cvArea.cpp:
+DPII < Maintenance Modifiers >
+
+cvArea.h:
+DPII < Maintenance Modifiers >
+
+cvCity.cpp:
+DPII < Maintenance Modifiers >
+
+cvTextGameMgr.cpp:
+DPII < Maintenance Modifiers >
+
+cvTextGameMgr.h:
+DPII < Maintenance Modifiers >
+
+cvinfos:
+
+cvinfos_Building.cpp-includes projects also:
+DPII < Maintenance Modifiers > --> check function placement?
+cvinfos_tech.cpp:
+DPII < Maintenance Modifiers > --> check function placement?
+cvinfos_civic.cpp:
+DPII < Maintenance Modifiers > --> check function placement?
+cvinfos_Building.h-includes projects also::
+DPII < Maintenance Modifiers > --> check function placement?
+cvinfos_tech.h:
+DPII < Maintenance Modifiers > --> check function placement?
+cvinfos_civic.h:
+DPII < Maintenance Modifiers > --> check function placement?
+
+cvplayer.cpp:
+DPII < Maintenance Modifiers > --> check function placement?
+cvplayer.h:
+DPII < Maintenance Modifiers > --> check function placement?
+
+cvteam.cpp:
+DPII < Maintenance Modifiers > --> check function placement?

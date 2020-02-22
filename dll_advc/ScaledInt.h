@@ -430,6 +430,7 @@ public:
 	__forceinline ScaledInt& operator/=(ScaledInt rOther)
 	{
 		m_i = toScale(m_i, rOther.m_i, SCALE);
+		return *this;
 	}
 
 	__forceinline ScaledInt& operator*=(ScaledInt rOther)

@@ -79,6 +79,15 @@ m_iGreatPeopleUnitClass(NO_UNITCLASS),
 m_iGreatPeopleRateChange(0),
 m_iConquestProbability(0),
 m_iMaintenanceModifier(0),
+//DPII < Maintenance Modifier >
+m_iGlobalMaintenanceModifier(0),
+m_iAreaMaintenanceModifier(0),
+m_iOtherAreaMaintenanceModifier(0),
+m_iDistanceMaintenanceModifier(0),
+m_iNumCitiesMaintenanceModifier(0),
+m_iCoastalDistanceMaintenanceModifier(0),
+m_iConnectedCityMaintenanceModifier(0),
+//DPII < Maintenance Modifier >
 m_iWarWearinessModifier(0),
 m_iGlobalWarWearinessModifier(0),
 m_iEnemyWarWearinessModifier(0),
@@ -252,6 +261,44 @@ int CvBuildingInfo::getAreaTradeRoutes() const
 		return 0;
 	return m_iAreaTradeRoutes;
 } // </advc.310>
+
+//DPII < Maintenance Modifier >
+//due to advc changes - i dont know its this is the place- keldath
+int CvBuildingInfo::getGlobalMaintenanceModifier() const
+{
+    return m_iGlobalMaintenanceModifier;
+}
+
+int CvBuildingInfo::getAreaMaintenanceModifier() const
+{
+    return m_iAreaMaintenanceModifier;
+}
+
+int CvBuildingInfo::getOtherAreaMaintenanceModifier() const
+{
+    return m_iOtherAreaMaintenanceModifier;
+}
+
+int CvBuildingInfo::getDistanceMaintenanceModifier() const
+{
+    return m_iDistanceMaintenanceModifier;
+}
+
+int CvBuildingInfo::getNumCitiesMaintenanceModifier() const
+{
+    return m_iNumCitiesMaintenanceModifier;
+}
+
+int CvBuildingInfo::getCoastalDistanceMaintenanceModifier() const
+{
+    return m_iCoastalDistanceMaintenanceModifier;
+}
+
+int CvBuildingInfo::getConnectedCityMaintenanceModifier() const
+{
+    return m_iConnectedCityMaintenanceModifier;
+}
+//DPII < Maintenance Modifier >
 
 void CvBuildingInfo::setMissionType(MissionTypes eNewType)
 {
@@ -687,6 +734,15 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iGreatPeopleRateChange);
 	stream->Read(&m_iConquestProbability);
 	stream->Read(&m_iMaintenanceModifier);
+	//DPII < Maintenance Modifier >
+	stream->Read(&m_iGlobalMaintenanceModifier);
+	stream->Read(&m_iAreaMaintenanceModifier);
+	stream->Read(&m_iOtherAreaMaintenanceModifier);//keldath fix?
+	stream->Read(&m_iDistanceMaintenanceModifier);
+	stream->Read(&m_iNumCitiesMaintenanceModifier);
+	stream->Read(&m_iDistanceMaintenanceModifier);
+	stream->Read(&m_iConnectedCityMaintenanceModifier);
+	//DPII < Maintenance Modifier >
 	stream->Read(&m_iWarWearinessModifier);
 	stream->Read(&m_iGlobalWarWearinessModifier);
 	stream->Read(&m_iEnemyWarWearinessModifier);
@@ -965,6 +1021,15 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iGreatPeopleRateChange);
 	stream->Write(m_iConquestProbability);
 	stream->Write(m_iMaintenanceModifier);
+	//DPII < Maintenance Modifier >
+	stream->Write(m_iGlobalMaintenanceModifier);
+	stream->Write(m_iAreaMaintenanceModifier);
+	stream->Write(m_iOtherAreaMaintenanceModifier);
+	stream->Write(m_iDistanceMaintenanceModifier);
+	stream->Write(m_iNumCitiesMaintenanceModifier);
+	stream->Write(m_iCoastalDistanceMaintenanceModifier);
+	stream->Write(m_iConnectedCityMaintenanceModifier);
+	//DPII < Maintenance Modifier >
 	stream->Write(m_iWarWearinessModifier);
 	stream->Write(m_iGlobalWarWearinessModifier);
 	stream->Write(m_iEnemyWarWearinessModifier);
@@ -1257,6 +1322,15 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iAreaFreeSpecialist, "iAreaFreeSpecialist");
 	pXML->GetChildXmlValByName(&m_iGlobalFreeSpecialist, "iGlobalFreeSpecialist");
 	pXML->GetChildXmlValByName(&m_iMaintenanceModifier, "iMaintenanceModifier");
+	//DPII < Maintenance Modifier >
+    pXML->GetChildXmlValByName(&m_iGlobalMaintenanceModifier, "iGlobalMaintenanceModifier", 0);
+    pXML->GetChildXmlValByName(&m_iAreaMaintenanceModifier, "iAreaMaintenanceModifier", 0);
+    pXML->GetChildXmlValByName(&m_iOtherAreaMaintenanceModifier, "iOtherAreaMaintenanceModifier", 0);
+	pXML->GetChildXmlValByName(&m_iDistanceMaintenanceModifier, "iDistanceMaintenanceModifier", 0);
+	pXML->GetChildXmlValByName(&m_iNumCitiesMaintenanceModifier, "iNumCitiesMaintenanceModifier", 0);
+	pXML->GetChildXmlValByName(&m_iCoastalDistanceMaintenanceModifier, "iCoastalDistanceMaintenanceModifier", 0);
+	pXML->GetChildXmlValByName(&m_iConnectedCityMaintenanceModifier, "iConnectedCityMaintenanceModifier", 0);
+	//DPII < Maintenance Modifier >
 	pXML->GetChildXmlValByName(&m_iWarWearinessModifier, "iWarWearinessModifier");
 	pXML->GetChildXmlValByName(&m_iGlobalWarWearinessModifier, "iGlobalWarWearinessModifier");
 	pXML->GetChildXmlValByName(&m_iEnemyWarWearinessModifier, "iEnemyWarWearinessModifier");
@@ -1949,6 +2023,12 @@ m_iMaxTeamInstances(0),
 m_iProductionCost(0),
 m_iNukeInterception(0),
 m_iTechShare(0),
+//DPII < Maintenance Modifiers >
+m_iGlobalMaintenanceModifier(0),
+m_iDistanceMaintenanceModifier(0),
+m_iNumCitiesMaintenanceModifier(0),
+m_iConnectedCityMaintenanceModifier(0),
+//DPII < Maintenance Modifiers >
 m_iEveryoneSpecialUnit(NO_SPECIALUNIT),
 m_iEveryoneSpecialBuilding(NO_SPECIALBUILDING),
 m_iVictoryDelayPercent(0),
@@ -1999,7 +2079,6 @@ int CvProjectInfo::getBonusProductionModifier(int i) const
 	FAssertBounds(0, GC.getNumBonusInfos(), i);
 	return m_piBonusProductionModifier ? m_piBonusProductionModifier[i] : 0; // advc.003t
 }
-
 int CvProjectInfo::getVictoryThreshold(int i) const
 {
 	FAssertBounds(0, GC.getNumVictoryInfos(), i);
@@ -2022,6 +2101,28 @@ int CvProjectInfo::getProjectsNeeded(int i) const
 	FAssertBounds(0, GC.getNumProjectInfos(), i);
 	return m_piProjectsNeeded ? m_piProjectsNeeded[i] : 0; // advc.003t: was false
 }
+//DPII < Maintenance Modifiers >
+int CvProjectInfo::getGlobalMaintenanceModifier() const
+{
+    return m_iGlobalMaintenanceModifier;
+}
+
+int CvProjectInfo::getDistanceMaintenanceModifier() const
+{
+    return m_iDistanceMaintenanceModifier;
+}
+
+int CvProjectInfo::getNumCitiesMaintenanceModifier() const
+{
+    return m_iNumCitiesMaintenanceModifier;
+
+}
+
+int CvProjectInfo::getConnectedCityMaintenanceModifier() const
+{
+    return m_iConnectedCityMaintenanceModifier;
+}
+//DPII < Maintenance Modifiers >
 
 bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 {
@@ -2041,6 +2142,12 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iProductionCost, "iCost");
 	pXML->GetChildXmlValByName(&m_iNukeInterception, "iNukeInterception");
 	pXML->GetChildXmlValByName(&m_iTechShare, "iTechShare");
+	//DPII < Maintenance Modifiers >
+	pXML->GetChildXmlValByName(&m_iGlobalMaintenanceModifier, "iGlobalMaintenanceModifier", 0);
+	pXML->GetChildXmlValByName(&m_iDistanceMaintenanceModifier, "iDistanceMaintenanceModifier", 0);
+	pXML->GetChildXmlValByName(&m_iNumCitiesMaintenanceModifier, "iNumCitiesMaintenanceModifier", 0);
+	pXML->GetChildXmlValByName(&m_iConnectedCityMaintenanceModifier, "iConnectedCityMaintenanceModifier", 0);
+	//DPII < Maintenance Modifiers >
 
 	pXML->GetChildXmlValByName(szTextVal, "EveryoneSpecialUnit");
 	m_iEveryoneSpecialUnit = pXML->FindInInfoClass(szTextVal);

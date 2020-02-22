@@ -17,6 +17,12 @@ m_iEra(NO_ERA),
 m_iTradeRoutes(0),
 m_iFeatureProductionModifier(0),
 m_iWorkerSpeedModifier(0),
+//DPII < Maintenance Modifier >
+m_iMaintenanceModifier(0),
+m_iDistanceMaintenanceModifier(0),
+m_iNumCitiesMaintenanceModifier(0),
+m_iCoastalDistanceMaintenanceModifier(0),
+//DPII < Maintenance Modifier >
 m_iFirstFreeUnitClass(NO_UNITCLASS),
 m_iHealth(0),
 m_iHappiness(0),
@@ -93,6 +99,28 @@ void CvTechInfo::setQuoteKey(const TCHAR* szVal)
 {
 	m_szQuoteKey = szVal;
 }
+//DPII < Maintenance Modifier >
+//due to advc changes - i dont know its this is the place- keldath
+int CvTechInfo::getMaintenanceModifier() const
+{
+    return m_iMaintenanceModifier;
+}
+
+int CvTechInfo::getDistanceMaintenanceModifier() const
+{
+    return m_iDistanceMaintenanceModifier;
+}
+
+int CvTechInfo::getNumCitiesMaintenanceModifier() const
+{
+    return m_iNumCitiesMaintenanceModifier;
+}
+
+int CvTechInfo::getCoastalDistanceMaintenanceModifier() const
+{
+    return m_iCoastalDistanceMaintenanceModifier;
+}
+//DPII < Maintenance Modifier >
 
 const TCHAR* CvTechInfo::getSound() const
 {
@@ -175,6 +203,12 @@ void CvTechInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iFirstFreeUnitClass);
 	stream->Read(&m_iFeatureProductionModifier);
 	stream->Read(&m_iWorkerSpeedModifier);
+	//DPII < Maintenance Modifier >
+	stream->Read(&m_iMaintenanceModifier);
+	stream->Read(&m_iDistanceMaintenanceModifier);
+	stream->Read(&m_iNumCitiesMaintenanceModifier);
+	stream->Read(&m_iCoastalDistanceMaintenanceModifier);
+	//DPII < Maintenance Modifier >
 	stream->Read(&m_iTradeRoutes);
 	stream->Read(&m_iHealth);
 	stream->Read(&m_iHappiness);
@@ -248,6 +282,12 @@ void CvTechInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iFirstFreeUnitClass);
 	stream->Write(m_iFeatureProductionModifier);
 	stream->Write(m_iWorkerSpeedModifier);
+	//DPII < Maintenance Modifier >
+	stream->Write(m_iMaintenanceModifier);
+	stream->Write(m_iDistanceMaintenanceModifier);
+	stream->Write(m_iNumCitiesMaintenanceModifier);
+	stream->Write(m_iCoastalDistanceMaintenanceModifier);
+	//DPII < Maintenance Modifier >
 	stream->Write(m_iTradeRoutes);
 	stream->Write(m_iHealth);
 	stream->Write(m_iHappiness);
@@ -310,6 +350,12 @@ bool CvTechInfo::read(CvXMLLoadUtility* pXML)
 
 	pXML->GetChildXmlValByName(&m_iFeatureProductionModifier, "iFeatureProductionModifier");
 	pXML->GetChildXmlValByName(&m_iWorkerSpeedModifier, "iWorkerSpeedModifier");
+	//DPII < Maintenance Modifiers >
+	pXML->GetChildXmlValByName(&m_iMaintenanceModifier, "iMaintenanceModifier", 0);
+	pXML->GetChildXmlValByName(&m_iDistanceMaintenanceModifier, "iDistanceMaintenanceModifier", 0);
+	pXML->GetChildXmlValByName(&m_iNumCitiesMaintenanceModifier, "iNumCitiesMaintenanceModifier", 0);
+	pXML->GetChildXmlValByName(&m_iCoastalDistanceMaintenanceModifier, "iCoastalDistanceMaintenanceModifier", 0);
+	//DPII < Maintenance Modifiers >
 	pXML->GetChildXmlValByName(&m_iTradeRoutes, "iTradeRoutes");
 	pXML->GetChildXmlValByName(&m_iHealth, "iHealth");
 	pXML->GetChildXmlValByName(&m_iHappiness, "iHappiness");

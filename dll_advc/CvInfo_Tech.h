@@ -22,6 +22,12 @@ public: // advc: All the const functions are exposed to Python except those adde
 	inline int getTradeRoutes() const { return m_iTradeRoutes; }
 	inline int getFeatureProductionModifier() const { return m_iFeatureProductionModifier; }
 	inline int getWorkerSpeedModifier() const { return m_iWorkerSpeedModifier; }
+	//DPII < Maintenance Modifier >
+    DllExport int getMaintenanceModifier() const;
+    DllExport int getDistanceMaintenanceModifier() const;
+    DllExport int getNumCitiesMaintenanceModifier() const;
+    DllExport int getCoastalDistanceMaintenanceModifier() const;
+    //DPII < Maintenance Modifier >
 	inline int getFirstFreeUnitClass() const { return m_iFirstFreeUnitClass; }
 	inline int getHealth() const { return m_iHealth; }
 	inline int getHappiness() const { return m_iHappiness; }
@@ -93,6 +99,12 @@ protected:
 	int m_iTradeRoutes;
 	int m_iFeatureProductionModifier;
 	int m_iWorkerSpeedModifier;
+	//DPII < Maintenance Modifier >
+	int m_iMaintenanceModifier;
+	int m_iDistanceMaintenanceModifier;
+	int m_iNumCitiesMaintenanceModifier;
+	int m_iCoastalDistanceMaintenanceModifier;
+	//DPII < Maintenance Modifier >
 	int m_iFirstFreeUnitClass;
 	int m_iHealth;
 	int m_iHappiness;

@@ -4729,11 +4729,23 @@ void CvCity::updateMaintenance()
 
 	int iOldMaintenance = getMaintenanceTimes100();
 	int iNewMaintenance = 0;
+	//DPII < Maintenance Modifiers >
+	int iModifier;
+	//DPII < Maintenance Modifiers >
 
 	if (!isDisorder() && !isWeLoveTheKingDay() && getPopulation() > 0)
 	{
-		iNewMaintenance = (calculateBaseMaintenanceTimes100() *
-				std::max(0, getMaintenanceModifier() + 100)) / 100;
+		//DPII < Maintenance Modifiers >
+		iModifier = getMaintenanceModifier() + GET_PLAYER(getOwner()).getMaintenanceModifier() + area()->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
+
+        if (isConnectedToCapital() && !(isCapital()))
+        {
+            iModifier += GET_PLAYER(getOwner()).getConnectedCityMaintenanceModifier();
+        }
+
+		iNewMaintenance = (calculateBaseMaintenanceTimes100() * std::max(0, (getMaintenanceModifier() + 100))) / 100;
+		//DPII < Maintenance Modifiers >
+
 	}
 
 	if (iOldMaintenance != iNewMaintenance)
@@ -12764,7 +12776,15 @@ int CvCity::calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
 
 		iTempMaintenance *= std::max(0, (GET_PLAYER(eOwner).getDistanceMaintenanceModifier() + 100));
 		iTempMaintenance /= 100;
-
+		//DPII < Maintenance Modifiers >
+		if(kCityPlot.isCoastalLand(GC.getDefineINT(CvGlobals::MIN_WATER_SIZE_FOR_OCEAN)))
+		//if (isCoastal(GC.getMIN_WATER_SIZE_FOR_OCEAN()))
+		{
+			iTempMaintenance *= std::max(0, (GET_PLAYER(eOwner).getCoastalDistanceMaintenanceModifier() + 100));
+            iTempMaintenance /= 100;
+		}
+		//DPII < Maintenance Modifiers >
+		
 		iTempMaintenance *= GC.getInfo(GC.getMap().getWorldSize()).getDistanceMaintenancePercent();
 		iTempMaintenance /= 100;
 

@@ -171,6 +171,9 @@ public:
 	void buildFreeUnitString(CvWStringBuffer& szBuffer, TechTypes eTech, bool bList = false, bool bPlayerContext = false);
 	void buildFeatureProductionString(CvWStringBuffer& szBuffer, TechTypes eTech, bool bList = false, bool bPlayerContext = false);
 	void buildWorkerRateString(CvWStringBuffer& szBuffer, TechTypes eTech, bool bList = false, bool bPlayerContext = false);
+	//DPII < Maintenance Modifier >
+	void buildMaintenanceModifiersString(CvWStringBuffer& szBuffer, TechTypes eTech, bool bList = false, bool bPlayerContext = false );
+    //DPII < Maintenance Modifier >
 	void buildTradeRouteString(CvWStringBuffer& szBuffer, TechTypes eTech, bool bList = false, bool bPlayerContext = false);
 	void buildHealthRateString(CvWStringBuffer& szBuffer, TechTypes eTech, bool bList = false, bool bPlayerContext = false);
 	void buildHappinessRateString( CvWStringBuffer& szBuffer, TechTypes eTech, bool bList = false, bool bPlayerContext = false);

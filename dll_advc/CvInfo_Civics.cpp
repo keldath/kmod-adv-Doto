@@ -17,6 +17,10 @@ m_iDomesticGreatGeneralRateModifier(0),
 m_iStateReligionGreatPeopleRateModifier(0),
 m_iDistanceMaintenanceModifier(0),
 m_iNumCitiesMaintenanceModifier(0),
+//DPII < Maintenance Modifiers >
+m_iHomeAreaMaintenanceModifier(0),
+m_iOtherAreaMaintenanceModifier(0),
+//DPII < Maintenance Modifiers >
 m_iCorporationMaintenanceModifier(0),
 m_iExtraHealth(0),
 m_iExtraHappiness(0), // K-Mod
@@ -135,6 +139,18 @@ int CvCivicInfo::getDistanceMaintenanceModifier() const
 {
 	return m_iDistanceMaintenanceModifier;
 }
+//DPII < Maintenance Modifiers >
+//due to advc changes - i dont know its this is the place- keldath
+int CvCivicInfo::getHomeAreaMaintenanceModifier() const
+{
+    return m_iHomeAreaMaintenanceModifier;
+}
+
+int CvCivicInfo::getOtherAreaMaintenanceModifier() const
+{
+    return m_iOtherAreaMaintenanceModifier;
+}
+//DPII < Maintenance Modifiers >
 
 int CvCivicInfo::getNumCitiesMaintenanceModifier() const
 {
@@ -455,6 +471,10 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iStateReligionGreatPeopleRateModifier);
 	stream->Read(&m_iDistanceMaintenanceModifier);
 	stream->Read(&m_iNumCitiesMaintenanceModifier);
+	//DPII < Maintenance Modifiers >
+	stream->Read(&m_iHomeAreaMaintenanceModifier);
+	stream->Read(&m_iOtherAreaMaintenanceModifier);
+	//DPII < Maintenance Modifiers >				
 	stream->Read(&m_iCorporationMaintenanceModifier);
 	stream->Read(&m_iExtraHealth);
 	if (uiFlag >= 2)
@@ -568,6 +588,10 @@ void CvCivicInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iStateReligionGreatPeopleRateModifier);
 	stream->Write(m_iDistanceMaintenanceModifier);
 	stream->Write(m_iNumCitiesMaintenanceModifier);
+	//DPII < Maintenance Modifiers >
+	stream->Write(m_iHomeAreaMaintenanceModifier);
+	stream->Write(m_iOtherAreaMaintenanceModifier);
+	//DPII < Maintenance Modifiers >					
 	stream->Write(m_iCorporationMaintenanceModifier);
 	stream->Write(m_iExtraHealth);
 	stream->Write(m_iExtraHappiness); // K-Mod, uiFlag >= 2

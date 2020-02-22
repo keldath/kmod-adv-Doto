@@ -504,6 +504,11 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_iUnhealthyPopulationModifier = 0; // K-Mod
 	m_iExpInBorderModifier = 0;
 	m_iBuildingOnlyHealthyCount = 0;
+	//DPII < Maintenance Modifier >
+	m_iMaintenanceModifier = 0;
+	m_iCoastalDistanceMaintenanceModifier = 0;
+	m_iConnectedCityMaintenanceModifier = 0;
+	//DPII < Maintenance Modifier >
 	m_iDistanceMaintenanceModifier = 0;
 	m_iNumCitiesMaintenanceModifier = 0;
 	m_iCorporationMaintenanceModifier = 0;
@@ -5834,6 +5839,14 @@ void CvPlayer::removeBuildingClass(BuildingClassTypes eBuildingClass)
 // courtesy of the Gourd Bros...
 void CvPlayer::processBuilding(BuildingTypes eBuilding, int iChange, CvArea& kArea)
 {
+	//DPII < Maintenance Modifiers >
+    //CvArea* pArea = isArea(kArea)
+    CvArea* pLoopArea = NULL;
+	int iLoop = 0;
+
+	//FAssert(iChange == 1 || iChange == -1);
+
+    //DPII < Maintenance Modifiers >
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding); // advc
 
 	if (kBuilding.getFreeBuildingClass() != NO_BUILDINGCLASS)
@@ -5870,6 +5883,13 @@ void CvPlayer::processBuilding(BuildingTypes eBuilding, int iChange, CvArea& kAr
 			doChangeCivicsPopup(eNewCivic); // </advc.004x>
 	}
 
+	//DPII < Maintenance Modifiers >
+    changeMaintenanceModifier(kBuilding.getGlobalMaintenanceModifier() * iChange);
+	changeDistanceMaintenanceModifier(kBuilding.getDistanceMaintenanceModifier() * iChange);
+	changeNumCitiesMaintenanceModifier(kBuilding.getNumCitiesMaintenanceModifier() * iChange);
+	changeCoastalDistanceMaintenanceModifier(kBuilding.getCoastalDistanceMaintenanceModifier() * iChange);
+	changeConnectedCityMaintenanceModifier(kBuilding.getConnectedCityMaintenanceModifier() * iChange);
+	//DPII < Maintenance Modifiers >
 	changeGreatPeopleRateModifier(kBuilding.getGlobalGreatPeopleRateModifier() * iChange);
 	changeGreatGeneralRateModifier(kBuilding.getGreatGeneralRateModifier() * iChange);
 	changeDomesticGreatGeneralRateModifier(kBuilding.getDomesticGreatGeneralRateModifier() * iChange);
@@ -5907,6 +5927,21 @@ void CvPlayer::processBuilding(BuildingTypes eBuilding, int iChange, CvArea& kAr
 	changeCityDefenseModifier(kBuilding.getAllCityDefenseModifier() * iChange);
 	kArea.changeCleanPowerCount(getTeam(), ((kBuilding.isAreaCleanPower()) ? iChange : 0));
 	kArea.changeBorderObstacleCount(getTeam(), ((kBuilding.isAreaBorderObstacle()) ? iChange : 0));
+	
+	//DPII < Maintenance Modifiers >
+    kArea.changeMaintenanceModifier(getID(), (kBuilding.getAreaMaintenanceModifier() * iChange));
+
+    if (kBuilding.getOtherAreaMaintenanceModifier() != 0)
+    {
+        for (pLoopArea = GC.getMap().firstArea(&iLoop); pLoopArea != NULL; pLoopArea = GC.getMap().nextArea(&iLoop))
+        {
+            if (!pLoopArea->GC.getInfo(GC.getMap().isArea(kArea)) == kArea)
+            {
+                pLoopArea->changeMaintenanceModifier(getID(), (kBuilding.getOtherAreaMaintenanceModifier()  * iChange));
+            }
+        }
+    }
+    //DPII < Maintenance Modifiers >
 
 	FOR_EACH_ENUM2(Yield, y)
 	{
@@ -8647,7 +8682,52 @@ void CvPlayer::changeBuildingOnlyHealthyCount(int iChange)
 		AI_makeAssignWorkDirty();
 	}
 }
+//DPII < Maintenance Modifiers >
+int CvPlayer::getMaintenanceModifier()
+{
+    return m_iMaintenanceModifier;
+}
 
+void CvPlayer::changeMaintenanceModifier(int iChange)
+{
+    if (iChange != 0)
+    {
+        m_iMaintenanceModifier = (m_iMaintenanceModifier + iChange);
+
+        updateMaintenance();
+    }
+}
+
+int CvPlayer::getCoastalDistanceMaintenanceModifier()
+{
+    return m_iCoastalDistanceMaintenanceModifier;
+}
+
+void CvPlayer::changeCoastalDistanceMaintenanceModifier(int iChange)
+{
+    if (iChange != 0)
+    {
+        m_iCoastalDistanceMaintenanceModifier = (m_iCoastalDistanceMaintenanceModifier + iChange);
+
+        updateMaintenance();
+    }
+}
+
+int CvPlayer::getConnectedCityMaintenanceModifier()
+{
+    return m_iConnectedCityMaintenanceModifier;
+}
+
+void CvPlayer::changeConnectedCityMaintenanceModifier(int iChange)
+{
+    if (iChange != 0)
+    {
+        m_iConnectedCityMaintenanceModifier = (m_iConnectedCityMaintenanceModifier + iChange);
+
+        updateMaintenance();
+    }
+}
+//DPII < Maintenance Modifiers >
 
 int CvPlayer::getDistanceMaintenanceModifier() const
 {
@@ -9278,7 +9358,19 @@ void CvPlayer::setCapitalCity(CvCity* pNewCapitalCity)
 		if (pNewCapitalCity != NULL)
 			pNewCapitalCity->getPlot().updatePlotGroupBonus(true);
 	}
-
+//DPII < Maintenance Modifier >
+		if (pOldCapitalCity != NULL)
+		{
+            if ((pOldCapitalCity->area()) != (pNewCapitalCity->area()))
+            {
+                pNewCapitalCity->area()->setHomeArea(getID(), pOldCapitalCity->area());
+            }
+		}
+		else
+		{
+            pNewCapitalCity->area()->setHomeArea(getID(), NULL);
+		}
+//DPII < Maintenance Modifier >
 	updateMaintenance();
 	updateTradeRoutes();
 
@@ -15803,6 +15895,14 @@ int CvPlayer::doCaptureGold(CvCity const& kOldCity) // "old": city still fully i
 
 void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 {
+	//DPII < Maintenance Modifiers >
+    CvArea* pLoopArea = NULL;
+
+    int iLoop2 = 0;
+	//keldath changed iloop to iloop2 cause theres alreayd one for civics plus
+	// i dony know if it will work.......so.....
+	//int iLoop = 0;
+    //DPII < Maintenance Modifiers >
 	int iI, iJ;
 
 	changeGreatPeopleRateModifier(GC.getInfo(eCivic).getGreatPeopleRateModifier() * iChange);
@@ -15845,6 +15945,24 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	changeNoNonStateReligionSpreadCount((GC.getInfo(eCivic).isNoNonStateReligionSpread()) ? iChange : 0);
 	changeStateReligionHappiness(GC.getInfo(eCivic).getStateReligionHappiness() * iChange);
 	changeNonStateReligionHappiness(GC.getInfo(eCivic).getNonStateReligionHappiness() * iChange);
+	//DPII < Maintenance Modifiers >
+		if ((GC.getInfo(eCivic).getOtherAreaMaintenanceModifier() != 0) || (GC.getInfo(eCivic).getHomeAreaMaintenanceModifier() != 0))
+		{
+			for (pLoopArea = GC.getMap().firstArea(&iLoop2); pLoopArea != NULL; pLoopArea = GC.getMap().nextArea(&iLoop2))
+		//keldath changed iloop to iloop2 cause theres alreayd one for civics plus
+		//for (pLoopArea = GC.getMap().firstArea(&iLoop); pLoopArea != NULL; pLoopArea = GC.getMap().nextArea(&iLoop))
+			{
+				if (pLoopArea->isHomeArea(getID()))
+				{
+					pLoopArea->changeHomeAreaMaintenanceModifier(getID(), (GC.getInfo(eCivic).getHomeAreaMaintenanceModifier()  * iChange));
+				}
+				else
+				{
+					pLoopArea->changeOtherAreaMaintenanceModifier(getID(), (GC.getInfo(eCivic).getOtherAreaMaintenanceModifier()  * iChange));
+				}
+			}
+		}
+	//DPII < Maintenance Modifiers >
 	changeStateReligionUnitProductionModifier(GC.getInfo(eCivic).getStateReligionUnitProductionModifier() * iChange);
 	changeStateReligionBuildingProductionModifier(GC.getInfo(eCivic).getStateReligionBuildingProductionModifier() * iChange);
 	changeStateReligionFreeExperience(GC.getInfo(eCivic).getStateReligionFreeExperience() * iChange);
@@ -16004,6 +16122,11 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iUnhealthyPopulationModifier); // K-Mod
 	pStream->Read(&m_iExpInBorderModifier);
 	pStream->Read(&m_iBuildingOnlyHealthyCount);
+	//DPII < Maintenance Modifiers >
+	pStream->Read(&m_iMaintenanceModifier);
+	pStream->Read(&m_iCoastalDistanceMaintenanceModifier);
+	pStream->Read(&m_iConnectedCityMaintenanceModifier);
+	//DPII < Maintenance Modifiers >
 	pStream->Read(&m_iDistanceMaintenanceModifier);
 	pStream->Read(&m_iNumCitiesMaintenanceModifier);
 	pStream->Read(&m_iCorporationMaintenanceModifier);
@@ -16538,6 +16661,11 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	pStream->Write(m_iUnhealthyPopulationModifier); // K-Mod
 	pStream->Write(m_iExpInBorderModifier);
 	pStream->Write(m_iBuildingOnlyHealthyCount);
+	//DPII < Maintenance Modifiers >
+	pStream->Write(m_iMaintenanceModifier);
+	pStream->Write(m_iCoastalDistanceMaintenanceModifier);
+	pStream->Write(m_iConnectedCityMaintenanceModifier);
+	//DPII < Maintenance Modifiers >
 	pStream->Write(m_iDistanceMaintenanceModifier);
 	pStream->Write(m_iNumCitiesMaintenanceModifier);
 	pStream->Write(m_iCorporationMaintenanceModifier);
