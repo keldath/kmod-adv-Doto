@@ -1142,6 +1142,22 @@ protected:
 	//void resolveCombat(CvUnit* pDefender, CvPlot* pPlot, CvBattleDefinition& kBattle);
 	void resolveCombat(CvUnit* pDefender, CvPlot* pPlot, bool bVisible); // K-Mod
 	void resolveAirCombat(CvUnit* pInterceptor, CvPlot* pPlot, CvAirMissionDefinition& kBattle);
+/*************************************************************************************************/
+/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
+/**                                                                                              */
+/** Original Author Moctezuma              Start                                                 */
+/*************************************************************************************************/
+
+	// ------ BEGIN InfluenceDrivenWar -------------------------------
+	float doVictoryInfluence(CvUnit* pLoserUnit, bool bAttacking, bool bWithdrawal);
+	void influencePlots(CvPlot* pCentralPlot, PlayerTypes eTargetPlayer, float fLocationMultiplier);
+	float doPillageInfluence();
+	// ------ END InfluenceDrivenWar ---------------------------------
+/*************************************************************************************************/
+/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
+/**                                                                                              */
+/** Original Author Moctezuma              End                                                   */
+/*************************************************************************************************/
 	void checkRemoveSelectionAfterAttack();
 // <advc.003u>
 private:

@@ -5935,7 +5935,7 @@ void CvPlayer::processBuilding(BuildingTypes eBuilding, int iChange, CvArea& kAr
     {
         for (pLoopArea = GC.getMap().firstArea(&iLoop); pLoopArea != NULL; pLoopArea = GC.getMap().nextArea(&iLoop))
         {
-            if (!pLoopArea->GC.getInfo(GC.getMap().isArea(kArea)) == kArea)
+            if (!(pLoopArea == &kArea))
             {
                 pLoopArea->changeMaintenanceModifier(getID(), (kBuilding.getOtherAreaMaintenanceModifier()  * iChange));
             }
