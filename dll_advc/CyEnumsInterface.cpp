@@ -575,9 +575,6 @@ void CyEnumsPythonInterface()
 		.value("GAMEOPTION_NO_CITY_RAZING", GAMEOPTION_NO_CITY_RAZING) // advc.250b
 		.value("GAMEOPTION_NO_ANIMALS", GAMEOPTION_NO_ANIMALS) // advc.309
 		.value("GAMEOPTION_NO_SLAVERY", GAMEOPTION_NO_SLAVERY) // advc.912d
-//Influence Driven War: Added for PIG Mod by PieceOfMind 26/10/09
-		.value("GAMEOPTION_INFLUENCE_DRIVEN_WAR", GAMEOPTION_INFLUENCE_DRIVEN_WAR)
-//Influence Driven War: End Add
 		.value("NUM_GAMEOPTION_TYPES", NUM_GAMEOPTION_TYPES)
 		;
 
