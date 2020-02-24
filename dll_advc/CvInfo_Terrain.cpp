@@ -428,6 +428,9 @@ m_iGroupRange(0),
 m_iGroupRand(0),
 m_bOneArea(false),
 m_bHills(false),
+//===NM=====Mountain Mod===0=====
+m_bPeaks(false),
+//===NM=====Mountain Mod===X=====
 m_bFlatlands(false),
 m_bNoRiverSide(false),
 m_bNormalize(false),
@@ -554,7 +557,12 @@ bool CvBonusInfo::isHills() const
 {
 	return m_bHills;
 }
-
+//===NM=====Mountain Mod===0=====
+bool CvBonusInfo::isPeaks() const
+{
+	return m_bPeaks; 
+}
+//===NM=====Mountain Mod===X=====
 bool CvBonusInfo::isFlatlands() const
 {
 	return m_bFlatlands;
@@ -655,6 +663,9 @@ void CvBonusInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iGroupRand);
 	stream->Read(&m_bOneArea);
 	stream->Read(&m_bHills);
+//===NM=====Mountain Mod===0=====
+	stream->Read(&m_bPeaks);
+//===NM=====Mountain Mod===X=====
 	stream->Read(&m_bFlatlands);
 	stream->Read(&m_bNoRiverSide);
 	stream->Read(&m_bNormalize);
@@ -705,6 +716,9 @@ void CvBonusInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iGroupRand);
 	stream->Write(m_bOneArea);
 	stream->Write(m_bHills);
+//===NM=====Mountain Mod===0=====
+	stream->Write(m_bPeaks);
+//===NM=====Mountain Mod===X=====
 	stream->Write(m_bFlatlands);
 	stream->Write(m_bNoRiverSide);
 	stream->Write(m_bNormalize);
@@ -774,6 +788,9 @@ bool CvBonusInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iGroupRand, "iGroupRand");
 	pXML->GetChildXmlValByName(&m_bOneArea, "bArea");
 	pXML->GetChildXmlValByName(&m_bHills, "bHills");
+//===NM=====Mountain Mod===0=====
+	pXML->GetChildXmlValByName(&m_bPeaks, "bPeaks", false);
+//===NM=====Mountain Mod===X=====
 	pXML->GetChildXmlValByName(&m_bFlatlands, "bFlatlands");
 	pXML->GetChildXmlValByName(&m_bNoRiverSide, "bNoRiverSide");
 	pXML->GetChildXmlValByName(&m_bNormalize, "bNormalize");
@@ -922,6 +939,12 @@ m_iImprovementPillage(NO_IMPROVEMENT),
 m_iImprovementUpgrade(NO_IMPROVEMENT),
 m_bActsAsCity(false), // advc: was true
 m_bHillsMakesValid(false),
+//===NM=====Mountain Mod===0=====
+m_bPeakMakesValid(false),
+//===NM=====Mountain Mod===X=====
+// davidlallen: mountain limitations next line
+m_bPeakMakesInvalid(false),
+//===NM=====Mountain Mod===X=====
 m_bFreshWaterMakesValid(false),
 m_bRiverSideMakesValid(false),
 m_bNoFreshWater(false),
@@ -1209,6 +1232,12 @@ void CvImprovementInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iImprovementUpgrade);
 	stream->Read(&m_bActsAsCity);
 	stream->Read(&m_bHillsMakesValid);
+//===NM=====Mountain Mod===X=====
+	stream->Read(&m_bPeakMakesValid);
+//===NM=====Mountain Mod===X=====
+// davidlallen: mountain limitations next line
+	stream->Read(&m_bPeakMakesInvalid);
+//===NM=====Mountain Mod===X=====
 	stream->Read(&m_bFreshWaterMakesValid);
 	stream->Read(&m_bRiverSideMakesValid);
 	stream->Read(&m_bNoFreshWater);
@@ -1296,6 +1325,12 @@ void CvImprovementInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iImprovementUpgrade);
 	stream->Write(m_bActsAsCity);
 	stream->Write(m_bHillsMakesValid);
+//===NM=====Mountain Mod===0=====
+	stream->Write(m_bPeakMakesValid);
+//===NM=====Mountain Mod===X=====			
+// davidlallen: mountain limitations next line
+	stream->Write(m_bPeakMakesInvalid);
+//===NM=====Mountain Mod===X=====
 	stream->Write(m_bFreshWaterMakesValid);
 	stream->Write(m_bRiverSideMakesValid);
 	stream->Write(m_bNoFreshWater);
@@ -1382,6 +1417,12 @@ bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iAdvancedStartCostIncrease, "iAdvancedStartCostIncrease");
 	pXML->GetChildXmlValByName(&m_bActsAsCity, "bActsAsCity");
 	pXML->GetChildXmlValByName(&m_bHillsMakesValid, "bHillsMakesValid");
+//===NM=====Mountain Mod===0=====
+	pXML->GetChildXmlValByName(&m_bPeakMakesValid, "bPeakMakesValid", false);
+//===NM=====Mountain Mod===X=====
+// davidlallen: mountain limitations next line
+	pXML->GetChildXmlValByName(&m_bPeakMakesInvalid, "bPeakMakesInvalid", false);
+//===NM=====Mountain Mod===X=====
 	pXML->GetChildXmlValByName(&m_bFreshWaterMakesValid, "bFreshWaterMakesValid");
 	pXML->GetChildXmlValByName(&m_bRiverSideMakesValid, "bRiverSideMakesValid");
 	pXML->GetChildXmlValByName(&m_bNoFreshWater, "bNoFreshWater");

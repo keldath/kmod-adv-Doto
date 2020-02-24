@@ -5099,6 +5099,19 @@ bool CvPlayer::canFound(int iX, int iY, bool bTestVisible) const  // advc: some 
 	if (pPlot->isImpassable())
 		return false;
 
+//===NM=====Mountain Mod===0=====
+	if (pPlot->isPeak())
+	{
+		if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))//AND Mountains Option
+			{
+			if (GC.getDefineINT("PEAK_CAN_FOUND_CITY") == 0)
+			{
+				return false;
+			}
+		}
+	}
+//===NM=====Mountain Mod===X=====
+
 	if (pPlot->isFeature() && GC.getInfo(pPlot->getFeatureType()).isNoCity())
 		return false;
 
@@ -5935,7 +5948,7 @@ void CvPlayer::processBuilding(BuildingTypes eBuilding, int iChange, CvArea& kAr
     {
         for (pLoopArea = GC.getMap().firstArea(&iLoop); pLoopArea != NULL; pLoopArea = GC.getMap().nextArea(&iLoop))
         {
-            if (!pLoopArea->GC.getInfo(GC.getMap().isArea(kArea)) == kArea)
+            if (!(pLoopArea == &kArea))
             {
                 pLoopArea->changeMaintenanceModifier(getID(), (kBuilding.getOtherAreaMaintenanceModifier()  * iChange));
             }

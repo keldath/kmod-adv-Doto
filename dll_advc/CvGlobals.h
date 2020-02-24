@@ -484,9 +484,15 @@ public:
 		/* </advc.opt> */ \
 		DO(PATH_DAMAGE_WEIGHT) \
 		DO(HILLS_EXTRA_DEFENSE) \
+/*===NM=====Mountain Mod===0=====*/\
+		DO(PEAK_EXTRA_DEFENSE) \
+/*===NM=====Mountain Mod===0=====*/\
 		DO(RIVER_ATTACK_MODIFIER) \
 		DO(AMPHIB_ATTACK_MODIFIER) \
 		DO(HILLS_EXTRA_MOVEMENT) \
+/*===NM=====Mountain Mod===0=====*/\
+		DO(PEAK_EXTRA_MOVEMENT) \
+/*===NM=====Mountain Mod===0=====*/\
 		DO(PERCENT_ANGER_DIVISOR) \
 		DO(MIN_CITY_RANGE) \
 		DO(CITY_MAX_NUM_BUILDINGS) \

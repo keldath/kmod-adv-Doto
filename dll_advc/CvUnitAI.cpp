@@ -16788,6 +16788,10 @@ bool CvUnitAI::AI_improveCity(CvCityAI const& kCity) // advc.003u: param was CvC
 
 			if (getPlot().isHills())
 				iPlotMoveCost += GC.getDefineINT(CvGlobals::HILLS_EXTRA_MOVEMENT);
+//===NM=====Mountain Mod===0=====
+			if (plot()->isPeak())
+				iPlotMoveCost += GC.getDefineINT(CvGlobals::PEAK_EXTRA_MOVEMENT);
+//===NM=====Mountain Mod===X=====
 			if (iPlotMoveCost > 1)
 				eMission = MISSION_ROUTE_TO;
 		}
@@ -17656,7 +17660,13 @@ BuildTypes CvUnitAI::AI_betterPlotBuild(CvPlot const& kPlot, BuildTypes eBuild) 
 		if (GC.getDefineINT(CvGlobals::HILLS_EXTRA_MOVEMENT) > 0 && iTargetWorkers > 1)
 			bBuildRoute = true;
 	} // BETTER_BTS_AI_MOD: END
-
+//===NM=====Mountain Mod===0=====
+	else if (kPlot.isPeak())
+	{	
+		if (GC.getDefineINT(CvGlobals::PEAK_EXTRA_MOVEMENT) > 0 && (iTargetWorkers > 1))
+			bBuildRoute = true;
+	}
+//===NM=====Mountain Mod===X=====
 	if (kPlot.isRoute())
 		bBuildRoute = false;
 
@@ -17687,7 +17697,12 @@ BuildTypes CvUnitAI::AI_betterPlotBuild(CvPlot const& kPlot, BuildTypes eBuild) 
 				{
 					iValue *= 2 + iTargetWorkers +
 							((kPlot.isHills() && iTargetWorkers > 1) ?
+							2 * GC.getDefineINT(CvGlobals::HILLS_EXTRA_MOVEMENT) : 0)
+							+
+//===NM=====Mountain Mod===X=====keldath change to org
+							((kPlot.isPeak() && iTargetWorkers > 1) ?
 							2 * GC.getDefineINT(CvGlobals::HILLS_EXTRA_MOVEMENT) : 0);
+//===NM=====Mountain Mod===X=====
 					iValue /= 3;
 				}
 				ImprovementTypes const eImprovement = kOriginalBuildInfo.getImprovement();

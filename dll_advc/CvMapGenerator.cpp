@@ -135,6 +135,10 @@ bool CvMapGenerator::canPlaceGoodyAt(ImprovementTypes eImprovement, int iX, int 
 	if (pPlot->isImproved() || pPlot->getBonusType() != NO_BONUS || pPlot->isImpassable())
 		return false;
 
+//===NM=====Mountain Mod===0=====
+	if (pPlot->isPeak()) 
+		return false;
+//===NM=====Mountain Mod===X===
 	int iUniqueRange = GC.getInfo(eImprovement).getGoodyUniqueRange();
 	for (int iDX = -iUniqueRange; iDX <= iUniqueRange; iDX++)
 	{

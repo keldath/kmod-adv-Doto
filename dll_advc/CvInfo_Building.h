@@ -742,11 +742,11 @@ public: // All const functions are exposed to Python. advc.inl: Most of them inl
 	{
 		return m_iTechShare;
 	}
-	//DPII < Maintenance Modifier >
-    DllExport int getGlobalMaintenanceModifier() const;
-    DllExport int getDistanceMaintenanceModifier() const;
-    DllExport int getNumCitiesMaintenanceModifier() const;
-    DllExport int getConnectedCityMaintenanceModifier() const;
+	//DPII < Maintenance Modifier had DllExport on all but no need according to  f1rpo>
+    int getGlobalMaintenanceModifier() const;
+    int getDistanceMaintenanceModifier() const;
+    int getNumCitiesMaintenanceModifier() const;
+    int getConnectedCityMaintenanceModifier() const;
     //DPII < Maintenance Modifier >
 	int getEveryoneSpecialUnit() const
 	{

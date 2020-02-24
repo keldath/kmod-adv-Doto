@@ -4736,14 +4736,18 @@ void CvCity::updateMaintenance()
 	if (!isDisorder() && !isWeLoveTheKingDay() && getPopulation() > 0)
 	{
 		//DPII < Maintenance Modifiers >
-		iModifier = getMaintenanceModifier() + GET_PLAYER(getOwner()).getMaintenanceModifier() + area()->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
+		//iModifier = getMaintenanceModifier() + GET_PLAYER(getOwner()).getMaintenanceModifier() + area()->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
+		//keldath - f1rpo fix the GET_PLAYER(getOwner()).getMaintenanceModifier() is included in getMaintenanceModifier()
+		iModifier = getMaintenanceModifier() + area()->getTotalAreaMaintenanceModifier(getOwner());
 
         if (isConnectedToCapital() && !(isCapital()))
         {
             iModifier += GET_PLAYER(getOwner()).getConnectedCityMaintenanceModifier();
         }
 
-		iNewMaintenance = (calculateBaseMaintenanceTimes100() * std::max(0, (getMaintenanceModifier() + 100))) / 100;
+		//iNewMaintenance = (calculateBaseMaintenanceTimes100() * std::max(0, (getMaintenanceModifier() + 100))) / 100;
+		//keldath - f1rpo fix 
+		iNewMaintenance = (calculateBaseMaintenanceTimes100() * std::max(0, iModifier + 100)) / 100;
 		//DPII < Maintenance Modifiers >
 
 	}
@@ -13040,3 +13044,75 @@ void CvCity::payOverflowGold(int iLostProduction, int iProductionGold)
 			MESSAGE_TYPE_INFO, GC.getInfo(COMMERCE_GOLD).
 			getButton(), NO_COLOR, getX(), getY(), false, false);
 } // </advc.064b>
+/*************************************************************************************************/
+/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
+/**                                                                                              */
+/** Original Author Moctezuma              Start                                                 */
+/*************************************************************************************************/
+// ------ BEGIN InfluenceDrivenWar -------------------------------
+void CvCity::emergencyConscript()
+{
+	CvUnit* pUnit;
+	UnitAITypes eCityAI;
+	UnitTypes eConscriptUnit;
+
+	int iEmergencyDraftMinPopulation = 2; // minimal city size to draft militia 
+	if (GC.getDefineINT("IDW_EMERGENCY_DRAFT_MIN_POPULATION"))
+		iEmergencyDraftMinPopulation = GC.getDefineINT("IDW_EMERGENCY_DRAFT_MIN_POPULATION");
+
+	if (getPopulation() < iEmergencyDraftMinPopulation)
+	{
+		return;
+	}
+
+	if (getConscriptUnit() == NO_UNIT)
+	{
+		return;
+	}
+
+	changePopulation(-1);
+
+	float fEmergencyDraftAngerMultiplier = 0.5; // default: 50% of normal conscription anger
+	if (GC.getDefineFLOAT("IDW_EMERGENCY_DRAFT_ANGER_MULTIPLIER"))
+		fEmergencyDraftAngerMultiplier = GC.getDefineFLOAT("IDW_EMERGENCY_DRAFT_ANGER_MULTIPLIER");
+		
+	changeConscriptAngerTimer(int(flatConscriptAngerLength() * fEmergencyDraftAngerMultiplier));
+
+	eConscriptUnit = getConscriptUnit();
+
+	if (GET_PLAYER(getOwner()).AI_unitValue(eConscriptUnit, UNITAI_CITY_DEFENSE, area()) > 0)
+	{
+		eCityAI = UNITAI_CITY_DEFENSE;
+	}
+	else if (GET_PLAYER(getOwner()).AI_unitValue(eConscriptUnit, UNITAI_CITY_COUNTER, area()) > 0)
+	{
+		eCityAI = UNITAI_CITY_COUNTER;
+	}
+	else if (GET_PLAYER(getOwner()).AI_unitValue(eConscriptUnit, UNITAI_CITY_SPECIAL, area()) > 0)
+	{
+		eCityAI = UNITAI_CITY_SPECIAL;
+	}
+	else
+	{
+		eCityAI = NO_UNITAI;
+	}
+
+	pUnit = GET_PLAYER(getOwner()).initUnit(eConscriptUnit, getX(), getY(), eCityAI);
+	FAssertMsg(pUnit != NULL, "pUnit expected to be assigned (not NULL)");
+
+	addProductionExperience(pUnit, true);
+
+	pUnit->setMoves(0);
+
+	float fEmergencyDraftStrength = 0.25f; // default: 25% of full health: represents very low training level
+	if (GC.getDefineFLOAT("IDW_EMERGENCY_DRAFT_STRENGTH"))
+		fEmergencyDraftStrength = GC.getDefineFLOAT("IDW_EMERGENCY_DRAFT_STRENGTH");
+
+	pUnit->setDamage(int((1 - fEmergencyDraftStrength) * pUnit->maxHitPoints()), getOwner());
+}
+// ------ END InfluenceDrivenWar ---------------------------------
+/*************************************************************************************************/
+/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
+/**                                                                                              */
+/** Original Author Moctezuma              End                                                   */
+/*************************************************************************************************/

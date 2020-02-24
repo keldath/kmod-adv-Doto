@@ -693,6 +693,10 @@ void CvGlobals::cacheGlobalInts(char const* szChangedDefine, int iNewValue)
 		case LFB_USECOMBATODDS: iDefault = 1; break;
 		case COMBAT_DIE_SIDES: iDefault = -1; break;
 		case COMBAT_DAMAGE: iDefault = -1; break;
+//===NM=====Mountain Mod===0=====
+		case PEAK_EXTRA_DEFENSE: iDefault = 0; break;
+		case PEAK_EXTRA_MOVEMENT: iDefault = 0; break;
+//===NM=====Mountain Mod===0=====
 		// BETTER_BTS_AI_MOD: END
 		}
 		m_aiGlobalDefinesCache[i] = getDefineINT(aszGlobalDefinesTagNames[i], iDefault);

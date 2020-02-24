@@ -738,6 +738,11 @@ protected:
 	char m_iRiverCrossingCount;
 
 	bool m_bStartingPlot:1;
+//keldath - why hills are out??
+//	bool m_bHills:1;
+//===NM=====Mountain Mod===0=====
+	bool m_bPeaks:1;
+//===NM=====Mountain Mod===X=====
 	bool m_bNOfRiver:1;
 	bool m_bWOfRiver:1;
 	bool m_bIrrigated:1;

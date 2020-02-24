@@ -4340,6 +4340,12 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 			{
 				// iAccessibility represents the number of this improvement we expect to have per city.
 				iAccessibility += ((kBuildImprovement.isHillsMakesValid()) ? 150 : 0);
+				//===NM=====Mountain Mod===0=====
+				iAccessibility += ((kBuildImprovement.isPeakMakesValid()) ? 150 : 0);
+				//===NM=====Mountain Mod===X=====
+				// davidlallen: mountain limitations next line
+				iAccessibility += ((kBuildImprovement.isPeakMakesInvalid()) ? 150 : 0);
+				//===NM=====Mountain Mod===X=====
 				iAccessibility += ((kBuildImprovement.isFreshWaterMakesValid()) ? 150 : 0);
 				iAccessibility += ((kBuildImprovement.isRiverSideMakesValid()) ? 150 : 0);
 				if (kBuildImprovement.isAnyTerrainMakesValid()) // advc.003t

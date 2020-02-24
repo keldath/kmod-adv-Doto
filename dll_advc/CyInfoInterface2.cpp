@@ -284,6 +284,12 @@ void CyInfoPythonInterface2()
 
 		.def("isActsAsCity", &CvImprovementInfo::isActsAsCity, "bool ()")
 		.def("isHillsMakesValid", &CvImprovementInfo::isHillsMakesValid, "bool ()")
+//===NM=====Mountain Mod===0=====
+		.def("isPeakMakesValid", &CvImprovementInfo::isPeakMakesValid, "bool ()")
+//===NM=====Mountain Mod===X=====
+//===NM=====Mountain Mod===0=====
+		.def("isPeakMakesInvalid", &CvImprovementInfo::isPeakMakesInvalid, "bool ()")
+//===NM=====Mountain Mod===X=====
 		.def("isFreshWaterMakesValid", &CvImprovementInfo::isFreshWaterMakesValid, "bool ()")
 		.def("isRiverSideMakesValid", &CvImprovementInfo::isRiverSideMakesValid, "bool ()")
 		.def("isNoFreshWater", &CvImprovementInfo::isNoFreshWater, "bool ()")
@@ -352,6 +358,9 @@ void CyInfoPythonInterface2()
 
 		.def("isOneArea", &CvBonusInfo::isOneArea, "bool ()")
 		.def("isHills", &CvBonusInfo::isHills, "bool ()")
+//===NM=====Mountain Mod===0=====
+		.def("isPeaks", &CvBonusInfo::isPeaks, "bool ()")
+//===NM=====Mountain Mod===X=====
 		.def("isFlatlands", &CvBonusInfo::isFlatlands, "bool ()")
 		.def("isNoRiverSide", &CvBonusInfo::isNoRiverSide, "bool ()")
 		.def("isNormalize", &CvBonusInfo::isNormalize, "bool ()")

@@ -32,7 +32,13 @@ void CyGlobalContextPythonInterface2(python::class_<CyGlobalContext>& x)
 		.def("getPERCENT_ANGER_DIVISOR", &CyGlobalContext::getPERCENT_ANGER_DIVISOR, "int ()")
 		.def("getMIN_WATER_SIZE_FOR_OCEAN", &CyGlobalContext::getMIN_WATER_SIZE_FOR_OCEAN, "int ()")
 		.def("getMAX_CITY_DEFENSE_DAMAGE", &CyGlobalContext::getMAX_CITY_DEFENSE_DAMAGE, "int ()")
-
+//f1rpo said these are un needed, but , left it here anyway.
+//===NM=====Mountain Mod===0=====
+		.def("getPEAK_EXTRA_DEFENSE", &CyGlobalContext::getPEAK_EXTRA_DEFENSE, "int ()")
+//===NM=====Mountain Mod===X=====
+//===NM=====Mountain Mod===0=====
+		.def("getPEAK_EXTRA_MOVEMENT", &CyGlobalContext::getPEAK_EXTRA_MOVEMENT, "int ()")
+//===NM=====Mountain Mod===X=====
 		.def("getNUM_UNIT_PREREQ_OR_BONUSES", &CyGlobalContext::getNUM_UNIT_PREREQ_OR_BONUSES, "int ()")
 		.def("getNUM_BUILDING_PREREQ_OR_BONUSES", &CyGlobalContext::getNUM_BUILDING_PREREQ_OR_BONUSES, "int ()")
 		.def("getNUM_AND_TECH_PREREQS", &CyGlobalContext::getNUM_AND_TECH_PREREQS, "int ()")

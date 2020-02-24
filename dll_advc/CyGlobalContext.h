@@ -273,7 +273,14 @@ public:
 	int getPERCENT_ANGER_DIVISOR() const { return kGlobals.getPERCENT_ANGER_DIVISOR(); }
 	int getMIN_WATER_SIZE_FOR_OCEAN() const { return kGlobals.getDefineINT(CvGlobals::MIN_WATER_SIZE_FOR_OCEAN); }
 	int getMAX_CITY_DEFENSE_DAMAGE() const { return kGlobals.getMAX_CITY_DEFENSE_DAMAGE(); }
+//f`rpo said these are not needed, but left them anyway
+//===NM=====Mountain Mod===0=====
+	int getPEAK_EXTRA_DEFENSE() const { return kGlobals.getDefineINT(CvGlobals::PEAK_EXTRA_DEFENSE); }
+//===NM=====Mountain Mod===X=====
 
+//===NM=====Mountain Mod===0=====
+	int getPEAK_EXTRA_MOVEMENT() const { return kGlobals.getDefineINT(CvGlobals::PEAK_EXTRA_MOVEMENT); }
+//===NM=====Mountain Mod===X=====
 	int getNUM_UNIT_AND_TECH_PREREQS() const { return kGlobals.getNUM_UNIT_AND_TECH_PREREQS(); }
 	int getNUM_UNIT_PREREQ_OR_BONUSES() const { return kGlobals.getNUM_UNIT_PREREQ_OR_BONUSES(); }
 	int getNUM_BUILDING_AND_TECH_PREREQS() const { return kGlobals.getNUM_BUILDING_AND_TECH_PREREQS(); }

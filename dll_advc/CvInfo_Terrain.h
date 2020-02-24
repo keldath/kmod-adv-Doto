@@ -227,6 +227,10 @@ public: // All the const functions are exposed to Python
 
 	bool isOneArea() const;
 	bool isHills() const;
+//===NM=====Mountain Mod===0=====
+/*	DllExport also had 	// Exposed to Python */ 
+    bool isPeaks() const;							
+//===NM=====Mountain Mod===X=====
 	bool isFlatlands() const;
 	bool isNoRiverSide() const;
 	bool isNormalize() const;
@@ -279,6 +283,9 @@ protected:
 
 	bool m_bOneArea;
 	bool m_bHills;
+//===NM=====Mountain Mod===0=====
+	bool m_bPeaks;
+//===NM=====Mountain Mod===X=====
 	bool m_bFlatlands;
 	bool m_bNoRiverSide;
 	bool m_bNormalize;
@@ -393,6 +400,12 @@ public: /*  All the const functions are exposed to Python except those dealing w
 
 	inline bool isActsAsCity() const { return m_bActsAsCity; }
 	inline bool isHillsMakesValid() const { return m_bHillsMakesValid; }
+//===NM=====Mountain Mod===0=====
+	inline bool isPeakMakesValid() const { return m_bPeakMakesValid; };
+//===NM=====Mountain Mod===X=====
+// davidlallen: mountain limitations next line
+	inline bool isPeakMakesInvalid() const { return m_bPeakMakesInvalid; };
+//===NM=====Mountain Mod===X=====
 	inline bool isFreshWaterMakesValid() const { return m_bFreshWaterMakesValid; }
 	inline bool isRiverSideMakesValid() const { return m_bRiverSideMakesValid; }
 	inline bool isNoFreshWater() const { return m_bNoFreshWater; }
@@ -474,7 +487,13 @@ protected:
 	CvString m_szArtDefineTag;
 
 	bool m_bActsAsCity;
-	bool m_bHillsMakesValid;
+	bool m_bHillsMakesValid;			
+//===NM=====Mountain Mod===0=====
+	bool m_bPeakMakesValid;
+//===NM=====Mountain Mod===X=====
+// davidlallen: mountain limitations next line
+	bool m_bPeakMakesInvalid;
+//===NM=====Mountain Mod===X=====
 	bool m_bFreshWaterMakesValid;
 	bool m_bRiverSideMakesValid;
 	bool m_bNoFreshWater;

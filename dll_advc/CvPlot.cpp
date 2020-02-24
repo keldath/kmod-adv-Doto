@@ -58,6 +58,10 @@ CvPlot::CvPlot() // advc: Merged with the deleted reset function
 	m_iTotalCulture = 0; // advc.opt
 
 	m_bStartingPlot = false;
+//	m_bHills = false; keldath - what is this for?
+//===NM=====Mountain Mod===0=====
+	m_bPeaks = false;
+//===NM=====Mountain Mod===X=====
 	m_bNOfRiver = false;
 	m_bWOfRiver = false;
 	m_bIrrigated = false;
@@ -1113,8 +1117,10 @@ bool CvPlot::isFreshWater() const
 
 
 bool CvPlot::isPotentialIrrigation() const
-{
-	if ((isCity() && !isHills()) ||
+{	
+	//===NM=====Mountain Mod===0=====keldath - i hope thats ok
+	if ((isCity() && !(isHills() || !isPeak()))||
+	//===NM=====Mountain Mod===0=====
 		(isImproved() && GC.getInfo(getImprovementType()).isCarriesIrrigation()))
 	{
 		if (isOwned() && GET_TEAM(getTeam()).isIrrigation())
@@ -1127,7 +1133,9 @@ bool CvPlot::isPotentialIrrigation() const
 
 bool CvPlot::canHavePotentialIrrigation() const
 {
-	if (isCity() && !isHills())
+//===NM=====Mountain Mod===0=====keldath - i hope thats ok
+	if (isCity() && !(isHills() || !isPeak()))
+//===NM=====Mountain Mod===0=====
 		return true;
 	// <advc.opt>
 	if(isWater())
@@ -1648,6 +1656,7 @@ bool CvPlot::canHaveBonus(BonusTypes eBonus, bool bIgnoreLatitude,
 		return false;
 
 	if (isPeak())
+//keldath - add logic depend on a game option!
 		return false;
 
 	CvBonusInfo const& kBonus = GC.getInfo(eBonus);
@@ -1760,6 +1769,15 @@ bool CvPlot::canHaveImprovement(ImprovementTypes eImprovement, TeamTypes eTeam, 
 			bValid = true;
 		if (isFeature() && GC.getInfo(eImprovement).getFeatureMakesValid(getFeatureType()))
 			bValid = true;
+//===NM=====Mountain Mod===0=====
+		if (GC.getInfo(eImprovement).isPeakMakesValid() && isPeak())
+			bValid = true;
+//===NM=====Mountain Mod===X=====
+// davidlallen: mountain limitations start
+		if (GC.getInfo(eImprovement).isPeakMakesInvalid() && isPeak())
+		//	return false;
+			bValid = false;
+// davidlallen: mountain limitations end
 		if (!bValid)
 			return false;
 	}
@@ -1971,6 +1989,14 @@ int CvPlot::getBuildTime(BuildTypes eBuild, /* advc.251: */ PlayerTypes ePlayer)
 	int iTime = GC.getInfo(eBuild).getTime();
 	if (isFeature())
 		iTime += GC.getInfo(eBuild).getFeatureTime(getFeatureType());
+
+//===NM=====Mountain Mod===0=====
+	if (isPeak())
+	{
+		iTime *= std::max(0, (GC.getDefineINT("PEAK_BUILD_TIME_MODIFIER") + 100));
+		iTime /= 100;
+	}
+//===NM=====Mountain Mod===X=====
 
 	iTime *= std::max(0, (GC.getInfo(getTerrainType()).getBuildModifier() + 100));
 	iTime /= 100;
@@ -2249,6 +2275,10 @@ int CvPlot::movementCost(const CvUnit* pUnit, const CvPlot* pFromPlot,
 				GC.getInfo(getFeatureType()).getMovementCost());
 		if (isHills())
 			iRegularCost += GC.getDefineINT(CvGlobals::HILLS_EXTRA_MOVEMENT);
+//===NM=====Mountain Mod===0=====
+		if (isPeak())
+			iRegularCost += GC.getDefineINT(CvGlobals::PEAK_EXTRA_MOVEMENT);
+//===NM=====Mountain Mod===X=====
 
 		if (iRegularCost > 0)
 			iRegularCost = std::max(1, iRegularCost - pUnit->getExtraMoveDiscount());
@@ -2261,7 +2291,9 @@ int CvPlot::movementCost(const CvUnit* pUnit, const CvPlot* pFromPlot,
 	{
 		if ((!isFeature() ? pUnit->isTerrainDoubleMove(getTerrainType()) :
 			pUnit->isFeatureDoubleMove(getFeatureType())) ||
-			(isHills() && pUnit->isHillsDoubleMove()))
+//===NM=====Mountain Mod===0=====
+			((isPeak() || isHills()) && pUnit->isHillsDoubleMove())) // Deliverator - Hijacked, Hills -> Peak + hills by keldath
+//===NM=====Mountain Mod===0=====		
 		{
 			iRegularCost /= 2;
 		}
@@ -3346,8 +3378,15 @@ bool CvPlot::isValidDomainForAction(const CvUnit& unit) const
 bool CvPlot::isImpassable() const
 {
 	//PROFILE_FUNC(); // advc.003o: Most of the calls come from pathfinding
-	if (isPeak())
-		return true;
+//===NM=====Mountain Mod===X=====
+	if (!GC.getGame().isOption(GAMEOPTION_MOUNTAINS))//AND Mountains Option
+	{	
+		if (isPeak())
+		{
+			return true;
+		}
+	}
+//===NM=====Mountain Mod===X=====
 	return (!isFeature() ?
 			// advc.opt: Check NO_TERRAIN only if NO_FEATURE
 			(getTerrainType() != NO_TERRAIN && GC.getInfo(getTerrainType()).isImpassable()) :
@@ -7057,6 +7096,13 @@ void CvPlot::read(FDataStreamBase* pStream)
 	m_bStartingPlot = bVal;
 	if(uiFlag < 4) // advc.opt: m_bHills removed
 		pStream->Read(&bVal);
+//keldath - i have no idea what this does
+//===NM=====Mountain Mod===0=====
+/*	pStream->Read(&bVal);
+	m_bHills = bVal;
+*/	pStream->Read(&bVal);
+	m_bPeaks = bVal;
+//===NM=====Mountain Mod===X=====
 	pStream->Read(&bVal);
 	m_bNOfRiver = bVal;
 	pStream->Read(&bVal);
@@ -7235,6 +7281,11 @@ void CvPlot::write(FDataStreamBase* pStream)
 	pStream->Write(m_iLatitude); // advc.tsl
 
 	pStream->Write(m_bStartingPlot);
+//keldath - why does hills areopt out?
+//	pStream->Write(m_bHills);
+//===NM=====Mountain Mod===0=====
+	pStream->Write(m_bPeaks);
+//===NM=====Mountain Mod===X=====
 	pStream->Write(m_bNOfRiver);
 	pStream->Write(m_bWOfRiver);
 	pStream->Write(m_bIrrigated);
