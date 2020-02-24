@@ -179,19 +179,7 @@ public:
 	int flatConscriptAngerLength() const;																		// Exposed to Python
 	bool canConscript() const;																					// Exposed to Python
 	void conscript();																							// Exposed to Python
-/*************************************************************************************************/
-/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
-/**                                                                                              */
-/** Original Author Moctezuma              Start                                                 */
-/*************************************************************************************************/
-	// ------ BEGIN InfluenceDrivenWar -------------------------------
-	void emergencyConscript();
-	// ------ END InfluenceDrivenWar ---------------------------------
-/*************************************************************************************************/
-/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
-/**                                                                                              */
-/** Original Author Moctezuma              End                                                   */
-/*************************************************************************************************/
+
 	int getBonusHealth(BonusTypes eBonus) const;																// Exposed to Python
 	int getBonusHappiness(BonusTypes eBonus) const;																// Exposed to Python
 	int getBonusPower(BonusTypes eBonus, bool bDirty) const;													// Exposed to Python

@@ -3776,17 +3776,7 @@ void CvTeam::changeProjectCount(ProjectTypes eIndex, int iChange)  // advc: styl
 
 	for (MemberIter it(getID()); it.hasNext(); ++it)
 	{
-		
 		CvPlayerAI& kAIMember = *it;
-		
-		//DPII < Maintenance Modifiers > 
-		//keldath - placed below as f1rpo suggested in a separate loop - but can be here also
-      /*  kAIMember.changeMaintenanceModifier(GC.getInfo(eIndex).getGlobalMaintenanceModifier());
-        kAIMember.changeDistanceMaintenanceModifier(GC.getInfo(eIndex).getDistanceMaintenanceModifier());
-        kAIMember.changeNumCitiesMaintenanceModifier(GC.getInfo(eIndex).getNumCitiesMaintenanceModifier());
-        kAIMember.changeConnectedCityMaintenanceModifier(GC.getInfo(eIndex).getConnectedCityMaintenanceModifier());
-      */ //DPII < Maintenance Modifiers >
-
 		if (kAIMember.isHuman())
 			continue;
 
@@ -3802,17 +3792,14 @@ void CvTeam::changeProjectCount(ProjectTypes eIndex, int iChange)  // advc: styl
 		}
 		if (bChangeProduction)
 			kAIMember.AI_makeProductionDirty();
-	
+		//DPII < Maintenance Modifiers >
+        kAIMember.changeMaintenanceModifier(GC.getInfo(eIndex).getGlobalMaintenanceModifier());
+        kAIMember.changeDistanceMaintenanceModifier(GC.getInfo(eIndex).getDistanceMaintenanceModifier());
+        kAIMember.changeNumCitiesMaintenanceModifier(GC.getInfo(eIndex).getNumCitiesMaintenanceModifier());
+        kAIMember.changeConnectedCityMaintenanceModifier(GC.getInfo(eIndex).getConnectedCityMaintenanceModifier());
+        //DPII < Maintenance Modifiers >
 	}
-	//DPII < Maintenance Modifiers >
-	for (MemberIter it(getID()); it.hasNext(); ++it)
-	{
-    	it->changeMaintenanceModifier(GC.getInfo(eIndex).getGlobalMaintenanceModifier());
-    	it->changeDistanceMaintenanceModifier(GC.getInfo(eIndex).getDistanceMaintenanceModifier());
-    	it->changeNumCitiesMaintenanceModifier(GC.getInfo(eIndex).getNumCitiesMaintenanceModifier());
-    	it->changeConnectedCityMaintenanceModifier(GC.getInfo(eIndex).getConnectedCityMaintenanceModifier());
-	} //DPII </ Maintenance Modifiers >
-	
+
 	if (GC.getGame().isFinalInitialized() && !gDLL->GetWorldBuilderMode())
 	{
 		CvWString szBuffer = gDLL->getText( // <advc.008e>
