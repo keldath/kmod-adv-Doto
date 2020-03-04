@@ -30,11 +30,36 @@ public: // All the const functions are exposed to Python except for those relate
 	inline int getBuildModifier() const { return m_iBuildModifier; }
 	inline int getDefenseModifier() const { return m_iDefenseModifier; }
 
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: New Tag Definition                                                               **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+	int getHealthPercent() const;							// Exposed to Python
+	int getTurnDamage() const;							// Exposed to Python
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
+
 	inline bool isWater() const { return m_bWater; }
 	inline bool isImpassable() const { return m_bImpassable; }
 	inline bool isFound() const { return m_bFound; }
 	inline bool isFoundCoast() const { return m_bFoundCoast; }
 	inline bool isFoundFreshWater() const { return m_bFoundFreshWater; }
+
+	/*****************************************************************************************************/
+	/**  Author: TheLadiesOgre                                                                          **/
+	/**  Date: 15.10.2009                                                                               **/
+	/**  ModComp: TLOTags                                                                               **/
+	/**  Reason Added: New Tag Definition                                                               **/
+	/**  Notes:                                                                                         **/
+	/*****************************************************************************************************/
+	bool isRequiresFlatlands () const;							// Exposed to Python
+	/*****************************************************************************************************/
+	/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+	/*****************************************************************************************************/
 
 	DllExport const TCHAR* getArtDefineTag() const;
 	void setArtDefineTag(const TCHAR* szTag);
@@ -58,11 +83,35 @@ protected:
 	int m_iBuildModifier;
 	int m_iDefenseModifier;
 
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: New Tag Definition                                                               **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+	int m_iHealthPercent;
+	int m_iTurnDamage;
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
+
 	bool m_bWater;
 	bool m_bImpassable;
 	bool m_bFound;
 	bool m_bFoundCoast;
 	bool m_bFoundFreshWater;
+	/*****************************************************************************************************/
+	/**  Author: TheLadiesOgre                                                                          **/
+	/**  Date: 15.10.2009                                                                               **/
+	/**  ModComp: TLOTags                                                                               **/
+	/**  Reason Added: New Tag Definition                                                               **/
+	/**  Notes:                                                                                         **/
+	/*****************************************************************************************************/
+	bool m_bRequiresFlatlands;
+	/*****************************************************************************************************/
+	/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+	/*****************************************************************************************************/
 
 	int m_iWorldSoundscapeScriptId;
 
@@ -397,7 +446,20 @@ public: /*  All the const functions are exposed to Python except those dealing w
 	int getPillageGold() const;
 	int getImprovementPillage() const;
 	int getImprovementUpgrade() const { return m_iImprovementUpgrade; }
-
+	// < JCultureControl Mod Start >
+	int getCultureBorderRange() const;				// Exposed to Python
+	void setCultureBorderRange(int i);
+	int getCultureControlStrength() const;				// Exposed to Python
+	void setCultureControlStrength(int i);
+	int getCultureControlCenterTileBonus() const;				// Exposed to Python
+	void setCultureControlCenterTileBonus(int i);
+	bool isSpreadCultureControl() const;				// Exposed to Python
+	// < JCultureControl Mod End >
+	
+	// Deliverator
+	int getAddsFreshWaterInRadius() const;				// Exposed to Python
+	void setAddsFreshWaterInRadius(int i);
+	// Deliverator
 	inline bool isActsAsCity() const { return m_bActsAsCity; }
 	inline bool isHillsMakesValid() const { return m_bHillsMakesValid; }
 //===NM=====Mountain Mod===0=====
@@ -423,7 +485,12 @@ public: /*  All the const functions are exposed to Python except those dealing w
 	void setArtDefineTag(const TCHAR* szVal);
 
 	int getWorldSoundscapeScriptId() const;
-
+	// < JImprovementLimit Mod Start >
+	bool isNotInsideBorders() const;				// Exposed to Python
+    int getMakesInvalidRange() const;                // Exposed to Python
+    int getImprovementRequired() const;                // Exposed to Python
+    void setImprovementRequired(int iImprovementType);
+    // < JImprovementLimit Mod End >
 	// Array access:
 
 	int getPrereqNatureYield(int i) const;
@@ -486,6 +553,15 @@ protected:
 
 	CvString m_szArtDefineTag;
 
+	// < JCultureControl Mod Start >
+	int m_iCultureBorderRange;
+	int m_iCultureControlStrength;
+	int m_iCultureControlCenterTileBonus;
+	bool m_bSpreadCultureControl;
+	// < JCultureControl Mod End >
+	// Deliverator fresh water
+	int m_iAddsFreshWaterInRadius;
+	// Deliverator
 	bool m_bActsAsCity;
 	bool m_bHillsMakesValid;			
 //===NM=====Mountain Mod===0=====
@@ -507,6 +583,11 @@ protected:
 	bool m_bPermanent;
 	bool m_bOutsideBorders;
 
+	// < JImprovementLimit Mod Start >
+	bool m_bNotInsideBorders;
+	int m_iMakesInvalidRange;
+	int m_iImprovementRequired;
+	// < JImprovementLimit Mod End >
 	int* m_piPrereqNatureYield;
 	int* m_piYieldChange;
 	int* m_piRiverSideYieldChange;

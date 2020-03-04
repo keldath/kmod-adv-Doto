@@ -270,9 +270,9 @@ bool CvArtInfoUnit::read(CvXMLLoadUtility* pXML)
 
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "AudioRunSounds"))
 	{
-		pXML->GetChildXmlValByName(szTextVal, "AudioRunTypeLoop");
+		pXML->GetChildXmlValByName(szTextVal, "AudioRunTypeLoop","");
 		m_iRunLoopSoundTag = CvGlobals::getInstance().getFootstepAudioTypeByTag(szTextVal);
-		pXML->GetChildXmlValByName(szTextVal, "AudioRunTypeEnd");
+		pXML->GetChildXmlValByName(szTextVal, "AudioRunTypeEnd","");
 		m_iRunEndSoundTag = CvGlobals::getInstance().getFootstepAudioTypeByTag(szTextVal);
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}

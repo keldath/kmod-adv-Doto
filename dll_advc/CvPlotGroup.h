@@ -34,7 +34,11 @@ public:
 
 	int getNumBonuses(BonusTypes eBonus) const { return m_paiNumBonuses.get(eBonus); } // advc.inl
 	bool hasBonus(BonusTypes eBonus) { return(getNumBonuses(eBonus) > 0); } // advc.inl
-	void changeNumBonuses(BonusTypes eBonus, int iChange);
+	//< Building Resource Converter Start >
+	//f1rpo 096 - added a var here to pass an param to avoid a loop - keldath
+	void changeNumBonuses(BonusTypes eBonus, int iChange,
+       bool bUpdateBuildings = true);
+	//< Building Resource Converter End   >
 	void verifyCityProduction(); // advc.064d
 
 	void insertAtEndPlots(XYCoords xy);

@@ -439,6 +439,23 @@ short AIFoundValue::evaluate()
 					GC.getInfo(eFeature).getHealthPercent());
 			if (!bRemovableFeature || iFeatureHealth > 0)
 				iHealth += iFeatureHealth;
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Enable Terrain Health Modifiers                                                  **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+			//keldath re write according to the feature above - by f1rpo
+			//keldath QA
+			TerrainTypes const eTerrain = p.getTerrainType();
+			FAssert(eFeature != NO_FEATURE || (!bRemovableFeature && !bPersistentFeature));
+			int const iTerrainHealth = (eFeature == NO_TERRAIN ? 0 :
+					GC.getInfo(eTerrain).getHealthPercent());
+				iHealth += iTerrainHealth;	
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 		}
 		BonusTypes const eBonus = getBonus(p);
 		// <advc.031> (This was much coarser in K-Mod)
@@ -2139,15 +2156,37 @@ int AIFoundValue::evaluateSeaAccess(bool bGoodFirstColony, double productionModi
 	Could then also add a chokepoint evaluation. */
 int AIFoundValue::evaluateDefense() const
 {
-	int r = 0;
-	if (kPlot.isHills())
-	{
-		/*  advc.031: Was 100+100 in K-Mod, 200 flat in BtS. Reduced b/c
+//EFCTION BELOW SUGGESTED BY F1RPO - but, prefered not t o give peaks weight wheb eval of def.
+//original f1rpo code below
+/*   int r = 0;
+   if (kPlot.isHills())
+   {*/
+       /*  advc.031: Was 100+100 in K-Mod, 200 flat in BtS. Reduced b/c
+           counted again for diploFactor below. */
+   /*    r += 75 + (kSet.isDefensive() ? 75 : 0);
+   }*/
+//Mountain mod - addition by f1rpo
+ /*  if (kGame.isOption(GAMEOPTION_MOUNTAINS))
+   {
+       FOR_EACH_ENUM(Direction)
+       {
+           CvPlot const* pAdj = GC.getMap().plotDirection(eLoopDirection);
+           if (pAdj != NULL && pAdj->isPeak())
+               r += (kSet.isDefensive() ? 15 : 8);
+       }
+   }
+   IFLOG if(r>0) logBBAI("+%d from defensive terrain", r);
+
+   return r;*/
+   int r = 0;
+   if (kPlot.isHills())
+   {
+	     /*  advc.031: Was 100+100 in K-Mod, 200 flat in BtS. Reduced b/c
 			counted again for diploFactor below. */
-		r += 75 + (kSet.isDefensive() ? 75 : 0);
-		IFLOG logBBAI("+%d from hill defense", r);
-	}
-	return r;
+	   r += 75 + (kSet.isDefensive() ? 75 : 0);
+	   IFLOG logBBAI("+%d from hill defense", r);
+   }
+   return r;	
 }
 
 // Taking into account tiles beyond the city radius

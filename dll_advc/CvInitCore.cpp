@@ -6,7 +6,15 @@
 #include "CvInfo_Unit.h"
 #include "CvInfo_GameOption.h"
 #include "CvDLLUtilityIFaceBase.h"
-
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/** deleting bogus Corporations and Religions elements from the vectors                          */
+/*************************************************************************************************/
+#include "CvXMLLoadUtility.h"
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 
 CvInitCore::CvInitCore()
 {
@@ -122,6 +130,17 @@ void CvInitCore::reset(GameMode eMode)
 	{
 		setDefaults();
 	}
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/** deleting bogus Corporations and Religions elements from the vectors                          */
+/*************************************************************************************************/
+	CvXMLLoadUtility* pXMLLoadUtility = new CvXMLLoadUtility;
+	pXMLLoadUtility->cleanTGA();
+	SAFE_DELETE(pXMLLoadUtility);
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 }
 
 void CvInitCore::setDefaults()

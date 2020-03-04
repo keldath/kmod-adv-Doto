@@ -153,7 +153,10 @@ void CvPlotGroup::setID(int iID)
 }
 
 
-void CvPlotGroup::changeNumBonuses(BonusTypes eBonus, int iChange)
+// < Building Resource Converter Start >
+//f1rpo 096 change - pass a bool to avoid an infinite loop				
+void CvPlotGroup::changeNumBonuses(BonusTypes eBonus, int iChange, bool bUpdateBuildings)
+// < Building Resource Converter End   >
 {
 	if (iChange == 0)
 		return; // advc
@@ -173,7 +176,15 @@ void CvPlotGroup::changeNumBonuses(BonusTypes eBonus, int iChange)
 		if (pCity != NULL)
 		{
 			if (pCity->getOwner() == getOwner())
-				pCity->changeNumBonuses(eBonus, iChange);
+				// < Building Resource Converter Start >
+				//f1rpo 096 change - pass a bool to avoid an infinite loop
+				pCity->changeNumBonuses(eBonus, iChange, bUpdateBuildings);
+				//comment out - f1rpo advc - handled by CvCity::changeNumBonuse
+				//keldath
+				//	if (bUpdateBuildings) {
+				//		pCity->processBuildingBonuses();
+				//	}
+				// < Building Resource Converter End   >
 		}
 		pPlotNode = nextPlotsNode(pPlotNode);
 	}

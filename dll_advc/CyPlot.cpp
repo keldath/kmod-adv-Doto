@@ -117,6 +117,14 @@ bool CyPlot::isIrrigationAvailable(bool bIgnoreSelf)
 {
 	return m_pPlot ? m_pPlot->isIrrigationAvailable(bIgnoreSelf) : false;
 }
+// Deliverator -fresh water
+void CyPlot::changeFreshWaterInRadius(int iChange, int iRadius)
+{
+	if (m_pPlot)
+		m_pPlot->changeFreshWaterInRadius(iChange, iRadius);
+}
+
+// Deliverator
 
 bool CyPlot::isRiverSide()
 {
@@ -169,6 +177,17 @@ bool CyPlot::canHaveImprovement(int /* ImprovementTypes */ eImprovement, int /*T
 	return m_pPlot ? m_pPlot->canHaveImprovement(((ImprovementTypes)eImprovement), ((TeamTypes)eTeam), bPotential) : false;
 }
 
+// < JImprovementLimit Mod Start >
+bool CyPlot::isImprovementInRange(int /* ImprovementTypes */ eImprovement, int iRange, bool bCheckBuildProgress)
+{
+	return m_pPlot ? m_pPlot->isImprovementInRange((ImprovementTypes) eImprovement, iRange, bCheckBuildProgress) : false;
+}
+
+bool CyPlot::isImprovementAncestor(int /* ImprovementTypes */ eImprovement, int /* ImprovementTypes */ eCheckImprovement)
+{
+	return m_pPlot ? m_pPlot->isImprovementAncestor((ImprovementTypes) eImprovement, (ImprovementTypes) eCheckImprovement) : false;
+}
+// < JImprovementLimit Mod End >
 bool CyPlot::canBuild(int /*BuildTypes*/ eBuild, int /*PlayerTypes*/ ePlayer, bool bTestVisible)
 {
 	return m_pPlot ? m_pPlot->canBuild((BuildTypes) eBuild, (PlayerTypes) ePlayer, bTestVisible) : false;
@@ -632,6 +651,74 @@ void CyPlot::setOwnerNoUnitCheck(int /*PlayerTypes*/ eNewValue)
 	if (m_pPlot)
 		m_pPlot->setOwner((PlayerTypes) eNewValue, false, true);
 }
+
+// < JCultureControl Mod Start >
+int CyPlot::getImprovementOwner()
+{
+	return m_pPlot ? m_pPlot->getImprovementOwner() : -1;
+}
+
+void CyPlot::setImprovementOwner(int /*PlayerTypes*/ eNewValue)
+{
+	if (m_pPlot)
+		m_pPlot->setImprovementOwner((PlayerTypes) eNewValue);
+}
+
+int CyPlot::getCultureControl(int /*PlayerTypes*/ eIndex)
+{
+	return m_pPlot ? m_pPlot->getCultureControl((PlayerTypes)eIndex) : -1;
+}
+
+int CyPlot::countTotalCultureControl()
+{
+	return m_pPlot ? m_pPlot->countTotalCultureControl() : -1;
+}
+
+int /*TeamTypes*/ CyPlot::findHighestCultureControlPlayer()
+{
+	return m_pPlot ? m_pPlot->findHighestCultureControlPlayer() : -1;
+}
+
+int CyPlot::calculateCultureControlPercent(int /*PlayerTypes*/ eIndex)
+{
+	return m_pPlot ? m_pPlot->calculateCultureControlPercent((PlayerTypes)eIndex) : -1;
+}
+
+int CyPlot::calculateTeamCultureControlPercent(int /*TeamTypes*/ eIndex)
+{
+	return m_pPlot ? m_pPlot->calculateTeamCultureControlPercent((TeamTypes)eIndex) : -1;
+}
+
+void CyPlot::setCultureControl(int /*PlayerTypes*/ eIndex, int iChange, bool bUpdate)
+{
+	if (m_pPlot)
+		m_pPlot->setCultureControl((PlayerTypes)eIndex, iChange, bUpdate, true);
+}
+
+void CyPlot::changeCultureControl(int /*PlayerTypes*/ eIndex, int iChange, bool bUpdate)
+{
+	if (m_pPlot)
+		m_pPlot->changeCultureControl((PlayerTypes)eIndex, iChange, bUpdate);
+}
+
+void CyPlot::addCultureControl(int /*PlayerTypes*/ ePlayer, int /*ImprovementTypes*/ eImprovement, bool bUpdateInterface)
+{
+	if (m_pPlot)
+		m_pPlot->addCultureControl((PlayerTypes) ePlayer, (ImprovementTypes) eImprovement, bUpdateInterface);
+}
+
+void CyPlot::clearCultureControl(int /*PlayerTypes*/ ePlayer, int /*ImprovementTypes*/ eImprovement, bool bUpdateInterface)
+{
+	if (m_pPlot)
+		m_pPlot->clearCultureControl((PlayerTypes) ePlayer, (ImprovementTypes) eImprovement, bUpdateInterface);
+}
+
+/*void CyPlot::updateCultureControl(int iCenterX, int iCenterY, int iUpdateRange, bool bUpdateInterface)
+{
+	if (m_pPlot)
+		m_pPlot->updateCultureControl(iCenterX, iCenterY, iUpdateRange, bUpdateInterface);
+}*/
+// < JCultureControl Mod End >
 PlotTypes CyPlot::getPlotType()
 {
 	return m_pPlot ? m_pPlot->getPlotType() : NO_PLOT;

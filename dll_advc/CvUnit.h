@@ -29,7 +29,23 @@ public:
 
 	void setupGraphical();
 	void reloadEntity();
-
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		
+ *	Source:
+ *	  Archid
+ *
+ ****************************************/
+	void setCivicEnabled(bool bEnable);
+	bool isCivicEnabled() const;
+	bool isEnabled() const;
+protected:
+	bool m_bCivicEnabled;
+public:
+/**
+ ** End: Unit Civic Prereq
+ **/
 	void convert(CvUnit* pUnit);																			// Exposed to Python
 	void kill(bool bDelay, PlayerTypes ePlayer = NO_PLAYER);												// Exposed to Python
 
@@ -60,7 +76,11 @@ public:
 
 	bool canEnterTerritory(TeamTypes eTeam, bool bIgnoreRightOfPassage = false,								// Exposed to Python
 			CvArea const* pArea = NULL) const; // advc: canEnterArea merged into canEnterTerritory
-	TeamTypes getDeclareWarMove(const CvPlot* pPlot) const;													// Exposed to Python
+	TeamTypes getDeclareWarMove(const CvPlot* pPlot) const;													// Exposed to Python														// Exposed to Python
+//MOD@VET_Andera412_Blocade_Unit-begin1/3
+	bool cannotMoveFromTo(const CvPlot* pFromPlot, const CvPlot* pToPlot) const;																		//VET CanMoveImpassable - 1/1
+	bool cannotMoveFromPlotToPlot(const CvPlot* pFromPlot, const CvPlot* pToPlot, bool bWithdrawal) const;												//VET DefenderWithdrawal - 1/1
+//MOD@VET_Andera412_Blocade_Unit-end1/3
 	bool canMoveInto(CvPlot const& kPlot, bool bAttack = false, bool bDeclareWar = false,					// Exposed to Python
 			bool bIgnoreLoad = false,
 			bool bAssumeVisible = true, // K-Mod
@@ -493,6 +513,12 @@ public:
 	{
 		return m_pUnitInfo->isCanMoveAllTerrain();
 	}
+//keldath QA - is this good? replaced original code in the cpp file
+// Deliverator mountain mod
+	inline bool canMovePeak() const																	// Exposed to Python
+	{
+		return m_pUnitInfo->isCanMovePeak();
+	}
 	inline bool flatMovementCost() const																	// Exposed to Python
 	{
 		return m_pUnitInfo->isFlatMovementCost();
@@ -663,6 +689,11 @@ public:
 	bool isAmphib() const { return (getAmphibCount() > 0); }												// Exposed to Python
 	void changeAmphibCount(int iChange);
 
+//MOD@VET_Andera412_Blocade_Unit-begin2/3
+	int getUnblocadeCount() const;																																
+	bool isUnblocade() const;																													// Exposed to Python					
+	void changeUnblocadeCount(int iChange);																											
+//MOD@VET_Andera412_Blocade_Unit-end2/3
 	int getRiverCount() const { return m_iRiverCount; }
 	bool isRiver() const { return (getRiverCount() > 0); }													// Exposed to Python
 	void changeRiverCount(int iChange);
@@ -1044,6 +1075,9 @@ protected:
 	int m_iFortifyTurns;
 	int m_iBlitzCount;
 	int m_iAmphibCount;
+//MOD@VET_Andera412_Blocade_Unit-begin3/3
+	int m_iUnblocadeCount;
+//MOD@VET_Andera412_Blocade_Unit-end3/3
 	int m_iRiverCount;
 	int m_iEnemyRouteCount;
 	int m_iAlwaysHealCount;

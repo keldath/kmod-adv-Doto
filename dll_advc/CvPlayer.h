@@ -59,7 +59,18 @@ protected: // advc.003u: Can't easily move these past AI_makeAssignWorkDirty (th
 public:
 	// advc.003u: Keep one pure virtual function so that this class is abstract
 	virtual void AI_makeAssignWorkDirty() = 0;
-
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		Based on code by Afforess
+ *	Source:
+ *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
+ *
+ ****************************************/
+	bool hasValidCivics(UnitTypes eUnit) const;
+/**
+ ** End: Unit Civic Prereq
+ **/
 	DllExport void init(PlayerTypes eID);
 	DllExport void setupGraphical();
 	DllExport void reset(PlayerTypes eID = NO_PLAYER, bool bConstructorCall = false);
@@ -175,11 +186,27 @@ public:
 	void updateExtraBuildingHealth();
 	void updateFeatureHappiness();
 	void updateReligionHappiness();
-	void updateExtraSpecialistYield();
+	void updateExtraSpecialistYield();	
+	/*************************************************************************************************/
+	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+	/**																								**/
+	/**																								**/
+	/*************************************************************************************************/
+	void updateSpecialistCivicExtraCommerce();
+	/*************************************************************************************************/
+	/**	CMEDIT: End																					**/
+	/*************************************************************************************************/
+	
 	void updateCommerce(CommerceTypes eCommerce);
 	void updateCommerce();
 	void updateBuildingCommerce();
+	// < Civic Infos Plus Start >
+	void updateBuildingYield();
+	// < Civic Infos Plus End   >
 	void updateReligionCommerce();
+	// < Civic Infos Plus Start >
+	void updateReligionYield();
+	// < Civic Infos Plus End   >
 	void updateCorporation();
 	//void updateCityPlotYield(); // advc.003j
 	void updateCitySight(bool bIncrement, bool bUpdatePlotGroups);
@@ -270,6 +297,9 @@ public:
 	void found(int iX, int iY);																																			// Exposed to Python
 
 	bool canTrain(UnitTypes eUnit, bool bContinue = false, bool bTestVisible = false, bool bIgnoreCost = false) const;										// Exposed to Python
+	//Tholish UnbuildableBuildingDeletion START
+	bool canKeep(BuildingTypes eBuilding) const;
+	//Tholish UnbuildableBuildingDeletion END
 	bool canConstruct(BuildingTypes eBuilding, bool bContinue = false, bool bTestVisible = false, bool bIgnoreCost = false, bool bIgnoreTech = false) const; // Exposed to Python, K-Mod added bIgnoreTech
 	bool canCreate(ProjectTypes eProject, bool bContinue = false, bool bTestVisible = false) const;							// Exposed to Python
 	bool canMaintain(ProcessTypes eProcess, bool bContinue = false) const;																			// Exposed to Python
@@ -335,6 +365,9 @@ public:
 	bool isResearch() const;																																							// Exposed to Python
 	bool canEverResearch(TechTypes eTech) const;																								// Exposed to Python
 	TechTypes getDiscoveryTech(UnitTypes eUnit) const; // advc: Moved from CvGameCoreUtils
+	/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+	bool canEverTrade(TechTypes eTech) const;
+	/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/																								// Exposed to Python
 	bool canResearch(TechTypes eTech, bool bTrade = false,
 			bool bFree = false, // (K-Mod, added bFree.) Exposed to Python
 			// advc.126: Disables the isHasTech check
@@ -536,6 +569,16 @@ public:
 
 	int getCityDefenseModifier() const;																																		// Exposed to Python
 	void changeCityDefenseModifier(int iChange);
+/************************************************************************************************/
+/* REVDCM                                 09/02/10                                phungus420    */
+/*                                                                                              */
+/* Player Functions  cantrain                                                                           */
+/************************************************************************************************/
+
+	bool isBuildingClassRequiredToTrain(BuildingClassTypes eBuildingClass, UnitTypes eUnit) const;																			// Exposed to Python
+/************************************************************************************************/
+/* REVDCM                                  END                                                  */
+/************************************************************************************************/
 
 	int getNumNukeUnits() const;																																					// Exposed to Python
 	void changeNumNukeUnits(int iChange);
@@ -705,7 +748,13 @@ public:
 
 	int getNonStateReligionHappiness() const;																																	// Exposed to Python
 	void changeNonStateReligionHappiness(int iChange);
-
+// < Civic Infos Plus Start >
+	DllExport int getStateReligionExtraHealth() const;																													// Exposed to Python
+	void changeStateReligionExtraHealth(int iChange);
+	DllExport void updateReligionHealth();
+	int getNonStateReligionExtraHealth() const;																																	// Exposed to Python
+	void changeNonStateReligionExtraHealth(int iChange);
+	// < Civic Infos Plus End   >
 	int getStateReligionUnitProductionModifier() const;																												// Exposed to Python
 	void changeStateReligionUnitProductionModifier(int iChange);
 
@@ -844,6 +893,23 @@ public:
 
 	int getCapitalYieldRateModifier(YieldTypes eIndex) const;																					// Exposed to Python
 	void changeCapitalYieldRateModifier(YieldTypes eIndex, int iChange);
+	
+	// < Civic Infos Plus Start >
+	int getStateReligionYieldRateModifier(YieldTypes eIndex) const;
+	void changeStateReligionYieldRateModifier(YieldTypes eIndex, int iChange);
+
+	int getStateReligionCommerceRateModifier(CommerceTypes eIndex) const;
+	void changeStateReligionCommerceRateModifier(CommerceTypes eIndex, int iChange);
+
+	int getNonStateReligionYieldRateModifier(YieldTypes eIndex) const;
+	void changeNonStateReligionYieldRateModifier(YieldTypes eIndex, int iChange);
+
+	int getNonStateReligionCommerceRateModifier(CommerceTypes eIndex) const;
+	void changeNonStateReligionCommerceRateModifier(CommerceTypes eIndex, int iChange);
+
+	int getSpecialistExtraYield(YieldTypes eIndex) const;
+	void changeSpecialistExtraYield(YieldTypes eIndex, int iChange);
+	// < Civic Infos Plus End   >
 
 	int getExtraYieldThreshold(YieldTypes eIndex) const;																							// Exposed to Python
 	void updateExtraYieldThreshold(YieldTypes eIndex);
@@ -980,10 +1046,27 @@ public:
 
 	int getSpecialistExtraYield(SpecialistTypes eIndex1, YieldTypes eIndex2) const;										// Exposed to Python
 	void changeSpecialistExtraYield(SpecialistTypes eIndex1, YieldTypes eIndex2, int iChange);
+	/*************************************************************************************************/
+	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+	/**																								**/
+	/**																								**/
+	/*************************************************************************************************/	
+	int getSpecialistCivicExtraCommerce(SpecialistTypes eIndex1, CommerceTypes eIndex) const;										
+	void changeSpecialistCivicExtraCommerce(SpecialistTypes eIndex1, CommerceTypes eIndex, int iChange);
+	/*************************************************************************************************/
+	/**	CMEDIT: End																					**/
+	/*************************************************************************************************/
 
 	int getImprovementYieldChange(ImprovementTypes eIndex1, YieldTypes eIndex2) const;								// Exposed to Python
 	void changeImprovementYieldChange(ImprovementTypes eIndex1, YieldTypes eIndex2, int iChange);
 
+    // < Civic Infos Plus Start >
+	int getBuildingYieldChange(BuildingTypes eIndex1, YieldTypes eIndex2) const;								// Exposed to Python
+	void changeBuildingYieldChange(BuildingTypes eIndex1, YieldTypes eIndex2, int iChange);
+
+	int getBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes eIndex2) const;								// Exposed to Python
+	void changeBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes eIndex2, int iChange);
+	// < Civic Infos Plus End   >
 	//void updateGroupCycle(CvUnit* pUnit);
 	void updateGroupCycle(CvSelectionGroup const& kGroup); // K-Mod
 	void removeGroupCycle(int iID);
@@ -1354,6 +1437,10 @@ protected:  // <advc.210>
 	int m_iNoNonStateReligionSpreadCount;
 	int m_iStateReligionHappiness;
 	int m_iNonStateReligionHappiness;
+	// < Civic Infos Plus Start >
+	int m_iStateReligionExtraHealth;
+	int m_iNonStateReligionExtraHealth;
+	// < Civic Infos Plus End   >
 	int m_iStateReligionUnitProductionModifier;
 	int m_iStateReligionBuildingProductionModifier;
 	int m_iStateReligionFreeExperience;
@@ -1402,6 +1489,13 @@ protected:  // <advc.210>
 	int* m_aiSeaPlotYield;
 	int* m_aiYieldRateModifier;
 	int* m_aiCapitalYieldRateModifier;
+	// < Civic Infos Plus Start >
+	int* m_aiStateReligionCommerceRateModifier;
+	int* m_aiNonStateReligionCommerceRateModifier;
+	int* m_aiStateReligionYieldRateModifier;
+	int* m_aiNonStateReligionYieldRateModifier;
+	int* m_aiSpecialistExtraYield;
+	// < Civic Infos Plus End   >
 	int* m_aiExtraYieldThreshold;
 	int* m_aiTradeYieldModifier;
 	int* m_aiFreeCityCommerce;
@@ -1454,8 +1548,22 @@ protected:  // <advc.210>
 
 	CivicTypes* m_paeCivics;
 
-	int** m_ppaaiSpecialistExtraYield;
+	int** m_ppaaiSpecialistExtraYield;	
+	/*************************************************************************************************/
+	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+	/**																								**/
+	/**																								**/
+	/*************************************************************************************************/	
+	int** m_ppaaiSpecialistCivicExtraCommerce;
+	/*************************************************************************************************/
+	/**	CMEDIT: End																					**/
+	/*************************************************************************************************/
+	
 	int** m_ppaaiImprovementYieldChange;
+	// < Civic Infos Plus Start >
+	int** m_ppaaiBuildingYieldChange;
+	int** m_ppaaiBuildingCommerceChange;
+	// < Civic Infos Plus End   >
 
 	CLinkList<int> m_groupCycle;
 	CLinkList<TechTypes> m_researchQueue;
@@ -1532,6 +1640,19 @@ protected:  // <advc.210>
 	void getResourceLayerColors(GlobeLayerResourceOptionTypes eOption, std::vector<NiColorA>& aColors, std::vector<CvPlotIndicatorData>& aIndicators) const;  // used by Globeview resource layer
 	void getReligionLayerColors(ReligionTypes eSelectedReligion, std::vector<NiColorA>& aColors, std::vector<CvPlotIndicatorData>& aIndicators) const;  // used by Globeview religion layer
 	void getCultureLayerColors(std::vector<NiColorA>& aColors, std::vector<CvPlotIndicatorData>& aIndicators) const;  // used by Globeview culture layer
+
+//KNOEDELbegin CULTURAL_GOLDEN_AGE
+public:
+	int getCultureGoldenAgeProgress() const;
+	void changeCultureGoldenAgeProgress(int iChange);
+	int getCultureGoldenAgeThreshold() const;
+	int getCultureGoldenAgesStarted() const;																																		// Exposed to Python
+	void incrementCultureGoldenAgeStarted();
+
+protected:
+	int m_iCultureGoldenAgeProgress;
+	int m_iCultureGoldenAgesStarted;
+//KNOEDELend
 
 private:
 	/*  advc.003u: The remaining virtual functions should not be called within

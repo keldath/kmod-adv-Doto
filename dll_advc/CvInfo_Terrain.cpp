@@ -12,11 +12,34 @@ m_iSeeFromLevel(0),
 m_iSeeThroughLevel(0),
 m_iBuildModifier(0),
 m_iDefenseModifier(0),
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: New Tag Definition                                                               **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+m_iHealthPercent(0),
+m_iTurnDamage(0),
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 m_bWater(false),
 m_bImpassable(false),
 m_bFound(false),
 m_bFoundCoast(false),
 m_bFoundFreshWater(false),
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: New Tag Definition                                                               **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+m_bRequiresFlatlands(false),
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 m_iWorldSoundscapeScriptId(0),
 m_piYields(NULL),
 m_piRiverYieldChange(NULL),
@@ -71,7 +94,44 @@ int CvTerrainInfo::get3DAudioScriptFootstepIndex(int i) const
 	return m_pi3DAudioScriptFootstepIndex ? m_pi3DAudioScriptFootstepIndex[i]
 			: 0; // advc.003t: see get3DAudioScriptFootstepIndex
 }
+//keldath QA i hope thats a good location
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: New Tag Definition                                                               **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+int CvTerrainInfo::getHealthPercent() const
+{
+	return m_iHealthPercent;
+}
 
+int CvTerrainInfo::getTurnDamage() const
+{
+	return m_iTurnDamage;
+}
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: New Tag Definition                                                               **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: New Tag Definition                                                               **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+bool CvTerrainInfo::isRequiresFlatlands() const
+{
+	return m_bRequiresFlatlands;
+}
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 bool CvTerrainInfo::read(CvXMLLoadUtility* pXML)
 {
 	if (!CvInfoBase::read(pXML))
@@ -107,12 +167,34 @@ bool CvTerrainInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_bFound, "bFound");
 	pXML->GetChildXmlValByName(&m_bFoundCoast, "bFoundCoast");
 	pXML->GetChildXmlValByName(&m_bFoundFreshWater, "bFoundFreshWater");
-
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: New Tag Definition                                                               **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+	pXML->GetChildXmlValByName(&m_bRequiresFlatlands, "bRequiresFlatlands", false);
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 	pXML->GetChildXmlValByName(&m_iMovementCost, "iMovement");
 	pXML->GetChildXmlValByName(&m_iSeeFromLevel, "iSeeFrom");
 	pXML->GetChildXmlValByName(&m_iSeeThroughLevel, "iSeeThrough");
 	pXML->GetChildXmlValByName(&m_iBuildModifier, "iBuildModifier");
 	pXML->GetChildXmlValByName(&m_iDefenseModifier, "iDefense");
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: New Tag Definition                                                               **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+	pXML->GetChildXmlValByName(&m_iHealthPercent, "iHealthPercent", 0);
+	pXML->GetChildXmlValByName(&m_iTurnDamage, "iTurnDamage", 0);
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 
 	pXML->SetVariableListTagPairForAudioScripts(&m_pi3DAudioScriptFootstepIndex, "FootstepSounds", GC.getNumFootstepAudioTypes());
 
@@ -364,7 +446,7 @@ bool CvFeatureInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iHealthPercent, "iHealthPercent");
 	pXML->GetChildXmlValByName(&m_iDefenseModifier, "iDefense");
 	// advc.012:
-	pXML->GetChildXmlValByName(&m_iRivalDefenseModifier, "iRivalDefense");
+	pXML->GetChildXmlValByName(&m_iRivalDefenseModifier, "iRivalDefense",0);
 	pXML->GetChildXmlValByName(&m_iAdvancedStartRemoveCost, "iAdvancedStartRemoveCost");
 	pXML->GetChildXmlValByName(&m_iTurnDamage, "iTurnDamage");
 	pXML->GetChildXmlValByName(&m_iWarmingDefense, "iWarmingDefense"); //GWMod new xml field M.A.
@@ -374,7 +456,7 @@ bool CvFeatureInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_bNoCoast, "bNoCoast");
 	pXML->GetChildXmlValByName(&m_bNoRiver, "bNoRiver");
 	pXML->GetChildXmlValByName(&m_bNoAdjacent, "bNoAdjacent");
-	pXML->GetChildXmlValByName(&m_bRequiresFlatlands, "bRequiresFlatlands");
+	pXML->GetChildXmlValByName(&m_bRequiresFlatlands, "bRequiresFlatlands",false);
 	pXML->GetChildXmlValByName(&m_bRequiresRiver, "bRequiresRiver");
 	// advc.129b:
 	pXML->GetChildXmlValByName(&m_bRequiresRiverSide, "bRequiresRiverSide");
@@ -937,6 +1019,15 @@ m_iHappiness(0),
 m_iPillageGold(0),
 m_iImprovementPillage(NO_IMPROVEMENT),
 m_iImprovementUpgrade(NO_IMPROVEMENT),
+// < JCultureControl Mod Start >
+m_iCultureBorderRange(-1),
+m_iCultureControlStrength(0),
+m_iCultureControlCenterTileBonus(0),
+m_bSpreadCultureControl(false),
+// < JCultureControl Mod End >
+// Deliverator fresh water
+m_iAddsFreshWaterInRadius(-1),
+// Deliverator
 m_bActsAsCity(false), // advc: was true
 m_bHillsMakesValid(false),
 //===NM=====Mountain Mod===0=====
@@ -958,6 +1049,11 @@ m_bGoody(false),
 m_bPermanent(false),
 m_bOutsideBorders(false),
 m_iWorldSoundscapeScriptId(0),
+// < JImprovementLimit Mod Start >
+m_bNotInsideBorders(false),
+m_iMakesInvalidRange(0),
+m_iImprovementRequired(NO_IMPROVEMENT),
+// < JImprovementLimit Mod End >
 m_piPrereqNatureYield(NULL),
 m_piYieldChange(NULL),
 m_piRiverSideYieldChange(NULL),
@@ -999,6 +1095,92 @@ CvImprovementInfo::~CvImprovementInfo()
 		SAFE_DELETE_ARRAY(m_ppiRouteYieldChanges);
 	}
 }
+//keldath QA i hope thats ok tp put these here instead of the.h
+// Deliverator
+int CvImprovementInfo::getAddsFreshWaterInRadius() const
+{
+	return m_iAddsFreshWaterInRadius;
+}
+
+void CvImprovementInfo::setAddsFreshWaterInRadius(int i)
+{
+	m_iAddsFreshWaterInRadius = i;
+}
+// Deliverator
+
+
+// < JCultureControl Mod Start >
+int CvImprovementInfo::getCultureBorderRange() const
+{
+	return m_iCultureBorderRange;
+}
+
+void CvImprovementInfo::setCultureBorderRange(int i)
+{
+	m_iCultureBorderRange = i;
+}
+
+int CvImprovementInfo::getCultureControlStrength() const
+{
+	return m_iCultureControlStrength;
+}
+
+void CvImprovementInfo::setCultureControlStrength(int i)
+{
+	m_iCultureControlStrength = i;
+}
+
+int CvImprovementInfo::getCultureControlCenterTileBonus() const
+{
+	return m_iCultureControlCenterTileBonus;
+}
+
+void CvImprovementInfo::setCultureControlCenterTileBonus(int i)
+{
+	m_iCultureControlCenterTileBonus = i;
+}
+
+bool CvImprovementInfo::isSpreadCultureControl() const
+{
+	return m_bSpreadCultureControl;
+}
+// < JCultureControl Mod End >
+
+//===NM=====Mountain Mod===0=====
+bool CvImprovementInfo::isPeakMakesValid() const
+{
+	return m_bPeakMakesValid; 
+}
+//===NM=====Mountain Mod===X=====
+
+// davidlallen: mountain limitations start
+bool CvImprovementInfo::isPeakMakesInvalid() const
+{
+	return m_bPeakMakesInvalid;
+}
+// davidlallen: mountain limitations end
+
+// < JImprovementLimit Mod Start >
+bool CvImprovementInfo::isNotInsideBorders() const
+{
+	return m_bNotInsideBorders;
+}
+
+int CvImprovementInfo::getMakesInvalidRange() const
+{
+	return m_iMakesInvalidRange;
+}
+
+int CvImprovementInfo::getImprovementRequired() const
+{
+	return m_iImprovementRequired;
+}
+
+void CvImprovementInfo::setImprovementRequired(int iImprovementType)
+{
+	m_iImprovementRequired = iImprovementType;
+}
+// < JImprovementLimit Mod End >
 
 int CvImprovementInfo::getAdvancedStartCost() const
 {
@@ -1230,6 +1412,15 @@ void CvImprovementInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iPillageGold);
 	stream->Read(&m_iImprovementPillage);
 	stream->Read(&m_iImprovementUpgrade);
+	// < JCultureControl Mod Start >
+	stream->Read(&m_iCultureBorderRange);
+	stream->Read(&m_iCultureControlStrength);
+	stream->Read(&m_iCultureControlCenterTileBonus);
+	stream->Read(&m_bSpreadCultureControl);
+	// < JCultureControl Mod End >
+	// Deliverator fresh wate
+	stream->Read(&m_iAddsFreshWaterInRadius);	
+	// Deliverator
 	stream->Read(&m_bActsAsCity);
 	stream->Read(&m_bHillsMakesValid);
 //===NM=====Mountain Mod===X=====
@@ -1252,6 +1443,11 @@ void CvImprovementInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_bOutsideBorders);
 	stream->ReadString(m_szArtDefineTag);
 	stream->Read(&m_iWorldSoundscapeScriptId);
+    // < JImprovementLimit Mod Start >
+	stream->Read(&m_bNotInsideBorders);
+	stream->Read(&m_iMakesInvalidRange);
+	stream->Read(&m_iImprovementRequired);
+	// < JImprovementLimit Mod End >
 	SAFE_DELETE_ARRAY(m_piPrereqNatureYield);
 	m_piPrereqNatureYield = new int[NUM_YIELD_TYPES];
 	stream->Read(NUM_YIELD_TYPES, m_piPrereqNatureYield);
@@ -1323,6 +1519,15 @@ void CvImprovementInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iPillageGold);
 	stream->Write(m_iImprovementPillage);
 	stream->Write(m_iImprovementUpgrade);
+ // < JCultureControl Mod Start >
+	stream->Write(m_iCultureBorderRange);
+	stream->Write(m_iCultureControlStrength);
+	stream->Write(m_iCultureControlCenterTileBonus);
+	stream->Write(m_bSpreadCultureControl);
+	// < JCultureControl Mod End >
+	// Deliverator fresh water
+	stream->Write(m_iAddsFreshWaterInRadius);	
+	// Deliverator
 	stream->Write(m_bActsAsCity);
 	stream->Write(m_bHillsMakesValid);
 //===NM=====Mountain Mod===0=====
@@ -1345,6 +1550,11 @@ void CvImprovementInfo::write(FDataStreamBase* stream)
 	stream->Write(m_bOutsideBorders);
 	stream->WriteString(m_szArtDefineTag);
 	stream->Write(m_iWorldSoundscapeScriptId);
+	// < JImprovementLimit Mod Start >
+	stream->Write(m_bNotInsideBorders);
+	stream->Write(m_iMakesInvalidRange);
+	stream->Write(m_iImprovementRequired);
+	// < JImprovementLimit Mod End >
 	stream->Write(NUM_YIELD_TYPES, m_piPrereqNatureYield);
 	stream->Write(NUM_YIELD_TYPES, m_piYieldChange);
 	stream->Write(NUM_YIELD_TYPES, m_piRiverSideYieldChange);
@@ -1412,7 +1622,10 @@ bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
 	else pXML->InitList(&m_piIrrigatedChange, NUM_YIELD_TYPES);
-
+ // < JImprovementLimit Mod Start >
+	pXML->GetChildXmlValByName(&m_bNotInsideBorders, "bNotInsideBorders", false);
+	pXML->GetChildXmlValByName(&m_iMakesInvalidRange, "iMakesInvalidRange", 0);
+// < JImprovementLimit Mod End >
 	pXML->GetChildXmlValByName(&m_iAdvancedStartCost, "iAdvancedStartCost");
 	pXML->GetChildXmlValByName(&m_iAdvancedStartCostIncrease, "iAdvancedStartCostIncrease");
 	pXML->GetChildXmlValByName(&m_bActsAsCity, "bActsAsCity");
@@ -1443,7 +1656,15 @@ bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iHappiness, "iHappiness");
 	pXML->GetChildXmlValByName(&m_iPillageGold, "iPillageGold");
 	pXML->GetChildXmlValByName(&m_bOutsideBorders, "bOutsideBorders");
-
+    // < JCultureControl Mod Start >
+	pXML->GetChildXmlValByName(&m_iCultureBorderRange, "iCultureBorderRange", 0);
+	pXML->GetChildXmlValByName(&m_iCultureControlStrength, "iCultureControlStrength", 0);
+	pXML->GetChildXmlValByName(&m_iCultureControlCenterTileBonus, "iCultureControlCenterTileBonus", 0);
+	pXML->GetChildXmlValByName(&m_bSpreadCultureControl, "bSpreadCultureControl", false);
+	// < JCultureControl Mod End >
+// Deliverator fresh water
+	pXML->GetChildXmlValByName(&m_iAddsFreshWaterInRadius, "iAddsFreshWaterInRadius",	-1); // f1rpo
+	// Deliverator
 	pXML->SetVariableListTagPair(&m_pbTerrainMakesValid, "TerrainMakesValids", GC.getNumTerrainInfos());
 	pXML->SetVariableListTagPair(&m_pbFeatureMakesValid, "FeatureMakesValids", GC.getNumFeatureInfos());
 
@@ -1515,6 +1736,11 @@ bool CvImprovementInfo::readPass2(CvXMLLoadUtility* pXML)
 
 	pXML->GetChildXmlValByName(szTextVal, "ImprovementUpgrade");
 	m_iImprovementUpgrade = GC.getInfoTypeForString(szTextVal);
+
+    // < JImprovementLimit Mod Start >
+	pXML->GetChildXmlValByName(szTextVal, "ImprovementRequired",""); // f1rpo
+	m_iImprovementRequired = GC.getInfoTypeForString(szTextVal);
+    // < JImprovementLimit Mod End >
 
 	return true;
 }

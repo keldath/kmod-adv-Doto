@@ -266,6 +266,15 @@ public:
 	int getMilitaryProductionModifier();
 	int getSpaceProductionModifier();
 	int getCityDefenseModifier();
+/************************************************************************************************/
+/* REVDCM                                 09/02/10                                phungus420    */
+/*                                                                                              */
+/* Player Functions                                                                             */
+/************************************************************************************************/
+	bool isBuildingClassRequiredToTrain(int /*BuildingClassTypes*/ iBuildingClass, int /*UnitTypes*/ iUnit);
+/************************************************************************************************/
+/* REVDCM                                  END                                                  */
+/************************************************************************************************/
 	int getNumNukeUnits();
 	int getNumOutsideUnits();
 	int getBaseFreeUnits();

@@ -14,6 +14,16 @@ public: // All the const functions are exposed to Python
 	CvOrganizationInfo();
 
 	int getChar() const;
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int getTGAIndex() const;
+	void setTGAIndex(int i);
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 	void setChar(int i);
 	inline int getTechPrereq() const { return m_iTechPrereq; } // advc.130f: inline
 	int getFreeUnitClass() const;
@@ -31,6 +41,15 @@ public: // All the const functions are exposed to Python
 	bool read(CvXMLLoadUtility* pXML);
 
 protected:
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int m_iTGAIndex;
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 	int m_iChar;
 	int m_iTechPrereq;
 	int m_iFreeUnitClass;

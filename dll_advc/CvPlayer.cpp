@@ -48,8 +48,17 @@ CvPlayer::CvPlayer(/* advc.003u: */ PlayerTypes eID) :
 	m_aiSeaPlotYield = new int[NUM_YIELD_TYPES];
 	m_aiYieldRateModifier = new int[NUM_YIELD_TYPES];
 	m_aiCapitalYieldRateModifier = new int[NUM_YIELD_TYPES];
+	// < Civic Infos Plus Start >
+	m_aiStateReligionYieldRateModifier = new int[NUM_YIELD_TYPES];
+	m_aiStateReligionCommerceRateModifier = new int[NUM_COMMERCE_TYPES];
+	m_aiNonStateReligionYieldRateModifier = new int[NUM_YIELD_TYPES];
+	m_aiNonStateReligionCommerceRateModifier = new int[NUM_COMMERCE_TYPES];
+	// < Civic Infos Plus End   >
 	m_aiExtraYieldThreshold = new int[NUM_YIELD_TYPES];
-	m_aiTradeYieldModifier = new int[NUM_YIELD_TYPES];
+	m_aiTradeYieldModifier = new int[NUM_YIELD_TYPES];	
+	// < Civic Infos Plus Start >
+	m_aiSpecialistExtraYield = new int[NUM_YIELD_TYPES];
+	// < Civic Infos Plus End   >
 	m_aiFreeCityCommerce = new int[NUM_COMMERCE_TYPES];
 	m_aiCommercePercent = new int[NUM_COMMERCE_TYPES];
 	m_aiCommerceRate = new int[NUM_COMMERCE_TYPES];
@@ -90,10 +99,23 @@ CvPlayer::CvPlayer(/* advc.003u: */ PlayerTypes eID) :
 	m_paeCivics = NULL;
 
 	m_ppaaiSpecialistExtraYield = NULL;
+	/*************************************************************************************************/
+	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+	/**																								**/
+	/**																								**/
+	/*************************************************************************************************/
+	m_ppaaiSpecialistCivicExtraCommerce = NULL;
+	/*************************************************************************************************/
+	/**	CMEDIT: End																					**/
+	/*************************************************************************************************/
+	
 	m_ppaaiImprovementYieldChange = NULL;
 
 	m_aszBonusHelp = NULL; // advc.003p
-
+// < Civic Infos Plus Start >
+	m_ppaaiBuildingYieldChange = NULL;
+	m_ppaaiBuildingCommerceChange = NULL;
+// < Civic Infos Plus End   >
 	m_bDisableHuman = false; // bbai
 	m_iChoosingFreeTechCount = 0; // K-Mod
 
@@ -108,6 +130,11 @@ CvPlayer::~CvPlayer()
 	SAFE_DELETE_ARRAY(m_aiSeaPlotYield);
 	SAFE_DELETE_ARRAY(m_aiYieldRateModifier);
 	SAFE_DELETE_ARRAY(m_aiCapitalYieldRateModifier);
+	// < Civic Infos Plus Start >
+	SAFE_DELETE_ARRAY(m_aiStateReligionYieldRateModifier);
+	SAFE_DELETE_ARRAY(m_aiSpecialistExtraYield);
+	SAFE_DELETE_ARRAY(m_aiNonStateReligionYieldRateModifier);
+	// < Civic Infos Plus End   >
 	SAFE_DELETE_ARRAY(m_aiExtraYieldThreshold);
 	SAFE_DELETE_ARRAY(m_aiTradeYieldModifier);
 	SAFE_DELETE_ARRAY(m_aiFreeCityCommerce);
@@ -115,6 +142,10 @@ CvPlayer::~CvPlayer()
 	SAFE_DELETE_ARRAY(m_aiCommerceRate);
 	SAFE_DELETE_ARRAY(m_aiCommerceRateModifier);
 	SAFE_DELETE_ARRAY(m_aiCapitalCommerceRateModifier);
+	// < Civic Infos Plus Start >
+	SAFE_DELETE_ARRAY(m_aiStateReligionCommerceRateModifier);
+	SAFE_DELETE_ARRAY(m_aiNonStateReligionCommerceRateModifier);
+	// < Civic Infos Plus End   >
 	SAFE_DELETE_ARRAY(m_aiStateReligionBuildingCommerce);
 	SAFE_DELETE_ARRAY(m_aiSpecialistExtraCommerce);
 	SAFE_DELETE_ARRAY(m_aiCommerceFlexibleCount);
@@ -409,7 +440,22 @@ void CvPlayer::uninit()
 		}
 		SAFE_DELETE_ARRAY(m_ppaaiSpecialistExtraYield);
 	}
-
+	/*************************************************************************************************/
+	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+	/**																								**/
+	/**																								**/
+	/*************************************************************************************************/
+	if (m_ppaaiSpecialistCivicExtraCommerce != NULL)
+	{
+		for (int iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
+		{
+			SAFE_DELETE_ARRAY(m_ppaaiSpecialistCivicExtraCommerce[iI]);
+		}
+		SAFE_DELETE_ARRAY(m_ppaaiSpecialistCivicExtraCommerce);
+	}
+	/*************************************************************************************************/
+	/**	CMEDIT: End																					**/
+	/*************************************************************************************************/	
 	if (m_ppaaiImprovementYieldChange != NULL)
 	{
 		for (int iI = 0; iI < GC.getNumImprovementInfos(); iI++)
@@ -425,7 +471,25 @@ void CvPlayer::uninit()
 			SAFE_DELETE(m_aszBonusHelp[i]);
 		SAFE_DELETE_ARRAY(m_aszBonusHelp);
 	} // </advc.003p>
+// < Civic Infos Plus Start >
+	if (m_ppaaiBuildingYieldChange != NULL)
+	{
+		for (int iI = 0; iI < GC.getNumBuildingInfos(); iI++)
+		{
+			SAFE_DELETE_ARRAY(m_ppaaiBuildingYieldChange[iI]);
+		}
+		SAFE_DELETE_ARRAY(m_ppaaiBuildingYieldChange);
+	}
 
+	if (m_ppaaiBuildingCommerceChange != NULL)
+	{
+		for (int iI = 0; iI < GC.getNumBuildingInfos(); iI++)
+		{
+			SAFE_DELETE_ARRAY(m_ppaaiBuildingCommerceChange[iI]);
+		}
+		SAFE_DELETE_ARRAY(m_ppaaiBuildingCommerceChange);
+	}
+// < Civic Infos Plus End   >
 	m_groupCycle.clear();
 	m_researchQueue.clear();
 	m_cityNames.clear();
@@ -536,6 +600,10 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_iNoNonStateReligionSpreadCount = 0;
 	m_iStateReligionHappiness = 0;
 	m_iNonStateReligionHappiness = 0;
+	// < Civic Infos Plus Start >
+	m_iStateReligionExtraHealth = 0;
+	m_iNonStateReligionExtraHealth = 0;
+	// < Civic Infos Plus End   >
 	m_iStateReligionUnitProductionModifier = 0;
 	m_iStateReligionBuildingProductionModifier = 0;
 	m_iStateReligionFreeExperience = 0;
@@ -571,10 +639,13 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_bSavingReplay = false; // advc.106i
 	m_bScoreboardExpanded = false; // advc.085
 	m_eReminderPending = NO_CIVIC; // advc.004x
-
+	
+	m_iCultureGoldenAgeProgress = 0;	//KNOEDEL CULTURAL_GOLDEN_AGE 1/8
+	m_iCultureGoldenAgesStarted = 2;	//KNOEDEL CULTURAL_GOLDEN_AGE 2/8
 	m_eID = eID;
 	updateTeamType();
 	updateHuman();
+
 	if (m_eID != NO_PLAYER)
 		m_ePersonalityType = GC.getInitCore().getLeader(m_eID); //??? Is this repeated data???
 	else m_ePersonalityType = NO_LEADER;
@@ -589,6 +660,11 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 		m_aiCapitalYieldRateModifier[iI] = 0;
 		m_aiExtraYieldThreshold[iI] = 0;
 		m_aiTradeYieldModifier[iI] = 0;
+		// < Civic Infos Plus Start >
+		m_aiStateReligionYieldRateModifier[iI] = 0;
+		m_aiNonStateReligionYieldRateModifier[iI] = 0;
+		m_aiSpecialistExtraYield[iI] = 0;
+		// < Civic Infos Plus End   >
 	}
 
 	for (iI = 0; iI < NUM_COMMERCE_TYPES; iI++)
@@ -601,6 +677,10 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 		m_aiStateReligionBuildingCommerce[iI] = 0;
 		m_aiSpecialistExtraCommerce[iI] = 0;
 		m_aiCommerceFlexibleCount[iI] = 0;
+		// < Civic Infos Plus Start >
+		m_aiStateReligionCommerceRateModifier[iI] = 0;
+		m_aiNonStateReligionCommerceRateModifier[iI] = 0;
+		// < Civic Infos Plus End   >
 	}
 
 	for (iI = 0; iI < MAX_PLAYERS; iI++)
@@ -783,6 +863,25 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 				m_ppaaiSpecialistExtraYield[iI][iJ] = 0;
 			}
 		}
+	/*************************************************************************************************/
+	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+	/**																								**/
+	/**																								**/
+	/*************************************************************************************************/
+		FAssertMsg(0 < GC.getNumSpecialistInfos(), "GC.getNumSpecialistInfos() is not greater than zero but it is used to allocate memory in CvPlayer::reset");
+		FAssertMsg(m_ppaaiSpecialistCivicExtraCommerce==NULL, "about to leak memory, CvPlayer::m_ppaaiSpecialistCivicExtraCommerce");
+		m_ppaaiSpecialistCivicExtraCommerce = new int*[GC.getNumSpecialistInfos()];
+		for (iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
+		{
+			m_ppaaiSpecialistCivicExtraCommerce[iI] = new int[NUM_COMMERCE_TYPES];
+			for (iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
+			{
+				m_ppaaiSpecialistCivicExtraCommerce[iI][iJ] = 0;
+			}
+		}
+	/*************************************************************************************************/
+	/**	CMEDIT: End																					**/
+	/*************************************************************************************************/
 
 		FAssertMsg(m_ppaaiImprovementYieldChange==NULL, "about to leak memory, CvPlayer::m_ppaaiImprovementYieldChange");
 		m_ppaaiImprovementYieldChange = new int*[GC.getNumImprovementInfos()];
@@ -800,6 +899,29 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 		for(int i = 0; i < GC.getNumBonusInfos(); i++)
 			m_aszBonusHelp[i] = NULL;
 		// </advc.003p>
+		// < Civic Infos Plus Start >
+		FAssertMsg(m_ppaaiBuildingYieldChange==NULL, "about to leak memory, CvPlayer::m_ppaaiBuildingYieldChange");
+		m_ppaaiBuildingYieldChange = new int*[GC.getNumBuildingInfos()];
+		for (iI = 0; iI < GC.getNumBuildingInfos(); iI++)
+		{
+			m_ppaaiBuildingYieldChange[iI] = new int[NUM_YIELD_TYPES];
+			for (iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
+			{
+				m_ppaaiBuildingYieldChange[iI][iJ] = 0;
+			}
+		}
+
+		FAssertMsg(m_ppaaiBuildingCommerceChange==NULL, "about to leak memory, CvPlayer::m_ppaaiBuildingCommerceChange");
+		m_ppaaiBuildingCommerceChange = new int*[GC.getNumBuildingInfos()];
+		for (iI = 0; iI < GC.getNumBuildingInfos(); iI++)
+		{
+			m_ppaaiBuildingCommerceChange[iI] = new int[NUM_COMMERCE_TYPES];
+			for (iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
+			{
+				m_ppaaiBuildingCommerceChange[iI][iJ] = 0;
+			}
+		}
+        // < Civic Infos Plus End   >
 
 		m_mapEventsOccured.clear();
 		m_mapEventCountdown.clear();
@@ -2987,6 +3109,19 @@ void CvPlayer::doTurn()  // advc: style changes
 		changeGoldenAgeTurns(-1);
 	if (getAnarchyTurns() > 0)
 		changeAnarchyTurns(-1);
+//KNOEDELbegin CULTURAL_GOLDEN_AGE 3/8
+//	
+//
+if (g.isOption(GAMEOPTION_CULTURE_GOLDEN_AGE))
+	{
+		if (getCultureGoldenAgeProgress() >= getCultureGoldenAgeThreshold())
+		{
+			changeCultureGoldenAgeProgress(-getCultureGoldenAgeThreshold());
+			incrementCultureGoldenAgeStarted();
+			changeGoldenAgeTurns(getGoldenAgeLength());
+		}
+	}
+//KNOEDELend
 	verifyCivics();
 	doChangeCivicsPopup(NO_CIVIC); // advc.004x
 	//verifyStateReligion(); // dlph.10: disabled for now
@@ -3248,6 +3383,25 @@ void CvPlayer::updateCommerce()
 	FOR_EACH_CITY_VAR(pLoopCity, *this)
 		pLoopCity->updateCommerce();
 }
+
+/*************************************************************************************************/
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**																								**/
+/**																								**/
+/*************************************************************************************************/
+void CvPlayer::updateSpecialistCivicExtraCommerce()
+{
+	CvCity* pLoopCity;
+	int iLoop;
+
+	for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
+	{
+		pLoopCity->updateSpecialistCivicExtraCommerce();
+	}
+}
+/*************************************************************************************************/
+/**	CMEDIT: End																					**/
+/*************************************************************************************************/
 
 
 void CvPlayer::updateBuildingCommerce()
@@ -4603,6 +4757,24 @@ bool CvPlayer::canRaze(CvCity const& kCity) const // advc: param was CvCity*
 		static int const iRAZING_CULTURAL_PERCENT_THRESHOLD = GC.getDefineINT("RAZING_CULTURAL_PERCENT_THRESHOLD"); // advc.opt
 		if (kCity.calculateTeamCulturePercent(getTeam()) >= iRAZING_CULTURAL_PERCENT_THRESHOLD)
 			return false;
+//Keldath QA- this is needed? and if so - shouldnt it replace the above?
+/************************************************************************************************/
+/* REVOLUTIONDCM_MOD                         02/17/10                           jdog5000        */
+/*                                                                                              */
+/*influence driven war                                                                                              */
+/************************************************************************************************/
+		// Change for IDW, so AI may raze cities it captures
+		if( kCity.isEverOwned(getID()) || kCity.plot()->isCultureRangeCity(getID(), std::max(0,GC.getNumCultureLevelInfos() - 1)) )
+		{
+			if (kCity.calculateTeamCulturePercent(getTeam()) >= GC.getDefineINT("RAZING_CULTURAL_PERCENT_THRESHOLD"))
+			{
+				return false;
+			}
+		}
+/************************************************************************************************/
+/* REVOLUTIONDCM_MOD                         END                                 Glider1        */
+/************************************************************************************************/
+
 	}
 	/*  advc.003y (note): This Python function is also called from acquireCity.
 		acquireCity should arguably call CvPlayer::canRaze instead. But that seems
@@ -5104,6 +5276,7 @@ bool CvPlayer::canFound(int iX, int iY, bool bTestVisible) const  // advc: some 
 	{
 		if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))//AND Mountains Option
 			{
+			//if (GC.getDefineINT(CvGlobals::MIN_CITY_RANGE)== 0)	
 			if (GC.getDefineINT("PEAK_CAN_FOUND_CITY") == 0)
 			{
 				return false;
@@ -5269,6 +5442,22 @@ void CvPlayer::found(int iX, int iY)  // advc: some style changes
 bool CvPlayer::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible, bool bIgnoreCost) const
 {
 	//PROFILE_FUNC(); // advc.003o
+	/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		Based on code by Afforess
+ *	Source:
+ *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
+ *
+ ****************************************/
+	if (!hasValidCivics(eUnit))
+	{
+		return false;
+	}
+/**
+ ** End: Unit Civic Prereq
+ **/
+
 	UnitClassTypes eUnitClass = GC.getInfo(eUnit).getUnitClassType();
 
 	/*	K-Mod note. This assert can fail if team games when checking whether this city can
@@ -5294,6 +5483,91 @@ bool CvPlayer::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible, bool
 			return false;
 		}
 	}
+
+/************************************************************************************************/
+/* REVDCM                                 02/16/10                                phungus420    */
+/*                                                                                              */
+/* CanTrain  -new unit options                                                                                   */
+/************************************************************************************************/
+	if (GC.getInfo(eUnit).getMaxStartEra() != NO_ERA)
+	{
+		if (GC.getGame().getStartEra() > GC.getInfo(eUnit).getMaxStartEra())
+		{
+			return false;
+		}
+	}
+
+	if (GC.getInfo(eUnit).getForceObsoleteTech() != NO_TECH)
+	{
+		if (GET_TEAM(getTeam()).isHasTech((TechTypes)(GC.getInfo(eUnit).getForceObsoleteTech())))
+		{
+			return false;
+		}
+	}
+
+	if (GC.getInfo(eUnit).getPrereqGameOption() != NO_GAMEOPTION)
+	{
+		if (!(GC.getGame().isOption((GameOptionTypes)GC.getInfo(eUnit).getPrereqGameOption())))
+		{
+			return false;
+		}
+	}
+	
+	if (GC.getInfo(eUnit).getNotGameOption() != NO_GAMEOPTION)
+	{
+		if (GC.getGame().isOption((GameOptionTypes)GC.getInfo(eUnit).getNotGameOption()))
+		{
+			return false;
+		}
+	}
+/*
+	bool bNoReqCivic = true;
+	bool bHasReqTech = false;
+	for (int iI = 0; iI < GC.getNumCivicInfos(); iI++)
+	{
+		if (GC.getInfo(eUnit).isPrereqOrCivics(iI))
+		{
+			bNoReqCivic = false;
+			if (GET_TEAM(getTeam()).isHasTech((TechTypes)(GC.getCivicInfo(CivicTypes(iI))).getTechPrereq()))
+			{
+				bHasReqTech = true;
+			}
+		}
+	}
+	if (!bNoReqCivic && !bHasReqTech)
+	{
+		return false;
+	}*/
+
+/*		bool bValid = false;
+		bool bNoReqCivic = true;
+		for (iI = 0; iI < GC.getNumCivicInfos(); iI++)
+		{
+			if (GC.getUnitInfo(eUnit).isPrereqOrCivics(iI))
+			{
+				bNoReqCivic = false;
+				if (isCivic(CivicTypes(iI)))
+				{
+					bValid = true;
+				}
+			}
+		}
+		if (!bNoReqCivic && !bValid)
+		{
+			return false;
+		}
+*/
+//MERGED DUPLICATE CODES - KELDATH
+	if (GC.getInfo(eUnit).isStateReligion())
+		{
+			if (getStateReligion() == NO_RELIGION)
+			{
+				return false;
+			}
+		}
+/************************************************************************************************/
+/* REVDCM                                  END CanTrain                                         */
+/************************************************************************************************/
 
 	if (GC.getInfo(eUnit).getStateReligion() != NO_RELIGION)
 	{
@@ -5347,6 +5621,31 @@ bool CvPlayer::canConstruct(BuildingTypes eBuilding, bool bContinue, bool bTestV
 	// (advc.003w: Usually, the caller checks this now, but can't rely on that.)
 	if (getCivilization().getBuilding(eBuildingClass) != eBuilding)
 		return false;
+/************************************************************************************************/
+/* REVDCM                                 02/16/10                                phungus420    */
+/*                                                                                              */
+/* CanConstruct       building need option                                                                          */
+/************************************************************************************************/
+/* moved to cvgame suggested by f1 advc - keldath
+	if (GC.getBuildingInfo(eBuilding).getPrereqGameOption() != NO_GAMEOPTION)
+	{
+		if (!(g.isOption((GameOptionTypes)GC.getBuildingInfo(eBuilding).getPrereqGameOption())))
+		{
+			return false;
+		}
+	}
+
+	if (GC.getBuildingInfo(eBuilding).getNotGameOption() != NO_GAMEOPTION)
+	{
+		if (g.isOption((GameOptionTypes)GC.getBuildingInfo(eBuilding).getNotGameOption()))
+		{
+			return false;
+		}
+	}
+*/
+/************************************************************************************************/
+/* REVDCM                                  END CanContstruct                                    */
+/************************************************************************************************/
 
 	CvTeamAI& kOurTeam = GET_TEAM(getTeam());
 	if (!bIgnoreTech) // K-Mod
@@ -5455,7 +5754,15 @@ bool CvPlayer::canCreate(ProjectTypes eProject, bool bContinue, bool bTestVisibl
 	{
 		return false;
 	}
+	// davidlallen: project civilization and free unit start
+	int eCiv = GC.getProjectInfo(eProject).getCivilization();
+	if ((eCiv != -1) && (eCiv != getCivilizationType()))
+	{
+		return false;
+	}
+	// davidlallen: project civilization and free unit end
 
+   
 	if (!(GET_TEAM(getTeam()).isHasTech((TechTypes)(GC.getInfo(eProject).getTechPrereq()))))
 	{
 		return false;
@@ -5689,7 +5996,19 @@ int CvPlayer::getProductionNeeded(BuildingTypes eBuilding) const
 		iProductionNeeded *= iAIModifier;
 		iProductionNeeded /= 100;
 	} // </advc.251>
-
+/* Population Limit ModComp - Beginning : these code lines adjust buildings' costs to make them cheaper */
+// option added by keldath after f1rpo suggestion
+	if(!GC.getGame().isOption(GAMEOPTION_NO_POPULATION_LIMIT)){
+			if (GC.getBuildingInfo(eBuilding).getPopulationLimitChange() != 0)
+	{
+		iProductionNeeded -= (((GC.getGame().getGameTurn() / 10) * (GC.getGame().getAdjustedPopulationLimitChange(GC.getBuildingInfo(eBuilding).getPopulationLimitChange()) * 10)) / 100);
+		if (!(isHuman()))
+		{
+			iProductionNeeded /= 2;
+		}
+	}
+}
+	/* Population Limit ModComp - End */
 	return std::max(1, iProductionNeeded);
 }
 
@@ -6426,10 +6745,19 @@ int CvPlayer::calculateResearchModifier(TechTypes eTech, // <advc.910>
 	int iModifier = 100;
 	if(NO_TECH == eTech)
 		return iModifier;
-
+// ALN DuneWars Start
+	// this should have been done a long time ago
+	// since techs are passed around, the tech pace is quicker, lets clamp it a little
+	if (!GC.getGame().isOption(GAMEOPTION_NO_TECH_TRADING) && GC.getGame().getCurrentEra() > 0)
+	{
+		iModifier -= 10;
+	}
+// ALN End
 	// BETTER_BTS_AI_MOD, Tech Diffusion, 07/27/09, jdog5000: START
-	static bool const bTECH_DIFFUSION_ENABLE = GC.getDefineBOOL("TECH_DIFFUSION_ENABLE");
-	if (bTECH_DIFFUSION_ENABLE)
+/* Tech Diffusion  GAMEOPTION*/
+	//static bool const bTECH_DIFFUSION_ENABLE = GC.getDefineBOOL("TECH_DIFFUSION_ENABLE");
+	if (GC.getGame().isOption(GAMEOPTION_TECH_DIFFUSION))
+	//if (bTECH_DIFFUSION_ENABLE)
 	{
 		double knownExp = 0.0;
 		// Tech flows better through open borders
@@ -6660,6 +6988,29 @@ TechTypes CvPlayer::getDiscoveryTech(UnitTypes eUnit) const
 }
 
 
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+bool CvPlayer::canEverTrade(TechTypes eTech) const
+{
+	if (GC.getCivilizationInfo(getCivilizationType()).isCivilizationDisableTechs(eTech))
+	{
+		return false;
+	}
+
+	CyArgsList argsList;
+	argsList.add(getID());
+	argsList.add(eTech);
+	argsList.add(false);
+	long lResult=0;
+	gDLL->getPythonIFace()->callFunction(PYGameModule, "cannotResearch", argsList.makeFunctionArgs(), &lResult);
+	if (lResult == 1)
+	{
+		return false;
+	}
+
+	return true;
+}
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
+
 bool CvPlayer::canResearch(TechTypes eTech, bool bTrade, bool bFree,
 		bool bCouldResearchAgain) const // advc.126
 {
@@ -6721,8 +7072,20 @@ bool CvPlayer::canResearch(TechTypes eTech, bool bTrade, bool bFree,
 		}
 	}
 
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+	if (bTrade)
+	{
+		if (!canEverTrade(eTech))
+		{
+			return false;
+		}
+	}
+	else
+	{
 	if (!canEverResearch(eTech))
 		return false;
+	}
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
 
 	return true;
 }
@@ -6842,8 +7205,9 @@ bool CvPlayer::canSeeTech(PlayerTypes eOther) const
 	if(otherTeam.isVassal(ourTeam.getID()))
 		return true; // Can see tech through "we'd like you to research ..."
 	// advc.553: Make tech visible despite No Tech Trading (as in BtS)
-	/*if(GC.getGame().isOption(GAMEOPTION_NO_TECH_TRADING) && !canSeeResearch(eOther))
-		return false;*/
+	//REOPENED BY KELDATH - i dont wish to see techsif i cant trade them :)
+	if(GC.getGame().isOption(GAMEOPTION_NO_TECH_TRADING) && !canSeeResearch(eOther))
+		return false;
 	if(!ourTeam.isAlive() || !otherTeam.isAlive() ||
 			ourTeam.isBarbarian() || otherTeam.isBarbarian() ||
 			ourTeam.isMinorCiv() || otherTeam.isMinorCiv())
@@ -7162,6 +7526,15 @@ bool CvPlayer::canConvert(ReligionTypes eReligion) const
 		}
 	}
 
+	// davidlallen religion forbidden to civilization start
+	if (eReligion != NO_RELIGION)
+	{
+		if (GC.getCivilizationInfo(getCivilizationType()).isForbidden(eReligion))
+		{
+			return false;
+		}
+	}
+	// davidlallen religion forbidden to civilization end
 	return true;
 }
 
@@ -7578,7 +7951,19 @@ int CvPlayer::specialistYield(SpecialistTypes eSpecialist, YieldTypes eYield) co
 
 int CvPlayer::specialistCommerce(SpecialistTypes eSpecialist, CommerceTypes eCommerce) const
 {
-	return (GC.getInfo(eSpecialist).getCommerceChange(eCommerce) + getSpecialistExtraCommerce(eCommerce));
+	/*************************************************************************************************/
+	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+	/**																								**/
+	/**																								**/
+	/*************************************************************************************************/
+//<Original Code>	
+	//return (GC.getInfo(eSpecialist).getCommerceChange(eCommerce) + getSpecialistExtraCommerce(eCommerce));
+	//return (GC.getSpecialistInfo(eSpecialist).getCommerceChange(eCommerce) + getSpecialistExtraCommerce(eCommerce));
+		
+	return (GC.getInfo(eSpecialist).getCommerceChange(eCommerce) + getSpecialistExtraCommerce(eCommerce)); + getSpecialistCivicExtraCommerce (eSpecialist, eCommerce));
+	/*************************************************************************************************/
+	/**	CMEDIT: End																					**/
+	/*************************************************************************************************/
 }
 
 
@@ -7626,7 +8011,176 @@ void CvPlayer::setStartingPlot(CvPlot* pNewValue, bool bUpdateStartDist)
 	FAssert(pNewValue == NULL || !pNewValue->isWater()); // advc.021b
 }
 
+// < Civic Infos Plus Start >
 
+int CvPlayer::getBuildingYieldChange(BuildingTypes eIndex1, YieldTypes eIndex2) const
+{
+	FAssertMsg(eIndex1 >= 0, "eIndex1 is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
+	FAssertMsg(eIndex2 >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex2 < NUM_YIELD_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
+	return m_ppaaiBuildingYieldChange[eIndex1][eIndex2];
+}
+
+
+void CvPlayer::changeBuildingYieldChange(BuildingTypes eIndex1, YieldTypes eIndex2, int iChange)
+{
+	FAssertMsg(eIndex1 >= 0, "eIndex1 is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
+	FAssertMsg(eIndex2 >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex2 < NUM_YIELD_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
+
+	if (iChange != 0)
+	{
+		m_ppaaiBuildingYieldChange[eIndex1][eIndex2] = (m_ppaaiBuildingYieldChange[eIndex1][eIndex2] + iChange);
+		FAssert(getBuildingYieldChange(eIndex1, eIndex2) >= 0);
+	}
+}
+
+
+int CvPlayer::getStateReligionYieldRateModifier(YieldTypes eIndex) const
+{
+	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+	return m_aiStateReligionYieldRateModifier[eIndex];
+}
+
+
+void CvPlayer::changeStateReligionYieldRateModifier(YieldTypes eIndex, int iChange)
+{
+	CvCity* pLoopCity;
+	int iLoop;
+
+	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+
+	if (iChange != 0)
+	{
+		m_aiStateReligionYieldRateModifier[eIndex] = (m_aiStateReligionYieldRateModifier[eIndex] + iChange);
+
+		invalidateYieldRankCache(eIndex);
+
+		for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
+		{
+			pLoopCity->changeStateReligionYieldRateModifier(eIndex, iChange);
+		}
+	}
+}
+
+int CvPlayer::getStateReligionCommerceRateModifier(CommerceTypes eIndex) const
+{
+	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+	return m_aiStateReligionCommerceRateModifier[eIndex];
+}
+
+
+void CvPlayer::changeStateReligionCommerceRateModifier(CommerceTypes eIndex, int iChange)
+{
+	CvCity* pLoopCity;
+	int iLoop;
+
+	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+
+	if (iChange != 0)
+	{
+		m_aiStateReligionCommerceRateModifier[eIndex] = (m_aiStateReligionCommerceRateModifier[eIndex] + iChange);
+		FAssert(getStateReligionCommerceRateModifier(eIndex) >= 0);
+
+		for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
+		{
+			pLoopCity->changeStateReligionCommerceRateModifier(eIndex, iChange);
+		}
+	}
+}
+
+int CvPlayer::getNonStateReligionYieldRateModifier(YieldTypes eIndex) const
+{
+	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+	return m_aiNonStateReligionYieldRateModifier[eIndex];
+}
+
+
+void CvPlayer::changeNonStateReligionYieldRateModifier(YieldTypes eIndex, int iChange)
+{
+	CvCity* pLoopCity;
+	int iLoop;
+
+	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+
+	if (iChange != 0)
+	{
+		m_aiNonStateReligionYieldRateModifier[eIndex] = (m_aiNonStateReligionYieldRateModifier[eIndex] + iChange);
+
+		invalidateYieldRankCache(eIndex);
+
+		for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
+		{
+			pLoopCity->changeNonStateReligionYieldRateModifier(eIndex, iChange);
+		}
+	}
+}
+
+
+int CvPlayer::getNonStateReligionCommerceRateModifier(CommerceTypes eIndex) const
+{
+	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+	return m_aiNonStateReligionCommerceRateModifier[eIndex];
+}
+
+
+void CvPlayer::changeNonStateReligionCommerceRateModifier(CommerceTypes eIndex, int iChange)
+{
+	CvCity* pLoopCity;
+	int iLoop;
+
+	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+
+	if (iChange != 0)
+	{
+		m_aiNonStateReligionCommerceRateModifier[eIndex] = (m_aiNonStateReligionCommerceRateModifier[eIndex] + iChange);
+		FAssert(getNonStateReligionCommerceRateModifier(eIndex) >= 0);
+
+		for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
+		{
+			pLoopCity->changeNonStateReligionCommerceRateModifier(eIndex, iChange);
+		}
+	}
+}
+
+
+int CvPlayer::getBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes eIndex2) const
+{
+	FAssertMsg(eIndex1 >= 0, "eIndex1 is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
+	FAssertMsg(eIndex2 >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex2 < NUM_COMMERCE_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
+	return m_ppaaiBuildingCommerceChange[eIndex1][eIndex2];
+}
+
+
+void CvPlayer::changeBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes eIndex2, int iChange)
+{
+//	CvCity* pLoopCity;
+//	int iLoop;
+
+	FAssertMsg(eIndex1 >= 0, "eIndex1 is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
+	FAssertMsg(eIndex2 >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex2 < NUM_COMMERCE_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
+
+	if (iChange != 0)
+	{
+		m_ppaaiBuildingCommerceChange[eIndex1][eIndex2] = (m_ppaaiBuildingCommerceChange[eIndex1][eIndex2] + iChange);
+		FAssert(getBuildingCommerceChange(eIndex1, eIndex2) >= 0);
+	}
+}
+// < Civic Infos Plus End   >
 int CvPlayer::getTotalPopulation() const
 {
 	return m_iTotalPopulation;
@@ -8284,6 +8838,33 @@ void CvPlayer::changeCityDefenseModifier(int iChange)
 	m_iCityDefenseModifier = (m_iCityDefenseModifier + iChange);
 }
 
+/************************************************************************************************/
+/* REVDCM                                 09/02/10                                phungus420    */
+/*                                                                                              */
+/* Player Functions              cantrain                                                               */
+/************************************************************************************************/
+bool CvPlayer::isBuildingClassRequiredToTrain(BuildingClassTypes eBuildingClass, UnitTypes eUnit) const
+{
+	CvUnitInfo& kUnit = GC.getUnitInfo(eUnit);
+	if (kUnit.isPrereqBuildingClass(eBuildingClass))
+	{
+		TechTypes eOverrideTech = (TechTypes) kUnit.getPrereqBuildingClassOverrideTech(eBuildingClass);
+		if (eOverrideTech != NO_TECH && GET_TEAM(getTeam()).isHasTech(TechTypes(eOverrideTech)) )
+		{
+			return false;
+		}
+		EraTypes eOverrideEra = (EraTypes) kUnit.getPrereqBuildingClassOverrideEra(eBuildingClass);
+		if (eOverrideEra != NO_ERA && EraTypes(getCurrentEra()) >= eOverrideEra)
+		{
+			return false;
+		}
+		return true;
+	}
+	return false;
+}
+/************************************************************************************************/
+/* REVDCM                                  END                                                  */
+/************************************************************************************************/
 
 int CvPlayer::getNumNukeUnits() const
 {
@@ -9290,7 +9871,50 @@ void CvPlayer::changeNonStateReligionHappiness(int iChange)
 	}
 }
 
+// < Civic Infos Plus Start >
+int CvPlayer::getStateReligionExtraHealth() const
+{
+	return m_iStateReligionExtraHealth;
+}
 
+
+void CvPlayer::changeStateReligionExtraHealth(int iChange)
+{
+	if (iChange != 0)
+	{
+		m_iStateReligionExtraHealth = (m_iStateReligionExtraHealth + iChange);
+
+		updateReligionHealth();
+	}
+}
+
+void CvPlayer::updateReligionHealth()
+{
+	CvCity* pLoopCity;
+	int iLoop;
+
+	for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
+	{
+		pLoopCity->updateReligionHealth();
+	}
+}
+
+int CvPlayer::getNonStateReligionExtraHealth() const
+{
+	return m_iNonStateReligionExtraHealth;
+}
+
+
+void CvPlayer::changeNonStateReligionExtraHealth(int iChange)
+{
+	if (iChange != 0)
+	{
+		m_iNonStateReligionExtraHealth = (m_iNonStateReligionExtraHealth + iChange);
+
+		updateReligionHealth();
+	}
+}
+// < Civic Infos Plus End   >
 int CvPlayer::getStateReligionUnitProductionModifier() const
 {
 	return m_iStateReligionUnitProductionModifier;
@@ -11102,6 +11726,32 @@ void CvPlayer::changeSpecialistExtraCommerce(CommerceTypes eIndex, int iChange)
 }
 
 
+// < Civic Infos Plus Start >
+int CvPlayer::getSpecialistExtraYield(YieldTypes eIndex) const
+{
+	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+	return m_aiSpecialistExtraYield[eIndex];
+}
+
+
+void CvPlayer::changeSpecialistExtraYield(YieldTypes eIndex, int iChange)
+{
+	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+
+	if (iChange != 0)
+	{
+		m_aiSpecialistExtraYield[eIndex] = (m_aiSpecialistExtraYield[eIndex] + iChange);
+		FAssert(getSpecialistExtraYield(eIndex) >= 0);
+
+		updateYield();
+
+		AI_makeAssignWorkDirty();
+	}
+}
+// < Civic Infos Plus End   >
+
 int CvPlayer::getCommerceFlexibleCount(CommerceTypes eIndex) const
 {
 	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
@@ -11298,7 +11948,10 @@ void CvPlayer::changeImprovementCount(ImprovementTypes eIndex, int iChange)
 	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
 	FAssertMsg(eIndex < GC.getNumImprovementInfos(), "eIndex is expected to be within maximum bounds (invalid Index)");
 	m_paiImprovementCount[eIndex] = (m_paiImprovementCount[eIndex] + iChange);
-	FAssert(getImprovementCount(eIndex) >= 0);
+//	FAssert(getImprovementCount(eIndex) >= 0);
+//jculturecontrol fix by f1 advc - keldath
+	FAssert(getImprovementCount(eIndex) >= 0 || (getImprovementCount(eIndex) >= -1 && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL)));
+
 }
 
 
@@ -11999,6 +12652,46 @@ void CvPlayer::setCivics(CivicOptionTypes eIndex, CivicTypes eNewValue)
 	if (getCivics(eIndex) != NO_CIVIC)
 		processCivics(getCivics(eIndex), 1);
 
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		Based on code by Afforess
+ *	Source:
+ *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
+ *
+ ****************************************/
+	int iLoop;
+
+		if (eNewValue != NO_CIVIC && eOldCivic != NO_CIVIC)
+		{
+			CvCivicInfo& kCivic = GC.getCivicInfo(getCivics(eIndex));
+			CvCivicInfo& kOldCivic = GC.getCivicInfo(eOldCivic);
+		}
+	//defined above keldath change
+	//	CvWString szBuffer;
+		for (CvUnit* pLoopUnit = firstUnit(&iLoop); NULL != pLoopUnit; pLoopUnit = nextUnit(&iLoop))
+		{
+			bool validCivics = hasValidCivics(pLoopUnit->getUnitType());
+			if (!validCivics && pLoopUnit->isCivicEnabled())
+			{
+				pLoopUnit->setCivicEnabled(false);
+				szBuffer = gDLL->getText("TXT_KEY_CIVIC_DISABLED_UNIT", pLoopUnit->getUnitType(), pLoopUnit->getNameKey());
+				//fix by f1 to kmod style -keldth
+				//gDLL->getInterfaceIFace()->addMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
+				gDLL->getInterfaceIFace()->addHumanMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
+			}
+			else if (validCivics && !pLoopUnit->isCivicEnabled())
+			{
+				pLoopUnit->setCivicEnabled(true);
+				szBuffer = gDLL->getText("TXT_KEY_CIVIC_ENABLED_UNIT", pLoopUnit->getUnitType(), pLoopUnit->getNameKey());
+				//fix by f1 to kmod style -keldth
+				//gDLL->getInterfaceIFace()->addMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
+				gDLL->getInterfaceIFace()->addHumanMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
+			}
+		}
+/**
+ ** End: Unit Civic Prereq
+ **/
 	CvGame& g = GC.getGame();
 	g.updateSecretaryGeneral();
 	g.AI_makeAssignWorkDirty();
@@ -12093,6 +12786,41 @@ void CvPlayer::changeSpecialistExtraYield(SpecialistTypes eIndex1, YieldTypes eI
 	}
 }
 
+/*************************************************************************************************/
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**																								**/
+/**																								**/
+/*************************************************************************************************/
+int CvPlayer::getSpecialistCivicExtraCommerce(SpecialistTypes eIndex1, CommerceTypes eIndex) const
+{
+	FAssertMsg(eIndex1 >= 0, "eIndex1 expected to be >= 0");
+	FAssertMsg(eIndex1 < GC.getNumSpecialistInfos(), "eIndex1 expected to be < GC.getNumSpecialistInfos()");
+	FAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
+	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex expected to be < NUM_COMMERCE__TYPES");
+	return m_ppaaiSpecialistCivicExtraCommerce [eIndex1][eIndex];
+}
+
+
+void CvPlayer::changeSpecialistCivicExtraCommerce(SpecialistTypes eIndex1, CommerceTypes eIndex, int iChange)
+{
+	FAssertMsg(eIndex1 >= 0, "eIndex1 expected to be >= 0");
+	FAssertMsg(eIndex1 < GC.getNumSpecialistInfos(), "eIndex1 expected to be < GC.getNumSpecialistInfos()");
+	FAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
+	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex expected to be < NUM_COMMERCE_TYPES");
+
+	if (iChange != 0)
+	{
+		m_ppaaiSpecialistCivicExtraCommerce[eIndex1][eIndex] = (m_ppaaiSpecialistCivicExtraCommerce[eIndex1][eIndex] + iChange);
+		FAssert(getSpecialistCivicExtraCommerce(eIndex1, eIndex) >= 0);
+
+		updateSpecialistCivicExtraCommerce();
+
+		AI_makeAssignWorkDirty();
+	}
+}
+/*************************************************************************************************/
+/**	CMEDIT: End																					**/
+/*************************************************************************************************/
 
 int CvPlayer::getImprovementYieldChange(ImprovementTypes eIndex1, YieldTypes eIndex2) const
 {
@@ -15006,6 +15734,16 @@ void CvPlayer::doAdvancedStartAction(AdvancedStartActionTypes eAction, int iX, i
 					}
 					pPlot->setImprovementType(eImprovement);
 					changeAdvancedStartPoints(-iCost);
+  					// < JCultureControl Mod Start >
+				    if (eImprovement != NO_IMPROVEMENT && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
+                    {
+                        if (GC.getImprovementInfo(eImprovement).isSpreadCultureControl())
+                        {
+                            pPlot->setImprovementOwner(getID());
+                            pPlot->addCultureControl(getID(), eImprovement, true);
+                        }
+                    }
+				    // < JCultureControl Mod End >
 				}
 			}
 			else // Remove Improvement from the Plot
@@ -15165,6 +15903,12 @@ int CvPlayer::getAdvancedStartUnitCost(UnitTypes eUnit, bool bAdd, CvPlot const*
 
 				if (pPlot->isImpassable() && !GC.getInfo(eUnit).canMoveImpassable())
 					return -1;
+				// Deliverator - peak mod
+				if (pPlot->isPeak() && !GC.getUnitInfo(eUnit).isCanMovePeak())
+				{
+					return -1;
+				}	
+				// Deliverator				
 
 				if (pPlot->isFeature())
 				{
@@ -15917,7 +16661,10 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	//int iLoop = 0;
     //DPII < Maintenance Modifiers >
 	int iI, iJ;
-
+	// < Civic Infos Plus Start >
+	CvCity* pLoopCity;
+	int iLoop;
+	// < Civic Infos Plus End   >
 	changeGreatPeopleRateModifier(GC.getInfo(eCivic).getGreatPeopleRateModifier() * iChange);
 	changeGreatGeneralRateModifier(GC.getInfo(eCivic).getGreatGeneralRateModifier() * iChange);
 	changeDomesticGreatGeneralRateModifier(GC.getInfo(eCivic).getDomesticGreatGeneralRateModifier() * iChange);
@@ -15976,6 +16723,11 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 			}
 		}
 	//DPII < Maintenance Modifiers >
+	
+	// < Civic Infos Plus Start >
+	changeStateReligionExtraHealth(GC.getCivicInfo(eCivic).getStateReligionExtraHealth() * iChange);
+	changeNonStateReligionExtraHealth(GC.getCivicInfo(eCivic).getNonStateReligionExtraHealth() * iChange);
+	// < Civic Infos Plus End   >
 	changeStateReligionUnitProductionModifier(GC.getInfo(eCivic).getStateReligionUnitProductionModifier() * iChange);
 	changeStateReligionBuildingProductionModifier(GC.getInfo(eCivic).getStateReligionBuildingProductionModifier() * iChange);
 	changeStateReligionFreeExperience(GC.getInfo(eCivic).getStateReligionFreeExperience() * iChange);
@@ -15983,6 +16735,15 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 
 	for (iI = 0; iI < NUM_YIELD_TYPES; iI++)
 	{
+		 // < Civic Infos Plus Start >
+		changeStateReligionYieldRateModifier(((YieldTypes)iI), (GC.getInfo(eCivic).getStateReligionYieldModifier(iI) * iChange));
+		changeNonStateReligionYieldRateModifier(((YieldTypes)iI), (GC.getInfo(eCivic).getNonStateReligionYieldModifier(iI) * iChange));
+
+		for (iJ = 0; iJ < GC.getNumSpecialistInfos(); iJ++)
+        {
+            changeSpecialistExtraYield((SpecialistTypes) iJ, (YieldTypes)iI, (GC.getInfo(eCivic).getSpecialistExtraYield(iI) * iChange));
+        }
+		// < Civic Infos Plus End   >
 		changeYieldRateModifier(((YieldTypes)iI), (GC.getInfo(eCivic).getYieldModifier(iI) * iChange));
 		changeCapitalYieldRateModifier(((YieldTypes)iI), (GC.getInfo(eCivic).getCapitalYieldModifier(iI) * iChange));
 		changeTradeYieldModifier(((YieldTypes)iI), (GC.getInfo(eCivic).getTradeYieldModifier(iI) * iChange));
@@ -15990,6 +16751,10 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 
 	for (iI = 0; iI < NUM_COMMERCE_TYPES; iI++)
 	{
+		// < Civic Infos Plus Start >
+		changeStateReligionCommerceRateModifier(((CommerceTypes)iI), (GC.getInfo(eCivic).getStateReligionCommerceModifier(iI) * iChange));
+		changeNonStateReligionCommerceRateModifier(((CommerceTypes)iI), (GC.getInfo(eCivic).getNonStateReligionCommerceModifier(iI) * iChange));
+		// < Civic Infos Plus End   >
 		changeCommerceRateModifier(((CommerceTypes)iI), (GC.getInfo(eCivic).getCommerceModifier(iI) * iChange));
 		changeCapitalCommerceRateModifier(((CommerceTypes)iI), (GC.getInfo(eCivic).getCapitalCommerceModifier(iI) * iChange));
 		changeSpecialistExtraCommerce(((CommerceTypes)iI), (GC.getInfo(eCivic).getSpecialistExtraCommerce(iI) * iChange));
@@ -16000,6 +16765,17 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 		CvCivilization const& kCiv = getCivilization(); // advc.003w
 		for (int i = 0; i < kCiv.getNumBuildings(); i++)
 		{
+			// < Civic Infos Plus Start >
+	    	for (iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
+			{
+			changeBuildingYieldChange(((BuildingTypes)iI), ((YieldTypes)iJ), (GC.getInfo(eCivic).getBuildingYieldChanges(iI, iJ) * iChange));
+			}
+
+			for (iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
+			{
+				changeBuildingCommerceChange(((BuildingTypes)iI), ((CommerceTypes)iJ), (GC.getInfo(eCivic).getBuildingCommerceChanges(iI, iJ) * iChange));
+			}
+			// < Civic Infos Plus End   >
 			BuildingTypes eOurBuilding = kCiv.buildingAt(i);
 			BuildingClassTypes eLoopClass = kCiv.buildingClassAt(i);
 			changeExtraBuildingHappiness(eOurBuilding, GC.getInfo(eCivic).getBuildingHappinessChanges(eLoopClass) * iChange);
@@ -16026,7 +16802,17 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	{
 		changeSpecialistValidCount(((SpecialistTypes)iI), ((GC.getInfo(eCivic).isSpecialistValid(iI)) ? iChange : 0));
 	}
-
+// < Civic Infos Plus Start >
+	for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
+	{
+		for(iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
+		{
+			pLoopCity->changeFreeSpecialistCount((SpecialistTypes)iI, (GC.getCivicInfo(eCivic).getFreeSpecialistCount(iI) * iChange));
+		}
+		pLoopCity->updateBuildingCommerceChange(eCivic, iChange);
+		pLoopCity->updateBuildingYieldChange(eCivic, iChange);
+	}
+// < Civic Infos Plus End   >
 	for (iI = 0; iI < GC.getNumImprovementInfos(); iI++)
 	{
 		for (iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
@@ -16034,6 +16820,29 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 			changeImprovementYieldChange(((ImprovementTypes)iI), ((YieldTypes)iJ), (GC.getInfo(eCivic).getImprovementYieldChanges(iI, iJ) * iChange));
 		}
 	}
+	/*************************************************************************************************/
+	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+	/**																								**/
+	/**																								**/
+	/*************************************************************************************************/	
+	for (iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
+	{
+		for (iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
+		{
+			changeSpecialistExtraYield(((SpecialistTypes)iI), ((YieldTypes)iJ), (GC.getCivicInfo(eCivic).getSpecialistYieldChange(iI, iJ) * iChange));
+		}
+	}
+
+	for (iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
+	{
+		for (iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
+		{
+			changeSpecialistCivicExtraCommerce(((SpecialistTypes)iI), ((CommerceTypes)iJ), (GC.getCivicInfo(eCivic).getSpecialistCommerceChange(iI, iJ) * iChange));
+		}
+	}
+	/*************************************************************************************************/
+	/**	CMEDIT: End																					**/
+	/*************************************************************************************************/
 }
 
 void CvPlayer::showMissedMessages()
@@ -16167,6 +16976,10 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iNoNonStateReligionSpreadCount);
 	pStream->Read(&m_iStateReligionHappiness);
 	pStream->Read(&m_iNonStateReligionHappiness);
+	// < Civic Infos Plus Start >
+	pStream->Read(&m_iStateReligionExtraHealth);
+	pStream->Read(&m_iNonStateReligionExtraHealth);
+	// < Civic Infos Plus End   >
 	pStream->Read(&m_iStateReligionUnitProductionModifier);
 	pStream->Read(&m_iStateReligionBuildingProductionModifier);
 	pStream->Read(&m_iStateReligionFreeExperience);
@@ -16221,6 +17034,11 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	pStream->Read(NUM_YIELD_TYPES, m_aiSeaPlotYield);
 	pStream->Read(NUM_YIELD_TYPES, m_aiYieldRateModifier);
 	pStream->Read(NUM_YIELD_TYPES, m_aiCapitalYieldRateModifier);
+	// < Civic Infos Plus Start >
+    pStream->Read(NUM_YIELD_TYPES, m_aiSpecialistExtraYield);
+    pStream->Read(NUM_YIELD_TYPES, m_aiStateReligionYieldRateModifier);
+    pStream->Read(NUM_YIELD_TYPES, m_aiNonStateReligionYieldRateModifier);
+    // < Civic Infos Plus End   >
 	pStream->Read(NUM_YIELD_TYPES, m_aiExtraYieldThreshold);
 	pStream->Read(NUM_YIELD_TYPES, m_aiTradeYieldModifier);
 	pStream->Read(NUM_COMMERCE_TYPES, m_aiFreeCityCommerce);
@@ -16228,6 +17046,10 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	pStream->Read(NUM_COMMERCE_TYPES, m_aiCommerceRate);
 	pStream->Read(NUM_COMMERCE_TYPES, m_aiCommerceRateModifier);
 	pStream->Read(NUM_COMMERCE_TYPES, m_aiCapitalCommerceRateModifier);
+	// < Civic Infos Plus Start >
+    pStream->Read(NUM_COMMERCE_TYPES, m_aiStateReligionCommerceRateModifier);
+    pStream->Read(NUM_COMMERCE_TYPES, m_aiNonStateReligionCommerceRateModifier);
+    // < Civic Infos Plus End   >
 	pStream->Read(NUM_COMMERCE_TYPES, m_aiStateReligionBuildingCommerce);
 	pStream->Read(NUM_COMMERCE_TYPES, m_aiSpecialistExtraCommerce);
 	pStream->Read(NUM_COMMERCE_TYPES, m_aiCommerceFlexibleCount);
@@ -16273,6 +17095,29 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	{
 		pStream->Read(NUM_YIELD_TYPES, m_ppaaiSpecialistExtraYield[iI]);
 	}
+	// < Civic Infos Plus Start >
+	for (iI=0;iI<GC.getNumBuildingInfos();iI++)
+	{
+		pStream->Read(NUM_YIELD_TYPES, m_ppaaiBuildingYieldChange[iI]);
+	}
+
+	for (iI=0;iI<GC.getNumBuildingInfos();iI++)
+	{
+		pStream->Read(NUM_COMMERCE_TYPES, m_ppaaiBuildingCommerceChange[iI]);
+	}
+	// < Civic Infos Plus End   >
+	/*************************************************************************************************/
+	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+	/**																								**/
+	/**																								**/
+	/*************************************************************************************************/	
+	for (iI=0;iI<GC.getNumSpecialistInfos();iI++)
+	{
+		pStream->Read(NUM_COMMERCE_TYPES, m_ppaaiSpecialistCivicExtraCommerce[iI]);
+	}
+	/*************************************************************************************************/
+	/**	CMEDIT: End																					**/
+	/*************************************************************************************************/
 
 	for (iI=0;iI<GC.getNumImprovementInfos();iI++)
 	{
@@ -16570,6 +17415,9 @@ void CvPlayer::read(FDataStreamBase* pStream)
 		}
 	} // </advc.064b>
 	pStream->Read(&m_iInflationModifier);
+//KNOEDEL CULTURAL_GOLDEN_AGE
+	pStream->Read(&m_iCultureGoldenAgeProgress);	//KNOEDEL CULTURAL_GOLDEN_AGE 4/8
+	pStream->Read(&m_iCultureGoldenAgesStarted);	//KNOEDEL CULTURAL_GOLDEN_AGE 5/8
 
 	if(!isAlive())
 		return; // advc
@@ -16706,6 +17554,10 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	pStream->Write(m_iNoNonStateReligionSpreadCount);
 	pStream->Write(m_iStateReligionHappiness);
 	pStream->Write(m_iNonStateReligionHappiness);
+	// < Civic Infos Plus Start >
+	pStream->Write(m_iStateReligionExtraHealth);
+	pStream->Write(m_iNonStateReligionExtraHealth);
+	// < Civic Infos Plus End   >
 	pStream->Write(m_iStateReligionUnitProductionModifier);
 	pStream->Write(m_iStateReligionBuildingProductionModifier);
 	pStream->Write(m_iStateReligionFreeExperience);
@@ -16743,6 +17595,11 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	pStream->Write(NUM_YIELD_TYPES, m_aiSeaPlotYield);
 	pStream->Write(NUM_YIELD_TYPES, m_aiYieldRateModifier);
 	pStream->Write(NUM_YIELD_TYPES, m_aiCapitalYieldRateModifier);
+	// < Civic Infos Plus Start >
+    pStream->Write(NUM_YIELD_TYPES, m_aiSpecialistExtraYield);
+    pStream->Write(NUM_YIELD_TYPES, m_aiStateReligionYieldRateModifier);
+    pStream->Write(NUM_YIELD_TYPES, m_aiNonStateReligionYieldRateModifier);
+    // < Civic Infos Plus End   >
 	pStream->Write(NUM_YIELD_TYPES, m_aiExtraYieldThreshold);
 	pStream->Write(NUM_YIELD_TYPES, m_aiTradeYieldModifier);
 	pStream->Write(NUM_COMMERCE_TYPES, m_aiFreeCityCommerce);
@@ -16750,6 +17607,10 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	pStream->Write(NUM_COMMERCE_TYPES, m_aiCommerceRate);
 	pStream->Write(NUM_COMMERCE_TYPES, m_aiCommerceRateModifier);
 	pStream->Write(NUM_COMMERCE_TYPES, m_aiCapitalCommerceRateModifier);
+	// < Civic Infos Plus Start >
+    pStream->Write(NUM_COMMERCE_TYPES, m_aiStateReligionCommerceRateModifier);
+    pStream->Write(NUM_COMMERCE_TYPES, m_aiNonStateReligionCommerceRateModifier);
+    // < Civic Infos Plus End   >
 	pStream->Write(NUM_COMMERCE_TYPES, m_aiStateReligionBuildingCommerce);
 	pStream->Write(NUM_COMMERCE_TYPES, m_aiSpecialistExtraCommerce);
 	pStream->Write(NUM_COMMERCE_TYPES, m_aiCommerceFlexibleCount);
@@ -16796,6 +17657,29 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	{
 		pStream->Write(NUM_YIELD_TYPES, m_ppaaiSpecialistExtraYield[iI]);
 	}
+	// < Civic Infos Plus Start >
+	for (iI=0;iI<GC.getNumBuildingInfos();iI++)
+	{
+		pStream->Write(NUM_YIELD_TYPES, m_ppaaiBuildingYieldChange[iI]);
+	}
+
+	for (iI=0;iI<GC.getNumBuildingInfos();iI++)
+	{
+		pStream->Write(NUM_COMMERCE_TYPES, m_ppaaiBuildingCommerceChange[iI]);
+	}
+	// < Civic Infos Plus End   >	
+	/*************************************************************************************************/
+	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+	/**																								**/
+	/**																								**/
+	/*************************************************************************************************/
+	for (iI=0;iI<GC.getNumSpecialistInfos();iI++)
+	{
+		pStream->Write(NUM_COMMERCE_TYPES, m_ppaaiSpecialistCivicExtraCommerce[iI]);
+	}
+	/*************************************************************************************************/
+	/**	CMEDIT: End																					**/
+	/*************************************************************************************************/
 
 	for (iI=0;iI<GC.getNumImprovementInfos();iI++)
 	{
@@ -17037,6 +17921,9 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	pStream->Write(m_iPopRushHurryCount);
 	pStream->Write(m_iGoldRushHurryCount); // advc.064b
 	pStream->Write(m_iInflationModifier);
+//CULTURAL_GOLDEN_AGE
+	pStream->Write(m_iCultureGoldenAgeProgress);	//KNOEDEL 6/8
+	pStream->Write(m_iCultureGoldenAgesStarted);	//KNOEDEL 7/8
 }
 
 void CvPlayer::createGreatPeople(UnitTypes eGreatPersonUnit,
@@ -22407,3 +23294,170 @@ void CvPlayer::announceEspionageToThirdParties(EspionageMissionTypes eMission, P
 				eTarget, szTmp);
 	}
 } // </advc.120f>
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		Based on code by Afforess
+ *	Source:
+ *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
+ *
+ ****************************************/
+bool CvPlayer::hasValidCivics(UnitTypes eUnit) const
+{
+	int iI;
+	bool bValidOrCivic = false;
+	bool bNoReqOrCivic = true;
+	bool bValidAndCivic = true;
+	bool bReqAndCivic = true;
+	for (iI = 0; iI < GC.getNumCivicInfos(); iI++)
+	{
+		if (GC.getUnitInfo(eUnit).isPrereqOrCivics(iI))
+		{
+			bNoReqOrCivic = false;
+			if (isCivic(CivicTypes(iI)))
+			{
+				bValidOrCivic = true;
+			}
+		}
+		
+		if (GC.getUnitInfo(eUnit).isPrereqAndCivics(iI))
+		{
+			bReqAndCivic = true;
+			if (!isCivic(CivicTypes(iI)))
+			{
+				bValidAndCivic = false;
+			}
+		}
+	}
+	
+	if (!bNoReqOrCivic && !bValidOrCivic)
+	{
+		return false;
+	}
+
+	if (bReqAndCivic && !bValidAndCivic)
+	{
+		return false;
+	}
+	
+	return true;
+}
+/**
+ ** End: Unit Civic Prereq
+ **/
+//Tholish UnbuildableBuildingDeletion START
+bool CvPlayer::canKeep(BuildingTypes eBuilding) const
+{
+	if (GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
+	{
+	BuildingClassTypes eBuildingClass;
+	int iI;
+	CvTeamAI& currentTeam = GET_TEAM(getTeam());
+
+	eBuildingClass = ((BuildingClassTypes)(GC.getBuildingInfo(eBuilding).getBuildingClassType()));
+
+	FAssert(GC.getCivilizationInfo(getCivilizationType()).getCivilizationBuildings(eBuildingClass) == eBuilding);
+	if (GC.getCivilizationInfo(getCivilizationType()).getCivilizationBuildings(eBuildingClass) != eBuilding)
+	{
+		return false;
+	}
+
+		if (GC.getBuildingInfo(eBuilding).getProductionCost() == -1)
+		{
+			return false;
+		}
+
+
+	if (!(currentTeam.isHasTech((TechTypes)(GC.getBuildingInfo(eBuilding).getPrereqAndTech()))))
+	{
+		return false;
+	}
+
+	for (iI = 0; iI < GC.getNUM_BUILDING_AND_TECH_PREREQS(); iI++)
+	{
+		if (GC.getBuildingInfo(eBuilding).getPrereqAndTechs(iI) != NO_TECH)
+		{
+			if (!(currentTeam.isHasTech((TechTypes)(GC.getBuildingInfo(eBuilding).getPrereqAndTechs(iI)))))
+			{
+				return false;
+			}
+		}
+	}
+
+	if (GC.getBuildingInfo(eBuilding).getSpecialBuildingType() != NO_SPECIALBUILDING)
+	{
+		if (!(currentTeam.isHasTech((TechTypes)(GC.getSpecialBuildingInfo((SpecialBuildingTypes) GC.getBuildingInfo(eBuilding).getSpecialBuildingType()).getTechPrereq()))))
+		{
+			return false;
+		}
+	}
+
+	if (GC.getBuildingInfo(eBuilding).getStateReligion() != NO_RELIGION)
+	{
+		if (getStateReligion() != GC.getBuildingInfo(eBuilding).getStateReligion())
+		{
+			return false;
+		}
+	}
+
+
+		if (getHighestUnitLevel() < GC.getBuildingInfo(eBuilding).getUnitLevelPrereq())
+		{
+			return false;
+		}
+
+
+
+
+	return true;
+	}
+return false;
+}
+//Tholish UnbuildableBuildingDeletion END
+//KNOEDELbegin CULTURAL_GOLDEN_AGE 8/8
+int CvPlayer::getCultureGoldenAgeProgress() const
+{
+	return m_iCultureGoldenAgeProgress;
+}
+
+void CvPlayer::changeCultureGoldenAgeProgress(int iChange)
+{
+	m_iCultureGoldenAgeProgress = (m_iCultureGoldenAgeProgress + iChange);
+	FAssert(getCultureGoldenAgeProgress() >= 0);
+}
+
+int CvPlayer::getCultureGoldenAgesStarted() const
+{
+	return m_iCultureGoldenAgesStarted;
+}
+
+
+void CvPlayer::incrementCultureGoldenAgeStarted()
+{
+	if (m_iCultureGoldenAgesStarted > 100)
+	{
+			m_iCultureGoldenAgesStarted = 200;
+	}
+	else
+	{
+			m_iCultureGoldenAgesStarted *= 2;
+	}
+}
+
+int CvPlayer::getCultureGoldenAgeThreshold() const
+{
+	int iThreshold;
+
+	iThreshold = (GC.getDefineINT("CULTURE_GOLDEN_AGE_THRESHOLD") * std::max(0, (getCultureGoldenAgesStarted())));
+
+	iThreshold *= GC.getGameSpeedInfo(GC.getGame().getGameSpeedType()).getGreatPeoplePercent();
+	iThreshold /= 100;
+
+	iThreshold *= GC.getEraInfo(GC.getGame().getStartEra()).getGreatPeoplePercent();
+	iThreshold /= 100;
+
+	iThreshold *= GC.getWorldInfo(GC.getMap().getWorldSize()).getResearchPercent();
+	iThreshold /= 130; // research percent standard size
+
+	return std::max(1, iThreshold);
+}//KNOEDELend

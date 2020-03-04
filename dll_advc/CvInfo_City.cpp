@@ -54,6 +54,17 @@ m_bVisible(false),
 m_piYieldChange(NULL),
 m_piCommerceChange(NULL),
 m_piFlavorValue(NULL),
+/*************************************************************************************************/
+/** Specialists Enhancements, by Supercheese 10/9/09                                             */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+m_iHealth(0),
+m_iHappiness(0),
+/*************************************************************************************************/
+/** Specialists Enhancements                          END                                        */
+/*************************************************************************************************/
+
 m_iExperience(0)
 {}
 
@@ -63,6 +74,23 @@ CvSpecialistInfo::~CvSpecialistInfo()
 	SAFE_DELETE_ARRAY(m_piCommerceChange);
 	SAFE_DELETE_ARRAY(m_piFlavorValue);
 }
+
+*************************************************************************************************/
+/** Specialists Enhancements, by Supercheese 10/9/09                                                   */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+int CvSpecialistInfo::getHealth() const
+{
+	return m_iHealth;
+}
+int CvSpecialistInfo::getHappiness() const
+{
+	return m_iHappiness;
+}
+/*************************************************************************************************/
+/** Specialists Enhancements                          END                                              */
+/*************************************************************************************************/
 
 int CvSpecialistInfo::getGreatPeopleUnitClass() const
 {
@@ -157,6 +185,16 @@ bool CvSpecialistInfo::read(CvXMLLoadUtility* pXML)
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
 	else pXML->InitList(&m_piCommerceChange, NUM_COMMERCE_TYPES);
+/*************************************************************************************************/
+/** Specialists Enhancements, by Supercheese 10/9/09                                                   */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	pXML->GetChildXmlValByName(&m_iHealth, "iHealth", 0);
+	pXML->GetChildXmlValByName(&m_iHappiness, "iHappiness", 0);
+/*************************************************************************************************/
+/** Specialists Enhancements                          END                                              */
+/*************************************************************************************************/
 
 	pXML->GetChildXmlValByName(&m_iExperience, "iExperience");
 

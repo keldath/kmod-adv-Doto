@@ -1111,7 +1111,18 @@ int CyPlayer::getCityDefenseModifier()
 {
 	return m_pPlayer ? m_pPlayer->getCityDefenseModifier() : -1;
 }
-
+/************************************************************************************************/
+/* REVDCM                                 09/02/10                                phungus420    */
+/*                                                                                              */
+/* Player Functions                                                                             */
+/************************************************************************************************/
+bool CyPlayer::isBuildingClassRequiredToTrain(int /*BuildingClassTypes*/ iBuildingClass, int /*UnitTypes*/ iUnit)
+{
+	return m_pPlayer ? m_pPlayer->isBuildingClassRequiredToTrain((BuildingClassTypes)iBuildingClass, (UnitTypes)iUnit) : false;
+}
+/************************************************************************************************/
+/* REVDCM                                  END                                                  */
+/************************************************************************************************/
 int CyPlayer::getNumNukeUnits()
 {
 	return m_pPlayer ? m_pPlayer->getNumNukeUnits() : -1;

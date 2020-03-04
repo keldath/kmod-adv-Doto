@@ -110,6 +110,9 @@ void CvTeam::reset(TeamTypes eID, bool bConstructorCall)
 	m_iVassalTradingCount = 0;
 	m_iBridgeBuildingCount = 0;
 	m_iIrrigationCount = 0;
+	/* Population Limit ModComp - Beginning */
+	m_iNoPopulationLimitCount = 0;
+	/* Population Limit ModComp - End */
 	m_iIgnoreIrrigationCount = 0;
 	m_iWaterWorkCount = 0;
 	m_iVassalPower = 0;
@@ -2598,6 +2601,33 @@ void CvTeam::changeIrrigationCount(int iChange)
 }
 
 
+/* Population Limit ModComp - Beginning */
+int CvTeam::getNoPopulationLimitCount() const
+{
+	return m_iNoPopulationLimitCount;
+}
+
+//added by kedlath after f1rpo suggested
+bool CvTeam::isNoPopulationLimit() const
+{
+if(GC.getGame().isOption(GAMEOPTION_NO_POPULATION_LIMIT))
+   return true;
+return (getNoPopulationLimitCount() > 0);
+}
+
+
+void CvTeam::changeNoPopulationLimitCount(int iChange)
+{
+	if (iChange != 0)
+	{
+		m_iNoPopulationLimitCount += iChange;
+		FAssert(getNoPopulationLimitCount() >= 0);
+
+		AI_makeAssignWorkDirty();
+	}
+}
+/* Population Limit ModComp - End */
+
 void CvTeam::changeIgnoreIrrigationCount(int iChange)
 {
 	m_iIgnoreIrrigationCount = (m_iIgnoreIrrigationCount + iChange);
@@ -2745,6 +2775,61 @@ void CvTeam::changeCommerceFlexibleCount(CommerceTypes eIndex, int iChange)
 		gDLL->getInterfaceIFace()->setDirty(GameData_DIRTY_BIT, true);
 	}
 }
+// < Civic Infos Plus Start >
+int CvTeam::getYieldRateModifier(YieldTypes eIndex)
+{
+	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+	return m_aiYieldRateModifier[eIndex];
+}
+
+
+void CvTeam::changeYieldRateModifier(YieldTypes eIndex, int iChange)
+{
+	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+
+	if (iChange != 0)
+	{
+		m_aiYieldRateModifier[eIndex] = (m_aiYieldRateModifier[eIndex] + iChange);
+
+		if (eIndex == YIELD_COMMERCE)
+		{
+			updateCommerce();
+		}
+
+		AI_makeAssignWorkDirty();
+
+		if (getID() == GC.getGame().getActiveTeam())
+		{
+			gDLL->getInterfaceIFace()->setDirty(CityInfo_DIRTY_BIT, true);
+		}
+	}
+}
+
+int CvTeam::getCommerceRateModifier(CommerceTypes eIndex)
+{
+	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+	return m_aiCommerceRateModifier[eIndex];
+}
+
+
+void CvTeam::changeCommerceRateModifier(CommerceTypes eIndex, int iChange)
+{
+	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+
+	if (iChange != 0)
+	{
+		m_aiCommerceRateModifier[eIndex] = (m_aiCommerceRateModifier[eIndex] + iChange);
+
+		updateCommerce();
+
+		AI_makeAssignWorkDirty();
+	}
+}
+// < Civic Infos Plus End   >
 
 
 int CvTeam::getExtraMoves(DomainTypes eIndex) const
@@ -3773,7 +3858,27 @@ void CvTeam::changeProjectCount(ProjectTypes eIndex, int iChange)  // advc: styl
 
 	if (kProject.isAllowsNukes())
 		GC.getGame().makeNukesValid(true);
-
+// davidlallen: project civilization and free unit start
+	if (kProject.getFreeUnit() != NO_UNIT)
+		{
+			for (int iI = 0; iI < MAX_PLAYERS; iI++)
+			{
+				if (GET_PLAYER((PlayerTypes)iI).isAlive())
+				{
+					if (GET_PLAYER((PlayerTypes)iI).getTeam() == getID())
+					{
+						if (GET_PLAYER((PlayerTypes)iI).getCivilizationType() == kProject.getCivilization())
+						{
+							UnitTypes eFreeUnit = (UnitTypes)(kProject.getFreeUnit());
+							CvCity* pCapitalCity = GET_PLAYER((PlayerTypes)iI).getCapitalCity();
+							GET_PLAYER((PlayerTypes)iI).initUnit(eFreeUnit, pCapitalCity->getX(), pCapitalCity->getY());
+							break; // sorry, only first player of correct type gets it
+						}
+					}
+				}
+			}
+		}
+// davidlallen: project civilization and free unit end
 	for (MemberIter it(getID()); it.hasNext(); ++it)
 	{
 		
@@ -4376,32 +4481,44 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer, bo
 			{
 				if (GC.getInfo(eLoopReligion).getTechPrereq() != eTech)
 					continue;
-
-				int iBestValue = MAX_INT;
-				PlayerTypes eBestPlayer = NO_PLAYER;
-				for (MemberIter it(getID()); it.hasNext(); ++it)
+//david lalen forbidden religion dune wars
+				if (!g.isReligionSlotTaken((ReligionTypes)iI))
 				{
-					CvPlayer const& kMember = *it;
-
-					int iValue = 10;
-					iValue += g.getSorenRandNum(10, "Found Religion (Player)");
-					for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
-						iValue += kMember.getHasReligionCount((ReligionTypes)iK) * 10;
-
-					if (kMember.getCurrentResearch() != eTech)
-						iValue *= 10;
-
-					if (iValue < iBestValue)
+// end
+					int iBestValue = MAX_INT;
+					PlayerTypes eBestPlayer = NO_PLAYER;
+					for (MemberIter it(getID()); it.hasNext(); ++it)
 					{
-						iBestValue = iValue;
-						eBestPlayer = kMember.getID();
-					}
+						// davidlallen religion forbidden to civilization start
+						CivilizationTypes eCiv = GET_PLAYER((PlayerTypes)iJ).getCivilizationType();
+						if (!(GC.getCivilizationInfo(eCiv).isForbidden((ReligionTypes)iI)))
+						{
+						// davidlallen religion forbidden to civilization end
+							
+							CvPlayer const& kMember = *it;
+
+							int iValue = 10;
+							iValue += g.getSorenRandNum(10, "Found Religion (Player)");
+							for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
+								iValue += kMember.getHasReligionCount((ReligionTypes)iK) * 10;
+
+							if (kMember.getCurrentResearch() != eTech)
+								iValue *= 10;
+
+							if (iValue < iBestValue)
+							{
+								iBestValue = iValue;
+								eBestPlayer = kMember.getID();
+							}
+						}
+//forbiden religion david lalen - by keldath 
 				}
+//end
 				if (eBestPlayer == NO_PLAYER)
 					continue;
 
 				g.setReligionSlotTaken(eLoopReligion, true);
-				if (g.isOption(GAMEOPTION_PICK_RELIGION))
+/*				if (g.isOption(GAMEOPTION_PICK_RELIGION))
 				{
 					if (GET_PLAYER(eBestPlayer).isHuman())
 					{
@@ -4416,7 +4533,7 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer, bo
 							GET_PLAYER(eBestPlayer).foundReligion(eFoundReligion, eLoopReligion, true);
 					}
 				}
-				else GET_PLAYER(eBestPlayer).foundReligion(eLoopReligion, eLoopReligion, true);
+				else*/ GET_PLAYER(eBestPlayer).foundReligion(eLoopReligion, eLoopReligion, true);
 				bReligionFounded = true;
 				bFirstPerk = true;
 			}
@@ -5326,7 +5443,12 @@ void CvTeam::processTech(TechTypes eTech, int iChange) // advc: style changes
 
 	if (kTech.isIgnoreIrrigation())
 		changeIgnoreIrrigationCount(iChange);
-
+/* Population Limit ModComp - Beginning */
+	if (GC.getTechInfo(eTech).isNoPopulationLimit())
+	{
+		changeNoPopulationLimitCount(iChange);
+	}
+/* Population Limit ModComp - End */
 	if (kTech.isWaterWork())
 		changeWaterWorkCount(iChange);
 
@@ -5334,6 +5456,35 @@ void CvTeam::processTech(TechTypes eTech, int iChange) // advc: style changes
 	{
 		changeRouteChange(eLoopRoute, GC.getInfo(eLoopRoute).getTechMovementChange(eTech) * iChange);
 	}
+// < Civic Infos Plus Start >
+    for (iI = 0; iI < MAX_PLAYERS; iI++)
+	{
+		if (GET_PLAYER((PlayerTypes)iI).isAlive())
+		{
+			if (GET_PLAYER((PlayerTypes)iI).getTeam() == getID())
+			{
+                for (int iY = 0; iY < NUM_YIELD_TYPES; iY++)
+                {
+                    GET_PLAYER((PlayerTypes)iI).changeYieldRateModifier(((YieldTypes)iY), (GC.getTechInfo(eTech).getYieldModifier(iY) * iChange));
+                }
+			}
+		}
+	}
+
+	for (iI = 0; iI < MAX_PLAYERS; iI++)
+	{
+		if (GET_PLAYER((PlayerTypes)iI).isAlive())
+		{
+			if (GET_PLAYER((PlayerTypes)iI).getTeam() == getID())
+			{
+                for (int iY = 0; iY < NUM_COMMERCE_TYPES; iY++)
+                {
+                    GET_PLAYER((PlayerTypes)iI).changeCommerceRateModifier(((CommerceTypes)iY), (GC.getTechInfo(eTech).getCommerceModifier(iY) * iChange));
+                }
+			}
+		}
+	}
+	// < Civic Infos Plus End   >
 	FOR_EACH_ENUM(Domain)
 	{
 		changeExtraMoves(eLoopDomain, kTech.getDomainExtraMoves(eLoopDomain) * iChange);
@@ -5491,6 +5642,9 @@ void CvTeam::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iVassalTradingCount);
 	pStream->Read(&m_iBridgeBuildingCount);
 	pStream->Read(&m_iIrrigationCount);
+	/* Population Limit ModComp - Beginning */
+	pStream->Read(&m_iNoPopulationLimitCount);
+	/* Population Limit ModComp - End */
 	pStream->Read(&m_iIgnoreIrrigationCount);
 	pStream->Read(&m_iWaterWorkCount);
 	pStream->Read(&m_iVassalPower);
@@ -5533,6 +5687,13 @@ void CvTeam::read(FDataStreamBase* pStream)
 	// <advc.120g> Prior to uiFlag=6, espionage was flexible from the beginning.
 	if(uiFlag < 6)
 		m_aiCommerceFlexibleCount.set(COMMERCE_ESPIONAGE, 1); // </advc.120g>
+// < Civic Infos Plus Start >
+//	pStream->Read(NUM_YIELD_TYPES, m_aiYieldRateModifier);
+//	pStream->Read(NUM_COMMERCE_TYPES, m_aiCommerceRateModifier);
+//keldath QA i hope thats fine...
+	m_aiYieldRateModifier.Read(pStream);
+	m_aiCommerceRateModifier.Read(pStream);	
+// < Civic Infos Plus End   >
 	m_aiExtraMoves.Read(pStream);
 	m_aiForceTeamVoteEligibilityCount.Read(pStream);
 	m_abHasMet.Read(pStream);
@@ -5668,6 +5829,9 @@ void CvTeam::write(FDataStreamBase* pStream)
 	pStream->Write(m_iVassalTradingCount);
 	pStream->Write(m_iBridgeBuildingCount);
 	pStream->Write(m_iIrrigationCount);
+	/* Population Limit ModComp - Beginning */
+	pStream->Write(m_iNoPopulationLimitCount);
+	/* Population Limit ModComp - End */
 	pStream->Write(m_iIgnoreIrrigationCount);
 	pStream->Write(m_iWaterWorkCount);
 	pStream->Write(m_iVassalPower);
@@ -5694,6 +5858,13 @@ void CvTeam::write(FDataStreamBase* pStream)
 	m_aiCounterespionageTurnsLeftAgainstTeam.Write(pStream);
 	m_aiCounterespionageModAgainstTeam.Write(pStream);
 	m_aiCommerceFlexibleCount.Write(pStream);
+	// < Civic Infos Plus Start >
+	//pStream->Write(NUM_YIELD_TYPES, m_aiYieldRateModifier);
+	//pStream->Write(NUM_COMMERCE_TYPES, m_aiCommerceRateModifier);
+//keldath QA i hope its ok...
+	m_aiYieldRateModifier.Write(pStream);
+	m_aiCommerceRateModifier.Write(pStream);
+	// < Civic Infos Plus End   >
 	m_aiExtraMoves.Write(pStream);
 	m_aiForceTeamVoteEligibilityCount.Write(pStream);
 

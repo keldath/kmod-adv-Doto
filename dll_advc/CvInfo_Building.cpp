@@ -16,6 +16,10 @@ m_iNoBonus(NO_BONUS),
 m_iPowerBonus(NO_BONUS),
 m_iFreeBonus(NO_BONUS),
 m_iNumFreeBonuses(0),
+// < Building Resource Converter Start >
+m_paiRequiredInputBonuses(NULL),
+m_paiBuildingOutputBonuses(NULL),
+// < Building Resource Converter End   >
 m_iFreeBuildingClass(NO_BUILDINGCLASS),
 m_iFreePromotion(NO_PROMOTION),
 m_iCivicOption(NO_CIVICOPTION),
@@ -27,6 +31,13 @@ m_iAdvancedStartCost(0),
 m_iAdvancedStartCostIncrease(0),
 m_iMinAreaSize(0),
 m_iNumCitiesPrereq(0),
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+m_iNumCitySizeBldPrereq(0),
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
 m_iNumTeamsPrereq(0),
 m_iUnitLevelPrereq(0),
 m_iMinLatitude(0),
@@ -40,6 +51,9 @@ m_iGoldenAgeModifier(0),
 m_iGlobalHurryModifier(0),
 m_iFreeExperience(0),
 m_iGlobalFreeExperience(0),
+/* Population Limit ModComp - Beginning */
+m_iPopulationLimitChange(0),
+/* Population Limit ModComp - End */
 m_iFoodKept(0),
 m_iAirlift(0),
 m_iAirModifier(0),
@@ -66,6 +80,16 @@ m_iAssetValue(0),
 m_iPowerValue(0),
 m_iSpecialBuildingType(NO_SPECIALBUILDING),
 m_iAdvisorType(NO_ADVISOR),
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanConstruct															*/
+/********************************************************************************/
+m_iPrereqGameOption(NO_GAMEOPTION),										
+m_iNotGameOption(NO_GAMEOPTION),
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 m_iHolyCity(NO_RELIGION),
 m_iReligionType(NO_RELIGION),
 m_iStateReligion(NO_RELIGION),
@@ -75,6 +99,7 @@ m_iFoundsCorporation(NO_CORPORATION),
 m_iGlobalReligionCommerce(0),
 m_iGlobalCorporationCommerce(0),
 m_iPrereqAndBonus(NO_BONUS),
+//m_iPrereqVicinityBonus(NO_BONUS),  //Shqype Vicinity Bonus Add
 m_iGreatPeopleUnitClass(NO_UNITCLASS),
 m_iGreatPeopleRateChange(0),
 m_iConquestProbability(0),
@@ -97,6 +122,9 @@ m_iAreaHealth(0),
 m_iGlobalHealth(0),
 m_iGlobalPopulationChange(0),
 m_iFreeTechs(0),
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+m_iFreeSpecificTech(NO_TECH),
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
 m_iDefenseModifier(0),
 m_iBombardDefenseModifier(0),
 m_iAllCityDefenseModifier(0),
@@ -128,6 +156,7 @@ m_bStateReligion(false),
 m_bAllowsNukes(false),
 m_piPrereqAndTechs(NULL),
 m_piPrereqOrBonuses(NULL),
+//m_piPrereqOrVicinityBonuses(NULL),  //Shqype Vicinity Bonus Add
 m_piProductionTraits(NULL),
 m_piHappinessTraits(NULL),
 m_piSeaPlotYieldChange(NULL),
@@ -164,6 +193,11 @@ m_pbCommerceChangeOriginalOwner(NULL),
 m_pbBuildingClassNeededInCity(NULL),
 m_ppaiSpecialistYieldChange(NULL),
 m_ppaiBonusYieldModifier(NULL),
+// davidlallen: building bonus yield, commerce start
+m_iBonusConsumed(NO_BONUS),
+m_paiCommerceProduced(NULL),
+m_paiYieldProduced(NULL),
+// davidlallen: building bonus yield, commerce end
 // UNOFFICIAL_PATCH, Efficiency, 06/27/10, Afforess & jdog5000: START
 m_bAnySpecialistYieldChange(false),
 m_bAnyBonusYieldModifier(false)
@@ -172,8 +206,13 @@ m_bAnyBonusYieldModifier(false)
 
 CvBuildingInfo::~CvBuildingInfo()
 {
+	// < Building Resource Converter Start >
+	SAFE_DELETE_ARRAY(m_paiRequiredInputBonuses);
+	SAFE_DELETE_ARRAY(m_paiBuildingOutputBonuses);
+	// < Building Resource Converter End   >
 	SAFE_DELETE_ARRAY(m_piPrereqAndTechs);
 	SAFE_DELETE_ARRAY(m_piPrereqOrBonuses);
+//	SAFE_DELETE_ARRAY(m_piPrereqOrVicinityBonuses);  //Shqype Vicinity Bonus Add
 	SAFE_DELETE_ARRAY(m_piProductionTraits);
 	SAFE_DELETE_ARRAY(m_piHappinessTraits);
 	SAFE_DELETE_ARRAY(m_piSeaPlotYieldChange);
@@ -221,6 +260,10 @@ CvBuildingInfo::~CvBuildingInfo()
 			SAFE_DELETE_ARRAY(m_ppaiBonusYieldModifier[i]);
 		SAFE_DELETE_ARRAY(m_ppaiBonusYieldModifier);
 	}
+	// davidlallen: building bonus yield, commerce start
+	SAFE_DELETE_ARRAY(m_paiCommerceProduced);
+	SAFE_DELETE_ARRAY(m_paiYieldProduced);
+	// davidlallen: building bonus yield, commerce end
 }
 // <advc.tag>
 void CvBuildingInfo::addElements(std::vector<XMLElement*>& r) const
@@ -643,6 +686,154 @@ const TCHAR* CvBuildingInfo::getMovie() const
 
 	return NULL;
 }
+//keldath QA i hope its a good place to pace these
+// < Building Resource Converter Start >
+
+bool CvBuildingInfo::isRequiredInputBonus(int iBonus) const
+{
+	FAssertMsg(iBonus < GC.getNumBonusInfos(), "Index out of bounds");
+	FAssertMsg(iBonus > -1, "Index out of bounds");
+
+	return (getRequiredInputBonusValue(iBonus) > 0);
+}
+
+int CvBuildingInfo::getRequiredInputBonusValue(int iBonus) const
+{
+	FAssertMsg(iBonus < GC.getNumBonusInfos(), "Index out of bounds");
+	FAssertMsg(iBonus > -1, "Index out of bounds");
+	return m_paiRequiredInputBonuses ? m_paiRequiredInputBonuses[iBonus] : -1;
+}
+
+int CvBuildingInfo::getRequiredInputBonusCount() const
+{
+	int requiredInputBonusCount = 0;
+	int iI;
+
+	for(iI=0; iI < GC.getNumBonusInfos() ; iI++)
+	{
+		if(getRequiredInputBonusValue(iI) > 0)
+		{
+			requiredInputBonusCount += 1;
+		}
+	}
+
+	return requiredInputBonusCount;
+}
+
+bool CvBuildingInfo::isBuildingOutputBonus(int iBonus) const
+{
+	FAssertMsg(iBonus < GC.getNumBonusInfos(), "Index out of bounds");
+	FAssertMsg(iBonus > -1, "Index out of bounds");
+
+	return (getBuildingOutputBonusValues(iBonus) > 0);
+}
+
+int CvBuildingInfo::getBuildingOutputBonusValues(int iBonus) const
+{
+	FAssertMsg(iBonus < GC.getNumBonusInfos(), "Index out of bounds");
+	FAssertMsg(iBonus > -1, "Index out of bounds");
+	return m_paiBuildingOutputBonuses ? m_paiBuildingOutputBonuses[iBonus] : -1;
+}
+
+int CvBuildingInfo::getBuildingOutputBonusCount() const
+{
+	int buildingOutputBonusCount = 0;
+	int iI;
+
+	for(iI=0; iI < GC.getNumBonusInfos() ; iI++)
+	{
+		if(getBuildingOutputBonusValues(iI) > 0)
+		{
+			buildingOutputBonusCount += 1;
+		}
+	}
+
+	return buildingOutputBonusCount;
+}
+// < Building Resource Converter End   >
+
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+/*moved to the .h file - keldath
+int CvBuildingInfo::getNumCitySizeBldPrereq() const
+{
+	return m_iNumCitySizeBldPrereq;
+}
+*/
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
+/* Population Limit ModComp - Beginning */
+/*moved to .h - keldath
+int CvBuildingInfo::getPopulationLimitChange() const
+{
+	return m_iPopulationLimitChange;
+}
+*/
+/* Population Limit ModComp - End */
+
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanConstruct															*/
+/********************************************************************************/
+/* moved to .h file - keldath
+int CvBuildingInfo::getPrereqGameOption() const					
+{
+	return m_iPrereqGameOption;
+}
+
+int CvBuildingInfo::getNotGameOption() const			
+{
+	return m_iNotGameOption;
+}
+*/
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
+
+//Shqype Vicinity Bonus Start
+/*int CvBuildingInfo::getPrereqVicinityBonus() const		
+{
+	return m_iPrereqVicinityBonus;
+}*/
+//Shqype Vicinity Bonus End
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+/*moved to .h file - kedlath
+int CvBuildingInfo::getFreeSpecificTech() const
+{
+	return m_iFreeSpecificTech;
+}
+*/
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
+//Shqype Vicinity Bonus Start
+//int CvBuildingInfo::getPrereqOrVicinityBonuses(int i) const		
+//{
+//	FAssertMsg(i < GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), "Index out of bounds");
+//	FAssertMsg(i > -1, "Index out of bounds");
+//	return m_piPrereqOrVicinityBonuses ? m_piPrereqOrVicinityBonuses[i] : -1;
+//}
+//Shqype Vicinity Bonus End
+
+// davidlallen: building bonus yield, commerce start
+int CvBuildingInfo::getBonusConsumed() const {
+	return m_iBonusConsumed;
+}
+
+int CvBuildingInfo::getCommerceProduced(int i) const {
+	FAssertMsg(i < NUM_COMMERCE_TYPES, "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_paiCommerceProduced ? m_paiCommerceProduced[i] : 0;
+}
+
+int CvBuildingInfo::getYieldProduced(int i) const {
+	FAssertMsg(i < NUM_YIELD_TYPES, "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_paiYieldProduced ? m_paiYieldProduced[i] : 0;
+}
+// davidlallen: building bonus yield, commerce end
+
 // advc.008e:
 bool CvBuildingInfo::nameNeedsArticle() const
 {
@@ -671,6 +862,15 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iPowerBonus);
 	stream->Read(&m_iFreeBonus);
 	stream->Read(&m_iNumFreeBonuses);
+// < Building Resource Converter Start >	
+	SAFE_DELETE_ARRAY(m_paiRequiredInputBonuses);
+	m_paiRequiredInputBonuses = new int[GC.getNumBonusInfos()];
+	stream->Read(GC.getNumBonusInfos(), m_paiRequiredInputBonuses);
+	
+	SAFE_DELETE_ARRAY(m_paiBuildingOutputBonuses);
+	m_paiBuildingOutputBonuses = new int[GC.getNumBonusInfos()];
+	stream->Read(GC.getNumBonusInfos(), m_paiBuildingOutputBonuses);
+// < Building Resource Converter End   >
 	stream->Read(&m_iFreeBuildingClass);
 	stream->Read(&m_iFreePromotion);
 	stream->Read(&m_iCivicOption);
@@ -682,6 +882,13 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iAdvancedStartCostIncrease);
 	stream->Read(&m_iMinAreaSize);
 	stream->Read(&m_iNumCitiesPrereq);
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+	stream->Read(&m_iNumCitySizeBldPrereq);
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
 	stream->Read(&m_iNumTeamsPrereq);
 	stream->Read(&m_iUnitLevelPrereq);
 	stream->Read(&m_iMinLatitude);
@@ -695,6 +902,9 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iGlobalHurryModifier);
 	stream->Read(&m_iFreeExperience);
 	stream->Read(&m_iGlobalFreeExperience);
+	/* Population Limit ModComp - Beginning */
+	stream->Read(&m_iPopulationLimitChange);
+	/* Population Limit ModComp - End */
 	stream->Read(&m_iFoodKept);
 	stream->Read(&m_iAirlift);
 	stream->Read(&m_iAirModifier);
@@ -721,6 +931,16 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iPowerValue);
 	stream->Read(&m_iSpecialBuildingType);
 	stream->Read(&m_iAdvisorType);
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanConstruct															*/
+/********************************************************************************/
+	stream->Read(&m_iPrereqGameOption);
+	stream->Read(&m_iNotGameOption);
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 	stream->Read(&m_iHolyCity);
 	stream->Read(&m_iReligionType);
 	stream->Read(&m_iStateReligion);
@@ -730,6 +950,7 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iGlobalReligionCommerce);
 	stream->Read(&m_iGlobalCorporationCommerce);
 	stream->Read(&m_iPrereqAndBonus);
+//	stream->Read(&m_iPrereqVicinityBonus);  //Shqype Vicinity Bonus Add
 	stream->Read(&m_iGreatPeopleUnitClass);
 	stream->Read(&m_iGreatPeopleRateChange);
 	stream->Read(&m_iConquestProbability);
@@ -752,6 +973,9 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iGlobalHealth);
 	stream->Read(&m_iGlobalPopulationChange);
 	stream->Read(&m_iFreeTechs);
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+	stream->Read(&m_iFreeSpecificTech);
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
 	stream->Read(&m_iDefenseModifier);
 	stream->Read(&m_iBombardDefenseModifier);
 	stream->Read(&m_iAllCityDefenseModifier);
@@ -790,6 +1014,11 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	SAFE_DELETE_ARRAY(m_piPrereqOrBonuses);
 	m_piPrereqOrBonuses = new int[GC.getNUM_BUILDING_PREREQ_OR_BONUSES()];
 	stream->Read(GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), m_piPrereqOrBonuses);
+//Shqype Vicinity Bonus Start
+//	SAFE_DELETE_ARRAY(m_piPrereqOrVicinityBonuses);
+//	m_piPrereqOrVicinityBonuses = new int[GC.getNUM_BUILDING_PREREQ_OR_BONUSES()];
+//	stream->Read(GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), m_piPrereqOrVicinityBonuses);
+//Shqype Vicinity Bonus End
 	SAFE_DELETE_ARRAY(m_piProductionTraits);
 	m_piProductionTraits = new int[GC.getNumTraitInfos()];
 	stream->Read(GC.getNumTraitInfos(), m_piProductionTraits);
@@ -927,7 +1156,17 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	{
 		m_ppaiBonusYieldModifier[i]  = new int[NUM_YIELD_TYPES];
 		stream->Read(NUM_YIELD_TYPES, m_ppaiBonusYieldModifier[i]);
-	} // UNOFFICIAL_PATCH, Efficiency, 06/27/10, Afforess & jdog5000: START
+	} 
+// davidlallen: building bonus yield, commerce start
+	stream->Read(&m_iBonusConsumed);
+	SAFE_DELETE_ARRAY(m_paiCommerceProduced);
+	m_paiCommerceProduced = new int[NUM_COMMERCE_TYPES];
+	stream->Read(NUM_COMMERCE_TYPES, m_paiCommerceProduced);
+	SAFE_DELETE_ARRAY(m_paiYieldProduced);
+	m_paiYieldProduced = new int[NUM_YIELD_TYPES];
+	stream->Read(NUM_YIELD_TYPES, m_paiYieldProduced);
+	// davidlallen: building bonus yield, commerce end
+	// UNOFFICIAL_PATCH, Efficiency, 06/27/10, Afforess & jdog5000: START
 	m_bAnyBonusYieldModifier = false;
 	for(int i = 0; !m_bAnyBonusYieldModifier && i < GC.getNumBonusInfos(); i++)
 	{
@@ -958,6 +1197,10 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iPowerBonus);
 	stream->Write(m_iFreeBonus);
 	stream->Write(m_iNumFreeBonuses);
+	// < Building Resource Converter Start >	
+	stream->Write(GC.getNumBonusInfos(), m_paiRequiredInputBonuses);
+	stream->Write(GC.getNumBonusInfos(), m_paiBuildingOutputBonuses);
+	// < Building Resource Converter End   >
 	stream->Write(m_iFreeBuildingClass);
 	stream->Write(m_iFreePromotion);
 	stream->Write(m_iCivicOption);
@@ -969,6 +1212,13 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iAdvancedStartCostIncrease);
 	stream->Write(m_iMinAreaSize);
 	stream->Write(m_iNumCitiesPrereq);
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+	stream->Write(m_iNumCitySizeBldPrereq);
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
 	stream->Write(m_iNumTeamsPrereq);
 	stream->Write(m_iUnitLevelPrereq);
 	stream->Write(m_iMinLatitude);
@@ -982,6 +1232,9 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iGlobalHurryModifier);
 	stream->Write(m_iFreeExperience);
 	stream->Write(m_iGlobalFreeExperience);
+	/* Population Limit ModComp - Beginning */
+	stream->Write(m_iPopulationLimitChange);
+	/* Population Limit ModComp - End */
 	stream->Write(m_iFoodKept);
 	stream->Write(m_iAirlift);
 	stream->Write(m_iAirModifier);
@@ -1008,6 +1261,16 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iPowerValue);
 	stream->Write(m_iSpecialBuildingType);
 	stream->Write(m_iAdvisorType);
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanConstruct															*/
+/********************************************************************************/
+	stream->Write(m_iPrereqGameOption);
+	stream->Write(m_iNotGameOption);
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 	stream->Write(m_iHolyCity);
 	stream->Write(m_iReligionType);
 	stream->Write(m_iStateReligion);
@@ -1017,6 +1280,7 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iGlobalReligionCommerce);
 	stream->Write(m_iGlobalCorporationCommerce);
 	stream->Write(m_iPrereqAndBonus);
+//	stream->Write(m_iPrereqVicinityBonus);  //Shqype Vicinity Bonus Add
 	stream->Write(m_iGreatPeopleUnitClass);
 	stream->Write(m_iGreatPeopleRateChange);
 	stream->Write(m_iConquestProbability);
@@ -1039,6 +1303,9 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iGlobalHealth);
 	stream->Write(m_iGlobalPopulationChange);
 	stream->Write(m_iFreeTechs);
+	/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+	stream->Write(m_iFreeSpecificTech);
+	/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
 	stream->Write(m_iDefenseModifier);
 	stream->Write(m_iBombardDefenseModifier);
 	stream->Write(m_iAllCityDefenseModifier);
@@ -1075,6 +1342,7 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->WriteString(m_szMovieDefineTag);
 	stream->Write(GC.getNUM_BUILDING_AND_TECH_PREREQS(), m_piPrereqAndTechs);
 	stream->Write(GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), m_piPrereqOrBonuses);
+	//	stream->Write(GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), m_piPrereqOrVicinityBonuses);  //Shqype Vicinity Bonus Add
 	stream->Write(GC.getNumTraitInfos(), m_piProductionTraits);
 	stream->Write(GC.getNumTraitInfos(), m_piHappinessTraits);
 	stream->Write(NUM_YIELD_TYPES, m_piSeaPlotYieldChange);
@@ -1113,6 +1381,11 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 		stream->Write(NUM_YIELD_TYPES, m_ppaiSpecialistYieldChange[i]);
 	for(int i = 0; i < GC.getNumBonusInfos(); i++)
 		stream->Write(NUM_YIELD_TYPES, m_ppaiBonusYieldModifier[i]);
+	// davidlallen: building bonus yield, commerce start
+	stream->Write(m_iBonusConsumed);
+	stream->Write(NUM_COMMERCE_TYPES, m_paiCommerceProduced);
+	stream->Write(NUM_YIELD_TYPES, m_paiYieldProduced);
+	// davidlallen: building bonus yield, commerce end
 }
 #endif
 
@@ -1120,9 +1393,18 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 {
 	if (!CvHotkeyInfo::read(pXML))
 		return false;
-
+	std::string szType(getType());
+	bool bPlaceHolder = (szType.rfind("BUILDING_PLACEHOLDER", 0) == 0);
+	if(bPlaceHolder)
+		//pXML->setAssertMandatory(false); // </advc.006b> //CODE FROM 095 - KELDATH ADJUSTMENT
+		pXML->setAssertMandatoryEnabled(false);
 	CvString szTextVal;
-
+// < Civic Infos Plus Start > //ADDED BY KELDATH	
+	int j=0;						//loop counter
+	int k=0;						//loop counter
+	int iNumSibs=0;				// the number of siblings the current xml node has
+//	int iNumChildren;				// the number of children the current node has
+// < Civic Infos Plus END > //ADDED BY KELDATH
 	pXML->GetChildXmlValByName(szTextVal, "BuildingClass");
 	m_iBuildingClassType = pXML->FindInInfoClass(szTextVal);
 
@@ -1137,7 +1419,21 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 
 	pXML->GetChildXmlValByName(szTextVal, "MovieDefineTag");
 	setMovieDefineTag(szTextVal);
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanConstruct															*/
+/********************************************************************************/
+	pXML->GetChildXmlValByName(szTextVal, "PrereqGameOption",
+		""); // f1rpo
+	m_iPrereqGameOption = pXML->FindInInfoClass(szTextVal);
 
+	pXML->GetChildXmlValByName(szTextVal, "NotGameOption",
+		""); // f1rpo
+	m_iNotGameOption = pXML->FindInInfoClass(szTextVal);
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 	pXML->GetChildXmlValByName(szTextVal, "HolyCity");
 	m_iHolyCity = pXML->FindInInfoClass(szTextVal);
 
@@ -1207,6 +1503,37 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
 
+//Shqype Vicinity Bonus Start
+/*	pXML->GetChildXmlValByName(szTextVal, "VicinityBonus");
+	m_iPrereqVicinityBonus = pXML->FindInInfoClass(szTextVal);
+
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"PrereqVicinityBonuses"))
+	{
+		if (pXML->SkipToNextVal())
+		{
+			iNumChildren = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
+			pXML->InitList(&m_piPrereqOrVicinityBonuses, GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), -1);
+
+			if (0 < iNumChildren)
+			{
+				if (pXML->GetChildXmlVal(szTextVal))
+				{
+					FAssertMsg((iNumChildren <= GC.getNUM_BUILDING_PREREQ_OR_BONUSES()),"For loop iterator is greater than array size");
+					for (j=0;j<iNumChildren;j++)
+					{
+						m_piPrereqOrVicinityBonuses[j] = pXML->FindInInfoClass(szTextVal);
+						if (!pXML->GetNextXmlVal(szTextVal))
+						{
+							break;
+						}
+					}
+					gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+				}
+			}
+		}
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}*/
+//Shqype Vicinity Bonus End
 	pXML->GetChildXmlValByName(szTextVal, "Bonus");
 	m_iPrereqAndBonus = pXML->FindInInfoClass(szTextVal);
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"PrereqBonuses"))
@@ -1251,7 +1578,10 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(szTextVal, "FreeBonus");
 	m_iFreeBonus = pXML->FindInInfoClass(szTextVal);
 	pXML->GetChildXmlValByName(&m_iNumFreeBonuses, "iNumFreeBonuses");
-
+// < Building Resource Converter Start >	
+	pXML->SetVariableListTagPair(&m_paiRequiredInputBonuses, "RequiredInputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
+	pXML->SetVariableListTagPair(&m_paiBuildingOutputBonuses, "BuildingOutputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
+	// < Building Resource Converter End   >
 	pXML->GetChildXmlValByName(szTextVal, "FreeBuilding");
 	m_iFreeBuildingClass = pXML->FindInInfoClass(szTextVal);
 
@@ -1299,6 +1629,13 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iMinAreaSize, "iMinAreaSize");
 	pXML->GetChildXmlValByName(&m_iConquestProbability, "iConquestProb");
 	pXML->GetChildXmlValByName(&m_iNumCitiesPrereq, "iCitiesPrereq");
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+	pXML->GetChildXmlValByName(&m_iNumCitySizeBldPrereq, "iCitySizeBldPrereq", 0);
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
 	pXML->GetChildXmlValByName(&m_iNumTeamsPrereq, "iTeamsPrereq");
 	pXML->GetChildXmlValByName(&m_iUnitLevelPrereq, "iLevelPrereq");
 	pXML->GetChildXmlValByName(&m_iMinLatitude, "iMinLatitude");
@@ -1312,6 +1649,9 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iGlobalHurryModifier, "iGlobalHurryModifier");
 	pXML->GetChildXmlValByName(&m_iFreeExperience, "iExperience");
 	pXML->GetChildXmlValByName(&m_iGlobalFreeExperience, "iGlobalExperience");
+	/* Population Limit ModComp - Beginning */
+	pXML->GetChildXmlValByName(&m_iPopulationLimitChange, "iPopulationLimitChange", 0);
+	/* Population Limit ModComp - End */
 	pXML->GetChildXmlValByName(&m_iFoodKept, "iFoodKept");
 	pXML->GetChildXmlValByName(&m_iAirlift, "iAirlift");
 	pXML->GetChildXmlValByName(&m_iAirModifier, "iAirModifier");
@@ -1353,6 +1693,10 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iForeignTradeRouteModifier, "iForeignTradeRouteModifier");
 	pXML->GetChildXmlValByName(&m_iGlobalPopulationChange, "iGlobalPopulationChange");
 	pXML->GetChildXmlValByName(&m_iFreeTechs, "iFreeTechs");
+	/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+	pXML->GetChildXmlValByName(szTextVal, "FreeSpecificTech", "NONE");
+	m_iFreeSpecificTech = pXML->FindInInfoClass(szTextVal);
+	/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
 	pXML->GetChildXmlValByName(&m_iDefenseModifier, "iDefense");
 	pXML->GetChildXmlValByName(&m_iBombardDefenseModifier, "iBombardDefense");
 	pXML->GetChildXmlValByName(&m_iAllCityDefenseModifier, "iAllCityDefense");
@@ -1595,7 +1939,34 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_piFlavorValue, "Flavors", GC.getNumFlavorTypes());
 	pXML->SetVariableListTagPair(&m_piImprovementFreeSpecialist, "ImprovementFreeSpecialists", GC.getNumImprovementInfos());
 	pXML->SetVariableListTagPair(&m_piBuildingHappinessChanges, "BuildingHappinessChanges", GC.getNumBuildingClassInfos());
-
+	// davidlallen: building bonus yield, commerce start
+	pXML->GetChildXmlValByName(szTextVal, "BonusConsumed",
+		""); // f1rpo
+	m_iBonusConsumed = pXML->FindInInfoClass(szTextVal);
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "CommerceProduced"))
+	{
+		pXML->SetCommerce(&m_paiCommerceProduced);
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+	else
+	{
+		pXML->InitList(&m_paiCommerceProduced, NUM_COMMERCE_TYPES);
+	}
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"YieldProduced"))
+	{
+		pXML->SetYields(&m_paiYieldProduced);
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+	else
+	{
+		pXML->InitList(&m_paiYieldProduced, NUM_YIELD_TYPES);
+	}
+	// davidlallen: building bonus yield, commerce end
+	// <advc.006b> and keldath
+	if(bPlaceHolder)
+		//pXML->setAssertMandatory(true); // </advc.006b>
+		//pXML->setAssertMandatory(true); // </advc.006b> //CODE FROM 095 - KELDATH ADJUSTMENT
+		pXML->setAssertMandatoryEnabled(true);
 	return true;
 }
 // <advc.310>
@@ -2033,6 +2404,10 @@ m_iEveryoneSpecialUnit(NO_SPECIALUNIT),
 m_iEveryoneSpecialBuilding(NO_SPECIALBUILDING),
 m_iVictoryDelayPercent(0),
 m_iSuccessRate(0),
+// davidlallen: project civilization and free unit start
+m_iCivilization(NO_CIVILIZATION),
+m_iFreeUnit(NO_UNIT),
+// davidlallen: project civilization and free unit start
 m_bSpaceship(false),
 m_bAllowsNukes(false),
 m_piBonusProductionModifier(NULL),
@@ -2123,6 +2498,17 @@ int CvProjectInfo::getConnectedCityMaintenanceModifier() const
     return m_iConnectedCityMaintenanceModifier;
 }
 //DPII < Maintenance Modifiers >
+// davidlallen: project civilization and free unit start
+int CvProjectInfo::getCivilization() const
+{
+	return m_iCivilization;
+}
+
+int CvProjectInfo::getFreeUnit() const
+{
+	return m_iFreeUnit;
+}
+// davidlallen: project civilization and free unit end
 
 bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 {
@@ -2164,6 +2550,14 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_piVictoryMinThreshold, "VictoryMinThresholds", GC.getNumVictoryInfos());
 	pXML->GetChildXmlValByName(&m_iVictoryDelayPercent, "iVictoryDelayPercent");
 	pXML->GetChildXmlValByName(&m_iSuccessRate, "iSuccessRate");
+	// davidlallen: project civilization and free unit start
+	pXML->GetChildXmlValByName(szTextVal, "CivilizationType",
+		""); // f1rpo
+	m_iCivilization = pXML->FindInInfoClass(szTextVal);
+	pXML->GetChildXmlValByName(szTextVal, "FreeUnit",
+		""); // f1rpo
+	m_iFreeUnit = pXML->FindInInfoClass(szTextVal);
+	// davidlallen: project civilization and free unit end
 
 	pXML->GetChildXmlValByName(szTextVal, "CreateSound");
 	setCreateSound(szTextVal);

@@ -117,9 +117,18 @@ public:
 	bool canHaveImprovement(ImprovementTypes eImprovement,														// Exposed to Python
 			TeamTypes eTeam = NO_TEAM, bool bPotential = false,
 			BuildTypes eBuild = NO_BUILD, bool bAnyBuild = true) const; // dlph.9
+	// < JImprovementLimit Mod Start >
+	bool isImprovementInRange(ImprovementTypes eImprovement, int iRange, bool bCheckBuildProgress) const;               // Exposed to Python
+	bool isImprovementAncestor(ImprovementTypes eImprovement, ImprovementTypes eCheckImprovement) const;               // Exposed to Python
+	// < JImprovementLimit Mod End >
 	bool canBuild(BuildTypes eBuild, PlayerTypes ePlayer = NO_PLAYER, bool bTestVisible = false) const;														// Exposed to Python
 	int getBuildTime(BuildTypes eBuild,																																										// Exposed to Python
 			PlayerTypes ePlayer) const; // advc.251
+	
+// Deliverator
+	void changeFreshWater(int iChange);
+	void changeFreshWaterInRadius(int iChange, int Radius);
+// Deliverator
 	int getBuildTurnsLeft(BuildTypes eBuild, /* advc.251: */ PlayerTypes ePlayer,
 			int iNowExtra, int iThenExtra,																			// Exposed to Python
 			// <advc.011c>
@@ -500,6 +509,25 @@ public:
 	int calculateTeamCulturePercent(TeamTypes eIndex) const;																						// Exposed to Python
 	void setCulture(PlayerTypes eIndex, int iNewValue, bool bUpdate, bool bUpdatePlotGroups);																		// Exposed to Python
 	void changeCulture(PlayerTypes eIndex, int iChange, bool bUpdate);																	// Exposed to Python
+// < JCultureControl Mod Start >
+	PlayerTypes getImprovementOwner() const;               // Exposed to Python
+	void setImprovementOwner(PlayerTypes eNewValue);               // Exposed to Python
+//keldath QA - im totally not sure of this m_aiCultureControl
+	inline int getCultureControl(PlayerTypes eIndex) const { return m_aiCultureControl.get(eIndex); }															// Exposed to Python
+	//int getCultureControl(PlayerTypes eIndex) const;             // Exposed to Python
+	int countTotalCultureControl() const;             // Exposed to Python
+	PlayerTypes findHighestCultureControlPlayer() const;             // Exposed to Python
+
+	int calculateCultureControlPercent(PlayerTypes eIndex) const;             // Exposed to Python
+	int calculateTeamCultureControlPercent(TeamTypes eIndex) const;             // Exposed to Python
+	void setCultureControl(PlayerTypes eIndex, int iNewValue, bool bUpdate, bool bUpdatePlotGroups);             // Exposed to Python
+	void changeCultureControl(PlayerTypes eIndex, int iChange, bool bUpdate);             // Exposed to Python
+
+	void addCultureControl(PlayerTypes ePlayer, ImprovementTypes eImprovement, bool bUpdateInterface);               // Exposed to Python
+	void clearCultureControl(PlayerTypes ePlayer, ImprovementTypes eImprovement, bool bUpdateInterface);               // Exposed to Python
+	void updateCultureControl(int iCenterX, int iCenterY, int iUpdateRange, bool bUpdateInterface);
+	// < JCultureControl Mod End >
+
 
 	int countNumAirUnits(TeamTypes eTeam) const;																					// Exposed to Python
 	int airUnitSpaceAvailable(TeamTypes eTeam) const;
@@ -710,6 +738,7 @@ public:
 	DllExport bool checkLateEra() const;
 	void killRandomUnit(PlayerTypes eOwner, DomainTypes eDomain); // advc.300
 
+//    bool isHasValidBonus() const;  //Shqype Vicinity Bonus Add
 	wchar const* debugStr() const; // advc.031c
 
 	void read(FDataStreamBase* pStream);
@@ -717,12 +746,18 @@ public:
 	// advc.003h: Adopted from We The People mod (devolution)
 	static void setMaxVisibilityRangeCache();
 
+//MOD@VET_Andera412_Blocade_Unit-begin1/1
+	bool isWithBlocaders(const CvPlot* pFromPlot, const CvPlot* pToPlot, const CvUnit* const pUnit, bool bToWater) const; // Есть ли на тайле вражеские защитники и юниты видящие нашего юнита
+	bool isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const; // Блокируется ли тайл вражескими юнитами с данного направления
+//MOD@VET_Andera412_Blocade_Unit-end1/1
 protected:
 
 	short m_iX;
 	short m_iY;
 	int m_iRiverID;
 	int m_iTotalCulture; // advc.opt
+	// Deliverator fresh water
+	int m_iFreshWaterAmount;	// Deliverator	
 	short m_iFeatureVariety;
 	short m_iOwnershipDuration;
 	short m_iImprovementDuration;
@@ -753,6 +788,9 @@ protected:
 	bool m_bLayoutStateWorked:1;
 
 	char /*PlayerTypes*/ m_eOwner;
+	// < JCultureControl Mod Start >
+	char /*PlayerTypes*/ m_eImprovementOwner;
+	// < JCultureControl Mod End >
 	char /*TeamTypes*/ m_eTeam; // advc.opt: cache the owner's team
 	// advc.opt: These five were short int
 	char /*PlotTypes*/ m_ePlotType;
@@ -786,6 +824,11 @@ protected:
 
 	EnumMap<YieldTypes,char> m_aiYield;
 	EnumMap<PlayerTypes,int> m_aiCulture;
+	// < JCultureControl Mod Start >
+	EnumMap<PlayerTypes,int> m_aiCultureControl;
+	//keldath QA original code
+	//int* m_aiCultureControl;
+	// < JCultureControl Mod End >
 	EnumMapDefault<PlayerTypes,int,FFreeList::INVALID_INDEX> m_aiPlotGroup;
 	mutable EnumMap<PlayerTypes,short> m_aiFoundValue; // advc: mutable
 	EnumMap<PlayerTypes,char> m_aiPlayerCityRadiusCount;

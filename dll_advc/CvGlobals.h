@@ -469,6 +469,9 @@ public:
 		DO(ESPIONAGE_SPY_INTERCEPT_MOD) \
 		DO(ESPIONAGE_SPY_NO_INTRUDE_INTERCEPT_MOD) \
 		DO(USE_SPIES_NO_ENTER_BORDERS) \
+/*MOD@VET_Andera412_Blocade_Unit-begin */ \
+		DO(BLOCADE_UNIT) \
+/*MOD@VET_Andera412_Blocade_Unit-end*/	 \
 		DO(MIN_EXPERIENCE_PER_COMBAT) \
 		DO(MAX_EXPERIENCE_PER_COMBAT) \
 		DO(EXPERIENCE_FROM_WITHDRAWL) \
@@ -650,7 +653,16 @@ public:
 	inline bool suppressCycling() const { return (GetKeyState('X') & 0x8000) ||
 			((GetKeyState('U') & 0x8000) && shiftKey() && altKey()); } // advc.088
 	// K-Mod end
-
+/*************************************************************************************************/
+/** TGA_INDEXATION                          11/13/07                            MRGENIE          */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int getTGA_RELIGIONS();								// GAMEFONT
+	int getTGA_CORPORATIONS();
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 	DllExport int getMAX_CIV_PLAYERS(); // advc: Shouldn't be used in the DLL
 	/*  The rest of these (getMAX_PLAYERS, getMAX_CIV_TEAMS, getMAX_TEAMS,
 		getBARBARIAN_PLAYER, getBARBARIAN_TEAM, getINVALID_PLOT_COORD,
@@ -916,6 +928,16 @@ protected:
 	float m_fFIELD_OF_VIEW;
 	float m_fSHADOW_SCALE;
 	float m_fUNIT_MULTISELECT_DISTANCE;
+/*************************************************************************************************/
+/** TGA_INDEXATION                          11/13/07                            MRGENIE          */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int m_iTGA_RELIGIONS;
+	int m_iTGA_CORPORATIONS;
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 
 	CvXMLLoadUtility* m_pXMLLoadUtility; // advc.003v
 

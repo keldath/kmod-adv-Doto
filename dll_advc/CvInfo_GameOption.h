@@ -301,6 +301,9 @@ public: // The const functions are exposed to Python except functions added by m
 	int getInflationPercent() const;
 	int getHealthBonus() const;
 	int getHappyBonus() const;
+/* Population Limit ModComp - Beginning */
+	DllExport int getPopulationLimit() const;				// Exposed to Python
+	/* Population Limit ModComp - End */
 	int getAttitudeChange() const;
 	int getNoTechTradeModifier() const;
 	int getTechTradeKnownModifier() const;
@@ -390,6 +393,9 @@ protected:
 	int m_iInflationPercent;
 	int m_iHealthBonus;
 	int m_iHappyBonus;
+	/* Population Limit ModComp - Beginning */
+	int m_iPopulationLimit;
+	/* Population Limit ModComp - End */
 	int m_iAttitudeChange;
 	int m_iNoTechTradeModifier;
 	int m_iTechTradeKnownModifier;

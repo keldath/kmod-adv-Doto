@@ -233,7 +233,11 @@ public:
 	//int AI_getKnownPlayerRank(PlayerTypes ePlayer) const; // advc.sha
 	// END: Show Hidden Attitude Mod
 	int AI_getExpansionistAttitude(PlayerTypes ePlayer) const; // advc.130w
-
+//dune wars - hated civs
+	int AI_getHatedCivicAttitude(PlayerTypes ePlayer) const; //a1021
+	int AI_getFavoriteCivilizationAttitude(PlayerTypes ePlayer) const; //a1021
+	int AI_getHatedCivilizationAttitude(PlayerTypes ePlayer) const; //a1021	
+//dune wars - hated civs
 	PlayerVoteTypes AI_diploVote(const VoteSelectionSubData& kVoteData, VoteSourceTypes eVoteSource, bool bPropose);
 
 	int AI_dealVal(PlayerTypes eFromPlayer, CLinkList<TradeData> const& kList,

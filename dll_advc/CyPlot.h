@@ -45,7 +45,9 @@ public:
 	bool isPotentialIrrigation();
 	bool canHavePotentialIrrigation();
 	bool isIrrigationAvailable(bool bIgnoreSelf);
-
+	// Deliverator
+	void changeFreshWaterInRadius(int iChange, int Radius);
+	// Deliverator	
 	bool isRiverSide();
 	bool isRiver();
 	bool isRiverConnection(int /*DirectionTypes*/ eDirection);
@@ -56,6 +58,10 @@ public:
 	int seeThroughLevel();
 	bool canHaveBonus(int /*BonusTypes*/ eBonus, bool bIgnoreLatitude);
 	bool canHaveImprovement(int /* ImprovementTypes */ eImprovement, int /*TeamTypes*/ eTeam, bool bPotential);
+	// < JImprovementLimit Mod Start >
+	bool isImprovementInRange(int /* ImprovementTypes */ eImprovement, int iRange, bool bCheckBuildProgress);
+	bool isImprovementAncestor(int /* ImprovementTypes */ eImprovement, int /* ImprovementTypes */ eCheckImprovement);
+	// < JImprovementLimit Mod End >
 	bool canBuild(int /*BuildTypes*/ eBuild, int /*PlayerTypes*/ ePlayer, bool bTestVisible);
 	// advc.251: Param ePlayer added to these two functions
 	int getBuildTime(int /*BuildTypes*/ eBuild, int /*PlayerTypes*/ ePlayer);
@@ -174,6 +180,23 @@ public:
 	int /*PlayerTypes*/ getOwner();
 	void setOwner(int /*PlayerTypes*/ eNewValue);
 	void setOwnerNoUnitCheck(int /*PlayerTypes*/ eNewValue);
+	// < JCultureControl Mod Start >
+	int /*PlayerTypes*/ getImprovementOwner();
+	void setImprovementOwner(int /*PlayerTypes*/ eNewValue);
+
+	int getCultureControl(int /*PlayerTypes*/ eIndex);
+	int countTotalCultureControl();
+	int /*PlayerTypes*/ findHighestCultureControlPlayer();
+
+	int calculateCultureControlPercent(int /*PlayerTypes*/ eIndex);
+	int calculateTeamCultureControlPercent(int /*TeamTypes*/ eIndex);
+	void setCultureControl(int /*PlayerTypes*/ eIndex, int iNewValue, bool bUpdate);
+	void changeCultureControl(int /*PlayerTypes*/ eIndex, int iChange, bool bUpdate);
+
+	void addCultureControl(int /*PlayerTypes*/ ePlayer, int /*ImprovementTypes*/ eImprovement, bool bUpdateInterface);
+	void clearCultureControl(int /*PlayerTypes*/ ePlayer, int /*ImprovementTypes*/ eImprovement, bool bUpdateInterface);
+	//void updateCultureControl(int iCenterX, int iCenterY, int iUpdateRange, bool bUpdateInterface);
+	// < JCultureControl Mod End >
 	PlotTypes getPlotType();
 	bool isWater();
 	bool isFlatlands();

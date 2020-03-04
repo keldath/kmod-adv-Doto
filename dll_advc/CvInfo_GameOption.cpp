@@ -597,6 +597,9 @@ m_iCivicUpkeepPercent(0),
 m_iInflationPercent(0),
 m_iHealthBonus(0),
 m_iHappyBonus(0),
+/* Population Limit ModComp - Beginning */
+m_iPopulationLimit(0),
+/* Population Limit ModComp - End */
 m_iAttitudeChange(0),
 m_iNoTechTradeModifier(0),
 m_iTechTradeKnownModifier(0),
@@ -740,6 +743,13 @@ int CvHandicapInfo::getHappyBonus() const
 {
 	return m_iHappyBonus;
 }
+
+/* Population Limit ModComp - Beginning */
+int CvHandicapInfo::getPopulationLimit() const
+{
+	return m_iPopulationLimit;
+}
+/* Population Limit ModComp - End */
 
 int CvHandicapInfo::getAttitudeChange() const
 {
@@ -1011,6 +1021,9 @@ void CvHandicapInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iInflationPercent);
 	stream->Read(&m_iHealthBonus);
 	stream->Read(&m_iHappyBonus);
+	/* Population Limit ModComp - Beginning */
+	stream->Read(&m_iPopulationLimit);
+	/* Population Limit ModComp - End */
 	stream->Read(&m_iAttitudeChange);
 	stream->Read(&m_iNoTechTradeModifier);
 	stream->Read(&m_iTechTradeKnownModifier);
@@ -1115,6 +1128,9 @@ void CvHandicapInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iInflationPercent);
 	stream->Write(m_iHealthBonus);
 	stream->Write(m_iHappyBonus);
+	/* Population Limit ModComp - Beginning */
+	stream->Write(m_iPopulationLimit);
+	/* Population Limit ModComp - End */
 	stream->Write(m_iAttitudeChange);
 	stream->Write(m_iNoTechTradeModifier);
 	stream->Write(m_iTechTradeKnownModifier);
@@ -1181,16 +1197,17 @@ bool CvHandicapInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iFreeUnits, "iFreeUnits");
 	pXML->GetChildXmlValByName(&m_iUnitCostPercent, "iUnitCostPercent");
 	// <advc.251>
-	pXML->GetChildXmlValByName(&m_iBuildTimePercent, "iBuildTimePercent");
-	pXML->GetChildXmlValByName(&m_iBaseGrowthThresholdPercent, "iBaseGrowthThresholdPercent");
-	pXML->GetChildXmlValByName(&m_iGPThresholdPercent, "iGPThresholdPercent");
+	//keldath added some secondary value in case of null xml tag
+	pXML->GetChildXmlValByName(&m_iBuildTimePercent, "iBuildTimePercent",100);
+	pXML->GetChildXmlValByName(&m_iBaseGrowthThresholdPercent, "iBaseGrowthThresholdPercent",100);
+	pXML->GetChildXmlValByName(&m_iGPThresholdPercent, "iGPThresholdPercent",100);
 	pXML->GetChildXmlValByName(&m_iCultureLevelPercent, "iCultureLevelPercent");
 	// </advc.251>
 	pXML->GetChildXmlValByName(&m_iResearchPercent, "iResearchPercent");
 	// <advc.251>
-	pXML->GetChildXmlValByName(&m_iTrainPercent, "iTrainPercent");
-	pXML->GetChildXmlValByName(&m_iConstructPercent, "iConstructPercent");
-	pXML->GetChildXmlValByName(&m_iCreatePercent, "iCreatePercent");
+	pXML->GetChildXmlValByName(&m_iTrainPercent, "iTrainPercent",100);
+	pXML->GetChildXmlValByName(&m_iConstructPercent, "iConstructPercent",100);
+	pXML->GetChildXmlValByName(&m_iCreatePercent, "iCreatePercent",100);
 	// </advc.251>
 	pXML->GetChildXmlValByName(&m_iDistanceMaintenancePercent, "iDistanceMaintenancePercent");
 	pXML->GetChildXmlValByName(&m_iNumCitiesMaintenancePercent, "iNumCitiesMaintenancePercent");
@@ -1202,6 +1219,9 @@ bool CvHandicapInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iInflationPercent, "iInflationPercent");
 	pXML->GetChildXmlValByName(&m_iHealthBonus, "iHealthBonus");
 	pXML->GetChildXmlValByName(&m_iHappyBonus, "iHappyBonus");
+	/* Population Limit ModComp - Beginning */
+	pXML->GetChildXmlValByName(&m_iPopulationLimit, "iPopulationLimit");
+	/* Population Limit ModComp - End */
 	pXML->GetChildXmlValByName(&m_iAttitudeChange, "iAttitudeChange");
 	pXML->GetChildXmlValByName(&m_iNoTechTradeModifier, "iNoTechTradeModifier");
 	pXML->GetChildXmlValByName(&m_iTechTradeKnownModifier, "iTechTradeKnownModifier");
@@ -1228,8 +1248,8 @@ bool CvHandicapInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iAIWorkRateModifier, "iAIWorkRateModifier");
 	pXML->GetChildXmlValByName(&m_iAIGrowthPercent, "iAIGrowthPercent");
 	// <advc.251>
-	pXML->GetChildXmlValByName(&m_iAIGPThresholdPercent, "iAIGPThresholdPercent");
-	pXML->GetChildXmlValByName(&m_iAIResearchPercent, "iAIResearchPercent");
+	pXML->GetChildXmlValByName(&m_iAIGPThresholdPercent, "iAIGPThresholdPercent", 100);
+	pXML->GetChildXmlValByName(&m_iAIResearchPercent, "iAIResearchPercent", 100);
 	// </advc.251>
 	pXML->GetChildXmlValByName(&m_iAITrainPercent, "iAITrainPercent");
 	pXML->GetChildXmlValByName(&m_iAIWorldTrainPercent, "iAIWorldTrainPercent");
@@ -1249,7 +1269,7 @@ bool CvHandicapInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iAIAdvancedStartPercent, "iAIAdvancedStartPercent");
 	// advc.148:
 	pXML->GetChildXmlValByName(&m_iAIAttitudeChangePercent, "iAIAttitudeChangePercent");
-	pXML->GetChildXmlValByName(&m_iDifficulty, "iDifficulty"); // advc.250a
+	pXML->GetChildXmlValByName(&m_iDifficulty, "iDifficulty", 100); // advc.250a
 
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "Goodies"))
 	{

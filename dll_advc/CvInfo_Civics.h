@@ -30,8 +30,8 @@ public: // The const functions are exposed to Python except those (to be) added 
 	int getDistanceMaintenanceModifier() const;
 	int getNumCitiesMaintenanceModifier() const;
 	//DPII < Maintenance Modifiers >
-    DllExport int getHomeAreaMaintenanceModifier() const;
-    DllExport int getOtherAreaMaintenanceModifier() const;
+    int getHomeAreaMaintenanceModifier() const;
+    int getOtherAreaMaintenanceModifier() const;
     //DPII < Maintenance Modifiers >
 	int getCorporationMaintenanceModifier() const;
 	int getExtraHealth() const;
@@ -57,6 +57,10 @@ public: // The const functions are exposed to Python except those (to be) added 
 	int getMaxConscript() const;
 	int getStateReligionHappiness() const;
 	int getNonStateReligionHappiness() const;
+	// < Civic Infos Plus Start >
+	int getStateReligionExtraHealth() const;				// Exposed to Python
+	int getNonStateReligionExtraHealth() const;				// Exposed to Python
+	// < Civic Infos Plus End   >
 	int getStateReligionUnitProductionModifier() const;
 	int getStateReligionBuildingProductionModifier() const;
 	int getStateReligionFreeExperience() const;
@@ -77,12 +81,41 @@ public: // The const functions are exposed to Python except those (to be) added 
 	void setWeLoveTheKingKey(const TCHAR* szVal);
 
 	// Array access:
+	/*************************************************************************************************/
+	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+	/**																								**/
+	/**																								**/
+	/*************************************************************************************************/
+	int getSpecialistYieldChange(int i, int j) const;			
+	int* getSpecialistYieldChangeArray(int i) const;
+	
+	int getSpecialistCommerceChange(int i, int j) const;			
+	int* getSpecialistCommerceChangeArray(int i) const;
 
+	/*************************************************************************************************/
+	/**	CMEDIT: End																					**/
+	/*************************************************************************************************/
+	
 	int getYieldModifier(int i) const;
 	int* getYieldModifierArray() const;
 	int getCapitalYieldModifier(int i) const;
 	int* getCapitalYieldModifierArray() const;
 	int getTradeYieldModifier(int i) const;
+	// < Civic Infos Plus Start >
+	int getStateReligionYieldModifier(int i) const;        // Exposed to Python
+	int* getStateReligionYieldModifierArray() const;
+	int getNonStateReligionYieldModifier(int i) const;        // Exposed to Python
+	int* getNonStateReligionYieldModifierArray() const;
+	int getSpecialistExtraYield(int i) const;				// Exposed to Python
+	int* getSpecialistExtraYieldArray() const;
+	int getFreeSpecialistCount(int i) const;				// Exposed to Python
+	int getStateReligionCommerceModifier(int i) const;             // Exposed to Python
+	int* getStateReligionCommerceModifierArray() const;
+	int getNonStateReligionCommerceModifier(int i) const;             // Exposed to Python
+	int* getNonStateReligionCommerceModifierArray() const;
+	int getBuildingYieldChanges(int i, int j) const;                  // Exposed to Python
+	int getBuildingCommerceChanges(int i, int j) const;               // Exposed to Python
+	// < Civic Infos Plus End   >
 	int* getTradeYieldModifierArray() const;
 	int getCommerceModifier(int i) const;
 	int* getCommerceModifierArray() const;
@@ -145,7 +178,11 @@ protected:
 	int m_iCivicPercentAnger;
 	int m_iMaxConscript;
 	int m_iStateReligionHappiness;
-	int m_iNonStateReligionHappiness;
+	int m_iNonStateReligionHappiness;					
+// < Civic Infos Plus Start >
+	int m_iStateReligionExtraHealth;
+	int m_iNonStateReligionExtraHealth;
+// < Civic Infos Plus End   >
 	int m_iStateReligionUnitProductionModifier;
 	int m_iStateReligionBuildingProductionModifier;
 	int m_iStateReligionFreeExperience;
@@ -162,10 +199,31 @@ protected:
 	bool m_bNoNonStateReligionSpread;
 
 	CvWString m_szWeLoveTheKingKey;
-
+	/*************************************************************************************************/
+	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+	/**																								**/
+	/**																								**/
+	/*************************************************************************************************/
+	int** m_ppiSpecialistYieldChange;
+	int** m_ppiSpecialistCommerceChange;
+	/*************************************************************************************************/
+	/**	CMEDIT: End																					**/
+	/*************************************************************************************************/
+	/*************************************************************************************************/
+	
 	int* m_piYieldModifier;
 	int* m_piCapitalYieldModifier;
 	int* m_piTradeYieldModifier;
+	// < Civic Infos Plus Start >
+	int* m_piSpecialistExtraYield;
+	int* m_paiFreeSpecialistCount;
+	int* m_piStateReligionYieldModifier;
+	int* m_piStateReligionCommerceModifier;
+	int* m_piNonStateReligionYieldModifier;
+	int* m_piNonStateReligionCommerceModifier;
+	int** m_ppiBuildingYieldChanges;
+	int** m_ppiBuildingCommerceChanges;
+	// < Civic Infos Plus End   >
 	int* m_piCommerceModifier;
 	int* m_piCapitalCommerceModifier;
 	int* m_piSpecialistExtraCommerce;

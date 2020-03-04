@@ -229,6 +229,16 @@ void CyInfoPythonInterface3()
 		.def("getMovieFile", &CvCorporationInfo::getMovieFile, "string ()")
 		.def("getMovieSound", &CvCorporationInfo::getMovieSound, "string ()")
 		.def("getSound", &CvCorporationInfo::getSound, "string ()")
+/*************************************************************************************************/
+/** TGA_INDEXATION                          03/25/08                                MRGENIE      */
+/**                                                                                              */
+/** reorganizing the Religion vector by checking the TGAIndex of the xml and placing everything  */
+/** properly                                                                                     */
+/*************************************************************************************************/
+		.def("getTGAIndex", &CvReligionInfo::getTGAIndex, "int ()")
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 
 		// Arrays
 
@@ -376,7 +386,18 @@ void CyInfoPythonInterface3()
 
 	python::class_<CvCultureLevelInfo, boost::noncopyable, python::bases<CvInfoBase> >("CvCultureLevelInfo")
 		.def("getCityDefenseModifier", &CvCultureLevelInfo::getCityDefenseModifier, "int ()")
-
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Expose new terrain tags to python                                                **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+		.def("getHealthPercent", &CvTerrainInfo::getHealthPercent, "int ()")
+		.def("getTurnDamage", &CvTerrainInfo::getTurnDamage, "int ()")
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 		.def("getSpeedThreshold", &CvCultureLevelInfo::getSpeedThreshold, "int ()")
 		;
 

@@ -24,6 +24,8 @@ m_pbLeaders(NULL),
 m_pbCivilizationFreeBuildingClass(NULL),
 m_pbCivilizationFreeTechs(NULL),
 m_pbCivilizationDisableTechs(NULL),
+// davidlallen: religion forbidden to civilization next line
+m_pbForbiddenReligions(NULL),
 m_paszCityNames(NULL)
 {}
 
@@ -37,6 +39,8 @@ CvCivilizationInfo::~CvCivilizationInfo()
 	SAFE_DELETE_ARRAY(m_pbCivilizationFreeBuildingClass);
 	SAFE_DELETE_ARRAY(m_pbCivilizationFreeTechs);
 	SAFE_DELETE_ARRAY(m_pbCivilizationDisableTechs);
+	// davidlallen: religion forbidden to civilization next line
+	SAFE_DELETE_ARRAY(m_pbForbiddenReligions);
 	SAFE_DELETE_ARRAY(m_paszCityNames);
 }
 
@@ -199,6 +203,15 @@ const TCHAR* CvCivilizationInfo::getButton() const
 	return getArtInfo()->getButton();
 }
 
+// davidlallen religion forbidden to civilization start
+bool CvCivilizationInfo::isForbidden(int eReligionType) const
+{
+	FAssertMsg(eReligionType < GC.getNumReligionInfos(), "Index out of bounds");
+	FAssertMsg(eReligionType > -1, "Index out of bounds");
+	return m_pbForbiddenReligions ? m_pbForbiddenReligions[eReligionType] : false;
+}
+// davidlallen religion forbidden to civilization end
+
 std::string CvCivilizationInfo::getCityNames(int i) const
 {
 	FAssertMsg(i < getNumCityNames(), "Index out of bounds");
@@ -250,6 +263,11 @@ void CvCivilizationInfo::read(FDataStreamBase* stream)
 	SAFE_DELETE_ARRAY(m_pbCivilizationDisableTechs);
 	m_pbCivilizationDisableTechs = new bool[GC.getNumTechInfos()];
 	stream->Read(GC.getNumTechInfos(), m_pbCivilizationDisableTechs);
+	// davidlallen: religion forbidden to civilization start
+	SAFE_DELETE_ARRAY(m_pbForbiddenReligions);
+	m_pbForbiddenReligions = new bool[GC.getNumReligionInfos()];
+	stream->Read(GC.getNumReligionInfos(), m_pbForbiddenReligions);
+	// davidlallen: religion forbidden to civilization end
 	SAFE_DELETE_ARRAY(m_paszCityNames);
 	m_paszCityNames = new CvString[m_iNumCityNames];
 	stream->ReadString(m_iNumCityNames, m_paszCityNames);
@@ -282,6 +300,8 @@ void CvCivilizationInfo::write(FDataStreamBase* stream)
 	stream->Write(GC.getNumBuildingClassInfos(), m_pbCivilizationFreeBuildingClass);
 	stream->Write(GC.getNumTechInfos(), m_pbCivilizationFreeTechs);
 	stream->Write(GC.getNumTechInfos(), m_pbCivilizationDisableTechs);
+	// davidlallen: religion forbidden to civilization next line
+	stream->Write(GC.getNumReligionInfos(), m_pbForbiddenReligions);
 	stream->WriteString(m_iNumCityNames, m_paszCityNames);
 }
 #endif
@@ -373,6 +393,8 @@ bool CvCivilizationInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_pbCivilizationFreeBuildingClass, "FreeBuildingClasses", GC.getNumBuildingClassInfos());
 	pXML->SetVariableListTagPair(&m_pbCivilizationFreeTechs, "FreeTechs", GC.getNumTechInfos());
 	pXML->SetVariableListTagPair(&m_pbCivilizationDisableTechs, "DisableTechs", GC.getNumTechInfos());
+	// davidlallen: religion forbidden to civilization next line
+	pXML->SetVariableListTagPair(&m_pbForbiddenReligions, "ForbiddenReligions", sizeof(GC.getReligionInfo((ReligionTypes)0)), GC.getNumReligionInfos());
 
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"InitialCivics"))
 	{
@@ -471,6 +493,11 @@ m_iShareWarAttitudeChange(0),
 m_iShareWarAttitudeDivisor(0),
 m_iShareWarAttitudeChangeLimit(0),
 m_iFavoriteCivicAttitudeChange(0),
+//dune wars - hated civs
+m_iHatedCivicAttitudeChange(0), //a1021
+m_iFavoriteCivilizationAttitudeChange(0), //a1021
+m_iHatedCivilizationAttitudeChange(0), //a1021
+//dune wars - hated civs
 m_iFavoriteCivicAttitudeDivisor(0),
 m_iFavoriteCivicAttitudeChangeLimit(0),
 m_iDemandTributeAttitudeThreshold(NO_ATTITUDE),
@@ -496,6 +523,11 @@ m_iVassalRefuseAttitudeThreshold(NO_ATTITUDE),
 m_iVassalPowerModifier(0),
 m_iFreedomAppreciation(0),
 m_iFavoriteCivic(NO_CIVIC),
+//dune wars - hated civs
+m_iHatedCivic(NO_CIVIC), //a1021
+m_iFavoriteCivilization(NO_CIVIC), //a1021
+m_iHatedCivilization(NO_CIVIC), //a1021
+//dune wars - hated civs
 m_iFavoriteReligion(NO_RELIGION),
 m_pbTraits(NULL),
 m_piFlavorValue(NULL),
@@ -803,6 +835,24 @@ int CvLeaderHeadInfo::getShareWarAttitudeChangeLimit() const
 {
 	return m_iShareWarAttitudeChangeLimit;
 }
+//a1021//dune wars - hated civs
+
+int CvLeaderHeadInfo::getHatedCivicAttitudeChange() const
+{
+	return m_iHatedCivicAttitudeChange;
+}
+
+int CvLeaderHeadInfo::getFavoriteCivilizationAttitudeChange() const
+{
+	return m_iFavoriteCivilizationAttitudeChange;
+}
+
+int CvLeaderHeadInfo::getHatedCivilizationAttitudeChange() const
+{
+	return m_iHatedCivilizationAttitudeChange;
+}
+
+//a1021 end //dune wars - hated civs
 
 int CvLeaderHeadInfo::getFavoriteCivicAttitudeChange() const
 {
@@ -923,6 +973,22 @@ int CvLeaderHeadInfo::getFavoriteCivic() const
 {
 	return m_iFavoriteCivic;
 }
+//a1021//dune wars - hated civs
+int CvLeaderHeadInfo::getHatedCivic() const
+{
+	return m_iHatedCivic;
+}
+
+int CvLeaderHeadInfo::getFavoriteCivilization() const
+{
+	return m_iFavoriteCivilization;
+}
+
+int CvLeaderHeadInfo::getHatedCivilization() const
+{
+	return m_iHatedCivilization;
+}
+//a1021 end//dune wars - hated civs
 
 int CvLeaderHeadInfo::getFavoriteReligion() const
 {
@@ -1105,6 +1171,11 @@ void CvLeaderHeadInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iShareWarAttitudeDivisor);
 	stream->Read(&m_iShareWarAttitudeChangeLimit);
 	stream->Read(&m_iFavoriteCivicAttitudeChange);
+//dune wars - hated civs
+	stream->Read(&m_iHatedCivicAttitudeChange); //a1021
+	stream->Read(&m_iFavoriteCivilizationAttitudeChange); //a1021
+	stream->Read(&m_iHatedCivilizationAttitudeChange); //a1021	
+//dune wars - hated civs
 	stream->Read(&m_iFavoriteCivicAttitudeDivisor);
 	stream->Read(&m_iFavoriteCivicAttitudeChangeLimit);
 	stream->Read(&m_iDemandTributeAttitudeThreshold);
@@ -1130,6 +1201,11 @@ void CvLeaderHeadInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iVassalPowerModifier);
 	stream->Read(&m_iFreedomAppreciation);
 	stream->Read(&m_iFavoriteCivic);
+//dune wars - hated civs
+	stream->Read(&m_iHatedCivic); //a1021
+	stream->Read(&m_iFavoriteCivilization); //a1021
+	stream->Read(&m_iHatedCivilization); //a1021	
+//dune wars - hated civs
 	stream->Read(&m_iFavoriteReligion);
 	stream->ReadString(m_szArtDefineTag);
 	SAFE_DELETE_ARRAY(m_pbTraits);
@@ -1244,6 +1320,11 @@ void CvLeaderHeadInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iShareWarAttitudeDivisor);
 	stream->Write(m_iShareWarAttitudeChangeLimit);
 	stream->Write(m_iFavoriteCivicAttitudeChange);
+//dune wars - hated civs
+	stream->Write(m_iHatedCivicAttitudeChange); //a1021
+	stream->Write(m_iFavoriteCivilizationAttitudeChange); //a1021
+	stream->Write(m_iHatedCivilizationAttitudeChange); //a1021	
+//dune wars - hated civs
 	stream->Write(m_iFavoriteCivicAttitudeDivisor);
 	stream->Write(m_iFavoriteCivicAttitudeChangeLimit);
 	stream->Write(m_iDemandTributeAttitudeThreshold);
@@ -1269,6 +1350,11 @@ void CvLeaderHeadInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iVassalPowerModifier);
 	stream->Write(m_iFreedomAppreciation);
 	stream->Write(m_iFavoriteCivic);
+//dune wars - hated civs
+	stream->Write(m_iHatedCivic); //a1021
+	stream->Write(m_iFavoriteCivilization); //a1021
+	stream->Write(m_iHatedCivilization); //a1021	
+//dune wars - hated civs
 	stream->Write(m_iFavoriteReligion);
 	stream->WriteString(m_szArtDefineTag);
 	stream->Write(GC.getNumTraitInfos(), m_pbTraits);
@@ -1358,6 +1444,11 @@ bool CvLeaderHeadInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iShareWarAttitudeDivisor, "iShareWarAttitudeDivisor");
 	pXML->GetChildXmlValByName(&m_iShareWarAttitudeChangeLimit, "iShareWarAttitudeChangeLimit");
 	pXML->GetChildXmlValByName(&m_iFavoriteCivicAttitudeChange, "iFavoriteCivicAttitudeChange");
+//dune wars - hated civs
+	pXML->GetChildXmlValByName(&m_iHatedCivicAttitudeChange, "iHatedCivicAttitudeChange", 0); //a1021
+	pXML->GetChildXmlValByName(&m_iFavoriteCivilizationAttitudeChange, "iFavoriteCivilizationAttitudeChange", 0); //a1021
+	pXML->GetChildXmlValByName(&m_iHatedCivilizationAttitudeChange, "iHatedCivilizationAttitudeChange", 0); //a1021	
+//dune wars - hated civs
 	pXML->GetChildXmlValByName(&m_iFavoriteCivicAttitudeDivisor, "iFavoriteCivicAttitudeDivisor");
 	pXML->GetChildXmlValByName(&m_iFavoriteCivicAttitudeChangeLimit, "iFavoriteCivicAttitudeChangeLimit");
 	pXML->GetChildXmlValByName(&m_iVassalPowerModifier, "iVassalPowerModifier");
@@ -1425,6 +1516,20 @@ bool CvLeaderHeadInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(szTextVal, "FavoriteCivic");
 	m_iFavoriteCivic = pXML->FindInInfoClass(szTextVal);
 
+	//a1021//dune wars - hated civs
+	pXML->GetChildXmlValByName(szTextVal, "HatedCivic",
+		""); // f1rpo
+	m_iHatedCivic = pXML->FindInInfoClass(szTextVal);
+	
+	pXML->GetChildXmlValByName(szTextVal, "FavoriteCivilization",
+		""); // f1rpo
+	m_aszExtraXMLforPass3.push_back(szTextVal);
+	
+	pXML->GetChildXmlValByName(szTextVal, "HatedCivilization",
+		""); // f1rpo
+	m_aszExtraXMLforPass3.push_back(szTextVal);	
+	//a1021 end//dune wars - hated civs
+
 	pXML->GetChildXmlValByName(szTextVal, "FavoriteReligion");
 	m_iFavoriteReligion = pXML->FindInInfoClass(szTextVal);
 
@@ -1446,6 +1551,19 @@ bool CvLeaderHeadInfo::read(CvXMLLoadUtility* pXML)
 	return true;
 }
 
+// dune wars - HATED CIVS
+bool CvLeaderHeadInfo::readPass3()
+{
+	if (m_aszExtraXMLforPass3.size() > 0)
+	{
+		m_iFavoriteCivilization = GC.getInfoTypeForString(m_aszExtraXMLforPass3[0].GetCString());
+		m_iHatedCivilization = GC.getInfoTypeForString(m_aszExtraXMLforPass3[1].GetCString());
+	}
+	m_aszExtraXMLforPass3.clear();
+
+	return true;
+// HATED CIVS
+}
 CvTraitInfo::CvTraitInfo() :
 m_iHealth(0),
 m_iHappiness(0),

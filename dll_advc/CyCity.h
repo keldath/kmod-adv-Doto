@@ -39,6 +39,16 @@ public:
 	int findBaseYieldRateRank(int /*YieldTypes*/ eYield);
 	int findYieldRateRank(int /*YieldTypes*/ eYield);
 	int findCommerceRateRank(int /*CommerceTypes*/ eCommerce);
+/************************************************************************************************/
+/* REVDCM                                 02/16/10                                phungus420    */
+/*                                                                                              */
+/* CanTrain                                                                                     */
+/************************************************************************************************/
+	bool isForceObsoleteUnitClassAvailable(int /*UnitTypes*/ eUnit);
+	bool isPlotTrainable(int /*UnitTypes*/ eUnit, bool bContinue, bool bTestVisible);
+/************************************************************************************************/
+/* REVDCM                                  END                                                  */
+/************************************************************************************************/
 
 	int /*UnitTypes*/ allUpgradesAvailable(int /*UnitTypes*/ eUnit, int iUpgradeCount);
 	bool isWorldWondersMaxed();
@@ -181,6 +191,10 @@ public:
 	int getPopulation();
 	void setPopulation(int iNewValue);
 	void changePopulation(int iChange);
+	/* Population Limit ModComp - Beginning */
+	int getPopulationLimit();
+	int getPopulationLimitChange();
+	/* Population Limit ModComp - End */
 	long getRealPopulation();
 
 	int getHighestPopulation();
@@ -400,6 +414,9 @@ public:
 	void changeFreeBonus(int /*BonusTypes*/ eIndex, int iChange);
 	int getNumBonuses(int /*BonusTypes*/ iBonus);
 	bool hasBonus(int /*BonusTypes */ iBonus);
+	// < Building Resource Converter Start >
+	int CyCity::getBuildingOutputBonus(int /*BonusTypes */iBonus);
+	// < Building Resource Converter End   >
 	int getBuildingProduction(int /*BuildingTypes*/ iIndex);
 	void setBuildingProduction(int /*BuildingTypes*/ iIndex, int iNewValue);
 	void changeBuildingProduction(int /*BuildingTypes*/ iIndex, int iChange);

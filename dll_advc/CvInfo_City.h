@@ -41,6 +41,16 @@ public: // All the const functions are exposed to Python
 	int getGreatPeopleRateChange() const;
 	int getMissionType() const;
 	void setMissionType(int iNewType);
+/*************************************************************************************************/
+/** Specialists Enhancements, by Supercheese 10/9/09                                                   */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int getHealth() const;							// Exposed to Python
+	int getHappiness() const;							// Exposed to Python
+/*************************************************************************************************/
+/** Specialists Enhancements                          END                                              */
+/*************************************************************************************************/
 	int getExperience() const;
 
 	bool isVisible() const;
@@ -59,6 +69,16 @@ protected:
 	int m_iGreatPeopleUnitClass;
 	int m_iGreatPeopleRateChange;
 	int m_iMissionType;
+/*************************************************************************************************/
+/** Specialists Enhancements, by Supercheese 10/9/09                                                   */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int m_iHealth;
+	int m_iHappiness;
+/*************************************************************************************************/
+/** Specialists Enhancements                          END                                              */
+/*************************************************************************************************/ 
 	int m_iExperience;
 
 	bool m_bVisible;

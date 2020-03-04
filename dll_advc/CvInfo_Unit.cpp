@@ -8,12 +8,33 @@
 
 bool CvUnitInfo::m_bCanAnyMoveAllTerrain = false; // advc.opt (static initialization)
 
-CvUnitInfo::CvUnitInfo() :
+CvUnitInfo::CvUnitInfo() 
+:
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		Based on code by Afforess
+ *	Source:
+ *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
+ *
+ ****************************************/
+m_pbPrereqOrCivics(NULL),
+m_pbPrereqAndCivics(NULL),
+/**
+ ** End: Unit Civic Prereq
+ **/
 m_iAIWeight(0),
 m_iProductionCost(0),
 m_iHurryCostModifier(0),
 m_iAdvancedStartCost(100), // advc (from MNAI)
 m_iAdvancedStartCostIncrease(0),
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+m_iNumCitySizeUnitPrereq(0),
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
 m_iMinAreaSize(0),
 m_iMoves(0),
 m_iAirRange(0),
@@ -67,6 +88,20 @@ m_iDomainType(NO_DOMAIN),
 m_iDefaultUnitAIType(NO_UNITAI),
 m_iInvisibleType(NO_INVISIBLE),
 m_iAdvisorType(NO_ADVISOR),
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanTrain																*/
+/********************************************************************************/
+//missing pre civic
+m_iMaxStartEra(NO_ERA),
+m_iForceObsoleteTech(NO_TECH),
+m_bStateReligion(false),
+m_iPrereqGameOption(NO_GAMEOPTION),
+m_iNotGameOption(NO_GAMEOPTION),
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 m_iHolyCity(NO_RELIGION),
 m_iReligionType(NO_RELIGION),
 m_iStateReligion(NO_RELIGION),
@@ -75,6 +110,7 @@ m_iPrereqCorporation(NO_CORPORATION),
 m_iPrereqBuilding(NO_BUILDING),
 m_iPrereqAndTech(NO_TECH),
 m_iPrereqAndBonus(NO_BONUS),
+//m_iPrereqVicinityBonus(NO_BONUS),  //Shqype Vicinity Bonus Add
 m_iGroupSize(0),
 m_iGroupDefinitions(0),
 m_iUnitMeleeWaveSize(0),
@@ -112,6 +148,7 @@ m_bNoDefensiveBonus(false),
 m_bIgnoreBuildingDefense(false),
 m_bCanMoveImpassable(false),
 m_bCanMoveAllTerrain(false),
+m_bCanMovePeak(false), //Deliverator
 m_bFlatMovementCost(false),
 m_bIgnoreTerrainCost(false),
 m_bNukeImmune(false),
@@ -127,6 +164,19 @@ m_bAlwaysHostile(false),
 m_bNoRevealMap(false),
 m_fUnitMaxSpeed(0.0f),
 m_fUnitPadTime(0.0f),
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanTrain																*/
+/********************************************************************************/
+//m_pbPrereqOrCivics(NULL),
+m_pbPrereqBuildingClass(NULL),
+m_piPrereqBuildingClassOverrideTech(NULL),
+m_piPrereqBuildingClassOverrideEra(NULL),
+m_pbForceObsoleteUnitClass(NULL),
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 m_pbUpgradeUnitClass(NULL),
 m_pbTargetUnitClass(NULL),
 m_pbTargetUnitCombat(NULL),
@@ -147,6 +197,7 @@ m_pbTerrainImpassable(NULL),
 m_pbFeatureImpassable(NULL),
 m_piPrereqAndTechs(NULL),
 m_piPrereqOrBonuses(NULL),
+//m_piPrereqOrVicinityBonuses(NULL),  //Shqype Vicinity Bonus Add
 m_piProductionTraits(NULL),
 m_piFlavorValue(NULL),
 m_piTerrainAttackModifier(NULL),
@@ -174,6 +225,32 @@ m_paszUnitNames(NULL)
 
 CvUnitInfo::~CvUnitInfo()
 {
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		Based on code by Afforess
+ *	Source:
+ *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
+ *
+ ****************************************/
+	SAFE_DELETE_ARRAY(m_pbPrereqOrCivics);
+	SAFE_DELETE_ARRAY(m_pbPrereqAndCivics);
+/**
+ ** End: Unit Civic Prereq
+ **/
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanTrain																*/
+/********************************************************************************/
+//	SAFE_DELETE_ARRAY(m_pbPrereqOrCivics);
+	SAFE_DELETE_ARRAY(m_pbPrereqBuildingClass);
+	SAFE_DELETE_ARRAY(m_piPrereqBuildingClassOverrideTech);
+	SAFE_DELETE_ARRAY(m_piPrereqBuildingClassOverrideEra);
+	SAFE_DELETE_ARRAY(m_pbForceObsoleteUnitClass);
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 	SAFE_DELETE_ARRAY(m_pbUpgradeUnitClass);
 	SAFE_DELETE_ARRAY(m_pbTargetUnitClass);
 	SAFE_DELETE_ARRAY(m_pbTargetUnitCombat);
@@ -194,6 +271,7 @@ CvUnitInfo::~CvUnitInfo()
 	SAFE_DELETE_ARRAY(m_pbFeatureImpassable);
 	SAFE_DELETE_ARRAY(m_piPrereqAndTechs);
 	SAFE_DELETE_ARRAY(m_piPrereqOrBonuses);
+//	SAFE_DELETE_ARRAY(m_piPrereqOrVicinityBonuses);  //Shqype Vicinity Bonus Add
 	// <advc.905b>
 	SAFE_DELETE_ARRAY(m_piSpeedBonuses[0]);
 	SAFE_DELETE_ARRAY(m_piSpeedBonuses[1]);
@@ -219,6 +297,50 @@ CvUnitInfo::~CvUnitInfo()
 	SAFE_DELETE_ARRAY(m_paszMiddleArtDefineTags);
 	SAFE_DELETE_ARRAY(m_paszUnitNames);
 }
+
+//keldath QA i hope thats ok thats its here and not in the .h file.
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		Based on code by Afforess
+ *	Source:
+ *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
+ *
+ ****************************************/
+bool CvUnitInfo::isPrereqOrCivics(int i) const
+{
+	FAssertMsg(i < GC.getNumCivicInfos(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_pbPrereqOrCivics ? m_pbPrereqOrCivics[i] : false;
+}
+
+bool CvUnitInfo::isPrereqAndCivics(int i) const
+{
+	FAssertMsg(i < GC.getNumCivicInfos(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_pbPrereqAndCivics ? m_pbPrereqAndCivics[i] : false;
+}
+
+//This is for the readpass3
+int CvUnitInfo::isPrereqOrCivicsVectorSize()					{return m_aszPrereqOrCivicsforPass3.size();}
+CvString CvUnitInfo::isPrereqOrCivicsNamesVectorElement(int i)	{return m_aszPrereqOrCivicsforPass3[i];}
+int CvUnitInfo::isPrereqOrCivicsValuesVectorElement(int i)		{return m_abPrereqOrCivicsforPass3[i];}
+int CvUnitInfo::isPrereqAndCivicsVectorSize()					{return m_aszPrereqAndCivicsforPass3.size();}
+CvString CvUnitInfo::isPrereqAndCivicsNamesVectorElement(int i)	{return m_aszPrereqAndCivicsforPass3[i];}
+int CvUnitInfo::isPrereqAndCivicsValuesVectorElement(int i)		{return m_abPrereqAndCivicsforPass3[i];}
+/**
+ ** End: Unit Civic Prereq
+ **/
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+int CvUnitInfo::getNumCitySizeUnitPrereq() const
+{
+	return m_iNumCitySizeUnitPrereq;
+}
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/**********************/
 
 int CvUnitInfo::getAdvancedStartCost() const
 {
@@ -309,6 +431,86 @@ void CvUnitInfo::setCommandType(CommandTypes eNewType)
 {
 	m_iCommandType = (CommandTypes)eNewType;
 }
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanTrain																*/
+/********************************************************************************/
+int CvUnitInfo::getMaxStartEra() const				
+{
+	return m_iMaxStartEra;
+}
+
+int CvUnitInfo::getForceObsoleteTech() const
+{
+	return m_iForceObsoleteTech;
+}
+
+bool CvUnitInfo::isStateReligion() const				
+{
+	return m_bStateReligion;
+}
+
+int CvUnitInfo::getPrereqGameOption() const
+{
+	return m_iPrereqGameOption;
+}
+
+int CvUnitInfo::getNotGameOption() const
+{
+	return m_iNotGameOption;
+}
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
+//Shqype Vicinity Bonus Start
+/*int CvUnitInfo::getPrereqVicinityBonus() const			
+{
+	return m_iPrereqVicinityBonus;
+}*/
+//Shqype Vicinity Bonus End
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanTrain																*/
+/********************************************************************************/
+/*bool CvUnitInfo::isPrereqOrCivics(int i) const	
+{
+	FAssertMsg(i < GC.getNumCivicInfos(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_pbPrereqOrCivics ? m_pbPrereqOrCivics[i] : false;
+}
+*/
+bool CvUnitInfo::isPrereqBuildingClass(int i) const
+{
+	FAssertMsg(i < GC.getNumBuildingClassInfos(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_pbPrereqBuildingClass ? m_pbPrereqBuildingClass[i] : false;
+}
+
+int CvUnitInfo::getPrereqBuildingClassOverrideTech(int i) const
+{
+	FAssertMsg(i < GC.getNumBuildingClassInfos(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_piPrereqBuildingClassOverrideTech ? m_piPrereqBuildingClassOverrideTech[i] : -1;
+}
+
+int CvUnitInfo::getPrereqBuildingClassOverrideEra(int i) const
+{
+	FAssertMsg(i < GC.getNumBuildingClassInfos(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_piPrereqBuildingClassOverrideEra ? m_piPrereqBuildingClassOverrideEra[i] : -1;
+}
+
+bool CvUnitInfo::getForceObsoleteUnitClass(int i) const
+{
+	FAssertMsg(i < GC.getNumUnitClassInfos(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_pbForceObsoleteUnitClass ? m_pbForceObsoleteUnitClass[i] : false;
+}
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 
 
 TechTypes CvUnitInfo::getPrereqAndTechs(int i) const
@@ -316,6 +518,14 @@ TechTypes CvUnitInfo::getPrereqAndTechs(int i) const
 	FAssertBounds(0, GC.getNUM_UNIT_AND_TECH_PREREQS(), i);
 	return m_piPrereqAndTechs ? (TechTypes)m_piPrereqAndTechs[i] : NO_TECH; // advc.003t
 }
+//Shqype Vicinity Bonus Start
+/*int CvUnitInfo::getPrereqOrVicinityBonuses(int i) const
+{
+	FAssertMsg(i < GC.getNUM_UNIT_PREREQ_OR_BONUSES(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_piPrereqOrVicinityBonuses ? m_piPrereqOrVicinityBonuses[i] : -1;
+}*/
+//Shqype Vicinity Bonus End
 
 BonusTypes CvUnitInfo::getPrereqOrBonuses(int i) const
 {
@@ -585,7 +795,16 @@ bool CvUnitInfo::isPromotionValid(PromotionTypes ePromotion, bool bLeader) const
 			return false;
 		}
 	}
-
+//MOD@VET_Andera412_Blocade_Unit-begin1/2
+	if (!GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
+	{
+		if (kPromotion.isUnblocade())
+		{
+			return false;
+		}
+	}	
+//MOD@VET_Andera412_Blocade_Unit-end1/2
+	
 	if (isIgnoreTerrainCost() && kPromotion.getMoveDiscountChange() != 0)
 		return false;
 	// advc.164: Check this in CvUnit::isPromotionValid instead
@@ -743,11 +962,37 @@ void CvUnitInfo::read(FDataStreamBase* stream)
 	uint uiFlag=0;
 	stream->Read(&uiFlag);
 
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		Based on code by Afforess
+ *	Source:
+ *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
+ *
+ ****************************************/
+	SAFE_DELETE_ARRAY(m_pbPrereqOrCivics);
+	m_pbPrereqOrCivics = new bool[GC.getNumCivicInfos()];
+	stream->Read(GC.getNumCivicInfos(), m_pbPrereqOrCivics);
+	
+	SAFE_DELETE_ARRAY(m_pbPrereqAndCivics);
+	m_pbPrereqAndCivics = new bool[GC.getNumCivicInfos()];
+	stream->Read(GC.getNumCivicInfos(), m_pbPrereqAndCivics);
+/**
+ ** End: Unit Civic Prereq
+ **/
+
 	stream->Read(&m_iAIWeight);
 	stream->Read(&m_iProductionCost);
 	stream->Read(&m_iHurryCostModifier);
 	stream->Read(&m_iAdvancedStartCost);
 	stream->Read(&m_iAdvancedStartCostIncrease);
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+	stream->Read(&m_iNumCitySizeUnitPrereq);
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
 	stream->Read(&m_iMinAreaSize);
 	stream->Read(&m_iMoves);
 	stream->Read(&m_iAirRange);
@@ -811,6 +1056,20 @@ void CvUnitInfo::read(FDataStreamBase* stream)
 		m_aiSeeInvisibleTypes.push_back(iSeeInvisibleType);
 	}
 	stream->Read(&m_iAdvisorType);
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanTrain																*/
+/********************************************************************************/
+	//missing civic
+	stream->Read(&m_iMaxStartEra);
+	stream->Read(&m_iForceObsoleteTech);
+	stream->Read(&m_bStateReligion);
+	stream->Read(&m_iPrereqGameOption);
+	stream->Read(&m_iNotGameOption);
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 	stream->Read(&m_iHolyCity);
 	stream->Read(&m_iReligionType);
 	stream->Read(&m_iStateReligion);
@@ -819,6 +1078,7 @@ void CvUnitInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iPrereqBuilding);
 	stream->Read(&m_iPrereqAndTech);
 	stream->Read(&m_iPrereqAndBonus);
+//	stream->Read(&m_iPrereqVicinityBonus);  //Shqype Vicinity Bonus Add
 	stream->Read(&m_iGroupSize);
 	stream->Read(&m_iGroupDefinitions);
 	stream->Read(&m_iUnitMeleeWaveSize);
@@ -858,6 +1118,7 @@ void CvUnitInfo::read(FDataStreamBase* stream)
 	// <advc.opt>
 	if (m_bCanMoveAllTerrain)
 		m_bCanAnyMoveAllTerrain = true; // </advc.opt>
+	stream->Read(&m_bCanMovePeak); //Deliverator
 	stream->Read(&m_bFlatMovementCost);
 	stream->Read(&m_bIgnoreTerrainCost);
 	stream->Read(&m_bNukeImmune);
@@ -876,6 +1137,11 @@ void CvUnitInfo::read(FDataStreamBase* stream)
 	SAFE_DELETE_ARRAY(m_piPrereqAndTechs);
 	m_piPrereqAndTechs = new int[GC.getNUM_UNIT_AND_TECH_PREREQS()];
 	stream->Read(GC.getNUM_UNIT_AND_TECH_PREREQS(), m_piPrereqAndTechs);
+//Shqype Vicinity Bonus Start
+//	SAFE_DELETE_ARRAY(m_piPrereqOrVicinityBonuses);
+//	m_piPrereqOrVicinityBonuses = new int[GC.getNUM_UNIT_PREREQ_OR_BONUSES()];
+//	stream->Read(GC.getNUM_UNIT_PREREQ_OR_BONUSES(), m_piPrereqOrVicinityBonuses);
+//Shqype Vicinity Bonus End
 	SAFE_DELETE_ARRAY(m_piPrereqOrBonuses);
 	m_piPrereqOrBonuses = new int[GC.getNUM_UNIT_PREREQ_OR_BONUSES()];
 	stream->Read(GC.getNUM_UNIT_PREREQ_OR_BONUSES(), m_piPrereqOrBonuses);
@@ -931,6 +1197,33 @@ void CvUnitInfo::read(FDataStreamBase* stream)
 	SAFE_DELETE_ARRAY(m_piUnitGroupRequired);
 	m_piUnitGroupRequired = new int[m_iGroupDefinitions];
 	stream->Read(m_iGroupDefinitions, m_piUnitGroupRequired);
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanTrain																*/
+/********************************************************************************/
+/*	SAFE_DELETE_ARRAY(m_pbPrereqOrCivics);
+	m_pbPrereqOrCivics = new bool[GC.getNumCivicInfos()];
+	stream->Read(GC.getNumCivicInfos(), m_pbPrereqOrCivics);
+*/
+	SAFE_DELETE_ARRAY(m_pbPrereqBuildingClass);
+	m_pbPrereqBuildingClass = new bool[GC.getNumBuildingClassInfos()];
+	stream->Read(GC.getNumBuildingClassInfos(), m_pbPrereqBuildingClass);
+
+	SAFE_DELETE_ARRAY(m_piPrereqBuildingClassOverrideTech);
+	m_piPrereqBuildingClassOverrideTech = new int[GC.getNumBuildingClassInfos()];
+	stream->Read(GC.getNumBuildingClassInfos(), m_piPrereqBuildingClassOverrideTech);
+
+	SAFE_DELETE_ARRAY(m_piPrereqBuildingClassOverrideEra);
+	m_piPrereqBuildingClassOverrideEra = new int[GC.getNumBuildingClassInfos()];
+	stream->Read(GC.getNumBuildingClassInfos(), m_piPrereqBuildingClassOverrideEra);
+
+	SAFE_DELETE_ARRAY(m_pbForceObsoleteUnitClass);
+	m_pbForceObsoleteUnitClass = new bool[GC.getNumUnitClassInfos()];
+	stream->Read(GC.getNumUnitClassInfos(), m_pbForceObsoleteUnitClass);
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 	SAFE_DELETE_ARRAY(m_pbUpgradeUnitClass);
 	m_pbUpgradeUnitClass = new bool[GC.getNumUnitClassInfos()];
 	stream->Read(GC.getNumUnitClassInfos(), m_pbUpgradeUnitClass);
@@ -1020,12 +1313,31 @@ void CvUnitInfo::write(FDataStreamBase* stream)
 	uiFlag = 2; // advc.315
 	uiFlag = 3; // advc.905b
 	stream->Write(uiFlag);
-
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		Based on code by Afforess
+ *	Source:
+ *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
+ *
+ ****************************************/
+	stream->Write(GC.getNumCivicInfos(), m_pbPrereqOrCivics);
+	stream->Write(GC.getNumCivicInfos(), m_pbPrereqAndCivics);
+/**
+ ** End: Unit Civic Prereq
+ **/
 	stream->Write(m_iAIWeight);
 	stream->Write(m_iProductionCost);
 	stream->Write(m_iHurryCostModifier);
 	stream->Write(m_iAdvancedStartCost);
 	stream->Write(m_iAdvancedStartCostIncrease);
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+	stream->Write(m_iNumCitySizeUnitPrereq);
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
 	stream->Write(m_iMinAreaSize);
 	stream->Write(m_iMoves);
 	stream->Write(m_iAirRange);
@@ -1082,6 +1394,20 @@ void CvUnitInfo::write(FDataStreamBase* stream)
 	for(int i = 0; i < (int)m_aiSeeInvisibleTypes.size(); i++)
 		stream->Write(m_aiSeeInvisibleTypes[i]);
 	stream->Write(m_iAdvisorType);
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanTrain																*/
+/********************************************************************************/
+//missing civic
+	stream->Write(m_iMaxStartEra);
+	stream->Write(m_iForceObsoleteTech);
+	stream->Write(m_bStateReligion);
+	stream->Write(m_iPrereqGameOption);
+	stream->Write(m_iNotGameOption);
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 	stream->Write(m_iHolyCity);
 	stream->Write(m_iReligionType);
 	stream->Write(m_iStateReligion);
@@ -1090,6 +1416,7 @@ void CvUnitInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iPrereqBuilding);
 	stream->Write(m_iPrereqAndTech);
 	stream->Write(m_iPrereqAndBonus);
+//	stream->Write(m_iPrereqVicinityBonus);  //Shqype Vicinity Bonus Add
 	stream->Write(m_iGroupSize);
 	stream->Write(m_iGroupDefinitions);
 	stream->Write(m_iUnitMeleeWaveSize);
@@ -1123,6 +1450,7 @@ void CvUnitInfo::write(FDataStreamBase* stream)
 	stream->Write(m_bIgnoreBuildingDefense);
 	stream->Write(m_bCanMoveImpassable);
 	stream->Write(m_bCanMoveAllTerrain);
+	stream->Write(m_bCanMovePeak); //Deliverator
 	stream->Write(m_bFlatMovementCost);
 	stream->Write(m_bIgnoreTerrainCost);
 	stream->Write(m_bNukeImmune);
@@ -1140,6 +1468,7 @@ void CvUnitInfo::write(FDataStreamBase* stream)
 	stream->Write(m_fUnitPadTime);
 	stream->Write(GC.getNUM_UNIT_AND_TECH_PREREQS(), m_piPrereqAndTechs);
 	stream->Write(GC.getNUM_UNIT_PREREQ_OR_BONUSES(), m_piPrereqOrBonuses);
+	//	stream->Write(GC.getNUM_UNIT_PREREQ_OR_BONUSES(), m_piPrereqOrVicinityBonuses);  //Shqype Vicinity Bonus Add
 	// <advc.905b>
 	stream->Write(GC.getNUM_UNIT_PREREQ_OR_BONUSES(), m_piSpeedBonuses[0]);
 	stream->Write(GC.getNUM_UNIT_PREREQ_OR_BONUSES(), m_piSpeedBonuses[1]);
@@ -1157,6 +1486,19 @@ void CvUnitInfo::write(FDataStreamBase* stream)
 	stream->Write(NUM_DOMAIN_TYPES, m_piDomainModifier);
 	stream->Write(GC.getNumBonusInfos(), m_piBonusProductionModifier);
 	stream->Write(m_iGroupDefinitions, m_piUnitGroupRequired);
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanTrain																*/
+/********************************************************************************/
+//	stream->Write(GC.getNumCivicInfos(), m_pbPrereqOrCivics);
+	stream->Write(GC.getNumBuildingClassInfos(), m_pbPrereqBuildingClass);
+	stream->Write(GC.getNumBuildingClassInfos(), m_piPrereqBuildingClassOverrideTech);
+	stream->Write(GC.getNumBuildingClassInfos(), m_piPrereqBuildingClassOverrideEra);
+	stream->Write(GC.getNumUnitClassInfos(), m_pbForceObsoleteUnitClass);
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 	stream->Write(GC.getNumUnitClassInfos(), m_pbUpgradeUnitClass);
 	stream->Write(GC.getNumUnitClassInfos(), m_pbTargetUnitClass);
 	stream->Write(GC.getNumUnitCombatInfos(), m_pbTargetUnitCombat);
@@ -1194,6 +1536,84 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 		return false;
 
 	CvString szTextVal;
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		Based on code by Afforess
+ *	Source:
+ *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
+ *
+ ****************************************/
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"PrereqOrCivics"))
+	{
+		if (pXML->SkipToNextVal())
+		{
+			int iNumSibs = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
+			bool bTemp = false;
+			if (iNumSibs > 0)
+			{
+				if (gDLL->getXMLIFace()->SetToChild(pXML->GetXML()))
+				{
+					for (int i=0;i<iNumSibs;i++)
+					{
+						if (pXML->GetChildXmlVal(szTextVal))
+						{
+                            m_aszPrereqOrCivicsforPass3.push_back(szTextVal);
+                            pXML->GetNextXmlVal(&bTemp);
+                            m_abPrereqOrCivicsforPass3.push_back(bTemp);
+							gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+						}
+
+						if (!gDLL->getXMLIFace()->NextSibling(pXML->GetXML()))
+						{
+							break;
+						}
+					}
+
+					gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+				}
+			}
+		}
+
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+	
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"PrereqAndCivics"))
+	{
+		if (pXML->SkipToNextVal())
+		{
+			int iNumSibs = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
+			bool bTemp = false;
+			if (iNumSibs > 0)
+			{
+				if (gDLL->getXMLIFace()->SetToChild(pXML->GetXML()))
+				{
+					for (int i=0;i<iNumSibs;i++)
+					{
+						if (pXML->GetChildXmlVal(szTextVal))
+						{
+                            m_aszPrereqAndCivicsforPass3.push_back(szTextVal);
+                            pXML->GetNextXmlVal(&bTemp);
+                            m_abPrereqAndCivicsforPass3.push_back(bTemp);
+							gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+						}
+
+						if (!gDLL->getXMLIFace()->NextSibling(pXML->GetXML()))
+						{
+							break;
+						}
+					}
+
+					gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+				}
+			}
+		}
+
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+/**
+ ** End: Unit Civic Prereq
+ **/
 
 	pXML->GetChildXmlValByName(szTextVal, "Class");
 	m_iUnitClassType = pXML->FindInInfoClass(szTextVal);
@@ -1234,9 +1654,9 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_bNoBadGoodies, "bNoBadGoodies");
 	pXML->GetChildXmlValByName(&m_bOnlyDefensive, "bOnlyDefensive");
 	// advc.315a:
-	pXML->GetChildXmlValByName(&m_bOnlyAttackAnimals, "bOnlyAttackAnimals");
+	pXML->GetChildXmlValByName(&m_bOnlyAttackAnimals, "bOnlyAttackAnimals",false, false);
 	// advc.315b:
-	pXML->GetChildXmlValByName(&m_bOnlyAttackBarbarians, "bOnlyAttackBarbarians");
+	pXML->GetChildXmlValByName(&m_bOnlyAttackBarbarians, "bOnlyAttackBarbarians",false, false);
 	pXML->GetChildXmlValByName(&m_bNoCapture, "bNoCapture");
 	pXML->GetChildXmlValByName(&m_bQuickCombat, "bQuickCombat");
 	pXML->GetChildXmlValByName(&m_bRivalTerritory, "bRivalTerritory");
@@ -1261,6 +1681,7 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 	// <advc.opt>
 	if (m_bCanMoveAllTerrain)
 		m_bCanAnyMoveAllTerrain = true; // </advc.opt>
+	pXML->GetChildXmlValByName(&m_bCanMovePeak, "bCanMovePeak", false); //Deliverator
 	pXML->GetChildXmlValByName(&m_bFlatMovementCost, "bFlatMovementCost");
 	pXML->GetChildXmlValByName(&m_bIgnoreTerrainCost, "bIgnoreTerrainCost");
 	pXML->GetChildXmlValByName(&m_bNukeImmune, "bNukeImmune");
@@ -1310,6 +1731,48 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 
 	pXML->SetVariableListTagPair(&m_pbBuildings, "Buildings", GC.getNumBuildingInfos());
 	//pXML->SetVariableListTagPair(&m_pbForceBuildings, "ForceBuildings", GC.getNumBuildingInfos()); // advc.003t
+
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanTrain																*/
+/********************************************************************************/
+	pXML->GetChildXmlValByName(szTextVal, "MaxStartEra",
+		""); // f1rpo
+	m_iMaxStartEra = pXML->FindInInfoClass(szTextVal);
+
+	pXML->GetChildXmlValByName(szTextVal, "ForceObsoleteTech",
+		""); // f1rpo
+	m_iForceObsoleteTech = pXML->FindInInfoClass(szTextVal);
+	
+	pXML->GetChildXmlValByName(&m_bStateReligion, "bStateReligion", false,
+		false); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "PrereqGameOption",
+		""); // f1rpo
+	m_iPrereqGameOption = pXML->FindInInfoClass(szTextVal);
+
+	pXML->GetChildXmlValByName(szTextVal, "NotGameOption",
+		""); // f1rpo
+	m_iNotGameOption = pXML->FindInInfoClass(szTextVal);
+
+//	pXML->SetVariableListTagPair(&m_pbPrereqOrCivics, "PrereqOrCivics", sizeof(GC.getCivicInfo((CivicTypes)0)), GC.getNumCivicInfos());
+
+	pXML->SetVariableListTagPair(&m_pbPrereqBuildingClass,
+			"PrereqBuildingClasses", sizeof(GC.getBuildingClassInfo((BuildingClassTypes)0)),
+			GC.getNumBuildingClassInfos());
+
+	pXML->SetVariableListTagPair(&m_piPrereqBuildingClassOverrideTech,
+			"PrereqBuildingClasses", sizeof(GC.getBuildingClassInfo((BuildingClassTypes)0)),
+			GC.getNumBuildingClassInfos(), "TechOverride", GC.getNumTechInfos());
+
+	pXML->SetVariableListTagPair(&m_piPrereqBuildingClassOverrideEra,
+			"PrereqBuildingClasses", sizeof(GC.getBuildingClassInfo((BuildingClassTypes)0)),
+			GC.getNumBuildingClassInfos(), "EraOverride", GC.getNumEraInfos());
+
+	pXML->SetVariableListTagPair(&m_pbForceObsoleteUnitClass, "ForceObsoleteUnitClasses", sizeof(GC.getUnitClassInfo((UnitClassTypes)0)), GC.getNumUnitClassInfos());
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 
 	pXML->GetChildXmlValByName(szTextVal, "HolyCity");
 	m_iHolyCity = pXML->FindInInfoClass(szTextVal);
@@ -1395,6 +1858,41 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 				SAFE_DELETE_ARRAY(m_piPrereqOrBonuses); // </advc.003t>
 		}
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	} 
+//Shqype Vicinity Bonus Start
+/*	pXML->GetChildXmlValByName(szTextVal, "VicinityBonusType");
+	m_iPrereqVicinityBonus = pXML->FindInInfoClass(szTextVal);
+
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"PrereqVicinityBonuses"))
+	{
+		if (pXML->SkipToNextVal())
+		{
+			iNumSibs = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
+			FAssertMsg((0 < GC.getNUM_UNIT_PREREQ_OR_BONUSES()),"Allocating zero or less memory in SetGlobalUnitInfo");
+			pXML->InitList(&m_piPrereqOrVicinityBonuses, GC.getNUM_UNIT_PREREQ_OR_BONUSES(), -1);
+
+			if (0 < iNumSibs)
+			{
+				if (pXML->GetChildXmlVal(szTextVal))
+				{
+					FAssertMsg((iNumSibs <= GC.getNUM_UNIT_PREREQ_OR_BONUSES()) , "There are more siblings than memory allocated for them in SetGlobalUnitInfo");
+					for (j=0;j<iNumSibs;j++)
+					{
+						m_piPrereqOrVicinityBonuses[j] = pXML->FindInInfoClass(szTextVal);
+						if (!pXML->GetNextXmlVal(szTextVal))
+						{
+							break;
+						}
+					}
+
+					gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+				}
+			}
+		}
+
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}*/
+//Shqype Vicinity Bonus End
 	} /* <advc.905b> Could implement this like e.g. BonusHappinessChanges, but that
 		 would mean storing one int for every (unit type, bonus type) pair. Instead,
 		 do sth. similar to the code for PrereqOrBonuses above. */
@@ -1436,6 +1934,13 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iHurryCostModifier, "iHurryCostModifier");
 	pXML->GetChildXmlValByName(&m_iAdvancedStartCost, "iAdvancedStartCost", /* advc: */ 100);
 	pXML->GetChildXmlValByName(&m_iAdvancedStartCostIncrease, "iAdvancedStartCostIncrease");
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+	pXML->GetChildXmlValByName(&m_iNumCitySizeUnitPrereq, "iCitySizeUnitPrereq", 1);
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
 	pXML->GetChildXmlValByName(&m_iMinAreaSize, "iMinAreaSize");
 	pXML->GetChildXmlValByName(&m_iMoves, "iMoves");
 	pXML->GetChildXmlValByName(&m_iAirRange, "iAirRange");
@@ -1473,7 +1978,8 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iCityDefenseModifier, "iCityDefense");
 	pXML->GetChildXmlValByName(&m_iAnimalCombatModifier, "iAnimalCombat");
 	// advc.315c:
-	pXML->GetChildXmlValByName(&m_iBarbarianCombatModifier, "iBarbarianCombat");
+	// advc.315c: re added - aecondary valure - keldath
+	pXML->GetChildXmlValByName(&m_iBarbarianCombatModifier, "iBarbarianCombat", 0);
 	pXML->GetChildXmlValByName(&m_iHillsAttackModifier, "iHillsAttack");
 	pXML->GetChildXmlValByName(&m_iHillsDefenseModifier, "iHillsDefense");
 
@@ -1564,6 +2070,60 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 
 	return true;
 }
+
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		Based on code by Afforess
+ *	Source:
+ *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
+ *
+ ****************************************/
+bool CvUnitInfo::readPass3()
+{
+	m_pbPrereqOrCivics = new bool[GC.getNumCivicInfos()];
+	for (int iI = 0; iI < GC.getNumCivicInfos(); iI++)
+	{
+		m_pbPrereqOrCivics[iI] = false;
+	}
+	if (!m_abPrereqOrCivicsforPass3.empty() && !m_aszPrereqOrCivicsforPass3.empty())
+	{
+		int iNumLoad = m_abPrereqOrCivicsforPass3.size();
+		for(int iI = 0; iI < iNumLoad; iI++)
+		{
+			//FAssertMsg(GC.getInfoTypeForString(m_aszPrereqOrCivicsforPass3[iI]) >= 0, "Warning, about to leak memory in CvBuildingInfo::readPass3");
+			int iTempIndex = GC.getInfoTypeForString(m_aszPrereqOrCivicsforPass3[iI]);
+			if (iTempIndex >= 0 && iTempIndex < GC.getNumCivicInfos())
+				m_pbPrereqOrCivics[iTempIndex] = m_abPrereqOrCivicsforPass3[iI];
+		}
+		m_aszPrereqOrCivicsforPass3.clear();
+		m_abPrereqOrCivicsforPass3.clear();
+	}
+	m_pbPrereqAndCivics = new bool[GC.getNumCivicInfos()];
+    for (int iI = 0; iI < GC.getNumCivicInfos(); iI++)
+	{
+        m_pbPrereqAndCivics[iI] = false;
+	}
+	if (!m_abPrereqAndCivicsforPass3.empty() && !m_aszPrereqAndCivicsforPass3.empty())
+	{
+		int iNumLoad = m_abPrereqAndCivicsforPass3.size();
+		for(int iI = 0; iI < iNumLoad; iI++)
+		{
+			//FAssertMsg(GC.getInfoTypeForString(m_aszPrereqAndCivicsforPass3[iI]) >= 0, "Warning, about to leak memory in CvBuildingInfo::readPass3");
+			int iTempIndex = GC.getInfoTypeForString(m_aszPrereqAndCivicsforPass3[iI]);
+			if (iTempIndex >= 0 && iTempIndex < GC.getNumCivicInfos())
+				m_pbPrereqAndCivics[iTempIndex] = m_abPrereqAndCivicsforPass3[iI];
+		}
+		m_aszPrereqAndCivicsforPass3.clear();
+		m_abPrereqAndCivicsforPass3.clear();
+	}
+	
+	return true;
+}
+
+/**
+ ** End: Unit Civic Prereq
+ **/
 
 const TCHAR* CvUnitArtStyleInfo::getEarlyArtDefineTag(int i, int j) const
 {
@@ -1841,6 +2401,9 @@ m_iKamikazePercent(0),
 m_bLeader(false),
 m_iBlitz(0), // advc.164
 m_bAmphib(false),
+//MOD@VET_Andera412_Blocade_Unit-begin1/5
+m_bUnblocade(false),
+//MOD@VET_Andera412_Blocade_Unit-end1/5
 m_bRiver(false),
 m_bEnemyRoute(false),
 m_bAlwaysHeal(false),
@@ -2090,7 +2653,14 @@ bool CvPromotionInfo::isAmphib() const
 	return m_bAmphib;
 }
 
-bool CvPromotionInfo::isRiver() const
+//MOD@VET_Andera412_Blocade_Unit-begin2/5
+bool CvPromotionInfo::isUnblocade() const			
+{
+	return m_bUnblocade;
+}
+//MOD@VET_Andera412_Blocade_Unit-end2/5
+
+bool CvPromotionInfo::isRiver() const		
 {
 	return m_bRiver;
 }
@@ -2234,6 +2804,9 @@ void CvPromotionInfo::read(FDataStreamBase* stream)
 		else m_iBlitz = 0;
 	} // </advc.164>
 	stream->Read(&m_bAmphib);
+//MOD@VET_Andera412_Blocade_Unit-begin3/5
+	stream->Read(&m_bUnblocade);
+//MOD@VET_Andera412_Blocade_Unit-end3/5	
 	stream->Read(&m_bRiver);
 	stream->Read(&m_bEnemyRoute);
 	stream->Read(&m_bAlwaysHeal);
@@ -2315,6 +2888,9 @@ void CvPromotionInfo::write(FDataStreamBase* stream)
 	stream->Write(m_bLeader);
 	stream->Write(m_iBlitz); // advc.164
 	stream->Write(m_bAmphib);
+//MOD@VET_Andera412_Blocade_Unit-begin4/5
+	stream->Write(m_bUnblocade);
+//MOD@VET_Andera412_Blocade_Unit-end4/5
 	stream->Write(m_bRiver);
 	stream->Write(m_bEnemyRoute);
 	stream->Write(m_bAlwaysHeal);
@@ -2356,6 +2932,9 @@ bool CvPromotionInfo::read(CvXMLLoadUtility* pXML)
 		m_bGraphicalOnly = true;  // don't show in Civilopedia list of promotions
 	pXML->GetChildXmlValByName(&m_iBlitz, "iBlitz"); // advc.164
 	pXML->GetChildXmlValByName(&m_bAmphib, "bAmphib");
+//MOD@VET_Andera412_Blocade_Unit-begin5/5
+	pXML->GetChildXmlValByName(&m_bUnblocade, "bUnblocade", false);
+//MOD@VET_Andera412_Blocade_Unit-end5/5
 	pXML->GetChildXmlValByName(&m_bRiver, "bRiver");
 	pXML->GetChildXmlValByName(&m_bEnemyRoute, "bEnemyRoute");
 	pXML->GetChildXmlValByName(&m_bAlwaysHeal, "bAlwaysHeal");
@@ -2412,7 +2991,7 @@ bool CvPromotionInfo::readPass2(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(szTextVal, "PromotionPrereqOr2");
 	m_iPrereqOrPromotion2 = GC.getInfoTypeForString(szTextVal);
 	// K-Mod, 7/jan/11
-	pXML->GetChildXmlValByName(szTextVal, "PromotionPrereqOr3");
+	pXML->GetChildXmlValByName(szTextVal, "PromotionPrereqOr3","");//keldath default :""
 	m_iPrereqOrPromotion3 = GC.getInfoTypeForString(szTextVal); // K-Mod end
 
 	return true;

@@ -23,10 +23,10 @@ public: // advc: All the const functions are exposed to Python except those adde
 	inline int getFeatureProductionModifier() const { return m_iFeatureProductionModifier; }
 	inline int getWorkerSpeedModifier() const { return m_iWorkerSpeedModifier; }
 	//DPII < Maintenance Modifier >
-    DllExport int getMaintenanceModifier() const;
-    DllExport int getDistanceMaintenanceModifier() const;
-    DllExport int getNumCitiesMaintenanceModifier() const;
-    DllExport int getCoastalDistanceMaintenanceModifier() const;
+    int getMaintenanceModifier() const;
+    int getDistanceMaintenanceModifier() const;
+    int getNumCitiesMaintenanceModifier() const;
+    int getCoastalDistanceMaintenanceModifier() const;
     //DPII < Maintenance Modifier >
 	inline int getFirstFreeUnitClass() const { return m_iFirstFreeUnitClass; }
 	inline int getHealth() const { return m_iHealth; }
@@ -54,6 +54,11 @@ public: // advc: All the const functions are exposed to Python except those adde
 	inline bool isVassalStateTrading() const { return m_bVassalStateTrading; }
 	inline bool isBridgeBuilding() const { return m_bBridgeBuilding; }
 	inline bool isIrrigation() const { return m_bIrrigation; }
+	/* Population Limit ModComp - Beginning */
+	inline bool isNoPopulationLimit() const { return m_bNoPopulationLimit; }
+	//original - keldath	
+	//bool isNoPopulationLimit() const;						// Exposed to Python
+	/* Population Limit ModComp - End */
 	inline bool isIgnoreIrrigation() const { return m_bIgnoreIrrigation; }
 	inline bool isWaterWork() const { return m_bWaterWork; }
 	inline bool isRiverTrade() const { return m_bRiverTrade; }
@@ -68,6 +73,13 @@ public: // advc: All the const functions are exposed to Python except those adde
 	// Array access:
 
 	int getDomainExtraMoves(int i) const;
+	// <Tech Bonus Mod- civic info>
+    int getYieldModifier(int i) const;                // Exposed to Python
+    int* getYieldModifierArray() const;
+//kmod rewrite
+    int getCommerceModifier(int i) const;				// Exposed to Python
+ 	int* getCommerceModifierArray() const;
+	// <Tech Bonus Mod>
 	int getFlavorValue(int i) const;
 	int getPrereqOrTechs(int i) const;
 	inline bool isAnyPrereqOrTech() const { return (m_piPrereqOrTechs != NULL); } // advc.003t
@@ -131,6 +143,9 @@ protected:
 	bool m_bVassalStateTrading;
 	bool m_bBridgeBuilding;
 	bool m_bIrrigation;
+	/* Population Limit ModComp - Beginning */
+	bool m_bNoPopulationLimit;
+	/* Population Limit ModComp - End */
 	bool m_bIgnoreIrrigation;
 	bool m_bWaterWork;
 	bool m_bRiverTrade;
@@ -140,6 +155,10 @@ protected:
 	CvString m_szSoundMP;
 
 	int* m_piDomainExtraMoves;
+	// <Tech Bonus Mod Start>
+	int* m_piYieldModifier;
+	int* m_piCommerceModifier;
+	// <Tech Bonus Mod End>
 	int* m_piFlavorValue;
 
 	int* m_piPrereqOrTechs;

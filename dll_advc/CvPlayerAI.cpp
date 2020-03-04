@@ -3286,6 +3286,24 @@ int CvPlayerAI::AI_goldTarget(bool bUpgradeBudgetOnly) const
 		}
 		// K-Mod end
 	}
+/************************************************************************************************/
+/* Afforess	                  Start		 02/01/10                                               */
+/*                                                                                              */
+/*  Don't bother saving gold if we can't trade it for anything                                  */
+/************************************************************************************************/
+	if (!GET_TEAM(getTeam()).isGoldTrading() || !(GET_TEAM(getTeam()).isTechTrading()) || (GC.getGame().isOption(GAMEOPTION_NO_TECH_TRADING)))
+	{
+		iGold /= 3;
+	}
+	//Fuyu: Afforess says gold is also less useful without tech brokering, so why not add it
+	else if (GC.getGame().isOption(GAMEOPTION_NO_TECH_BROKERING))
+	{
+		iGold *= 3;
+		iGold /= 4;
+	}
+/************************************************************************************************/
+/* Afforess	                     END                                                            */
+/************************************************************************************************/
 
 	return iGold + AI_getExtraGoldTarget();
 }
@@ -6655,7 +6673,11 @@ void CvPlayerAI::AI_updateAttitude(PlayerTypes ePlayer, /* advc.130e: */ bool bU
 	iAttitude += AI_getFavoriteCivicAttitude(ePlayer);
 	iAttitude += AI_getTradeAttitude(ePlayer);
 	iAttitude += AI_getRivalTradeAttitude(ePlayer);
-
+//dune wars - start
+	iAttitude += AI_getHatedCivicAttitude(ePlayer);
+	iAttitude += AI_getFavoriteCivilizationAttitude(ePlayer); 
+	iAttitude += AI_getHatedCivilizationAttitude(ePlayer); 
+// dune wars - end
 	FOR_EACH_ENUM(Memory)
 		iAttitude += AI_getMemoryAttitude(ePlayer, eLoopMemory);
 
@@ -7284,7 +7306,58 @@ int CvPlayerAI::AI_getFavoriteCivicAttitude(PlayerTypes ePlayer) const
 
 	return iAttitude;
 }
+//a1021//dune wars - hated civs
+int CvPlayerAI::AI_getHatedCivicAttitude(PlayerTypes ePlayer) const
+{
+	int iAttitude;
 
+	iAttitude = 0;
+
+	if (GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivic() != NO_CIVIC)
+	{
+		if (!isCivic((CivicTypes)(GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivic())) && GET_PLAYER(ePlayer).isCivic((CivicTypes)(GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivic())))
+		{
+			iAttitude += GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivicAttitudeChange();
+		}
+	}
+
+	return iAttitude;
+}
+
+int CvPlayerAI::AI_getFavoriteCivilizationAttitude(PlayerTypes ePlayer) const
+{
+	int iAttitude;
+
+	iAttitude = 0;
+
+	if (GC.getLeaderHeadInfo(getPersonalityType()).getFavoriteCivilization() != NO_CIVILIZATION)
+	{
+		if (GC.getLeaderHeadInfo(getPersonalityType()).getFavoriteCivilization() == GET_PLAYER(ePlayer).getCivilizationType())
+		{
+			iAttitude += GC.getLeaderHeadInfo(getPersonalityType()).getFavoriteCivilizationAttitudeChange();
+		}
+	}
+
+	return iAttitude;
+}
+
+int CvPlayerAI::AI_getHatedCivilizationAttitude(PlayerTypes ePlayer) const
+{
+	int iAttitude;
+
+	iAttitude = 0;
+
+	if (GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivilization() != NO_CIVILIZATION)
+	{
+		if (GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivilization() == GET_PLAYER(ePlayer).getCivilizationType())
+		{
+			iAttitude += GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivilizationAttitudeChange();
+		}
+	}
+
+	return iAttitude;
+}
+//a1021 end//dune wars - hated civs
 // <advc.130p> No BtS code left here
 int CvPlayerAI::AI_getTradeAttitude(PlayerTypes ePlayer) const
 {
@@ -7662,7 +7735,20 @@ PlayerVoteTypes CvPlayerAI::AI_diploVote(const VoteSelectionSubData& kVoteData, 
 		{
 			if (!GC.getInfo(eVote).isForceCivic(iI) || isCivic((CivicTypes)iI))
 				continue;
-
+//start section here was removed - f1rpo said this is better handled below in the iBestCivicValue
+//this part written by keldath - so ill have a similar condition set for the dune wars code...dunno if its good.
+	//		if (GC.getVoteInfo(eVote).isForceCivic(iI) && !isCivic((CivicTypes)iI))
+	//		{
+				//dune wars - hated civs						//a1021
+	/*					if (GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivic() == (CivicTypes)iI)
+						{
+							bValid = false;
+							bDefy = true;
+							break;
+						}
+	*/			//dune wars - hated civs					//a1021 end
+	//		}
+//end section here was removed
 			CivicTypes eBestCivic = AI_bestCivic((CivicOptionTypes)(GC.getInfo((CivicTypes)iI).getCivicOptionType()));
 			if (eBestCivic == NO_CIVIC || eBestCivic == ((CivicTypes)iI))
 				continue;
@@ -15002,6 +15088,21 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 					(kCivic.getImprovementYieldChanges(iJ, iI) *
 					(getImprovementCount((ImprovementTypes)iJ) + iCities/2))) /
 					100;
+		}
+/*************************************************************************************************/
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**																								**/
+/**																								**/
+/*************************************************************************************************/
+		for (int iJ = 0; iJ < GC.getNumSpecialistInfos(); iJ++)
+					{
+						iTempValue += ((kCivic.getSpecialistYieldChange(iJ, iI) * getTotalPopulation()) / 5);
+					}
+
+/*************************************************************************************************/
+/**	CMEDIT: End																					**/
+/*************************************************************************************************/
+
 		}/*if (iI == YIELD_FOOD)
 			iTempValue *= 3;
 		else if (iI == YIELD_PRODUCTION)
@@ -15074,6 +15175,20 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 			iTempValue /= 100;
 
 			iValue += iTempValue;
+/*************************************************************************************************/
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**																								**/
+/**																								**/
+/*************************************************************************************************/
+		for (int iJ = 0; iJ < GC.getNumSpecialistInfos(); iJ++)
+					{
+						/*int; removed by keldath*/ iTempValue += ((kCivic.getSpecialistCommerceChange(iJ, iI) * getTotalPopulation()) / 15);
+					}
+
+/*************************************************************************************************/
+/**	CMEDIT: End																					**/
+/*************************************************************************************************/
+
 		}
 	}
 	if (kCivic.isAnyBuildingHappinessChanges())
@@ -15217,7 +15332,21 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 			iValue += 6 * iCities;
 		}
 	}
-
+//dune wars - hated civs
+	if (GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivic() == eCivic)
+	{
+		if (iValue > 0)
+		{
+			/*
+			iValue *= 2;
+			iValue /= 3;
+			*/
+			//new values - suggested by f1rpo -0.96- keldath 
+			iValue *= 1;
+			iValue /= 2;
+		}
+	}
+//dune wars - hated civs
 	/* if (AI_atVictoryStage(AI_VICTORY_CULTURE2) && (GC.getInfo(eCivic).isNoNonStateReligionSpread()))
 		iValue /= 10;*/ // what the lol...
 
@@ -17326,8 +17455,12 @@ void CvPlayerAI::AI_doCivics()
 			/*  advc.001r: Same thing as under karadoc's "temporary switch" comment
 				in the loop below */
 			CivicTypes eOtherCivic = aeBestCivic[iI];
-			if(eOtherCivic == eNewCivic)
-				continue; // advc
+			// <advc.003>
+		//new fix by f1 for new civic category with no civics xml - added by keldath
+			if(eOtherCivic == eNewCivic || eNewCivic == NO_CIVIC)
+   				continue;
+		//	if(eOtherCivic == eNewCivic)
+		//		continue; // </advc.003>
 			aeBestCivic[iI] = eNewCivic; // advc.001r
 			int iTestAnarchy = getCivicAnarchyLength(&aeBestCivic[0]);
 			aeBestCivic[iI] = eOtherCivic; // advc.001r
@@ -24234,7 +24367,9 @@ void CvPlayerAI::AI_recalculateFoundValues(int iX, int iY, int iInnerRadius, int
 int CvPlayerAI::AI_getMinFoundValue() const
 {
 	PROFILE_FUNC();
-
+// Dune Wars MIN_FOUND_VALUE koma13 START
+//	int iValue = GC.getDefineINT("MIN_FOUND_VALUE");
+// Dune Wars MIN_FOUND_VALUE koma13 END
 	//int iValue = 600;
 	static int const iBBAI_MINIMUM_FOUND_VALUE = GC.getDefineINT("BBAI_MINIMUM_FOUND_VALUE"); // advc.opt
 	int iValue = iBBAI_MINIMUM_FOUND_VALUE; // K-Mod

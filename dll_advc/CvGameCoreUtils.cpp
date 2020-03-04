@@ -1443,6 +1443,22 @@ int pathValid_join(FAStarNode* parent, FAStarNode* node, CvSelectionGroup const*
 	{
 		return FALSE;
 	}
+//keldath first ref is now in player.cpp - see this .h file
+//MOD@VET_Andera412_Blocade_Unit-begin2/2
+	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
+	{	
+		if (pSelectionGroup->getNumUnits() > 0)
+		{
+			CvUnit* pLoopUnit;
+			for (CLLNode<IDInfo>* pUnitNode = pSelectionGroup->headUnitNode(); pUnitNode != NULL; pUnitNode = pSelectionGroup->nextUnitNode(pUnitNode))
+			{
+				pLoopUnit = ::getUnit(pUnitNode->m_data);
+				if (pLoopUnit->cannotMoveFromPlotToPlot(pFromPlot, pToPlot,/*bWithdrawal*/false))
+					{return FALSE;}
+			}
+		}
+	}	
+//MOD@VET_Andera412_Blocade_Unit-end2/2	
 	return TRUE;
 }
 

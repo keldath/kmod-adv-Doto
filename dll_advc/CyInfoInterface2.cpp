@@ -281,7 +281,17 @@ void CyInfoPythonInterface2()
 		.def("getPillageGold", &CvImprovementInfo::getPillageGold, "int ()")
 		.def("getImprovementPillage", &CvImprovementInfo::getImprovementPillage, "int ()")
 		.def("getImprovementUpgrade", &CvImprovementInfo::getImprovementUpgrade, "int ()")
+		// < JCultureControl Mod Start >
+		.def("getCultureBorderRange", &CvImprovementInfo::getCultureBorderRange, "int ()")
+		.def("getCultureControlStrength", &CvImprovementInfo::getCultureControlStrength, "int ()")
+		.def("getCultureControlCenterTileBonus", &CvImprovementInfo::getCultureControlCenterTileBonus, "int ()")
+		.def("isSpreadCultureControl", &CvImprovementInfo::isSpreadCultureControl, "bool ()")
+        // < JCultureControl Mod End >
 
+		// Deliverator
+		.def("getAddsFreshWaterInRadius", &CvImprovementInfo::getAddsFreshWaterInRadius, "int ()")		
+		// Deliverator
+	
 		.def("isActsAsCity", &CvImprovementInfo::isActsAsCity, "bool ()")
 		.def("isHillsMakesValid", &CvImprovementInfo::isHillsMakesValid, "bool ()")
 //===NM=====Mountain Mod===0=====
@@ -304,6 +314,11 @@ void CyInfoPythonInterface2()
 		.def("isOutsideBorders", &CvImprovementInfo::isOutsideBorders, "bool ()")
 
 		.def("getArtDefineTag", &CvImprovementInfo::getArtDefineTag, "string ()")
+		// < JImprovementLimit Mod Start >
+		.def("isNotInsideBorders", &CvImprovementInfo::isNotInsideBorders, "bool ()")
+		.def("getMakesInvalidRange", &CvImprovementInfo::getMakesInvalidRange, "int ()")
+		.def("getImprovementRequired", &CvImprovementInfo::getImprovementRequired, "int ()")
+        // < JImprovementLimit Mod End >
 
 		// Arrays
 
@@ -452,6 +467,28 @@ void CyInfoPythonInterface2()
 		.def("isFound", &CvTerrainInfo::isFound, "bool ()")
 		.def("isFoundCoast", &CvTerrainInfo::isFoundCoast, "bool ()")
 		.def("isFoundFreshWater", &CvTerrainInfo::isFoundFreshWater, "bool ()")
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Expose new terrain tags to python                                                **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+		.def("isRequiresFlatlands", &CvTerrainInfo::isRequiresFlatlands, "bool ()")
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Expose new terrain tags to python                                                **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+		.def("isRequiresFlatlands", &CvTerrainInfo::isRequiresFlatlands, "bool ()")
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 
 		// Arrays
 

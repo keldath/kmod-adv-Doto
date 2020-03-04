@@ -99,6 +99,23 @@ int CyCity::findCommerceRateRank(int /*CommerceTypes*/ eCommerce)
 {
 	return m_pCity ? m_pCity->findCommerceRateRank((CommerceTypes) eCommerce) : -1;
 }
+/************************************************************************************************/
+/* REVDCM                                 02/16/10                                phungus420    */
+/*                                                                                              */
+/* CanTrain                                                                                     */
+/************************************************************************************************/
+bool CyCity::isForceObsoleteUnitClassAvailable(int /*UnitTypes*/ eUnitType)
+{
+	return m_pCity ? m_pCity->isForceObsoleteUnitClassAvailable((UnitTypes) eUnitType) : false;
+}
+
+bool CyCity::isPlotTrainable( int /*UnitTypes*/ eUnit, bool bContinue, bool bTestVisible )
+{
+	return m_pCity ? m_pCity->isPlotTrainable((UnitTypes)eUnit, bContinue, bTestVisible) : false;
+}
+/************************************************************************************************/
+/* REVDCM                                  END                                                  */
+/************************************************************************************************/
 
 int /*UnitTypes*/ CyCity::allUpgradesAvailable(int /*UnitTypes*/ eUnitType, int iUpgradeCount)
 {
@@ -783,6 +800,17 @@ void CyCity::changePopulation(int iChange)
 	if (m_pCity)
 		m_pCity->changePopulation(iChange);
 }
+/* Population Limit ModComp - Beginning */
+int CyCity::getPopulationLimit()
+{
+	return m_pCity ? m_pCity->getPopulationLimit() : -1;
+}
+
+int CyCity::getPopulationLimitChange()
+{
+	return m_pCity ? m_pCity->getPopulationLimitChange() : -1;
+}
+/* Population Limit ModComp - End */
 
 long CyCity::getRealPopulation()
 {
@@ -1849,6 +1877,13 @@ int CyCity::getNumBonuses(int /*BonusTypes*/ iBonus)
 	return m_pCity ? m_pCity->getNumBonuses((BonusTypes) iBonus) : -1;
 }
 
+// < Building Resource Converter Start >
+
+int CyCity::getBuildingOutputBonus(int /*BonusTypes */iBonus)
+{
+	return m_pCity ? m_pCity->getBuildingOutputBonus((BonusTypes) iBonus) : -1;
+}
+// < Building Resource Converter End   >
 bool CyCity::hasBonus(int /*BonusTypes */iBonus)
 {
 	return m_pCity ? m_pCity->hasBonus((BonusTypes) iBonus) : false;

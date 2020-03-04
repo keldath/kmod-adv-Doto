@@ -21,7 +21,9 @@ public: // advc: All the const functions are exposed to Python
 	~CvCivilizationInfo();
 	void reset(); // override
 
-	int getDerivativeCiv() const;
+	int getDerivativeCiv() const;										// Exposed to Python
+// davidlallen: religion forbidden to civilization next line
+	bool isForbidden(int eReligionType) const;
 	DllExport int getDefaultPlayerColor() const;
 	int getArtStyleType() const;
 	int getUnitArtStyleType() const;
@@ -97,6 +99,8 @@ protected:
 	bool* m_pbCivilizationFreeBuildingClass;
 	bool* m_pbCivilizationFreeTechs;
 	bool* m_pbCivilizationDisableTechs;
+	// davidlallen: religion forbidden to civilization next line
+	bool* m_pbForbiddenReligions;
 
 	CvString* m_paszCityNames;
 
@@ -171,6 +175,12 @@ public: // advc: All the const functions are exposed to Python except those adde
 	int getShareWarAttitudeDivisor() const;
 	int getShareWarAttitudeChangeLimit() const;
 	int getFavoriteCivicAttitudeChange() const;
+//dune wars - hated civs
+	int getHatedCivicAttitudeChange() const;				// Exposed to Python a1021
+	int getFavoriteCivilizationAttitudeChange() const;				// Exposed to Python
+	int getHatedCivilizationAttitudeChange() const;				// Exposed to Python a1021	
+//dune wars - hated civs
+
 	int getFavoriteCivicAttitudeDivisor() const;
 	int getFavoriteCivicAttitudeChangeLimit() const;
 	int getDemandTributeAttitudeThreshold() const;
@@ -195,6 +205,11 @@ public: // advc: All the const functions are exposed to Python except those adde
 	int getVassalRefuseAttitudeThreshold() const;
 	int getVassalPowerModifier() const;
 	int getFavoriteCivic() const;
+//dune wars - hated civs
+	int getHatedCivic() const;				//a1021												// Exposed to Python
+	int getFavoriteCivilization() const;				//a1021												// Exposed to Python
+	int getHatedCivilization() const;				//a1021												// Exposed to Python
+//dune wars - hated civs
 	int getFavoriteReligion() const;
 	int getFreedomAppreciation() const;
 
@@ -227,6 +242,10 @@ public: // advc: All the const functions are exposed to Python except those adde
 	void write(FDataStreamBase* stream);
 	#endif
 	bool read(CvXMLLoadUtility* pXML);
+
+//dune wars - hated civs
+	bool readPass3();
+//dune wars - hated civs
 
 protected:
 	int m_iWonderConstructRand;
@@ -286,6 +305,11 @@ protected:
 	int m_iShareWarAttitudeDivisor;
 	int m_iShareWarAttitudeChangeLimit;
 	int m_iFavoriteCivicAttitudeChange;
+//dune wars - hated civs
+	int m_iHatedCivicAttitudeChange; //a1021
+	int m_iFavoriteCivilizationAttitudeChange; //a1021	
+	int m_iHatedCivilizationAttitudeChange; //a1021	
+//dune wars - hated civs
 	int m_iFavoriteCivicAttitudeDivisor;
 	int m_iFavoriteCivicAttitudeChangeLimit;
 	int m_iDemandTributeAttitudeThreshold;
@@ -311,6 +335,11 @@ protected:
 	int m_iVassalPowerModifier;
 	int m_iFreedomAppreciation;
 	int m_iFavoriteCivic;
+//dune wars - hated civs
+	int m_iHatedCivic; //a1021
+	int m_iFavoriteCivilization; //a1021	
+	int m_iHatedCivilization; //a1021	
+//dune wars - hated civs
 	int m_iFavoriteReligion;
 
 	CvString m_szArtDefineTag;

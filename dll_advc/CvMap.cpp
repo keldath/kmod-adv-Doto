@@ -339,6 +339,12 @@ void CvMap::updateCenterUnit()  // advc: some style changes
 		int iLoopRange;
 		if (kLoopUnit.getDomainType() == DOMAIN_AIR)
 			iLoopRange = kLoopUnit.airRange();
+		//keldath Ranged Strike
+		//vincentz ranged strike - seems good to add a code part for ranged strike units.
+		else if (pLoopUnit->getDomainType() != DOMAIN_AIR && pLoopUnit->airRange() > 0) 
+		{
+			iLoopRange = kLoopUnit.airRange();
+		}
 		else
 		{
 			int iStepCost = (kLoopUnit.getDomainType() == DOMAIN_LAND ?
@@ -1182,17 +1188,19 @@ byte const* CvMap::getReplayTexture() const
 void CvMap::calculateAreas()
 {
 	PROFILE("CvMap::calculateAreas"); // <advc.030>
-	if(GC.getDefineINT("PASSABLE_AREAS") > 0)
-	{
-		/*  Will recalculate from CvGame::setinitialItems once normalization is
-			through. But need preliminary areas because normalization is done
-			based on areas. Also, some scenarios don't call CvGame::
-			setInitialItems; these only get the initial calculation based on
-			land, sea and peaks (not ice). */
-		calculateAreas_030();
-		calculateReprAreas();
-		return;
-	} // </advc.030>
+//mountain mod
+//added by f1 advc to allow peaks to seperate continents
+	if(!GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && GC.getDefineINT("PASSABLE_AREAS") > 0) {
+			/*  Will recalculate from CvGame::setinitialItems once normalization is
+				through. But need preliminary areas because normalization is done
+				based on areas. Also, some scenarios don't call CvGame::
+				setInitialItems; these only get the initial calculation based on
+				land, sea and peaks (not ice). */
+			calculateAreas_030();
+			calculateReprAreas();
+			return;
+		} // </advc.030>
+	
 	for (int i = 0; i < numPlots(); i++)
 	{
 		CvPlot& kLoopPlot = getPlotByIndex(i);

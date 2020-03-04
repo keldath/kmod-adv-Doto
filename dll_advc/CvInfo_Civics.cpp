@@ -45,6 +45,10 @@ m_iCivicPercentAnger(0),
 m_iMaxConscript(0),
 m_iStateReligionHappiness(0),
 m_iNonStateReligionHappiness(0),
+// < Civic Infos Plus Start >
+m_iStateReligionExtraHealth(0),
+m_iNonStateReligionExtraHealth(0),
+// < Civic Infos Plus End   >
 m_iStateReligionUnitProductionModifier(0),
 m_iStateReligionBuildingProductionModifier(0),
 m_iStateReligionFreeExperience(0),
@@ -58,9 +62,29 @@ m_bNoCorporations(false),
 m_bNoForeignCorporations(false),
 m_bStateReligion(false),
 m_bNoNonStateReligionSpread(false),
+/*************************************************************************************************/
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**																								**/
+/**																								**/
+/*************************************************************************************************/
+m_ppiSpecialistYieldChange(NULL),
+m_ppiSpecialistCommerceChange(NULL),
+/*************************************************************************************************/
+/**	CMEDIT: End																					**/
+/*************************************************************************************************/
 m_piYieldModifier(NULL),
 m_piCapitalYieldModifier(NULL),
 m_piTradeYieldModifier(NULL),
+// < Civic Infos Plus Start >
+m_piSpecialistExtraYield(NULL),
+m_piStateReligionYieldModifier(NULL),
+m_piStateReligionCommerceModifier(NULL),
+m_piNonStateReligionYieldModifier(NULL),
+m_piNonStateReligionCommerceModifier(NULL),
+m_ppiBuildingYieldChanges(NULL),
+m_ppiBuildingCommerceChanges(NULL),
+m_paiFreeSpecialistCount(NULL),
+// < Civic Infos Plus End   >
 m_piCommerceModifier(NULL),
 m_piCapitalCommerceModifier(NULL),
 m_piSpecialistExtraCommerce(NULL),
@@ -78,6 +102,30 @@ CvCivicInfo::~CvCivicInfo()
 	SAFE_DELETE_ARRAY(m_piYieldModifier);
 	SAFE_DELETE_ARRAY(m_piCapitalYieldModifier);
 	SAFE_DELETE_ARRAY(m_piTradeYieldModifier);
+// < Civic Infos Plus Start >
+	SAFE_DELETE_ARRAY(m_piSpecialistExtraYield);
+    SAFE_DELETE_ARRAY(m_paiFreeSpecialistCount);
+	SAFE_DELETE_ARRAY(m_piStateReligionYieldModifier);
+	SAFE_DELETE_ARRAY(m_piStateReligionCommerceModifier);
+	SAFE_DELETE_ARRAY(m_piNonStateReligionYieldModifier);
+	SAFE_DELETE_ARRAY(m_piNonStateReligionCommerceModifier);
+	if (m_ppiBuildingYieldChanges != NULL)
+	{
+		for (iI=0;iI<GC.getNumBuildingInfos();iI++)
+		{
+			SAFE_DELETE_ARRAY(m_ppiBuildingYieldChanges[iI]);
+		}
+		SAFE_DELETE_ARRAY(m_ppiBuildingYieldChanges);
+	}
+	if (m_ppiBuildingCommerceChanges != NULL)
+	{
+		for (iI=0;iI<GC.getNumBuildingInfos();iI++)
+		{
+			SAFE_DELETE_ARRAY(m_ppiBuildingCommerceChanges[iI]);
+		}
+		SAFE_DELETE_ARRAY(m_ppiBuildingCommerceChanges);
+	}
+	// < Civic Infos Plus End   >
 	SAFE_DELETE_ARRAY(m_piCommerceModifier);
 	SAFE_DELETE_ARRAY(m_piCapitalCommerceModifier);
 	SAFE_DELETE_ARRAY(m_piSpecialistExtraCommerce);
@@ -93,6 +141,33 @@ CvCivicInfo::~CvCivicInfo()
 			SAFE_DELETE_ARRAY(m_ppiImprovementYieldChanges[iI]);
 		SAFE_DELETE_ARRAY(m_ppiImprovementYieldChanges);
 	}
+
+/*************************************************************************************************/
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**																								**/
+/**																								**/
+/*************************************************************************************************/	
+	if (m_ppiSpecialistYieldChange != NULL)
+	{
+		for(int i=0;i<GC.getNumSpecialistInfos();i++)
+		{
+			SAFE_DELETE_ARRAY(m_ppiSpecialistYieldChange[i]);
+		}
+		SAFE_DELETE_ARRAY(m_ppiSpecialistYieldChange);
+	}
+	
+	if (m_ppiSpecialistCommerceChange != NULL)
+	{
+		for(int i=0;i<GC.getNumSpecialistInfos();i++)
+		{
+			SAFE_DELETE_ARRAY(m_ppiSpecialistCommerceChange[i]);
+		}
+		SAFE_DELETE_ARRAY(m_ppiSpecialistCommerceChange);
+	}
+/*************************************************************************************************/
+/**	CMEDIT: End																					**/
+/*************************************************************************************************/
+
 }
 
 int CvCivicInfo::getCivicOptionType() const
@@ -271,6 +346,17 @@ int CvCivicInfo::getNonStateReligionHappiness() const
 {
 	return m_iNonStateReligionHappiness;
 }
+// < Civic Infos Plus Start >
+int CvCivicInfo::getStateReligionExtraHealth() const
+{
+	return m_iStateReligionExtraHealth;
+}
+
+int CvCivicInfo::getNonStateReligionExtraHealth() const
+{
+	return m_iNonStateReligionExtraHealth;
+}
+// < Civic Infos Plus End   >
 
 int CvCivicInfo::getStateReligionUnitProductionModifier() const
 {
@@ -345,6 +431,47 @@ void CvCivicInfo::setWeLoveTheKingKey(const TCHAR* szVal)
 {
 	m_szWeLoveTheKingKey = szVal;
 }
+/*************************************************************************************************/
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**																								**/
+/**																								**/
+/*************************************************************************************************/
+int CvCivicInfo::getSpecialistYieldChange(int i, int j) const
+{
+	FAssertMsg(i < GC.getNumSpecialistInfos(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	FAssertMsg(j < NUM_YIELD_TYPES, "Index out of bounds");
+	FAssertMsg(j > -1, "Index out of bounds");
+	return m_ppiSpecialistYieldChange ? m_ppiSpecialistYieldChange[i][j] : -1;
+}
+
+int* CvCivicInfo::getSpecialistYieldChangeArray(int i) const
+{
+	FAssertMsg(i < GC.getNumSpecialistInfos(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_ppiSpecialistYieldChange[i];
+}
+
+
+int CvCivicInfo::getSpecialistCommerceChange(int i, int j) const
+{
+	FAssertMsg(i < GC.getNumSpecialistInfos(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	FAssertMsg(j < NUM_COMMERCE_TYPES, "Index out of bounds");
+	FAssertMsg(j > -1, "Index out of bounds");
+	return m_ppiSpecialistCommerceChange ? m_ppiSpecialistCommerceChange[i][j] : -1;
+}
+
+int* CvCivicInfo::getSpecialistCommerceChangeArray(int i) const
+{
+	FAssertMsg(i < GC.getNumSpecialistInfos(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_ppiSpecialistCommerceChange[i];
+}
+
+/*************************************************************************************************/
+/**	CMEDIT: End																					**/
+/*************************************************************************************************/
 
 int CvCivicInfo::getYieldModifier(int i) const
 {
@@ -378,6 +505,93 @@ int* CvCivicInfo::getTradeYieldModifierArray() const
 {
 	return m_piTradeYieldModifier;
 }
+
+// < Civic Infos Plus Start >
+int CvCivicInfo::getStateReligionYieldModifier (int i) const
+{
+	FAssertMsg(i < NUM_YIELD_TYPES, "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_piStateReligionYieldModifier ? m_piStateReligionYieldModifier[i] : -1;
+}
+
+int* CvCivicInfo::getStateReligionYieldModifierArray() const
+{
+	return m_piStateReligionYieldModifier;
+}
+
+int CvCivicInfo::getStateReligionCommerceModifier(int i) const
+{
+	FAssertMsg(i < NUM_COMMERCE_TYPES, "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_piStateReligionCommerceModifier ? m_piStateReligionCommerceModifier[i] : -1;
+}
+
+int* CvCivicInfo::getStateReligionCommerceModifierArray() const
+{
+	return m_piStateReligionCommerceModifier;
+}
+
+int CvCivicInfo::getNonStateReligionYieldModifier (int i) const
+{
+	FAssertMsg(i < NUM_YIELD_TYPES, "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_piNonStateReligionYieldModifier ? m_piNonStateReligionYieldModifier[i] : -1;
+}
+
+int* CvCivicInfo::getNonStateReligionYieldModifierArray() const
+{
+	return m_piNonStateReligionYieldModifier;
+}
+
+int CvCivicInfo::getNonStateReligionCommerceModifier(int i) const
+{
+	FAssertMsg(i < NUM_COMMERCE_TYPES, "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_piNonStateReligionCommerceModifier ? m_piNonStateReligionCommerceModifier[i] : -1;
+}
+
+int* CvCivicInfo::getNonStateReligionCommerceModifierArray() const
+{
+	return m_piNonStateReligionCommerceModifier;
+}
+
+int CvCivicInfo::getBuildingYieldChanges(int i, int j) const
+{
+	FAssertMsg(i < GC.getNumBuildingInfos(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	FAssertMsg(j < NUM_YIELD_TYPES, "Index out of bounds");
+	FAssertMsg(j > -1, "Index out of bounds");
+	return m_ppiBuildingYieldChanges[i][j];
+}
+
+int CvCivicInfo::getBuildingCommerceChanges(int i, int j) const
+{
+	FAssertMsg(i < GC.getNumBuildingInfos(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	FAssertMsg(j < NUM_COMMERCE_TYPES, "Index out of bounds");
+	FAssertMsg(j > -1, "Index out of bounds");
+	return m_ppiBuildingCommerceChanges[i][j];
+}
+
+int CvCivicInfo::getSpecialistExtraYield(int i) const
+{
+	FAssertMsg(i < NUM_YIELD_TYPES, "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_piSpecialistExtraYield ? m_piSpecialistExtraYield[i] : -1;
+}
+
+int* CvCivicInfo::getSpecialistExtraYieldArray() const
+{
+	return m_piSpecialistExtraYield;
+}
+
+int CvCivicInfo::getFreeSpecialistCount(int i) const
+{
+	FAssertMsg(i < GC.getNumSpecialistInfos(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_paiFreeSpecialistCount ? m_paiFreeSpecialistCount[i] : -1;
+}
+// < Civic Infos Plus End   >
 
 int CvCivicInfo::getCommerceModifier(int i) const
 {
@@ -507,6 +721,10 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iMaxConscript);
 	stream->Read(&m_iStateReligionHappiness);
 	stream->Read(&m_iNonStateReligionHappiness);
+	// < Civic Infos Plus Start >
+    stream->Read(&m_iStateReligionExtraHealth);
+	stream->Read(&m_iNonStateReligionExtraHealth);
+	// < Civic Infos Plus End   >
 	stream->Read(&m_iStateReligionUnitProductionModifier);
 	stream->Read(&m_iStateReligionBuildingProductionModifier);
 	stream->Read(&m_iStateReligionFreeExperience);
@@ -529,6 +747,31 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 	SAFE_DELETE_ARRAY(m_piTradeYieldModifier);
 	m_piTradeYieldModifier = new int[NUM_YIELD_TYPES];
 	stream->Read(NUM_YIELD_TYPES, m_piTradeYieldModifier);
+	// < Civic Infos Plus Start >
+	SAFE_DELETE_ARRAY(m_piStateReligionYieldModifier);
+	m_piStateReligionYieldModifier = new int[NUM_YIELD_TYPES];
+	stream->Read(NUM_YIELD_TYPES, m_piStateReligionYieldModifier);
+
+	SAFE_DELETE_ARRAY(m_piStateReligionCommerceModifier);
+	m_piStateReligionCommerceModifier = new int[NUM_COMMERCE_TYPES];
+	stream->Read(NUM_COMMERCE_TYPES, m_piStateReligionCommerceModifier);
+
+	SAFE_DELETE_ARRAY(m_piNonStateReligionYieldModifier);
+	m_piNonStateReligionYieldModifier = new int[NUM_YIELD_TYPES];
+	stream->Read(NUM_YIELD_TYPES, m_piNonStateReligionYieldModifier);
+
+	SAFE_DELETE_ARRAY(m_piNonStateReligionCommerceModifier);
+	m_piNonStateReligionCommerceModifier = new int[NUM_COMMERCE_TYPES];
+	stream->Read(NUM_COMMERCE_TYPES, m_piNonStateReligionCommerceModifier);
+
+    SAFE_DELETE_ARRAY(m_piSpecialistExtraYield);
+	m_piSpecialistExtraCommerce = new int[NUM_YIELD_TYPES];
+	stream->Read(NUM_YIELD_TYPES, m_piSpecialistExtraYield);
+
+	SAFE_DELETE_ARRAY(m_paiFreeSpecialistCount);
+	m_paiFreeSpecialistCount = new int[GC.getNumSpecialistInfos()];
+	stream->Read(GC.getNumSpecialistInfos(), m_paiFreeSpecialistCount);
+	// < Civic Infos Plus End   >
 	SAFE_DELETE_ARRAY(m_piCommerceModifier);
 	m_piCommerceModifier = new int[NUM_COMMERCE_TYPES];
 	stream->Read(NUM_COMMERCE_TYPES, m_piCommerceModifier);
@@ -556,6 +799,40 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 	SAFE_DELETE_ARRAY(m_pabSpecialistValid);
 	m_pabSpecialistValid = new bool[GC.getNumSpecialistInfos()];
 	stream->Read(GC.getNumSpecialistInfos(), m_pabSpecialistValid);
+
+// < Civic Infos Plus Start >
+	int i;
+	if (m_ppiBuildingYieldChanges != NULL)
+	{
+		for(i=0;i<GC.getNumBuildingInfos();i++)
+		{
+			SAFE_DELETE_ARRAY(m_ppiBuildingYieldChanges[i]);
+		}
+		SAFE_DELETE_ARRAY(m_ppiBuildingYieldChanges);
+	}
+	m_ppiBuildingYieldChanges = new int*[GC.getNumBuildingInfos()];
+	for(i=0;i<GC.getNumBuildingInfos();i++)
+	{
+		m_ppiBuildingYieldChanges[i]  = new int[NUM_YIELD_TYPES];
+		stream->Read(NUM_YIELD_TYPES, m_ppiBuildingYieldChanges[i]);
+	}
+
+	if (m_ppiBuildingCommerceChanges != NULL)
+	{
+		for(i=0;i<GC.getNumBuildingInfos();i++)
+		{
+			SAFE_DELETE_ARRAY(m_ppiBuildingCommerceChanges[i]);
+		}
+		SAFE_DELETE_ARRAY(m_ppiBuildingCommerceChanges);
+	}
+	m_ppiBuildingCommerceChanges = new int*[GC.getNumBuildingInfos()];
+	for(i=0;i<GC.getNumBuildingInfos();i++)
+	{
+		m_ppiBuildingCommerceChanges[i]  = new int[NUM_COMMERCE_TYPES];
+		stream->Read(NUM_COMMERCE_TYPES, m_ppiBuildingCommerceChanges[i]);
+	}
+	// < Civic Infos Plus End   >
+	
 	if (m_ppiImprovementYieldChanges != NULL)
 	{
 		for(int i = 0; i < GC.getNumImprovementInfos(); i++)
@@ -616,6 +893,10 @@ void CvCivicInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iMaxConscript);
 	stream->Write(m_iStateReligionHappiness);
 	stream->Write(m_iNonStateReligionHappiness);
+// < Civic Infos Plus Start >
+	stream->Write(m_iStateReligionExtraHealth);
+	stream->Write(m_iNonStateReligionExtraHealth);
+// < Civic Infos Plus End   >
 	stream->Write(m_iStateReligionUnitProductionModifier);
 	stream->Write(m_iStateReligionBuildingProductionModifier);
 	stream->Write(m_iStateReligionFreeExperience);
@@ -632,6 +913,14 @@ void CvCivicInfo::write(FDataStreamBase* stream)
 	stream->Write(NUM_YIELD_TYPES, m_piYieldModifier);
 	stream->Write(NUM_YIELD_TYPES, m_piCapitalYieldModifier);
 	stream->Write(NUM_YIELD_TYPES, m_piTradeYieldModifier);
+	// < Civic Infos Plus Start >
+	stream->Write(NUM_YIELD_TYPES, m_piStateReligionYieldModifier);
+	stream->Write(NUM_COMMERCE_TYPES, m_piStateReligionCommerceModifier);
+	stream->Write(NUM_YIELD_TYPES, m_piNonStateReligionYieldModifier);
+	stream->Write(NUM_COMMERCE_TYPES, m_piNonStateReligionCommerceModifier);
+	stream->Write(NUM_YIELD_TYPES, m_piSpecialistExtraYield);
+	stream->Write(GC.getNumSpecialistInfos(), m_paiFreeSpecialistCount);
+	// < Civic Infos Plus End   >
 	stream->Write(NUM_COMMERCE_TYPES, m_piCommerceModifier);
 	stream->Write(NUM_COMMERCE_TYPES, m_piCapitalCommerceModifier);
 	stream->Write(NUM_COMMERCE_TYPES, m_piSpecialistExtraCommerce);
@@ -641,9 +930,39 @@ void CvCivicInfo::write(FDataStreamBase* stream)
 	stream->Write(GC.getNumHurryInfos(), m_pabHurry);
 	stream->Write(GC.getNumSpecialBuildingInfos(), m_pabSpecialBuildingNotRequired);
 	stream->Write(GC.getNumSpecialistInfos(), m_pabSpecialistValid);
+	// < Civic Infos Plus Start >
+	for(int i=0;i<GC.getNumBuildingInfos();i++)
+	{
+		stream->Write(NUM_YIELD_TYPES, m_ppiBuildingYieldChanges[i]);
+	}
+
+	for(int i=0;i<GC.getNumBuildingInfos();i++)
+	{
+		stream->Write(NUM_COMMERCE_TYPES, m_ppiBuildingCommerceChanges[i]);
+	}
+	// < Civic Infos Plus End   >
 	for(int i = 0;i < GC.getNumImprovementInfos(); i++)
 		stream->Write(NUM_YIELD_TYPES, m_ppiImprovementYieldChanges[i]);
 	stream->WriteString(m_szWeLoveTheKingKey);
+
+/*************************************************************************************************/
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**																								**/
+/**																								**/
+/*************************************************************************************************/
+	for(int i=0;i<GC.getNumSpecialistInfos();i++)
+	{
+		stream->Write(NUM_YIELD_TYPES, m_ppiSpecialistYieldChange[i]);
+	}
+	
+	for(int i=0;i<GC.getNumSpecialistInfos();i++)
+	{
+		stream->Write(NUM_COMMERCE_TYPES, m_ppiSpecialistCommerceChange[i]);
+	}
+/*************************************************************************************************/
+/**	CMEDIT: End																					**/
+/*************************************************************************************************/
+
 }
 #endif
 bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
@@ -652,6 +971,30 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 		return false;
 
 	CvString szTextVal;
+
+// < Civic Infos Plus Start > //ADDED BY KELDATH
+ 	int j;
+	int iNumSibs=0;				// the number of siblings the current xml node has
+	int iIndex;
+// < Civic Infos Plus End   >
+/*************************************************************************************************/
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**																								**/
+/**																								**/
+/*************************************************************************************************/
+	int k=0;
+/*************************************************************************************************/
+/**	CMEDIT: End																					**/
+/*************************************************************************************************/
+/*************************************************************************************************/
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**																								**/
+/**																								**/
+/*************************************************************************************************/
+	int iNumChildren;				// the number of children the current node has
+/*************************************************************************************************/
+/**	CMEDIT: End																					**/
+/*************************************************************************************************/
 
 	pXML->GetChildXmlValByName(szTextVal, "CivicOptionType");
 	m_iCivicOptionType = pXML->FindInInfoClass(szTextVal);
@@ -671,9 +1014,13 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iStateReligionGreatPeopleRateModifier, "iStateReligionGreatPeopleRateModifier");
 	pXML->GetChildXmlValByName(&m_iDistanceMaintenanceModifier, "iDistanceMaintenanceModifier");
 	pXML->GetChildXmlValByName(&m_iNumCitiesMaintenanceModifier, "iNumCitiesMaintenanceModifier");
+	//DPII < Maintenance Modifiers >
+	pXML->GetChildXmlValByName(&m_iHomeAreaMaintenanceModifier, "iHomeAreaMaintenanceModifier", 0);
+	pXML->GetChildXmlValByName(&m_iOtherAreaMaintenanceModifier, "iOtherAreaMaintenanceModifier", 0);
+	//DPII < Maintenance Modifiers >
 	pXML->GetChildXmlValByName(&m_iCorporationMaintenanceModifier, "iCorporationMaintenanceModifier");
 	pXML->GetChildXmlValByName(&m_iExtraHealth, "iExtraHealth");
-	pXML->GetChildXmlValByName(&m_iExtraHappiness, "iExtraHappiness"); // K-Mod
+	pXML->GetChildXmlValByName(&m_iExtraHappiness, "iExtraHappiness",0); // K-Mod
 	pXML->GetChildXmlValByName(&m_iFreeExperience, "iFreeExperience");
 	pXML->GetChildXmlValByName(&m_iWorkerSpeedModifier, "iWorkerSpeedModifier");
 	pXML->GetChildXmlValByName(&m_iImprovementUpgradeRateModifier, "iImprovementUpgradeRateModifier");
@@ -686,7 +1033,7 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iGoldPerMilitaryUnit, "iGoldPerMilitaryUnit");
 	pXML->GetChildXmlValByName(&m_iHappyPerMilitaryUnit, "iHappyPerMilitaryUnit");
 	// advc.912c:
-	pXML->GetChildXmlValByName(&m_iLuxuryModifier, "iLuxuryModifier");
+	pXML->GetChildXmlValByName(&m_iLuxuryModifier, "iLuxuryModifier",0);
 	pXML->GetChildXmlValByName(&m_bMilitaryFoodProduction, "bMilitaryFoodProduction");
 	pXML->GetChildXmlValByName(&m_iMaxConscript, "iMaxConscript");
 	//pXML->GetChildXmlValByName(&m_bNoUnhealthyPopulation, "bNoUnhealthyPopulation");
@@ -704,6 +1051,10 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_bNoNonStateReligionSpread, "bNoNonStateReligionSpread");
 	pXML->GetChildXmlValByName(&m_iStateReligionHappiness, "iStateReligionHappiness");
 	pXML->GetChildXmlValByName(&m_iNonStateReligionHappiness, "iNonStateReligionHappiness");
+	// < Civic Infos Plus Start >
+    pXML->GetChildXmlValByName(&m_iStateReligionExtraHealth, "iStateReligionExtraHealth", 0);
+	pXML->GetChildXmlValByName(&m_iNonStateReligionExtraHealth, "iNonStateReligionExtraHealth", 0);
+	// < Civic Infos Plus End   >
 	pXML->GetChildXmlValByName(&m_iStateReligionUnitProductionModifier, "iStateReligionUnitProductionModifier");
 	pXML->GetChildXmlValByName(&m_iStateReligionBuildingProductionModifier, "iStateReligionBuildingProductionModifier");
 	pXML->GetChildXmlValByName(&m_iStateReligionFreeExperience, "iStateReligionFreeExperience");
@@ -729,7 +1080,155 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
 	else pXML->InitList(&m_piTradeYieldModifier, NUM_YIELD_TYPES);
+// < Civic Infos Plus Start >
 
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"SpecialistExtraYields"))
+	{
+		pXML->SetCommerce(&m_piSpecialistExtraYield);
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+	else
+	{
+		pXML->InitList(&m_piSpecialistExtraYield, NUM_YIELD_TYPES);
+	}
+
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"StateReligionYieldModifiers"))
+	{
+		pXML->SetYields(&m_piStateReligionYieldModifier);
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+	else
+	{
+		pXML->InitList(&m_piStateReligionYieldModifier, NUM_YIELD_TYPES);
+	}
+
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"StateReligionCommerceModifiers"))
+	{
+		pXML->SetCommerce(&m_piStateReligionCommerceModifier);
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+	else
+	{
+		pXML->InitList(&m_piStateReligionCommerceModifier, NUM_COMMERCE_TYPES);
+	}
+
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"NonStateReligionYieldModifiers"))
+	{
+		pXML->SetYields(&m_piNonStateReligionYieldModifier);
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+	else
+	{
+		pXML->InitList(&m_piNonStateReligionYieldModifier, NUM_YIELD_TYPES);
+	}
+
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"NonStateReligionCommerceModifiers"))
+	{
+		pXML->SetCommerce(&m_piNonStateReligionCommerceModifier);
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+	else
+	{
+		pXML->InitList(&m_piNonStateReligionCommerceModifier, NUM_COMMERCE_TYPES);
+	}
+
+	// initialize the boolean list to the correct size and all the booleans to false
+	FAssertMsg((GC.getNumBuildingInfos() > 0) && (NUM_YIELD_TYPES) > 0,"either the number of Building infos is zero or less or the number of yield types is zero or less");
+	pXML->Init2DIntList(&m_ppiBuildingYieldChanges, GC.getNumBuildingInfos(), NUM_YIELD_TYPES);
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"BuildingYieldChanges"))
+	{
+		if (pXML->SkipToNextVal())
+		{
+			iNumSibs = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
+			if (gDLL->getXMLIFace()->SetToChild(pXML->GetXML()))
+			{
+				if (0 < iNumSibs)
+				{
+					for (j=0;j<iNumSibs;j++)
+					{
+						pXML->GetChildXmlValByName(szTextVal, "BuildingType");
+						iIndex = pXML->FindInInfoClass(szTextVal);
+
+						if (iIndex > -1)
+						{
+							// delete the array since it will be reallocated
+							SAFE_DELETE_ARRAY(m_ppiBuildingYieldChanges[iIndex]);
+							// if we can set the current xml node to it's next sibling
+							if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"BuildingYields"))
+							{
+								// call the function that sets the yield change variable
+								pXML->SetYields(&m_ppiBuildingYieldChanges[iIndex]);
+								gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+							}
+							else
+							{
+								pXML->InitList(&m_ppiBuildingYieldChanges[iIndex], NUM_YIELD_TYPES);
+							}
+						}
+
+						if (!gDLL->getXMLIFace()->NextSibling(pXML->GetXML()))
+						{
+							break;
+						}
+					}
+				}
+
+				gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+			}
+		}
+
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+
+	// initialize the boolean list to the correct size and all the booleans to false
+	FAssertMsg((GC.getNumBuildingInfos() > 0) && (NUM_COMMERCE_TYPES) > 0,"either the number of Building infos is zero or less or the number of commerce types is zero or less");
+	pXML->Init2DIntList(&m_ppiBuildingCommerceChanges, GC.getNumBuildingInfos(), NUM_COMMERCE_TYPES);
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"BuildingCommerceChanges"))
+	{
+		if (pXML->SkipToNextVal())
+		{
+			iNumSibs = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
+			if (gDLL->getXMLIFace()->SetToChild(pXML->GetXML()))
+			{
+				if (0 < iNumSibs)
+				{
+					for (j=0;j<iNumSibs;j++)
+					{
+						pXML->GetChildXmlValByName(szTextVal, "BuildingType");
+						iIndex = pXML->FindInInfoClass(szTextVal);
+
+						if (iIndex > -1)
+						{
+							// delete the array since it will be reallocated
+							SAFE_DELETE_ARRAY(m_ppiBuildingCommerceChanges[iIndex]);
+							// if we can set the current xml node to it's next sibling
+							if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"BuildingCommerces"))
+							{
+								// call the function that sets the commerce change variable
+								pXML->SetYields(&m_ppiBuildingCommerceChanges[iIndex]);
+								gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+							}
+							else
+							{
+								pXML->InitList(&m_ppiBuildingCommerceChanges[iIndex], NUM_COMMERCE_TYPES);
+							}
+						}
+
+						if (!gDLL->getXMLIFace()->NextSibling(pXML->GetXML()))
+						{
+							break;
+						}
+					}
+				}
+
+				gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+			}
+		}
+
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+
+	// < Civic Infos Plus End   >
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"CommerceModifiers"))
 	{
 		pXML->SetCommerce(&m_piCommerceModifier);
@@ -754,7 +1253,11 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_pabHurry, "Hurrys", GC.getNumHurryInfos());
 	pXML->SetVariableListTagPair(&m_pabSpecialBuildingNotRequired, "SpecialBuildingNotRequireds", GC.getNumSpecialBuildingInfos());
 	pXML->SetVariableListTagPair(&m_pabSpecialistValid, "SpecialistValids", GC.getNumSpecialistInfos());
+// < Civic Infos Plus Start >
 
+	pXML->SetVariableListTagPair(&m_paiFreeSpecialistCount, "FreeSpecialistCounts", sizeof(GC.getSpecialistInfo((SpecialistTypes)0)), GC.getNumSpecialistInfos());
+
+// < Civic Infos Plus End   >
 	pXML->SetVariableListTagPair(&m_paiBuildingHappinessChanges, "BuildingHappinessChanges", GC.getNumBuildingClassInfos());
 	pXML->SetVariableListTagPair(&m_paiBuildingHealthChanges, "BuildingHealthChanges", GC.getNumBuildingClassInfos());
 	pXML->SetVariableListTagPair(&m_paiFeatureHappinessChanges, "FeatureHappinessChanges", GC.getNumFeatureInfos());
@@ -793,6 +1296,95 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 		}
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
+/*************************************************************************************************/
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**																								**/
+/**																								**/
+/*************************************************************************************************/
+	pXML->Init2DIntList(&m_ppiSpecialistYieldChange, GC.getNumSpecialistInfos(), NUM_YIELD_TYPES);
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"SpecialistYieldChanges"))
+	{
+		iNumChildren = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
+
+		if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"SpecialistYieldChange"))
+		{
+			for(j=0;j<iNumChildren;j++)
+			{
+				pXML->GetChildXmlValByName(szTextVal, "SpecialistType");
+				k = pXML->FindInInfoClass(szTextVal);
+				if (k > -1)
+				{
+					// delete the array since it will be reallocated
+					SAFE_DELETE_ARRAY(m_ppiSpecialistYieldChange[k]);
+					if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"YieldChanges"))
+					{
+						// call the function that sets the yield change variable
+						pXML->SetYields(&m_ppiSpecialistYieldChange[k]);
+						gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+					}
+					else
+					{
+						pXML->InitList(&m_ppiSpecialistYieldChange[k], NUM_YIELD_TYPES);
+					}
+				}
+
+				if (!gDLL->getXMLIFace()->NextSibling(pXML->GetXML()))
+				{
+					break;
+				}
+			}
+
+			// set the current xml node to it's parent node
+			gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		}
+
+		// set the current xml node to it's parent node
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+
+	pXML->Init2DIntList(&m_ppiSpecialistCommerceChange, GC.getNumSpecialistInfos(), NUM_COMMERCE_TYPES);
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"SpecialistCommerceChanges"))
+	{
+		iNumChildren = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
+
+		if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"SpecialistCommerceChange"))
+		{
+			for(j=0;j<iNumChildren;j++)
+			{
+				pXML->GetChildXmlValByName(szTextVal, "SpecialistType");
+				k = pXML->FindInInfoClass(szTextVal);
+				if (k > -1)
+				{
+					// delete the array since it will be reallocated
+					SAFE_DELETE_ARRAY(m_ppiSpecialistCommerceChange[k]);
+					if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"CommerceChanges"))
+					{
+						// call the function that sets the yield change variable
+						pXML->SetCommerce(&m_ppiSpecialistCommerceChange[k]);
+						gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+					}
+					else
+					{
+						pXML->InitList(&m_ppiSpecialistCommerceChange[k], NUM_COMMERCE_TYPES);
+					}
+				}
+
+				if (!gDLL->getXMLIFace()->NextSibling(pXML->GetXML()))
+				{
+					break;
+				}
+			}
+
+			// set the current xml node to it's parent node
+			gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		}
+
+		// set the current xml node to it's parent node
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+/*************************************************************************************************/
+/**	CMEDIT: End																					**/
+/*************************************************************************************************/
 
 	pXML->GetChildXmlValByName(szTextVal, "WeLoveTheKing");
 	setWeLoveTheKingKey(szTextVal);

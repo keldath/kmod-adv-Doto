@@ -2780,7 +2780,15 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
 			if (eImprovement != NO_IMPROVEMENT)
 			{
 				CvImprovementInfo const& kImprov = GC.getInfo(eImprovement);
-				if (kMissionPlot.getTeam() != kUnitTeam.getID())
+				// < JImprovementLimit Mod Start >
+//keldath 0 shuld this be kMissionPlot.getTeam() != kUnitTeam.getID()? instead if kMissionPlot.getTeam() != NO_TEAM
+				if (kMissionPlot.getTeam() != NO_TEAM && kImprov.isNotInsideBorders() && kImprov.isOutsideBorders())
+				{
+					szBuffer.append(NEWLINE);
+					szBuffer.append(gDLL->getText("TXT_KEY_ACTION_REQUIRES_NO_CULTURE_BORDER"));
+				}
+				else if (gDLL->getInterfaceIFace()->getHeadSelectedUnit() != NULL &&
+						kMissionPlot.getTeam() != gDLL->getInterfaceIFace()->getHeadSelectedUnit()->getTeam())
 				{
 					if (kImprov.isOutsideBorders())
 					{
@@ -2796,6 +2804,7 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
 						szBuffer.append(gDLL->getText("TXT_KEY_ACTION_NEEDS_CULTURE_BORDER"));
 					}
 				}
+				// < JImprovementLimit Mod End >
 				if (eBonus == NO_BONUS || !kImprov.isImprovementBonusTrade(eBonus))
 				{
 					if (!kUnitTeam.isIrrigation() && !kUnitTeam.isIgnoreIrrigation())
@@ -2888,11 +2897,34 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
 		{
 			if (kMissionPlot.isImproved())
 			{
-				szBuffer.append(NEWLINE);
+			// < JImprovementLimit Mod Start >
+                    if (kImprov.getImprovementRequired() != NO_IMPROVEMENT)
+                     {
+                            szBuffer.append(NEWLINE);
+                            szBuffer.append(gDLL->getText("TXT_KEY_ACTION_WILL_REPLACE_IMPROVEMENT", kImprov kImprov.getImprovementRequired()).getDescription()));
+					}
+                        else
+                        {
+						szBuffer.append(NEWLINE);
+						szBuffer.append(gDLL->getText("TXT_KEY_ACTION_WILL_DESTROY_IMP", GC.getInfo(kMissionPlot.getImprovementType()).getTextKeyWide()));
+					}
+             // < JImprovementLimit Mod End >
+			/*	szBuffer.append(NEWLINE);
 				szBuffer.append(gDLL->getText("TXT_KEY_ACTION_WILL_DESTROY_IMP",
 						GC.getInfo(kMissionPlot.getImprovementType()).
 						getTextKeyWide()));
+			*/
 			}
+			// < JImprovementLimit Mod Start >
+					if (kImprov.getMakesInvalidRange() > 0)
+                    {
+                        if (kMissionPlot.isImprovementInRange(eImprovement, kImprov.getMakesInvalidRange(), true))
+                        {
+                            szBuffer.append(NEWLINE);
+                            szBuffer.append(gDLL->getText("TXT_KEY_ACTION_IMPROVEMENT_TO_CLOSE", kImprov.getDescription(), kImprov.getMakesInvalidRange()));
+					}
+				}
+					// < JImprovementLimit Mod End >	
 		}
 		if (GC.getInfo(eBuild).isKill())
 		{
@@ -2923,6 +2955,26 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
 		if (eImprovement != NO_IMPROVEMENT)
 		{
 			CvImprovementInfo const& kImprov = GC.getInfo(eImprovement);
+			// < JCultureControl Mod Start >
+                    if (kImprov.isSpreadCultureControl() && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
+                    {
+                        if (kImprov.getCultureBorderRange() == 0)
+                        {
+                            szBuffer.append(NEWLINE);
+                            szBuffer.append(gDLL->getText("TXT_KEY_ACTION_SPREADS_CULTURE_CONTROL_THIS_TILE"));
+                        }
+                        else if (kImprov.getCultureBorderRange() == 1)
+                        {
+                            szBuffer.append(NEWLINE);
+                            szBuffer.append(gDLL->getText("TXT_KEY_ACTION_SPREADS_CULTURE_CONTROL_RANGE_ONE", kImprov.getCultureBorderRange()));
+                        }
+                        else if (kImprov.getCultureBorderRange() > 1)
+                        {
+                            szBuffer.append(NEWLINE);
+                            szBuffer.append(gDLL->getText("TXT_KEY_ACTION_SPREADS_CULTURE_CONTROL_RANGE", kImprov.getCultureBorderRange()));
+                        }
+                    }
+            // < JCultureControl Mod End >
 			if (eBonus != NO_BONUS)
 			{
 				//if (!kUnitTeam.isBonusObsolete(eBonus))
@@ -4705,6 +4757,54 @@ void CvDLLWidgetData::parseUnitModelHelp(CvWidgetDataStruct &widgetDataStruct, C
 void CvDLLWidgetData::parseFlagHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer)
 {
 	CvWString szTempBuffer;
+
+/// ADDED FOR KMOD - BY KELDATH -VERSION OVER FLAG
+	// Add string showing version number
+	// BTS Version
+	float fVersion = GC.getDefineINT("CIV4_VERSION") / 100.0f;
+	szTempBuffer.Format(SETCOLR L"Beyond the Sword %0.2f" ENDCOLR, TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"), fVersion);
+	szBuffer.append(szTempBuffer);
+	szBuffer.append(NEWLINE);
+/************************************************************************************************/
+/* UNOFFICIAL_PATCH                      03/04/10                                jdog5000       */
+/*                                                                                              */
+/*                                                                                              */
+/************************************************************************************************/
+	szTempBuffer.Format(L"%S", "KelDath Doto Dll Mod");
+	szBuffer.append(szTempBuffer);
+/************************************************************************************************/
+/* UNOFFICIAL_PATCH                       END                                                   */
+/************************************************************************************************/
+/************************************************************************************************/
+/* BETTER_BTS_AI_MOD                      07/04/10                                jdog5000      */
+/*                                                                                              */
+/*                                                                                              */
+/************************************************************************************************/
+	// Add string showing version number
+	szTempBuffer.Format(NEWLINE SETCOLR L"%S" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), "Kmod 1.46b+advc096e++");
+	szBuffer.append(szTempBuffer);
+	szBuffer.append(NEWLINE);
+#ifdef LOG_AI
+	szTempBuffer.Format(NEWLINE L"%c", gDLL->getSymbolID(BULLET_CHAR));
+	szBuffer.append(szTempBuffer);
+	szBuffer.append("AI Logging");
+#endif
+/************************************************************************************************/
+/* BETTER_BTS_AI_MOD                       END                                                  */
+/************************************************************************************************/
+// BUG - Version Info - start
+/************************************************************************************************/
+/* REVOLUTION_MOD                         01/01/08                                jdog5000      */
+/*                                                                                              */
+/* Dynamic Civ Names                                                                            */
+/************************************************************************************************/
+	// Show the active player's civ's current name when mousing over flag
+	//szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"), GC.getCivilizationInfo(GC.getGame().getActiveCivilizationType()).getDescription());
+	szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"), GET_PLAYER(GC.getGame().getActivePlayer()).getCivilizationDescription());
+/************************************************************************************************/
+/* REVOLUTION_MOD                          END                                                  */
+/************************************************************************************************/
+
 	// <advc.135c>
 	CvGame const& g = GC.getGame();
 	if(g.isNetworkMultiPlayer() && g.isDebugToolsAllowed(false))
@@ -5015,6 +5115,17 @@ void CvDLLWidgetData::parseCultureHelp(CvWidgetDataStruct &widgetDataStruct, CvW
 
 	szBuffer.append(L"\n=======================\n");
 	GAMETEXT.setCommerceHelp(szBuffer, *pHeadSelectedCity, COMMERCE_CULTURE);
+	//KNOEDELbegin ************************ CULTURAL_GOLDEN_AGE
+	//if added by keldath
+	if (GC.getGame().isOption(GAMEOPTION_CULTURE_GOLDEN_AGE)) {
+			 szBuffer.append(L"\n=======================\n");
+			 szBuffer.append(gDLL->getText("TXT_KEY_MISC_CULTURAL_GOLDEN_AGE_PROGRESS", GET_PLAYER(pHeadSelectedCity->getOwner()).getCultureGoldenAgeProgress(), GET_PLAYER(pHeadSelectedCity->getOwner()).getCultureGoldenAgeThreshold(), GET_PLAYER(pHeadSelectedCity->getOwner()).getCommerceRate(COMMERCE_CULTURE)));
+	}
+		
+	else {
+			 szBuffer.append(L"\n==WeLoveKeldath==\n");
+	}
+	///KNOEDELend ************************
 }
 
 

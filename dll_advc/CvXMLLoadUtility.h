@@ -147,6 +147,18 @@ public:
 	// advc.003x: Unused param iInfoBaseSize removed from these four
 	void SetVariableListTagPair(int **ppiList, const TCHAR* szRootTagName,
 			int iInfoBaseLength, int iDefaultListVal = 0);
+/************************************************************************************************/
+/* RevDCM  XMLloading                             05/05/10             phungus420               */
+/*                                                                                              */
+/*   added by f1 - might not be needed - xml modularload?                                                                                           */
+/************************************************************************************************/
+	// allocate and initialize a list from a tag pair in the xml by tag name
+	void SetVariableListTagPair(int **ppiList, const TCHAR* szRootTagName,
+		int iInfoBaseSize, int iInfoBaseLength,
+		const TCHAR* szValueTagName, int iValueInfoBaseLength, int iDefaultListVal = -1);
+/************************************************************************************************/
+/* RevDCM	                                 END                                                */
+/************************************************************************************************/
 	void SetVariableListTagPair(bool **ppbList, const TCHAR* szRootTagName,
 			int iInfoBaseLength, bool bDefaultListVal = false);
 	void SetVariableListTagPair(float **ppfList, const TCHAR* szRootTagName,
@@ -169,6 +181,23 @@ public:
 	bool SetAndLoadVar(int** ppiVar, int iDefault=0);
 	bool SetStringList(CvString** ppszStringArray, int* piSize);
 	int GetHotKeyInt(const TCHAR* pszHotKeyVal);
+/************************************************************************************************/
+/* TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/*                                                                                              */
+/* reorganizing the Corporations and Religions vectors                                          */
+/************************************************************************************************/
+	template <class T>
+	void ArrangeTGA(std::vector<T*>& aInfos, const char* szInfo);
+	template <class T>
+	void AddTGABogus(std::vector<T*>& aInfos, const char* szInfo);
+	void cleanTGA();
+	template <class T>
+	void RemoveTGABogusReligion(std::vector<T*>& aInfos);
+	template <class T>
+	void RemoveTGABogusCorporation(std::vector<T*>& aInfos);
+/************************************************************************************************/
+/* TGA_INDEXATION                          END                                                  */
+/************************************************************************************************/
 
 
 private:

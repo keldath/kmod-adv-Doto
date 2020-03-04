@@ -79,11 +79,51 @@ public: /*  All const functions are exposed to Python except some related to art
 	CvUnitInfo();
 	~CvUnitInfo();
 
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		Based on code by Afforess
+ *	Source:
+ *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
+ *
+ ****************************************/
+	bool isPrereqOrCivics(int iCivic) const;
+	bool isPrereqAndCivics(int iCivic) const;
+
+	std::vector<CvString> m_aszPrereqOrCivicsforPass3;
+	std::vector<bool> m_abPrereqOrCivicsforPass3;
+	
+	int isPrereqOrCivicsVectorSize();
+	CvString isPrereqOrCivicsNamesVectorElement(int i);
+	int isPrereqOrCivicsValuesVectorElement(int i);
+	
+	int isPrereqAndCivicsVectorSize();
+	CvString isPrereqAndCivicsNamesVectorElement(int i);
+	int isPrereqAndCivicsValuesVectorElement(int i);
+	
+	std::vector<CvString> m_aszPrereqAndCivicsforPass3;
+	std::vector<bool> m_abPrereqAndCivicsforPass3;
+
+	bool readPass3();
+protected:
+	bool* m_pbPrereqOrCivics;
+	bool* m_pbPrereqAndCivics;
+public:
+/**
+ ** End: Unit Civic Prereq
+ **/
 	int getAIWeight() const { return m_iAIWeight; }
 	inline int getProductionCost() const { return m_iProductionCost; }
 	int getHurryCostModifier() const { return m_iHurryCostModifier; }
 	int getAdvancedStartCost() const;
 	int getAdvancedStartCostIncrease() const;
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+	int getNumCitySizeUnitPrereq() const;  // Exposed to Python
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
 	int getMinAreaSize() const { return m_iMinAreaSize; }
 	inline int getMoves() const { return m_iMoves; }
 	inline int getAirRange() const { return m_iAirRange; }
@@ -149,7 +189,20 @@ public: /*  All const functions are exposed to Python except some related to art
 		return (InvisibleTypes)m_aiSeeInvisibleTypes[i];
 	}
 	inline int getNumSeeInvisibleTypes() const { return (int)m_aiSeeInvisibleTypes.size(); }
-	AdvisorTypes getAdvisorType() const { return (AdvisorTypes)m_iAdvisorType; }
+	AdvisorTypes getAdvisorType() const { return (AdvisorTypes)m_iAdvisorType; }	
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanTrain 																*/
+/********************************************************************************/
+	int getMaxStartEra() const;							// Exposed to Python
+	int getForceObsoleteTech() const;									// Exposed to Python
+	bool isStateReligion() const;				// Exposed to Python
+	int getPrereqGameOption() const;									// Exposed to Python
+	int getNotGameOption() const;									// Exposed to Python
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 	ReligionTypes getHolyCity() const { return (ReligionTypes)m_iHolyCity; }
 	ReligionTypes getReligionType() const { return (ReligionTypes)m_iReligionType; }
 	ReligionTypes getStateReligion() const { return (ReligionTypes)m_iStateReligion; }
@@ -157,6 +210,7 @@ public: /*  All const functions are exposed to Python except some related to art
 	CorporationTypes getPrereqCorporation() const { return (CorporationTypes)m_iPrereqCorporation; }
 	BuildingTypes getPrereqBuilding() const { return (BuildingTypes)m_iPrereqBuilding; }
 	TechTypes getPrereqAndTech() const { return (TechTypes)m_iPrereqAndTech; }
+//	int getPrereqVicinityBonus() const;  //Shqype Vicinity Bonus Add
 	bool isTechRequired(TechTypes eTech) const; // advc.003w: Replacing global isTechRequiredForUnit
 	BonusTypes getPrereqAndBonus() const { return (BonusTypes)m_iPrereqAndBonus; }
 	int getGroupSize() const; // the initial number of individuals in the unit group
@@ -202,6 +256,8 @@ public: /*  All const functions are exposed to Python except some related to art
 	// advc.inl: force-inlined for CvArea::canBeEntered. Renamed from "isCanMoveImpassable"
 	__forceinline bool canMoveImpassable() const { return m_bCanMoveImpassable; }
 	inline bool isCanMoveAllTerrain() const { return m_bCanMoveAllTerrain; }
+//Deliverator mountain mod
+	inline bool isCanMovePeak() const { return m_bCanMovePeak; }
 	bool isFlatMovementCost() const { return m_bFlatMovementCost; }
 	bool isIgnoreTerrainCost() const { return m_bIgnoreTerrainCost; }
 	bool isNukeImmune() const { return m_bNukeImmune; }
@@ -226,6 +282,7 @@ public: /*  All const functions are exposed to Python except some related to art
 	BonusTypes getPrereqOrBonuses(int i) const;
 	inline bool isAnyPrereqOrBonus() const { return (m_piPrereqOrBonuses != NULL); } // advc.003t
 	// <advc.905b>
+//	int getPrereqOrVicinityBonuses(int i) const;  //Shqype Vicinity Bonus Add
 	BonusTypes getSpeedBonuses(int i) const;
 	int getExtraMoves(int i) const;
 	// </advc.905b>
@@ -252,7 +309,19 @@ public: /*  All const functions are exposed to Python except some related to art
 	TechTypes getFeaturePassableTech(int i) const;
 	int getFlankingStrikeUnitClass(int i) const;
 	inline bool isAnyFlankingStrikeUnitClass() const { return (m_piFlankingStrikeUnitClass != NULL); } // advc.003t
-
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanTrain 																*/
+/********************************************************************************/
+//	bool isPrereqOrCivics(int i) const;				// Exposed to Python
+	bool isPrereqBuildingClass(int i) const; 				//Exposed to Python
+	int getPrereqBuildingClassOverrideTech(int i) const; 				//Exposed to Python
+	int getPrereqBuildingClassOverrideEra(int i) const; 				//Exposed to Python
+	bool getForceObsoleteUnitClass(int i) const; 				//Exposed to Python
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 	bool getUpgradeUnitClass(int i) const;
 	inline bool isAnyUpgradeUnitClass() const { return (m_pbUpgradeUnitClass != NULL); } // advc.003t
 	bool getTargetUnitClass(int i) const;
@@ -333,6 +402,13 @@ protected:
 	int m_iHurryCostModifier;
 	int m_iAdvancedStartCost;
 	int m_iAdvancedStartCostIncrease;
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+	int m_iNumCitySizeUnitPrereq;
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
 	int m_iMinAreaSize;
 	int m_iMoves;
 	int m_iAirRange;
@@ -387,6 +463,19 @@ protected:
 	int m_iDefaultUnitAIType;
 	int m_iInvisibleType;
 	int m_iAdvisorType;
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanTrain 																*/
+/********************************************************************************/
+	int m_iMaxStartEra;
+	int m_iForceObsoleteTech;
+	bool m_bStateReligion;
+	int m_iPrereqGameOption;
+	int m_iNotGameOption;
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 	int m_iHolyCity;
 	int m_iReligionType;
 	int m_iStateReligion;
@@ -395,6 +484,7 @@ protected:
 	int m_iPrereqBuilding;
 	int m_iPrereqAndTech;
 	int m_iPrereqAndBonus;
+//	int m_iPrereqVicinityBonus;  //Shqype Vicinity Bonus Add
 	int m_iGroupSize;
 	int m_iGroupDefinitions;
 	int m_iUnitMeleeWaveSize;
@@ -430,6 +520,7 @@ protected:
 	bool m_bIgnoreBuildingDefense;
 	bool m_bCanMoveImpassable;
 	bool m_bCanMoveAllTerrain;
+	bool m_bCanMovePeak; //Deliverator	
 	bool m_bFlatMovementCost;
 	bool m_bIgnoreTerrainCost;
 	bool m_bNukeImmune;
@@ -450,6 +541,7 @@ protected:
 
 	int* m_piPrereqAndTechs;
 	int* m_piPrereqOrBonuses;
+//	int* m_piPrereqOrVicinityBonuses;  //Shqype Vicinity Bonus Add
 	int* m_piSpeedBonuses[2]; // advc.905b
 	int* m_piProductionTraits;
 	int* m_piFlavorValue;
@@ -469,6 +561,20 @@ protected:
 	int* m_piTerrainPassableTech;
 	int* m_piFeaturePassableTech;
 	int* m_piFlankingStrikeUnitClass;
+
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**																				*/
+/**		CanTrain 																*/
+/********************************************************************************/
+//	bool* m_pbPrereqOrCivics;
+	bool* m_pbPrereqBuildingClass;
+	int* m_piPrereqBuildingClassOverrideTech;
+	int* m_piPrereqBuildingClassOverrideEra;
+	bool* m_pbForceObsoleteUnitClass;
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 
 	bool* m_pbUpgradeUnitClass;
 	bool* m_pbTargetUnitClass;
@@ -609,6 +715,9 @@ public: // All the const functions are exposed to Python
 	// advc.164: was isBlitz
 	int getBlitz() const;
 	bool isAmphib() const;
+//MOD@VET_Andera412_Blocade_Unit-begin1/2
+	bool isUnblocade() const;
+//MOD@VET_Andera412_Blocade_Unit-end1/2
 	bool isRiver() const;
 	bool isEnemyRoute() const;
 	bool isAlwaysHeal() const;
@@ -679,7 +788,10 @@ protected:
 	bool m_bLeader;
 	//bool m_bBlitz;
 	int m_iBlitz; // advc.164
-	bool m_bAmphib;
+	bool m_bAmphib;		
+//MOD@VET_Andera412_Blocade_Unit-begin2/2
+	bool m_bUnblocade;
+//MOD@VET_Andera412_Blocade_Unit-end2/2
 	bool m_bRiver;
 	bool m_bEnemyRoute;
 	bool m_bAlwaysHeal;

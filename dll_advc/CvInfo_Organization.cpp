@@ -82,7 +82,15 @@ bool CvOrganizationInfo::read(CvXMLLoadUtility* pXML)
 	m_iFreeUnitClass = pXML->FindInInfoClass(szTextVal);
 
 	pXML->GetChildXmlValByName(&m_iSpreadFactor, "iSpreadFactor");
-
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	pXML->GetChildXmlValByName(&m_iTGAIndex, "iTGAIndex");
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 	pXML->GetChildXmlValByName(szTextVal, "MovieFile");
 	setMovieFile(szTextVal);
 
@@ -96,6 +104,16 @@ bool CvOrganizationInfo::read(CvXMLLoadUtility* pXML)
 }
 
 CvReligionInfo::CvReligionInfo() :
+/*************************************************************************************************/
+/** TGA_INDEXATION                          03/17/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+m_iChar(0),
+m_iTGAIndex(-1),
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 m_iHolyCityChar(0),
 m_iNumFreeUnits(0),
 m_paiGlobalReligionCommerce(NULL),
@@ -109,6 +127,38 @@ CvReligionInfo::~CvReligionInfo()
 	SAFE_DELETE_ARRAY(m_paiHolyCityCommerce);
 	SAFE_DELETE_ARRAY(m_paiStateReligionCommerce);
 }
+//keldath QA check that setchar - does not exists in f1rpo but exists in prev ver
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+void CvReligionInfo::setChar(int i)
+{
+
+	m_iChar = 8550 + m_iTGAIndex * 2;
+}
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+int CvReligionInfo::getTGAIndex() const
+{
+	return m_iTGAIndex; 
+}
+
+void CvReligionInfo::setTGAIndex(int i)
+{
+	m_iTGAIndex = i;
+}
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
+
 
 int CvReligionInfo::getHolyCityChar() const
 {
@@ -117,7 +167,19 @@ int CvReligionInfo::getHolyCityChar() const
 
 void CvReligionInfo::setHolyCityChar(int i)
 {
-	m_iHolyCityChar = i;
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+/*
+	m_iHolyCityChar = i; 
+*/
+	m_iHolyCityChar = 8551 + m_iTGAIndex * 2;
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
+
 }
 
 int CvReligionInfo::getNumFreeUnits() const
@@ -257,6 +319,17 @@ bool CvReligionInfo::isReligionTech(TechTypes eTech)
 }
 
 CvCorporationInfo::CvCorporationInfo() :
+
+/*************************************************************************************************/
+/** TGA_INDEXATION                          03/17/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+m_iChar(0),
+m_iTGAIndex(-1),
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 m_iHeadquarterChar(0),
 m_iSpreadCost(0),
 m_iMaintenance(0),
@@ -275,6 +348,36 @@ CvCorporationInfo::~CvCorporationInfo()
 	SAFE_DELETE_ARRAY(m_paiYieldProduced);
 }
 
+//keldath QA check the ichar - was exists in yhie ver
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+void CvCorporationInfo::setChar(int i)
+{
+	m_iChar = 8550 + (TGA_RELIGIONS + m_iTGAIndex) * 2;
+}
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+int CvCorporationInfo::getTGAIndex() const
+{
+	return m_iTGAIndex; 
+}
+
+void CvCorporationInfo::setTGAIndex(int i)
+{
+	m_iTGAIndex = i;
+}
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 int CvCorporationInfo::getHeadquarterChar() const
 {
 	return m_iHeadquarterChar;
@@ -282,7 +385,19 @@ int CvCorporationInfo::getHeadquarterChar() const
 
 void CvCorporationInfo::setHeadquarterChar(int i)
 {
-	m_iHeadquarterChar = i;
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+/*
+	m_iHeadquarterChar = i; 
+*/
+	m_iHeadquarterChar = 8551 + (TGA_RELIGIONS + m_iTGAIndex) * 2;
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
+;
 }
 
 int CvCorporationInfo::getSpreadCost() const
@@ -348,6 +463,15 @@ bool CvCorporationInfo::read(CvXMLLoadUtility* pXML)
 
 	pXML->GetChildXmlValByName(&m_iSpreadCost, "iSpreadCost");
 	pXML->GetChildXmlValByName(&m_iMaintenance, "iMaintenance");
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	pXML->GetChildXmlValByName(&m_iTGAIndex, "iTGAIndex");
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"HeadquarterCommerces"))
 	{

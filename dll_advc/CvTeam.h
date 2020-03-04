@@ -208,6 +208,12 @@ public:
 	bool isIrrigation() const { return (getIrrigationCount() > 0); }														// Exposed to Python
 	void changeIrrigationCount(int iChange);																			// Exposed to Python
 
+/* Population Limit ModComp - Beginning */
+	int getNoPopulationLimitCount() const;																											// Exposed to Python
+	bool isNoPopulationLimit() const;																								// Exposed to Python
+	void changeNoPopulationLimitCount(int iChange);	// Exposed to Python
+/* Population Limit ModComp - End */
+
 	int getIgnoreIrrigationCount() const { return m_iIgnoreIrrigationCount; }																// Exposed to Python
 	bool isIgnoreIrrigation() const { return (getIgnoreIrrigationCount() > 0); }														// Exposed to Python
 	void changeIgnoreIrrigationCount(int iChange);																// Exposed to Python
@@ -247,7 +253,13 @@ public:
 	int getCommerceFlexibleCount(CommerceTypes eIndex) const;														// Exposed to Python
 	bool isCommerceFlexible(CommerceTypes eIndex) const;																// Exposed to Python
 	void changeCommerceFlexibleCount(CommerceTypes eIndex, int iChange);					// Exposed to Python
+    // < Civic Infos Plus Start >
+    int getYieldRateModifier(YieldTypes eIndex);																								// Exposed to Python
+	void changeYieldRateModifier(YieldTypes eIndex, int iChange);
 
+	int getCommerceRateModifier(CommerceTypes eIndex);																								// Exposed to Python
+	void changeCommerceRateModifier(CommerceTypes eIndex, int iChange);
+	// < Civic Infos Plus End   >
 	int getExtraMoves(DomainTypes eIndex) const;																				// Exposed to Python
 	void changeExtraMoves(DomainTypes eIndex, int iChange);								// Exposed to Python
 
@@ -543,6 +555,11 @@ protected:
 	EnumMap<TeamTypes,int> m_aiCounterespionageModAgainstTeam; // <...,short>?
 
 	EnumMap<CommerceTypes,int> m_aiCommerceFlexibleCount;
+// < Civic Infos Plus Start >
+//keldath QA - i hope i applied this well
+	EnumMap<YieldTypes,int> m_aiYieldRateModifier;
+	EnumMap<CommerceTypes,int> m_aiCommerceRateModifier;
+// < Civic Infos Plus Start >
 	EnumMap<DomainTypes,int> m_aiExtraMoves;
 	EnumMap<VoteSourceTypes,int> m_aiForceTeamVoteEligibilityCount;
 	EnumMap<RouteTypes,int> m_aiRouteChange;

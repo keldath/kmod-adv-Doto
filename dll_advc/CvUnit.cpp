@@ -24,6 +24,18 @@ CvUnit::CvUnit() // advc.003u: Body cut from the deleted reset function
 {
 	CvDLLEntity::createUnitEntity(this);
 
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		Based on code by Afforess
+ *	Source:
+ *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
+ *
+ ****************************************/
+	m_bCivicEnabled = true;
+/**
+ ** End: Unit Civic Prereq
+ **/
 	m_iID = 0;
 	m_iGroupID = FFreeList::INVALID_INDEX;
 	m_iHotKeyNumber = -1;
@@ -46,6 +58,9 @@ CvUnit::CvUnit() // advc.003u: Body cut from the deleted reset function
 	m_iFortifyTurns = 0;
 	m_iBlitzCount = 0;
 	m_iAmphibCount = 0;
+//MOD@VET_Andera412_Blocade_Unit-begin1/6	
+	m_iUnblocadeCount = 0;
+//MOD@VET_Andera412_Blocade_Unit-end1/6
 	m_iRiverCount = 0;
 	m_iEnemyRouteCount = 0;
 	m_iAlwaysHealCount = 0;
@@ -673,6 +688,26 @@ void CvUnit::doTurn()
 				changeDamage(GC.getInfo(eFeature).getTurnDamage(), NO_PLAYER);
 			}
 		}
+
+	/*****************************************************************************************************/
+	/**  Author: TheLadiesOgre                                                                          **/
+	/**  Date: 15.10.2009                                                                               **/
+	/**  ModComp: TLOTags                                                                               **/
+	/**  Reason Added: Allow Terrain Damage to work                                                     **/
+	/**  Notes:                                                                                         **/
+	/*****************************************************************************************************/
+		TerrainTypes eTerrain = plot()->getTerrainType();
+		if (NO_TERRAIN != eTerrain)
+		{
+			if ((0 != GC.getTerrainInfo(eTerrain).getTurnDamage()) && (!plot()->isCity()) && (m_pUnitInfo->getTerrainNative(eTerrain) == false))
+			{
+				changeDamage(GC.getTerrainInfo(eTerrain).getTurnDamage(), NO_PLAYER);
+			}
+		}
+	/*****************************************************************************************************/
+	/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+	/*****************************************************************************************************/
+
 	}
 
 	if (hasMoved())
@@ -2421,6 +2456,44 @@ bool CvUnit::willRevealAnyPlotFrom(CvPlot const& kFrom) const
 	return false;
 }
 
+//MOD@VET_Andera412_Blocade_Unit-begin2/6
+bool CvUnit::cannotMoveFromTo(const CvPlot* pFromPlot, const CvPlot* pToPlot) const
+{
+	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
+	{		
+		if (pFromPlot->getRouteType() == NO_ROUTE)
+		{
+			if (/*(*/(pToPlot->isImpassable() /*&& (pToPlot->getRouteType() == NO_ROUTE))*/ || pFromPlot->isImpassable()) && !canMoveImpassable())
+				{return true;}
+		}
+	}	
+	return false;
+}
+
+bool CvUnit::cannotMoveFromPlotToPlot(const CvPlot* pFromPlot, const CvPlot* pToPlot, bool bWithdrawal) const
+{
+	if (bWithdrawal)
+	{
+		if (!canMoveInto(pToPlot))
+			{return true;}
+		if (getDomainType() == DOMAIN_SEA)
+		{
+			if (pFromPlot->isWater() && pToPlot->isWater())
+			{
+				if (!(GC.getMap().plotSoren(pFromPlot->getX(), pToPlot->getY())->isWater()) && !(GC.getMap().plotSoren(pToPlot->getX(), pFromPlot->getY())->isWater()))
+					{return true;}
+			}
+		}
+	}
+	
+	if (GC.getBLOCADE_UNIT() && pToPlot->isBlocade(pFromPlot, this))
+		{
+			return true;
+		}
+	return false;
+}
+//MOD@VET_Andera412_Blocade_Unit-end2/6
+
 /*  K-Mod. I've rearranged a few things to make the function slightly faster,
 	and added "bAssumeVisible" which signals that we should check for units on
 	the plot regardless of whether we can actually see. */
@@ -2432,6 +2505,14 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar, bo
 	if (atPlot(&kPlot))
 		return false;
 
+// keldath - i changed a bit the org code.
+//mountain mod - sort off
+	// Deliverator peaks
+	if (kPlot.isPeak() && !canMovePeak() || !canMoveImpassable())
+	{
+		return false;
+	}	
+// Deliverator
 	if (!canMoveImpassable() && kPlot.isImpassable())
 		return false;
 
@@ -3812,7 +3893,7 @@ bool CvUnit::canNukeAt(const CvPlot* pPlot, int iX, int iY) const
 
 	if (airRange() > 0 && iDistance > airRange())
 		return false;
-
+/* KELDATH nukes anywhere?
 	CvPlot* pTargetPlot = GC.getMap().plot(iX, iY);
 	for (TeamIter<MAJOR_CIV> it; it.hasNext(); ++it)
 	{
@@ -3822,7 +3903,7 @@ bool CvUnit::canNukeAt(const CvPlot* pPlot, int iX, int iY) const
 				return false;
 		}
 	}
-
+*/
 	return true;
 }
 
@@ -4333,6 +4414,12 @@ bool CvUnit::airBomb(int iX, int iY)
 							GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_PILLAGED", MESSAGE_TYPE_INFO, getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), kPlot.getX(), kPlot.getY(), true, true);
 				}
 				kPlot.setImprovementType((ImprovementTypes)(GC.getInfo(kPlot.getImprovementType()).getImprovementPillage()));
+				// < JCultureControl Mod Start >
+                if (kPlot.getImprovementOwner() != NO_PLAYER && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
+                {
+                    kPlot.addCultureControl(kPlot.getImprovementOwner(), (ImprovementTypes) GC.getImprovementInfo(kPlot.getImprovementType()).getImprovementPillage(), true);
+                }
+                // < JCultureControl Mod End >
 			}
 			else
 			{
@@ -4926,6 +5013,12 @@ bool CvUnit::sabotage()
 	{
 		kPlot.setImprovementType((ImprovementTypes)
 				GC.getInfo(kPlot.getImprovementType()).getImprovementPillage());
+		// < JCultureControl Mod Start >
+        if (kPlot.getImprovementOwner() != NO_PLAYER && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
+        {
+            kPlot.addCultureControl(kPlot.getImprovementOwner(), (ImprovementTypes) GC.getImprovementInfo(kPlot.getImprovementType()).getImprovementPillage(), true);
+        }
+        // < JCultureControl Mod End >
 		finishMoves();
 		CvCity* pNearestCity = GC.getMap().findCity(kPlot.getX(), kPlot.getY(),
 				kPlot.getOwner(), NO_TEAM, false);
@@ -6101,11 +6194,24 @@ bool CvUnit::build(BuildTypes eBuild)
 	// that function will notify the entity to stop building.
 	NotifyEntity((MissionTypes)GC.getInfo(eBuild).getMissionType());
 	GET_PLAYER(getOwner()).changeGold(-(GET_PLAYER(getOwner()).getBuildCost(plot(), eBuild)));
+// < JCultureControl Mod Start >
+	ImprovementTypes eOldImprovement = plot()->getImprovementType();
+// < JCultureControl Mod End >
 	bool bFinished = getPlot().changeBuildProgress(eBuild, workRate(false),
 			/*getTeam()*/ getOwner()); // advc.251
 	finishMoves(); // needs to be at bottom because movesLeft() can affect workRate()...
 	if (bFinished)
 	{
+		// < JCultureControl Mod Start >
+	    if ((ImprovementTypes) GC.getBuildInfo(eBuild).getImprovement() != NO_IMPROVEMENT && (ImprovementTypes) GC.getBuildInfo(eBuild).getImprovement() != eOldImprovement)
+	    {
+	        if (GC.getImprovementInfo((ImprovementTypes) GC.getBuildInfo(eBuild).getImprovement()).isSpreadCultureControl()  && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
+	        {
+                plot()->setImprovementOwner(getOwner());
+                plot()->addCultureControl(getOwner(), (ImprovementTypes) GC.getBuildInfo(eBuild).getImprovement(), true);
+	        }
+	    }
+	    // < JCultureControl Mod End >	
 		if (GC.getInfo(eBuild).isKill())
 			kill(true);
 	}
@@ -6707,6 +6813,22 @@ bool CvUnit::canMove() const
 {
 	if (isDead())
 		return false;
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		
+ *	Source:
+ *	  Archid
+ *
+ ****************************************/
+	if (!isEnabled())
+	{
+		return false;
+	}
+/**
+ ** End: Unit Civic Prereq
+ **/
+
 	if (getMoves() >= maxMoves())
 		return false;
 	if (getImmobileTimer() > 0)
@@ -7134,7 +7256,7 @@ int CvUnit::maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDet
 			if (pCombatDetails != NULL)
 				pCombatDetails->iCityDefenseModifier = iExtraModifier;
 		}
-		if (pPlot->isHills())
+		if (pPlot->isPeak() || pPlot->isHills()) // Deliverator - Hijacked, Hills -> Peak+keldath hills
 		{
 			iExtraModifier = hillsDefenseModifier();
 			iModifier += iExtraModifier;
@@ -7180,7 +7302,7 @@ int CvUnit::maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDet
 					pCombatDetails->iCityBarbarianDefenseModifier = iExtraModifier;
 			}
 		}
-		if (pAttackedPlot->isHills())
+		if (pAttackedPlot->isPeak() || pAttackedPlot->isHills() ) // Deliverator - Hijacked, Hills -> Peak + hills added keldath
 		{
 			iExtraModifier = -pAttacker->hillsAttackModifier();
 			iTempModifier += iExtraModifier;
@@ -9100,6 +9222,23 @@ void CvUnit::changeAmphibCount(int iChange)
 	m_iAmphibCount += iChange;
 	FAssert(getAmphibCount() >= 0);
 }
+//MOD@VET_Andera412_Blocade_Unit-begin3/6
+int CvUnit::getUnblocadeCount() const
+{
+	return m_iUnblocadeCount;
+}
+
+bool CvUnit::isUnblocade() const
+{
+	return (getUnblocadeCount() > 0);
+}
+
+void CvUnit::changeUnblocadeCount(int iChange)
+{
+	m_iUnblocadeCount += iChange;
+	FAssert(getUnblocadeCount() >= 0);
+}
+//MOD@VET_Andera412_Blocade_Unit-end3/6
 
 void CvUnit::changeRiverCount(int iChange)
 {
@@ -10100,6 +10239,9 @@ void CvUnit::setHasPromotion(PromotionTypes ePromotion, bool bNewValue)
 	// advc.164: Conveniently, CvUnit was already storing Blitz in an integer.
 	changeBlitzCount(GC.getInfo(ePromotion).getBlitz() * iChange);
 	changeAmphibCount((GC.getInfo(ePromotion).isAmphib()) ? iChange : 0);
+//MOD@VET_Andera412_Blocade_Unit-begin4/6
+	changeUnblocadeCount((GC.getPromotionInfo(eIndex).isUnblocade()) ? iChange : 0);
+//MOD@VET_Andera412_Blocade_Unit-end4/6
 	changeRiverCount((GC.getInfo(ePromotion).isRiver()) ? iChange : 0);
 	changeEnemyRouteCount((GC.getInfo(ePromotion).isEnemyRoute()) ? iChange : 0);
 	changeAlwaysHealCount((GC.getInfo(ePromotion).isAlwaysHeal()) ? iChange : 0);
@@ -10202,6 +10344,19 @@ int CvUnit::getSubUnitsAlive(int iDamage) const
 void CvUnit::read(FDataStreamBase* pStream)
 {
 	uint uiFlag=0;
+		pStream->Read(&uiFlag);	// flags for expansion
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		Based on code by Afforess
+ *	Source:
+ *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
+ *
+ ****************************************/
+	pStream->Read(&m_bCivicEnabled);
+/**
+ ** End: Unit Civic Prereq
+ **/
 	pStream->Read(&uiFlag);
 
 	pStream->Read(&m_iID);
@@ -10239,6 +10394,9 @@ void CvUnit::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iFortifyTurns);
 	pStream->Read(&m_iBlitzCount);
 	pStream->Read(&m_iAmphibCount);
+//MOD@VET_Andera412_Blocade_Unit-begin5/6
+	pStream->Read(&m_iUnblocadeCount);
+//MOD@VET_Andera412_Blocade_Unit-end5/6
 	pStream->Read(&m_iRiverCount);
 	pStream->Read(&m_iEnemyRouteCount);
 	pStream->Read(&m_iAlwaysHealCount);
@@ -10331,6 +10489,19 @@ void CvUnit::write(FDataStreamBase* pStream)
 
 	uint uiFlag = 4; // advc.029
 	uiFlag = 5; // advc.164
+		pStream->Write(uiFlag);		// flag for expansion
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		Based on code by Afforess
+ *	Source:
+ *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
+ *
+ ****************************************/
+	pStream->Write(m_bCivicEnabled);
+/**
+ ** End: Unit Civic Prereq
+ **/
 	pStream->Write(uiFlag);
 
 	pStream->Write(m_iID);
@@ -10356,6 +10527,9 @@ void CvUnit::write(FDataStreamBase* pStream)
 	pStream->Write(m_iFortifyTurns);
 	pStream->Write(m_iBlitzCount);
 	pStream->Write(m_iAmphibCount);
+//MOD@VET_Andera412_Blocade_Unit-begin6/6
+	pStream->Write(m_iUnblocadeCount);
+//MOD@VET_Andera412_Blocade_Unit-end6/6
 	pStream->Write(m_iRiverCount);
 	pStream->Write(m_iEnemyRouteCount);
 	pStream->Write(m_iAlwaysHealCount);
@@ -11845,6 +12019,35 @@ int CvUnit::LFBgetDefenderCombatOdds(const CvUnit* pAttacker) const
 	return LFBgetCombatOdds(iDefenderLowFS, iDefenderHighFS, iAttackerLowFS, iAttackerHighFS, iNeededRoundsDefender, iNeededRoundsAttacker, iDefenderOdds);
 }
 // BETTER_BTS_AI_MOD: END
+/************************************************************************************************/
+/* BETTER_BTS_AI_MOD                       END                                                  */
+/************************************************************************************************/
+/****************************************
+ *  Archid Mod: 10 Jun 2012
+ *  Functionality: Unit Civic Prereq - Archid
+ *		
+ *	Source:
+ *	  Archid
+ *
+ ****************************************/
+ void CvUnit::setCivicEnabled(bool bEnable)
+{
+	m_bCivicEnabled = bEnable;
+}
+
+bool CvUnit::isCivicEnabled() const
+{
+	return m_bCivicEnabled;
+}
+
+bool CvUnit::isEnabled() const
+{
+	return isCivicEnabled();
+}
+
+/**
+ ** End: Unit Civic Prereq
+ **/
 // ------ BEGIN InfluenceDrivenWar -------------------------------
 /*************************************************************************************************/
 /** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */

@@ -47,10 +47,17 @@ m_bPermanentAllianceTrading(false),
 m_bVassalStateTrading(false),
 m_bBridgeBuilding(false),
 m_bIrrigation(false),
+/* Population Limit ModComp - Beginning */
+m_bNoPopulationLimit(false),
+/* Population Limit ModComp - End */
 m_bIgnoreIrrigation(false),
 m_bWaterWork(false),
 m_bRiverTrade(false),
 m_piDomainExtraMoves(NULL),
+// <Tech Bonus Mod Start>
+m_piYieldModifier(NULL),
+m_piCommerceModifier(NULL),
+// <Tech Bonus Mod End>
 m_piFlavorValue(NULL),
 m_piPrereqOrTechs(NULL),
 m_piPrereqAndTechs(NULL),
@@ -62,6 +69,10 @@ m_pbTerrainTrade(NULL)
 CvTechInfo::~CvTechInfo()
 {
 	SAFE_DELETE_ARRAY(m_piDomainExtraMoves);
+	// <Tech Bonus Mod Start>
+	SAFE_DELETE_ARRAY(m_piYieldModifier);
+	SAFE_DELETE_ARRAY(m_piCommerceModifier);
+	// <Tech Bonus Mod End>
 	SAFE_DELETE_ARRAY(m_piFlavorValue);
 	SAFE_DELETE_ARRAY(m_piPrereqOrTechs);
 	SAFE_DELETE_ARRAY(m_piPrereqAndTechs);
@@ -121,6 +132,14 @@ int CvTechInfo::getCoastalDistanceMaintenanceModifier() const
     return m_iCoastalDistanceMaintenanceModifier;
 }
 //DPII < Maintenance Modifier >
+/* Population Limit ModComp - Beginning */
+/*moved to the .h file - keldath
+bool CvTechInfo::isNoPopulationLimit() const
+{
+	return m_bNoPopulationLimit;
+}
+*/
+/* Population Limit ModComp - End */
 
 const TCHAR* CvTechInfo::getSound() const
 {
@@ -141,7 +160,31 @@ void CvTechInfo::setSoundMP(const TCHAR* szVal)
 {
 	m_szSoundMP = szVal;
 }
+// <Tech Bonus Mod Start civic plus>
+int CvTechInfo::getYieldModifier(int i) const
+{
+    FAssertMsg(i < NUM_YIELD_TYPES, "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+    return m_piYieldModifier ? m_piYieldModifier[i] : -1;
+}
 
+int* CvTechInfo::getYieldModifierArray() const
+{
+    return m_piYieldModifier;
+}
+/* rewritten by kmod
+int CvTechInfo::getCommerceModifier(int i) const
+{
+	FAssertMsg(i < NUM_COMMERCE_TYPES, "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_piCommerceModifier ? m_piCommerceModifier[i] : -1;
+}
+
+int* CvTechInfo::getCommerceModifierArray() const
+{
+	return m_piCommerceModifier;
+}*/
+// <Tech Bonus Mod End>
 int CvTechInfo::getDomainExtraMoves(int i) const
 {
 	FAssertBounds(0, NUM_DOMAIN_TYPES, i); // advc: check bounds
@@ -164,6 +207,22 @@ int CvTechInfo::getPrereqAndTechs(int i) const
 	return m_piPrereqAndTechs ? m_piPrereqAndTechs[i] : NO_TECH; // advc.003t
 }
 // K-Mod
+
+//this does not exists on advc - so i merged it form kmod - its needed for
+//<Tech Bonus Mod End>
+int CvTechInfo::getCommerceModifier(int i) const
+{
+	FAssertMsg(m_piCommerceModifier, "Tech info not initialised");
+	FASSERT_BOUNDS(0, NUM_COMMERCE_TYPES, i, "CvTechInfo::getCommerceModifier");
+
+	return m_piCommerceModifier ? m_piCommerceModifier[i] : 0;
+}
+
+int* CvTechInfo::getCommerceModifierArray() const
+{
+	return m_piCommerceModifier;
+}
+//end <Tech Bonus Mod End> kmod
 int CvTechInfo::getSpecialistExtraCommerce(int i) const
 {
 	FAssertBounds(0, GC.getNumFlavorTypes(), i);
@@ -231,6 +290,9 @@ void CvTechInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_bVassalStateTrading);
 	stream->Read(&m_bBridgeBuilding);
 	stream->Read(&m_bIrrigation);
+	/* Population Limit ModComp - Beginning */
+	stream->Read(&m_bNoPopulationLimit);
+	/* Population Limit ModComp - End */
 	stream->Read(&m_bIgnoreIrrigation);
 	stream->Read(&m_bWaterWork);
 	stream->Read(&m_bRiverTrade);
@@ -239,6 +301,15 @@ void CvTechInfo::read(FDataStreamBase* stream)
 	SAFE_DELETE_ARRAY(m_piDomainExtraMoves);
 	m_piDomainExtraMoves = new int[NUM_DOMAIN_TYPES];
 	stream->Read(NUM_DOMAIN_TYPES, m_piDomainExtraMoves);
+	// <Tech Bonus Mod Start>
+	SAFE_DELETE_ARRAY(m_piYieldModifier);
+	m_piYieldModifier = new int[NUM_YIELD_TYPES];
+	stream->Read(NUM_YIELD_TYPES, m_piYieldModifier);
+
+	SAFE_DELETE_ARRAY(m_piCommerceModifier);
+	m_piCommerceModifier = new int[NUM_COMMERCE_TYPES];
+	stream->Read(NUM_COMMERCE_TYPES, m_piCommerceModifier);
+	// <Tech Bonus Mod End>
 	SAFE_DELETE_ARRAY(m_piFlavorValue);
 	m_piFlavorValue = new int[GC.getNumFlavorTypes()];
 	stream->Read(GC.getNumFlavorTypes(), m_piFlavorValue);
@@ -310,12 +381,19 @@ void CvTechInfo::write(FDataStreamBase* stream)
 	stream->Write(m_bVassalStateTrading);
 	stream->Write(m_bBridgeBuilding);
 	stream->Write(m_bIrrigation);
+	/* Population Limit ModComp - Beginning */
+	stream->Write(m_bNoPopulationLimit);
+	/* Population Limit ModComp - End */
 	stream->Write(m_bIgnoreIrrigation);
 	stream->Write(m_bWaterWork);
 	stream->Write(m_bRiverTrade);
 	stream->Write(m_iGridX);
 	stream->Write(m_iGridY);
 	stream->Write(NUM_DOMAIN_TYPES, m_piDomainExtraMoves);
+	// <Tech Bonus Mod Start>
+	stream->Write(NUM_YIELD_TYPES, m_piYieldModifier);
+	stream->Write(NUM_COMMERCE_TYPES, m_piCommerceModifier);
+	// <Tech Bonus Mod End>
 	stream->Write(GC.getNumFlavorTypes(), m_piFlavorValue);
 	stream->Write(GC.getNUM_OR_TECH_PREREQS(), m_piPrereqOrTechs);
 	stream->Write(GC.getNUM_AND_TECH_PREREQS(), m_piPrereqAndTechs);
@@ -336,11 +414,11 @@ bool CvTechInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(szTextVal, "Advisor");
 	m_iAdvisorType = pXML->FindInInfoClass(szTextVal);
 
-	pXML->GetChildXmlValByName(&m_iAIWeight, "iAIWeight");
-	pXML->GetChildXmlValByName(&m_iAITradeModifier, "iAITradeModifier");
+	pXML->GetChildXmlValByName(&m_iAIWeight, "iAIWeight", 0);
+	pXML->GetChildXmlValByName(&m_iAITradeModifier, "iAITradeModifier", 0);
 	pXML->GetChildXmlValByName(&m_iResearchCost, "iCost");
 	pXML->GetChildXmlValByName(&m_iAdvancedStartCost, "iAdvancedStartCost");
-	pXML->GetChildXmlValByName(&m_iAdvancedStartCostIncrease, "iAdvancedStartCostIncrease");
+	pXML->GetChildXmlValByName(&m_iAdvancedStartCostIncrease, "iAdvancedStartCostIncrease", 0);
 
 	pXML->GetChildXmlValByName(szTextVal, "Era");
 	m_iEra = pXML->FindInInfoClass(szTextVal);
@@ -348,41 +426,45 @@ bool CvTechInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(szTextVal, "FirstFreeUnitClass");
 	m_iFirstFreeUnitClass = pXML->FindInInfoClass(szTextVal);
 
-	pXML->GetChildXmlValByName(&m_iFeatureProductionModifier, "iFeatureProductionModifier");
-	pXML->GetChildXmlValByName(&m_iWorkerSpeedModifier, "iWorkerSpeedModifier");
+	pXML->GetChildXmlValByName(&m_iFeatureProductionModifier, "iFeatureProductionModifier", 0);
+	pXML->GetChildXmlValByName(&m_iWorkerSpeedModifier, "iWorkerSpeedModifier", 0);
 	//DPII < Maintenance Modifiers >
 	pXML->GetChildXmlValByName(&m_iMaintenanceModifier, "iMaintenanceModifier", 0);
 	pXML->GetChildXmlValByName(&m_iDistanceMaintenanceModifier, "iDistanceMaintenanceModifier", 0);
 	pXML->GetChildXmlValByName(&m_iNumCitiesMaintenanceModifier, "iNumCitiesMaintenanceModifier", 0);
 	pXML->GetChildXmlValByName(&m_iCoastalDistanceMaintenanceModifier, "iCoastalDistanceMaintenanceModifier", 0);
 	//DPII < Maintenance Modifiers >
-	pXML->GetChildXmlValByName(&m_iTradeRoutes, "iTradeRoutes");
-	pXML->GetChildXmlValByName(&m_iHealth, "iHealth");
-	pXML->GetChildXmlValByName(&m_iHappiness, "iHappiness");
-	pXML->GetChildXmlValByName(&m_iFirstFreeTechs, "iFirstFreeTechs");
+	pXML->GetChildXmlValByName(&m_iTradeRoutes, "iTradeRoutes", 0);
+	pXML->GetChildXmlValByName(&m_iHealth, "iHealth", 0);
+	pXML->GetChildXmlValByName(&m_iHappiness, "iHappiness", 0);
+	pXML->GetChildXmlValByName(&m_iFirstFreeTechs, "iFirstFreeTechs", 0);
 	pXML->GetChildXmlValByName(&m_iAssetValue, "iAsset");
 	pXML->GetChildXmlValByName(&m_iPowerValue, "iPower");
-	pXML->GetChildXmlValByName(&m_bRepeat, "bRepeat");
-	pXML->GetChildXmlValByName(&m_bTrade, "bTrade");
+	pXML->GetChildXmlValByName(&m_bRepeat, "bRepeat", false);
+	pXML->GetChildXmlValByName(&m_bTrade, "bTrade", false);
 	pXML->GetChildXmlValByName(&m_bDisable, "bDisable");
-	pXML->GetChildXmlValByName(&m_bGoodyTech, "bGoodyTech");
-	pXML->GetChildXmlValByName(&m_bExtraWaterSeeFrom, "bExtraWaterSeeFrom");
-	pXML->GetChildXmlValByName(&m_bMapCentering, "bMapCentering");
-	pXML->GetChildXmlValByName(&m_bMapVisible, "bMapVisible");
-	pXML->GetChildXmlValByName(&m_bMapTrading, "bMapTrading");
-	pXML->GetChildXmlValByName(&m_bTechTrading, "bTechTrading");
-	pXML->GetChildXmlValByName(&m_bGoldTrading, "bGoldTrading");
-	pXML->GetChildXmlValByName(&m_bOpenBordersTrading, "bOpenBordersTrading");
-	pXML->GetChildXmlValByName(&m_bDefensivePactTrading, "bDefensivePactTrading");
-	pXML->GetChildXmlValByName(&m_bPermanentAllianceTrading, "bPermanentAllianceTrading");
-	pXML->GetChildXmlValByName(&m_bVassalStateTrading, "bVassalTrading");
-	pXML->GetChildXmlValByName(&m_bBridgeBuilding, "bBridgeBuilding");
-	pXML->GetChildXmlValByName(&m_bIrrigation, "bIrrigation");
-	pXML->GetChildXmlValByName(&m_bIgnoreIrrigation, "bIgnoreIrrigation");
-	pXML->GetChildXmlValByName(&m_bWaterWork, "bWaterWork");
-	pXML->GetChildXmlValByName(&m_bRiverTrade, "bRiverTrade");
+	pXML->GetChildXmlValByName(&m_bGoodyTech, "bGoodyTech", false);
+	pXML->GetChildXmlValByName(&m_bExtraWaterSeeFrom, "bExtraWaterSeeFrom", false);
+	pXML->GetChildXmlValByName(&m_bMapCentering, "bMapCentering", false);
+	pXML->GetChildXmlValByName(&m_bMapVisible, "bMapVisible", false);
+	pXML->GetChildXmlValByName(&m_bMapTrading, "bMapTrading", false);
+	pXML->GetChildXmlValByName(&m_bTechTrading, "bTechTrading", false);
+	pXML->GetChildXmlValByName(&m_bGoldTrading, "bGoldTrading", false);
+	pXML->GetChildXmlValByName(&m_bOpenBordersTrading, "bOpenBordersTrading", false);
+	pXML->GetChildXmlValByName(&m_bDefensivePactTrading, "bDefensivePactTrading", false);
+	pXML->GetChildXmlValByName(&m_bPermanentAllianceTrading, "bPermanentAllianceTrading", false);
+	pXML->GetChildXmlValByName(&m_bVassalStateTrading, "bVassalTrading", false);
+	pXML->GetChildXmlValByName(&m_bBridgeBuilding, "bBridgeBuilding", false);
+	pXML->GetChildXmlValByName(&m_bIrrigation, "bIrrigation", false);
+	/* Population Limit ModComp - Beginning */
+	pXML->GetChildXmlValByName(&m_bNoPopulationLimit, "bNoPopulationLimit", false);
+	/* Population Limit ModComp - End */
+	pXML->GetChildXmlValByName(&m_bIgnoreIrrigation, "bIgnoreIrrigation", false);
+	pXML->GetChildXmlValByName(&m_bWaterWork, "bWaterWork", false);
+	pXML->GetChildXmlValByName(&m_bRiverTrade, "bRiverTrade", false);
 	pXML->GetChildXmlValByName(&m_iGridX, "iGridX");
 	pXML->GetChildXmlValByName(&m_iGridY, "iGridY");
+//end of secondary value to xml incase its does not exists in the xml min...=0
 
 	// K-Mod
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"SpecialistExtraCommerces"))
@@ -401,6 +483,28 @@ bool CvTechInfo::read(CvXMLLoadUtility* pXML)
 	else pXML->InitList(&m_pbCommerceFlexible, NUM_COMMERCE_TYPES);
 
 	pXML->SetVariableListTagPair(&m_piDomainExtraMoves, "DomainExtraMoves", NUM_DOMAIN_TYPES);
+	
+	// <Tech Bonus Mod Start>
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"YieldModifiers"))
+	{
+		pXML->SetYields(&m_piYieldModifier);
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+	else
+	{
+		pXML->InitList(&m_piYieldModifier, NUM_YIELD_TYPES);
+	}
+
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"CommerceModifiers"))
+	{
+		pXML->SetCommerce(&m_piCommerceModifier);
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+	else
+	{
+		pXML->InitList(&m_piCommerceModifier, NUM_COMMERCE_TYPES);
+	}
+	// <Tech Bonus Mod End>
 	pXML->SetVariableListTagPair(&m_pbTerrainTrade, "TerrainTrades", GC.getNumTerrainInfos(), false);
 	pXML->SetVariableListTagPair(&m_piFlavorValue, "Flavors", GC.getNumFlavorTypes());
 

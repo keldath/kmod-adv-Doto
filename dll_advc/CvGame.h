@@ -127,6 +127,9 @@ public:
 
 	int getSymbolID(int iSymbol);																	// Exposed to Python
 
+	/* Population Limit ModComp - Beginning */
+	int getAdjustedPopulationLimitChange(int iValue) const;											// Exposed to Python
+	/* Population Limit ModComp - End */
 	int getProductionPerPopulation(HurryTypes eHurry) const; // Exposed to Python
 
 	int getAdjustedPopulationPercent(VictoryTypes eVictory) const;								// Exposed to Python

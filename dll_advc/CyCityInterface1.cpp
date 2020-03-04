@@ -32,6 +32,16 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("findBaseYieldRateRank", &CyCity::findBaseYieldRateRank, "int (int /*YieldTypes*/ eYield)")
 		.def("findYieldRateRank", &CyCity::findYieldRateRank, "int (int /*YieldTypes*/ eYield)")
 		.def("findCommerceRateRank", &CyCity::findCommerceRateRank, "int (int /*CommerceTypes*/ eCommerce)")
+/************************************************************************************************/
+/* REVDCM                                 02/16/10                                phungus420    */
+/*                                                                                              */
+/* CanTrain                                                                                     */
+/************************************************************************************************/
+		.def("isForceObsoleteUnitClassAvailable", &CyCity::isForceObsoleteUnitClassAvailable, "bool (int eUnit)")
+		.def("isPlotTrainable", &CyCity::isPlotTrainable, "bool (int eUnit, bool bContinue, bool bTestVisible)")
+/************************************************************************************************/
+/* REVDCM                                  END                                                  */
+/************************************************************************************************/
 
 		.def("allUpgradesAvailable", &CyCity::allUpgradesAvailable, "int UnitTypes (int eUnit, int iUpgradeCount)")
 		.def("isWorldWondersMaxed", &CyCity::isWorldWondersMaxed, "bool ()")
@@ -178,6 +188,10 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("getPopulation", &CyCity::getPopulation, "int () - total city population")
 		.def("setPopulation", &CyCity::setPopulation, "void (int iNewValue) - sets the city population to iNewValue")
 		.def("changePopulation", &CyCity::changePopulation, "void (int iChange) - adjusts the city population by iChange")
+		/* Population Limit ModComp - Beginning */
+		.def("getPopulationLimit", &CyCity::getPopulationLimit, "int () - PopulationLimit")
+		.def("getPopulationLimitChange", &CyCity::getPopulationLimitChange, "int () - PopulationLimitChange")
+		/* Population Limit ModComp - End */
 		.def("getRealPopulation", &CyCity::getRealPopulation, "int () - total city population in \"real\" numbers")
 		.def("getHighestPopulation", &CyCity::getHighestPopulation, "int () ")
 		.def("setHighestPopulation", &CyCity::setHighestPopulation, "void (iNewValue)")
@@ -392,6 +406,9 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("changeFreeBonus", &CyCity::changeFreeBonus, "void (int eIndex, int iChange)")
 		.def("getNumBonuses", &CyCity::getNumBonuses, "int (PlayerID)")
 		.def("hasBonus", &CyCity::hasBonus, "bool - (BonusID) - is BonusID connected to the city?")
+		// < Building Resource Converter Start >
+		.def("getBuildingOutputBonus", &CyCity::getBuildingOutputBonus, "int - (BonusID)")
+		// < Building Resource Converter End   >
 		.def("getBuildingProduction", &CyCity::getBuildingProduction, "int (BuildingID) - current production towards BuildingID")
 		.def("setBuildingProduction", &CyCity::setBuildingProduction, "void (BuildingID, iNewValue) - set progress towards BuildingID as iNewValue")
 		.def("changeBuildingProduction", &CyCity::changeBuildingProduction, "void (BuildingID, iChange) - adjusts progress towards BuildingID by iChange")

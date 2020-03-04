@@ -8,6 +8,16 @@
 // <advc.enum>
 #include "CvDefines.h"
 #include "CvInfoEnums.h"
+/*************************************************************************************************/
+/** TGA_INDEXATION                       10/16/07                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+#include "CvDefinesTGA.h"
+/*************************************************************************************************/
+/** TGA_INDEXATION                       END                                                  */
+/*************************************************************************************************/
+
 
 // This generates most of the enums with associated XML data
 DO_FOR_EACH_DYN_INFO_TYPE(MAKE_INFO_ENUM)
@@ -533,10 +543,27 @@ ENUM_START(GameOption, GAMEOPTION)
 	GAMEOPTION_NO_CITY_RAZING, // advc.250b: Moved down
 	GAMEOPTION_NO_ANIMALS, // advc.309
 	GAMEOPTION_NO_SLAVERY, // advc.912d
-	GAMEOPTION_MOUNTAINS,//AND Mountains  Option  
+//MOD@VET_Andera412_Blocade_Unit-begin1/1
+	GAMEOPTION_BLOCADE_UNIT,
+//MOD@VET_Andera412_Blocade_Unit-end1/1	
+    GAMEOPTION_MOUNTAINS,//AND Mountains  Option
+    GAMEOPTION_TECH_DIFFUSION, //Tech Diffusion Option by Stolenrays	
+    GAMEOPTION_CULTURE_CONTROL,//Culture Control Gameoption by Stolenrays
 //Influence Driven War: Added for PIG Mod by PieceOfMind 26/10/09
 	GAMEOPTION_INFLUENCE_DRIVEN_WAR,
 //Influence Driven War: End Add
+//tholih building deletion
+	GAMEOPTION_BUILDING_DELETION,
+	GAMEOPTION_CULTURE_GOLDEN_AGE,
+//tholih building deletion keldath added as an option
+   ///by keldath
+    GAMEOPTION_EXTRA_BUILDINGS,
+    GAMEOPTION_NO_CORPORATIONS,
+	GAMEOPTION_NO_POPULATION_LIMIT,
+	GAMEOPTION_RANGED_RETALIATION,
+	GAMEOPTION_RANGED_SEA_END_MOVES,
+	GAMEOPTION_RANGED_LAND_END_MOVES,
+	GAMEOPTION_RANGED_SEA_ALLOW_REGULAR,
 
 ENUM_END(GameOption, GAMEOPTION)
 
@@ -1633,11 +1660,21 @@ enum FontSymbols
 	MAP_CHAR,
 	OCCUPATION_CHAR,
 	POWER_CHAR,
+/*************************************************************************************************/
+/** TGA_INDEXATION									                                BUG mod      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
 	/*  <advc.002f> From BULL. Only using AIRPORT_CHAR so far, but need all of them
 		in order to be compatible with BULL's GameFont.tga */
 	CITIZEN_CHAR,
 	GREAT_GENERAL_CHAR,
 	AIRPORT_CHAR, // </advc.002f>
+/*************************************************************************************************/
+/** TGA_INDEXATION									                                BUG mod      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
 #ifdef _USRDLL
 	MAX_NUM_SYMBOLS
 #endif

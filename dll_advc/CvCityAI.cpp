@@ -497,7 +497,17 @@ void CvCityAI::AI_chooseProduction()
 	CvArea* pWaterArea = waterArea(true);
 	bool bMaybeWaterArea = false;
 	bool bWaterDanger = false;
+//removed in dune wars - i dont know why - maybe something with water - keldath
+	///the same code below need to be marked i think adv made it to not be needed 
+	/* if( pWaterSettlerArea == NULL )
+	{
+		pWaterSettlerArea = GC.getMap().findBiggestArea(true);
 
+		if (kPlayer.AI_totalWaterAreaUnitAIs(pWaterSettlerArea, UNITAI_SETTLER_SEA) == 0)
+		{
+			pWaterSettlerArea = NULL;
+		}
+	} */
 	if (pWaterArea != NULL)
 	{
 		bMaybeWaterArea = true;
@@ -1367,7 +1377,23 @@ void CvCityAI::AI_chooseProduction()
 			}
 		}
 	}
-
+	//keldath - removed by dube wars - not sure seems good to remove.... delete the code duplication below to activate
+	// ALN DuneWars - don't do this, not necessary (no colony maintenance) and confuses the AI on island maps
+	/* if (!bDanger && !bIsCapitalArea && area()->getCitiesPerPlayer(getOwner()) > iNumCapitalAreaCities)
+	{
+		// BBAI TODO:  This check should be done by player, not by city and optimize placement
+		// If losing badly in war, don't build big things
+		if( !bLandWar || (iWarSuccessRatio > -30) )
+		{
+			if( kPlayer.getCapitalCity() == NULL || area()->getPopulationPerPlayer(getOwner()) > kPlayer.getCapitalCity()->area()->getPopulationPerPlayer(getOwner()) )
+			{
+				if (AI_chooseBuilding(BUILDINGFOCUS_CAPITAL, 15))
+				{
+					return;
+				}
+			}
+		}
+	} */	
 	if (!bDanger && !bCapitalArea && kArea.getCitiesPerPlayer(getOwner()) > iNumCapitalAreaCities)
 	{
 		// BBAI TODO:  This check should be done by player, not by city and optimize placement
@@ -4238,7 +4264,21 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags,
 			// K-Mod end
 
 			iValue += ((kBuilding.getWorkerSpeedModifier() * kOwner.AI_getNumAIUnits(UNITAI_WORKER)) / 10);
-
+/* Population Limit ModComp - Beginning+ f1rpo fix */
+			if(kBuilding.getPopulationLimitChange() > 0 && getPopulationLimit() < MAX_INT) {
+   			// Loosely based on the K-Mod evaluation of iBuildingActualHappiness
+   			int iCitizenValue = 6 + iOwnerEra;
+   			int iDelta = std::max(0, getPopulationLimit() - getPopulation());
+   			if(iDelta == 0 && iHappinessLevel > 0)
+       			iValue += 4 * iCitizenValue;
+   			if(iDelta == 1 && iFoodDifference > 1 && iHappinessLevel > 0 && iHealthLevel >= 0)
+      			iValue += std::min(3, iFoodDifference) * iCitizenValue;
+   			int iPopLimitChangeValue = 10 * iCitizenValue / (3 +
+           			iDelta + iDelta / 2 + kBuilding.getPopulationLimitChange() +
+           			getPopulationLimit() +
+           			2 * (std::max(0, -iHealthLevel) + std::max(0, -iHappinessLevel)));
+   			iValue += kBuilding.getPopulationLimitChange() * std::max(0, iPopLimitChangeValue);
+}/* Population Limit ModComp - End */
 			int iMilitaryProductionModifier = kBuilding.getMilitaryProductionModifier();
 			if (iHasMetCount > 0 && iMilitaryProductionModifier > 0)
 			{
@@ -4361,7 +4401,9 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags,
 				}
 				// else: If there is nothing to research, a free tech is worthless.
 			}
-
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+				iValue += (kBuilding.getFreeSpecificTech() == NO_TECH ? 0 : 80);
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
 			iValue += kBuilding.getEnemyWarWearinessModifier() / 2;
 
 			FOR_EACH_ENUM(Specialist)
@@ -6620,12 +6662,24 @@ int CvCityAI::AI_culturePressureFactor() const
 
 int CvCityAI::AI_getEmphasizeAvoidGrowthCount() const
 {
+	/* Population Limit ModComp - Beginning */
+	if (getPopulation() >= getPopulationLimit())
+	{
+		return true;
+	}
+	/* Population Limit ModComp - End */
 	return m_iEmphasizeAvoidGrowthCount;
 }
 
 
 bool CvCityAI::AI_isEmphasizeAvoidGrowth() const
 {
+	/* Population Limit ModComp - Beginning */
+	if (getPopulation() >= getPopulationLimit())
+	{
+		return true;
+	}
+	/* Population Limit ModComp - End */
 	return (AI_getEmphasizeAvoidGrowthCount() > 0);
 }
 
@@ -7375,6 +7429,12 @@ int CvCityAI::AI_getImprovementValue(CvPlot const& kPlot, ImprovementTypes eImpr
 			// K-Mod
 			iValue += (kOwner.AI_bonusVal(eNonObsoleteBonus, 1) * 50);
 			iValue += 100;
+//f1rpo fix - added by keldath - this should lower forts on resourses stupid bug
+// unused for now since its advciv
+//			CvImprovementInfo& imp = GC.getImprovementInfo(eImprovement);
+//  			if(imp.isActsAsCity() && pPlot->getWorkingCity() != NULL)
+//    		iValue /= 4;
+//f1rpo added by keldath
 			// K-Mod end
 			/* <advc.121> Make sure the AI prefers improvements with yields over
 				Forts. Don't want to rule out Forts altogether b/c of Gems in a
@@ -10323,6 +10383,45 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 			} } */
 	}
 
+/*************************************************************************************************/
+/** Specialists Enhancements, by Supercheese 10/12/09                                            */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/	
+	//advc change= what to use? new job or old?? keldath
+	int iSpecialistHealth = GC.getInfo((SpecialistTypes)new_job.second).getHealth();
+	int iSpecialistHappiness = GC.getInfo((SpecialistTypes)new_job.second).getHappiness();
+	int iHappinessLevel = happyLevel() - unhappyLevel(1);
+	int iAngryPopulation = range(-iHappinessLevel, 0, (getPopulation() + 1));
+	int iHealthLevel = goodHealth() - badHealth(/*bNoAngry*/ false, std::max(0, (iHappinessLevel + 1) / 2));
+	int iBadHealth = std::max(0, -iHealthLevel);
+
+	int iHappyModifier = (iHappinessLevel >= iHealthLevel && iHappinessLevel <= 6) ? 6 : 3;
+	int iHealthModifier = (iHealthLevel > iHappinessLevel && iHealthLevel <= 4) ? 4 : 2;
+	if (iHappinessLevel >= 10)
+	{
+		iHappyModifier = 1;
+	}
+	if (iHealthModifier >= 8)
+	{
+		iHealthModifier = 0;
+	}
+
+	if (iSpecialistHealth != 0)
+	{
+		iTotalValue += (std::min(iSpecialistHealth, iBadHealth) * 12)
+			+ (std::max(0, iSpecialistHealth - iBadHealth) * iHealthModifier);
+	}
+	
+	if (iSpecialistHappiness != 0)
+	{
+		iTotalValue += (std::min(iSpecialistHappiness, iAngryPopulation) * 10) 
+			+ (std::max(0, iSpecialistHappiness - iAngryPopulation) * iHappyModifier);
+	}
+/*************************************************************************************************/
+/** Specialists Enhancements                          END                                        */
+/*************************************************************************************************/
+
 	return iTotalValue;
 }
 
@@ -10545,9 +10644,12 @@ int CvCityAI::AI_experienceWeight()
 	//return ((getProductionExperience() + getDomainFreeExperience(DOMAIN_SEA)) * 2);
 	// K-Mod
 	return 2 * getProductionExperience() + getDomainFreeExperience(DOMAIN_LAND) + getDomainFreeExperience(DOMAIN_SEA)
-			- 4; /*  advc.017: Barracks are pretty ubiquitous; shouldn't add 6
+			//- 4; 
+				/*  advc.017: Barracks are pretty ubiquitous; shouldn't add 6
 					 to buildUnitProb. Rather make cities w/o Barracks hesitant
 					 to train units. */
+			//CHANGED FOR DOTO BY F1RPO- idont remember why - f1rpo  - if you see this can you add a comment?
+			- std::min(4, 2 * GET_PLAYER(getOwner()).getCurrentEra());
 	// K-Mod end
 }
 

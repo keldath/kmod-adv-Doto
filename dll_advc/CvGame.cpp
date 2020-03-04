@@ -223,7 +223,10 @@ void CvGame::setInitialItems()
 	normalizeStartingPlots();
 	// <advc.030> Now that ice has been placed and normalization is through
 	if(GC.getDefineBOOL("PASSABLE_AREAS"))
-		GC.getMap().recalculateAreas();
+//added by f1 advc to allow peaks to seperate continents
+		if(!isOption(GAMEOPTION_MOUNTAINS)){
+			GC.getMap().recalculateAreas();
+	}
 	// </advc.030>
 	initFreeUnits();
 	int iStartTurn = getStartTurn(); // advc.250c, advc.251
@@ -911,16 +914,17 @@ void CvGame::initScenario()
 	initFreeState(); // Tech from handicap
 	// <advc.030>
 	if(GC.getDefineBOOL("PASSABLE_AREAS"))
-	{
-		/*  recalculateAreas can't handle preplaced cities. Or perhaps it can
-			(Barbarian cities are fine in most cases), but there's going to
-			be other stuff, like free units, that causes problems. */
-		for(int i = 0; i < MAX_CIV_PLAYERS; i++)
-		{
-			if(GET_PLAYER((PlayerTypes)i).getNumCities() > 0)
-				return;
-		}
-		GC.getMap().recalculateAreas();
+//added by f1 advc to allow peaks to seperate continents
+		if(!isOption(GAMEOPTION_MOUNTAINS)) {
+   			/*  recalculateAreas can't handle preplaced cities. Or perhaps it can
+				(Barbarian cities are fine in most cases), but there's going to
+				be other stuff, like free units, that causes problems. */
+   			for(int i = 0; i < MAX_CIV_PLAYERS; i++) {
+       			if(GET_PLAYER((PlayerTypes)i).getNumCities() > 0)
+           			return;
+   			}
+   			GC.getMap().recalculateAreas();
+		}	
 	} // </advc.030>
 }
 
@@ -2112,7 +2116,9 @@ void CvGame::normalizeAddExtras()  // advc: changes to reduce indentation
 			CvPlot& kLoopPlot = *it;
 			if (kLoopPlot.isWater() || kLoopPlot.isHills())
 				continue;
-
+//re implementation of the code below - seems duplicated - keldath
+			if (!GC.getTerrainInfo(pLoopPlot->getTerrainType()).isRequiresFlatlands())
+			{
 			if (!kLoopPlot.isFeature() ||
 				!GC.getInfo(kLoopPlot.getFeatureType()).isRequiresFlatlands())
 			{
@@ -2122,6 +2128,42 @@ void CvGame::normalizeAddExtras()  // advc: changes to reduce indentation
 					if (gMapLogLevel > 0) logBBAI("    Adding hills for player %d.", kPlayer.getID()); // K-Mod
 					kLoopPlot.setPlotType(PLOT_HILLS, false, true);
 					iHillsCount++;
+	} // added - keldath
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Enable isRequiresFlatlands for Terrains                                          **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************
+								if ((pLoopPlot->getFeatureType() == NO_FEATURE) ||
+									!GC.getFeatureInfo(pLoopPlot->getFeatureType()).isRequiresFlatlands())
+								{
+									if ((pLoopPlot->getBonusType() == NO_BONUS) ||
+										GC.getBonusInfo(pLoopPlot->getBonusType()).isHills())
+									{
+										pLoopPlot->setPlotType(PLOT_HILLS, false, true);									
+										iHillsCount++;
+									}
+								}*/
+/* comment out - see above rows - i think, this was jsut wrong...
+								if (!GC.getTerrainInfo(pLoopPlot->getTerrainType()).isRequiresFlatlands())
+								{
+									if ((pLoopPlot->getFeatureType() == NO_FEATURE) ||
+										!GC.getFeatureInfo(pLoopPlot->getFeatureType()).isRequiresFlatlands())
+									{
+										if ((pLoopPlot->getBonusType() == NO_BONUS) ||
+											GC.getBonusInfo(pLoopPlot->getBonusType()).isHills())
+										{
+											pLoopPlot->setPlotType(PLOT_HILLS, false, true);
+											iHillsCount++;
+										}
+								}
+							}*/
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
+			
 				}
 			}
 		}
@@ -3032,6 +3074,17 @@ int CvGame::getAdjustedPopulationPercent(VictoryTypes eVictory) const
 	return std::min(100, (((iNextBestPopulation * 100) / getTotalPopulation()) +
 			GC.getInfo(eVictory).getPopulationPercentLead()));
 }
+
+
+/* Population Limit ModComp - Beginning : This function adjust the buildings abilities to change the limit with difficulty level */
+int CvGame::getAdjustedPopulationLimitChange(int iValue) const
+{
+	return (iValue);
+	// changed by keldath - i dont wan the pop limit to be dependent on the handicap, i dont like the formula, 
+	// i want it to be steady
+	//return ((iValue * GC.getHandicapInfo(getHandicapType()).getPopulationLimit()) / 10);
+}
+/* Population Limit ModComp - End */
 
 
 int CvGame::getProductionPerPopulation(HurryTypes eHurry) const
@@ -5547,6 +5600,35 @@ bool CvGame::canConstruct(BuildingTypes eBuilding, bool bIgnoreCost, bool bTestV
 	}
 	if(isBuildingClassMaxedOut(kBuilding.getBuildingClassType()))
 		return false;
+//Keldath QA - this code should be above if(bTestVisible) or below?
+/************************************************************************************************/
+/* REVDCM                                 02/16/10                                phungus420    */
+/*                                                                                              */
+/* CanConstruct       building need option                                                                          */
+/************************************************************************************************/
+//pasted here from cvplayer - suggested by f1 advc - keldath
+	if (kBuilding.getPrereqGameOption() != NO_GAMEOPTION)
+	{
+		if (!(isOption((GameOptionTypes)kBuilding.getPrereqGameOption())))
+		// changed - suggested by f1
+		//if (!(GC.getGameINLINE().isOption((GameOptionTypes)GC.getBuildingInfo(eBuilding).getPrereqGameOption())))
+		{
+			return false;
+		}
+	}
+
+	if (kBuilding.getNotGameOption() != NO_GAMEOPTION)
+	{
+		if (isOption((GameOptionTypes)kBuilding.getNotGameOption()))
+		// changed - suggested by f1
+		//if (GC.getGameINLINE().isOption((GameOptionTypes)GC.getBuildingInfo(eBuilding).getNotGameOption()))
+		{
+			return false;
+		}
+	}
+/************************************************************************************************/
+/* REVDCM                                  END CanContstruct                                    */
+/************************************************************************************************/
 
 	if(bTestVisible)
 		return true;
@@ -6698,13 +6780,17 @@ void CvGame::doHolyCity()  // advc: many style changes
 		ReligionTypes eReligion = (ReligionTypes)iI;
 		if (isReligionSlotTaken(eReligion))
 			continue;
-
+//david lalen forbiddan religion - dune wars start
+		// davidlallen religion forbidden to civilization start
+		// remove test for team; assign by player instead
+		// because what if the best team's best player cannot convert?
+		/*
 		TeamTypes eBestTeam = NO_TEAM;
 		{ // scope for iBestValue
 			int iBestValue = MAX_INT;
-			/*  advc.001: Was MAX_TEAMS. Make sure Barbarians can't found a religion
+		*/	/*  advc.001: Was MAX_TEAMS. Make sure Barbarians can't found a religion
 				somehow. Adopted from Mongoose SDK ReligionMod. */
-			for (int iJ = 0; iJ < MAX_CIV_TEAMS; iJ++)
+	/*		for (int iJ = 0; iJ < MAX_CIV_TEAMS; iJ++)
 			{
 				CvTeam const& kTeam = GET_TEAM((TeamTypes)iJ);
 				if (!kTeam.isAlive())
@@ -6732,7 +6818,8 @@ void CvGame::doHolyCity()  // advc: many style changes
 		}
 		if (eBestTeam == NO_TEAM)
 			continue;
-
+		*/
+//david lalen forbiddan religion - dune wars end
 		int iBestValue = MAX_INT;
 		PlayerTypes eBestPlayer = NO_PLAYER;
 		for (int iJ = 0; iJ < MAX_PLAYERS; iJ++)
@@ -6740,31 +6827,43 @@ void CvGame::doHolyCity()  // advc: many style changes
 			CvPlayer const& kMember = GET_PLAYER((PlayerTypes)iJ);
 			if (!kMember.isAlive() || kMember.getTeam() != eBestTeam || kMember.getNumCities() <= 0)
 				continue;
-
-			int iValue = getSorenRandNum(10, "Found Religion (Player)");
-			if (!kMember.isHuman())
-				iValue += 18; // advc.138: Was 10. Need some x: 15 < x < 20.
-			for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
+//david lalen forbiddan religion - dune wars start
+			if (GET_TEAM(kMember.getTeam()).isHasTech((TechTypes)(GC.getReligionInfo((ReligionTypes)iI).getTechPrereq())))
 			{
-				int iReligionCount = kMember.getHasReligionCount((ReligionTypes)iK);
-				if (iReligionCount > 0)
-					iValue += iReligionCount * 20;
-			}
-			iValue -= religionPriority(kMember.getID(), eReligion); // advc.138
-			if (iValue < iBestValue)
-			{
-				iBestValue = iValue;
-				eBestPlayer = kMember.getID();
-			}
-		}
+				CivilizationTypes eCiv = kMember.getCivilizationType();
+				if (!(GC.getCivilizationInfo(eCiv).isForbidden((ReligionTypes)iI)))
+//david lalen forbiddan religion - dune wars end
+					int iValue = getSorenRandNum(10, "Found Religion (Player)");
+					if (!kMember.isHuman())
+						iValue += 18; // advc.138: Was 10. Need some x: 15 < x < 20.
+					for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
+					{
+						int iReligionCount = kMember.getHasReligionCount((ReligionTypes)iK);
+						if (iReligionCount > 0)
+							iValue += iReligionCount * 20;
+					}
+					iValue -= religionPriority(kMember.getID(), eReligion); // advc.138
+					if (iValue < iBestValue)
+					{
+						iBestValue = iValue;
+						eBestPlayer = kMember.getID();
+					}
+				}
+		}//david lalen forbiddan religion - dune wars end
 		if (eBestPlayer == NO_PLAYER)
 			continue;
 
 		ReligionTypes eFoundReligion = eReligion;
+/*removed by forbidden religion - i think - keldath we dont want to cause a mess when choosing religion
 		if (isOption(GAMEOPTION_PICK_RELIGION))
 			eFoundReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
+*/
 		if (eFoundReligion != NO_RELIGION)
-			GET_PLAYER(eBestPlayer).foundReligion(eFoundReligion, eReligion, false);
+//david lalen forbiddan religion - dune wars end
+//keldath QA- the true is something with units, not sure
+		//	GET_PLAYER(eBestPlayer).foundReligion(eFoundReligion, eReligion, false);
+			GET_PLAYER(eBestPlayer).foundReligion(eFoundReligion, eReligion, true);
+//david lalen forbiddan religion - dune wars end
 	}
 }
 
