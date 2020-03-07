@@ -91,6 +91,9 @@ m_iNumAnimationOperatorTypes(0),
 m_iNumFlavorTypes(0),
 m_iNumArtStyleTypes(0),
 m_iNumFootstepAudioTypes(0),
+//MOD@VET_Andera412_Blocade_Unit-begin1/2
+m_iBLOCADE_UNIT(0),
+//MOD@VET_Andera412_Blocade_Unit-end1/2
 /*************************************************************************************************/
 /** TGA_INDEXATION                          11/13/07                            MRGENIE          */
 /**                                                                                              */
@@ -752,6 +755,9 @@ void CvGlobals::cacheGlobals()
 	m_pPythonCaller = new CvPythonCaller();
 	// Some of the callback defines are handled by CvDllPythonEvents
 	CvEventReporter::getInstance().initPythonCallbackGuards();
+//MOD@VET_Andera412_Blocade_Unit-begin2/2
+	m_iBLOCADE_UNIT = getDefineINT("BLOCADE_UNIT");												// BlocadeUnit 2/3
+//MOD@VET_Andera412_Blocade_Unit-end2/2	
 /*************************************************************************************************/
 /** TGA_INDEXATION                          11/13/07                            MRGENIE          */
 /**                                                                                              */

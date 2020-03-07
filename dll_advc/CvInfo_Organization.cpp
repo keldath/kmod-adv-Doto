@@ -26,25 +26,13 @@ int CvOrganizationInfo::getChar() const
 {
 	return m_iChar;
 }
-/* see below - TGAINDEX
+/*
+ see below - TGAINDEX
 void CvOrganizationInfo::setChar(int i)
 {
 	m_iChar = i;
 }
 */
-
-//keldath QA check that setchar - does not exists in f1rpo but exists in prev ver
-/*************************************************************************************************/
-/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
-/**                                                                                              */
-/**                                                                                              */
-/*************************************************************************************************/
-void CvOrganizationInfo::setChar(int i)
-{
-
-	m_iChar = 8550 + m_iTGAIndex * 2;
-}
-/*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
 /*************************************************************************************************/
@@ -160,6 +148,18 @@ CvReligionInfo::~CvReligionInfo()
 	SAFE_DELETE_ARRAY(m_paiStateReligionCommerce);
 }
 
+//keldath QA check that setchar - does not exists in f1rpo but exists in prev ver
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+void CvReligionInfo::setChar(int i)
+{
+
+	m_iChar = 8550 + m_iTGAIndex * 2;
+}
+/*************************************************************************************************/
 int CvReligionInfo::getHolyCityChar() const
 {
 	return m_iHolyCityChar;
@@ -336,6 +336,18 @@ CvCorporationInfo::~CvCorporationInfo()
 	SAFE_DELETE_ARRAY(m_paiYieldProduced);
 }
 
+//keldath QA check that setchar - does not exists in f1rpo but exists in prev ver
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+void CvCorporationInfo::setChar(int i)
+{
+
+	m_iChar = 8550 + (GC.getDefineINT(CvGlobals::TGA_RELIGIONS) + m_iTGAIndex) * 2;
+}
+/*************************************************************************************************/
 int CvCorporationInfo::getHeadquarterChar() const
 {
 	return m_iHeadquarterChar;
@@ -351,7 +363,7 @@ void CvCorporationInfo::setHeadquarterChar(int i)
 /*
 	m_iHeadquarterChar = i; 
 */
-	m_iHeadquarterChar = 8551 + ((CvGlobals::getTGA_RELIGIONS) + m_iTGAIndex) * 2;
+	m_iHeadquarterChar = 8551 + (GC.getDefineINT(CvGlobals::TGA_RELIGIONS) + m_iTGAIndex) * 2;
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/

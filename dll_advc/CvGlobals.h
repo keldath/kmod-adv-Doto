@@ -532,8 +532,10 @@ public:
 		DO(BBAI_ATTACK_CITY_STACK_RATIO) \
 		DO(BBAI_SKIP_BOMBARD_BASE_STACK_RATIO) \
 		DO(BBAI_SKIP_BOMBARD_MIN_STACK_RATIO) \
+/* TGA_INDEXATION */ \
 		DO(TGA_RELIGIONS) \
 		DO(TGA_CORPORATIONS) \
+/* TGA_INDEXATION */ \
 		/* From Lead From Behind by UncutDragon. (edited for K-Mod) */ \
 		DO(LFB_ENABLE) DO(LFB_BASEDONGENERAL) DO(LFB_BASEDONEXPERIENCE) \
 		DO(LFB_BASEDONLIMITED) DO(LFB_BASEDONHEALER) DO(LFB_DEFENSIVEADJUSTMENT) \
@@ -655,6 +657,9 @@ public:
 	inline bool suppressCycling() const { return (GetKeyState('X') & 0x8000) ||
 			((GetKeyState('U') & 0x8000) && shiftKey() && altKey()); } // advc.088
 	// K-Mod end
+//MOD@VET_Andera412_Blocade_Unit-begin1/2
+	inline int getBLOCADE_UNIT() {return m_iBLOCADE_UNIT;}									// BlocadeUnit 3/3
+//MOD@VET_Andera412_Blocade_Unit-end1/2
 /*************************************************************************************************/
 /** TGA_INDEXATION                          11/13/07                            MRGENIE          */
 /**                                                                                              */
@@ -930,6 +935,9 @@ protected:
 	float m_fFIELD_OF_VIEW;
 	float m_fSHADOW_SCALE;
 	float m_fUNIT_MULTISELECT_DISTANCE;
+//MOD@VET_Andera412_Blocade_Unit-begin2/2
+	int m_iBLOCADE_UNIT;
+//MOD@VET_Andera412_Blocade_Unit-end2/2	
 /*************************************************************************************************/
 /** TGA_INDEXATION                          11/13/07                            MRGENIE          */
 /**                                                                                              */

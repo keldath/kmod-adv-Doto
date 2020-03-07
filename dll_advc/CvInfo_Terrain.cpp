@@ -1147,19 +1147,22 @@ bool CvImprovementInfo::isSpreadCultureControl() const
 // < JCultureControl Mod End >
 
 //===NM=====Mountain Mod===0=====
+/* defined already in the .h file (f1rpo method)
 bool CvImprovementInfo::isPeakMakesValid() const
 {
 	return m_bPeakMakesValid; 
 }
+*/
 //===NM=====Mountain Mod===X=====
 
 // davidlallen: mountain limitations start
+/* defined already in the .h file (f1rpo method)
 bool CvImprovementInfo::isPeakMakesInvalid() const
 {
 	return m_bPeakMakesInvalid;
 }
 // davidlallen: mountain limitations end
-
+*/
 // < JImprovementLimit Mod Start >
 bool CvImprovementInfo::isNotInsideBorders() const
 {

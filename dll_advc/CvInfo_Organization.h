@@ -14,7 +14,8 @@ public: // All the const functions are exposed to Python
 	CvOrganizationInfo();
 
 	int getChar() const;
-	void setChar(int i);
+//TGA_INDEXATION -ADVC ADJUSTMENT
+	//void setChar(int i);
 	inline int getTechPrereq() const { return m_iTechPrereq; } // advc.130f: inline
 	int getFreeUnitClass() const;
 	inline int getSpreadFactor() const { return m_iSpreadFactor; } // advc.130f: inline
@@ -70,7 +71,10 @@ class CvReligionInfo : public CvOrganizationInfo
 public: // All the const functions are exposed to Python
 	CvReligionInfo();
 	~CvReligionInfo();
-
+//TGA_INDEXATION -ADVC ADJUSTMENT
+	//int getChar() const;
+	void setChar(int i);
+	
 	int getHolyCityChar() const;
 	void setHolyCityChar(int i);
 	int getNumFreeUnits() const;
@@ -120,7 +124,10 @@ class CvCorporationInfo : public CvOrganizationInfo
 public: // All the const functions are exposed to Python
 	CvCorporationInfo();
 	virtual ~CvCorporationInfo();
-
+//TGA_INDEXATION -ADVC ADJUSTMENT
+	//int getChar() const;
+	void setChar(int i);
+	
 	int getHeadquarterChar() const;
 	void setHeadquarterChar(int i);
 	int getSpreadCost() const;

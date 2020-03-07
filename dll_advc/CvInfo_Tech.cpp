@@ -212,8 +212,8 @@ int CvTechInfo::getPrereqAndTechs(int i) const
 //<Tech Bonus Mod End>
 int CvTechInfo::getCommerceModifier(int i) const
 {
-	FAssertMsg(m_piCommerceModifier, "Tech info not initialised");
-	FASSERT_BOUNDS(0, NUM_COMMERCE_TYPES, i, "CvTechInfo::getCommerceModifier");
+//	FAssertMsg(m_piCommerceModifier, "Tech info not initialised");
+//	FASSERT_BOUNDS(0, NUM_COMMERCE_TYPES, i, "CvTechInfo::getCommerceModifier");
 
 	return m_piCommerceModifier ? m_piCommerceModifier[i] : 0;
 }
@@ -225,7 +225,7 @@ int* CvTechInfo::getCommerceModifierArray() const
 //end <Tech Bonus Mod End> kmod
 int CvTechInfo::getSpecialistExtraCommerce(int i) const
 {
-	FAssertBounds(0, GC.getNumFlavorTypes(), i);
+//	FAssertBounds(0, GC.getNumFlavorTypes(), i);
 	return m_piSpecialistExtraCommerce ? m_piSpecialistExtraCommerce[i] : 0;
 }
 
@@ -236,13 +236,13 @@ int* CvTechInfo::getSpecialistExtraCommerceArray() const
 
 bool CvTechInfo::isCommerceFlexible(int i) const
 {
-	FAssertBounds(0, NUM_COMMERCE_TYPES, i);
+	//FAssertBounds(0, NUM_COMMERCE_TYPES, i);
 	return m_pbCommerceFlexible ? m_pbCommerceFlexible[i] : false;
 }
 
 bool CvTechInfo::isTerrainTrade(int i) const
 {
-	FAssertBounds(0, GC.getNumTerrainInfos(), i); // advc: check bounds
+	//FAssertBounds(0, GC.getNumTerrainInfos(), i); // advc: check bounds
 	return m_pbTerrainTrade ? m_pbTerrainTrade[i] : false;
 }
 #if SERIALIZE_CVINFOS

@@ -795,6 +795,7 @@ bool CvUnitInfo::isPromotionValid(PromotionTypes ePromotion, bool bLeader) const
 			return false;
 		}
 	}
+
 //MOD@VET_Andera412_Blocade_Unit-begin1/2
 	if (!GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
 	{
@@ -804,7 +805,7 @@ bool CvUnitInfo::isPromotionValid(PromotionTypes ePromotion, bool bLeader) const
 		}
 	}	
 //MOD@VET_Andera412_Blocade_Unit-end1/2
-	
+
 	if (isIgnoreTerrainCost() && kPromotion.getMoveDiscountChange() != 0)
 		return false;
 	// advc.164: Check this in CvUnit::isPromotionValid instead

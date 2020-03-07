@@ -1443,28 +1443,6 @@ int pathValid_join(FAStarNode* parent, FAStarNode* node, CvSelectionGroup const*
 	{
 		return FALSE;
 	}
-//keldath first ref is now in player.cpp - see this .h file
-//MOD@VET_Andera412_Blocade_Unit-begin2/2
-	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
-	{	
-		if (pSelectionGroup->getNumUnits() > 0)
-		{
-			CvUnit* pLoopUnit;
-			//keldath QA2 - i added these cause i didnt know how to make use of the k's above
-			//the cannotMoveFromPlotToPlot probabaly needs to be changes also - but dodnt know how
-			// so need some help, but this seems to work also.
-			CvPlot* pFromPlot = kMap.plotSoren(parent->m_iX, parent->m_iY);
-			CvPlot* pToPlot = kMap.plotSoren(node->m_iX, node->m_iY);
-
-			for (CLLNode<IDInfo>* pUnitNode = pSelectionGroup->headUnitNode(); pUnitNode != NULL; pUnitNode = pSelectionGroup->nextUnitNode(pUnitNode))
-			{
-				pLoopUnit = ::getUnit(pUnitNode->m_data);
-				if (pLoopUnit->cannotMoveFromPlotToPlot(pFromPlot, pToPlot,/*bWithdrawal*/false))
-					{return FALSE;}
-			}
-		}
-	}	
-//MOD@VET_Andera412_Blocade_Unit-end2/2	
 	return TRUE;
 }
 
@@ -1603,6 +1581,28 @@ int pathValid(FAStarNode* parent, FAStarNode* node, int data, const void* pointe
 	if (!pathValid_join(parent, node, pSelectionGroup, iFlags))
 		return FALSE;
 
+//keldath first ref is now in player.cpp - see this .h file
+//MOD@VET_Andera412_Blocade_Unit-begin2/2
+	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
+	{	
+		if (pSelectionGroup->getNumUnits() > 0)
+		{
+			CvUnit* pLoopUnit;
+			//keldath QA2 - i added these cause i didnt know how to make use of the k's above
+			//the cannotMoveFromPlotToPlot probabaly needs to be changes also - but dodnt know how
+			// so need some help, but this seems to work also.
+			CvPlot* pFromPlot = GC.getMap().plotSoren(parent->m_iX, parent->m_iY);
+			CvPlot* pToPlot = GC.getMap().plotSoren(node->m_iX, node->m_iY);
+
+			for (CLLNode<IDInfo>* pUnitNode = pSelectionGroup->headUnitNode(); pUnitNode != NULL; pUnitNode = pSelectionGroup->nextUnitNode(pUnitNode))
+			{
+				pLoopUnit = ::getUnit(pUnitNode->m_data);
+				if (pLoopUnit->cannotMoveFromPlotToPlot(pFromPlot, pToPlot,/*bWithdrawal*/false))
+					{return FALSE;}
+			}
+		}
+	}	
+//MOD@VET_Andera412_Blocade_Unit-end2/2	
 	//bResult = pathValidInternal(parent, node, data, pPathSettings, finder);
 	return pathValid_source(parent, pSelectionGroup, iFlags);
 }
