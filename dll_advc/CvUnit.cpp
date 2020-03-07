@@ -3773,7 +3773,16 @@ int CvUnit::healTurns(const CvPlot* pPlot) const
 	if (eFeature != NO_FEATURE)
 		iHeal -= GC.getInfo(eFeature).getTurnDamage();
 	// UNOFFICIAL_PATCH: END
-
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Ensure AI_exploreSeaMove does choose to heal on damaging terrain                 **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+//addition suggested by f1rpo
+	if (!getPlot().isCity())
+		iHeal -= GC.getInfo(getTerrainType()).getTurnDamage();
 	if (iHeal > 0)
 	{
 		/*iTurns = (getDamage() / iHeal);

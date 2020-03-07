@@ -452,8 +452,8 @@ void CvCity::kill(bool bUpdatePlotGroups)
 	if (GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
 	{
 		kPlot.setImprovementOwner(getOriginalOwner());
-			//keldath - what is ImprovementTypes??
-		kPlot.addCultureControl(getOriginalOwner(), (ImprovementTypes) GC.getDefineINT("RUINS_IMPROVEMENT"), true);
+		//keldathQA-DONE
+		kPlot.addCultureControl(getOriginalOwner(), (ImprovementTypes) GC.getRUINS_IMPROVEMENT(), true);
 	}
 	// < JCultureControl Mod End >
 	CvEventReporter::getInstance().cityLost(this);
@@ -3281,31 +3281,24 @@ void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolet
 					getBuildingYieldChange(kBuilding.getBuildingClassType(), y)) * iChange);
 			changeYieldRateModifier(y, kBuilding.getYieldModifier(y) * iChange);
 			changePowerYieldRateModifier(y, kBuilding.getPowerYieldModifier(y) * iChange);
+			// < Civic Infos Plus Start >
+			//keldath QA-DONE
+			changeBuildingYieldChange(kBuilding.getBuildingClassType(), y, kOwner.getBuildingYieldChange(eBuilding, y));
+			// < Civic Infos Plus End   >
 		}
-//keldath QA
-//these is silly wasted loop, i couldnt add those to the above one 
-		// < Civic Infos Plus Start >
-		for (int iI = 0; iI < NUM_YIELD_TYPES; iI++)
-		{
-			changeBuildingYieldChange((BuildingClassTypes)kBuilding.getBuildingClassType(), ((YieldTypes)iI),GET_PLAYER((PlayerTypes)iI).getBuildingYieldChange(eBuilding, ((YieldTypes)iI)));		
-		}
-		// < Civic Infos Plus End   >
+
 		FOR_EACH_ENUM(Commerce)
 		{
 			changeCommerceRateModifier(eLoopCommerce,
 					kBuilding.getCommerceModifier(eLoopCommerce) * iChange);
 			changeCommerceHappinessPer(eLoopCommerce,
 					kBuilding.getCommerceHappiness(eLoopCommerce) * iChange);
+			// < Civic Infos Plus Start >
+			//keldath QA-DONE
+			changeBuildingCommerceChange(kBuilding.getBuildingClassType(), eLoopCommerce, 
+					kOwner.getBuildingCommerceChange(eBuilding, eLoopCommerce));
+			// < Civic Infos Plus End   >
 		}
-//keldath QA
-//these is silly wasted loop, i couldnt add those to the above one 
-		// < Civic Infos Plus Start >
-		for (int iI = 0; iI < NUM_COMMERCE_TYPES; iI++)
-		{	
-			changeBuildingCommerceChange((BuildingClassTypes)kBuilding.getBuildingClassType(), ((CommerceTypes)iI),GET_PLAYER((PlayerTypes)iI).getBuildingCommerceChange(eBuilding, ((CommerceTypes)iI)));
-			
-		}
-		// < Civic Infos Plus End   >
 		if (kBuilding.isAnyReligionChange()) // advc.003t
 		{
 			FOR_EACH_ENUM(Religion)
@@ -5646,8 +5639,8 @@ int CvCity::getTerrainBadHealth() const
 {
 	return m_iTerrainBadHealth;
 }
-
-void CvCity::updateTerrainHealth()
+//keldath - tried to fix syntax from org, but f1rpo did it better below.
+/*void CvCity::updateTerrainHealth()
 {
 //	CvPlot* pLoopPlot;
 	TerrainTypes eTerrain;
@@ -5677,7 +5670,17 @@ void CvCity::updateTerrainHealth()
 			}
 	//	}
 	}
-
+*/
+//f1rpo 097 cleaner syntax
+void CvCity::updateTerrainHealth()
+{
+   int iNewGoodHealth = 0;
+   int iNewBadHealth = 0;
+   for (CityPlotIter it(*this); it.hasNext(); ++it)
+   {
+       int iHealthPercent = GC.getInfo(it->getTerrainType()).getHealthPercent();
+       (iHealthPercent > 0 ? iNewGoodHealth : iNewBadHealth) += iHealthPercent;
+   }
 	iNewGoodHealth /= 100;
 	iNewBadHealth /= 100;
 
@@ -8018,18 +8021,18 @@ void CvCity::updateExtraSpecialistYield()
 	/*************************************************************************************************/	
 int CvCity::getSpecialistCivicExtraCommerce(CommerceTypes eIndex) const
 {
-	FAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
-	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex expected to be < NUM_COMMERCE_TYPES");
-	return m_aiExtraSpecialistCommerce(eIndex);
+	//FAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
+	//FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex expected to be < NUM_COMMERCE_TYPES");
+	return m_aiExtraSpecialistCommerce.get(eIndex);
 }
 
 int CvCity::getSpecialistCivicExtraCommerceBySpecialist(CommerceTypes eIndex, SpecialistTypes eSpecialist) const
 {
-	FAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
+	/*FAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
 	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex expected to be < NUM_COMMERCE_TYPES");
 	FAssertMsg(eSpecialist >= 0, "eSpecialist expected to be >= 0");
 	FAssertMsg(eSpecialist < GC.getNumSpecialistInfos(), "GC.getNumSpecialistInfos expected to be >= 0");
-	return ((getSpecialistCount(eSpecialist) + getFreeSpecialistCount(eSpecialist)) * GET_PLAYER(getOwner()).getSpecialistCivicExtraCommerce(eSpecialist, eIndex));
+	*/return ((getSpecialistCount(eSpecialist) + getFreeSpecialistCount(eSpecialist)) * GET_PLAYER(getOwner()).getSpecialistCivicExtraCommerce(eSpecialist, eIndex));
 }
 
 
@@ -8053,7 +8056,7 @@ void CvCity::updateSpecialistCivicExtraCommerce(CommerceTypes eCommerce)
 
 	if (iOldCommerce != iNewCommerce)
 	{
-		m_aiExtraSpecialistCommerce[eCommerce] = iNewCommerce;
+		iNewCommerce = m_aiExtraSpecialistCommerce.get(eCommerce)  ;
 		FAssert(getSpecialistCivicExtraCommerce(eCommerce) >= 0);
 
 		changeSpecialistCommerce(eCommerce, (iNewCommerce - iOldCommerce));
@@ -9291,7 +9294,7 @@ void CvCity::changeNumBonuses(BonusTypes eIndex, int iChange,bool bUpdateBuildin
 			processBonus(eIndex, 1);
 		else processBonus(eIndex, -1);
 	}
-	} // <f1rpo>
+	 // <f1rpo>
 //< Building Resource Converter Start >
 	if (bUpdateBuildings && isBuildingBonus(eIndex))
 		processBuildingBonuses(); // </f1rpo>
@@ -9401,8 +9404,8 @@ bool CvCity::isBuildingBonus(BuildingTypes eBuilding) const
 // < Building Resource Converter Start > // f1rpo: refactored; comments added.
 int CvCity::getBuildingOutputBonus(BonusTypes eIndex) const
 {
-   FASSERT_BOUNDS(0, GC.getNumBonusInfos(), eIndex, "CvCity::getBuildingOutputBonus");
-   return m_paiBuildingOutputBonuses[eIndex];
+//   FASSERT_BOUNDS(0, GC.getNumBonusInfos(), eIndex, "CvCity::getBuildingOutputBonus");
+   return m_paiBuildingOutputBonuses.get(eIndex);
 }
 
 
@@ -9455,9 +9458,10 @@ void CvCity::processBuildingBonuses()
 				   int iOutputPerReqMet = kBuilding.getBuildingOutputBonusValues(eBonus);
 				   if (iOutputPerReqMet <= 0)
 					   continue;
-
-				   m_paiBuildingOutputBonuses[eBonus] = iReqMet * iOutputPerReqMet;
-				   changeNumBonuses(eBonus, getBuildingOutputBonus(eBonus), false);
+				   //int m_paiBuildingOutputBonuses.get(eBonus) = iReqMet * iOutputPerReqMet;	
+				  //f1rpo enummap change 
+				  m_paiBuildingOutputBonuses.set(eBonus, iReqMet * iOutputPerReqMet);
+				  changeNumBonuses(eBonus, getBuildingOutputBonus(eBonus), false);
 
 			   }
 			   /*  Fixme: What if a building processed in a later iteration
@@ -9477,22 +9481,29 @@ void CvCity::processBuildingBonuses()
 void CvCity::resetBuildingOutputBonuses()
 {
    // This branch should not be necessary; memory is allocated in CvCity::reset.
-   if (m_paiBuildingOutputBonuses == NULL)
+  //f1rpo - removed check - 
+	//keldath QA2 
+	/*
+		That code block should be removed then. It's for lazy allocation (create BuildingOutputBonuses array only once it is needed), and that's what EnumMap does in any case internally.
+	*/
+	/* if (m_paiBuildingOutputBonuses == NULL)
    {
 	   FAssert(m_paiBuildingOutputBonuses != NULL);
 	   m_paiBuildingOutputBonuses = new int[GC.getNumBonusInfos()]();
    }
-   else
-   {
+   else*/
+ //  {
 	   for (int i = 0; i < GC.getNumBonusInfos(); i++)
 	   {
-		   if (m_paiBuildingOutputBonuses[i] != 0)
+		   if (m_paiBuildingOutputBonuses.get((BonusTypes)i)/*m_paiBuildingOutputBonuses[i]*/ != 0)
 		   {
-			   changeNumBonuses((BonusTypes)i, -m_paiBuildingOutputBonuses[i], false);
-			   m_paiBuildingOutputBonuses[i] = 0;
+			   changeNumBonuses((BonusTypes)i, -m_paiBuildingOutputBonuses.get((BonusTypes)i)/*m_paiBuildingOutputBonuses[i]*/, false);
+			  // m_paiBuildingOutputBonuses[i] = 0;
+			  m_paiBuildingOutputBonuses.set((BonusTypes)i, 0);
+
 		   }
 	   }
-   }
+//   }
 //end of f1rpo refactor code < Building Resource Converter end >
 //keldath change - changeNumBonuses2 from changeNumBonuses
 //i duplicated a the func in plotgroup - to avoid infinite loop.

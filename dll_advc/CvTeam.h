@@ -556,7 +556,7 @@ protected:
 
 	EnumMap<CommerceTypes,int> m_aiCommerceFlexibleCount;
 // < Civic Infos Plus Start >
-//keldath QA - i hope i applied this well
+//keldath QA-DONE
 	EnumMap<YieldTypes,int> m_aiYieldRateModifier;
 	EnumMap<CommerceTypes,int> m_aiCommerceRateModifier;
 // < Civic Infos Plus Start >

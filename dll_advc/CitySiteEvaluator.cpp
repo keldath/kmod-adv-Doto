@@ -446,13 +446,9 @@ short AIFoundValue::evaluate()
 /**  Reason Added: Enable Terrain Health Modifiers                                                  **/
 /**  Notes:                                                                                         **/
 /*****************************************************************************************************/
-			//keldath re write according to the feature above - by f1rpo
-			//keldath QA
-			TerrainTypes const eTerrain = p.getTerrainType();
-			FAssert(eFeature != NO_FEATURE || (!bRemovableFeature && !bPersistentFeature));
-			int const iTerrainHealth = (eFeature == NO_TERRAIN ? 0 :
-					GC.getInfo(eTerrain).getHealthPercent());
-				iHealth += iTerrainHealth;	
+			//keldathQA-DONE
+			//by f1rpo - change - Terrain isn't removable and can't be NO_TERRAIN here.
+			iHealth += GC.getInfo(p.getTerrainType()).getHealthPercent();	
 /*****************************************************************************************************/
 /**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
 /*****************************************************************************************************/

@@ -44,7 +44,7 @@ CvPlot::CvPlot() // advc: Merged with the deleted reset function
 	m_iY = 0;
 	m_pArea = NULL;
 	m_iFreshWaterAmount = 0; // Deliverator
-//keldath QA this was on CvPlot::CvPlot - i think im using f1rpo method now...hope its a good merge.
+//keldath QA-DONE
 	// < JCultureControl Mod Start >
 	//m_aiCultureControl = NULL;
 	// < JCultureControl Mod End >
@@ -5789,18 +5789,24 @@ void CvPlot::setImprovementOwner(PlayerTypes eNewValue)
         m_eImprovementOwner = eNewValue;
     }
 }
-
-int CvPlot::getCultureControl(PlayerTypes eIndex) const
-{
-	FAssertMsg(eIndex >= 0, "iIndex is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex < MAX_PLAYERS, "iIndex is expected to be within maximum bounds (invalid Index)");
-
-	if (NULL == m_aiCultureControl)
+//keldath since its defnied in the header already - 
+// theres no need to re define this here.
+//suggested by f1rpo
+//i should do this for all functions that are decaled here - to the header file.
+//int CvPlot::getCultureControl(PlayerTypes eIndex) const
+//{
+//	FAssertMsg(eIndex >= 0, "iIndex is expected to be non-negative (invalid Index)");
+//	FAssertMsg(eIndex < MAX_PLAYERS, "iIndex is expected to be within maximum bounds (invalid Index)");
+//
+//F1RPO : Assertions and NULL check aren't needed. NULL check is actually illegal since m_aiCultureControl is an object (not a pointer).
+/*	if (NULL == m_aiCultureControl)
 	{
 		return 0;
 	}
-
-	return m_aiCultureControl[eIndex];
+*/
+	//return m_aiCultureControl[eIndex];
+	//f1rpo change due to enummaps
+//	return m_aiCultureControl.get(eIndex);
 }
 
 
@@ -5928,6 +5934,8 @@ void CvPlot::setCultureControl(PlayerTypes eIndex, int iNewValue, bool bUpdate, 
 	if (iNewValue >= 0 && getCultureControl(eIndex) != iNewValue)
 	{
 		if(NULL == m_aiCultureControl)
+//keldath QA2	
+//f1rpo said to delete ->which lines? not sure i got what part to remove.
 		{
 			m_aiCultureControl = new int[MAX_PLAYERS];
 			for (int iI = 0; iI < MAX_PLAYERS; ++iI)
@@ -5936,7 +5944,9 @@ void CvPlot::setCultureControl(PlayerTypes eIndex, int iNewValue, bool bUpdate, 
 			}
 		}
 
-		m_aiCultureControl[eIndex] = iNewValue;
+		//m_aiCultureControl[eIndex] = iNewValue;
+		//f1rpo fix due to enummaps
+		m_aiCultureControl.set(eIndex, iNewValue);
 		FAssert(getCultureControl(eIndex) >= 0);
 
 		if (bUpdate)
@@ -7825,7 +7835,8 @@ void CvPlot::read(FDataStreamBase* pStream)
 	pStream->Read(&cCount);
 	if (cCount > 0)
 		m_aiCultureControl.Read(pStream);
-	/* keldath QA - original code - i copied the f1rpo method
+	/* keldath QA-DONE - ANSWER:
+	//I've only used that to stay savegame-compatible with AdvCiv 0.96. That isn't a concern here, so you could remove those two lines. Doesn't really matter of course – so long as read and write are consistent with each other.
 	SAFE_DELETE_ARRAY(m_aiCultureControl);
 	pStream->Read(&cCount);
 	if (cCount > 0)
@@ -7986,7 +7997,10 @@ void CvPlot::write(FDataStreamBase* pStream)
 		pStream->Write((char)m_aiCultureControl.getLength());
 		m_aiCultureControl.Write(pStream);
 	}
-//kedath QA - original code below - copied f1rpo method
+//kedath QA-DONE -> ANSWER:
+//OK. If read is simplified (see above), then this here would just say:
+//m_aiCultureControl.Write(pStream);
+//keldath - l left it, too scared to change now-maybe later
 /*	if (NULL == m_aiCultureControl)
 	{
 		pStream->Write((char)0);

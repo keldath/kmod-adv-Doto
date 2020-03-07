@@ -597,6 +597,8 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 	{
 		CvPlayer const& kOwner = GET_PLAYER(pUnit->getOwner());
 		szString.append(L", ");
+//keldath qa2 - not sure if the szTempBuffer.Format is written like f1rpo's methods.
+// nor that this even has an effect
 //		szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, PLAYER_TEXT_COLOR(kOwner), kOwner.getName());
 /************************************************************************************************/
 /* REVOLUTION_MOD                         02/01/08                                jdog5000      */
@@ -606,7 +608,7 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 		// For minor civs, display civ name instead of player name ... to differentiate
 		// and help human recognize why they can't contact that player
 		if( GET_PLAYER(pUnit->getOwner()).isMinorCiv() )
-			szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, kOwner).getPlayerTextColorR(), kOwner.getPlayerTextColorG(), kOwner.getPlayerTextColorB(), kOwner.getPlayerTextColorA(), kOwner.getCivilizationDescription());
+			szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, kOwner.getPlayerTextColorR(), kOwner.getPlayerTextColorG(), kOwner.getPlayerTextColorB(), kOwner.getPlayerTextColorA(), kOwner.getCivilizationDescription());
 					
 		else
 			szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, kOwner.getPlayerTextColorR(), kOwner.getPlayerTextColorG(), kOwner.getPlayerTextColorB(), kOwner.getPlayerTextColorA(), kOwner.getName());
@@ -5850,7 +5852,6 @@ void CvGameTextMgr::setPlotHelpDebug_ShiftOnly(CvWStringBuffer& szString, CvPlot
 			}
 		}
 	} // advc.007: Use Alt for found values
-	} 
 // < JCultureControl Mod Start >
         if (GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
 		{
@@ -9558,6 +9559,7 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 	if (!bCivilopediaText)
 	{
 		szBuffer.append(NEWLINE);
+		CvWString szTempBuffer;
 
 //Air range for land units -  vincentz ranged strike - keldath addition
 //i changed the way air combat shows - now - it if the strength is 0 - the whole "strength" wont show.
@@ -10624,7 +10626,7 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		}
 
 		// davidlallen: project civilization and free unit start
-		for (iI = 0; iI < GC.getNumProjectInfos(); ++iI)
+		for (int iI = 0; iI < GC.getNumProjectInfos(); ++iI)
 		{
 			if (GC.getProjectInfo((ProjectTypes)iI).getFreeUnit() == eUnit)
 			{
@@ -10873,7 +10875,7 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 						else
 						{
 						// show default building
-							eRequiredBuilding = (BuildingTypes)GC.getBuildingClassInfo((BuildingClassTypes)iI).getDefaultBuildingIndex();
+							eRequiredBuilding = (BuildingTypes)GC.getBuildingClassInfo((BuildingClassTypes)iI).getDefaultBuilding()/*getDefaultBuildingIndex()*/;
 						}
 					}
 					else
@@ -11235,7 +11237,8 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer, BuildingTyp
 			int eBonus = kBuilding.getBonusConsumed();
 			if (NO_BONUS != eBonus)
 			{
-				aiYields[iI] += kBuilding.getYieldProduced(iI) * pCity->getNumBonuses((BonusTypes)eBonus) / 100;
+				//keldath qa2 - changed Ij to eLoopYield	
+				aiYields[eLoopYield] += kBuilding.getYieldProduced(eLoopYield) * pCity->getNumBonuses((BonusTypes)eBonus) / 100;
 			}
 			// davidlallen: building bonus yield, commerce end
 	}
@@ -11251,7 +11254,8 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer, BuildingTyp
 			int eBonus = kBuilding.getBonusConsumed();
 			if (NO_BONUS != eBonus)
 			{
-				aiCommerces[iI] += kBuilding.getCommerceProduced(iI) * pCity->getNumBonuses((BonusTypes)eBonus) / 100;
+				//keldath qa2 - changed I to e	
+				aiCommerces[e] += kBuilding.getCommerceProduced(e) * pCity->getNumBonuses((BonusTypes)eBonus) / 100;
 			}
 			// davidlallen: building bonus yield, commerce end
 		}
@@ -11543,7 +11547,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer, BuildingTyp
 		szTempBuffer.Format(L"%cConverts ", gDLL->getSymbolID(BULLET_CHAR));
 		szBuffer.append(szTempBuffer);
 
-		for (iI = 0; iI < GC.getNumBonusInfos(); iI++)
+		for (int iI = 0; iI < GC.getNumBonusInfos(); iI++)
 		{
 
 			if(kBuilding.getRequiredInputBonusValue((BonusTypes)iI) > 0)
@@ -12513,7 +12517,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer, BuildingTyp
 	// If any yield or commerce is produced, print one line
 	// Assumes a BonusConsumed is also set
 	szTempBuffer.clear();
-	for (iI = 0; iI < NUM_YIELD_TYPES; ++iI)
+	for (int iI = 0; iI < NUM_YIELD_TYPES; ++iI)
 	{
 		int iYieldProduced = kBuilding.getYieldProduced((YieldTypes)iI);
 		if (iYieldProduced != 0)
@@ -13750,6 +13754,7 @@ void CvGameTextMgr::setBadHealthHelp(CvWStringBuffer &szBuffer, CvCity& city)
 /**  Reason Added: Display Terrain Bad Health Help                                                  **/
 /**  Notes:                                                                                         **/
 /*****************************************************************************************************/
+		/*
 			TerrainTypes eTerrain = NO_TERRAIN;
 
 			for (int iI = 0; iI < NUM_CITY_PLOTS; ++iI)
@@ -13778,25 +13783,47 @@ void CvGameTextMgr::setBadHealthHelp(CvWStringBuffer &szBuffer, CvCity& city)
 
 			szBuffer.append(gDLL->getText("TXT_KEY_MISC_TERRAIN_HEALTH", iHealth, ((eTerrain == NO_TERRAIN) ? L"TXT_KEY_MISC_FEATURES" : GC.getTerrainInfo(eTerrain).getTextKeyWide())));
 			szBuffer.append(NEWLINE);
+		*/
+		//keldath qa2 - well okd code wont work - so i sort of duplicated the feature code by f1rpo
+		TerrainTypes eTerrain = NO_TERRAIN;
+		for (CityPlotIter it(city); it.hasNext(); ++it)
+		{
+			CvPlot const& kPlot = *it;
+			int iHealthPercent = GC.getInfo(kPlot.getTerrainType()).getHealthPercent();
+			if (iHealthPercent < 0) // </advc.901>
+			{
+				if (eTerrain == NO_TERRAIN)
+					eTerrain = kPlot.getTerrainType();
+				else if (eTerrain != kPlot.getTerrainType())
+				{
+					eTerrain = NO_TERRAIN;
+					break;
+				}
+			}
+		}
+		szBuffer.append(gDLL->getText("TXT_KEY_MISC_TERRAIN_HEALTH", iHealth,
+				(eTerrain == NO_FEATURE ?
+				L"TXT_KEY_MISC_SURROUNDINGS" : // advc.901: was TXT_KEY_MISC_FEATURES
+				GC.getInfo(eTerrain).getTextKeyWide())));
+		szBuffer.append(NEWLINE);
 /*****************************************************************************************************/
 /**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
 /*****************************************************************************************************/
-		}
-
 /*************************************************************************************************/
 /** Specialists Enhancements, by Supercheese 10/9/09                                                   */
 /**                                                                                              */
 /**                                                                                              */
 /*************************************************************************************************/
-	iHealth = -(city.getSpecialistBadHealth());
-	if (iHealth > 0)
-	{
-		szBuffer.append(gDLL->getText("TXT_KEY_BAD_HEALTH_FROM_SPECIALISTS", iHealth));
-			zBuffer.append(NEWLINE);
-	}
+		iHealth = -(city.getSpecialistBadHealth());
+		if (iHealth > 0)
+		{
+			szBuffer.append(gDLL->getText("TXT_KEY_BAD_HEALTH_FROM_SPECIALISTS", iHealth));
+			szBuffer.append(NEWLINE);
+		}
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
+}
 
 	iHealth = city.getEspionageHealthCounter();
 	if (iHealth > 0)
@@ -18867,19 +18894,11 @@ void CvGameTextMgr::setCommerceHelp(CvWStringBuffer &szBuffer, CvCity const& kCi
 		bNeedSubtotal = true; // BUG - Base Commerce
 	}
 
-/* keldath QA not sure why commented out - keldath - the below is the  same but from bts
-	// < Civic Infos Plus Start >
-	int iBuildingCommerce = city.getBuildingCommerce(eCommerceType) + city.getBuildingCommerceChange(eCommerceType);
-	// < Civic Infos Plus End   >
-	if (0 != iBuildingCommerce)
-	{
-		szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_BUILDING_COMMERCE", iBuildingCommerce, info.getChar()));
-		szBuffer.append(NEWLINE);
-		iBaseCommerceRate += 100 * iBuildingCommerce;
-	}
-// < Civic Infos Plus End   >
-*/
 	int iBuildingCommerce = kCity.getBuildingCommerce(eCommerce);
+	//KELDATH qa2 -  kCity.getBuildingCommerceChange(eCommerce); THROWS AN ERROR
+	// < Civic Infos Plus Start >
+	//int iBuildingCommerce = kCity.getBuildingCommerce(eCommerce) + kCity.getBuildingCommerceChange(eCommerce);
+	// < Civic Infos Plus End   >
 	if(iBuildingCommerce != 0)
 	{
 		szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_BUILDING_COMMERCE",
@@ -19143,11 +19162,6 @@ void CvGameTextMgr::setYieldHelp(CvWStringBuffer &szBuffer, CvCity const& kCity,
 		}
 	}
 
-//civic info plus - added by f1 advc - help text - keldath
-	if(kOwner.getStateReligion() != NO_RELIGION && kCity.isHasReligion(kOwner.getStateReligion()))
-       iCivicMod += kCity.getStateReligionYieldRateModifier(eYield);
-   	else iCivicMod += kCity.getNonStateReligionYieldRateModifier(eYield);
-//civic info plus - added by f1 advc - help text - keldath
 	// Civics
 	int iCivicMod = 0;
 	for(int i = 0; i < GC.getNumCivicOptionInfos(); i++)
@@ -19155,6 +19169,12 @@ void CvGameTextMgr::setYieldHelp(CvWStringBuffer &szBuffer, CvCity const& kCity,
 		if(kOwner.getCivics((CivicOptionTypes)i) != NO_CIVIC)
 			iCivicMod += GC.getInfo(kOwner.getCivics((CivicOptionTypes)i)).getYieldModifier(eYield);
 	}
+	//civic info plus - added by f1 advc - help text - keldath
+	if(kOwner.getStateReligion() != NO_RELIGION && kCity.isHasReligion(kOwner.getStateReligion()))
+       iCivicMod += kCity.getStateReligionYieldRateModifier(eYield);
+   	else iCivicMod += kCity.getNonStateReligionYieldRateModifier(eYield);
+	//civic info plus - added by f1 advc - help text - keldath
+
 	if(iCivicMod != 0)
 	{
 		szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_YIELD_CIVICS", iCivicMod, iYieldChar));
@@ -19670,7 +19690,7 @@ void CvGameTextMgr::buildCityBillboardCityNameString( CvWStringBuffer& szBuffer,
 			{
 				int iTurns = pCity->getFoodTurnsLeft();
 
-				if ((iTurns > 1) || !(pCity->AI_isEmphasizeAvoidGrowth()))
+				if ((iTurns > 1) || !(pCity->AI().AI_isEmphasizeAvoidGrowth()))
 				{
 					if (iTurns < MAX_INT)
 					{
@@ -21994,7 +22014,8 @@ void CvGameTextMgr::getTurnTimerText(CvWString& strText)
 /**                                                                                              */
 /**                                                        */
 /*************************************************************************************************/
-//keldath qa - new addition? i missed till now?
+//keldath QA2 - new addition? i missed till now?
+//f1rpo-I found in the source code these changes - not sure what they do, it all worked for me before without this...but i decided to add it.
 void CvGameTextMgr::getFontSymbols(std::vector< std::vector<wchar> >& aacSymbols, std::vector<int>& aiMaxNumRows)
 {
 	aacSymbols.push_back(std::vector<wchar>());

@@ -2780,7 +2780,9 @@ int CvTeam::getYieldRateModifier(YieldTypes eIndex)
 {
 	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
 	FAssertMsg(eIndex < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
-	return m_aiYieldRateModifier[eIndex];
+	//return m_aiYieldRateModifier[eIndex];
+	//f1rpo - fix due to enummap
+	return m_aiYieldRateModifier.get(eIndex);
 }
 
 
@@ -2791,8 +2793,9 @@ void CvTeam::changeYieldRateModifier(YieldTypes eIndex, int iChange)
 
 	if (iChange != 0)
 	{
-		m_aiYieldRateModifier[eIndex] = (m_aiYieldRateModifier[eIndex] + iChange);
-
+		//m_aiYieldRateModifier[eIndex] = (m_aiYieldRateModifier[eIndex] + iChange);
+		//f1rpo - fix due to enummap
+		m_aiYieldRateModifier.add(eIndex, iChange);
 		if (eIndex == YIELD_COMMERCE)
 		{
 			updateCommerce();
@@ -2822,8 +2825,9 @@ void CvTeam::changeCommerceRateModifier(CommerceTypes eIndex, int iChange)
 
 	if (iChange != 0)
 	{
-		m_aiCommerceRateModifier[eIndex] = (m_aiCommerceRateModifier[eIndex] + iChange);
-
+		//f1rpo - fix due to enummap
+		//m_aiCommerceRateModifier[eIndex] = (m_aiCommerceRateModifier[eIndex] + iChange);
+		m_aiCommerceRateModifier.add(eIndex, iChange);
 		updateCommerce();
 
 		AI_makeAssignWorkDirty();
@@ -4492,6 +4496,9 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer, bo
 						// davidlallen religion forbidden to civilization start
 						CivilizationTypes eCiv = GET_PLAYER((PlayerTypes)iJ).getCivilizationType();
 						if (!(GC.getCivilizationInfo(eCiv).isForbidden((ReligionTypes)iI)))
+						//keldath qa2 - f1rpo said to redifine it if the check is true.
+						//did i get it right?
+						CivilizationTypes eCiv = kMember.getCivilizationType();
 						{
 						// davidlallen religion forbidden to civilization end
 							
@@ -4533,7 +4540,21 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer, bo
 							GET_PLAYER(eBestPlayer).foundReligion(eFoundReligion, eLoopReligion, true);
 					}
 				}
-				else*/ GET_PLAYER(eBestPlayer).foundReligion(eLoopReligion, eLoopReligion, true);
+				else
+//keldath-QA2 - ADDED PART from f1rpo - in case usage of pick religion
+//fyi - i dont like pick religion - so it wont be available as a game options .
+//if used though f1rpo said:
+//But for human players, the code for BUTTONPOPUP_FOUND_RELIGION in CvDLLButtonPopup.cpp would have to be changed.
+				{
+    				ReligionTypes eChosenReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
+    				if (eChosenReligion != NO_RELIGION &&
+        			!GC.getInfo(GET_PLAYER(eBestPlayer).getCivilizationType()).isForbidden(eChosenReligion))
+    				{
+        				GET_PLAYER(eBestPlayer).foundReligion(eChosenReligion, eLoopReligion, true);
+    				}
+				}
+*/ 
+				GET_PLAYER(eBestPlayer).foundReligion(eLoopReligion, eLoopReligion, true);
 				bReligionFounded = true;
 				bFirstPerk = true;
 			}
@@ -5690,7 +5711,7 @@ void CvTeam::read(FDataStreamBase* pStream)
 // < Civic Infos Plus Start >
 //	pStream->Read(NUM_YIELD_TYPES, m_aiYieldRateModifier);
 //	pStream->Read(NUM_COMMERCE_TYPES, m_aiCommerceRateModifier);
-//keldath QA i hope thats fine...
+//keldath QA-DONE
 	m_aiYieldRateModifier.Read(pStream);
 	m_aiCommerceRateModifier.Read(pStream);	
 // < Civic Infos Plus End   >
@@ -5861,7 +5882,7 @@ void CvTeam::write(FDataStreamBase* pStream)
 	// < Civic Infos Plus Start >
 	//pStream->Write(NUM_YIELD_TYPES, m_aiYieldRateModifier);
 	//pStream->Write(NUM_COMMERCE_TYPES, m_aiCommerceRateModifier);
-//keldath QA i hope its ok...
+//keldath QA-DONE
 	m_aiYieldRateModifier.Write(pStream);
 	m_aiCommerceRateModifier.Write(pStream);
 	// < Civic Infos Plus End   >

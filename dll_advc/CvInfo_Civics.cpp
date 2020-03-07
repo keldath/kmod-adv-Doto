@@ -111,7 +111,7 @@ CvCivicInfo::~CvCivicInfo()
 	SAFE_DELETE_ARRAY(m_piNonStateReligionCommerceModifier);
 	if (m_ppiBuildingYieldChanges != NULL)
 	{
-		for (iI=0;iI<GC.getNumBuildingInfos();iI++)
+		for (int iI=0;iI<GC.getNumBuildingInfos();iI++)
 		{
 			SAFE_DELETE_ARRAY(m_ppiBuildingYieldChanges[iI]);
 		}
@@ -119,7 +119,7 @@ CvCivicInfo::~CvCivicInfo()
 	}
 	if (m_ppiBuildingCommerceChanges != NULL)
 	{
-		for (iI=0;iI<GC.getNumBuildingInfos();iI++)
+		for (int iI=0;iI<GC.getNumBuildingInfos();iI++)
 		{
 			SAFE_DELETE_ARRAY(m_ppiBuildingCommerceChanges[iI]);
 		}
@@ -1254,8 +1254,9 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_pabSpecialBuildingNotRequired, "SpecialBuildingNotRequireds", GC.getNumSpecialBuildingInfos());
 	pXML->SetVariableListTagPair(&m_pabSpecialistValid, "SpecialistValids", GC.getNumSpecialistInfos());
 // < Civic Infos Plus Start >
-
-	pXML->SetVariableListTagPair(&m_paiFreeSpecialistCount, "FreeSpecialistCounts", sizeof(GC.getSpecialistInfo((SpecialistTypes)0)), GC.getNumSpecialistInfos());
+	//keldath qa2 - removed sizeof(GC.getSpecialistInfo((SpecialistTypes)0))-fqrpo dont use it?
+	//pXML->SetVariableListTagPair(&m_paiFreeSpecialistCount, "FreeSpecialistCounts", sizeof(GC.getSpecialistInfo((SpecialistTypes)0)), GC.getNumSpecialistInfos());
+	pXML->SetVariableListTagPair(&m_paiFreeSpecialistCount, "FreeSpecialistCounts", GC.getNumSpecialistInfos());
 
 // < Civic Infos Plus End   >
 	pXML->SetVariableListTagPair(&m_paiBuildingHappinessChanges, "BuildingHappinessChanges", GC.getNumBuildingClassInfos());

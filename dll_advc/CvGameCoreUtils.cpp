@@ -1450,6 +1450,12 @@ int pathValid_join(FAStarNode* parent, FAStarNode* node, CvSelectionGroup const*
 		if (pSelectionGroup->getNumUnits() > 0)
 		{
 			CvUnit* pLoopUnit;
+			//keldath QA2 - i added these cause i didnt know how to make use of the k's above
+			//the cannotMoveFromPlotToPlot probabaly needs to be changes also - but dodnt know how
+			// so need some help, but this seems to work also.
+			CvPlot* pFromPlot = kMap.plotSoren(parent->m_iX, parent->m_iY);
+			CvPlot* pToPlot = kMap.plotSoren(node->m_iX, node->m_iY);
+
 			for (CLLNode<IDInfo>* pUnitNode = pSelectionGroup->headUnitNode(); pUnitNode != NULL; pUnitNode = pSelectionGroup->nextUnitNode(pUnitNode))
 			{
 				pLoopUnit = ::getUnit(pUnitNode->m_data);

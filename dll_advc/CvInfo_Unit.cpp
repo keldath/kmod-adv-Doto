@@ -298,7 +298,7 @@ CvUnitInfo::~CvUnitInfo()
 	SAFE_DELETE_ARRAY(m_paszUnitNames);
 }
 
-//keldath QA i hope thats ok thats its here and not in the .h file.
+//keldath QA-DONE
 /****************************************
  *  Archid Mod: 10 Jun 2012
  *  Functionality: Unit Civic Prereq - Archid

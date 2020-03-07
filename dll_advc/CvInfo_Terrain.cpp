@@ -1095,7 +1095,7 @@ CvImprovementInfo::~CvImprovementInfo()
 		SAFE_DELETE_ARRAY(m_ppiRouteYieldChanges);
 	}
 }
-//keldath QA i hope thats ok tp put these here instead of the.h
+//keldath QA-DONE 
 // Deliverator
 int CvImprovementInfo::getAddsFreshWaterInRadius() const
 {

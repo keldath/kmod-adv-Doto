@@ -14,6 +14,10 @@ public: // All the const functions are exposed to Python
 	CvOrganizationInfo();
 
 	int getChar() const;
+	void setChar(int i);
+	inline int getTechPrereq() const { return m_iTechPrereq; } // advc.130f: inline
+	int getFreeUnitClass() const;
+	inline int getSpreadFactor() const { return m_iSpreadFactor; } // advc.130f: inline
 /*************************************************************************************************/
 /** TGA_INDEXATION                          01/21/08                                MRGENIE      */
 /**                                                                                              */
@@ -24,10 +28,6 @@ public: // All the const functions are exposed to Python
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
-	void setChar(int i);
-	inline int getTechPrereq() const { return m_iTechPrereq; } // advc.130f: inline
-	int getFreeUnitClass() const;
-	inline int getSpreadFactor() const { return m_iSpreadFactor; } // advc.130f: inline
 	int getMissionType() const;
 	void setMissionType(int iNewType);
 
@@ -41,6 +41,11 @@ public: // All the const functions are exposed to Python
 	bool read(CvXMLLoadUtility* pXML);
 
 protected:
+
+	int m_iChar;
+	int m_iTechPrereq;
+	int m_iFreeUnitClass;
+	int m_iSpreadFactor;
 /*************************************************************************************************/
 /** TGA_INDEXATION                          01/21/08                                MRGENIE      */
 /**                                                                                              */
@@ -50,10 +55,6 @@ protected:
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
-	int m_iChar;
-	int m_iTechPrereq;
-	int m_iFreeUnitClass;
-	int m_iSpreadFactor;
 	int m_iMissionType;
 
 	CvString m_szMovieFile;

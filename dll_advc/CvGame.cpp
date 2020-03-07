@@ -926,7 +926,6 @@ void CvGame::initScenario()
    			GC.getMap().recalculateAreas();
 		}	
 	} // </advc.030>
-}
 
 void CvGame::initFreeUnits()
 {
@@ -2117,7 +2116,7 @@ void CvGame::normalizeAddExtras()  // advc: changes to reduce indentation
 			if (kLoopPlot.isWater() || kLoopPlot.isHills())
 				continue;
 //re implementation of the code below - seems duplicated - keldath
-			if (!GC.getTerrainInfo(pLoopPlot->getTerrainType()).isRequiresFlatlands())
+			if (!GC.getTerrainInfo(kLoopPlot.getTerrainType()).isRequiresFlatlands())
 			{
 			if (!kLoopPlot.isFeature() ||
 				!GC.getInfo(kLoopPlot.getFeatureType()).isRequiresFlatlands())
@@ -5605,6 +5604,9 @@ bool CvGame::canConstruct(BuildingTypes eBuilding, bool bIgnoreCost, bool bTestV
 /* REVDCM                                 02/16/10                                phungus420    */
 /*                                                                                              */
 /* CanConstruct       building need option                                                                          */
+//f1rpo - I think above (as it is). Don't want the building buttons to be shown 
+//grayed out all the time when the game option conditions aren't met.
+//so accordingto the f1rpo comment - ill leave it above testvisible
 /************************************************************************************************/
 //pasted here from cvplayer - suggested by f1 advc - keldath
 	if (kBuilding.getPrereqGameOption() != NO_GAMEOPTION)
@@ -6788,7 +6790,7 @@ void CvGame::doHolyCity()  // advc: many style changes
 		TeamTypes eBestTeam = NO_TEAM;
 		{ // scope for iBestValue
 			int iBestValue = MAX_INT;
-		*/	/*  advc.001: Was MAX_TEAMS. Make sure Barbarians can't found a religion
+			*//*  advc.001: Was MAX_TEAMS. Make sure Barbarians can't found a religion
 				somehow. Adopted from Mongoose SDK ReligionMod. */
 	/*		for (int iJ = 0; iJ < MAX_CIV_TEAMS; iJ++)
 			{
@@ -6820,12 +6822,15 @@ void CvGame::doHolyCity()  // advc: many style changes
 			continue;
 		*/
 //david lalen forbiddan religion - dune wars end
+		
+		int iValue = 0; //keldath QA2 i have no idea what value to use - since the above is removed
 		int iBestValue = MAX_INT;
 		PlayerTypes eBestPlayer = NO_PLAYER;
 		for (int iJ = 0; iJ < MAX_PLAYERS; iJ++)
 		{
 			CvPlayer const& kMember = GET_PLAYER((PlayerTypes)iJ);
-			if (!kMember.isAlive() || kMember.getTeam() != eBestTeam || kMember.getNumCities() <= 0)
+			//keldath qa2 - i removed the check for other team- since the above is cancelled.
+			if (!kMember.isAlive() || /*kMember.getTeam() != eBestTeam ||*/ kMember.getNumCities() <= 0)
 				continue;
 //david lalen forbiddan religion - dune wars start
 			if (GET_TEAM(kMember.getTeam()).isHasTech((TechTypes)(GC.getReligionInfo((ReligionTypes)iI).getTechPrereq())))
@@ -6857,10 +6862,19 @@ void CvGame::doHolyCity()  // advc: many style changes
 /*removed by forbidden religion - i think - keldath we dont want to cause a mess when choosing religion
 		if (isOption(GAMEOPTION_PICK_RELIGION))
 			eFoundReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
+		//alternarive usage in case we want pick religion, for now , we dont.
+		if (isOption(GAMEOPTION_PICK_RELIGION))
+		{
+    		ReligionTypes eChosenReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
+    		if (!GC.getCivilizationInfo(GET_PLAYER(eBestPlayer).getCivilizationType()).isForbidden(eChosenReligion))
+        		eFoundReligion = eChosenReligion;
+		}
 */
 		if (eFoundReligion != NO_RELIGION)
 //david lalen forbiddan religion - dune wars end
 //keldath QA- the true is something with units, not sure
+//f1rpo explenation for the true param:
+//true will create free missionaries. Seems like those are normally not created when a religion is founded at game start (actually, founding gets delayed until turn 5 iirc), but, if you want to change that – sounds fair enough.
 		//	GET_PLAYER(eBestPlayer).foundReligion(eFoundReligion, eReligion, false);
 			GET_PLAYER(eBestPlayer).foundReligion(eFoundReligion, eReligion, true);
 //david lalen forbiddan religion - dune wars end

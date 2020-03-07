@@ -512,7 +512,9 @@ public:
 // < JCultureControl Mod Start >
 	PlayerTypes getImprovementOwner() const;               // Exposed to Python
 	void setImprovementOwner(PlayerTypes eNewValue);               // Exposed to Python
-//keldath QA - im totally not sure of this m_aiCultureControl
+//keldath QA-DONE answer:
+//this maked the definition in the cpp file not to be needed.
+//so i did mark it out.
 	inline int getCultureControl(PlayerTypes eIndex) const { return m_aiCultureControl.get(eIndex); }															// Exposed to Python
 	//int getCultureControl(PlayerTypes eIndex) const;             // Exposed to Python
 	int countTotalCultureControl() const;             // Exposed to Python

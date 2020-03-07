@@ -4754,26 +4754,28 @@ bool CvPlayer::canRaze(CvCity const& kCity) const // advc: param was CvCity*
 
 		if (kCity.getOwner() != getID())
 			return false;
-		static int const iRAZING_CULTURAL_PERCENT_THRESHOLD = GC.getDefineINT("RAZING_CULTURAL_PERCENT_THRESHOLD"); // advc.opt
-		if (kCity.calculateTeamCulturePercent(getTeam()) >= iRAZING_CULTURAL_PERCENT_THRESHOLD)
-			return false;
-//Keldath QA- this is needed? and if so - shouldnt it replace the above?
-/************************************************************************************************/
-/* REVOLUTIONDCM_MOD                         02/17/10                           jdog5000        */
-/*                                                                                              */
-/*influence driven war                                                                                              */
-/************************************************************************************************/
+		//Keldath QA2
+		//f1rpo explain this replaces the lines below
+		//also added the option check.
+		/************************************************************************************************/
+		/* REVOLUTIONDCM_MOD                         02/17/10                           jdog5000        */
+		/*                                                                                              */
+		/*influence driven war                                                                                              */
+		/************************************************************************************************/
 		// Change for IDW, so AI may raze cities it captures
-		if( kCity.isEverOwned(getID()) || kCity.plot()->isCultureRangeCity(getID(), std::max(0,GC.getNumCultureLevelInfos() - 1)) )
+		if (!GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR) || kCity.isEverOwned(getID()) || kCity.plot()->isCultureRangeCity(getID(), std::max(0,GC.getNumCultureLevelInfos() - 1)) )
 		{
 			if (kCity.calculateTeamCulturePercent(getTeam()) >= GC.getDefineINT("RAZING_CULTURAL_PERCENT_THRESHOLD"))
 			{
 				return false;
 			}
 		}
-/************************************************************************************************/
-/* REVOLUTIONDCM_MOD                         END                                 Glider1        */
-/************************************************************************************************/
+		/************************************************************************************************/
+		/* REVOLUTIONDCM_MOD                         END                                 Glider1        */
+		/************************************************************************************************/
+		//static int const iRAZING_CULTURAL_PERCENT_THRESHOLD = GC.getDefineINT("RAZING_CULTURAL_PERCENT_THRESHOLD"); // advc.opt
+		//if (kCity.calculateTeamCulturePercent(getTeam()) >= iRAZING_CULTURAL_PERCENT_THRESHOLD)
+		//	return false;
 
 	}
 	/*  advc.003y (note): This Python function is also called from acquireCity.
@@ -6745,14 +6747,16 @@ int CvPlayer::calculateResearchModifier(TechTypes eTech, // <advc.910>
 	int iModifier = 100;
 	if(NO_TECH == eTech)
 		return iModifier;
+//kedlath - suggested by f1rpo :
+//Kind of redundant: AdvCiv has TECH_COST_NOTRADE_MODIFIER, which gets applied in CvTeam::getResearchCost. (Also only applies after era 0.)
 // ALN DuneWars Start
 	// this should have been done a long time ago
 	// since techs are passed around, the tech pace is quicker, lets clamp it a little
-	if (!GC.getGame().isOption(GAMEOPTION_NO_TECH_TRADING) && GC.getGame().getCurrentEra() > 0)
+/*	if (!GC.getGame().isOption(GAMEOPTION_NO_TECH_TRADING) && GC.getGame().getCurrentEra() > 0)
 	{
 		iModifier -= 10;
 	}
-// ALN End
+*/// ALN End
 	// BETTER_BTS_AI_MOD, Tech Diffusion, 07/27/09, jdog5000: START
 /* Tech Diffusion  GAMEOPTION*/
 	//static bool const bTECH_DIFFUSION_ENABLE = GC.getDefineBOOL("TECH_DIFFUSION_ENABLE");
@@ -7000,13 +7004,18 @@ bool CvPlayer::canEverTrade(TechTypes eTech) const
 	argsList.add(getID());
 	argsList.add(eTech);
 	argsList.add(false);
-	long lResult=0;
-	gDLL->getPythonIFace()->callFunction(PYGameModule, "cannotResearch", argsList.makeFunctionArgs(), &lResult);
+//	long lResult=0;
+//Python call. Potentially slow. There is
+//in AdvCiv, which should have the same effect and only calls Python if the callback is enabled in XML. (No need for the argsList and lResult variables then.)
+/*	gDLL->getPythonIFace()->callFunction(PYGameModule, "cannotResearch", argsList.makeFunctionArgs(), &lResult);
 	if (lResult == 1)
 	{
 		return false;
 	}
-
+*/
+	//keldath-QA2 - do i need to set xml python call to 1? which of them>?
+	if (GC.getPythonCaller()->cannotResearchOverride(getID(), eTech, false))
+		return false;
 	return true;
 }
 /*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
@@ -12677,16 +12686,16 @@ void CvPlayer::setCivics(CivicOptionTypes eIndex, CivicTypes eNewValue)
 				pLoopUnit->setCivicEnabled(false);
 				szBuffer = gDLL->getText("TXT_KEY_CIVIC_DISABLED_UNIT", pLoopUnit->getUnitType(), pLoopUnit->getNameKey());
 				//fix by f1 to kmod style -keldth
-				//gDLL->getInterfaceIFace()->addMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
-				gDLL->getInterfaceIFace()->addHumanMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
+				//gDLL->getInterfaceIFace()->addMessageExternal(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
+				gDLL->getInterfaceIFace()->addMessage (getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
 			}
 			else if (validCivics && !pLoopUnit->isCivicEnabled())
 			{
 				pLoopUnit->setCivicEnabled(true);
 				szBuffer = gDLL->getText("TXT_KEY_CIVIC_ENABLED_UNIT", pLoopUnit->getUnitType(), pLoopUnit->getNameKey());
 				//fix by f1 to kmod style -keldth
-				//gDLL->getInterfaceIFace()->addMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
-				gDLL->getInterfaceIFace()->addHumanMessage(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
+				//gDLL->getInterfaceIFace()->addMessageExternal(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
+				gDLL->getInterfaceIFace()->addMessage (getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
 			}
 		}
 /**

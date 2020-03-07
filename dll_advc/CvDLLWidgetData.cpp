@@ -2781,14 +2781,17 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
 			{
 				CvImprovementInfo const& kImprov = GC.getInfo(eImprovement);
 				// < JImprovementLimit Mod Start >
-//keldath 0 shuld this be kMissionPlot.getTeam() != kUnitTeam.getID()? instead if kMissionPlot.getTeam() != NO_TEAM
+				//keldath qa shuld this be kMissionPlot.getTeam() != kUnitTeam.getID()? instead if kMissionPlot.getTeam() != NO_TEAM
+				//no change suggested by f1rpo here
 				if (kMissionPlot.getTeam() != NO_TEAM && kImprov.isNotInsideBorders() && kImprov.isOutsideBorders())
 				{
 					szBuffer.append(NEWLINE);
 					szBuffer.append(gDLL->getText("TXT_KEY_ACTION_REQUIRES_NO_CULTURE_BORDER"));
 				}
-				else if (gDLL->getInterfaceIFace()->getHeadSelectedUnit() != NULL &&
-						kMissionPlot.getTeam() != gDLL->getInterfaceIFace()->getHeadSelectedUnit()->getTeam())
+				//f1rpo suggested change due to bValid ensures that the HeadSelectedUnit isn't NULL
+				//else if (gDLL->getInterfaceIFace()->getHeadSelectedUnit() != NULL &&
+				//		kMissionPlot.getTeam() != gDLL->getInterfaceIFace()->getHeadSelectedUnit()->getTeam())
+				else if (kMissionPlot.getTeam() != kUnitTeam.getID())
 				{
 					if (kImprov.isOutsideBorders())
 					{
@@ -2897,11 +2900,12 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
 		{
 			if (kMissionPlot.isImproved())
 			{
+				//kedath qa2 - not sure the block of the two j are right
 			// < JImprovementLimit Mod Start >
-                    if (kImprov.getImprovementRequired() != NO_IMPROVEMENT)
+                    if (GC.getInfo(eImprovement).getImprovementRequired() != NO_IMPROVEMENT)
                      {
                             szBuffer.append(NEWLINE);
-                            szBuffer.append(gDLL->getText("TXT_KEY_ACTION_WILL_REPLACE_IMPROVEMENT", kImprov kImprov.getImprovementRequired()).getDescription()));
+                            szBuffer.append(gDLL->getText("TXT_KEY_ACTION_WILL_REPLACE_IMPROVEMENT", GC.getInfo((ImprovementTypes)GC.getInfo(eImprovement).getImprovementRequired()).getDescription()));
 					}
                         else
                         {
@@ -2916,12 +2920,12 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
 			*/
 			}
 			// < JImprovementLimit Mod Start >
-					if (kImprov.getMakesInvalidRange() > 0)
+					if (GC.getInfo(eImprovement).getMakesInvalidRange() > 0)
                     {
-                        if (kMissionPlot.isImprovementInRange(eImprovement, kImprov.getMakesInvalidRange(), true))
+                        if (kMissionPlot.isImprovementInRange(eImprovement, GC.getInfo(eImprovement).getMakesInvalidRange(), true))
                         {
                             szBuffer.append(NEWLINE);
-                            szBuffer.append(gDLL->getText("TXT_KEY_ACTION_IMPROVEMENT_TO_CLOSE", kImprov.getDescription(), kImprov.getMakesInvalidRange()));
+                            szBuffer.append(gDLL->getText("TXT_KEY_ACTION_IMPROVEMENT_TO_CLOSE", GC.getInfo(eImprovement).getDescription(), GC.getInfo(eImprovement).getMakesInvalidRange()));
 					}
 				}
 					// < JImprovementLimit Mod End >	

@@ -748,8 +748,8 @@ public:
 
 	int getNonStateReligionHappiness() const;																																	// Exposed to Python
 	void changeNonStateReligionHappiness(int iChange);
-// < Civic Infos Plus Start >
-	DllExport int getStateReligionExtraHealth() const;																													// Exposed to Python
+	// < Civic Infos Plus Start >
+	int getStateReligionExtraHealth() const;																													// Exposed to Python
 	void changeStateReligionExtraHealth(int iChange);
 	DllExport void updateReligionHealth();
 	int getNonStateReligionExtraHealth() const;																																	// Exposed to Python

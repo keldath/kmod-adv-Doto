@@ -151,6 +151,7 @@ public:
 /* RevDCM  XMLloading                             05/05/10             phungus420               */
 /*                                                                                              */
 /*   added by f1 - might not be needed - xml modularload?                                                                                           */
+//Well, who knows. Live and let live. :) - Amen brother!
 /************************************************************************************************/
 	// allocate and initialize a list from a tag pair in the xml by tag name
 	void SetVariableListTagPair(int **ppiList, const TCHAR* szRootTagName,

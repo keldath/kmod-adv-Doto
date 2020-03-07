@@ -3291,7 +3291,8 @@ int CvPlayerAI::AI_goldTarget(bool bUpgradeBudgetOnly) const
 /*                                                                                              */
 /*  Don't bother saving gold if we can't trade it for anything                                  */
 /************************************************************************************************/
-	if (!GET_TEAM(getTeam()).isGoldTrading() || !(GET_TEAM(getTeam()).isTechTrading()) || (GC.getGame().isOption(GAMEOPTION_NO_TECH_TRADING)))
+//f1rpo said that advciv has a good system for this, he might add brokering into account.
+/*	if (!GET_TEAM(getTeam()).isGoldTrading() || !(GET_TEAM(getTeam()).isTechTrading()) || (GC.getGame().isOption(GAMEOPTION_NO_TECH_TRADING)))
 	{
 		iGold /= 3;
 	}
@@ -3301,6 +3302,7 @@ int CvPlayerAI::AI_goldTarget(bool bUpgradeBudgetOnly) const
 		iGold *= 3;
 		iGold /= 4;
 	}
+*/
 /************************************************************************************************/
 /* Afforess	                     END                                                            */
 /************************************************************************************************/

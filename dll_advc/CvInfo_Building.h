@@ -125,12 +125,12 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 	BonusTypes getFreeBonus() const { return (BonusTypes)m_iFreeBonus; }
 	int getNumFreeBonuses() const { return m_iNumFreeBonuses; }
 	// < Building Resource Converter Start >
-	DllExport bool isRequiredInputBonus(int iBonus) const;			// Exposed to Python
-	DllExport int getRequiredInputBonusValue(int iBonus) const;		// Exposed to Python
-	DllExport int getRequiredInputBonusCount() const;						// Exposed to Python
-	DllExport bool isBuildingOutputBonus(int iBonus) const;			// Exposed to Python
-	DllExport int getBuildingOutputBonusValues(int iBonus) const;	// Exposed to Python
-	DllExport int getBuildingOutputBonusCount() const;						// Exposed to Python
+	bool isRequiredInputBonus(int iBonus) const;			// Exposed to Python
+	int getRequiredInputBonusValue(int iBonus) const;		// Exposed to Python
+	int getRequiredInputBonusCount() const;						// Exposed to Python
+	bool isBuildingOutputBonus(int iBonus) const;			// Exposed to Python
+	int getBuildingOutputBonusValues(int iBonus) const;	// Exposed to Python
+	int getBuildingOutputBonusCount() const;						// Exposed to Python
 	// < Building Resource Converter End   >
 	BuildingClassTypes getFreeBuildingClass() const { return (BuildingClassTypes)m_iFreeBuildingClass; }
 	PromotionTypes getFreePromotion() const { return (PromotionTypes)m_iFreePromotion; }

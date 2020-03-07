@@ -686,7 +686,7 @@ const TCHAR* CvBuildingInfo::getMovie() const
 
 	return NULL;
 }
-//keldath QA i hope its a good place to pace these
+//keldath QA-DONE i hope its a good place to pace these
 // < Building Resource Converter Start >
 
 bool CvBuildingInfo::isRequiredInputBonus(int iBonus) const
@@ -701,7 +701,7 @@ int CvBuildingInfo::getRequiredInputBonusValue(int iBonus) const
 {
 	FAssertMsg(iBonus < GC.getNumBonusInfos(), "Index out of bounds");
 	FAssertMsg(iBonus > -1, "Index out of bounds");
-	return m_paiRequiredInputBonuses ? m_paiRequiredInputBonuses[iBonus] : -1;
+	return m_paiRequiredInputBonuses ?  m_paiRequiredInputBonuses[iBonus] : -1;
 }
 
 int CvBuildingInfo::getRequiredInputBonusCount() const
@@ -1578,9 +1578,12 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(szTextVal, "FreeBonus");
 	m_iFreeBonus = pXML->FindInInfoClass(szTextVal);
 	pXML->GetChildXmlValByName(&m_iNumFreeBonuses, "iNumFreeBonuses");
-// < Building Resource Converter Start >	
-	pXML->SetVariableListTagPair(&m_paiRequiredInputBonuses, "RequiredInputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
-	pXML->SetVariableListTagPair(&m_paiBuildingOutputBonuses, "BuildingOutputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
+// < Building Resource Converter Start >	GC.getNumBonusInfos()
+//keldath qa2 0 seens this was a change - is it good?
+//	pXML->SetVariableListTagPair(&m_paiRequiredInputBonuses, "RequiredInputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
+//	pXML->SetVariableListTagPair(&m_paiBuildingOutputBonuses, "BuildingOutputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
+	pXML->SetVariableListTagPair(&m_paiRequiredInputBonuses, "RequiredInputBonuses", GC.getNumBonusInfos());
+	pXML->SetVariableListTagPair(&m_paiBuildingOutputBonuses, "BuildingOutputBonuses", GC.getNumBonusInfos());
 	// < Building Resource Converter End   >
 	pXML->GetChildXmlValByName(szTextVal, "FreeBuilding");
 	m_iFreeBuildingClass = pXML->FindInInfoClass(szTextVal);

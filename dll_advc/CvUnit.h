@@ -513,7 +513,7 @@ public:
 	{
 		return m_pUnitInfo->isCanMoveAllTerrain();
 	}
-//keldath QA - is this good? replaced original code in the cpp file
+//keldath QA-DONE
 // Deliverator mountain mod
 	inline bool canMovePeak() const																	// Exposed to Python
 	{

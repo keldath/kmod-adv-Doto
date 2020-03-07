@@ -1377,23 +1377,26 @@ void CvCityAI::AI_chooseProduction()
 			}
 		}
 	}
-	//keldath - removed by dube wars - not sure seems good to remove.... delete the code duplication below to activate
+	//keldath QA-DONE
 	// ALN DuneWars - don't do this, not necessary (no colony maintenance) and confuses the AI on island maps
-	/* if (!bDanger && !bIsCapitalArea && area()->getCitiesPerPlayer(getOwner()) > iNumCapitalAreaCities)
+	 if (!bDanger && !bCapitalArea && area()->getCitiesPerPlayer(getOwner()) > iNumCapitalAreaCities)
 	{
 		// BBAI TODO:  This check should be done by player, not by city and optimize placement
 		// If losing badly in war, don't build big things
-		if( !bLandWar || (iWarSuccessRatio > -30) )
+		if( !bLandWar || (iWarSuccessRating > -30) )
 		{
-			if( kPlayer.getCapitalCity() == NULL || area()->getPopulationPerPlayer(getOwner()) > kPlayer.getCapitalCity()->area()->getPopulationPerPlayer(getOwner()) )
+			if (pCapital == NULL || kArea.getPopulationPerPlayer(getOwner()) >
+				pCapital->getArea().getPopulationPerPlayer(getOwner()))
 			{
-				if (AI_chooseBuilding(BUILDINGFOCUS_CAPITAL, 15))
+				//change suggested by f1rpo
+				int iOdds = 3 * kArea.getCitiesPerPlayer(getOwner());
+				if (AI_chooseBuilding(BUILDINGFOCUS_CAPITAL, iOdds))
 				{
 					return;
 				}
 			}
 		}
-	} */	
+	} 	/* org code
 	if (!bDanger && !bCapitalArea && kArea.getCitiesPerPlayer(getOwner()) > iNumCapitalAreaCities)
 	{
 		// BBAI TODO:  This check should be done by player, not by city and optimize placement
@@ -1408,7 +1411,7 @@ void CvCityAI::AI_chooseProduction()
 			}
 		}
 	}
-
+	*/
 	// K-Mod.
 	if (iProjectValue < 0 && (kPlayer.AI_atVictoryStage(AI_VICTORY_SPACE3) ||
 		!(bLandWar && iWarSuccessRating < 30)))
