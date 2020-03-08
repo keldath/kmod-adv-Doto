@@ -4,6 +4,10 @@
 #include "CvInfo_Unit.h"
 #include "CvXMLLoadUtility.h"
 #include "CvDLLXMLIFaceBase.h"
+//VET_Andera412_Blocade_Unit
+//in order for the game optionto work - this file is needed, explained by f1rpo for 097.
+#include "CvGame.h" 
+//VET_Andera412_Blocade_Unit
 
 
 bool CvUnitInfo::m_bCanAnyMoveAllTerrain = false; // advc.opt (static initialization)
@@ -1560,7 +1564,8 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 						if (pXML->GetChildXmlVal(szTextVal))
 						{
                             m_aszPrereqOrCivicsforPass3.push_back(szTextVal);
-                            pXML->GetNextXmlVal(&bTemp);
+							//keldath qa3 -it was &bTemp - whats the diff?
+                            pXML->GetNextXmlVal(bTemp);
                             m_abPrereqOrCivicsforPass3.push_back(bTemp);
 							gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 						}
@@ -1594,7 +1599,8 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 						if (pXML->GetChildXmlVal(szTextVal))
 						{
                             m_aszPrereqAndCivicsforPass3.push_back(szTextVal);
-                            pXML->GetNextXmlVal(&bTemp);
+							//keldath qa3 -it was &bTemp - whats the diff?
+                            pXML->GetNextXmlVal(bTemp);
                             m_abPrereqAndCivicsforPass3.push_back(bTemp);
 							gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 						}
@@ -1757,7 +1763,8 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 	m_iNotGameOption = pXML->FindInInfoClass(szTextVal);
 
 //	pXML->SetVariableListTagPair(&m_pbPrereqOrCivics, "PrereqOrCivics", sizeof(GC.getCivicInfo((CivicTypes)0)), GC.getNumCivicInfos());
-
+	//keldath qa3 - without sizeof - compile error.. error C2664: 'void CvXMLLoadUtility::SetVariableListTagPair(int ** ,const TCHAR *,CvString *,int,int)' : cannot convert parameter 3 from 'int' to 'CvString *'
+	//keldath qa3 - with sizeof - use of undefined type 'CvBuildingClassInfo'
 	pXML->SetVariableListTagPair(&m_pbPrereqBuildingClass,
 			"PrereqBuildingClasses", sizeof(GC.getBuildingClassInfo((BuildingClassTypes)0)),
 			GC.getNumBuildingClassInfos());

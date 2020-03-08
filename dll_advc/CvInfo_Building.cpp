@@ -1579,7 +1579,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	m_iFreeBonus = pXML->FindInInfoClass(szTextVal);
 	pXML->GetChildXmlValByName(&m_iNumFreeBonuses, "iNumFreeBonuses");
 // < Building Resource Converter Start >	GC.getNumBonusInfos()
-//keldath qa2 0 seens this was a change - is it good?
+//keldath qa2 - done - from f1rpo - The sizeof... parameter was unused, so I've removed it.
 //	pXML->SetVariableListTagPair(&m_paiRequiredInputBonuses, "RequiredInputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
 //	pXML->SetVariableListTagPair(&m_paiBuildingOutputBonuses, "BuildingOutputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
 	pXML->SetVariableListTagPair(&m_paiRequiredInputBonuses, "RequiredInputBonuses", GC.getNumBonusInfos());

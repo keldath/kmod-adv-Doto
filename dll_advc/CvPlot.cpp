@@ -5933,9 +5933,8 @@ void CvPlot::setCultureControl(PlayerTypes eIndex, int iNewValue, bool bUpdate, 
 
 	if (iNewValue >= 0 && getCultureControl(eIndex) != iNewValue)
 	{
-		if(NULL == m_aiCultureControl)
-//keldath QA2	
-//f1rpo said to delete ->which lines? not sure i got what part to remove.
+		//comment out - suggested by f1rpo - after keldath qa2-done
+		/*if(NULL == m_aiCultureControl)	
 		{
 			m_aiCultureControl = new int[MAX_PLAYERS];
 			for (int iI = 0; iI < MAX_PLAYERS; ++iI)
@@ -5943,7 +5942,7 @@ void CvPlot::setCultureControl(PlayerTypes eIndex, int iNewValue, bool bUpdate, 
 				m_aiCultureControl[iI] = 0;
 			}
 		}
-
+		*/
 		//m_aiCultureControl[eIndex] = iNewValue;
 		//f1rpo fix due to enummaps
 		m_aiCultureControl.set(eIndex, iNewValue);

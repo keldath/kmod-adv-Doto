@@ -1254,7 +1254,7 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_pabSpecialBuildingNotRequired, "SpecialBuildingNotRequireds", GC.getNumSpecialBuildingInfos());
 	pXML->SetVariableListTagPair(&m_pabSpecialistValid, "SpecialistValids", GC.getNumSpecialistInfos());
 // < Civic Infos Plus Start >
-	//keldath qa2 - removed sizeof(GC.getSpecialistInfo((SpecialistTypes)0))-fqrpo dont use it?
+	//keldath qa2 - removed sizeof(GC.getSpecialistInfo((SpecialistTypes)0))-f1rpo- (It was never used.)
 	//pXML->SetVariableListTagPair(&m_paiFreeSpecialistCount, "FreeSpecialistCounts", sizeof(GC.getSpecialistInfo((SpecialistTypes)0)), GC.getNumSpecialistInfos());
 	pXML->SetVariableListTagPair(&m_paiFreeSpecialistCount, "FreeSpecialistCounts", GC.getNumSpecialistInfos());
 

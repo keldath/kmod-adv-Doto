@@ -665,6 +665,9 @@ public:
 /**                                                                                              */
 /**                                                                                              */
 /*************************************************************************************************/
+	//f1rpo said :
+	//Shouldn't be needed now that you've added them to the GlobalDefines enum. But then all locations will have to use GC.getDefineINT(CvGlobals::...).
+	//decided to leave it here, i guess its not harmfull 
 	int getTGA_RELIGIONS();								// GAMEFONT
 	int getTGA_CORPORATIONS();							// GAMEFONT
 /*************************************************************************************************/

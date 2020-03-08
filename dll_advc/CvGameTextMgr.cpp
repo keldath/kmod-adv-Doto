@@ -19,7 +19,6 @@
 #include "CvDLLSymbolIFaceBase.h"
 #include <sstream> // advc.050
 
-
 // For displaying Asserts and error messages
 static char* szErrorMsg;
 
@@ -597,8 +596,8 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 	{
 		CvPlayer const& kOwner = GET_PLAYER(pUnit->getOwner());
 		szString.append(L", ");
-//keldath qa2 - not sure if the szTempBuffer.Format is written like f1rpo's methods.
-// nor that this even has an effect
+//keldath qa2done
+// 
 //		szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, PLAYER_TEXT_COLOR(kOwner), kOwner.getName());
 /************************************************************************************************/
 /* REVOLUTION_MOD                         02/01/08                                jdog5000      */
@@ -608,10 +607,15 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 		// For minor civs, display civ name instead of player name ... to differentiate
 		// and help human recognize why they can't contact that player
 		if( GET_PLAYER(pUnit->getOwner()).isMinorCiv() )
-			szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, kOwner.getPlayerTextColorR(), kOwner.getPlayerTextColorG(), kOwner.getPlayerTextColorB(), kOwner.getPlayerTextColorA(), kOwner.getCivilizationDescription());
-					
+			//f1rpo suggested syntax:
+			//option 1 - szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, kOwner.getPlayerTextColorR(), kOwner.getPlayerTextColorG(), kOwner.getPlayerTextColorB(), kOwner.getPlayerTextColorA(), kOwner.getCivilizationDescription());
+			//option 2 - szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, PLAYER_TEXT_COLOR(kOwner), kOwner.getCivilizationDescription());
+			szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, PLAYER_TEXT_COLOR(kOwner),
+        						kOwner.isMinorCiv() ? kOwner.getCivilizationDescription() : kOwner.getName());		
 		else
-			szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, kOwner.getPlayerTextColorR(), kOwner.getPlayerTextColorG(), kOwner.getPlayerTextColorB(), kOwner.getPlayerTextColorA(), kOwner.getName());
+			//f1rpo suggested syntax:
+			//option 1 - szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, kOwner.getPlayerTextColorR(), kOwner.getPlayerTextColorG(), kOwner.getPlayerTextColorB(), kOwner.getPlayerTextColorA(), kOwner.getName());
+			szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, PLAYER_TEXT_COLOR(kOwner), kOwner.getName());
 /************************************************************************************************/
 /* REVOLUTION_MOD                          END                                                  */
 /************************************************************************************************/
@@ -11237,7 +11241,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer, BuildingTyp
 			int eBonus = kBuilding.getBonusConsumed();
 			if (NO_BONUS != eBonus)
 			{
-				//keldath qa2 - changed Ij to eLoopYield	
+				//keldath qa2-done	
 				aiYields[eLoopYield] += kBuilding.getYieldProduced(eLoopYield) * pCity->getNumBonuses((BonusTypes)eBonus) / 100;
 			}
 			// davidlallen: building bonus yield, commerce end
@@ -11254,7 +11258,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer, BuildingTyp
 			int eBonus = kBuilding.getBonusConsumed();
 			if (NO_BONUS != eBonus)
 			{
-				//keldath qa2 - changed I to e	
+				//keldath qa2-done
 				aiCommerces[e] += kBuilding.getCommerceProduced(e) * pCity->getNumBonuses((BonusTypes)eBonus) / 100;
 			}
 			// davidlallen: building bonus yield, commerce end
@@ -13784,7 +13788,7 @@ void CvGameTextMgr::setBadHealthHelp(CvWStringBuffer &szBuffer, CvCity& city)
 			szBuffer.append(gDLL->getText("TXT_KEY_MISC_TERRAIN_HEALTH", iHealth, ((eTerrain == NO_TERRAIN) ? L"TXT_KEY_MISC_FEATURES" : GC.getTerrainInfo(eTerrain).getTextKeyWide())));
 			szBuffer.append(NEWLINE);
 		*/
-		//keldath qa2 - well okd code wont work - so i sort of duplicated the feature code by f1rpo
+		//keldath qa2 - DONE - keldath qa3 F1RPO SAID TO DEFINE IT AS eTerrain = -1?
 		TerrainTypes eTerrain = NO_TERRAIN;
 		for (CityPlotIter it(city); it.hasNext(); ++it)
 		{
@@ -13802,13 +13806,14 @@ void CvGameTextMgr::setBadHealthHelp(CvWStringBuffer &szBuffer, CvCity& city)
 			}
 		}
 		szBuffer.append(gDLL->getText("TXT_KEY_MISC_TERRAIN_HEALTH", iHealth,
-				(eTerrain == NO_FEATURE ?
+				(eTerrain == NO_TERRAIN ?
 				L"TXT_KEY_MISC_SURROUNDINGS" : // advc.901: was TXT_KEY_MISC_FEATURES
 				GC.getInfo(eTerrain).getTextKeyWide())));
 		szBuffer.append(NEWLINE);
 /*****************************************************************************************************/
 /**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
 /*****************************************************************************************************/
+//keldath qa3 - is this suppose to be here or after the brackets below?
 /*************************************************************************************************/
 /** Specialists Enhancements, by Supercheese 10/9/09                                                   */
 /**                                                                                              */
@@ -18895,9 +18900,17 @@ void CvGameTextMgr::setCommerceHelp(CvWStringBuffer &szBuffer, CvCity const& kCi
 	}
 
 	int iBuildingCommerce = kCity.getBuildingCommerce(eCommerce);
-	//KELDATH qa2 -  kCity.getBuildingCommerceChange(eCommerce); THROWS AN ERROR
+	//KELDATH qa2 -  done
 	// < Civic Infos Plus Start >
 	//int iBuildingCommerce = kCity.getBuildingCommerce(eCommerce) + kCity.getBuildingCommerceChange(eCommerce);
+	//f1rpo suggested to  run over all buildings and get their commerce total change , not just 1 building
+	FOR_EACH_ENUM(Building)
+	{
+    	iBuildingCommerce += kCity.getNumActiveBuilding(eLoopBuilding) *
+            	kCity.getBuildingCommerceChange(
+				//keldath qa3 - 	getBuildingClass() is in events - f1rpo - did you mean getBuildingClassType()?
+            	GC.getInfo(eLoopBuilding).getBuildingClassType(), eCommerce);
+	}
 	// < Civic Infos Plus End   >
 	if(iBuildingCommerce != 0)
 	{

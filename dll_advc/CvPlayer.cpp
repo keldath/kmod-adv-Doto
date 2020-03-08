@@ -7013,7 +7013,11 @@ bool CvPlayer::canEverTrade(TechTypes eTech) const
 		return false;
 	}
 */
-	//keldath-QA2 - do i need to set xml python call to 1? which of them>?
+	//keldath-QA2-done
+	//from f1rpo USE_CANNOT_RESEARCH_CALLBACK
+	//But I'd only enable it if cannotResearch actually does something in Python. I can't find that function in your old Doto files, so the author (Grave) probably only added the Python call in order to be consistent with CvPlayer::canEverResearch.
+	//keldath qa3 - i got that code years ago, cant get the original, canr tell...
+	//as it is now? no harm? i prefer not to use callback thing.
 	if (GC.getPythonCaller()->cannotResearchOverride(getID(), eTech, false))
 		return false;
 	return true;

@@ -6823,8 +6823,8 @@ void CvGame::doHolyCity()  // advc: many style changes
 		*/
 //david lalen forbiddan religion - dune wars end
 		
-		int iValue = 0; //keldath QA2 i have no idea what value to use - since the above is removed
 		int iBestValue = MAX_INT;
+		int iValue = getSorenRandNum(10, "Found Religion (Player)");
 		PlayerTypes eBestPlayer = NO_PLAYER;
 		for (int iJ = 0; iJ < MAX_PLAYERS; iJ++)
 		{
@@ -6838,7 +6838,6 @@ void CvGame::doHolyCity()  // advc: many style changes
 				CivilizationTypes eCiv = kMember.getCivilizationType();
 				if (!(GC.getCivilizationInfo(eCiv).isForbidden((ReligionTypes)iI)))
 //david lalen forbiddan religion - dune wars end
-					int iValue = getSorenRandNum(10, "Found Religion (Player)");
 					if (!kMember.isHuman())
 						iValue += 18; // advc.138: Was 10. Need some x: 15 < x < 20.
 					for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
@@ -6866,13 +6865,14 @@ void CvGame::doHolyCity()  // advc: many style changes
 		if (isOption(GAMEOPTION_PICK_RELIGION))
 		{
     		ReligionTypes eChosenReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
-    		if (!GC.getCivilizationInfo(GET_PLAYER(eBestPlayer).getCivilizationType()).isForbidden(eChosenReligion))
+			//check no religion fix - suggested by f1rpo
+    		if (eChosenReligion != NO_RELIGION && !GC.getCivilizationInfo(GET_PLAYER(eBestPlayer).getCivilizationType()).isForbidden(eChosenReligion))
         		eFoundReligion = eChosenReligion;
 		}
 */
 		if (eFoundReligion != NO_RELIGION)
 //david lalen forbiddan religion - dune wars end
-//keldath QA- the true is something with units, not sure
+//keldath QA-done
 //f1rpo explenation for the true param:
 //true will create free missionaries. Seems like those are normally not created when a religion is founded at game start (actually, founding gets delayed until turn 5 iirc), but, if you want to change that – sounds fair enough.
 		//	GET_PLAYER(eBestPlayer).foundReligion(eFoundReligion, eReligion, false);

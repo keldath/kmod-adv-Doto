@@ -4491,17 +4491,16 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer, bo
 // end
 					int iBestValue = MAX_INT;
 					PlayerTypes eBestPlayer = NO_PLAYER;
-					for (MemberIter it(getID()); it.hasNext(); ++it)
+					// davidlallen religion forbidden to civilization start
+					CivilizationTypes eCiv = GET_PLAYER((PlayerTypes)iJ).getCivilizationType();
+					if (!(GC.getCivilizationInfo(eCiv).isForbidden((ReligionTypes)iI)))
+					//keldath qa2-done
+					CivilizationTypes eCiv = kMember.getCivilizationType();
 					{
-						// davidlallen religion forbidden to civilization start
-						CivilizationTypes eCiv = GET_PLAYER((PlayerTypes)iJ).getCivilizationType();
-						if (!(GC.getCivilizationInfo(eCiv).isForbidden((ReligionTypes)iI)))
-						//keldath qa2 - f1rpo said to redifine it if the check is true.
-						//did i get it right?
-						CivilizationTypes eCiv = kMember.getCivilizationType();
-						{
-						// davidlallen religion forbidden to civilization end
-							
+					//jeldath qa3 - well third time the charm, ok?
+					// davidlallen religion forbidden to civilization end
+						for (MemberIter it(getID()); it.hasNext(); ++it)
+						{							
 							CvPlayer const& kMember = *it;
 
 							int iValue = 10;
@@ -4514,7 +4513,7 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer, bo
 
 							if (iValue < iBestValue)
 							{
-								iBestValue = iValue;
+								BestValue = iValue;
 								eBestPlayer = kMember.getID();
 							}
 						}

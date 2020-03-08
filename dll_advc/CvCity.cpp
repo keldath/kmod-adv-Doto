@@ -8056,7 +8056,8 @@ void CvCity::updateSpecialistCivicExtraCommerce(CommerceTypes eCommerce)
 
 	if (iOldCommerce != iNewCommerce)
 	{
-		iNewCommerce = m_aiExtraSpecialistCommerce.get(eCommerce)  ;
+		//method changed by f1rpo //keldath -done
+		m_aiExtraSpecialistCommerce.set(eCommerce, iNewCommerce);
 		FAssert(getSpecialistCivicExtraCommerce(eCommerce) >= 0);
 
 		changeSpecialistCommerce(eCommerce, (iNewCommerce - iOldCommerce));

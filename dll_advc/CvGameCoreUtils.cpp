@@ -1588,15 +1588,15 @@ int pathValid(FAStarNode* parent, FAStarNode* node, int data, const void* pointe
 		if (pSelectionGroup->getNumUnits() > 0)
 		{
 			CvUnit* pLoopUnit;
-			//keldath QA2 - i added these cause i didnt know how to make use of the k's above
-			//the cannotMoveFromPlotToPlot probabaly needs to be changes also - but dodnt know how
-			// so need some help, but this seems to work also.
+			//keldath QA2-done
 			CvPlot* pFromPlot = GC.getMap().plotSoren(parent->m_iX, parent->m_iY);
 			CvPlot* pToPlot = GC.getMap().plotSoren(node->m_iX, node->m_iY);
-
+			
 			for (CLLNode<IDInfo>* pUnitNode = pSelectionGroup->headUnitNode(); pUnitNode != NULL; pUnitNode = pSelectionGroup->nextUnitNode(pUnitNode))
 			{
 				pLoopUnit = ::getUnit(pUnitNode->m_data);
+				//can use also the below instead of new vars above - suggested by f1rpo
+				//if (pLoopUnit->cannotMoveFromPlotToPlot(&kFromPlot,&kToPlot,/*bWithdrawal*/false)
 				if (pLoopUnit->cannotMoveFromPlotToPlot(pFromPlot, pToPlot,/*bWithdrawal*/false))
 					{return FALSE;}
 			}
