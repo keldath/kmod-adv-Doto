@@ -13751,6 +13751,7 @@ void CvGameTextMgr::setBadHealthHelp(CvWStringBuffer &szBuffer, CvCity& city)
 				L"TXT_KEY_MISC_SURROUNDINGS" : // advc.901: was TXT_KEY_MISC_FEATURES
 				GC.getInfo(eFeature).getTextKeyWide())));
 		szBuffer.append(NEWLINE);
+}
 /*****************************************************************************************************/
 /**  Author: TheLadiesOgre                                                                          **/
 /**  Date: 15.10.2009                                                                               **/
@@ -13788,7 +13789,7 @@ void CvGameTextMgr::setBadHealthHelp(CvWStringBuffer &szBuffer, CvCity& city)
 			szBuffer.append(gDLL->getText("TXT_KEY_MISC_TERRAIN_HEALTH", iHealth, ((eTerrain == NO_TERRAIN) ? L"TXT_KEY_MISC_FEATURES" : GC.getTerrainInfo(eTerrain).getTextKeyWide())));
 			szBuffer.append(NEWLINE);
 		*/
-		//keldath qa2 - DONE - keldath qa3 F1RPO SAID TO DEFINE IT AS eTerrain = -1?
+		//keldath qa2-DONE - keldath qa3 F1RPO SAID TO DEFINE IT AS eTerrain = -1?
 		TerrainTypes eTerrain = NO_TERRAIN;
 		for (CityPlotIter it(city); it.hasNext(); ++it)
 		{
@@ -13813,7 +13814,11 @@ void CvGameTextMgr::setBadHealthHelp(CvWStringBuffer &szBuffer, CvCity& city)
 /*****************************************************************************************************/
 /**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
 /*****************************************************************************************************/
-//keldath qa3 - is this suppose to be here or after the brackets below?
+//keldath qa3-done
+/*
+After. And actually, the "Display Terrain Bad Health Help" code should also come after the closing brace. That brace closes a conditional that checks
+-city.getSurroundingBadHealth() > 0, and neither bad health from terrain nor from specialists is included in that computation.
+*/
 /*************************************************************************************************/
 /** Specialists Enhancements, by Supercheese 10/9/09                                                   */
 /**                                                                                              */
@@ -13828,7 +13833,6 @@ void CvGameTextMgr::setBadHealthHelp(CvWStringBuffer &szBuffer, CvCity& city)
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
-}
 
 	iHealth = city.getEspionageHealthCounter();
 	if (iHealth > 0)

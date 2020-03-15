@@ -1825,7 +1825,7 @@ void CvXMLLoadUtility::SetVariableListTagPair(int **ppiList, const TCHAR* szRoot
 /*                        i think this is for the tga index or the unit tags from revdcm? - keldath                                                                      */
 /************************************************************************************************/
 //allows loading of a variable pair into an array by tag name
-void CvXMLLoadUtility::SetVariableListTagPair(int **ppiList, const TCHAR* szRootTagName,
+void CvXMLLoadUtility::SetVariableListTagPair2(int **ppiList, const TCHAR* szRootTagName,
 		int iInfoBaseSize, int iInfoBaseLength,
 		const TCHAR* szValueTagName, int iValueInfoBaseLength, int iDefaultListVal)
 {

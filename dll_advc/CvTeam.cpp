@@ -4492,12 +4492,16 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer, bo
 					int iBestValue = MAX_INT;
 					PlayerTypes eBestPlayer = NO_PLAYER;
 					// davidlallen religion forbidden to civilization start
+					/* no need for that - f1rpo fix
+					
 					CivilizationTypes eCiv = GET_PLAYER((PlayerTypes)iJ).getCivilizationType();
-					if (!(GC.getCivilizationInfo(eCiv).isForbidden((ReligionTypes)iI)))
-					//keldath qa2-done
 					CivilizationTypes eCiv = kMember.getCivilizationType();
+					*/
+					if (!(GC.getCivilizationInfo(kMember.getCivilizationType()).isForbidden((ReligionTypes)iI)))
+					//keldath qa2-done
+					
 					{
-					//jeldath qa3 - well third time the charm, ok?
+					//keldath qa4 - maybe now ?:)
 					// davidlallen religion forbidden to civilization end
 						for (MemberIter it(getID()); it.hasNext(); ++it)
 						{							

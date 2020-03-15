@@ -2898,8 +2898,8 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
 		}
 			//kedath qa2-done
 		// < JImprovementLimit Mod Start >
-		//kedath qa3
-		//CvImpromentInfo const& kImprov = GC.getInfo(eImprovement);//error with it so i changed back
+		//kedath qa3-done 
+		CvImprovementInfo const& kImprov = GC.getInfo(eImprovement);
 		// < JImprovementLimit Mod End >
 		if (eImprovement != NO_IMPROVEMENT)
 		{
@@ -2908,10 +2908,11 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
 				 
 			
 			// < JImprovementLimit Mod Start >
-                    if (GC.getInfo(eImprovement).getImprovementRequired() != NO_IMPROVEMENT)
+                    if (kImprov.getImprovementRequired() != NO_IMPROVEMENT)
                      {
                             szBuffer.append(NEWLINE);
-                            szBuffer.append(gDLL->getText("TXT_KEY_ACTION_WILL_REPLACE_IMPROVEMENT", GC.getInfo((ImprovementTypes)GC.getInfo(eImprovement).getImprovementRequired()).getDescription()));
+							//keldath-qa4- this part "GC.getInfo((ImprovementTypes)kImprov.getIm" looks wierd?
+                            szBuffer.append(gDLL->getText("TXT_KEY_ACTION_WILL_REPLACE_IMPROVEMENT", GC.getInfo((ImprovementTypes)kImprov.getImprovementRequired()).getDescription()));
 					}
                         else
                         {
@@ -2926,12 +2927,12 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
 			*/
 			}
 			// < JImprovementLimit Mod Start >
-					if (GC.getInfo(eImprovement).getMakesInvalidRange() > 0)
+					if (kImprov.getMakesInvalidRange() > 0)
                     {
-                        if (kMissionPlot.isImprovementInRange(eImprovement, GC.getInfo(eImprovement).getMakesInvalidRange(), true))
+                        if (kMissionPlot.isImprovementInRange(eImprovement, kImprov.getMakesInvalidRange(), true))
                         {
                             szBuffer.append(NEWLINE);
-                            szBuffer.append(gDLL->getText("TXT_KEY_ACTION_IMPROVEMENT_TO_CLOSE", GC.getInfo(eImprovement).getDescription(), GC.getInfo(eImprovement).getMakesInvalidRange()));
+                            szBuffer.append(gDLL->getText("TXT_KEY_ACTION_IMPROVEMENT_TO_CLOSE", kImprov.getDescription(), kImprov.getMakesInvalidRange()));
 					}
 				}
 					// < JImprovementLimit Mod End >	

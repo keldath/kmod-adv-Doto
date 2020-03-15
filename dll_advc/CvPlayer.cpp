@@ -7000,10 +7000,14 @@ bool CvPlayer::canEverTrade(TechTypes eTech) const
 		return false;
 	}
 
+/* 
+//no need to use this arglists since python isnt used anyways with this mod
+//f1rpo suggestion
 	CyArgsList argsList;
 	argsList.add(getID());
 	argsList.add(eTech);
 	argsList.add(false);
+*/
 //	long lResult=0;
 //Python call. Potentially slow. There is
 //in AdvCiv, which should have the same effect and only calls Python if the callback is enabled in XML. (No need for the argsList and lResult variables then.)
@@ -7016,8 +7020,11 @@ bool CvPlayer::canEverTrade(TechTypes eTech) const
 	//keldath-QA2-done
 	//from f1rpo USE_CANNOT_RESEARCH_CALLBACK
 	//But I'd only enable it if cannotResearch actually does something in Python. I can't find that function in your old Doto files, so the author (Grave) probably only added the Python call in order to be consistent with CvPlayer::canEverResearch.
-	//keldath qa3 - i got that code years ago, cant get the original, canr tell...
+	//keldath qa3 - i got that code years ago, cant get the original, cant tell...
 	//as it is now? no harm? i prefer not to use callback thing.
+/*
+		f1rpo -> I'd leave it as it is (with the callback disabled in XML). The point is apparently, that, when a Python modder uses (and enables) the cannotResearch callback to prevent some player from researching a tech, that player will also be prohibited from receiving that tech through trade. You should remove the argsList stuff though; CvPythonCaller::cannotResearchOverride doesn't need it.
+*/	
 	if (GC.getPythonCaller()->cannotResearchOverride(getID(), eTech, false))
 		return false;
 	return true;

@@ -6822,14 +6822,13 @@ void CvGame::doHolyCity()  // advc: many style changes
 			continue;
 		*/
 //david lalen forbiddan religion - dune wars end
-		
+		int iValue = 0;
 		int iBestValue = MAX_INT;
-		int iValue = getSorenRandNum(10, "Found Religion (Player)");
 		PlayerTypes eBestPlayer = NO_PLAYER;
 		for (int iJ = 0; iJ < MAX_PLAYERS; iJ++)
 		{
 			CvPlayer const& kMember = GET_PLAYER((PlayerTypes)iJ);
-			//keldath qa2 - i removed the check for other team- since the above is cancelled.
+			//keldath qa2-done - i removed the check for other team- since the above is cancelled.
 			if (!kMember.isAlive() || /*kMember.getTeam() != eBestTeam ||*/ kMember.getNumCities() <= 0)
 				continue;
 //david lalen forbiddan religion - dune wars start
@@ -6838,6 +6837,7 @@ void CvGame::doHolyCity()  // advc: many style changes
 				CivilizationTypes eCiv = kMember.getCivilizationType();
 				if (!(GC.getCivilizationInfo(eCiv).isForbidden((ReligionTypes)iI)))
 //david lalen forbiddan religion - dune wars end
+					iValue = getSorenRandNum(10, "Found Religion (Player)");//f1rpo quote-Needs to be in the player loop so that each player recives a different random number.
 					if (!kMember.isHuman())
 						iValue += 18; // advc.138: Was 10. Need some x: 15 < x < 20.
 					for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)

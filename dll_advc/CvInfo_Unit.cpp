@@ -1564,7 +1564,7 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 						if (pXML->GetChildXmlVal(szTextVal))
 						{
                             m_aszPrereqOrCivicsforPass3.push_back(szTextVal);
-							//keldath qa3 -it was &bTemp - whats the diff?
+							//keldath qa3-done -it was &bTemp 
                             pXML->GetNextXmlVal(bTemp);
                             m_abPrereqOrCivicsforPass3.push_back(bTemp);
 							gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
@@ -1761,23 +1761,36 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(szTextVal, "NotGameOption",
 		""); // f1rpo
 	m_iNotGameOption = pXML->FindInInfoClass(szTextVal);
-
+//civics is handles by archid mod code.
 //	pXML->SetVariableListTagPair(&m_pbPrereqOrCivics, "PrereqOrCivics", sizeof(GC.getCivicInfo((CivicTypes)0)), GC.getNumCivicInfos());
-	//keldath qa3 - without sizeof - compile error.. error C2664: 'void CvXMLLoadUtility::SetVariableListTagPair(int ** ,const TCHAR *,CvString *,int,int)' : cannot convert parameter 3 from 'int' to 'CvString *'
-	//keldath qa3 - with sizeof - use of undefined type 'CvBuildingClassInfo'
-	pXML->SetVariableListTagPair(&m_pbPrereqBuildingClass,
+	
+	/*
+		keldath qa4 - ok now i got it that revdcm changed the SetVariableListTagPair2, 
+		i tried t oconvert it to take advciv changes, but failed...
+		so i just renamed it....in the xmlloadset file something to SetVariableListTagPair2
+		its silly...but, thats what i came up with......
+		seems the second chat var in the paraerters below - for example "TechOverride"
+		does not exists in advc SetVariableListTagPair
+		doint this rename -a allowed to compile to continue...
+	*/
+	
+	pXML->SetVariableListTagPair(&m_pbPrereqBuildingClass, "PrereqBuildingClasses", GC.getNumBuildingClassInfos());
+	
+	/*pXML->SetVariableListTagPair(&m_pbPrereqBuildingClass,
 			"PrereqBuildingClasses", sizeof(GC.getBuildingClassInfo((BuildingClassTypes)0)),
 			GC.getNumBuildingClassInfos());
-
-	pXML->SetVariableListTagPair(&m_piPrereqBuildingClassOverrideTech,
-			"PrereqBuildingClasses", sizeof(GC.getBuildingClassInfo((BuildingClassTypes)0)),
+	*/
+	pXML->SetVariableListTagPair2(&m_piPrereqBuildingClassOverrideTech,
+			"PrereqBuildingClasses", /*sizeof(GC.getBuildingClassInfo((BuildingClassTypes)0))*/0,
 			GC.getNumBuildingClassInfos(), "TechOverride", GC.getNumTechInfos());
-
-	pXML->SetVariableListTagPair(&m_piPrereqBuildingClassOverrideEra,
-			"PrereqBuildingClasses", sizeof(GC.getBuildingClassInfo((BuildingClassTypes)0)),
+		
+	pXML->SetVariableListTagPair2(&m_piPrereqBuildingClassOverrideEra,
+			"PrereqBuildingClasses", /*sizeof(GC.getBuildingClassInfo((BuildingClassTypes)0))*/0,
 			GC.getNumBuildingClassInfos(), "EraOverride", GC.getNumEraInfos());
 
-	pXML->SetVariableListTagPair(&m_pbForceObsoleteUnitClass, "ForceObsoleteUnitClasses", sizeof(GC.getUnitClassInfo((UnitClassTypes)0)), GC.getNumUnitClassInfos());
+	pXML->SetVariableListTagPair(&m_pbForceObsoleteUnitClass, "ForceObsoleteUnitClasses", 
+			/*sizeof(GC.getUnitClassInfo((UnitClassTypes)0)),*/ GC.getNumUnitClassInfos());
+	
 /********************************************************************************/
 /**		REVDCM									END								*/
 /********************************************************************************/
@@ -1901,9 +1914,10 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}*/
 //Shqype Vicinity Bonus End
-	} /* <advc.905b> Could implement this like e.g. BonusHappinessChanges, but that
+    /* <advc.905b> Could implement this like e.g. BonusHappinessChanges, but that
 		 would mean storing one int for every (unit type, bonus type) pair. Instead,
 		 do sth. similar to the code for PrereqOrBonuses above. */
+	//keldath qa4 - why is there an error from f1rpo code?
 	if(gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "SpeedBonuses"))
 	{
 		if(pXML->SkipToNextVal()) {

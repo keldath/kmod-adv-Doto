@@ -154,7 +154,7 @@ public:
 //Well, who knows. Live and let live. :) - Amen brother!
 /************************************************************************************************/
 	// allocate and initialize a list from a tag pair in the xml by tag name
-	void SetVariableListTagPair(int **ppiList, const TCHAR* szRootTagName,
+	void SetVariableListTagPair2(int **ppiList, const TCHAR* szRootTagName,
 		int iInfoBaseSize, int iInfoBaseLength,
 		const TCHAR* szValueTagName, int iValueInfoBaseLength, int iDefaultListVal = -1);
 /************************************************************************************************/

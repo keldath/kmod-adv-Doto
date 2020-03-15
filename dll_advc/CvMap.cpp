@@ -341,7 +341,7 @@ void CvMap::updateCenterUnit()  // advc: some style changes
 			iLoopRange = kLoopUnit.airRange();
 		//keldath Ranged Strike
 		//vincentz ranged strike - seems good to add a code part for ranged strike units.
-		else if (pLoopUnit->getDomainType() != DOMAIN_AIR && pLoopUnit->airRange() > 0) 
+		else if (kLoopUnit.getDomainType() != DOMAIN_AIR && kLoopUnit.airRange() > 0)
 		{
 			iLoopRange = kLoopUnit.airRange();
 		}
