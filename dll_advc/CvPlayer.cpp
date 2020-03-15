@@ -4763,6 +4763,7 @@ bool CvPlayer::canRaze(CvCity const& kCity) const // advc: param was CvCity*
 		/*influence driven war                                                                                              */
 		/************************************************************************************************/
 		// Change for IDW, so AI may raze cities it captures
+			//keldath qa4 - error on  error C2664 : 'CvPlot::isCultureRangeCity' : cannot convert parameter 2 from 'const int' to 'CultureLevelTypes'
 		if (!GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR) || kCity.isEverOwned(getID()) || kCity.plot()->isCultureRangeCity(getID(), std::max(0,GC.getNumCultureLevelInfos() - 1)) )
 		{
 			if (kCity.calculateTeamCulturePercent(getTeam()) >= GC.getDefineINT("RAZING_CULTURAL_PERCENT_THRESHOLD"))
