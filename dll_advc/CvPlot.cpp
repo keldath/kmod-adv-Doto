@@ -5807,7 +5807,7 @@ void CvPlot::setImprovementOwner(PlayerTypes eNewValue)
 	//return m_aiCultureControl[eIndex];
 	//f1rpo change due to enummaps
 //	return m_aiCultureControl.get(eIndex);
-}
+//}
 
 
 int CvPlot::countTotalCultureControl() const
@@ -8897,7 +8897,7 @@ float CvPlot::getAqueductSourceWeight() const
 	// Deliverator - changed next line fresh water
 	if (isLake() || isPeak() || (getImprovementType() != NO_IMPROVEMENT && GC.getImprovementInfo(getImprovementType()).getAddsFreshWaterInRadius() >= 0)
 	//keldath added from bts
-	|| isFeature() && GC.getInfo(getFeatureType()).isAddsFreshWater()))
+		|| isFeature() && GC.getInfo(getFeatureType()).isAddsFreshWater())
 	{
 		fWeight = 1.0f;
 	}
@@ -9188,7 +9188,9 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 		{
 			TeamTypes eOurTeam = pUnit->getTeam();
 			bool bPlotWithoutOurUnit_Wrap = true;
-			bool bPlotWithoutEnemy = (GC.getBLOCADE_UNIT() > 1);//bPlotWithoutEnemy = true//(bPlotWithoutEnemy && (GC.getBLOCADE_UNIT() > 1))
+			//keldath qa5 - fix usage of calls from globals.
+			//bool bPlotWithoutEnemy = (GC.getBLOCADE_UNIT() > 1);//bPlotWithoutEnemy = true//(bPlotWithoutEnemy && (GC.getBLOCADE_UNIT() > 1))
+			bool bPlotWithoutEnemy = GC.getDefineINT(CvGlobals::BASE_UNIT_UPGRADE_COST) > 1;
 			if (isVisible(eOurTeam, false))
 			{
 				bool bOurTeam;

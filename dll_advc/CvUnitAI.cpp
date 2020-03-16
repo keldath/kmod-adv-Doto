@@ -17037,7 +17037,7 @@ bool CvUnitAI::AI_improveCity(CvCityAI const& kCity) // advc.003u: param was CvC
 			if (getPlot().isHills())
 				iPlotMoveCost += GC.getDefineINT(CvGlobals::HILLS_EXTRA_MOVEMENT);
 //===NM=====Mountain Mod===0=====
-			if (getPlot()->isPeak())
+			if (getPlot().isPeak())
 				iPlotMoveCost += GC.getDefineINT(CvGlobals::PEAK_EXTRA_MOVEMENT);
 //===NM=====Mountain Mod===X=====
 			if (iPlotMoveCost > 1)

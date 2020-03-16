@@ -525,6 +525,9 @@ protected:
 	int m_iVassalTradingCount;
 	int m_iBridgeBuildingCount;
 	int m_iIrrigationCount;
+	/* Population Limit ModComp - Beginning */
+	int m_iNoPopulationLimitCount;
+	/* Population Limit ModComp - End */
 	int m_iIgnoreIrrigationCount;
 	int m_iWaterWorkCount;
 	int m_iVassalPower;

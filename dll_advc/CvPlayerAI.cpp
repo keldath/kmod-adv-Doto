@@ -15105,7 +15105,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 /**	CMEDIT: End																					**/
 /*************************************************************************************************/
 
-		}/*if (iI == YIELD_FOOD)
+		/*if (iI == YIELD_FOOD)
 			iTempValue *= 3;
 		else if (iI == YIELD_PRODUCTION)
 			iTempValue *= ((AI_avoidScience()) ? 6 : 2);

@@ -4764,7 +4764,9 @@ bool CvPlayer::canRaze(CvCity const& kCity) const // advc: param was CvCity*
 		/************************************************************************************************/
 		// Change for IDW, so AI may raze cities it captures
 			//keldath qa4 - error on  error C2664 : 'CvPlot::isCultureRangeCity' : cannot convert parameter 2 from 'const int' to 'CultureLevelTypes'
-		if (!GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR) || kCity.isEverOwned(getID()) || kCity.plot()->isCultureRangeCity(getID(), std::max(0,GC.getNumCultureLevelInfos() - 1)) )
+		if (!GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR) || kCity.isEverOwned(getID()) || kCity.plot()->isCultureRangeCity(getID(), (CultureLevelTypes)std::max(0,GC.getNumCultureLevelInfos() - 1)))
+	//can also be this syntax using a small func added by f1rpo to cvinfo_city.h - keldath entry
+	//	if (!GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR) || kCity.isEverOwned(getID()) || kCity.getPlot().isCultureRangeCity(getID(), CvCultureLevelInfo::finalCultureLevel()))
 		{
 			if (kCity.calculateTeamCulturePercent(getTeam()) >= GC.getDefineINT("RAZING_CULTURAL_PERCENT_THRESHOLD"))
 			{
@@ -7981,7 +7983,7 @@ int CvPlayer::specialistCommerce(SpecialistTypes eSpecialist, CommerceTypes eCom
 	//return (GC.getInfo(eSpecialist).getCommerceChange(eCommerce) + getSpecialistExtraCommerce(eCommerce));
 	//return (GC.getSpecialistInfo(eSpecialist).getCommerceChange(eCommerce) + getSpecialistExtraCommerce(eCommerce));
 		
-	return (GC.getInfo(eSpecialist).getCommerceChange(eCommerce) + getSpecialistExtraCommerce(eCommerce)); + getSpecialistCivicExtraCommerce (eSpecialist, eCommerce));
+	return (GC.getInfo(eSpecialist).getCommerceChange(eCommerce) + getSpecialistExtraCommerce(eCommerce) + getSpecialistCivicExtraCommerce (eSpecialist, eCommerce));
 	/*************************************************************************************************/
 	/**	CMEDIT: End																					**/
 	/*************************************************************************************************/

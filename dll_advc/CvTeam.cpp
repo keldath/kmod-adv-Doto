@@ -2814,7 +2814,7 @@ int CvTeam::getCommerceRateModifier(CommerceTypes eIndex)
 {
 	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
 	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
-	return m_aiCommerceRateModifier[eIndex];
+	return m_aiCommerceRateModifier.get(eIndex);
 }
 
 
@@ -4486,44 +4486,33 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer, bo
 				if (GC.getInfo(eLoopReligion).getTechPrereq() != eTech)
 					continue;
 //david lalen forbidden religion dune wars
-				if (!g.isReligionSlotTaken((ReligionTypes)iI))
+				if (!g.isReligionSlotTaken(eLoopReligion))
 				{
 // end
 					int iBestValue = MAX_INT;
 					PlayerTypes eBestPlayer = NO_PLAYER;
-					// davidlallen religion forbidden to civilization start
-					/* no need for that - f1rpo fix
-					
-					CivilizationTypes eCiv = GET_PLAYER((PlayerTypes)iJ).getCivilizationType();
-					CivilizationTypes eCiv = kMember.getCivilizationType();
-					*/
-					if (!(GC.getCivilizationInfo(kMember.getCivilizationType()).isForbidden((ReligionTypes)iI)))
-					//keldath qa2-done
-					
-					{
-					//keldath qa4 - maybe now ?:)
 					// davidlallen religion forbidden to civilization end
-						for (MemberIter it(getID()); it.hasNext(); ++it)
-						{							
-							CvPlayer const& kMember = *it;
+					for (MemberIter it(getID()); it.hasNext(); ++it)
+					{							
+						CvPlayer const& kMember = *it;
+						if (GC.getInfo(kMember.getCivilizationType()).isForbidden(eLoopReligion))
+    						continue;								
+							
+						int iValue = 10;
+						iValue += g.getSorenRandNum(10, "Found Religion (Player)");
+						for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
+							iValue += kMember.getHasReligionCount((ReligionTypes)iK) * 10;
 
-							int iValue = 10;
-							iValue += g.getSorenRandNum(10, "Found Religion (Player)");
-							for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
-								iValue += kMember.getHasReligionCount((ReligionTypes)iK) * 10;
+						if (kMember.getCurrentResearch() != eTech)
+							iValue *= 10;
 
-							if (kMember.getCurrentResearch() != eTech)
-								iValue *= 10;
-
-							if (iValue < iBestValue)
-							{
-								BestValue = iValue;
-								eBestPlayer = kMember.getID();
-							}
+						if (iValue < iBestValue)
+						{
+							iBestValue = iValue;
+							eBestPlayer = kMember.getID();
 						}
+					}
 //forbiden religion david lalen - by keldath 
-				}
-//end
 				if (eBestPlayer == NO_PLAYER)
 					continue;
 
@@ -4561,6 +4550,9 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer, bo
 				bReligionFounded = true;
 				bFirstPerk = true;
 			}
+// added ) for pick religion forbidden religion david lalen dune wars
+	}
+//end
 			FOR_EACH_ENUM(Corporation)
 			{
 				CorporationTypes const eCorp = eLoopCorporation;
@@ -5481,7 +5473,7 @@ void CvTeam::processTech(TechTypes eTech, int iChange) // advc: style changes
 		changeRouteChange(eLoopRoute, GC.getInfo(eLoopRoute).getTechMovementChange(eTech) * iChange);
 	}
 // < Civic Infos Plus Start >
-    for (iI = 0; iI < MAX_PLAYERS; iI++)
+    for (int iI = 0; iI < MAX_PLAYERS; iI++)
 	{
 		if (GET_PLAYER((PlayerTypes)iI).isAlive())
 		{
@@ -5495,7 +5487,7 @@ void CvTeam::processTech(TechTypes eTech, int iChange) // advc: style changes
 		}
 	}
 
-	for (iI = 0; iI < MAX_PLAYERS; iI++)
+	for (int iI = 0; iI < MAX_PLAYERS; iI++)
 	{
 		if (GET_PLAYER((PlayerTypes)iI).isAlive())
 		{

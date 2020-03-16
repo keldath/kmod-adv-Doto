@@ -2911,7 +2911,7 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
                     if (kImprov.getImprovementRequired() != NO_IMPROVEMENT)
                      {
                             szBuffer.append(NEWLINE);
-							//keldath-qa4- this part "GC.getInfo((ImprovementTypes)kImprov.getIm" looks wierd?
+							//keldath-qa4-done this part "GC.getInfo((ImprovementTypes)kImprov.getIm" looks wierd?
                             szBuffer.append(gDLL->getText("TXT_KEY_ACTION_WILL_REPLACE_IMPROVEMENT", GC.getInfo((ImprovementTypes)kImprov.getImprovementRequired()).getDescription()));
 					}
                         else

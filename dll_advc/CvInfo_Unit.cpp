@@ -1780,11 +1780,11 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 			"PrereqBuildingClasses", sizeof(GC.getBuildingClassInfo((BuildingClassTypes)0)),
 			GC.getNumBuildingClassInfos());
 	*/
-	pXML->SetVariableListTagPair2(&m_piPrereqBuildingClassOverrideTech,
+	pXML->SetVariableListTagPairRevDCM(&m_piPrereqBuildingClassOverrideTech,
 			"PrereqBuildingClasses", /*sizeof(GC.getBuildingClassInfo((BuildingClassTypes)0))*/0,
 			GC.getNumBuildingClassInfos(), "TechOverride", GC.getNumTechInfos());
 		
-	pXML->SetVariableListTagPair2(&m_piPrereqBuildingClassOverrideEra,
+	pXML->SetVariableListTagPairRevDCM(&m_piPrereqBuildingClassOverrideEra,
 			"PrereqBuildingClasses", /*sizeof(GC.getBuildingClassInfo((BuildingClassTypes)0))*/0,
 			GC.getNumBuildingClassInfos(), "EraOverride", GC.getNumEraInfos());
 

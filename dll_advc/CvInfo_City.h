@@ -102,6 +102,12 @@ public:
 	int getCityDefenseModifier() const; // Exposed to Python
 	int getSpeedThreshold(int i) const; // Exposed to Python
 	bool read(CvXMLLoadUtility* pXML);
+	//influence driven war - added by f1rpo
+	static CultureLevelTypes finalCultureLevel()
+	{
+		FAssert(GC.getNumCultureLevelInfos() > 0);
+		return (CultureLevelTypes)(GC.getNumCultureLevelInfos() - 1);
+	};
 
 protected:
 	int m_iCityDefenseModifier;

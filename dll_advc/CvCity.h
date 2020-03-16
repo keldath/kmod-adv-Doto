@@ -1035,7 +1035,7 @@ public:
 	void changeNumBonuses(BonusTypes eBonus, int iChange,
        bool bUpdateBuildings = true);
 	//< Building Resource Converter End   >
-	void changeNumBonuses(BonusTypes eIndex, int iChange);
+//	void changeNumBonuses(BonusTypes eIndex, int iChange);
 	int countUniqueBonuses() const; // advc.149
 	int getNumCorpProducedBonuses(BonusTypes eIndex) const
 	{

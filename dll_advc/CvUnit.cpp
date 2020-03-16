@@ -2474,7 +2474,7 @@ bool CvUnit::cannotMoveFromPlotToPlot(const CvPlot* pFromPlot, const CvPlot* pTo
 {
 	if (bWithdrawal)
 	{
-		if (!canMoveInto(pToPlot))
+		if (!canMoveInto(*pToPlot))
 			{return true;}
 		if (getDomainType() == DOMAIN_SEA)
 		{
@@ -2485,8 +2485,8 @@ bool CvUnit::cannotMoveFromPlotToPlot(const CvPlot* pFromPlot, const CvPlot* pTo
 			}
 		}
 	}
-	
-	if (GC.getBLOCADE_UNIT() && pToPlot->isBlocade(pFromPlot, this))
+	//GC.getBLOCADE_UNIT()
+	if (GC.getDefineINT(CvGlobals::BLOCADE_UNIT) && pToPlot->isBlocade(pFromPlot, this))
 		{
 			return true;
 		}
@@ -3781,8 +3781,9 @@ int CvUnit::healTurns(const CvPlot* pPlot) const
 /**  Notes:                                                                                         **/
 /*****************************************************************************************************/
 //addition suggested by f1rpo
+	TerrainTypes eTerrain = plot()->getTerrainType();
 	if (!getPlot().isCity())
-		iHeal -= GC.getInfo(getTerrainType()).getTurnDamage();
+		iHeal -= GC.getInfo(eTerrain).getTurnDamage();
 	if (iHeal > 0)
 	{
 		/*iTurns = (getDamage() / iHeal);
@@ -10249,7 +10250,7 @@ void CvUnit::setHasPromotion(PromotionTypes ePromotion, bool bNewValue)
 	changeBlitzCount(GC.getInfo(ePromotion).getBlitz() * iChange);
 	changeAmphibCount((GC.getInfo(ePromotion).isAmphib()) ? iChange : 0);
 //MOD@VET_Andera412_Blocade_Unit-begin4/6
-	changeUnblocadeCount((GC.getPromotionInfo(eIndex).isUnblocade()) ? iChange : 0);
+	changeUnblocadeCount((GC.getPromotionInfo(ePromotion).isUnblocade()) ? iChange : 0);
 //MOD@VET_Andera412_Blocade_Unit-end4/6
 	changeRiverCount((GC.getInfo(ePromotion).isRiver()) ? iChange : 0);
 	changeEnemyRouteCount((GC.getInfo(ePromotion).isEnemyRoute()) ? iChange : 0);
