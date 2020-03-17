@@ -623,7 +623,9 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 /** reorganizing the Religion vector by checking the TGAIndex of the xml and placing everything  */
 /** properly                                                                                     */
 /*************************************************************************************************/
-	ArrangeTGA(GC.getReligionInfo, "CIV4ReligionInfo");
+	//ArrangeTGA(GC.getReligionInfo, "CIV4ReligionInfo");
+	//advciv syntax
+	ArrangeTGA(GC.m_paReligionInfo, "CIV4ReligionInfo");
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
@@ -649,7 +651,9 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 /** reorganizing the Corporations vector by checking the TGAIndex of the xml and placing         */
 /** everything properly                                                                          */
 /*************************************************************************************************/
-	ArrangeTGA(GC.getCorporationInfo, "CIV4CorporationInfo");
+	//ArrangeTGA(GC.getCorporationInfo, "CIV4CorporationInfo");
+	//syntax for advciv
+	ArrangeTGA(GC.m_paCorporationInfo, "CIV4CorporationInfo");
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
@@ -664,7 +668,7 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 	LoadGlobalClassInfo(GC.m_paSpecialUnitInfo, "CIV4SpecialUnitInfos", "Units", "Civ4SpecialUnitInfos/SpecialUnitInfos/SpecialUnitInfo", false);
 	// davidlallen: project civilization and free unit next line
 	// CIV4ProjectInfo was here
-	//LoadGlobalClassInfo(GC.getProjectInfo, "CIV4ProjectInfo", "GameInfo", "Civ4ProjectInfo/ProjectInfos/ProjectInfo", true);
+	//LoadGlobalClassInfo(GC.m_paProjectInfo, "CIV4ProjectInfo", "GameInfo", "Civ4ProjectInfo/ProjectInfos/ProjectInfo", true);
 	LoadGlobalClassInfo(GC.m_paCivicInfo, "CIV4CivicInfos", "GameInfo", "Civ4CivicInfos/CivicInfos/CivicInfo", false, &CvDLLUtilityIFaceBase::createCivicInfoCacheObject);
 	for (int i=0; i < GC.getNumVoteSourceInfos(); ++i)
 	{
@@ -685,7 +689,7 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 	LoadGlobalClassInfo(GC.m_paCivilizationInfo, "CIV4CivilizationInfos", "Civilizations", "Civ4CivilizationInfos/CivilizationInfos/CivilizationInfo", true, &CvDLLUtilityIFaceBase::createCivilizationInfoCacheObject);
 	LoadGlobalClassInfo(GC.m_paHintInfo, "CIV4Hints", "GameInfo", "Civ4Hints/HintInfos/HintInfo", false);
 	// davidlallen: project civilization and free unit next line
-	LoadGlobalClassInfo(GC.getProjectInfo, "CIV4ProjectInfo", "GameInfo", "Civ4ProjectInfo/ProjectInfos/ProjectInfo", true);
+	LoadGlobalClassInfo(GC.m_paProjectInfo, "CIV4ProjectInfo", "GameInfo", "Civ4ProjectInfo/ProjectInfos/ProjectInfo", true);
     LoadGlobalClassInfo(GC.m_paMainMenuInfo, "CIV4MainMenus", "Art", "Civ4MainMenus/MainMenus/MainMenu", false);
 	LoadGlobalClassInfo(GC.m_paSlideShowInfo, "CIV4SlideShowInfos", "Interface", "Civ4SlideShowInfos/SlideShowInfos/SlideShowInfo", false);
 	LoadGlobalClassInfo(GC.m_paSlideShowRandomInfo, "CIV4SlideShowRandomInfos", "Interface", "Civ4SlideShowRandomInfos/SlideShowRandomInfos/SlideShowRandomInfo", false);
@@ -742,8 +746,11 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 /**                                                                                              */
 /** Filling up empty spots(i.e. because module not loaded)                                       */
 /*************************************************************************************************/
-	AddTGABogus(GC.getCorporationInfo(), "CIV4CorporationInfo");
-	AddTGABogus(GC.getReligionInfo(), "CIV4ReligionInfo");
+	//AddTGABogus(GC.getCorporationInfo(), "CIV4CorporationInfo");
+	//AddTGABogus(GC.getCorporationInfo(), "CIV4CorporationInfo");
+	//advc syntax
+	AddTGABogus(GC.m_paCorporationInfo, "CIV4CorporationInfo");
+	AddTGABogus(GC.m_paReligionInfo, "CIV4ReligionInfo");
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
@@ -2544,7 +2551,7 @@ void CvXMLLoadUtility::AddTGABogus(std::vector<T*>& aInfos, const char* szInfo)
 
 	if ( verify == "CIV4ReligionInfo" )
 	{
-		for ( int iI = 0; iI < TGA_RELIGIONS; iI++ )
+		for ( int iI = 0; iI < GC.getDefineINT(CvGlobals::TGA_RELIGIONS); iI++ )
 		{
 			bTGAInfoTypeValid = false;
 			// loop through the religions see what we've got
@@ -2565,7 +2572,7 @@ void CvXMLLoadUtility::AddTGABogus(std::vector<T*>& aInfos, const char* szInfo)
 
 	if ( verify == "CIV4CorporationInfo" )
 	{
-		for ( int iI = 0; iI < TGA_CORPORATIONS; iI++ )
+		for ( int iI = 0; iI < GC.getDefineINT(CvGlobals::TGA_CORPORATIONS) ; iI++ )
 		{
 			bTGAInfoTypeValid = false;
 			// loop through the religions see what we've got
@@ -2589,8 +2596,11 @@ void CvXMLLoadUtility::AddTGABogus(std::vector<T*>& aInfos, const char* szInfo)
 // principly any one can be added here in future, if everything is ok, nothing will be done anyway
 void CvXMLLoadUtility::cleanTGA()
 {
-	RemoveTGABogusReligion(GC.getReligionInfo());
-	RemoveTGABogusCorporation(GC.getCorporationInfo());
+//	RemoveTGABogusReligion(GC.getReligionInfo());
+//	RemoveTGABogusCorporation(GC.getCorporationInfo());
+	RemoveTGABogusReligion(GC.m_paReligionInfo);
+	RemoveTGABogusCorporation(GC.m_paCorporationInfo);
+
 }
 
 template <class T>

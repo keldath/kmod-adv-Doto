@@ -58,6 +58,7 @@
 ## Path to the directory where boost and python is stored
 ## Overwritten by enviroment variable CIV4_LIB_INSTALL_PATH
 #CIV4_PATH=$(PROGRAMFILES)\Sid Meier's Civilization 4\Beyond the Sword
+CIV4_PATH=D:\games\civ4bts\Beyond the Sword
 #CIV4_PATH=$(PROGRAMFILES)\2K Games\Firaxis Games\Sid Meier's Civilization IV Colonization\CvGameCoreDLL
 #
 ## Optional:

@@ -9190,7 +9190,7 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 			bool bPlotWithoutOurUnit_Wrap = true;
 			//keldath qa5 - fix usage of calls from globals.
 			//bool bPlotWithoutEnemy = (GC.getBLOCADE_UNIT() > 1);//bPlotWithoutEnemy = true//(bPlotWithoutEnemy && (GC.getBLOCADE_UNIT() > 1))
-			bool bPlotWithoutEnemy = GC.getDefineINT(CvGlobals::BASE_UNIT_UPGRADE_COST) > 1;
+			bool bPlotWithoutEnemy = GC.getDefineINT(CvGlobals::BLOCADE_UNIT) > 1;
 			if (isVisible(eOurTeam, false))
 			{
 				bool bOurTeam;
