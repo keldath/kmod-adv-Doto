@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by lcollins (Firaxis Games) -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+		<Tag>TXT_KEY_IMPROVEMENT_CAN_BUILD_OUTSIDE_CULTURE_BORDERS</Tag>
+		<English>[ICON_BULLET]Can be built outside Culture Borders</English>
+		<French>[ICON_BULLET]Can be built outside Culture Borders</French>
+		<German>[ICON_BULLET]Can be built outside Culture Borders</German>
+		<Italian>[ICON_BULLET]Can be built outside Culture Borders</Italian>
+		<Spanish>[ICON_BULLET]Can be built outside Culture Borders</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_IMPROVEMENT_PEAK_INVALID</Tag>
+		<English>[ICON_BULLET]Can not be built on Mountains</English>
+		<French>[ICON_BULLET]Ne peut être construit sur un plateau</French>
+		<German>[ICON_BULLET]Can not be built on mesa</German>
+		<Italian>[ICON_BULLET]Can not be built on mesa</Italian>
+		<Spanish>[ICON_BULLET]Can not be built on mesa</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_CANNOT_MOVE_PEAK</Tag>
+		<English>[ICON_BULLET]Cannot Enter Mountains</English>
+		<French>[ICON_BULLET]Ne peut se déplacer dans les plateaux</French>
+		<German>[ICON_BULLET]Cannot Enter Mesa</German>
+		<Italian>[ICON_BULLET]Cannot Enter Mesa</Italian>
+		<Spanish>[ICON_BULLET]Cannot Enter Mesa</Spanish>
+	</TEXT>
+</Civ4GameText>

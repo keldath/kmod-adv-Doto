@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+	BUG Main Interface
+	by EmperorFool, Impaler[WrG], NeverMind, SimCutie
+	
+	Collects all of the various main interface mods.
+	
+	Copyright (c) 2008 The BUG Mod.
+-->
+<mod id="MainInterface" 
+	 name="BUG Main Interface" 
+	 author="EmperorFool, Impaler[WrG], NeverMind, SimCutie" 
+	 version="3.0" 
+	 date="07/11/2008"
+	 url="http://forums.civfanatics.com/forumdisplay.php?f=268">
+	 
+	<options id="MainInterface" file="BUG Main Interface.ini">
+		<section id="Main">
+		
+			<!-- Options Screen Shortcut Reminder -->
+			<!-- advc (note): Now unused -->
+			<option id="OptionsKey" key="Options Shortcut Reminder" 
+					type="boolean" default="False" 
+					get="isShowOptionsKeyReminder" set="setShowOptionsKeyReminder" dirtyBit="GameData"/>
+			
+			<!-- Options Screen Button -->
+			<!-- advc.004: Dirty-bit ("GameData") removed b/c this requires a
+				 restart anyway. -->
+			<option id="OptionsButton" key="Options Button" 
+					type="boolean" default="False"
+					get="isShowOptionsButton" set="setShowOptionsButton"/>
+					
+			<!-- advc.106b -->
+			<option id="AutoOpenEventLog" key="Auto Open Event Log" 
+					type="boolean" default="True" 
+					get="isAutoOpenEventLog"/>
+			<list   id="MessageLimit" key="Message Limit"
+					type="int" default="3" listType="int"
+					values="0, 1, 2, 3, 4, 5, 10"
+					get="getMessageLimit">
+			</list>
+			
+			<!-- advc.002n: New option. This part of the main interface gets
+				 constantly updated; no dirty-bit needed. -->
+			<option id="EndTurnMessage" key="End Turn Message" 
+					type="boolean" default="False" 
+					get="isShowEndTurnMessage"/>
+
+			<!-- Gold Rate Warning -->
+			<!--option id="GoldRateWarning" key="Gold Rate Warning" 
+					type="boolean" default="False" 
+					get="isGoldRateWarning" dirtyBit="GameData"/-->
+			<!-- advc.070: Replacing the above -->
+			<option id="PositiveGoldRateColor" key="Positive Gold Rate Color"
+					type="color" default="COLOR_POSITIVE_TEXT"
+					get="getPositiveGoldRateColor" dirtyBit="GameData"/>
+			<option id="NegativeGoldRateColor" key="Negative Gold Rate Color"
+					type="color" default="COLOR_WARNING_TEXT"
+					get="getNegativeGoldRateColor" dirtyBit="GameData"/>
+			<option id="GoldRateBrokeColor" key="Gold Rate Broke Color"
+					type="color" default="COLOR_WARNING_TEXT"
+					get="getGoldRateBrokeColor" dirtyBit="GameData"/>
+			
+			<!-- Great Person Progress Bar by Impaler[WrG], EmperorFool -->
+			<option id="GPBar" key="GP Progress Bar" 
+					type="boolean" default="False" 
+					get="isShowGPProgressBar" dirtyBit="GameData"/>
+			<list   id="GPBar_Types" key="GP Progress Bar Types" 
+					type="int" default="2" listType="string" 
+					values="None|One|Maximum" 
+					get="getGPBarPercents" dirtyBit="GameData">
+				<choice id="None" get="isGPBarTypesNone"/>
+				<choice id="One" get="isGPBarTypesOne"/>
+				<choice id="Maximum" get="isGPBarTypesMax"/>
+			</list>
+			
+			<!-- Great General Progress Bar by NeverMind -->
+			<option id="Combat_Counter" key="Combat Counter" 
+					type="boolean" default="False" 
+					get="isShowGGProgressBar" dirtyBit="GameData"/>
+			
+			<!-- Min/Max Commerce Buttons by codewarrior -->
+			<option id="MinMax_Commerce" key="MinMax Commerce" 
+					type="boolean" default="False" 
+					get="isShowMinMaxCommerceButtons" dirtyBit="PercentButtons, GameData">
+				<change module="CvCustomizableDomesticAdvisor" function="forcePositionCalc"/>
+			</option>
+			
+			<!-- advc.120c -->
+			<option id="Hide_EspSlider" key="Hide EspSlider" 
+					type="boolean" default="True" 
+					get="isHideEspSlider" dirtyBit="PercentButtons, GameData, Espionage_Advisor">
+				<change module="CvCustomizableDomesticAdvisor" function="forcePositionCalc"/>
+			</option>
+			
+			<!-- City Cycle Arrows by SimCutie -->
+			<option id="CityArrows" key="City Cycle Arrows" 
+					type="boolean" default="True" 
+					get="isShowCityCycleArrows" dirtyBit="MiscButtons"/>
+
+			<!-- Progress Bar Tick Marks -->
+			<option id="ProgressBarsTickMarks" key="Tick Marks" 
+					type="boolean" default="True" 
+					get="isShowBarTickMarks" dirtyBit="GameData"/>
+			
+			<!-- advc.078: New option -->
+			<option id="OnceProgress" key="Once Progress" 
+					type="boolean" default="False" 
+					get="isShowOnlyOnceProgress" dirtyBit="GameData"/>
+
+			<!-- Field of View -->
+			<option id="FieldOfView" key="Field of View" 
+					type="boolean" default="False" 
+					get="isShowFieldOfView" dirtyBit="MiscButtons"/>
+			<option id="FieldOfView_Remember" key="Remember Field of View" 
+					type="boolean" default="True"
+					get="isRememberFieldOfView"/>
+			<option id="FieldOfView_Value" key="Field of View Value"
+					type="string" default="-1"
+					get="getFieldOfView" set="setFieldOfView"/> 
+
+			<!-- Movement Points -->
+			<option id="UnitMovementPointsFraction" key="Unit Movement Points Fraction" 
+					type="boolean" default="True" 
+					get="isShowUnitMovementPointsFraction" dirtyBit="InfoPane"/>
+			<option id="StackMovementPoints" key="Stack Movement Points" 
+					type="boolean" default="False" 
+					get="isShowStackMovementPoints" dirtyBit="InfoPane"/>
+
+			<!-- Stack Promotions -->
+			<option id="StackPromotions" key="Stack Promotions"
+					type="boolean" default="False"
+					get="isShowStackPromotions" dirtyBit="InfoPane"/>
+			<option id="StackPromotionCounts" key="Stack Promotion Counts"
+					type="boolean" default="False"
+					get="isShowStackPromotionCounts" dirtyBit="InfoPane"/>
+			<option id="StackPromotionColor" key="Stack Promotion Color"
+					type="color" default="COLOR_GREEN"
+					get="getStackPromotionColor" dirtyBit="InfoPane"/>
+			<option id="StackPromotionColorAll" key="Stack Promotion Color All"
+					type="color" default="COLOR_MAGENTA"
+					get="getStackPromotionColorAll" dirtyBit="InfoPane"/>
+
+			<!-- advc.061 -->
+			<option id="ListUnitsPerOwner" key="List Units Per Owner" 
+					type="boolean" default="True" 
+					get="isListUnitsPerOwner"/>
+			<!-- dirtyBit: Would like to redraw the unit layer indicators, but
+				 that's not possible through a dirty-bit. See tbd. in manual. -->
+
+			<!-- Build/Action Icon Size by EmperorFool -->
+			<list   id="BuildIconSize" key="Build Icon Size" 
+					type="int" default="1" listType="string" 
+					values="Small|Medium|Large" 
+					get="getBuildIconSize" dirtyBit="SelectionButtons">
+				<choice id="Small" get="isBuildIconSizeSmall"/>
+				<choice id="Medium" get="isBuildIconSizeMedium"/>
+				<choice id="Large" get="isBuildIconSizeLarge"/>
+			</list>
+
+			<!-- Rapid unit cycling, by karadoc -->
+			<option id="RapidUnitCycling" key="Rapid Unit Cycling"
+					type="boolean" default="False"/>
+
+			<!-- Simple selection, by karadoc -->
+			<!-- advc.004: default was False -->
+			<option id="SimpleSelection" key="Simple Selection"
+					type="boolean" default="True"/>
+
+			<!-- advc.004k -->
+			<option id="SeaPatrol" key="Sea Patrol"
+					type="boolean" default="False" dirtyBit="SelectionButtons"/>
+			
+			<!-- advc.004z -->
+			<option id="ScoresInGlobeView" key="Scores in Globe View" 
+					type="boolean" default="True" 
+					get="isScoresInGlobeView" dirtyBit="GlobeInfo,Score"/>
+			<!-- advc.004z -->
+			<option id="ResourceIconOptions" key="Resource Icon Options" 
+					type="boolean" default="False" 
+					get="isResourceIconOptions" dirtyBit="GlobeInfo,Score"/>
+			<!-- advc.004z -->
+			<option id="TribalVillageIcons" key="Tribal Village Icons" 
+					type="boolean" default="True" dirtyBit="GlobeLayer"/>
+			<!-- advc.004m -->
+			<option id="StartWithResourceIcons" key="Start With Resource Icons" 
+					type="boolean" default="True" 
+					get="isStartWithResourceIcons"/>
+			<!-- advc.004h -->
+			<option id="FoundingYields" key="Founding Yields" 
+					type="boolean" default="False"/>
+			<!-- advc.004h: The DLL relies on this order of the choices -->
+			<list   id="FoundingBorder" key="Founding Border" 
+					type="int" default="2" listType="string" 
+					values="None|Adjacent|City Cross" dirtyBit="ColoredPlots">
+				<choice id="None"/>
+				<choice id="Adjacent"/>
+				<choice id="CityCross"/>
+			</list>
+			<!-- advc.002f -->
+			<option id="CityNetworkIcon" key="City Network Icon" 
+					type="boolean" default="False" dirtyBit="CityInfo"/>
+			<option id="AirportIcon" key="Airport Icon" 
+					type="boolean" default="True" dirtyBit="CityInfo"/>
+		</section>
+	</options>
+	
+	<widget name="WIDGET_GP_PROGRESS_BAR" module="GPUtil" function="getHoverText"/>
+	<widget name="WIDGET_BUG_OPTION_SCREEN" xml="TXT_KEY_BUG_OPTIONS_SCREEN_HOVER"/>
+</mod>
