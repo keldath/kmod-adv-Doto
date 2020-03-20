@@ -453,39 +453,5 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("getSpecialistFreeExperience", &CyCity::getSpecialistFreeExperience, "int ()")
 		.def("getEspionageDefenseModifier", &CyCity::getEspionageDefenseModifier, "int ()")
 
-		.def("isWorkingPlotByIndex", &CyCity::isWorkingPlotByIndex, "bool (iIndex) - true if a worker is working this city's plot iIndex")
-		.def("isWorkingPlot", &CyCity::isWorkingPlot, "bool (iIndex) - true if a worker is working this city's pPlot")
-		.def("alterWorkingPlot", &CyCity::alterWorkingPlot, "void (iIndex)")
-		.def("getNumRealBuilding", &CyCity::getNumRealBuilding, "int (BuildingID) - get # real building of this type")
-		.def("setNumRealBuilding", &CyCity::setNumRealBuilding, "(BuildingID, iNum) - Sets number of buildings in this city of BuildingID type")
-		.def("getNumFreeBuilding", &CyCity::getNumFreeBuilding, "int (BuildingID) - # of free Building ID (ie: from a Wonder)")
-		.def("isHasReligion", &CyCity::isHasReligion, "bool (ReligionID) - does city have ReligionID?")
-		.def("setHasReligion", &CyCity::setHasReligion, "void (ReligionID, bool bNewValue, bool bAnnounce, bool bArrows) - religion begins to spread")
-		.def("isHasCorporation", &CyCity::isHasCorporation, "bool (CorporationID) - does city have CorporationID?")
-		.def("setHasCorporation", &CyCity::setHasCorporation, "void (CorporationID, bool bNewValue, bool bAnnounce, bool bArrows) - corporation begins to spread")
-		.def("isActiveCorporation", &CyCity::isActiveCorporation, "bool (CorporationID) - does city have active CorporationID?")
-		.def("getTradeCity", &CyCity::getTradeCity, python::return_value_policy<python::manage_new_object>(), "CyCity (int iIndex) - remove SpecialistType[iIndex]")
-		.def("getTradeRoutes", &CyCity::getTradeRoutes, "int ()")
-
-		.def("clearOrderQueue", &CyCity::clearOrderQueue, "void ()")
-		.def("pushOrder", &CyCity::pushOrder, "void (OrderTypes eOrder, int iData1, int iData2, bool bSave, bool bPop, bool bAppend, bool bForce)")
-		.def("popOrder", &CyCity::popOrder, "int (int iNum, bool bFinish, bool bChoose)")
-		.def("getOrderQueueLength", &CyCity::getOrderQueueLength, "void ()")
-		.def("getOrderFromQueue", &CyCity::getOrderFromQueue, python::return_value_policy<python::manage_new_object>(), "OrderData* (int iIndex)")
-
-		.def("setWallOverridePoints", &CyCity::setWallOverridePoints, "setWallOverridePoints(const python::tuple& kPoints)")
-		.def("getWallOverridePoints", &CyCity::getWallOverridePoints, "python::tuple getWallOverridePoints()")
-
-		//.def("AI_avoidGrowth", &CyCity::AI_avoidGrowth, "bool ()")
-		.def("AI_isEmphasize", &CyCity::AI_isEmphasize, "bool (int iEmphasizeType)")
-		.def("AI_countBestBuilds", &CyCity::AI_countBestBuilds, "int (CyArea* pArea)")
-		.def("AI_cityValue", &CyCity::AI_cityValue, "int ()")
-		// advc.001n:
-		.def("AI_neededFloatingDefenders", &CyCity::AI_neededFloatingDefenders, "int ()")
-
-		.def("getScriptData", &CyCity::getScriptData, "str () - Get stored custom data (via pickle)")
-		.def("setScriptData", &CyCity::setScriptData, "void (str) - Set stored custom data (via pickle)")
-
-		.def("visiblePopulation", &CyCity::visiblePopulation, "int ()")
 		;
 }

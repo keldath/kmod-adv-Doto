@@ -459,7 +459,7 @@ bool CvFeatureInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_bRequiresFlatlands, "bRequiresFlatlands",false);
 	pXML->GetChildXmlValByName(&m_bRequiresRiver, "bRequiresRiver");
 	// advc.129b:
-	pXML->GetChildXmlValByName(&m_bRequiresRiverSide, "bRequiresRiverSide");
+	pXML->GetChildXmlValByName(&m_bRequiresRiverSide, "bRequiresRiverSide",0);
 	pXML->GetChildXmlValByName(&m_bAddsFreshWater, "bAddsFreshWater");
 	pXML->GetChildXmlValByName(&m_bImpassable, "bImpassable");
 	pXML->GetChildXmlValByName(&m_bNoCity, "bNoCity");

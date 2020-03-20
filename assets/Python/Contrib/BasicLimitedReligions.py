@@ -71,16 +71,16 @@ class BasicLimitedReligionsEvent:
 			iRelCheck = gc.getInfoTypeForString("RELIGION_ODIN")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True	
-		if iTechType == gc.getInfoTypeForString("TECH_SHINTO"):
-			iRelCheck = gc.getInfoTypeForString("TECH_LITERATURE")
+		if iTechType == gc.getInfoTypeForString("TECH_LITERATURE"):
+			iRelCheck = gc.getInfoTypeForString("RELIGION_SHINTO")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True
 		if iTechType == gc.getInfoTypeForString("TECH_WRITING"):
 			iRelCheck = gc.getInfoTypeForString("RELIGION_ZOROASTRIANISM")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True
-		if iTechType == gc.getInfoTypeForString("TECH_DRUIDISM"):
-			iRelCheck = gc.getInfoTypeForString("TECH_CALENDAR")
+		if iTechType == gc.getInfoTypeForString("TECH_CALENDAR"):
+			iRelCheck = gc.getInfoTypeForString("RELIGION_DRUIDISM")
 			if not gc.getGame().isReligionSlotTaken(iRelCheck):
 				bRTech = True
 		if iTechType == gc.getInfoTypeForString("TECH_PAPER"):

@@ -2501,7 +2501,7 @@ void CvXMLLoadUtility::AddTGABogus(std::vector<T*>& aInfos, const char* szInfo)
 
 	if ( verify == "CIV4ReligionInfo" )
 	{
-		for ( int iI = 0; iI < GC.getDefineINT(CvGlobals::TGA_RELIGIONS); iI++ )
+		for ( int iI = 0; iI < GC.getDefineINT(CvGlobals::GAMEFONT_TGA_RELIGIONS); iI++ )
 		{
 			bTGAInfoTypeValid = false;
 			// loop through the religions see what we've got
@@ -2522,7 +2522,7 @@ void CvXMLLoadUtility::AddTGABogus(std::vector<T*>& aInfos, const char* szInfo)
 
 	if ( verify == "CIV4CorporationInfo" )
 	{
-		for ( int iI = 0; iI < GC.getDefineINT(CvGlobals::TGA_CORPORATIONS) ; iI++ )
+		for ( int iI = 0; iI < GC.getDefineINT(CvGlobals::GAMEFONT_TGA_CORPORATIONS) ; iI++ )
 		{
 			bTGAInfoTypeValid = false;
 			// loop through the religions see what we've got

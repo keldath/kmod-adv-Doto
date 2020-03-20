@@ -10271,9 +10271,9 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 				aiCommerceLost[eLoopCommerce] = -iCommerce;
 		}
 		iTotalValue += 100 * AI_yieldValue(NULL, aiCommerceGained, false,
-				bIgnoreFood, bIgnoreStarvation, false, iGrowthValue);
+			bIgnoreFood, bIgnoreStarvation, false, iGrowthValue);
 		iTotalValue -= 100 * AI_yieldValue(NULL, aiCommerceLost, true,
-				bIgnoreFood, bIgnoreStarvation, false, iGrowthValue);
+			bIgnoreFood, bIgnoreStarvation, false, iGrowthValue);
 
 		int iGPPGained = 0;
 		int iGPPLost = 0;
@@ -10285,11 +10285,11 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 		if (iGPPGained || iGPPLost)
 		{
 			int iEmphasisCount = AI_isEmphasizeYield(YIELD_COMMERCE) +
-					AI_isEmphasizeYield(YIELD_FOOD) + AI_isEmphasizeYield(YIELD_PRODUCTION);
+				AI_isEmphasizeYield(YIELD_FOOD) + AI_isEmphasizeYield(YIELD_PRODUCTION);
 
 			int iBaseValue = AI_isEmphasizeGreatPeople() ? 12 :
-					(iEmphasisCount > 0 ? 3 : 4);
-				// note: each point of iEmphasisCount reduces the value at the end.
+				(iEmphasisCount > 0 ? 3 : 4);
+			// note: each point of iEmphasisCount reduces the value at the end.
 
 			int iGPPValue = 0;
 
@@ -10297,12 +10297,12 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 			if (iGPPGained)
 			{
 				iGPPValue += iGPPGained * iBaseValue * kOwner.AI_getGreatPersonWeight((UnitClassTypes)
-						GC.getInfo((SpecialistTypes)new_job.second).getGreatPeopleUnitClass());
+					GC.getInfo((SpecialistTypes)new_job.second).getGreatPeopleUnitClass());
 			}
 			if (iGPPLost)
 			{
 				iGPPValue -= iGPPLost * iBaseValue * kOwner.AI_getGreatPersonWeight((UnitClassTypes)
-						GC.getInfo((SpecialistTypes)old_job.second).getGreatPeopleUnitClass());
+					GC.getInfo((SpecialistTypes)old_job.second).getGreatPeopleUnitClass());
 			}
 			iGPPValue *= getTotalGreatPeopleRateModifier();
 			iGPPValue /= 100;
@@ -10332,7 +10332,7 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 				if (iHighestRate > iCityRate)
 				{
 					iGPPValue *= 100;
-					iGPPValue /= (2*100*(iHighestRate+8))/(iCityRate+8) - 100; // the +8 is just so that we don't block ourselves from assigning the first couple of specialists.
+					iGPPValue /= (2 * 100 * (iHighestRate + 8)) / (iCityRate + 8) - 100; // the +8 is just so that we don't block ourselves from assigning the first couple of specialists.
 				}
 				// each successive great person costs more points. So the points are effectively worth less...
 				// (note: I haven't tried to match this value decrease with the actual cost increase,
@@ -10348,7 +10348,7 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 			// However, because of the flawed way that food is currently evaluated, I need to dilute the value of GPP
 			// so that specialists don't get value more highly than food tiles. (I hope to correct this later.)
 			iGPPValue *= 100;
-			iGPPValue /= (300 + kOwner.AI_averageGreatPeopleMultiplier())/4;
+			iGPPValue /= (300 + kOwner.AI_averageGreatPeopleMultiplier()) / 4;
 
 			iGPPValue /= (1 + iEmphasisCount);
 
@@ -10381,46 +10381,60 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 				if (old_job.first && old_job.second == eGenericCitizen)
 					iTotalValue = iTotalValue * 100 / 80;
 			} } */
-	}
 
-/*************************************************************************************************/
-/** Specialists Enhancements, by Supercheese 10/12/09                                            */
-/**                                                                                              */
-/**                                                                                              */
-/*************************************************************************************************/	
-	//advc change= what to use? new job or old?? keldath
-	int iSpecialistHealth = GC.getInfo((SpecialistTypes)new_job.second).getHealth();
-	int iSpecialistHappiness = GC.getInfo((SpecialistTypes)new_job.second).getHappiness();
-	int iHappinessLevel = happyLevel() - unhappyLevel(1);
-	int iAngryPopulation = range(-iHappinessLevel, 0, (getPopulation() + 1));
-	int iHealthLevel = goodHealth() - badHealth(/*bNoAngry*/ false, std::max(0, (iHappinessLevel + 1) / 2));
-	int iBadHealth = std::max(0, -iHealthLevel);
+			/*************************************************************************************************/
+			/** Specialists Enhancements, by Supercheese 10/12/09                                            */
+			/**                                                                                              */
+			/**                                                                                              */
+			/*************************************************************************************************/
+				//advc change= what to use? new job or old?? keldath
+				//int iSpecialistHealth = GC.getInfo((SpecialistTypes)new_job.second).getHealth();
+				//int iSpecialistHappiness = GC.getInfo((SpecialistTypes)new_job.second).getHappiness();
+				//f1rpo suggested fix,
+		//KELDATH QA6 - is this implemented right? also placed right?
+			int iSpecialistHealth = 0;
+			int iSpecialistHappiness = 0;
+			if (new_job.second >= 0 && new_job.first)
+			{
+				iSpecialistHealth += GC.getInfo((SpecialistTypes)new_job.second).getHealth();
+				iSpecialistHappiness += GC.getInfo((SpecialistTypes)new_job.second).getHappiness();
+			}
+			if (old_job.second >= 0 && old_job.first)
+			{
+				iSpecialistHealth += GC.getInfo((SpecialistTypes)old_job.second).getHealth();
+				iSpecialistHappiness += GC.getInfo((SpecialistTypes)old_job.second).getHappiness();
+			}
+			int iHappinessLevel = happyLevel() - unhappyLevel(1);
+			int iAngryPopulation = range(-iHappinessLevel, 0, (getPopulation() + 1));
+			int iHealthLevel = goodHealth() - badHealth(/*bNoAngry*/ false, std::max(0, (iHappinessLevel + 1) / 2));
+			int iBadHealth = std::max(0, -iHealthLevel);
 
-	int iHappyModifier = (iHappinessLevel >= iHealthLevel && iHappinessLevel <= 6) ? 6 : 3;
-	int iHealthModifier = (iHealthLevel > iHappinessLevel && iHealthLevel <= 4) ? 4 : 2;
-	if (iHappinessLevel >= 10)
-	{
-		iHappyModifier = 1;
-	}
-	if (iHealthModifier >= 8)
-	{
-		iHealthModifier = 0;
-	}
+			int iHappyModifier = (iHappinessLevel >= iHealthLevel && iHappinessLevel <= 6) ? 6 : 3;
+			int iHealthModifier = (iHealthLevel > iHappinessLevel && iHealthLevel <= 4) ? 4 : 2;
+			if (iHappinessLevel >= 10)
+			{
+				iHappyModifier = 1;
+			}
+			if (iHealthModifier >= 8)
+			{
+				iHealthModifier = 0;
+			}
 
-	if (iSpecialistHealth != 0)
-	{
-		iTotalValue += (std::min(iSpecialistHealth, iBadHealth) * 12)
-			+ (std::max(0, iSpecialistHealth - iBadHealth) * iHealthModifier);
+			if (iSpecialistHealth != 0)
+			{
+				iTotalValue += (std::min(iSpecialistHealth, iBadHealth) * 12)
+					+ (std::max(0, iSpecialistHealth - iBadHealth) * iHealthModifier);
+			}
+
+			if (iSpecialistHappiness != 0)
+			{
+				iTotalValue += (std::min(iSpecialistHappiness, iAngryPopulation) * 10)
+					+ (std::max(0, iSpecialistHappiness - iAngryPopulation) * iHappyModifier);
+			}
+		/*************************************************************************************************/
+		/** Specialists Enhancements                          END                                        */
+		/*************************************************************************************************/
 	}
-	
-	if (iSpecialistHappiness != 0)
-	{
-		iTotalValue += (std::min(iSpecialistHappiness, iAngryPopulation) * 10) 
-			+ (std::max(0, iSpecialistHappiness - iAngryPopulation) * iHappyModifier);
-	}
-/*************************************************************************************************/
-/** Specialists Enhancements                          END                                        */
-/*************************************************************************************************/
 
 	return iTotalValue;
 }

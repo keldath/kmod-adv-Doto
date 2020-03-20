@@ -552,8 +552,8 @@ public:
 		DO(BBAI_SKIP_BOMBARD_BASE_STACK_RATIO) \
 		DO(BBAI_SKIP_BOMBARD_MIN_STACK_RATIO) \
 /* TGA_INDEXATION */ \
-		DO(TGA_RELIGIONS) \
-		DO(TGA_CORPORATIONS) \
+		DO(GAMEFONT_TGA_RELIGIONS) \
+		DO(GAMEFONT_TGA_CORPORATIONS) \
 /* TGA_INDEXATION */ \
 		/* From Lead From Behind by UncutDragon. (edited for K-Mod) */ \
 		DO(LFB_ENABLE) DO(LFB_BASEDONGENERAL) DO(LFB_BASEDONEXPERIENCE) \
@@ -687,8 +687,8 @@ public:
 	//f1rpo said :
 	//Shouldn't be needed now that you've added them to the GlobalDefines enum. But then all locations will have to use GC.getDefineINT(CvGlobals::...).
 	//decided to leave it here, i guess its not harmfull 
-	int getTGA_RELIGIONS();								// GAMEFONT
-	int getTGA_CORPORATIONS();							// GAMEFONT
+	//int getTGA_RELIGIONS();								// GAMEFONT
+	//int getTGA_CORPORATIONS();							// GAMEFONT
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
