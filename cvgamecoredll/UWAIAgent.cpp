@@ -780,8 +780,7 @@ bool UWAI::Team::tryFindingMaster(TeamTypes enemyId) {
 						ourLeader.getPersonalityType()).getContactDelay(
 						CONTACT_PERMANENT_ALLIANCE));
 				CvDiploParameters* pDiplo = new CvDiploParameters(ourLeader.getID());
-				pDiplo->setDiploComment((DiploCommentTypes)GC.getInfoTypeForString(
-						"AI_DIPLOCOMMENT_OFFER_VASSAL"));
+				pDiplo->setDiploComment(GC.getAIDiploCommentType("OFFER_VASSAL"));
 				pDiplo->setAIContact(true);
 				pDiplo->setOurOfferList(theirList);
 				pDiplo->setTheirOfferList(ourList);
@@ -1438,7 +1437,7 @@ int UWAI::Team::declareWarTradeVal(TeamTypes targetId,
 	/*  Adjust the price based on our attitude and obscure it so that humans
 		can't learn how willing we are exactly */
 	AttitudeTypes towardSponsor = agent.AI_getAttitude(sponsorId);
-	std::vector<long> hashInput;
+	std::vector<int> hashInput;
 	/*  Allow hash to change w/e the target's rank or our attitude toward the
 		sponsor changes */
 	hashInput.push_back(GC.getGame().getRankTeam(targetId));
@@ -1533,7 +1532,7 @@ int UWAI::Team::endWarVal(TeamTypes enemyId) const {
 	if(humanUtility <= 0 && aiReluct < humanUtility && aiReluct >= 2 * humanUtility)
 		return 0;
 	double reparations = 0;
-	// Only AI wants to end the more or AI wants to end it much more badly
+	// Only AI wants to end the war or AI wants to end it much more badly
 	if(aiReluct < 0 && (humanUtility >= 0 || aiReluct < 2 * humanUtility)) {
 		// Human pays nothing if AI pays
 		if(agentHuman)
@@ -1587,6 +1586,8 @@ int UWAI::Team::endWarVal(TeamTypes enemyId) const {
 			if(aiReluct > 0)
 				greedFactor += 0.1;
 			int delta = std::min(0, aiReluct) - humanUtility;
+			if (delta == 0)
+				return 0;
 			FAssert(delta > 0);
 			// Conversion based on human's economy
 			reparations += greedFactor * human.uwai().utilityToTradeVal(delta);
@@ -1917,9 +1918,8 @@ void UWAI::Team::showWarPlanMsg(TeamTypes targetId, char const* txtKey) {
 	CvWString szBuffer = gDLL->getText(txtKey,
 			GET_TEAM(agentId).getName().GetCString(),
 			GET_TEAM(targetId).getName().GetCString());
-	gDLL->getInterfaceIFace()->addMessage(activePl.getID(), false,
-			GC.getEVENT_MESSAGE_TIME(), szBuffer, 0, MESSAGE_TYPE_MAJOR_EVENT,
-			// <advc.127b>
+	gDLL->UI().addMessage(activePl.getID(), false, -1, szBuffer,
+			0, MESSAGE_TYPE_MAJOR_EVENT,  // <advc.127b>
 			NULL, NO_COLOR, GET_TEAM(agentId).getCapitalX(activePl.getTeam(), true),
 			GET_TEAM(agentId).getCapitalY(activePl.getTeam(), true)); // </advc.127b>
 }
@@ -2149,7 +2149,7 @@ bool UWAI::Civ::considerGiftRequest(PlayerTypes theyId, int tradeVal) const {
 		Probability to accept is 45% for Gandhi, 0% for Tokugawa. */
 	double prSuccess = 0.5 - we.AI_prDenyHelp();
 	// Can't use sync'd RNG here, but don't want the outcome to change after reload.
-	std::vector<long> inputs;
+	std::vector<int> inputs;
 	inputs.push_back(GC.getGame().getGameTurn());
 	inputs.push_back(tradeVal);
 	if(::hash(inputs, weId) < prSuccess)
@@ -2302,10 +2302,10 @@ bool UWAI::Civ::isNearMilitaryVictory(int stage) const {
 		return true;
 	CvPlayerAI& we = GET_PLAYER(weId);
 	switch(stage) {
-		case 1: return we.AI_atVictoryStage(AI_VICTORY_CONQUEST1 | AI_VICTORY_DOMINATION1);
-		case 2: return we.AI_atVictoryStage(AI_VICTORY_CONQUEST2 | AI_VICTORY_DOMINATION2) ;
-		case 3: return we.AI_atVictoryStage(AI_VICTORY_CONQUEST3 | AI_VICTORY_DOMINATION3);
-		case 4: return we.AI_atVictoryStage(AI_VICTORY_CONQUEST4 | AI_VICTORY_DOMINATION4);
+		case 1: return we.AI_atVictoryStage(AI_VICTORY_MILITARY1);
+		case 2: return we.AI_atVictoryStage(AI_VICTORY_MILITARY2);
+		case 3: return we.AI_atVictoryStage(AI_VICTORY_MILITARY3);
+		case 4: return we.AI_atVictoryStage(AI_VICTORY_MILITARY4);
 		default: return false;
 	}
 }

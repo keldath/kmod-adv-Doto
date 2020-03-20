@@ -1,0 +1,41 @@
+
+
+changed many Advc ai definitions (xml) to give more agressivness
+ai will value horseback more.
+-1 happy and health to gunpowder and rifling
+civilizations now have 1 forbidden religion and 1 unique religon instead of 2:1
+Sultans Elits CHANGED TO MELEE FROM MOUNTED
+all siege units now have:
+    1 airrange
+     combat limit from 25 to 45
+     air combat === combat
+     no capure cities
+added odin religion (AVAILABLE TO ALL)
+TOBACCO REDUCED
+
+--
+RANGED ATTACK BY VIP:
+ALL SIEGE UNITS NOW USES A NEW SYSTEM OF RANGED ATTACK (FROM VIP MOD)
+SIEGE UNITS HAVE COOL RANGED ATTACK SYSTEM. AND RE COUNTERED BY OTHER SIEGE UNITS.
+SEE UNIT XML FILES FOR MORE DETAILS
+
+
+TODO:
+ADD RELIGION PROMOS
+REMOVE ALL UNITQE RELIGION AND MOVE THEM TO THE TECHS.
+JUST LEAVE ONE FORBIDDEN RELIGION.
+STILL LEAVE LIMITED RELIGION PYTHON.
+I THINK IT WILL BE BETTER FOR THE GAME.
+
+ADD SIEGE UNITS WITH RANGE 2 - LIMITED.
+MAYBE SPLIT SIEGE UNITS INTO CITY ATTACKERS AND SIEGE SUPPORT?
+
+ADD UNITCOMBAT TAGS BY LOPEZ AND USE WITH THE NEW SIEGE
+USE TARGET TAG TO TARGET SIEGE UNITS WHEN ATTACKING - MAYBE SPECIAL UNITS
+
+ADD TO THE TECH TREE...
+ADD SOME EARLY BUILDINGS
+
+FIX HANDICAP CHANGE I HAVE MADE TO MAKE THE TECH CHEEPER...OR THE OTHER WAY AROUND...
+
+give 2 settlers on start - make proper money adjustments - i prefer faster start....not to watse time.

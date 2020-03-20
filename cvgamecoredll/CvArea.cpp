@@ -680,7 +680,7 @@ void CvArea::changeCleanPowerCount(TeamTypes eIndex, int iChange)
 		GET_TEAM(eIndex).updateCommerce();
 		GET_TEAM(eIndex).updatePowerHealth();
 		if (eIndex == GC.getGame().getActiveTeam())
-			gDLL->getInterfaceIFace()->setDirty(CityInfo_DIRTY_BIT, true);
+			gDLL->UI().setDirty(CityInfo_DIRTY_BIT, true);
 	}
 }
 
@@ -751,7 +751,7 @@ void CvArea::changeYieldRateModifier(PlayerTypes eIndex1, YieldTypes eIndex2, in
 		GET_PLAYER(eIndex1).updateCommerce();
 	GET_PLAYER(eIndex1).AI_makeAssignWorkDirty();
 	if (GET_PLAYER(eIndex1).getTeam() == GC.getGame().getActiveTeam())
-		gDLL->getInterfaceIFace()->setDirty(CityInfo_DIRTY_BIT, true);
+		gDLL->UI().setDirty(CityInfo_DIRTY_BIT, true);
 }
 
 
@@ -905,6 +905,7 @@ void CvArea::read(FDataStreamBase* pStream)
 void CvArea::write(FDataStreamBase* pStream)
 {
 	PROFILE_FUNC(); // advc
+	REPRO_TEST_BEGIN_WRITE(CvString::format("Area(%d)", getID()));
 	uint uiFlag=0;
 	uiFlag = 1; // advc.030
 	uiFlag = 2; // advc: Remove m_aiAnimalsPerPlayer, advc.enum: write m_aaiYieldRateModifier as short
@@ -959,4 +960,5 @@ void CvArea::write(FDataStreamBase* pStream)
 	m_aaiNumAIUnits.Write(pStream);
 	m_aiBonuses.Write(pStream);
 	//m_aiImprovements.Write(pStream); // advc.opt
+	REPRO_TEST_END_WRITE();
 }

@@ -163,6 +163,7 @@ public:
 	wchar const* getCivilizationAdjectiveKey() const;																									// Exposed to Python
 	DllExport CvWString getFlagDecal() const;																																		// Exposed to Python
 	DllExport bool isWhiteFlag() const;																																					// Exposed to Python
+	void setFlagDecal(CvWString const& szFlagDecal, bool bUpdate); // advc.127c
 	const wchar* getStateReligionName(uint uiForm = 0) const;																					// Exposed to Python
 	const wchar* getStateReligionKey() const;																													// Exposed to Python
 	const CvWString getBestAttackUnitName(uint uiForm = 0) const;																								// Exposed to Python
@@ -863,7 +864,7 @@ public:
 	void setPersonalityType(LeaderHeadTypes eNewValue);																					// Exposed to Python
 	// advc.opt: Inlined
 	inline DllExport EraTypes getCurrentEra() const { return m_eCurrentEra; }																										// Exposed to Python
-	void setCurrentEra(EraTypes eNewValue, /* advc.127c: */ bool bGraphicsOnly = false);
+	void setCurrentEra(EraTypes eNewValue);
 
 	ReligionTypes getLastStateReligion() const;
 	ReligionTypes getStateReligion() const;																									// Exposed to Python
@@ -1634,6 +1635,7 @@ protected:  // <advc.210>
 
 	//void doUpdateCacheOnTurn(); // advc: unused
 	int getResearchTurnsLeftTimes100(TechTypes eTech, bool bOverflow) const;
+	int groundbreakingPenalty(TechTypes eTech) const; // advc.groundbr
 
 	void getTradeLayerColors(std::vector<NiColorA>& aColors, std::vector<CvPlotIndicatorData>& aIndicators) const;  // used by Globeview trade layer
 	void getUnitLayerColors(GlobeLayerUnitOptionTypes eOption, std::vector<NiColorA>& aColors, std::vector<CvPlotIndicatorData>& aIndicators) const;  // used by Globeview unit layer

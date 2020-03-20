@@ -3582,9 +3582,10 @@ void CvUnitAI::AI_attackCityMove()
 							(it's a pretty ugly function, so I /hope/ we don't need it.) */
 						FAssertMsg(false, "AI_attackCityMove is resorting to AI_solveBlockageProblem");
 						if (AI_solveBlockageProblem(pAreaTargetCity->plot(),
-								(GET_TEAM(getTeam()).getNumWars() <= 0)))
+							(GET_TEAM(getTeam()).getNumWars() <= 0)))
+						{
 							return;
-						// advc.006:
+						}  // advc.006:
 						FAssertMsg(false, "AI_solveBlockageProblem returned false");
 					}
 				}
@@ -7157,7 +7158,7 @@ void CvUnitAI::AI_assaultSeaMove()
 			// split out galleys from stack of ocean capable ships
 			if (kOwner.AI_unitImpassableCount(getUnitType()) == 0 && getGroup()->getNumUnits() > 1)
 			{
-				//getGroup()->AI_separateImpassable();
+				//AI_getGroup()->AI_separateImpassable();
 				// K-Mod
 				if (AI_getGroup()->AI_separateImpassable())
 				{
@@ -9817,12 +9818,10 @@ bool CvUnitAI::AI_omniGroup(UnitAITypes eUnitAI, int iMaxGroup, int iMaxOwnUnitA
 	if (!AI_canGroupWithAIType(eUnitAI))
 		return false;
 
-	if (getDomainType() == DOMAIN_LAND && !canMoveAllTerrain())
+	if (getDomainType() == DOMAIN_LAND && !canMoveAllTerrain() &&
+		getArea().getNumAIUnits(getOwner(), eUnitAI) == 0)
 	{
-		if (getArea().getNumAIUnits(getOwner(), eUnitAI) == 0)
-		{
-			return false;
-		}
+		return false;
 	}
 
 	int iOurImpassableCount = 0;
@@ -9830,7 +9829,8 @@ bool CvUnitAI::AI_omniGroup(UnitAITypes eUnitAI, int iMaxGroup, int iMaxOwnUnitA
 		pUnitNode = getGroup()->nextUnitNode(pUnitNode))
 	{
 		CvUnit const* pImpassUnit = ::getUnit(pUnitNode->m_data);
-		iOurImpassableCount = std::max(iOurImpassableCount, GET_PLAYER(getOwner()).AI_unitImpassableCount(pImpassUnit->getUnitType()));
+		iOurImpassableCount = std::max(iOurImpassableCount,
+				GET_PLAYER(getOwner()).AI_unitImpassableCount(pImpassUnit->getUnitType()));
 	}
 
 	CvUnit* pBestUnit = NULL;
@@ -10685,10 +10685,11 @@ bool CvUnitAI::AI_guardBonus(int iMinValue)
 	PROFILE_FUNC();
 	// <advc.107> No defenders to spare for bonuses
 	if(GET_PLAYER(getOwner()).AI_isDoStrategy(AI_STRATEGY_TURTLE) ||
-			(getArea().getAreaAIType(getTeam()) == AREAAI_DEFENSIVE &&
-			GET_TEAM(getTeam()).AI_getWarSuccessRating() < -80))
-		return false; // </advc.107>
-
+		(getArea().getAreaAIType(getTeam()) == AREAAI_DEFENSIVE &&
+		GET_TEAM(getTeam()).AI_getWarSuccessRating() < -80))
+	{
+		return false;
+	} // </advc.107>
 	CvPlot const* pBestPlot = NULL;
 	CvPlot const* pBestGuardPlot = NULL;
 	int iBestValue = 0;
@@ -21255,9 +21256,8 @@ int CvUnitAI::AI_connectBonusCost(CvPlot const& p, BuildTypes eBuild, int iMissi
 	if(iMissingWorkersInArea == 0)
 		iMultiplier = 1;
 	// Account for having to replace a Fort later
-	if(kImpr.isActsAsCity() && GET_PLAYER(getOwner()).
-		AI_isAdjacentCitySite(p, true))
-			iMultiplier++;
+	if(kImpr.isActsAsCity() && GET_PLAYER(getOwner()).AI_isAdjacentCitySite(p, true))
+		iMultiplier++;
 	iCost *= iMultiplier;
 	iCost /= 2;
 	int const iDefenseWeight = 20;
@@ -21919,7 +21919,6 @@ bool CvUnitAI::AI_canGroupWithAIType(UnitAITypes eUnitAI) const
 }
 
 
-
 bool CvUnitAI::AI_allowGroup(CvUnitAI const& kUnit, UnitAITypes eUnitAI) const // advc.003u: 1st param was CvUnit const*
 {
 	CvSelectionGroupAI const* pGroup = kUnit.AI_getGroup();
@@ -22069,15 +22068,17 @@ void CvUnitAI::read(FDataStreamBase* pStream)
 
 void CvUnitAI::write(FDataStreamBase* pStream)
 {
+	REPRO_TEST_BEGIN_WRITE(CvString::format("Unit[AI](%d,%d,%d)", getID(), getX(), getY()));
 	CvUnit::write(pStream);
 
 	uint uiFlag=0;
-	pStream->Write(uiFlag);		// flag for expansion
+	pStream->Write(uiFlag);
 
 	pStream->Write(m_iBirthmark);
 
 	pStream->Write(m_eUnitAIType);
 	pStream->Write(m_iAutomatedAbortTurn);
+	REPRO_TEST_END_WRITE();
 }
 
 // advc:

@@ -1,0 +1,28 @@
+
+Ranged combat system by keldath.
+
+based on VIP - Vincentz original ranged strike code.
+
+
+Definition:
+allow units to have a ranged bombard over tiles as an attack type.
+uses a random factor for hit probability that is controled form the alt global xml.
+(air attacks modified to have random also).
+
+affects 
+1.  land or sea units.
+2. units with air range >0
+
+
+mission types and definitions:
+1. Bombard - Normal vanilla bombard - units without air range.
+
+2. ranged strike 
+-attack on units out side a city - will damage a number of units
+-according to collateral damage attack rules.
+-attack on a city - if the city is fortified:
+	-will reduce defense 
+	- attack units - city defense percant will decrease damage out put.
+	-random probability
+
+optional ranged game options:

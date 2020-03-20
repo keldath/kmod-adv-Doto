@@ -332,8 +332,8 @@ void CvMap::updateCenterUnit()  // advc: some style changes
 	PROFILE_FUNC();
 	int iRange = -1;
 
-	for (CLLNode<IDInfo> const* pSelectionNode = gDLL->getInterfaceIFace()->headSelectionListNode();
-		pSelectionNode != NULL; pSelectionNode = gDLL->getInterfaceIFace()->nextSelectionListNode(pSelectionNode))
+	for (CLLNode<IDInfo> const* pSelectionNode = gDLL->UI().headSelectionListNode();
+		pSelectionNode != NULL; pSelectionNode = gDLL->UI().nextSelectionListNode(pSelectionNode))
 	{
 		CvUnit const& kLoopUnit = *::getUnit(pSelectionNode->m_data);
 		int iLoopRange;
@@ -368,7 +368,7 @@ void CvMap::updateCenterUnit()  // advc: some style changes
 	else
 	{
 		// only update within the range
-		CvPlot* pCenterPlot = gDLL->getInterfaceIFace()->getHeadSelectedUnit()->plot();
+		CvPlot* pCenterPlot = gDLL->UI().getHeadSelectedUnit()->plot();
 		for (SquareIter it(*pCenterPlot, iRange); it.hasNext(); ++it)
 		{
 			it->updateCenterUnit();
@@ -1083,7 +1083,6 @@ void CvMap::read(FDataStreamBase* pStream)
 			m_pMapPlots[iI].read(pStream);
 	}
 
-	// call the read of the free list CvArea class allocations
 	ReadStreamableFFreeListTrashArray(m_areas, pStream);
 	// <advc> Let the plots know that the areas have been loaded
 	for (int i = 0; i < numPlots(); i++)
@@ -1095,7 +1094,7 @@ void CvMap::read(FDataStreamBase* pStream)
 	/*  advc.004z: Not sure if this is the ideal place for this, but it works.
 		(The problem was that goody huts weren't always highlighted by the
 		Resource layer after loading a game.) */
-	gDLL->getInterfaceIFace()->setDirty(GlobeLayer_DIRTY_BIT, true);
+	gDLL->UI().setDirty(GlobeLayer_DIRTY_BIT, true);
 	// <advc.106n>
 	if (uiFlag > 0)
 	{
@@ -1114,6 +1113,7 @@ void CvMap::read(FDataStreamBase* pStream)
 // save object to a stream
 void CvMap::write(FDataStreamBase* pStream)
 {
+	REPRO_TEST_BEGIN_WRITE("Map");
 	uint uiFlag=0;
 	uiFlag = 1; // advc.106n
 	pStream->Write(uiFlag);
@@ -1132,11 +1132,10 @@ void CvMap::write(FDataStreamBase* pStream)
 	FAssertMsg((0 < GC.getNumBonusInfos()), "GC.getNumBonusInfos() is not greater than zero but an array is being allocated");
 	m_aiNumBonus.Write(pStream);
 	m_aiNumBonusOnLand.Write(pStream);
-
+	REPRO_TEST_END_WRITE();
 	for (int iI = 0; iI < numPlots(); iI++)
 		m_pMapPlots[iI].write(pStream);
 
-	// call the read of the free list CvArea class allocations
 	WriteStreamableFFreeListTrashArray(m_areas, pStream);
 	// <advc.106n>
 	pStream->Write(m_replayTexture.size());
@@ -1163,7 +1162,7 @@ void CvMap::rebuild(int iGridW, int iGridH, int iTopLatitude, int iBottomLatitud
 // <advc.106n>
 void CvMap::updateReplayTexture()
 {
-	byte* pTexture = gDLL->getInterfaceIFace()->getMinimapBaseTexture();
+	byte* pTexture = gDLL->UI().getMinimapBaseTexture();
 	FAssert(pTexture != NULL);
 	if (pTexture == NULL)
 		return;

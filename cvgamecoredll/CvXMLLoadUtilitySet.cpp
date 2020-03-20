@@ -9,7 +9,6 @@
 #include "CvInfo_All.h"
 #include "CvGameAI.h" // advc.104x
 #include "FVariableSystem.h"
-#include "ScaledInt.h" // advc.tmp: Move to precompiled header once the code has matured a bit
 // <advc> Overwrite the definition in CvGlobals.h b/c a const GC is no use here
 #undef GC
 #define GC CvGlobals::getInstance() // </advc>
@@ -1275,7 +1274,8 @@ void CvXMLLoadUtility::SetGameText(const char* szTextGroup, const char* szTagNam
 	Takes the szTagName parameter and loads the ppszString with the text values
 	under the tags. This will be the hints displayed during game initialization and load. */
 template <class T>
-void CvXMLLoadUtility::SetGlobalClassInfo(std::vector<T*>& aInfos, const char* szTagName, bool bTwoPass)
+void CvXMLLoadUtility::SetGlobalClassInfo(std::vector<T*>& aInfos, const char* szTagName,
+	bool bPassTwo) // advc.rh: Renamed from bTwoPass
 {
 	char szLog[256];
 	sprintf(szLog, "SetGlobalClassInfo (%s)", szTagName);
@@ -1284,11 +1284,58 @@ void CvXMLLoadUtility::SetGlobalClassInfo(std::vector<T*>& aInfos, const char* s
 
 	// locate the tag name in the xml file
 	if (!gDLL->getXMLIFace()->LocateNode(m_pFXml, szTagName))
-		return;
+		return; // advc
+
+	if (bPassTwo)
+	{
+		// if we successfully locate the szTagName node
+		if (gDLL->getXMLIFace()->LocateNode(m_pFXml, szTagName))
+		{
+			/*	<advc.rh> Comment by rheinig: "Major bug:
+				The following maps records as currently present in the info array,
+				beginning with the first, to elements in the XML, beginning with the
+				first, one by one, and does a (<T>).readPass2() on these pairs.
+				Well, without Modular XML that may have worked most of the time...
+				With modular XML, it will write partial properties of a new record
+				over the first existing records... As this only hits Stuff loaded with
+				the 'Two-Pass' flag on, and then only properties that are delayed to
+				the second pass, this is seldomly visible - best examples:
+				Techs or Promotions and their Prerequisite trees." */
+			/*gDLL->getXMLIFace()->SetToParent(m_pFXml);
+			gDLL->getXMLIFace()->SetToChild(m_pFXml);
+			for (std::vector<T*>::iterator it = aInfos.begin(); it != aInfos.end(); ++it) {
+				SkipToNextVal(); // skip to the next non-comment node
+				(*it)->readPass2(this);
+				if (!gDLL->getXMLIFace()->NextSibling(m_pFXml))
+					break;
+			}*/
+			do
+			{
+				SkipToNextVal();
+				MapChildren();
+				CvString szType;
+				if (GetChildXmlValByName(szType, "Type"))
+				{
+					if (!szType.empty())
+					{
+						int iIndex = GC.getInfoTypeForString(szType, true);
+						if (iIndex >= 0)
+							aInfos[iIndex]->readPass2(this);
+					}
+				}
+			} while (gDLL->getXMLIFace()->NextSibling(m_pFXml));
+		}
+		/*  Comment by rheinig: "Because the mixing of pass 1 and pass 2 with
+			modular XML was a major source of insidious bugs, the passes are now
+			decoupled by the LoadGlobalClassInfo routine. I have replaced the old
+			bTwoPass parameter with bPassTwo, which chooses the pass to perform,
+			instead of enabling both passes here." */
+		return; // </advc.rh>
+	}
 
 	do // loop through each tag
 	{
-		//SkipToNextVal();	// skip to the next non-comment node
+		//SkipToNextVal(); // K-Mod: Moved into termination check
 		T* pClassInfo = new T;
 		FAssert(pClassInfo != NULL);
 		if (pClassInfo == NULL)
@@ -1320,28 +1367,7 @@ void CvXMLLoadUtility::SetGlobalClassInfo(std::vector<T*>& aInfos, const char* s
 			SAFE_DELETE(aInfos[iIndex]);
 			aInfos[iIndex] = pClassInfo;
 		}
-
-
-		//} while (gDLL->getXMLIFace()->NextSibling(m_pFXml));
-	} while (gDLL->getXMLIFace()->NextSibling(m_pFXml) && SkipToNextVal()); // K-Mod
-
-	if (bTwoPass)
-	{
-		// if we successfully locate the szTagName node
-		if (gDLL->getXMLIFace()->LocateNode(m_pFXml, szTagName))
-		{
-			gDLL->getXMLIFace()->SetToParent(m_pFXml);
-			gDLL->getXMLIFace()->SetToChild(m_pFXml);
-			// loop through each tag
-			for (std::vector<T*>::iterator it = aInfos.begin(); it != aInfos.end(); ++it)
-			{
-				SkipToNextVal(); // skip to the next non-comment node
-				(*it)->readPass2(this);
-				if (!gDLL->getXMLIFace()->NextSibling(m_pFXml))
-					break;
-			}
-		}
-	}
+	} while (gDLL->getXMLIFace()->NextSibling(m_pFXml) /* K-Mod: */ && SkipToNextVal());
 }
 
 void CvXMLLoadUtility::SetDiplomacyInfo(std::vector<CvDiplomacyInfo*>& DiploInfos, const char* szTagName)
@@ -1417,13 +1443,28 @@ void CvXMLLoadUtility::LoadGlobalClassInfo(std::vector<T*>& aInfos,
 			errorMessage(szMessage, XML_LOAD_ERROR);
 		}
 		else
-		{
-			SetGlobalClassInfo(aInfos, szXmlPath, bTwoPass);
+		{	/*	<advc.rh> Comment by rheinig: "Because the Event tables contain
+				member arrays dimensioned to their own count, we need to delay pass 2
+				for the monolithic XML until after pass 1 has run for the modules.
+				Thus, the 'pass' parameter of SetGlobalClassInfo now indicates the
+				actual pass requested, not the need to execute both passes. */
+			SetGlobalClassInfo(aInfos, szXmlPath, /*bTwoPass*/ false);
+			std::vector<CvString> aszFiles; // (moved up) </advc.rh>
 			if (gDLL->isModularXMLLoading())
 			{
-				std::vector<CvString> aszFiles;
 				// search for the modular files
 				gDLL->enumerateFiles(aszFiles, CvString::format("modules\\*_%s.xml", szFileRoot));
+
+				/*	advc.rh: Comments by rheinig: "Ensure predictable load order
+					(anyone else working on a modular mod suddenly have unit or
+					building types swapped around after a non-xml change?)
+					DO NOT use stable_sort (mem allocator issue).
+					Repeat the loop to de-couple pass 2 (allows crossreferences
+					between different modules, which are problematic anyway,
+					but I like the XML code as clever as possible) Thus, this
+					first loop will *not* call pass 2. " */
+				std::sort(aszFiles.begin(), aszFiles.end());
+
 				for (std::vector<CvString>::iterator it = aszFiles.begin(); it != aszFiles.end(); ++it)
 				{
 					bLoaded = LoadCivXml(m_pFXml, *it);
@@ -1433,9 +1474,36 @@ void CvXMLLoadUtility::LoadGlobalClassInfo(std::vector<T*>& aInfos,
 						sprintf(szMessage, "LoadXML call failed for %s.", it->GetCString());
 						errorMessage(szMessage, XML_LOAD_ERROR);
 					}
-					else SetGlobalClassInfo(aInfos, szXmlPath, bTwoPass);
+					else SetGlobalClassInfo(aInfos, szXmlPath, /*bTwoPass*/ true); // advc.rh
 				}
 			}
+			// <advc.rh>
+			if (bTwoPass)
+			{
+				if (!gDLL->isModularXMLLoading())
+				{
+					/*	"Do Pass 2 for the monolithic XML *now*
+						(no need to reload the XML, no intervening modules)" */
+					SetGlobalClassInfo(aInfos, szXmlPath, true);
+				}
+				else
+				{
+					/*	"Do Pass 2 for the monolithic XML *now*
+						(reload the XML, intervening modules)
+						For this second pass, we forgo any loading error messages -
+						they hav already been output on pass 1" */
+					bLoaded = LoadCivXml(m_pFXml, CvString::format("xml\\%s/%s.xml", szFileDirectory, szFileRoot));
+					if (bLoaded)
+						SetGlobalClassInfo(aInfos, szXmlPath, true);
+					// "... followed by pass 2 for the modules:"
+					for (std::vector<CvString>::iterator it = aszFiles.begin(); it != aszFiles.end(); ++it)
+					{
+						bLoaded = LoadCivXml(m_pFXml, *it);
+						if (bLoaded)
+							SetGlobalClassInfo(aInfos, szXmlPath, true);
+					}
+				}
+			} // </advc.rh>
 			// advc.003i: Disabled
 			/*if (NULL != pArgFunction && bWriteCache) {
 				// write info to cache
@@ -1762,13 +1830,12 @@ bool CvXMLLoadUtility::SetAndLoadVar(int** ppiVar, int iDefault)
 	return true;
 }
 
-
-/*  advc.003t: Will set the array that ppiList points to to NULL if
-	iDefaultListVal is 0 and no pairs are found or if all (index,value) pairs
+/*  advc.003t: Will set the array that pptList points to to NULL if
+	tDefaultListVal is 0 and no pairs are found or if all (index,value) pairs
 	have the value 0. */
-// advc.003x: Unused param iInfoBaseSize removed
-void CvXMLLoadUtility::SetVariableListTagPair(int **ppiList, const TCHAR* szRootTagName,
-	int iInfoBaseLength, int iDefaultListVal)
+template<typename T>
+void CvXMLLoadUtility::SetVariableListTagPair(T** pptList, const TCHAR* szRootTagName,
+	int iInfoBaseLength, T tDefaultListVal) // (advc.003x: Unused param iInfoBaseSize removed)
 {
 	if (iInfoBaseLength <= 0)
 	{
@@ -1777,14 +1844,14 @@ void CvXMLLoadUtility::SetVariableListTagPair(int **ppiList, const TCHAR* szRoot
 				GC.getCurrentXMLFile().GetCString());
 		errorMessage(szMessage);
 	}
-	InitList(ppiList, iInfoBaseLength, iDefaultListVal);
+	InitList(pptList, iInfoBaseLength, tDefaultListVal);
 	bool bListModified = false; // advc.003t
 	if (gDLL->getXMLIFace()->SetToChildByTagName(m_pFXml,szRootTagName))
 	{
 		if (SkipToNextVal())
 		{
 			int iNumSibs = gDLL->getXMLIFace()->GetNumChildren(m_pFXml);
-			int* piList = *ppiList;
+			T* ptList = *pptList;
 			if (iNumSibs > 0)
 			{
 				if(iNumSibs > iInfoBaseLength)
@@ -1799,16 +1866,16 @@ void CvXMLLoadUtility::SetVariableListTagPair(int **ppiList, const TCHAR* szRoot
 					TCHAR szTextVal[256];
 					for (int i = 0; i < iNumSibs; i++)
 					{
-						//if (GetChildXmlVal(szTextVal))
-						if (SkipToNextVal() && GetChildXmlVal(szTextVal)) // K-Mod. (without this, a comment in the xml could break this)
+						if (SkipToNextVal() && // K-Mod. (without this, a comment in the xml could break this)
+							GetChildXmlVal(szTextVal))
 						{
 							int iIndexVal = FindInInfoClass(szTextVal);
 							if (iIndexVal != -1)
 							{
-								int const iOldVal = piList[iIndexVal]; // advc.003t
-								GetNextXmlVal(piList[iIndexVal]);
+								T const tOldVal = ptList[iIndexVal]; // advc.003t
+								GetNextXmlVal(ptList[iIndexVal]);
 								// <advc.003t>
-								if (iOldVal != piList[iIndexVal])
+								if (tOldVal != ptList[iIndexVal])
 									bListModified = true; // </advc.003t>
 							}
 							gDLL->getXMLIFace()->SetToParent(m_pFXml);
@@ -1823,8 +1890,8 @@ void CvXMLLoadUtility::SetVariableListTagPair(int **ppiList, const TCHAR* szRoot
 		gDLL->getXMLIFace()->SetToParent(m_pFXml);
 	}
 	// <advc.003t>
-	if (!bListModified && iDefaultListVal == 0)
-		SAFE_DELETE_ARRAY(*ppiList); // </advc.003t>
+	if (!bListModified && tDefaultListVal == 0)
+		SAFE_DELETE_ARRAY(*pptList); // </advc.003t>
 }
 /************************************************************************************************/
 /* RevDCM  XMLloading                             05/05/10             phungus420               */
@@ -1912,128 +1979,11 @@ void CvXMLLoadUtility::SetVariableListTagPairRevDCM(int **ppiList, const TCHAR* 
 /************************************************************************************************/
 /* RevDCM	                                 END                                                */
 /************************************************************************************************/
-
-// advc.003t: See SetVariableListTagPair(int**,...) above
-void CvXMLLoadUtility::SetVariableListTagPair(bool **ppbList, const TCHAR* szRootTagName,
-	int iInfoBaseLength, bool bDefaultListVal)
-{
-	if(iInfoBaseLength <= 0)
-	{
-		char szMessage[1024];
-		sprintf(szMessage, "Allocating zero or less memory in CvXMLLoadUtility::SetVariableListTagPair \n Current XML file is: %s",
-				GC.getCurrentXMLFile().GetCString());
-		errorMessage(szMessage);
-	}
-	InitList(ppbList, iInfoBaseLength, bDefaultListVal);
-	bool bListModified = false; // advc.003t
-	if (gDLL->getXMLIFace()->SetToChildByTagName(m_pFXml,szRootTagName))
-	{
-		if (SkipToNextVal())
-		{
-			int iNumSibs = gDLL->getXMLIFace()->GetNumChildren(m_pFXml);
-			bool* pbList = *ppbList;
-			if (iNumSibs > 0)
-			{
-				if(iNumSibs > iInfoBaseLength)
-				{
-					char szMessage[1024];
-					sprintf(szMessage, "There are more siblings than memory allocated for them in CvXMLLoadUtility::SetVariableListTagPair \n Current XML file is: %s",
-							GC.getCurrentXMLFile().GetCString());
-					errorMessage(szMessage);
-				}
-				if (gDLL->getXMLIFace()->SetToChild(m_pFXml))
-				{
-					TCHAR szTextVal[256];
-					for (int i = 0; i < iNumSibs; i++)
-					{
-						//if (GetChildXmlVal(szTextVal))
-						if (SkipToNextVal() && GetChildXmlVal(szTextVal)) // K-Mod. (without this, a comment in the xml could break this)
-						{
-							int iIndexVal = FindInInfoClass(szTextVal);
-							if (iIndexVal != -1)
-							{
-								bool bOldVal = pbList[iIndexVal]; // advc.003t
-								GetNextXmlVal(pbList[iIndexVal]);
-								// <advc.003t>
-								if (bOldVal != pbList[iIndexVal])
-									bListModified = true; // </advc.003t>
-							}
-							gDLL->getXMLIFace()->SetToParent(m_pFXml);
-						}
-						if (!gDLL->getXMLIFace()->NextSibling(m_pFXml))
-							break;
-					}
-					gDLL->getXMLIFace()->SetToParent(m_pFXml);
-				}
-			}
-		}
-		gDLL->getXMLIFace()->SetToParent(m_pFXml);
-	}
-	// <advc.003t>
-	if (!bListModified && bDefaultListVal == false)
-		SAFE_DELETE_ARRAY(*ppbList); // </advc.003t>
-}
-
-// advc.003t: See SetVariableListTagPair(int**,...) above
-void CvXMLLoadUtility::SetVariableListTagPair(float **ppfList, const TCHAR* szRootTagName,
-	int iInfoBaseLength, float fDefaultListVal)
-{
-	if(iInfoBaseLength <= 0)
-	{
-		char szMessage[1024];
-		sprintf(szMessage, "Allocating zero or less memory in CvXMLLoadUtility::SetVariableListTagPair \n Current XML file is: %s",
-				GC.getCurrentXMLFile().GetCString());
-		errorMessage(szMessage);
-	}
-	InitList(ppfList, iInfoBaseLength, fDefaultListVal);
-	bool bListModified = false; // advc.003t
-	if (gDLL->getXMLIFace()->SetToChildByTagName(m_pFXml,szRootTagName))
-	{
-		if (SkipToNextVal())
-		{
-			int iNumSibs = gDLL->getXMLIFace()->GetNumChildren(m_pFXml);
-			float* pfList = *ppfList;
-			if (iNumSibs > 0)
-			{
-				if(iNumSibs > iInfoBaseLength)
-				{
-					char szMessage[1024];
-					sprintf(szMessage, "There are more siblings than memory allocated for them in CvXMLLoadUtility::SetVariableListTagPair \n Current XML file is: %s",
-							GC.getCurrentXMLFile().GetCString());
-					errorMessage(szMessage);
-				}
-				if (gDLL->getXMLIFace()->SetToChild(m_pFXml))
-				{
-					TCHAR szTextVal[256];
-					for (int i = 0; i < iNumSibs; i++)
-					{
-						//if (GetChildXmlVal(szTextVal))
-						if (SkipToNextVal() && GetChildXmlVal(szTextVal)) // K-Mod. (without this, a comment in the xml could break this)
-						{
-							int iIndexVal = FindInInfoClass(szTextVal);
-							if (iIndexVal != -1)
-							{
-								float fOldVal = pfList[iIndexVal]; // advc.003t
-								GetNextXmlVal(pfList[iIndexVal]);
-								// <advc.003t>
-								if (fOldVal != pfList[iIndexVal])
-									bListModified = true; // </advc.003t>
-							}
-							gDLL->getXMLIFace()->SetToParent(m_pFXml);
-						}
-						if (!gDLL->getXMLIFace()->NextSibling(m_pFXml))
-							break;
-					}
-					gDLL->getXMLIFace()->SetToParent(m_pFXml);
-				}
-			}
-		}
-		gDLL->getXMLIFace()->SetToParent(m_pFXml);
-	}
-	// <advc.003t>
-	if (!bListModified && fDefaultListVal == 0)
-		SAFE_DELETE_ARRAY(*ppfList); // </advc.003t>
-}
+// <advc> Explicit instantiations of member function template
+template void CvXMLLoadUtility::SetVariableListTagPair(int**, const TCHAR*, int, int);
+template void CvXMLLoadUtility::SetVariableListTagPair(bool**, const TCHAR*, int, bool);
+template void CvXMLLoadUtility::SetVariableListTagPair(float**, const TCHAR*, int, float);
+// </advc>
 
 // advc.003t: See SetVariableListTagPair(int**,...) above
 void CvXMLLoadUtility::SetVariableListTagPair(CvString **ppszList, const TCHAR* szRootTagName,

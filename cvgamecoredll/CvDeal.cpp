@@ -85,15 +85,13 @@ void CvDeal::announceCancel(PlayerTypes eMsgTarget, PlayerTypes eOther, bool bFo
 	CvWString szCancelString = gDLL->getText("TXT_KEY_POPUP_DEAL_CANCEL");
 	GAMETEXT.getDealString(szDealString, *this, eMsgTarget, /* advc.004w: */ true);
 	szString.Format(L"%s: %s", szCancelString.GetCString(), szDealString.getCString());
-	gDLL->getInterfaceIFace()->addMessage(eMsgTarget,
-			bForce, // advc.106j
-			GC.getEVENT_MESSAGE_TIME(), szString,
+	gDLL->UI().addMessage(eMsgTarget, /* advc.106j: */ bForce,
+			-1, szString,
 			bForce ? "AS2D_DEAL_CANCELLED" : NULL, // advc.106j
 			// <advc.127b>
 			MESSAGE_TYPE_INFO, NULL, NO_COLOR,
 			GET_PLAYER(eOther).getCapitalX(eMsgTarget),
-			GET_PLAYER(eOther).getCapitalY(eMsgTarget));
-			// </advc.127b>
+			GET_PLAYER(eOther).getCapitalY(eMsgTarget)); // </advc.127b>
 }
 
 void CvDeal::killSilent(bool bKillTeam, bool bUpdateAttitude, // </advc.036>
@@ -733,7 +731,7 @@ void CvDeal::write(FDataStreamBase* pStream)
 	PROFILE_FUNC(); // advc
 	uint uiFlag=0;
 	pStream->Write(uiFlag);
-
+	REPRO_TEST_BEGIN_WRITE(CvString::format("Deal(%d,%d,%d)", getID(), getFirstPlayer(), getSecondPlayer()));
 	pStream->Write(m_iID);
 	pStream->Write(m_iInitialGameTurn);
 
@@ -742,6 +740,7 @@ void CvDeal::write(FDataStreamBase* pStream)
 
 	m_firstTrades.Write(pStream);
 	m_secondTrades.Write(pStream);
+	REPRO_TEST_END_WRITE();
 }
 
 void CvDeal::read(FDataStreamBase* pStream)

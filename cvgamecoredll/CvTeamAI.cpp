@@ -431,10 +431,10 @@ AreaAITypes CvTeamAI::AI_calculateAreaAIType(CvArea const& kArea, bool bPreparin
 		int iPower = countPowerByArea(kArea);
 		int iEnemyPower = AI_countEnemyPowerByArea(kArea);
 		iPower *=
-				AI_limitedWarPowerRatio() // advc.107: was 100 flat (see Karadoc's comment below on personality)
-				+ iWarSuccessRating + ((bChosenTargets
-				|| !bRecentAttack) // advc.107
-				? 100 : 70); // advc.107: Was 100 : 50
+				AI_limitedWarPowerRatio() + // advc.107: was 100 flat
+							   // (addressing the K-Mod comment below)
+				iWarSuccessRating + //(bChosenTargets ? 100 : 50)
+				(bChosenTargets || !bRecentAttack ? 100 : 70); // advc.107
 		iEnemyPower *= 100;
 		/*  it would be nice to put some personality modifiers into this.
 			But this is a Team function. :( */
@@ -1062,7 +1062,7 @@ int CvTeamAI::AI_warSpoilsValue(TeamTypes eTarget, WarPlanTypes eWarPlan,
 			iDenyFactor += 10;
 		}
 	}
-	if (AI_anyMemberAtVictoryStage(AI_VICTORY_CONQUEST4 | AI_VICTORY_DOMINATION4))
+	if (AI_anyMemberAtVictoryStage(AI_VICTORY_MILITARY4))
 	{
 		iDenyFactor += 20;
 	}
@@ -1288,8 +1288,8 @@ int CvTeamAI::AI_warSpoilsValue(TeamTypes eTarget, WarPlanTypes eWarPlan,
 	iGainedValue *= 75 + 50 * iCloseCities / std::max(1, kTargetTeam.getNumCities());
 	iGainedValue /= 100;
 
-	// amplify the gained value if we are aiming for a conquest or domination victory
-	if (AI_anyMemberAtVictoryStage(AI_VICTORY_CONQUEST2 | AI_VICTORY_DOMINATION2))
+	// amplify the gained value if we are aiming for a military victory
+	if (AI_anyMemberAtVictoryStage(AI_VICTORY_MILITARY2))
 		iGainedValue = iGainedValue * 4/3;
 
 	// reduce the gained value based on how many other teams are at war with the target
@@ -1483,7 +1483,7 @@ int CvTeamAI::AI_warCommitmentCost(TeamTypes eTarget, WarPlanTypes eWarPlan,
 			iCommitmentPool = iCommitmentPool * iPoolMultiplier / 100;
 
 			// Don't pick a fight if we're expecting to beat them to a peaceful victory.
-			if (!AI_anyMemberAtVictoryStage(AI_VICTORY_DOMINATION4 | AI_VICTORY_CONQUEST4))
+			if (!AI_anyMemberAtVictoryStage(AI_VICTORY_MILITARY4))
 			{
 				if (AI_anyMemberAtVictoryStage(AI_VICTORY_CULTURE4) ||
 					(AI_anyMemberAtVictoryStage(AI_VICTORY_SPACE4) && !GET_TEAM(eTarget).AI_anyMemberAtVictoryStage(AI_VICTORY_CULTURE4 | AI_VICTORY_SPACE4)) ||
@@ -2354,7 +2354,7 @@ DenialTypes CvTeamAI::AI_surrenderTrade(TeamTypes eMasterTeam, int iPowerMultipl
 	if(isAVassal() && !isCapitulated())
 	{
 		// Obscured; don't want player to aim for a very specific power ratio
-		std::vector<long> hashInput;
+		std::vector<int> hashInput;
 		hashInput.push_back(kGame.getTeamRank(getID()));
 		hashInput.push_back(kGame.getTeamRank(eMasterTeam));
 		hashInput.push_back(getNumWars());
@@ -2655,7 +2655,7 @@ DenialTypes CvTeamAI::AI_surrenderTrade(TeamTypes eMasterTeam, int iPowerMultipl
 		return DENIAL_POWER_YOUR_ENEMIES; // Denial type doesn't matter
 	} // </advc.143>  <advc.143b>
 	double nuked = 0;
-	for (TeamIter<ALIVE,ENEMY_OF> it(getID()); it.hasNext(); ++it)
+	for (TeamIter<CIV_ALIVE,ENEMY_OF> it(getID()); it.hasNext(); ++it)
 	{
 		CvTeam const& kEnemy = *it;
 		if(kEnemy.getCurrentEra() < 5) // for performance
@@ -2852,12 +2852,11 @@ int CvTeamAI::AI_getRivalAirPower() const
 bool CvTeamAI::AI_refusePeace(TeamTypes ePeaceTeam) const
 {
 	// Refuse peace if we need the war for our conquest / domination victory.
-	return (!isHuman() && AI_anyMemberAtVictoryStage(
-			AI_VICTORY_CONQUEST4 | AI_VICTORY_DOMINATION4) &&
-			((AI_isChosenWar(ePeaceTeam)
+	return (!isHuman() && AI_anyMemberAtVictoryStage(AI_VICTORY_MILITARY4) &&
+			((AI_isChosenWar(ePeaceTeam) &&
 			// advc.115:
-			&& GET_TEAM(ePeaceTeam).AI_getWarPlan(getID()) == WARPLAN_ATTACKED_RECENT)
-			|| getNumWars(true, true) == 1) && AI_getWarSuccessRating() > 0);
+			GET_TEAM(ePeaceTeam).AI_getWarPlan(getID()) == WARPLAN_ATTACKED_RECENT) ||
+			getNumWars(true, true) == 1) && AI_getWarSuccessRating() > 0);
 }
 
 bool CvTeamAI::AI_refuseWar(TeamTypes eWarTeam) const
@@ -3191,9 +3190,10 @@ void CvTeamAI::AI_getWarThresholds(int &iTotalWarThreshold, int &iLimitedWarThre
 		iHighUnitSpending += (std::max(0, iUnitSpendingPerMil - 16) / 6); // K-Mod
 
 		if (kMember.AI_isDoStrategy(AI_STRATEGY_DAGGER) ||
-				kMember.AI_atVictoryStage(AI_VICTORY_CONQUEST4) ||
-				kMember.AI_atVictoryStage(AI_VICTORY_DOMINATION4))
+			kMember.AI_atVictoryStage(AI_VICTORY_MILITARY4))
+		{
 			bAggressive = true;
+		}
 		if (kMember.AI_atVictoryStage(AI_VICTORY_CONQUEST2))
 			bConq2 = true;
 		if (kMember.AI_atVictoryStage(AI_VICTORY_DOMINATION3))
@@ -3203,7 +3203,7 @@ void CvTeamAI::AI_getWarThresholds(int &iTotalWarThreshold, int &iLimitedWarThre
 	iHighUnitSpending /= std::max(1, getNumMembers());
 	iTotalWarThreshold = iHighUnitSpending *
 			//(bAggressive ? 3 : 2);
-			2; // advc.019: The  +=bAggressive?1:0  below should be enough aggro
+			2; // advc.019: The '+=bAggressive?1:0' below should be enough aggro
 	if (bDom3)
 	{
 		iTotalWarThreshold *= 3;
@@ -3236,9 +3236,9 @@ int CvTeamAI::AI_getTotalWarOddsTimes100() const
 	{
 		// I don't see a fundamental difference between Domination and Conquest here
 		int iMilitaryVictoryFactor = 0;
-		if(AI_anyMemberAtVictoryStage(AI_VICTORY_CONQUEST2 | AI_VICTORY_DOMINATION2))
+		if(AI_anyMemberAtVictoryStage(AI_VICTORY_MILITARY2))
 			iMilitaryVictoryFactor = 3; // Don't care about 2 vs. 3 vs. 4 here
-		else if(AI_anyMemberAtVictoryStage(AI_VICTORY_CONQUEST1 | AI_VICTORY_DOMINATION1))
+		else if(AI_anyMemberAtVictoryStage(AI_VICTORY_MILITARY1))
 			iMilitaryVictoryFactor = 2;
 		return 100 * iMilitaryVictoryFactor + 20000 / std::max(iTotalWarRand, 1);
 	} // </advc.104>
@@ -4579,6 +4579,7 @@ void CvTeamAI::write(FDataStreamBase* pStream)
 	PROFILE_FUNC(); // advc
 	CvTeam::write(pStream);
 
+	REPRO_TEST_BEGIN_WRITE(CvString::format("TeamAI(%d)", getID()).GetCString());
 	uint uiFlag=1;
 	uiFlag = 2; // advc.109
 	uiFlag = 3; // advc.opt: m_aiWarPlanCounts
@@ -4619,6 +4620,7 @@ void CvTeamAI::write(FDataStreamBase* pStream)
 	// <advc.104>
 	if(isEverAlive() && !isBarbarian() && !isMinorCiv())
 		uwai().write(pStream); // </advc.104>
+	REPRO_TEST_END_WRITE();
 }
 
 // <advc.012>

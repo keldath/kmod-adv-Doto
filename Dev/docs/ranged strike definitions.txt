@@ -1,0 +1,72 @@
+This mod adds Rangestrikes (Ranged Combat) to sieges and ships from Frigate and forward.
+The sieges are no longer able to perform direct combat, only rangestrikes. The ships can do both.
+AI will use it for Land2Land, Land2Sea, Sea2Land, Continent2Continent and sometimes Sea2Sea.
+
+The formula for hit chance is depending on airdamage, enemy strength and how many enemy units on plot.
+
+
+
+When a rangestrike is made and a defender with rangestrike is being targeted, it will automatically return fire.
+To make sure its the rangestriker that defends, the <UnitCombatDefenders> can be used on the rangestrikers in the CIV4UnitInfos.xml.
+Otherwise it will be the strongest defender that will be hit.
+Code:
+<UnitCombatDefenders>
+	<UnitCombatDefender>
+		<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+		<bUnitCombatDefender>1</bUnitCombatDefender>
+	</UnitCombatDefender>
+</UnitCombatDefenders>
+To enable rangestrike for a unit, 3 things have to be changed in the CIV4UnitInfos.XML :
+1) <iAirRange>
+the range the unit can hit
+2) <iAirCombat>
+the damage done by an attack (Random 1-100%)
+3) <iAirCombatLimit>
+the max % of damage possible to enemy unit
+
+The RANGE_COMBAT_DAMAGE in GlobalDefines.xml can be used to adjust the overall damage done by rangestrikes.
+
+Note: Messaging is not completely done, and will be adjusted in later version.
+
+Special thanks to everyone who helped with the coding. :goodjob:
+
+
+----
+
+Im glad you ask, coz its one of the things I need to clean up/clear up :
+PHP:
+    if (((GC.getGameINLINE().getSorenRandNum(GC.getDefineINT("MAX_INTERCEPTION_DAMAGE"), "Random")) + airBaseCombatStr() * 2 * currHitPoints() / maxHitPoints()) < ((GC.getGameINLINE().getSorenRandNum(GC.getDefineINT("MAX_INTERCEPTION_DAMAGE"), "Random")) + pDefender->baseCombatStr() * pDefender->currHitPoints() / pDefender->maxHitPoints()))    
+Translated:
+If RandomNumber(0-XXX*) + (Our Airstrength x 2 x Health% is less than
+RandomNumber(0-XXX*) + (Their Strength x Health%) then it misses, otherwise it hits.
+
+XXX* Should have another define in the GlobalDefinesAlt.xml than Max_Interception_Damage as it is now.
+
+So basically if our "dice" and twice our Airstrength (regulated down if we are damaged) are higher than their "dice" and normal Strength (regulated down if they are damaged) then we hit.
+So its easier to hit a damaged unit, but harder to shoot if we are damaged.
+
+Now, the thought behind it was that you could have f.ex. an Artillery with strength 5 but Airstrength 15, so (A) when it was direct-attacked it would be easy to destroy and (B) when someone attacked it in a stack it would stay "behind the frontline" and be attacked last (unless cavalry was used for flanking ;))
+
+The return fire is simply calculated the other way around with Their Attackstrength vs our Strength, and checking if its possible for their Rangestriker to hit ours :
+PHP:
+    if (pDefender->canRangeStrikeAt(this->plot(), this->plot()->getX_INLINE(), this->plot()->getY_INLINE()))
+edit: the unit disapperaing instead of dying have been fixed, as it was indeed the *2 and *3 i added to timer. now they fire instantaneous and simultaneous.
+
+edit: added the following to GlobalDefinesAlt.xml (not uploaded yet though)
+PHP:
+    <!--SIZE OF THE ATTACK-DICE, THE HIGHER, THE LESS AIRSTRENGTH/STRENGHT IS A FACTOR -->
+    <Define>
+        <DefineName>RANGESTRIKE_DICE</DefineName>
+        <iDefineIntVal>100</iDefineIntVal>
+    </Define>
+    <!--1 FOR EQUAL ATTACK/DEFENSE (LOTS OF MISSES), >1 FOR EASIER HIT-->
+    <Define>
+        <DefineName>RANGESTRIKE_HIT_MODIFIER</DefineName>
+        <iDefineIntVal>2</iDefineIntVal>
+    </Define>
+    <!--1 FOR ENABLE RANGESTRIKE RETURN FIRE, 0 FOR DISABLE -->
+    <Define>
+        <DefineName>RANGESTRIKE_RETURN_FIRE</DefineName>
+        <iDefineIntVal>1</iDefineIntVal>
+    </Define>
+    <!--THE FORMULA FOR RANGESTRIKE HIT SUCCESS IS  -->

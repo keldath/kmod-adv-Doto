@@ -121,7 +121,7 @@ void CvPythonCaller::launchPythonScreenPopup(CvPopupInfo const& kPopupInfo, CvPo
 	argsList.add(kPopupInfo.getOption2());
 	call(CvString(kPopupInfo.getText()).c_str(), argsList, lResult, PYScreensModule);
 	if (lResult != 0)
-		gDLL->getInterfaceIFace()->popupSetAsCancelled(pPopup);
+		gDLL->UI().popupSetAsCancelled(pPopup);
 }
 
 void CvPythonCaller::callScreenFunction(char const* szFunctionName) const
@@ -1316,7 +1316,7 @@ bool CvPythonCaller::generateTerrainTypes(std::vector<int>& r, size_t uiTargetSi
 	m_bLastCallSuccessful = m_python.callFunction(m_python.getMapScriptModule(),
 			"generateTerrainTypes", NULL, &r);
 	if (!isOverride())
-	{
+	{	// PlantGenerator seems to generate terrain in addFeatures, but that's highly irregular.
 		FAssertMsg(false, "Map script has to override generateTerrainTypes and mustn't call usingDefaultImpl");
 		return false;
 	}

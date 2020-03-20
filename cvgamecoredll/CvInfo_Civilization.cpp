@@ -5,7 +5,7 @@
 #include "CvDLLXMLIFaceBase.h"
 
 
-CvCivilizationInfo::CvCivilizationInfo():
+CvCivilizationInfo::CvCivilizationInfo() :
 m_iDefaultPlayerColor(NO_PLAYERCOLOR),
 m_iArtStyleType(NO_ARTSTYLE),
 m_iUnitArtStyleType(NO_UNIT_ARTSTYLE),
@@ -394,7 +394,7 @@ bool CvCivilizationInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_pbCivilizationFreeTechs, "FreeTechs", GC.getNumTechInfos());
 	pXML->SetVariableListTagPair(&m_pbCivilizationDisableTechs, "DisableTechs", GC.getNumTechInfos());
 	// davidlallen: religion forbidden to civilization next line
-	pXML->SetVariableListTagPair(&m_pbForbiddenReligions, "ForbiddenReligions", sizeof(GC.getReligionInfo((ReligionTypes)0)), GC.getNumReligionInfos());
+	pXML->SetVariableListTagPair(&m_pbForbiddenReligions, "ForbiddenReligions", /*sizeof(GC.getReligionInfo((ReligionTypes)0)),*/ GC.getNumReligionInfos());
 
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"InitialCivics"))
 	{

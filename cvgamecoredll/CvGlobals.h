@@ -195,8 +195,22 @@ public:
 	//
 	// Global Infos
 	// All info type strings are upper case and are kept in this hash map for fast lookup
-	//
-	DllExport int getInfoTypeForString(const char* szType, bool bHideAssert = false) const;			// returns the infos index, use this when searching for an info type string
+	// returns the infos index, use this when searching for an info type string
+	DllExport int getInfoTypeForString(const char* szType, bool bHideAssert = false) const
+	// <advc.006> Need another param
+	{ return getInfoTypeForString(szType, bHideAssert, false); }
+	int getInfoTypeForString(const char* szType, bool bHideAssert, bool bFromPython) const;
+	// </advc.006>  // <advc>
+	inline ColorTypes getColorType(const char* szType) const
+	{
+		static CvString szPrefix = "COLOR_";
+		return (ColorTypes)getInfoTypeForString((szPrefix + szType).c_str());
+	}
+	inline DiploCommentTypes getAIDiploCommentType(const char* szType) const
+	{
+		static CvString szPrefix = "AI_DIPLOCOMMENT_";
+		return (DiploCommentTypes)getInfoTypeForString((szPrefix + szType).c_str());
+	} // </advc>
 	void setInfoTypeFromString(const char* szType, int idx);
 	DllExport void infoTypeFromStringReset();
 	DllExport void infosReset();
@@ -324,9 +338,10 @@ public:
 	// The other functions are kept for convenience when enumerating, but most are not used
 	//
 	DllExport int getTypesEnum(const char* szType) const // use this when searching for a type
-	// <advc.006> Add bHideAssert param
+	// <advc.006> Add two params
 	{ return getTypesEnum(szType, false); }
-	int getTypesEnum(const char* szType, bool bHideAssert) const; // </advc.006>
+	int getTypesEnum(const char* szType, bool bHideAssert, bool bFromPython = false) const;
+	// </advc.006>
 	void setTypesEnum(const char* szType, int iEnum);
 
 	int& getNumEntityEventTypes();
@@ -439,6 +454,10 @@ public:
 		/* </advc.148> */ \
 		DO(MINIMAP_RENDER_SIZE) /* advc.106m */ \
 		DO(CAN_TRAIN_CHECKS_AIR_UNIT_CAP) /* advc.001b */ \
+		/* <advc.groundbr> */ \
+		DO(AI_GROUNDBREAKING_PENALTY_ENABLE) \
+		DO(HUMAN_GROUNDBREAKING_PENALTY_ENABLE) \
+		/* </advc.groundbr> */ \
 		/* <advc.opt> */ \
 		DO(DIPLOMACY_VALUE_REMAINDER) \
 		DO(PEACE_TREATY_LENGTH) \

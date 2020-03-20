@@ -191,11 +191,9 @@ bool CvEraInfo::isNoBarbCities() const
 int CvEraInfo::getSoundtracks(int i) const
 {
 	FAssertBounds(0, getNumSoundtracks(), i);
-	return m_paiSoundtracks ? m_paiSoundtracks[i]
-		/*  advc.003t: Was -1. CvEraInfo::read also uses -1 as the default, but,
-			since 0 is used as the default for all other audio ids, let's hope
-			that 0 will also work here. */
-		: 0;
+	/*	advc (note): For all other audio ids, the default is 0, but the -1 here
+		is consistent with CvEraInfo::read and CvGame::getNextSoundtrack. */
+	return m_paiSoundtracks ? m_paiSoundtracks[i] : -1;
 }
 
 int CvEraInfo::getCitySoundscapeScriptId(int i) const
@@ -203,10 +201,19 @@ int CvEraInfo::getCitySoundscapeScriptId(int i) const
 	FAssertBounds(0, NUM_CITYSIZE_TYPES, i); // advc: Check for upper bound added
 	return m_paiCitySoundscapeScriptIds ? m_paiCitySoundscapeScriptIds[i] : 0; // advc.003t
 }
+// <advc.tag>
+void CvEraInfo::addElements(std::vector<XMLElement*>& r) const
+{
+	CvXMLInfo::addElements(r);
+	// <advc.groundbr>
+	r.push_back(new IntElement(AIMaxGroundbreakingPenalty, "AIMaxGroundbreakingPenalty", 0));
+	r.push_back(new IntElement(HumanMaxGroundbreakingPenalty, "HumanMaxGroundbreakingPenalty", 0));
+	// </advc.groundbr>
+} // </advc.tag>
 
 bool CvEraInfo::read(CvXMLLoadUtility* pXML)
 {
-	if (!CvInfoBase::read(pXML))
+	if (!CvXMLInfo::read(pXML))
 		return false;
 
 	pXML->GetChildXmlValByName(&m_bNoGoodies, "bNoGoodies");
@@ -227,7 +234,7 @@ bool CvEraInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iCreatePercent, "iCreatePercent");
 	pXML->GetChildXmlValByName(&m_iResearchPercent, "iResearchPercent");
 	// BETTER_BTS_AI_MOD, Tech Diffusion, 08/21/09, jdog5000:
-	pXML->GetChildXmlValByName(&m_iTechCostModifier, "iTechCostModifier");
+	pXML->GetChildXmlValByName(&m_iTechCostModifier, "iTechCostModifier", 0);
 	pXML->GetChildXmlValByName(&m_iBuildPercent, "iBuildPercent");
 	pXML->GetChildXmlValByName(&m_iImprovementPercent, "iImprovementPercent");
 	pXML->GetChildXmlValByName(&m_iGreatPeoplePercent, "iGreatPeoplePercent");

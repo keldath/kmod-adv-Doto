@@ -1,0 +1,46 @@
+
+pyramids bug bug check duamo
+
+slow spread for ai?
+
+no bardbs early?+no attacks from them+no cities?
+units pass near barbs and they wont attack at all....
+barn wont wdvance in tech units due to resources? they come with warriors and archer.
+for sure - 0 attacks from barbs ...
+
+ai behaviour:
+togogwa built 2 cities near 4 deserts when there was green near him....
+he prefered close borders over better locations??
+this caused his research to be very low....
+no walls on japans cities...
+
+tech trade? wierd - how can i do so before writing?
+
+wierd thing - when build - there is a double city build pop up  - nothing importent though
+turn insights:
+turn 137 
+only warriors are spawned.
+turn 142
+im weaker than japan - yet no ai trade or contact at all and no apparent war on sight.
+turn 179
+some barbs spearmans, low atatcks.
+ai still not expanding much - 
+never made diplomacy contact
+no war.
+turn 198
+no barb cities
+japan cities - some are with 1 defending unit.
+turn 225
+japan cities are low, barely developed almosst un defended.
+maybe he dont have money?
+
+costs:
+units + buildings costs so so - maybe slow city growth
+also too much gems 
+low horse copper and iron
+tech acctually could be a bit cheeper.
+
+doto:
+make religion limit optional + unique religion + forbidden?
+add option to play without spies?
+amon ra tech icon is ping !!

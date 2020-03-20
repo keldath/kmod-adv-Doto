@@ -199,7 +199,7 @@ void CyInfoPythonInterface1()
 
 	python::class_<CvUnitInfo, boost::noncopyable, python::bases<CvInfoBase, CvScalableInfo> >("CvUnitInfo")
 
-		/****************************************
+/****************************************
  *  Archid Mod: 10 Jun 2012
  *  Functionality: Unit Civic Prereq - Archid
  *		Based on code by Afforess

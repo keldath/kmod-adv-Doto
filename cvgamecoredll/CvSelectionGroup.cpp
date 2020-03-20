@@ -269,10 +269,10 @@ void CvSelectionGroup::doTurn()
 			if (iBestWaitTurns > 0)
 			{
 				// Cycle selection if the current group is selected
-				CvUnit* pSelectedUnit = gDLL->getInterfaceIFace()->getHeadSelectedUnit();
+				CvUnit* pSelectedUnit = gDLL->UI().getHeadSelectedUnit();
 				if (pSelectedUnit && pSelectedUnit->getGroup() == this)
 				{
-					gDLL->getInterfaceIFace()->selectGroup(pSelectedUnit, false, false, false);
+					gDLL->UI().selectGroup(pSelectedUnit, false, false, false);
 				}
 			}
 		}
@@ -514,7 +514,7 @@ void CvSelectionGroup::pushMission(MissionTypes eMission, int iData1, int iData2
 			if (isBusy() && GC.getInfo(eMission).isSound())
 				playActionSound();
 
-			gDLL->getInterfaceIFace()->setHasMovedUnit(true);
+			gDLL->UI().setHasMovedUnit(true);
 			/*  advc.001w: Prevent help text and mouse focus from lingering after
 				a command button is clicked */
 			GC.getGame().setUpdateTimer(CvGame::UPDATE_MOUSE_FOCUS, 2);
@@ -597,7 +597,7 @@ void CvSelectionGroup::updateMission()
 			{
 				if (getOwner() == GC.getGame().getActivePlayer())
 				{
-					if (gDLL->getInterfaceIFace()->getHeadSelectedUnit() == NULL)
+					if (gDLL->UI().getHeadSelectedUnit() == NULL)
 						GC.getGame().cycleSelectionGroups_delayed(1, true);
 				}
 			}
@@ -721,7 +721,6 @@ void CvSelectionGroup::startMission()
 	else
 	{
 		FAssertMsg(GET_PLAYER(getOwner()).isTurnActive() || GET_PLAYER(getOwner()).isHuman(), "It's expected that either the turn is active for this player or the player is human");
-
 		// K-Mod. Moved from outside.
 		if (readyForMission())
 		{
@@ -734,8 +733,10 @@ void CvSelectionGroup::startMission()
 				/*  Both air attack and rebase are MOVE_TO missions. Want to
 					clear the recon-plot only for rebase. */
 				if(data.eMissionType == MISSION_MOVE_TO && pDest != NULL &&
-						pDest->isFriendlyCity(*getHeadUnit(), true))
+					pDest->isFriendlyCity(*getHeadUnit(), true))
+				{
 					getHeadUnit()->setReconPlot(NULL);
+				}
 			} // </advc.029>
 		}
 		else setActivityType(ACTIVITY_HOLD);
@@ -756,9 +757,12 @@ void CvSelectionGroup::startMission()
 			// also, we should allow an amphibious landing even if we are out of moves.
 			if (!canAllMove())
 			{
-				if (groupAmphibMove(GC.getMap().getPlot(headMissionQueueNode()->m_data.iData1, headMissionQueueNode()->m_data.iData2),
-						headMissionQueueNode()->m_data.iFlags))
+				if (groupAmphibMove(GC.getMap().getPlot(
+					headMissionQueueNode()->m_data.iData1, headMissionQueueNode()->m_data.iData2),
+					headMissionQueueNode()->m_data.iFlags))
+				{
 					bDelete = true;
+				}
 			}
 			// K-Mod end
 		case MISSION_ROUTE_TO:
@@ -1273,22 +1277,24 @@ bool CvSelectionGroup::continueMission_bulk(int iSteps)  // advc: style changes
 		return false;
 	}
 	MissionData missionData = pHeadMission->m_data;
-	CvGame& g = GC.getGame();
+	CvGame& kGame = GC.getGame();
 	CvPlot* pFromPlot = plot(); // advc.102
 	bool bDone = false;
 	bool bAction = false;
 
 	if (!(missionData.iFlags & MOVE_NO_ATTACK) && // K-Mod
-		(missionData.iPushTurn == g.getGameTurn() ||
+		(missionData.iPushTurn == kGame.getGameTurn() ||
 		missionData.iFlags & MOVE_THROUGH_ENEMY))
 	{
 		if (missionData.eMissionType == MISSION_MOVE_TO)
 		{
 			bool bFailedAlreadyFighting;
 			if (groupAttack(missionData.iData1, missionData.iData2,
-					missionData.iFlags, bFailedAlreadyFighting,
-					/* advc.048: */ missionData.bModified))
+				missionData.iFlags, bFailedAlreadyFighting,
+				/* advc.048: */ missionData.bModified))
+			{
 				bDone = true;
+			}
 		}
 		// K-Mod. We need to do a similar check for MISSION_MOVE_TO_UNIT,
 		// because with the MOVE_ATTACK_STACK flag, MOVE_TO_UNIT might actually want to attack something!
@@ -1310,14 +1316,14 @@ bool CvSelectionGroup::continueMission_bulk(int iSteps)  // advc: style changes
 	{
 		setActivityType(ACTIVITY_AWAKE);
 		// K-Mod. Since I removed the cycle trigger from deactivateHeadMission, we need it here.
-		if (getOwner() == g.getActivePlayer() && IsSelected())
-			g.cycleSelectionGroups_delayed(1, true, canAnyMove());
+		if (getOwner() == kGame.getActivePlayer() && IsSelected())
+			kGame.cycleSelectionGroups_delayed(1, true, canAnyMove());
 		return false;
 	}
 	missionData = pHeadMission->m_data;
 
 	// K-Mod. 'direct attack' should be used for attack commands only. (But in simultaneous turns mode, the defenders might have already left.)
-	FAssert(bDone || !(missionData.iFlags & MOVE_DIRECT_ATTACK) || g.isMPOption(MPOPTION_SIMULTANEOUS_TURNS));
+	FAssert(bDone || !(missionData.iFlags & MOVE_DIRECT_ATTACK) || kGame.isMPOption(MPOPTION_SIMULTANEOUS_TURNS));
 
 	if (!bDone && getNumUnits() > 0 && /* K-Mod: */ readyForMission()) //canAllMove()
 	{
@@ -1339,7 +1345,7 @@ bool CvSelectionGroup::continueMission_bulk(int iSteps)  // advc: style changes
 				{
 					missionData = pHeadMission->m_data;
 					if (groupAmphibMove(GC.getMap().getPlot(
-							missionData.iData1, missionData.iData2), missionData.iFlags))
+						missionData.iData1, missionData.iData2), missionData.iFlags))
 					{
 						bAction = false;
 						bDone = true;
@@ -1543,13 +1549,13 @@ bool CvSelectionGroup::continueMission_bulk(int iSteps)  // advc: style changes
 		{
 			// Pass pFromPlot
 			updateMissionTimer(iSteps, pFromPlot);
-			if(g.getActivePlayer() != NO_PLAYER && getOwner() != g.getActivePlayer())
+			if(kGame.getActivePlayer() != NO_PLAYER && getOwner() != kGame.getActivePlayer())
 			{
-				bool bDestActiveVisible = !isInvisible(g.getActiveTeam());
+				bool bDestActiveVisible = !isInvisible(kGame.getActiveTeam());
 				CvDLLInterfaceIFaceBase* pInterface = gDLL->getInterfaceIFace();
 				if(gDLL->getEngineIFace()->isGlobeviewUp())
 				{
-					if(bDestActiveVisible && g.getCurrentLayer() == GLOBE_LAYER_UNIT &&
+					if(bDestActiveVisible && kGame.getCurrentLayer() == GLOBE_LAYER_UNIT &&
 						getPlot().isActiveVisible(true))
 					{
 						pInterface->setDirty(GlobeLayer_DIRTY_BIT, true);
@@ -1574,28 +1580,29 @@ bool CvSelectionGroup::continueMission_bulk(int iSteps)  // advc: style changes
 
 	if (bDone)
 	{	/*if (!isBusy()) {
-			if (getOwner() == g.getActivePlayer()) {
+			if (getOwner() == kGame.getActivePlayer()) {
 				if (IsSelected()) {
 					if ((headMissionQueueNode()->m_data.eMissionType == MISSION_MOVE_TO) ||
 						(headMissionQueueNode()->m_data.eMissionType == MISSION_ROUTE_TO) ||
 						(headMissionQueueNode()->m_data.eMissionType == MISSION_MOVE_TO_UNIT))
-						g.cycleSelectionGroups_delayed(GET_PLAYER(getOwner()).isOption(PLAYEROPTION_QUICK_MOVES) ? 1 : 2, true, true);
+						kGame.cycleSelectionGroups_delayed(GET_PLAYER(getOwner()).isOption(PLAYEROPTION_QUICK_MOVES) ? 1 : 2, true, true);
 				}
 			}
 			deleteMissionQueueNode(headMissionQueueNode());
 		}*/ // BtS
 		// K-Mod. If rapid-unit-cycling is enabled, I want to cycle as soon a possible. Otherwise, I want to mimic the original behaviour.
 		// Note: I've removed cycleSelectionGroups_delayed(1, true, canAnyMove()) from inside CvSelectionGroup::deactivateHeadMission
-		if (getOwner() == g.getActivePlayer() && IsSelected())
+		if (getOwner() == kGame.getActivePlayer() && IsSelected())
 		{
 			if ((missionData.eMissionType == MISSION_MOVE_TO ||
-					missionData.eMissionType == MISSION_ROUTE_TO ||
-					missionData.eMissionType == MISSION_MOVE_TO_UNIT) && !isBusy()) {
-				g.cycleSelectionGroups_delayed(GET_PLAYER(getOwner()).
+				missionData.eMissionType == MISSION_ROUTE_TO ||
+				missionData.eMissionType == MISSION_MOVE_TO_UNIT) && !isBusy())
+			{
+				kGame.cycleSelectionGroups_delayed(GET_PLAYER(getOwner()).
 						isOption(PLAYEROPTION_QUICK_MOVES) ?
 						2 : 3, true, canAnyMove()); // (? 1 : 2) + 1
 			}
-			else g.cycleSelectionGroups_delayed(1, true, canAnyMove());
+			else kGame.cycleSelectionGroups_delayed(1, true, canAnyMove());
 		}
 
 		if (!isBusy())
@@ -1632,10 +1639,10 @@ bool CvSelectionGroup::continueMission_bulk(int iSteps)  // advc: style changes
 			//continueMission(iSteps + 1);
 			return true;
 		}
-		else if (!isBusy() && getOwner() == g.getActivePlayer())
+		else if (!isBusy() && getOwner() == kGame.getActivePlayer())
 		{
 			if (IsSelected())
-				g.cycleSelectionGroups_delayed(1, true);
+				kGame.cycleSelectionGroups_delayed(1, true);
 		}
 	}
 	return false;
@@ -2311,7 +2318,7 @@ bool CvSelectionGroup::canMoveInto(CvPlot* pPlot, bool bAttack)
 bool CvSelectionGroup::canMoveOrAttackInto(CvPlot const& kPlot, bool bDeclareWar,
 		bool bCheckMoves, bool bAssumeVisible) const // K-Mod
 {
-	if(getNumUnits() <= 0)
+	if (getNumUnits() <= 0)
 		return false;
 
 	bool const bVisible = bAssumeVisible || kPlot.isVisible(getHeadTeam()); // K-Mod
@@ -2333,7 +2340,7 @@ bool CvSelectionGroup::canMoveOrAttackInto(CvPlot const& kPlot, bool bDeclareWar
 
 bool CvSelectionGroup::canMoveThrough(CvPlot const& kPlot, bool bDeclareWar, bool bAssumeVisible) const
 {
-	if(getNumUnits() <= 0)
+	if (getNumUnits() <= 0)
 		return false;
 
 	for (CLLNode<IDInfo> const* pUnitNode = headUnitNode(); pUnitNode != NULL;
@@ -2342,9 +2349,7 @@ bool CvSelectionGroup::canMoveThrough(CvPlot const& kPlot, bool bDeclareWar, boo
 		CvUnit const* pLoopUnit = ::getUnit(pUnitNode->m_data);
 		//if (!pLoopUnit->canMoveThrough(kPlot))
 		if (!pLoopUnit->canMoveInto(kPlot, false, bDeclareWar, true, bAssumeVisible)) // K-Mod
-		{
 			return false;
-		}
 	}
 	return true;
 }
@@ -2852,10 +2857,9 @@ void CvSelectionGroup::groupMove(CvPlot* pPlot, bool bCombat, CvUnit* pCombatUni
 		CvUnit::updateCombat may still unselect the no-capture unit through
 		checkRemoveSelectionAfterAttack. This could be fixed, but doesn't seem worth
 		the trouble.
-		K-Mod 1.45 has rewritten this function, which may fix the problem (and some others
-		too), but then I'd also have to merge the K-Mod fix for the Gunship city capture
-		bug ... too much work. */
-	for(int iStage = 0; iStage < 2; iStage++)
+		K-Mod 1.45 has rewritten this function, which may fix the problem (and some others too),
+		but then I'd also have to merge the K-Mod fix for the Gunship city capture bug ... */
+	for (int iStage = 0; iStage < 2; iStage++)
 	{
 		CLLNode<IDInfo>* pUnitNode = headUnitNode();
 		while (pUnitNode != NULL)
@@ -2867,14 +2871,16 @@ void CvSelectionGroup::groupMove(CvPlot* pPlot, bool bCombat, CvUnit* pCombatUni
 			if (pLoopUnit == pCombatUnit)
 				continue; // this unit is moved before the loop.
 			// <advc.001>
-			if(pLoopUnit->isNoCityCapture() != (bool)iStage)
+			if (pLoopUnit->isNoCityCapture() != (bool)iStage)
 				continue; // </advc.001>
 			if (pLoopUnit->canMove() &&
-					/*  advc.001: This condition was removed in K-Mod 1.44, but is needed
-						b/c canMoveOrAttackInto doesn't cover it (perhaps it should). */
-					!(pLoopUnit->isNoCityCapture() && pPlot->isEnemyCity(*pLoopUnit)) &&
-					(bCombat ? pLoopUnit->canMoveOrAttackInto(*pPlot) : pLoopUnit->canMoveInto(*pPlot)))
+				/*  advc.001: This condition was removed in K-Mod 1.44, but is needed
+					b/c canMoveOrAttackInto doesn't cover it (perhaps it should). */
+				!(pLoopUnit->isNoCityCapture() && pPlot->isEnemyCity(*pLoopUnit)) &&
+				(bCombat ? pLoopUnit->canMoveOrAttackInto(*pPlot) : pLoopUnit->canMoveInto(*pPlot)))
+			{
 				pLoopUnit->move(*pPlot, true);
+			}
 			else
 			{
 				/*pLoopUnit->joinGroup(NULL, true);
@@ -2883,11 +2889,11 @@ void CvSelectionGroup::groupMove(CvPlot* pPlot, bool bCombat, CvUnit* pCombatUni
 				// K-Mod. all units left behind should stay in the same group. (unless it would mean a change of group AI)
 				// (Note: it is important that units left behind are not in the original group.
 				// The later code assumes that the original group has moved, and if it hasn't, there will be an infinite loop.)
-				if (pStaticGroup && (isHuman() || pStaticGroup->getHeadUnitAIType() == eHeadAI))
+				if (pStaticGroup != NULL && (isHuman() || pStaticGroup->getHeadUnitAIType() == eHeadAI))
 					pLoopUnit->joinGroup(pStaticGroup, true);
 				else
 				{
-					pLoopUnit->joinGroup(0, true);
+					pLoopUnit->joinGroup(NULL, true);
 					pStaticGroup = pLoopUnit->getGroup();
 				}
 				//
@@ -2895,21 +2901,23 @@ void CvSelectionGroup::groupMove(CvPlot* pPlot, bool bCombat, CvUnit* pCombatUni
 			// K-Mod. If the unit is no longer in the original group; then display it's movement animation now.
 			// (this replaces the ExecuteMove line commented out in the above block, and it also handles the case of loading units onto boats.)
 			if (pLoopUnit->getGroupID() != getID())
-				pLoopUnit->ExecuteMove(((float)(GC.getInfo(MISSION_MOVE_TO).getTime() * gDLL->getMillisecsPerTurn())) / 1000.0f, false);
-			// K-Mod end
+			{
+				pLoopUnit->ExecuteMove(((float)(GC.getInfo(MISSION_MOVE_TO).getTime() *
+						gDLL->getMillisecsPerTurn())) / 1000.0f, false);
+			} // K-Mod end
 		}
 	} // advc.001: end of iStage loop
 
 	//execute move
-	if(bEndMove || !canAllMove())
+	if (bEndMove || !canAllMove())
 	{
 		CLLNode<IDInfo>* pUnitNode = headUnitNode();
-		while(pUnitNode != NULL)
+		while (pUnitNode != NULL)
 		{
 			CvUnit* pLoopUnit = ::getUnit(pUnitNode->m_data);
 			pUnitNode = nextUnitNode(pUnitNode);
-			pLoopUnit->ExecuteMove(((float)(GC.getInfo(MISSION_MOVE_TO).
-					getTime() * gDLL->getMillisecsPerTurn())) / 1000.0f, false);
+			pLoopUnit->ExecuteMove(((float)(GC.getInfo(MISSION_MOVE_TO).getTime() *
+					gDLL->getMillisecsPerTurn())) / 1000.0f, false);
 		}
 	}
 }
@@ -2947,7 +2955,7 @@ bool CvSelectionGroup::groupPathTo(int iX, int iY, int iFlags)
 		pPathPlot = getPathFirstPlot();*/ // BtS
 		// K-Mod. I've added & ~MOVE_DECLARE_WAR so that if we need to declare war at this point, and haven't yet done so,
 		// the move will fail here rather than splitting the group inside groupMove.
-		// Also, I've change it to use a different pathfinder, to avoid clearing the path data - and to avoid OOS errors.
+		// Also, I've changed it to use a different pathfinder, to avoid clearing the path data - and to avoid OOS errors.
 		final_path.SetSettings(this, iFlags & ~MOVE_DECLARE_WAR);
 		if (!final_path.GeneratePath(pDestPlot))
 			return false;
@@ -3069,27 +3077,26 @@ bool CvSelectionGroup::groupBuild(BuildTypes eBuild, /* advc.011b: */ bool bFini
 			break;
 		}
 		// advc.011c:
-		if(!bFinish && isHuman() && pPlot->getBuildTurnsLeft(eBuild, getOwner()) == 1)
+		if (!bFinish && isHuman() && pPlot->getBuildTurnsLeft(eBuild, getOwner()) == 1)
 		{
 			// <advc.011b>
 			CvWString szBuild = GC.getInfo(eBuild).getDescription();
 			// Get rid of the LINK tags b/c these result in an underscore
-			for(int i = 0; i < 2; i++)
+			for (int i = 0; i < 2; i++)
 			{
 				int posOpening = szBuild.find(L'<');
-				if(posOpening == CvWString::npos)
+				if (posOpening == CvWString::npos)
 					continue;
 				int posClosing = szBuild.find(L'>');
-				if(posClosing == CvWString::npos || posClosing < posOpening)
+				if (posClosing == CvWString::npos || posClosing < posOpening)
 					continue;
 				szBuild = (szBuild.substr(0, posOpening) +
 						szBuild.substr(posClosing + 1, szBuild.length() - posClosing - 1));
 			}
 			CvWString szBuffer = gDLL->getText("TXT_KEY_BUILD_NOT_FINISHED", szBuild.c_str());
-			gDLL->getInterfaceIFace()->addMessage(getOwner(), false,
-					GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_INFO,
+			gDLL->UI().addMessage(getOwner(), false, -1, szBuffer, NULL, MESSAGE_TYPE_INFO,
 					GC.getInfo(eBuild).getButton()/*getHeadUnit()->getButton()*/,
-					(ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"/*"COLOR_BUILDING_TEXT"*/),
+					GC.getColorType("WHITE"/*"COLOR_BUILDING_TEXT"*/),
 					getX(), getY(), true, false);
 			// </advc.011b>
 			// <advc.011c>
@@ -3740,10 +3747,10 @@ void CvSelectionGroup::setActivityType(ActivityTypes eNewValue)
 		}
 	}
 
-	if (pPlot == gDLL->getInterfaceIFace()->getSelectionPlot())
+	if (pPlot == gDLL->UI().getSelectionPlot())
 	{
-		gDLL->getInterfaceIFace()->setDirty(PlotListButtons_DIRTY_BIT, true);
-		gDLL->getInterfaceIFace()->setDirty(SelectionButtons_DIRTY_BIT, true);
+		gDLL->UI().setDirty(PlotListButtons_DIRTY_BIT, true);
+		gDLL->UI().setDirty(SelectionButtons_DIRTY_BIT, true);
 	}
 }
 
@@ -3883,9 +3890,7 @@ bool CvSelectionGroup::addUnit(CvUnit* pUnit, bool bMinimalChange)
 	}
 
 	if (!bAdded)
-	{
 		m_units.insertAtEnd(pUnit->getIDInfo());
-	}
 
 	if(!bMinimalChange)
 	{
@@ -4269,9 +4274,9 @@ void CvSelectionGroup::clearMissionQueue()
 	m_missionQueue.clear();
 	if (getOwner() == GC.getGame().getActivePlayer() && IsSelected())
 	{
-		gDLL->getInterfaceIFace()->setDirty(Waypoints_DIRTY_BIT, true);
-		gDLL->getInterfaceIFace()->setDirty(SelectionButtons_DIRTY_BIT, true);
-		gDLL->getInterfaceIFace()->setDirty(InfoPane_DIRTY_BIT, true);
+		gDLL->UI().setDirty(Waypoints_DIRTY_BIT, true);
+		gDLL->UI().setDirty(SelectionButtons_DIRTY_BIT, true);
+		gDLL->UI().setDirty(InfoPane_DIRTY_BIT, true);
 	}
 }
 
@@ -4297,9 +4302,9 @@ void CvSelectionGroup::insertAtEndMissionQueue(MissionData mission, bool bStart)
 
 	if (getOwner() == GC.getGame().getActivePlayer() && IsSelected())
 	{
-		gDLL->getInterfaceIFace()->setDirty(Waypoints_DIRTY_BIT, true);
-		gDLL->getInterfaceIFace()->setDirty(SelectionButtons_DIRTY_BIT, true);
-		gDLL->getInterfaceIFace()->setDirty(InfoPane_DIRTY_BIT, true);
+		gDLL->UI().setDirty(Waypoints_DIRTY_BIT, true);
+		gDLL->UI().setDirty(SelectionButtons_DIRTY_BIT, true);
+		gDLL->UI().setDirty(InfoPane_DIRTY_BIT, true);
 	}
 }
 
@@ -4320,9 +4325,9 @@ CLLNode<MissionData>* CvSelectionGroup::deleteMissionQueueNode(CLLNode<MissionDa
 
 	if (getOwner() == GC.getGame().getActivePlayer() && IsSelected())
 	{
-		gDLL->getInterfaceIFace()->setDirty(Waypoints_DIRTY_BIT, true);
-		gDLL->getInterfaceIFace()->setDirty(SelectionButtons_DIRTY_BIT, true);
-		gDLL->getInterfaceIFace()->setDirty(InfoPane_DIRTY_BIT, true);
+		gDLL->UI().setDirty(Waypoints_DIRTY_BIT, true);
+		gDLL->UI().setDirty(SelectionButtons_DIRTY_BIT, true);
+		gDLL->UI().setDirty(InfoPane_DIRTY_BIT, true);
 	}
 
 	return pNextMissionNode;
@@ -4515,8 +4520,8 @@ void CvSelectionGroup::write(FDataStreamBase* pStream)
 	uint uiFlag=0;
 	uiFlag = 1; // advc.011b
 	uiFlag = 2; // advc.004l
-	pStream->Write(uiFlag);		// flag for expansion
-
+	pStream->Write(uiFlag);
+	REPRO_TEST_BEGIN_WRITE(CvString::format("SelGroup(%d,%d,%d)", getID(), getX(), getY()));
 	pStream->Write(m_iID);
 	pStream->Write(m_iMissionTimer);
 
@@ -4525,10 +4530,10 @@ void CvSelectionGroup::write(FDataStreamBase* pStream)
 	pStream->Write(m_eOwner);
 	pStream->Write(m_eActivityType);
 	pStream->Write(m->eAutomateType);
-
 	m_units.Write(pStream);
 	m->knownEnemies.Write(pStream); // advc.004l
 	m_missionQueue.Write(pStream);
+	REPRO_TEST_END_WRITE();
 }
 
 

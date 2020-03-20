@@ -159,17 +159,10 @@ void CvInitCore::setDefaults()
 bool CvInitCore::getHuman(PlayerTypes eID) const
 {
 	if (getSlotStatus(eID) == SS_TAKEN)
-	{
 		return true;
-	}
 	else if (getSlotStatus(eID) == SS_OPEN)
-	{
-		return ( gDLL->isGameActive() || getHotseat() || getPitboss() || getPbem());
-	}
-	else
-	{
-		return false;
-	}
+		return (gDLL->isGameActive() || getHotseat() || getPitboss() || getPbem());
+	return false;
 }
 
 int CvInitCore::getNumHumans() const
@@ -1222,8 +1215,7 @@ void CvInitCore::setLeaderName(PlayerTypes eID, const CvWString & szLeaderName)
 		m_aszLeaderName[eID] = szName;
 	}
 	else FAssertBounds(0, MAX_PLAYERS, eID);
-	// advc.001m:
-	gDLL->getInterfaceIFace()->setDirty(Score_DIRTY_BIT, true);
+	gDLL->UI().setDirty(Score_DIRTY_BIT, true); // advc.001m
 }
 
 const CvWString & CvInitCore::getLeaderNameKey(PlayerTypes eID) const
@@ -1888,6 +1880,7 @@ void CvInitCore::read(FDataStreamBase* pStream)
 
 void CvInitCore::write(FDataStreamBase* pStream)
 {
+	REPRO_TEST_BEGIN_WRITE("InitCore");
 	uint uiSaveFlag=1;
 	uiSaveFlag=2; // advc.912d
 	pStream->Write(uiSaveFlag);		// flag for expansion, see SaveBits)
@@ -1973,7 +1966,7 @@ void CvInitCore::write(FDataStreamBase* pStream)
 	pStream->Write(MAX_PLAYERS, (int*)m_aeHandicap);
 	pStream->Write(MAX_PLAYERS, (int*)m_aeColor);
 	pStream->Write(MAX_PLAYERS, (int*)m_aeArtStyle);
-
+	REPRO_TEST_END_WRITE(); // (skip slot data)
 	pStream->Write(MAX_PLAYERS, (int*)m_aeSlotStatus);
 	pStream->Write(MAX_PLAYERS, (int*)m_aeSlotClaim);
 

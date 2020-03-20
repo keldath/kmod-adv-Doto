@@ -1701,8 +1701,9 @@ void HiredHand::evaluate() {
 double HiredHand::eval(PlayerTypes allyId, int originalUtility, int obligationThresh) {
 
 	// (These conditions overlap with those under Fidelity)
-	if(allyId != NO_PLAYER && (!we->canContact(allyId, true) ||
-			agent.isAtWar(TEAMID(allyId)) ||
+	if(allyId != NO_PLAYER && (agent.isAtWar(TEAMID(allyId)) ||
+			// Note: Important to check atWar first; infinite recursion possible otherwise.
+			!we->canContact(allyId, true) ||
 			agent.AI_getWorstEnemy() == TEAMID(allyId) ||
 			GET_TEAM(allyId).isAVassal())) { // Don't feel obliged to vassals
 		log("We don't feel obliged to fight for %s", report.leaderName(allyId));
@@ -2010,8 +2011,8 @@ bool KingMaking::anyVictory(PlayerTypes civId, AIVictoryStage flags, int stage,
 	if(!bPredict) {
 		if(stage == 3)
 			return civ.AI_atVictoryStage3();
-		return (flags & (AI_VICTORY_SPACE4 | AI_VICTORY_CONQUEST4 |
-				AI_VICTORY_DIPLOMACY4 | AI_VICTORY_DOMINATION4 | AI_VICTORY_CULTURE4));
+		return (flags & (AI_VICTORY_SPACE4 | AI_VICTORY_MILITARY4 |
+				AI_VICTORY_DIPLOMACY4 | AI_VICTORY_CULTURE4));
 	}
 	if(m->isEliminated(civId) || m->hasCapitulated(TEAMID(civId)))
 		return false;
@@ -2911,7 +2912,7 @@ void Affection::evaluate() {
 	uMinus *= linkedWarFactor * directPlanFactor * gameProgressFactor;
 	// When there's supposed to be uncertainty
 	if(!ignDistr && ((noWarPercent > 0 && noWarPercent < 100) || hiredAgainstFriend)) {
-		vector<long> hashInputs;
+		vector<int> hashInputs;
 		hashInputs.push_back(theyId);
 		hashInputs.push_back(towardsThem);
 		hashInputs.push_back(we->AI_getMemoryCount(theyId, MEMORY_DECLARED_WAR));
