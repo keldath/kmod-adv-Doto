@@ -256,7 +256,7 @@ public:
 	// advc.inl: force-inlined for CvArea::canBeEntered. Renamed from "isCanMoveImpassable"
 	__forceinline bool canMoveImpassable() const { return m_bCanMoveImpassable; }
 	inline bool isCanMoveAllTerrain() const { return m_bCanMoveAllTerrain; }
-//Deliverator mountain mod
+//Deliverator mountains mod
 	inline bool isCanMovePeak() const { return m_bCanMovePeak; }
 	bool isFlatMovementCost() const { return m_bFlatMovementCost; }
 	bool isIgnoreTerrainCost() const { return m_bIgnoreTerrainCost; }
@@ -520,6 +520,7 @@ protected:
 	bool m_bIgnoreBuildingDefense;
 	bool m_bCanMoveImpassable;
 	bool m_bCanMoveAllTerrain;
+//Mountains mod
 	bool m_bCanMovePeak; //Deliverator	
 	bool m_bFlatMovementCost;
 	bool m_bIgnoreTerrainCost;

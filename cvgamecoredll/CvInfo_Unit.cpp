@@ -152,6 +152,7 @@ m_bNoDefensiveBonus(false),
 m_bIgnoreBuildingDefense(false),
 m_bCanMoveImpassable(false),
 m_bCanMoveAllTerrain(false),
+//Mountains mod
 m_bCanMovePeak(false), //Deliverator
 m_bFlatMovementCost(false),
 m_bIgnoreTerrainCost(false),

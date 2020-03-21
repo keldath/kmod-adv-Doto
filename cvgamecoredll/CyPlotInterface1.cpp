@@ -39,7 +39,7 @@ void CyPlotPythonInterface1(python::class_<CyPlot>& x)
 		.def("isPotentialIrrigation", &CyPlot::isPotentialIrrigation, "bool ()")
 		.def("canHavePotentialIrrigation", &CyPlot::canHavePotentialIrrigation, "bool ()")
 		.def("isIrrigationAvailable", &CyPlot::isIrrigationAvailable, "bool (bool bIgnoreSelf)")
-		// Deliverator
+		// Deliverator - fresh water from improvements
 		.def("changeFreshWaterInRadius", &CyPlot::changeFreshWaterInRadius, "void (int iChange, int iRadius)")	
 		// Deliverator		
 		

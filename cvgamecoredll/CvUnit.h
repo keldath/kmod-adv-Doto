@@ -514,7 +514,7 @@ public:
 		return m_pUnitInfo->isCanMoveAllTerrain();
 	}
 //keldath QA-DONE
-// Deliverator mountain mod
+// Deliverator Mountains mod
 	inline bool canMovePeak() const																	// Exposed to Python
 	{
 		return m_pUnitInfo->isCanMovePeak();

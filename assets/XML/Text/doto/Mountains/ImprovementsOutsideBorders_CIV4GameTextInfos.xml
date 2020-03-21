@@ -25,4 +25,16 @@
 		<Italian>[ICON_BULLET]Cannot Enter Mesa</Italian>
 		<Spanish>[ICON_BULLET]Cannot Enter Mesa</Spanish>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_CAN_MOVE_PEAK</Tag>
+		<English>[ICON_BULLET]Can Enter Mountains</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_IMPROVEMENT_PEAK_VALID</Tag>
+		<English>[ICON_BULLET]Can be built on Mountains</English>
+		<French>[ICON_BULLET]Ne peut être construit sur un plateau</French>
+		<German>[ICON_BULLET]Can not be built on mesa</German>
+		<Italian>[ICON_BULLET]Can not be built on mesa</Italian>
+		<Spanish>[ICON_BULLET]Can not be built on mesa</Spanish>
+	</TEXT>
 </Civ4GameText>

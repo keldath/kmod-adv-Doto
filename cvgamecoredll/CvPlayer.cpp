@@ -5289,7 +5289,7 @@ bool CvPlayer::canFound(int iX, int iY, bool bTestVisible) const  // advc: some 
 	if (pPlot->isImpassable())
 		return false;
 
-//===NM=====Mountain Mod===0=====
+//===NM=====Mountains Mod===0=====
 	if (pPlot->isPeak())
 	{
 		if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))//AND Mountains Option
@@ -5301,7 +5301,7 @@ bool CvPlayer::canFound(int iX, int iY, bool bTestVisible) const  // advc: some 
 			}
 		}
 	}
-//===NM=====Mountain Mod===X=====
+//===NM=====Mountains Mod===X=====
 
 	if (pPlot->isFeature() && GC.getInfo(pPlot->getFeatureType()).isNoCity())
 		return false;
@@ -15945,13 +15945,17 @@ int CvPlayer::getAdvancedStartUnitCost(UnitTypes eUnit, bool bAdd, CvPlot const*
 
 				if (pPlot->isImpassable() && !GC.getInfo(eUnit).canMoveImpassable())
 					return -1;
+				//mountains mod start
 				// Deliverator - peak mod
-				if (pPlot->isPeak() && !GC.getUnitInfo(eUnit).isCanMovePeak())
+				if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
 				{
-					return -1;
-				}	
-				// Deliverator				
-
+					if (pPlot->isPeak() && !(GC.getUnitInfo(eUnit).isCanMovePeak() || GC.getInfo(eUnit).canMoveImpassable()))
+					{
+						return -1;
+					}	
+					// Deliverator				
+				}
+				//mountains mod end
 				if (pPlot->isFeature())
 				{
 					if (GC.getInfo(eUnit).getFeatureImpassable(pPlot->getFeatureType()))

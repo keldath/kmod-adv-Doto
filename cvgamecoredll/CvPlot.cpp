@@ -63,10 +63,11 @@ CvPlot::CvPlot() // advc: Merged with the deleted reset function
 	m_iTotalCulture = 0; // advc.opt
 
 	m_bStartingPlot = false;
-//	m_bHills = false; keldath - what is this for?
-//===NM=====Mountain Mod===0=====
-	m_bPeaks = false;
-//===NM=====Mountain Mod===X=====
+//keldath qa6 - what is this for?
+//	m_bHills = false; 
+//===NM=====Mountains Mod===0=====
+//	m_bPeaks = false;
+//===NM=====Mountains Mod===X=====
 	m_bNOfRiver = false;
 	m_bWOfRiver = false;
 	m_bIrrigated = false;
@@ -1174,9 +1175,9 @@ bool CvPlot::isFreshWater() const
 
 bool CvPlot::isPotentialIrrigation() const
 {	
-	//===NM=====Mountain Mod===0=====keldath - i hope thats ok
-	if ((isCity() && !(isHills() || !isPeak()))||
-	//===NM=====Mountain Mod===0=====
+	//===NM=====Mountains Mod===0=====keldath - i hope thats ok
+	if ((isCity() && !(isHills() || (GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && isPeak())))||
+	//===NM=====Mountains Mod===0=====
 		(isImproved() && GC.getInfo(getImprovementType()).isCarriesIrrigation()))
 	{
 		if (isOwned() && GET_TEAM(getTeam()).isIrrigation())
@@ -1189,9 +1190,9 @@ bool CvPlot::isPotentialIrrigation() const
 
 bool CvPlot::canHavePotentialIrrigation() const
 {
-//===NM=====Mountain Mod===0=====keldath - i hope thats ok
-	if (isCity() && !(isHills() || !isPeak()))
-//===NM=====Mountain Mod===0=====
+//===NM=====Mountains Mods===0=====keldath - i hope thats ok
+	if (isCity() && !(isHills() || (GC.getGame().isOption(GAMEOPTION_MOUNTAINS) &&isPeak())))
+//===NM=====Mountains Mods===0=====
 		return true;
 	// <advc.opt>
 	if(isWater())
@@ -1710,7 +1711,7 @@ bool CvPlot::canHaveBonus(BonusTypes eBonus, bool bIgnoreLatitude,
 
 	if (getBonusType() != NO_BONUS)
 		return false;
-//mountain mod Mountains Start
+//Mountains Start
 	if (!GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
 	{
 		if (isPeak())
@@ -1741,7 +1742,7 @@ bool CvPlot::canHaveBonus(BonusTypes eBonus, bool bIgnoreLatitude,
 		if (!kBonus.isHills())
 			return false;
 	}
-//mountain mod Mountains Start	else if (isPeak())
+//Mountains Start
 	else if (isPeak())
 	{
 		if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))//AND Option
@@ -1831,15 +1832,18 @@ bool CvPlot::canHaveImprovement(ImprovementTypes eImprovement, TeamTypes eTeam, 
 		bool bValid = false;
 		if (GC.getInfo(eImprovement).isHillsMakesValid() && isHills())
 			bValid = true;
-//===NM=====Mountain Mod===0=====
-		if (GC.getInfo(eImprovement).isPeakMakesValid() && isPeak())
-			bValid = true;
-//===NM=====Mountain Mod===X=====
+//===NM=====Mountains Mod===0=====
+		if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
+		{
+			if (GC.getInfo(eImprovement).isPeakMakesValid() && isPeak())
+				bValid = true;
 // davidlallen: mountain limitations start
-		if (GC.getInfo(eImprovement).isPeakMakesInvalid() && isPeak())
-		//	return false;
-			bValid = false;
+			if (GC.getInfo(eImprovement).isPeakMakesInvalid() && isPeak())
+			//	return false;
+				bValid = false;
 // davidlallen: mountain limitations end
+		}
+//===NM=====Mountains Mod===X=====
 		if (GC.getInfo(eImprovement).isFreshWaterMakesValid() && isFreshWater())
 			bValid = true;
 		if (GC.getInfo(eImprovement).isRiverSideMakesValid() && isRiverSide())
@@ -2129,7 +2133,6 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible)
 
 		if (!bTestVisible)
 		{
-			 
 			if (GC.getInfo(eRoute).getPrereqBonus() != NO_BONUS)
 			{
 				if (!isAdjacentPlotGroupConnectedBonus(ePlayer, ((BonusTypes)(GC.getInfo(eRoute).getPrereqBonus()))))
@@ -2182,13 +2185,13 @@ int CvPlot::getBuildTime(BuildTypes eBuild, /* advc.251: */ PlayerTypes ePlayer)
 	if (isFeature())
 		iTime += GC.getInfo(eBuild).getFeatureTime(getFeatureType());
 
-//===NM=====Mountain Mod===0=====
-	if (isPeak())
+//===NM=====Mountains Mod===0=====
+	if (isPeak() && GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
 	{
 		iTime *= std::max(0, (GC.getDefineINT("PEAK_BUILD_TIME_MODIFIER") + 100));
 		iTime /= 100;
 	}
-//===NM=====Mountain Mod===X=====
+//===NM=====Mountains Mod===X=====
 
 	iTime *= std::max(0, (GC.getInfo(getTerrainType()).getBuildModifier() + 100));
 	iTime /= 100;
@@ -2405,8 +2408,7 @@ int CvPlot::defenseModifier(TeamTypes eDefender, bool bIgnoreBuilding,
 		if (eDefender != NO_TEAM && (getTeam() == NO_TEAM || GET_TEAM(eDefender).isFriendlyTerritory(getTeam())))
 			iModifier += GC.getInfo(eImprovement).getDefenseModifier();
 	}
-//mountain mod mountains mod
-
+//mountains mod
 	if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))//AND Mountain Option
 	{
 		if (isPeak())
@@ -2475,13 +2477,13 @@ int CvPlot::movementCost(const CvUnit* pUnit, const CvPlot* pFromPlot,
 				GC.getInfo(getFeatureType()).getMovementCost());
 		if (isHills())
 			iRegularCost += GC.getDefineINT(CvGlobals::HILLS_EXTRA_MOVEMENT);
-//===NM=====Mountain Mod===0=====
-	if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
-	{
-		if (isPeak())
-			iRegularCost += GC.getDefineINT(CvGlobals::PEAK_EXTRA_MOVEMENT);
-	}
-//===NM=====Mountain Mod===X=====
+//===NM=====Mountains Mod===0=====
+		if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
+		{
+			if (isPeak())
+				iRegularCost += GC.getDefineINT(CvGlobals::PEAK_EXTRA_MOVEMENT);
+		}
+//===NM=====Mountains Mod===X=====
 
 		if (iRegularCost > 0)
 			iRegularCost = std::max(1, iRegularCost - pUnit->getExtraMoveDiscount());
@@ -2494,9 +2496,9 @@ int CvPlot::movementCost(const CvUnit* pUnit, const CvPlot* pFromPlot,
 	{
 		if ((!isFeature() ? pUnit->isTerrainDoubleMove(getTerrainType()) :
 			pUnit->isFeatureDoubleMove(getFeatureType())) ||
-//===NM=====Mountain Mod===0=====
-			((isPeak() || isHills()) && pUnit->isHillsDoubleMove())) // Deliverator - Hijacked, Hills -> Peak + hills by keldath
-//===NM=====Mountain Mod===0=====		
+//===NM=====Mountains Mod===0=====
+			(((GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && isPeak()) || isHills()) && pUnit->isHillsDoubleMove())) // Deliverator - Hijacked, Hills -> Peak + hills by keldath
+//===NM=====Mountains Mod===0=====		
 		{
 			iRegularCost /= 2;
 		}
@@ -3592,7 +3594,7 @@ bool CvPlot::isValidDomainForAction(const CvUnit& unit) const
 bool CvPlot::isImpassable() const
 {
 	//PROFILE_FUNC(); // advc.003o: Most of the calls come from pathfinding
-//===NM=====Mountain Mod===X=====
+//===NM=====Mountains Mod===X=====
 	if (!GC.getGame().isOption(GAMEOPTION_MOUNTAINS))//AND Mountains Option
 	{	
 		if (isPeak())
@@ -3600,7 +3602,7 @@ bool CvPlot::isImpassable() const
 			return true;
 		}
 	}
-//===NM=====Mountain Mod===X=====
+//===NM=====Mountains Mod===X=====
 	return (!isFeature() ?
 			// advc.opt: Check NO_TERRAIN only if NO_FEATURE
 			(getTerrainType() != NO_TERRAIN && GC.getInfo(getTerrainType()).isImpassable()) :
@@ -4724,7 +4726,8 @@ void CvPlot::setTerrainType(TerrainTypes eNewValue, bool bRecalculate, bool bReb
 /**  Reason Added: Enable isRequiresFlatlands for Terrain                                           **/
 /**  Notes:                                                                                         **/
 /*****************************************************************************************************/
-		if (isHills())
+	//mountains back in service addition- keldath
+		if (isHills() || isPeak())
 		{
 			if (GC.getTerrainInfo(getTerrainType()).isRequiresFlatlands() != isFlatlands())
 			{
@@ -7749,13 +7752,14 @@ void CvPlot::read(FDataStreamBase* pStream)
 	m_bStartingPlot = bVal;
 	if(uiFlag < 4) // advc.opt: m_bHills removed
 		pStream->Read(&bVal);
-//keldath - i have no idea what this does
-//===NM=====Mountain Mod===0=====
+//keldath qa6- i have no idea what this does
+//===NM=====Mountains Mod===0=====
 /*	pStream->Read(&bVal);
 	m_bHills = bVal;
-*/	pStream->Read(&bVal);
+	pStream->Read(&bVal);
 	m_bPeaks = bVal;
-//===NM=====Mountain Mod===X=====
+*/
+//===NM=====Mountains Mod===X=====
 	pStream->Read(&bVal);
 	m_bNOfRiver = bVal;
 	pStream->Read(&bVal);
@@ -7953,11 +7957,11 @@ void CvPlot::write(FDataStreamBase* pStream)
 	pStream->Write(m_iLatitude); // advc.tsl
 
 	pStream->Write(m_bStartingPlot);
-//keldath - why does hills areopt out?
+//keldath qa6- in the orig - hills where marked off. i marked the peaks - i thing advc dont need that?
 //	pStream->Write(m_bHills);
-//===NM=====Mountain Mod===0=====
-	pStream->Write(m_bPeaks);
-//===NM=====Mountain Mod===X=====
+//===NM=====Mountains Mod===0=====
+//	pStream->Write(m_bPeaks);
+//===NM=====Mountains Mod===X=====
 	pStream->Write(m_bNOfRiver);
 	pStream->Write(m_bWOfRiver);
 	pStream->Write(m_bIrrigated);

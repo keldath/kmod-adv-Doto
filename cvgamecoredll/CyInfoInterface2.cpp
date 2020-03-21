@@ -288,16 +288,14 @@ void CyInfoPythonInterface2()
 		.def("isSpreadCultureControl", &CvImprovementInfo::isSpreadCultureControl, "bool ()")
         // < JCultureControl Mod End >
 
-		// Deliverator
+		// Deliverator - fresh water from improvements
 		.def("getAddsFreshWaterInRadius", &CvImprovementInfo::getAddsFreshWaterInRadius, "int ()")		
 		// Deliverator
 	
 		.def("isActsAsCity", &CvImprovementInfo::isActsAsCity, "bool ()")
 		.def("isHillsMakesValid", &CvImprovementInfo::isHillsMakesValid, "bool ()")
-//===NM=====Mountain Mod===0=====
+//===NM=====Mountains Mod===0=====
 		.def("isPeakMakesValid", &CvImprovementInfo::isPeakMakesValid, "bool ()")
-//===NM=====Mountain Mod===X=====
-//===NM=====Mountain Mod===0=====
 		.def("isPeakMakesInvalid", &CvImprovementInfo::isPeakMakesInvalid, "bool ()")
 //===NM=====Mountain Mod===X=====
 		.def("isFreshWaterMakesValid", &CvImprovementInfo::isFreshWaterMakesValid, "bool ()")
@@ -373,9 +371,9 @@ void CyInfoPythonInterface2()
 
 		.def("isOneArea", &CvBonusInfo::isOneArea, "bool ()")
 		.def("isHills", &CvBonusInfo::isHills, "bool ()")
-//===NM=====Mountain Mod===0=====
+//===NM=====Mountains Mod===0=====
 		.def("isPeaks", &CvBonusInfo::isPeaks, "bool ()")
-//===NM=====Mountain Mod===X=====
+//===NM=====Mountain Mods===X=====
 		.def("isFlatlands", &CvBonusInfo::isFlatlands, "bool ()")
 		.def("isNoRiverSide", &CvBonusInfo::isNoRiverSide, "bool ()")
 		.def("isNormalize", &CvBonusInfo::isNormalize, "bool ()")

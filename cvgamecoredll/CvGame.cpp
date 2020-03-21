@@ -224,6 +224,7 @@ void CvGame::setInitialItems()
 	// <advc.030> Now that ice has been placed and normalization is through
 	if(GC.getDefineBOOL("PASSABLE_AREAS"))
 //added by f1 advc to allow peaks to seperate continents
+//Mountains mod
 		if(!isOption(GAMEOPTION_MOUNTAINS)){
 			GC.getMap().recalculateAreas();
 	}
@@ -914,19 +915,21 @@ void CvGame::initScenario()
 {
 	initFreeState(); // Tech from handicap
 	// <advc.030>
-	if(GC.getDefineBOOL("PASSABLE_AREAS"))
+//Mountains Mod
 //added by f1 advc to allow peaks to seperate continents
-		if(!isOption(GAMEOPTION_MOUNTAINS)) {
-   			/*  recalculateAreas can't handle preplaced cities. Or perhaps it can
-				(Barbarian cities are fine in most cases), but there's going to
-				be other stuff, like free units, that causes problems. */
-   			for(int i = 0; i < MAX_CIV_PLAYERS; i++) {
-       			if(GET_PLAYER((PlayerTypes)i).getNumCities() > 0)
-           			return;
-   			}
-   			GC.getMap().recalculateAreas();
-		}	
+	if(GC.getDefineBOOL("PASSABLE_AREAS") && !isOption(GAMEOPTION_MOUNTAINS))
+	{
+		/*  recalculateAreas can't handle preplaced cities. Or perhaps it can
+			(Barbarian cities are fine in most cases), but there's going to
+			be other stuff, like free units, that causes problems. */
+		for(int i = 0; i < MAX_CIV_PLAYERS; i++)
+		{
+			if(GET_PLAYER((PlayerTypes)i).getNumCities() > 0)
+				return;
+		}
+		GC.getMap().recalculateAreas();
 	} // </advc.030>
+}
 
 void CvGame::initFreeUnits()
 {
@@ -2116,7 +2119,7 @@ void CvGame::normalizeAddExtras()  // advc: changes to reduce indentation
 			CvPlot& kLoopPlot = *it;
 			if (kLoopPlot.isWater() || kLoopPlot.isHills())
 				continue;
-//re implementation of the code below - seems duplicated - keldath
+//re implementation of the code below - seems duplicated - keldatha6
 			if (!GC.getTerrainInfo(kLoopPlot.getTerrainType()).isRequiresFlatlands())
 			{
 			if (!kLoopPlot.isFeature() ||

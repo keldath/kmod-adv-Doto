@@ -117,7 +117,7 @@ bool CyPlot::isIrrigationAvailable(bool bIgnoreSelf)
 {
 	return m_pPlot ? m_pPlot->isIrrigationAvailable(bIgnoreSelf) : false;
 }
-// Deliverator -fresh water
+// Deliverator -fresh water from improvement
 void CyPlot::changeFreshWaterInRadius(int iChange, int iRadius)
 {
 	if (m_pPlot)

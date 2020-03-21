@@ -278,15 +278,14 @@
             <Help>If unchecked  - Cities are LImited to size 8 , with buildings and more, that limit is increased.</Help>
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
-       	</GameOptionInfo>
-<!--Vincentz ranged strike options keldath -->
+<!--Vincentz ranged strike options keldath 
+		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_RETALIATION</Type>
             <Description>Ranged-Retaliate</Description>
             <Help>If checked - when attacking an enemy ranged unit, it will retalliate with counter attack(no collateral damage).</Help>
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
-<!--UNUSED -->
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_SEA_END_MOVES</Type>
@@ -301,7 +300,6 @@
             <Help>If Checked - After Land units Range Strike, it wont be able to move if it have more move points.(default on)</Help>
             <bDefault>0</bDefault>
             <bVisible>0</bVisible>
-<!-- END UNUSED -->
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_SEA_ALLOW_REGULAR</Type>
@@ -309,6 +307,6 @@
             <Help>If Checked - Sea Units with Ranged Attack willl be able to use either ranged or direct (normal) Combat (default off)</Help>
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
-       	</GameOptionInfo>
+      --> 	</GameOptionInfo>
 	</GameOptionInfos>
 </Civ4GameOptionInfos>

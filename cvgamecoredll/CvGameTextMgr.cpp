@@ -714,11 +714,13 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 				szString.append(NEWLINE);
 				szString.append(gDLL->getText("TXT_KEY_UNIT_CAN_MOVE_IMPASSABLE"));
 			}
-	// Deliverator mountains
-			if (!pUnit->canMovePeak())
+	// Mountains mod
+			
+			if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS)&& pUnit->canMovePeak())
 			{
 				szString.append(NEWLINE);
-				szString.append(gDLL->getText("TXT_KEY_UNIT_CANNOT_MOVE_PEAK"));
+				//keldath -> was - TXT_KEY_UNIT_CANNOT_MOVE_PEAK
+				szString.append(gDLL->getText("TXT_KEY_UNIT_CAN_MOVE_PEAK"));
 			}		
 	// Deliverator	
 		}
@@ -9890,11 +9892,12 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		szBuffer.append(NEWLINE);
 		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_CAN_MOVE_IMPASSABLE"));
 	}
-// Deliverator peaks
-	if (!u.isCanMovePeak())
+// Mountains Mod
+	if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && u.isCanMovePeak())
 	{
 		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_CANNOT_MOVE_PEAK"));
+		//kedlath was -> TXT_KEY_UNIT_CANNOT_MOVE_PEAK
+		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_CAN_MOVE_PEAK"));
 	}	
 // Deliverator
 
@@ -10072,12 +10075,12 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_WITHDRAWL_PROBABILITY", u.getWithdrawalProbability()));
 	}
 	//vincentz ranged strike - now will also dispplay aircombat limit for units
-	if(u.getDomainType() == DOMAIN_AIR && u.getAirRange() > 0 ) 
+/*	if(u.getDomainType() == DOMAIN_AIR && u.getAirRange() > 0 ) 
 	{
 		szBuffer.append(NEWLINE);
 		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIRCOMBAT_LIMIT", u.getAirCombatLimit()));
 	}
-	else 
+	else*/ 
 	if (u.getCombatLimit() < GC.getMAX_HIT_POINTS() && u.getCombat() > 0 && !u.isOnlyDefensive())
 	{
 		szBuffer.append(NEWLINE);
@@ -16973,14 +16976,24 @@ void CvGameTextMgr::setImprovementHelp(CvWStringBuffer &szBuffer, ImprovementTyp
 			szBuffer.append(NEWLINE);
 			szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_ONLY_BUILD_FLATLANDS"));
 		}
-        // davidlallen: mountain limitations start
-		if (info.isPeakMakesInvalid())
-		{
-			szBuffer.append(NEWLINE);
-			szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_PEAK_INVALID"));
+		//Mountains mod
+		if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
+        {
+			// davidlallen: mountain limitations start
+			if (info.isPeakMakesInvalid())
+			{
+				szBuffer.append(NEWLINE);
+				szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_PEAK_INVALID"));
+			}
+			//this added by keldath
+			if (info.isPeakMakesValid())
+			{
+				szBuffer.append(NEWLINE);
+				szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_PEAK_VALID"));
+			}
 		}
 		// davidlallen: mountain limitations start
-		// Deliverator
+		// Deliverator fresh water from improvements
 		if (info.getAddsFreshWaterInRadius() >= 0)
 		{
 			szBuffer.append(NEWLINE);

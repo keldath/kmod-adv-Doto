@@ -848,6 +848,7 @@ void CvGlobals::setDefineSTRING(const char * szName, const char * szValue, /* ad
 /**                                                                                              */
 /**                                                                                              */
 /*************************************************************************************************/
+//no need for this in f1rpo advc 097
 /*int CvGlobals::getTGA_RELIGIONS()								// GAMEFONT_TGA_RELIGIONS
 {
 	return m_iTGA_RELIGIONS;

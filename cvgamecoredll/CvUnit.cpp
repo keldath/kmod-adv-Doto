@@ -2493,17 +2493,19 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar, bo
 	if (atPlot(&kPlot))
 		return false;
 
-// keldath - i changed a bit the org code.
-//mountain mod - sort off
-	// Deliverator peaks
-	if (kPlot.isPeak() && !canMovePeak() || !canMoveImpassable())
-	{
-		return false;
-	}	
-// Deliverator
 	if (!canMoveImpassable() && kPlot.isImpassable())
 		return false;
-
+// keldath - i changed a bit the org code.
+//mountain back in service mod - sort off
+	// Deliverator peaks
+	if (kPlot.isPeak())
+	{
+		if(!canMovePeak() /*|| !canMoveImpassable()*/)
+		{
+			return false;
+		}
+	}	
+// Deliverator
 	if (m_pUnitInfo->isNoRevealMap() && willRevealAnyPlotFrom(kPlot))
 		return false;
 

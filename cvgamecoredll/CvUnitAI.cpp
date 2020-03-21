@@ -17037,10 +17037,10 @@ bool CvUnitAI::AI_improveCity(CvCityAI const& kCity) // advc.003u: param was CvC
 
 			if (getPlot().isHills())
 				iPlotMoveCost += GC.getDefineINT(CvGlobals::HILLS_EXTRA_MOVEMENT);
-//===NM=====Mountain Mod===0=====
-			if (getPlot().isPeak())
+//===NM=====Mountain Mods===0=====
+			if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && getPlot().isPeak())
 				iPlotMoveCost += GC.getDefineINT(CvGlobals::PEAK_EXTRA_MOVEMENT);
-//===NM=====Mountain Mod===X=====
+//===NM=====Mountains Mod===X=====
 			if (iPlotMoveCost > 1)
 				eMission = MISSION_ROUTE_TO;
 		}
@@ -17199,10 +17199,10 @@ bool CvUnitAI::AI_improveLocalPlot(int iRange, CvCity const* pIgnoreCity, // adv
 
 			if (getPlot().isHills())
 				iPlotMoveCost += GC.getDefineINT(CvGlobals::HILLS_EXTRA_MOVEMENT);
-//===NM=====Mountain Mod===0=====
-			if (getPlot().isPeak())
+//===NM=====Mountain Mods===0=====
+			if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && getPlot().isPeak())
 				iPlotMoveCost += GC.getDefineINT(CvGlobals::PEAK_EXTRA_MOVEMENT);
-//===NM=====Mountain Mod===0=====
+//===NM=====Mountain Mods===0=====
 			if (iPlotMoveCost > 1)
 				eMission = MISSION_ROUTE_TO;
 		}
@@ -17913,13 +17913,13 @@ BuildTypes CvUnitAI::AI_betterPlotBuild(CvPlot const& kPlot, BuildTypes eBuild) 
 		if (GC.getDefineINT(CvGlobals::HILLS_EXTRA_MOVEMENT) > 0 && iTargetWorkers > 1)
 			bBuildRoute = true;
 	} // BETTER_BTS_AI_MOD: END
-//===NM=====Mountain Mod===0=====
-	else if (kPlot.isPeak())
+//===NM=====Mountains Mod===0=====
+	else if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && kPlot.isPeak())
 	{	
 		if (GC.getDefineINT(CvGlobals::PEAK_EXTRA_MOVEMENT) > 0 && (iTargetWorkers > 1))
 			bBuildRoute = true;
 	}
-//===NM=====Mountain Mod===X=====
+//===NM=====Mountains Mod===X=====
 	if (kPlot.isRoute())
 		bBuildRoute = false;
 
@@ -17952,10 +17952,10 @@ BuildTypes CvUnitAI::AI_betterPlotBuild(CvPlot const& kPlot, BuildTypes eBuild) 
 							((kPlot.isHills() && iTargetWorkers > 1) ?
 							2 * GC.getDefineINT(CvGlobals::HILLS_EXTRA_MOVEMENT) : 0)
 							+
-//===NM=====Mountain Mod===X=====keldath change to org
+//===NM=====Mountains Mod===X=====keldath change to org
 							((kPlot.isPeak() && iTargetWorkers > 1) ?
 							2 * GC.getDefineINT(CvGlobals::PEAK_EXTRA_MOVEMENT) : 0);
-//===NM=====Mountain Mod===X=====
+//===NM=====Mountains Mod===X=====
 					iValue /= 3;
 				}
 				ImprovementTypes const eImprovement = kOriginalBuildInfo.getImprovement();
