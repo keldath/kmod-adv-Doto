@@ -244,6 +244,34 @@
 			<bDefault>0</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
+		<GameOptionInfo>
+			<Type>GAMEOPTION_INFLUENCE_DRIVEN_WAR</Type>
+            <Description>IDW</Description>
+            <Help>Influence Driver War - Allows Combat To Spread Culture Via Combat</Help>
+			<bDefault>0</bDefault>
+			<bVisible>1</bVisible>
+		</GameOptionInfo>
+		<GameOptionInfo>
+			<Type>GAMEOPTION_IDW_NO_BARBARIAN</Type>
+            <Description>No barbarians IDW</Description>
+            <Help>Barbarians battles dont affect IDW [IDW Dependant]</Help>
+			<bDefault>0</bDefault>
+			<bVisible>1</bVisible>
+		</GameOptionInfo>
+		<GameOptionInfo>
+			<Type>GAMEOPTION_IDW_NO_NAVAL</Type>
+            <Description>No naval IDW</Description>
+            <Help>naval battles dont affect IDW[IDW Dependant]</Help>
+			<bDefault>0</bDefault>
+			<bVisible>1</bVisible>
+		</GameOptionInfo>
+		<GameOptionInfo>
+			<Type>GAMEOPTION_IDW_PILLAGE</Type>
+            <Description>Pillage IDW</Description>
+            <Help>IDW from Pillaging [IDW Dependant]</Help>
+			<bDefault>0</bDefault>
+			<bVisible>1</bVisible>
+		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_BUILDING_DELETION</Type>
             <Description>Building Deletion</Description>

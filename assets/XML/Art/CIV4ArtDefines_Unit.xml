@@ -6603,7 +6603,7 @@
 			<iDamageStates>4</iDamageStates>
 			<TrailDefinition>
 				<Texture>Art/Shared/tanktread.dds</Texture>
-				<fWidth>1.0</fWidth>
+				<fWidth>0.8</fWidth>
 				<fLength>180.0</fLength>
 				<fTaper>0.0</fTaper>
 				<fFadeStartTime>0.2</fFadeStartTime>
@@ -6612,10 +6612,13 @@
 			<fBattleDistance>0.5</fBattleDistance>
 			<fRangedDeathTime>0.12</fRangedDeathTime>
 			<bActAsRanged>1</bActAsRanged>
-			<TrainSound/>
-			<AudioRunSounds/>
-			<SelectionSound/>
-			<ActionSound/>
+			<TrainSound>AS2D_UNIT_BUILD_UNIT</TrainSound>
+			<AudioRunSounds>
+				<AudioRunTypeLoop>LOOPSTEP_TANK</AudioRunTypeLoop>
+				<AudioRunTypeEnd>ENDSTEP_TANK</AudioRunTypeEnd>
+			</AudioRunSounds>
+			<SelectionSound>AS3D_UN_TANK_FORT</SelectionSound>
+			<ActionSound>AS3D_UN_TANK_FORT</ActionSound>
 		</UnitArtInfo>
 		<UnitArtInfo>
 			<Type>ART_DEF_UNIT_CFRIGATE</Type>

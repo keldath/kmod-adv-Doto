@@ -776,10 +776,10 @@ protected:
 	char m_iRiverCrossingCount;
 
 	bool m_bStartingPlot:1;
-//keldath - why hills are out??
+//keldath f1rpo-The relevant info is in m_ePlotType and can be accessed through isHills() and isPeak(); that was already the case in BtS. m_bHills was, essentially, unused.
 //	bool m_bHills:1;
 //===NM=====Mountain Mod===0=====
-	bool m_bPeaks:1;
+//	bool m_bPeaks:1;
 //===NM=====Mountain Mod===X=====
 	bool m_bNOfRiver:1;
 	bool m_bWOfRiver:1;

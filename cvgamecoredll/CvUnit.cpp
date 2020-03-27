@@ -4702,8 +4702,8 @@ bool CvUnit::pillage()
 				/*
 				if (GC.getDefineINT("IDW_ENABLED") && GC.getDefineINT("IDW_PILLAGE_INFLUENCE_ENABLED"))
 				*/
-				// New code
-				if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR) && GC.getDefineINT("IDW_PILLAGE_INFLUENCE_ENABLED"))
+				// New code by kedlath
+				if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR) && GC.getGame().isOption(GAMEOPTION_IDW_PILLAGE))
 				//End PIG Mod
 				{
 					if (atWar(kPlot.getTeam(), getTeam()))
@@ -12072,14 +12072,16 @@ bool CvUnit::isEnabled() const
 // returns influence % in defended plot
 float CvUnit::doVictoryInfluence(CvUnit* pLoserUnit, bool bAttacking, bool bWithdrawal)
 {
-	if (GC.getDefineINT("IDW_NO_BARBARIAN_INFLUENCE"))
+	/*if (GC.getDefineINT("IDW_NO_BARBARIAN_INFLUENCE")) changed by keldath*/
+	if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR) && GC.getGame().isOption(GAMEOPTION_IDW_NO_BARBARIAN))
 	{
 		if (isBarbarian() || pLoserUnit->isBarbarian())
 		{
 			return 0.0f;
 		}
 	}
-	if (GC.getDefineINT("IDW_NO_NAVAL_INFLUENCE"))
+	/*if (GC.getDefineINT("IDW_NO_NAVAL_INFLUENCE")) changed by keldath*/
+	if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR) && GC.getGame().isOption(GAMEOPTION_IDW_NO_NAVAL))
 	{
 		if (DOMAIN_SEA == getDomainType())
 		{

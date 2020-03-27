@@ -2119,7 +2119,7 @@ void CvGame::normalizeAddExtras()  // advc: changes to reduce indentation
 			CvPlot& kLoopPlot = *it;
 			if (kLoopPlot.isWater() || kLoopPlot.isHills())
 				continue;
-//re implementation of the code below - seems duplicated - keldatha6
+//re implementation of the code below - f1rpo said its ok - keldath
 			if (!GC.getTerrainInfo(kLoopPlot.getTerrainType()).isRequiresFlatlands())
 			{
 			if (!kLoopPlot.isFeature() ||

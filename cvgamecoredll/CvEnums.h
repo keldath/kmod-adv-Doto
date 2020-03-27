@@ -551,6 +551,9 @@ ENUM_START(GameOption, GAMEOPTION)
     GAMEOPTION_CULTURE_CONTROL,//Culture Control Gameoption by Stolenrays
 //Influence Driven War: Added for PIG Mod by PieceOfMind 26/10/09
 	GAMEOPTION_INFLUENCE_DRIVEN_WAR,
+	GAMEOPTION_IDW_NO_BARBARIAN,
+	GAMEOPTION_IDW_NO_NAVAL,
+	GAMEOPTION_IDW_PILLAGE,
 //Influence Driven War: End Add
 //tholih building deletion
 	GAMEOPTION_BUILDING_DELETION,

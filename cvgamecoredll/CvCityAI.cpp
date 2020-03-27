@@ -10355,6 +10355,19 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 			iTotalValue += iGPPValue;
 
 			// Evaluate military experience from specialists
+			//moved to below - f1rpo suggestion - keldath
+		}
+		// Devalue generic citizens (for no specific reason). (cf. AI_specialistValue)
+		/* if (no gpp) {
+			SpecialistTypes eGenericCitizen = (SpecialistTypes)GC.getDEFAULT_SPECIALIST();
+			if (eGenericCitizen != NO_SPECIALIST) {
+				if (new_job.first && new_job.second == eGenericCitizen)
+					iTotalValue = iTotalValue * 80 / 100;
+				if (old_job.first && old_job.second == eGenericCitizen)
+					iTotalValue = iTotalValue * 100 / 80;
+			} } */
+			// Evaluate military experience from specialists
+			//moved from above - keldath - f1rpo suggestion.
 			int iExperience = 0;
 			if (new_job.second >= 0 && new_job.first)
 				iExperience += GC.getInfo((SpecialistTypes)new_job.second).getExperience();
@@ -10371,17 +10384,6 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 				iExperienceValue += (getMilitaryProductionModifier() * iExperience * 8);
 				iTotalValue += iExperienceValue;
 			}
-		}
-		// Devalue generic citizens (for no specific reason). (cf. AI_specialistValue)
-		/* if (no gpp) {
-			SpecialistTypes eGenericCitizen = (SpecialistTypes)GC.getDEFAULT_SPECIALIST();
-			if (eGenericCitizen != NO_SPECIALIST) {
-				if (new_job.first && new_job.second == eGenericCitizen)
-					iTotalValue = iTotalValue * 80 / 100;
-				if (old_job.first && old_job.second == eGenericCitizen)
-					iTotalValue = iTotalValue * 100 / 80;
-			} } */
-
 			/*************************************************************************************************/
 			/** Specialists Enhancements, by Supercheese 10/12/09                                            */
 			/**                                                                                              */
@@ -10662,7 +10664,7 @@ int CvCityAI::AI_experienceWeight()
 				/*  advc.017: Barracks are pretty ubiquitous; shouldn't add 6
 					 to buildUnitProb. Rather make cities w/o Barracks hesitant
 					 to train units. */
-			//CHANGED FOR DOTO BY F1RPO- idont remember why - f1rpo  - if you see this can you add a comment?
+			//CHANGED FOR DOTO BY F1RPO- That was a tweak to avoid decreasing AI_buildUnitProb in the early game so that the AI might be able to start a war sooner.
 			- std::min(4, 2 * GET_PLAYER(getOwner()).getCurrentEra());
 	// K-Mod end
 }

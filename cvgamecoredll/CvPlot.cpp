@@ -63,7 +63,7 @@ CvPlot::CvPlot() // advc: Merged with the deleted reset function
 	m_iTotalCulture = 0; // advc.opt
 
 	m_bStartingPlot = false;
-//keldath qa6 - what is this for?
+//keldath f1rpo-The relevant info is in m_ePlotType and can be accessed through isHills() and isPeak(); that was already the case in BtS. m_bHills was, essentially, unused.
 //	m_bHills = false; 
 //===NM=====Mountains Mod===0=====
 //	m_bPeaks = false;
@@ -7752,7 +7752,7 @@ void CvPlot::read(FDataStreamBase* pStream)
 	m_bStartingPlot = bVal;
 	if(uiFlag < 4) // advc.opt: m_bHills removed
 		pStream->Read(&bVal);
-//keldath qa6- i have no idea what this does
+//keldath f1rpo-The relevant info is in m_ePlotType and can be accessed through isHills() and isPeak(); that was already the case in BtS. m_bHills was, essentially, unused.
 //===NM=====Mountains Mod===0=====
 /*	pStream->Read(&bVal);
 	m_bHills = bVal;
@@ -7957,7 +7957,7 @@ void CvPlot::write(FDataStreamBase* pStream)
 	pStream->Write(m_iLatitude); // advc.tsl
 
 	pStream->Write(m_bStartingPlot);
-//keldath qa6- in the orig - hills where marked off. i marked the peaks - i thing advc dont need that?
+//keldath f1rpo-The relevant info is in m_ePlotType and can be accessed through isHills() and isPeak(); that was already the case in BtS. m_bHills was, essentially, unused.
 //	pStream->Write(m_bHills);
 //===NM=====Mountains Mod===0=====
 //	pStream->Write(m_bPeaks);

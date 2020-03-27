@@ -209,9 +209,9 @@
 		<DefineName>CULTURE_CONTROL_IMPROVEMENT_ALWAYS_KEEP_OWNER_BORDER</DefineName>
 		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
-
 <!-- Influence Driven War -->
 	<Define>
+<!-- IDW_ENABLED obsolete-done by game option -->
 		<DefineName>IDW_ENABLED</DefineName>
 		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
@@ -281,16 +281,19 @@
 		<fDefineFloatVal>0.5</fDefineFloatVal>
 	</Define>
 	<Define>
+<!-- IDW_NO_BARBARIAN_INFLUENCE obsolete-done by game option -->
 		<DefineName>IDW_NO_BARBARIAN_INFLUENCE</DefineName>
 <!-- if 1: barbarian influence is disabled and no militia emerges in case of barbarian combat -->
 		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
 	<Define>
+<!-- IDW_NO_NAVAL_INFLUENCE obsolete-done by game option -->
 		<DefineName>IDW_NO_NAVAL_INFLUENCE</DefineName>
 <!-- if 1: naval influence is disabled -->
 		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
 	<Define>
+<!-- IDW_PILLAGE_INFLUENCE_ENABLED obsolete-done by game option -->
 		<DefineName>IDW_PILLAGE_INFLUENCE_ENABLED</DefineName>
 <!-- Enable/Disable influence from pillage; works only if IDW_ENABLED = 1 -->
 		<iDefineIntVal>1</iDefineIntVal>
@@ -317,14 +320,6 @@
 	<Define>
 		<DefineName>CULTURE_GOLDEN_AGE_THRESHOLD</DefineName>
 		<iDefineIntVal>1200</iDefineIntVal>
-	</Define>
-	<Define>
-	<!-- Unit creates barriers for enemy units movement. blocade mod
-			If the Define value is 0 VET Blocade units component becomes disabled
-			If the Define value is 1 units can move in 45 degrees direction to the enemy if the movement is not along the diagonal 
-			If the Define value is 2 units can't move in 45 degrees direction to the enemy  -->
-		<DefineName>BLOCADE_UNIT</DefineName>
-		<iDefineIntVal>2</iDefineIntVal>
 	</Define>
 	<!-- advc.002m: Added to STANDARD_BATTLE_ANIMATION_ROUNDS. Recommended:
 		 -1, i.e. subtract 1 per era. Set to 0 for K-Mod behavior. -->
