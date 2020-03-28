@@ -320,7 +320,7 @@
             <Description>Ranged-Movement End (Sea)</Description>
             <Help>Sea units Range Strike, it wont be able to move if it have more move points.(default off)</Help>
             <bDefault>1</bDefault>
-            <bVisible>0</bVisible>
+            <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_LAND_END_MOVES</Type>
@@ -330,7 +330,7 @@
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
-            <Type>GAMEOPTION_RAND_BOMBARD_DMG</Type>
+            <Type>GAMEOPTION_RAND_AIR_BOMB_DMG</Type>
             <Description>Random Air bombardment Damage</Description>
             <Help>Air units damage will be randomized</Help>
             <bDefault>1</bDefault>
