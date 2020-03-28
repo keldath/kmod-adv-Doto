@@ -744,7 +744,8 @@ int CvUnitAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy) const
 	int iDamageToThem = std::max(1, (GC.getCOMBAT_DAMAGE() *
 			(iOurFirepower + iStrengthFactor)) /
 			(iTheirFirepower + iStrengthFactor));
-	//qa7 -f1rpo - what do you think? needed?
+	//qa7-done -f1rpo - what do you think? needed?
+	//maybe a bts bug, but shouldnt matter, ranged attacks doesnt really need combat odds.
 	//RangedAttack-keldath check for air combat
 	int therightLimit;
 	if (getDomainType() == DOMAIN_AIR) 
@@ -1204,7 +1205,12 @@ int CvUnitAI::AI_sacrificeValue(const CvPlot* pPlot) const
 				2 + (immuneToFirstStrikes() ? 20 : 0) +
 				(combatLimit() < 100 ? 20 : 0);
 		iValue /= 100;
-//qa7 = f1rpo - do you think a reffarence to air range is needed like voncentz did above for the org code?
+//qa7-done = f1rpo - do you think a reffarence to air range is needed like voncentz did above for the org code?
+/*
+f1rpo responded:
+	AI_sacrificeValue determines, I think, which units the AI sends in first in a stack-on-stack attack when no attacker has good odds. Perhaps vincentz felt that the AI was too happy to sacrifice range-strikers. But setting their sacrifice value to 0 is very crude. Production cost is taken into account; that's probably sufficient.
+ill leave it without the dumb down ranged units.
+*/
 		// K-Mod end
 
 		//iValue /= std::max(1, (1 + getUnitInfo().getProductionCost()));
@@ -13874,7 +13880,7 @@ bool CvUnitAI::AI_bombardCity()
 	FAssert(pBombardCity != NULL);
 
 	int iAttackOdds = AI_getGroup()->AI_attackOdds(pBombardCity->plot(), true);
-//qa7- probably meaningless
+//qa7-done- probably meaningless
 // rangedattack-keldath Vincentz Rangestrike off 
 // keldath need to imolement this somehow in kmods -  but it wasnt on the org ranged.
 //		int iAttackOdds = getGroup()->AI_attackOdds(pBombardCity->plot(), 
@@ -13884,6 +13890,9 @@ bool CvUnitAI::AI_bombardCity()
 //		{
 //			return false;
 //		}
+//f1rpo reponded: Doesn't even check for air range; so it seems like a more general AI tweak. Could be an improvement, but looks ... hamfisted. I'd rather trust the K-Mod code to decide whether the city is worth bombarding.
+//Don't know where the bPotentialEnemy variable is supposed to come from. Using true instead seems fine. It's relevant when the AI hasn't declared war yet.
+//keldath - ok kmod code it is
 //rangedattack-keldath Vincentz Rangestrike end	
 	int iBase = GC.getDefineINT(CvGlobals::BBAI_SKIP_BOMBARD_BASE_STACK_RATIO);
 	int iMin = GC.getDefineINT(CvGlobals::BBAI_SKIP_BOMBARD_MIN_STACK_RATIO);
@@ -13927,8 +13936,8 @@ bool CvUnitAI::AI_cityAttack(int iRange, int iOddsThreshold, int iFlags, bool bF
 		{
 			int iPathTurns;
 			if ((bFollow ? canMoveOrAttackInto(p, bDeclareWar) :
-//rangedattack-keldath - check rangeattack
-				generatePath(&p, iFlags, true, &iPathTurns, iRange))|| canRangeStrike())
+//rangedattack-keldath - check rangeattack - shouldnt p be kPlot?
+				generatePath(&p, iFlags, true, &iPathTurns, iRange))|| canRangeStrikeAt(plot(), p.getX(), p.getY())/*changed from canRangeStrike()*/)
 			{
 				int iValue = AI_isAnyEnemyDefender(p) ? 100 :
 						AI_getGroup()->AI_getWeightedOdds(&p, true);
@@ -13997,9 +14006,8 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, int iFlags, int iMin
 	for (SquareIter it(*this, iSearchRange, false); it.hasNext(); ++it)
 	{
 		CvPlot& p = *it;
-//rangedattack-keldath - i guess if the plot is invalid - or no ranged, pass.
-//i think i dont need this at all - shoudl apply to ai_rangeAttack above...
-		if (!AI_plotValid(p) || !canRangeStrike())
+//rangedattack-keldath 
+		if (!AI_plotValid(p) && !canRangeStrikeAt(plot(), p.getX(), p.getY()))
 			continue;
 		if (!bAllowCities && p.isCity())
 			continue;
@@ -14031,9 +14039,10 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, int iFlags, int iMin
 
 //rangedattack-keldath - i guess if the plot is invalid - or no ranged, pass.
 //i think i dont need this at all - shoudl apply to ai_rangeAttack above...
+//ok removed the canrangedstrike(at)() f1rpo confirmed , the test is above.
 		if (bFollow ?
 			getGroup()->canMoveOrAttackInto(p, bDeclareWar, true) :
-			generatePath(&p, iFlags, true, 0, iRange)|| canRangeStrike())
+			generatePath(&p, iFlags, true, 0, iRange))
 		{
 			// 101 for cities, because that's a better thing to capture.
 			int iOdds = (iEnemyDefenders == 0 ? (p.isCity() ? 101 : 100) :
@@ -14092,12 +14101,19 @@ bool CvUnitAI::AI_rangeAttack(int iRange)
 //Vincentz Rangestrike end
 	CvPlot* pBestPlot = NULL;
 	int iBestValue = 0;
-	int iSearchRange = AI_searchRange(iRange);
-//rangedAttack-keldath - in vinentz RS - qa7 - he added 5 for the range, dont know why.
+//	int iSearchRange = AI_searchRange(iRange); rangedAttack-keldath-org statement
+//rangedAttack-keldath - in vinentz RS - qa7-done - he added 5 for the range, dont know why.
+//vincentz - defined a seaerch range of +5, arbitrary value.
+//f1rpo suggested the conde not to use AI_searchRange for rangeAttack - see below:
 //	int iSearchRange = AI_searchRange(iRange) * 5;
 	/*  advc.opt: I don't think MISSION_RANGE_ATTACK will cause the unit to move
 		toward the target. No point in searching beyond the air range then. */
-	for (SquareIter it(*this, std::min(iSearchRange, airRange()), false);
+	/*for (SquareIter it(*this, std::min(iSearchRange, airRange()), false);
+		it.hasNext(); ++it)*/
+	//int iSearchRange = AI_searchRange(iRange);
+	/*  advc.rstr: I don't think MISSION_RANGE_ATTACK will cause the unit to move
+		toward the target. AI_searchRange is no help then. */
+	for (SquareIter it(*this, std::min(iRange, airRange()), false);
 		it.hasNext(); ++it)
 	{
 		CvPlot& kLoopPlot = *it;
@@ -14106,9 +14122,19 @@ bool CvUnitAI::AI_rangeAttack(int iRange)
 		{
 			if (canRangeStrikeAt(plot(), kLoopPlot.getX(), kLoopPlot.getY()))
 			{
-				int iValue = AI_getGroup()->AI_attackOdds(&kLoopPlot, true);
-//rangedattack-keldath - this line was used before - whats the difference? qa7
+			//	int iValue = AI_getGroup()->AI_attackOdds(&kLoopPlot, true);//org
+//rangedattack-keldath - this line was used before - whats the difference? qa7-done
 			//	int iValue = AI_getWeightedOdds(&kLoopPlot, false);
+/*
+f1rpo response:
+Weighted odds takes into account how valuable the attacker and defender are. E.g. a Knight should attack a damaged Tank even if the odds are just 25% because the Tank costs much more production. That might be better here(?). It's a bit strange to use the odds of the range striker because that unit isn't going to make a regular attack. It might be grouped with other units that will make attacks after the range strike. So perhaps
+int iValue = AI_getGroup()->AI_getWeightedOdds(&kLoopPlot, false);
+Not sure about the bPotentialEnemy arg. Seems preferable not to start a war with a range strike, i.e. false.
+In any case, it's a pretty arbitrary way to pick a target.
+keldath - well, maybe not that importent to use the original code, but as usual , i went with f1rpo suggestion.
+seems that AI_attackOdds is more straight forward odds.
+*/
+				int iValue = AI_getGroup()->AI_getWeightedOdds(&kLoopPlot, false);
 					if (iValue > iBestValue)
 				{
 					iBestValue = iValue;

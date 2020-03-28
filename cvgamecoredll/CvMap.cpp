@@ -335,6 +335,23 @@ void CvMap::updateCenterUnit()  // advc: some style changes
 	for (CLLNode<IDInfo> const* pSelectionNode = gDLL->UI().headSelectionListNode();
 		pSelectionNode != NULL; pSelectionNode = gDLL->UI().nextSelectionListNode(pSelectionNode))
 	{
+		//rangedattack-keldath
+		//new code from f1rpo to adress ranged units with air range and their domain.
+		CvUnit const& kLoopUnit = *::getUnit(pSelectionNode->m_data);
+		if (kLoopUnit.airRange() > 0) // advc.rstr
+			iRange = std::max(iRange, kLoopUnit.airRange());
+		DomainTypes eLoopDomain = kLoopUnit.getDomainType();
+		if (eLoopDomain == DOMAIN_LAND || eLoopDomain == DOMAIN_SEA) // advc.rstr
+		{
+			int iStepCost = (eLoopDomain == DOMAIN_LAND ?
+					KmodPathFinder::MinimumStepCost(kLoopUnit.baseMoves()) :
+					GC.getMOVE_DENOMINATOR());
+			int iMoveRange = kLoopUnit.maxMoves() / iStepCost +
+					(kLoopUnit.canParadrop(kLoopUnit.plot()) ?
+					kLoopUnit.getDropRange() : 0);
+			iRange = std::max(iRange, iMoveRange);
+		}
+/* original code with my own stuff.
 		CvUnit const& kLoopUnit = *::getUnit(pSelectionNode->m_data);
 		int iLoopRange;
 		if (kLoopUnit.getDomainType() == DOMAIN_AIR)
@@ -356,6 +373,7 @@ void CvMap::updateCenterUnit()  // advc: some style changes
 					kLoopUnit.getDropRange() : 0);
 		}
 		iRange = std::max(iRange, iLoopRange);
+*/
 		/*  Note: technically we only really need the minimum range; but I'm using the maximum range
 			because I think it will produce more intuitive and useful information for the player. */
 	}

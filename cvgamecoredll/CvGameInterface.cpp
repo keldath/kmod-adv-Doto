@@ -207,6 +207,66 @@ void CvGame::updateColoredPlots()
 			}
 		}
 	}
+//rangedattack-keldath -f1rpo suggestion how to refer to airrange units.
+//this blockwill replace the refrance to units with air range or air domain(original two blocks of code)
+if (pHeadSelectedUnit->airRange() > 0)
+	{
+		int iMaxAirRange = 0;
+		for (CLLNode<IDInfo> const* pSelectedUnitNode = kUI.headSelectionListNode();
+			pSelectedUnitNode != NULL; pSelectedUnitNode = kUI.nextSelectionListNode(pSelectedUnitNode))
+		{
+			CvUnit const* pSelectedUnit = ::getUnit(pSelectedUnitNode->m_data);
+			if (pSelectedUnit != NULL)
+				iMaxAirRange = std::max(iMaxAirRange, pSelectedUnit->airRange());
+		}
+		//if the unit is in a city, a land unit only - it has another range to it as a bonus - note that this exists also in the cvunit.cpp
+		//original code was from vincentz
+		if ((pHeadSelectedUnit->plot()->isCity(true, pHeadSelectedUnit->getTeam())) && (pHeadSelectedUnit->getDomainType() == DOMAIN_LAND) && (pHeadSelectedUnit->baseCombatStr() > 0))
+		{
+			iMaxAirRange += 1;
+		}
+	
+		if (iMaxAirRange > 0)
+		{
+			bool const bAir = (pHeadSelectedUnit->getDomainType() == DOMAIN_AIR);
+			//keldath addition
+			bool const bLand = (pHeadSelectedUnit->getDomainType() == DOMAIN_LAND);
+			bool const bSea = (pHeadSelectedUnit->getDomainType() == DOMAIN_SEA);
+			char * color = "GREEN";
+			for (PlotCircleIter it(*pHeadSelectedUnit, iMaxAirRange); it.hasNext(); ++it)
+			{
+				CvPlot const& kTargetPlot = *it;
+				if (bAir || bLand || bSea ||
+					(kTargetPlot.isVisible(pHeadSelectedUnit->getTeam()) &&
+					pHeadSelectedUnit->getPlot().canSeePlot(
+					&kTargetPlot, pHeadSelectedUnit->getTeam(), iMaxAirRange,
+					pHeadSelectedUnit->getFacingDirection(true))))
+				{
+					//keldath addition - i wanted different colors :)
+					if (bAir)
+					{
+						color = "YELLOW";
+					}
+					else if (bLand) 
+					{
+						color = "WHITE";
+					}
+					else if (bSea)
+					{
+						color = "ORANGE";
+					}
+					//f1rpo initial code:
+					/*NiColorA color(GC.getInfo(GC.getColorType(bAir ?
+							"YELLOW" : "RED")).getColor());*/
+					NiColorA color(GC.getInfo(GC.getColorType(color)).getColor());	
+					color.a = 0.5f;
+					kEngine.fillAreaBorderPlot(kTargetPlot.getX(), kTargetPlot.getY(),
+							color, AREA_BORDER_LAYER_RANGED);
+				}
+			}
+		}
+	}
+/* original code - overwritten by the above from f1rpo suggestion
 	if (pHeadSelectedUnit->getDomainType() == DOMAIN_AIR)
 	{
 		int iMaxAirRange = 0;
@@ -230,10 +290,12 @@ void CvGame::updateColoredPlots()
 			}
 		}
 	}
+*/
+//this once i added - than removed - f1rpo suggestion
 //qa7 - f1rpo - do you think this is right? vincentz used the same syntax in his mod but with a small change.
 //should i use the sytax beow that i commented?
 /*rangedattack-keldath duplication of the above for airrange*/
-	if (pHeadSelectedUnit->airRange() > 0)
+/*	else if (pHeadSelectedUnit->airRange() > 0)
 	{
 		int iMaxAirRange = 0;
 
@@ -261,10 +323,11 @@ void CvGame::updateColoredPlots()
 						color, AREA_BORDER_LAYER_RANGED);
 			}
 		}
-	}
+	}*/
 //
 /* //rangedattack-keldath - this is from f1rpo - i canclled it - i dont know why
 	//i copied vibcentz method - he added a +1 for city , based on the air domain code above
+//this is another original code
 	else if(pHeadSelectedUnit->airRange() > 0) //other ranged units
 	{
 		int const iRange = pHeadSelectedUnit->airRange();

@@ -7997,8 +7997,20 @@ int CvUnit::rangeCombatDamage(const CvUnit* pDefender) const
 	//this is due to that best defender isnt working well with using air strength from land to land or sea to land
 	//int iOurStrength = airCurrCombatStr(pDefender);
 	CvPlot* pPlot = pDefender->plot();
-	//qa7 - f1rpo - do i need the plot here? or nulll or something?
-	int iOurStrength = currCombatStr(pPlot,pDefender);
+	//qa7done - f1rpo - do i need the plot here? or nulll or something?
+	//the below is wrong:
+	//int iOurStrength = currCombatStr(pPlot,pDefender);
+	/*
+		according to the rules in currCombatStr:
+			
+			// pPlot == NULL, pAttacker == NULL for combat when this is the attacker
+			// pPlot valid, pAttacker valid for combat when this is the defender
+			// pPlot valid, pAttacker == NULL (new case), when this is the defender, attacker unknown
+			// pPlot valid, pAttacker == this (new case), when the defender is unknown, but we want to calc appr
+		f1rpo reply: 
+			this" refers to the unit that currCombatStr is called on. So I think you want NULL, NULL. All the modifiers that involve the defender should be covered by iTheirStrength (e.g. also if the attacker has +50% vs. Melee and the defender is a Melee unit).
+	*/
+	int iOurStrength = currCombatStr(NULL,NULL);
 	////rangedattack-keldath
 	FAssertMsg(iOurStrength > 0, "Combat strength is expected to be greater than zero");
 	int iTheirStrength = pDefender->maxCombatStr(plot(), this);
@@ -11133,10 +11145,12 @@ bool CvUnit::canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY, bool bStrikeB
 	}*/
 //rangedattack-keldath
 
-/*rangedattack-keldath- i guess we dont care which direction the unit faces - vincentz canceled it. qa7 f1rpo - your thoughts?
-	if (!pPlot->canSeePlot(pTargetPlot, getTeam(), airRange(), getFacingDirection(true)))
+//rangedattack-keldath- i guess we dont care which direction the unit faces - vincentz canceled it. qa7-done
+//it was marked off entirely - f1rpo suggested to use directionXY(), i hope i used proper params.
+//	if (!pPlot->canSeePlot(pTargetPlot, getTeam(), airRange(), getFacingDirection(true)))
+	if (!pPlot->canSeePlot(pTargetPlot, getTeam(), airRange(),directionXY(pPlot,pTargetPlot)))
 		return false;
-*/
+
 	return true;
 }
 
@@ -11329,12 +11343,12 @@ bool CvUnit::rangeStrike(int iX, int iY)
 	}
 	else
 	{
-	//qa7-f1rpo - the goal here damage if the damage is below combatlimit
+	//qa7-f1rpo-done - the goal here damage if the damage is below combatlimit
 	//the below one - i marked off - im not sure what it gets and why
-	/*	if ((((iUnitDamage - pDefender->getDamage()) * 100)
-			/ pDefender->maxHitPoints()) != 0)*/
+	//re added the line-no need to check combat limit. thats done elsewhere. you cant attack a unit with max combat limit anyway.
+		if ((((iUnitDamage - pDefender->getDamage()) * 100)	/ pDefender->maxHitPoints()) != 0)
 		//i used this to check if combat limit was exceeded-if so a max damage will pop below.
-		if (pDefender->getDamage() <= std::min((pDefender->getDamage() + iDamage), combatLimit()))
+		//if (pDefender->getDamage() <= std::min((pDefender->getDamage() + iDamage), combatLimit()))
 		{
 			CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR",
 				pDefender->getNameKey(), getNameKey(),
@@ -11384,6 +11398,8 @@ bool CvUnit::rangeStrike(int iX, int iY)
 		}
 		else
 		{
+			//this will never show - you can attack a unit with combat limit , so no message ever.
+			// i left it here, who knows...
 			CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_ENEMY_MAXIMUM_DAMAGE", pDefender->getNameKey(), getNameKey()));
 			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
 				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREY"), this->getX(), this->getY()/*, true, true*/);
@@ -11457,9 +11473,10 @@ bool CvUnit::rangeStrike(int iX, int iY)
 
 				if (((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) + pDefender->baseCombatStr()) * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER") > ((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) + this->baseCombatStr()))
 				{
-					//qa70same as the above - i want combat limit to take effect - im not sure of the marked off if statement.
-					//if ((((iUnitDamage - this->getDamage()) * 100) / this->maxHitPoints()) != 0)
-					if(this->getDamage()<= std::min((this->getDamage() + iDamage), pDefender->combatLimit()))
+					//qa7-donesame as the above - i want combat limit to take effect - im not sure of the marked off if statement.
+					//re added the line - check the above part.
+					if ((((iUnitDamage - this->getDamage()) * 100) / this->maxHitPoints()) != 0)
+					//if(this->getDamage()<= std::min((this->getDamage() + iDamage), pDefender->combatLimit()))
 					{
 						CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR",
 							pDefender->getNameKey(), getNameKey(),
@@ -11484,7 +11501,8 @@ bool CvUnit::rangeStrike(int iX, int iY)
 
 					}
 					else
-					{
+					{	//this will never show - you can attack a unit with combat limit , so no message ever.
+						// i left it here, who knows...
 						CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_ENEMY_MAXIMUM_DAMAGE", pDefender->getNameKey(), getNameKey()));
 						gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
 							"AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREY"), this->getX(), this->getY()/*, true, true*/);
