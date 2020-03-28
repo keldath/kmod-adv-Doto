@@ -1613,6 +1613,10 @@ protected:  // <advc.210>
 	// </advc.106b>
 	void decayBuildProgress(); // advc.011
 	void showForeignPromoGlow(bool b); // advc.002e
+	// <advc.ctr>
+	int cultureConvertedUponCityTrade(CvPlot const& kCityPlot, CvPlot const& kPlot,
+			PlayerTypes eOldOwner, PlayerTypes eNewOwner,
+			bool bIgnorePriority = false) const; // </advc.ctr>
 	// <advc.314>
 	bool isGoodyTech(TechTypes techId, bool bProgress) const;
 	void addGoodyMsg(CvWString s, CvPlot const& p, TCHAR const* sound);

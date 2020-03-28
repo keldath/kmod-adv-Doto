@@ -744,7 +744,20 @@ int CvUnitAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy) const
 	int iDamageToThem = std::max(1, (GC.getCOMBAT_DAMAGE() *
 			(iOurFirepower + iStrengthFactor)) /
 			(iTheirFirepower + iStrengthFactor));
-	int iHitLimitThem = pDefender->maxHitPoints() - combatLimit();
+	//qa7 -f1rpo - what do you think? needed?
+	//RangedAttack-keldath check for air combat
+	int therightLimit;
+	if (getDomainType() == DOMAIN_AIR) 
+	{
+			therightLimit = airCombatLimit();
+	}
+	else //if (combatLimit() > 0 && baseCombatStr() > 0) 
+	{
+			therightLimit = combatLimit();
+	}
+	//original
+	//iHitLimitThem = pDefender->maxHitPoints() - combatLimit();
+	int iHitLimitThem = pDefender->maxHitPoints() - therightLimit;
 
 	int iNeededRoundsUs = (std::max(0, pDefender->currHitPoints() - iHitLimitThem) +
 			iDamageToThem - 1) / iDamageToThem;
@@ -1149,7 +1162,7 @@ int CvUnitAI::AI_sacrificeValue(const CvPlot* pPlot) const
 
 		//iValue /= (100 + cityDefenseModifier());
 		/*  <advc.001> The above doesn't handle negative modifiers well
-			(especially not -100 ...). Bug found by keldath. */
+			(especially not -100 ...). Bug found by keldath. thanks f1rpo for the credit here:)*/
 		int iCityDefenseModifier = cityDefenseModifier();
 		if(iCityDefenseModifier < 0)
 		{
@@ -1176,6 +1189,12 @@ int CvUnitAI::AI_sacrificeValue(const CvPlot* pPlot) const
 		/*if (combatLimit() < 100) {
 			iValue *= 150;
 			iValue /= 100;
+// rangedattack-keldath - Vincentz Rangeattack keldath - added here, just incase (it was commented out in vincentz
+//also - its not in the stand alone ranged
+//		if (m_pUnitInfo->getAirRange() > 0)
+//		{
+//			iValue = 0;
+//		}
 			iValue *= 100;
 			iValue /= std::max(1, combatLimit());
 		}*/ // BtS
@@ -1185,6 +1204,7 @@ int CvUnitAI::AI_sacrificeValue(const CvPlot* pPlot) const
 				2 + (immuneToFirstStrikes() ? 20 : 0) +
 				(combatLimit() < 100 ? 20 : 0);
 		iValue /= 100;
+//qa7 = f1rpo - do you think a reffarence to air range is needed like voncentz did above for the org code?
 		// K-Mod end
 
 		//iValue /= std::max(1, (1 + getUnitInfo().getProductionCost()));
@@ -3580,6 +3600,7 @@ void CvUnitAI::AI_attackCityMove()
 							until the preparations are through. Difficult to avoid the assertions below. */
 						/*  this is a last resort. I don't expect that we'll ever actually need it.
 							(it's a pretty ugly function, so I /hope/ we don't need it.) */
+						//keldath - f1 suggested to remove this assert.
 						FAssertMsg(false, "AI_attackCityMove is resorting to AI_solveBlockageProblem");
 						if (AI_solveBlockageProblem(pAreaTargetCity->plot(),
 							(GET_TEAM(getTeam()).getNumWars() <= 0)))
@@ -12603,7 +12624,7 @@ bool CvUnitAI::AI_paradrop(int iRange)  // advc: some style changes
 				{
 					int iAttackerCount = GET_PLAYER(getOwner()).AI_adjacentPotentialAttackers(*pAdjacentPlot, true);
 					int iDefenderCount = pAdjacentPlot->getNumVisibleEnemyDefenders(this);
-					//f1 fix for crash regarding tlo tags of paratrooper for every unitai - keldath
+					//keldath f1rpo fix for crash regarding tlo tags of paratrooper for every unitai - keldath
 					if (iParatrooperCount <= 0) 
 					{
 						iParatrooperCount = 1;
@@ -13853,6 +13874,17 @@ bool CvUnitAI::AI_bombardCity()
 	FAssert(pBombardCity != NULL);
 
 	int iAttackOdds = AI_getGroup()->AI_attackOdds(pBombardCity->plot(), true);
+//qa7- probably meaningless
+// rangedattack-keldath Vincentz Rangestrike off 
+// keldath need to imolement this somehow in kmods -  but it wasnt on the org ranged.
+//		int iAttackOdds = getGroup()->AI_attackOdds(pBombardCity->plot(), 
+			//bPotentialEnemy //COMMENTED OFF IN THE ORIGINAL 
+//			true);
+//		if (iAttackOdds > 95)
+//		{
+//			return false;
+//		}
+//rangedattack-keldath Vincentz Rangestrike end	
 	int iBase = GC.getDefineINT(CvGlobals::BBAI_SKIP_BOMBARD_BASE_STACK_RATIO);
 	int iMin = GC.getDefineINT(CvGlobals::BBAI_SKIP_BOMBARD_MIN_STACK_RATIO);
 	int iBombardTurns = getGroup()->getBombardTurns(pBombardCity);
@@ -13895,7 +13927,8 @@ bool CvUnitAI::AI_cityAttack(int iRange, int iOddsThreshold, int iFlags, bool bF
 		{
 			int iPathTurns;
 			if ((bFollow ? canMoveOrAttackInto(p, bDeclareWar) :
-				generatePath(&p, iFlags, true, &iPathTurns, iRange)))
+//rangedattack-keldath - check rangeattack
+				generatePath(&p, iFlags, true, &iPathTurns, iRange))|| canRangeStrike())
 			{
 				int iValue = AI_isAnyEnemyDefender(p) ? 100 :
 						AI_getGroup()->AI_getWeightedOdds(&p, true);
@@ -13964,7 +13997,9 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, int iFlags, int iMin
 	for (SquareIter it(*this, iSearchRange, false); it.hasNext(); ++it)
 	{
 		CvPlot& p = *it;
-		if (!AI_plotValid(p))
+//rangedattack-keldath - i guess if the plot is invalid - or no ranged, pass.
+//i think i dont need this at all - shoudl apply to ai_rangeAttack above...
+		if (!AI_plotValid(p) || !canRangeStrike())
 			continue;
 		if (!bAllowCities && p.isCity())
 			continue;
@@ -13994,9 +14029,11 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, int iFlags, int iMin
 		if (iEnemyDefenders < iMinStack)
 			continue;
 
+//rangedattack-keldath - i guess if the plot is invalid - or no ranged, pass.
+//i think i dont need this at all - shoudl apply to ai_rangeAttack above...
 		if (bFollow ?
 			getGroup()->canMoveOrAttackInto(p, bDeclareWar, true) :
-			generatePath(&p, iFlags, true, 0, iRange))
+			generatePath(&p, iFlags, true, 0, iRange)|| canRangeStrike())
 		{
 			// 101 for cities, because that's a better thing to capture.
 			int iOdds = (iEnemyDefenders == 0 ? (p.isCity() ? 101 : 100) :
@@ -14044,9 +14081,20 @@ bool CvUnitAI::AI_rangeAttack(int iRange)
 	if (!canRangeStrike())
 		return false;
 
+
+//rangedattack-keldath - vincentz pushed bombard mission, either way - i joined ranged attack with city bombard.
+/*	if (canBombard(plot()))
+	{
+		getGroup()->pushMission(MISSION_BOMBARD);
+		return true;
+	}
+*/
+//Vincentz Rangestrike end
 	CvPlot* pBestPlot = NULL;
 	int iBestValue = 0;
 	int iSearchRange = AI_searchRange(iRange);
+//rangedAttack-keldath - in vinentz RS - qa7 - he added 5 for the range, dont know why.
+//	int iSearchRange = AI_searchRange(iRange) * 5;
 	/*  advc.opt: I don't think MISSION_RANGE_ATTACK will cause the unit to move
 		toward the target. No point in searching beyond the air range then. */
 	for (SquareIter it(*this, std::min(iSearchRange, airRange()), false);
@@ -14059,7 +14107,9 @@ bool CvUnitAI::AI_rangeAttack(int iRange)
 			if (canRangeStrikeAt(plot(), kLoopPlot.getX(), kLoopPlot.getY()))
 			{
 				int iValue = AI_getGroup()->AI_attackOdds(&kLoopPlot, true);
-				if (iValue > iBestValue)
+//rangedattack-keldath - this line was used before - whats the difference? qa7
+			//	int iValue = AI_getWeightedOdds(&kLoopPlot, false);
+					if (iValue > iBestValue)
 				{
 					iBestValue = iValue;
 					pBestPlot = &kLoopPlot;

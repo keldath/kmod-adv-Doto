@@ -161,19 +161,16 @@ void CvPlayer::init(PlayerTypes eID)
 {
 	reset(eID); // Reset serialized data
 
-	// Init containers
 	initContainers(); // advc.003q: Moved into a subroutine for initInGame
 
 	setupGraphical();
 
-	//--------------------------------
-	// Init team data
+	// Init team data ...
 	FAssert(getTeam() != NO_TEAM);
 	GET_TEAM(getTeam()).changeNumMembers(1);
 	GET_TEAM(getTeam()).updateMinorCiv(); // advc.003m
 
-	//--------------------------------
-	// Init other player data
+	// Init other player data ...
 	// <advc.003q> Moved into a subroutine for initInGame
 	if(!initOtherData())
 		return;
@@ -184,8 +181,8 @@ void CvPlayer::init(PlayerTypes eID)
 }
 
 // advc.003q: Cut from CvPlayer::init
-void CvPlayer::initContainers() {
-
+void CvPlayer::initContainers()
+{
 	m_plotGroups.init();
 	m_cities.init();
 	m_units.init();
@@ -1789,8 +1786,10 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 		CLinkList<IDInfo> oldUnits; // (I doubt that it's necessary to copy the plot's unit list here)
 		{
 			for (CLLNode<IDInfo> const* pUnitNode = kCityPlot.headUnitNode(); pUnitNode != NULL;
-					pUnitNode = kCityPlot.nextUnitNode(pUnitNode))
+				pUnitNode = kCityPlot.nextUnitNode(pUnitNode))
+			{
 				oldUnits.insertAtEnd(pUnitNode->m_data);
+			}
 		}
 		CLLNode<IDInfo>* pUnitNode = oldUnits.head();
 		while (pUnitNode != NULL)
@@ -2030,20 +2029,10 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 		// <advc.ctr>
 		for (CityPlotIter it(kCityPlot); it.hasNext(); ++it)
 		{
-			CvPlot& kPlot = *it;
-			CvCity* pWorkingCity = kPlot.getWorkingCity();
-			/*  Always reduce eOldOwner culture in the inner circle. Outer circle:
-				Only if tiles not assigned to other cities of eOldOwner. */
-			if (!::adjacentOrSame(kPlot, kCityPlot) && pWorkingCity != NULL &&
-				pWorkingCity->plot() != &kCityPlot &&
-				pWorkingCity->getOwner() != eOldOwner)
-			{
-				continue;
-			}
-			int iConvertedCulture = std::min(kPlot.getCulture(eOldOwner) / 2,
-					2 * kPlot.getCulture(getID()));
-			kPlot.changeCulture(eOldOwner, -iConvertedCulture, false);
-			kPlot.changeCulture(getID(), iConvertedCulture, false);
+			int iConvertedCulture = cultureConvertedUponCityTrade(
+					kCityPlot, *it, eOldOwner, getID());
+			it->changeCulture(eOldOwner, -iConvertedCulture, false);
+			it->changeCulture(getID(), iConvertedCulture, false);
 		}
 		// BtS code replaced by the loop above // </advc.ctr>
 		/*for (int iDX = -1; iDX <= 1; iDX++) {
@@ -2058,8 +2047,10 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 		{
 			CvTeam const& t = GET_TEAM((TeamTypes)i);
 			if(!t.isAlive() || t.isMinorCiv() || t.getID() == TEAMID(eOldOwner) ||
-					t.getID() == getTeam() || !t.isAtWar(TEAMID(eOldOwner)))
+				t.getID() == getTeam() || !t.isAtWar(TEAMID(eOldOwner)))
+			{
 				continue;
+			}
 			bool bEverOwned = false;
 			for(int j = 0; j < MAX_CIV_PLAYERS; j++)
 			{
@@ -2339,7 +2330,37 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 	   case where a dead player arranged a vassal agreement. */
 	if(eOldOwner != NO_PLAYER)
 		GET_PLAYER(eOldOwner).verifyAlive(); // </advc.001>
-	AI().AI_updateCityAttitude(kCityPlot); // advc.130w
+	// <advc.130w>
+	AI().AI_updateCityAttitude(kCityPlot);
+	GET_PLAYER(eOldOwner).AI_updateCityAttitude(kCityPlot); // </advc.130w>
+}
+
+// advc.ctr:
+int CvPlayer::cultureConvertedUponCityTrade(CvPlot const& kCityPlot, CvPlot const& kPlot,
+	PlayerTypes eOldOwner, PlayerTypes eNewOwner, bool bIgnorePriority) const
+{
+	bool bConvert = false;
+	if (bIgnorePriority)
+		bConvert = (::plotDistance(&kCityPlot, &kPlot) <= 2);
+	else
+	{
+		// Always convert culture in the inner radius
+		bConvert = ::adjacentOrSame(kPlot, kCityPlot);
+		if (!bConvert)
+		{
+			// Outer circle: Based on plot priority when contested
+			CvCity const* pDefaultWorkingCity = kPlot.defaultWorkingCity();
+			bConvert = (pDefaultWorkingCity != NULL &&
+					/*	Plot has to be assigned to the traded city or to
+						a city of the new owner */
+					(pDefaultWorkingCity->at(kCityPlot) ||
+					pDefaultWorkingCity->getOwner() == eNewOwner));
+		}
+	}
+	if (!bConvert)
+		return 0;
+	return std::min(kPlot.getCulture(eOldOwner) / 2,
+			2 * kPlot.getCulture(getID()));
 }
 
 
@@ -4163,7 +4184,7 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 			break;
 		}
 		CvCity const& kCity = *pCity;
-		if (kCity.getLiberationPlayer(false, /* advc.ctr: */ getTeam()) == eWhoTo)
+		if (kCity.getLiberationPlayer() == eWhoTo)
 			return true;
 		// <advc.ctr>
 		if (kCity.isCapital() || !kCity.isRevealed(kToTeam.getID()))
@@ -6000,7 +6021,7 @@ int CvPlayer::getProductionNeeded(BuildingTypes eBuilding) const
 	iProductionNeeded = ::roundToMultiple(0.01 * iProductionNeeded *
 			GC.getInfo(getHandicapType()).getConstructPercent(),
 			isHuman() ? 5 : 1);
-	if(!isHuman()) // Barbarians too
+	if (!isHuman()) // Barbarians too
 	{
 		CvHandicapInfo const& h = GC.getInfo(g.getHandicapType());
 		int iAIModifier = //h.getAIPerEraModifier() * getCurrentEra()
@@ -7953,27 +7974,22 @@ int CvPlayer::greatPeopleThreshold(bool bMilitary) const
 		iThreshold = ((iGREAT_PEOPLE_THRESHOLD *
 				std::max(0, getGreatPeopleThresholdModifier() + 100)) / 100);
 	}
-	CvGame const& g = GC.getGame(); // advc
-	iThreshold *= GC.getInfo(g.getGameSpeedType()).getGreatPeoplePercent();
+	CvGame const& kGame = GC.getGame(); // advc
+	iThreshold *= GC.getInfo(kGame.getGameSpeedType()).getGreatPeoplePercent();
 	if (bMilitary)
-	{
-		iThreshold /= std::max(1, GC.getInfo(g.getGameSpeedType()).getTrainPercent());
-	}
-	else
-	{
-		iThreshold /= 100;
-	}
+		iThreshold /= std::max(1, GC.getInfo(kGame.getGameSpeedType()).getTrainPercent());
+	else iThreshold /= 100;
 
-	iThreshold *= GC.getInfo(g.getStartEra()).getGreatPeoplePercent();
+	iThreshold *= GC.getInfo(kGame.getStartEra()).getGreatPeoplePercent();
 	iThreshold /= 100;
 	// <advc.251>
 	iThreshold = ::roundToMultiple(0.01 * iThreshold * GC.getInfo(
 			getHandicapType()).getGPThresholdPercent(),
 			isHuman() ? 5 : 1);
-	if(!isHuman() && !isBarbarian())
+	if (!isHuman() && !isBarbarian())
 	{
 		iThreshold = ::round(0.01 * iThreshold * GC.getInfo(
-				g.getHandicapType()).getAIGPThresholdPercent());
+				kGame.getHandicapType()).getAIGPThresholdPercent());
 	} // </advc.251>
 
 	return std::max(1, iThreshold);
@@ -17966,6 +17982,7 @@ void CvPlayer::write(FDataStreamBase* pStream)
 //CULTURAL_GOLDEN_AGE
 	pStream->Write(m_iCultureGoldenAgeProgress);	//KNOEDEL 6/8
 	pStream->Write(m_iCultureGoldenAgesStarted);	//KNOEDEL 7/8
+	REPRO_TEST_END_WRITE();
 }
 
 void CvPlayer::createGreatPeople(UnitTypes eGreatPersonUnit,
@@ -21751,6 +21768,28 @@ void CvPlayer::calculateTradeTotals(YieldTypes eIndex,
 // <advc.085>
 void CvPlayer::setScoreboardExpanded(bool b)
 {
+	CvGame& kGame = GC.getGame();
+	/*	During diplomacy, my code for detecting whether the cursor
+		has been moved away from the scoreboard causes the
+		hover text box to flicker. Don't think I can fix that.
+		Workaround: If the player expands the scoreboard during
+		diplomacy, it remains expanded until diplomacy ends. */
+	if (gDLL->isDiplomacy())
+	{
+		if (!BUGOption::isEnabled("Scores__ExpandOnHover", false, false))
+			return;
+		/*	Expand the scoreboard. (Note: An update timer set by
+			CvDLLWidgetData::doContactCiv prevents the scoreboard
+			from already getting stuck at expanded when the player
+			clicks on the scoreboard to initiate diplomacy.) */
+		if (b && !m_bScoreboardExpanded)
+			gDLL->getInterfaceIFace()->setDirty(Score_DIRTY_BIT, true);
+		m_bScoreboardExpanded = b;
+		// Schedule callback for collapse
+		kGame.setUpdateTimer(CvGame::UPDATE_COLLAPSE_SCORE_BOARD, 1);
+		// Ignore callback while diplomacy ongoing
+		return;
+	}
 	if (b)
 	{
 		FAssert(BUGOption::isEnabled("Scores__AlignIcons", true, false));
@@ -21759,7 +21798,6 @@ void CvPlayer::setScoreboardExpanded(bool b)
 			/*  A delay of 1 means that the scoreboard collapses after
 				two game updates (250 ms) */
 			int const iDelay = 1;
-			CvGame& kGame = GC.getGame();
 			/*  So long as the mouse hovers over a scoreboard widget,
 				setScoreboardExpanded(true) keeps getting called and
 				the collapse timer keeps getting reset. */
@@ -22413,25 +22451,18 @@ void CvPlayer::markTradeOffers(CLinkList<TradeData>& ourInventory, const CLinkLi
 
 int CvPlayer::getIntroMusicScriptId(PlayerTypes eForPlayer) const
 {
-	CvPlayer& kForPlayer = GET_PLAYER(eForPlayer);
-	EraTypes eEra = kForPlayer.getCurrentEra();
-	CvLeaderHeadInfo& kLeader = GC.getInfo(getPersonalityType());
-	if (GET_TEAM(kForPlayer.getTeam()).isAtWar(getTeam()))
-	{
+	EraTypes eEra = GET_PLAYER(eForPlayer).getCurrentEra();
+	CvLeaderHeadInfo const& kLeader = GC.getInfo(getPersonalityType());
+	if (GET_TEAM(eForPlayer).isAtWar(getTeam()))
 		return kLeader.getDiploWarIntroMusicScriptIds(eEra);
-	}
-	else
-	{
-		return kLeader.getDiploPeaceIntroMusicScriptIds(eEra);
-	}
+	return kLeader.getDiploPeaceIntroMusicScriptIds(eEra);
 }
 
 int CvPlayer::getMusicScriptId(PlayerTypes eForPlayer) const
 {
-	CvPlayer& kForPlayer = GET_PLAYER(eForPlayer);
-	EraTypes eEra = kForPlayer.getCurrentEra();
-	CvLeaderHeadInfo& kLeader = GC.getInfo(getLeaderType());
-	if (GET_TEAM(kForPlayer.getTeam()).isAtWar(getTeam()))
+	EraTypes eEra = GET_PLAYER(eForPlayer).getCurrentEra();
+	CvLeaderHeadInfo const& kLeader = GC.getInfo(getLeaderType());
+	if (GET_TEAM(eForPlayer).isAtWar(getTeam()))
 		return kLeader.getDiploWarMusicScriptIds(eEra);
 	return kLeader.getDiploPeaceMusicScriptIds(eEra);
 }

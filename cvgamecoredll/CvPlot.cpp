@@ -4265,6 +4265,7 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 
 	if(getOwner() == eNewValue)
 		return; // advc
+	PlayerTypes eOldOwner = getOwner(); // advc.ctr
 	GC.getGame().addReplayMessage(REPLAY_MESSAGE_PLOT_OWNER_CHANGE, eNewValue, (char*)NULL, getX(), getY());
 
 	CvCity* pOldCity = getPlotCity();
@@ -4467,7 +4468,20 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 			gDLL->getEngineIFace()->SetDirty(CultureBorders_DIRTY_BIT, true);
 		}
 	}
-
+	// <advc.ctr> Wake up sleeping/ fortified human units
+	if (isOwned() && eOldOwner != NO_PLAYER && GET_PLAYER(eOldOwner).isHuman())
+	{
+		for (CLLNode<IDInfo> const* pNode = headUnitNode(); pNode != NULL;
+			pNode = nextUnitNode(pNode))
+		{
+			CvSelectionGroup& kGroup = *::getUnit(pNode->m_data)->getGroup();
+			if (kGroup.getOwner() == eOldOwner && kGroup.getLengthMissionQueue() <= 0 &&
+				kGroup.getActivityType() == ACTIVITY_SLEEP)
+			{
+				kGroup.setActivityType(ACTIVITY_AWAKE);
+			}
+		}
+	} // </advc.ctr>
 	invalidateBorderDangerCache(); // K-Mod. (based on BBAI)
 	updateSymbols();
 }
@@ -5224,7 +5238,7 @@ CvCityAI* CvPlot::AI_getWorkingCityOverrideAI() const
 
 void CvPlot::updateWorkingCity()
 {
-	CvCity* pBestCity = getPlotCity();
+	CvCity const* pBestCity = getPlotCity();
 	if (pBestCity == NULL)
 	{
 		pBestCity = getWorkingCityOverride();
@@ -5232,30 +5246,7 @@ void CvPlot::updateWorkingCity()
 	}
 
 	if (pBestCity == NULL && isOwned())
-	{
-		CityPlotTypes eBestPlot = CITY_HOME_PLOT;
-		for (CityPlotIter it(*this); it.hasNext(); ++it)
-		{
-			CvCity* pLoopCity = it->getPlotCity();
-			if (pLoopCity == NULL)
-				continue; // advc
-			CityPlotTypes const ePlot = it.currID();
-			if (pLoopCity->getOwner() == getOwner())
-			{	// XXX use getGameTurnAcquired() instead???
-				int const* pCityPriority = GC.getCityPlotPriority(); // advc
-				if (pBestCity == NULL ||
-					pCityPriority[ePlot] < pCityPriority[eBestPlot] ||
-					(pCityPriority[ePlot] == pCityPriority[eBestPlot] &&
-					(pLoopCity->getGameTurnFounded() < pBestCity->getGameTurnFounded() ||
-					(pLoopCity->getGameTurnFounded() == pBestCity->getGameTurnFounded() &&
-					pLoopCity->getID() < pBestCity->getID()))))
-				{
-					eBestPlot = ePlot;
-					pBestCity = pLoopCity;
-				}
-			}
-		}
-	}
+		pBestCity = defaultWorkingCity(); // advc: Moved into new function
 
 	CvCity* pOldWorkingCity = getWorkingCity();
 	if (pOldWorkingCity == pBestCity)
@@ -5292,6 +5283,35 @@ void CvPlot::updateWorkingCity()
 				gDLL->UI().setDirty(ColoredPlots_DIRTY_BIT, true);
 		}
 	}
+}
+
+// advc: Cut from updateWorkingCity (for advc.ctr)
+CvCity const* CvPlot::defaultWorkingCity() const
+{
+	CvCity const* pR = NULL;
+	CityPlotTypes eBestPlot = CITY_HOME_PLOT;
+	for (CityPlotIter it(*this); it.hasNext(); ++it)
+	{
+		CvCity* pLoopCity = it->getPlotCity();
+		if (pLoopCity == NULL)
+			continue;
+		CityPlotTypes const ePlot = it.currID();
+		if (pLoopCity->getOwner() == getOwner())
+		{	// XXX use getGameTurnAcquired() instead???
+			int const* pCityPriority = GC.getCityPlotPriority();
+			if (pR == NULL ||
+				pCityPriority[ePlot] < pCityPriority[eBestPlot] ||
+				(pCityPriority[ePlot] == pCityPriority[eBestPlot] &&
+				(pLoopCity->getGameTurnFounded() < pR->getGameTurnFounded() ||
+				(pLoopCity->getGameTurnFounded() == pR->getGameTurnFounded() &&
+				pLoopCity->getID() < pR->getID()))))
+			{
+				eBestPlot = ePlot;
+				pR = pLoopCity;
+			}
+		}
+	}
+	return pR;
 }
 
 

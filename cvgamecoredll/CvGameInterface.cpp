@@ -230,6 +230,41 @@ void CvGame::updateColoredPlots()
 			}
 		}
 	}
+//qa7 - f1rpo - do you think this is right? vincentz used the same syntax in his mod but with a small change.
+//should i use the sytax beow that i commented?
+/*rangedattack-keldath duplication of the above for airrange*/
+	if (pHeadSelectedUnit->airRange() > 0)
+	{
+		int iMaxAirRange = 0;
+
+		for (CLLNode<IDInfo> const* pSelectedUnitNode = kUI.headSelectionListNode();
+			pSelectedUnitNode != NULL; pSelectedUnitNode = kUI.nextSelectionListNode(pSelectedUnitNode))
+		{
+			CvUnit const* pSelectedUnit = ::getUnit(pSelectedUnitNode->m_data);
+			if (pSelectedUnit != NULL)
+				iMaxAirRange = std::max(iMaxAirRange, pSelectedUnit->airRange());
+		}
+//rangedattack-keldath changes - now checks regular combat + refers to land and sea (was land only)
+		if ((pHeadSelectedUnit->plot()->isCity(true, pHeadSelectedUnit->getTeam())) && (pHeadSelectedUnit->getDomainType() != DOMAIN_AIR) && (pHeadSelectedUnit->baseCombatStr() > 0))
+		{
+			iMaxAirRange += 1;
+		}
+//rangedattack-keldath			
+		if (iMaxAirRange > 0)
+		{
+			for (PlotCircleIter it(*pHeadSelectedUnit, iMaxAirRange); it.hasNext(); ++it)
+			{
+				CvPlot const& kLoopPlot = *it;
+				NiColorA color(GC.getInfo(GC.getColorType("RED")).getColor());
+				color.a = 0.5f;
+				kEngine.fillAreaBorderPlot(kLoopPlot.getX(), kLoopPlot.getY(),
+						color, AREA_BORDER_LAYER_RANGED);
+			}
+		}
+	}
+//
+/* //rangedattack-keldath - this is from f1rpo - i canclled it - i dont know why
+	//i copied vibcentz method - he added a +1 for city , based on the air domain code above
 	else if(pHeadSelectedUnit->airRange() > 0) //other ranged units
 	{
 		int const iRange = pHeadSelectedUnit->airRange();
@@ -248,7 +283,7 @@ void CvGame::updateColoredPlots()
 			}
 		}
 	}
-
+*/
 	if (!GET_PLAYER(getActivePlayer()).isOption(PLAYEROPTION_NO_UNIT_RECOMMENDATIONS))
 	{
 		CvUnitAI const& kRecommendUnit = pHeadSelectedUnit->AI(); // advc.003u

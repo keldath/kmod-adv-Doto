@@ -788,9 +788,9 @@ void CvGlobals::setDEFAULT_SPECIALIST(int iValue)
 	m_iDEFAULT_SPECIALIST = iValue;
 } // </advc.opt>
 
-int CvGlobals::getDefineINT(const char * szName,
-		// BETTER_BTS_AI_MOD, 02/21/10, jdog5000: START
-		const int iDefault) const
+int CvGlobals::getDefineINT(char const* szName,
+	// BETTER_BTS_AI_MOD, 02/21/10, jdog5000: START
+	int iDefault) const
 {
 	int iReturn = iDefault;
 	// BETTER_BTS_AI_MOD: END
@@ -801,7 +801,7 @@ int CvGlobals::getDefineINT(const char * szName,
 }
 
 
-float CvGlobals::getDefineFLOAT(const char * szName) const
+float CvGlobals::getDefineFLOAT(char const* szName) const
 {
 	float fReturn = 0;
 	bool bSuccess = // advc.003c
@@ -812,32 +812,32 @@ float CvGlobals::getDefineFLOAT(const char * szName) const
 	return fReturn;
 }
 
-const char * CvGlobals::getDefineSTRING(const char * szName) const
+char const* CvGlobals::getDefineSTRING(char const* szName) const
 {
-	const char * szReturn = NULL;
+	char const* szReturn = NULL;
 	bool bSuccess = // advc.003c
 			getDefinesVarSystem()->GetValue(szName, szReturn);
 	FAssert(bSuccess); // advc.003c
 	return szReturn;
 }
 
-void CvGlobals::setDefineINT(const char * szName, int iValue, /* advc.opt: */ bool bUpdateCache)
+void CvGlobals::setDefineINT(char const* szName, int iValue, /* advc.opt: */ bool bUpdateCache)
 {
 	getDefinesVarSystem()->SetValue(szName, iValue);
 	// <advc.opt>
-	if(bUpdateCache)
+	if (bUpdateCache)
 		cacheGlobalInts(szName, iValue); // Pinpoint update </advc.opt>
 }
 
-void CvGlobals::setDefineFLOAT(const char * szName, float fValue, /* advc.opt: */ bool bUpdateCache)
+void CvGlobals::setDefineFLOAT(char const* szName, float fValue, /* advc.opt: */ bool bUpdateCache)
 {
 	getDefinesVarSystem()->SetValue(szName, fValue);
 	// <advc.opt>
-	if(bUpdateCache)
+	if (bUpdateCache)
 		cacheGlobalFloats(); // </advc.opt>
 }
 
-void CvGlobals::setDefineSTRING(const char * szName, const char * szValue, /* advc.opt: */ bool bUpdateCache)
+void CvGlobals::setDefineSTRING(char const* szName, char const* szValue, /* advc.opt: */ bool bUpdateCache)
 {
 	getDefinesVarSystem()->SetValue(szName, szValue);
 	//cacheGlobals();
@@ -866,48 +866,47 @@ int CvGlobals::getMAX_CIV_PLAYERS()
 {
 	return MAX_CIV_PLAYERS;
 }
-/*  <advc.003t> Optional parameters added. The return value is only an upper bound,
-	even if an argument is given. */
+// <advc.003t> Variants that take a parameter. The return value is still only an upper bound.
 int CvGlobals::getNUM_UNIT_PREREQ_OR_BONUSES(UnitTypes eUnit) const
 {
-	return (eUnit == NO_UNIT || getInfo(eUnit).isAnyPrereqOrBonus() ?
-			getDefineINT(NUM_UNIT_PREREQ_OR_BONUSES) : 0);
+	return (getInfo(eUnit).isAnyPrereqOrBonus() ?
+			getNUM_UNIT_PREREQ_OR_BONUSES() : 0);
 }
 
 int CvGlobals::getNUM_UNIT_AND_TECH_PREREQS(UnitTypes eUnit) const
 {
-	return (eUnit == NO_UNIT || getInfo(eUnit).isAnyPrereqAndTech() ?
-			getDefineINT(NUM_UNIT_AND_TECH_PREREQS) : 0);
+	return (getInfo(eUnit).isAnyPrereqAndTech() ?
+			getNUM_UNIT_AND_TECH_PREREQS() : 0);
 }
 
 int CvGlobals::getNUM_BUILDING_PREREQ_OR_BONUSES(BuildingTypes eBuilding) const
 {
-	return (eBuilding == NO_BUILDING || getInfo(eBuilding).isAnyPrereqOrBonus() ?
-			getDefineINT(NUM_BUILDING_PREREQ_OR_BONUSES) : 0);
+	return (getInfo(eBuilding).isAnyPrereqOrBonus() ?
+			getNUM_BUILDING_PREREQ_OR_BONUSES() : 0);
 }
 
 int CvGlobals::getNUM_BUILDING_AND_TECH_PREREQS(BuildingTypes eBuilding) const
 {
-	return (eBuilding == NO_BUILDING || getInfo(eBuilding).isAnyPrereqAndTech() ?
-			getDefineINT(NUM_BUILDING_AND_TECH_PREREQS) : 0);
+	return (getInfo(eBuilding).isAnyPrereqAndTech() ?
+			getNUM_BUILDING_AND_TECH_PREREQS() : 0);
 }
 
 int CvGlobals::getNUM_AND_TECH_PREREQS(TechTypes eTech) const
 {
-	return (eTech == NO_TECH || getInfo(eTech).isAnyPrereqAndTech() ?
-			getDefineINT(NUM_AND_TECH_PREREQS) : 0);
+	return (getInfo(eTech).isAnyPrereqAndTech() ?
+			getNUM_AND_TECH_PREREQS() : 0);
 }
 
 int CvGlobals::getNUM_OR_TECH_PREREQS(TechTypes eTech) const
 {
-	return (eTech == NO_TECH || getInfo(eTech).isAnyPrereqOrTech() ?
-			getDefineINT(NUM_OR_TECH_PREREQS) : 0);
+	return (getInfo(eTech).isAnyPrereqOrTech() ?
+			getNUM_OR_TECH_PREREQS() : 0);
 }
 
 int CvGlobals::getNUM_ROUTE_PREREQ_OR_BONUSES(RouteTypes eRoute) const
 {
-	return (eRoute == NO_ROUTE || getInfo(eRoute).isAnyPrereqOrBonus() ?
-			getDefineINT(NUM_ROUTE_PREREQ_OR_BONUSES) : 0);
+	return (getInfo(eRoute).isAnyPrereqOrBonus() ?
+			getNUM_ROUTE_PREREQ_OR_BONUSES() : 0);
 }
 // </advc.003t>
 int CvGlobals::getNUM_CORPORATION_PREREQ_BONUSES() const

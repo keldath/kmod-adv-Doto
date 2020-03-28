@@ -2154,6 +2154,7 @@ int AIFoundValue::evaluateDefense() const
 {
 //EFCTION BELOW SUGGESTED BY F1RPO - but, prefered not t o give peaks weight wheb eval of def.
 //original f1rpo code below
+//mountain mod
 /*   int r = 0;
    if (kPlot.isHills())
    {*/

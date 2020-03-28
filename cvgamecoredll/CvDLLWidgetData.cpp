@@ -1455,7 +1455,10 @@ void CvDLLWidgetData::doContactCiv(CvWidgetDataStruct &widgetDataStruct)
 			gDLL->UI().toggleScoresMinimized();
 		}
 		return;
-	}
+	}  /* <advc.085> Give the player time to move the cursor off the scoreboard
+		  (cf. comments in CvPlayer::setScoreboardExpanded) */
+	if (BUGOption::isEnabled("Scores__ExpandOnHover", false, false))
+		GC.getGame().setUpdateTimer(CvGame::UPDATE_DIRTY_SCORE_BOARD, 4); // </advc.085>
 	// BETTER_BTS_AI_MOD, Player Interface, 01/11/09, jdog5000: START
 	if (GC.shiftKey() && !GC.altKey())
 	{
@@ -3802,7 +3805,8 @@ void CvDLLWidgetData::parseScoreboardCheatText(CvWidgetDataStruct &widgetDataStr
 	if (kPlayer.AI_atVictoryStage(AI_VICTORY_CULTURE3) || GC.ctrlKey())
 	{
 		szBuffer.append(CvWString::format(L"\n\nTop %c cities by weight:", GC.getInfo(COMMERCE_CULTURE).getChar()));
-		int iLegendaryCulture = GC.getGame().getCultureThreshold((CultureLevelTypes)(GC.getNumCultureLevelInfos() - 1));
+		int iLegendaryCulture = GC.getGame().getCultureThreshold(
+				CvCultureLevelInfo::finalCultureLevel());
 		std::vector<std::pair<int,int> > city_list; // (weight, city id)
 
 		FOR_EACH_CITYAI(pLoopCity, kPlayer)

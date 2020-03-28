@@ -28,6 +28,10 @@
 	#undef MAXUINT
 #endif
 
+/*	Uncomment for some additional runtime assertions
+	checking conditions that are really the client's responsibility. */
+//#define SCALED_INT_EXTRA_ASSERTS
+
 // For members shared by all instantiations of ScaledInt
 template<typename Dummy> // Just so that static data members can be defined in the header
 class ScaledIntBase
@@ -147,7 +151,8 @@ public:
 	template<int iNUM, int iDEN>
 	static inline ScaledInt fromRational()
 	{
-		BOOST_STATIC_ASSERT(bSIGNED || (iDEN >= 0 && iNUM >= 0));
+		BOOST_STATIC_ASSERT(iDEN != 0);
+		BOOST_STATIC_ASSERT(bSIGNED || (iDEN > 0 && iNUM >= 0));
 		return fromDouble(iNUM / static_cast<double>(iDEN));
 	}
 
@@ -207,7 +212,10 @@ public:
 
 	// Scale and integer type conversion constructor
 	template<int iFROM_SCALE, typename OtherIntType, typename OtherEnumType>
-	__forceinline ScaledInt(ScaledInt<iFROM_SCALE,OtherIntType,OtherEnumType> rOther)
+	/*	Take the argument by reference although this isn't technically a copy constructor.
+		Taking it by value leads to peculiar compiler errors when an assignment is followed 
+		by an opening curly brace (compiler demands a semicolon then). */
+	__forceinline ScaledInt(ScaledInt<iFROM_SCALE,OtherIntType,OtherEnumType>& rOther)
 	{
 		STATIC_ASSERT_COMPATIBLE(EnumType,OtherEnumType);
 		static OtherIntType const FROM_SCALE = ScaledInt<iFROM_SCALE,OtherIntType,OtherEnumType>::SCALE;
@@ -348,7 +356,7 @@ public:
 		FAssert(!isNegative());
 		return powNonNegative(fromRational<1,2>());
 	}
-	__forceinline ScaledInt exponentiate(ScaledInt rExp)
+	__forceinline void exponentiate(ScaledInt rExp)
 	{
 		*this = pow(rExp);
 	}
@@ -547,16 +555,19 @@ public:
 	// Operand on different scale: Let ctor implicitly convert it to ScaledInt
 	__forceinline ScaledInt& operator+=(ScaledInt rOther)
 	{
-		// Maybe uncomment this for some special occasion
-		/*FAssert(rOther <= 0 || m_i <= INTMAX - rOther.m_i);
-		FAssert(rOther >= 0 || m_i >= INTMIN + rOther.m_i);*/
+		#ifdef SCALED_INT_EXTRA_ASSERTS
+			FAssert(rOther <= 0 || m_i <= INTMAX - rOther.m_i);
+			FAssert(rOther >= 0 || m_i >= INTMIN + rOther.m_i);
+		#endif
 		m_i += rOther.m_i;
 		return *this;
 	}
 	__forceinline ScaledInt& operator-=(ScaledInt rOther)
 	{
-		/*FAssert(rOther >= 0 || m_i <= INTMAX + rOther.m_i);
-		FAssert(rOther <= 0 || m_i >= INTMIN - rOther.m_i);*/
+		#ifdef SCALED_INT_EXTRA_ASSERTS
+			FAssert(rOther >= 0 || m_i <= INTMAX + rOther.m_i);
+			FAssert(rOther <= 0 || m_i >= INTMIN - rOther.m_i);
+		#endif
 		m_i -= rOther.m_i;
 		return *this;
 	}
@@ -703,6 +714,9 @@ private:
 				ReturnType;
 		BOOST_STATIC_ASSERT(sizeof(MultiplierType) <= 4);
 		BOOST_STATIC_ASSERT(sizeof(DivisorType) <= 4);
+		#ifdef SCALED_INT_EXTRA_ASSERTS
+			FAssert(divisor != 0);
+		#endif
 		if (std::numeric_limits<ReturnType>::is_signed)
 		{
 			int i;
@@ -810,7 +824,9 @@ private:
 		There is a reasonably recent paper "A Division-Free Algorithm for Fixed-Point
 		Power Exponential Function in Embedded System" [sic] based on Newton's method.
 		That's probably faster and more accurate, but an implementation isn't
-		spelled out. Perhaps tbd. */
+		spelled out. Perhaps tbd.
+		Once the current implementation is used in some frequently executed code,
+		a test should be carried out in which the implementation is replaced with std::pow. */
 	ScaledInt powNonNegative(ScaledInt rExp) const
 	{
 		/*	Base 0 or too close to it to make a difference given the precision of the algorithm.

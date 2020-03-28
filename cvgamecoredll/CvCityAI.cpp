@@ -10271,9 +10271,9 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 				aiCommerceLost[eLoopCommerce] = -iCommerce;
 		}
 		iTotalValue += 100 * AI_yieldValue(NULL, aiCommerceGained, false,
-			bIgnoreFood, bIgnoreStarvation, false, iGrowthValue);
+				bIgnoreFood, bIgnoreStarvation, false, iGrowthValue);
 		iTotalValue -= 100 * AI_yieldValue(NULL, aiCommerceLost, true,
-			bIgnoreFood, bIgnoreStarvation, false, iGrowthValue);
+				bIgnoreFood, bIgnoreStarvation, false, iGrowthValue);
 
 		int iGPPGained = 0;
 		int iGPPLost = 0;
@@ -10285,11 +10285,11 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 		if (iGPPGained || iGPPLost)
 		{
 			int iEmphasisCount = AI_isEmphasizeYield(YIELD_COMMERCE) +
-				AI_isEmphasizeYield(YIELD_FOOD) + AI_isEmphasizeYield(YIELD_PRODUCTION);
+					AI_isEmphasizeYield(YIELD_FOOD) + AI_isEmphasizeYield(YIELD_PRODUCTION);
 
 			int iBaseValue = AI_isEmphasizeGreatPeople() ? 12 :
-				(iEmphasisCount > 0 ? 3 : 4);
-			// note: each point of iEmphasisCount reduces the value at the end.
+					(iEmphasisCount > 0 ? 3 : 4);
+				// note: each point of iEmphasisCount reduces the value at the end.
 
 			int iGPPValue = 0;
 
@@ -10297,12 +10297,12 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 			if (iGPPGained)
 			{
 				iGPPValue += iGPPGained * iBaseValue * kOwner.AI_getGreatPersonWeight((UnitClassTypes)
-					GC.getInfo((SpecialistTypes)new_job.second).getGreatPeopleUnitClass());
+						GC.getInfo((SpecialistTypes)new_job.second).getGreatPeopleUnitClass());
 			}
 			if (iGPPLost)
 			{
 				iGPPValue -= iGPPLost * iBaseValue * kOwner.AI_getGreatPersonWeight((UnitClassTypes)
-					GC.getInfo((SpecialistTypes)old_job.second).getGreatPeopleUnitClass());
+						GC.getInfo((SpecialistTypes)old_job.second).getGreatPeopleUnitClass());
 			}
 			iGPPValue *= getTotalGreatPeopleRateModifier();
 			iGPPValue /= 100;
@@ -10332,7 +10332,7 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 				if (iHighestRate > iCityRate)
 				{
 					iGPPValue *= 100;
-					iGPPValue /= (2 * 100 * (iHighestRate + 8)) / (iCityRate + 8) - 100; // the +8 is just so that we don't block ourselves from assigning the first couple of specialists.
+					iGPPValue /= (2*100*(iHighestRate+8))/(iCityRate+8) - 100; // the +8 is just so that we don't block ourselves from assigning the first couple of specialists.
 				}
 				// each successive great person costs more points. So the points are effectively worth less...
 				// (note: I haven't tried to match this value decrease with the actual cost increase,
@@ -10348,14 +10348,29 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 			// However, because of the flawed way that food is currently evaluated, I need to dilute the value of GPP
 			// so that specialists don't get value more highly than food tiles. (I hope to correct this later.)
 			iGPPValue *= 100;
-			iGPPValue /= (300 + kOwner.AI_averageGreatPeopleMultiplier()) / 4;
+			iGPPValue /= (300 + kOwner.AI_averageGreatPeopleMultiplier())/4;
 
 			iGPPValue /= (1 + iEmphasisCount);
 
 			iTotalValue += iGPPValue;
-
-			// Evaluate military experience from specialists
-			//moved to below - f1rpo suggestion - keldath
+		} /* advc.001: Moved the XP code out of the 'iGPPGained || iGPPLost' block.
+			 That (unused) ability shouldn't be assumed to imply a GPP rate. */
+		// Evaluate military experience from specialists
+		int iExperience = 0;
+		if (new_job.second >= 0 && new_job.first)
+			iExperience += GC.getInfo((SpecialistTypes)new_job.second).getExperience();
+		if (old_job.second >= 0 && old_job.first)
+		{	// advc.001: was +=
+			iExperience -= GC.getInfo((SpecialistTypes)old_job.second).getExperience();
+		}
+		if (iExperience != 0)
+		{
+			int iProductionRank = findYieldRateRank(YIELD_PRODUCTION);
+			int iExperienceValue = 100 * iExperience * 4;
+			if (iProductionRank <= kOwner.getNumCities() / 2 + 1)
+				iExperienceValue += 100 * iExperience * 4;
+			iExperienceValue += (getMilitaryProductionModifier() * iExperience * 8);
+			iTotalValue += iExperienceValue;
 		}
 		// Devalue generic citizens (for no specific reason). (cf. AI_specialistValue)
 		/* if (no gpp) {
@@ -10366,24 +10381,6 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 				if (old_job.first && old_job.second == eGenericCitizen)
 					iTotalValue = iTotalValue * 100 / 80;
 			} } */
-			// Evaluate military experience from specialists
-			//moved from above - keldath - f1rpo suggestion.
-			int iExperience = 0;
-			if (new_job.second >= 0 && new_job.first)
-				iExperience += GC.getInfo((SpecialistTypes)new_job.second).getExperience();
-			if (old_job.second >= 0 && old_job.first)
-			{	// advc.001: was +=
-				iExperience -= GC.getInfo((SpecialistTypes)old_job.second).getExperience();
-			}
-			if (iExperience != 0)
-			{
-				int iProductionRank = findYieldRateRank(YIELD_PRODUCTION);
-				int iExperienceValue = 100 * iExperience * 4;
-				if (iProductionRank <= kOwner.getNumCities() / 2 + 1)
-					iExperienceValue += 100 * iExperience * 4;
-				iExperienceValue += (getMilitaryProductionModifier() * iExperience * 8);
-				iTotalValue += iExperienceValue;
-			}
 			/*************************************************************************************************/
 			/** Specialists Enhancements, by Supercheese 10/12/09                                            */
 			/**                                                                                              */
@@ -11807,15 +11804,9 @@ int CvCityAI::AI_getCityImportance(bool bEconomy, bool bMilitary)
 		if (iCultureRateRank <= iCulturalVictoryNumCultureCities)
 		{
 			iValue += 100;
-
-			if ((getCultureLevel() < (GC.getNumCultureLevelInfos() - 1)))
-			{
+			if (getCultureLevel() < CvCultureLevelInfo::finalCultureLevel())
 				iValue += !bMilitary ? 100 : 0;
-			}
-			else
-			{
-				iValue += bMilitary ? 100 : 0;
-			}
+			else iValue += bMilitary ? 100 : 0;
 		}
 	}
 	return iValue;
@@ -12497,9 +12488,9 @@ int CvCityAI::AI_cityThreat(bool bDangerPercent) /* advc: */ const
 	if (kOwner.AI_atVictoryStage(AI_VICTORY_CULTURE3)) {
 		iValue += 5;
 		iValue += getCommerceRateModifier(COMMERCE_CULTURE) / 20;
-		if (getCultureLevel() >= (GC.getNumCultureLevelInfos() - 2)) {
+		if (getCultureLevel() >= GC.getNumCultureLevelInfos() - 2) {
 			iValue += 20;
-			if (getCultureLevel() >= (GC.getNumCultureLevelInfos() - 1))
+			if (getCultureLevel() >= GC.getNumCultureLevelInfos() - 1)
 				iValue += 30;
 		}
 	}*/ // BtS
@@ -12970,7 +12961,8 @@ void CvCityAI::read(FDataStreamBase* pStream)
 	{
 		pStream->Read(&m_bSafe);
 		pStream->Read(&m_iCityValPercent);
-	} // </advc.139>
+	}
+	else m_bSafe = true; // </advc.139>
 	pStream->Read(&m_iWorkersNeeded);
 	pStream->Read(&m_iWorkersHave);
 	// K-Mod

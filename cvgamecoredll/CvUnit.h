@@ -962,8 +962,13 @@ public:
 	bool isEnemy(CvPlot const& kPlot) const;
 	// (advc: isPotentialEnemy moved to CvUnitAI)
 
-	bool canRangeStrike() const;
-	bool canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY) const;
+//rangedattack-keldath
+//Vincentz Rangestrike start-f1rpo fix for a loop in  the source code.
+	//bool canRangeStrike() const;
+	//bool canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY) const;
+	bool canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY, bool bStrikeBack = false) const;
+	bool canRangeStrike(bool bStrikeBack = false) const;
+//Vincentz Rangestrike end
 	bool rangeStrike(int iX, int iY);
 
 	int getTriggerValue(EventTriggerTypes eTrigger, const CvPlot* pPlot, bool bCheckPlot) const;

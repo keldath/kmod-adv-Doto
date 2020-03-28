@@ -299,31 +299,33 @@ void CvDeal::addTrades(CLinkList<TradeData> const& kFirstList, CLinkList<TradeDa
 	// K-Mod end
 }
 
-/*  <advc.130p> Based on code cut from addTrades. Return values says whether
+/*  advc.130p: Based on code cut from addTrades. Return values says whether
 	attitude cache needs to be updated. */
 bool CvDeal::recordTradeValue(CLinkList<TradeData> const& kFirstList, CLinkList<TradeData> const& kSecondList,
 	PlayerTypes eFirstPlayer, PlayerTypes eSecondPlayer, bool bPeace,
 	TeamTypes ePeaceTradeTarget, TeamTypes eWarTradeTarget)
 {
 	if(kFirstList.getLength() <= 0 ||
-			/*  Given reparations should matter for RivalTrade; given Peace shouldn't.
-				Brokered peace (TRADE_PEACE) can't be filtered out here b/c other
-				items could be traded along with TRADE_PEACE. */
-			(kFirstList.getLength() == 1 && kFirstList.head()->m_data.m_eItemType ==
-			TRADE_PEACE_TREATY))
+		/*  Given reparations should matter for RivalTrade; given Peace shouldn't.
+			Brokered peace (TRADE_PEACE) can't be filtered out here b/c other
+			items could be traded along with TRADE_PEACE. */
+		(kFirstList.getLength() == 1 &&
+		kFirstList.head()->m_data.m_eItemType == TRADE_PEACE_TREATY))
+	{
 		return false;
+	}
 	/*  advc.550a: Ignore discounts when it comes to fair-trade diplo bonuses?
 		Hard to decide, apply half the discount for now. */
-	int iValue = ::round((GET_PLAYER(eSecondPlayer).AI_dealVal(eFirstPlayer,
-			kFirstList, true, 1, true, true) +
+	int iValue = ROUND_DIVIDE(GET_PLAYER(eSecondPlayer).AI_dealVal(eFirstPlayer,
+			kFirstList, true, 1, true, true, /* advc.ctr: */ true) +
 			GET_PLAYER(eSecondPlayer).AI_dealVal(eFirstPlayer,
-			kFirstList, true, 1, false, true) / 2.0));
+			kFirstList, true, 1, false, true, /* advc.ctr: */ true), 2);
 	if(iValue <= 0)
 		return false;
 	GET_PLAYER(eSecondPlayer).AI_processPeacetimeValue(eFirstPlayer, iValue,
 			kSecondList.getLength() <= 0, bPeace, ePeaceTradeTarget, eWarTradeTarget);
 	return true;
-} // </advc.130p>
+}
 
 
 void CvDeal::doTurn()
@@ -812,9 +814,16 @@ bool CvDeal::startTrade(TradeData trade, PlayerTypes eFromPlayer, PlayerTypes eT
 		CvCity* pCity = GET_PLAYER(eFromPlayer).getCity(trade.m_iData);
 		if (pCity != NULL)
 		{
+			bool bLib = (pCity->getLiberationPlayer() == eToPlayer); // advc.ctr
 			if (gTeamLogLevel >= 2) logBBAI("    Player %d (%S) gives a city due to TRADE_CITIES with %d (%S)", eFromPlayer, GET_PLAYER(eFromPlayer).getCivilizationDescription(0), eToPlayer, GET_PLAYER(eToPlayer).getCivilizationDescription(0));
 			pCity->doTask(/* advc.ctr: */ bPeace ? TASK_CEDE :
 					TASK_GIFT, eToPlayer);
+			// <advc.ctr>
+			if (!bPeace && !bLib)
+			{
+				FAssert(!GET_TEAM(eFromPlayer).isAtWar(TEAMID(eToPlayer)));
+				GET_TEAM(eFromPlayer).signPeaceTreaty(TEAMID(eToPlayer));
+			} // </advc.ctr>
 		}
 		break;
 	}
@@ -822,20 +831,14 @@ bool CvDeal::startTrade(TradeData trade, PlayerTypes eFromPlayer, PlayerTypes eT
 		GET_PLAYER(eFromPlayer).changeGold(-trade.m_iData);
 		GET_PLAYER(eToPlayer).changeGold(trade.m_iData);
 		GET_PLAYER(eFromPlayer).AI_changeGoldTradedTo(eToPlayer, trade.m_iData);
-
 		if (gTeamLogLevel >= 2) logBBAI("    Player %d (%S) trades gold %d due to TRADE_GOLD with player %d (%S)", eFromPlayer, GET_PLAYER(eFromPlayer).getCivilizationDescription(0), trade.m_iData, eToPlayer, GET_PLAYER(eToPlayer).getCivilizationDescription(0));
-
-		// Python Event
 		CvEventReporter::getInstance().playerGoldTrade(eFromPlayer, eToPlayer, trade.m_iData);
-
 		break;
 
 	case TRADE_GOLD_PER_TURN:
 		GET_PLAYER(eFromPlayer).changeGoldPerTurnByPlayer(eToPlayer, -(trade.m_iData));
 		GET_PLAYER(eToPlayer).changeGoldPerTurnByPlayer(eFromPlayer, trade.m_iData);
-
 		if (gTeamLogLevel >= 2) logBBAI("    Player %d (%S) trades gold per turn %d due to TRADE_GOLD_PER_TURN with player %d (%S)", eFromPlayer, GET_PLAYER(eFromPlayer).getCivilizationDescription(0), trade.m_iData, eToPlayer, GET_PLAYER(eToPlayer).getCivilizationDescription(0));
-
 		bSave = true;
 		break;
 

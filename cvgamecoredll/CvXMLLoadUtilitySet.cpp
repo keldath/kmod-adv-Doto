@@ -1474,7 +1474,9 @@ void CvXMLLoadUtility::LoadGlobalClassInfo(std::vector<T*>& aInfos,
 						sprintf(szMessage, "LoadXML call failed for %s.", it->GetCString());
 						errorMessage(szMessage, XML_LOAD_ERROR);
 					}
-					else SetGlobalClassInfo(aInfos, szXmlPath, /*bTwoPass*/ true); // advc.rh
+				//	else SetGlobalClassInfo(aInfos, szXmlPath, /*bTwoPass*/ true); // advc.rh
+				//keldath = f1rpo fix for readpass2 assert error
+					else SetGlobalClassInfo(aInfos, szXmlPath, /*bTwoPass*/ false); // advc.rh
 				}
 			}
 			// <advc.rh>
