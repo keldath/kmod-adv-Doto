@@ -221,7 +221,10 @@ if (pHeadSelectedUnit->airRange() > 0)
 		}
 		//if the unit is in a city, a land unit only - it has another range to it as a bonus - note that this exists also in the cvunit.cpp
 		//original code was from vincentz
-		if ((pHeadSelectedUnit->plot()->isCity(true, pHeadSelectedUnit->getTeam())) && (pHeadSelectedUnit->getDomainType() == DOMAIN_LAND) && (pHeadSelectedUnit->baseCombatStr() > 0))
+		//added high ground - this one exists in cv map and cv unit
+		if ((pHeadSelectedUnit->plot()->isCity(true, pHeadSelectedUnit->getTeam())|| (pHeadSelectedUnit->plot()->isHills() || pHeadSelectedUnit->plot()->isPeak())) 
+			&& (pHeadSelectedUnit->getDomainType() == DOMAIN_LAND) 
+			&& (pHeadSelectedUnit->baseCombatStr() > 0))
 		{
 			iMaxAirRange += 1;
 		}
@@ -253,7 +256,7 @@ if (pHeadSelectedUnit->airRange() > 0)
 					}
 					else if (bSea)
 					{
-						color = "ORANGE";
+						color = "WHITE";
 					}
 					//f1rpo initial code:
 					/*NiColorA color(GC.getInfo(GC.getColorType(bAir ?

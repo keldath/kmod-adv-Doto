@@ -7790,7 +7790,9 @@ bool CvUnit::isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttack
 	// UncutDragon
 	// To cut down on changes to existing code, we just short-circuit the method
 	// and this point and call our own version instead
-	if (GC.getDefineBOOL(CvGlobals::LFB_ENABLE))
+	//if (GC.getDefineBOOL(CvGlobals::LFB_ENABLE))
+//keldath - made it into a game option from xml.
+	if (GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND))
 		return LFBisBetterDefenderThan(pDefender, pAttacker, pBestDefenderRank);
 	// /UncutDragon
 
@@ -11114,6 +11116,7 @@ bool CvUnit::canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY, bool bStrikeB
 	// UNOFFICIAL_PATCH: END
 //rangedattack-keldath - if the city unit is in a city or the unit is on peak or hill, give +1 range.
 	int rangestrikeRangechange = 0;
+	//this exists in cvmap and in gameinterface
 	if (((plot()->isCity(true, getTeam())) || (pPlot->isHills())||(pPlot->isPeak())) && (getDomainType() == DOMAIN_LAND))
 	{
 		rangestrikeRangechange += 1;
@@ -11148,7 +11151,7 @@ bool CvUnit::canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY, bool bStrikeB
 //rangedattack-keldath- i guess we dont care which direction the unit faces - vincentz canceled it. qa7-done
 //it was marked off entirely - f1rpo suggested to use directionXY(), i hope i used proper params.
 //	if (!pPlot->canSeePlot(pTargetPlot, getTeam(), airRange(), getFacingDirection(true)))
-	if (!pPlot->canSeePlot(pTargetPlot, getTeam(), airRange(),directionXY(pPlot,pTargetPlot)))
+	if (!pPlot->canSeePlot(pTargetPlot, getTeam(), airRange(),GC.getMap().directionXY(*pPlot, *pTargetPlot)))
 		return false;
 
 	return true;
@@ -12290,7 +12293,14 @@ int CvUnit::LFBgetDefenderOdds(const CvUnit* pAttacker) const
 
 	int iDefense = 0;
 
-	if (bUseAttacker && GC.getDefineBOOL(CvGlobals::LFB_USECOMBATODDS))
+	if (bUseAttacker && GC.getDefineBOOL(CvGlobals::LFB_USECOMBATODDS)
+//rangedattack-keldath
+//i decided that ranged units should not use combat odds.
+//this is a test, ill see how it goes.
+//the reason is that not always it picked the best defender.
+	&&	pAttacker->getDomainType() != DOMAIN_AIR &&  pAttacker->airRange()
+//rangedattack-keldath
+		)
 	{
 		// We start with straight combat odds
 		iDefense = LFBgetDefenderCombatOdds(pAttacker);

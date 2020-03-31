@@ -328,14 +328,6 @@ public:
 
 	int airRange() const																					// Exposed to Python
 	{
-		//rangedattack-keldath - if the city unit is in a city or the unit is on peak or hill, give +1 range.
-	/*	int airRange = m_pUnitInfo->getAirRange() + getExtraAirRange();
-		if (((plot()->isCity(true, getTeam())) || (pPlot->isHills())||(pPlot->isPeak())) && (getDomainType() == DOMAIN_LAND) && m_pUnitInfo->baseCombatStr() > 0)
-		{
-			airRange += 1;
-		}
-		return (airRange);*/
-		//rangedattack-keldath
 		return (m_pUnitInfo->getAirRange() + getExtraAirRange());
 	}
 	int nukeRange() const																					// Exposed to Python

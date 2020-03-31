@@ -2,6 +2,7 @@
 <!-- Global Defines for Lead From Behind mod by Uncut Dragon, rebalanced by Karadoc -->
 <Civ4Defines xmlns="x-schema:CIV4GlobalDefinesSchema.xml">
 	<Define>
+		<!--keldath - now a custom game option -->
 		<DefineName>LFB_ENABLE</DefineName>
 		<iDefineIntVal>1</iDefineIntVal>
 	</Define>

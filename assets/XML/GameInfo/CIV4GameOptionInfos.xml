@@ -239,13 +239,6 @@
        	</GameOptionInfo>
 		<GameOptionInfo>
 			<Type>GAMEOPTION_INFLUENCE_DRIVEN_WAR</Type>
-            <Description>Influence Driven War</Description>
-            <Help>Allows Combat To Spread Culture Via Combat</Help>
-			<bDefault>0</bDefault>
-			<bVisible>1</bVisible>
-		</GameOptionInfo>
-		<GameOptionInfo>
-			<Type>GAMEOPTION_INFLUENCE_DRIVEN_WAR</Type>
             <Description>IDW</Description>
             <Help>Influence Driver War - Allows Combat To Spread Culture Via Combat</Help>
 			<bDefault>0</bDefault>
@@ -301,6 +294,13 @@
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
+            <Type>GAMEOPTION_LEFT_FROM_BEHIND</Type>
+            <Description>Left From Behind</Description>
+            <Help>An Elaborated system to pick Defenders on Combat(Reccomended-on)</Help>
+            <bDefault>1</bDefault>
+            <bVisible>1</bVisible>
+		</GameOptionInfo>
+        <GameOptionInfo>
             <Type>GAMEOPTION_NO_POPULATION_LIMIT</Type>
             <Description>No Pop Limit</Description>
             <Help>If unchecked  - Cities are LImited to size 8 , with buildings and more, that limit is increased.</Help>
@@ -317,35 +317,35 @@
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_SEA_END_MOVES</Type>
-            <Description>Ranged-Movement End (Sea)</Description>
+            <Description>Ranged-Move End(Sea)</Description>
             <Help>Sea units Range Strike, it wont be able to move if it have more move points.(default off)</Help>
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_LAND_END_MOVES</Type>
-            <Description>Ranged-Movement End (Land)</Description>
+            <Description>Ranged-Move End(Land)</Description>
             <Help>Land units Range Strike, it wont be able to move if it have more move points.(default on)</Help>
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RAND_AIR_BOMB_DMG</Type>
-            <Description>Random Air bombardment Damage</Description>
+            <Description>Random Air bombardment</Description>
             <Help>Air units damage will be randomized</Help>
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RAND_BOMBARD_DMG</Type>
-            <Description>Random City Bombardment Damage</Description>
+            <Description>Random City Bombardment</Description>
             <Help>City Bombard Attacks damage will be randomized</Help>
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RAND_RANGED_DMG</Type>
-            <Description>Random Ranged attack Damage</Description>
+            <Description>Random Ranged attack</Description>
             <Help>Ranged units damage will be randomized</Help>
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>

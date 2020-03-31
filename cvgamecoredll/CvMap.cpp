@@ -338,8 +338,19 @@ void CvMap::updateCenterUnit()  // advc: some style changes
 		//rangedattack-keldath
 		//new code from f1rpo to adress ranged units with air range and their domain.
 		CvUnit const& kLoopUnit = *::getUnit(pSelectionNode->m_data);
-		if (kLoopUnit.airRange() > 0) // advc.rstr
-			iRange = std::max(iRange, kLoopUnit.airRange());
+		int unitsAirRange = kLoopUnit.airRange();
+		if (unitsAirRange > 0) // advc.rstr
+		{
+			//keldath added - if on city or high ground, add +1 range.
+			//its in gameinterface and cvunit.
+			if ((kLoopUnit.plot()->isCity(true, kLoopUnit.getTeam()) || (kLoopUnit.plot()->isHills() || kLoopUnit.plot()->isPeak())) 
+				 && (kLoopUnit.getDomainType() == DOMAIN_LAND) 
+				&& (kLoopUnit.baseCombatStr() > 0))
+			{
+				unitsAirRange += 1;
+			}
+			iRange = std::max(iRange, unitsAirRange);
+		}
 		DomainTypes eLoopDomain = kLoopUnit.getDomainType();
 		if (eLoopDomain == DOMAIN_LAND || eLoopDomain == DOMAIN_SEA) // advc.rstr
 		{
