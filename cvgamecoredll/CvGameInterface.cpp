@@ -252,19 +252,21 @@ if (pHeadSelectedUnit->airRange() > 0)
 					}
 					else if (bLand) 
 					{
-						color = "WHITE";
+						color = "RED";
 					}
 					else if (bSea)
 					{
-						color = "WHITE";
+						color = "GREEN";
 					}
 					//f1rpo initial code:
 					/*NiColorA color(GC.getInfo(GC.getColorType(bAir ?
 							"YELLOW" : "RED")).getColor());*/
 					NiColorA color(GC.getInfo(GC.getColorType(color)).getColor());	
-					color.a = 0.5f;
-					kEngine.fillAreaBorderPlot(kTargetPlot.getX(), kTargetPlot.getY(),
+					color.a = 0.7f/*0.5f*/;
+				/*	kEngine.fillAreaBorderPlot(kTargetPlot.getX(), kTargetPlot.getY(),
 							color, AREA_BORDER_LAYER_RANGED);
+				*/	kEngine.addColoredPlot(kTargetPlot.getX(), kTargetPlot.getY(), color,
+						PLOT_STYLE_TARGET, PLOT_LANDSCAPE_LAYER_BASE);	
 				}
 			}
 		}
