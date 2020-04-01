@@ -1283,7 +1283,7 @@ bool CvPlot::isRiverSide() const
 		CvPlot* pLoopPlot = plotCardinalDirection(getX(), getY(), (CardinalDirectionTypes)iI);
 		if (pLoopPlot != NULL)
 		{
-			if (isRiverCrossing(directionXY(this, pLoopPlot)))
+			if (isRiverCrossing(directionXY(*this, *pLoopPlot)))
 				return true;
 		}
 	}
@@ -1864,7 +1864,7 @@ bool CvPlot::canHaveImprovement(ImprovementTypes eImprovement, TeamTypes eTeam, 
 			if (pLoopPlot == NULL)
 				continue;
 
-			if (isRiverCrossing(directionXY(this, pLoopPlot)))
+			if (isRiverCrossing(directionXY(*this, *pLoopPlot)))
 			{
 				if (pLoopPlot->getImprovementType() != eImprovement)
 				{
@@ -2508,7 +2508,7 @@ int CvPlot::movementCost(const CvUnit* pUnit, const CvPlot* pFromPlot,
 	if (pFromPlot->isValidRoute(pUnit, bAssumeRevealed) &&
 		isValidRoute(pUnit, bAssumeRevealed) && // </advc.001i>
 		(GET_TEAM(pUnit->getTeam()).isBridgeBuilding() ||
-		!pFromPlot->isRiverCrossing(directionXY(pFromPlot, this))))
+		!pFromPlot->isRiverCrossing(directionXY(*pFromPlot, *this))))
 	{	// <advc.001i>
 		RouteTypes eFromRoute = (bAssumeRevealed ? pFromPlot->getRouteType() :
 				pFromPlot->getRevealedRouteType(pUnit->getTeam()));
@@ -3529,7 +3529,7 @@ bool CvPlot::isTradeNetworkConnected(CvPlot const& kOther, TeamTypes eTeam) cons
 
 		if (kOther.isRiverNetwork(eTeam))
 		{
-			if (kOther.isRiverConnection(directionXY(&kOther, this)))
+			if (kOther.isRiverConnection(directionXY(kOther, *this)))
 				return true;
 		}
 		// <advc.124>
@@ -3548,12 +3548,12 @@ bool CvPlot::isTradeNetworkConnected(CvPlot const& kOther, TeamTypes eTeam) cons
 	{
 		if (kOther.isNetworkTerrain(eTeam))
 		{
-			if (isRiverConnection(directionXY(this, &kOther)))
+			if (isRiverConnection(directionXY(*this, kOther)))
 				return true;
 		}
 
-		if (isRiverConnection(directionXY(this, &kOther)) ||
-			kOther.isRiverConnection(directionXY(&kOther, this)))
+		if (isRiverConnection(directionXY(*this, kOther)) ||
+			kOther.isRiverConnection(directionXY(kOther, *this)))
 		{
 			if (kOther.isRiverNetwork(eTeam))
 				return true;
@@ -4469,14 +4469,16 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 		}
 	}
 	// <advc.ctr> Wake up sleeping/ fortified human units
-	if (isOwned() && eOldOwner != NO_PLAYER && GET_PLAYER(eOldOwner).isHuman())
+	if (eOldOwner != NO_PLAYER && GET_PLAYER(eOldOwner).isHuman() &&
+		getOwner() != eOldOwner)
 	{
 		for (CLLNode<IDInfo> const* pNode = headUnitNode(); pNode != NULL;
 			pNode = nextUnitNode(pNode))
 		{
 			CvSelectionGroup& kGroup = *::getUnit(pNode->m_data)->getGroup();
 			if (kGroup.getOwner() == eOldOwner && kGroup.getLengthMissionQueue() <= 0 &&
-				kGroup.getActivityType() == ACTIVITY_SLEEP)
+				(kGroup.getActivityType() == ACTIVITY_SLEEP ||
+				kGroup.getActivityType() == ACTIVITY_SENTRY))
 			{
 				kGroup.setActivityType(ACTIVITY_AWAKE);
 			}
@@ -9161,7 +9163,7 @@ bool CvPlot::isWithBlocaders(const CvPlot* pFromPlot, const CvPlot* pToPlot, con
 			TeamTypes eTeam = pUnit->getTeam();
 			if (!isVisible(eTeam, false))
 			{
-				if (isEnemyCity(*pUnit) && (pUnit->getDomainType() == DOMAIN_LAND) && (pUnit->getInvisibleType() == NO_INVISIBLE) && !isRiverCrossing(directionXY(this, pToPlot))) // 
+				if (isEnemyCity(*pUnit) && (pUnit->getDomainType() == DOMAIN_LAND) && (pUnit->getInvisibleType() == NO_INVISIBLE) && !isRiverCrossing(directionXY(*this, *pToPlot))) // 
 					{return true;}
 				return false;
 			}
@@ -9174,7 +9176,7 @@ bool CvPlot::isWithBlocaders(const CvPlot* pFromPlot, const CvPlot* pToPlot, con
 				TeamTypes eTempTeam;
 				InvisibleTypes eOurInvisible = pUnit->getInvisibleType();
 				//bool bDifWater = (isWater() != pToPlot->isWater());
-				bool bNotRiverCrossing = !isRiverCrossing(directionXY(this, pToPlot));
+				bool bNotRiverCrossing = !isRiverCrossing(directionXY(*this, *pToPlot));
 				bool bHiddenNationality = pUnit->getUnitInfo().isHiddenNationality();
 				bool bTeam, bDefenders, bOurVisible, bEnemyVisible;
 				while (pUnitNode != NULL)

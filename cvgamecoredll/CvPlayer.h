@@ -1545,7 +1545,8 @@ protected:  // <advc.210>
 	// <advc.106b>
 	std::vector<CvTalkingHeadMessage*> m_aMajorMsgs;
 	int m_iNewMessages; // </advc.106b>
-	CLinkList<std::pair<PlayerTypes,BonusTypes> > m_cancelingExport; // advc.074
+	// advc.074:
+	mutable CLinkList<std::pair<PlayerTypes,BonusTypes> > m_cancelingExport;
 
 	CivicTypes* m_paeCivics;
 

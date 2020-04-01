@@ -2021,7 +2021,7 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 			aBuildingHealthChange.push_back(std::make_pair(eBuildingClass, iChange));
 	}
 
-	pOldCity->kill(false);
+	pOldCity->kill(false, /* advc.001: */ false); // Don't bump units yet
 	pOldCity = NULL; // advc: Shouldn't access that past this point
 
 	if (bTrade) // Repercussions of cession: tile culture, war success (city culture: further down)
@@ -2128,9 +2128,10 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 			continue;
 
 		if (isProductionMaxedBuildingClass(eBuildingClass, true) ||
-				!kNewCity.isValidBuildingLocation(eBuilding))
+			!kNewCity.isValidBuildingLocation(eBuilding))
+		{
 			continue;
-
+		}
 		// Capture roll unless recapture
 		int iOdds = kBuilding.getConquestProbability();
 		if (!bConquest || bRecapture || (iOdds > 0 &&
@@ -3923,7 +3924,10 @@ void CvPlayer::handleDiploEvent(DiploEventTypes eDiploEvent, PlayerTypes ePlayer
 	case DIPLOEVENT_GIVE_HELP:
 		// advc.130j:
 		AI().AI_rememberEvent(ePlayer, MEMORY_GIVE_HELP);
-		forcePeace(ePlayer);
+		/*	advc.104m: Was forcePeace(ePlayer) originally. The peace treaty is
+			now part of the help deal. (Signing another one wouldn't hurt
+			because of change advc.032; it's just unnecessary.) */
+		//GET_TEAM(getTeam()).signPeaceTreaty(TEAMID(ePlayer));
 		break;
 
 	case DIPLOEVENT_REFUSED_HELP:
@@ -3939,14 +3943,10 @@ void CvPlayer::handleDiploEvent(DiploEventTypes eDiploEvent, PlayerTypes ePlayer
 		GET_PLAYER(ePlayer).AI_changeMemoryCount(getID(), MEMORY_MADE_DEMAND_RECENT, 1);
 		/*  advc (comment): This event (and its counterpart REJECTED_DEMAND)
 			is only triggered when a human accepts an AI demand. When a human
-			demands sth., DIPLOEVENT_MADE_DEMAND triggers (and that one doesn't
-			trigger when the AI demands sth.). */
-		forcePeace(ePlayer);
-		/*  advc.104m (comment): Sadly, we can't reliably identify the CvDeal object
-			here that corresponds to the tribute demand. Otherwise, that deal could
-			be marked as a tribute deal and be canceled automatically after 10 turns.
-			Getting the necessary data from CvPlayerAI::AI_demandTribute to here is
-			awkward. Tbd.: Could CvGame::handleDiplomacySetAIComment help with this? */
+			demands something from the AI, DIPLOEVENT_MADE_DEMAND triggers
+			(and that one doesn't trigger when the AI makes a demand). */
+		// advc.104m: (see note under DIPLOEVENT_GIVE_HELP above)
+		//GET_TEAM(getTeam()).signPeaceTreaty(TEAMID(ePlayer));
 		break;
 
 	case DIPLOEVENT_REJECTED_DEMAND:
@@ -4048,18 +4048,18 @@ void CvPlayer::handleDiploEvent(DiploEventTypes eDiploEvent, PlayerTypes ePlayer
 	case DIPLOEVENT_MADE_DEMAND:
 		/*  <advc.130o> Moved the handling of MEMORY_MADE_DEMAND (non-recent) to
 			CvPlayerAI::AI_considerOffer */
-		if(getTeam() != TEAMID(ePlayer)) // advc.155: Handled in AI_considerOffer
+		if (getTeam() != TEAMID(ePlayer)) // advc.155: Handled in AI_considerOffer
 		{
 			// <advc.130j>
 			int iDemandRecentMem = AI().AI_getMemoryCount(ePlayer, MEMORY_MADE_DEMAND_RECENT);
-			if(iDemandRecentMem <= 0)
+			if (iDemandRecentMem <= 0)
 				AI().AI_rememberEvent(ePlayer, MEMORY_MADE_DEMAND_RECENT);
 			// Only remember it half if already remembered as recent, and cap at 2.
-			else if(iDemandRecentMem < 2)
+			else if (iDemandRecentMem < 2)
 				AI().AI_changeMemoryCount(ePlayer, MEMORY_MADE_DEMAND_RECENT, 1);
 		} // </advc.130o> </advc.130j>
 		// <advc.144>
-		if(iData1 > 0) // Let proxy AI remember when a human request is granted
+		if (iData1 > 0) // Let proxy AI remember when a human request is granted
 		{
 			GET_PLAYER(ePlayer).AI_rememberEvent(getID(), // advc.130j
 					eDiploEvent == DIPLOEVENT_ASK_HELP ?
@@ -4135,32 +4135,37 @@ bool CvPlayer::canReceiveTradeCity() const
 
 bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial) const  // advc: Style changes; assertions added.
 {
-	if (bTestDenial && getTradeDenial(eWhoTo, item) != NO_DENIAL)
-		return false;
+	PROFILE_FUNC(); // advc.test: To be profiled (also the scoped PROFILE calls below)
+
 	/*  <advc.opt> Moved the clauses that don't depend on item.m_iData into a
 		subroutine so that client code can check them upfront before e.g.
 		calling canTradeItem for every technology. */
 	if (!canPossiblyTradeItem(eWhoTo, item.m_eItemType))
 		return false; // </advc.opt>
 
+	bool bValid = false; // advc.opt: TradeDenial check moved down
 	CvTeam const& kOurTeam = GET_TEAM(getTeam());
 	CvTeam const& kToTeam = GET_TEAM(eWhoTo);
 	switch (item.m_eItemType)
 	{
 	case TRADE_TECHNOLOGIES:
 	{
+		PROFILE("CvPlayer::canTradeItem.TECH");
 		FAssertBounds(0, GC.getNumTechInfos(), item.m_iData);
 		TechTypes eTech = (TechTypes)item.m_iData;
 		if (GC.getInfo(eTech).isTrade() &&
-				kOurTeam.isHasTech(eTech) &&
-				!kOurTeam.isNoTradeTech(eTech) &&
-				!kToTeam.isHasTech(eTech) &&
-				GET_PLAYER(eWhoTo).canResearch(eTech, true))
-			return true;
+			kOurTeam.isHasTech(eTech) &&
+			!kOurTeam.isNoTradeTech(eTech) &&
+			!kToTeam.isHasTech(eTech) &&
+			GET_PLAYER(eWhoTo).canResearch(eTech, true))
+		{
+			bValid = true;
+		}
 		break;
 	}
 	case TRADE_RESOURCES:
 	{
+		PROFILE("CvPlayer::canTradeItem.RESOURCES");
 		FAssertBounds(0, GC.getNumBonusInfos(), item.m_iData);
 		BonusTypes eBonus = (BonusTypes)item.m_iData;
 		if (!kToTeam.isBonusObsolete(eBonus) &&
@@ -4170,13 +4175,14 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 			bool const bCanTradeAll = true; // advc.036
 			if (getNumTradeableBonuses(eBonus) > (bCanTradeAll ? 0 : 1))
 			{	// if (GET_PLAYER(eWhoTo).getNumAvailableBonuses(eBonus) == 0)
-				return true;
+				bValid = true;
 			}
 		}
 		break;
 	}
 	case TRADE_CITIES:
 	{
+		PROFILE("CvPlayer::canTradeItem.CITIES");
 		CvCity const* pCity = getCity(item.m_iData);
 		if (pCity == NULL)
 		{
@@ -4184,20 +4190,27 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 			break;
 		}
 		CvCity const& kCity = *pCity;
-		if (kCity.getLiberationPlayer() == eWhoTo)
-			return true;
 		// <advc.ctr>
 		if (kCity.isCapital() || !kCity.isRevealed(kToTeam.getID()))
+			break; // </advc.ctr>
+		if (kCity.getLiberationPlayer() == eWhoTo)
+		{
+			bValid = true;
 			break;
-		// Can't trade so long as the previous owner hasn't accepted the loss (let's ignore kCity.getOriginalOwner())
+		}
+		// <advc.ctr>
+		/*	Can't trade so long as the previous owner hasn't accepted the loss
+			(let's ignore kCity.getOriginalOwner()) */
 		PlayerTypes ePreviousOwner = kCity.getPreviousOwner();
 		if (ePreviousOwner != NO_PLAYER)
 		{
 			TeamTypes ePreviousTeam = TEAMID(ePreviousOwner);
 			if (ePreviousTeam != kToTeam.getID() &&
-					kOurTeam.isAtWar(ePreviousTeam) &&
-					!kToTeam.isAtWar(ePreviousTeam))
+				kOurTeam.isAtWar(ePreviousTeam) &&
+				!kToTeam.isAtWar(ePreviousTeam))
+			{
 				break;
+			}
 		}
 		CvPlot const& kCityPlot = *kCity.plot();
 		if (!kToTeam.isAtWar(getTeam()) && kCityPlot.isVisibleEnemyCityAttacker(getID()))
@@ -4212,31 +4225,32 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 			break;
 		}
 		if (kToTeam.isVassal(getTeam()) &&
-				kCityPlot.getCulture(eWhoTo) <= kCityPlot.getCulture(getID()))
+			kCityPlot.getCulture(eWhoTo) <= kCityPlot.getCulture(getID()))
+		{
 			break;
-		return true;
-		// </advc.ctr>
+		}
+		bValid = true; // </advc.ctr>
 		break;
 	}
 	case TRADE_GOLD:
 		FAssert(item.m_iData >= 0); // (advc: 0 is OK as an unspecified amount)
 		if (getGold() >= item.m_iData)
-			return true;
+			bValid = true;
 		break;
 	case TRADE_GOLD_PER_TURN:
 		FAssert(item.m_iData >= 0);
-		return true;
+		bValid = true;
 	case TRADE_MAPS:
-		return true;
+		bValid = true;
 	case TRADE_VASSAL:
 		// advc.112: Make sure that only capitulation is possible between war enemies
 		if (!kToTeam.isAtWar(getTeam()))
-			return true;
+			bValid = true;
 	case TRADE_SURRENDER:
 	{
 		bool bForce = (item.m_iData == 1); // Used by CvDeal::startTeamTrade
 		if ((kToTeam.isAtWar(getTeam()) || bForce) && item.m_eItemType == TRADE_SURRENDER)
-			return true;
+			bValid = true;
 		break;
 	}
 	case TRADE_PEACE:
@@ -4244,8 +4258,10 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 		FAssertBounds(0, MAX_CIV_TEAMS, item.m_iData);
 		TeamTypes eTargetTeam = (TeamTypes)item.m_iData;
 		if (kToTeam.isHasMet(eTargetTeam) && //kOurTeam.isHasMet(eTargetTeam) && // advc: redundant
-				kOurTeam.isAtWar(eTargetTeam))
-			return true;
+			kOurTeam.isAtWar(eTargetTeam))
+		{
+			bValid = true;
+		}
 		break;
 	}
 	case TRADE_WAR:
@@ -4253,27 +4269,33 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 		FAssertBounds(0, MAX_CIV_TEAMS, item.m_iData);
 		TeamTypes eTargetTeam = (TeamTypes)item.m_iData;
 		if (!GET_TEAM(eTargetTeam).isAVassal() &&
-				kOurTeam.isHasMet(eTargetTeam) && kToTeam.isHasMet(eTargetTeam) &&
-				kOurTeam.canDeclareWar(eTargetTeam))
-			return true;
+			kOurTeam.isHasMet(eTargetTeam) && kToTeam.isHasMet(eTargetTeam) &&
+			kOurTeam.canDeclareWar(eTargetTeam))
+		{
+			bValid = true;
+		}
 		break;
 	}
 	case TRADE_EMBARGO:
 	{
+		PROFILE("CvPlayer::canTradeItem.EMBARGO");
 		FAssertBounds(0, MAX_CIV_TEAMS, item.m_iData);
 		TeamTypes eTargetTeam = (TeamTypes)item.m_iData;
 		if (!kOurTeam.isHuman() &&
-				kOurTeam.isHasMet(eTargetTeam) && kToTeam.isHasMet(eTargetTeam) &&
-				canStopTradingWithTeam(eTargetTeam) &&
-				// <advc.130f>
-				(!GET_PLAYER(eWhoTo).isTradingWithTeam(eTargetTeam, true) ||
-				(kOurTeam.isCapitulated() && kOurTeam.isVassal(kToTeam.getID()))))
-				// </advc.130f>
-			return true;
+			kOurTeam.isHasMet(eTargetTeam) && kToTeam.isHasMet(eTargetTeam) &&
+			canStopTradingWithTeam(eTargetTeam) &&
+			// <advc.130f>
+			(!GET_PLAYER(eWhoTo).isTradingWithTeam(eTargetTeam, true) ||
+			(kOurTeam.isCapitulated() && kOurTeam.isVassal(kToTeam.getID()))))
+			// </advc.130f>
+		{
+			bValid = true;
+		}
 		break;
 	}
 	case TRADE_CIVIC:
 	{
+		PROFILE("CvPlayer::canTradeItem.CIVIC");
 		FAssertBounds(0, GC.getNumCivicInfos(), item.m_iData);
 		CivicTypes eCivic = (CivicTypes)item.m_iData;
 		if (GET_PLAYER(eWhoTo).isCivic(eCivic) /* <advc.132> */ ||
@@ -4284,12 +4306,13 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 			GET_PLAYER(eWhoTo).canForceCivics(getID(), eCivic))) // </advc.132>
 		{
 			if (canDoCivics(eCivic) && !isCivic(eCivic) && canRevolution(NULL))
-				return true;
+				bValid = true;
 		}
 		break;
 	}
 	case TRADE_RELIGION:
 	{
+		PROFILE("CvPlayer::canTradeItem.RELIGION");
 		FAssertBounds(0, GC.getNumReligionInfos(), item.m_iData);
 		ReligionTypes eReligion = (ReligionTypes)item.m_iData;
 		if (GET_PLAYER(eWhoTo).getStateReligion() == eReligion /* <advc.132> */ ||
@@ -4299,7 +4322,7 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 			GET_PLAYER(eWhoTo).canForceReligion(getID(), eReligion))) // </advc.132>
 		{
 			if (canConvert(eReligion))
-				return true;
+				bValid = true;
 		}
 		break;
 	}
@@ -4310,10 +4333,10 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 	case TRADE_PEACE_TREATY:
 	// <advc.034>
 	case TRADE_DISENGAGE:
-		return true; // </advc.034>
+		bValid = true; // </advc.034>
 	}
-
-	return false;
+	// advc.opt: (denial check moved down)
+	return (bValid && (!bTestDenial || getTradeDenial(eWhoTo, item) == NO_DENIAL));
 }
 
 /*  advc.opt: Cut from canTradeItem.
@@ -4321,6 +4344,7 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 	trade might be possible. */
 bool CvPlayer::canPossiblyTradeItem(PlayerTypes eWhoTo, TradeableItems eItemType) const // advc.opt
 {
+	PROFILE_FUNC(); // advc.test: To be profiled
 	CvTeam const& kOurTeam = GET_TEAM(getTeam());
 	CvTeam const& kToTeam = GET_TEAM(eWhoTo);
 	switch (eItemType)
@@ -4409,7 +4433,7 @@ bool CvPlayer::canPossiblyTradeItem(PlayerTypes eWhoTo, TradeableItems eItemType
 				#endif
 				kOurTeam.getNumMembers() == 1 && kToTeam.getNumMembers() == 1);
 	case TRADE_PEACE_TREATY:
-		return true;
+		return kOurTeam.canChangeWarPeace(kToTeam.getID()); // advc.130v
 	// <advc.034>
 	case TRADE_DISENGAGE:
 		return (!kToTeam.isDisengage(getTeam()) &&
@@ -13964,7 +13988,8 @@ void CvPlayer::updateEspionageHistory(int iTurn, int iBestEspionage)
 const CvPlayerRecord* CvPlayer::getPlayerRecord() const
 {
 	return CvEventReporter::getInstance().
-			// advc.make: CvEventReporter::getPlayerRecord added
+			/*	advc.make: CvEventReporter::getPlayerRecord added.
+				We're no longer a friend of CvEventReporter. */
 			/*m_kStatistics.*/getPlayerRecord(getID());
 }
 // K-Mod end
@@ -17243,6 +17268,20 @@ void CvPlayer::read(FDataStreamBase* pStream)
 			{
 				pDiplo->read(*pStream);
 				m_listDiplomacy.push_back(pDiplo);
+				// <advc.074> (see comment in CvPlayerAI::AI_doDeals)
+				if (pDiplo->getDiploComment() == GC.getAIDiploCommentType("CANCEL_DEAL"))
+				{
+					for (CLLNode<TradeData> const* pNode = pDiplo->getOurOfferList().head();
+						pNode != NULL; pNode =  pDiplo->getOurOfferList().next(pNode))
+					{
+						if (pNode->m_data.m_eItemType == TRADE_RESOURCES)
+						{
+							m_cancelingExport.insertAtEnd(std::make_pair(
+									pDiplo->getWhoTalkingTo(),
+									(BonusTypes)pNode->m_data.m_iData));
+						}
+					}
+				} // </advc.074>
 			}
 		}
 	}
@@ -21608,21 +21647,17 @@ void CvPlayer::forcePeace(PlayerTypes ePlayer)
 {
 	/*if (!GET_TEAM(getTeam()).isAVassal()) {
 		FAssert(GET_TEAM(getTeam()).canChangeWarPeace(GET_PLAYER(ePlayer).getTeam()));*/ // BtS
-
-	// K-Mod. "canChangeWarPeace" can return false here if the peace team vassalates after the vote is cast.
-	if (GET_TEAM(getTeam()).canChangeWarPeace(GET_PLAYER(ePlayer).getTeam()))
-	{
-	// K-Mod end
-		CLinkList<TradeData> playerList;
-		CLinkList<TradeData> loopPlayerList;
-		TradeData peaceTreaty(TRADE_PEACE_TREATY);
-		playerList.insertAtEnd(peaceTreaty);
-		loopPlayerList.insertAtEnd(peaceTreaty);
-		GC.getGame().implementDeal(getID(), ePlayer, playerList, loopPlayerList);
-	}
+	// K-Mod: "canChangeWarPeace" can return false here if the peace team vassalates after the vote is cast.
+	//if (GET_TEAM(getTeam()).canChangeWarPeace(GET_PLAYER(ePlayer).getTeam()))
+	// ...
+	/*	advc: Redundant code deleted; CvTeam::signPeaceTreaty does the same thing
+		including, due to advc.130v, the canChangeWarPeace check.
+		To avoid making forcePeace obsolete, I'm changing its semantics so that
+		canChangeWarPeace is NOT checked. */
+	GET_TEAM(getTeam()).signPeaceTreaty(TEAMID(ePlayer), true);
 }
 
-// <advc.032>
+// advc.032:
 bool CvPlayer::resetPeaceTreaty(PlayerTypes ePlayer)
 {
 	int iGameTurn = GC.getGame().getGameTurn();
@@ -21642,7 +21677,7 @@ bool CvPlayer::resetPeaceTreaty(PlayerTypes ePlayer)
 		}
 	}
 	return false;
-} // </advc.032>
+}
 
 bool CvPlayer::canSpiesEnterBorders(PlayerTypes ePlayer) const
 {
@@ -21841,68 +21876,53 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& o
 	PROFILE_FUNC(); // advc.opt (not frequently called)
 	TradeData item;
 	bool const bOtherHuman = GET_PLAYER(eOtherPlayer).isHuman(); // advc.opt
-	//	Put the gold and maps into the table
+
 	setTradeItem(&item, TRADE_GOLD);
 	if (canTradeItem(eOtherPlayer, item))
-	{
 		ourList.insertAtEnd(item);
-	}
 
-	//	Gold per turn
 	setTradeItem(&item, TRADE_GOLD_PER_TURN);
 	if (canTradeItem(eOtherPlayer, item))
-	{
 		ourList.insertAtEnd(item);
-	}
 
-	//	Maps
 	setTradeItem(&item, TRADE_MAPS, 0);
 	if (canTradeItem(eOtherPlayer, item))
-	{
 		ourList.insertAtEnd(item);
-	}
 
-	//	Vassal
 	setTradeItem(&item, TRADE_VASSAL, 0);
 	if (canTradeItem(eOtherPlayer, item))
-	{
 		ourList.insertAtEnd(item);
-	}
 
-	//	Open Borders
 	setTradeItem(&item, TRADE_OPEN_BORDERS);
 	if (canTradeItem(eOtherPlayer, item))
-	{
 		ourList.insertAtEnd(item);
-	}
 
-	//	Defensive Pact
 	setTradeItem(&item, TRADE_DEFENSIVE_PACT);
 	if (canTradeItem(eOtherPlayer, item))
-	{
 		ourList.insertAtEnd(item);
-	}
 
-	//	Permanent Alliance
 	setTradeItem(&item, TRADE_PERMANENT_ALLIANCE);
 	if (canTradeItem(eOtherPlayer, item))
-	{
 		ourList.insertAtEnd(item);
-	}
 
-	if (::atWar(getTeam(), GET_PLAYER(eOtherPlayer).getTeam()))
+	if (GET_TEAM(getTeam()).isAtWar(TEAMID(eOtherPlayer)))
 	{
-		//	We are at war, allow a peace treaty option
 		setTradeItem(&item, TRADE_PEACE_TREATY);
 		ourList.insertAtEnd(item);
 
-		//	Capitulation
 		setTradeItem(&item, TRADE_SURRENDER, 0);
 		if (canTradeItem(eOtherPlayer, item))
-		{
 			ourList.insertAtEnd(item);
-		}
 	}
+	/*  <advc.104m> Make peace treaties hidden items at peacetime
+		so that the trade screen (EXE) doesn't discard them from
+		tribute and help requests. */
+	else
+	{
+		setTradeItem(&item, TRADE_PEACE_TREATY);
+		item.m_bHidden = true;
+		ourList.insertAtEnd(item);
+	} // </advc.104m>
 
 	//	Initial build of the inventory lists and buttons.
 	//	Go through all the possible headings
@@ -21953,7 +21973,7 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& o
 						if(eCancelPlayer == eOtherPlayer && eCancelBonus == j)
 						{
 							bValid = true;
-							const_cast<CvPlayer*>(this)->m_cancelingExport.deleteNode(pNode);
+							m_cancelingExport.deleteNode(pNode);
 							break;
 						}
 					}
@@ -22156,8 +22176,10 @@ bool CvPlayer::getItemTradeString(PlayerTypes eOtherPlayer, bool bOffer,
 					in order to stay in-sync with the iteration done by the EXE,
 					but we're only interested in a subset here: */
 				if(!CvDeal::isDual(eItemType) && eItemType != TRADE_RESOURCES &&
-						eItemType != TRADE_GOLD_PER_TURN)
+					eItemType != TRADE_GOLD_PER_TURN)
+				{
 					pDeal = NULL;
+				}
 			}
 		}
 	} // </advc.072>
@@ -22238,7 +22260,8 @@ bool CvPlayer::getItemTradeString(PlayerTypes eOtherPlayer, bool bOffer,
 		else pCity = getCity(zTradeData.m_iData);
 		if (pCity != NULL)
 		{
-			if (pCity->getLiberationPlayer() == eOtherPlayer)
+			if (pCity->getLiberationPlayer() == //eOtherPlayer)
+				(bOffer ? getID() : eOtherPlayer)) // advc.001 (bugfix?), advc.ctr
 			{
 				szString.Format(L"%s (%s)", pCity->getName().GetCString(),
 						gDLL->getText("TXT_KEY_LIBERATE_CITY").GetCString());
@@ -22323,7 +22346,7 @@ bool CvPlayer::getItemTradeString(PlayerTypes eOtherPlayer, bool bOffer,
 }
 
 void CvPlayer::updateTradeList(PlayerTypes eOtherPlayer, CLinkList<TradeData>& ourInventory,
-	const CLinkList<TradeData>& ourOffer, const CLinkList<TradeData>& theirOffer) const
+	CLinkList<TradeData> const& ourOffer, CLinkList<TradeData> const& theirOffer) const
 {
 	for (CLLNode<TradeData>* pNode = ourInventory.head(); pNode != NULL;
 		pNode = ourInventory.next(pNode))
@@ -22882,7 +22905,8 @@ void CvPlayer::getResourceLayerColors(GlobeLayerResourceOptionTypes eOption, std
 			// <advc.004z>
 			if(eLoopBonus == NO_BONUS)
 				GAMETEXT.setImprovementHelp(szBuffer, kPlot.getImprovementType());
-			else { // </advc.004z>
+			else // </advc.004z>
+			{
 				//GAMETEXT.setBonusHelp(szBuffer, eCurType, false);
 				// <advc.003p> Replacing the above
 				if(m_aszBonusHelp[eLoopBonus] != NULL)
@@ -22960,13 +22984,9 @@ void CvPlayer::getCultureLayerColors(std::vector<NiColorA>& aColors, std::vector
 			continue; // </advc.004z>
 		int iTotalCulture = kLoopPlot.getTotalCulture(); // advc.opt: was countTotalCulture
 		if (iTotalCulture > iMaxTotalCulture)
-		{
 			iMaxTotalCulture = iTotalCulture;
-		}
 		if (iTotalCulture < iMinTotalCulture && iTotalCulture > 0)
-		{
 			iMinTotalCulture = iTotalCulture;
-		}
 	}
 	iMinTotalCulture = 0;
 
@@ -23010,8 +23030,8 @@ void CvPlayer::getCultureLayerColors(std::vector<NiColorA>& aColors, std::vector
 			the colored area. */
 		bool baDone[MAX_PLAYERS] = {false};
 		for(int iPass = 0; iPass < 2 &&
-				// Try to fill plot_owners up
-				plot_owners.size() < iColorsPerPlot; iPass++)
+			// Try to fill plot_owners up
+			plot_owners.size() < iColorsPerPlot; iPass++)
 		{
 			// To avoid adding to plot_owners while looping through it
 			std::vector <std::pair<int,int> > repeated_owners;
@@ -23091,9 +23111,7 @@ const CvArtInfoUnit* CvPlayer::getUnitArtInfo(UnitTypes eUnit, int iMeshGroup) c
 {
 	CivilizationTypes eCivilization = getCivilizationType();
 	if (eCivilization == NO_CIVILIZATION)
-	{
 		eCivilization = (CivilizationTypes)GC.getDefineINT("BARBARIAN_CIVILIZATION");
-	}
 	// <advc.001> Redirect the call to the city owner
 	if(gDLL->getInterfaceIFace()->isCityScreenUp())
 	{
@@ -23104,9 +23122,7 @@ const CvArtInfoUnit* CvPlayer::getUnitArtInfo(UnitTypes eUnit, int iMeshGroup) c
 	UnitArtStyleTypes eStyle = (UnitArtStyleTypes) GC.getInfo(eCivilization).getUnitArtStyleType();
 	EraTypes eEra = getCurrentEra();
 	if (eEra == NO_ERA)
-	{
-		eEra = (EraTypes) 0;
-	}
+		eEra = (EraTypes)0;
 	return GC.getInfo(eUnit).getArtInfo(iMeshGroup, eEra, eStyle);
 }
 
@@ -23277,14 +23293,16 @@ void CvPlayer::promoteFreeUnit(CvUnit& u, double pr)
 					iUnitCombat++;
 			}
 			if((kPromo.getCombatPercent() <= 0 || /* No Combat2 */ j > 0) &&
-					(eDefFeature == NO_FEATURE ||
-					kPromo.getFeatureDefensePercent(eDefFeature) <= 0) &&
-					kPromo.getHillsDefensePercent() <= 0 &&
-					/*  This is the Cover promotion. Only that one, Woodsman,
-						Guerilla and City Raider have exactly 3 eligible unit
-						combat classes. */
-					(iUnitCombat != 3 || kPromo.getCityAttackPercent() > 0))
+				(eDefFeature == NO_FEATURE ||
+				kPromo.getFeatureDefensePercent(eDefFeature) <= 0) &&
+				kPromo.getHillsDefensePercent() <= 0 &&
+				/*  This is the Cover promotion. Only that one, Woodsman,
+					Guerilla and City Raider have exactly 3 eligible unit
+					combat classes. */
+				(iUnitCombat != 3 || kPromo.getCityAttackPercent() > 0))
+			{
 				continue;
+			}
 			// Second promo needs to build on the first
 			/*if(ePrevPromo != NO_PROMOTION &&
 					promo.getPrereqPromotion() != ePrevPromo &&
@@ -23306,9 +23324,11 @@ void CvPlayer::promoteFreeUnit(CvUnit& u, double pr)
 			for(size_t k = 0; k < apSurroundings.size(); k++)
 			{
 				int iTmpVal = 0;
-				if(eDefFeature != NO_FEATURE && apSurroundings[k]->getFeatureType() ==
-						eDefFeature)
+				if(eDefFeature != NO_FEATURE &&
+					apSurroundings[k]->getFeatureType() == eDefFeature)
+				{
 					iTmpVal += kPromo.getFeatureDefensePercent(eDefFeature);
+				}
 				// Encourage non-Woodsman then
 				else iTmpVal -= kPromo.getFeatureDefensePercent(eDefFeature) / 3;
 				if(apSurroundings[k]->isHills())

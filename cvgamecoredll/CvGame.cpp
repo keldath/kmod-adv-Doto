@@ -1140,8 +1140,8 @@ void CvGame::assignStartingPlots()
 	else
 	{
 		int const iAlive = countCivPlayersAlive();
-		for(int i = 0; i < iAlive; i++)
-			playerOrder.push_back(NO_PLAYER);
+		FAssert(playerOrder.empty());
+		playerOrder.resize(iAlive, NO_PLAYER); // advc (replacing loop)
 		for(int iPass = 0; iPass < 2; iPass++)
 		{
 			bool bHuman = (iPass == 0);
@@ -2996,18 +2996,7 @@ CvDeal* CvGame::implementAndReturnDeal(PlayerTypes eWho, PlayerTypes eOtherWho,
 	FAssert(eWho != NO_PLAYER);
 	FAssert(eOtherWho != NO_PLAYER);
 	FAssert(eWho != eOtherWho);
-	// <advc.032>
-	if(GET_TEAM(eWho).isForcePeace(TEAMID(eOtherWho)))
-	{
-		for(CLLNode<TradeData> const* pNode = kOurList.head(); pNode != NULL; pNode = kOurList.next(pNode))
-		{
-			if(pNode->m_data.m_eItemType == TRADE_PEACE_TREATY)
-			{
-				if(GET_PLAYER(eWho).resetPeaceTreaty(eOtherWho))
-					return NULL; // advc.036
-			}
-		}
-	} // </advc.032>
+
 	CvDeal* pDeal = addDeal();
 	pDeal->init(pDeal->getID(), eWho, eOtherWho);
 	pDeal->addTrades(kOurList, kTheirList, !bForce);
@@ -8243,8 +8232,7 @@ void CvGame::processVote(const VoteTriggeredData& kData, int iChange)
 		{
 			FAssert(NO_PLAYER != kData.kVoteOption.ePlayer);
 			CvPlayer& kPlayer = GET_PLAYER(kData.kVoteOption.ePlayer);
-			if (gTeamLogLevel >= 1) // BETTER_BTS_AI_MOD, AI logging, 10/02/09, jdog5000
-				logBBAI("  Vote for forcing peace against team %d (%S) passes", kPlayer.getTeam(), kPlayer.getCivilizationDescription(0));
+			if (gTeamLogLevel >= 1) logBBAI("  Vote for forcing peace against team %d (%S) passes", kPlayer.getTeam(), kPlayer.getCivilizationDescription(0)); // BETTER_BTS_AI_MOD, AI logging, 10/02/09, jdog5000
 			// <dlph.25> 'Cancel defensive pacts with the attackers first'
 			FOR_EACH_DEAL_VAR(pLoopDeal)
 			{
@@ -8273,11 +8261,12 @@ void CvGame::processVote(const VoteTriggeredData& kData, int iChange)
 				{
 					if (kLoopPlayer.isVotingMember(kData.eVoteSource))
 					{
+						/*	advc.130v (note): Not replaced with CvTeam::signPeaceTreaty
+							because I want vassals to get their own peace treaties here. */
 						kLoopPlayer.forcePeace(kData.kVoteOption.ePlayer);
 					}
 				}
 			}
-
 			setVoteOutcome(kData, NO_PLAYER_VOTE);
 		}
 		else if (kVote.isForceNoTrade())
@@ -8369,7 +8358,7 @@ CvDeal* CvGame::addDeal()
 	gDLL->getInterfaceIFace()->setDirty(Foreign_Screen_DIRTY_BIT, true);
 }
 
-/*  <advc.072> All the FAssert(false) in this function mean that we're somehow
+/*  advc.072: All the FAssert(false) in this function mean that we're somehow
 	out of step with the iteration that happens in the EXE. */
 CvDeal* CvGame::nextCurrentDeal(PlayerTypes eGivePlayer, PlayerTypes eReceivePlayer,
 		TradeableItems eItemType, int iData, bool bWidget)
@@ -8440,7 +8429,7 @@ CvDeal* CvGame::nextCurrentDeal(PlayerTypes eGivePlayer, PlayerTypes eReceivePla
 	kCurrentDeals.deleteNode(pNode);
 	FAssert(r != NULL);
 	return r;
-} // </advc.072>
+}
 
 
 int CvGame::calculateSyncChecksum()

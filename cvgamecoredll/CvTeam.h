@@ -61,7 +61,7 @@ public:
 			bool bCheckWillingness = false) const; // K-Mod, Exposed to Python
 	void meet(TeamTypes eTeam, bool bNewDiplo,																			// Exposed to Python
 			FirstContactData* pData = NULL); // advc.071
-	void signPeaceTreaty(TeamTypes eTeam); // K-Mod
+	void signPeaceTreaty(TeamTypes eTeam, bool bForce = false); // K-Mod (advc: bForce)
 	void signOpenBorders(TeamTypes eTeam);																				// Exposed to Python
 	void signDisengage(TeamTypes otherId); // advc.034
 	void signDefensivePact(TeamTypes eTeam);																			// Exposed to Python
@@ -603,8 +603,8 @@ protected:
 	std::vector<int>* m_pavProjectArtTypes; // a vector for each type of project
 	std::vector<BonusTypes> m_aeRevealedBonuses;
 	// <advc.134a>
-	TeamTypes m_eOfferingPeace;
-	int m_iPeaceOfferStage;
+	mutable TeamTypes m_eOfferingPeace;
+	mutable int m_iPeaceOfferStage;
 	// </advc.134a>
 
 	// <dlph.26>

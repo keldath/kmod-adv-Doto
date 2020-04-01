@@ -692,9 +692,10 @@ int CvUnitAI::AI_groupSecondVal() /* advc: */ const
 	return ((getDomainType() == DOMAIN_AIR) ? airBaseCombatStr() : baseCombatStr());
 }
 
-
-// Returns attack odds out of 100 (the higher, the better...)
-// Withdrawal odds included in returned value
+/*	Returns attack odds out of 100 (the higher, the better...)
+	Withdrawal odds included in returned value
+	advc (note): Mostly obsoleted by LFBgetBetterAttacker and AI_getWeightedOdds;
+	I think only AI_paradrop still uses CvUnitAI::AI_attackOdds. */
 int CvUnitAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy) const
 {
 	PROFILE_FUNC();
@@ -759,7 +760,11 @@ int CvUnitAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy) const
 	//original
 	//iHitLimitThem = pDefender->maxHitPoints() - combatLimit();
 	int iHitLimitThem = pDefender->maxHitPoints() - therightLimit;
-
+	/*	advc: If this function gets used for air units, then airCombatLimit
+		should probably be used. */
+	/* keldatjh removed FAssert(getDomainType() != DOMAIN_AIR);
+	int iHitLimitThem = pDefender->maxHitPoints() - combatLimit();
+	*/
 	int iNeededRoundsUs = (std::max(0, pDefender->currHitPoints() - iHitLimitThem) +
 			iDamageToThem - 1) / iDamageToThem;
 	int iNeededRoundsThem = (std::max(0, currHitPoints()) + iDamageToUs - 1) / iDamageToUs;
@@ -1128,7 +1133,9 @@ int CvUnitAI::AI_sacrificeValue(const CvPlot* pPlot) const
 	int iCollateralDamageValue = 0;
 	if (pPlot != NULL)
 	{
-		const int iPossibleTargets = std::min((pPlot->getNumVisibleEnemyDefenders(this) - 1), collateralDamageMaxUnits());
+		const int iPossibleTargets = std::min(
+				(pPlot->getNumVisibleEnemyDefenders(this) - 1),
+				collateralDamageMaxUnits());
 		if (iPossibleTargets > 0)
 		{
 			iCollateralDamageValue = collateralDamage();
@@ -1138,7 +1145,6 @@ int CvUnitAI::AI_sacrificeValue(const CvPlot* pPlot) const
 		}
 	}
 
-	//int iValue;
 	//long iValue; // K-Mod. (the int will overflow)
 	/*  Erik (BUG1): Based on his comment he probably meant to use
 		a 64 bit integer here since sizeof(int) == sizeof(long) hence a long long is needed */
@@ -1148,22 +1154,22 @@ int CvUnitAI::AI_sacrificeValue(const CvPlot* pPlot) const
 	{
 		iValue = 128 * (100 + currInterceptionProbability());
 		if (getUnitInfo().getNukeRange() != -1)
-		{
 			iValue += 25000;
-		}
 		//iValue /= std::max(1, (1 + getUnitInfo().getProductionCost()));
-		iValue /= getUnitInfo().getProductionCost() > 0 ? getUnitInfo().getProductionCost() : 180; // K-Mod
+		// <K-Mod>
+		iValue /= getUnitInfo().getProductionCost() > 0 ?
+				getUnitInfo().getProductionCost() : 180; // </K-Mod>
 		iValue *= (maxHitPoints() - getDamage());
 		iValue /= 100;
 	}
 	else
 	{
-		iValue = 128 * (currEffectiveStr(pPlot, ((pPlot == NULL) ? NULL : this)));
+		iValue = 128 * currEffectiveStr(pPlot, pPlot == NULL ? NULL : this);
 		iValue *= (100 + iCollateralDamageValue);
 
 		//iValue /= (100 + cityDefenseModifier());
 		/*  <advc.001> The above doesn't handle negative modifiers well
-			(especially not -100 ...). Bug found by keldath. thanks f1rpo for the credit here:)*/
+			(especially not -100 ...). Bug found by keldath. */
 		int iCityDefenseModifier = cityDefenseModifier();
 		if(iCityDefenseModifier < 0)
 		{
@@ -1171,7 +1177,7 @@ int CvUnitAI::AI_sacrificeValue(const CvPlot* pPlot) const
 			FAssert(iCityDefenseModifier > -100);
 		}
 		iValue /= std::max(1, 100 + iCityDefenseModifier); // </advc.001>
-		iValue *= (100 + withdrawalProbability());
+		iValue *= 100 + withdrawalProbability();
 		// BETTER_BTS_AI_MOD, General AI, 05/14/10, jdog5000: START
 		/*iValue /= std::max(1, (1 + getUnitInfo().getProductionCost()));
 		iValue /= (10 + getExperience());*/ // BtS code
@@ -1181,9 +1187,9 @@ int CvUnitAI::AI_sacrificeValue(const CvPlot* pPlot) const
 		if (!GC.getDefineBOOL(CvGlobals::LFB_ENABLE))
 		{
 			iValue *= 10; // K-Mod
-			iValue /= (10 + getExperience()); // K-Mod - moved from out of the if.
+			iValue /= 10 + getExperience(); // K-Mod - moved from out of the if.
 			iValue *= 10;
-			iValue /= (10 + getSameTileHeal() + getAdjacentTileHeal());
+			iValue /= 10 + getSameTileHeal() + getAdjacentTileHeal();
 		}
 
 		// Value units which can't kill units later, also combat limits mean higher survival odds
@@ -1214,7 +1220,9 @@ ill leave it without the dumb down ranged units.
 		// K-Mod end
 
 		//iValue /= std::max(1, (1 + getUnitInfo().getProductionCost()));
-		iValue /= getUnitInfo().getProductionCost() > 0 ? getUnitInfo().getProductionCost() : 180; // K-Mod
+		// <K-Mod>
+		iValue /= getUnitInfo().getProductionCost() > 0 ?
+				getUnitInfo().getProductionCost() : 180; // </K-Mod>
 		// BETTER_BTS_AI_MOD: END
 	}
 
@@ -3155,13 +3163,13 @@ void CvUnitAI::AI_attackCityMove()
 				if (iComparePostBombard < GC.getDefineINT(CvGlobals::BBAI_SKIP_BOMBARD_BASE_STACK_RATIO) && // only if we don't already have overwhelming force
 					(iComparePostBombard < iAttackRatioSkipBombard ||
 					pTargetCity->getDefenseDamage() < GC.getMAX_CITY_DEFENSE_DAMAGE()/ 2 ||
-					getPlot().isRiverCrossing(directionXY(plot(), pTargetCity->plot()))))
+					getPlot().isRiverCrossing(directionXY(getPlot(), pTargetCity->getPlot()))))
 				{
 					// Only move into attack position if we have a chance.
 					// Without this check, the AI can get stuck alternating between this, and pillage.
 					// I've tried to roughly take into account how much our ratio would improve by removing a river penalty.
 					if ((getGroup()->canBombard(getPlot()) && iBombardTurns > 2) ||
-						(getPlot().isRiverCrossing(directionXY(plot(), pTargetCity->plot())) &&
+						(getPlot().isRiverCrossing(directionXY(getPlot(), pTargetCity->getPlot())) &&
 						150 * iComparePostBombard >= (150 + GC.getDefineINT(CvGlobals::RIVER_ATTACK_MODIFIER)) * iAttackRatio))
 					{
 						if (AI_goToTargetCity(iMoveFlags, 2, pTargetCity))
@@ -3780,12 +3788,12 @@ void CvUnitAI::AI_collateralMove()
 	{
 		return;
 	}
-
+/* see below
 	if (AI_heal(30, 1))
 	{
 		return;
 	}
-
+*/
 /*****************************************************************************************************/
 /**  Author: TheLadiesOgre                                                                          **/
 /**  Date: 20.10.2009                                                                               **/
@@ -3804,6 +3812,10 @@ void CvUnitAI::AI_collateralMove()
 /*****************************************************************************************************/
 /**  TheLadiesOgre; 20.10.2009; TLOTags                                                             **/
 /*****************************************************************************************************/
+	if (AI_cityAttack(1, 35))
+	{
+		return;
+	}
 
 	/*if (AI_anyAttack(1, 45, 0, 3))
 		return;*/
@@ -3865,7 +3877,8 @@ void CvUnitAI::AI_collateralMove()
 	//f1rpo - no need to double check - its already in the ai heal fn
 	//if ((GC.getTerrainInfo(plot()->getTerrainType()).getTurnDamage() == 0) || (plot()->isCity()))
 	//{
-	if (AI_heal(30, 1))
+	//if (AI_heal(30, 1))
+	if (AI_heal()) //chnged by f1rpo
 	{
 		return;
 	}
@@ -13669,8 +13682,11 @@ bool CvUnitAI::AI_goToTargetCity(int iFlags, int iMaxPathTurns, CvCity* pTargetC
 				int iValue = std::max(0, 100 +
 						//pAdjacentPlot->defenseModifier(getTeam(), false)
 						AI_plotDefense(pAdjacentPlot)); // advc.012
-				if (!pAdjacentPlot->isRiverCrossing(directionXY(pAdjacentPlot, pTargetCity->plot())))
+				if (!pAdjacentPlot->isRiverCrossing(
+					directionXY(*pAdjacentPlot, pTargetCity->getPlot())))
+				{
 					iValue += (-12 * GC.getDefineINT(CvGlobals::RIVER_ATTACK_MODIFIER));
+				}
 				if (!isEnemy(*pAdjacentPlot))
 					iValue += 100;
 				if (atPlot(pAdjacentPlot))
@@ -13900,8 +13916,12 @@ bool CvUnitAI::AI_bombardCity()
 	// <advc.004c>
 	if(iBombardTurns == 0)
 		return false; // </advc.004c>
-	iBase = (iBase * (GC.getMAX_CITY_DEFENSE_DAMAGE()-pBombardCity->getDefenseDamage()) + iMin * pBombardCity->getDefenseDamage())/std::max(1, GC.getMAX_CITY_DEFENSE_DAMAGE());
-	int iThreshold = (iBase * (100 - iAttackOdds) + (1 + iBombardTurns/2) * iMin * iAttackOdds) / (100 + (iBombardTurns/2) * iAttackOdds);
+	iBase = (iBase * (GC.getMAX_CITY_DEFENSE_DAMAGE() - pBombardCity->getDefenseDamage()) +
+			iMin * pBombardCity->getDefenseDamage()) /
+			std::max(1, GC.getMAX_CITY_DEFENSE_DAMAGE());
+	int iThreshold = (iBase * (100 - iAttackOdds) +
+			(1 + iBombardTurns/2) * iMin * iAttackOdds) /
+			(100 + (iBombardTurns/2) * iAttackOdds);
 	int iComparison = AI_getGroup()->AI_compareStacks(pBombardCity->plot(), true);
 
 	if (iComparison > iThreshold)
@@ -13910,8 +13930,8 @@ bool CvUnitAI::AI_bombardCity()
 		return false;
 	}
 
-	//getGroup()->pushMission(MISSION_BOMBARD);
-	getGroup()->pushMission(MISSION_BOMBARD, -1, -1, 0, false, false, MISSIONAI_ASSAULT, pBombardCity->plot()); // K-Mod
+	getGroup()->pushMission(MISSION_BOMBARD,
+			-1, -1, 0, false, false, MISSIONAI_ASSAULT, pBombardCity->plot()); // K-Mod
 	return true;
 }
 
@@ -14111,20 +14131,20 @@ bool CvUnitAI::AI_rangeAttack(int iRange)
 	/*for (SquareIter it(*this, std::min(iSearchRange, airRange()), false);
 		it.hasNext(); ++it)*/
 	//int iSearchRange = AI_searchRange(iRange);
-	/*  advc.rstr: I don't think MISSION_RANGE_ATTACK will cause the unit to move
-		toward the target. AI_searchRange is no help then. */
+	/*  advc.rstr: MISSION_RANGE_ATTACK doesn't currently cause the unit to
+		move toward the target. AI_searchRange and iRange are no help then. */
 	for (SquareIter it(*this, std::min(iRange, airRange()), false);
 		it.hasNext(); ++it)
 	{
 		CvPlot& kLoopPlot = *it;
-		//if (kLoopPlot.isVisibleEnemyUnit(this) || (kLoopPlot.isCity() && AI_potentialEnemy(kLoopPlot.getTeam())))
-		if (kLoopPlot.isVisibleEnemyUnit(this)) // K-Mod
+		if (kLoopPlot.isVisibleEnemyUnit(this) /*|| // K-Mod: disabled
+			(kLoopPlot.isCity() && AI_potentialEnemy(kLoopPlot.getTeam()))*/)
 		{
 			if (canRangeStrikeAt(plot(), kLoopPlot.getX(), kLoopPlot.getY()))
-			{
-			//	int iValue = AI_getGroup()->AI_attackOdds(&kLoopPlot, true);//org
-//rangedattack-keldath - this line was used before - whats the difference? qa7-done
-			//	int iValue = AI_getWeightedOdds(&kLoopPlot, false);
+			{	//int iValue = AI_getGroup()->AI_attackOdds(&kLoopPlot, true);
+				/*	advc.rstr: A bit better? Still pretty dumb to always shoot
+					the softest target ... */
+//rangedAttack-keldath 
 /*
 f1rpo response:
 Weighted odds takes into account how valuable the attacker and defender are. E.g. a Knight should attack a damaged Tank even if the odds are just 25% because the Tank costs much more production. That might be better here(?). It's a bit strange to use the odds of the range striker because that unit isn't going to make a regular attack. It might be grouped with other units that will make attacks after the range strike. So perhaps
@@ -14135,7 +14155,7 @@ keldath - well, maybe not that importent to use the original code, but as usual 
 seems that AI_attackOdds is more straight forward odds.
 */
 				int iValue = AI_getGroup()->AI_getWeightedOdds(&kLoopPlot, false);
-					if (iValue > iBestValue)
+				if (iValue > iBestValue)
 				{
 					iBestValue = iValue;
 					pBestPlot = &kLoopPlot;
@@ -15550,7 +15570,7 @@ bool CvUnitAI::AI_assaultSeaTransport(bool bAttackBarbs, bool bLocal)
 			{
 				pCity = pAdjacentCity;
 				// Copied from above
-				if(kPlot.isRiverCrossing(directionXY(&kPlot, pCity->plot())))
+				if(kPlot.isRiverCrossing(directionXY(kPlot, pCity->getPlot())))
 					iModifier += GC.getDefineINT(CvGlobals::RIVER_ATTACK_MODIFIER)/10;
 			} // Also copied from above
 			iValueMultiplier *= (100 + iModifier);

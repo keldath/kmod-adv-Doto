@@ -246,8 +246,9 @@ public:
 			int iChange = 1, /* advc: was called iExtra, which didn't make sense
 								and differed from the parameter name in CvPlayerAI.cpp. */
 			bool bIgnoreDiscount = false, // advc.550a
-			bool bIgnorePeace = false, // advc.130p
-			bool bCountLiberation = false) const; // advc.ctr
+			bool bIgnorePeace = false, // advc.130p  <advc.ctr>
+			bool bCountLiberation = false, bool bAIRequest = false,
+			bool bDiploVal = false) const; // </advc.ctr>
 	bool AI_goldDeal(CLinkList<TradeData> const& kList) const;
 	bool isAnnualDeal(CLinkList<TradeData> const& itemList) const; // advc.705
 	bool AI_considerOffer(PlayerTypes ePlayer, CLinkList<TradeData> const& kTheyGive,
@@ -288,7 +289,8 @@ public:
 			PlayerTypes eToPlayer = NO_PLAYER,
 			// (The function will ignore this in some situations)
 			LiberationWeightTypes eLibWeight = LIBERATION_WEIGHT_ZERO,
-			bool bConquest = false) const; // </advc.ctr>
+			bool bConquest = false, bool bAIRequest = false,
+			bool bDiploVal = false) const; // </advc.ctr>
 	DenialTypes AI_cityTrade(CvCityAI const& kCity, PlayerTypes ePlayer) const;
 
 	int AI_stopTradingTradeVal(TeamTypes eTradeTeam, PlayerTypes ePlayer,
@@ -611,7 +613,10 @@ public:
 	bool AI_contactCivics(PlayerTypes eHuman);
 	bool AI_askHelp(PlayerTypes eHuman);
 	bool AI_demandTribute(PlayerTypes eHuman, AIDemandTypes eDemand);
-	// </advc.104m>
+	// </advc.104m>  <advc.ctr>
+	CvCityAI const* AI_bestRequestCity(PlayerTypes eOwner, scaled rMinVal = 1,
+			scaled rMinRatio = -1) const; // </advc.ctr>
+	bool AI_proposeCityTrade(PlayerTypes eToPlayer);
 	double AI_amortizationMultiplier(int iDelay) const; // advc.104, advc.031
 	scaled AI_targetAmortizationTurns() const; // advc.ctr
 	// advc.104r: Made public and param added
@@ -673,8 +678,8 @@ protected:
 	int* m_aiGoldTradedTo;
 	int* m_aiAttitudeExtra;
 	// <advc.079>
-	UnitTypes m_aeLastBrag[MAX_CIV_PLAYERS];
-	TeamTypes m_aeLastWarn[MAX_CIV_PLAYERS]; // </advc.079>
+	mutable UnitTypes m_aeLastBrag[MAX_CIV_PLAYERS];
+	mutable TeamTypes m_aeLastWarn[MAX_CIV_PLAYERS]; // </advc.079>
 	int* m_aiBonusValue;
 	int* m_aiBonusValueTrade; // advc.036
 	int* m_aiUnitClassWeights;
@@ -762,6 +767,7 @@ protected:
 			bool* bEnough = NULL) const;
 	// <advc.ctr>
 	AttitudeTypes AI_cityTradeAttitudeThresh(CvCity const& kCity, PlayerTypes eToPlayer, bool bLiberate) const;
+	scaled AI_peaceTreatyAversion(TeamTypes eTarget) const;
 	static bool isLiberationTrade(PlayerTypes eFirst, PlayerTypes eSecond,
 			CLinkList<TradeData> const& kFirstGives, CLinkList<TradeData> const& kSecondGives);
 	// </advc.ctr>

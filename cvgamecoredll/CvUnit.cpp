@@ -1409,7 +1409,7 @@ void CvUnit::updateCombat(bool bQuick)
 					gDLL->UI().isCombatFocus());
 			if (bFocused)
 			{
-				DirectionTypes directionType = directionXY(plot(), pPlot);
+				DirectionTypes directionType = directionXY(getPlot(), *pPlot);
 				//								N			NE				E				SE
 				NiPoint2 directions[8] = {NiPoint2(0, 1), NiPoint2(1, 1), NiPoint2(1, 0), NiPoint2(1, -1), 
 							// 		S				SW					W				NW
@@ -2876,7 +2876,7 @@ void CvUnit::attackForDamage(CvUnit *pDefender, int attackerDamageChange, int de
 		bool bFocused = (bVisible && isCombatFocus() && gDLL->UI().isCombatFocus());
 		if (bFocused)
 		{
-			DirectionTypes directionType = directionXY(plot(), pPlot);
+			DirectionTypes directionType = directionXY(getPlot(), *pPlot);
 			//								N			NE				E			
 			NiPoint2 directions[8] = {NiPoint2(0, 1), NiPoint2(1, 1), NiPoint2(1, 0),
 					// SE					S				SW					W				NW
@@ -4519,8 +4519,7 @@ bool CvUnit::canBombard(CvPlot const& kPlot) const
 	if (bombardRate() <= 0)
 		return false;
 
-	if (//isMadeAttack()
-			isMadeAllAttacks()) // advc.164
+	if (/*isMadeAttack()*/ isMadeAllAttacks()) // advc.164
 		return false;
 
 	if (isCargo())
@@ -4571,7 +4570,7 @@ if (!GC.getGame().isOption(GAMEOPTION_RAND_BOMBARD_DMG))
 	changeMoves(GC.getMOVE_DENOMINATOR());
 
 	CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_REDUCED_TO",
-			getNameKey(), // advc.004g: Show unit name  (idea from MNAI)
+			getNameKey(), // advc.004g: Show unit name (idea from MNAI)
 			pBombardCity->getDefenseModifier(false),
 			GET_PLAYER(getOwner())./*getNameKey()*/getCivilizationAdjectiveKey(), // advc.004g
 			pBombardCity->getNameKey());
@@ -7062,11 +7061,11 @@ bool CvUnit::isNoCityCapture() const
 			m_pUnitInfo->isOnlyAttackAnimals()); // advc.315a
 }
 
-// <advc.315b> Allow Explorers to capture units (if worker stealing allowed; cf. advc.010)
+// advc.315b: Allow Explorers to capture units (if worker stealing allowed; cf. advc.010)
 bool CvUnit::isNoUnitCapture() const
 {
 	return (isNoCityCapture() && !m_pUnitInfo->isOnlyAttackBarbarians());
-} // </advc.315b>
+}
 
 
 bool CvUnit::isMilitaryHappiness() const
@@ -7076,7 +7075,7 @@ bool CvUnit::isMilitaryHappiness() const
 			getPlot().getTeam() == GET_TEAM(getTeam()).getMasterTeam()); // </advc.001o>
 }
 
-/*	<advc.101> Replacing iCultureGarrison in XML, which increases too slowly
+/*	advc.101: Replacing iCultureGarrison in XML, which increases too slowly
 	over the course of the game. Note that CvCity::cultureStrength now also
 	increases faster than in BtS. */
 int CvUnit::garrisonStrength() const
@@ -7093,15 +7092,15 @@ int CvUnit::garrisonStrength() const
 	iModifier *= currHitPoints();
 	iModifier /= 100; // </advc.023>
 	return r * iModifier;
-} // </advc.101>
+}
 
-// <advc.004h>
+// advc.004h:
 bool CvUnit::isFound() const
 {
 	if(BUGOption::isEnabled("MainInterface__FoundingYields", false))
 		return canFound();
 	return false;
-} // </advc.004h>
+} 
 
 
 bool CvUnit::isGoldenAge() const
@@ -7151,14 +7150,14 @@ void CvUnit::setBaseCombatStr(int iCombat)
 //		pPlot valid, pAttacker == this (new case), when the defender is unknown, but we want to calc approx str
 //			note, in this last case, it is expected pCombatDetails == NULL, it does not have to be, but some
 //			values may be unexpectedly reversed in this case (iModifierTotal will be the negative sum)
-int CvUnit::maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails,
+int CvUnit::maxCombatStr(CvPlot const* pPlot, CvUnit const* pAttacker, CombatDetails* pCombatDetails,
 	bool bGarrisonStrength) const // advc.500b
 {
 	FAssert(pPlot == NULL || pPlot->getTerrainType() != NO_TERRAIN);
 
 	// handle our new special case
-	const	CvPlot*	pAttackedPlot = NULL;
-	bool	bAttackingUnknownDefender = false;
+	CvPlot const* pAttackedPlot = NULL;
+	bool bAttackingUnknownDefender = false;
 	if (pAttacker == this)
 	{
 		bAttackingUnknownDefender = true;
@@ -7400,7 +7399,7 @@ int CvUnit::maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDet
 	if (bAttackingUnknownDefender)
 		pAttacker = this;
 
-	// calc attacker bonueses
+	// calc attacker's modifiers
 	if (pAttacker != NULL && pAttackedPlot != NULL)
 	{
 		int iTempModifier = 0;
@@ -7497,7 +7496,8 @@ int CvUnit::maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDet
 		}
 		if (!pAttacker->isRiver())
 		{
-			if (pAttacker->getPlot().isRiverCrossing(directionXY(pAttacker->plot(), pAttackedPlot)))
+			if (pAttacker->getPlot().isRiverCrossing(
+				directionXY(pAttacker->getPlot(), *pAttackedPlot)))
 			{
 				iExtraModifier = -GC.getDefineINT(CvGlobals::RIVER_ATTACK_MODIFIER);
 				iTempModifier += iExtraModifier;
@@ -7555,7 +7555,8 @@ int CvUnit::maxCombatStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDet
 // this nomalizes str by firepower, useful for quick odds calcs
 // the effect is that a damaged unit will have an effective str lowered by firepower/maxFirepower
 // doing the algebra, this means we mulitply by 1/2(1 + currHP)/maxHP = (maxHP + currHP) / (2 * maxHP)
-int CvUnit::currEffectiveStr(const CvPlot* pPlot, const CvUnit* pAttacker, CombatDetails* pCombatDetails,
+int CvUnit::currEffectiveStr(CvPlot const* pPlot, CvUnit const* pAttacker,
+	CombatDetails* pCombatDetails,
 	int iCurrentHP) const // advc.139
 {
 	int currStr = currCombatStr(pPlot, pAttacker, pCombatDetails);
@@ -11122,7 +11123,7 @@ bool CvUnit::canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY, bool bStrikeB
 		rangestrikeRangechange += 1;
 	}
 	int airRangePlus = airRange() + rangestrikeRangechange;
-	if (plotDistance(pPlot->getX(), pPlot->getY(), pTargetPlot->getX(), pTargetPlot->getY()) > airRangePlus)
+	if (plotDistance(pPlot, pTargetPlot) > airRange())
 		return false;
 //rangedattack-keldath
 	CvUnit* pDefender = airStrikeTarget(pTargetPlot);
@@ -11150,7 +11151,12 @@ bool CvUnit::canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY, bool bStrikeB
 
 //rangedattack-keldath- i guess we dont care which direction the unit faces - vincentz canceled it. qa7-done
 //it was marked off entirely - f1rpo suggested to use directionXY(), i hope i used proper params.
-//	if (!pPlot->canSeePlot(pTargetPlot, getTeam(), airRange(), getFacingDirection(true)))
+	/*	advc.rstr: The facing direction shouldn't matter. If we want to check for
+		obstacles in the line of sight, GC.getMap().directionXY(*pPlot, *pTargetPlot)
+		could be used instead of getFacingDirection, but a strike at range 2 should
+		arguably represent indirect fire. */
+	/*if (!pPlot->canSeePlot(pTargetPlot, getTeam(), airRange(), getFacingDirection(true)))
+		return false;*/
 	if (!pPlot->canSeePlot(pTargetPlot, getTeam(), airRange(),GC.getMap().directionXY(*pPlot, *pTargetPlot)))
 		return false;
 
@@ -11296,7 +11302,7 @@ bool CvUnit::rangeStrike(int iX, int iY)
 	int iDamage = rangeCombatDamage(pDefender);
 
 	int iUnitDamage = std::max(pDefender->getDamage(),
-			std::min((pDefender->getDamage() + iDamage), airCombatLimit()));
+			std::min(pDefender->getDamage() + iDamage, airCombatLimit()));
 
 	CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR",
 			pDefender->getNameKey(), getNameKey(),
