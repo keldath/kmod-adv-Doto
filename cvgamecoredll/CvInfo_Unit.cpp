@@ -42,6 +42,8 @@ m_iNumCitySizeUnitPrereq(0),
 m_iMinAreaSize(0),
 m_iMoves(0),
 m_iAirRange(0),
+//rangedattack-keldath
+m_iRangeStrike(0),
 m_iAirUnitCap(0),
 m_iDropRange(0),
 m_iNukeRange(0),
@@ -1002,6 +1004,8 @@ void CvUnitInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iMinAreaSize);
 	stream->Read(&m_iMoves);
 	stream->Read(&m_iAirRange);
+//rangedattack-keldath
+	stream->Read(&m_iRangeStrike);
 	stream->Read(&m_iAirUnitCap);
 	stream->Read(&m_iDropRange);
 	stream->Read(&m_iNukeRange);
@@ -1347,6 +1351,8 @@ void CvUnitInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iMinAreaSize);
 	stream->Write(m_iMoves);
 	stream->Write(m_iAirRange);
+//rangedattack-keldath
+	stream->Write(m_iRangeStrike);
 	stream->Write(m_iAirUnitCap);
 	stream->Write(m_iDropRange);
 	stream->Write(m_iNukeRange);
@@ -1966,7 +1972,9 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 /************************************************************************************************/
 	pXML->GetChildXmlValByName(&m_iMinAreaSize, "iMinAreaSize");
 	pXML->GetChildXmlValByName(&m_iMoves, "iMoves");
-	pXML->GetChildXmlValByName(&m_iAirRange, "iAirRange");
+	pXML->GetChildXmlValByName(&m_iAirRange, "iAirRange",0);
+//rangedattack-keldath
+	pXML->GetChildXmlValByName(&m_iRangeStrike, "iRangeStrike",0);
 	pXML->GetChildXmlValByName(&m_iAirUnitCap, "iAirUnitCap");
 	pXML->GetChildXmlValByName(&m_iDropRange, "iDropRange");
 	pXML->GetChildXmlValByName(&m_iNukeRange, "iNukeRange");

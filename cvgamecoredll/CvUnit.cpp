@@ -2661,8 +2661,8 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar, bo
 // rangedattack-keldathVincentz Rangestrike cannot move
 	if (bAttack)
 	{
-		//keldath change - now we use regular combat + check air range
-		if (canRangeStrike() && baseCombatStr() > 0 && airRange() > 0)
+//rangedattack-keldath
+		if (canRangeStrikeK())
 		{
 			if (getDomainType() != DOMAIN_AIR) 
 			{
@@ -2670,6 +2670,7 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar, bo
 			}
 		}
 	}
+
 	if (getDomainType() == DOMAIN_AIR)
 	{
 		if (bAttack)
@@ -8029,8 +8030,9 @@ int CvUnit::rangeCombatDamage(const CvUnit* pDefender) const
 	//condider make this game optional - random damage.
 	if (pPlot->getPlotCity() != NULL)
 	{
-		iDamage *= 100;
-		iDamage /= std::max(0, (pPlot->getPlotCity()->getBuildingDefense() + 100));
+		
+		iDamage *= std::max(0, (pPlot->getPlotCity()->getBuildingDefense() + 100));
+		iDamage /= 100;
 	}
 	iDamage *= (50 + GC.getGame().getSorenRandNum(100, "RandomHit"));
 	iDamage /= 100;
@@ -11071,40 +11073,33 @@ it will only attack one unit - i wanted the city defense to count for something 
 	return true;
 }
 
-//rangedattack-kedath - f1rpo fix for loop call from the strike back by vincentz
-bool CvUnit::canRangeStrike(bool bStrikeBack) const
+
+bool CvUnit::canRangeStrike() const
 {
 	if (getDomainType() == DOMAIN_AIR)
 		return false;
 	if (airRange() <= 0)
 		return false;
-//rangedattack-keldath ranged attack is not defined by aircombat but souly by airrange
-/*	if (airBaseCombatStr() <= 0)
-		return false;
-*/
-//instead - make sure that a paratrooper canr range attack.
-	if (getDropRange() > 0) 
+	if (airBaseCombatStr() <= 0)
 		return false;
 	if (!canFight())
 		return false;
-//rangedattack-keldath - f1rpo fix for recursion loop from strike back
 	if (//isMadeAttack() && !isBlitz()
-			isMadeAllAttacks() && !bStrikeBack) // advc.164
+		isMadeAllAttacks()) // advc.164
+	{
 		return false;
-// rangedattack-keldath bstrike is to avoind infinite loop from retalliation.
-	if (!canMove() && getMoves() > 0 && !bStrikeBack)
+	}
+	if (!canMove() && getMoves() > 0)
 		return false;
 	return true;
 }
-//rangedattack-keldath - f1rpo fix for oos and reccursion loop from the strike back/retaliation
-bool CvUnit::canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY, bool bStrikeBack) const
+
+bool CvUnit::canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY) const
 {
-	//rangedattack-keldath passing the bool check to avoid loops
-	if (!canRangeStrike(bStrikeBack))
+	if (!canRangeStrike())
 		return false;
 
 	CvPlot* pTargetPlot = GC.getMap().plot(iX, iY);
-
 	if (pTargetPlot == NULL)
 		return false;
 
@@ -11115,55 +11110,24 @@ bool CvUnit::canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY, bool bStrikeB
 	if (!pTargetPlot->isVisible(getTeam()))
 		return false;
 	// UNOFFICIAL_PATCH: END
-//rangedattack-keldath - if the city unit is in a city or the unit is on peak or hill, give +1 range.
-	int rangestrikeRangechange = 0;
-	//this exists in cvmap and in gameinterface
-	if (((plot()->isCity(true, getTeam())) || (pPlot->isHills())||(pPlot->isPeak())) && (getDomainType() == DOMAIN_LAND))
-	{
-		rangestrikeRangechange += 1;
-	}
-	int airRangePlus = airRange() + rangestrikeRangechange;
 	if (plotDistance(pPlot, pTargetPlot) > airRange())
 		return false;
-//rangedattack-keldath
+
 	CvUnit* pDefender = airStrikeTarget(pTargetPlot);
 	if (pDefender == NULL)
 		return false;
-//rangedattack-keldath- i guess thats a silly option....
-//only unit with ignore defence can range strike when theres a city.
-/*
-	//check if theres a city.
-	CvCity* pCity = pTargetPlot->getPlotCity();
-	if (pCity != NULL)
-	{
-		if (pCity->isBombardable(this)) 
-		{
-			if(!ignoreBuildingDefense()) {
-				if (pCity->isRevealed(getTeam(), false)) 
-				{
-					return false;
-				}
-			}
-	
-		}
-	}*/
-//rangedattack-keldath
 
-//rangedattack-keldath- i guess we dont care which direction the unit faces - vincentz canceled it. qa7-done
-//it was marked off entirely - f1rpo suggested to use directionXY(), i hope i used proper params.
 	/*	advc.rstr: The facing direction shouldn't matter. If we want to check for
 		obstacles in the line of sight, GC.getMap().directionXY(*pPlot, *pTargetPlot)
 		could be used instead of getFacingDirection, but a strike at range 2 should
 		arguably represent indirect fire. */
 	/*if (!pPlot->canSeePlot(pTargetPlot, getTeam(), airRange(), getFacingDirection(true)))
 		return false;*/
-	if (!pPlot->canSeePlot(pTargetPlot, getTeam(), airRange(),GC.getMap().directionXY(*pPlot, *pTargetPlot)))
-		return false;
 
 	return true;
 }
 
-//rangedattack-HEAVILY EDITED BY KELDATH FOR VINCENTZ RANGED AND ADVC COMPATIBILITY
+
 bool CvUnit::rangeStrike(int iX, int iY)
 {
 	CvPlot* pPlot = GC.getMap().plot(iX, iY);
@@ -11185,120 +11149,12 @@ bool CvUnit::rangeStrike(int iX, int iY)
 	FAssert(pDefender != NULL);
 	FAssert(pDefender->canDefend());
 
-/* changed by rangedattack-keldath
 	if (GC.getDefineINT("RANGED_ATTACKS_USE_MOVES") == 0)
 	{
 		setMadeAttack(true);
 	}
-*/
-//rangedattack-keldath - deny any attacks to be made after ranged atatck was made
-	if (getDomainType() != DOMAIN_AIR)
-	{
-		setMadeAttack(true);
-	}
-	
-//	changeMoves(GC.getMOVE_DENOMINATOR());
-
-//rangedattack-keldath - choose if you want after a ranged attack , the unit should move or not.
-	if (GC.getGame().isOption(GAMEOPTION_RANGED_LAND_END_MOVES))
-	{
-		if (getDomainType() == DOMAIN_LAND)
-		{
-			finishMoves();
-		}
-		else
-		{	
-			changeMoves(GC.getMOVE_DENOMINATOR());
-		}
-	}
-	if (GC.getGame().isOption(GAMEOPTION_RANGED_SEA_END_MOVES))
-	{
-		if (getDomainType() == DOMAIN_SEA)
-		{
-			finishMoves();
-		}
-		else
-		{	
-			changeMoves(GC.getMOVE_DENOMINATOR());
-		}
-	}
-//this is copied from the bombard function directly.
-//so ranged stike will also reduce city defense and also range attack units
-//both have random factor to it.
-	
-//rangedattack-keldath city Bombard //start
-//reduce city defense and also range attack units
-//code is and should be identical to the bombard function
-//if i knew how - i would just call bombard().
-	CvCity* pCity = pPlot->getPlotCity();
-	if (pCity != NULL && (pCity->isBombardable(this)) && bombardRate() > 0)
-	{
-		int iBombardModifier = 0;
-		if (!ignoreBuildingDefense())
-		{
-			iBombardModifier -= pCity->getBuildingBombardDefense();
-		}
-
-		int RandomBombardChance = GC.getGame().getSorenRandNum(100, "RandomHit");
-		//MAYBE CHANGE THE 50 TO A CONTROLLED VALUE - KELDATH
-		int RandomBombardDamage = 50 + GC.getGame().getSorenRandNum(100, "RandomDamage");
-		bool bFirstBombardment = !pCity->isBombarded();
-		bool bIgnore = ignoreBuildingDefense();
-		if (RandomBombardChance > (bombardRate() + GC.getDefineINT("BOMBARD_HIT_CHANCE")))
-		{
-			//original code was arranged different-keldath
-			CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_MISSED",
-				getNameKey(), // advc.004g: Show unit name  (idea from MNAI)
-				pCity->getDefenseModifier(false),
-				//GET_PLAYER(getOwner()).getNameKey()); 
-				GET_PLAYER(getOwner())./*getNameKey()*/getCivilizationAdjectiveKey(), // advc.004g
-				pCity->getNameKey());
-			gDLL->UI().addMessage(pCity->getOwner(), /* advc.004g: */ true,
-				-1, szBuffer, pCity->getPlot(),
-				!bFirstBombardment ? NULL : // advc.004g: Don't bombard the owner with sound
-				"AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREEN"),
-				pCity->getX(), pCity->getY()/*, true, true*/);
-			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_MISSED_CITY_DEFENSES",
-				getNameKey(), pCity->getNameKey(),
-				pCity->getDefenseModifier(bIgnore)); // advc.004g: arg was false
-			gDLL->UI().addMessage(getOwner(), true,
-				-1, szBuffer, "AS2D_BOMBARD",
-				MESSAGE_TYPE_INFO, getButton(), GC.getColorType("RED"),
-				pCity->getX(), pCity->getY());
-		}
-		else
-		{
-			pCity->changeDefenseModifier(-(bombardRate() * currHitPoints() / maxHitPoints() * RandomBombardDamage * std::max(0, 100 + iBombardModifier)) / (100 * 100));
-
-			CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_REDUCED_TO",
-				getNameKey(), // advc.004g: Show unit name  (idea from MNAI)
-				pCity->getDefenseModifier(false),
-				//GET_PLAYER(getOwner()).getNameKey()); 
-				GET_PLAYER(getOwner())./*getNameKey()*/getCivilizationAdjectiveKey(), // advc.004g
-				pCity->getNameKey());
-			gDLL->UI().addMessage(pCity->getOwner(), /* advc.004g: */ true,
-				-1, szBuffer, pCity->getPlot(),
-				!bFirstBombardment ? NULL : // advc.004g: Don't bombard the owner with sound
-				"AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("RED"), pCity->getX(), pCity->getY()/*, true, true*/);
-			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_REDUCE_CITY_DEFENSES",
-				getNameKey(), pCity->getNameKey(),
-				pCity->getDefenseModifier(bIgnore)); // advc.004g: arg was false
-			gDLL->UI().addMessage(getOwner(), true,
-				-1, szBuffer, "AS2D_BOMBARD",
-				MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREEN"),
-				pCity->getX(), pCity->getY());
-
-			//keldath addition - 50% chance to get experience if theres a hit.
-			if (GC.getGame().getSorenRandNum(100, "RandomHit") + 1 >= 50)
-			{
-				changeExperience(1);
-			}
-		}
-	}
-/*original code
-	setMadeAttack(true);
 	changeMoves(GC.getMOVE_DENOMINATOR());
-	
+
 	int iDamage = rangeCombatDamage(pDefender);
 
 	int iUnitDamage = std::max(pDefender->getDamage(),
@@ -11325,236 +11181,27 @@ bool CvUnit::rangeStrike(int iX, int iY)
 
 	//set damage but don't update entity damage visibility
 	pDefender->setDamage(iUnitDamage, getOwner(), false);
-*/
 
-	int iDamage = rangeCombatDamage(pDefender) * currHitPoints() / maxHitPoints();
-	int iUnitDamage = std::max(pDefender->getDamage(), 
-			std::min((pDefender->getDamage() + iDamage), combatLimit()));
-		
-	if (((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) 
-			+ baseCombatStr() * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER") 
-			* currHitPoints() / maxHitPoints()) 
-		< ((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), 
-			"Random")) + pDefender->baseCombatStr() * pDefender->currHitPoints() 
-			/ pDefender->maxHitPoints()))
+	if (pPlot->isActiveVisible(false))
 	{
-		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR_MISS", 
-				 pDefender->getNameKey(), getNameKey())); 
-		//red icon over attacking unit
-		gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
-			"AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREEN"), this->getX(), this->getY()/*, true, true*/);
-		//white icon over defending unit
-		gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"", pDefender->getPlot(),
-			"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(),GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY()/*, true, true*/);
-		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR_MISS", getNameKey(), pDefender->getNameKey());
-		gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
-			"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("RED"),pPlot->getX(), pPlot->getY());
+		// Range strike entity mission
+		CvMissionDefinition kDefiniton;
+		kDefiniton.setMissionTime(GC.getInfo(MISSION_RANGE_ATTACK).getTime() * gDLL->getSecsPerTurn());
+		kDefiniton.setMissionType(MISSION_RANGE_ATTACK);
+		kDefiniton.setPlot(pDefender->plot());
+		kDefiniton.setUnit(BATTLE_UNIT_ATTACKER, this);
+		kDefiniton.setUnit(BATTLE_UNIT_DEFENDER, pDefender);
+		gDLL->getEntityIFace()->AddMission(&kDefiniton);
+
+		//delay death
+		// UNOFFICIAL_PATCH (Bugfix), 05/10/10, jdog5000
+		// mission timer is not used like this in any other part of code, so it might cause OOS
+		// issues ... at worst I think unit dies before animation is complete, so no real
+		// harm in commenting it out.
+		//pDefender->getGroup()->setMissionTimer(GC.getInfo(MISSION_RANGE_ATTACK).getTime()); // BtS
 	}
-	else
-	{
-	//qa7-f1rpo-done - the goal here damage if the damage is below combatlimit
-	//the below one - i marked off - im not sure what it gets and why
-	//re added the line-no need to check combat limit. thats done elsewhere. you cant attack a unit with max combat limit anyway.
-		if ((((iUnitDamage - pDefender->getDamage()) * 100)	/ pDefender->maxHitPoints()) != 0)
-		//i used this to check if combat limit was exceeded-if so a max damage will pop below.
-		//if (pDefender->getDamage() <= std::min((pDefender->getDamage() + iDamage), combatLimit()))
-		{
-			CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR",
-				pDefender->getNameKey(), getNameKey(),
-				// advc.004g:
-				((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints()));
-			// advc.004g:
-//red icon over attacking unit
-			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
-				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("RED"), this->getX(), this->getY()/*, true, true*/);
-			//white icon over defending unit
-			gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"", pDefender->getPlot(),
-				"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY()/*, true, true*/);
 
-
-			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR", getNameKey(), pDefender->getNameKey(),
-				// advc.004g:
-				((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints());
-			gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
-				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
-
-			//keldath addition - 30% chance to get experience if theres a hit.
-			//if (RandomBombardDamage > 75)
-			if (GC.getGame().getSorenRandNum(100, "RandomHit") + 1 >= 70)
-			{
-				changeExperience(1);
-			}
-			//set damage but don't update entity damage visibility
-			pDefender->setDamage(iUnitDamage, getOwner(), false);
-
-			//15% chance of missing collateral damage
-			if (GC.getGame().getSorenRandNum(100, "RandomHit") + 1 >= 15)
-			{
-				if (pCity != NULL)
-				{
-					//if target is a city->if can ignore city defense or no units in city-> collateral damage.
-					if (!ignoreBuildingDefense() || pCity->getDefenseModifier(false) == 0)
-					{
-						//collateralCombat(pPlot, pDefender);
-						collateralCombat(pPlot, airStrikeTarget(pPlot));
-					}
-				}
-				else
-				{
-					collateralCombat(pPlot, airStrikeTarget(pPlot));
-				}
-			}
-		}
-		else
-		{
-			//this will never show - you can attack a unit with combat limit , so no message ever.
-			// i left it here, who knows...
-			CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_ENEMY_MAXIMUM_DAMAGE", pDefender->getNameKey(), getNameKey()));
-			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
-				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREY"), this->getX(), this->getY()/*, true, true*/);
-			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_MAXIMUM_DAMAGE", getNameKey(), pDefender->getNameKey());
-			gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
-				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY());
-		}
-		if (pPlot->isActiveVisible(false))
-		{
-			// Range strike entity mission
-			CvMissionDefinition kDefiniton;
-			kDefiniton.setMissionTime(GC.getInfo(MISSION_RANGE_ATTACK).getTime() * gDLL->getSecsPerTurn());
-			//Vincentz Rangestrike 
-					//kDefiniton.setMissionTime(GC.getInfo(MISSION_RANGE_ATTACK).getTime() * gDLL->getSecsPerTurn() + 2);
-					//105 change - i afraid of oos in mp game so i removed the time delay stuff.
-			//Vincentz Rangestrike
-			kDefiniton.setMissionType(MISSION_RANGE_ATTACK);
-			kDefiniton.setPlot(pDefender->plot());
-			kDefiniton.setUnit(BATTLE_UNIT_ATTACKER, this);
-			kDefiniton.setUnit(BATTLE_UNIT_DEFENDER, pDefender);
-			gDLL->getEntityIFace()->AddMission(&kDefiniton);
-
-			//delay death
-			// UNOFFICIAL_PATCH (Bugfix), 05/10/10, jdog5000
-			// mission timer is not used like this in any other part of code, so it might cause OOS
-			// issues ... at worst I think unit dies before animation is complete, so no real
-			// harm in commenting it out.
-			//pDefender->getGroup()->setMissionTimer(GC.getInfo(MISSION_RANGE_ATTACK).getTime()); // BtS
-	/*Vincentz Rangestrike Strikeback - keldath - remove due to the warnig above of oos - i dont care if a unit is vanished after its dead without animation
-			pDefender->getGroup()->setMissionTimer(GC.getMissionInfo(MISSION_RANGE_ATTACK).getTime() + 4);
-	*/
-		}
-		if (pDefender->isDead())
-		{
-			CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", getNameKey(), pDefender->getNameKey()));
-			gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, GC.getInfo(
-				GET_PLAYER(getOwner()) // advc.002l
-				.getCurrentEra()).getAudioUnitVictoryScript(), MESSAGE_TYPE_INFO, NULL,
-				GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
-			//keldath removed - xp is handled above.
-			//changeExperience(GC.getDefineINT("MIN_EXPERIENCE_PER_COMBAT"));
-		}
-
-		//Vincentz Rangestrike Strikeback --keldath - dunno - i guess the lines are not aligned with advc
-		if (GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATION))
-		{
-			//keldath notes - this runs over the plot looiking for a unit that can air range strike?
-			//keldath f1rpo - added boll true to stop infinite re run of the code
-			// keldath - decided to go with the original syntax of the pplot()->getX()/Y()
-			if (!pDefender->canRangeStrikeAt(pDefender->plot(), this->plot()->getX(), this->plot()->getY(), true/*infinite loop breaker*/))
-			{
-				pDefender = NULL;
-				CLLNode<IDInfo>* pUnitNode = pPlot->headUnitNode();
-				while (NULL != pUnitNode)
-				{
-					CvUnit* pLoopUnit = ::getUnit(pUnitNode->m_data);
-					pUnitNode = pPlot->nextUnitNode(pUnitNode);
-
-					//keldath f1rpo - added bool true to stop infinite re run of the code
-					if (pLoopUnit->canRangeStrikeAt(pLoopUnit->plot(), this->plot()->getX(), this->plot()->getY(), true/*infinite loop breaker*/))
-					{
-						pDefender = pLoopUnit;
-					}
-				}
-			}
-			//keldath notes - found a defender that can strike?
-			if (pDefender != NULL)
-			{
-				int iDamage = rangeCombatDamage(this) * pDefender->currHitPoints() / pDefender->maxHitPoints();
-				int iUnitDamage = std::max(this->getDamage(), std::min((this->getDamage() + iDamage), pDefender->combatLimit()));
-
-				if (((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) + pDefender->baseCombatStr()) * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER") > ((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) + this->baseCombatStr()))
-				{
-					//qa7-donesame as the above - i want combat limit to take effect - im not sure of the marked off if statement.
-					//re added the line - check the above part.
-					if ((((iUnitDamage - this->getDamage()) * 100) / this->maxHitPoints()) != 0)
-					//if(this->getDamage()<= std::min((this->getDamage() + iDamage), pDefender->combatLimit()))
-					{
-						CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR",
-							pDefender->getNameKey(), getNameKey(),
-							// advc.004g:
-							(((iUnitDamage - this->getDamage()) * 100) / this->maxHitPoints())));
-						// advc.004g:
-						gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
-							"AS2D_BOMBARD", MESSAGE_TYPE_INFO, this->getButton(), GC.getColorType("GREEN"), this->getX(), this->getY()/*, true, true*/);
-						szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR", getNameKey(), pDefender->getNameKey(),
-							// advc.004g:
-							(((iUnitDamage - this->getDamage()) * 100) / this->maxHitPoints()));
-						gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
-							"AS2D_BOMBARD", MESSAGE_TYPE_INFO, this->getButton(), GC.getColorType("RED"), pPlot->getX(), pPlot->getY());
-
-						this->setDamage(iUnitDamage, this->getOwner(), false);
-						//15% chance of missing collateral damage
-						if (GC.getGame().getSorenRandNum(100, "RandomHit") + 1 >= 15)
-						{
-							//added the this-> pointer
-							collateralCombat(this->plot(), this);
-						}
-
-					}
-					else
-					{	//this will never show - you can attack a unit with combat limit , so no message ever.
-						// i left it here, who knows...
-						CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_ENEMY_MAXIMUM_DAMAGE", pDefender->getNameKey(), getNameKey()));
-						gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
-							"AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREY"), this->getX(), this->getY()/*, true, true*/);
-						szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_MAXIMUM_DAMAGE", getNameKey(), pDefender->getNameKey());
-						gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
-							"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("WHITE"), pPlot->getX(), pPlot->getY());
-					}
-				}
-				else
-				{
-					CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR_MISS",
-						pDefender->getNameKey(), getNameKey())); //KELDATH BACKWORDS NAMES
-					gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
-						"AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("RED"), this->getX(), this->getY()/*, true, true*/);
-					szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR_MISS", getNameKey(), pDefender->getNameKey());
-					gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
-						"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
-				}
-
-				if (pPlot->isActiveVisible(false))
-				{
-
-					// Range strike entity mission
-					CvMissionDefinition kDefiniton2;
-					//kDefiniton2.setMissionTime(GC.getMissionInfo(MISSION_RANGE_ATTACK).getTime() * gDLL->getSecsPerTurn() + 4);
-					//105 change - keldath - i removed the time delay, i fear oos in mp.
-					kDefiniton2.setMissionTime(GC.getMissionInfo(MISSION_RANGE_ATTACK).getTime() * gDLL->getSecsPerTurn());
-					kDefiniton2.setMissionType(MISSION_RANGE_ATTACK);
-					kDefiniton2.setPlot(this->plot());
-					kDefiniton2.setUnit(BATTLE_UNIT_ATTACKER, pDefender);
-					kDefiniton2.setUnit(BATTLE_UNIT_DEFENDER, this);
-
-					gDLL->getEntityIFace()->AddMission(&kDefiniton2);
-
-					//delay death
-					/* keldath - removed delay death - see unofficial patch above.
-					this->getGroup()->setMissionTimer(GC.getMissionInfo(MISSION_RANGE_ATTACK).getTime() + 2);
-					*/
-				}
-			}
-		}
-	}
-	return true;	
+	return true;
 }
 
 //------------------------------------------------------------------------------------------------
@@ -12912,3 +12559,445 @@ float CvUnit::doPillageInfluence()
 /**                                                                                              */
 /** Original Author Moctezuma              End                                                   */
 /*************************************************************************************************/
+//based on the original rangeCombatDamage + airCombatDamage
+int CvUnit::rangeCombatDamageK(const CvUnit* pDefender) const
+{
+	/*
+		according to the rules in currCombatStr:	
+			// pPlot == NULL, pAttacker == NULL for combat when this is the attacker
+			// pPlot valid, pAttacker valid for combat when this is the defender
+			// pPlot valid, pAttacker == NULL (new case), when this is the defender, attacker unknown
+			// pPlot valid, pAttacker == this (new case), when the defender is unknown, but we want to calc appr
+	*/
+	CvPlot* pPlot = pDefender->plot();
+	int iOurStrength = currCombatStr(NULL,NULL);
+	FAssertMsg(iOurStrength > 0, "Combat strength is expected to be greater than zero");
+	int iTheirStrength = pDefender->maxCombatStr(plot(), this);
+
+	int iStrengthFactor = (iOurStrength + iTheirStrength + 1) / 2;
+	//check syntax to original
+	int iDamage = std::max(1, ((GC.getDefineINT("RANGE_COMBAT_DAMAGE") *
+		(iOurStrength + iStrengthFactor)) / (iTheirStrength + iStrengthFactor)));
+	CvCity const* pCity = getPlot().getPlotCity();
+	if (!GC.getGame().isOption(GAMEOPTION_RAND_RANGED_DMG))
+	{	
+		if (pCity != NULL)
+		{
+			//which comes first?? its opposite in air? - qa8
+			iDamage *= std::max(0, (pCity->getBuildingDefense() + 100));
+			iDamage /= 100;
+			
+		}
+		iDamage *= (50 + GC.getGame().getSorenRandNum(100, "RandomHit"));
+		iDamage /= 100;
+	}
+	return iDamage;
+}
+
+//rangedattack-keldath just a note that ranged attack now uses this also.
+//based on airStrikeTarget
+CvUnit* CvUnit::rangedStrikeTargetK(const CvPlot* pPlot) const
+{
+	CvUnit* pDefender = pPlot->getBestDefender(NO_PLAYER, getOwner(), this, true);
+	if (pDefender != NULL && !pDefender->isDead())
+	{
+		if (pDefender->canDefend())
+			return pDefender;
+	}
+	return NULL;
+}
+
+//rangedattack-keldath - f1rpo fix for loop call from the strike back by vincentz
+bool CvUnit::canRangeStrikeK(bool bStrikeBack) const
+{
+	/*
+		rangedattack-keldath: bStrikeBack - f1rpo fix for recursion loop from strike back
+	*/
+	if (getDomainType() == DOMAIN_AIR)
+		return false;
+	if (rangedStrike() <= 0)
+		return false;
+	if (baseCombatStr() <= 0)
+		return false;
+	if (getDropRange() > 0) 
+		return false;
+	if (!canFight())
+		return false;
+	if (isMadeAllAttacks() && !bStrikeBack) // advc.164
+		return false;
+	if (!canMove() && getMoves() > 0 && !bStrikeBack)
+		return false;
+	return true;
+}
+//rangedattack-keldath - f1rpo fix for oos and reccursion loop from the strike back/retaliation
+bool CvUnit::canRangeStrikeAtK(const CvPlot* pPlot, int iX, int iY, bool bStrikeBack) const
+{
+	/*
+		rangedattack-keldath: bStrikeBack - f1rpo fix for recursion loop from strike back
+	*/
+	if (!canRangeStrikeK(bStrikeBack))
+		return false;
+
+	CvPlot* pTargetPlot = GC.getMap().plot(iX, iY);
+
+	if (pTargetPlot == NULL)
+		return false;
+
+	if (!pPlot->isVisible(getTeam()))
+		return false;
+	if (!pTargetPlot->isVisible(getTeam()))
+		return false;
+//rangedattack-keldath - if the city unit is in a city or the unit is on peak or hill, give +1 range.
+	int rangestrikeRangechange = 0;
+	//this exists in cvmap and in gameinterface
+	if (((plot()->isCity(true, getTeam())) || (pPlot->isHills())||(pPlot->isPeak())) && (getDomainType() == DOMAIN_LAND))
+	{
+		rangestrikeRangechange += 1;
+	}
+	int airRangePlus = rangedStrike() + rangestrikeRangechange;
+	if (plotDistance(pPlot, pTargetPlot) > airRangePlus)
+		return false;
+//rangedattack-keldath
+	CvUnit* pDefender = rangedStrikeTargetK(pTargetPlot);
+	if (pDefender == NULL)
+		return false;
+	/*	advc.rstr: The facing direction shouldn't matter. If we want to check for
+		obstacles in the line of sight, GC.getMap().directionXY(*pPlot, *pTargetPlot)
+		could be used instead of getFacingDirection, but a strike at range 2 should
+		arguably represent indirect fire. */
+	/*if (!pPlot->canSeePlot(pTargetPlot, getTeam(), airRange(), getFacingDirection(true)))
+		return false;*/
+	if (!pPlot->canSeePlot(pTargetPlot, getTeam(), airRange(),GC.getMap().directionXY(*pPlot, *pTargetPlot)))
+		return false;
+
+	return true;
+}
+
+//rangedattack-HEAVILY EDITED BY KELDATH FOR VINCENTZ RANGED AND ADVC COMPATIBILITY
+bool CvUnit::rangeStrikeK(int iX, int iY)
+{
+	CvPlot* pPlot = GC.getMap().plot(iX, iY);
+	if (pPlot == NULL)
+	{
+		FAssertMsg(pPlot != NULL, "Range strike off the map"); // advc
+		return false;
+	}
+	
+	if (!canRangeStrikeAtK(plot(), iX, iY))
+		return false;
+
+	CvUnit* pDefender = rangedStrikeTargetK(pPlot);
+
+	FAssert(pDefender != NULL);
+	FAssert(pDefender->canDefend());
+
+	if (getDomainType() != DOMAIN_AIR)
+	{
+		setMadeAttack(true);
+	}
+
+	if (GC.getGame().isOption(GAMEOPTION_RANGED_LAND_END_MOVES))
+	{
+		if (getDomainType() == DOMAIN_LAND)
+		{
+			finishMoves();
+		}
+		else
+		{	
+			changeMoves(GC.getMOVE_DENOMINATOR());
+		}
+	}
+	if (GC.getGame().isOption(GAMEOPTION_RANGED_SEA_END_MOVES))
+	{
+		if (getDomainType() == DOMAIN_SEA)
+		{
+			finishMoves();
+		}
+		else
+		{	
+			changeMoves(GC.getMOVE_DENOMINATOR());
+		}
+	}
+
+	//call bombard
+	CvCity* pCity = pPlot->getPlotCity();
+	if (pCity != NULL && (pCity->isBombardable(this)) && bombardRate() > 0)
+	{
+		int iBombardModifier = 0;
+		if (!ignoreBuildingDefense())
+		{
+			iBombardModifier -= pCity->getBuildingBombardDefense();
+		}
+
+		int RandomBombardChance = GC.getGame().getSorenRandNum(100, "RandomHit");
+		//MAYBE CHANGE THE 50 TO A CONTROLLED VALUE - KELDATH
+		int RandomBombardDamage = 50 + GC.getGame().getSorenRandNum(100, "RandomDamage");
+		bool bFirstBombardment = !pCity->isBombarded();
+		bool bIgnore = ignoreBuildingDefense();
+		if (RandomBombardChance > (bombardRate() + GC.getDefineINT("BOMBARD_HIT_CHANCE")))
+		{
+			//original code was arranged different-keldath
+			CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_MISSED",
+				getNameKey(), // advc.004g: Show unit name  (idea from MNAI)
+				pCity->getDefenseModifier(false),
+				//GET_PLAYER(getOwner()).getNameKey()); 
+				GET_PLAYER(getOwner())./*getNameKey()*/getCivilizationAdjectiveKey(), // advc.004g
+				pCity->getNameKey());
+			gDLL->UI().addMessage(pCity->getOwner(), /* advc.004g: */ true,
+				-1, szBuffer, pCity->getPlot(),
+				!bFirstBombardment ? NULL : // advc.004g: Don't bombard the owner with sound
+				"AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREEN"),
+				pCity->getX(), pCity->getY()/*, true, true*/);
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_MISSED_CITY_DEFENSES",
+				getNameKey(), pCity->getNameKey(),
+				pCity->getDefenseModifier(bIgnore)); // advc.004g: arg was false
+			gDLL->UI().addMessage(getOwner(), true,
+				-1, szBuffer, "AS2D_BOMBARD",
+				MESSAGE_TYPE_INFO, getButton(), GC.getColorType("RED"),
+				pCity->getX(), pCity->getY());
+		}
+		else
+		{
+			pCity->changeDefenseModifier(-(bombardRate() * currHitPoints() / maxHitPoints() * RandomBombardDamage * std::max(0, 100 + iBombardModifier)) / (100 * 100));
+
+			CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_REDUCED_TO",
+				getNameKey(), // advc.004g: Show unit name  (idea from MNAI)
+				pCity->getDefenseModifier(false),
+				//GET_PLAYER(getOwner()).getNameKey()); 
+				GET_PLAYER(getOwner())./*getNameKey()*/getCivilizationAdjectiveKey(), // advc.004g
+				pCity->getNameKey());
+			gDLL->UI().addMessage(pCity->getOwner(), /* advc.004g: */ true,
+				-1, szBuffer, pCity->getPlot(),
+				!bFirstBombardment ? NULL : // advc.004g: Don't bombard the owner with sound
+				"AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("RED"), pCity->getX(), pCity->getY()/*, true, true*/);
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_REDUCE_CITY_DEFENSES",
+				getNameKey(), pCity->getNameKey(),
+				pCity->getDefenseModifier(bIgnore)); // advc.004g: arg was false
+			gDLL->UI().addMessage(getOwner(), true,
+				-1, szBuffer, "AS2D_BOMBARD",
+				MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREEN"),
+				pCity->getX(), pCity->getY());
+
+			//keldath addition - 50% chance to get experience if theres a hit.
+			if (GC.getGame().getSorenRandNum(100, "RandomHit") + 1 >= 50)
+			{
+				changeExperience(1);
+			}
+		}
+	}
+
+	int iDamage = rangeCombatDamageK(pDefender) * currHitPoints() / maxHitPoints();
+	int iUnitDamage = std::max(pDefender->getDamage(), 
+			std::min((pDefender->getDamage() + iDamage), combatLimit()));	
+	if (((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) 
+			+ baseCombatStr() * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER") 
+			* currHitPoints() / maxHitPoints()) 
+		< ((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), 
+			"Random")) + pDefender->baseCombatStr() * pDefender->currHitPoints() 
+			/ pDefender->maxHitPoints()))
+	{
+		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR_MISS", 
+				 pDefender->getNameKey(), getNameKey())); 
+		//red icon over attacking unit
+		gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
+			"AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREEN"), this->getX(), this->getY()/*, true, true*/);
+		//white icon over defending unit
+		gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"", pDefender->getPlot(),
+			"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(),GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY()/*, true, true*/);
+		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR_MISS", getNameKey(), pDefender->getNameKey());
+		gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
+			"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("RED"),pPlot->getX(), pPlot->getY());
+	}
+	else
+	{
+		if ((((iUnitDamage - pDefender->getDamage()) * 100)	/ pDefender->maxHitPoints()) != 0)
+		{
+			CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR",
+				pDefender->getNameKey(), getNameKey(),
+				// advc.004g:
+				((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints()));
+			// advc.004g:
+			//red icon over attacking unit
+			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("RED"), this->getX(), this->getY()/*, true, true*/);
+			//white icon over defending unit
+			gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"", pDefender->getPlot(),
+				"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY()/*, true, true*/);
+
+
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR", getNameKey(), pDefender->getNameKey(),
+				// advc.004g:
+				((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints());
+			gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
+
+			//keldath addition - 30% chance to get experience if theres a hit.
+			//if (RandomBombardDamage > 75)
+			if (GC.getGame().getSorenRandNum(100, "RandomHit") + 1 >= 70)
+			{
+				changeExperience(1);
+			}
+			//set damage but don't update entity damage visibility
+			pDefender->setDamage(iUnitDamage, getOwner(), false);
+
+			//30% chance of missing collateral damage
+			if (GC.getGame().getSorenRandNum(100, "RandomHit") + 1 >= 70)
+			{
+				if (pCity != NULL)
+				{
+					//if target is a city->if can ignore city defense or no units in city-> collateral damage.
+					if (!ignoreBuildingDefense() || pCity->getDefenseModifier(false) == 0)
+					{
+						//collateralCombat(pPlot, pDefender);
+						collateralCombat(pPlot, airStrikeTarget(pPlot));
+					}
+				}
+				else
+				{
+					collateralCombat(pPlot, airStrikeTarget(pPlot));
+				}
+			}
+		}
+		else
+		{
+			//this will never show - you can attack a unit with combat limit , so no message ever.
+			// i left it here, who knows...
+			CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_ENEMY_MAXIMUM_DAMAGE", pDefender->getNameKey(), getNameKey()));
+			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREY"), this->getX(), this->getY()/*, true, true*/);
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_MAXIMUM_DAMAGE", getNameKey(), pDefender->getNameKey());
+			gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY());
+		}
+		if (pPlot->isActiveVisible(false))
+		{
+			// Range strike entity mission
+			CvMissionDefinition kDefiniton;
+			kDefiniton.setMissionTime(GC.getInfo(MISSION_RANGE_ATTACK).getTime() * gDLL->getSecsPerTurn());
+			//Vincentz Rangestrike 
+			//kDefiniton.setMissionTime(GC.getInfo(MISSION_RANGE_ATTACK).getTime() * gDLL->getSecsPerTurn() + 2);
+			kDefiniton.setMissionType(MISSION_RANGE_ATTACK);
+			kDefiniton.setPlot(pDefender->plot());
+			kDefiniton.setUnit(BATTLE_UNIT_ATTACKER, this);
+			kDefiniton.setUnit(BATTLE_UNIT_DEFENDER, pDefender);
+			gDLL->getEntityIFace()->AddMission(&kDefiniton);
+
+			//delay death
+			// UNOFFICIAL_PATCH (Bugfix), 05/10/10, jdog5000
+			// mission timer is not used like this in any other part of code, so it might cause OOS
+			// issues ... at worst I think unit dies before animation is complete, so no real
+			// harm in commenting it out.
+			//pDefender->getGroup()->setMissionTimer(GC.getInfo(MISSION_RANGE_ATTACK).getTime()); // BtS
+	/*Vincentz Rangestrike Strikeback - keldath - remove due to the warnig above of oos - i dont care if a unit is vanished after its dead without animation
+			pDefender->getGroup()->setMissionTimer(GC.getMissionInfo(MISSION_RANGE_ATTACK).getTime() + 4);
+	*/
+		}
+		if (pDefender->isDead())
+		{
+			CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", getNameKey(), pDefender->getNameKey()));
+			gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, GC.getInfo(
+				GET_PLAYER(getOwner()) // advc.002l
+				.getCurrentEra()).getAudioUnitVictoryScript(), MESSAGE_TYPE_INFO, NULL,
+				GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
+			//keldath removed - xp is handled above.
+			//changeExperience(GC.getDefineINT("MIN_EXPERIENCE_PER_COMBAT"));
+		}
+
+		//Vincentz Rangestrike Strikeback --keldath - dunno - i guess the lines are not aligned with advc
+		if (GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATION))
+		{
+			//keldath notes - this runs over the plot looiking for a unit that can air range strike?
+			//keldath f1rpo - added boll true to stop infinite re run of the code
+			// keldath - decided to go with the original syntax of the pplot()->getX()/Y()
+			if (!pDefender->canRangeStrikeAtK(pDefender->plot(), this->plot()->getX(), this->plot()->getY(), true/*infinite loop breaker*/))
+			{
+				pDefender = NULL;
+				CLLNode<IDInfo>* pUnitNode = pPlot->headUnitNode();
+				while (NULL != pUnitNode)
+				{
+					CvUnit* pLoopUnit = ::getUnit(pUnitNode->m_data);
+					pUnitNode = pPlot->nextUnitNode(pUnitNode);
+
+					//keldath f1rpo - added bool true to stop infinite re run of the code
+					if (pLoopUnit->canRangeStrikeAtK(pLoopUnit->plot(), this->plot()->getX(), this->plot()->getY(), true/*infinite loop breaker*/))
+					{
+						pDefender = pLoopUnit;
+					}
+				}
+			}
+			//keldath notes - found a defender that can strike?
+			if (pDefender != NULL)
+			{
+				int iDamage = rangeCombatDamageK(this) * pDefender->currHitPoints() / pDefender->maxHitPoints();
+				int iUnitDamage = std::max(this->getDamage(), std::min((this->getDamage() + iDamage), pDefender->combatLimit()));
+
+				if (((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) + pDefender->baseCombatStr()) * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER") > ((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) + this->baseCombatStr()))
+				{
+					//qa7-donesame as the above - i want combat limit to take effect - im not sure of the marked off if statement.
+					//re added the line - check the above part.
+					if ((((iUnitDamage - this->getDamage()) * 100) / this->maxHitPoints()) != 0)
+					//if(this->getDamage()<= std::min((this->getDamage() + iDamage), pDefender->combatLimit()))
+					{
+						CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR",
+							pDefender->getNameKey(), getNameKey(),
+							// advc.004g:
+							(((iUnitDamage - this->getDamage()) * 100) / this->maxHitPoints())));
+						// advc.004g:
+						gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
+							"AS2D_BOMBARD", MESSAGE_TYPE_INFO, this->getButton(), GC.getColorType("GREEN"), this->getX(), this->getY()/*, true, true*/);
+						szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR", getNameKey(), pDefender->getNameKey(),
+							// advc.004g:
+							(((iUnitDamage - this->getDamage()) * 100) / this->maxHitPoints()));
+						gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
+							"AS2D_BOMBARD", MESSAGE_TYPE_INFO, this->getButton(), GC.getColorType("RED"), pPlot->getX(), pPlot->getY());
+
+						this->setDamage(iUnitDamage, this->getOwner(), false);
+						//15% chance of missing collateral damage
+						if (GC.getGame().getSorenRandNum(100, "RandomHit") + 1 >= 85)
+						{
+							//added the this-> pointer
+							collateralCombat(this->plot(), this);
+						}
+
+					}
+					else
+					{	//this will never show - you can attack a unit with combat limit , so no message ever.
+						// i left it here, who knows...
+						CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_ENEMY_MAXIMUM_DAMAGE", pDefender->getNameKey(), getNameKey()));
+						gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
+							"AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREY"), this->getX(), this->getY()/*, true, true*/);
+						szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_MAXIMUM_DAMAGE", getNameKey(), pDefender->getNameKey());
+						gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
+							"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("WHITE"), pPlot->getX(), pPlot->getY());
+					}
+				}
+				else
+				{
+					CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR_MISS",
+						pDefender->getNameKey(), getNameKey())); //KELDATH BACKWORDS NAMES
+					gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
+						"AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("RED"), this->getX(), this->getY()/*, true, true*/);
+					szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR_MISS", getNameKey(), pDefender->getNameKey());
+					gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
+						"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
+				}
+
+				if (pPlot->isActiveVisible(false))
+				{
+
+					// Range strike entity mission
+					CvMissionDefinition kDefiniton2;
+					kDefiniton2.setMissionTime(GC.getMissionInfo(MISSION_RANGE_ATTACK).getTime() * gDLL->getSecsPerTurn());
+					kDefiniton2.setMissionType(MISSION_RANGE_ATTACK);
+					kDefiniton2.setPlot(this->plot());
+					kDefiniton2.setUnit(BATTLE_UNIT_ATTACKER, pDefender);
+					kDefiniton2.setUnit(BATTLE_UNIT_DEFENDER, this);
+
+					gDLL->getEntityIFace()->AddMission(&kDefiniton2);
+
+				}
+			}
+		}
+	}
+	return true;	
+}

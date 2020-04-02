@@ -212,7 +212,7 @@ void CvGame::updateColoredPlots()
 
 	/*	advc.rstr: Merged air range with ranged strike code so that the maximal range
 		is highlighted also for range-strikers */
-	if (pHeadSelectedUnit->airRange() > 0)
+	if (pHeadSelectedUnit->airRange() > 0 || pHeadSelectedUnit->rangedStrike() > 0)
 	{
 		int iMaxAirRange = 0;
 		for (CLLNode<IDInfo> const* pSelectedUnitNode = kUI.headSelectionListNode();
@@ -220,7 +220,16 @@ void CvGame::updateColoredPlots()
 		{
 			CvUnit const* pSelectedUnit = ::getUnit(pSelectedUnitNode->m_data);
 			if (pSelectedUnit != NULL)
-				iMaxAirRange = std::max(iMaxAirRange, pSelectedUnit->airRange());
+			{
+				if (pSelectedUnit->rangedStrike() == 0 && pSelectedUnit->airRange() > 0 )
+				{
+					iMaxAirRange = std::max(iMaxAirRange, pSelectedUnit->airRange());
+				}
+				else if (pSelectedUnit->rangedStrike() > 0 && pSelectedUnit->airRange() == 0 )
+				{
+					iMaxAirRange = std::max(iMaxAirRange, pSelectedUnit->rangedStrike());
+				}
+			}
 		}
 		//rangedattack-keldath
 		//if the unit is in a city, a land unit only - it has another range to it as a bonus - note that this exists also in the cvunit.cpp

@@ -517,22 +517,18 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 				gDLL->getSymbolID(MOVES_CHAR));
 	} // </advc.069>
 	szString.append(szTempBuffer);
-//vincentz ranegd strike 
-//rangedattack-keldath - no need for now
-/*	if (pUnit->getDomainType() == DOMAIN_AIR && pUnit->airRange() > 0 )
-	{
-		szString.append(gDLL->getText("TXT_KEY_UNIT_AIR_COMBATSHORT", pUnit->airBaseCombatStr()));
-	}
-	if (pUnit->airRange() > 0 && pUnit->getDomainType() != DOMAIN_AIR)
-	{
-		szString.append(gDLL->getText("TXT_KEY_ASTRENGTHSHORT", pUnit->baseCombatStr()));
-	}
-*/
+
 	if (pUnit->airRange() > 0)
 	{
 		szString.append(gDLL->getText("TXT_KEY_UNIT_HELP_AIR_RANGE", pUnit->airRange()));
 	}
 
+//rangedattack-keldath
+	if (pUnit->rangedStrike() > 0)
+	{
+		szString.append(gDLL->getText("TXT_KEY_ASTRENGTH", pUnit->rangedStrike()));
+	}
+//rangedattack-keldath
 	BuildTypes eBuild = pUnit->getBuildType();
 
 	if (eBuild != NO_BUILD)
@@ -940,24 +936,7 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 			szString.append(NEWLINE);
 			szString.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT", (100 * pUnit->combatLimit()) / GC.getMAX_HIT_POINTS()));
 		}
-//rangedattack-keldath - it showed funky results
-		//vincentz ranged strike - now will also dispplay aircombat limit for units
-	/*	if ((pUnit->combatLimit() < GC.getMAX_HIT_POINTS()
-			||pUnit->airCombatLimit() < GC.getMAX_HIT_POINTS() )
-			&& pUnit->canAttack())
-		{
-			if(pUnit->airCombatLimit() > 0 && pUnit->airRange() > 0 ) 
-			{
-				szString.append(NEWLINE);
-				szString.append(gDLL->getText("TXT_KEY_UNIT_AIRCOMBAT_LIMIT", (100 * pUnit->airCombatLimit()) / GC.getMAX_HIT_POINTS()));
-			}
-			else 
-			{
-				szString.append(NEWLINE);
-				szString.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT", (100 * pUnit->combatLimit()) / GC.getMAX_HIT_POINTS()));
-			} 
-		}
-*/
+
 		if (pUnit->collateralDamage() > 0)
 		{
 			szString.append(NEWLINE);
@@ -9596,7 +9575,7 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 			}
 		}
 		//Air range for land units -  vincentz ranged strike - keldath addition
-		else if (u.getDomainType() != DOMAIN_AIR && u.getAirRange() > 0)
+		else if (u.getDomainType() != DOMAIN_AIR && u.getRangeStrike() > 0)
 		{
 				szTempBuffer.Format(L"%d%c%d%c, ", u.getCombat(), gDLL->getSymbolID(DEFENSE_CHAR));
 				szBuffer.append(szTempBuffer);
@@ -9679,10 +9658,15 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		}
 		//Air range for land units -  vincentz ranged strike - keldath addition end
 //rangedattack-keldath
-		if (u.getAirRange() > 0)
+		if (u.getAirRange() > 0 )
 		{
 			szBuffer.append(L", ");
 			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIR_RANGE", u.getAirRange()));
+		}
+		if (u.getRangeStrike() > 0)
+		{
+			szBuffer.append(L", ");
+			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIR_RANGE", u.getRangeStrike()));
 		}
 	}
 

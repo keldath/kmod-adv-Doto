@@ -330,6 +330,11 @@ public:
 	{
 		return (m_pUnitInfo->getAirRange() + getExtraAirRange());
 	}
+//rangedattack-keldath
+	int rangedStrike() const																					// Exposed to Python
+	{
+		return (m_pUnitInfo->getRangeStrike());
+	}
 	int nukeRange() const																					// Exposed to Python
 	{
 		return m_pUnitInfo->getNukeRange();
@@ -963,13 +968,8 @@ public:
 	bool isEnemy(CvPlot const& kPlot) const;
 	// (advc: isPotentialEnemy moved to CvUnitAI)
 
-//rangedattack-keldath
-//Vincentz Rangestrike start-f1rpo fix for a loop in  the source code.
-	//bool canRangeStrike() const;
-	//bool canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY) const;
-	bool canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY, bool bStrikeBack = false) const;
-	bool canRangeStrike(bool bStrikeBack = false) const;
-//Vincentz Rangestrike end
+	bool canRangeStrike() const;
+	bool canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY) const;
 	bool rangeStrike(int iX, int iY);
 
 	int getTriggerValue(EventTriggerTypes eTrigger, const CvPlot* pPlot, bool bCheckPlot) const;
@@ -1026,7 +1026,12 @@ public:
 	bool LFBisBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker, int* pBestDefenderRank) const;
 	int LFBgetDefenderCombatOdds(const CvUnit* pAttacker) const;
 	// Lead From Behind: END
-
+	//rangedattack-keldath	
+	int rangeCombatDamageK(const CvUnit* pDefender) const;													// Exposed to Python
+	CvUnit* rangedStrikeTargetK(const CvPlot* pPlot) const;
+	bool canRangeStrikeAtK(const CvPlot* pPlot, int iX, int iY, bool bStrikeBack = false) const;
+	bool canRangeStrikeK(bool bStrikeBack = false) const;
+	bool rangeStrikeK(int iX, int iY);
 	// <advc.003u>
 	// virtual for FFreeListTrashArray
 	virtual void read(FDataStreamBase* pStream);

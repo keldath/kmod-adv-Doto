@@ -127,6 +127,8 @@ public:
 	int getMinAreaSize() const { return m_iMinAreaSize; }
 	inline int getMoves() const { return m_iMoves; }
 	inline int getAirRange() const { return m_iAirRange; }
+//rangedattack-keldath
+	inline int getRangeStrike() const { return m_iRangeStrike;}
 	int getAirUnitCap() const { return m_iAirUnitCap; }
 	int getDropRange() const { return m_iDropRange; }
 	int getNukeRange() const { return m_iNukeRange; }
@@ -412,6 +414,7 @@ protected:
 	int m_iMinAreaSize;
 	int m_iMoves;
 	int m_iAirRange;
+	int m_iRangeStrike;
 	int m_iAirUnitCap;
 	int m_iDropRange;
 	int m_iNukeRange;
