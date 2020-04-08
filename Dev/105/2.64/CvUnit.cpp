@@ -4532,9 +4532,10 @@ bool CvUnit::canBombard(CvPlot const& kPlot) const
 	if (isCargo())
 		return false;
 
-//keldath - if we got a null param - it means - the bool CvUnit::bombard()
+//keldath - if we got a the same plot, that unit is on, check for the surronding plots(regular bombard mission or AI check)
 //already got a city target to bomb - by the human player that chose that plot 
-	if (&kPlot == NULL) 
+//sort of a silly cheeck , should be either at some bool check if we want to test this, or have a canrangedbombard()
+	if (&kPlot == this->plot())
 	{
 		if (bombardTarget(kPlot) == NULL)
 			return false;
@@ -11293,8 +11294,12 @@ bool CvUnit::canRangeStrikeAtK(const CvPlot* pPlot, int iX, int iY, bool bStrike
 	CvCity* pBombardCity = pTargetPlot->getPlotCity();
 	//bool pbomb = canBombard(*pTargetPlot)
 	//TODO - change can bombard - i dont care for checking plots and this is just too much syntax.
-	if (pDefender == NULL && !(pBombardCity == NULL && pBombardCity->getDefenseModifier(false) == 0 && bombardRate() <= 0))
-		return false;		
+	//better have a canrangedbombard check function
+	if (pDefender == NULL)
+	{
+		if (!(pBombardCity != NULL && pBombardCity->getDefenseModifier(false) > 0 && bombardRate() > 0))
+			return false;
+	}
 		
 	/*	advc.rstr: The facing direction shouldn't matter. If we want to check for
 		obstacles in the line of sight, GC.getMap().directionXY(*pPlot, *pTargetPlot)
