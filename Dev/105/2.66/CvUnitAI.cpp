@@ -2145,7 +2145,7 @@ void CvUnitAI::AI_barbAttackMove()
 			return;
 		}
 	}
-
+	
 	if (AI_anyAttack(1, 20))
 	{
 		return;
@@ -2172,7 +2172,7 @@ void CvUnitAI::AI_barbAttackMove()
 			{
 				return;
 			}
-
+	
 			if (AI_cityAttack(3, 10))
 			{
 				return;
@@ -2429,6 +2429,10 @@ void CvUnitAI::AI_attackMove()
 				return;
 			if (AI_anyAttack(1, 65))
 				return;*/ // BtS
+//i think it better bove collateral check since range includes thats
+			//rangedstrike-keldath
+			if(AI_rangedStrikeK())
+				return;
 
 			if (collateralDamage() > 0)
 			{
@@ -2815,7 +2819,7 @@ void CvUnitAI::AI_paratrooperMove()
 	{
 		return;
 	}
-
+	
 	if (AI_anyAttack(1, 55))
 	{
 		return;
@@ -3301,7 +3305,6 @@ void CvUnitAI::AI_attackCityMove()
 		}
 	}*/ // BtS
 //rangedattack-keldath
-//re enanbled this - keldath
 /*	if (collateralDamage() > 0)
 	{				
 		if (AI_rangedStrikeK(50) ||
@@ -6141,7 +6144,9 @@ void CvUnitAI::AI_workerSeaMove()
 }
 
 
-void CvUnitAI::	if (AI_guardCity(true))
+void CvUnitAI::AI_barbAttackSeaMove()
+	
+	if (AI_guardCity(true))
 	{
 //rangedattack-keldath-added by me
 		if (!AI_rangedStrikeK())
@@ -7109,7 +7114,7 @@ void CvUnitAI::AI_exploreSeaMove()
 	getGroup()->pushMission(MISSION_SKIP);
 }
 
-
+//keldath rangedstrike - long func - need to think how to add it here
 void CvUnitAI::AI_assaultSeaMove()
 {
 	PROFILE_FUNC();
