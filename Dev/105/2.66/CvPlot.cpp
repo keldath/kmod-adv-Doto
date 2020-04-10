@@ -2330,7 +2330,8 @@ CvUnit* CvPlot::getBestDefender(PlayerTypes eOwner, PlayerTypes eAttackingPlayer
 	// BETTER_BTS_AI_MOD, Lead From Behind (UncutDragon), 02/21/10, jdog5000
 	int iBestUnitRank = -1;
 	CvUnit* pBestUnit = NULL;
-	for (CLLNode<IDInfo> const* pUnitNode = headUnitNode(); pUnitNode != NULL; pUnitNode = nextUnitNode(pUnitNode)) // advc: while loop replaced
+	for (CLLNode<IDInfo> const* pUnitNode = headUnitNode(); pUnitNode != NULL; // advc: while loop replaced
+		pUnitNode = nextUnitNode(pUnitNode))
 	{
 		CvUnit& kLoopUnit = *::getUnit(pUnitNode->m_data);
 		if (eOwner != NO_PLAYER && kLoopUnit.getOwner() != eOwner)
@@ -2345,9 +2346,11 @@ CvUnit* CvPlot::getBestDefender(PlayerTypes eOwner, PlayerTypes eAttackingPlayer
 			if (bAny)
 				return &kLoopUnit; // </advc>
 			if (kLoopUnit.isBetterDefenderThan(pBestUnit, pAttacker,
-					&iBestUnitRank, // UncutDragon
-					bTestVisible)) // advc.061
+				&iBestUnitRank, // UncutDragon
+				bTestVisible)) // advc.061
+			{
 				pBestUnit = &kLoopUnit;
+			}
 		}
 	}
 	// BETTER_BTS_AI_MOD: END
@@ -3302,12 +3305,22 @@ bool CvPlot::isVisibleEnemyUnit(PlayerTypes ePlayer) const
 {
 	return (plotCheck(PUF_isEnemy, ePlayer, false, NO_PLAYER, NO_TEAM, PUF_isVisible, ePlayer) != NULL);
 }
-// <advc.ctr>
-bool CvPlot::isVisibleEnemyCityAttacker(PlayerTypes eDefender, TeamTypes eAssumePeace) const
+
+// advc.ctr:
+bool CvPlot::isVisibleEnemyCityAttacker(PlayerTypes eDefender, TeamTypes eAssumePeace,
+	int iRange) const
 {
-	return (plotCheck(PUF_isEnemyCityAttacker, eDefender, eAssumePeace,
-			NO_PLAYER, NO_TEAM, PUF_isVisible, eDefender) != NULL);
-} // </advc.ctr>
+	PROFILE_FUNC(); // advc.test: To be profiled
+	for (SquareIter it(*this, iRange, true); it.hasNext(); ++it)
+	{
+		if (it->plotCheck(PUF_isEnemyCityAttacker, eDefender, eAssumePeace,
+			NO_PLAYER, NO_TEAM, PUF_isVisible, eDefender) != NULL)
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 
 int CvPlot::getNumVisibleUnits(PlayerTypes ePlayer) const
@@ -3455,20 +3468,21 @@ bool CvPlot::isTradeNetwork(TeamTypes eTeam) const
 {
 	//PROFILE_FUNC(); // advc.003o
 
-	if (getTeam() != NO_TEAM && GET_TEAM(eTeam).isAtWar(getTeam()) // advc.opt: faster than ::atWar
-			/*  advc.124: War blocks trade, but blockades against the plot owner
-				override this. If these blockades also affect eTeam, trade is again
-				blocked (by the next conditional). */
-			&& getBlockadedCount(getTeam()) <= 0)
+	if (getTeam() != NO_TEAM && GET_TEAM(eTeam).isAtWar(getTeam()) && // advc.opt: faster than ::atWar
+		/*  advc.124: War blocks trade, but blockades against the plot owner
+			override this. If these blockades also affect eTeam, trade is again
+			blocked (by the next conditional). */
+		getBlockadedCount(getTeam()) <= 0)
+	{
 		return false;
-
+	}
 	if (getBlockadedCount(eTeam) > 0)
 		return false;
 
 	if (isTradeNetworkImpassable(eTeam))
 		return false;
 
-	//if (!isOwned()) { // advc.124 (commented out)
+	//if (!isOwned()) // advc.124 (disabled)
 	if (!isRevealed(eTeam))
 		return false;
 
@@ -3632,11 +3646,11 @@ void CvPlot::setLatitude(int iLatitude)
 	m_iLatitude = iLatitude;
 } // </advc.tsl>
 
-// <advc>
+// advc: (But normally better to call CvMap::plotNum directly b/c of inlining)
 int CvPlot::getMapIndex() const
 {
-	return GC.getMap().plotNum(getX(), getY());
-} // </advc>
+	return GC.getMap().plotNum(*this);
+}
 
 
 int CvPlot::getLatitude() const

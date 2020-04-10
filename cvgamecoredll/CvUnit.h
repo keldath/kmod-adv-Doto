@@ -158,7 +158,8 @@ public:
 
 	CvCity* bombardTarget(CvPlot const& kPlot) const;														// Exposed to Python
 	bool canBombard(CvPlot const& kPlot) const;																// Exposed to Python
-	bool bombard();
+	////rangedstrike-keldath change - ALLOW PLOT VAR WITH DEFAULT NULL
+	bool bombard(CvPlot const* pPlot = NULL) ;
 
 	bool canParadrop(const CvPlot* pPlot) const;															// Exposed to Python
 	bool canParadropAt(const CvPlot* pPlot, int iX, int iY) const;											// Exposed to Python
@@ -971,6 +972,13 @@ public:
 	bool canRangeStrike() const;
 	bool canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY) const;
 	bool rangeStrike(int iX, int iY);
+	//rangedattack-keldath	
+	int rangeCombatDamageK(const CvUnit* pDefender) const;													// Exposed to Python
+	CvUnit* rangedStrikeTargetK(const CvPlot* pPlot) const;
+	bool canRangeStrikeK(bool bStrikeBack = false) const;
+	bool canRangeStrikeAtK(const CvPlot* pPlot, int iX, int iY, bool bStrikeBack = false) const;
+	bool afterRangeStrikeK(CvUnit* pAttacker) ;
+	bool rangeStrikeK(int iX, int iY);
 
 	int getTriggerValue(EventTriggerTypes eTrigger, const CvPlot* pPlot, bool bCheckPlot) const;
 	bool canApplyEvent(EventTypes eEvent) const;
@@ -1026,12 +1034,7 @@ public:
 	bool LFBisBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker, int* pBestDefenderRank) const;
 	int LFBgetDefenderCombatOdds(const CvUnit* pAttacker) const;
 	// Lead From Behind: END
-	//rangedattack-keldath	
-	int rangeCombatDamageK(const CvUnit* pDefender) const;													// Exposed to Python
-	CvUnit* rangedStrikeTargetK(const CvPlot* pPlot) const;
-	bool canRangeStrikeAtK(const CvPlot* pPlot, int iX, int iY, bool bStrikeBack = false) const;
-	bool canRangeStrikeK(bool bStrikeBack = false) const;
-	bool rangeStrikeK(int iX, int iY);
+
 	// <advc.003u>
 	// virtual for FFreeListTrashArray
 	virtual void read(FDataStreamBase* pStream);

@@ -486,7 +486,6 @@ void CvSelectionGroup::pushMission(MissionTypes eMission, int iData1, int iData2
 	{
 		if (isBusy())
 			return;
-
 		clearMissionQueue();
 	}
 
@@ -504,8 +503,8 @@ void CvSelectionGroup::pushMission(MissionTypes eMission, int iData1, int iData2
 	if (canAllMove()) // K-Mod. Do not set the AI mission type if this is just a "follow" command!
 		AI().AI_setMissionAI(eMissionAI, pMissionAIPlot, pMissionAIUnit);
 
-	insertAtEndMissionQueue(mission, !bAppend
-			|| AI_isControlled()); // K-Mod (AI commands should execute immediately)
+	insertAtEndMissionQueue(mission, !bAppend ||
+			AI_isControlled()); // K-Mod (AI commands should execute immediately)
 
 	if (bManual)
 	{
@@ -1025,14 +1024,17 @@ void CvSelectionGroup::startMission()
 					break;
 
 				case MISSION_BOMBARD:
-					if (pLoopUnit->bombard())
+//rangedstrike-keldath
+					//dont push a bombard mission if the unit already have a ranged attack
+					if (pLoopUnit->bombard() && !pLoopUnit->canRangeStrikeK())
 					{
 						bAction = true;
 					}
 					break;
 
 				case MISSION_RANGE_ATTACK:
-					if (pLoopUnit->rangeStrike(headMissionQueueNode()->m_data.iData1, headMissionQueueNode()->m_data.iData2))
+//rangedstrike-keldath
+					if (pLoopUnit->rangeStrikeK(headMissionQueueNode()->m_data.iData1, headMissionQueueNode()->m_data.iData2))
 					{
 						bAction = true;
 					}
@@ -1830,7 +1832,8 @@ bool CvSelectionGroup::canDoInterfaceMode(InterfaceModeTypes eInterfaceMode)
 			break;
 
 		case INTERFACEMODE_RANGE_ATTACK:
-			if (pLoopUnit->canRangeStrike())
+//rangedstrike-keldath
+			if (pLoopUnit->canRangeStrikeK())
 				return true;
 			break;
 
@@ -1905,7 +1908,8 @@ bool CvSelectionGroup::canDoInterfaceModeAt(InterfaceModeTypes eInterfaceMode, C
 		case INTERFACEMODE_RANGE_ATTACK:
 			if (pLoopUnit != NULL)
 			{
-				if (pLoopUnit->canRangeStrikeAt(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
+//rangedstrike-keldath
+				if (pLoopUnit->canRangeStrikeAtK(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
 					return true;
 			}
 			break;
@@ -2391,6 +2395,18 @@ bool CvSelectionGroup::canBombard(CvPlot const& kPlot) const // advc: CvPlot ref
 	}
 	return false;
 }
+//rangedstrike-keldath
+bool CvSelectionGroup::canRanged(const CvPlot* pPlot, int ix, int iy) const // advc: CvPlot reference, const.
+{
+	for (CLLNode<IDInfo> const* pUnitNode = headUnitNode(); pUnitNode != NULL;
+		pUnitNode = nextUnitNode(pUnitNode))
+	{
+		CvUnit const* pLoopUnit = ::getUnit(pUnitNode->m_data);
+		if (pLoopUnit->canRangeStrikeAtK(pPlot,ix,iy))
+			return true;
+	}
+	return false;
+}
 
 bool CvSelectionGroup::visibilityRange() /* advc: */ const
 {
@@ -2749,9 +2765,10 @@ bool CvSelectionGroup::groupAttack(int iX, int iY, int iFlags, bool& bFailedAlre
 		return false; // advc
 
 	if(getDomainType() != DOMAIN_AIR && stepDistance(getX(), getY(),
-			pDestPlot->getX(), pDestPlot->getY()) != 1)
+		pDestPlot->getX(), pDestPlot->getY()) != 1)
+	{
 		return false; // advc
-
+	}
 	bool bAttack = false;
 	//if ((iFlags & MOVE_DIRECT_ATTACK) || (getDomainType() == DOMAIN_AIR) || (iFlags & MOVE_THROUGH_ENEMY) || (generatePath(plot(), pDestPlot, iFlags) && (getPathFirstPlot() == pDestPlot)))
 	// K-Mod.
@@ -2840,13 +2857,14 @@ void CvSelectionGroup::groupMove(CvPlot* pPlot, bool bCombat, CvUnit* pCombatUni
 	//PROFILE_FUNC();
 
 	FAssert(!isBusy()); // K-Mod
+	CvPlot const& kFrom = getPlot(); // advc.139
 
 	// K-Mod. Some variables to help us regroup appropriately if not everyone can move.
 	CvSelectionGroup* pStaticGroup = 0;
 	UnitAITypes eHeadAI = getHeadUnitAIType();
 
 	// Move the combat unit first, so that no-capture units don't get unneccarily left behind.
-	if (pCombatUnit)
+	if (pCombatUnit != NULL)
 		pCombatUnit->move(*pPlot, true);
 	// K-Mod end
 
@@ -2866,7 +2884,7 @@ void CvSelectionGroup::groupMove(CvPlot* pPlot, bool bCombat, CvUnit* pCombatUni
 		{
 			CvUnit* pLoopUnit = ::getUnit(pUnitNode->m_data);
 			pUnitNode = nextUnitNode(pUnitNode);
-			//if ((pLoopUnit->canMove() && ((bCombat && (!(pLoopUnit->isNoCapture()) || !(pPlot->isEnemyCity(*pLoopUnit)))) ? pLoopUnit->canMoveOrAttackInto(pPlot) : pLoopUnit->canMoveInto(pPlot))) || (pLoopUnit == pCombatUnit))
+			//if ((pLoopUnit->canMove() && ((bCombat && (!pLoopUnit->isNoCapture() || !pPlot->isEnemyCity(*pLoopUnit))) ? pLoopUnit->canMoveOrAttackInto(pPlot) : pLoopUnit->canMoveInto(pPlot))) || pLoopUnit == pCombatUnit)
 			// K-Mod
 			if (pLoopUnit == pCombatUnit)
 				continue; // this unit is moved before the loop.
@@ -2911,6 +2929,20 @@ void CvSelectionGroup::groupMove(CvPlot* pPlot, bool bCombat, CvUnit* pCombatUni
 	//execute move
 	if (bEndMove || !canAllMove())
 	{
+		// <advc.139>
+		if (isHuman() && getNumUnits() > 1)
+		{
+			PlayerTypes const eGroupOwner = getOwner();
+			PlayerTypes const eFromOwner = kFrom.getOwner();
+			PlayerTypes const eToOwner = pPlot->getOwner();
+			if (eFromOwner != NO_PLAYER && GET_TEAM(eFromOwner).isAtWar(TEAMID(eGroupOwner)))
+				GET_PLAYER(eFromOwner).AI_humanEnemyStackMovedInTerritory(kFrom, *pPlot);
+			if (eToOwner != NO_PLAYER && GET_TEAM(eToOwner).isAtWar(TEAMID(eGroupOwner)) &&
+				eToOwner != eFromOwner)
+			{
+				GET_PLAYER(eToOwner).AI_humanEnemyStackMovedInTerritory(kFrom, *pPlot);
+			}
+		} // </advc.139>
 		CLLNode<IDInfo>* pUnitNode = headUnitNode();
 		while (pUnitNode != NULL)
 		{
@@ -3470,13 +3502,16 @@ bool CvSelectionGroup::canDoMission(int iMission, int iData1, int iData2,
 			break;
 
 		case MISSION_BOMBARD:
-			if (pLoopUnit->canBombard(*pPlot) && (!bCheckMoves || pLoopUnit->canMove()))
+//rangedstrike-keldath
+			//dont push a bombard mission if the unit already have a ranged attack
+			if (pLoopUnit->canBombard(*pPlot) && (!bCheckMoves || pLoopUnit->canMove()) && !pLoopUnit->canRangeStrikeK())
 				return true;
 			break;
 
 		case MISSION_RANGE_ATTACK:
-			if (pLoopUnit->canRangeStrikeAt(pPlot, iData1, iData2) && (!bCheckMoves || pLoopUnit->canMove()))
-				return true;
+//rangedstrike-keldath
+			if (pLoopUnit->canRangeStrikeAtK(pPlot, iData1, iData2) && (!bCheckMoves || pLoopUnit->canMove()))
+					return true;
 			break;
 
 		case MISSION_PLUNDER:

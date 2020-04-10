@@ -1740,7 +1740,6 @@ bool CvImprovementInfo::readPass2(CvXMLLoadUtility* pXML)
 
 	pXML->GetChildXmlValByName(szTextVal, "ImprovementUpgrade");
 	m_iImprovementUpgrade = GC.getInfoTypeForString(szTextVal);
-
     // < JImprovementLimit Mod Start >
 	pXML->GetChildXmlValByName(szTextVal, "ImprovementRequired",""); // f1rpo
 	m_iImprovementRequired = GC.getInfoTypeForString(szTextVal);

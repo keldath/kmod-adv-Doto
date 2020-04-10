@@ -2082,7 +2082,6 @@ int CvTeam::getTypicalUnitValue(UnitAITypes eUnitAI, DomainTypes eDomain) const
 
 int CvTeam::getResearchCost(TechTypes eTech, bool bGlobalModifiers, bool bTeamSizeModifiers) const // K-Mod: params added
 {
-	FAssertMsg(eTech != NO_TECH, "Tech is not assigned a valid value");
 	CvGame const& g = GC.getGame();
 
 	// advc.251: To reduce rounding errors (as there are quite a few modifiers to apply)
@@ -2134,10 +2133,13 @@ int CvTeam::getResearchCost(TechTypes eTech, bool bGlobalModifiers, bool bTeamSi
 		// <advc.550d>
 		if (g.isOption(GAMEOPTION_NO_TECH_TRADING) && eTechEra > 0 && eTechEra < 6)
 		{
-			static int const iTECH_COST_NOTRADE_MODIFIER = GC.getDefineINT("TECH_COST_NOTRADE_MODIFIER");
-			scaled rNoTradeAdjustment = (per100(iTECH_COST_NOTRADE_MODIFIER) + per100(5) *
-					(eTechEra - fixp(2.5)).abs().pow(fixp(1.5))) *
-					scaled::clamp(scaled(kWorld.getDefaultPlayers() - 2, 6), 0, 2);
+			static scaled const rTECH_COST_NOTRADE_MODIFIER = per100(
+					GC.getDefineINT("TECH_COST_NOTRADE_MODIFIER"));
+			scaled rNoTradeAdjustment =
+					(rTECH_COST_NOTRADE_MODIFIER + per100(5) *
+					(eTechEra - scaled(3)).abs().pow(fixp(1.5))) *
+					scaled::clamp(scaled(kWorld.getDefaultPlayers() - 2,
+					11 - eTechEra), 0, fixp(8/3.));
 			rNoTradeAdjustment.decreaseTo(0); // No Tech Trading can only lower tech costs
 			rModifier += rNoTradeAdjustment;
 		} // </advc.550d>
@@ -2159,7 +2161,10 @@ int CvTeam::getResearchCost(TechTypes eTech, bool bGlobalModifiers, bool bTeamSi
 
 int CvTeam::getResearchLeft(TechTypes eTech) const
 {
-	return std::max(0, (getResearchCost(eTech) - getResearchProgress(eTech)));
+	// <advc> Safer, cleaner this way. (NB: NO_TECH isn't allowed here.)
+	if (isHasTech(eTech) && !GC.getInfo(eTech).isRepeat())
+		return 0; // </advc>
+	return std::max(0, getResearchCost(eTech) - getResearchProgress(eTech));
 }
 
 
@@ -3996,7 +4001,9 @@ void CvTeam::changeObsoleteBuildingCount(BuildingTypes eIndex, int iChange)
 	}
 }
 
-
+/*	advc (note): If the tech is already known, then the research progress
+	is equal to the number of beakers that this team has put into it;
+	i.e. it's not necessarily greater than the tech cost, can even be 0. */
 int CvTeam::getResearchProgress(TechTypes eIndex) const
 {
 	if (eIndex != NO_TECH)
@@ -4021,8 +4028,9 @@ void CvTeam::setResearchProgress(TechTypes eIndex, int iNewValue, PlayerTypes eP
 			Popup_DIRTY_BIT would suffice here?) */
 		CvPlayer& kActivePlayer = GET_PLAYER(GC.getGame().getActivePlayer());
 		if(kActivePlayer.getCurrentResearch() == NO_TECH &&
-				kActivePlayer.isFoundedFirstCity() &&
-				kActivePlayer.isHuman()) { // i.e. not during Auto Play
+			kActivePlayer.isFoundedFirstCity() &&
+			kActivePlayer.isHuman()) // i.e. not during Auto Play
+		{
 			kActivePlayer.killAll(BUTTONPOPUP_CHOOSETECH);
 			kActivePlayer.chooseTech();
 		} // </advc.004x>
@@ -4033,6 +4041,9 @@ void CvTeam::setResearchProgress(TechTypes eIndex, int iNewValue, PlayerTypes eP
 		int iOverflow = (100 * (getResearchProgress(eIndex) - getResearchCost(eIndex))) /
 				std::max(1, GET_PLAYER(ePlayer).calculateResearchModifier(eIndex));
 		GET_PLAYER(ePlayer).changeOverflowResearch(iOverflow);
+		// <advc> Cleaner to subtract the overflow. Cf. comment in getResearchProgress.
+		m_aiResearchProgress.add(eIndex,
+				getResearchProgress(eIndex) - getResearchCost(eIndex)); // </advc>
 		setHasTech(eIndex, true, ePlayer, true, true);
 		/*if (!GC.getGame().isMPOption(MPOPTION_SIMULTANEOUS_TURNS) && !GC.getGame().isOption(GAMEOPTION_NO_TECH_BROKERING))
 			setNoTradeTech(eIndex, true);*/ // BtS

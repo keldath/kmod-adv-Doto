@@ -384,6 +384,8 @@ void CyUnitPythonInterface1(python::class_<CyUnit>& x)
 		.def("centerCamera", &CyUnit::centerCamera, "void () - Centers the Camera on the unit")
 		.def("attackForDamage", &CyUnit::attackForDamage, "void attackForDamage(CyUnit *defender, int attakerDamageChange, int defenderDamageChange)")
 		.def("rangeStrike", &CyUnit::rangeStrike, "void rangeStrike(int iX, int iY)")
+//rangedattack-keldath
+		.def("rangeStrikeK", &CyUnit::rangeStrikeK, "void rangeStrikeK(int iX, int iY)")
 
 		.def("getArtInfo", &CyUnit::getArtInfo,  python::return_value_policy<python::reference_existing_object>(), "CvArtInfoUnit* (int i, eEra)")
 		.def("getButton", &CyUnit::getButton, "std::string ()")

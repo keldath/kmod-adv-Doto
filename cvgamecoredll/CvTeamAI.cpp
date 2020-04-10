@@ -2848,7 +2848,7 @@ int CvTeamAI::AI_getRivalAirPower() const
 	return iEnemyAirPower + iRivalAirPower / std::max(1, iTeamCount);
 }
 
-// K-Mod
+// K-Mod:
 bool CvTeamAI::AI_refusePeace(TeamTypes ePeaceTeam) const
 {
 	// Refuse peace if we need the war for our conquest / domination victory.
@@ -3390,12 +3390,16 @@ DenialTypes CvTeamAI::AI_makePeaceTrade(TeamTypes ePeaceTeam, TeamTypes eBroker)
 		return DENIAL_VICTORY;
 	// <advc.004d>
 	if(isAtWar(eBroker) && !GET_TEAM(ePeaceTeam).AI_refusePeace(getID()) &&
-			GET_PLAYER(GET_TEAM(ePeaceTeam).getLeaderID()).AI_isWillingToTalk(getLeaderID()))
-		return NO_DENIAL; // </advc.004d>
-	if (!GET_PLAYER(getLeaderID()).canContact(GET_TEAM(ePeaceTeam).getLeaderID(), true) ||
-			GET_TEAM(ePeaceTeam).AI_refusePeace(getID()))
-		//return DENIAL_CONTACT_THEM;
+		GET_PLAYER(GET_TEAM(ePeaceTeam).getLeaderID()).AI_isWillingToTalk(getLeaderID()))
+	{
+		return NO_DENIAL;
+	} // </advc.004d>
+	if (!GET_PLAYER(getLeaderID()).canContact(GET_TEAM(ePeaceTeam).getLeaderID(), true))
+	{	//return DENIAL_CONTACT_THEM;
 		return DENIAL_RECENT_CANCEL; // advc.004d: Contacting them is not helpful
+	}
+	if (GET_TEAM(ePeaceTeam).AI_refusePeace(getID()))
+		return DENIAL_CONTACT_THEM;
 	// K-Mod end
 	return NO_DENIAL;
 }
@@ -3812,12 +3816,6 @@ DenialTypes CvTeamAI::AI_permanentAllianceTrade(TeamTypes eWithTeam) const  // a
 }
 
 
-TeamTypes CvTeamAI::AI_getWorstEnemy() const
-{
-	return m_eWorstEnemy;
-}
-
-
 void CvTeamAI::AI_updateWorstEnemy(/* advc.130p: */ bool bUpdateRivalTrade)
 {
 	PROFILE_FUNC();
@@ -3881,6 +3879,50 @@ void CvTeamAI::AI_updateWorstEnemy(/* advc.130p: */ bool bUpdateRivalTrade)
 }
 
 // <advc.130p>
+/*	Conditions for enemy trade moved into a separate function b/c they're getting
+	more complicated and so that other AI code can anticipate enemy trade penalties
+	(will use this for advc.ctr). */
+scaled CvTeamAI::AI_enemyTradeResentmentFactor(TeamTypes eTo, TeamTypes eFrom,
+	TeamTypes eWarTradeTarget, TeamTypes ePeaceTradeTarget, bool bPeaceDeal) const
+{
+	bool const bToWorstEnemy = (AI_getWorstEnemy() == eTo);
+	// Special treatment for war enemies trading among each other
+	bool const bWarWithFromTeam = (isAtWar(eFrom) || eWarTradeTarget == getID());
+	bool const bWarWithToTeam = isAtWar(eTo);
+	if(!bToWorstEnemy && !(bWarWithToTeam && !bWarWithFromTeam))
+		return 0;
+	// No anger among vassal-master when they make peace
+	if (bPeaceDeal && GET_TEAM(eFrom).getMasterTeam() == getID())
+		return 0;
+	if (ePeaceTradeTarget == getMasterTeam() ||
+		/*  Don't mind if our worst enemy is paid to make peace with a team
+			that we like -- unless we're at war with our worst enemy because,
+			then, the peace deals means that we lose a war ally. */
+		(ePeaceTradeTarget != NO_TEAM && !bWarWithToTeam &&
+		AI_getAttitude(ePeaceTradeTarget) >= ATTITUDE_PLEASED &&
+		// Should be implied by attitude, but let's make sure.
+		!isAtWar(ePeaceTradeTarget)))
+	{
+		return 0;
+	}
+	/*  Avoid oscillation of worst enemy, but still punish non-war party
+		for helping a war enemy. */
+	int iAttitudeDiff = ::range(
+			AI_getAttitudeVal(eFrom) - (bWarWithFromTeam ? 2 : 0) -
+			(AI_getAttitudeVal(AI_getWorstEnemy()) - (bWarWithToTeam ? 2 : 0)),
+			0, 7);
+	scaled r(iAttitudeDiff, 5);
+	if (bPeaceDeal) // But count brokered peace in full
+		r *= fixp(0.4);
+	if (bWarWithToTeam && bToWorstEnemy && !bWarWithFromTeam)
+		r *= fixp(4/3.);
+	else if (bToWorstEnemy && !bWarWithFromTeam)
+		r *= fixp(0.9);
+	else r *= fixp(2/3.);
+	return r;
+}
+
+
 int CvTeamAI::AI_enmityValue(TeamTypes eEnemy) const
 {
 	if(eEnemy == NO_TEAM)
@@ -4148,7 +4190,7 @@ void CvTeamAI::AI_setEnemyPeacetimeGrantValue(TeamTypes eIndex, int iNewValue)
 
 void CvTeamAI::AI_changeEnemyPeacetimeGrantValue(TeamTypes eIndex, int iChange)
 {
-	AI_setEnemyPeacetimeGrantValue(eIndex, (AI_getEnemyPeacetimeGrantValue(eIndex) + iChange));
+	AI_setEnemyPeacetimeGrantValue(eIndex, AI_getEnemyPeacetimeGrantValue(eIndex) + iChange);
 }
 
 // advc.003u: Moved from CvTeam
@@ -4394,8 +4436,10 @@ bool CvTeamAI::AI_isMasterPlanningLandWar(CvArea const& kArea) const
 	{
 		AreaAITypes eMasterAreaAI = kArea.getAreaAIType(kMaster.getID());
 		if (eMasterAreaAI == AREAAI_OFFENSIVE || eMasterAreaAI == AREAAI_DEFENSIVE ||
-				eMasterAreaAI == AREAAI_MASSING)
+			eMasterAreaAI == AREAAI_MASSING)
+		{
 			return true;
+		}
 		else if (eMasterAreaAI == AREAAI_NEUTRAL)
 		{
 			// Master has no presence here
@@ -4407,9 +4451,11 @@ bool CvTeamAI::AI_isMasterPlanningLandWar(CvArea const& kArea) const
 	{
 		static bool const bBBAI_HUMAN_VASSAL_WAR_BUILD = GC.getDefineBOOL("BBAI_HUMAN_VASSAL_WAR_BUILD");
 		if (bBBAI_HUMAN_VASSAL_WAR_BUILD &&
-				kArea.getNumCities() - countNumCitiesByArea(kArea) -
-				kMaster.countNumCitiesByArea(kArea) > 2)
+			kArea.getNumCities() - countNumCitiesByArea(kArea) -
+			kMaster.countNumCitiesByArea(kArea) > 2)
+		{
 			return (GC.getGame().getSorenRandNum(4, "Vassal land war") == 0);
+		}
 	}
 	return false;
 }
@@ -4912,13 +4958,13 @@ int CvTeamAI::AI_getStrengthMemory(const CvPlot* pPlot) const
 {
 	//return AI_getStrengthMemory(pPlot->getX(), pPlot->getY());
 	// To make sure that it won't be slower than before
-	return m_aiStrengthMemory[GC.getMap().plotNum(pPlot->getX(), pPlot->getY())];
+	return m_aiStrengthMemory[GC.getMap().plotNum(*pPlot)];
 }
 
 void CvTeamAI::AI_setStrengthMemory(const CvPlot* pPlot, int value)
 {
 	//AI_setStrengthMemory(pPlot->getX(), pPlot->getY(), value);
-	m_aiStrengthMemory[GC.getMap().plotNum(pPlot->getX(), pPlot->getY())] = value;
+	m_aiStrengthMemory[GC.getMap().plotNum(*pPlot)] = value;
 } // </advc.make>
 
 void CvTeamAI::AI_updateStrengthMemory()

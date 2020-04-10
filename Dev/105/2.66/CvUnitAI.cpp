@@ -2145,7 +2145,7 @@ void CvUnitAI::AI_barbAttackMove()
 			return;
 		}
 	}
-	
+
 	if (AI_anyAttack(1, 20))
 	{
 		return;
@@ -2172,7 +2172,7 @@ void CvUnitAI::AI_barbAttackMove()
 			{
 				return;
 			}
-	
+
 			if (AI_cityAttack(3, 10))
 			{
 				return;
@@ -2819,7 +2819,7 @@ void CvUnitAI::AI_paratrooperMove()
 	{
 		return;
 	}
-	
+
 	if (AI_anyAttack(1, 55))
 	{
 		return;
@@ -3045,7 +3045,7 @@ void CvUnitAI::AI_attackCityMove()
 		return;
 	}
 //qa-rb-q- needed? rangedattack-keldath
-	if (AI_rangeAttack())
+	if (AI_rangedStrikeK())
 	{
 		return;
 	}
@@ -3101,10 +3101,10 @@ void CvUnitAI::AI_attackCityMove()
 			iReducedModifier *= std::min(20, iBombardTurns);
 			iReducedModifier /= 20;
 			////mountain mod - keldath addition
-			int iBase = 210
+			int iBase = 210;
 			int hills = (pTargetCity->getPlot().isHills() ? GC.getDefineINT(CvGlobals::HILLS_EXTRA_DEFENSE) : 0);
 			int peaks = ((pTargetCity->getPlot().isPeak() && GC.getGame().isOption(GAMEOPTION_MOUNTAINS)) ? GC.getDefineINT(CvGlobals::PEAK_EXTRA_DEFENSE) : 0);
-			base += hills + peaks
+			iBase += hills + peaks;
 			////mountain mod
 			// advc: Make sure we don't get an overflow here
 			double mult = iBase / (double)std::max(1,
@@ -3118,7 +3118,7 @@ void CvUnitAI::AI_attackCityMove()
 		
 //todo qa-rb-1
 //rangedattack-keldath - im thinking - ranged above 1 should be considered when eval of steps?
-		int rangeStrikeCheck = rangeStrike() > 1 ? rangeStrike()-1 : 0
+		int rangeStrikeCheck = rangedStrike() > 1 ? rangedStrike() - 1 : 0;
 		if (iStepDistToTarget <= 2 - rangeStrikeCheck)
 		{
 			// K-Mod. I've rearranged and rewritten most of this section - removing the bbai code.
@@ -3702,7 +3702,7 @@ void CvUnitAI::AI_attackCityMove()
 		}
 		// K-Mod end
 //rangedstrike
-		if ((bombardRate() > 0 || rangeStrike()) && noDefensiveBonus())
+		if ((bombardRate() > 0 || rangedStrike()) && noDefensiveBonus())
 		{
 			// BBAI Notes: Add this stack lead by bombard unit to stack probably not lead by a bombard unit
 			// BBAI TODO: Some sense of minimum stack size?  Can have big stack moving 10 turns to merge with tiny stacks
@@ -4852,7 +4852,7 @@ void CvUnitAI::AI_cityDefenseExtraMove()
 		return;
 	}
 
-	if (AI_guardCity(true))
+	if (AI_guardCity(false, true, 1))
 	{
 //qa-rb-1 rangedattack-keldath-added by me
 		if (!AI_rangedStrikeK())
@@ -6145,15 +6145,6 @@ void CvUnitAI::AI_workerSeaMove()
 
 
 void CvUnitAI::AI_barbAttackSeaMove()
-	
-	if (AI_guardCity(true))
-	{
-//rangedattack-keldath-added by me
-		if (!AI_rangedStrikeK())
-		{
-			return;
-		}
-	}
 {
 	PROFILE_FUNC();
 	// <advc.306> Assault mode until cargo delivered
@@ -6674,7 +6665,7 @@ void CvUnitAI::AI_reserveSeaMove()
 		return;
 	}
 //rangedstrike-keldath
-	if (bombardRate() > 0 || rangeStrike() > 0)
+	if (bombardRate() > 0 || rangedStrike() > 0)
 	{
 		if (AI_shadow(UNITAI_ASSAULT_SEA, 2, 30, true, false, 8))
 		{
@@ -7255,7 +7246,7 @@ void CvUnitAI::AI_assaultSeaMove()
 		}
 	}
 //qa-rb-1 is this needed? rangedattack-keldath
-	if (AI_rangeAttack())
+	if (AI_rangedStrikeK())
 	{
 		return ;
 	}
@@ -11593,6 +11584,7 @@ bool CvUnitAI::AI_afterAttack()
 	{
 		return true;
 	}
+
 	if (AI_pillageRange(2))
 	{
 		return true;
@@ -13918,8 +13910,7 @@ bool CvUnitAI::AI_pillageAroundCity(CvCity* pTargetCity, int iBonusValueThreshol
 			if (!generatePath(pBestPillagePlot, iFlags, true, &iPathTurns))
 				return false;
 			pBestPlot = getPathEndTurnPlot();
-		}
-		// K-Mod end
+		} // K-Mod end
 		if (atPlot(pBestPillagePlot))
 		{
 			//if (isEnemy(pBestPillagePlot->getTeam()))
@@ -14029,10 +14020,10 @@ bool CvUnitAI::AI_cityAttack(int iRange, int iOddsThreshold, int iFlags, bool bF
 //rangedattack-keldath
 			if (canRangeStrikeAtK(plot(), p.getX(), p.getY()))
 			{
-				pBestPlot = bombardTarget(&p);
-				doRanged = true;
+		/*		pBestPlot = AI_bombardTarget();
+			*/	doRanged = true;
 			}	
-		else /*if*/ ((bFollow ? canMoveOrAttackInto(p, bDeclareWar) :
+		else if ((bFollow ? canMoveOrAttackInto(p, bDeclareWar) :
 //rangedattack-keldath -removed - i dont want ranged units to pillage.
 				generatePath(&p, iFlags, true, &iPathTurns, iRange)))
 			{
@@ -21642,8 +21633,9 @@ bool CvUnitAI::AI_canEnterByLand(CvArea const& kArea) const
 	return (isArea(kArea) || (canMoveImpassable() && canEnterArea(kArea)));
 } // </advc.030>
 
-// A simple hash of the unit's birthmark.
-// This is to be used for getting a 'random' number which depends on the unit but which does not vary from turn to turn.
+// K-Mod. A simple hash of the unit's birthmark.
+/*	This is to be used for getting a 'random' number which depends on the unit
+	but which does not vary from turn to turn. */
 unsigned CvUnitAI::AI_unitBirthmarkHash(int iExtra) const
 {
 	unsigned iHash = AI_getBirthmark() + iExtra;
@@ -21654,7 +21646,7 @@ unsigned CvUnitAI::AI_unitBirthmarkHash(int iExtra) const
 // another 'random' hash, but which depends on a particular plot
 unsigned CvUnitAI::AI_unitPlotHash(const CvPlot* pPlot, int iExtra) const
 {
-	return AI_unitBirthmarkHash(GC.getMap().plotNum(pPlot->getX(), pPlot->getY()) + iExtra);
+	return AI_unitBirthmarkHash(GC.getMap().plotNum(*pPlot) + iExtra);
 }
 // K-Mod end
 
@@ -22296,6 +22288,47 @@ CvUnitAI* CvUnitAI::fromIDInfo(IDInfo id)
 /*  advc: Body cut from AI_airStrike in order to make the code easier to read.
 	iCurrentBest is only for saving time. Comments aren't mine. */
 //rangedattack-keldath
+//based on bombardTarget
+
+CvPlot* CvUnitAI::AI_bombardTarget()
+{
+//rangedstrike-keldath rewrite - get best cities according to range!
+//rewrite of the func - get the best xlosest city according to rangedstrike range or default 1.
+	CvPlot* pBestCity = NULL;
+	int iBestValue = MAX_INT;
+	int shortestdistance = 0;
+//	bool bBombard = false; // K-Mod. bombard (city / improvement), rather than air strike (damage)
+//need to add code for city or peaks change
+	for (SquareIter it(*this, std::max(rangedStrike(),1), false); it.hasNext(); ++it)
+	{
+			CvPlot& p = *it;
+			if (&p == NULL)//the SquareIter ingone these - f1rpo note
+				continue; // advc
+			CvCity* pCity = p.getPlotCity();
+			if (pCity == NULL || pCity->getDefenseModifier(true) == 0/*!pLoopCity->isBombardable(this)*/)
+				continue; // advc
+			// <advc>
+			int iValue = pCity->getDefenseDamage();//do we need this?
+			//give the closest city advantage
+			int distance = plotDistance(getX(), getY()/*plot()*/, pCity->getX(), pCity->getY());
+			if (distance < shortestdistance) 
+			{
+				iValue *= 64;
+				shortestdistance = distance;
+			}
+		/*	if (pCity->isBombardable(this))
+				iValue *= 128;
+			if (isEnemy(pCity->getTeam(), plot()))
+				iValue *= 128;
+			*/if (iValue > iBestValue)
+			{
+				iBestValue = iValue; // </advc>
+				pBestCity = &p;
+			}
+	}
+	return pBestCity;
+}
+
 //based off AI_airStrikeValue
 //finds the best plot to strike.
 int CvUnitAI::AI_rangedStrikeValueK(CvPlot const& kPlot, int iCurrentBest) const

@@ -265,6 +265,9 @@ public:
 	bool canReceiveTradeCity() const;
 	DllExport bool canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial = false) const;			// Exposed to Python
 	bool canPossiblyTradeItem(PlayerTypes eWhoTo, TradeableItems eItemType) const; // advc.opt
+	// <advc.ctr>
+	bool canTradeCityTo(PlayerTypes eRecipient, CvCity const& kCity,
+			bool bConquest = false) const; // </advc.ctr>
 	DllExport DenialTypes getTradeDenial(PlayerTypes eWhoTo, TradeData item) const;												// Exposed to Python
 	bool canTradeNetworkWith(PlayerTypes ePlayer) const;																									// Exposed to Python
 	int getNumAvailableBonuses(BonusTypes eBonus) const;																									// Exposed to Python
@@ -1122,10 +1125,19 @@ public:
 		FAssert(!bRev);
 		return m_cities.beginIter(pIterIdx); // advc.opt
 	}
-	DllExport inline CvCity* nextCity(int *pIterIdx, bool bRev=false) const											// Exposed to Python
+	DllExport inline CvCity* nextCity(int* pIterIdx, bool bRev=false) const											// Exposed to Python
 	{	//return (!bRev ? m_cities.nextIter(pIterIdx) : m_cities.prevIter(pIterIdx));
 		return m_cities.nextIter(pIterIdx); // advc.opt
 	}
+	// <advc.opt> Backwards traversal Moved into separate functions (needed for city cycling)
+	inline CvCity* lastCity(int* pIterIdx) const
+	{
+		return m_cities.endIter(pIterIdx);
+	}
+	inline CvCity* prevCity(int* pIterIdx) const
+	{
+		return m_cities.prevIter(pIterIdx);
+	} // </advc.opt>
 	DllExport int getNumCities() const																				// Exposed to Python
 	{
 		return m_cities.getCount();

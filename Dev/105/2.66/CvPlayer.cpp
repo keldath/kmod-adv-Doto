@@ -1044,7 +1044,7 @@ void CvPlayer::changePersonalityType()
 		{
 			if (GET_PLAYER((PlayerTypes)iJ).isAlive())
 			{
-				if (GET_PLAYER((PlayerTypes)iJ).getPersonalityType() == ((LeaderHeadTypes)iI))
+				if (GET_PLAYER((PlayerTypes)iJ).getPersonalityType() == (LeaderHeadTypes)iI)
 					iValue /= 2;
 			}
 		}
@@ -1077,10 +1077,12 @@ void CvPlayer::resetCivTypeEffects(/* advc.003q: */ bool bInit)  // advc: style 
 		{
 			EventTriggerTypes eEventTrigger = (EventTriggerTypes)i;
 			if(bInit || // advc.003q
-					(!GC.getInfo(eEventTrigger).isGlobal() &&
-					(!GC.getInfo(eEventTrigger).isTeam() ||
-					GET_TEAM(getTeam()).getNumMembers() == 1)))
+				(!GC.getInfo(eEventTrigger).isGlobal() &&
+				(!GC.getInfo(eEventTrigger).isTeam() ||
+				GET_TEAM(getTeam()).getNumMembers() == 1)))
+			{
 				resetTriggerFired(eEventTrigger);
+			}
 		}
 	}
 	for (int i = 0; i < kCiv.getNumUnits(); i++)
@@ -2270,10 +2272,8 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 						GET_TEAM(getTeam()).canPeacefullyEnter(TEAMID(eLiberationPlayer)));
 				// </advc>  <advc.ctr> Make sure that the ownership change is legal
 				if (bGift)
-				{
-					// Don't check denial though; recipient can't refuse.
-					bGift = canTradeItem(eLiberationPlayer, TradeData(
-						TRADE_CITIES, kNewCity.getID()));
+				{	// Don't check denial though; recipient can't refuse.
+					bGift = canTradeCityTo(eLiberationPlayer, kNewCity, true);
 				} // </advc.ctr>
 				if (bRaze || bGift)
 				{
@@ -2654,7 +2654,7 @@ void CvPlayer::killUnits()
 // XXX should pUnit be a CvSelectionGroup???
 // Returns the next unit in the cycle...
 CvSelectionGroup* CvPlayer::cycleSelectionGroups(CvUnit* pUnit, bool bForward,
-		bool bWorkers, bool* pbWrap)
+	bool bWorkers, bool* pbWrap)
 {
 	FAssert(GC.getGame().getActivePlayer() == getID() && isHuman());
 	// <advc.004h>
@@ -4182,54 +4182,13 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 	}
 	case TRADE_CITIES:
 	{
-		PROFILE("CvPlayer::canTradeItem.CITIES");
 		CvCity const* pCity = getCity(item.m_iData);
 		if (pCity == NULL)
 		{
 			FAssert(pCity != NULL);
 			break;
 		}
-		CvCity const& kCity = *pCity;
-		// <advc.ctr>
-		if (kCity.isCapital() || !kCity.isRevealed(kToTeam.getID()))
-			break; // </advc.ctr>
-		if (kCity.getLiberationPlayer() == eWhoTo)
-		{
-			bValid = true;
-			break;
-		}
-		// <advc.ctr>
-		/*	Can't trade so long as the previous owner hasn't accepted the loss
-			(let's ignore kCity.getOriginalOwner()) */
-		PlayerTypes ePreviousOwner = kCity.getPreviousOwner();
-		if (ePreviousOwner != NO_PLAYER)
-		{
-			TeamTypes ePreviousTeam = TEAMID(ePreviousOwner);
-			if (ePreviousTeam != kToTeam.getID() &&
-				kOurTeam.isAtWar(ePreviousTeam) &&
-				!kToTeam.isAtWar(ePreviousTeam))
-			{
-				break;
-			}
-		}
-		CvPlot const& kCityPlot = *kCity.plot();
-		if (!kToTeam.isAtWar(getTeam()) && kCityPlot.isVisibleEnemyCityAttacker(getID()))
-			break; // Can't trade an endangered city to a third party
-		if (kCityPlot.calculateCulturePercent(eWhoTo) < GC.getDefineINT(CvGlobals::CITY_TRADE_CULTURE_THRESH))
-			break;
-		if (!kOurTeam.isAtWar(TEAMID(eWhoTo)) &&
-			// Prevent back-and-forth trades between humans
-			(kCity.isEverOwned(eWhoTo) && isHuman() && GET_PLAYER(eWhoTo).isHuman() ? 1 : 2) * 
-			kCityPlot.getCulture(eWhoTo) <= kCityPlot.getCulture(getID()))
-		{
-			break;
-		}
-		if (kToTeam.isVassal(getTeam()) &&
-			kCityPlot.getCulture(eWhoTo) <= kCityPlot.getCulture(getID()))
-		{
-			break;
-		}
-		bValid = true; // </advc.ctr>
+		bValid = canTradeCityTo(eWhoTo, *pCity); // advc.ctr;
 		break;
 	}
 	case TRADE_GOLD:
@@ -4447,6 +4406,57 @@ bool CvPlayer::canPossiblyTradeItem(PlayerTypes eWhoTo, TradeableItems eItemType
 		FAssertMsg(false, "Unknown trade item type");
 		return false;
 	}
+}
+
+// advc.ctr:
+bool CvPlayer::canTradeCityTo(PlayerTypes eRecipient, CvCity const& kCity, bool bConquest) const
+{
+	PROFILE_FUNC(); // advc.test: To be profiled
+	CvPlayer const& kRecipient = GET_PLAYER(eRecipient);
+	/*	canTradeItem already checks this through canPossiblyTradeItem, so this
+		is redundant. However, I also need to check the city trade conditions
+		from CvPlayer::acquireCity, so this can't be helped unless I add the
+		bConquest param to canTradeItem, which I find inelegant. */
+	if (!kRecipient.canReceiveTradeCity())
+		return false;
+
+	if (kCity.isCapital() || !kCity.isRevealed(kRecipient.getTeam()))
+		return false;
+	if (kCity.getLiberationPlayer(bConquest) == eRecipient) // as in BtS
+		return true;
+	/*	Can't trade so long as the previous owner hasn't accepted the loss
+		(let's ignore kCity.getOriginalOwner()) */
+	PlayerTypes ePreviousOwner = kCity.getPreviousOwner();
+	if (ePreviousOwner != NO_PLAYER)
+	{
+		TeamTypes ePreviousTeam = TEAMID(ePreviousOwner);
+		if (ePreviousTeam != kRecipient.getTeam() &&
+			GET_TEAM(getTeam()).isAtWar(ePreviousTeam) &&
+			!GET_TEAM(eRecipient).isAtWar(ePreviousTeam))
+		{
+			return false;
+		}
+	}
+	CvPlot const& kCityPlot = *kCity.plot();
+	if (kCityPlot.calculateCulturePercent(eRecipient) <
+		GC.getDefineINT(CvGlobals::CITY_TRADE_CULTURE_THRESH))
+	{
+		return false;
+	}
+	if (!GET_TEAM(eRecipient).isAtWar(getTeam()) &&
+		// Prevent back-and-forth trades between humans
+		(kCity.isEverOwned(eRecipient) && isHuman() &&
+		kRecipient.isHuman() ? 1 : 2) * kCityPlot.getCulture(eRecipient) <=
+		kCityPlot.getCulture(getID()))
+	{
+		return false;
+	}
+	if (GET_TEAM(eRecipient).isVassal(getTeam()) &&
+		kCityPlot.getCulture(eRecipient) <= kCityPlot.getCulture(getID()))
+	{
+		return false;
+	}
+	return true;
 }
 
 
@@ -7175,53 +7185,32 @@ bool CvPlayer::canResearch(TechTypes eTech, bool bTrade, bool bFree,
 
 TechTypes CvPlayer::getCurrentResearch() const
 {
-	CLLNode<TechTypes>* pResearchNode;
-
-	pResearchNode = headResearchQueueNode();
-
+	CLLNode<TechTypes>* pResearchNode = headResearchQueueNode();
 	if (pResearchNode != NULL)
-	{
 		return pResearchNode->m_data;
-	}
-	else
-	{
-		return NO_TECH;
-	}
+	return NO_TECH;
 }
 
 
 bool CvPlayer::isCurrentResearchRepeat() const
 {
-	TechTypes eCurrentResearch;
-
-	eCurrentResearch = getCurrentResearch();
-
+	TechTypes eCurrentResearch = getCurrentResearch();
 	if (eCurrentResearch == NO_TECH)
-	{
 		return false;
-	}
-
 	return GC.getInfo(eCurrentResearch).isRepeat();
 }
 
 
 bool CvPlayer::isNoResearchAvailable() const
 {
-	int iI;
-
 	if (getCurrentResearch() != NO_TECH)
-	{
 		return false;
-	}
 
-	for (iI = 0; iI < GC.getNumTechInfos(); iI++)
+	FOR_EACH_ENUM(Tech)
 	{
-		if (canResearch((TechTypes)iI))
-		{
+		if (canResearch(eLoopTech))
 			return false;
-		}
 	}
-
 	return true;
 }
 
@@ -7237,14 +7226,19 @@ int CvPlayer::getResearchTurnsLeft(TechTypes eTech, bool bOverflow) const
 
 int CvPlayer::getResearchTurnsLeftTimes100(TechTypes eTech, bool bOverflow) const  // advc: style changes
 {
+	// <advc>
+	if (GET_TEAM(getTeam()).isHasTech(eTech))
+		return 0; // </advc>
 	int iResearchRate = 0;
 	int iOverflow = 0;
 	for (int iI = 0; iI < MAX_PLAYERS; iI++)
 	{
 		CvPlayer const& kMember = GET_PLAYER((PlayerTypes)iI);
-		if(!kMember.isAlive() || kMember.getTeam() != getTeam()
-				|| !kMember.isResearch()) // advc.004x
+		if(!kMember.isAlive() || kMember.getTeam() != getTeam() ||
+			!kMember.isResearch()) // advc.004x
+		{
 			continue;
+		}
 		if(iI == getID() || kMember.getCurrentResearch() == eTech)
 		{
 			//iResearchRate += GET_PLAYER((PlayerTypes)iI).calculateResearchRate(eTech);
@@ -14102,12 +14096,14 @@ void CvPlayer::doResearch()
 		TechTypes eCurrentTech = getCurrentResearch();
 		if (eCurrentTech == NO_TECH)
 		{
-			int iOverflow = (100 * calculateResearchRate()) / std::max(1, calculateResearchModifier(eCurrentTech));
+			int iOverflow = (100 * calculateResearchRate()) /
+					std::max(1, calculateResearchModifier(eCurrentTech));
 			changeOverflowResearch(iOverflow);
 		}
 		else
 		{
-			int iOverflowResearch = (getOverflowResearch() * calculateResearchModifier(eCurrentTech)) / 100;
+			int iOverflowResearch = (getOverflowResearch() *
+					calculateResearchModifier(eCurrentTech)) / 100;
 			setOverflowResearch(0);
 			GET_TEAM(getTeam()).changeResearchProgress(eCurrentTech,
 					// K-Mod (replacing the minimum which used to be in calculateResearchRate)
@@ -19802,7 +19798,9 @@ bool CvPlayer::isValidEventTech(TechTypes eTech, EventTypes eEvent, PlayerTypes 
 		return false;
 	}
 
-	if (kEvent.getTechPercent() < 0 && GET_TEAM(getTeam()).getResearchProgress(eTech) <= 0)
+	if (kEvent.getTechPercent() < 0 &&
+		(GET_TEAM(getTeam()).isHasTech(eTech) || // advc: Don't rely on getResearchProgress
+		GET_TEAM(getTeam()).getResearchProgress(eTech) <= 0))
 	{
 		return false;
 	}
@@ -19818,7 +19816,7 @@ bool CvPlayer::isValidEventTech(TechTypes eTech, EventTypes eEvent, PlayerTypes 
 		return false;
 	}
 
-	if (NO_PLAYER != eOtherPlayer && !GET_TEAM(GET_PLAYER(eOtherPlayer).getTeam()).isHasTech(eTech))
+	if (NO_PLAYER != eOtherPlayer && !GET_TEAM(eOtherPlayer).isHasTech(eTech))
 	{
 		return false;
 	}
@@ -22954,7 +22952,7 @@ void CvPlayer::getReligionLayerColors(ReligionTypes eSelectedReligion, std::vect
 			{
 				if (!it->isRevealed(getTeam(), true))
 					continue; // advc
-				int iIndex = GC.getMap().plotNum(it->getX(), it->getY());
+				int iIndex = GC.getMap().plotNum(*it);
 				if (fAlpha > aColors[iIndex].a)
 				{
 					aColors[iIndex] = kBaseColor;
@@ -22998,7 +22996,7 @@ void CvPlayer::getCultureLayerColors(std::vector<NiColorA>& aColors, std::vector
 		if(eOwner == NO_PLAYER)
 			continue; // advc: Moved up
 		// how many people own this plot?
-		std::vector < std::pair<int,int> > plot_owners;
+		std::vector<std::pair<int,PlayerTypes> > plot_owners;
 		//int iNumNonzeroOwners = 0;
 		// K-Mod
 		int iTotalCulture = kLoopPlot.getTotalCulture(); // advc.opt: was countTotalCulture
@@ -23010,18 +23008,19 @@ void CvPlayer::getCultureLayerColors(std::vector<NiColorA>& aColors, std::vector
 		bool bVisible = kLoopPlot.isVisible(getTeam(), true);
 		if(bVisible)
 		{ // </advc.004z>
-			for (int iPlayer = 0; iPlayer < MAX_PLAYERS; iPlayer++) // dlph.21: was MAX_CIV_PLAYERS
-			{	// <advc.004z> Owner handled above
-				if(iPlayer == eOwner)
+			// dlph.21: include Barbarians; advc.099: include defeated.
+			for (PlayerIter<EVER_ALIVE> it; it.hasNext(); ++it)
+			{
+				PlayerTypes ePlayer = it->getID();
+				// <advc.004z> Owner handled above
+				if(ePlayer == eOwner)
 					continue; // </advc.004z>
-				if(!GET_PLAYER((PlayerTypes)iPlayer).isEverAlive()) // advc.099: was isAlive
-					continue;
-				int iCurCultureAmount = kLoopPlot.getCulture((PlayerTypes)iPlayer);
+				int iCurCultureAmount = kLoopPlot.getCulture(ePlayer);
 				//if (iCurCultureAmount != 0)
 				// K-Mod (to reduce visual spam from small amounts of culture)
-				if (iCurCultureAmount * 100 / iTotalCulture >= 20)
+				if (100 * iCurCultureAmount >= 20 * iTotalCulture)
 				{	//iNumNonzeroOwners ++;
-					plot_owners.push_back(std::pair<int,int>(iCurCultureAmount, iPlayer));
+					plot_owners.push_back(std::make_pair(iCurCultureAmount, ePlayer));
 				}
 			}
 		}
@@ -23034,7 +23033,7 @@ void CvPlayer::getCultureLayerColors(std::vector<NiColorA>& aColors, std::vector
 			plot_owners.size() < iColorsPerPlot; iPass++)
 		{
 			// To avoid adding to plot_owners while looping through it
-			std::vector <std::pair<int,int> > repeated_owners;
+			std::vector<std::pair<int,PlayerTypes> > repeated_owners;
 			for(size_t i = 0; i < plot_owners.size(); i++)
 			{
 				if(baDone[plot_owners[i].second])
@@ -23044,8 +23043,8 @@ void CvPlayer::getCultureLayerColors(std::vector<NiColorA>& aColors, std::vector
 					iExtra += (plot_owners[i].first * iColorsPerPlot) / iTotalCulture;
 				else if(iPass == 1) // Round to nearest
 				{
-					iExtra += ::round((plot_owners[i].first * iColorsPerPlot) /
-							(double)iTotalCulture);
+					iExtra += ROUND_DIVIDE(plot_owners[i].first * iColorsPerPlot,
+							iTotalCulture);
 				} // Respect size limit
 				iExtra = std::min(iExtra, iColorsPerPlot - (int)
 						(plot_owners.size() + repeated_owners.size()));
@@ -23059,10 +23058,15 @@ void CvPlayer::getCultureLayerColors(std::vector<NiColorA>& aColors, std::vector
 				will be set to the civ's color. */
 			for(size_t i = 0; i < repeated_owners.size(); i++)
 				plot_owners.push_back(repeated_owners[i]);
-		} // Ideally ==, but my algorithm above can't guarantee that.
-		FAssert(plot_owners.size() <= iColorsPerPlot);
+		}
+		/*	Ideally ==iColorsPerPlot, but my algorithm above can't guarantee that.
+			Can be 1 greater than iColorsPerPlot because the territorial owner is
+			always included. */
+		FAssert(plot_owners.size() <= iColorsPerPlot + 1);
 		// </advc.004z>
-		for (int i = 0; i < iColorsPerPlot; ++i)
+		for (int i = 0;
+			// adv.004z: max (see comment above)
+			i < std::max(iColorsPerPlot, (int)plot_owners.size()); i++)
 		{
 			int iCurOwnerIdx = i % plot_owners.size();
 			PlayerTypes eCurOwnerID = (PlayerTypes) plot_owners[iCurOwnerIdx].second;
@@ -23087,7 +23091,7 @@ void CvPlayer::getCultureLayerColors(std::vector<NiColorA>& aColors, std::vector
 	}
 }
 
-// <advc.003p>
+// advc.003p:
 void CvPlayer::setBonusHelpDirty()
 {
 	if(m_aszBonusHelp == NULL)
@@ -23097,7 +23101,7 @@ void CvPlayer::setBonusHelpDirty()
 	}
 	for(int i = 0; i < GC.getNumBonusInfos(); i++)
 		SAFE_DELETE(m_aszBonusHelp[i])
-} // </advc.003p>
+}
 
 
 void CvPlayer::cheat(bool bCtrl, bool bAlt, bool bShift)
@@ -23132,7 +23136,7 @@ bool CvPlayer::hasSpaceshipArrived() const
 	return GET_TEAM(getTeam()).hasSpaceshipArrived();
 }
 
-// <advc.210>
+// advc.210:
 void CvPlayer::checkAlert(int iAlertID, bool bSilent)
 {
 	if (m_paAlerts.empty())
@@ -23146,9 +23150,9 @@ void CvPlayer::checkAlert(int iAlertID, bool bSilent)
 		return;
 	}
 	m_paAlerts[iAlertID]->check(bSilent);
-} // </advc.210>
+}
 
-// <advc.104> Inspired by CvTeamAI::AI_estimateTotalYieldRate
+// advc.104: Inspired by CvTeamAI::AI_estimateTotalYieldRate
 // (Tbd.: Move to CvPlayerAI)
 double CvPlayer::estimateYieldRate(YieldTypes eYield, int iSamples) const
 {
@@ -23187,7 +23191,7 @@ double CvPlayer::estimateYieldRate(YieldTypes eYield, int iSamples) const
 	if(samples.empty())
 		return 0;
 	return ::dMedian(samples);
-} // </advc.104>
+}
 
 // advc.004x:
 void CvPlayer::killAll(ButtonPopupTypes ePopupType, int iData1)
@@ -23221,7 +23225,10 @@ void CvPlayer::killAll(ButtonPopupTypes ePopupType, int iData1)
 					and founded a religion, i.e. the found-religion popup is
 					essentially already done. */
 				(ePopupType != BUTTONPOPUP_CHANGERELIGION || iPass < 1 ||
-				pPopup->getButtonPopupType() != BUTTONPOPUP_FOUND_RELIGION)) ||
+				pPopup->getButtonPopupType() != BUTTONPOPUP_FOUND_RELIGION) &&
+				// Doesn't get minimized, never needs to be relaunched.
+				(iPass < 1 || pPopup->getButtonPopupType() != BUTTONPOPUP_DECLAREWARMOVE))
+				||
 				(iData1 >= 0 && pPopup->getData1() != iData1))
 			{
 				newQueue.push_back(pPopup);
