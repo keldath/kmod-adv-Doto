@@ -2690,6 +2690,12 @@ void CvUnitAI::AI_attackMove()
 						{
 							return;
 						}
+						//rangedstrike-keldath
+						if(rangedStrike() > 0)//filter wihtout running all the ranged functions
+						{	
+							if (AI_rangedStrikeK())
+								return;
+						}
 					}
 				}
 			}
@@ -3324,6 +3330,12 @@ void CvUnitAI::AI_attackCityMove()
 	}*/ // BtS
 
 	//if (AI_anyAttack(1, 60, iMoveFlags, 0, false))
+//rangedstrike-keldath
+	if(rangedStrike() > 0)//filter wihtout running all the ranged functions
+	{	
+		if (AI_rangedStrikeK())
+			return;
+	}
 	if (AI_anyAttack(1, 60, iMoveFlags | MOVE_SINGLE_ATTACK)) // K-Mod (changed to allow cities, and to only use a single unit, but it is still a questionable move)
 	{
 		return;
@@ -4058,7 +4070,12 @@ void CvUnitAI::AI_pillageMove()
 		return;
 	}
 	// K-Mod end
-
+//rangedstrike-keldath
+	if(rangedStrike() > 0)//filter wihtout running all the ranged functions
+	{	
+		if (AI_rangedStrikeK())
+			return;
+	}
 	if (AI_anyAttack(1, 65))
 	{
 		return;
@@ -4270,6 +4287,12 @@ void CvUnitAI::AI_reserveMove()
 	}
 	else
 	{
+		//rangedstrike-keldath
+		if(rangedStrike() > 0)//filter wihtout running all the ranged functions
+		{	
+			if (AI_rangedStrikeK())
+				return;
+		}
 		if (AI_anyAttack(1, 65))
 			return;
 	}
@@ -4383,6 +4406,12 @@ void CvUnitAI::AI_reserveMove()
 	{
 		/*if (AI_cityAttack(3, 45))
 			return;*/
+		//rangedstrike-keldath
+		if(rangedStrike() > 0)//filter wihtout running all the ranged functions
+		{	
+			if (AI_rangedStrikeK())
+				return;
+		}
 		if (AI_anyAttack(3, 50))
 		{
 			return;
@@ -4538,6 +4567,12 @@ void CvUnitAI::AI_counterMove()
 		/*if (AI_cityAttack(1, 35))
 			return;*/ // disabled by K-Mod
 
+		//rangedstrike-keldath
+		if(rangedStrike() > 0)//filter wihtout running all the ranged functions
+		{	
+			if (AI_rangedStrikeK())
+				return;
+		}
 		if (AI_anyAttack(1, 40))
 		{
 			return;
@@ -4934,6 +4969,12 @@ void CvUnitAI::AI_exploreMove()
 		if (AI_cityAttack(3, 80))
 		{
 			return;
+		}
+		//rangedstrike-keldath
+		if(rangedStrike() > 0)//filter wihtout running all the ranged functions
+		{	
+			if (AI_rangedStrikeK())
+				return;
 		}
 	}
 
@@ -6182,6 +6223,12 @@ void CvUnitAI::AI_barbAttackSeaMove()
 	if (AI_heal())
 		return;*/ // BtS
 	// K-Mod
+	//rangedstrike-keldath
+	if(rangedStrike() > 0)//filter wihtout running all the ranged functions
+	{	
+		if (AI_rangedStrikeK())
+			return;
+	}
 	if (AI_anyAttack(1, 51)) // safe attack
 		return;
 
@@ -6280,6 +6327,12 @@ void CvUnitAI::AI_pirateSeaMove()
 
 	if (kPlot.isOwned() && kPlot.getTeam() == getTeam())
 	{
+		//rangedstrike-keldath
+		if(rangedStrike() > 0)//filter wihtout running all the ranged functions
+		{	
+			if (AI_rangedStrikeK())
+				return;
+		}
 		if (AI_anyAttack(2, 40))
 		{
 			return;
@@ -6303,6 +6356,12 @@ void CvUnitAI::AI_pirateSeaMove()
 	}
 	else
 	{
+		//rangedstrike-keldath
+		if(rangedStrike() > 0)//filter wihtout running all the ranged functions
+		{	
+			if (AI_rangedStrikeK())
+				return;
+		}
 		if (AI_anyAttack(2, 51))
 		{
 			return;
@@ -6366,6 +6425,12 @@ void CvUnitAI::AI_attackSeaMove()
 	{
 		if(AI_isThreatenedFromLand()) // advc.139: Code moved into subroutine
 		{
+			//rangedstrike-keldath
+			if(rangedStrike() > 0)//filter wihtout running all the ranged functions
+			{	
+				if (AI_rangedStrikeK())
+					return;
+			}
 			if (AI_anyAttack(2, 50))
 			{
 				return;
@@ -6408,6 +6473,13 @@ void CvUnitAI::AI_attackSeaMove()
 	{
 		return;
 	}
+//LEFT IT OUT - MAYBE OI SHOUDL ADD CHANCES TO RB , LIKE ANYATTACK.
+	//rangedstrike-keldath
+/*	if(rangedStrike() > 0)//filter wihtout running all the ranged functions
+	{	
+		if (AI_rangedStrikeK())
+			return;
+	}*/
 
 	if (AI_anyAttack(1, 35))
 	{
@@ -6460,6 +6532,12 @@ void CvUnitAI::AI_attackSeaMove()
 						of a future use. Also, blockading units can't usually heal;
 						not imperative to destroy them in one turn. In fact, damaging
 						them may be enough to drive them off. */
+			//rangedstrike-keldath
+					if(rangedStrike() > 0)//filter wihtout running all the ranged functions
+					{	
+					if (AI_rangedStrikeK())
+						return;
+					}		
 					double attackerRatio = iAttackers / (double)iBlockaders;
 					int oddsThresh = 0;
 					if(attackerRatio < 5 && attackerRatio >= 3)
@@ -6598,6 +6676,12 @@ void CvUnitAI::AI_reserveSeaMove()
 	{
 		if(AI_isThreatenedFromLand()) // advc.139: Code moved into subroutine
 		{
+			//rangedstrike-keldath
+			if(rangedStrike() > 0)//filter wihtout running all the ranged functions
+			{	
+				if (AI_rangedStrikeK())
+					return;
+			}
 			if (AI_anyAttack(2, 60))
 			{
 				return;
@@ -6637,6 +6721,12 @@ void CvUnitAI::AI_reserveSeaMove()
 		return;
 	}
 
+	//rangedstrike-keldath
+	if(rangedStrike() > 0 ! bombardRate() > 0)//HANDLE BOMB RATE BELOW.
+	{	
+		if (AI_rangedStrikeK())
+					return;
+	}
 	if (AI_anyAttack(1, 55))
 	{
 		return;
@@ -6690,7 +6780,13 @@ void CvUnitAI::AI_reserveSeaMove()
 	{
 		return;
 	}
-
+	//rangedstrike-keldath
+	if(rangedStrike() > 0 )
+	{	
+		if (AI_rangedStrikeK())
+					return;
+	}
+	
 	if (AI_anyAttack(3, 45))
 	{
 		return;
@@ -6769,6 +6865,12 @@ void CvUnitAI::AI_escortSeaMove()
 	{
 		if(AI_isThreatenedFromLand()) // advc.139: Code moved into subroutine
 		{
+			//rangedstrike-keldath
+			if(rangedStrike() > 0)
+			{	
+				if (AI_rangedStrikeK())
+						return;
+			}
 			if (AI_anyAttack(1, 60))
 			{
 				return;
@@ -6925,7 +7027,13 @@ void CvUnitAI::AI_escortSeaMove()
 	{
 		return;
 	}
-
+	//rangedstrike-keldath
+	if(rangedStrike() > 0 )
+	{	
+		if (AI_rangedStrikeK())
+					return;
+	}
+	
 	getGroup()->pushMission(MISSION_SKIP);
 }
 
@@ -6941,6 +7049,12 @@ void CvUnitAI::AI_exploreSeaMove()
 		{
 			if (!isHuman())
 			{
+				//rangedstrike-keldath
+				if(rangedStrike() > 0)
+				{	
+					if (AI_rangedStrikeK())
+						return;
+				}
 				if (AI_anyAttack(1, 60))
 					return;
 			}
@@ -6955,6 +7069,12 @@ void CvUnitAI::AI_exploreSeaMove()
 
 	if (!isHuman())
 	{
+		//rangedstrike-keldath
+		if(rangedStrike() > 0 )
+		{	
+			if (AI_rangedStrikeK())
+					return;
+		}
 		if (AI_anyAttack(1, 60))
 			return;
 	}
@@ -7129,6 +7249,11 @@ void CvUnitAI::AI_assaultSeaMove()
 		// K-Mod
 		int iOurDefense = kOwner.AI_localDefenceStrength(plot(), getTeam(), DOMAIN_LAND, 0);
 		int iEnemyOffense = kOwner.AI_localAttackStrength(plot(), NO_TEAM, DOMAIN_LAND, 2);
+		//rangedstrike-keldath
+		if (rangedStrike() > 0) 
+		{
+			iEnemyOffense /= 2 //reduce offence - ranged bombardment dont care for it	
+		}
 		// K-Mod end
 
 		if (getDamage() > 0)	// extra risk to leaving when wounded
@@ -7145,6 +7270,12 @@ void CvUnitAI::AI_assaultSeaMove()
 					getGroup()->unloadAll();
 				}
 
+				//rangedstrike-keldath
+				if(rangedStrike() > 0)//HANDLE BOMB RATE BELOW.
+				{	
+					if (AI_rangedStrikeK())
+							return;
+				}
 				if (AI_anyAttack(1, 65))
 				{
 					return;
@@ -7178,6 +7309,12 @@ void CvUnitAI::AI_assaultSeaMove()
 
 	if (bEmpty)
 	{
+		//rangedstrike-keldath
+		if(rangedStrike() > 0)//HANDLE BOMB RATE BELOW.
+		{	
+			if (AI_rangedStrikeK())
+				return;
+		}
 		if (AI_anyAttack(1, 65))
 		{
 			return;
@@ -7251,11 +7388,6 @@ void CvUnitAI::AI_assaultSeaMove()
 				return;
 			}
 		}
-	}
-//qa-rb-1 is this needed? rangedattack-keldath
-	if (AI_rangedStrikeK())
-	{
-		return ;
 	}
 
 	if (bCity)
@@ -7545,8 +7677,8 @@ void CvUnitAI::AI_assaultSeaMove()
 							if (getGroup()->countNumUnitAIType(UNITAI_ATTACK_SEA) + getGroup()->countNumUnitAIType(UNITAI_RESERVE_SEA) > 0)
 							{
 								bool bMissionPushed = false;
-
-								if (AI_seaBombardRange(1))
+								//rangedstrike-  keldath
+								if (AI_rangedStrikeK() || AI_seaBombardRange(1))
 								{
 									bMissionPushed = true;
 								}
@@ -7843,6 +7975,12 @@ void CvUnitAI::AI_settlerSeaMove()
 		{
 			if (bEmpty)
 			{
+				//rangedstrike-keldath
+				if(rangedStrike() > 0)//HANDLE BOMB RATE BELOW.
+				{	
+					if (AI_rangedStrikeK())
+							return;
+				}
 				if (AI_anyAttack(1, 65))
 				{
 					return;
@@ -7869,6 +8007,12 @@ void CvUnitAI::AI_settlerSeaMove()
 
 	if (bEmpty)
 	{
+		//rangedstrike-keldath
+		if(rangedStrike() > 0)//HANDLE BOMB RATE BELOW.
+		{	
+			if (AI_rangedStrikeK())
+				return;
+		}
 		if (AI_anyAttack(1, 65))
 		{
 			return;
@@ -8395,7 +8539,8 @@ void CvUnitAI::AI_carrierSeaMove()
 	}
 	else
 	{
-		if (AI_seaBombardRange(1))
+//rangedstrike-kedlath
+		if (AI_rangedStrikeK() || AI_seaBombardRange(1))
 		{
 			return;
 		}
@@ -11356,6 +11501,12 @@ bool CvUnitAI::AI_chokeDefend()
 				if (pCity->AI_isDefended(pCity->getPlot().plotCount(PUF_canDefendGroupHead,
 					-1, -1, getOwner(), NO_TEAM, PUF_isNotCityAIType)))
 				{
+					//rangedstrike-keldath-not sure this is such a good placemnt - i thought - no threat for ranged units.
+					if(rangedStrike() > 0)//HANDLE BOMB RATE BELOW.
+					{	
+						if (AI_rangedStrikeK())
+								return;
+					}	
 					int const iDangerThresh = 4;
 					int iPlotDanger = GET_PLAYER(getOwner()).AI_getPlotDanger(getPlot(), 3, true,
 							iDangerThresh + 1); // advc.opt: Stop counting at thresh
@@ -11537,6 +11688,11 @@ bool CvUnitAI::AI_isThreatenedFromLand() const
 	CvPlayerAI const& kOwner = GET_PLAYER(getOwner());
 	int iOurDefense = kOwner.AI_localDefenceStrength(plot(), getTeam(), DOMAIN_LAND, 0);
 	int iEnemyOffense = kOwner.AI_localAttackStrength(plot(), NO_TEAM, DOMAIN_LAND, 2);
+	//rangedstrike-keldath
+	if(rangedStrike() > 0)//HANDLE BOMB RATE BELOW.
+	{	
+		iEnemyoffense /= 2; //reduce enemy power if the unit is ranged.
+	}
 	// (was based on AI_getOurPlotStrength in BBAI)
 	if(bDamaged) // extra risk to leaving when wounded
 		iOurDefense *= 2;
@@ -11565,6 +11721,12 @@ bool CvUnitAI::AI_afterAttack()
 		// K-Mod. We might be able to capture an undefended city, or at least a worker. (think paratrooper)
 		// (note: it's also possible that we are asking our group partner to attack something.)
 		// (also, note that AI_anyAttack will favour undefended cities over workers.)
+		//rangedstrike-keldath
+		if(rangedStrike() > 0)//HANDLE BOMB RATE BELOW.
+		{	
+			if (AI_rangedStrikeK())
+				return;
+		}
 		if (AI_anyAttack(1, 65))
 		{
 			return true;
@@ -12967,6 +13129,7 @@ bool CvUnitAI::AI_defend() //  advc: style changes
 
 	CvPlot* pBestPlot = NULL;
 	int iBestValue = 0;
+//rangedstrike -keldath - do i ne to check for ranged units?
 	for (SquareIter it(*this, AI_searchRange(1), false); it.hasNext(); ++it)
 	{
 		CvPlot& p = *it;
@@ -13014,6 +13177,7 @@ bool CvUnitAI::AI_safety()
 	//for (iPass = 0; iPass < 2; iPass++)
 	do // K-Mod. What's the point of the first pass if it is just ignored? (see break condition at the end)
 	{
+//rangedstrike-keldath - do i need to check for ranged strikes?
 		for (SquareIter it(*this, iSearchRange); it.hasNext(); ++it)
 		{
 			CvPlot& p = *it;
@@ -13103,6 +13267,7 @@ bool CvUnitAI::AI_hide()  // advc: style changes
 	CvPlot* pBestPlot = NULL;
 	int iBestValue = 0;
 	CvGame& g = GC.getGame();
+//rangedstrike-do i need to check for ranged strikes?
 	for (SquareIter itPlot(*this, AI_searchRange(1)); itPlot.hasNext(); ++itPlot)
 	{
 		CvPlot& p = *itPlot;
@@ -13344,6 +13509,7 @@ bool CvUnitAI::AI_exploreRange(int iRange) // advc: style changes
 	CvMap const& kMap = GC.getMap();
 	CvGame& kGame = GC.getGame();
 	int const iSearchRange = AI_searchRange(iRange);
+//rangedstrike - do i need to check for ranged?
 	for (SquareIter it(*this, iSearchRange, false); it.hasNext(); ++it)
 	{
 		PROFILE("AI_exploreRange 1");
@@ -13567,6 +13733,12 @@ CvCity* CvUnitAI::AI_pickTargetCity(int iFlags, int iMaxPathTurns, bool bHuntBar
 				{
 					iEnemyDefence = kOwner.AI_localDefenceStrength(pLoopCity->plot(),
 							NO_TEAM, DOMAIN_LAND, true, iPathTurns > 1 ? 2 : 0);
+					//rangedstrike-keldath
+					if (rangedStrike() > 0) 
+					{
+					 	iEnemyDefence /= 2; //reduce enemeydefense when out unit is ranged
+					}
+			
 					if (iPathTurns > 2)
 					{
 						int iAttackRatio = ((GC.getMAX_CITY_DEFENSE_DAMAGE() -
@@ -13600,6 +13772,12 @@ CvCity* CvUnitAI::AI_pickTargetCity(int iFlags, int iMaxPathTurns, bool bHuntBar
 							pLoopCity->getDefenseModifier(false) / 8
 							+ (pLoopCity->getPlot().isHills() ?
 							GC.getDefineINT(CvGlobals::HILLS_EXTRA_DEFENSE) : 0);
+					//mountain mod - keldath addition
+					if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS)))
+					{
+						iMod +=(pLoopCity->getPlot().isHills().isPeak() ? GC.getDefineINT(CvGlobals::PEAK_EXTRA_DEFENSE) : 0);
+			
+					}
 					iValue *= std::max(25, 125 - iMod);
 					iValue /= 25; // the denominator is arbitrary, and unimportant.
 					/*  note: the value reduction from high defences which are bombardable should not
@@ -13612,6 +13790,7 @@ CvCity* CvUnitAI::AI_pickTargetCity(int iFlags, int iMaxPathTurns, bool bHuntBar
 				{
 					int iStepsFromTarget = stepDistance(pLoopCity->getX(), pLoopCity->getY(),
 							pTargetCity->getX(), pTargetCity->getY());
+					//rangedstrike-keldath - do i need to check the range to steps?
 					iValue *= 124 - 2*std::min(12, iStepsFromTarget);
 					iValue /= 100;
 				}
@@ -13648,11 +13827,16 @@ CvCity* CvUnitAI::AI_pickTargetCity(int iFlags, int iMaxPathTurns, bool bHuntBar
 				// Reduce the value if we can see, or remember, that the city is well defended.
 				// Note. This adjustment can be more heavy handed because it is harder to feign strong defence than weak defence.
 				iEnemyDefence = kOurTeam.AI_getStrengthMemory(pLoopCity->plot());
+				if (rangedStrike() > 0) 
+				{
+					iEnemyDefense /= 2; // reduce enemey def - ranged units dont get attacked back.
+				}
 				if (iEnemyDefence > iTotalOffence)
 				{
 					// a more sensitive adjustment than usual (w/ modifier on the denominator), so as not to be too deterred before bombarding.
 					iEnemyDefence *= 130;
-					iEnemyDefence /= 130 + (bombardRate() > 0 ? pLoopCity->getDefenseModifier(false) : 0);
+					//rangedstrike-keldath - maybe range strike even withut bombard.
+					iEnemyDefence /= 130 + (bombardRate() > 0 || rangedStrike() ? pLoopCity->getDefenseModifier(false) : 0);
 					WarPlanTypes eWarPlan = kOurTeam.AI_getWarPlan(pLoopCity->getTeam());
 					// If we aren't fully committed to the war, then focus on taking easy cities - but try not to be completely predictable.
 					bool bCherryPick = (eWarPlan == WARPLAN_LIMITED ||
@@ -13694,6 +13878,7 @@ CvCity* CvUnitAI::AI_pickTargetCity(int iFlags, int iMaxPathTurns, bool bHuntBar
 			} // end if revealed.
 			// K-Mod. If no city in the area is revealed,
 			// then assume the AI is able to deduce the position of the closest city.
+	//rangestike-keldath - maybe add range to stepdistance if its a ranged unit above 2
 			else if (iBestValue == 0 && !pLoopCity->isBarbarian() && (pBestCity == NULL ||
 				stepDistance(getX(), getY(), pBestCity->getX(), pBestCity->getY()) >
 				stepDistance(getX(), getY(), pLoopCity->getX(), pLoopCity->getY())))
