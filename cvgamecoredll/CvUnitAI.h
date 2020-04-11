@@ -343,6 +343,7 @@ protected:
 	CvPlot* AI_bombardTarget(); // advc
 	int AI_rangedStrikeValueK(CvPlot const& kPlot, int iCurrentBest = 0, bool cityStrike = false) const; // advc
 	bool AI_rangedStrikeK(int iThreshold = 0, bool cityStrike = false); // K-Mod note. this function now handles bombing defences, and defensive strikes.
+	bool AI_rangedStrikePlotK(const CvPlot* pPlot, int iX, int iY, bool bStrikeBack = false); // K-Mod note. this function now handles bombing defences, and defensive strikes.
 	
 	// added so under cheat mode we can call protected functions for testing
 	friend class CvGameTextMgr;
