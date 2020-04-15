@@ -25,8 +25,7 @@ public:
 	void AI_upgrade();
 	void AI_promote();
 
-	int AI_groupFirstVal()   
-const;
+	int AI_groupFirstVal() const;
 	int AI_groupSecondVal() const;
 
 	int AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy) const;
@@ -57,7 +56,7 @@ const;
 	int AI_sacrificeValue(const CvPlot* pPlot) const;
 	// Lead From Behind by UncutDragon (edited for K-Mod):
 	void LFBgetBetterAttacker(CvUnitAI** ppAttacker, const CvPlot* pPlot, bool bPotentialEnemy, int& iAIAttackOdds, int& iAttackerValue);
-	//rangedattack-keldath
+
 	void read(FDataStreamBase* pStream);
 	void write(FDataStreamBase* pStream);
 
@@ -328,12 +327,6 @@ protected:
 	//bool AI_artistCultureVictoryMove(); // disabled by K-Mod
 	bool AI_poach();
 	bool AI_choke(int iRange = 1, bool bDefensive = false, int iFlags = 0);
-	
-	int AI_rangedStrikeValueK(CvPlot const& kPlot, int iCurrentBest = 0, int plotFilter = 0) const; // advc
-	CvPlot* AI_findRangedTargetPlotAI(int plotFilter = 0); // advc
-	bool AI_rangedStrikeK(int plotFilter = 0, const CvPlot* pPlot = NULL, 
-								int iX = NULL, int iY = NULL, bool bStrikeBack = false); // K-Mod note. this function now handles bombing defences, and defensive strikes.
-	
 	// advc.012: CvUnit::plot if pPlot=NULL; cf. CvTeamAI::plotDefense.
 	int AI_plotDefense(CvPlot const* pPlot = NULL) const;
 
@@ -346,7 +339,12 @@ protected:
 	bool AI_canGroupWithAIType(UnitAITypes eUnitAI) const;
 	bool AI_allowGroup(CvUnitAI const& kUnit, UnitAITypes eUnitAI) const;
 	bool AI_moveSettlerToCoast(int iMaxPathTurns = 5); // advc.040
-
+//rangedattack-keldath
+	CvPlot* AI_bombardTarget(); // advc
+	int AI_rangedStrikeValueK(CvPlot const& kPlot, int iCurrentBest = 0, bool cityStrike = false) const; // advc
+	bool AI_rangedStrikeK(int iThreshold = 0, bool cityStrike = false); // K-Mod note. this function now handles bombing defences, and defensive strikes.
+	bool AI_rangedStrikePlotK(const CvPlot* pPlot, int iX, int iY, bool bStrikeBack = false); // K-Mod note. this function now handles bombing defences, and defensive strikes.
+	
 	// added so under cheat mode we can call protected functions for testing
 	friend class CvGameTextMgr;
 };
