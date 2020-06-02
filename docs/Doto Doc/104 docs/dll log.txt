@@ -1,0 +1,3 @@
+note - 
+
+f1rpo disavled explore unit ai in the unitai.cpp 

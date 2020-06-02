@@ -76,7 +76,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_ENEMY_MAXIMUM_DAMAGE</Tag>
-		<English>eNEMY %s1_UnitName attack on the enemy %s2_EnUName is on Max Damage!</English>
+		<English>Enemy %s1_UnitName attack on the enemy %s2_EnUName is on Max Damage!</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_ASTRENGTH</Tag>
@@ -96,7 +96,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNIT_AIRCOMBAT_LIMIT</Tag>
-		<English>[ICON_BULLET]Max. Ranged %d3_Damage%% Damage to Enemy on attack</English>
+		<English>[ICON_BULLET]Max Ranged %d3_Damage%% Damage to Enemy on attack</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_YOU_MISSED_CITY_DEFENSES</Tag>

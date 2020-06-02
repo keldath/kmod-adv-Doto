@@ -164,6 +164,8 @@
 	<ElementType name="NoWarAttitudeProbs" content="eltOnly">
 		<element type="NoWarAttitudeProb" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
+	<!-- advc.104 -->
+	<ElementType name="iLoveOfPeace" content="textOnly" dt:type="int"/>
 	<ElementType name="UnitAIType" content="textOnly"/>
 	<ElementType name="iWeightModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="UnitAIWeightModifier" content="eltOnly">
@@ -203,6 +205,8 @@
 	<ElementType name="DiplomacyIntroMusicWar" content="eltOnly">
 		<element type="DiploMusicWarEra" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
+	<!-- advc.xmldefault: Made many subelements optional (minOccurs 0).
+		 None were optional before except the ones added by advc.ctr. -->
 	<ElementType name="LeaderHeadInfo" content="eltOnly">
 		<element type="Type"/>
 		<element type="Description" minOccurs="0"/>
@@ -309,6 +313,8 @@
 		<element type="MemoryDecays" minOccurs="0"/>
 		<element type="MemoryAttitudePercents" minOccurs="0"/>
 		<element type="NoWarAttitudeProbs" minOccurs="0"/>
+		<!-- advc.104 -->
+		<element type="iLoveOfPeace" minOccurs="0"/>
 		<element type="UnitAIWeightModifiers" minOccurs="0"/>
 		<element type="ImprovementWeightModifiers" minOccurs="0"/>
 		<element type="DiplomacyIntroMusicPeace" minOccurs="0"/>
@@ -487,7 +493,7 @@
 		<element type="Type"/>
 		<element type="Description" minOccurs="0"/>
 		<element type="ShortDescription" minOccurs="0"/>
-    		<element type="Help" minOccurs="0"/>
+    	<element type="Help" minOccurs="0"/>
 		<element type="Adjective" minOccurs="0"/>
 		<element type="Civilopedia" minOccurs="0"/>
 		<element type="DefaultPlayerColor" minOccurs="0"/>

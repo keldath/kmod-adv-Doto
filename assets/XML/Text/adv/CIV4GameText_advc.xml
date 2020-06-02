@@ -171,6 +171,41 @@
 		<Italian>Città può rivoltarsi se &gt; %d1[ICON_STRENGTH] sono trasferite</Italian>
 		<Spanish>Ciudad puede rebelarse si &gt; %d1[ICON_STRENGTH] son retiradas</Spanish>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_INCREASED_BY_GRIEVANCE</Tag>
+		<English>Increased opposition due to</English>
+		<French>Opposition renforcée par</French>
+		<German>Erhöhter Widerstand durch</German>
+		<Italian>Opposizione rafforzata da</Italian>
+		<Spanish>Oposición reforzada por</Spanish>
+	</TEXT>
+	<!-- Translations based on TXT_KEY_BUILDING_HURRY_ANGER_MOD
+		 (CIV4GameText_Warlords.xml) -->
+	<TEXT>
+		<Tag>TXT_KEY_GRIEVANCE_HURRY</Tag>
+		<English>hurry [ICON_UNHAPPY]</English>
+		<French>des sacrifices de population</French>
+		<German>[ICON_UNHAPPY] über Bevölkerungseinbußen</German>
+		<Italian>sacrifici della popolazione</Italian>
+		<Spanish>los sacrificios de la población</Spanish>
+	</TEXT>
+	<!-- Based on TXT_KEY_DRAFT_UNIT (Civ4GameText_Misc1.xml)-->
+	<TEXT>
+		<Tag>TXT_KEY_GRIEVANCE_CONSCRIPT</Tag>
+		<English>draft [ICON_UNHAPPY]</English>
+		<French>l'enr&#244;lement</French>
+		<German>[ICON_UNHAPPY] über Einberufung</German>
+		<Italian>coscrizione</Italian>
+		<Spanish>el reclutamiento</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_GRIEVANCE_RELIGION</Tag>
+		<English>religion</English>
+		<French>la religion</French>
+		<German>Religion</German>
+		<Italian>religione</Italian>
+		<Spanish>la religi&#243;n</Spanish>
+	</TEXT>
 
 	<!-- advc.101: Originally in CIV4GameTextInfos.xml. Adding the
 		 pre-revolt owner of the city. -->
@@ -315,24 +350,24 @@
 		</Spanish>
 	</TEXT>
 	
-	<!-- advc.004a: Used in help text of promotion buttons.
+	<!-- advc.004e: Used in help text of promotion buttons.
 		 Akin to TXT_KEY_PEDIA_LEADS_TO in CIV4GameTextInfos.xml.
 		 The "Leads to" translations are taken from there. -->
 	<TEXT>
 		<Tag>TXT_KEY_LEADS_TO</Tag>
 		<English>Leads to</English>
-		<French>M&#232;ne &#224; </French>
-		<German>F&#252;hrt zu </German>
-		<Italian>Conduce a </Italian>
-		<Spanish>Lleva a </Spanish>
+		<French>M&#232;ne &#224;</French>
+		<German>F&#252;hrt zu</German>
+		<Italian>Conduce a</Italian>
+		<Spanish>Lleva a</Spanish>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_REQUIRED_FOR</Tag>
 		<English>Required for</English>
-		<French>N&#233;cessaire pour </French>
-		<German>Ben&#246;tigt f&#252;r </German>
-		<Italian>Necessario per </Italian>
-		<Spanish>Necesario por </Spanish>
+		<French>N&#233;cessaire pour</French>
+		<German>Ben&#246;tigt f&#252;r</German>
+		<Italian>Necessario per</Italian>
+		<Spanish>Necesario por</Spanish>
 	</TEXT>
 	
 	<!-- advc.004a
@@ -756,6 +791,17 @@
 		<Italian>+%d1_Change[ICON_UNHAPPY]: "Temiamo per la nostra incolumit&#224;. Abbiamo bisogno di migliori difese militari!"</Italian>
 		<Spanish>+%d1_Change [ICON_UNHAPPY]: "Tememos por nuestra seguridad. &#161;Solicitamos mejor protecci&#243;n militar!"</Spanish>
 	</TEXT>
+
+	<!-- advc.130m: Like TXT_KEY_MISC_ATTITUDE_SHARE_WAR (CIV4GameTextInfos.xml),
+		 but past tense. -->
+	<TEXT>
+		<Tag>TXT_KEY_MISC_ATTITUDE_SHARED_WAR</Tag>
+		<English>%D1: "Our mutual military struggle has brought us closer together."</English>
+		<French>%D1 : "Notre engagement militaire commun nous a rapprochés."</French>
+		<German>%D1: "Unsere gemeinsamen milit&#228;rischen Aktivit&#228;ten haben uns zusammengeschwei&#223;t."</German>
+		<Italian>%D1: "I nostri reciproci aiuti militari ci hanno reso molto vicini l'un l'altro."</Italian>
+		<Spanish>%D1: "Nuestra mutua lucha militar nos ha acercado m&#225;s."</Spanish>
+	</TEXT>
 	
 	<!-- advc.004g: "close" borders sounds too similar to "closed".
 		 That would be tolerable, but the German and Spanish translation
@@ -1043,6 +1089,24 @@
 		<Spanish>Cancelar&#225; la &#250;ltima orden en la cola de &#243;rdenes de la unidad.</Spanish>
 	</TEXT>
 
+	<!-- advc.004g: From CIV4GameText_Warlords.xml. Quotation marks added. -->
+	<TEXT>
+		<Tag>TXT_KEY_DENIAL_WAR_NOT_POSSIBLE_US</Tag>
+		<English>"Joining the war on your side is not possible for us."</English>
+		<French>"Nous ne pouvons pas nous battre &#224; vos c&#244;t&#233;s."</French>
+		<German>"Wir k&#246;nnen in diesem Krieg nicht auf Eurer Seite k&#228;mpfen."</German>
+		<Italian>"Non possiamo scendere in guerra al tuo fianco."</Italian>
+		<Spanish>"No nos es posible unirnos a la guerra en vuestro bando."</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_DENIAL_WAR_NOT_POSSIBLE_YOU</Tag>
+		<English>"Joining the war on our side is not possible for you."</English>
+		<French>"Vous ne pouvez pas vous battre &#224; nos c&#244;t&#233;s."</French>
+		<German>"Ihr k&#246;nnt in diesem Krieg nicht auf unserer Seite k&#228;mpfen."</German>
+		<Italian>"Non puoi scendere in guerra al nostro fianco."</Italian>
+		<Spanish>"No es posible que os un&#225;is a la guerra en nuestro bando."</Spanish>
+	</TEXT>
+
 	<!-- advc.004: German translation - "Neuer Random Seed" was just too
 		 awful. Originally in CIV4GameText_Misc1.xml. -->
 	<TEXT>
@@ -1131,9 +1195,9 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HANDICAP_IMMORTAL_HELP</Tag>
-		<English>Very hard. Apart from receiving high ongoing bonuses, the AI players start the game with a Worker, two Scouts, three Archers and, in total, up to five technologies. The game starts on turn 10 in order to match this big head start.</English>
+		<English>Very hard. Apart from receiving high ongoing bonuses, the AI players start the game with a Worker, a Scout, two Archers and, in total, up to five technologies. The game starts on turn 10 in order to match this big head start.</English>
 		<French>Peu nombreux sont ceux qui peuvent revendiquer une place parmi les Immortels. C'est l&#224; un d&#233;fi que seuls les plus exp&#233;riment&#233;s sauront relever.</French>
-		<German>Sehr schwierig. Zusätzlich zu hohen andauernden Boni erhalten die KI-Spieler zu Spielbeginn einen Bautrupp, zwei Kundschafter, drei Bogesnchützen und, insgesamt, bis zu fünf Technologien.</German>
+		<German>Sehr schwierig. Zusätzlich zu hohen andauernden Boni erhalten die KI-Spieler zu Spielbeginn einen Bautrupp, einen Kundschafter, zwei Bogesnchützen und, insgesamt, bis zu fünf Technologien.</German>
 		<Italian>Solo in pochi possono appartenere alla schiera degli Immortali. Una prova molto impegnativa, anche per i pi&#249; esperti.</Italian>
 		<Spanish>Solo unos cuantos pueden contarse entre las filas de los inmortales.  Esto resulta una prueba demoledora para todos, excepto para los m&#225;s experimentados.</Spanish>
 	</TEXT>
@@ -3377,11 +3441,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_BUG_OPT_CIV4LERTS__CITYTRADE_HOVER</Tag>
-		<English>Displays an alert whenever another civilization becomes willing to cede a [COLOR_CITY_BLUE]city[COLOR_REVERT] to you or to trade for one of your cities (unless you've just acquired it).</English>
-		<French>Affiche une alerte lorsqu'un autre civilisation devient prêt à vous céder une [COLOR_CITY_BLUE]ville[COLOR_REVERT] ou à échanger pour une de vos villes (sauf si vous venez de l'acquérir).</French>
-		<German>Meldet, wenn eine andere Zivilisation zu einem Handel mit [COLOR_CITY_BLUE]Städten[COLOR_REVERT] bereit ist. Städte, die Sie erst seit kurzem besitzen, werden nicht gemeldet.</German>
-		<Italian>Visualizza un avviso ogni volta che un altra civiltà diventa disposta a cedere una [COLOR_CITY_BLUE]città[COLOR_REVERT] a Lei o a scambiare per una delle Sue città (se non l'abbia appena acquistata).</Italian>
-		<Spanish>Muestra una alerta cada vez que un otra civilización se convierte dispuesto a cederle una [COLOR_CITY_BLUE]ciudad[COLOR_REVERT] o a cambiar por una de sus ciudades (a no ser que recién la haya adquirido).</Spanish>
+		<English>Displays an alert whenever another civilization becomes willing to cede a [COLOR_CITY_BLUE]city[COLOR_REVERT] to you or to trade for one of your cities.</English>
+		<French>Affiche une alerte lorsqu'un autre civilisation devient prêt à vous céder une [COLOR_CITY_BLUE]ville[COLOR_REVERT] ou à échanger pour une de vos villes.</French>
+		<German>Meldet, wenn eine andere Zivilisation zu einem Handel mit [COLOR_CITY_BLUE]Städten[COLOR_REVERT] bereit ist.</German>
+		<Italian>Visualizza un avviso ogni volta che un altra civiltà diventa disposta a cedere una [COLOR_CITY_BLUE]città[COLOR_REVERT] a Lei o a scambiare per una delle Sue città.</Italian>
+		<Spanish>Muestra una alerta cada vez que un otra civilización se convierte dispuesto a cederle una [COLOR_CITY_BLUE]ciudad[COLOR_REVERT] o a cambiar por una de sus ciudades.</Spanish>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_CAN_LIBERATE</Tag>
@@ -3390,6 +3454,17 @@
 		<German>kann befreit und an %s1_Ldr abgetreten werden.</German>
 		<Italian>può essere liberato come un favore a %s1_Ldr.</Italian>
 		<Spanish>puede ser liberado como un favor a %s1_Ldr.</Spanish>
+	</TEXT>
+	<!-- From CIV4GameTextInfos.xml. Was "we're not willing". I'm using this
+		 for cities that the AI doesn't accept. "want" is a little better for
+		 that and should be fine in other contexts too.-->
+	<TEXT>
+		<Tag>TXT_KEY_DENIAL_UNKNOWN</Tag>
+		<English>"Sorry... we don't want to trade this."</English>
+		<French>"Je regrette... nous ne souhaitons pas &#233;changer ceci."</French>
+		<German>"Wir haben leider kein Interesse, damit zu handeln."</German>
+		<Italian>"Ci spiace, ma non vogliamo commerciare."</Italian>
+		<Spanish>"Lo sentimos... No deseamos intercambiar esto."</Spanish>
 	</TEXT>
 
 	<!-- advc.004q: Based on TXT_KEY_ATTITUDE_TOWARDS in
@@ -5847,6 +5922,22 @@
 		<German>Nein, überlasst die Stadt dem %s1:2_CivName (Befreiung).</German>
 		<Italian>No, restituisci il controllo all'%s1_CivName</Italian>
 		<Spanish>No, devolvedle el control al %s1_CivName</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_POPUP_LIBERATION_NOTE_OTHER</Tag>
+		<English>(Note: Liberation at a later time will cede the city to the %s1_CivName.)</English>
+		<French>(Remarque : une libération ultérieure cédera la ville à l'%s1_CivName.)</French>
+		<German>(Bemerkung: Falls Ihr die Stadt später befreit, wird sie an das %s1:2_CivName übergehen.)</German>
+		<Italian>(Nota: Liberazione in un secondo momento cederà la città all'%s1_CivName.)</Italian>
+		<Spanish>(Nota: Una liberación en otro momento cederá la ciudad al %s1_CivName.)</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_POPUP_LIBERATION_NOTE_NONE</Tag>
+		<English>(Note: Liberation to the %s1_CivName will not be possible at a later time.)</English>
+		<French>(Remarque: libération à l'%s1_CivName ne sera pas possible ultérieurement.)</French>
+		<German>(Bemerkung: Abtretung an das %s1:2_CivName durch Befreiung später nicht mehr möglich)</German>
+		<Italian>(Nota: Liberazione all'%s1_CivName non sarà possibile in un secondo momento.)</Italian>
+		<Spanish>(Nota: Liberación al %s1_CivName no será posible en otro momento.)</Spanish>
 	</TEXT>
 
 	<!-- advc.004g: From CIV4GameText_BTS.xml. Said "terrain", which is

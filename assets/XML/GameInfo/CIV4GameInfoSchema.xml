@@ -233,7 +233,6 @@
 <!-- TGA_INDEXATION			01/21/2008			MRGENIE		-->
 		<element type="iTGAIndex" minOccurs="0"/>
 <!-- TGA_INDEXATION			END				MRGENIE		-->
-		<element type="iFreeUnits" minOccurs="0"/>
 		<element type="GlobalReligionCommerces" minOccurs="0"/>
 		<element type="HolyCityCommerces" minOccurs="0"/>
 		<element type="StateReligionCommerces" minOccurs="0"/>
@@ -563,7 +562,10 @@
 	<ElementType name="iTechShare" content="textOnly" dt:type="int"/>
 	<!--DPII < Maintenance Modifiers > -->
 	<ElementType name="iGlobalMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iConnectedCityMaintenanceModifier" content="textOnly" dt:type="int"/>
+<!-- seems these are missing, need to check the dll 	
+	<ElementType name="iDistanceMaintenanceModifier" content="textOnly" dt:type="int"/>
+	<ElementType name="iNumCitiesMaintenanceModifier" content="textOnly" dt:type="int"/>
+-->	<ElementType name="iConnectedCityMaintenanceModifier" content="textOnly" dt:type="int"/>
 	<!--DPII < Maintenance Modifiers > -->
 	<ElementType name="EveryoneSpecialUnit" content="textOnly"/>
 	<ElementType name="EveryoneSpecialBuilding" content="textOnly"/>
@@ -792,8 +794,7 @@
   </ElementType>
   <ElementType name="BuildingCommerceChanges" content="eltOnly">
     <element type="BuildingCommerceChange" minOccurs="0" maxOccurs="*"/>
-  </ElementType>
-
+    </ElementType>
 	<ElementType name="Upkeep" content="textOnly"/>
 	<ElementType name="iYield" content="textOnly" dt:type="int"/>
 	<ElementType name="YieldModifiers" content="eltOnly">
@@ -921,7 +922,7 @@
 	</ElementType>
 <!-- CMEDIT END	-->	
 	<ElementType name="CivicInfo" content="eltOnly">
-		<element type="CivicOptionType" minOccurs="0"/>
+		<element type="CivicOptionType"/>
 		<element type="Type"/>
 		<element type="Description" minOccurs="0"/>
 		<element type="Civilopedia" minOccurs="0"/>
@@ -979,11 +980,11 @@
 		<element type="iStateReligionExtraHealth" minOccurs="0"/>
     	<element type="iNonStateReligionExtraHealth" minOccurs="0"/>
 <!-- CIVIC AND PLUS -->
-    	<element type="iStateReligionUnitProductionModifier" minOccurs="0"/>
+		<element type="iStateReligionUnitProductionModifier" minOccurs="0"/>
 		<element type="iStateReligionBuildingProductionModifier" minOccurs="0"/>
 		<element type="iStateReligionFreeExperience" minOccurs="0"/>
-		<element type="StateReligionYieldModifiers" minOccurs="0"/>
 <!-- CIVIC AND PLUS -->
+		<element type="StateReligionYieldModifiers" minOccurs="0"/>
 	    <element type="StateReligionCommerceModifiers" minOccurs="0"/>
 	    <element type="NonStateReligionYieldModifiers" minOccurs="0"/>
 	    <element type="NonStateReligionCommerceModifiers" minOccurs="0"/>
@@ -1318,46 +1319,46 @@
 	<ElementType name="bDefault" content="textOnly" dt:type="boolean"/>
 	<ElementType name="GameOptionInfo" content="eltOnly">
 		<element type="Type"/>
-		<element type="Description" minOccurs="0"/>
-		<element type="Help" minOccurs="0"/>
-		<element type="bDefault" minOccurs="0"/>
-		<element type="bVisible" minOccurs="0"/>
+		<element type="Description"/>
+		<element type="Help"/>
+		<element type="bDefault"/>
+		<element type="bVisible"/>
 	</ElementType>
 	<ElementType name="GameOptionInfos" content="eltOnly">
 		<element type="GameOptionInfo" maxOccurs="*"/>
 	</ElementType>
 	<ElementType name="MPOptionInfo" content="eltOnly">
 		<element type="Type"/>
-		<element type="Description" minOccurs="0"/>
-		<element type="Help" minOccurs="0"/>
-		<element type="bDefault" minOccurs="0"/>
+		<element type="Description"/>
+		<element type="Help"/>
+		<element type="bDefault"/>
 	</ElementType>
 	<ElementType name="MPOptionInfos" content="eltOnly">
 		<element type="MPOptionInfo" maxOccurs="*"/>
 	</ElementType>
 	<ElementType name="ForceControlInfo" content="eltOnly">
 		<element type="Type"/>
-		<element type="Description" minOccurs="0"/>
-		<element type="Help" minOccurs="0"/>
-		<element type="bDefault" minOccurs="0"/>
+		<element type="Description"/>
+		<element type="Help"/>
+		<element type="bDefault"/>
 	</ElementType>
 	<ElementType name="ForceControlInfos" content="eltOnly">
 		<element type="ForceControlInfo" maxOccurs="*"/>
 	</ElementType>
 	<ElementType name="PlayerOptionInfo" content="eltOnly">
 		<element type="Type"/>
-		<element type="Description" minOccurs="0"/>
-		<element type="Help" minOccurs="0"/>
-		<element type="bDefault" minOccurs="0"/>
+		<element type="Description"/>
+		<element type="Help"/>
+		<element type="bDefault"/>
 	</ElementType>
 	<ElementType name="PlayerOptionInfos" content="eltOnly">
 		<element type="PlayerOptionInfo" maxOccurs="*"/>
 	</ElementType>
 	<ElementType name="GraphicOptionInfo" content="eltOnly">
 		<element type="Type"/>
-		<element type="Description" minOccurs="0"/>
-		<element type="Help" minOccurs="0"/>
-		<element type="bDefault" minOccurs="0"/>
+		<element type="Description"/>
+		<element type="Help"/>
+		<element type="bDefault"/>
 	</ElementType>
 	<ElementType name="bIsPassive" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bIsTwoPhases" content="textOnly" dt:type="boolean"/>

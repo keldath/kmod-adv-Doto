@@ -4,20 +4,6 @@
 <!-- -->
 <!-- Unit Schema -->
 <Schema xmlns="urn:schemas-microsoft-com:xml-data" xmlns:dt="urn:schemas-microsoft-com:datatypes">
-	<!-- Archid : Prereq civics -->
-	<ElementType name="CivicOption" content="textOnly"/>
-	<ElementType name="bPrereqCivic" content="textOnly" dt:type="boolean"/>
-	<ElementType name="PrereqCivic" content="eltOnly">
-		<element type="CivicOption"/>
-		<element type="bPrereqCivic"/>
-	</ElementType>
-	<ElementType name="PrereqOrCivics" content="eltOnly">
-		<element type="PrereqCivic" minOccurs="0" maxOccurs="*"/>
-	</ElementType>
-	<ElementType name="PrereqAndCivics" content="eltOnly">
-		<element type="PrereqCivic" minOccurs="0" maxOccurs="*"/>
-	</ElementType>
-	<!-- Archid : Prereq civics -->
 	<ElementType name="ImprovementName" content="textOnly"/>
 	<ElementType name="iYield" content="textOnly" dt:type="int"/>
 	<ElementType name="TerrainType" content="textOnly"/>
@@ -271,15 +257,29 @@
 	<ElementType name="Buildings" content="eltOnly">
 		<element type="Building" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
-	<!-- advc.003t: Remove ForceBuildings -->
-	<!--ElementType name="bForceBuilding" content="textOnly" dt:type="boolean"/>
+	<!-- advc.003t (note): ForceBuildings is no longer read by the DLL -->
+	<ElementType name="bForceBuilding" content="textOnly" dt:type="boolean"/>
 	<ElementType name="ForceBuilding" content="eltOnly">
 		<element type="BuildingType"/>
 		<element type="bForceBuilding"/>
 	</ElementType>
-	<ElementType name="ForceBuildings" content="eltOnly">
+<!--	<ElementType name="ForceBuildings" content="eltOnly">
 		<element type="ForceBuilding" minOccurs="0" maxOccurs="*"/>
 	</ElementType>-->
+		<!-- Archid : Prereq civics -->
+	<ElementType name="CivicOption" content="textOnly"/>
+	<ElementType name="bPrereqCivic" content="textOnly" dt:type="boolean"/>
+	<ElementType name="PrereqCivic" content="eltOnly">
+		<element type="CivicOption"/>
+		<element type="bPrereqCivic"/>
+	</ElementType>
+	<ElementType name="PrereqOrCivics" content="eltOnly">
+		<element type="PrereqCivic" minOccurs="0" maxOccurs="*"/>
+	</ElementType>
+	<ElementType name="PrereqAndCivics" content="eltOnly">
+		<element type="PrereqCivic" minOccurs="0" maxOccurs="*"/>
+	</ElementType>
+	<!-- Archid : Prereq civics -->
 	<!-- RevDCM canTrain -->
 	<ElementType name="MaxStartEra" content="textOnly"/>
 	<ElementType name="ForceObsoleteTech" content="textOnly"/>
@@ -329,11 +329,11 @@
 	<ElementType name="PrereqBonuses" content="eltOnly">
 		<element type="BonusType" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
-<!-- shqype vicinity  -->
+<!-- shqype vicinity  
 	<ElementType name="VicinityBonusType" content="textOnly"/>
 	<ElementType name="PrereqVicinityBonuses" content="eltOnly">
 		<element type="VicinityBonusType" minOccurs="0" maxOccurs="*"/>
-	</ElementType>
+	</ElementType>-->
 <!-- advc.905b -->
 	<ElementType name="iExtraMoves" content="textOnly" dt:type="int"/>
 	<!-- advc.905b -->
@@ -372,6 +372,7 @@
 	<ElementType name="iMoves" content="textOnly" dt:type="int"/>
 	<ElementType name="bNoRevealMap" content="textOnly" dt:type="boolean"/>
 	<ElementType name="iAirRange" content="textOnly" dt:type="int"/>
+	<ElementType name="iRangeStrike" content="textOnly" dt:type="int"/>
 	<ElementType name="iAirUnitCap" content="textOnly" dt:type="int"/>
 	<ElementType name="iDropRange" content="textOnly" dt:type="int"/>
 	<ElementType name="iNukeRange" content="textOnly" dt:type="int"/>
@@ -606,9 +607,9 @@
 		<element type="bFood" minOccurs="0"/>
 		<element type="bNoBadGoodies" minOccurs="0"/>
 		<element type="bOnlyDefensive" minOccurs="0"/>
-		<!-- advc.315a -->
+		<!-- advc.315a (set to false by default in the DLL) -->
 		<element type="bOnlyAttackAnimals" minOccurs="0"/>
-		<!-- advc.315b -->
+		<!-- advc.315b (set to false by default in the DLL) -->
 		<element type="bOnlyAttackBarbarians" minOccurs="0"/>
 		<element type="bNoCapture" minOccurs="0"/>
 		<element type="bQuickCombat" minOccurs="0"/>
@@ -658,8 +659,10 @@
 		<element type="CorporationSpreads" minOccurs="0"/>
 		<element type="GreatPeoples" minOccurs="0"/>
 	    <element type="Buildings" minOccurs="0"/>
-		<!-- advc.003t -->
-		<!--element type="ForceBuildings"/-->
+		<!-- advc.003t: No longer has any effect, but still allowed. 
+		<element type="ForceBuildings" minOccurs="0"/>-->
+		<element type="PrereqOrCivics" minOccurs="0"/> <!-- Archid : Prereq civics -->
+		<element type="PrereqAndCivics" minOccurs="0"/> <!-- Archid : Prereq civics -->
 		<!-- RevDCM canTrain -->
 		<element type="MaxStartEra" minOccurs="0"/>
 		<element type="ForceObsoleteTech" minOccurs="0"/>
@@ -680,11 +683,9 @@
 		<element type="TechTypes" minOccurs="0"/>
 		<element type="BonusType" minOccurs="0"/>
 		<element type="PrereqBonuses" minOccurs="0"/>
-		<element type="PrereqOrCivics" minOccurs="0"/> <!-- Archid : Prereq civics -->
-		<element type="PrereqAndCivics" minOccurs="0"/> <!-- Archid : Prereq civics -->
-		<!-- shqype vicinity -->
+		<!-- shqype vicinity
 		<element type="VicinityBonusType" minOccurs="0"/>
-		<element type="PrereqVicinityBonuses" minOccurs="0"/>
+		<element type="PrereqVicinityBonuses" minOccurs="0"/>-->
 		<!-- advc.905b -->
 		<element type="SpeedBonuses" minOccurs="0"/>
 		<element type="ProductionTraits" minOccurs="0"/>
@@ -698,6 +699,7 @@
 		<element type="iMoves" minOccurs="0"/>
 		<element type="bNoRevealMap" minOccurs="0"/>
 		<element type="iAirRange" minOccurs="0"/>
+		<element type="iRangeStrike" minOccurs="0"/>
 		<element type="iAirUnitCap" minOccurs="0"/>
 		<element type="iDropRange" minOccurs="0"/>
 		<element type="iNukeRange" minOccurs="0"/>

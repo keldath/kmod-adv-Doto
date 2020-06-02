@@ -161,7 +161,7 @@
     </Define>
 
 	<!-- These two are from the original GlobalDefines. -->
-	<!-- [advc.099c] Was 100, meaning that foreign culture strength is doubled
+	<!-- advc.101: Was 100, meaning that foreign culture strength is doubled
 		 if the foreign state religion is in the city. Now also applies when the
 		 owner of the foreign culture is eliminated and there is a "suppressed"
 		 religion in the city, i.e. a religion that differs from the city owner's
@@ -896,14 +896,21 @@
 	</Define>
 
 	<!-- advc.ctr: To receive a city through trade, a civ needs to have at
-		 least this percentage of tile culture in the city tile. Moreover,
-		 an AI civ applies a stricter attitude threshold when it has this much or
-		 more culture in a city and needs to decide whether to trade (not
-		 liberate) the city to another civ.
+		 least this percentage of culture in the city tile (nationality).
+		 (Additionally, the recipient needs to have at least half as much
+		 nationality as the city owner.)
 		 Recommended: 10 -->
 	<Define>
 		<DefineName>CITY_TRADE_CULTURE_THRESH</DefineName>
 		<iDefineIntVal>10</iDefineIntVal>
+	</Define>
+	<!-- When a city has this much nationality (city tile culture percentage)
+		 or more, then its AI owner applies a stricter attitude threshold
+		 when deciding whether to trade (not liberate) the city.
+		 Recommended: 20 (twice the CITY_TRADE_CULTURE_THRESH) -->
+	<Define>
+		<DefineName>NATIVE_CITY_CULTURE_THRESH</DefineName>
+		<iDefineIntVal>20</iDefineIntVal>
 	</Define>
 
 	<!-- [advc.030] Set this to 1 or greater (recommended) to treat plot groups
@@ -972,7 +979,9 @@
 
 	<!-- advc.550d: This modifier is applied to tech costs when playing
 		 with the "No Tech Trading" option. The effect of the modifier is
-		 reduced in the early and late game. Recommended: -28. Use 0 for BtS
+		 reduced in the early and late game. Recommended: -28, meaning that
+		 tech costs are taken times 100% - 28% = 72%. This multiplier gets
+		 further adjusted to the tech era and map size. Use 0 for BtS
 		 behavior (tech costs unaffected by the "No Tech Trading" option). -->
 	<Define>
 		<DefineName>TECH_COST_NOTRADE_MODIFIER</DefineName>

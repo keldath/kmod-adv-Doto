@@ -65,16 +65,16 @@
 		<element type="bFoundCoast" minOccurs="0"/>
 		<element type="bFoundFreshWater" minOccurs="0"/>
 		<!--TLOTags Start-->
-    <element type="bRequiresFlatlands" minOccurs="0"/>
-    <!--TLOTags End-->
+    	<element type="bRequiresFlatlands" minOccurs="0"/>
+    	<!--TLOTags End-->
 		<element type="iMovement" minOccurs="0"/>
 		<element type="iSeeFrom" minOccurs="0"/>
 		<element type="iSeeThrough" minOccurs="0"/>
 		<element type="iBuildModifier" minOccurs="0"/>
 		<element type="iDefense" minOccurs="0"/>
     <!--TLOTags Start-->
-    <element type="iHealthPercent" minOccurs="0"/>
-    <element type="iTurnDamage" minOccurs="0"/>
+    	<element type="iHealthPercent" minOccurs="0"/>
+    	<element type="iTurnDamage" minOccurs="0"/>
     <!--TLOTags End-->
 		<element type="Button" minOccurs="0"/>
 		<element type="FootstepSounds" minOccurs="0"/>
@@ -175,6 +175,7 @@
 		<element type="iDisappearance" minOccurs="0"/>
 		<element type="iGrowth" minOccurs="0"/>
 		<element type="iTurnDamage" minOccurs="0"/>
+		<!-- advc: Now optional; set to 0 by default in the DLL. -->
 		<element type="iWarmingDefense" minOccurs="0"/>
 		<element type="bNoCoast" minOccurs="0"/>
 		<element type="bNoRiver" minOccurs="0"/>
