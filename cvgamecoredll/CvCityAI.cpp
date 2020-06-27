@@ -7413,6 +7413,9 @@ void CvCityAI::AI_getYieldMultipliers(int &iFoodMultiplier, int &iProductionMult
 	iFoodMultiplier /= std::max(1, (iUnworkedPlots + iWorkedPlots) *
 			GC.getFOOD_CONSUMPTION_PER_POPULATION() *
 			(iFoodTotal-iExtraFoodForGrowth));
+	/*	advc.121: I've seen this go above 60000. I guess the formulas above
+		don't deal well with tiny cities that are supposed to grow big. */
+	iFoodMultiplier = std::min(iFoodMultiplier, 5000);
 
 	// Note: this food multiplier calculation still doesn't account for possible food yield multipliers. Sorry.
 
@@ -7428,7 +7431,9 @@ void CvCityAI::AI_getYieldMultipliers(int &iFoodMultiplier, int &iProductionMult
 }
 
 // advc: Made the plot param const
-int CvCityAI::AI_getImprovementValue(CvPlot const& kPlot, ImprovementTypes eImprovement, int iFoodPriority, int iProductionPriority, int iCommercePriority, int iDesiredFoodChange, int iClearFeatureValue, bool bEmphasizeIrrigation, BuildTypes* peBestBuild) const
+int CvCityAI::AI_getImprovementValue(CvPlot const& kPlot, ImprovementTypes eImprovement,
+	int iFoodPriority, int iProductionPriority, int iCommercePriority, int iDesiredFoodChange,
+	int iClearFeatureValue, bool bEmphasizeIrrigation, BuildTypes* peBestBuild) const
 {
 	CvPlayerAI const& kOwner = GET_PLAYER(getOwner()); // K-Mod
 	BonusTypes eBonus = kPlot.getBonusType(getTeam());
@@ -7891,9 +7896,9 @@ int CvCityAI::AI_countBestBuilds(CvArea const& kArea) const  // advc: style chan
 // Note: this function has been somewhat mangled by K-Mod
 void CvCityAI::AI_updateBestBuild()
 {
-	int iFoodMultiplier, iProductionMultiplier, iCommerceMultiplier, iDesiredFoodChange;
 	CvPlayerAI& kOwner = GET_PLAYER(getOwner()); // K-Mod
 
+	int iFoodMultiplier, iProductionMultiplier, iCommerceMultiplier, iDesiredFoodChange;
 	AI_getYieldMultipliers(iFoodMultiplier, iProductionMultiplier, iCommerceMultiplier, iDesiredFoodChange);
 
 	/* I've disabled these for now

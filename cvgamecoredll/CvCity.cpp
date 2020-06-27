@@ -7900,7 +7900,6 @@ void CvCity::changeBonusYieldRateModifier(YieldTypes eIndex, int iChange)
 int CvCity::totalTradeModifier(CvCity const* pOtherCity) const // advc: const CvCity*
 {
 	static int const iCAPITAL_TRADE_MODIFIER = GC.getDefineINT("CAPITAL_TRADE_MODIFIER"); // advc.opt
-	static int const iOVERSEAS_TRADE_MODIFIER = GC.getDefineINT("OVERSEAS_TRADE_MODIFIER"); // advc.opt
 	int iModifier = 100;
 
 	iModifier += getTradeRouteModifier();
@@ -7912,7 +7911,7 @@ int CvCity::totalTradeModifier(CvCity const* pOtherCity) const // advc: const Cv
 	if (pOtherCity != NULL)
 	{
 		if (!sameArea(*pOtherCity))
-			iModifier += iOVERSEAS_TRADE_MODIFIER;
+			iModifier += GC.getDefineINT(CvGlobals::OVERSEAS_TRADE_MODIFIER);
 
 		if (getTeam() != pOtherCity->getTeam())
 		{
@@ -11251,7 +11250,7 @@ void CvCity::popOrder(int iNum, bool bFinish, bool bChoose,  // advc: style chan
 					finishes 1 instance, abort only 1 of p's instances:
 					the one with less production invested. */
 				CvCity* pMinProductionCity = NULL;
-				int iMinProduction = 0;
+				int iMinProduction = -1; // 0 production can happen
 				for (int j = 0; j < pCity->getOrderQueueLength(); j++)
 				{
 					OrderData* pOrder = pCity->getOrderFromQueue(j);
@@ -12200,10 +12199,10 @@ void CvCity::doGreatPeople()
 	{
 		UnitTypes eUnit = kCiv.unitAt(i);
 		int iUnitRate = getGreatPeopleUnitRate(eUnit); // advc
-		changeGreatPeopleUnitProgress(eUnit, iUnitRate *
+		changeGreatPeopleUnitProgress(eUnit, (iUnitRate *
 				/*	advc.001c: Seems like an oversight - per-unit progress
 					should include modifiers. */
-				iTotalGreatPeopleRateModifier);
+				iTotalGreatPeopleRateModifier) / 100);
 		// <advc>
 		#ifdef FASSERT_ENABLE
 			iTotalUnitRate += iUnitRate;

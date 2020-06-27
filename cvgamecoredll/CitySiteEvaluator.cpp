@@ -1568,7 +1568,7 @@ int AIFoundValue::removableFeatureYieldVal(FeatureTypes eFeature,
 			iR += 25 * kFeature.getYieldChange(eLoopYield);
 		}
 	}
-	if(iR!=0) logBBAI("From (removable) feature yield: %d", iR);
+	IFLOG if(iR!=0) logBBAI("From (removable) feature yield: %d", iR);
 	return iR;
 }
 
@@ -1956,22 +1956,22 @@ int AIFoundValue::nonYieldBonusValue(CvPlot const& p, BonusTypes eBonus,
 int AIFoundValue::calculateSpecialYieldModifier(int iCultureModifier, bool bEasyAccess,
 	bool bBonus, bool bCanSoonImproveBonus, bool bCanImproveBonus) const
 {
-	int iR = iCultureModifier;
+	scaled r = iCultureModifier;
 	// </advc.040>
 	if (!bEasyAccess)
-		iR /= 2; // <advc.040>
+		r /= 2; // <advc.040>
 	// <advc.031>
 	if (bBonus)
 	{
 		if (!bCanSoonImproveBonus)
 		{
 			// Don't want to discount e.g. Wine too much near capital
-			iR = (iR * (kSet.isStartingLoc() ? 4 : 3)) / 10;	
+			r = (r * (kSet.isStartingLoc() ? 4 : 3)) / 10;	
 		}
 		else if (!bCanImproveBonus)
-			iR = (iR * 3) / 4;
+			r *= fixp(0.75);
 	} // </advc.031>
-	return iR;
+	return r.round();
 }
 
 
@@ -2032,7 +2032,6 @@ void AIFoundValue::calculateBuildingYields(CvPlot const& p, int const* aiNatureY
 {
 	FOR_EACH_ENUM(Yield)
 		aiBuildingYield[eLoopYield] = 0;
-	int iEffectiveFood = aiNatureYield[YIELD_FOOD];
 	if (bCoastal && p.isWater() &&
 		aiNatureYield[YIELD_COMMERCE] > 1)
 	{
@@ -2095,7 +2094,11 @@ int AIFoundValue::evaluateSpecialYields(int const* aiSpecialYield,
 		Don't value it highly, because it's also counted in a bunch of other ways. */
 	//return iSpecialFood*20+iSpecialProduction*40+iSpecialCommerce*35;
 	// <advc.031>
-	scaled arWeight[NUM_YIELD_TYPES] = {fixp(0.24), fixp(0.36),
+	scaled arWeight[NUM_YIELD_TYPES] = {
+			// advc.108: So that less food gets placed during normalization - hopefully.
+			kSet.isStartingLoc() ? fixp(0.42) :
+			fixp(0.24),
+			fixp(0.36),
 			/*  advc.108: For moving the starting Settler. Though a commercial
 				resource at the second city is also valuable, so: */
 			iCities <= 1 && eEra <= 0 ? fixp(0.48) : fixp(0.32)};
@@ -2216,7 +2219,8 @@ int AIFoundValue::evaluateSeaAccess(bool bGoodFirstColony, scaled rProductionMod
 	if (/* advc.108: */ iCities <= 0)
 	{
 		// BtS: "let other penalties bring this down."
-		r += 360; // advc.031: was 600 in BtS, 500 in K-Mod
+		r += (kSet.isStartingLoc() ? 360 // advc.031: was 600 in BtS, 500 in K-Mod
+				: 200); // advc.031: Less when normalizing or moving 1st settler
 		if (!kSet.isNormalizing() && kArea.getNumStartingPlots() <= 0)
 		{
 			// advc.031: An inland sea will probably do an isolated civ no good
@@ -3052,19 +3056,32 @@ scaled AIFoundValue::evaluateWorkablePlot(CvPlot const& p) const
 	bool bCanSoonImproveBonus = false;
 	int aiBonusImprovementYield[NUM_YIELD_TYPES] = {0, 0, 0};
 	ImprovementTypes eBonusImprovement = NO_IMPROVEMENT;
+	if (eBonus != NO_BONUS)
 	{
 		bool abDummy[]={false, false};
 		bool bImprovementRemovesFeature = false;
 		eBonusImprovement = getBonusImprovement(eBonus, p,
 				bCanTradeBonus, bCanSoonTradeBonus, aiBonusImprovementYield,
 				bCanImproveBonus, bCanSoonImproveBonus, bImprovementRemovesFeature);
+		if (eBonusImprovement == NO_IMPROVEMENT) // We're nowhere near the tech reqs
+		{
+			FAssert(aiBonusImprovementYield[YIELD_FOOD] == 0 &&
+					aiBonusImprovementYield[YIELD_PRODUCTION] == 0 &&
+					aiBonusImprovementYield[YIELD_COMMERCE] == 0);
+			// To account for w/e yields the improved resource will provide eventually
+			aiBonusImprovementYield[YIELD_PRODUCTION] = 1;
+		}
 	}
 	if (!bPersistentFeature && eFeature != NO_FEATURE)
 	{
-		r += scaled(
-				removableFeatureYieldVal(eFeature, bRemovableFeature, eBonus != NO_BONUS) +
-				removableFeatureYieldVal(eFeature, !bPersistentFeature, eBonus != NO_BONUS),
-				2);
+		int iRemovableFeatureYieldVal = removableFeatureYieldVal(
+				eFeature, bRemovableFeature, eBonus != NO_BONUS);
+		int iNonPersistentFeatureYieldVal = removableFeatureYieldVal(
+				eFeature, !bPersistentFeature, eBonus != NO_BONUS);
+		/*	Weighted average to account for chopping becoming available later.
+			Mostly treat chopping as available b/c Jungle seems to get valued
+			too lowly; I guess b/c bonus improvement yields aren't counted. */
+		r += scaled(iRemovableFeatureYieldVal + 3 * iNonPersistentFeatureYieldVal, 4);
 	}
 	int aiYield[NUM_YIELD_TYPES];
 	FOR_EACH_ENUM(Yield)
@@ -3123,8 +3140,8 @@ scaled AIFoundValue::evaluateWorkablePlot(CvPlot const& p) const
 		if (aiYield[YIELD_FOOD] < GC.getFOOD_CONSUMPTION_PER_POPULATION())
 			rYieldVal *= fixp(0.9); // 0 food isn't necessarily worse
 		rYieldVal -= (GC.getFOOD_CONSUMPTION_PER_POPULATION() + fixp(1/3.))
-				* aiYieldWeight[YIELD_FOOD] + // for pop growth and sustenance
-				scaled(aiYieldWeight[YIELD_COMMERCE], 4); // expenses per population
+				* aiYieldWeight[YIELD_FOOD] // for pop growth and sustenance
+				+ scaled(aiYieldWeight[YIELD_COMMERCE], 4); // expenses per population
 		if (rYieldVal > 0)
 		{
 			rYieldVal.exponentiate(fixp(1.3));
@@ -3132,13 +3149,38 @@ scaled AIFoundValue::evaluateWorkablePlot(CvPlot const& p) const
 			r += rYieldVal;
 		}
 	}
+	if (!p.isWater() || p.isLake())
+	{
+		int iVal = aiYield[YIELD_FOOD] + aiYield[YIELD_PRODUCTION] +
+				(eBonus != NO_BONUS || eFeature != NO_FEATURE ? 2 : 0);
+		if (iVal >= 1)
+		{
+			/*	Even with marginal yields, land allows for minimal space
+				between cities, can ease border tensions, and the cities
+				themselves have to be placed on some tile as well.
+				Though if a tile is really bad, the surroundings may not
+				even be worth settling. */
+			r += 5;
+			if (iVal >= 2)
+				r += 13;
+		}
+	}
 	if (eBonus != NO_BONUS)
 	{
 		bool bDummy=false;
-		/*	We want to look a bit farther ahead than "soon", but the BonusValues
-			(e.g. for Oil) seem high enough as it is. */
-		r += nonYieldBonusValue(p, eBonus, bCanTradeBonus,
+		/*	It won't necessarily be the first instance of eBonus, but we also want
+			to look a bit farther ahead than "soon"; that ought to even out. */
+		scaled rNonYieldBonusVal = nonYieldBonusValue(p, eBonus, bCanTradeBonus,
 				bCanSoonTradeBonus, true, bDummy, NULL, 100);
+		if (!bCanSoonImproveBonus)
+		{	// Late-game resources need to be devalued though
+			TechTypes eTech = GC.getInfo(eBonus).getTechReveal();
+			int iEraDiff = (eTech == NO_TECH ? 0 :
+					 GC.getInfo(eTech).getEra() - eEra);
+			if (iEraDiff > 1)
+				rNonYieldBonusVal / iEraDiff;
+		}
+		r += rNonYieldBonusVal;
 	}
 	{
 		int const iFeatureHealth = (eFeature == NO_FEATURE ? 0 :
@@ -3149,7 +3191,11 @@ scaled AIFoundValue::evaluateWorkablePlot(CvPlot const& p) const
 			r += iFeatureHealth * fixp(1/9.);
 	}
 	if (p.isGoody())
-		r += evaluateGoodies(1);
-
+	{
+		//r += evaluateGoodies(1);
+		/*	They're more valuable than this, but don't want to encourage
+			goodies close to starting sites. */
+		r += 18;
+	}
 	return scaled::max(r, 0);
 }

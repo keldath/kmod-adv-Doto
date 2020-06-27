@@ -104,11 +104,13 @@ m_iTGA_CORPORATIONS(0),                         // GAMEFONT_TGA_CORPORATIONS
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
-// </advc> <advc.opt>
-m_iRUINS_IMPROVEMENT(NO_IMPROVEMENT),
-m_iDEFAULT_SPECIALIST(NO_SPECIALIST)
+
+// </advc>  <advc.opt>
+m_iEventMessageTime(-1),
+m_eRUINS_IMPROVEMENT(NO_IMPROVEMENT),
+m_eDEFAULT_SPECIALIST(NO_SPECIALIST)
 {
-	m_aiWATER_TERRAIN[0] = m_aiWATER_TERRAIN[1] = -1; // </advc.opt>
+	m_aeWATER_TERRAIN[0] = m_aeWATER_TERRAIN[1] = NO_TERRAIN; // </advc.opt>
 	setCurrentXMLFile(NULL); // advc.006e
 }
 
@@ -673,6 +675,8 @@ void CvGlobals::cacheGlobalInts(char const* szChangedDefine, int iNewValue)
 				break;
 			}
 		}
+		if (strcmp(szChangedDefine, "EVENT_MESSAGE_TIME") == 0)
+			m_iEventMessageTime = iNewValue; // (See m_iEventMessageTime in header)
 		return;
 	}
 
@@ -723,6 +727,7 @@ void CvGlobals::cacheGlobalInts(char const* szChangedDefine, int iNewValue)
 		}
 		m_aiGlobalDefinesCache[i] = getDefineINT(aszGlobalDefinesTagNames[i], iDefault);
 	}
+	m_iEventMessageTime = getDefineINT("EVENT_MESSAGE_TIME");
 } // </advc.opt>
 
 void CvGlobals::cacheGlobalFloats()
@@ -777,17 +782,17 @@ void CvGlobals::cacheGlobals()
 // <advc.opt>
 void CvGlobals::setRUINS_IMPROVEMENT(int iValue)
 {
-	m_iRUINS_IMPROVEMENT = iValue;
+	m_eRUINS_IMPROVEMENT = (ImprovementTypes)iValue;
 }
 
 void CvGlobals::setWATER_TERRAIN(bool bShallow, int iValue)
 {
-	m_aiWATER_TERRAIN[bShallow] = iValue;
+	m_aeWATER_TERRAIN[bShallow] = (TerrainTypes)iValue;
 } 
 
 void CvGlobals::setDEFAULT_SPECIALIST(int iValue)
 {
-	m_iDEFAULT_SPECIALIST = iValue;
+	m_eDEFAULT_SPECIALIST = (SpecialistTypes)iValue;
 } // </advc.opt>
 
 int CvGlobals::getDefineINT(char const* szName,

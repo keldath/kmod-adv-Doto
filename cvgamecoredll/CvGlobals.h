@@ -495,6 +495,7 @@ public:
 		DO(ENABLE_DEBUG_TOOLS_MULTIPLAYER) \
 		DO(FREE_VASSAL_LAND_PERCENT) \
 		DO(FREE_VASSAL_POPULATION_PERCENT) \
+		DO(OVERSEAS_TRADE_MODIFIER) \
 		/* </advc.opt> */ \
 		DO(PATH_DAMAGE_WEIGHT) \
 		DO(HILLS_EXTRA_DEFENSE) \
@@ -523,7 +524,7 @@ public:
 		DO(MAX_HIT_POINTS) \
 		DO(MAX_PLOT_LIST_ROWS) \
 		DO(UNIT_MULTISELECT_MAX) \
-		DO(EVENT_MESSAGE_TIME) \
+		/*DO(EVENT_MESSAGE_TIME) \ (cached separately) */ \
 		DO(EVENT_MESSAGE_TIME_LONG) \
 		DO(NUM_UNIT_PREREQ_OR_BONUSES) \
 		DO(NUM_UNIT_AND_TECH_PREREQS) \
@@ -578,9 +579,9 @@ public:
 	inline int getMAX_PLOT_LIST_ROWS() const { return getDefineINT(MAX_PLOT_LIST_ROWS); }
 	DllExport inline int getUNIT_MULTISELECT_MAX() { CvGlobals const& kThis = *this; return kThis.getUNIT_MULTISELECT_MAX(); }
 	inline int getUNIT_MULTISELECT_MAX() const { return getDefineINT(UNIT_MULTISELECT_MAX); }
+	// Note: The EXE calls this during audio init if all audio devices are disabled
 	DllExport inline int getEVENT_MESSAGE_TIME() { CvGlobals const& kThis = *this; return kThis.getEVENT_MESSAGE_TIME(); }
-	inline int getEVENT_MESSAGE_TIME() const { return getDefineINT(EVENT_MESSAGE_TIME); }
-	inline int getEVENT_MESSAGE_TIME_LONG() const { return getDefineINT(EVENT_MESSAGE_TIME_LONG); } // advc: Treat these two the same
+	inline int getEVENT_MESSAGE_TIME() const { return m_iEventMessageTime; }
 	// BETTER_BTS_AI_MOD, Efficiency, Options, 02/21/10, jdog5000: START
 	inline int getWAR_SUCCESS_CITY_CAPTURING() const { return getDefineINT(WAR_SUCCESS_CITY_CAPTURING); }
 	inline int getCOMBAT_DIE_SIDES() const { return getDefineINT(COMBAT_DIE_SIDES); }
@@ -590,21 +591,21 @@ public:
 		updated when a setDefine... function is called.) */
 	inline ImprovementTypes getRUINS_IMPROVEMENT() const
 	{
-		FAssertMsg(m_iRUINS_IMPROVEMENT != NO_IMPROVEMENT, "RUINS_IMPROVEMENT accessed before CvXMLLoadUtility::SetPostGlobalsGlobalDefines");
-		return (ImprovementTypes)m_iRUINS_IMPROVEMENT;
+		FAssertMsg(m_eRUINS_IMPROVEMENT != NO_IMPROVEMENT, "RUINS_IMPROVEMENT accessed before CvXMLLoadUtility::SetPostGlobalsGlobalDefines");
+		return m_eRUINS_IMPROVEMENT;
 	}
 	void setRUINS_IMPROVEMENT(int iVal);
 	inline SpecialistTypes getDEFAULT_SPECIALIST() const
 	{
-		FAssertMsg(m_iDEFAULT_SPECIALIST != NO_SPECIALIST, "DEFAULT_SPECIALIST accessed before CvXMLLoadUtility::SetPostGlobalsGlobalDefines");
-		return (SpecialistTypes)m_iDEFAULT_SPECIALIST;
+		FAssertMsg(m_eDEFAULT_SPECIALIST != NO_SPECIALIST, "DEFAULT_SPECIALIST accessed before CvXMLLoadUtility::SetPostGlobalsGlobalDefines");
+		return m_eDEFAULT_SPECIALIST;
 	}
 	void setDEFAULT_SPECIALIST(int iVal);
 	inline TerrainTypes getWATER_TERRAIN(bool bShallow) const
 	{
-		int r = m_aiWATER_TERRAIN[bShallow];
+		TerrainTypes r = m_aeWATER_TERRAIN[bShallow];
 		FAssertMsg(r != NO_TERRAIN, "WATER_TERRAIN accessed before CvXMLLoadUtility::SetPostGlobalsGlobalDefines");
-		return (TerrainTypes)r;
+		return r;
 	}
 	void setWATER_TERRAIN(bool bShallow, int iValue);
 	// </advc.opt>
@@ -690,8 +691,8 @@ public:
 	DllExport int getUSE_FINISH_TEXT_CALLBACK();
 	// advc.003y: Moved the other callback getters to CvPythonCaller
 #pragma endregion GlobalDefines
-	// K-Mod: more reliable versions of the 'gDLL->xxxKey' functions
-	// NOTE: I've replaced all calls to the gDLL key functions with calls to these functions.
+	/*	K-Mod: more reliable versions of the 'gDLL->xxxKey' functions
+		NOTE: I've replaced all calls to the gDLL key functions with calls to these functions. */
 	inline bool altKey() const { return (GetKeyState(VK_MENU) & 0x8000); }
 	inline bool ctrlKey() const { return (GetKeyState(VK_CONTROL) & 0x8000); }
 	inline bool shiftKey() const { return (GetKeyState(VK_SHIFT) & 0x8000); }
@@ -896,9 +897,8 @@ protected:
 	DirectionTypes m_aeTurnRightDirection[NUM_DIRECTION_TYPES];
 	DirectionTypes m_aaeXYDirection[DIRECTION_DIAMETER][DIRECTION_DIAMETER];
 
-	/***********************************************************************************************************************
-	Globals loaded from XML
-	************************************************************************************************************************/
+
+	// Globals loaded from XML ...
 
 	// all type strings are upper case and are kept in this hash map for fast lookup, Moose
 	typedef stdext::hash_map<std::string /* type string */, int /* info index */> InfosMap;
@@ -914,9 +914,8 @@ protected:
 	DO_FOR_EACH_INFO_TYPE(DECLARE_INFO_VECTOR) // </advc.enum>
 	std::vector<CvWorldInfo*> m_paWorldInfo;
 
-	//////////////////////////////////////////////////////////////////////////
-	// GLOBAL TYPES
-	//////////////////////////////////////////////////////////////////////////
+
+	// GLOBAL TYPES ...
 
 	// all type strings are upper case and are kept in this hash map for fast lookup, Moose
 	typedef stdext::hash_map<std::string /* type string */, int /*enum value */> TypesMap;
@@ -952,17 +951,14 @@ protected:
 
 	CvString m_szCurrentXMLFile;
 	bool m_bHoFScreenUp; // advc.106i
-	//////////////////////////////////////////////////////////////////////////
-	// Formerly Global Defines
-	//////////////////////////////////////////////////////////////////////////
 
 	FVariableSystem* m_VarSystem;
-
-	int* m_aiGlobalDefinesCache;
 	// <advc.opt>
-	int m_iRUINS_IMPROVEMENT;
-	int m_iDEFAULT_SPECIALIST;
-	int m_aiWATER_TERRAIN[2]; // </advc.opt>
+	int* m_aiGlobalDefinesCache;
+	int m_iEventMessageTime; // Cached separately b/c the EXE can access it before XML loading
+	ImprovementTypes m_eRUINS_IMPROVEMENT;
+	SpecialistTypes m_eDEFAULT_SPECIALIST;
+	TerrainTypes m_aeWATER_TERRAIN[2]; // </advc.opt>
 	float m_fPOWER_CORRECTION; // advc.104
 
 	float m_fCAMERA_MIN_YAW;
@@ -996,10 +992,9 @@ protected:
 
 	CvXMLLoadUtility* m_pXMLLoadUtility; // advc.003v
 
-	// DLL interface
 	CvDLLUtilityIFaceBase* m_pDLL;
 
-	FProfiler* m_Profiler;		// profiler
+	FProfiler* m_Profiler;
 	CvString m_szDllProfileText;
 
 private:
@@ -1011,9 +1006,9 @@ private:
 
 extern CvGlobals gGlobals;	// for debugging
 
-//
-// inlines
-//
+
+// inlines ...
+
 __forceinline CvGlobals& CvGlobals::getInstance()
 {
 	return gGlobals;
@@ -1034,9 +1029,9 @@ inline WorldSizeTypes getEnumLength(WorldSizeTypes) { return (WorldSizeTypes)gGl
 inline FlavorTypes getEnumLength(FlavorTypes) { return (FlavorTypes)gGlobals.getNumFlavorTypes(); }
 // </advc.enum>
 
-//
-// helpers
-//
+
+// helpers ...
+
 #define GC CvGlobals::getConstInstance() // advc: was ...getInstance()
 #ifndef _USRDLL
 #define gDLL GC.getDLLIFaceNonInl()
