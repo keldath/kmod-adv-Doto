@@ -1178,7 +1178,6 @@ void CvLeaderHeadInfo::SetPassExtraFromChildXmlVal(TCHAR const* szName, uint uiI
    }
 }
 // dune wars - HATED CIVS
-/* replaced by the above.
 bool CvLeaderHeadInfo::readPass3() // dune wars - HATED CIVS
 {
    int* aExtraInts[] = { &m_iFavoriteCivilization, &m_iHatedCivilization };
@@ -1193,7 +1192,7 @@ bool CvLeaderHeadInfo::readPass3() // dune wars - HATED CIVS
    else FAssert(m_aszExtraXMLforPass3.empty());
    m_aszExtraXMLforPass3.clear();
    return true;
-}*/
+}
 /*original version the above is f1rpo's
 bool CvLeaderHeadInfo::readPass3()
 {

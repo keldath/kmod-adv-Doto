@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by XMLSPY 2004 Professional Ed. Release 2, Installed Multi + SMP for 3 users (Firaxis Games) -->
+<!-- Sid Meier's Civilization 4 -->
+<!-- Copyright Firaxis Games 2005 -->
+<!-- -->
+<!-- Game Text - New -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+		<Tag></Tag>
+		<English></English>
+		<French></French>
+		<German></German>
+		<Italian></Italian>
+		<Spanish></Spanish>
+	</TEXT>
+
+	<TEXT>
+		<Tag>TXT_KEY_IMPROVEMENT_CAN_BUILD_ANYWHERE</Tag>
+		<English>[ICON_BULLET]Can be built anywhere</English>
+		<French>[ICON_BULLET]Can be built anywhere</French>
+		<German>[ICON_BULLET]Can be built anywhere</German>
+		<Italian>[ICON_BULLET]Can be built anywhere</Italian>
+		<Spanish>[ICON_BULLET]Can be built anywhere</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_IMPROVEMENT_CAN_BUILD_ONLY_INSIDE_CULTURE_BORDERS</Tag>
+		<English>[ICON_BULLET]Can not build outside Culture Borders</English>
+		<French>[ICON_BULLET]Can not build outside Culture Borders</French>
+		<German>[ICON_BULLET]Can not build outside Culture Borders</German>
+		<Italian>[ICON_BULLET]Can not build outside Culture Borders</Italian>
+		<Spanish>[ICON_BULLET]Can not build outside Culture Borders</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_IMPROVEMENT_CAN_BUILD_ONLY_OUTSIDE_CULTURE_BORDERS</Tag>
+		<English>[ICON_BULLET]Can not build inside Culture Borders</English>
+		<French>[ICON_BULLET]Can not build inside Culture Borders</French>
+		<German>[ICON_BULLET]Can not build inside Culture Borders</German>
+		<Italian>[ICON_BULLET]Can not build inside Culture Borders</Italian>
+		<Spanish>[ICON_BULLET]Can not build inside Culture Borders</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_IMPROVEMENT_CAN_NOT_BUILD</Tag>
+		<English>[ICON_BULLET]Can not be built</English>
+		<French>[ICON_BULLET]Can not be built</French>
+		<German>[ICON_BULLET]Can not be built</German>
+		<Italian>[ICON_BULLET]Can not be built</Italian>
+		<Spanish>[ICON_BULLET]Can not be built</Spanish>
+	</TEXT>
+
+	<TEXT>
+		<Tag>TXT_KEY_IMPROVEMENT_CASTLE</Tag>
+		<English>Castle</English>
+		<French>Castle</French>
+		<German>Castle</German>
+		<Italian>Castle</Italian>
+		<Spanish>Castle</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_IMPROVEMENT_CASTLE_PEDIA</Tag>
+		<English>?</English>
+		<French>?</French>
+		<German>?</German>
+		<Italian>?</Italian>
+		<Spanish>?</Spanish>
+	</TEXT>
+
+	<TEXT>
+		<Tag>TXT_KEY_IMPROVEMENT_CITADEL</Tag>
+		<English>Citadel</English>
+		<French>Citadel</French>
+		<German>Citadel</German>
+		<Italian>Citadel</Italian>
+		<Spanish>Citadel</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_IMPROVEMENT_CITADEL_PEDIA</Tag>
+		<English>?</English>
+		<French>?</French>
+		<German>?</German>
+		<Italian>?</Italian>
+		<Spanish>?</Spanish>
+	</TEXT>
+</Civ4GameText>

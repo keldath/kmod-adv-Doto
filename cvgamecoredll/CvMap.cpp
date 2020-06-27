@@ -338,7 +338,8 @@ void CvMap::updateCenterUnit()  // advc: some style changes
 	{
 		CvUnit const& kLoopUnit = *::getUnit(pSelectionNode->m_data);
 		//if (kLoopUnit.getDomainType() == DOMAIN_AIR)
-		if (kLoopUnit.airRange() > 0) // advc.rstr
+//rangedattack-keldath
+		if (std::max(kLoopUnit.airRange(),kLoopUnit.rangedStrike()) > 0) // advc.rstr
 			iRange = std::max(iRange, kLoopUnit.airRange());
 		DomainTypes eLoopDomain = kLoopUnit.getDomainType();
 		if (eLoopDomain == DOMAIN_LAND || eLoopDomain == DOMAIN_SEA) // advc.rstr

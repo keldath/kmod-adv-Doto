@@ -152,10 +152,11 @@ public:
 	bool canAirBomb(const CvPlot* pPlot) const;																// Exposed to Python
 	bool canAirBombAt(const CvPlot* pPlot, int iX, int iY) const;											// Exposed to Python
 	bool airBomb(int iX, int iY);
-
-	CvCity* bombardTarget(CvPlot const& kPlot) const;														// Exposed to Python
+//rangedstrike-keldath
+	CvCity* bombardTarget(CvPlot const& kPlot,int attackerRange = 1) const;														// Exposed to Python
 	bool canBombard(CvPlot const& kPlot) const;																// Exposed to Python
-	bool bombard();
+	////rangedstrike-keldath change - ALLOW PLOT VAR WITH DEFAULT NULL
+	bool bombard(CvPlot const* pPlot = NULL) ;
 
 	bool canParadrop(const CvPlot* pPlot) const;															// Exposed to Python
 	bool canParadropAt(const CvPlot* pPlot, int iX, int iY) const;											// Exposed to Python
@@ -326,6 +327,11 @@ public:
 	int airRange() const																					// Exposed to Python
 	{
 		return (m_pUnitInfo->getAirRange() + getExtraAirRange());
+	}
+//rangedattack-keldath
+	int rangedStrike() const																					// Exposed to Python
+	{
+		return (m_pUnitInfo->getRangeStrike());
 	}
 	int nukeRange() const																					// Exposed to Python
 	{
@@ -963,6 +969,13 @@ public:
 	bool canRangeStrike() const;
 	bool canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY) const;
 	bool rangeStrike(int iX, int iY);
+	//rangedattack-keldath	
+	int rangeCombatDamageK(const CvUnit* pDefender) const;													// Exposed to Python
+	CvUnit* rangedStrikeTargetK(const CvPlot* pPlot) const;
+	bool canRangeStrikeK(bool bStrikeBack = false) const;
+	bool canRangeStrikeAtK(const CvPlot* pPlot, int iX, int iY, bool bStrikeBack = false) const;
+	bool afterRangeStrikeK(CvUnit* pAttacker) ;
+	bool rangeStrikeK(int iX, int iY);
 
 	int getTriggerValue(EventTriggerTypes eTrigger, const CvPlot* pPlot, bool bCheckPlot) const;
 	bool canApplyEvent(EventTypes eEvent) const;

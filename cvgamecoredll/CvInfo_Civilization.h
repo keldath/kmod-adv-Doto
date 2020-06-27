@@ -255,8 +255,9 @@ public: // advc: All the const functions are exposed to Python except those adde
 	bool read(CvXMLLoadUtility* pXML);
 
 //dune wars - hated civs
+	//helper fn from f1rpo
 	void SetPassExtraFromChildXmlVal(TCHAR const* szName, uint uiIndex);
-//	bool readPass3();//replaced by the above - f1rpo
+	bool readPass3();
 //dune wars - hated civs
 
 protected:
