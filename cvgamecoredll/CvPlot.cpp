@@ -3625,7 +3625,7 @@ bool CvPlot::isValidDomainForAction(const CvUnit& unit) const
 void CvPlot::updateImpassable()
 {
    m_bImpassable = ((isPeak() && !GC.getGame().isOption(GAMEOPTION_MOUNTAINS)) ||
-   // (^the above is the only change)
+   // (the above is the only change)
          (!isFeature() ?
          (getTerrainType() != NO_TERRAIN && GC.getInfo(getTerrainType()).isImpassable()) :
          GC.getInfo(getFeatureType()).isImpassable()));

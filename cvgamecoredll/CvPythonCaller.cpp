@@ -1400,7 +1400,8 @@ bool CvPythonCaller::addGoodies() const
 
 bool CvPythonCaller::addFeatures() const
 {
-	call("addFeatures", m_python.getMapScriptModule());
+	//keldath fix - i added a false here - or else - ctd.
+	call("addFeatures", m_python.getMapScriptModule(), false);
 	return isOverride();
 }
 
