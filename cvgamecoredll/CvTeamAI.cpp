@@ -1812,6 +1812,7 @@ int CvTeamAI::AI_knownTechValModifier(TechTypes eTech) const
 	// <advc.551> Replacing the above
 	double const maxModifierPercent = 34;
 	return::round((maxModifierPercent * (iCivsMet - iTechCivs)) /
+//keldath - sent by om from f1rpo - uncommitted yet
 			/*	Decrease modifier below 100% if more than half know the tech? No -
 				generally, 1 research point should have a trade value greater than 1. */
 			std::max(1, iCivsMet) /*- maxModifierPercent / 2*/); // </advc.551>
@@ -1826,9 +1827,12 @@ int CvTeamAI::AI_techTradeVal(TechTypes eTech, TeamTypes eFromTeam,
 	// advc: Original BtS code deleted; K-Mod replaced it with AI_knownTechValModifier.
 	CvTechInfo const& kTech = GC.getInfo(eTech);
 	int iValue = (125 // advc.551: was 150
-			// K-Mod. Standardized the modifier for # of teams with the tech; and removed the effect of team size.
+//keldath - sent by om from f1rpo - uncommitted yet
+			/*	K-Mod. Standardized the modifier for # of teams with the tech;
+				and removed the effect of team size. */
 			+ AI_knownTechValModifier(eTech)) *
-			std::max(0, (getResearchCost(eTech, true, false) -
+			// advc.551: Revert the 2nd part of the K-Mod change
+			std::max(0, (getResearchCost(eTech/*, true, false*/) -
 			getResearchProgress(eTech))) / 100;
 			// K-Mod end
 	/*  <advc.104h> Peace for tech isn't that attractive for the receiving side

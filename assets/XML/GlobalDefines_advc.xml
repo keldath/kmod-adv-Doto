@@ -253,10 +253,11 @@
 		 assignStartingPlots or findStartingPosition.
 		 (The advc.108 settings below are independent from this; they mostly
 		 deal with start plot "normalization" whereas starting position
-		 iteration mostly moves the BtS starting locations around.) -->
+		 iteration mostly moves the BtS starting locations around.) 
+Keldath - f1rpo said to turn it off - untested properly -->
 	<Define>
         <DefineName>ENABLE_STARTING_POSITION_ITERATION</DefineName>
-        <iDefineIntVal>1</iDefineIntVal>
+        <iDefineIntVal>0</iDefineIntVal>
     </Define>
 
 	<!-- [advc.108]

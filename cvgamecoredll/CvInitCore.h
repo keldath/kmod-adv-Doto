@@ -138,12 +138,10 @@ public:
 	DllExport bool getVictory(VictoryTypes eVictory) const;
 	DllExport void setVictory(VictoryTypes eVictory, bool bVictory);
 
-	//DllExport inline bool getOption(GameOptionTypes eIndex) const { return m_abOptions.get(eIndex); }
-DllExport inline bool getOption(GameOptionTypes eIndex) const { return m_abOptions[eIndex]; }
+	DllExport inline bool getOption(GameOptionTypes eIndex) const { return m_abOptions.get(eIndex); }
 	DllExport void setOption(GameOptionTypes eIndex, bool bOption);
 
-	//DllExport bool getMPOption(MultiplayerOptionTypes eIndex) const { return m_abMPOptions.get(eIndex); }
-DllExport bool getMPOption(MultiplayerOptionTypes eIndex) const { return m_abMPOptions[eIndex]; }
+	DllExport bool getMPOption(MultiplayerOptionTypes eIndex) const { return m_abMPOptions.get(eIndex); }
 	DllExport void setMPOption(MultiplayerOptionTypes eIndex, bool bMPOption);
 
 	bool getStatReporting() const { return m_bStatReporting; }
@@ -269,15 +267,8 @@ DllExport bool getMPOption(MultiplayerOptionTypes eIndex) const { return m_abMPO
 
 	DllExport void resetAdvancedStartPoints();
 
-protected:
-
-	void clearCustomMapOptions();
-	void refreshCustomMapOptions();
-	void updatePangaea(); // advc
-
-	/*void clearVictories();
-	void refreshVictories();*/ // advc: Easier to understand w/o these
-
+protected: /* advc.003k (caveat): It's not safe to add data members to this class
+			  nor to reorder the existing data members. */
 	// CORE GAME INIT DATA ...
 
 	// Game type
@@ -304,20 +295,25 @@ protected:
 	int m_iNumCustomMapOptions;
 	int m_iNumHiddenCustomMapOptions;
 	CustomMapOptionTypes* m_aeCustomMapOptions;
-	bool m_bPangaea; // advc
+	//bool m_bPangaea; // (advc: Can't add this here b/c it would change the memory layout)
 
 	// Standard game options
+//	EnumMap<GameOptionTypes,bool> m_abOptions;
+// the goal is to keep all of them to 4 bytes
+// the exception is when bINLINE is set and is allowed to use more than 4 bytes
+// an example of this is <PlayerTypes, bool> has a bool for each player, hence 8 bytes
+//kedlath added change from f1rpo - memory issue size of game options
+	EnumMap<GameOptionTypes,byte> m_abOptions;
+	EnumMap<MPOptionTypes,bool> m_abMPOptions;
 	bool m_bStatReporting;
-	/*EnumMap<GameOptionTypes,bool> m_abOptions;
-	EnumMap<MPOptionTypes,bool> m_abMPOptions;*/
-	bool* m_abOptions;
-	bool* m_abMPOptions;
+	/*	advc: Not related to "standard game options". But here's a good place
+		to add a bool b/c of padding; the memory layout stays the same. */
+	bool m_bPangaea;
 	EnumMap<ForceControlTypes,bool> m_abForceControls;
 
 	// Dynamic victory condition setting
-	/*	(advc.enum: ^Whatever that means? Using an EnumMap has resulted in
-		an infinite loop in the EXE calling getVictory. Weird, but I won't
-		mess with this anymore.) */
+	/*	(advc.enum: ^Whatever that means? Using a dummy variable and an EnumMap instead
+		causes a crash in the EXE.) */
 	int m_iNumVictories;
 	bool* m_abVictories;
 
@@ -379,6 +375,20 @@ protected:
 	CvString* m_aszPythonCheck;
 	CvString* m_aszXMLCheck;
 	mutable CvString m_szTempCheck;
+
+	void clearCustomMapOptions();
+	void refreshCustomMapOptions();
+	void updatePangaea(); // advc
+
+	/*void clearVictories();
+	void refreshVictories();*/ // advc: Easier to understand w/o these
 };
+
+/*  advc.003k: If this fails, then you've probably added a data member
+	to CvInitCore. Note, however, that it's not enough to leave the size
+	unchanged. The whole memory layout must remain intact. Don't know why.
+	Ctor isn't exported and dtor not called externally. Perhaps a
+	memcopy call in the EXE? */
+//BOOST_STATIC_ASSERT(sizeof(CvInitCore) == 404);
 
 #endif
