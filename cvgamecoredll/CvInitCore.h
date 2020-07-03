@@ -3,6 +3,13 @@
 #ifndef CIV4_INITCORE_H
 #define CIV4_INITCORE_H
 
+/*
+Doto
+file is differenct from advciv 097b 
+mp options are arrays now, not enum 
+strange bug exits on custom game 
+*/
+
 // (K-Mod, 8/dec/10: Moved FASSERT_BOUNDS to CvGlobals.h)
 
 class CvInitCore
@@ -131,10 +138,12 @@ public:
 	DllExport bool getVictory(VictoryTypes eVictory) const;
 	DllExport void setVictory(VictoryTypes eVictory, bool bVictory);
 
-	DllExport inline bool getOption(GameOptionTypes eIndex) const { return m_abOptions.get(eIndex); }
+	//DllExport inline bool getOption(GameOptionTypes eIndex) const { return m_abOptions.get(eIndex); }
+DllExport inline bool getOption(GameOptionTypes eIndex) const { return m_abOptions[eIndex]; }
 	DllExport void setOption(GameOptionTypes eIndex, bool bOption);
 
-	DllExport bool getMPOption(MultiplayerOptionTypes eIndex) const { return m_abMPOptions.get(eIndex); }
+	//DllExport bool getMPOption(MultiplayerOptionTypes eIndex) const { return m_abMPOptions.get(eIndex); }
+DllExport bool getMPOption(MultiplayerOptionTypes eIndex) const { return m_abMPOptions[eIndex]; }
 	DllExport void setMPOption(MultiplayerOptionTypes eIndex, bool bMPOption);
 
 	bool getStatReporting() const { return m_bStatReporting; }
@@ -299,8 +308,10 @@ protected:
 
 	// Standard game options
 	bool m_bStatReporting;
-	EnumMap<GameOptionTypes,bool> m_abOptions;
-	EnumMap<MPOptionTypes,bool> m_abMPOptions;
+	/*EnumMap<GameOptionTypes,bool> m_abOptions;
+	EnumMap<MPOptionTypes,bool> m_abMPOptions;*/
+	bool* m_abOptions;
+	bool* m_abMPOptions;
 	EnumMap<ForceControlTypes,bool> m_abForceControls;
 
 	// Dynamic victory condition setting

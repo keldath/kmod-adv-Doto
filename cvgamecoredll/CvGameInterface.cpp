@@ -204,12 +204,9 @@ void CvGame::updateColoredPlots()
 			}
 		}
 	}
-//rangedattack-keldath -f1rpo suggestion how to refer to airrange units.
-//this blockwill replace the refrance to units with air range or air domain(original two blocks of code)
-
 	/*	advc.rstr: Merged air range with ranged strike code so that the maximal range
 		is highlighted also for range-strikers */
-	if (pHeadSelectedUnit->airRange() > 0 || pHeadSelectedUnit->rangedStrike() > 0)
+	if (pHeadSelectedUnit->airRange() > 0)
 	{
 		int iMaxAirRange = 0;
 		for (CLLNode<IDInfo> const* pSelectedUnitNode = kUI.headSelectionListNode();
@@ -217,77 +214,25 @@ void CvGame::updateColoredPlots()
 		{
 			CvUnit const* pSelectedUnit = ::getUnit(pSelectedUnitNode->m_data);
 			if (pSelectedUnit != NULL)
-			{	
-				int rs = pSelectedUnit->rangedStrike();
-				int ar = pSelectedUnit->airRange();
-				if (rs == 0 && ar > 0 )
-				{
-					iMaxAirRange = std::max(iMaxAirRange, ar);
-				}
-				else if (rs > 0 && ar == 0 )
-				{
-					iMaxAirRange = std::max(iMaxAirRange, rs);
-				}
-			}
+				iMaxAirRange = std::max(iMaxAirRange, pSelectedUnit->airRange());
 		}
-		//rangedattack-keldath
-		//if the unit is in a city, a land unit only - it has another range to it as a bonus - note that this exists also in the cvunit.cpp		
-		//added high ground - this one exists in cv map and cv unit
-/* removed 105b
-		if ((pHeadSelectedUnit->plot()->isCity(true, pHeadSelectedUnit->getTeam())|| (pHeadSelectedUnit->plot()->isHills() || pHeadSelectedUnit->plot()->isPeak())) 
-			&& (pHeadSelectedUnit->getDomainType() == DOMAIN_LAND) 
-			&& (pHeadSelectedUnit->baseCombatStr() > 0))
-		{
-			iMaxAirRange += 1;
-		}
-*/	
 		if (iMaxAirRange > 0)
 		{
 			bool const bAir = (pHeadSelectedUnit->getDomainType() == DOMAIN_AIR);
-			////rangedattack-keldath addition
-			bool const bLand = (pHeadSelectedUnit->getDomainType() == DOMAIN_LAND);
-			bool const bSea = (pHeadSelectedUnit->getDomainType() == DOMAIN_SEA);
-			char * color = "GREEN";
 			for (PlotCircleIter it(*pHeadSelectedUnit, iMaxAirRange); it.hasNext(); ++it)
 			{
-				int rs = pHeadSelectedUnit->rangedStrike();
-				int ar = pHeadSelectedUnit->airRange();
-				
 				CvPlot const& kTargetPlot = *it;
-				//rangedattack-keldath
-				if ((bAir || bLand || bSea) /*||*/ &&
-					(kTargetPlot.isVisible(pHeadSelectedUnit->getTeam()) &&
+				if (bAir ||
+					(kTargetPlot.isVisible(pHeadSelectedUnit->getTeam()) /*&&
+					// advc.rstr: See CvUnit::canRangeStrikeAt
 					pHeadSelectedUnit->getPlot().canSeePlot(
 					&kTargetPlot, pHeadSelectedUnit->getTeam(), iMaxAirRange,
-					pHeadSelectedUnit->getFacingDirection(true))))
+					pHeadSelectedUnit->getFacingDirection(true))*/))
 				{
-					//keldath addition - i wanted different colors :)
-					if (bAir)
-					{
-						color = "YELLOW";
-					}
-					else if (bLand) 
-					{
-						color = "RED";
-					}
-					else if (bSea)
-					{
-						color = "GREEN";
-					}
-					//f1rpo initial code:
-					/*NiColorA color(GC.getInfo(GC.getColorType(bAir ?
-							"YELLOW" : "RED")).getColor());*/
-					NiColorA color(GC.getInfo(GC.getColorType(color)).getColor());
-					//rangedattack-keldath - changed style and color	
-					color.a = 0.7f/*0.5f*/;
-					if (rs == 0 && ar > 0 ) {
-						kEngine.fillAreaBorderPlot(kTargetPlot.getX(), kTargetPlot.getY(),
+					NiColorA color(GC.getInfo(GC.getColorType("YELLOW")).getColor());
+					color.a = 0.5f;
+					kEngine.fillAreaBorderPlot(kTargetPlot.getX(), kTargetPlot.getY(),
 							color, AREA_BORDER_LAYER_RANGED);
-					}	
-					else if (rs > 0 && ar == 0 )
-					{	kEngine.addColoredPlot(kTargetPlot.getX(), kTargetPlot.getY(), color,
-							PLOT_STYLE_TARGET, PLOT_LANDSCAPE_LAYER_BASE);	
-					}
 				}
 			}
 		}

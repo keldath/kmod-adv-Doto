@@ -14,7 +14,12 @@
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
-
+/*
+Doto
+file is differenct from advciv 097b 
+mp options are arrays now, not enum 
+strange bug exits on custom game 
+*/
 CvInitCore::CvInitCore()
 {
 	m_aszLeaderName = new CvWString[MAX_PLAYERS];
@@ -30,7 +35,8 @@ CvInitCore::CvInitCore()
 
 	m_aeSlotStatus = new SlotStatus[MAX_PLAYERS];
 	m_aeSlotClaim = new SlotClaim[MAX_PLAYERS];
-
+m_abOptions=new bool[NUM_GAMEOPTION_TYPES];
+m_abMPOptions=new bool[NUM_MPOPTION_TYPES];
 	m_aeCustomMapOptions = NULL;
 	m_abVictories = NULL;
 
@@ -53,6 +59,8 @@ CvInitCore::~CvInitCore()
 	SAFE_DELETE_ARRAY(m_aszXMLCheck);
 	SAFE_DELETE_ARRAY(m_aeSlotStatus);
 	SAFE_DELETE_ARRAY(m_aeSlotClaim);
+SAFE_DELETE_ARRAY(m_abOptions);
+SAFE_DELETE_ARRAY(m_abMPOptions);
 }
 
 void CvInitCore::init(GameMode eMode)
@@ -99,14 +107,18 @@ void CvInitCore::reset(GameMode eMode)
 
 void CvInitCore::setDefaults()
 {
-	FOR_EACH_ENUM(GameOption)
+	/*FOR_EACH_ENUM(GameOption)
 	{
 		m_abOptions.set(eLoopGameOption, GC.getInfo(eLoopGameOption).getDefault());
 	}
 	FOR_EACH_ENUM(MPOption)
 	{
 		m_abMPOptions.set(eLoopMPOption, GC.getInfo(eLoopMPOption).getDefault());
-	}
+	}*/
+FOR_EACH_ENUM(GameOption)
+	m_abOptions[eLoopGameOption]=GC.getInfo(eLoopGameOption).getDefault();
+FOR_EACH_ENUM(MPOption)
+	m_abMPOptions[eLoopMPOption]=GC.getInfo(eLoopMPOption).getDefault();
 }
 
 
@@ -460,8 +472,12 @@ void CvInitCore::resetGame()
 	} // </advc>
 
 	// Standard game options
-	m_abOptions.reset();
-	m_abMPOptions.reset();
+	/*m_abOptions.reset();
+	m_abMPOptions.reset();*/
+FOR_EACH_ENUM(GameOption)
+	m_abOptions[eLoopGameOption]=false;
+FOR_EACH_ENUM(MPOption)
+	m_abOptions[eLoopMPOption]=false;
 	m_bStatReporting = false;
 
 	m_abForceControls.reset();
@@ -936,7 +952,7 @@ void CvInitCore::setVictories(int iVictories, bool const* abVictories)
 {
 	SAFE_DELETE_ARRAY(m_abVictories);
 	m_iNumVictories = 0;
-	if (iVictories)
+	if (iVictories > 0)
 	{
 		m_iNumVictories = iVictories;
 		m_abVictories = new bool[m_iNumVictories];
@@ -962,12 +978,14 @@ bool CvInitCore::getVictory(VictoryTypes eVictory) const
 
 void CvInitCore::setOption(GameOptionTypes eIndex, bool bOption)
 {
-	m_abOptions.set(eIndex, bOption);
+	//m_abOptions.set(eIndex, bOption);
+	m_abOptions[eIndex]=bOption;
 }
 
 void CvInitCore::setMPOption(MultiplayerOptionTypes eIndex, bool bOption)
 {
-	m_abMPOptions.set(eIndex, bOption);
+	//m_abMPOptions.set(eIndex, bOption);
+	m_abMPOptions[eIndex]=bOption;
 }
 
 void CvInitCore::setForceControl(ForceControlTypes eIndex, bool bOption)
@@ -1496,7 +1514,7 @@ void CvInitCore::read(FDataStreamBase* pStream)
 		pStream->Read(m_iNumVictories, m_abVictories);
 	}
 	// <advc.912d>
-	if (uiFlag <= 1)
+//	if (uiFlag <= 1)
 	{
 		bool* abOptions = new bool[NUM_GAMEOPTION_TYPES];
 		if (uiFlag == 1)
@@ -1510,13 +1528,16 @@ void CvInitCore::read(FDataStreamBase* pStream)
 			abOptions[NUM_GAMEOPTION_TYPES - 2] = false;
 			abOptions[NUM_GAMEOPTION_TYPES - 1] = false;
 		}
+		/*FOR_EACH_ENUM(GameOption)
+			m_abOptions.set(eLoopGameOption, abOptions[eLoopGameOption]);*/
 		FOR_EACH_ENUM(GameOption)
-			m_abOptions.set(eLoopGameOption, abOptions[eLoopGameOption]);
+			m_abOptions[eLoopGameOption]=abOptions[eLoopGameOption];
 		delete[] abOptions;
 	}
-	else m_abOptions.Read(pStream);
+//	else m_abOptions.Read(pStream);
 	// </advc.912d>
-	m_abMPOptions.Read(pStream);
+//	m_abMPOptions.Read(pStream);
+	pStream->Read(NUM_MPOPTION_TYPES, m_abMPOptions);
 
 	pStream->Read(&m_bStatReporting);
 
@@ -1639,16 +1660,19 @@ void CvInitCore::write(FDataStreamBase* pStream)
 	pStream->Write(m_iNumVictories);
 	pStream->Write(m_iNumVictories, m_abVictories);
 
-	m_abOptions.Write(pStream);
+	//m_abOptions.Write(pStream);
+pStream->Write(NUM_GAMEOPTION_TYPES, m_abOptions);
 	// <advc.test>
 	#ifdef FASSERT_ENABLE
 	if (!getGameMultiplayer())
 	{
 		FOR_EACH_ENUM(MPOption)
-			FAssert(!m_abMPOptions.get(eLoopMPOption));
+			//FAssert(!m_abMPOptions.get(eLoopMPOption));
+			FAssert(!m_abMPOptions[eLoopMPOption]);
 	}
 	#endif // </advc.test>
-	m_abMPOptions.Write(pStream);
+	//m_abMPOptions.Write(pStream);
+pStream->Write(NUM_MPOPTION_TYPES, m_abMPOptions);
 
 	pStream->Write(m_bStatReporting);
 

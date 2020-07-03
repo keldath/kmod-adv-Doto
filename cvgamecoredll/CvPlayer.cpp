@@ -6826,7 +6826,7 @@ int CvPlayer::calculateResearchModifier(TechTypes eTech,  // <advc.910>
 			if (!kTechTeam.isHasTech(eTech))
 				continue;
 			rKnownExp += fixp(0.5);
-			if (GET_TEAM(getTeam()).isFriendlyTerritory(kTechTeam.getID()))
+			if (GET_TEAM(getTeam()).canPeacefullyEnter(kTechTeam.getID()))
 				rKnownExp += fixp(1.5);
 			else if (kTechTeam.isAtWar(getTeam()) || GET_TEAM(getTeam()).isVassal(kTechTeam.getID()))
 				rKnownExp += fixp(0.5);
@@ -10385,7 +10385,7 @@ void CvPlayer::setAlive(bool bNewValue)  // advc: some style changes
 {
 	if(isAlive() == bNewValue)
 		return;
-	/*	<advc.003m> Moved up b/c once the team's AliveCount is set to 0,
+	/*	<advc.003m> Moved up b/c, once the team's AliveCount is set to 0,
 		at-war status is lost. Need that for lifting blockades.
 		Also seems generally safer to destroy a player's components
 		before killing the player itself. Therefore I've also moved up

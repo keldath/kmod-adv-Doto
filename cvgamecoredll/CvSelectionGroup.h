@@ -102,8 +102,6 @@ public:
 	bool canFight() const;																																										// Exposed to Python
 	bool canDefend() const;																																										// Exposed to Python
 	bool canBombard(CvPlot const& kPlot) const;
-//rangedstrike-keldath
-	bool canRanged(const CvPlot* pPlot = NULL, int ix = NULL, int iy = NULL) const;
 	bool visibilityRange() const;
 
 	// BETTER_BTS_AI_MOD, General AI, 08/19/09, jdog5000: START

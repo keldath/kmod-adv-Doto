@@ -1215,9 +1215,59 @@ NormalizationTarget* CvGame::assignStartingPlots()
 	}
 	FAssert(startPlots.size() == playerOrder.size());
 	std::sort(startPlots.begin(), startPlots.end());
+	// <advc.027> Try to avoid giving human players a high-volatility start
+	if (pNormalizationTarget != NULL && playerOrder.size() > 5u)
+	{
+		for (size_t i = 0; i < playerOrder.size(); i++)
+		{
+			if (playerOrder[i] == NO_PLAYER || !GET_PLAYER(playerOrder[i]).isHuman())
+				continue;
+			CvPlot const* pStart = kMap.plotByIndex(startPlots[i].second);
+			if (pStart == NULL)
+				continue;
+			scaled rVolatility = pNormalizationTarget->getVolatilityValue(*pStart);
+			if (rVolatility < fixp(0.2))
+				continue;
+			/*	Don't want to undercut the handicap bias too much. Hence look for
+				a less volatile start only one up and one down in the player order. */
+			std::vector<std::pair<int,PlayerTypes> > aieSwapPlayers;
+			if (i > 0)
+				aieSwapPlayers.push_back(std::make_pair((int)(i - 1), playerOrder[i - 1]));
+			if (i < playerOrder.size() - 1)
+				aieSwapPlayers.push_back(std::make_pair((int)(i + 1), playerOrder[i + 1]));
+			int iBestSwapIndex = -1;
+			// Tiny improvements in volatility aren't worth swapping for
+			scaled rBestSwapVal = fixp(0.1);
+			for (size_t j = 0; j < aieSwapPlayers.size(); j++)
+			{
+				PlayerTypes const eSwapPlayer = aieSwapPlayers[j].second;
+				int const iSwapPlayerOrderIndex = aieSwapPlayers[j].first;
+				if (eSwapPlayer == NO_PLAYER || GET_PLAYER(eSwapPlayer).isHuman())
+					continue;
+				CvPlot const* pSwapStart = kMap.plotByIndex(
+						startPlots[iSwapPlayerOrderIndex].second);
+				if (pSwapStart == NULL)
+					continue;
+				scaled rSwapVolatility = pNormalizationTarget->
+						getVolatilityValue(*pSwapStart);
+				scaled rSwapVal = rVolatility - rSwapVolatility;
+				if (rSwapVal > rBestSwapVal)
+				{
+					rBestSwapVal = rSwapVal;
+					iBestSwapIndex = iSwapPlayerOrderIndex;
+				}
+			}
+			if (iBestSwapIndex >= 0)
+			{
+				std::swap(playerOrder[i], playerOrder[iBestSwapIndex]);
+				if (iBestSwapIndex == i + 1)
+					i++; // Skip next iteration to make sure not to swap again
+			}
+		}
+	} // </advc.027>
 	for (size_t i = 0; i < playerOrder.size(); i++)
 	{
-		if(playerOrder[i] == NO_PLAYER)
+		if (playerOrder[i] == NO_PLAYER)
 		{
 			FAssert(playerOrder[i] != NO_PLAYER);
 			continue;
@@ -1381,19 +1431,20 @@ int CvGame::getStartingPlotRange() const
 
 void CvGame::normalizeAddRiver()  // advc: style changes
 {
-	CvMap const& m = GC.getMap();
-	for (int iI = 0; iI < MAX_CIV_PLAYERS; iI++)
+	CvMap const& kMap = GC.getMap();
+	for (PlayerIter<CIV_ALIVE> it; it.hasNext(); ++it)
 	{
-		CvPlayer const& kLoopPlayer = GET_PLAYER((PlayerTypes)iI);
-		if (!kLoopPlayer.isAlive())
-			continue;
-
+		CvPlayer const& kLoopPlayer = *it;
 		CvPlot* pStartingPlot = kLoopPlayer.getStartingPlot();
 		if (pStartingPlot == NULL)
 			continue;
-		if (pStartingPlot->isFreshWater())
+		if (pStartingPlot->isFreshWater() ||
+			// <advc.108>
+			(m_eNormalizationLevel <= NORMALIZE_LOW &&
+			pStartingPlot->isAdjacentFreshWater())) // </advc.108>
+		{
 			continue;
-
+		}
 		// if we will be able to add a lake, then use old river code
 		if (normalizeFindLakePlot(kLoopPlayer.getID()) != NULL)
 		{
@@ -1413,16 +1464,17 @@ void CvGame::normalizeAddRiver()  // advc: style changes
 		else CvMapGenerator::GetInstance().addRiver(pStartingPlot);
 
 		// add floodplains to any desert tiles the new river passes through
-		for (int iJ = 0; iJ < m.numPlots(); iJ++)
+		for (int i = 0; i < kMap.numPlots(); i++)
 		{
-			CvPlot& kPlot = m.getPlotByIndex(iJ);
-			for (int iK = 0; iK < GC.getNumFeatureInfos(); iK++)
+			CvPlot& kPlot = kMap.getPlotByIndex(i);
+			// advc.108: Can't hurt to randomize the order
+			FOR_EACH_ENUM_RAND(Feature, getMapRand())
 			{
-				FeatureTypes eLoopFeature = (FeatureTypes)iK;
 				if (!GC.getInfo(eLoopFeature).isRequiresRiver() ||
-						!kPlot.canHaveFeature(eLoopFeature))
+					!kPlot.canHaveFeature(eLoopFeature))
+				{
 					continue;
-
+				}
 				if (GC.getInfo(eLoopFeature).getAppearanceProbability() == 10000)
 				{
 					if (kPlot.getBonusType() != NO_BONUS)
@@ -1471,53 +1523,64 @@ void CvGame::normalizeRemovePeaks()  // advc: style changes
 	}
 }
 
+
 void CvGame::normalizeAddLakes()
 {
-	for (int iI = 0; iI < MAX_CIV_PLAYERS; iI++)
-	{
-		if (GET_PLAYER((PlayerTypes)iI).isAlive())
+	for (PlayerIter<CIV_ALIVE> it; it.hasNext(); ++it)
+	{	// <advc> (Moved out of normalizeFindLakePlot)
+		CvPlot* pStartingPlot = it->getStartingPlot();
+		if (pStartingPlot == NULL || pStartingPlot->isFreshWater() || // </advc>
+			// <advc.108>
+			(m_eNormalizationLevel <= NORMALIZE_LOW &&
+			pStartingPlot->isAdjacentFreshWater())) // </advc.108>
 		{
-			CvPlot* pLakePlot = normalizeFindLakePlot((PlayerTypes)iI);
-			if (pLakePlot != NULL)
-			{
-				pLakePlot->setPlotType(PLOT_OCEAN);
-			}
+			continue; 
 		}
+		CvPlot* pLakePlot = normalizeFindLakePlot(it->getID());
+		if (pLakePlot != NULL)
+			pLakePlot->setPlotType(PLOT_OCEAN);
 	}
 }
 
-CvPlot* CvGame::normalizeFindLakePlot(PlayerTypes ePlayer)  // advc: style changes
+/*	K-Mod: Shuffle the plots - advc.108: Randomize, yes,
+	but the inner ring has to take precedence. Rewritten. */
+CvPlot* CvGame::normalizeFindLakePlot(PlayerTypes ePlayer)
 {
-	if (!GET_PLAYER(ePlayer).isAlive())
+	CvPlot const& kStart = *GET_PLAYER(ePlayer).getStartingPlot();
+	FOR_EACH_ENUM_RAND(Direction, getMapRand())
+	{
+		CvPlot* pAdj = plotDirection(kStart.getX(), kStart.getY(), eLoopDirection);
+		if (pAdj != NULL && normalizeCanAddLakeTo(*pAdj))
+			return pAdj;
+	}
+	if (kStart.isAdjacentFreshWater())
 		return NULL;
-
-	CvPlot* pStartingPlot = GET_PLAYER(ePlayer).getStartingPlot();
-	if (pStartingPlot == NULL || pStartingPlot->isFreshWater())
-		return NULL;
-
-	// K-Mod: Shuffle the plots
-	for (CityPlotRandIter itPlot(*pStartingPlot, getMapRand(), false);
+	for (CityPlotRandIter itPlot(kStart, getMapRand(), false);
 		itPlot.hasNext(); ++itPlot)
 	{
-		CvPlot& kLoopPlot = *itPlot;
-		if (kLoopPlot.isWater() || kLoopPlot.isCoastalLand() ||
-			kLoopPlot.isRiver() || kLoopPlot.getBonusType() != NO_BONUS)
-		{
+		if (itPlot.currID() < NUM_INNER_PLOTS)
 			continue;
-		}
-		bool bStartingPlot = false;
-		for (PlayerIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
-		{
-			if (itPlayer->getStartingPlot() == &kLoopPlot)
-			{
-				bStartingPlot = true;
-				break;
-			}
-		}
-		if (!bStartingPlot)
-			return &kLoopPlot;
+		if (normalizeCanAddLakeTo(*itPlot))
+			return &*itPlot;
 	}
 	return NULL;
+}
+
+// advc.108: Cut from normalizeFindLakePlot
+bool CvGame::normalizeCanAddLakeTo(CvPlot const& kPlot) const
+{
+	if (kPlot.isWater() || kPlot.isCoastalLand() ||
+		kPlot.isRiver() || kPlot.getBonusType() != NO_BONUS)
+	{
+		return false;
+	}
+	bool bStartingPlot = false;
+	for (PlayerIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
+	{
+		if (itPlayer->getStartingPlot() == &kPlot)
+			return false;
+	}
+	return true;
 }
 
 
@@ -1749,6 +1812,13 @@ void CvGame::normalizeAddFoodBonuses(  // advc: refactoring
 			{
 				continue;
 			}
+			// <advc.001> Whale
+			TechTypes eTechImprove = kBonus.getTechImprove(p.isWater());
+			if (eTechImprove != NO_TECH &&
+				GC.getInfo(eTechImprove).getEra() > getStartEra())
+			{
+				continue;
+			} // </advc.001>
 			if (p.isWater())
 			{
 				iFoodBonus += 2;
@@ -1979,8 +2049,16 @@ void CvGame::normalizeAddExtras(  // advc: some refactoring
 			{
 				continue;
 			}
-			if (!kLoopPlot.isFeature() ||
-				!GC.getInfo(kLoopPlot.getFeatureType()).isRequiresFlatlands())
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Enable isRequiresFlatlands for Terrains                                          **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+			if ((!kLoopPlot.isFeature() ||
+   				!GC.getInfo(kLoopPlot.getFeatureType()).isRequiresFlatlands()) &&
+   				!GC.getInfo(kLoopPlot.getTerrainType()).isRequiresFlatlands())
 			{
 				if (kLoopPlot.getBonusType() == NO_BONUS ||
 					GC.getInfo(kLoopPlot.getBonusType()).isHills())
@@ -2297,7 +2375,7 @@ void CvGame::normalizeAddExtras(  // advc: some refactoring
 /**  Notes:                                                                                         **/
 /*****************************************************************************************************/
 //re implementation of the code below - f1rpo said its ok - keldath
-		int iHillsCount = 0;
+/*		int iHillsCount = 0;
 		for (CityPlotIter itPlot(*pStartingPlot); itPlot.hasNext(); ++itPlot)
 		{
 			if (itPlot->isHills())
@@ -2311,8 +2389,8 @@ void CvGame::normalizeAddExtras(  // advc: some refactoring
 			CvPlot& kLoopPlot = *it;
 			if (kLoopPlot.isWater() || kLoopPlot.isHills())
 				continue;
-//re implementation of the code below - f1rpo said its ok - keldath
-			if (!GC.getTerrainInfo(kLoopPlot.getTerrainType()).isRequiresFlatlands())
+*///re implementation of the code below - f1rpo said its ok - keldath
+/*			if (!GC.getTerrainInfo(kLoopPlot.getTerrainType()).isRequiresFlatlands())
 			{
 				if (!kLoopPlot.isFeature() ||
 					!GC.getInfo(kLoopPlot.getFeatureType()).isRequiresFlatlands())
@@ -2326,7 +2404,7 @@ void CvGame::normalizeAddExtras(  // advc: some refactoring
 					} // added - keldath
 				}
 			}
-		}
+		}*/
 		next_player: continue; // advc
 	}
 }

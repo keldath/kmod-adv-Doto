@@ -401,8 +401,6 @@ public:
 	void centerCamera();
 	void attackForDamage(CyUnit *defender, int attakerDamageChange, int defenderDamageChange);
 	void rangeStrike(int iX, int iY);
-//rangedattack-keldath
-	void rangeStrikeK(int iX, int iY);
 
 protected:
 	CvUnit* m_pUnit;

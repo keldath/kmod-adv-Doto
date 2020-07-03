@@ -1164,14 +1164,25 @@ bool CvPlot::isFreshWater() const
 		if (pLoopPlot->isLake())
 			return true;
 
-		if (pLoopPlot->isFeature())
+		if (pLoopPlot->isFeature() &&
+			GC.getInfo(pLoopPlot->getFeatureType()).isAddsFreshWater())
 		{
-			if (GC.getInfo(pLoopPlot->getFeatureType()).isAddsFreshWater())
-				return true;
+			return true;
 		}
 	}
 
 	return false;/* if u want no fresh water from lakes and ocean mark out up to here ->*/
+}
+// advc.108:
+bool CvPlot::isAdjacentFreshWater() const
+{
+	FOR_EACH_ENUM(Direction)
+	{
+		CvPlot const* pAdj = plotDirection(getX(), getY(), eLoopDirection);
+		if (pAdj != NULL && pAdj->isFreshWater())
+			return true;
+	}
+	return false;
 }
 
 
