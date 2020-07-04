@@ -4416,7 +4416,13 @@ bool CvUnit::airBomb(int iX, int iY)
 							szBuffer, kPlot, "AS2D_PILLAGED", MESSAGE_TYPE_INFO,
 							getButton(), GC.getColorType("RED"));
 				}
-				kPlot.setImprovementType(GC.getInfo(kPlot.getImprovementType()).getImprovementPillage());
+				kPlot.setImprovementType((ImprovementTypes)(GC.getInfo(kPlot.getImprovementType()).getImprovementPillage()));
+				// < JCultureControl Mod Start >
+                if (kPlot.getImprovementOwner() != NO_PLAYER && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
+                {
+                    kPlot.addCultureControl(kPlot.getImprovementOwner(), (ImprovementTypes) GC.getImprovementInfo(kPlot.getImprovementType()).getImprovementPillage(), true);
+                }
+                // < JCultureControl Mod End >
 			}
 			else
 			{
