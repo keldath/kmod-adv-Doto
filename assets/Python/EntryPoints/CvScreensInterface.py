@@ -39,12 +39,6 @@ import CvDebugInfoScreen
 import GameFontDisplay # advc.gfd
 #import CvDiplomacy
 
-## Platypedia ##
-#import PlatyPediaMain
-#import PlatyPediaHistory
-#import PlatyPediaMovie
-## Platypedia ##
-
 import CvUtil
 import CvPopupInterface
 import CvScreenUtilsInterface
@@ -303,15 +297,12 @@ def createCivilopedia():
 			import SevoPediaMain
 			import SevoPediaHistory
 			bUsingSevopedia = True
-## Platypedia ##
 			pediaMainScreen = SevoPediaMain.SevoPediaMain()
 		else:
-			import PlatyPediaMain
-			import PlatyPediaHistory
-			import PlatyPediaMovie
+			import CvPediaMain
+			import CvPediaHistory
 			bUsingSevopedia = False
-			pediaMainScreen = PlatyPediaMain.CvPediaMain()
-## Platypedia ##
+			pediaMainScreen = CvPediaMain.CvPediaMain()
 		HandleInputMap.update(
 							{
 								PEDIA_MAIN : pediaMainScreen,
@@ -1173,8 +1164,6 @@ HandleInputMap = {  MAIN_INTERFACE : mainInterface,
 					DEBUG_INFO_SCREEN : debugInfoScreen,
 					# advc.gfd:
 					GAMEFONT_DISPLAY_SCREEN : GameFontDisplay.GameFontDisplay(),
-## Platypedia ##
-#					PLATYPEDIA_MOVIE : PlatyPediaMovie.CvPediaMovie(pediaMainScreen),
 				
 				# add new screens here
 				}

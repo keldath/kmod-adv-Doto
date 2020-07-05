@@ -18005,13 +18005,13 @@ UNITAI changed - now will used to counter.
 			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
 			<!-- advc.315b -->
 			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
-			<bNoCapture>0</bNoCapture>
+			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -18044,11 +18044,25 @@ UNITAI changed - now will used to counter.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK_CITY</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+<!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
@@ -18113,6 +18127,7 @@ UNITAI changed - now will used to counter.
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
 			<iAirRange>0</iAirRange>
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -18130,7 +18145,7 @@ UNITAI changed - now will used to counter.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>5</iCombat>
-			<iCombatLimit>75</iCombatLimit>
+			<iCombatLimit>50</iCombatLimit>
 			<iAirCombat>0</iAirCombat>
 			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
@@ -18141,8 +18156,8 @@ UNITAI changed - now will used to counter.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>50</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>6</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>25</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>

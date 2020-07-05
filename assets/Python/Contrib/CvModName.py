@@ -1,7 +1,7 @@
 #CvModName.py
 
-modName = "Doto"
-displayName = "Doto"
+modName = "Doto 106"
+displayName = "Doto 106"
 modVersion = ""
 
 civName = "BtS"
