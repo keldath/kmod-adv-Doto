@@ -522,6 +522,12 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 		szString.append(gDLL->getText("TXT_KEY_UNIT_HELP_AIR_RANGE", pUnit->airRange()));
 	}
 
+//rangedattack-keldath
+	if (pUnit->rangedStrike() > 0)
+	{
+		szString.append(gDLL->getText("TXT_KEY_ASTRENGTH", pUnit->rangedStrike()));
+	}
+//rangedattack-keldath
 	BuildTypes eBuild = pUnit->getBuildType();
 
 	if (eBuild != NO_BUILD)
@@ -1251,6 +1257,15 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 			szString.append(NEWLINE);
 			szString.append(gDLL->getText("TXT_KEY_UNIT_FLANKING_STRIKES", szTempBuffer.GetCString()));
 		}
+		
+/*** RANGED BOMBARDMENT - Dale START ***/
+		if (pUnit->rangedStrike() > 0)
+		{
+				szString.append(NEWLINE);
+				szString.append(gDLL->getText("TXT_KEY_IS_RANGE_BOMBARD", pUnit->rangedStrike()));
+		}
+/*** RANGED BOMBARDMENT - Dale END ***/
+
 
 		if (pUnit->bombardRate() > 0)
 		{
@@ -9556,22 +9571,28 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		szBuffer.append(NEWLINE);
 		CvWString szTempBuffer;
 
+//rangedattack-keldath- different symbols for each type
 		if (u.getDomainType() == DOMAIN_AIR)
 		{
 			if (u.getAirCombat() > 0)
 			{
-				szTempBuffer.Format(L"%d%c, ", u.getAirCombat(), gDLL->getSymbolID(STRENGTH_CHAR));
+				szTempBuffer.Format(L"%d%c, ", u.getAirCombat(), gDLL->getSymbolID(AIRPORT_CHAR));
 				szBuffer.append(szTempBuffer);
 			}
 		}
-		else
+		//rangedstrike-keldath Air range for land units -  vincentz  - keldath addition
+		else if (u.getDomainType() != DOMAIN_AIR && (u.getRangeStrike() > 0 || u.getAirRange() > 0))
 		{
-			if (u.getCombat() > 0)
-			{
+				szTempBuffer.Format(L"%d%c%d%c, ", u.getCombat(), gDLL->getSymbolID(DEFENSE_CHAR));
+				szBuffer.append(szTempBuffer);
+		}
+		
+		else if (u.getCombat() > 0)
+		{
 				szTempBuffer.Format(L"%d%c, ", u.getCombat(), gDLL->getSymbolID(STRENGTH_CHAR));
 				szBuffer.append(szTempBuffer);
-			}
 		}
+//rangedattack-keldath- different symbols for each type
 		// <advc.905b>
 		bool bAllSpeedBonusesAvailable = true;
 		CvCity* pCity = gDLL->UI().getHeadSelectedCity();
@@ -9628,10 +9649,30 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 			else szBuffer.append(szSpeedBonuses);
 			szBuffer.append(L")");
 		} // </advc.905b>
-		if (u.getAirRange() > 0)
+	//Air range for land units -  vincentz ranged strike - keldath addition start
+/*		if (u.getAirRange() > 0 && u.getDomainType() != DOMAIN_AIR)
+		{
+			szBuffer.append(L", ");
+//rangedattack-keldath
+			szBuffer.append(gDLL->getText("TXT_KEY_ASTRENGTH", u.getCombat()));
+		}
+		else*/ if (u.getDomainType() == DOMAIN_AIR && u.getAirRange() > 0)
+//rangedattack-keldath
+		{
+			szBuffer.append(L", ");
+			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIR_COMBAT", u.getAirCombat()));
+		}
+		//Air range for land units -  vincentz ranged strike - keldath addition end
+//rangedattack-keldath
+		if (u.getAirRange() > 0 )
 		{
 			szBuffer.append(L", ");
 			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIR_RANGE", u.getAirRange()));
+		}
+		if (u.getRangeStrike() > 0)
+		{
+			szBuffer.append(L", ");
+			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIR_RANGE", u.getRangeStrike()));
 		}
 	}
 
@@ -10023,11 +10064,17 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		szBuffer.append(NEWLINE);
 		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_WITHDRAWL_PROBABILITY", u.getWithdrawalProbability()));
 	}
-
-	if (u.getCombatLimit() < GC.getMAX_HIT_POINTS() && u.getCombat() > 0 && !u.isOnlyDefensive())
+	//rangedattack-keldath vincentz ranged strike - now will also dispplay aircombat limit for units
+	//debugg pops an error with hits one
+	/*if(u.getDomainType() == DOMAIN_AIR && u.getAirRange() > 0 ) 
 	{
 		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT", (100 * u.getCombatLimit()) / GC.getMAX_HIT_POINTS()));
+		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIRCOMBAT_LIMIT", u.getAirCombatLimit()));
+	}
+	else*/ if (u.getCombatLimit()/* < GC.getMAX_HIT_POINTS() && u.getCombat() > 0*/ && !u.isOnlyDefensive())
+	{
+		szBuffer.append(NEWLINE);
+		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT", (/*100 * */u.getCombatLimit()/*) / GC.getMAX_HIT_POINTS()*/)));
 	}
 
 	if (u.getCollateralDamage() > 0)
@@ -19665,9 +19712,9 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 		if (pCity->isVisible(GC.getGame().getActiveTeam(), true))
 		{
 			int iDefenseModifier = pCity->getDefenseModifier(GC.getGame().selectionListIgnoreBuildingDefense());
-
-			if (iDefenseModifier != 0)
-			{
+		//keldath - rangedattack - i prefer to see th 0 all the time
+		//	if (iDefenseModifier != 0)
+		//	{
 				//szBuffer.append(CvWString::format(L" %c:%s%d%%", gDLL->getSymbolID(DEFENSE_CHAR), ((iDefenseModifier > 0) ? "+" : ""), iDefenseModifier));
 				// <advc.002f> Replacing the above
 				szBuffer.append(CvWString::format(L"   " SETCOLR L"%s%d%%" ENDCOLR L"%c",
@@ -19676,7 +19723,7 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 						((iDefenseModifier > 0) ? "+" : ""),
 						iDefenseModifier,
 						gDLL->getSymbolID(DEFENSE_CHAR))); // </advc.002f>
-			}
+		//	}
 		}
 	}
 }

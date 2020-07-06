@@ -2908,13 +2908,13 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
 				}
 			}
 		}
-			//kedath qa2-done
-		// < JImprovementLimit Mod Start >
-		//kedath qa3-done 
-		CvImprovementInfo const& kImprov = GC.getInfo(eImprovement);
-		// < JImprovementLimit Mod End >
 		if (eImprovement != NO_IMPROVEMENT)
 		{
+			// < JImprovementLimit Mod Start >
+			//moved here -  eImprovement i saw an error when  NO_IMPROVEMENT
+			CvImprovementInfo const& kImprov = GC.getInfo(eImprovement);
+			// < JImprovementLimit Mod End >
+
 			if (kMissionPlot.isImproved())
 			{
 				 
