@@ -208,6 +208,8 @@
 	<ElementType name="iGreatPeopleRateChange" content="textOnly" dt:type="int"/>
 	<ElementType name="iHurryAngerModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="bBorderObstacle" content="textOnly" dt:type="boolean"/>
+	<!-- advc.310 -->
+	<ElementType name="bConditionalAbilities" content="textOnly" dt:type="boolean"/>
 	<ElementType name="iYield" content="textOnly" dt:type="int"/>
 	<ElementType name="SeaPlotYieldChanges" content="eltOnly">
 		<element type="iYield" minOccurs="0" maxOccurs="*"/>
@@ -489,6 +491,11 @@
 		<element type="iGreatPeopleRateChange" minOccurs="0"/>
 		<element type="iHurryAngerModifier" minOccurs="0"/>
 		<element type="bBorderObstacle" minOccurs="0"/>
+		<!-- advc.310: Only used for the Great Wall (see Civ4BuildingInfos.xml)
+			 but could perhaps be used elsewhere if another building needs to
+			 have abilities that get disabled by the DLL depending on
+			 game options (or map options). -->
+		<element type="bConditionalAbilities" minOccurs="0"/>
 		<element type="bTeamShare" minOccurs="0"/>
 		<element type="bWater" minOccurs="0"/>
 		<element type="bRiver" minOccurs="0"/>

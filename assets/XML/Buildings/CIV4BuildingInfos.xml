@@ -10026,7 +10026,9 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
 		</BuildingInfo>
-		<!-- advc.200 BEGIN Copy-pasted the entries for Colosseum and all unique replacements from BtS. Only kept the K-Mod change to Odeon (one fewer culture) -->
+		<!-- advc.200 BEGIN Copy-pasted the entries for Colosseum and all
+			unique replacements from BtS. Only kept the K-Mod change to Odeon
+			(one less culture). -->
 		<BuildingInfo>
 			<BuildingClass>BUILDINGCLASS_COLOSSEUM</BuildingClass>
 			<Type>BUILDING_COLOSSEUM</Type>
@@ -26741,6 +26743,10 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iGreatPeopleRateChange>2</iGreatPeopleRateChange>
 			<iHurryAngerModifier>0</iHurryAngerModifier>
 			<bBorderObstacle>1</bBorderObstacle>
+			<!-- advc.310: Causes the DLL to disable bBorderObstacle,
+				 iAreaTradeRoutes or iDomesticGreatGeneralRateModifier
+				 depending on the Barbarian game options. -->
+			<bConditionalAbilities>1</bConditionalAbilities>
 			<bTeamShare>1</bTeamShare>
 			<bWater>0</bWater>
 			<bRiver>0</bRiver>
@@ -26810,7 +26816,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iGlobalSpaceProductionModifier>0</iGlobalSpaceProductionModifier>
 			<iTradeRoutes>0</iTradeRoutes>
 			<iCoastalTradeRoutes>0</iCoastalTradeRoutes>
-			<!-- advc.310: Was 0 -->
+			<!-- advc.310 -->
 			<iAreaTradeRoutes>1</iAreaTradeRoutes>
 			<iTradeRouteModifier>0</iTradeRouteModifier>
 			<iForeignTradeRouteModifier>0</iForeignTradeRouteModifier>

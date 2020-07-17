@@ -179,10 +179,17 @@
 		<element type="iWarmingDefense" minOccurs="0"/>
 		<element type="bNoCoast" minOccurs="0"/>
 		<element type="bNoRiver" minOccurs="0"/>
+		<!-- advc.129b (set to false by default in the DLL; currently unused)
+			 Value doesn't matter if bNoRiver is set. -->
+		<element type="bNoRiverSide" minOccurs="0"/>
 		<element type="bNoAdjacent" minOccurs="0"/>
         <element type="bRequiresFlatlands" minOccurs="0"/>
 		<element type="bRequiresRiver" minOccurs="0"/>
 		<!-- advc.129b -->
+		<element type="bRequiresRiverSide" minOccurs="0"/>
+		<!-- advc.129b (set to false by default in the DLL)
+			 If bRequiresRiverSide is set, then the value of bRequiresRiver
+			 doesn't matter. -->
 		<element type="bRequiresRiverSide" minOccurs="0"/>
 		<element type="bAddsFreshWater" minOccurs="0"/>
 		<element type="bImpassable" minOccurs="0"/>

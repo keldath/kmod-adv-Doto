@@ -84,8 +84,6 @@ EffectType	Effect that can occur when a unit enters a plot with the feature-->
 			<iSeeThrough>0</iSeeThrough>
 			<iHealthPercent>0</iHealthPercent>
 			<iDefense>0</iDefense>
-			<!-- advc.012 -->
-			<iRivalDefense>0</iRivalDefense>
 			<iAppearance>0</iAppearance>
 			<iDisappearance>0</iDisappearance>
 			<iGrowth>0</iGrowth>
@@ -96,8 +94,6 @@ EffectType	Effect that can occur when a unit enters a plot with the feature-->
 			<bNoAdjacent>0</bNoAdjacent>
 			<bRequiresFlatlands>0</bRequiresFlatlands>
 			<bRequiresRiver>0</bRequiresRiver>
-			<!-- advc.129b -->
-			<bRequiresRiverSide>0</bRequiresRiverSide>
 			<bAddsFreshWater>0</bAddsFreshWater>
 			<bImpassable>1</bImpassable>
 			<!-- advc.651: was 0 -->
@@ -219,8 +215,6 @@ EffectType	Effect that can occur when a unit enters a plot with the feature-->
 			<bNoAdjacent>0</bNoAdjacent>
 			<bRequiresFlatlands>0</bRequiresFlatlands>
 			<bRequiresRiver>0</bRequiresRiver>
-			<!-- advc.129b -->
-			<bRequiresRiverSide>0</bRequiresRiverSide>
 			<bAddsFreshWater>0</bAddsFreshWater>
 			<bImpassable>0</bImpassable>
 			<bNoCity>0</bNoCity>
@@ -334,8 +328,6 @@ EffectType	Effect that can occur when a unit enters a plot with the feature-->
 			<iSeeThrough>1</iSeeThrough>
 			<iHealthPercent>0</iHealthPercent>
 			<iDefense>0</iDefense>
-			<!-- advc.012 -->
-			<iRivalDefense>0</iRivalDefense>
 			<iAppearance>500</iAppearance>
 			<iDisappearance>0</iDisappearance>
 			<iGrowth>0</iGrowth>
@@ -346,8 +338,6 @@ EffectType	Effect that can occur when a unit enters a plot with the feature-->
 			<bNoAdjacent>1</bNoAdjacent>
 			<bRequiresFlatlands>1</bRequiresFlatlands>
 			<bRequiresRiver>0</bRequiresRiver>
-			<!-- advc.129b -->
-			<bRequiresRiverSide>0</bRequiresRiverSide>
 			<bAddsFreshWater>1</bAddsFreshWater>
 			<bImpassable>0</bImpassable>
 			<bNoCity>1</bNoCity>

@@ -1414,7 +1414,8 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iMinLandPercent>0</iMinLandPercent>
 			<iUnique>0</iUnique>
 			<iGroupRange>1</iGroupRange>
-			<iGroupRand>25</iGroupRand>
+			<!-- advc.129: was 25 -->
+			<iGroupRand>17</iGroupRand>
 			<!-- advc.129: was 1 -->
 			<bArea>0</bArea>
 			<bHills>1</bHills>

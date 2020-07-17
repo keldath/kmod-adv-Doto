@@ -2920,11 +2920,11 @@
 	<!-- advc.908a: Originally in CIV4GameTextInfos.xml -->
 	<TEXT>
 		<Tag>TXT_KEY_TRAIT_EXTRA_YIELD_THRESHOLDS</Tag>
-		<English>[NEWLINE][SPACE][SPACE][ICON_BULLET]+1%F1_yield on tiles with a natural yield of at least %d2%F3_yield or a total yield of at least %d4%F5_yield.</English>
-		<French>[NEWLINE][SPACE][SPACE][ICON_BULLET]+1%F1_yield sur les cases avec un rendement naturel de %d2%F3_yield ou un rendement total de %d4%F5_yield.</French>
-		<German>[NEWLINE][SPACE][SPACE][ICON_BULLET]+1%F1_yield auf Feldern mit natürlichem Ertrag von wenigstens %d2%F3_yield oder einem Gesamtertrag von wenigstens %d4%F5_yield.</German>
-		<Italian>[NEWLINE][SPACE][SPACE][ICON_BULLET]+1%F1_yield su caselle con un rendimento naturale di %d2%F3_yield o un rendimento totale di %d4%F5_yield.</Italian>
-		<Spanish>[NEWLINE][SPACE][SPACE][ICON_BULLET]+1 %F1_yield en las casillas con un rendimiento natural de %d2%F3_yield o un rendimiento total de %d4%F5_yield.</Spanish>
+		<English>[NEWLINE][SPACE][SPACE][ICON_BULLET]+1%F1_yield on tiles with a natural yield of at least %d2%F3_yield or a total yield of at least %d4%F5_yield</English>
+		<French>[NEWLINE][SPACE][SPACE][ICON_BULLET]+1%F1_yield sur les cases avec un rendement naturel de %d2%F3_yield ou un rendement total de %d4%F5_yield</French>
+		<German>[NEWLINE][SPACE][SPACE][ICON_BULLET]+1%F1_yield auf Feldern mit natürlichem Ertrag von wenigstens %d2%F3_yield oder einem Gesamtertrag von wenigstens %d4%F5_yield</German>
+		<Italian>[NEWLINE][SPACE][SPACE][ICON_BULLET]+1%F1_yield su caselle con un rendimento naturale di %d2%F3_yield o un rendimento totale di %d4%F5_yield</Italian>
+		<Spanish>[NEWLINE][SPACE][SPACE][ICON_BULLET]+1 %F1_yield en las casillas con un rendimiento natural de %d2%F3_yield o un rendimiento total de %d4%F5_yield</Spanish>
 	</TEXT>
 	
 	<!-- advc.012: Plot help text to be used along with TXT_KEY_PLOT_BONUS
@@ -3243,6 +3243,23 @@
 		<Italian>%s1_TeamName non potrebbe più essere indotto à una guerra contro</Italian>
 		<Spanish>%s1_TeamName ya no es dispuesto a una guerra contra</Spanish>
 	</TEXT>
+	<!-- (quoting TXT_KEY_DENIAL_TOO_MANY_WARS in Civ4GameTextInfos.xml) -->
+	<TEXT>
+		<Tag>TXT_KEY_CIV4LERTS_TOO_MANY_WARS</Tag>
+		<English>%s1_LeaderName is now preparing for war ("too much on our hands").</English>
+		<French>%s1_LeaderName se prépare à la guerre ("suffisamment à faire").</French>
+		<German>%s1_LeaderName trifft Kriegsvorbereitungen ("genug andere Sorgen").</German>
+		<Italian>%s1_LeaderName si prepara alla guerra ("troppi conflitti").</Italian>
+		<Spanish>%s1_LeaderName e prepara para la guerra ("demasiado entre manos").</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_CIV4LERTS_NO_LONGER_TOO_MANY_WARS</Tag>
+		<English>%s1_LeaderName may have abandoned [NUM1:his:her] war preparations.</English>
+		<French>%s1_LeaderName ne paraît plus se préparer à la guerre.</French>
+		<German>%s1_LeaderName scheint keinen Krieg mehr vorzubereiten.</German>
+		<Italian>%s1_LeaderName non pare più prepararsi alla guerra.</Italian>
+		<Spanish>%s1_LeaderName ya no parece prepararse para la guerra.</Spanish>
+	</TEXT>
 	
 	<!-- advc.210b -->
 	<TEXT>
@@ -3531,6 +3548,32 @@
 		</Italian>
 		<Spanish>
 			<Text>Imperio Amerindio</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</Spanish>
+	</TEXT>
+
+	<!-- advc.005: was Pacal II -->
+	<TEXT>
+		<Tag>TXT_KEY_LEADER_PACAL</Tag>
+		<English>Pacal</English>
+		<French>
+			<Text>Pacal</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</French>
+		<German>
+			<Text>Pacal</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</German>
+		<Italian>
+			<Text>Pakal</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</Italian>
+		<Spanish>
+			<Text>Pacal</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</Spanish>
@@ -6101,6 +6144,16 @@
 		<German>[ICON_BULLET]Kollateralschaden (max. %d1%%, %d2 Verteidiger)</German>
 		<Italian>[ICON_BULLET]Danni collaterali (max. %d1%%) a %d2 [NUM1:difensore:difensori]</Italian>
 		<Spanish>[ICON_BULLET]Da&#241;os colaterales (max. %d1%%) a %d2 [NUM1:defensor:defensores]</Spanish>
+	</TEXT>
+
+	<!-- advc.030 -->
+	<TEXT>
+		<Tag>TXT_KEY_PLOT_ICE_LOCKED</Tag>
+		<English>ice-locked</English>
+		<French>englac&#233;</French>
+		<German>eingeschlossen</German>
+		<Italian>circondato di ghiacco</Italian>
+		<Spanish>rodeado de hielo</Spanish>
 	</TEXT>
 
 </Civ4GameText>
