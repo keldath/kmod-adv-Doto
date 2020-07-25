@@ -1012,7 +1012,7 @@ NormalizationTarget* CvGame::assignStartingPlots()
 		if (it->getStartingPlot() != NULL)
 			continue; // Already got one
 		// advc.027b: was getSorenRandNum
-		int iRandOffset = getMapRand().getInt(starting_plots.size(), "Starting Plot");
+		int iRandOffset = getMapRandNum(starting_plots.size(), "Starting Plot");
 		it->setStartingPlot(starting_plots[iRandOffset], true);
 		// remove this plot from the list.
 		starting_plots[iRandOffset] = starting_plots[starting_plots.size()-1];
@@ -1033,7 +1033,7 @@ NormalizationTarget* CvGame::assignStartingPlots()
 		{
 			bool bStartFound = false;
 			// advc.027b: was getSorenRandNum
-			int iRandOffset = getMapRand().getInt(countCivTeamsAlive(), "Team Starting Plot");
+			int iRandOffset = getMapRandNum(countCivTeamsAlive(), "Team Starting Plot");
 			gDLL->callUpdater(); // advc (seems like a better place than the one I commented out above)
 			for (int iI = 0; iI < MAX_CIV_TEAMS; iI++)
 			{
@@ -1072,7 +1072,7 @@ NormalizationTarget* CvGame::assignStartingPlots()
 		 multiplayer, and the BtS random assignment of human starts doesn't
 		 actually work - favors player 0 when humans are in slots 0, 1 ... */
 	/*else if (isGameMultiPlayer()) {
-		int iRandOffset = getMapRand().getInt(PlayerIter<CIV_ALIVE>::count(), "Player Starting Plot");
+		int iRandOffset = getMapRandNum(PlayerIter<CIV_ALIVE>::count(), "Player Starting Plot");
 		// ... (deleted on 14 June 2020)
 	}
 	else
@@ -1104,7 +1104,7 @@ NormalizationTarget* CvGame::assignStartingPlots()
 			int iLoopCivs = PlayerIter<HUMAN>::count();
 			if (!bHuman)
 				iLoopCivs = iCivsAlive - iLoopCivs;
-			int iRandOffset = getMapRand().getInt(iLoopCivs, "advc.108b");
+			int iRandOffset = getMapRandNum(iLoopCivs, "advc.108b");
 			int iSkipped = 0;
 			for (PlayerIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 			{
@@ -1432,13 +1432,16 @@ void CvGame::normalizeAddRiver()  // advc: style changes
 		if (normalizeFindLakePlot(kLoopPlayer.getID()) != NULL)
 		{
 			//CvMapGenerator::GetInstance().doRiver(pStartingPlot);
-			// K-Mod. If we can have a lake then we don't always need a river.
-			// Also, the river shouldn't always start on the SE corner of our site.
-			if (//getSorenRandNum(10, "normalize add river") < (pStartingPlot->isCoastalLand() ? 5 : 7))
-				/*	advc.108: 25% lake chance (but will also get a lake
-					when no river possible or a lake already happens to be present) */
-				fixp(0.75).bernoulliSuccess(GC.getGame().getMapRand(), "normalize add river"))
-			{
+			/*	K-Mod. If we can have a lake then we don't always need a river.
+				Also, the river shouldn't always start on the SE corner of our site. */
+			if (//getSorenRandNum(10,"...") < (pStartingPlot->isCoastalLand() ? 5 : 7))
+				/*	<advc.108> The above is a 50% lake chance when coastal, 30% otherwise.
+					(Will also get a lake when no river possible or a lake already happens
+					to be present.) Note that a coastal river normally has only one segment.
+					Want to reduce the lake chance and coastal bias a bit. */
+				(pStartingPlot->isCoastalLand() ? fixp(0.62) : fixp(0.74)).
+				bernoulliSuccess(GC.getGame().getMapRand(), "normalize add river"))
+			{	// </advc.108>
 				CvPlot* pRiverPlot = pStartingPlot->getInlandCorner();
 				if (pRiverPlot != NULL)
 					CvMapGenerator::GetInstance().doRiver(pRiverPlot);
@@ -1709,7 +1712,7 @@ void CvGame::normalizeRemoveBadTerrain()  // advc: refactored
 					iTargetFood = 1;
 				else if (iPlotFood == 1 || iDistance <= iCityRange)
 				{	// advc.027b: was getSorenRandNum
-					iTargetFood = 1 + getMapRand().getInt(2, "Map Upgrade Terrain Food");
+					iTargetFood = 1 + getMapRandNum(2, "Map Upgrade Terrain Food");
 				}
 				else iTargetFood = (p.isCoastalLand() ? 2 : 1);
 
@@ -1744,7 +1747,7 @@ void CvGame::normalizeAddFoodBonuses(  // advc: refactoring
 	for (PlayerIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
 		CvPlayer const& kPlayer = *itPlayer;
-		CvPlot* pStartingPlot = kPlayer.getStartingPlot();
+		CvPlot const* pStartingPlot = kPlayer.getStartingPlot();
 		if (pStartingPlot == NULL)
 			continue;
 
@@ -1827,90 +1830,106 @@ void CvGame::normalizeAddFoodBonuses(  // advc: refactoring
 		bool bTargetReached = (pTarget != NULL &&
 				pTarget->isReached(*pStartingPlot)); // </advc.027>
 		iTargetFoodBonusCount += std::max(0, 2 - iGoodNatureTileCount); // K-Mod
-
-		// K-Mod. I've rearranged a couple of things to make it a bit more efficient and easier to read.
-		for (CityPlotIter itPlot(*pStartingPlot, false); itPlot.hasNext() &&
-			iFoodBonus < iTargetFoodBonusCount - /* advc.027: */ (bTargetReached ? 1 : 0);
-			++itPlot)
+		// <advc.108> Randomize order of traversal but (much) prefer the inner ring
+		for (int iOuterPass = 0; iOuterPass < 2; iOuterPass++)
 		{
-			CvPlot& p = *itPlot;
-			if (p.getBonusType() != NO_BONUS || /* advc.004z: */ p.isGoody() ||
-				// advc.108 (from PerfectWorld 2)
-				(!p.sameArea(*pStartingPlot) && !p.isWater()))
-			{
-				continue;
-			}
-			for (int iPass = 0; iPass < 2; iPass++) // advc.108: First pass avoids duplicates
-			{
-				// advc.129: Randomize the order in which resources are considered
-				FOR_EACH_ENUM_RAND(Bonus, getMapRand())
+			bool const bInnerRingBias = (iOuterPass == 0);
+			for (CityPlotRandIter itPlot(*pStartingPlot, getMapRand(), false);
+				itPlot.hasNext() && // </advc.108>
+			/*	K-Mod. I've rearranged a couple of things to make it a bit
+				more efficient and easier to read. */
+				iFoodBonus < iTargetFoodBonusCount - /* advc.027: */ (bTargetReached ? 1 : 0);
+				++itPlot)
+			{	// <advc.108>
+				if (bInnerRingBias && itPlot.currID() >= NUM_INNER_PLOTS &&
+					fixp(0.63).bernoulliSuccess(getMapRand(), "inner ring bias food"))
 				{
-					CvBonusInfo const& kLoopBonus = GC.getInfo(eLoopBonus);
-					if (!kLoopBonus.isNormalize() || kLoopBonus.getYieldChange(YIELD_FOOD) <= 0)
-						continue;
-
-					if (kLoopBonus.getTechCityTrade() != NO_TECH &&
-						GC.getInfo(kLoopBonus.getTechCityTrade()).
-						getEra() > getStartEra())
+					continue;
+				} // </advc.108>
+				CvPlot& p = *itPlot;
+				if (p.getBonusType() != NO_BONUS || /* advc.004z: */ p.isGoody() ||
+					// advc.108 (from PerfectWorld 2)
+					(!p.sameArea(*pStartingPlot) && !p.isWater()))
+				{
+					continue;
+				}
+				// <adcv.108>
+				for (int iPass = 0; iPass < 2; iPass++)
+				{
+					bool const bAvoidDuplicates = (iPass == 0); // </advc.108>
+					// advc.129: Randomize the order in which resources are considered
+					FOR_EACH_ENUM_RAND(Bonus, getMapRand())
 					{
-						continue;
-					}
-					if (!GET_TEAM(kPlayer.getTeam()).isHasTech(kLoopBonus.getTechReveal()))
-						continue;
-					// <advc.108> Don't place the food resource on a bad feature
-					FeatureTypes const eFeature = p.getFeatureType();
-					bool bValid = true;
-					if(eFeature != NO_FEATURE)
-					{
-						CvFeatureInfo const& kFeature = GC.getInfo(eFeature);
-						bValid = false;
-						if(m_eNormalizationLevel >= NORMALIZE_HIGH ||
-							kFeature.getYieldChange(YIELD_FOOD) > 0 ||
-							kFeature.getYieldChange(YIELD_PRODUCTION) > 0)
+						CvBonusInfo const& kLoopBonus = GC.getInfo(eLoopBonus);
+						if (!kLoopBonus.isNormalize() ||
+							kLoopBonus.getYieldChange(YIELD_FOOD) <= 0)
 						{
-							bValid = true;
+							continue;
 						}
-					}
-					if(!bValid)
-						continue; // </advc.108>
-					if (!p.canHaveBonus(eLoopBonus, bIgnoreLatitude) ||
-						// advc.108:
-						(iPass <= 0 && skipDuplicateExtraBonus(*pStartingPlot, p, eLoopBonus)))
-					{
-						continue;
-					}
-					p.setBonusType(eLoopBonus);
-					if (gMapLogLevel > 0) logBBAI("    Adding food bonus %S for player %d", GC.getInfo(eLoopBonus).getDescription(), itPlayer->getID()); // advc
-					if (p.isWater())
-						iFoodBonus += 2;
-					else
-					{
-						//iFoodBonus += 3;
-						// K-Mod
-						int const iNaturalFood = p.calculateBestNatureYield(
-								YIELD_FOOD, kPlayer.getTeam());
-						int const iHighFoodThreshold = 2*iFoodPerPop;
-						// (+1 just as a shortcut to save time for obvious cases.)
-						bool bHighFood = (iNaturalFood + 1 >= iHighFoodThreshold);
-						FOR_EACH_ENUM(Improvement)
+						if (kLoopBonus.getTechCityTrade() != NO_TECH &&
+							GC.getInfo(kLoopBonus.getTechCityTrade()).
+							getEra() > getStartEra())
 						{
-							if (GC.getInfo(eLoopImprovement).
-								isImprovementBonusTrade(eLoopBonus))
+							continue;
+						}
+						if (!GET_TEAM(kPlayer.getTeam()).isHasTech(kLoopBonus.getTechReveal()))
+							continue;
+						// <advc.108> Don't place the food resource on a bad feature
+						FeatureTypes const eFeature = p.getFeatureType();
+						bool bValid = true;
+						if(eFeature != NO_FEATURE)
+						{
+							CvFeatureInfo const& kFeature = GC.getInfo(eFeature);
+							bValid = false;
+							if(m_eNormalizationLevel >= NORMALIZE_HIGH ||
+								kFeature.getYieldChange(YIELD_FOOD) > 0 ||
+								kFeature.getYieldChange(YIELD_PRODUCTION) > 0)
 							{
-								bHighFood = (iNaturalFood +
-										p.calculateImprovementYieldChange(eLoopImprovement,
-										YIELD_FOOD, kPlayer.getID(), false, false) >=
-										iHighFoodThreshold);
+								bValid = true;
 							}
 						}
-						iFoodBonus += (bHighFood ? 3 : 2);
-					} // K-Mod end
-					// advc.027:
-					bTargetReached = (pTarget != NULL && pTarget->isReached(*pStartingPlot));
-					break;
-				}  // <advc.108> Don't do 2nd pass if 1st pass has succeeded
-				if (p.getBonusType() != NO_BONUS)
-					break; // </advc.108>
+						if(!bValid)
+							continue; // </advc.108>
+						if (!p.canHaveBonus(eLoopBonus, bIgnoreLatitude) ||
+							// <advc.108>
+							(bAvoidDuplicates &&
+							skipDuplicateExtraBonus(*pStartingPlot, p, eLoopBonus)))
+						{	// </advc.108>
+							continue;
+						}
+						p.setBonusType(eLoopBonus);
+						if (gMapLogLevel > 0) logBBAI("    Adding food bonus %S for player %d", GC.getInfo(eLoopBonus).getDescription(), itPlayer->getID()); // advc
+						if (p.isWater())
+							iFoodBonus += 2;
+						else
+						{
+							//iFoodBonus += 3;
+							// K-Mod
+							int const iNaturalFood = p.calculateBestNatureYield(
+									YIELD_FOOD, kPlayer.getTeam());
+							int const iHighFoodThreshold = 2 * iFoodPerPop;
+							// (+1 just as a shortcut to save time for obvious cases.)
+							bool bHighFood = (iNaturalFood + 1 >= iHighFoodThreshold);
+							FOR_EACH_ENUM(Improvement)
+							{
+								if (GC.getInfo(eLoopImprovement).
+									isImprovementBonusTrade(eLoopBonus))
+								{
+									bHighFood = (iNaturalFood +
+											p.calculateImprovementYieldChange(eLoopImprovement,
+											YIELD_FOOD, kPlayer.getID(), false, false) >=
+											iHighFoodThreshold);
+								}
+							}
+							iFoodBonus += (bHighFood ? 3 : 2);
+						} // K-Mod end
+						// advc.027:
+						bTargetReached = (pTarget != NULL && pTarget->isReached(*pStartingPlot));
+						break;
+					}  // <advc.108> Don't do 2nd pass if 1st pass has succeeded
+					if (p.getBonusType() != NO_BONUS)
+						break; // </advc.108>
+				}
 			}
 		}
 	}
@@ -2185,14 +2204,22 @@ void CvGame::normalizeAddExtras(  // advc: some refactoring
 					iLandFood++; // </advc.108>
 			}
 		}
+		// <advc.108>
+		for (int iOuterPass = 0; iOuterPass < 2; iOuterPass++)
 		{
+			bool const bInnerRingBias = (iOuterPass == 0); // </advc.108>
 			bool const bLandBias = (iWater > NUM_CITY_PLOTS / 2);
 			for (CityPlotRandIter itPlot(*pStartingPlot, getMapRand(), false);
 				itPlot.hasNext() &&
 				//iLandBonus * 3 +
 				iLandFood * 4 + (iLandBonus - iLandFood) * 3 + // advc.108
 				iOceanBonus * 2 + iCoastBonus * 3 < 12; ++itPlot) // advc.108: iCoastBonus multiplier was 2
-			{
+			{	// <advc.108>
+				if (bInnerRingBias && itPlot.currID() >= NUM_INNER_PLOTS &&
+					fixp(0.47).bernoulliSuccess(getMapRand(), "inner ring bias extras"))
+				{
+					continue;
+				} // </advc.108>
 				CvPlot& p = *itPlot;
 				//if (getSorenRandNum(bLandBias && p.isWater() ? 2 : 1,"...") == 0) {
 				// advc.027b: (note that getSorenRandNum(1) is always 0)
@@ -2202,7 +2229,7 @@ void CvGame::normalizeAddExtras(  // advc: some refactoring
 					citySiteEval.evaluate(*pStartingPlot) >= rTargetValue)
 				{
 					if (gMapLogLevel > 0) logBBAI("    Player %d doesn't need any more bonuses.", kPlayer.getID()); // K-Mod
-					break;
+					goto done_placing_resources;
 				}
 				bool const bCoast = (p.isWater() && p.isAdjacentToLand());
 				bool const bOcean = (p.isWater() && !bCoast);
@@ -2270,7 +2297,7 @@ void CvGame::normalizeAddExtras(  // advc: some refactoring
 					}
 				}
 			}
-		}
+		} done_placing_resources:
 		for (CityPlotRandIter itPlot(*pStartingPlot, getMapRand(), false);
 			itPlot.hasNext(); ++itPlot)
 		{

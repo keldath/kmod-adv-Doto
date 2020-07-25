@@ -1404,7 +1404,10 @@ bool CvCivicOptionInfo::read(CvXMLLoadUtility* pXML)
 
 CvUpkeepInfo::CvUpkeepInfo() :
 m_iPopulationPercent(0),
-m_iCityPercent(0)
+m_iCityPercent(0),
+//keldath min civic cost when no inflation
+m_iminUpkeepCost(0)// doto keldath
+
 {}
 
 int CvUpkeepInfo::getPopulationPercent() const
@@ -1416,6 +1419,11 @@ int CvUpkeepInfo::getCityPercent() const
 {
 	return m_iCityPercent;
 }
+//keldath min civic cost when no inflation
+int CvUpkeepInfo::getminUpkeepCost() const
+{
+	return m_iminUpkeepCost;
+} // </advc.912c>
 
 bool CvUpkeepInfo::read(CvXMLLoadUtility* pXml)
 {
@@ -1424,6 +1432,8 @@ bool CvUpkeepInfo::read(CvXMLLoadUtility* pXml)
 
 	pXml->GetChildXmlValByName(&m_iPopulationPercent, "iPopulationPercent");
 	pXml->GetChildXmlValByName(&m_iCityPercent, "iCityPercent");
-
+//keldath min civic cost when no inflation
+	pXml->GetChildXmlValByName(&m_iminUpkeepCost, "iminUpkeepCost", 0); // doto - keldath
+	
 	return true;
 }

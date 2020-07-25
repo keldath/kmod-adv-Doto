@@ -83,6 +83,7 @@ void CvArea::reset(int iID, bool bWater, bool bConstructorCall)
 	m_aeAreaAIType.reset();
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
 		//DPII < Maintenance Modifiers >
 		m_aiMaintenanceModifier[i] = 0;
 		m_aiHomeAreaMaintenanceModifier[i] = 0;
@@ -90,6 +91,7 @@ void CvArea::reset(int iID, bool bWater, bool bConstructorCall)
 		m_abHomeArea[i] = 0;
 		//DPII < Maintenance Modifiers >
 		m_aTargetCities[i].reset();
+	}
 
 	m_aaiYieldRateModifier.reset();
 	m_aaiNumTrainAIUnits.reset();
@@ -205,7 +207,7 @@ int CvArea::countHasCorporation(CorporationTypes eCorporation, PlayerTypes eOwne
 
 void CvArea::updateLake(bool bCheckRepr)
 {
-	PROFILE("CvArea::updateLake");
+	PROFILE_FUNC();
 	m_bLake = false;
 	if(!isWater())
 		return;
@@ -219,7 +221,9 @@ void CvArea::updateLake(bool bCheckRepr)
 	}
 	FOR_EACH_AREA(pOther)
 	{
-		if(pOther->m_iRepresentativeAreaId == m_iRepresentativeAreaId && pOther->getID() != getID()) {
+		if(pOther->m_iRepresentativeAreaId == m_iRepresentativeAreaId &&
+			pOther->getID() != getID())
+		{
 			iTotalTiles += pOther->getNumTiles();
 			if(iTotalTiles > GC.getDefineINT(CvGlobals::LAKE_MAX_AREA_SIZE))
 				return;

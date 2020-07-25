@@ -1188,7 +1188,7 @@ bool CvPlot::isAdjacentSaltWater() const
 {
 	FOR_EACH_ENUM(Direction)
 	{
-		CvPlot* pAdj = plotDirection(getX(), getY(), eLoopDirection);
+		CvPlot const* pAdj = plotDirection(getX(), getY(), eLoopDirection);
 		if (pAdj != NULL && pAdj->isWater() && !pAdj->isLake())
 			return true;
 	}
@@ -1213,9 +1213,14 @@ bool CvPlot::isPotentialIrrigation() const
 
 bool CvPlot::canHavePotentialIrrigation() const
 {
+	PROFILE_FUNC(); // advc.test: To be profiled	
 //===NM=====Mountains Mods===0=====keldath - i hope thats ok
 	if (isCity() && !(isHills() || (GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && isPeak())))
 //===NM=====Mountains Mods===0=====
+	// advc: 2nd check was !isHills. Mods might allow cities on peaks.
+	//keldath - prefer optional
+	//if (isCity() && isFlatlands())
+	
 		return true;
 	// <advc.opt>
 	if(isWater())
@@ -4246,14 +4251,14 @@ void CvPlot::updatePotentialCityWork()
 	PROFILE_FUNC();
 
 	bool bValid = false;
-	for (CityPlotIter it(*this); it.hasNext(); ++it)
+	for (CityPlotIter it(*this);
+		!bValid && it.hasNext(); ++it)
 	{
-		if (!it->isWater())
-		{
+		//if (!it->isWater())
+		if (it->canEverFound()) // advc.129d
 			bValid = true;
-			break;
-		}
 	}
+
 	if (isPotentialCityWork() != bValid)
 	{
 		m_bPotentialCityWork = bValid;
@@ -4560,195 +4565,205 @@ void CvPlot::setPlotType(PlotTypes eNewValue, bool bRecalculate, bool bRebuildGr
 {
 	bool bRecalculateAreas = false; // advc.030
 	static TerrainTypes const eLAND_TERRAIN = (TerrainTypes)GC.getDefineINT("LAND_TERRAIN"); // advc.opt
-	if (getPlotType() != eNewValue)
+	if (getPlotType() == eNewValue)
+		return;
+
+	if (getPlotType() == PLOT_OCEAN || eNewValue == PLOT_OCEAN)
+		erase();
+
+	bool const bWasWater = isWater();
+	bool const bWasImpassable = isImpassable(); // advc.030
+
+	updateSeeFromSight(false, true);
+
+	m_ePlotType = eNewValue;
+
+	updateImpassable(); // advc.opt
+	updateYield();
+	updatePlotGroup();
+
+	updateSeeFromSight(true, true);
+
+	if (getTerrainType() == NO_TERRAIN ||
+		GC.getInfo(getTerrainType()).isWater() != isWater())
 	{
-		if (getPlotType() == PLOT_OCEAN || eNewValue == PLOT_OCEAN)
-			erase();
+		setTerrainType(isWater() ? GC.getWATER_TERRAIN(isAdjacentToLand()) :
+				eLAND_TERRAIN, bRecalculate, bRebuildGraphics);
+	}
 
-		bool bWasWater = isWater();
-		bool bWasPeak = isPeak(); // advc.030
+	GC.getMap().resetPathDistance();
 
-		updateSeeFromSight(false, true);
-
-		m_ePlotType = eNewValue;
-
-		updateImpassable(); // advc.opt
-		updateYield();
-		updatePlotGroup();
-
-		updateSeeFromSight(true, true);
-
-		if (getTerrainType() == NO_TERRAIN || GC.getInfo(getTerrainType()).isWater() != isWater())
+	if (bWasWater != isWater())
+	{
+		if (bRecalculate)
 		{
-			setTerrainType(isWater() ? GC.getWATER_TERRAIN(isAdjacentToLand()) :
-					eLAND_TERRAIN, bRecalculate, bRebuildGraphics);
+			FOR_EACH_ENUM(Direction)
+			{
+				CvPlot* pAdj = plotDirection(getX(), getY(), eLoopDirection);
+				if (pAdj == NULL)
+					continue;
+				if (pAdj->isWater())
+				{
+					pAdj->setTerrainType(GC.getWATER_TERRAIN(pAdj->isAdjacentToLand()),
+							bRecalculate, bRebuildGraphics);
+				}
+			}
 		}
 
-		GC.getMap().resetPathDistance();
-
-		if (bWasWater != isWater())
+		FOR_EACH_ENUM(Direction)
 		{
-			if (bRecalculate)
+			CvPlot* pAdj = plotDirection(getX(), getY(), eLoopDirection);
+			if (pAdj != NULL)
 			{
-				for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+				pAdj->updateYield();
+				pAdj->updatePlotGroup();
+			}
+		}
+
+		// (advc.129d: updatePotentialCityWork moved down)
+
+		GC.getMap().changeLandPlots(isWater() ? -1 : 1);
+
+		if (getBonusType() != NO_BONUS)
+			GC.getMap().changeNumBonusesOnLand(getBonusType(), isWater() ? -1 : 1);
+
+		if (isOwned())
+		{
+			GET_PLAYER(getOwner()).changeTotalLand(isWater() ? -1 : 1);
+			GET_TEAM(getTeam()).changeTotalLand(isWater() ? -1 : 1);
+		}
+
+		if (bRecalculate)
+		{
+			CvArea* pNewArea = NULL;
+			bRecalculateAreas = false;
+
+			// XXX might want to change this if we allow diagonal water movement...
+			if (isWater())
+			{
+				FOR_EACH_ENUM(CardinalDirection)
 				{
-					CvPlot* pLoopPlot = plotDirection(getX(), getY(), (DirectionTypes)iI);
-					if (pLoopPlot == NULL)
+					CvPlot const* pAdj = plotCardinalDirection(getX(), getY(),
+							eLoopCardinalDirection);
+					if (pAdj == NULL)
 						continue;
-					if (pLoopPlot->isWater())
+					if (pAdj->getArea().isWater())
 					{
-						pLoopPlot->setTerrainType(GC.getWATER_TERRAIN(pLoopPlot->isAdjacentToLand()),
-								bRecalculate, bRebuildGraphics);
-					}
-				}
-			}
-
-			for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
-			{
-				CvPlot* pLoopPlot = plotDirection(getX(), getY(), (DirectionTypes)iI);
-				if (pLoopPlot != NULL)
-				{
-					pLoopPlot->updateYield();
-					pLoopPlot->updatePlotGroup();
-				}
-			}
-
-			for (CityPlotIter it(*this); it.hasNext(); ++it)
-			{
-				it->updatePotentialCityWork();
-			}
-
-			GC.getMap().changeLandPlots((isWater()) ? -1 : 1);
-
-			if (getBonusType() != NO_BONUS)
-				GC.getMap().changeNumBonusesOnLand(getBonusType(), isWater() ? -1 : 1);
-
-			if (isOwned())
-			{
-				GET_PLAYER(getOwner()).changeTotalLand(isWater() ? -1 : 1);
-				GET_TEAM(getTeam()).changeTotalLand(isWater() ? -1 : 1);
-			}
-
-			if (bRecalculate)
-			{
-				CvArea* pNewArea = NULL;
-				bRecalculateAreas = false;
-
-				// XXX might want to change this if we allow diagonal water movement...
-				if (isWater())
-				{
-					for (int iI = 0; iI < NUM_CARDINALDIRECTION_TYPES; ++iI)
-					{
-						CvPlot* pLoopPlot = plotCardinalDirection(getX(), getY(), (CardinalDirectionTypes)iI);
-						if (pLoopPlot == NULL)
-							continue;
-						if (pLoopPlot->getArea().isWater())
+						if (pNewArea == NULL)
+							pNewArea = pAdj->area();
+						else if (pNewArea != pAdj->area())
 						{
-							if (pNewArea == NULL)
-								pNewArea = pLoopPlot->area();
-							else if (pNewArea != pLoopPlot->area())
-							{
-								bRecalculateAreas = true;
-								break;
-							}
-						}
-
-					}
-				}
-				else
-				{
-					for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
-					{
-						CvPlot* pLoopPlot = plotDirection(getX(), getY(), (DirectionTypes)iI);
-						if (pLoopPlot == NULL)
-							continue; // advc
-						if (!pLoopPlot->getArea().isWater())
-						{
-							if (pNewArea == NULL)
-								pNewArea = pLoopPlot->area();
-							else if (pNewArea != pLoopPlot->area())
-							{
-								bRecalculateAreas = true;
-								break;
-							}
+							bRecalculateAreas = true;
+							break;
 						}
 					}
 				}
-
-				if (!bRecalculateAreas)
-				{
-					CvPlot* pLoopPlot = plotDirection(getX(), getY(), (DirectionTypes)(NUM_DIRECTION_TYPES - 1));
-					CvArea const* pLastArea = NULL;
-					if (pLoopPlot != NULL)
-						pLastArea = pLoopPlot->area();
-
-					int iAreaCount = 0;
-					for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
-					{
-						pLoopPlot = plotDirection(getX(), getY(), (DirectionTypes)iI);
-						CvArea* pCurrArea = NULL;
-						if (pLoopPlot != NULL)
-							pCurrArea = pLoopPlot->area();
-						if (pCurrArea != pLastArea)
-							iAreaCount++;
-						pLastArea = pCurrArea;
-					}
-
-					if (iAreaCount > 2)
-						bRecalculateAreas = true;
-				}
-				if (bRecalculateAreas)
-					GC.getMap().recalculateAreas();
-				else
-				{
-					CvArea* pOldArea = area(); // advc
-					setArea(NULL);
-					if (pOldArea != NULL && pOldArea->getNumTiles() == 1)
-						GC.getMap().deleteArea(pOldArea->getID());
-					if (pNewArea == NULL)
-					{
-						pNewArea = GC.getMap().addArea();
-						pNewArea->init(isWater());
-					}
-					setArea(pNewArea);
-				}
 			}
-		}
-		// <advc.030>
-		if (!isWater() && bWasPeak != isPeak() && !bRecalculateAreas && bRecalculate)
-		{
-			/*  When removing a peak, it's easy enough to tell whether we need to
-				recalc, but too much work to come up with conditions for recalc
-				when placing a peak; will have to always recalc. */
-			if (isPeak())
-				GC.getMap().recalculateAreas();
 			else
 			{
 				FOR_EACH_ENUM(Direction)
 				{
-					CvPlot* p = plotDirection(getX(), getY(), eLoopDirection);
-					if (p == NULL || p->isWater())
+					CvPlot const* pAdj = plotDirection(getX(), getY(),
+							eLoopDirection);
+					if (pAdj == NULL)
 						continue;
-					if (!sameArea(*p))
+					if (!pAdj->getArea().isWater())
 					{
-						GC.getMap().recalculateAreas();
-						break;
+						if (pNewArea == NULL)
+							pNewArea = pAdj->area();
+						else if (pNewArea != pAdj->area())
+						{
+							bRecalculateAreas = true;
+							break;
+						}
 					}
 				}
 			}
-		} // </advc.030>
-		if (bRebuildGraphics && GC.IsGraphicsInitialized())
-		{
-			//Update terrain graphical
-			gDLL->getEngineIFace()->RebuildPlot(getX(), getY(), true, true);
-			//gDLL->getEngineIFace()->SetDirty(MinimapTexture_DIRTY_BIT, true); //minimap does a partial update
-			//gDLL->getEngineIFace()->SetDirty(GlobeTexture_DIRTY_BIT, true);
 
-			updateFeatureSymbol();
-			setLayoutDirty(true);
-			updateRouteSymbol(false, true);
-			updateRiverSymbol(false, true);
+			if (!bRecalculateAreas)
+			{
+				CvArea const* pLastArea = NULL; // advc: Was "pLoopPLot"; don't reuse.
+				{
+					CvPlot const* pLastPlot = plotDirection(getX(), getY(),
+							(DirectionTypes)(NUM_DIRECTION_TYPES - 1));
+					if (pLastPlot != NULL)
+						pLastArea = pLastPlot->area();
+				}
+				int iAreaCount = 0;
+				FOR_EACH_ENUM(Direction)
+				{
+					CvPlot const* pCurrPlot = plotDirection(getX(), getY(),
+							eLoopDirection);
+					CvArea* pCurrArea = NULL;
+					if (pCurrPlot != NULL)
+						pCurrArea = pCurrPlot->area();
+					if (pCurrArea != pLastArea)
+						iAreaCount++;
+					pLastArea = pCurrArea;
+				}
+				if (iAreaCount > 2)
+					bRecalculateAreas = true;
+			}
+			if (bRecalculateAreas)
+				GC.getMap().recalculateAreas();
+			else
+			{
+				CvArea* pOldArea = area(); // advc
+				setArea(NULL);
+				if (pOldArea != NULL && pOldArea->getNumTiles() == 1)
+					GC.getMap().deleteArea(pOldArea->getID());
+				if (pNewArea == NULL)
+				{
+					pNewArea = GC.getMap().addArea();
+					pNewArea->init(isWater());
+				}
+				setArea(pNewArea);
+			}
 		}
+	}
+	// <advc.129d>
+	if (isWater() != bWasWater || isImpassable() != bWasImpassable)
+	{	// Moved from above. Now also needed when impassable status changes.
+		for (CityPlotIter it(*this); it.hasNext(); ++it)
+		{
+			it->updatePotentialCityWork();
+		}
+	} // </advc.129d>
+	// <advc.030>
+	if (!isWater() && bWasImpassable != isImpassable() &&
+		!bRecalculateAreas && bRecalculate)
+	{
+		/*  When removing a peak, it's easy enough to tell whether we need to
+			recalc, but too much work to come up with conditions for recalc
+			when placing a peak; will have to always recalc. */
+		if (isPeak())
+			GC.getMap().recalculateAreas();
+		else
+		{
+			FOR_EACH_ENUM(Direction)
+			{
+				CvPlot* pAdj = plotDirection(getX(), getY(), eLoopDirection);
+				if (pAdj == NULL || pAdj->isWater())
+					continue;
+				if (!sameArea(*pAdj))
+				{
+					GC.getMap().recalculateAreas();
+					break;
+				}
+			}
+		}
+	} // </advc.030>
+	if (bRebuildGraphics && GC.IsGraphicsInitialized())
+	{
+		//Update terrain graphical
+		gDLL->getEngineIFace()->RebuildPlot(getX(), getY(), true, true);
+		//gDLL->getEngineIFace()->SetDirty(MinimapTexture_DIRTY_BIT, true); //minimap does a partial update
+		//gDLL->getEngineIFace()->SetDirty(GlobeTexture_DIRTY_BIT, true);
+
+		updateFeatureSymbol();
+		setLayoutDirty(true);
+		updateRouteSymbol(false, true);
+		updateRiverSymbol(false, true);
 	}
 }
 
@@ -5617,14 +5632,14 @@ int CvPlot::calculateImprovementYieldChange(ImprovementTypes eImprovement, Yield
 
 char CvPlot::calculateYield(YieldTypes eYield, bool bDisplay) const
 {
-	if (bDisplay && GC.getGame().isDebugMode())
-		return getYield(eYield);
-
 	if (getTerrainType() == NO_TERRAIN)  // (advc: Can happen during map initialization)
 		return 0;
 
 	if (!isPotentialCityWork())
 		return 0;
+
+	if (bDisplay && GC.getGame().isDebugMode()) // (advc.129d: Moved down)
+		return getYield(eYield);
 
 	PlayerTypes ePlayer;
 	ImprovementTypes eImprovement;
@@ -6252,55 +6267,51 @@ void CvPlot::setFoundValue(PlayerTypes eIndex, short iNewValue)
 // advc: Cut from CvPlayer::canFound (for advc.027)
 bool CvPlot::canFound(bool bTestVisible) const
 {
-	if (isImpassable())
+	if (!canEverFound()) // advc.129d: Moved into another new function
 		return false;
-	bool bValid = false; // advc.opt: Water check moved up
-
-	/*  UNOFFICIAL_PATCH, Bugfix, 02/16/10, EmperorFool & jdog5000:
-		(canFoundCitiesOnWater callback handling was incorrect and ignored isWater() if it returned true) */
-	if (isWater())
-	{
-		if (GC.getPythonCaller()->canFoundWaterCity(*this))
-		{
-			bValid = true;
-			FAssertMsg(false, "The AdvCiv mod probably does not support cities on water"); // advc
-		}
-		else return false; // advc.opt
-	}
-
+	
 	if (isFeature() && GC.getInfo(getFeatureType()).isNoCity())
 		return false; // (advc.opt: Moved down)
-	if (!bValid)
-	{
-		if (GC.getInfo(getTerrainType()).isFound())
-			bValid = true;
-	}
-	if (!bValid)
-	{
-		if (GC.getInfo(getTerrainType()).isFoundCoast() && isCoastalLand())
-			bValid = true;
-	}
-	if (!bValid)
-	{
-		if (GC.getInfo(getTerrainType()).isFoundFreshWater() &&
-			isFreshWater())
-		{
-			bValid = true;
-		}
-	}
-	if (!bValid)
-		return false;
 
 	if (bTestVisible)
 		return true;
 
-	for (SquareIter it(*this, GC.getDefineINT(CvGlobals::MIN_CITY_RANGE)); it.hasNext(); ++it)
+	for (SquareIter it(*this, GC.getDefineINT(CvGlobals::MIN_CITY_RANGE));
+		it.hasNext(); ++it)
 	{
 		if (it->isCity() && it->sameArea(*this))
 			return false;
 	}
 
 	return true;
+}
+
+/*	advc.129d: Cut from CvPlayer::canFound.
+	Maybe not never ever; e.g. impassable status could change in mods. */
+bool CvPlot::canEverFound() const
+{
+	if (isImpassable())
+		return false;
+	// advc.opt: Water check moved up
+	/*  UNOFFICIAL_PATCH, Bugfix, 02/16/10, EmperorFool & jdog5000:
+		(canFoundCitiesOnWater callback handling was incorrect and ignored isWater() if it returned true) */
+	if (isWater())
+	{
+		if (GC.getPythonCaller()->canFoundWaterCity(*this))
+		{
+			FAssertMsg(false, "The AdvCiv mod probably does not support cities on water"); // advc
+			return true;
+		}
+		return false; // advc.opt
+	}
+	CvTerrainInfo const& kTerrain = GC.getInfo(getTerrainType());
+	if (kTerrain.isFound())
+		return true;
+	if (kTerrain.isFoundCoast() && isCoastalLand())
+		return true;
+	if (kTerrain.isFoundFreshWater() && isFreshWater())
+		return true;
+	return false;
 }
 
 

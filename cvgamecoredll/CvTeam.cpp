@@ -4459,8 +4459,7 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,  /
 
 	if (isHasTech(eTech))
 	{
-		if (gTeamLogLevel >= 2) // BETTER_BTS_AI_MOD, AI logging, 10/02/09, jdog5000: START
-			logBBAI("    Team %d (%S) acquires tech %S", getID(), getName().GetCString(), kTech.getDescription());
+		if (gTeamLogLevel >= 2) logBBAI("    Team %d (%S) acquires tech %S", getID(), getName().GetCString(), kTech.getDescription()); // BETTER_BTS_AI_MOD, AI logging, 10/02/09, jdog5000
 
 		for (MemberIter it(getID()); it.hasNext(); ++it)
 		{
@@ -4685,19 +4684,13 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,  /
 		{
 			announceTechToPlayers(eTech, /* advc.156: */ ePlayer);
 			bool bMessageSent = false; // advc.004r
+			bool bAnyDiscovered = false; // advc.004r
 			CvMap const& kMap = GC.getMap();
-			for (int iI = 0; iI < kMap.numPlots(); iI++)
+			for (int i = 0; i < kMap.numPlots(); i++)
 			{
-				CvPlot const& kLoopPlot = kMap.getPlotByIndex(iI);
-				// <advc.004r>
-				TeamTypes eRevealedTeam = kLoopPlot.getRevealedTeam(getID(), false);
-				if ((eRevealedTeam != getID() && eRevealedTeam != NO_TEAM &&
-					eRevealedTeam != BARBARIAN_TEAM &&
-					!GET_TEAM(eRevealedTeam).isVassal(getID())) ||
-					!kLoopPlot.isRevealed(getID())) // </advc.004r>
-				{
-					continue; // advc
-				}
+				CvPlot const& kLoopPlot = kMap.getPlotByIndex(i);
+				if (!kLoopPlot.isRevealed(getID()))
+					continue;
 				BonusTypes eBonus = kLoopPlot.getBonusType();
 				if (eBonus == NO_BONUS)
 					continue;
@@ -4706,7 +4699,16 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,  /
 				{
 					continue;
 				}
-				CvCity* pCity = kMap.findCity(kLoopPlot.getX(), kLoopPlot.getY(), NO_PLAYER,
+				// <advc.004r>
+				bAnyDiscovered = true;
+				TeamTypes eRevealedTeam = kLoopPlot.getRevealedTeam(getID(), false);
+				if (eRevealedTeam != getID() && eRevealedTeam != NO_TEAM &&
+					eRevealedTeam != BARBARIAN_TEAM &&
+					!GET_TEAM(eRevealedTeam).isVassal(getID())) // </advc.004r>
+				{
+					continue; // advc
+				}
+				CvCity const* pCity = kMap.findCity(kLoopPlot.getX(), kLoopPlot.getY(), NO_PLAYER,
 						// advc.004r: Pass ID as 'observer' (last param) instead of city owner
 						NO_TEAM, false, false, NO_TEAM, NO_DIRECTION, NULL, getID());
 				if (pCity == NULL)
@@ -4737,8 +4739,11 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,  /
 				}
 				if (eBonus != NO_BONUS)
 				{
+					CvWString szOwnershipStatus;
+					if (bAnyDiscovered)
+						szOwnershipStatus = gDLL->getText("TXT_KEY_MISC_DISCOVERED_UNCLAIMED");
 					CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DISCOVERED_NO_BONUS",
-							GC.getInfo(eBonus).getTextKeyWide());
+							szOwnershipStatus.GetCString(), GC.getInfo(eBonus).getTextKeyWide());
 					for (MemberIter it(getID()); it.hasNext(); ++it)
 					{
 						gDLL->UI().addMessage(it->getID(), false, -1, szBuffer

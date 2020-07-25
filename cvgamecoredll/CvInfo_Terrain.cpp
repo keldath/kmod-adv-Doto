@@ -486,7 +486,7 @@ bool CvFeatureInfo::read(CvXMLLoadUtility* pXML)
 }
 
 CvBonusInfo::CvBonusInfo() :
-m_iBonusClassType(NO_BONUSCLASS),
+m_eBonusClassType(NO_BONUSCLASS),
 m_iChar(0),
 m_eTechReveal(NO_TECH),
 m_eTechCityTrade(NO_TECH),
@@ -531,11 +531,6 @@ CvBonusInfo::~CvBonusInfo()
 	SAFE_DELETE_ARRAY(m_pbTerrain);
 	SAFE_DELETE_ARRAY(m_pbFeature);
 	SAFE_DELETE_ARRAY(m_pbFeatureTerrain); // free memory - MT
-}
-
-int CvBonusInfo::getBonusClassType() const
-{
-	return m_iBonusClassType;
 }
 
 int CvBonusInfo::getChar() const
@@ -717,7 +712,7 @@ void CvBonusInfo::read(FDataStreamBase* stream)
 	uint uiFlag=0;
 	stream->Read(&uiFlag);
 
-	stream->Read(&m_iBonusClassType);
+	stream->Read((int*)&m_eBonusClassType);
 	stream->Read(&m_iChar);
 	stream->Read((int*)&m_eTechReveal);
 	stream->Read((int*)&m_eTechCityTrade);
@@ -770,7 +765,7 @@ void CvBonusInfo::write(FDataStreamBase* stream)
 	uint uiFlag=0;
 	stream->Write(uiFlag);
 
-	stream->Write(m_iBonusClassType);
+	stream->Write(m_eBonusClassType);
 	stream->Write(m_iChar);
 	stream->Write(m_eTechReveal);
 	stream->Write(m_eTechCityTrade);
@@ -814,7 +809,7 @@ bool CvBonusInfo::read(CvXMLLoadUtility* pXML)
 	if (!CvInfoBase::read(pXML))
 		return false;
 
-	pXML->SetInfoIDFromChildXmlVal(m_iBonusClassType, "BonusClassType");
+	pXML->SetInfoIDFromChildXmlVal((int&)m_eBonusClassType, "BonusClassType");
 
 	pXML->GetChildXmlValByName(m_szArtDefineTag, "ArtDefineTag");
 

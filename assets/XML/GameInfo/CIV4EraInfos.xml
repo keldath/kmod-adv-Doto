@@ -62,7 +62,7 @@ era trans faster
 				 costs b/c I want this default for SPaH (advc.250b). -->
 			<iAdvancedStartPoints>400</iAdvancedStartPoints>
 			<iStartingUnitMultiplier>1</iStartingUnitMultiplier>
-			<iStartingDefenseUnits>1</iStartingDefenseUnits>
+			<iStartingDefenseUnits>2</iStartingDefenseUnits>
 			<iStartingWorkerUnits>0</iStartingWorkerUnits>
 			<iStartingExploreUnits>1</iStartingExploreUnits>
 			<iStartingGold>0</iStartingGold>

@@ -4791,7 +4791,7 @@ void CvDLLWidgetData::parseFlagHelp(CvWidgetDataStruct &widgetDataStruct, CvWStr
 /*                                                                                              */
 /*                                                                                              */
 /************************************************************************************************/
-	szTempBuffer.Format(L"%S", "AdvCiv 0.97b Doto 1.06");
+	szTempBuffer.Format(L"%S", "AdvCiv 0.97c+ Doto 1.06");
 	szBuffer.append(szTempBuffer);
 /************************************************************************************************/
 /* UNOFFICIAL_PATCH                       END                                                   */

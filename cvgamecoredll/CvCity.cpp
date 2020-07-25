@@ -3925,7 +3925,7 @@ int CvCity::unhappyLevel(int iExtra) const
 /**                                                                                              */
 /**                                                                                              */
 /*************************************************************************************************/
-		iUnhappiness -= std::min(0, getSpecialistUnhappiness());
+	iUnhappiness -= std::min(0, getSpecialistUnhappiness());
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
@@ -5249,7 +5249,8 @@ void CvCity::updateMaintenance()
 		//iModifier = getMaintenanceModifier() + GET_PLAYER(getOwner()).getMaintenanceModifier() + area()->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
 		//keldath - f1rpo fix the GET_PLAYER(getOwner()).getMaintenanceModifier() is included in getMaintenanceModifier()
 		iModifier = getMaintenanceModifier() + area()->getTotalAreaMaintenanceModifier(getOwner());
-
+		//iModifier = getMaintenanceModifier() + GET_PLAYER(getOwner()).getMaintenanceModifier() + area()->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
+		
         if (isConnectedToCapital() && !(isCapital()))
         {
             iModifier += GET_PLAYER(getOwner()).getConnectedCityMaintenanceModifier();
@@ -14373,6 +14374,7 @@ int CvCity::calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
 		iTempMaintenance /= 100;
 		//DPII < Maintenance Modifiers >
 		if(kCityPlot.isCoastalLand(GC.getDefineINT(CvGlobals::MIN_WATER_SIZE_FOR_OCEAN)))
+		//if(isCoastal((GC.getDefineINT(CvGlobals::MIN_WATER_SIZE_FOR_OCEAN)))
 		//if (isCoastal(GC.getMIN_WATER_SIZE_FOR_OCEAN()))
 		{
 			iTempMaintenance *= std::max(0, (GET_PLAYER(eOwner).getCoastalDistanceMaintenanceModifier() + 100));

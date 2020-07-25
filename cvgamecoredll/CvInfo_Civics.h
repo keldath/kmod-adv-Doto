@@ -263,13 +263,16 @@ public:
 
 	int getPopulationPercent() const; //	Exposed to Python
 	int getCityPercent() const;	//	Exposed to Python
+//keldath min civic cost when no inflation
+	int getminUpkeepCost() const; // doto keldath
 
 	bool read(CvXMLLoadUtility* pXML);
 
 protected:
 	int m_iPopulationPercent;
 	int m_iCityPercent;
-
+//keldath min civic cost when no inflation
+	int m_iminUpkeepCost; // doto keldath	
 };
 
 #endif

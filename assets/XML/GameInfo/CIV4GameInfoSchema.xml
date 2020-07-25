@@ -1103,12 +1103,16 @@
 	</ElementType>
 	<ElementType name="iPopulationPercent" content="textOnly" dt:type="int"/>
 	<ElementType name="iCityPercent" content="textOnly" dt:type="int"/>
+<!-- keldath min civic cost -->
+	<ElementType name="iminUpkeepCost" content="textOnly" dt:type="int"/>
 	<ElementType name="UpkeepInfo" content="eltOnly">
 		<element type="Type"/>
 		<element type="Description" minOccurs="0"/>
 		<element type="Strategy" minOccurs="0"/>
 		<element type="iPopulationPercent" minOccurs="0"/>
 		<element type="iCityPercent" minOccurs="0"/>
+<!-- keldath min civic cost -->
+		<element type="iminUpkeepCost" minOccurs="0"/>
 	</ElementType>
 	<ElementType name="UpkeepInfos" content="eltOnly">
 		<element type="UpkeepInfo" maxOccurs="*"/>

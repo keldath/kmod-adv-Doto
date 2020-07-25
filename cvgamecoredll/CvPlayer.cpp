@@ -12647,7 +12647,7 @@ CivicTypes CvPlayer::getCivics(CivicOptionTypes eIndex) const
 
 
 int CvPlayer::getSingleCivicUpkeep(CivicTypes eCivic, bool bIgnoreAnarchy,
-		int iExtraCities) const // advc.004b
+	int iExtraCities) const // advc.004b
 {
 	if (eCivic == NO_CIVIC)
 		return 0;
@@ -12667,13 +12667,13 @@ int CvPlayer::getSingleCivicUpkeep(CivicTypes eCivic, bool bIgnoreAnarchy,
 
 	int iUpkeep = 0;
 	iUpkeep += (std::max(0, getTotalPopulation() +
-			(iExtraCities * CvCity::initialPopulation()) + // advc.004b
-			iUPKEEP_POPULATION_OFFSET - GC.getInfo(eCivic).getCivicOptionType()) *
-			GC.getInfo((UpkeepTypes)GC.getInfo(eCivic).getUpkeep()).
-			getPopulationPercent()) / 100;
-	iUpkeep += (std::max(0, getNumCities() + /* advc.004b: */ iExtraCities + 
-			iUPKEEP_CITY_OFFSET + GC.getInfo(eCivic).getCivicOptionType() -
-			GC.getNumCivicOptionInfos() / 2) * GC.getInfo((UpkeepTypes)
+		(iExtraCities * CvCity::initialPopulation()) + // advc.004b
+		iUPKEEP_POPULATION_OFFSET - GC.getInfo(eCivic).getCivicOptionType()) *
+		GC.getInfo((UpkeepTypes)GC.getInfo(eCivic).getUpkeep()).
+		getPopulationPercent()) / 100;
+	iUpkeep += (std::max(0, getNumCities() + /* advc.004b: */ iExtraCities +
+		iUPKEEP_CITY_OFFSET + GC.getInfo(eCivic).getCivicOptionType() -
+		GC.getNumCivicOptionInfos() / 2) * GC.getInfo((UpkeepTypes)
 			GC.getInfo(eCivic).getUpkeep()).getCityPercent()) / 100;
 
 	iUpkeep *= std::max(0, (getUpkeepModifier() + 100));
@@ -12689,6 +12689,45 @@ int CvPlayer::getSingleCivicUpkeep(CivicTypes eCivic, bool bIgnoreAnarchy,
 		// advc.251: Gold costs are no longer adjusted to handicap
 		/*iUpkeep *= std::max(0, ((GC.getInfo(GC.getGame().getHandicapType()).getAIPerEraModifier() * getCurrentEra()) + 100));
 		iUpkeep /= 100;*/
+	}
+
+	int minCivicCost = GC.getInfo((UpkeepTypes)GC.getInfo(eCivic).getUpkeep()).getminUpkeepCost();
+	if (iUpkeep == 0) 
+	{	
+		int citiesMultip = 1;
+		switch (getNumCities())
+		{
+		case 0:
+			citiesMultip = 0;
+		case 1:
+		case 2:
+		case 3:
+			citiesMultip = 1;
+			break;
+		case 4:
+		case 5:
+		case 6:
+			citiesMultip = 2;
+			break;
+		case 7:
+		case 8:
+			citiesMultip = 4;
+			break;
+		case 9:
+			citiesMultip = 6;
+			break;
+		case 10:
+			citiesMultip = 7;
+			break;
+		default:
+			citiesMultip = 10;
+			break;
+		}
+		iUpkeep = minCivicCost  * citiesMultip;
+	}
+	else 
+	{
+		iUpkeep += minCivicCost - 1;
 	}
 
 	return std::max(0, iUpkeep);
