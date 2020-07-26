@@ -1,2 +1,0 @@
-this build 106 097b 01072020
-it includes a merge of optional ranged attack
