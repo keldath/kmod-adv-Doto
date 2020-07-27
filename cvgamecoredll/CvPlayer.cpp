@@ -10051,12 +10051,14 @@ void CvPlayer::setCapitalCity(CvCity* pNewCapitalCity)
 		{
             if ((pOldCapitalCity->area()) != (pNewCapitalCity->area()))
             {
-                pNewCapitalCity->area()->setHomeArea(getID(), pOldCapitalCity->area());
+              //  pNewCapitalCity->area()->setHomeArea(getID(), pOldCapitalCity->area());
+             //	pNewCapitalCity->area()->setHomeArea(getID(), pOldCapitalCity->area(),true);
+				pNewCapitalCity->area()->setHomeArea(getID(), pOldCapitalCity->area(),pNewCapitalCity->area());
             }
 		}
 		else
 		{
-            pNewCapitalCity->area()->setHomeArea(getID(), NULL);
+            pNewCapitalCity->area()->setHomeArea(getID(),pNewCapitalCity->area(), pNewCapitalCity->area());
 		}
 //DPII < Maintenance Modifier >
 	updateMaintenance();
@@ -16779,6 +16781,10 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	changeDistanceMaintenanceModifier(GC.getInfo(eCivic).getDistanceMaintenanceModifier() * iChange);
 	changeNumCitiesMaintenanceModifier(GC.getInfo(eCivic).getNumCitiesMaintenanceModifier() * iChange);
 	changeCorporationMaintenanceModifier(GC.getInfo(eCivic).getCorporationMaintenanceModifier() * iChange);
+	//DPII < Maintenance Modifiers >
+ //   changeNumCitiesMaintenanceModifier(GC.getInfo(eCivic).getHomeAreaMaintenanceModifier() * iChange);
+//	changeNumCitiesMaintenanceModifier(GC.getInfo(eCivic).getOtherAreaMaintenanceModifier() * iChange);
+	//DPII < Maintenance Modifiers >
 	changeExtraHealth(GC.getInfo(eCivic).getExtraHealth() * iChange);
 	changeExtraHappiness(GC.getInfo(eCivic).getExtraHappiness() * iChange); // K-Mod
 	changeFreeExperience(GC.getInfo(eCivic).getFreeExperience() * iChange);

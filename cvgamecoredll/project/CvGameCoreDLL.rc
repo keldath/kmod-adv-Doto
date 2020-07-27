@@ -71,8 +71,8 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "CompanyName", "Firaxis Games"
-            VALUE "FileDescription", "Modified DLL Advciv:Doto"
-            VALUE "FileVersion", "0, 9, 7, 5"
+            VALUE "FileDescription", "Modified DLL Advciv:Doto_106"
+            VALUE "FileVersion", "0, 9, 7, 0"
             VALUE "InternalName", "Sid Meier's Civilization 4 : Beyond The Sword Game Core DLL"
             VALUE "LegalCopyright", "Copyright (C) Firaxis Games.  All Rights Reserved."
             VALUE "OriginalFilename", "CvGameCoreDLL.dll"

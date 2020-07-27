@@ -15,17 +15,17 @@
 			<Button>,Art/Interface/Buttons/Civics/Despotism.dds,Art/Interface/Buttons/Civics_Civilizations_Religions_Atlas.dds,5,1</Button>
 			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
-			<Upkeep>NONE</Upkeep>
+			<Upkeep>UPKEEP_LOW</Upkeep>
 			<iAIWeight>0</iAIWeight>
 			<iGreatPeopleRateModifier>0</iGreatPeopleRateModifier>
 			<iGreatGeneralRateModifier>0</iGreatGeneralRateModifier>
 			<iDomesticGreatGeneralRateModifier>0</iDomesticGreatGeneralRateModifier>
 			<iStateReligionGreatPeopleRateModifier>0</iStateReligionGreatPeopleRateModifier>
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>5</iNumCitiesMaintenanceModifier>
+			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCorporationMaintenanceModifier>0</iCorporationMaintenanceModifier>
 			<!--DPII < Maintenance Modifiers > -->
-			<iHomeAreaMaintenanceModifier>100</iHomeAreaMaintenanceModifier>
+			<iHomeAreaMaintenanceModifier>10000</iHomeAreaMaintenanceModifier>
 			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
 			<!--DPII < Maintenance Modifiers > -->
 			<iExtraHealth>0</iExtraHealth>

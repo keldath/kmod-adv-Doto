@@ -5358,7 +5358,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<GlobalSeaPlotYieldChanges/>
 			<YieldChanges/>
 			<YieldModifiers>
-				<iYield>0</iYield>
+				<iYield>15</iYield>
 				<iYield>25</iYield>
 				<iYield>0</iYield>
 			</YieldModifiers>
@@ -5550,7 +5550,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<GlobalSeaPlotYieldChanges/>
 			<YieldChanges/>
 			<YieldModifiers>
-				<iYield>0</iYield>
+				<iYield>20</iYield>
 				<iYield>25</iYield>
 				<iYield>0</iYield>
 			</YieldModifiers>
@@ -5747,12 +5747,12 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<GlobalSeaPlotYieldChanges/>
 			<YieldChanges/>
 			<YieldModifiers>
-				<iYield>0</iYield>
+				<iYield>10</iYield>
 				<iYield>25</iYield>
 				<iYield>0</iYield>
 			</YieldModifiers>
 			<PowerYieldModifiers>
-				<iYield>0</iYield>
+				<iYield>5</iYield>
 				<iYield>50</iYield>
 				<iYield>0</iYield>
 			</PowerYieldModifiers>
@@ -5944,12 +5944,12 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<!-- advc.200: was +2 production in K-Mod -->
 			<YieldChanges/>
 			<YieldModifiers>
-				<iYield>0</iYield>
+				<iYield>10</iYield>
 				<iYield>25</iYield>
 				<iYield>0</iYield>
 			</YieldModifiers>
 			<PowerYieldModifiers>
-				<iYield>0</iYield>
+				<iYield>10</iYield>
 				<iYield>50</iYield>
 				<iYield>0</iYield>
 			</PowerYieldModifiers>

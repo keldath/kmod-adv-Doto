@@ -13,10 +13,11 @@
 CvArea::CvArea()
 {
 	//DPII < Maintenance Modifiers >
-	m_aiMaintenanceModifier = new int[MAX_PLAYERS];
+	/*m_aiMaintenanceModifier = new int[MAX_PLAYERS];
 	m_aiHomeAreaMaintenanceModifier = new int[MAX_PLAYERS];
 	m_aiOtherAreaMaintenanceModifier = new int[MAX_PLAYERS];
 	m_abHomeArea = new bool[MAX_PLAYERS];
+	*/
 	//DPII < Maintenance Modifiers >
 	m_aTargetCities = new IDInfo[MAX_PLAYERS];
 	// advc: Default id was 0; invalid seems safer.
@@ -28,11 +29,11 @@ CvArea::~CvArea()
 {
 	uninit();
 	//DPII < Maintenance Modifiers >
-	SAFE_DELETE_ARRAY(m_aiMaintenanceModifier);
+	/*SAFE_DELETE_ARRAY(m_aiMaintenanceModifier);
 	SAFE_DELETE_ARRAY(m_aiHomeAreaMaintenanceModifier);
 	SAFE_DELETE_ARRAY(m_aiOtherAreaMaintenanceModifier);
 	SAFE_DELETE_ARRAY(m_abHomeArea);
-	//DPII < Maintenance Modifiers >
+	*///DPII < Maintenance Modifiers >
 	SAFE_DELETE_ARRAY(m_aTargetCities);
 }
 
@@ -75,6 +76,12 @@ void CvArea::reset(int iID, bool bWater, bool bConstructorCall)
 	m_aiFreeSpecialist.reset();
 	m_aiPower.reset();
 	m_aiBestFoundValue.reset();
+	//DPII < Maintenance Modifiers >
+	m_aiMaintenanceModifier.reset();
+	m_aiHomeAreaMaintenanceModifier.reset();
+	m_aiOtherAreaMaintenanceModifier.reset();
+	m_abHomeArea.reset();
+	//DPII < Maintenance Modifiers >
 	m_aiNumRevealedTiles.reset();
 	m_aiCleanPowerCount.reset();
 	m_aiBorderObstacleCount.reset();
@@ -84,12 +91,6 @@ void CvArea::reset(int iID, bool bWater, bool bConstructorCall)
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
-		//DPII < Maintenance Modifiers >
-		m_aiMaintenanceModifier[i] = 0;
-		m_aiHomeAreaMaintenanceModifier[i] = 0;
-		m_aiOtherAreaMaintenanceModifier[i] = 0;
-		m_abHomeArea[i] = 0;
-		//DPII < Maintenance Modifiers >
 		m_aTargetCities[i].reset();
 	}
 
@@ -491,56 +492,62 @@ int CvArea::getMaintenanceModifier(PlayerTypes eIndex) const
 {
     FAssertMsg(eIndex >= 0, "eIndex is expected to be >= 0");
     FAssertMsg(eIndex < MAX_PLAYERS, "eIndex is expected to be < MAX_PLAYERS");
-    return m_aiMaintenanceModifier[eIndex];
+    return m_aiMaintenanceModifier.get(eIndex);
 }
 
 void CvArea::changeMaintenanceModifier(PlayerTypes eIndex, int iChange)
 {
     FAssertMsg(eIndex >= 0, "eIndex is expected to be >= 0");
     FAssertMsg(eIndex < MAX_PLAYERS, "eIndex is expected to be < MAX_PLAYERS");
-    m_aiMaintenanceModifier[eIndex] = (m_aiMaintenanceModifier[eIndex] + iChange);
+   // m_aiMaintenanceModifier[eIndex] = (m_aiMaintenanceModifier[eIndex] + iChange);
+	m_aiMaintenanceModifier.add(eIndex, iChange);
 }
 
 int CvArea::getHomeAreaMaintenanceModifier(PlayerTypes eIndex) const
 {
     FAssertMsg(eIndex >= 0, "eIndex is expected to be >= 0");
     FAssertMsg(eIndex < MAX_PLAYERS, "eIndex is expected to be < MAX_PLAYERS");
-    return m_aiHomeAreaMaintenanceModifier[eIndex];
+    return m_aiHomeAreaMaintenanceModifier.get(eIndex);
 }
 
 void CvArea::changeHomeAreaMaintenanceModifier(PlayerTypes eIndex, int iChange)
 {
     FAssertMsg(eIndex >= 0, "eIndex is expected to be >= 0");
     FAssertMsg(eIndex < MAX_PLAYERS, "eIndex is expected to be < MAX_PLAYERS");
-    m_aiHomeAreaMaintenanceModifier[eIndex] = (m_aiHomeAreaMaintenanceModifier[eIndex] + iChange);
+   // m_aiHomeAreaMaintenanceModifier[eIndex] = (m_aiHomeAreaMaintenanceModifier[eIndex] + iChange);
+	m_aiHomeAreaMaintenanceModifier.add(eIndex, iChange);
+
 }
 
 void CvArea::setHomeAreaMaintenanceModifier(PlayerTypes eIndex, int iNewValue)
 {
     FAssertMsg(eIndex >= 0, "eIndex is expected to be >= 0");
     FAssertMsg(eIndex < MAX_PLAYERS, "eIndex is expected to be < MAX_PLAYERS");
-    m_aiHomeAreaMaintenanceModifier[eIndex] = iNewValue;
+   // m_aiHomeAreaMaintenanceModifier[eIndex] = iNewValue;
+	m_aiHomeAreaMaintenanceModifier.set(eIndex, iNewValue);
 }
 
 int CvArea::getOtherAreaMaintenanceModifier(PlayerTypes eIndex) const
 {
     FAssertMsg(eIndex >= 0, "eIndex is expected to be >= 0");
     FAssertMsg(eIndex < MAX_PLAYERS, "eIndex is expected to be < MAX_PLAYERS");
-    return m_aiOtherAreaMaintenanceModifier[eIndex];
+    return m_aiOtherAreaMaintenanceModifier.get(eIndex);
 }
 
 void CvArea::changeOtherAreaMaintenanceModifier(PlayerTypes eIndex, int iChange)
 {
     FAssertMsg(eIndex >= 0, "eIndex is expected to be >= 0");
     FAssertMsg(eIndex < MAX_PLAYERS, "eIndex is expected to be < MAX_PLAYERS");
-    m_aiOtherAreaMaintenanceModifier[eIndex] = (m_aiOtherAreaMaintenanceModifier[eIndex] + iChange);
+    //m_aiOtherAreaMaintenanceModifier[eIndex] = (m_aiOtherAreaMaintenanceModifier[eIndex] + iChange);
+	m_aiOtherAreaMaintenanceModifier.set(eIndex, iChange);
 }
 
 void CvArea::setOtherAreaMaintenanceModifier(PlayerTypes eIndex, int iNewValue)
 {
     FAssertMsg(eIndex >= 0, "eIndex is expected to be >= 0");
     FAssertMsg(eIndex < MAX_PLAYERS, "eIndex is expected to be < MAX_PLAYERS");
-    m_aiOtherAreaMaintenanceModifier[eIndex] = iNewValue;
+    //m_aiOtherAreaMaintenanceModifier[eIndex] = iNewValue;
+	m_aiOtherAreaMaintenanceModifier.set(eIndex, iNewValue);
 }
 
 
@@ -548,7 +555,7 @@ bool CvArea::isHomeArea(PlayerTypes eIndex) const
 {
     FAssertMsg(eIndex >= 0, "eIndex is expected to be >= 0");
     FAssertMsg(eIndex < MAX_PLAYERS, "eIndex is expected to be < MAX_PLAYERS");
-    return m_abHomeArea[eIndex];
+    return m_abHomeArea.get(eIndex);
 }
 
 /* DPII: Any new area modifiers for things like yield, happiness or health have to have the modifiers switched here
@@ -556,20 +563,28 @@ bool CvArea::isHomeArea(PlayerTypes eIndex) const
  old home area needs to be cleared.  The process is the same for setting and clearing the OtherArea modifiers but in reverse.
 
  If you've done this correctly, no Area should have both a HomeArea and an OtherArea modifier value.*/
-void CvArea::setHomeArea(PlayerTypes ePlayer, CvArea* pOldHomeArea)
+void CvArea::setHomeArea(PlayerTypes ePlayer, CvArea* pOldHomeArea, CvArea* pNewHomeArea)
 {
-	if ( pOldHomeArea != NULL && pOldHomeArea != this )
+//	if ( pOldHomeArea != NULL && pOldHomeArea != this )
+	if ( pOldHomeArea != pNewHomeArea)
 	{
 		setHomeAreaMaintenanceModifier(ePlayer, (pOldHomeArea->getHomeAreaMaintenanceModifier(ePlayer)));
-		pOldHomeArea->setHomeAreaMaintenanceModifier(ePlayer, 0);
+		setOtherAreaMaintenanceModifier(ePlayer, 0);
+		m_abHomeArea.set(ePlayer, true);
 
 		pOldHomeArea->setOtherAreaMaintenanceModifier(ePlayer, getOtherAreaMaintenanceModifier(ePlayer));
-		setOtherAreaMaintenanceModifier(ePlayer, 0);
-
-		pOldHomeArea->m_abHomeArea[ePlayer] = false;
+		pOldHomeArea->setHomeAreaMaintenanceModifier(ePlayer, 0);
+		pOldHomeArea->m_abHomeArea.set(ePlayer, false);
+	//	return true;
 	}
-
-	m_abHomeArea[ePlayer] = true;
+	else {
+		setHomeAreaMaintenanceModifier(ePlayer, (getHomeAreaMaintenanceModifier(ePlayer)));
+		setOtherAreaMaintenanceModifier(ePlayer, 0);
+		
+		m_abHomeArea.set(ePlayer, true);
+	//	return false;
+	}
+	
 }
 
 int CvArea::getTotalAreaMaintenanceModifier(PlayerTypes ePlayer) const
@@ -749,10 +764,10 @@ void CvArea::read(FDataStreamBase* pStream)
 	m_aiPower.Read(pStream);
 	m_aiBestFoundValue.Read(pStream);
 	//DPII < Maintenance Modifiers >
-	pStream->Read(MAX_PLAYERS, m_aiMaintenanceModifier);
-	pStream->Read(MAX_PLAYERS, m_aiHomeAreaMaintenanceModifier);
-	pStream->Read(MAX_PLAYERS, m_aiOtherAreaMaintenanceModifier);
-	pStream->Read(MAX_PLAYERS, m_abHomeArea);
+	m_aiMaintenanceModifier.Read(pStream);
+	m_aiHomeAreaMaintenanceModifier.Read(pStream);
+	m_aiOtherAreaMaintenanceModifier.Read(pStream);
+	m_abHomeArea.Read(pStream);
 	//DPII < Maintenance Modifiers >
 	m_aiNumRevealedTiles.Read(pStream);
 	m_aiCleanPowerCount.Read(pStream);
@@ -817,10 +832,10 @@ void CvArea::write(FDataStreamBase* pStream)
 	m_aiPower.Write(pStream);
 	m_aiBestFoundValue.Write(pStream);
 	//DPII < Maintenance Modifiers >
-	pStream->Write(MAX_PLAYERS, m_aiMaintenanceModifier);
-	pStream->Write(MAX_PLAYERS, m_aiHomeAreaMaintenanceModifier);
-	pStream->Write(MAX_PLAYERS, m_aiOtherAreaMaintenanceModifier);
-	pStream->Write(MAX_PLAYERS, m_abHomeArea);
+	m_aiMaintenanceModifier.Write(pStream);
+	m_aiHomeAreaMaintenanceModifier.Write(pStream);
+	m_aiOtherAreaMaintenanceModifier.Write(pStream);
+	m_abHomeArea.Write(pStream);
 	//DPII < Maintenance Modifiers >
 	m_aiNumRevealedTiles.Write(pStream);
 	m_aiCleanPowerCount.Write(pStream);

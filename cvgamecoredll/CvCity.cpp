@@ -5248,8 +5248,8 @@ void CvCity::updateMaintenance()
 		//DPII < Maintenance Modifiers >
 		//iModifier = getMaintenanceModifier() + GET_PLAYER(getOwner()).getMaintenanceModifier() + area()->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
 		//keldath - f1rpo fix the GET_PLAYER(getOwner()).getMaintenanceModifier() is included in getMaintenanceModifier()
-		iModifier = getMaintenanceModifier() + area()->getTotalAreaMaintenanceModifier(getOwner());
-		//iModifier = getMaintenanceModifier() + GET_PLAYER(getOwner()).getMaintenanceModifier() + area()->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
+		int titalA = area()->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
+		iModifier = getMaintenanceModifier() + GET_PLAYER(getOwner()).getMaintenanceModifier() + titalA;
 		
         if (isConnectedToCapital() && !(isCapital()))
         {

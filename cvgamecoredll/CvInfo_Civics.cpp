@@ -214,6 +214,13 @@ int CvCivicInfo::getDistanceMaintenanceModifier() const
 {
 	return m_iDistanceMaintenanceModifier;
 }
+
+int CvCivicInfo::getNumCitiesMaintenanceModifier() const
+{
+	return m_iNumCitiesMaintenanceModifier;
+}
+
+
 //DPII < Maintenance Modifiers >
 //due to advc changes - i dont know its this is the place- keldath
 int CvCivicInfo::getHomeAreaMaintenanceModifier() const
@@ -226,11 +233,6 @@ int CvCivicInfo::getOtherAreaMaintenanceModifier() const
     return m_iOtherAreaMaintenanceModifier;
 }
 //DPII < Maintenance Modifiers >
-
-int CvCivicInfo::getNumCitiesMaintenanceModifier() const
-{
-	return m_iNumCitiesMaintenanceModifier;
-}
 
 int CvCivicInfo::getCorporationMaintenanceModifier() const
 {
@@ -1001,11 +1003,11 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iStateReligionGreatPeopleRateModifier, "iStateReligionGreatPeopleRateModifier");
 	pXML->GetChildXmlValByName(&m_iDistanceMaintenanceModifier, "iDistanceMaintenanceModifier");
 	pXML->GetChildXmlValByName(&m_iNumCitiesMaintenanceModifier, "iNumCitiesMaintenanceModifier");
-	//DPII < Maintenance Modifiers >
-	pXML->GetChildXmlValByName(&m_iHomeAreaMaintenanceModifier, "iHomeAreaMaintenanceModifier", 0);
-	pXML->GetChildXmlValByName(&m_iOtherAreaMaintenanceModifier, "iOtherAreaMaintenanceModifier", 0);
-	//DPII < Maintenance Modifiers >
 	pXML->GetChildXmlValByName(&m_iCorporationMaintenanceModifier, "iCorporationMaintenanceModifier");
+	//DPII < Maintenance Modifiers >
+	pXML->GetChildXmlValByName(&m_iHomeAreaMaintenanceModifier, "iHomeAreaMaintenanceModifier",0);
+	pXML->GetChildXmlValByName(&m_iOtherAreaMaintenanceModifier, "iOtherAreaMaintenanceModifier",0);
+	//DPII < Maintenance Modifiers >
 	pXML->GetChildXmlValByName(&m_iExtraHealth, "iExtraHealth");
 	pXML->GetChildXmlValByName(&m_iExtraHappiness, "iExtraHappiness", 0); // K-Mod (advc: made optional)
 	pXML->GetChildXmlValByName(&m_iFreeExperience, "iFreeExperience");

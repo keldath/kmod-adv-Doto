@@ -142,7 +142,7 @@ public:
     int getTotalAreaMaintenanceModifier(PlayerTypes ePlayer) const;
 
     bool isHomeArea(PlayerTypes eIndex) const;
-    void setHomeArea(PlayerTypes ePlayer, CvArea* pOldHomeArea);
+    void setHomeArea(PlayerTypes ePlayer, CvArea* pOldHomeArea,CvArea* pNewHomeArea);
     //DPII < Maintenance Modifiers >
 
 	inline int getNumUnrevealedTiles(TeamTypes eIndex) const											// Exposed to Python
@@ -242,10 +242,14 @@ protected:
 	EnumMap<PlayerTypes,int> m_aiPower;
 	EnumMap<PlayerTypes,int> m_aiBestFoundValue;
 	//DPII < Maintenance Modifiers 096 style>
-	int* m_aiMaintenanceModifier;
+	EnumMap<PlayerTypes,int> m_aiMaintenanceModifier;
+	EnumMap<PlayerTypes,int> m_aiHomeAreaMaintenanceModifier;
+	EnumMap<PlayerTypes,int> m_aiOtherAreaMaintenanceModifier;
+	EnumMap<PlayerTypes, bool> m_abHomeArea;
+/*	int* m_aiMaintenanceModifier;
 	int* m_aiHomeAreaMaintenanceModifier;
 	int* m_aiOtherAreaMaintenanceModifier;
-	bool* m_abHomeArea;
+	bool* m_abHomeArea;*/
 	//DPII < Maintenance Modifiers >
 	EnumMap<TeamTypes,int> m_aiNumRevealedTiles;
 	EnumMap<TeamTypes,int> m_aiCleanPowerCount;
