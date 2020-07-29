@@ -539,7 +539,7 @@ void CvArea::changeOtherAreaMaintenanceModifier(PlayerTypes eIndex, int iChange)
     FAssertMsg(eIndex >= 0, "eIndex is expected to be >= 0");
     FAssertMsg(eIndex < MAX_PLAYERS, "eIndex is expected to be < MAX_PLAYERS");
     //m_aiOtherAreaMaintenanceModifier[eIndex] = (m_aiOtherAreaMaintenanceModifier[eIndex] + iChange);
-	m_aiOtherAreaMaintenanceModifier.set(eIndex, iChange);
+	m_aiOtherAreaMaintenanceModifier.add(eIndex, iChange);
 }
 
 void CvArea::setOtherAreaMaintenanceModifier(PlayerTypes eIndex, int iNewValue)
@@ -563,14 +563,13 @@ bool CvArea::isHomeArea(PlayerTypes eIndex) const
  old home area needs to be cleared.  The process is the same for setting and clearing the OtherArea modifiers but in reverse.
 
  If you've done this correctly, no Area should have both a HomeArea and an OtherArea modifier value.*/
-void CvArea::setHomeArea(PlayerTypes ePlayer, CvArea* pOldHomeArea, CvArea* pNewHomeArea)
+void CvArea::setHomeArea(PlayerTypes ePlayer, CvArea* pOldHomeArea,CvArea* pNewHomeArea)
 {
-//	if ( pOldHomeArea != NULL && pOldHomeArea != this )
-	if ( pOldHomeArea != pNewHomeArea)
+	if ( pOldHomeArea != NULL && pOldHomeArea != this )
 	{
-		setHomeAreaMaintenanceModifier(ePlayer, (pOldHomeArea->getHomeAreaMaintenanceModifier(ePlayer)));
-		setOtherAreaMaintenanceModifier(ePlayer, 0);
-		m_abHomeArea.set(ePlayer, true);
+		pNewHomeArea->setHomeAreaMaintenanceModifier(ePlayer, (pOldHomeArea->getHomeAreaMaintenanceModifier(ePlayer)));
+		pNewHomeArea->setOtherAreaMaintenanceModifier(ePlayer, 0);
+		pNewHomeArea->m_abHomeArea.set(ePlayer, true);
 
 		pOldHomeArea->setOtherAreaMaintenanceModifier(ePlayer, getOtherAreaMaintenanceModifier(ePlayer));
 		pOldHomeArea->setHomeAreaMaintenanceModifier(ePlayer, 0);
@@ -578,22 +577,21 @@ void CvArea::setHomeArea(PlayerTypes ePlayer, CvArea* pOldHomeArea, CvArea* pNew
 	//	return true;
 	}
 	else {
-		setHomeAreaMaintenanceModifier(ePlayer, (getHomeAreaMaintenanceModifier(ePlayer)));
-		setOtherAreaMaintenanceModifier(ePlayer, 0);
+		pNewHomeArea->setHomeAreaMaintenanceModifier(ePlayer, (pNewHomeArea->getHomeAreaMaintenanceModifier(ePlayer)));
+		pNewHomeArea->setOtherAreaMaintenanceModifier(ePlayer, 0);
 		
-		m_abHomeArea.set(ePlayer, true);
+		pNewHomeArea->m_abHomeArea.set(ePlayer, true);
 	//	return false;
-	}
-	
+	}	
 }
 
 int CvArea::getTotalAreaMaintenanceModifier(PlayerTypes ePlayer) const
 {
     int iModifier;
 
-    iModifier = (getHomeAreaMaintenanceModifier(ePlayer) + getOtherAreaMaintenanceModifier(ePlayer) + getMaintenanceModifier(ePlayer));
+    iModifier = (std::max(0,getHomeAreaMaintenanceModifier(ePlayer)) + std::max(0,getOtherAreaMaintenanceModifier(ePlayer)) + std::max(0,getMaintenanceModifier(ePlayer)));
 
-    return iModifier;
+    return std::max(0,iModifier);
 }
 //DPII < Maintenance Modifiers >
 

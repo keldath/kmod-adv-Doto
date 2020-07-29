@@ -17,7 +17,6 @@
 #include "CvBugOptions.h" // advc.060
 #include "BBAILog.h" // BETTER_BTS_AI_MOD, AI logging, 10/02/09, jdog5000
 
-
 CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 {
 	CvDLLEntity::createCityEntity(this); // create and attach entity to city
@@ -3194,6 +3193,12 @@ void CvCity::processBonus(BonusTypes eBonus, int iChange)
 void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete)
 {
 	// <advc>
+//keldath extended building inactive
+//if the prereq of a building is no more - it will stop providing.
+//if you cant keep the building, dont update its stuff.
+	if (!canKeep(eBuilding)) //SAGI
+		return;
+ 
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
 	CvGame const& kGame = GC.getGame();
 	CvPlayer& kOwner = GET_PLAYER(getOwner()); // </advc>
@@ -5240,7 +5245,7 @@ void CvCity::updateMaintenance()
 	int iOldMaintenance = getMaintenanceTimes100();
 	int iNewMaintenance = 0;
 	//DPII < Maintenance Modifiers >
-	int iModifier;
+	int iModifier = 0;
 	//DPII < Maintenance Modifiers >
 
 	if (!isDisorder() && !isWeLoveTheKingDay() && getPopulation() > 0)
@@ -5248,8 +5253,9 @@ void CvCity::updateMaintenance()
 		//DPII < Maintenance Modifiers >
 		//iModifier = getMaintenanceModifier() + GET_PLAYER(getOwner()).getMaintenanceModifier() + area()->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
 		//keldath - f1rpo fix the GET_PLAYER(getOwner()).getMaintenanceModifier() is included in getMaintenanceModifier()
-		int titalA = area()->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
-		iModifier = getMaintenanceModifier() + GET_PLAYER(getOwner()).getMaintenanceModifier() + titalA;
+		CvArea* citiiesArea = this->area();
+		int titalA = citiiesArea->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
+		iModifier = getMaintenanceModifier() + citiiesArea->getMaintenanceModifier(GET_PLAYER(getOwner()).getID()) + titalA;
 		
         if (isConnectedToCapital() && !(isCapital()))
         {
@@ -11973,17 +11979,27 @@ void CvCity::doDecay()
 	FOR_EACH_ENUM(Building)
 	{
 		if (getProductionBuilding() == eLoopBuilding)
-			continue; // advc
-		
+			continue; // advc		
 //Tholish UnbuildableBuildingDeletion START
-		if (GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
+		if (getNumRealBuilding(eLoopBuilding) > 0 && GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
 		{
-		//added fix by f1 from advc thank you so much!- keldath
-			if (getNumRealBuilding(eLoopBuilding) > 0 && !canKeep(eLoopBuilding)) 
+			//keldath extended building inactive
+			//if the prereq of a building is no more - it will stop providing.
+			//works for bonux for now
+			//added fix by f1 from advc thank you so much!- keldath
+			if (!canKeep(eLoopBuilding))
 			{
-				setNumRealBuilding(eLoopBuilding, 0);
+				//setNumRealBuilding(eLoopBuilding.0);//original tholish row - removes.
+				defuseBuilding(eLoopBuilding);
+				m_aiBuildingeActive.set(eLoopBuilding, false);
+
 			}
-    	}
+			else if (canKeep(eLoopBuilding) && !m_aiBuildingeActive.get(eLoopBuilding))
+			{
+				activateBuilding(eLoopBuilding);
+				m_aiBuildingeActive.set(eLoopBuilding,true);
+			}
+		}
 //Tholish UnbuildableBuildingDeletion END
 		if (getBuildingProduction(eLoopBuilding) > 0)
 		{
@@ -12556,6 +12572,9 @@ void CvCity::read(FDataStreamBase* pStream)
 	m_aiBuildingProduction.Read(pStream);
 	m_aiBuildingProductionTime.Read(pStream);
 	m_aiBuildingOriginalOwner.Read(pStream);
+//keldath extended building inactive
+//if the prereq of a building is no more - it will stop providing.
+	m_aiBuildingeActive.Read(pStream);
 	m_aiBuildingOriginalTime.Read(pStream);
 	m_aiUnitProduction.Read(pStream);
 	m_aiUnitProductionTime.Read(pStream);
@@ -12887,6 +12906,9 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiBuildingProduction.Write(pStream);
 	m_aiBuildingProductionTime.Write(pStream);
 	m_aiBuildingOriginalOwner.Write(pStream);
+//keldath extended building inactive
+//if the prereq of a building is no more - it will stop providing.
+	m_aiBuildingeActive.Write(pStream);
 	m_aiBuildingOriginalTime.Write(pStream);
 	m_aiUnitProduction.Write(pStream);
 	m_aiUnitProductionTime.Write(pStream);
@@ -14871,3 +14893,44 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 return true;
 }
 //Tholish UnbuildableBuildingDeletion END
+//keldath extended building inactive
+//if the prereq of a building is no more - it will stop providing.
+//works for bonux for now
+void CvCity::defuseBuilding(BuildingTypes eBuilding)
+{
+	// <advc>
+	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
+	CvGame const& kGame = GC.getGame();
+	CvPlayer& kOwner = GET_PLAYER(getOwner()); // </advc>
+	BonusTypes eBonus = kBuilding.getFreeBonus();
+
+	if (eBonus != NO_BONUS && getFreeBonus(kBuilding.getFreeBonus()) > 0)
+	{
+		int freeB = kGame.getNumFreeBonuses(eBuilding);
+		if(freeB > 0)
+		{ 
+			changeFreeBonus(eBonus,freeB * -1);
+		}
+	}
+}
+void CvCity::activateBuilding(BuildingTypes eBuilding)
+{
+	// <advc>
+	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
+	CvGame const& kGame = GC.getGame();
+	CvPlayer& kOwner = GET_PLAYER(getOwner()); // </advc>
+	BonusTypes eBonus = kBuilding.getFreeBonus();
+
+	if (eBonus != NO_BONUS)
+	{
+		int freeB = kGame.getNumFreeBonuses(eBuilding);
+		if(freeB > 0)
+		{ 
+			if(getFreeBonus(kBuilding.getFreeBonus()) > 0) 
+			{
+				changeFreeBonus(eBonus,freeB * -1);//i think due to the loop every turn it adds 2 if its cankeep.
+			}
+			changeFreeBonus(eBonus,freeB);
+		}
+	}
+}

@@ -22,10 +22,10 @@
 			<iDomesticGreatGeneralRateModifier>0</iDomesticGreatGeneralRateModifier>
 			<iStateReligionGreatPeopleRateModifier>0</iStateReligionGreatPeopleRateModifier>
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
+			<iNumCitiesMaintenanceModifier>5</iNumCitiesMaintenanceModifier>
 			<iCorporationMaintenanceModifier>0</iCorporationMaintenanceModifier>
 			<!--DPII < Maintenance Modifiers > -->
-			<iHomeAreaMaintenanceModifier>10000</iHomeAreaMaintenanceModifier>
+			<iHomeAreaMaintenanceModifier>0</iHomeAreaMaintenanceModifier>
 			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
 			<!--DPII < Maintenance Modifiers > -->
 			<iExtraHealth>0</iExtraHealth>

@@ -10047,19 +10047,19 @@ void CvPlayer::setCapitalCity(CvCity* pNewCapitalCity)
 			pNewCapitalCity->getPlot().updatePlotGroupBonus(true);
 	}
 //DPII < Maintenance Modifier >
-		if (pOldCapitalCity != NULL)
-		{
-            if ((pOldCapitalCity->area()) != (pNewCapitalCity->area()))
-            {
-              //  pNewCapitalCity->area()->setHomeArea(getID(), pOldCapitalCity->area());
-             //	pNewCapitalCity->area()->setHomeArea(getID(), pOldCapitalCity->area(),true);
-				pNewCapitalCity->area()->setHomeArea(getID(), pOldCapitalCity->area(),pNewCapitalCity->area());
-            }
-		}
-		else
-		{
-            pNewCapitalCity->area()->setHomeArea(getID(),pNewCapitalCity->area(), pNewCapitalCity->area());
-		}
+	if (pOldCapitalCity != NULL)
+	{
+           if ((pOldCapitalCity->area()) != (pNewCapitalCity->area()))
+           {
+             //  pNewCapitalCity->area()->setHomeArea(getID(), pOldCapitalCity->area());
+            //	pNewCapitalCity->area()->setHomeArea(getID(), pOldCapitalCity->area(),true);
+			pNewCapitalCity->area()->setHomeArea(getID(), pOldCapitalCity->area(),pNewCapitalCity->area());
+           }
+	}
+	else
+	{
+           pNewCapitalCity->area()->setHomeArea(getID(),NULL,pNewCapitalCity->area());
+	}
 //DPII < Maintenance Modifier >
 	updateMaintenance();
 	updateTradeRoutes();
@@ -16764,7 +16764,7 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	//DPII < Maintenance Modifiers >
     CvArea* pLoopArea = NULL;
 
-    int iLoop2 = 0;
+   // int iLoop2;
 	//keldath changed iloop to iloop2 cause theres alreayd one for civics plus
 	// i dony know if it will work.......so.....
 	//int iLoop = 0;
@@ -16781,8 +16781,8 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	changeDistanceMaintenanceModifier(GC.getInfo(eCivic).getDistanceMaintenanceModifier() * iChange);
 	changeNumCitiesMaintenanceModifier(GC.getInfo(eCivic).getNumCitiesMaintenanceModifier() * iChange);
 	changeCorporationMaintenanceModifier(GC.getInfo(eCivic).getCorporationMaintenanceModifier() * iChange);
-	//DPII < Maintenance Modifiers >
- //   changeNumCitiesMaintenanceModifier(GC.getInfo(eCivic).getHomeAreaMaintenanceModifier() * iChange);
+	//DPII keldath< Maintenance Modifiers >
+//    changeNumCitiesMaintenanceModifier(GC.getInfo(eCivic).getHomeAreaMaintenanceModifier() * iChange);
 //	changeNumCitiesMaintenanceModifier(GC.getInfo(eCivic).getOtherAreaMaintenanceModifier() * iChange);
 	//DPII < Maintenance Modifiers >
 	changeExtraHealth(GC.getInfo(eCivic).getExtraHealth() * iChange);
@@ -16819,22 +16819,35 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	changeStateReligionHappiness(GC.getInfo(eCivic).getStateReligionHappiness() * iChange);
 	changeNonStateReligionHappiness(GC.getInfo(eCivic).getNonStateReligionHappiness() * iChange);
 	//DPII < Maintenance Modifiers >
-		if ((GC.getInfo(eCivic).getOtherAreaMaintenanceModifier() != 0) || (GC.getInfo(eCivic).getHomeAreaMaintenanceModifier() != 0))
+	if ((GC.getInfo(eCivic).getOtherAreaMaintenanceModifier() != 0) || (GC.getInfo(eCivic).getHomeAreaMaintenanceModifier() != 0))
+	{
+		FOR_EACH_AREA_VAR(pLoopArea)
 		{
-			for (pLoopArea = GC.getMap().firstArea(&iLoop2); pLoopArea != NULL; pLoopArea = GC.getMap().nextArea(&iLoop2))
-		//keldath changed iloop to iloop2 cause theres alreayd one for civics plus
-		//for (pLoopArea = GC.getMap().firstArea(&iLoop); pLoopArea != NULL; pLoopArea = GC.getMap().nextArea(&iLoop))
+			bool tt = pLoopArea->isHomeArea(getID());
+			if (tt)
 			{
-				if (pLoopArea->isHomeArea(getID()))
-				{
-					pLoopArea->changeHomeAreaMaintenanceModifier(getID(), (GC.getInfo(eCivic).getHomeAreaMaintenanceModifier()  * iChange));
-				}
-				else
-				{
-					pLoopArea->changeOtherAreaMaintenanceModifier(getID(), (GC.getInfo(eCivic).getOtherAreaMaintenanceModifier()  * iChange));
-				}
+				pLoopArea->changeHomeAreaMaintenanceModifier(getID(), (GC.getInfo(eCivic).getHomeAreaMaintenanceModifier()  /* * iChange*/));
+			}
+			else
+			{
+				pLoopArea->changeOtherAreaMaintenanceModifier(getID(), (GC.getInfo(eCivic).getOtherAreaMaintenanceModifier() /* * iChange*/));
 			}
 		}
+	}/*
+	if ((GC.getInfo(eCivic).getOtherAreaMaintenanceModifier() != 0) || (GC.getInfo(eCivic).getHomeAreaMaintenanceModifier() != 0))
+	{
+		for (pLoopArea = GC.getMap().firstArea(&iLoop2); pLoopArea != NULL; pLoopArea = GC.getMap().nextArea(&iLoop2))
+		{
+			if (pLoopArea->isHomeArea(getID()))
+			{
+				pLoopArea->changeHomeAreaMaintenanceModifier(getID(), (GC.getInfo(eCivic).getHomeAreaMaintenanceModifier()  * iChange));
+			}
+			else
+			{
+				pLoopArea->changeOtherAreaMaintenanceModifier(getID(), (GC.getInfo(eCivic).getOtherAreaMaintenanceModifier()  * iChange));
+			}
+		}
+	}*/
 	//DPII < Maintenance Modifiers >
 	
 	// < Civic Infos Plus Start >
@@ -23558,12 +23571,12 @@ bool CvPlayer::canKeep(BuildingTypes eBuilding) const
 	{
 		return false;
 	}
-
-		if (GC.getBuildingInfo(eBuilding).getProductionCost() == -1)
+//cancelled by keldath - not sure why its needed, why should a building have no cost?
+/*		if (GC.getBuildingInfo(eBuilding).getProductionCost() == -1)
 		{
 			return false;
 		}
-
+*/
 
 	if (!(currentTeam.isHasTech((TechTypes)(GC.getBuildingInfo(eBuilding).getPrereqAndTech()))))
 	{
