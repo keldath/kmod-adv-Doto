@@ -216,8 +216,7 @@ public:
 
 	void processBonus(BonusTypes eBonus, int iChange);
 	void processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false);
-//keldath extended building inactive
-//if the prereq of a building is no more - it will stop providing.
+///prereqMust+tholish
 	void defuseBuilding(BuildingTypes eBuilding);
 	void activateBuilding(BuildingTypes eBuilding);
 	void processProcess(ProcessTypes eProcess, int iChange);
@@ -1592,9 +1591,8 @@ protected:
 	EnumMap<BuildingTypes,int> m_aiBuildingProduction;
 	EnumMap<BuildingTypes,int> m_aiBuildingProductionTime;
 	EnumMap<BuildingTypes,int> m_aiBuildingOriginalOwner;
-//keldath extended building inactive
-//if the prereq of a building is no more - it will stop providing.
-//saves which buildings are active.
+//prereqMust+tholish - this enum array will allow to keep tarck of shich buildings
+//were set to inactive
 	EnumMap<BuildingTypes,bool> m_aiBuildingeActive;
 	EnumMapDefault<BuildingTypes,int,MIN_INT> m_aiBuildingOriginalTime;
 	EnumMap<BuildingTypes,int> m_aiNumRealBuilding;

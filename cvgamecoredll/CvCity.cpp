@@ -3193,10 +3193,8 @@ void CvCity::processBonus(BonusTypes eBonus, int iChange)
 void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete)
 {
 	// <advc>
-//keldath extended building inactive
-//if the prereq of a building is no more - it will stop providing.
-//if you cant keep the building, dont update its stuff.
-	if (!canKeep(eBuilding)) //SAGI
+//prereqMust+tholish
+	if (GC.getInfo(eBuilding).getBonusMust() > 0 && !canKeep(eBuilding)) //SAGI
 		return;
  
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
@@ -11981,7 +11979,10 @@ void CvCity::doDecay()
 		if (getProductionBuilding() == eLoopBuilding)
 			continue; // advc		
 //Tholish UnbuildableBuildingDeletion START
-		if (getNumRealBuilding(eLoopBuilding) > 0 && GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
+//prereqMust+tholish
+		if (GC.getInfo(eLoopBuilding).getBonusMust() > 0 &&
+				getNumRealBuilding(eLoopBuilding) > 0 && 
+					GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
 		{
 			//keldath extended building inactive
 			//if the prereq of a building is no more - it will stop providing.
@@ -11992,7 +11993,6 @@ void CvCity::doDecay()
 				//setNumRealBuilding(eLoopBuilding.0);//original tholish row - removes.
 				defuseBuilding(eLoopBuilding);
 				m_aiBuildingeActive.set(eLoopBuilding, false);
-
 			}
 			else if (canKeep(eLoopBuilding) && !m_aiBuildingeActive.get(eLoopBuilding))
 			{
@@ -12572,8 +12572,7 @@ void CvCity::read(FDataStreamBase* pStream)
 	m_aiBuildingProduction.Read(pStream);
 	m_aiBuildingProductionTime.Read(pStream);
 	m_aiBuildingOriginalOwner.Read(pStream);
-//keldath extended building inactive
-//if the prereq of a building is no more - it will stop providing.
+//prereqMust+tholish
 	m_aiBuildingeActive.Read(pStream);
 	m_aiBuildingOriginalTime.Read(pStream);
 	m_aiUnitProduction.Read(pStream);
@@ -12906,8 +12905,7 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiBuildingProduction.Write(pStream);
 	m_aiBuildingProductionTime.Write(pStream);
 	m_aiBuildingOriginalOwner.Write(pStream);
-//keldath extended building inactive
-//if the prereq of a building is no more - it will stop providing.
+//prereqMust+tholish
 	m_aiBuildingeActive.Write(pStream);
 	m_aiBuildingOriginalTime.Write(pStream);
 	m_aiUnitProduction.Write(pStream);
@@ -14893,12 +14891,9 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 return true;
 }
 //Tholish UnbuildableBuildingDeletion END
-//keldath extended building inactive
-//if the prereq of a building is no more - it will stop providing.
-//works for bonux for now
+//prereqMust+tholish
 void CvCity::defuseBuilding(BuildingTypes eBuilding)
 {
-	// <advc>
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
 	CvGame const& kGame = GC.getGame();
 	CvPlayer& kOwner = GET_PLAYER(getOwner()); // </advc>
@@ -14909,7 +14904,7 @@ void CvCity::defuseBuilding(BuildingTypes eBuilding)
 		int freeB = kGame.getNumFreeBonuses(eBuilding);
 		if(freeB > 0)
 		{ 
-			changeFreeBonus(eBonus,freeB * -1);
+			changeFreeBonus(eBonus,freeB * -1); //deduct the amount that otherwsie would be provided
 		}
 	}
 }
@@ -14926,7 +14921,7 @@ void CvCity::activateBuilding(BuildingTypes eBuilding)
 		int freeB = kGame.getNumFreeBonuses(eBuilding);
 		if(freeB > 0)
 		{ 
-			if(getFreeBonus(kBuilding.getFreeBonus()) > 0) 
+			if(getFreeBonus(kBuilding.getFreeBonus()) > 0) //make sure we dont sent negative value
 			{
 				changeFreeBonus(eBonus,freeB * -1);//i think due to the loop every turn it adds 2 if its cankeep.
 			}

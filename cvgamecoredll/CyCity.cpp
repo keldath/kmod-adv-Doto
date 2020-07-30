@@ -1880,9 +1880,7 @@ int CyCity::getNumBonuses(int /*BonusTypes*/ iBonus)
 {
 	return m_pCity ? m_pCity->getNumBonuses((BonusTypes) iBonus) : -1;
 }
-
 // < Building Resource Converter Start >
-
 int CyCity::getBuildingOutputBonus(int /*BonusTypes */iBonus)
 {
 	return m_pCity ? m_pCity->getBuildingOutputBonus((BonusTypes) iBonus) : -1;

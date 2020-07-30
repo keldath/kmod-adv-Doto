@@ -16,6 +16,8 @@ m_iNoBonus(NO_BONUS),
 m_iPowerBonus(NO_BONUS),
 m_iFreeBonus(NO_BONUS),
 m_iNumFreeBonuses(0),
+//prereqMust+tholish
+m_iBonusMust(0),
 // < Building Resource Converter Start >
 m_paiRequiredInputBonuses(NULL),
 m_paiBuildingOutputBonuses(NULL),
@@ -848,6 +850,8 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iPowerBonus);
 	stream->Read(&m_iFreeBonus);
 	stream->Read(&m_iNumFreeBonuses);
+//prereqMust+tholish
+	stream->Read(&m_iBonusMust);
 // < Building Resource Converter Start >	
 	SAFE_DELETE_ARRAY(m_paiRequiredInputBonuses);
 	m_paiRequiredInputBonuses = new int[GC.getNumBonusInfos()];
@@ -1184,6 +1188,8 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iPowerBonus);
 	stream->Write(m_iFreeBonus);
 	stream->Write(m_iNumFreeBonuses);
+//prereqMust+tholish
+	stream->Write(m_iBonusMust);
 	// < Building Resource Converter Start >	
 	stream->Write(GC.getNumBonusInfos(), m_paiRequiredInputBonuses);
 	stream->Write(GC.getNumBonusInfos(), m_paiBuildingOutputBonuses);
@@ -1529,7 +1535,9 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetInfoIDFromChildXmlVal(m_iFreeBonus, "FreeBonus");
 
 	pXML->GetChildXmlValByName(&m_iNumFreeBonuses, "iNumFreeBonuses");
-// < Building Resource Converter Start >	GC.getNumBonusInfos()
+//prereqMust+tholish
+	pXML->GetChildXmlValByName(&m_iBonusMust, "iBonusMust",0);
+// < Building Resource Converter Start >
 //keldath qa2 - done - from f1rpo - The sizeof... parameter was unused, so I've removed it.
 //	pXML->SetVariableListTagPair(&m_paiRequiredInputBonuses, "RequiredInputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
 //	pXML->SetVariableListTagPair(&m_paiBuildingOutputBonuses, "BuildingOutputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());

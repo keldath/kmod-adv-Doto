@@ -124,6 +124,8 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 	BonusTypes getPowerBonus() const { return (BonusTypes)m_iPowerBonus; }
 	BonusTypes getFreeBonus() const { return (BonusTypes)m_iFreeBonus; }
 	int getNumFreeBonuses() const { return m_iNumFreeBonuses; }
+//prereqMust+tholish
+	int getBonusMust() const { return m_iBonusMust; }
 	// < Building Resource Converter Start >
 	bool isRequiredInputBonus(int iBonus) const;			// Exposed to Python
 	int getRequiredInputBonusValue(int iBonus) const;		// Exposed to Python
@@ -446,6 +448,8 @@ protected:
 	int m_iPowerBonus;
 	int m_iFreeBonus;
 	int m_iNumFreeBonuses;
+//prereqMust+tholish
+	int m_iBonusMust;
 	// < Building Resource Converter Start >
 	int* m_paiRequiredInputBonuses;
 	int* m_paiBuildingOutputBonuses;
