@@ -14,12 +14,7 @@
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
-/*
-Doto
-file is differenct from advciv 097b 
-mp options are arrays now, not enum 
-strange bug exits on custom game 
-*/
+
 CvInitCore::CvInitCore()
 {
 	m_aszLeaderName = new CvWString[MAX_PLAYERS];

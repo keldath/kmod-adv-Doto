@@ -301,7 +301,7 @@ CvCorporationInfo::~CvCorporationInfo()
 void CvCorporationInfo::setChar(int i)
 {
 
-	m_iChar = 8550 + (GC.getDefineINT(CvGlobals::GAMEFONT_TGA_RELIGIONS) + m_iTGAIndex) * 2;
+	m_iChar = 8550 + (TGA_RELIGIONS + m_iTGAIndex) * 2;
 }
 /*************************************************************************************************/
 int CvCorporationInfo::getHeadquarterChar() const
@@ -319,7 +319,7 @@ void CvCorporationInfo::setHeadquarterChar(int i)
 /*
 	m_iHeadquarterChar = i; 
 */
-	m_iHeadquarterChar = 8551 + (GC.getDefineINT(CvGlobals::GAMEFONT_TGA_RELIGIONS) + m_iTGAIndex) * 2;
+	m_iHeadquarterChar = 8551 + (TGA_RELIGIONS + m_iTGAIndex) * 2;
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/

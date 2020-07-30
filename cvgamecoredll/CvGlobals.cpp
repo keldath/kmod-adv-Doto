@@ -713,10 +713,6 @@ void CvGlobals::cacheGlobalInts(char const* szChangedDefine, int iNewValue)
 //MOD@VET_Andera412_Blocade_Unit-begin1/2
 		case BLOCADE_UNIT: iDefault = 0; break;
 //MOD@VET_Andera412_Blocade_Unit-end1/2
-/* TGA_INDEXATION */
-		case GAMEFONT_TGA_RELIGIONS: iDefault = 0; break;
-		case GAMEFONT_TGA_CORPORATIONS: iDefault = 0; break;
-/* TGA_INDEXATION */
 		// BETTER_BTS_AI_MOD: END
 		}
 		m_aiGlobalDefinesCache[i] = getDefineINT(aszGlobalDefinesTagNames[i], iDefault);
@@ -764,10 +760,18 @@ void CvGlobals::cacheGlobals()
 /**                                                                                              */
 /**                                                                                              */
 /*************************************************************************************************/
-//	m_iTGA_RELIGIONS = getDefineINT("GAMEFONT_TGA_RELIGIONS");													// GAMEFONT_TGA_RELIGIONS
-//	m_iTGA_CORPORATIONS = getDefineINT("GAMEFONT_TGA_CORPORATIONS");											// GAMEFONT_TGA_CORPORATIONS
-	m_iTGA_RELIGIONS = GC.getDefineINT(CvGlobals::GAMEFONT_TGA_RELIGIONS);													// GAMEFONT_TGA_RELIGIONS
-	m_iTGA_CORPORATIONS = GC.getDefineINT(CvGlobals::GAMEFONT_TGA_CORPORATIONS);											// GAMEFONT_TGA_CORPORATIONS
+//	m_iTGA_RELIGIONS = GC.getDefineINT(CvGlobals::GAMEFONT_TGA_RELIGIONS);													// GAMEFONT_TGA_RELIGIONS
+//	m_iTGA_CORPORATIONS = GC.getDefineINT(CvGlobals::GAMEFONT_TGA_CORPORATIONS);											// GAMEFONT_TGA_CORPORATIONS
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
+/*************************************************************************************************/
+/** TGA_INDEXATION                          11/13/07                            MRGENIE          */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	m_iTGA_RELIGIONS = getDefineINT("GAMEFONT_TGA_RELIGIONS");													// GAMEFONT_TGA_RELIGIONS
+	m_iTGA_CORPORATIONS = getDefineINT("GAMEFONT_TGA_CORPORATIONS");											// GAMEFONT_TGA_CORPORATIONS
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
@@ -854,7 +858,6 @@ void CvGlobals::setDefineSTRING(char const* szName, char const* szValue, /* advc
 {
 	return m_iTGA_RELIGIONS;
 }
-
 int CvGlobals::getTGA_CORPORATIONS()							// GAMEFONT_TGA_CORPORATIONS
 {
 	return m_iTGA_CORPORATIONS;

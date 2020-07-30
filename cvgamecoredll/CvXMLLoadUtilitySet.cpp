@@ -2342,8 +2342,8 @@ DllExport bool CvXMLLoadUtility::LoadPlayerOptions()
 {
 	if (!CreateFXml())
 		return false;
-
-	LoadGlobalClassInfo(GC.m_paPlayerOptionInfo, "CIV4PlayerOptionInfos", "GameInfo", "Civ4PlayerOptionInfos/PlayerOptionInfos/PlayerOptionInfo", false);
+	LoadGlobalClassInfo(GC.m_paPlayerOptionInfo, "CIV4PlayerOptionInfos", "GameInfo",
+			"Civ4PlayerOptionInfos/PlayerOptionInfos/PlayerOptionInfo", false);
 	FAssert(GC.getNumPlayerOptionInfos() == NUM_PLAYEROPTION_TYPES);
 	DestroyFXml();
 	return true;
@@ -2353,8 +2353,8 @@ DllExport bool CvXMLLoadUtility::LoadGraphicOptions()
 {
 	if (!CreateFXml())
 		return false;
-
-	LoadGlobalClassInfo(GC.m_paGraphicOptionInfo, "CIV4GraphicOptionInfos", "GameInfo", "Civ4GraphicOptionInfos/GraphicOptionInfos/GraphicOptionInfo", false);
+	LoadGlobalClassInfo(GC.m_paGraphicOptionInfo, "CIV4GraphicOptionInfos", "GameInfo",
+			"Civ4GraphicOptionInfos/GraphicOptionInfos/GraphicOptionInfo", false);
 	FAssert(GC.getNumGraphicOptions() == NUM_GRAPHICOPTION_TYPES);
 	DestroyFXml();
 	return true;
@@ -2518,7 +2518,7 @@ void CvXMLLoadUtility::AddTGABogus(std::vector<T*>& aInfos, const char* szInfo)
 
 	if ( verify == "CIV4ReligionInfo" )
 	{
-		for ( int iI = 0; iI < GC.getDefineINT(CvGlobals::GAMEFONT_TGA_RELIGIONS); iI++ )
+		for ( int iI = 0; iI < TGA_RELIGIONS; iI++ )
 		{
 			bTGAInfoTypeValid = false;
 			// loop through the religions see what we've got
@@ -2539,7 +2539,7 @@ void CvXMLLoadUtility::AddTGABogus(std::vector<T*>& aInfos, const char* szInfo)
 
 	if ( verify == "CIV4CorporationInfo" )
 	{
-		for ( int iI = 0; iI < GC.getDefineINT(CvGlobals::GAMEFONT_TGA_CORPORATIONS) ; iI++ )
+		for ( int iI = 0; iI < TGA_CORPORATIONS; iI++ )
 		{
 			bTGAInfoTypeValid = false;
 			// loop through the religions see what we've got

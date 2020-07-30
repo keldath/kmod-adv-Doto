@@ -543,10 +543,6 @@ public:
 		DO(BBAI_ATTACK_CITY_STACK_RATIO) \
 		DO(BBAI_SKIP_BOMBARD_BASE_STACK_RATIO) \
 		DO(BBAI_SKIP_BOMBARD_MIN_STACK_RATIO) \
-/* TGA_INDEXATION */ \
-		DO(GAMEFONT_TGA_RELIGIONS) \
-		DO(GAMEFONT_TGA_CORPORATIONS) \
-/* TGA_INDEXATION */ \
 		/* From Lead From Behind by UncutDragon. (edited for K-Mod) */ \
 		DO(LFB_ENABLE) DO(LFB_BASEDONGENERAL) DO(LFB_BASEDONEXPERIENCE) \
 		DO(LFB_BASEDONLIMITED) DO(LFB_BASEDONHEALER) DO(LFB_DEFENSIVEADJUSTMENT) \
@@ -707,11 +703,10 @@ public:
 /**                                                                                              */
 /**                                                                                              */
 /*************************************************************************************************/
-	//f1rpo said :
-	//Shouldn't be needed now that you've added them to the GlobalDefines enum. But then all locations will have to use GC.getDefineINT(CvGlobals::...).
-	//decided to leave it here, i guess its not harmfull 
-	//int getTGA_RELIGIONS();								// GAMEFONT
-	//int getTGA_CORPORATIONS();							// GAMEFONT
+//	int getTGA_RELIGIONS();								// GAMEFONT
+//	int getTGA_CORPORATIONS();							// GAMEFONT
+	inline int getTGA_RELIGIONS() {return m_iTGA_RELIGIONS;}	// GAMEFONT
+	inline int getTGA_CORPORATIONS() {return m_iTGA_CORPORATIONS;}	// GAMEFONT
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
@@ -827,6 +822,16 @@ public:
 	void deleteInfoArrays();
 	bool isCachingDone() const; // advc.003c
 	void setHoFScreenUp(bool b); // advc.106i
+/*************************************************************************************************/
+/** TGA_INDEXATION                          11/13/07                            MRGENIE          */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int m_iTGA_RELIGIONS;
+	int m_iTGA_CORPORATIONS;
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 
 protected:
 
@@ -976,16 +981,6 @@ protected:
 //MOD@VET_Andera412_Blocade_Unit-begin2/2
 	int m_iBLOCADE_UNIT;
 //MOD@VET_Andera412_Blocade_Unit-end2/2	
-/*************************************************************************************************/
-/** TGA_INDEXATION                          11/13/07                            MRGENIE          */
-/**                                                                                              */
-/**                                                                                              */
-/*************************************************************************************************/
-	int m_iTGA_RELIGIONS;
-	int m_iTGA_CORPORATIONS;
-/*************************************************************************************************/
-/** TGA_INDEXATION                          END                                                  */
-/*************************************************************************************************/
 
 	CvXMLLoadUtility* m_pXMLLoadUtility; // advc.003v
 
