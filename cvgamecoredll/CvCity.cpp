@@ -17,6 +17,7 @@
 #include "CvBugOptions.h" // advc.060
 #include "BBAILog.h" // BETTER_BTS_AI_MOD, AI logging, 10/02/09, jdog5000
 
+
 CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 {
 	CvDLLEntity::createCityEntity(this); // create and attach entity to city
@@ -3189,18 +3190,31 @@ void CvCity::processBonus(BonusTypes eBonus, int iChange)
 	}
 }
 
-
-void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete)
+//editted for //prereqMust+tholish 
+void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete, bool checkKeep)
 {
 	// <advc>
-//prereqMust+tholish
-	if (GC.getInfo(eBuilding).getBonusMust() > 0 && !canKeep(eBuilding)) //SAGI
-		return;
- 
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
 	CvGame const& kGame = GC.getGame();
 	CvPlayer& kOwner = GET_PLAYER(getOwner()); // </advc>
-	if (!GET_TEAM(getTeam()).isObsoleteBuilding(eBuilding) || bObsolete)
+//keldath extended building inactive
+//if the prereq of a building is no more - it will stop providing.
+//if you cant keep the building, dont update its stuff.
+	// <advc>		
+	bool buildingStatus = true;
+	bool obsoleteCheck = GET_TEAM(getTeam()).isObsoleteBuilding(eBuilding);
+	if (GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION) &&
+		!obsoleteCheck &&
+		GC.getInfo(eBuilding).getBonusMust() > 0 && 
+		getNumRealBuilding(eBuilding) > 0
+	)
+	{	
+		buildingStatus = checkKeep;
+	}
+	
+if (buildingStatus == true)
+{
+	if (!obsoleteCheck || bObsolete)
 	{
 		if (iChange > 0)
 		{
@@ -3443,7 +3457,12 @@ void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolet
 			}
 		} // </advc.004w>
 	}
-
+}
+//prereqMust+tholish - remove all of the buildings changes	
+if (buildingStatus == false)
+{
+	UNprocessBuilding(eBuilding, iChange, bObsolete);		
+}
 	updateBuildingCommerce();
 	// < Building Resource Converter Start >
 	//frpo1 added a check to avoid infinite loop
@@ -11978,29 +11997,34 @@ void CvCity::doDecay()
 	{
 		if (getProductionBuilding() == eLoopBuilding)
 			continue; // advc		
+
 //Tholish UnbuildableBuildingDeletion START
 //prereqMust+tholish
 		if (GC.getInfo(eLoopBuilding).getBonusMust() > 0 &&
 				getNumRealBuilding(eLoopBuilding) > 0 && 
-					GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
+					GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION) &&
+					eLoopBuilding != NULL && eLoopBuilding != 0	//exclude the first building - palace
+		)
 		{
 			//keldath extended building inactive
 			//if the prereq of a building is no more - it will stop providing.
 			//works for bonux for now
 			//added fix by f1 from advc thank you so much!- keldath
-			if (!canKeep(eLoopBuilding))
+			bool keepit = canKeep(eLoopBuilding);
+			bool buildingStatus = m_aiBuildingeActive.get(eLoopBuilding);
+			if (!keepit && buildingStatus)
 			{
-				//setNumRealBuilding(eLoopBuilding.0);//original tholish row - removes.
-				defuseBuilding(eLoopBuilding);
 				m_aiBuildingeActive.set(eLoopBuilding, false);
+				processBuilding(eLoopBuilding, 1, false, keepit);
 			}
-			else if (canKeep(eLoopBuilding) && !m_aiBuildingeActive.get(eLoopBuilding))
+			else if (keepit && !buildingStatus)
 			{
-				activateBuilding(eLoopBuilding);
 				m_aiBuildingeActive.set(eLoopBuilding,true);
+				processBuilding(eLoopBuilding, 1, false, keepit);
 			}
 		}
 //Tholish UnbuildableBuildingDeletion END
+
 		if (getBuildingProduction(eLoopBuilding) > 0)
 		{
 			changeBuildingProductionTime(eLoopBuilding, 1);
@@ -14744,11 +14768,11 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 			return false;
 	}
 
-	//if (getNumBuilding(eBuilding) >= GC.getCITY_MAX_NUM_BUILDINGS())
-	//{
-	//	return false;
-	//}
-
+/*	if (getNumBuilding(eBuilding) >= GC.getDefineINT(CvGlobals::CITY_MAX_NUM_BUILDINGS))
+	{
+		return false;
+	}
+	*/
 	if (GC.getBuildingInfo(eBuilding).isPrereqReligion())
 	{
 		if (getReligionCount() > 0)
@@ -14927,5 +14951,285 @@ void CvCity::activateBuilding(BuildingTypes eBuilding)
 			}
 			changeFreeBonus(eBonus,freeB);
 		}
+	}
+}
+
+void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsolete)
+{
+	// <advc>
+//prereqMust+tholish
+/*
+	this fn is almost ... the same as processBuilding.
+	ive just oicked off some effects i didnt want to remove.
+	also the updated in the end were removed to the processBuilding it self will commit, no need for twice.
+todo
+make sute the >0 values are ok down below
+set xml tag to define it it will alter the effect by desire - like the bonus xml tag i added for now
+*/	
+	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
+	CvGame const& kGame = GC.getGame();
+	CvPlayer& kOwner = GET_PLAYER(getOwner()); // </advc>
+	iChange *= -1;
+	if (!GET_TEAM(getTeam()).isObsoleteBuilding(eBuilding) || bObsolete)
+	{
+		
+		if (kBuilding.getNoBonus() != NO_BONUS)
+			changeNoBonusCount(kBuilding.getNoBonus(), iChange);
+
+		if (kBuilding.getFreeBonus() != NO_BONUS && kGame.getNumFreeBonuses(eBuilding) > 0)
+		{
+			changeFreeBonus(kBuilding.getFreeBonus(),
+					kGame.getNumFreeBonuses(eBuilding) * iChange);
+		}
+
+		if (kBuilding.getFreePromotion() != NO_PROMOTION)
+		{
+			changeFreePromotionCount(kBuilding.getFreePromotion(), iChange);
+		}// <advc.912d>
+/*
+		if(kGame.isOption(GAMEOPTION_NO_SLAVERY) && kOwner.isHuman() &&
+			kBuilding.getHurryAngerModifier() < 0)
+		{
+			changePopRushCount(iChange);
+		}
+*/ 
+		// </advc.912d>
+		int getEspionageDefenseModifier	= kBuilding.getEspionageDefenseModifier();
+		int getGreatPeopleRateModifier	= kBuilding.getGreatPeopleRateModifier();
+		int getFreeExperience	= kBuilding.getFreeExperience();
+		int getFoodKept	= kBuilding.getFoodKept();
+		int getAirlift	= kBuilding.getAirlift();
+		int getAirModifier	= kBuilding.getAirModifier();
+		int getAirUnitCapacity	= kBuilding.getAirUnitCapacity();
+		int getNukeModifier	= kBuilding.getNukeModifier();
+		int getFreeSpecialist	= kBuilding.getFreeSpecialist();
+		int getMaintenanceModifier	= kBuilding.getMaintenanceModifier();
+		int getWarWearinessModifier	= kBuilding.getWarWearinessModifier();
+		int getHurryAngerModifier	= kBuilding.getHurryAngerModifier();
+		int getHealRateChange = kBuilding.getHealRateChange();
+		
+		//if (getEspionageDefenseModifier != 0)
+			changeEspionageDefenseModifier(getEspionageDefenseModifier * iChange);
+		if (getGreatPeopleRateModifier > 0) 
+			changeGreatPeopleRateModifier(getGreatPeopleRateModifier * iChange);
+		if (getFreeExperience > 0)
+			changeFreeExperience(getFreeExperience * iChange);
+		if (getFoodKept > 0)
+			changeMaxFoodKeptPercent(getFoodKept * iChange);
+		if (getAirlift > 0)
+			changeMaxAirlift(getAirlift * iChange);
+		if (getAirModifier > 0)
+			changeAirModifier(getAirModifier * iChange);
+		if (getAirUnitCapacity > 0)
+			changeAirUnitCapacity(getAirUnitCapacity * iChange);
+		if (getNukeModifier > 0)
+			changeNukeModifier(getNukeModifier * iChange);
+		if (getFreeSpecialist > 0) 
+			changeFreeSpecialist(getFreeSpecialist * iChange);
+		//if (getMaintenanceModifier != 0)
+			changeMaintenanceModifier(getMaintenanceModifier * iChange);
+		if (getWarWearinessModifier > 0)
+			changeWarWearinessModifier(getWarWearinessModifier * iChange);
+		if (getHurryAngerModifier > 0)
+			changeHurryAngerModifier(getHurryAngerModifier * iChange);
+		if (getHealRateChange > 0)
+			changeHealRate(getHealRateChange * iChange);
+		/* Population Limit ModComp - Beginning */
+//keep this one anyway - i dont know what will happen...
+//		changePopulationLimitChange(kGame.getAdjustedPopulationLimitChange(kBuilding.getPopulationLimitChange()) * iChange);
+		/* Population Limit ModComp - End */
+		if (kBuilding.getHealth() > 0)
+			changeBuildingGoodHealth(kBuilding.getHealth() * iChange);
+		else changeBuildingBadHealth(kBuilding.getHealth() * iChange);
+		if (kBuilding.getHappiness() > 0)
+			changeBuildingGoodHappiness(kBuilding.getHappiness() * iChange);
+		else changeBuildingBadHappiness(kBuilding.getHappiness() * iChange);
+		if (kBuilding.getReligionType() != NO_RELIGION)
+		{
+			changeStateReligionHappiness(kBuilding.getReligionType(),
+					kBuilding.getStateReligionHappiness() * iChange);
+		}
+		changeMilitaryProductionModifier(kBuilding.getMilitaryProductionModifier() * iChange);
+		changeSpaceProductionModifier(kBuilding.getSpaceProductionModifier() * iChange);
+		changeExtraTradeRoutes(kBuilding.getTradeRoutes() * iChange);
+		changeTradeRouteModifier(kBuilding.getTradeRouteModifier() * iChange);
+		changeForeignTradeRouteModifier(kBuilding.getForeignTradeRouteModifier() * iChange);
+		changePowerCount(kBuilding.isPower() ? iChange : 0, kBuilding.isDirtyPower());
+//		changeGovernmentCenterCount(kBuilding.isGovernmentCenter() ? iChange : 0);
+		changeNoUnhappinessCount(kBuilding.isNoUnhappiness() ? iChange : 0);
+		//changeNoUnhealthyPopulationCount(kBuilding.isNoUnhealthyPopulation() ? iChange : 0);
+		changeUnhealthyPopulationModifier(kBuilding.getUnhealthyPopulationModifier() * iChange); // K-Mod
+		changeBuildingOnlyHealthyCount(kBuilding.isBuildingOnlyHealthy() ? iChange : 0);
+
+		FOR_EACH_ENUM2(Yield, y)
+		{
+			changeSeaPlotYield(y, kBuilding.getSeaPlotYieldChange(y) * iChange);
+			changeRiverPlotYield(y, kBuilding.getRiverPlotYieldChange(y) * iChange);
+			changeBaseYieldRate(y, (kBuilding.getYieldChange(y) +
+					getBuildingYieldChange(kBuilding.getBuildingClassType(), y)) * iChange);
+			changeYieldRateModifier(y, kBuilding.getYieldModifier(y) * iChange);
+			changePowerYieldRateModifier(y, kBuilding.getPowerYieldModifier(y) * iChange);
+			// < Civic Infos Plus Start >
+			//keldath QA-DONE
+			changeBuildingYieldChange(kBuilding.getBuildingClassType(), y, kOwner.getBuildingYieldChange(eBuilding, y));
+			// < Civic Infos Plus End   >
+		}
+
+		FOR_EACH_ENUM(Commerce)
+		{
+			changeCommerceRateModifier(eLoopCommerce,
+					kBuilding.getCommerceModifier(eLoopCommerce) * iChange);
+			changeCommerceHappinessPer(eLoopCommerce,
+					kBuilding.getCommerceHappiness(eLoopCommerce) * iChange);
+			// < Civic Infos Plus Start >
+			//keldath QA-DONE
+			changeBuildingCommerceChange(kBuilding.getBuildingClassType(), eLoopCommerce, 
+					kOwner.getBuildingCommerceChange(eBuilding, eLoopCommerce));
+			// < Civic Infos Plus End   >
+		}
+		if (kBuilding.isAnyReligionChange()) // advc.003t
+		{
+			FOR_EACH_ENUM(Religion)
+			{
+				changeReligionInfluence(eLoopReligion,
+						kBuilding.getReligionChange(eLoopReligion) * iChange);
+			}
+		}
+		FOR_EACH_ENUM(Specialist)
+		{
+			changeMaxSpecialistCount(eLoopSpecialist,
+					kBuilding.getSpecialistCount(eLoopSpecialist) * iChange);
+			changeFreeSpecialistCount(eLoopSpecialist,
+					kBuilding.getFreeSpecialistCount(eLoopSpecialist) * iChange);
+		}
+		if (kBuilding.isAnyImprovementFreeSpecialist()) // advc.003t
+		{
+			FOR_EACH_ENUM(Improvement)
+			{
+				changeImprovementFreeSpecialists(eLoopImprovement,
+						kBuilding.getImprovementFreeSpecialist(eLoopImprovement) * iChange);
+			}
+		}
+		FOR_EACH_ENUM(Bonus)
+		{
+			if (!hasBonus(eLoopBonus))
+				continue; // advc
+
+			if (kBuilding.getBonusHealthChanges(eLoopBonus) > 0)
+			{
+				changeBonusGoodHealth(iChange *
+						kBuilding.getBonusHealthChanges(eLoopBonus));
+			}
+			else
+			{
+				changeBonusBadHealth(iChange *
+						kBuilding.getBonusHealthChanges(eLoopBonus));
+			}
+			if (kBuilding.getBonusHappinessChanges(eLoopBonus) > 0)
+			{
+				changeBonusGoodHappiness(iChange *
+						kBuilding.getBonusHappinessChanges(eLoopBonus));
+			}
+			else
+			{
+				changeBonusBadHappiness(iChange *
+						kBuilding.getBonusHappinessChanges(eLoopBonus));
+			}
+			if (kBuilding.getPowerBonus() == eLoopBonus)
+				changePowerCount(iChange, kBuilding.isDirtyPower());
+
+			FOR_EACH_ENUM(Yield)
+			{
+				changeBonusYieldRateModifier(eLoopYield, iChange * 
+						kBuilding.getBonusYieldModifier(eLoopBonus, eLoopYield));
+			}
+		}
+
+		FOR_EACH_ENUM(UnitCombat)
+		{
+			changeUnitCombatFreeExperience(eLoopUnitCombat, iChange *
+					kBuilding.getUnitCombatFreeExperience(eLoopUnitCombat));
+		}
+
+		FOR_EACH_ENUM(Domain)
+		{
+			changeDomainFreeExperience(eLoopDomain, iChange *
+					kBuilding.getDomainFreeExperience(eLoopDomain));
+			changeDomainProductionModifier(eLoopDomain, iChange *
+					kBuilding.getDomainProductionModifier(eLoopDomain));
+		}
+
+		updateExtraBuildingHappiness();
+		updateExtraBuildingHealth();
+
+//		kOwner.changeAssets(iChange * kBuilding.getAssetValue());
+
+//		getArea().changePower(getOwner(), iChange * kBuilding.getPowerValue());
+//		kOwner.changePower(kBuilding.getPowerValue() * iChange);
+
+		for (MemberIter it(getTeam()); it.hasNext(); ++it)
+		{
+			if (kBuilding.isTeamShare() || it->getID() == getOwner())
+			{
+				it->processBuilding(eBuilding, iChange, getArea());
+			}
+		}
+		GET_TEAM(getTeam()).processBuilding(eBuilding, iChange);
+		GC.getGame().processBuilding(eBuilding, iChange);
+	}
+
+	if (!bObsolete)
+	{
+		/*  <advc.004c> Can avoid an update (which loops over all buildings)
+			in the most common circumstances */
+		if (kBuilding.getDefenseModifier() != 0 && getBuildingDefense() > 0)
+			updateBuildingDefense();
+		else // </advc.004c>
+			changeBuildingDefense(kBuilding.getDefenseModifier() * iChange);
+		// <advc.004c>
+		if (kBuilding.get(CvBuildingInfo::RaiseDefense) > 0)
+		{
+			if (iChange >= 0)
+			{
+				changeBuildingDefense(std::max(kBuilding.get(CvBuildingInfo::RaiseDefense),
+						getBuildingDefense()) - getBuildingDefense());
+			}
+			else updateBuildingDefense();
+		} // </advc.004c>
+		changeBuildingBombardDefense(kBuilding.getBombardDefenseModifier() * iChange);
+		// advc.051: Moved
+		//changeBaseGreatPeopleRate(kBuilding.getGreatPeopleRateChange() * iChange);
+		if (kBuilding.getGreatPeopleUnitClass() != NO_UNITCLASS)
+		{
+			UnitTypes eGreatPeopleUnit = getCivilization().getUnit((UnitClassTypes)
+					kBuilding.getGreatPeopleUnitClass());
+			if (eGreatPeopleUnit != NO_UNIT)
+			{
+				changeGreatPeopleUnitRate(eGreatPeopleUnit,
+						kBuilding.getGreatPeopleRateChange() * iChange);
+				/*  advc.051: Moved from above. Barbarians can obtain wonders, but
+					don't have GP units, and shouldn't have a positive base GP rate. */
+				changeBaseGreatPeopleRate(kBuilding.getGreatPeopleRateChange() * iChange);
+			}
+		}
+		// <advc.004w>
+		if (kGame.getCurrentLayer() == GLOBE_LAYER_RESOURCE)
+		{
+			// Update text of resource indicators (CvGameTextMgr::setBonusExtraHelp)
+			PlayerTypes eDirtyPlayer = NO_PLAYER;
+			if (kBuilding.isNationalWonder() &&
+				getOwner() == kGame.getActivePlayer())
+			{
+				eDirtyPlayer = getOwner();
+			}
+			else if (kBuilding.isWorldWonder())
+				eDirtyPlayer = kGame.getActivePlayer();
+			if (eDirtyPlayer != NO_PLAYER)
+			{
+				gDLL->UI().setDirty(GlobeLayer_DIRTY_BIT, true);
+				// advc.003p:
+				GET_PLAYER(getOwner()).setBonusHelpDirty();
+			}
+		} // </advc.004w>
 	}
 }

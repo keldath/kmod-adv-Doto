@@ -215,8 +215,10 @@ public:
 	int getBonusYieldRateModifier(YieldTypes eIndex, BonusTypes eBonus) const;									// Exposed to Python
 
 	void processBonus(BonusTypes eBonus, int iChange);
-	void processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false);
+	void processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false, bool checkKeep = true);
 ///prereqMust+tholish
+	void UNprocessBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false);
+///prereqMust+tholish -- unused -older trial that worked
 	void defuseBuilding(BuildingTypes eBuilding);
 	void activateBuilding(BuildingTypes eBuilding);
 	void processProcess(ProcessTypes eProcess, int iChange);
