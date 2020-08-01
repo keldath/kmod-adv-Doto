@@ -415,7 +415,7 @@ void CvCityAI::AI_chooseProduction()
 	CvTeamAI const& kTeam = GET_TEAM(getTeam());
 	CvGame& g = GC.getGame();
 	CvArea const& kArea = getArea();
-	CvCityAI const* pCapital = kPlayer.AI_getCapitalCity();
+	CvCityAI const* pCapital = kPlayer.AI_getCapital();
 	// </advc>
 
 	if (isProduction())
@@ -1810,12 +1810,16 @@ void CvCityAI::AI_chooseProduction()
 					if (kArea.getAreaAIType(getTeam()) != AREAAI_DEFENSIVE)
 					{	// <advc.030b>
 						bool bAssaultTargetFound = false;
-						for(int i = 0; i < MAX_CIV_PLAYERS; i++) {
+						for(int i = 0; i < MAX_CIV_PLAYERS; i++)
+						{
 							CvPlayer const& kTarget = GET_PLAYER((PlayerTypes)i);
 							if(!kTarget.isAlive() || kTeam.AI_getWarPlan(
-									kTarget.getTeam()) == NO_WARPLAN)
+								kTarget.getTeam()) == NO_WARPLAN)
+							{
 								continue;
-							if(pWaterArea->getCitiesPerPlayer(kTarget.getID(), true) > 0) {
+							}
+							if(pWaterArea->getCitiesPerPlayer(kTarget.getID(), true) > 0)
+							{
 								bAssaultTargetFound = true;
 								break;
 							}
@@ -2054,7 +2058,7 @@ void CvCityAI::AI_chooseProduction()
 				}
 				return;
 			}
-			// dlph.15: missile carrier code moved
+			// kekm.15: missile carrier code moved
 		}
 	}
 
@@ -2172,7 +2176,7 @@ void CvCityAI::AI_chooseProduction()
 				}
 			}
 		}
-	} // <dlph.15>
+	} // <kekm.15>
 	int iMissileCarriers = kPlayer.AI_totalUnitAIs(UNITAI_MISSILE_CARRIER_SEA);
 	if (!bFinancialTrouble && iMissileCarriers > 0 && !bImportantCity)
 	{	// Bugfix(?): was '<=' in BtS
@@ -2202,7 +2206,7 @@ void CvCityAI::AI_chooseProduction()
 				}
 			}
 		}
-	} // </dlph.15>
+	} // </kekm.15>
 
 	/*if (!bAlwaysPeace && !(bLandWar || bAssault) && (kPlayer.AI_isDoStrategy(AI_STRATEGY_OWABWNW) || (g.getSorenRandNum(12, "AI consider Nuke") == 0))) {
 		if (!bFinancialTrouble) {
@@ -3600,7 +3604,7 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags,
 	PROFILE_FUNC();
 
 	CvPlayerAI const& kOwner = GET_PLAYER(getOwner());
-	CvTeamAI const& kTeam = GET_TEAM(kOwner.getTeam()); // dlph.16
+	CvTeamAI const& kTeam = GET_TEAM(kOwner.getTeam()); // kekm.16
 	CvGame const& kGame = GC.getGame();
 	int const iOwnerEra = kOwner.getCurrentEra();
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
@@ -4151,8 +4155,7 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags,
 				//iValue += ((calculateDistanceMaintenance() - 3) * iNumCitiesInArea);
 				// K-mod. More bonus for colonies, because it reduces that extra maintenance too.
 				int iTempValue = 2*(calculateDistanceMaintenance() - 2) * iNumCitiesInArea;
-				const CvCity* pCapitalCity = kOwner.getCapitalCity();
-				if (pCapitalCity == NULL || !sameArea(*pCapitalCity))
+				if (!kOwner.hasCapital() || !sameArea(*kOwner.getCapital()))
 					iTempValue *= 2;
 				iValue += iTempValue;
 				// K-Mod end
@@ -5739,7 +5742,7 @@ int CvCityAI::AI_defensiveBuildingValue(BuildingTypes eBuilding,
 	}
 	//r += -kBuilding.getNukeModifier() / (g.isNukesValid() && !g.isNoNukes() ? 4 : 40);
 	// K-Mod end
-	// <dlph.16> Replacing the line above.
+	// <kekm.16> Replacing the line above.
 	// DarkLunaPhantom - "Bomb Shelters should be of much higher value, I copied and adjusted rough estimates from AI_projectValue()."
 	int iNukeDefense = -kBuilding.getNukeModifier();
 	if(iNukeDefense > 0)
@@ -5778,7 +5781,7 @@ int CvCityAI::AI_defensiveBuildingValue(BuildingTypes eBuilding,
 		iTempValue /= 10000;
 		iTempValue /= GET_PLAYER(getOwner()).AI_nukeDangerDivisor();
 		r += iTempValue;
-	} // </dlph.16>
+	} // </kekm.16>
 	return r;
 }
 

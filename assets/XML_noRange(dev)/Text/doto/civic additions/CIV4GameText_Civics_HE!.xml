@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by lcollins (Firaxis Games) -->
+<!-- Sid Meier's Civilization 4 -->
+<!-- -->
+<!-- Game Text - Unit Upgrades for Civilopedia -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+		<Tag>TXT_KEY_CIVIC_MERCENARIES_PEDIA</Tag>
+		<English>[TAB]A mercenary is an alien hired by a foreign army, as opposed to a soldier enlisted in the armed forces of the sovereign state of which he is a citizen.</English>
+		<French>???</French>
+		<German>???</German>
+		<Italian>???</Italian>
+		<Spanish>???</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_CIVIC_PROARM_PEDIA</Tag>
+		<English>[TAB]As the extent of the territories falling under Roman control expanded and the size of the forces increased, the soldiery gradually became salaried professionals. As a consequence, military service at the lower (non-salaried) levels became progressively longer-term. Roman military units of the period were largely homogeneous and highly regulated. The army consisted of units of citizen infantry known as legions (Latin: legiones) as well as non-legionary allied troops known as auxilia. The latter were most commonly called upon to provide light infantry, logistical, or cavalry support.</English>
+		<French>???</French>
+		<German>???</German>
+		<Italian>???</Italian>
+		<Spanish>???</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_CIVIC_FIELD_D_PEDIA</Tag>
+		<English>[TAB]Soldiers are organized by military specialty. The combat arms includes infantry, cavalry, artillery, and other such smaller organizations such as marines, which, some times, is detached from its navy counterpart for land based operations.</English>
+		<French>???</French>
+		<German>???</German>
+		<Italian>???</Italian>
+		<Spanish>???</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_CIVIC_RELI_D_PEDIA</Tag>
+		<English>[TAB]A religious war is a war caused by religious differences. It can involve one state with an established religion against another state with a different religion or a different sect within the same religion, or a religiously motivated group attempting to spread its faith by violence, or to suppress another group because of its religious beliefs or practices. The Muslim Conquests, the French Wars of Religion, the Crusades, and the Reconquista are frequently cited historical examples.</English>
+		<French>???</French>
+		<German>???</German>
+		<Italian>???</Italian>
+		<Spanish>???</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_CIVIC_STATE_A_PEDIA</Tag>
+		<English>[TAB]State atheism has been defined by David Kowalewski as the official "promotion of atheism" by a government, typically by active suppression of religious freedom and practice.</English>
+		<French>???</French>
+		<German>???</German>
+		<Italian>???</Italian>
+		<Spanish>???</Spanish>
+	</TEXT>
+</Civ4GameText>

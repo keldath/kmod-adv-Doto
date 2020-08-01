@@ -269,7 +269,7 @@ class MapConstants:
 		#depending on map size, meteors, and which landmass generator was selected.
 		#self.landPercent   = 0.2889
 		# advc.021b: See comments about sea level above. Gets further modified in initInGameOptions.
-		self.landPercent = 0.26
+		self.landPercent = 0.27
 
 		#Percentage of land squares high enough to be Hills or Peaks.
 		self.HillPercent   = 0.30 # advc.021b: was 42
@@ -5574,7 +5574,7 @@ def getCustomMapOptionDescAt(argsList):
 			return "Flat"
 	elif optionID == 1:
 		# advc.021b: was just "Old World"
-		owMsg = "Old World (unless Pangaea); -35% players recommended"
+		owMsg = "Old World (unless Pangaea); -25% players recommended"
 		if mc.AllowNewWorld:
 			if selectionID == 0:
 				return owMsg
@@ -6178,22 +6178,25 @@ def addFeatures():
 						# Also convert grassland to plains
 						if tm.tData[i] == mc.GRASS:
 							tm.tData[i] = mc.PLAINS
-							# I think terrain has already been set at this point; need to overwrite that.
+							# Terrain has already been set at this point; need to overwrite that.
 							plot.setTerrainType(gc.getInfoTypeForString("TERRAIN_PLAINS"), False, False)
 					else:
 					# </advc.021b>					
-						plot.setFeatureType(fJungle, 0)
+						setFeature(plot, fJungle, 0)
 				elif cm.RainfallMap.data[i] >= tm.plainsThreshold * mc.JungleFactor * PRand.random() and PRand.random() < (mc.MaxTreeChance * mc.ForestChance): # advc.021b: Multiplication by ForestChance added
 					if tm.tData[i] == mc.TUNDRA:
-						plot.setFeatureType(fForest, FORESTSNOWY)
+						setFeature(plot, fForest, FORESTSNOWY)
 					elif cm.TemperatureMap.data[i] >= mc.ForestTemp:
-						plot.setFeatureType(fForest, FORESTLEAFY)
+						setFeature(plot, fForest, FORESTLEAFY)
 					else:
-						plot.setFeatureType(fForest, FORESTEVERGREEN)
+						setFeature(plot, fForest, FORESTEVERGREEN)
 			#Floodplains, Oasis
 			elif not plot.isWater() and tm.tData[i] == mc.DESERT and tm.pData[i] == mc.LAND:
-				if plot.isRiver():
-					plot.setFeatureType(fFloodPlains, 0)
+				#if plot.isRiver():
+					#plot.setFeatureType(fFloodPlains, 0)
+				# <advc.021b> Let the DLL check that
+				if setFeature(plot, fFloodPlains, 0):
+					pass # </advc.021b>
 				else:
 					#is this square surrounded by desert?
 					valid = True
@@ -6216,7 +6219,15 @@ def addFeatures():
 						if not valid:
 							break
 					if valid and PRand.random() < mc.OasisChance:
-						plot.setFeatureType(fOasis, 0)
+						setFeature(plot, fOasis, 0)
+
+# <advc.021b> Make sure that placement rules are consistent with DLL.
+# setFeatureType calls above redirected here.
+def setFeature(plot, feature, variety):
+	if not plot.canHaveFeature(feature):
+		return False
+	plot.setFeatureType(feature, variety)
+	return True # </advc.021b>
 
 
 def createIce():

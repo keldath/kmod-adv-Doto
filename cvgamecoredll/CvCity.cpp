@@ -3190,7 +3190,7 @@ void CvCity::processBonus(BonusTypes eBonus, int iChange)
 	}
 }
 
-//editted for //prereqMust+tholish 
+
 void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete, bool checkKeep)
 {
 	// <advc>
@@ -3205,7 +3205,7 @@ void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolet
 	bool obsoleteCheck = GET_TEAM(getTeam()).isObsoleteBuilding(eBuilding);
 	if (GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION) &&
 		!obsoleteCheck &&
-		GC.getInfo(eBuilding).getBonusMust() > 0 && 
+		GC.getInfo(eBuilding).getPrereqMustAll() > 0 && 
 		getNumRealBuilding(eBuilding) > 0
 	)
 	{	
@@ -3457,8 +3457,7 @@ if (buildingStatus == true)
 			}
 		} // </advc.004w>
 	}
-}
-//prereqMust+tholish - remove all of the buildings changes	
+}	
 if (buildingStatus == false)
 {
 	UNprocessBuilding(eBuilding, iChange, bObsolete);		
@@ -3652,7 +3651,7 @@ bool CvCity::isVisible(TeamTypes eTeam, bool bDebug) const
 
 bool CvCity::isCapital() const
 {
-	return (GET_PLAYER(getOwner()).getCapitalCity() == this);
+	return (GET_PLAYER(getOwner()).getCapital() == this);
 }
 
 // advc: Cut from CvPlot::canTrain
@@ -3742,24 +3741,28 @@ int CvCity::getOvercrowdingPercentAnger(int iExtra) const
 
 
 int CvCity::getNoMilitaryPercentAnger() const
-{
-	static bool const bDEMAND_BETTER_PROTECTION = GC.getDefineBOOL("DEMAND_BETTER_PROTECTION");
-	if (!bDEMAND_BETTER_PROTECTION) // advc.500b
+{	// <advc.500b>
+	static bool const bDEMAND_BETTER_PROTECTION = GC.getDefineBOOL(
+			"DEMAND_BETTER_PROTECTION");
+	if (!bDEMAND_BETTER_PROTECTION) // </advc.500b>
 	{
 		int iAnger = 0;
 		if (getMilitaryHappinessUnits() == 0)
 			iAnger += GC.getDefineINT(CvGlobals::NO_MILITARY_PERCENT_ANGER);
-		return iAnger;  // <advc.500b>
+		return iAnger;
 	}
-	double targetGarrStr = getPopulation() / 2.0;
-	double actualGarrStr = defensiveGarrison(targetGarrStr);
-	if (actualGarrStr >= targetGarrStr)
+	// <advc.500b>
+	static scaled const rPOP_PERCENT = per100(GC.getDefineINT(
+			"DEMAND_BETTER_PROTECTION_POP_PERCENT"));
+	scaled rTargetGarrStr = getPopulation() * rPOP_PERCENT;
+	scaled rActualGarrStr = defensiveGarrison(rTargetGarrStr);
+	if (rActualGarrStr >= rTargetGarrStr)
 		return 0;
 	/* Currently (as per vanilla) 334, meaning 33.4% of the population get angry.
 	   The caller adds up all the anger percentages (actually permillages)
 	   before rounding, so rounding shouldn't be a concern in this function. */
 	int iMaxAnger = GC.getDefineINT(CvGlobals::NO_MILITARY_PERCENT_ANGER);
-	return iMaxAnger - (int)(iMaxAnger * actualGarrStr / targetGarrStr);
+	return iMaxAnger - (iMaxAnger * rActualGarrStr / rTargetGarrStr).floor();
 	// </advc.500b>
 }
 
@@ -5904,6 +5907,8 @@ int CvCity::GPTurnsLeft() const
 
 void CvCity::GPProjection(std::vector<std::pair<UnitTypes,int> >& r) const
 {
+	if (isDisorder())
+		return;
 	CvCivilization const& kCiv = getCivilization();
 	int const iTurnsLeft = GPTurnsLeft();
 	/*  (advc.001c: Can't use getGreatPeopleProgress() b/c the
@@ -11782,13 +11787,13 @@ void CvCity::doPlotCultureTimes100(bool bUpdate, PlayerTypes ePlayer,  // advc: 
 			{
 				iCultureToAdd = (iCultureToAdd * iCultureToMaster) / 100;
 			} // </advc.025>
-			// <dlph.23> Loss of tile culture upon city trade
+			// <kekm.23> Loss of tile culture upon city trade
 			if (iCultureToAdd < 0)
 			{
 				FAssert(iCultureRateTimes100 < 0);
 				int iPlotCulture = pLoopPlot->getCulture(ePlayer);
 				iCultureToAdd = -std::min(-iCultureToAdd, iPlotCulture);
-			} // </dlph.23>
+			} // </kekm.23>
 			pLoopPlot->changeCulture(ePlayer, iCultureToAdd, bUpdate || !pLoopPlot->isOwned());
 		}
 	} // K-Mod end
@@ -12000,7 +12005,7 @@ void CvCity::doDecay()
 
 //Tholish UnbuildableBuildingDeletion START
 //prereqMust+tholish
-		if (GC.getInfo(eLoopBuilding).getBonusMust() > 0 &&
+		if (GC.getInfo(eLoopBuilding).getPrereqMustAll() > 0 &&
 				getNumRealBuilding(eLoopBuilding) > 0 && 
 					GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION) &&
 					eLoopBuilding != NULL && eLoopBuilding != 0	//exclude the first building - palace
@@ -12292,7 +12297,7 @@ void CvCity::doMeltdown()
 	for (int i = 0; i < kCiv.getNumBuildings(); i++)
 	{
 		BuildingTypes eDangerBuilding = kCiv.buildingAt(i);
-		// <dlph.5> (advc: Restructured the Kek-Mod code the code a bit)
+		// <kekm.5> (advc: Restructured the Kek-Mod code the code a bit)
 		int iOddsDivisor = GC.getInfo(eDangerBuilding).getNukeExplosionRand();
 		if (iOddsDivisor <= 0)
 			continue; // Save some time
@@ -12305,14 +12310,14 @@ void CvCity::doMeltdown()
 			!hasBonus(kDangerBuilding.getPowerBonus())))
 		{
 			continue;
-		} // </dlph.5>
+		} // </kekm.5>
 		// <advc> Roll the dice before checking for a safe power source - faster
 		// Adjust odds to game speed:
 		double pr = 1.0 / (iOddsDivisor * GC.getGame().gameSpeedFactor());
 		//if (GC.getGame().getSorenRandNum(GC.getInfo((BuildingTypes)iI).getNukeExplosionRand(), "Meltdown!!!") == 0)
 		if (!::bernoulliSuccess(pr, "Meltdown"))
 			continue; // </advc>
-		// <dlph.5>
+		// <kekm.5>
 		bool bUnused = false;
 		// Check for hydroplant (or any modded plant with less severe drawbacks)
 		for (int j = 0; j < kCiv.getNumBuildings(); j++)
@@ -12358,7 +12363,7 @@ void CvCity::doMeltdown()
 			}
 		}
 		if (bUnused)
-			continue; // </dlph.5>
+			continue; // </kekm.5>
 
 		if (getNumRealBuilding(eDangerBuilding) > 0)
 			setNumRealBuilding(eDangerBuilding, 0);
@@ -14121,7 +14126,7 @@ void CvCity::liberate(bool bConquest, /* advc.ctr: */ bool bPeaceDeal)
 	PlayerTypes ePlayer = getLiberationPlayer(bConquest);
 	if(ePlayer == NO_PLAYER)
 		return; // advc
-	// dlph.23: No longer used
+	// kekm.23: No longer used
 	/*CvPlot* pPlot = plot();
 	int iOldOwnerCulture = getCultureTimes100(getOwner());
 	bool bPreviouslyOwned = isEverOwned(ePlayer);*/ // K-Mod, for use below
@@ -14172,7 +14177,7 @@ void CvCity::liberate(bool bConquest, /* advc.ctr: */ bool bPeaceDeal)
 				iNewVassalLand - iOldVassalLand);
 	}
 	GET_PLAYER(ePlayer).AI_updateAttitude(getOwner()); // advc.ctr
-	// dlph.23: setCulture now done by advc.ctr in acquireCity
+	// kekm.23: setCulture now done by advc.ctr in acquireCity
 	/*if (NULL != pPlot) {
 		CvCity* pCity = pPlot->getPlotCity();
 		if (NULL != pCity) {
@@ -14190,8 +14195,8 @@ void CvCity::liberate(bool bConquest, /* advc.ctr: */ bool bPeaceDeal)
 	}*/
 }
 
-// advc: style changes and renamed some variables
-PlayerTypes CvCity::getLiberationPlayer(bool bConquest) const
+
+PlayerTypes CvCity::getLiberationPlayer(bool bConquest) const  // advc: refactoring changes
 {
 	PROFILE_FUNC(); // advc: Fine so far; not frequently called.
 	if (isCapital())
@@ -14204,10 +14209,9 @@ PlayerTypes CvCity::getLiberationPlayer(bool bConquest) const
 		CvPlayer& kLoopPlayer = *it;
 		if (kLoopPlayer.getParent() == kOwner.getID())
 		{
-			CvCity* pLoopCapital = kLoopPlayer.getCapitalCity();
-			if (pLoopCapital != NULL)
+			if (kLoopPlayer.hasCapital())
 			{
-				if (sameArea(*pLoopCapital))
+				if (sameArea(*kLoopPlayer.getCapital()))
 					return kLoopPlayer.getID();
 			}
 		}
@@ -14239,14 +14243,16 @@ PlayerTypes CvCity::getLiberationPlayer(bool bConquest) const
 			at culture level 0, i.e. to players who never owned the city. */
 		if (!isEverOwned(kLoopPlayer.getID()))
 			continue; // </advc.ctr>
-
-		CvCity* pCapital = kLoopPlayer.getCapitalCity();
-		if (pCapital == NULL)
-			continue;
-		int iCapitalDistance = ::plotDistance(getX(), getY(), pCapital->getX(), pCapital->getY());
-		if (!sameArea(*pCapital))
-			iCapitalDistance *= 2;
-
+		int iCapitalDistance = -1;
+		{
+			CvCity* pCapital = kLoopPlayer.getCapital();
+			if (pCapital == NULL)
+				continue;
+			iCapitalDistance = ::plotDistance(getX(), getY(),
+					pCapital->getX(), pCapital->getY());
+			if (!sameArea(*pCapital))
+				iCapitalDistance *= 2;
+		}
 		int iCultureScore = getCultureTimes100(kLoopPlayer.getID()) /* K-Mod: */ + iBaseCulture;
 		if (bConquest && kLoopPlayer.getID() == getOriginalOwner())
 		{
@@ -14522,11 +14528,11 @@ int CvCity::calculateColonyMaintenanceTimes100(CvPlot const& kCityPlot,
 
 	if (GC.getGame().isOption(GAMEOPTION_NO_VASSAL_STATES))
 		return 0;
-
-	CvCity* pCapital = GET_PLAYER(eOwner).getCapitalCity();
-	if (pCapital && pCapital->isArea(kCityArea))
-		return 0;
-
+	{
+		CvCity* pCapital = GET_PLAYER(eOwner).getCapital();
+		if (pCapital != NULL && pCapital->isArea(kCityArea))
+			return 0;
+	}
 	int iNumCitiesPercent = 100;
 
 	iNumCitiesPercent *= (iPopulation + 17);
@@ -14567,17 +14573,22 @@ int CvCity::calculateColonyMaintenanceTimes100(CvPlot const& kCityPlot,
 	return iMaintenance;
 }
 
-// <advc.500b> (The parameter is important for performance)
-double CvCity::defensiveGarrison(double stopCountingAt) const
+// advc.500b:
+scaled CvCity::defensiveGarrison(
+	scaled rStopCountingAt) const // Param important for performance
 {
-	/*  Time is now acceptable, but still not negligible (slightly above 1%).
-		Probably b/c of the allUpgradesAvailable check. Should simply
-		cache the result of getNoMilitaryPercentAnger. */
+	/*  Time is acceptable - but not negligible (slightly above 1% of an AI turn) -
+		with rOUTDATED_PERCENT < 1. Perhaps fine if I keep it at 1 in XML.
+		Otherwise, I should simply cache the result of getNoMilitaryPercentAnger. */
 	PROFILE_FUNC();
-	double r = 0;
+
+	scaled r = 0;
 	CvPlayer const& kOwner = GET_PLAYER(getOwner());
-	CvPlot const& kPlot = *plot();
-	CvCity const* pCapital = kOwner.getCapitalCity();
+	CvPlot const& kPlot = getPlot();
+	// ("Obsolete" isn't really the right term for units)
+	static scaled const rOUTDATED_PERCENT = per100(GC.getDefineINT(
+			"DEMAND_BETTER_PROTECTION_OBSOLETE_PERCENT"));
+	CvCity const* pCapital = kOwner.getCapital();
 	if (pCapital == this)
 		pCapital = NULL;
 	for (int i = 0; i < kPlot.getNumUnits(); i++)
@@ -14585,23 +14596,26 @@ double CvCity::defensiveGarrison(double stopCountingAt) const
 		CvUnit const& kUnit = *kPlot.getUnitByIndex(i);
 		CvUnitInfo const& u = kUnit.getUnitInfo();
 		// Exclude naval units but not Explorer and Gunship
-		if(!u.isMilitaryHappiness() && u.getCultureGarrisonValue() <= 0)
+		if (!u.isMilitaryHappiness() && u.getCultureGarrisonValue() <= 0)
 			continue;
-		double defStr = kUnit.maxCombatStr(&kPlot, NULL, NULL, true);
-		// Outdated units count half
-		if(allUpgradesAvailable(kUnit.getUnitType()) != NO_UNIT ||
+		scaled rDefStr = per100(kUnit.maxCombatStr(&kPlot, NULL, NULL, true));
+		if (rOUTDATED_PERCENT != 1 &&
+			allUpgradesAvailable(kUnit.getUnitType()) != NO_UNIT ||
+			/*	Check capital too. Player might remove access to e.g. Copper
+				to avoid Warrior obsoletion penalty, but also cutting the capital
+				off from a strategic resource will rarely be worthwhile. */
 			(pCapital != NULL && pCapital->allUpgradesAvailable(kUnit.getUnitType())))
 		{
-			defStr /= 2;
+			rDefStr *= rOUTDATED_PERCENT;
 		}
-		r += defStr;
-		if (stopCountingAt > 0 && r > stopCountingAt)
+		r += rDefStr;
+		if (rStopCountingAt > 0 && r > rStopCountingAt)
 			return r;
 	}
 	return r;
-} // </advc.500b>
+}
 
-// <advc.123f>
+// advc.123f:
 void CvCity::failProduction(int iOrderData, int iInvestedProduction, bool bProject)
 {
 	// Based on code in doCheckProduction
@@ -14631,7 +14645,7 @@ void CvCity::failProduction(int iOrderData, int iInvestedProduction, bool bProje
 	gDLL->UI().addMessage(getOwner(), false, -1, szMsg, getPlot(), "AS2D_WONDERGOLD",
 			MESSAGE_TYPE_MINOR_EVENT, GC.getInfo(COMMERCE_GOLD).getButton(),
 			GC.getColorType("RED"));
-} // </advc.123f>
+}
 
 // <advc.064b>
 int CvCity::failGoldPercent(OrderTypes eOrder) const // Fail and overflow gold
@@ -14958,14 +14972,7 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 {
 	// <advc>
 //prereqMust+tholish
-/*
-	this fn is almost ... the same as processBuilding.
-	ive just oicked off some effects i didnt want to remove.
-	also the updated in the end were removed to the processBuilding it self will commit, no need for twice.
-todo
-make sute the >0 values are ok down below
-set xml tag to define it it will alter the effect by desire - like the bonus xml tag i added for now
-*/	
+	
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
 	CvGame const& kGame = GC.getGame();
 	CvPlayer& kOwner = GET_PLAYER(getOwner()); // </advc>

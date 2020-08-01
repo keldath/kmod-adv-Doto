@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by lcollins (Firaxis Games) -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+	   <Tag>TXT_KEY_IMPROVEMENT_FRESH_WATER_RADIUS</Tag>
+		<English>[ICON_BULLET]Adds Water in a %d1 tile radius</English>
+	</TEXT>				
+	<TEXT>
+		<Tag>TXT_KEY_IMPROVEMENT_NO_BUILD_FRESH_WATER</Tag>
+		<English>[ICON_BULLET]Cannot be built near Water</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_IMPROVEMENT_BUILD_ONLY_WATER</Tag>
+		<English>[ICON_BULLET]Built only in Water</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_TERRAIN_FRESH_WATER_CITIES</Tag>
+		<English>unless they are near Water</English>
+		</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_TERRAIN_NO_FRESH_WATER_CITIES</Tag>
+		<English>[NEWLINE][ICON_BULLET]Cities cannot be founded near Water</English>
+		</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_ADDS_FRESH_WATER</Tag>
+		<English>[NEWLINE][ICON_BULLET]Acts as a source of Water</English>
+		</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PLOT_FRESH_WATER</Tag>
+		<English>Water</English>
+		</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PLOT_FRESH_WATER_LAKE</Tag>
+		<English>Water Lake</English>
+		</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_WATER_WORK</Tag>
+		<English>[ICON_BULLET]Can Work Water Tiles</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_FROM_FRESH_WATER</Tag>
+		<English>%D1_Change[ICON_UNHEALTHY] from Water</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_HEALTH_FROM_FRESH_WATER</Tag>
+		<English>%D1_Change[ICON_HEALTHY] from Water</English>
+	</TEXT>
+</Civ4GameText>

@@ -118,7 +118,7 @@ public:
 			bool bIgnoreFeature = false) const; // advc.129
 	bool canHaveImprovement(ImprovementTypes eImprovement,														// Exposed to Python
 			TeamTypes eTeam = NO_TEAM, bool bPotential = false,
-			BuildTypes eBuild = NO_BUILD, bool bAnyBuild = true) const; // dlph.9
+			BuildTypes eBuild = NO_BUILD, bool bAnyBuild = true) const; // kekm.9
 	// < JImprovementLimit Mod Start >
 	bool isImprovementInRange(ImprovementTypes eImprovement, int iRange, bool bCheckBuildProgress) const;               // Exposed to Python
 	bool isImprovementAncestor(ImprovementTypes eImprovement, ImprovementTypes eCheckImprovement) const;               // Exposed to Python
@@ -488,15 +488,16 @@ public:
 	{
 		return m_aiYield.get(eIndex);
 	}
-	int calculateNatureYield(YieldTypes eIndex, TeamTypes eTeam /* advc: */ = NO_TEAM,						// Exposed to Python
+	int calculateNatureYield(YieldTypes eIndex, TeamTypes eTeam /* advc: */ = NO_TEAM,								// Exposed to Python
 			bool bIgnoreFeature = false, /* advc.300: */ bool bIgnoreHills = false) const;
-	int calculateBestNatureYield(YieldTypes eIndex, TeamTypes eTeam) const;															// Exposed to Python
+	int calculateBestNatureYield(YieldTypes eIndex, TeamTypes eTeam) const;											// Exposed to Python
 	int calculateTotalBestNatureYield(TeamTypes eTeam) const;																						// Exposed to Python
 	// BETTER_BTS_AI_MOD, City AI, 10/06/09, jdog5000:
-	int calculateImprovementYieldChange(ImprovementTypes eImprovement, YieldTypes eYield, PlayerTypes ePlayer, bool bOptimal = false, bool bBestRoute = false) const;	// Exposed to Python
+	int calculateImprovementYieldChange(ImprovementTypes eImprovement, YieldTypes eYield,							// Exposed to Python
+			PlayerTypes ePlayer = NO_PLAYER, bool bOptimal = false, bool bBestRoute = false) const;
 	// advc.enum: Return type changed to char (was int)
-	char calculateYield(YieldTypes eIndex, bool bDisplay = false) const;												// Exposed to Python
-	bool hasYield() const { return m_aiYield.hasContent(); } // advc.enum												// Exposed to Python
+	char calculateYield(YieldTypes eIndex, bool bDisplay = false) const;											// Exposed to Python
+	bool hasYield() const { return m_aiYield.hasContent(); } // advc.enum											// Exposed to Python
 	void updateYield();
 	int calculateCityPlotYieldChange(YieldTypes eYield, int iYield, int iCityPopulation) const;
 	// int calculateMaxYield(YieldTypes eYield) const; // disabled by K-Mod
@@ -509,7 +510,7 @@ public:
 	TeamTypes findHighestCultureTeam() const;																														// Exposed to Python
 	PlayerTypes findHighestCulturePlayer(
 			bool bAlive = false) const; // advc.035
-	int calculateCulturePercent(PlayerTypes eIndex) const;																		// Exposed to Python
+	int calculateCulturePercent(PlayerTypes eIndex) const;																// Exposed to Python
 	int calculateTeamCulturePercent(TeamTypes eIndex) const;																						// Exposed to Python
 	void setCulture(PlayerTypes eIndex, int iNewValue, bool bUpdate, bool bUpdatePlotGroups);																		// Exposed to Python
 	void changeCulture(PlayerTypes eIndex, int iChange, bool bUpdate);																	// Exposed to Python
@@ -535,7 +536,7 @@ public:
 	// < JCultureControl Mod End >
 
 
-	int countNumAirUnits(TeamTypes eTeam) const;																					// Exposed to Python
+	int countNumAirUnits(TeamTypes eTeam) const;																		// Exposed to Python
 	int airUnitSpaceAvailable(TeamTypes eTeam) const;
 	// <advc.081>
 	int countHostileUnits(PlayerTypes ePlayer, bool bPlayer, bool bTeam,

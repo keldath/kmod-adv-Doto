@@ -67,7 +67,7 @@
 		</GameOptionInfo>
 		<!-- advc: According to DarkLunaPhantom, this option has to remain
 			 in the eighth position.
-			 https://github.com/DarkLunaPhantom/Civ4-K-Mod/commit/908160ecea97d427cc24736fb4fb1e1b51f282f3 -->
+			 github.com/DarkLunaPhantom/Civ4-K-Mod/commit/908160ecea97d427cc24736fb4fb1e1b51f282f3 -->
 		<GameOptionInfo>
 			<Type>GAMEOPTION_RANDOM_PERSONALITIES</Type>
 			<Description>TXT_KEY_GAME_OPTION_RANDOM_PERSONALITIES</Description>
@@ -267,8 +267,8 @@
 		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_BUILDING_DELETION</Type>
-            <Description>Building Deletion</Description>
-            <Help>Buildings that their build condition will be removed, such as resource and such, will be demolished from the city</Help>
+            <Description>Inactive Buildings</Description>
+            <Help>Buildings Must have Prereq demands at all times, unless, their output would be inactive</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>
     	</GameOptionInfo>
@@ -308,7 +308,7 @@
 		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_ATTACK</Type>
-            <Description>Ranged Attack</Description>
+            <Description>R-Attack (DEV)</Description>
             <Help>Siege Units Have Ranged Attack (Reccomended-on)</Help>
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
@@ -316,28 +316,28 @@
 		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_RETALIATION</Type>
-            <Description>Ranged-Retaliate</Description>
+            <Description>R-Retaliate (DEV)</Description>
             <Help>Attacking an enemy ranged unit, it will retalliate with counter attack(no collateral damage).</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_END_MOVES</Type>
-            <Description>Ranged-Move End</Description>
+            <Description>R-Move End (DEV)</Description>
             <Help>Units with Range Strike wont be able to move if it have more move points.(default off)</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RAND_BOMB_HIT</Type>
-            <Description>Random Bombardment Damage</Description>
+            <Description>Random Bomb Hit (DEV)</Description>
             <Help>Bombard Attacks damage will be randomized</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RAND_BOMB_DMG</Type>
-            <Description>Random Bombardment Damage</Description>
+            <Description>Random Bomb Damage (DEV)</Description>
             <Help>Bombard Attacks damage will be randomized</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>

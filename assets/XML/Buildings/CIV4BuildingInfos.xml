@@ -216,7 +216,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iConquestProb>0</iConquestProb>
-			<iCitiesPrereq>4</iCitiesPrereq>
+			<iCitiesPrereq>0</iCitiesPrereq>
 			<iTeamsPrereq>0</iTeamsPrereq>
 			<iLevelPrereq>0</iLevelPrereq>
 			<iMinLatitude>0</iMinLatitude>
@@ -2592,7 +2592,9 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PrereqTech>TECH_POTTERY</PrereqTech>
 			<TechTypes/>
 			<Bonus>NONE</Bonus>
-			<PrereqBonuses/>
+			<PrereqBonuses>
+				<BonusType>BONUS_CORN</BonusType>
+			</PrereqBonuses>
 			<ProductionTraits>
 				<ProductionTrait>
 					<ProductionTraitType>TRAIT_EXPANSIVE</ProductionTraitType>
@@ -2603,7 +2605,10 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<NoBonus>NONE</NoBonus>
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
-			<iNumFreeBonuses>0</iNumFreeBonuses>
+			<iNumFreeBonuses>NONE</iNumFreeBonuses>
+<!--Doto prereqMust 
+			<iBonusMust>0</iBonusMust>
+-->
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -23780,6 +23785,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				<iCommerce>0</iCommerce>
 				<iCommerce>2</iCommerce>
 			</SpecialistExtraCommerces>
+			<!-- Reduced by K-Mod; was 5 culture in BtS. -->
 			<StateReligionCommerces>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>

@@ -39,7 +39,7 @@ public:
 	void AI_updatePersonality(); // advc.104
 
 	// <advc.003u> Access to AI-type members. Code mostly duplicated from CvPlayer.
-	inline CvCityAI* AI_getCapitalCity() const {
+	inline CvCityAI* AI_getCapital() const {
 		return AI_getCity(m_iCapitalCityID);
 	}
 	inline CvCityAI* AI_firstCity(int *pIterIdx) const {
@@ -327,7 +327,7 @@ public:
 	int AI_unitCostPerMil() const; // K-Mod
 	int AI_maxUnitCostPerMil(CvArea const* pArea = NULL, int iBuildProb = -1) const; // K-Mod
 	int AI_nukeWeight() const; // K-Mod
-	int AI_nukeDangerDivisor() const; // dlph.16
+	int AI_nukeDangerDivisor() const; // kekm.16
 	bool AI_isLandWar(CvArea const& kArea) const; // K-Mod
 	bool AI_isFocusWar(CvArea const* pArea = NULL) const; // advc.105
 
@@ -662,9 +662,9 @@ public:
 	   train a significant number of units of type eUnit? */
 	bool AI_canBeExpectedToTrain(UnitTypes eUnit) const; // advc.104, advc.651
 	bool AI_isDefenseFocusOnBarbarians(CvArea const& kArea) const; // advc.300
-	// advc.001: needed for bNeighbouringReligion in AI_techValue
-	bool AI_hasSharedPrimaryArea(PlayerTypes eOther) const;
+	bool AI_hasSharedPrimaryArea(PlayerTypes eOther) const; // advc
 
+	int AI_getContactDelay(ContactTypes eContact) const; // advc.130r
 	// <advc.104m>
 	bool AI_proposeEmbargo(PlayerTypes eHuman);
 	bool AI_contactReligion(PlayerTypes eHuman);
@@ -842,7 +842,7 @@ protected:
 	// </advc>
 	bool AI_proposeResourceTrade(PlayerTypes eTo); // advc.133
 	// advc.132:
-	bool AI_checkCivicReligionConsistency(CLinkList<TradeData> const& tradeItems) const;
+	bool AI_checkCivicReligionConsistency(CLinkList<TradeData> const& kTradeItems) const;
 	// <advc.036>
 	bool AI_checkResourceLimits(CLinkList<TradeData> const& kWeGive,
 			CLinkList<TradeData> const& kTheyGive, PlayerTypes eThey,

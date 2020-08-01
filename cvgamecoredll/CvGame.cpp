@@ -796,7 +796,7 @@ void CvGame::initGameHandicap()
 			/*  advc.250a: Relies on no strange new handicaps being placed
 				between Settler and Deity. Same in CvTeam::getHandicapType. */
 				setHandicapType((HandicapTypes)
-				::round // dlph.22
+				::round // kekm.22
 				(iSum / (10.0 * iDiv)));
 		}
 		FAssertMsg(iDiv > 0, "All-AI game. Not necessarily wrong, but unexpected.");
@@ -1608,7 +1608,8 @@ void CvGame::normalizeRemoveBadFeatures()  // advc: refactored
 					// <advc.108>
 					if (itPlot.currID() < NUM_INNER_PLOTS ||
 						(!isPowerfulStartingBonus(p, itPlayer->getID()) &&
-						prRemoval.bernoulliSuccess(getMapRand(), "advc.108")))
+						(prRemoval.bernoulliSuccess(getMapRand(), "Remove Bad Feature 1") ||
+						isWeakStartingFoodBonus(p, itPlayer->getID()))))
 					{	// </advc.108>
 						p.setFeatureType(NO_FEATURE);
 					}
@@ -1629,7 +1630,7 @@ void CvGame::normalizeRemoveBadFeatures()  // advc: refactored
 				{
 					if (p.isAdjacentToLand() || (iDistance <= iCityRange + 1 &&
 						// advc.027b: was getSorenRandNum
-						fixp(0.5).bernoulliSuccess(getMapRand(), "Remove Bad Feature")))
+						fixp(0.5).bernoulliSuccess(getMapRand(), "Remove Bad Feature 2")))
 					{
 						p.setFeatureType(NO_FEATURE);
 					}
@@ -1648,7 +1649,7 @@ void CvGame::normalizeRemoveBadFeatures()  // advc: refactored
 					else if (p.getBonusType() == NO_BONUS)
 						prRemoval = scaled(1, 3); // </advc.108>
 					// advc.027b: was getSorenRandNum
-					if (prRemoval.bernoulliSuccess(getMapRand(), "Remove Bad Feature"))
+					if (prRemoval.bernoulliSuccess(getMapRand(), "Remove Bad Feature 3"))
 						p.setFeatureType(NO_FEATURE);
 				}
 			}
@@ -1677,7 +1678,7 @@ void CvGame::normalizeRemoveBadTerrain()  // advc: refactored
 			int iDistance = itPlot.currPlotDist();
 			if (!p.isWater() && (iDistance <= iCityRange ||
 				p.isCoastalLand() || scaled(1, 1 + iDistance - iCityRange).
-				bernoulliSuccess(getMapRand(), "Map Upgrade Terrain Food")))
+				bernoulliSuccess(getMapRand(), "Map Upgrade Terrain Food 1")))
 			{
 				CvTerrainInfo const& kTerrain = GC.getInfo(p.getTerrainType());
 				int iPlotFood = kTerrain.getYield(YIELD_FOOD);
@@ -1695,15 +1696,16 @@ void CvGame::normalizeRemoveBadTerrain()  // advc: refactored
 				{
 					continue;
 				}
-				if (prKeep.bernoulliSuccess(getMapRand(), "advc.108"))
+				if (prKeep.bernoulliSuccess(getMapRand(), "Map Upgrade Terrain Food 2"))
 				{
-					if(iPlotFood > 0 ||
+					if (iPlotFood > 0 ||
 					/*  advc.129b: Two chances of removal for Snow river
 						(BuildModifier=50), but not for Desert river. */
 						(p.isRiver() && kTerrain.getBuildModifier() < 30) ||
-						prKeep.bernoulliSuccess(getMapRand(), "advc.108"))
+						prKeep.bernoulliSuccess(getMapRand(), "Map Upgrade Terrain Food 3"))
 					{
-						continue;
+						if (!isWeakStartingFoodBonus(p, itPlayer->getID()))
+							continue;
 					}
 				} // </advc.108>
 				int const iTargetTotal = 2;
@@ -1712,7 +1714,7 @@ void CvGame::normalizeRemoveBadTerrain()  // advc: refactored
 					iTargetFood = 1;
 				else if (iPlotFood == 1 || iDistance <= iCityRange)
 				{	// advc.027b: was getSorenRandNum
-					iTargetFood = 1 + getMapRandNum(2, "Map Upgrade Terrain Food");
+					iTargetFood = 1 + getMapRandNum(2, "Map Upgrade Terrain Food 4");
 				}
 				else iTargetFood = (p.isCoastalLand() ? 2 : 1);
 
@@ -2490,9 +2492,11 @@ bool CvGame::placeExtraBonus(PlayerTypes eStartPlayer, CvPlot& kPlot,
 	FOR_EACH_ENUM_RAND(Bonus, getMapRand())
 	{
 		CvBonusInfo const& kLoopBonus = GC.getInfo(eLoopBonus);
-		// <advc.108>
-		if (bNoFood && kLoopBonus.getYieldChange(YIELD_FOOD) > 0)
-			continue; // </advc.108>
+		if (bNoFood && kLoopBonus.getYieldChange(YIELD_FOOD) > 0 || // advc.108
+			kPlot.getBonusType() != NO_BONUS)
+		{
+			continue;
+		}
 		if (!isValidExtraBonus(eLoopBonus, eStartPlayer, kPlot, bCheckCanPlace, bIgnoreLatitude) ||
 			skipDuplicateExtraBonus(kStartPlot, kPlot, eLoopBonus, !bCheckCanPlace)) // advc.108
 		{
@@ -2502,7 +2506,7 @@ bool CvGame::placeExtraBonus(PlayerTypes eStartPlayer, CvPlot& kPlot,
 		if (kPlot.isGoody())
 			kPlot.setImprovementType(NO_IMPROVEMENT); // </advc.004z>
 		if (gMapLogLevel > 0) logBBAI("    Adding %S for player %d", kLoopBonus.getDescription(), eStartPlayer); // K-Mod
-		kPlot.setBonusType(eLoopBonus);			
+		kPlot.setBonusType(eLoopBonus);
 		return true;
 	}
 	return false;
@@ -2536,8 +2540,8 @@ bool CvGame::skipDuplicateExtraBonus(CvPlot const& kStartPlot, CvPlot const& kPl
 
 // advc: Cut, pasted, refactored from normalizeAddExtras
 bool CvGame::isValidExtraBonus(BonusTypes eBonus, PlayerTypes eStartPlayer,
-		CvPlot const& kPlot, bool bCheckCanPlace, bool bIgnoreLatitude) const {
-
+	CvPlot const& kPlot, bool bCheckCanPlace, bool bIgnoreLatitude) const
+{
 	CvBonusInfo const& kBonus = GC.getInfo(eBonus);
 	if (!kBonus.isNormalize())
 		return false;
@@ -2556,27 +2560,65 @@ bool CvGame::isValidExtraBonus(BonusTypes eBonus, PlayerTypes eStartPlayer,
 		b/c all of the isNormalize resources are revealed from the start. */
 	if (!GET_TEAM(eStartPlayer).isHasTech((TechTypes)kBonus.getTechReveal()))
 		return false;
-
-	if (bCheckCanPlace ? CvMapGenerator::GetInstance().
-		canPlaceBonusAt(eBonus, kPlot.getX(), kPlot.getY(), bIgnoreLatitude) :
-		kPlot.canHaveBonus(eBonus, bIgnoreLatitude))
+	if (kPlot.getBonusType() == eBonus)
 	{
+		FAssert(!bCheckCanPlace);
 		return true;
 	}
-	return false;
+	return (bCheckCanPlace ? CvMapGenerator::GetInstance().
+			canPlaceBonusAt(eBonus, kPlot.getX(), kPlot.getY(), bIgnoreLatitude) :
+			kPlot.canHaveBonus(eBonus, bIgnoreLatitude));
 }
 
-// advc.108:
-bool CvGame::isPowerfulStartingBonus(CvPlot const& kStartPlot, PlayerTypes eStartPlayer) const
+// <advc.108>
+bool CvGame::isPowerfulStartingBonus(CvPlot const& kPlot, PlayerTypes eStartPlayer) const
 {
 	if(getStartEra() > 0)
 		return false;
-	BonusTypes eBonus = kStartPlot.getBonusType(TEAMID(eStartPlayer));
+	BonusTypes eBonus = kPlot.getBonusType(TEAMID(eStartPlayer));
 	if(eBonus == NO_BONUS)
 		return false;
 	return (GC.getInfo(eBonus).getBonusClassType() ==
 			GC.getInfoTypeForString("BONUSCLASS_PRECIOUS"));
 }
+
+// Tailored for Tundra Deer, dry Jungle Rice
+bool CvGame::isWeakStartingFoodBonus(CvPlot const& kPlot, PlayerTypes eStartPlayer) const
+{
+	BonusTypes eBonus = kPlot.getBonusType(TEAMID(eStartPlayer));
+	if (eBonus == NO_BONUS ||
+		// To filter out resources that normalizeAddFood doesn't care about
+		!isValidExtraBonus(eBonus, eStartPlayer, kPlot, false, true))
+	{
+		return false;
+	}
+	int iBaseFood = GC.getInfo(eBonus).getYieldChange(YIELD_FOOD);
+	if (iBaseFood <= 0)
+		return false;
+	 iBaseFood += GC.getInfo(kPlot.getTerrainType()).getYield(YIELD_FOOD);
+	// (Some overlap with AIFoundValue::getBonusImprovement)
+	int iBestImprovFood = 0;
+	FOR_EACH_ENUM(Build)
+	{
+		CvBuildInfo const& kBuild = GC.getInfo(eLoopBuild);
+		ImprovementTypes eImprov = kBuild.getImprovement();
+		if (eImprov == NO_IMPROVEMENT)
+			continue;
+		CvImprovementInfo const& kImprov = GC.getInfo(eImprov);
+		if (eImprov == NO_IMPROVEMENT ||
+			!kImprov.isImprovementBonusMakesValid(eBonus) ||
+			!kImprov.isImprovementBonusTrade(eBonus))
+		{
+			continue;
+		}
+		int iImprovFood = kPlot.calculateImprovementYieldChange(
+				eImprov, YIELD_FOOD, eStartPlayer);
+		iBestImprovFood = std::max(iBestImprovFood, iImprovFood);
+	}
+	return (iBaseFood + iBestImprovFood <= 4 &&
+			// Not really a food resource if the improvement doesn't add food
+			iBestImprovFood > 0);
+} // </advc.108>
 
 // For each of n teams, let the closeness score for that team be the average distance of an edge between two players on that team.
 // This function calculates the closeness score for each team and returns the sum of those n scores.
@@ -3968,7 +4010,7 @@ EraTypes CvGame::getCurrentEra() const
 	if (iCount > 0)
 	{
 		//return ((EraTypes)(iEra / iCount));
-		return (EraTypes)::round(iEra / (double)iCount); // dlph.17
+		return (EraTypes)::round(iEra / (double)iCount); // kekm.17
 	}
 	FAssert(iCount > 0); // advc
 	return NO_ERA;
@@ -4934,14 +4976,14 @@ bool CvGame::canDoResolution(VoteSourceTypes eVoteSource, const VoteSelectionSub
 		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iPlayer);
 
 		if (kPlayer.isVotingMember(eVoteSource))
-		{	// <dlph.25/advc>
+		{	// <kekm.25/advc>
 			if(kVote.isForceWar())
 			{
 				if(GET_TEAM(kPlayer.getTeam()).isFullMember(eVoteSource) &&
 						!kPlayer.canDoResolution(eVoteSource, kData))
 					return false;
 			}
-			else // </dlph.25/advc>
+			else // </kekm.25/advc>
 			if (!kPlayer.canDoResolution(eVoteSource, kData))
 			{
 				return false;
@@ -5049,7 +5091,7 @@ bool CvGame::isValidVoteSelection(VoteSourceTypes eVoteSource, const VoteSelecti
 		if(kPlayer.isAVassal()) // advc
 			return false;
 		//if (!kPlayer.isFullMember(eVoteSource))
-		// dlph.25: 'These are not necessarily the same.'
+		// kekm.25: 'These are not necessarily the same.'
 		if (!GET_TEAM(kPlayer.getTeam()).isFullMember(eVoteSource))
 			return false;
 
@@ -5071,7 +5113,7 @@ bool CvGame::isValidVoteSelection(VoteSourceTypes eVoteSource, const VoteSelecti
 	{
 		CvPlayer& kPlayer = GET_PLAYER(kData.ePlayer);
 		//if (kPlayer.isFullMember(eVoteSource))
-		// dlph.25: 'These are not necessarily the same.'
+		// kekm.25: 'These are not necessarily the same.'
 		if (GET_TEAM(kPlayer.getTeam()).isFullMember(eVoteSource))
 			return false;
 
@@ -5082,7 +5124,7 @@ bool CvGame::isValidVoteSelection(VoteSourceTypes eVoteSource, const VoteSelecti
 			if (kPlayer2.getTeam() != kPlayer.getTeam())
 			{
 				//if (kPlayer2.isFullMember(eVoteSource))
-				// dlph.25: 'These are not necessarily the same.'
+				// kekm.25: 'These are not necessarily the same.'
 				if (GET_TEAM(kPlayer2.getTeam()).isFullMember(eVoteSource))
 				{
 					if (kPlayer2.canStopTradingWithTeam(kPlayer.getTeam()))
@@ -5105,7 +5147,7 @@ bool CvGame::isValidVoteSelection(VoteSourceTypes eVoteSource, const VoteSelecti
 		if (kTeam.isAVassal())
 			return false;
 		//if (kPlayer.isFullMember(eVoteSource))
-		// dlph.25: 'These are not necessarily the same.'
+		// kekm.25: 'These are not necessarily the same.'
 		if (GET_TEAM(kPlayer.getTeam()).isFullMember(eVoteSource))
 			return false;
 
@@ -5130,7 +5172,7 @@ bool CvGame::isValidVoteSelection(VoteSourceTypes eVoteSource, const VoteSelecti
 			return false;
 
 		//if (!kPlayer.isVotingMember(eVoteSource))
-		// dlph.25: Replacing the above
+		// kekm.25: Replacing the above
 		if (!GET_TEAM(kPlayer.getTeam()).isFullMember(eVoteSource))
 		{
 			// Can be passed only if already at war with a member
@@ -5157,7 +5199,7 @@ bool CvGame::isValidVoteSelection(VoteSourceTypes eVoteSource, const VoteSelecti
 	{
 		CvPlayer& kPlayer = GET_PLAYER(kData.ePlayer);
 		//if (kPlayer.isFullMember(eVoteSource) || !kPlayer.isVotingMember(eVoteSource))
-		// dlph.25: 'These are not necessarily the same'
+		// kekm.25: 'These are not necessarily the same'
 		if (GET_TEAM(kPlayer.getTeam()).isFullMember(eVoteSource) || !GET_TEAM(kPlayer.getTeam()).isVotingMember(eVoteSource))
 			return false;
 
@@ -5179,7 +5221,7 @@ bool CvGame::isValidVoteSelection(VoteSourceTypes eVoteSource, const VoteSelecti
 			return false;
 
 		//if (!kOtherPlayer.isFullMember(eVoteSource))
-		// dlph.25: 'These are not necessarily the same'
+		// kekm.25: 'These are not necessarily the same'
 		if (!GET_TEAM(kOtherPlayer.getTeam()).isFullMember(eVoteSource))
 			return false;
 
@@ -5962,11 +6004,11 @@ bool CvGame::isForceCivic(CivicTypes eIndex) const
 
 bool CvGame::isForceCivicOption(CivicOptionTypes eCivicOption) const
 {
-	for (int iI = 0; iI < GC.getNumCivicInfos(); iI++)
+	FOR_EACH_ENUM(Civic)
 	{
-		if (GC.getInfo((CivicTypes)iI).getCivicOptionType() == eCivicOption)
+		if (GC.getInfo(eLoopCivic).getCivicOptionType() == eCivicOption)
 		{
-			if (isForceCivic((CivicTypes)iI))
+			if (isForceCivic(eLoopCivic))
 				return true;
 		}
 	}
@@ -6815,7 +6857,7 @@ void CvGame::doGlobalWarming()
 			{
 				// only destroy the improvement if the new terrain cannot support it
 				if (!pPlot->canHaveImprovement(pPlot->getImprovementType()),
-					NO_BUILD, false) // dlph.9
+					NO_BUILD, false) // kekm.9
 				{
 					pPlot->setImprovementType(NO_IMPROVEMENT);
 				}  // <advc.055>
@@ -7796,7 +7838,7 @@ int CvGame::createBarbarianUnits(int n, CvArea& a, Shelf* pShelf, bool bCargoAll
 		// </advc.300>
 		// K-Mod. Give a combat penalty to barbarian boats.
 		if (pNewUnit && pPlot->isWater() &&
-				!pNewUnit->getUnitInfo().isHiddenNationality()) // dlph.12
+				!pNewUnit->getUnitInfo().isHiddenNationality()) // kekm.12
 		{	// find the "disorganized" promotion. (is there a better way to do this?)
 			PromotionTypes eDisorganized = (PromotionTypes)
 					GC.getInfoTypeForString("PROMOTION_DISORGANIZED", true);
@@ -7903,48 +7945,65 @@ UnitTypes CvGame::randomBarbarianUnit(UnitAITypes eUnitAI, CvArea const& a)
 			!GET_PLAYER(BARBARIAN_PLAYER).canTrain(eUnit))
 		{
 			continue;
-		} // <advc.301>
-		BonusTypes eAndBonus = kUnit.getPrereqAndBonus();
-		TechTypes eAndBonusTech = NO_TECH;
+		}  // <advc.301>
+		BonusTypes const eAndBonus = kUnit.getPrereqAndBonus();
+		std::vector<TechTypes> aeAndBonusTechs(2, NO_TECH);
 		if (eAndBonus != NO_BONUS)
 		{
-			eAndBonusTech = GC.getInfo(eAndBonus).getTechCityTrade();
-			if((eAndBonusTech != NO_TECH &&
-				!GET_TEAM(BARBARIAN_TEAM).isHasTech(eAndBonusTech)) ||
-				!a.hasAnyAreaPlayerBonus(eAndBonus))
+			CvBonusInfo const& kAndBonus = GC.getInfo(eAndBonus);
+			aeAndBonusTechs.push_back(kAndBonus.getTechCityTrade()); // (as in BtS)
+			aeAndBonusTechs.push_back(kAndBonus.getTechReveal());
+			bool bValid = true;
+			for (size_t j = 0; j < aeAndBonusTechs.size(); j++)
 			{
-				continue;
+				if (aeAndBonusTechs[j] != NO_TECH &&
+					!GET_TEAM(BARBARIAN_TEAM).isHasTech(aeAndBonusTechs[j]))
+				{
+					bValid = false;
+					break;
+				}
 			}
+			if (!bValid || !a.hasAnyAreaPlayerBonus(eAndBonus))
+				continue;
 		}
 		/*  No units from more than 1 era ago (obsoletion too difficult to test).
 			hasTech already tested by canTrain, but era shouldn't be
 			tested there b/c it's OK for Barbarian cities to train outdated units
 			(they only will if they can't train anything better). */
-		TechTypes eAndTech = kUnit.getPrereqAndTech();
+		TechTypes const eAndTech = kUnit.getPrereqAndTech();
 		int iUnitEra = 0;
 		if (eAndTech != NO_TECH)
 			iUnitEra = GC.getInfo(eAndTech).getEra();
-		if (eAndBonusTech != NO_TECH)
-			iUnitEra = std::max<int>(iUnitEra, GC.getInfo(eAndBonusTech).getEra());
+		for (size_t j = 0; j < aeAndBonusTechs.size(); j++)
+		{
+			if (aeAndBonusTechs[j] != NO_TECH)
+			{
+				iUnitEra = std::max<int>(iUnitEra,
+						GC.getInfo(aeAndBonusTechs[j]).getEra());
+			}
+		}
 		if (iUnitEra + 1 < getCurrentEra())
 			continue; // </advc.301>
 		bool bFound = false;
 		bool bRequires = false;
-		for (int j = 0; j < GC.getNUM_UNIT_PREREQ_OR_BONUSES(eUnit); j++)
+		for (int j = 0; j < GC.getNUM_UNIT_PREREQ_OR_BONUSES(eUnit) &&
+			!bFound; j++) // advc.301
 		{
 			BonusTypes eOrBonus = kUnit.getPrereqOrBonuses(j);
 			if(eOrBonus == NO_BONUS)
 				continue;
 			CvBonusInfo const& kOrBonus = GC.getInfo(eOrBonus);
-			TechTypes eOrBonusTech = kOrBonus.getTechCityTrade();
-			if (eOrBonusTech != NO_TECH)
+			// <advc.301>
+			std::vector<TechTypes> aeOrBonusTechs(2, NO_TECH);
+			aeOrBonusTechs.push_back(kOrBonus.getTechCityTrade()); // (as in BtS)
+			aeOrBonusTechs.push_back(kOrBonus.getTechReveal());
+			for (size_t k = 0; k < aeOrBonusTechs.size(); k++)
 			{
+				if (aeOrBonusTechs[k] == NO_TECH)
+					continue;
 				bRequires = true;
-				if (GET_TEAM(BARBARIAN_TEAM).isHasTech(eOrBonusTech) &&
-					/*  advc.301: Also require the resource to be connected by
-						someone on this continent; in particular, don't spawn
-						Horse Archers on a horseless continent. */
-					a.hasAnyAreaPlayerBonus(eOrBonus))
+				if (GET_TEAM(BARBARIAN_TEAM).isHasTech(aeOrBonusTechs[k]) &&
+					a.hasAnyAreaPlayerBonus(eOrBonus)) // </advc.301>
 				{
 					bFound = true;
 					break;
@@ -7953,13 +8012,6 @@ UnitTypes CvGame::randomBarbarianUnit(UnitAITypes eUnitAI, CvArea const& a)
 		}
 		if (bRequires && !bFound)
 			continue;
-		/*  <advc.301>: The code above only checks if they can build the improvements
-			necessary to obtain the required resources; it does not check if they
-			can see/use the resource. This means that Spearmen often appear before
-			Archers b/c they require only Hunting and Mining, and not Bronze Working.
-			Correction: */
-		if (!GET_TEAM(BARBARIAN_TEAM).canSeeReqBonuses(eUnit))
-			continue; // </advc.301>
 		int iValue = (1 + getSorenRandNum(1000, "Barb Unit Selection"));
 		if (kUnit.getUnitAIType(eUnitAI))
 			iValue += 200;
@@ -8401,7 +8453,7 @@ void CvGame::processVote(const VoteTriggeredData& kData, int iChange)
 			FAssert(NO_PLAYER != kData.kVoteOption.ePlayer);
 			CvPlayer& kPlayer = GET_PLAYER(kData.kVoteOption.ePlayer);
 			if (gTeamLogLevel >= 1) logBBAI("  Vote for forcing peace against team %d (%S) passes", kPlayer.getTeam(), kPlayer.getCivilizationDescription(0)); // BETTER_BTS_AI_MOD, AI logging, 10/02/09, jdog5000
-			// <dlph.25> 'Cancel defensive pacts with the attackers first'
+			// <kekm.25> 'Cancel defensive pacts with the attackers first'
 			FOR_EACH_DEAL_VAR(pLoopDeal)
 			{
 				if ((TEAMID(pLoopDeal->getFirstPlayer()) == kPlayer.getTeam() &&
@@ -8421,7 +8473,7 @@ void CvGame::processVote(const VoteTriggeredData& kData, int iChange)
 						}
 					} // advc: Don't bother with SecondTrades; DPs are dual.
 				}
-			} // </dlph.25>
+			} // </kekm.25>
 			for (int iPlayer = 0; iPlayer < MAX_CIV_PLAYERS; ++iPlayer)
 			{
 				CvPlayer& kLoopPlayer = GET_PLAYER((PlayerTypes)iPlayer);
@@ -8466,18 +8518,18 @@ void CvGame::processVote(const VoteTriggeredData& kData, int iChange)
 				it.hasNext(); ++it)
 			{
 				CvTeam& kFullMember = GET_TEAM(it->getTeam());
-				// dlph.25/advc: was isVotingMember
+				// kekm.25/advc: was isVotingMember
 				if (!kFullMember.isFullMember(kData.eVoteSource))
 					continue;
 				if (kFullMember.canChangeWarPeace(kTeam.getID()))
 				{
-					// <dlph.26>
+					// <kekm.26>
 					CvTeam::queueWar(kFullMember.getID(), kTeam.getID(),
-							false, WARPLAN_DOGPILE); // </dlph.26>
+							false, WARPLAN_DOGPILE); // </kekm.26>
 					kTeam.AI_makeUnwillingToTalk(kFullMember.getID()); // advc.104i
 				}
 			}
-			CvTeam::triggerWars(); // dlph.26
+			CvTeam::triggerWars(); // kekm.26
 			setVoteOutcome(kData, NO_PLAYER_VOTE);
 		}
 		else if (kVote.isAssignCity())
@@ -10259,7 +10311,7 @@ VoteTriggeredData* CvGame::addVoteTriggered(VoteSourceTypes eVoteSource, const V
 					kVoter.AI_diploVote(kOptionData, eVoteSource, false));
 			continue; // advc
 		}
-		// <dlph.25> (advc: simplified)
+		// <kekm.25> (advc: simplified)
 		if (isTeamVote(kOptionData.eVote))
 		{
 			TeamTypes const eVoterMaster = kVoter.getMasterTeam();
@@ -10272,7 +10324,7 @@ VoteTriggeredData* CvGame::addVoteTriggered(VoteSourceTypes eVoteSource, const V
 						kVoter.AI_diploVote(kOptionData, eVoteSource, false));
 				continue;
 			}
-		} // </dlph.25>
+		} // </kekm.25>
 		CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_DIPLOVOTE);
 		pInfo->setData1(pData->getID());
 		gDLL->getInterfaceIFace()->addPopup(pInfo, kVoter.getID());

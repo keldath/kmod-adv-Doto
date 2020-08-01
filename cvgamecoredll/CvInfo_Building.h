@@ -124,8 +124,8 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 	BonusTypes getPowerBonus() const { return (BonusTypes)m_iPowerBonus; }
 	BonusTypes getFreeBonus() const { return (BonusTypes)m_iFreeBonus; }
 	int getNumFreeBonuses() const { return m_iNumFreeBonuses; }
-//prereqMust+tholish
-	int getBonusMust() const { return m_iBonusMust; }
+//Doto-prereqMust+tholish
+	int getPrereqMustAll() const { return m_iPrereqMustAll; }
 	// < Building Resource Converter Start >
 	bool isRequiredInputBonus(int iBonus) const;			// Exposed to Python
 	int getRequiredInputBonusValue(int iBonus) const;		// Exposed to Python
@@ -146,13 +146,13 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 	int getMinAreaSize() const { return m_iMinAreaSize; }
 	int getNumCitiesPrereq() const { return m_iNumCitiesPrereq; }
 /************************************************************************************************/
-/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/* Doto-City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
 /************************************************************************************************/
 	int getNumCitySizeBldPrereq() const { return m_iNumCitySizeBldPrereq; }
 	//ORG - keldath
 	//int getNumCitySizeBldPrereq() const;  // Exposed to Python
 /************************************************************************************************/
-/* City Size Prerequisite                  END                                                  */
+/* Doto-City Size Prerequisite                  END                                                  */
 /************************************************************************************************/
 	int getNumTeamsPrereq() const { return m_iNumTeamsPrereq; }
 	int getUnitLevelPrereq() const { return m_iUnitLevelPrereq; }
@@ -168,11 +168,11 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 	int getFreeExperience() const { return m_iFreeExperience; }
 	int getGlobalFreeExperience() const { return m_iGlobalFreeExperience; }
 	int getFoodKept() const { return m_iFoodKept; }
-	/* Population Limit ModComp - Beginning */
+	/* Doto-Population Limit ModComp - Beginning */
 	int getPopulationLimitChange() const { return m_iPopulationLimitChange; }
 	//orgiginal - keldath
 	//DllExport int getPopulationLimitChange() const;				// Exposed to Python
-	/* Population Limit ModComp - End */
+	/* Doto- Population Limit ModComp - End */
 	int getAirlift() const { return m_iAirlift; }
 	int getAirModifier() const { return m_iAirModifier; }
 	int getAirUnitCapacity() const { return m_iAirUnitCapacity; }
@@ -203,7 +203,7 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 	AdvisorTypes getAdvisorType() const { return (AdvisorTypes)m_iAdvisorType; }
 	
 /********************************************************************************/
-/**		REVDCM									2/16/10				phungus420	*/
+/**		Doto-REVDCM									2/16/10				phungus420	*/
 /**																				*/
 /**		CanConstruct															*/
 /********************************************************************************/
@@ -236,12 +236,13 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 		return (CorporationTypes)m_iGlobalCorporationCommerce;
 	}
 	BonusTypes getPrereqAndBonus() const { return (BonusTypes)m_iPrereqAndBonus; }
-//	int getPrereqVicinityBonus() const;  //Shqype Vicinity Bonus Add
+//Doto-Shqype Vicinity Bonus Add
+//	int getPrereqVicinityBonus() const;  
 	int getGreatPeopleUnitClass() const { return m_iGreatPeopleUnitClass; }
 	int getGreatPeopleRateChange() const { return m_iGreatPeopleRateChange; }
 	int getConquestProbability() const { return m_iConquestProbability; }
 	int getMaintenanceModifier() const { return m_iMaintenanceModifier; }
-	//DPII < Maintenance Modifiers >
+	////Doto-DPII < Maintenance Modifiers >
 	int getGlobalMaintenanceModifier() const;
     int getAreaMaintenanceModifier() const;
     int getOtherAreaMaintenanceModifier() const;
@@ -259,7 +260,7 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 	int getGlobalHealth() const { return m_iGlobalHealth; }
 	int getGlobalPopulationChange() const { return m_iGlobalPopulationChange; }
 	int getFreeTechs() const { return m_iFreeTechs; }
-/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+/*** //Doto- HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
 	int getFreeSpecificTech() const { return m_iFreeSpecificTech; }
 	//original - keldath
 	//int getFreeSpecificTech() const;
@@ -370,7 +371,8 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 	inline bool isAnyPrereqAndTech() const { return (m_piPrereqAndTechs != NULL); } // advc.003t
 	BonusTypes getPrereqOrBonuses(int i) const;
 	inline bool isAnyPrereqOrBonus() const { return (m_piPrereqOrBonuses != NULL); } // advc.003t
-//	int getPrereqOrVicinityBonuses(int i) const;  //Shqype Vicinity Bonus Add
+//Doto-Shqype Vicinity Bonus Add
+//	int getPrereqOrVicinityBonuses(int i) const;  
 	int getProductionTraits(int i) const;
 	int getHappinessTraits(int i) const;
 	int getBuildingHappinessChanges(int i) const;
@@ -390,11 +392,11 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 	int* getSpecialistYieldChangeArray(int i) const;
 	int getBonusYieldModifier(int i, int j) const;
 	int* getBonusYieldModifierArray(int i) const;
-	// davidlallen: building bonus yield, commerce start
+	// /Doto-davidlallen: building bonus yield, commerce start
 	int getBonusConsumed() const;
 	int getCommerceProduced(int i) const;
 	int getYieldProduced(int i) const;
-	// davidlallen: building bonus yield, commerce end
+	// /Doto-davidlallen: building bonus yield, commerce end
 	// UNOFFICIAL_PATCH, Efficiency, 06/27/10, Afforess & jdog5000: START  // advc.003t: inlined
 	inline bool isAnySpecialistYieldChange() const { return m_bAnySpecialistYieldChange; }
 	inline bool isAnyBonusYieldModifier() const { return m_bAnyBonusYieldModifier; }
@@ -448,12 +450,12 @@ protected:
 	int m_iPowerBonus;
 	int m_iFreeBonus;
 	int m_iNumFreeBonuses;
-//prereqMust+tholish
-	int m_iBonusMust;
-	// < Building Resource Converter Start >
+//Doto-prereqMust+tholish
+	int m_iPrereqMustAll;
+	// < Doto-Building Resource Converter Start >
 	int* m_paiRequiredInputBonuses;
 	int* m_paiBuildingOutputBonuses;
-	// < Building Resource Converter End   >
+	// < Doto-Building Resource Converter End   >
 	int m_iFreeBuildingClass;
 	int m_iFreePromotion;
 	int m_iCivicOption;
@@ -466,11 +468,11 @@ protected:
 	int m_iMinAreaSize;
 	int m_iNumCitiesPrereq;
 /************************************************************************************************/
-/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/* Doto-City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
 /************************************************************************************************/
 	int m_iNumCitySizeBldPrereq;
 /************************************************************************************************/
-/* City Size Prerequisite                  END                                                  */
+/* Doto-City Size Prerequisite                  END                                                  */
 /************************************************************************************************/
 	int m_iNumTeamsPrereq;
 	int m_iUnitLevelPrereq;
@@ -485,9 +487,9 @@ protected:
 	int m_iGlobalHurryModifier;
 	int m_iFreeExperience;
 	int m_iGlobalFreeExperience;
-	/* Population Limit ModComp - Beginning */
+	/* Doto-Population Limit ModComp - Beginning */
 	int m_iPopulationLimitChange;
-	/* Population Limit ModComp - End */
+	/* Doto-Population Limit ModComp - End */
 	int m_iFoodKept;
 	int m_iAirlift;
 	int m_iAirModifier;
@@ -515,7 +517,7 @@ protected:
 	int m_iSpecialBuildingType;
 	int m_iAdvisorType;
 /********************************************************************************/
-/**		REVDCM									2/16/10				phungus420	*/
+/**		Doto-REVDCM									2/16/10				phungus420	*/
 /**																				*/
 /**		CanConstruct															*/
 /********************************************************************************/
@@ -533,12 +535,13 @@ protected:
 	int m_iGlobalReligionCommerce;
 	int m_iGlobalCorporationCommerce;
 	int m_iPrereqAndBonus;
-//	int m_iPrereqVicinityBonus;  //Shqype Vicinity Bonus Add
+//Doto-Shqype Vicinity Bonus Add
+//	int m_iPrereqVicinityBonus;  
 	int m_iGreatPeopleUnitClass;
 	int m_iGreatPeopleRateChange;
 	int m_iConquestProbability;
 	int m_iMaintenanceModifier;
-	//DPII < Maintenance Modifier >
+	//Doto-DPII < Maintenance Modifier >
 	int m_iGlobalMaintenanceModifier;
 	int m_iAreaMaintenanceModifier;
 	int m_iOtherAreaMaintenanceModifier;
@@ -546,7 +549,7 @@ protected:
 	int m_iNumCitiesMaintenanceModifier;
 	int m_iCoastalDistanceMaintenanceModifier;
 	int m_iConnectedCityMaintenanceModifier;
-	//DPII < Maintenance Modifier >
+	//Doto-DPII < Maintenance Modifier >
 	int m_iWarWearinessModifier;
 	int m_iGlobalWarWearinessModifier;
 	int m_iEnemyWarWearinessModifier;
@@ -556,9 +559,9 @@ protected:
 	int m_iGlobalHealth;
 	int m_iGlobalPopulationChange;
 	int m_iFreeTechs;
-/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+/*** Doto-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
 	int m_iFreeSpecificTech;
-/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
+/*** Doto-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
 	int m_iDefenseModifier;
 	int m_iBombardDefenseModifier;
 	int m_iAllCityDefenseModifier;
@@ -597,7 +600,8 @@ protected:
 
 	int* m_piPrereqAndTechs;
 	int* m_piPrereqOrBonuses;
-//	int* m_piPrereqOrVicinityBonuses;  //Shqype Vicinity Bonus Add
+//Doto-Shqype Vicinity Bonus Add
+//	int* m_piPrereqOrVicinityBonuses;  
 	int* m_piProductionTraits;
 	int* m_piHappinessTraits;
 	int* m_piSeaPlotYieldChange;
@@ -636,11 +640,11 @@ protected:
 
 	int** m_ppaiSpecialistYieldChange;
 	int** m_ppaiBonusYieldModifier;
-	// davidlallen: building bonus yield, commerce start
+	// Doto-davidlallen: building bonus yield, commerce start
 	int m_iBonusConsumed;
 	int* m_paiCommerceProduced;
 	int* m_paiYieldProduced;
-	// davidlallen: building bonus yield, commerce end
+	//Doto-davidlallen: building bonus yield, commerce end
 	// UNOFFICIAL_PATCH, Efficiency, 06/27/10, Afforess & jdog5000: START
 	bool m_bAnySpecialistYieldChange;
 	bool m_bAnyBonusYieldModifier;
@@ -826,12 +830,12 @@ public: // All const functions are exposed to Python. advc.inl: Most of them inl
 	{
 		return m_iTechShare;
 	}
-	//DPII < Maintenance Modifier had DllExport on all but no need according to  f1rpo>
+	//Doto-DPII < Maintenance Modifier had DllExport on all but no need according to  f1rpo>
     int getGlobalMaintenanceModifier() const;
     int getDistanceMaintenanceModifier() const;
     int getNumCitiesMaintenanceModifier() const;
     int getConnectedCityMaintenanceModifier() const;
-    //DPII < Maintenance Modifier >
+    //Doto-DPII < Maintenance Modifier >
 	int getEveryoneSpecialUnit() const
 	{
 		return m_iEveryoneSpecialUnit;
@@ -848,10 +852,10 @@ public: // All const functions are exposed to Python. advc.inl: Most of them inl
 	{
 		return m_iSuccessRate;
 	}
-// davidlallen: project civilization and free unit start
+// Doto-davidlallen: project civilization and free unit start
 	int getCivilization() const;
 	int getFreeUnit() const;
-// davidlallen: project civilization and free unit end
+// Doto-davidlallen: project civilization and free unit end
 
 	bool isSpaceship() const
 	{
@@ -887,20 +891,20 @@ protected:
 	int m_iProductionCost;
 	int m_iNukeInterception;
 	int m_iTechShare;
-	//DPII < Maintenance Modifiers >
+	//Doto-DPII < Maintenance Modifiers >
 	int m_iGlobalMaintenanceModifier;
 	int m_iDistanceMaintenanceModifier;
 	int m_iNumCitiesMaintenanceModifier;
 	int m_iConnectedCityMaintenanceModifier;
-	//DPII < Maintenance Modifiers >
+	//Doto-DPII < Maintenance Modifiers >
 	int m_iEveryoneSpecialUnit;
 	int m_iEveryoneSpecialBuilding;
 	int m_iVictoryDelayPercent;
 	int m_iSuccessRate;
-// davidlallen: project civilization and free unit start
+// Doto-davidlallen: project civilization and free unit start
 	int m_iCivilization;
 	int m_iFreeUnit;
-// davidlallen: project civilization and free unit end
+// Doto-davidlallen: project civilization and free unit end
 
 	bool m_bSpaceship;
 	bool m_bAllowsNukes;

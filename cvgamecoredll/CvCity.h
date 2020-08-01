@@ -216,9 +216,8 @@ public:
 
 	void processBonus(BonusTypes eBonus, int iChange);
 	void processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false, bool checkKeep = true);
-///prereqMust+tholish
 	void UNprocessBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false);
-///prereqMust+tholish -- unused -older trial that worked
+///prereqMust+tholish
 	void defuseBuilding(BuildingTypes eBuilding);
 	void activateBuilding(BuildingTypes eBuilding);
 	void processProcess(ProcessTypes eProcess, int iChange);
@@ -1595,7 +1594,7 @@ protected:
 	EnumMap<BuildingTypes,int> m_aiBuildingOriginalOwner;
 //prereqMust+tholish - this enum array will allow to keep tarck of shich buildings
 //were set to inactive
-	EnumMap<BuildingTypes,bool> m_aiBuildingeActive;
+	EnumMapDefault<BuildingTypes,bool,true> m_aiBuildingeActive;
 	EnumMapDefault<BuildingTypes,int,MIN_INT> m_aiBuildingOriginalTime;
 	EnumMap<BuildingTypes,int> m_aiNumRealBuilding;
 	EnumMap<BuildingTypes,int> m_aiNumFreeBuilding;
@@ -1694,7 +1693,7 @@ protected:
 			int iAttempt) const;
 	// </advc.310>
 	void updateBuildingDefense(); // advc.004c
-	double defensiveGarrison(double stopCountingAt = -1) const; // advc.500b
+	scaled defensiveGarrison(scaled stopCountingAt = -1) const; // advc.500b
 	//int calculateMaintenanceDistance() const;
 	// advc.004b: Replacing the above (which was public, but is only used internally)
 	static int calculateMaintenanceDistance(CvPlot const* cityPlot, PlayerTypes owner);

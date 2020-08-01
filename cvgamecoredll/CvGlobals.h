@@ -137,7 +137,7 @@ public:
 	DllExport bool& getSynchLogging() { return m_bSynchLogging; }
 	DllExport bool& overwriteLogs() { return m_bOverwriteLogs; }
 	// <advc> const inline versions of the above
-	// The first two are exposed to Python for dlph.27
+	// The first two are exposed to Python for kekm.27
 	inline bool isLogging() const { return m_bLogging; }
 	inline bool isRandLogging() const { return m_bRandLogging; }
 	inline bool isSynchLogging() const { return m_bSynchLogging; }
@@ -495,6 +495,7 @@ public:
 		DO(FREE_VASSAL_LAND_PERCENT) \
 		DO(FREE_VASSAL_POPULATION_PERCENT) \
 		DO(OVERSEAS_TRADE_MODIFIER) \
+		DO(MIN_REVOLUTION_TURNS) \
 		/* </advc.opt> */ \
 		DO(PATH_DAMAGE_WEIGHT) \
 		DO(HILLS_EXTRA_DEFENSE) \

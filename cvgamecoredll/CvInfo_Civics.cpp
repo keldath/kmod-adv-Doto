@@ -7,7 +7,7 @@
 
 
 CvCivicInfo::CvCivicInfo() :
-m_iCivicOptionType(NO_CIVICOPTION),
+m_eCivicOptionType(NO_CIVICOPTION),
 m_iAnarchyLength(0),
 m_iUpkeep(0),
 m_iAIWeight(0),
@@ -141,7 +141,6 @@ CvCivicInfo::~CvCivicInfo()
 			SAFE_DELETE_ARRAY(m_ppiImprovementYieldChanges[iI]);
 		SAFE_DELETE_ARRAY(m_ppiImprovementYieldChanges);
 	}
-
 /*************************************************************************************************/
 /**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 /**																								**/
@@ -167,257 +166,28 @@ CvCivicInfo::~CvCivicInfo()
 /*************************************************************************************************/
 /**	CMEDIT: End																					**/
 /*************************************************************************************************/
-
 }
-
-int CvCivicInfo::getCivicOptionType() const
-{
-	return m_iCivicOptionType;
-}
-
-int CvCivicInfo::getAnarchyLength() const
-{
-	return m_iAnarchyLength;
-}
-
-int CvCivicInfo::getUpkeep() const
-{
-	return m_iUpkeep;
-}
-
-int CvCivicInfo::getAIWeight() const
-{
-	return m_iAIWeight;
-}
-
-int CvCivicInfo::getGreatPeopleRateModifier() const
-{
-	return m_iGreatPeopleRateModifier;
-}
-
-int CvCivicInfo::getGreatGeneralRateModifier() const
-{
-	return m_iGreatGeneralRateModifier;
-}
-
-int CvCivicInfo::getDomesticGreatGeneralRateModifier() const
-{
-	return m_iDomesticGreatGeneralRateModifier;
-}
-
-int CvCivicInfo::getStateReligionGreatPeopleRateModifier() const
-{
-	return m_iStateReligionGreatPeopleRateModifier;
-}
-
-int CvCivicInfo::getDistanceMaintenanceModifier() const
-{
-	return m_iDistanceMaintenanceModifier;
-}
-
-int CvCivicInfo::getNumCitiesMaintenanceModifier() const
-{
-	return m_iNumCitiesMaintenanceModifier;
-}
-
-
 //DPII < Maintenance Modifiers >
 //due to advc changes - i dont know its this is the place- keldath
 int CvCivicInfo::getHomeAreaMaintenanceModifier() const
 {
     return m_iHomeAreaMaintenanceModifier;
 }
-
 int CvCivicInfo::getOtherAreaMaintenanceModifier() const
 {
     return m_iOtherAreaMaintenanceModifier;
 }
 //DPII < Maintenance Modifiers >
-
-int CvCivicInfo::getCorporationMaintenanceModifier() const
-{
-	return m_iCorporationMaintenanceModifier;
-}
-
-int CvCivicInfo::getExtraHealth() const
-{
-	return m_iExtraHealth;
-}
-
-int CvCivicInfo::getFreeExperience() const
-{
-	return m_iFreeExperience;
-}
-
-int CvCivicInfo::getWorkerSpeedModifier() const
-{
-	return m_iWorkerSpeedModifier;
-}
-
-int CvCivicInfo::getImprovementUpgradeRateModifier() const
-{
-	return m_iImprovementUpgradeRateModifier;
-}
-
-int CvCivicInfo::getMilitaryProductionModifier() const
-{
-	return m_iMilitaryProductionModifier;
-}
-
-int CvCivicInfo::getBaseFreeUnits() const
-{
-	return m_iBaseFreeUnits;
-}
-
-int CvCivicInfo::getBaseFreeMilitaryUnits() const
-{
-	return m_iBaseFreeMilitaryUnits;
-}
-
-int CvCivicInfo::getFreeUnitsPopulationPercent() const
-{
-	return m_iFreeUnitsPopulationPercent;
-}
-
-int CvCivicInfo::getFreeMilitaryUnitsPopulationPercent() const
-{
-	return m_iFreeMilitaryUnitsPopulationPercent;
-}
-
-int CvCivicInfo::getGoldPerUnit() const
-{
-	return m_iGoldPerUnit;
-}
-
-int CvCivicInfo::getGoldPerMilitaryUnit() const
-{
-	return m_iGoldPerMilitaryUnit;
-}
-
-int CvCivicInfo::getHappyPerMilitaryUnit() const
-{
-	return m_iHappyPerMilitaryUnit;
-}
-// <advc.912c>
-int CvCivicInfo::getLuxuryModifier() const
-{
-	return m_iLuxuryModifier;
-} // </advc.912c>
-
-int CvCivicInfo::getLargestCityHappiness() const
-{
-	return m_iLargestCityHappiness;
-}
-
-int CvCivicInfo::getWarWearinessModifier() const
-{
-	return m_iWarWearinessModifier;
-}
-
-int CvCivicInfo::getFreeSpecialist() const
-{
-	return m_iFreeSpecialist;
-}
-
-int CvCivicInfo::getTradeRoutes() const
-{
-	return m_iTradeRoutes;
-}
-
-int CvCivicInfo::getCivicPercentAnger() const
-{
-	return m_iCivicPercentAnger;
-}
-
-int CvCivicInfo::getMaxConscript() const
-{
-	return m_iMaxConscript;
-}
-
-int CvCivicInfo::getStateReligionHappiness() const
-{
-	return m_iStateReligionHappiness;
-}
-
-int CvCivicInfo::getNonStateReligionHappiness() const
-{
-	return m_iNonStateReligionHappiness;
-}
 // < Civic Infos Plus Start >
 int CvCivicInfo::getStateReligionExtraHealth() const
 {
 	return m_iStateReligionExtraHealth;
 }
-
 int CvCivicInfo::getNonStateReligionExtraHealth() const
 {
 	return m_iNonStateReligionExtraHealth;
 }
 // < Civic Infos Plus End   >
-
-int CvCivicInfo::getStateReligionUnitProductionModifier() const
-{
-	return m_iStateReligionUnitProductionModifier;
-}
-
-int CvCivicInfo::getStateReligionBuildingProductionModifier() const
-{
-	return m_iStateReligionBuildingProductionModifier;
-}
-
-int CvCivicInfo::getStateReligionFreeExperience() const
-{
-	return m_iStateReligionFreeExperience;
-}
-
-int CvCivicInfo::getExpInBorderModifier() const
-{
-	return m_iExpInBorderModifier;
-}
-
-bool CvCivicInfo::isMilitaryFoodProduction() const
-{
-	return m_bMilitaryFoodProduction;
-}
-/*bool CvCivicInfo::isNoUnhealthyPopulation() const
-{
-	return m_bNoUnhealthyPopulation;
-}*/
-// K-Mod, 27/dec/10: replaced NoUnhealthyPopulation with UnhealthyPopulationModifier
-int CvCivicInfo::getUnhealthyPopulationModifier() const
-{
-	return m_iUnhealthyPopulationModifier;
-} // K-Mod end
-
-bool CvCivicInfo::isBuildingOnlyHealthy() const
-{
-	return m_bBuildingOnlyHealthy;
-}
-
-bool CvCivicInfo::isNoForeignTrade() const
-{
-	return m_bNoForeignTrade;
-}
-
-bool CvCivicInfo::isNoCorporations() const
-{
-	return m_bNoCorporations;
-}
-
-bool CvCivicInfo::isNoForeignCorporations() const
-{
-	return m_bNoForeignCorporations;
-}
-
-bool CvCivicInfo::isStateReligion() const
-{
-	return m_bStateReligion;
-}
-
-bool CvCivicInfo::isNoNonStateReligionSpread() const
-{
-	return m_bNoNonStateReligionSpread;
-}
 
 const wchar* CvCivicInfo::getWeLoveTheKing()
 {
@@ -668,7 +438,7 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 	uint uiFlag=0;
 	stream->Read(&uiFlag);
 
-	stream->Read(&m_iCivicOptionType);
+	stream->Read(&m_eCivicOptionType);
 	stream->Read(&m_iAnarchyLength);
 	stream->Read(&m_iUpkeep);
 	stream->Read(&m_iAIWeight);
@@ -848,7 +618,7 @@ void CvCivicInfo::write(FDataStreamBase* stream)
 	uiFlag = 3; // advc.912c
 	stream->Write(uiFlag);
 
-	stream->Write(m_iCivicOptionType);
+	stream->Write(m_eCivicOptionType);
 	stream->Write(m_iAnarchyLength);
 	stream->Write(m_iUpkeep);
 	stream->Write(m_iAIWeight);
@@ -989,7 +759,8 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 /**	CMEDIT: End																					**/
 /*************************************************************************************************/
 
-	pXML->SetInfoIDFromChildXmlVal(m_iCivicOptionType, "CivicOptionType");
+	pXML->SetInfoIDFromChildXmlVal((int&)m_eCivicOptionType, "CivicOptionType");
+	FAssert(m_eCivicOptionType != NO_CIVICOPTION); // advc
 	pXML->SetInfoIDFromChildXmlVal((int&)m_eTechPrereq, "TechPrereq");
 
 	pXML->GetChildXmlValByName(&m_iAnarchyLength, "iAnarchyLength");
@@ -1412,15 +1183,6 @@ m_iminUpkeepCost(0)// doto keldath
 
 {}
 
-int CvUpkeepInfo::getPopulationPercent() const
-{
-	return m_iPopulationPercent;
-}
-
-int CvUpkeepInfo::getCityPercent() const
-{
-	return m_iCityPercent;
-}
 //keldath min civic cost when no inflation
 int CvUpkeepInfo::getminUpkeepCost() const
 {

@@ -16,12 +16,12 @@ m_iNoBonus(NO_BONUS),
 m_iPowerBonus(NO_BONUS),
 m_iFreeBonus(NO_BONUS),
 m_iNumFreeBonuses(0),
-//prereqMust+tholish
-m_iBonusMust(0),
-// < Building Resource Converter Start >
+//Doto-prereqMust+tholish
+m_iPrereqMustAll(0),
+// < Doto-Building Resource Converter Start >
 m_paiRequiredInputBonuses(NULL),
 m_paiBuildingOutputBonuses(NULL),
-// < Building Resource Converter End   >
+// < Doto-Building Resource Converter End   >
 m_iFreeBuildingClass(NO_BUILDINGCLASS),
 m_iFreePromotion(NO_PROMOTION),
 m_iCivicOption(NO_CIVICOPTION),
@@ -34,11 +34,11 @@ m_iAdvancedStartCostIncrease(0),
 m_iMinAreaSize(0),
 m_iNumCitiesPrereq(0),
 /************************************************************************************************/
-/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/* Doto-City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
 /************************************************************************************************/
 m_iNumCitySizeBldPrereq(0),
 /************************************************************************************************/
-/* City Size Prerequisite                  END                                                  */
+/* Doto-City Size Prerequisite                  END                                                  */
 /************************************************************************************************/
 m_iNumTeamsPrereq(0),
 m_iUnitLevelPrereq(0),
@@ -53,9 +53,9 @@ m_iGoldenAgeModifier(0),
 m_iGlobalHurryModifier(0),
 m_iFreeExperience(0),
 m_iGlobalFreeExperience(0),
-/* Population Limit ModComp - Beginning */
+/* Doto-Population Limit ModComp - Beginning */
 m_iPopulationLimitChange(0),
-/* Population Limit ModComp - End */
+/* Doto-Population Limit ModComp - End */
 m_iFoodKept(0),
 m_iAirlift(0),
 m_iAirModifier(0),
@@ -83,7 +83,7 @@ m_iPowerValue(0),
 m_iSpecialBuildingType(NO_SPECIALBUILDING),
 m_iAdvisorType(NO_ADVISOR),
 /********************************************************************************/
-/**		REVDCM									2/16/10				phungus420	*/
+/**		Doto-REVDCM									2/16/10				phungus420	*/
 /**																				*/
 /**		CanConstruct															*/
 /********************************************************************************/
@@ -101,12 +101,13 @@ m_iFoundsCorporation(NO_CORPORATION),
 m_iGlobalReligionCommerce(0),
 m_iGlobalCorporationCommerce(0),
 m_iPrereqAndBonus(NO_BONUS),
-//m_iPrereqVicinityBonus(NO_BONUS),  //Shqype Vicinity Bonus Add
+//Doto-Shqype Vicinity Bonus Add
+//m_iPrereqVicinityBonus(NO_BONUS),  
 m_iGreatPeopleUnitClass(NO_UNITCLASS),
 m_iGreatPeopleRateChange(0),
 m_iConquestProbability(0),
 m_iMaintenanceModifier(0),
-//DPII < Maintenance Modifier >
+//Doto-DPII < Maintenance Modifier >
 m_iGlobalMaintenanceModifier(0),
 m_iAreaMaintenanceModifier(0),
 m_iOtherAreaMaintenanceModifier(0),
@@ -114,7 +115,7 @@ m_iDistanceMaintenanceModifier(0),
 m_iNumCitiesMaintenanceModifier(0),
 m_iCoastalDistanceMaintenanceModifier(0),
 m_iConnectedCityMaintenanceModifier(0),
-//DPII < Maintenance Modifier >
+//Doto-DPII < Maintenance Modifier >
 m_iWarWearinessModifier(0),
 m_iGlobalWarWearinessModifier(0),
 m_iEnemyWarWearinessModifier(0),
@@ -124,9 +125,9 @@ m_iAreaHealth(0),
 m_iGlobalHealth(0),
 m_iGlobalPopulationChange(0),
 m_iFreeTechs(0),
-/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+/*** Doto-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
 m_iFreeSpecificTech(NO_TECH),
-/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
+/*** Doto-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
 m_iDefenseModifier(0),
 m_iBombardDefenseModifier(0),
 m_iAllCityDefenseModifier(0),
@@ -159,7 +160,8 @@ m_bStateReligion(false),
 m_bAllowsNukes(false),
 m_piPrereqAndTechs(NULL),
 m_piPrereqOrBonuses(NULL),
-//m_piPrereqOrVicinityBonuses(NULL),  //Shqype Vicinity Bonus Add
+//Doto-Shqype Vicinity Bonus Add
+//m_piPrereqOrVicinityBonuses(NULL),  
 m_piProductionTraits(NULL),
 m_piHappinessTraits(NULL),
 m_piSeaPlotYieldChange(NULL),
@@ -196,11 +198,11 @@ m_pbCommerceChangeOriginalOwner(NULL),
 m_pbBuildingClassNeededInCity(NULL),
 m_ppaiSpecialistYieldChange(NULL),
 m_ppaiBonusYieldModifier(NULL),
-// davidlallen: building bonus yield, commerce start
+// Doto-davidlallen: building bonus yield, commerce start
 m_iBonusConsumed(NO_BONUS),
 m_paiCommerceProduced(NULL),
 m_paiYieldProduced(NULL),
-// davidlallen: building bonus yield, commerce end
+// Doto-davidlallen: building bonus yield, commerce end
 // UNOFFICIAL_PATCH, Efficiency, 06/27/10, Afforess & jdog5000: START
 m_bAnySpecialistYieldChange(false),
 m_bAnyBonusYieldModifier(false)
@@ -209,10 +211,10 @@ m_bAnyBonusYieldModifier(false)
 
 CvBuildingInfo::~CvBuildingInfo()
 {
-	// < Building Resource Converter Start >
+	// < Doto-Building Resource Converter Start >
 	SAFE_DELETE_ARRAY(m_paiRequiredInputBonuses);
 	SAFE_DELETE_ARRAY(m_paiBuildingOutputBonuses);
-	// < Building Resource Converter End   >
+	// < Doto-Building Resource Converter End   >
 	SAFE_DELETE_ARRAY(m_piPrereqAndTechs);
 	SAFE_DELETE_ARRAY(m_piPrereqOrBonuses);
 //	SAFE_DELETE_ARRAY(m_piPrereqOrVicinityBonuses);  //Shqype Vicinity Bonus Add
@@ -263,10 +265,10 @@ CvBuildingInfo::~CvBuildingInfo()
 			SAFE_DELETE_ARRAY(m_ppaiBonusYieldModifier[i]);
 		SAFE_DELETE_ARRAY(m_ppaiBonusYieldModifier);
 	}
-	// davidlallen: building bonus yield, commerce start
+	// Doto-davidlallen: building bonus yield, commerce start
 	SAFE_DELETE_ARRAY(m_paiCommerceProduced);
 	SAFE_DELETE_ARRAY(m_paiYieldProduced);
-	// davidlallen: building bonus yield, commerce end
+	// Doto-davidlallen: building bonus yield, commerce end
 }
 // advc.tag:
 void CvBuildingInfo::addElements(std::vector<XMLElement*>& r) const
@@ -308,7 +310,7 @@ int CvBuildingInfo::getAreaTradeRoutes() const
 	return m_iAreaTradeRoutes;
 } // </advc.310>
 
-//DPII < Maintenance Modifier >
+//Doto-DPII < Maintenance Modifier >
 //due to advc changes - i dont know its this is the place- keldath
 int CvBuildingInfo::getGlobalMaintenanceModifier() const
 {
@@ -344,7 +346,7 @@ int CvBuildingInfo::getConnectedCityMaintenanceModifier() const
 {
     return m_iConnectedCityMaintenanceModifier;
 }
-//DPII < Maintenance Modifier >
+//Doto-DPII < Maintenance Modifier >
 
 void CvBuildingInfo::setMissionType(MissionTypes eNewType)
 {
@@ -674,8 +676,7 @@ const TCHAR* CvBuildingInfo::getMovie() const
 
 	return NULL;
 }
-//keldath QA-DONE i hope its a good place to pace these
-// < Building Resource Converter Start >
+// < Doto-Building Resource Converter Start >
 
 bool CvBuildingInfo::isRequiredInputBonus(int iBonus) const
 {
@@ -738,10 +739,10 @@ int CvBuildingInfo::getBuildingOutputBonusCount() const
 
 	return buildingOutputBonusCount;
 }
-// < Building Resource Converter End   >
+// < Doto-Building Resource Converter End   >
 
 /************************************************************************************************/
-/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/* Doto-City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
 /************************************************************************************************/
 /*moved to the .h file - keldath
 int CvBuildingInfo::getNumCitySizeBldPrereq() const
@@ -750,19 +751,19 @@ int CvBuildingInfo::getNumCitySizeBldPrereq() const
 }
 */
 /************************************************************************************************/
-/* City Size Prerequisite                  END                                                  */
+/* Doto-City Size Prerequisite                  END                                                  */
 /************************************************************************************************/
-/* Population Limit ModComp - Beginning */
+/* Doto-Population Limit ModComp - Beginning */
 /*moved to .h - keldath
 int CvBuildingInfo::getPopulationLimitChange() const
 {
 	return m_iPopulationLimitChange;
 }
 */
-/* Population Limit ModComp - End */
+/* Doto-Population Limit ModComp - End */
 
 /********************************************************************************/
-/**		REVDCM									2/16/10				phungus420	*/
+/**		Doto-REVDCM									2/16/10				phungus420	*/
 /**																				*/
 /**		CanConstruct															*/
 /********************************************************************************/
@@ -778,33 +779,33 @@ int CvBuildingInfo::getNotGameOption() const
 }
 */
 /********************************************************************************/
-/**		REVDCM									END								*/
+/**		Doto-REVDCM									END								*/
 /********************************************************************************/
 
-//Shqype Vicinity Bonus Start
+//Doto-Shqype Vicinity Bonus Start
 /*int CvBuildingInfo::getPrereqVicinityBonus() const		
 {
 	return m_iPrereqVicinityBonus;
 }*/
-//Shqype Vicinity Bonus End
-/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+//Doto-Shqype Vicinity Bonus End
+/*** Doto-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
 /*moved to .h file - kedlath
 int CvBuildingInfo::getFreeSpecificTech() const
 {
 	return m_iFreeSpecificTech;
 }
 */
-/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
-//Shqype Vicinity Bonus Start
+/*** Doto-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
+//Doto-Shqype Vicinity Bonus Start
 //int CvBuildingInfo::getPrereqOrVicinityBonuses(int i) const		
 //{
 //	FAssertMsg(i < GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), "Index out of bounds");
 //	FAssertMsg(i > -1, "Index out of bounds");
 //	return m_piPrereqOrVicinityBonuses ? m_piPrereqOrVicinityBonuses[i] : -1;
 //}
-//Shqype Vicinity Bonus End
+//Doto-Shqype Vicinity Bonus End
 
-// davidlallen: building bonus yield, commerce start
+// Doto-davidlallen: building bonus yield, commerce start
 int CvBuildingInfo::getBonusConsumed() const {
 	return m_iBonusConsumed;
 }
@@ -820,7 +821,7 @@ int CvBuildingInfo::getYieldProduced(int i) const {
 	FAssertMsg(i > -1, "Index out of bounds");
 	return m_paiYieldProduced ? m_paiYieldProduced[i] : 0;
 }
-// davidlallen: building bonus yield, commerce end
+// Doto-davidlallen: building bonus yield, commerce end
 
 // advc.008e:
 bool CvBuildingInfo::nameNeedsArticle() const
@@ -850,9 +851,9 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iPowerBonus);
 	stream->Read(&m_iFreeBonus);
 	stream->Read(&m_iNumFreeBonuses);
-//prereqMust+tholish
-	stream->Read(&m_iBonusMust);
-// < Building Resource Converter Start >	
+//Doto-prereqMust+tholish
+	stream->Read(&m_iPrereqMustAll);
+// < Doto-Building Resource Converter Start >	
 	SAFE_DELETE_ARRAY(m_paiRequiredInputBonuses);
 	m_paiRequiredInputBonuses = new int[GC.getNumBonusInfos()];
 	stream->Read(GC.getNumBonusInfos(), m_paiRequiredInputBonuses);
@@ -860,7 +861,7 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	SAFE_DELETE_ARRAY(m_paiBuildingOutputBonuses);
 	m_paiBuildingOutputBonuses = new int[GC.getNumBonusInfos()];
 	stream->Read(GC.getNumBonusInfos(), m_paiBuildingOutputBonuses);
-// < Building Resource Converter End   >
+// < Doto-Building Resource Converter End   >
 	stream->Read(&m_iFreeBuildingClass);
 	stream->Read(&m_iFreePromotion);
 	stream->Read(&m_iCivicOption);
@@ -873,11 +874,11 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iMinAreaSize);
 	stream->Read(&m_iNumCitiesPrereq);
 /************************************************************************************************/
-/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/* Doto-City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
 /************************************************************************************************/
 	stream->Read(&m_iNumCitySizeBldPrereq);
 /************************************************************************************************/
-/* City Size Prerequisite                  END                                                  */
+/* Doto-City Size Prerequisite                  END                                                  */
 /************************************************************************************************/
 	stream->Read(&m_iNumTeamsPrereq);
 	stream->Read(&m_iUnitLevelPrereq);
@@ -892,9 +893,9 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iGlobalHurryModifier);
 	stream->Read(&m_iFreeExperience);
 	stream->Read(&m_iGlobalFreeExperience);
-	/* Population Limit ModComp - Beginning */
+	/* Doto-Population Limit ModComp - Beginning */
 	stream->Read(&m_iPopulationLimitChange);
-	/* Population Limit ModComp - End */
+	/* Doto-Population Limit ModComp - End */
 	stream->Read(&m_iFoodKept);
 	stream->Read(&m_iAirlift);
 	stream->Read(&m_iAirModifier);
@@ -922,14 +923,14 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iSpecialBuildingType);
 	stream->Read(&m_iAdvisorType);
 /********************************************************************************/
-/**		REVDCM									2/16/10				phungus420	*/
+/**		Doto-REVDCM									2/16/10				phungus420	*/
 /**																				*/
 /**		CanConstruct															*/
 /********************************************************************************/
 	stream->Read(&m_iPrereqGameOption);
 	stream->Read(&m_iNotGameOption);
 /********************************************************************************/
-/**		REVDCM									END								*/
+/**		Doto-REVDCM									END								*/
 /********************************************************************************/
 	stream->Read(&m_iHolyCity);
 	stream->Read(&m_iReligionType);
@@ -940,12 +941,13 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iGlobalReligionCommerce);
 	stream->Read(&m_iGlobalCorporationCommerce);
 	stream->Read(&m_iPrereqAndBonus);
-//	stream->Read(&m_iPrereqVicinityBonus);  //Shqype Vicinity Bonus Add
+//Doto-Shqype Vicinity Bonus Add
+//	stream->Read(&m_iPrereqVicinityBonus);  
 	stream->Read(&m_iGreatPeopleUnitClass);
 	stream->Read(&m_iGreatPeopleRateChange);
 	stream->Read(&m_iConquestProbability);
 	stream->Read(&m_iMaintenanceModifier);
-	//DPII < Maintenance Modifier >
+	//Doto-DPII < Maintenance Modifier >
 	stream->Read(&m_iGlobalMaintenanceModifier);
 	stream->Read(&m_iAreaMaintenanceModifier);
 	stream->Read(&m_iOtherAreaMaintenanceModifier);//keldath fix?
@@ -953,7 +955,7 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iNumCitiesMaintenanceModifier);
 	stream->Read(&m_iDistanceMaintenanceModifier);
 	stream->Read(&m_iConnectedCityMaintenanceModifier);
-	//DPII < Maintenance Modifier >
+	//Doto-DPII < Maintenance Modifier >
 	stream->Read(&m_iWarWearinessModifier);
 	stream->Read(&m_iGlobalWarWearinessModifier);
 	stream->Read(&m_iEnemyWarWearinessModifier);
@@ -963,9 +965,9 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iGlobalHealth);
 	stream->Read(&m_iGlobalPopulationChange);
 	stream->Read(&m_iFreeTechs);
-/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+/*** Doto-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
 	stream->Read(&m_iFreeSpecificTech);
-/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
+/*** Doto-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
 	stream->Read(&m_iDefenseModifier);
 	stream->Read(&m_iBombardDefenseModifier);
 	stream->Read(&m_iAllCityDefenseModifier);
@@ -1005,11 +1007,11 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	SAFE_DELETE_ARRAY(m_piPrereqOrBonuses);
 	m_piPrereqOrBonuses = new int[GC.getNUM_BUILDING_PREREQ_OR_BONUSES()];
 	stream->Read(GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), m_piPrereqOrBonuses);
-//Shqype Vicinity Bonus Start
+//Doto-Shqype Vicinity Bonus Start
 //	SAFE_DELETE_ARRAY(m_piPrereqOrVicinityBonuses);
 //	m_piPrereqOrVicinityBonuses = new int[GC.getNUM_BUILDING_PREREQ_OR_BONUSES()];
 //	stream->Read(GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), m_piPrereqOrVicinityBonuses);
-//Shqype Vicinity Bonus End
+//Doto-Shqype Vicinity Bonus End
 	SAFE_DELETE_ARRAY(m_piProductionTraits);
 	m_piProductionTraits = new int[GC.getNumTraitInfos()];
 	stream->Read(GC.getNumTraitInfos(), m_piProductionTraits);
@@ -1148,7 +1150,7 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 		m_ppaiBonusYieldModifier[i]  = new int[NUM_YIELD_TYPES];
 		stream->Read(NUM_YIELD_TYPES, m_ppaiBonusYieldModifier[i]);
 	} 
-// davidlallen: building bonus yield, commerce start
+// Doto-davidlallen: building bonus yield, commerce start
 	stream->Read(&m_iBonusConsumed);
 	SAFE_DELETE_ARRAY(m_paiCommerceProduced);
 	m_paiCommerceProduced = new int[NUM_COMMERCE_TYPES];
@@ -1156,7 +1158,7 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	SAFE_DELETE_ARRAY(m_paiYieldProduced);
 	m_paiYieldProduced = new int[NUM_YIELD_TYPES];
 	stream->Read(NUM_YIELD_TYPES, m_paiYieldProduced);
-	// davidlallen: building bonus yield, commerce end
+// Doto-davidlallen: building bonus yield, commerce end
 	// UNOFFICIAL_PATCH, Efficiency, 06/27/10, Afforess & jdog5000: START
 	m_bAnyBonusYieldModifier = false;
 	for(int i = 0; !m_bAnyBonusYieldModifier && i < GC.getNumBonusInfos(); i++)
@@ -1188,12 +1190,12 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iPowerBonus);
 	stream->Write(m_iFreeBonus);
 	stream->Write(m_iNumFreeBonuses);
-//prereqMust+tholish
-	stream->Write(m_iBonusMust);
-	// < Building Resource Converter Start >	
+//Doto-prereqMust+tholish
+	stream->Write(m_iPrereqMustAll);
+	// < Doto-Building Resource Converter Start >	
 	stream->Write(GC.getNumBonusInfos(), m_paiRequiredInputBonuses);
 	stream->Write(GC.getNumBonusInfos(), m_paiBuildingOutputBonuses);
-	// < Building Resource Converter End   >
+	// < Doto-Building Resource Converter End   >
 	stream->Write(m_iFreeBuildingClass);
 	stream->Write(m_iFreePromotion);
 	stream->Write(m_iCivicOption);
@@ -1206,11 +1208,11 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iMinAreaSize);
 	stream->Write(m_iNumCitiesPrereq);
 /************************************************************************************************/
-/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/* Doto-City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
 /************************************************************************************************/
 	stream->Write(m_iNumCitySizeBldPrereq);
 /************************************************************************************************/
-/* City Size Prerequisite                  END                                                  */
+/* Doto-City Size Prerequisite                  END                                                  */
 /************************************************************************************************/
 	stream->Write(m_iNumTeamsPrereq);
 	stream->Write(m_iUnitLevelPrereq);
@@ -1225,9 +1227,9 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iGlobalHurryModifier);
 	stream->Write(m_iFreeExperience);
 	stream->Write(m_iGlobalFreeExperience);
-	/* Population Limit ModComp - Beginning */
+	/* Doto-Population Limit ModComp - Beginning */
 	stream->Write(m_iPopulationLimitChange);
-	/* Population Limit ModComp - End */
+	/* Doto-Population Limit ModComp - End */
 	stream->Write(m_iFoodKept);
 	stream->Write(m_iAirlift);
 	stream->Write(m_iAirModifier);
@@ -1255,14 +1257,14 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iSpecialBuildingType);
 	stream->Write(m_iAdvisorType);
 /********************************************************************************/
-/**		REVDCM									2/16/10				phungus420	*/
+/**		Doto-REVDCM									2/16/10				phungus420	*/
 /**																				*/
 /**		CanConstruct															*/
 /********************************************************************************/
 	stream->Write(m_iPrereqGameOption);
 	stream->Write(m_iNotGameOption);
 /********************************************************************************/
-/**		REVDCM									END								*/
+/**		Doto-REVDCM									END								*/
 /********************************************************************************/
 	stream->Write(m_iHolyCity);
 	stream->Write(m_iReligionType);
@@ -1273,12 +1275,13 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iGlobalReligionCommerce);
 	stream->Write(m_iGlobalCorporationCommerce);
 	stream->Write(m_iPrereqAndBonus);
-//	stream->Write(m_iPrereqVicinityBonus);  //Shqype Vicinity Bonus Add
+//Doto-Shqype Vicinity Bonus Add
+//	stream->Write(m_iPrereqVicinityBonus);  
 	stream->Write(m_iGreatPeopleUnitClass);
 	stream->Write(m_iGreatPeopleRateChange);
 	stream->Write(m_iConquestProbability);
 	stream->Write(m_iMaintenanceModifier);
-	//DPII < Maintenance Modifier >
+	//Doto-DPII < Maintenance Modifier >
 	stream->Write(m_iGlobalMaintenanceModifier);
 	stream->Write(m_iAreaMaintenanceModifier);
 	stream->Write(m_iOtherAreaMaintenanceModifier);
@@ -1286,7 +1289,7 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iNumCitiesMaintenanceModifier);
 	stream->Write(m_iCoastalDistanceMaintenanceModifier);
 	stream->Write(m_iConnectedCityMaintenanceModifier);
-	//DPII < Maintenance Modifier >
+	//Doto-DPII < Maintenance Modifier >
 	stream->Write(m_iWarWearinessModifier);
 	stream->Write(m_iGlobalWarWearinessModifier);
 	stream->Write(m_iEnemyWarWearinessModifier);
@@ -1296,9 +1299,9 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iGlobalHealth);
 	stream->Write(m_iGlobalPopulationChange);
 	stream->Write(m_iFreeTechs);
-	/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+	/*** Doto-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
 	stream->Write(m_iFreeSpecificTech);
-	/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
+	/*** Doto-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
 	stream->Write(m_iDefenseModifier);
 	stream->Write(m_iBombardDefenseModifier);
 	stream->Write(m_iAllCityDefenseModifier);
@@ -1336,7 +1339,8 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->WriteString(m_szMovieDefineTag);
 	stream->Write(GC.getNUM_BUILDING_AND_TECH_PREREQS(), m_piPrereqAndTechs);
 	stream->Write(GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), m_piPrereqOrBonuses);
-	//	stream->Write(GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), m_piPrereqOrVicinityBonuses);  //Shqype Vicinity Bonus Add
+//Doto-Shqype Vicinity Bonus Add
+	//	stream->Write(GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), m_piPrereqOrVicinityBonuses);  
 	stream->Write(GC.getNumTraitInfos(), m_piProductionTraits);
 	stream->Write(GC.getNumTraitInfos(), m_piHappinessTraits);
 	stream->Write(NUM_YIELD_TYPES, m_piSeaPlotYieldChange);
@@ -1375,11 +1379,11 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 		stream->Write(NUM_YIELD_TYPES, m_ppaiSpecialistYieldChange[i]);
 	for(int i = 0; i < GC.getNumBonusInfos(); i++)
 		stream->Write(NUM_YIELD_TYPES, m_ppaiBonusYieldModifier[i]);
-	// davidlallen: building bonus yield, commerce start
+	// Doto-davidlallen: building bonus yield, commerce start
 	stream->Write(m_iBonusConsumed);
 	stream->Write(NUM_COMMERCE_TYPES, m_paiCommerceProduced);
 	stream->Write(NUM_YIELD_TYPES, m_paiYieldProduced);
-	// davidlallen: building bonus yield, commerce end
+	// Doto-davidlallen: building bonus yield, commerce end
 }
 #endif
 
@@ -1387,6 +1391,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 {
 	if (!CvHotkeyInfo::read(pXML))
 		return false;
+//Doto-code for placegolder buldingd
 	std::string szType(getType());
 	bool bPlaceHolder = (szType.rfind("BUILDING_PLACEHOLDER", 0) == 0);
 	if(bPlaceHolder)
@@ -1394,19 +1399,19 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 		pXML->setAssertMandatoryEnabled(false);
 	CvString szTextVal;
 //keldath-qa10-the above was changed by f1rpo 097
-// < Civic Infos Plus Start > //ADDED BY KELDATH	
+// < Doto-Civic Infos Plus Start > //ADDED BY KELDATH	
 	int j=0;						//loop counter
 	int k=0;						//loop counter
 	int iNumSibs=0;				// the number of siblings the current xml node has
 //	int iNumChildren;				// the number of children the current node has
-// < Civic Infos Plus END > //ADDED BY KELDATH
+// < Doto-Civic Infos Plus END > //ADDED BY KELDATH
 	pXML->SetInfoIDFromChildXmlVal(m_iBuildingClassType, "BuildingClass");
 	pXML->SetInfoIDFromChildXmlVal(m_iSpecialBuildingType, "SpecialBuildingType");
 	pXML->SetInfoIDFromChildXmlVal(m_iAdvisorType, "Advisor");
 	pXML->GetChildXmlValByName(m_szArtDefineTag, "ArtDefineTag");
 	pXML->GetChildXmlValByName(m_szMovieDefineTag, "MovieDefineTag");
 /********************************************************************************/
-/**		REVDCM									2/16/10				phungus420	*/
+/**		Doto-REVDCM									2/16/10				phungus420	*/
 /**																				*/
 /**		CanConstruct															*/
 /********************************************************************************/
@@ -1416,7 +1421,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(szTextVal, "NotGameOption",""); // f1rpo
 	m_iNotGameOption = pXML->FindInInfoClass(szTextVal);
 /********************************************************************************/
-/**		REVDCM									END								*/
+/**		Doto-REVDCM									END								*/
 /********************************************************************************/
 	pXML->SetInfoIDFromChildXmlVal(m_iHolyCity, "HolyCity");
 	pXML->SetInfoIDFromChildXmlVal(m_iReligionType, "ReligionType");
@@ -1463,7 +1468,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
 
-//Shqype Vicinity Bonus Start
+//Doto-Shqype Vicinity Bonus Start
 /*	pXML->GetChildXmlValByName(szTextVal, "VicinityBonus");
 	m_iPrereqVicinityBonus = pXML->FindInInfoClass(szTextVal);
 
@@ -1493,7 +1498,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 		}
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}*/
-//Shqype Vicinity Bonus End
+//Doto-Shqype Vicinity Bonus End
 	pXML->SetInfoIDFromChildXmlVal(m_iPrereqAndBonus, "Bonus");
 
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"PrereqBonuses"))
@@ -1535,15 +1540,15 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetInfoIDFromChildXmlVal(m_iFreeBonus, "FreeBonus");
 
 	pXML->GetChildXmlValByName(&m_iNumFreeBonuses, "iNumFreeBonuses");
-//prereqMust+tholish
-	pXML->GetChildXmlValByName(&m_iBonusMust, "iBonusMust",0);
-// < Building Resource Converter Start >
+//Doto-prereqMust+tholish
+	pXML->GetChildXmlValByName(&m_iPrereqMustAll, "iPrereqMustAll",0);
+// < BDoto-uilding Resource Converter Start >
 //keldath qa2 - done - from f1rpo - The sizeof... parameter was unused, so I've removed it.
 //	pXML->SetVariableListTagPair(&m_paiRequiredInputBonuses, "RequiredInputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
 //	pXML->SetVariableListTagPair(&m_paiBuildingOutputBonuses, "BuildingOutputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
 	pXML->SetVariableListTagPair(&m_paiRequiredInputBonuses, "RequiredInputBonuses", GC.getNumBonusInfos());
 	pXML->SetVariableListTagPair(&m_paiBuildingOutputBonuses, "BuildingOutputBonuses", GC.getNumBonusInfos());
-	// < Building Resource Converter End   >
+	// < Doto-Building Resource Converter End   >
 	pXML->SetInfoIDFromChildXmlVal(m_iFreeBuildingClass, "FreeBuilding");
 	pXML->SetInfoIDFromChildXmlVal(m_iFreePromotion, "FreePromotion");
 	pXML->SetInfoIDFromChildXmlVal(m_iCivicOption, "CivicOption");
@@ -1584,11 +1589,11 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iConquestProbability, "iConquestProb");
 	pXML->GetChildXmlValByName(&m_iNumCitiesPrereq, "iCitiesPrereq");
 /************************************************************************************************/
-/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/* Doto-City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
 /************************************************************************************************/
 	pXML->GetChildXmlValByName(&m_iNumCitySizeBldPrereq, "iCitySizeBldPrereq", 0);
 /************************************************************************************************/
-/* City Size Prerequisite                  END                                                  */
+/* Doto-City Size Prerequisite                  END                                                  */
 /************************************************************************************************/
 	pXML->GetChildXmlValByName(&m_iNumTeamsPrereq, "iTeamsPrereq");
 	pXML->GetChildXmlValByName(&m_iUnitLevelPrereq, "iLevelPrereq");
@@ -1616,7 +1621,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iAreaFreeSpecialist, "iAreaFreeSpecialist");
 	pXML->GetChildXmlValByName(&m_iGlobalFreeSpecialist, "iGlobalFreeSpecialist");
 	pXML->GetChildXmlValByName(&m_iMaintenanceModifier, "iMaintenanceModifier");
-	//DPII < Maintenance Modifier >
+	//Doto-DPII < Maintenance Modifier >
     pXML->GetChildXmlValByName(&m_iGlobalMaintenanceModifier, "iGlobalMaintenanceModifier", 0);
     pXML->GetChildXmlValByName(&m_iAreaMaintenanceModifier, "iAreaMaintenanceModifier", 0);
     pXML->GetChildXmlValByName(&m_iOtherAreaMaintenanceModifier, "iOtherAreaMaintenanceModifier", 0);
@@ -1624,7 +1629,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iNumCitiesMaintenanceModifier, "iNumCitiesMaintenanceModifier", 0);
 	pXML->GetChildXmlValByName(&m_iCoastalDistanceMaintenanceModifier, "iCoastalDistanceMaintenanceModifier", 0);
 	pXML->GetChildXmlValByName(&m_iConnectedCityMaintenanceModifier, "iConnectedCityMaintenanceModifier", 0);
-	//DPII < Maintenance Modifier >
+	//Doto-DPII < Maintenance Modifier >
 	pXML->GetChildXmlValByName(&m_iWarWearinessModifier, "iWarWearinessModifier");
 	pXML->GetChildXmlValByName(&m_iGlobalWarWearinessModifier, "iGlobalWarWearinessModifier");
 	pXML->GetChildXmlValByName(&m_iEnemyWarWearinessModifier, "iEnemyWarWearinessModifier");
@@ -1647,10 +1652,10 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iForeignTradeRouteModifier, "iForeignTradeRouteModifier");
 	pXML->GetChildXmlValByName(&m_iGlobalPopulationChange, "iGlobalPopulationChange");
 	pXML->GetChildXmlValByName(&m_iFreeTechs, "iFreeTechs");
-	/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+	/*** Doto-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
 	pXML->GetChildXmlValByName(szTextVal, "FreeSpecificTech", "NONE");
 	m_iFreeSpecificTech = pXML->FindInInfoClass(szTextVal);
-	/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
+	/*** Doto-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
 	pXML->GetChildXmlValByName(&m_iDefenseModifier, "iDefense");
 	pXML->GetChildXmlValByName(&m_iBombardDefenseModifier, "iBombardDefense");
 	pXML->GetChildXmlValByName(&m_iAllCityDefenseModifier, "iAllCityDefense");
@@ -1894,7 +1899,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_piFlavorValue, "Flavors", GC.getNumFlavorTypes());
 	pXML->SetVariableListTagPair(&m_piImprovementFreeSpecialist, "ImprovementFreeSpecialists", GC.getNumImprovementInfos());
 	pXML->SetVariableListTagPair(&m_piBuildingHappinessChanges, "BuildingHappinessChanges", GC.getNumBuildingClassInfos());
-	// davidlallen: building bonus yield, commerce start
+// Doto-davidlallen: building bonus yield, commerce start
 	pXML->GetChildXmlValByName(szTextVal, "BonusConsumed",
 		""); // f1rpo
 	m_iBonusConsumed = pXML->FindInInfoClass(szTextVal);
@@ -1916,8 +1921,8 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	{
 		pXML->InitList(&m_paiYieldProduced, NUM_YIELD_TYPES);
 	}
-	// davidlallen: building bonus yield, commerce end
-	// <advc.006b> and keldath
+// Doto-davidlallen: building bonus yield, commerce end
+	// Doto-<advc.006b> and keldath
 	if(bPlaceHolder)
 		//pXML->setAssertMandatory(true); // </advc.006b>
 		//pXML->setAssertMandatory(true); // </advc.006b> //CODE FROM 095 - KELDATH ADJUSTMENT
@@ -2344,20 +2349,20 @@ m_iMaxTeamInstances(0),
 m_iProductionCost(0),
 m_iNukeInterception(0),
 m_iTechShare(0),
-//DPII < Maintenance Modifiers >
+//Doto-DPII < Maintenance Modifiers >
 m_iGlobalMaintenanceModifier(0),
 m_iDistanceMaintenanceModifier(0),
 m_iNumCitiesMaintenanceModifier(0),
 m_iConnectedCityMaintenanceModifier(0),
-//DPII < Maintenance Modifiers >
+//Doto-DPII < Maintenance Modifiers >
 m_iEveryoneSpecialUnit(NO_SPECIALUNIT),
 m_iEveryoneSpecialBuilding(NO_SPECIALBUILDING),
 m_iVictoryDelayPercent(0),
 m_iSuccessRate(0),
-// davidlallen: project civilization and free unit start
+//Doto-davidlallen: project civilization and free unit start
 m_iCivilization(NO_CIVILIZATION),
 m_iFreeUnit(NO_UNIT),
-// davidlallen: project civilization and free unit start
+//Doto-davidlallen: project civilization and free unit start
 m_bSpaceship(false),
 m_bAllowsNukes(false),
 m_piBonusProductionModifier(NULL),
@@ -2427,7 +2432,7 @@ int CvProjectInfo::getProjectsNeeded(int i) const
 	FAssertBounds(0, GC.getNumProjectInfos(), i);
 	return m_piProjectsNeeded ? m_piProjectsNeeded[i] : 0; // advc.003t: was false
 }
-//DPII < Maintenance Modifiers >
+//Doto-DPII < Maintenance Modifiers >
 int CvProjectInfo::getGlobalMaintenanceModifier() const
 {
     return m_iGlobalMaintenanceModifier;
@@ -2448,8 +2453,8 @@ int CvProjectInfo::getConnectedCityMaintenanceModifier() const
 {
     return m_iConnectedCityMaintenanceModifier;
 }
-//DPII < Maintenance Modifiers >
-// davidlallen: project civilization and free unit start
+//Doto-DPII < Maintenance Modifiers >
+// Doto-davidlallen: project civilization and free unit start
 int CvProjectInfo::getCivilization() const
 {
 	return m_iCivilization;
@@ -2459,7 +2464,7 @@ int CvProjectInfo::getFreeUnit() const
 {
 	return m_iFreeUnit;
 }
-// davidlallen: project civilization and free unit end
+// Doto-davidlallen: project civilization and free unit end
 
 bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 {
@@ -2474,12 +2479,12 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iProductionCost, "iCost");
 	pXML->GetChildXmlValByName(&m_iNukeInterception, "iNukeInterception");
 	pXML->GetChildXmlValByName(&m_iTechShare, "iTechShare");
-	//DPII < Maintenance Modifiers >
+	//Doto-DPII < Maintenance Modifiers >
 	pXML->GetChildXmlValByName(&m_iGlobalMaintenanceModifier, "iGlobalMaintenanceModifier", 0);
 	pXML->GetChildXmlValByName(&m_iDistanceMaintenanceModifier, "iDistanceMaintenanceModifier", 0);
 	pXML->GetChildXmlValByName(&m_iNumCitiesMaintenanceModifier, "iNumCitiesMaintenanceModifier", 0);
 	pXML->GetChildXmlValByName(&m_iConnectedCityMaintenanceModifier, "iConnectedCityMaintenanceModifier", 0);
-	//DPII < Maintenance Modifiers >
+	//Doto-DPII < Maintenance Modifiers >
 
 
 	pXML->SetInfoIDFromChildXmlVal(m_iEveryoneSpecialUnit, "EveryoneSpecialUnit");
@@ -2495,8 +2500,7 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iVictoryDelayPercent, "iVictoryDelayPercent");
 	pXML->GetChildXmlValByName(&m_iSuccessRate, "iSuccessRate");
 	
-	
-	// davidlallen: project civilization and free unit start	
+	// Doto-davidlallen: project civilization and free unit start	
 	CvString szTextVal;
 	pXML->GetChildXmlValByName(szTextVal, "CivilizationType",
 		""); // f1rpo
@@ -2504,7 +2508,7 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(szTextVal, "FreeUnit",
 		""); // f1rpo
 	m_iFreeUnit = pXML->FindInInfoClass(szTextVal);
-	// davidlallen: project civilization and free unit end
+	// Doto-davidlallen: project civilization and free unit end
 	pXML->GetChildXmlValByName(szTextVal, "CreateSound");
 	setCreateSound(szTextVal);
 

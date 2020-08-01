@@ -329,19 +329,22 @@ bool CvTeamAI::AI_hasCitiesInPrimaryArea(TeamTypes eTeam) const
 	return false;
 }
 
-// K-Mod. Return true if this team and eTeam have at least one primary area in common.
+/*	K-Mod: Return true if this team and eTeam have at least one primary area in common.
+	advc: K-Mod code moved into new function CvPlayerAI::AI_hasSharedPrimaryArea
+	because I need this at the player level. */
 bool CvTeamAI::AI_hasSharedPrimaryArea(TeamTypes eTeam) const
 {
 	FAssert(eTeam != getID());
-
-	CvTeamAI const& kTeam = GET_TEAM(eTeam);
-	FOR_EACH_AREA(pLoopArea)
+	for (MemberIter itOurMember(getID()); itOurMember.hasNext(); ++itOurMember)
 	{
-		if (AI_isPrimaryArea(*pLoopArea) && kTeam.AI_isPrimaryArea(*pLoopArea))
-			return true;
+		for (MemberIter itTheirMember(eTeam); itTheirMember.hasNext(); ++itTheirMember)
+		{
+			if (itOurMember->AI_hasSharedPrimaryArea(itTheirMember->getID()))
+				return true;
+		}
 	}
 	return false;
-} // K-Mod end
+}
 
 /*  advc.104s (note): If UWAI is enabled, AI_doWar may adjust (i.e. overwrite) the
 	result of this calculation through UWAI::Team::alignAreaAI. */
@@ -818,15 +821,15 @@ int CvTeamAI::AI_chooseElection(const VoteSelectionData& kVoteSelectionData) con
 		{
 			for (MemberIter it(getID()); it.hasNext(); ++it)
 			{
-				PlayerVoteTypes ePlayerVote = // dlph.25: was eVote (name clash)
+				PlayerVoteTypes ePlayerVote = // kekm.25: was eVote (name clash)
 						it->AI_diploVote(kVoteSelectionData.aVoteOptions[iI], eVoteSource, true);
 				//if (eVote != PLAYER_VOTE_YES || eVote == GC.getGame().getVoteOutcome((VoteTypes)iI))
-				/*  <dlph.25> Replacing the above.
+				/*  <kekm.25> Replacing the above.
 					'AI can choose to repeal an already passed resolution
 					if all team members agree' */
 				bool bVoteYes = (ePlayerVote == PLAYER_VOTE_YES);
 				bool bAlreadyPassed = (GC.getGame().getVoteOutcome(eVote) == PLAYER_VOTE_YES);
-				if((bVoteYes && bAlreadyPassed) || (!bVoteYes && !bAlreadyPassed)) // </dlph.25>
+				if((bVoteYes && bAlreadyPassed) || (!bVoteYes && !bAlreadyPassed)) // </kekm.25>
 				{
 					bValid = false;
 					break;
@@ -3790,9 +3793,9 @@ DenialTypes CvTeamAI::AI_defensivePactTrade(TeamTypes eWithTeam) const
 	if (isHuman())
 		return NO_DENIAL;
 
-	// <dlph.3> (actually an advc change): Refuses/ cancels DP when ally makes peace
+	// <kekm.3> (actually an advc change): Refuses/ cancels DP when ally makes peace
 	if(!allWarsShared(eWithTeam))
-		return DENIAL_JOKING; // </dlph.3>
+		return DENIAL_JOKING; // </kekm.3>
 	// <advc.130p>
 	if(AI_getMemoryCount(eWithTeam, MEMORY_CANCELLED_DEFENSIVE_PACT) > 0)
 		return DENIAL_RECENT_CANCEL;
@@ -3852,7 +3855,7 @@ DenialTypes CvTeamAI::AI_permanentAllianceTrade(TeamTypes eWithTeam) const  // a
 }
 
 
-void CvTeamAI::AI_updateWorstEnemy(/* advc.130p: */ bool bUpdateRivalTrade)
+void CvTeamAI::AI_updateWorstEnemy(/* advc.130p: */ bool bUpdateTradeMemory)
 {
 	PROFILE_FUNC();
 
@@ -3886,9 +3889,9 @@ void CvTeamAI::AI_updateWorstEnemy(/* advc.130p: */ bool bUpdateRivalTrade)
 		}
 	}
 	// <advc.130p>
-	if(eBestTeam == m_eWorstEnemy)
+	if (eBestTeam == m_eWorstEnemy)
 		return;
-	if(bUpdateRivalTrade && m_eWorstEnemy != NO_TEAM && m_eWorstEnemy != eBestTeam)
+	if (bUpdateTradeMemory && m_eWorstEnemy != NO_TEAM)
 	{
 		for (TeamIter<MAJOR_CIV,OTHER_KNOWN_TO> it(getID()); it.hasNext(); ++it)
 		{
@@ -3965,8 +3968,8 @@ int CvTeamAI::AI_enmityValue(TeamTypes eEnemy) const
 		return 0;
 	CvTeam const& kEnemy = GET_TEAM(eEnemy);
 	FAssert(eEnemy != getID() && !kEnemy.isMinorCiv() && kEnemy.isHasMet(getID()));
-	if(!kEnemy.isAlive() || kEnemy.isCapitulated() ||
-		isVassal(eEnemy) || // advc.130d
+	if(!kEnemy.isAlive() ||
+		kEnemy.isCapitulated() || // advc.130d
 		((AI_getAttitude(eEnemy) >= ATTITUDE_CAUTIOUS ||
 		AI_getAttitude(eEnemy, false) >= ATTITUDE_CAUTIOUS) && // advc.130d
 		!isAtWar(eEnemy)))
@@ -4197,23 +4200,23 @@ void CvTeamAI::AI_changeEnemyPeacetimeTradeValue(TeamTypes eIndex, int iChange)
 	AI_setEnemyPeacetimeTradeValue(eIndex, (AI_getEnemyPeacetimeTradeValue(eIndex) + iChange));
 }
 
-// <advc.130p><advc.130m> To keep the rate consistent between TeamAI and PlayerAI
+// <advc.130p>, advc.130m To keep the rate consistent between TeamAI and PlayerAI
 double CvTeamAI::AI_getDiploDecay() const
 {
 	/*  On Normal speed, this decay rate halves a value in about 50 turns:
 		0.9865^50 = 0.507 */
 	return 1.45 / GC.getInfo(GC.getGame().getGameSpeedType()).
 			getGoldenAgePercent();
-} // </advc.130m>
+}
 
 // Needed for both RivalTrade and "fair trade"
-double CvTeamAI::AI_recentlyMetMultiplier(TeamTypes eOther) const
+scaled CvTeamAI::AI_recentlyMetMultiplier(TeamTypes eOther) const
 {
-	double recency = std::min(1.0, AI_getHasMetCounter(eOther) /
-			((double)GC.getInfo(GC.getGame().getGameSpeedType()).
-			getResearchPercent()));
+	scaled rRecency = scaled::min(1, scaled(
+			AI_getHasMetCounter(eOther),
+			GC.getInfo(GC.getGame().getGameSpeedType()).getResearchPercent()));
 	// +50% if just met, declining linearly to +0% if met 100 turns ago (Normal speed)
-	return 1 + 0.5 * (1 - recency);
+	return 1 + (1 - rRecency) / 2;
 } // </advc.130p>
 
 
@@ -4707,19 +4710,18 @@ void CvTeamAI::write(FDataStreamBase* pStream)
 	REPRO_TEST_END_WRITE();
 }
 
-// <advc.012>
+// advc.012:
 int CvTeamAI::AI_plotDefense(CvPlot const& kPlot, bool bIgnoreBuilding,
 	bool bGarrisonStrength) const // advc.500b
 {
 	TeamTypes eAttacker = NO_TEAM;
-	/*  We could also be attacked in p by a second war enemy that doesn't own the
-		plot; impossible to predict. An attack by the plot owner is far more likely
-		though. */
-	if(kPlot.getOwner() != NO_PLAYER && GET_TEAM(getID()).isAtWar(kPlot.getTeam()))
+	/*  We could also be attacked in p by a second war enemy that doesn't own the plot;
+		impossible to predict. An attack by the plot owner is far more likely though. */
+	if (kPlot.isOwned() && GET_TEAM(getID()).isAtWar(kPlot.getTeam()))
 		eAttacker = kPlot.getTeam();
 	return kPlot.defenseModifier(getID(), bIgnoreBuilding, eAttacker,
 			bGarrisonStrength); // advc.500b
-} // </advc.012>
+}
 
 // <advc.130y> ('bFreed' is unused; not needed after all, I guess.)
 void CvTeamAI::AI_forgiveEnemy(TeamTypes eEnemyTeam, bool bCapitulated, bool bFreed)
@@ -4758,24 +4760,31 @@ void CvTeamAI::AI_forgiveEnemy(TeamTypes eEnemyTeam, bool bCapitulated, bool bFr
 				no other forgiveness condition applies, and not (times 0) in the
 				Ancient era (attacks on Workers and Settlers). */
 			if(iLimit <= -3 && iDelta >= 0 && iWS < 0.3 * getCurrentEra() *
-					GC.getWAR_SUCCESS_CITY_CAPTURING())
+				GC.getWAR_SUCCESS_CITY_CAPTURING())
+			{
 				iDeltaLoop--;
+			}
 			// No complete forgiveness unless capitulated
 			if(!bCapitulated && iLimit < 0)
 				iLimit++;
 			int iChange = std::min(0, std::max(iDeltaLoop, iLimit));
 			if(iChange != 0)
+			{
 				kMember.AI_changeMemoryCount(kEnemyMember.getID(),
 						MEMORY_DECLARED_WAR, iChange);
+			}
 			if(bCapitulated) // Directly willing to sign OB
 			{
 				kMember.AI_setMemoryCount(kEnemyMember.getID(),
 						MEMORY_CANCELLED_OPEN_BORDERS, 0);
 			} // <advc.134a>
-			int iContactPeace = kMember.AI_getContactTimer(kEnemyMember.getID(), CONTACT_PEACE_TREATY);
+			int iContactPeace = kMember.AI_getContactTimer(
+					kEnemyMember.getID(), CONTACT_PEACE_TREATY);
 			if(iContactPeace != 0) // for debugger stop
-				kMember.AI_changeContactTimer(kEnemyMember.getID(), CONTACT_PEACE_TREATY, -iContactPeace);
-			// </advc.134a>
+			{
+				kMember.AI_changeContactTimer(kEnemyMember.getID(),
+						CONTACT_PEACE_TREATY, -iContactPeace);
+			} // </advc.134a>
 		}
 	}
 }
@@ -5761,7 +5770,9 @@ void CvTeamAI::AI_doWar()
 	//if (getAnyWarPlanCount(true) == 0 || iEnemyPowerPercent < 45)
 	// K-Mod. Some more nuance to the conditions for considering war
 	// First condition: only consider a new war if there are no current wars that need more attention. (local total war, or a war we aren't winning)
-	bool bConsiderWar = !bAnyWarPlan || (iEnemyPowerPercent < 45 && !(bLocalWarPlan && bTotalWarPlan) && AI_getWarSuccessRating() > (bTotalWarPlan ? 40 : 15));
+	bool bConsiderWar = (!bAnyWarPlan ||
+			(iEnemyPowerPercent < 45 && !(bLocalWarPlan && bTotalWarPlan) &&
+			AI_getWarSuccessRating() > (bTotalWarPlan ? 40 : 15)));
 	// Second condition: don't consider war very early in the game. It would be unfair on human players to rush them with our extra starting units and techs!
 	bConsiderWar = (bConsiderWar &&
 		(kGame.isOption(GAMEOPTION_AGGRESSIVE_AI) ||
@@ -5795,7 +5806,7 @@ void CvTeamAI::AI_doWar()
 				iFinancialTroubleCount++;
 		}
 
-		// if random in this range is 0, we go to war of this type (so lower numbers are higher probablity)
+		// if random in this range is 0, we go to war of this type (so lower numbers are higher probability)
 		// average of everyone on our team
 		int iTotalWarRand;
 		int iLimitedWarRand;
@@ -5815,7 +5826,7 @@ void CvTeamAI::AI_doWar()
 			bFinancesOpposeWar = true;
 		}
 
-		// if agressive, we may start a war to get money
+		// if aggressive, we may start a war to get money
 		bool bFinancesProTotalWar = false;
 		bool bFinancesProLimitedWar = false;
 		bool bFinancesProDogpileWar = false;
@@ -5881,7 +5892,7 @@ void CvTeamAI::AI_doWar()
 						if (!canEventuallyDeclareWar(eTarget) || !AI_haveSeenCities(eTarget))
 							continue; // advc
 
-						TeamTypes eLoopMasterTeam = GET_TEAM(eTarget).getMasterTeam(); // K-Mod (plus all changes which refer to this variable).
+						TeamTypes const eLoopMasterTeam = GET_TEAM(eTarget).getMasterTeam(); // K-Mod (plus all changes which refer to this variable).
 						bool bVassal = (eLoopMasterTeam != eTarget);
 						if (bVassal && !AI_isOkayVassalTarget(eTarget))
 							continue;
@@ -6013,7 +6024,7 @@ void CvTeamAI::AI_doWar()
 									continue; // </advc.001>
 								iDogpilePower += itDog->getPower(false);
 							}
-							// dlph.3 (advc): No longer holds I think; the target could have a DP despite being at war
+							// kekm.3 (advc): No longer holds I think; the target could have a DP despite being at war
 							//FAssert(bVassal || GET_TEAM(eTarget).getPower(true) == GET_TEAM(eTarget).getDefensivePower(getID()));
 							if ((GET_TEAM(eTarget).getDefensivePower(getID()) * 3) / 2 < iDogpilePower)
 							{

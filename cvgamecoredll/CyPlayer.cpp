@@ -1407,7 +1407,7 @@ int CyPlayer::getStateReligionFreeExperience()
 
 CyCity* CyPlayer::getCapitalCity()
 {
-	return m_pPlayer ? new CyCity(m_pPlayer->getCapitalCity()) : NULL;
+	return m_pPlayer ? new CyCity(m_pPlayer->getCapital()) : NULL;
 }
 
 int CyPlayer::getCitiesLost()

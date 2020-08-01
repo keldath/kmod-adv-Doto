@@ -2,6 +2,7 @@
 
 #include "CvGameCoreDLL.h"
 #include "CvPlot.h"
+#include "CvPlotGroup.h"
 #include "PlotRange.h"
 #include "CoreAI.h"
 #include "CvCityAI.h"
@@ -783,19 +784,19 @@ void CvPlot::nukeExplosion(int iRange, CvUnit* pNukeUnit, bool bBomb)
 			pUnitNode = oldUnits.next(pUnitNode);
 			if (pLoopUnit == NULL || pLoopUnit == pNukeUnit)
 				continue;
-			// <dlph.7>
+			// <kekm.7>
 			TeamTypes eAttackingTeam = NO_TEAM;
 			if(pNukeUnit != NULL)
 				eAttackingTeam = TEAMID(pNukeUnit->getOwner());
-			// </dlph.7>
+			// </kekm.7>
 			if (!pLoopUnit->isNukeImmune() && !pLoopUnit->isDelayedDeath() &&
-				// <dlph.7>
+				// <kekm.7>
 				// Nukes target only enemy and own units.
 				//Needed because blocking by neutral players disabled.
 				(eAttackingTeam == NO_TEAM ||
 				pLoopUnit->isEnemy(eAttackingTeam) ||
 				eAttackingTeam == TEAMID(pLoopUnit->getOwner())))
-				// </dlph.7>
+				// </kekm.7>
 			{
 				int iNukeDamage = (iNUKE_UNIT_DAMAGE_BASE +
 						GC.getGame().getSorenRandNum(iNUKE_UNIT_DAMAGE_RAND_1, "Nuke Damage 1") +
@@ -812,11 +813,11 @@ void CvPlot::nukeExplosion(int iRange, CvUnit* pNukeUnit, bool bBomb)
 							pNukeUnit->getOwner() : NO_PLAYER);
 				}
 				//else if (iNukeDamage >= GC.getDefineINT("NUKE_NON_COMBAT_DEATH_THRESHOLD"))
-				// <dlph.20>
+				// <kekm.20>
 				else if(GC.getGame().getSorenRandNum(100,"Non-Combat Nuke Rand") * 100 <
 					std::max(0, ((pCity == NULL ? 0 : pCity->getNukeModifier()) + 100)) *
 					(iNUKE_UNIT_DAMAGE_BASE - 1 + (iNUKE_UNIT_DAMAGE_RAND_1 +
-					iNUKE_UNIT_DAMAGE_RAND_2 - 1) / 2)) // </dlph.20>
+					iNUKE_UNIT_DAMAGE_RAND_2 - 1) / 2)) // </kekm.20>
 				{
 					pLoopUnit->kill(false, pNukeUnit != NULL ? pNukeUnit->getOwner() : NO_PLAYER);
 				}
@@ -873,9 +874,9 @@ bool CvPlot::isConnectedToCapital(PlayerTypes ePlayer) const
 
 	if (ePlayer != NO_PLAYER)
 	{
-		CvCity* pCapitalCity = GET_PLAYER(ePlayer).getCapitalCity();
-		if (pCapitalCity != NULL)
-			return isConnectedTo(pCapitalCity);
+		CvCity* pCapital = GET_PLAYER(ePlayer).getCapital();
+		if (pCapital != NULL)
+			return isConnectedTo(pCapital);
 	}
 
 	return false;
@@ -889,7 +890,7 @@ int CvPlot::getPlotGroupConnectedBonus(PlayerTypes ePlayer, BonusTypes eBonus) c
 	CvPlotGroup* pPlotGroup = getPlotGroup(ePlayer);
 	if (pPlotGroup != NULL)
 		return pPlotGroup->getNumBonuses(eBonus);
-	else return 0;
+	return 0;
 }
 
 
@@ -1246,10 +1247,10 @@ bool CvPlot::isIrrigationAvailable(bool bIgnoreSelf) const
 	if (isFreshWater())
 		return true;
 
-	for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+	FOR_EACH_ENUM(Direction)
 	{
-		CvPlot* pAdjacentPlot = plotDirection(getX(), getY(), (DirectionTypes)iI);
-		if (pAdjacentPlot != NULL && pAdjacentPlot->isIrrigated())
+		CvPlot* pAdj = plotDirection(getX(), getY(), eLoopDirection);
+		if (pAdj != NULL && pAdj->isIrrigated())
 			return true;
 	}
 
@@ -1812,7 +1813,7 @@ bool CvPlot::canHaveBonus(BonusTypes eBonus, bool bIgnoreLatitude,
 
 
 bool CvPlot::canHaveImprovement(ImprovementTypes eImprovement, TeamTypes eTeam, bool bPotential,
-	BuildTypes eBuild, bool bAnyBuild) const // dlph.9  advc: some style changes
+	BuildTypes eBuild, bool bAnyBuild) const // kekm.9  advc: some style changes
 {
 	/*  K-Mod, 21/dec/10, karadoc
 		changed to check for NO_IMPROVEMENT rather than just assume the input is an actual improvement */
@@ -1821,13 +1822,13 @@ bool CvPlot::canHaveImprovement(ImprovementTypes eImprovement, TeamTypes eTeam, 
 		return true;
 	// K-Mod end
 
-	// <dlph.9>
+	// <kekm.9>
 	FAssertMsg(!bAnyBuild || eBuild == NO_BUILD,
 			"expected: if bAnyBuild is true then eBuild is NO_BUILD");
 	FAssertMsg(eBuild == NO_BUILD ||
 			GC.getInfo(eBuild).getImprovement() == eImprovement,
 			"expected that eBuild matches eImprovement");
-	// </dlph.9>
+	// </kekm.9>
 
 	if (isCity())
 		return false;
@@ -1908,7 +1909,7 @@ bool CvPlot::canHaveImprovement(ImprovementTypes eImprovement, TeamTypes eTeam, 
 		if (calculateNatureYield(((YieldTypes)iI), eTeam) < GC.getInfo(eImprovement).getPrereqNatureYield(iI))
 			return false;
 	}*/
-	// <dlph.9> Replacing the above
+	// <kekm.9> Replacing the above
 	bool bFound = false;
 	bool bBuildable = false;
 	if (eBuild == NO_BUILD && !bAnyBuild)
@@ -1961,7 +1962,7 @@ bool CvPlot::canHaveImprovement(ImprovementTypes eImprovement, TeamTypes eTeam, 
 
 		if (bBuildable && !bFound)
 			return false;
- 	} // </dlph.9>
+ 	} // </kekm.9>
 
 	if (getTeam() == NO_TEAM || !GET_TEAM(getTeam()).isIgnoreIrrigation())
 	{
@@ -2082,7 +2083,7 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible)
 	if (eImprovement != NO_IMPROVEMENT)
 	{
 		if (!canHaveImprovement(eImprovement, GET_PLAYER(ePlayer).getTeam(), bTestVisible,
-			eBuild, false)) // dlph.9
+			eBuild, false)) // kekm.9
 		{
 			return false;
 		}
@@ -2418,7 +2419,7 @@ int CvPlot::defenseModifier(TeamTypes eDefender, bool bIgnoreBuilding,
 {
 	int iModifier = GC.getInfo(getTerrainType()).getDefenseModifier();
 	FeatureTypes eFeature = getFeatureType();
-	if(eFeature != NO_FEATURE)
+	if (eFeature != NO_FEATURE)
 	{
 		iModifier += GC.getInfo(eFeature).getDefenseModifier();
 		// <advc.012>
@@ -2435,8 +2436,11 @@ int CvPlot::defenseModifier(TeamTypes eDefender, bool bIgnoreBuilding,
 
 	if (eImprovement != NO_IMPROVEMENT)
 	{
-		if (eDefender != NO_TEAM && (getTeam() == NO_TEAM || GET_TEAM(eDefender).isFriendlyTerritory(getTeam())))
+		if (eDefender != NO_TEAM &&
+			(!isOwned() || GET_TEAM(eDefender).isFriendlyTerritory(getTeam())))
+		{
 			iModifier += GC.getInfo(eImprovement).getDefenseModifier();
+		}
 	}
 //mountains mod
 	if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))//AND Mountain Option
@@ -2446,6 +2450,7 @@ int CvPlot::defenseModifier(TeamTypes eDefender, bool bIgnoreBuilding,
 			iModifier += GC.getDefineINT(CvGlobals::PEAK_EXTRA_DEFENSE);
 		}
 	}
+
 	if (!bHelp)
 	{
 		CvCity* pCity = getPlotCity();
@@ -2652,78 +2657,80 @@ int CvPlot::getNumCultureRangeCities(PlayerTypes ePlayer) const
 }
 
 // BETTER_BTS_AI_MOD, General AI, 01/10/10, jdog5000: START
-bool CvPlot::isHasPathToEnemyCity(TeamTypes eAttackerTeam, bool bIgnoreBarb) /* advc: */ const  // (and some minor style changes)
+bool CvPlot::isHasPathToEnemyCity(TeamTypes eAttackerTeam, bool bIgnoreBarb) const  // advc: refactored
 {
 	PROFILE_FUNC();
 
-	if (getArea().getNumCities() - GET_TEAM(eAttackerTeam).countNumCitiesByArea(getArea()) == 0)
-		return false;
+	bool bR = false;
 
-	// Imitate instatiation of irrigated finder, pIrrigatedFinder
-	// Can't mimic step finder initialization because it requires creation from the exe
+	if (getArea().getNumCities() == GET_TEAM(eAttackerTeam).countNumCitiesByArea(getArea()))
+		return bR;
+
+	/*	Imitate instatiation of irrigated finder, pIrrigatedFinder.
+		Can't mimic step finder initialization because it requires creation from the exe */
 	std::vector<TeamTypes> aeTeams;
 	aeTeams.push_back(eAttackerTeam);
 	aeTeams.push_back(NO_TEAM);
 	FAStar* pTeamStepFinder = gDLL->getFAStarIFace()->create();
-	CvMap const& m = GC.getMap();
-	gDLL->getFAStarIFace()->Initialize(pTeamStepFinder, m.getGridWidth(), m.getGridHeight(),
-			m.isWrapX(), m.isWrapY(), stepDestValid, stepHeuristic,
+	CvMap const& kMap = GC.getMap();
+	gDLL->getFAStarIFace()->Initialize(pTeamStepFinder,
+			kMap.getGridWidth(), kMap.getGridHeight(),
+			kMap.isWrapX(), kMap.isWrapY(), stepDestValid, stepHeuristic,
 			stepCost, teamStepValid, stepAdd, NULL, NULL);
 	gDLL->getFAStarIFace()->SetData(pTeamStepFinder, &aeTeams);
 
-	bool bFound = false;
-	// First check capitals
-	for (int iI = 0; !bFound && iI < MAX_CIV_PLAYERS; iI++)
+	
+	/*	advc: I guess it's important for performance to check capitals first;
+		So continue doing that, but compute the enemy players only in one place. */
+	std::vector<CvPlayer const*> apEnemies;
+	for (PlayerIter<ALIVE,KNOWN_POTENTIAL_ENEMY_OF> itEnemy(eAttackerTeam);
+		itEnemy.hasNext(); ++itEnemy)
 	{
-		if (GET_PLAYER((PlayerTypes)iI).isAlive() && GET_TEAM(eAttackerTeam).AI_getWarPlan(GET_PLAYER((PlayerTypes)iI).getTeam()) != NO_WARPLAN)
+		if (bIgnoreBarb && (itEnemy->isBarbarian() || itEnemy->isMinorCiv()))
+			continue;
+		if (GET_TEAM(eAttackerTeam).AI_getWarPlan(itEnemy->getTeam()) != NO_WARPLAN)
+		apEnemies.push_back(&*itEnemy);
+	} 
+
+	for (size_t i = 0; i < apEnemies.size(); i++)
+	{
+		CvCity* pCapital = apEnemies[i]->getCapital();
+		if (pCapital == NULL)
+			continue;
+		if (pCapital->isArea(getArea()))
 		{
-			if (!bIgnoreBarb || !(GET_PLAYER((PlayerTypes)iI).isBarbarian() || GET_PLAYER((PlayerTypes)iI).isMinorCiv()))
+			if (gDLL->getFAStarIFace()->GeneratePath(pTeamStepFinder, getX(), getY(),
+				pCapital->getX(), pCapital->getY(), false, 0, true))
 			{
-				CvCity* pLoopCity = GET_PLAYER((PlayerTypes)iI).getCapitalCity();
-				if (pLoopCity == NULL)
-					continue;
-				if (pLoopCity->isArea(getArea()))
-				{
-					bFound = gDLL->getFAStarIFace()->GeneratePath(pTeamStepFinder,
-							getX(), getY(),
-							pLoopCity->getX(), pLoopCity->getY(),
-							false, 0, true);
-					if (bFound)
-						break;
-				}
+				bR = true;
+				goto free_and_return;
 			}
 		}
 	}
 
 	// Check all other cities
-	for (int iI = 0; !bFound && iI < MAX_PLAYERS; iI++)
+	for (size_t i = 0; i < apEnemies.size(); i++)
 	{
-		CvPlayer const& kLoopPlayer = GET_PLAYER((PlayerTypes)iI);
-		if (kLoopPlayer.isAlive() && GET_TEAM(eAttackerTeam).AI_getWarPlan(GET_PLAYER((PlayerTypes)iI).getTeam()) != NO_WARPLAN)
+		FOR_EACH_CITY(pCity, *apEnemies[i])
 		{
-			if (!bIgnoreBarb || !(kLoopPlayer.isBarbarian() || kLoopPlayer.isMinorCiv()))
+			if (pCity->isArea(getArea()) && !pCity->isCapital())
 			{
-				FOR_EACH_CITY(pLoopCity, kLoopPlayer)
+				if (gDLL->getFAStarIFace()->GeneratePath(pTeamStepFinder, getX(), getY(),
+					pCity->getX(), pCity->getY(), false, 0, true))
 				{
-					if (pLoopCity->isArea(getArea()) && !pLoopCity->isCapital())
-					{
-						bFound = gDLL->getFAStarIFace()->GeneratePath(pTeamStepFinder,
-								getX(), getY(), pLoopCity->getX(), pLoopCity->getY(),
-								false, 0, true);
-						if (bFound)
-							break;
-					}
+					bR = true;
+					goto free_and_return;
 				}
 			}
 		}
 	}
 
+free_and_return:
 	gDLL->getFAStarIFace()->destroy(pTeamStepFinder);
-
-	return bFound;
+	return bR;
 }
 
-bool CvPlot::isHasPathToPlayerCity(TeamTypes eMoveTeam, PlayerTypes eOtherPlayer) /* advc: */ const  // (and some minor style changes)
+bool CvPlot::isHasPathToPlayerCity(TeamTypes eMoveTeam, PlayerTypes eOtherPlayer) /* advc: */ const
 {
 	PROFILE_FUNC();
 
@@ -2732,8 +2739,8 @@ bool CvPlot::isHasPathToPlayerCity(TeamTypes eMoveTeam, PlayerTypes eOtherPlayer
 	if (getArea().getCitiesPerPlayer(eOtherPlayer) == 0)
 		return false;
 
-	// Imitate instatiation of irrigated finder, pIrrigatedFinder
-	// Can't mimic step finder initialization because it requires creation from the exe
+	/*	Imitate instatiation of irrigated finder, pIrrigatedFinder.
+		Can't mimic step finder initialization because it requires creation from the exe */
 	std::vector<TeamTypes> aeTeams;
 	aeTeams.push_back(eMoveTeam);
 	aeTeams.push_back(GET_PLAYER(eOtherPlayer).getTeam());
@@ -2778,7 +2785,7 @@ int CvPlot::calculatePathDistanceToPlot(TeamTypes eTeam, CvPlot const& kTargetPl
 		return false;*/
 	FAssert(eDomain != NO_DOMAIN);
 
-	// Imitate instatiation of irrigated finder, pIrrigatedFinder
+	// Imitate instatiation of irrigated finder, pIrrigatedFinder.
 	// Can't mimic step finder initialization because it requires creation from the exe
 	/*  <advc.104b> vector type changed to int[]; dom, eTargetTeam (instead of
 		NO_TEAM), iMaxPath and target coordinates added. */
@@ -5563,8 +5570,9 @@ int CvPlot::calculateTotalBestNatureYield(TeamTypes eTeam) const
 			calculateBestNatureYield(YIELD_COMMERCE, eTeam);
 }
 
-// BETTER_BTS_AI_MOD, City AI, 10/06/09, jdog5000: START
-int CvPlot::calculateImprovementYieldChange(ImprovementTypes eImprovement, YieldTypes eYield, PlayerTypes ePlayer, bool bOptimal, bool bBestRoute) const
+// BETTER_BTS_AI_MOD, City AI, 10/06/09, jdog5000:
+int CvPlot::calculateImprovementYieldChange(ImprovementTypes eImprovement, YieldTypes eYield,
+	PlayerTypes ePlayer, bool bOptimal, bool bBestRoute) const
 {
 	PROFILE_FUNC();
 
@@ -5581,9 +5589,10 @@ int CvPlot::calculateImprovementYieldChange(ImprovementTypes eImprovement, Yield
 	if (bOptimal)
 	{
 		int iBestYield = 0;
-		for (int iI = 0; iI < GC.getNumRouteInfos(); ++iI)
+		FOR_EACH_ENUM(Route)
 		{
-			iBestYield = std::max(iBestYield, kImpr.getRouteYieldChanges(iI, eYield));
+			iBestYield = std::max(iBestYield,
+					kImpr.getRouteYieldChanges(eLoopRoute, eYield));
 		}
 		iYield += iBestYield;
 	}
@@ -5602,15 +5611,16 @@ int CvPlot::calculateImprovementYieldChange(ImprovementTypes eImprovement, Yield
 
 	if (bOptimal || ePlayer == NO_PLAYER)
 	{
-		for (int iI = 0; iI < GC.getNumTechInfos(); ++iI)
+		FOR_EACH_ENUM(Tech)
 		{
-			iYield += kImpr.getTechYieldChanges(iI, eYield);
+			iYield += kImpr.getTechYieldChanges(eLoopTech, eYield);
 		}
-		// K-Mod note: this doesn't calculate the 'optimal' yield, because it will count negative effects and it will count effects from competing civics.
-		// Maybe I'll fix it later.
-		for (int iI = 0; iI < GC.getNumCivicInfos(); ++iI)
+		/*	K-Mod note (fixme): this doesn't calculate the 'optimal' yield, because it
+			will count negative effects and it will count effects from competing civics. */
+		FOR_EACH_ENUM(Civic)
 		{
-			iYield += GC.getInfo((CivicTypes)iI).getImprovementYieldChanges(eImprovement, eYield);
+			iYield += GC.getInfo(eLoopCivic).
+					getImprovementYieldChanges(eImprovement, eYield);
 		}
 	}
 	else
@@ -5627,7 +5637,7 @@ int CvPlot::calculateImprovementYieldChange(ImprovementTypes eImprovement, Yield
 	}
 
 	return iYield;
-} // BETTER_BTS_AI_MOD: END
+}
 
 
 char CvPlot::calculateYield(YieldTypes eYield, bool bDisplay) const
@@ -7862,7 +7872,7 @@ ColorTypes CvPlot::plotMinimapColor()
 						getKnownPlayerColor()).getColorTypePrimary();
 			}
 		}
-		// dlph.21: Removed !isRevealedBarbarian() clause
+		// kekm.21: Removed !isRevealedBarbarian() clause
 		if (getRevealedOwner(eActiveTeam, true) != NO_PLAYER)
 		{
 			return GC.getInfo(GET_PLAYER(getRevealedOwner(eActiveTeam, true)).
