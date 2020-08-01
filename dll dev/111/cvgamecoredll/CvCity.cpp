@@ -15008,30 +15008,31 @@ set xml tag to define it it will alter the effect by desire - like the bonus xml
 		int getHurryAngerModifier	= kBuilding.getHurryAngerModifier();
 		int getHealRateChange = kBuilding.getHealRateChange();
 		
-		changeEspionageDefenseModifier(getEspionageDefenseModifier * iChange);
-		if (getGreatPeopleRateModifier != 0) 
+		//if (getEspionageDefenseModifier != 0)
+			changeEspionageDefenseModifier(getEspionageDefenseModifier * iChange);
+		if (getGreatPeopleRateModifier > 0) 
 			changeGreatPeopleRateModifier(getGreatPeopleRateModifier * iChange);
-		if (getFreeExperience != 0)
+		if (getFreeExperience > 0)
 			changeFreeExperience(getFreeExperience * iChange);
-		if (getFoodKept != 0)
+		if (getFoodKept > 0)
 			changeMaxFoodKeptPercent(getFoodKept * iChange);
-		if (getAirlift != 0)
+		if (getAirlift > 0)
 			changeMaxAirlift(getAirlift * iChange);
-		if (getAirModifier != 0)
+		if (getAirModifier > 0)
 			changeAirModifier(getAirModifier * iChange);
-		if (getAirUnitCapacity != 0)
+		if (getAirUnitCapacity > 0)
 			changeAirUnitCapacity(getAirUnitCapacity * iChange);
-		if (getNukeModifier != 0)
+		if (getNukeModifier > 0)
 			changeNukeModifier(getNukeModifier * iChange);
-		if (getFreeSpecialist != 0)
+		if (getFreeSpecialist > 0) 
 			changeFreeSpecialist(getFreeSpecialist * iChange);
-		if (getMaintenanceModifier != 0)
+		//if (getMaintenanceModifier != 0)
 			changeMaintenanceModifier(getMaintenanceModifier * iChange);
-		if (getWarWearinessModifier != 0)
+		if (getWarWearinessModifier > 0)
 			changeWarWearinessModifier(getWarWearinessModifier * iChange);
-		if (getHurryAngerModifier != 0)
+		if (getHurryAngerModifier > 0)
 			changeHurryAngerModifier(getHurryAngerModifier * iChange);
-		if (getHealRateChange != 0)
+		if (getHealRateChange > 0)
 			changeHealRate(getHealRateChange * iChange);
 		/* Population Limit ModComp - Beginning */
 //keep this one anyway - i dont know what will happen...
@@ -15053,92 +15054,60 @@ set xml tag to define it it will alter the effect by desire - like the bonus xml
 		changeExtraTradeRoutes(kBuilding.getTradeRoutes() * iChange);
 		changeTradeRouteModifier(kBuilding.getTradeRouteModifier() * iChange);
 		changeForeignTradeRouteModifier(kBuilding.getForeignTradeRouteModifier() * iChange);
-//keldath - safer to always set it to 0
-		changePowerCount(kBuilding.isPower() ? 0 : 0, kBuilding.isDirtyPower());
-//keldath - dont you dare changing the gov building :)
+		changePowerCount(kBuilding.isPower() ? iChange : 0, kBuilding.isDirtyPower());
 //		changeGovernmentCenterCount(kBuilding.isGovernmentCenter() ? iChange : 0);
-//keldath - set it always to 0 it safer.
-		changeNoUnhappinessCount(kBuilding.isNoUnhappiness() ? 0 : 0);
+		changeNoUnhappinessCount(kBuilding.isNoUnhappiness() ? iChange : 0);
 		//changeNoUnhealthyPopulationCount(kBuilding.isNoUnhealthyPopulation() ? iChange : 0);
 		changeUnhealthyPopulationModifier(kBuilding.getUnhealthyPopulationModifier() * iChange); // K-Mod
-//keldath - safer to set it to 0 always
-		changeBuildingOnlyHealthyCount(kBuilding.isBuildingOnlyHealthy() ? 0 : 0);
-
+		changeBuildingOnlyHealthyCount(kBuilding.isBuildingOnlyHealthy() ? iChange : 0);
 
 		FOR_EACH_ENUM2(Yield, y)
 		{
-			int getSeaPlotYieldChange = kBuilding.getSeaPlotYieldChange(y);
-			int getRiverPlotYieldChange = kBuilding.getRiverPlotYieldChange(y);
-			int getYieldChangegetBuildingYieldChange = kBuilding.getYieldChange(y) +
-				getBuildingYieldChange(kBuilding.getBuildingClassType(), y);
-			int getYieldModifier = kBuilding.getYieldModifier(y);
-			int getPowerYieldModifier = kBuilding.getPowerYieldModifier(y);
-			int getBuildingYieldChangeO = kOwner.getBuildingYieldChange(eBuilding, y);
-
-			if (getSeaPlotYieldChange != 0)
-				changeSeaPlotYield(y, getSeaPlotYieldChange * iChange);
-			if(getRiverPlotYieldChange != 0)
-				changeRiverPlotYield(y, getRiverPlotYieldChange * iChange);
-			if (getYieldChangegetBuildingYieldChange !=0)
-				changeBaseYieldRate(y, (getYieldChangegetBuildingYieldChange) * iChange);
-			if(getYieldModifier != 0)
-				changeYieldRateModifier(y, getYieldModifier * iChange);
-			if (getPowerYieldModifier !=0)
-				changePowerYieldRateModifier(y, getPowerYieldModifier * iChange);
+			changeSeaPlotYield(y, kBuilding.getSeaPlotYieldChange(y) * iChange);
+			changeRiverPlotYield(y, kBuilding.getRiverPlotYieldChange(y) * iChange);
+			changeBaseYieldRate(y, (kBuilding.getYieldChange(y) +
+					getBuildingYieldChange(kBuilding.getBuildingClassType(), y)) * iChange);
+			changeYieldRateModifier(y, kBuilding.getYieldModifier(y) * iChange);
+			changePowerYieldRateModifier(y, kBuilding.getPowerYieldModifier(y) * iChange);
 			// < Civic Infos Plus Start >
 			//keldath QA-DONE
-			if (getBuildingYieldChangeO !=0)
-			changeBuildingYieldChange(kBuilding.getBuildingClassType(), y, getBuildingYieldChangeO);
+			changeBuildingYieldChange(kBuilding.getBuildingClassType(), y, kOwner.getBuildingYieldChange(eBuilding, y));
 			// < Civic Infos Plus End   >
 		}
 
 		FOR_EACH_ENUM(Commerce)
 		{
-			int getCommerceModifier = kBuilding.getCommerceModifier(eLoopCommerce);
-			int getCommerceHappiness = kBuilding.getCommerceHappiness(eLoopCommerce);
-			int getBuildingCommerceChange = kOwner.getBuildingCommerceChange(eBuilding, eLoopCommerce);
-			if (getCommerceModifier != 0)
-				changeCommerceRateModifier(eLoopCommerce,
-					getCommerceModifier * iChange);
-			if (getCommerceHappiness != 0)
-				changeCommerceHappinessPer(eLoopCommerce,
-					getCommerceHappiness * iChange);
+			changeCommerceRateModifier(eLoopCommerce,
+					kBuilding.getCommerceModifier(eLoopCommerce) * iChange);
+			changeCommerceHappinessPer(eLoopCommerce,
+					kBuilding.getCommerceHappiness(eLoopCommerce) * iChange);
 			// < Civic Infos Plus Start >
 			//keldath QA-DONE
-			if (getBuildingCommerceChange !=0)
-				changeBuildingCommerceChange(kBuilding.getBuildingClassType(), eLoopCommerce, 
-					getBuildingCommerceChange);
+			changeBuildingCommerceChange(kBuilding.getBuildingClassType(), eLoopCommerce, 
+					kOwner.getBuildingCommerceChange(eBuilding, eLoopCommerce));
 			// < Civic Infos Plus End   >
 		}
 		if (kBuilding.isAnyReligionChange()) // advc.003t
 		{
 			FOR_EACH_ENUM(Religion)
 			{
-				int getReligionChange = kBuilding.getReligionChange(eLoopReligion);
-				if (getReligionChange !=0)
-					changeReligionInfluence(eLoopReligion,
+				changeReligionInfluence(eLoopReligion,
 						kBuilding.getReligionChange(eLoopReligion) * iChange);
 			}
 		}
 		FOR_EACH_ENUM(Specialist)
 		{
-			int getSpecialistCount = kBuilding.getSpecialistCount(eLoopSpecialist);
-			int getFreeSpecialistCount = kBuilding.getFreeSpecialistCount(eLoopSpecialist);
-			if (getSpecialistCount !=0)
-				changeMaxSpecialistCount(eLoopSpecialist,
-				getSpecialistCount * iChange);
-			if(getFreeSpecialistCount != 0)
-				changeFreeSpecialistCount(eLoopSpecialist,
+			changeMaxSpecialistCount(eLoopSpecialist,
+					kBuilding.getSpecialistCount(eLoopSpecialist) * iChange);
+			changeFreeSpecialistCount(eLoopSpecialist,
 					kBuilding.getFreeSpecialistCount(eLoopSpecialist) * iChange);
 		}
 		if (kBuilding.isAnyImprovementFreeSpecialist()) // advc.003t
 		{
 			FOR_EACH_ENUM(Improvement)
 			{
-				int getImprovementFreeSpecialist  = kBuilding.getImprovementFreeSpecialist(eLoopImprovement);
-				if (getImprovementFreeSpecialist !=0 )
-					changeImprovementFreeSpecialists(eLoopImprovement,
-					getImprovementFreeSpecialist * iChange);
+				changeImprovementFreeSpecialists(eLoopImprovement,
+						kBuilding.getImprovementFreeSpecialist(eLoopImprovement) * iChange);
 			}
 		}
 		FOR_EACH_ENUM(Bonus)
@@ -15146,41 +15115,33 @@ set xml tag to define it it will alter the effect by desire - like the bonus xml
 			if (!hasBonus(eLoopBonus))
 				continue; // advc
 
-			int getBonusHealthChanges = kBuilding.getBonusHealthChanges(eLoopBonus);
-			if (getBonusHealthChanges !=0)
+			if (kBuilding.getBonusHealthChanges(eLoopBonus) > 0)
 			{
-				if (getBonusHealthChanges > 0)
-				{
-					changeBonusGoodHealth(iChange *
-						getBonusHealthChanges);
-				}
-				else
-				{
-					changeBonusBadHealth(iChange *
-						getBonusHealthChanges);
-				}
+				changeBonusGoodHealth(iChange *
+						kBuilding.getBonusHealthChanges(eLoopBonus));
 			}
-			int getBonusHappinessChanges = (kBuilding.getBonusHappinessChanges(eLoopBonus));
-			if (getBonusHappinessChanges > 0)
+			else
+			{
+				changeBonusBadHealth(iChange *
+						kBuilding.getBonusHealthChanges(eLoopBonus));
+			}
+			if (kBuilding.getBonusHappinessChanges(eLoopBonus) > 0)
 			{
 				changeBonusGoodHappiness(iChange *
-					getBonusHappinessChanges);
+						kBuilding.getBonusHappinessChanges(eLoopBonus));
 			}
 			else
 			{
 				changeBonusBadHappiness(iChange *
-					getBonusHappinessChanges);
+						kBuilding.getBonusHappinessChanges(eLoopBonus));
 			}
-			int dirty = kBuilding.isDirtyPower();
-			if (kBuilding.getPowerBonus() == eLoopBonus && dirty !=0)
-				changePowerCount(iChange, dirty);
+			if (kBuilding.getPowerBonus() == eLoopBonus)
+				changePowerCount(iChange, kBuilding.isDirtyPower());
 
 			FOR_EACH_ENUM(Yield)
 			{
-				int getBonusYieldModifier = kBuilding.getBonusYieldModifier(eLoopBonus, eLoopYield);
-				if(getBonusYieldModifier !=0)
-					changeBonusYieldRateModifier(eLoopYield, iChange * 
-						getBonusYieldModifier);
+				changeBonusYieldRateModifier(eLoopYield, iChange * 
+						kBuilding.getBonusYieldModifier(eLoopBonus, eLoopYield));
 			}
 		}
 
@@ -15192,13 +15153,9 @@ set xml tag to define it it will alter the effect by desire - like the bonus xml
 
 		FOR_EACH_ENUM(Domain)
 		{
-			int exp = kBuilding.getDomainFreeExperience(eLoopDomain);
-			int prod = kBuilding.getDomainProductionModifier(eLoopDomain);
-			if (exp != 0)
-				changeDomainFreeExperience(eLoopDomain, iChange *
-					exp);
-			if (prod !=0)
-				changeDomainProductionModifier(eLoopDomain, iChange *
+			changeDomainFreeExperience(eLoopDomain, iChange *
+					kBuilding.getDomainFreeExperience(eLoopDomain));
+			changeDomainProductionModifier(eLoopDomain, iChange *
 					kBuilding.getDomainProductionModifier(eLoopDomain));
 		}
 
@@ -15225,11 +15182,10 @@ set xml tag to define it it will alter the effect by desire - like the bonus xml
 	{
 		/*  <advc.004c> Can avoid an update (which loops over all buildings)
 			in the most common circumstances */
-		int getDefenseModifier = kBuilding.getDefenseModifier();
-		if (getDefenseModifier != 0 && getBuildingDefense() > 0)
+		if (kBuilding.getDefenseModifier() != 0 && getBuildingDefense() > 0)
 			updateBuildingDefense();
-		else if (getDefenseModifier !=0)// </advc.004c>
-			changeBuildingDefense(getDefenseModifier * iChange);
+		else // </advc.004c>
+			changeBuildingDefense(kBuilding.getDefenseModifier() * iChange);
 		// <advc.004c>
 		if (kBuilding.get(CvBuildingInfo::RaiseDefense) > 0)
 		{
@@ -15240,9 +15196,7 @@ set xml tag to define it it will alter the effect by desire - like the bonus xml
 			}
 			else updateBuildingDefense();
 		} // </advc.004c>
-		int bomb = kBuilding.getBombardDefenseModifier();
-		if (bomb !=0)
-			changeBuildingBombardDefense(bomb * iChange);
+		changeBuildingBombardDefense(kBuilding.getBombardDefenseModifier() * iChange);
 		// advc.051: Moved
 		//changeBaseGreatPeopleRate(kBuilding.getGreatPeopleRateChange() * iChange);
 		if (kBuilding.getGreatPeopleUnitClass() != NO_UNITCLASS)
@@ -15251,15 +15205,11 @@ set xml tag to define it it will alter the effect by desire - like the bonus xml
 					kBuilding.getGreatPeopleUnitClass());
 			if (eGreatPeopleUnit != NO_UNIT)
 			{
-				int getGreatPeopleRateChange = kBuilding.getGreatPeopleRateChange();
-				if (getGreatPeopleRateChange != 0)
-				{
-					changeGreatPeopleUnitRate(eGreatPeopleUnit,
-						getGreatPeopleRateChange * iChange);
-					/*  advc.051: Moved from above. Barbarians can obtain wonders, but
-						don't have GP units, and shouldn't have a positive base GP rate. */
-					changeBaseGreatPeopleRate(getGreatPeopleRateChange * iChange);
-				}
+				changeGreatPeopleUnitRate(eGreatPeopleUnit,
+						kBuilding.getGreatPeopleRateChange() * iChange);
+				/*  advc.051: Moved from above. Barbarians can obtain wonders, but
+					don't have GP units, and shouldn't have a positive base GP rate. */
+				changeBaseGreatPeopleRate(kBuilding.getGreatPeopleRateChange() * iChange);
 			}
 		}
 		// <advc.004w>
