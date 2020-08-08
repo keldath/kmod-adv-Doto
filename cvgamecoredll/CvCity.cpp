@@ -819,7 +819,7 @@ bool CvCity::canBeSelected() const  // advc: refactored
 		CvEspionageMissionInfo const& kMission = GC.getInfo(eLoopEspionageMission);
 		if(kMission.isPassive() && kMission.isInvestigateCity() &&
 			GET_PLAYER(kGame.getActivePlayer()).canDoEspionageMission(
-			eLoopEspionageMission, getOwner(), plot(), -1, NULL))
+			eLoopEspionageMission, getOwner(), plot()))
 		{
 			return true;
 		}
@@ -876,7 +876,8 @@ void CvCity::updateVisibility()
 void CvCity::createGreatPeople(UnitTypes eGreatPersonUnit, bool bIncrementThreshold,
 	bool bIncrementExperience) /* advc: */ const
 {
-	GET_PLAYER(getOwner()).createGreatPeople(eGreatPersonUnit, bIncrementThreshold, bIncrementExperience, getX(), getY());
+	GET_PLAYER(getOwner()).createGreatPeople(eGreatPersonUnit, bIncrementThreshold,
+			bIncrementExperience, getPlot());
 }
 
 
@@ -1002,9 +1003,10 @@ void CvCity::chooseProduction(UnitTypes eTrainUnit, BuildingTypes eConstructBuil
 }
 
 // advc: Can't inline these two b/c the plotCityXY functions are now at CvMap
-CityPlotTypes CvCity::getCityPlotIndex(CvPlot const* pPlot) const // advc.enum: Return type was int
+// advc.enum: Return type was int
+CityPlotTypes CvCity::getCityPlotIndex(CvPlot const& kPlot) const // advc: 1st param was pointer
 {
-	return GC.getMap().plotCityXY(getX(), getY(), *pPlot);
+	return GC.getMap().plotCityXY(getX(), getY(), kPlot);
 }
 
 CvPlot* CvCity::getCityIndexPlot(CityPlotTypes ePlot) const // advc.enum: CityPlotTypes
@@ -1013,22 +1015,22 @@ CvPlot* CvCity::getCityIndexPlot(CityPlotTypes ePlot) const // advc.enum: CityPl
 }
 
 
-bool CvCity::canWork(CvPlot const* pPlot) const // advc: const param
+bool CvCity::canWork(CvPlot /* advc: */ const& kPlot) const
 {
-	if (pPlot->getWorkingCity() != this)
+	if (kPlot.getWorkingCity() != this)
 		return false;
 
-	FAssert(getCityPlotIndex(pPlot) != NO_CITYPLOT);
+	FAssert(getCityPlotIndex(kPlot) != NO_CITYPLOT);
 
-	if (pPlot->plotCheck(PUF_canSiege, getOwner()) != NULL)
+	if (kPlot.plotCheck(PUF_canSiege, getOwner()) != NULL)
 		return false;
 
-	if (pPlot->isWater())
+	if (kPlot.isWater())
 	{
 		if (!GET_TEAM(getTeam()).isWaterWork())
 			return false;
 
-		if (pPlot->getBlockadedCount(getTeam()) > 0)
+		if (kPlot.getBlockadedCount(getTeam()) > 0)
 		{   /*  <advc.124> Should work, but I don't want units to overwrite
 				blockades after all. */
 			/*bool bDefended = false;
@@ -1036,7 +1038,7 @@ bool CvCity::canWork(CvPlot const* pPlot) const // advc: const param
 				PlayerTypes eLoopPlayer = (PlayerTypes)i;
 				if(GET_PLAYER(eLoopPlayer).isAlive() && GET_PLAYER(eLoopPlayer).getMasterTeam() ==
 						GET_PLAYER(getOwner()).getMasterTeam() &&
-						pPlot->isVisibleOtherUnit(eLoopPlayer)) {
+						kPlot.isVisibleOtherUnit(eLoopPlayer)) {
 					isDefended = true;
 					break;
 				}
@@ -1046,9 +1048,9 @@ bool CvCity::canWork(CvPlot const* pPlot) const // advc: const param
 		}
 
 		/* Replaced by blockade mission, above
-		if (!(pPlot->plotCheck(PUF_canDefend, -1, -1, NO_PLAYER, getTeam()))) {
+		if (!(kPlot.plotCheck(PUF_canDefend, -1, -1, NO_PLAYER, getTeam()))) {
 			for (int iI = 0; iI < NUM_DIRECTION_TYPES; iI++) {
-				CvPlot* pLoopPlot = plotDirection(pPlot->getX(), pPlot->getY(), ((DirectionTypes)iI));
+				CvPlot* pLoopPlot = plotDirection(kPlot.getX(), kPlot.getY(), ((DirectionTypes)iI));
 				if (pLoopPlot != NULL) {
 					if (pLoopPlot->isWater()) {
 						if (pLoopPlot->plotCheck(PUF_canSiege, getOwner()) != NULL)
@@ -1056,7 +1058,7 @@ bool CvCity::canWork(CvPlot const* pPlot) const // advc: const param
 		} } } }*/
 	}
 
-	if (!pPlot->hasYield())
+	if (!kPlot.hasYield())
 		return false;
 
 	return true;
@@ -1065,17 +1067,14 @@ bool CvCity::canWork(CvPlot const* pPlot) const // advc: const param
 
 void CvCity::verifyWorkingPlot(CityPlotTypes ePlot) // advc.enum: CityPlotTypes
 {
-	FAssertBounds(0, NUM_CITY_PLOTS, ePlot);
+	FAssertEnumBounds(ePlot);
 	if (isWorkingPlot(ePlot))
 	{
 		CvPlot* pPlot = getCityIndexPlot(ePlot);
-		if (pPlot != NULL)
+		if (pPlot != NULL && !canWork(*pPlot))
 		{
-			if (!canWork(pPlot))
-			{
-				setWorkingPlot(ePlot, false);
-				AI_setAssignWorkDirty(true);
-			}
+			setWorkingPlot(ePlot, false);
+			AI_setAssignWorkDirty(true);
 		}
 	}
 }
@@ -3389,9 +3388,7 @@ if (buildingStatus == true)
 		for (MemberIter it(getTeam()); it.hasNext(); ++it)
 		{
 			if (kBuilding.isTeamShare() || it->getID() == getOwner())
-			{
 				it->processBuilding(eBuilding, iChange, getArea());
-			}
 		}
 		GET_TEAM(getTeam()).processBuilding(eBuilding, iChange);
 		GC.getGame().processBuilding(eBuilding, iChange);
@@ -3679,6 +3676,12 @@ bool CvCity::isCoastal(int iMinWaterSize) const
 bool CvCity::isDisorder() const
 {
 	return (isOccupation() || GET_PLAYER(getOwner()).isAnarchy());
+}
+
+// advc:
+bool CvCity::isNoMaintenance() const
+{
+	return (isDisorder() || isWeLoveTheKingDay() || getPopulation() <= 0);
 }
 
 
@@ -5240,14 +5243,14 @@ void CvCity::changeGovernmentCenterCount(int iChange)
 	}
 }
 
-// BUG - Building Saved Maintenance - start
+// BUG - Building Saved Maintenance:
 /*  Returns the total additional gold from saved maintenance times 100 that adding one of the given buildings will provide.
 	Doesn't check if the building can be constructed in this city. */
 int CvCity::getSavedMaintenanceTimes100ByBuilding(BuildingTypes eBuilding) const
 {
 	CvBuildingInfo& kBuilding = GC.getInfo(eBuilding);
 	int iModifier = kBuilding.getMaintenanceModifier();
-	if (iModifier != 0 && !isDisorder() && !isWeLoveTheKingDay() && getPopulation() > 0)
+	if (iModifier != 0 && !isNoMaintenance())
 	{
 		int iNewMaintenance = calculateBaseMaintenanceTimes100() *
 				std::max(0, getMaintenanceModifier() + iModifier + 100) / 100;
@@ -5255,7 +5258,7 @@ int CvCity::getSavedMaintenanceTimes100ByBuilding(BuildingTypes eBuilding) const
 				(100 + GET_PLAYER(getOwner()).calculateInflationRate()), 100); // K-Mod
 	}
 	return 0;
-} // BUG - Building Saved Maintenance - end
+}
 
 
 void CvCity::updateMaintenance()
@@ -5268,7 +5271,7 @@ void CvCity::updateMaintenance()
 	int iModifier = 0;
 	//DPII < Maintenance Modifiers >
 
-	if (!isDisorder() && !isWeLoveTheKingDay() && getPopulation() > 0)
+	if (!isNoMaintenance())
 	{
 		//DPII < Maintenance Modifiers >
 		//iModifier = getMaintenanceModifier() + GET_PLAYER(getOwner()).getMaintenanceModifier() + area()->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
@@ -9212,7 +9215,7 @@ void CvCity::updateEspionageVisibility(bool bUpdatePlotGroups)
 			CvPlayer& kMember = *itMember;
 			for (size_t i = 0; i < aMission.size(); i++)
 			{
-				if (kMember.canDoEspionageMission(aMission[i], getOwner(), plot(), -1, NULL))
+				if (kMember.canDoEspionageMission(aMission[i], getOwner(), plot()))
 				{
 					bVisibility = true;
 					break;
@@ -9271,13 +9274,16 @@ void CvCity::setName(const wchar* szNewValue, bool bFound, /* advc.106k: */ bool
 void CvCity::doFoundMessage()
 {
 	CvWString szBuffer;
-
-	szBuffer = gDLL->getText("TXT_KEY_MISC_CITY_HAS_BEEN_FOUNDED", getNameKey());
-	gDLL->UI().addMessage(getOwner(), false, -1, szBuffer,
-			ARTFILEMGR.getInterfaceArtInfo("WORLDBUILDER_CITY_EDIT")->getPath(),
-			MESSAGE_TYPE_MAJOR_EVENT_LOG_ONLY, // advc.106b
-			NULL, NO_COLOR, getX(), getY());
-
+	/*	advc.106b: Seems that messages aren't supposed to be shown during advanced start
+		and changing the message type causes the EXE to display the message. */
+	if (GET_PLAYER(getOwner()).getAdvancedStartPoints() < 0)
+	{
+		szBuffer = gDLL->getText("TXT_KEY_MISC_CITY_HAS_BEEN_FOUNDED", getNameKey());
+		gDLL->UI().addMessage(getOwner(), false, -1, szBuffer,
+				ARTFILEMGR.getInterfaceArtInfo("WORLDBUILDER_CITY_EDIT")->getPath(),
+				MESSAGE_TYPE_MAJOR_EVENT_LOG_ONLY, // advc.106b
+				NULL, NO_COLOR, getX(), getY());
+	}
 	szBuffer = gDLL->getText("TXT_KEY_MISC_CITY_IS_FOUNDED", getNameKey());
 	GC.getGame().addReplayMessage(REPLAY_MESSAGE_CITY_FOUNDED, getOwner(),
 			szBuffer, getX(), getY(),
@@ -9910,7 +9916,7 @@ void CvCity::alterSpecialistCount(SpecialistTypes eIndex, int iChange)
 			int iNumCanWorkPlots = 0;
 			for (CityPlotIter it(*this, false); it.hasNext(); ++it)
 			{
-				if (!isWorkingPlot(it.currID()) && canWork(&(*it)))
+				if (!isWorkingPlot(it.currID()) && canWork(*it))
 					iNumCanWorkPlots++;
 			}
 			if (iNumCanWorkPlots > 0)
@@ -10077,10 +10083,10 @@ void CvCity::changeEspionageDefenseModifier(int iChange)
 }
 
 
-bool CvCity::isWorkingPlot(CvPlot const* pPlot) const
+bool CvCity::isWorkingPlot(CvPlot const& kPlot) const
 {
 	// advc.enum: Use CityPlotTypes instead of int
-	CityPlotTypes eIndex = getCityPlotIndex(pPlot);
+	CityPlotTypes eIndex = getCityPlotIndex(kPlot);
 	if (eIndex != NO_CITYPLOT)
 		return isWorkingPlot(eIndex);
 	return false;
@@ -10137,9 +10143,9 @@ void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue) // advc.enum: C
 }
 
 
-void CvCity::setWorkingPlot(CvPlot* pPlot, bool bNewValue)
+void CvCity::setWorkingPlot(CvPlot& kPlot, bool bNewValue)
 {
-	setWorkingPlot(getCityPlotIndex(pPlot), bNewValue);
+	setWorkingPlot(getCityPlotIndex(kPlot), bNewValue);
 }
 
 
@@ -10153,7 +10159,7 @@ void CvCity::alterWorkingPlot(CityPlotTypes ePlot) // advc.enum: CityPlotTypes
 	CvPlot* pPlot = getCityIndexPlot(ePlot);
 	if (pPlot == NULL)
 		return; // advc
-	if (!canWork(pPlot))
+	if (!canWork(*pPlot))
 	{
 		if (pPlot->getOwner() == getOwner())
 			pPlot->setWorkingCityOverride(this);

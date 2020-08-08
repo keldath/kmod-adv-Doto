@@ -18,6 +18,8 @@
 #include "CvPopupInfo.h"
 #include "CvDLLUtilityIFaceBase.h"
 #include "CvDLLSymbolIFaceBase.h"
+//doto-tholish prereq
+#include "CvInitCore.h"
 
 
 // For displaying Asserts and error messages
@@ -5210,7 +5212,7 @@ void CvGameTextMgr::setPlotHealthHappyHelp(CvWStringBuffer& szBuffer, CvPlot con
 			FOR_EACH_ENUM(Build)
 			{
 				if (GC.getInfo(eLoopBuild).isFeatureRemove(kPlot.getFeatureType()) &&
-					pHeadSelectedUnit->canBuild(&kPlot, eLoopBuild))
+					pHeadSelectedUnit->canBuild(kPlot, eLoopBuild))
 				{
 					bCanRemove = true;
 					break;
@@ -5907,7 +5909,7 @@ void CvGameTextMgr::setPlotHelpDebug_ShiftOnly(CvWStringBuffer& szString, CvPlot
 	CvCityAI const* pWorkingCity = kPlot.AI_getWorkingCity();
 	if (pWorkingCity != NULL)
 	{
-		CityPlotTypes ePlot = pWorkingCity->getCityPlotIndex(&kPlot);
+		CityPlotTypes ePlot = pWorkingCity->getCityPlotIndex(kPlot);
 		int iBuildValue = pWorkingCity->AI_getBestBuildValue(ePlot);
 		BuildTypes eBestBuild = pWorkingCity->AI_getBestBuild(ePlot);
 		// BETTER_BTS_AI_MOD, Debug, 06/25/09, jdog5000: START
@@ -6299,9 +6301,9 @@ void CvGameTextMgr::setPlotHelpDebug_AltOnly(CvWStringBuffer& szString, CvPlot c
 		PlayerTypes ePlayer = (PlayerTypes)iI;
 		CvPlayerAI& kLoopPlayer = GET_PLAYER(ePlayer);
 
-		if (kLoopPlayer.isAlive()
-				// advc.001n: Might cache FoundValue
-				&& !GC.getGame().isNetworkMultiPlayer())
+		if (kLoopPlayer.isAlive() &&
+			// advc.001n: Might cache FoundValue
+			!GC.getGame().isNetworkMultiPlayer())
 		{ // <advc.007> Moved up, and skip unrevealed.
 			bool bRevealed = kPlot.isRevealed(kLoopPlayer.getTeam());
 			if(!bRevealed)
@@ -6559,7 +6561,7 @@ void CvGameTextMgr::setPlotHelpDebug_ShiftAltOnly(CvWStringBuffer& szString, CvP
 		}
 		else
 		{
-			bool bWorkingPlot = pCity->isWorkingPlot(&kPlot);
+			bool bWorkingPlot = pCity->isWorkingPlot(kPlot);
 
 			if (bWorkingPlot)
 				szTempBuffer.Format( SETCOLR L"%s is working" ENDCOLR, TEXT_COLOR("COLOR_ALT_HIGHLIGHT_TEXT"), pCity->getName().GetCString());
@@ -6567,8 +6569,8 @@ void CvGameTextMgr::setPlotHelpDebug_ShiftAltOnly(CvWStringBuffer& szString, CvP
 				szTempBuffer.Format( SETCOLR L"%s not working" ENDCOLR, TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"), pCity->getName().GetCString());
 			szString.append(szTempBuffer);
 
-			int iValue = pCity->AI_plotValue(&kPlot, bWorkingPlot, false, false, iGrowthValue);
-			int iRawValue = pCity->AI_plotValue(&kPlot, bWorkingPlot, true, false, iGrowthValue);
+			int iValue = pCity->AI_plotValue(kPlot, bWorkingPlot, false, false, iGrowthValue);
+			int iRawValue = pCity->AI_plotValue(kPlot, bWorkingPlot, true, false, iGrowthValue);
 			int iMagicValue = pCity->AI_getPlotMagicValue(kPlot, pCity->healthRate() == 0);
 
 			szTempBuffer.Format(L"\nvalue = %d\nraw value = %d\nmagic value = %d", iValue, iRawValue, iMagicValue);
@@ -6739,7 +6741,7 @@ void CvGameTextMgr::setCityPlotYieldValueString(CvWStringBuffer &szString, CvCit
 	if (pPlot != NULL && pPlot->getWorkingCity() == pCity)
 	{
 		bool bWorkingPlot = pCity->isWorkingPlot(ePlot);
-		int iValue = pCity->AI_plotValue(pPlot, bWorkingPlot, bIgnoreFood, false, iGrowthValue);
+		int iValue = pCity->AI_plotValue(*pPlot, bWorkingPlot, bIgnoreFood, false, iGrowthValue);
 		setYieldValueString(szString, iValue, /*bActive*/ bWorkingPlot);
 	}
 	else setYieldValueString(szString, 0, /*bActive*/ false, /*bMakeWhitespace*/ true);
@@ -13019,7 +13021,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 		}
 	}
 //Doto-prereqMust+tholish show info to buildings if their build but conditions are not met.
-	if (GC.getInfo(eBuilding).getPrereqMustAll() > 0 && GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION)) 
+	if (GC.getInfo(eBuilding).getPrereqMustAll() > 0 && GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION) && pCity != NULL /*use this only when in city, other wise - its double*/) 
 	{
 		buildBuildingRequiresString(szBuffer, eBuilding, bCivilopediaText, bTechChooserText, pCity);
 	}
@@ -13231,7 +13233,6 @@ void CvGameTextMgr::buildBuildingRequiresString(CvWStringBuffer& szBuffer, Build
 /************************************************************************************************/
 /* City Size Prerequisite                  END                                                  */
 /************************************************************************************************/
-
 		if (kBuilding.getUnitLevelPrereq() > 0)
 		{
 			if (NO_PLAYER == ePlayer || GET_PLAYER(ePlayer).getHighestUnitLevel() < kBuilding.getUnitLevelPrereq())
@@ -13271,7 +13272,6 @@ void CvGameTextMgr::buildBuildingRequiresString(CvWStringBuffer& szBuffer, Build
 				}
 			}
 		}
-
 //Shqype Vicinity Bonus Start
 /*		if (kBuilding.getPrereqVicinityBonus() != NO_BONUS)
 		{
@@ -13309,6 +13309,36 @@ void CvGameTextMgr::buildBuildingRequiresString(CvWStringBuffer& szBuffer, Build
 			szBonusList.append(ENDCOLR);
 			szBuffer.append(szBonusList);
 		}*/
+//DOTO-prereqmustall building deletion
+		if (kBuilding.getPrereqMustAll() > 0 &&
+					GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
+		{			
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_MUST_PREREQ_ALL"));
+		}
+//DOTO-prereqmustall building deletion
+//DOTO-prere Game option disply
+		int preqGameOptionB = kBuilding.getPrereqGameOption();
+		if (preqGameOptionB != NO_GAMEOPTION)
+		{	
+			szBuffer.append(NEWLINE);
+			bool isoptionset = !GC.getGame().isOption((GameOptionTypes)kBuilding.getPrereqGameOption());
+			bool isNotoptionset = !GC.getGame().isOption((GameOptionTypes)kBuilding.getNotGameOption());
+
+			if (isoptionset) 
+			{
+				if (!GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
+					szBuffer.append(gDLL->getText("TXT_KEY_GAMEOPTION_EXTRA_BUILDINGS"));
+				else if (!GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
+					szBuffer.append(gDLL->getText("TXT_KEY_GAMEOPTION_BUILDING_DELETION"));
+			}
+			if (isNotoptionset)
+			{
+				if (!GC.getGame().isOption(GAMEOPTION_NO_CORPORATIONS))
+					szBuffer.append(gDLL->getText("TXT_KEY_GAMEOPTION_NO_CORPORATIONS"));
+			}
+		}
+//DOTO-prere Game option disply
 //Shqype Vicinity Bonus End
 		if (bCivilopediaText)
 		{	// advc.008a: Moved this block up a bit
@@ -13488,7 +13518,7 @@ void CvGameTextMgr::buildBuildingRequiresString(CvWStringBuffer& szBuffer, Build
 					szBonusList.append(ENDCOLR);
 					szBuffer.append(szBonusList);
 				}
-			}
+			}	
 		}
 	}
 }
@@ -18215,40 +18245,46 @@ void CvGameTextMgr::buildFinanceCityMaintString(CvWStringBuffer& szBuffer, Playe
 	if (NO_PLAYER == ePlayer)
 		return;
 
-	int iDistanceMaint = 0;
-	int iColonyMaint = 0;
-	int iCorporationMaint = 0;
-
-	CvPlayer& player = GET_PLAYER(ePlayer);
-	FOR_EACH_CITY(pLoopCity, player)
+	/*	advc: Improve precision a bit. (Rules-wise, costs get rounded down -
+		but only after adding all components up. Don't want to round down in
+		the breakdown, and K-Mod had already been using ROUND_DIVIDE.) */
+	scaled rDistanceMaint;
+	scaled rColonyMaint;
+	scaled rCorpMaint;
+	CvPlayer const& kPlayer = GET_PLAYER(ePlayer);
+	FOR_EACH_CITY(pCity, kPlayer)
 	{
-		// K-Mod, 06/sep/10, Karadoc: Bug fix
-		/* Old BTS code
-		iDistanceMaint += (pLoopCity->calculateDistanceMaintenanceTimes100() * std::max(0, (pLoopCity->getMaintenanceModifier() + 100))) / 100;
-		iColonyMaint += (pLoopCity->calculateColonyMaintenanceTimes100() * std::max(0, (pLoopCity->getMaintenanceModifier() + 100))) / 100;
-		iCorporationMaint += (pLoopCity->calculateCorporationMaintenanceTimes100() * std::max(0, (pLoopCity->getMaintenanceModifier() + 100))) / 100;
-		*/
-		if (!pLoopCity->isDisorder() && !pLoopCity->isWeLoveTheKingDay() && (pLoopCity->getPopulation() > 0))
+		if (!pCity->isNoMaintenance()) // K-Mod, 06/sep/10 (bugfix)
 		{
-			iDistanceMaint += (pLoopCity->calculateDistanceMaintenanceTimes100() * std::max(0, (pLoopCity->getMaintenanceModifier() + 100))+50) / 100;
-			iColonyMaint += (pLoopCity->calculateColonyMaintenanceTimes100() * std::max(0, (pLoopCity->getMaintenanceModifier() + 100))+50) / 100;
-			iCorporationMaint += (pLoopCity->calculateCorporationMaintenanceTimes100() * std::max(0, (pLoopCity->getMaintenanceModifier() + 100))+50) / 100;
+			rDistanceMaint += per100(pCity->calculateDistanceMaintenanceTimes100()) *
+					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
+			rColonyMaint += per100(pCity->calculateColonyMaintenanceTimes100()) *
+					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
+			rCorpMaint += per100(pCity->calculateCorporationMaintenanceTimes100()) *
+					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
 		}
-		// K-Mod end
 	}
 	// K-Mod. Changed to include the effects of inflation.
-	int iInflationFactor = player.calculateInflationRate()+100;
+	int const iInflationFactorTimes100 = kPlayer.calculateInflationRate() + 100;
+	scaled const rInflationFactor = per100(iInflationFactorTimes100);
 
-	iDistanceMaint = ROUND_DIVIDE(iDistanceMaint * iInflationFactor, 10000);
-	iColonyMaint = ROUND_DIVIDE(iColonyMaint * iInflationFactor, 10000);
-	iCorporationMaint = ROUND_DIVIDE(iCorporationMaint * iInflationFactor, 10000); // Note: currently, calculateCorporationMaintenanceTimes100 includes the inverse of this factor.
+	rDistanceMaint *= rInflationFactor;
+	rColonyMaint *= rInflationFactor;
+	rCorpMaint *= rInflationFactor;
+	/*	Note: currently, calculateCorporationMaintenanceTimes100
+		includes the inverse of this factor. */
 
-	int iNumCityMaint = ROUND_DIVIDE(player.getTotalMaintenance() * iInflationFactor, 100) - iDistanceMaint - iColonyMaint - iCorporationMaint;
+	int iDistanceMaint = rDistanceMaint.round();
+	int iColonyMaint = rColonyMaint.round();
+	int iCorpMaint = rCorpMaint.round();
+
+	int iNumCityMaint = (kPlayer.getTotalMaintenance() * rInflationFactor).round() -
+			iDistanceMaint - iColonyMaint - iCorpMaint;
 	CvWString szTmp; // advc.086
 	szTmp.append(NEWLINE);
 	szTmp.append(gDLL->getText("TXT_KEY_FINANCE_ADVISOR_CITY_MAINT_COST",
-			iDistanceMaint, iNumCityMaint, iColonyMaint, iCorporationMaint,
-			player.getTotalMaintenance()*iInflationFactor/100));
+			iDistanceMaint, iNumCityMaint, iColonyMaint, iCorpMaint,
+			(kPlayer.getTotalMaintenance() * iInflationFactorTimes100) / 100));
 	// <advc.086>
 	if(szBuffer.isEmpty())
 		szBuffer.assign(szTmp.substr(2, szTmp.length()));
@@ -18258,21 +18294,22 @@ void CvGameTextMgr::buildFinanceCityMaintString(CvWStringBuffer& szBuffer, Playe
 
 void CvGameTextMgr::buildFinanceCivicUpkeepString(CvWStringBuffer& szBuffer, PlayerTypes ePlayer)
 {
-	if (NO_PLAYER == ePlayer)
+	if (ePlayer == NO_PLAYER)
 		return;
-	CvPlayer& player = GET_PLAYER(ePlayer);
+	CvPlayer const& kPlayer = GET_PLAYER(ePlayer);
 	CvWString szCivicOptionCosts;
 
-	int inflFactor = 100+player.calculateInflationRate();
+	int iInflFactor = 100 + kPlayer.calculateInflationRate();
 
-	for (int iI = 0; iI < GC.getNumCivicOptionInfos(); ++iI)
+	FOR_EACH_ENUM(CivicOption)
 	{
-		CivicTypes eCivic = player.getCivics((CivicOptionTypes)iI);
+		CivicTypes eCivic = kPlayer.getCivics(eLoopCivicOption);
 		if (NO_CIVIC != eCivic)
 		{
 			CvWString szTemp;
-			//szTemp.Format(L"%d%c: %s", player.getSingleCivicUpkeep(eCivic), GC.getInfo(COMMERCE_GOLD).getChar(),  GC.getInfo(eCivic).getDescription());
-			szTemp.Format(L"%d%c: %s", ROUND_DIVIDE(player.getSingleCivicUpkeep(eCivic)*inflFactor,100), GC.getInfo(COMMERCE_GOLD).getChar(), GC.getInfo(eCivic).getDescription()); // K-Mod
+			szTemp.Format(L"%d%c: %s",
+					ROUND_DIVIDE(kPlayer.getSingleCivicUpkeep(eCivic) * iInflFactor, 100), // K-Mod
+					GC.getInfo(COMMERCE_GOLD).getChar(), GC.getInfo(eCivic).getDescription());
 			szCivicOptionCosts += NEWLINE + szTemp;
 		}
 	}
@@ -18281,7 +18318,7 @@ void CvGameTextMgr::buildFinanceCivicUpkeepString(CvWStringBuffer& szBuffer, Pla
 	szTmp.append(gDLL->getText("TXT_KEY_FINANCE_ADVISOR_CIVIC_UPKEEP_COST",
 			szCivicOptionCosts.GetCString(),
 			//player.getCivicUpkeep()));
-			ROUND_DIVIDE(player.getCivicUpkeep()*inflFactor,100))); // K-Mod
+			ROUND_DIVIDE(kPlayer.getCivicUpkeep() * iInflFactor, 100))); // K-Mod
 	// <advc.086>
 	if(szBuffer.isEmpty())
 		szBuffer.assign(szTmp.substr(2, szTmp.length()));
@@ -22330,9 +22367,10 @@ void CvGameTextMgr::assignFontIds(int iFirstSymbolCode, int iPadAmount)
 	}
 }
 
-void CvGameTextMgr::getCityDataForAS(std::vector<CvWBData>& mapCityList, std::vector<CvWBData>& mapBuildingList, std::vector<CvWBData>& mapAutomateList)
+void CvGameTextMgr::getCityDataForAS(std::vector<CvWBData>& mapCityList,
+	std::vector<CvWBData>& mapBuildingList, std::vector<CvWBData>& mapAutomateList)
 {
-	CvPlayer& kActivePlayer = GET_PLAYER(GC.getGame().getActivePlayer());
+	CvPlayer const& kActivePlayer = GET_PLAYER(GC.getGame().getActivePlayer());
 
 	CvWString szHelp;
 	int iCost = kActivePlayer.getAdvancedStartCityCost(true);
@@ -22340,14 +22378,16 @@ void CvGameTextMgr::getCityDataForAS(std::vector<CvWBData>& mapCityList, std::ve
 	{
 		szHelp = gDLL->getText("TXT_KEY_CITY");
 		szHelp += gDLL->getText("TXT_KEY_AS_UNREMOVABLE");
-		mapCityList.push_back(CvWBData(0, szHelp, ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath()));
+		mapCityList.push_back(CvWBData(0, szHelp,
+				ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BUTTONS_CITYSELECTION")->getPath()));
 	}
 
 	iCost = kActivePlayer.getAdvancedStartPopCost(true);
 	if (iCost > 0)
 	{
 		szHelp = gDLL->getText("TXT_KEY_WB_AS_POPULATION");
-		mapCityList.push_back(CvWBData(1, szHelp, ARTFILEMGR.getInterfaceArtInfo("INTERFACE_ANGRYCITIZEN_TEXTURE")->getPath()));
+		mapCityList.push_back(CvWBData(1, szHelp,
+				ARTFILEMGR.getInterfaceArtInfo("INTERFACE_ANGRYCITIZEN_TEXTURE")->getPath()));
 	}
 
 	iCost = kActivePlayer.getAdvancedStartCultureCost(true);
@@ -22355,7 +22395,8 @@ void CvGameTextMgr::getCityDataForAS(std::vector<CvWBData>& mapCityList, std::ve
 	{
 		szHelp = gDLL->getText("TXT_KEY_ADVISOR_CULTURE");
 		szHelp += gDLL->getText("TXT_KEY_AS_UNREMOVABLE");
-		mapCityList.push_back(CvWBData(2, szHelp, ARTFILEMGR.getInterfaceArtInfo("CULTURE_BUTTON")->getPath()));
+		mapCityList.push_back(CvWBData(2, szHelp,
+				ARTFILEMGR.getInterfaceArtInfo("CULTURE_BUTTON")->getPath()));
 	}
 
 	CvWStringBuffer szBuffer;
@@ -22371,6 +22412,7 @@ void CvGameTextMgr::getCityDataForAS(std::vector<CvWBData>& mapCityList, std::ve
 			{
 				szBuffer.clear();
 				setBuildingHelp(szBuffer, eBuilding);
+				szBuffer.append(gDLL->getText("TXT_KEY_AS_UNREMOVABLE")); // advc.250c
 				mapBuildingList.push_back(CvWBData(eBuilding, szBuffer.getCString(),
 						GC.getInfo(eBuilding).getButton()));
 			}
@@ -22378,12 +22420,13 @@ void CvGameTextMgr::getCityDataForAS(std::vector<CvWBData>& mapCityList, std::ve
 	}
 
 	szHelp = gDLL->getText("TXT_KEY_ACTION_AUTOMATE_BUILD");
-	mapAutomateList.push_back(CvWBData(0, szHelp, ARTFILEMGR.getInterfaceArtInfo("INTERFACE_AUTOMATE")->getPath()));
+	mapAutomateList.push_back(CvWBData(0, szHelp,
+			ARTFILEMGR.getInterfaceArtInfo("INTERFACE_AUTOMATE")->getPath()));
 }
 
 void CvGameTextMgr::getUnitDataForAS(std::vector<CvWBData>& mapUnitList)
 {
-	CvPlayer& kActivePlayer = GET_PLAYER(GC.getGame().getActivePlayer());
+	CvPlayer const& kActivePlayer = GET_PLAYER(GC.getGame().getActivePlayer());
 
 	CvWStringBuffer szBuffer;
 	CvCivilization const& kCiv = kActivePlayer.getCivilization(); // advc.003w
@@ -22401,45 +22444,45 @@ void CvGameTextMgr::getUnitDataForAS(std::vector<CvWBData>& mapUnitList)
 			if (iMaxUnitsPerCity >= 0 && GC.getInfo(eUnit).isMilitarySupport())
 			{
 				szBuffer.append(NEWLINE);
-				szBuffer.append(gDLL->getText("TXT_KEY_WB_AS_MAX_UNITS_PER_CITY", iMaxUnitsPerCity));
+				szBuffer.append(gDLL->getText("TXT_KEY_WB_AS_MAX_UNITS_PER_CITY",	
+					iMaxUnitsPerCity));
 			}
-			mapUnitList.push_back(CvWBData(eUnit, szBuffer.getCString(), kActivePlayer.getUnitButton(eUnit)));
+			mapUnitList.push_back(CvWBData(eUnit, szBuffer.getCString(),
+					kActivePlayer.getUnitButton(eUnit)));
 		}
 	}
 }
 
-void CvGameTextMgr::getImprovementDataForAS(std::vector<CvWBData>& mapImprovementList, std::vector<CvWBData>& mapRouteList)
+void CvGameTextMgr::getImprovementDataForAS(std::vector<CvWBData>& mapImprovementList,
+	std::vector<CvWBData>& mapRouteList)
 {
-	CvPlayer& kActivePlayer = GET_PLAYER(GC.getGame().getActivePlayer());
+	CvPlayer const& kActivePlayer = GET_PLAYER(GC.getGame().getActivePlayer());
 
-	for (int i = 0; i < GC.getNumRouteInfos(); i++)
+	FOR_EACH_ENUM(Route)
 	{
-		RouteTypes eRoute = (RouteTypes) i;
-		if (eRoute != NO_ROUTE)
+		int iCost = kActivePlayer.getAdvancedStartRouteCost(eLoopRoute, true);
+		if (iCost > 0) // Cost -1 denotes route which may not be purchased
 		{
-			// Route cost -1 denotes route which may not be purchased
-			int iCost = kActivePlayer.getAdvancedStartRouteCost(eRoute, true);
-			if (iCost > 0)
-			{
-				mapRouteList.push_back(CvWBData(eRoute, GC.getInfo(eRoute).getDescription(), GC.getInfo(eRoute).getButton()));
-			}
+			mapRouteList.push_back(CvWBData(
+					eLoopRoute,
+					GC.getInfo(eLoopRoute).getDescription(),
+					GC.getInfo(eLoopRoute).getButton()));
 		}
 	}
 
 	CvWStringBuffer szBuffer;
-	for (int i = 0; i < GC.getNumImprovementInfos(); i++)
+	FOR_EACH_ENUM(Improvement)
 	{
-		ImprovementTypes eImprovement = (ImprovementTypes) i;
-		if (eImprovement != NO_IMPROVEMENT)
+		int iCost = kActivePlayer.getAdvancedStartImprovementCost(eLoopImprovement, true);
+		// Cost -1 denotes Improvement which may not be purchased
+		if (iCost > 0)
 		{
-			// Improvement cost -1 denotes Improvement which may not be purchased
-			int iCost = kActivePlayer.getAdvancedStartImprovementCost(eImprovement, true);
-			if (iCost > 0)
-			{
-				szBuffer.clear();
-				setImprovementHelp(szBuffer, eImprovement);
-				mapImprovementList.push_back(CvWBData(eImprovement, szBuffer.getCString(), GC.getInfo(eImprovement).getButton()));
-			}
+			szBuffer.clear();
+			setImprovementHelp(szBuffer, eLoopImprovement);
+			mapImprovementList.push_back(CvWBData(
+					eLoopImprovement,
+					szBuffer.getCString(),
+					GC.getInfo(eLoopImprovement).getButton()));
 		}
 	}
 }
@@ -22452,23 +22495,31 @@ void CvGameTextMgr::getVisibilityDataForAS(std::vector<CvWBData>& mapVisibilityL
 	{
 		CvWString szHelp = gDLL->getText("TXT_KEY_WB_AS_VISIBILITY");
 		szHelp += gDLL->getText("TXT_KEY_AS_UNREMOVABLE", iCost);
-		mapVisibilityList.push_back(CvWBData(0, szHelp, ARTFILEMGR.getInterfaceArtInfo("INTERFACE_TECH_LOS")->getPath()));
+		mapVisibilityList.push_back(CvWBData(0, szHelp,
+				ARTFILEMGR.getInterfaceArtInfo("INTERFACE_TECH_LOS")->getPath()));
 	}
 }
 
 void CvGameTextMgr::getTechDataForAS(std::vector<CvWBData>& mapTechList)
 {
-	mapTechList.push_back(CvWBData(0, gDLL->getText("TXT_KEY_WB_AS_TECH"), ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BTN_TECH")->getPath()));
+	static CvWString szTechHelp = // advc.250c
+				CvWString(gDLL->getText("TXT_KEY_WB_AS_TECH")) +
+				gDLL->getText("TXT_KEY_AS_UNREMOVABLE"); // advc.250c
+	mapTechList.push_back(CvWBData(0, szTechHelp.c_str(),
+			ARTFILEMGR.getInterfaceArtInfo("INTERFACE_BTN_TECH")->getPath()));
 }
 
 void CvGameTextMgr::getUnitDataForWB(std::vector<CvWBData>& mapUnitData)
 {
 	CvWStringBuffer szBuffer;
-	for (int i = 0; i < GC.getNumUnitInfos(); i++)
+	FOR_EACH_ENUM(Unit)
 	{
 		szBuffer.clear();
-		setUnitHelp(szBuffer, (UnitTypes)i);
-		mapUnitData.push_back(CvWBData(i, szBuffer.getCString(), GC.getInfo((UnitTypes)i).getButton()));
+		setUnitHelp(szBuffer, eLoopUnit);
+		mapUnitData.push_back(CvWBData(
+				eLoopUnit,
+				szBuffer.getCString(),
+				GC.getInfo(eLoopUnit).getButton()));
 	}
 }
 
@@ -22477,39 +22528,55 @@ void CvGameTextMgr::getBuildingDataForWB(bool bStickyButton, std::vector<CvWBDat
 	int iCount = 0;
 	if (!bStickyButton)
 	{
-		mapBuildingData.push_back(CvWBData(iCount++, GC.getInfo(MISSION_FOUND).getDescription(), GC.getInfo(MISSION_FOUND).getButton()));
+		mapBuildingData.push_back(CvWBData(
+				iCount++,
+				GC.getInfo(MISSION_FOUND).getDescription(),
+				GC.getInfo(MISSION_FOUND).getButton()));
 	}
 
 	CvWStringBuffer szBuffer;
-	for (int i=0; i < GC.getNumBuildingInfos(); i++)
+	FOR_EACH_ENUM(Building)
 	{
 		szBuffer.clear();
-		setBuildingHelp(szBuffer, (BuildingTypes)i);
-		mapBuildingData.push_back(CvWBData(iCount++, szBuffer.getCString(), GC.getInfo((BuildingTypes)i).getButton()));
+		setBuildingHelp(szBuffer, eLoopBuilding);
+		mapBuildingData.push_back(CvWBData(
+				iCount++,
+				szBuffer.getCString(),
+				GC.getInfo(eLoopBuilding).getButton()));
 	}
 }
 
-void CvGameTextMgr::getTerrainDataForWB(std::vector<CvWBData>& mapTerrainData, std::vector<CvWBData>& mapFeatureData, std::vector<CvWBData>& mapPlotData, std::vector<CvWBData>& mapRouteData)
+void CvGameTextMgr::getTerrainDataForWB(std::vector<CvWBData>& mapTerrainData,
+	std::vector<CvWBData>& mapFeatureData, std::vector<CvWBData>& mapPlotData,
+	std::vector<CvWBData>& mapRouteData)
 {
 	CvWStringBuffer szBuffer;
 
-	for (int i = 0; i < GC.getNumTerrainInfos(); i++)
+	FOR_EACH_ENUM(Terrain)
 	{
-		if (!GC.getInfo((TerrainTypes)i).isGraphicalOnly())
+		if (!GC.getInfo(eLoopTerrain).isGraphicalOnly())
 		{
 			szBuffer.clear();
-			setTerrainHelp(szBuffer, (TerrainTypes)i);
-			mapTerrainData.push_back(CvWBData(i, szBuffer.getCString(), GC.getInfo((TerrainTypes)i).getButton()));
+			setTerrainHelp(szBuffer, eLoopTerrain);
+			mapTerrainData.push_back(CvWBData(
+					eLoopTerrain,
+					szBuffer.getCString(),
+					GC.getInfo(eLoopTerrain).getButton()));
 		}
 	}
 
-	for (int i = 0; i < GC.getNumFeatureInfos(); i++)
+	FOR_EACH_ENUM(Feature)
 	{
-		for (int k = 0; k < GC.getInfo((FeatureTypes)i).getArtInfo()->getNumVarieties(); k++)
+		for (int i = 0; i < GC.getInfo(eLoopFeature).getArtInfo()->
+			getNumVarieties(); i++)
 		{
 			szBuffer.clear();
-			setFeatureHelp(szBuffer, (FeatureTypes)i);
-			mapFeatureData.push_back(CvWBData(i + GC.getNumFeatureInfos() * k, szBuffer.getCString(), GC.getInfo((FeatureTypes)i).getArtInfo()->getVariety(k).getVarietyButton()));
+			setFeatureHelp(szBuffer, eLoopFeature);
+			mapFeatureData.push_back(CvWBData(
+					eLoopFeature + GC.getNumFeatureInfos() * i,
+					szBuffer.getCString(),
+					GC.getInfo(eLoopFeature).getArtInfo()->
+					getVariety(i).getVarietyButton()));
 		}
 	}
 
@@ -22518,11 +22585,16 @@ void CvGameTextMgr::getTerrainDataForWB(std::vector<CvWBData>& mapTerrainData, s
 	mapPlotData.push_back(CvWBData(2, gDLL->getText("TXT_KEY_WB_PLOT_TYPE_PLAINS"), ARTFILEMGR.getInterfaceArtInfo("WORLDBUILDER_PLOT_TYPE_PLAINS")->getPath()));
 	mapPlotData.push_back(CvWBData(3, gDLL->getText("TXT_KEY_WB_PLOT_TYPE_OCEAN"), ARTFILEMGR.getInterfaceArtInfo("WORLDBUILDER_PLOT_TYPE_OCEAN")->getPath()));
 
-	for (int i = 0; i < GC.getNumRouteInfos(); i++)
+	FOR_EACH_ENUM(Route)
 	{
-		mapRouteData.push_back(CvWBData(i, GC.getInfo((RouteTypes)i).getDescription(), GC.getInfo((RouteTypes)i).getButton()));
+		mapRouteData.push_back(CvWBData(
+				eLoopRoute,
+				GC.getInfo(eLoopRoute).getDescription(),
+				GC.getInfo(eLoopRoute).getButton()));
 	}
-	mapRouteData.push_back(CvWBData(GC.getNumRouteInfos(), gDLL->getText("TXT_KEY_WB_RIVER_PLACEMENT"), ARTFILEMGR.getInterfaceArtInfo("WORLDBUILDER_RIVER_PLACEMENT")->getPath()));
+	mapRouteData.push_back(CvWBData(GC.getNumRouteInfos(),
+			gDLL->getText("TXT_KEY_WB_RIVER_PLACEMENT"),
+			ARTFILEMGR.getInterfaceArtInfo("WORLDBUILDER_RIVER_PLACEMENT")->getPath()));
 }
 
 void CvGameTextMgr::getTerritoryDataForWB(std::vector<CvWBData>& mapTerritoryData)
@@ -22545,11 +22617,14 @@ void CvGameTextMgr::getTerritoryDataForWB(std::vector<CvWBData>& mapTerritoryDat
 void CvGameTextMgr::getTechDataForWB(std::vector<CvWBData>& mapTechData)
 {
 	CvWStringBuffer szBuffer;
-	for (int i=0; i < GC.getNumTechInfos(); i++)
+	FOR_EACH_ENUM(Tech)
 	{
 		szBuffer.clear();
-		setTechHelp(szBuffer, (TechTypes) i);
-		mapTechData.push_back(CvWBData(i, szBuffer.getCString(), GC.getInfo((TechTypes) i).getButton()));
+		setTechHelp(szBuffer, eLoopTech);
+		mapTechData.push_back(CvWBData(
+				eLoopTech,
+				szBuffer.getCString(),
+				GC.getInfo(eLoopTech).getButton()));
 	}
 }
 

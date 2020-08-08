@@ -344,7 +344,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iHotKeyPriority>0</iHotKeyPriority>
 		</BuildingInfo>
 		<BuildingInfo>
-			<BuildingClass>BUILDINGCLASS_GREAT_PALACE</BuildingClass>
+			<BuildingClass>BUILDINGCLASS_GREAT_PALACE</BuildingClass> <!-- advc: a.k.a. Forbidden Palace -->
 			<Type>BUILDING_GREAT_PALACE</Type>
 			<SpecialBuildingType>NONE</SpecialBuildingType>
 			<Description>TXT_KEY_BUILDING_GREAT_PALACE</Description>
@@ -7869,7 +7869,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iUnhealthyPopulationModifier>0</iUnhealthyPopulationModifier>
 			<bBuildingOnlyHealthy>0</bBuildingOnlyHealthy>
 			<bNeverCapture>0</bNeverCapture>
-			<bNukeImmune>0</bNukeImmune>
+			<!-- advc.650: was 0 -->
+			<bNukeImmune>1</bNukeImmune>
 			<bPrereqReligion>0</bPrereqReligion>
 			<bCenterInCity>0</bCenterInCity>
 			<iAIWeight>0</iAIWeight>
@@ -14297,6 +14298,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -14477,6 +14480,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -14668,6 +14673,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -14842,6 +14849,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -15031,6 +15040,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -15211,6 +15222,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -15402,6 +15415,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -15576,6 +15591,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -15765,6 +15782,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -15945,6 +15964,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -16136,6 +16157,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -16310,6 +16333,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -16499,6 +16524,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -16679,6 +16706,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -16870,6 +16899,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -17044,6 +17075,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -17233,6 +17266,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -17413,6 +17448,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -17604,6 +17641,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -17778,6 +17817,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -17967,6 +18008,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -18147,6 +18190,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -18338,6 +18383,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -18512,6 +18559,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -18701,6 +18750,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -18881,6 +18932,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -19072,6 +19125,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -19246,6 +19301,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -21468,7 +21525,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iUnhealthyPopulationModifier>0</iUnhealthyPopulationModifier>
 			<bBuildingOnlyHealthy>0</bBuildingOnlyHealthy>
 			<bNeverCapture>0</bNeverCapture>
-			<bNukeImmune>0</bNukeImmune>
+			<!-- advc.650: was 0 -->
+			<bNukeImmune>1</bNukeImmune>
 			<bPrereqReligion>0</bPrereqReligion>
 			<bCenterInCity>0</bCenterInCity>
 			<iAIWeight>0</iAIWeight>
@@ -23785,7 +23843,6 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				<iCommerce>0</iCommerce>
 				<iCommerce>2</iCommerce>
 			</SpecialistExtraCommerces>
-			<!-- Reduced by K-Mod; was 5 culture in BtS. -->
 			<StateReligionCommerces>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
@@ -26220,7 +26277,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iUnhealthyPopulationModifier>0</iUnhealthyPopulationModifier>
 			<bBuildingOnlyHealthy>0</bBuildingOnlyHealthy>
 			<bNeverCapture>0</bNeverCapture>
-			<bNukeImmune>0</bNukeImmune>
+			<!-- advc.650: was 0 -->
+			<bNukeImmune>1</bNukeImmune>
 			<bPrereqReligion>0</bPrereqReligion>
 			<bCenterInCity>0</bCenterInCity>
 			<iAIWeight>0</iAIWeight>
@@ -29358,6 +29416,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -29543,6 +29603,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -29727,6 +29789,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -29913,6 +29977,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -30088,6 +30154,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -30274,6 +30342,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -30447,6 +30517,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -30631,6 +30703,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -30817,6 +30891,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -30992,6 +31068,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -31178,6 +31256,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -31351,6 +31431,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -31526,6 +31608,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -31712,6 +31796,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -31885,6 +31971,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -32058,6 +32146,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -32233,6 +32323,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -32419,6 +32511,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -32592,6 +32686,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -32767,6 +32863,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -33126,6 +33224,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -33315,6 +33415,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -33495,6 +33597,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
@@ -33686,6 +33790,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
+<!-- prereqMust+tholish -->
+			<iPrereqMustAll>1</iPrereqMustAll>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>

@@ -62,8 +62,8 @@ era trans faster
 				 costs b/c I want this default for SPaH (advc.250b). -->
 			<iAdvancedStartPoints>400</iAdvancedStartPoints>
 			<iStartingUnitMultiplier>1</iStartingUnitMultiplier>
-			<iStartingDefenseUnits>2</iStartingDefenseUnits>
-			<iStartingWorkerUnits>0</iStartingWorkerUnits>
+			<iStartingDefenseUnits>1</iStartingDefenseUnits>
+			<iStartingWorkerUnits>1</iStartingWorkerUnits>
 			<iStartingExploreUnits>1</iStartingExploreUnits>
 			<iStartingGold>0</iStartingGold>
 			<iFreePopulation>0</iFreePopulation>
@@ -119,7 +119,7 @@ era trans faster
 			<bNoBarbCities>0</bNoBarbCities>
 			<!-- advc.250c: was 1200 -->
 			<iAdvancedStartPoints>1600</iAdvancedStartPoints>
-			<iStartingUnitMultiplier>1</iStartingUnitMultiplier>
+			<iStartingUnitMultiplier>2</iStartingUnitMultiplier>
 			<iStartingDefenseUnits>1</iStartingDefenseUnits>
 			<iStartingWorkerUnits>1</iStartingWorkerUnits>
 			<iStartingExploreUnits>1</iStartingExploreUnits>
@@ -276,7 +276,7 @@ era trans faster
 			<iStartingUnitMultiplier>2</iStartingUnitMultiplier>
 			<iStartingDefenseUnits>2</iStartingDefenseUnits>
 			<iStartingWorkerUnits>1</iStartingWorkerUnits>
-			<iStartingExploreUnits>1</iStartingExploreUnits>
+			<iStartingExploreUnits>2</iStartingExploreUnits>
 			<iStartingGold>50</iStartingGold>
 			<iFreePopulation>1</iFreePopulation>
 			<!-- advc.126: was 37 -->

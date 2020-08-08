@@ -857,7 +857,7 @@ bool CvUnitAI::AI_bestCityBuild(CvCityAI const& kCity, CvPlot** ppBestPlot, Buil
 					continue;
 
 				BuildTypes eBuild = kCity.AI_getBestBuild(ePlot);
-				if (eBuild == NO_BUILD || /* K-Mod: */ !canBuild(&kPlot, eBuild))
+				if (eBuild == NO_BUILD || /* K-Mod: */ !canBuild(kPlot, eBuild))
 					continue;
 
 				if (iPass == 0)
@@ -2317,6 +2317,12 @@ void CvUnitAI::AI_attackMove()
 	{
 		if (bDanger && getPlot().isCity())
 		{
+			//rangedattack-if cant range strike
+			// civ Reimagined inspired.
+			if (!canRangeStrikeK() && AI_leaveAttack(2, 55, 105))
+			{
+				return;
+			}
 			if (AI_leaveAttack(2, 55, 105))
 				return;
 		}
@@ -2361,12 +2367,6 @@ void CvUnitAI::AI_attackMove()
 		{
 			return;
 		}
-//rangedattack-keldath
-		if (AI_rangedStrikeK(0,plot(),NULL,NULL,false))
-		{
-			return;
-		}
-	
 
 		/* bts code (with omniGroup subbed in.)
 		if (!bDanger) {
@@ -2420,9 +2420,16 @@ void CvUnitAI::AI_attackMove()
 				}
 			}
 		}
-
+	
 		if (bDanger)
-		{
+		{		
+//rangedattack-keldath - attack units - 0
+//if in danger, range attack...dont care for retalliation.
+//also - dont care for enemy stack size?
+			if (AI_rangedStrikeK(3,plot(),NULL,NULL,false))
+			{
+				return;
+			}
 			// K-Mod
 			if (getGroup()->getNumUnits() > 1 && AI_stackVsStack(3, 110, 65, 0))
 				return;
@@ -2432,13 +2439,7 @@ void CvUnitAI::AI_attackMove()
 				return;
 			if (AI_anyAttack(1, 65))
 				return;*/ // BtS
-//rangedattack-keldath - try ranged b4 collateral - if i have a unit with not collateral - range anyway.
-//anyattack has ranged in it FYI
-			if (AI_rangedStrikeK(0,plot(),NULL,NULL,false))
-			{
-				return ;
-			}
-	
+
 			if (collateralDamage() > 0)
 			{
 				if (AI_anyAttack(1, 45, 0, 3))
@@ -2947,12 +2948,6 @@ void CvUnitAI::AI_attackCityMove()
 		// note. this will eject a unit to defend the city rather than using the whole group
 		if (AI_guardCity(false))
 			return;
-//rangedattack-kedlath
-		if (AI_rangedStrikeK(2,plot(),NULL,NULL,false))
-		{
-			return;
-		}
-	
 		//if ((eAreaAIType == AREAAI_ASSAULT) || (eAreaAIType == AREAAI_ASSAULT_ASSIST))
 		if (bAssault) // K-Mod
 		{
@@ -3048,11 +3043,6 @@ void CvUnitAI::AI_attackCityMove()
 	//if (AI_groupMergeRange(UNITAI_ATTACK_CITY, 0, true, true, bIgnoreFaster))
 	if (AI_omniGroup(UNITAI_ATTACK_CITY, -1, -1, true, iMoveFlags,
 		0, true, false, bIgnoreFaster))
-	{
-		return;
-	}
-//rangedattack-kedlath
-	if (AI_rangedStrikeK(2,plot(),NULL,NULL,false))
 	{
 		return;
 	}
@@ -3232,12 +3222,19 @@ void CvUnitAI::AI_attackCityMove()
 							return;
 					}
 					// Note: bombard may skip if stack is powerful enough
+					//rangedattack-kedlath
+					if (AI_rangedStrikeK(0,plot(),NULL,NULL,false))
+						return;
 					if (AI_bombardCity())
 						return;
 				}
 				// we're satisfied with our position already. But we still want to consider bombarding.
+				
+				//rangedattack-kedlath
+				else if (AI_rangedStrikeK(0,plot(),NULL,NULL,false))
+						return;
 				else if (iComparePostBombard >= iAttackRatio && AI_bombardCity())
-					return;
+						return;
 
 				if (iComparePostBombard >= iAttackRatio)
 				{
@@ -3289,11 +3286,6 @@ void CvUnitAI::AI_attackCityMove()
 		{
 			return;
 		}
-//rangedattack-kedlath
-		if (AI_rangedStrikeK(2,plot(),NULL,NULL,false))
-		{
-			return;
-		}
 	} // K-Mod end
 
 	//if (AI_groupMergeRange(UNITAI_ATTACK_CITY, 2, true, true, bIgnoreFaster))
@@ -3332,11 +3324,6 @@ void CvUnitAI::AI_attackCityMove()
 		}
 	}*/ // BtS
 
-//rangedattack-kedlath-anyattack covers it
-	/*	if (AI_rangedStrikeK(0,plot(),NULL,NULL,false))
-		{
-			return;
-		}*/
 	//if (AI_anyAttack(1, 60, iMoveFlags, 0, false))
 	/*	K-Mod (changed to allow cities, and to only use a single unit,
 		but it is still a questionable move) */
@@ -3365,7 +3352,7 @@ void CvUnitAI::AI_attackCityMove()
 		if (iStepDistToTarget <= 1 && AI_choke(3, false, iMoveFlags))
 			return;
 	}
-
+//sagi
 	/*	one more thing. Sometimes a single step can cause the AI to change its target city;
 		and when it changes the target - and so sometimes they can get stuck in a loop where
 		they step towards their target, change their mind, step back to pillage something, ... repeat.
@@ -3638,6 +3625,10 @@ void CvUnitAI::AI_attackCityMove()
 						/*	we're standing outside the city already, but we can't capture it
 							and we can't pillage or choke it.
 							I guess we'll just wait for reinforcements to arrive. */
+					//DOTO-rangedStrike - kets strike them before holding
+					//didnt add return - cause if can move, do saftey.
+						AI_rangedStrikeK(0, plot(), NULL, NULL, false);
+				
 						if (AI_safety())
 							return;
 						getGroup()->pushMission(MISSION_SKIP);
@@ -3708,7 +3699,7 @@ void CvUnitAI::AI_attackCityMove()
 		}
 		// K-Mod end
 //rangedstrike-keldath
-		if ((bombardRate() > 0  && noDefensiveBonus()) || rangedStrike() > 0)
+		if ((bombardRate() > 0  && noDefensiveBonus()) || canRangeStrikeK())
 		{
 			/*	BBAI Notes: Add this stack lead by a bombard unit
 				to a stack probably not lead by a bombard unit */
@@ -3934,11 +3925,6 @@ void CvUnitAI::AI_collateralMove()
 		if (AI_guardCity(false, false))
 			return;
 	}*/ // redundant
-//rangedattack-kedlath anyatatck covers it
-/*		if (AI_rangedStrikeK(0,plot(),NULL,NULL,false))
-		{
-			return;
-		}*/
 
 	if (AI_anyAttack(2, 55, 0, 3))
 	{
@@ -4663,11 +4649,6 @@ void CvUnitAI::AI_cityDefenseMove()
 			return;
 		}
 	}
-//rangedattack-kedlath anyatatck covers it
-		if (AI_rangedStrikeK(0,plot(),NULL,NULL,false))
-		{
-			return;
-		}
 
 	if (AI_guardCityBestDefender())
 	{
@@ -4838,11 +4819,6 @@ void CvUnitAI::AI_cityDefenseExtraMove()
 	{
 		return;
 	}
-//rangedattack-kedlath anyatatck covers it
-		if (AI_rangedStrikeK(0,plot(),NULL,NULL,false))
-		{
-			return;
-		}
 
 	if (AI_guardCityBestDefender())
 	{
@@ -6427,11 +6403,6 @@ void CvUnitAI::AI_attackSeaMove()
 	{
 		return;
 	}
-//rangedattack-kedlath anyatatck covers it
-		if (AI_rangedStrikeK(0,plot(),NULL,NULL,false))
-		{
-			return;
-		}
 
 	if (AI_anyAttack(1, 35))
 	{
@@ -6697,7 +6668,7 @@ void CvUnitAI::AI_reserveSeaMove()
 		return;
 	}
 //rangedstrike-keldath
-	if (bombardRate() > 0 || rangedStrike() > 0)
+	if (bombardRate() > 0 || canRangeStrikeK())
 	{
 		if (AI_shadow(UNITAI_ASSAULT_SEA, 2, 30, true, false, 8))
 		{
@@ -7248,11 +7219,6 @@ void CvUnitAI::AI_assaultSeaMove()
 				return;
 		}
 	}
-//rangedattack-kedlath anyatatck covers it
-		if (AI_rangedStrikeK(0,plot(),NULL,NULL,false))
-		{
-			return;
-		}
 
 	if (bCity)
 	{
@@ -11584,11 +11550,7 @@ bool CvUnitAI::AI_afterAttack()
 	{
 		return true;
 	}
-//rangedattack-kedlath anyatatck covers it
-	if (AI_rangedStrikeK(0,plot(),NULL,NULL,false))
-	{
-		return true;
-	}
+
 	if (AI_pillageRange(2))
 	{
 		return true;
@@ -13653,7 +13615,7 @@ CvCity* CvUnitAI::AI_pickTargetCity(int iFlags, int iMaxPathTurns, bool bHuntBar
 					// a more sensitive adjustment than usual (w/ modifier on the denominator), so as not to be too deterred before bombarding.
 					iEnemyDefence *= 130;
 					//rangedstrike-keldath - maybe range strike even withut bombard.
-					iEnemyDefence /= 130 + ((bombardRate() > 0 || rangedStrike() > 0) ? pLoopCity->getDefenseModifier(false) : 0);
+					iEnemyDefence /= 130 + ((bombardRate() > 0 || canRangeStrikeK()) ? pLoopCity->getDefenseModifier(false) : 0);
 					WarPlanTypes eWarPlan = kOurTeam.AI_getWarPlan(pLoopCity->getTeam());
 					// If we aren't fully committed to the war, then focus on taking easy cities - but try not to be completely predictable.
 					bool bCherryPick = (eWarPlan == WARPLAN_LIMITED ||
@@ -13954,10 +13916,10 @@ bool CvUnitAI::AI_bombardCity()
 	//seems that this pushes a bombard mission anyway on the buttom
 	//so, if it couldnt find a city target, and we do have ranged attack,
 	//lets stop and not push a bombard mission. since ranged covers it.
-	else if (rangedStrike() > 0)
+	if (AI_rangedStrikeK(0,plot(),NULL,NULL,false))
 	{
-		return false;
-	} 				
+		return true;
+	}
 	// check if we need to declare war before bombarding!
 	FOR_EACH_ENUM(Direction)
 	{
@@ -13981,20 +13943,6 @@ bool CvUnitAI::AI_bombardCity()
 	FAssert(pBombardCity != NULL);
 
 	int iAttackOdds = AI_getGroup()->AI_attackOdds(pBombardCity->plot(), true);
-//qa7-done- probably meaningless
-// rangedattack-keldath Vincentz Rangestrike off 
-// keldath need to imolement this somehow in kmods -  but it wasnt on the org ranged.
-//		int iAttackOdds = getGroup()->AI_attackOdds(pBombardCity->plot(), 
-			//bPotentialEnemy //COMMENTED OFF IN THE ORIGINAL 
-//			true);
-//		if (iAttackOdds > 95)
-//		{
-//			return false;
-//		}
-//f1rpo reponded: Doesn't even check for air range; so it seems like a more general AI tweak. Could be an improvement, but looks ... hamfisted. I'd rather trust the K-Mod code to decide whether the city is worth bombarding.
-//Don't know where the bPotentialEnemy variable is supposed to come from. Using true instead seems fine. It's relevant when the AI hasn't declared war yet.
-//keldath - ok kmod code it is
-//rangedattack-keldath Vincentz Rangestrike end	
 	int iBase = GC.getDefineINT(CvGlobals::BBAI_SKIP_BOMBARD_BASE_STACK_RATIO);
 	int iMin = GC.getDefineINT(CvGlobals::BBAI_SKIP_BOMBARD_MIN_STACK_RATIO);
 	int iBombardTurns = getGroup()->getBombardTurns(pBombardCity);
@@ -14045,6 +13993,12 @@ bool CvUnitAI::AI_cityAttack(int iRange, int iOddsThreshold, int iFlags, bool bF
 			{
 				int iValue = AI_isAnyEnemyDefender(p) ? 100 :
 						AI_getGroup()->AI_getWeightedOdds(&p, true);
+
+//rangedattack-keldath -if unit can range attack lets give more value. 
+				if (canRangeStrikeAtK(plot(), p.getX(), p.getY()))
+				{
+					iValue += 10;
+				}
 				if (iValue >= iOddsThreshold)
 				{
 					if (iValue > iBestValue)
@@ -14085,7 +14039,8 @@ bool CvUnitAI::AI_cityAttack(int iRange, int iOddsThreshold, int iFlags, bool bF
 		if(getGroup()->canRanged(pBestPlot,pBestPlot->getX(), pBestPlot->getY()))
 		{	
 			getGroup()->pushMission(MISSION_RANGE_ATTACK, pBestPlot->getX(), pBestPlot->getY());	
-			return true;
+			//lets leave the next action  free and dont end, maybe other units will move into
+			//return true;
 		}
 					
 		getGroup()->pushMission(MISSION_MOVE_TO, pBestPlot->getX(), pBestPlot->getY(),
@@ -16627,8 +16582,8 @@ bool CvUnitAI::AI_ferryWorkers()
 			if (pWorkingCity != NULL)
 			{
 				BuildTypes eBestBuild = pWorkingCity->AI_getBestBuild(pWorkingCity->
-						getCityPlotIndex(&kPlot));
-				if (eBestBuild == NO_BUILD || !kWorker.canBuild(&kPlot, eBestBuild))
+						getCityPlotIndex(kPlot));
+				if (eBestBuild == NO_BUILD || !kWorker.canBuild(kPlot, eBestBuild))
 					continue;
 				ImprovementTypes eBestImpr = GC.getInfo(eBestBuild).getImprovement();
 				if (eBestImpr == NO_IMPROVEMENT) // Don't go there just to chop
@@ -17256,7 +17211,7 @@ bool CvUnitAI::AI_improveCity(CvCityAI const& kCity) // advc.003u: param was CvC
 	if (!AI_bestCityBuild(kCity, &pBestPlot, &eBestBuild, NULL, this))
 		return false; // advc
 	FAssert(pBestPlot != NULL);
-	FAssertBounds(0, GC.getNumBuildInfos(), eBestBuild);
+	FAssertEnumBounds(eBestBuild);
 
 	MissionTypes eMission = MISSION_MOVE_TO;
 	if (getPlot().getWorkingCity() != &kCity /*||
@@ -17333,7 +17288,7 @@ bool CvUnitAI::AI_improveLocalPlot(int iRange, CvCity const* pIgnoreCity, // adv
 				iValue = kBuild.getFeatureProduction(p.getFeatureType());
 				if (iValue <= iBestValue)
 					continue;
-				if (!canBuild(&p, eLoopBuild)) // (advc.opt: moved down)
+				if (!canBuild(p, eLoopBuild)) // (advc.opt: moved down)
 					continue;
 				int iPathTurns;
 				if (generatePath(&p, 0, true, &iPathTurns, 5))
@@ -17358,7 +17313,7 @@ bool CvUnitAI::AI_improveLocalPlot(int iRange, CvCity const* pIgnoreCity, // adv
 			continue;
 		if (pIgnoreCity != NULL && pCity == pIgnoreCity)
 			continue;
-		CityPlotTypes ePlot = pCity->getCityPlotIndex(&p); // advc.117
+		CityPlotTypes ePlot = pCity->getCityPlotIndex(p); // advc.117
 		if (ePlot == CITY_HOME_PLOT || pCity->AI_getBestBuild(ePlot) == NO_BUILD)
 			continue;
 		if (pIgnoreCity != NULL && pCity->AI_getWorkersHave() -
@@ -17378,7 +17333,7 @@ bool CvUnitAI::AI_improveLocalPlot(int iRange, CvCity const* pIgnoreCity, // adv
 		iValue = pCity->AI_getBestBuildValue(ePlot);
 		if (iValue <= 1) // (advc.opt: moved up)
 			continue;
-		if (!canBuild(&p, pCity->AI_getBestBuild(ePlot)))
+		if (!canBuild(p, pCity->AI_getBestBuild(ePlot)))
 			continue;
 		if (GET_PLAYER(getOwner()).isOption(PLAYEROPTION_SAFE_AUTOMATION) &&
 			p.isImproved() && p.getImprovementType() != GC.getRUINS_IMPROVEMENT())
@@ -17418,7 +17373,7 @@ bool CvUnitAI::AI_improveLocalPlot(int iRange, CvCity const* pIgnoreCity, // adv
 
 	if (pBestPlot != NULL)
 	{
-		FAssertBounds(0, GC.getNumBuildInfos(), eBestBuild);
+		FAssertEnumBounds(eBestBuild);
 		// advc.117: No longer guaranteed
 		//FAssert(pBestPlot->getWorkingCity() != NULL);
 		// advc.113b: Now handled by AI_workerMove
@@ -17536,7 +17491,7 @@ bool CvUnitAI::AI_nextCityToImprove(CvCity const* pCity) // advc: const param
 
 	if (pBestPlot == NULL)
 		return false;
-	FAssertBounds(0, GC.getNumBuildInfos(), eBestBuild);
+	FAssertEnumBounds(eBestBuild);
 	// advc.113b: Now handled by AI_workerMove
 	/*if (getPlot().getWorkingCity() != NULL)
 		getPlot().getWorkingCity()->AI_changeWorkersHave(-1);
@@ -17663,7 +17618,7 @@ bool CvUnitAI::AI_irrigateTerritory()  // advc: refactored
 		{
 			const BuildTypes eBuild = irrigationCarryingBuilds[iJ];
 			const ImprovementTypes eIrrigImprov = GC.getInfo(eBuild).getImprovement();
-			if (!canBuild(&kLoopPlot, eBuild))
+			if (!canBuild(kLoopPlot, eBuild))
 				continue;
 			/*  <advc.121> Was 10000/(...getTime()+1). Same problem as in
 				AI_improveBonus (see there). */
@@ -17763,7 +17718,7 @@ bool CvUnitAI::AI_fortTerritory(bool bCanal, bool bAirbase)
 				if(GC.getInfo(eImprov).isActsAsCity() &&
 					GC.getInfo(eImprov).getDefenseModifier() > 0)
 				{
-					if (canBuild(&kPlot, eLoopBuild) ||
+					if (canBuild(kPlot, eLoopBuild) ||
 						eImprov == kPlot.getImprovementType()) // advc.121
 					{
 						/* int iValue = 10000;
@@ -17782,7 +17737,7 @@ bool CvUnitAI::AI_fortTerritory(bool bCanal, bool bAirbase)
 			}
 		}
 		// <advc.121>
-		if(eBestTempBuild != NO_BUILD && !canBuild(&kPlot, eBestTempBuild))
+		if(eBestTempBuild != NO_BUILD && !canBuild(kPlot, eBestTempBuild))
 			eBestTempBuild = NO_BUILD; // </advc.121>
 		if(eBestTempBuild != NO_BUILD)
 		{
@@ -17919,7 +17874,7 @@ bool CvUnitAI::AI_improveBonus( // K-Mod. (all that junk wasn't being used anywa
 					pWorkingCity->getX(), pWorkingCity->getY(), kPlot));
 			if (eBuild != NO_BUILD && kOwner.doesImprovementConnectBonus(
 				GC.getInfo(eBuild).getImprovement(), eNonObsoleteBonus) &&
-				canBuild(&kPlot, eBuild))
+				canBuild(kPlot, eBuild))
 			{
 				bDoImprove = true;
 				eBestTempBuild = eBuild;
@@ -17946,7 +17901,7 @@ bool CvUnitAI::AI_improveBonus( // K-Mod. (all that junk wasn't being used anywa
 		}
 		/*  <advc.121> canBuild no longer guaranteed b/c eBestTempBuild could
 			already be present. */
-		if(eBestTempBuild != NO_BUILD && !canBuild(&kPlot, eBestTempBuild))
+		if(eBestTempBuild != NO_BUILD && !canBuild(kPlot, eBestTempBuild))
 			eBestTempBuild = NO_BUILD; // </advc.121>
 		if(eBestTempBuild == NO_BUILD)
 			bDoImprove = false;
@@ -18189,7 +18144,7 @@ BuildTypes CvUnitAI::AI_betterPlotBuild(CvPlot const& kPlot, BuildTypes eBuild) 
 		if ((bBuildRoute && eRoute != NO_ROUTE) ||
 			(bClearFeature && kLoopBuild.isFeatureRemove(eFeature)))
 		{
-			if (!canBuild(&kPlot, eLoopBuild))
+			if (!canBuild(kPlot, eLoopBuild))
 				continue;
 
 			int iValue = 10000;
@@ -20856,18 +20811,17 @@ bool CvUnitAI::AI_espionageSpy()
 		return false;
 
 	EspionageMissionTypes eBestMission = NO_ESPIONAGEMISSION;
-	CvPlot* pTargetPlot = NULL;
-	PlayerTypes eTargetPlayer = NO_PLAYER;
+	/*CvPlot* pTargetPlot = NULL;
+	PlayerTypes eTargetPlayer = NO_PLAYER;*/ // advc (not needed)
 	int iExtraData = -1;
 
 	//eBestMission = GET_PLAYER(getOwner()).AI_bestPlotEspionage(plot(), eTargetPlayer, pTargetPlot, iExtraData);
-	eBestMission = AI_bestPlotEspionage(eTargetPlayer, pTargetPlot, iExtraData);
-	if (NO_ESPIONAGEMISSION == eBestMission)
-	{
+	eBestMission = AI_bestPlotEspionage(iExtraData);
+	if (eBestMission == NO_ESPIONAGEMISSION)
 		return false;
-	}
 
-	if (!GET_PLAYER(getOwner()).canDoEspionageMission(eBestMission, eTargetPlayer, pTargetPlot, iExtraData, this))
+	if (!GET_PLAYER(getOwner()).canDoEspionageMission(eBestMission,
+		getPlot().getOwner(), plot(), iExtraData, this))
 	{
 		return false;
 	}
@@ -20879,136 +20833,135 @@ bool CvUnitAI::AI_espionageSpy()
 	return true;
 }
 
-// K-Mod edition. (This use to be a CvPlayerAI:: function.)
-EspionageMissionTypes CvUnitAI::AI_bestPlotEspionage(PlayerTypes& eTargetPlayer, CvPlot*& pPlot, int& iData) const
+/*	K-Mod edition (this use to be a CvPlayerAI:: function):
+	advc: Removed out parameters for target plot and target player
+	b/c it's always the plot of this unit and the owner of that plot. */
+EspionageMissionTypes CvUnitAI::AI_bestPlotEspionage(int& iData) const
 {
 	PROFILE_FUNC();
 
-	CvPlot* pSpyPlot = plot();
-	CvPlayerAI const& kPlayer = GET_PLAYER(getOwner());
-	bool const bBigEspionage = kPlayer.AI_isDoStrategy(AI_STRATEGY_BIG_ESPIONAGE);
+	CvPlot& kSpyPlot = getPlot();
+	// advc: Target checks moved up
+	PlayerTypes const eTargetPlayer = kSpyPlot.getOwner();
+	if (eTargetPlayer == NO_PLAYER) 
+		return NO_ESPIONAGEMISSION;
+	TeamTypes const eTargetTeam = kSpyPlot.getTeam();
+	if (eTargetTeam == getTeam())
+		return NO_ESPIONAGEMISSION;
 
-	FAssert(pSpyPlot != NULL);
-
-	int iSpyValue = 3 * kPlayer.getProductionNeeded(getUnitType()) + 60;
-	if (kPlayer.hasCapital())
-	{
-		iSpyValue += stepDistance(getX(), getY(),
-				kPlayer.getCapital()->getX(), kPlayer.getCapital()->getY()) / 2;
-	}
-
-	pPlot = NULL;
-	iData = -1;
 	EspionageMissionTypes eBestMission = NO_ESPIONAGEMISSION;
+	iData = -1;
 	int iBestValue = 0;
 
-	int const iEspionageRate = kPlayer.getCommerceRate(COMMERCE_ESPIONAGE);
+	CvPlayerAI const& kOwner = GET_PLAYER(getOwner());
+	bool const bBigEspionage = kOwner.AI_isDoStrategy(AI_STRATEGY_BIG_ESPIONAGE);
+	int const iEspionageRate = kOwner.getCommerceRate(COMMERCE_ESPIONAGE);
+	int const iEspPoints = GET_TEAM(getTeam()).getEspionagePointsAgainstTeam(eTargetTeam);
 
-	if (pSpyPlot->isOwned())
+	int iSpyValue = 3 * kOwner.getProductionNeeded(getUnitType()) + 60;
+	if (kOwner.hasCapital())
 	{
-		TeamTypes const eTargetTeam = pSpyPlot->getTeam();
-		if (eTargetTeam != getTeam())
+		iSpyValue += stepDistance(getX(), getY(),
+				kOwner.getCapital()->getX(), kOwner.getCapital()->getY()) / 2;
+	}
+	// estimate risk cost of losing the spy while trying to escape
+	int iBaseIntercept = 0;
+	{
+		int iTargetTotal = GET_TEAM(eTargetTeam).getEspionagePointsEver();
+		int iOurTotal = GET_TEAM(getTeam()).getEspionagePointsEver();
+		iBaseIntercept += (GC.getDefineINT("ESPIONAGE_INTERCEPT_SPENDING_MAX") * iTargetTotal) /
+				std::max(1, iTargetTotal + iOurTotal);
+		if (GET_TEAM(eTargetTeam).getCounterespionageModAgainstTeam(getTeam()) > 0)
+			iBaseIntercept += GC.getDefineINT("ESPIONAGE_INTERCEPT_COUNTERESPIONAGE_MISSION");
+	}
+	int const iEscapeCost = 2 * iSpyValue * iBaseIntercept *
+			(100 + GC.getDefineINT("ESPIONAGE_SPY_MISSION_ESCAPE_MOD")) / 10000;
+
+	// One espionage mission loop to rule them all.
+	FOR_EACH_ENUM2(EspionageMission, eMission)
+	{
+		CvEspionageMissionInfo const& kMission = GC.getInfo(eMission);
+		int iTestData = 1;
+		if (kMission.getBuyTechCostFactor() > 0)
+			iTestData = GC.getNumTechInfos();
+		else if (kMission.getDestroyProjectCostFactor() > 0)
+			iTestData = GC.getNumProjectInfos();
+		else if (kMission.getDestroyBuildingCostFactor() > 0)
+			iTestData = GC.getNumBuildingInfos();
+
+		// estimate the risk cost of losing the spy.
+		int iOverhead = iEscapeCost + iSpyValue * iBaseIntercept *
+				(100 + kMission.getDifficultyMod()) / 10000;
+		bool bFirst = true; // advc.007
+		for (iTestData-- ; iTestData >= 0; iTestData--)
 		{
-			int const iEspPoints = GET_TEAM(getTeam()).getEspionagePointsAgainstTeam(eTargetTeam);
-			// estimate risk cost of losing the spy while trying to escape
-			int iBaseIntercept = 0;
+			int iCost = kOwner.getEspionageMissionCost(
+					eMission, eTargetPlayer, &kSpyPlot, iTestData, this);
+			if (iCost < 0 || (iCost <= iEspPoints && !kOwner.canDoEspionageMission(
+				eMission, eTargetPlayer, &kSpyPlot, iTestData, this)))
 			{
-				int iTargetTotal = GET_TEAM(eTargetTeam).getEspionagePointsEver();
-				int iOurTotal = GET_TEAM(getTeam()).getEspionagePointsEver();
-				iBaseIntercept += (GC.getDefineINT("ESPIONAGE_INTERCEPT_SPENDING_MAX") * iTargetTotal) /
-						std::max(1, iTargetTotal + iOurTotal);
-
-				if (GET_TEAM(eTargetTeam).getCounterespionageModAgainstTeam(getTeam()) > 0)
-					iBaseIntercept += GC.getDefineINT("ESPIONAGE_INTERCEPT_COUNTERESPIONAGE_MISSION");
+				continue; // we can't do the mission, and cost is not the limiting factor.
 			}
-			int iEscapeCost = 2*iSpyValue * iBaseIntercept *
-					(100+GC.getDefineINT("ESPIONAGE_SPY_MISSION_ESCAPE_MOD")) / 10000;
-			// One espionage mission loop to rule them all.
-			FOR_EACH_ENUM2(EspionageMission, eMission)
+			int iValue = kOwner.AI_espionageVal(
+					eTargetPlayer, eMission, &kSpyPlot, iTestData);
+			iValue *= 80 + GC.getGame().getSorenRandNum(60,
+					// <advc.007> Don't pollute the MPLog
+					bFirst ? "AI best espionage mission" : NULL);
+			bFirst = false; // </advc.007>
+			iValue /= 100;
+			iValue -= iOverhead;
+			iValue -= iCost * (bBigEspionage ? 2 : 1) * iCost / std::max(1,
+					iCost + GET_TEAM(getTeam()).getEspionagePointsAgainstTeam(eTargetTeam));
+
+			/*	If we can't do the mission yet, don't completely give up.
+				It might be worth saving points for. */
+			if (!kOwner.canDoEspionageMission(eMission,
+				eTargetPlayer, &kSpyPlot, iTestData, this))
 			{
-				CvEspionageMissionInfo& kMissionInfo = GC.getInfo(eMission);
-				int iTestData = 1;
-				if (kMissionInfo.getBuyTechCostFactor() > 0)
-					iTestData = GC.getNumTechInfos();
-				else if (kMissionInfo.getDestroyProjectCostFactor() > 0)
-					iTestData = GC.getNumProjectInfos();
-				else if (kMissionInfo.getDestroyBuildingCostFactor() > 0)
-					iTestData = GC.getNumBuildingInfos();
-
-				// estimate the risk cost of losing the spy.
-				int iOverhead = iEscapeCost + iSpyValue * iBaseIntercept *
-						(100 + kMissionInfo.getDifficultyMod()) / 10000;
-				bool bFirst = true; // advc.007
-				for (iTestData-- ; iTestData >= 0; iTestData--)
+				// Is cost is the reason we can't do the mission?
+				if (GET_TEAM(getTeam()).isHasTech((TechTypes)kMission.getTechPrereq()))
 				{
-					int iCost = kPlayer.getEspionageMissionCost(
-							eMission, pSpyPlot->getOwner(), pSpyPlot, iTestData, this);
-					if (iCost < 0 || (iCost <= iEspPoints && !kPlayer.canDoEspionageMission(
-						eMission, pSpyPlot->getOwner(), pSpyPlot, iTestData, this)))
-					{
-						continue; // we can't do the mission, and cost is not the limiting factor.
-					}
-					int iValue = kPlayer.AI_espionageVal(
-							pSpyPlot->getOwner(), eMission, pSpyPlot, iTestData);
-					iValue *= 80 + GC.getGame().getSorenRandNum(60,
-							// <advc.007> Don't pollute the MPLog
-							bFirst ? "AI best espionage mission" : NULL);
-					bFirst = false; // </advc.007>
-					iValue /= 100;
-					iValue -= iOverhead;
-					iValue -= iCost * (bBigEspionage ? 2 : 1) * iCost / std::max(1,
-							iCost + GET_TEAM(getTeam()).getEspionagePointsAgainstTeam(eTargetTeam));
+					FAssert(iCost > iEspPoints); // (see condition at the top of the loop)
 
-					// If we can't do the mission yet, don't completely give up. It might be worth saving points for.
-					if (!kPlayer.canDoEspionageMission(eMission,
-						pSpyPlot->getOwner(), pSpyPlot, iTestData, this))
-					{
-						// Is cost is the reason we can't do the mission?
-						if (GET_TEAM(getTeam()).isHasTech((TechTypes)kMissionInfo.getTechPrereq()))
-						{
-							FAssert(iCost > iEspPoints); // (see condition at the top of the loop)
-							// Scale the mission value based on how long we think it will take to get the points.
-
-							int iTurns = (iCost - iEspPoints) / std::max(1, iEspionageRate);
-							iTurns *= bBigEspionage? 1 : 2;
-							// The number of turns is approximated (poorly) by assuming our entire esp rate is targeting eTargetTeam.
-							iValue *= 3;
-							iValue /= iTurns + 3;
-							// eg, 1 turn left -> 3/4. 2 turns -> 3/5, 3 turns -> 3/6. Etc.
-						}
-						else
-						{
-							// Ok. Now it's time to give up. (Even if we're researching the prereq tech right now - too bad.)
-							iValue = 0;
-						}
-					}
-
-					// Block small missions when using "big espionage", unless the mission is really good value.
-					if (bBigEspionage &&
-						iValue < 50*kPlayer.getCurrentEra()*(kPlayer.getCurrentEra()+1) && // 100, 300, 600, 1000, 1500, ...
-						iValue < (kPlayer.AI_isDoStrategy(AI_STRATEGY_ESPIONAGE_ECONOMY) ? 4 : 2)*iCost)
-					{
-						iValue = 0;
-					}
-
-					if (iValue > iBestValue)
-					{
-						iBestValue = iValue;
-						eBestMission = eMission;
-						eTargetPlayer = pSpyPlot->getOwner();
-						pPlot = pSpyPlot;
-						iData = iTestData;
-					}
+					/*	Scale the mission value based on
+						how long we think it will take to get the points. */
+					int iTurns = (iCost - iEspPoints) / std::max(1, iEspionageRate);
+					iTurns *= bBigEspionage? 1 : 2;
+					/*	The number of turns is approximated (poorly)
+						by assuming our entire esp rate is targeting eTargetTeam. */
+					iValue *= 3;
+					iValue /= iTurns + 3;
+					// eg, 1 turn left -> 3/4. 2 turns -> 3/5, 3 turns -> 3/6. Etc.
+				}
+				else
+				{
+					/*	Ok. Now it's time to give up.
+						(Even if we're researching the prereq tech right now - too bad.) */
+					iValue = 0;
 				}
 			}
-			// K-Mod end
+
+			// Block small missions when using "big espionage", unless the mission is really good value.
+			if (bBigEspionage &&
+				// 100, 300, 600, 1000, 1500, ...
+				iValue < 50 * kOwner.getCurrentEra() * (kOwner.getCurrentEra() + 1) &&
+				iValue < (kOwner.AI_isDoStrategy(AI_STRATEGY_ESPIONAGE_ECONOMY)
+				? 4 : 2) * iCost)
+			{
+				iValue = 0;
+			}
+			if (iValue > iBestValue)
+			{
+				iBestValue = iValue;
+				eBestMission = eMission;
+				iData = iTestData;
+			}
 		}
 	}
 	if (gUnitLogLevel > 2 && eBestMission != NO_ESPIONAGEMISSION)
 	{
-		// The following assert isn't a problem or a bug. I just want to know when it happens, for testing purposes.
-		//FAssertMsg(!kPlayer.AI_isDoStrategy(AI_STRATEGY_ESPIONAGE_ECONOMY) || GC.getInfo(eBestMission).getBuyTechCostFactor() > 0 || GC.getInfo(eBestMission).getDestroyProjectCostFactor() > 0, "Potentially wasteful AI use of espionage.");
-		logBBAI("      %S chooses %S as their best%s espionage mission (value: %d, cost: %d).", GET_PLAYER(getOwner()).getCivilizationDescription(0), GC.getInfo(eBestMission).getText(), bBigEspionage?" (big)":"", iBestValue, kPlayer.getEspionageMissionCost(eBestMission, eTargetPlayer, pPlot, iData, this));
+		//FAssertMsg(!kOwner.AI_isDoStrategy(AI_STRATEGY_ESPIONAGE_ECONOMY) || GC.getInfo(eBestMission).getBuyTechCostFactor() > 0 || GC.getInfo(eBestMission).getDestroyProjectCostFactor() > 0, "Potentially wasteful AI use of espionage."); // Just for testing purposes
+		logBBAI("      %S chooses %S as their best%s espionage mission (value: %d, cost: %d).", GET_PLAYER(getOwner()).getCivilizationDescription(0), GC.getInfo(eBestMission).getText(), bBigEspionage?" (big)":"", iBestValue, kOwner.getEspionageMissionCost(eBestMission, eTargetPlayer, plot(), iData, this));
 	}
 
 	return eBestMission;
@@ -21620,7 +21573,7 @@ bool CvUnitAI::AI_canConnectBonus(CvPlot const& p, BuildTypes eBuild) const
 		already connects the resource */
 	if(p.getImprovementType() == eImpr)
 		return true;
-	if(!canBuild(&p, eBuild))
+	if(!canBuild(p, eBuild))
 		return false;
 	if(p.isFeature() &&
 		GC.getInfo(eBuild).isFeatureRemove(p.getFeatureType()) &&
@@ -22285,19 +22238,6 @@ bool CvUnitAI::AI_rangedStrikeK(int plotFilter, const CvPlot* pPlot,
 	
 	if (pTargetPlot != NULL)
 	{
-/*		if (AI_leaveAttack(1, 30, 100)) // was 20
-		{
-			return false;
-		}
-		if (AI_retreatToCity())
-		{
-			return false;
-		}
-
-		if (AI_safety())
-		{
-			return false;
-		}*/
 		// K-Mod note: no AI_considerDOW here.
 		getGroup()->pushMission(MISSION_RANGE_ATTACK, pTargetPlot->getX(), pTargetPlot->getY());
 		return true;

@@ -174,21 +174,21 @@ void CvTeam::reset(TeamTypes eID, bool bConstructorCall)
 		for (int i = 0; i < MAX_TEAMS; i++)
 		{
 			CvTeam& kLoopTeam = GET_TEAM((TeamTypes)i);
-			kLoopTeam.m_aiStolenVisibilityTimer.set(getID(), 0);
-			kLoopTeam.m_aiWarWeariness.set(getID(), 0);
-			kLoopTeam.m_aiTechShareCount.set(getID(), 0);
-			kLoopTeam.m_aiEspionagePointsAgainstTeam.set(getID(), 0);
-			kLoopTeam.m_aiCounterespionageTurnsLeftAgainstTeam.set(getID(), 0);
-			kLoopTeam.m_aiCounterespionageModAgainstTeam.set(getID(), 0);
-			kLoopTeam.m_abHasMet.set(getID(), false);
-			kLoopTeam.m_abHasSeen.set(getID(), false); // K-Mod
-			kLoopTeam.m_abAtWar.set(getID(), false);
-			kLoopTeam.m_abJustDeclaredWar.set(getID(), false); // advc.162
-			kLoopTeam.m_abPermanentWarPeace.set(getID(), false);
-			kLoopTeam.m_abOpenBorders.set(getID(), false);
-			kLoopTeam.m_abDisengage.set(getID(), false); // advc.034
-			kLoopTeam.m_abDefensivePact.set(getID(), false);
-			kLoopTeam.m_abForcePeace.set(getID(), false);
+			kLoopTeam.m_aiStolenVisibilityTimer.reset(getID());
+			kLoopTeam.m_aiWarWeariness.reset(getID());
+			kLoopTeam.m_aiTechShareCount.reset(getID());
+			kLoopTeam.m_aiEspionagePointsAgainstTeam.reset(getID());
+			kLoopTeam.m_aiCounterespionageTurnsLeftAgainstTeam.reset(getID());
+			kLoopTeam.m_aiCounterespionageModAgainstTeam.reset(getID());
+			kLoopTeam.m_abHasMet.reset(getID());
+			kLoopTeam.m_abHasSeen.reset(getID()); // K-Mod
+			kLoopTeam.m_abAtWar.reset(getID());
+			kLoopTeam.m_abJustDeclaredWar.reset(getID()); // advc.162
+			kLoopTeam.m_abPermanentWarPeace.reset(getID());
+			kLoopTeam.m_abOpenBorders.reset(getID());
+			kLoopTeam.m_abDisengage.reset(getID()); // advc.034
+			kLoopTeam.m_abDefensivePact.reset(getID());
+			kLoopTeam.m_abForcePeace.reset(getID());
 			// <advc.opt>
 			if (kLoopTeam.m_eMaster == getID())
 				kLoopTeam.m_eMaster = NO_TEAM; // </advc.opt>
@@ -3717,7 +3717,7 @@ void CvTeam::setProjectDefaultArtType(ProjectTypes eIndex, int iValue)
 
 int CvTeam::getProjectArtType(ProjectTypes eIndex, int number) const
 {
-	FAssertBounds(0, GC.getNumProjectInfos(), eIndex);
+	FAssertEnumBounds(eIndex);
 	FAssertBounds(0, getProjectCount(eIndex), number);
 	return m_pavProjectArtTypes[eIndex][number];
 }
@@ -3725,7 +3725,7 @@ int CvTeam::getProjectArtType(ProjectTypes eIndex, int number) const
 
 void CvTeam::setProjectArtType(ProjectTypes eIndex, int number, int value)
 {
-	FAssertBounds(0, GC.getNumProjectInfos(), eIndex);
+	FAssertEnumBounds(eIndex);
 	FAssertBounds(0, getProjectCount(eIndex), number);
 	m_pavProjectArtTypes[eIndex][number] = value;
 }
@@ -3965,17 +3965,18 @@ void CvTeam::changeObsoleteBuildingCount(BuildingTypes eIndex, int iChange)
 	m_aiObsoleteBuildingCount.add(eIndex, iChange);
 	FAssert(getObsoleteBuildingCount(eIndex) >= 0);
 
-	if (bOldObsoleteBuilding != isObsoleteBuilding(eIndex))
+	if (bOldObsoleteBuilding == isObsoleteBuilding(eIndex))
+		return;
+
+	for (MemberIter it(getID()); it.hasNext(); ++it)
 	{
-		for (MemberIter it(getID()); it.hasNext(); ++it)
+		FOR_EACH_CITY_VAR(pLoopCity, *it)
 		{
-			FOR_EACH_CITY_VAR(pLoopCity, *it)
+			if (pLoopCity->getNumBuilding(eIndex) > 0)
 			{
-				if (pLoopCity->getNumBuilding(eIndex) > 0)
-				{
-					pLoopCity->processBuilding(eIndex, isObsoleteBuilding(eIndex) ?
-						-pLoopCity->getNumBuilding(eIndex) : pLoopCity->getNumBuilding(eIndex), true);
-				}
+				pLoopCity->processBuilding(eIndex, isObsoleteBuilding(eIndex) ?
+						-pLoopCity->getNumBuilding(eIndex) :
+						pLoopCity->getNumBuilding(eIndex), true);
 			}
 		}
 	}
@@ -4904,14 +4905,36 @@ void CvTeam::changeEspionagePointsAgainstTeam(TeamTypes eIndex, int iChange)
 	setEspionagePointsAgainstTeam(eIndex, getEspionagePointsAgainstTeam(eIndex) + iChange);
 }
 
-// K-Mod
+// advc.120d:
+bool CvTeam::canSeeTech(TeamTypes eOther) const
+{
+	/*	In part based on drawTechDeals in ExoticForeignAdvisor.py.
+		Exposed to Python via CvPlayer. Therefore has to pretty foolproof. */
+	CvTeam const& kOther = GET_TEAM(eOther);
+	// Can see vassal tech through "we'd like you to research ..."
+	if (getID() == kOther.getID() || kOther.isVassal(getID()))
+		return true;
+	// advc.553: Make tech visible despite No Tech Trading (as in BtS)
+//doto-keldath 0 i prefer it like this
+	if(GC.getGame().isOption(GAMEOPTION_NO_TECH_TRADING)/* && !canSeeResearch(eOther)*/)
+		return false;
+	if (!isAlive() || !kOther.isAlive() ||
+		!isMajorCiv() || !kOther.isMajorCiv() ||
+		isMinorCiv() || kOther.isMinorCiv())
+	{
+		return false;
+	}
+	return (isHasMet(kOther.getID()) && (isTechTrading() || kOther.isTechTrading()));
+}
+
+// K-Mod:
 int CvTeam::getTotalUnspentEspionage() const
 {
 	int iTotal = 0;
 	for (TeamIter<CIV_ALIVE> it; it.hasNext(); ++it)
 		iTotal += getEspionagePointsAgainstTeam(it->getID());
 	return iTotal;
-} // K-Mod end
+}
 
 int CvTeam::getEspionagePointsEver() const
 {

@@ -98,8 +98,8 @@
 	<ElementType name="PowerBonus" content="textOnly"/>
 	<ElementType name="FreeBonus" content="textOnly"/>
 	<ElementType name="iNumFreeBonuses" content="textOnly" dt:type="int"/>
-<!--DOTO- prereqMust+tholish -->
-	<ElementType name="iBonusMust" content="textOnly" dt:type="int"/>
+<!-- prereqMust+tholish -->
+	<ElementType name="iPrereqMustAll" content="textOnly" dt:type="int"/>
 	<ElementType name="FreeBuilding" content="textOnly"/>
 	<ElementType name="bTeamShare" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bWater" content="textOnly" dt:type="boolean"/>
@@ -129,9 +129,9 @@
 	<ElementType name="iMinAreaSize" content="textOnly" dt:type="int"/>
 	<ElementType name="iConquestProb" content="textOnly" dt:type="int"/>
 	<ElementType name="iCitiesPrereq" content="textOnly" dt:type="int"/>
-<!--DOTO- city size preqeq-->
+<!--city size preqeq-->
 	<ElementType name="iCitySizePrereq" content="textOnly" dt:type="int"/>  <!-- Shqype Add -->
-<!--DOTO- city size preqeq-->
+<!--city size preqeq-->
 	<ElementType name="iTeamsPrereq" content="textOnly" dt:type="int"/>
 	<ElementType name="iLevelPrereq" content="textOnly" dt:type="int"/>
 	<ElementType name="iMinLatitude" content="textOnly" dt:type="int"/>
@@ -482,8 +482,8 @@
 		<element type="PowerBonus" minOccurs="0"/>
 		<element type="FreeBonus" minOccurs="0"/>
 		<element type="iNumFreeBonuses" minOccurs="0"/>
-<!-- DOTO- prereqMust+tholish -->
-		<element type="iBonusMust" minOccurs="0"/>
+<!-- prereqMust+tholish -->
+		<element type="iPrereqMustAll" minOccurs="0"/>
 		<!-- lopez bonus converter start-->
 		<element type="RequiredInputBonuses" minOccurs="0"/>
     	<element type="BuildingOutputBonuses" minOccurs="0"/>
