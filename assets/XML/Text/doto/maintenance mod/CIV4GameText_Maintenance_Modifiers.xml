@@ -242,4 +242,18 @@ telephone technology with the advent of computers and satellites. </Spanish>
 		<Italian>[ICON_BULLET]%D1_Mod%% Maintenance Costs for All Cities on Home Continent</Italian>
 		<Spanish>[ICON_BULLET]%D1_Mod%% Maintenance Costs for All Cities on Home Continent</Spanish>
 	</TEXT>
+	<TEXT>	
+		<Tag>TXT_KEY_FINANCE_ADVISOR_CITY_MAINT_COST</Tag>
+		<English>%d1[ICON_GOLD]: Distance
+				 %d2[ICON_GOLD]: Cities Anount
+				 %d3[ICON_GOLD]: Capital Area
+				 %d4[ICON_GOLD]: Other Area
+				 %d5[ICON_GOLD]: Capital Connection
+				 %d6[ICON_GOLD]: Coastal Cities
+				 %d7[ICON_GOLD]: Colony Expenses
+				 %d8[ICON_GOLD]: Corporation Payments
+				 ------------------------
+				 TOTAL: %d9[ICON_GOLD]
+		</English>
+	</TEXT>
 </Civ4GameText>

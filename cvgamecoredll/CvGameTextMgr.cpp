@@ -18249,6 +18249,12 @@ void CvGameTextMgr::buildFinanceCityMaintString(CvWStringBuffer& szBuffer, Playe
 		but only after adding all components up. Don't want to round down in
 		the breakdown, and K-Mod had already been using ROUND_DIVIDE.) */
 	scaled rDistanceMaint;
+//DOTO-DPII < Maintenance Modifiers >
+	scaled rHomeMaint;
+	scaled rOtherMaint;
+	scaled rConnected;
+	scaled rCostalMaint;
+//DOTO-DPII < Maintenance Modifiers >
 	scaled rColonyMaint;
 	scaled rCorpMaint;
 	CvPlayer const& kPlayer = GET_PLAYER(ePlayer);
@@ -18258,6 +18264,16 @@ void CvGameTextMgr::buildFinanceCityMaintString(CvWStringBuffer& szBuffer, Playe
 		{
 			rDistanceMaint += per100(pCity->calculateDistanceMaintenanceTimes100()) *
 					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
+//DOTO-DPII < Maintenance Modifiers >
+			rHomeMaint = per100(GET_PLAYER(ePlayer).getHomeAreaMaintenanceModifier()) *
+					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
+			rOtherMaint = per100(GET_PLAYER(ePlayer).getOtherAreaMaintenanceModifier()) *
+					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
+			rConnected = per100(GET_PLAYER(ePlayer).getConnectedCityMaintenanceModifier()) *
+					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
+			rCostalMaint = per100(GET_PLAYER(ePlayer).getCoastalDistanceMaintenanceModifier()) *
+					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
+//DOTO-DPII < Maintenance Modifiers >
 			rColonyMaint += per100(pCity->calculateColonyMaintenanceTimes100()) *
 					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
 			rCorpMaint += per100(pCity->calculateCorporationMaintenanceTimes100()) *
@@ -18269,22 +18285,36 @@ void CvGameTextMgr::buildFinanceCityMaintString(CvWStringBuffer& szBuffer, Playe
 	scaled const rInflationFactor = per100(iInflationFactorTimes100);
 
 	rDistanceMaint *= rInflationFactor;
+//DOTO-DPII < Maintenance Modifiers >
+	rHomeMaint *= rInflationFactor;
+	rOtherMaint *= rInflationFactor;
+	rConnected *= rInflationFactor;
+	rCostalMaint *= rInflationFactor;
+//DOTO-DPII < Maintenance Modifiers >
 	rColonyMaint *= rInflationFactor;
 	rCorpMaint *= rInflationFactor;
 	/*	Note: currently, calculateCorporationMaintenanceTimes100
 		includes the inverse of this factor. */
 
 	int iDistanceMaint = rDistanceMaint.round();
+	int iHomeMaint = rHomeMaint.round();
+	int iOtherMaint = rOtherMaint.round();
+	int iConnected = rConnected.round();
+	int iCostalMaint = rCostalMaint.round();
 	int iColonyMaint = rColonyMaint.round();
 	int iCorpMaint = rCorpMaint.round();
-
-	int iNumCityMaint = (kPlayer.getTotalMaintenance() * rInflationFactor).round() -
-			iDistanceMaint - iColonyMaint - iCorpMaint;
+//DOTO-DPII < Maintenance Modifiers >
+	iDistanceMaint = iDistanceMaint - iCostalMaint;
+	int totalMaint = (kPlayer.getTotalMaintenance() * rInflationFactor).round() - iHomeMaint - iOtherMaint - iConnected;
+	int iNumCityMaint = totalMaint - iDistanceMaint - iColonyMaint - iCorpMaint ;
+//DOTO-DPII < Maintenance Modifiers >
 	CvWString szTmp; // advc.086
 	szTmp.append(NEWLINE);
+//DOTO-DPII < Maintenance Modifiers >
 	szTmp.append(gDLL->getText("TXT_KEY_FINANCE_ADVISOR_CITY_MAINT_COST",
-			iDistanceMaint, iNumCityMaint, iColonyMaint, iCorpMaint,
+			iDistanceMaint, iNumCityMaint,iHomeMaint ,iOtherMaint ,iConnected ,iCostalMaint , iColonyMaint, iCorpMaint, 
 			(kPlayer.getTotalMaintenance() * iInflationFactorTimes100) / 100));
+//DOTO-DPII < Maintenance Modifiers >
 	// <advc.086>
 	if(szBuffer.isEmpty())
 		szBuffer.assign(szTmp.substr(2, szTmp.length()));
