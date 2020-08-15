@@ -212,10 +212,12 @@ scaled CitySiteEvaluator::evaluateWorkablePlot(CvPlot const& kPlot) const
 	// Should only be used for StartingPositionIteration
 	FAssert(isNormalizing() && !isDebug());
 	/*	The evaluation is going to be largely independent from any city tile,
-		but it could matter whether it's coastal and on the same landmass. */
+		but it could matter whether it's coastal and on the same landmass.
+		And for the evaluation of water tiles, I want to be able to guess
+		based on the potential city tile whether it's arctic water. */
 	CvPlot const* pBestCityPlot = NULL;
 	int iBestScore = 0;
-	int const iBestPossibleScore = (kPlot.isWater() ? 2 : 3);
+	int const iBestPossibleScore = (kPlot.isWater() ? 4 : 5);
 	for (CityPlotIter it(kPlot, false); it.hasNext(); ++it)
 	{
 		if (!m_kPlayer.canFound(it->getX(), it->getY()))
@@ -224,12 +226,14 @@ scaled CitySiteEvaluator::evaluateWorkablePlot(CvPlot const& kPlot) const
 		if (kPlot.isWater())
 		{
 			if (it->isCoastalLand(-1))
+				iScore += 2;
+			if (GC.getTerrainInfo(it->getTerrainType()).getYield(YIELD_FOOD) > 0)
 				iScore++;
 		}
 		else
 		{
 			if (kPlot.sameArea(*it))
-				iScore += 2;
+				iScore += 4;
 		}
 		if (iScore > iBestScore)
 		{
@@ -736,6 +740,8 @@ short AIFoundValue::evaluate()
 		iValue /= 100;
 		IFLOG if(iModifier!=100) logBBAI("Times %d percent for starting on a resource", iModifier);
 	}
+	if (kSet.isStartingLoc())
+		iValue = adjustToLandAreaBoundary(iValue);
 	if (kSet.isStartingLoc() || /* advc.031e: */ kSet.isNormalizing())
 	{	// <advc.027
 		if (kSet.isIgnoreStartingSurroundings())
@@ -2328,6 +2334,48 @@ int AIFoundValue::evaluateGoodies(int iGoodies) const
 	return iGoodies * 50;
 }
 
+/*	advc.027: Starting near a mountain chain that separates a landmass
+	into two sizable areas is bad b/c normalization may (or may not)
+	remove that obstacle; makes the site difficult to evaluate. */
+int AIFoundValue::adjustToLandAreaBoundary(int iValue) const
+{
+	std::set<int> otherLandAreas;
+	bool bFoundImpassable = false;
+	int const iReprArea = kArea.getRepresentativeArea();
+	/*	Range corresponds to CvGame::normalizeRemovePeaks. Need to go one farther
+		b/c the boundary itself takes up one tile and could belong to kArea. */
+	int const iPeakRemovalRange = 3;
+	for (SquareIter itPlot(kPlot, iPeakRemovalRange + 1); itPlot.hasNext(); ++itPlot)
+	{
+		if (!itPlot->isArea(kArea) &&
+			itPlot->getArea().getRepresentativeArea() == iReprArea)
+		{
+			otherLandAreas.insert(itPlot->getArea().getID());
+		}
+		if (itPlot->isImpassable() && itPlot.currStepDist() <= iPeakRemovalRange)
+			bFoundImpassable = true;
+	}
+	if (!bFoundImpassable)
+		return iValue;
+	int iOtherLandAreaSize = 0;
+	for (std::set<int>::const_iterator it = otherLandAreas.begin();
+		it != otherLandAreas.end(); ++it)
+	{
+		iOtherLandAreaSize += GC.getMap().getArea(*it)->getNumTiles();
+	}
+	if (iOtherLandAreaSize <= 0)
+		return iValue;
+	int iAreaSize = kArea.getNumTiles();
+	scaled rAdjust;
+	if (iOtherLandAreaSize >= iAreaSize)
+	{
+		rAdjust = scaled(iAreaSize, iOtherLandAreaSize);
+		rAdjust.increaseTo(fixp(1/4.));
+	}
+	else rAdjust = 1 - scaled(iOtherLandAreaSize, 2 * iAreaSize);
+	return (iValue * rAdjust).round();
+}
+
 // Taking into account tiles beyond the city radius
 int AIFoundValue::adjustToStartingSurroundings(int iValue) const
 {
@@ -3247,6 +3295,17 @@ scaled AIFoundValue::evaluateWorkablePlot(CvPlot const& p) const
 			r += iFeatureHealth * fixp(1/6.);
 		else if (!bRemovableFeature)
 			r += iFeatureHealth * fixp(1/9.);
+	}
+	if (r > 0 && p.isWater())
+	{
+		/*	Decrease value if surrounding land is bad.
+			Save time by only looking at kPlot. */
+		int iYieldScore = 5 * kPlot.calculateNatureYield(YIELD_FOOD, NO_TEAM, true, true) +
+				4 * kPlot.calculateNatureYield(YIELD_PRODUCTION, NO_TEAM, true, true) +
+				2 * kPlot.calculateNatureYield(YIELD_COMMERCE, NO_TEAM, true, true);
+		int const iTargetScore = 8;
+		if (iYieldScore < iTargetScore)
+			r *= 1 - (iTargetScore - iYieldScore) * per100(4);
 	}
 	if (p.isGoody())
 	{

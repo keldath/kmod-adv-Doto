@@ -1197,6 +1197,9 @@ bool CvPlot::isAdjacentSaltWater() const
 
 bool CvPlot::isPotentialIrrigation() const
 {	
+	// advc: 2nd condition was !isHills. Mods might allow cities on peaks.
+	//doto-keldath- left it out
+	//if ((isCity() && isFlatlands()) ||
 	//===NM=====Mountains Mod===0=====keldath - i hope thats ok
 	if ((isCity() && !(isHills() || (GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && isPeak())))||
 	//===NM=====Mountains Mod===0=====

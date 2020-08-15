@@ -330,14 +330,14 @@
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RAND_BOMB_HIT</Type>
-            <Description>Random Bomb Hit (DEV)</Description>
+            <Description>Random Bomb Hit</Description>
             <Help>Bombard Attacks damage will be randomized</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RAND_BOMB_DMG</Type>
-            <Description>Random Bomb Damage (DEV)</Description>
+            <Description>Random Bomb Damage</Description>
             <Help>Bombard Attacks damage will be randomized</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>

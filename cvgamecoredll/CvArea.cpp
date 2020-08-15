@@ -78,10 +78,10 @@ void CvArea::reset(int iID, bool bWater, bool bConstructorCall)
 	m_aiBestFoundValue.reset();
 	//DPII < Maintenance Modifiers >
 	m_aiMaintenanceModifier.reset();
-	m_aiHomeAreaMaintenanceModifier.reset();
+/*	m_aiHomeAreaMaintenanceModifier.reset();
 	m_aiOtherAreaMaintenanceModifier.reset();
 	m_abHomeArea.reset();
-	//DPII < Maintenance Modifiers >
+*/	//DPII < Maintenance Modifiers >
 	m_aiNumRevealedTiles.reset();
 	m_aiCleanPowerCount.reset();
 	m_aiBorderObstacleCount.reset();
@@ -502,7 +502,7 @@ void CvArea::changeMaintenanceModifier(PlayerTypes eIndex, int iChange)
    // m_aiMaintenanceModifier[eIndex] = (m_aiMaintenanceModifier[eIndex] + iChange);
 	m_aiMaintenanceModifier.add(eIndex, iChange);
 }
-
+/*
 int CvArea::getHomeAreaMaintenanceModifier(PlayerTypes eIndex) const
 {
     FAssertMsg(eIndex >= 0, "eIndex is expected to be >= 0");
@@ -557,13 +557,13 @@ bool CvArea::isHomeArea(PlayerTypes eIndex) const
     FAssertMsg(eIndex < MAX_PLAYERS, "eIndex is expected to be < MAX_PLAYERS");
     return m_abHomeArea.get(eIndex);
 }
-
+*/
 /* DPII: Any new area modifiers for things like yield, happiness or health have to have the modifiers switched here
  in the setHomeArea code.  The HomeArea modifiers for the new home area needs to be set and the HomeArea modifiers for the
  old home area needs to be cleared.  The process is the same for setting and clearing the OtherArea modifiers but in reverse.
 
  If you've done this correctly, no Area should have both a HomeArea and an OtherArea modifier value.*/
-void CvArea::setHomeArea(PlayerTypes ePlayer, CvArea* pOldHomeArea,CvArea* pNewHomeArea)
+/*void CvArea::setHomeArea(PlayerTypes ePlayer, CvArea* pOldHomeArea,CvArea* pNewHomeArea)
 {
 	if ( pOldHomeArea != NULL && pOldHomeArea != this )
 	{
@@ -593,6 +593,7 @@ int CvArea::getTotalAreaMaintenanceModifier(PlayerTypes ePlayer) const
 
     return std::max(0,iModifier);
 }
+*/
 //DPII < Maintenance Modifiers >
 
 void CvArea::changeNumRevealedTiles(TeamTypes eIndex, int iChange)
@@ -763,10 +764,10 @@ void CvArea::read(FDataStreamBase* pStream)
 	m_aiBestFoundValue.Read(pStream);
 	//DPII < Maintenance Modifiers >
 	m_aiMaintenanceModifier.Read(pStream);
-	m_aiHomeAreaMaintenanceModifier.Read(pStream);
+/*	m_aiHomeAreaMaintenanceModifier.Read(pStream);
 	m_aiOtherAreaMaintenanceModifier.Read(pStream);
 	m_abHomeArea.Read(pStream);
-	//DPII < Maintenance Modifiers >
+*/	//DPII < Maintenance Modifiers >
 	m_aiNumRevealedTiles.Read(pStream);
 	m_aiCleanPowerCount.Read(pStream);
 	m_aiBorderObstacleCount.Read(pStream);
@@ -831,10 +832,10 @@ void CvArea::write(FDataStreamBase* pStream)
 	m_aiBestFoundValue.Write(pStream);
 	//DPII < Maintenance Modifiers >
 	m_aiMaintenanceModifier.Write(pStream);
-	m_aiHomeAreaMaintenanceModifier.Write(pStream);
+/*	m_aiHomeAreaMaintenanceModifier.Write(pStream);
 	m_aiOtherAreaMaintenanceModifier.Write(pStream);
 	m_abHomeArea.Write(pStream);
-	//DPII < Maintenance Modifiers >
+*/	//DPII < Maintenance Modifiers >
 	m_aiNumRevealedTiles.Write(pStream);
 	m_aiCleanPowerCount.Write(pStream);
 	m_aiBorderObstacleCount.Write(pStream);

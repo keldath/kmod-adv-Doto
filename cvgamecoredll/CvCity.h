@@ -1093,7 +1093,7 @@ public:
 
 	PlayerTypes getBuildingOriginalOwner(BuildingTypes eIndex) const														// Exposed to Python
 	{
-		return m_aiBuildingOriginalOwner.get(eIndex);
+		return m_aeBuildingOriginalOwner.get(eIndex);
 	}
 	int getBuildingOriginalTime(BuildingTypes eIndex) const															// Exposed to Python
 	{
@@ -1592,7 +1592,7 @@ protected:
 	EnumMap<ProjectTypes,int> m_aiProjectProduction;
 	EnumMap<BuildingTypes,int> m_aiBuildingProduction;
 	EnumMap<BuildingTypes,int> m_aiBuildingProductionTime;
-	EnumMap<BuildingTypes,PlayerTypes> m_aiBuildingOriginalOwner;
+	EnumMap<BuildingTypes,PlayerTypes> m_aeBuildingOriginalOwner;
 //prereqMust+tholish - this enum array will allow to keep tarck of shich buildings
 //were set to inactive
 	EnumMapDefault<BuildingTypes,bool,true> m_aiBuildingeActive;

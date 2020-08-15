@@ -685,6 +685,12 @@ public:
 
     int getConnectedCityMaintenanceModifier();
     void changeConnectedCityMaintenanceModifier(int iChange);
+
+    int getHomeAreaMaintenanceModifier();
+    void changeHomeAreaMaintenanceModifier(int iChange);
+
+    int getOtherAreaMaintenanceModifier();
+    void changeOtherAreaMaintenanceModifier(int iChange);
 //DPII < Maintenance Modifiers >
 
 	int getDistanceMaintenanceModifier() const { return m_iDistanceMaintenanceModifier; }							// Exposed to Python
@@ -798,7 +804,7 @@ public:
 	{
 		return getCapital();
 	}
-	void setCapitalCity(CvCity* pNewCapital);
+	void setCapital(CvCity* pNewCapital);
 	// <advc.127b> -1 if no capital or (eObserver!=NO_TEAM) unrevealed to eObserver
 	int getCapitalX(TeamTypes eObserver, bool bDebug = false) const;
 	int getCapitalY(TeamTypes eObserver, bool bDebug = false) const;
@@ -806,7 +812,7 @@ public:
 	int getCapitalY(PlayerTypes eObserver, bool bDebug = false) const;
 	// </advc.127b>  <advc>
 	inline bool hasCapital() const
-	{	// (Don't want to waste time checking both coordinates)
+	{
 		return (m_iCapitalCityID != FFreeList::INVALID_INDEX);
 	} // </advc>
 
@@ -1543,7 +1549,9 @@ protected:  // <advc.210>
 	//DPII < Maintenance Modifiers >
 	int m_iMaintenanceModifier;
 	int m_iCoastalDistanceMaintenanceModifier;
-	int m_iConnectedCityMaintenanceModifier;
+	int m_iConnectedCityMaintenanceModifier;;
+	int m_iHomeAreaMaintenanceModifier;
+	int m_iOtherAreaMaintenanceModifier;
 	//DPII < Maintenance Modifiers >
 	int m_iDistanceMaintenanceModifier;
 	int m_iNumCitiesMaintenanceModifier;

@@ -5273,10 +5273,27 @@ void CvCity::updateMaintenance()
 
 	if (!isNoMaintenance())
 	{
-		//DPII < Maintenance Modifiers >
+		CvArea const& kArea = getArea();
+		CvPlayer const& kOwner = GET_PLAYER(getOwner());
+		int iModifier = getMaintenanceModifier() + kArea.getMaintenanceModifier(getOwner()); //kArea.getAreaMaintenanceModifier(getOwner());
+		CvCity const* pCapital = kOwner.getCapitalCity();
+		if (pCapital != NULL)
+		{
+   		if (pCapital->isArea(kArea))
+      		iModifier += GET_PLAYER(getOwner()).getHomeAreaMaintenanceModifier();
+   			else iModifier += GET_PLAYER(getOwner()).getOtherAreaMaintenanceModifier();
+		}
+		if (isConnectedToCapital() && !(isCapital()))
+        {
+            iModifier += GET_PLAYER(getOwner()).getConnectedCityMaintenanceModifier();
+        }
+		iNewMaintenance = (calculateBaseMaintenanceTimes100() *
+				std::max(0, iModifier + 100)) / 100;
+
+//DPII < Maintenance Modifiers >
 		//iModifier = getMaintenanceModifier() + GET_PLAYER(getOwner()).getMaintenanceModifier() + area()->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
 		//keldath - f1rpo fix the GET_PLAYER(getOwner()).getMaintenanceModifier() is included in getMaintenanceModifier()
-		CvArea* citiiesArea = this->area();
+/*		CvArea* citiiesArea = this->area();
 		int titalA = citiiesArea->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
 		iModifier = getMaintenanceModifier() + citiiesArea->getMaintenanceModifier(GET_PLAYER(getOwner()).getID()) + titalA;
 		
@@ -5288,7 +5305,7 @@ void CvCity::updateMaintenance()
 		//iNewMaintenance = (calculateBaseMaintenanceTimes100() * std::max(0, (getMaintenanceModifier() + 100))) / 100;
 		//keldath - f1rpo fix 
 		iNewMaintenance = (calculateBaseMaintenanceTimes100() * std::max(0, iModifier + 100)) / 100;
-		//DPII < Maintenance Modifiers >
+*/		//DPII < Maintenance Modifiers >
 
 	}
 
@@ -10208,12 +10225,12 @@ void CvCity::setNumRealBuildingTimed(BuildingTypes eBuilding, int iNewValue, boo
 	m_aiNumRealBuilding.set(eBuilding, iNewValue);
 	if (getNumRealBuilding(eBuilding) > 0)
 	{
-		m_aiBuildingOriginalOwner.set(eBuilding, eOriginalOwner);
+		m_aeBuildingOriginalOwner.set(eBuilding, eOriginalOwner);
 		m_aiBuildingOriginalTime.set(eBuilding, iOriginalTime);
 	}
 	else
 	{
-		m_aiBuildingOriginalOwner.set(eBuilding, NO_PLAYER);
+		m_aeBuildingOriginalOwner.set(eBuilding, NO_PLAYER);
 		m_aiBuildingOriginalTime.set(eBuilding, MIN_INT);
 	}
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
@@ -10248,7 +10265,7 @@ void CvCity::setNumRealBuildingTimed(BuildingTypes eBuilding, int iNewValue, boo
 	if (iChange > 0 && bFirst)
 	{
 		if (kBuilding.isCapital())
-			GET_PLAYER(getOwner()).setCapitalCity(this);
+			GET_PLAYER(getOwner()).setCapital(this);
 
 		if (GC.getGame().isFinalInitialized() && !gDLL->GetWorldBuilderMode())
 		{
@@ -12606,7 +12623,7 @@ void CvCity::read(FDataStreamBase* pStream)
 	m_aiProjectProduction.Read(pStream);
 	m_aiBuildingProduction.Read(pStream);
 	m_aiBuildingProductionTime.Read(pStream);
-	m_aiBuildingOriginalOwner.Read(pStream);
+	m_aeBuildingOriginalOwner.Read(pStream);
 //prereqMust+tholish
 	m_aiBuildingeActive.Read(pStream);
 	m_aiBuildingOriginalTime.Read(pStream);
@@ -12939,7 +12956,7 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiProjectProduction.Write(pStream);
 	m_aiBuildingProduction.Write(pStream);
 	m_aiBuildingProductionTime.Write(pStream);
-	m_aiBuildingOriginalOwner.Write(pStream);
+	m_aeBuildingOriginalOwner.Write(pStream);
 //prereqMust+tholish
 	m_aiBuildingeActive.Write(pStream);
 	m_aiBuildingOriginalTime.Write(pStream);

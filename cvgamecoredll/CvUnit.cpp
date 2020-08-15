@@ -22,7 +22,7 @@
 CvUnit::CvUnit() // advc.003u: Body cut from the deleted reset function
 {
 	CvDLLEntity::createUnitEntity(this);
-
+//DOTO-
 /****************************************
  *  Archid Mod: 10 Jun 2012
  *  Functionality: Unit Civic Prereq - Archid
@@ -57,6 +57,7 @@ CvUnit::CvUnit() // advc.003u: Body cut from the deleted reset function
 	m_iFortifyTurns = 0;
 	m_iBlitzCount = 0;
 	m_iAmphibCount = 0;
+//DOTO-
 //MOD@VET_Andera412_Blocade_Unit-begin1/6	
 	m_iUnblocadeCount = 0;
 //MOD@VET_Andera412_Blocade_Unit-end1/6
@@ -688,7 +689,7 @@ void CvUnit::doTurn()
 				changeDamage(GC.getInfo(eFeature).getTurnDamage(), NO_PLAYER);
 			}
 		}
-
+//DOTO-
 	/*****************************************************************************************************/
 	/**  Author: TheLadiesOgre                                                                          **/
 	/**  Date: 15.10.2009                                                                               **/
@@ -1558,6 +1559,7 @@ void CvUnit::updateCombat(bool bQuick)
 		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DIED_ATTACKING",
 				getNameKeyNoGG(), // advc.004u
 				pDefender->getNameKey());
+//DOTO-
 /*************************************************************************************************/
 /** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
 /**                                                                                              */
@@ -1593,6 +1595,7 @@ void CvUnit::updateCombat(bool bQuick)
 		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_KILLED_ENEMY_UNIT", pDefender->getNameKey(),
 				getNameKeyNoGG(), // advc.004u
 				getVisualCivAdjective(pDefender->getTeam()));
+//DOTO-
 /*************************************************************************************************/
 /** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
 /**                                                                                              */
@@ -1667,6 +1670,7 @@ void CvUnit::updateCombat(bool bQuick)
 
 		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", getNameKey(),
 				pDefender->getNameKeyNoGG()); // advc.004u
+//DOTO-
 /*************************************************************************************************/
 /** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
 /**                                                                                              */
@@ -1710,6 +1714,7 @@ void CvUnit::updateCombat(bool bQuick)
 					pDefender->getNameKeyNoGG(), // advc.004u
 					getNameKey(), getVisualCivAdjective(pDefender->getTeam()));
 		}
+//DOTO-
 /*************************************************************************************************/
 /** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
 /**                                                                                              */
@@ -1770,6 +1775,7 @@ void CvUnit::updateCombat(bool bQuick)
 				checkRemoveSelectionAfterAttack();
 			}
 		}
+//DOTO-
 /*************************************************************************************************/
 /** INFLUENCE_DRIVEN_WAR                  KELDATH MARKING                 		   johnysmith    */
 /**                                                                                              */
@@ -1812,6 +1818,7 @@ void CvUnit::updateCombat(bool bQuick)
 
 		changeMoves(std::max(GC.getMOVE_DENOMINATOR(), pPlot->movementCost(this, plot())));
 		checkRemoveSelectionAfterAttack();
+//DOTO-
 /*************************************************************************************************/
 /** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
 /**                                                                                              */
@@ -2422,7 +2429,7 @@ bool CvUnit::willRevealAnyPlotFrom(CvPlot const& kFrom) const
 	}
 	return false;
 }
-
+//DOTO-
 //MOD@VET_Andera412_Blocade_Unit-begin2/6
 bool CvUnit::cannotMoveFromTo(const CvPlot* pFromPlot, const CvPlot* pToPlot) const
 {
@@ -2474,7 +2481,7 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar, bo
 
 	if (!canMoveImpassable() && kPlot.isImpassable())
 		return false;
-// keldath - i changed a bit the org code.
+//DOTO- keldath - i changed a bit the org code.
 //mountain back in service mod - sort off
 	// Deliverator peaks
 	if (kPlot.isPeak())
@@ -3892,7 +3899,7 @@ bool CvUnit::canNukeAt(const CvPlot* pPlot, int iX, int iY) const
 
 	if (airRange() > 0 && iDistance > airRange())
 		return false;
-/* doto-KELDATH nukes anywhere?
+/* DOTO-KELDATH nukes anywhere
 	CvPlot* pTargetPlot = GC.getMap().plot(iX, iY);
 	for (TeamIter<MAJOR_CIV> it; it.hasNext(); ++it)
 	{
@@ -4353,7 +4360,7 @@ bool CvUnit::airBomb(int iX, int iY)
 			chg = (chg * 50 + GC.getGame().getSorenRandNum(100, "Air Bomb - Random") / 100);
 		}
 		else 
-		{	
+		{	//ORG
 			chg = -airBombCurrRate() * (iDefWithBuildings / (double)iDefSansBuildings);
 		}
 //rangedattack-keldath Randomized Airbomb
@@ -4394,8 +4401,8 @@ bool CvUnit::airBomb(int iX, int iY)
 				kPlot.setImprovementType((ImprovementTypes)(GC.getInfo(kPlot.getImprovementType()).getImprovementPillage()));
 				// < JCultureControl Mod Start >
                 if (kPlot.getImprovementOwner() != NO_PLAYER && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
-                {
-                    kPlot.addCultureControl(kPlot.getImprovementOwner(), (ImprovementTypes) GC.getImprovementInfo(kPlot.getImprovementType()).getImprovementPillage(), true);
+                {														 	
+                    kPlot.addCultureControl(kPlot.getImprovementOwner(), (ImprovementTypes) GC.getInfo(kPlot.getImprovementType()).getImprovementPillage(), true);
                 }
                 // < JCultureControl Mod End >
 			}
@@ -4632,8 +4639,8 @@ bool CvUnit::bombard(CvPlot const* pPlot)
 			-1, szBuffer, "AS2D_BOMBARD",
 			MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREEN"),
 			pBombardCity->getX(), pBombardCity->getY());
-		//keldath addition - 50% chance to get experience if theres a hit.
-		if (GC.getGame().getSorenRandNum(100, "RandomHit")+1 >= 50)
+		//keldath addition - 75% chance to get experience if theres a hit.
+		if (GC.getGame().getSorenRandNum(100, "RandomHit")+1 >= 75)
 		{
 			changeExperience(1);
 		}
@@ -5112,7 +5119,7 @@ bool CvUnit::sabotage()
 		// < JCultureControl Mod Start >
         if (kPlot.getImprovementOwner() != NO_PLAYER && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
         {
-            kPlot.addCultureControl(kPlot.getImprovementOwner(), (ImprovementTypes) GC.getImprovementInfo(kPlot.getImprovementType()).getImprovementPillage(), true);
+            kPlot.addCultureControl(kPlot.getImprovementOwner(), (ImprovementTypes) GC.getInfo(kPlot.getImprovementType()).getImprovementPillage(), true);
         }
         // < JCultureControl Mod End >
 		finishMoves();
@@ -7370,6 +7377,7 @@ int CvUnit::maxCombatStr(CvPlot const* pPlot, CvUnit const* pAttacker, CombatDet
 			if (pCombatDetails != NULL)
 				pCombatDetails->iCityDefenseModifier = iExtraModifier;
 		}
+//DOTO-
 		if (pPlot->isPeak() || pPlot->isHills()) // Deliverator - Hijacked, Hills -> Peak+keldath hills
 		{
 			iExtraModifier = hillsDefenseModifier();
@@ -7416,6 +7424,7 @@ int CvUnit::maxCombatStr(CvPlot const* pPlot, CvUnit const* pAttacker, CombatDet
 					pCombatDetails->iCityBarbarianDefenseModifier = iExtraModifier;
 			}
 		}
+//DOTO-
 		if (pAttackedPlot->isPeak() || pAttackedPlot->isHills() ) // Deliverator - Hijacked, Hills -> Peak + hills added keldath
 		{
 			iExtraModifier = -pAttacker->hillsAttackModifier();
@@ -7794,6 +7803,7 @@ bool CvUnit::isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttack
 	// To cut down on changes to existing code, we just short-circuit the method
 	// and this point and call our own version instead
 	//if (GC.getDefineBOOL(CvGlobals::LFB_ENABLE))
+//DOTO-
 //keldath - made it into a game option from xml.
 	if (GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND))
 		return LFBisBetterDefenderThan(pDefender, pAttacker, pBestDefenderRank);
@@ -7985,8 +7995,8 @@ int CvUnit::airCombatDamage(const CvUnit* pDefender) const
 		iDamage /= 100;
 	}
 	
-	//rangedattack-keldath Random Damage Start
-	//consider make this optional
+//rangedattack-keldath Random Damage Start
+//consider make this optional
 //	iDamage *= (50 + GC.getGame().getSorenRandNum(100, "RandomHit"));
 //	iDamage /= 100;
 	//rangedattack-keldathRANGED STRIKE Random Damage End
@@ -7994,7 +8004,8 @@ int CvUnit::airCombatDamage(const CvUnit* pDefender) const
 	return iDamage;
 }
 //rangedattack-keldath 
-//unused , overwritten by rangeCombatDamagek
+
+//DOTO-unused , overwritten by rangeCombatDamagek
 int CvUnit::rangeCombatDamage(const CvUnit* pDefender) const
 {
 	int iOurStrength = airCurrCombatStr(pDefender);
@@ -11026,7 +11037,6 @@ bool CvUnit::airStrike(CvPlot* pPlot)
 			MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("GREEN"),
 			pPlot->getX(), pPlot->getY());
 //rangedattack-keldath
-	//collateralCombat(pPlot, pDefender);
 /*if a unit have ignore building defence - 
 it will only attack one unit - i wanted the city defense to count for something */
 	CvCity* pCity = pPlot->getPlotCity();

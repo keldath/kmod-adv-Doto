@@ -1087,10 +1087,10 @@ NormalizationTarget* CvGame::assignStartingPlots()
 	// <advc.108b>
 	else // i.e. if not a team game
 	{	/*	<advc.027> If the map script allows it, StartingPositionIteration will
-			set starting locations that the code below may then shuffle around. */
+			set starting sites that the code below may then reassign among the civs. */
 		StartingPositionIteration spi;
 		pNormalizationTarget = spi.createNormalizationTarget();
-		// Shuffling the positions around makes debugging harder
+		// Reassigning the starting sites makes debugging harder
 		if (pNormalizationTarget != NULL && spi.isDebug())
 			return pNormalizationTarget; // </advc.027>
 		/*	Apply StartingLocationPercent from handicap.
@@ -1490,6 +1490,7 @@ void CvGame::normalizeRemovePeaks()  // advc: refactored
 		CvPlot* pStartingPlot = itPlayer->getStartingPlot();
 		if (pStartingPlot == NULL)
 			continue;
+		// advc 027 (note): Range corresponds to AIFoundValue::adjustToLandAreaBoundary
 		for (SquareIter itPlot(*pStartingPlot, 3); itPlot.hasNext(); ++itPlot)
 		{
 			if (itPlot->isPeak() &&
@@ -3841,7 +3842,7 @@ int CvGame::getNumFreeBonuses(BuildingTypes eBuilding) const
 {
 	if (GC.getInfo(eBuilding).getNumFreeBonuses() == -1)
 		return GC.getInfo(GC.getMap().getWorldSize()).getNumFreeBuildingBonuses();
-	else return GC.getInfo(eBuilding).getNumFreeBonuses();
+	return GC.getInfo(eBuilding).getNumFreeBonuses();
 }
 
 

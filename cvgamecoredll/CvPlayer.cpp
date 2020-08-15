@@ -448,6 +448,8 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_iMaintenanceModifier = 0;
 	m_iCoastalDistanceMaintenanceModifier = 0;
 	m_iConnectedCityMaintenanceModifier = 0;
+	m_iHomeAreaMaintenanceModifier = 0;
+	m_iOtherAreaMaintenanceModifier = 0;
 	//DPII < Maintenance Modifier >
 	m_iDistanceMaintenanceModifier = 0;
 	m_iNumCitiesMaintenanceModifier = 0;
@@ -1685,7 +1687,7 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 	EnumMap<CorporationTypes,bool> abHasCorporation;
 	EnumMap<CorporationTypes,bool> abHeadquarters;
 	EnumMap<BuildingTypes,int> aiNumRealBuilding;
-	EnumMap<BuildingTypes,PlayerTypes> aiBuildingOriginalOwner;
+	EnumMap<BuildingTypes,PlayerTypes> aeBuildingOriginalOwner;
 	EnumMapDefault<BuildingTypes,int,MIN_INT> aiBuildingOriginalTime;
 
 	PlayerTypes const eOldOwner = pOldCity->getOwner();
@@ -1731,7 +1733,7 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 	FOR_EACH_ENUM2(Building, eBuilding)
 	{
 		aiNumRealBuilding.set(eBuilding, pOldCity->getNumRealBuilding(eBuilding));
-		aiBuildingOriginalOwner.set(eBuilding, pOldCity->getBuildingOriginalOwner(eBuilding));
+		aeBuildingOriginalOwner.set(eBuilding, pOldCity->getBuildingOriginalOwner(eBuilding));
 		aiBuildingOriginalTime.set(eBuilding, pOldCity->getBuildingOriginalTime(eBuilding));
 	}
 	// <advc.001f>
@@ -1858,19 +1860,19 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 	} // </kekm.23>
 
 	// Destruction of buildings
-	FOR_EACH_ENUM2(Building, eBuilding)
+	FOR_EACH_ENUM(Building)
 	{
-		if (aiNumRealBuilding.get(eBuilding) <= 0)
+		if (aiNumRealBuilding.get(eLoopBuilding) <= 0)
 			continue;
-
-		CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
-		BuildingClassTypes eBuildingClass = kBuilding.getBuildingClassType();
-		// Can't acquire another civ's unique building
-		if (!kBuilding.isWorldWonder()) // So that Barbarians can capture wonders
-			eBuilding = getCivilization().getBuilding(eBuildingClass);
+		BuildingClassTypes eBuildingClass = GC.getInfo(eLoopBuilding).
+				getBuildingClassType();
+		/*	Can't acquire another civ's unique building.
+			Wonders exception allows Barbarians to capture wonders. */
+		BuildingTypes const eBuilding = (GC.getInfo(eLoopBuilding).isWorldWonder() ?
+				eLoopBuilding : getCivilization().getBuilding(eBuildingClass));
 		if (eBuilding == NO_BUILDING)
 			continue;
-
+		CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
 		// Can acquire never-capture buildings only through city trade
 		if (!bTrade && kBuilding.isNeverCapture())
 			continue;
@@ -1890,7 +1892,7 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 					kNewCity.getNumRealBuilding(eBuilding) +
 					aiNumRealBuilding.get(eBuilding)),
 					false,
-					aiBuildingOriginalOwner.get(eBuilding),
+					aeBuildingOriginalOwner.get(eBuilding),
 					aiBuildingOriginalTime.get(eBuilding));
 		}
 	}
@@ -5934,6 +5936,8 @@ void CvPlayer::processBuilding(BuildingTypes eBuilding, int iChange, CvArea& kAr
 	changeNumCitiesMaintenanceModifier(kBuilding.getNumCitiesMaintenanceModifier() * iChange);
 	changeCoastalDistanceMaintenanceModifier(kBuilding.getCoastalDistanceMaintenanceModifier() * iChange);
 	changeConnectedCityMaintenanceModifier(kBuilding.getConnectedCityMaintenanceModifier() * iChange);
+	changeHomeAreaMaintenanceModifier(kBuilding.getAreaMaintenanceModifier() * iChange);
+	changeOtherAreaMaintenanceModifier(kBuilding.getOtherAreaMaintenanceModifier() * iChange);
 	//DPII < Maintenance Modifiers >
 	changeGreatPeopleRateModifier(kBuilding.getGlobalGreatPeopleRateModifier() * iChange);
 	changeGreatGeneralRateModifier(kBuilding.getGreatGeneralRateModifier() * iChange);
@@ -8536,6 +8540,35 @@ void CvPlayer::changeConnectedCityMaintenanceModifier(int iChange)
         updateMaintenance();
     }
 }
+
+int CvPlayer::getHomeAreaMaintenanceModifier()
+{
+    return m_iHomeAreaMaintenanceModifier;
+}
+
+void CvPlayer::changeHomeAreaMaintenanceModifier(int iChange)
+{
+    if (iChange != 0)
+    {
+        m_iHomeAreaMaintenanceModifier = (m_iHomeAreaMaintenanceModifier + iChange);
+
+        updateMaintenance();
+    }
+}
+int CvPlayer::getOtherAreaMaintenanceModifier()
+{
+    return m_iOtherAreaMaintenanceModifier;
+}
+
+void CvPlayer::changeOtherAreaMaintenanceModifier(int iChange)
+{
+    if (iChange != 0)
+    {
+        m_iOtherAreaMaintenanceModifier = (m_iOtherAreaMaintenanceModifier + iChange);
+
+        updateMaintenance();
+    }
+}
 //DPII < Maintenance Modifiers >
 
 void CvPlayer::changeDistanceMaintenanceModifier(int iChange)
@@ -8928,13 +8961,16 @@ void CvPlayer::changeStateReligionFreeExperience(int iChange)
 	m_iStateReligionFreeExperience += iChange;
 }
 
-
-void CvPlayer::setCapitalCity(CvCity* pNewCapital)
+// advc: Renamed from "setCapitalCity"
+void CvPlayer::setCapital(CvCity* pNewCapital)
 {
 	CvCity* pOldCapital = getCapital();
-	if(pOldCapital == pNewCapital)
+	if (pOldCapital == pNewCapital)
+	{	// <advc> Make sure these are consistent
+		if (pNewCapital == NULL)
+			m_iCapitalCityID = FFreeList::INVALID_INDEX; // </advc>
 		return;
-
+	}
 	bool bUpdatePlotGroups = (pOldCapital == NULL || pNewCapital == NULL ||
 			pOldCapital->getPlot().getOwnerPlotGroup() !=
 			pNewCapital->getPlot().getOwnerPlotGroup());
@@ -8958,7 +8994,7 @@ void CvPlayer::setCapitalCity(CvCity* pNewCapital)
 			pNewCapital->getPlot().updatePlotGroupBonus(true);
 	}
 //DPII < Maintenance Modifier >
-	if (pOldCapital != NULL)
+/*	if (pOldCapital != NULL)
 	{
            if ((pOldCapital->area()) != (pNewCapital->area()))
            {
@@ -8970,7 +9006,7 @@ void CvPlayer::setCapitalCity(CvCity* pNewCapital)
 	else
 	{
 		pNewCapital->area()->setHomeArea(getID(),NULL, pNewCapital->area());
-	}
+	}*/
 //DPII < Maintenance Modifier >
 	updateMaintenance();
 	updateTradeRoutes();
@@ -9233,13 +9269,12 @@ void CvPlayer::setAlive(bool bNewValue)  // advc: some style changes
 		return;
 	/*	<advc.003m> Moved up b/c, once the team's AliveCount is set to 0,
 		at-war status is lost. Need that for lifting blockades.
-		Also seems generally safer to destroy a player's components
-		before killing the player itself. Therefore I've also moved up
-		killAllDeals. Not sure about cities (there should be none anyway). */
+		Not sure about killing cities (there should be none anyway).
+		killAllDeals relies on bAlive=false.  */
 	if (!bNewValue)
 	{
+		setCapital(NULL);
 		killUnits(); // </advc.003m>
-		killAllDeals(); // advc: Moved up
 	}
 	bool const bEverAlive = isEverAlive();
 	m_bAlive = bNewValue;
@@ -9309,7 +9344,7 @@ void CvPlayer::setAlive(bool bNewValue)  // advc: some style changes
 		clearPopups(); // advc
 		//killUnits(); // advc.003m: Moved up
 		killCities();
-		//killAllDeals(); // advc: Moved up
+		killAllDeals();
 
 		setTurnActive(false);
 
@@ -10550,8 +10585,9 @@ void CvPlayer::changeBonusExport(BonusTypes eBonus, int iChange)
 	FAssert(getBonusExport(eBonus) >= 0);
 	if (pCapital != NULL)
 		pCapital->getPlot().updatePlotGroupBonus(true);
-
-	AI().AI_updateBonusValue(); // advc.036
+	// <advc.036>
+	if (isAlive()) // Deals can get canceled while dying
+		AI().AI_updateBonusValue(); // </advc.036>
 }
 
 
@@ -10567,8 +10603,9 @@ void CvPlayer::changeBonusImport(BonusTypes eBonus, int iChange)
 	FAssert(getBonusImport(eBonus) >= 0);
 	if (pCapital != NULL)
 		pCapital->getPlot().updatePlotGroupBonus(true);
-
-	AI().AI_updateBonusValue(); // advc.036
+	// <advc.036>
+	if (isAlive()) // Deals can get canceled while dying
+		AI().AI_updateBonusValue(); // </advc.036>
 }
 
 
@@ -14588,7 +14625,7 @@ int CvPlayer::doCaptureGold(CvCity const& kOldCity) // "old": city still fully i
 void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 {
 	//DPII < Maintenance Modifiers >
-    CvArea* pLoopArea = NULL;
+  //  CvArea* pLoopArea = NULL;
 
    // int iLoop2;
 	//keldath changed iloop to iloop2 cause theres alreayd one for civics plus
@@ -14608,8 +14645,8 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	changeNumCitiesMaintenanceModifier(GC.getInfo(eCivic).getNumCitiesMaintenanceModifier() * iChange);
 	changeCorporationMaintenanceModifier(GC.getInfo(eCivic).getCorporationMaintenanceModifier() * iChange);
 	//DPII keldath< Maintenance Modifiers >
-//    changeNumCitiesMaintenanceModifier(GC.getInfo(eCivic).getHomeAreaMaintenanceModifier() * iChange);
-//	changeNumCitiesMaintenanceModifier(GC.getInfo(eCivic).getOtherAreaMaintenanceModifier() * iChange);
+    changeHomeAreaMaintenanceModifier(GC.getInfo(eCivic).getHomeAreaMaintenanceModifier() * iChange);
+	changeOtherAreaMaintenanceModifier(GC.getInfo(eCivic).getOtherAreaMaintenanceModifier() * iChange);
 	//DPII < Maintenance Modifiers >
 	changeExtraHealth(GC.getInfo(eCivic).getExtraHealth() * iChange);
 	changeExtraHappiness(GC.getInfo(eCivic).getExtraHappiness() * iChange); // K-Mod
@@ -14645,32 +14682,18 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	changeStateReligionHappiness(GC.getInfo(eCivic).getStateReligionHappiness() * iChange);
 	changeNonStateReligionHappiness(GC.getInfo(eCivic).getNonStateReligionHappiness() * iChange);
 	//DPII < Maintenance Modifiers >
-	if ((GC.getInfo(eCivic).getOtherAreaMaintenanceModifier() != 0) || (GC.getInfo(eCivic).getHomeAreaMaintenanceModifier() != 0))
+/*	if ((GC.getInfo(eCivic).getOtherAreaMaintenanceModifier() != 0) || (GC.getInfo(eCivic).getHomeAreaMaintenanceModifier() != 0))
 	{
 		FOR_EACH_AREA_VAR(pLoopArea)
 		{
 			bool tt = pLoopArea->isHomeArea(getID());
 			if (tt)
 			{
-				pLoopArea->changeHomeAreaMaintenanceModifier(getID(), (GC.getInfo(eCivic).getHomeAreaMaintenanceModifier()  /* * iChange*/));
+				pLoopArea->changeHomeAreaMaintenanceModifier(getID(), (GC.getInfo(eCivic).getHomeAreaMaintenanceModifier() */ /* * iChange*//*));
 			}
 			else
 			{
-				pLoopArea->changeOtherAreaMaintenanceModifier(getID(), (GC.getInfo(eCivic).getOtherAreaMaintenanceModifier() /* * iChange*/));
-			}
-		}
-	}/*
-	if ((GC.getInfo(eCivic).getOtherAreaMaintenanceModifier() != 0) || (GC.getInfo(eCivic).getHomeAreaMaintenanceModifier() != 0))
-	{
-		for (pLoopArea = GC.getMap().firstArea(&iLoop2); pLoopArea != NULL; pLoopArea = GC.getMap().nextArea(&iLoop2))
-		{
-			if (pLoopArea->isHomeArea(getID()))
-			{
-				pLoopArea->changeHomeAreaMaintenanceModifier(getID(), (GC.getInfo(eCivic).getHomeAreaMaintenanceModifier()  * iChange));
-			}
-			else
-			{
-				pLoopArea->changeOtherAreaMaintenanceModifier(getID(), (GC.getInfo(eCivic).getOtherAreaMaintenanceModifier()  * iChange));
+				pLoopArea->changeOtherAreaMaintenanceModifier(getID(), (GC.getInfo(eCivic).getOtherAreaMaintenanceModifier() *//* * iChange*//*));
 			}
 		}
 	}*/
@@ -14685,32 +14708,31 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	changeStateReligionFreeExperience(GC.getInfo(eCivic).getStateReligionFreeExperience() * iChange);
 	changeExpInBorderModifier(GC.getInfo(eCivic).getExpInBorderModifier() * iChange);
 
-	for (iI = 0; iI < NUM_YIELD_TYPES; iI++)
+	FOR_EACH_ENUM2(Yield, y)
 	{
-		 // < Civic Infos Plus Start >
-		changeStateReligionYieldRateModifier(((YieldTypes)iI), (GC.getInfo(eCivic).getStateReligionYieldModifier(iI) * iChange));
-		changeNonStateReligionYieldRateModifier(((YieldTypes)iI), (GC.getInfo(eCivic).getNonStateReligionYieldModifier(iI) * iChange));
-
-		for (iJ = 0; iJ < GC.getNumSpecialistInfos(); iJ++)
-        {
-            changeSpecialistExtraYield((SpecialistTypes) iJ, (YieldTypes)iI, (GC.getInfo(eCivic).getSpecialistExtraYield(iI) * iChange));
-        }
-		// < Civic Infos Plus End   >
-		changeYieldRateModifier(((YieldTypes)iI), (GC.getInfo(eCivic).getYieldModifier(iI) * iChange));
-		changeCapitalYieldRateModifier(((YieldTypes)iI), (GC.getInfo(eCivic).getCapitalYieldModifier(iI) * iChange));
-		changeTradeYieldModifier(((YieldTypes)iI), (GC.getInfo(eCivic).getTradeYieldModifier(iI) * iChange));
+//DOTO- // < Civic Infos Plus Start >
+		changeStateReligionYieldRateModifier(y, (GC.getInfo(eCivic).getStateReligionYieldModifier(y) * iChange));
+		changeNonStateReligionYieldRateModifier(y, (GC.getInfo(eCivic).getNonStateReligionYieldModifier(y) * iChange));
+		FOR_EACH_ENUM(Specialist)
+		{
+   			changeSpecialistExtraYield(eLoopSpecialist, y, (GC.getInfo(eCivic).getSpecialistExtraYield(y) * iChange));		
+		}
+//DOTO-	// < Civic Infos Plus End   >
+		changeYieldRateModifier(y, GC.getInfo(eCivic).getYieldModifier(y) * iChange);
+		changeCapitalYieldRateModifier(y, GC.getInfo(eCivic).getCapitalYieldModifier(y) * iChange);
+		changeTradeYieldModifier(y, GC.getInfo(eCivic).getTradeYieldModifier(y) * iChange);
 	}
-
-	for (iI = 0; iI < NUM_COMMERCE_TYPES; iI++)
+	FOR_EACH_ENUM2(Commerce, c)
 	{
-		// < Civic Infos Plus Start >
-		changeStateReligionCommerceRateModifier(((CommerceTypes)iI), (GC.getInfo(eCivic).getStateReligionCommerceModifier(iI) * iChange));
-		changeNonStateReligionCommerceRateModifier(((CommerceTypes)iI), (GC.getInfo(eCivic).getNonStateReligionCommerceModifier(iI) * iChange));
+//DOTO-	// < Civic Infos Plus Start >
+		changeStateReligionCommerceRateModifier(c, (GC.getInfo(eCivic).getStateReligionCommerceModifier(c) * iChange));
+		changeNonStateReligionCommerceRateModifier(c, (GC.getInfo(eCivic).getNonStateReligionCommerceModifier(c) * iChange));
 		// < Civic Infos Plus End   >
-		changeCommerceRateModifier(((CommerceTypes)iI), (GC.getInfo(eCivic).getCommerceModifier(iI) * iChange));
-		changeCapitalCommerceRateModifier(((CommerceTypes)iI), (GC.getInfo(eCivic).getCapitalCommerceModifier(iI) * iChange));
-		changeSpecialistExtraCommerce(((CommerceTypes)iI), (GC.getInfo(eCivic).getSpecialistExtraCommerce(iI) * iChange));
-	} // <advc.003t>
+		changeCommerceRateModifier(c, GC.getInfo(eCivic).getCommerceModifier(c) * iChange);
+		changeCapitalCommerceRateModifier(c, GC.getInfo(eCivic).getCapitalCommerceModifier(c) * iChange);
+		changeSpecialistExtraCommerce(c, GC.getInfo(eCivic).getSpecialistExtraCommerce(c) * iChange);
+	}
+	// <advc.003t>
 	if (GC.getInfo(eCivic).isAnyBuildingHappinessChanges() ||
 		GC.getInfo(eCivic).isAnyBuildingHealthChanges()) // </advc.003t>
 	{
@@ -14720,12 +14742,12 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 			// < Civic Infos Plus Start >
 	    	for (iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
 			{
-			changeBuildingYieldChange(((BuildingTypes)iI), ((YieldTypes)iJ), (GC.getInfo(eCivic).getBuildingYieldChanges(iI, iJ) * iChange));
+				changeBuildingYieldChange(((BuildingTypes)i), ((YieldTypes)iJ), (GC.getInfo(eCivic).getBuildingYieldChanges(i, iJ) * iChange));
 			}
 
 			for (iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
 			{
-				changeBuildingCommerceChange(((BuildingTypes)iI), ((CommerceTypes)iJ), (GC.getInfo(eCivic).getBuildingCommerceChanges(iI, iJ) * iChange));
+				changeBuildingCommerceChange(((BuildingTypes)i), ((CommerceTypes)iJ), (GC.getInfo(eCivic).getBuildingCommerceChanges(i, iJ) * iChange));
 			}
 			// < Civic Infos Plus End   >
 			BuildingTypes eOurBuilding = kCiv.buildingAt(i);
@@ -14913,6 +14935,8 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iMaintenanceModifier);
 	pStream->Read(&m_iCoastalDistanceMaintenanceModifier);
 	pStream->Read(&m_iConnectedCityMaintenanceModifier);
+	pStream->Read(&m_iHomeAreaMaintenanceModifier);
+	pStream->Read(&m_iOtherAreaMaintenanceModifier);
 	//DPII < Maintenance Modifiers >
 	pStream->Read(&m_iDistanceMaintenanceModifier);
 	pStream->Read(&m_iNumCitiesMaintenanceModifier);
@@ -15496,6 +15520,8 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	pStream->Write(m_iMaintenanceModifier);
 	pStream->Write(m_iCoastalDistanceMaintenanceModifier);
 	pStream->Write(m_iConnectedCityMaintenanceModifier);
+	pStream->Write(m_iHomeAreaMaintenanceModifier);
+	pStream->Write(m_iOtherAreaMaintenanceModifier);
 	//DPII < Maintenance Modifiers >
 	pStream->Write(m_iDistanceMaintenanceModifier);
 	pStream->Write(m_iNumCitiesMaintenanceModifier);
