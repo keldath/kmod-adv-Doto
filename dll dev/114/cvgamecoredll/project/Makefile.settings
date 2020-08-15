@@ -1,0 +1,4 @@
+TOOLKIT=yourpath\Microsoft Visual C++ Toolkit 2003
+PSDK=yourpath\WindowsSDK
+CIV4_PATH=yourpath\Beyond the Sword\CvGameCoreDLL
+YOURMOD=
