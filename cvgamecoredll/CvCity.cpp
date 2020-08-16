@@ -5272,41 +5272,17 @@ void CvCity::updateMaintenance()
 	//DPII < Maintenance Modifiers >
 
 	if (!isNoMaintenance())
-	{
-		CvArea const& kArea = getArea();
-		CvPlayer const& kOwner = GET_PLAYER(getOwner());
-		int iModifier = getMaintenanceModifier() + kArea.getMaintenanceModifier(getOwner()); //kArea.getAreaMaintenanceModifier(getOwner());
-		CvCity const* pCapital = kOwner.getCapitalCity();
-		if (pCapital != NULL)
-		{
-   		if (pCapital->isArea(kArea))
-      		iModifier += GET_PLAYER(getOwner()).getHomeAreaMaintenanceModifier();
-   			else iModifier += GET_PLAYER(getOwner()).getOtherAreaMaintenanceModifier();
-		}
-		if (isConnectedToCapital() && !(isCapital()))
-        {
-            iModifier += GET_PLAYER(getOwner()).getConnectedCityMaintenanceModifier();
-        }
+	{		
+//DPII < Maintenance Modifiers >		
+		iModifier += getMaintenanceModifier()
+					+ isConnectedMaintanence() 
+					+ cityHomeAreaMaintanance()
+					+ cityOtherAreaMaintanance();
+
 		iNewMaintenance = (calculateBaseMaintenanceTimes100() *
 				std::max(0, iModifier + 100)) / 100;
 
 //DPII < Maintenance Modifiers >
-		//iModifier = getMaintenanceModifier() + GET_PLAYER(getOwner()).getMaintenanceModifier() + area()->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
-		//keldath - f1rpo fix the GET_PLAYER(getOwner()).getMaintenanceModifier() is included in getMaintenanceModifier()
-/*		CvArea* citiiesArea = this->area();
-		int titalA = citiiesArea->getTotalAreaMaintenanceModifier(GET_PLAYER(getOwner()).getID());
-		iModifier = getMaintenanceModifier() + citiiesArea->getMaintenanceModifier(GET_PLAYER(getOwner()).getID()) + titalA;
-		
-        if (isConnectedToCapital() && !(isCapital()))
-        {
-            iModifier += GET_PLAYER(getOwner()).getConnectedCityMaintenanceModifier();
-        }
-
-		//iNewMaintenance = (calculateBaseMaintenanceTimes100() * std::max(0, (getMaintenanceModifier() + 100))) / 100;
-		//keldath - f1rpo fix 
-		iNewMaintenance = (calculateBaseMaintenanceTimes100() * std::max(0, iModifier + 100)) / 100;
-*/		//DPII < Maintenance Modifiers >
-
 	}
 
 	if (iOldMaintenance != iNewMaintenance)
@@ -14445,14 +14421,9 @@ int CvCity::calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
 
 		iTempMaintenance *= std::max(0, (GET_PLAYER(eOwner).getDistanceMaintenanceModifier() + 100));
 		iTempMaintenance /= 100;
-		//DPII < Maintenance Modifiers >
-		if(kCityPlot.isCoastalLand(GC.getDefineINT(CvGlobals::MIN_WATER_SIZE_FOR_OCEAN)))
-		//if(isCoastal((GC.getDefineINT(CvGlobals::MIN_WATER_SIZE_FOR_OCEAN)))
-		//if (isCoastal(GC.getMIN_WATER_SIZE_FOR_OCEAN()))
-		{
-			iTempMaintenance *= std::max(0, (GET_PLAYER(eOwner).getCoastalDistanceMaintenanceModifier() + 100));
-            iTempMaintenance /= 100;
-		}
+		//
+		//DPII< Maintenance Modifiers >
+		iTempMaintenance = CoastalDistanceMaintanence(iTempMaintenance);
 		//DPII < Maintenance Modifiers >
 		
 		iTempMaintenance *= GC.getInfo(GC.getMap().getWorldSize()).getDistanceMaintenancePercent();
@@ -14473,6 +14444,17 @@ int CvCity::calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
 	return iTempMaintenance;
 }
 
+//DPII< Maintenance Modifiers >
+int CvCity::CoastalDistanceMaintanence(int iTempMaintenance) const {
+
+		if(kCityPlot.isCoastalLand(GC.getDefineINT(CvGlobals::MIN_WATER_SIZE_FOR_OCEAN)))
+		{
+			iTempMaintenance *= std::max(0, (GET_PLAYER(eOwner).getCoastalDistanceMaintenanceModifier() + 100));
+            iTempMaintenance /= 100;
+		}
+		return iTempMaintenance;
+}
+//DPII < Maintenance Modifiers >
 // K-Mod. new function to help with maintenance calculations
 // advc.004b, advc.104: Parameters added
 int CvCity::calculateMaintenanceDistance(CvPlot const* pCityPlot, PlayerTypes eOwner)

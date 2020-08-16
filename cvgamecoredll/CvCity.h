@@ -440,6 +440,11 @@ public:
 	int getSavedMaintenanceTimes100ByBuilding(BuildingTypes eBuilding) const;
 	int getMaintenance() const { return m_iMaintenance / 100; }													// Exposed to Python
 	int getMaintenanceTimes100() const { return m_iMaintenance; }												// Exposed to Python
+	//DPII keldath<Maintenance Modifiers> 
+	int cityHomeAreaMaintanance() const;
+	int cityOtherAreaMaintanance() const;
+	int isConnectedMaintanence() const;
+	//DPII keldath<Maintenance Modifiers >
 	void updateMaintenance();
 	int calculateDistanceMaintenance() const;																	// Exposed to Python
 	int calculateNumCitiesMaintenance() const;																	// Exposed to Python
@@ -451,6 +456,9 @@ public:
 	int calculateColonyMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;
 	int calculateNumCitiesMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;							// Exposed to Python									// Exposed to Python
 	// </advc.104>
+	//DPII keldath<Maintenance Modifiers> default 1 - for textmanager data
+	int CoastalDistanceMaintanence(int iTempMaintenance=1) const;
+	//DPII keldath<Maintenance Modifiers>
 	// <advc.004b> A projection for cities yet to be founded
 	static int calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
 			PlayerTypes eOwner, int iPopulation = -1);

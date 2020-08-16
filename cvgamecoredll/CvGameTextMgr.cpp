@@ -13318,26 +13318,31 @@ void CvGameTextMgr::buildBuildingRequiresString(CvWStringBuffer& szBuffer, Build
 		}
 //DOTO-prereqmustall building deletion
 //DOTO-prere Game option disply
-		int preqGameOptionB = kBuilding.getPrereqGameOption();
-		if (preqGameOptionB != NO_GAMEOPTION)
-		{	
-			szBuffer.append(NEWLINE);
-			bool isoptionset = !GC.getGame().isOption((GameOptionTypes)kBuilding.getPrereqGameOption());
-			bool isNotoptionset = !GC.getGame().isOption((GameOptionTypes)kBuilding.getNotGameOption());
-
-			if (isoptionset) 
-			{
-				if (!GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
-					szBuffer.append(gDLL->getText("TXT_KEY_GAMEOPTION_EXTRA_BUILDINGS"));
-				else if (!GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
-					szBuffer.append(gDLL->getText("TXT_KEY_GAMEOPTION_BUILDING_DELETION"));
-			}
-			if (isNotoptionset)
-			{
-				if (!GC.getGame().isOption(GAMEOPTION_NO_CORPORATIONS))
-					szBuffer.append(gDLL->getText("TXT_KEY_GAMEOPTION_NO_CORPORATIONS"));
-			}
+		szBuffer.append(NEWLINE);
+		bool isoptionset = false;
+		bool isNotoptionset = false;
+		if (kBuilding.getPrereqGameOption() != NO_GAMEOPTION)
+		{
+			isoptionset = !GC.getGame().isOption((GameOptionTypes)kBuilding.getPrereqGameOption());
 		}
+		if (kBuilding.getNotGameOption() != NO_GAMEOPTION)
+		{
+			isNotoptionset = !GC.getGame().isOption((GameOptionTypes)kBuilding.getNotGameOption());
+		}
+
+		if (isoptionset)
+		{
+			if (!GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
+				szBuffer.append(gDLL->getText("TXT_KEY_GAMEOPTION_EXTRA_BUILDINGS"));
+			else if (!GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
+				szBuffer.append(gDLL->getText("TXT_KEY_GAMEOPTION_BUILDING_DELETION"));
+		}
+		if (isNotoptionset)
+		{
+			if (!GC.getGame().isOption(GAMEOPTION_NO_CORPORATIONS))
+				szBuffer.append(gDLL->getText("TXT_KEY_GAMEOPTION_NO_CORPORATIONS"));
+		}
+
 //DOTO-prere Game option disply
 //Shqype Vicinity Bonus End
 		if (bCivilopediaText)
@@ -18265,13 +18270,13 @@ void CvGameTextMgr::buildFinanceCityMaintString(CvWStringBuffer& szBuffer, Playe
 			rDistanceMaint += per100(pCity->calculateDistanceMaintenanceTimes100()) *
 					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
 //DOTO-DPII < Maintenance Modifiers >
-			rHomeMaint = per100(GET_PLAYER(ePlayer).getHomeAreaMaintenanceModifier()) *
+			rHomeMaint += per100(pCity->cityHomeAreaMaintanance()) *
 					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
-			rOtherMaint = per100(GET_PLAYER(ePlayer).getOtherAreaMaintenanceModifier()) *
+			rOtherMaint += per100(pCity->cityOtherAreaMaintanance()) *
 					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
-			rConnected = per100(GET_PLAYER(ePlayer).getConnectedCityMaintenanceModifier()) *
+			rConnected += per100(pCity->isConnectedMaintanence()) *
 					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
-			rCostalMaint = per100(GET_PLAYER(ePlayer).getCoastalDistanceMaintenanceModifier()) *
+			rCostalMaint += per100(pCity->CoastalDistanceMaintanence()) *
 					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
 //DOTO-DPII < Maintenance Modifiers >
 			rColonyMaint += per100(pCity->calculateColonyMaintenanceTimes100()) *
@@ -18299,20 +18304,20 @@ void CvGameTextMgr::buildFinanceCityMaintString(CvWStringBuffer& szBuffer, Playe
 	int iDistanceMaint = rDistanceMaint.round();
 	int iHomeMaint = rHomeMaint.round();
 	int iOtherMaint = rOtherMaint.round();
-	int iConnected = rConnected.round();
+	int iConnectedMaint = rConnected.round();
 	int iCostalMaint = rCostalMaint.round();
 	int iColonyMaint = rColonyMaint.round();
 	int iCorpMaint = rCorpMaint.round();
 //DOTO-DPII < Maintenance Modifiers >
-	iDistanceMaint = iDistanceMaint - iCostalMaint;
-	int totalMaint = (kPlayer.getTotalMaintenance() * rInflationFactor).round() - iHomeMaint - iOtherMaint - iConnected;
-	int iNumCityMaint = totalMaint - iDistanceMaint - iColonyMaint - iCorpMaint ;
+	iDistanceMaint = std::max(0,iDistanceMaint - iCostalMaint);//since iCostalMaint is already in iDistanceMaint, if its 0, than i dont want to remove it - it will be <0
+	int totalMaintnew = std::max(0,(kPlayer.getTotalMaintenance() * rInflationFactor).round());
+	int iNumCityMaint = totalMaintnew - iDistanceMaint - iColonyMaint - iCorpMaint - iHomeMaint - iOtherMaint - iConnectedMaint;
 //DOTO-DPII < Maintenance Modifiers >
 	CvWString szTmp; // advc.086
 	szTmp.append(NEWLINE);
 //DOTO-DPII < Maintenance Modifiers >
 	szTmp.append(gDLL->getText("TXT_KEY_FINANCE_ADVISOR_CITY_MAINT_COST",
-			iDistanceMaint, iNumCityMaint,iHomeMaint ,iOtherMaint ,iConnected ,iCostalMaint , iColonyMaint, iCorpMaint, 
+			iDistanceMaint, iNumCityMaint,iHomeMaint ,iOtherMaint ,iConnectedMaint ,iCostalMaint , iColonyMaint, iCorpMaint, 
 			(kPlayer.getTotalMaintenance() * iInflationFactorTimes100) / 100));
 //DOTO-DPII < Maintenance Modifiers >
 	// <advc.086>
