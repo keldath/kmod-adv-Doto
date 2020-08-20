@@ -48,6 +48,13 @@ CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 	m_iGovernmentCenterCount = 0;
 	m_iMaintenance = 0;
 	m_iMaintenanceModifier = 0;
+	//DPII < Maintenance Modifiers >
+	m_iLocalDistanceMaintenanceModifier = 0;
+	m_iLocalCoastalDistanceMaintenanceModifier  = 0;
+	m_iLocalConnectedCityMaintenanceModifier  = 0;
+	m_iLocalHomeAreaMaintenanceModifier  = 0;
+	m_iLocalOtherAreaMaintenanceModifier  = 0;
+	//DPII < Maintenance Modifiers >
 	m_iWarWearinessModifier = 0;
 	m_iHurryAngerModifier = 0;
 	m_iHealRate = 0;
@@ -3197,6 +3204,7 @@ void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolet
 	CvGame const& kGame = GC.getGame();
 	CvPlayer& kOwner = GET_PLAYER(getOwner()); // </advc>
 //keldath extended building inactive
+//remeber - update here and in unprocessbuildings new additions!!!
 //if the prereq of a building is no more - it will stop providing.
 //if you cant keep the building, dont update its stuff.
 	// <advc>		
@@ -3250,6 +3258,13 @@ if (buildingStatus == true)
 		changeNukeModifier(kBuilding.getNukeModifier() * iChange);
 		changeFreeSpecialist(kBuilding.getFreeSpecialist() * iChange);
 		changeMaintenanceModifier(kBuilding.getMaintenanceModifier() * iChange);
+		//DPII < Maintenance Modifiers >
+		changeLocalDistanceMaintenanceModifier(kBuilding.getLocalDistanceMaintenanceModifier() * iChange);
+		changeLocalCoastalDistanceMaintenanceModifier(kBuilding.getLocalCoastalDistanceMaintenanceModifier() * iChange);
+		changeLocalConnectedCityMaintenanceModifier(kBuilding.getLocalConnectedCityMaintenanceModifier() * iChange);
+		changeLocalHomeAreaMaintenanceModifier(kBuilding.getLocalHomeAreaMaintenanceModifier() * iChange);
+		changeLocalOtherAreaMaintenanceModifier(kBuilding.getLocalOtherAreaMaintenanceModifier() * iChange);
+		//DPII < Maintenance Modifiers >
 		changeWarWearinessModifier(kBuilding.getWarWearinessModifier() * iChange);
 		changeHurryAngerModifier(kBuilding.getHurryAngerModifier() * iChange);
 		changeHealRate(kBuilding.getHealRateChange() * iChange);
@@ -5267,22 +5282,11 @@ void CvCity::updateMaintenance()
 
 	int iOldMaintenance = getMaintenanceTimes100();
 	int iNewMaintenance = 0;
-	//DPII < Maintenance Modifiers >
-	int iModifier = 0;
-	//DPII < Maintenance Modifiers >
 
 	if (!isNoMaintenance())
-	{		
-//DPII < Maintenance Modifiers >		
-		iModifier += getMaintenanceModifier()
-					+ isConnectedMaintanence() 
-					+ cityHomeAreaMaintanance()
-					+ cityOtherAreaMaintanance();
-
+	{
 		iNewMaintenance = (calculateBaseMaintenanceTimes100() *
-				std::max(0, iModifier + 100)) / 100;
-
-//DPII < Maintenance Modifiers >
+				std::max(0, getMaintenanceModifier() + 100)) / 100;
 	}
 
 	if (iOldMaintenance != iNewMaintenance)
@@ -5306,8 +5310,9 @@ int CvCity::calculateDistanceMaintenance() const
 int CvCity::calculateDistanceMaintenanceTimes100(PlayerTypes eOwner) const
 {
 	// advc.004b: BtS code moved into new static function
+	int iLocalDistance = getLocalDistanceMaintenanceModifier();
 	return CvCity::calculateDistanceMaintenanceTimes100(getPlot(),
-			eOwner == NO_PLAYER ? getOwner() : eOwner, getPopulation());
+			eOwner == NO_PLAYER ? getOwner() : eOwner, getPopulation(), iLocalDistance);
 }
 
 int CvCity::calculateNumCitiesMaintenance() const
@@ -5355,7 +5360,47 @@ int CvCity::calculateCorporationMaintenanceTimes100() const
 	FAssert(iMaintenance >= 0);
 	return iMaintenance;
 }
-
+//DPII < Maintenance Modifiers >
+int CvCity::calculateHomeAreaMaintanance() const
+{
+	return calculateHomeAreaMaintenanceTimes100() / 100;
+}
+int CvCity::calculateHomeAreaMaintenanceTimes100(PlayerTypes eOwner) const
+{
+	int iLocalHomeArea = getLocalHomeAreaMaintenanceModifier();
+	bool capitalcity = isCapital();
+	return CvCity::calculateHomeAreaMaintenanceTimes100(getArea(), eOwner == NO_PLAYER ? getOwner() : eOwner, iLocalHomeArea, capitalcity);
+}
+int CvCity::calculateOtherAreaMaintanance() const
+{
+	return calculateOtherAreaMaintenanceTimes100() / 100;
+}
+int CvCity::calculateOtherAreaMaintenanceTimes100(PlayerTypes eOwner) const
+{
+	int iLocalOtherArea = getLocalOtherAreaMaintenanceModifier();
+	return CvCity::calculateOtherAreaMaintenanceTimes100(getArea(), eOwner == NO_PLAYER ? getOwner() : eOwner, iLocalOtherArea);
+}
+int CvCity::calculateConnectedMaintanance() const
+{
+	return calculateConnectedMaintenanceTimes100() / 100;
+}
+int CvCity::calculateConnectedMaintenanceTimes100(PlayerTypes eOwner) const
+{
+	bool iCheckConnection = (isConnectedToCapital() && !(isCapital()));
+	int iLocalConnected = getLocalConnectedCityMaintenanceModifier();
+	return CvCity::calculateConnectedMaintenanceTimes100(eOwner == NO_PLAYER ? getOwner() : eOwner, iCheckConnection, iLocalConnected);
+}
+int CvCity::calculateCoastalMaintanance() const
+{
+	return calculateCoastalMaintenanceTimes100() / 100;
+}
+int CvCity::calculateCoastalMaintenanceTimes100(PlayerTypes eOwner) const
+{
+	int localCoastal = getLocalCoastalDistanceMaintenanceModifier();
+	bool capitalcitynConn = (!isCapital() && !isConnectedToCapital());
+	return CvCity::calculateCoastalMaintenanceTimes100(localCoastal, getPlot(), eOwner == NO_PLAYER ? getOwner() : eOwner, capitalcitynConn);
+}
+//DPII < Maintenance Modifiers >
 int CvCity::calculateCorporationMaintenanceTimes100(CorporationTypes eCorporation) const
 {
 	int iMaintenance = 0;
@@ -5399,11 +5444,12 @@ int CvCity::calculateCorporationMaintenanceTimes100(CorporationTypes eCorporatio
 	return iMaintenance;
 }
 
-
 int CvCity::calculateBaseMaintenanceTimes100() const
 {
-	return calculateDistanceMaintenanceTimes100() + calculateNumCitiesMaintenanceTimes100() +
-			calculateColonyMaintenanceTimes100() + calculateCorporationMaintenanceTimes100();
+	return (calculateDistanceMaintenanceTimes100() + calculateNumCitiesMaintenanceTimes100() +
+			calculateColonyMaintenanceTimes100() + calculateCorporationMaintenanceTimes100() +
+			calculateHomeAreaMaintenanceTimes100() + calculateOtherAreaMaintenanceTimes100() +
+			calculateConnectedMaintenanceTimes100() + calculateCoastalMaintenanceTimes100());
 }
 
 
@@ -5416,6 +5462,48 @@ void CvCity::changeMaintenanceModifier(int iChange)
 	}
 }
 
+//DPII < Maintenance Modifiers >
+void CvCity::changeLocalDistanceMaintenanceModifier(int iChange)
+{
+	if (iChange != 0)
+	{
+		m_iLocalDistanceMaintenanceModifier += iChange;
+		updateMaintenance();
+	}
+}
+void CvCity::changeLocalCoastalDistanceMaintenanceModifier(int iChange)
+{
+	if (iChange != 0)
+	{
+		m_iLocalCoastalDistanceMaintenanceModifier += iChange;
+		updateMaintenance();
+	}
+}
+void CvCity::changeLocalConnectedCityMaintenanceModifier(int iChange)
+{
+	if (iChange != 0)
+	{
+		m_iLocalConnectedCityMaintenanceModifier += iChange;
+		updateMaintenance();
+	}
+}
+void CvCity::changeLocalHomeAreaMaintenanceModifier(int iChange)
+{
+	if (iChange != 0)
+	{
+		m_iLocalHomeAreaMaintenanceModifier += iChange;
+		updateMaintenance();
+	}
+}
+void CvCity::changeLocalOtherAreaMaintenanceModifier(int iChange)
+{
+	if (iChange != 0)
+	{
+		m_iLocalOtherAreaMaintenanceModifier += iChange;
+		updateMaintenance();
+	}
+}
+//DPII < Maintenance Modifiers >
 
 void CvCity::changeWarWearinessModifier(int iChange)
 {
@@ -12409,6 +12497,13 @@ void CvCity::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iGovernmentCenterCount);
 	pStream->Read(&m_iMaintenance);
 	pStream->Read(&m_iMaintenanceModifier);
+	//DPII < Maintenance Modifiers >
+	pStream->Read(&m_iLocalDistanceMaintenanceModifier);
+	pStream->Read(&m_iLocalCoastalDistanceMaintenanceModifier);
+	pStream->Read(&m_iLocalConnectedCityMaintenanceModifier);
+	pStream->Read(&m_iLocalHomeAreaMaintenanceModifier);
+	pStream->Read(&m_iLocalOtherAreaMaintenanceModifier);
+	//DPII < Maintenance Modifiers >
 	pStream->Read(&m_iWarWearinessModifier);
 	pStream->Read(&m_iHurryAngerModifier);
 	pStream->Read(&m_iHealRate);
@@ -12748,6 +12843,13 @@ void CvCity::write(FDataStreamBase* pStream)
 	pStream->Write(m_iGovernmentCenterCount);
 	pStream->Write(m_iMaintenance);
 	pStream->Write(m_iMaintenanceModifier);
+	//DPII < Maintenance Modifiers >
+	pStream->Write(m_iLocalDistanceMaintenanceModifier);
+	pStream->Write(m_iLocalCoastalDistanceMaintenanceModifier);
+	pStream->Write(m_iLocalConnectedCityMaintenanceModifier);
+	pStream->Write(m_iLocalHomeAreaMaintenanceModifier);
+	pStream->Write(m_iLocalOtherAreaMaintenanceModifier);
+	//DPII < Maintenance Modifiers >
 	pStream->Write(m_iWarWearinessModifier);
 	pStream->Write(m_iHurryAngerModifier);
 	pStream->Write(m_iHealRate);
@@ -14396,7 +14498,7 @@ int CvCity::initialPopulation()
 
 // advc.004b, advc.104: Parameters added
 int CvCity::calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
-	PlayerTypes eOwner, int iPopulation)
+	PlayerTypes eOwner, int iPopulation, int iLocalDistance)
 {
 	if(iPopulation < 0)
 		iPopulation = initialPopulation();
@@ -14419,13 +14521,14 @@ int CvCity::calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
 		iTempMaintenance *= (iPopulation + 7);
 		iTempMaintenance /= 10;
 
+		//DOTO- dpii 
+		iTempMaintenance *= std::max(0, iLocalDistance + 100);
+		iTempMaintenance /= 100;
+		//DOTO- dpii 		
+
 		iTempMaintenance *= std::max(0, (GET_PLAYER(eOwner).getDistanceMaintenanceModifier() + 100));
 		iTempMaintenance /= 100;
-		//
-		//DPII< Maintenance Modifiers >
-		iTempMaintenance = CoastalDistanceMaintanence(iTempMaintenance);
-		//DPII < Maintenance Modifiers >
-		
+
 		iTempMaintenance *= GC.getInfo(GC.getMap().getWorldSize()).getDistanceMaintenancePercent();
 		iTempMaintenance /= 100;
 
@@ -14444,17 +14547,6 @@ int CvCity::calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
 	return iTempMaintenance;
 }
 
-//DPII< Maintenance Modifiers >
-int CvCity::CoastalDistanceMaintanence(int iTempMaintenance) const {
-
-		if(kCityPlot.isCoastalLand(GC.getDefineINT(CvGlobals::MIN_WATER_SIZE_FOR_OCEAN)))
-		{
-			iTempMaintenance *= std::max(0, (GET_PLAYER(eOwner).getCoastalDistanceMaintenanceModifier() + 100));
-            iTempMaintenance /= 100;
-		}
-		return iTempMaintenance;
-}
-//DPII < Maintenance Modifiers >
 // K-Mod. new function to help with maintenance calculations
 // advc.004b, advc.104: Parameters added
 int CvCity::calculateMaintenanceDistance(CvPlot const* pCityPlot, PlayerTypes eOwner)
@@ -14548,7 +14640,7 @@ int CvCity::calculateColonyMaintenanceTimes100(CvPlot const& kCityPlot,
 
 	iNumCitiesPercent *= GC.getInfo(eOwnerHandicap).getColonyMaintenancePercent();
 	iNumCitiesPercent /= 100;
-
+//doto  - very strange calc -> (iNumCities * iNumCities) 
 	int iNumCities = (kCityArea.getCitiesPerPlayer(eOwner) - 1 + iExtraCities) *
 			iNumCitiesPercent;
 	int iMaintenance = (iNumCities * iNumCities) / 100;
@@ -14577,7 +14669,73 @@ int CvCity::calculateColonyMaintenanceTimes100(CvPlot const& kCityPlot,
 	FAssert(iMaintenance >= 0);
 	return iMaintenance;
 }
+//DPII < Maintenance Modifiers >
+int CvCity::calculateHomeAreaMaintenanceTimes100(CvArea const& kArea, PlayerTypes eOwner, int iLocalHomeArea, bool capitalcity)
+{
+	CvPlayer const& kOwner = GET_PLAYER(eOwner);
+	CvCity* pCapital = kOwner.getCapitalCity();
+	int iTempMaintenance = 100;
+	if (pCapital != NULL && !capitalcity)//capital should pay for being in its own area...
+	{
+		if (pCapital->isArea(kArea))
+		{
+			iTempMaintenance *= std::max(0, GET_PLAYER(eOwner).getHomeAreaMaintenanceModifier() + 100);
+			iTempMaintenance /= 100;
+			iTempMaintenance *= std::max(0, iLocalHomeArea + 100) ;
+			iTempMaintenance /= 100;
+			return iTempMaintenance;
+		}
+	}
+	return 0;
+}
 
+int CvCity::calculateOtherAreaMaintenanceTimes100(CvArea const& kArea, PlayerTypes eOwner, int iLocalOtherArea)
+{
+	CvPlayer const& kOwner = GET_PLAYER(eOwner);
+	CvCity* pCapital = kOwner.getCapitalCity();
+	int iTempMaintenance = 100;
+	if (pCapital != NULL)
+	{//!pCapital->isArea(kArea)(pCapital->area() != &kArea)
+		if (!pCapital->isArea(kArea))
+		{
+			iTempMaintenance *= std::max(0, GET_PLAYER(eOwner).getOtherAreaMaintenanceModifier() + 100);
+			iTempMaintenance /= 100;
+			iTempMaintenance *= std::max(0, iLocalOtherArea + 100);
+			iTempMaintenance /= 100;
+			return iTempMaintenance;
+		}
+	}
+	return 0;
+}
+int CvCity::calculateConnectedMaintenanceTimes100(PlayerTypes eOwner, bool iCheckConnection, int iLocalConnected)
+{
+		int iTempMaintenance = 100;
+		if (iCheckConnection)
+		{
+			iTempMaintenance *= std::max(0, GET_PLAYER(eOwner).getConnectedCityMaintenanceModifier() + 100);
+			iTempMaintenance /= 100;
+			iTempMaintenance *= std::max(0, iLocalConnected + 100);
+			iTempMaintenance /= 100;
+			return iTempMaintenance;
+		}
+		return 0;
+}
+
+int CvCity::calculateCoastalMaintenanceTimes100(int localCoastal, CvPlot const& kCityPlot, PlayerTypes eOwner,bool capitalcitynConn)
+{
+		int iTempMaintenance = 100;
+		if (kCityPlot.isCoastalLand(GC.getDefineINT(CvGlobals::MIN_WATER_SIZE_FOR_OCEAN)) && capitalcitynConn) //dont apply to capital and not if its connected to capital
+		{
+			iTempMaintenance *= std::max(0, GET_PLAYER(eOwner).getCoastalDistanceMaintenanceModifier() + 100);
+			iTempMaintenance /= 100;
+			iTempMaintenance *= std::max(0, localCoastal + 100);
+			iTempMaintenance /= 100;
+			return iTempMaintenance;
+		}
+		return 0;
+}
+
+	//DPII < Maintenance Modifiers >
 // advc.500b:
 scaled CvCity::defensiveGarrison(
 	scaled rStopCountingAt) const // Param important for performance
@@ -15016,6 +15174,13 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 		int getNukeModifier	= kBuilding.getNukeModifier();
 		int getFreeSpecialist	= kBuilding.getFreeSpecialist();
 		int getMaintenanceModifier	= kBuilding.getMaintenanceModifier();
+		//DPII < Maintenance Modifiers >
+		int getLocalDistanceMaintenance = kBuilding.getLocalDistanceMaintenanceModifier();
+		int getLocalCoastalDistanceMaintenance = kBuilding.getLocalCoastalDistanceMaintenanceModifier();
+		int getLocalConnectedCityMaintenance = kBuilding.getLocalConnectedCityMaintenanceModifier();
+		int getLocalHomeAreaMaintenance = kBuilding.getLocalHomeAreaMaintenanceModifier();
+		int getLocalOtherAreaMaintenance = kBuilding.getLocalOtherAreaMaintenanceModifier();
+		//DPII < Maintenance Modifiers >
 		int getWarWearinessModifier	= kBuilding.getWarWearinessModifier();
 		int getHurryAngerModifier	= kBuilding.getHurryAngerModifier();
 		int getHealRateChange = kBuilding.getHealRateChange();
@@ -15039,6 +15204,18 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 			changeFreeSpecialist(getFreeSpecialist * iChange);
 		if (getMaintenanceModifier != 0)
 			changeMaintenanceModifier(getMaintenanceModifier * iChange);
+		//DPII < Maintenance Modifiers >
+		if (getLocalDistanceMaintenance != 0)
+			changeLocalDistanceMaintenanceModifier(getLocalDistanceMaintenance * iChange);
+		if (getLocalCoastalDistanceMaintenance != 0)
+			changeLocalCoastalDistanceMaintenanceModifier(getLocalCoastalDistanceMaintenance * iChange);
+		if (getLocalConnectedCityMaintenance != 0)
+			changeLocalConnectedCityMaintenanceModifier(getLocalConnectedCityMaintenance * iChange);
+		if (getLocalHomeAreaMaintenance != 0)
+			changeLocalHomeAreaMaintenanceModifier(getLocalHomeAreaMaintenance * iChange);
+		if (getLocalOtherAreaMaintenance != 0)
+			changeLocalOtherAreaMaintenanceModifier(getLocalOtherAreaMaintenance * iChange);
+		//DPII < Maintenance Modifiers >
 		if (getWarWearinessModifier != 0)
 			changeWarWearinessModifier(getWarWearinessModifier * iChange);
 		if (getHurryAngerModifier != 0)

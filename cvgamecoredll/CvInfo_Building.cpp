@@ -116,6 +116,13 @@ m_iNumCitiesMaintenanceModifier(0),
 m_iCoastalDistanceMaintenanceModifier(0),
 m_iConnectedCityMaintenanceModifier(0),
 //Doto-DPII < Maintenance Modifier >
+//Doto-DPII < Maintenance Modifier >
+m_iLocalHomeAreaMaintenanceModifier(0),
+m_iLocalOtherAreaMaintenanceModifier(0),
+m_iLocalDistanceMaintenanceModifier(0),
+m_iLocalCoastalDistanceMaintenanceModifier(0),
+m_iLocalConnectedCityMaintenanceModifier(0),
+//Doto-DPII < Maintenance Modifier >
 m_iWarWearinessModifier(0),
 m_iGlobalWarWearinessModifier(0),
 m_iEnemyWarWearinessModifier(0),
@@ -309,42 +316,54 @@ int CvBuildingInfo::getAreaTradeRoutes() const
 		return 0;
 	return m_iAreaTradeRoutes;
 } // </advc.310>
-
 //Doto-DPII < Maintenance Modifier >
-//due to advc changes - i dont know its this is the place- keldath
 int CvBuildingInfo::getGlobalMaintenanceModifier() const
 {
     return m_iGlobalMaintenanceModifier;
 }
-
 int CvBuildingInfo::getAreaMaintenanceModifier() const
 {
     return m_iAreaMaintenanceModifier;
 }
-
 int CvBuildingInfo::getOtherAreaMaintenanceModifier() const
 {
     return m_iOtherAreaMaintenanceModifier;
 }
-
 int CvBuildingInfo::getDistanceMaintenanceModifier() const
 {
     return m_iDistanceMaintenanceModifier;
 }
-
 int CvBuildingInfo::getNumCitiesMaintenanceModifier() const
 {
     return m_iNumCitiesMaintenanceModifier;
 }
-
 int CvBuildingInfo::getCoastalDistanceMaintenanceModifier() const
 {
     return m_iCoastalDistanceMaintenanceModifier;
 }
-
 int CvBuildingInfo::getConnectedCityMaintenanceModifier() const
 {
     return m_iConnectedCityMaintenanceModifier;
+}
+int CvBuildingInfo::getLocalHomeAreaMaintenanceModifier() const
+{
+    return m_iLocalHomeAreaMaintenanceModifier;
+}
+int CvBuildingInfo::getLocalOtherAreaMaintenanceModifier() const
+{
+    return m_iLocalOtherAreaMaintenanceModifier;
+}
+int CvBuildingInfo::getLocalDistanceMaintenanceModifier() const
+{
+    return m_iLocalDistanceMaintenanceModifier;
+}
+int CvBuildingInfo::getLocalCoastalDistanceMaintenanceModifier() const
+{
+    return m_iLocalCoastalDistanceMaintenanceModifier;
+}
+int CvBuildingInfo::getLocalConnectedCityMaintenanceModifier() const
+{
+    return m_iLocalConnectedCityMaintenanceModifier;
 }
 //Doto-DPII < Maintenance Modifier >
 
@@ -953,8 +972,15 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iOtherAreaMaintenanceModifier);//keldath fix?
 	stream->Read(&m_iDistanceMaintenanceModifier);
 	stream->Read(&m_iNumCitiesMaintenanceModifier);
-	stream->Read(&m_iDistanceMaintenanceModifier);
+	stream->Read(&m_iCoastalDistanceMaintenanceModifier);
 	stream->Read(&m_iConnectedCityMaintenanceModifier);
+	//Doto-DPII < Maintenance Modifier >
+	//Doto-DPII < Maintenance Modifier >
+	stream->Read(&m_iLocalHomeAreaMaintenanceModifier);
+	stream->Read(&m_iLocalOtherAreaMaintenanceModifier);//keldath fix?
+	stream->Read(&m_iLocalDistanceMaintenanceModifier);
+	stream->Read(&m_iLocaCoastalDistanceMaintenanceModifier);
+	stream->Read(&m_iLocalConnectedCityMaintenanceModifier);
 	//Doto-DPII < Maintenance Modifier >
 	stream->Read(&m_iWarWearinessModifier);
 	stream->Read(&m_iGlobalWarWearinessModifier);
@@ -1289,6 +1315,13 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iNumCitiesMaintenanceModifier);
 	stream->Write(m_iCoastalDistanceMaintenanceModifier);
 	stream->Write(m_iConnectedCityMaintenanceModifier);
+	//Doto-DPII < Maintenance Modifier >
+	//Doto-DPII < Maintenance Modifier >
+	stream->Write(m_iLocalHomeAreaMaintenanceModifier);
+	stream->Write(m_iLocalOtherAreaMaintenanceModifier);
+	stream->Write(m_iLocalDistanceMaintenanceModifier);
+	stream->Write(m_iLocalCoastalDistanceMaintenanceModifier);
+	stream->Write(m_iLocalConnectedCityMaintenanceModifier);
 	//Doto-DPII < Maintenance Modifier >
 	stream->Write(m_iWarWearinessModifier);
 	stream->Write(m_iGlobalWarWearinessModifier);
@@ -1629,6 +1662,13 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iNumCitiesMaintenanceModifier, "iNumCitiesMaintenanceModifier", 0);
 	pXML->GetChildXmlValByName(&m_iCoastalDistanceMaintenanceModifier, "iCoastalDistanceMaintenanceModifier", 0);
 	pXML->GetChildXmlValByName(&m_iConnectedCityMaintenanceModifier, "iConnectedCityMaintenanceModifier", 0);
+	//Doto-DPII < Maintenance Modifier >
+	//Doto-DPII < Maintenance Modifier >
+    pXML->GetChildXmlValByName(&m_iLocalHomeAreaMaintenanceModifier, "iLocalHomeAreaMaintenanceModifier", 0);
+    pXML->GetChildXmlValByName(&m_iLocalOtherAreaMaintenanceModifier, "iLocalOtherAreaMaintenanceModifier", 0);
+	pXML->GetChildXmlValByName(&m_iLocalDistanceMaintenanceModifier, "iLocalDistanceMaintenanceModifier", 0);
+	pXML->GetChildXmlValByName(&m_iLocalCoastalDistanceMaintenanceModifier, "iLocalCoastalDistanceMaintenanceModifier", 0);
+	pXML->GetChildXmlValByName(&m_iLocalConnectedCityMaintenanceModifier, "iLocalConnectedCityMaintenanceModifier", 0);
 	//Doto-DPII < Maintenance Modifier >
 	pXML->GetChildXmlValByName(&m_iWarWearinessModifier, "iWarWearinessModifier");
 	pXML->GetChildXmlValByName(&m_iGlobalWarWearinessModifier, "iGlobalWarWearinessModifier");

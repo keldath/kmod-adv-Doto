@@ -215,6 +215,7 @@ public:
 	int getBonusYieldRateModifier(YieldTypes eIndex, BonusTypes eBonus) const;									// Exposed to Python
 
 	void processBonus(BonusTypes eBonus, int iChange);
+//prereqMust+tholish
 	void processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false, bool checkKeep = true);
 	void UNprocessBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false);
 ///prereqMust+tholish
@@ -440,40 +441,64 @@ public:
 	int getSavedMaintenanceTimes100ByBuilding(BuildingTypes eBuilding) const;
 	int getMaintenance() const { return m_iMaintenance / 100; }													// Exposed to Python
 	int getMaintenanceTimes100() const { return m_iMaintenance; }												// Exposed to Python
-	//DPII keldath<Maintenance Modifiers> 
-	int cityHomeAreaMaintanance() const;
-	int cityOtherAreaMaintanance() const;
-	int isConnectedMaintanence() const;
-	//DPII keldath<Maintenance Modifiers >
 	void updateMaintenance();
 	int calculateDistanceMaintenance() const;																	// Exposed to Python
 	int calculateNumCitiesMaintenance() const;																	// Exposed to Python
 	int calculateColonyMaintenance() const;																		// Exposed to Python
 	int calculateCorporationMaintenance() const;																// Exposed to Python
+	//DPII keldath<Maintenance Modifiers> 
+	int calculateHomeAreaMaintanance() const;																	// Exposed to Python
+	int calculateOtherAreaMaintanance() const;																	// Exposed to Python
+	int calculateConnectedMaintanance() const;																	// Exposed to Python
+	int calculateCoastalMaintanance() const;																	// Exposed to Python	
+	//DPII keldath<Maintenance Modifiers> 
 	/* <advc.104> Added an optional parameter to allow the computation of
 	   projected maintenance for cities yet to be conquered. */
 	int calculateDistanceMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;								// Exposed to Python
 	int calculateColonyMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;
 	int calculateNumCitiesMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;							// Exposed to Python									// Exposed to Python
+	//DPII keldath<Maintenance Modifiers> 
+	int calculateHomeAreaMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;								// Exposed to Python
+	int calculateOtherAreaMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;								// Exposed to Python
+	int calculateConnectedMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;								// Exposed to Python
+	int calculateCoastalMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;								// Exposed to Python
+	//DPII keldath<Maintenance Modifiers> 
 	// </advc.104>
-	//DPII keldath<Maintenance Modifiers> default 1 - for textmanager data
-	int CoastalDistanceMaintanence(int iTempMaintenance=1) const;
-	//DPII keldath<Maintenance Modifiers>
 	// <advc.004b> A projection for cities yet to be founded
 	static int calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
-			PlayerTypes eOwner, int iPopulation = -1);
+			PlayerTypes eOwner, int iPopulation = -1, int iLocalDistance = 0);
 	static int calculateNumCitiesMaintenanceTimes100(CvPlot const& kCityPlot,
 			PlayerTypes eOwner, int iPopulation = -1, int iExtraCities = 0);
 	static int calculateColonyMaintenanceTimes100(CvPlot const& kCityPlot,
 			PlayerTypes eOwner, int iPopulation = -1, int iExtraCities = 0);
+	//seems i have to use different params than the calculateHomeAreaMaintenanceTimes100 same fn name above.
+	static int calculateHomeAreaMaintenanceTimes100(CvArea const& kArea, PlayerTypes eOwner, int iLocalHomeArea = 0, bool capitalcity = false);
+	static int calculateOtherAreaMaintenanceTimes100(CvArea const& kArea, PlayerTypes eOwner, int iLocalOtherArea = 0);
+	static int calculateConnectedMaintenanceTimes100(PlayerTypes eOwner, bool iCheckConnection,int iLocalConnected = 0);
+	static int calculateCoastalMaintenanceTimes100(int localCoastal, CvPlot const& kCityPlot, PlayerTypes eOwner,bool capitalcitynConn = false);
+	//DPII keldath< Maintenance Modifiers
 	static int initialPopulation();
+	//DPII keldath< Maintenance Modifiers
 	// </advc.004b>
 	int calculateCorporationMaintenanceTimes100(CorporationTypes eCorporation) const;							// Exposed to Python
 	int calculateCorporationMaintenanceTimes100() const;														// Exposed to Python
 	int calculateBaseMaintenanceTimes100() const;
 	int getMaintenanceModifier() const { return m_iMaintenanceModifier; }										// Exposed to Python
+//DPII < Maintenance Modifiers >
+	int getLocalDistanceMaintenanceModifier() const { return m_iLocalDistanceMaintenanceModifier; }		// Exposed to Python
+	int getLocalCoastalDistanceMaintenanceModifier() const { return m_iLocalCoastalDistanceMaintenanceModifier; }		// Exposed to Python
+	int getLocalConnectedCityMaintenanceModifier() const { return m_iLocalConnectedCityMaintenanceModifier; }   // Exposed to Python
+	int getLocalHomeAreaMaintenanceModifier() const { return m_iLocalHomeAreaMaintenanceModifier; }				// Exposed to Python
+	int getLocalOtherAreaMaintenanceModifier() const { return m_iLocalOtherAreaMaintenanceModifier; }			// Exposed to Python
+//DPII < Maintenance Modifiers >
 	void changeMaintenanceModifier(int iChange);
-
+//DPII < Maintenance Modifiers >
+	void changeLocalDistanceMaintenanceModifier(int iChange);
+	void changeLocalCoastalDistanceMaintenanceModifier(int iChange);
+	void changeLocalConnectedCityMaintenanceModifier(int iChange);
+	void changeLocalHomeAreaMaintenanceModifier(int iChange);
+	void changeLocalOtherAreaMaintenanceModifier(int iChange);
+//DPII < Maintenance Modifiers >
 	int getWarWearinessModifier() const { return m_iWarWearinessModifier; }										// Exposed to Python
 	void changeWarWearinessModifier(int iChange);
 	int getHurryAngerModifier() const { return m_iHurryAngerModifier; }											// Exposed to Python
@@ -1424,6 +1449,13 @@ protected:
 	int m_iGovernmentCenterCount;
 	int m_iMaintenance;
 	int m_iMaintenanceModifier;
+	//DPII < Maintenance Modifiers >
+	int m_iLocalDistanceMaintenanceModifier;
+	int m_iLocalCoastalDistanceMaintenanceModifier;
+	int m_iLocalConnectedCityMaintenanceModifier;
+	int m_iLocalHomeAreaMaintenanceModifier;
+	int m_iLocalOtherAreaMaintenanceModifier;
+	//DPII < Maintenance Modifiers >
 	int m_iWarWearinessModifier;
 	int m_iHurryAngerModifier;
 	int m_iHealRate;

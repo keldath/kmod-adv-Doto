@@ -251,6 +251,13 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
     int getCoastalDistanceMaintenanceModifier() const;
     int getConnectedCityMaintenanceModifier() const;
 	//DPII < Maintenance Modifiers >
+	////Doto-DPII < Maintenance Modifiers >
+	int getLocalHomeAreaMaintenanceModifier() const;
+    int getLocalOtherAreaMaintenanceModifier() const;
+	int getLocalDistanceMaintenanceModifier() const;
+    int getLocalCoastalDistanceMaintenanceModifier() const;
+    int getLocalConnectedCityMaintenanceModifier() const;
+	//DPII < Maintenance Modifiers >
 	int getWarWearinessModifier() const { return m_iWarWearinessModifier; }
 	int getGlobalWarWearinessModifier() const { return m_iGlobalWarWearinessModifier; }
 	int getEnemyWarWearinessModifier() const { return m_iEnemyWarWearinessModifier; }
@@ -549,6 +556,13 @@ protected:
 	int m_iNumCitiesMaintenanceModifier;
 	int m_iCoastalDistanceMaintenanceModifier;
 	int m_iConnectedCityMaintenanceModifier;
+	//Doto-DPII < Maintenance Modifier >
+	//Doto-DPII < Maintenance Modifier >
+	int m_iLocalHomeAreaMaintenanceModifier;
+	int m_iLocalOtherAreaMaintenanceModifier;
+	int m_iLocalDistanceMaintenanceModifier;
+	int m_iLocalCoastalDistanceMaintenanceModifier;
+	int m_iLocalConnectedCityMaintenanceModifier;
 	//Doto-DPII < Maintenance Modifier >
 	int m_iWarWearinessModifier;
 	int m_iGlobalWarWearinessModifier;

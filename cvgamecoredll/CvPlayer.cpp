@@ -445,7 +445,7 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_iExpInBorderModifier = 0;
 	m_iBuildingOnlyHealthyCount = 0;
 	//DPII < Maintenance Modifier >
-	m_iMaintenanceModifier = 0;
+	m_iGlobalMaintenanceModifier = 0;
 	m_iCoastalDistanceMaintenanceModifier = 0;
 	m_iConnectedCityMaintenanceModifier = 0;
 	m_iHomeAreaMaintenanceModifier = 0;
@@ -5931,7 +5931,7 @@ void CvPlayer::processBuilding(BuildingTypes eBuilding, int iChange, CvArea& kAr
 	}
 
 	//DPII < Maintenance Modifiers >
-    changeMaintenanceModifier(kBuilding.getGlobalMaintenanceModifier() * iChange);
+    changeGlobalMaintenanceModifier(kBuilding.getGlobalMaintenanceModifier() * iChange);
 	changeDistanceMaintenanceModifier(kBuilding.getDistanceMaintenanceModifier() * iChange);
 	changeNumCitiesMaintenanceModifier(kBuilding.getNumCitiesMaintenanceModifier() * iChange);
 	changeCoastalDistanceMaintenanceModifier(kBuilding.getCoastalDistanceMaintenanceModifier() * iChange);
@@ -5968,19 +5968,6 @@ void CvPlayer::processBuilding(BuildingTypes eBuilding, int iChange, CvArea& kAr
 	kArea.changeBorderObstacleCount(getTeam(), ((kBuilding.isAreaBorderObstacle()) ? iChange : 0));
 	
 	//DPII < Maintenance Modifiers >
-    kArea.changeMaintenanceModifier(getID(), (kBuilding.getAreaMaintenanceModifier() * iChange));
-
-    if (kBuilding.getOtherAreaMaintenanceModifier() != 0)
-    {
-        for (pLoopArea = GC.getMap().firstArea(&iLoop); pLoopArea != NULL; pLoopArea = GC.getMap().nextArea(&iLoop))
-        {
-            if (!(pLoopArea == &kArea))
-            {
-                pLoopArea->changeMaintenanceModifier(getID(), (kBuilding.getOtherAreaMaintenanceModifier()  * iChange));
-            }
-        }
-    }
-    //DPII < Maintenance Modifiers >
 
 	FOR_EACH_ENUM2(Yield, y)
 	{
@@ -8496,16 +8483,16 @@ void CvPlayer::changeBuildingOnlyHealthyCount(int iChange)
 	}
 }
 //DPII < Maintenance Modifiers >
-int CvPlayer::getMaintenanceModifier()
+int CvPlayer::getGlobalMaintenanceModifier()
 {
-    return m_iMaintenanceModifier;
+    return m_iGlobalMaintenanceModifier;
 }
 
-void CvPlayer::changeMaintenanceModifier(int iChange)
+void CvPlayer::changeGlobalMaintenanceModifier(int iChange)
 {
     if (iChange != 0)
     {
-        m_iMaintenanceModifier = (m_iMaintenanceModifier + iChange);
+        m_iGlobalMaintenanceModifier = (m_iGlobalMaintenanceModifier + iChange);
 
         updateMaintenance();
     }
@@ -8545,7 +8532,6 @@ int CvPlayer::getHomeAreaMaintenanceModifier()
 {
     return m_iHomeAreaMaintenanceModifier;
 }
-
 void CvPlayer::changeHomeAreaMaintenanceModifier(int iChange)
 {
     if (iChange != 0)
@@ -14932,7 +14918,7 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iExpInBorderModifier);
 	pStream->Read(&m_iBuildingOnlyHealthyCount);
 	//DPII < Maintenance Modifiers >
-	pStream->Read(&m_iMaintenanceModifier);
+	pStream->Read(&m_iGlobalMaintenanceModifier);
 	pStream->Read(&m_iCoastalDistanceMaintenanceModifier);
 	pStream->Read(&m_iConnectedCityMaintenanceModifier);
 	pStream->Read(&m_iHomeAreaMaintenanceModifier);
@@ -15517,7 +15503,7 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	pStream->Write(m_iExpInBorderModifier);
 	pStream->Write(m_iBuildingOnlyHealthyCount);
 	//DPII < Maintenance Modifiers >
-	pStream->Write(m_iMaintenanceModifier);
+	pStream->Write(m_iGlobalMaintenanceModifier);
 	pStream->Write(m_iCoastalDistanceMaintenanceModifier);
 	pStream->Write(m_iConnectedCityMaintenanceModifier);
 	pStream->Write(m_iHomeAreaMaintenanceModifier);

@@ -167,6 +167,13 @@
 	<ElementType name="iCoastalDistanceMaintenanceModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iConnectedCityMaintenanceModifier" content="textOnly" dt:type="int"/>
 	<!-- DPII < Maintenance Modifiers > -->
+	<!-- DPII < Maintenance Modifiers > -->
+	<ElementType name="iLocalHomeAreaMaintenanceModifier" content="textOnly" dt:type="int"/>
+	<ElementType name="iLocalOtherAreaMaintenanceModifier" content="textOnly" dt:type="int"/>
+	<ElementType name="iLocalDistanceMaintenanceModifier" content="textOnly" dt:type="int"/>
+	<ElementType name="iLocalCoastalDistanceMaintenanceModifier" content="textOnly" dt:type="int"/>
+	<ElementType name="iLocalConnectedCityMaintenanceModifier" content="textOnly" dt:type="int"/>
+	<!-- DPII < Maintenance Modifiers > -->
 	<ElementType name="iWarWearinessModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iGlobalWarWearinessModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iEnemyWarWearinessModifier" content="textOnly" dt:type="int"/>
@@ -555,7 +562,7 @@
 		<element type="iAreaFreeSpecialist" minOccurs="0"/>
 		<element type="iGlobalFreeSpecialist" minOccurs="0"/>
 		<element type="iMaintenanceModifier" minOccurs="0"/>
-		<!--DPII < Maintenance Modifiers > -->
+		<!--DPII < global Maintenance Modifiers > -->
 		<element type="iGlobalMaintenanceModifier" minOccurs="0"/>
 		<element type="iAreaMaintenanceModifier" minOccurs="0"/>
 		<element type="iOtherAreaMaintenanceModifier" minOccurs="0"/>
@@ -563,6 +570,13 @@
 		<element type="iNumCitiesMaintenanceModifier" minOccurs="0"/>
 		<element type="iCoastalDistanceMaintenanceModifier" minOccurs="0"/>
 		<element type="iConnectedCityMaintenanceModifier" minOccurs="0"/>
+		<!--DPII < Maintenance Modifiers > -->
+		<!--DPII < local Maintenance Modifiers > -->
+		<element type="iLocalHomeAreaMaintenanceModifier" minOccurs="0"/>
+		<element type="iLocalOtherAreaMaintenanceModifier" minOccurs="0"/>
+		<element type="iLocalDistanceMaintenanceModifier" minOccurs="0"/>
+		<element type="iLocalCoastalDistanceMaintenanceModifier" minOccurs="0"/>
+		<element type="iLocalConnectedCityMaintenanceModifier" minOccurs="0"/>
 		<!--DPII < Maintenance Modifiers > -->
 		<element type="iWarWearinessModifier" minOccurs="0"/>
 		<element type="iGlobalWarWearinessModifier" minOccurs="0"/>

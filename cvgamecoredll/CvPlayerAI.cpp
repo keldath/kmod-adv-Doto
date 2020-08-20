@@ -1828,10 +1828,12 @@ void CvPlayerAI::AI_conquerCity(CvCityAI& kCity)  // advc: style changes, advc.0
 				} // </advc.116>
 			}
 			// <advc.116>
+//doto??advc error on numcities maint??
 			if (bFinancialTrouble)
 			{
 				iRazeValue += (kCity.calculateDistanceMaintenanceTimes100(getID()) +
-						kCity.calculateDistanceMaintenanceTimes100(getID())) /
+//keldath fix was calculateDistanceMaintenanceTimes100(getID())
+						kCity.calculateNumCitiesMaintenanceTimes100(getID())) /
 						100; // Replacing:
 						//std::max(0, (70 - 15 * pCity->getPopulation()));
 			}

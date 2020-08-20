@@ -250,6 +250,12 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
 			<iConnectedCityMaintenanceModifier>0</iConnectedCityMaintenanceModifier>
 			<!--DPII < Maintenance Modifiers > -->
+			<!--DPII < Maintenance Modifiers  -->
+			<iLocalDistanceMaintenanceModifier>0</iLocalDistanceMaintenanceModifier>
+			<iLocalOtherAreaMaintenanceModifier>0</iLocalOtherAreaMaintenanceModifier>
+			<iLocalCoastalDistanceMaintenanceModifier>0</iLocalCoastalDistanceMaintenanceModifier>
+			<iLocalConnectedCityMaintenanceModifier>0</iLocalConnectedCityMaintenanceModifier>
+			<!--DPII < Maintenance Modifiers > -->
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
 			<iEnemyWarWearinessModifier>0</iEnemyWarWearinessModifier>

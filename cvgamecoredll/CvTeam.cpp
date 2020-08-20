@@ -3880,7 +3880,7 @@ void CvTeam::changeProjectCount(ProjectTypes eIndex, int iChange)  // advc: styl
 	//DPII < Maintenance Modifiers >
 	for (MemberIter it(getID()); it.hasNext(); ++it)
 	{
-    	it->changeMaintenanceModifier(GC.getInfo(eIndex).getGlobalMaintenanceModifier());
+    	it->changeGlobalMaintenanceModifier(GC.getInfo(eIndex).getGlobalMaintenanceModifier());
     	it->changeDistanceMaintenanceModifier(GC.getInfo(eIndex).getDistanceMaintenanceModifier());
     	it->changeNumCitiesMaintenanceModifier(GC.getInfo(eIndex).getNumCitiesMaintenanceModifier());
     	it->changeConnectedCityMaintenanceModifier(GC.getInfo(eIndex).getConnectedCityMaintenanceModifier());

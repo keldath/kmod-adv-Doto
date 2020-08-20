@@ -18258,7 +18258,7 @@ void CvGameTextMgr::buildFinanceCityMaintString(CvWStringBuffer& szBuffer, Playe
 	scaled rHomeMaint;
 	scaled rOtherMaint;
 	scaled rConnected;
-	scaled rCostalMaint;
+	scaled rCoastalMaint;
 //DOTO-DPII < Maintenance Modifiers >
 	scaled rColonyMaint;
 	scaled rCorpMaint;
@@ -18270,13 +18270,13 @@ void CvGameTextMgr::buildFinanceCityMaintString(CvWStringBuffer& szBuffer, Playe
 			rDistanceMaint += per100(pCity->calculateDistanceMaintenanceTimes100()) *
 					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
 //DOTO-DPII < Maintenance Modifiers >
-			rHomeMaint += per100(pCity->cityHomeAreaMaintanance()) *
+			rHomeMaint += per100(pCity->calculateHomeAreaMaintenanceTimes100()) *
 					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
-			rOtherMaint += per100(pCity->cityOtherAreaMaintanance()) *
+			rOtherMaint += per100(pCity->calculateOtherAreaMaintenanceTimes100()) *
 					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
-			rConnected += per100(pCity->isConnectedMaintanence()) *
+			rConnected += per100(pCity->calculateConnectedMaintenanceTimes100()) *
 					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
-			rCostalMaint += per100(pCity->CoastalDistanceMaintanence()) *
+			rCoastalMaint += per100(pCity->calculateCoastalMaintenanceTimes100()) *
 					per100(std::max(0, pCity->getMaintenanceModifier() + 100));
 //DOTO-DPII < Maintenance Modifiers >
 			rColonyMaint += per100(pCity->calculateColonyMaintenanceTimes100()) *
@@ -18294,7 +18294,7 @@ void CvGameTextMgr::buildFinanceCityMaintString(CvWStringBuffer& szBuffer, Playe
 	rHomeMaint *= rInflationFactor;
 	rOtherMaint *= rInflationFactor;
 	rConnected *= rInflationFactor;
-	rCostalMaint *= rInflationFactor;
+	rCoastalMaint *= rInflationFactor;
 //DOTO-DPII < Maintenance Modifiers >
 	rColonyMaint *= rInflationFactor;
 	rCorpMaint *= rInflationFactor;
@@ -18305,19 +18305,18 @@ void CvGameTextMgr::buildFinanceCityMaintString(CvWStringBuffer& szBuffer, Playe
 	int iHomeMaint = rHomeMaint.round();
 	int iOtherMaint = rOtherMaint.round();
 	int iConnectedMaint = rConnected.round();
-	int iCostalMaint = rCostalMaint.round();
+	int iCoastalMaint = rCoastalMaint.round();
 	int iColonyMaint = rColonyMaint.round();
 	int iCorpMaint = rCorpMaint.round();
 //DOTO-DPII < Maintenance Modifiers >
-	iDistanceMaint = std::max(0,iDistanceMaint - iCostalMaint);//since iCostalMaint is already in iDistanceMaint, if its 0, than i dont want to remove it - it will be <0
 	int totalMaintnew = std::max(0,(kPlayer.getTotalMaintenance() * rInflationFactor).round());
-	int iNumCityMaint = totalMaintnew - iDistanceMaint - iColonyMaint - iCorpMaint - iHomeMaint - iOtherMaint - iConnectedMaint;
+	int iNumCityMaint = totalMaintnew - iDistanceMaint - iColonyMaint - iCorpMaint - iHomeMaint - iOtherMaint - iConnectedMaint - iCoastalMaint;
 //DOTO-DPII < Maintenance Modifiers >
 	CvWString szTmp; // advc.086
 	szTmp.append(NEWLINE);
 //DOTO-DPII < Maintenance Modifiers >
 	szTmp.append(gDLL->getText("TXT_KEY_FINANCE_ADVISOR_CITY_MAINT_COST",
-			iDistanceMaint, iNumCityMaint,iHomeMaint ,iOtherMaint ,iConnectedMaint ,iCostalMaint , iColonyMaint, iCorpMaint, 
+			iDistanceMaint, iNumCityMaint,iHomeMaint ,iOtherMaint ,iConnectedMaint ,iCoastalMaint , iColonyMaint, iCorpMaint, 
 			(kPlayer.getTotalMaintenance() * iInflationFactorTimes100) / 100));
 //DOTO-DPII < Maintenance Modifiers >
 	// <advc.086>

@@ -677,8 +677,8 @@ public:
 	bool isBuildingOnlyHealthy() const { return (getBuildingOnlyHealthyCount() > 0); }								// Exposed to Python
 	void changeBuildingOnlyHealthyCount(int iChange);
 //DPII < Maintenance Modifiers >
-    int getMaintenanceModifier();
-    void changeMaintenanceModifier(int iChange);
+    int getGlobalMaintenanceModifier();
+    void changeGlobalMaintenanceModifier(int iChange);
 
     int getCoastalDistanceMaintenanceModifier();
     void changeCoastalDistanceMaintenanceModifier(int iChange);
@@ -1547,7 +1547,7 @@ protected:  // <advc.210>
 	int m_iExpInBorderModifier;
 	int m_iBuildingOnlyHealthyCount;
 	//DPII < Maintenance Modifiers >
-	int m_iMaintenanceModifier;
+	int m_iGlobalMaintenanceModifier;
 	int m_iCoastalDistanceMaintenanceModifier;
 	int m_iConnectedCityMaintenanceModifier;;
 	int m_iHomeAreaMaintenanceModifier;
