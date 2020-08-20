@@ -126,24 +126,6 @@ public:
 		return m_aiBestFoundValue.get(eIndex);
 	}
 	void setBestFoundValue(PlayerTypes eIndex, int iNewValue);
-	
-	//DPII < Maintenance Modifiers >
-    int getMaintenanceModifier(PlayerTypes eIndex) const;
-    void changeMaintenanceModifier(PlayerTypes eIndex, int iChange);
-
- /*   int getHomeAreaMaintenanceModifier(PlayerTypes eIndex) const;
-    void changeHomeAreaMaintenanceModifier(PlayerTypes eIndex, int iChange);
-    void setHomeAreaMaintenanceModifier(PlayerTypes eIndex, int iNewValue);
-
-    int getOtherAreaMaintenanceModifier(PlayerTypes eIndex) const;
-    void changeOtherAreaMaintenanceModifier(PlayerTypes eIndex, int iChange);
-    void setOtherAreaMaintenanceModifier(PlayerTypes eIndex, int iNewValue);
-*/
-//    int getTotalAreaMaintenanceModifier(PlayerTypes ePlayer) const;
-/*
-    bool isHomeArea(PlayerTypes eIndex) const;
-    void setHomeArea(PlayerTypes ePlayer, CvArea* pOldHomeArea,CvArea* pNewHomeArea);
-  */  //DPII < Maintenance Modifiers >
 
 	inline int getNumUnrevealedTiles(TeamTypes eIndex) const											// Exposed to Python
 	{
@@ -241,16 +223,6 @@ protected:
 	EnumMap<PlayerTypes,int> m_aiFreeSpecialist;
 	EnumMap<PlayerTypes,int> m_aiPower;
 	EnumMap<PlayerTypes,int> m_aiBestFoundValue;
-	//DPII < Maintenance Modifiers 096 style>
-	EnumMap<PlayerTypes,int> m_aiMaintenanceModifier;
-/*	EnumMap<PlayerTypes,int> m_aiHomeAreaMaintenanceModifier;
-	EnumMap<PlayerTypes,int> m_aiOtherAreaMaintenanceModifier;
-	EnumMap<PlayerTypes, bool> m_abHomeArea;*/
-/*	int* m_aiMaintenanceModifier;
-	int* m_aiHomeAreaMaintenanceModifier;
-	int* m_aiOtherAreaMaintenanceModifier;
-	bool* m_abHomeArea;*/
-	//DPII < Maintenance Modifiers >
 	EnumMap<TeamTypes,int> m_aiNumRevealedTiles;
 	EnumMap<TeamTypes,int> m_aiCleanPowerCount;
 	EnumMap<TeamTypes,int> m_aiBorderObstacleCount;
