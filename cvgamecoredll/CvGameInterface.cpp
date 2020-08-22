@@ -204,7 +204,7 @@ void CvGame::updateColoredPlots()
 			}
 		}
 	}
-//rangedattack-keldath -f1rpo suggestion how to refer to airrange units.
+//DOTO-rangedattack-keldath -f1rpo suggestion how to refer to airrange units.
 //this blockwill replace the refrance to units with air range or air domain(original two blocks of code)
 
 	/*	advc.rstr: Merged air range with ranged strike code so that the maximal range

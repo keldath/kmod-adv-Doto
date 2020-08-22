@@ -71,7 +71,7 @@ public:
 	int findCommerceRateRank(CommerceTypes eCommerce) const;													// Exposed to Python
 /************************************************************************************************/
 /* REVDCM                                 05/05/10                                phungus420    */
-/*                                                                                              */
+/* doto-                                                                                             */
 /* CanTrain                                                                                     */
 /************************************************************************************************/
 	bool isForceObsoleteUnitClassAvailable(UnitTypes eUnit) const;						// Exposed to Python
@@ -98,9 +98,9 @@ public:
 	bool canConstruct(BuildingTypes eBuilding, bool bContinue = false,											// Exposed to Python
 			bool bTestVisible = false, bool bIgnoreCost = false,
 			bool bIgnoreTech = false) const; // K-Mod
-//Tholish UnbuildableBuildingDeletion START
+//doto-Tholish UnbuildableBuildingDeletion START
 	bool canKeep(BuildingTypes eBuilding) const;
-//Tholish UnbuildableBuildingDeletion END
+//doto-Tholish UnbuildableBuildingDeletion END
 	bool canCreate(ProjectTypes eProject, bool bContinue = false, bool bTestVisible = false) const;				// Exposed to Python
 	bool canMaintain(ProcessTypes eProcess, bool bContinue = false) const;										// Exposed to Python
 	bool canJoin() const;																						// Exposed to Python
@@ -198,7 +198,7 @@ public:
 	void conscript();																							// Exposed to Python
 /*************************************************************************************************/
 /** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
-/**                                                                                              */
+/** doto-                                                                                             */
 /** Original Author Moctezuma              Start                                                 */
 /*************************************************************************************************/
 	// ------ BEGIN InfluenceDrivenWar -------------------------------
@@ -215,12 +215,13 @@ public:
 	int getBonusYieldRateModifier(YieldTypes eIndex, BonusTypes eBonus) const;									// Exposed to Python
 
 	void processBonus(BonusTypes eBonus, int iChange);
-//prereqMust+tholish
+//doto-prereqMust+tholish
 	void processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false, bool checkKeep = true);
 	void UNprocessBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false);
-///prereqMust+tholish
-	void defuseBuilding(BuildingTypes eBuilding);
-	void activateBuilding(BuildingTypes eBuilding);
+///doto-prereqMust+tholish
+//older version code
+//	void defuseBuilding(BuildingTypes eBuilding);
+//	void activateBuilding(BuildingTypes eBuilding);
 	void processProcess(ProcessTypes eProcess, int iChange);
 	void processSpecialist(SpecialistTypes eSpecialist, int iChange);
 	void processVoteSource(VoteSourceTypes eVoteSource, bool bActive);
@@ -389,7 +390,7 @@ public:
 	inline int getPopulation() const { return m_iPopulation; }													// Exposed to Python
 	void setPopulation(int iNewValue);																			// Exposed to Python
 	void changePopulation(int iChange);		
-	/* Population Limit ModComp - Beginning */
+	/* doto-Population Limit ModComp - Beginning */
 	int getPopulationLimit() const;														// Exposed to Python
 	int getPopulationLimitChange() const;														// Exposed to Python
 /*	int getPopulationLimit() const;														// Exposed to Python
@@ -446,59 +447,62 @@ public:
 	int calculateNumCitiesMaintenance() const;																	// Exposed to Python
 	int calculateColonyMaintenance() const;																		// Exposed to Python
 	int calculateCorporationMaintenance() const;																// Exposed to Python
-	//DPII keldath<Maintenance Modifiers> 
+	//DOTO-DPII keldath<Maintenance Modifiers> 
 	int calculateHomeAreaMaintanance() const;																	// Exposed to Python
 	int calculateOtherAreaMaintanance() const;																	// Exposed to Python
 	int calculateConnectedMaintanance() const;																	// Exposed to Python
 	int calculateCoastalMaintanance() const;																	// Exposed to Python	
-	//DPII keldath<Maintenance Modifiers> 
+	//DOTO-DPII keldath<Maintenance Modifiers> 
 	/* <advc.104> Added an optional parameter to allow the computation of
 	   projected maintenance for cities yet to be conquered. */
 	int calculateDistanceMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;								// Exposed to Python
 	int calculateColonyMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;
 	int calculateNumCitiesMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;							// Exposed to Python									// Exposed to Python
-	//DPII keldath<Maintenance Modifiers> 
+	//DOTO-DPII keldath<Maintenance Modifiers> 
 	int calculateHomeAreaMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;								// Exposed to Python
 	int calculateOtherAreaMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;								// Exposed to Python
 	int calculateConnectedMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;								// Exposed to Python
 	int calculateCoastalMaintenanceTimes100(PlayerTypes eOwner = NO_PLAYER) const;								// Exposed to Python
-	//DPII keldath<Maintenance Modifiers> 
+	//DOTO-DPII keldath<Maintenance Modifiers> 
 	// </advc.104>
 	// <advc.004b> A projection for cities yet to be founded
 	static int calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
+	//DOTO-DPII keldath<Maintenance Modifiers> 
 			PlayerTypes eOwner, int iPopulation = -1, int iLocalDistance = 0);
+	//DOTO-DPII keldath<Maintenance Modifiers> 
 	static int calculateNumCitiesMaintenanceTimes100(CvPlot const& kCityPlot,
 			PlayerTypes eOwner, int iPopulation = -1, int iExtraCities = 0);
 	static int calculateColonyMaintenanceTimes100(CvPlot const& kCityPlot,
 			PlayerTypes eOwner, int iPopulation = -1, int iExtraCities = 0);
-	//seems i have to use different params than the calculateHomeAreaMaintenanceTimes100 same fn name above.
+	//DOTO-DPII seems i have to use different params than the calculateHomeAreaMaintenanceTimes100 same fn name above.
 	static int calculateHomeAreaMaintenanceTimes100(CvArea const& kArea, PlayerTypes eOwner, int iLocalHomeArea = 0, bool capitalcity = false);
 	static int calculateOtherAreaMaintenanceTimes100(CvArea const& kArea, PlayerTypes eOwner, int iLocalOtherArea = 0);
 	static int calculateConnectedMaintenanceTimes100(PlayerTypes eOwner, bool iCheckConnection,int iLocalConnected = 0);
 	static int calculateCoastalMaintenanceTimes100(int localCoastal, CvPlot const& kCityPlot, PlayerTypes eOwner,bool capitalcitynConn = false);
-	//DPII keldath< Maintenance Modifiers
+	//DOTO-DPII DPII keldath< Maintenance Modifiers
 	static int initialPopulation();
-	//DPII keldath< Maintenance Modifiers
+	//DOTO-DPII DPII keldath< Maintenance Modifiers
 	// </advc.004b>
 	int calculateCorporationMaintenanceTimes100(CorporationTypes eCorporation) const;							// Exposed to Python
 	int calculateCorporationMaintenanceTimes100() const;														// Exposed to Python
-	int calculateBaseMaintenanceTimes100() const;
+	int calculateBaseMaintenanceTimes100(
+			PlayerTypes eOwner = NO_PLAYER) const; // advc.ctr
 	int getMaintenanceModifier() const { return m_iMaintenanceModifier; }										// Exposed to Python
-//DPII < Maintenance Modifiers >
+//DOTO-DPII DPII < Maintenance Modifiers >
 	int getLocalDistanceMaintenanceModifier() const { return m_iLocalDistanceMaintenanceModifier; }		// Exposed to Python
 	int getLocalCoastalDistanceMaintenanceModifier() const { return m_iLocalCoastalDistanceMaintenanceModifier; }		// Exposed to Python
 	int getLocalConnectedCityMaintenanceModifier() const { return m_iLocalConnectedCityMaintenanceModifier; }   // Exposed to Python
 	int getLocalHomeAreaMaintenanceModifier() const { return m_iLocalHomeAreaMaintenanceModifier; }				// Exposed to Python
 	int getLocalOtherAreaMaintenanceModifier() const { return m_iLocalOtherAreaMaintenanceModifier; }			// Exposed to Python
-//DPII < Maintenance Modifiers >
+//DOTO-DPII DPII < Maintenance Modifiers >
 	void changeMaintenanceModifier(int iChange);
-//DPII < Maintenance Modifiers >
+//DOTO-DPII DPII < Maintenance Modifiers >
 	void changeLocalDistanceMaintenanceModifier(int iChange);
 	void changeLocalCoastalDistanceMaintenanceModifier(int iChange);
 	void changeLocalConnectedCityMaintenanceModifier(int iChange);
 	void changeLocalHomeAreaMaintenanceModifier(int iChange);
 	void changeLocalOtherAreaMaintenanceModifier(int iChange);
-//DPII < Maintenance Modifiers >
+//DOTO-DPII DPII < Maintenance Modifiers >
 	int getWarWearinessModifier() const { return m_iWarWearinessModifier; }										// Exposed to Python
 	void changeWarWearinessModifier(int iChange);
 	int getHurryAngerModifier() const { return m_iHurryAngerModifier; }											// Exposed to Python
@@ -582,12 +586,12 @@ public:
 	int getBonusBadHealth() const { return m_iBonusBadHealth; }													// Exposed to Python
 	void changeBonusGoodHealth(int iChange);
 	void changeBonusBadHealth(int iChange);
-    // < Civic Infos Plus Start >
+    // <DOTO-DPII  Civic Infos Plus Start >
     int getReligionGoodHealth() const;																	// Exposed to Python
 	int getReligionBadHealth() const;																	// Exposed to Python
 	int getReligionHealth(ReligionTypes eReligion) const;							// Exposed to Python
 	void updateReligionHealth();
-	// < Civic Infos Plus End   >
+	// <DOTO-DPII  Civic Infos Plus End   >
 
 	int getMilitaryHappiness() const;																			// Exposed to Python
 	int getMilitaryHappinessUnits() const { return m_iMilitaryHappinessUnits; }									// Exposed to Python
@@ -838,7 +842,7 @@ public:
 		return m_aiBonusYieldRateModifier.get(eIndex);
 	}
 	void changeBonusYieldRateModifier(YieldTypes eIndex, int iChange);
-	// < Civic Infos Plus Start >
+	// < DOTO-DPII Civic Infos Plus Start >
 //removed by f1 advc - keldath
 	int getStateReligionYieldRateModifier(YieldTypes eIndex) const;											// Exposed to Python
 	void changeStateReligionYieldRateModifier(YieldTypes eIndex, int iChange);
@@ -1081,11 +1085,11 @@ public:
 	{
 		return (getNumBonuses(eIndex) > 0);
 	}
-	//< Building Resource Converter Start >
+	//< DOTO-DPII Building Resource Converter Start >
 	//f1rpo 096 - added a var here to pass an param to avoid a loop - keldath
 	void changeNumBonuses(BonusTypes eBonus, int iChange,
        bool bUpdateBuildings = true);
-	//< Building Resource Converter End   >
+	//< DOTO-DPII Building Resource Converter End   >
 //	void changeNumBonuses(BonusTypes eIndex, int iChange);
 	int countUniqueBonuses() const; // advc.149
 	int getNumCorpProducedBonuses(BonusTypes eIndex) const
@@ -1094,15 +1098,15 @@ public:
 	}
 	bool isCorporationBonus(BonusTypes eBonus) const;
 	bool isActiveCorporation(CorporationTypes eCorporation) const;
-	//< Building Resource Converter Start >
+	//<DOTO-DPII  Building Resource Converter Start >
 	bool isBuildingBonus(BonusTypes eBonus) const; // f1rpo
 	bool isBuildingBonus(BuildingTypes eBuilding) const; // f1rpo
-	//< Building Resource Converter end >
-	// < Building Resource Converter Start >
+	//< DOTO-DPII Building Resource Converter end >
+	// <DOTO-DPII  Building Resource Converter Start >
 	void processBuildingBonuses();
 	int getBuildingOutputBonus(BonusTypes eIndex) const;														// Exposed to Python
 	protected: void resetBuildingOutputBonuses(); public:
-	// < Building Resource Converter End   >
+	// <DOTO-DPII  Building Resource Converter End   >
 	int getBuildingProduction(BuildingTypes eIndex) const															// Exposed to Python
 	{
 		return m_aiBuildingProduction.get(eIndex);
@@ -1267,8 +1271,7 @@ public:
 			bool bEndOfTurn = false); // advc.001x
 	void setNumRealBuildingTimed(BuildingTypes eIndex, int iNewValue, bool bFirst,
 			PlayerTypes eOriginalOwner, int iOriginalTime, /* advc.001x */ bool bEndOfTurn = false);
-
-	bool isValidBuildingLocation(BuildingTypes eIndex) const;
+	//bool isValidBuildingLocation(BuildingTypes eIndex) const; // advc: Replaced by CvPlot::canConstruct
 
 	int getNumFreeBuilding(BuildingTypes eIndex) const																// Exposed to Python
 	{
@@ -1300,7 +1303,8 @@ public:
 	// K-Mod. (the old version is still exposed to Python)
 	void pushOrder(OrderTypes eOrder, int iData1, int iData2 = -1, bool bSave = false,
 			bool bPop = false, int iPosition = 0, bool bForce = false);
-	void popOrder(int iNum, bool bFinish = false, bool bChoose = false,												// Exposed to Python
+	enum ChooseProductionPlayers { NONE_CHOOSE, HUMAN_CHOOSE, AI_CHOOSE, ALL_CHOOSE }; // advc.064d
+	void popOrder(int iNum, bool bFinish = false, ChooseProductionPlayers eChoose = NONE_CHOOSE,							// Exposed to Python
 			bool bEndOfTurn = true); // advc.001x
 	void startHeadOrder();
 	void stopHeadOrder();
@@ -1432,9 +1436,9 @@ protected:
 	int m_iGameTurnFounded;
 	int m_iGameTurnAcquired;
 	int m_iPopulation;
-	/* Population Limit ModComp - Beginning */
+	/* DOTO- Population Limit ModComp - Beginning */
 	int m_iPopulationLimitChange;
-	/* Population Limit ModComp - End */
+	/* DOTO Population Limit ModComp - End */
 	int m_iHighestPopulation;
 	int m_iWorkingPopulation;
 	int m_iSpecialistPopulation;
@@ -1449,13 +1453,13 @@ protected:
 	int m_iGovernmentCenterCount;
 	int m_iMaintenance;
 	int m_iMaintenanceModifier;
-	//DPII < Maintenance Modifiers >
+	//DOTO-DPII < Maintenance Modifiers >
 	int m_iLocalDistanceMaintenanceModifier;
 	int m_iLocalCoastalDistanceMaintenanceModifier;
 	int m_iLocalConnectedCityMaintenanceModifier;
 	int m_iLocalHomeAreaMaintenanceModifier;
 	int m_iLocalOtherAreaMaintenanceModifier;
-	//DPII < Maintenance Modifiers >
+	//DOTO-DPII < Maintenance Modifiers >
 	int m_iWarWearinessModifier;
 	int m_iHurryAngerModifier;
 	int m_iHealRate;
@@ -1491,10 +1495,10 @@ protected:
 /*************************************************************************************************/
 	int m_iBuildingGoodHealth;
 	int m_iBuildingBadHealth;
-	// < Civic Infos Plus Start >
+	// <DOTO- Civic Infos Plus Start >
 	int m_iReligionGoodHealth;
 	int m_iReligionBadHealth;
-	// < Civic Infos Plus Start >
+	// < DOTO- Civic Infos Plus Start >
 	int m_iPowerGoodHealth;
 	int m_iPowerBadHealth;
 	int m_iBonusGoodHealth;
@@ -1578,7 +1582,7 @@ protected:
 	EnumMap<YieldTypes,int> m_aiYieldRateModifier;
 	EnumMap<YieldTypes,int> m_aiPowerYieldRateModifier;
 	EnumMap<YieldTypes,int> m_aiBonusYieldRateModifier;
-    // < Civic Infos Plus Start >
+    // <DOTO- Civic Infos Plus Start >
 	//removed by f1 advc - keldath
 	//int* m_aiBuildingYieldChange;
 	//int* m_aiStateReligionYieldRateModifier;
@@ -1586,7 +1590,7 @@ protected:
 	EnumMap<YieldTypes,int> m_aiBuildingYieldChange;
 	EnumMap<YieldTypes,int> m_aiStateReligionYieldRateModifier;
 	EnumMap<YieldTypes,int> m_aiNonStateReligionYieldRateModifier;
-	// < Civic Infos Plus End >
+	// <DOTO- Civic Infos Plus End >
 	EnumMap<YieldTypes,int> m_aiTradeYield;
 	EnumMap<YieldTypes,int> m_aiCorporationYield;
 	EnumMap<YieldTypes,int> m_aiExtraSpecialistYield;
@@ -1595,7 +1599,7 @@ protected:
 	EnumMap<CommerceTypes,int> m_aiBuildingCommerce;
 	EnumMap<CommerceTypes,int> m_aiSpecialistCommerce;
 	EnumMap<CommerceTypes,int> m_aiReligionCommerce;
-	// < Civic Infos Plus Start >
+	// <DOTO- Civic Infos Plus Start >
 	//removed by f1 advc - keldath
 	//int* m_aiBuildingCommerceChange;
 	//int* m_aiStateReligionCommerceRateModifier;
@@ -1603,7 +1607,7 @@ protected:
 	EnumMap<CommerceTypes,int> m_aiBuildingCommerceChange;	
 	EnumMap<CommerceTypes,int> m_aiStateReligionCommerceRateModifier;	
 	EnumMap<CommerceTypes,int> m_aiNonStateReligionCommerceRateModifier;	
-	// < Civic Infos Plus End   >
+	// <DOTO- Civic Infos Plus End   >
 /*************************************************************************************************/
 /**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 /**																								**/
@@ -1624,16 +1628,16 @@ protected:
 	EnumMap<BonusTypes,int> m_aiNoBonus;
 	EnumMap<BonusTypes,int> m_aiFreeBonus;
 	EnumMap<BonusTypes,int> m_aiNumBonuses;
-	// < Building Resource Converter Start >
+	// <DOTO- Building Resource Converter Start >
 	//int* m_paiBuildingOutputBonuses;
 	EnumMap<BonusTypes,int> m_paiBuildingOutputBonuses;
-	// < Building Resource Converter End   >
+	// <DOTO- Building Resource Converter End   >
 	EnumMap<BonusTypes,int> m_aiNumCorpProducedBonuses;
 	EnumMap<ProjectTypes,int> m_aiProjectProduction;
 	EnumMap<BuildingTypes,int> m_aiBuildingProduction;
 	EnumMap<BuildingTypes,int> m_aiBuildingProductionTime;
 	EnumMap<BuildingTypes,PlayerTypes> m_aeBuildingOriginalOwner;
-//prereqMust+tholish - this enum array will allow to keep tarck of shich buildings
+//DOTO-prereqMust+tholish - this enum array will allow to keep tarck of shich buildings
 //were set to inactive
 	EnumMapDefault<BuildingTypes,bool,true> m_aiBuildingeActive;
 	EnumMapDefault<BuildingTypes,int,MIN_INT> m_aiBuildingOriginalTime;
@@ -1694,8 +1698,11 @@ protected:
 	void doGrowth();
 	void doCulture();
 	bool doCheckProduction();
-	void upgradeProduction(); // advc.064d
-	bool checkCanContinueProduction(bool bCheckUpgrade = true); // advc.064d
+	// <advc.064d>
+	void upgradeProduction();
+	bool checkCanContinueProduction(bool bCheckUpgrade = true,
+			ChooseProductionPlayers eChoose = ALL_CHOOSE);
+	// </advc.064d>
 	void doProduction(bool bAllowNoProduction);
 	void doDecay();
 	void doReligion();

@@ -337,7 +337,7 @@ void CvMap::updateCenterUnit()  // advc: some style changes
 	{
 		CvUnit const& kLoopUnit = *::getUnit(pSelectionNode->m_data);
 		//if (kLoopUnit.getDomainType() == DOMAIN_AIR)
-//rangedattack-keldath
+//DOTO-rangedattack-keldath
 		if (std::max(kLoopUnit.airRange(),kLoopUnit.rangedStrike()) > 0) // advc.rstr
 			iRange = std::max(std::max(iRange, kLoopUnit.airRange()),kLoopUnit.rangedStrike());
 		DomainTypes eLoopDomain = kLoopUnit.getDomainType();
@@ -888,7 +888,9 @@ CvWString CvMap::getNonDefaultCustomMapOptionDesc(int iOption) const
 	CvPythonCaller const& py = *GC.getPythonCaller();
 	CvString szMapScriptNameNarrow(GC.getInitCore().getMapScriptName());
 	CustomMapOptionTypes eOptionValue = getCustomMapOption(iOption);
-	if (eOptionValue == py.customMapOptionDefault(szMapScriptNameNarrow.c_str(), iOption))
+	int iDefaultValue = py.customMapOptionDefault(szMapScriptNameNarrow.c_str(), iOption);
+	// Negative value means that default couldn't be loaded (script may have been removed)
+	if (iDefaultValue < 0 || eOptionValue == iDefaultValue)
 		return L"";
 	return py.customMapOptionDescription(szMapScriptNameNarrow.c_str(), iOption, eOptionValue);
 }

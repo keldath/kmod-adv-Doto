@@ -1510,8 +1510,10 @@ void CvCity::verifyProduction()
 	if(isProduction()) // Only want to address invalid orders here; no production is OK.
 	{
 		/*  This doesn't check all preconditions, just the ones that could change
-			throughout a (human) turn. */
-		checkCanContinueProduction();
+			throughout a (human) turn. Don't want the AI to choose a new order
+			b/c it might be another civ's turn, and, in that case,
+			CvPlayerAI::AI_chooseProduction isn't guaranteed to work correctly. */
+		checkCanContinueProduction(true, HUMAN_CHOOSE);
 	}
 }
 
@@ -1673,7 +1675,7 @@ bool CvCity::canConstruct(BuildingTypes eBuilding, bool bContinue,
 			}
 		}
 	}
-	if (!isValidBuildingLocation(eBuilding))
+	if (!getPlot().canConstruct(eBuilding))
 		return false;
 
 	if (kBuilding.isGovernmentCenter() && isGovernmentCenter())
@@ -3196,7 +3198,7 @@ void CvCity::processBonus(BonusTypes eBonus, int iChange)
 	}
 }
 
-
+//DOTO -ACTIVE_BUILDINGS-keldath extended building
 void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete, bool checkKeep)
 {
 	// <advc>
@@ -5310,6 +5312,7 @@ int CvCity::calculateDistanceMaintenance() const
 int CvCity::calculateDistanceMaintenanceTimes100(PlayerTypes eOwner) const
 {
 	// advc.004b: BtS code moved into new static function
+//doto-dpii
 	int iLocalDistance = getLocalDistanceMaintenanceModifier();
 	return CvCity::calculateDistanceMaintenanceTimes100(getPlot(),
 			eOwner == NO_PLAYER ? getOwner() : eOwner, getPopulation(), iLocalDistance);
@@ -5406,7 +5409,8 @@ int CvCity::calculateCorporationMaintenanceTimes100(CorporationTypes eCorporatio
 	int iMaintenance = 0;
 	FOR_EACH_ENUM(Commerce)
 	{
-		iMaintenance += 100 * GC.getInfo(eCorporation).getHeadquarterCommerce(eLoopCommerce);
+		iMaintenance += 100 * GC.getInfo(eCorporation).
+				getHeadquarterCommerce(eLoopCommerce);
 	}
 
 	int iNumBonuses = 0;
@@ -5418,17 +5422,19 @@ int CvCity::calculateCorporationMaintenanceTimes100(CorporationTypes eCorporatio
 	}
 
 	int iBonusMaintenance = GC.getInfo(eCorporation).getMaintenance() * iNumBonuses;
-	iBonusMaintenance *= GC.getInfo(GC.getMap().getWorldSize()).getCorporationMaintenancePercent();
+	iBonusMaintenance *= GC.getInfo(GC.getMap().getWorldSize()).
+			getCorporationMaintenancePercent();
 	iBonusMaintenance /= 100;
 	iMaintenance += iBonusMaintenance;
 
-	iMaintenance *= (getPopulation() + 17);
+	iMaintenance *= getPopulation() + 17;
 	iMaintenance /= 18;
 
 	iMaintenance *= GC.getInfo(getHandicapType()).getCorporationMaintenancePercent();
 	iMaintenance /= 100;
 
-	iMaintenance *= std::max(0, (GET_PLAYER(getOwner()).getCorporationMaintenanceModifier() + 100));
+	iMaintenance *= std::max(0, GET_PLAYER(getOwner()).
+			getCorporationMaintenanceModifier() + 100);
 	iMaintenance /= 100;
 
 	int iInflation = GET_PLAYER(getOwner()).calculateInflationRate() + 100;
@@ -5444,12 +5450,24 @@ int CvCity::calculateCorporationMaintenanceTimes100(CorporationTypes eCorporatio
 	return iMaintenance;
 }
 
-int CvCity::calculateBaseMaintenanceTimes100() const
+
+int CvCity::calculateBaseMaintenanceTimes100(
+	/* <advc.ctr> */ PlayerTypes eOwner) const
 {
-	return (calculateDistanceMaintenanceTimes100() + calculateNumCitiesMaintenanceTimes100() +
-			calculateColonyMaintenanceTimes100() + calculateCorporationMaintenanceTimes100() +
-			calculateHomeAreaMaintenanceTimes100() + calculateOtherAreaMaintenanceTimes100() +
-			calculateConnectedMaintenanceTimes100() + calculateCoastalMaintenanceTimes100());
+	if (eOwner == NO_PLAYER)
+		eOwner = getOwner(); // </advc.ctr>
+	int iR = calculateDistanceMaintenanceTimes100(eOwner) +
+			calculateNumCitiesMaintenanceTimes100(eOwner) +
+//DOTO-dpii
+			calculateColonyMaintenanceTimes100(eOwner) +
+			calculateHomeAreaMaintenanceTimes100(eOwner) + 
+			calculateOtherAreaMaintenanceTimes100(eOwner) +
+			calculateConnectedMaintenanceTimes100(eOwner) + 
+			calculateCoastalMaintenanceTimes100(eOwner);
+	// advc.ctr: Anticipating corporation maintenance gets too complicated
+	if (eOwner == getOwner())
+		iR += calculateCorporationMaintenanceTimes100();
+	return iR;
 }
 
 
@@ -5517,20 +5535,20 @@ void CvCity::changeWarWearinessModifier(int iChange)
 
 void CvCity::changeHurryAngerModifier(int iChange)
 {
-	if (iChange != 0)
+	if (iChange == 0)
+		return;
+
+	int iRatio = 0;
+	if (m_iHurryAngerTimer > 0)
 	{
-		int iRatio = 0;
-		if (m_iHurryAngerTimer > 0)
-		{
-			iRatio = (100 * (m_iHurryAngerTimer - 1)) /
+		iRatio = (100 * (m_iHurryAngerTimer - 1)) /
 				std::max(1, 100 + getHurryAngerModifier());
-		}
-		m_iHurryAngerModifier += iChange;
-		if (m_iHurryAngerTimer > 0)
-		{
-			m_iHurryAngerTimer = (iRatio *
-					std::max(1, 100 + getHurryAngerModifier())) / 100 + 1;
-		}
+	}
+	m_iHurryAngerModifier += iChange;
+	if (m_iHurryAngerTimer > 0)
+	{
+		m_iHurryAngerTimer = (iRatio *
+				std::max(1, 100 + getHurryAngerModifier())) / 100 + 1;
 	}
 }
 
@@ -11110,7 +11128,8 @@ void CvCity::pushOrder(OrderTypes eOrder, int iData1, int iData2, bool bSave,
 }
 
 
-void CvCity::popOrder(int iNum, bool bFinish, bool bChoose,  // advc: style changes
+void CvCity::popOrder(int iNum, bool bFinish,
+	ChooseProductionPlayers eChoose, // advc.064d (was bool bChoose)
 	bool bEndOfTurn) // advc.001x
 {
 	wchar szBuffer[1024];
@@ -11412,7 +11431,10 @@ void CvCity::popOrder(int iNum, bool bFinish, bool bChoose,  // advc: style chan
 	}
 
 	bool bMessage = false;
-	if (bChoose && getOrderQueueLength() == 0)
+	if (getOrderQueueLength() == 0 &&
+		// <advc.064d>
+		(eChoose == ALL_CHOOSE ||
+		(eChoose != NONE_CHOOSE && (eChoose == HUMAN_CHOOSE) == isHuman()))) // </advc.064d>
 	{
 		if (!isHuman() || isProductionAutomated())
 			AI().AI_chooseProduction();
@@ -12005,7 +12027,8 @@ void CvCity::upgradeProduction()
 }
 
 // advc.064d: Cut from doCheckProduction
-bool CvCity::checkCanContinueProduction(bool bCheckUpgrade)
+bool CvCity::checkCanContinueProduction(bool bCheckUpgrade,
+	ChooseProductionPlayers eChoose)
 {
 	bool r = true;
 	for (int i = getOrderQueueLength() - 1; i >= 0; i--)
@@ -12016,9 +12039,9 @@ bool CvCity::checkCanContinueProduction(bool bCheckUpgrade)
 			if (bCheckUpgrade)
 			{
 				upgradeProduction();
-				return checkCanContinueProduction(false);
+				return checkCanContinueProduction(false, eChoose);
 			}
-			popOrder(i, false, true);
+			popOrder(i, false, eChoose);
 			r = false;
 		}
 	}  // <advc.004x> Relaunch choose-production popups
@@ -12049,12 +12072,12 @@ void CvCity::doProduction(bool bAllowNoProduction)
 	{
 		// K-Mod. End the culture process if our borders have expanded.
 		// (This function is called after "doResearch" etc.)
-		const OrderData& order = headOrderQueueNode()->m_data;
-		if (order.iData2 > 0 && GC.getInfo((ProcessTypes)order.iData1).
+		OrderData const& kOrder = headOrderQueueNode()->m_data;
+		if (kOrder.iData2 > 0 && GC.getInfo((ProcessTypes)kOrder.iData1).
 			getProductionToCommerceModifier(COMMERCE_CULTURE) > 0 &&
-			getCultureLevel() > order.iData2)
+			getCultureLevel() > kOrder.iData2)
 		{
-			popOrder(0, false, true);
+			popOrder(0, false, ALL_CHOOSE);
 		}
 		// K-Mod end
 		return;
@@ -12073,7 +12096,7 @@ void CvCity::doProduction(bool bAllowNoProduction)
 		changeFeatureProduction(-iFeatureProductionUsed); // advc.064b
 
 		if (getProduction() >= getProductionNeeded())
-			popOrder(0, true, true);
+			popOrder(0, true, ALL_CHOOSE);
 	}
 	else
 	{
@@ -12380,30 +12403,30 @@ void CvCity::doMeltdown()
 	if (GC.getPythonCaller()->doMeltdown(*this))
 		return;
 
+	bool bMessage = false; // advc
 	CvCivilization const& kCiv = getCivilization(); // advc.003w
 	for (int i = 0; i < kCiv.getNumBuildings(); i++)
 	{
 		BuildingTypes eDangerBuilding = kCiv.buildingAt(i);
+		CvBuildingInfo const& kDangerBuilding = GC.getInfo(eDangerBuilding);
 		// <kekm.5> (advc: Restructured the Kek-Mod code the code a bit)
-		int iOddsDivisor = GC.getInfo(eDangerBuilding).getNukeExplosionRand();
+		int const iOddsDivisor = kDangerBuilding.getNukeExplosionRand();
 		if (iOddsDivisor <= 0)
 			continue; // Save some time
 		if (getNumActiveBuilding(eDangerBuilding) == 0) // was getNumBuilding
 			continue;
-		CvBuildingInfo const& kDangerBuilding = GC.getInfo(eDangerBuilding);
-		if (kDangerBuilding.getNukeExplosionRand() == 0 || isAreaCleanPower() ||
+		if (iOddsDivisor <= 0 || isAreaCleanPower() ||
 			(!kDangerBuilding.isPower() && kDangerBuilding.getPowerBonus() == NO_BONUS) ||
 			(kDangerBuilding.getPowerBonus() != NO_BONUS &&
 			!hasBonus(kDangerBuilding.getPowerBonus())))
 		{
 			continue;
 		} // </kekm.5>
-		// <advc> Roll the dice before checking for a safe power source - faster
-		// Adjust odds to game speed:
-		double pr = 1.0 / (iOddsDivisor * GC.getGame().gameSpeedFactor());
-		//if (GC.getGame().getSorenRandNum(GC.getInfo((BuildingTypes)iI).getNukeExplosionRand(), "Meltdown!!!") == 0)
-		if (!::bernoulliSuccess(pr, "Meltdown"))
-			continue; // </advc>
+		// advc.opt: Roll the dice before checking for a safe power source.
+		// advc.652: Adjust to game speed
+		scaled rNukePr = 1 / (iOddsDivisor * GC.getGame().gameSpeedMultiplier());
+		if (!rNukePr.bernoulliSuccess(GC.getGame().getSRand(), "Meltdown"))
+			continue;
 		// <kekm.5>
 		bool bUnused = false;
 		// Check for hydroplant (or any modded plant with less severe drawbacks)
@@ -12454,15 +12477,31 @@ void CvCity::doMeltdown()
 
 		if (getNumRealBuilding(eDangerBuilding) > 0)
 			setNumRealBuilding(eDangerBuilding, 0);
-
 		getPlot().nukeExplosion(1, /* K-Mod: */ 0, false);
-
-		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_MELTDOWN_CITY", getNameKey()));
-		gDLL->UI().addMessage(getOwner(), false, -1, szBuffer, getPlot(),
-				"AS2D_MELTDOWN", MESSAGE_TYPE_MINOR_EVENT, ARTFILEMGR.getInterfaceArtPath(
-				"INTERFACE_UNHEALTHY_PERSON"), GC.getColorType("RED"));
+		bMessage = true;
 		break;
 	}
+	if (!bMessage)
+		return;
+	CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_MELTDOWN_CITY", getNameKey()));
+	// advc.106: Notify all players
+	for (PlayerIter<MAJOR_CIV> it; it.hasNext(); ++it)
+	{
+		CvPlayer const& kObs = *it;
+		if (isRevealed(kObs.getTeam()) /* advc.127: */ || kObs.isSpectator())
+		{
+			bool bAffected = kObs.getID() == getOwner();
+			gDLL->UI().addMessage(kObs.getID(), false, -1, szBuffer, getPlot(),
+					"AS2D_MELTDOWN",
+					// advc.106: Was MINOR (and only the owner was notified)
+					bAffected ? MESSAGE_TYPE_MAJOR_EVENT : MESSAGE_TYPE_MINOR_EVENT,
+					ARTFILEMGR.getInterfaceArtPath("INTERFACE_UNHEALTHY_PERSON"),
+					GC.getColorType(bAffected ? "RED" : "BUILDING_TEXT"));
+		}
+	}
+	// <advc.106> Replay msg - or maybe not. Doesn't really affect the cause of the game.
+	/*GC.getGame().addReplayMessage(REPLAY_MESSAGE_MAJOR_EVENT, getOwner(), szBuffer,
+			getX(), getY(), GET_PLAYER(getOwner()).getPlayerTextColor());*/ // </advc.106>
 }
 
 
@@ -13420,32 +13459,6 @@ NiColorA CvCity::getBarBackgroundColor() const
 bool CvCity::isStarCity() const
 {
 	return isCapital();
-}
-
-
-bool CvCity::isValidBuildingLocation(BuildingTypes eBuilding) const
-{
-	// if both the river and water flags are set, we require one of the two conditions, not both
-	if (GC.getInfo(eBuilding).isWater())
-	{
-		if (!GC.getInfo(eBuilding).isRiver() || !getPlot().isRiver())
-		{
-			if (!isCoastal(GC.getInfo(eBuilding).getMinAreaSize()))
-				return false;
-		}
-	}
-	else
-	{
-		if (getArea().getNumTiles() < GC.getInfo(eBuilding).getMinAreaSize())
-			return false;
-
-		if (GC.getInfo(eBuilding).isRiver())
-		{
-			if (!getPlot().isRiver())
-				return false;
-		}
-	}
-	return true;
 }
 
 
@@ -14454,7 +14467,12 @@ void CvCity::cheat(bool bCtrl, bool bAlt, bool bShift)
 			changeCulture(getOwner(), 10, true, true);
 		else if (bShift)
 			changePopulation(1);
-		else popOrder(0, true, /* advc.001x: */ false, false);
+		else
+		{
+			popOrder(0, true,
+					NONE_CHOOSE, // advc.001x
+					false);
+		}
 	}
 }
 
@@ -14498,6 +14516,7 @@ int CvCity::initialPopulation()
 
 // advc.004b, advc.104: Parameters added
 int CvCity::calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
+//DOTO-dpii
 	PlayerTypes eOwner, int iPopulation, int iLocalDistance)
 {
 	if(iPopulation < 0)
@@ -14524,8 +14543,7 @@ int CvCity::calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
 		//DOTO- dpii 
 		iTempMaintenance *= std::max(0, iLocalDistance + 100);
 		iTempMaintenance /= 100;
-		//DOTO- dpii 		
-
+		//DOTO- dpii 
 		iTempMaintenance *= std::max(0, (GET_PLAYER(eOwner).getDistanceMaintenanceModifier() + 100));
 		iTempMaintenance /= 100;
 
@@ -14792,7 +14810,7 @@ void CvCity::failProduction(int iOrderData, int iInvestedProduction, bool bProje
 		if (od != NULL && od->eOrderType == eOrderType && od->iData1 == iOrderData)
 		{
 			FAssert(!canContinueProduction(*od));
-			popOrder(i, false, true);
+			popOrder(i, false, HUMAN_CHOOSE);
 		}
 	}
 	int iGoldPercent = failGoldPercent(eOrderType);
@@ -15004,7 +15022,7 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 		}
 	}
 
-	if (!isValidBuildingLocation(eBuilding))
+	if (!getPlot().canConstruct(eBuilding))
 	{
 		return false;
 	}
@@ -15093,6 +15111,8 @@ return true;
 }
 //Tholish UnbuildableBuildingDeletion END
 //prereqMust+tholish
+//old version
+/*
 void CvCity::defuseBuilding(BuildingTypes eBuilding)
 {
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
@@ -15130,7 +15150,7 @@ void CvCity::activateBuilding(BuildingTypes eBuilding)
 		}
 	}
 }
-
+*/
 void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsolete)
 {
 	// <advc>

@@ -2080,9 +2080,9 @@ bool CvBuildingClassInfo::readPass3()
 }
 
 CvSpecialBuildingInfo::CvSpecialBuildingInfo() :
-m_iObsoleteTech(NO_TECH),
-m_iTechPrereq(NO_TECH),
-m_iTechPrereqAnyone(NO_TECH),
+m_eObsoleteTech(NO_TECH),
+m_eTechPrereq(NO_TECH),
+m_eTechPrereqAnyone(NO_TECH),
 m_bValid(false),
 m_piProductionTraits(NULL)
 {}
@@ -2090,26 +2090,6 @@ m_piProductionTraits(NULL)
 CvSpecialBuildingInfo::~CvSpecialBuildingInfo()
 {
 	SAFE_DELETE_ARRAY(m_piProductionTraits);
-}
-
-int CvSpecialBuildingInfo::getObsoleteTech() const
-{
-	return m_iObsoleteTech;
-}
-
-int CvSpecialBuildingInfo::getTechPrereq() const
-{
-	return m_iTechPrereq;
-}
-
-int CvSpecialBuildingInfo::getTechPrereqAnyone() const
-{
-	return m_iTechPrereqAnyone;
-}
-
-bool CvSpecialBuildingInfo::isValid() const
-{
-	return m_bValid;
 }
 
 int CvSpecialBuildingInfo::getProductionTraits(int i) const
@@ -2124,9 +2104,9 @@ bool CvSpecialBuildingInfo::read(CvXMLLoadUtility* pXML)
 	if (!CvInfoBase::read(pXML))
 		return false;
 
-	pXML->SetInfoIDFromChildXmlVal(m_iObsoleteTech, "ObsoleteTech");
-	pXML->SetInfoIDFromChildXmlVal(m_iTechPrereq, "TechPrereq");
-	pXML->SetInfoIDFromChildXmlVal(m_iTechPrereqAnyone, "TechPrereqAnyone");
+	pXML->SetInfoIDFromChildXmlVal((int&)m_eObsoleteTech, "ObsoleteTech");
+	pXML->SetInfoIDFromChildXmlVal((int&)m_eTechPrereq, "TechPrereq");
+	pXML->SetInfoIDFromChildXmlVal((int&)m_eTechPrereqAnyone, "TechPrereqAnyone");
 
 	pXML->GetChildXmlValByName(&m_bValid, "bValid");
 

@@ -156,10 +156,10 @@ void CvTeam::reset(TeamTypes eID, bool bConstructorCall)
 	m_aiTechCount.reset();
 	m_aiTerrainTradeCount.reset();
 	m_aiVictoryCountdown.reset();
+	m_aiHasMetTurn.reset(); // advc.091
 	m_aaiImprovementYieldChange.reset();
 	m_abAtWar.reset();
 	m_abJustDeclaredWar.reset(); // advc.162
-	m_abHasMet.reset();
 	m_abHasSeen.reset(); // K-Mod
 	m_abPermanentWarPeace.reset();
 	m_abOpenBorders.reset();
@@ -180,7 +180,7 @@ void CvTeam::reset(TeamTypes eID, bool bConstructorCall)
 			kLoopTeam.m_aiEspionagePointsAgainstTeam.reset(getID());
 			kLoopTeam.m_aiCounterespionageTurnsLeftAgainstTeam.reset(getID());
 			kLoopTeam.m_aiCounterespionageModAgainstTeam.reset(getID());
-			kLoopTeam.m_abHasMet.reset(getID());
+			kLoopTeam.m_aiHasMetTurn.reset(getID()); // advc.091
 			kLoopTeam.m_abHasSeen.reset(getID()); // K-Mod
 			kLoopTeam.m_abAtWar.reset(getID());
 			kLoopTeam.m_abJustDeclaredWar.reset(getID()); // advc.162
@@ -2819,18 +2819,23 @@ void CvTeam::changeExtraMoves(DomainTypes eIndex, int iChange)
 }
 
 
-void CvTeam::makeHasMet(TeamTypes eIndex, bool bNewDiplo,
+void CvTeam::makeHasMet(TeamTypes eOther, bool bNewDiplo,
 	FirstContactData* pData) // advc.071
 {
-	if(isHasMet(eIndex))
+	if(isHasMet(eOther))
 		return;
 
-	makeHasSeen(eIndex); // K-mod
-	m_abHasMet.set(eIndex, true);
-
+	makeHasSeen(eOther); // K-Mod
+	//m_abHasMet.set(eOther, true);
+	// <advc.091>
+	{
+		int iGameTurn = GC.getGame().getGameTurn();
+		FAssert(iGameTurn >= 0);
+		m_aiHasMetTurn.set(eOther, iGameTurn);
+	} // </advc.091>
 	updateTechShare();
 
-	/*if(GET_TEAM(eIndex).isHuman()) {
+	/*if(GET_TEAM(eOther).isHuman()) {
 		for (iI = 0; iI < MAX_PLAYERS; iI++) {
 			if (GET_PLAYER((PlayerTypes)iI).isAlive()) {
 				if (GET_PLAYER((PlayerTypes)iI).getTeam() == getID()) {
@@ -2843,15 +2848,15 @@ void CvTeam::makeHasMet(TeamTypes eIndex, bool bNewDiplo,
 	//if (isAVassal()) ...  // advc.001: Vassal/ master meetings moved to CvTeam::meet
 
 	// report event to Python, along with some other key state
-	CvEventReporter::getInstance().firstContact(getID(), eIndex);
+	CvEventReporter::getInstance().firstContact(getID(), eOther);
 	// <advc.071> ^Moved EventReporter call up // advc.001n:
-	if(eIndex == getID() || isBarbarian() || GET_TEAM(eIndex).isBarbarian())
+	if(eOther == getID() || isBarbarian() || GET_TEAM(eOther).isBarbarian())
 		return; // </advc.071>
 
 	// K-Mod: Initialize attitude cache for players on our team towards player's on their team.
 	// advc.001: Too early for that. Moved to caller (CvTeam::meet).
 
-	if (getID() == GC.getGame().getActiveTeam() || eIndex == GC.getGame().getActiveTeam())
+	if (getID() == GC.getGame().getActiveTeam() || eOther == GC.getGame().getActiveTeam())
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
 	// <advc.071>
 	bool bShowMessage = (isHuman() && pData != NULL);
@@ -2868,13 +2873,13 @@ void CvTeam::makeHasMet(TeamTypes eIndex, bool bNewDiplo,
 	} // </advc.071>
 	if (GC.getGame().isOption(GAMEOPTION_ALWAYS_WAR))
 	{
-		if (isHuman() && getID() != eIndex)
-			declareWar(eIndex, false, NO_WARPLAN);
+		if (isHuman() && getID() != eOther)
+			declareWar(eOther, false, NO_WARPLAN);
 	}  // advc: reduce indentation in else branch
 	else if (GC.getGame().isFinalInitialized() && !gDLL->GetWorldBuilderMode() &&
-		bNewDiplo && !isHuman() && !isAtWar(eIndex))
+		bNewDiplo && !isHuman() && !isAtWar(eOther))
 	{
-		for (PlayerIter<HUMAN,MEMBER_OF> it(eIndex); it.hasNext(); ++it)
+		for (PlayerIter<HUMAN,MEMBER_OF> it(eOther); it.hasNext(); ++it)
 		{
 			CvPlayer const& kMember = *it;
 			if (GET_PLAYER(getLeaderID()).canContact(kMember.getID()))
@@ -2898,27 +2903,27 @@ void CvTeam::makeHasMet(TeamTypes eIndex, bool bNewDiplo,
 		CvUnit const* pUnitMet = NULL;
 		CvPlot const* pAt = NULL;
 		PlayerTypes ePlayerMet = NO_PLAYER;
-		if (pUnit1 != NULL && pUnit1->getTeam() == eIndex)
+		if (pUnit1 != NULL && pUnit1->getTeam() == eOther)
 		{
 			ePlayerMet = pUnit1->getOwner();
 			if (pUnit1->getPlot().isVisible(getID()))
 				pUnitMet = pUnit1;
 		}
-		if (pUnit2 != NULL && pUnit2->getTeam() == eIndex)
+		if (pUnit2 != NULL && pUnit2->getTeam() == eOther)
 		{
 			if (ePlayerMet == NO_PLAYER)
 				ePlayerMet = pUnit2->getOwner();
 			if (pUnit2->getPlot().isVisible(getID()))
 				pUnitMet = pUnit2;
 		}
-		if (pAt1 != NULL && pAt1->isOwned() && pAt1->getTeam() == eIndex)
+		if (pAt1 != NULL && pAt1->isOwned() && pAt1->getTeam() == eOther)
 		{
 			if (pAt1->isVisible(getID()))
 				pAt = pAt1;
 			if (ePlayerMet == NO_PLAYER)
 				ePlayerMet = pAt1->getOwner();
 		}
-		if (pAt2 != NULL && pAt2->isOwned() && pAt2->getTeam() == eIndex)
+		if (pAt2 != NULL && pAt2->isOwned() && pAt2->getTeam() == eOther)
 		{
 			if (pAt2->isVisible(getID()))
 				pAt = pAt2;
@@ -2926,7 +2931,7 @@ void CvTeam::makeHasMet(TeamTypes eIndex, bool bNewDiplo,
 				ePlayerMet = pAt2->getOwner();
 		}
 		if (ePlayerMet == NO_PLAYER)
-			ePlayerMet = GET_TEAM(eIndex).getLeaderID();
+			ePlayerMet = GET_TEAM(eOther).getLeaderID();
 		if (pUnitMet != NULL && pUnitMet->getPlot().isVisible(getID()))
 			pAt = pUnitMet->plot();
 		if (pAt == NULL) // We can't see any of their tiles or units, but they see ours.
@@ -3231,7 +3236,7 @@ int CvTeam::turnsOfForcedPeaceRemaining(TeamTypes eOther) const
 void CvTeam::setVassal(TeamTypes eMaster, bool bNewValue, bool bCapitulated)
 {
 	FAssertMsg(!bNewValue || !GET_TEAM(eMaster).isAVassal(), "can't become a vassal of a vassal");
-	bool bWasCapitulated = isCapitulated(); // advc.130v
+	bool const bWasCapitulated = isCapitulated(); // advc.130v
 	/*  <advc> If this function is used for turning capitulated into
 		voluntary vassals at some point, then the code for processing this change
 		will have to be placed before this clause, or will also have to check if
@@ -3316,6 +3321,9 @@ void CvTeam::setVassal(TeamTypes eMaster, bool bNewValue, bool bCapitulated)
 			kLoopPlot.updateCulture(true, false);
 	}
 
+	/*	advc.064d (note): m_bCapitulated hasn't been set yet. If the
+		plot group update causes an AI city to choose new production
+		immediately, there could be trouble. I don't think that can happen though. */
 	GC.getGame().updatePlotGroups();
 
 	if (isVassal(eMaster))
@@ -4353,11 +4361,11 @@ CvWString const CvTeam::tradeItemString(TradeableItems eItem, int iData, TeamTyp
 void CvTeam::announceTechToPlayers(TechTypes eIndex, /* advc.156: */ PlayerTypes eDiscoverPlayer,
 	bool bPartial)
 {
-	CvGame const& g = GC.getGame();
-	bool bSound = ((g.isNetworkMultiPlayer() ||
+	CvGame const& kGame = GC.getGame();
+	bool bSound = ((kGame.isNetworkMultiPlayer() ||
 			/*  advc.156: I think HotSeat doesn't play sounds along with messages,
 				but let's try. */
-			g.isHotSeat() ||
+			kGame.isHotSeat() ||
 			gDLL->UI().noTechSplash()) && !bPartial);
 	for (MemberIter it(getID()); it.hasNext(); ++it)
 	{
@@ -4892,11 +4900,15 @@ int CvTeam::getEspionagePointsAgainstTeam(TeamTypes eIndex) const
 
 void CvTeam::setEspionagePointsAgainstTeam(TeamTypes eIndex, int iValue)
 {
+	PROFILE_FUNC(); // advc.test: To be profiled
 	if (iValue != getEspionagePointsAgainstTeam(eIndex))
 	{
 		m_aiEspionagePointsAgainstTeam.set(eIndex, iValue);
 		verifySpyUnitsValidPlot();
 		GET_TEAM(eIndex).verifySpyUnitsValidPlot();
+		// <advc.091>
+		for (MemberIter itOurMember(getID()); itOurMember.hasNext(); ++itOurMember)
+			itOurMember->updateEverSeenDemographics(eIndex); // </advc.091>
 	}
 }
 
@@ -5721,7 +5733,24 @@ void CvTeam::read(FDataStreamBase* pStream)
 // < Civic Infos Plus End   >
 	m_aiExtraMoves.Read(pStream);
 	m_aiForceTeamVoteEligibilityCount.Read(pStream);
-	m_abHasMet.Read(pStream);
+	// <advc.091>
+	if (uiFlag < 12)
+	{
+		EnumMap<TeamTypes,bool> abHasMet;
+		abHasMet.Read(pStream);
+		CvGame const& kGame = GC.getGame();
+		int iGameTurn = kGame.getGameTurn();
+		int iStartTurn = kGame.getStartTurn();
+		FAssert(iGameTurn >= 0 && iStartTurn >= 0);
+		for (TeamIter<> itTeam; itTeam.hasNext(); ++itTeam)
+		{
+			TeamTypes eTeam = itTeam->getID();
+			if (abHasMet.get(eTeam))
+				m_aiHasMetTurn.set(eTeam, eTeam == getID() ? iStartTurn : iGameTurn);
+		}
+	}
+	else m_aiHasMetTurn.Read(pStream);
+	// </advc.091>
 	/*if (uiFlag >= 1)
 		pStream->Read(MAX_TEAMS, m_abHasSeen);
 	else memcpy(m_abHasSeen, m_abHasMet, sizeof(*m_abHasSeen)*MAX_TEAMS);*/ // K-Mod
@@ -5857,6 +5886,7 @@ void CvTeam::write(FDataStreamBase* pStream)
 	uiFlag = 9; // advc.opt: remove m_abVassal; advc.enum/ advc.034: write m_abDisengage[BARBARIAN_TEAM]
 	uiFlag = 10; // advc.101: m_iTechCount
 	uiFlag = 11; // advc.opt: fix m_aiVictoryCountdown bug
+	uiFlag = 12; // advc.091
 	pStream->Write(uiFlag);
 
 	pStream->Write(m_iNumMembers);
@@ -5915,7 +5945,7 @@ void CvTeam::write(FDataStreamBase* pStream)
 	m_aiExtraMoves.Write(pStream);
 	m_aiForceTeamVoteEligibilityCount.Write(pStream);
 
-	m_abHasMet.Write(pStream);
+	m_aiHasMetTurn.Write(pStream); // advc.091
 	m_abHasSeen.Write(pStream); // K-Mod. uiFlag >= 1
 	m_abAtWar.Write(pStream);
 	m_abJustDeclaredWar.Write(pStream); // advc.162

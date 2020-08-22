@@ -13,7 +13,7 @@
 #include "CvInfo_Terrain.h" // for getBestBuildRoute
 //#include "CvInfo_Unit.h" // for canAnyMoveAllTerrain (now in PCH)
 #include "CySelectionGroup.h"
-//keldath-rangedattack-checking option
+//DOTO-keldath-rangedattack-checking option
 #include "CvInfo_GameOption.h"
 
 
@@ -300,11 +300,9 @@ void CvSelectionGroup::doTurnPost()
 
 bool CvSelectionGroup::showMoves(/* advc.102: */ CvPlot const& kFromPlot) const
 {
-	if (GC.getGame().isMPOption(MPOPTION_SIMULTANEOUS_TURNS) ||
-		GC.getGame().isSimultaneousTeamTurns())
-	{
+	if (isNeverShowMoves()) // advc: Moved into new function
 		return false;
-	}  // <advc.102>
+	// <advc.102>
 	static bool const bShowWorkers = GC.getDefineBOOL("SHOW_FRIENDLY_WORKER_MOVES");
 	static bool const bShowShips = GC.getDefineBOOL("SHOW_FRIENDLY_SEA_MOVES");
 	// Also refers to Executives; those have the same Unit AI.
@@ -379,11 +377,34 @@ bool CvSelectionGroup::showMoves(/* advc.102: */ CvPlot const& kFromPlot) const
 	return false;
 }
 
-// <advc.102>
+// advc: Cut from showMoves
+bool CvSelectionGroup::isNeverShowMoves() const
+{
+	return (GC.getGame().isMPOption(MPOPTION_SIMULTANEOUS_TURNS) ||
+			GC.getGame().isSimultaneousTeamTurns());
+}
+
+// advc.002m:
+int CvSelectionGroup::nukeMissionTime() const
+{
+	int const iFull = GC.getInfo(MISSION_NUKE).getTime(); // cut from startMission
+	int const iShortened = iFull / 4;
+	if (isNeverShowMoves())
+		return iShortened / 2;
+	CvGame const& kGame = GC.getGame();
+	if (getOwner() != kGame.getActivePlayer())
+		return iShortened / 2;
+	// Nothing to see when particle effects aren't enabled
+	if (gDLL->getGraphicOption(GRAPHICOPTION_EFFECTS_DISABLED))
+		return iShortened;
+	return iFull;
+}
+
+// advc.102:
 void CvSelectionGroup::setInitiallyVisible(bool b)
 {
 	m->bInitiallyVisible = b;
-} // </advc.102>
+}
 
 
 void CvSelectionGroup::updateTimers()
@@ -1024,13 +1045,13 @@ void CvSelectionGroup::startMission()
 					break;
 
 				case MISSION_BOMBARD:
-					//rangedstrike-keldath - mission bombard is pushed form somewhere, so added a check
+					//DOTO-rangedstrike-keldath - mission bombard is pushed form somewhere, so added a check
 					if (pLoopUnit->bombard() && pLoopUnit->rangedStrike()==0)
 					{
 						bAction = true;
 					}
 					break;
-//rangedstrike-keldath
+//DOTO-rangedstrike-keldath
 				case MISSION_RANGE_ATTACK:
 					if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
 					{
@@ -1227,7 +1248,7 @@ void CvSelectionGroup::startMission()
 			}
 		}
 		if (bNuke)
-			setMissionTimer(GC.getInfo(MISSION_NUKE).getTime());
+			setMissionTimer(nukeMissionTime()); // advc.002m: Moved into new function
 		if (!isBusy())
 		{
 			if (bDelete)
@@ -1863,7 +1884,7 @@ bool CvSelectionGroup::canDoInterfaceMode(InterfaceModeTypes eInterfaceMode)
 			break;
 
 		case INTERFACEMODE_RANGE_ATTACK:
-//rangedstrike-keldath
+//DOTO-rangedstrike-keldath
 			if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
 			{
 				if (pLoopUnit->canRangeStrike())
@@ -1946,7 +1967,7 @@ bool CvSelectionGroup::canDoInterfaceModeAt(InterfaceModeTypes eInterfaceMode, C
 		case INTERFACEMODE_RANGE_ATTACK:
 			if (pLoopUnit != NULL)
 			{
-//rangedstrike-keldath
+//DOTO-rangedstrike-keldath
 				if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
 				{	
 					if (pLoopUnit->canRangeStrikeAt(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
@@ -2441,7 +2462,7 @@ bool CvSelectionGroup::canBombard(CvPlot const& kPlot) const // advc: CvPlot ref
 	}
 	return false;
 }
-//rangedstrike-keldath
+//DOTO-rangedstrike-keldath
 bool CvSelectionGroup::canRanged(const CvPlot* pPlot, int ix, int iy) const // advc: CvPlot reference, const.
 {
 	if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK)) 
@@ -3578,7 +3599,7 @@ bool CvSelectionGroup::canDoMission(int iMission, int iData1, int iData2,
 			break;
 
 		case MISSION_RANGE_ATTACK:
-//rangedstrike-keldath
+//DOTOrangedstrike-keldath
 			if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
 			{
 				if (pLoopUnit->canRangeStrikeAt(pPlot, iData1, iData2) && (!bCheckMoves || pLoopUnit->canMove()))
@@ -3818,44 +3839,50 @@ void CvSelectionGroup::changeMissionTimer(int iChange)
 }
 
 
-void CvSelectionGroup::updateMissionTimer(int iSteps, /* advc.102: */ CvPlot* pFromPlot)
+void CvSelectionGroup::updateMissionTimer(int iSteps,  // advc: refactored
+	CvPlot* pFromPlot) // advc.102
 {
-	int iTime = 0;
-	if (!isHuman() && (!showMoves( // <advc.102>
-			pFromPlot == NULL ? *plot() : *pFromPlot) ||
-			// Are these timers synchronized?
-			(!GC.getGame().isNetworkMultiPlayer() &&
-			gDLL->getEngineIFace()->isGlobeviewUp()))) // </advc.102>
-		iTime = 0;
-	else if (headMissionQueueNode() != NULL)
+	CvGame const& kGame = GC.getGame();
+	if (headMissionQueueNode() == NULL || 
+		(!isHuman() && (!showMoves( // <advc.102>
+		pFromPlot == NULL ? getPlot() : *pFromPlot) ||
+		/*	(showMoves returning true means that simultaneous turns
+			aren't a concern) */
+		gDLL->getEngineIFace()->isGlobeviewUp()))) // </advc.102>
 	{
-		iTime = GC.getInfo((MissionTypes)(headMissionQueueNode()->m_data.eMissionType)).getTime();
-
-		if ((headMissionQueueNode()->m_data.eMissionType == MISSION_MOVE_TO) ||
-			(headMissionQueueNode()->m_data.eMissionType == MISSION_ROUTE_TO) ||
-			(headMissionQueueNode()->m_data.eMissionType == MISSION_MOVE_TO_UNIT))
-		{
-			CvPlot* pTargetPlot = NULL;
-			if (headMissionQueueNode()->m_data.eMissionType == MISSION_MOVE_TO_UNIT)
-			{
-				CvUnit* pTargetUnit = GET_PLAYER((PlayerTypes)headMissionQueueNode()->m_data.iData1).getUnit(headMissionQueueNode()->m_data.iData2);
-				if (pTargetUnit != NULL)
-					pTargetPlot = pTargetUnit->plot();
-			}
-			else pTargetPlot = GC.getMap().plot(headMissionQueueNode()->m_data.iData1, headMissionQueueNode()->m_data.iData2);
-
-			if (atPlot(pTargetPlot))
-				iTime += iSteps;
-			else iTime = std::min(iTime, 2);
-		}
-
-		if (isHuman() && (isAutomated() || (GET_PLAYER(
-				GC.getGame().isNetworkMultiPlayer() ? getOwner() :
-				GC.getGame().getActivePlayer()).
-				isOption(PLAYEROPTION_QUICK_MOVES))))
-			iTime = std::min(iTime, 1);
+		setMissionTimer(0);
+		return;
 	}
-
+	int iTime = GC.getInfo((MissionTypes)
+			headMissionQueueNode()->m_data.eMissionType).getTime();
+	if ((headMissionQueueNode()->m_data.eMissionType == MISSION_MOVE_TO) ||
+		(headMissionQueueNode()->m_data.eMissionType == MISSION_ROUTE_TO) ||
+		(headMissionQueueNode()->m_data.eMissionType == MISSION_MOVE_TO_UNIT))
+	{
+		CvPlot* pTargetPlot = NULL;
+		if (headMissionQueueNode()->m_data.eMissionType == MISSION_MOVE_TO_UNIT)
+		{
+			CvUnit* pTargetUnit = GET_PLAYER((PlayerTypes)headMissionQueueNode()->m_data.iData1).
+					getUnit(headMissionQueueNode()->m_data.iData2);
+			if (pTargetUnit != NULL)
+				pTargetPlot = pTargetUnit->plot();
+		}
+		else
+		{
+			pTargetPlot = GC.getMap().plot(headMissionQueueNode()->m_data.iData1,
+					headMissionQueueNode()->m_data.iData2);
+		}
+		if (atPlot(pTargetPlot))
+			iTime += iSteps;
+		else iTime = std::min(iTime, 2);
+	}
+	if (isHuman() && (isAutomated() || (GET_PLAYER(
+		kGame.isNetworkMultiPlayer() ? getOwner() :
+		kGame.getActivePlayer()).
+		isOption(PLAYEROPTION_QUICK_MOVES))))
+	{
+		iTime = std::min(iTime, 1);
+	}
 	setMissionTimer(iTime);
 }
 

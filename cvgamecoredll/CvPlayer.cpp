@@ -69,8 +69,9 @@ CvPlayer::CvPlayer(/* advc.003u: */ PlayerTypes eID) :
 	m_ppaaiBuildingYieldChange = NULL;
 	m_ppaaiBuildingCommerceChange = NULL;
 // < Civic Infos Plus End   >
-	m_bDisableHuman = false; // bbai
-	m_iChoosingFreeTechCount = 0; // K-Mod
+	// advc: Pretty sure that this is redundant
+	/*m_bDisableHuman = false; // bbai
+	m_iChoosingFreeTechCount = 0;*/ // K-Mod
 	reset(eID, true);
 }
 
@@ -78,7 +79,6 @@ CvPlayer::CvPlayer(/* advc.003u: */ PlayerTypes eID) :
 CvPlayer::~CvPlayer()
 {
 	uninit();
-
 	// < Civic Infos Plus Start >
 	SAFE_DELETE_ARRAY(m_aiStateReligionYieldRateModifier);
 	SAFE_DELETE_ARRAY(m_aiSpecialistExtraYield);
@@ -498,7 +498,11 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_iPopRushHurryCount = 0;
 	m_iGoldRushHurryCount = 0; // advc.064b
 	m_iInflationModifier = 0;
+	m_iChoosingFreeTechCount = 0; // K-Mod
+	m_iNewMessages = 0; // advc.106b
+	m_iButtonPopupsRelaunching = 0; // advc.004x
 	m_uiStartTime = 0;
+	m_eReminderPending = NO_CIVIC; // advc.004x
 
 	m_bAlive = false;
 	m_bEverAlive = false;
@@ -511,14 +515,13 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_bAnyGPPEver = false; // advc.078
 	m_bStrike = false;
 	m_bDisableHuman = false; // bbai
-	m_iChoosingFreeTechCount = 0; // K-Mod
-	m_iNewMessages = 0; // advc.106b
 	m_bAutoPlayJustEnded = false; // advc.127
 	m_bSavingReplay = false; // advc.106i
 	m_bScoreboardExpanded = false; // advc.085
-	m_eReminderPending = NO_CIVIC; // advc.004x
-	m_iCultureGoldenAgeProgress = 0;	//KNOEDEL CULTURAL_GOLDEN_AGE 1/8
-	m_iCultureGoldenAgesStarted = 2;	//KNOEDEL CULTURAL_GOLDEN_AGE 2/8
+//KNOEDEL CULTURAL_GOLDEN_AGE 1/8
+	m_iCultureGoldenAgeProgress = 0;	
+	m_iCultureGoldenAgesStarted = 2;	
+//KNOEDEL CULTURAL_GOLDEN_AGE 2/8
 	m_eID = eID;
 	updateTeamType();
 	updateHuman();
@@ -565,7 +568,10 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	if (!bConstructorCall && getID() != NO_PLAYER)
 	{
 		for (int i = 0; i < MAX_PLAYERS; i++)
+		{
 			GET_PLAYER((PlayerTypes)i).m_aiGoldPerTurnByPlayer.reset(getID());
+			GET_PLAYER((PlayerTypes)i).m_abEverSeenDemographics.reset(getID()); // advc.091
+		}
 	}
 	m_aiEspionageSpendingWeightAgainstTeam.reset();
 	if (!bConstructorCall && getTeam() != NO_TEAM)
@@ -600,6 +606,7 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_abFeatAccomplished.reset();
 	m_abOptions.reset();
 	m_abResearchingTech.reset();
+	m_abEverSeenDemographics.reset(); // advc.091
 	m_abLoyalMember.reset();
 	m_aaeSpecialistExtraYield.reset();
 	m_aaeImprovementYieldChange.reset();
@@ -1718,7 +1725,8 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 		abEverOwned.set(it->getID(), pOldCity->isEverOwned(it->getID()));
 		aiCulture.set(it->getID(), pOldCity->getCultureTimes100(it->getID()));
 	}
-	abEverOwned.set(getID(), true);
+	// advc.ctr: This gets set automatically when kNewCity is initialized
+	//abEverOwned.set(getID(), true);
 
 	FOR_EACH_ENUM(Religion)
 	{
@@ -1843,7 +1851,9 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 
 	for (PlayerIter<> it; it.hasNext(); ++it)
 	{
-		kNewCity.setEverOwned(it->getID(), abEverOwned.get(it->getID()));
+		// advc.ctr: Don't overwrite this player's ownership status
+		if (!kNewCity.isEverOwned(it->getID()) && abEverOwned.get(it->getID()))
+			kNewCity.setEverOwned(it->getID(), true);
 		kNewCity.setCultureTimes100(it->getID(),
 				aiCulture.get(it->getID()), false, false);
 	} // <kekm.23>
@@ -1878,7 +1888,7 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 			continue;
 
 		if (isProductionMaxedBuildingClass(eBuildingClass, true) ||
-			!kNewCity.isValidBuildingLocation(eBuilding))
+			!kCityPlot.canConstruct(eBuilding))
 		{
 			continue;
 		}
@@ -1954,15 +1964,15 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 		{
 			int iPopPercent = GC.getDefineINT("OCCUPATION_TURNS_POPULATION_PERCENT");
 			kNewCity.changeOccupationTimer(
-				/*  advc.023: Population size as upper bound, and iPopPercent set to
-					0 through XML. (Im multiplying by 1+100*iPopPercent so that the
-					upper bound has no effect if iPopPercent is set back to 50 in XML.)
-					NB: iTeamCulturePercent is city culture, not tile culture;
-					only relevant when a city is reconquered. */
-				std::min(kNewCity.getPopulation() * (1 + iPopPercent * 100),
-				((GC.getDefineINT("BASE_OCCUPATION_TURNS") +
-				((kNewCity.getPopulation() * iPopPercent) / 100)) *
-				(100 - iTeamCulturePercent)) / 100));
+					/*  advc.023: Population size as upper bound, and iPopPercent set to
+						0 through XML. (Im multiplying by 1+100*iPopPercent so that the
+						upper bound has no effect if iPopPercent is set back to 50 in XML.)
+						NB: iTeamCulturePercent is city culture, not tile culture;
+						only relevant when a city is reconquered. */
+					std::min(kNewCity.getPopulation() * (1 + iPopPercent * 100),
+					((GC.getDefineINT("BASE_OCCUPATION_TURNS") +
+					((kNewCity.getPopulation() * iPopPercent) / 100)) *
+					(100 - iTeamCulturePercent)) / 100));
 		}
 		GC.getMap().verifyUnitValidPlot();
 	}
@@ -2013,7 +2023,9 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 				kNewCity.doTask(TASK_RAZE);
 			}
 			else if (!isHuman())
-				AI().AI_conquerCity(kNewCity); // could delete the pointer...
+			{	// May delete kNewCity!
+				AI().AI_conquerCity(kNewCity, abEverOwned.get(getID()));
+			}
 			else
 			{	// popup raze option
 				bool bRaze = canRaze(kNewCity);
@@ -5424,8 +5436,8 @@ bool CvPlayer::canConstruct(BuildingTypes eBuilding, bool bContinue, bool bTestV
 		return false;
 	{
 		SpecialBuildingTypes eSpecial = kBuilding.getSpecialBuildingType();
-		if (eSpecial != NO_SPECIALBUILDING && !kOurTeam.isHasTech((TechTypes)
-			GC.getInfo(eSpecial).getTechPrereq()))
+		if (eSpecial != NO_SPECIALBUILDING &&
+			!kOurTeam.isHasTech(GC.getInfo(eSpecial).getTechPrereq()))
 		{
 			return false;
 		}
@@ -6409,7 +6421,7 @@ int CvPlayer::calculateInflatedCosts() const
 	PROFILE_FUNC();
 
 	int iCosts = calculatePreInflatedCosts();
-	iCosts *= std::max(0, (calculateInflationRate() + 100));
+	iCosts *= std::max(0, calculateInflationRate() + 100);
 	iCosts /= 100;
 	return iCosts;
 }
@@ -6964,6 +6976,16 @@ int CvPlayer::espionageNeededToSee(PlayerTypes ePlayer, bool bDemographics) cons
 		}
 	}
 	return iR;
+}
+
+// advc.091:
+void CvPlayer::updateEverSeenDemographics(TeamTypes eTargetTeam)
+{
+	for (MemberIter it(eTargetTeam); it.hasNext(); ++it)
+	{
+		if (!hasEverSeenDemographics(it->getID()) && canSeeDemographics(it->getID()))
+			m_abEverSeenDemographics.set(it->getID(), true);
+	}
 }
 
 // advc.550e:
@@ -9170,7 +9192,8 @@ void CvPlayer::setCombatExperience(int iExperience)
 
 	int iExperienceThreshold = greatPeopleThreshold(true);
 	if (m_iCombatExperience >= iExperienceThreshold && iExperienceThreshold > 0)
-	{	// create great person
+	{
+		// create great person
 		CvCity const* pBestCity = NULL;
 		int iBestValue = MAX_INT;
 		FOR_EACH_CITY(pLoopCity, *this)
@@ -9205,7 +9228,7 @@ void CvPlayer::setCombatExperience(int iExperience)
 			}
 		}
 	} // <advc.078>
-	if(getID() == kGame.getActivePlayer() &&
+	if (getID() == kGame.getActivePlayer() &&
 		BUGOption::isEnabled("MainInterface__Combat_Counter", false))
 	{
 		gDLL->UI().setDirty(GameData_DIRTY_BIT, true);
@@ -15055,6 +15078,21 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	m_aiUpkeepCount.Read(pStream);
 	m_aiSpecialistValidCount.Read(pStream);
 	m_abResearchingTech.Read(pStream);
+	// <advc.091>
+	if (uiFlag >= 12)
+		m_abEverSeenDemographics.Read(pStream);
+	else if(isBarbarian()) // Once all players have been loaded
+	{
+		for (PlayerIter<CIV_ALIVE> itSpyPlayer; itSpyPlayer.hasNext(); ++itSpyPlayer)
+		{
+			for (PlayerIter<CIV_ALIVE> itTargetPlayer; itTargetPlayer.hasNext();
+				++itTargetPlayer)
+			{
+				itSpyPlayer->m_abEverSeenDemographics.set(itTargetPlayer->getID(),
+						itSpyPlayer->canSeeDemographics(itTargetPlayer->getID()));
+			}
+		}
+	} // </advc.091>
 	m_abLoyalMember.Read(pStream);
 	m_aeCivics.Read(pStream);
 	m_aaeSpecialistExtraYield.Read(pStream);
@@ -15437,6 +15475,7 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	uiFlag = 9; // advc.078
 	uiFlag = 10; // advc.064b
 	uiFlag = 11; // advc.001x
+	uiFlag = 12; // advc.091
 	pStream->Write(uiFlag);
 
 	// <advc.027>
@@ -15623,6 +15662,7 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	m_aiUpkeepCount.Write(pStream);
 	m_aiSpecialistValidCount.Write(pStream);
 	m_abResearchingTech.Write(pStream);
+	m_abEverSeenDemographics.Write(pStream); // advc.091
 	m_abLoyalMember.Write(pStream);
 	m_aeCivics.Write(pStream);
 	m_aaeSpecialistExtraYield.Write(pStream);
@@ -16854,9 +16894,10 @@ void CvPlayer::applyEvent(EventTypes eEvent, int iEventTriggeredId, bool bUpdate
 				getCity(pTriggeredData->m_iOtherPlayerCityId);
 	}
 
+	// advc (note): This computation of iGold seems overcomplicated - but correct.
 	int const iRandomGold = getEventCost(eEvent, pTriggeredData->m_eOtherPlayer, true);
-	int const iGold = getEventCost(eEvent, pTriggeredData->m_eOtherPlayer, false) +
-			GC.getGame().getSorenRandNum(iRandomGold - iGold + 1, "Event random gold");
+	int iGold = getEventCost(eEvent, pTriggeredData->m_eOtherPlayer, false);
+	iGold += GC.getGame().getSorenRandNum(iRandomGold - iGold + 1, "Event random gold");
 
 	if (iGold != 0)
 	{
@@ -20742,7 +20783,7 @@ double CvPlayer::estimateYieldRate(YieldTypes eYield, int iSamples) const
 	return ::dMedian(samples);
 }
 
-// advc.004x:
+// <advc.004x>
 void CvPlayer::killAll(ButtonPopupTypes ePopupType, int iData1)
 {
 	CvGame const& kGame = GC.getGame();
@@ -20756,20 +20797,23 @@ void CvPlayer::killAll(ButtonPopupTypes ePopupType, int iData1)
 	{
 		return;
 	}
-	// Preserve the popups we don't want killed in newQueue
-	std::list<CvPopupInfo*> newQueue;
+	FAssert(m_iButtonPopupsRelaunching == 0);
+	CvPopupQueue relaunchDisplayed;
+	CvPopupQueue relaunchQueued;
+	int iOnDisplay = 0;
 	for (int iPass = 0; iPass < 2; iPass++)
 	{
-		if(iPass == 1)
+		if (iPass == 1)
 		{
 			// Recall popups already launched
 			gDLL->UI().getDisplayedButtonPopups(m_listPopups);
+			iOnDisplay = m_listPopups.size();
 		}
 		for (std::list<CvPopupInfo*>::iterator it = m_listPopups.begin();
 			it != m_listPopups.end(); it++)
 		{
 			CvPopupInfo* pPopup = *it;
-			if((pPopup->getButtonPopupType() != ePopupType &&
+			if ((pPopup->getButtonPopupType() != ePopupType &&
 				/*	Don't relaunch a found-religion popup in response to a
 					change-religion popup. The player will already have chosen
 					and founded a religion, i.e. the found-religion popup is
@@ -20781,25 +20825,46 @@ void CvPlayer::killAll(ButtonPopupTypes ePopupType, int iData1)
 				||
 				(iData1 >= 0 && pPopup->getData1() != iData1))
 			{
-				newQueue.push_back(pPopup);
+				(iPass == 0 ? relaunchQueued : relaunchDisplayed).push_back(pPopup);
 			}
-			else
+			else if (iPass <= 0)
 			{
-				if (iPass <= 0)
-					SAFE_DELETE(pPopup);
-				// else it's still in the list of popups on display
-			}
+				SAFE_DELETE(pPopup);
+			} /* Otherwise, the EXE owns it. The clearQueuedPopups call below will
+				 delete it (I assume). */
 		}
 		m_listPopups.clear();
 	}
-	// The EXE will relaunch these from m_listPopups
-	gDLL->UI().clearQueuedPopups();
-	for (std::list<CvPopupInfo*>::iterator it = newQueue.begin();
-		it != newQueue.end(); it++)
+
+	// Relaunch popups already on display only when necessary
+	if (iOnDisplay != relaunchDisplayed.size())
 	{
-		m_listPopups.push_back(*it);
+		gDLL->UI().clearQueuedPopups();
+		// To suppress the sound
+		m_iButtonPopupsRelaunching = relaunchDisplayed.size();
+		m_listPopups.insert(m_listPopups.begin(),
+				relaunchDisplayed.begin(), relaunchDisplayed.end());
 	}
+	m_listPopups.insert(m_listPopups.end(),
+			relaunchQueued.begin(), relaunchQueued.end());
+	/*	Note: The EXE will fetch the CvPopupInfo in m_listPopups,
+		create CvPopup objects (which the DLL can't do) and
+		launch them through CvDLLButtonPopup::launchButtonPopup. */
 }
+
+/*	Wrapper for CvDLLInterfaceIFaceBase::playGeneralSound that suppresses
+	sounds upon relaunching (i.e. merely updating) a popup */
+void CvPlayer::playButtonPopupSound(LPCTSTR pszSound) const
+{
+	if (m_iButtonPopupsRelaunching <= 0)
+		gDLL->UI().playGeneralSound(pszSound);
+}
+
+
+void CvPlayer::reportButtonPopupLaunched()
+{
+	m_iButtonPopupsRelaunching = std::max(m_iButtonPopupsRelaunching - 1, 0);
+} // </advc.004x>
 
 // <advc.314>
 // iProgress <= 0 means guaranteed discovery

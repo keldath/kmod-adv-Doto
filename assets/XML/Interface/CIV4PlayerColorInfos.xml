@@ -152,8 +152,8 @@
 		</PlayerColorInfo>
 		<PlayerColorInfo>
 			<Type>PLAYERCOLOR_ISRABLUE</Type>
-	        <ColorTypePrimary>COLOR_PLAYER_ISRAEL</ColorTypePrimary>
-			<ColorTypeSecondary>COLOR_PLAYER_WHITE</ColorTypeSecondary>
+	        <ColorTypePrimary>COLOR_PLAYER_WHITE</ColorTypePrimary>
+			<ColorTypeSecondary>COLOR_PLAYER_ISRAEL</ColorTypeSecondary>
 			<TextColorType>COLOR_PLAYER_ISRAEL_TEXT</TextColorType>
 		</PlayerColorInfo>
 		<PlayerColorInfo>

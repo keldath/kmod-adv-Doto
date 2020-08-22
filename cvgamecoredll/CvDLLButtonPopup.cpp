@@ -812,23 +812,23 @@ void CvDLLButtonPopup::OnFocus(CvPopup* pPopup, CvPopupInfo &info)
 // returns false if popup is not launched
 bool CvDLLButtonPopup::launchButtonPopup(CvPopup* pPopup, CvPopupInfo &info)
 {
+	ButtonPopupTypes const eType = info.getButtonPopupType();
 	// <advc.706>
 	CvGame& kGame = GC.getGame();
 	if(kGame.isOption(GAMEOPTION_RISE_FALL))
 	{
-		ButtonPopupTypes bpt = info.getButtonPopupType();
-		if(bpt == BUTTONPOPUP_RF_CHOOSECIV)
+		if(eType == BUTTONPOPUP_RF_CHOOSECIV)
 			return kGame.getRiseFall().launchCivSelectionPopup(pPopup, info);
-		if(bpt == BUTTONPOPUP_RF_DEFEAT)
+		if(eType == BUTTONPOPUP_RF_DEFEAT)
 			return kGame.getRiseFall().launchDefeatPopup(pPopup, info);
 		if(CvPlot::isAllFog())
 			return false;
-		if(bpt == BUTTONPOPUP_RF_RETIRE)
+		if(eType == BUTTONPOPUP_RF_RETIRE)
 			return kGame.getRiseFall().launchRetirePopup(pPopup, info);
 		/*  The EXE launches these popups after human takeover; afterwards(?),
 			the AI makes a choice, and the popup is killed once the player clicks
 			on it. */
-		if((bpt == BUTTONPOPUP_CHOOSEPRODUCTION || bpt == BUTTONPOPUP_CHOOSETECH) &&
+		if((eType == BUTTONPOPUP_CHOOSEPRODUCTION || eType == BUTTONPOPUP_CHOOSETECH) &&
 			kGame.getRiseFall().isBlockPopups())
 		{
 			return false;
@@ -837,8 +837,7 @@ bool CvDLLButtonPopup::launchButtonPopup(CvPopup* pPopup, CvPopupInfo &info)
 	FAssert(GC.getGame().getActivePlayer() != NO_PLAYER); // K-Mod
 
 	bool bLaunched = false;
-
-	switch (info.getButtonPopupType())
+	switch (eType)
 	{
 	case BUTTONPOPUP_TEXT:
 		bLaunched = launchTextPopup(pPopup, info);
@@ -952,9 +951,18 @@ bool CvDLLButtonPopup::launchButtonPopup(CvPopup* pPopup, CvPopupInfo &info)
 		break;
 	default:
 		FAssert(false);
-		break;
 	}
-	return (bLaunched);
+	// <advc.004x>
+	CvPlayer& kPlayer = GET_PLAYER(GC.getGame().getActivePlayer());
+	/*	Replacing the AS2D_IF_SCREEN_UP audio script that the EXE had played
+		(which I've disabled through XML). The sound is unchanged. */
+	if (bLaunched)
+		kPlayer.playButtonPopupSound("AS2D_IF_BUTTONPOPUP_UP");
+	/*	Allow CvPlayer to track relaunched popups (doesn't matter for
+		CvPlayer whether the launch was successful) */
+	kPlayer.reportButtonPopupLaunched();
+	// </advc.004x>
+	return bLaunched;
 }
 
 
@@ -980,6 +988,7 @@ bool CvDLLButtonPopup::launchProductionPopup(CvPopup* pPopup, CvPopupInfo &info)
 		return false;
 
 	FAssert(pCity->getOwner() == GC.getGame().getActivePlayer());
+	CvPlayer const& kOwner = GET_PLAYER(pCity->getOwner());
 
 	UnitTypes eTrainUnit = NO_UNIT;
 	BuildingTypes eConstructBuilding = NO_BUILDING;
@@ -1016,7 +1025,7 @@ bool CvDLLButtonPopup::launchProductionPopup(CvPopup* pPopup, CvPopupInfo &info)
 					"TXT_KEY_POPUP_CANNOT_TRAIN_WORK_NEXT",
 					GC.getInfo(eTrainUnit).getTextKeyWide(), pCity->getNameKey());
 		}
-		szArtFilename = GET_PLAYER(pCity->getOwner()).getUnitButton(eTrainUnit);
+		szArtFilename = kOwner.getUnitButton(eTrainUnit);
 	}
 	else if (eConstructBuilding != NO_BUILDING)
 	{
@@ -1121,7 +1130,7 @@ bool CvDLLButtonPopup::launchProductionPopup(CvPopup* pPopup, CvPopupInfo &info)
 		szBuffer = gDLL->getText("TXT_KEY_POPUP_RECOMMENDED", kInfo.getTextKeyWide(), iTurns,
 				GC.getInfo(kInfo.getAdvisorType()).getTextKeyWide());
 		m_kUI.popupAddGenericButton(pPopup, szBuffer,
-				GET_PLAYER(pCity->getOwner()).getUnitButton(eProductionUnit),
+				kOwner.getUnitButton(eProductionUnit),
 				kInfo.getUnitClassType(), WIDGET_TRAIN,
 				kInfo.getUnitClassType(), pCity->getID(), true,
 				POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
@@ -1181,7 +1190,7 @@ bool CvDLLButtonPopup::launchProductionPopup(CvPopup* pPopup, CvPopupInfo &info)
 		iTurns = pCity->sanitizeProductionTurns(iTurns, ORDER_TRAIN, eLoopUnit);
 		szBuffer.Format(L"%s (%d)", GC.getInfo(eLoopUnit).getDescription(), iTurns);
 		m_kUI.popupAddGenericButton(pPopup, szBuffer,
-				GET_PLAYER(pCity->getOwner()).getUnitButton(eLoopUnit), eUnitClass,
+				kOwner.getUnitButton(eLoopUnit), eUnitClass,
 				WIDGET_TRAIN, eUnitClass, pCity->getID(), true,
 				POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
 		iNumBuilds++;
@@ -1201,14 +1210,13 @@ bool CvDLLButtonPopup::launchProductionPopup(CvPopup* pPopup, CvPopupInfo &info)
 				GC.getInfo(eLoopBuilding).getButton(), eBuildingClass,
 				WIDGET_CONSTRUCT, eBuildingClass, pCity->getID(), true,
 				POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
-			iNumBuilds++;
+		iNumBuilds++;
 	}
-	for (int iI = 0; iI < GC.getNumProjectInfos(); iI++)
+	FOR_EACH_ENUM(Project)
 	{
-		ProjectTypes eLoopProject = (ProjectTypes)iI;
 		if (eLoopProject == eProductionProject || !pCity->canCreate(eLoopProject))
 			continue; // advc
-		int iTurns = pCity->getProductionTurnsLeft((ProjectTypes)iI, 0);
+		int iTurns = pCity->getProductionTurnsLeft(eLoopProject, 0);
 		// advc.004x:
 		iTurns = pCity->sanitizeProductionTurns(iTurns, ORDER_CREATE, eLoopProject);
 		szBuffer.Format(L"%s (%d)", GC.getInfo(eLoopProject).getDescription(), iTurns);
@@ -1217,9 +1225,8 @@ bool CvDLLButtonPopup::launchProductionPopup(CvPopup* pPopup, CvPopupInfo &info)
 				pCity->getID(), true, POPUP_LAYOUT_STRETCH, DLL_FONT_LEFT_JUSTIFY);
 		iNumBuilds++;
 	}
-	for (int iI = 0; iI < GC.getNumProcessInfos(); iI++)
+	FOR_EACH_ENUM(Process)
 	{
-		ProcessTypes eLoopProcess = (ProcessTypes)iI;
 		if (eLoopProcess == eProductionProcess || !pCity->canMaintain(eLoopProcess))
 			continue; // advc
 		m_kUI.popupAddGenericButton(pPopup,
@@ -1238,18 +1245,21 @@ bool CvDLLButtonPopup::launchProductionPopup(CvPopup* pPopup, CvPopupInfo &info)
 	m_kUI.popupLaunch(pPopup, false, POPUPSTATE_MINIMIZED, 252);
 
 	switch (info.getData2())
-	{
+	{	// advc.004x: Play the sounds via CvPlayer
 	case ORDER_TRAIN:
-		m_kUI.playGeneralSound(GC.getInfo((UnitTypes)info.getData3()).
-				getArtInfo(0, GET_PLAYER(pCity->getOwner()).getCurrentEra(), NO_UNIT_ARTSTYLE)->getTrainSound());
+		kOwner.playButtonPopupSound(GC.getInfo((UnitTypes)info.getData3()).
+				getArtInfo(0, kOwner.getCurrentEra(), NO_UNIT_ARTSTYLE)->
+				getTrainSound());
 		break;
 
 	case ORDER_CONSTRUCT:
-		m_kUI.playGeneralSound(GC.getInfo((BuildingTypes)info.getData3()).getConstructSound());
+		kOwner.playButtonPopupSound(GC.getInfo((BuildingTypes)info.getData3()).
+				getConstructSound());
 		break;
 
 	case ORDER_CREATE:
-		m_kUI.playGeneralSound(GC.getInfo((ProjectTypes)info.getData3()).getCreateSound());
+		kOwner.playButtonPopupSound(GC.getInfo((ProjectTypes)info.getData3()).
+				getCreateSound());
 		break;
 
 	default: break;
@@ -1469,19 +1479,19 @@ bool CvDLLButtonPopup::launchRazeCityPopup(CvPopup* pPopup, CvPopupInfo &info)
 	m_kUI.popupAddGenericButton(pPopup, gDLL->getText("TXT_KEY_CITY_WARNING_ANSWER3"),
 			NULL, 3, WIDGET_GENERAL, -1, -1);
 	m_kUI.popupLaunch(pPopup, false, POPUPSTATE_IMMEDIATE);
-	//m_kUI.playGeneralSound("AS2D_CITYCAPTURE"); // disabled by K-Mod (I've put this somewhere else.)
+	//m_kUI.playGeneralSound("AS2D_CITYCAPTURE"); // K-Mod: handled by CvPlayer::acquireCity now
 
 	return true;
 }
 
 bool CvDLLButtonPopup::launchDisbandCityPopup(CvPopup* pPopup, CvPopupInfo &info)
 {
-	CvPlayer& player = GET_PLAYER(GC.getGame().getActivePlayer());
+	CvPlayer const& kPlayer = GET_PLAYER(GC.getGame().getActivePlayer());
 
-	CvCity* pNewCity = player.getCity(info.getData1());
-	if (NULL == pNewCity)
+	CvCity* pNewCity = kPlayer.getCity(info.getData1());
+	if (pNewCity == NULL)
 	{
-		FAssert(false);
+		FAssert(pNewCity != NULL);
 		return false;
 	}
 
@@ -1494,7 +1504,7 @@ bool CvDLLButtonPopup::launchDisbandCityPopup(CvPopup* pPopup, CvPopupInfo &info
 			NULL, 1, WIDGET_GENERAL);
 	m_kUI.popupLaunch(pPopup, false, POPUPSTATE_IMMEDIATE);
 
-	m_kUI.playGeneralSound("AS2D_CULTUREFLIP");
+	kPlayer.playButtonPopupSound("AS2D_CULTUREFLIP"); // advc.004x (was m_kUI.playGeneralSound)
 
 	return true;
 }
@@ -1690,7 +1700,8 @@ bool CvDLLButtonPopup::launchChangeCivicsPopup(CvPopup* pPopup, CvPopupInfo &inf
 
 bool CvDLLButtonPopup::launchAlarmPopup(CvPopup* pPopup, CvPopupInfo &info)
 {
-	m_kUI.playGeneralSound("AS2D_ALARM");
+	//m_kUI.playGeneralSound("AS2D_ALARM");
+	GET_PLAYER(GC.getGame().getActivePlayer()).playButtonPopupSound("AS2D_ALARM"); // advc.004x
 
 	m_kUI.popupSetHeaderString(pPopup, gDLL->getText("TXT_KEY_POPUP_ALARM_TITLE").c_str());
 	m_kUI.popupSetBodyString(pPopup, info.getText());

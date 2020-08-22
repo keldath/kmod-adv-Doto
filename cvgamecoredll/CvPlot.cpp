@@ -21,7 +21,7 @@
 
 #define STANDARD_MINIMAP_ALPHA		(0.75f) // advc.002a: was 0.6
 bool CvPlot::m_bAllFog = false; // advc.706
-int CvPlot::iMaxVisibilityRangeCache; // advc.003h
+int CvPlot::m_iMaxVisibilityRangeCache; // advc.003h
 #define NO_BUILD_IN_PROGRESS (-2) // advc.011
 
 
@@ -344,8 +344,7 @@ void CvPlot::doImprovementUpgrade()
 				{
                        addCultureControl(getImprovementOwner(), eImprovementUpdrade, true);
 				}
-				// < JCultureControl Mod End >
-				
+				// < JCultureControl Mod End >				
 		}
 	}
 }
@@ -729,9 +728,9 @@ void CvPlot::forceBumpUnits()
 	}
 } // K-Mod end
 
-// K-Mod. Added bBomb argument.
-// bBomb signals that the explosion should damage units, buildings, and city population.
-// (I've also tidied up the code a little bit)
+/*	K-Mod. Added bBomb argument.
+	bBomb signals that the explosion should damage units, buildings, and city population.
+	(I've also tidied up the code a little bit) */
 void CvPlot::nukeExplosion(int iRange, CvUnit* pNukeUnit, bool bBomb)
 {
 	// <advc.opt>
@@ -1711,20 +1710,20 @@ void CvPlot::updateSight(bool bIncrement, bool bUpdatePlotGroups)
 	}
 }
 
-// <advc.003h> Cut and pasted from CvPlot::updateSeeFromSight
+// advc.003h: Cut and pasted from CvPlot::updateSeeFromSight
 void CvPlot::setMaxVisibilityRangeCache()
 {
 	int iRange = GC.getDefineINT(CvGlobals::UNIT_VISIBILITY_RANGE) + 1;
 	for(int iPromotion = 0; iPromotion < GC.getNumPromotionInfos(); iPromotion++)
 		iRange += GC.getInfo((PromotionTypes)iPromotion).getVisibilityChange();
 	iRange = std::max(GC.getDefineINT(CvGlobals::RECON_VISIBILITY_RANGE) + 1, iRange);
-	iMaxVisibilityRangeCache = iRange;
-} // </advc.003h>
+	m_iMaxVisibilityRangeCache = iRange;
+}
 
 
 void CvPlot::updateSeeFromSight(bool bIncrement, bool bUpdatePlotGroups)
 {
-	for (SquareIter it(*this, /* advc.003h: */ iMaxVisibilityRangeCache);
+	for (SquareIter it(*this, /* advc.003h: */ m_iMaxVisibilityRangeCache);
 		it.hasNext(); ++it)
 	{
 		it->updateSight(bIncrement, bUpdatePlotGroups);
@@ -6502,6 +6501,10 @@ void CvPlot::changeVisibilityCount(TeamTypes eTeam, int iChange, InvisibleTypes 
 	//FAssert(getVisibilityCount(eTeam) >= 0);
 	/*  <advc.006> Had some problems here with the Earth1000AD scenario (as the
 		initial cities were being placed). The problems remain unresolved. */
+	/*	advc.001: Also works around a problem with nukeExplosion replacing
+		a sight-blocking feature with fallout. To reproduce this bug (in order to
+		fix it properly), it should suffice to drop a nuke onto a fogged Forest
+		or Jungle. */
 	if(getVisibilityCount(eTeam) < 0)
 	{
 		FAssert(m_aiVisibilityCount.get(eTeam) >= 0);
@@ -9021,6 +9024,33 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 		return false;
 	} // </advc.001b>
 
+	return true;
+}
+
+// advc: Replacing CvCity::isValidBuildingLocation. Body cut from there (incl. the comment)
+bool CvPlot::canConstruct(BuildingTypes eBuilding) const
+{
+	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
+	/*	If both the river and water flags are set, then
+		we require one of the two conditions, not both. */
+	if (kBuilding.isWater())
+	{
+		if (!kBuilding.isRiver() || !isRiver())
+		{
+			if (!isCoastalLand(kBuilding.getMinAreaSize()))
+				return false;
+		}
+	}
+	else
+	{
+		if (getArea().getNumTiles() < kBuilding.getMinAreaSize())
+			return false;
+		if (kBuilding.isRiver())
+		{
+			if (!isRiver())
+				return false;
+		}
+	}
 	return true;
 }
 

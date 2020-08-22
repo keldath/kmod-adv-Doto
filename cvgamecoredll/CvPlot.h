@@ -740,6 +740,7 @@ public:
 	bool canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 			bool bCheckAirUnitCap = true, // advc.001b
 			BonusTypes eAssumeAvailable = NO_BONUS) const; // advc.001u
+	bool canConstruct(BuildingTypes eBuilding) const; // advc
 	bool isEspionageCounterSpy(TeamTypes eTeam) const;
 
 	DllExport int getAreaIdForGreatWall() const;
@@ -749,8 +750,8 @@ public:
 	DllExport bool shouldDisplayBridge(CvPlot* pToPlot, PlayerTypes ePlayer) const;
 	DllExport bool checkLateEra() const;
 	void killRandomUnit(PlayerTypes eOwner, DomainTypes eDomain); // advc.300
-
-//    bool isHasValidBonus() const;  //Shqype Vicinity Bonus Add
+//Shqype Vicinity Bonus Add
+//    bool isHasValidBonus() const;  
 	wchar const* debugStr() const; // advc.031c
 
 	void read(FDataStreamBase* pStream);
@@ -871,7 +872,7 @@ protected:
 	std::vector<CvSymbol*> m_symbols;
 
 	static bool m_bAllFog; // advc.706
-	static int iMaxVisibilityRangeCache; // advc.003h
+	static int m_iMaxVisibilityRangeCache; // advc.003h
 
 	void doFeature();
 	void doCulture();

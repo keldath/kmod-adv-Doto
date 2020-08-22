@@ -200,8 +200,7 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 	{
 		return (SpecialBuildingTypes)m_iSpecialBuildingType;
 	}
-	AdvisorTypes getAdvisorType() const { return (AdvisorTypes)m_iAdvisorType; }
-	
+	AdvisorTypes getAdvisorType() const { return (AdvisorTypes)m_iAdvisorType; }	
 /********************************************************************************/
 /**		Doto-REVDCM									2/16/10				phungus420	*/
 /**																				*/
@@ -677,24 +676,24 @@ protected:
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class CvSpecialBuildingInfo : public CvInfoBase
 {
-public: // All the const functions are exposed to Python
+public: // All the const functions are exposed to Python. advc.inl: Inlined the non-array getters.
 	CvSpecialBuildingInfo();
 	virtual ~CvSpecialBuildingInfo();
 
-	int getObsoleteTech() const;
-	int getTechPrereq() const;
-	int getTechPrereqAnyone() const;
+	TechTypes getObsoleteTech() const { return m_eObsoleteTech; }
+	TechTypes getTechPrereq() const { return m_eTechPrereq; }
+	TechTypes getTechPrereqAnyone() const { return m_eTechPrereqAnyone; }
 
-	bool isValid() const;
+	bool isValid() const { return m_bValid; }
 
 	int getProductionTraits(int i) const;
 
 	bool read(CvXMLLoadUtility* pXML);
 
 protected:
-	int m_iObsoleteTech;
-	int m_iTechPrereq;
-	int m_iTechPrereqAnyone;
+	TechTypes m_eObsoleteTech;
+	TechTypes m_eTechPrereq;
+	TechTypes m_eTechPrereqAnyone;
 
 	bool m_bValid;
 

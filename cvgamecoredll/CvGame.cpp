@@ -1859,25 +1859,21 @@ void CvGame::normalizeAddFoodBonuses(  // advc: refactoring
 				// <adcv.108>
 				for (int iPass = 0; iPass < 2; iPass++)
 				{
-					bool const bAvoidDuplicates = (iPass == 0); // </advc.108>
+					bool const bInitialPass = (iPass == 0); // </advc.108>
 					// advc.129: Randomize the order in which resources are considered
 					FOR_EACH_ENUM_RAND(Bonus, getMapRand())
 					{
-						CvBonusInfo const& kLoopBonus = GC.getInfo(eLoopBonus);
-						if (!kLoopBonus.isNormalize() ||
-							kLoopBonus.getYieldChange(YIELD_FOOD) <= 0)
+						if (GC.getInfo(eLoopBonus).getYieldChange(YIELD_FOOD) <= 0)
+							continue;
+						/*	advc.108: Let map generator check canPlaceBonusAt in the
+							initial pass (same as in normalizeAddExtras) */
+						if (!isNormalizationBonus(eLoopBonus, kPlayer.getID(), p,
+							bInitialPass, !bInitialPass))
 						{
 							continue;
 						}
-						if (kLoopBonus.getTechCityTrade() != NO_TECH &&
-							GC.getInfo(kLoopBonus.getTechCityTrade()).
-							getEra() > getStartEra())
-						{
-							continue;
-						}
-						if (!GET_TEAM(kPlayer.getTeam()).isHasTech(kLoopBonus.getTechReveal()))
-							continue;
-						// <advc.108> Don't place the food resource on a bad feature
+						// <advc.108>
+						// Don't place the food resource on a bad feature
 						FeatureTypes const eFeature = p.getFeatureType();
 						bool bValid = true;
 						if(eFeature != NO_FEATURE)
@@ -1892,11 +1888,9 @@ void CvGame::normalizeAddFoodBonuses(  // advc: refactoring
 							}
 						}
 						if(!bValid)
-							continue; // </advc.108>
-						if (!p.canHaveBonus(eLoopBonus, bIgnoreLatitude) ||
-							// <advc.108>
-							(bAvoidDuplicates &&
-							skipDuplicateExtraBonus(*pStartingPlot, p, eLoopBonus)))
+							continue;
+						if (bInitialPass &&
+							skipDuplicateNormalizationBonus(*pStartingPlot, p, eLoopBonus))
 						{	// </advc.108>
 							continue;
 						}
@@ -2498,8 +2492,8 @@ bool CvGame::placeExtraBonus(PlayerTypes eStartPlayer, CvPlot& kPlot,
 		{
 			continue;
 		}
-		if (!isValidExtraBonus(eLoopBonus, eStartPlayer, kPlot, bCheckCanPlace, bIgnoreLatitude) ||
-			skipDuplicateExtraBonus(kStartPlot, kPlot, eLoopBonus, !bCheckCanPlace)) // advc.108
+		if (!isNormalizationBonus(eLoopBonus, eStartPlayer, kPlot, bCheckCanPlace, bIgnoreLatitude) ||
+			skipDuplicateNormalizationBonus(kStartPlot, kPlot, eLoopBonus, !bCheckCanPlace)) // advc.108
 		{
 			continue;
 		}
@@ -2515,7 +2509,7 @@ bool CvGame::placeExtraBonus(PlayerTypes eStartPlayer, CvPlot& kPlot,
 
 /*	advc.108: May probabilistically return false when there is already a resource
 	of type eBonus near kStartPlot */
-bool CvGame::skipDuplicateExtraBonus(CvPlot const& kStartPlot, CvPlot const& kPlot,
+bool CvGame::skipDuplicateNormalizationBonus(CvPlot const& kStartPlot, CvPlot const& kPlot,
 	BonusTypes eBonus, bool bSecondPass)
 {
 	scaled rSkipPr = fixp(1/3.);
@@ -2540,7 +2534,7 @@ bool CvGame::skipDuplicateExtraBonus(CvPlot const& kStartPlot, CvPlot const& kPl
 }
 
 // advc: Cut, pasted, refactored from normalizeAddExtras
-bool CvGame::isValidExtraBonus(BonusTypes eBonus, PlayerTypes eStartPlayer,
+bool CvGame::isNormalizationBonus(BonusTypes eBonus, PlayerTypes eStartPlayer,
 	CvPlot const& kPlot, bool bCheckCanPlace, bool bIgnoreLatitude) const
 {
 	CvBonusInfo const& kBonus = GC.getInfo(eBonus);
@@ -2589,7 +2583,7 @@ bool CvGame::isWeakStartingFoodBonus(CvPlot const& kPlot, PlayerTypes eStartPlay
 	BonusTypes eBonus = kPlot.getBonusType(TEAMID(eStartPlayer));
 	if (eBonus == NO_BONUS ||
 		// To filter out resources that normalizeAddFood doesn't care about
-		!isValidExtraBonus(eBonus, eStartPlayer, kPlot, false, true))
+		!isNormalizationBonus(eBonus, eStartPlayer, kPlot, false, true))
 	{
 		return false;
 	}
@@ -3970,27 +3964,23 @@ int CvGame::getImprovementUpgradeTime(ImprovementTypes eImprovement) const
 /*  advc: 3 for Marathon, 0.67 for Quick. Based on VictoryDelay. For cases where
 	there isn't a more specific game speed modifier that could be applied. (E.g.
 	tech costs should be adjusted based on iResearchPercent, not on this function.) */
-double CvGame::gameSpeedFactor() const
+scaled CvGame::gameSpeedMultiplier() const
 {
-	return GC.getInfo(getGameSpeedType()).getVictoryDelayPercent() / 100.0;
-} // </advc>
+	return per100(GC.getInfo(getGameSpeedType()).getVictoryDelayPercent());
+}
 
 bool CvGame::canTrainNukes() const
 {
-	for (int iI = 0; iI < MAX_PLAYERS; iI++)
+	for (PlayerIter<ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
-		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iI);
-		if (kPlayer.isAlive())
+		CvCivilization const& kCiv = itPlayer->getCivilization(); // advc.003w
+		for (int i = 0; i < kCiv.getNumUnits(); i++)
 		{
-			CvCivilization const& kCiv = kPlayer.getCivilization(); // advc.003w
-			for (int i = 0; i < kCiv.getNumUnits(); i++)
+			UnitTypes eUnit = kCiv.unitAt(i);
+			if (GC.getInfo(eUnit).getNukeRange() >= 0)
 			{
-				UnitTypes eUnit = kCiv.unitAt(i);
-				if (GC.getInfo(eUnit).getNukeRange() >= 0)
-				{
-					if (kPlayer.canTrain(eUnit))
-						return true;
-				}
+				if (itPlayer->canTrain(eUnit))
+					return true;
 			}
 		}
 	}
@@ -4010,8 +4000,8 @@ EraTypes CvGame::getCurrentEra() const
 	int const iCount = it.nextIndex();
 	if (iCount > 0)
 	{
-		//return ((EraTypes)(iEra / iCount));
-		return (EraTypes)::round(iEra / (double)iCount); // kekm.17
+		//return (EraTypes)(iEra / iCount);
+		return (EraTypes)ROUND_DIVIDE(iEra, iCount); // kekm.17
 	}
 	FAssert(iCount > 0); // advc
 	return NO_ERA;
@@ -5804,7 +5794,7 @@ bool CvGame::canConstruct(BuildingTypes eBuilding, bool bIgnoreCost, bool bTestV
 	}
 	if(isBuildingClassMaxedOut(kBuilding.getBuildingClassType()))
 		return false;
-//Keldath QA - this code should be above if(bTestVisible) or below?
+//DOTO-Keldath QA - this code should be above if(bTestVisible) or below?
 /************************************************************************************************/
 /* REVDCM                                 02/16/10                                phungus420    */
 /*                                                                                              */
@@ -6979,7 +6969,7 @@ void CvGame::doHolyCity()  // advc: many style changes
 		ReligionTypes eReligion = (ReligionTypes)iI;
 		if (isReligionSlotTaken(eReligion))
 			continue;
-//david lalen forbiddan religion - dune wars start
+//DOTO-david lalen forbiddan religion - dune wars start
 		// davidlallen religion forbidden to civilization start
 		// remove test for team; assign by player instead
 		// because what if the best team's best player cannot convert?
@@ -9557,6 +9547,7 @@ void CvGame::onGraphicsInitialized()
 	if (GET_PLAYER(getActivePlayer()).getNumUnits() == 0)
 		setUpdateTimer(UPDATE_LOOK_AT_STARTING_PLOT, 1);
 	// </advc.001>
+	CvGlobals::getInstance().updateCameraStartDistance();
 }
 
 

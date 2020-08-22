@@ -493,7 +493,7 @@ void CvCityAI::AI_chooseProduction()
 	CvArea* pWaterArea = waterArea(true);
 	bool bMaybeWaterArea = false;
 	bool bWaterDanger = false;
-//removed in dune wars - i dont know why - maybe something with water - keldath
+//DOTO-removed in dune wars - i dont know why - maybe something with water - keldath
 	///the same code below need to be marked i think adv made it to not be needed 
 	/* if( pWaterSettlerArea == NULL )
 	{
@@ -1376,7 +1376,7 @@ void CvCityAI::AI_chooseProduction()
 			}
 		}
 	}
-	//keldath QA-DONE
+	//DOTO-keldath
 	// ALN DuneWars - don't do this, not necessary (no colony maintenance) and confuses the AI on island maps
 	 if (!bDanger && !bCapitalArea && area()->getCitiesPerPlayer(getOwner()) > iNumCapitalAreaCities)
 	{
@@ -3451,8 +3451,8 @@ BuildingTypes CvCityAI::AI_bestBuildingThreshold(int iFocusFlags, int iMaxTurns,
 
 		// K-Mod
 		TechTypes eObsoleteTech = kBuilding.getObsoleteTech();
-		TechTypes eSpObsoleteTech = kBuilding.getSpecialBuildingType() == NO_SPECIALBUILDING ? NO_TECH
-				: (TechTypes)GC.getInfo(kBuilding.getSpecialBuildingType()).getObsoleteTech();
+		TechTypes eSpObsoleteTech = kBuilding.getSpecialBuildingType() == NO_SPECIALBUILDING ?
+				NO_TECH : GC.getInfo(kBuilding.getSpecialBuildingType()).getObsoleteTech();
 
 		if ((eObsoleteTech != NO_TECH && kOwner.getCurrentResearch() == eObsoleteTech) ||
 			(eSpObsoleteTech != NO_TECH && kOwner.getCurrentResearch() == eSpObsoleteTech))
@@ -4325,7 +4325,7 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags,
 			// K-Mod end
 
 			iValue += ((kBuilding.getWorkerSpeedModifier() * kOwner.AI_getNumAIUnits(UNITAI_WORKER)) / 10);
-/* Population Limit ModComp - Beginning+ f1rpo fix */
+/* DOTO-Population Limit ModComp - Beginning+ f1rpo fix */
 			if(kBuilding.getPopulationLimitChange() > 0 && getPopulationLimit() < MAX_INT) {
    			// Loosely based on the K-Mod evaluation of iBuildingActualHappiness
    			int iCitizenValue = 6 + iOwnerEra;
@@ -4339,7 +4339,7 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags,
            			getPopulationLimit() +
            			2 * (std::max(0, -iHealthLevel) + std::max(0, -iHappinessLevel)));
    			iValue += kBuilding.getPopulationLimitChange() * std::max(0, iPopLimitChangeValue);
-}/* Population Limit ModComp - End */
+}/* DOTO-Population Limit ModComp - End */
 			int iMilitaryProductionModifier = kBuilding.getMilitaryProductionModifier();
 			if (iHasMetCount > 0 && iMilitaryProductionModifier > 0)
 			{
@@ -4462,9 +4462,9 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags,
 				}
 				// else: If there is nothing to research, a free tech is worthless.
 			}
-/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+/*** DOTO-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
 				iValue += (kBuilding.getFreeSpecificTech() == NO_TECH ? 0 : 80);
-/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
+/*** DOTO-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
 			iValue += kBuilding.getEnemyWarWearinessModifier() / 2;
 
 			FOR_EACH_ENUM(Specialist)
@@ -6758,24 +6758,24 @@ int CvCityAI::AI_culturePressureFactor() const
 
 int CvCityAI::AI_getEmphasizeAvoidGrowthCount() const
 {
-	/* Population Limit ModComp - Beginning */
+	/* DOTO-Population Limit ModComp - Beginning */
 	if (getPopulation() >= getPopulationLimit())
 	{
 		return true;
 	}
-	/* Population Limit ModComp - End */
+	/* DOTO-Population Limit ModComp - End */
 	return m_iEmphasizeAvoidGrowthCount;
 }
 
 
 bool CvCityAI::AI_isEmphasizeAvoidGrowth() const
 {
-	/* Population Limit ModComp - Beginning */
+	/* DOTO-Population Limit ModComp - Beginning */
 	if (getPopulation() >= getPopulationLimit())
 	{
 		return true;
 	}
-	/* Population Limit ModComp - End */
+	/* DOTO-Population Limit ModComp - End */
 	return (AI_getEmphasizeAvoidGrowthCount() > 0);
 }
 
@@ -7539,7 +7539,7 @@ int CvCityAI::AI_getImprovementValue(CvPlot const& kPlot, ImprovementTypes eImpr
 			// K-Mod
 			rValue += kOwner.AI_bonusVal(eNonObsoleteBonus, 1) * 50;
 			rValue += 100;
-//f1rpo fix - added by keldath - this should lower forts on resourses stupid bug
+//DOTO-f1rpo fix - added by keldath - this should lower forts on resourses stupid bug
 // unused for now since its advciv
 //			CvImprovementInfo& imp = GC.getImprovementInfo(eImprovement);
 //  			if(imp.isActsAsCity() && pPlot->getWorkingCity() != NULL)
@@ -10532,7 +10532,7 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 				//int iSpecialistHealth = GC.getInfo((SpecialistTypes)new_job.second).getHealth();
 				//int iSpecialistHappiness = GC.getInfo((SpecialistTypes)new_job.second).getHappiness();
 				//f1rpo suggested fix,
-		//KELDATH QA6 - is this implemented right? also placed right?
+		//DOTO-KELDATH QA6 - is this implemented right? also placed right?
 			int iSpecialistHealth = 0;
 			int iSpecialistHappiness = 0;
 			if (new_job.second >= 0 && new_job.first)

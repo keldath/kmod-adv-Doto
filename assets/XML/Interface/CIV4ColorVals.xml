@@ -971,7 +971,7 @@
 			<fRed>0.10</fRed>
 			<fGreen>0.00</fGreen>
 			<fBlue>1.0</fBlue>
-			<fAlpha>1.00</fAlpha>
+			<fAlpha>0</fAlpha>
 		</ColorVal>
 		<ColorVal>
 			<Type>COLOR_PLAYER_ISRAEL_TEXT</Type>

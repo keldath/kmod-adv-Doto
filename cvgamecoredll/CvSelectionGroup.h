@@ -29,6 +29,7 @@ public:
 	void doTurn();
 	void doTurnPost(); // advc.004l
 	bool showMoves( /* <advc.102> */ CvPlot const& kFromPlot) const;
+	int nukeMissionTime() const; // advc.002m
 	void setInitiallyVisible(bool b); // </advc.102>
 
 	void updateTimers();
@@ -102,7 +103,7 @@ public:
 	bool canFight() const;																																										// Exposed to Python
 	bool canDefend() const;																																										// Exposed to Python
 	bool canBombard(CvPlot const& kPlot) const;
-//rangedstrike-keldath
+//DOTO-rangedstrike-keldath
 	bool canRanged(const CvPlot* pPlot = NULL, int ix = INVALID_PLOT_COORD, int iy = INVALID_PLOT_COORD) const;
 	bool visibilityRange() const;
 
@@ -300,6 +301,7 @@ protected:
 
 	void activateHeadMission();
 	void deactivateHeadMission();
+	bool isNeverShowMoves() const; // advc
 	// <advc.075>
 	void handleBoarded();
 	bool canDisembark() const;

@@ -573,8 +573,8 @@ void CvUnit::kill(bool bDelay, PlayerTypes ePlayer)
 	kOwner.AI_changeNumAIUnits(AI_getUnitAIType(), -1);
 
 	PlayerTypes eCapturingPlayer = getCapturingPlayer();
-	UnitTypes eCaptureUnitType = ((eCapturingPlayer != NO_PLAYER) ?
-			getCaptureUnitType(GET_PLAYER(eCapturingPlayer).getCivilizationType()) : NO_UNIT);
+	UnitTypes eCaptureUnitType = (eCapturingPlayer == NO_PLAYER ? NO_UNIT :
+			getCaptureUnitType(GET_PLAYER(eCapturingPlayer).getCivilizationType()));
 
 	setXY(INVALID_PLOT_COORD, INVALID_PLOT_COORD, true);
 
@@ -1668,6 +1668,9 @@ void CvUnit::updateCombat(bool bQuick)
 			}
 		} // <advc.130m>
 
+		//addAttackSuccessMessages(*pDefender, true); // advc.010: Moved into new function
+		//DOTO-keldath new from 22082020 need to convert idw to this new fn	
+
 		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", getNameKey(),
 				pDefender->getNameKeyNoGG()); // advc.004u
 //DOTO-
@@ -1771,7 +1774,7 @@ void CvUnit::updateCombat(bool bQuick)
 			if (!bAdvance)
 			{
 				changeMoves(std::max(GC.getMOVE_DENOMINATOR(),
-					pPlot->movementCost(this, plot())));
+						pPlot->movementCost(this, plot())));
 				checkRemoveSelectionAfterAttack();
 			}
 		}
@@ -1795,7 +1798,7 @@ void CvUnit::updateCombat(bool bQuick)
 				if (pPlot->getNumVisibleEnemyDefenders(this) == 0)
 				{
 					getGroup()->groupMove(pPlot, true, bAdvance ? this : NULL,
-						true); // K-Mod
+						  true); // K-Mod
 				}
 
 				// This is is put before the plot advancement, the unit will always try to walk back
@@ -1855,6 +1858,37 @@ void CvUnit::updateCombat(bool bQuick)
 		getGroup()->clearMissionQueue();
 	}
 }
+
+// advc.010: Cut from resolveCombat. Used for killed noncombatants when bFought=false.
+void CvUnit::addAttackSuccessMessages(CvUnit const& kDefender, bool bFought) const
+{
+	CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY",
+			getNameKey(), /* advc.004u: */ kDefender.getNameKeyNoGG());
+	CvPlot const& kPlot = kDefender.getPlot();
+	gDLL->UI().addMessage(getOwner(), bFought, -1, szBuffer, bFought ? GC.getInfo(
+			GET_PLAYER(getOwner()) // advc.002l
+			.getCurrentEra()).getAudioUnitVictoryScript()
+			: NULL, // advc.010: No victory sound for killing noncombatant
+			MESSAGE_TYPE_INFO, NULL,
+			GC.getColorType("GREEN"), kPlot.getX(), kPlot.getY());
+	if (getVisualOwner(kDefender.getTeam()) != getOwner())
+	{
+		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_WAS_DESTROYED_UNKNOWN",
+				kDefender.getNameKeyNoGG(), // advc.004u
+				getNameKey());
+	}
+	else
+	{
+		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_WAS_DESTROYED",
+				kDefender.getNameKeyNoGG(), // advc.004u
+				getNameKey(), getVisualCivAdjective(kDefender.getTeam()));
+	}
+	gDLL->UI().addMessage(kDefender.getOwner(), bFought, -1, szBuffer, GC.getInfo(
+			GET_PLAYER(kDefender.getOwner()) // advc.002l
+			.getCurrentEra()).getAudioUnitDefeatScript(), MESSAGE_TYPE_INFO, NULL,
+			GC.getColorType("RED"), kPlot.getX(), kPlot.getY());
+}
+
 
 void CvUnit::checkRemoveSelectionAfterAttack()
 {
@@ -3966,6 +4000,9 @@ bool CvUnit::nuke(int iX, int iY)
 	iBestInterception /= 100;
 
 	setReconPlot(&kPlot);
+	// <advc.002m>
+	int const iMissionTime = getGroup()->nukeMissionTime();
+	bool const bShortAnimation = (iMissionTime <= 8); // </advc.002m>
 
 	if (GC.getGame().getSorenRandNum(100, "Nuke") < iBestInterception)
 	{
@@ -3980,14 +4017,15 @@ bool CvUnit::nuke(int iX, int iY)
 				szBuffer = gDLL->getText("TXT_KEY_MISC_NUKE_INTERCEPTED",
 						GET_PLAYER(getOwner()).getNameKey(), getNameKey(),
 						GET_TEAM(eBestTeam).getName().GetCString());
-				gDLL->UI().addMessage(kObs.getID(), kObs.getID() == getOwner(), -1,
-						szBuffer, kPlot, "AS2D_NUKE_INTERCEPTED", MESSAGE_TYPE_MAJOR_EVENT,
-						getButton(), GC.getColorType("RED"));
+				gDLL->UI().addMessage(kObs.getID(), kObs.getID() == getOwner() ||
+						!bShortAnimation, // advc.002m
+						-1, szBuffer, kPlot, "AS2D_NUKE_INTERCEPTED",
+						MESSAGE_TYPE_MAJOR_EVENT, getButton(), GC.getColorType("RED"));
 			}
 		}
 		if (kPlot.isActiveVisible(false))
 		{	// advc: Moved into helper class (was duplicated below)
-			NukeMissionDef kMissionDef(kPlot, *this, true);
+			NukeMissionDef kMissionDef(kPlot, *this, true, iMissionTime);
 			gDLL->getEntityIFace()->AddMission(&kMissionDef);
 		}
 		kill(true);
@@ -3996,7 +4034,7 @@ bool CvUnit::nuke(int iX, int iY)
 
 	if (kPlot.isActiveVisible(false))
 	{	// advc: Moved into helper class
-		NukeMissionDef kMissionDef(kPlot, *this, false);
+		NukeMissionDef kMissionDef(kPlot, *this, false, iMissionTime);
 		gDLL->getEntityIFace()->AddMission(&kMissionDef);
 	}
 
@@ -4114,9 +4152,10 @@ bool CvUnit::nuke(int iX, int iY)
 		{
 			szBuffer = gDLL->getText("TXT_KEY_MISC_NUKE_LAUNCHED",
 					GET_PLAYER(getOwner()).getNameKey(), getNameKey());
-			gDLL->UI().addMessage(kObs.getID(), kObs.getID() == getOwner(), -1,
-					szBuffer, kPlot, "AS2D_NUKE_EXPLODES", MESSAGE_TYPE_MAJOR_EVENT,
-					getButton(), GC.getColorType("RED"));
+			gDLL->UI().addMessage(kObs.getID(), kObs.getID() == getOwner() ||
+					!bShortAnimation, // advc.002m
+					-1, szBuffer, kPlot, "AS2D_NUKE_EXPLODES",
+					MESSAGE_TYPE_MAJOR_EVENT, getButton(), GC.getColorType("RED"));
 		}
 	}
 	// <advc.106>
@@ -6215,8 +6254,10 @@ int CvUnit::getSpyInterceptPercent(TeamTypes eTargetTeam, bool bMission) const
 		const CvTeam& kTargetTeam = GET_TEAM(eTargetTeam);
 
 		int iPopScale = 5 * GC.getInfo(GC.getMap().getWorldSize()).getTargetNumCities();
-		int iTargetPoints = 10 * kTargetTeam.getEspionagePointsEver() / std::max(1, iPopScale + kTargetTeam.getTotalPopulation(false));
-		int iOurPoints = 10 * kTeam.getEspionagePointsEver() / std::max(1, iPopScale + kTeam.getTotalPopulation(false));
+		int iTargetPoints = 10 * kTargetTeam.getEspionagePointsEver() /
+				std::max(1, iPopScale + kTargetTeam.getTotalPopulation(false));
+		int iOurPoints = 10 * kTeam.getEspionagePointsEver() /
+				std::max(1, iPopScale + kTeam.getTotalPopulation(false));
 		iSuccess += iESPIONAGE_INTERCEPT_SPENDING_MAX * iTargetPoints / std::max(1, iTargetPoints + iOurPoints);
 	}
 	// K-Mod end
@@ -8716,6 +8757,12 @@ void CvUnit::setXY(int iX, int iY, bool bGroup, bool bUpdate, bool bShow, bool b
 						}
 						if (!isNoUnitCapture())
 							pLoopUnit->setCapturingPlayer(getOwner());
+						// <advc.010> Report death when pLoopUnit won't be captured
+						if (pLoopUnit->getCaptureUnitType(
+							GET_PLAYER(getOwner()).getCivilizationType()) == NO_UNIT)
+						{
+							addAttackSuccessMessages(*pLoopUnit, false);
+						} // </advc.010>
 						pLoopUnit->kill(false, getOwner());
 					}
 				}
@@ -10936,18 +10983,21 @@ void CvUnit::flankingStrikeCombat(const CvPlot* pPlot, int iAttackerStrength,
 	{
 		CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_DAMAGED_UNITS_BY_FLANKING",
 				getNameKey(), iNumUnitsHit);
-		gDLL->UI().addMessage(getOwner(), false, -1, szBuffer,
-				GC.getInfo(/* advc.002l: */ GET_PLAYER(getOwner())
-				.getCurrentEra()).getAudioUnitVictoryScript(), MESSAGE_TYPE_INFO, NULL,
-				GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
+		// advc.106: No sound and bForce=true (for both messages)
+		gDLL->UI().addMessage(getOwner(), true, -1, szBuffer,
+				/*GC.getInfo(GET_PLAYER(getOwner()) // advc.002l
+				.getCurrentEra()).getAudioUnitVictoryScript()*/ NULL,
+				MESSAGE_TYPE_INFO, NULL, GC.getColorType("GREEN"),
+				pPlot->getX(), pPlot->getY());
 		if (pSkipUnit != NULL)
 		{
 			szBuffer = gDLL->getText("TXT_KEY_MISC_YOUR_UNITS_DAMAGED_BY_FLANKING",
 					getNameKey(), iNumUnitsHit);
-			gDLL->UI().addMessage(pSkipUnit->getOwner(), false, -1, szBuffer,
-					GC.getInfo(/* advc.002l: */ GET_PLAYER(pSkipUnit->getOwner())
-					.getCurrentEra()).getAudioUnitDefeatScript(), MESSAGE_TYPE_INFO, NULL,
-					GC.getColorType("RED"), pPlot->getX(), pPlot->getY());
+			gDLL->UI().addMessage(pSkipUnit->getOwner(), true, -1, szBuffer,
+					/*GC.getInfo(GET_PLAYER(pSkipUnit->getOwner()) // advc.002l
+					.getCurrentEra()).getAudioUnitDefeatScript()*/ NULL,
+					MESSAGE_TYPE_INFO, NULL, GC.getColorType("RED"),
+					pPlot->getX(), pPlot->getY());
 		}
 	}
 }
