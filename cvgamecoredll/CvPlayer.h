@@ -691,11 +691,11 @@ public:
 
     int getConnectedCityMaintenanceModifier();
     void changeConnectedCityMaintenanceModifier(int iChange);
-
-    int getHomeAreaMaintenanceModifier();
+	//doto - keldath added const - its needed to the code i added for civics on the player ai
+	int getHomeAreaMaintenanceModifier() const { return m_iHomeAreaMaintenanceModifier; }							// Exposed to Python
     void changeHomeAreaMaintenanceModifier(int iChange);
 
-    int getOtherAreaMaintenanceModifier();
+	int getOtherAreaMaintenanceModifier() const { return m_iOtherAreaMaintenanceModifier; }						// Exposed to Python
     void changeOtherAreaMaintenanceModifier(int iChange);
 //DPII < Maintenance Modifiers >
 

@@ -5463,7 +5463,8 @@ int CvCity::calculateBaseMaintenanceTimes100(
 			calculateHomeAreaMaintenanceTimes100(eOwner) + 
 			calculateOtherAreaMaintenanceTimes100(eOwner) +
 			calculateConnectedMaintenanceTimes100(eOwner) + 
-			calculateCoastalMaintenanceTimes100(eOwner);
+			calculateCoastalMaintenanceTimes100(eOwner) +
+			(std::max(0,(GET_PLAYER(getOwner()).getGlobalMaintenanceModifier()) + 100) / 100);
 	// advc.ctr: Anticipating corporation maintenance gets too complicated
 	if (eOwner == getOwner())
 		iR += calculateCorporationMaintenanceTimes100();
@@ -5480,7 +5481,7 @@ void CvCity::changeMaintenanceModifier(int iChange)
 	}
 }
 
-//DPII < Maintenance Modifiers >
+//DOTO-DPII < Maintenance Modifiers >
 void CvCity::changeLocalDistanceMaintenanceModifier(int iChange)
 {
 	if (iChange != 0)
@@ -5521,7 +5522,7 @@ void CvCity::changeLocalOtherAreaMaintenanceModifier(int iChange)
 		updateMaintenance();
 	}
 }
-//DPII < Maintenance Modifiers >
+//DOTO-DPII < Maintenance Modifiers >
 
 void CvCity::changeWarWearinessModifier(int iChange)
 {
@@ -5779,7 +5780,7 @@ void CvCity::goodBadHealthHappyChange(CvPlot const& kPlot, ImprovementTypes eNew
 /**  Date: 15.10.2009                                                                               **/
 /**  ModComp: TLOTags                                                                               **/
 /**  Reason Added: Enable Terrain Health Modifiers                                                  **/
-/**  Notes:                                                                                         **/
+/**  Notes:   DOTO-                                                                                       **/
 /*****************************************************************************************************/
 int CvCity::getTerrainGoodHealth() const
 {
@@ -5851,13 +5852,13 @@ void CvCity::updateTerrainHealth()
 	}
 }
 /*****************************************************************************************************/
-/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/**  TheLadiesOgre; 15.10.2009; TLOTags   DOTO-                                                          **/
 /*****************************************************************************************************/
 
 /*************************************************************************************************/
 /** Specialists Enhancements, by Supercheese 10/9/09                                                   */
 /**                                                                                              */
-/**                                                                                              */
+/**                    DOTO-                                                                          */
 /*************************************************************************************************/
 int CvCity::getSpecialistGoodHealth() const
 {
@@ -5948,7 +5949,7 @@ void CvCity::changeSpecialistUnhappiness(int iChange)
 	}
 }
 /*************************************************************************************************/
-/** Specialists Enhancements                          END                                              */
+/** Specialists Enhancements   DOTO-                       END                                              */
 /*************************************************************************************************/
 
 // BUG - Actual Effects - start
@@ -6168,7 +6169,7 @@ void CvCity::changeBonusBadHealth(int iChange)
 		setInfoDirty(true);
 }
 
-// < Civic Infos Plus Start >
+// DOTO-< Civic Infos Plus Start >
 int CvCity::getReligionGoodHealth() const
 {
 	return m_iReligionGoodHealth;
@@ -6243,7 +6244,7 @@ void CvCity::updateReligionHealth()
 		AI_setAssignWorkDirty(true);
 	}
 }
-// < Civic Infos Plus End   >
+// DOTO-< Civic Infos Plus End   >
 
 int CvCity::getMilitaryHappiness() const
 {
@@ -7804,7 +7805,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra) const
 	iModifier += getArea().getYieldRateModifier(getOwner(), eIndex);
 	iModifier += GET_PLAYER(getOwner()).getYieldRateModifier(eIndex);
 
-// < Civic Infos Plus Start >
+// DOTO-< Civic Infos Plus Start >
     if (GET_PLAYER(getOwner()).getStateReligion() != NO_RELIGION)
 	{
 		if (isHasReligion(GET_PLAYER(getOwner()).getStateReligion()))
@@ -7818,7 +7819,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra) const
 		}
 	}
 
-// < Civic Infos Plus End   >
+// DOTO-< Civic Infos Plus End   >
 
 	if (isCapital())
 		iModifier += GET_PLAYER(getOwner()).getCapitalYieldRateModifier(eIndex);
@@ -7862,7 +7863,7 @@ void CvCity::changeBaseYieldRate(YieldTypes eIndex, int iChange)
 	setBaseYieldRate(eIndex, getBaseYieldRate(eIndex) + iChange);
 }
 
-// < Civic Infos Plus Start >
+// DOTO-< Civic Infos Plus Start >
 void CvCity::updateBuildingYieldChange(CivicTypes eCivic, int iChange)
 {
 
@@ -7889,7 +7890,7 @@ void CvCity::updateBuildingYieldChange(CivicTypes eCivic, int iChange)
 		setInfoDirty(true);
 	}
 }
-// < Civic Infos Plus End   >
+// DOTO-< Civic Infos Plus End   >
 
 void CvCity::changeYieldRateModifier(YieldTypes eIndex, int iChange)
 {
@@ -7926,7 +7927,7 @@ void CvCity::changePowerYieldRateModifier(YieldTypes eIndex, int iChange)
 		setInfoDirty(true);
 }
 
-// < Civic Infos Plus Start >
+// DOTO-< Civic Infos Plus Start >
 //change from f1 advc to acctually work - keldath
 int CvCity::getStateReligionYieldRateModifier(YieldTypes eIndex) const {
    return GET_PLAYER(getOwner()).getStateReligionYieldRateModifier(eIndex);
@@ -8006,7 +8007,7 @@ void CvCity::changeNonStateReligionYieldRateModifier(YieldTypes eIndex, int iCha
 		}
 	}
 }
-// < Civic Infos Plus End   >
+// DOTO-< Civic Infos Plus End   >
 void CvCity::changeBonusYieldRateModifier(YieldTypes eIndex, int iChange)
 {
 	if (iChange == 0)
@@ -12519,9 +12520,9 @@ void CvCity::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iGameTurnFounded);
 	pStream->Read(&m_iGameTurnAcquired);
 	pStream->Read(&m_iPopulation);
-	/* Population Limit ModComp - Beginning */
+	/* DOTO-Population Limit ModComp - Beginning */
 	pStream->Read(&m_iPopulationLimitChange);
-	/* Population Limit ModComp - End */
+	/* DOTO-Population Limit ModComp - End */
 	pStream->Read(&m_iHighestPopulation);
 	pStream->Read(&m_iWorkingPopulation);
 	pStream->Read(&m_iSpecialistPopulation);
@@ -12536,13 +12537,13 @@ void CvCity::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iGovernmentCenterCount);
 	pStream->Read(&m_iMaintenance);
 	pStream->Read(&m_iMaintenanceModifier);
-	//DPII < Maintenance Modifiers >
+	//DOTO-DPII < Maintenance Modifiers >
 	pStream->Read(&m_iLocalDistanceMaintenanceModifier);
 	pStream->Read(&m_iLocalCoastalDistanceMaintenanceModifier);
 	pStream->Read(&m_iLocalConnectedCityMaintenanceModifier);
 	pStream->Read(&m_iLocalHomeAreaMaintenanceModifier);
 	pStream->Read(&m_iLocalOtherAreaMaintenanceModifier);
-	//DPII < Maintenance Modifiers >
+	//DOTO-DPII < Maintenance Modifiers >
 	pStream->Read(&m_iWarWearinessModifier);
 	pStream->Read(&m_iHurryAngerModifier);
 	pStream->Read(&m_iHealRate);
@@ -12557,7 +12558,7 @@ void CvCity::read(FDataStreamBase* pStream)
 /**  Date: 15.10.2009                                                                               **/
 /**  ModComp: TLOTags                                                                               **/
 /**  Reason Added: Enable Terrain Health Modifiers                                                  **/
-/**  Notes:                                                                                         **/
+/**  Notes:   DOTO-                                                                                      **/
 /*****************************************************************************************************/
 	pStream->Read(&m_iTerrainGoodHealth);
 	pStream->Read(&m_iTerrainBadHealth);
@@ -12567,7 +12568,7 @@ void CvCity::read(FDataStreamBase* pStream)
 /*************************************************************************************************/
 /** Specialists Enhancements, by Supercheese 10/9/09                                                   */
 /**                                                                                              */
-/**                                                                                              */
+/**        DOTO-                                                                                      */
 /*************************************************************************************************/
 	pStream->Read(&m_iSpecialistGoodHealth);
 	pStream->Read(&m_iSpecialistBadHealth);
@@ -12578,10 +12579,10 @@ void CvCity::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iBuildingBadHealth);
 	pStream->Read(&m_iPowerGoodHealth);
 	pStream->Read(&m_iPowerBadHealth);
-// < Civic Infos Plus Start >
+// DOTO-< Civic Infos Plus Start >
 	pStream->Read(&m_iReligionGoodHealth);
 	pStream->Read(&m_iReligionBadHealth);
-// < Civic Infos Plus End   >
+// DOTO-< Civic Infos Plus End   >
 	pStream->Read(&m_iBonusGoodHealth);
 	pStream->Read(&m_iBonusBadHealth);
 	pStream->Read(&m_iHurryAngerTimer);
@@ -12592,7 +12593,7 @@ void CvCity::read(FDataStreamBase* pStream)
 /*************************************************************************************************/
 /** Specialists Enhancements, by Supercheese 10/9/09                                                   */
 /**                                                                                              */
-/**                                                                                              */
+/**  DOTO-                                                                                            */
 /*************************************************************************************************/
 	pStream->Read(&m_iSpecialistHappiness);
 	pStream->Read(&m_iSpecialistUnhappiness);
@@ -12675,12 +12676,12 @@ void CvCity::read(FDataStreamBase* pStream)
 	m_aiYieldRateModifier.Read(pStream);
 	m_aiPowerYieldRateModifier.Read(pStream);
 	m_aiBonusYieldRateModifier.Read(pStream);
-	// < Civic Infos Plus Start >
+	// DOTO-< Civic Infos Plus Start >
 	//no need for these - f1 advc - STILL TRUE?
 	m_aiBuildingYieldChange.Read(pStream);
 	m_aiStateReligionYieldRateModifier.Read(pStream);
 	m_aiNonStateReligionYieldRateModifier.Read(pStream);
-	// < Civic Infos Plus End   >
+	// DOTO-< Civic Infos Plus End   >
 	m_aiTradeYield.Read(pStream);
 	m_aiCorporationYield.Read(pStream);
 	m_aiExtraSpecialistYield.Read(pStream);
@@ -12689,16 +12690,16 @@ void CvCity::read(FDataStreamBase* pStream)
 	m_aiBuildingCommerce.Read(pStream);
 	m_aiSpecialistCommerce.Read(pStream);
 	m_aiReligionCommerce.Read(pStream);
-	// < Civic Infos Plus Start >
+	// DOTO-< Civic Infos Plus Start >
 	//no need for these f1 advc - STILL TRUE?
 	m_aiStateReligionCommerceRateModifier.Read(pStream);
 	m_aiNonStateReligionCommerceRateModifier.Read(pStream);
 	m_aiBuildingCommerceChange.Read(pStream);
-	// < Civic Infos Plus End   >
+	// DOTO-< Civic Infos Plus End   >
 	m_aiCorporationCommerce.Read(pStream);
 	/*************************************************************************************************/
 	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
-	/**																								**/
+	/**DOTO-																								**/
 	/**																								**/
 	/*************************************************************************************************/	 
 	m_aiExtraSpecialistCommerce.Read(pStream);
@@ -12726,15 +12727,15 @@ void CvCity::read(FDataStreamBase* pStream)
 	m_aiNoBonus.Read(pStream);
 	m_aiFreeBonus.Read(pStream);
 	m_aiNumBonuses.Read(pStream);
-	// < Building Resource Converter Start >
+	// DOTO-< Building Resource Converter Start >
 	m_paiBuildingOutputBonuses.Read(pStream);
-	// < Building Resource Converter End   >
+	// DOTO-< Building Resource Converter End   >
 	m_aiNumCorpProducedBonuses.Read(pStream);
 	m_aiProjectProduction.Read(pStream);
 	m_aiBuildingProduction.Read(pStream);
 	m_aiBuildingProductionTime.Read(pStream);
 	m_aeBuildingOriginalOwner.Read(pStream);
-//prereqMust+tholish
+//DOTO-ACTIVE BUILDINGS+tholish
 	m_aiBuildingeActive.Read(pStream);
 	m_aiBuildingOriginalTime.Read(pStream);
 	m_aiUnitProduction.Read(pStream);
@@ -12865,9 +12866,9 @@ void CvCity::write(FDataStreamBase* pStream)
 	pStream->Write(m_iGameTurnFounded);
 	pStream->Write(m_iGameTurnAcquired);
 	pStream->Write(m_iPopulation);
-	/* Population Limit ModComp - Beginning */
+	/* DOTO-Population Limit ModComp - Beginning */
 	pStream->Write(m_iPopulationLimitChange);
-	/* Population Limit ModComp - End */
+	/* DOTO-Population Limit ModComp - End */
 	pStream->Write(m_iHighestPopulation);
 	pStream->Write(m_iWorkingPopulation);
 	pStream->Write(m_iSpecialistPopulation);
@@ -12882,13 +12883,13 @@ void CvCity::write(FDataStreamBase* pStream)
 	pStream->Write(m_iGovernmentCenterCount);
 	pStream->Write(m_iMaintenance);
 	pStream->Write(m_iMaintenanceModifier);
-	//DPII < Maintenance Modifiers >
+	//DOTO-DPII < Maintenance Modifiers >
 	pStream->Write(m_iLocalDistanceMaintenanceModifier);
 	pStream->Write(m_iLocalCoastalDistanceMaintenanceModifier);
 	pStream->Write(m_iLocalConnectedCityMaintenanceModifier);
 	pStream->Write(m_iLocalHomeAreaMaintenanceModifier);
 	pStream->Write(m_iLocalOtherAreaMaintenanceModifier);
-	//DPII < Maintenance Modifiers >
+	//DOTO-DPII < Maintenance Modifiers >
 	pStream->Write(m_iWarWearinessModifier);
 	pStream->Write(m_iHurryAngerModifier);
 	pStream->Write(m_iHealRate);
@@ -12903,7 +12904,7 @@ void CvCity::write(FDataStreamBase* pStream)
 /**  Date: 15.10.2009                                                                               **/
 /**  ModComp: TLOTags                                                                               **/
 /**  Reason Added: Enable Terrain Health Modifiers                                                  **/
-/**  Notes:                                                                                         **/
+/**  Notes: DOTO-                                                                                        **/
 /*****************************************************************************************************/
 	pStream->Write(m_iTerrainGoodHealth);
 	pStream->Write(m_iTerrainBadHealth);
@@ -12912,7 +12913,7 @@ void CvCity::write(FDataStreamBase* pStream)
 /*****************************************************************************************************/
 /*************************************************************************************************/
 /** Specialists Enhancements, by Supercheese 10/9/09                                                   */
-/**                                                                                              */
+/**                      DOTO-                                                                        */
 /**                                                                                              */
 /*************************************************************************************************/
 	pStream->Write(m_iSpecialistGoodHealth);
@@ -12937,7 +12938,7 @@ void CvCity::write(FDataStreamBase* pStream)
 	pStream->Write(m_iMilitaryHappinessUnits);
 /*************************************************************************************************/
 /** Specialists Enhancements, by Supercheese 10/9/09                                                   */
-/**                                                                                              */
+/**              DOTO-                                                                                */
 /**                                                                                              */
 /*************************************************************************************************/
 	pStream->Write(m_iSpecialistHappiness);
@@ -13017,12 +13018,12 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiYieldRateModifier.Write(pStream);
 	m_aiPowerYieldRateModifier.Write(pStream);
 	m_aiBonusYieldRateModifier.Write(pStream);
-	// < Civic Infos Plus Start >
+	// DOTO-< Civic Infos Plus Start >
 	// no need for these - f1 advc - STILL TRUE?
 	m_aiBuildingYieldChange.Write(pStream);
 	m_aiStateReligionYieldRateModifier.Write(pStream);
 	m_aiNonStateReligionYieldRateModifier.Write(pStream);
-	// < Civic Infos Plus End   >
+	// DOTO-< Civic Infos Plus End   >
 	m_aiTradeYield.Write(pStream);
 	m_aiCorporationYield.Write(pStream);
 	m_aiExtraSpecialistYield.Write(pStream);
@@ -13031,17 +13032,17 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiBuildingCommerce.Write(pStream);
 	m_aiSpecialistCommerce.Write(pStream);
 	m_aiReligionCommerce.Write(pStream);
-	// < Civic Infos Plus Start >
+	// DOTO-< Civic Infos Plus Start >
 	//no need for these f1 advc - STILL TRUE?
 	m_aiStateReligionCommerceRateModifier.Write(pStream);
 	m_aiNonStateReligionCommerceRateModifier.Write(pStream);
 	m_aiBuildingCommerceChange.Write(pStream);
-	// < Civic Infos Plus End   >
+	// DOTO-< Civic Infos Plus End   >
 	m_aiCorporationCommerce.Write(pStream);
 	/*************************************************************************************************/
 	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 	/**																								**/
-	/**																								**/
+	/**	DOTO-																							**/
 	/*************************************************************************************************/ 
 	m_aiExtraSpecialistCommerce.Write(pStream);
 	/*************************************************************************************************/
@@ -13066,15 +13067,15 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiNoBonus.Write(pStream);
 	m_aiFreeBonus.Write(pStream);
 	m_aiNumBonuses.Write(pStream);
-	// < Building Resource Converter Start >
+	// DOTO-< Building Resource Converter Start >
 	m_paiBuildingOutputBonuses.Write(pStream);
-	// < Building Resource Converter End   >
+	// DOTO-< Building Resource Converter End   >
 	m_aiNumCorpProducedBonuses.Write(pStream);
 	m_aiProjectProduction.Write(pStream);
 	m_aiBuildingProduction.Write(pStream);
 	m_aiBuildingProductionTime.Write(pStream);
 	m_aeBuildingOriginalOwner.Write(pStream);
-//prereqMust+tholish
+//DOTO-ACTOVE BUILDINGS+tholish
 	m_aiBuildingeActive.Write(pStream);
 	m_aiBuildingOriginalTime.Write(pStream);
 	m_aiUnitProduction.Write(pStream);
@@ -13328,7 +13329,7 @@ void CvCity::getCityBillboardSizeIconColors(NiColorA& kDotColor, NiColorA& kText
 
 	if (getTeam() == GC.getGame().getActiveTeam() /* advc.127: */ && isHuman())
 	{
-		/* Population Limit ModComp - Beginning */
+		/* DOTO-Population Limit ModComp - Beginning */
 		if (foodDifference() < 0 && getPopulation() < getPopulationLimit())
 		{
 			if ((foodDifference() == -1) && (getFood() >= ((75 * growthThreshold()) / 100)))
@@ -13352,7 +13353,7 @@ void CvCity::getCityBillboardSizeIconColors(NiColorA& kDotColor, NiColorA& kText
 			kDotColor = kStagnant;
 			kTextColor = kBlack;
 		}
-	/* Population Limit ModComp - End */
+	/* DOTO-Population Limit ModComp - End */
 	}
 	else
 	{
@@ -14508,15 +14509,15 @@ int CvCity::initialPopulation()
 {
 	return GC.getDefineINT("INITIAL_CITY_POPULATION") +
 			GC.getInfo(GC.getGame().getStartEra()).getFreePopulation();
-/* Population Limit ModComp - Beginning : The new cities can't have a population level higher than the authorized limit */			
+/* DOTO-Population Limit ModComp - Beginning : The new cities can't have a population level higher than the authorized limit */			
 	/*return std::min((GC.getDefineINT("INITIAL_CITY_POPULATION") +
 			GC.getEraInfo(GC.getGame().getStartEra()).getFreePopulation()), getPopulationLimit());*/
-/* Population Limit ModComp - End */
+/* DOTO-Population Limit ModComp - End */
 }
 
 // advc.004b, advc.104: Parameters added
 int CvCity::calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
-//DOTO-dpii
+//DOTO-dpii ADDED LOCAL DISTANCE MODIFER
 	PlayerTypes eOwner, int iPopulation, int iLocalDistance)
 {
 	if(iPopulation < 0)
@@ -14540,7 +14541,7 @@ int CvCity::calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
 		iTempMaintenance *= (iPopulation + 7);
 		iTempMaintenance /= 10;
 
-		//DOTO- dpii 
+		//DOTO- dpii ADDED LOCAL DISTANCE MODIFER
 		iTempMaintenance *= std::max(0, iLocalDistance + 100);
 		iTempMaintenance /= 100;
 		//DOTO- dpii 
@@ -14687,7 +14688,7 @@ int CvCity::calculateColonyMaintenanceTimes100(CvPlot const& kCityPlot,
 	FAssert(iMaintenance >= 0);
 	return iMaintenance;
 }
-//DPII < Maintenance Modifiers >
+//DOTODPII < Maintenance Modifiers >
 int CvCity::calculateHomeAreaMaintenanceTimes100(CvArea const& kArea, PlayerTypes eOwner, int iLocalHomeArea, bool capitalcity)
 {
 	CvPlayer const& kOwner = GET_PLAYER(eOwner);
@@ -14753,7 +14754,7 @@ int CvCity::calculateCoastalMaintenanceTimes100(int localCoastal, CvPlot const& 
 		return 0;
 }
 
-	//DPII < Maintenance Modifiers >
+//DOTODPII < Maintenance Modifiers >
 // advc.500b:
 scaled CvCity::defensiveGarrison(
 	scaled rStopCountingAt) const // Param important for performance
@@ -14874,7 +14875,7 @@ void CvCity::payOverflowGold(int iLostProduction, int iProductionGold)
 } // </advc.064b>
 /*************************************************************************************************/
 /** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
-/**                                                                                              */
+/**   DOTO                                                                                           */
 /** Original Author Moctezuma              Start                                                 */
 /*************************************************************************************************/
 // ------ BEGIN InfluenceDrivenWar -------------------------------
@@ -14941,9 +14942,10 @@ void CvCity::emergencyConscript()
 // ------ END InfluenceDrivenWar ---------------------------------
 /*************************************************************************************************/
 /** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
-/**                                                                                              */
+/**     DOTO                                                                                         */
 /** Original Author Moctezuma              End                                                   */
 /*************************************************************************************************/
+//DOTO ACTIVE BUILDING AND THOLISH
 //Tholish UnbuildableBuildingDeletion START
 bool CvCity::canKeep(BuildingTypes eBuilding) const
 {
@@ -15110,8 +15112,8 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 return true;
 }
 //Tholish UnbuildableBuildingDeletion END
-//prereqMust+tholish
-//old version
+//DOTO ACTIVE BUILDINGS tholish
+//old versionLIMITED FUNCS.
 /*
 void CvCity::defuseBuilding(BuildingTypes eBuilding)
 {
@@ -15151,11 +15153,11 @@ void CvCity::activateBuilding(BuildingTypes eBuilding)
 	}
 }
 */
+//DOTO ACTIVE BULDINGS + THOLISH
+//this is a duplicated function , that sets to 0 all the items, if the prereq for a building (cankeep)
+//is false.
 void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsolete)
 {
-	// <advc>
-//prereqMust+tholish
-	
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
 	CvGame const& kGame = GC.getGame();
 	CvPlayer& kOwner = GET_PLAYER(getOwner()); // </advc>
@@ -15492,3 +15494,4 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 		} // </advc.004w>
 	}
 }
+//DOTO active buildings

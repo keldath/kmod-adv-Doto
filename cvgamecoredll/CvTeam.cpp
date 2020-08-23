@@ -3863,6 +3863,7 @@ void CvTeam::changeProjectCount(ProjectTypes eIndex, int iChange)  // advc: styl
 		
 		//DPII < Maintenance Modifiers > 
 		//keldath - placed below as f1rpo suggested in a separate loop - but can be here also
+		//SEE BELOW
       /*  kAIMember.changeMaintenanceModifier(GC.getInfo(eIndex).getGlobalMaintenanceModifier());
         kAIMember.changeDistanceMaintenanceModifier(GC.getInfo(eIndex).getDistanceMaintenanceModifier());
         kAIMember.changeNumCitiesMaintenanceModifier(GC.getInfo(eIndex).getNumCitiesMaintenanceModifier());
@@ -3892,8 +3893,7 @@ void CvTeam::changeProjectCount(ProjectTypes eIndex, int iChange)  // advc: styl
     	it->changeDistanceMaintenanceModifier(GC.getInfo(eIndex).getDistanceMaintenanceModifier());
     	it->changeNumCitiesMaintenanceModifier(GC.getInfo(eIndex).getNumCitiesMaintenanceModifier());
     	it->changeConnectedCityMaintenanceModifier(GC.getInfo(eIndex).getConnectedCityMaintenanceModifier());
-	} //DPII </ Maintenance Modifiers >
-	
+	} //DPII </ Maintenance Modifiers >	
 	if (GC.getGame().isFinalInitialized() && !gDLL->GetWorldBuilderMode())
 	{
 		CvWString szBuffer = gDLL->getText( // <advc.008e>

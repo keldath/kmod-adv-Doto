@@ -12096,6 +12096,77 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 	    }
 	}
     //DPII < Maintenance Modifiers >
+//DOTO-DPII < local Maintenance Modifiers >
+    	if (kBuilding.getLocalDistanceMaintenanceModifier() != 0)
+	{
+		if (kBuilding.getLocalDistanceMaintenanceModifier() <= -100)
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_LOCAL_DISTANCE_MAINT"));
+		}
+		else
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_LOCAL_DISTANCE_MAINT_MOD", kBuilding.getDistanceMaintenanceModifier()));
+		}
+	}
+
+	if (kBuilding.getLocalCoastalDistanceMaintenanceModifier() != 0)
+	{
+	    if (kBuilding.getLocalCoastalDistanceMaintenanceModifier() <= -100)
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_COASTAL_LOCAL_DISTANCE_MAINT"));
+	    }
+	    else
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_COASTAL_LOCAL_DISTANCE_MAINT_MOD", kBuilding.getCoastalDistanceMaintenanceModifier()));
+	    }
+	}
+
+	if (kBuilding.getLocalConnectedCityMaintenanceModifier() != 0)
+	{
+	    if (kBuilding.getLocalConnectedCityMaintenanceModifier() <= -100)
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_CONNECTED_LOCAL_CITY_MAINT"));
+	    }
+	    else
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_CONNECTED_LOCAL_CITY_MAINT_MOD", kBuilding.getConnectedCityMaintenanceModifier()));
+	    }
+	}
+
+	if (kBuilding.getLocalHomeAreaMaintenanceModifier() != 0)
+	{
+	    if (kBuilding.getLocalHomeAreaMaintenanceModifier() <= -100)
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_CONTINENTAL_LOCAL_CITY_MAINT"));
+	    }
+	    else
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_CONTINENTAL_LOCAL_CITY_MAINT_MOD", kBuilding.getAreaMaintenanceModifier()));
+	    }
+	}
+
+	if (kBuilding.getLocalOtherAreaMaintenanceModifier() != 0)
+	{
+	    if (kBuilding.getLocalOtherAreaMaintenanceModifier() <= -100)
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_OVERSEAS_CITY_MAINT"));
+	    }
+	    else
+	    {
+			szBuffer.append(NEWLINE);
+	       szBuffer.append(gDLL->getText("TXT_KEY_OVERSEAS_LOCAL_CITY_MAINT_MOD", kBuilding.getOtherAreaMaintenanceModifier()));
+	    }
+	}
+    //DPII < Maintenance Modifiers >
 	if (kBuilding.getHurryAngerModifier() != 0)
 	{
 		szBuffer.append(NEWLINE);

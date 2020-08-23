@@ -216,6 +216,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iConquestProb>0</iConquestProb>
+<!--dont do for palace... -->
 			<iCitiesPrereq>0</iCitiesPrereq>
 			<iTeamsPrereq>0</iTeamsPrereq>
 			<iLevelPrereq>0</iLevelPrereq>
@@ -242,20 +243,20 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iAreaFreeSpecialist>0</iAreaFreeSpecialist>
 			<iGlobalFreeSpecialist>0</iGlobalFreeSpecialist>
 			<iMaintenanceModifier>0</iMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers  -->
+			<!--DPII < global Maintenance Modifiers  -->
 			<iGlobalMaintenanceModifier>0</iGlobalMaintenanceModifier>
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
 			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
 			<iConnectedCityMaintenanceModifier>0</iConnectedCityMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<!--DPII < Maintenance Modifiers  -->
+			<!--DPII < global Maintenance Modifiers > -->
+			<!--DPII <Local Maintenance Modifiers  -->
 			<iLocalDistanceMaintenanceModifier>0</iLocalDistanceMaintenanceModifier>
 			<iLocalOtherAreaMaintenanceModifier>0</iLocalOtherAreaMaintenanceModifier>
 			<iLocalCoastalDistanceMaintenanceModifier>0</iLocalCoastalDistanceMaintenanceModifier>
 			<iLocalConnectedCityMaintenanceModifier>0</iLocalConnectedCityMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
+			<!--DPII <Local Maintenance Modifiers > -->
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
 			<iEnemyWarWearinessModifier>0</iEnemyWarWearinessModifier>

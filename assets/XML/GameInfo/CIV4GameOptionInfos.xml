@@ -5,8 +5,7 @@
 <!-- -->
 <!-- Game Option -->
 <Civ4GameOptionInfos xmlns="x-schema:CIV4GameInfoSchema.xml">
-	<GameOptionInfos>
-	
+	<GameOptionInfos>	
 		<GameOptionInfo>
 			<Type>GAMEOPTION_ADVANCED_START</Type>
 			<Description>TXT_KEY_GAME_OPTION_ADVANCED_START</Description>

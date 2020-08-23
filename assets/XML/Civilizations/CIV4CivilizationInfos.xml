@@ -4757,7 +4757,9 @@
 			<ShortDescription>Israel</ShortDescription>
 			<Adjective>Israeli</Adjective>
 			<Civilopedia>Israel My Home</Civilopedia>
-			<DefaultPlayerColor>PLAYERCOLOR_ISRABLUE</DefaultPlayerColor>
+		<!--<DefaultPlayerColor>PLAYERCOLOR_ISRABLUE</DefaultPlayerColor>
+			<ArtDefineTag>ART_DEF_CIVILIZATION_ISRAEL</ArtDefineTag>-->
+			<DefaultPlayerColor>PLAYERCOLOR_ISRAEL_BLUE</DefaultPlayerColor>
 			<ArtDefineTag>ART_DEF_CIVILIZATION_ISRAEL</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_MIDDLE_EAST</ArtStyleType>
 			<UnitArtStyleType>UNIT_ARTSTYLE_MIDDLE_EAST</UnitArtStyleType>

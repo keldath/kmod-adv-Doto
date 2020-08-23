@@ -965,7 +965,7 @@
 		    <fGreen>0.00</fGreen>
 			<fBlue>0.50</fBlue>
 			<fAlpha>1.00</fAlpha>
-		</ColorVal>
+<!--		</ColorVal>
 		<ColorVal>
 			<Type>COLOR_PLAYER_ISRAEL</Type>
 			<fRed>0.10</fRed>
@@ -978,6 +978,20 @@
 			<fRed>0.65</fRed>
 			<fGreen>0.49</fGreen>
 			<fBlue>0.78</fBlue>
+			<fAlpha>1.00</fAlpha>
+-->		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_PLAYER_ISRAEL_BLUE</Type>
+			<fRed>0.05</fRed>
+			<fGreen>0.28</fGreen>
+			<fBlue>0.85</fBlue>
+			<fAlpha>1.00</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_PLAYER_ISRAEL_BLUE_TEXT</Type>
+			<fRed>0.191</fRed>
+			<fGreen>0.421</fGreen>
+			<fBlue>0.891</fBlue>
 			<fAlpha>1.00</fAlpha>
 		</ColorVal>
 	</ColorVals>

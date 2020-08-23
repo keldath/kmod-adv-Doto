@@ -15375,7 +15375,42 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 		iValue -= iTemp * kCivic.getDistanceMaintenanceModifier() / 10000;
 	}
 	// K-Mod end
+//DOTO- PLAYER AI ADDITION - DPII < Maintenance Modifiers >
+	if (kCivic.getHomeAreaMaintenanceModifier() != 0)
+	{
+		PROFILE("civicValue: HomeAreaMaintenance");
+		int iTemp = 0;
+		FOR_EACH_CITY(pLoopCity, *this)
+		{
+			iTemp += pLoopCity->calculateHomeAreaMaintenanceTimes100() *
+				(pLoopCity->getMaintenanceModifier() + 100) / 100;
+		}
+		iTemp *= 100;
+		iTemp /= std::max(1, getHomeAreaMaintenanceModifier() + 100);
 
+		iTemp *= iMaintenanceFactor;
+		iTemp /= 100;
+
+		iValue -= iTemp * kCivic.getHomeAreaMaintenanceModifier() / 10000;
+	}
+	if (kCivic.getOtherAreaMaintenanceModifier() != 0)
+	{
+		PROFILE("civicValue: OtherAreaMaintenance");
+		int iTemp = 0;
+		FOR_EACH_CITY(pLoopCity, *this)
+		{
+			iTemp += pLoopCity->calculateOtherAreaMaintenanceTimes100() *
+				(pLoopCity->getMaintenanceModifier() + 100) / 100;
+		}
+		iTemp *= 100;
+		iTemp /= std::max(1, getOtherAreaMaintenanceModifier() + 100);
+
+		iTemp *= iMaintenanceFactor;
+		iTemp /= 100;
+
+		iValue -= iTemp * kCivic.getOtherAreaMaintenanceModifier() / 10000;
+	}
+//DOTO- PLAYER AI ADDITION - DPII < Maintenance Modifiers >
 	/*iValue += ((kCivic.getWorkerSpeedModifier() * AI_getNumAIUnits(UNITAI_WORKER)) / 15);
 	iValue += ((kCivic.getImprovementUpgradeRateModifier() * iCities) / 50);
 	iValue += (kCivic.getMilitaryProductionModifier() * iCities * iWarmongerPercent) / (bWarPlan ? 300 : 500);

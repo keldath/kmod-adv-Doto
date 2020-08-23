@@ -1215,7 +1215,7 @@ void CvPlayer::addFreeUnit(UnitTypes eUnit, UnitAITypes eUnitAI)
 		return;
 
 	CvPlot* pBestPlot = NULL;
-//DOTO-keldath saame plot start for all units-
+//DOTO-keldath same plot start for all units-
 /*
 	//if (isHuman())
 	if(eUnitAI == UNITAI_EXPLORE && // advc.108
@@ -8549,11 +8549,12 @@ void CvPlayer::changeConnectedCityMaintenanceModifier(int iChange)
         updateMaintenance();
     }
 }
-
+/* doto moved to header -due to code in player ai for civics
 int CvPlayer::getHomeAreaMaintenanceModifier()
 {
     return m_iHomeAreaMaintenanceModifier;
 }
+*/
 void CvPlayer::changeHomeAreaMaintenanceModifier(int iChange)
 {
     if (iChange != 0)
@@ -8563,11 +8564,12 @@ void CvPlayer::changeHomeAreaMaintenanceModifier(int iChange)
         updateMaintenance();
     }
 }
+/*doto moved to header -due to code in player ai for civics
 int CvPlayer::getOtherAreaMaintenanceModifier()
 {
     return m_iOtherAreaMaintenanceModifier;
 }
-
+*/
 void CvPlayer::changeOtherAreaMaintenanceModifier(int iChange)
 {
     if (iChange != 0)
@@ -10977,47 +10979,18 @@ int CvPlayer::getSingleCivicUpkeep(CivicTypes eCivic, bool bIgnoreAnarchy,
 		iUpkeep /= 100;*/
 	}
 //DOTO - initial civics cost untill inflation starts
-	int minCivicCost = GC.getInfo((UpkeepTypes)GC.getInfo(eCivic).getUpkeep()).getminUpkeepCost();
-	int iCitiesTarget = getNumCities() / GC.getInfo(GC.getMap().getWorldSize()).getTargetNumCities();
-	iUpkeep += minCivicCost + iCitiesTarget;
-/*	if (iUpkeep == 0) 
-	{	
-		int citiesMultip = 1;
-		switch (getNumCities())
-		{
-		case 0:
-			citiesMultip = 0;
-		case 1:
-		case 2:
-		case 3:
-			citiesMultip = 1;
-			break;
-		case 4:
-		case 5:
-		case 6:
-			citiesMultip = 2;
-			break;
-		case 7:
-		case 8:
-			citiesMultip = 4;
-			break;
-		case 9:
-			citiesMultip = 6;
-			break;
-		case 10:
-			citiesMultip = 7;
-			break;
-		default:
-			citiesMultip = 10;
-			break;
-		}
-		iUpkeep = minCivicCost  * citiesMultip;
-	}
-	else 
+//if upkeeo num is higher than num of cities, pay.
+	if (iUpkeep == 0) 
 	{
-		iUpkeep += minCivicCost - 1;
-	}
-*/
+		
+		int minCivicCost = GC.getInfo((UpkeepTypes)GC.getInfo(eCivic).getUpkeep()).getminUpkeepCost();
+		int iCitiesNum = getNumCities();
+		if (minCivicCost >  iCitiesNum)
+		{
+			iUpkeep +=  std::max(1, minCivicCost - iCitiesNum);	
+		}
+	}	
+
 
 	return std::max(0, iUpkeep);
 }

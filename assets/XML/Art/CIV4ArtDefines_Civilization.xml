@@ -224,9 +224,13 @@
 		</CivilizationArtInfo>
 		<CivilizationArtInfo>
 			<Type>ART_DEF_CIVILIZATION_ISRAEL</Type>
-			<Button>,Art/Interface/Buttons/Civilizations/Israel.dds</Button>
+			<!--<Button>,Art/Interface/Buttons/Civilizations/Israel.dds</Button>
 			<Path>Art/Interface/TeamColor/FlagDECAL_Israel.dds</Path>
 			<bWhiteFlag>0</bWhiteFlag>
+			-->
+			<Button>,Art/Interface/Buttons/Civilizations/FlagButton.dds</Button>
+			<Path>Art/Interface/TeamColor/IsraelFlag.dds</Path>
+			<bWhiteFlag>1</bWhiteFlag>
 		</CivilizationArtInfo>
 	</CivilizationArtInfos>
 </Civ4ArtDefines>
