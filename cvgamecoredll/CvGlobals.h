@@ -394,24 +394,26 @@ public:
 	void cacheGlobals();
 
 	// ***** EXPOSED TO PYTHON *****
-	DllExport inline int getDefineINT(const char * szName) const
+	DllExport inline int getDefineINT(char const* szName) const
 	{
 		return getDefineINT(szName, 0); // advc.opt: Call the BBAI version
 	}
 	// BETTER_BTS_AI_MOD, Efficiency, Options, 02/21/10, jdog5000:
-	int getDefineINT(const char * szName, const int iDefault) const;
+	int getDefineINT(char const* szName, int iDefault) const;
 	// <advc>
-	inline bool getDefineBOOL(const char * szName, const bool bDefault = false) const
+	inline bool getDefineBOOL(char const* szName, bool bDefault = false) const
 	{
 		return (getDefineINT(szName, (int)bDefault) > 0);
 	} // </advc>
-	DllExport float getDefineFLOAT(const char * szName) const;
-	DllExport const char * getDefineSTRING(const char * szName) const;
+	DllExport float getDefineFLOAT(char const* szName) const;
+	/*	advc (note): Global TextVals loaded by CvXMLLoadUtility::
+		SetPostGlobalsGlobalDefines need to be accessed through getDefineINT instead. */
+	DllExport const char* getDefineSTRING(char const* szName) const;
 	/*  advc.opt: Params for suppressing cache update added. False for string b/c
 		there are none that we could update. */
-	void setDefineINT(const char * szName, int iValue, bool bUpdateCache = true);
-	void setDefineFLOAT(const char * szName, float fValue, bool bUpdateCache = true);
-	void setDefineSTRING(const char * szName, const char * szValue, bool bUpdateCache = false);
+	void setDefineINT(char const* szName, int iValue, bool bUpdateCache = true);
+	void setDefineFLOAT(char const* szName, float fValue, bool bUpdateCache = true);
+	void setDefineSTRING(char const* szName, char const* szValue, bool bUpdateCache = false);
 	// advc.opt:
 #pragma region GlobalDefines
 	/*  Access cached integer GlobalDefines through enum values
@@ -683,7 +685,7 @@ public:
 	inline float getSHADOW_SCALE() const { return m_fSHADOW_SCALE; }
 	DllExport inline float getUNIT_MULTISELECT_DISTANCE() { CvGlobals const& kThis = *this; return kThis.getUNIT_MULTISELECT_DISTANCE(); }
 	inline float getUNIT_MULTISELECT_DISTANCE() const { return m_fUNIT_MULTISELECT_DISTANCE; }
-	void updateCameraStartDistance(); // advc.004m
+	void updateCameraStartDistance(bool bReset); // advc.004m  (exposed to Python)
 
 	DllExport int getUSE_FINISH_TEXT_CALLBACK();
 	// advc.003y: Moved the other callback getters to CvPythonCaller

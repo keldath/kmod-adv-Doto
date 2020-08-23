@@ -1555,7 +1555,8 @@ void CvUnit::updateCombat(bool bQuick)
 					iWS, getTeam(), pDefender->getTeam(), true);
 			}
 		} // <advc.130m>
-
+		//DOTO - need to adapt to the below function-todo. from advc 098 23082020
+		//addDefenseSuccessMessages(*pDefender); // advc: Moved into new function
 		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DIED_ATTACKING",
 				getNameKeyNoGG(), // advc.004u
 				pDefender->getNameKey());
@@ -1669,7 +1670,7 @@ void CvUnit::updateCombat(bool bQuick)
 		} // <advc.130m>
 
 		//addAttackSuccessMessages(*pDefender, true); // advc.010: Moved into new function
-		//DOTO-keldath new from 22082020 need to convert idw to this new fn	
+		//DOTO-keldath new from 22082020 need to convert idw to this new fn	 - todo
 
 		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", getNameKey(),
 				pDefender->getNameKeyNoGG()); // advc.004u
@@ -1859,14 +1860,15 @@ void CvUnit::updateCombat(bool bQuick)
 	}
 }
 
-// advc.010: Cut from resolveCombat. Used for killed noncombatants when bFought=false.
+// advc.010: Cut from resolveCombat. Used for killed noncombatants with bFought=false.
 void CvUnit::addAttackSuccessMessages(CvUnit const& kDefender, bool bFought) const
 {
+	bool const bSound = !suppressStackAttackSound(kDefender); // advc.002l
 	CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY",
 			getNameKey(), /* advc.004u: */ kDefender.getNameKeyNoGG());
 	CvPlot const& kPlot = kDefender.getPlot();
-	gDLL->UI().addMessage(getOwner(), bFought, -1, szBuffer, bFought ? GC.getInfo(
-			GET_PLAYER(getOwner()) // advc.002l
+	gDLL->UI().addMessage(getOwner(), bFought, -1, szBuffer, bFought &&
+			bSound ? GC.getInfo(GET_PLAYER(getOwner()) // advc.002l
 			.getCurrentEra()).getAudioUnitVictoryScript()
 			: NULL, // advc.010: No victory sound for killing noncombatant
 			MESSAGE_TYPE_INFO, NULL,
@@ -1883,10 +1885,53 @@ void CvUnit::addAttackSuccessMessages(CvUnit const& kDefender, bool bFought) con
 				kDefender.getNameKeyNoGG(), // advc.004u
 				getNameKey(), getVisualCivAdjective(kDefender.getTeam()));
 	}
-	gDLL->UI().addMessage(kDefender.getOwner(), bFought, -1, szBuffer, GC.getInfo(
-			GET_PLAYER(kDefender.getOwner()) // advc.002l
-			.getCurrentEra()).getAudioUnitDefeatScript(), MESSAGE_TYPE_INFO, NULL,
-			GC.getColorType("RED"), kPlot.getX(), kPlot.getY());
+	gDLL->UI().addMessage(kDefender.getOwner(), bFought, -1, szBuffer,
+			bSound ? GC.getInfo(GET_PLAYER(kDefender.getOwner()) // advc.002l
+			.getCurrentEra()).getAudioUnitDefeatScript() /* advc.002l: */ : NULL,
+			MESSAGE_TYPE_INFO, NULL, GC.getColorType("RED"), kPlot.getX(), kPlot.getY());
+}
+
+// advc: Cut from resolveCombat - just to be consistent with addAttackSuccessMessages.
+void CvUnit::addDefenseSuccessMessages(CvUnit const& kDefender) const
+{
+	bool const bSound = !suppressStackAttackSound(kDefender);
+	CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DIED_ATTACKING",
+			getNameKeyNoGG(), // advc.004u
+			kDefender.getNameKey());
+	CvPlot const& kPlot = kDefender.getPlot();
+	gDLL->UI().addMessage(getOwner(), true, -1, szBuffer,
+			bSound ? GC.getInfo(GET_PLAYER(getOwner()) // advc.002l
+			.getCurrentEra()).getAudioUnitDefeatScript() /* 002l: */ : NULL,
+			MESSAGE_TYPE_INFO, NULL, GC.getColorType("RED"),
+			kPlot.getX(), kPlot.getY());
+	szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_KILLED_ENEMY_UNIT", kDefender.getNameKey(),
+			getNameKeyNoGG(), // advc.004u
+			getVisualCivAdjective(kDefender.getTeam()));
+	gDLL->UI().addMessage(kDefender.getOwner(),
+			true, -1, szBuffer,
+			bSound ? GC.getInfo(GET_PLAYER(kDefender.getOwner()) // advc.002l
+			.getCurrentEra()).getAudioUnitVictoryScript() /* advc.002l: */ : NULL,
+			MESSAGE_TYPE_INFO, NULL, GC.getColorType("GREEN"),
+			kPlot.getX(), kPlot.getY());
+}
+
+// advc.002l:
+bool CvUnit::suppressStackAttackSound(CvUnit const& kDefender) const
+{
+	if (getOwner() != GC.getGame().getActivePlayer())
+		return false;
+	CvSelectionGroup const* pAttackGroup = gDLL->UI().getSelectionList();
+	if (pAttackGroup == NULL ||
+		!GET_PLAYER(getOwner()).isOption(PLAYEROPTION_STACK_ATTACK))
+	{
+		return false;
+	}
+	/*	Play sound for final attack. (Apparently, 2 units remain selected
+		at that point - don't know why. */
+	if (pAttackGroup->getNumUnits() <= 2)
+		return false;
+	// Also the final attack if we're running out of defenders
+	return (kDefender.getPlot().getNumVisibleEnemyDefenders(this) > 1);
 }
 
 
@@ -6415,6 +6460,8 @@ void CvUnit::promote(PromotionTypes ePromotion, int iLeaderUnitId)
 	if (!canPromote(ePromotion, iLeaderUnitId))
 		return;
 
+	bool bSound = true; // advc.002l
+
 	if (iLeaderUnitId >= 0)
 	{
 		CvUnit* pWarlord = GET_PLAYER(getOwner()).getUnit(iLeaderUnitId);
@@ -6427,7 +6474,26 @@ void CvUnit::promote(PromotionTypes ePromotion, int iLeaderUnitId)
 			m_eLeaderUnitType = pWarlord->getUnitType();
 			reloadEntity();
 		}
-	}
+	}  // <advc.002l>
+	else if (IsSelected())
+	{
+		int iSelectedCanPromote = 0;
+		for (CLLNode<IDInfo> const* pNode = gDLL->UI().headSelectionListNode();
+			pNode != NULL; pNode = gDLL->UI().nextSelectionListNode(pNode))
+		{
+			CvUnit const* pUnit = ::getUnit(pNode->m_data);
+			if (pUnit != NULL && pUnit->canPromote(ePromotion, iLeaderUnitId))
+			{
+				iSelectedCanPromote++;
+				// Play sound only for the last promoted unit in a selected stack
+				if (iSelectedCanPromote > 1)
+				{
+					bSound = false;
+					break;
+				}
+			}
+		}
+	} // </advc.002l>
 
 	if (!GC.getInfo(ePromotion).isLeader())
 	{
@@ -6441,7 +6507,8 @@ void CvUnit::promote(PromotionTypes ePromotion, int iLeaderUnitId)
 
 	if (IsSelected())
 	{
-		gDLL->UI().playGeneralSound(GC.getInfo(ePromotion).getSound());
+		if (bSound) // advc.002l
+			gDLL->UI().playGeneralSound(GC.getInfo(ePromotion).getSound());
 
 		gDLL->UI().setDirty(UnitInfo_DIRTY_BIT, true);
 		gDLL->getFAStarIFace()->ForceReset(&GC.getInterfacePathFinder()); // K-Mod.
@@ -10983,9 +11050,9 @@ void CvUnit::flankingStrikeCombat(const CvPlot* pPlot, int iAttackerStrength,
 	{
 		CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_DAMAGED_UNITS_BY_FLANKING",
 				getNameKey(), iNumUnitsHit);
-		// advc.106: No sound and bForce=true (for both messages)
+		// advc.002l: No sound and bForce=true (for both messages)
 		gDLL->UI().addMessage(getOwner(), true, -1, szBuffer,
-				/*GC.getInfo(GET_PLAYER(getOwner()) // advc.002l
+				/*GC.getInfo(GET_PLAYER(getOwner())
 				.getCurrentEra()).getAudioUnitVictoryScript()*/ NULL,
 				MESSAGE_TYPE_INFO, NULL, GC.getColorType("GREEN"),
 				pPlot->getX(), pPlot->getY());
@@ -10994,7 +11061,7 @@ void CvUnit::flankingStrikeCombat(const CvPlot* pPlot, int iAttackerStrength,
 			szBuffer = gDLL->getText("TXT_KEY_MISC_YOUR_UNITS_DAMAGED_BY_FLANKING",
 					getNameKey(), iNumUnitsHit);
 			gDLL->UI().addMessage(pSkipUnit->getOwner(), true, -1, szBuffer,
-					/*GC.getInfo(GET_PLAYER(pSkipUnit->getOwner()) // advc.002l
+					/*GC.getInfo(GET_PLAYER(pSkipUnit->getOwner())
 					.getCurrentEra()).getAudioUnitDefeatScript()*/ NULL,
 					MESSAGE_TYPE_INFO, NULL, GC.getColorType("RED"),
 					pPlot->getX(), pPlot->getY());
