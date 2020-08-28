@@ -10982,13 +10982,7 @@ int CvPlayer::getSingleCivicUpkeep(CivicTypes eCivic, bool bIgnoreAnarchy,
 //if upkeeo num is higher than num of cities, pay.
 	if (iUpkeep == 0) 
 	{
-		
-		int minCivicCost = GC.getInfo((UpkeepTypes)GC.getInfo(eCivic).getUpkeep()).getminUpkeepCost();
-		int iCitiesNum = getNumCities();
-		if (minCivicCost >  iCitiesNum)
-		{
-			iUpkeep +=  std::max(1, minCivicCost - iCitiesNum);	
-		}
+		iUpkeep += GC.getInfo((UpkeepTypes)GC.getInfo(eCivic).getUpkeep()).getminUpkeepCost();
 	}	
 
 

@@ -26,6 +26,7 @@ import BugUtil
 AdvisorOpt = BugCore.game.Advisors
 ScoreOpt = BugCore.game.Scores
 #BUG: Change Graphs - end
+import copy # advc.091
 
 # globals
 gc = CyGlobalContext()

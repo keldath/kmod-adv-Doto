@@ -14693,61 +14693,58 @@ int CvCity::calculateHomeAreaMaintenanceTimes100(CvArea const& kArea, PlayerType
 {
 	CvPlayer const& kOwner = GET_PLAYER(eOwner);
 	CvCity* pCapital = kOwner.getCapitalCity();
-	int iTempMaintenance = 100;
+	int iTempMaintenance = 0;
 	if (pCapital != NULL && !capitalcity)//capital should pay for being in its own area...
 	{
 		if (pCapital->isArea(kArea))
 		{
-			iTempMaintenance *= std::max(0, GET_PLAYER(eOwner).getHomeAreaMaintenanceModifier() + 100);
+			iTempMaintenance = std::max(0, GET_PLAYER(eOwner).getHomeAreaMaintenanceModifier() + 100);
 			iTempMaintenance /= 100;
-			iTempMaintenance *= std::max(0, iLocalHomeArea + 100) ;
+			iTempMaintenance += std::max(0, iLocalHomeArea + 100) ;
 			iTempMaintenance /= 100;
-			return iTempMaintenance;
 		}
 	}
-	return 0;
+	return iTempMaintenance;
 }
 
 int CvCity::calculateOtherAreaMaintenanceTimes100(CvArea const& kArea, PlayerTypes eOwner, int iLocalOtherArea)
 {
 	CvPlayer const& kOwner = GET_PLAYER(eOwner);
 	CvCity* pCapital = kOwner.getCapitalCity();
-	int iTempMaintenance = 100;
+	int iTempMaintenance = 0;
 	if (pCapital != NULL)
 	{//!pCapital->isArea(kArea)(pCapital->area() != &kArea)
 		if (!pCapital->isArea(kArea))
 		{
-			iTempMaintenance *= std::max(0, GET_PLAYER(eOwner).getOtherAreaMaintenanceModifier() + 100);
+			iTempMaintenance = std::max(0, GET_PLAYER(eOwner).getOtherAreaMaintenanceModifier() + 100);
 			iTempMaintenance /= 100;
-			iTempMaintenance *= std::max(0, iLocalOtherArea + 100);
+			iTempMaintenance += std::max(0, iLocalOtherArea + 100);
 			iTempMaintenance /= 100;
-			return iTempMaintenance;
 		}
 	}
-	return 0;
+	return iTempMaintenance;
 }
 int CvCity::calculateConnectedMaintenanceTimes100(PlayerTypes eOwner, bool iCheckConnection, int iLocalConnected)
 {
-		int iTempMaintenance = 100;
+	int iTempMaintenance = 0;
 		if (iCheckConnection)
 		{
-			iTempMaintenance *= std::max(0, GET_PLAYER(eOwner).getConnectedCityMaintenanceModifier() + 100);
+			iTempMaintenance = std::max(0, GET_PLAYER(eOwner).getConnectedCityMaintenanceModifier() + 100);
 			iTempMaintenance /= 100;
-			iTempMaintenance *= std::max(0, iLocalConnected + 100);
+			iTempMaintenance += std::max(0, iLocalConnected + 100);
 			iTempMaintenance /= 100;
-			return iTempMaintenance;
 		}
-		return 0;
+		return iTempMaintenance;
 }
 
 int CvCity::calculateCoastalMaintenanceTimes100(int localCoastal, CvPlot const& kCityPlot, PlayerTypes eOwner,bool capitalcitynConn)
 {
-		int iTempMaintenance = 100;
+	int iTempMaintenance;// = 100;
 		if (kCityPlot.isCoastalLand(GC.getDefineINT(CvGlobals::MIN_WATER_SIZE_FOR_OCEAN)) && capitalcitynConn) //dont apply to capital and not if its connected to capital
 		{
-			iTempMaintenance *= std::max(0, GET_PLAYER(eOwner).getCoastalDistanceMaintenanceModifier() + 100);
+			iTempMaintenance = std::max(0, GET_PLAYER(eOwner).getCoastalDistanceMaintenanceModifier() + 100);
 			iTempMaintenance /= 100;
-			iTempMaintenance *= std::max(0, localCoastal + 100);
+			iTempMaintenance += std::max(0, localCoastal + 100);
 			iTempMaintenance /= 100;
 			return iTempMaintenance;
 		}

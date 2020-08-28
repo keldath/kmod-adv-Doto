@@ -3172,15 +3172,16 @@ void CvUnitAI::AI_attackCityMove()
 				}
 				else
 				{
+					//rangedattack-keldath--i hope that if theres at least one unit can range - it will attack, and only than the stack would strike.
+					if(canRangeStrikeAtK(pTargetCity->plot(),pTargetCity->plot()->getX(), pTargetCity->plot()->getY()))
+					//if(getGroup()->canRanged(pTargetCity->plot(),pTargetCity->plot()->getX(), pTargetCity->plot()->getY()))
+					{	
+						getGroup()->pushMission(MISSION_RANGE_ATTACK, pTargetCity->getX(), pTargetCity->getY());	
+//dont stop rest of the units?	return;
+					}
 					if (AI_omniGroup(UNITAI_ATTACK_CITY, -1, -1, true, iMoveFlags,
 						3, true, false, bIgnoreFaster)) // bigger groups only
 					{
-						return;
-					}
-					//rangedattack-keldath--i hope that if theres at least one unit can range - it will attack, and only than the stack would strike.
-					if(getGroup()->canRanged(pTargetCity->plot(),pTargetCity->plot()->getX(), pTargetCity->plot()->getY()))
-					{	
-						getGroup()->pushMission(MISSION_RANGE_ATTACK, pTargetCity->getX(), pTargetCity->getY());	
 						return;
 					}
 					if (canBombard(getPlot()) && rangedStrike() == 0)
@@ -13535,6 +13536,7 @@ CvCity* CvUnitAI::AI_pickTargetCity(int iFlags, int iMaxPathTurns, bool bHuntBar
 								GC.getDefineINT(CvGlobals::BBAI_SKIP_BOMBARD_MIN_STACK_RATIO)) /
 								std::max(1, GC.getMAX_CITY_DEFENSE_DAMAGE());
 						if (100 * iOffenceEnRoute > iAttackRatio * iEnemyDefence)
+//doto- checkmaybe here for ranged
 							continue;
 					}
 				}
@@ -14569,10 +14571,11 @@ bool CvUnitAI::AI_stackVsStack(int iSearchRange, int iAttackThreshold, int iRisk
 	{
 		
 		//rangedattack-keldath--i hope that if theres at least one unit can range - it will attack, and only than the stack would strike.
-		if(getGroup()->canRanged(pBestPlot,pBestPlot->getX(), pBestPlot->getY()))
+		if(canRangeStrikeAtK(pBestPlot,pBestPlot->getX(), pBestPlot->getY()))
+		//if(getGroup()->canRanged(pBestPlot,pBestPlot->getX(), pBestPlot->getY()))
 		{	
 			getGroup()->pushMission(MISSION_RANGE_ATTACK, pBestPlot->getX(), pBestPlot->getY());	
-			return true;
+//removed maybe it wont stop the stack? return true;
 		}	
 		FAssert(!atPlot(pBestPlot));
 		if (gUnitLogLevel >= 2) logBBAI("    Stack for player %d (%S) uses StackVsStack attack with value %d", getOwner(), GET_PLAYER(getOwner()).getCivilizationDescription(0), iBestValue);
@@ -14664,7 +14667,8 @@ bool CvUnitAI::AI_blockade()  // advc: some style changes
 //rangedattack-keldath - lets try to range bombard first.
 		//rangedattack-keldath--i hope that if theres at least one unit can range - it will attack, and only than the stack would strike.
 		//rangedattack-keldath--i hope that if theres at least one unit can range - it will attack, and only than the stack would strike.
-		if(getGroup()->canRanged(pBestPlot,pBestPlot->getX(), pBestPlot->getY()))
+		if(canRangeStrikeAtK(pBestPlot,pBestPlot->getX(), pBestPlot->getY()))
+		//if(getGroup()->canRanged(pBestPlot,pBestPlot->getX(), pBestPlot->getY()))
 		{	
 			getGroup()->pushMission(MISSION_RANGE_ATTACK, pBestPlot->getX(), pBestPlot->getY());	
 		}	
@@ -14683,7 +14687,8 @@ bool CvUnitAI::AI_blockade()  // advc: some style changes
 	{
 		FAssert(!atPlot(pBestPlot));
 		//rangedattack-keldath--i hope that if theres at least one unit can range - it will attack, and only than the stack would strike.
-		if(getGroup()->canRanged(pBestPlot,pBestPlot->getX(), pBestPlot->getY()))
+		if(canRangeStrikeAtK(pBestPlot,pBestPlot->getX(), pBestPlot->getY()))
+		//f(getGroup()->canRanged(pBestPlot,pBestPlot->getX(), pBestPlot->getY()))
 		{	
 			getGroup()->pushMission(MISSION_RANGE_ATTACK, pBestPlot->getX(), pBestPlot->getY());	
 			return true;

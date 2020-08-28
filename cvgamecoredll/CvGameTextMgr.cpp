@@ -12107,7 +12107,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 		else
 		{
 			szBuffer.append(NEWLINE);
-			szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_LOCAL_DISTANCE_MAINT_MOD", kBuilding.getDistanceMaintenanceModifier()));
+			szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_LOCAL_DISTANCE_MAINT_MOD", kBuilding.getLocalDistanceMaintenanceModifier()));
 		}
 	}
 
@@ -12121,7 +12121,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 	    else
 	    {
 			szBuffer.append(NEWLINE);
-	       szBuffer.append(gDLL->getText("TXT_KEY_COASTAL_LOCAL_DISTANCE_MAINT_MOD", kBuilding.getCoastalDistanceMaintenanceModifier()));
+	       szBuffer.append(gDLL->getText("TXT_KEY_COASTAL_LOCAL_DISTANCE_MAINT_MOD", kBuilding.getLocalCoastalDistanceMaintenanceModifier()));
 	    }
 	}
 
@@ -12135,7 +12135,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 	    else
 	    {
 			szBuffer.append(NEWLINE);
-	       szBuffer.append(gDLL->getText("TXT_KEY_CONNECTED_LOCAL_CITY_MAINT_MOD", kBuilding.getConnectedCityMaintenanceModifier()));
+	       szBuffer.append(gDLL->getText("TXT_KEY_CONNECTED_LOCAL_CITY_MAINT_MOD", kBuilding.getLocalConnectedCityMaintenanceModifier()));
 	    }
 	}
 
@@ -12149,7 +12149,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 	    else
 	    {
 			szBuffer.append(NEWLINE);
-	       szBuffer.append(gDLL->getText("TXT_KEY_CONTINENTAL_LOCAL_CITY_MAINT_MOD", kBuilding.getAreaMaintenanceModifier()));
+	       szBuffer.append(gDLL->getText("TXT_KEY_CONTINENTAL_LOCAL_CITY_MAINT_MOD", kBuilding.getLocalHomeAreaMaintenanceModifier()));
 	    }
 	}
 
@@ -12163,7 +12163,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 	    else
 	    {
 			szBuffer.append(NEWLINE);
-	       szBuffer.append(gDLL->getText("TXT_KEY_OVERSEAS_LOCAL_CITY_MAINT_MOD", kBuilding.getOtherAreaMaintenanceModifier()));
+	       szBuffer.append(gDLL->getText("TXT_KEY_OVERSEAS_LOCAL_CITY_MAINT_MOD", kBuilding.getLocalOtherAreaMaintenanceModifier()));
 	    }
 	}
     //DPII < Maintenance Modifiers >

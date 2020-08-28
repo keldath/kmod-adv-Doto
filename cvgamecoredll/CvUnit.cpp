@@ -12462,7 +12462,7 @@ int CvUnit::LFBgetDefenderOdds(const CvUnit* pAttacker) const
 //i decided that ranged units should not use combat odds.
 //this is a test, ill see how it goes.
 //the reason is that not always it picked the best defender.
-	&&	(pAttacker->getDomainType() == DOMAIN_AIR ||  (pAttacker->getDomainType() != DOMAIN_AIR  && (pAttacker->airRange() == 0 && pAttacker->rangedStrike() == 0 )))
+	&&	(pAttacker->getDomainType() == DOMAIN_AIR ||  (pAttacker->getDomainType() != DOMAIN_AIR  && (pAttacker->airRange() == 0 || pAttacker->rangedStrike() == 0 )))
 //rangedattack-keldath
 		)
 	{
