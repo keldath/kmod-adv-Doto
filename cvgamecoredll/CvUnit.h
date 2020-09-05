@@ -29,6 +29,13 @@ public:
 	virtual ~CvUnit();
 
 	void setupGraphical();
+/*** RANGED BOMBARDMENT - Dale START ***/
+	bool canRangeStrikeK() const;
+	CvUnit* rangedStrikeTargetK(const CvPlot* pPlot) const;
+	int rangeCombatDamageK(const CvUnit* pDefender) const;
+	bool canRangedStrikeAtk(const CvPlot* pPlot, int iX, int iY) const;
+	bool rangeStrikeK(int iX, int iY);
+/*** RANGED BOMBARDMENT - Dale END ***/
 	void reloadEntity();
 /****************************************
  *  Archid Mod: 10 Jun 2012
@@ -156,11 +163,10 @@ public:
 	bool canAirBomb(const CvPlot* pPlot) const;																// Exposed to Python
 	bool canAirBombAt(const CvPlot* pPlot, int iX, int iY) const;											// Exposed to Python
 	bool airBomb(int iX, int iY);
-//rangedstrike-keldath
-	CvCity* bombardTarget(CvPlot const& kPlot,int attackerRange = 1) const;														// Exposed to Python
+
+	CvCity* bombardTarget(CvPlot const& kPlot) const;														// Exposed to Python
 	bool canBombard(CvPlot const& kPlot) const;																// Exposed to Python
-	//rangedstrike-keldath change - ALLOW PLOT VAR WITH DEFAULT NULL
-	bool bombard(CvPlot const* pPlot = NULL) ;
+	bool bombard();
 
 	bool canParadrop(const CvPlot* pPlot) const;															// Exposed to Python
 	bool canParadropAt(const CvPlot* pPlot, int iX, int iY) const;											// Exposed to Python
@@ -472,26 +478,7 @@ public:
 	DllExport float airCurrCombatStrFloat(const CvUnit* pOther) const;										// Exposed to Python
 	int combatLimit() const																					// Exposed to Python
 	{
-		//rangedattack-keldath - random combat limit, sometimes...
-		//if we have a bombard unit, that is not defined with ranged attack
-		// the limit  will be random where the minimum is the deduned value
-		//with max of 100.
-		//its a little twist to give nice edge when playing without ranged attack
-		//since all siege unit attack values has been lowered...
-		int cLimit = m_pUnitInfo->getCombatLimit();
-		if (((GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK) &&
-			 m_pUnitInfo->getRangeStrike() == 0 && bombardRate() > 0) 
-			||
-			(!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK) && bombardRate() > 0))
-			&& cLimit != 100 && cLimit != 0)
-		{
-			int rndLimit = cLimit+GC.getGame().getSorenRandNum(100-cLimit, "Collateral Damage");
-			return std::min(100,rndLimit);
-		}
-		else 
-		{
-			return cLimit;
-		}
+		return m_pUnitInfo->getCombatLimit();
 	}
 	int airCombatLimit() const																				// Exposed to Python
 	{
@@ -1001,13 +988,6 @@ public:
 	bool canRangeStrike() const;
 	bool canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY) const;
 	bool rangeStrike(int iX, int iY);
-	//rangedattack-keldath	
-	int rangeCombatDamageK(const CvUnit* pDefender) const;													// Exposed to Python
-	CvUnit* rangedStrikeTargetK(const CvPlot* pPlot) const;
-	bool canRangeStrikeK(bool bStrikeBack = false) const;
-	bool canRangeStrikeAtK(const CvPlot* pPlot, int iX, int iY, bool bStrikeBack = false) const;
-	bool afterRangeStrikeK(CvUnit* pAttacker) ;
-	bool rangeStrikeK(int iX, int iY);
 
 	int getTriggerValue(EventTriggerTypes eTrigger, const CvPlot* pPlot, bool bCheckPlot) const;
 	bool canApplyEvent(EventTypes eEvent) const;

@@ -16,6 +16,12 @@ public:
 
 	CvUnitAI();
 	~CvUnitAI();
+/*** RANGED BOMBARDMENT - Dale START ***/
+	int AI_rangedStrikeValueK(CvPlot const& kPlot) const;
+	bool AI_rangedStrikeK();
+	int NetTotalStreangth (const CvPlot* pAttackedPlot) const;
+	int isPlotWorthRanged(CvPlot const& kPlot) const;
+/*** RANGED BOMBARDMENT - Dale END ***/
 	// advc.003u: Override replacing AI_init. Parameter list copied from CvUnit::init.
 	void init(int iID, UnitTypes eUnit, UnitAITypes eUnitAI, PlayerTypes eOwner,
 			int iX, int iY, DirectionTypes eFacingDirection);
@@ -328,12 +334,6 @@ protected:
 	//bool AI_artistCultureVictoryMove(); // disabled by K-Mod
 	bool AI_poach();
 	bool AI_choke(int iRange = 1, bool bDefensive = false, int iFlags = 0);
-//rangedstrike-keldath	
-	int AI_rangedStrikeValueK(CvPlot const& kPlot, int iCurrentBest = 0, int plotFilter = 0) const; // advc
-	CvPlot* AI_findRangedTargetPlotAI(int plotFilter = 0); // advc
-	bool AI_rangedStrikeK(int plotFilter = 0, const CvPlot* pPlot = NULL, 
-								int iX = NULL, int iY = NULL, bool bStrikeBack = false); // K-Mod note. this function now handles bombing defences, and defensive strikes.
-	
 	// advc.012: CvUnit::plot if pPlot=NULL; cf. CvTeamAI::plotDefense.
 	int AI_plotDefense(CvPlot const* pPlot = NULL) const;
 
