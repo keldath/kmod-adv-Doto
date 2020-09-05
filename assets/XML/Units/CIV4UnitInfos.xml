@@ -19283,6 +19283,8 @@ UNITAI changed - now will used to counter.
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
 			<iAirRange>0</iAirRange>
+<!--ranged attack keldath -->
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>

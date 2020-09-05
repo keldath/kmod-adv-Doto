@@ -318,25 +318,25 @@
             <Description>R-Retaliate (DEV)</Description>
             <Help>Attacking an enemy ranged unit, it will retalliate with counter attack(no collateral damage).</Help>
             <bDefault>0</bDefault>
-            <bVisible>1</bVisible>
+            <bVisible>0</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_END_MOVES</Type>
             <Description>R-Move End (DEV)</Description>
             <Help>Units with Range Strike wont be able to move if it have more move points.(default off)</Help>
             <bDefault>0</bDefault>
-            <bVisible>1</bVisible>
+            <bVisible>0</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RAND_BOMB_HIT</Type>
             <Description>Random Bomb Hit</Description>
             <Help>Bombard Attacks damage will be randomized</Help>
             <bDefault>0</bDefault>
-            <bVisible>1</bVisible>
+            <bVisible>0</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
-            <Type>GAMEOPTION_RAND_BOMB_DMG</Type>
-            <Description>Random Bomb Damage</Description>
+            <Type>GAMEOPTION_RAND_RANGEDSTRIKE_DMG</Type>
+            <Description>Random RStrike Damage</Description>
             <Help>Bombard Attacks damage will be randomized</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>
