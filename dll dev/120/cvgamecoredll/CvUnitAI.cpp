@@ -22555,7 +22555,7 @@ int CvUnitAI::isPlotWorthRanged(CvPlot const& kPlot)const
 		{		
 			//if the avg dmg for units is larger than the unit combat limit +10. allow the ranged.
 			if (netUnits-dmgdUnits != 0 && 
-				(totalLimitedDmgUnits / netUnits)  <= attackerCombatLimit + 15)//maybe make a var
+				(totalLimitedDmgUnits / netUnits)  <= attackerCombatLimit - 15)//maybe make a var
 			{
 				return true;
 			}
@@ -22563,7 +22563,7 @@ int CvUnitAI::isPlotWorthRanged(CvPlot const& kPlot)const
 			if (netUnits-dmgdUnits == 0 &&
 				(totalLimitedDmgUnits / netUnits)  <= attackerCombatLimit)
 			{
-				if (!(kOwner.AI_isAnyPlotDanger(getPlot(), 2)))//keldath check rtange 2for danger
+				if ((kOwner.AI_isAnyPlotDanger(getPlot(), 2)))//keldath check rtange 2for danger
 				{
 					return true;
 				}
