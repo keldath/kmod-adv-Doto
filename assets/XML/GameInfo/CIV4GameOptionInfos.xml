@@ -307,37 +307,37 @@
 		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_ATTACK</Type>
-            <Description>R-Attack (DEV)</Description>
+            <Description>Ranged Attack</Description>
             <Help>Siege Units Have Ranged Attack (Reccomended-on)</Help>
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
 <!--rangedattack-keldath-->
 		</GameOptionInfo>
         <GameOptionInfo>
-            <Type>GAMEOPTION_RANGED_RETALIATION</Type>
-            <Description>R-Retaliate (DEV)</Description>
-            <Help>Attacking an enemy ranged unit, it will retalliate with counter attack(no collateral damage).</Help>
+            <Type>GAMEOPTION_END_ATTACK</Type>
+            <Description>Allow More Attacks</Description>
+            <Help>Siege and Ranged units can carry another attack if ther have movement</Help>
             <bDefault>0</bDefault>
-            <bVisible>0</bVisible>
+            <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
-            <Type>GAMEOPTION_RANGED_END_MOVES</Type>
-            <Description>R-Move End (DEV)</Description>
+            <Type>GAMEOPTION_END_ATTACK</Type>
+            <Description>Ranged Move End-(DEV)</Description>
             <Help>Units with Range Strike wont be able to move if it have more move points.(default off)</Help>
             <bDefault>0</bDefault>
-            <bVisible>0</bVisible>
+            <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
-            <Type>GAMEOPTION_RAND_BOMB_HIT</Type>
-            <Description>Random Bomb Hit</Description>
-            <Help>Bombard Attacks damage will be randomized</Help>
-            <bDefault>0</bDefault>
-            <bVisible>0</bVisible>
+            <Type>GAMEOPTION_RAND_HIT</Type>
+            <Description>Random Bombardment Hit</Description>
+            <Help>Air,Siege and Ranged units Attacks Hits will be randomized</Help>
+            <bDefault>1</bDefault>
+            <bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
-            <Type>GAMEOPTION_RAND_RANGEDSTRIKE_DMG</Type>
-            <Description>Random RStrike Damage</Description>
-            <Help>Bombard Attacks damage will be randomized</Help>
+            <Type>GAMEOPTION_RAND_DMG</Type>
+            <Description>Random Bombardment Damage</Description>
+            <Help>Air,Siege and Ranged units Bombard Attacks damage will be randomized</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>
 		</GameOptionInfo>

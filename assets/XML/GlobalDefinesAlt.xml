@@ -376,7 +376,6 @@
 		<DefineName>MOVE_MULTIPLIER</DefineName>
 		<iDefineIntVal>5</iDefineIntVal>-->
 	<!-- MOD - START - Improved AI Range Attack -->
-	</Define>
 	<Define>
 		<!-- Minimum attack odds of best attacker for AI to skip range attacking a city and just attack. Default: 80 -->
 		<DefineName>SKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS</DefineName>
