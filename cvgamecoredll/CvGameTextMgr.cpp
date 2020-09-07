@@ -1260,7 +1260,7 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 			szString.append(NEWLINE);
 			szString.append(gDLL->getText("TXT_KEY_UNIT_FLANKING_STRIKES", szTempBuffer.GetCString()));
 		}
-		
+//rangedattack-keldath		
 /*** RANGED BOMBARDMENT - Dale START ***/
 		if (pUnit->rangedStrike() > 0)
 		{
@@ -1268,7 +1268,7 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 				szString.append(gDLL->getText("TXT_KEY_IS_RANGE_BOMBARD", pUnit->rangedStrike()));
 		}
 /*** RANGED BOMBARDMENT - Dale END ***/
-
+//rangedattack-keldath
 
 		if (pUnit->bombardRate() > 0)
 		{
@@ -9680,7 +9680,7 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		//rangedstrike-keldath Air range for land units -  vincentz  - keldath addition
 		else if (u.getDomainType() != DOMAIN_AIR && (u.getRangeStrike() > 0 || u.getAirRange() > 0))
 		{
-				szTempBuffer.Format(L"%d%c%d%c, ", u.getCombat(), gDLL->getSymbolID(DEFENSE_CHAR));
+				szTempBuffer.Format(L"%d%c, ", u.getCombat(), gDLL->getSymbolID(DEFENSE_CHAR));
 				szBuffer.append(szTempBuffer);
 		}
 		
@@ -9746,31 +9746,27 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 			else szBuffer.append(szSpeedBonuses);
 			szBuffer.append(L")");
 		} // </advc.905b>
+//rangedattack-keldath
 	//Air range for land units -  vincentz ranged strike - keldath addition start
 /*		if (u.getAirRange() > 0 && u.getDomainType() != DOMAIN_AIR)
 		{
 			szBuffer.append(L", ");
-//rangedattack-keldath
 			szBuffer.append(gDLL->getText("TXT_KEY_ASTRENGTH", u.getCombat()));
 		}
-		else*/ if (u.getDomainType() == DOMAIN_AIR && u.getAirRange() > 0)
-//rangedattack-keldath
-		{
-			szBuffer.append(L", ");
-			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIR_COMBAT", u.getAirCombat()));
-		}
-		//Air range for land units -  vincentz ranged strike - keldath addition end
+		else*/
 //rangedattack-keldath
 		if (u.getAirRange() > 0 )
 		{
 			szBuffer.append(L", ");
 			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIR_RANGE", u.getAirRange()));
 		}
+//rangedattack-keldath
 		if (u.getRangeStrike() > 0)
 		{
 			szBuffer.append(L", ");
-			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIR_RANGE", u.getRangeStrike()));
+			szBuffer.append(gDLL->getText("TXT_KEY_ASTRENGTH", u.getRangeStrike()));
 		}
+//rangedattack-keldath
 	}
 
 	if (u.isGoldenAge())
@@ -10161,19 +10157,20 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		szBuffer.append(NEWLINE);
 		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_WITHDRAWL_PROBABILITY", u.getWithdrawalProbability()));
 	}
-	//rangedattack-keldath vincentz ranged strike - now will also dispplay aircombat limit for units
-	//debugg pops an error with hits one
+//rangedattack-keldath
 	/*if(u.getDomainType() == DOMAIN_AIR && u.getAirRange() > 0 ) 
 	{
 		szBuffer.append(NEWLINE);
 		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIRCOMBAT_LIMIT", u.getAirCombatLimit()));
 	}
-	else*/ if (u.getCombatLimit()/* < GC.getMAX_HIT_POINTS() && u.getCombat() > 0*/ && !u.isOnlyDefensive())
+	else*/ 
+	if (u.getCombatLimit() < GC.getMAX_HIT_POINTS() && u.getCombat() > 0 && !u.isOnlyDefensive())
 	{
 		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT", (/*100 * */u.getCombatLimit()/*) / GC.getMAX_HIT_POINTS()*/)));
+		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT", (100 * u.getCombatLimit()) / GC.getMAX_HIT_POINTS()));
 	}
-
+//rangedattack-keldath
+//rangedattack-keldath
 	if (u.getCollateralDamage() > 0)
 	{
 		szBuffer.append(NEWLINE);
@@ -18381,10 +18378,12 @@ void CvGameTextMgr::buildFinanceCityMaintString(CvWStringBuffer& szBuffer, Playe
 		includes the inverse of this factor. */
 
 	int iDistanceMaint = rDistanceMaint.round();
+//DOTO-DPII < Maintenance Modifiers >
 	int iHomeMaint = rHomeMaint.round();
 	int iOtherMaint = rOtherMaint.round();
 	int iConnectedMaint = rConnected.round();
 	int iCoastalMaint = rCoastalMaint.round();
+//DOTO-DPII < Maintenance Modifiers >
 	int iColonyMaint = rColonyMaint.round();
 	int iCorpMaint = rCorpMaint.round();
 //DOTO-DPII < Maintenance Modifiers >
@@ -19961,7 +19960,7 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 		if (pCity->isVisible(GC.getGame().getActiveTeam(), true))
 		{
 			int iDefenseModifier = pCity->getDefenseModifier(GC.getGame().selectionListIgnoreBuildingDefense());
-		//DOTO-keldath - rangedattack - i prefer to see thE 0 all the time
+		////rangedattack-keldath i prefer to see thE 0 all the time
 		//	if (iDefenseModifier != 0)
 		//	{
 				//szBuffer.append(CvWString::format(L" %c:%s%d%%", gDLL->getSymbolID(DEFENSE_CHAR), ((iDefenseModifier > 0) ? "+" : ""), iDefenseModifier));
@@ -19972,7 +19971,7 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 						((iDefenseModifier > 0) ? "+" : ""),
 						iDefenseModifier,
 						gDLL->getSymbolID(DEFENSE_CHAR))); // </advc.002f>
-		//	}
+		////rangedattack-keldath	}
 		}
 	}
 }

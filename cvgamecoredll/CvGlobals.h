@@ -837,6 +837,18 @@ public:
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
 
+//rangedattack-keldath DOTO-MOD - START - Ranged Strike AI realism invictus
+/*
+public:
+	int getSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS() const;
+	int getSKIP_RANGE_ATTACK_MIN_STACK_RATIO() const;
+
+protected:
+	int m_iSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS;
+	int m_iSKIP_RANGE_ATTACK_MIN_STACK_RATIO;
+*/
+// MOD - END - Ranged Strike AI
+
 protected:
 
 	bool m_bGraphicsInitialized;

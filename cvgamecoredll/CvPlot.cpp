@@ -2341,11 +2341,12 @@ int CvPlot::getFeatureProduction(BuildTypes eBuild, TeamTypes eTeam, CvCity** pp
 	return std::max(0, iProduction);
 }
 
-
+// DOTO-MOD - START - Ranged Strike AI realism invictus
 CvUnit* CvPlot::getBestDefender(PlayerTypes eOwner, PlayerTypes eAttackingPlayer,
 	CvUnit const* pAttacker, bool bTestEnemy, bool bTestPotentialEnemy,
 	/* advc.028: */ bool bTestVisible,
-	bool bTestCanAttack, bool bAny) const // advc: new params (for CvPlot::hasDefender)
+	bool bTestCanAttack, bool bAny // advc: new params (for CvPlot::hasDefender)
+	, bool bRanged) const // DOTO-MOD - START - Ranged Strike AI realism invictus
 {
 	// <advc> Ensure consistency of parameters
 	if (pAttacker != NULL)
@@ -2375,7 +2376,8 @@ CvUnit* CvPlot::getBestDefender(PlayerTypes eOwner, PlayerTypes eAttackingPlayer
 				return &kLoopUnit; // </advc>
 			if (kLoopUnit.isBetterDefenderThan(pBestUnit, pAttacker,
 				&iBestUnitRank, // UncutDragon
-				bTestVisible)) // advc.061
+// DOTO-MOD - START - Ranged Strike AI realism invictus
+				bTestVisible, bRanged)) // advc.061 //
 			{
 				pBestUnit = &kLoopUnit;
 			}

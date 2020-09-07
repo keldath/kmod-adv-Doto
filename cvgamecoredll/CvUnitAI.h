@@ -16,12 +16,13 @@ public:
 
 	CvUnitAI();
 	~CvUnitAI();
-/*** RANGED BOMBARDMENT - Dale START ***/
-	int AI_rangedStrikeValueK(CvPlot const& kPlot) const;
-	bool AI_rangedStrikeK();
-	int NetTotalStreangth (const CvPlot* pAttackedPlot) const;
-	int isPlotWorthRanged(CvPlot const& kPlot) const;
-/*** RANGED BOMBARDMENT - Dale END ***/
+// MOD - rangedattack-keldath START - Ranged Strike AI-REALISM INVICTUS
+	CvPlot* AI_rangeStrikeTargetPlotK(int iSearchRange) const;
+	bool AI_rangeAttackK(int iFlags = 0, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
+	bool AI_rangeAttackCityK();
+	bool AI_rangeAttackOrSkipK(int iFlags = 0, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
+	bool AI_rangeAttackOrFortifyK(int iFlags = 0, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
+// MOD - END - Ranged Strike AI
 	// advc.003u: Override replacing AI_init. Parameter list copied from CvUnit::init.
 	void init(int iID, UnitTypes eUnit, UnitAITypes eUnitAI, PlayerTypes eOwner,
 			int iX, int iY, DirectionTypes eFacingDirection);

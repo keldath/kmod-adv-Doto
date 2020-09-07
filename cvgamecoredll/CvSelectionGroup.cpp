@@ -13,7 +13,7 @@
 #include "CvInfo_Terrain.h" // for getBestBuildRoute
 //#include "CvInfo_Unit.h" // for canAnyMoveAllTerrain (now in PCH)
 #include "CySelectionGroup.h"
-//DOTO-keldath-rangedattack-checking option
+//DOTO-rangedattack-keldath-checking option
 #include "CvInfo_GameOption.h"
 
 
@@ -672,9 +672,6 @@ CvPlot* CvSelectionGroup::lastMissionPlot()
 		case MISSION_LEAD:
 		case MISSION_ESPIONAGE:
 		case MISSION_DIE_ANIMATION:
-/*** RANGED BOMBARDMENT - Dale START ***/
-		case MISSION_RBOMBARD:			// Dale - Field Bombard
-/*** RANGED BOMBARDMENT - Dale END ***/
 			break;
 		default:
 			FAssert(false);
@@ -928,9 +925,6 @@ void CvSelectionGroup::startMission()
 		case MISSION_LEAD:
 		case MISSION_ESPIONAGE:
 		case MISSION_DIE_ANIMATION:
-/*** RANGED BOMBARDMENT - Dale START ***/
-		case MISSION_RBOMBARD:				// Dale - Field Bombard
-/*** RANGED BOMBARDMENT - Dale END ***/
 			break;
 
 		default:
@@ -1051,30 +1045,21 @@ void CvSelectionGroup::startMission()
 					break;
 
 				case MISSION_BOMBARD:
-/*** RANGED BOMBARDMENT - Dale START  block regular bombard for ranged units***/
-					if(!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK) && pLoopUnit->rangedStrike() == 0)				
+					if (pLoopUnit->bombard())
 					{
-						if (pLoopUnit->bombard())
-						{
-							bAction = true;
-						}
-					}
-/*** RANGED BOMBARDMENT - Dale END ***/
-					break;
-
-/*** RANGED BOMBARDMENT - Dale START ***/
-				case MISSION_RBOMBARD:
-					if(GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))				// Dale - Field Bombard: new method
-					{
-						if (pLoopUnit->rangeStrikeK(headMissionQueueNode()->m_data.iData1, headMissionQueueNode()->m_data.iData2))
-						{
-							bAction = true;
-						}
+						bAction = true;
 					}
 					break;
-/*** RANGED BOMBARDMENT - Dale END ***/
+//DOTO-rangedattack-keldath
 				case MISSION_RANGE_ATTACK:
-					if (pLoopUnit->rangeStrike(headMissionQueueNode()->m_data.iData1, headMissionQueueNode()->m_data.iData2))
+					if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
+					{
+						if (pLoopUnit->rangeStrike(headMissionQueueNode()->m_data.iData1, headMissionQueueNode()->m_data.iData2))
+						{
+							bAction = true;
+						}
+					}
+					else if (pLoopUnit->rangeStrikeK(headMissionQueueNode()->m_data.iData1, headMissionQueueNode()->m_data.iData2))
 					{
 						bAction = true;
 					}
@@ -1508,9 +1493,6 @@ bool CvSelectionGroup::continueMission_bulk(int iSteps)  // advc: style changes
 		case MISSION_LEAD:
 		case MISSION_ESPIONAGE:
 		case MISSION_DIE_ANIMATION:
-/*** RANGED BOMBARDMENT - Dale START ***/
-		case MISSION_RBOMBARD:				// Dale - Field Bombard
-/*** RANGED BOMBARDMENT - Dale END ***/
 			break;
 
 		case MISSION_BUILD:
@@ -1594,9 +1576,6 @@ bool CvSelectionGroup::continueMission_bulk(int iSteps)  // advc: style changes
 		case MISSION_LEAD:
 		case MISSION_ESPIONAGE:
 		case MISSION_DIE_ANIMATION:
-/*** RANGED BOMBARDMENT - Dale START ***/
-		case MISSION_RBOMBARD:			// Dale - Field Bombard
-/*** RANGED BOMBARDMENT - Dale END ***/
 			bDone = true;
 			break;
 
@@ -1904,8 +1883,16 @@ bool CvSelectionGroup::canDoInterfaceMode(InterfaceModeTypes eInterfaceMode)
 			break;
 
 		case INTERFACEMODE_RANGE_ATTACK:
-			if (pLoopUnit->canRangeStrike())
+//DOTO-rangedattack-keldath
+			if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
+			{
+				if (pLoopUnit->canRangeStrike())
+					return true;
+			}
+			else if (pLoopUnit->canRangeStrikeK())
+			{
 				return true;
+			}
 			break;
 
 		case INTERFACEMODE_AIRSTRIKE:
@@ -1920,15 +1907,6 @@ bool CvSelectionGroup::canDoInterfaceMode(InterfaceModeTypes eInterfaceMode)
 			if (pLoopUnit->getDomainType() == DOMAIN_AIR)
 				return true;
 			break;
-
-/*** RANGED BOMBARDMENT - Dale START ***/
-		case INTERFACEMODE_RANGEBOMB:
-			if (pLoopUnit->canRangeStrikeK() && GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
-			{
-				return true;
-			}
-			break;
-/*** RANGED BOMBARDMENT - Dale END ***/
 		}
 	}
 
@@ -1988,8 +1966,17 @@ bool CvSelectionGroup::canDoInterfaceModeAt(InterfaceModeTypes eInterfaceMode, C
 		case INTERFACEMODE_RANGE_ATTACK:
 			if (pLoopUnit != NULL)
 			{
-				if (pLoopUnit->canRangeStrikeAt(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
-					return true;
+//DOTO-rangedstrike-keldath
+				if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
+				{	
+					if (pLoopUnit->canRangeStrikeAt(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
+						return true;
+				}	
+//rangedstrike-keldath
+				else if (pLoopUnit->canRangeStrikeAtK(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
+				{
+						return true;
+				}
 			}
 			break;
 
@@ -2008,21 +1995,7 @@ bool CvSelectionGroup::canDoInterfaceModeAt(InterfaceModeTypes eInterfaceMode, C
 					return true;
 			}
 			break;
-		
-/*** RANGED BOMBARDMENT - Dale START ***/
-		case INTERFACEMODE_RANGEBOMB:
-			if (pLoopUnit != NULL)
-			{
-				if(GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
-				{
-					if (pLoopUnit->canRangedStrikeAtk(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
-					{
-						return true;
-					}
-				}
-			}
-			break;
-/*** RANGED BOMBARDMENT - Dale END ***/
+
 		default: return true;
 		}
 	}
@@ -2482,14 +2455,7 @@ bool CvSelectionGroup::canBombard(CvPlot const& kPlot) const // advc: CvPlot ref
 	for (CLLNode<IDInfo> const* pUnitNode = headUnitNode(); pUnitNode != NULL;
 		pUnitNode = nextUnitNode(pUnitNode))
 	{
-		CvUnit const* pLoopUnit = ::getUnit(pUnitNode->m_data);	
-/*** RANGED BOMBARDMENT - Dale START ***/
-//keldath - originally - the bombaard was first
-		if (pLoopUnit->canRangeStrikeK() && GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
-		{
-			return true;
-		}
-/*** RANGED BOMBARDMENT - Dale END ***/
+		CvUnit const* pLoopUnit = ::getUnit(pUnitNode->m_data);
 		if (pLoopUnit->canBombard(kPlot))
 			return true;
 	}
@@ -2883,6 +2849,38 @@ bool CvSelectionGroup::groupAttack(int iX, int iY, int iFlags, bool& bFailedAlre
 					!bMaxSurvival, bMaxSurvival); // advc.048
 			if (pBestAttackUnit == NULL)
 				break;
+// DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus			
+			bAttack = true; //moved up
+
+			// DOTO-MOD - START - Ranged Strike AI realism invictus
+			// TODO: Add a hotkey to allow humans to auto-fire their ranged attacks first?
+			if (!isHuman())
+			{
+				//doto-advc adjustment
+				if (iAttackOdds < 80 /*GC.getSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS()*/)
+				{
+					CvUnit* pBestRangedUnit = AI_getBestGroupRangeAttacker(pDestPlot);
+
+					bool bRangeStrike = false;
+					while (pBestRangedUnit != NULL && pBestRangedUnit->rangeStrikeK(pDestPlot->getX(), pDestPlot->getY()))
+					{
+						bRangeStrike = true;
+						pBestRangedUnit = AI_getBestGroupRangeAttacker(pDestPlot);
+					}
+
+					if (bRangeStrike)
+					{
+						//doto-advc adjustment AI().		
+						pBestAttackUnit = AI().AI_getBestGroupAttacker(pDestPlot, false, iAttackOdds, false, !bBlitz /*bNoBlitz advc change*/);
+						if (pBestAttackUnit == NULL)
+						{
+							// There aren't any attack units left with moves after range striking
+							break;
+						}
+					}
+				}
+			}
+			// DOTO-MOD - end - Ranged Strike AI realism invictus
 
 			// advc.048: AI_getBestGroupSacrifice moved into AI_getBestGroupAttacker
 
@@ -3603,31 +3601,21 @@ bool CvSelectionGroup::canDoMission(int iMission, int iData1, int iData2,
 			break;
 
 		case MISSION_BOMBARD:
-/*** RANGED BOMBARDMENT - Dale START ***/
-			if(!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK) && pLoopUnit->rangedStrike() == 0)				
+			if (pLoopUnit->canBombard(*pPlot) &&
+				(!bCheckMoves || pLoopUnit->canMove()))
 			{
-				if (pLoopUnit->canBombard(*pPlot) &&
-					(!bCheckMoves || pLoopUnit->canMove()))
-				{
-					return true;
-				}
-			}
-/*** RANGED BOMBARDMENT - Dale END ***/
-			break;	
-/*** RANGED BOMBARDMENT - Dale START ***/
-		case MISSION_RBOMBARD:
-			if(GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))	// Dale - Field Bombard:
-			{
-				if (pLoopUnit->canRangedStrikeAtk(pPlot, iData1, iData2))	// Dale - Field Bombard: changed for ranged bombard
-				{
-					return true;
-				}
+				return true;
 			}
 			break;
-/*** RANGED BOMBARDMENT - Dale END ***/
+
 		case MISSION_RANGE_ATTACK:
-			if (pLoopUnit->canRangeStrikeAt(pPlot, iData1, iData2) &&
-				(!bCheckMoves || pLoopUnit->canMove()))
+//DOTO-rangedattack-keldath
+			if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
+			{
+				if (pLoopUnit->canRangeStrikeAt(pPlot, iData1, iData2) && (!bCheckMoves || pLoopUnit->canMove()))
+					return true;
+			}
+			else if (pLoopUnit->canRangeStrikeAtK(pPlot, iData1, iData2) && (!bCheckMoves || pLoopUnit->canMove()))
 			{
 				return true;
 			}

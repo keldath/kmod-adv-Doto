@@ -103,7 +103,7 @@ public:
 	bool canFight() const;																																										// Exposed to Python
 	bool canDefend() const;																																										// Exposed to Python
 	bool canBombard(CvPlot const& kPlot) const;
-//DOTO-rangedstrike-keldath
+//DOTO-rangedattack-keldath
 	bool canRanged(const CvPlot* pPlot = NULL, int ix = INVALID_PLOT_COORD, int iy = INVALID_PLOT_COORD) const;
 	bool visibilityRange() const;
 
@@ -322,6 +322,9 @@ private: // advc.003u: (See comments in the private section of CvPlayer.h)
 			bool bForce = false, bool bNoBlitz = false);
 	virtual CvUnit* AI_getBestGroupSacrificeExternal(CvPlot* pPlot, bool bPotentialEnemy,
 			bool bForce = false, bool bNoBlitz = false);
+	// DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
+	virtual CvUnit* AI_getBestGroupRangeAttacker(const CvPlot* pPlot) const = 0;
+	// MOD - END - Ranged Strike AI
 	virtual int AI_compareStacksExternal(CvPlot* pPlot, bool bPotentialEnemy,
 			bool bCheckCanAttack = false, bool bCheckCanMove = false);
 	virtual int AI_sumStrengthExternal(

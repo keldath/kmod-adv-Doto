@@ -6,7 +6,7 @@
 #define CIV4_UNIT_H
 
 #include "CvDLLEntity.h"
-//kedldath-rangedattack-so i can use options
+//doto-rangedattack-keldath-so i can use options
 #include "CvInfo_GameOption.h"
 #include "CvGame.h"
 //kedldath-rangedattack
@@ -29,13 +29,6 @@ public:
 	virtual ~CvUnit();
 
 	void setupGraphical();
-/*** RANGED BOMBARDMENT - Dale START ***/
-	bool canRangeStrikeK() const;
-	CvUnit* rangedStrikeTargetK(const CvPlot* pPlot) const;
-	int rangeCombatDamageK(const CvUnit* pDefender) const;
-	bool canRangedStrikeAtk(const CvPlot* pPlot, int iX, int iY) const;
-	bool rangeStrikeK(int iX, int iY);
-/*** RANGED BOMBARDMENT - Dale END ***/
 	void reloadEntity();
 /****************************************
  *  Archid Mod: 10 Jun 2012
@@ -338,7 +331,7 @@ public:
 	{
 		return (m_pUnitInfo->getAirRange() + getExtraAirRange());
 	}
-//rangedattack-keldath
+//doto-rangedattack-keldath
 	int rangedStrike() const																					// Exposed to Python
 	{
 		//if option is off then just send 0 ...so gameplay will be normal ranged attack
@@ -988,6 +981,16 @@ public:
 	bool canRangeStrike() const;
 	bool canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY) const;
 	bool rangeStrike(int iX, int iY);
+// DOTO-MOD - START - Ranged Strike AI realism invictus
+	// Note: These two functions are no longer protected
+	int rangeCombatDamageK(const CvUnit* pDefender) const;
+	CvUnit* rangedStrikeTargetK(const CvPlot* pPlot) const;
+	bool isRangeStrikeCapableK() const;
+	bool canRangeStrikeK() const;
+	bool canRangeStrikeAtK(const CvPlot* pPlot, int iX, int iY) const;
+	bool rangeStrikeK(int iX, int iY);
+	bool afterRangeStrikeK(CvUnit* pAttacker);
+// MOD - END - Ranged Strike AI
 
 	int getTriggerValue(EventTriggerTypes eTrigger, const CvPlot* pPlot, bool bCheckPlot) const;
 	bool canApplyEvent(EventTypes eEvent) const;
@@ -1028,11 +1031,13 @@ public:
 	DllExport float getHealthBarModifier() const;
 	DllExport void getLayerAnimationPaths(std::vector<AnimationPathTypes>& aAnimationPaths) const;
 	DllExport int getSelectionSoundScript() const;
-
+// DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
 	bool isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker,
 	// Lead From Behind (UncutDragon, edited for K-Mod): START
 			int* pBestDefenderRank,
-			bool bPreferUnowned = false) const; // advc.061
+			bool bPreferUnowned = false,// advc.061
+			bool bRanged = false) const; //realism inv added branged
+// MOD - end - Ranged Strike AI
 	int LFBgetAttackerRank(const CvUnit* pDefender, int& iUnadjustedRank) const;
 	int LFBgetDefenderRank(const CvUnit* pAttacker) const;
 	// unprotected by K-Mod. (I want to use the LFB value for some AI stuff)

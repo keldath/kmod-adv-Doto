@@ -501,7 +501,56 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupSacrifice(const CvPlot* pPlot,
 	}
 	return pBestUnit;
 }
+// DOTO-MOD - rangedattack-keldath START - Ranged Strike AI realism invictus
+CvUnit* CvSelectionGroupAI::AI_getBestGroupRangeAttacker(const CvPlot* pPlot) const
+{
+	int iBestValue = 0;
+	CvUnit* pBestUnit = NULL;
 
+	CLLNode<IDInfo>* pUnitNode = headUnitNode();
+
+	bool bIsHuman = (pUnitNode != NULL) ? GET_PLAYER(::getUnit(pUnitNode->m_data)->getOwner()).isHuman() : true;
+
+	while (pUnitNode != NULL)
+	{
+		CvUnit* pLoopUnit = ::getUnit(pUnitNode->m_data);
+		pUnitNode = nextUnitNode(pUnitNode);
+
+		if (pLoopUnit->canRangeStrikeAtK(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
+		{
+			CvUnit* pDefender = pLoopUnit->rangedStrikeTargetK(pPlot);
+
+			FAssert(pDefender != NULL);
+			FAssert(pDefender->canDefend());
+
+			int iDamage = pLoopUnit->rangeCombatDamage(pDefender);//change fn
+
+			int iUnitDamage = std::max(pDefender->getDamage(), std::min((pDefender->getDamage() + iDamage), pLoopUnit->airCombatLimit()));
+			int iValue = iUnitDamage;
+
+			if (pLoopUnit->collateralDamage() > 0)
+			{
+				int iPossibleTargets = std::min((pPlot->getNumVisibleEnemyDefenders(pLoopUnit) - 1), pLoopUnit->collateralDamageMaxUnits());
+
+				if (iPossibleTargets > 0)
+				{
+					iValue *= (100 + ((pLoopUnit->collateralDamage() * iPossibleTargets) / 5));
+					iValue /= 100;
+				}
+			}
+
+			// if non-human, prefer the last unit that has the best value (so as to avoid splitting the group)
+			if (iValue > iBestValue || (!bIsHuman && iValue > 0 && iValue == iBestValue))
+			{
+				iBestValue = iValue;
+				pBestUnit = pLoopUnit;
+			}
+		}
+	}
+
+	return pBestUnit;
+}
+// MOD - END - Ranged Strike AI
 // Returns ratio of strengths of stacks times 100
 // (so 100 is even ratio, numbers over 100 mean this group is more powerful than the stack on a plot)
 int CvSelectionGroupAI::AI_compareStacks(const CvPlot* pPlot, bool bCheckCanAttack) const

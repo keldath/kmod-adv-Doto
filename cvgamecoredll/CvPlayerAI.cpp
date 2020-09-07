@@ -1129,9 +1129,13 @@ int CvPlayerAI::AI_movementPriority(CvSelectionGroupAI const& kGroup) const // a
 	if (pHeadUnit->bombardRate() > 0)
 		return 11;
 
-	if (pHeadUnit->collateralDamage() > 0)
+	// DOTO-MOD -rangedattack-keldath START - Ranged Strike AI realism invictus
+	if (pHeadUnit->canRangeStrikeK())
 		return 12;
 
+	if (pHeadUnit->collateralDamage() > 0)
+		return 13;
+	// MOD -rangedattack-keldath END - Ranged Strike AI
 	if (kGroup.isStranded())
 		return 505;
 
@@ -1830,7 +1834,7 @@ void CvPlayerAI::AI_conquerCity(CvCityAI& kCity,  // advc.003u: param was CvCity
 			// <advc.116>
 			if (bFinancialTrouble)
 			{
-//ADVC - DOTOkeldath FOUDN ERROR in org code of duplicate distance calc.
+//ADVC - DOTO-keldath FOUDN ERROR in org code of duplicate distance calc.
 				iRazeValue += //std::max(0, (70 - 15 * pCity->getPopulation()));
 						kCity.calculateBaseMaintenanceTimes100() / 100;
 			}
