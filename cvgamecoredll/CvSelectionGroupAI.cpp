@@ -290,10 +290,22 @@ int CvSelectionGroupAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy)
 		return 100;
 
 	int iOdds = 0;
-	CvUnit* pAttacker = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds);
+//rangedattack-keldath	//added due to move block for ranged units - vip addition
+	CvUnit* /*CvUnitAI* */pAttacker = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds);
+//change to use rangedcapable
 	if (pAttacker == NULL)
-		return 0;
-
+	{	
+/*		CvUnit* pAttackerranged = AI_getBestGroupRangeAttacker(pPlot);
+		if (pAttackerranged == NULL)
+		{	
+	*/		return 0;
+/*		}
+		else
+		{
+			iOdds += 100;
+		}*/
+	}
+//rangedattack-keldath
 	return iOdds;
 }
 
@@ -306,8 +318,19 @@ int CvSelectionGroupAI::AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialE
 	PROFILE_FUNC();
 	int iOdds;
 	CvUnitAI* pAttacker = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds);
-	if (!pAttacker)
-		return 0;
+//rangedattack-keldath //added due to move block for ranged units - vip addition
+/*	CvUnit* pAttackerranged = NULL;*/
+	if (pAttacker == NULL/*!pAttacker*/)
+	{	
+/*		pAttackerranged = AI_getBestGroupRangeAttacker(pPlot);
+		// keldath fix - was -> !pAttacker
+		if (pAttackerranged == NULL)
+		{	
+		*/	return 0;
+	/*	}*/
+	}
+	//CvUnit* pAttacker = pAttacker == NULL ? pAttackerranged : pAttacker;//use valid attacker
+// rangedattack - keldath //added due to move block for ranged units - vip addition
 	CvUnit* pDefender = pPlot->getBestDefender(NO_PLAYER, getOwner(), pAttacker,
 			!bPotentialEnemy, bPotentialEnemy,
 			true, false); // advc.028, advc.089 (same as in CvUnitAI::AI_attackOdds)
@@ -523,11 +546,11 @@ CvUnit* CvSelectionGroupAI::AI_getBestGroupRangeAttacker(const CvPlot* pPlot) co
 			FAssert(pDefender != NULL);
 			FAssert(pDefender->canDefend());
 
-			int iDamage = pLoopUnit->rangeCombatDamage(pDefender);//change fn
+			int iDamage = pLoopUnit->rangeCombatDamageK(pDefender);//change fn
 
-			int iUnitDamage = std::max(pDefender->getDamage(), std::min((pDefender->getDamage() + iDamage), pLoopUnit->airCombatLimit()));
+			int iUnitDamage = std::max(pDefender->getDamage(), std::min((pDefender->getDamage() + iDamage), pLoopUnit->combatLimit()));
 			int iValue = iUnitDamage;
-
+			//add curr hp also/
 			if (pLoopUnit->collateralDamage() > 0)
 			{
 				int iPossibleTargets = std::min((pPlot->getNumVisibleEnemyDefenders(pLoopUnit) - 1), pLoopUnit->collateralDamageMaxUnits());

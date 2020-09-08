@@ -3495,7 +3495,9 @@ void TacticalSituation::evalEngagement() {
 			if(!p.isVisible(agentId) || !p.sameArea(groupPlot) ||
 					!p.isUnit() || // shortcut
 					// Could do without this if it's too slow
-					!head->canMoveInto(p, true, false, false, true, false))
+					(!head->canMoveInto(p, true, false, false, true, false))
+					//rangedstrike keldath additions
+					&& !!head->isRangeStrikeCapableK())
 				continue;
 			int plotNum = m.plotNum(p);
 			std::map<int,int>::iterator pos = weThreaten.find(plotNum);

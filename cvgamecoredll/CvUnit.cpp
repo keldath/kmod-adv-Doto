@@ -11935,7 +11935,9 @@ CvUnit* CvUnit::rangedStrikeTargetK(const CvPlot* pPlot) const
 		if (pDefender->canDefend())
 		{
 		// MOD - START - Improved Range Strike AI
-			if (pDefender->getDamage() < combatLimit())
+			int curDMG = std::max(0, ::round(pDefender->currHitPoints()/* / pDefender->maxHitPoints()*/)) /* * 100*/;
+			//(pDefender->getDamage()
+			if (curDMG  > combatLimit())
 			{
 				return pDefender;
 			}
@@ -12125,7 +12127,7 @@ bool CvUnit::rangeStrikeK(int iX, int iY)
 //	FAssert(pDefender->canDefend());
 	if (pDefender != NULL /*&& iDefenderNum > 0*/) 
 	{
-		int iDamage = rangeCombatDamageK(pDefender) * currHitPoints() / maxHitPoints();
+		int iDamage = rangeCombatDamageK(pDefender) /* * currHitPoints() / maxHitPoints()*/;
 		int iUnitDamage = std::max(pDefender->getDamage(), 
 						  std::min((pDefender->getDamage() + iDamage), combatLimit()));		
 		/*	if (combatLimit() >= iUnitDamage) 

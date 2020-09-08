@@ -2859,13 +2859,14 @@ bool CvSelectionGroup::groupAttack(int iX, int iY, int iFlags, bool& bFailedAlre
 				//doto-advc adjustment
 				if (iAttackOdds < 80 /*GC.getSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS()*/)
 				{
-					CvUnit* pBestRangedUnit = AI_getBestGroupRangeAttacker(pDestPlot);
+					//doto-advc adjustment AI().		
+					CvUnit* pBestRangedUnit = AI().AI_getBestGroupRangeAttacker(pDestPlot);
 
 					bool bRangeStrike = false;
 					while (pBestRangedUnit != NULL && pBestRangedUnit->rangeStrikeK(pDestPlot->getX(), pDestPlot->getY()))
 					{
 						bRangeStrike = true;
-						pBestRangedUnit = AI_getBestGroupRangeAttacker(pDestPlot);
+						pBestRangedUnit = AI().AI_getBestGroupRangeAttacker(pDestPlot);
 					}
 
 					if (bRangeStrike)
@@ -2883,8 +2884,8 @@ bool CvSelectionGroup::groupAttack(int iX, int iY, int iFlags, bool& bFailedAlre
 			// DOTO-MOD - end - Ranged Strike AI realism invictus
 
 			// advc.048: AI_getBestGroupSacrifice moved into AI_getBestGroupAttacker
-
-			bAttack = true;
+			// DOTO-MOD - end - Ranged Strike AI realism invictus - moved above
+			//bAttack = true;
 
 			if (GC.getPythonCaller()->doCombat(*this, *pDestPlot))
 				break;

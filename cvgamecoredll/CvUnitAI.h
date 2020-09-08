@@ -17,11 +17,14 @@ public:
 	CvUnitAI();
 	~CvUnitAI();
 // MOD - rangedattack-keldath START - Ranged Strike AI-REALISM INVICTUS
+	int AI_rangedStrikeValueK(CvPlot const& kPlot) const;
 	CvPlot* AI_rangeStrikeTargetPlotK(int iSearchRange) const;
 	bool AI_rangeAttackK(int iFlags = 0, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
 	bool AI_rangeAttackCityK();
 	bool AI_rangeAttackOrSkipK(int iFlags = 0, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
 	bool AI_rangeAttackOrFortifyK(int iFlags = 0, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
+	int NetTotalStreangth (const CvPlot* pAttackedPlot,bool bRanged) const;
+	int isPlotWorthRanged(CvPlot const& kPlot) const;
 // MOD - END - Ranged Strike AI
 	// advc.003u: Override replacing AI_init. Parameter list copied from CvUnit::init.
 	void init(int iID, UnitTypes eUnit, UnitAITypes eUnitAI, PlayerTypes eOwner,
