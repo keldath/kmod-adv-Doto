@@ -322,7 +322,7 @@
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_END_MOVES</Type>
-            <Description>Ranged Move End-(DEV)</Description>
+            <Description>Ranged Move End</Description>
             <Help>Units with Range Strike wont be able to move if it have more move points.(default off)</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>
