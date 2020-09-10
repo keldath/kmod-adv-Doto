@@ -2859,8 +2859,8 @@ bool CvSelectionGroup::groupAttack(int iX, int iY, int iFlags, bool& bFailedAlre
 				//doto-advc adjustment
 				if (iAttackOdds < 80 /*GC.getSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS()*/)
 				{
-					//doto-advc adjustment AI().		
-					CvUnit* pBestRangedUnit = AI().AI_getBestGroupRangeAttacker(pDestPlot);
+					//doto-advc adjustment AI(). and cvunitai instead of cvunit		
+					CvUnitAI* pBestRangedUnit = AI().AI_getBestGroupRangeAttacker(pDestPlot);
 
 					bool bRangeStrike = false;
 					while (pBestRangedUnit != NULL && pBestRangedUnit->rangeStrikeK(pDestPlot->getX(), pDestPlot->getY()))

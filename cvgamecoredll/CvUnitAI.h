@@ -18,7 +18,8 @@ public:
 	~CvUnitAI();
 // MOD - rangedattack-keldath START - Ranged Strike AI-REALISM INVICTUS
 	int AI_rangedStrikeValueK(CvPlot const& kPlot) const;
-	CvPlot* AI_rangeStrikeTargetPlotK(int iSearchRange) const;
+	CvPlot* AI_rangeStrikeTargetPlotK(int iSearchRange, CvUnitAI* pAttacker) const;
+	bool AI_rangeAttackK2(int iFlags = 0, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
 	bool AI_rangeAttackK(int iFlags = 0, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
 	bool AI_rangeAttackCityK();
 	bool AI_rangeAttackOrSkipK(int iFlags = 0, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
@@ -198,7 +199,9 @@ protected:
 	bool AI_goToTargetCity(int iFlags = 0, int iMaxPathTurns = MAX_INT, CvCity* pTargetCity = NULL);
 	//bool AI_goToTargetBarbCity(int iMaxPathTurns = 10); // disabled by K-Mod. (duplicate code ftl)
 	bool AI_pillageAroundCity(CvCity* pTargetCity, int iBonusValueThreshold = 0, int iFlags = 0, int iMaxPathTurns = MAX_INT);
-	bool AI_bombardCity();
+//keldath - rangedstrik - added bool skipRangedAttack - rangedstrik - if this is
+	bool AI_bombardCity(bool skipRangedAttack = true);
+//keldath - rangedstrik - added bool skipRangedAttack - rangedstrik - if this is
 	bool AI_cityAttack(int iRange, int iOddsThreshold, int iFlags = 0, bool bFollow = false);
 	bool AI_anyAttack(int iRange, int iOddsThreshold, int iFlags = 0, int iMinStack = 0, bool bAllowCities = true, bool bFollow = false);
 	// BETTER_BTS_AI_MOD: END

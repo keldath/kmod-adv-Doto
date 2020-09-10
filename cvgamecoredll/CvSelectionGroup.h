@@ -323,7 +323,8 @@ private: // advc.003u: (See comments in the private section of CvPlayer.h)
 	virtual CvUnit* AI_getBestGroupSacrificeExternal(CvPlot* pPlot, bool bPotentialEnemy,
 			bool bForce = false, bool bNoBlitz = false);
 	// DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
-	virtual CvUnit* AI_getBestGroupRangeAttacker(const CvPlot* pPlot) const = 0;
+	//change to cvunitai
+	virtual CvUnitAI* AI_getBestGroupRangeAttacker(const CvPlot* pPlot) const = 0;
 	// MOD - END - Ranged Strike AI
 	virtual int AI_compareStacksExternal(CvPlot* pPlot, bool bPotentialEnemy,
 			bool bCheckCanAttack = false, bool bCheckCanMove = false);

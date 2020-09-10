@@ -290,22 +290,10 @@ int CvSelectionGroupAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy)
 		return 100;
 
 	int iOdds = 0;
-//rangedattack-keldath	//added due to move block for ranged units - vip addition
-	CvUnit* /*CvUnitAI* */pAttacker = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds);
-//change to use rangedcapable
+	CvUnit* pAttacker = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds);
 	if (pAttacker == NULL)
-	{	
-/*		CvUnit* pAttackerranged = AI_getBestGroupRangeAttacker(pPlot);
-		if (pAttackerranged == NULL)
-		{	
-	*/		return 0;
-/*		}
-		else
-		{
-			iOdds += 100;
-		}*/
-	}
-//rangedattack-keldath
+		return 0;
+
 	return iOdds;
 }
 
@@ -313,24 +301,38 @@ int CvSelectionGroupAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy)
 	(note: I would like to put this in CvSelectionGroupAI ... but - well -
 	I don't need to say it, right?)
 	advc.003u: I think CvUnitAI::AI_getGroup solves karadoc's problem; so - moved. */
-int CvSelectionGroupAI::AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialEnemy)
+int CvSelectionGroupAI::AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialEnemy,bool bRanged)
 {
 	PROFILE_FUNC();
 	int iOdds;
-	CvUnitAI* pAttacker = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds);
-//rangedattack-keldath //added due to move block for ranged units - vip addition
-/*	CvUnit* pAttackerranged = NULL;*/
-	if (pAttacker == NULL/*!pAttacker*/)
-	{	
-/*		pAttackerranged = AI_getBestGroupRangeAttacker(pPlot);
-		// keldath fix - was -> !pAttacker
-		if (pAttackerranged == NULL)
-		{	
-		*/	return 0;
-	/*	}*/
+//keldath rangedStrike
+	CvUnitAI* pAttacker = NULL;
+	CvUnitAI* pAttackerNotRanged = NULL;
+	CvUnitAI* pAttackerRanged = NULL;
+	if (!bRanged) 
+	{
+		pAttackerNotRanged = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds);
+		if (pAttackerNotRanged == NULL)
+			return 0;
 	}
-	//CvUnit* pAttacker = pAttacker == NULL ? pAttackerranged : pAttacker;//use valid attacker
-// rangedattack - keldath //added due to move block for ranged units - vip addition
+	else 
+	{
+		pAttackerRanged = AI_getBestGroupRangeAttacker(pPlot);
+		if (pAttackerRanged==NULL)
+		{
+			return 0;
+		}
+		else 
+		{
+			iOdds = 100; //seems odds is updated, somehow if its not a ranged 
+						//attacker, so i added a 100 as a default here
+						//adcv commentbelow speaks of a precent output that expected
+						//so i used 100 as a default, ranged attack attack odds...are, 100...:_)
+						//keldath
+		}
+	}
+	pAttacker = bRanged ? pAttackerRanged : pAttackerNotRanged;
+//keldath rangedStrike		
 	CvUnit* pDefender = pPlot->getBestDefender(NO_PLAYER, getOwner(), pAttacker,
 			!bPotentialEnemy, bPotentialEnemy,
 			true, false); // advc.028, advc.089 (same as in CvUnitAI::AI_attackOdds)
@@ -525,18 +527,25 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupSacrifice(const CvPlot* pPlot,
 	return pBestUnit;
 }
 // DOTO-MOD - rangedattack-keldath START - Ranged Strike AI realism invictus
-CvUnit* CvSelectionGroupAI::AI_getBestGroupRangeAttacker(const CvPlot* pPlot) const
+//keldath - note that i replaved the CvUnit* with CvUnitAI* here and selectiongroup.cpp
+//and its headers, the reason is becuase i am using weghitedodds fn now so this gets fired from there.
+//originaly, this was fired by attackodds.
+//due to vip method where range units cannot attack directly (canmoveto()) it failed the check on bestdefender.
+//so i made the changes .
+CvUnitAI* CvSelectionGroupAI::AI_getBestGroupRangeAttacker(const CvPlot* pPlot) const
 {
 	int iBestValue = 0;
-	CvUnit* pBestUnit = NULL;
+//changed to cvunitai
+	CvUnitAI* pBestUnit = NULL;
 
 	CLLNode<IDInfo>* pUnitNode = headUnitNode();
 
 	bool bIsHuman = (pUnitNode != NULL) ? GET_PLAYER(::getUnit(pUnitNode->m_data)->getOwner()).isHuman() : true;
 
 	while (pUnitNode != NULL)
-	{
-		CvUnit* pLoopUnit = ::getUnit(pUnitNode->m_data);
+	{	
+		CvUnitAI* pLoopUnit = ::AI_getUnit(pUnitNode->m_data);
+		//CvUnitAI* pLoopUnit = ::getUnit(pUnitNode->m_data);
 		pUnitNode = nextUnitNode(pUnitNode);
 
 		if (pLoopUnit->canRangeStrikeAtK(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
@@ -662,8 +671,16 @@ int CvSelectionGroupAI::AI_sumStrength(const CvPlot* pAttackedPlot,
 				}
 			}
 			else*/
+// DOTO - MODrangedattack - keldath - Scheck if the unit is ranged - see the below can move.
+			bool bRanged = false;
+			if (kLoopUnit.rangedStrike() > 0 )
+			{
+				bRanged = true;
+			}
+// DOTO - MODrangedattack - keldath - end
 			if (!kLoopUnit.canAttack() || !kLoopUnit.canMove() ||
-				(pAttackedPlot && bDefenders && !kLoopUnit.canMoveInto(*pAttackedPlot, true, true)) ||
+// DOTO - MODrangedattack - keldath - START added bRanged so  it willignore canmoveinto - ranged units cannot attack directly.
+				(pAttackedPlot && bDefenders && (!kLoopUnit.canMoveInto(*pAttackedPlot, true, true) && !bRanged)) ||
 				//(!pLoopUnit->isBlitz() && pLoopUnit->isMadeAttack())
 				kLoopUnit.isMadeAllAttacks()) // advc.164
 			{
