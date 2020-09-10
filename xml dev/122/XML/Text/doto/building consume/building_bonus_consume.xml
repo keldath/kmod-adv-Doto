@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Civ4GameText>
+<TEXT>
+<Tag>TXT_KEY_BUILDING_PRODUCES</Tag>
+<English>[ICON_BULLET] Produces %s1 per [COLOR_HIGHLIGHT_TEXT][LINK=literal]%s2_BonusName[\LINK][COLOR_REVERT] (%F3_BonusIcon) Consumed</English>
+<French>[ICON_BULLET] Produces %s1 per [COLOR_HIGHLIGHT_TEXT][LINK=literal]%s2_BonusName[\LINK][COLOR_REVERT] (%F3_BonusIcon) Consumed</French>
+<German>[ICON_BULLET] Produces %s1 per [COLOR_HIGHLIGHT_TEXT][LINK=literal]%s2_BonusName[\LINK][COLOR_REVERT] (%F3_BonusIcon) Consumed</German>
+<Italian>[ICON_BULLET] Produces %s1 per [COLOR_HIGHLIGHT_TEXT][LINK=literal]%s2_BonusName[\LINK][COLOR_REVERT] (%F3_BonusIcon) Consumed</Italian>
+<Spanish>[ICON_BULLET] Produces %s1 per [COLOR_HIGHLIGHT_TEXT][LINK=literal]%s2_BonusName[\LINK][COLOR_REVERT] (%F3_BonusIcon) Consumed</Spanish>
+</TEXT>
+</Civ4GameText>
