@@ -4,6 +4,7 @@
 #include "CvInfo_GameOption.h"
 #include "CvXMLLoadUtility.h"
 #include "CvDLLXMLIFaceBase.h"
+#include "CvInitCore.h" // advc.137
 
 
 CvGameOptionInfo::CvGameOptionInfo() :
@@ -266,9 +267,12 @@ bool CvEraInfo::read(CvXMLLoadUtility* pXML)
 	}
 
 	pXML->SetVariableListTagPairForAudioScripts(&m_paiCitySoundscapeScriptIds,
-		"CitySoundscapes", CvGlobals::getInstance().getCitySizeTypes(),
-		//sizeof(GC.getCitySizeTypes((CitySizeTypes)0))
-		NUM_CITYSIZE_TYPES); // advc.001 (The above was greater than the correct value, so it didn't do any real harm.)
+			"CitySoundscapes",
+			//CvGlobals::getInstance().getCitySizeTypes(), // advc: callee didn't use it
+			//sizeof(GC.getCitySizeTypes((CitySizeTypes)0))
+			/*	advc.001 (The above was greater than the correct value,
+				so it didn't do any real harm.) */
+			NUM_CITYSIZE_TYPES);
 
 	return true;
 }
@@ -392,6 +396,11 @@ bool CvGameSpeedInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iUnitTradePercent, "iUnitTradePercent");
 	pXML->GetChildXmlValByName(&m_iUnitGreatWorkPercent, "iUnitGreatWorkPercent");
 	pXML->GetChildXmlValByName(&m_iGoldenAgePercent, "iGoldenAgePercent");
+	// <advc>
+	FAssertMsg(m_iResearchPercent >= 100 ?
+			(m_iGoldenAgePercent > m_iResearchPercent / 3 && m_iGoldenAgePercent <= m_iResearchPercent) :
+			(3 * m_iGoldenAgePercent < 4 * m_iResearchPercent && m_iGoldenAgePercent >= m_iResearchPercent),
+			"The Golden Age modifier gets used for various adjustments; unusual values should be avoided."); // </advc>
 	pXML->GetChildXmlValByName(&m_iHurryPercent, "iHurryPercent");
 	pXML->GetChildXmlValByName(&m_iHurryConscriptAngerPercent, "iHurryConscriptAngerPercent");
 	pXML->GetChildXmlValByName(&m_iInflationOffset, "iInflationOffset");
@@ -982,7 +991,7 @@ bool CvHandicapInfo::isAIFreeTechs(int i) const // advc.003t: Return type was in
 	FAssertBounds(0, GC.getNumTechInfos(), i);
 	return (m_pbAIFreeTechs != NULL ? m_pbAIFreeTechs[i] : false);
 }
-#if SERIALIZE_CVINFOS
+#if ENABLE_XML_FILE_CACHE
 void CvHandicapInfo::read(FDataStreamBase* stream)
 {
 	CvInfoBase::read(stream);
@@ -1541,4 +1550,24 @@ bool CvSeaLevelInfo::read(CvXMLLoadUtility* pXML)
 	FAssert(m_iResearchPercent > 0); // </advc.910>
 
 	return true;
+}
+// advc.137: Include recommendation in description on Custom Game screen
+wchar const* CvSeaLevelInfo::getDescriptionInternal(uint uiForm) const
+{
+	CvInitCore const& kInitCore = GC.getInitCore();
+	if (kInitCore.getActivePlayer() == NO_PLAYER &&
+		/*	This distinguishes Custom Game from Play Now.
+			(Play Now doesn't have enough room for a recommendation,
+			and doesn't allow player counts to be adjusted.) */
+		kInitCore.getSlotStatus(FIRST_PLAYER) == SS_OPEN)
+	{
+		CvWString szTag;
+		if (m_iSeaLevelChange < 0)
+			szTag = L"TXT_KEY_SEALEVEL_LOW_RECOMMEND";
+		else if (m_iSeaLevelChange > 0)
+			szTag = L"TXT_KEY_SEALEVEL_HIGH_RECOMMEND";
+		if (!szTag.empty())
+			return gDLL->getText(szTag);
+	}
+	return CvInfoBase::getDescriptionInternal(uiForm);
 }

@@ -6,14 +6,14 @@
 	CvEnums.h and CvGlobals.h are used.
 	Formatting: linebreaks added before scope resolution operators.
 	advc.fract: Disabled the INLINE_NATIVE representation for "small" enum types
-	in order to allow T=ScaledNum. (As suggested to me by Nightinggale.) */
+	in order to allow T=ScaledNum. (As suggested to me by Nightinggale.)
+	Functions for bitwise operations moved into BitUtil.h (included in PCH);
+	WtP defines them directly in the PCH. */
 
 #pragma once
 
 #ifndef ENUM_MAP_H
 #define ENUM_MAP_H
-
-#include "BitUtil.h" // advc.enum: For bitwise operations; WtP uses CvGameCoreDLL.h for that.
 
 // advc: Moved up; (VS2010) IntelliSense needs it here.
 template <class T> struct EnumMapGetDefault {};
@@ -97,22 +97,22 @@ public:
 	// add a number to all indexes
 	void addAll(T tValue);
 
-	// get the sum of all elements
-	int getTotal() const;
-	
+	// get the sum of all elements // advc.fract: return type was int
+	T getTotal() const;
+
 	// Check if there is non-default contents.
 	// isAllocated() test for a null pointer while hasContent() will loop the array to test each index for default value.
 	// Useful to avoid looping all 0 arrays and when creating savegames.
 	// Note: hasContent() can release memory if it doesn't alter what get() will return.
 	bool isAllocated() const;
 	bool hasContent() const;
-	
+
 	T getMin() const;
 	T getMax() const;
 
 	void keepMin(IndexType eIndex, T tValue);
 	void keepMax(IndexType eIndex, T tValue);
-	
+
 	// memory allocation and freeing
 	void reset();
 	void setAll(T tValue);
@@ -157,7 +157,7 @@ private: // advc (Maybe some of these should indeed be public, but probably not 
 private: // advc: Since these aren't implemented (yet), make them private.
 	// operator overload
 	EnumMapBase& operator=(const EnumMapBase &rhs);
-	
+
 	template<class T2, int DEFAULT2>
 	EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>&
 			operator=(const EnumMapBase<IndexType, T2, DEFAULT2, T_SUBSET, LengthType> &rhs);
@@ -171,7 +171,7 @@ private: // advc: Since these aren't implemented (yet), make them private.
 	bool operator==(const EnumMapBase<IndexType, T2, DEFAULT2, T_SUBSET, LengthType> &rhs) const;
 	template<class T2, int DEFAULT2>
 	bool operator!=(const EnumMapBase<IndexType, T2, DEFAULT2, T_SUBSET, LengthType> &rhs) const;
-	
+
 
 private:
 
@@ -333,18 +333,19 @@ private:
 	}
 	template<>
 	__forceinline void _set<false, ENUMMAP_SIZE_1_BYTE>(int iIndex, T tValue)
-	{
-		m_pArrayChar[iIndex] = tValue;
+	{	// advc: Cast added to conform with /W4
+		m_pArrayChar[iIndex] = static_cast<char>(tValue);
 	}
 	template<>
 	__forceinline void _set<false, ENUMMAP_SIZE_2_BYTE>(int iIndex, T tValue)
 	{
-		m_pArrayShort[iIndex] = tValue;
+		m_pArrayShort[iIndex] = static_cast<short>(tValue); // advc: cast (see above)
 	}
 	template<>
 	inline void _set<false, ENUMMAP_SIZE_BOOL>(int iIndex, T tValue)
 	{
-		BitUtil::SetBit(m_pArrayBool[getBoolArrayBlock(iIndex)], getBoolArrayIndexInBlock(iIndex), tValue ? 1 : 0);
+		BitUtil::SetBit(m_pArrayBool[getBoolArrayBlock(iIndex)],
+				getBoolArrayIndexInBlock(iIndex), tValue ? 1 : 0);
 	}
 	/*template<>
 	__forceinline void _set<true, ENUMMAP_SIZE_NATIVE>(int iIndex, T tValue)
@@ -441,22 +442,22 @@ private:
 	/*template<>
 	void _allocate<true, ENUMMAP_SIZE_NATIVE>(T tValue)
 	{
-		FAssertMsg(false, "EnumMap::_allocate shouldn't be called for classes with inline memory");
+		FErrorMsg("EnumMap::_allocate shouldn't be called for classes with inline memory");
 	}*/ // advc.fract
 	template<>
 	void _allocate<true, ENUMMAP_SIZE_1_BYTE>(T tValue)
 	{
-		FAssertMsg(false, "EnumMap::_allocate shouldn't be called for classes with inline memory");
+		FErrorMsg("EnumMap::_allocate shouldn't be called for classes with inline memory");
 	}
 	template<>
 	void _allocate<true, ENUMMAP_SIZE_2_BYTE>(T tValue)
 	{
-		FAssertMsg(false, "EnumMap::_allocate shouldn't be called for classes with inline memory");
+		FErrorMsg("EnumMap::_allocate shouldn't be called for classes with inline memory");
 	}
 	template<>
 	void _allocate<true, ENUMMAP_SIZE_BOOL>(T tValue)
 	{
-		FAssertMsg(false, "EnumMap::_allocate shouldn't be called for classes with inline memory");
+		FErrorMsg("EnumMap::_allocate shouldn't be called for classes with inline memory");
 	}
 
 	////
@@ -487,8 +488,8 @@ private:
 			pStream->Read(&bTmp);
 			set(eIndex, bTmp);
 		} // </advc>
-	} 
-	
+	}
+
 	template<>
 	void _Write<ENUMMAP_SIZE_BOOL>(/* <advc> */ FDataStreamBase* pStream, bool bAsInt,
 		bool bAsFloat) const
@@ -593,7 +594,7 @@ void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 	FAssert(eIndex >= First() && eIndex < getLength());
 	if (!bINLINE && m_pArrayFull == NULL)
 	{
-		if (tValue == DEFAULT) 
+		if (tValue == DEFAULT)
 		{
 			return;
 		}
@@ -624,7 +625,7 @@ inline void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 		but tMultiplier==1 in 'multiply' seems far less likely than tValue==0 in 'add'. */
 	//if (tMultiplier != 1)
 	set(eIndex, tMultiplier * get(eIndex));
-} 
+}
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
 void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
@@ -665,8 +666,8 @@ void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-// advc: was inline
-int EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>::getTotal() const
+// advc: was inline; advc.fract: return type was int
+T EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>::getTotal() const
 {
 	// bINLINE is set at compile time and if true, isAllocated will always be true
 	// used here to tell the compiler that the true statement (not allocated) can be declared unreachable at compile time
@@ -675,13 +676,13 @@ int EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>::getTotal() const
 		// no need to loop through unallocated memory
 		return DEFAULT * getLength();
 	}
-	int iReturnVal = 0;
+	T tReturnVal = 0;
 	const int iLength = getLength();
 	for (IndexType eIndex = First(); eIndex < iLength; ++eIndex)
 	{
-		iReturnVal += get(eIndex);
+		tReturnVal = tReturnVal + get(eIndex);
 	}
-	return iReturnVal;
+	return tReturnVal;
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
@@ -1240,14 +1241,18 @@ template<> struct EnumMapGetDefault<PlotNumTypes> {
 	};
 /*  Don't want to set these in CvEnums.h or anywhere in the global namespace b/c
 	the FOR_EACH_ENUM macro shouldn't be used for them */
-SET_NONXML_ENUM_LENGTH(PlayerTypes, (PlayerTypes)MAX_PLAYERS)
-SET_NONXML_ENUM_LENGTH(TeamTypes, (TeamTypes)MAX_TEAMS)
+SET_NONXML_ENUM_LENGTH(PlayerTypes, MAX_PLAYERS)
+SET_NONXML_ENUM_LENGTH(TeamTypes, MAX_TEAMS)
 
 // For enum maps that exclude the Barbarians
-enum CivPlayerTypes {};
-enum CivTeamTypes {};
-SET_NONXML_ENUM_LENGTH(CivPlayerTypes, (CivPlayerTypes)MAX_CIV_PLAYERS)
-SET_NONXML_ENUM_LENGTH(CivTeamTypes, (CivTeamTypes)MAX_CIV_TEAMS)
+enum CivPlayerTypes {
+	NUM_CIV_PLAYER_TYPES = MAX_CIV_PLAYERS
+};
+enum CivTeamTypes {
+	NUM_CIV_TEAM_TYPES = MAX_CIV_TEAMS,
+};
+SET_NONXML_ENUM_LENGTH(CivPlayerTypes, NUM_CIV_PLAYER_TYPES)
+SET_NONXML_ENUM_LENGTH(CivTeamTypes, NUM_CIV_TEAM_TYPES)
 
 // Not to be used outside of this header
 #undef SET_XML_ENUM_SIZE

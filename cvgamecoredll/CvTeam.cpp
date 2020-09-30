@@ -1046,7 +1046,8 @@ bool CvTeam::canEventuallyDeclareWar(TeamTypes eTeam) const
 } // bbai end
 
 // K-Mod note: I've shuffled things around a bit in this function.  // advc: refactored
-void CvTeam::declareWar(TeamTypes eTarget, bool bNewDiplo, WarPlanTypes eWarPlan, bool bPrimaryDoW,
+void CvTeam::declareWar(TeamTypes eTarget, bool bNewDiplo, WarPlanTypes eWarPlan,
+	bool bPrimaryDoW, // K-Mod
 	PlayerTypes eSponsor, // advc.100
 	bool bRandomEvent) // advc.106g
 {
@@ -1114,7 +1115,7 @@ void CvTeam::declareWar(TeamTypes eTarget, bool bNewDiplo, WarPlanTypes eWarPlan
 		// advc.001w: Can now enter each other's territory
 		gDLL->UI().setDirty(Waypoints_DIRTY_BIT, true);
 		// advc.162: DoW increases certain path costs
-		CvSelectionGroup::path_finder.Reset();
+		CvSelectionGroup::resetPath();
 	}
 	// advc.003j: Obsolete
 	/*for (iI = 0; iI < MAX_PLAYERS; iI++) {
@@ -1162,17 +1163,16 @@ void CvTeam::declareWar(TeamTypes eTarget, bool bNewDiplo, WarPlanTypes eWarPlan
 		for (PlayerIter<MAJOR_CIV> it; it.hasNext(); ++it)
 		{
 			CvPlayer const& kObs = *it;
-			// <advc.106b>
-			LPCTSTR szSoundYou = "AS2D_DECLAREWAR";
-			LPCTSTR szSoundThey = "AS2D_THEIRDECLAREWAR";
-			if ((isAVassal() && !isHuman()) || (kTarget.isAVassal() && !kTarget.isHuman()))
-				szSoundYou = szSoundThey = NULL; // </advc.106b>
+			// <advc.002l>
+			LPCTSTR szSoundYou = (bPrimaryDoW ? "AS2D_DECLAREWAR" : NULL);
+			LPCTSTR szSoundThey = (bPrimaryDoW ? "AS2D_THEIRDECLAREWAR" : NULL);
+			// </advc.002l>
 			if (kObs.getTeam() == getID())
 			{
 				szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_DECLARED_WAR_ON",
 						kTarget.getName().GetCString());
 				gDLL->UI().addMessage(kObs.getID(), true, -1, szBuffer,
-						szSoundYou, // advc.106b
+						szSoundYou, // advc.002l
 						MESSAGE_TYPE_MAJOR_EVENT, NULL, GC.getColorType("WARNING_TEXT"),
 						// advc.127b:
 						kTarget.getCapitalX(kObs.getTeam()), kTarget.getCapitalY(kObs.getTeam()));
@@ -1185,7 +1185,7 @@ void CvTeam::declareWar(TeamTypes eTarget, bool bNewDiplo, WarPlanTypes eWarPlan
 				else // </advc.100>
 					szBuffer = gDLL->getText("TXT_KEY_MISC_DECLARED_WAR_ON_YOU", getName().GetCString());
 				gDLL->UI().addMessage(kObs.getID(), true, -1, szBuffer,
-						szSoundYou, // advc.106b
+						szSoundYou, // advc.002l
 						MESSAGE_TYPE_MAJOR_EVENT, NULL, GC.getColorType("WARNING_TEXT"),
 						// advc.127b:
 						getCapitalX(kObs.getTeam()), getCapitalY(kObs.getTeam()));
@@ -1206,8 +1206,9 @@ void CvTeam::declareWar(TeamTypes eTarget, bool bNewDiplo, WarPlanTypes eWarPlan
 							getName().GetCString(), kTarget.getName().GetCString());
 				}
 				gDLL->UI().addMessage(kObs.getID(), false, -1, szBuffer,
+						szSoundThey, // advc.002l
 						// <advc.106b>
-						szSoundThey, (isAVassal() || kTarget.isAVassal() ?
+						(isAVassal() || kTarget.isAVassal() ?
 						MESSAGE_TYPE_MAJOR_EVENT_LOG_ONLY : // </advc.106b>
 						MESSAGE_TYPE_MAJOR_EVENT), NULL, GC.getColorType("WARNING_TEXT"),
 						// advc.127b:
@@ -1240,10 +1241,48 @@ void CvTeam::declareWar(TeamTypes eTarget, bool bNewDiplo, WarPlanTypes eWarPlan
 				-1, -1, GC.getColorType("WARNING_TEXT"));
 	}
 	// kekm.26 (advc): EventReporter call moved down
+	triggerDefensivePacts(eTarget, bNewDiplo, bPrimaryDoW); // advc: Moved into subroutine
+	for (TeamIter<CIV_ALIVE> it; it.hasNext(); ++it)
+	{
+		CvTeam& kThirdTeam = *it;
+		if (kThirdTeam.getID() == getID() || kThirdTeam.getID() == eTarget)
+			continue;
+		if (kThirdTeam.isVassal(eTarget) || kTarget.isVassal(kThirdTeam.getID()))
+		{
+			//declareWar(kThirdTeam.getID(), bNewDiplo, AI_getWarPlan(eTeam), false);
+			// kekm.26:
+			queueWar(getID(), kThirdTeam.getID(), bNewDiplo, AI().AI_getWarPlan(eTarget), false);
+		}
+		else if (kThirdTeam.isVassal(getID()) || isVassal(kThirdTeam.getID()))
+		{
+			//kThirdTeam.declareWar(eTeam, bNewDiplo, WARPLAN_DOGPILE, false);
+			// kekm.26:
+			queueWar(kThirdTeam.getID(), eTarget, bNewDiplo, WARPLAN_DOGPILE, false);
+		}
+	}
+	/*if (bPrimaryDoW) { // K-Mod. update attitude
+		for (PlayerTypes i = (PlayerTypes)0; i < MAX_CIV_PLAYERS; i=(PlayerTypes)(i+1))
+			GET_PLAYER(i).AI_updateAttitude();
+	}*/
+	// <kekm.26> The above is "updated when the war queue is emptied."
+	/*  advc (bugfix): But not unless this function communicates to triggerWars that
+		a (primary) DoW has already occurred. */
+	triggerWars(true);
+	// advc: Moved down so that war status has already changed when event is reported
+	CvEventReporter::getInstance().changeWar(true, getID(), eTarget); // </kekm.26>
+}
 
-	/*  K-Mod / BBAI. This section includes some customization options from BBAI.
-		The code has been modified for K-Mod, so that it uses "bPrimaryDoW" rather than the BBAI parameter.
-		The original BtS code has been deleted. */
+// advc: Cut from declareWar
+void CvTeam::triggerDefensivePacts(TeamTypes eTarget, bool bNewDiplo, bool bPrimary)
+{
+	/*	advc (kekm3): New vassal joining its master's wars shouldn't trigger DP.
+		Master should already be at war with all DP allies of its enemies, but,
+		at least in multiplayer, this isn't guaranteed (I think). */
+	if (isAVassal())
+		return;
+	/*  K-Mod / BBAI. Customization options from BBAI have been modified, so that
+		they use "bPrimary". The original BtS code has been deleted. */
+
 	/* kekm.3: 'BBAI option 1 didn't work because if clauses for canceling pacts
 	   were wrong. BBAI otpion 2 needs further fixing. When all players have
 	   defensive pacts with all other players and someone declares war the
@@ -1251,8 +1290,9 @@ void CvTeam::declareWar(TeamTypes eTarget, bool bNewDiplo, WarPlanTypes eWarPlan
 	   but additional wars are declared due to recursive calls of declareWar
 	   in the loop below.' */
 	int const iDPBehavior = GC.getDefineINT(CvGlobals::BBAI_DEFENSIVE_PACT_BEHAVIOR);
-	if(iDPBehavior == 0 || (iDPBehavior == 1 && bPrimaryDoW))
+	if(iDPBehavior == 0 || (iDPBehavior == 1 && bPrimary))
 		cancelDefensivePacts();
+	CvTeamAI& kTarget = GET_TEAM(eTarget);
 	bool bDefPactTriggered = false; // advc.104i
 	for (TeamIter<CIV_ALIVE> it; it.hasNext(); ++it)
 	{
@@ -1291,35 +1331,7 @@ void CvTeam::declareWar(TeamTypes eTarget, bool bNewDiplo, WarPlanTypes eWarPlan
 	/*  <advc.104i> When other teams come to the help of eTeam through a
 		defensive pact, then eTeam becomes unwilling to talk with us. */
 	if(bDefPactTriggered)
-		kTarget.AI().AI_makeUnwillingToTalk(getID()); // </advc.104i>
-	for (TeamIter<CIV_ALIVE> it; it.hasNext(); ++it)
-	{
-		CvTeam& kThirdTeam = *it;
-		if (kThirdTeam.getID() == getID() || kThirdTeam.getID() == eTarget)
-			continue;
-		if (kThirdTeam.isVassal(eTarget) || kTarget.isVassal(kThirdTeam.getID()))
-		{
-			//declareWar(kThirdTeam.getID(), bNewDiplo, AI_getWarPlan(eTeam), false);
-			// kekm.26:
-			queueWar(getID(), kThirdTeam.getID(), bNewDiplo, AI().AI_getWarPlan(eTarget), false);
-		}
-		else if (kThirdTeam.isVassal(getID()) || isVassal(kThirdTeam.getID()))
-		{
-			//kThirdTeam.declareWar(eTeam, bNewDiplo, WARPLAN_DOGPILE, false);
-			// kekm.26:
-			queueWar(kThirdTeam.getID(), eTarget, bNewDiplo, WARPLAN_DOGPILE, false);
-		}
-	}
-	/*if (bPrimaryDoW) { // K-Mod. update attitude
-		for (PlayerTypes i = (PlayerTypes)0; i < MAX_CIV_PLAYERS; i=(PlayerTypes)(i+1))
-			GET_PLAYER(i).AI_updateAttitude();
-	}*/
-	// <kekm.26> The above is "updated when the war queue is emptied."
-	/*  advc (bugfix): But not unless this function communicates to triggerWars that
-		a (primary) DoW has already occurred. */
-	triggerWars(true);
-	// advc: Moved down so that war status has already changed when event is reported
-	CvEventReporter::getInstance().changeWar(true, getID(), eTarget); // </kekm.26>
+		kTarget.AI_makeUnwillingToTalk(getID()); // </advc.104i>
 }
 
 
@@ -1383,18 +1395,18 @@ void CvTeam::makePeace(TeamTypes eTarget, bool bBumpUnits,  // advc: refactored
 	for (PlayerIter<MAJOR_CIV> it; it.hasNext(); ++it)
 	{
 		CvPlayer const& kObs = *it;
-		// <advc.106b>
+		// <advc.002l>
 		LPCTSTR szSoundYou = "AS2D_MAKEPEACE";
 		LPCTSTR szSoundThey = "AS2D_THEIRMAKEPEACE";
-		if(isAVassal() && !isHuman() || (kTarget.isAVassal() && !kTarget.isHuman()))
-			szSoundYou = szSoundThey = NULL; // </advc.106b>
+		if (isAVassal() || kTarget.isAVassal())
+			szSoundYou = szSoundThey = NULL; // </advc.002l>
 		bool bWarTeam = false; // advc.039
 		if (kObs.getTeam() == getID())
 		{
 			CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_MADE_PEACE_WITH",
 					kTarget.getName().GetCString()));
 			gDLL->UI().addMessage(kObs.getID(), true, -1, szBuffer,
-					szSoundYou, // advc.106b
+					szSoundYou, // advc.002l
 					MESSAGE_TYPE_MAJOR_EVENT, NULL, GC.getColorType("HIGHLIGHT_TEXT"),
 					// advc.127b:
 					kTarget.getCapitalX(kObs.getTeam(), true), kTarget.getCapitalY(kObs.getTeam(), true));
@@ -1405,7 +1417,7 @@ void CvTeam::makePeace(TeamTypes eTarget, bool bBumpUnits,  // advc: refactored
 			CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_MADE_PEACE_WITH",
 					getName().GetCString()));
 			gDLL->UI().addMessage(kObs.getID(), true, -1, szBuffer,
-					szSoundYou, // advc.106b
+					szSoundYou, // advc.002l
 					MESSAGE_TYPE_MAJOR_EVENT, NULL, GC.getColorType("HIGHLIGHT_TEXT"),
 					// advc.127b:
 					getCapitalX(kObs.getTeam()), getCapitalY(kObs.getTeam()));
@@ -1457,8 +1469,9 @@ void CvTeam::makePeace(TeamTypes eTarget, bool bBumpUnits,  // advc: refactored
 						getName().GetCString(), kTarget.getName().GetCString());
 			}
 			gDLL->UI().addMessage(kObs.getID(), false, -1, szBuffer,
+					szSoundThey, // advc.002l
 					// <advc.106b>
-					szSoundThey, (isAVassal() || kTarget.isAVassal() ?
+					(isAVassal() || kTarget.isAVassal() ?
 					MESSAGE_TYPE_MAJOR_EVENT_LOG_ONLY : // </advc.106b>
 					MESSAGE_TYPE_MAJOR_EVENT), NULL,
 					(bAnyReparations ? NO_COLOR : // advc.039
@@ -2121,11 +2134,10 @@ int CvTeam::getResearchCost(TechTypes eTech, bool bGlobalModifiers, bool bTeamSi
 		// <advc.308>
 		if(kGame.isOption(GAMEOPTION_RAGING_BARBARIANS) && kGame.getStartEra() == 0)
 		{
-			switch(eTechEra)
-			{
-			case 1: rModifier -= per100(14); break;
-			case 2: rModifier -= per100(7); break;
-			}
+			if (eTechEra == 1)
+				rModifier -= per100(14);
+			else if (eTechEra == 2)
+				rModifier -= per100(7);
 		}
 		if(kGame.getStartEra() == 0 && kGame.isOption(GAMEOPTION_NO_BARBARIANS) &&
 			eTechEra <= 1)
@@ -2836,7 +2848,7 @@ void CvTeam::makeHasMet(TeamTypes eOther, bool bNewDiplo,
 	{
 		int iGameTurn = GC.getGame().getGameTurn();
 		FAssert(iGameTurn >= 0);
-		m_aiHasMetTurn.set(eOther, iGameTurn);
+		m_aiHasMetTurn.set(eOther, toShort(iGameTurn));
 	} // </advc.091>
 	updateTechShare();
 
@@ -3813,7 +3825,7 @@ void CvTeam::changeProjectCount(ProjectTypes eIndex, int iChange)  // advc: styl
 		for(int i = 0; i < -iChange; i++)
 			m_pavProjectArtTypes[eIndex].pop_back();
 	}
-	FAssertMsg(getProjectCount(eIndex) == (int)m_pavProjectArtTypes[eIndex].size(), "[Jason] Unbalanced project art types.");
+	FAssertMsg(getProjectCount(eIndex) == m_pavProjectArtTypes[eIndex].size(), "[Jason] Unbalanced project art types.");
 
 	CvProjectInfo& kProject = GC.getInfo(eIndex);
 
@@ -4650,7 +4662,8 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,  /
 					CvPlayerAI& kOther = *it;
 					if (!kOther.isHuman() && kOther.isResearchingTech(eTech))
 					{
-						// K-Mod note: we just want to flag it for re-evaluation. Clearing the queue is currently the only way to do that.
+						/*	K-Mod note: we just want to flag it for re-evaluation.
+							Clearing the queue is currently the only way to do that. */
 						kOther.clearResearchQueue();
 					}
 				}
@@ -4688,7 +4701,7 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,  /
 					continue; // advc
 				}
 				CvCity const* pCity = kMap.findCity(kLoopPlot.getX(), kLoopPlot.getY(), NO_PLAYER,
-						// advc.004r: Pass ID as 'observer' (last param) instead of city owner
+						// advc.004r: Pass ID as eObserver (last param) instead of city owner
 						NO_TEAM, false, false, NO_TEAM, NO_DIRECTION, NULL, getID());
 				if (pCity == NULL)
 					continue;
@@ -4776,21 +4789,16 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,  /
 		} // </advc.106>
 	}
 
-	if (bNewValue)
+	if (bNewValue && bAnnounce && kGame.isFinalInitialized() &&
+		!gDLL->GetWorldBuilderMode())
 	{
-		if (bAnnounce)
+		FAssert(ePlayer != NO_PLAYER);
+		if (GET_PLAYER(ePlayer).isResearch() &&
+			GET_PLAYER(ePlayer).getCurrentResearch() == NO_TECH &&
+			GET_PLAYER(ePlayer).isHuman()) // K-Mod
 		{
-			if (kGame.isFinalInitialized() && !gDLL->GetWorldBuilderMode())
-			{
-				FAssert(ePlayer != NO_PLAYER);
-				if (GET_PLAYER(ePlayer).isResearch() &&
-					GET_PLAYER(ePlayer).getCurrentResearch() == NO_TECH &&
-					GET_PLAYER(ePlayer).isHuman()) // K-Mod
-				{
-					CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_WHAT_TO_RESEARCH_NEXT");
-					GET_PLAYER(ePlayer).chooseTech(0, szBuffer);
-				}
-			}
+			CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_WHAT_TO_RESEARCH_NEXT");
+			GET_PLAYER(ePlayer).chooseTech(0, szBuffer);
 		}
 	}
 
@@ -4905,7 +4913,7 @@ int CvTeam::getEspionagePointsAgainstTeam(TeamTypes eIndex) const
 
 void CvTeam::setEspionagePointsAgainstTeam(TeamTypes eIndex, int iValue)
 {
-	PROFILE_FUNC(); // advc.test: To be profiled
+	PROFILE_FUNC(); // advc: So far not called frequently enough to be of any concern
 	if (iValue != getEspionagePointsAgainstTeam(eIndex))
 	{
 		m_aiEspionagePointsAgainstTeam.set(eIndex, iValue);
@@ -5751,7 +5759,10 @@ void CvTeam::read(FDataStreamBase* pStream)
 		{
 			TeamTypes eTeam = itTeam->getID();
 			if (abHasMet.get(eTeam))
-				m_aiHasMetTurn.set(eTeam, eTeam == getID() ? iStartTurn : iGameTurn);
+			{
+				m_aiHasMetTurn.set(eTeam, toShort(
+						eTeam == getID() ? iStartTurn : iGameTurn));
+			}
 		}
 	}
 	else m_aiHasMetTurn.Read(pStream);

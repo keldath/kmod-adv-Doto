@@ -650,19 +650,19 @@ void CvCity::doTurn()  // advc: style changes
 	#endif // XXX
 }
 
-// <advc.104u> Cut, pasted, refactored from the end of CvCity::doTurn
-int CvCity::calculateBaseYieldRate(YieldTypes y)
+// advc.104u: Cut, pasted, refactored from the end of CvCity::doTurn
+int CvCity::calculateBaseYieldRate(YieldTypes eYield)
 {
-	int r = 0;
+	int iR = 0;
 	for (WorkingPlotIter it(*this); it.hasNext(); ++it)
 	{
 		CvPlot const* pPlot = getCityIndexPlot(it.currID());
 		if(pPlot != NULL)
-			r += pPlot->getYield(y);
+			iR += pPlot->getYield(eYield);
 	}
 	FOR_EACH_ENUM(Specialist)
 	{
-		r += GET_PLAYER(getOwner()).specialistYield(eLoopSpecialist, y) *
+		iR += GET_PLAYER(getOwner()).specialistYield(eLoopSpecialist, eYield) *
 				(getSpecialistCount(eLoopSpecialist) +
 				getFreeSpecialistCount(eLoopSpecialist));
 	}
@@ -671,13 +671,13 @@ int CvCity::calculateBaseYieldRate(YieldTypes y)
 	{
 		BuildingTypes eBuilding = kCiv.buildingAt(i);
 		CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
-		r += getNumActiveBuilding(eBuilding) * (kBuilding.getYieldChange(y) +
-				getBuildingYieldChange(kBuilding.getBuildingClassType(), y));
+		iR += getNumActiveBuilding(eBuilding) * (kBuilding.getYieldChange(eYield) +
+				getBuildingYieldChange(kBuilding.getBuildingClassType(), eYield));
 	}
-	r += getTradeYield(y);
-	r += getCorporationYield(y);
-	return r;
-} // </advc.104u>
+	iR += getTradeYield(eYield);
+	iR += getCorporationYield(eYield);
+	return iR;
+}
 
 // advc: Code cut and pasted from CvPlot::doCulture; also refactored.
 void CvCity::doRevolt()
@@ -964,7 +964,7 @@ void CvCity::doTask(TaskTypes eTask, int iData1, int iData2, bool bOption,
 		break;
 
 	default:
-		FAssertMsg(false, "eTask failed to match a valid option");
+		FErrorMsg("eTask failed to match a valid option");
 	}
 }
 
@@ -1908,7 +1908,7 @@ bool CvCity::isProductionLimited() const
 			break;
 
 		default:
-			FAssertMsg(false, "pOrderNode->m_data.eOrderType failed to match a valid option");
+			FErrorMsg("pOrderNode->m_data.eOrderType failed to match a valid option");
 		}
 	}
 	return false;
@@ -1972,7 +1972,7 @@ bool CvCity::canContinueProduction(OrderData order)
 		break;
 
 	default:
-		FAssertMsg(false, "order.eOrderType failed to match a valid option");
+		FErrorMsg("order.eOrderType failed to match a valid option");
 	}
 	return false;
 }
@@ -2045,7 +2045,7 @@ UnitTypes CvCity::getProductionUnit() const
 		case ORDER_MAINTAIN:
 			break;
 		default:
-			FAssertMsg(false, "pOrderNode->m_data.eOrderType failed to match a valid option");
+			FErrorMsg("pOrderNode->m_data.eOrderType failed to match a valid option");
 		}
 	}
 	return NO_UNIT;
@@ -2066,7 +2066,7 @@ UnitAITypes CvCity::getProductionUnitAI() const
 		case ORDER_MAINTAIN:
 			break;
 		default:
-			FAssertMsg(false, "pOrderNode->m_data.eOrderType failed to match a valid option");
+			FErrorMsg("pOrderNode->m_data.eOrderType failed to match a valid option");
 		}
 	}
 	return NO_UNITAI;
@@ -2088,7 +2088,7 @@ BuildingTypes CvCity::getProductionBuilding() const
 		case ORDER_MAINTAIN:
 			break;
 		default:
-			FAssertMsg(false, "pOrderNode->m_data.eOrderType failed to match a valid option");
+			FErrorMsg("pOrderNode->m_data.eOrderType failed to match a valid option");
 		}
 	}
 	return NO_BUILDING;
@@ -2110,7 +2110,7 @@ ProjectTypes CvCity::getProductionProject() const
 		case ORDER_MAINTAIN:
 			break;
 		default:
-			FAssertMsg(false, "pOrderNode->m_data.eOrderType failed to match a valid option");
+			FErrorMsg("pOrderNode->m_data.eOrderType failed to match a valid option");
 		}
 	}
 	return NO_PROJECT;
@@ -2131,7 +2131,7 @@ ProcessTypes CvCity::getProductionProcess() const
 		case ORDER_MAINTAIN:
 			return ((ProcessTypes)(pOrderNode->m_data.iData1));
 		default:
-			FAssertMsg(false, "pOrderNode->m_data.eOrderType failed to match a valid option");
+			FErrorMsg("pOrderNode->m_data.eOrderType failed to match a valid option");
 		}
 	}
 	return NO_PROCESS;
@@ -2154,7 +2154,7 @@ const wchar* CvCity::getProductionName() const
 		case ORDER_MAINTAIN:
 			return GC.getInfo((ProcessTypes) pOrderNode->m_data.iData1).getDescription();
 		default:
-			FAssertMsg(false, "pOrderNode->m_data.eOrderType failed to match a valid option");
+			FErrorMsg("pOrderNode->m_data.eOrderType failed to match a valid option");
 		}
 	}
 	return L"";
@@ -2177,7 +2177,7 @@ const wchar* CvCity::getProductionNameKey() const
 		case ORDER_MAINTAIN:
 			return GC.getInfo((ProcessTypes) pOrderNode->m_data.iData1).getTextKeyWide();
 		default:
-			FAssertMsg(false, "pOrderNode->m_data.eOrderType failed to match a valid option");
+			FErrorMsg("pOrderNode->m_data.eOrderType failed to match a valid option");
 		}
 	}
 	return L"";
@@ -2202,7 +2202,7 @@ bool CvCity::isFoodProduction() const
 			break;
 
 		default:
-			FAssertMsg(false, "pOrderNode->m_data.eOrderType failed to match a valid option");
+			FErrorMsg("pOrderNode->m_data.eOrderType failed to match a valid option");
 			break;
 		}
 	}
@@ -2311,7 +2311,7 @@ int CvCity::getProduction() const
 		case ORDER_MAINTAIN:
 			break;
 		default:
-			FAssertMsg(false, "pOrderNode->m_data.eOrderType failed to match a valid option");
+			FErrorMsg("pOrderNode->m_data.eOrderType failed to match a valid option");
 		}
 	}
 	return 0;
@@ -2334,7 +2334,7 @@ int CvCity::getProductionNeeded() const
 		case ORDER_MAINTAIN:
 			break;
 		default:
-			FAssertMsg(false, "pOrderNode->m_data.eOrderType failed to match a valid option");
+			FErrorMsg("pOrderNode->m_data.eOrderType failed to match a valid option");
 		}
 	}
 	return MAX_INT;
@@ -2388,7 +2388,7 @@ int CvCity::getProductionTurnsLeft() const  // advc: some style changes
 			return getProductionTurnsLeft((ProjectTypes)iData, 0);
 		case ORDER_MAINTAIN:
 			break;
-		default: FAssertMsg(false, "Unknown order type");
+		default: FErrorMsg("Unknown order type");
 		}
 	}
 	return MAX_INT;
@@ -2576,7 +2576,7 @@ int CvCity::getProductionModifier() const
 		case ORDER_MAINTAIN:
 			break;
 		default:
-			FAssertMsg(false, "pOrderNode->m_data.eOrderType failed to match a valid option");
+			FErrorMsg("pOrderNode->m_data.eOrderType failed to match a valid option");
 		}
 	}
 	return 0;
@@ -4341,7 +4341,7 @@ int CvCity::getHurryCostModifier(bool bIgnoreNew) const
 		case ORDER_MAINTAIN:
 			break;
 		default:
-			FAssertMsg(false, "pOrderNode->m_data.eOrderType did not match a valid option");
+			FErrorMsg("pOrderNode->m_data.eOrderType did not match a valid option");
 		}
 	}
 	return iModifier;
@@ -4607,6 +4607,17 @@ int CvCity::cultureStrength(PlayerTypes ePlayer,
 	rSecondPartyModifier.clamp(0, 1);
 	rStrength *= rSecondPartyModifier;
 
+	/*	Culture strength too low in the late game - or garrison strength too high, but
+		garrison strength is what players can directly control; needs to be simple, linear.
+		Make this adjustment before applying grievance modifiers (or any other modifiers
+		that the UI communicates to the player). */
+	static scaled const rFOREIGN_CULTURE_STRENGTH_EXPONENT = per100(
+			GC.getDefineINT("FOREIGN_CULTURE_STRENGTH_EXPONENT"));
+	static scaled const rFOREIGN_CULTURE_STRENGTH_FACTOR = per100(
+			GC.getDefineINT("FOREIGN_CULTURE_STRENGTH_FACTOR"));
+	rStrength.exponentiate(rFOREIGN_CULTURE_STRENGTH_EXPONENT);
+	rStrength *= rFOREIGN_CULTURE_STRENGTH_FACTOR;
+
 	static scaled const rREVOLT_OFFENSE_STATE_RELIGION_MODIFIER = per100(
 			GC.getDefineINT("REVOLT_OFFENSE_STATE_RELIGION_MODIFIER"));
 	static scaled const rREVOLT_DEFENSE_STATE_RELIGION_MODIFIER = per100(
@@ -4633,7 +4644,6 @@ int CvCity::cultureStrength(PlayerTypes ePlayer,
 			Instead, count some religion offense also when the owner's state religion
 			is absent and at least one religion is in the city. This makes (some) sense
 			whether ePlayer is defeated or not. */
-		bool bReligionSuppressed = false;
 		if(eOwnerStateReligion != NO_RELIGION && !isHasReligion(eOwnerStateReligion))
 		{
 			FOR_EACH_ENUM(Religion)
@@ -4680,14 +4690,8 @@ int CvCity::cultureStrength(PlayerTypes ePlayer,
 	if(rGrievanceModifier < 0)
 		rGrievanceModifier /= 2;
 	rStrength *= (1 + scaled::max(-1, rGrievanceModifier));
-	/*	Culture strength too low in the late game - or garrison strength too high, but
-		garrison strength is what players can directly control; needs to be simple, linear. */
-	static scaled const rFOREIGN_CULTURE_STRENGTH_EXPONENT = per100(
-			GC.getDefineINT("FOREIGN_CULTURE_STRENGTH_EXPONENT"));
-	static scaled const rFOREIGN_CULTURE_STRENGTH_FACTOR = per100(
-			GC.getDefineINT("FOREIGN_CULTURE_STRENGTH_FACTOR"));
-	return (rFOREIGN_CULTURE_STRENGTH_FACTOR *
-			rStrength.pow(rFOREIGN_CULTURE_STRENGTH_EXPONENT)).round();
+
+	return rStrength.round();
 }
 
 
@@ -8109,7 +8113,7 @@ int CvCity::calculateTradeYield(YieldTypes eIndex, int iTradeProfit) const
 	return 0;
 }
 
-// BULL - Trade Hover - start  (advc: simplified a bit, _MOD_FRACTRADE removed)
+// BULL - Trade Hover:  (advc: simplified a bit, _MOD_FRACTRADE removed)
 /*  Adds the yield and count for each trade route with eWithPlayer to the
 	int references (out parameters). */
 void CvCity::calculateTradeTotals(YieldTypes eIndex, int& iDomesticYield, int& iDomesticRoutes,
@@ -8119,14 +8123,15 @@ void CvCity::calculateTradeTotals(YieldTypes eIndex, int& iDomesticYield, int& i
 		return;
 
 	int iNumTradeRoutes = getTradeRoutes();
-	for (int iI = 0; iI < iNumTradeRoutes; iI++)
+	for (int i = 0; i < iNumTradeRoutes; i++)
 	{
-		CvCity* pTradeCity = getTradeCity(iI);
+		CvCity* pTradeCity = getTradeCity(i);
 		if (pTradeCity != NULL && (eWithPlayer == NO_PLAYER ||
 			pTradeCity->getOwner() == eWithPlayer))
 		{
 			int iTradeYield = getBaseTradeProfit(pTradeCity);
-			iTradeYield = calculateTradeYield(YIELD_COMMERCE,
+			iTradeYield = calculateTradeYield(//YIELD_COMMERCE
+					eIndex, // advc.001
 					calculateTradeProfit(pTradeCity));
 			if (pTradeCity->getOwner() == getOwner())
 			{
@@ -8140,7 +8145,7 @@ void CvCity::calculateTradeTotals(YieldTypes eIndex, int& iDomesticYield, int& i
 			}
 		}
 	}
-} // BULL - Trade Hover - end
+}
 
 void CvCity::setTradeYield(YieldTypes eIndex, int iNewValue)
 {
@@ -9144,11 +9149,13 @@ void CvCity::setCultureTimes100(PlayerTypes eIndex, int iNewValue, bool bPlots, 
 		if (bPlots)
 		{
 			//doPlotCulture(true, eIndex, 0);
-			//doPlotCulture(true, eIndex, (iNewValue-iOldValue)/100);
-			doPlotCultureTimes100(true, eIndex, (iNewValue-iOldValue), false);
-			// note: this function no longer applies free city culture.
-			// also, note that if a city's culture is decreased to zero, there will probably still be some residual plot culture around the city
-			// this is because the culture level on the way up will be higher than it is on the way down.
+			//doPlotCulture(true, eIndex, (iNewValue - iOldValue) / 100);
+			doPlotCultureTimes100(true, eIndex, iNewValue - iOldValue, false);
+			/*	note: this function no longer applies free city culture.
+				also, note that if a city's culture is decreased to zero,
+				there will probably still be some residual plot culture around the city.
+				this is because the culture level on the way up
+				will be higher than it is on the way down. */
 		}
 	} // K-Mod end
 }
@@ -9905,7 +9912,7 @@ bool CvCity::isAnyProductionProgress(OrderTypes eOrder) const
 	case ORDER_CREATE:	return m_aiProjectProduction.hasContent();
 	case ORDER_MAINTAIN: return false; // Can't make progress on a process
 	case ORDER_TRAIN: return m_aiUnitProduction.hasContent();
-	default: FAssertMsg(false, "Unknown type of production order");
+	default: FErrorMsg("Unknown type of production order");
 		return false;
 	}
 }
@@ -11072,7 +11079,7 @@ void CvCity::pushOrder(OrderTypes eOrder, int iData1, int iData2, bool bSave,
 		break;
 	}
 	default:
-		FAssertMsg(false, "iOrder did not match a valid option");
+		FErrorMsg("iOrder did not match a valid option");
 	}
 
 	if (!bValid)
@@ -11352,7 +11359,7 @@ void CvCity::popOrder(int iNum, bool bFinish,
 		break;
 
 	default:
-		FAssertMsg(false, "Unknown production order type");
+		FErrorMsg("Unknown production order type");
 		doPopOrder(pOrderNode); // advc.064d
 	}
 	/*  advc.064d: (BtS code moved into auxiliary function doPopOrder; called
@@ -11673,8 +11680,8 @@ void CvCity::addGreatWall(int iAttempt)
 }
 
 // Helper function for placing Great Wall segments
-bool CvCity::needsGreatWallSegment(CvPlot const& kInside, CvPlot const& kOutside,
-	int iAttempt) const
+bool CvCity::needsGreatWallSegment(/* not currently used: */CvPlot const& kInside,
+	CvPlot const& kOutside, int iAttempt) const
 {
 	if(!isArea(kOutside.getArea()) || kOutside.isImpassable() ||
 		!kOutside.isHabitable(true))
@@ -11811,11 +11818,12 @@ void CvCity::doCulture()
 //KNOEDELend oy vey truth be told I have no idea what to do about this here
 }
 
-/*	This function has essentially been rewritten for K-Mod. (and it used to not be 'times 100')
+/*	This function has essentially been rewritten for K-Mod.
+	(and it used to not be 'times 100')
 	A note about scale: the city plot itself gets roughly 10x culture.
 	The outer edges of the cultural influence get 1x culture
 	(ie. the influence that extends beyond the borders). */
-void CvCity::doPlotCultureTimes100(bool bUpdate, PlayerTypes ePlayer,  // advc: some style changes
+void CvCity::doPlotCultureTimes100(bool bUpdate, PlayerTypes ePlayer,  // advc: some refactoring
 	int iCultureRateTimes100, bool bCityCulture)
 {
 	FAssert(ePlayer != NO_PLAYER);
@@ -11830,7 +11838,8 @@ void CvCity::doPlotCultureTimes100(bool bUpdate, PlayerTypes ePlayer,  // advc: 
 	{
 		for (int iI = GC.getNumCultureLevelInfos() - 1; iI > 0; iI--)
 		{
-			if (getCultureTimes100(ePlayer) >= 100 * GC.getGame().getCultureThreshold((CultureLevelTypes)iI))
+			if (getCultureTimes100(ePlayer) >=
+				100 * GC.getGame().getCultureThreshold((CultureLevelTypes)iI))
 			{
 				eCultureLevel = (CultureLevelTypes)iI;
 				break;
@@ -11840,7 +11849,7 @@ void CvCity::doPlotCultureTimes100(bool bUpdate, PlayerTypes ePlayer,  // advc: 
 
 	/*  K-Mod, 30/oct/10
 		increased culture range, added a percentage based distance bonus
-		(decreasing the importance flat rate bonus). */
+		(decreasing the importance of the flat rate bonus). */
 	// (original bts code deleted)
 
 	// Experimental culture profile...
@@ -11855,18 +11864,19 @@ void CvCity::doPlotCultureTimes100(bool bUpdate, PlayerTypes ePlayer,  // advc: 
 	// free culture bonus for cities
 	iCultureRateTimes100 += (bCityCulture ? 400 : 0);
 
-	// note, original code had "if (getCultureTimes100(ePlayer) > 0)". I took that part out.
+	// note, I took out "if (getCultureTimes100(ePlayer) > 0)".
 	if (eCultureLevel == NO_CULTURELEVEL ||
-		(std::abs(iCultureRateTimes100*iScale) < 100 && !bCityCulture))
+		(abs(iCultureRateTimes100 * iScale) < 100 && !bCityCulture))
 	{
 		return;
 	}
 	// <advc.025>
-	int iCultureToMaster = 100;
+	scaled rCultureToMaster = 1;
 	if(GET_TEAM(getTeam()).isCapitulated())
 	{
-		static int const iCAPITULATED_TO_MASTER_CULTURE_PERCENT = GC.getDefineINT("CAPITULATED_TO_MASTER_CULTURE_PERCENT");
-		iCultureToMaster = iCAPITULATED_TO_MASTER_CULTURE_PERCENT;
+		static scaled const rCAPITULATED_TO_MASTER_CULTURE_PERCENT = per100(
+				GC.getDefineINT("CAPITULATED_TO_MASTER_CULTURE_PERCENT"));
+		rCultureToMaster = rCAPITULATED_TO_MASTER_CULTURE_PERCENT;
 	} // </advc.025>
 	for (int iDX = -iCultureRange; iDX <= iCultureRange; iDX++)
 	{
@@ -11882,29 +11892,31 @@ void CvCity::doPlotCultureTimes100(bool bUpdate, PlayerTypes ePlayer,  // advc: 
 			{
 				continue;
 			}
+			//(eCultureLevel - iDistance) < 0 ? 0 : 1 + iCultureRateTimes100/100 + (eCultureLevel - iDistance) * 20; // BtS formula
 			//int iCultureToAdd = iCultureRateTimes100*((iScale-1)*(iDistance-iCultureRange)*(iDistance-iCultureRange) + iCultureRange*iCultureRange)/(100*iCultureRange*iCultureRange);
 			/*  <advc.001> Deleted some old K-Mod code that had been commented out.
 				The line above was the most recent K-Mod code. Causes an integer
 				overflow when a large amount of culture is added through the
 				WorldBuilder (e.g. 50000). Corrected below. (Also fixed in K-Mod 1.46.) */
-			double dCultureToAdd = iCultureRateTimes100 / (100.0*iCultureRange*iCultureRange);
-			int iDelta = iDistance-iCultureRange;
-			dCultureToAdd *= (iScale-1)*iDelta*iDelta + iCultureRange*iCultureRange;
-			int iCultureToAdd = ::round(dCultureToAdd); // </advc.001>
-			// <advc.025>
-			if (iCultureToMaster != 100 && pLoopPlot->getTeam() != getTeam() &&
+			scaled rCultureToAdd(iCultureRateTimes100, 100 * iCultureRange * iCultureRange);
+			int iDelta = iDistance - iCultureRange;
+			rCultureToAdd *= (iScale - 1) * iDelta * iDelta + iCultureRange * iCultureRange;
+			// </advc.001>  <advc.025>
+			if (pLoopPlot->getTeam() != getTeam() &&
 				pLoopPlot->getTeam() == GET_TEAM(getTeam()).getMasterTeam())
 			{
-				iCultureToAdd = (iCultureToAdd * iCultureToMaster) / 100;
+				rCultureToAdd *= rCultureToMaster;
 			} // </advc.025>
 			// <kekm.23> Loss of tile culture upon city trade
-			if (iCultureToAdd < 0)
+			if (rCultureToAdd.isNegative())
 			{
 				FAssert(iCultureRateTimes100 < 0);
 				int iPlotCulture = pLoopPlot->getCulture(ePlayer);
-				iCultureToAdd = -std::min(-iCultureToAdd, iPlotCulture);
+				rCultureToAdd.flipSign();
+				rCultureToAdd.decreaseTo(iPlotCulture);
 			} // </kekm.23>
-			pLoopPlot->changeCulture(ePlayer, iCultureToAdd, bUpdate || !pLoopPlot->isOwned());
+			pLoopPlot->changeCulture(ePlayer, rCultureToAdd.round(),
+					bUpdate || !pLoopPlot->isOwned());
 		}
 	} // K-Mod end
 }
@@ -12370,6 +12382,10 @@ void CvCity::doGreatPeople()
 		{
 			iTotalGreatPeopleUnitProgress += getGreatPeopleUnitProgress(kCiv.unitAt(i));
 		}
+		// <advc> Should only happen in old savegames (due to a bug in AdvCiv 0.97)
+		bool const bOverflow = (iTotalGreatPeopleUnitProgress > CvRandom::getRange());
+		if (bOverflow)
+			iTotalGreatPeopleUnitProgress = scaled(iTotalGreatPeopleUnitProgress, 100).ceil(); // </advc>
 
 		int iGreatPeopleUnitRand = GC.getGame().getSorenRandNum(
 				iTotalGreatPeopleUnitProgress, "Great Person");
@@ -12378,12 +12394,16 @@ void CvCity::doGreatPeople()
 		for (int i = 0; i < kCiv.getNumUnits(); i++)
 		{
 			UnitTypes eLoopGP = kCiv.unitAt(i);
-			if (iGreatPeopleUnitRand < getGreatPeopleUnitProgress(eLoopGP))
+			int iLoopProgress = getGreatPeopleUnitProgress(eLoopGP);
+			// <advc> (see above)
+			if (bOverflow)
+				iLoopProgress = scaled(iLoopProgress, 100).ceil(); // </advc>
+			if (iGreatPeopleUnitRand < iLoopProgress)
 			{
 				eGreatPeopleUnit = eLoopGP;
 				break;
 			}
-			else iGreatPeopleUnitRand -= getGreatPeopleUnitProgress(eLoopGP);
+			iGreatPeopleUnitRand -= iLoopProgress;
 		}
 
 		if (eGreatPeopleUnit != NO_UNIT)
@@ -13183,8 +13203,8 @@ void CvCity::getVisibleBuildings(std::list<BuildingTypes>& kChosenVisible,
 	TeamTypes const eActiveTeam = GC.getGame().getActiveTeam();
 	bool const bAllVisible = (eActiveTeam != NO_TEAM &&
 			isAllBuildingsVisible(eActiveTeam, true)); // </advc.045>
-	CvCivilization const& kCiv = getCivilization(); // advc.003w
 	std::vector<BuildingTypes> kVisible;
+	CvCivilization const& kCiv = getCivilization(); // advc.003w
 	for (int i = 0; i < kCiv.getNumBuildings(); i++)
 	{
 		BuildingTypes const eBuilding = kCiv.buildingAt(i);
@@ -14589,7 +14609,8 @@ int CvCity::calculateMaintenanceDistance(CvPlot const* pCityPlot, PlayerTypes eO
 }
 
 // advc.004b, advc.104: Parameters added
-int CvCity::calculateNumCitiesMaintenanceTimes100(CvPlot const& kCityPlot,
+int CvCity::calculateNumCitiesMaintenanceTimes100(
+	CvPlot const& kCityPlot, // (unused - not relevant for NumCitiesMaintenance)
 	PlayerTypes eOwner, int iPopulation, int iExtraCities)
 {
 	if(iPopulation < 0)
@@ -14659,13 +14680,13 @@ int CvCity::calculateColonyMaintenanceTimes100(CvPlot const& kCityPlot,
 
 	iNumCitiesPercent *= GC.getInfo(eOwnerHandicap).getColonyMaintenancePercent();
 	iNumCitiesPercent /= 100;
-//doto  - very strange calc -> (iNumCities * iNumCities) 
+//doto  - very strange calc -> (iNumCities * iNumCities) //fixed by advc 0 but the same, using sqr
 	int iNumCities = (kCityArea.getCitiesPerPlayer(eOwner) - 1 + iExtraCities) *
 			iNumCitiesPercent;
-	int iMaintenance = (iNumCities * iNumCities) / 100;
+	int iMaintenance = SQR(iNumCities) / 100;
 	//iMaintenance = std::min(iMaintenance, (GC.getInfo(getHandicapType()).getMaxColonyMaintenance() * calculateDistanceMaintenanceTimes100()) / 100);
-	/*  K-Mod, 17/dec/10, karadoc
-		Changed colony maintenance cap to not include distance maintenance modifiers (such as state property) */
+	/*  K-Mod, 17/dec/10: Changed colony maintenance cap to not include
+		distance maintenance modifiers (such as state property) */
 	int iMaintenanceCap = 100 * GC.getDefineINT(CvGlobals::MAX_DISTANCE_CITY_MAINTENANCE) *
 			calculateMaintenanceDistance(&kCityPlot, eOwner);
 
@@ -14770,9 +14791,10 @@ scaled CvCity::defensiveGarrison(
 	CvCity const* pCapital = kOwner.getCapital();
 	if (pCapital == this)
 		pCapital = NULL;
-	for (int i = 0; i < kPlot.getNumUnits(); i++)
+	for (CLLNode<IDInfo> const* pNode = kPlot.headUnitNode(); pNode != NULL;
+		pNode = kPlot.nextUnitNode(pNode))
 	{
-		CvUnit const& kUnit = *kPlot.getUnitByIndex(i);
+		CvUnit const& kUnit = *::getUnit(pNode->m_data);
 		CvUnitInfo const& u = kUnit.getUnitInfo();
 		// Exclude naval units but not Explorer and Gunship
 		if (!u.isMilitaryHappiness() && u.getCultureGarrisonValue() <= 0)

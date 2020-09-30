@@ -409,13 +409,12 @@ bool MilitaryAnalyst::isWar(TeamTypes t1, TeamTypes t2) const {
 
 bool MilitaryAnalyst::hasCapitulated(TeamTypes teamId) const {
 
-	CvTeam const& t = GET_TEAM(teamId);
 	FAssert(teamId != BARBARIAN_TEAM);
 	for(MemberIter it(teamId); it.hasNext(); ++it) {
 		PlayerTypes civId = it->getID();
 		InvasionGraph::Node* node = ig->getNode(civId);
 		if(node != NULL && node->hasCapitulated()) {
-			FAssert(!t.isAVassal());
+			FAssert(!GET_TEAM(teamId).isAVassal());
 			return true;
 		}
 	}
@@ -465,7 +464,7 @@ void MilitaryAnalyst::logResults(PlayerTypes civId) {
 	if(::round(militaryProduction(civId)) == 0)
 		return;
 	if(civId < 0 || civId > MAX_CIV_PLAYERS) {
-		FAssertMsg(false, "civId out of bounds");
+		FErrorMsg("civId out of bounds");
 		return;
 	}
 	report.log("Results about %s", report.leaderName(civId));

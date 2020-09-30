@@ -173,7 +173,8 @@ void CvGame::init(HandicapTypes eHandicap)
 			char szRandomPassword[iPasswordSize];
 			for (int i = 0; i < iPasswordSize-1; i++)
 			{
-				szRandomPassword[i] = getSorenRandNum(128, NULL);
+				szRandomPassword[i] = /* advc: */ toChar(
+						getSorenRandNum(CHAR_MAX + 1, NULL));
 			}
 			szRandomPassword[iPasswordSize-1] = 0;
 			ic.setAdminPassword(szRandomPassword);
@@ -778,6 +779,82 @@ void CvGame::initDiplomacy()
 	}
 }
 
+/*	advc.002i: Assign unique player colors in games where multiple players
+	have the same civ type */
+void CvGame::setPlayerColors()
+{
+	std::vector<std::pair<PlayerTypes,int> > aeiReassign;
+	EnumMap<CivilizationTypes,int> aiPlayersPerCiv;
+	for (PlayerIter<ALIVE> it; it.hasNext(); ++it)
+	{
+		CivilizationTypes eCiv = it->getCivilizationType();
+		aiPlayersPerCiv.add(eCiv, 1);
+		int iPlayers = aiPlayersPerCiv.get(eCiv);
+		if (iPlayers > 1)
+			aeiReassign.push_back(std::make_pair(it->getID(), iPlayers));
+	}
+	for (size_t i = 0; i < aeiReassign.size(); i++)
+	{
+		PlayerTypes const eReassignPlayer = aeiReassign[i].first;
+		bool const bMatchSecondary = (aeiReassign[i].second == 2);
+		bool const bRandomize = (aeiReassign[i].second > 3);
+		CivilizationTypes eBestCiv = NO_CIVILIZATION;
+		float fSmallestDiff = FLT_MAX;
+		CivilizationTypes const eCiv = GET_PLAYER(eReassignPlayer).
+				getCivilizationType();
+		CvPlayerColorInfo const& kDefaultColor = GC.getInfo(
+				(PlayerColorTypes)GC.getInfo(eCiv).getDefaultPlayerColor());
+		/*	Look for a color similar to the secondary color of eCiv.
+			(If we try to match the primary color, it'll be difficult
+			to distinguish from the first player of eCiv.) */
+		NiColorA const& kTargetColor = GC.getInfo(kDefaultColor.
+				getColorTypeSecondary()).getColor();
+		/*	For the third player per civ, try matching a mix of primary
+			and secondary color. For subsequent players, pick a random color. */
+		NiColorA const* pTargetColor2 = (bMatchSecondary || bRandomize) ? NULL :
+				&GC.getInfo(kDefaultColor.getColorTypePrimary()).getColor();
+		FOR_EACH_ENUM2(Civilization, eLoopCiv)
+		{
+			if (aiPlayersPerCiv.get(eLoopCiv) > 0)
+				continue;
+			float fDiffValue = 0;
+			if (bRandomize)
+			{
+				/*	Since RGB values are stored as float, it's conceivable
+					that different colors could get chosen on different machines
+					in multiplayer. That should be OK, but I'd very much prefer for
+					everyone to use the same colors, so I'm not going to use
+					GC.getASyncRand. */
+				fDiffValue += getSorenRandNum(10000, "setPlayerColors");
+			}
+			else
+			{
+				// Candidate color: primary color of an unused civ
+				NiColorA const& kLoopColor = GC.getInfo(GC.getInfo(
+						(PlayerColorTypes)GC.getInfo(eLoopCiv).
+						getDefaultPlayerColor()).getColorTypePrimary()).getColor();
+				fDiffValue += ::colorDifference(kTargetColor, kLoopColor);
+				if (pTargetColor2 != NULL)
+					fDiffValue += ::colorDifference(*pTargetColor2, kLoopColor);
+			}
+			if (fDiffValue < fSmallestDiff)
+			{
+				fSmallestDiff = fDiffValue;
+				eBestCiv = eLoopCiv;
+			}
+		}
+		FAssert(eBestCiv != NO_CIVILIZATION || MAX_PLAYERS > GC.getNumCivilizationInfos());
+		if (eBestCiv != NO_CIVILIZATION)
+		{
+			GC.getInitCore().setColor(eReassignPlayer, (PlayerColorTypes)
+					GC.getInfo(eBestCiv).getDefaultPlayerColor());
+			aiPlayersPerCiv.add(eBestCiv, 1);
+		}
+		/*	(Else keep the colors assigned by the EXE. They're picked from the back
+			of Civ4PlayerColorInfos.xml. Not guaranteed to be unique.) */
+	}
+}
+
 // advc.127:
 void CvGame::initGameHandicap()
 {
@@ -823,6 +900,7 @@ void CvGame::initFreeState()
 	// advc.003g: Want to set this as soon as CvGame knows the GameType
 	m_bFPTestDone = !isNetworkMultiPlayer();
 	GC.getAgents().gameStart(false); // advc.agent
+	setPlayerColors(); // advc.002i
 	initGameHandicap(); // advc.127
 	// <advc.250b>
 	if(!isOption(GAMEOPTION_ADVANCED_START) ||
@@ -1134,7 +1212,7 @@ NormalizationTarget* CvGame::assignStartingPlots()
 					kPlayer.setStartingPlot(kPlayer.findStartingPlot(), true);
 				if(kPlayer.getStartingPlot() == NULL)
 				{
-					FAssertMsg(false, "No starting plot found");
+					FErrorMsg("No starting plot found");
 					continue;
 				}
 				int iPos = ::range((iCivsAlive *
@@ -1554,7 +1632,6 @@ bool CvGame::normalizeCanAddLakeTo(CvPlot const& kPlot) const
 	{
 		return false;
 	}
-	bool bStartingPlot = false;
 	for (PlayerIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
 		if (itPlayer->getStartingPlot() == &kPlot)
@@ -1578,7 +1655,6 @@ void CvGame::normalizeRemoveBadFeatures()  // advc: refactored
 		int iBadFeatures = 0;
 		for (CityPlotIter itPlot(*pStartingPlot); itPlot.hasNext(); ++itPlot)
 		{
-			CvPlot& p = *itPlot;
 			// Disregard inner ring later
 			if (itPlot.currID() < NUM_INNER_PLOTS || !itPlot->isFeature())
 				continue;
@@ -1868,7 +1944,7 @@ void CvGame::normalizeAddFoodBonuses(  // advc: refactoring
 						/*	advc.108: Let map generator check canPlaceBonusAt in the
 							initial pass (same as in normalizeAddExtras) */
 						if (!isNormalizationBonus(eLoopBonus, kPlayer.getID(), p,
-							bInitialPass, !bInitialPass))
+							bInitialPass, !bInitialPass || bIgnoreLatitude))
 						{
 							continue;
 						}
@@ -2040,7 +2116,7 @@ void CvGame::normalizeAddExtras(  // advc: some refactoring
 /**  Notes:                                                                                         **/
 /*****************************************************************************************************/
 			if ((!p.isFeature() ||
-   				!GC.getInfo(p.getFeatureType()).isRequiresFlatlands()) &&
+   				!GC.getInfo(p.getFeatureType()).isRequiresFlatlands()) || //keldath  i changed to or instead of and
    				!GC.getInfo(p.getTerrainType()).isRequiresFlatlands())
 			{
 				if (p.getBonusType() == NO_BONUS ||
@@ -2654,7 +2730,7 @@ int CvGame::getTeamClosenessScore(int** aaiDistances, int* aiStartingLocs)
 								}
 								else if (iPlayerStart == iOtherPlayerStart)
 								{
-									FAssertMsg(false, "Two players are (hypothetically) assigned to the same starting location!");
+									FErrorMsg("Two players are (hypothetically) assigned to the same starting location!");
 								}
 								iTeamTotalDist += aaiDistances[iPlayerStart][iOtherPlayerStart];
 							}
@@ -4712,8 +4788,8 @@ void CvGame::changeCivTeamsEverAlive(int iChange)
 	FAssertBounds(0, MAX_CIV_TEAMS + 1, m_iCivTeamsEverAlive);
 } // </advc.opt>
 
-/*  K-mod, 6/dec/10, karadoc
-	18/dec/10 - added Gw calc functions */
+/*  K-mod, 6/dec/10:
+	(18/dec/10 - added Gw calc functions) */
 int CvGame::getGlobalWarmingIndex() const
 {
 	return m_iGlobalWarmingIndex;
@@ -4815,23 +4891,21 @@ int CvGame::calculateGwSustainabilityThreshold(PlayerTypes ePlayer) const
 
 int CvGame::calculateGwSeverityRating() const
 {
-	// Here are some of the properties I want from this function:
-	// - the severity should be a number between 0 and 100 (ie. a percentage value)
-	// - zero severity should mean zero global warming
-	// - the function should asymptote towards 100
-	//
-	// - It should be a function of the index divided by (total land area * game length).
-
-	// I recommend looking at the graph of this function to get a sense of how it works.
-
-	const long x = GC.getDefineINT("GLOBAL_WARMING_PROB") * getGlobalWarmingIndex() /
-			(std::max(1,4*GC.getInfo(getGameSpeedType()).getVictoryDelayPercent()*GC.getMap().getLandPlots()));
-	const long b = 70; // shape parameter. Lower values result in the function being steeper earlier.
-	return 100L - b*100L/(b+x*x);
-}
-/*
-** K-mod end
-*/
+	/*	Here are some of the properties I want from this function:
+		- the severity should be a number between 0 and 100 (ie. a percentage value)
+		- zero severity should mean zero global warming
+		- the function should asymptote towards 100
+		- It should be a function of the index divided by (total land area * game length).
+	I recommend looking at the graph of this function to get a sense of how it works. */
+	/*	advc: Was long, which is equivalent to int. Could use long long,
+		but it looks like 32 bit should suffice. */
+	int const x = GC.getDefineINT("GLOBAL_WARMING_PROB") * getGlobalWarmingIndex() /
+			std::max(1, GC.getMap().getLandPlots() * 4 *
+			GC.getInfo(getGameSpeedType()).getVictoryDelayPercent());
+	// shape parameter. Lower values result in the function being steeper earlier.
+	int const b = 70;
+	return 100 - (b * 100) / (b + SQR(x));
+} // K-Mod end
 
 unsigned int CvGame::getInitialTime()
 {
@@ -7508,7 +7582,6 @@ void CvGame::createBarbarianUnits()
 		}
 		if(iUnownedTotal < iBaseTilesPerLandUnit / 2)
 			continue;
-		int iOwned = iTiles - iUnowned;
 		int iBarbCities = a.getCitiesPerPlayer(BARBARIAN_PLAYER);
 		int iNeededLand = numBarbariansToCreate(iBaseTilesPerLandUnit, iTiles,
 				iUnowned, iLandUnits, iBarbCities);
@@ -7757,7 +7830,7 @@ int CvGame::createBarbarianUnits(int n, CvArea& a, Shelf* pShelf, bool bCargoAll
 	int r = 0;
 	if(bCargoAllowed)
 	{
-		CvUnit* pTransport = pShelf->randomBarbarianCargoUnit();
+		CvUnit* pTransport = pShelf->randomBarbarianTransport();
 		if (pTransport != NULL)
 		{
 			UnitAITypes eLoadAI = UNITAI_ATTACK;
@@ -7843,15 +7916,15 @@ int CvGame::createBarbarianUnits(int n, CvArea& a, Shelf* pShelf, bool bCargoAll
 }
 
 // <advc.300>
-CvPlot* CvGame::randomBarbarianPlot(CvArea const& a, Shelf* shelf) const
+CvPlot* CvGame::randomBarbarianPlot(CvArea const& a, Shelf const* pShelf)
 {
-	int restrictionFlags = RANDPLOT_NOT_VISIBLE_TO_CIV |
+	RandPlotTypes const ePredicates = (RANDPLOT_NOT_VISIBLE_TO_CIV |
 			/*  Shelves already ensure this and one-tile islands
 				can't spawn Barbarians anyway. */
 			//RANDPLOT_ADJACENT_LAND |
 			RANDPLOT_PASSABLE |
-			RANDPLOT_HABITABLE | // New flag
-			RANDPLOT_UNOWNED;
+			RANDPLOT_HABITABLE | // new
+			RANDPLOT_UNOWNED);
 	/*  Added the "unowned" flag to prevent spawning in Barbarian land.
 		Could otherwise happen now b/c the visible flag and dist. restriction
 		no longer apply to Barbarians previously spawned; see
@@ -7859,24 +7932,23 @@ CvPlot* CvGame::randomBarbarianPlot(CvArea const& a, Shelf* shelf) const
 	static int const iDist = GC.getDefineINT("MIN_BARBARIAN_STARTING_DISTANCE");
 	// <advc.304> Sometimes don't pick a plot if there are few legal plots
 	int iLegal = 0;
-	CvPlot* r = NULL;
-	if (shelf == NULL)
-		r = GC.getMap().syncRandPlot(restrictionFlags, &a, iDist, -1, &iLegal);
+	CvPlot* pRandPlot = NULL;
+	if (pShelf == NULL)
+		pRandPlot = GC.getMap().syncRandPlot(ePredicates, &a, iDist, -1, &iLegal);
 	else
 	{
-		r = shelf->randomPlot(restrictionFlags, iDist, &iLegal);
-		if(r != NULL && iLegal * 100 < shelf->size())
-			r = NULL;
+		pRandPlot = pShelf->randomPlot(ePredicates, iDist, &iLegal);
+		if(pRandPlot != NULL && iLegal * 100 < pShelf->size())
+			pRandPlot = NULL;
 	}
-	if (r != NULL)
+	if (pRandPlot != NULL && iLegal > 0 && iLegal < 4)
 	{
-		double prSkip = 0;
-		if(iLegal > 0 && iLegal < 4)
-			prSkip = 1 - 1.0 / (5 - iLegal); // Tbd.: Should perhaps be based on a.getNumTiles()
-		if(::bernoulliSuccess(prSkip, "advc.304"))
-			r = NULL;
+		// Tbd.: Should perhaps be based on a.getNumTiles()
+		scaled rSkipProb = 1 - scaled(1, 5 - iLegal);
+		if(rSkipProb.bernoulliSuccess(getSRand(), "randomBarbarianPlot"))
+		pRandPlot = NULL;
 	}
-	return r; // </advc.304>
+	return pRandPlot; // </advc.304>
 }
 
 
@@ -8924,7 +8996,7 @@ void CvGame::handleUpdateTimer(UpdateTimerTypes eTimerType)
 		} // </advc.004j>
 		// advc.106n:
 		case UPDATE_STORE_REPLAY_TEXTURE: GC.getMap().updateReplayTexture(); break;
-		default: FAssertMsg(false, "Unknown update timer type");
+		default: FErrorMsg("Unknown update timer type");
 		}
 	}
 	m_aiUpdateTimers[eTimerType]--;
@@ -9993,7 +10065,7 @@ BuildingTypes CvGame::getShrineBuilding(int eIndex, ReligionTypes eReligion)
 		if (eReligion == NO_RELIGION)
 			eBuilding = (BuildingTypes) m_aiShrineBuilding[eIndex];
 		else for (int iI = 0, iReligiousBuilding = 0; iI < m_iShrineBuildingCount; iI++)
-			if (m_aiShrineReligion[iI] == (int) eReligion)
+			if (m_aiShrineReligion[iI] == eReligion)
 			{
 				if (iReligiousBuilding == eIndex)
 				{
@@ -10023,7 +10095,7 @@ void CvGame::changeShrineBuilding(BuildingTypes eBuilding, ReligionTypes eReligi
 			if (!bFound)
 			{
 				// note, eReligion is not important if we removing, since each building is always one religion
-				if (m_aiShrineBuilding[iI] == (int) eBuilding)
+				if (m_aiShrineBuilding[iI] == eBuilding)
 					bFound = true;
 			}
 
@@ -10129,7 +10201,8 @@ void CvGame::doUpdateCacheOnTurn()
 		}
 	}
 	// K-Mod. (todo: move all of that stuff above somewhere else. That doesn't need to be updated every turn!)
-	CvSelectionGroup::path_finder.Reset(); // (one of the few manual resets we need)
+	if (isFinalInitialized()) // advc.pf: Else pathfinder may not have been created yet
+		CvSelectionGroup::resetPath(); // (one of the few manual resets we need)
 	m_ActivePlayerCycledGroups.clear();
 	// K-Mod end
 }
@@ -10664,70 +10737,70 @@ void CvGame::doVoteResults()
 	}
 }
 
-void CvGame::doVoteSelection()  // advc: some changes to reduce indentation
+void CvGame::doVoteSelection()
 {
-	for (int iI = 0; iI < GC.getNumVoteSourceInfos(); ++iI)
+	FOR_EACH_ENUM2(VoteSource, eVS)
 	{
-		VoteSourceTypes eVoteSource = (VoteSourceTypes)iI;
-		if (!isDiploVote(eVoteSource))
+		if (!isDiploVote(eVS))
 			continue;
-	
-		if (getVoteTimer(eVoteSource) > 0)
+		if (getVoteTimer(eVS) > 0)
 		{
-			changeVoteTimer(eVoteSource, -1);
+			changeVoteTimer(eVS, -1);
 			continue;
 		}
-		setVoteTimer(eVoteSource, (GC.getInfo(eVoteSource).getVoteInterval() * GC.getInfo(getGameSpeedType()).getVictoryDelayPercent()) / 100);
+		setVoteTimer(eVS, (GC.getInfo(eVS).getVoteInterval() *
+				GC.getInfo(getGameSpeedType()).getVictoryDelayPercent()) / 100);
 
-		for (int iTeam1 = 0; iTeam1 < MAX_CIV_TEAMS; ++iTeam1)
+		for (TeamIter<MAJOR_CIV> itTeam1; itTeam1.hasNext(); ++itTeam1)
 		{
-			CvTeam& kTeam1 = GET_TEAM((TeamTypes)iTeam1);
-			if (!kTeam1.isAlive() || !kTeam1.isVotingMember(eVoteSource))
+			if (!itTeam1->isVotingMember(eVS))
 				continue;
-			for (int iTeam2 = iTeam1 + 1; iTeam2 < MAX_CIV_TEAMS; ++iTeam2)
+			for (TeamIter<MAJOR_CIV> itTeam2; itTeam2.hasNext(); ++itTeam2)
 			{
-				CvTeam& kTeam2 = GET_TEAM((TeamTypes)iTeam2);
-				if (!kTeam2.isAlive() || !kTeam2.isVotingMember(eVoteSource))
+				if (!itTeam2->isVotingMember(eVS))
 					continue;
-				//kTeam1.meet((TeamTypes)iTeam2, true);
+				//itTeam1->meet(itTeam2->getID(), true);
 				// <advc.071> Check isHasMet b/c getVoteSourceCity is a bit slow
-				if(!kTeam1.isHasMet(kTeam2.getID()))
+				if(!itTeam1->isHasMet(itTeam2->getID()))
 				{
-					CvCity const* pSrcCity = getVoteSourceCity(eVoteSource, NO_TEAM);
+					CvCity const* pSrcCity = getVoteSourceCity(eVS, NO_TEAM);
 					if(pSrcCity == NULL)
-						kTeam1.meet((TeamTypes)iTeam2, true, NULL);
+						itTeam1->meet(itTeam2->getID(), true, NULL);
 					else
 					{
 						FirstContactData fcData(pSrcCity->plot());
-						kTeam1.meet((TeamTypes)iTeam2, true, &fcData);
+						itTeam1->meet(itTeam2->getID(), true, &fcData);
 					} // </advc.071>
 				}
 			}
 		}
-		TeamTypes eSecretaryGeneral = getSecretaryGeneral(eVoteSource);
+		TeamTypes eSecretaryGeneral = getSecretaryGeneral(eVS);
 		PlayerTypes eSecretaryPlayer = NO_PLAYER;
 		if (eSecretaryGeneral != NO_TEAM)
 			eSecretaryPlayer = GET_TEAM(eSecretaryGeneral).getSecretaryID();
 
 		bool bSecretaryGeneralVote = false;
-		if (canHaveSecretaryGeneral(eVoteSource))
+		if (canHaveSecretaryGeneral(eVS))
 		{
-			if (getSecretaryGeneralTimer(eVoteSource) > 0)
-				changeSecretaryGeneralTimer(eVoteSource, -1);
+			if (getSecretaryGeneralTimer(eVS) > 0)
+				changeSecretaryGeneralTimer(eVS, -1);
 			else
 			{
-				setSecretaryGeneralTimer(eVoteSource, GC.getDefineINT("DIPLO_VOTE_SECRETARY_GENERAL_INTERVAL"));
-				for (int iJ = 0; iJ < GC.getNumVoteInfos(); iJ++)
+				setSecretaryGeneralTimer(eVS, GC.getDefineINT("DIPLO_VOTE_SECRETARY_GENERAL_INTERVAL"));
+				FOR_EACH_ENUM(Vote)
 				{
-					if (GC.getInfo((VoteTypes)iJ).isSecretaryGeneral() && GC.getInfo((VoteTypes)iJ).isVoteSourceType(iI))
+					CvVoteInfo const& kLoopVote = GC.getInfo(eLoopVote);
+					if (kLoopVote.isSecretaryGeneral() && kLoopVote.isVoteSourceType(eVS))
 					{
 						VoteSelectionSubData kOptionData;
 						kOptionData.iCityId = -1;
 						kOptionData.ePlayer = NO_PLAYER;
 						kOptionData.eOtherPlayer = NO_PLAYER; // kmodx: Missing initialization
-						kOptionData.eVote = (VoteTypes)iJ;
-						kOptionData.szText = gDLL->getText("TXT_KEY_POPUP_ELECTION_OPTION", GC.getInfo((VoteTypes)iJ).getTextKeyWide(), getVoteRequired((VoteTypes)iJ, eVoteSource), countPossibleVote((VoteTypes)iJ, eVoteSource));
-						addVoteTriggered(eVoteSource, kOptionData);
+						kOptionData.eVote = eLoopVote;
+						kOptionData.szText = gDLL->getText("TXT_KEY_POPUP_ELECTION_OPTION",
+								kLoopVote.getTextKeyWide(), getVoteRequired(eLoopVote, eVS),
+								countPossibleVote(eLoopVote, eVS));
+						addVoteTriggered(eVS, kOptionData);
 						bSecretaryGeneralVote = true;
 						break;
 					}
@@ -10735,15 +10808,16 @@ void CvGame::doVoteSelection()  // advc: some changes to reduce indentation
 			}
 		}
 
-		if (!bSecretaryGeneralVote && eSecretaryGeneral != NO_TEAM && eSecretaryPlayer != NO_PLAYER)
+		if (!bSecretaryGeneralVote &&
+			eSecretaryGeneral != NO_TEAM && eSecretaryPlayer != NO_PLAYER)
 		{
-			VoteSelectionData* pData = addVoteSelection(eVoteSource);
-			if (NULL != pData)
+			VoteSelectionData* pData = addVoteSelection(eVS);
+			if (pData != NULL)
 			{
 				if (GET_PLAYER(eSecretaryPlayer).isHuman())
 				{
 					CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_CHOOSEELECTION);
-					if (NULL != pInfo)
+					if (pInfo != NULL)
 					{
 						pInfo->setData1(pData->getID());
 						gDLL->getInterfaceIFace()->addPopup(pInfo, eSecretaryPlayer);
@@ -10751,10 +10825,11 @@ void CvGame::doVoteSelection()  // advc: some changes to reduce indentation
 				}
 				else
 				{
-					setVoteChosen(GET_TEAM(eSecretaryGeneral).AI_chooseElection(*pData), pData->getID());
+					setVoteChosen(GET_TEAM(eSecretaryGeneral).AI_chooseElection(*pData),
+							pData->getID());
 				}
 			}
-			else setVoteTimer(eVoteSource, 0);
+			else setVoteTimer(eVS, 0);
 		}
 	}
 }
@@ -10971,8 +11046,9 @@ BuildingTypes CvGame::getVoteSourceBuilding(VoteSourceTypes eVS) const
 void CvGame::setScenario(bool b)
 {
 	m_bScenario = b;
-	/*  These two apparently check the same thing, but both call the EXE ultimately,
-		so one can't be certain what they check and how long it might take. */
+	/*  These two apparently check the same thing via the EXE,
+		probably by checking the ending of the map script name,
+		which is going to be somewhat slow. */
 	FAssert(m_bScenario == gDLL->isWBMapScript());
 	FAssert(m_bScenario == GC.getInitCore().getWBMapScript());
 }

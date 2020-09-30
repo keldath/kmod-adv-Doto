@@ -684,7 +684,7 @@ public:
 	{
 		return m_mapRand.get(iNum, pszLog);
 	}
-	CvRandom& getSorenRand()																								// Exposed to Python
+	inline CvRandom& getSorenRand()																								// Exposed to Python
 	{
 		return m_sorenRand;
 	}  // <advc> Shorter. "S" could also stand for "synchronized" (or "Soren"). (Tbd.: Move to CvGlobals.)
@@ -698,7 +698,7 @@ public:
 		return getSorenRandNum(iNum, pszLog, iData1, iData2);
 	} // </advc>
 	//  Returns a value from the half-closed interval [0,iNum)
-	int getSorenRandNum(int iNum, const char* pszLog,
+	inline int getSorenRandNum(int iNum, const char* pszLog,
 		int iData1 = MIN_INT, int iData2 = MIN_INT) // advc.007
 	{
 		return m_sorenRand.getInt(iNum, pszLog, /* advc.007: */ iData1, iData2);
@@ -818,7 +818,7 @@ public:
 	GlobeLayerTypes getCurrentLayer() const;
 	void reportCurrentLayer(GlobeLayerTypes eLayer);		// (exposed to Python)
 	// </advc.004m>  <advc.052>
-	bool isScenario() const { return m_bScenario; }
+	bool isScenario() const { return m_bScenario; }			// (exposed to Python)
 	void setScenario(bool b);
 	// </advc.052>  <advc.127b>
 	/*  Returns (-1,-1) if 'vs' doesn't exist in any city or (eObserver!=NO_TEAM)
@@ -1000,6 +1000,7 @@ protected:
 	void initScenario();
 	void initFreeUnits_bulk();
 	// </advc.051>
+	void setPlayerColors(); // advc.002i
 	void initGameHandicap(); // advc.127
 	void initFreeState();
 	/* <advc.027> */ NormalizationTarget* /* </advc.027> */ assignStartingPlots();
@@ -1029,7 +1030,7 @@ protected:
 			int iUnitsPresent, int iBarbarianCities = 0);
 	int createBarbarianUnits(int n, CvArea& a, Shelf* shelf, bool bCargoAllowed = false,
 			bool bOnlyCargo = false);
-	CvPlot* randomBarbarianPlot(CvArea const& a, Shelf* shelf) const;
+	CvPlot* randomBarbarianPlot(CvArea const& a, Shelf const* pShelf);
 	bool killBarbarian(int iPresent, int iTiles, int iPop, CvArea& a, Shelf* shelf);
 	UnitTypes randomBarbarianUnit(UnitAITypes eUnitAI, CvArea const& a);
 	// </advc.300>

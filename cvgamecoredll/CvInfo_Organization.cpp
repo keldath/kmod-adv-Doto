@@ -3,10 +3,12 @@
 #include "CvGameCoreDLL.h"
 #include "CvXMLLoadUtility.h"
 #include "CvDLLXMLIFaceBase.h"
-
+#include <iostream>   // std::wcout
+#include <string>     // std::wstring, std::to_wstring 
+#include <wchar.h>
 
 CvOrganizationInfo::CvOrganizationInfo() :
-m_iChar(0),
+m_wcSymbol(0),
 m_iTechPrereq(NO_TECH),
 m_iFreeUnitClass(NO_UNITCLASS),
 m_iSpreadFactor(0),
@@ -22,9 +24,9 @@ m_iTGAIndex(-1),
 m_iMissionType(NO_MISSION)
 {}
 
-int CvOrganizationInfo::getChar() const
+wchar CvOrganizationInfo::getChar() const
 {
-	return m_iChar;
+	return m_wcSymbol;
 }
 /*
  see below - TGAINDEX
@@ -132,10 +134,11 @@ CvReligionInfo::~CvReligionInfo()
 /**                                                                                              */
 /**                                                                                              */
 /*************************************************************************************************/
-void CvReligionInfo::setChar(int i)
+void CvReligionInfo::setChar(wchar wc)
 {
 
-	m_iChar = 8550 + m_iTGAIndex * 2;
+	//m_iChar = 8550 + m_iTGAIndex * 2;
+	m_wcSymbol = (wchar_t)(8550 + m_iTGAIndex * 2);
 }
 /*************************************************************************************************/
 int CvReligionInfo::getHolyCityChar() const
@@ -298,10 +301,11 @@ CvCorporationInfo::~CvCorporationInfo()
 /**                                                                                              */
 /**                                                                                              */
 /*************************************************************************************************/
-void CvCorporationInfo::setChar(int i)
+void CvCorporationInfo::setChar(wchar wc)
 {
 
-	m_iChar = 8550 + (TGA_RELIGIONS + m_iTGAIndex) * 2;
+	//m_iChar = 8550 + (TGA_RELIGIONS + m_iTGAIndex) * 2;
+	m_wcSymbol = (wchar_t)(8550 + (TGA_RELIGIONS + m_iTGAIndex));
 }
 /*************************************************************************************************/
 int CvCorporationInfo::getHeadquarterChar() const

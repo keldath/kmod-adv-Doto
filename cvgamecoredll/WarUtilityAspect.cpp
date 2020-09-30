@@ -141,7 +141,7 @@ char const* WarUtilityAspect::aspectName() const {
 		if (szBuffer[i] == '_')
 			szBuffer[i] = ' ';
 		if (i > 0 && szBuffer[i - 1] != ' ')
-			szBuffer[i] = ::tolower(szBuffer[i]);
+			szBuffer[i] = static_cast<char>(::tolower(szBuffer[i]));
 	}
 	return szBuffer.GetCString();
 }
@@ -1162,7 +1162,7 @@ void MilitaryVictory::evaluate() {
 		if(we->AI_atVictoryStage(AI_VICTORY_DIPLOMACY4))
 			voteCost += popLossRate * 40;
 		if(voteCost > 0.5) {
-			FAssertMsg(false, "Just sth. to take a look at b/c it seems to come up"
+			FErrorMsg("Just sth. to take a look at b/c it seems to come up"
 					" very rarely if ever - diplo victory stage discouraging nuclear war");
 			log("Nuclear war jeopardizes diplo victory: %d "
 					"(%d percent population loss expected)",
@@ -1757,7 +1757,7 @@ void BorderDisputes::evaluate() {
 	if(we->isHuman() && cbac != 0)
 		diplo = ::round((-4.0 * diplo) / cbac);
 	if(m->getCapitulationsAccepted(agentId).count(TEAMID(theyId)) > 0) {
-		int uPlus = diplo * 8;
+		u += diplo * 8;
 		log("They capitulate; shared-borders diplo%s: %d",
 				(we->isHuman() ? " (human)" : ""), diplo);
 		return;
@@ -3496,7 +3496,7 @@ void TacticalSituation::evalEngagement() {
 					!p.isUnit() || // shortcut
 					// Could do without this if it's too slow
 					(!head->canMoveInto(p, true, false, false, true, false))
-					//rangedstrike keldath additions
+//rangedstrike keldath additions
 					&& !!head->isRangeStrikeCapableK())
 				continue;
 			int plotNum = m.plotNum(p);

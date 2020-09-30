@@ -392,7 +392,6 @@ void UWAI::Team::alignAreaAI(bool isNaval) {
 bool UWAI::Team::reviewPlan(TeamTypes targetId, int u, int prepTime) {
 
 	CvTeamAI& agent = GET_TEAM(agentId);
-	CvTeamAI& target = GET_TEAM(targetId);
 	WarPlanTypes wp = agent.AI_getWarPlan(targetId);
 	FAssert(wp != NO_WARPLAN);
 	bool bAtWar = agent.isAtWar(targetId);
@@ -828,7 +827,7 @@ bool UWAI::Team::considerPlanTypeChange(TeamTypes targetId, int u) {
 	case WARPLAN_TOTAL:
 		altWarPlan = WARPLAN_LIMITED;
 		break;
-	default: FAssertMsg(false, "Unsuitable war plan type");
+	default: FErrorMsg("Unsuitable war plan type");
 	}
 	if(altWarPlan == NO_WARPLAN)
 		return true;
@@ -1006,8 +1005,9 @@ bool UWAI::Team::considerConcludePreparations(TeamTypes targetId, int u,
 		int u0 = eval.evaluate(directWp);
 		report->log("Utility of immediate switch to direct war plan: %d", u0);
 		if(u0 > 0) {
-			double rand = GC.getGame().getSorenRandNum(100000, "advc.104")
-					/ 100000.0;
+			double rand = GC.getGame().getSRand().get(MAX_UNSIGNED_SHORT,
+					// (CvRandom::getFloat doesn't allow a szLog param)
+					"conclude war prep") / (double)MAX_UNSIGNED_SHORT;
 			/*  The more time remains, the longer we'd still have to wait in order
 				to get utility u. Therefore low thresh if high timeRemaining.
 				Example: 10 turns remaining, u=80: thresh between 32 and 80.
@@ -1192,8 +1192,6 @@ void UWAI::Team::scheme() {
 	}
 	vector<TargetData> targets;
 	double totalDrive = 0;
-	CvLeaderHeadInfo& lh = GC.getInfo(GET_PLAYER(agent.getLeaderID()).
-			getPersonalityType());
 	UWAICache& cache = leaderCache();
 	for(TeamIter<FREE_MAJOR_CIV,KNOWN_POTENTIAL_ENEMY_OF> it(agentId); it.hasNext(); ++it) {
 		TeamTypes targetId = it->getID();
@@ -2177,7 +2175,7 @@ bool UWAI::Civ::considerGiftRequest(PlayerTypes theyId, int tradeVal) const {
 	/*  Accept probabilistically regardless of war utility (so long as we're
 		not planning war yet, which the caller ensures).
 		Probability to accept is 45% for Gandhi, 0% for Tokugawa. */
-	double prSuccess = 0.5 - we.AI_prDenyHelp();
+	double prSuccess = 0.5 - we.AI_prDenyHelp().getDouble();
 	// Can't use sync'd RNG here, but don't want the outcome to change after reload.
 	std::vector<int> inputs;
 	inputs.push_back(GC.getGame().getGameTurn());

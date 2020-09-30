@@ -147,7 +147,7 @@ public:
 	int calculateTotalCommerce();
 	int calculateResearchRate(int /*TechTypes*/ eTech);
 	int calculateResearchModifier(int /*TechTypes*/ eTech);
-	int calculatePollution(int iTypes) const; // K-Mod
+	int calculatePollution(int iPollution) const; // K-Mod
 	int getGwPercentAnger() const; // K-Mod
 	// int calculateBaseNetResearch();
 	bool isResearch();
@@ -306,7 +306,7 @@ public:
 	int getOverflowResearch();
 	//bool isNoUnhealthyPopulation();
 	int getUnhealthyPopulationModifier(); // K-Mod
-	bool getExpInBorderModifier();
+	int getExpInBorderModifier();
 	bool isBuildingOnlyHealthy();
 
 	int getDistanceMaintenanceModifier();
@@ -542,6 +542,9 @@ public:
 	// <advc.085>
 	void setScoreboardExpanded(bool b);
 	bool isScoreboardExpanded() const; // </advc.085>
+	// <advc.190c>
+	bool wasCivRandomlyChosen() const;
+	bool wasLeaderRandomlyChosen() const; // </advc.190c>
 
 private:
 	CvPlayerAI* m_pPlayer; // advc.003u: was CvPlayer*

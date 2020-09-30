@@ -14,9 +14,8 @@
 // advc.003x: Include this with the other info classes that aren't needed in the DLL
 #include "CvInfo_Water.h"
 
-// advc: Appear to be unnecessary; perhaps needed for compiling the EXE.
-//#pragma warning(disable: 4251) // "needs to have dll-interface to be used by clients of class"
-//#pragma warning(disable: 4127)
+/*#pragma warning(disable: 251)
+#pragma warning(disable: 127)*/ // advc.make: Handled by PCH
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // class	: CvUnitFormationInfo
@@ -525,7 +524,7 @@ public:
 			SAFE_DELETE_ARRAY(m_pbDiplomacyPowerTypes);
 			SAFE_DELETE_ARRAY(m_paszDiplomacyText);
 		}
-		#if SERIALIZE_CVINFOS
+		#if ENABLE_XML_FILE_CACHE
 		void read(FDataStreamBase* stream);
 		void write(FDataStreamBase* stream);
 		#endif
@@ -555,7 +554,7 @@ public:
 	int getNumDiplomacyText(int i) const;
 	const TCHAR* getDiplomacyText(int i, int j) const;
 
-	#if SERIALIZE_CVINFOS
+	#if ENABLE_XML_FILE_CACHE
 	void read(FDataStreamBase* stream);
 	void write(FDataStreamBase* stream);
 	#endif

@@ -487,7 +487,7 @@ bool CvFeatureInfo::read(CvXMLLoadUtility* pXML)
 
 CvBonusInfo::CvBonusInfo() :
 m_eBonusClassType(NO_BONUSCLASS),
-m_iChar(0),
+m_wcSymbol(0),
 m_eTechReveal(NO_TECH),
 m_eTechCityTrade(NO_TECH),
 m_eTechObsolete(NO_TECH),
@@ -533,14 +533,14 @@ CvBonusInfo::~CvBonusInfo()
 	SAFE_DELETE_ARRAY(m_pbFeatureTerrain); // free memory - MT
 }
 
-int CvBonusInfo::getChar() const
+wchar CvBonusInfo::getChar() const
 {
-	return m_iChar;
+	return m_wcSymbol;
 }
 
-void CvBonusInfo::setChar(int i)
+void CvBonusInfo::setChar(wchar wc)
 {
-	m_iChar = i;
+	m_wcSymbol = wc;
 }
 
 int CvBonusInfo::getAITradeModifier() const
@@ -705,7 +705,7 @@ const TCHAR* CvBonusInfo::getButton() const
 
 	return NULL;
 }
-#if SERIALIZE_CVINFOS
+#if ENABLE_XML_FILE_CACHE
 void CvBonusInfo::read(FDataStreamBase* stream)
 {
 	CvInfoBase::read(stream);
@@ -1421,7 +1421,7 @@ void CvArtInfoImprovement::setShaderNIF(const TCHAR* szDesc)
 {
 	m_szShaderNIF = szDesc;
 }
-#if SERIALIZE_CVINFOS
+#if ENABLE_XML_FILE_CACHE
 void CvImprovementInfo::read(FDataStreamBase* stream)
 {
 	CvXMLInfo::read(stream); // advc.tag
@@ -1802,7 +1802,7 @@ int CvImprovementBonusInfo::getYieldChange(int i) const
 	FAssertBounds(0, NUM_YIELD_TYPES, i);
 	return m_piYieldChange ? m_piYieldChange[i] : 0; // advc.003t
 }
-#if SERIALIZE_CVINFOS
+#if ENABLE_XML_FILE_CACHE
 void CvImprovementBonusInfo::read(FDataStreamBase* stream)
 {
 	CvInfoBase::read(stream);

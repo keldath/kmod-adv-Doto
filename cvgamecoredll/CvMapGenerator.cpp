@@ -232,7 +232,7 @@ void CvMapGenerator::addRivers()  // advc: refactored
 			if (p.isWater())
 				continue;
 
-			bool bValid;
+			bool bValid = false;
 			switch(iPass)
 			{
 			case 0:
@@ -251,14 +251,14 @@ void CvMapGenerator::addRivers()  // advc: refactored
 				bValid = (p.getArea().getNumRiverEdges() < 1 +
 						p.getArea().getNumTiles() / iPlotsPerRiverEdge);
 				break;
-			default: FAssertMsg(false, "Invalid iPass");
+			default: FErrorMsg("Invalid iPass");
 			}
 			if (!bValid)
 				continue;
 
 			gDLL->callUpdater(); // advc.opt: Moved down; shouldn't need to update the UI in every iteration.
-			if (!GC.getMap().findWater(&p, iRiverSourceRange, true) &&
-				!GC.getMap().findWater(&p, iSeaWaterRange, false))
+			if (!GC.getMap().findWater(&p, iRiverSourceRangeLoop, true) &&
+				!GC.getMap().findWater(&p, iSeaWaterRangeLoop, false))
 			{
 				CvPlot* pStartPlot = p.getInlandCorner();
 				if (pStartPlot != NULL)
@@ -358,7 +358,7 @@ void CvMapGenerator::doRiver(CvPlot *pStartPlot, CardinalDirectionTypes eLastCar
 	}
 	else
 	{
-		//FAssertMsg(false, "Illegal direction type");
+		//FErrorMsg("Illegal direction type");
 		// River is starting here, set the direction in the next step
 		pRiverPlot = pStartPlot;
 
@@ -492,7 +492,7 @@ bool CvMapGenerator::addRiver(CvPlot* pFreshWaterPlot)
 				break;
 
 			default:
-				FAssertMsg(false, "invalid cardinal direction");
+				FErrorMsg("invalid cardinal direction");
 			}
 
 			if (pRiverPlot != NULL && !pRiverPlot->hasCoastAtSECorner())

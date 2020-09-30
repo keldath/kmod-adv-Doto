@@ -49,8 +49,10 @@ public:
 	DllExport bool getMultiplayer() const;
 	DllExport bool getNewGame() const;
 	DllExport bool getSavedGame() const;
-	DllExport bool getGameMultiplayer() const { return (getMultiplayer() || getPitboss() || getPbem() || getHotseat()); }
-
+	DllExport bool getGameMultiplayer() const
+	{
+		return (getMultiplayer() || getPitboss() || getPbem() || getHotseat());
+	}
 	DllExport bool getPitboss() const;
 	DllExport bool getHotseat() const;
 	DllExport bool getPbem() const;
@@ -73,10 +75,10 @@ public:
 	// Member access ...
 
 	const CvWString& getGameName() const { return m_szGameName; }
-	DllExport void setGameName(const CvWString& szGameName)	{ m_szGameName = szGameName; }
+	DllExport void setGameName(const CvWString& szGameName);
 
 	const CvWString& getGamePassword() const { return m_szGamePassword; }
-	DllExport void setGamePassword(const CvWString& szGamePassword)	{ m_szGamePassword = szGamePassword; }
+	DllExport void setGamePassword(const CvWString& szGamePassword);
 
 	const CvWString& getAdminPassword() const { return m_szAdminPassword; }
 	DllExport void setAdminPassword(const CvWString& szAdminPassword, bool bEncrypt = true);
@@ -87,7 +89,7 @@ public:
 	bool isPangaea() const { return m_bPangaea; } // advc
 
 	bool getWBMapNoPlayers() const { return m_bWBMapNoPlayers; }
-	void setWBMapNoPlayers(bool bValue)	{ m_bWBMapNoPlayers = bValue; }
+	void setWBMapNoPlayers(bool bValue) { m_bWBMapNoPlayers = bValue; }
 
 	WorldSizeTypes getWorldSize() const { return m_eWorldSize; }
 	void setWorldSize(WorldSizeTypes eWorldSize) { m_eWorldSize = eWorldSize; }
@@ -152,30 +154,30 @@ public:
 	DllExport void setForceControl(ForceControlTypes eIndex, bool bForceControl);
 
 	inline int getGameTurn() const { return m_iGameTurn; } // advc.inl
-	void setGameTurn(int iGameTurn)	{ m_iGameTurn = iGameTurn; }
+	void setGameTurn(int iGameTurn) { m_iGameTurn = iGameTurn; }
 
 	int getMaxTurns() const { return m_iMaxTurns; }
-	void setMaxTurns(int iMaxTurns)	{ m_iMaxTurns = iMaxTurns; }
+	void setMaxTurns(int iMaxTurns) { m_iMaxTurns = iMaxTurns; }
 
 	DllExport int getPitbossTurnTime() const { return m_iPitbossTurnTime; }
-	DllExport void setPitbossTurnTime(int iPitbossTurnTime)	{ m_iPitbossTurnTime = iPitbossTurnTime; }
+	DllExport void setPitbossTurnTime(int iPitbossTurnTime);
 
 	int getTargetScore() const { return m_iTargetScore; }
-	void setTargetScore(int iTargetScore)	{ m_iTargetScore = iTargetScore; }
+	void setTargetScore(int iTargetScore) { m_iTargetScore = iTargetScore; }
 
 
 	int getMaxCityElimination() const { return m_iMaxCityElimination; }
-	void setMaxCityElimination(int iMaxCityElimination)	{ m_iMaxCityElimination = iMaxCityElimination; }
+	void setMaxCityElimination(int iMaxCityElimination) { m_iMaxCityElimination = iMaxCityElimination; }
 
 	int getNumAdvancedStartPoints() const { return m_iNumAdvancedStartPoints; }
-	void setNumAdvancedStartPoints(int iNumPoints)	{ m_iNumAdvancedStartPoints = iNumPoints; }
+	void setNumAdvancedStartPoints(int iNumPoints) { m_iNumAdvancedStartPoints = iNumPoints; }
 	int getAdvancedStartMinPoints() const; // advc.250c
 
 	DllExport unsigned int getSyncRandSeed() const { return m_uiSyncRandSeed; }
-	DllExport void setSyncRandSeed(unsigned int uiSyncRandSeed)	{ m_uiSyncRandSeed = uiSyncRandSeed; }
+	DllExport void setSyncRandSeed(unsigned int uiSyncRandSeed);
 
 	DllExport unsigned int getMapRandSeed() const { return m_uiMapRandSeed; }
-	DllExport void setMapRandSeed(unsigned int uiMapRandSeed)	{ m_uiMapRandSeed = uiMapRandSeed; }
+	DllExport void setMapRandSeed(unsigned int uiMapRandSeed);
 
 	PlayerTypes getActivePlayer() const { return m_eActivePlayer; }
 	DllExport void setActivePlayer(PlayerTypes eActivePlayer);
@@ -225,8 +227,13 @@ public:
 	DllExport void setCiv(PlayerTypes eID, CivilizationTypes eCiv);
 
 	DllExport LeaderHeadTypes getLeader(PlayerTypes eID) const { return m_aeLeader.get(eID); }
-	DllExport void setLeader(PlayerTypes eID, LeaderHeadTypes eLeader);
-
+	void setLeader(PlayerTypes eID, LeaderHeadTypes eLeader);
+	// advc.191: (exported through .def file)
+	void setLeaderExternal(PlayerTypes eID, LeaderHeadTypes eLeader);
+	// // <advc.190c> (all exposed to Python via CvPlayer, CvGame)
+	bool wasCivRandomlyChosen(PlayerTypes eID) const;
+	bool wasLeaderRandomlyChosen(PlayerTypes eID) const;
+	bool isCivLeaderSetupKnown() const { return m_bCivLeaderSetupKnown; } // </advc.190c>
 	DllExport TeamTypes getTeam(PlayerTypes eID) const { return m_aeTeam.get(eID); }
 	DllExport void setTeam(PlayerTypes eID, TeamTypes eTeam);
 
@@ -267,6 +274,8 @@ public:
 	DllExport void setXMLCheck(PlayerTypes eID, const CvString& iXMLCheck);
 
 	DllExport void resetAdvancedStartPoints();
+
+	void externalRNGCall(int iUpper, CvRandom const* pRandom); // advc.190c
 
 protected:
 	/* advc.003k (caveat): It's not safe to add data members to this class
@@ -362,6 +371,10 @@ protected:
 	EnumMap<PlayerTypes,HandicapTypes> m_aeHandicap;
 	EnumMap<PlayerTypes,PlayerColorTypes> m_aeColor;
 	EnumMap<PlayerTypes,ArtStyleTypes> m_aeArtStyle;
+	// <advc.190c>
+	EnumMap<PlayerTypes,bool> m_abCivChosenRandomly;
+	EnumMap<PlayerTypes,bool> m_abLeaderChosenRandomly;
+	bool m_bCivLeaderSetupKnown; // </advc.190c>
 
 	// Slot data
 	SlotStatus* m_aeSlotStatus;
@@ -372,12 +385,14 @@ protected:
 	EnumMap<PlayerTypes,bool> m_abMinorNationCiv;
 
 	// Unsaved player data
-	EnumMap<PlayerTypes,int> m_aiNetID;
+	EnumMapDefault<PlayerTypes,int,-1> m_aiNetID;
 	EnumMap<PlayerTypes,bool> m_abReady;
 
 	CvString* m_aszPythonCheck;
 	CvString* m_aszXMLCheck;
 	mutable CvString m_szTempCheck;
+
+	void reRandomizeCivsAndLeaders(); // advc.191
 
 	void clearCustomMapOptions();
 	void refreshCustomMapOptions();
@@ -389,8 +404,10 @@ protected:
 
 // Would increase the size of m_abMPOptions to 8 byte
 BOOST_STATIC_ASSERT(NUM_MPOPTION_TYPES <= 32 && NUM_FORCECONTROL_TYPES <= 32);
-/*  advc.003k: Probably OK to increase the size of CvInitCore. Just make sure that
-	new data members are added in the right place. */
-BOOST_STATIC_ASSERT(sizeof(CvInitCore) == (MAX_CIV_PLAYERS <= 32 || MAX_CIV_PLAYERS > 64 ? 404 : 420));
+/*  advc.003k: OK to increase the size of CvInitCore (and to update or remove this
+	assertion). Just make sure that new data members are added in the right place. */
+BOOST_STATIC_ASSERT(sizeof(CvInitCore) ==
+		// EnumMap<PlayerTypes,bool> has size 8 then
+		(MAX_CIV_PLAYERS > 32 && MAX_CIV_PLAYERS <= 64 ? 440 : 416)); 
 
 #endif

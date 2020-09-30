@@ -34,7 +34,8 @@ CyPlot* CyMap::syncRandPlot(int iFlags, int iArea, int iMinUnitDistance, int iTi
 {
 	// advc: No longer takes an area id
 	CvArea* pArea = m_kMap.getArea(iArea);
-	return new CyPlot(m_kMap.syncRandPlot(iFlags, pArea, iMinUnitDistance, iTimeout));
+	return new CyPlot(m_kMap.syncRandPlot(/* advc.enum: */(RandPlotTypes)iFlags,
+			pArea, iMinUnitDistance, iTimeout));
 }
 
 CyCity* CyMap::findCity(int iX, int iY, int /*PlayerTypes*/ eOwner, int /*TeamTypes*/ eTeam, bool bSameArea, bool bCoastalOnly,
@@ -168,7 +169,7 @@ CustomMapOptionTypes CyMap::getCustomMapOption(int iOption)
 {
 	return m_kMap.getCustomMapOption(iOption);
 }
-// advc.004:
+// advc.190b:
 std::wstring CyMap::getNonDefaultCustomMapOptionDesc(int iOption)
 {
 	return m_kMap.getNonDefaultCustomMapOptionDesc(iOption);

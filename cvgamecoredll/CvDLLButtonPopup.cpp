@@ -20,25 +20,27 @@
 
 CvDLLButtonPopup* CvDLLButtonPopup::m_pInst = NULL;
 
-// K-Mod. In the original code, arbitrary integers are used to express the options of the in-game main menu.
-// I found it confusing, and I know that such use of 'magic numbers' is prone to mistakes - especially since I intended to add a new option into the middle...
-// I've created this enum set to make sure there is no confusion as to what each item number is.
-static enum MainMenuOptions
+namespace
 {
-	MM_EXIT_TO_DESKTOP = 0,
-	MM_EXIT_TO_MAIN_MENU,
-	MM_RETIRE,
-	MM_REGENERATE_MAP,
-	MM_LOAD_GAME,
-	MM_SAVE_GAME,
-	MM_OPTIONS,
-	MM_BUG_OPTIONS, // new in K-Mod
-	MM_ENTER_WB,
-	MM_GAME_DETAILS,
-	MM_PLAYER_DETAILS,
-	MM_CANCEL,
-};
-// K-Mod end
+	/*	K-Mod: In the original code, arbitrary integers are used
+		to express the options of the in-game main menu. */
+	enum MainMenuOptions
+	{
+		MM_EXIT_TO_DESKTOP,
+		MM_EXIT_TO_MAIN_MENU,
+		MM_RETIRE,
+		MM_REGENERATE_MAP,
+		MM_LOAD_GAME,
+		MM_SAVE_GAME,
+		MM_OPTIONS,
+		MM_BUG_OPTIONS, // new in K-Mod
+		MM_ENTER_WB,
+		MM_GAME_DETAILS,
+		MM_PLAYER_DETAILS,
+		MM_CANCEL,
+	};
+}
+
 
 CvDLLButtonPopup& CvDLLButtonPopup::getInstance()
 {
@@ -337,7 +339,7 @@ void CvDLLButtonPopup::OnOkClicked(CvPopup* pPopup, PopupReturn *pPopupReturn, C
 					info.getData1(), info.getData2(), info.getData3()),
 					kGame.getActivePlayer(), false, true);
 			break;
-		default: FAssertMsg(false, "Clicked button not recognized");
+		default: FErrorMsg("Clicked button not recognized");
 		}
 		break;
 	}
@@ -1582,15 +1584,13 @@ bool CvDLLButtonPopup::launchChooseTechPopup(CvPopup* pPopup, CvPopupInfo &info)
 			CvGame const& kGame = GC.getGame(); // advc
 			FOR_EACH_ENUM2(Religion, eReligion)
 			{
-				if (GC.getInfo(eReligion).getTechPrereq() == eTech)
+				if (GC.getInfo(eReligion).getTechPrereq() == eTech &&
+					!kGame.isReligionSlotTaken(eReligion))
 				{
-					if (!kGame.isReligionSlotTaken(eReligion))
-					{
-						szButton = kGame.isOption(GAMEOPTION_PICK_RELIGION) ?
-								GC.getInfo(eReligion).getGenericTechButton() :
-								GC.getInfo(eReligion).getTechButton();
-						break;
-					}
+					szButton = (kGame.isOption(GAMEOPTION_PICK_RELIGION) ?
+							GC.getInfo(eReligion).getGenericTechButton() :
+							GC.getInfo(eReligion).getTechButton());
+					break;
 				}
 			}
 			m_kUI.popupAddGenericButton(pPopup, szBuffer,
@@ -1599,7 +1599,7 @@ bool CvDLLButtonPopup::launchChooseTechPopup(CvPopup* pPopup, CvPopupInfo &info)
 			iNumTechs++;
 		}
 	}
-	if (iNumTechs == 0)
+	if (iNumTechs <= 0)
 	{
 		// player cannot research anything, so don't show this popup after all
 		return false;
@@ -2314,7 +2314,7 @@ bool CvDLLButtonPopup::launchConfirmMenu(CvPopup *pPopup, CvPopupInfo &info)
 				gDLL->getText("TXT_KEY_POPUP_ENTER_WB").c_str(), NULL, 0, WIDGET_GENERAL);
 		break;
 	default:
-		FAssertMsg(false, "launchConfirmMenu called with unknown type");
+		FErrorMsg("launchConfirmMenu called with unknown type");
 		return false;
 	}
 	m_kUI.popupAddGenericButton(pPopup,

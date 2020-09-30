@@ -1,7 +1,5 @@
 #pragma once
 
-// unit.h
-
 #ifndef CIV4_UNIT_H
 #define CIV4_UNIT_H
 
@@ -10,8 +8,6 @@
 #include "CvInfo_GameOption.h"
 #include "CvGame.h"
 //kedldath-rangedattack
-
-#pragma warning( disable: 4251 ) // needs to have dll-interface to be used by clients of class
 
 class CvPlot;
 class CvArea;
@@ -69,7 +65,8 @@ public:
 
 	//FAStarNode* getPathLastNode() const; // disabled by K-Mod
 	CvPlot* getPathEndTurnPlot() const;																		// Exposed to Python
-	bool generatePath(const CvPlot* pToPlot, int iFlags = 0, bool bReuse = false,							// Exposed to Python
+	bool generatePath(const CvPlot* pToPlot, MovementFlags eFlags = NO_MOVEMENT_FLAGS,						// Exposed to Python
+			bool bReuse = false,
 			int* piPathTurns = NULL,
 			int iMaxPath = -1, // K-Mod
 			bool bUseTempFinder = false) const; // advc.128
@@ -134,9 +131,9 @@ public:
 	bool canSentryHeal(const CvPlot* pPlot) const; // advc.004l
 	bool canSentry(const CvPlot* pPlot) const;																// Exposed to Python
 
-	int healRate(const CvPlot* pPlot,
-			bool bLocation = true, bool bUnits = true) const; // K-Mod
-	int healTurns(const CvPlot* pPlot) const;
+	int healRate(/* K-Mod: */ bool bLocation = true, bool bUnits = true,
+			CvPlot const* pAt /* advc: */ = NULL) const;
+	int healTurns(CvPlot const* pAt /* advc: */ = NULL) const;
 	void doHeal();
 
 		// advc (tbd.): Change the iX,iY params to a CvPlot const& kTarget (x10)
@@ -145,8 +142,8 @@ public:
 	bool airlift(int iX, int iY);
 
 	bool isNukeVictim(const CvPlot* pPlot, TeamTypes eTeam) const;											// Exposed to Python
-	bool canNuke(const CvPlot* pPlot) const { return (nukeRange() != -1); }									// Exposed to Python
-	bool canNukeAt(const CvPlot* pPlot, int iX, int iY) const;												// Exposed to Python
+	bool canNuke(const CvPlot* pFrom) const { return (nukeRange() != -1); }									// Exposed to Python
+	bool canNukeAt(const CvPlot* pFrom, int iX, int iY) const;												// Exposed to Python
 	bool nuke(int iX, int iY);
 
 	bool canRecon(const CvPlot* pPlot) const;																// Exposed to Python
@@ -401,7 +398,7 @@ public:
 	}
 	DllExport bool isAttacking() const;																		// Exposed to Python
 	DllExport bool isDefending() const;																		// Exposed to Python
-	bool isCombat() const;																					// Exposed to Python
+	bool isInCombat() const;																				// Exposed to Python
 
 	DllExport inline int maxHitPoints() const																// Exposed to Python
 	{
@@ -680,7 +677,7 @@ public:
 
 	CvPlot* getAttackPlot() const;
 	void setAttackPlot(const CvPlot* pNewValue, bool bAirCombat);
-	bool isAirCombat() const;
+	bool isInAirCombat() const;
 
 	DllExport int getCombatTimer() const;
 	void setCombatTimer(int iNewValue);

@@ -48,7 +48,7 @@ void CvDLLWidgetData::parseHelp(CvWStringBuffer &szBuffer, CvWidgetDataStruct &w
 			(widgetDataStruct.m_iData1 <= NO_PLAYER ||
 			widgetDataStruct.m_iData1 >= MAX_PLAYERS))
 		{
-			FAssertMsg(false, "Player id missing in widget data");
+			FErrorMsg("Player id missing in widget data");
 			return;
 		}
 	} // </advc.085>
@@ -1409,7 +1409,7 @@ void CvDLLWidgetData::doResearch(CvWidgetDataStruct &widgetDataStruct)
 		{
 			gDLL->UI().addMessage(GC.getGame().getActivePlayer(), true, -1,
 					gDLL->getText("TXT_KEY_CHEATERS_NEVER_PROSPER"), NULL, MESSAGE_TYPE_MAJOR_EVENT);
-			FAssertMsg(false, "doResearch called for free tech when !isChoosingFreeTech()");
+			FErrorMsg("doResearch called for free tech when !isChoosingFreeTech()");
 			return;
 		}
 		else kPlayer.changeChoosingFreeTechCount(-1);
@@ -1673,7 +1673,8 @@ void CvDLLWidgetData::parseLiberateCityHelp(CvWidgetDataStruct &widgetDataStruct
 		PlayerTypes ePlayer = pHeadSelectedCity->getLiberationPlayer();
 		if (NO_PLAYER != ePlayer)
 		{
-			szBuffer.append(gDLL->getText("TXT_KEY_LIBERATE_CITY_HELP", pHeadSelectedCity->getNameKey(), GET_PLAYER(ePlayer).getNameKey()));
+			szBuffer.append(gDLL->getText("TXT_KEY_LIBERATE_CITY_HELP",
+					pHeadSelectedCity->getNameKey(), GET_PLAYER(ePlayer).getNameKey()));
 		}
 	}
 }
@@ -5073,7 +5074,7 @@ void CvDLLWidgetData::parseNationalityHelp(CvWidgetDataStruct &widgetDataStruct,
 			case CvCity::GRIEVANCE_HURRY: szGrievanceKey += L"HURRY"; break;
 			case CvCity::GRIEVANCE_CONSCRIPT: szGrievanceKey += L"CONSCRIPT"; break;
 			case CvCity::GRIEVANCE_RELIGION: szGrievanceKey += L"RELIGION"; break;
-			default: FAssertMsg(false, "Unknown grievance type");
+			default: FErrorMsg("Unknown grievance type");
 			}
 			szBuffer.append(gDLL->getText(szGrievanceKey.GetCString()));
 		}
@@ -5247,7 +5248,7 @@ void CvDLLWidgetData::parseSelectedHelp(CvWidgetDataStruct &widgetDataStruct,  /
 		break;
 
 	default:
-		FAssertMsg(false, "eOrderType did not match valid options");
+		FErrorMsg("eOrderType did not match valid options");
 		break;
 	}
 }
@@ -6097,8 +6098,7 @@ void CvDLLWidgetData::parseGoldenAgeAnarchyHelp(PlayerTypes ePlayer, int iData2,
 	}
 } // </advc.085>
 
-/*  K-Mod, 5/jan/11, karadoc
-	Environmental advisor mouse-over text */
+// <K-Mod> 5/jan/11: Environmental advisor mouse-over text
 void CvDLLWidgetData::parsePollutionOffsetsHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer)
 {
 	szBuffer.append(gDLL->getText("TXT_KEY_POLLUTION_OFFSETS_HELP"));
@@ -6109,38 +6109,43 @@ void CvDLLWidgetData::parsePollutionOffsetsHelp(CvWidgetDataStruct &widgetDataSt
 		if (iWarmingDefence != 0)
 		{
 			szBuffer.append(NEWLINE);
-			szBuffer.append(gDLL->getText("TXT_KEY_OFFSET_PER_FEATURE", -iWarmingDefence, GC.getInfo((FeatureTypes)iI).getTextKeyWide()));
+			szBuffer.append(gDLL->getText("TXT_KEY_OFFSET_PER_FEATURE",
+					-iWarmingDefence, GC.getInfo((FeatureTypes)iI).getTextKeyWide()));
 		}
 	}
 }
 
 void CvDLLWidgetData::parsePollutionHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer)
 {
-	int iFlags = (int)widgetDataStruct.m_iData1;
+	CvPlayer::PollutionTypes eFlags = (CvPlayer::PollutionTypes)widgetDataStruct.m_iData1;
 
 	szBuffer.append(gDLL->getText("TXT_KEY_POLLUTION")+":");
 
-	if (iFlags & POLLUTION_POPULATION)
+	if (eFlags & CvPlayer::POLLUTION_POPULATION)
 	{
 		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_POLLUTION_FROM_POPULATION", GC.getDefineINT("GLOBAL_WARMING_POPULATION_WEIGHT")));
+		szBuffer.append(gDLL->getText("TXT_KEY_POLLUTION_FROM_POPULATION",
+				GC.getDefineINT("GLOBAL_WARMING_POPULATION_WEIGHT")));
 	}
-	if (iFlags & POLLUTION_BUILDINGS)
+	if (eFlags & CvPlayer::POLLUTION_BUILDINGS)
 	{
 		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_POLLUTION_FROM_BUILDINGS", GC.getDefineINT("GLOBAL_WARMING_BUILDING_WEIGHT")));
+		szBuffer.append(gDLL->getText("TXT_KEY_POLLUTION_FROM_BUILDINGS",
+				GC.getDefineINT("GLOBAL_WARMING_BUILDING_WEIGHT")));
 	}
-	if (iFlags & POLLUTION_BONUSES)
+	if (eFlags & CvPlayer::POLLUTION_BONUSES)
 	{
 		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_POLLUTION_FROM_BONUSES", GC.getDefineINT("GLOBAL_WARMING_BONUS_WEIGHT")));
+		szBuffer.append(gDLL->getText("TXT_KEY_POLLUTION_FROM_BONUSES",
+				GC.getDefineINT("GLOBAL_WARMING_BONUS_WEIGHT")));
 	}
-	if (iFlags & POLLUTION_POWER)
+	if (eFlags & CvPlayer::POLLUTION_POWER)
 	{
 		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_POLLUTION_FROM_POWER", GC.getDefineINT("GLOBAL_WARMING_POWER_WEIGHT")));
+		szBuffer.append(gDLL->getText("TXT_KEY_POLLUTION_FROM_POWER",
+				GC.getDefineINT("GLOBAL_WARMING_POWER_WEIGHT")));
 	}
-} // K-Mod end
+} // </K-Mod>
 
 // <advc.ctr>
 bool CvDLLWidgetData::parseCityTradeHelp(CvWidgetDataStruct const& kWidget, CvCity*& pCity,

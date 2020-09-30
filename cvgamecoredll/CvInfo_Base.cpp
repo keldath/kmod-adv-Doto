@@ -9,11 +9,10 @@ CvInfoBase::CvInfoBase() : m_bGraphicalOnly(false) {}
 // advc.xmldefault:
 CvInfoBase::CvInfoBase(CvInfoBase const& kOther)
 {
-	FAssertMsg(false, "Copy-ctor not implemented");
+	FErrorMsg("Copy-ctor not implemented");
 }
 
-CvInfoBase::~CvInfoBase() {}
-#if SERIALIZE_CVINFOS
+#if ENABLE_XML_FILE_CACHE
 void CvInfoBase::read(FDataStreamBase* pStream)
 {
 	reset();
@@ -52,11 +51,10 @@ bool CvInfoBase::isGraphicalOnly() const
 	return m_bGraphicalOnly;
 }
 
-const TCHAR* CvInfoBase::getType() const
+TCHAR const* CvInfoBase::getType() const
 {
 	if (m_szType.empty())
 		return NULL;
-
 	return m_szType;
 }
 
@@ -68,12 +66,12 @@ bool CvInfoBase::isDefaultsType() const
 	CvString const szEnding = "_DEFAULTS";
 	return (m_szType.length() > szEnding.length() &&
 			m_szType.compare(
-				m_szType.length() - szEnding.length(),
-				szEnding.length(),
-				szEnding) == 0);
+			m_szType.length() - szEnding.length(),
+			szEnding.length(),
+			szEnding) == 0);
 }
 
-const TCHAR* CvInfoBase::getButton() const
+TCHAR const* CvInfoBase::getButton() const
 {
 	if (m_szButton.empty())
 		return NULL;
@@ -81,22 +79,22 @@ const TCHAR* CvInfoBase::getButton() const
 	return m_szButton;
 }
 
-const wchar* CvInfoBase::getTextKeyWide() const
+wchar const* CvInfoBase::getTextKeyWide() const
 {
 	return m_szTextKey;
 }
 
-const wchar* CvInfoBase::getDescription(uint uiForm) const
+wchar const* CvInfoBase::getDescriptionInternal(uint uiForm) const
 {
 	while(m_aCachedDescriptions.size() <= uiForm)
 	{
 		m_aCachedDescriptions.push_back(gDLL->getObjectText(m_szTextKey,
-			m_aCachedDescriptions.size()));
+				m_aCachedDescriptions.size()));
 	}
 	return m_aCachedDescriptions[uiForm];
 }
 
-const wchar* CvInfoBase::getText() const
+wchar const* CvInfoBase::getText() const
 {
 	// used instead of getDescription for Info entries that are not objects
 	// so they do not have gender/plurality/forms defined in the Translator system
@@ -105,21 +103,21 @@ const wchar* CvInfoBase::getText() const
 	return m_szCachedText;
 }
 
-const wchar* CvInfoBase::getCivilopedia() const
+wchar const* CvInfoBase::getCivilopedia() const
 {
 	if(m_szCachedCivilopedia.empty())
 		m_szCachedCivilopedia = gDLL->getText(m_szCivilopediaKey);
 	return m_szCachedCivilopedia;
 }
 
-const wchar* CvInfoBase::getHelp() const
+wchar const* CvInfoBase::getHelp() const
 {
 	if (m_szCachedHelp.empty())
 		m_szCachedHelp = gDLL->getText(m_szHelpKey);
 	return m_szCachedHelp;
 }
 
-const wchar* CvInfoBase::getStrategy() const
+wchar const* CvInfoBase::getStrategy() const
 {
 	if (m_szCachedStrategy.empty())
 		m_szCachedStrategy = gDLL->getText(m_szStrategyKey);
@@ -225,7 +223,7 @@ bool CvHotkeyInfo::read(CvXMLLoadUtility* pXML)
 
 	return true;
 }
-#if SERIALIZE_CVINFOS
+#if ENABLE_XML_FILE_CACHE
 void CvHotkeyInfo::read(FDataStreamBase* pStream)
 {
 	CvXMLInfo::read(pStream); // advc.tag
@@ -409,7 +407,7 @@ CvXMLInfo::ElementDataType CvXMLInfo::BoolElement::getDataType() const
 	return BOOL_ELEMENT;
 }
 
-int CvXMLInfo::BoolElement::getDefaultValue() const { return m_bDefaultValue; }
+bool CvXMLInfo::BoolElement::getDefaultValue() const { return m_bDefaultValue; }
 
 void CvXMLInfo::addElements(std::vector<XMLElement*>& r) const
 {
@@ -443,7 +441,7 @@ bool CvXMLInfo::read(CvXMLLoadUtility* pXML)
 			{
 			case INT_ELEMENT: iIntElements++; break;
 			case BOOL_ELEMENT: iBoolElements++; break;
-			default: FAssertMsg(false, "Data type misses element counting code");
+			default: FErrorMsg("Data type misses element counting code");
 			}
 		}
 		m_aiData.resize(iIntElements);
@@ -482,14 +480,14 @@ bool CvXMLInfo::read(CvXMLLoadUtility* pXML)
 			FAssertBounds(0, m_abData.size(), iEnumValue);
 			m_abData[iEnumValue] = bTmp;
 			break;
-		default: FAssertMsg(false, "Data type misses XML loading code");
+		default: FErrorMsg("Data type misses XML loading code");
 		}
 		delete &kElement;
 	}
 	return true;
 }
 
-#if SERIALIZE_CVINFOS
+#if ENABLE_XML_FILE_CACHE
 void CvXMLInfo::read(FDataStreamBase* pStream)
 {
 	CvInfoBase::read(pStream);

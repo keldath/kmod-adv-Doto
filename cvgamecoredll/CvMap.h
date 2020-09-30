@@ -9,11 +9,9 @@
 //	Copyright (c) 2004 Firaxis Games, Inc. All rights reserved.
 
 #include "CvPlot.h"
-class CvArea;
-// <advc.300>
-#include "Shelf.h"
-#include <map> // </advc.300>
+#include "Shelf.h" // advc.300
 
+class CvArea;
 class FAStar;
 class CvPlotGroup;
 class CvSelectionGroup;
@@ -141,7 +139,7 @@ public:
 		if (abs(iDX) > DIRECTION_RADIUS || abs(iDY) > DIRECTION_RADIUS)
 		{
 			// advc.test: (apparently not needed - remove it for next release)
-			FAssertMsg(false, "Just to see if the DIRECTION_RADIUS<abs branch is needed");
+			FErrorMsg("Just to see if the DIRECTION_RADIUS<abs branch is needed");
 			return NO_DIRECTION;
 		}
 		return GC.getXYDirection(iDX + DIRECTION_RADIUS, iDY + DIRECTION_RADIUS);
@@ -197,9 +195,7 @@ public:
 		return (stepDistance(&kFirstPlot, &kSecondPlot) <= 1);
 	}
 	/*	advc (for advc.030, advc.027): Cut from teamStepValid in CvGameCoreUtils.
-		Would rather leave it there with the other pathfinding helper functions,
-		but can't inline it there.
-		advc.test: Is it getting inlined here (probably not)? Should it be? */
+		Not getting inlined - which is OK (I've benchmarked it with forceinline). */
 	bool isSeparatedByIsthmus(CvPlot const& kFrom, CvPlot const& kTo) const
 	{
 		return (kFrom.isWater() && kTo.isWater() &&
@@ -286,12 +282,13 @@ public: // advc: made several functions const
 	void combinePlotGroups(PlayerTypes ePlayer, CvPlotGroup* pPlotGroup1, CvPlotGroup* pPlotGroup2,
 			bool bVerifyProduction = true); // advc.064d
 
-	CvPlot* syncRandPlot(int iFlags = 0, CvArea const* pArea = NULL, // advc: was iArea								// Exposed to Python
+	CvPlot* syncRandPlot(RandPlotTypes ePredicates = RANDPLOT_ANY,									// Exposed to Python
+			CvArea const* pArea = NULL, // advc: was iArea
 			int iMinCivUnitDistance = -1,
 			int iTimeout = -1, int* piValidCount = NULL); // advc.304 (default timeout was 100)
 	// <advc>
-	bool isValidRandPlot(CvPlot const& kPlot, int iFlags, CvArea const* pArea,
-			int iMinCivUnitDistance) const; // </advc>
+	bool isValidRandPlot(CvPlot const& kPlot, RandPlotTypes ePredicates,
+			CvArea const* pArea, int iMinCivUnitDistance) const; // </advc>
 
 	DllExport CvCity* findCity(int iX, int iY, PlayerTypes eOwner = NO_PLAYER, TeamTypes eTeam = NO_TEAM, bool bSameArea = true, bool bCoastalOnly = false, TeamTypes eTeamAtWarWith = NO_TEAM, DirectionTypes eDirection = NO_DIRECTION, CvCity* pSkipCity = NULL)	// Exposed to Python
 	{	// <advc.004r>
@@ -306,11 +303,11 @@ public: // advc: made several functions const
 
 	CvArea* findBiggestArea(bool bWater);																						// Exposed to Python
 
-	int getMapFractalFlags() const;																												// Exposed to Python
+	int getMapFractalFlags() const;																				// Exposed to Python
 	bool findWater(CvPlot const* pPlot, int iRange, bool bFreshWater);										// Exposed to Python
 
 	bool isPlotExternal(int iX, int iY) const; // advc.inl: Exported through .def file							// Exposed to Python
-	inline int isPlot(int iX, int iY) const // advc.inl: Renamed from isPlotINLINE
+	inline bool isPlot(int iX, int iY) const // advc.inl: Renamed from isPlotINLINE; return type was int.
 	{
 		return (iX >= 0 && iX < getGridWidth() && iY >= 0 && iY < getGridHeight());
 	}
@@ -402,7 +399,7 @@ public: // advc: made several functions const
 
 	int getNumCustomMapOptions() const;
 	CustomMapOptionTypes getCustomMapOption(int iOption) const;											// Exposed to Python
-	CvWString getNonDefaultCustomMapOptionDesc(int iOption) const; // advc.004 (exposed to Python)
+	CvWString getNonDefaultCustomMapOptionDesc(int iOption) const; // advc.190b (exposed to Python)
 
 	int getNumBonuses(BonusTypes eIndex) const;																	// Exposed to Python
 	void changeNumBonuses(BonusTypes eIndex, int iChange);
@@ -488,6 +485,12 @@ public: // advc: made several functions const
 	// </advc.300>
 	void resetPathDistance();																		// Exposed to Python
 	int calculatePathDistance(CvPlot const* pSource, CvPlot const* pDest) const;					// Exposed to Python
+	// advc.104b: (based on BBAI's CvPlot::calculatePathDistanceToPlot)
+	int calculateTeamPathDistance(TeamTypes eTeam,
+			CvPlot const& kFrom, CvPlot const& kTo, int iMaxPath = -1,
+			TeamTypes eTargetTeam = BARBARIAN_TEAM,
+			DomainTypes eDomain = DOMAIN_LAND) const;
+	void updateIrrigated(CvPlot& kPlot); // advc.pf
 
 	// BETTER_BTS_AI_MOD, Efficiency (plot danger cache), 08/21/09, jdog5000: START
 	//void invalidateIsActivePlayerNoDangerCache();

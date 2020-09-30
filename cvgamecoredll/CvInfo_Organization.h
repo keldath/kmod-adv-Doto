@@ -13,9 +13,9 @@ class CvOrganizationInfo : public CvHotkeyInfo
 public: // All the const functions are exposed to Python
 	CvOrganizationInfo();
 
-	int getChar() const;
+	wchar getChar() const; // advc: return wchar (not int)
 //TGA_INDEXATION -ADVC ADJUSTMENT
-	//void setChar(int i);
+	//void setChar(/* advc: */ wchar wc);
 	inline int getTechPrereq() const { return m_iTechPrereq; } // advc.130f: inline
 	int getFreeUnitClass() const;
 	inline int getSpreadFactor() const { return m_iSpreadFactor; } // advc.130f: inline
@@ -39,7 +39,7 @@ public: // All the const functions are exposed to Python
 	bool read(CvXMLLoadUtility* pXML);
 
 protected:
-	int m_iChar;
+	wchar m_wcSymbol; // advc
 	int m_iTechPrereq;
 	int m_iFreeUnitClass;
 	int m_iSpreadFactor;
@@ -69,7 +69,8 @@ public: // All the const functions are exposed to Python
 	~CvReligionInfo();
 //TGA_INDEXATION -ADVC ADJUSTMENT
 	//int getChar() const;
-	void setChar(int i);
+	//void setChar(int i);
+	void setChar(/* advc: */ wchar wc);
 	
 	int getHolyCityChar() const;
 	void setHolyCityChar(int i);
@@ -118,7 +119,8 @@ public: // All the const functions are exposed to Python
 	virtual ~CvCorporationInfo();
 //TGA_INDEXATION -ADVC ADJUSTMENT
 	//int getChar() const;
-	void setChar(int i);
+	//void setChar(int i);
+	void setChar(/* advc: */ wchar wc);
 	
 	int getHeadquarterChar() const;
 	void setHeadquarterChar(int i);

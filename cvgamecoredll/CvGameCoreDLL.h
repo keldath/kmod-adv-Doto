@@ -6,8 +6,12 @@
 // includes (pch) for gamecore dll files
 // Author - Mustafa Thamer
 
+// <advc.make>
+#include "PragmaWarnings.h" // Customize compiler warnings
+#pragma warning(push, 3) // Don't check win, std and boost headers with /W4
+// </advc.make>
+
 // WINDOWS ...
-#pragma warning( disable: 4530 )	// C++ exception handler used, but unwind semantics are not enabled
 #define WIN32_LEAN_AND_MEAN
 // <advc.fract> Otherwise, classes in the PCH can't have members named "max" and "min".
 #ifndef NOMINMAX
@@ -40,30 +44,36 @@
 #include <utility>
 #include <algorithm>
 #include <queue> // k146
+#include <stack> // advc.030
 // K-Mod end
 
 #define DllExport   __declspec( dllexport )
 
-typedef unsigned char    byte;
+typedef unsigned char		byte;
 // advc (note): A little strange to me, but consistent with WORD in winnt.h.
-typedef unsigned short   word;
-typedef unsigned int     uint;
-typedef unsigned long    dword;
-typedef unsigned __int64 qword;
-typedef wchar_t          wchar;
+typedef unsigned short		word;
+typedef unsigned int		uint;
+typedef unsigned long		dword;
+typedef unsigned __int64	qword;
+typedef wchar_t				wchar;
 
-#define MAX_CHAR                            (0x7f)
-#define MIN_CHAR                            (0x80)
-#define MAX_SHORT                           (0x7fff)
-#define MIN_SHORT                           (0x8000)
-#define MAX_INT                             (0x7fffffff)
-#define MIN_INT                             (0x80000000)
-#define MAX_UNSIGNED_CHAR                   (0xff)
-#define MIN_UNSIGNED_CHAR                   (0x00)
-#define MAX_UNSIGNED_SHORT                  (0xffff)
-#define MIN_UNSIGNED_SHORT                  (0x0000)
-#define MAX_UNSIGNED_INT                    (0xffffffff)
-#define MIN_UNSIGNED_INT                    (0x00000000)
+/*	advc.001q: Put minus operators into the negative constants, otherwise,
+	if there's only a literal, it can get treated as an unsigned value. */
+#define MAX_CHAR							(0x7f)
+//#define MIN_CHAR							(0x80)
+#define MIN_CHAR							(-MAX_CHAR - 1)
+#define MAX_SHORT							(0x7fff)
+//#define MIN_SHORT							(0x8000)
+#define MIN_SHORT							(-MAX_SHORT - 1)
+#define MAX_INT								(0x7fffffff)
+//#define MIN_INT							(0x80000000)
+#define MIN_INT								(-MAX_INT - 1)
+#define MAX_UNSIGNED_CHAR					(0xff)
+#define MIN_UNSIGNED_CHAR					(0x00)
+#define MAX_UNSIGNED_SHORT					(0xffff)
+#define MIN_UNSIGNED_SHORT					(0x0000)
+#define MAX_UNSIGNED_INT					(0xffffffff)
+#define MIN_UNSIGNED_INT					(0x00000000)
 
 // (advc.make: Some macros moved into new header Trigonometry.h)
 
@@ -79,24 +89,28 @@ __forceinline float MaxFloat() { return DWtoF(0x7f7fffff); }
 #include "GameBryo.h"
 #include "CvMemoryManager.h"
 #include "BoostPythonPCH.h" // </advc>
+#pragma warning(pop) // advc.make: Restore project warning level
 #include "FAssert.h"
 #include "CvGameCoreDLLDefNew.h"
 #include "FDataStreamBase.h"
 #include "FFreeListTrashArray.h" // advc.003s: includes FreeListTraversal.h
+#include "LinkedList.h"
 #include "CvString.h"
-#include "CvEnums.h" // includes CvDefines.h, CvInfoEnum.h
+#include "BitUtil.h" // advc.enum
+#include "CvDefines.h"
+#include "CvEnums.h" // includes CvInfoEnum.h
 /*  advc: Smaller numbers may already crash the EXE; the DLL assumes in some places
 	that player ids fit in a single byte. */
 BOOST_STATIC_ASSERT(MAX_PLAYERS < MAX_CHAR && MAX_TEAMS < MAX_CHAR);
 #include "CvStructs.h"
-#include "CvDLLUtilityIFaceBase.h" // includes LinkedList.h
+#include "CvDLLUtilityIFaceBase.h"
 
 //jason tests (advc.make: removed most of these)
 #include "CvRandom.h"
 #include "CvGameCoreUtils.h"
 #include "ScaledNum.h"
 #include "CvGlobals.h"
-#include "EnumMap2D.h" // advc.enum: Includes EnumMap.h, which includes BitUtil.h.
+#include "EnumMap2D.h" // advc.enum: Includes EnumMap.h
 #include "CvPythonCaller.h" // advc.003y
 #include "CvDLLLogger.h" // advc.003t
 #include "FProfiler.h"

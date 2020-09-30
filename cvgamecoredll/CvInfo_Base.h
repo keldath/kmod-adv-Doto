@@ -8,6 +8,8 @@
 /*  advc.003x: Cut from CvInfos.h; to be precompiled.
 	CvInfoBase, CvScalableInfo, CvHotkeyInfo */
 
+#define ENABLE_XML_FILE_CACHE 0 // advc.003i
+
 class CvXMLLoadUtility;
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -21,15 +23,17 @@ class CvInfoBase /* advc.003e: */ : private boost::noncopyable
 public: // All the const functions are exposed to Python
 	CvInfoBase();
 	CvInfoBase(CvInfoBase const& kOther); // advc.xmldefault
-	DllExport virtual ~CvInfoBase();
+	/*	advc (note): There is a call location in the EXE according to Dependency Walker,
+		but it might be unreachable: I'm not crashing when I remove the destructor. */
+	DllExport virtual ~CvInfoBase() {}
 
 	virtual void reset();
 
 	bool isGraphicalOnly() const;
 
-	DllExport const TCHAR* getType() const;
+	DllExport TCHAR const* getType() const;
 	bool isDefaultsType() const; // advc.xmldefault
-	virtual const TCHAR* getButton() const;
+	virtual TCHAR const* getButton() const;
 
 	// for python wide string handling
 	std::wstring pyGetTextKey() { return getTextKeyWide(); }
@@ -40,15 +44,18 @@ public: // All the const functions are exposed to Python
 	std::wstring pyGetHelp() { return getHelp(); }
 	std::wstring pyGetStrategy() { return getStrategy(); }
 
-	DllExport const wchar* getTextKeyWide() const;
-	DllExport const wchar* getDescription(uint uiForm = 0) const;
-	DllExport const wchar* getText() const;
-	const wchar* getCivilopedia() const;
-	DllExport const wchar* getHelp() const;
-	const wchar* getStrategy() const;
+	DllExport wchar const* getTextKeyWide() const;
+	DllExport wchar const* getDescription(uint uiForm = 0) const
+	// <advc.137> Allow this to be overridden
+	{ return getDescriptionInternal(uiForm); }
+	virtual wchar const* getDescriptionInternal(uint uiForm) const; // </advc.137>
+	DllExport wchar const* getText() const;
+	wchar const* getCivilopedia() const;
+	DllExport wchar const* getHelp() const;
+	wchar const* getStrategy() const;
 
 	bool isMatchForLink(std::wstring szLink, bool bKeysOnly) const;
-	#if SERIALIZE_CVINFOS
+	#if ENABLE_XML_FILE_CACHE
 	virtual void read(FDataStreamBase* pStream);
 	virtual void write(FDataStreamBase* pStream);
 	#endif
@@ -60,12 +67,12 @@ public: // All the const functions are exposed to Python
 	virtual bool read(CvXMLLoadUtility* pXML);
 	virtual bool readPass2(CvXMLLoadUtility* pXML)
 	{
-		FAssertMsg(false, "readPass2 has not been overridden");
+		FErrorMsg("readPass2 has not been overridden");
 		return false;
 	}
 	virtual bool readPass3()
 	{
-		FAssertMsg(false, "readPass3 has not been overridden");
+		FErrorMsg("readPass3 has not been overridden");
 		return false;
 	}
 
@@ -131,7 +138,7 @@ public:
 		return m_abData[e];
 	}
 	bool read(CvXMLLoadUtility* pXML);
-	#if SERIALIZE_CVINFOS
+	#if ENABLE_XML_FILE_CACHE
 	void read(FDataStreamBase* pStream);
 	void write(FDataStreamBase* pStream);
 	#endif
@@ -173,7 +180,7 @@ protected:
 		BoolElement(int iEnumValue, CvString szName);
 		BoolElement(int iEnumValue, CvString szName, bool bDefault);
 		ElementDataType getDataType() const;
-		int getDefaultValue() const;
+		bool getDefaultValue() const;
 	private:
 		int m_bDefaultValue;
 	};
@@ -218,7 +225,7 @@ public:
 	} // </advc.tag>
 
 	bool read(CvXMLLoadUtility* pXML);
-	#if SERIALIZE_CVINFOS
+	#if ENABLE_XML_FILE_CACHE
 	virtual void read(FDataStreamBase* pStream);
 	virtual void write(FDataStreamBase* pStream);
 	#endif

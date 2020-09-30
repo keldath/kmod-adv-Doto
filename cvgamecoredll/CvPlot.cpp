@@ -19,6 +19,12 @@
 #include "CvDLLPlotBuilderIFaceBase.h"
 #include "CvDLLFlagEntityIFaceBase.h"
 
+/*	advc.make: I've added toChar, toShort calls in a few places that looked at least
+	slightly hazardous. Beyond that, explicit casts would only add clutter.
+	NB: Disabling this warning entirely does unfortunately not only allow implicit
+	conversions from larger to smaller int types but also float-to-int conversions. */
+#pragma warning(disable: 244) // "type conversion: possible loss of data"
+
 #define STANDARD_MINIMAP_ALPHA		(0.75f) // advc.002a: was 0.6
 bool CvPlot::m_bAllFog = false; // advc.706
 int CvPlot::m_iMaxVisibilityRangeCache; // advc.003h
@@ -123,8 +129,8 @@ CvPlot::~CvPlot() // advc: Merged with the deleted uninit function
 
 void CvPlot::init(int iX, int iY)
 {
-	m_iX = iX;
-	m_iY = iY;
+	m_iX = toShort(iX);
+	m_iY = toShort(iY);
 	m_iLatitude = calculateLatitude(); // advc.tsl
 }
 
@@ -159,8 +165,10 @@ void CvPlot::erase()  // advc: some style changes
 	CLinkList<IDInfo> oldUnits;
 	{
 		for (CLLNode<IDInfo> const* pUnitNode = headUnitNode(); pUnitNode != NULL;
-				pUnitNode = nextUnitNode(pUnitNode))
+			pUnitNode = nextUnitNode(pUnitNode))
+		{
 			oldUnits.insertAtEnd(pUnitNode->m_data);
+		}
 	}
 	// kill units
 	CLLNode<IDInfo>* pUnitNode = oldUnits.head();
@@ -222,13 +230,13 @@ float CvPlot::getSymbolSize() const
 	{
 		if (isShowCitySymbols())
 			return 1.6f;
-		else return 1.2f;
+		return 1.2f;
 	}
 	else
 	{
 		if (isShowCitySymbols())
 			return 1.2f;
-		else return 0.8f;
+		return 0.8f;
 	}
 }
 
@@ -265,7 +273,7 @@ void CvPlot::doTurn()
 	/*if (!isOwned())
 		doImprovementUpgrade();*/ // advc (comment): Was already commented out in BtS
 
-	// advc: This sounds pretty slow and I'm not that I've ever needed it
+	// advc: This sounds pretty slow and I don't think I've ever needed it
 	/*#ifdef _DEBUG // XXX
 	for (CLLNode<IDInfo> const* pUnitNode = headUnitNode(); pUnitNode != NULL;
 		pUnitNode = nextUnitNode(pUnitNode))
@@ -617,15 +625,20 @@ void CvPlot::verifyUnitValidPlot()  // advc: some style changes
 			FAssertMsg(pLoopUnit != NULL, "Can this happen?"); // advc
 			continue;
 		}
-		if (pLoopUnit->atPlot(this) && !pLoopUnit->isCargo() && !pLoopUnit->isCombat())
+		if (pLoopUnit->atPlot(this) && !pLoopUnit->isCargo() &&
+			!pLoopUnit->isInCombat())
 		{
 			if (!isValidDomainForLocation(*pLoopUnit) ||
 				!pLoopUnit->canEnterTerritory(getTeam(), false, area()))
 			{
 				if (!pLoopUnit->jumpToNearestValidPlot(true))
 					bErased = true;
-				// K-Mod:
-				else bumped_groups.push_back(std::make_pair(pLoopUnit->getOwner(), pLoopUnit->getGroupID()));
+				// <K-Mod>
+				else
+				{
+					bumped_groups.push_back(std::make_pair(
+							pLoopUnit->getOwner(), pLoopUnit->getGroupID()));
+				} // </K-Mod>
 			}
 		}
 		if (bErased)
@@ -647,7 +660,7 @@ void CvPlot::verifyUnitValidPlot()  // advc: some style changes
 			}
 			else
 			{
-				if (pLoopUnit->atPlot(this) && !pLoopUnit->isCombat())
+				if (pLoopUnit->atPlot(this) && !pLoopUnit->isInCombat())
 				{
 					if (pLoopUnit->getTeam() != getTeam() && (getTeam() == NO_TEAM ||
 						!GET_TEAM(getTeam()).isVassal(pLoopUnit->getTeam())))
@@ -716,7 +729,7 @@ void CvPlot::forceBumpUnits()
 		else
 		{
 			if (pLoopUnit->atPlot(this) && !pLoopUnit->isCargo() &&
-				!pLoopUnit->isCombat())
+				!pLoopUnit->isInCombat())
 			{
 				if (!pLoopUnit->jumpToNearestValidPlot(true, true))
 					bErased = true;
@@ -1129,7 +1142,7 @@ void CvPlot::changeFreshWaterInRadius(int iChange, int iRadius)
 		}
 	}
 }
-// XXX if this changes need to call updateIrrigated() and pCity->updateFreshWaterHealth()
+// XXX if this changes need to call updateIrrigated and CvCity::updateFreshWaterHealth
 // XXX precalculate this???
 bool CvPlot::isFreshWater() const
 {
@@ -1140,6 +1153,10 @@ bool CvPlot::isFreshWater() const
 	}
 /* Original code - commented out by Deliverator removed marker here to rmeove fresh water from lakes and ocean ->*/
 
+	/*	advc: Called frequently enough that I don't want to keep profiling it.
+		Caching this in a variable bool m_bFreshWater:1 would save some time,
+		but not quite trivial to keep it updated, so probably not worth it. */
+	//PROFILE_FUNC();
 	// davidlallen: fresh water on ocean: remove test isLand()
     if (isWater())
 		return false;
@@ -1169,6 +1186,7 @@ bool CvPlot::isFreshWater() const
 
 	return false;/* if u want no fresh water from lakes and ocean mark out up to here ->*/
 }
+
 // advc.108:
 bool CvPlot::isAdjacentFreshWater() const
 {
@@ -1214,12 +1232,12 @@ bool CvPlot::isPotentialIrrigation() const
 
 bool CvPlot::canHavePotentialIrrigation() const
 {
-	PROFILE_FUNC(); // advc.test: To be profiled	
+	PROFILE_FUNC(); // advc (not called very frequently)	
 //===NM=====Mountains Mods===0=====keldath - i hope thats ok
 	if (isCity() && !(isHills() || (GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && isPeak())))
 //===NM=====Mountains Mods===0=====
-	// advc: 2nd check was !isHills. Mods might allow cities on peaks.
-	//keldath - prefer optional
+	// advc: 2nd condition was !isHills. Mods might allow cities on peaks.
+	//keldath - prefer optional176.230.175.24
 	//if (isCity() && isFlatlands())
 	
 		return true;
@@ -2658,179 +2676,19 @@ int CvPlot::getNumCultureRangeCities(PlayerTypes ePlayer) const
 	return iCount;
 }
 
-// BETTER_BTS_AI_MOD, General AI, 01/10/10, jdog5000: START
-bool CvPlot::isHasPathToEnemyCity(TeamTypes eAttackerTeam, bool bIgnoreBarb) const  // advc: refactored
-{
-	PROFILE_FUNC();
-
-	bool bR = false;
-
-	if (getArea().getNumCities() == GET_TEAM(eAttackerTeam).countNumCitiesByArea(getArea()))
-		return bR;
-
-	/*	Imitate instatiation of irrigated finder, pIrrigatedFinder.
-		Can't mimic step finder initialization because it requires creation from the exe */
-	std::vector<TeamTypes> aeTeams;
-	aeTeams.push_back(eAttackerTeam);
-	aeTeams.push_back(NO_TEAM);
-	FAStar* pTeamStepFinder = gDLL->getFAStarIFace()->create();
-	CvMap const& kMap = GC.getMap();
-	gDLL->getFAStarIFace()->Initialize(pTeamStepFinder,
-			kMap.getGridWidth(), kMap.getGridHeight(),
-			kMap.isWrapX(), kMap.isWrapY(), stepDestValid, stepHeuristic,
-			stepCost, teamStepValid, stepAdd, NULL, NULL);
-	gDLL->getFAStarIFace()->SetData(pTeamStepFinder, &aeTeams);
-
-	
-	/*	advc: I guess it's important for performance to check capitals first;
-		So continue doing that, but compute the enemy players only in one place. */
-	std::vector<CvPlayer const*> apEnemies;
-	for (PlayerIter<ALIVE,KNOWN_POTENTIAL_ENEMY_OF> itEnemy(eAttackerTeam);
-		itEnemy.hasNext(); ++itEnemy)
-	{
-		if (bIgnoreBarb && (itEnemy->isBarbarian() || itEnemy->isMinorCiv()))
-			continue;
-		if (GET_TEAM(eAttackerTeam).AI_getWarPlan(itEnemy->getTeam()) != NO_WARPLAN)
-		apEnemies.push_back(&*itEnemy);
-	} 
-
-	for (size_t i = 0; i < apEnemies.size(); i++)
-	{
-		CvCity* pCapital = apEnemies[i]->getCapital();
-		if (pCapital == NULL)
-			continue;
-		if (pCapital->isArea(getArea()))
-		{
-			if (gDLL->getFAStarIFace()->GeneratePath(pTeamStepFinder, getX(), getY(),
-				pCapital->getX(), pCapital->getY(), false, 0, true))
-			{
-				bR = true;
-				goto free_and_return;
-			}
-		}
-	}
-
-	// Check all other cities
-	for (size_t i = 0; i < apEnemies.size(); i++)
-	{
-		FOR_EACH_CITY(pCity, *apEnemies[i])
-		{
-			if (pCity->isArea(getArea()) && !pCity->isCapital())
-			{
-				if (gDLL->getFAStarIFace()->GeneratePath(pTeamStepFinder, getX(), getY(),
-					pCity->getX(), pCity->getY(), false, 0, true))
-				{
-					bR = true;
-					goto free_and_return;
-				}
-			}
-		}
-	}
-
-free_and_return:
-	gDLL->getFAStarIFace()->destroy(pTeamStepFinder);
-	return bR;
-}
-
-bool CvPlot::isHasPathToPlayerCity(TeamTypes eMoveTeam, PlayerTypes eOtherPlayer) /* advc: */ const
-{
-	PROFILE_FUNC();
-
-	FAssert(eMoveTeam != NO_TEAM);
-
-	if (getArea().getCitiesPerPlayer(eOtherPlayer) == 0)
-		return false;
-
-	/*	Imitate instatiation of irrigated finder, pIrrigatedFinder.
-		Can't mimic step finder initialization because it requires creation from the exe */
-	std::vector<TeamTypes> aeTeams;
-	aeTeams.push_back(eMoveTeam);
-	aeTeams.push_back(GET_PLAYER(eOtherPlayer).getTeam());
-	FAStar* pTeamStepFinder = gDLL->getFAStarIFace()->create();
-	CvMap const& m = GC.getMap();
-	gDLL->getFAStarIFace()->Initialize(pTeamStepFinder, m.getGridWidth(), m.getGridHeight(),
-			m.isWrapX(), m.isWrapY(), stepDestValid, stepHeuristic,
-			stepCost, teamStepValid, stepAdd, NULL, NULL);
-	gDLL->getFAStarIFace()->SetData(pTeamStepFinder, &aeTeams);
-
-	bool bFound = false;
-	FOR_EACH_CITY(pLoopCity, GET_PLAYER(eOtherPlayer))
-	{
-		if (pLoopCity->isArea(getArea()))
-		{
-			bFound = gDLL->getFAStarIFace()->GeneratePath(pTeamStepFinder, getX(), getY(),
-					pLoopCity->getX(), pLoopCity->getY(), false, 0, true);
-			if (bFound)
-				break;
-		}
-	}
-
-	gDLL->getFAStarIFace()->destroy(pTeamStepFinder);
-
-	return bFound;
-}
-
-/*  advc.104b (comment): This BBAI function was previously unused, so I'm free
-	to twist it to my purpose. I don't think it had ever been tested either
-	b/c it didn't seem to work at all until I changed the GetLastNode call
-	at the end. */
-int CvPlot::calculatePathDistanceToPlot(TeamTypes eTeam, CvPlot const& kTargetPlot,
-	int iMaxPath, TeamTypes eTargetTeam, DomainTypes eDomain) const // advc.104b
-{
-	PROFILE_FUNC(); // advc: The time is mostly spent in teamStepValid_advc
-	FAssert(eTeam != NO_TEAM);
-	FAssert(eTargetTeam != NO_TEAM);
-	/*  advc.104b: Commented out. Want to be able to measure paths between
-		coastal cities of different continents. (And shouldn't return "false"
-		at any rate.) */
-	/*if (pTargetPlot->area() != area())
-		return false;*/
-	FAssert(eDomain != NO_DOMAIN);
-
-	// Imitate instatiation of irrigated finder, pIrrigatedFinder.
-	// Can't mimic step finder initialization because it requires creation from the exe
-	/*  <advc.104b> vector type changed to int[]; dom, eTargetTeam (instead of
-		NO_TEAM), iMaxPath and target coordinates added. */
-	int aStepData[] = {
-		eTeam, eTargetTeam, eDomain, kTargetPlot.getX(), kTargetPlot.getY(), iMaxPath
-	}; // </advc.104b>
-	FAStar* pStepFinder = gDLL->getFAStarIFace()->create();
-	gDLL->getFAStarIFace()->Initialize(pStepFinder,
-			GC.getMap().getGridWidth(),
-			GC.getMap().getGridHeight(),
-			GC.getMap().isWrapX(),
-			GC.getMap().isWrapY(),
-			// advc.104b: Plugging in _advc functions
-			stepDestValid_advc, stepHeuristic, stepCost, teamStepValid_advc, stepAdd,
-			NULL, NULL);
-	gDLL->getFAStarIFace()->SetData(pStepFinder, aStepData);
-
-	int iPathDistance = -1;
-	gDLL->getFAStarIFace()->GeneratePath(pStepFinder, getX(), getY(),
-			kTargetPlot.getX(), kTargetPlot.getY(), false, 0, true);
-	// advc.104b, advc.001: was &GC.getStepFinder() instead of pStepFinder
-	FAStarNode* pNode = gDLL->getFAStarIFace()->GetLastNode(pStepFinder);
-	if (pNode != NULL)
-		iPathDistance = pNode->m_iData1;
-
-	gDLL->getFAStarIFace()->destroy(pStepFinder);
-
-	return iPathDistance;
-}
-// BETTER_BTS_AI_MOD: END
-
-// K-Mod. (rewrite of a bbai function)
-// I've changed the purpose of this function - because this is the way it is always used.
+/*	K-Mod (rewrite of a bbai function)
+	I've changed the purpose of this function - because this is the way it is always used. */
 void CvPlot::invalidateBorderDangerCache()
 {
-	for (SquareIter itPlot(*this, BORDER_DANGER_RANGE); itPlot.hasNext(); ++itPlot)
+	for (SquareIter itPlot(*this, CvPlayerAI::BORDER_DANGER_RANGE);
+		itPlot.hasNext(); ++itPlot)
 	{
 		for (TeamIter<> itTeam; itTeam.hasNext(); ++itTeam)
 		{
 			itPlot->setBorderDangerCache(itTeam->getID(), false);
 		}
 	}
-} // K-Mod end
+}
 
 
 PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureRange,
@@ -3694,16 +3552,16 @@ int CvPlot::getYExternal() const
 	return m_iY;
 }
 
-// <advc.tsl>
+// advc.tsl:
 void CvPlot::setLatitude(int iLatitude)
 {
 	if (iLatitude < 0 || iLatitude > 90)
 	{
-		FAssertMsg(false, "Latitude should be in the interval [0,90]");
+		FErrorMsg("Latitude should be in the interval [0,90]");
 		iLatitude = range(iLatitude, 0, 90);
 	}
-	m_iLatitude = iLatitude;
-} // </advc.tsl>
+	m_iLatitude = toChar(iLatitude);
+}
 
 
 int CvPlot::getLatitude() const
@@ -3729,7 +3587,7 @@ char CvPlot::calculateLatitude() const
 	else fLatitude = ((getX() * 1.0) / (GC.getMap().getGridWidth()-1));
 	fLatitude = fLatitude * (GC.getMap().getTopLatitude() - GC.getMap().getBottomLatitude());
 	iLatitude = (int)(fLatitude + 0.5);
-	return intToChar(std::min(abs((iLatitude + GC.getMap().getBottomLatitude())), 90));
+	return toChar(std::min(abs((iLatitude + GC.getMap().getBottomLatitude())), 90));
 	// UNOFFICIAL_PATCH: END
 }
 
@@ -3900,18 +3758,13 @@ void CvPlot::setOwnershipDuration(int iNewValue)
 
 	bool bOldOwnershipScore = isOwnershipScore();
 
-	m_iOwnershipDuration = iNewValue;
+	m_iOwnershipDuration = toShort(iNewValue);
 	FAssert(getOwnershipDuration() >= 0);
 
-	if (bOldOwnershipScore != isOwnershipScore())
+	if (bOldOwnershipScore != isOwnershipScore() &&
+		isOwned() && !isWater())
 	{
-		if (isOwned())
-		{
-			if (!isWater())
-			{
-				GET_PLAYER(getOwner()).changeTotalLandScored((isOwnershipScore()) ? 1 : -1);
-			}
-		}
+		GET_PLAYER(getOwner()).changeTotalLandScored(isOwnershipScore() ? 1 : -1);
 	}
 }
 
@@ -3924,7 +3777,7 @@ void CvPlot::changeOwnershipDuration(int iChange)
 
 void CvPlot::setImprovementDuration(int iNewValue)
 {
-	m_iImprovementDuration = iNewValue;
+	m_iImprovementDuration = toShort(iNewValue);
 	FAssert(getImprovementDuration() >= 0);
 }
 
@@ -3955,7 +3808,7 @@ int CvPlot::getUpgradeTimeLeft(ImprovementTypes eImprovement, PlayerTypes ePlaye
 
 void CvPlot::setUpgradeProgress(int iNewValue)
 {
-	m_iUpgradeProgress = iNewValue;
+	m_iUpgradeProgress = toShort(iNewValue);
 	FAssert(getUpgradeProgress() >= 0);
 }
 
@@ -3974,7 +3827,7 @@ bool CvPlot::isForceUnowned() const
 
 void CvPlot::setForceUnownedTimer(int iNewValue)
 {
-	m_iForceUnownedTimer = iNewValue;
+	m_iForceUnownedTimer = toShort(iNewValue);
 	FAssert(getForceUnownedTimer() >= 0);
 }
 
@@ -3987,7 +3840,7 @@ void CvPlot::changeForceUnownedTimer(int iChange)
 
 void CvPlot::changeCityRadiusCount(int iChange)
 {
-	m_iCityRadiusCount = (m_iCityRadiusCount + iChange);
+	m_iCityRadiusCount += iChange;
 	FAssert(getCityRadiusCount() >= 0);
 }
 
@@ -4071,18 +3924,18 @@ void CvPlot::setWOfRiver(bool bNewValue, CardinalDirectionTypes eRiverDir)
 		updateRiverCrossing();
 		updateYield();
 
-		for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+		FOR_EACH_ENUM(Direction)
 		{
-			CvPlot* pAdjacentPlot = plotDirection(getX(), getY(), ((DirectionTypes)iI));
-			if (pAdjacentPlot != NULL)
+			CvPlot* pAdj = plotDirection(getX(), getY(), eLoopDirection);
+			if (pAdj != NULL)
 			{
-				pAdjacentPlot->updateRiverCrossing();
-				pAdjacentPlot->updateYield();
+				pAdj->updateRiverCrossing();
+				pAdj->updateYield();
 			}
 		}
 
 		if (area() != NULL)
-			getArea().changeNumRiverEdges((isWOfRiver()) ? 1 : -1);
+			getArea().changeNumRiverEdges(isWOfRiver() ? 1 : -1);
 		else FAssert(area() != NULL); // advc.test
 	}
 
@@ -4176,64 +4029,10 @@ void CvPlot::setIrrigated(bool bNewValue)
 
 void CvPlot::updateIrrigated()
 {
-	PROFILE_FUNC();
-
-	if (area() == NULL)
-	{
-		FAssert(area() != NULL); // advc.test
-		return;
-	}
-	if (!GC.getGame().isFinalInitialized())
-		return;
-
-	CvMap const& kMap = GC.getMap();
-	FAStar* pIrrigatedFinder = gDLL->getFAStarIFace()->create();
-	if (isIrrigated())
-	{
-		if (!isPotentialIrrigation())
-		{
-			setIrrigated(false);
-			for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
-			{
-				CvPlot* pLoopPlot = plotDirection(getX(), getY(), (DirectionTypes)iI);
-				if (pLoopPlot == NULL)
-					continue; // advc
-
-				bool bFoundFreshWater = false;
-				gDLL->getFAStarIFace()->Initialize(pIrrigatedFinder,
-						kMap.getGridWidth(), kMap.getGridHeight(),
-						kMap.isWrapX(), kMap.isWrapY(), NULL, NULL, NULL,
-						potentialIrrigation, NULL, checkFreshWater,
-						&bFoundFreshWater);
-				gDLL->getFAStarIFace()->GeneratePath(pIrrigatedFinder,
-						pLoopPlot->getX(), pLoopPlot->getY(), -1, -1);
-				if (!bFoundFreshWater)
-				{
-					bool bIrrigated = false;
-					gDLL->getFAStarIFace()->Initialize(pIrrigatedFinder,
-							kMap.getGridWidth(), kMap.getGridHeight(),
-							kMap.isWrapX(), kMap.isWrapY(), NULL, NULL, NULL,
-							potentialIrrigation, NULL, changeIrrigated, &bIrrigated);
-					gDLL->getFAStarIFace()->GeneratePath(pIrrigatedFinder,
-							pLoopPlot->getX(), pLoopPlot->getY(), -1, -1);
-				}
-			}
-		}
-	}
-	else
-	{
-		if (isPotentialIrrigation() && isIrrigationAvailable(true))
-		{
-			bool bIrrigated = true;
-			gDLL->getFAStarIFace()->Initialize(pIrrigatedFinder,
-					kMap.getGridWidth(), kMap.getGridHeight(),
-					kMap.isWrapX(), kMap.isWrapY(), NULL, NULL, NULL,
-					potentialIrrigation, NULL, changeIrrigated, &bIrrigated);
-			gDLL->getFAStarIFace()->GeneratePath(pIrrigatedFinder, getX(), getY(), -1, -1);
-		}
-	}
-
-	gDLL->getFAStarIFace()->destroy(pIrrigatedFinder);
+	//if (area() == NULL) return;
+	FAssert(area() != NULL); // advc
+	// advc.pf: Rather handle the pathfinding in CvMap
+	GC.getMap().updateIrrigated(*this);
 }
 
 
@@ -4448,9 +4247,9 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 				GET_PLAYER(pLoopUnit->getOwner()).changeNumOutsideUnits(-1);
 			}
 
-			if (pLoopUnit->isBlockading()
+			if (pLoopUnit->isBlockading() &&
 				// advc.033: Owner change shouldn't always disrupt blockade
-				&& !pLoopUnit->canPlunder(pLoopUnit->getPlot()))
+				!pLoopUnit->canPlunder(pLoopUnit->getPlot()))
 			{
 				pLoopUnit->setBlockading(false);
 				pLoopUnit->getGroup()->clearMissionQueue();
@@ -5445,7 +5244,7 @@ int CvPlot::getMinOriginalStartDist() const
 
 void CvPlot::setMinOriginalStartDist(int iNewValue)
 {
-	m_iMinOriginalStartDist = iNewValue;
+	m_iMinOriginalStartDist = toShort(iNewValue);
 }
 
 
@@ -5457,7 +5256,7 @@ int CvPlot::getReconCount() const
 
 void CvPlot::changeReconCount(int iChange)
 {
-	m_iReconCount += m_iReconCount;
+	m_iReconCount += iChange;
 	FAssert(getReconCount() >= 0);
 }
 
@@ -5470,7 +5269,7 @@ int CvPlot::getRiverCrossingCount() const
 
 void CvPlot::changeRiverCrossingCount(int iChange)
 {
-	m_iRiverCrossingCount = (m_iRiverCrossingCount + iChange);
+	m_iRiverCrossingCount += iChange;
 	FAssert(getRiverCrossingCount() >= 0);
 }
 
@@ -5642,7 +5441,7 @@ int CvPlot::calculateImprovementYieldChange(ImprovementTypes eImprovement, Yield
 }
 
 
-char CvPlot::calculateYield(YieldTypes eYield, bool bDisplay) const
+int CvPlot::calculateYield(YieldTypes eYield, bool bDisplay) const
 {
 	if (getTerrainType() == NO_TERRAIN)  // (advc: Can happen during map initialization)
 		return 0;
@@ -5734,7 +5533,8 @@ char CvPlot::calculateYield(YieldTypes eYield, bool bDisplay) const
 	}
 
 	iYield = std::max(0, iYield);
-	return intToChar(iYield); // advc.enum
+	FAssert(iYield <= MAX_CHAR); // advc
+	return iYield;
 }
 
 // advc.031: Cut from calculateYield
@@ -5763,14 +5563,13 @@ void CvPlot::updateYield()
 		return;
 	}
 	bool bChange = false;
-	for (int iI = 0; iI < NUM_YIELD_TYPES; ++iI)
+	FOR_EACH_ENUM2(Yield, eYield)
 	{
-		YieldTypes eYield = (YieldTypes)iI;
 		char iNewYield = calculateYield(eYield);
 		if (getYield(eYield) == iNewYield)
 			continue; // advc
 
-		char iOldYield = getYield(eYield);
+		int iOldYield = getYield(eYield);
 		m_aiYield.set(eYield, iNewYield);
 		FAssert(getYield(eYield) >= 0);
 
@@ -6311,7 +6110,7 @@ bool CvPlot::canEverFound() const
 	{
 		if (GC.getPythonCaller()->canFoundWaterCity(*this))
 		{
-			FAssertMsg(false, "The AdvCiv mod probably does not support cities on water"); // advc
+			FErrorMsg("The AdvCiv mod probably does not support cities on water"); // advc
 			return true;
 		}
 		return false; // advc.opt
@@ -6704,7 +6503,7 @@ bool CvPlot::isRiverCrossing(DirectionTypes eIndex) const
 {
 	if (eIndex == NO_DIRECTION)
 	{
-		FAssertMsg(false, "Just to see if the NO_DIRECTION branch is needed"); // advc.test
+		FErrorMsg("Just to see if the NO_DIRECTION branch is needed"); // advc.test
 		return false;
 	}
 	return m_abRiverCrossing.get(eIndex);
@@ -7899,12 +7698,10 @@ void CvPlot::read(FDataStreamBase* pStream)
 
 	uint uiFlag=0;
 	pStream->Read(&uiFlag);
-
 	pStream->Read(&m_iX);
 	pStream->Read(&m_iY);
 	pStream->Read(&m_iArea);
 
-	pStream->Read(&m_iFreshWaterAmount); // Deliverator
 	pStream->Read(&m_iFeatureVariety);
 	pStream->Read(&m_iOwnershipDuration);
 	pStream->Read(&m_iImprovementDuration);
@@ -7914,7 +7711,7 @@ void CvPlot::read(FDataStreamBase* pStream)
 	if (uiFlag < 5)
 	{
 		short sTmp; pStream->Read(&sTmp);
-		m_iCityRadiusCount = intToChar(sTmp);
+		m_iCityRadiusCount = toChar(sTmp);
 	}
 	else pStream->Read(&m_iCityRadiusCount);
 	int iRiver;
@@ -7929,7 +7726,7 @@ void CvPlot::read(FDataStreamBase* pStream)
 	if (uiFlag < 5)
 	{
 		short sTmp; pStream->Read(&sTmp);
-		m_iRiverCrossingCount = intToChar(sTmp);
+		m_iRiverCrossingCount = toChar(sTmp);
 	}
 	else pStream->Read(&m_iRiverCrossingCount); // </advc.opt>
 	// <advc.tsl>
@@ -7939,7 +7736,7 @@ void CvPlot::read(FDataStreamBase* pStream)
 		{
 			short sTmp;
 			pStream->Read(&sTmp);
-			m_iLatitude = intToChar(sTmp);
+			m_iLatitude = toChar(sTmp);
 		}
 		else pStream->Read(&m_iLatitude);
 	}
@@ -7988,11 +7785,11 @@ void CvPlot::read(FDataStreamBase* pStream)
 	{
 		short sTmp;
 		pStream->Read(&sTmp);
-		m_ePlotType = intToChar(sTmp);
+		m_ePlotType = toChar(sTmp);
 		pStream->Read(&sTmp);
-		m_eTerrainType = intToChar(sTmp);
+		m_eTerrainType = toChar(sTmp);
 		pStream->Read(&sTmp);
-		m_eFeatureType = intToChar(sTmp);
+		m_eFeatureType = toChar(sTmp);
 	}
 	else
 	{ // </advc.opt>
@@ -8009,14 +7806,14 @@ void CvPlot::read(FDataStreamBase* pStream)
 	{
 		short sTmp;
 		pStream->Read(&sTmp);
-		m_eImprovementType = intToChar(sTmp);
+		m_eImprovementType = toChar(sTmp);
 	}
 	else pStream->Read(&m_eImprovementType);
 	if (uiFlag < 5)
 	{
 		short sTmp;
 		pStream->Read(&sTmp);
-		m_eRouteType = intToChar(sTmp);
+		m_eRouteType = toChar(sTmp);
 	}
 	else pStream->Read(&m_eRouteType); // </advc.opt>
 	pStream->Read(&m_eRiverNSDirection);
@@ -8106,7 +7903,7 @@ void CvPlot::read(FDataStreamBase* pStream)
 	if (uiFlag < 5)
 	{
 		int iTmp; pStream->Read(&iTmp);
-		m_iTurnsBuildsInterrupted = ::intToShort(iTmp);
+		m_iTurnsBuildsInterrupted = toShort(iTmp);
 	}
 	else pStream->Read(&m_iTurnsBuildsInterrupted); // </advc.011>
 	// <advc.005c>

@@ -332,7 +332,16 @@ public:
 	int calculateTotalCityHealthiness() const;																		// Exposed to Python
 	int calculateTotalCityUnhealthiness() const;																	// Exposed to Python
 
-	int calculatePollution(int iTypes = POLLUTION_ALL) const; // K-Mod, Exposed to Python
+	/*	K-Mod, 18/dec/10: global warming pollution flags
+		advc.enum: Moved from CvDefines, turned into an enum.
+		(Overloaded bitwise operators at end of file) */
+	enum PollutionTypes // Exposed to Python
+	{
+		POLLUTION_POPULATION = (1 << 0), POLLUTION_BUILDINGS = (1 << 1),
+		POLLUTION_BONUSES = (1 << 2), POLLUTION_POWER = (1 << 3),
+		POLLUTION_ALL = (1 << 4) - 1
+	};
+	int calculatePollution(PollutionTypes ePollution = POLLUTION_ALL) const; // K-Mod, Exposed to Python
 	int getGwPercentAnger() const { return m_iGwPercentAnger; } // K-Mod, Exposed to Python
 	void setGwPercentAnger(int iNewValue); // K-Mod
 
@@ -367,8 +376,8 @@ public:
 	/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
 	bool canEverTrade(TechTypes eTech) const;
 	/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/																								// Exposed to Python
-	bool canResearch(TechTypes eTech, bool bTrade = false,
-			bool bFree = false, // (K-Mod, added bFree.) Exposed to Python
+	bool canResearch(TechTypes eTech, bool bTrade = false,													 // K-Mod: Exposed to Python
+			bool bFree = false, // K-Mod (advc.004x: disused)
 			// advc.126: Disables the isHasTech check
 			bool bCouldResearchAgain = false) const;
 	TechTypes getCurrentResearch() const;																			// Exposed to Python
@@ -1924,5 +1933,8 @@ inline CvUnit* getUnit(IDInfo unit)																					// Exposed to Python
 CvCity* getCityExternal(IDInfo city); // exported through .def file
 CvUnit* getUnitExternal(IDInfo unit); // exported through .def file
 // </advc.opt>
+
+// advc.enum: For calculatePollution. (Needs to be outside the class definition.)
+OVERLOAD_BITWISE_OPERATORS(CvPlayer::PollutionTypes)
 
 #endif

@@ -4,9 +4,10 @@
 #include "CvUnit.h"
 #include "CvUnitAI.h"
 #include "CvSelectionGroupAI.h"
+#include "KmodPathFinder.h" // advc.128
 #include "CoreAI.h"
 #include "CvCityAI.h"
-#include "UWAIAgent.h" // advc.104
+#include "UWAIAgent.h"
 #include "RiseFall.h" // advc.705
 #include "PlotRange.h"
 #include "CvArea.h"
@@ -432,11 +433,8 @@ void CvUnit::kill(bool bDelay, PlayerTypes ePlayer)
 	if(canFound() && isHuman())
 		updateFoundingBorder(true); // </advc.004h>
 
-	CLLNode<IDInfo>* pUnitNode = kPlot.headUnitNode();
-	while (pUnitNode != NULL)
+	FOR_EACH_UNIT_VAR_IN(pLoopUnit, kPlot) // advc.test for advc.003s macro
 	{
-		CvUnit* pLoopUnit = ::getUnit(pUnitNode->m_data);
-		pUnitNode = kPlot.nextUnitNode(pUnitNode);
 		if (pLoopUnit->getTransportUnit() == this)
 		{
 			if (kPlot.isValidDomainForLocation(*pLoopUnit))
@@ -1116,10 +1114,10 @@ void CvUnit::updateAirCombat(bool bQuick)
 // K-Mod. I've edited this function so that it handles the battle planning internally rather than feeding details back to the caller.
 void CvUnit::resolveCombat(CvUnit* pDefender, CvPlot* pPlot, bool bVisible)
 {
-#ifdef LOG_COMBAT_OUTCOMES
-	int iLoggedOdds = getCombatOdds(this, pDefender);
-	iLoggedOdds += (1000 - iLoggedOdds)*withdrawalProbability()/100;
-#endif
+	#ifdef LOG_COMBAT_OUTCOMES
+		int iLoggedOdds = getCombatOdds(this, pDefender);
+		iLoggedOdds += (1000 - iLoggedOdds)*withdrawalProbability()/100;
+	#endif
 
 	// K-Mod. Initialize battle info.
 	// Note: kBattle is only relevant if we are going to show the battle animation.
@@ -1164,12 +1162,14 @@ void CvUnit::resolveCombat(CvUnit* pDefender, CvPlot* pPlot, bool bVisible)
 		{
 			if (getCombatFirstStrikes() == 0)
 			{
-				if (getDamage() + iAttackerDamage >= maxHitPoints() && GC.getGame().getSorenRandNum(100, "Withdrawal") < withdrawalProbability())
+				if (getDamage() + iAttackerDamage >= maxHitPoints() &&
+					GC.getGame().getSorenRandNum(100, "Withdrawal") < withdrawalProbability())
 				{
-					flankingStrikeCombat(pPlot, iAttackerStrength, iAttackerFirepower, iAttackerKillOdds, iDefenderDamage, pDefender);
-
+					flankingStrikeCombat(pPlot, iAttackerStrength, iAttackerFirepower,
+							iAttackerKillOdds, iDefenderDamage, pDefender);
 					changeExperience(GC.getDefineINT(CvGlobals::EXPERIENCE_FROM_WITHDRAWL),
-							pDefender->maxXPValue(), true, pPlot->getOwner() == getOwner(), !pDefender->isBarbarian());
+							pDefender->maxXPValue(), true, pPlot->getOwner() == getOwner(),
+							!pDefender->isBarbarian());
 					combat_log.push_back(0); // K-Mod
 					break;
 				}
@@ -1207,10 +1207,12 @@ void CvUnit::resolveCombat(CvUnit* pDefender, CvPlot* pPlot, bool bVisible)
 		{
 			if (pDefender->getCombatFirstStrikes() == 0)
 			{
-				if (std::min(GC.getMAX_HIT_POINTS(), pDefender->getDamage() + iDefenderDamage) > combatLimit())
+				if (std::min(GC.getMAX_HIT_POINTS(),
+					pDefender->getDamage() + iDefenderDamage) > combatLimit())
 				{
 					changeExperience(GC.getDefineINT(CvGlobals::EXPERIENCE_FROM_WITHDRAWL),
-							pDefender->maxXPValue(), true, pPlot->getOwner() == getOwner(), !pDefender->isBarbarian());
+							pDefender->maxXPValue(), true, pPlot->getOwner() == getOwner(),
+							!pDefender->isBarbarian());
 					combat_log.push_back(combatLimit() - pDefender->getDamage()); // K-Mod
 					pDefender->setDamage(combatLimit(), getOwner());
 					break;
@@ -1247,14 +1249,9 @@ void CvUnit::resolveCombat(CvUnit* pDefender, CvPlot* pPlot, bool bVisible)
 		}
 
 		if (getCombatFirstStrikes() > 0)
-		{
 			changeCombatFirstStrikes(-1);
-		}
-
 		if (pDefender->getCombatFirstStrikes() > 0)
-		{
 			pDefender->changeCombatFirstStrikes(-1);
-		}
 
 		if (isDead() || pDefender->isDead())
 		{
@@ -1262,21 +1259,26 @@ void CvUnit::resolveCombat(CvUnit* pDefender, CvPlot* pPlot, bool bVisible)
 			{
 				int iExperience = defenseXPValue();
 				iExperience = ((iExperience * iAttackerStrength) / iDefenderStrength);
-				iExperience = range(iExperience, GC.getDefineINT(CvGlobals::MIN_EXPERIENCE_PER_COMBAT),
+				iExperience = range(iExperience,
+						GC.getDefineINT(CvGlobals::MIN_EXPERIENCE_PER_COMBAT),
 						GC.getDefineINT(CvGlobals::MAX_EXPERIENCE_PER_COMBAT)
 						- (isBarbarian() ? 4 : 0)); // advc.312
-				pDefender->changeExperience(iExperience, maxXPValue(), true, pPlot->getOwner() == pDefender->getOwner(), !isBarbarian());
+				pDefender->changeExperience(iExperience, maxXPValue(), true,
+						pPlot->getOwner() == pDefender->getOwner(), !isBarbarian());
 			}
 			else
 			{
-				flankingStrikeCombat(pPlot, iAttackerStrength, iAttackerFirepower, iAttackerKillOdds, iDefenderDamage, pDefender);
+				flankingStrikeCombat(pPlot, iAttackerStrength, iAttackerFirepower,
+						iAttackerKillOdds, iDefenderDamage, pDefender);
 
 				int iExperience = pDefender->attackXPValue();
 				iExperience = ((iExperience * iDefenderStrength) / iAttackerStrength);
-				iExperience = range(iExperience, GC.getDefineINT(CvGlobals::MIN_EXPERIENCE_PER_COMBAT),
+				iExperience = range(iExperience,
+						GC.getDefineINT(CvGlobals::MIN_EXPERIENCE_PER_COMBAT),
 						GC.getDefineINT(CvGlobals::MAX_EXPERIENCE_PER_COMBAT)
 						/ (pDefender->isBarbarian() ? 2 : 1)); // advc.312
-				changeExperience(iExperience, pDefender->maxXPValue(), true, pPlot->getOwner() == getOwner(), !pDefender->isBarbarian());
+				changeExperience(iExperience, pDefender->maxXPValue(), true,
+						pPlot->getOwner() == getOwner(), !pDefender->isBarbarian());
 			}
 			GET_PLAYER(getOwner()).AI_attackMadeAgainst(*pDefender); // advc.139
 			break;
@@ -1304,15 +1306,14 @@ void CvUnit::resolveCombat(CvUnit* pDefender, CvPlot* pPlot, bool bVisible)
 			gDLL->getEntityIFace()->AddMission(&kBattle);
 		}
 	}
-
-#ifdef LOG_COMBAT_OUTCOMES
-	if (!isBarbarian() && !pDefender->isBarbarian()) // don't log barb battles, because they have special rules.
-	{
-		TCHAR message[20];
-		_snprintf(message, 20, "%.2f\t%d\n", (float)iLoggedOdds/1000, isDead() ? 0 : 1);
-		gDLL->logMsg("combat.txt", message ,false, false);
-	}
-#endif
+	#ifdef LOG_COMBAT_OUTCOMES
+		if (!isBarbarian() && !pDefender->isBarbarian()) // don't log barb battles, because they have special rules.
+		{
+			TCHAR message[20];
+			_snprintf(message, 20, "%.2f\t%d\n", (float)iLoggedOdds/1000, isDead() ? 0 : 1);
+			gDLL->logMsg("combat.txt", message ,false, false);
+		}
+	#endif
 }
 
 
@@ -1370,7 +1371,7 @@ void CvUnit::updateCombat(bool bQuick)
 		// K-Mod
 		if (bFinish)
 		{
-			FAssertMsg(false, "Cannot 'finish' combat with NULL defender");
+			FErrorMsg("Cannot 'finish' combat with NULL defender");
 			return;
 		}
 		else getGroup()->groupMove(pPlot, true, canAdvance(pPlot, 0) ? this : NULL, true);
@@ -2150,7 +2151,8 @@ void CvUnit::updateFoundingBorder(bool bForceClear) const
 	if(bForceClear || iMode <= 0 || !canFound())
 		return;
 	CvSelectionGroup* gr = getGroup();
-	for(CLLNode<IDInfo> const* pNode = gr->headUnitNode(); pNode != NULL; pNode = gr->nextUnitNode(pNode))
+	for(CLLNode<IDInfo> const* pNode = gr->headUnitNode(); pNode != NULL;
+		pNode = gr->nextUnitNode(pNode))
 	{
 		CvUnit const* pUnit = ::getUnit(pNode->m_data);
 		if(pUnit == NULL || (pUnit->IsSelected() && !pUnit->canFound()))
@@ -2403,26 +2405,26 @@ CvPlot* CvUnit::getPathEndTurnPlot() const
 }
 
 
-bool CvUnit::generatePath(const CvPlot* pToPlot, int iFlags, bool bReuse,
+bool CvUnit::generatePath(const CvPlot* pToPlot, MovementFlags eFlags, bool bReuse,
 	int* piPathTurns, int iMaxPath, /* <advc.128> */ bool bUseTempFinder) const
 {
 	if(!bUseTempFinder) // </advc.128>
-		return getGroup()->generatePath(plot(), pToPlot, iFlags, bReuse, piPathTurns, iMaxPath);
+		return getGroup()->generatePath(plot(), pToPlot, eFlags, bReuse, piPathTurns, iMaxPath);
 	// <advc.128>
 	FAssert(!bReuse);
 	KmodPathFinder temp_finder;
-	temp_finder.SetSettings(getGroup(), iFlags, iMaxPath, GC.getMOVE_DENOMINATOR());
+	temp_finder.SetSettings(getGroup(), eFlags, iMaxPath, GC.getMOVE_DENOMINATOR());
 	bool r = temp_finder.GeneratePath(pToPlot);
 	if(piPathTurns != NULL)
 		*piPathTurns = temp_finder.GetPathTurns();
 	return r; // </advc.128>
 }
 
-// K-Mod. Return the standard pathfinder, for extracting path information.
+// K-Mod: Return the standard pathfinder, for extracting path information.
 KmodPathFinder& CvUnit::getPathFinder() const
 {
-	return CvSelectionGroup::path_finder;
-} // K-Mod end
+	return CvSelectionGroup::pathFinder();
+}
 
 
 bool CvUnit::canEnterTerritory(TeamTypes eTeam, bool bIgnoreRightOfPassage,
@@ -3517,12 +3519,9 @@ bool CvUnit::shouldLoadOnMove(const CvPlot* pPlot) const
 bool CvUnit::canLoadOntoAnyUnit(CvPlot const& kPlot, /* advc.123c: */ bool bCheckMoves) const
 {
 	//PROFILE_FUNC(); // advc.003o
-
-	for (CLLNode<IDInfo> const* pUnitNode = kPlot.headUnitNode();
-		pUnitNode != NULL; pUnitNode = kPlot.nextUnitNode(pUnitNode))
+	FOR_EACH_UNIT_IN(pTransport, kPlot) // advc.test: for advc.003s macro
 	{
-		CvUnit const* pLoopUnit = ::getUnit(pUnitNode->m_data);
-		if(canLoadOnto(*pLoopUnit, kPlot, /* advc.123c: */ bCheckMoves))
+		if(canLoadOnto(*pTransport, kPlot, /* advc.123c: */ bCheckMoves))
 			return true;
 	}
 	return false;
@@ -3753,26 +3752,29 @@ bool CvUnit::canSentry(const CvPlot* pPlot) const
 }
 
 
-int CvUnit::healRate(const CvPlot* pPlot, bool bLocation, bool bUnits) const
+int CvUnit::healRate(bool bLocation, bool bUnits, CvPlot const* pAt) const
 {
-	//PROFILE_FUNC(); // advc.003o
+	PROFILE_FUNC();
+	CvPlot const& kPlot = (pAt == NULL ? getPlot() : *pAt); // advc
 	// <advc.opt>
 	static int const iCITY_HEAL_RATE = GC.getDefineINT("CITY_HEAL_RATE");
 	static int const iFRIENDLY_HEAL_RATE = GC.getDefineINT("FRIENDLY_HEAL_RATE");
 	static int const iNEUTRAL_HEAL_RATE = GC.getDefineINT("NEUTRAL_HEAL_RATE");
 	static int const iENEMY_HEAL_RATE = GC.getDefineINT("ENEMY_HEAL_RATE");
 	// </advc.opt>
-	CvCity* pCity = pPlot->getPlotCity();
 	int iTotalHeal = 0;
 
 	if (bLocation) // K-Mod
 	{	// advc:
-		bool bFriendly = GET_TEAM(getTeam()).isFriendlyTerritory(pPlot->getTeam());
-		if (pPlot->isCity(true, getTeam()))
+		bool bFriendly = GET_TEAM(getTeam()).isFriendlyTerritory(kPlot.getTeam());
+		if (kPlot.isCity(true, getTeam()))
 		{
 			iTotalHeal += //iCITY_HEAL_RATE + // advc.023: Moved
 					(bFriendly ? getExtraFriendlyHeal() : getExtraNeutralHeal());
-			if (pCity && !pCity->isOccupation())
+			CvCity const* pCity = kPlot.getPlotCity();
+			if (pCity == NULL) // fort
+				iTotalHeal += iCITY_HEAL_RATE; // advc.023
+			else if (!pCity->isOccupation())
 				iTotalHeal += pCity->getHealRate() /* <advc.023> */ + iCITY_HEAL_RATE;
 			else iTotalHeal += (bFriendly ? iFRIENDLY_HEAL_RATE : iNEUTRAL_HEAL_RATE);
 			// </advc.023>
@@ -3781,7 +3783,7 @@ int CvUnit::healRate(const CvPlot* pPlot, bool bLocation, bool bUnits) const
 		{
 			if (!bFriendly)
 			{
-				if (isEnemy(*pPlot))
+				if (isEnemy(kPlot))
 					iTotalHeal += iENEMY_HEAL_RATE + getExtraEnemyHeal();
 				else iTotalHeal += iNEUTRAL_HEAL_RATE + getExtraNeutralHeal();
 			}
@@ -3791,60 +3793,60 @@ int CvUnit::healRate(const CvPlot* pPlot, bool bLocation, bool bUnits) const
 
 	if (bUnits) // K-Mod
 	{
-		// XXX optimize this (save it?)
+		// <XXX> optimize this (save it?)
 		int iBestHeal = 0;
-		for (CLLNode<IDInfo> const* pUnitNode = pPlot->headUnitNode(); pUnitNode != NULL;
-			pUnitNode = pPlot->nextUnitNode(pUnitNode))
+		for (CLLNode<IDInfo> const* pNode = kPlot.headUnitNode(); pNode != NULL;
+			pNode = kPlot.nextUnitNode(pNode))
 		{
-			CvUnit const* pLoopUnit = ::getUnit(pUnitNode->m_data);
-			if (pLoopUnit->getTeam() == getTeam()) // XXX what about alliances?
+			CvUnit const& kLoopUnit = *::getUnit(pNode->m_data);
+			if (kLoopUnit.getTeam() == getTeam()) // XXX what about alliances?
 			{
-				int iHeal = pLoopUnit->getSameTileHeal();
+				int iHeal = kLoopUnit.getSameTileHeal();
 				if (iHeal > iBestHeal)
 					iBestHeal = iHeal;
 			}
 		}
 
-		for (int iI = 0; iI < NUM_DIRECTION_TYPES; iI++)
+		FOR_EACH_ENUM(Direction)
 		{
-			CvPlot* pLoopPlot = plotDirection(pPlot->getX(), pPlot->getY(), (DirectionTypes)iI);
-			if (pLoopPlot != NULL)
-			{	// advc.030: Instead check domain type below
-				//if (pLoopPlot->sameArea(*pPlot)) {
-				CLLNode<IDInfo>* pUnitNode = pLoopPlot->headUnitNode();
-				while (pUnitNode != NULL)
-				{
-					CvUnit* pLoopUnit = ::getUnit(pUnitNode->m_data);
-					pUnitNode = pLoopPlot->nextUnitNode(pUnitNode);
-					if ( // <advc.030>
-						pLoopUnit->getDomainType() == getDomainType() &&
-						!pLoopUnit->isCargo() && // </advc.030>
-						pLoopUnit->getTeam() == getTeam()) // XXX what about alliances?
+			CvPlot* pAdj = plotDirection(kPlot.getX(), kPlot.getY(), eLoopDirection);
+			if (pAdj == NULL)
+				continue;
+			// advc.030: Instead check domain type below
+			//if (pLoopPlot->sameArea(*pPlot)) {
+			for (CLLNode<IDInfo>* pNode = pAdj->headUnitNode(); pNode != NULL;
+				pNode = pAdj->nextUnitNode(pNode))
+			{
+				CvUnit const& kLoopUnit = *::getUnit(pNode->m_data);
+				if ( // <advc.030>
+					kLoopUnit.getDomainType() == getDomainType() &&
+					!kLoopUnit.isCargo() && // </advc.030>
+					kLoopUnit.getTeam() == getTeam()) // XXX what about alliances?
 					{
-						int iHeal = pLoopUnit->getAdjacentTileHeal();
+						int iHeal = kLoopUnit.getAdjacentTileHeal();
 						if (iHeal > iBestHeal)
 							iBestHeal = iHeal;
 					}
-				}
 			}
 		}
 
 		iTotalHeal += iBestHeal;
-		// XXX
+		// </XXX>
 	}
 
 	return iTotalHeal;
 }
 
 
-int CvUnit::healTurns(const CvPlot* pPlot) const
+int CvUnit::healTurns(CvPlot const* pAt) const
 {
 	if (!isHurt())
 		return 0;
 
-	int iHeal = healRate(pPlot);
+	int iHeal = healRate(true, true, pAt);
+	CvPlot const& kPlot = (pAt == NULL ? getPlot() : *pAt); // advc
 	// UNOFFICIAL_PATCH, Bugfix (FeatureDamageFix), 06/02/10, LunarMongoose: START
-	FeatureTypes eFeature = pPlot->getFeatureType();
+	FeatureTypes eFeature = kPlot.getFeatureType();
 	if (eFeature != NO_FEATURE)
 		iHeal -= GC.getInfo(eFeature).getTurnDamage();
 	// UNOFFICIAL_PATCH: END
@@ -3859,6 +3861,7 @@ int CvUnit::healTurns(const CvPlot* pPlot) const
 	TerrainTypes eTerrain = plot()->getTerrainType();
 	if (!getPlot().isCity())
 		iHeal -= GC.getInfo(eTerrain).getTurnDamage();
+
 	if (iHeal > 0)
 	{
 		/*iTurns = (getDamage() / iHeal);
@@ -3867,13 +3870,13 @@ int CvUnit::healTurns(const CvPlot* pPlot) const
 		return iTurns; */
 		return (getDamage() + iHeal-1) / iHeal; // K-Mod (same, but faster)
 	}
-	else return MAX_INT;
+	return MAX_INT;
 }
 
 
 void CvUnit::doHeal()
 {
-	changeDamage(-(healRate(plot())));
+	changeDamage(-healRate());
 }
 
 
@@ -3967,12 +3970,13 @@ bool CvUnit::isNukeVictim(const CvPlot* pPlot, TeamTypes eTeam) const
 }
 
 
-bool CvUnit::canNukeAt(const CvPlot* pPlot, int iX, int iY) const
+bool CvUnit::canNukeAt(/* advc: renamed from "pPlot" */ CvPlot const* pFrom,
+	int iX, int iY) const
 {
-	if (!canNuke(pPlot))
+	if (!canNuke(pFrom))
 		return false;
 
-	int iDistance = plotDistance(pPlot->getX(), pPlot->getY(), iX, iY);
+	int iDistance = plotDistance(pFrom->getX(), pFrom->getY(), iX, iY);
 	if (iDistance <= nukeRange())
 		return false;
 
@@ -3984,7 +3988,7 @@ bool CvUnit::canNukeAt(const CvPlot* pPlot, int iX, int iY) const
 	{
 		if (isNukeVictim(pTargetPlot, it->getID()))
 		{
-			if (!isEnemy(it->getID(), *pPlot))
+			if (!isEnemy(it->getID(), *pFrom))
 				return false;
 		}
 	}
@@ -4120,8 +4124,8 @@ bool CvUnit::nuke(int iX, int iY)
 			{
 				pReplayCity = &kAffectedCity;
 			} // </advc.106>
-			rScore += scaled::fromDouble(GET_PLAYER(kAffectedCity.getOwner()).
-					AI_razeMemoryScore(kAffectedCity));
+			rScore += GET_PLAYER(kAffectedCity.getOwner()).
+					AI_razeMemoryScore(kAffectedCity);
 		}
 		if (rScore >= 1)
 			aiDamageScore.set(it->getID(), 2);
@@ -5044,9 +5048,9 @@ void CvUnit::blockadeRange(std::vector<CvPlot*>& r, int iExtra, /* advc.033: */ 
 				//GC.getMap().calculatePathDistance(plot(), &kLoopPlot);
 				/*  <advc.033> Faster (iMaxPath), but probably doesn't fix the
 					issue described below b/c still uses FAStar. */
-				getPlot().calculatePathDistanceToPlot(BARBARIAN_TEAM, kLoopPlot,
-				iRange + iExtra, BARBARIAN_TEAM, bImpassables ?
-				DOMAIN_IMMOBILE : getDomainType()); // </advc.033>
+				GC.getMap().calculateTeamPathDistance(BARBARIAN_TEAM,
+				getPlot(), kLoopPlot, iRange + iExtra, BARBARIAN_TEAM,
+				bImpassables ? DOMAIN_IMMOBILE : getDomainType()); // </advc.033>
 		// BBAI NOTES (jdog5000, 06/01/09):
 		// There are rare issues where the path finder will return incorrect results
 		// for unknown reasons.  Seems to find a suboptimal path sometimes in partially repeatable
@@ -6450,9 +6454,10 @@ void CvUnit::promote(PromotionTypes ePromotion, int iLeaderUnitId)
 {
 	if (!canPromote(ePromotion, iLeaderUnitId))
 		return;
-
-	bool bSound = true; // advc.002l
-
+	// <advc.002l>
+	bool bSound = true;
+	bool const bSelected = IsSelected();
+	// </advc.002l>
 	if (iLeaderUnitId >= 0)
 	{
 		CvUnit* pWarlord = GET_PLAYER(getOwner()).getUnit(iLeaderUnitId);
@@ -6466,7 +6471,7 @@ void CvUnit::promote(PromotionTypes ePromotion, int iLeaderUnitId)
 			reloadEntity();
 		}
 	}  // <advc.002l>
-	else if (IsSelected())
+	else if (bSelected)
 	{
 		int iSelectedCanPromote = 0;
 		for (CLLNode<IDInfo> const* pNode = gDLL->UI().headSelectionListNode();
@@ -6494,9 +6499,11 @@ void CvUnit::promote(PromotionTypes ePromotion, int iLeaderUnitId)
 
 	setHasPromotion(ePromotion, true);
 	testPromotionReady();
-	CvSelectionGroup::path_finder.Reset(); // K-Mod. (This currently isn't important, because the AI doesn't use promotions mid-turn anyway.)
+	/*	K-Mod. (This currently isn't important because
+		the AI doesn't use promotions mid-turn anyway.) */
+	CvSelectionGroup::resetPath();
 
-	if (IsSelected())
+	if (bSelected)
 	{
 		if (bSound) // advc.002l
 			gDLL->UI().playGeneralSound(GC.getInfo(ePromotion).getSound());
@@ -6670,10 +6677,10 @@ int CvUnit::upgradePrice(UnitTypes eUnit) const
 	}
 	iPrice -= (iPrice * getUpgradeDiscount()) / 100;
 
-	return iPrice;
+	return std::max(0, iPrice); // advc.mnai: max (future-proofing)
 }
 
-// <advc.080> Based on code cut from CvUnit::upgrade. The param is (so far) unused.
+// advc.080: Based on code cut from CvUnit::upgrade. The param is (so far) unused.
 int CvUnit::upgradeXPChange(UnitTypes eUnit) const
 {
 	if(getLeaderUnitType() != NO_UNIT)
@@ -6681,7 +6688,7 @@ int CvUnit::upgradeXPChange(UnitTypes eUnit) const
 
 	static int const iMAX_EXPERIENCE_AFTER_UPGRADE = GC.getDefineINT("MAX_EXPERIENCE_AFTER_UPGRADE");
 	return std::min(0, iMAX_EXPERIENCE_AFTER_UPGRADE - getExperience());
-} // </advc.080>
+}
 
 
 bool CvUnit::upgradeAvailable(UnitTypes eFromUnit, UnitClassTypes eToUnitClass, int iCount) const  // advc: style changes
@@ -6880,7 +6887,7 @@ CvCity* CvUnit::getUpgradeCity(UnitTypes eUnit, bool bSearch, int* iSearchValue)
 								iValue *= 16;
 
 							// if we cannot path there, not as good (lower numbers are better)
-							if (!generatePath(pLoopCity->plot(), 0, true))
+							if (!generatePath(pLoopCity->plot(), NO_MOVEMENT_FLAGS, true))
 								iValue *= 16;
 							/*	<advc.139> This should really be checked in a CvUnitAI function.
 								That said, the whole search part of this function is really
@@ -7236,8 +7243,8 @@ bool CvUnit::isDefending() const
 	return (isFighting() && !isAttacking());
 }
 
-
-bool CvUnit::isCombat() const
+// advc: Renamed from "isCombat"
+bool CvUnit::isInCombat() const
 {
 	return (isFighting() || isAttacking());
 }
@@ -7834,7 +7841,7 @@ bool CvUnit::canBeAttackedBy(PlayerTypes eAttackingPlayer,
 // DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
 bool CvUnit::isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker,
 	int* pBestDefenderRank, // Lead From Behind by UncutDragon
-	bool bPreferUnowned, // advc.061
+	bool bPreferUnowned , // advc.061
  	bool bRanged) const 
 // MOD - START - Ranged Strike AI
 {
@@ -9409,7 +9416,8 @@ void CvUnit::setAttackPlot(const CvPlot* pNewValue, bool bAirCombat)
 	m_bAirCombat = bAirCombat;
 }
 
-bool CvUnit::isAirCombat() const
+// advc: Renamed from "isAirCombat"
+bool CvUnit::isInAirCombat() const
 {
 	return m_bAirCombat;
 }
@@ -9540,7 +9548,8 @@ void CvUnit::changeExtraVisibilityRange(int iChange)
 void CvUnit::changeExtraMoves(int iChange)
 {
 	m_iExtraMoves += iChange;
-	FAssert(getExtraMoves() >= 0);
+	FAssert(getExtraMoves() >= 0 ||
+			getExtraMoves() == -1 && isBarbarian()); // advc.905a
 }
 
 void CvUnit::changeExtraMoveDiscount(int iChange)
@@ -11303,8 +11312,8 @@ int CvUnit::planBattle(CvBattleDefinition& kBattle, const std::vector<int>& comb
 	const int BATTLE_TURNS_SETUP = 4;
 	const int BATTLE_TURNS_ENDING = 4;
 	const int BATTLE_TURNS_MELEE = 6;
-	const int BATTLE_TURNS_RANGED = 6;
-	const int BATTLE_TURN_RECHECK = 4;
+	/*const int BATTLE_TURNS_RANGED = 6;
+	const int BATTLE_TURN_RECHECK = 4;*/ // advc: unused
 
 	CvUnit* pAttackUnit = kBattle.getUnit(BATTLE_UNIT_ATTACKER);
 	CvUnit* pDefenceUnit = kBattle.getUnit(BATTLE_UNIT_DEFENDER);

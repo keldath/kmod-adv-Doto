@@ -204,7 +204,7 @@ inline double dRange(double d, double low, double high)
 // advc: Body cut from CvUnitAI::AI_sacrificeValue. (K-Mod had used long -> int.)
 inline int longLongToInt(long long x)
 {
-	FAssert(x < MAX_INT);
+	FAssert(x <= MAX_INT && x >= MIN_INT);
 	//return std::min((long)MAX_INT, iValue); // K-Mod
 	/*  Erik (BUG1): We cannot change the signature [of AI_sacrificeValue] due to
 		the virtual specifier so we have to truncate the final value to an int. */
@@ -213,20 +213,34 @@ inline int longLongToInt(long long x)
 	//return static_cast<int>(std::min(static_cast<long long>(MAX_INT), x));
 	/*  advc: Can't use std::min as above here, probably b/c of a conflicting definition
 		in windows.h. No matter: */
-	return static_cast<int>(std::min<long long>(MAX_INT, x));
+	return static_cast<int>(std::max<long long>(std::min<long long>(MAX_INT, x), MIN_INT));
+}
+// <advc.make> Enabling level-4 c4244 warnings makes such functions pretty indispensable
+template<typename T>
+inline short toShort(T x)
+{
+	BOOST_STATIC_ASSERT(sizeof(T) > sizeof(short));
+	FAssert(x <= MAX_SHORT && x >= MIN_SHORT);
+	return static_cast<short>(std::max<T>(std::min<T>(MAX_SHORT, x), MIN_SHORT));
 }
 
-inline short intToShort(int x)
+template<typename T>
+inline char toChar(T x)
 {
-	FAssert(x < MAX_SHORT);
-	return static_cast<short>(std::min<int>(MAX_SHORT, x));
+	BOOST_STATIC_ASSERT(sizeof(T) > sizeof(char));
+	FAssert(x <= MAX_CHAR && x >= MIN_CHAR);
+	return static_cast<char>(std::max<T>(std::min<T>(MAX_CHAR, x), MIN_CHAR));
 }
 
-inline char intToChar(int x)
+template<typename T>
+inline wchar toWChar(T x)
 {
-	FAssert(x < MAX_CHAR);
-	return static_cast<char>(std::min<char>(MAX_CHAR, x));
-}
+	BOOST_STATIC_ASSERT(sizeof(T) > sizeof(wchar));
+	FAssert(x <= WCHAR_MAX && x >= WCHAR_MIN);
+	return static_cast<wchar>(std::max<T>(std::min<T>(WCHAR_MAX, x), WCHAR_MIN));
+} // </advc.make>
+
+float colorDifference(NiColorA const& c1, NiColorA const& c2); // advc.002i
 
 // (advc.make: Distance functions moved into CvMap.h)
 
@@ -314,34 +328,7 @@ bool PUF_isFiniteRangeAndNotJustProduced(const CvUnit* pUnit, int iData1, int iD
 bool PUF_isMissionAIType(const CvUnit* pUnit, int iData1, int iData2); // K-Mod
 bool PUF_isAirIntercept(const CvUnit* pUnit, int iData1, int iData2); // K-Mod
 
-// FAStarFunc...
-int potentialIrrigation(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-int checkFreshWater(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-int changeIrrigated(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-int pathDestValid(int iToX, int iToY, const void* pointer, FAStar* finder);
-int pathHeuristic(int iFromX, int iFromY, int iToX, int iToY);
-int pathCost(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-int pathValid_join(FAStarNode* parent, FAStarNode* node, CvSelectionGroup const* pSelectionGroup, int iFlags); // K-Mod
-int pathValid_source(FAStarNode* parent, CvSelectionGroup const* pSelectionGroup, int iFlags); // K-Mod
-int pathValid(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-int pathAdd(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-int stepDestValid(int iToX, int iToY, const void* pointer, FAStar* finder);
-// advc.104b:
-int stepDestValid_advc(int iToX, int iToY, const void* pointer, FAStar* finder);
-int stepHeuristic(int iFromX, int iFromY, int iToX, int iToY);
-int stepValid(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-int stepCost(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-int stepAdd(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-// BETTER_BTS_AI_MOD, 11/30/08, jdog5000:
-int teamStepValid(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-// advc.104b:
-int teamStepValid_advc(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-int routeValid(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-int borderValid(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-int areaValid(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-int joinArea(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-int plotGroupValid(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
-int countPlotGroup(FAStarNode* parent, FAStarNode* node, int data, const void* pointer, FAStar* finder);
+// FAStarFunc... // advc.pf: Moved into new header FAStarFunc.h
 
 int baseYieldToSymbol(int iNumYieldTypes, int iYieldStack);
 //bool isPickableName(const TCHAR* szName); // advc.003j

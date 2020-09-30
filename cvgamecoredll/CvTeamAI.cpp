@@ -4,6 +4,7 @@
 #include "CvTeamAI.h"
 #include "CoreAI.h"
 #include "CvCityAI.h"
+#include "FAStarFunc.h"
 #include "CityPlotIterator.h"
 #include "CvArea.h"
 #include "CvInfo_City.h"
@@ -245,7 +246,7 @@ int CvTeamAI::AI_estimateTotalYieldRate(YieldTypes eYield) const
 			case YIELD_FOOD:
 				p = kMember.getAgricultureHistory(iTurn - (j+1));
 				break;
-			default: FAssertMsg(false, "unknown yield type");
+			default: FErrorMsg("unknown yield type");
 			}
 			if (p > 0)
 			{
@@ -631,7 +632,8 @@ bool CvTeamAI::AI_isWarPossible() const
 			!GC.getGame().isOption(GAMEOPTION_NO_CHANGING_WAR_PEACE));
 }
 
-// This function has been completely rewritten for K-Mod. The original BtS code, and the BBAI code have been deleted.
+/*	This function has been completely rewritten for K-Mod.
+	The original BtS code, and the BBAI code have been deleted. */
 bool CvTeamAI::AI_isLandTarget(TeamTypes eTarget,
 	bool bCheckAlliesOfTarget) const // advc
 {
@@ -713,6 +715,133 @@ bool CvTeamAI::AI_isLandTarget(TeamTypes eTarget,
 
 	return false;
 }
+
+/*	BETTER_BTS_AI_MOD, General AI, 01/10/10, jdog5000: START
+	advc.pf: Moved from CvPlot, refactored. At least the first one cares about
+	war plans and is therefore AI code. The second one doesn't have a plausible
+	use for human players either, and I want to keep them together. */
+bool CvTeamAI::AI_isHasPathToEnemyCity(CvPlot const& kFrom, bool bIgnoreBarb) const
+{
+	PROFILE_FUNC();
+
+	CvArea const& kFromArea = kFrom.getArea();
+
+	if (kFromArea.getNumCities() == countNumCitiesByArea(kFromArea))
+		false;
+
+	/*	Imitate instatiation of irrigated finder, pIrrigatedFinder.
+		Can't mimic step finder initialization because it requires creation from the exe */
+	std::vector<TeamTypes> aeTeams;
+	aeTeams.push_back(getID());
+	aeTeams.push_back(NO_TEAM);
+	FAStar* pTeamStepFinder = gDLL->getFAStarIFace()->create();
+	CvMap const& kMap = GC.getMap();
+	gDLL->getFAStarIFace()->Initialize(pTeamStepFinder,
+			kMap.getGridWidth(), kMap.getGridHeight(),
+			kMap.isWrapX(), kMap.isWrapY(),
+			/*	advc.104 (note): Using stepDestValid_advc, teamStepValid_advc here
+				might save time, but this function really isn't called often, so ...*/
+			stepDestValid, stepHeuristic, stepCost, teamStepValid,
+			stepAdd, NULL, NULL);
+	gDLL->getFAStarIFace()->SetData(pTeamStepFinder, &aeTeams);
+
+	
+	/*	advc: I guess it's important for performance to check capitals first;
+		So continue doing that, but compute the enemy players only in one place. */
+	std::vector<CvPlayer const*> apEnemies;
+	for (PlayerIter<ALIVE,KNOWN_POTENTIAL_ENEMY_OF> itEnemy(getID());
+		itEnemy.hasNext(); ++itEnemy)
+	{
+		if (bIgnoreBarb && (itEnemy->isBarbarian() || itEnemy->isMinorCiv()))
+			continue;
+		if (AI_getWarPlan(itEnemy->getTeam()) != NO_WARPLAN)
+		apEnemies.push_back(&*itEnemy);
+	} 
+
+	bool bR = false;
+
+	for (size_t i = 0; i < apEnemies.size(); i++)
+	{
+		CvCity* pCapital = apEnemies[i]->getCapital();
+		if (pCapital == NULL)
+			continue;
+		if (pCapital->isArea(kFromArea))
+		{
+			if (gDLL->getFAStarIFace()->GeneratePath(pTeamStepFinder,
+				kFrom.getX(), kFrom.getY(), pCapital->getX(), pCapital->getY(),
+				false, 0, true))
+			{
+				bR = true;
+				goto free_and_return;
+			}
+		}
+	}
+
+	// Check all other cities
+	for (size_t i = 0; i < apEnemies.size(); i++)
+	{
+		FOR_EACH_CITY(pCity, *apEnemies[i])
+		{
+			if (pCity->isArea(kFromArea) && !pCity->isCapital())
+			{
+				if (gDLL->getFAStarIFace()->GeneratePath(pTeamStepFinder,
+					kFrom.getX(), kFrom.getY(), pCity->getX(), pCity->getY(),
+					false, 0, true))
+				{
+					bR = true;
+					goto free_and_return;
+				}
+			}
+		}
+	}
+
+free_and_return:
+	gDLL->getFAStarIFace()->destroy(pTeamStepFinder);
+	return bR;
+}
+
+
+bool CvTeamAI::AI_isHasPathToPlayerCity(CvPlot const& kFrom, PlayerTypes eOtherPlayer) const
+{
+	PROFILE_FUNC();
+
+	CvArea const& kFromArea = kFrom.getArea();
+
+	if (kFromArea.getCitiesPerPlayer(eOtherPlayer) == 0)
+		return false;
+
+	/*	Imitate instatiation of irrigated finder, pIrrigatedFinder.
+		Can't mimic step finder initialization because it requires creation from the exe */
+	std::vector<TeamTypes> aeTeams;
+	aeTeams.push_back(getID());
+	aeTeams.push_back(TEAMID(eOtherPlayer));
+	FAStar* pTeamStepFinder = gDLL->getFAStarIFace()->create();
+	CvMap const& kMap = GC.getMap();
+	gDLL->getFAStarIFace()->Initialize(pTeamStepFinder, kMap.getGridWidth(), kMap.getGridHeight(),
+			kMap.isWrapX(), kMap.isWrapY(),
+			/*	advc.104 (note): Using stepDestValid_advc, teamStepValid_advc here
+				might save time, but this function really isn't called often, so ...*/
+			stepDestValid, stepHeuristic, stepCost, teamStepValid,
+			stepAdd, NULL, NULL);
+	gDLL->getFAStarIFace()->SetData(pTeamStepFinder, &aeTeams);
+
+	bool bFound = false;
+	FOR_EACH_CITY(pLoopCity, GET_PLAYER(eOtherPlayer))
+	{
+		if (pLoopCity->isArea(kFromArea))
+		{
+			bFound = gDLL->getFAStarIFace()->GeneratePath(pTeamStepFinder,
+					kFrom.getX(), kFrom.getY(), pLoopCity->getX(), pLoopCity->getY(),
+					false, 0, true);
+			if (bFound)
+				break;
+		}
+	}
+
+	gDLL->getFAStarIFace()->destroy(pTeamStepFinder);
+
+	return bFound;
+} // BETTER_BTS_AI_MOD: END
 
 
 bool CvTeamAI::AI_shareWar(TeamTypes eTeam) const
@@ -810,10 +939,7 @@ int CvTeamAI::AI_chooseElection(const VoteSelectionData& kVoteSelectionData) con
 	for (int iI = 0; iI < (int)kVoteSelectionData.aVoteOptions.size(); ++iI)
 	{
 		VoteTypes eVote = kVoteSelectionData.aVoteOptions[iI].eVote;
-		CvVoteInfo& kVoteInfo = GC.getInfo(eVote);
-
-		FAssert(kVoteInfo.isVoteSourceType(eVoteSource));
-
+		FAssert(GC.getInfo(eVote).isVoteSourceType(eVoteSource));
 		FAssert(GC.getGame().isChooseElection(eVote));
 		bool bValid = true;
 		bool bCanWinDiplo = false; // advc.115b
@@ -1354,7 +1480,6 @@ int CvTeamAI::AI_warCommitmentCost(TeamTypes eTarget, WarPlanTypes eWarPlan,
 		// scale based on our current strength relative to our enemies.
 		// cf. with code in AI_calculateAreaAIType
 		{
-			int iWarSuccessRating = isAtWar(eTarget) ? AI_getWarSuccessRating() : 0;
 			int iOurRelativeStrength = 100 * getPower(true) / (AI_countMilitaryWeight(0) + 20); // whether to include vassals is a tricky issue...
 			// Sum the relative strength for all enemies, including existing wars and wars with civs attached to the target team.
 			int iEnemyRelativeStrength = 0;
@@ -1377,7 +1502,8 @@ int CvTeamAI::AI_warCommitmentCost(TeamTypes eTarget, WarPlanTypes eWarPlan,
 			}
 			//
 
-			//iCommitmentPerMil = iCommitmentPerMil * (100 * iEnemyRelativeStrength) / std::max(1, iOurRelativeStrength * (100+iWarSuccessRating/2));
+			/*int iWarSuccessRating = (isAtWar(eTarget) ? AI_getWarSuccessRating() : 0);
+			iCommitmentPerMil = iCommitmentPerMil * (100 * iEnemyRelativeStrength) / std::max(1, iOurRelativeStrength * (100+iWarSuccessRating/2));*/
 			iCommitmentPerMil = iCommitmentPerMil * iEnemyRelativeStrength / std::max(1, iOurRelativeStrength);
 		}
 
@@ -1538,7 +1664,7 @@ int CvTeamAI::AI_warDiplomacyCost(TeamTypes eTarget) const
 {
 	if (isAtWar(eTarget))
 	{
-		//FAssertMsg(false, "AI_warDiplomacyCost called when already at war."); // sometimes we call this function for debug purposes.
+		//FErrorMsg("AI_warDiplomacyCost called when already at war."); // sometimes we call this function for debug purposes.
 		return 0;
 	}
 
@@ -1779,7 +1905,6 @@ int CvTeamAI::AI_endWarVal(TeamTypes eTeam) const // XXX this should consider ar
 	for (MemberIter it(getID()); it.hasNext(); ++it)
 		iOurAttackers += it->AI_enemyTargetMissions(eTeam);
 	int iTheirAttackers = 0;
-	CvArea* pLoopArea = NULL;
 	FOR_EACH_AREA(pLoopArea)
 		iTheirAttackers += countEnemyDangerByArea(*pLoopArea, eTeam);
 
@@ -3503,7 +3628,7 @@ int CvTeamAI::AI_declareWarTradeValLegacy(TeamTypes eWarTeam, TeamTypes eTeam) c
 		break;
 
 	default:
-		FAssertMsg(false, "unknown attitude type");
+		FErrorMsg("unknown attitude type");
 	}
 
 	iValue *= std::max(0, (iModifier + 100));
@@ -4884,7 +5009,7 @@ double CvTeamAI::AI_votesToGoForVictory(double* pVoteTarget, bool bForceUN) cons
 			CvVoteInfo& vote = GC.getInfo(eLoopVote);
 			if(vote.getStateReligionVotePercent() == 0 && vote.isVictory())
 			{
-				FAssertMsg(false, "Could not determine vote threshold");
+				FErrorMsg("Could not determine vote threshold");
 				break;
 			}
 		}
@@ -6093,7 +6218,7 @@ int CvTeamAI::AI_getAttitudeWeight(TeamTypes eTeam) const  // advc: refactored
 	case ATTITUDE_CAUTIOUS: return -5;
 	case ATTITUDE_PLEASED: return 50;
 	case ATTITUDE_FRIENDLY: return 100;
-	default: FAssertMsg(false, "unknown attitude type"); return 0;
+	default: FErrorMsg("unknown attitude type"); return 0;
 	}
 }
 

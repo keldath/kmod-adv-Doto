@@ -557,22 +557,17 @@ int CyPlayer::calculateResearchModifier(int /*TechTypes*/ eTech)
 {
 	return m_pPlayer ? m_pPlayer->calculateResearchModifier((TechTypes)eTech) : -1;
 }
-
-/*
-** K-Mod, 18/dec/10, karadoc
-*/
-int CyPlayer::calculatePollution(int iTypes) const
+// <K-Mod> 18/dec/10
+int CyPlayer::calculatePollution(int iPollution) const
 {
-	return m_pPlayer ? m_pPlayer->calculatePollution(iTypes) : 0;
+	return m_pPlayer ? m_pPlayer->calculatePollution(
+			(CvPlayer::PollutionTypes)iPollution) : -1; // advc.enum
 }
 
 int CyPlayer::getGwPercentAnger() const
 {
-	return m_pPlayer ? m_pPlayer->getGwPercentAnger() : 0;
-}
-/*
-** K-Mod end
-*/
+	return m_pPlayer ? m_pPlayer->getGwPercentAnger() : /* advc: */ -1;
+} // </K-Mod>
 
 /* int CyPlayer::calculateBaseNetResearch()
 {
@@ -1252,7 +1247,7 @@ int CyPlayer::getUnhealthyPopulationModifier()
 	return m_pPlayer ? m_pPlayer->getUnhealthyPopulationModifier() : 0;
 }
 
-bool CyPlayer::getExpInBorderModifier()
+int CyPlayer::getExpInBorderModifier() // advc: was bool
 {
 	return m_pPlayer ? m_pPlayer->getExpInBorderModifier() : false;
 }
@@ -2149,7 +2144,7 @@ int CyPlayer::AI_foundValue(int iX, int iY, int iMinRivalRange/* = -1*/, bool bS
 			bStartingLoc = true;
 		else bNormalize = true;
 	} // </advc.031e>
-	FAssertMsg(false, "Just to see if this works correctly if it ever happens");
+	FErrorMsg("Just to see if this works correctly if it ever happens");
 	return m_pPlayer->AI_foundValue(iX, iY, iMinRivalRange, bStartingLoc, bNormalize);
 }
 
@@ -2411,6 +2406,21 @@ bool CyPlayer::isScoreboardExpanded() const
 		return false;
 	return m_pPlayer->isScoreboardExpanded();
 } // </advc.085>
+
+// <advc.190c>
+bool CyPlayer::wasCivRandomlyChosen() const
+{
+	if (m_pPlayer == NULL)
+		return false;
+	return GC.getInitCore().wasCivRandomlyChosen(m_pPlayer->getID());
+}
+
+bool CyPlayer::wasLeaderRandomlyChosen() const
+{
+	if (m_pPlayer == NULL)
+		return false;
+	return GC.getInitCore().wasLeaderRandomlyChosen(m_pPlayer->getID());
+} // </advc.190c>
 
 // advc.001: In part cut from getCivicAnarchyLength
 void CyPlayer::pyListToCivicMap(boost::python::list const& kFrom, CivicMap& kTo)

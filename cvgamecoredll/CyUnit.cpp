@@ -62,12 +62,16 @@ void CyUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 
 CyPlot* CyUnit::getPathEndTurnPlot()
 {
-	return m_pUnit ? new CyPlot(m_pUnit->getPathEndTurnPlot()) : false;
+	return m_pUnit ? new CyPlot(m_pUnit->getPathEndTurnPlot()) : //false
+			NULL; // advc.001
 }
 
 bool CyUnit::generatePath(CyPlot* pToPlot, int iFlags, bool bReuse, int* piPathTurns)
 {
-	return m_pUnit ? m_pUnit->generatePath(pToPlot->getPlot(), iFlags, bReuse, piPathTurns) : false;
+	if (m_pUnit == NULL)
+		return false;
+	return m_pUnit->generatePath(pToPlot->getPlot(), (MovementFlags)iFlags,
+			bReuse, piPathTurns);
 }
 
 bool CyUnit::canEnterTerritory(int /*TeamTypes*/ eTeam, bool bIgnoreRightOfPassage)
@@ -307,7 +311,9 @@ bool CyUnit::canSpread(CyPlot* pPlot, int /*ReligionTypes*/ eReligion, bool bTes
 
 bool CyUnit::canJoin(CyPlot* pPlot, int /*SpecialistTypes*/ eSpecialist)
 {
-	return m_pUnit ? m_pUnit->canFound(pPlot->getPlot(), (SpecialistTypes) eSpecialist) : false;
+	return m_pUnit ? //m_pUnit->canFound(
+			m_pUnit->canJoin( // advc.001
+			pPlot->getPlot(), (SpecialistTypes)eSpecialist) : false;
 }
 
 bool CyUnit::canConstruct(CyPlot* pPlot, int /*BuildingTypes*/ eBuilding)
@@ -634,7 +640,7 @@ bool CyUnit::isDefending()
 
 bool CyUnit::isCombat()
 {
-	return m_pUnit ? m_pUnit->isCombat() : false;
+	return m_pUnit ? m_pUnit->isInCombat() : false;
 }
 
 int CyUnit::maxHitPoints()
@@ -1662,7 +1668,7 @@ void CyUnit::rangeStrike(int iX, int iY)
 	}
 }
 
-//rangedattack-keldath
+//rangedstrike-keldath
 void CyUnit::rangeStrikeK(int iX, int iY)
 {
 	if(m_pUnit != NULL)

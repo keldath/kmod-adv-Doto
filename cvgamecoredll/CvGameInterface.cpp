@@ -4,6 +4,8 @@
 #include "CvCityAI.h"
 #include "CvUnitAI.h"
 #include "CvSelectionGroup.h"
+#include "KmodPathFinder.h"
+#include "FAStarNode.h"
 #include "PlotRange.h"
 #include "CvInfo_City.h"
 #include "CvInfo_Command.h"
@@ -82,7 +84,7 @@ void CvGame::updateColoredPlots()
 				if (pWorkingCity != NULL && eImprovement != NO_IMPROVEMENT)
 				{
 					CityPlotTypes ePlot = pWorkingCity->getCityPlotIndex(kPlot);
-					int iBuildValue = pWorkingCity->AI_getBestBuildValue(ePlot);
+					//int iBuildValue = pWorkingCity->AI_getBestBuildValue(ePlot);
 					BuildTypes eBestBuild = pWorkingCity->AI_getBestBuild(ePlot);
 					if (eBestBuild != NO_BUILD)
 					{
@@ -97,7 +99,7 @@ void CvGame::updateColoredPlots()
 				}
 			}
 		}
-	} // advc.007
+	}
 	// BETTER_BTS_AI_MOD: END
 
 	// City circles when in Advanced Start
@@ -333,13 +335,14 @@ void CvGame::updateColoredPlots()
 		// city sites
 		const CvPlayerAI& kActivePlayer = GET_PLAYER(getActivePlayer());
 		KmodPathFinder site_path;
-		site_path.SetSettings(pHeadSelectedUnit->getGroup(), 0, 7, GC.getMOVE_DENOMINATOR());
+		site_path.SetSettings(pHeadSelectedUnit->getGroup(), NO_MOVEMENT_FLAGS,
+				7, GC.getMOVE_DENOMINATOR());
 		if (pHeadSelectedUnit->canFound()) // advc.004h: was isFound
 		{
 			for (int i = 0; i < kActivePlayer.AI_getNumCitySites(); i++)
 			{
 				CvPlot* pSite = kActivePlayer.AI_getCitySite(i);
-				if (pSite && site_path.GeneratePath(pSite))
+				if (pSite != NULL && site_path.GeneratePath(pSite))
 				{
 					kEngine.addColoredPlot(pSite->getX(), pSite->getY(),
 							GC.getInfo(GC.getColorType("HIGHLIGHT_TEXT")).getColor(),
@@ -357,7 +360,8 @@ void CvGame::updateColoredPlots()
 				iRange++;
 			else iRange--; // </advc.004z>
 			// just a smaller range.
-			site_path.SetSettings(pHeadSelectedUnit->getGroup(), 0, iRange, GC.getMOVE_DENOMINATOR());
+			site_path.SetSettings(pHeadSelectedUnit->getGroup(), NO_MOVEMENT_FLAGS,
+					iRange, GC.getMOVE_DENOMINATOR());
 			for (SquareIter it(*pHeadSelectedUnit, iRange); it.hasNext(); ++it)
 			{
 				CvPlot const& kLoopPlot = *it;
@@ -859,7 +863,7 @@ void CvGame::selectionListMove(CvPlot* pPlot, bool bAlt, bool bShift, bool bCtrl
 
 
 void CvGame::selectionListGameNetMessage(int eMessage, int iData2, int iData3, int iData4,
-		int iFlags, bool bAlt, bool bShift) const
+	int iFlags, bool bAlt, bool bShift) const
 {
 	int aiPyData[] = { iData2, iData3, iData4 };
 	if (GC.getPythonCaller()->cannotSelectionListNetOverride((GameMessageTypes)
@@ -923,6 +927,7 @@ void CvGame::selectionListGameNetMessage(int eMessage, int iData2, int iData3, i
 		if (!gDLL->UI().mirrorsSelectionGroup())
 			selectionListGameNetMessage(GAMEMESSAGE_JOIN_GROUP);
 
+		MovementFlags eFlags = (MovementFlags)iFlags;
 		if (eMessage == GAMEMESSAGE_PUSH_MISSION)
 		{	// K-Mod. I've moved the BUTTONPOPUP_DECLAREWARMOVE stuff to here from selectionListMove
 			// so that it can catch left-click moves as well as right-click moves.
@@ -935,7 +940,7 @@ void CvGame::selectionListGameNetMessage(int eMessage, int iData2, int iData3, i
 			//
 			// (I'd rather not have UI stuff like this in this function,
 			//  but this is the only place where I can catch left-click moves.)
-			if (iData2 == MISSION_MOVE_TO && !(iFlags & MOVE_DECLARE_WAR))
+			if (iData2 == MISSION_MOVE_TO && !(eFlags & MOVE_DECLARE_WAR))
 			{
 				CvPlot* pPlot = GC.getMap().plot(iData3, iData4);
 				FAssert(pPlot);
@@ -979,7 +984,7 @@ void CvGame::selectionListGameNetMessage(int eMessage, int iData2, int iData3, i
 				bModified = GC.altKey(); // </advc.048>
 			CvMessageControl::getInstance().sendPushMission(pHeadSelectedUnit->getID(),
 					(MissionTypes)iData2, iData3, iData4,
-					iFlags & ~ MOVE_DECLARE_WAR, bShift, // K-Mod end
+					eFlags & ~ MOVE_DECLARE_WAR, bShift, // K-Mod end
 					bModified); // advc.011b
 		}
 		else CvMessageControl::getInstance().sendAutoMission(pHeadSelectedUnit->getID());
@@ -1343,7 +1348,7 @@ bool CvGame::canDoControl(ControlTypes eControl) const
 		break;
 
 	default:
-		FAssertMsg(false, "eControl did not match any valid options");
+		FErrorMsg("eControl did not match any valid options");
 	}
 
 	return false;
@@ -1591,7 +1596,7 @@ void CvGame::doControl(ControlTypes eControl)
 						break;
 					}
 				}
-				FAssertMsg(false, "Failed to find quicksave");
+				FErrorMsg("Failed to find quicksave");
 			} // </advc.003d>
 			gDLL->QuickLoad();
 		}
@@ -1749,7 +1754,7 @@ void CvGame::doControl(ControlTypes eControl)
 			kUI.addPopup(pInfo);
 		break;
 	}
-	default: FAssertMsg(false, "Unknown control type");
+	default: FErrorMsg("Unknown control type");
 	}
 }
 
@@ -2127,7 +2132,7 @@ void CvGame::applyFlyoutMenu(const CvFlyoutMenuData& kItem)
 			{
 				CvMessageControl::getInstance().sendPushMission(pLoopUnit->getID(),
 						pLoopUnit->isFortifyable() ? MISSION_FORTIFY : MISSION_SLEEP,
-						-1, -1, 0, false, /* advc.011b: */ GC.ctrlKey());
+						-1, -1, NO_MOVEMENT_FLAGS, false, /* advc.011b: */ GC.ctrlKey());
 			}
 		}
 		break;
@@ -2382,7 +2387,7 @@ void CvGame::nextActivePlayer(bool bForward)
 int CvGame::getNextSoundtrack(EraTypes eLastEra, int iLastSoundtrack) const
 {
 	EraTypes eCurEra = GET_PLAYER(getActivePlayer()).getCurrentEra();
-	CvEraInfo& kCurrentEra = GC.getInfo(eCurEra);
+	CvEraInfo const& kCurrentEra = GC.getInfo(eCurEra);
 	if (kCurrentEra.getNumSoundtracks() == 0)
 		return -1;
 	if (kCurrentEra.getNumSoundtracks() == 1 ||
@@ -2390,13 +2395,29 @@ int CvGame::getNextSoundtrack(EraTypes eLastEra, int iLastSoundtrack) const
 	{
 		return kCurrentEra.getSoundtracks(0);
 	}
-	return kCurrentEra.getSoundtracks(
-			GC.getASyncRand().get(kCurrentEra.getNumSoundtracks(), "Pick Song ASYNC"));
+	//return kCurrentEra.getSoundtracks(GC.getASyncRand().get(kCurrentEra.getNumSoundtracks(), "Pick Song ASYNC"));
+	/*	<advc.002o> Perhaps was meant to be implemented this way? Why else handle
+		kCurrentEra.getNumSoundtracks()==1 upfront? (Not to mention the unused param.) */
+	std::vector<int> aiTracks;
+	for (int i = 0; i < kCurrentEra.getNumSoundtracks(); i++)
+	{
+		int iTrack = kCurrentEra.getSoundtracks(i);
+		if (iTrack != iLastSoundtrack)
+			aiTracks.push_back(iTrack);
+	}
+	if (aiTracks.empty())
+	{
+		FAssert(!aiTracks.empty());
+		aiTracks.push_back(iLastSoundtrack);
+	}
+	return aiTracks[GC.getASyncRand().get(
+			aiTracks.size(), "Pick Song ASYNC")]; // </advc.002o>
 }
 
 int CvGame::getSoundtrackSpace() const
 {
-	return std::max(1, GC.getInfo(GET_PLAYER(getActivePlayer()).getCurrentEra()).getSoundtrackSpace());
+	return std::max(1, GC.getInfo(GET_PLAYER(getActivePlayer()).getCurrentEra()).
+			getSoundtrackSpace());
 }
 
 bool CvGame::isSoundtrackOverride(CvString& strSoundtrack) const

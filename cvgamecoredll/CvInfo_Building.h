@@ -434,7 +434,7 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 
 	bool nameNeedsArticle() const; // advc.008e
 
-	#if SERIALIZE_CVINFOS
+	#if ENABLE_XML_FILE_CACHE
 	void read(FDataStreamBase*);
 	void write(FDataStreamBase*);
 	#endif

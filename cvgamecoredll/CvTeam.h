@@ -144,7 +144,7 @@ public:
 
 	// advc.inl: In-line definitions for most of the get..Count and is... functions below
 	int getAliveCount() const { return m_iAliveCount; } // advc.155: Exposed to Python
-	inline int isAlive() const { return (m_iAliveCount > 0); }																// Exposed to Python
+	inline bool isAlive() const { return (m_iAliveCount > 0); }																// Exposed to Python
 	void changeAliveCount(int iChange);
 
 	inline int getEverAliveCount() const { return m_iEverAliveCount; }			
@@ -628,6 +628,7 @@ protected:
 
 	void processTech(TechTypes eTech, int iChange, /* advc.121: */ bool bEndOfTurn);
 
+	void triggerDefensivePacts(TeamTypes eTarget, bool bNewDiplo, bool bPrimary); // advc
 	void cancelDefensivePacts();
 	void allowDefensivePactsToBeCanceled(); // kekm.3
 	// <advc.003m>

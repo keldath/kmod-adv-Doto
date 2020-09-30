@@ -818,8 +818,11 @@ int CvGlobals::getDefineINT(char const* szName,
 {
 	int iReturn = iDefault;
 	// BETTER_BTS_AI_MOD: END
-	bool bSuccess = // advc.003c
-			getDefinesVarSystem()->GetValue(szName, iReturn);
+	// <advc.003c>
+	#ifdef FASSERT_ENABLE
+	bool bSuccess =
+	#endif // </advc.003c>
+	getDefinesVarSystem()->GetValue(szName, iReturn);
 	FAssert(bSuccess); // advc.003c
 	return iReturn;
 }
@@ -828,8 +831,11 @@ int CvGlobals::getDefineINT(char const* szName,
 float CvGlobals::getDefineFLOAT(char const* szName) const
 {
 	float fReturn = 0;
-	bool bSuccess = // advc.003c
-			getDefinesVarSystem()->GetValue(szName, fReturn);
+	// <advc.003c>
+	#ifdef FASSERT_ENABLE
+	bool bSuccess =
+	#endif // </advc.003c>
+	getDefinesVarSystem()->GetValue(szName, fReturn);
 	/*  advc.003c: The EXE queries CAMERA_MIN_DISTANCE during startup, which
 		fails but doesn't cause any problems. */
 	FAssert(bSuccess || std::strcmp("CAMERA_MIN_DISTANCE", szName) == 0);
@@ -839,8 +845,11 @@ float CvGlobals::getDefineFLOAT(char const* szName) const
 char const* CvGlobals::getDefineSTRING(char const* szName) const
 {
 	char const* szReturn = NULL;
-	bool bSuccess = // advc.003c
-			getDefinesVarSystem()->GetValue(szName, szReturn);
+	// <advc.003c>
+	#ifdef FASSERT_ENABLE
+	bool bSuccess =
+	#endif// </advc.003c>
+	getDefinesVarSystem()->GetValue(szName, szReturn);
 	FAssert(bSuccess); // advc.003c
 	return szReturn;
 }
@@ -875,7 +884,22 @@ void CvGlobals::updateCameraStartDistance(bool bReset)
 			GC.getDefineFLOAT("CAMERA_START_DISTANCE"));
 	float fNewValue = m_fCAMERA_START_DISTANCE_Override;
 	if (!bReset)
-		fNewValue = std::max(8440 - 80 * getDefineFLOAT("FIELD_OF_VIEW"), 1200.f);
+	{
+		fNewValue = std::max(8750 - 80 * getDefineFLOAT("FIELD_OF_VIEW"), 1200.f);
+		PlayerTypes eActivePlayer = getGame().getActivePlayer();
+		if (eActivePlayer != NO_PLAYER)
+		{	/*	Or better use getNumCities (while still calling updateCameraStartDistance
+				only upon entering a new era)? */
+			switch((int)GET_PLAYER(eActivePlayer).getCurrentEra())
+			{
+			case 0: fNewValue *= 0.88f; break;
+			case 1: fNewValue *= 0.94f; break;
+			case 2: break;
+			case 3: fNewValue *= 1.05f; break;
+			default: fNewValue *= 1.075f;
+			}
+		}
+	}
 	setDefineFLOAT("CAMERA_START_DISTANCE", fNewValue,
 			false); // Update the cache explicitly instead:
 	cacheGlobalFloats(false);
@@ -1007,7 +1031,7 @@ bool CvGlobals::isDLLProfilerEnabled() const
 int CvGlobals::getTypesEnum(const char* szType,
 	bool bHideAssert, bool bFromPython) const // advc.006
 {
-	FAssertMsg(szType, "null type string");
+	FAssertMsg(szType != NULL, "null type string");
 	TypesMap::const_iterator it = m_typesMap.find(szType);
 	if (it != m_typesMap.end())
 		return it->second;
@@ -1026,7 +1050,7 @@ int CvGlobals::getTypesEnum(const char* szType,
 			gDLL->logMsg("xml.log", szError);
 		}
 		else szError.Format("type %s not found", szType); // advc.006
-		FAssertMsg(false, szError.c_str());
+		FErrorMsg(szError.c_str());
 	}
 	return -1;
 }
@@ -1054,7 +1078,7 @@ void CvGlobals::setHoFScreenUp(bool b)
 int CvGlobals::getInfoTypeForString(const char* szType, bool bHideAssert,
 	bool bFromPython) const // advc.006
 {
-	FAssertMsg(szType, "null info type string");
+	FAssertMsg(szType != NULL, "null info type string");
 	InfosMap::const_iterator it = m_infosMap.find(szType);
 	if (it != m_infosMap.end())
 		return it->second;
@@ -1066,7 +1090,7 @@ int CvGlobals::getInfoTypeForString(const char* szType, bool bHideAssert,
 
 void CvGlobals::setInfoTypeFromString(const char* szType, int idx)
 {
-	FAssertMsg(szType, "null info type string");
+	FAssertMsg(szType != NULL, "null info type string");
 #ifdef _DEBUG
 	InfosMap::const_iterator it = m_infosMap.find(szType);
 	int iExisting = (it!=m_infosMap.end()) ? it->second : -1;
@@ -1077,7 +1101,7 @@ void CvGlobals::setInfoTypeFromString(const char* szType, int idx)
 
 void CvGlobals::infoTypeFromStringReset()
 {
-	FAssertMsg(false, "Just to see if and when CvGlobals::infoTypeFromStringReset is ever called"); // advc.test
+	FErrorMsg("Just to see if and when CvGlobals::infoTypeFromStringReset is ever called"); // advc.test
 	m_infosMap.clear();
 }
 
@@ -1119,7 +1143,7 @@ namespace // advc
 	template <class T>
 	bool readInfoArray(FDataStreamBase* pStream, std::vector<T*>& array, const char* szClassName)
 	{
-	#if SERIALIZE_CVINFOS
+	#if ENABLE_XML_FILE_CACHE
 		//addToInfosVectors(&array); // advc.enum (no longer used)
 		int iSize;
 		pStream->Read(&iSize);
@@ -1153,7 +1177,7 @@ namespace // advc
 	template <class T>
 	bool writeInfoArray(FDataStreamBase* pStream,  std::vector<T*>& array)
 	{
-	#if SERIALIZE_CVINFOS
+	#if ENABLE_XML_FILE_CACHE
 		int iSize = sizeof(T);
 		pStream->Write(iSize);
 		pStream->Write(array.size());
@@ -1371,7 +1395,7 @@ int CvGlobals::getNUM_LEADERANIM_TYPES() const
 
 void CvGlobals::infosReset()
 {
-	FAssertMsg(false, "Just to see if and when CvGlobals::infosReset is ever called"); // advc.test
+	FErrorMsg("Just to see if and when CvGlobals::infosReset is ever called"); // advc.test
 	// <advc.enum> Replacing a loop through m_aInfoVectors (now deleted)
 	for (size_t i = 0; i < m_paWorldInfo.size(); i++)
 		m_paWorldInfo[i]->reset();

@@ -249,8 +249,12 @@ void CvPythonCaller::call(char const* szFunctionName, CyArgsList& kArgsList,
 	long& lResult, char const* szModuleName, bool bAssertSuccess,
 	bool bCheckExists) const
 {
-	// Not sure how expensive this check is; otherwise, I'd just always perform it.
-	if (bCheckExists && !m_python.moduleExists(szModuleName, false))
+	/*	Not sure how expensive this check is; otherwise, I'd just always perform it.
+		bLoadIfNecessary: Generally won't help I think, except after having run
+		into some error while reloading Python scripts. I doubt that
+		bLoadIfNecessary=true will take extra time when the module is found,
+		and, normally, it should always be found. So let's go with true. */
+	if (bCheckExists && !m_python.moduleExists(szModuleName, true))
 		m_bLastCallSuccessful = false;
 	else
 	{
@@ -263,7 +267,7 @@ void CvPythonCaller::call(char const* szFunctionName, CyArgsList& kArgsList,
 void CvPythonCaller::call(char const* szFunctionName, long& lResult,
 	char const* szModuleName, bool bAssertSuccess, bool bCheckExists) const
 {
-	if (bCheckExists && !m_python.moduleExists(szModuleName, false))
+	if (bCheckExists && !m_python.moduleExists(szModuleName, true))
 		m_bLastCallSuccessful = false;
 	else
 	{
@@ -276,7 +280,7 @@ void CvPythonCaller::call(char const* szFunctionName, long& lResult,
 void CvPythonCaller::call(char const* szFunctionName, CyArgsList& kArgsList,
 	char const* szModuleName, bool bAssertSuccess, bool bCheckExists) const
 {
-	if (bCheckExists && !m_python.moduleExists(szModuleName, false))
+	if (bCheckExists && !m_python.moduleExists(szModuleName, true))
 		m_bLastCallSuccessful = false;
 	else
 	{
@@ -289,7 +293,7 @@ void CvPythonCaller::call(char const* szFunctionName, CyArgsList& kArgsList,
 void CvPythonCaller::call(char const* szFunctionName,
 	char const* szModuleName, bool bAssertSuccess, bool bCheckExists) const
 {
-	if (bCheckExists && !m_python.moduleExists(szModuleName, false))
+	if (bCheckExists && !m_python.moduleExists(szModuleName, true))
 		m_bLastCallSuccessful = false;
 	else
 	{
@@ -1038,7 +1042,7 @@ short CvPythonCaller::AI_foundValue(PlayerTypes ePlayer, CvPlot const& kPlot) co
 	argsList.add(kPlot.getY());
 	call("getCityFoundValue", argsList, lResult);
 	FAssert(lResult <= MAX_SHORT); // K-Mod
-	return ::intToShort(lResult);
+	return toShort(lResult);
 }
 
 TechTypes CvPythonCaller::AI_chooseTech(PlayerTypes ePlayer, bool bFree) const
@@ -1237,7 +1241,7 @@ CvWString CvPythonCaller::customMapOptionDescription(char const* szMapScriptName
 	CyArgsList argsList;
 	argsList.add(iOption);
 	argsList.add(eOptionValue);
-	if (!m_python.moduleExists(szMapScriptName, false))
+	if (!m_python.moduleExists(szMapScriptName, true))
 		m_bLastCallSuccessful = false;
 	else
 	{
@@ -1323,12 +1327,12 @@ bool CvPythonCaller::generatePlotTypes(int* aiPlotTypes, size_t uiSize) const
 			"generatePlotTypes", NULL, &result);
 	if (!isOverride())
 	{
-		FAssertMsg(false, "Map script has to override generatePlotTypes and mustn't call usingDefaultImpl");
+		FErrorMsg("Map script has to override generatePlotTypes and mustn't call usingDefaultImpl");
 		return false;
 	}
 	if (result.size() != uiSize)
 	{
-		FAssertMsg(false, "Need to set a plot type for every plot");
+		FErrorMsg("Need to set a plot type for every plot");
 		return false;
 	}
 	for (size_t i = 0; i < uiSize; i++)
@@ -1343,12 +1347,12 @@ bool CvPythonCaller::generateTerrainTypes(std::vector<int>& r, size_t uiTargetSi
 			"generateTerrainTypes", NULL, &r);
 	if (!isOverride())
 	{	// PlantGenerator seems to generate terrain in addFeatures, but that's highly irregular.
-		FAssertMsg(false, "Map script has to override generateTerrainTypes and mustn't call usingDefaultImpl");
+		FErrorMsg("Map script has to override generateTerrainTypes and mustn't call usingDefaultImpl");
 		return false;
 	}
 	if (r.size() != uiTargetSize)
 	{
-		FAssertMsg(false, "No terrain generated for some plots");
+		FErrorMsg("No terrain generated for some plots");
 		return false;
 	}
 	return true;
