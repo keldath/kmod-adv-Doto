@@ -672,7 +672,11 @@
 		<Italian> dalle caratteristiche</Italian>
 		<Spanish> por accidentes</Spanish>
 	</TEXT>
-	<!-- Based on TXT_KEY_PEDIA_TRAITS in Civ4GameTextInfos.xml. -->
+	<!-- Based on TXT_KEY_PEDIA_TRAITS in Civ4GameTextInfos.xml.
+		 Also used for advc.004g to replace
+		 TXT_KEY_MISC_HELP_FREE_CITY_COMMERCE,
+		 TXT_KEY_MISC_GOOD_HEALTH_FROM_CIV,
+		 TXT_KEY_MISC_HEALTH_FROM_CIV. -->
 	<TEXT>
 		<Tag>TXT_KEY_FROM_TRAIT</Tag>
 		<English> from Traits</English>
@@ -1115,6 +1119,34 @@
 		<German>"Ihr k&#246;nnt in diesem Krieg nicht auf unserer Seite k&#228;mpfen."</German>
 		<Italian>"Non puoi scendere in guerra al nostro fianco."</Italian>
 		<Spanish>"No es posible que os un&#225;is a la guerra en nuestro bando."</Spanish>
+	</TEXT>
+
+	<!-- advc.004g: "Resources" instead of "Bonuses" -->
+	<!-- from CIV4GameText_Misc1.xml -->
+	<TEXT>
+		<Tag>TXT_KEY_WB_BONUSES</Tag>
+		<English>Resources</English>
+		<French>Bonus</French>
+		<German>Ressourcen</German>
+		<Italian>Bonus</Italian>
+		<Spanish>Bonificaciones</Spanish>
+	</TEXT>
+	<!-- both from Civ4GameTextInfos.xml -->
+	<TEXT>
+		<Tag>TXT_KEY_MISC_HEALTH_FROM_BONUSES</Tag>
+		<English>%D1_Change[ICON_UNHEALTHY] from Resources</English>
+		<French>%D1_Change[ICON_UNHEALTHY] (bonus)</French>
+		<German>%D1_Change[ICON_UNHEALTHY] durch Ressourcen</German>
+		<Italian>%D1_Change[ICON_UNHEALTHY] per i bonus</Italian>
+		<Spanish>%D1_Change [ICON_UNHEALTHY] por bonificaciones</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_GOOD_HEALTH_FROM_BONUSES</Tag>
+		<English>%D1_Change[ICON_HEALTHY] from Resources</English>
+		<French>%D1_Change[ICON_HEALTHY] (bonus)</French>
+		<German>%D1_Change[ICON_HEALTHY] durch Ressourcen</German>
+		<Italian>%D1_Change[ICON_HEALTHY] per i bonus</Italian>
+		<Spanish>%D1_Change [ICON_HEALTHY] por bonificaciones</Spanish>
 	</TEXT>
 
 	<!-- advc.004: German translation - "Neuer Random Seed" was just too
@@ -1947,23 +1979,23 @@
 	<!-- advc.137: Copy-pasted from Vanilla Civ4GameTextInfos.xml;
 		 recommendation added (only in English). -->
 	<TEXT>
-		<Tag>TXT_KEY_SEALEVEL_LOW</Tag>
+		<Tag>TXT_KEY_SEALEVEL_LOW_RECOMMEND</Tag>
 		<English>Low - extra players recommended (+35%%)</English>
 		<French>Bas</French>
-		<German>Niedrig</German>
+		<German>Niedrig - zus. Spieler empfohlen (+35%%)</German>
 		<Italian>Basso</Italian>
 		<Spanish>Bajo</Spanish>
 	</TEXT>
 	<TEXT>
-		<Tag>TXT_KEY_SEALEVEL_HIGH</Tag>
+		<Tag>TXT_KEY_SEALEVEL_HIGH_RECOMMEND</Tag>
 		<English>High - fewer players recommended (-30%%)</English>
 		<French>Haut</French>
-		<German>Hoch</German>
+		<German>Hoch - weniger Spieler empfohlen (-30%%)</German>
 		<Italian>Alto</Italian>
 		<Spanish>Alto</Spanish>
 	</TEXT>
-	<!-- advc.137: New tag name for the original game text (for use on the
-		 Settings screen). -->
+	<!-- advc.137: Better use a separate key for H/M/L when it doesn't refer to
+		 the sea level. Text is the same though (from Civ4GameTextInfos.xml). -->
 	<TEXT>
 		<Tag>TXT_KEY_LOW</Tag>
 		<English>Low</English>
@@ -1971,6 +2003,14 @@
 		<German>Niedrig</German>
 		<Italian>Basso</Italian>
 		<Spanish>Bajo</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MEDIUM</Tag>
+		<English>Medium</English>
+		<French>Normal</French>
+		<German>Mittel</German>
+		<Italian>Medio</Italian>
+		<Spanish>Medio</Spanish>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HIGH</Tag>
@@ -3604,6 +3644,31 @@
 		</Italian>
 		<Spanish>
 			<Text>Pacal</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</Spanish>
+	</TEXT>
+	<!-- advc.005: was Asoka -->
+	<TEXT>
+		<Tag>TXT_KEY_LEADER_ASOKA</Tag>
+		<English>Ashoka</English>
+		<French>
+			<Text>Ashoka</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</French>
+		<German>
+			<Text>Ashoka</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</German>
+		<Italian>
+			<Text>Ashoka</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</Italian>
+		<Spanish>
+			<Text>Ashoka</Text>
 			<Gender>Male</Gender>
 			<Plural>0</Plural>
 		</Spanish>
@@ -5351,7 +5416,7 @@
 		<Italian>[COLOR_WARNING_TEXT]Impossibile colpire con armi nucleari il territorio e le unit&#224; amiche[COLOR_REVERT]</Italian>
 		<Spanish>[COLOR_WARNING_TEXT]No se pueden hacer bombardeos nucleares contra los territorios o unidades amigos[COLOR_REVERT]</Spanish>
 	</TEXT>
-	
+
 	<!-- advc.072: Based on TXT_KEY_TRADE_PEACE_TREATY_STRING in
 		 CIV4GameTextInfos.xml -->
 	<TEXT>
@@ -5362,7 +5427,17 @@
 		<Italian>Trattato di pace</Italian>
 		<Spanish>Tratado de paz</Spanish>
 	</TEXT>
-	
+
+	<!-- advc.104m: -->
+	<TEXT>
+		<Tag>TXT_KEY_TRADE_SIGN_PEACE_TREATY</Tag>
+		<English>Sign Peace Treaty (%d1_Num [NUM1:Turn:Turns])</English>
+		<French>Trait&#233; de paix (%d1_Num [NUM1:tour:tours])</French>
+		<German>Friedensvertrag (%d1_Num [NUM1:Runde:Runden])</German>
+		<Italian>Trattato di pace (%d1_Num [NUM1:turno:turni])</Italian>
+		<Spanish>Tratado de paz (%d1_Num [NUM1:turno:turnos])</Spanish>
+	</TEXT>
+
 	<!-- advc.036 -->
 	<TEXT>
 		<Tag>TXT_KEY_MISC_WILL_PAY</Tag>
@@ -6192,6 +6267,103 @@
 		<German>eingeschlossen</German>
 		<Italian>circondato di ghiacco</Italian>
 		<Spanish>rodeado de hielo</Spanish>
+	</TEXT>
+
+	<!-- advc.190c -->
+	<!-- Based on TXT_KEY_RIVALS_MET (CIV4GameText_Misc1.xml),
+		 TXT_KEY_MAIN_MENU_PLAYERS (CIV4GameTextInfos.xml). -->
+	<TEXT>
+		<Tag>TXT_KEY_PLAYERS_MET</Tag>
+		<English>Players Met</English>
+		<French>Joueurs rencontr&#233;s</French>
+		<German>Bekannte Spieler</German>
+		<Italian>Giocatori incontrati</Italian>
+		<Spanish>Jugadores encontrados</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OTHER_PLAYERS</Tag>
+		<English>Other Players</English>
+		<French>Autres joueurs</French>
+		<German>Andere Spieler</German>
+		<Italian>Altri giocatori</Italian>
+		<Spanish>Otros jugadores</Spanish>
+	</TEXT>
+	
+	<!-- Translations based on TXT_KEY_MAIN_MENU_RANDOM.
+		 (Don't have access to an AI translator right now,
+		 so this batch of FIS translations might be -even-
+		 worse than usual.) -->
+	<TEXT>
+		<Tag>TXT_KEY_ALL_AT_RANDOM</Tag>
+		<English>all at Random</English>
+		<French>tous al&#233;atoires</French>
+		<German>alle zufällig</German>
+		<Italian>tutti casuali</Italian>
+		<Spanish>todos al azar</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_NONE_AT_RANDOM</Tag>
+		<English>all manually chosen</English>
+		<French>choisi manuellement</French>
+		<German>alle voreingestellt</German>
+		<Italian>scelti manualemente</Italian>
+		<Spanish>escogidos al azar</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_RANDOMLY_CHOSEN</Tag>
+		<English>Randomly chosen</English>
+		<French>choix al&#233;atoire</French>
+		<German>zufällig gewählt</German>
+		<Italian>scelta casuale</Italian>
+		<Spanish>escogido al azar</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MANUALLY_CHOSEN</Tag>
+		<English>manually chosen</English>
+		<French>choix manuel</French>
+		<German>voreingestellt</German>
+		<Italian>scelta manuale</Italian>
+		<Spanish>escogido manualmente</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_RANDOM_LEADER</Tag>
+		<English>Random leader of %s1_Civ</English>
+		<French>chef al&#233;atoire de %s1_Civ</French>
+		<German>zufälliges %s1_Civ-Oberhaupt</German>
+		<Italian>leader casuale di %s1_Civ</Italian>
+		<Spanish>l&#237;der al azar de %s1_Civ</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_RANDOM_CIV</Tag>
+		<English>%s1_Civ chosen at Random</English>
+		<French>%s1_Civ choisi al&#233;atoirement</French>
+		<German>%s1_Civ zufällig gewählt</German>
+		<Italian>%s1_Civ scelta casualmente</Italian>
+		<Spanish>%s1_Civ escogido al azar</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_RIVAL_NOT_MET</Tag>
+		<English>not Met</English>
+		<French>sans contact</French>
+		<German>kein Kontakt</German>
+		<Italian>nessun contatto</Italian>
+		<Spanish>sin contacto</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNKNOWN_RIVALS</Tag>
+		<English>%d1 Unknown Rivals</English>
+		<French>%d1 rivaux inconnus</French>
+		<German>%d1 unbekannte Gegner</German>
+		<Italian>%d1 rivali sconosciuti</Italian>
+		<Spanish>%d1 rivales desconocidos</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_ONE_UNKNOWN_RIVAL</Tag>
+		<English>1 Unknown Rival</English>
+		<French>1 rival inconnu</French>
+		<German>1 unbekannter Gegner</German>
+		<Italian>1 rivale sconosciuto</Italian>
+		<Spanish>1 rival desconocido</Spanish>
 	</TEXT>
 
 </Civ4GameText>

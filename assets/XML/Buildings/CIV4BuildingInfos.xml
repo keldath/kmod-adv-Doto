@@ -570,7 +570,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
-			<GreatPeopleUnitClass>UNITCLASS_MERCHANT</GreatPeopleUnitClass>
+			<!-- advc.310: was MERCHANT -->
+			<GreatPeopleUnitClass>UNITCLASS_GREAT_SPY</GreatPeopleUnitClass>
 			<iGreatPeopleRateChange>2</iGreatPeopleRateChange>
 			<iHurryAngerModifier>0</iHurryAngerModifier>
 			<bBorderObstacle>0</bBorderObstacle>
@@ -29052,11 +29053,10 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<FreeStartEra>NONE</FreeStartEra>
 			<MaxStartEra>NONE</MaxStartEra>
 			<ObsoleteTech>NONE</ObsoleteTech>
-			<!-- advc.200: Restored Mass Media and moved Corporation
-			     into TechTypes -->
-			<PrereqTech>TECH_MASS_MEDIA</PrereqTech>
+			<!-- K-Mod: was MASS_MEDIA -->
+			<PrereqTech>TECH_CORPORATION</PrereqTech>
 			<TechTypes>
-				<PrereqTech>TECH_CORPORATION</PrereqTech>
+				<PrereqTech>NONE</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
 			</TechTypes>
