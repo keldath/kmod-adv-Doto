@@ -189,7 +189,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAIStartingWorkerUnits>0</iAIStartingWorkerUnits>
 			<iAIStartingExploreUnits>0</iAIStartingExploreUnits>
 			<iBarbarianDefenders>1</iBarbarianDefenders>
-			<iAIDeclareWarProb>80</iAIDeclareWarProb>
+			<iAIDeclareWarProb>25</iAIDeclareWarProb>
 			<iAIWorkRateModifier>0</iAIWorkRateModifier>
 			<!-- advc.251 (start) -->
 			<!-- was 160 -->
@@ -211,13 +211,12 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAIUnitUpgradePercent>50</iAIUnitUpgradePercent>
 			<iAIInflationPercent>100</iAIInflationPercent>
 			<iAIWarWearinessPercent>100</iAIWarWearinessPercent>
-<!-- advc.251: start -->
+			<!-- advc.251: renamed -->
 			<iAIHandicapIncrementTurns>0</iAIHandicapIncrementTurns>
 			<!-- advc.250c: was 100 -->
 			<iAIAdvancedStartPercent>67</iAIAdvancedStartPercent>
 			<!-- advc.148 -->
 			<iAIAttitudeChangePercent>30</iAIAttitudeChangePercent>
-<!-- advc.148 end -->
 			<Goodies>
 				<GoodyType>GOODY_HIGH_GOLD</GoodyType>
 				<GoodyType>GOODY_HIGH_GOLD</GoodyType>
@@ -362,7 +361,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAIStartingWorkerUnits>0</iAIStartingWorkerUnits>
 			<iAIStartingExploreUnits>0</iAIStartingExploreUnits>
 			<iBarbarianDefenders>1</iBarbarianDefenders>
-			<iAIDeclareWarProb>100</iAIDeclareWarProb>
+			<iAIDeclareWarProb>50</iAIDeclareWarProb>
 			<iAIWorkRateModifier>0</iAIWorkRateModifier>
 			<!-- advc.251 (start) -->
 			<!-- was 130 -->
@@ -471,7 +470,8 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.251 (end) -->
 			<iDistanceMaintenancePercent>65</iDistanceMaintenancePercent>
 			<iNumCitiesMaintenancePercent>60</iNumCitiesMaintenancePercent>
-			<iMaxNumCitiesMaintenance>5</iMaxNumCitiesMaintenance>
+			<!-- advc.exp.1: was 5 -->
+			<iMaxNumCitiesMaintenance>5000</iMaxNumCitiesMaintenance>
 			<iColonyMaintenancePercent>90</iColonyMaintenancePercent>
 			<iMaxColonyMaintenance>200</iMaxColonyMaintenance>
 			<iCorporationMaintenancePercent>90</iCorporationMaintenancePercent>
@@ -509,7 +509,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAIStartingWorkerUnits>0</iAIStartingWorkerUnits>
 			<iAIStartingExploreUnits>0</iAIStartingExploreUnits>
 			<iBarbarianDefenders>1</iBarbarianDefenders>
-			<iAIDeclareWarProb>110</iAIDeclareWarProb>
+			<iAIDeclareWarProb>75</iAIDeclareWarProb>
 			<iAIWorkRateModifier>0</iAIWorkRateModifier>
 			<iAIGrowthPercent>110</iAIGrowthPercent>
 			<!-- advc.251 -->
@@ -633,7 +633,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAIStartingWorkerUnits>0</iAIStartingWorkerUnits>
 			<iAIStartingExploreUnits>0</iAIStartingExploreUnits>
 			<iBarbarianDefenders>2</iBarbarianDefenders>
-			<iAIDeclareWarProb>120</iAIDeclareWarProb>
+			<iAIDeclareWarProb>100</iAIDeclareWarProb>
 			<iAIWorkRateModifier>0</iAIWorkRateModifier>
 			<iAIGrowthPercent>100</iAIGrowthPercent>
 			<!-- advc.251 -->
@@ -753,7 +753,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAIStartingWorkerUnits>0</iAIStartingWorkerUnits>
 			<iAIStartingExploreUnits>0</iAIStartingExploreUnits>
 			<iBarbarianDefenders>2</iBarbarianDefenders>
-			<iAIDeclareWarProb>120</iAIDeclareWarProb>
+			<iAIDeclareWarProb>100</iAIDeclareWarProb>
 			<!-- advc.251: was 10 -->
 			<iAIWorkRateModifier>5</iAIWorkRateModifier>
 			<iAIGrowthPercent>100</iAIGrowthPercent>
@@ -880,7 +880,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAIStartingWorkerUnits>0</iAIStartingWorkerUnits>
 			<iAIStartingExploreUnits>0</iAIStartingExploreUnits>
 			<iBarbarianDefenders>3</iBarbarianDefenders>
-			<iAIDeclareWarProb>130</iAIDeclareWarProb>
+			<iAIDeclareWarProb>100</iAIDeclareWarProb>
 			<!-- advc.251: was 20 -->
 			<iAIWorkRateModifier>10</iAIWorkRateModifier>
 			<iAIGrowthPercent>95</iAIGrowthPercent>
@@ -991,7 +991,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iNumCitiesMaintenancePercent>90</iNumCitiesMaintenancePercent>
 			<!-- advc.exp.1: was 7 -->
 			<iMaxNumCitiesMaintenance>7000</iMaxNumCitiesMaintenance>
-			<!-- advc.251: was 115 -->
+			<!-- advc.251: was 130 -->
 			<iColonyMaintenancePercent>115</iColonyMaintenancePercent>
 			<iMaxColonyMaintenance>200</iMaxColonyMaintenance>
 			<!-- advc.251: was 130 -->
@@ -1032,7 +1032,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.250e: was 1 -->
 			<iAIStartingExploreUnits>0</iAIStartingExploreUnits>
 			<iBarbarianDefenders>3</iBarbarianDefenders>
-			<iAIDeclareWarProb>130</iAIDeclareWarProb>
+			<iAIDeclareWarProb>100</iAIDeclareWarProb>
 			<!-- advc.251: was 50 -->
 			<iAIWorkRateModifier>15</iAIWorkRateModifier>
 			<iAIGrowthPercent>90</iAIGrowthPercent>
@@ -1192,7 +1192,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAIStartingExploreUnits>0</iAIStartingExploreUnits>
 			<!-- advc.250e: was 4 -->
 			<iBarbarianDefenders>3</iBarbarianDefenders>
-			<iAIDeclareWarProb>130</iAIDeclareWarProb>
+			<iAIDeclareWarProb>100</iAIDeclareWarProb>
 			<!-- advc.251: was 75 -->
 			<iAIWorkRateModifier>20</iAIWorkRateModifier>
 			<iAIGrowthPercent>85</iAIGrowthPercent>
@@ -1355,7 +1355,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAIStartingWorkerUnits>1</iAIStartingWorkerUnits>
 			<iAIStartingExploreUnits>1</iAIStartingExploreUnits>
 			<iBarbarianDefenders>4</iBarbarianDefenders>
-			<iAIDeclareWarProb>130</iAIDeclareWarProb>
+			<iAIDeclareWarProb>100</iAIDeclareWarProb>
 			<!-- advc.251: was 100 -->
 			<iAIWorkRateModifier>25</iAIWorkRateModifier>
 			<iAIGrowthPercent>80</iAIGrowthPercent>

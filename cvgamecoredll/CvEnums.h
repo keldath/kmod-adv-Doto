@@ -28,7 +28,6 @@
 enum PlayerTypes
 {
 	NO_PLAYER = -1,
-	FIRST_PLAYER, // When an arbitrary player id is needed
 	// K-Mod (note): default is 18, some people like 48. They are not compatible.
 	/*  advc.056 (note): Scenario (WB) files are now compatible so long
 		as the player ids in the WB file don't exceed MAX_CIV_PLAYERS in the DLL.
@@ -40,7 +39,6 @@ enum PlayerTypes
 enum TeamTypes
 {
 	NO_TEAM = -1,
-	FIRST_TEAM = 0,
 	MAX_CIV_TEAMS = MAX_CIV_PLAYERS,
 	BARBARIAN_TEAM = MAX_CIV_TEAMS,
 	MAX_TEAMS

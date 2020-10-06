@@ -101,7 +101,7 @@ __forceinline float MaxFloat() { return DWtoF(0x7f7fffff); }
 #include "CvEnums.h" // includes CvInfoEnum.h
 /*  advc: Smaller numbers may already crash the EXE; the DLL assumes in some places
 	that player ids fit in a single byte. */
-BOOST_STATIC_ASSERT(MAX_PLAYERS < MAX_CHAR && MAX_TEAMS < MAX_CHAR);
+//BOOST_STATIC_ASSERT(MAX_PLAYERS < MAX_CHAR && MAX_TEAMS < MAX_CHAR);
 #include "CvStructs.h"
 #include "CvDLLUtilityIFaceBase.h"
 

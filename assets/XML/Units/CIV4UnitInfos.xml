@@ -41417,7 +41417,7 @@ UNITAI changed - now will used to counter.
 			<UnitCombatMods/>
 			<UnitCombatCollateralImmunes>
 				<UnitCombatCollateralImmune>
-					<UnitCombatType>UNITCLASS_MODERN_ARMOR</UnitCombatType>
+					<UnitCombatType>UNITCOMBAT_ARMOR</UnitCombatType>
 					<iUnitCombatCollateralImmune>1</iUnitCombatCollateralImmune>
 				</UnitCombatCollateralImmune>
 			</UnitCombatCollateralImmunes>

@@ -8,13 +8,13 @@
 	<SeaLevelInfos>
 		<SeaLevelInfo>
 			<Type>SEALEVEL_VERY_VERY_LOW</Type>
-			<Description>Very Very Low :)</Description>
+			<Description>Lowest</Description>
 			<iSeaLevelChange>-20</iSeaLevelChange>
 			<iResearchPercent>150</iResearchPercent>
 		</SeaLevelInfo>
 		<SeaLevelInfo>
 			<Type>SEALEVEL_VERY_LOW</Type>
-			<Description>Very Low</Description>
+			<Description>Lower</Description>
 			<iSeaLevelChange>-15</iSeaLevelChange>
 			<iResearchPercent>140</iResearchPercent>
 		</SeaLevelInfo>

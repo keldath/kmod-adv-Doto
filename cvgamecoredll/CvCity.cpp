@@ -14755,12 +14755,12 @@ int CvCity::calculateConnectedMaintenanceTimes100(PlayerTypes eOwner, bool iChec
 			iTempMaintenance += std::max(0, iLocalConnected + 100);
 			iTempMaintenance /= 100;
 		}
-		return iTempMaintenance;
+	return iTempMaintenance;
 }
 
 int CvCity::calculateCoastalMaintenanceTimes100(int localCoastal, CvPlot const& kCityPlot, PlayerTypes eOwner,bool capitalcitynConn)
 {
-	int iTempMaintenance;// = 100;
+		int iTempMaintenance = 0;// = 100;
 		if (kCityPlot.isCoastalLand(GC.getDefineINT(CvGlobals::MIN_WATER_SIZE_FOR_OCEAN)) && capitalcitynConn) //dont apply to capital and not if its connected to capital
 		{
 			iTempMaintenance = std::max(0, GET_PLAYER(eOwner).getCoastalDistanceMaintenanceModifier() + 100);

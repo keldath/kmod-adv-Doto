@@ -1552,22 +1552,34 @@ bool CvSeaLevelInfo::read(CvXMLLoadUtility* pXML)
 	return true;
 }
 // advc.137: Include recommendation in description on Custom Game screen
-wchar const* CvSeaLevelInfo::getDescriptionInternal(uint uiForm) const
+CvWString CvSeaLevelInfo::getDescriptionInternal() const
 {
 	CvInitCore const& kInitCore = GC.getInitCore();
 	if (kInitCore.getActivePlayer() == NO_PLAYER &&
 		/*	This distinguishes Custom Game from Play Now.
 			(Play Now doesn't have enough room for a recommendation,
 			and doesn't allow player counts to be adjusted.) */
-		kInitCore.getSlotStatus(FIRST_PLAYER) == SS_OPEN)
+		kInitCore.getSlotStatus((PlayerTypes)0) == SS_OPEN)
 	{
-		CvWString szTag;
-		if (m_iSeaLevelChange < 0)
-			szTag = L"TXT_KEY_SEALEVEL_LOW_RECOMMEND";
-		else if (m_iSeaLevelChange > 0)
-			szTag = L"TXT_KEY_SEALEVEL_HIGH_RECOMMEND";
-		if (!szTag.empty())
-			return gDLL->getText(szTag);
+		CvWString szTag = m_szTextKey + L"_RECOMMEND";
+		CvWString szText = gDLL->getText(szTag);
+		// If a text key with recommendation was found, show it.
+		if (szText != szTag)
+			return szText;
+	}
+	return CvInfoBase::getDescriptionInternal();
+}
+/*
+wchar const* CvSeaLevelInfo::getDescriptionInternal(uint uiForm) const
+{
+	// if(...) [no change]
+	{
+		CvWString szTag = m_szTextKey + L"_RECOMMEND";
+		wchar const* szText = gDLL->getText(szTag);
+		// If a text key with recommendation was found, show it.
+		if (std::wcscmp(szText, szTag.c_str()) != 0)
+			return szText;
 	}
 	return CvInfoBase::getDescriptionInternal(uiForm);
 }
+*/

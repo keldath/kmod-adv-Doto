@@ -125,7 +125,7 @@ class ScaledNum : ScaledNumBase<void> // Not named "ScaledInt" b/c what's being 
 {
 	IntType m_i;
 
-	BOOST_STATIC_ASSERT(sizeof(IntType) <= 4);
+	//BOOST_STATIC_ASSERT(sizeof(IntType) <= 4);
 	/*	Workaround for MSVC bug with dependent template argument in friend declaration:
 		Make the scale parameter an int but cast it to IntType internally. This way,
 		iSCALE can also precede IntType in the parameter list. */

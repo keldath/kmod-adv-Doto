@@ -194,7 +194,7 @@ private:
 	};
 
 	// the code will technically still work if this fails, but it will waste memory
-	BOOST_STATIC_ASSERT(sizeof(T) <= 4 /*|| bINLINE_NATIVE*/); // advc.fract
+	//BOOST_STATIC_ASSERT(sizeof(T) <= 4 /*|| bINLINE_NATIVE*/); // advc.fract
 	enum
 	{
 		SAVE_ARRAY_MULTI_BYTE,

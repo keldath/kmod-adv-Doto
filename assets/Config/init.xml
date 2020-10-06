@@ -138,8 +138,6 @@
 	
 	<!-- Mods -->
 	
-	<!-- added by keldath -->
-	<load mod="Basic Limited Religions"/>
 	<load mod="BUG Main Interface"/>
 	<load mod="BUG City Screen"/>
 	<load mod="BUG Advisors"/>
@@ -176,6 +174,8 @@
 	<!-- advc.009c: Commented out -->
 	<!--load mod="MapFinder"/-->
 	<load mod="Advanced Combat Odds"/>
+	<!-- added by keldath -->
+	<load mod="Basic Limited Religions"/>
 	
 	<!-- BUFFY -->
 	

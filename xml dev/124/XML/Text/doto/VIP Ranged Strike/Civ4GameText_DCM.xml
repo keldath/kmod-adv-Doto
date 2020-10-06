@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by lcollins (Firaxis Games) -->
+<!-- Sid Meier's Civilization 4 -->
+<!-- Copyright Firaxis Games 2005 -->
+<!-- -->
+<!-- Game Text Cities -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+		<Tag>TXT_KEY_IS_RANGE_BOMBARD</Tag>
+		<English>Ranged Bombardment: %d1_BombRange</English>
+		<French>Ranged Bombardment: %d1_BombRange</French>
+		<German>Ranged Bombardment: %d1_BombRange</German>
+		<Italian>Ranged Bombardment: %d1_BombRange</Italian>
+		<Spanish>Ranged Bombardment: %d1_BombRange</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_CONCEPT_RBOMBARD_TEXT</Tag>
+		<English>Ranged Bombardment</English>
+		<French>Bombardement à distance</French>
+		<German>Fernbombardierung</German>
+		<Italian>Bombardamento ad area</Italian>
+		<Spanish>Cañoneo de alcance</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_CONCEPT_RBOMBARD_PEDIA</Tag>
+		<English>[H1]Ranged Bombardment[\H1][PARAGRAPH:2]Ranged Bombardment allows siege units to bombard in the field (as opposed to only bombarding cities). By selecting the bombard icon you can select whether to bombard units, improvements or cities. Bombarding is possible from a range. Thus, the Cannon will be able to bombard into adjacent plots, while artillery can bombard into plots up to 2 plots away.[PARAGRAPH:2]</English>
+		<French>[H1]Bombardement à distance [\H1][PARAGRAPH:2]Un bombardement à distance permet aux unités de siège d'effectuer des bombardements de terrain (par opposition aux bombardements de cités). En sélectionnant l'icone Bombardement, vous pouvez choisir de bombarder des unités, des améliorations de terrain ou des villes. Vous pouvez également bombarder à distance. Dans "Sentiers de la guerre", l'artillerie standard peut bombarder des cases adjacentes tandis que l'artillerie lourde est autorisée à tirer jusqu'à une distance de deux cases.[PARAGRAPH:2]</French>
+		<German>[H1]Fernbombardierung[\H1][PARAGRAPH:2]Die Fernbombardierung ermöglicht Belagerungseinheiten, auch offenes Gelände zu bombardieren (statt ausschließlich Städte). Durch Auswahl des Symbols Bombardierung können Sie wählen, ob Einheiten, Modernisierungen oder Städte bombardiert werden sollen. Darüber hinaus sind auch Bombardierungsangriffe aus der Ferne möglich: In Road to War kann die Standardartillerie benachbarte Geländefelder und die schwere Artillerie bis zu 2 Geländefelder entfernt bombardieren.[PARAGRAPH:2]</German>
+		<Italian>[H1]Bombardamento ad area[\H1][PARAGRAPH:2]Il bombardamento ad area permette alle unità d'assedio di bombardare anche sul campo (invece che solo sulle città). Selezionando l'icona apposita puoi decidere se bombardare unità, miglioramenti o città. Inoltre è possibile bombardare dalla distanza. Così ne La strada per la guerra l'artiglieria sarà in grado di bombardare nelle caselle adiacenti, mentre l'artiglieria pesante potrà farlo fino a una distanza di 2 caselle.[PARAGRAPH:2]</Italian>
+		<Spanish>[H1]Cañoneo de alcance[\H1][PARAGRAPH:2]El cañoneo de alcance permite a las unidades de asedio cañonear el campo de batalla (al contrario que bombardear solo ciudades). Si se selecciona el icono de cañoneo, se puede elegir entre bombardear unidades, mejoras o ciudades. También se puede cañonear desde una distancia. Por lo tanto, en &quot;The Road to War&quot;, la artillería estándar podrá bombardear casillas adyacentes, mientras que la pesada podrá hacerlo hasta a 2 casillas de distancia.[PARAGRAPH:2]</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_INTERFACEMODE_RBOMBARD_HELP</Tag>
+		<English>[H1]Ranged Bombardment[\H1][PARAGRAPH:2]Ranged Bombardment allows siege units to bombard in the field (as opposed to only bombarding cities). By selecting the bombard icon you can select whether to bombard units, improvements or cities. Bombarding is possible from a range. Thus the Cannon will be able to bombard into adjacent plots, while artillery can bombard into plots up to 2 plots away.[PARAGRAPH:2]</English>
+		<French>[H1]Bombardement à distance [\H1][PARAGRAPH:2]Le bombardement à distance permet aux unités de siège d'effectuer des bombardements de terrain (par opposition aux bombardements de cités). En sélectionnant l'icone Bombardement vous pouvez choisir de bombarder des unités, des améliorations de terrain ou des villes. Le bombardement à distance est également possible. Dans "Les sentiers de la guerre", l'artillerie standard peut bombarder des cases adjacentes tandis que l'artillerie lourde est autorisée à tirer jusqu'à une distance de deux cases.[PARAGRAPH:2]</French>
+		<German>[H1]Fernbombardierung[\H1][PARAGRAPH:2]Die Fernbombardierung ermöglicht Belagerungseinheiten, auch offenes Gelände zu bombardieren (statt ausschließlich Städte). Durch Auswahl des Symbols Bombardierung können Sie wählen, ob Einheiten, Modernisierungen oder Städte bombardiert werden sollen. Darüber hinaus sind auch Bombardierungsangriffe aus der Ferne möglich: In Road to War kann die Standardartillerie benachbarte Geländefelder und die schwere Artillerie bis zu 2 Geländefelder entfernt bombardieren.[PARAGRAPH:2]</German>
+		<Italian>[H1]Bombardamento ad area[\H1][PARAGRAPH:2]Il bombardamento ad area permette alle unità d'assedio di bombardare anche sul campo (invece che solo sulle città). Selezionando l'icona apposita puoi decidere se bombardare unità, miglioramenti o città. Inoltre è possibile bombardare dalla distanza. Così ne La strada per la guerra l'artiglieria sarà in grado di bombardare nelle caselle adiacenti, mentre l'artiglieria pesante potrà farlo fino a una distanza di 2 caselle.[PARAGRAPH:2]</Italian>
+		<Spanish>[H1]Cañoneo de alcance[\H1][PARAGRAPH:2]El cañoneo de alcance permite a las unidades de asedio cañonear el campo de batalla (al contrario que bombardear solo ciudades). Si se selecciona el icono de cañoneo, se puede elegir entre bombardear unidades, mejoras o ciudades. También se puede cañonear desde una distancia. Por lo tanto, en &quot;The Road to War&quot;, la artillería estándar podrá bombardear casillas adyacentes, mientras que la pesada podrá hacerlo hasta a 2 casillas de distancia.[PARAGRAPH:2]</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_RBOMBARD</Tag>
+		<English>Ranged Bombardment</English>
+		<French>Bombardement à distance</French>
+		<German>Fernbombardierung</German>
+		<Italian>Bombardamento ad area</Italian>
+		<Spanish>Cañoneo de alcance</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_RBOMBARD_HELP</Tag>
+		<English>Select an artillery unit, select the bombard mission, then click on the plot to bombard.</English>
+		<French>Sélectionnez une unité d'artillerie puis une mission de bombardement. Cliquez ensuite sur la case à bombarder.</French>
+		<German>Wählen Sie eine Artillerieeinheit, aktivieren Sie die Mission "Bombardierung" und klicken Sie dann auf das Geländefeld, das bombardiert werden soll.</German>
+		<Italian>Seleziona un'unità di artiglieria, seleziona il bombardamento, quindi clicca sulla casella da bombardare.</Italian>
+		<Spanish>Se elige una unidad de artillería, una misión de bombardeo y se hace clic en la casilla a bombardear.</Spanish>
+	</TEXT>	
+	<TEXT>
+		<Tag>TXT_KEY_IS_RANGE_BARRAGE</Tag>
+		<English>Ranged Barrage: %d1_BombRange</English>
+		<French>Ranged Barrage: %d1_BombRange</French>
+		<German>Ranged Barrage: %d1_BombRange</German>
+		<Italian>Ranged Barrage: %d1_BombRange</Italian>
+		<Spanish>Ranged Barrage: %d1_BombRange</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_CONCEPT_RBARRAGE_TEXT</Tag>
+		<English>Ranged Barrage</English>
+		<French>Ranged Barrage</French>
+		<German>Ranged Barrage</German>
+		<Italian>Ranged Barrage</Italian>
+		<Spanish>Ranged Barrage</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_CONCEPT_RBARRAGE_PEDIA</Tag>
+		<English>[H1]Ranged Barrage[\H1][PARAGRAPH:2]Ranged Barrage allows Archery units to attack the enemy with a barrage of arrows. By selecting the barrage icon you can select whether to barrage units, improvements or cities. Archery Barrage is possible from adjacent plots.[PARAGRAPH:2]</English>
+		<French>[H1]Ranged Barrage[\H1][PARAGRAPH:2]Ranged Barrage allows Archery units to attack the enemy with a barrage of arrows. By selecting the barrage icon you can select whether to barrage units, improvements or cities. Archery Barrage is possible from adjacent plots.[PARAGRAPH:2]</French>
+		<German>[H1]Ranged Barrage[\H1][PARAGRAPH:2]Ranged Barrage allows Archery units to attack the enemy with a barrage of arrows. By selecting the barrage icon you can select whether to barrage units, improvements or cities. Archery Barrage is possible from adjacent plots.[PARAGRAPH:2]</German>
+		<Italian>[H1]Ranged Barrage[\H1][PARAGRAPH:2]Ranged Barrage allows Archery units to attack the enemy with a barrage of arrows. By selecting the barrage icon you can select whether to barrage units, improvements or cities. Archery Barrage is possible from adjacent plots.[PARAGRAPH:2]</Italian>
+		<Spanish>[H1]Ranged Barrage[\H1][PARAGRAPH:2]Ranged Barrage allows Archery units to attack the enemy with a barrage of arrows. By selecting the barrage icon you can select whether to barrage units, improvements or cities. Archery Barrage is possible from adjacent plots.[PARAGRAPH:2]</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_INTERFACEMODE_RBARRAGE_HELP</Tag>
+		<English>[H1]Ranged Barrage[\H1][PARAGRAPH:2]Ranged Barrage allows Archery units to attack the enemy with a barrage of arrows. By selecting the barrage icon you can select whether to barrage units, improvements or cities. Archery Barrage is possible from adjacent plots.[PARAGRAPH:2]</English>
+		<French>[H1]Ranged Barrage[\H1][PARAGRAPH:2]Ranged Barrage allows Archery units to attack the enemy with a barrage of arrows. By selecting the barrage icon you can select whether to barrage units, improvements or cities. Archery Barrage is possible from adjacent plots.[PARAGRAPH:2]</French>
+		<German>[H1]Ranged Barrage[\H1][PARAGRAPH:2]Ranged Barrage allows Archery units to attack the enemy with a barrage of arrows. By selecting the barrage icon you can select whether to barrage units, improvements or cities. Archery Barrage is possible from adjacent plots.[PARAGRAPH:2]</German>
+		<Italian>[H1]Ranged Barrage[\H1][PARAGRAPH:2]Ranged Barrage allows Archery units to attack the enemy with a barrage of arrows. By selecting the barrage icon you can select whether to barrage units, improvements or cities. Archery Barrage is possible from adjacent plots.[PARAGRAPH:2]</Italian>
+		<Spanish>[H1]Ranged Barrage[\H1][PARAGRAPH:2]Ranged Barrage allows Archery units to attack the enemy with a barrage of arrows. By selecting the barrage icon you can select whether to barrage units, improvements or cities. Archery Barrage is possible from adjacent plots.[PARAGRAPH:2]</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_RBARRAGE</Tag>
+		<English>Ranged Barrage</English>
+		<French>Ranged Barrage</French>
+		<German>Ranged Barrage</German>
+		<Italian>Ranged Barrage</Italian>
+		<Spanish>Ranged Barrage</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_RBARRAGE_HELP</Tag>
+		<English>Select an archery unit, select the barrage mission, then click on the plot to execute the barrage.</English>
+		<French>Select an archery unit, select the barrage mission, then click on the plot to execute the barrage.</French>
+		<German>Select an archery unit, select the barrage mission, then click on the plot to execute the barrage.</German>
+		<Italian>Select an archery unit, select the barrage mission, then click on the plot to execute the barrage.</Italian>
+		<Spanish>Select an archery unit, select the barrage mission, then click on the plot to execute the barrage.</Spanish>
+	</TEXT>
+</Civ4GameText>

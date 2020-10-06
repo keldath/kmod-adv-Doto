@@ -368,6 +368,6 @@ private: // advc.003u: (See comments in the private section of CvPlayer.h)
 };
 /*  advc.003k: If this fails, then you've probably added a data member (directly)
 	to CvSelectionGroup. */
-BOOST_STATIC_ASSERT(sizeof(CvSelectionGroup) == 80);
+//BOOST_STATIC_ASSERT(sizeof(CvSelectionGroup) == 80);
 
 #endif

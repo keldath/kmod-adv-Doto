@@ -1433,9 +1433,9 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	CvString szTextVal;
 //keldath-qa10-the above was changed by f1rpo 097
 // < Doto-Civic Infos Plus Start > //ADDED BY KELDATH	
-	int j=0;						//loop counter
-	int k=0;						//loop counter
-	int iNumSibs=0;				// the number of siblings the current xml node has
+//	int j=0;						//loop counter
+//	int k=0;						//loop counter
+//	int iNumSibs=0;				// the number of siblings the current xml node has
 //	int iNumChildren;				// the number of children the current node has
 // < Doto-Civic Infos Plus END > //ADDED BY KELDATH
 	pXML->SetInfoIDFromChildXmlVal(m_iBuildingClassType, "BuildingClass");

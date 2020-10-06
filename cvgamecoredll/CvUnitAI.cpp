@@ -22886,7 +22886,7 @@ int CvUnitAI::isPlotWorthRanged(CvPlot const& kPlot)const
 ////////////////////////////
 //attacker
 ///////////////////////////
-	CvUnit* nextUnitus = NULL;
+//	CvUnit* nextUnitus = NULL;
 	unitCountus = getPlot().getNumUnits();
 	//loop over all units on the pottential plot to rangestrike
 	// i think i can merge the NetTotalStreangth func to these loops
@@ -22974,7 +22974,7 @@ int CvUnitAI::isPlotWorthRanged(CvPlot const& kPlot)const
 CvPlot* CvUnitAI::AI_rangeStrikeTargetPlotK(int iSearchRange, CvUnitAI* pAttacker) const
 {
 	CvPlot* pBestPlot = NULL;
-	CvPlot* pWorstPlot = NULL;
+//	CvPlot* pWorstPlot = NULL;
 	int iBestValue = 0;
 	bool isDangerPlot = false;
 	for (SquareIter it(*this,iSearchRange , false);

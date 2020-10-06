@@ -71,6 +71,6 @@ protected: // advc.003k (warning): It's not safe to add data members to this cla
 	bool m_bPendingDelete;
 };
 
-BOOST_STATIC_ASSERT(sizeof(CvPopupInfo) == 160); // advc.003k
+//BOOST_STATIC_ASSERT(sizeof(CvPopupInfo) == 160); // advc.003k
 
 #endif

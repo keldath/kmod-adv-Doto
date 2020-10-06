@@ -403,11 +403,11 @@ protected:
 };
 
 // Would increase the size of m_abMPOptions to 8 byte
-BOOST_STATIC_ASSERT(NUM_MPOPTION_TYPES <= 32 && NUM_FORCECONTROL_TYPES <= 32);
+//BOOST_STATIC_ASSERT(NUM_MPOPTION_TYPES <= 32 && NUM_FORCECONTROL_TYPES <= 32);
 /*  advc.003k: OK to increase the size of CvInitCore (and to update or remove this
 	assertion). Just make sure that new data members are added in the right place. */
-BOOST_STATIC_ASSERT(sizeof(CvInitCore) ==
+//BOOST_STATIC_ASSERT(sizeof(CvInitCore) ==
 		// EnumMap<PlayerTypes,bool> has size 8 then
-		(MAX_CIV_PLAYERS > 32 && MAX_CIV_PLAYERS <= 64 ? 440 : 416)); 
+		//(MAX_CIV_PLAYERS > 32 && MAX_CIV_PLAYERS <= 64 ? 440 : 416)); 
 
 #endif
