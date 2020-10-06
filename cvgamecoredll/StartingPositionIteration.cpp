@@ -30,8 +30,10 @@ bool StartingPositionIteration::isDebug()
 StartingPositionIteration::StartingPositionIteration() :
 	m_bRestrictedAreas(false), m_bNormalizationTargetReady(false)
 {
-	if (!GC.getDefineBOOL("ENABLE_STARTING_POSITION_ITERATION"))
-		return;
+//keldath crash fix for starting positions	- see cvgame.cpp also 
+	//if (!GC.getDefineBOOL("ENABLE_STARTING_POSITION_ITERATION"))
+	//	return;
+//note that this might be due to my system...
 	CvMap const& kMap = GC.getMap();
 	/*	Could go a bit higher w/o becoming prohibitively slow, but I doubt
 		that the algorithm will do much good on super-huge maps unless the

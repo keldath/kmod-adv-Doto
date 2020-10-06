@@ -1166,11 +1166,16 @@ NormalizationTarget* CvGame::assignStartingPlots()
 	else // i.e. if not a team game
 	{	/*	<advc.027> If the map script allows it, StartingPositionIteration will
 			set starting sites that the code below may then reassign among the civs. */
+//keldath crash fix for starting positions	see startingpositioniteration.cpp also	
 		StartingPositionIteration spi;
-		pNormalizationTarget = spi.createNormalizationTarget();
-		// Reassigning the starting sites makes debugging harder
-		if (pNormalizationTarget != NULL && spi.isDebug())
-			return pNormalizationTarget; // </advc.027>
+		if (GC.getDefineBOOL("ENABLE_STARTING_POSITION_ITERATION"))
+		{
+			pNormalizationTarget = spi.createNormalizationTarget();
+			// Reassigning the starting sites makes debugging harder
+			if (pNormalizationTarget != NULL && spi.isDebug())
+				return pNormalizationTarget; // </advc.027>
+		}
+//note that this might be due to my system...
 		/*	Apply StartingLocationPercent from handicap.
 			Note: Would be better to do this _after_ normalization. */
 		int const iCivsAlive = PlayerIter<CIV_ALIVE>::count();
