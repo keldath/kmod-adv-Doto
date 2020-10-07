@@ -2771,7 +2771,7 @@ PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureR
 			{
 				continue;
 			}
-			int iPriority = GC.getCityPlotPriority()[iI];
+			int iPriority = GC.getCityPlotPriority()[it.currID()];
 			if (pLoopCity->getTeam() == TEAMID(eBestPlayer))
 				iPriority += 5; // priority ranges from 0 to 4 -> give priority to Masters of a Vassal
 			if (iPriority < iBestPriority || (iPriority == iBestPriority &&
