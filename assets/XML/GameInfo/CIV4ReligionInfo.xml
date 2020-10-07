@@ -288,7 +288,7 @@ MovieFile	Provides the directory path for the founding movie.
 			<FreeUnitClass>UNITCLASS_ODIN_SHAMAN</FreeUnitClass>
 			<iFreeUnits>0</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
-			<iTGAIndex>68</iTGAIndex>
+			<iTGAIndex>13</iTGAIndex>
 			<GlobalReligionCommerces>
 				<iGlobalReligionCommerce>1</iGlobalReligionCommerce>
 				<iGlobalReligionCommerce>0</iGlobalReligionCommerce>
@@ -304,9 +304,9 @@ MovieFile	Provides the directory path for the founding movie.
 				<iStateReligionCommerce>1</iStateReligionCommerce>
 				<iStateReligionCommerce>0</iStateReligionCommerce>
 			</StateReligionCommerces>
-			<Button>Art/Interface/Buttons/Religions/ODIN.dds</Button>
-			<TechButton>Art/Interface/Buttons/Religions/ODIN.dds</TechButton>
-			<GenericTechButton>Art/Interface/Buttons/Religions/ODIN.dds</GenericTechButton>
+			<Button>Art/Interface/Buttons/religions/runes.dds</Button>
+			<TechButton>Art/Interface/Buttons/religions/runes.dds</TechButton>
+			<GenericTechButton>Art/Interface/Buttons/religions/runes.dds</GenericTechButton>
 			<MovieFile>Art/Movies/Religion/Christianity/Chr_Found.nif</MovieFile>
 			<MovieSound>AS2D_BUILD_NORDIC_MOVIE</MovieSound>
 			<Sound>AS2D_BUILD_NORDIC</Sound>

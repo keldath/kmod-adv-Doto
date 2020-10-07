@@ -166,36 +166,40 @@ iVictoryDelayPercent	Percent of space ship travel time
 			<iVictoryDelayPercent>200</iVictoryDelayPercent>
 			<GameTurnInfos>
 				<GameTurnInfo>
-					<iMonthIncrement>247</iMonthIncrement>
-					<iTurnsPerIncrement>170</iTurnsPerIncrement>
+					<iMonthIncrement>240</iMonthIncrement>
+					<iTurnsPerIncrement>154</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
-					<iMonthIncrement>135</iMonthIncrement>
+					<iMonthIncrement>144</iMonthIncrement>
 					<iTurnsPerIncrement>120</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
-					<iMonthIncrement>68</iMonthIncrement>
-					<iTurnsPerIncrement>70</iTurnsPerIncrement>
+					<iMonthIncrement>96</iMonthIncrement>
+					<iTurnsPerIncrement>80</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
-					<iMonthIncrement>45</iMonthIncrement>
-					<iTurnsPerIncrement>120</iTurnsPerIncrement>
+					<iMonthIncrement>60</iMonthIncrement>
+					<iTurnsPerIncrement>59</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
-					<iMonthIncrement>17</iMonthIncrement>
-					<iTurnsPerIncrement>100</iTurnsPerIncrement>
+					<iMonthIncrement>24</iMonthIncrement>
+					<iTurnsPerIncrement>80</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
-					<iMonthIncrement>9</iMonthIncrement>
-					<iTurnsPerIncrement>130</iTurnsPerIncrement>
+					<iMonthIncrement>12</iMonthIncrement>
+					<iTurnsPerIncrement>151</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
-					<iMonthIncrement>5</iMonthIncrement>
-					<iTurnsPerIncrement>242</iTurnsPerIncrement>
+					<iMonthIncrement>6</iMonthIncrement>
+					<iTurnsPerIncrement>80</iTurnsPerIncrement>
+				</GameTurnInfo>
+				<GameTurnInfo>
+					<iMonthIncrement>3</iMonthIncrement>
+					<iTurnsPerIncrement>132</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>1</iMonthIncrement>
-					<iTurnsPerIncrement>40</iTurnsPerIncrement>
+					<iTurnsPerIncrement>144</iTurnsPerIncrement>
 				</GameTurnInfo>
 			</GameTurnInfos>
 		</GameSpeedInfo>

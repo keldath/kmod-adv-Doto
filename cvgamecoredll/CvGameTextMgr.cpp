@@ -13553,7 +13553,7 @@ void CvGameTextMgr::buildBuildingRequiresString(CvWStringBuffer& szBuffer, Build
 					szBonusList.append(ENDCOLR);
 					szBuffer.append(szBonusList);
 				}
-			}	
+			}
 		}
 	}
 }

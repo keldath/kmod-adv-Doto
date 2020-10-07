@@ -268,7 +268,7 @@ private:
 };
 
 // Size 20 also seems OK, 28 definitely not, causes Wine to crash.
-BOOST_STATIC_ASSERT(sizeof(CvXMLLoadUtility) == 16);
+//BOOST_STATIC_ASSERT(sizeof(CvXMLLoadUtility) == 16);
 
 #ifdef _USRDLL
 // inlines / templates ...
