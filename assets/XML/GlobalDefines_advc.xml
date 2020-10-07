@@ -254,7 +254,7 @@
 Keldath - f1rpo said to turn it off - untested properly -->
 	<Define>
         <DefineName>ENABLE_STARTING_POSITION_ITERATION</DefineName>
-        <iDefineIntVal>0</iDefineIntVal>
+        <iDefineIntVal>1</iDefineIntVal>
     </Define>
 
 	<!-- [advc.108]
