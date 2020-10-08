@@ -51,6 +51,8 @@ TechButton	Defines the directory path for the image used on the tech tree screen
 GenericTechButton	Unclear. Specifies the directory path for the generic tech tree button (see example text).
 MovieFile	Provides the directory path for the founding movie.
 
+TGA - THE NUMBERS MUST BE DESC - OR ERROR
+
 -->
 <Civ4ReligionInfo xmlns="x-schema:CIV4GameInfoSchema.xml">
 	<ReligionInfos>
@@ -149,6 +151,38 @@ MovieFile	Provides the directory path for the founding movie.
 			<MovieFile>Art/Movies/Religion/Islam/Isl_Found.nif</MovieFile>
 			<MovieSound>AS2D_BUILD_ISLAMIC_MOVIE</MovieSound>
 			<Sound>AS2D_BUILD_ISLAMIC</Sound>
+		</ReligionInfo>
+		<ReligionInfo>
+			<Type>RELIGION_ODIN</Type>
+			<Description>TXT_KEY_RELIGION_ODIN</Description>
+			<Adjective>TXT_KEY_RELIGION_ODIN_ADJECTIVE</Adjective>
+			<Civilopedia>TXT_KEY_RELIGION_ODIN_PEDIA</Civilopedia>
+			<TechPrereq>TECH_HORSEBACK_RIDING</TechPrereq>
+			<FreeUnitClass>UNITCLASS_ODIN_SHAMAN</FreeUnitClass>
+			<iFreeUnits>0</iFreeUnits>
+			<iSpreadFactor>100</iSpreadFactor>
+			<iTGAIndex>13</iTGAIndex>
+			<GlobalReligionCommerces>
+				<iGlobalReligionCommerce>1</iGlobalReligionCommerce>
+				<iGlobalReligionCommerce>0</iGlobalReligionCommerce>
+				<iGlobalReligionCommerce>0</iGlobalReligionCommerce>
+			</GlobalReligionCommerces>
+			<HolyCityCommerces>
+				<iHolyCityCommerce>0</iHolyCityCommerce>
+				<iHolyCityCommerce>0</iHolyCityCommerce>
+				<iHolyCityCommerce>0</iHolyCityCommerce>
+			</HolyCityCommerces>
+			<StateReligionCommerces>
+				<iStateReligionCommerce>0</iStateReligionCommerce>
+				<iStateReligionCommerce>1</iStateReligionCommerce>
+				<iStateReligionCommerce>0</iStateReligionCommerce>
+			</StateReligionCommerces>
+			<Button>Art/Interface/Buttons/religions/runes.dds</Button>
+			<TechButton>Art/Interface/Buttons/religions/runes.dds</TechButton>
+			<GenericTechButton>Art/Interface/Buttons/religions/runes.dds</GenericTechButton>
+			<MovieFile>Art/Movies/Religion/Christianity/Chr_Found.nif</MovieFile>
+			<MovieSound>AS2D_BUILD_NORDIC_MOVIE</MovieSound>
+			<Sound>AS2D_BUILD_NORDIC</Sound>
 		</ReligionInfo>
 		<ReligionInfo>
 			<Type>RELIGION_HINDUISM</Type>
@@ -278,38 +312,6 @@ MovieFile	Provides the directory path for the founding movie.
 			<MovieFile>Art/Movies/Religion/Taoism/Tao_Found.nif</MovieFile>
 			<MovieSound>AS2D_BUILD_TAOIST_MOVIE</MovieSound>
 			<Sound>AS2D_BUILD_TAOIST</Sound>
-		</ReligionInfo>
-		<ReligionInfo>
-			<Type>RELIGION_ODIN</Type>
-			<Description>TXT_KEY_RELIGION_ODIN</Description>
-			<Adjective>TXT_KEY_RELIGION_ODIN_ADJECTIVE</Adjective>
-			<Civilopedia>TXT_KEY_RELIGION_ODIN_PEDIA</Civilopedia>
-			<TechPrereq>TECH_HORSEBACK_RIDING</TechPrereq>
-			<FreeUnitClass>UNITCLASS_ODIN_SHAMAN</FreeUnitClass>
-			<iFreeUnits>0</iFreeUnits>
-			<iSpreadFactor>100</iSpreadFactor>
-			<iTGAIndex>13</iTGAIndex>
-			<GlobalReligionCommerces>
-				<iGlobalReligionCommerce>1</iGlobalReligionCommerce>
-				<iGlobalReligionCommerce>0</iGlobalReligionCommerce>
-				<iGlobalReligionCommerce>0</iGlobalReligionCommerce>
-			</GlobalReligionCommerces>
-			<HolyCityCommerces>
-				<iHolyCityCommerce>0</iHolyCityCommerce>
-				<iHolyCityCommerce>0</iHolyCityCommerce>
-				<iHolyCityCommerce>0</iHolyCityCommerce>
-			</HolyCityCommerces>
-			<StateReligionCommerces>
-				<iStateReligionCommerce>0</iStateReligionCommerce>
-				<iStateReligionCommerce>1</iStateReligionCommerce>
-				<iStateReligionCommerce>0</iStateReligionCommerce>
-			</StateReligionCommerces>
-			<Button>Art/Interface/Buttons/religions/runes.dds</Button>
-			<TechButton>Art/Interface/Buttons/religions/runes.dds</TechButton>
-			<GenericTechButton>Art/Interface/Buttons/religions/runes.dds</GenericTechButton>
-			<MovieFile>Art/Movies/Religion/Christianity/Chr_Found.nif</MovieFile>
-			<MovieSound>AS2D_BUILD_NORDIC_MOVIE</MovieSound>
-			<Sound>AS2D_BUILD_NORDIC</Sound>
 		</ReligionInfo>
 		<ReligionInfo>
 			<Type>RELIGION_SHINTO</Type>

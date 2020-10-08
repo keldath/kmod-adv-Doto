@@ -256,10 +256,5 @@
 			<Description>TXT_KEY_CONCEPT_IRRIGATION</Description>
 			<Civilopedia>TXT_KEY_CONCEPT_IRRIGATION_PEDIA</Civilopedia>
 		</ConceptInfo>
-		<ConceptInfo>
-			<Type>CONCEPT_RBOMBARD</Type>
-			<Description>TXT_KEY_CONCEPT_RBOMBARD_TEXT</Description>
-			<Civilopedia>TXT_KEY_CONCEPT_RBOMBARD_PEDIA</Civilopedia>
-		</ConceptInfo>		
 	</ConceptInfos>
 </Civ4BasicInfos>

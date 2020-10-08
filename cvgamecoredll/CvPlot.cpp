@@ -4621,6 +4621,7 @@ void CvPlot::setTerrainType(TerrainTypes eNewValue, bool bRecalculate, bool bReb
 /**  Notes:                                                                                         **/
 /*****************************************************************************************************/
 	//mountains back in service addition- keldath
+
 		if (isHills() || isPeak())
 		{
 			if (GC.getTerrainInfo(getTerrainType()).isRequiresFlatlands() != isFlatlands())
@@ -4628,6 +4629,7 @@ void CvPlot::setTerrainType(TerrainTypes eNewValue, bool bRecalculate, bool bReb
 				setPlotType(((GC.getTerrainInfo(getTerrainType()).isRequiresFlatlands()) ? PLOT_LAND : PLOT_HILLS), bRecalculate, bRebuildGraphics);
 			}
 		}
+
 /*****************************************************************************************************/
 /**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
 /*****************************************************************************************************/
@@ -7701,7 +7703,8 @@ void CvPlot::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iX);
 	pStream->Read(&m_iY);
 	pStream->Read(&m_iArea);
-
+// Deliverator	freshwater
+	pStream->Read(&m_iFreshWaterAmount); // Deliverator		
 	pStream->Read(&m_iFeatureVariety);
 	pStream->Read(&m_iOwnershipDuration);
 	pStream->Read(&m_iImprovementDuration);
