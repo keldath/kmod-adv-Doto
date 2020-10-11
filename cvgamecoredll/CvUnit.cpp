@@ -2563,7 +2563,7 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar, bo
 	if (!canMoveImpassable() && kPlot.isImpassable())
 		return false;
 //DOTO- keldath - i changed a bit the org code.
-//mountain back in service mod - sort off
+//mountain mod back in service mod - sort off
 	// Deliverator peaks
 	if (kPlot.isPeak())
 	{
@@ -2572,7 +2572,7 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar, bo
 			return false;
 		}
 	}	
-// Deliverator
+// Deliverator mountains mod
 	if (m_pUnitInfo->isNoRevealMap() && willRevealAnyPlotFrom(kPlot))
 		return false;
 
@@ -7483,7 +7483,7 @@ int CvUnit::maxCombatStr(CvPlot const* pPlot, CvUnit const* pAttacker, CombatDet
 			if (pCombatDetails != NULL)
 				pCombatDetails->iCityDefenseModifier = iExtraModifier;
 		}
-//DOTO-
+//DOTO--mointains mod --need to make it separate? //back to service
 		if (pPlot->isPeak() || pPlot->isHills()) // Deliverator - Hijacked, Hills -> Peak+keldath hills
 		{
 			iExtraModifier = hillsDefenseModifier();
@@ -7530,7 +7530,7 @@ int CvUnit::maxCombatStr(CvPlot const* pPlot, CvUnit const* pAttacker, CombatDet
 					pCombatDetails->iCityBarbarianDefenseModifier = iExtraModifier;
 			}
 		}
-//DOTO-
+//DOTO-mountains mod // back to service
 		if (pAttackedPlot->isPeak() || pAttackedPlot->isHills() ) // Deliverator - Hijacked, Hills -> Peak + hills added keldath
 		{
 			iExtraModifier = -pAttacker->hillsAttackModifier();

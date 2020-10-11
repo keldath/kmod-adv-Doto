@@ -4612,7 +4612,8 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 				iAccessibility += ((kBuildImprovement.isPeakMakesValid()) ? 150 : 0);
 				//===NM=====Mountain Mod===X=====
 				// davidlallen: mountain limitations next line
-				iAccessibility += ((kBuildImprovement.isPeakMakesInvalid()) ? 150 : 0);
+				//keldath - i think i added thi swithout thinking... keldath
+				//iAccessibility += ((kBuildImprovement.isPeakMakesInvalid()) ? 150 : 0);
 				//===NM=====Mountain Mod===X=====
 				iAccessibility += ((kBuildImprovement.isFreshWaterMakesValid()) ? 150 : 0);
 				iAccessibility += ((kBuildImprovement.isRiverSideMakesValid()) ? 150 : 0);

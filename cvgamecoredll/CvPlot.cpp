@@ -1218,7 +1218,7 @@ bool CvPlot::isPotentialIrrigation() const
 	//doto-keldath- left it out
 	//if ((isCity() && isFlatlands()) ||
 	//===NM=====Mountains Mod===0=====keldath - i hope thats ok
-	if ((isCity() && !(isHills() || (GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && isPeak())))||
+	if ((isCity() && !(isHills() || !(GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && isPeak())))||
 	//===NM=====Mountains Mod===0=====
 		(isImproved() && GC.getInfo(getImprovementType()).isCarriesIrrigation()))
 	{
@@ -1234,7 +1234,7 @@ bool CvPlot::canHavePotentialIrrigation() const
 {
 	PROFILE_FUNC(); // advc (not called very frequently)	
 //===NM=====Mountains Mods===0=====keldath - i hope thats ok
-	if (isCity() && !(isHills() || (GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && isPeak())))
+	if (isCity() && !(isHills() || !(GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && isPeak())))
 //===NM=====Mountains Mods===0=====
 	// advc: 2nd condition was !isHills. Mods might allow cities on peaks.
 	//keldath - prefer optional176.230.175.24
@@ -2723,28 +2723,30 @@ PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureR
 
 	int iBestCulture = 0;
 	PlayerTypes eBestPlayer = NO_PLAYER;
-	for (int iI = 0; iI < MAX_PLAYERS; ++iI)
-	{	// <advc.035>
-		if(bOwnExclusiveRadius && bAnyCityRadius && !abCityRadius[iI])
+	for (PlayerIter<EVER_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
+	{
+		PlayerTypes const ePlayer = itPlayer->getID();
+		// <advc.035>
+		if(bOwnExclusiveRadius && bAnyCityRadius && !abCityRadius[ePlayer])
 			continue; // </advc.035>
-		PlayerTypes eLoopPlayer = (PlayerTypes)iI;
-		if(GET_PLAYER(eLoopPlayer).isAlive() /* advc.099c: */ || bIgnoreCultureRange)
+		if(itPlayer->isAlive() /* advc.099c: */ || bIgnoreCultureRange)
 		{
-			int iCulture = getCulture(eLoopPlayer);
+			int iCulture = getCulture(ePlayer);
 			/*  <advc.035> When the range of a city expands, tile ownership is updated
 				before tile culture is spread. If the expansion is sudden (WorldBuilder,
 				perhaps also culture bomb), 0 tile culture in the new range is possible. */
-			if (bOwnExclusiveRadius && iBestCulture == 0 && abCityRadius[iI])
+			if (bOwnExclusiveRadius && iBestCulture == 0 && abCityRadius[ePlayer])
 				iBestCulture = -1;
 			if (iCulture <= iBestCulture) // </advc.035>
 				continue; // advc
 			if (/* advc.099c: */ bIgnoreCultureRange ||
-				isWithinCultureRange(eLoopPlayer))
+				isWithinCultureRange(ePlayer))
 			{
-				if (iCulture > iBestCulture || (iCulture == iBestCulture && getOwner() == eLoopPlayer))
+				if (iCulture > iBestCulture ||
+					(iCulture == iBestCulture && getOwner() == ePlayer))
 				{
 					iBestCulture = iCulture;
-					eBestPlayer = eLoopPlayer;
+					eBestPlayer = ePlayer;
 				}
 			}
 		}
@@ -8971,7 +8973,7 @@ int CvPlot::get3DAudioScriptFootstepIndex(int iFootstepTag) const
 float CvPlot::getAqueductSourceWeight() const
 {
 	float fWeight = 0.0f;
-	// Deliverator - changed next line fresh water
+	// Deliverator - changed next line fresh water fresh water
 	if (isLake() || isPeak() || (getImprovementType() != NO_IMPROVEMENT && GC.getImprovementInfo(getImprovementType()).getAddsFreshWaterInRadius() >= 0)
 	//keldath added from bts
 		|| isFeature() && GC.getInfo(getFeatureType()).isAddsFreshWater())

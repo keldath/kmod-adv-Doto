@@ -7116,7 +7116,7 @@ void CvUnitAI::AI_exploreSeaMove()
 		// Don't be too quick to decide that there are too many explorers
 		if(::bernoulliSuccess(0.13, "advc.017b"))
 		{
-			bool bTransform = kOwner.AI_isExcessSeaExplorers(*pWaterArea);
+			bTransform = kOwner.AI_isExcessSeaExplorers(*pWaterArea);
 			bExcessExplorers = bTransform;
 		}
 		if(!bTransform &&
@@ -14161,7 +14161,11 @@ bool CvUnitAI::AI_bombardCity(bool skipRangedAttack)
 	}
 	
 	CvCity* pBombardCity = bombardTarget(getPlot());
-
+	//added saftey check - it can happen with the target value search
+	if (pBombardCity == NULL)
+	{
+		return false;
+	}
 	FAssert(pBombardCity != NULL);
 
 	int iAttackOdds = AI_getGroup()->AI_attackOdds(pBombardCity->plot(), true);
@@ -15022,8 +15026,9 @@ bool CvUnitAI::AI_pirateBlockade()
 								AI_getAttitude(pPlotCity->getOwner());
 						if (iAttitudeLevel > 0)
 						{
-							std::max(1, iAttitudeFactor - ::round(
-									std::pow((double)iAttitudeLevel, 1.5)));
+							iAttitudeFactor = std::max(1,
+									iAttitudeFactor -
+									scaled(iAttitudeLevel).pow(fixp(1.5)).round());
 						}
 						iCityValue *= iAttitudeFactor;
 						TechTypes eTechReq = getUnitInfo().getPrereqAndTech();
