@@ -26,7 +26,7 @@ bool StartingPositionIteration::isDebug()
 	#endif
 }
 
-
+//KELDATH - F1RPO FIXED A MEM LEAK  - VERY IMPORTAMT - SNAKY CONTINANTS CTD
 StartingPositionIteration::StartingPositionIteration() :
 	m_bRestrictedAreas(false), m_bNormalizationTargetReady(false),
 	m_pEval(NULL), m_pYieldValues(NULL), m_pYieldsPerArea(NULL),
