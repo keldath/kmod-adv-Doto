@@ -6811,7 +6811,7 @@ int CvCityAI::AI_getEmphasizeAvoidGrowthCount() const
 	/* DOTO-Population Limit ModComp - Beginning */
 	if (getPopulation() >= getPopulationLimit())
 	{
-		return true;
+		return 1;
 	}
 	/* DOTO-Population Limit ModComp - End */
 	return m_iEmphasizeAvoidGrowthCount;
