@@ -3094,6 +3094,24 @@ short CvPlayerAI::AI_foundValue_bulk(int iX, int iY, const CvFoundSettings& kSet
 				if (iI != CITY_HOME_PLOT && (!bRemoveableFeature || GC.getFeatureInfo(eFeature).getHealthPercent() > 0))
 					iHealth += GC.getFeatureInfo(eFeature).getHealthPercent(); // note, this will be reduced by some factor before being added to the total value.
 			}
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Enable Terrain Health Modifiers                                                  **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+					TerrainTypes eTerrain = pLoopPlot->getTerrainType();
+					if (eTerrain != NO_TERRAIN)
+					{
+						if (iI != CITY_HOME_PLOT)
+						{
+							iHealth += GC.getTerrainInfo(eTerrain).getHealthPercent();
+						}
+					}
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 			// K-Mod end
 
 			// K-Mod note: iClaimThreshold is bigger for bEasyCulture and bAmbitious civs.
@@ -3279,6 +3297,25 @@ short CvPlayerAI::AI_foundValue_bulk(int iX, int iY, const CvFoundSettings& kSet
 			iPlotValue *= kSet.iGreed;
 			iPlotValue /= 100;
 			// K-Mod end
+/************************************************************************************************/
+/* Afforess	                  Start		 03/18/10                                               */
+/*                                                                                              */
+/*                           Mountains mod nm Option                                                                   */
+/************************************************************************************************/
+			if (pLoopPlot->isPeak())
+			{
+				if (GC.getGameINLINE().isOption(GAMEOPTION_MOUNTAINS))
+				{
+					iPlotValue += 10;
+				}
+				else
+				{
+					iPlotValue -= 10;
+				}
+			}
+/************************************************************************************************/
+/* Afforess	                     END                                                            */
+/************************************************************************************************/
 
 			iPlotValue *= iCultureMultiplier;
 			iPlotValue /= 100;
@@ -4944,6 +4981,25 @@ int CvPlayerAI::AI_goldTarget(bool bUpgradeBudgetOnly) const
 		// K-Mod end
 	}
 
+/************************************************************************************************/
+/* Afforess	 improvements                 Start		 02/01/10                                               */
+/*                                                                                              */
+/*  Don't bother saving gold if we can't trade it for anything                                  */
+/************************************************************************************************/
+	if (!GET_TEAM(getTeam()).isGoldTrading() || !(GET_TEAM(getTeam()).isTechTrading()) || (GC.getGameINLINE().isOption(GAMEOPTION_NO_TECH_TRADING)))
+	{
+		iGold /= 3;
+	}
+	//Fuyu: Afforess says gold is also less useful without tech brokering, so why not add it
+	else if (GC.getGameINLINE().isOption(GAMEOPTION_NO_TECH_BROKERING))
+	{
+		iGold *= 3;
+		iGold /= 4;
+	}
+/************************************************************************************************/
+/* Afforess	                     END                                                            */
+/************************************************************************************************/
+
 	return iGold + AI_getExtraGoldTarget();
 }
 
@@ -5690,7 +5746,12 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech, b
 		}
 	}
 	// K-Mod end
-
+/* Population Limit ModComp - Beginning */
+	if (kTechInfo.isNoPopulationLimit())
+	{
+		iValue += (GC.getHandicapInfo(getHandicapType()).getPopulationLimit() * 2 * (getTotalPopulation() - (iCityCount * 2)));
+	}
+/* Population Limit ModComp - End */
 	if (kTechInfo.isPermanentAllianceTrading() && (GC.getGameINLINE().isOption(GAMEOPTION_PERMANENT_ALLIANCES)))
 	{
 		iValue += 8*iCityTarget;
@@ -5923,6 +5984,10 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech, b
 					//iImprovementValue += ((kImprovement.isPeakMakesValid()) ? 100 : 0);
 					iAccessibility += ((kBuildImprovement.isPeakMakesValid()) ? 150 : 0);
 					//===NM=====Mountains Mod===X=====
+					// davidlallen: mountain limitations next line
+					//keldath - i think i added thi swithout thinking... keldath
+					//iAccessibility += ((kBuildImprovement.isPeakMakesInvalid()) ? 150 : 0);
+					//===NM=====Mountain Mod===X=====
 					iAccessibility += ((kBuildImprovement.isFreshWaterMakesValid()) ? 150 : 0);
 					iAccessibility += ((kBuildImprovement.isRiverSideMakesValid()) ? 150 : 0);
 
@@ -8130,6 +8195,11 @@ void CvPlayerAI::AI_updateAttitudeCache(PlayerTypes ePlayer)
 	iAttitude += AI_getFavoriteCivicAttitude(ePlayer);
 	iAttitude += AI_getTradeAttitude(ePlayer);
 	iAttitude += AI_getRivalTradeAttitude(ePlayer);
+//dune wars - start - start hated civs hated civic hated civics
+	iAttitude += AI_getHatedCivicAttitude(ePlayer);
+	iAttitude += AI_getFavoriteCivilizationAttitude(ePlayer); 
+	iAttitude += AI_getHatedCivilizationAttitude(ePlayer); 
+// dune wars - end - start hated civs
 
 	for (int iI = 0; iI < NUM_MEMORY_TYPES; iI++)
 	{
@@ -8492,7 +8562,58 @@ int CvPlayerAI::AI_getFavoriteCivicAttitude(PlayerTypes ePlayer) const
 	return iAttitude;
 }
 
+//a1021//dune wars - hated civs
+int CvPlayerAI::AI_getHatedCivicAttitude(PlayerTypes ePlayer) const
+{
+	int iAttitude;
 
+	iAttitude = 0;
+
+	if (GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivic() != NO_CIVIC)
+	{
+		if (!isCivic((CivicTypes)(GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivic())) && GET_PLAYER(ePlayer).isCivic((CivicTypes)(GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivic())))
+		{
+			iAttitude += GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivicAttitudeChange();
+		}
+	}
+
+	return iAttitude;
+}
+
+int CvPlayerAI::AI_getFavoriteCivilizationAttitude(PlayerTypes ePlayer) const
+{
+	int iAttitude;
+
+	iAttitude = 0;
+
+	if (GC.getLeaderHeadInfo(getPersonalityType()).getFavoriteCivilization() != NO_CIVILIZATION)
+	{
+		if (GC.getLeaderHeadInfo(getPersonalityType()).getFavoriteCivilization() == GET_PLAYER(ePlayer).getCivilizationType())
+		{
+			iAttitude += GC.getLeaderHeadInfo(getPersonalityType()).getFavoriteCivilizationAttitudeChange();
+		}
+	}
+
+	return iAttitude;
+}
+
+int CvPlayerAI::AI_getHatedCivilizationAttitude(PlayerTypes ePlayer) const
+{
+	int iAttitude;
+
+	iAttitude = 0;
+
+	if (GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivilization() != NO_CIVILIZATION)
+	{
+		if (GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivilization() == GET_PLAYER(ePlayer).getCivilizationType())
+		{
+			iAttitude += GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivilizationAttitudeChange();
+		}
+	}
+
+	return iAttitude;
+}
+//a1021 end//dune wars - hated civs
 int CvPlayerAI::AI_getTradeAttitude(PlayerTypes ePlayer) const
 {
 	// XXX human only?
@@ -8636,6 +8757,15 @@ PlayerVoteTypes CvPlayerAI::AI_diploVote(const VoteSelectionSubData& kVoteData, 
 				{
 					if (!isCivic((CivicTypes)iI))
 					{
+//dune wars - hated civs						//a1021
+						if (GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivic() == (CivicTypes)iI)
+						{
+							bValid = false;
+							bDefy = true;
+							break;
+						}
+//dune wars - hated civs					//a1021 end
+
 						eBestCivic = AI_bestCivic((CivicOptionTypes)(GC.getCivicInfo((CivicTypes)iI).getCivicOptionType()));
 
 						if (eBestCivic != NO_CIVIC)
@@ -14847,7 +14977,19 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 			// Free Speech
 			iTempValue += (AI_averageYieldMultiplier((YieldTypes)iI) * (kCivic.getImprovementYieldChanges(iJ, iI) * (getImprovementCount((ImprovementTypes)iJ) + iCities/2))) / 100;
 		}
+/*************************************************************************************************/
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**																								**/
+/**																								**/
+/*************************************************************************************************/
+		for (int iJ = 0; iJ < GC.getNumSpecialistInfos(); iJ++)
+		{
+			iTempValue += ((kCivic.getSpecialistYieldChange(iJ, iI) * getTotalPopulation()) / 5);
+		}
 
+/*************************************************************************************************/
+/**	CMEDIT: End																					**/
+/*************************************************************************************************/
 		/* original code
 		if (iI == YIELD_FOOD)
 		{ 
@@ -14924,8 +15066,21 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 		{
 			iTempValue *= AI_commerceWeight((CommerceTypes)iI);
 			iTempValue /= 100;
+/*************************************************************************************************/
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**																								**/
+/**																								**/
+/*************************************************************************************************/
+			for (int iJ = 0; iJ < GC.getNumSpecialistInfos(); iJ++)
+			{
+				iTempValue += ((kCivic.getSpecialistCommerceChange(iJ, iI) * getTotalPopulation()) / 15);
+			}
 
+/*************************************************************************************************/
+/**	CMEDIT: End																					**/
+/*************************************************************************************************/
 			iValue += iTempValue;
+
 		}
 	}
 
@@ -15063,6 +15218,21 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 			iValue += 20; 
 		}
 	}
+//dune wars - hated civs
+	if (GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivic() == eCivic)
+	{
+		if (iValue > 0)
+		{
+			/*
+			iValue *= 2;
+			iValue /= 3;
+			*/
+			//new values - suggested by f1rpo -0.96- keldath 
+			iValue *= 1;
+			iValue /= 2;
+		}
+	}
+//dune wars - hated civs
 
 	/* if (AI_isDoVictoryStrategy(AI_VICTORY_CULTURE2) && (GC.getCivicInfo(eCivic).isNoNonStateReligionSpread()))
 	{
@@ -23448,6 +23618,9 @@ void CvPlayerAI::AI_recalculateFoundValues(int iX, int iY, int iInnerRadius, int
 	
 int CvPlayerAI::AI_getMinFoundValue() const
 {
+// Dune Wars MIN_FOUND_VALUE koma13 START
+//	int iValue = GC.getDefineINT("MIN_FOUND_VALUE");
+// Dune Wars MIN_FOUND_VALUE koma13 END
 	PROFILE_FUNC();
 	//int iValue = 600;
 	int iValue = GC.getDefineINT("BBAI_MINIMUM_FOUND_VALUE"); // K-Mod

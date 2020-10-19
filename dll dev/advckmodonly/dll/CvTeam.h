@@ -197,6 +197,11 @@ public:
 	bool isIrrigation() const;																								// Exposed to Python	
 	void changeIrrigationCount(int iChange);																			// Exposed to Python	
 																																								
+/* Population Limit ModComp - Beginning */
+	int getNoPopulationLimitCount() const;																											// Exposed to Python
+	bool isNoPopulationLimit() const;																								// Exposed to Python
+	void changeNoPopulationLimitCount(int iChange);	// Exposed to Python
+/* Population Limit ModComp - End */
 	int getIgnoreIrrigationCount() const;																								// Exposed to Python	
 	bool isIgnoreIrrigation() const;																					// Exposed to Python	
 	void changeIgnoreIrrigationCount(int iChange);																// Exposed to Python	
@@ -235,6 +240,14 @@ public:
 	int getCommerceFlexibleCount(CommerceTypes eIndex) const;														// Exposed to Python
 	bool isCommerceFlexible(CommerceTypes eIndex) const;																// Exposed to Python
 	void changeCommerceFlexibleCount(CommerceTypes eIndex, int iChange);					// Exposed to Python
+
+    // < Civic Infos Plus Start >
+    int getYieldRateModifier(YieldTypes eIndex);																								// Exposed to Python
+	void changeYieldRateModifier(YieldTypes eIndex, int iChange);
+
+	int getCommerceRateModifier(CommerceTypes eIndex);																								// Exposed to Python
+	void changeCommerceRateModifier(CommerceTypes eIndex, int iChange);
+	// < Civic Infos Plus End   >
 
 	int getExtraMoves(DomainTypes eIndex) const;																				// Exposed to Python
 	void changeExtraMoves(DomainTypes eIndex, int iChange);							// Exposed to Python
@@ -437,6 +450,9 @@ protected:
 	int m_iVassalTradingCount;
 	int m_iBridgeBuildingCount;
 	int m_iIrrigationCount;
+	/* Population Limit ModComp - Beginning */
+	int m_iNoPopulationLimitCount;
+	/* Population Limit ModComp - End */
 	int m_iIgnoreIrrigationCount;
 	int m_iWaterWorkCount;
 	int m_iVassalPower;
@@ -454,6 +470,11 @@ protected:
 	int* m_aiWarWeariness;
 	int* m_aiTechShareCount;
 	int* m_aiCommerceFlexibleCount;
+	// < Civic Infos Plus Start >
+	int* m_aiYieldRateModifier;
+	int* m_aiCommerceRateModifier;
+	// < Civic Infos Plus End   >
+
 	int* m_aiExtraMoves;
 	int* m_aiForceTeamVoteEligibilityCount;
 

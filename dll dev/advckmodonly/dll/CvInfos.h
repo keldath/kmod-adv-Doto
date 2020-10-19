@@ -247,6 +247,16 @@ public:
 	int getGreatPeopleRateChange() const;		// Exposed to Python
 	int getMissionType() const;							// Exposed to Python
 	void setMissionType(int iNewType);
+/*************************************************************************************************/
+/** Specialists Enhancements, by Supercheese 10/9/09                                                   */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int getHealth() const;							// Exposed to Python
+	int getHappiness() const;							// Exposed to Python
+/*************************************************************************************************/
+/** Specialists Enhancements                          END                                              */
+/*************************************************************************************************/
 	int getExperience() const;				// Exposed to Python
 
 	bool isVisible() const;				// Exposed to Python
@@ -270,6 +280,16 @@ protected:
 	int m_iGreatPeopleUnitClass;		// Exposed to Python
 	int m_iGreatPeopleRateChange;		// Exposed to Python
 	int m_iMissionType;
+/*************************************************************************************************/
+/** Specialists Enhancements, by Supercheese 10/9/09                                                   */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int m_iHealth;
+	int m_iHappiness;
+/*************************************************************************************************/
+/** Specialists Enhancements                          END                                              */
+/*************************************************************************************************/ 
 	int m_iExperience;
 
 	bool m_bVisible;				// Exposed to Python
@@ -338,6 +358,9 @@ public:
 	bool isVassalStateTrading() const;	// Exposed to Python
 	bool isBridgeBuilding() const;				// Exposed to Python
 	bool isIrrigation() const;						// Exposed to Python
+	/* Population Limit ModComp - Beginning */
+	bool isNoPopulationLimit() const;						// Exposed to Python
+	/* Population Limit ModComp - End */
 	bool isIgnoreIrrigation() const;			// Exposed to Python
 	bool isWaterWork() const;							// Exposed to Python
 	bool isRiverTrade() const;							// Exposed to Python
@@ -352,6 +375,12 @@ public:
 	// Arrays
 
 	int getDomainExtraMoves(int i) const;	// Exposed to Python
+	 // <Tech Bonus Mod- civic info  Civic Infos Plus Start>
+    int getYieldModifier(int i) const;                // Exposed to Python
+    int* getYieldModifierArray() const;
+   // DllExport int getCommerceModifier(int i) const;				// Exposed to Python
+//	int* getCommerceModifierArray() const;
+	// <Tech Bonus Mod>
 	int getFlavorValue(int i) const;			// Exposed to Python
 	int getPrereqOrTechs(int i) const;		// Exposed to Python
 	int getPrereqAndTechs(int i) const;		// Exposed to Python
@@ -409,6 +438,9 @@ protected:
 	bool m_bVassalStateTrading;
 	bool m_bBridgeBuilding;
 	bool m_bIrrigation;
+	/* Population Limit ModComp - Beginning */
+	bool m_bNoPopulationLimit;
+	/* Population Limit ModComp - End */
 	bool m_bIgnoreIrrigation;
 	bool m_bWaterWork;
 	bool m_bRiverTrade;
@@ -420,6 +452,11 @@ protected:
 	// Arrays
 
 	int* m_piDomainExtraMoves;
+	// <Tech Bonus Mod Start  Civic Infos Plus Start>
+	int* m_piYieldModifier;
+//	int* m_piCommerceModifier;
+	// <Tech Bonus Mod End>
+
 	int* m_piFlavorValue;
 
 	int* m_piPrereqOrTechs;
@@ -501,6 +538,9 @@ public:
 	bool isLeader() const;				// Exposed to Python
 	bool isBlitz() const;				// Exposed to Python
 	bool isAmphib() const;				// Exposed to Python
+//MOD@VET_Andera412_Blocade_Unit-begin1/2
+	bool isUnblocade() const;
+//MOD@VET_Andera412_Blocade_Unit-end1/2
 	bool isRiver() const;				// Exposed to Python
 	bool isEnemyRoute() const;				// Exposed to Python
 	bool isAlwaysHeal() const;				// Exposed to Python
@@ -573,7 +613,10 @@ protected:
 
 	bool m_bLeader;
 	bool m_bBlitz;									
-	bool m_bAmphib;								
+	bool m_bAmphib;					
+//MOD@VET_Andera412_Blocade_Unit-begin2/2
+	bool m_bUnblocade;
+//MOD@VET_Andera412_Blocade_Unit-end2/2
 	bool m_bRiver;									
 	bool m_bEnemyRoute;						
 	bool m_bAlwaysHeal;						
@@ -824,6 +867,13 @@ public:
 	int getHurryCostModifier() const;				// Exposed to Python
 	int getAdvancedStartCost() const;				// Exposed to Python
 	int getAdvancedStartCostIncrease() const;				// Exposed to Python
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+	int getNumCitySizeUnitPrereq() const;  // Exposed to Python
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
 	int getMinAreaSize() const;				// Exposed to Python
 	int getMoves() const;				// Exposed to Python
 	int getAirRange() const;				// Exposed to Python
@@ -880,6 +930,20 @@ public:
 	int getSeeInvisibleType(int i) const;					// Exposed to Python
 	int getNumSeeInvisibleTypes() const;					// Exposed to Python
 	int getAdvisorType() const;								// Exposed to Python
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**				units																*/
+/**		CanTrain 																*/
+/********************************************************************************/
+	int getMaxStartEra() const;							// Exposed to Python
+	int getForceObsoleteTech() const;									// Exposed to Python
+	bool isStateReligion() const;				// Exposed to Python
+	int getPrereqGameOption() const;									// Exposed to Python
+	int getNotGameOption() const;									// Exposed to Python
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
+
 	int getHolyCity() const;									// Exposed to Python
 	int getReligionType() const;							// Exposed to Python
 	int getStateReligion() const;							// Exposed to Python
@@ -964,6 +1028,20 @@ public:
 	int getFeaturePassableTech(int i) const;		// Exposed to Python
 	int getFlankingStrikeUnitClass(int i) const;	// Exposed to Python
 
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**		units																		*/
+/**		CanTrain 																*/
+/********************************************************************************/
+	bool isPrereqOrCivics(int i) const;				// Exposed to Python
+	bool isPrereqBuildingClass(int i) const; 				//Exposed to Python
+	int getPrereqBuildingClassOverrideTech(int i) const; 				//Exposed to Python
+	int getPrereqBuildingClassOverrideEra(int i) const; 				//Exposed to Python
+	bool getForceObsoleteUnitClass(int i) const; 				//Exposed to Python
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
+
 	bool getUpgradeUnitClass(int i) const;	// Exposed to Python
 	bool getTargetUnitClass(int i) const;	// Exposed to Python
 	bool getTargetUnitCombat(int i) const;	// Exposed to Python
@@ -1011,6 +1089,13 @@ protected:
 	int m_iHurryCostModifier;
 	int m_iAdvancedStartCost;
 	int m_iAdvancedStartCostIncrease;
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+	int m_iNumCitySizeUnitPrereq;
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
 	int m_iMinAreaSize;
 	int m_iMoves;
 	int m_iAirRange;
@@ -1064,6 +1149,21 @@ protected:
 	int m_iDefaultUnitAIType;
 	int m_iInvisibleType;					
 	int m_iAdvisorType;
+
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**		units																		*/
+/**		CanTrain 																*/
+/********************************************************************************/
+	int m_iMaxStartEra;
+	int m_iForceObsoleteTech;
+	bool m_bStateReligion;
+	int m_iPrereqGameOption;
+	int m_iNotGameOption;
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
+
 	int m_iHolyCity;							
 	int m_iReligionType;					
 	int m_iStateReligion;					
@@ -1147,6 +1247,20 @@ protected:
 	int* m_piTerrainPassableTech;
 	int* m_piFeaturePassableTech;
 	int* m_piFlankingStrikeUnitClass;
+
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**		units																		*/
+/**		CanTrain 																*/
+/********************************************************************************/
+	bool* m_pbPrereqOrCivics;
+	bool* m_pbPrereqBuildingClass;
+	int* m_piPrereqBuildingClassOverrideTech;
+	int* m_piPrereqBuildingClassOverrideEra;
+	bool* m_pbForceObsoleteUnitClass;
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 
 	bool* m_pbUpgradeUnitClass;
 	bool* m_pbTargetUnitClass;
@@ -1352,6 +1466,11 @@ public:
 	int getMaxConscript() const;				// Exposed to Python
 	int getStateReligionHappiness() const;				// Exposed to Python
 	int getNonStateReligionHappiness() const;				// Exposed to Python
+	// < Civic Infos Plus Start >
+	int getStateReligionExtraHealth() const;				// Exposed to Python
+	int getNonStateReligionExtraHealth() const;				// Exposed to Python
+	// < Civic Infos Plus End   >
+
 	int getStateReligionUnitProductionModifier() const;				// Exposed to Python
 	int getStateReligionBuildingProductionModifier() const;				// Exposed to Python
 	int getStateReligionFreeExperience() const;								// Exposed to Python
@@ -1373,12 +1492,42 @@ public:
 
 	// Arrays
 
+	/*************************************************************************************************/
+	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+	/**																								**/
+	/**																								**/
+	/*************************************************************************************************/
+	int getSpecialistYieldChange(int i, int j) const;			
+	int* getSpecialistYieldChangeArray(int i) const;
+	
+	int getSpecialistCommerceChange(int i, int j) const;			
+	int* getSpecialistCommerceChangeArray(int i) const;
+
+	/*************************************************************************************************/
+	/**	CMEDIT: End																					**/
+	/*************************************************************************************************/
 	int getYieldModifier(int i) const;				// Exposed to Python
 	int* getYieldModifierArray() const;
 	int getCapitalYieldModifier(int i) const;				// Exposed to Python
 	int* getCapitalYieldModifierArray() const;
 	int getTradeYieldModifier(int i) const;				// Exposed to Python
 	int* getTradeYieldModifierArray() const;
+	// < Civic Infos Plus Start >
+	int getStateReligionYieldModifier(int i) const;        // Exposed to Python
+	int* getStateReligionYieldModifierArray() const;
+	int getNonStateReligionYieldModifier(int i) const;        // Exposed to Python
+	int* getNonStateReligionYieldModifierArray() const;
+	int getSpecialistExtraYield(int i) const;				// Exposed to Python
+	int* getSpecialistExtraYieldArray() const;
+	int getFreeSpecialistCount(int i) const;				// Exposed to Python
+	int getStateReligionCommerceModifier(int i) const;             // Exposed to Python
+	int* getStateReligionCommerceModifierArray() const;
+	int getNonStateReligionCommerceModifier(int i) const;             // Exposed to Python
+	int* getNonStateReligionCommerceModifierArray() const;
+	int getBuildingYieldChanges(int i, int j) const;                  // Exposed to Python
+	int getBuildingCommerceChanges(int i, int j) const;               // Exposed to Python
+	// < Civic Infos Plus End   >
+
 	int getCommerceModifier(int i) const;				// Exposed to Python
 	int* getCommerceModifierArray() const;
 	int getCapitalCommerceModifier(int i) const;				// Exposed to Python
@@ -1436,6 +1585,11 @@ protected:
 	int m_iMaxConscript;											
 	int m_iStateReligionHappiness;							
 	int m_iNonStateReligionHappiness;						
+// < Civic Infos Plus Start >
+	int m_iStateReligionExtraHealth;
+	int m_iNonStateReligionExtraHealth;
+// < Civic Infos Plus End   >
+
 	int m_iStateReligionUnitProductionModifier;			
 	int m_iStateReligionBuildingProductionModifier;	
 	int m_iStateReligionFreeExperience;	
@@ -1455,9 +1609,31 @@ protected:
 
 	// Arrays
 
+	/*************************************************************************************************/
+	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+	/**																								**/
+	/**																								**/
+	/*************************************************************************************************/
+	int** m_ppiSpecialistYieldChange;
+	int** m_ppiSpecialistCommerceChange;
+	/*************************************************************************************************/
+	/**	CMEDIT: End																					**/
+	/*************************************************************************************************/
+	/*************************************************************************************************/
 	int* m_piYieldModifier;
 	int* m_piCapitalYieldModifier;
 	int* m_piTradeYieldModifier;
+	// < Civic Infos Plus Start >
+	int* m_piSpecialistExtraYield;
+	int* m_paiFreeSpecialistCount;
+	int* m_piStateReligionYieldModifier;
+	int* m_piStateReligionCommerceModifier;
+	int* m_piNonStateReligionYieldModifier;
+	int* m_piNonStateReligionCommerceModifier;
+	int** m_ppiBuildingYieldChanges;
+	int** m_ppiBuildingCommerceChanges;
+	// < Civic Infos Plus End   >
+
 	int* m_piCommerceModifier;
 	int* m_piCapitalCommerceModifier;
 	int* m_piSpecialistExtraCommerce;
@@ -1590,6 +1766,13 @@ public:
 	int getAdvancedStartCostIncrease() const;				// Exposed to Python
 	int getMinAreaSize() const;				// Exposed to Python
 	int getNumCitiesPrereq() const;				// Exposed to Python
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+	int getNumCitySizeBldPrereq() const;  // Exposed to Python
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
 	int getNumTeamsPrereq() const;				// Exposed to Python
 	int getUnitLevelPrereq() const;				// Exposed to Python
 	int getMinLatitude() const;				// Exposed to Python
@@ -1604,6 +1787,9 @@ public:
 	int getFreeExperience() const;				// Exposed to Python
 	int getGlobalFreeExperience() const;				// Exposed to Python
 	int getFoodKept() const;				// Exposed to Python
+	/* Population Limit ModComp - Beginning */
+	int getPopulationLimitChange() const;				// Exposed to Python
+	/* Population Limit ModComp - End */
 	int getAirlift() const;				// Exposed to Python
 	int getAirModifier() const;				// Exposed to Python
 	int getAirUnitCapacity() const;				// Exposed to Python
@@ -1629,6 +1815,16 @@ public:
 	int getPowerValue() const;				// Exposed to Python
 	int getSpecialBuildingType() const;				// Exposed to Python
 	int getAdvisorType() const;				// Exposed to Python
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**			nuildings																	*/
+/**		CanConstruct															*/
+/********************************************************************************/
+	int getPrereqGameOption() const;				// Exposed to Python
+	int getNotGameOption() const;				// Exposed to Python
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 	int getHolyCity() const;				// Exposed to Python
 	int getReligionType() const;				// Exposed to Python
 	int getStateReligion() const;				// Exposed to Python
@@ -1651,6 +1847,10 @@ public:
 	int getGlobalHealth() const;				// Exposed to Python
 	int getGlobalPopulationChange() const;				// Exposed to Python
 	int getFreeTechs() const;				// Exposed to Python
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+	int getFreeSpecificTech() const;
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
+
 	int getDefenseModifier() const;					// Exposed to Python
 	int getBombardDefenseModifier() const;					// Exposed to Python
 	int getAllCityDefenseModifier() const;				// Exposed to Python
@@ -1752,6 +1952,11 @@ public:
 	int getBonusYieldModifier(int i, int j) const;				// Exposed to Python
 	int* getBonusYieldModifierArray(int i) const;
 
+	// davidlallen: building bonus yield, commerce start
+	int getBonusConsumed() const;
+	int getCommerceProduced(int i) const;
+	int getYieldProduced(int i) const;
+	// davidlallen: building bonus yield, commerce end
 /************************************************************************************************/
 /* UNOFFICIAL_PATCH                       06/27/10                    Afforess & jdog5000       */
 /*                                                                                              */
@@ -1799,6 +2004,13 @@ protected:
 	int m_iAdvancedStartCostIncrease;
 	int m_iMinAreaSize;									
 	int m_iNumCitiesPrereq;							
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+	int m_iNumCitySizeBldPrereq;
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
 	int m_iNumTeamsPrereq;							
 	int m_iUnitLevelPrereq;							
 	int m_iMinLatitude;									
@@ -1812,6 +2024,9 @@ protected:
 	int m_iGlobalHurryModifier;						
 	int m_iFreeExperience;
 	int m_iGlobalFreeExperience;						
+	/* Population Limit ModComp - Beginning */
+	int m_iPopulationLimitChange;
+	/* Population Limit ModComp - End */	
 	int m_iFoodKept;
 	int m_iAirlift;
 	int m_iAirModifier;									
@@ -1838,6 +2053,16 @@ protected:
 	int m_iPowerValue;									
 	int m_iSpecialBuildingType;						
 	int m_iAdvisorType;
+/********************************************************************************/
+/**		REVDCM									2/16/10				phungus420	*/
+/**				buildings																*/
+/**		CanConstruct															*/
+/********************************************************************************/
+	int m_iPrereqGameOption;										
+	int m_iNotGameOption;
+/********************************************************************************/
+/**		REVDCM									END								*/
+/********************************************************************************/
 	int m_iHolyCity;										
 	int m_iReligionType;								
 	int m_iStateReligion;								
@@ -1860,6 +2085,11 @@ protected:
 	int m_iGlobalHealth;
 	int m_iGlobalPopulationChange;
 	int m_iFreeTechs;
+
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+	int m_iFreeSpecificTech;
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
+
 	int m_iDefenseModifier;
 	int m_iBombardDefenseModifier;
 	int m_iAllCityDefenseModifier;
@@ -1938,6 +2168,11 @@ protected:
 
 	int** m_ppaiSpecialistYieldChange;
 	int** m_ppaiBonusYieldModifier;
+	// davidlallen: building bonus yield, commerce start
+	int m_iBonusConsumed;
+	int* m_paiCommerceProduced;
+	int* m_paiYieldProduced;
+	// davidlallen: building bonus yield, commerce end
 /************************************************************************************************/
 /* UNOFFICIAL_PATCH                       06/27/10                    Afforess & jdog5000       */
 /*                                                                                              */
@@ -2219,6 +2454,9 @@ public:
 	DllExport int getDerivativeCiv() const;																// Exposed to Python
 	void setDerivativeCiv(int iCiv);
 
+	// davidlallen: religion forbidden to civilization next line
+	bool isForbidden(int eReligionType) const;
+
 	bool read(CvXMLLoadUtility* pXML);
 	DllExport bool readPass2(CvXMLLoadUtility* pXML);
 	DllExport void read(FDataStreamBase* stream);
@@ -2254,6 +2492,8 @@ protected:
 	bool* m_pbCivilizationFreeBuildingClass;
 	bool* m_pbCivilizationFreeTechs;
 	bool* m_pbCivilizationDisableTechs;
+	// davidlallen: religion forbidden to civilization next line
+	bool* m_pbForbiddenReligions;
 
 	CvString* m_paszCityNames;
 
@@ -2386,6 +2626,9 @@ public:
 	int getInflationPercent() const;				// Exposed to Python
 	int getHealthBonus() const;				// Exposed to Python
 	int getHappyBonus() const;				// Exposed to Python
+	/* Population Limit ModComp - Beginning */
+	int getPopulationLimit() const;				// Exposed to Python
+	/* Population Limit ModComp - End */
 	int getAttitudeChange() const;				// Exposed to Python
 	int getNoTechTradeModifier() const;				// Exposed to Python
 	int getTechTradeKnownModifier() const;				// Exposed to Python
@@ -2460,6 +2703,9 @@ protected:
 	int m_iInflationPercent;									
 	int m_iHealthBonus;									
 	int m_iHappyBonus;										
+	/* Population Limit ModComp - Beginning */
+	int m_iPopulationLimit;
+	/* Population Limit ModComp - End */
 	int m_iAttitudeChange;
 	int m_iNoTechTradeModifier;
 	int m_iTechTradeKnownModifier;
@@ -3426,12 +3672,35 @@ public:
 	int getSeeThroughLevel() const;			// Exposed to Python
 	int getBuildModifier() const;				// Exposed to Python
 	int getDefenseModifier() const;			// Exposed to Python
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: New Tag Definition                                                               **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+	int getHealthPercent() const;							// Exposed to Python
+	int getTurnDamage() const;							// Exposed to Python
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 
 	bool isWater() const;								// Exposed to Python
 	bool isImpassable() const;					// Exposed to Python
 	bool isFound() const;								// Exposed to Python
 	bool isFoundCoast() const;					// Exposed to Python
 	bool isFoundFreshWater() const;			// Exposed to Python
+	/*****************************************************************************************************/
+	/**  Author: TheLadiesOgre                                                                          **/
+	/**  Date: 15.10.2009                                                                               **/
+	/**  ModComp: TLOTags                                                                               **/
+	/**  Reason Added: New Tag Definition                                                               **/
+	/**  Notes:                                                                                         **/
+	/*****************************************************************************************************/
+	bool isRequiresFlatlands () const;							// Exposed to Python
+	/*****************************************************************************************************/
+	/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+	/*****************************************************************************************************/
 
 	DllExport const TCHAR* getArtDefineTag() const;			
 	void setArtDefineTag(const TCHAR* szTag);			
@@ -3460,12 +3729,35 @@ protected:
 	int m_iSeeThroughLevel;		
 	int m_iBuildModifier;				
 	int m_iDefenseModifier;	
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: New Tag Definition                                                               **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+	int m_iHealthPercent;
+	int m_iTurnDamage;
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 
 	bool m_bWater;					
 	bool m_bImpassable;
 	bool m_bFound;
 	bool m_bFoundCoast;
 	bool m_bFoundFreshWater;
+	/*****************************************************************************************************/
+	/**  Author: TheLadiesOgre                                                                          **/
+	/**  Date: 15.10.2009                                                                               **/
+	/**  ModComp: TLOTags                                                                               **/
+	/**  Reason Added: New Tag Definition                                                               **/
+	/**  Notes:                                                                                         **/
+	/*****************************************************************************************************/
+	bool m_bRequiresFlatlands;
+	/*****************************************************************************************************/
+	/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+	/*****************************************************************************************************/
 
 	int m_iWorldSoundscapeScriptId;
 
@@ -3632,6 +3924,11 @@ public:
 	int getShareWarAttitudeDivisor() const;				// Exposed to Python
 	int getShareWarAttitudeChangeLimit() const;				// Exposed to Python
 	int getFavoriteCivicAttitudeChange() const;				// Exposed to Python
+//dune wars - hated civs
+	int getHatedCivicAttitudeChange() const;				// Exposed to Python a1021
+	int getFavoriteCivilizationAttitudeChange() const;				// Exposed to Python
+	int getHatedCivilizationAttitudeChange() const;				// Exposed to Python a1021	
+//dune wars - hated civs
 	int getFavoriteCivicAttitudeDivisor() const;				// Exposed to Python
 	int getFavoriteCivicAttitudeChangeLimit() const;				// Exposed to Python
 	int getDemandTributeAttitudeThreshold() const;				// Exposed to Python
@@ -3653,6 +3950,11 @@ public:
 	int getVassalRefuseAttitudeThreshold() const;				// Exposed to Python
 	int getVassalPowerModifier() const;				// Exposed to Python
 	int getFavoriteCivic() const;																// Exposed to Python
+//dune wars - hated civs
+	int getHatedCivic() const;				//a1021												// Exposed to Python
+	int getFavoriteCivilization() const;				//a1021												// Exposed to Python
+	int getHatedCivilization() const;				//a1021												// Exposed to Python
+//dune wars - hated civs
 	int getFavoriteReligion() const;																// Exposed to Python
 	int getFreedomAppreciation() const;																// Exposed to Python
 
@@ -3685,6 +3987,9 @@ public:
 	void write(FDataStreamBase* stream);
 	void read(FDataStreamBase* stream);
 	bool read(CvXMLLoadUtility* pXML);
+//dune wars - hated civs
+	bool readPass3();
+//dune wars - hated civs
 
 	//---------------------------------------PROTECTED MEMBER VARIABLES---------------------------------
 protected:
@@ -3752,6 +4057,11 @@ protected:
 	int m_iShareWarAttitudeDivisor;
 	int m_iShareWarAttitudeChangeLimit;
 	int m_iFavoriteCivicAttitudeChange;
+//dune wars - hated civs
+	int m_iHatedCivicAttitudeChange; //a1021
+	int m_iFavoriteCivilizationAttitudeChange; //a1021	
+	int m_iHatedCivilizationAttitudeChange; //a1021	
+//dune wars - hated civs
 	int m_iFavoriteCivicAttitudeDivisor;
 	int m_iFavoriteCivicAttitudeChangeLimit;
 	int m_iDemandTributeAttitudeThreshold;
@@ -3774,6 +4084,11 @@ protected:
 	int m_iVassalPowerModifier;
 	int m_iFreedomAppreciation;
 	int m_iFavoriteCivic;
+//dune wars - hated civs
+	int m_iHatedCivic; //a1021
+	int m_iFavoriteCivilization; //a1021	
+	int m_iHatedCivilization; //a1021	
+//dune wars - hated civs
 	int m_iFavoriteReligion;
 
 	CvString m_szArtDefineTag;
@@ -4051,6 +4366,10 @@ public:
 	int getEveryoneSpecialBuilding() const;				// Exposed to Python
 	int getVictoryDelayPercent() const;				// Exposed to Python
 	int getSuccessRate() const;				// Exposed to Python
+	// davidlallen: project civilization and free unit start
+	int getCivilization() const;
+	int getFreeUnit() const;
+	// davidlallen: project civilization and free unit end
 
 	bool isSpaceship() const;											// Exposed to Python
 	bool isAllowsNukes() const;											// Exposed to Python
@@ -4084,6 +4403,10 @@ protected:
 	int m_iEveryoneSpecialBuilding;
 	int m_iVictoryDelayPercent;
 	int m_iSuccessRate;
+	// davidlallen: project civilization and free unit start
+	int m_iCivilization;
+	int m_iFreeUnit;
+	// davidlallen: project civilization and free unit end
 
 	bool m_bSpaceship;
 	bool m_bAllowsNukes;
@@ -4116,6 +4439,16 @@ public:
 	virtual ~CvReligionInfo();
 
 	int getChar() const;								// Exposed to Python
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int getTGAIndex() const;
+	void setTGAIndex(int i);
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 	void setChar(int i);			
 	int getHolyCityChar() const;				// Exposed to Python
 	void setHolyCityChar(int i);			
@@ -4157,6 +4490,15 @@ public:
 	//---------------------------------------PROTECTED MEMBER VARIABLES---------------------------------
 protected:
 
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int m_iTGAIndex;
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 	int m_iChar;					
 	int m_iHolyCityChar;	
 	int m_iTechPrereq;
@@ -4196,6 +4538,16 @@ public:
 	virtual ~CvCorporationInfo();
 
 	int getChar() const;								// Exposed to Python
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int getTGAIndex() const;
+	void setTGAIndex(int i);
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 	void setChar(int i);			
 	int getHeadquarterChar() const;				// Exposed to Python
 	void setHeadquarterChar(int i);			
@@ -4231,6 +4583,15 @@ public:
 	//---------------------------------------PROTECTED MEMBER VARIABLES---------------------------------
 protected:
 
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int m_iTGAIndex;
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 	int m_iChar;					
 	int m_iHeadquarterChar;	
 	int m_iTechPrereq;

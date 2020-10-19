@@ -244,6 +244,18 @@ public:
 		}
 		return &(m_pMapPlots[plotNumINLINE(iX, iY)]);
 	}
+//MOD@VET_Andera412_Blocade_Unit-begin1/1
+	CvPlot* getPlot(int iX, int iY);
+	__forceinline CvPlot* getPlotINLINE(int iX, int iY) const
+	{
+		int iMapX = coordRange(iX, m_iGridWidth, m_bWrapX);
+		int iMapY = coordRange(iY, m_iGridHeight, m_bWrapY);
+		return ((isPlotINLINE(iMapX, iMapY)) ? &(m_pMapPlots[plotNumINLINE(iMapX, iMapY)]) : NULL);
+	}
+	CvPlot* getPlotSoren(int iX, int iY) const;
+	__forceinline CvPlot* getPlotSorenINLINE(int iX, int iY) const
+		{return &(m_pMapPlots[plotNumINLINE(iX, iY)]);}
+//MOD@VET_Andera412_Blocade_Unit-end1/1
 #endif
 	DllExport CvPlot* pointToPlot(float fX, float fY);
 

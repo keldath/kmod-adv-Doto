@@ -1463,12 +1463,13 @@ bool CvPlot::isFreshWater() const
 	CvPlot* pLoopPlot;
 	int iDX, iDY;
 
-	if (isWater())
+	// davidlallen: fresh water on ocean: remove test isLand()
+    if (isWater())
 	{
 		return false;
 	}
-
-	if (isImpassable())
+   // davidlallen: fresh water on ocean: remove test isLand()
+    if (isImpassable())
 	{
 		return false;
 	}
@@ -1502,7 +1503,7 @@ bool CvPlot::isFreshWater() const
 		}
 	}
 
-	return false;
+	return false;/* if u want no fresh water from lakes and ocean mark out up to here ->*/
 }
 
 
@@ -4602,6 +4603,39 @@ CvArea* CvPlot::secondWaterArea() const
 			}
 		}
 	}
+/* this entire part replaces the above if you want no fresh water from lakes and oceans */	
+/* dune wars	- unmark this for no fresh water on lakes andocean //
+//	FAssert(!isWater());
+
+	iBestValue = 0;
+	pBestArea = NULL;
+
+// i dont know what this does so i left it out - keldath
+// dune wars - start
+	if (!isWater()) 
+	{	
+// dune wars - 	
+		for (iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+		{
+			pAdjacentPlot = plotDirection(getX_INLINE(), getY_INLINE(), ((DirectionTypes)iI));
+
+			if (pAdjacentPlot != NULL)
+			{
+				if (pAdjacentPlot->isWater() && (pAdjacentPlot->getArea() != pWaterArea->getID()))
+				{
+					iValue = pAdjacentPlot->area()->getNumTiles();
+
+					if (iValue > iBestValue)
+					{
+						iBestValue = iValue;
+						pBestArea = pAdjacentPlot->area();		
+					}
+				}
+			}
+		}
+// dune wars - 		
+	}
+// dune wars - end	*/
 
 	return pBestArea;	
 	
@@ -5779,6 +5813,25 @@ void CvPlot::setTerrainType(TerrainTypes eNewValue, bool bRecalculate, bool bReb
 		{
 			setPlotType(((GC.getTerrainInfo(getTerrainType()).isWater()) ? PLOT_OCEAN : PLOT_LAND), bRecalculate, bRebuildGraphics);
 		}
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Enable isRequiresFlatlands for Terrain                                           **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+	//mountains back in service addition- keldath mountain mod nm
+
+		if (isHills() || isPeak())
+		{
+			if (GC.getTerrainInfo(getTerrainType()).isRequiresFlatlands() != isFlatlands())
+			{
+				setPlotType(((GC.getTerrainInfo(getTerrainType()).isRequiresFlatlands()) ? PLOT_LAND : PLOT_HILLS), bRecalculate, bRebuildGraphics);
+			}
+		}
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 	}
 }
 
@@ -6711,6 +6764,22 @@ int CvPlot::calculateImprovementYieldChange(ImprovementTypes eImprovement, Yield
 	}
 
 	return iYield;
+/*************************************************************************************************/
+/* UNOFFICIAL_PATCH                       06/02/10                     Afforess & jdog5000       */
+/*                                                                                               */
+/* Bugfix                                                                                        */
+/*************************************************************************************************/
+/* original bts code
+	return iYield;
+*/
+	// Improvement cannot actually produce negative yield
+//keldath for now disabled - 102020
+//	int iCurrYield = calculateNatureYield(eYield, (ePlayer == NO_PLAYER) ? NO_TEAM : GET_PLAYER(ePlayer).getTeam(), bOptimal);
+
+//	return std::max( -iCurrYield, iYield );
+/*************************************************************************************************/
+/* UNOFFICIAL_PATCH                         END                                                  */
+/*************************************************************************************************/
 }
 /************************************************************************************************/
 /* BETTER_BTS_AI_MOD                       END                                                  */
@@ -10808,8 +10877,29 @@ void CvPlot::applyEvent(EventTypes eEvent)
 bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible) const
 {
 	CvCity* pCity = getPlotCity();
+/************************************************************************************************/
+/* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
+/************************************************************************************************/
+	if (GC.getUnitInfo(eUnit).getNumCitySizeUnitPrereq() > 0)
+	{
+		if (NULL == pCity || pCity->getPopulation() < GC.getUnitInfo(eUnit).getNumCitySizeUnitPrereq())
+		{
+			return false;
+		}
+	}
+/************************************************************************************************/
+/* City Size Prerequisite                  END                                                  */
+/************************************************************************************************/
+/************************************************************************************************/
+/* REVDCM                                 04/16/10                                phungus420    */
+/*                                                                                              */
+/* CanTrain Performance                                                                         */
+/************************************************************************************************/
+	CvUnitInfo& kUnit = GC.getUnitInfo(eUnit);
+//marked out by keldath no need gives an error warning undeclared. dune wars
+//	int iI;
 
-	if (GC.getUnitInfo(eUnit).isPrereqReligion())
+	if (kUnit.isPrereqReligion())
 	{
 		//if (NULL == pCity || pCity->getReligionCount() > 0)
 		if (NULL == pCity || pCity->getReligionCount() == 0) // K-Mod
@@ -10818,25 +10908,25 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible) const
 		}
 	}
 
-	if (GC.getUnitInfo(eUnit).getPrereqReligion() != NO_RELIGION)
+	if (kUnit.getPrereqReligion() != NO_RELIGION)
 	{
-		if (NULL == pCity || !pCity->isHasReligion((ReligionTypes)(GC.getUnitInfo(eUnit).getPrereqReligion())))
+		if (NULL == pCity || !pCity->isHasReligion((ReligionTypes)(kUnit.getPrereqReligion())))
 		{
 			return false;
 		}
 	}
 
-	if (GC.getUnitInfo(eUnit).getPrereqCorporation() != NO_CORPORATION)
+	if (kUnit.getPrereqCorporation() != NO_CORPORATION)
 	{
-		if (NULL == pCity || !pCity->isActiveCorporation((CorporationTypes)(GC.getUnitInfo(eUnit).getPrereqCorporation())))
+		if (NULL == pCity || !pCity->isActiveCorporation((CorporationTypes)(kUnit.getPrereqCorporation())))
 		{
 			return false;
 		}
 	}
 
-	if (GC.getUnitInfo(eUnit).isPrereqBonuses())
+	if (kUnit.isPrereqBonuses())
 	{
-		if (GC.getUnitInfo(eUnit).getDomainType() == DOMAIN_SEA)
+		if (kUnit.getDomainType() == DOMAIN_SEA)
 		{
 			bool bValid = false;
 
@@ -10873,7 +10963,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible) const
 
 	if (isCity())
 	{
-		if (GC.getUnitInfo(eUnit).getDomainType() == DOMAIN_SEA)
+		if (kUnit.getDomainType() == DOMAIN_SEA)
 		{
 			if (!isWater() && !isCoastalLand(GC.getUnitInfo(eUnit).getMinAreaSize()))
 			{
@@ -10882,7 +10972,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible) const
 		}
 		else
 		{
-			if (area()->getNumTiles() < GC.getUnitInfo(eUnit).getMinAreaSize())
+			if (area()->getNumTiles() < kUnit.getMinAreaSize())
 			{
 				return false;
 			}
@@ -10890,19 +10980,19 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible) const
 	}
 	else
 	{
-		if (area()->getNumTiles() < GC.getUnitInfo(eUnit).getMinAreaSize())
+		if (area()->getNumTiles() < kUnit.getMinAreaSize())
 		{
 			return false;
 		}
 
-		if (GC.getUnitInfo(eUnit).getDomainType() == DOMAIN_SEA)
+		if (kUnit.getDomainType() == DOMAIN_SEA)
 		{
 			if (!isWater())
 			{
 				return false;
 			}
 		}
-		else if (GC.getUnitInfo(eUnit).getDomainType() == DOMAIN_LAND)
+		else if (kUnit.getDomainType() == DOMAIN_LAND)
 		{
 			if (isWater())
 			{
@@ -10917,7 +11007,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible) const
 
 	if (!bTestVisible)
 	{
-		if (GC.getUnitInfo(eUnit).getHolyCity() != NO_RELIGION)
+		if (kUnit.getHolyCity() != NO_RELIGION)
 		{
 			if (NULL == pCity || !pCity->isHolyCity(((ReligionTypes)(GC.getUnitInfo(eUnit).getHolyCity()))))
 			{
@@ -10925,14 +11015,14 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible) const
 			}
 		}
 
-		if (GC.getUnitInfo(eUnit).getPrereqBuilding() != NO_BUILDING)
+		if (kUnit.getPrereqBuilding() != NO_BUILDING)
 		{
 			if (NULL == pCity)
 			{
 				return false;
 			}
 
-			if (pCity->getNumBuilding((BuildingTypes)(GC.getUnitInfo(eUnit).getPrereqBuilding())) == 0)
+			if (pCity->getNumBuilding((BuildingTypes)(kUnit.getPrereqBuilding())) == 0)
 			{
 				SpecialBuildingTypes eSpecialBuilding = ((SpecialBuildingTypes)(GC.getBuildingInfo((BuildingTypes)(GC.getUnitInfo(eUnit).getPrereqBuilding())).getSpecialBuildingType()));
 
@@ -10943,18 +11033,18 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible) const
 			}
 		}
 
-		if (GC.getUnitInfo(eUnit).getPrereqAndBonus() != NO_BONUS)
+		if (kUnit.getPrereqAndBonus() != NO_BONUS)
 		{
 			if (NULL == pCity)
 			{
-				if (!isPlotGroupConnectedBonus(getOwnerINLINE(), (BonusTypes)GC.getUnitInfo(eUnit).getPrereqAndBonus()))
+				if (!isPlotGroupConnectedBonus(getOwnerINLINE(), (BonusTypes)kUnit.getPrereqAndBonus()))
 				{
 					return false;
 				}
 			}
 			else
 			{
-				if (!pCity->hasBonus((BonusTypes)GC.getUnitInfo(eUnit).getPrereqAndBonus()))
+				if (!pCity->hasBonus((BonusTypes)kUnit.getPrereqAndBonus()))
 				{
 					return false;
 				}
@@ -10966,13 +11056,13 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible) const
 
 		for (int iI = 0; iI < GC.getNUM_UNIT_PREREQ_OR_BONUSES(); ++iI)
 		{
-			if (GC.getUnitInfo(eUnit).getPrereqOrBonuses(iI) != NO_BONUS)
+			if (kUnit.getPrereqOrBonuses(iI) != NO_BONUS)
 			{
 				bRequiresBonus = true;
 
 				if (NULL == pCity)
 				{
-					if (isPlotGroupConnectedBonus(getOwnerINLINE(), (BonusTypes)GC.getUnitInfo(eUnit).getPrereqOrBonuses(iI)))
+					if (isPlotGroupConnectedBonus(getOwnerINLINE(), (BonusTypes)kUnit.getPrereqOrBonuses(iI)))
 					{
 						bNeedsBonus = false;
 						break;
@@ -10980,7 +11070,10 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible) const
 				}
 				else
 				{
-					if (pCity->hasBonus((BonusTypes)GC.getUnitInfo(eUnit).getPrereqOrBonuses(iI)))
+					if (pCity->hasBonus((BonusTypes)kUnit.getPrereqOrBonuses(iI)))
+/************************************************************************************************/
+/* REVDCM                                  END Performance                                      */
+/************************************************************************************************/
 					{
 						bNeedsBonus = false;
 						break;
@@ -11231,3 +11324,260 @@ bool CvPlot::hasDefender(bool bCheckCanAttack, PlayerTypes eOwner, PlayerTypes e
 /************************************************************************************************/
 /* BETTER_BTS_AI_MOD                       END                                                  */
 /************************************************************************************************/
+//MOD@VET_Andera412_Blocade_Unit-begin1/1
+bool CvPlot::isWithBlocaders(const CvPlot* pFromPlot, const CvPlot* pToPlot, const CvUnit* const pUnit, bool bToWater) const //
+{
+	if (GC.getGameINLINE().isOption(GAMEOPTION_BLOCADE_UNIT))
+	{	
+		if (isWater() == bToWater)
+		{
+			TeamTypes eTeam = pUnit->getTeam();
+			if (!isVisible(eTeam, false))
+			{
+				if (isEnemyCity(*pUnit) && (pUnit->getDomainType() == DOMAIN_LAND) && (pUnit->getInvisibleType() == NO_INVISIBLE) && !isRiverCrossing(directionXY(this, pToPlot))) // 
+					{return true;}
+				return false;
+			}
+			CLLNode<IDInfo>* pUnitNode = headUnitNode();
+			if (pUnitNode != NULL)
+			{
+				CvUnit* pLoopUnit;
+				CvTeam& kTeam = GET_TEAM(eTeam);
+				TeamTypes eLoopTeam = NO_TEAM;
+				TeamTypes eTempTeam;
+				InvisibleTypes eOurInvisible = pUnit->getInvisibleType();
+				//bool bDifWater = (isWater() != pToPlot->isWater());
+				bool bNotRiverCrossing = !isRiverCrossing(directionXY(this, pToPlot));
+				bool bHiddenNationality = pUnit->getUnitInfo().isHiddenNationality();
+				bool bTeam, bDefenders, bOurVisible, bEnemyVisible;
+				while (pUnitNode != NULL)
+				{
+					pLoopUnit = ::getUnit(pUnitNode->m_data);
+					if (!pLoopUnit->isAnimal())
+					{
+						eTempTeam = pLoopUnit->getTeam();
+						/*if (eLoopTeam != eTempTeam)//
+						{
+							eLoopTeam = eTempTeam;
+							bDefenders = false;
+							bOurVisible = false;
+							bEnemyVisible = false;
+						}*/
+						eLoopTeam = eTempTeam;
+						bTeam = (eLoopTeam == eTempTeam);
+						bDefenders = bDefenders & (bTeam);
+						bOurVisible = bOurVisible & (bTeam);
+						bEnemyVisible = bEnemyVisible & (bTeam);
+						if ((eLoopTeam != eTeam) && (kTeam.isAtWar(eLoopTeam) || pLoopUnit->getUnitInfo().isHiddenNationality() | bHiddenNationality))/** && !pUnit->isInvisible(eLoopTeam, false)*/
+						{
+							if ((pLoopUnit->canFight()) && !pLoopUnit->cannotMoveFromTo(this, pToPlot) && (pLoopUnit->getTransportUnit() == NULL) &&
+								(bNotRiverCrossing || pLoopUnit->isRiver()))
+								{bDefenders = true;}
+							if ((eOurInvisible == NO_INVISIBLE) || pFromPlot->isInvisibleVisible(eLoopTeam, eOurInvisible))
+								{bOurVisible = true;}
+							if ((pLoopUnit->getInvisibleType() == NO_INVISIBLE) || isInvisibleVisible(eTeam, pLoopUnit->getInvisibleType()))
+								{bEnemyVisible = true;}
+						}
+						if (bDefenders & bOurVisible & bEnemyVisible)
+							{return true;}
+					}
+					pUnitNode = nextUnitNode(pUnitNode);
+				}
+			}
+		}
+	}	
+	return false;
+}
+
+bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const//(CvGameCoreUtils::pathValid)
+{
+	if (GC.getGameINLINE().isOption(GAMEOPTION_BLOCADE_UNIT))
+	{
+		if (pUnit->isAnimal() || pUnit->alwaysInvisible() || pUnit->isUnblocade())
+			{return false;}
+
+		if (!isFriendlyCity(*pUnit, true))
+		{
+			TeamTypes eOurTeam = pUnit->getTeam();
+			bool bPlotWithoutOurUnit_Wrap = true;
+			bool bPlotWithoutEnemy = (GC.getBLOCADE_UNIT() > 1);//bPlotWithoutEnemy = true//(bPlotWithoutEnemy && (GC.getBLOCADE_UNIT() > 1))
+			if (isVisible(eOurTeam, false))
+			{
+				bool bOurTeam;
+				CLLNode<IDInfo>* pUnitNode = headUnitNode();
+				CvUnit* pLoopUnit;
+				TeamTypes eLoopTeam;
+				InvisibleTypes eInvisible;
+				while (pUnitNode != NULL)
+				{
+					pLoopUnit = ::getUnit(pUnitNode->m_data);
+					eLoopTeam = pLoopUnit->getTeam();
+					bOurTeam = (eLoopTeam == eOurTeam);
+					if (bOurTeam && pLoopUnit->canFight())//
+					{
+						bPlotWithoutOurUnit_Wrap = false;
+						break;
+					}
+					else if ((GET_TEAM(eLoopTeam).isAtWar(eOurTeam) || ((!bOurTeam) & pUnit->getUnitInfo().isHiddenNationality())) && pLoopUnit->canFight())//
+					{
+						eInvisible = pLoopUnit->getInvisibleType();
+						if ((eInvisible == NO_INVISIBLE) || isInvisibleVisible(eOurTeam, eInvisible))
+						{
+							bPlotWithoutEnemy = false;
+							break;
+						}
+					}
+					pUnitNode = nextUnitNode(pUnitNode);
+				}
+			}
+			if (bPlotWithoutOurUnit_Wrap)
+			{
+				int iPlotX, iPlotY, iFromX, iFromY;
+				CvMap& kMap = GC.getMapINLINE();
+
+				iPlotX = getX_INLINE();
+				iPlotY = getY_INLINE();
+				iFromX = pFromPlot->getX_INLINE();
+				iFromY = pFromPlot->getY_INLINE();
+				///byte iI;
+				if (iFromX == iPlotX)
+				{
+				/**	bPlotWithoutOurUnit_Wrap = kMap.isWrapXINLINE();
+					iI = 0;
+					goto A;*/
+
+					if (bPlotWithoutEnemy)
+					{
+						int iX = iFromX;
+						++iX;
+						if (iX != kMap.getGridWidthINLINE())
+						{
+							if (kMap.getPlotSorenINLINE(iX, iPlotY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+								{return true;}
+						}
+						else
+						{
+							if (kMap.isWrapX())
+							{
+								iX = 0;
+								if (kMap.getPlotSoren(iX, iPlotY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+									{return true;}
+							}
+						}
+
+						iX = iFromX;
+						--iX;
+						if (iX != -1)
+						{
+							if (kMap.getPlotSorenINLINE(iX, iPlotY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+								{return true;}
+						}
+						else
+						{
+							if (kMap.isWrapX())
+							{
+								iX += kMap.getGridWidth();
+								if (kMap.getPlotSoren(iX, iPlotY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+									{return true;}
+							}
+						}
+					}
+				}
+				else if (iFromY == iPlotY)
+				{
+				/**	bPlotWithoutOurUnit_Wrap = kMap.isWrapYINLINE();
+					iI = 1;
+					goto A;*/
+
+					if (bPlotWithoutEnemy)
+					{
+						int iY = iFromY;
+						++iY;
+						if (iY != kMap.getGridHeightINLINE())
+						{
+							if (kMap.getPlotSorenINLINE(iPlotX, iY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+								{return true;}
+						}
+						else
+						{
+							if (kMap.isWrapY())
+							{
+								iY = 0;
+								if (kMap.getPlotSoren(iPlotX, iY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+									{return true;}
+							}
+						}
+						iY = iFromY;
+						--iY;
+						if (iY != -1)
+						{
+							if (kMap.getPlotSorenINLINE(iPlotX, iY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+								{return true;}
+						}
+						else
+						{
+							if (kMap.isWrapY())
+							{
+								iY += kMap.getGridHeight();
+								if (kMap.getPlotSoren(iPlotX, iY)->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+									{return true;}
+							}
+						}
+					}
+				}
+				else if ((kMap.getPlotSorenINLINE(iFromX, iPlotY)->isWithBlocaders(pFromPlot, this, pUnit, isWater())) ||
+						(kMap.getPlotSorenINLINE(iPlotX, iFromY)->isWithBlocaders(pFromPlot, this, pUnit, isWater())))
+					{return true;}
+			/**	return false;
+	A:
+				if (bPlotWithoutEnemy && (GC.getBLOCADE_UNIT() > 1))
+				{
+					int iSize;
+					int iCoord;
+					int aiXY[2];
+					if (iI)// iI == 0
+					{
+						iSize = kMap.getGridWidth();
+						aiXY[0] = iFromX;
+						aiXY[1] = iPlotY;
+					}
+					else// iI == 1
+					{
+						iSize = kMap.getGridHeight();
+						aiXY[0] = iPlotX;
+						aiXY[1] = iFromY;
+					}
+					iCoord = aiXY[iI];
+
+					aiXY[iI]++;
+					if (aiXY[iI] == iSize)
+					{
+						if (bPlotWithoutOurUnit_Wrap)
+						{
+							aiXY[iI] = 0;
+							if (kMap.getPlotSorenINLINE(aiXY[0], aiXY[1])->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+								{return true;}
+						}
+					}
+					else if (kMap.getPlotSorenINLINE(aiXY[0], aiXY[1])->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+						{return true;}
+					iCoord--;// aiXY[iI]--
+					aiXY[iI] = iCoord;
+					if (aiXY[iI] == -1)
+					{
+						if (bPlotWithoutOurUnit_Wrap)
+						{
+							aiXY[iI] += iSize;
+							if (kMap.getPlotSorenINLINE(aiXY[0], aiXY[1])->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+								{return true;}
+						}
+					}
+					else if (kMap.getPlotSorenINLINE(aiXY[0], aiXY[1])->isWithBlocaders(pFromPlot, this, pUnit, isWater()))
+						{return true;}
+				}*/
+			}
+		}
+	}	
+	return false;
+}
+//MOD@VET_Andera412_Blocade_Unit-end1/1

@@ -5062,7 +5062,13 @@ void CvDLLWidgetData::parseCultureHelp(CvWidgetDataStruct &widgetDataStruct, CvW
 
 		szBuffer.append(L"\n=======================\n");
 		GAMETEXT.setCommerceHelp(szBuffer, *pHeadSelectedCity, COMMERCE_CULTURE);
-//doto - ye, i added this :)		 
+//KNOEDELbegin ************************ CULTURAL_GOLDEN_AGE
+		
+		szBuffer.append(L"\n=======================\n");
+		szBuffer.append(gDLL->getText("TXT_KEY_MISC_CULTURAL_GOLDEN_AGE_PROGRESS", GET_PLAYER(pHeadSelectedCity->getOwnerINLINE()).getCultureGoldenAgeProgress(), GET_PLAYER(pHeadSelectedCity->getOwnerINLINE()).getCultureGoldenAgeThreshold(), GET_PLAYER(pHeadSelectedCity->getOwnerINLINE()).getCommerceRate(COMMERCE_CULTURE)));
+///KNOEDELend ************************
+//doto - ye, i added this :)
+		szBuffer.append(L"\n=======================\n");		 
 		szBuffer.append(L"\n==WeLoveKeldath==\n");
 //doto
 	}

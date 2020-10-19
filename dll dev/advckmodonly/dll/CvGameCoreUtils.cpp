@@ -342,6 +342,16 @@ bool isPromotionValid(PromotionTypes ePromotion, UnitTypes eUnit, bool bLeader)
 		}
 	}
 
+//MOD@VET_Andera412_Blocade_Unit-begin1/2
+	if (!GC.getGameINLINE().isOption(GAMEOPTION_BLOCADE_UNIT))
+	{
+		if (kPromotion.isUnblocade())
+		{
+			return false;
+		}
+	}	
+//MOD@VET_Andera412_Blocade_Unit-end1/2
+	
 	if (kUnit.isIgnoreTerrainCost())
 	{
 		if (kPromotion.getMoveDiscountChange() != 0)
@@ -1915,6 +1925,21 @@ int pathValid_join(FAStarNode* parent, FAStarNode* node, CvSelectionGroup* pSele
 				}
 			}
 		}
+//MOD@VET_Andera412_Blocade_Unit-begin2/2
+	if (GC.getGameINLINE().isOption(GAMEOPTION_BLOCADE_UNIT))
+	{	
+		if (pSelectionGroup->getNumUnits() > 0)
+		{
+			CvUnit* pLoopUnit;
+			for (CLLNode<IDInfo>* pUnitNode = pSelectionGroup->headUnitNode(); pUnitNode != NULL; pUnitNode = pSelectionGroup->nextUnitNode(pUnitNode))
+			{
+				pLoopUnit = ::getUnit(pUnitNode->m_data);
+				if (pLoopUnit->cannotMoveFromPlotToPlot(pFromPlot, pToPlot,/*bWithdrawal*/false))
+					{return FALSE;}
+			}
+		}
+	}	
+//MOD@VET_Andera412_Blocade_Unit-end2/2
 	}
 	return TRUE;
 }

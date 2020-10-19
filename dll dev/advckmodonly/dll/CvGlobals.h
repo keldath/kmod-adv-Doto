@@ -742,6 +742,9 @@ public:
 	int getPEAK_SEE_FROM_CHANGE();
 	int getHILLS_SEE_FROM_CHANGE();
 	int getUSE_SPIES_NO_ENTER_BORDERS();
+//MOD@VET_Andera412_Blocade_Unit-begin1/2
+	inline int getBLOCADE_UNIT() {return m_iBLOCADE_UNIT;}									// BlocadeUnit 3/3
+//MOD@VET_Andera412_Blocade_Unit-end1/2
 
 	DllExport float getCAMERA_MIN_YAW();
 	DllExport float getCAMERA_MAX_YAW();
@@ -812,7 +815,16 @@ public:
 
 	inline bool suppressCycling() { return (GetKeyState('X') & 0x8000); } // hold X to temporarily suppress automatic unit cycling.
 	// K-Mod end
-
+/*************************************************************************************************/
+/** TGA_INDEXATION                          11/13/07                            MRGENIE          */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int getTGA_RELIGIONS();								// GAMEFONT
+	int getTGA_CORPORATIONS();
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 	DllExport int getMAX_CIV_PLAYERS();
 	DllExport int getMAX_PLAYERS();
 	DllExport int getMAX_CIV_TEAMS();
@@ -1199,6 +1211,9 @@ protected:
 	int m_iPEAK_SEE_FROM_CHANGE;
 	int m_iHILLS_SEE_FROM_CHANGE;
 	int m_iUSE_SPIES_NO_ENTER_BORDERS;
+//MOD@VET_Andera412_Blocade_Unit-begin2/2
+	int m_iBLOCADE_UNIT;
+//MOD@VET_Andera412_Blocade_Unit-end2/2	
 
 	float m_fCAMERA_MIN_YAW;
 	float m_fCAMERA_MAX_YAW;
@@ -1261,7 +1276,16 @@ protected:
 	bool m_bUSE_UNIT_UPGRADE_PRICE_CALLBACK;
 	bool m_bUSE_DO_COMBAT_CALLBACK;
 	// K-Mod end
-
+/*************************************************************************************************/
+/** TGA_INDEXATION                          11/13/07                            MRGENIE          */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int m_iTGA_RELIGIONS;
+	int m_iTGA_CORPORATIONS;
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 	// DLL interface
 	CvDLLUtilityIFaceBase* m_pDLL;
 

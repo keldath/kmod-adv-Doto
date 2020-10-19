@@ -96,6 +96,12 @@ void CvMap::init(CvMapInitData* pInitInfo/*=NULL*/)
 		for (iY = 0; iY < getGridHeightINLINE(); iY++)
 		{
 			plotSorenINLINE(iX, iY)->init(iX, iY);
+//MOD@VET_Andera412_Blocade_Unit-begin1/2
+			if (GC.getGameINLINE().isOption(GAMEOPTION_BLOCADE_UNIT))
+			{
+				getPlotSorenINLINE(iX, iY)->init(iX, iY);
+			}	
+//MOD@VET_Andera412_Blocade_Unit-end1/2			
 		}
 	}
 	calculateAreas();
@@ -1191,6 +1197,17 @@ CvPlot* CvMap::plot(int iX, int iY) const
 	return plotINLINE(iX, iY);
 }
 
+//MOD@VET_Andera412_Blocade_Unit-begin2/2
+CvPlot* CvMap::getPlot(int iX, int iY)
+{
+	int iMapX = coordRange(iX, m_iGridWidth, m_bWrapX);
+	int iMapY = coordRange(iY, m_iGridHeight, m_bWrapY);
+	return ((isPlot(iMapX, iMapY)) ? getPlotSoren(iMapX, iMapY) : NULL);
+}
+
+CvPlot* CvMap::getPlotSoren(int iX, int iY) const
+	{return &(m_pMapPlots[plotNum(iX, iY)]);}
+//MOD@VET_Andera412_Blocade_Unit-end2/2
 
 CvPlot* CvMap::pointToPlot(float fX, float fY)													
 {

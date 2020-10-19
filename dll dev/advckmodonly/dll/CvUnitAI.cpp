@@ -32,6 +32,12 @@
 /* BETTER_BTS_AI_MOD                       END                                                  */
 /************************************************************************************************/
 
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  keldath - originally - all the ai_heal had a terrain check - but its not needed				**/
+/*since its being checked in the ai_healt it self...                                                 **/
+/*****************************************************************************************************/
+
 #define FOUND_RANGE				(7)
 
 // Public Functions...
@@ -2468,7 +2474,25 @@ void CvUnitAI::AI_attackMove()
 			if (bAggressive && AI_anyAttack(3, 40))
 				return;
 		}
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 16.09.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Implement AI_paradrop for other UNITAI's now that it is potentially available    **/
+/**  Notes: 14.10.2009-- Moved higher and added bCity check                                         **/
+/*****************************************************************************************************/
+	bool bCity = plot()->isCity();
+	if (bCity)
+	{
+		if (AI_paradrop(getDropRange()))
+		{
+			return;
+		}
+	}
 
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 16.09.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 		if (!isEnemy(plot()->getTeam()))
 		{
 			if (AI_heal())
@@ -2597,6 +2621,25 @@ void CvUnitAI::AI_attackMove()
 		{
 			return;
 		}
+
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 16.09.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Implement AI_paradrop for other UNITAI's now that it is potentially available    **/
+/**  Notes: 14.10.2009-- Added bCity check                                                          **/
+/*****************************************************************************************************/
+		if (bCity)
+		{
+			if (AI_paradrop(getDropRange()))
+			{
+				return;
+			}
+		}
+
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 16.09.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 
 		if (AI_offensiveAirlift())
 		{
@@ -3488,7 +3531,8 @@ void CvUnitAI::AI_attackCityMove()
 					{
 						// this is a last resort. I don't expect that we'll ever actually need it.
 						// (it's a pretty ugly function, so I /hope/ we don't need it.)
-						FAssertMsg(false, "AI_attackCityMove is resorting to AI_solveBlockageProblem");
+						//DOTO-keldath - f1 suggested to remove this assert.
+						//FAssertMsg(false, "AI_attackCityMove is resorting to AI_solveBlockageProblem");
 						if (AI_solveBlockageProblem(pTargetCity->plot(), (GET_TEAM(getTeam()).getAtWarCount(true) == 0)))
 						{
 							return;
@@ -3873,6 +3917,25 @@ void CvUnitAI::AI_pillageMove()
 		}
 	}
 
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 16.09.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Implement AI_paradrop for other UNITAI's now that it is potentially available    **/
+/**  Notes: 14.10.2009-- Added bCity check                                                          **/
+/*****************************************************************************************************/
+	bool bCity = plot()->isCity();
+	if (bCity)
+	{
+		if (AI_paradrop(getDropRange()))
+		{
+			return;
+		}
+	}
+
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 16.09.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 	if (AI_pillageRange(3, 11))
 	{
 		return;
@@ -4686,7 +4749,10 @@ void CvUnitAI::AI_exploreMove()
 
 	if (getDamage() > 0)
 	{
-		if ((plot()->getFeatureType() == NO_FEATURE) || (GC.getFeatureInfo(plot()->getFeatureType()).getTurnDamage() == 0))
+		//if ((plot()->getFeatureType() == NO_FEATURE) || (GC.getFeatureInfo(plot()->getFeatureType()).getTurnDamage() == 0))
+		//doto addition Mongoose FeatureDamageFix BEGIN
+		if ((plot()->getFeatureType() == NO_FEATURE) || (GC.getFeatureInfo(plot()->getFeatureType()).getTurnDamage() <= 0))
+		//doto addition Mongoose FeatureDamageFix END
 		{
 			getGroup()->pushMission(MISSION_HEAL);
 			return;
@@ -9971,6 +10037,22 @@ int CvUnitAI::AI_promotionValue(PromotionTypes ePromotion)
 		}
 	}
 
+//MOD@VET_Andera412_Blocade_Unit-begin1/1
+	if (GC.getPromotionInfo(ePromotion).isUnblocade())
+	{
+		if ((AI_getUnitAIType() == UNITAI_ATTACK) ||
+			  (AI_getUnitAIType() == UNITAI_ATTACK_CITY) ||
+			  (AI_getUnitAIType() == UNITAI_COUNTER))
+		{
+			iValue += 7;
+		}
+		else
+		{
+			iValue++;
+		}
+	}
+//MOD@VET_Andera412_Blocade_Unit-end1/1
+	
 	if (GC.getPromotionInfo(ePromotion).isRiver())
 	{
 		if ((AI_getUnitAIType() == UNITAI_ATTACK) ||
@@ -12471,6 +12553,24 @@ bool CvUnitAI::AI_heal(int iDamagePercent, int iMaxPath)
 		}
 	}
 	
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Ensure AI_heal does not heal on damaging terrain                                 **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+	if (plot()->getTerrainType() != NO_TERRAIN)
+	{
+		if ((GC.getTerrainInfo(plot()->getTerrainType()).getTurnDamage() != 0) && (!plot()->isCity()))
+		{
+			return false;
+		}
+	}
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
+	
 	pGroup = getGroup();
 	
 	if (iDamagePercent == 0)
@@ -14053,7 +14153,9 @@ bool CvUnitAI::AI_paradrop(int iRange)
 		return false;
 	}
 	int iParatrooperCount = plot()->plotCount(PUF_isUnitAIType, UNITAI_PARADROP, -1, getOwnerINLINE());
-	FAssert(iParatrooperCount > 0);
+//DOTO-removed by kedath- just alerts added due to the added paratrooper ai above theladiesogre
+//	FAssert(iParatrooperCount > 0);
+
 
 	CvPlot* pPlot = plot();
 
@@ -14119,6 +14221,11 @@ bool CvUnitAI::AI_paradrop(int iRange)
 										{
 											int iAttackerCount = GET_PLAYER(getOwnerINLINE()).AI_adjacentPotentialAttackers(pAdjacentPlot, true);
 											int iDefenderCount = pAdjacentPlot->getNumVisibleEnemyDefenders(this);
+											//DOTO-keldath f1rpo fix for crash regarding theladiesogre of paratrooper for every unitai - keldath
+											if (iParatrooperCount <= 0) 
+											{
+												iParatrooperCount = 1;
+											}
 											iValue += 20 * (AI_attackOdds(pAdjacentPlot, true) - ((50 * iDefenderCount) / (iParatrooperCount + iAttackerCount)));
 										}
 									}
@@ -15134,6 +15241,12 @@ CvCity* CvUnitAI::AI_pickTargetCity(int iFlags, int iMaxPathTurns, bool bHuntBar
 									int iMod =
 										std::min(8, getGroup()->getBombardTurns(pLoopCity)) * pLoopCity->getDefenseModifier(false) / 8
 										+ (pLoopCity->plot()->isHills() ? GC.getHILLS_EXTRA_DEFENSE() : 0);
+									//mountain mod - keldath addition
+									if (GC.getGameINLINE().isOption(GAMEOPTION_MOUNTAINS))
+									{
+										iMod += (pLoopCity->plot()->isPeak() ? GC.getPEAK_EXTRA_DEFENSE() : 0);
+			
+									}
 									iValue *= std::max(25, 125 - iMod);
 									iValue /= 25; // the denominator is arbitrary, and unimportant.
 									// note: the value reduction from high defences which are bombardable should not be more than

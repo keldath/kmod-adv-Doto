@@ -105,6 +105,10 @@ public:
 	bool canEnterTerritory(TeamTypes eTeam, bool bIgnoreRightOfPassage = false) const;						// Exposed to Python
 	bool canEnterArea(TeamTypes eTeam, const CvArea* pArea, bool bIgnoreRightOfPassage = false) const;						// Exposed to Python
 	TeamTypes getDeclareWarMove(const CvPlot* pPlot) const;															// Exposed to Python
+//MOD@VET_Andera412_Blocade_Unit-begin1/3
+	bool cannotMoveFromTo(const CvPlot* pFromPlot, const CvPlot* pToPlot) const;																		//VET CanMoveImpassable - 1/1
+	bool cannotMoveFromPlotToPlot(const CvPlot* pFromPlot, const CvPlot* pToPlot, bool bWithdrawal) const;												//VET DefenderWithdrawal - 1/1
+//MOD@VET_Andera412_Blocade_Unit-end1/3
 	bool canMoveInto(const CvPlot* pPlot, bool bAttack = false, bool bDeclareWar = false, bool bIgnoreLoad = false, bool bAssumeVisible = true, // K-Mod added bAssumeVisible. Exposed to Python
 			bool bCheckMadeAttack = true) const; // f1rpo (advc.001k)
 	bool canMoveOrAttackInto(const CvPlot* pPlot, bool bDeclareWar = false,								// Exposed to Python
@@ -509,11 +513,17 @@ public:
 	int getBlitzCount() const;			
 	bool isBlitz() const;																														// Exposed to Python					
 	void changeBlitzCount(int iChange);																												
-																																														
-	int getAmphibCount() const;																																
-	bool isAmphib() const;																													// Exposed to Python					
-	void changeAmphibCount(int iChange);																											
-																																														
+	
+	int getAmphibCount() const;
+	bool isAmphib() const;
+	void changeAmphibCount(int iChange);
+	
+//MOD@VET_Andera412_Blocade_Unit-begin2/3
+	int getUnblocadeCount() const;																																
+	bool isUnblocade() const;																													// Exposed to Python					
+	void changeUnblocadeCount(int iChange);																											
+//MOD@VET_Andera412_Blocade_Unit-end2/3
+	
 	int getRiverCount() const;																																
 	bool isRiver() const;																														// Exposed to Python					
 	void changeRiverCount(int iChange);																												
@@ -816,6 +826,9 @@ protected:
 	int m_iFortifyTurns;
 	int m_iBlitzCount;
 	int m_iAmphibCount;
+//MOD@VET_Andera412_Blocade_Unit-begin3/3
+	int m_iUnblocadeCount;
+//MOD@VET_Andera412_Blocade_Unit-end3/3
 	int m_iRiverCount;
 	int m_iEnemyRouteCount;
 	int m_iAlwaysHealCount;

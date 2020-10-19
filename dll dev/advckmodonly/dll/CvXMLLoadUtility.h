@@ -203,6 +203,19 @@ public:
 	void SetVariableListTagPair(int **ppiList, const TCHAR* szRootTagName,
 		int iInfoBaseSize, int iInfoBaseLength, int iDefaultListVal = 0);
 
+/************************************************************************************************/
+/* RevDCM  XMLloading                             05/05/10             phungus420               */
+/*                    for revdcm tags                                                                          */
+/*                                                                                              */
+/************************************************************************************************/
+	// allocate and initialize a list from a tag pair in the xml by tag name
+	void SetVariableListTagPair(int **ppiList, const TCHAR* szRootTagName,
+		int iInfoBaseSize, int iInfoBaseLength,
+		const TCHAR* szValueTagName, int iValueInfoBaseLength, int iDefaultListVal = -1);
+/************************************************************************************************/
+/* RevDCM	                                 END                                                */
+/************************************************************************************************/
+
 	// allocate and initialize a list from a tag pair in the xml
 	void SetVariableListTagPair(bool **ppbList, const TCHAR* szRootTagName,
 		int iInfoBaseSize, int iInfoBaseLength, bool bDefaultListVal = false);
@@ -248,6 +261,23 @@ public:
 	// get the integer value for the keyboard mapping of the hotkey if it exists
 	int GetHotKeyInt(const TCHAR* pszHotKeyVal);
 
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/** reorganizing the Corporations and Religions vectors                                          */
+/*************************************************************************************************/
+	template <class T>
+	void ArrangeTGA(std::vector<T*>& aInfos, const char* szInfo);
+	template <class T>
+	void AddTGABogus(std::vector<T*>& aInfos, const char* szInfo);
+	void cleanTGA();
+	template <class T>
+	void RemoveTGABogusReligion(std::vector<T*>& aInfos);
+	template <class T>
+	void RemoveTGABogusCorporation(std::vector<T*>& aInfos);
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 	//---------------------------------------PRIVATE MEMBER VARIABLES---------------------------------
 private:
 	FXml* m_pFXml;						// member variable pointer to the current FXml class

@@ -2013,6 +2013,18 @@ void CvGame::normalizeAddExtras()
 				{
 					if (!pLoopPlot->isHills())
 					{
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Enable isRequiresFlatlands for Terrains                                          **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+						if (!GC.getTerrainInfo(pLoopPlot->getTerrainType()).isRequiresFlatlands())
+						{
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 						if ((pLoopPlot->getFeatureType() == NO_FEATURE) ||
 							!GC.getFeatureInfo(pLoopPlot->getFeatureType()).isRequiresFlatlands())
 						{
@@ -2023,6 +2035,17 @@ void CvGame::normalizeAddExtras()
 									logBBAI("    Adding hills for player %d.", iI); // K-Mod
 								pLoopPlot->setPlotType(PLOT_HILLS, false, true);									
 								iHillsCount++;
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Enable isRequiresFlatlands for Terrains                                          **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+						}
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 							}
 						}
 					}
@@ -2834,6 +2857,16 @@ int CvGame::getAdjustedPopulationPercent(VictoryTypes eVictory) const
 
 	return std::min(100, (((iNextBestPopulation * 100) / getTotalPopulation()) + GC.getVictoryInfo(eVictory).getPopulationPercentLead()));
 }
+
+/* Population Limit ModComp - Beginning : This function adjust the buildings abilities to change the limit with difficulty level */
+int CvGame::getAdjustedPopulationLimitChange(int iValue) const
+{
+	return (iValue);
+	// changed by keldath - i dont wan the pop limit to be dependent on the handicap, i dont like the formula, 
+	// i want it to be steady
+	//return ((iValue * GC.getHandicapInfo(getHandicapType()).getPopulationLimit()) / 10);
+}
+/* Population Limit ModComp - End */
 
 
 int CvGame::getProductionPerPopulation(HurryTypes eHurry) const
@@ -6537,7 +6570,71 @@ void CvGame::doHolyCity()
 	{
 		iI = ((iLoop + iRandOffset) % GC.getNumReligionInfos());
 
-		if (!isReligionSlotTaken((ReligionTypes)iI))
+		// davidlallen religion forbidden to civilization start
+//keldath - edit i made this into a game option. not that the code is almost the same as the original one.
+		bool relTaken = !isReligionSlotTaken((ReligionTypes)iI);
+		if (relTaken && isOption(GAMEOPTION_FORBIDDEN_RELIGION))
+		{
+			// remove test for team; assign by player instead
+			// because what if the best team's best player cannot convert?
+			
+				iBestValue = MAX_INT;
+				eBestPlayer = NO_PLAYER;
+
+				for (iJ = 0; iJ < MAX_PLAYERS; iJ++)
+				{
+					if (GET_PLAYER((PlayerTypes)iJ).isAlive())
+					{
+//david lalen forbiddan religion - dune wars
+						if (GET_TEAM(GET_PLAYER((PlayerTypes)iJ).getTeam()).isHasTech((TechTypes)(GC.getReligionInfo((ReligionTypes)iI).getTechPrereq())))
+						{
+							CivilizationTypes eCiv = GET_PLAYER((PlayerTypes)iJ).getCivilizationType();
+							if (!(GC.getCivilizationInfo(eCiv).isForbidden((ReligionTypes)iI)))
+							{
+								if (GET_PLAYER((PlayerTypes)iJ).getNumCities() > 0)
+								{
+									iValue = getSorenRandNum(10, "Found Religion (Player)");
+
+									if (!(GET_PLAYER((PlayerTypes)iJ).isHuman()))
+									{
+										iValue += 10;
+									}
+
+									for (iK = 0; iK < GC.getNumReligionInfos(); iK++)
+									{
+										int iReligionCount = GET_PLAYER((PlayerTypes)iJ).getHasReligionCount((ReligionTypes)iK);
+
+										if (iReligionCount > 0)
+										{
+											iValue += iReligionCount * 20;
+										}
+									}
+
+									if (iValue < iBestValue)
+									{
+										iBestValue = iValue;
+										eBestPlayer = ((PlayerTypes)iJ);
+									}
+								}
+							}
+						}
+					}
+				}
+			// davidlallen religion forbidden to civilization end
+
+				if (eBestPlayer != NO_PLAYER)
+				{
+					ReligionTypes eReligion = (ReligionTypes)iI;
+					if (NO_RELIGION != eReligion)
+					{
+					GET_PLAYER(eBestPlayer).foundReligion(eReligion, (ReligionTypes)iI, true);
+					eBestTeam = NO_TEAM;
+				}
+			}
+		}	
+			
+		else if (relTaken)
+// davidlallen religion forbidden to civilization end
 		{
 			iBestValue = MAX_INT;
 			eBestTeam = NO_TEAM;

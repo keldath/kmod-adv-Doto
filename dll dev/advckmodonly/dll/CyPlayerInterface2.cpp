@@ -61,5 +61,16 @@ void CyPlayerPythonInterface2(python::class_<CyPlayer>& x)
 		.def("canSplitArea", &CyPlayer::canSplitArea, "bool (int)")
 		.def("canHaveTradeRoutesWith", &CyPlayer::canHaveTradeRoutesWith, "bool (int)")
 		.def("forcePeace", &CyPlayer::forcePeace, "void (int)")
+/************************************************************************************************/
+/* REVDCM                                 09/02/10                                phungus420    */
+/*                                                                                              */
+/* Player Functions                                                                             */
+/************************************************************************************************/
+		.def("isBuildingClassRequiredToTrain", &CyPlayer::isBuildingClassRequiredToTrain, "bool ((BuildingClassTypes)iBuildingClass, (UnitTypes)iUnit)")
+/************************************************************************************************/
+/* REVDCM                                  END                                                  */
+/************************************************************************************************/																										// Exposed to Python
+
+/************************************************************************************************/
 		;
 }

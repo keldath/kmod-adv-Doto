@@ -176,6 +176,11 @@ public:
 	int AI_getRivalTradeAttitude(PlayerTypes ePlayer) const;
 	int AI_getMemoryAttitude(PlayerTypes ePlayer, MemoryTypes eMemory) const;
 	int AI_getColonyAttitude(PlayerTypes ePlayer) const;
+//dune wars - hated civs
+	int AI_getHatedCivicAttitude(PlayerTypes ePlayer) const; //a1021
+	int AI_getFavoriteCivilizationAttitude(PlayerTypes ePlayer) const; //a1021
+	int AI_getHatedCivilizationAttitude(PlayerTypes ePlayer) const; //a1021	
+//dune wars - hated civs
 
 	PlayerVoteTypes AI_diploVote(const VoteSelectionSubData& kVoteData, VoteSourceTypes eVoteSource, bool bPropose);
 

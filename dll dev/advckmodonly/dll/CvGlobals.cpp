@@ -225,6 +225,19 @@ m_iUSE_ON_UNIT_SELECTED_CALLBACK(0),
 m_iUSE_ON_UPDATE_CALLBACK(0),
 m_iUSE_ON_UNIT_CREATED_CALLBACK(0),
 m_iUSE_ON_UNIT_LOST_CALLBACK(0),
+//MOD@VET_Andera412_Blocade_Unit-begin1/2
+m_iBLOCADE_UNIT(0),
+//MOD@VET_Andera412_Blocade_Unit-end1/2
+/*************************************************************************************************/
+/** TGA_INDEXATION                          11/13/07                            MRGENIE          */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+m_iTGA_RELIGIONS(0),                            // GAMEFONT_TGA_RELIGIONS
+m_iTGA_CORPORATIONS(0),                         // GAMEFONT_TGA_CORPORATIONS
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 // K-Mod
 m_bUSE_AI_UNIT_UPDATE_CALLBACK(false),
 m_bUSE_AI_DO_DIPLO_CALLBACK(false),
@@ -2700,7 +2713,9 @@ void CvGlobals::cacheGlobals()
 	m_iPEAK_SEE_FROM_CHANGE = getDefineINT("PEAK_SEE_FROM_CHANGE");
 	m_iHILLS_SEE_FROM_CHANGE = getDefineINT("HILLS_SEE_FROM_CHANGE");
 	m_iUSE_SPIES_NO_ENTER_BORDERS = getDefineINT("USE_SPIES_NO_ENTER_BORDERS");
-	
+//MOD@VET_Andera412_Blocade_Unit-begin2/2
+	m_iBLOCADE_UNIT = getDefineINT("BLOCADE_UNIT");												// BlocadeUnit 2/3
+//MOD@VET_Andera412_Blocade_Unit-end2/2
 	m_fCAMERA_MIN_YAW = getDefineFLOAT("CAMERA_MIN_YAW");
 	m_fCAMERA_MAX_YAW = getDefineFLOAT("CAMERA_MAX_YAW");
 	m_fCAMERA_FAR_CLIP_Z_HEIGHT = getDefineFLOAT("CAMERA_FAR_CLIP_Z_HEIGHT");
@@ -2742,6 +2757,16 @@ void CvGlobals::cacheGlobals()
 	m_iUSE_ON_UPDATE_CALLBACK = getDefineINT("USE_ON_UPDATE_CALLBACK");
 	m_iUSE_ON_UNIT_CREATED_CALLBACK = getDefineINT("USE_ON_UNIT_CREATED_CALLBACK");
 	m_iUSE_ON_UNIT_LOST_CALLBACK = getDefineINT("USE_ON_UNIT_LOST_CALLBACK");
+/*************************************************************************************************/
+/** TGA_INDEXATION                          11/13/07                            MRGENIE          */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	m_iTGA_RELIGIONS = getDefineINT("GAMEFONT_TGA_RELIGIONS");													// GAMEFONT_TGA_RELIGIONS
+	m_iTGA_CORPORATIONS = getDefineINT("GAMEFONT_TGA_CORPORATIONS");											// GAMEFONT_TGA_CORPORATIONS
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 	// K-Mod
 	m_bUSE_AI_UNIT_UPDATE_CALLBACK = getDefineINT("USE_AI_UNIT_UPDATE_CALLBACK") != 0;
 	m_bUSE_AI_DO_DIPLO_CALLBACK = getDefineINT("USE_AI_DO_DIPLO_CALLBACK") != 0;
@@ -3261,6 +3286,24 @@ int CvGlobals::getUSE_ON_UNIT_LOST_CALLBACK()
 	return m_iUSE_ON_UNIT_LOST_CALLBACK;
 }
 
+/*************************************************************************************************/
+/** TGA_INDEXATION                          11/13/07                            MRGENIE          */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+int CvGlobals::getTGA_RELIGIONS()								// GAMEFONT_TGA_RELIGIONS
+{
+	return m_iTGA_RELIGIONS;
+}
+
+int CvGlobals::getTGA_CORPORATIONS()							// GAMEFONT_TGA_CORPORATIONS
+{
+	return m_iTGA_CORPORATIONS;
+}
+
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 int CvGlobals::getMAX_CIV_PLAYERS()
 {
 	return MAX_CIV_PLAYERS;

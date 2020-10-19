@@ -195,6 +195,18 @@ bool CvXMLLoadUtility::SetGlobalDefines()
 	{
 		return false;
 	}
+/*************************************************************************************************/
+/** TGA_INDEXATION                          02/19/08                                MRGENIE      */
+/**                                                                                              */
+/** reading the Defines to know the modded TGA icons                                             */
+/*************************************************************************************************/
+	if (!ReadGlobalDefines("xml\\GameFont_GlobalDefines.xml", cache))
+	{
+		FAssertMsg(false,"The \"GameFont_GlobalDefines.xml\" could not be found");
+	}
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 
 /************************************************************************************************/
 /* BETTER_BTS_AI_MOD                      02/21/10                                jdog5000      */
@@ -702,6 +714,15 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 	}
 
 	LoadGlobalClassInfo(GC.getGameSpeedInfo(), "CIV4GameSpeedInfo", "GameInfo", "Civ4GameSpeedInfo/GameSpeedInfos/GameSpeedInfo", false);
+/************************************************************************************************/
+/* REVDCM                                 02/16/10                                phungus420    */
+/*                                                                                              */
+/* CanTrain                                                                                     */
+/************************************************************************************************/
+	LoadGlobalClassInfo(GC.getGameOptionInfo(), "CIV4GameOptionInfos", "GameInfo", "Civ4GameOptionInfos/GameOptionInfos/GameOptionInfo", false);
+/************************************************************************************************/
+/* REVDCM                                  END                                                  */
+/************************************************************************************************/
 	LoadGlobalClassInfo(GC.getTurnTimerInfo(), "CIV4TurnTimerInfo", "GameInfo", "Civ4TurnTimerInfo/TurnTimerInfos/TurnTimerInfo", false);
 	LoadGlobalClassInfo(GC.getWorldInfo(), "CIV4WorldInfo", "GameInfo", "Civ4WorldInfo/WorldInfos/WorldInfo", false);
 	LoadGlobalClassInfo(GC.getClimateInfo(), "CIV4ClimateInfo", "GameInfo", "Civ4ClimateInfo/ClimateInfos/ClimateInfo", false);
@@ -715,6 +736,17 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 	LoadGlobalClassInfo(GC.getTechInfo(), "CIV4TechInfos", "Technologies", "Civ4TechInfos/TechInfos/TechInfo", true, &CvDLLUtilityIFaceBase::createTechInfoCacheObject);
 	LoadGlobalClassInfo(GC.getFeatureInfo(), "Civ4FeatureInfos", "Terrain", "Civ4FeatureInfos/FeatureInfos/FeatureInfo", false);
 	LoadGlobalClassInfo(GC.getReligionInfo(), "CIV4ReligionInfo", "GameInfo", "Civ4ReligionInfo/ReligionInfos/ReligionInfo", false);
+/*************************************************************************************************/
+/** TGA_INDEXATION                          03/25/08                                MRGENIE      */
+/**                                                                                              */
+/** reorganizing the Religion vector by checking the TGAIndex of the xml and placing everything  */
+/** properly                                                                                     */
+/*************************************************************************************************/
+	ArrangeTGA(GC.getReligionInfo(), "CIV4ReligionInfo");
+
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 	LoadGlobalClassInfo(GC.getAnimationCategoryInfo(), "CIV4AnimationInfos", "Units", "Civ4AnimationInfos/AnimationCategories/AnimationCategory", false);
 	LoadGlobalClassInfo(GC.getAnimationPathInfo(), "CIV4AnimationPathInfos", "Units", "Civ4AnimationPathInfos/AnimationPaths/AnimationPath", false);
 	LoadGlobalClassInfo(GC.getPromotionInfo(), "CIV4PromotionInfos", "Units", "Civ4PromotionInfos/PromotionInfos/PromotionInfo", true, &CvDLLUtilityIFaceBase::createPromotionInfoCacheObject);
@@ -731,6 +763,16 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 	LoadGlobalClassInfo(GC.getVictoryInfo(), "CIV4VictoryInfo", "GameInfo", "Civ4VictoryInfo/VictoryInfos/VictoryInfo", false);
 	LoadGlobalClassInfo(GC.getBonusInfo(), "CIV4BonusInfos", "Terrain", "Civ4BonusInfos/BonusInfos/BonusInfo", false, &CvDLLUtilityIFaceBase::createBonusInfoCacheObject);
 	LoadGlobalClassInfo(GC.getCorporationInfo(), "CIV4CorporationInfo", "GameInfo", "Civ4CorporationInfo/CorporationInfos/CorporationInfo", false);
+/*************************************************************************************************/
+/** TGA_INDEXATION                          03/25/08                                MRGENIE      */
+/**                                                                                              */
+/** reorganizing the Corporations vector by checking the TGAIndex of the xml and placing         */
+/** everything properly                                                                          */
+/*************************************************************************************************/
+	ArrangeTGA(GC.getCorporationInfo(), "CIV4CorporationInfo");
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 	LoadGlobalClassInfo(GC.getRouteInfo(), "Civ4RouteInfos", "Misc", "Civ4RouteInfos/RouteInfos/RouteInfo", false);
 	LoadGlobalClassInfo(GC.getImprovementInfo(), "CIV4ImprovementInfos", "Terrain", "Civ4ImprovementInfos/ImprovementInfos/ImprovementInfo", true, &CvDLLUtilityIFaceBase::createImprovementInfoCacheObject);
 	LoadGlobalClassInfo(GC.getBuildingClassInfo(), "CIV4BuildingClassInfos", "Buildings", "Civ4BuildingClassInfos/BuildingClassInfos/BuildingClassInfo", false);
@@ -740,7 +782,9 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 		GC.getBuildingClassInfo((BuildingClassTypes)i).readPass3();
 	}
 	LoadGlobalClassInfo(GC.getSpecialUnitInfo(), "CIV4SpecialUnitInfos", "Units", "Civ4SpecialUnitInfos/SpecialUnitInfos/SpecialUnitInfo", false);
-	LoadGlobalClassInfo(GC.getProjectInfo(), "CIV4ProjectInfo", "GameInfo", "Civ4ProjectInfo/ProjectInfos/ProjectInfo", true);
+	// davidlallen: project civilization and free unit next line
+	// CIV4ProjectInfo was here
+	//LoadGlobalClassInfo(GC.getProjectInfo(), "CIV4ProjectInfo", "GameInfo", "Civ4ProjectInfo/ProjectInfos/ProjectInfo", true);
 	LoadGlobalClassInfo(GC.getCivicInfo(), "CIV4CivicInfos", "GameInfo", "Civ4CivicInfos/CivicInfos/CivicInfo", false, &CvDLLUtilityIFaceBase::createCivicInfoCacheObject);
 	for (int i=0; i < GC.getNumVoteSourceInfos(); ++i)
 	{
@@ -759,7 +803,16 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 	}
 	LoadGlobalClassInfo(GC.getUnitArtStyleTypeInfo(), "CIV4UnitArtStyleTypeInfos", "Civilizations", "Civ4UnitArtStyleTypeInfos/UnitArtStyleTypeInfos/UnitArtStyleTypeInfo", false);
 	LoadGlobalClassInfo(GC.getCivilizationInfo(), "CIV4CivilizationInfos", "Civilizations", "Civ4CivilizationInfos/CivilizationInfos/CivilizationInfo", true, &CvDLLUtilityIFaceBase::createCivilizationInfoCacheObject);
-	LoadGlobalClassInfo(GC.getHints(), "CIV4Hints", "GameInfo", "Civ4Hints/HintInfos/HintInfo", false);
+	//hated civs additions - f1rpo dune wars aln start
+	for (int i=0; i < GC.getNumLeaderHeadInfos(); ++i)
+	{
+		GC.getLeaderHeadInfo((LeaderHeadTypes)i).readPass3();
+	}
+	//hated civs additions - f1rpo dune wars aln end
+	// davidlallen: project civilization and free unit next line
+	LoadGlobalClassInfo(GC.getProjectInfo(), "CIV4ProjectInfo", "GameInfo", "Civ4ProjectInfo/ProjectInfos/ProjectInfo", true);
+    
+    LoadGlobalClassInfo(GC.getHints(), "CIV4Hints", "GameInfo", "Civ4Hints/HintInfos/HintInfo", false);
 	LoadGlobalClassInfo(GC.getMainMenus(), "CIV4MainMenus", "Art", "Civ4MainMenus/MainMenus/MainMenu", false);
 	LoadGlobalClassInfo(GC.getSlideShowInfo(), "CIV4SlideShowInfos", "Interface", "Civ4SlideShowInfos/SlideShowInfos/SlideShowInfo", false);
 	LoadGlobalClassInfo(GC.getSlideShowRandomInfo(), "CIV4SlideShowRandomInfos", "Interface", "Civ4SlideShowRandomInfos/SlideShowRandomInfos/SlideShowRandomInfo", false);
@@ -802,6 +855,16 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 			GC.getNumAIPlayableCivilizationInfos() += 1;
 		}
 	}
+/*************************************************************************************************/
+/** TGA_INDEXATION                          03/25/08                                MRGENIE      */
+/**                                                                                              */
+/** Filling up empty spots(i.e. because module not loaded)                                       */
+/*************************************************************************************************/
+	AddTGABogus(GC.getCorporationInfo(), "CIV4CorporationInfo");
+	AddTGABogus(GC.getReligionInfo(), "CIV4ReligionInfo");
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 
 	UpdateProgressCB("GlobalOther");
 
@@ -2102,6 +2165,92 @@ void CvXMLLoadUtility::SetVariableListTagPair(int **ppiList, const TCHAR* szRoot
 	}
 }
 
+/************************************************************************************************/
+/* RevDCM  XMLloading                             05/05/10             phungus420               */
+/*                         cantrain                                                                     */
+/*                        i think this is for the tga index or the unit tags from revdcm? - keldath                                                                      */
+/************************************************************************************************/
+//allows loading of a variable pair into an array by tag name
+void CvXMLLoadUtility::SetVariableListTagPair(int **ppiList, const TCHAR* szRootTagName,
+		int iInfoBaseSize, int iInfoBaseLength,
+		const TCHAR* szValueTagName, int iValueInfoBaseLength, int iDefaultListVal)
+{
+	int i;
+	int iIndexVal;
+	int iNumSibs;
+	int iValue;
+	TCHAR szTextPosition[256];
+	TCHAR szTextVal[256];
+	int* piList = NULL;
+
+	if (0 > iInfoBaseLength)
+	{
+		char	szMessage[1024];
+		sprintf( szMessage, "Allocating zero or less memory in CvXMLLoadUtility::SetVariableListTagPair \n Current XML file is: %s", GC.getCurrentXMLFile().GetCString());
+		gDLL->MessageBox(szMessage, "XML Error");
+	}
+	InitList(ppiList, iInfoBaseLength, iDefaultListVal);
+	piList = *ppiList;
+
+	if (gDLL->getXMLIFace()->SetToChildByTagName(m_pFXml,szRootTagName))
+	{
+		if (SkipToNextVal())
+		{
+			iNumSibs = gDLL->getXMLIFace()->GetNumChildren(m_pFXml);
+			if (0 < iNumSibs)
+			{
+				if(!(iNumSibs <= iInfoBaseLength))
+				{
+					char	szMessage[1024];
+					sprintf( szMessage, "There are more siblings than memory allocated for them in CvXMLLoadUtility::SetVariableListTagPair \n Current XML file is: %s", GC.getCurrentXMLFile().GetCString());
+					gDLL->MessageBox(szMessage, "XML Error");
+				}
+				if (gDLL->getXMLIFace()->SetToChild(m_pFXml))
+				{
+					for (i=0;i<iNumSibs;i++)
+					{
+						if (GetChildXmlVal(szTextPosition))
+						{
+							iIndexVal = FindInInfoClass(szTextPosition);
+
+							if (iIndexVal != -1)
+							{
+								gDLL->getXMLIFace()->SetToParent(m_pFXml);
+								GetChildXmlValByName(szTextVal, szValueTagName);
+								iValue = FindInInfoClass(szTextVal);
+								if( (iValue < -1) || (iValue >= iValueInfoBaseLength) )
+								{
+									char	szMessage[1024];
+									sprintf( szMessage, "A defined value for an array is outside of the accepted size of the infoclass!\n Current XML file is: %s", GC.getCurrentXMLFile().GetCString());
+									gDLL->MessageBox(szMessage, "XML Error");
+								} else
+								{
+									piList[iIndexVal] = iValue;
+								}
+							} else
+							{
+								gDLL->getXMLIFace()->SetToParent(m_pFXml);
+							}
+						}
+
+						if (!gDLL->getXMLIFace()->NextSibling(m_pFXml))
+						{
+							break;
+						}
+					}
+
+					gDLL->getXMLIFace()->SetToParent(m_pFXml);
+				}
+			}
+		}
+
+		gDLL->getXMLIFace()->SetToParent(m_pFXml);
+	}
+}
+/************************************************************************************************/
+/* RevDCM	                                 END                                                */
+/************************************************************************************************/
+
 //------------------------------------------------------------------------------------------------------
 //
 //  FUNCTION:   SetVariableListTagPair(	bool **ppbList, const TCHAR* szRootTagName,
@@ -2688,3 +2837,251 @@ DllExport bool CvXMLLoadUtility::LoadGraphicOptions()
 }
 
 
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/** reorganizing the Corporations and Religions vectors                                          */
+/*************************************************************************************************/
+template <class T>
+void CvXMLLoadUtility::ArrangeTGA(std::vector<T*>& aInfos, const char* szInfo)
+{
+	int iMinIndex;
+	CvString szDebugBuffer;
+
+	T* pTempClassInfo = new T;	// Temp to store while swapping positions
+
+	FAssert(NULL != pTempClassInfo);
+	if (NULL == pTempClassInfo)
+	{
+		return;
+	}
+
+	CvString verify = CvString::format("%s", szInfo).GetCString();  //string comparison
+
+	if ( verify == "CIV4ReligionInfo" )
+	{
+#ifdef DEBUG_TGA_LOADING
+		GC.logInfoTypeMap("Before religion game font rearranging");
+		// loop through the religions see what we've got
+		szDebugBuffer.Format("=== BEFORE %s TGA indices. ===", szInfo);
+		gDLL->logMsg("CvXMLLoadUtility_ArrangeTGA.log", szDebugBuffer.c_str());
+		for (std::vector<T*>::const_iterator it = aInfos.begin(); it != aInfos.end(); it++)
+		{
+			szDebugBuffer.Format("* Religion %s: TGA index %i; type ID %i", (*it)->getType(), (*it)->getTGAIndex(), GC.getInfoTypeForString((*it)->getType()));
+			gDLL->logMsg("CvXMLLoadUtility_ArrangeTGA.log", szDebugBuffer.c_str());
+
+		}
+#endif
+		for ( int iReligion = 0; iReligion < (int)aInfos.size(); iReligion++ )
+		{
+			iMinIndex = iReligion;
+
+			// if we found the Religion with the proper GTAIndex, make sure it's on the right spot in the aInfos vector
+			for ( int iReligionCheck = iReligion + 1; iReligionCheck < (int)aInfos.size(); iReligionCheck++ )
+			{
+				if ( GC.getReligionInfo((ReligionTypes)iReligionCheck).getTGAIndex() < GC.getReligionInfo((ReligionTypes)iMinIndex).getTGAIndex() )
+				{
+					iMinIndex = iReligionCheck;
+				}
+			}
+
+			if ( iMinIndex != iReligion )
+			{
+#ifdef DEBUG_TGA_LOADING
+				szDebugBuffer.Format(" * Found candidates to swap: %i <-> %i", iMinIndex, iReligion);
+				gDLL->logMsg("CvXMLLoadUtility_ArrangeTGA.log", szDebugBuffer.c_str());
+#endif
+
+				int iOldType1 = GC.getInfoTypeForString(aInfos[iReligion]->getType());
+				int iOldType2 = GC.getInfoTypeForString(aInfos[iMinIndex]->getType());
+
+#ifdef DEBUG_TGA_LOADING
+				szDebugBuffer.Format(" -- Old info types: %s: %i <-> %s: %i", aInfos[iReligion]->getType(), iOldType1, aInfos[iMinIndex]->getType(), iOldType2);
+				gDLL->logMsg("CvXMLLoadUtility_ArrangeTGA.log", szDebugBuffer.c_str());
+#endif
+
+				GC.setInfoTypeFromString(aInfos[iReligion]->getType(), iOldType2);
+				GC.setInfoTypeFromString(aInfos[iMinIndex]->getType(), iOldType1);
+
+				pTempClassInfo = aInfos[iReligion];			//store in temp value
+				aInfos[iReligion] = aInfos[iMinIndex];		//move iReligion to proper place
+				aInfos[iMinIndex] = pTempClassInfo;			//finish the swap
+
+				// Set the InfoTypeFromString map properly according to the new alphabetical order
+				/*if (NULL != aInfos[iReligion]->getType())
+				{*/
+					// overwrite existing info maps with the proper id's
+					//GC.setInfoTypeFromString(aInfos[iReligion]->getType(), iMinIndex, true);
+				/*}
+				if (NULL != aInfos[iMinIndex]->getType())
+				{*/
+					// overwrite existing info maps with the proper id's
+					//GC.setInfoTypeFromString(aInfos[iMinIndex]->getType(), iReligion, true);
+				//}
+
+#ifdef DEBUG_TGA_LOADING
+				szDebugBuffer.Format(" -- NEW info types: %s: %i <-> %s: %i", aInfos[iReligion]->getType(), GC.getInfoTypeForString(aInfos[iReligion]->getType()), aInfos[iMinIndex]->getType(), GC.getInfoTypeForString(aInfos[iMinIndex]->getType()));
+				gDLL->logMsg("CvXMLLoadUtility_ArrangeTGA.log", szDebugBuffer.c_str());
+#endif
+			}
+		}
+#ifdef DEBUG_TGA_LOADING
+		szDebugBuffer.Format("=== AFTER %s TGA indices. ===", szInfo);
+		gDLL->logMsg("CvXMLLoadUtility_ArrangeTGA.log", szDebugBuffer.c_str());
+		for (std::vector<T*>::const_iterator it = aInfos.begin(); it != aInfos.end(); it++)
+		{
+			szDebugBuffer.Format("* Religion %s: TGA index %i; type ID %i", (*it)->getType(), (*it)->getTGAIndex(), GC.getInfoTypeForString((*it)->getType()));
+			gDLL->logMsg("CvXMLLoadUtility_ArrangeTGA.log", szDebugBuffer.c_str());
+
+		}
+
+		GC.logInfoTypeMap("After religion game font rearranging");
+#endif
+	}
+	
+
+	if ( verify == "CIV4CorporationInfo" )
+	{		
+		// loop through the religions see what we've got
+		for ( int iCorporation = 0; iCorporation < (int)aInfos.size(); iCorporation++ )
+		{
+			iMinIndex = iCorporation;
+
+			// if we found the Religion with the proper GTAIndex, make sure it's on the right spot in the aInfos vector
+			for ( int iCorporationCheck = iCorporation + 1; iCorporationCheck < (int)aInfos.size(); iCorporationCheck++ )
+			{
+				if ( GC.getCorporationInfo((CorporationTypes)iCorporationCheck).getTGAIndex() < GC.getCorporationInfo((CorporationTypes)iMinIndex).getTGAIndex() )
+				{
+					iMinIndex = iCorporationCheck;
+				}
+			}
+
+			if ( iMinIndex != iCorporation )
+			{
+				pTempClassInfo = aInfos[iCorporation];			//store in temp value
+				aInfos[iCorporation] = aInfos[iMinIndex];		//move iReligion to proper place
+				aInfos[iMinIndex] = pTempClassInfo;			//finish the swap
+				// Set the InfoTypeFromString map properly according to the new alphabetical order
+				if (NULL != aInfos[iCorporation]->getType())
+				{
+					// overwrite existing info maps with the proper id's
+					GC.setInfoTypeFromString(aInfos[iCorporation]->getType(), iMinIndex);
+				}
+				if (NULL != aInfos[iMinIndex]->getType())
+				{
+					// overwrite existing info maps with the proper id's
+					GC.setInfoTypeFromString(aInfos[iMinIndex]->getType(), iCorporation);
+				}
+			}
+		}
+	}
+}
+
+template <class T>
+void CvXMLLoadUtility::AddTGABogus(std::vector<T*>& aInfos, const char* szInfo)
+{
+	bool bTGAInfoTypeValid = false;
+
+	T* pTempClassInfo = new T;	// Temp to store while swapping positions
+	T* pClassInfo = new T;		// Bogus InfoType
+
+	FAssert(NULL != pTempClassInfo);
+	FAssert(NULL != pClassInfo);
+	if (NULL == pClassInfo || NULL == pTempClassInfo)
+	{
+		return;
+	}
+
+	CvString verify = CvString::format("%s", szInfo).GetCString();  //string comparison
+
+	if ( verify == "CIV4ReligionInfo" )
+	{
+		for ( int iI = 0; iI < TGA_RELIGIONS; iI++ )
+		{
+			bTGAInfoTypeValid = false;
+			// loop through the religions see what we've got
+			for ( int iReligion = 0; iReligion < (int)aInfos.size(); iReligion++ )
+			{
+				// if we found the Religion with the proper GTAIndex, make sure it's on the right spot in the aInfos vector
+				if ( GC.getReligionInfo((ReligionTypes)iReligion).getTGAIndex() == iI )
+				{
+					bTGAInfoTypeValid = true;
+				}
+			}
+			if ( !bTGAInfoTypeValid)
+			{
+				aInfos.insert(aInfos.begin() + iI, pClassInfo);
+			}
+		}
+	}
+
+	if ( verify == "CIV4CorporationInfo" )
+	{
+		for ( int iI = 0; iI < TGA_CORPORATIONS; iI++ )
+		{
+			bTGAInfoTypeValid = false;
+			// loop through the religions see what we've got
+			for ( int iCorporation = 0; iCorporation < (int)aInfos.size(); iCorporation++ )
+			{
+				// if we found the Religion with the proper GTAIndex, make sure it's on the right spot in the aInfos vector
+				if ( GC.getCorporationInfo((CorporationTypes)iCorporation).getTGAIndex() == iI )
+				{
+					bTGAInfoTypeValid = true;
+				}
+			}
+			if ( !bTGAInfoTypeValid)
+			{
+				aInfos.insert(aInfos.begin() + iI, pClassInfo);
+			}
+		}
+	}
+}
+
+// Made an own little function for this one in case we have to clean up any further info vectors in future
+// principly any one can be added here in future, if everything is ok, nothing will be done anyway
+void CvXMLLoadUtility::cleanTGA()
+{
+	RemoveTGABogusReligion(GC.getReligionInfo());
+	RemoveTGABogusCorporation(GC.getCorporationInfo());
+}
+
+template <class T>
+void CvXMLLoadUtility::RemoveTGABogusReligion(std::vector<T*>& aInfos)
+{
+	std::vector <int> viDeletionVector;
+
+	for ( int iI = 0; iI < GC.getNumReligionInfos(); iI++)
+	{
+		if ( NULL == GC.getReligionInfo((ReligionTypes)iI).getType() )
+		{
+			viDeletionVector.push_back(iI);
+		}
+	}
+
+	for ( int iI = (int)viDeletionVector.size() - 1; iI >= 0; iI--)	// gotta do this backwards
+	{
+		aInfos.erase( aInfos.begin()+viDeletionVector.at(iI));
+	}
+}
+
+template <class T>
+void CvXMLLoadUtility::RemoveTGABogusCorporation(std::vector<T*>& aInfos)
+{
+	std::vector <int> viDeletionVector;
+
+	for ( int iI = 0; iI < GC.getNumCorporationInfos(); iI++)
+	{
+		if ( NULL == GC.getCorporationInfo((CorporationTypes)iI).getType() )
+		{
+			viDeletionVector.push_back(iI);
+		}
+	}
+
+	for ( int iI = (int)viDeletionVector.size() - 1; iI >= 0; iI--)	// gotta do this backwards
+	{
+		aInfos.erase( aInfos.begin()+viDeletionVector.at(iI));
+	}
+}
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/

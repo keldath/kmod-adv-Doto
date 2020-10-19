@@ -6,6 +6,15 @@
 // enums.h
 
 #include "CvDefines.h"
+/*************************************************************************************************/
+/** TGA_INDEXATION                       10/16/07                                MRGENIE      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+#include "CvDefinesTGA.h"
+/*************************************************************************************************/
+/** TGA_INDEXATION                       END                                                  */
+/*************************************************************************************************/
 
 enum GameStateTypes					// Exposed to Python
 {
@@ -749,14 +758,22 @@ enum GameOptionTypes				// Exposed to Python
 	GAMEOPTION_NO_GOODY_HUTS,
 	GAMEOPTION_NO_EVENTS,
 	GAMEOPTION_NO_ESPIONAGE,
-
+//MOD@VET_Andera412_Blocade_Unit-begin1/1
+	GAMEOPTION_BLOCADE_UNIT,
+//MOD@VET_Andera412_Blocade_Unit-end1/1	
     GAMEOPTION_MOUNTAINS,//AND Mountains mod Option
+    GAMEOPTION_TECH_DIFFUSION, //Tech Diffusion Option by Stolenrays
     GAMEOPTION_CULTURE_CONTROL,//Culture Control Gameoption by Stolenrays
 //Influence Driven War: Added for PIG Mod by PieceOfMind 26/10/09
 	GAMEOPTION_INFLUENCE_DRIVEN_WAR,
 	GAMEOPTION_IDW_NO_BARBARIAN,
 	GAMEOPTION_IDW_NO_NAVAL,
 	GAMEOPTION_IDW_PILLAGE,
+	GAMEOPTION_NO_POPULATION_LIMIT,
+	GAMEOPTION_FORBIDDEN_RELIGION,
+   ///by keldath
+    GAMEOPTION_EXTRA_BUILDINGS,
+    GAMEOPTION_NO_CORPORATIONS,
 #ifdef _USRDLL
 	NUM_GAMEOPTION_TYPES
 #endif
@@ -954,6 +971,17 @@ enum FontSymbols					// Exposed to Python
 	MAP_CHAR,
 	OCCUPATION_CHAR,
 	POWER_CHAR,
+/*************************************************************************************************/
+/** TGA_INDEXATION									                                BUG mod      */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	CITIZEN_CHAR,
+	GREAT_GENERAL_CHAR,
+	AIRPORT_CHAR,
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 
 #ifdef _USRDLL
 	MAX_NUM_SYMBOLS

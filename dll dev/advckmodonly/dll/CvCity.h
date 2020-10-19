@@ -71,6 +71,16 @@ public:
 	int findBaseYieldRateRank(YieldTypes eYield) const;											// Exposed to Python
 	int findYieldRateRank(YieldTypes eYield) const;								// Exposed to Python					
 	int findCommerceRateRank(CommerceTypes eCommerce) const;			// Exposed to Python					
+/************************************************************************************************/
+/* REVDCM     tags                            05/05/10                                phungus420    */
+/*                                                                                              */
+/* CanTrain                                                                                     */
+/************************************************************************************************/
+	bool isForceObsoleteUnitClassAvailable(UnitTypes eUnit) const;						// Exposed to Python
+	bool isPlotTrainable(UnitTypes eUnit, bool bContinue, bool bTestVisible) const;						// Exposed to Python
+/************************************************************************************************/
+/* REVDCM                                  END                                                  */
+/************************************************************************************************/
 
 	UnitTypes allUpgradesAvailable(UnitTypes eUnit, int iUpgradeCount = 0) const;						// Exposed to Python
 	bool isWorldWondersMaxed() const;																							// Exposed to Python
@@ -306,6 +316,13 @@ public:
 	int getPopulation() const;														// Exposed to Python
 	void setPopulation(int iNewValue);										// Exposed to Python
 	void changePopulation(int iChange);										// Exposed to Python
+	/* Population Limit ModComp - Beginning */
+	/* doto*/
+	int getPopulationLimit() const;														// Exposed to Python
+	int getPopulationLimitChange() const;														// Exposed to Python
+	void setPopulationLimitChange(int iNewValue);										// Exposed to Python
+	void changePopulationLimitChange(int iChange);										// Exposed to Python
+	/* Population Limit ModComp - End */
 
 	long getRealPopulation() const;																	// Exposed to Python
 
@@ -402,6 +419,35 @@ public:
 	int getFeatureGoodHealth() const;																			// Exposed to Python
 	int getFeatureBadHealth() const;														// Exposed to Python
 	void updateFeatureHealth();
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Enable Terrain Health Modifiers                                                  **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+	int getTerrainGoodHealth() const;																					// Exposed to Python
+	int getTerrainBadHealth() const;																					// Exposed to Python
+	void updateTerrainHealth();
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
+/*************************************************************************************************/
+/** Specialists Enhancements, by Supercheese 10/9/09                                                   */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int getSpecialistGoodHealth() const;																			// Exposed to Python
+	int getSpecialistBadHealth() const;														// Exposed to Python
+	int getSpecialistHappiness() const;																			// Exposed to Python
+	int getSpecialistUnhappiness() const;														// Exposed to Python
+	void changeSpecialistGoodHealth(int iChange);
+	void changeSpecialistBadHealth(int iChange);
+	void changeSpecialistHappiness(int iChange);
+	void changeSpecialistUnhappiness(int iChange);
+/*************************************************************************************************/
+/** Specialists Enhancements                          END                                              */
+/*************************************************************************************************/
 
 // BUG - Actual Effects - start
 	int getAdditionalAngryPopuplation(int iGood, int iBad) const;
@@ -425,6 +471,12 @@ public:
 	int getBonusBadHealth() const;															// Exposed to Python 
 	void changeBonusGoodHealth(int iChange);
 	void changeBonusBadHealth(int iChange);
+    // < Civic Infos Plus Start >
+    int getReligionGoodHealth() const;																	// Exposed to Python
+	int getReligionBadHealth() const;																	// Exposed to Python
+	int getReligionHealth(ReligionTypes eReligion) const;							// Exposed to Python
+	void updateReligionHealth();
+	// < Civic Infos Plus End   >
 
 	int getMilitaryHappiness() const;																			// Exposed to Python
 	int getMilitaryHappinessUnits() const;																// Exposed to Python
@@ -714,6 +766,23 @@ public:
 
 	int getBonusYieldRateModifier(YieldTypes eIndex) const;						// Exposed to Python 
 	void changeBonusYieldRateModifier(YieldTypes eIndex, int iChange);
+	// < DOTO-DPII Civic Infos Plus Start >
+//removed by f1 advc - keldath
+	int getStateReligionYieldRateModifier(YieldTypes eIndex) const;											// Exposed to Python
+	void changeStateReligionYieldRateModifier(YieldTypes eIndex, int iChange);
+
+	int getStateReligionCommerceRateModifier(CommerceTypes eIndex) const;
+	void changeStateReligionCommerceRateModifier(CommerceTypes eIndex, int iChange);
+
+	int getNonStateReligionYieldRateModifier(YieldTypes eIndex) const;											// Exposed to Python
+	void changeNonStateReligionYieldRateModifier(YieldTypes eIndex, int iChange);
+
+	int getNonStateReligionCommerceRateModifier(CommerceTypes eIndex) const;
+	void changeNonStateReligionCommerceRateModifier(CommerceTypes eIndex, int iChange);
+
+	void updateBuildingYieldChange(CivicTypes eCivic, int iChange);
+	void updateBuildingCommerceChange(CivicTypes eCivic, int iChange);
+	// < Civic Infos Plus End   >
 
 	int getTradeYield(YieldTypes eIndex) const;									// Exposed to Python
 	int totalTradeModifier(CvCity* pOtherCity = NULL) const;					// Exposed to Python
@@ -728,7 +797,18 @@ public:
 	int getExtraSpecialistYield(YieldTypes eIndex, SpecialistTypes eSpecialist) const;// Exposed to Python
 	void updateExtraSpecialistYield(YieldTypes eYield);
 	void updateExtraSpecialistYield();
-
+/*************************************************************************************************/
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**																								**/
+/**																								**/
+/*************************************************************************************************/
+	int getSpecialistCivicExtraCommerce(CommerceTypes eIndex) const;
+	int getSpecialistCivicExtraCommerceBySpecialist(CommerceTypes eIndex, SpecialistTypes eSpecialist) const;					// Exposed to Python
+	void updateSpecialistCivicExtraCommerce(CommerceTypes eCommerce);
+	void updateSpecialistCivicExtraCommerce();
+/*************************************************************************************************/
+/**	CMEDIT: End																					**/
+/*************************************************************************************************/
 	int getCommerceRate(CommerceTypes eIndex) const;									// Exposed to Python
 	int getCommerceRateTimes100(CommerceTypes eIndex) const;									// Exposed to Python
 	int getCommerceFromPercent(CommerceTypes eIndex, int iYieldRate) const;			// Exposed to Python
@@ -1101,6 +1181,9 @@ protected:
 	int m_iGameTurnFounded;
 	int m_iGameTurnAcquired;
 	int m_iPopulation;
+	/* Population Limit ModComp - Beginning */
+	int m_iPopulationLimitChange;
+	/* Population Limit ModComp - End */
 	int m_iHighestPopulation;
 	int m_iWorkingPopulation;
 	int m_iSpecialistPopulation;
@@ -1124,8 +1207,37 @@ protected:
 	int m_iFreshWaterBadHealth;
 	int m_iFeatureGoodHealth;
 	int m_iFeatureBadHealth;
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: New Tag Definition                                                               **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+	int m_iTerrainGoodHealth;
+	int m_iTerrainBadHealth;
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
+/*************************************************************************************************/
+/** Specialists Enhancements, by Supercheese 10/9/09                                                   */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+	int m_iSpecialistGoodHealth;
+	int m_iSpecialistBadHealth;
+	int m_iSpecialistHappiness;
+	int m_iSpecialistUnhappiness;
+/*************************************************************************************************/
+/** Specialists Enhancements                          END                                              */
+/*************************************************************************************************/
 	int m_iBuildingGoodHealth;
 	int m_iBuildingBadHealth;
+	// < Civic Infos Plus Start >
+	int m_iReligionGoodHealth;
+	int m_iReligionBadHealth;
+	// < Civic Infos Plus Start >
+
 	int m_iPowerGoodHealth;
 	int m_iPowerBadHealth;
 	int m_iBonusGoodHealth;
@@ -1205,14 +1317,36 @@ protected:
 	int* m_aiYieldRateModifier;
 	int* m_aiPowerYieldRateModifier;
 	int* m_aiBonusYieldRateModifier;
+    // < Civic Infos Plus Start >
+	int* m_aiBuildingYieldChange;
+	int* m_aiStateReligionYieldRateModifier;
+	int* m_aiNonStateReligionYieldRateModifier;
+	// < Civic Infos Plus End   >
+	
 	int* m_aiTradeYield;
 	int* m_aiCorporationYield;
 	int* m_aiExtraSpecialistYield;
+/*************************************************************************************************/
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**																								**/
+/**																								**/
+/*************************************************************************************************/
+	int* m_aiExtraSpecialistCommerce;
+/*************************************************************************************************/
+/**	CMEDIT: End																					**/
+/*************************************************************************************************/
+
 	int* m_aiCommerceRate;
 	int* m_aiProductionToCommerceModifier;
 	int* m_aiBuildingCommerce;
 	int* m_aiSpecialistCommerce;
 	int* m_aiReligionCommerce;
+	// < Civic Infos Plus Start >
+	int* m_aiBuildingCommerceChange;
+	int* m_aiStateReligionCommerceRateModifier;
+	int* m_aiNonStateReligionCommerceRateModifier;
+	// < Civic Infos Plus End   >
+
 	int* m_aiCorporationCommerce;
 	int* m_aiCommerceRateModifier;
 	int* m_aiCommerceHappinessPer;

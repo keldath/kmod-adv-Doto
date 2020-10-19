@@ -33,12 +33,35 @@ void CyInfoPythonInterface3()
 		.def("getSeeThroughLevel", &CvTerrainInfo::getSeeThroughLevel, "int ()")
 		.def("getBuildModifier", &CvTerrainInfo::getBuildModifier, "int ()")
 		.def("getDefenseModifier", &CvTerrainInfo::getDefenseModifier, "int ()")
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Expose new terrain tags to python                                                **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+		.def("getHealthPercent", &CvTerrainInfo::getHealthPercent, "int ()")
+		.def("getTurnDamage", &CvTerrainInfo::getTurnDamage, "int ()")
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 
 		.def("isWater", &CvTerrainInfo::isWater, "bool ()")
 		.def("isImpassable", &CvTerrainInfo::isImpassable, "bool ()")
 		.def("isFound", &CvTerrainInfo::isFound, "bool ()")
 		.def("isFoundCoast", &CvTerrainInfo::isFoundCoast, "bool ()")
 		.def("isFoundFreshWater", &CvTerrainInfo::isFoundFreshWater, "bool ()")
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Expose new terrain tags to python                                                **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/
+		.def("isRequiresFlatlands", &CvTerrainInfo::isRequiresFlatlands, "bool ()")
+/*****************************************************************************************************/
+/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+/*****************************************************************************************************/
 
 		// Arrays
 
@@ -268,6 +291,16 @@ void CyInfoPythonInterface3()
 		.def("getMovieSound", &CvCorporationInfo::getMovieSound, "string ()")
 		.def("getSound", &CvCorporationInfo::getSound, "string ()")
 
+/*************************************************************************************************/
+/** TGA_INDEXATION                          03/25/08                                MRGENIE      */
+/**                                                                                              */
+/** reorganizing the Religion vector by checking the TGAIndex of the xml and placing everything  */
+/** properly                                                                                     */
+/*************************************************************************************************/
+		.def("getTGAIndex", &CvReligionInfo::getTGAIndex, "int ()")
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 		// Arrays
 
 		.def("getPrereqBonus", &CvCorporationInfo::getPrereqBonus, "int (int i)")

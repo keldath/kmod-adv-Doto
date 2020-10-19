@@ -1420,7 +1420,24 @@ void CvCityAI::AI_chooseProduction()
 			}
 		}
 	}
-	
+//keldath - removed by dube wars - not sure seems good to remove....
+//i decided to remove this 18102020
+	// ALN DuneWars - don't do this, not necessary (no colony maintenance) and confuses the AI on island maps
+	/* if (!bDanger && !bIsCapitalArea && area()->getCitiesPerPlayer(getOwnerINLINE()) > iNumCapitalAreaCities)
+	{
+		// BBAI TODO:  This check should be done by player, not by city and optimize placement
+		// If losing badly in war, don't build big things
+		if( !bLandWar || (iWarSuccessRatio > -30) )
+		{
+			if( kPlayer.getCapitalCity() == NULL || area()->getPopulationPerPlayer(getOwnerINLINE()) > kPlayer.getCapitalCity()->area()->getPopulationPerPlayer(getOwnerINLINE()) )
+			{
+				if (AI_chooseBuilding(BUILDINGFOCUS_CAPITAL, 15))
+				{
+					return;
+				}
+			}
+		}
+	} */	
 	if (!bDanger && !bIsCapitalArea && area()->getCitiesPerPlayer(getOwnerINLINE()) > iNumCapitalAreaCities)
 	{
 		// BBAI TODO:  This check should be done by player, not by city and optimize placement
@@ -4132,6 +4149,24 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags, int iTh
 			// K-Mod end
 
 			iValue += ((kBuilding.getWorkerSpeedModifier() * kOwner.AI_getNumAIUnits(UNITAI_WORKER)) / 10);
+			/* Population Limit ModComp - Beginning original mod def value*/
+			//iValue += (kBuilding.getPopulationLimitChange() * 2 * (getPopulation() - (getPopulationLimit() - getPopulation())));
+			/* Population Limit ModComp - End */
+			/* DOTO-Population Limit ModComp - Beginning+ f1rpo fix+keldath */
+			if(kBuilding.getPopulationLimitChange() > 0 && getPopulationLimit() </*=*/ MAX_INT /*getPopulation()*/) {
+   			// Loosely based on the K-Mod evaluation of iBuildingActualHappiness
+   				int iCitizenValue = 6 + kOwner.getCurrentEra();
+   				int iDelta = std::max(0, getPopulationLimit() - getPopulation());
+   				if(iDelta == 0 && iHappinessLevel > 0)
+       				iValue += 4 * iCitizenValue;
+   				if(iDelta == 1 && iFoodDifference > 1 && iHappinessLevel > 0 && iHealthLevel >= 0)
+      				iValue += std::min(3, iFoodDifference) * iCitizenValue;
+   				int iPopLimitChangeValue = 10 * iCitizenValue / (3 +
+           			iDelta + iDelta / 2 + kBuilding.getPopulationLimitChange() +
+           			getPopulationLimit() +
+           			2 * (std::max(0, -iHealthLevel) + std::max(0, -iHappinessLevel)));
+   				iValue += kBuilding.getPopulationLimitChange() * std::max(0, iPopLimitChangeValue);
+			}/* DOTO-Population Limit ModComp - End */
 
 			int iMilitaryProductionModifier = kBuilding.getMilitaryProductionModifier();
 			if (iHasMetCount > 0 && iMilitaryProductionModifier > 0)
@@ -4235,6 +4270,10 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags, int iTh
 				}
 				// else: If there is nothing to research, a free tech is worthless.
 			}
+
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
+				iValue += (kBuilding.getFreeSpecificTech() == NO_TECH ? 0 : 80);
+/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
 
 			iValue += kBuilding.getEnemyWarWearinessModifier() / 2;
 
@@ -6122,12 +6161,26 @@ bool CvCityAI::AI_isDanger()
 
 int CvCityAI::AI_getEmphasizeAvoidGrowthCount() const
 {
+	/* DOTO-Population Limit ModComp - Beginning */
+	//was originally on avoid growth funcion
+	if (getPopulation() >= getPopulationLimit())
+	{
+		return 1;
+	}
+	/* DOTO-Population Limit ModComp - End */
 	return m_iEmphasizeAvoidGrowthCount;
 }
 
 
 bool CvCityAI::AI_isEmphasizeAvoidGrowth() const
 {
+	/* DOTO-Population Limit ModComp - Beginning */
+	//was originally on avoid growth funcion
+	if (getPopulation() >= getPopulationLimit())
+	{
+		return true;
+	}
+	/* DOTO-Population Limit ModComp - End */
 	return (AI_getEmphasizeAvoidGrowthCount() > 0);
 }
 
@@ -6936,6 +6989,11 @@ int CvCityAI::AI_getImprovementValue(CvPlot* pPlot, ImprovementTypes eImprovemen
 				iValue += (kOwner.AI_bonusVal(eNonObsoleteBonus, 1) * 50);
 				iValue += 100;
 				// K-Mod end
+//f1rpo fix - added by keldath - this should lower forts on resourses stupid bug
+			CvImprovementInfo& imp = GC.getImprovementInfo(eImprovement);
+  			if(imp.isActsAsCity() && pPlot->getWorkingCity() != NULL)
+    		iValue /= 4;
+//f1rpo added by keldath
 			}
 			else
 			{
@@ -9823,6 +9881,58 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 			}
 		} */
 	}
+/*************************************************************************************************/
+/** Specialists Enhancements, by Supercheese 10/12/09                                            */
+/**    doto - was originally here - CvCityAI::AI_specialistValue                                 */
+/**                                                                                              */
+/*************************************************************************************************/	
+		//advc change= what to use? new job or old?? keldath
+		//int iSpecialistHealth = GC.getInfo((SpecialistTypes)new_job.second).getHealth();
+		//int iSpecialistHappiness = GC.getInfo((SpecialistTypes)new_job.second).getHappiness();
+		//f1rpo suggested fix,
+		//DOTO-KELDATH QA6 - is this implemented right? also placed right?
+		int iSpecialistHealth = 0;
+		int iSpecialistHappiness = 0;
+		if (new_job.second >= 0 && new_job.first)
+		{
+			iSpecialistHealth += GC.getSpecialistInfo((SpecialistTypes)new_job.second).getHealth();
+			iSpecialistHappiness += GC.getSpecialistInfo((SpecialistTypes)new_job.second).getHappiness();
+		}
+		if (old_job.second >= 0 && old_job.first)
+		{
+			iSpecialistHealth += GC.getSpecialistInfo((SpecialistTypes)old_job.second).getHealth();
+			iSpecialistHappiness += GC.getSpecialistInfo((SpecialistTypes)old_job.second).getHappiness();
+		}
+		int iHappinessLevel = happyLevel() - unhappyLevel(1);
+		int iAngryPopulation = range(-iHappinessLevel, 0, (getPopulation() + 1));
+		int iHealthLevel = goodHealth() - badHealth(/*bNoAngry*/ false, std::max(0, (iHappinessLevel + 1) / 2));
+		int iBadHealth = std::max(0, -iHealthLevel);
+
+	int iHappyModifier = (iHappinessLevel >= iHealthLevel && iHappinessLevel <= 6) ? 6 : 3;
+	int iHealthModifier = (iHealthLevel > iHappinessLevel && iHealthLevel <= 4) ? 4 : 2;
+	if (iHappinessLevel >= 10)
+	{
+		iHappyModifier = 1;
+	}
+	if (iHealthModifier >= 8)
+	{
+		iHealthModifier = 0;
+	}
+
+	if (iSpecialistHealth != 0)
+	{
+		iTotalValue += (std::min(iSpecialistHealth, iBadHealth) * 12)
+			+ (std::max(0, iSpecialistHealth - iBadHealth) * iHealthModifier);
+	}
+	
+	if (iSpecialistHappiness != 0)
+	{
+		iTotalValue += (std::min(iSpecialistHappiness, iAngryPopulation) * 10) 
+			+ (std::max(0, iSpecialistHappiness - iAngryPopulation) * iHappyModifier);
+	}
+/*************************************************************************************************/
+/** Specialists Enhancements                          END                                        */
+/*************************************************************************************************/
 
 	return iTotalValue;
 }

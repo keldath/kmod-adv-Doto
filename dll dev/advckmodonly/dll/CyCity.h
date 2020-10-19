@@ -42,6 +42,17 @@ public:
 	int findYieldRateRank(int /*YieldTypes*/ eYield);
 	int findCommerceRateRank(int /*CommerceTypes*/ eCommerce);
 
+/************************************************************************************************/
+/* REVDCM                                 02/16/10                                phungus420    */
+/*                                                                                              */
+/* CanTrain                                                                                     */
+/************************************************************************************************/
+	bool isForceObsoleteUnitClassAvailable(int /*UnitTypes*/ eUnit);
+	bool isPlotTrainable(int /*UnitTypes*/ eUnit, bool bContinue, bool bTestVisible);
+/************************************************************************************************/
+/* REVDCM                                  END                                                  */
+/************************************************************************************************/
+
 	int /*UnitTypes*/ allUpgradesAvailable(int /*UnitTypes*/ eUnit, int iUpgradeCount);
 	bool isWorldWondersMaxed();
 	bool isTeamWondersMaxed();
@@ -179,6 +190,10 @@ public:
 	int getPopulation();
 	void setPopulation(int iNewValue);
 	void changePopulation(int iChange);
+	/* Population Limit ModComp - Beginning */
+	int getPopulationLimit();
+	int getPopulationLimitChange();
+	/* Population Limit ModComp - End */
 	long getRealPopulation();
 
 	int getHighestPopulation();

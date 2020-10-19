@@ -307,6 +307,9 @@ void CvUnit::reset(int iID, UnitTypes eUnit, PlayerTypes eOwner, bool bConstruct
 	m_iFortifyTurns = 0;
 	m_iBlitzCount = 0;
 	m_iAmphibCount = 0;
+//MOD@VET_Andera412_Blocade_Unit-begin1/6	
+	m_iUnblocadeCount = 0;
+//MOD@VET_Andera412_Blocade_Unit-end1/6
 	m_iRiverCount = 0;
 	m_iEnemyRouteCount = 0;
 	m_iAlwaysHealCount = 0;
@@ -719,6 +722,25 @@ void CvUnit::doTurn()
 				changeDamage(GC.getFeatureInfo(eFeature).getTurnDamage(), NO_PLAYER);
 			}
 		}
+//DOTO-
+	/*****************************************************************************************************/
+	/**  Author: TheLadiesOgre                                                                          **/
+	/**  Date: 15.10.2009                                                                               **/
+	/**  ModComp: TLOTags                                                                               **/
+	/**  Reason Added: Allow Terrain Damage to work                                                     **/
+	/**  Notes:                                                                                         **/
+	/*****************************************************************************************************/
+		TerrainTypes eTerrain = plot()->getTerrainType();
+		if (NO_TERRAIN != eTerrain)
+		{
+			if ((0 != GC.getTerrainInfo(eTerrain).getTurnDamage()) && (!plot()->isCity()) && (m_pUnitInfo->getTerrainNative(eTerrain) == false))
+			{
+				changeDamage(GC.getTerrainInfo(eTerrain).getTurnDamage(), NO_PLAYER);
+			}
+		}
+	/*****************************************************************************************************/
+	/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
+	/*****************************************************************************************************/
 	}
 
 	if (hasMoved())
@@ -2586,9 +2608,46 @@ bool CvUnit::willRevealByMove(const CvPlot* pPlot) const
 			}
 		}
 	}
-
 	return false;
 }
+
+//MOD@VET_Andera412_Blocade_Unit-begin2/6
+bool CvUnit::cannotMoveFromTo(const CvPlot* pFromPlot, const CvPlot* pToPlot) const
+{
+	if (GC.getGameINLINE().isOption(GAMEOPTION_BLOCADE_UNIT))
+	{		
+		if (pFromPlot->getRouteType() == NO_ROUTE)
+		{
+			if (/*(*/(pToPlot->isImpassable() /*&& (pToPlot->getRouteType() == NO_ROUTE))*/ || pFromPlot->isImpassable()) && !canMoveImpassable())
+				{return true;}
+		}
+	}	
+	return false;
+}
+
+bool CvUnit::cannotMoveFromPlotToPlot(const CvPlot* pFromPlot, const CvPlot* pToPlot, bool bWithdrawal) const
+{
+	if (bWithdrawal)
+	{
+		if (!canMoveInto(pToPlot))
+			{return true;}
+		if (getDomainType() == DOMAIN_SEA)
+		{
+			if (pFromPlot->isWater() && pToPlot->isWater())
+			{
+				if (!(GC.getMapINLINE().plotSorenINLINE(pFromPlot->getX_INLINE(), pToPlot->getY_INLINE())->isWater()) && !(GC.getMapINLINE().plotSorenINLINE(pToPlot->getX_INLINE(), pFromPlot->getY_INLINE())->isWater()))
+					{return true;}
+			}
+		}
+	}
+	
+	if (GC.getBLOCADE_UNIT() && pToPlot->isBlocade(pFromPlot, this))
+		{
+			return true;
+		}
+	return false;
+}
+//MOD@VET_Andera412_Blocade_Unit-end2/6
 
 // K-Mod. I've rearranged a few things to make the function slightly faster, and added "bAssumeVisible" which signals that we should check for units on the plot regardless of whether we can actually see.
 bool CvUnit::canMoveInto(const CvPlot* pPlot, bool bAttack, bool bDeclareWar, bool bIgnoreLoad, bool bAssumeVisible,
@@ -2602,11 +2661,6 @@ bool CvUnit::canMoveInto(const CvPlot* pPlot, bool bAttack, bool bDeclareWar, bo
 	{
 		return false;
 	}
-
-	if (!m_pUnitInfo->isCanMoveImpassable() && pPlot->isImpassable())
-	{
-		return false;
-	}
 //mountains mod - back in service mod
 	if (pPlot->isPeak())
 	{
@@ -2616,6 +2670,11 @@ bool CvUnit::canMoveInto(const CvPlot* pPlot, bool bAttack, bool bDeclareWar, bo
 		}
 	}	
 // //mountains mod - back in service mod Deliverator
+	if (!m_pUnitInfo->isCanMoveImpassable() && pPlot->isImpassable())
+	{
+		return false;
+	}
+
 
 	// Cannot move around in unrevealed land freely
 	if (m_pUnitInfo->isNoRevealMap() && willRevealByMove(pPlot))
@@ -4081,6 +4140,17 @@ int CvUnit::healTurns(const CvPlot* pPlot) const
 /*************************************************************************************************/
 /* UNOFFICIAL_PATCH                         END                                                  */
 /*************************************************************************************************/
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Ensure AI_exploreSeaMove does choose to heal on damaging terrain                 **/
+/**  Notes:  terrain damage                                                                                       **/
+/*****************************************************************************************************/
+//addition suggested by f1rpo
+	TerrainTypes eTerrain = plot()->getTerrainType();
+	if (!pPlot->isCity())
+		iHeal -= GC.getTerrainInfo(eTerrain).getTurnDamage();
 
 	if (iHeal > 0)
 	{
@@ -10949,6 +11019,24 @@ void CvUnit::changeAmphibCount(int iChange)
 	FAssert(getAmphibCount() >= 0);
 }
 
+//MOD@VET_Andera412_Blocade_Unit-begin3/6
+int CvUnit::getUnblocadeCount() const
+{
+	return m_iUnblocadeCount;
+}
+
+bool CvUnit::isUnblocade() const
+{
+	return (getUnblocadeCount() > 0);
+}
+
+void CvUnit::changeUnblocadeCount(int iChange)
+{
+	m_iUnblocadeCount += iChange;
+	FAssert(getUnblocadeCount() >= 0);
+}
+//MOD@VET_Andera412_Blocade_Unit-end3/6
+
 int CvUnit::getRiverCount() const
 {
 	return m_iRiverCount;
@@ -12241,6 +12329,9 @@ void CvUnit::setHasPromotion(PromotionTypes eIndex, bool bNewValue)
 
 		changeBlitzCount((GC.getPromotionInfo(eIndex).isBlitz()) ? iChange : 0);
 		changeAmphibCount((GC.getPromotionInfo(eIndex).isAmphib()) ? iChange : 0);
+//MOD@VET_Andera412_Blocade_Unit-begin4/6
+		changeUnblocadeCount((GC.getPromotionInfo(eIndex).isUnblocade()) ? iChange : 0);
+//MOD@VET_Andera412_Blocade_Unit-end4/6
 		changeRiverCount((GC.getPromotionInfo(eIndex).isRiver()) ? iChange : 0);
 		changeEnemyRouteCount((GC.getPromotionInfo(eIndex).isEnemyRoute()) ? iChange : 0);
 		changeAlwaysHealCount((GC.getPromotionInfo(eIndex).isAlwaysHeal()) ? iChange : 0);
@@ -12394,6 +12485,9 @@ void CvUnit::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iFortifyTurns);
 	pStream->Read(&m_iBlitzCount);
 	pStream->Read(&m_iAmphibCount);
+//MOD@VET_Andera412_Blocade_Unit-begin5/6
+	pStream->Read(&m_iUnblocadeCount);
+//MOD@VET_Andera412_Blocade_Unit-end5/6
 	pStream->Read(&m_iRiverCount);
 	pStream->Read(&m_iEnemyRouteCount);
 	pStream->Read(&m_iAlwaysHealCount);
@@ -12498,6 +12592,9 @@ void CvUnit::write(FDataStreamBase* pStream)
 	pStream->Write(m_iFortifyTurns);
 	pStream->Write(m_iBlitzCount);
 	pStream->Write(m_iAmphibCount);
+//MOD@VET_Andera412_Blocade_Unit-begin6/6
+	pStream->Write(m_iUnblocadeCount);
+//MOD@VET_Andera412_Blocade_Unit-end6/6
 	pStream->Write(m_iRiverCount);
 	pStream->Write(m_iEnemyRouteCount);
 	pStream->Write(m_iAlwaysHealCount);

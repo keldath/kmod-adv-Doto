@@ -148,6 +148,7 @@
     <ClInclude Include="..\CvCityAI.h" />
     <ClInclude Include="..\CvDeal.h" />
     <ClInclude Include="..\CvDefines.h" />
+    <ClInclude Include="..\CvDefinesTGA.h" />
     <ClInclude Include="..\CvDiploParameters.h" />
     <ClInclude Include="..\CvDLLButtonPopup.h" />
     <ClInclude Include="..\CvDLLEngineIFaceBase.h" />

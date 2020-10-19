@@ -558,6 +558,10 @@ public:
 	void read(FDataStreamBase* pStream);
 	void write(FDataStreamBase* pStream);
 
+//MOD@VET_Andera412_Blocade_Unit-begin1/1
+	bool isWithBlocaders(const CvPlot* pFromPlot, const CvPlot* pToPlot, const CvUnit* const pUnit, bool bToWater) const; // Есть ли на тайле вражеские защитники и юниты видящие нашего юнита
+	bool isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const; // Блокируется ли тайл вражескими юнитами с данного направления
+//MOD@VET_Andera412_Blocade_Unit-end1/1
 protected:
 
 	short m_iX;
