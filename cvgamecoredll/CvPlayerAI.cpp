@@ -4360,6 +4360,12 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 		}
 	}
 	// K-Mod end
+/* Population Limit ModComp - Beginning */
+	if (kTech.isNoPopulationLimit())
+	{
+		iValue += (GC.getHandicapInfo(getHandicapType()).getPopulationLimit() * 2 * (getTotalPopulation() - (iCityCount * 2)));
+	}
+/* Population Limit ModComp - End */
 
 	if (kTech.isPermanentAllianceTrading() && GC.getGame().isOption(GAMEOPTION_PERMANENT_ALLIANCES))
 	{
@@ -6940,11 +6946,11 @@ void CvPlayerAI::AI_updateAttitude(PlayerTypes ePlayer, /* advc.130e: */ bool bU
 	iAttitude += AI_getFavoriteCivicAttitude(ePlayer);
 	iAttitude += AI_getTradeAttitude(ePlayer);
 	iAttitude += AI_getRivalTradeAttitude(ePlayer);
-//dune wars - start
+//dune wars - start hated civs
 	iAttitude += AI_getHatedCivicAttitude(ePlayer);
 	iAttitude += AI_getFavoriteCivilizationAttitude(ePlayer); 
 	iAttitude += AI_getHatedCivilizationAttitude(ePlayer); 
-// dune wars - end
+// dune wars - end - start hated civs
 	FOR_EACH_ENUM(Memory)
 		iAttitude += AI_getMemoryAttitude(ePlayer, eLoopMemory);
 

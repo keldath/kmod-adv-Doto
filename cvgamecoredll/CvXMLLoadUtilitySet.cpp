@@ -694,10 +694,10 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 	{
     	GC.getInfo(eLoopLeaderHead).readPass3();
 	}
-	LoadGlobalClassInfo(GC.m_paHintInfo, "CIV4Hints", "GameInfo", "Civ4Hints/HintInfos/HintInfo", false);
 	// davidlallen: project civilization and free unit next line
 	LoadGlobalClassInfo(GC.m_paProjectInfo, "CIV4ProjectInfo", "GameInfo", "Civ4ProjectInfo/ProjectInfos/ProjectInfo", true);
-    LoadGlobalClassInfo(GC.m_paMainMenuInfo, "CIV4MainMenus", "Art", "Civ4MainMenus/MainMenus/MainMenu", false);
+    LoadGlobalClassInfo(GC.m_paHintInfo, "CIV4Hints", "GameInfo", "Civ4Hints/HintInfos/HintInfo", false);
+	LoadGlobalClassInfo(GC.m_paMainMenuInfo, "CIV4MainMenus", "Art", "Civ4MainMenus/MainMenus/MainMenu", false);
 	LoadGlobalClassInfo(GC.m_paSlideShowInfo, "CIV4SlideShowInfos", "Interface", "Civ4SlideShowInfos/SlideShowInfos/SlideShowInfo", false);
 	LoadGlobalClassInfo(GC.m_paSlideShowRandomInfo, "CIV4SlideShowRandomInfos", "Interface", "Civ4SlideShowRandomInfos/SlideShowRandomInfos/SlideShowRandomInfo", false);
 	LoadGlobalClassInfo(GC.m_paWorldPickerInfo, "CIV4WorldPickerInfos", "Interface", "Civ4WorldPickerInfos/WorldPickerInfos/WorldPickerInfo", false);

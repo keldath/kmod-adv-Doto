@@ -10464,6 +10464,15 @@ bool CvUnit::isPromotionValid(PromotionTypes ePromotion) const
 	{
 		return false;
 	}
+	//MOD@VET_Andera412_Blocade_Unit-begin1/2 - taken from the otiginal placemnt - cvgamecoreuntils
+	if (!GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
+	{
+		if (kPromo.isUnblocade())
+		{
+			return false;
+		}
+	}	
+	//MOD@VET_Andera412_Blocade_Unit-end1/2
 	// <advc.164> Moved from ::isPromotionValid. The paradrop clause is new.
 	if(kPromo.getBlitz() != 0 && maxMoves() <= 1 && getDropRange() <= 0)
 		return false;

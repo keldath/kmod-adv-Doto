@@ -17677,6 +17677,31 @@ void CvGameTextMgr::getAttitudeString(CvWStringBuffer& szBuffer, PlayerTypes ePl
 			szBreakdown.append(szTempBuffer);
 			iTotal += iAttitudeChange;
 		} // <advc.sha>
+		//a1021- hated civic hated civics doto
+		iAttitudeChange = kPlayer.AI_getHatedCivicAttitude(eTargetPlayer);
+		if ((iPass == 0) ? (iAttitudeChange > 0) : (iAttitudeChange < 0))
+		{
+			szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, TEXT_COLOR((iAttitudeChange > 0) ? "COLOR_POSITIVE_TEXT" : "COLOR_NEGATIVE_TEXT"), gDLL->getText("TXT_KEY_MISC_ATTITUDE_HATED_CIVIC", iAttitudeChange).GetCString());
+			szBuffer.append(NEWLINE);
+			szBuffer.append(szTempBuffer);
+		}
+
+		iAttitudeChange = kPlayer.AI_getFavoriteCivilizationAttitude(eTargetPlayer);
+		if ((iPass == 0) ? (iAttitudeChange > 0) : (iAttitudeChange < 0))
+		{
+			szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, TEXT_COLOR((iAttitudeChange > 0) ? "COLOR_POSITIVE_TEXT" : "COLOR_NEGATIVE_TEXT"), gDLL->getText("TXT_KEY_MISC_ATTITUDE_FAVORITE_CIVILIZATION", iAttitudeChange).GetCString());
+			szBuffer.append(NEWLINE);
+			szBuffer.append(szTempBuffer);
+		}
+
+		iAttitudeChange = kPlayer.AI_getHatedCivilizationAttitude(eTargetPlayer);
+		if ((iPass == 0) ? (iAttitudeChange > 0) : (iAttitudeChange < 0))
+		{
+			szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, TEXT_COLOR((iAttitudeChange > 0) ? "COLOR_POSITIVE_TEXT" : "COLOR_NEGATIVE_TEXT"), gDLL->getText("TXT_KEY_MISC_ATTITUDE_HATED_CIVILIZATION", iAttitudeChange).GetCString());
+			szBuffer.append(NEWLINE);
+			szBuffer.append(szTempBuffer);
+		}		
+		//a1021 end
 		if(bSHowHiddenAttitude) // BEGIN: Show Hidden Attitude Mod 01/22/2010
 		{
 			iAttitudeChange = kPlayer.AI_getTeamSizeAttitude(eTargetPlayer);

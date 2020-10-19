@@ -569,6 +569,21 @@ BOOL pathValid(FAStarNode* parent, FAStarNode* node, int data, void const* point
 
 bool pathValid_join(CvPlot const& kFrom, CvPlot const& kTo, CvSelectionGroup const& kGroup, MovementFlags eFlags)
 {
+	//MOD@VET_Andera412_Blocade_Unit-begin2/2
+	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
+	{	
+		if (kGroup.getNumUnits() > 0)
+		{
+			CvUnit* pLoopUnit;
+			for (CLLNode<IDInfo>* pUnitNode = kGroup.headUnitNode(); pUnitNode != NULL; pUnitNode = kGroup.nextUnitNode(pUnitNode))
+			{
+				pLoopUnit = ::getUnit(pUnitNode->m_data);
+				if (pLoopUnit->cannotMoveFromPlotToPlot(&kFrom, &kTo,/*bWithdrawal*/false))
+					{return FALSE;}
+			}
+		}
+	}	
+	//MOD@VET_Andera412_Blocade_Unit-end2/2
 	return (kGroup.getDomainType() != DOMAIN_SEA ||
 			!GC.getMap().isSeparatedByIsthmus(kFrom, kTo) ||
 			kGroup.canMoveAllTerrain());

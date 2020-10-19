@@ -12873,7 +12873,7 @@ bool CvUnitAI::AI_paradrop(int iRange)  // advc: some style changes
 				{
 					int iAttackerCount = GET_PLAYER(getOwner()).AI_adjacentPotentialAttackers(*pAdjacentPlot, true);
 					int iDefenderCount = pAdjacentPlot->getNumVisibleEnemyDefenders(this);
-					//DOTO-keldath f1rpo fix for crash regarding tlo tags of paratrooper for every unitai - keldath
+					//DOTO-keldath f1rpo fix for crash regarding theladiesogre of paratrooper for every unitai - keldath
 					if (iParatrooperCount <= 0) 
 					{
 						iParatrooperCount = 1;
