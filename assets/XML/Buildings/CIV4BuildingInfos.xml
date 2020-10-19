@@ -34279,6 +34279,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<RiverPlotYieldChanges/>
 			<GlobalSeaPlotYieldChanges/>
 			<YieldChanges>
+				<iYield>0</iYield>
+				<iYield>0</iYield>
 				<iYield>1</iYield>
 			</YieldChanges>
 			<CommerceChanges/>
