@@ -578,7 +578,7 @@ void CyEnumsPythonInterface()
 		.value("GAMEOPTION_IDW_NO_NAVAL", GAMEOPTION_IDW_NO_NAVAL)
 		.value("GAMEOPTION_IDW_PILLAGE", GAMEOPTION_IDW_PILLAGE)
 //Influence Driven War: End Add
-//tholish building deletion
+////DOTO -tholish-Keldath inactive buildings
 		.value("GAMEOPTION_BUILDING_DELETION", GAMEOPTION_BUILDING_DELETION)
 		.value("GAMEOPTION_CULTURE_GOLDEN_AGE", GAMEOPTION_CULTURE_GOLDEN_AGE)
 //

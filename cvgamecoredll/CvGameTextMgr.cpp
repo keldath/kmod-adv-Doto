@@ -13038,7 +13038,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 			}
 		}
 	}
-//Doto-prereqMust+tholish show info to buildings if their build but conditions are not met.
+////DOTO -tholish-Keldath inactive buildings show info to buildings if their build but conditions are not met.
 	if (GC.getInfo(eBuilding).getPrereqMustAll() > 0 && GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION) && pCity != NULL /*use this only when in city, other wise - its double*/) 
 	{
 		buildBuildingRequiresString(szBuffer, eBuilding, bCivilopediaText, bTechChooserText, pCity);

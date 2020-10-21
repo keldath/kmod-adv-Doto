@@ -1381,7 +1381,8 @@ void CvCityAI::AI_chooseProduction()
 	}
 	//DOTO-keldath
 	// ALN DuneWars - don't do this, not necessary (no colony maintenance) and confuses the AI on island maps
-	 if (!bDanger && !bCapitalArea && area()->getCitiesPerPlayer(getOwner()) > iNumCapitalAreaCities)
+	//decided to remove this - 18102020 advc 098
+/*	 if (!bDanger && !bCapitalArea && area()->getCitiesPerPlayer(getOwner()) > iNumCapitalAreaCities)
 	{
 		// BBAI TODO:  This check should be done by player, not by city and optimize placement
 		// If losing badly in war, don't build big things
@@ -1398,7 +1399,7 @@ void CvCityAI::AI_chooseProduction()
 				}
 			}
 		}
-	} 	/* org code
+	} 	 org code*/
 	if (!bDanger && !bCapitalArea && kArea.getCitiesPerPlayer(getOwner()) > iNumCapitalAreaCities)
 	{
 		// BBAI TODO:  This check should be done by player, not by city and optimize placement
@@ -1414,7 +1415,7 @@ void CvCityAI::AI_chooseProduction()
 			}
 		}
 	}
-	*/
+
 	// K-Mod.
 	if (iProjectValue < 0 && (kPlayer.AI_atVictoryStage(AI_VICTORY_SPACE3) ||
 		!(bLandWar && iWarSuccessRating < 30)))

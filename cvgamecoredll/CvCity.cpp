@@ -3198,14 +3198,14 @@ void CvCity::processBonus(BonusTypes eBonus, int iChange)
 	}
 }
 
-//DOTO -ACTIVE_BUILDINGS-keldath extended building
+//DOTO -tholish-Keldath inactive buildings
 void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete, bool checkKeep)
 {
 	// <advc>
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
 	CvGame const& kGame = GC.getGame();
 	CvPlayer& kOwner = GET_PLAYER(getOwner()); // </advc>
-//keldath extended building inactive
+//tholish-Keldath inactive buildings start
 //remeber - update here and in unprocessbuildings new additions!!!
 //if the prereq of a building is no more - it will stop providing.
 //if you cant keep the building, dont update its stuff.
@@ -3223,6 +3223,7 @@ void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolet
 	
 if (buildingStatus == true)
 {
+//tholish-Keldath inactive buildings end
 	if (!obsoleteCheck || bObsolete)
 	{
 		if (iChange > 0)
@@ -3471,11 +3472,13 @@ if (buildingStatus == true)
 			}
 		} // </advc.004w>
 	}
+//tholish-Keldath inactive buildings
 }	
 if (buildingStatus == false)
 {
 	UNprocessBuilding(eBuilding, iChange, bObsolete);		
 }
+//tholish-Keldath inactive buildings
 	updateBuildingCommerce();
 	// < Building Resource Converter Start >
 	//frpo1 added a check to avoid infinite loop
@@ -12126,8 +12129,7 @@ void CvCity::doDecay()
 		if (getProductionBuilding() == eLoopBuilding)
 			continue; // advc		
 
-//Tholish UnbuildableBuildingDeletion START
-//prereqMust+tholish
+//DOTO -tholish-Keldath inactive buildings START
 		if (GC.getInfo(eLoopBuilding).getPrereqMustAll() > 0 &&
 				getNumRealBuilding(eLoopBuilding) > 0 && 
 					GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION) &&
@@ -12151,7 +12153,7 @@ void CvCity::doDecay()
 				processBuilding(eLoopBuilding, 1, false, keepit);
 			}
 		}
-//Tholish UnbuildableBuildingDeletion END
+//DOTO -tholish-Keldath inactive buildings END
 
 		if (getBuildingProduction(eLoopBuilding) > 0)
 		{
@@ -12755,7 +12757,7 @@ void CvCity::read(FDataStreamBase* pStream)
 	m_aiBuildingProduction.Read(pStream);
 	m_aiBuildingProductionTime.Read(pStream);
 	m_aeBuildingOriginalOwner.Read(pStream);
-//DOTO-ACTIVE BUILDINGS+tholish
+//tholish-Keldath inactive buildings
 	m_aiBuildingeActive.Read(pStream);
 	m_aiBuildingOriginalTime.Read(pStream);
 	m_aiUnitProduction.Read(pStream);
@@ -13095,7 +13097,7 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiBuildingProduction.Write(pStream);
 	m_aiBuildingProductionTime.Write(pStream);
 	m_aeBuildingOriginalOwner.Write(pStream);
-//DOTO-ACTOVE BUILDINGS+tholish
+//tholish-Keldath inactive buildings
 	m_aiBuildingeActive.Write(pStream);
 	m_aiBuildingOriginalTime.Write(pStream);
 	m_aiUnitProduction.Write(pStream);
@@ -14964,7 +14966,7 @@ void CvCity::emergencyConscript()
 /**     DOTO                                                                                         */
 /** Original Author Moctezuma              End                                                   */
 /*************************************************************************************************/
-//DOTO ACTIVE BUILDING AND THOLISH
+//DOTO -tholish-Keldath inactive buildings START
 //Tholish UnbuildableBuildingDeletion START
 bool CvCity::canKeep(BuildingTypes eBuilding) const
 {
@@ -15130,8 +15132,8 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 
 return true;
 }
-//Tholish UnbuildableBuildingDeletion END
-//DOTO ACTIVE BUILDINGS tholish
+//DOTO -tholish-Keldath inactive buildings  END
+//DOTO -tholish-Keldath inactive buildings START
 //old versionLIMITED FUNCS.
 /*
 void CvCity::defuseBuilding(BuildingTypes eBuilding)
@@ -15175,6 +15177,7 @@ void CvCity::activateBuilding(BuildingTypes eBuilding)
 //DOTO ACTIVE BULDINGS + THOLISH
 //this is a duplicated function , that sets to 0 all the items, if the prereq for a building (cankeep)
 //is false.
+// i marked some off so they wont be affected fro safety.
 void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsolete)
 {
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
@@ -15209,9 +15212,9 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 		int getGreatPeopleRateModifier	= kBuilding.getGreatPeopleRateModifier();
 		int getFreeExperience	= kBuilding.getFreeExperience();
 		int getFoodKept	= kBuilding.getFoodKept();
-		int getAirlift	= kBuilding.getAirlift();
+//		int getAirlift	= kBuilding.getAirlift();
 		int getAirModifier	= kBuilding.getAirModifier();
-		int getAirUnitCapacity	= kBuilding.getAirUnitCapacity();
+//		int getAirUnitCapacity	= kBuilding.getAirUnitCapacity();
 		int getNukeModifier	= kBuilding.getNukeModifier();
 		int getFreeSpecialist	= kBuilding.getFreeSpecialist();
 		int getMaintenanceModifier	= kBuilding.getMaintenanceModifier();
@@ -15233,12 +15236,16 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 			changeFreeExperience(getFreeExperience * iChange);
 		if (getFoodKept != 0)
 			changeMaxFoodKeptPercent(getFoodKept * iChange);
+/*
 		if (getAirlift != 0)
 			changeMaxAirlift(getAirlift * iChange);
+*/
 		if (getAirModifier != 0)
 			changeAirModifier(getAirModifier * iChange);
+/*
 		if (getAirUnitCapacity != 0)
 			changeAirUnitCapacity(getAirUnitCapacity * iChange);
+*/
 		if (getNukeModifier != 0)
 			changeNukeModifier(getNukeModifier * iChange);
 		if (getFreeSpecialist != 0)
@@ -15350,7 +15357,7 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 						kBuilding.getReligionChange(eLoopReligion) * iChange);
 			}
 		}
-		FOR_EACH_ENUM(Specialist)
+/*		FOR_EACH_ENUM(Specialist)
 		{
 			int getSpecialistCount = kBuilding.getSpecialistCount(eLoopSpecialist);
 			int getFreeSpecialistCount = kBuilding.getFreeSpecialistCount(eLoopSpecialist);
@@ -15361,7 +15368,7 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 				changeFreeSpecialistCount(eLoopSpecialist,
 					kBuilding.getFreeSpecialistCount(eLoopSpecialist) * iChange);
 		}
-		if (kBuilding.isAnyImprovementFreeSpecialist()) // advc.003t
+*/		if (kBuilding.isAnyImprovementFreeSpecialist()) // advc.003t
 		{
 			FOR_EACH_ENUM(Improvement)
 			{
@@ -15439,7 +15446,7 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 
 //		getArea().changePower(getOwner(), iChange * kBuilding.getPowerValue());
 //		kOwner.changePower(kBuilding.getPowerValue() * iChange);
-
+/* leave the team alone - affect only to the player
 		for (MemberIter it(getTeam()); it.hasNext(); ++it)
 		{
 			if (kBuilding.isTeamShare() || it->getID() == getOwner())
@@ -15449,7 +15456,7 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 		}
 		GET_TEAM(getTeam()).processBuilding(eBuilding, iChange);
 		GC.getGame().processBuilding(eBuilding, iChange);
-	}
+*/	}
 
 	if (!bObsolete)
 	{
@@ -15493,6 +15500,7 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 			}
 		}
 		// <advc.004w>
+/* leave the counts for buildings as is, safer this way.
 		if (kGame.getCurrentLayer() == GLOBE_LAYER_RESOURCE)
 		{
 			// Update text of resource indicators (CvGameTextMgr::setBonusExtraHelp)
@@ -15511,6 +15519,7 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 				GET_PLAYER(getOwner()).setBonusHelpDirty();
 			}
 		} // </advc.004w>
+*/
 	}
 }
 //DOTO active buildings

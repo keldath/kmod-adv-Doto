@@ -863,5 +863,14 @@
 			<iInstanceCostModifier>0</iInstanceCostModifier>
 			<DefaultUnit>UNIT_ODIN_SHAMAN</DefaultUnit>
     	</UnitClassInfo>
+		<UnitClassInfo>
+		    <Type>UNITCLASS_PELTAST</Type>
+			<Description>Slinger</Description>
+			<iMaxGlobalInstances>-1</iMaxGlobalInstances>
+			<iMaxTeamInstances>-1</iMaxTeamInstances>
+			<iMaxPlayerInstances>-1</iMaxPlayerInstances>
+			<iInstanceCostModifier>0</iInstanceCostModifier>
+			<DefaultUnit>UNIT_PELTAST</DefaultUnit>
+    	</UnitClassInfo>
 	</UnitClassInfos>
 </Civ4UnitClassInfos>

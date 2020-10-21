@@ -7483,7 +7483,7 @@ int CvUnit::maxCombatStr(CvPlot const* pPlot, CvUnit const* pAttacker, CombatDet
 			if (pCombatDetails != NULL)
 				pCombatDetails->iCityDefenseModifier = iExtraModifier;
 		}
-//DOTO--mointains mod --need to make it separate? //back to service
+//DOTO--mountains mod --need to make it separate? //back to service
 		if (pPlot->isPeak() || pPlot->isHills()) // Deliverator - Hijacked, Hills -> Peak+keldath hills
 		{
 			iExtraModifier = hillsDefenseModifier();

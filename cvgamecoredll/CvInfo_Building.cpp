@@ -16,7 +16,7 @@ m_iNoBonus(NO_BONUS),
 m_iPowerBonus(NO_BONUS),
 m_iFreeBonus(NO_BONUS),
 m_iNumFreeBonuses(0),
-//Doto-prereqMust+tholish
+//DOTO -tholish-Keldath inactive buildings
 m_iPrereqMustAll(0),
 // < Doto-Building Resource Converter Start >
 m_paiRequiredInputBonuses(NULL),

@@ -98,9 +98,9 @@ public:
 	bool canConstruct(BuildingTypes eBuilding, bool bContinue = false,											// Exposed to Python
 			bool bTestVisible = false, bool bIgnoreCost = false,
 			bool bIgnoreTech = false) const; // K-Mod
-//doto-Tholish UnbuildableBuildingDeletion START
+//DOTO -tholish-Keldath inactive buildings START
 	bool canKeep(BuildingTypes eBuilding) const;
-//doto-Tholish UnbuildableBuildingDeletion END
+//DOTO -tholish-Keldath inactive buildings END
 	bool canCreate(ProjectTypes eProject, bool bContinue = false, bool bTestVisible = false) const;				// Exposed to Python
 	bool canMaintain(ProcessTypes eProcess, bool bContinue = false) const;										// Exposed to Python
 	bool canJoin() const;																						// Exposed to Python
@@ -215,10 +215,10 @@ public:
 	int getBonusYieldRateModifier(YieldTypes eIndex, BonusTypes eBonus) const;									// Exposed to Python
 
 	void processBonus(BonusTypes eBonus, int iChange);
-//doto-prereqMust+tholish
+//DOTO -tholish-Keldath inactive buildings
 	void processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false, bool checkKeep = true);
 	void UNprocessBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false);
-///doto-prereqMust+tholish
+//DOTO -tholish-Keldath inactive buildings
 //older version code
 //	void defuseBuilding(BuildingTypes eBuilding);
 //	void activateBuilding(BuildingTypes eBuilding);

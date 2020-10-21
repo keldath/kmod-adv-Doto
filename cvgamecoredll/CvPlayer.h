@@ -292,9 +292,9 @@ public:
 
 	bool canTrain(UnitTypes eUnit, bool bContinue = false, bool bTestVisible = false,								// Exposed to Python
 			bool bIgnoreCost = false) const;
-	//Tholish UnbuildableBuildingDeletion START
+	//DOTO -tholish-Keldath inactive buildings START
 	bool canKeep(BuildingTypes eBuilding) const;
-	//Tholish UnbuildableBuildingDeletion END
+	//DOTO -tholish-Keldath inactive buildings END
 	bool canConstruct(BuildingTypes eBuilding, bool bContinue = false, bool bTestVisible = false,					// Exposed to Python
 			bool bIgnoreCost = false, /* K-Mod: */ bool bIgnoreTech = false) const;
 	bool canCreate(ProjectTypes eProject, bool bContinue = false, bool bTestVisible = false) const;					// Exposed to Python

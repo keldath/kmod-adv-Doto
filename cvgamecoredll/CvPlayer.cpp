@@ -21063,7 +21063,7 @@ bool CvPlayer::hasValidCivics(UnitTypes eUnit) const
 /**
  ** End: Unit Civic Prereq
  **/
-//Tholish UnbuildableBuildingDeletion START
+//DOTO -tholish-Keldath inactive buildings START
 bool CvPlayer::canKeep(BuildingTypes eBuilding) const
 {
 	if (GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
@@ -21131,7 +21131,7 @@ bool CvPlayer::canKeep(BuildingTypes eBuilding) const
 	}
 return false;
 }
-//Tholish UnbuildableBuildingDeletion END
+//DOTO -tholish-Keldath inactive buildings END
 //KNOEDELbegin CULTURAL_GOLDEN_AGE 8/8
 int CvPlayer::getCultureGoldenAgeProgress() const
 {

@@ -585,7 +585,7 @@ ENUM_START(GameOption, GAMEOPTION)
 	GAMEOPTION_IDW_NO_NAVAL,
 	GAMEOPTION_IDW_PILLAGE,
 //Influence Driven War: End Add
-//tholih building deletion
+////DOTO -tholish-Keldath inactive buildings
 	GAMEOPTION_BUILDING_DELETION,
 	GAMEOPTION_CULTURE_GOLDEN_AGE,
 //tholih building deletion keldath added as an option

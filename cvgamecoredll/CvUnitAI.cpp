@@ -13777,7 +13777,7 @@ CvCity* CvUnitAI::AI_pickTargetCity(MovementFlags eFlags, int iMaxPathTurns, boo
 							pLoopCity->getDefenseModifier(false) / 8
 							+ (pLoopCity->getPlot().isHills() ?
 							GC.getDefineINT(CvGlobals::HILLS_EXTRA_DEFENSE) : 0);
-					//mountain mod - keldath addition
+					//mountains mod - keldath addition nm back to service
 					if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
 					{
 						iMod += (pLoopCity->getPlot().isPeak() ? GC.getDefineINT(CvGlobals::PEAK_EXTRA_DEFENSE) : 0);
@@ -17466,10 +17466,10 @@ bool CvUnitAI::AI_improveCity(CvCityAI const& kCity) // advc.003u: param was CvC
 
 			if (getPlot().isHills())
 				iPlotMoveCost += GC.getDefineINT(CvGlobals::HILLS_EXTRA_MOVEMENT);
-//===NM=====Mountain Mods===0=====
+//===NM=====Mountains Mods===0=====
 			if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && getPlot().isPeak())
 				iPlotMoveCost += GC.getDefineINT(CvGlobals::PEAK_EXTRA_MOVEMENT);
-//===NM=====Mountains Mod===X=====
+//===NM=====Mountainss Mod===X=====
 			if (iPlotMoveCost > 1)
 				eMission = MISSION_ROUTE_TO;
 		}
@@ -17632,10 +17632,10 @@ bool CvUnitAI::AI_improveLocalPlot(int iRange, CvCity const* pIgnoreCity, // adv
 
 			if (getPlot().isHills())
 				iPlotMoveCost += GC.getDefineINT(CvGlobals::HILLS_EXTRA_MOVEMENT);
-//===NM=====Mountain Mods===0=====
+//===NM=====Mountains Mods===0=====
 			if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && getPlot().isPeak())
 				iPlotMoveCost += GC.getDefineINT(CvGlobals::PEAK_EXTRA_MOVEMENT);
-//===NM=====Mountain Mods===0=====
+//===NM=====Mountains Mods===0=====
 			if (iPlotMoveCost > 1)
 				eMission = MISSION_ROUTE_TO;
 		}

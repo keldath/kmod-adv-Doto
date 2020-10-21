@@ -1846,5 +1846,17 @@ Affects the project success rate (see: iSuccessRate) and the delay rate (see: iV
 			<DefaultBuilding>BUILDING_TRADE_CENTER</DefaultBuilding>
 			<VictoryThresholds/>
 		</BuildingClassInfo>
+		<BuildingClassInfo>
+			<Type>BUILDINGCLASS_LEARNINGHUT</Type>
+			<Description>Lerning Hut</Description>
+			<iMaxGlobalInstances>-1</iMaxGlobalInstances>
+			<iMaxTeamInstances>-1</iMaxTeamInstances>
+			<iMaxPlayerInstances>-1</iMaxPlayerInstances>
+			<iExtraPlayerInstances>0</iExtraPlayerInstances>
+			<bNoLimit>0</bNoLimit>
+			<bMonument>0</bMonument>
+			<DefaultBuilding>BUILDING_LEARNINGHUT</DefaultBuilding>
+			<VictoryThresholds/>
+		</BuildingClassInfo>
 	</BuildingClassInfos>
 </Civ4BuildingClassInfos>

@@ -8060,6 +8060,15 @@ PlayerVoteTypes CvPlayerAI::AI_diploVote(const VoteSelectionSubData& kVoteData,
 		CivicTypes eBestCivic = AI_bestCivic(GC.getInfo(eLoopCivic).getCivicOptionType());
 		if (eBestCivic == NO_CIVIC || eBestCivic == eLoopCivic)
 			continue;
+		
+		//dune wars - hated civs						//a1021		
+		if (GC.getLeaderHeadInfo(getPersonalityType()).getHatedCivic() == eLoopCivic)
+		{
+			bValid = false;
+			bDefy = true;
+			break;
+		}
+		//dune wars - hated civs					//a1021 end
 
 		int iBestCivicValue = AI_civicValue(eBestCivic);
 		int iNewCivicValue = AI_civicValue(eLoopCivic);
