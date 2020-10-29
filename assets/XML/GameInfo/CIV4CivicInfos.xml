@@ -60,9 +60,10 @@
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
 			<iStateReligionHappiness>0</iStateReligionHappiness>
 			<iNonStateReligionHappiness>0</iNonStateReligionHappiness>
-  <!-- civic plus -->
+ <!-- civic plus -->
       		<iStateReligionExtraHealth>0</iStateReligionExtraHealth>
       		<iNonStateReligionExtraHealth>0</iNonStateReligionExtraHealth>
+<!-- civic plus -->
 			<iStateReligionUnitProductionModifier>0</iStateReligionUnitProductionModifier>
 			<iStateReligionBuildingProductionModifier>0</iStateReligionBuildingProductionModifier>
 			<iStateReligionFreeExperience>0</iStateReligionFreeExperience>
@@ -73,21 +74,9 @@
       		<NonStateReligionCommerceModifiers/>
       		<BuildingYieldChanges/>
       		<BuildingCommerceChanges/>
-			<CapitalYieldModifiers>
-				<iYield>0</iYield>
-				<iYield>0</iYield>
-				<iYield>0</iYield>
-			</CapitalYieldModifiers>
-			<TradeYieldModifiers/>
-			<CommerceModifiers/>
-			<CapitalCommerceModifiers>
-				<iCommerce>0</iCommerce>
-				<iCommerce>0</iCommerce>
-				<iCommerce>0</iCommerce>
-				<iCommerce>0</iCommerce>
-			</CapitalCommerceModifiers>
 <!-- civic plus -->
-      		<SpecialistExtraYields/>
+			<YieldModifiers/>
+			<CapitalYieldModifiers/>
 			<TradeYieldModifiers/>
 			<CommerceModifiers/>
 			<CapitalCommerceModifiers/>

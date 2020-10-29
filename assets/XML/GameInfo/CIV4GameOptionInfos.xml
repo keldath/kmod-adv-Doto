@@ -297,7 +297,8 @@
             <Description>No Pop Limit</Description>
             <Help>If unchecked  - Cities are LImited to size 8 , with buildings and more, that limit is increased.</Help>
             <bDefault>1</bDefault>
-            <bVisible>1</bVisible></GameOptionInfo>
+            <bVisible>1</bVisible>
+		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_LEFT_FROM_BEHIND</Type>
             <Description>Left From Behind</Description>

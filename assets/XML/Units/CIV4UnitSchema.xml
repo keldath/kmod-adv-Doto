@@ -131,7 +131,7 @@
 	<ElementType name="bNoDefensiveBonus" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bIgnoreBuildingDefense" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bCanMoveImpassable" content="textOnly" dt:type="boolean"/>
-<!-- deliverator - move on peaks -->
+<!-- deliverator - mountains mod -->
 	<ElementType name="bCanMovePeak" content="textOnly" dt:type="boolean"/>	
 	<ElementType name="bCanMoveAllTerrain" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bFlatMovementCost" content="textOnly" dt:type="boolean"/>
@@ -372,6 +372,7 @@
 	<ElementType name="iMoves" content="textOnly" dt:type="int"/>
 	<ElementType name="bNoRevealMap" content="textOnly" dt:type="boolean"/>
 	<ElementType name="iAirRange" content="textOnly" dt:type="int"/>
+<!-- keldath rangedstrike -->
 	<ElementType name="iRangeStrike" content="textOnly" dt:type="int"/>
 	<ElementType name="iAirUnitCap" content="textOnly" dt:type="int"/>
 	<ElementType name="iDropRange" content="textOnly" dt:type="int"/>
@@ -632,7 +633,7 @@
 		<element type="bIgnoreBuildingDefense" minOccurs="0"/>
 		<element type="bCanMoveImpassable" minOccurs="0"/>
 		<element type="bCanMoveAllTerrain" minOccurs="0"/>
-        <!-- deliverator - move on peaks -->		
+        <!-- deliverator - mountains mod -->		
         <element type="bCanMovePeak" minOccurs="0"/>		
         <element type="bFlatMovementCost" minOccurs="0"/>
 		<element type="bIgnoreTerrainCost" minOccurs="0"/>
@@ -661,8 +662,10 @@
 	    <element type="Buildings" minOccurs="0"/>
 		<!-- advc.003t: No longer has any effect, but still allowed. 
 		<element type="ForceBuildings" minOccurs="0"/>-->
+<!-- Archid : Prereq civics -->
 		<element type="PrereqOrCivics" minOccurs="0"/> <!-- Archid : Prereq civics -->
 		<element type="PrereqAndCivics" minOccurs="0"/> <!-- Archid : Prereq civics -->
+<!-- Archid : Prereq civics -->
 		<!-- RevDCM canTrain -->
 		<element type="MaxStartEra" minOccurs="0"/>
 		<element type="ForceObsoleteTech" minOccurs="0"/>
@@ -699,6 +702,7 @@
 		<element type="iMoves" minOccurs="0"/>
 		<element type="bNoRevealMap" minOccurs="0"/>
 		<element type="iAirRange" minOccurs="0"/>
+<!-- keldath rangedstrike -->
 		<element type="iRangeStrike" minOccurs="0"/>
 		<element type="iAirUnitCap" minOccurs="0"/>
 		<element type="iDropRange" minOccurs="0"/>

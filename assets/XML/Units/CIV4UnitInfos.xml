@@ -257,7 +257,7 @@ UNITAI changed - now will used to counter.
 			<bIgnoreBuildingDefense>0</bIgnoreBuildingDefense>
 			<bCanMoveImpassable>0</bCanMoveImpassable>
 			<bCanMoveAllTerrain>0</bCanMoveAllTerrain>
-<!-- mountain pass -->
+<!-- mountains mod -->
             <bCanMovePeak>1</bCanMovePeak>	
 			<bFlatMovementCost>0</bFlatMovementCost>
 			<bIgnoreTerrainCost>0</bIgnoreTerrainCost>

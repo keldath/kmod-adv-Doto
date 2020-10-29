@@ -111,6 +111,7 @@
 	<ElementType name="Sound" content="textOnly"/>
 	<ElementType name="SoundMP" content="textOnly"/>
 	<ElementType name="Button" content="textOnly"/>
+<!-- added by keldath -->
 	<ElementType name="bGraphicalOnly" content="textOnly" dt:type="boolean"/>
 	<ElementType name="TechInfo" content="eltOnly">
 		<element type="Type"/>
@@ -176,6 +177,7 @@
 		<element type="Sound" minOccurs="0"/>
 		<element type="SoundMP" minOccurs="0"/>
 		<element type="Button" minOccurs="0"/>
+<!-- added by keldath -->
 		<element type="bGraphicalOnly" minOccurs="0"/>
 	</ElementType>
 	<ElementType name="TechInfos" content="eltOnly">

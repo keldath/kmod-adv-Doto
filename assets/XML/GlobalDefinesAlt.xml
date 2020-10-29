@@ -315,7 +315,7 @@
 			If the Define value is 2 units can't move in 45 degrees direction to the enemy  -->
 		<DefineName>BLOCADE_UNIT</DefineName>
 		<iDefineIntVal>2</iDefineIntVal>
-	<!-- CULTURE_GOLDEN_AGE -->
+<!-- CULTURE_GOLDEN_AGE -->
 	</Define>
 	<Define>
 		<DefineName>CULTURE_GOLDEN_AGE_THRESHOLD</DefineName>

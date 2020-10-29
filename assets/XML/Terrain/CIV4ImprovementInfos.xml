@@ -89,7 +89,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iHappiness>0</iHappiness>
 			<iPillageGold>0</iPillageGold>
 			<bOutsideBorders>0</bOutsideBorders>
-			<!-- JTLO HELATH Mod Start -->
+			<!-- JTLO kELATH Mod Start -->
 			<iHealthPercent>0</iHealthPercent>
 			<!-- JCultureControl Mod Start -->
 			<bSpreadCultureControl>0</bSpreadCultureControl>

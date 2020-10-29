@@ -4034,7 +4034,7 @@ class CvMainInterface:
 
 								for j in range( YieldTypes.NUM_YIELD_TYPES):
 									iYield = gc.getBuildingInfo(i).getYieldChange(j) + pHeadSelectedCity.getNumBuilding(i) * pHeadSelectedCity.getBuildingYieldChange(gc.getBuildingInfo(i).getBuildingClassType(), j)
-									# davidlallen: building bonus yield, commerce start
+									# doto davidlallen: building bonus yield, commerce start
 									iBonus = gc.getBuildingInfo(i).getBonusConsumed()
 									if iBonus != -1:
 										iYield += (gc.getBuildingInfo(i).getYieldProduced(j) * pHeadSelectedCity.getNumBonuses(iBonus) / 100)
@@ -4059,7 +4059,7 @@ class CvMainInterface:
 
 							for j in range(CommerceTypes.NUM_COMMERCE_TYPES):
 								iCommerce = pHeadSelectedCity.getBuildingCommerceByBuilding(j, i) / pHeadSelectedCity.getNumBuilding(i)
-								# davidlallen: building bonus yield, commerce start
+								# doto davidlallen: building bonus yield, commerce start
 								iBonus = gc.getBuildingInfo(i).getBonusConsumed()
 								if iBonus != -1:
 									iCommerce += (gc.getBuildingInfo(i).getCommerceProduced(j) * pHeadSelectedCity.getNumBonuses(iBonus) / 100)

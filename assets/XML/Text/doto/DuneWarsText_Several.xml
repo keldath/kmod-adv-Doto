@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Civ4GameText>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_RELIGION_FORBIDDEN</Tag>
+		<English>Your civilization is forbidden.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_RELIGION_FORBIDDEN_NOT</Tag>
+		<English>Forbidden Religion mod off</English>
+		<French>ENCYCLOPEDIE DE DUNE</French>
+		<German>DUNE ENCYCLOPEDIA</German>
+		<Italian>DUNE ENCYCLOPEDIA</Italian>
+		<Spanish>DUNE ENCYCLOPEDIA</Spanish>
+	</TEXT>
+</Civ4GameText>

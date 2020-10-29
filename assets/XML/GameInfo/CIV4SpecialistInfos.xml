@@ -22,8 +22,10 @@
 				<iYield>0</iYield>
 			</Yields>
 			<Commerces/>
+<!-- specialict snhancment - health and happtness -->
 			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>
+<!-- specialict snhancment - health and happtness -->
 			<iExperience>0</iExperience>
 			<Flavors/>
 			<HotKey/>
@@ -53,8 +55,10 @@
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
 			</Commerces>
+<!-- specialict snhancment - health and happtness -->
 			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>
+<!-- specialict snhancment - health and happtness -->
 			<iExperience>0</iExperience>
 			<Flavors/>
 			<HotKey/>
@@ -80,8 +84,10 @@
 				<iCommerce>1</iCommerce>
 				<iCommerce>4</iCommerce>
 			</Commerces>
+<!-- specialict snhancment - health and happtness -->
 			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>
+<!-- specialict snhancment - health and happtness -->
 			<iExperience>0</iExperience>
 			<Flavors/>
 			<HotKey/>

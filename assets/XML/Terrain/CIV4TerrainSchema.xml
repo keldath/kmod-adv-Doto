@@ -64,15 +64,15 @@
 		<element type="bFound" minOccurs="0"/>
 		<element type="bFoundCoast" minOccurs="0"/>
 		<element type="bFoundFreshWater" minOccurs="0"/>
-		<!--TLOTags Start-->
+	<!--TLOTags Start flatlands-->
     	<element type="bRequiresFlatlands" minOccurs="0"/>
-    	<!--TLOTags End-->
+    <!--TLOTags End-->
 		<element type="iMovement" minOccurs="0"/>
 		<element type="iSeeFrom" minOccurs="0"/>
 		<element type="iSeeThrough" minOccurs="0"/>
 		<element type="iBuildModifier" minOccurs="0"/>
 		<element type="iDefense" minOccurs="0"/>
-    <!--TLOTags Start-->
+    <!--TLOTags Start damage from terrain-->
     	<element type="iHealthPercent" minOccurs="0"/>
     	<element type="iTurnDamage" minOccurs="0"/>
     <!--TLOTags End-->
@@ -139,7 +139,7 @@
 	<ElementType name="bRequiresFlatlands" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bRequiresRiver" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bAddsFreshWater" content="textOnly" dt:type="boolean"/>
-<!-- deliverator - fresh water -->
+<!-- deliverator - fresh water from improvement-->
 	<ElementType name="iAddsFreshWaterInRadius" content="textOnly" dt:type="int"/>	
     <ElementType name="bNoCity" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bNoImprovement" content="textOnly" dt:type="boolean"/>
@@ -248,7 +248,7 @@
 	<ElementType name="iGroupRand" content="textOnly" dt:type="int"/>
 	<ElementType name="bArea" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bHills" content="textOnly" dt:type="boolean"/>
-<!--peaks mod-->
+<!--peaks mod mountains mod-->
 	<ElementType name="bPeaks" content="textOnly" dt:type="boolean"/>
 <!--peaks mod-->
 	<ElementType name="bFlatlands" content="textOnly" dt:type="boolean"/>
@@ -300,9 +300,9 @@
 		<element type="iGroupRand" minOccurs="0"/>
 		<element type="bArea" minOccurs="0"/>
 		<element type="bHills" minOccurs="0"/>
-<!--peaks mod-->
+<!--peaks mod  mountains mod-->
 		<element type="bPeaks" minOccurs="0"/>
-<!--peaks mod-->
+<!--peaks mod  mountains mod-->
         <element type="bFlatlands" minOccurs="0"/>
 		<element type="bNoRiverSide" minOccurs="0"/>
 		<element type="bNormalize" minOccurs="0"/>
@@ -415,7 +415,7 @@
 	<ElementType name="ImprovementUpgrade" content="textOnly"/>
 	<ElementType name="bActsAsCity" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bHillsMakesValid" content="textOnly" dt:type="boolean"/>
-<!-- peaks mod-->
+<!-- peaks mod  mountains mod-->
 	<ElementType name="bPeakMakesValid" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bPeakMakesInvalid" content="textOnly" dt:type="boolean"/>
 <!-- Dune Wars			-->
@@ -483,7 +483,7 @@
 		<element type="IrrigatedYieldChange" minOccurs="0"/>
 		<element type="bActsAsCity" minOccurs="0"/>
 		<element type="bHillsMakesValid" minOccurs="0"/>
-<!-- peaks mod-->
+<!-- peaks mod  mountains mod-->
 		<element type="bPeakMakesValid" minOccurs="0"/>
 		<element type="bPeakMakesInvalid" minOccurs="0"/>
 	<!-- mountains mod-->

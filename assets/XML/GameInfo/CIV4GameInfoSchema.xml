@@ -758,9 +758,8 @@
 	<ElementType name="iStateReligionHappiness" content="textOnly" dt:type="int"/>
 	<ElementType name="iNonStateReligionHappiness" content="textOnly" dt:type="int"/>
  <!-- civic plus -->
-  <ElementType name="iStateReligionExtraHealth" content="textOnly" dt:type="int"/>
-  <ElementType name="iNonStateReligionExtraHealth" content="textOnly" dt:type="int"/>
-
+    <ElementType name="iStateReligionExtraHealth" content="textOnly" dt:type="int"/>
+    <ElementType name="iNonStateReligionExtraHealth" content="textOnly" dt:type="int"/>
 	<ElementType name="iStateReligionUnitProductionModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iStateReligionBuildingProductionModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iStateReligionFreeExperience" content="textOnly" dt:type="int"/>
@@ -796,7 +795,7 @@
   </ElementType>
   <ElementType name="BuildingCommerceChanges" content="eltOnly">
     <element type="BuildingCommerceChange" minOccurs="0" maxOccurs="*"/>
-    </ElementType>
+  </ElementType>
 	<ElementType name="Upkeep" content="textOnly"/>
 	<ElementType name="iYield" content="textOnly" dt:type="int"/>
 	<ElementType name="YieldModifiers" content="eltOnly">

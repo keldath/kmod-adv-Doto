@@ -569,7 +569,7 @@ void CyEnumsPythonInterface()
 		//MOD@VET_Andera412_Blocade_Unit-begin1/1
 		.value("GAMEOPTION_BLOCADE_UNIT", GAMEOPTION_BLOCADE_UNIT)
 //MOD@VET_Andera412_Blocade_Unit-end1/1
-        .value("GAMEOPTION_MOUNTAINS", GAMEOPTION_MOUNTAINS)//AND Mountain Options
+		.value("GAMEOPTION_MOUNTAINS", GAMEOPTION_MOUNTAINS)//AND Mountains mod Options
         .value("GAMEOPTION_TECH_DIFFUSION", GAMEOPTION_TECH_DIFFUSION)//Tech Diffusion Option by Stolenrays
 		.value("GAMEOPTION_CULTURE_CONTROL", GAMEOPTION_CULTURE_CONTROL)//jCULTURE_CONTROL Options
 //Influence Driven War: Added for PIG Mod by PieceOfMind 26/10/09
