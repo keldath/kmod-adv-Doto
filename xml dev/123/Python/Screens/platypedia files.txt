@@ -1,2 +1,0 @@
-CvScreenEnums.py
-and the platypedia folder
