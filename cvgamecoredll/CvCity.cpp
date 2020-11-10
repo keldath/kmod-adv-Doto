@@ -690,8 +690,8 @@ void CvCity::doRevolt()
 		changeOccupationTimer(-1);
 		return;
 	} // </advc.023>
-	PlayerTypes eCulturalOwner = calculateCulturalOwner();
 	// <advc.099c>
+	PlayerTypes eCulturalOwner = getPlot().calculateCulturalOwner();
 	PlayerTypes eOwnerIgnRange = eCulturalOwner;
 	if(GC.getDefineBOOL(CvGlobals::REVOLTS_IGNORE_CULTURE_RANGE))
 		eOwnerIgnRange = getPlot().calculateCulturalOwner(true);
@@ -796,9 +796,12 @@ void CvCity::damageGarrison(PlayerTypes eRevoltSource)
 		pUnitNode = kPlot.nextUnitNode(pUnitNode);
 		if(pLoopUnit == NULL)
 			continue;
-		if(pLoopUnit->isBarbarian())
+		/*	advc.101: (Didn't matter in BtS because
+			Barbarian cities would flip on the first revolt) */
+		/*if(pLoopUnit->isBarbarian())
 			pLoopUnit->kill(false, eRevoltSource);
-		else if(pLoopUnit->canDefend())
+		else*/
+		if(pLoopUnit->canDefend())
 			pLoopUnit->changeDamage(pLoopUnit->currHitPoints() / 2, eRevoltSource);
 	}
 }
@@ -4700,12 +4703,12 @@ int CvCity::cultureStrength(PlayerTypes ePlayer,
 
 int CvCity::cultureGarrison(PlayerTypes ePlayer) const
 {
-	/*  <advc.101> Barbarian garrisons are not supposed to prevent revolts.
-		BtS enforces this in CvPlot::doCulture (now renamed to CvPlot::doRevolts).
-		Easier to do it here. */
-	if(isBarbarian())
-		return 0;
-
+	/*  <advc.101> BtS makes Barbarian units ineligible as culture garrison
+		through CvPlot::doCulture (now renamed to CvPlot::doRevolts).
+		Easier to do it here -- but I do want them to be eligible. In fact,
+		I'll give them extra strength below. */
+	/*if(isBarbarian())
+		return 0;*/
 	int iGarrison = 0; // was 1  </advc.101>
 	for(CLLNode<IDInfo> const* pUnitNode = getPlot().headUnitNode(); pUnitNode != NULL;
 		pUnitNode = getPlot().nextUnitNode(pUnitNode))
@@ -4715,7 +4718,7 @@ int CvCity::cultureGarrison(PlayerTypes ePlayer) const
 	}
 	/*if (atWar(GET_PLAYER(ePlayer).getTeam(), getTeam()))
 		iGarrison *= 2;*/ // advc.023: commented out
-	return iGarrison / 100; // advc.101: iGarrison now has times-100 precision
+	return ROUND_DIVIDE(iGarrison, 100); // advc.101: iGarrison now has times-100 precision
 }
 
 // <advc.099c>
@@ -9096,7 +9099,7 @@ bool CvCity::canCultureFlip(PlayerTypes eToPlayer, /* advc.101: */ bool bCheckPr
 		return true;*/ // advc.101: Commented out
 	// <advc.099c>
 	if (eToPlayer == NO_PLAYER)
-		eToPlayer = calculateCulturalOwner();
+		eToPlayer = getPlot().calculateCulturalOwner();
 	if(eToPlayer == NO_PLAYER || eToPlayer == getOwner() ||
 		!GET_PLAYER(eToPlayer).isAlive() || eToPlayer == BARBARIAN_PLAYER ||
 		GET_TEAM(eToPlayer).isVassal(getTeam()))
@@ -9196,14 +9199,19 @@ void CvCity::changeNumRevolts(PlayerTypes eIndex, int iChange)
 }
 
 
-double CvCity::getRevoltTestProbability() const // advc.101: Changed return type
+double CvCity::getRevoltTestProbability() const // advc.101: Return type was int; tbd.: change it to scaled.
 {
-	int iProtection = getRevoltProtection(); // advc.101: Moved into new function
+	// <advc.101>
+	CvGame const& kGame = GC.getGame();
+	// Was based on getVictoryDelayPercent() in K-Mod
+	scaled rSpeedFactor = per100(GC.getInfo(kGame.getGameSpeedType()).getGoldenAgePercent());
+	// Need to cut cities recently acquired by Barbarians some slack
+	if (isBarbarian() && kGame.getGameTurn() - getGameTurnAcquired() < 8 * rSpeedFactor)
+		return 0; // </advc.101>
 	static scaled const rREVOLT_TEST_PROB = per100(GC.getDefineINT("REVOLT_TEST_PROB")); // advc.opt
-	scaled r = rREVOLT_TEST_PROB * per100(100 - iProtection) /
-			// <advc.101> was .getVictoryDelayPercent() in K-Mod
-			per100(GC.getInfo(GC.getGame().getGameSpeedType()).getGoldenAgePercent());
-	r.decreaseTo(1); // Upper bound used to be handled by the caller </advc.101>
+	scaled r = rREVOLT_TEST_PROB * per100(100 - getRevoltProtection());
+	r /= rSpeedFactor;
+	r.decreaseTo(1); // advc.101: Upper bound used to be handled by the caller
 	return r.getDouble();
 }
 
@@ -12865,6 +12873,33 @@ void CvCity::read(FDataStreamBase* pStream)
 		if(pWaterArea != NULL)
 			pWaterArea->changeCitiesPerPlayer(getOwner(), 1);
 	} // </advc.030b>
+	// <advc.310>
+	if (uiFlag < 8)
+	{
+		BuildingTypes eVersailles = (BuildingTypes)GC.getInfoTypeForString(
+				"BUILDING_VERSAILLES");
+		if (eVersailles != NO_BUILDING && getNumBuilding(eVersailles) > 0)
+		{
+			CvBuildingInfo const& kVersailles = GC.getInfo(eVersailles);
+			int iRateChange = kVersailles.getGreatPeopleRateChange();
+			UnitClassTypes eOldGPClass = (UnitClassTypes)GC.getInfoTypeForString(
+						"UNITCLASS_MERCHANT");
+			UnitClassTypes eNewGPClass = (UnitClassTypes)kVersailles.getGreatPeopleUnitClass();
+			/*	To provide some safety against messing up savegames of a mod-mod
+				that may not have adopted this XML change */
+			if (eNewGPClass == GC.getInfoTypeForString("UNITCLASS_GREAT_SPY") &&
+				iRateChange == 2 && eOldGPClass != NO_UNITCLASS)
+			{
+				UnitTypes eOldGPUnit = getCivilization().getUnit(eOldGPClass);
+				UnitTypes eNewGPUnit = getCivilization().getUnit(eNewGPClass);
+				if (eOldGPUnit != NO_UNIT && eNewGPUnit != NO_UNIT)
+				{
+					changeGreatPeopleUnitRate(eOldGPUnit, -iRateChange);
+					changeGreatPeopleUnitRate(eNewGPUnit, iRateChange);
+				}
+			}
+		}
+	} // </advc.310>
 }
 
 void CvCity::write(FDataStreamBase* pStream)
@@ -12878,6 +12913,7 @@ void CvCity::write(FDataStreamBase* pStream)
 	uiFlag = 5; // advc.106k
 	uiFlag = 6; // advc.103
 	uiFlag = 7; // advc.003u: m_bChooseProductionDirty
+	uiFlag = 8; // advc.310
 	pStream->Write(uiFlag);
 
 	pStream->Write(m_iID);

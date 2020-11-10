@@ -663,15 +663,15 @@ int CvSelectionGroupAI::AI_sumStrength(const CvPlot* pAttackedPlot,
 				}
 			}
 			else*/
-// DOTO - MODrangedattack - keldath - Scheck if the unit is ranged - see the below can move.
+// DOTO - MOD rangedattack - keldath - Scheck if the unit is ranged - see the below can move.
 			bool bRanged = false;
 			if (kLoopUnit.rangedStrike() > 0 )
 			{
 				bRanged = true;
 			}
-// DOTO - MODrangedattack - keldath - end
+// DOTO - MOD rangedattack - keldath - end
 			if (!kLoopUnit.canAttack() || !kLoopUnit.canMove() ||
-// DOTO - MODrangedattack - keldath - START added bRanged so  it willignore canmoveinto - ranged units cannot attack directly.
+// DOTO - MOD rangedattack - keldath - START added bRanged so  it will ignore can moveinto - ranged units cannot attack directly.
 				(pAttackedPlot && bDefenders && (!kLoopUnit.canMoveInto(*pAttackedPlot, true, true) && !bRanged)) ||
 				//(!pLoopUnit->isBlitz() && pLoopUnit->isMadeAttack())
 				kLoopUnit.isMadeAllAttacks()) // advc.164

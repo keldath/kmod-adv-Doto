@@ -22672,7 +22672,7 @@ CvUnitAI* CvUnitAI::fromIDInfo(IDInfo id)
 */
 /*
 these function is my own trial combo of defining the ai pick for a plot to attack,
-its corrently in active as i edited the system from realism invictus.
+its corrently inactive as i edited the system from realism invictus.
 keeping the code here for the future if i will decide to swap.
 AI_rangedStrikeValueK
 AI_rangeAttackK2
@@ -23006,10 +23006,11 @@ CvPlot* CvUnitAI::AI_rangeStrikeTargetPlotK(int iSearchRange, CvUnitAI* pAttacke
 					}
 					// Always prefer to target cities
 					//if no need to bombard it first, value the plot for a range strike
+					//pehaps compare with other plots surrounding?
 					iValue += 100;
 				}
 				
-				int originaliOdds =  /*AI_getGroup()->AI_attackOdds(&kLoopPlot, true);*/AI_getGroup()->AI_getWeightedOdds(&kLoopPlot, true,true);
+				int originaliOdds =  AI_getGroup()->AI_getWeightedOdds(&kLoopPlot, true,true);// take range units to the odds also./*AI_getGroup()->AI_attackOdds(&kLoopPlot, true);*/
 				//i added these 2 ints, i decided that a range unit should also take into account the entire stack odds its inside and also stack vs stack. keldath
 				//check attack odds of the entire stack
 				int iAttackofNoneRangedOdds = AI_getGroup()->AI_getWeightedOdds(&kLoopPlot, true,false);// getGroup()->AI_attackOdds(&pTargetCityPlot, true);

@@ -9605,6 +9605,8 @@ bool CvPlayerAI::AI_counterPropose(PlayerTypes ePlayer,
 			!GET_TEAM(ePlayer).isGoldTrading() &&
 			rLeniency != rSecondAttempt)
 		{
+			kTheyAlsoGive.clear();
+			kWeAlsoGive.clear();
 			return AI_counterPropose(ePlayer, kTheyGive, kWeGive,
 					kTheirInventory, kOurInventory, kTheyAlsoGive, kWeAlsoGive,
 					rSecondAttempt);
@@ -10044,10 +10046,15 @@ bool CvPlayerAI::AI_balanceDeal(bool bGoldDeal, CLinkList<TradeData> const& kThe
 		}
 	} // <advc.036> Special treatment for one-for-one resource trades
 	if (bSingleResource && iTheyReceive - iWeReceive <= m_iSingleBonusTradeTolerance &&
-		((kWeWant.getLength() <= 0 && iOtherListLength == 1 &&
-		pGoldPerTurnNode != NULL) ||
-		(kWeWant.getLength() == 1 &&
-		kWeWant.head()->m_data.m_eItemType == TRADE_RESOURCES)))
+		(
+			(kWeWant.getLength() <= 0 && iOtherListLength == 1 &&
+			// Haven't added gold or unable to trade it
+			(pGoldPerTurnNode != NULL ||
+			!kPlayer.canTradeItem(getID(), TradeData(TRADE_GOLD_PER_TURN, 0))))
+		||
+			(kWeWant.getLength() == 1 &&
+			kWeWant.head()->m_data.m_eItemType == TRADE_RESOURCES)
+		))
 	{
 		return true;
 	} // </advc.036>
@@ -12438,8 +12445,8 @@ DenialTypes CvPlayerAI::AI_stopTradingTrade(TeamTypes eTradeTeam, PlayerTypes eP
 				continue;
 			bool bPeaceTreaty = false;
 			bool bAnnualPayment = false;
-			for(CLLNode<TradeData> const* pNode = d->headTradesNode(); pNode != NULL;
-				pNode = d->nextTradesNode(pNode))
+			for(CLLNode<TradeData> const* pNode = d->headGivesNode(getTeam());
+				pNode != NULL; pNode = d->nextGivesNode(pNode, getTeam()))
 			{
 				TradeableItems eItem = pNode->m_data.m_eItemType;
 				if(eItem == TRADE_PEACE_TREATY)
@@ -27750,6 +27757,8 @@ bool CvPlayerAI::AI_feelsSafe() const
 	if (getNumCities() <= 1)
 		return false; // Don't mess with early-game strategy
 	CvTeamAI const& kOurTeam = GET_TEAM(getTeam());
+	if (!kOurTeam.AI_isWarPossible())
+		return true;
 	if (kOurTeam.AI_countWarPlans(NUM_WARPLAN_TYPES, true, 1) > 0)
 		return false;
 	CvGame const& kGame = GC.getGame();
