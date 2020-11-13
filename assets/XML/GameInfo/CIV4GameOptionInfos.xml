@@ -295,7 +295,7 @@
         <GameOptionInfo>
             <Type>GAMEOPTION_BARBARIAN_CIV</Type>
             <Description>Barbarian Civ</Description>
-            <Help></Help>
+            <Help>Barbarian Cities will become Civs - see the python file BarbarianCiv.py for defs</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>
 		</GameOptionInfo>
