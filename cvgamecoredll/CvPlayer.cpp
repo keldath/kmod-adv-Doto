@@ -14600,10 +14600,6 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	//int iLoop = 0;
     //DPII < Maintenance Modifiers >
 	int iI, iJ;
-	// < Civic Infos Plus Start >
-	CvCity* pLoopCity;
-	int iLoop;
-	// < Civic Infos Plus End   >
 	changeGreatPeopleRateModifier(GC.getInfo(eCivic).getGreatPeopleRateModifier() * iChange);
 	changeGreatGeneralRateModifier(GC.getInfo(eCivic).getGreatGeneralRateModifier() * iChange);
 	changeDomesticGreatGeneralRateModifier(GC.getInfo(eCivic).getDomesticGreatGeneralRateModifier() * iChange);
@@ -14749,17 +14745,6 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 				GC.getInfo(eCivic).isSpecialistValid(eLoopSpecialist) ?
 				iChange : 0);
 	}
-// < Civic Infos Plus Start >
-	for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
-	{
-		for(iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
-		{
-			pLoopCity->changeFreeSpecialistCount((SpecialistTypes)iI, (GC.getCivicInfo(eCivic).getFreeSpecialistCount(iI) * iChange));
-		}
-		pLoopCity->updateBuildingCommerceChange(eCivic, iChange);
-		pLoopCity->updateBuildingYieldChange(eCivic, iChange);
-	}
-// < Civic Infos Plus End   >
 	FOR_EACH_ENUM(Improvement)
 	{
 		FOR_EACH_ENUM(Yield)

@@ -6997,13 +6997,13 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iGlobalFreeSpecialist>0</iGlobalFreeSpecialist>
 			<iMaintenanceModifier>0</iMaintenanceModifier>
 			<!--DPII < Maintenance Modifiers  -->
-			<iGlobalMaintenanceModifier>0</iGlobalMaintenanceModifier>
+			<iGlobalMaintenanceModifier>1</iGlobalMaintenanceModifier>
 			<iAreaMaintenanceModifier>0</iAreaMaintenanceModifier>
 			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<iConnectedCityMaintenanceModifier>-5</iConnectedCityMaintenanceModifier>
+			<iConnectedCityMaintenanceModifier>4</iConnectedCityMaintenanceModifier>
 			<!--DPII < Maintenance Modifiers > -->
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
@@ -7187,7 +7187,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iDistanceMaintenanceModifier>-5</iDistanceMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<iConnectedCityMaintenanceModifier>-5</iConnectedCityMaintenanceModifier>
+			<iConnectedCityMaintenanceModifier>5</iConnectedCityMaintenanceModifier>
 			<!--DPII < Maintenance Modifiers > -->
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
@@ -7382,7 +7382,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>-5</iNumCitiesMaintenanceModifier>
 			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<iConnectedCityMaintenanceModifier>-5</iConnectedCityMaintenanceModifier>
+			<iConnectedCityMaintenanceModifier>5</iConnectedCityMaintenanceModifier>
 			<!--DPII < Maintenance Modifiers > -->
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
@@ -21743,11 +21743,11 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iMaintenanceModifier>0</iMaintenanceModifier>
 			<!--DPII < Maintenance Modifiers  -->
 			<iGlobalMaintenanceModifier>0</iGlobalMaintenanceModifier>
-			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
+			<iDistanceMaintenanceModifier>5</iDistanceMaintenanceModifier>
 			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<iConnectedCityMaintenanceModifier>-5</iConnectedCityMaintenanceModifier>
+			<iConnectedCityMaintenanceModifier>0</iConnectedCityMaintenanceModifier>
 			<!--DPII < Maintenance Modifiers > -->
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
@@ -21941,7 +21941,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<!--DPII < Maintenance Modifiers  -->
 			<iGlobalMaintenanceModifier>0</iGlobalMaintenanceModifier>
 			<iAreaMaintenanceModifier>0</iAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
+			<iOtherAreaMaintenanceModifier>5</iOtherAreaMaintenanceModifier>
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
@@ -34040,7 +34040,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iGlobalMaintenanceModifier>0</iGlobalMaintenanceModifier>
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
 			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>-10</iNumCitiesMaintenanceModifier>
+			<iNumCitiesMaintenanceModifier>-2</iNumCitiesMaintenanceModifier>
 			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
 			<iConnectedCityMaintenanceModifier>0</iConnectedCityMaintenanceModifier>
 			<!--DPII < Maintenance Modifiers > -->

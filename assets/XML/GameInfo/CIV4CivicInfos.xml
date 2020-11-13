@@ -84,13 +84,6 @@
 			<Hurrys/>
 			<SpecialBuildingNotRequireds/>
 			<SpecialistValids/>
-<!-- civic plus 
-      <FreeSpecialistCounts>
-		  <FreeSpecialistCount>
-			  <SpecialistType>SPECIALIST_PRIEST</SpecialistType>
-			  <iFreeSpecialistCount>2</iFreeSpecialistCount>
-		  </FreeSpecialistCount>
-      </FreeSpecialistCounts> -->
 			<BuildingHappinessChanges/>
 			<BuildingHealthChanges/>
 			<FeatureHappinessChanges/>
@@ -2694,13 +2687,6 @@
 			<Hurrys/>
 			<SpecialBuildingNotRequireds/>
 			<SpecialistValids/>
-			<!-- civic plus -->
-      		<FreeSpecialistCounts>
-		  		<FreeSpecialistCount>
-			  		<SpecialistType>SPECIALIST_ENGINEER</SpecialistType>
-			  		<iFreeSpecialistCount>1</iFreeSpecialistCount>
-		 		 </FreeSpecialistCount>
-      		</FreeSpecialistCounts> 
 			<BuildingHappinessChanges/>
 			<BuildingHealthChanges/>
 			<FeatureHappinessChanges/>

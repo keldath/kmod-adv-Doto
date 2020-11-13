@@ -293,6 +293,13 @@
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
+            <Type>GAMEOPTION_BARBARIAN_CIV</Type>
+            <Description>Barbarian Civ</Description>
+            <Help></Help>
+            <bDefault>0</bDefault>
+            <bVisible>1</bVisible>
+		</GameOptionInfo>
+        <GameOptionInfo>
             <Type>GAMEOPTION_NO_POPULATION_LIMIT</Type>
             <Description>No Pop Limit</Description>
             <Help>If unchecked  - Cities are LImited to size 8 , with buildings and more, that limit is increased.</Help>

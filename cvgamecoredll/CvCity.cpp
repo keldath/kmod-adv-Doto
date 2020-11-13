@@ -14786,7 +14786,7 @@ int CvCity::calculateOtherAreaMaintenanceTimes100(CvArea const& kArea, PlayerTyp
 int CvCity::calculateConnectedMaintenanceTimes100(PlayerTypes eOwner, bool iCheckConnection, int iLocalConnected)
 {
 	int iTempMaintenance = 0;
-		if (iCheckConnection)
+		if (!iCheckConnection)
 		{
 			iTempMaintenance = std::max(0, GET_PLAYER(eOwner).getConnectedCityMaintenanceModifier() + 100);
 			iTempMaintenance /= 100;
