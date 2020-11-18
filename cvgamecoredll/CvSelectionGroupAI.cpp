@@ -404,9 +404,19 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot,
 
 		if (!bForce && !kLoopUnit.canMoveInto(*pPlot, true, /*bDeclareWar=*/bPotentialEnemy))
 			continue;
-
-		// BETTER_BTS_AI_MOD, Lead From Behind (UncutDragon), 02/21/10, jdog5000: START
-		if (GC.getDefineBOOL(CvGlobals::LFB_ENABLE) &&
+// DOTO-MOD rangedattack-keldath - START --add more weight to make the ai pick ranged first	
+//added here to take into account iof the KFB is chosen - i didnt want to edit the LFBgetBetterAttacker for now
+		if (kLoopUnit.isRangeStrikeCapableK()) 
+		{
+			iBestValue *= (100 + kLoopUnit.baseCombatStr());
+			iBestValue /= 100;
+		} 
+// DOTO-MOD rangedattack-keldath - START --add more weight to make the ai pick ranged first	 
+		// BETTER_BTS_AI_MOD, Lead From Behind (UncutDragon), 02/21/10, jdog5000: START	
+//keldath - made it into a game option from xml.
+// DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
+		if (GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND)
+		/*  GC.getDefineBOOL(CvGlobals::LFB_ENABLE)*/ &&
 			GC.getDefineBOOL(CvGlobals::LFB_USECOMBATODDS) &&
 			!bMaxSurvival) // advc.048
 		{
@@ -430,6 +440,15 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot,
 					iValue /= 100;
 				}
 			}
+// DOTO-MOD rangedattack-keldath - START --add more weight to make the ai pick ranged first	
+
+			if (kLoopUnit.isRangeStrikeCapableK()) 
+			{
+				iValue *= (100 + kLoopUnit.baseCombatStr());
+				iValue /= 100;
+			} 
+// DOTO-MOD rangedattack-keldath - START --add more weight to make the ai pick ranged first	
+
 			/*  if non-human, prefer the last unit that has the best value
 				(so as to avoid splitting the group) */
 			if (iValue > iBestValue ||

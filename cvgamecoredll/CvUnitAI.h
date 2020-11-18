@@ -19,14 +19,13 @@ public:
 // MOD - rangedattack-keldath START - Ranged Strike AI-REALISM INVICTUS
 //NO_MOVEMENT_FLAGS is a new thing from advc 098 30092020 also MovementFlags
 	int AI_rangedStrikeValueK(CvPlot const& kPlot) const;
-	CvPlot* AI_rangeStrikeTargetPlotK(int iSearchRange, CvUnitAI* pAttacker) const;
-	bool AI_rangeAttackK2(MovementFlags eFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
+	CvPlot* AI_rangeStrikeTargetPlotK(CvUnit* pAttacker = NULL) ;
 	bool AI_rangeAttackK(MovementFlags eFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
-	bool AI_rangeAttackCityK();
 	bool AI_rangeAttackOrSkipK(MovementFlags eFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
 	bool AI_rangeAttackOrFortifyK(MovementFlags eFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
 	int NetTotalStreangth (const CvPlot* pAttackedPlot,bool bRanged) const;
-	int isPlotWorthRanged(CvPlot const& kPlot) const;
+	int isNearPlotDanger(CvPlot const& kPlot) const;
+	bool isPlotWorthRanged(CvPlot const& kPlot) const;
 // MOD - END - Ranged Strike AI
 	// advc.003u: Override replacing AI_init. Parameter list copied from CvUnit::init.
 	void init(int iID, UnitTypes eUnit, UnitAITypes eUnitAI, PlayerTypes eOwner,
@@ -219,9 +218,7 @@ protected:
 	//bool AI_goToTargetBarbCity(int iMaxPathTurns = 10); // disabled by K-Mod. (duplicate code ftl)
 	bool AI_pillageAroundCity(CvCity* pTargetCity, int iBonusValueThreshold = 0,
 			MovementFlags eFlags = NO_MOVEMENT_FLAGS, int iMaxPathTurns = MAX_INT);
-//keldath - rangedstrik - added bool skipRangedAttack - rangedstrik - if this is
-	bool AI_bombardCity(bool skipRangedAttack = true);
-//keldath - rangedstrik - added bool skipRangedAttack - rangedstrik - if this is
+	bool AI_bombardCity();
 	bool AI_cityAttack(int iRange, int iOddsThreshold,
 			MovementFlags eFlags = NO_MOVEMENT_FLAGS, bool bFollow = false);
 	bool AI_anyAttack(int iRange, int iOddsThreshold,

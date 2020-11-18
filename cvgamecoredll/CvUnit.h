@@ -982,11 +982,13 @@ public:
 	// Note: These two functions are no longer protected
 	int rangeCombatDamageK(const CvUnit* pDefender) const;
 	CvUnit* rangedStrikeTargetK(const CvPlot* pPlot) const;
+	bool canRangedBombard(CvCity* pCity) const;
+	void rangedBombard(CvCity* pBombardCity, CvUnit* pAttacker) const;
 	bool isRangeStrikeCapableK() const;
 	bool canRangeStrikeK() const;
 	bool canRangeStrikeAtK(const CvPlot* pPlot, int iX, int iY) const;
 	bool rangeStrikeK(int iX, int iY);
-	bool afterRangeStrikeK(CvUnit* pAttacker);
+	bool afterRangeStrikeK(CvUnit* pAttacker) const;
 // MOD - END - Ranged Strike AI
 
 	int getTriggerValue(EventTriggerTypes eTrigger, const CvPlot* pPlot, bool bCheckPlot) const;

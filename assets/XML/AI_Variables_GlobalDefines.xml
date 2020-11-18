@@ -100,7 +100,7 @@
 	<Define>
 		<!-- By conquering cities, we reduce culture pressure on our cities. -->
 		<DefineName>UWAI_WEIGHT_BORDER_DISPUTES</DefineName>
-		<iDefineIntVal>125</iDefineIntVal>
+		<iDefineIntVal>115</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- Fight a joint war for the "mutual struggle" diplo bonus. -->
@@ -110,7 +110,7 @@
 	<Define>
 		<!-- To weaken a civ that we perceive as a long-term military threat. -->
 		<DefineName>UWAI_WEIGHT_PREEMPTIVE_WAR</DefineName>
-		<iDefineIntVal>125</iDefineIntVal>
+		<iDefineIntVal>110</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- Stop civs that we don't like from winning the game, or even civs

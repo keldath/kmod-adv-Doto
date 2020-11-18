@@ -392,8 +392,18 @@ bool CvUnitAI::AI_update()
 bool CvUnitAI::AI_follow(bool bFirst)
 {
 	FAssert(getDomainType() != DOMAIN_AIR);
-
-	if (AI_followBombard())
+	
+	//DOTO-keldath - rangedstrike - lets see if we cant bombard, lets range it.
+	//redirect all calls for AI_follow and transform it to rangedastrike.	
+	if (rangedStrike() > 0) 
+	{
+		if (AI_rangeAttackK())
+			return true;
+		//if its a ranged unit and it cannot carry an attack, 
+		//continue with the rest of this function.
+	}
+	//DOTO - keldath - rangedstrike added else if
+	else if (AI_followBombard())
 		return true;
 
 	if (bFirst && getGroup()->getHeadUnitAIType() == UNITAI_ATTACK_CITY)
@@ -572,10 +582,10 @@ int CvUnitAI::AI_groupFirstVal() /* advc: */ const
 		break;
 
 	case UNITAI_SETTLE:
-		return 24; // MOD - START - Ranged Strike AI
+		return 24; //doto rangedstrike MOD - START - Ranged Strike AI
 
 	case UNITAI_WORKER:
-		return 23; // MOD - START - Ranged Strike AI
+		return 23; //doto rangedstrike  MOD - START - Ranged Strike AI
 
 	case UNITAI_ATTACK:
 		// MOD - START - Ranged Strike AI
@@ -598,7 +608,7 @@ int CvUnitAI::AI_groupFirstVal() /* advc: */ const
 		}
 
 	case UNITAI_ATTACK_CITY:
-		// MOD - START - Ranged Strike AI
+		//doto rangedstrike MOD - START - Ranged Strike AI
 		if (bombardRate() > 0)
 		{
 			if (isRangeStrikeCapableK())
@@ -763,7 +773,12 @@ int CvUnitAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy) const
 		return 100;
 
 	// BETTER_BTS_AI_MOD, Efficiency, Lead From Behind (UncutDragon), jdog5000: START
-	if (GC.getDefineBOOL(CvGlobals::LFB_ENABLE) &&
+	
+//DOTO-
+//keldath - made it into a game option from xml.
+// DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
+	if (!GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND)
+	/*if (GC.getDefineBOOL(CvGlobals::LFB_ENABLE)*/ &&
 		GC.getDefineBOOL(CvGlobals::LFB_USECOMBATODDS))
 	{
 		// Combat odds are out of 1000 - we need odds out of 100
@@ -1237,7 +1252,11 @@ int CvUnitAI::AI_sacrificeValue(const CvPlot* pPlot) const
 		iValue /= 100; // K-Mod
 
 		// Experience and medics now better handled in LFB
-		if (!GC.getDefineBOOL(CvGlobals::LFB_ENABLE))
+//DOTO-
+//keldath - made it into a game option from xml.
+// DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
+		if (!GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND))
+	//	if (!GC.getDefineBOOL(CvGlobals::LFB_ENABLE))
 		{
 			iValue *= 10; // K-Mod
 			iValue /= 10 + getExperience(); // K-Mod - moved from out of the if.
@@ -1268,7 +1287,11 @@ int CvUnitAI::AI_sacrificeValue(const CvPlot* pPlot) const
 	}
 
 	// From Lead From Behind by UncutDragon
-	if (GC.getDefineBOOL(CvGlobals::LFB_ENABLE))
+//DOTO-
+//keldath - made it into a game option from xml.
+// DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
+	if (!GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND))
+	//if (GC.getDefineBOOL(CvGlobals::LFB_ENABLE))
 	{	// Reduce the value of sacrificing 'valuable' units - based on great general, limited, healer, experience
 		/* bbai code
 		iValue *= 100;
@@ -2361,9 +2384,11 @@ void CvUnitAI::AI_attackMove()
 		if (bDanger && getPlot().isCity())
 		{
 //doto- rangedstrike - not sure what it meanss - took from civreimagined
-			if (AI_leaveAttack(2, 55, 105) && rangedStrike() == 0)
+/*			if (AI_leaveAttack(2, 55, 105) && rangedStrike() == 0)
 				return;
 			if (AI_leaveAttack(1, 55, 105)) 
+	marked out for now - i want the danger place to apply to ranged also		
+*/		if (AI_leaveAttack(2, 55, 105))
 				return;
 		}
 		else
@@ -2408,11 +2433,13 @@ void CvUnitAI::AI_attackMove()
 			return;
 		}
 		/*** doto- rangedstrike RANGED BOMBARDMENT - Dale START ***/
-		if (AI_rangeAttackK())
+//marked off, i want the rest of the function checks to apply.
+//do ranged later on below.
+/*		if (AI_rangeAttackK())
 		{
 			return;
 		}
-		/*** RANGED BOMBARDMENT - Dale END ***/	
+*/		/*** RANGED BOMBARDMENT - Dale END ***/	
 
 		/* bts code (with omniGroup subbed in.)
 		if (!bDanger) {
@@ -2545,15 +2572,17 @@ void CvUnitAI::AI_attackMove()
 					{
 						return;
 					}
-				}				
-				/*** doto- rangedstrike RANGED BOMBARDMENT - Dale START ***/
-				if (AI_rangeAttackK())
-				{
-					return;
 				}
-				/*** RANGED BOMBARDMENT - Dale END ***/
+
 				if (kOwner.AI_isAnyUnitTargetMissionAI(*this, MISSIONAI_GROUP))
 				{
+					/*** doto- rangedstrike RANGED BOMBARDMENT - Dale START ***/
+					//this part was above this if check. moved here seems right ?
+					if (AI_rangeAttackK())
+					{
+						return;
+					}
+					/*** RANGED BOMBARDMENT - Dale END ***/
 					getGroup()->pushMission(MISSION_SKIP);
 					return;
 				}
@@ -3245,19 +3274,23 @@ void CvUnitAI::AI_attackCityMove()
 					{
 						return;
 					}
+					// doto - rangedattack-keldath MOD - START - Ranged Strike AI
+					//Using && AI_rangeStrikeTargetPlotK() != NULL
+					//as a way to determine if there are no danger plot near the target.
+					if (canRangeStrikeAtK(plot(), pTargetCity->plot()->getX(), pTargetCity->plot()->getY())
+						 && AI_rangeStrikeTargetPlotK() != NULL)
+					{
+						getGroup()->pushMission(MISSION_RANGE_ATTACK, pTargetCity->plot()->getX(), pTargetCity->plot()->getY(), NO_MOVEMENT_FLAGS, false, false, MISSIONAI_ASSAULT, pTargetCity->plot());
+						return;
+					}
+					// MOD - END - Ranged Strike AI
+
 					if (canBombard(getPlot()))
 					{
 						getGroup()->pushMission(MISSION_BOMBARD, -1, -1, NO_MOVEMENT_FLAGS,
 								false, false, MISSIONAI_ASSAULT, pTargetCity->plot());
 						return;
 					}
-					// doto - rangedattack-keldath MOD - START - Ranged Strike AI
-					if (canRangeStrikeAtK(plot(), pTargetCity->plot()->getX(), pTargetCity->plot()->getY()))
-					{
-						getGroup()->pushMission(MISSION_RANGE_ATTACK, pTargetCity->plot()->getX(), pTargetCity->plot()->getY(), NO_MOVEMENT_FLAGS, false, false, MISSIONAI_ASSAULT, pTargetCity->plot());
-						return;
-					}
-					// MOD - END - Ranged Strike AI
 
 					if (AI_omniGroup(UNITAI_ATTACK_CITY, -1, -1, true, eMoveFlags, 3,
 						true, false, bIgnoreFaster, false, /*bBiggerOnly=*/false)) // any size
@@ -3294,38 +3327,18 @@ void CvUnitAI::AI_attackCityMove()
 					if (AI_bombardCity())
 						return;
 				}
-				
-				// DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
-				/*
 				// we're satisfied with our position already. But we still want to consider bombarding.
 				else if (iComparePostBombard >= iAttackRatio && AI_bombardCity())
 					return;
-				*/
-				// we're satisfied with our position already. But we still want to consider bombarding.
-				else if (iComparePostBombard >= iAttackRatio) 
-				{
-					if (AI_bombardCity())
-						return;
 
-					if (AI_rangeAttackCityK())
-						return;
-					//added by keldath
-					if (AI_rangeAttackK())
-						return;
-				}
-				// MOD - END rangedattack-keldath - Ranged Strike AI
-				
 				if (iComparePostBombard >= iAttackRatio)
 				{
 					// in position; and no desire to bombard.  So attack!
 					
 					// DOTO-MOD rangedattack-keldath- START - Ranged Strike AI realism invictusI
-					if (AI_rangeAttackCityK())
-						return;
-					//added by keldath
-					if (AI_rangeAttackK())
-						return;
-					// MOD - END rangedattack-keldath- Ranged Strike AI
+					//i moved the raged strike directly to AI_stackAttackCity() so i wont have to alter 
+					//all AI_stackAttackCity refrences and add the rangedstrike.
+				
 					if (AI_stackAttackCity(iAttackRatio))
 						return;
 				}
@@ -4717,7 +4730,9 @@ void CvUnitAI::AI_cityDefenseMove()
 	if (bDanger)
 	{
 /*** doto- rangedstrike im not sure its right ***/
-		if (AI_leaveAttack(1, 70, 140) && rangedStrike() == 0) // was ,,175
+//		if (AI_leaveAttack(1, 70, 140) && rangedStrike() == 0) // was ,,175
+//marked off - lets have normal ai logic.
+		if (AI_leaveAttack(1, 70, 140)) // was ,,175
 		{
 			return;
 		}
@@ -4727,13 +4742,15 @@ void CvUnitAI::AI_cityDefenseMove()
 			return;
 		}
 	}
-/*** doto- rangedstrike RANGED BOMBARDMENT - Dale START ***/
-	if (AI_rangeAttackK())
-	{
-		return;
-	}
-/*** RANGED BOMBARDMENT - Dale END ***/
 
+/*** doto- rangedstrike RANGED BOMBARDMENT - Dale START ***/
+//MOVED BELOW - APPLY NORMAL AI CODE FOR THIS FUN - 
+//the range attack will be the last check
+//	if (AI_rangeAttackK())
+//	{
+//		return;
+//	}
+/*** RANGED BOMBARDMENT - Dale END ***/
 	if (AI_guardCityBestDefender())
 	{
 		return;
@@ -4877,6 +4894,13 @@ void CvUnitAI::AI_cityDefenseMove()
 		return;
 	}
 
+/*** doto- rangedstrike RANGED BOMBARDMENT - Dale START ***/
+	if (AI_rangeAttackK())
+	{
+		return;
+	}
+/*** RANGED BOMBARDMENT - Dale END ***/
+
 	getGroup()->pushMission(MISSION_SKIP);
 }
 
@@ -4894,7 +4918,8 @@ void CvUnitAI::AI_cityDefenseExtraMove()
 		}
 	} // BETTER_BTS_AI_MOD: END
 //doto-rangedstrike - similar to civ4 reimagined - im not sure of this.
-	if (AI_leaveAttack(2, 55, 150) && rangedStrike() == 0)
+//marked off, lets give the ai code work normally
+/*	if (AI_leaveAttack(2, 55, 150) && rangedStrike() == 0)
 	{
 		return;
 	}
@@ -4907,7 +4932,19 @@ void CvUnitAI::AI_cityDefenseExtraMove()
 	{
 		return;
 	}
-//doto-rangedstrike - similar to civ4 reimagined - im not sure of this.
+*/
+
+	if (AI_leaveAttack(2, 55, 150))
+	{
+		return;
+	}
+
+	if (AI_chokeDefend())
+	{
+		return;
+	}
+
+//doto-rangedstrike - i moved it here - was before leaveattack.
 /*** doto-rangedstrike RANGED BOMBARDMENT - Dale START ***/
 	if (AI_rangeAttackK())
 	{
@@ -13108,6 +13145,12 @@ bool CvUnitAI::AI_patrol() // advc: refactored
 	}
 	if(pBestPlot == NULL)
 		return false;
+//doto ranged strike addition
+//stange i found that ai patrol made the ai attack a city,
+//while there was a large stronger stack near the attacking stack
+//maybe add a threshold?
+	if (isNearPlotDanger(*pBestPlot) == NULL)
+		return false;
 
 	FAssert(!atPlot(pBestPlot));
 	getGroup()->pushMission(MISSION_MOVE_TO, pBestPlot->getX(), pBestPlot->getY(),
@@ -14130,11 +14173,22 @@ bool CvUnitAI::AI_pillageAroundCity(CvCity* pTargetCity, int iBonusValueThreshol
 	return false;
 }
 
+//doto-keldath - rangedstrik - added bool skipRangedAttack - rangedstrik - if this is
 // This function has been completely rewritten (and greatly simplified) for K-Mod
-//keldath - rangedstrik - added bool skipRangedAttack - rangedstrik - if this is
-// exec from the rangedstrikek(), i dont want an infinite loop....must avoid
-bool CvUnitAI::AI_bombardCity(bool skipRangedAttack)
+bool CvUnitAI::AI_bombardCity()
 {
+	
+	//DOTO-keldath - rangedstrike - lets see if we cant bombard, lets range it.
+	//redirect all calls for AI_bombardCity and transform it to rangedastrike.	
+	if (rangedStrike() > 0) 
+	{
+		if (AI_rangeAttackK())
+			return true;
+		else
+			return false;//dont continue for a bombard mission if this is a rangedstrike unit - could cause a loop
+			//maybe consider using the bombard calculation below for evaluating a ranged bombard for the ai
+	}
+	
 	// check if we need to declare war before bombarding!
 	FOR_EACH_ENUM(Direction)
 	{
@@ -14149,17 +14203,7 @@ bool CvUnitAI::AI_bombardCity(bool skipRangedAttack)
 			break; // assume there can only be one city adjacent to us.
 		}
 	}
-//keldath - rangedstrike - lets see if we cant bombard, lets range it.	
-	if (!canBombard(getPlot()) & skipRangedAttack) //very important - so it wont cause a loop - consider removing this and just add the range check after bombard checks
-	{
-		if (rangedStrike() > 0) 
-		{
-			if (AI_rangeAttackK())
-				return true;
-		}
-		return false;
-	}
-	
+
 	CvCity* pBombardCity = bombardTarget(getPlot());
 	//added saftey check - it can happen with the target value search
 	if (pBombardCity == NULL)
@@ -14256,6 +14300,18 @@ bool CvUnitAI::AI_cityAttack(int iRange, int iOddsThreshold,
 			bFollow = false;
 		}
 		// K-Mod end
+		// doto - rangedstrike-keldath MOD - START - Ranged Strike AI
+		//Using && AI_rangeStrikeTargetPlotK() != NULL
+		//as a way to determine if there are no danger plot near the target.
+		if (canRangeStrikeAtK(plot(), pBestPlot->getX(), pBestPlot->getY()) 
+			&& AI_rangeStrikeTargetPlotK() != NULL)
+		{
+			getGroup()->pushMission(MISSION_RANGE_ATTACK, pBestPlot->getX(), pBestPlot->getY(), NO_MOVEMENT_FLAGS, false, false, MISSIONAI_ASSAULT, pBestPlot);
+			return true;
+		}
+		// MOD - END - Ranged Strike AI
+
+				
 		getGroup()->pushMission(MISSION_MOVE_TO, pBestPlot->getX(), pBestPlot->getY(),
 				eFlags | (bFollow ?
 				MOVE_DIRECT_ATTACK | MOVE_SINGLE_ATTACK : NO_MOVEMENT_FLAGS));
@@ -14278,10 +14334,14 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, MovementFlags eFlags
 
 	// DOTO-MOD rangedattack-keldath- START - Ranged Strike AI realism invictus
 	//if (AI_rangeAttack(iRange))
-	if (AI_rangeAttackK())
-	// MOD - END - Ranged Strike AI
+	if (rangedStrike() > 0)
 	{
-		return true;
+		if (AI_rangeAttackK())
+			return true;
+		/*else
+			return false;*/
+		//dont end the function - let the rest of the funcctions calcs to carry
+		//ranged attack cannot attack but there are mnore stuff below that might be relevant?
 	}
 /*
 	if (AI_rangeAttack(iRange))
@@ -14794,7 +14854,21 @@ bool CvUnitAI::AI_stackVsStack(int iSearchRange, int iAttackThreshold, int iRisk
 	}
 
 	if (pBestPlot != NULL)
-	{
+	{				
+		// doto - rangedattack-keldath MOD - START - Ranged Strike AI
+		//Using && AI_rangeStrikeTargetPlotK() != NULL
+		//as a way to determine if there are no danger plot near the target.
+		if (getGroup()->canRanged(plot(), pBestPlot->getX(), pBestPlot->getY())
+			&& AI_rangeStrikeTargetPlotK() != NULL)
+			//canRangeStrikeAtK(plot(), pBestPlot->getX(), pBestPlot->getY()))
+		{
+			getGroup()->pushMission(MISSION_RANGE_ATTACK, pBestPlot->getX(), pBestPlot->getY(), eFlags, false, false, MISSIONAI_COUNTER_ATTACK, pBestPlot);
+								//NO_MOVEMENT_FLAGS, false, false, MISSIONAI_ASSAULT, pBestPlot->plot());
+				return true;
+		}
+		// MOD - END - Ranged Strike AI
+
+				
 		FAssert(!atPlot(pBestPlot));
 		if (gUnitLogLevel >= 2) logBBAI("    Stack for player %d (%S) uses StackVsStack attack with value %d", getOwner(), GET_PLAYER(getOwner()).getCivilizationDescription(0), iBestValue);
 		getGroup()->pushMission(MISSION_MOVE_TO, pBestPlot->getX(), pBestPlot->getY(),
@@ -14882,17 +14956,20 @@ bool CvUnitAI::AI_blockade()  // advc: some style changes
 
 	if (atPlot(pBestBlockadePlot))
 	{
-		if (canBombard(getPlot()))
+/*** doto-rangedstrike RANGED BOMBARDMENT - Dale START ***/
+		//Using && AI_rangeStrikeTargetPlotK() != NULL
+		//as a way to determine if there are no danger plot near the target.
+		if (canRangeStrikeK() && AI_rangeStrikeTargetPlotK() != NULL)
+		{
+			getGroup()->pushMission(MISSION_RANGE_ATTACK, -1, -1 /*pBestBlockadePlot->getX(), pBestBlockadePlot->getY()*/, NO_MOVEMENT_FLAGS, false, false, MISSIONAI_BLOCKADE, pBestBlockadePlot);
+		}
+/*** RANGED BOMBARDMENT - Dale END ***/
+		else if (canBombard(getPlot()))
 		{
 			getGroup()->pushMission(MISSION_BOMBARD, -1, -1, NO_MOVEMENT_FLAGS,
 					false, false, MISSIONAI_BLOCKADE, pBestBlockadePlot);
 		}
-/*** doto-rangedstrike RANGED BOMBARDMENT - Dale START ***/
-		if (canRangeStrikeK())
-		{
-			getGroup()->pushMission(MISSION_RANGE_ATTACK, pBestBlockadePlot->getX(), pBestBlockadePlot->getY(), NO_MOVEMENT_FLAGS, false, false, MISSIONAI_BLOCKADE, pBestBlockadePlot);
-		}
-/*** RANGED BOMBARDMENT - Dale END ***/
+
 		getGroup()->pushMission(MISSION_PLUNDER, -1, -1, NO_MOVEMENT_FLAGS,
 				//(getGroup()->getLengthMissionQueue() > 0), false, MISSIONAI_BLOCKADE, pBestBlockadePlot);
 				true, false, MISSIONAI_BLOCKADE, pBestBlockadePlot); // K-Mod
@@ -14902,6 +14979,15 @@ bool CvUnitAI::AI_blockade()  // advc: some style changes
 	else
 	{
 		FAssert(!atPlot(pBestPlot));
+/*** doto-rangedstrike RANGED BOMBARDMENT - Dale START ***/
+		//Using && AI_rangeStrikeTargetPlotK() != NULL
+		//as a way to determine if there are no danger plot near the target.
+		if (canRangeStrikeK() && AI_rangeStrikeTargetPlotK() != NULL)
+		{
+			getGroup()->pushMission(MISSION_RANGE_ATTACK, pBestPlot->getX(), pBestPlot->getY(), NO_MOVEMENT_FLAGS, false, false, MISSIONAI_BLOCKADE, pBestPlot);
+			return true;
+		}
+/*** RANGED BOMBARDMENT - Dale END ***/
 		getGroup()->pushMission(MISSION_MOVE_TO, pBestPlot->getX(), pBestPlot->getY(),
 				eFlags, false, false, MISSIONAI_BLOCKADE, pBestBlockadePlot);
 		return true;
@@ -15295,6 +15381,16 @@ bool CvUnitAI::AI_seaBombardRange(int iMaxRange)  // advc: some style changes
 	{
 		if (atPlot(pBestBombardPlot))
 		{
+/*** doto-rangedstrike RANGED BOMBARDMENT - Dale START ***/
+			//Using && AI_rangeStrikeTargetPlotK() != NULL
+			//as a way to determine if there are no danger plot near the target.
+			if (canRangeStrikeK() && AI_rangeStrikeTargetPlotK() != NULL)
+			{
+				getGroup()->pushMission(MISSION_RANGE_ATTACK, pBestBombardPlot->getX(), pBestBombardPlot->getY(),
+								NO_MOVEMENT_FLAGS, false, false,
+						MISSIONAI_BLOCKADE, pBestBombardPlot);
+			}
+/*** RANGED BOMBARDMENT - Dale END ***/
 			// if we are at the plot from which to bombard, and we have a unit that can bombard this turn, do it
 			if (bBombardUnitCanBombardNow && kGroup.canBombard(*pBestBombardPlot))
 			{
@@ -15323,6 +15419,18 @@ bool CvUnitAI::AI_seaBombardRange(int iMaxRange)  // advc: some style changes
 		}
 		else
 		{
+			/*** doto-rangedstrike RANGED BOMBARDMENT - Dale START ***/
+			//Using && AI_rangeStrikeTargetPlotK() != NULL
+			//as a way to determine if there are no danger plot near the target.
+			if (canRangeStrikeK() && AI_rangeStrikeTargetPlotK() != NULL)
+			{
+				getGroup()->pushMission(MISSION_RANGE_ATTACK, pBestPlot->getX(), pBestPlot->getY(), 
+								NO_MOVEMENT_FLAGS, false, false,
+						MISSIONAI_BLOCKADE, pBestBombardPlot);
+				return true;
+			}
+			/*** RANGED BOMBARDMENT - Dale END ***/
+
 			FAssert(!atPlot(pBestPlot));
 			getGroup()->pushMission(MISSION_MOVE_TO, pBestPlot->getX(), pBestPlot->getY(),
 					NO_MOVEMENT_FLAGS, false, false, MISSIONAI_BLOCKADE, pBestBombardPlot);
@@ -21383,15 +21491,22 @@ bool CvUnitAI::AI_airAttackDamagedSkip()
 	-- or we should wait for another unit to bombard... */
 bool CvUnitAI::AI_followBombard()
 {
-	if (canBombard(getPlot()))
+	
+	//DOTO-keldath - rangedstrike - lets see if we cant bombard, lets range it.
+	//redirect all calls for AI_followBombard and transform it to rangedastrike.	
+	if (rangedStrike() > 0)
+	{
+		if (AI_rangeAttackK())
+			return true;
+		else
+			return false;//dont continue to push a bombard mission - this is a rangedstrike unit
+	}
+	////DOTO-keldath - rangedstrike  added else
+	else if (canBombard(getPlot()))
 	{
 		getGroup()->pushMission(MISSION_BOMBARD);
 		return true;
 	}
-/*** DOTO-RANGEDSTRIKE RANGED BOMBARDMENT - Dale START ***/
-	if (AI_rangeAttackK())
-		return true;
-/*** DOTO-RANGEDSTRIKE RANGED BOMBARDMENT - Dale END ***/
 
 	// K-Mod note: I've disabled the following code because it seems like a timewaster with very little benefit.
 	// The code checks if we are standing next to a city, and then checks if we have any other readyToMove group
@@ -22089,7 +22204,10 @@ bool CvUnitAI::AI_stackAttackCity(int iPowerThreshold)
 				getGroup()->canMoveOrAttackInto(p, true, true))
 			{
 				// K-Mod
-				if (iPowerThreshold < 0)
+				/*** doto-rangedstrike RANGED BOMBARDMENT - Dale START ***/
+				//if the unit can range attack, skip this bombard check.
+				if (pCityPlot != NULL && iPowerThreshold < 0 && !getGroup()->canRanged(plot(), pCityPlot->getX(), pCityPlot->getY()))
+				/*** doto-rangedstrike RANGED BOMBARDMENT - Dale START ***/
 				{
 					// basic threshold calculation.
 					CvCity* pCity = p.getPlotCity();
@@ -22131,8 +22249,23 @@ bool CvUnitAI::AI_stackAttackCity(int iPowerThreshold)
 			if(!canMove())
 				return true;
 		} // </advc.163>
+/*** doto-rangedstrike RANGED BOMBARDMENT - Dale START ***/
+		//Using && AI_rangeStrikeTargetPlotK() != NULL
+		//as a way to determine if there are no danger plot near the target.
+		if (canRangeStrikeK() && AI_rangeStrikeTargetPlotK() != NULL)
+		{/*sagi err*/
+			getGroup()->pushMission(MISSION_RANGE_ATTACK, pCityPlot->getX(), pCityPlot->getY()
+				, NO_MOVEMENT_FLAGS, false, false, MISSIONAI_ASSAULT, pCityPlot);
+			return true;
+		}
+/*** RANGED BOMBARDMENT - Dale END ***/
+//doto -ranged strike - added to prevent the ai to attack a plot
+//if there is a stronger threat adjacent to the target plot
+		if (isNearPlotDanger(*pCityPlot) == NULL)
+			return false;
+
 		getGroup()->pushMission(MISSION_MOVE_TO, pCityPlot->getX(), pCityPlot->getY(),
-				pCityPlot->isVisibleEnemyDefender(this) ? MOVE_DIRECT_ATTACK : NO_MOVEMENT_FLAGS);
+		pCityPlot->isVisibleEnemyDefender(this) ? MOVE_DIRECT_ATTACK : NO_MOVEMENT_FLAGS);
 		return true;
 	}
 
@@ -22675,7 +22808,6 @@ these function is my own trial combo of defining the ai pick for a plot to attac
 its corrently inactive as i edited the system from realism invictus.
 keeping the code here for the future if i will decide to swap.
 AI_rangedStrikeValueK
-AI_rangeAttackK2
 NetTotalStreangth
 isPlotWorthRanged
 */
@@ -22747,55 +22879,6 @@ int CvUnitAI::AI_rangedStrikeValueK(CvPlot const& kPlot) const
 	}
 	return iStrikeValue;
 }
-//params here were defined in realism invictus
-bool CvUnitAI::AI_rangeAttackK2(MovementFlags eFlags, bool bAppend, bool bManual, MissionAITypes eMissionAI, CvPlot* pMissionAIPlot, CvUnit* pMissionAIUnit)
-{
-	PROFILE_FUNC();
-	FAssert(canMove());
-	//this is done also in the canRangedStrikeAt, but if checked here it willl avert 
-	//un needed loop below.
-	if (!canRangeStrikeK())
-		return false;
-
-	CvPlot* pBestPlot = NULL;
-	int iBestValue = 0;
-	//int iSearchRange = AI_searchRange(iRange);
-	/*  advc.rstr: MISSION_RANGE_ATTACK doesn't currently cause the unit to
-		move toward the target. AI_searchRange and iRange are no help then. */
-	for (SquareIter it(*this, rangedStrike(), false);
-		it.hasNext(); ++it)
-	{
-		CvPlot& kLoopPlot = *it;
-		if (kLoopPlot.isVisibleEnemyUnit(this) /*|| // K-Mod: disabled
-			(kLoopPlot.isCity() && AI_potentialEnemy(kLoopPlot.getTeam()))*/)
-		{
-			if (canRangeStrikeAtK(plot(), kLoopPlot.getX(), kLoopPlot.getY()))
-			{	//int iValue = AI_getGroup()->AI_attackOdds(&kLoopPlot, true);
-				/*	advc.rstr: A bit better? Still pretty dumb to always shoot
-					the softest target ... */
-				//cannot use >AI_attackOdds or weightedidds - need to fix that code
-				int iValue = AI_rangedStrikeValueK(kLoopPlot);
-				if (iValue > iBestValue)
-				{
-					iBestValue = iValue;
-					pBestPlot = &kLoopPlot;
-				}
-			}
-		}
-	}
-	
-	if (pBestPlot != NULL)
-	{
-		//keldath addition to check again if the plot is really worth it.
-		if (!isPlotWorthRanged(*pBestPlot))
-			return false;
-		// K-Mod note: no AI_considerDOW here.
-		getGroup()->pushMission(MISSION_RANGE_ATTACK, pBestPlot->getX(), pBestPlot->getY(), eFlags, bAppend, bManual, eMissionAI, pMissionAIPlot, pMissionAIUnit);
-		return true;
-	}
-	return false;
-}
-
 //int CvSelectionGroupAI::AI_sumStrength
 int CvUnitAI::NetTotalStreangth(const CvPlot* pAttackedPlot,bool bRanged) const
 {
@@ -22827,72 +22910,123 @@ int CvUnitAI::NetTotalStreangth(const CvPlot* pAttackedPlot,bool bRanged) const
 	}
 	return iSum;
 }
-int CvUnitAI::isPlotWorthRanged(CvPlot const& kPlot)const
-{	
-	int seigeCount = 0;
-	int dmgdUnits = 0; //how many damaged units are there
-	int maxDmgdUnits = 0;
-	int fullhpUnits = 0;
-	int totalLimitedDmgUnits = 0; // sum of the dmg taken by all units on the plot
-	int attackerCombatLimit = combatLimit();	
-	int seigeCountus = 0;
-	int unitCountus = 0;
-
-	CvCity* targetpCity = kPlot.getPlotCity();
+int CvUnitAI::isNearPlotDanger(CvPlot const& kPlot) const
+{
+//	int worthScore = 0;
+/*
+	CvCity* targetpCity = kPlot.getPlotCity();//add check for kLoopPlot.isEnemyCity(*this))
 	CvCity* attackerpCity = getPlot().getPlotCity();
-	//dont stop bombing a city 
-	if (targetpCity != NULL) 
+	*/
+	//return false;//block it for now
+
+	//do ranged attack if inside a city...
+	if (getPlot().getPlotCity() != NULL)
+		return false;
+
+	CvPlayerAI const& kOwner = GET_PLAYER(getOwner());
+	int iOurDefence = kOwner.AI_localDefenceStrength(plot(), getTeam(), getDomainType(), 1, false, false);
+	int iEnemyStrength = kOwner.AI_localAttackStrength(&kPlot, NO_TEAM, DOMAIN_LAND, 0, true, false, false, false);//range 0 i hope will catch ,that plot only
+	//if we are 1/4 weeker - we have a close plot that endanger us, so stop the range atack.
+	//add some parameters and maybe a random evaluation for the AI or some other factors
+	int powerPool = iOurDefence + iEnemyStrength;
+	if (powerPool > 0)
+	{
+		int strengthRate = ::round((iOurDefence / (double)powerPool * 100)) ;
+			/*ROUND_DIVIDE(iOurDefence , powerPool)*/
+		if (strengthRate >= GC.getDefineINT("RANGED_DANGER_RATIO") /*40*/ )
+		{
+			return true;
+		}
+	}
+	//check attack odds of the entire stack
+	int iAttackofNoneRangedOdds = AI_getGroup()->AI_getWeightedOdds(&kPlot, true, false);
+	//check stack vs stack chances + note that i added to CvSelectionGroupAI::AI_sumStrength check for ranged 
+	int iStackComparison = AI_getGroup()->AI_compareStacks(&kPlot, true);
+	//reduced to 70 was 80 and 100 was 150 - i though, ranged should have better lower risk to strike
+	//joint to one check, attcker stack must be stronger in addition to have more none ranged strength.
+	//i had it separated before/
+	if (iAttackofNoneRangedOdds < GC.getDefineINT("SKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS")  /*70*/
+		&&
+		iStackComparison < GC.getDefineINT("SKIP_RANGE_ATTACK_MIN_STACK_RATIO") /*100*/)
 	{
 		return true;
+		//if our stack and none ranged both lower, this plot is a danger  - which means - stack should not use range attack -> better to run away...
 	}
-	//from a city , bomb all threats
-	if (attackerpCity != NULL) 
-	{
+	/*
+		added another touch to calculate plot worthwhile.
+		check surronding plots for danger, 
+		the tile range is the attacker range +1 - maybe in the future
+		the code will allow usage of range strike above 1....
+		anyway - generate a random negetive deducer of the already calculated worth score...
+		maybe if theres danger - we should avert the attck all together?
+	*/
+	//worthScore += kOwner.AI_isAnyPlotDanger(getPlot(), rangedStrike()+1) ? (-1 * GC.getGame().getSorenRandNum(worthScore, "Plot Danger deduction")) : 0;
+
+	return false/*worthScore*/;
+}
+
+bool CvUnitAI::isPlotWorthRanged(CvPlot const& kPlot) const
+{
+	
+	/*this function will determine whether this plot contains units 
+	//that are worthy to strike.
+	//factoring, unit composition, damage taken by the enemy alreay,
+	the amount of ranged units ratio enemy to attacker.*/
+	int rangedCntdef = 0;
+	int dmgdUnitsDef = 0;
+	int maxDmgdUnitsDef = 0;
+	int fullhpUnitsDef = 0;
+	int totalLimitedDmgUnitsDef = 0;
+	int rangedCntAtr = 0;
+	int unitsCntAtr = 0;
+	int attackerCombatLimit = combatLimit();
+	int unitCntDef = kPlot.getNumVisibleEnemyDefenders(this);
+
+	//loop over all units on the pottential plot to rangestrike
+	// i think i can merge the NetTotalStreangth func to these loops
+
+	//if the of the attacker is a city - range attack is welcomed either way.
+	if (getPlot().getPlotCity() != NULL)
 		return true;
-	}
 ////////////////////////////
 //defender
 ///////////////////////////
-	//CvUnit* nextUnit = NULL;
-	int unitCount = kPlot.getNumUnits();
-	//loop over all units on the pottential plot to rangestrike
-	// i think i can merge the NetTotalStreangth func to these loops
-	for (CLLNode<IDInfo> const* pNode = kPlot.headUnitNode(); pNode != NULL;
-		pNode = kPlot.nextUnitNode(pNode))
+	for (CLLNode<IDInfo> const* pNode = kPlot.headUnitNode(); pNode != NULL;pNode = kPlot.nextUnitNode(pNode))
 	{
 		CvUnit const& nextUnit = *::getUnit(pNode->m_data);
 		if (&nextUnit != NULL)
 		{
 			if (nextUnit.canRangeStrikeK())
-			{
-				seigeCount++;//count how many siege units on target plot.
+			{	
+				rangedCntdef++;
+				//ignoring damaged ranged units.
 			}
 			else 
 			{
-				if (nextUnit.currHitPoints() == nextUnit.maxHitPoints())
+				if (nextUnit.getDamage() == 0)
 				{
-					fullhpUnits++;
+					fullhpUnitsDef++;
 				}
-				//reduncdent....
-				else if (nextUnit.getDamage() > 0)
+				else
 				{
-					dmgdUnits++;
+					dmgdUnitsDef++;
 				}
 				//how many units that exeeds the combat limit
 				if (attackerCombatLimit != 0 && attackerCombatLimit != 100 
 					&& nextUnit.getDamage() < attackerCombatLimit)
 				{
-					maxDmgdUnits++;
-					totalLimitedDmgUnits+= nextUnit.getDamage();
+					maxDmgdUnitsDef++;
+					totalLimitedDmgUnitsDef += nextUnit.getDamage();
 				}	
 			}
 		}
 	}
+
 ////////////////////////////
 //attacker
 ///////////////////////////
 //	CvUnit* nextUnitus = NULL;
-	unitCountus = getPlot().getNumUnits();
+	unitsCntAtr = getPlot().getNumVisibleEnemyDefenders(this);
 	//loop over all units on the pottential plot to rangestrike
 	// i think i can merge the NetTotalStreangth func to these loops
 	for (CLLNode<IDInfo> const* pNode = getPlot().headUnitNode(); pNode != NULL;
@@ -22903,72 +23037,114 @@ int CvUnitAI::isPlotWorthRanged(CvPlot const& kPlot)const
 		{
 			if (nextUnitus.canRangeStrikeK())
 			{
-				seigeCountus++;//count how many siege units on target plot.
+				rangedCntAtr++;//count how many siege units on target plot.
 			}
 		}
 	}
-		
-	int netUnitsus = unitCountus - seigeCountus;
-	int netUnits = unitCount - seigeCount;
+	
+
+////////////////////////////
+//evaluation start
+///////////////////////////
+	int netUnitsAtr = unitsCntAtr - rangedCntAtr; //how many none ranged units the attacker have
+	int netUnitsDef = unitCntDef - rangedCntdef;//how many none ranged units the defender have
+	int netFullHpUnitsDef = netUnitsDef - dmgdUnitsDef; //how many unit with full hp that are not ranged the defender have
+	//average damage taken already in the enemy target plot.using rounddivide to avoind floats.
+	//also do some zero divide checks - other wise - crash///
+	int averageDmgofStack = ROUND_DIVIDE(totalLimitedDmgUnitsDef, (netUnitsDef == 0 ? 
+												(totalLimitedDmgUnitsDef == 0 ? 1 : totalLimitedDmgUnitsDef)
+											: netUnitsDef));
 	CvPlayerAI const& kOwner = GET_PLAYER(getOwner());
 	//first handle none range units.
-	if (netUnits > 0) 
-	{	//maybe i need to adress the amount of units also here, i dont want a single ranegd to go vs a stack
-		// but i think its handled also in the rangedtargetvalue
+	if (netUnitsDef > 0)
+	{	
 		if (attackerCombatLimit != 0 && attackerCombatLimit != 100)
 		{		
-			//if the avg dmg for units is larger than the unit combat limit +10. allow the ranged.
-			if (netUnits-dmgdUnits != 0 && 
-				(totalLimitedDmgUnits / netUnits)  < attackerCombatLimit - 15)//maybe make a var
+			/*if the units on the target plot, already have an average damage close(+10)
+			//to the attacker combatlimit,but there are still units with full hp
+			its worth the ranged strike some more - hurt the remaining full hp ones.*/
+			if (netFullHpUnitsDef > 0 &&
+				(averageDmgofStack < attackerCombatLimit + GC.getDefineINT("RANGED_NONE_DMGED_CMLIMIT_THRESH")/*10*/))//maybe make a var
 			{
 				return true;
 			}
-			//if all the units are damaged, thats ok also, stop the attack.
-			else if (netUnits-dmgdUnits == 0 &&
-				(totalLimitedDmgUnits / netUnits)  < attackerCombatLimit-20)
+			//if all the units are damaged, but the combat limit is not enough (+20)
+			//inverstigate deeper if its worth a strike.
+			else if (netFullHpUnitsDef == 0 &&
+					(averageDmgofStack  < attackerCombatLimit+ GC.getDefineINT("RANGED_ALL_DMGED_CMLIMIT_THRESH")/*20*/))//maybe make a var
 			{
-				//who have the better strengh? mayve use stack compare?
+				//i came up with this
+				//calculate total average strength sum of attack/defender ratio WITHOUT ranged units
+				//if our stack is stonger, it means the plot is ok to attack.
+				//maybe i should add that to the int evalPlottoStrike or delete this all together....
 				int ourNoneRangedSTR = NetTotalStreangth(&getPlot(),true);
 				int enemyNoneRangeSTR = NetTotalStreangth(&kPlot,true);
 				bool checkAllSTR = true;
-				bool danger = kOwner.AI_isAnyPlotDanger(getPlot(), 3/*keldath check range 2 for danger*/);
-				if(netUnitsus != NULL && netUnits != NULL)
+				if(netUnitsAtr != NULL && netUnitsDef != NULL)
 				{
-					checkAllSTR = (ourNoneRangedSTR/netUnitsus) >= (enemyNoneRangeSTR/netUnits);
-				}
-				 
-				if (!danger || checkAllSTR)
-				{
-					return true;
+					if ((ourNoneRangedSTR / (netUnitsAtr == 0 ? 
+												(ourNoneRangedSTR == 0 ? 1 : ourNoneRangedSTR)
+											: netUnitsAtr))
+						>=
+						(enemyNoneRangeSTR / (netUnitsDef == 0 ? 
+										(enemyNoneRangeSTR == 0 ? 1 : enemyNoneRangeSTR)
+											: netUnitsDef))
+						)
+						return true;
 				}
 			}
 			else 
 			{
+				/*  if all units are damaged and combat estimated limit is reached
+					dont waste a strike on this plot....*/
 				return false;
 			}
 		}	
 		else 
 		{
-			//add area check? maybe fix that crappi wieghter odds....
+			//add area check? maybe fix that crappi weighted odds....//old comment from me...
+			/*
+				if the attacker have no combat limit,  calculate the plot worthiness 
+				while counteing all none ranged units and compare the  strength of the stacks.
+
+				same method is used above:
+				calculate total average strength sum of attack/defender ratio WITHOUT ranged units
+				if our stack is stonger, it means the plot is ok to attack.
+			    maybe i should add that to the int evalPlottoStrike or delete this all together....
+
+			*/
 			int ourNoneRangedSTR = NetTotalStreangth(&getPlot(),false);
 			int enemyNoneRangeSTR = NetTotalStreangth(&kPlot,false);
 
-			if (netUnitsus != 0 && netUnits != 0)
+			if (netUnitsAtr != 0 && netUnitsDef != 0)
 			{
-				if ((ourNoneRangedSTR/netUnitsus) >= (enemyNoneRangeSTR/netUnits))
+				if ((ourNoneRangedSTR / (netUnitsAtr == 0 ?
+					(ourNoneRangedSTR == 0 ? 1 : ourNoneRangedSTR)
+					: netUnitsAtr))
+					>=
+					(enemyNoneRangeSTR / (netUnitsDef == 0 ?
+					(enemyNoneRangeSTR == 0 ? 1 : enemyNoneRangeSTR)
+						: netUnitsDef))
+					)
 				{
 					return true;
 				}
 			}
 		}
 	}
-	//in case other tests failed, we can also attack if the unit numbers of our side is higher.
-	if ((seigeCountus-seigeCount) >=2 &&
-		(unitCountus - unitCount) >= 4)//consider making this as a va
+	//if there are no none ranged units in the defender stack
+	//just check how many ranged we have for now, if we have more ranged, continue blasting
+	//i should change this to factor in combat limit, total stength or comparestack,
+	//some way to tell if ranged untis should attack ranged units.
+	if ((rangedCntAtr - rangedCntdef >= 2) && rangedCntdef > 0  )//consider making this as a va
 	{
 		return true;
 	}
-	if (attackerCombatLimit == 0 || attackerCombatLimit == 100)
+
+	//if the plot target is a city and no units  - dont deem this 
+	//plot un worthy - let the ai bombared cities with no units but with buuilding defense.
+	//this will probably wont happen in reality.
+	if (rangedCntdef == 0 && netUnitsDef == 0 && kPlot.getPlotCity() != NULL)
 		return true;
 
 	return false;
@@ -22976,90 +23152,63 @@ int CvUnitAI::isPlotWorthRanged(CvPlot const& kPlot)const
 // DOTO-MODrangedattack-keldath - START - Ranged Strike AI realism invictus
 //realism invictus splitted this AI_rangeStrikeTargetPlot
 //attacker is to check if we can bombard a close city
-CvPlot* CvUnitAI::AI_rangeStrikeTargetPlotK(int iSearchRange, CvUnitAI* pAttacker) const
+CvPlot* CvUnitAI::AI_rangeStrikeTargetPlotK(CvUnit* pAttacker) 
 {
 	CvPlot* pBestPlot = NULL;
-//	CvPlot* pWorstPlot = NULL;
 	int iBestValue = 0;
 	bool isDangerPlot = false;
-	for (SquareIter it(*this,iSearchRange , false);
-		it.hasNext(); ++it)
+	CvUnit* pPlotStart = pAttacker == NULL ? this : pAttacker;
+	//i changed the square start parameter - so ill be able to pass a pint of start 
+	//only place im using it is in selectiongroups under bool CvSelectionGroup::groupAttack(
+	//original value was *this
+	//for (SquareIter it(*this, rangedStrike(), false);it.hasNext(); ++it)
+	for (SquareIter it(*pPlotStart, rangedStrike() , false);it.hasNext(); ++it)
 	{
 		CvPlot& kLoopPlot = *it;
 		if (kLoopPlot.isVisibleEnemyUnit(this) /*|| // K-Mod: disabled
 			(kLoopPlot.isCity() && AI_potentialEnemy(kLoopPlot.getTeam()))*/)
 		{
-			//keldath advc adjustments endif (canRangeStrikeAtK(plot(), kLoopPlot.getX(), kLoopPlot.getY()))
-			{	//int iValue = AI_getGroup()->AI_attackOdds(&kLoopPlot, true);
-				/*	advc.rstr: A bit better? Still pretty dumb to always shoot
-					the softest target ... */
-				//advc adjustment - i changed to wieghted odds as f1rpo wrote above - had to change the fn also.keldath
+			{	//advc adjustment - i changed to wieghted odds as f1rpo wrote above - had to change the fn also.keldath
 				int iValue = 0;
-				
-				//i case there is a city close, just use AI_bombardCity and return null so no ranged will be done
-				//ranged unit cannot strike if theres city defence . consider later change.
-				if (kLoopPlot.isEnemyCity(*this))
+				//give ranged value on the plot.
+				iValue += AI_rangedStrikeValueK(kLoopPlot); //uses the method of air stike. 
+
+				//basic score calc take range units to the odds
+				//just add value from another type of calc - by taking account of ranged units only
+				//if attacker rate of ranged units vs defender ranged units - maybe its also a good sign to attack
+				iValue += AI_getGroup()->AI_getWeightedOdds(&kLoopPlot, true, true);/*used to be->AI_getGroup()->AI_attackOdds(&kLoopPlot, true);*/
+
+				//check if this plot is worth the attack - considering units, strength and combatLimit
+				if (!isPlotWorthRanged(kLoopPlot))
 				{
-					if (pAttacker->AI_bombardCity(false))
-					{
-						return NULL;//null so the ranged strike wont be allowed.
-					}
-					// Always prefer to target cities
-					//if no need to bombard it first, value the plot for a range strike
-					//pehaps compare with other plots surrounding?
-					iValue += 100;
+					continue;
 				}
-				
-				int originaliOdds =  AI_getGroup()->AI_getWeightedOdds(&kLoopPlot, true,true);// take range units to the odds also./*AI_getGroup()->AI_attackOdds(&kLoopPlot, true);*/
-				//i added these 2 ints, i decided that a range unit should also take into account the entire stack odds its inside and also stack vs stack. keldath
-				//check attack odds of the entire stack
-				int iAttackofNoneRangedOdds = AI_getGroup()->AI_getWeightedOdds(&kLoopPlot, true,false);// getGroup()->AI_attackOdds(&pTargetCityPlot, true);
-				//check stack vs stack chances//not that i added to CvSelectionGroupAI::AI_sumStrength check for ranged 
-				int iStackComparison = AI_getGroup()->AI_compareStacks(&kLoopPlot, true); //getGroup()->AI_compareStacks(&pTargetCityPlot, true);
-				iValue = originaliOdds; //+ iAttackofNoneRangedOdds + iStackComparison;
-				//reduced to 70 was 80 and 100 was 150 - i though, ranged should have better lower risk to strike
-				//note that i revesed the < <=
-				if (iAttackofNoneRangedOdds > 70/*GC.getSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS()*/)
+				//if the plot in the area range that is a possible threat
+				//then dont attack with ranegd, abort.
+				if (isNearPlotDanger(kLoopPlot))
 				{
-					//if (gUnitLogLevel > 2) logBBAI("Stack skipping range attack of a Plot , starting odds %d, threshold %d", iAttackofNoneRangedOdds);//i edtted the log a bit - keldath
-					iValue += iAttackofNoneRangedOdds; //if our chances for our best defender is ok..70 0 add the value to the plot
+					//if we got an area that is dangerous nearby - abort the attack
+					continue;
 				}
-				if (iStackComparison > 100/*GC.getSKIP_RANGE_ATTACK_MIN_STACK_RATIO()*/)
-				{
-					//if (gUnitLogLevel > 2) logBBAI("Stack skipping range attack of a Plot , starting odds %d, threshold %d", iStackComparison);//i edtted the log a bit - keldath
-					iValue = 0; //if enemy stack is equal to ours and above, we should ignore the plot attack.
-				}
-				
+				//code that evaluates and check a minimum of 1 plot that can pose a threat to the attacker.
 				if (iValue > iBestValue)
 				{
 					iBestValue = iValue;
 					pBestPlot = &kLoopPlot;
 				}
-				else
-				{	/*
-						const CvPlot* pDefencePlot, TeamTypes eDefenceTeam,  // advc: some style changes in the body
-							DomainTypes eDomainType, int iRange, bool bMoveToTarget,
-					bool bCheckMoves, bool bNoCache,
-					bool bPredictPromotions
 
-					onst CvPlot* pTargetPlot, TeamTypes eAttackTeam,  // advc: some style changes in the body
-					DomainTypes eDomainType, int iRange, bool bUseTarget, bool bCheckMoves, bool bCheckCanAttack,
-					int* piAttackerCoun
-					*/
-					CvPlayerAI const& kOwner = GET_PLAYER(getOwner());
-					int iOurDefence = kOwner.AI_localDefenceStrength(plot(), getTeam(), getDomainType(),1,false,false);
-					int iEnemyStrength = kOwner.AI_localAttackStrength(&kLoopPlot, NO_TEAM, DOMAIN_LAND, 0,true,false,false,false);//range 0 i hope will catch ,that plot only
-					//if we are 1/4 weeker - we have a close plot that endanger us, so stop the range atack.
-					if ((4 * iOurDefence < 3 * iEnemyStrength))
-					{
-						//AI_getGroup()->AI_sumStrength()
-						isDangerPlot = true; //IF WE GOT A VERY dangerous plot that has 10% more units than us - dont attack the best plot.(run...)
-					}
-				}
+				//if the plot in the area range that is a possible threat
+				//then dont attack with ranegd, abort.
+			//	if (isNearPlotDanger(kLoopPlot))
+			//	{
+					//if we got an area that is dangerous nearby - abort the attack
+			//		return NULL;
+			//	}
+				//code that evaluates and check a minimum of 1 plot that can pose a threat to the attacker.
 			}
 		}
 	}
-	return isDangerPlot ? NULL : pBestPlot;
+	return pBestPlot;
 }
 //realism invictus splitted this AI_rangeStrikeTargetPlot
 bool CvUnitAI::AI_rangeAttackK(MovementFlags eFlags, bool bAppend, bool bManual, MissionAITypes eMissionAI, CvPlot* pMissionAIPlot, CvUnit* pMissionAIUnit)
@@ -23068,70 +23217,25 @@ bool CvUnitAI::AI_rangeAttackK(MovementFlags eFlags, bool bAppend, bool bManual,
 	if (!canRangeStrikeK())
 		return false;
 
-	CvPlot* pBestPlot = AI_rangeStrikeTargetPlotK(rangedStrike(), this);//this means the attacker
+	CvPlot* pBestPlot = AI_rangeStrikeTargetPlotK();
 	if (pBestPlot != NULL)
 	{
 		FAssert(!atPlot(pBestPlot));
 		getGroup()->pushMission(MISSION_RANGE_ATTACK, pBestPlot->getX(), pBestPlot->getY(), eFlags, bAppend, bManual, eMissionAI, pMissionAIPlot, pMissionAIUnit);
 		return true;
 	}
-
+	//check capture units - workers.
 	return false;
 }
-bool CvUnitAI::AI_rangeAttackCityK()
-{
-	FAssert(canMove());
-
-	//doto keldath - did some changed with the plot, advc adjustments
-	//CvPlot* pTargetCityPlot = NULL;
-	CvCity* pTargetCityPlot = NULL;
-
-	// check if we need to declare war before bombarding!
-	for (int iI = 0; iI < NUM_DIRECTION_TYPES; iI++)
-	{
-		CvPlot* pLoopPlot = plotDirection(plot()->getX(), plot()->getY(), ((DirectionTypes)iI));
-
-		if (pLoopPlot != NULL && pLoopPlot->isCity())
-		{
-			pTargetCityPlot = pLoopPlot->getPlotCity();
-			AI_considerDOW(*pTargetCityPlot->plot());//advc adjustment keldath
-			break; // assume there can only be one city adjacent to us.
-		}
-	}
-
-	if (pTargetCityPlot == NULL)
-		return false;
-
-	if (!canRangeStrikeAtK(plot(), pTargetCityPlot->getX(), pTargetCityPlot->getY()))
-		return false;
-//keldath switched to AI_getGroup()->AI_getWeightedOdds?
-//doto advc adjustments
-//	int iAttackOdds = AI_getGroup()->AI_attackOdds(pTargetCityPlot->plot(), true);// getGroup()->AI_attackOdds(&pTargetCityPlot, true);
-	int iAttackOdds = AI_getGroup()->AI_getWeightedOdds(pTargetCityPlot->plot(), true);// getGroup()->AI_attackOdds(&pTargetCityPlot, true);
-	int iStackComparison = AI_getGroup()->AI_compareStacks(pTargetCityPlot->plot(), true); //getGroup()->AI_compareStacks(&pTargetCityPlot, true);
-
-	if (iAttackOdds > 80/*GC.getSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS()*/ && iStackComparison >= 150/*GC.getSKIP_RANGE_ATTACK_MIN_STACK_RATIO()*/)
-	{
-		if( gUnitLogLevel > 2 ) logBBAI("      Stack skipping range attack of %S with compare %d, starting odds %d, threshold %d", pTargetCityPlot/*->getPlotCity()*/->getName().GetCString(), iStackComparison, iAttackOdds);
-		return false;
-	}
-
-	getGroup()->pushMission(MISSION_RANGE_ATTACK, pTargetCityPlot->getX(), pTargetCityPlot->getY(), NO_MOVEMENT_FLAGS, false, false, MISSIONAI_ASSAULT, pTargetCityPlot->plot());
-
-	return true;
-}
-
+//helper functions to reduce repettetive code
 bool CvUnitAI::AI_rangeAttackOrSkipK(MovementFlags eFlags, bool bAppend, bool bManual, MissionAITypes eMissionAI, CvPlot* pMissionAIPlot, CvUnit* pMissionAIUnit)
 {
 	if (AI_rangeAttackK(eFlags, bAppend, bManual, eMissionAI, pMissionAIPlot, pMissionAIUnit))
 	{
 		return true;
 	}
-	else
-	{
-		getGroup()->pushMission(MISSION_SKIP, -1, -1, eFlags, bAppend, bManual, eMissionAI, pMissionAIPlot, pMissionAIUnit);
-		return true;
-	}
+	getGroup()->pushMission(MISSION_SKIP, -1, -1, eFlags, bAppend, bManual, eMissionAI, pMissionAIPlot, pMissionAIUnit);
+	return true;
 }
 
 bool CvUnitAI::AI_rangeAttackOrFortifyK(MovementFlags eFlags, bool bAppend, bool bManual, MissionAITypes eMissionAI, CvPlot* pMissionAIPlot, CvUnit* pMissionAIUnit)
