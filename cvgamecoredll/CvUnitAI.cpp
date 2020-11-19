@@ -397,7 +397,7 @@ bool CvUnitAI::AI_follow(bool bFirst)
 	//redirect all calls for AI_follow and transform it to rangedastrike.	
 	if (rangedStrike() > 0) 
 	{
-		if (AI_rangeAttackK())
+		if (AI_rangeAttackK(NO_MOVEMENT_FLAGS, false, false, MISSIONAI_ASSAULT))
 			return true;
 		//if its a ranged unit and it cannot carry an attack, 
 		//continue with the rest of this function.
@@ -2512,7 +2512,7 @@ void CvUnitAI::AI_attackMove()
 				return;*/ // BtS
 
 			/*** doto- rangedstrike RANGED BOMBARDMENT - Dale START ***/
-			if (AI_rangeAttackK())
+			if (AI_rangeAttackK(NO_MOVEMENT_FLAGS, false, false, MISSIONAI_ASSAULT))
 			{
 				return;
 			}
@@ -2578,7 +2578,7 @@ void CvUnitAI::AI_attackMove()
 				{
 					/*** doto- rangedstrike RANGED BOMBARDMENT - Dale START ***/
 					//this part was above this if check. moved here seems right ?
-					if (AI_rangeAttackK())
+					if (AI_rangeAttackK(NO_MOVEMENT_FLAGS, false, false, MISSIONAI_ASSAULT))
 					{
 						return;
 					}
@@ -4895,7 +4895,7 @@ void CvUnitAI::AI_cityDefenseMove()
 	}
 
 /*** doto- rangedstrike RANGED BOMBARDMENT - Dale START ***/
-	if (AI_rangeAttackK())
+	if (AI_rangeAttackK(NO_MOVEMENT_FLAGS, false, false, MISSIONAI_ASSAULT))
 	{
 		return;
 	}
@@ -13149,8 +13149,10 @@ bool CvUnitAI::AI_patrol() // advc: refactored
 //stange i found that ai patrol made the ai attack a city,
 //while there was a large stronger stack near the attacking stack
 //maybe add a threshold?
-	if (isNearPlotDanger(*pBestPlot) == NULL)
-		return false;
+	if (!isNearPlotDanger(*pBestPlot) && isRangeStrikeCapableK())
+		getGroup()->pushMission(MISSION_RANGE_ATTACK, pBestPlot->getX(), pBestPlot->getY(), 
+			NO_MOVEMENT_FLAGS, false, false, MISSIONAI_COUNTER_ATTACK, pBestPlot);
+		//return false;//lets see what the other none ranhe units do...
 
 	FAssert(!atPlot(pBestPlot));
 	getGroup()->pushMission(MISSION_MOVE_TO, pBestPlot->getX(), pBestPlot->getY(),
@@ -19054,6 +19056,13 @@ bool CvUnitAI::AI_retreatToCity(bool bPrimary, bool bPrioritiseAirlift, int iMax
 	{
 		if (pCity->getTeam() == getTeam())
 		{
+//doto rangedstrike - ai would not attack with ranged when theres no chance of winning 
+//normal attack  - the code before checks if to evac the city and retreat, 
+//if all fails, all moves would be skipped - so i added stike code - why should a range sit and do nothing...
+			if (AI_rangeAttackK(NO_MOVEMENT_FLAGS, false, false, MISSIONAI_ASSAULT))
+			{
+				return true;
+			}
 			getGroup()->pushMission(MISSION_SKIP, -1, -1, NO_MOVEMENT_FLAGS,
 					false, false, MISSIONAI_RETREAT);
 			return true;
@@ -21496,7 +21505,7 @@ bool CvUnitAI::AI_followBombard()
 	//redirect all calls for AI_followBombard and transform it to rangedastrike.	
 	if (rangedStrike() > 0)
 	{
-		if (AI_rangeAttackK())
+		if (AI_rangeAttackK(NO_MOVEMENT_FLAGS, false, false, MISSIONAI_ASSAULT))
 			return true;
 		else
 			return false;//dont continue to push a bombard mission - this is a rangedstrike unit
@@ -22261,8 +22270,10 @@ bool CvUnitAI::AI_stackAttackCity(int iPowerThreshold)
 /*** RANGED BOMBARDMENT - Dale END ***/
 //doto -ranged strike - added to prevent the ai to attack a plot
 //if there is a stronger threat adjacent to the target plot
-		if (isNearPlotDanger(*pCityPlot) == NULL)
-			return false;
+		if (!isNearPlotDanger(*pCityPlot) && isRangeStrikeCapableK())
+			getGroup()->pushMission(MISSION_RANGE_ATTACK, pCityPlot->getX(), pCityPlot->getY(),
+				NO_MOVEMENT_FLAGS, false, false, MISSIONAI_ASSAULT, pCityPlot);
+			//return false;//lets see what the other none ranhe units do...
 
 		getGroup()->pushMission(MISSION_MOVE_TO, pCityPlot->getX(), pCityPlot->getY(),
 		pCityPlot->isVisibleEnemyDefender(this) ? MOVE_DIRECT_ATTACK : NO_MOVEMENT_FLAGS);
@@ -22912,20 +22923,18 @@ int CvUnitAI::NetTotalStreangth(const CvPlot* pAttackedPlot,bool bRanged) const
 }
 int CvUnitAI::isNearPlotDanger(CvPlot const& kPlot) const
 {
-//	int worthScore = 0;
-/*
-	CvCity* targetpCity = kPlot.getPlotCity();//add check for kLoopPlot.isEnemyCity(*this))
-	CvCity* attackerpCity = getPlot().getPlotCity();
-	*/
+ 	//this function is used in other places.
+	if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
+		return false;
 	//return false;//block it for now
-
-	//do ranged attack if inside a city...
+	
+	//do ranged attack if inside a city..so no danger here for ranged.
 	if (getPlot().getPlotCity() != NULL)
 		return false;
 
 	CvPlayerAI const& kOwner = GET_PLAYER(getOwner());
 	int iOurDefence = kOwner.AI_localDefenceStrength(plot(), getTeam(), getDomainType(), 1, false, false);
-	int iEnemyStrength = kOwner.AI_localAttackStrength(&kPlot, NO_TEAM, DOMAIN_LAND, 0, true, false, false, false);//range 0 i hope will catch ,that plot only
+	int iEnemyStrength = kOwner.AI_localAttackStrength(&kPlot, NO_TEAM, DOMAIN_LAND, 1, true, false, false, false);//range 1 i hope will catch ,that plot only
 	//if we are 1/4 weeker - we have a close plot that endanger us, so stop the range atack.
 	//add some parameters and maybe a random evaluation for the AI or some other factors
 	int powerPool = iOurDefence + iEnemyStrength;
@@ -22935,7 +22944,7 @@ int CvUnitAI::isNearPlotDanger(CvPlot const& kPlot) const
 			/*ROUND_DIVIDE(iOurDefence , powerPool)*/
 		if (strengthRate >= GC.getDefineINT("RANGED_DANGER_RATIO") /*40*/ )
 		{
-			return true;
+			return false;
 		}
 	}
 	//check attack odds of the entire stack
@@ -22945,11 +22954,11 @@ int CvUnitAI::isNearPlotDanger(CvPlot const& kPlot) const
 	//reduced to 70 was 80 and 100 was 150 - i though, ranged should have better lower risk to strike
 	//joint to one check, attcker stack must be stronger in addition to have more none ranged strength.
 	//i had it separated before/
-	if (iAttackofNoneRangedOdds < GC.getDefineINT("SKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS")  /*70*/
+	if (iAttackofNoneRangedOdds >= GC.getDefineINT("SKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS")  /*70*/
 		&&
-		iStackComparison < GC.getDefineINT("SKIP_RANGE_ATTACK_MIN_STACK_RATIO") /*100*/)
+		iStackComparison >= GC.getDefineINT("SKIP_RANGE_ATTACK_MIN_STACK_RATIO") /*100*/)
 	{
-		return true;
+		return false;
 		//if our stack and none ranged both lower, this plot is a danger  - which means - stack should not use range attack -> better to run away...
 	}
 	/*
@@ -22962,12 +22971,15 @@ int CvUnitAI::isNearPlotDanger(CvPlot const& kPlot) const
 	*/
 	//worthScore += kOwner.AI_isAnyPlotDanger(getPlot(), rangedStrike()+1) ? (-1 * GC.getGame().getSorenRandNum(worthScore, "Plot Danger deduction")) : 0;
 
-	return false/*worthScore*/;
+	return true;
 }
 
 bool CvUnitAI::isPlotWorthRanged(CvPlot const& kPlot) const
 {
 	
+	//this function is used in other places.
+	if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
+		return NULL;
 	/*this function will determine whether this plot contains units 
 	//that are worthy to strike.
 	//factoring, unit composition, damage taken by the enemy alreay,
@@ -23196,15 +23208,6 @@ CvPlot* CvUnitAI::AI_rangeStrikeTargetPlotK(CvUnit* pAttacker)
 					iBestValue = iValue;
 					pBestPlot = &kLoopPlot;
 				}
-
-				//if the plot in the area range that is a possible threat
-				//then dont attack with ranegd, abort.
-			//	if (isNearPlotDanger(kLoopPlot))
-			//	{
-					//if we got an area that is dangerous nearby - abort the attack
-			//		return NULL;
-			//	}
-				//code that evaluates and check a minimum of 1 plot that can pose a threat to the attacker.
 			}
 		}
 	}

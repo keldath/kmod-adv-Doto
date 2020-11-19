@@ -11868,7 +11868,7 @@ int CvUnit::rangeCombatDamageK(const CvUnit* pDefender) const
 		//which comes first?? its opposite in air? - qa8
 		//check if thers defense - i should check for ignore b defence ffor attacker.
 		int curDef = /*pCity->getBuildingDefense()*/pCity->getDefenseDamage();
-		if (curDef < 100)
+		if (curDef < 100 && curDef > 0)
 		{
 			iDamage *= std::max(0, (100 - curDef + 100));
 			iDamage /= 100;
@@ -11878,7 +11878,7 @@ int CvUnit::rangeCombatDamageK(const CvUnit* pDefender) const
 			iDamage *= 100;
 			*/
 		}
-		else 
+		else if (curDef == 100)
 		{
 			iDamage = 0; ///IF DEFENCE IS ABOVE 99 - NO DAMAGE SHOULD BE INFLICTED
 		}	
@@ -12188,6 +12188,7 @@ bool CvUnit::rangeStrikeK(int iX, int iY)
 		szBuffer = gDLL->getText("TXT_KEY_MISC_ENEMY_MAXIMUM_DAMAGE", getNameKey(), pDefender->getNameKey());
 		gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
 			"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY());
+		return false;
 	}
 	else
 	{

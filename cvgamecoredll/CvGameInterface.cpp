@@ -404,6 +404,23 @@ void CvGame::updateColoredPlots()
 			}
 		}
 	}
+//DOTO KELDATH BLOCKADE PLOTS HIGHLIGHT
+//MOD@VET_Andera412_Blocade_Unit-begin1/1
+	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
+	{
+		for (PlotCircleIter it(*pHeadSelectedUnit, 2); it.hasNext(); ++it)
+		{
+			CvPlot const& kTargetPlot = *it;
+			if (pHeadSelectedUnit->cannotMoveFromPlotToPlot(pHeadSelectedUnit->plot(), &kTargetPlot, false))
+			{
+				NiColorA color(GC.getInfo(GC.getColorType("RED")).getColor());
+				//rangedattack-keldath - changed style and color	
+				color.a = 0.5f;
+				kEngine.fillAreaBorderPlot(kTargetPlot.getX(), kTargetPlot.getY(),
+					color, AREA_BORDER_LAYER_BLOCKADING);
+			}
+		}
+	}
 }
 
 void CvGame::updateBlockadedPlots()
