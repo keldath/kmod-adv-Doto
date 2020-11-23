@@ -9262,7 +9262,11 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 {
 	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
 	{
-		if (pUnit->isAnimal() || pUnit->alwaysInvisible() || pUnit->isUnblocade())
+		if (pUnit->isAnimal() || pUnit->alwaysInvisible() || pUnit->isUnblocade()
+//DOTO = ADDED BY KELDATH setllers and workers should be affected.
+			|| pUnit->getUnitClassType() != GC.getInfoTypeForString("UNITCLASS_SETTLER")
+			|| pUnit->getUnitClassType() != GC.getInfoTypeForString("UNITCLASS_WORKER")
+			)
 			{return false;}
 
 		if (!isFriendlyCity(*pUnit, true))
