@@ -1588,7 +1588,7 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 	</Define>
 	<Define>
 		<DefineName>CAMERA_CITY_ZOOM_IN_DISTANCE</DefineName>
-		<fDefineFloatVal>3500</fDefineFloatVal>
+		<fDefineFloatVal>4800</fDefineFloatVal>
 	</Define>
 	<Define>
 		<DefineName>CAMERA_BATTLE_ZOOM_IN_DISTANCE</DefineName>

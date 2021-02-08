@@ -395,7 +395,6 @@
 		<!-- ADDE VALUE TO RAISE NATURAL COMBAT LIMIT COMPARED TO AVERAGE DAMAGE OF ALL DAMAGED DEFENDER UNITS -->
 		<DefineName>RANGED_ALL_DMGED_CMLIMIT_THRESH</DefineName>
 		<iDefineIntVal>20</iDefineIntVal>
-	</Define>
 <!-- DOTO rangedstrikeMOD - START - Improved AI Range Attack -->
 	</Define>
 	

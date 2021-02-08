@@ -208,7 +208,7 @@ iVictoryDelayPercent	Percent of space ship travel time
 			<Description>Jogging (750)</Description>
 			<Help>TXT_KEY_GAMESPEED_EPIC_HELP</Help>
 			<iGrowthPercent>150</iGrowthPercent>
-			<iTrainPercent>150</iTrainPercent>
+			<iTrainPercent>160</iTrainPercent>
 			<iConstructPercent>150</iConstructPercent>
 			<iCreatePercent>150</iCreatePercent>
 			<iResearchPercent>150</iResearchPercent>

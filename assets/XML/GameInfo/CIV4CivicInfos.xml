@@ -355,8 +355,8 @@
 		</CivicInfo>
 		<CivicInfo>
 			<CivicOptionType>CIVICOPTION_LEGAL</CivicOptionType>
-			<Type>CIVIC_BARBARISM</Type>
-			<Description>TXT_KEY_CIVIC_BARBARISM</Description>
+			<Type>CIVIC_ELDER</Type><!--was barbarism-->
+			<Description>Elders Wisdom</Description>
 			<Civilopedia>TXT_KEY_CIVIC_BARBARISM_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_CIVIC_BARBARISM_STRATEGY</Strategy>
 			<Button>,Art/Interface/Buttons/Civics/Barbarism.dds,Art/Interface/Buttons/Civics_Civilizations_Religions_Atlas.dds,1,1</Button>
@@ -3600,7 +3600,7 @@
 			<TechPrereq>TECH_IRON_WORKING</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>UPKEEP_HIGH</Upkeep>
-			<iAIWeight>2</iAIWeight>
+			<iAIWeight>0</iAIWeight>
 			<iGreatPeopleRateModifier>0</iGreatPeopleRateModifier>
 			<iGreatGeneralRateModifier>0</iGreatGeneralRateModifier>
 			<iDomesticGreatGeneralRateModifier>0</iDomesticGreatGeneralRateModifier>
@@ -3658,15 +3658,15 @@
 		</CivicInfo>
 		<CivicInfo>
 			<CivicOptionType>CIVICOPTION_CULTURALISM</CivicOptionType>
-			<Type>CIVIC_STORY</Type>
-			<Description>Story Telling</Description>
+			<Type>CIVIC_BARBARISM</Type>
+			<Description>Barbarism</Description>
 			<Civilopedia>TXT_KEY_CIVIC_PROARM_PEDIA</Civilopedia>
 			<Strategy>This civic is good for Empires with little GPT and big armies.</Strategy>
 			<Button>Art\Interface\Buttons\Civics\ProArm.dds</Button>
 			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>NONE</Upkeep>
-			<iAIWeight>2</iAIWeight>
+			<iAIWeight>0</iAIWeight>
 			<iGreatPeopleRateModifier>0</iGreatPeopleRateModifier>
 			<iGreatGeneralRateModifier>0</iGreatGeneralRateModifier>
 			<iDomesticGreatGeneralRateModifier>0</iDomesticGreatGeneralRateModifier>
@@ -3699,7 +3699,7 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
-			<iCivicPercentAnger>0</iCivicPercentAnger>
+			<iCivicPercentAnger>15</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
 			<iStateReligionHappiness>0</iStateReligionHappiness>
