@@ -36,5 +36,10 @@
 			<Description>Military</Description>
 			<TraitNoUpkeeps/>
 		</CivicOptionInfo>
+		<CivicOptionInfo>
+			<Type>CIVICOPTION_CULTURALISM</Type>
+			<Description>Culturalism</Description>
+			<TraitNoUpkeeps/>
+		</CivicOptionInfo>
 	</CivicOptionInfos>
 </Civ4CivicOptionInfos>
