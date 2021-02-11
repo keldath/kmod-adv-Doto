@@ -37,8 +37,8 @@
 			<TraitNoUpkeeps/>
 		</CivicOptionInfo>
 		<CivicOptionInfo>
-			<Type>CIVICOPTION_CULTURALISM</Type>
-			<Description>Culturalism</Description>
+			<Type>CIVICOPTION_IDEALS</Type>
+			<Description>**Ideals**</Description>
 			<TraitNoUpkeeps/>
 		</CivicOptionInfo>
 	</CivicOptionInfos>
