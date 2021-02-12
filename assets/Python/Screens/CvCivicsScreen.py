@@ -29,7 +29,7 @@ class CvCivicsScreen:
 		self.BACKGROUND_ID = "CivicsBackground"
 		self.HELP_HEADER_NAME = "CivicsScreenHeaderName"
 
-		self.HEADINGS_WIDTH = 199 #192 #176 #199 #171
+		self.HEADINGS_WIDTH = 174 #199 #192 #176 #199 #171
 		self.HEADINGS_TOP = 50 #70
 		self.HEADINGS_SPACING = -4 #5 #0
 		self.HEADINGS_BOTTOM = 330 #285 #305 #280
