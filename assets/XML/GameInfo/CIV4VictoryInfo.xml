@@ -151,7 +151,7 @@
 			<iPopulationPercentLead>0</iPopulationPercentLead>
 			<iLandPercent>0</iLandPercent>
 			<iMinLandPercent>0</iMinLandPercent>
-			<iReligionPercent>50</iReligionPercent>
+			<iReligionPercent>70</iReligionPercent>
 			<CityCulture>NONE</CityCulture>
 			<iNumCultureCities>0</iNumCultureCities>
 			<iTotalCultureRatio>0</iTotalCultureRatio>
@@ -160,8 +160,8 @@
 		</VictoryInfo>
 		<VictoryInfo>
 		    <Type>VICTORY_HOLY</Type>
-	        <Description>Holy War (50% Land + 40% Religion)</Description>
-	        <Civilopedia>Needs: 55% lAND 75 RELIGION</Civilopedia>
+	        <Description>Holy War (50% Land + 60% Religion)</Description>
+	        <Civilopedia>Needs: 50% lAND 65 RELIGION</Civilopedia>
 	        <bTargetScore>0</bTargetScore>
 	        <bEndScore>0</bEndScore>
 	        <bConquest>0</bConquest>
@@ -169,8 +169,8 @@
 	        <bPermanent>0</bPermanent>
 	        <iPopulationPercentLead>0</iPopulationPercentLead>
 	        <iLandPercent>50</iLandPercent>
-	        <iMinLandPercent>51</iMinLandPercent>
-        	<iReligionPercent>40</iReligionPercent>
+	        <iMinLandPercent>50</iMinLandPercent>
+        	<iReligionPercent>65</iReligionPercent>
 	        <CityCulture>NONE</CityCulture>
 	        <iNumCultureCities>0</iNumCultureCities>
 	        <iTotalCultureRatio>0</iTotalCultureRatio>

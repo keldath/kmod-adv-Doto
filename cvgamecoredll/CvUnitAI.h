@@ -26,6 +26,7 @@ public:
 	int NetTotalStreangth (const CvPlot* pAttackedPlot,bool bRanged) const;
 	int isNearPlotDanger(CvPlot const& kPlot) const;
 	bool isPlotWorthRanged(CvPlot const& kPlot) const;
+	bool shouldConsiderPlotRanged(CvPlot const& kPlot) const;
 // MOD - END - Ranged Strike AI
 	// advc.003u: Override replacing AI_init. Parameter list copied from CvUnit::init.
 	void init(int iID, UnitTypes eUnit, UnitAITypes eUnitAI, PlayerTypes eOwner,

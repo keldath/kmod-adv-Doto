@@ -38,7 +38,7 @@
 		</CivicOptionInfo>
 		<CivicOptionInfo>
 			<Type>CIVICOPTION_TERRA</Type>
-			<Description>Terra</Description>
+			<Description>**Terra**</Description>
 			<TraitNoUpkeeps/>
 		</CivicOptionInfo>
 		<CivicOptionInfo>

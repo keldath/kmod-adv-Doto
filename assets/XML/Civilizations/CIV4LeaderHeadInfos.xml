@@ -2144,7 +2144,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<iVassalPowerModifier>10</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_UNIVERSAL_SUFFRAGE</FavoriteCivic>
+			<FavoriteCivic>CIVIC_PROVINCIAL</FavoriteCivic>
 			<FavoriteReligion>NONE</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -4299,7 +4299,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<VassalRefuseAttitudeThreshold>ATTITUDE_ANNOYED</VassalRefuseAttitudeThreshold>
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_UNIVERSAL_SUFFRAGE</FavoriteCivic>
+			<FavoriteCivic>CIVIC_PROVINCIAL</FavoriteCivic>
 			<FavoriteReligion>RELIGION_CHRISTIANITY</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -4536,7 +4536,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<VassalRefuseAttitudeThreshold>ATTITUDE_ANNOYED</VassalRefuseAttitudeThreshold>
 			<iVassalPowerModifier>-20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_UNIVERSAL_SUFFRAGE</FavoriteCivic>
+			<FavoriteCivic>CIVIC_FUNDAMENTALISM</FavoriteCivic>
 			<FavoriteReligion>RELIGION_HINDUISM</FavoriteReligion>
 			<Traits>
 				<Trait>

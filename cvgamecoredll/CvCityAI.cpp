@@ -7653,7 +7653,10 @@ int CvCityAI::AI_getImprovementValue(CvPlot const& kPlot, ImprovementTypes eImpr
 	// Adjustments to match calculation in CvPlot::doImprovementUpgrade.
 	iTimeScale = iTimeScale * GC.getInfo(GC.getGame().getGameSpeedType()).getImprovementPercent()/100;
 	iTimeScale = iTimeScale * GC.getInfo(GC.getGame().getStartEra()).getImprovementPercent()/100;
-	iTimeScale = iTimeScale / kOwner.getImprovementUpgradeRate();
+	//doto-keldath fix when theres - on improvement upgrade time - anyway theres no such thing, negetive val for this
+	//but i did it by mistake in the xml and had a ctd
+	if (kOwner.getImprovementUpgradeRate() != 0)
+		iTimeScale = iTimeScale / kOwner.getImprovementUpgradeRate();
 
 	std::vector<scaled> weighted_final_yields(NUM_YIELD_TYPES);
 	std::vector<scaled> weighted_yield_diffs(NUM_YIELD_TYPES);
