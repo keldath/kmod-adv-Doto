@@ -18086,11 +18086,6 @@ UNITAI changed - now will used to counter.
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK_CITY</UnitAIType>
 					<bUnitAI>1</bUnitAI>
-<!-- ADDED DUE TO RANGED STRIKE - NOT SURE -  BUT VIP ADD MOST UNIT_AI  -->
-				</UnitAI>
-				<UnitAI>
-					<UnitAIType>UNITAI_ATTACK</UnitAIType>
-					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>

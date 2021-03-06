@@ -2811,8 +2811,18 @@ bool CvDLLButtonPopup::launchFoundReligionPopup(CvPopup* pPopup, CvPopupInfo &in
 	for (int iReligion = 0; iReligion < GC.getNumReligionInfos(); iReligion++)
 	{
 		CvReligionInfo& kReligion = GC.getInfo((ReligionTypes)iReligion);
-		if (!GC.getGame().isReligionFounded((ReligionTypes)iReligion))
+//david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
+//keldath fix - DONT ADD FORBIDDEN RELIGION TO THE POPUP		
+		CvPlayer& kActivePlayer = GET_PLAYER(GC.getGame().getActivePlayer());
+		CivilizationTypes eCiv = kActivePlayer.getCivilizationType();
+	
+		if (!GC.getGame().isReligionFounded((ReligionTypes)iReligion)
+			&& (!GC.getCivilizationInfo(eCiv).isForbidden(iReligion)
+			&& GC.getGame().isOption(GAMEOPTION_FORBIDDEN_RELIGION))
+			)
 		{
+//david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
+//keldath fix - DONT ADD FORBIDDEN RELIGION TO THE POPUP	
 			m_kUI.popupAddGenericButton(pPopup,
 					kReligion.getDescription(), kReligion.getButton(), iReligion, WIDGET_GENERAL);
 			bFound = true;

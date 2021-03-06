@@ -19522,8 +19522,9 @@ void CvGameTextMgr::setConvertHelp(CvWStringBuffer& szBuffer, PlayerTypes ePlaye
 		szBuffer.append(gDLL->getText("TXT_KEY_MISC_WAIT_MORE_TURNS", GET_PLAYER(ePlayer).getConversionTimer()));
 		szBuffer.append(L"."); // advc.004g
 	}
-	// davidlallen: religion forbidden to civilization start
-    else if (!(GC.getCivilizationInfo(GET_PLAYER(ePlayer).getCivilizationType()).isForbidden(eReligion)))
+	// davidlallen: religion forbidden to civilization start + KELDATH
+    else if (!(GC.getCivilizationInfo(GET_PLAYER(ePlayer).getCivilizationType()).isForbidden(eReligion))
+		&& GC.getGame().isOption(GAMEOPTION_FORBIDDEN_RELIGION))
 	{
 		szBuffer.append(L". ");
 		szBuffer.append(gDLL->getText("TXT_KEY_MISC_RELIGION_FORBIDDEN"));

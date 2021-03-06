@@ -14,8 +14,6 @@
 #include "CvInfo_Terrain.h" // for getBestBuildRoute
 //#include "CvInfo_Unit.h" // for canAnyMoveAllTerrain (now in PCH)
 #include "CySelectionGroup.h"
-//DOTO-rangedattack-keldath-checking option
-#include "CvInfo_GameOption.h"
 
 // K-Mod:
 KmodPathFinder* CvSelectionGroup::m_pPathFinder = NULL; // advc.pf: pointer
@@ -1068,23 +1066,14 @@ void CvSelectionGroup::startMission()
 					break;
 
 				case MISSION_BOMBARD:
-//DOTO-rangedattack-keldath rangedstrike - overwrite the bombard mission
-					if (GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
-					{
-						if (pLoopUnit->rangeStrikeK(headMissionQueueNode()->m_data.iData1, headMissionQueueNode()->m_data.iData2))
-						{
-							bAction = true;
-						}
-						break;
-					}
 					if (pLoopUnit->bombard())
 					{
 						bAction = true;
 					}
 					break;
-//DOTO-rangedattack-keldath rangedstrike
+
 				case MISSION_RANGE_ATTACK:
-					if (pLoopUnit->rangeStrikeK(headMissionQueueNode()->m_data.iData1, headMissionQueueNode()->m_data.iData2))
+					if (pLoopUnit->rangeStrike(headMissionQueueNode()->m_data.iData1, headMissionQueueNode()->m_data.iData2))
 					{
 						bAction = true;
 					}
@@ -1910,11 +1899,8 @@ bool CvSelectionGroup::canDoInterfaceMode(InterfaceModeTypes eInterfaceMode)
 			break;
 
 		case INTERFACEMODE_RANGE_ATTACK:
-			//DOTO-rangedattack-keldath rangedstrike
-			if (pLoopUnit->canRangeStrikeK())
-			{
+			if (pLoopUnit->canRangeStrike())
 				return true;
-			}
 			break;
 
 		case INTERFACEMODE_AIRSTRIKE:
@@ -1988,11 +1974,8 @@ bool CvSelectionGroup::canDoInterfaceModeAt(InterfaceModeTypes eInterfaceMode, C
 		case INTERFACEMODE_RANGE_ATTACK:
 			if (pLoopUnit != NULL)
 			{
-//DOTO-rangedstrike-keldath
-				if (pLoopUnit->canRangeStrikeAtK(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
-				{
-						return true;
-				}
+				if (pLoopUnit->canRangeStrikeAt(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
+					return true;
 			}
 			break;
 
@@ -2476,27 +2459,6 @@ bool CvSelectionGroup::canBombard(CvPlot const& kPlot) const // advc: CvPlot ref
 	}
 	return false;
 }
-//DOTO rangedstrike-keldath
-bool CvSelectionGroup::canRanged(const CvPlot* pPlot, int ix, int iy) const // advc: CvPlot reference, const.
-{
-	if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK)) 
-	{
-		return false;
-	}
-	for (CLLNode<IDInfo> const* pUnitNode = headUnitNode(); pUnitNode != NULL;
-		pUnitNode = nextUnitNode(pUnitNode))
-	{
-		CvUnit const* pLoopUnit = ::getUnit(pUnitNode->m_data);
-		if (pPlot != NULL && ix != NULL && iy != NULL)
-		{
-			if (pLoopUnit->canRangeStrikeAtK(pPlot, ix, iy))
-				return true;
-		}
-		if (pLoopUnit->canRangeStrikeK())
-			return true;
-	}
-	return false;
-}
 
 int CvSelectionGroup::visibilityRange() const // advc: const; return type was bool
 {
@@ -2883,48 +2845,10 @@ bool CvSelectionGroup::groupAttack(int iX, int iY, MovementFlags eFlags, bool& b
 					!bMaxSurvival, bMaxSurvival); // advc.048
 			if (pBestAttackUnit == NULL)
 				break;
-// DOTO-MOD rangedattack-keldath rangedstrike- START - Ranged Strike AI realism invictus			
-//no idea if this is needed......edit - see below
-			bAttack = true; //moved up
-
-			// DOTO-MOD - START - Ranged Strike AI realism invictus
-			// TODO: Add a hotkey to allow humans to auto-fire their ranged attacks first?
-			if (!isHuman())
-			{
-				//doto-advc adjustment
-				if (iAttackOdds < 80 /*GC.getSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS()*/)
-				{
-					//doto-advc adjustment AI().		
-					CvUnitAI* pBestRangedUnit = AI().AI_getBestGroupRangeAttacker(pDestPlot);
-
-					bool bRangeStrike = false;
-					//seems this loops also carries out ranged attacks.
-					//added the plot danger
-					while (pBestRangedUnit != NULL && 
-						pBestRangedUnit->AI_rangeStrikeTargetPlotK(pBestRangedUnit) != NULL &&
-						pBestRangedUnit->rangeStrikeK(pDestPlot->getX(), pDestPlot->getY()))
-					{
-						bRangeStrike = true;
-						pBestRangedUnit = AI().AI_getBestGroupRangeAttacker(pDestPlot);
-					}
-
-					if (bRangeStrike)
-					{
-						//doto-advc adjustment AI().		
-						pBestAttackUnit = AI().AI_getBestGroupAttacker(pDestPlot, false, iAttackOdds, false, !bBlitz /*bNoBlitz advc change*/);
-						if (pBestAttackUnit == NULL)
-						{
-							// There aren't any attack units left with moves after range striking
-							break;
-						}
-					}
-				}
-			}
-			// DOTO-MOD - end - Ranged Strike AI realism invictus
 
 			// advc.048: AI_getBestGroupSacrifice moved into AI_getBestGroupAttacker
-			// DOTO-MOD - end - Ranged Strike AI realism invictus - moved above
-			//bAttack = true;
+
+			bAttack = true;
 
 			if (GC.getPythonCaller()->doCombat(*this, *pDestPlot))
 				break;
@@ -3640,15 +3564,6 @@ bool CvSelectionGroup::canDoMission(int iMission, int iData1, int iData2,
 			break;
 
 		case MISSION_BOMBARD:
-//DOTO-rangedattack-keldath rangedstrike - overwrite the bombard mission
-			if (GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
-			{
-				if (pLoopUnit->canRangeStrikeAtK(pPlot, iData1, iData2) && (!bCheckMoves || pLoopUnit->canMove()))
-				{
-					return true;
-				}
-				break;
-			}
 			if (pLoopUnit->canBombard(*pPlot) &&
 				(!bCheckMoves || pLoopUnit->canMove()))
 			{
@@ -3657,8 +3572,8 @@ bool CvSelectionGroup::canDoMission(int iMission, int iData1, int iData2,
 			break;
 
 		case MISSION_RANGE_ATTACK:
-//DOTO-rangedattack-keldath rangedstrike
-			if (pLoopUnit->canRangeStrikeAtK(pPlot, iData1, iData2) && (!bCheckMoves || pLoopUnit->canMove()))
+			if (pLoopUnit->canRangeStrikeAt(pPlot, iData1, iData2) &&
+				(!bCheckMoves || pLoopUnit->canMove()))
 			{
 				return true;
 			}

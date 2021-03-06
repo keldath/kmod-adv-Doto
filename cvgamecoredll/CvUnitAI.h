@@ -16,18 +16,6 @@ public:
 
 	CvUnitAI();
 	~CvUnitAI();
-// MOD - rangedattack-keldath START - Ranged Strike AI-REALISM INVICTUS
-//NO_MOVEMENT_FLAGS is a new thing from advc 098 30092020 also MovementFlags
-	int AI_rangedStrikeValueK(CvPlot const& kPlot) const;
-	CvPlot* AI_rangeStrikeTargetPlotK(CvUnit* pAttacker = NULL) ;
-	bool AI_rangeAttackK(MovementFlags eFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
-	bool AI_rangeAttackOrSkipK(MovementFlags eFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
-	bool AI_rangeAttackOrFortifyK(MovementFlags eFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
-	int NetTotalStreangth (const CvPlot* pAttackedPlot,bool bRanged) const;
-	int isNearPlotDanger(CvPlot const& kPlot) const;
-	bool isPlotWorthRanged(CvPlot const& kPlot) const;
-	bool shouldConsiderPlotRanged(CvPlot const& kPlot) const;
-// MOD - END - Ranged Strike AI
 	// advc.003u: Override replacing AI_init. Parameter list copied from CvUnit::init.
 	void init(int iID, UnitTypes eUnit, UnitAITypes eUnitAI, PlayerTypes eOwner,
 			int iX, int iY, DirectionTypes eFacingDirection);

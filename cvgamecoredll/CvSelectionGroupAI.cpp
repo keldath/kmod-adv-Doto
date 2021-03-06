@@ -304,30 +304,13 @@ int CvSelectionGroupAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy)
 	(note: I would like to put this in CvSelectionGroupAI ... but - well -
 	I don't need to say it, right?)
 	advc.003u: I think CvUnitAI::AI_getGroup solves karadoc's problem; so - moved. */
-int CvSelectionGroupAI::AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialEnemy,bool bRanged)
+int CvSelectionGroupAI::AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialEnemy)
 {
 	PROFILE_FUNC();
 	int iOdds=-1;
-//keldath rangedStrike
-	CvUnitAI const* pAttacker = NULL;
-	CvUnitAI const* pAttackerNotRanged = NULL;
-	CvUnitAI const* pAttackerRanged = NULL;
-	if (!bRanged) 
-	{
-		pAttackerNotRanged = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds);
-		if (pAttackerNotRanged == NULL)
-			return 0;
-	}
-	else 
-	{
-		pAttackerRanged = AI_getBestGroupRangeAttacker(pPlot);
-		if (pAttackerRanged == NULL)
-		{
-			return 0;
-		}
-	}
-	pAttacker = bRanged ? pAttackerRanged : pAttackerNotRanged;
-//keldath rangedStrike		
+	CvUnitAI const* pAttacker = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds);
+	if (pAttacker == NULL)
+		return 0;
 	CvUnit const* pDefender = pPlot->getBestDefender(NO_PLAYER, getOwner(), pAttacker,
 			!bPotentialEnemy, bPotentialEnemy,
 			true, false); // advc.028, advc.089 (same as in CvUnitAI::AI_attackOdds)
@@ -386,7 +369,9 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot,
 	{
 		CvUnitAI& kLoopUnit = *::AI_getUnit(pUnitNode->m_data);
 		pUnitNode = nextUnitNode(pUnitNode);
-
+// DOTO-MOD rangedattack-keldath - START + ranged immunity
+		bool bRanged = kLoopUnit.isRangeStrikeCapableK();
+// DOTO-MOD rangedattack-keldath - END + ranged immunity
 		if (kLoopUnit.isDead())
 			continue; // advc
 
@@ -404,21 +389,15 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot,
 
 		if (!bForce && !kLoopUnit.canMoveInto(*pPlot, true, /*bDeclareWar=*/bPotentialEnemy))
 			continue;
-// DOTO-MOD rangedattack-keldath - START --add more weight to make the ai pick ranged first	
-//added here to take into account iof the KFB is chosen - i didnt want to edit the LFBgetBetterAttacker for now
-		if (kLoopUnit.isRangeStrikeCapableK()) 
-		{
-			iBestValue *= (100 + kLoopUnit.baseCombatStr());
-			iBestValue /= 100;
-		} 
-// DOTO-MOD rangedattack-keldath - START --add more weight to make the ai pick ranged first	 
+
+//DOTO-MOD rangedattack-keldath + ranged immunity - made it into a game option from xml. 
+//added check for ranged unit.
 		// BETTER_BTS_AI_MOD, Lead From Behind (UncutDragon), 02/21/10, jdog5000: START	
-//keldath - made it into a game option from xml.
-// DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
 		if (GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND)
 		/*  GC.getDefineBOOL(CvGlobals::LFB_ENABLE)*/ &&
 			GC.getDefineBOOL(CvGlobals::LFB_USECOMBATODDS) &&
-			!bMaxSurvival) // advc.048
+			!bMaxSurvival
+			&& !bRanged) // advc.048
 		{
 			kLoopUnit.LFBgetBetterAttacker(&pBestUnit, pPlot, bPotentialEnemy, iBestOdds,
 					iBestValue); // K-Mod.
@@ -428,27 +407,35 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot,
 			int iOdds = kLoopUnit.AI_attackOdds(pPlot, bPotentialEnemy);
 			int iValue = iOdds;
 			FAssert(iValue > 0);
-
-			if (kLoopUnit.collateralDamage() > 0 && /* advc.048: */ !bMaxSurvival)
+// DOTO-MOD rangedattack-keldath - START + ranged immunity 
+			if (kLoopUnit.collateralDamage() > 0 &&
+				 (bRanged ||
+				/* advc.048: */ !bMaxSurvival))
+// DOTO-MOD rangedattack-keldath - END + ranged immunity 
 			{
 				int iPossibleTargets = std::min(
 						pPlot->getNumVisibleEnemyDefenders(&kLoopUnit) - 1,
 						kLoopUnit.collateralDamageMaxUnits());
 				if (iPossibleTargets > 0)
 				{
+					// DOTO-MOD rangedattack-keldath + ranged immunity  - START 
+					//add lots of weight to make the ai pick the best ranged first	
+					//consider ranged to be a much more powerfull unit
+					if (bRanged) 
+					{
+						iValue *= (100 + kLoopUnit.baseCombatStr()) + 2 ;//make the ranged stronger by 2 
+						iValue /= 100;
+						iValue *= (100 + (kLoopUnit.collateralDamage() * iPossibleTargets) / 2);
+						iValue /= 100;
+					} 
+					else 
+					{
+					//org
 					iValue *= (100 + (kLoopUnit.collateralDamage() * iPossibleTargets) / 5);
 					iValue /= 100;
+					}
 				}
 			}
-// DOTO-MOD rangedattack-keldath - START --add more weight to make the ai pick ranged first	
-
-			if (kLoopUnit.isRangeStrikeCapableK()) 
-			{
-				iValue *= (100 + kLoopUnit.baseCombatStr());
-				iValue /= 100;
-			} 
-// DOTO-MOD rangedattack-keldath - START --add more weight to make the ai pick ranged first	
-
 			/*  if non-human, prefer the last unit that has the best value
 				(so as to avoid splitting the group) */
 			if (iValue > iBestValue ||
@@ -537,62 +524,7 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupSacrifice(const CvPlot* pPlot,
 	}
 	return pBestUnit;
 }
-// DOTO-MOD - rangedattack-keldath START - Ranged Strike AI realism invictus
-//keldath - note that i replaved the CvUnit* with CvUnitAI* here and selectiongroup.cpp
-//and its headers, the reason is becuase i am using weghitedodds fn now so this gets fired from there.
-//originaly, this was fired by attackodds.
-//due to vip method where range units cannot attack directly (canmoveto()) it failed the check on bestdefender.
-//so i made the changes .
-CvUnitAI* CvSelectionGroupAI::AI_getBestGroupRangeAttacker(const CvPlot* pPlot) const
-{
-	int iBestValue = 0;
-	CvUnitAI* pBestUnit = NULL;
 
-	CLLNode<IDInfo>* pUnitNode = headUnitNode();
-
-	bool bIsHuman = (pUnitNode != NULL) ? GET_PLAYER(::getUnit(pUnitNode->m_data)->getOwner()).isHuman() : true;
-
-	while (pUnitNode != NULL)
-	{	
-		CvUnitAI* pLoopUnit = ::AI_getUnit(pUnitNode->m_data);
-		//CvUnitAI* pLoopUnit = ::getUnit(pUnitNode->m_data);
-		pUnitNode = nextUnitNode(pUnitNode);
-
-		if (pLoopUnit->canRangeStrikeAtK(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
-		{
-			CvUnit* pDefender = pLoopUnit->rangedStrikeTargetK(pPlot);
-
-			FAssert(pDefender != NULL);
-			FAssert(pDefender->canDefend());
-
-			int iDamage = pLoopUnit->rangeCombatDamageK(pDefender);//change fn
-
-			int iUnitDamage = std::max(pDefender->getDamage(), std::min((pDefender->getDamage() + iDamage), pLoopUnit->combatLimit()));
-			int iValue = iUnitDamage;
-			//add curr hp also/
-			if (pLoopUnit->collateralDamage() > 0)
-			{
-				int iPossibleTargets = std::min((pPlot->getNumVisibleEnemyDefenders(pLoopUnit) - 1), pLoopUnit->collateralDamageMaxUnits());
-
-				if (iPossibleTargets > 0)
-				{
-					iValue *= (100 + ((pLoopUnit->collateralDamage() * iPossibleTargets) / 5));
-					iValue /= 100;
-				}
-			}
-
-			// if non-human, prefer the last unit that has the best value (so as to avoid splitting the group)
-			if (iValue > iBestValue || (!bIsHuman && iValue > 0 && iValue == iBestValue))
-			{
-				iBestValue = iValue;
-				pBestUnit = pLoopUnit;
-			}
-		}
-	}
-
-	return pBestUnit;
-}
-// MOD - END - Ranged Strike AI
 // Returns ratio of strengths of stacks times 100
 // (so 100 is even ratio, numbers over 100 mean this group is more powerful than the stack on a plot)
 int CvSelectionGroupAI::AI_compareStacks(const CvPlot* pPlot, bool bCheckCanAttack) const
@@ -682,16 +614,8 @@ int CvSelectionGroupAI::AI_sumStrength(const CvPlot* pAttackedPlot,
 				}
 			}
 			else*/
-// DOTO - MOD rangedattack - keldath - Scheck if the unit is ranged - see the below can move.
-			bool bRanged = false;
-			if (kLoopUnit.rangedStrike() > 0 )
-			{
-				bRanged = true;
-			}
-// DOTO - MOD rangedattack - keldath - end
 			if (!kLoopUnit.canAttack() || !kLoopUnit.canMove() ||
-// DOTO - MOD rangedattack - keldath - START added bRanged so  it will ignore can moveinto - ranged units cannot attack directly.
-				(pAttackedPlot && bDefenders && (!kLoopUnit.canMoveInto(*pAttackedPlot, true, true) && !bRanged)) ||
+				(pAttackedPlot && bDefenders && !kLoopUnit.canMoveInto(*pAttackedPlot, true, true)) ||
 				//(!pLoopUnit->isBlitz() && pLoopUnit->isMadeAttack())
 				kLoopUnit.isMadeAllAttacks()) // advc.164
 			{
@@ -705,6 +629,7 @@ int CvSelectionGroupAI::AI_sumStrength(const CvPlot* pAttackedPlot,
 		/*  <advc.159> Call AI_currEffectiveStr instead of currEffectiveStr.
 			Adjustments for first strikes and collateral damage moved into
 			that new function. */
+// DOTO-MOD rangedattack-keldath - START + ranged immunity - AI_currEffectiveStr have immunity code enrichment
 		int const iUnitStr = kLoopUnit.AI_currEffectiveStr(pAttackedPlot, &kLoopUnit,
 				bCountCollateral, iBaseCollateral, bCheckCanAttack);
 		// </advc.159>
@@ -945,7 +870,12 @@ CvUnitAI* CvSelectionGroupAI::AI_ejectBestDefender(CvPlot* pDefendPlot)
 
 			iValue /= 2 + (pLoopUnit->getLevel() *
 					// advc.mnai:
-					(pLoopUnit->AI_getUnitAIType() == UNITAI_ATTACK_CITY ? 2 : 1));
+					(pLoopUnit->AI_getUnitAIType() == UNITAI_ATTACK_CITY ? 2 : 1)
+// DOTO-MOD rangedattack-keldath + ranged immunity - START --if the unit is ranged - prefer not to eject it
+				*
+				(pLoopUnit->isRangeStrikeCapableK() ? 2 : 1)
+// DOTO-MOD rangedattack-+ ranged immunity  keldath - END 	
+				);
 			if (iValue > iBestUnitValue)
 			{
 				iBestUnitValue = iValue;

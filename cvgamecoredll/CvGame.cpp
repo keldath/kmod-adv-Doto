@@ -7080,17 +7080,18 @@ void CvGame::doHolyCity()  // advc: many style changes
 		ReligionTypes eReligion = (ReligionTypes)iI;
 		if (isReligionSlotTaken(eReligion))
 			continue;
-//DOTO-david lalen forbiddan religion - dune wars start
-		// davidlallen religion forbidden to civilization start
-		// remove test for team; assign by player instead
-		// because what if the best team's best player cannot convert?
-		/*
+		//DOTO-david lalen forbiddan religion - dune wars start
+				// davidlallen religion forbidden to civilization start
+				// remove test for team; assign by player instead
+				// because what if the best team's best player cannot convert?
+		if (!isOption(GAMEOPTION_FORBIDDEN_RELIGION))//keldath addition
+		{
 		TeamTypes eBestTeam = NO_TEAM;
 		{ // scope for iBestValue
 			int iBestValue = MAX_INT;
-			*//*  advc.001: Was MAX_TEAMS. Make sure Barbarians can't found a religion
+			/*  advc.001: Was MAX_TEAMS. Make sure Barbarians can't found a religion
 				somehow. Adopted from Mongoose SDK ReligionMod. */
-	/*		for (int iJ = 0; iJ < MAX_CIV_TEAMS; iJ++)
+			for (int iJ = 0; iJ < MAX_CIV_TEAMS; iJ++)
 			{
 				CvTeam const& kTeam = GET_TEAM((TeamTypes)iJ);
 				if (!kTeam.isAlive())
@@ -7118,7 +7119,7 @@ void CvGame::doHolyCity()  // advc: many style changes
 		}
 		if (eBestTeam == NO_TEAM)
 			continue;
-		*/
+		}
 //david lalen forbiddan religion - dune wars end
 		int iValue = 0;
 		int iBestValue = MAX_INT;
@@ -7129,49 +7130,55 @@ void CvGame::doHolyCity()  // advc: many style changes
 			//keldath qa2-done - i removed the check for other team- since the above is cancelled.
 			if (!kMember.isAlive() || /*kMember.getTeam() != eBestTeam ||*/ kMember.getNumCities() <= 0)
 				continue;
-//david lalen forbiddan religion - dune wars start
-			if (GET_TEAM(kMember.getTeam()).isHasTech((TechTypes)(GC.getReligionInfo((ReligionTypes)iI).getTechPrereq())))
+			// david lalen forbiddan religion - dune wars end - keldath fix - if religion is forbidden - pass.
+			CivilizationTypes eCiv = kMember.getCivilizationType();
+			if (eCiv != NO_CIVILIZATION && eReligion != NO_RELIGION)
 			{
-				CivilizationTypes eCiv = kMember.getCivilizationType();
-				if (!(GC.getCivilizationInfo(eCiv).isForbidden((ReligionTypes)iI)))
-//david lalen forbiddan religion - dune wars end
-					iValue = getSorenRandNum(10, "Found Religion (Player)");//f1rpo quote-Needs to be in the player loop so that each player recives a different random number.
-					if (!kMember.isHuman())
-						iValue += 18; // advc.138: Was 10. Need some x: 15 < x < 20.
-					for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
-					{
-						int iReligionCount = kMember.getHasReligionCount((ReligionTypes)iK);
-						if (iReligionCount > 0)
-							iValue += iReligionCount * 20;
-					}
-					iValue -= religionPriority(kMember.getID(), eReligion); // advc.138
-					if (iValue < iBestValue)
-					{
-						iBestValue = iValue;
-						eBestPlayer = kMember.getID();
-					}
-				}
-		}//david lalen forbiddan religion - dune wars end
+				if (isOption(GAMEOPTION_FORBIDDEN_RELIGION) && GC.getCivilizationInfo(eCiv).isForbidden(eReligion))
+					continue;
+				//david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
+				if (!GET_TEAM(kMember.getTeam()).isHasTech((TechTypes)(GC.getReligionInfo((ReligionTypes)iI).getTechPrereq()))
+						&& isOption(GAMEOPTION_FORBIDDEN_RELIGION))
+					continue;
+				//david lalen forbiddan religion - dune wars end
+			}
+			iValue = getSorenRandNum(10, "Found Religion (Player)");
+			if (!kMember.isHuman())
+				iValue += 18; // advc.138: Was 10. Need some x: 15 < x < 20.
+			for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
+			{
+				int iReligionCount = kMember.getHasReligionCount((ReligionTypes)iK);
+				if (iReligionCount > 0)
+					iValue += iReligionCount * 20;
+			}
+			iValue -= religionPriority(kMember.getID(), eReligion); // advc.138
+			if (iValue < iBestValue)
+			{
+				iBestValue = iValue;
+				eBestPlayer = kMember.getID();
+			}
+		}
 		if (eBestPlayer == NO_PLAYER)
 			continue;
 
 		ReligionTypes eFoundReligion = eReligion;
-/*removed by forbidden religion - i think - keldath we dont want to cause a mess when choosing religion
 		if (isOption(GAMEOPTION_PICK_RELIGION))
-			eFoundReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
-		//alternarive usage in case we want pick religion, for now , we dont.
-		if (isOption(GAMEOPTION_PICK_RELIGION))
-		{
-    		ReligionTypes eChosenReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
-			//check no religion fix - suggested by f1rpo
-    		if (eChosenReligion != NO_RELIGION && !GC.getCivilizationInfo(GET_PLAYER(eBestPlayer).getCivilizationType()).isForbidden(eChosenReligion))
-        		eFoundReligion = eChosenReligion;
-		}
-*/
+			if (!isOption(GAMEOPTION_FORBIDDEN_RELIGION))
+			{
+				//org code
+				eFoundReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
+			}
+			else 
+			{	//if pick religion make sure none forbidded is picked
+				ReligionTypes eChosenReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
+				//check no religion fix - suggested by f1rpo
+    			if (eChosenReligion != NO_RELIGION 
+    				&& !GC.getCivilizationInfo(GET_PLAYER(eBestPlayer).getCivilizationType()).isForbidden(eChosenReligion))
+        			eFoundReligion = eChosenReligion;
+        	}
+
 		if (eFoundReligion != NO_RELIGION)
 //david lalen forbiddan religion - dune wars end
-//keldath QA-done
-//f1rpo explenation for the true param:
 //true will create free missionaries. Seems like those are normally not created when a religion is founded at game start (actually, founding gets delayed until turn 5 iirc), but, if you want to change that – sounds fair enough.
 		//	GET_PLAYER(eBestPlayer).foundReligion(eFoundReligion, eReligion, false);
 			GET_PLAYER(eBestPlayer).foundReligion(eFoundReligion, eReligion, true);

@@ -79,7 +79,7 @@
 			<Description>TXT_KEY_GAME_OPTION_PICK_RELIGION</Description>
 			<Help>TXT_KEY_GAME_OPTION_PICK_RELIGION_HELP</Help>
 			<bDefault>0</bDefault>
-			<bVisible>0</bVisible>
+			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
 			<Type>GAMEOPTION_NO_TECH_TRADING</Type>
@@ -293,6 +293,13 @@
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
+            <Type>GAMEOPTION_FORBIDDEN_RELIGION</Type>
+            <Description>Forbidden Religion</Description>
+            <Help>Each Civ has one Religion it cannot found or convert to</Help>
+            <bDefault>1</bDefault>
+            <bVisible>1</bVisible>
+       	</GameOptionInfo>
+        <GameOptionInfo>
             <Type>GAMEOPTION_BARBARIAN_CIV</Type>
             <Description>Barbarian Civ</Description>
             <Help>Barbarian Cities will become Civs - see the python file BarbarianCiv.py for defs</Help>
@@ -316,10 +323,17 @@
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_ATTACK</Type>
             <Description>Ranged Attack</Description>
-            <Help>Siege Units Have Ranged Attack (Reccomended-on)</Help>
-            <bDefault>1</bDefault>
+            <Help>Siege can Attack a tile form range</Help>
+            <bDefault>0</bDefault>
             <bVisible>1</bVisible>
 <!--rangedattack-keldath-->
+		</GameOptionInfo>
+        <GameOptionInfo>
+            <Type>GAMEOPTION_RANGED_IMMUNITY</Type>
+            <Description>Ranged Immunity</Description>
+            <Help>when Siege Units Attack - Damage Immunity - ranged rules below apply as well</Help>
+            <bDefault>1</bDefault>
+            <bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_END_ATTACK</Type>

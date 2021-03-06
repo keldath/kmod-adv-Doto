@@ -372,7 +372,7 @@ void ArmamentForecast::predictArmament(int turnsBuildUp, double perTurnProductio
 	armamentPortion = std::min(armamentPortion, 0.7);
 	if(GET_PLAYER(civId).getMaxConscript() > 0 && intensity >= INCREASED) {
 		if(intensity == INCREASED)
-			armamentPortion += 0.05;
+			armamentPortion += 0.04;
 		else if(intensity == FULL)
 			armamentPortion += 0.08;
 		report.log("Armament portion increased b/c of conscription");

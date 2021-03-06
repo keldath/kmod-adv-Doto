@@ -3914,10 +3914,8 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 	case TRADE_GOLD_PER_TURN:
 		FAssert(item.m_iData >= 0);
 		bValid = true;
-		break;
 	case TRADE_MAPS:
 		bValid = true;
-		break;
 	case TRADE_VASSAL:
 		// advc.112: Make sure that only capitulation is possible between war enemies
 		if (!kToTeam.isAtWar(getTeam()))
@@ -7213,6 +7211,13 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 {
 	if (eReligion == NO_RELIGION)
 		return;
+//david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
+//keldath fix - avoid player to found forbidden religion
+	CivilizationTypes eCiv = GET_PLAYER(getID()).getCivilizationType();
+	if (eCiv != NO_CIVILIZATION && GC.getCivilizationInfo(eCiv).isForbidden(eReligion))
+		return;
+//david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
+
 
 	CvReligionInfo const& kSlotReligion = GC.getInfo(eSlotReligion);
 	CvGame& kGame = GC.getGame();

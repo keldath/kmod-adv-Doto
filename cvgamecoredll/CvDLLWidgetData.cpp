@@ -4793,7 +4793,7 @@ void CvDLLWidgetData::parseFlagHelp(CvWidgetDataStruct &widgetDataStruct, CvWStr
 /*                                                                                              */
 /************************************************************************************************/
 	// Add string showing version number
-	szTempBuffer.Format(NEWLINE SETCOLR L"%S" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), "AdvCiv 0.98c + Doto 1.06");
+	szTempBuffer.Format(NEWLINE SETCOLR L"%S" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), "AdvCiv 0.98c + Doto 1.07");
 	szBuffer.append(szTempBuffer);
 	szBuffer.append(NEWLINE);
 #ifdef LOG_AI
@@ -4839,7 +4839,26 @@ void CvDLLWidgetData::parseFlagHelp(CvWidgetDataStruct &widgetDataStruct, CvWStr
 					iiCountdown.first, iiCountdown.second) + L")");
 	} // </advc.700>
 	szBuffer.append(NEWLINE);
-
+	
+	// davidlallen: religion forbidden to civilization start + KELDATH  original addition
+	if (GC.getGame().isOption(GAMEOPTION_FORBIDDEN_RELIGION))
+	{
+		for (int iReligion = 0; iReligion < GC.getNumReligionInfos(); iReligion++)
+		{	// advc: Some style changes in this block
+			ReligionTypes eReligion = (ReligionTypes)iReligion;
+			if ((GC.getCivilizationInfo(GC.getGame().getActiveCivilizationType())).isForbidden(eReligion))
+			{
+				szBuffer.append(gDLL->getText("TXT_KEY_MISC_RELIGION_FORBIDDEN"));
+				szBuffer.append(":");
+				szBuffer.append(gDLL->getText(CvWString::format(SETCOLR L"%s" ENDCOLR,
+					TEXT_COLOR("COLOR_NEGATIVE_TEXT"),
+					GC.getInfo(eReligion).getDescription())));
+				// GC.getInfo(eReligion).getTextKeyWide();
+			}
+		}
+		szBuffer.append(NEWLINE);
+	}
+	// davidlallen: religion forbidden to civilization end
 
 	GAMETEXT.parseLeaderTraits(szBuffer, kActivePlayer.getLeaderType(),
 			kActivePlayer.getCivilizationType());

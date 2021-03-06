@@ -1131,16 +1131,16 @@ int CvPlayerAI::AI_movementPriority(CvSelectionGroupAI const& kGroup) const // a
 	if (pHeadUnit->AI_getUnitAIType() == UNITAI_EXPLORE)
 		return 10;
 
-	if (pHeadUnit->bombardRate() > 0)
+// DOTO-MOD -rangedattack-keldath START
+	if (pHeadUnit->rangedStrike() > 0)
 		return 11;
 
-	// DOTO-MOD -rangedattack-keldath START - Ranged Strike AI realism invictus
-	if (pHeadUnit->canRangeStrikeK())
+	if (pHeadUnit->bombardRate() > 0)
 		return 12;
 
 	if (pHeadUnit->collateralDamage() > 0)
 		return 13;
-	// MOD -rangedattack-keldath END - Ranged Strike AI
+// DOTO-MOD -rangedattack-keldath end
 	if (kGroup.isStranded())
 		return 505;
 
@@ -12717,7 +12717,8 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI, CvArea const*
 			break;
 
 		case UNITAI_COLLATERAL:
-			if (u.getCombat() > 0 && u.getCollateralDamage() > 0 &&
+			//doto keldath rangedattack + ranged immunity
+			if (u.getCombat() > 0 && (u.getCollateralDamage() > 0 || u.getRangeStrike()) &&
 				!u.isMostlyDefensive()) // advc.315
 			{
 				bValid = true;
@@ -13100,6 +13101,9 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI, CvArea const*
 		// The commented code above is K-Mod code from before the more recent changes; kept for comparison.
 		int iSiegeValue = 0;
 		iSiegeValue += iCombatValue * u.getCollateralDamage() * (4+u.getCollateralDamageMaxUnits()) / 600;
+		//doto keldath rangedattack + ranged immunity
+		iSiegeValue += u.getRangeStrike() ?
+					(((iCombatValue * iCombatValue) / 50) + iCombatValue / 2) : 0;
 		if (u.getBombardRate() > 0 && !AI_isDoStrategy(AI_STRATEGY_AIR_BLITZ))
 		{
 			int iBombardValue = (u.getBombardRate()+3) * 6;
@@ -13172,6 +13176,9 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI, CvArea const*
 		iValue += (iCombatValue * u.getMoves()) / 4;
 		iValue += (iCombatValue * u.getWithdrawalProbability()) / 25;
 		iValue -= (iCombatValue * u.getCityAttackModifier()) / 100;
+		//doto keldath rangedattack + ranged immunity
+		iValue += u.getRangeStrike() ?
+					(((iCombatValue * iCombatValue) / 50) + iCombatValue / 2) : 0;
 		break;
 
 	case UNITAI_PILLAGE:
