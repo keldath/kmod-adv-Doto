@@ -15701,6 +15701,23 @@ void CvGameTextMgr::setReligionHelp(CvWStringBuffer &szBuffer, ReligionTypes eRe
 			}
 		}
 	}
+	// davidlallen: religion forbidden to civilization start + KELDATH  original addition
+	if (GC.getGame().isOption(GAMEOPTION_FORBIDDEN_RELIGION))
+	{
+		if ((GC.getCivilizationInfo(GC.getGame().getActiveCivilizationType())).isForbidden(eReligion))
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText(CvWString::format(SETCOLR L"%s" ENDCOLR,
+				TEXT_COLOR("COLOR_NEGATIVE_TEXT"),
+				GC.getInfo(eReligion).getDescription())));
+			szBuffer.append(" is Forbidden for ");
+			szBuffer.append(GC.getCivilizationInfo(GC.getGame().getActiveCivilizationType()).getAdjective());
+			
+			// GC.getInfo(eReligion).getTextKeyWide();
+		}
+		szBuffer.append(NEWLINE);
+	}
+	// davidlallen: religion forbidden to civilization end
 }
 
 void CvGameTextMgr::setReligionHelpCity(CvWStringBuffer &szBuffer, ReligionTypes eReligion, CvCity *pCity, bool bCityScreen, bool bForceReligion, bool bForceState, bool bNoStateReligion)

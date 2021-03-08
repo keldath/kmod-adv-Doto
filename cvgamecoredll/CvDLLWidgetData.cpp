@@ -4848,11 +4848,11 @@ void CvDLLWidgetData::parseFlagHelp(CvWidgetDataStruct &widgetDataStruct, CvWStr
 			ReligionTypes eReligion = (ReligionTypes)iReligion;
 			if ((GC.getCivilizationInfo(GC.getGame().getActiveCivilizationType())).isForbidden(eReligion))
 			{
-				szBuffer.append(gDLL->getText("TXT_KEY_MISC_RELIGION_FORBIDDEN"));
-				szBuffer.append(":");
+				szBuffer.append("Forbidden Religion: ");
 				szBuffer.append(gDLL->getText(CvWString::format(SETCOLR L"%s" ENDCOLR,
 					TEXT_COLOR("COLOR_NEGATIVE_TEXT"),
 					GC.getInfo(eReligion).getDescription())));
+				szBuffer.append(CvWString::format(L" %c", GC.getReligionInfo(eReligion).getHolyCityChar()));
 				// GC.getInfo(eReligion).getTextKeyWide();
 			}
 		}

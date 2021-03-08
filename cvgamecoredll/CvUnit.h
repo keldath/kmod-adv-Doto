@@ -979,9 +979,9 @@ public:
 	bool canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY) const;
 	bool rangeStrike(int iX, int iY);
 // DOTO-MOD - Keldtah RangedStrike start + Ranged Immunity
-	int rangeCombatDamageK(const CvUnit* pDefender) const;
+	int rangeCombatDamageK(const CvUnit* pDefender, const CvUnit* pAttacker) const;
 	bool randomRangedGen(CvUnit* pDefender) const;
-	bool rImmunityCombatCallback(CvUnit* pDefender, CvPlot* pPlot, 
+	bool rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlot* pPlot,
 					int dmg, int msgType,bool rndHit = true ) const;
 	bool isRangeStrikeCapableK() const;
 // DOTO-MOD - Keldtah RangedStrike end + Ranged Immunity
@@ -1196,9 +1196,9 @@ protected:
 			int& iTheirDamage, CombatDetails* pTheirDetails = NULL) const;
 	bool isCombatVisible(const CvUnit* pDefender) const;
 	//void resolveCombat(CvUnit* pDefender, CvPlot* pPlot, CvBattleDefinition& kBattle);
+	void resolveCombat(CvUnit* pDefender, CvPlot* pPlot, bool bVisible); // K-Mod
 //DOTO - ranged-immunity
-	void resolveCombat(CvUnit* pDefender, CvPlot* pPlot, bool bVisible,
-		 int dmg,bool bAttckerRanged ,bool bdefenderRanged, bool rangedBattle, bool rImmunityOption = false); // K-Mod
+	void resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pPlot, bool bVisible, int dmgFromRanged); // K-Mod
 //DOTO - rangeimunity
 	void addAttackSuccessMessages(CvUnit const& kDefender, bool bFought) const; // advc.010
 	void addDefenseSuccessMessages(CvUnit const& kDefender) const; // advc
