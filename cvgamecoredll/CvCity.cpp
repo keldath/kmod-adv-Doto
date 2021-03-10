@@ -10853,7 +10853,9 @@ void CvCity::setHasCorporation(CorporationTypes eCorp, bool bNewValue, bool bAnn
 						if (eBonus != NO_BONUS)
 						{
 							CvWString szTemp;
-							szTemp.Format(L"%s", kCorp.getDescription());
+//doto advc 099 fix to 098 - Fix AdvCiv bug in announcement of founded corporation
+							//szTemp.Format(L"%s", kCorp.getDescription());
+							szTemp.Format(L"%s", GC.getInfo(eBonus).getDescription());
 							setListHelp(szBonusList, L"", szTemp, L", ", bFirst);
 							bFirst = false;
 						}

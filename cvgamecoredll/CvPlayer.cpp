@@ -2389,7 +2389,9 @@ CvSelectionGroup* CvPlayer::cycleSelectionGroups(CvUnit* pUnit, bool bForward,
 {
 	FAssert(GC.getGame().getActivePlayer() == getID() && isHuman());
 	// <advc.004h>
-	if(pUnit->canFound())
+//doto advc 099 fix to 098 - Fix AdvCiv crash during unit cycling
+	//if(pUnit->canFound())
+	if (pUnit != NULL && pUnit->canFound())
 		pUnit->updateFoundingBorder(true); // </advc.004h>
 	// K-Mod
 	bool bDummy;
@@ -6727,12 +6729,14 @@ bool CvPlayer::canResearch(TechTypes eTech, bool bTrade,
 	for (int i = 0; i < GC.getNUM_OR_TECH_PREREQS(eTech); i++)
 	{
 		TechTypes ePrereq = (TechTypes)GC.getInfo(eTech).getPrereqOrTechs(i);
+//doto advc 099 fix to 098 - Fix AI not respecting AdvCiv rule about tech requirements
 		// <advc.126> Cycle detection
-		if(ePrereq == eTech)
+		/*if(ePrereq == eTech)
 		{
 			FAssert(false);
 			continue;
-		} // </advc.126>
+		} */// </advc.126>
+		FAssert(ePrereq != eTech); // advc
 		if (ePrereq != NO_TECH)
 		{
 			bFoundPossible = true;
@@ -10340,9 +10344,15 @@ bool CvPlayer::setCommercePercent(CommerceTypes eCommerce, int iNewValue, bool b
 	updateCommerce();
 	/*	K-Mod. For human players, update commerce weight immediately
 		so that they can see effects on working plots, etc. */
-	if (isHuman() && isTurnActive())
+//doto advc 099 fix to 098 - Fix minor issue with initialization of AI commerce weights
+	if (isHuman() && isTurnActive() &&
+		/*	advc.001: Don't do this before the game is fully initialized,
+			in particular not before CvGame::initGameHandicap. */
+		getNumCities() > 0)
+	{
 		AI().AI_updateCommerceWeights();
-	// K-Mod end
+		// K-Mod end
+	}
 	AI_makeAssignWorkDirty();
 	/*if (getTeam() == GC.getGame().getActiveTeam()) {
 		gDLL->UI().setDirty(GameData_DIRTY_BIT, true);
@@ -20711,7 +20721,9 @@ double CvPlayer::estimateYieldRate(YieldTypes eYield, int iSamples) const
 	CvGame const& kGame = GC.getGame();
 	int iGameTurn = kGame.getGameTurn();
 	int iTurnsPlayed = iGameTurn - kGame.getStartTurn();
-	iSamples = std::min(iSamples, iTurnsPlayed - 1);
+//doto advc 099 fix to 098 - Fix crash in scenarios
+	//iSamples = std::min(iSamples, iTurnsPlayed - 1);
+	iSamples = std::max(0, std::min(iSamples, iTurnsPlayed - 1));
 	std::vector<double> samples; // double for ::dMedian
 	/* When anarchy lasts several turns, the sample may not contain a single
 	   non-revolution turn. In this case, increase the sample size gradually. */

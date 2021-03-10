@@ -1650,17 +1650,17 @@ void CvUnit::updateCombat(bool bQuick)
 			{	
 				if (bAttckerRanged)
 				{
-					rndHitAtk = randomRangedGen(pDefender);
+					rndHitAtk = randomRangedGen(pDefender,this);
 					dmgFromRangedA = rndHitAtk ? rangeCombatDamageK(pDefender, this) : 0; //if hit miss dont do damage
 					if (dmgFromRangedA != 0)
 						resolveRangedCombat(pDefender, this, pPlot, bVisible, dmgFromRangedA);
 				}	
-				if (bdefenderRanged)
+				if (bdefenderRanged && GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE))
 				{
-					rndHitDef = randomRangedGen(this);
+					rndHitDef = randomRangedGen(this, pDefender);
 					dmgFromRangedD = rndHitDef ? rangeCombatDamageK(this, pDefender) : 0; //if hit miss dont do damage
 					if (dmgFromRangedD != 0)
-						resolveRangedCombat(this,pDefender, this->plot(), bVisible, dmgFromRangedD);
+						resolveRangedCombat(this,pDefender, this->plot(), bVisible, ::round(dmgFromRangedD / 2));//i decided reta;oation damage would be halfed
 				}		
 			}
 			else
@@ -12044,14 +12044,20 @@ bool CvUnit::isRangeStrikeCapableK() const
 
 }
 
-bool CvUnit::randomRangedGen(CvUnit* pDefender) const
+bool CvUnit::randomRangedGen(CvUnit* pDefender, CvUnit* pAttacker) const
 {
 	bool hit = true;
 	if (GC.getGame().isOption(GAMEOPTION_RAND_HIT))
 	{
-		 hit = ((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) 
-				+ ((baseCombatStr() * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER") 
-				* currHitPoints()) / maxHitPoints())) 
+		int a = GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random");
+		int b = (pAttacker->baseCombatStr() * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER")* pAttacker->currHitPoints());
+		int c = pAttacker->maxHitPoints();
+		int d = (GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random"));
+		int e = ((pDefender->baseCombatStr() * pDefender->currHitPoints()) / pDefender->maxHitPoints());
+
+		hit = ((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) 
+				+ ((pAttacker->baseCombatStr() * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER")
+				* pAttacker->currHitPoints()) / pAttacker->maxHitPoints()))
 				> 
 				((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random"))
 				+ ((pDefender->baseCombatStr() * pDefender->currHitPoints()) / pDefender->maxHitPoints()));
@@ -12071,7 +12077,7 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot
 		gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
 			"AS2D_BOMBARD", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREY"), pAttacker->getX(), pAttacker->getY()/*, true, true*/);
 		szBuffer = gDLL->getText("TXT_KEY_MISC_ENEMY_MAXIMUM_DAMAGE", getNameKey(), pDefender->getNameKey());
-		gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
+		gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, *pPlot,
 			"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY());
 		noDmg = true;
 	}
@@ -12094,37 +12100,45 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot
 	*/
 		if (!rndHit) 
 		{
-			//if missed the attack on units.
-			CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR_MISS", 
-				 	pDefender->getNameKey(), pAttacker->getNameKey()));
-			//red icon over attacking unit
-			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
-				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("YELLOW"), pAttacker->getX(), pAttacker->getY()/*, true, true*/);
-			//white icon over defending unit
-			gDLL->UI().addMessage(pAttacker->getOwner(), false, 0, L"", pDefender->getPlot(),
-				"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(),GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY()/*, true, true*/);
+			CvWString szBuffer;
+			if (GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE))
+			{
+				//if missed the attack on units.
+				szBuffer =(gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR_MISS",
+					pDefender->getNameKey(), pAttacker->getNameKey()));
+				//red icon over attacking unit
+				gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, pAttacker->getPlot(),
+					"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("YELLOW"), pAttacker->getX(), pAttacker->getY()/*, true, true*/);
+				//white icon over defending unit
+				gDLL->UI().addMessage(pAttacker->getOwner(), false, 0, L"", pDefender->getPlot(),
+					"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY()/*, true, true*/);
+			}
 			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR_MISS", pAttacker->getNameKey(), pDefender->getNameKey());
 			gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, *pPlot,
 				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("MAGENTA"),pPlot->getX(), pPlot->getY());
 		}
 		else
 		{
-			//if the damage is none 0 and a hit.
-			CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR",
-				pDefender->getNameKey(), pAttacker->getNameKey(),
+			CvWString szBuffer;
+			if (GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE))
+			{
+				//if the damage is none 0 and a hit.
+				szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR",
+					pDefender->getNameKey(), pAttacker->getNameKey(),
+					// advc.004g:
+					((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints()));
 				// advc.004g:
-				((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints()));
-			// advc.004g:
-			//red icon over attacking unit
-			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, pAttacker->getPlot(),
-				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("RED"), pAttacker->getX(), pAttacker->getY()/*, true, true*/);
-			//white icon over defending unit
-			gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"", pDefender->getPlot(),
-				"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY()/*, true, true*/);
+				//red icon over attacking unit
+				gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, pAttacker->getPlot(),
+					"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("RED"), pAttacker->getX(), pAttacker->getY()/*, true, true*/);
+				//white icon over defending unit
+				gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"", pDefender->getPlot(),
+					"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY()/*, true, true*/);
+			}
 			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR", pAttacker->getNameKey(), pDefender->getNameKey(),
 				// advc.004g:
 				((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints());
-			gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
+			gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, *pPlot,
 				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
 
 			//set damage but don't update entity damage visibility
@@ -12137,9 +12151,9 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot
 	if (pDefender->isDead() && msgType == 2)
 	{
 		//should not occur - ranged units have a max combat limit. but i left it
-		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", getNameKey(), pDefender->getNameKey()));
-		gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, GC.getInfo(
-			GET_PLAYER(getOwner()) // advc.002l
+		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", pAttacker->getNameKey(), pDefender->getNameKey()));
+		gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, GC.getInfo(
+			GET_PLAYER(pAttacker->getOwner()) // advc.002l
 			.getCurrentEra()).getAudioUnitVictoryScript(), MESSAGE_TYPE_INFO, NULL,
 			GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
 	}

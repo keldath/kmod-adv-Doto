@@ -16131,8 +16131,9 @@ void CvGameTextMgr::setCorporationHelpCity(CvWStringBuffer &szBuffer, Corporatio
 			bHandled = true;
 		}
 	}
-
-	bHandled = false;
+//doto advc 099 fix to 098 - Fix AdvCiv bug in announcement of founded corporation
+	// advc.001: Looks wrong. The result from above would never be read.
+	//bHandled = false;
 	for (int i = 0; i < NUM_COMMERCE_TYPES; ++i)
 	{
 		int iCommerce = 0;

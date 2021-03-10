@@ -14086,8 +14086,11 @@ bool CvUnitAI::AI_cityAttack(int iRange, int iOddsThreshold,
 			if ((bFollow ? canMoveOrAttackInto(p, bDeclareWar) :
 				generatePath(&p, eFlags, true, &iPathTurns, iRange)))
 			{
-				int iValue = AI_isAnyEnemyDefender(p) ? 100 :
-						AI_getGroup()->AI_getWeightedOdds(&p, true);
+//doto advc 099 fix to 098 - Fix flipped sign in CvUnitAI::AI_cityAttack
+				/*int iValue = AI_isAnyEnemyDefender(p) ? 100 :
+						AI_getGroup()->AI_getWeightedOdds(&p, true);*/
+				int iValue = (!AI_isAnyEnemyDefender(p) ? 100 :
+					AI_getGroup()->AI_getWeightedOdds(&p, true)); 
 				if (iValue >= iOddsThreshold)
 				{
 					if (iValue > iBestValue)
@@ -17219,8 +17222,18 @@ bool CvUnitAI::AI_connectPlot(CvPlot const& kPlot, int iRange) // advc: 1st para
 			if(isBarbarian())
 			{
 				CvCity* c = kPlot.getWorkingCity();
-				if(c == NULL || !at(kPlot) || kPlot.isConnectedTo(c))
+//doto advc 099 fix to 098 - Fix rare AI unit loop (Barbarian worker)
+				//if(c == NULL || !at(kPlot) || kPlot.isConnectedTo(c))
+				int iDummy;
+				if (c == NULL || !at(kPlot) || kPlot.isConnectedTo(c) ||
+					/*	If Barbarians expand their borders somehow,
+						then the city might not be adjacent. */
+//doto advc 099 fix to 098 - i had to replave  c->getPlot() to c->plot()
+					//c->getPlot()
+					!generatePath(c->plot(), MOVE_SAFE_TERRITORY, false, &iDummy, 2))
+				{
 					return false;
+				}
 				getGroup()->pushMission(MISSION_ROUTE_TO, c->getX(), c->getY(),
 						MOVE_SAFE_TERRITORY, false, false, MISSIONAI_BUILD, &kPlot);
 				return true;

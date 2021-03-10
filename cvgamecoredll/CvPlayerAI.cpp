@@ -4130,8 +4130,25 @@ TechTypes CvPlayerAI::AI_bestTech(int iMaxPathLength, bool bFreeTech, bool bAsyn
 		FErrorMsg("Failed to create a tech path");
 		return NO_TECH;
 	}
-
-	TechTypes eBestTech = techs[best_path_it->second.back()].second;
+//doto advc 099 fix to 098 - Fix AI not respecting AdvCiv rule about tech requirements
+	//TechTypes eBestTech = techs[best_path_it->second.back()].second;
+	/*	<advc.126> Haven't checked the prereqs of the prereqs.
+		E.g. in Earth1000AD, India starts with Paper but w/o its prereqs.
+		Under AdvCiv rules, India is then prohibited from researching Education. */
+	TechTypes eBestTech;
+	{
+		size_t i = 0;
+		do
+		{
+			eBestTech = techs[
+				/*best_path_it->*/tech_paths[i]. // advc.550g
+					second.back()].second;
+			i++;
+		} while (i < tech_paths.size() &&
+			// K-Mod had asserted the negation of this
+			(isResearch() && getAdvancedStartPoints() >= 0 &&
+				!canResearch(eBestTech, false, bFreeTech)));
+	} // </advc.126>
 	if (gPlayerLogLevel >= 1)
 	{
 		logBBAI("  Player %d (%S) selects tech %S with value %d. (Aiming for %S)",
@@ -4141,8 +4158,10 @@ TechTypes CvPlayerAI::AI_bestTech(int iMaxPathLength, bool bFreeTech, bool bAsyn
 				GC.getInfo(techs[best_path_it->second.front()].second).
 				getDescription());
 	}
-	FAssert(!isResearch() || getAdvancedStartPoints() < 0 ||
+//doto advc 099 fix to 098 - Fix AI not respecting AdvCiv rule about tech requirements
+/*	FAssert(!isResearch() || getAdvancedStartPoints() < 0 ||
 			canResearch(eBestTech, false, bFreeTech));
+	*/
 	// </k146>
 	return eBestTech;
 }
@@ -14226,9 +14245,12 @@ bool CvPlayerAI::AI_isLandWar(CvArea const& kArea) const
 	checks. */
 bool CvPlayerAI::AI_isFocusWar(CvArea const* pArea) const
 {
-	if(!hasCapital())
+//doto advc 099 fix to 098 - Minor tweak to AI_isFocusWar
+	if (isBarbarian())
+		return true;
+	if (!hasCapital())
 		return false;
-	if(pArea == NULL)
+	if (pArea == NULL)
 		pArea = getCapital()->area();
 	/*  Chosen wars (ongoing or in preparation) are always worth focusing on;
 		others only when on the defensive. (In CvTeamAI::AI_calculateAreaAIType,
@@ -14796,6 +14818,8 @@ int CvPlayerAI::AI_localDefenceStrength(const CvPlot* pDefencePlot, TeamTypes eD
 
 	FAssert(bMoveToTarget || !bCheckMoves); // it doesn't make much sense to check moves if the defenders are meant to stay put.
 	FAssert(eDomainType != DOMAIN_AIR && eDomainType != DOMAIN_IMMOBILE); // advc: Air combat strength isn't counted
+//doto advc 099 fix to 098  -Increase AI strength estimate for defending stacks
+	int iDefenders = 0; // advc.159
 	for (SquareIter it(*pDefencePlot, iRange); it.hasNext(); ++it)
 	{
 		CvPlot const& p = *it;
@@ -14845,6 +14869,8 @@ int CvPlayerAI::AI_localDefenceStrength(const CvPlot* pDefencePlot, TeamTypes eD
 						bMoveToTarget ? pDefencePlot : &p, // </advc.159>
 						NULL, false, 0, false, iHP, bAssumePromo); // advc.139
 				iPlotTotal += iUnitStr;
+//doto advc 099 fix to 098  -Increase AI strength estimate for defending stacks
+				iDefenders++; // advc.159
 			}
 		}
 		if (!bNoCache && !isHuman() && eDefenceTeam == NO_TEAM &&
@@ -14858,8 +14884,11 @@ int CvPlayerAI::AI_localDefenceStrength(const CvPlot* pDefencePlot, TeamTypes eD
 		}
 		iTotal += iPlotTotal;
 	}
-
-	return iTotal;
+//doto advc 099 fix to 098  -Increase AI strength estimate for defending stacks
+	//return iTotal;
+	// <advc.159> Large defensive stacks are difficult to assail
+	iDefenders = std::min(iDefenders, 13);
+	return (iTotal * (75 + (iDefenders - 1))) / 75; // </advc.159>
 }
 
 // Total attack strength of units that can move iRange steps to reach pAttackPlot
@@ -20278,7 +20307,9 @@ void CvPlayerAI::AI_proposeWarTrade(PlayerTypes eHireling)
 				if (iAcquireVal <= 0) // Hireling insisting on liberation
 					continue;
 				FErrorMsg("Just to verify that this line is reachable; hasn't come up in tests yet"); // advc.test
-				int iFitness = iKeepVal - iAcquireVal;
+//doto advc 099 fix to 098 - Fix minor bug in AI city trade proposals
+				//int iFitness = iKeepVal - iAcquireVal;
+				int iFitness = iAcquireVal - iKeepVal;
 				if (iFitness > iBestFitness && (iKeepVal <= 0 ||
 					scaled(iAcquireVal, iKeepVal) - 1 > per100(iWSRating)))
 				{
@@ -23260,9 +23291,13 @@ void CvPlayerAI::AI_updateVictoryStageHash()
 
 	m_eVictoryStageHash = AI_DEFAULT_VICTORY_STAGE;
 	//m_iVictoryStrategyHashCacheTurn = GC.getGame().getGameTurn();
-
-	if (!hasCapital())
+//doto advc 099 fix to 098 - UWAI: Fix crash in games that start with free cities
+	if (!hasCapital() ||
+		// advc.115: Can't estimate yield rates on turn 0
+		GC.getGame().getElapsedGameTurns() <= 0)
+	{
 		return;
+	}
 
 	bool bStartedOtherLevel3 = false;
 	bool bStartedOtherLevel4 = false;

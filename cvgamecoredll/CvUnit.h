@@ -980,7 +980,7 @@ public:
 	bool rangeStrike(int iX, int iY);
 // DOTO-MOD - Keldtah RangedStrike start + Ranged Immunity
 	int rangeCombatDamageK(const CvUnit* pDefender, const CvUnit* pAttacker) const;
-	bool randomRangedGen(CvUnit* pDefender) const;
+	bool randomRangedGen(CvUnit* pDefender, CvUnit* pAttacker) const;
 	bool rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlot* pPlot,
 					int dmg, int msgType,bool rndHit = true ) const;
 	bool isRangeStrikeCapableK() const;

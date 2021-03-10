@@ -7149,8 +7149,15 @@ void CvPlot::updateFlagSymbol()
 	{
 		if (m_pFlagSymbol == NULL || gDLL->getFlagEntityIFace()->getPlayer(m_pFlagSymbol) != ePlayer)
 		{
-			if (m_pFlagSymbol != NULL)
+			if (m_pFlagSymbol != NULL &&
+//doto advc 099 fix to 098 - Fix crash upon quick-load (maybe only when debugging)
+				/*	advc.001: It seems that the update can occur while quick-loading,
+					resulting in a crash. Maybe only when debugging. Specifically, I
+					quick-loaded after stopping and continuing in pathfinding code. */
+				((pCenterUnit != NULL && pCenterUnit->getEntity() != NULL) || getNumUnits() == 0))
+			{
 				gDLL->getFlagEntityIFace()->destroy(m_pFlagSymbol);
+			}
 			m_pFlagSymbol = gDLL->getFlagEntityIFace()->create(ePlayer);
 			if (m_pFlagSymbol != NULL)
 				gDLL->getFlagEntityIFace()->setPlot(m_pFlagSymbol, this, false);
