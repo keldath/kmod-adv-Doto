@@ -5375,9 +5375,9 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<GlobalSeaPlotYieldChanges/>
 			<YieldChanges/>
 			<YieldModifiers>
-				<iYield>15</iYield>
-				<iYield>25</iYield>
 				<iYield>0</iYield>
+				<iYield>20</iYield>
+				<iYield>15</iYield>
 			</YieldModifiers>
 			<CommerceChanges/>
 			<ObsoleteSafeCommerceChanges/>
@@ -5466,7 +5466,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ProductionTraits>
 				<ProductionTrait>
 					<ProductionTraitType>TRAIT_INDUSTRIOUS</ProductionTraitType>
-					<iProductionTrait>100</iProductionTrait>
+					<iProductionTrait>60</iProductionTrait>
 				</ProductionTrait>
 			</ProductionTraits>
 			<HappinessTraits/>
@@ -5567,9 +5567,9 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<GlobalSeaPlotYieldChanges/>
 			<YieldChanges/>
 			<YieldModifiers>
-				<iYield>20</iYield>
-				<iYield>25</iYield>
 				<iYield>0</iYield>
+				<iYield>20</iYield>
+				<iYield>20</iYield>
 			</YieldModifiers>
 			<CommerceChanges/>
 			<ObsoleteSafeCommerceChanges/>
@@ -22919,7 +22919,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ObsoleteSafeCommerceChanges>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
-				<iCommerce>6</iCommerce>
+				<iCommerce>4</iCommerce>
 			</ObsoleteSafeCommerceChanges>
 			<CommerceChangeDoubleTimes>
 				<iCommerce>0</iCommerce>
@@ -27664,7 +27664,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ObsoleteSafeCommerceChanges>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
-				<iCommerce>6</iCommerce>
+				<iCommerce>5</iCommerce>
 			</ObsoleteSafeCommerceChanges>
 			<CommerceChangeDoubleTimes>
 				<iCommerce>0</iCommerce>

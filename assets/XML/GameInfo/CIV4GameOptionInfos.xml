@@ -331,14 +331,14 @@
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_IMMUNITY</Type>
             <Description>Ranged Immunity</Description>
-            <Help>when Siege Units Attack - Damage Immunity - ranged rules below apply as well</Help>
+            <Help>Ranged Units Attack will not sustain damage from target</Help>
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
-            <Type>GAMEOPTION_END_ATTACK</Type>
-            <Description>Allow More Attacks</Description>
-            <Help>Siege and Ranged units can carry another attack if ther have movement</Help>
+            <Type>GAMEOPTION_RANGED_RETALIATE</Type>
+            <Description>Ranged Retaliate</Description>
+            <Help>Ranged units can carry another attack if ther have movement</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>
        	</GameOptionInfo>
@@ -347,8 +347,8 @@
             <Description>Ranged Move End</Description>
             <Help>Units with Range Strike wont be able to move if it have more move points.(default off)</Help>
             <bDefault>0</bDefault>
-            <bVisible>1</bVisible>
-       	</GameOptionInfo>
+            <bVisible>0</bVisible> 	
+      	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RAND_HIT</Type>
             <Description>Random Bombardment Hit</Description>
