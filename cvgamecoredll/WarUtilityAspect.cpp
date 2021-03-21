@@ -2851,10 +2851,18 @@ void Affection::evaluate() {
 		that will only please us when it sees our soldiers approach isn't a true friend. */
 	if(wp != WARPLAN_PREPARING_LIMITED && wp != WARPLAN_PREPARING_TOTAL &&
 			wp != NO_WARPLAN) {
-		directPlanFactor = std::min(1.0, 0.08 * std::max(1,
+		directPlanFactor = std::min(1.0, 0.085 * std::max(1.0,
 				/*  If war stays imminent for a long time, and relations remain good,
-					affection should matter again. */
-				agent.AI_getWarPlanStateCounter(TEAMID(theyId)) - 4));
+					affection should matter again. Adjust a bit for game progress b/c
+					turns feel longer in the late game. (This runs counter to the
+					progress adjustment in the end.) If a human player _feels_ that
+					relations have been good for quite some time when war is declared,
+					then that's a problem.
+					Take into account the time spent on prepartions? That would reflect the
+					sunk cost of the AI and would also tend to be shorter in the late game.
+					But that duration isn't currently kept track of by the team AI. */
+				agent.AI_getWarPlanStateCounter(TEAMID(theyId))
+				- 4 * (2.5 * gameProgressFactor - 1.5)));
 	}
 	// We're not fully responsible for wars triggered by our DoW
 	double linkedWarFactor = 0;
@@ -3337,7 +3345,9 @@ void FairPlay::evaluate() {
 	double uMinus = 0;
 	/*  All bets off by turn 100, but, already by turn 50, the cost may
 		no longer be prohibitive. */
-	int iTargetTurn = 100;
+//doto advc 099 fix to 098 - Fix issue with UWAI fair-play behavior when start turn > 0
+	//int iTargetTurn = 100;
+	int iTargetTurn = 100 + game.getStartTurn();
 	// Allow earlier aggression on crowded maps
 	iTargetTurn = ::round(iTargetTurn *
 			((1 + 1.5 * (game.getRecommendedPlayers() /
@@ -3350,11 +3360,15 @@ void FairPlay::evaluate() {
 		uMinus = std::pow(iTurnsRemaining / 2.0, 1.28);
 		if(gameEra > startEra) {
 			log("The game era has surpassed the start era");
-			uMinus *= 2/3.;
+//doto advc 099 fix to 098 - Fix issue with UWAI fair-play behavior when start turn > 0
+			uMinus *= 3 / 3.;
+			//uMinus *= 2/3.;
 		}
 		if(they->getCurrentEra() > startEra) {
 			log("Their era has surpassed the start era");
-			uMinus *= 2/3.;
+//doto advc 099 fix to 098 - Fix issue with UWAI fair-play behavior when start turn > 0
+			//uMinus *= 2/3.;
+			uMinus *= 3 / 4.;
 		}
 		scaled scoreRatio(game.getPlayerScore(weId), game.getPlayerScore(theyId));
 		log("Score ratio: %s", scoreRatio.str(100).c_str());

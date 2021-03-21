@@ -36,5 +36,15 @@
 			<Description>Military</Description>
 			<TraitNoUpkeeps/>
 		</CivicOptionInfo>
+		<CivicOptionInfo>
+			<Type>CIVICOPTION_TERRA</Type>
+			<Description>**Terra**</Description>
+			<TraitNoUpkeeps/>
+		</CivicOptionInfo>
+		<CivicOptionInfo>
+			<Type>CIVICOPTION_IDEALS</Type>
+			<Description>**Ideals**</Description>
+			<TraitNoUpkeeps/>
+		</CivicOptionInfo>
 	</CivicOptionInfos>
 </Civ4CivicOptionInfos>

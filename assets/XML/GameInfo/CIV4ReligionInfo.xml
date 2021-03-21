@@ -189,7 +189,7 @@ TGA - THE NUMBERS MUST BE DESC - OR ERROR
 			<Description>TXT_KEY_RELIGION_HINDUISM</Description>
 			<Adjective>TXT_KEY_RELIGION_HINDUISM_ADJECTIVE</Adjective>
 			<Civilopedia>TXT_KEY_RELIGION_HINDUISM_PEDIA</Civilopedia>
-			<TechPrereq>TECH_MEDITATION</TechPrereq>
+			<TechPrereq>TECH_POLYTHEISM</TechPrereq>
 			<FreeUnitClass>UNITCLASS_HINDU_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
@@ -221,7 +221,7 @@ TGA - THE NUMBERS MUST BE DESC - OR ERROR
 			<Description>TXT_KEY_RELIGION_BUDDHISM</Description>
 			<Adjective>TXT_KEY_RELIGION_BUDDHISM_ADJECTIVE</Adjective>
 			<Civilopedia>TXT_KEY_RELIGION_BUDDHISM_PEDIA</Civilopedia>
-			<TechPrereq>TECH_POLYTHEISM</TechPrereq>
+			<TechPrereq>TECH_MEDITATION</TechPrereq>
 			<FreeUnitClass>UNITCLASS_BUDDHIST_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>

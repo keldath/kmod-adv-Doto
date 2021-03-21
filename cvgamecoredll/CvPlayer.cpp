@@ -1244,6 +1244,7 @@ int CvPlayer::startingPlotDistanceFactor(CvPlot const& kPlot, PlayerTypes ePlaye
 	PROFILE_FUNC();
 
 	FAssert(ePlayer != getID());
+	FAssert(iRange > 0);
 
 	int iValue = 1000;
 	CvPlot const* pStartingPlot = getStartingPlot();
@@ -1370,7 +1371,9 @@ std::vector<std::pair<int,int> > CvPlayer::findStartingAreas(  // advc: style ch
 	//return iBestArea; // <kekm.35>
 	VectorPairSecondGreaterComparator kComparator;
 	std::sort(areas_by_value.begin(), areas_by_value.end(), kComparator);
-	areas_by_value.resize(8); // advc: No need to pass around every little island
+	// advc: No need to consider every little island
+	areas_by_value.resize(std::min<int>(areas_by_value.size(),
+			PlayerIter<CIV_ALIVE>::count()));
 	return areas_by_value; // </kekm.35>
 }
 
@@ -2386,7 +2389,9 @@ CvSelectionGroup* CvPlayer::cycleSelectionGroups(CvUnit* pUnit, bool bForward,
 {
 	FAssert(GC.getGame().getActivePlayer() == getID() && isHuman());
 	// <advc.004h>
-	if(pUnit->canFound())
+//doto advc 099 fix to 098 - Fix AdvCiv crash during unit cycling
+	//if(pUnit->canFound())
+	if (pUnit != NULL && pUnit->canFound())
 		pUnit->updateFoundingBorder(true); // </advc.004h>
 	// K-Mod
 	bool bDummy;
@@ -3911,10 +3916,8 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 	case TRADE_GOLD_PER_TURN:
 		FAssert(item.m_iData >= 0);
 		bValid = true;
-		break;
 	case TRADE_MAPS:
 		bValid = true;
-		break;
 	case TRADE_VASSAL:
 		// advc.112: Make sure that only capitulation is possible between war enemies
 		if (!kToTeam.isAtWar(getTeam()))
@@ -6726,12 +6729,14 @@ bool CvPlayer::canResearch(TechTypes eTech, bool bTrade,
 	for (int i = 0; i < GC.getNUM_OR_TECH_PREREQS(eTech); i++)
 	{
 		TechTypes ePrereq = (TechTypes)GC.getInfo(eTech).getPrereqOrTechs(i);
+//doto advc 099 fix to 098 - Fix AI not respecting AdvCiv rule about tech requirements
 		// <advc.126> Cycle detection
-		if(ePrereq == eTech)
+		/*if(ePrereq == eTech)
 		{
 			FAssert(false);
 			continue;
-		} // </advc.126>
+		} */// </advc.126>
+		FAssert(ePrereq != eTech); // advc
 		if (ePrereq != NO_TECH)
 		{
 			bFoundPossible = true;
@@ -7210,6 +7215,13 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 {
 	if (eReligion == NO_RELIGION)
 		return;
+//david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
+//keldath fix - avoid player to found forbidden religion
+	CivilizationTypes eCiv = GET_PLAYER(getID()).getCivilizationType();
+	if (eCiv != NO_CIVILIZATION && GC.getCivilizationInfo(eCiv).isForbidden(eReligion))
+		return;
+//david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
+
 
 	CvReligionInfo const& kSlotReligion = GC.getInfo(eSlotReligion);
 	CvGame& kGame = GC.getGame();
@@ -9547,7 +9559,8 @@ void CvPlayer::setTurnActive(bool bNewValue, bool bDoTurn)
 				} // </advc.106b>
 			}
 			// <advc.044>
-			if (isHuman() || isHumanDisabled())
+			if ((isHuman() || isHumanDisabled()) &&
+				!kGame.isMPOption(MPOPTION_SIMULTANEOUS_TURNS) && !kGame.isHotSeat())
 			{
 				// <advc.700>
 				if(kGame.isOption(GAMEOPTION_RISE_FALL))
@@ -10331,9 +10344,15 @@ bool CvPlayer::setCommercePercent(CommerceTypes eCommerce, int iNewValue, bool b
 	updateCommerce();
 	/*	K-Mod. For human players, update commerce weight immediately
 		so that they can see effects on working plots, etc. */
-	if (isHuman() && isTurnActive())
+//doto advc 099 fix to 098 - Fix minor issue with initialization of AI commerce weights
+	if (isHuman() && isTurnActive() &&
+		/*	advc.001: Don't do this before the game is fully initialized,
+			in particular not before CvGame::initGameHandicap. */
+		getNumCities() > 0)
+	{
 		AI().AI_updateCommerceWeights();
-	// K-Mod end
+		// K-Mod end
+	}
 	AI_makeAssignWorkDirty();
 	/*if (getTeam() == GC.getGame().getActiveTeam()) {
 		gDLL->UI().setDirty(GameData_DIRTY_BIT, true);
@@ -10548,6 +10567,15 @@ bool CvPlayer::isOption(PlayerOptionTypes eOption) const
 void CvPlayer::setOption(PlayerOptionTypes eOption, bool bNewValue)
 {
 	m_abOptions.set(eOption, bNewValue);
+	/*	<advc.004z>, advc.001: At game start, colors and plot indicators get
+		updated before player options are set. Need to do another update after
+		the recommendations option has been set. And, actually, should always
+		do an update when that option changes. */
+	if (eOption == PLAYEROPTION_NO_UNIT_RECOMMENDATIONS)
+	{
+		gDLL->UI().setDirty(GlobeLayer_DIRTY_BIT, true);
+		gDLL->UI().setDirty(ColoredPlots_DIRTY_BIT, true);
+	} // </advc.004z>
 }
 
 
@@ -14590,10 +14618,6 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	//int iLoop = 0;
     //DPII < Maintenance Modifiers >
 	int iI, iJ;
-	// < Civic Infos Plus Start >
-	CvCity* pLoopCity;
-	int iLoop;
-	// < Civic Infos Plus End   >
 	changeGreatPeopleRateModifier(GC.getInfo(eCivic).getGreatPeopleRateModifier() * iChange);
 	changeGreatGeneralRateModifier(GC.getInfo(eCivic).getGreatGeneralRateModifier() * iChange);
 	changeDomesticGreatGeneralRateModifier(GC.getInfo(eCivic).getDomesticGreatGeneralRateModifier() * iChange);
@@ -14739,17 +14763,6 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 				GC.getInfo(eCivic).isSpecialistValid(eLoopSpecialist) ?
 				iChange : 0);
 	}
-// < Civic Infos Plus Start >
-	for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
-	{
-		for(iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
-		{
-			pLoopCity->changeFreeSpecialistCount((SpecialistTypes)iI, (GC.getCivicInfo(eCivic).getFreeSpecialistCount(iI) * iChange));
-		}
-		pLoopCity->updateBuildingCommerceChange(eCivic, iChange);
-		pLoopCity->updateBuildingYieldChange(eCivic, iChange);
-	}
-// < Civic Infos Plus End   >
 	FOR_EACH_ENUM(Improvement)
 	{
 		FOR_EACH_ENUM(Yield)
@@ -20708,7 +20721,9 @@ double CvPlayer::estimateYieldRate(YieldTypes eYield, int iSamples) const
 	CvGame const& kGame = GC.getGame();
 	int iGameTurn = kGame.getGameTurn();
 	int iTurnsPlayed = iGameTurn - kGame.getStartTurn();
-	iSamples = std::min(iSamples, iTurnsPlayed - 1);
+//doto advc 099 fix to 098 - Fix crash in scenarios
+	//iSamples = std::min(iSamples, iTurnsPlayed - 1);
+	iSamples = std::max(0, std::min(iSamples, iTurnsPlayed - 1));
 	std::vector<double> samples; // double for ::dMedian
 	/* When anarchy lasts several turns, the sample may not contain a single
 	   non-revolution turn. In this case, increase the sample size gradually. */

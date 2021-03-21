@@ -1423,6 +1423,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<!--DPII < Maintenance Modifiers > -->
+			<iMaintenanceModifier>5</iMaintenanceModifier>
+			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
+			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
+			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
+			<!--DPII < Maintenance Modifiers > -->
 			<iTradeRoutes>0</iTradeRoutes>
 			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>
@@ -2298,6 +2304,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<!--DPII < Maintenance Modifiers > -->
+			<iMaintenanceModifier>0</iMaintenanceModifier>
+			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
+			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
+			<iCoastalDistanceMaintenanceModifier>5</iCoastalDistanceMaintenanceModifier>
+			<!--DPII < Maintenance Modifiers > -->
 			<iTradeRoutes>0</iTradeRoutes>
 			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>
@@ -3702,6 +3714,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<!--DPII < Maintenance Modifiers > -->
+			<iMaintenanceModifier>0</iMaintenanceModifier>
+			<iDistanceMaintenanceModifier>5</iDistanceMaintenanceModifier>
+			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
+			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
+			<!--DPII < Maintenance Modifiers > -->
 			<iTradeRoutes>0</iTradeRoutes>
 			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>
@@ -5242,6 +5260,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<!--DPII < Maintenance Modifiers > -->
+			<iMaintenanceModifier>5</iMaintenanceModifier>
+			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
+			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
+			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
+			<!--DPII < Maintenance Modifiers > -->
 			<iTradeRoutes>0</iTradeRoutes>
 			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>

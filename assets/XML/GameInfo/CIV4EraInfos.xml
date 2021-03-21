@@ -126,10 +126,10 @@ era trans faster
 			<iStartingGold>10</iStartingGold>
 			<iFreePopulation>0</iFreePopulation>
 			<iStartPercent>10</iStartPercent>
-			<iGrowthPercent>100</iGrowthPercent>
+			<iGrowthPercent>90</iGrowthPercent>
 			<iTrainPercent>100</iTrainPercent>
 			<iConstructPercent>100</iConstructPercent>
-			<iCreatePercent>100</iCreatePercent>
+			<iCreatePercent>90</iCreatePercent>
 			<iResearchPercent>90</iResearchPercent>
 			<!-- advc.910: was 0 in K-Mod and BBAI -->
 			<iTechCostModifier>-11</iTechCostModifier>
@@ -202,10 +202,10 @@ era trans faster
 			<iFreePopulation>0</iFreePopulation>
 			<!-- advc.126: was 25 -->
 			<iStartPercent>22</iStartPercent>
-			<iGrowthPercent>100</iGrowthPercent>
+			<iGrowthPercent>90</iGrowthPercent>
 			<iTrainPercent>100</iTrainPercent>
 			<iConstructPercent>100</iConstructPercent>
-			<iCreatePercent>100</iCreatePercent>
+			<iCreatePercent>90</iCreatePercent>
 			<iResearchPercent>80</iResearchPercent>
 			<!-- advc.910: Was 6 in K-Mod, 4 in BBAI. -->
 			<iTechCostModifier>-5</iTechCostModifier>

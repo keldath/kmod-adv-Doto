@@ -1568,7 +1568,7 @@ protected:  // <advc.210>
 	//DPII < Maintenance Modifiers >
 	int m_iGlobalMaintenanceModifier;
 	int m_iCoastalDistanceMaintenanceModifier;
-	int m_iConnectedCityMaintenanceModifier;;
+	int m_iConnectedCityMaintenanceModifier;
 	int m_iHomeAreaMaintenanceModifier;
 	int m_iOtherAreaMaintenanceModifier;
 	//DPII < Maintenance Modifiers >

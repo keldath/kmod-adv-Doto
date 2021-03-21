@@ -347,46 +347,55 @@
 		<DefineName>TRUNCATE_ANIMATION_TURNS</DefineName>
 		<iDefineIntVal>14</iDefineIntVal>
 <!-- Vincentz Ranged Strike -->
+<!-- DOTO rangedstrikeMOD - START - Improved AI Range Attack -->
 	</Define>
-	<!--CHANCE OF SUCCESFUL BOMBARD -->
+	<!--CHANCE OF SUCCESFUL BOMBARD 
+		adds to the mitigation of randomness if gameoption is on
+	-->
 	<Define>
 		<DefineName>BOMBARD_HIT_CHANCE</DefineName>
 		<iDefineIntVal>50</iDefineIntVal>
 	</Define>
-	<!--SIZE OF THE ATTACK-DICE, THE HIGHER, THE LESS AIRSTRENGTH/STRENGHT IS A FACTOR -->
+	<!--SIZE OF THE ATTACK-DICE, THE HIGHER, THE LESS AIRSTRENGTH/STRENGHT IS A FACTOR 
+		IF GAMEOPTION RANDOM HIT IS ON-->
 	<Define>
 		<DefineName>RANGESTRIKE_DICE</DefineName>
 		<iDefineIntVal>100</iDefineIntVal>
 	</Define>
-	<!--1 FOR EQUAL ATTACK/DEFENSE (LOTS OF MISSES), >1 FOR EASIER HIT-->
+	<!--1 FOR EQUAL ATTACK/DEFENSE (LOTS OF MISSES), >1 FOR EASIER HIT
+		IF GAMEOPTION RANDOM HIT
+	-->
 	<Define>
 		<DefineName>RANGESTRIKE_HIT_MODIFIER</DefineName>
 		<iDefineIntVal>2</iDefineIntVal>
 	</Define>
-	<!--1 FOR ENABLE RANGESTRIKE RETURN FIRE, 0 FOR DISABLE -->
-	<Define>
-		<DefineName>RANGESTRIKE_RETURN_FIRE</DefineName>
-		<iDefineIntVal>1</iDefineIntVal>
-<!--	</Define> keldath - not sure this is related-->
-	<!--THE FORMULA FOR RANGESTRIKE HIT SUCCESS IS ... COMING LATER -->
 
-	<!--ACTIONS THAT REQUIRES EXTRA MOVES SUCH AS PARADROP, RANGESTRIK, BOMBARD ETC  -->
-	
-<!--	<Define>
-		<DefineName>MOVE_MULTIPLIER</DefineName>
-		<iDefineIntVal>5</iDefineIntVal>-->
-	<!-- MOD - START - Improved AI Range Attack -->
 	<Define>
 		<!-- Minimum attack odds of best attacker for AI to skip range attacking a city and just attack. Default: 80 -->
 		<DefineName>SKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS</DefineName>
-		<iDefineIntVal>80</iDefineIntVal>
+		<iDefineIntVal>70</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- Minimum stack strength ratio for AI to skip range attacking a city and just attack, higher is more conservative.  Default: 150 -->
 		<DefineName>SKIP_RANGE_ATTACK_MIN_STACK_RATIO</DefineName>
 		<iDefineIntVal>150</iDefineIntVal>
 	</Define>
-	<!-- MOD - END - Improved Range Attack -->
+	<Define>
+		<!-- MINIMUM RATIO OF ATTACKER to defender. if the defender is almost equal to the rate of bith enemy and attacker total strength
+			deem the target as danngerous -->
+		<DefineName>RANGED_DANGER_RATIO</DefineName>
+		<iDefineIntVal>40</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- ADDE VALUE TO RAISE NATURAL COMBAT LIMIT COMPARED TO AVERAGE DAMAGE OF ALL NONE DAMAGED DEFENDER UNITS -->
+		<DefineName>RANGED_NONE_DMGED_CMLIMIT_THRESH</DefineName>
+		<iDefineIntVal>10</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- ADDE VALUE TO RAISE NATURAL COMBAT LIMIT COMPARED TO AVERAGE DAMAGE OF ALL DAMAGED DEFENDER UNITS -->
+		<DefineName>RANGED_ALL_DMGED_CMLIMIT_THRESH</DefineName>
+		<iDefineIntVal>20</iDefineIntVal>
+<!-- DOTO rangedstrikeMOD - START - Improved AI Range Attack -->
 	</Define>
 	
 </Civ4Defines>

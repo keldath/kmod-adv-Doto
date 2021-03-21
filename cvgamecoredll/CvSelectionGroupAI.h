@@ -30,10 +30,7 @@ public:
 	bool AI_update();
 
 	int AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy) const;
-	// DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
-	int AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialEnemy = false, bool bRanged = false); // K-Mod
-	CvUnitAI* AI_getBestGroupRangeAttacker(const CvPlot* pPlot) const;
-	// MOD - END - Ranged Strike AI
+	int AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialEnemy = false); // K-Mod
 	// advc.003u: These two had returned CvUnit*
 	CvUnitAI* AI_getBestGroupAttacker(const CvPlot* pPlot, bool bPotentialEnemy,
 			int& iUnitOdds, bool bForce = false, bool bNoBlitz = false,

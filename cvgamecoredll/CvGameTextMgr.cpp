@@ -4543,7 +4543,7 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 						{
 							szString.append(gDLL->getText(
 									"TXT_KEY_GARRISON_STRENGTH_EXCESS_SHORT",
-									iSafeToRemove));
+									std::min(999, iSafeToRemove)));
 							szString.append(NEWLINE);
 						}
 					}
@@ -11342,7 +11342,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 			aiCommerces[e] = kBuilding.getCommerceChange(e);
 			aiCommerces[e] += kBuilding.getObsoleteSafeCommerceChange(e);
 			// K-Mod, 30/dec/10: added religious building bonus info
-			if (ePlayer != NO_PLAYER &&
+			if (ePlayer != NO_PLAYER && /* advc: */ !bCivilopediaText &&
 				kBuilding.getReligionType() != NO_RELIGION &&
 				kBuilding.getReligionType() == pPlayer->getStateReligion())
 			{
@@ -15701,6 +15701,23 @@ void CvGameTextMgr::setReligionHelp(CvWStringBuffer &szBuffer, ReligionTypes eRe
 			}
 		}
 	}
+	// davidlallen: religion forbidden to civilization start + KELDATH  original addition
+	if (GC.getGame().isOption(GAMEOPTION_FORBIDDEN_RELIGION))
+	{
+		if ((GC.getCivilizationInfo(GC.getGame().getActiveCivilizationType())).isForbidden(eReligion))
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText(CvWString::format(SETCOLR L"%s" ENDCOLR,
+				TEXT_COLOR("COLOR_NEGATIVE_TEXT"),
+				GC.getInfo(eReligion).getDescription())));
+			szBuffer.append(" is Forbidden for ");
+			szBuffer.append(GC.getCivilizationInfo(GC.getGame().getActiveCivilizationType()).getAdjective());
+			
+			// GC.getInfo(eReligion).getTextKeyWide();
+		}
+		szBuffer.append(NEWLINE);
+	}
+	// davidlallen: religion forbidden to civilization end
 }
 
 void CvGameTextMgr::setReligionHelpCity(CvWStringBuffer &szBuffer, ReligionTypes eReligion, CvCity *pCity, bool bCityScreen, bool bForceReligion, bool bForceState, bool bNoStateReligion)
@@ -16114,8 +16131,9 @@ void CvGameTextMgr::setCorporationHelpCity(CvWStringBuffer &szBuffer, Corporatio
 			bHandled = true;
 		}
 	}
-
-	bHandled = false;
+//doto advc 099 fix to 098 - Fix AdvCiv bug in announcement of founded corporation
+	// advc.001: Looks wrong. The result from above would never be read.
+	//bHandled = false;
 	for (int i = 0; i < NUM_COMMERCE_TYPES; ++i)
 	{
 		int iCommerce = 0;
@@ -19522,8 +19540,9 @@ void CvGameTextMgr::setConvertHelp(CvWStringBuffer& szBuffer, PlayerTypes ePlaye
 		szBuffer.append(gDLL->getText("TXT_KEY_MISC_WAIT_MORE_TURNS", GET_PLAYER(ePlayer).getConversionTimer()));
 		szBuffer.append(L"."); // advc.004g
 	}
-	// davidlallen: religion forbidden to civilization start
-    else if (!(GC.getCivilizationInfo(GET_PLAYER(ePlayer).getCivilizationType()).isForbidden(eReligion)))
+	// davidlallen: religion forbidden to civilization start + KELDATH
+    else if (!(GC.getCivilizationInfo(GET_PLAYER(ePlayer).getCivilizationType()).isForbidden(eReligion))
+		&& GC.getGame().isOption(GAMEOPTION_FORBIDDEN_RELIGION))
 	{
 		szBuffer.append(L". ");
 		szBuffer.append(gDLL->getText("TXT_KEY_MISC_RELIGION_FORBIDDEN"));

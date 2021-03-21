@@ -112,7 +112,6 @@ void CvGame::init(HandicapTypes eHandicap)
 	// Init non-serialized data ...
 
 	m_bAllGameDataRead = true; // advc: Not loading from savegame
-	m_eNormalizationLevel = NORMALIZE_DEFAULT; // advc.108
 
 	// Turn off all MP options if it's a single player game
 	if (ic.getType() == GAME_SP_NEW || ic.getType() == GAME_SP_SCENARIO)
@@ -563,6 +562,7 @@ void CvGame::reset(HandicapTypes eHandicap, bool bConstructorCall)
 	m_eVictory = NO_VICTORY;
 	m_eGameState = GAMESTATE_ON;
 	m_eInitialActivePlayer = NO_PLAYER; // advc.106h
+	m_eNormalizationLevel = NORMALIZE_DEFAULT; // advc.108
 	m_szScriptData = "";
 
 	for (iI = 0; iI < MAX_PLAYERS; iI++)
@@ -726,10 +726,21 @@ void CvGame::reset(HandicapTypes eHandicap, bool bConstructorCall)
 		CvGlobals::getInstance().loadOptionalXMLInfo(); // </advc.003v>
 }
 
-
+/*	The EXE calls this after generating the map but before initFreeState
+	(i.e. also before assigning starting plots). Seems like a good place
+	for various initializations as it gets called for all game types
+	(unlike setInitialItems). */
 void CvGame::initDiplomacy()
 {
 	PROFILE_FUNC();
+
+	GC.getAgents().gameStart(false); // advc.agent
+	m_bFPTestDone = !isNetworkMultiPlayer(); // advc.003g
+	// <advc.108>
+	// Don't overwrite "Balanced" custom map option
+	if (m_eNormalizationLevel != NORMALIZE_HIGH)
+		setStartingPlotNormalizationLevel(); // </advc.108>
+	setPlayerColors(); // advc.002i
 
 	for(int i = 0; i < MAX_TEAMS; i++)  // advc: style changes
 	{
@@ -897,10 +908,6 @@ void CvGame::initGameHandicap()
 
 void CvGame::initFreeState()
 {
-	// advc.003g: Want to set this as soon as CvGame knows the GameType
-	m_bFPTestDone = !isNetworkMultiPlayer();
-	GC.getAgents().gameStart(false); // advc.agent
-	setPlayerColors(); // advc.002i
 	initGameHandicap(); // advc.127
 	// <advc.250b>
 	if(!isOption(GAMEOPTION_ADVANCED_START) ||
@@ -1096,7 +1103,6 @@ NormalizationTarget* CvGame::assignStartingPlots()
 		starting_plots[iRandOffset] = starting_plots[starting_plots.size()-1];
 		starting_plots.pop_back();
 	} // K-Mod end
-	updateStartingPlotRange(); // advc.opt
 	if (GC.getPythonCaller()->callMapFunction("assignStartingPlots"))
 		return /* <advc.027> */ NULL;
 
@@ -1398,15 +1404,23 @@ void CvGame::normalizeStartingPlotLocations()
 
 	int iBestScore = getTeamClosenessScore(aaiDistances, aiStartingLocs);
 	bool bFoundSwap = true;
+	/*	<advc.027> I worry that going through the players in turn order
+		can lead to biases toward or against the (human) team of player 0.
+		(PlayerIter unfortunately only knows how to use SRand; I want MapRand here.) */
+	int aiPlayersShuffled[MAX_CIV_PLAYERS];
+	::shuffleArray(aiPlayersShuffled, MAX_CIV_PLAYERS, getMapRand()); // </advc.027>
 	while (bFoundSwap)
 	{
 		bFoundSwap = false;
-		for (iI = 0; iI < MAX_CIV_PLAYERS; iI++)
+		// <advc.027>
+		for (int i = 0; i < MAX_CIV_PLAYERS; i++)
 		{
+			int iI = aiPlayersShuffled[i]; // </advc.027>
 			if (GET_PLAYER((PlayerTypes)iI).isAlive())
-			{
-				for (iJ = 0; iJ < iI; iJ++)
+			{	// <advc.027>
+				for (int j = 0; j < i; j++)
 				{
+					int iJ = aiPlayersShuffled[j]; // </advc.027>
 					if (GET_PLAYER((PlayerTypes)iJ).isAlive())
 					{
 						int iTemp = aiStartingLocs[iI];
@@ -1480,17 +1494,18 @@ void CvGame::setStartingPlotNormalizationLevel(StartingPlotNormalizationLevel eL
 	m_eNormalizationLevel = eLevel;
 }
 
-
+/*	(Note: Only for external callers.
+	Within CvGame, m_eNormalizationLevel gets accessed directly.) */
 CvGame::StartingPlotNormalizationLevel CvGame::getStartingPlotNormalizationLevel() const
 {
 	return m_eNormalizationLevel;
 } // </advc.108
 
-/*  <advc.opt> Replacing CvPlayer::startingPlotRange. And now precomputed through
-	CvGame::updateStartingPlotRange. */
+// advc.opt: Replacing CvPlayer::startingPlotRange. Now cached.
 int CvGame::getStartingPlotRange() const
 {
-	FAssertMsg(m_iStartingPlotRange > 0, "CvGame::updateStartingPlotRange hasn't been called");
+	if (m_iStartingPlotRange <= 0)
+		updateStartingPlotRange();
 	return m_iStartingPlotRange;
 } // </advc.opt>
 
@@ -2529,18 +2544,30 @@ void CvGame::normalizeStartingPlots(NormalizationTarget const* pTarget)
 }
 
 /*  advc.opt: Body cut from CvPlayer::startingPlotRange. Not player-dependent,
-	and there's no need to recompute it for every prospective starting plot. */
-void CvGame::updateStartingPlotRange()
+	and there's no need to recompute it for every prospective starting plot.
+	const b/c it only updates a mutable cache. */
+void CvGame::updateStartingPlotRange() const
 {
 	CvMap const& kMap = GC.getMap();
 	int iRange = kMap.maxStepDistance() + 10;
 	iRange *= GC.getDefineINT("STARTING_DISTANCE_PERCENT");
 	iRange /= 100;
 	int const iAlive = countCivPlayersAlive();
-	iRange *= kMap.getLandPlots() / (std::max(GC.getInfo(kMap.getWorldSize()).
+	int const iLand = kMap.getLandPlots();
+	iRange *= iLand / (std::max(GC.getInfo(kMap.getWorldSize()).
 			getTargetNumCities(), 1) * iAlive);
 	iRange /= NUM_CITY_PLOTS;
-	iRange += std::min((kMap.getNumAreas() + 1) / 2, iAlive);
+	// <advc.031> Replacing kMap.getNumAreas(). Tiny islands shouldn't matter.
+	int iMajorAreas = 0;
+	FOR_EACH_AREA(pArea)
+	{
+		if (pArea->getNumTiles() * iAlive > iLand)
+			iMajorAreas++;
+	}
+	if (iMajorAreas == 0)
+		iMajorAreas = iAlive;
+	// </advc.031>
+	iRange += std::min((iMajorAreas + 1) / 2, iAlive);
 	iRange *= 100 + GC.getPythonCaller()->minStartingDistanceMod();
 	iRange /= 100;
 	m_iStartingPlotRange = std::max(iRange, GC.getDefineINT("MIN_CIV_STARTING_DISTANCE"));
@@ -3686,13 +3713,13 @@ TeamTypes CvGame::getSecretaryGeneral(VoteSourceTypes eVoteSource) const
 	}
 	FOR_EACH_ENUM(Vote)
 	{
-		if (GC.getInfo(eLoopVote).isVoteSourceType(eVoteSource))
+		if (GC.getInfo(eLoopVote).isVoteSourceType(eVoteSource) &&
+			GC.getInfo(eLoopVote).isSecretaryGeneral() &&
+			isVotePassed(eLoopVote))
 		{
-			if (GC.getInfo(eLoopVote).isSecretaryGeneral() &&
-				isVotePassed(eLoopVote))
-			{
-				return ((TeamTypes)getVoteOutcome(eLoopVote));
-			}
+			TeamTypes eSecretary = (TeamTypes)getVoteOutcome(eLoopVote);
+			if (GET_TEAM(eSecretary).isAlive()) // advc.001
+				return eSecretary;
 		}
 	}
 	return NO_TEAM;
@@ -6727,11 +6754,16 @@ void CvGame::doTurn()
 
 	stopProfilingDLL(true);
 	// <advc.044>
-	CvPlayer const& kActivePlayer = GET_PLAYER(getActivePlayer());
-	if (!kActivePlayer.isAlive())
-	{
-		FAssert(kActivePlayer.isHumanDisabled());
+	if (isMPOption(MPOPTION_SIMULTANEOUS_TURNS) || isHotSeat())
 		autoSave();
+	else
+	{
+		CvPlayer const& kActivePlayer = GET_PLAYER(getActivePlayer());
+		if (!kActivePlayer.isAlive())
+		{
+			FAssert(kActivePlayer.isHumanDisabled());
+			autoSave();
+		}
 	} // (Otherwise, autosave in CvPlayer::setTurnActive.)
 	// </advc.044>
 }
@@ -7048,17 +7080,18 @@ void CvGame::doHolyCity()  // advc: many style changes
 		ReligionTypes eReligion = (ReligionTypes)iI;
 		if (isReligionSlotTaken(eReligion))
 			continue;
-//DOTO-david lalen forbiddan religion - dune wars start
-		// davidlallen religion forbidden to civilization start
-		// remove test for team; assign by player instead
-		// because what if the best team's best player cannot convert?
-		/*
+		//DOTO-david lalen forbiddan religion - dune wars start
+				// davidlallen religion forbidden to civilization start
+				// remove test for team; assign by player instead
+				// because what if the best team's best player cannot convert?
+		if (!isOption(GAMEOPTION_FORBIDDEN_RELIGION))//keldath addition
+		{
 		TeamTypes eBestTeam = NO_TEAM;
 		{ // scope for iBestValue
 			int iBestValue = MAX_INT;
-			*//*  advc.001: Was MAX_TEAMS. Make sure Barbarians can't found a religion
+			/*  advc.001: Was MAX_TEAMS. Make sure Barbarians can't found a religion
 				somehow. Adopted from Mongoose SDK ReligionMod. */
-	/*		for (int iJ = 0; iJ < MAX_CIV_TEAMS; iJ++)
+			for (int iJ = 0; iJ < MAX_CIV_TEAMS; iJ++)
 			{
 				CvTeam const& kTeam = GET_TEAM((TeamTypes)iJ);
 				if (!kTeam.isAlive())
@@ -7086,7 +7119,7 @@ void CvGame::doHolyCity()  // advc: many style changes
 		}
 		if (eBestTeam == NO_TEAM)
 			continue;
-		*/
+		}
 //david lalen forbiddan religion - dune wars end
 		int iValue = 0;
 		int iBestValue = MAX_INT;
@@ -7097,49 +7130,55 @@ void CvGame::doHolyCity()  // advc: many style changes
 			//keldath qa2-done - i removed the check for other team- since the above is cancelled.
 			if (!kMember.isAlive() || /*kMember.getTeam() != eBestTeam ||*/ kMember.getNumCities() <= 0)
 				continue;
-//david lalen forbiddan religion - dune wars start
-			if (GET_TEAM(kMember.getTeam()).isHasTech((TechTypes)(GC.getReligionInfo((ReligionTypes)iI).getTechPrereq())))
+			// david lalen forbiddan religion - dune wars end - keldath fix - if religion is forbidden - pass.
+			CivilizationTypes eCiv = kMember.getCivilizationType();
+			if (eCiv != NO_CIVILIZATION && eReligion != NO_RELIGION)
 			{
-				CivilizationTypes eCiv = kMember.getCivilizationType();
-				if (!(GC.getCivilizationInfo(eCiv).isForbidden((ReligionTypes)iI)))
-//david lalen forbiddan religion - dune wars end
-					iValue = getSorenRandNum(10, "Found Religion (Player)");//f1rpo quote-Needs to be in the player loop so that each player recives a different random number.
-					if (!kMember.isHuman())
-						iValue += 18; // advc.138: Was 10. Need some x: 15 < x < 20.
-					for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
-					{
-						int iReligionCount = kMember.getHasReligionCount((ReligionTypes)iK);
-						if (iReligionCount > 0)
-							iValue += iReligionCount * 20;
-					}
-					iValue -= religionPriority(kMember.getID(), eReligion); // advc.138
-					if (iValue < iBestValue)
-					{
-						iBestValue = iValue;
-						eBestPlayer = kMember.getID();
-					}
-				}
-		}//david lalen forbiddan religion - dune wars end
+				if (isOption(GAMEOPTION_FORBIDDEN_RELIGION) && GC.getCivilizationInfo(eCiv).isForbidden(eReligion))
+					continue;
+				//david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
+				if (!GET_TEAM(kMember.getTeam()).isHasTech((TechTypes)(GC.getReligionInfo((ReligionTypes)iI).getTechPrereq()))
+						&& isOption(GAMEOPTION_FORBIDDEN_RELIGION))
+					continue;
+				//david lalen forbiddan religion - dune wars end
+			}
+			iValue = getSorenRandNum(10, "Found Religion (Player)");
+			if (!kMember.isHuman())
+				iValue += 18; // advc.138: Was 10. Need some x: 15 < x < 20.
+			for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
+			{
+				int iReligionCount = kMember.getHasReligionCount((ReligionTypes)iK);
+				if (iReligionCount > 0)
+					iValue += iReligionCount * 20;
+			}
+			iValue -= religionPriority(kMember.getID(), eReligion); // advc.138
+			if (iValue < iBestValue)
+			{
+				iBestValue = iValue;
+				eBestPlayer = kMember.getID();
+			}
+		}
 		if (eBestPlayer == NO_PLAYER)
 			continue;
 
 		ReligionTypes eFoundReligion = eReligion;
-/*removed by forbidden religion - i think - keldath we dont want to cause a mess when choosing religion
 		if (isOption(GAMEOPTION_PICK_RELIGION))
-			eFoundReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
-		//alternarive usage in case we want pick religion, for now , we dont.
-		if (isOption(GAMEOPTION_PICK_RELIGION))
-		{
-    		ReligionTypes eChosenReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
-			//check no religion fix - suggested by f1rpo
-    		if (eChosenReligion != NO_RELIGION && !GC.getCivilizationInfo(GET_PLAYER(eBestPlayer).getCivilizationType()).isForbidden(eChosenReligion))
-        		eFoundReligion = eChosenReligion;
-		}
-*/
+			if (!isOption(GAMEOPTION_FORBIDDEN_RELIGION))
+			{
+				//org code
+				eFoundReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
+			}
+			else 
+			{	//if pick religion make sure none forbidded is picked
+				ReligionTypes eChosenReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
+				//check no religion fix - suggested by f1rpo
+    			if (eChosenReligion != NO_RELIGION 
+    				&& !GC.getCivilizationInfo(GET_PLAYER(eBestPlayer).getCivilizationType()).isForbidden(eChosenReligion))
+        			eFoundReligion = eChosenReligion;
+        	}
+
 		if (eFoundReligion != NO_RELIGION)
 //david lalen forbiddan religion - dune wars end
-//keldath QA-done
-//f1rpo explenation for the true param:
 //true will create free missionaries. Seems like those are normally not created when a religion is founded at game start (actually, founding gets delayed until turn 5 iirc), but, if you want to change that – sounds fair enough.
 		//	GET_PLAYER(eBestPlayer).foundReligion(eFoundReligion, eReligion, false);
 			GET_PLAYER(eBestPlayer).foundReligion(eFoundReligion, eReligion, true);
@@ -7521,7 +7560,7 @@ void CvGame::createBarbarianUnits()
 		/*  advc.300: No need to delay Barbarians (bAnimals=true) if they start
 			slowly (PEAK_PERCENT>=35). For slow game speed settings, there is
 			now a similar check in CvUnitAI::AI_barbAttackMove. */
-		GC.getDefineINT(CvGlobals::BARB_PEAK_PERCENT) < 35)
+		barbarianPeakLandRatio() < per100(35))
 	{
 		bAnimals = true;
 	}
@@ -7757,24 +7796,25 @@ int CvGame::getBarbarianStartTurn() const
 int CvGame::numBarbariansToCreate(int iTilesPerUnit, int iTiles, int iUnowned,
 		int iUnitsPresent, int iBarbarianCities)
 {
-	int iOwned = iTiles - iUnowned;
-	int iPeakPercent = ::range(GC.getDefineINT(CvGlobals::BARB_PEAK_PERCENT), 0, 100);
-	if (iOwned == 0 || iPeakPercent == 0)
+	int const iOwned = iTiles - iUnowned;
+	scaled const rPeakRatio = barbarianPeakLandRatio();
+	if (iOwned == 0 || rPeakRatio == 0)
 		return 0;
-	double peak = iPeakPercent / 100.0;
-	double ownedRatio = iOwned / (double)iTiles;
-	bool bPeakReached = (ownedRatio > peak);
-	double divisor = iTilesPerUnit;
-	double dividend = -1;
-	if (bPeakReached)
+	scaled rDivisor = iTilesPerUnit;
+	scaled rDividend;
 	{
-		divisor *= (1 - peak);
-		dividend = iUnowned;
-	}
-	else
-	{
-		divisor *= peak;
-		dividend = iOwned;
+		scaled rOwnedRatio(iOwned, iTiles);
+		bool bPeakReached = (rOwnedRatio >= rPeakRatio);
+		if (bPeakReached)
+		{
+			rDivisor *= (1 - rPeakRatio);
+			rDividend = iUnowned;
+		}
+		else
+		{
+			rDivisor *= rPeakRatio;
+			rDividend = iOwned;
+		}
 	}
 	/*	For Rage, reduce divisor to 60% (50% in BtS), but
 		<advc.307> reduces it further based on the game era. */
@@ -7783,24 +7823,25 @@ int CvGame::numBarbariansToCreate(int iTilesPerUnit, int iTiles, int iUnowned,
 		int iCurrentEra = getCurrentEra();
 		/*  Don't reduce divisor in start era (gets too tough on Classical
 			and Medieval starts b/c the starting defenders are mere Archers). */
-		if(iCurrentEra <= getStartEra())
+		if (iCurrentEra <= getStartEra())
 			iCurrentEra = 0;
-		double rageMultiplier = 0.6;
-		rageMultiplier *= (8 - iCurrentEra) / 8.0;
-		divisor = divisor * rageMultiplier;
-		divisor = std::max(divisor, 10.0);
+		scaled rRageMultiplier = fixp(0.6);
+		rRageMultiplier.mulDiv(8 - iCurrentEra, 8);
+		rDivisor *= rRageMultiplier;
+		rDivisor.increaseTo(10);
 	} // </advc.307>
-	else divisor = std::max(divisor, 14.0);
-	double target = std::min(dividend / divisor,
-			/*  Make sure that there's enough unowned land where the Barbarians
-				could plausibly gather. */
-			iUnowned / 6.0);
-	static double const adjustment = (GC.getDefineINT("BARB_ACTIVITY_ADJUSTMENT") + 100) / 100.0;
-	target *= adjustment;
+	else rDivisor.increaseTo(14);
+	scaled rTarget = rDividend / rDivisor;
+	/*  Make sure that there's enough unowned land where the Barbarians
+		could plausibly gather. */
+	rTarget.decreaseTo(scaled(iUnowned, 6));
+	static scaled const rAdjustment = 1 + per100(GC.getDefineINT(
+			"BARB_ACTIVITY_ADJUSTMENT"));
+	rTarget *= rAdjustment;
 
 	int iInitialDefenders = GC.getInfo(getHandicapType()).
 			getBarbarianInitialDefenders();
-	double r = target - std::max(0, iUnitsPresent
+	scaled r = rTarget - std::max(0, iUnitsPresent
 	/*  Don't count city defenders. Settled Barbarians being less aggressive makes
 		sense, but cities also reduce the number of unowned tiles; that's enough.
 		(Alt. idea: Subtract half the Barbarian population in this area.)
@@ -7809,19 +7850,19 @@ int CvGame::numBarbariansToCreate(int iTilesPerUnit, int iTiles, int iUnowned,
 			- iBarbarianCities * std::max(0, iInitialDefenders));
 	if (r < 1)
 		return 0; // Avoid very small creation probabilities
-	double creationRate = 0.25; // the BtS rate
+	scaled rCreationRate = fixp(0.25); // the BtS rate
 	// Novel: adjusted to game speed
-	creationRate /= (GC.getInfo(getGameSpeedType()).getBarbPercent() / 100.0);
-	r *= creationRate;
+	rCreationRate /= per100(GC.getInfo(getGameSpeedType()).getBarbPercent());
+	r *= rCreationRate;
 	/*  BtS always created at least one unit, but, on Marathon, this could be too fast.
 		Probabilistic instead. */
 	if (r < 1)
 	{
-		if (::bernoulliSuccess(r, "advc.300 (numBarbariansToCreate)"))
+		if (r.bernoulliSuccess(getSRand(), "numBarbariansToCreate"))
 			return 1;
-		else return 0;
+		return 0;
 	}
-	return ::round(r);
+	return r.round();
 }
 
 // Returns the number of land units spawned (possibly in cargo). The first half is new code.
@@ -8090,6 +8131,26 @@ UnitTypes CvGame::randomBarbarianUnit(UnitAITypes eUnitAI, CvArea const& a)
 			iBestValue = iValue;
 		}
 	}
+	return r;
+}
+
+// (See documentation in XML)
+scaled CvGame::barbarianPeakLandRatio() const
+{
+	scaled r;
+	if (isOption(GAMEOPTION_RAGING_BARBARIANS))
+	{
+		static scaled const rRagingRatio = per100(GC.getDefineINT(
+				"BARB_RAGE_PEAK_PERCENT"));
+		r = rRagingRatio;
+	}
+	else
+	{
+		static scaled const rNormalRatio = per100(GC.getDefineINT(
+				"BARB_PEAK_PERCENT"));
+		r = rNormalRatio;
+	}
+	r.clamp(0, 1);
 	return r;
 }
 // </advc.300>
@@ -9164,7 +9225,10 @@ void CvGame::read(FDataStreamBase* pStream)
 	if(uiFlag >= 5)
 	{
 		pStream->Read((int*)&m_eCurrentLayer);
-		m_bLayerFromSavegame = true;
+		/*	Initial autosave doesn't contain valid info about the globe layers.
+			b/c it gets created before Python calls reportCurrentLayer */
+		if (getTurnSlice() > 0)
+			m_bLayerFromSavegame = true;
 	} // </advc.004m>
 	pStream->ReadString(m_szScriptData);
 

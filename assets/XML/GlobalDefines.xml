@@ -657,7 +657,7 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 	</Define>
 	<Define>
 		<DefineName>MAX_CIVIC_OPTIONS</DefineName>
-		<iDefineIntVal>5</iDefineIntVal>
+		<iDefineIntVal>8</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>BASE_CIVIC_ANARCHY_LENGTH</DefineName>
@@ -1588,7 +1588,7 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 	</Define>
 	<Define>
 		<DefineName>CAMERA_CITY_ZOOM_IN_DISTANCE</DefineName>
-		<fDefineFloatVal>3500</fDefineFloatVal>
+		<fDefineFloatVal>4800</fDefineFloatVal>
 	</Define>
 	<Define>
 		<DefineName>CAMERA_BATTLE_ZOOM_IN_DISTANCE</DefineName>

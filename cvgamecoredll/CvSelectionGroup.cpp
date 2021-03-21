@@ -14,8 +14,6 @@
 #include "CvInfo_Terrain.h" // for getBestBuildRoute
 //#include "CvInfo_Unit.h" // for canAnyMoveAllTerrain (now in PCH)
 #include "CySelectionGroup.h"
-//DOTO-rangedattack-keldath-checking option
-#include "CvInfo_GameOption.h"
 
 // K-Mod:
 KmodPathFinder* CvSelectionGroup::m_pPathFinder = NULL; // advc.pf: pointer
@@ -1073,16 +1071,9 @@ void CvSelectionGroup::startMission()
 						bAction = true;
 					}
 					break;
-//DOTO-rangedattack-keldath rangedstrike
+
 				case MISSION_RANGE_ATTACK:
-					if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
-					{
-						if (pLoopUnit->rangeStrike(headMissionQueueNode()->m_data.iData1, headMissionQueueNode()->m_data.iData2))
-						{
-							bAction = true;
-						}
-					}
-					else if (pLoopUnit->rangeStrikeK(headMissionQueueNode()->m_data.iData1, headMissionQueueNode()->m_data.iData2))
+					if (pLoopUnit->rangeStrike(headMissionQueueNode()->m_data.iData1, headMissionQueueNode()->m_data.iData2))
 					{
 						bAction = true;
 					}
@@ -1908,16 +1899,8 @@ bool CvSelectionGroup::canDoInterfaceMode(InterfaceModeTypes eInterfaceMode)
 			break;
 
 		case INTERFACEMODE_RANGE_ATTACK:
-//DOTO-rangedattack-keldath rangedstrike
-			if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
-			{
-				if (pLoopUnit->canRangeStrike())
-					return true;
-			}
-			else if (pLoopUnit->canRangeStrikeK())
-			{
+			if (pLoopUnit->canRangeStrike())
 				return true;
-			}
 			break;
 
 		case INTERFACEMODE_AIRSTRIKE:
@@ -1991,17 +1974,8 @@ bool CvSelectionGroup::canDoInterfaceModeAt(InterfaceModeTypes eInterfaceMode, C
 		case INTERFACEMODE_RANGE_ATTACK:
 			if (pLoopUnit != NULL)
 			{
-//DOTO-rangedstrike-keldath
-				if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
-				{	
-					if (pLoopUnit->canRangeStrikeAt(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
-						return true;
-				}	
-//rangedstrike-keldath
-				else if (pLoopUnit->canRangeStrikeAtK(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
-				{
-						return true;
-				}
+				if (pLoopUnit->canRangeStrikeAt(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
+					return true;
 			}
 			break;
 
@@ -2871,43 +2845,10 @@ bool CvSelectionGroup::groupAttack(int iX, int iY, MovementFlags eFlags, bool& b
 					!bMaxSurvival, bMaxSurvival); // advc.048
 			if (pBestAttackUnit == NULL)
 				break;
-// DOTO-MOD rangedattack-keldath rangedstrike- START - Ranged Strike AI realism invictus			
-			bAttack = true; //moved up
-
-			// DOTO-MOD - START - Ranged Strike AI realism invictus
-			// TODO: Add a hotkey to allow humans to auto-fire their ranged attacks first?
-			if (!isHuman())
-			{
-				//doto-advc adjustment
-				if (iAttackOdds < 80 /*GC.getSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS()*/)
-				{
-					//doto-advc adjustment AI().		
-					CvUnitAI* pBestRangedUnit = AI().AI_getBestGroupRangeAttacker(pDestPlot);
-
-					bool bRangeStrike = false;
-					while (pBestRangedUnit != NULL && pBestRangedUnit->rangeStrikeK(pDestPlot->getX(), pDestPlot->getY()))
-					{
-						bRangeStrike = true;
-						pBestRangedUnit = AI().AI_getBestGroupRangeAttacker(pDestPlot);
-					}
-
-					if (bRangeStrike)
-					{
-						//doto-advc adjustment AI().		
-						pBestAttackUnit = AI().AI_getBestGroupAttacker(pDestPlot, false, iAttackOdds, false, !bBlitz /*bNoBlitz advc change*/);
-						if (pBestAttackUnit == NULL)
-						{
-							// There aren't any attack units left with moves after range striking
-							break;
-						}
-					}
-				}
-			}
-			// DOTO-MOD - end - Ranged Strike AI realism invictus
 
 			// advc.048: AI_getBestGroupSacrifice moved into AI_getBestGroupAttacker
-			// DOTO-MOD - end - Ranged Strike AI realism invictus - moved above
-			//bAttack = true;
+
+			bAttack = true;
 
 			if (GC.getPythonCaller()->doCombat(*this, *pDestPlot))
 				break;
@@ -3631,13 +3572,8 @@ bool CvSelectionGroup::canDoMission(int iMission, int iData1, int iData2,
 			break;
 
 		case MISSION_RANGE_ATTACK:
-//DOTO-rangedattack-keldath rangedstrike
-			if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
-			{
-				if (pLoopUnit->canRangeStrikeAt(pPlot, iData1, iData2) && (!bCheckMoves || pLoopUnit->canMove()))
-					return true;
-			}
-			else if (pLoopUnit->canRangeStrikeAtK(pPlot, iData1, iData2) && (!bCheckMoves || pLoopUnit->canMove()))
+			if (pLoopUnit->canRangeStrikeAt(pPlot, iData1, iData2) &&
+				(!bCheckMoves || pLoopUnit->canMove()))
 			{
 				return true;
 			}

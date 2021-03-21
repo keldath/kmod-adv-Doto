@@ -151,11 +151,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -288,11 +290,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -417,11 +421,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -550,11 +556,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -687,11 +695,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -821,11 +831,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -959,11 +971,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -1100,11 +1114,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -1253,11 +1269,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -1388,11 +1406,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -1527,11 +1547,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -1660,11 +1682,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -1814,11 +1838,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -1956,11 +1982,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -2099,11 +2127,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -2226,11 +2256,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -2416,11 +2448,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -2548,11 +2582,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -2683,11 +2719,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -2806,11 +2844,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -2929,11 +2969,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -3070,11 +3112,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -3196,11 +3240,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -3343,11 +3389,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -3482,11 +3530,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -3611,11 +3661,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -3777,11 +3829,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -3919,11 +3973,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -4067,11 +4123,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -4202,11 +4260,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -4344,11 +4404,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -4474,11 +4536,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -4606,11 +4670,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -4735,11 +4801,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -4878,11 +4946,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -5075,11 +5145,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>
@@ -5958,11 +6030,13 @@
 			</ForbiddenReligions>
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_BARBARISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
 				<CivicType>CIVIC_PAGANISM</CivicType>
 				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
 			</InitialCivics>
 			<Leaders>
 				<Leader>

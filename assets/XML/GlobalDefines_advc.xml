@@ -540,10 +540,11 @@ Keldath - f1rpo said to turn it off - untested properly -->
 		 AdvCiv. With closed borders, the anger is CLOSED_BORDERS_CULTURE_
 		 ANGER_MODIFIER percent greater. The increased anger also applies when
 		 the foreign civ has capitulated to the city owner or has been
-		 eliminated (by anyone). Recommended: 25 -->
+		 eliminated (by anyone). Recommended: 25
+		keldath was on 40 -->
 	<Define>
 		<DefineName>CLOSED_BORDERS_CULTURE_ANGER_MODIFIER</DefineName>
-		<iDefineIntVal>40</iDefineIntVal>
+		<iDefineIntVal>25</iDefineIntVal>
 	</Define>
 
 	<!-- [advc.099]
@@ -555,10 +556,11 @@ Keldath - f1rpo said to turn it off - untested properly -->
 		 Civs eliminated by the city owner don't count as being
 		 at war in this context. (Otherwise, there would be an
 	     awkward incentive to stop short of elimination when
-		 capitulation isn't possible.) -->
+		 capitulation isn't possible.)
+			keldath was on 60 -->
 	<Define>
 		<DefineName>AT_WAR_CULTURE_ANGER_MODIFIER</DefineName>
-		<iDefineIntVal>60</iDefineIntVal>
+		<iDefineIntVal>50</iDefineIntVal>
 	</Define>
 
 	<!-- advc.099: Actually a permillage, not a percentage.
@@ -633,10 +635,17 @@ Keldath - f1rpo said to turn it off - untested properly -->
 		 the peak percentage. Setting BARB_PEAK_PERCENT to 0 results in BtS
 		 behavior, with B maximal when Barbarians first appear and then
 		 decreasing as the civs expand.
-		 Recommended: 60 -->
+		 Recommended: 56 -->
     <Define>
         <DefineName>BARB_PEAK_PERCENT</DefineName>
-        <iDefineIntVal>60</iDefineIntVal>
+        <iDefineIntVal>56</iDefineIntVal>
+    </Define>
+	<!-- Used instead of the value above when the Raging Barbarians option
+		 is enabled. Recommended: Somewhat higher, say 7 points, than
+		 BARB_PEAK_PERCENT so that the early game doesn't become too tense. -->
+	<Define>
+        <DefineName>BARB_RAGE_PEAK_PERCENT</DefineName>
+        <iDefineIntVal>63</iDefineIntVal>
     </Define>
 
 	<!-- [advc.300]

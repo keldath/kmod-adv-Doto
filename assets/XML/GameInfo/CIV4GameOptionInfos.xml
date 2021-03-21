@@ -79,7 +79,7 @@
 			<Description>TXT_KEY_GAME_OPTION_PICK_RELIGION</Description>
 			<Help>TXT_KEY_GAME_OPTION_PICK_RELIGION_HELP</Help>
 			<bDefault>0</bDefault>
-			<bVisible>0</bVisible>
+			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
 			<Type>GAMEOPTION_NO_TECH_TRADING</Type>
@@ -293,6 +293,20 @@
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
+            <Type>GAMEOPTION_FORBIDDEN_RELIGION</Type>
+            <Description>Forbidden Religion</Description>
+            <Help>Each Civ has one Religion it cannot found or convert to</Help>
+            <bDefault>1</bDefault>
+            <bVisible>1</bVisible>
+       	</GameOptionInfo>
+        <GameOptionInfo>
+            <Type>GAMEOPTION_BARBARIAN_CIV</Type>
+            <Description>Barbarian Civ</Description>
+            <Help>Barbarian Cities will become Civs - see the python file BarbarianCiv.py for defs</Help>
+            <bDefault>0</bDefault>
+            <bVisible>1</bVisible>
+		</GameOptionInfo>
+        <GameOptionInfo>
             <Type>GAMEOPTION_NO_POPULATION_LIMIT</Type>
             <Description>No Pop Limit</Description>
             <Help>If unchecked  - Cities are LImited to size 8 , with buildings and more, that limit is increased.</Help>
@@ -308,37 +322,44 @@
 		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_ATTACK</Type>
-            <Description>Ranged Attack</Description>
-            <Help>Siege Units Have Ranged Attack (Reccomended-on)</Help>
-            <bDefault>1</bDefault>
-            <bVisible>1</bVisible>
+            <Description>[will be added]Ranged Attack</Description>
+            <Help>Siege can Attack a tile form range</Help>
+            <bDefault>0</bDefault>
+            <bVisible>0</bVisible>
 <!--rangedattack-keldath-->
 		</GameOptionInfo>
         <GameOptionInfo>
-            <Type>GAMEOPTION_END_ATTACK</Type>
-            <Description>Allow More Attacks</Description>
-            <Help>Siege and Ranged units can carry another attack if ther have movement</Help>
+            <Type>GAMEOPTION_RANGED_IMMUNITY</Type>
+            <Description>Ranged Immunity</Description>
+            <Help>Ranged Units Attack will not sustain damage from target [to be used with retaliate-rand hit-rand dmd game options]</Help>
+            <bDefault>1</bDefault>
+            <bVisible>1</bVisible>
+		</GameOptionInfo>
+        <GameOptionInfo>
+            <Type>GAMEOPTION_RANGED_RETALIATE</Type>
+            <Description>Ranged Retaliate</Description>
+            <Help>Ranged units can carry another attack if ther have movement</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_END_MOVES</Type>
-            <Description>Ranged Move End</Description>
+            <Description>[will be replaced]Ranged Move End</Description>
             <Help>Units with Range Strike wont be able to move if it have more move points.(default off)</Help>
             <bDefault>0</bDefault>
-            <bVisible>1</bVisible>
-       	</GameOptionInfo>
+            <bVisible>0</bVisible> 	
+      	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RAND_HIT</Type>
-            <Description>Random Bombardment Hit</Description>
-            <Help>Air,Siege and Ranged units Attacks Hits will be randomized</Help>
+            <Description>Random Hit</Description>
+            <Help>Ranged units Attacks Hits will be randomized</Help>
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RAND_DMG</Type>
-            <Description>Random Bombardment Damage</Description>
-            <Help>Air,Siege and Ranged units Bombard Attacks damage will be randomized</Help>
+            <Description>Random Damage</Description>
+            <Help>Ranged units Attacks damage will be randomized</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>
 		</GameOptionInfo>

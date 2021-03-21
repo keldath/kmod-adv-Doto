@@ -98,10 +98,6 @@ m_iTGA_CORPORATIONS(0),                         // GAMEFONT_TGA_CORPORATIONS
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
-//rangedattack-keldath DOTO-MOD - START - Ranged Strike AI realism invictus
-//m_iSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS(80),
-//m_iSKIP_RANGE_ATTACK_MIN_STACK_RATIO(150),
-// MOD - END - Ranged Strike AI
 // </advc>  <advc.opt>
 m_iEventMessageTime(-1),
 m_eRUINS_IMPROVEMENT(NO_IMPROVEMENT),
@@ -790,10 +786,6 @@ void CvGlobals::cacheGlobals()
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
-	//rangedattack-keldath DOTO-MOD - START - Ranged Strike AI realism invictus
-//	m_iSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS = getDefineINT("SKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS"/*, m_iSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS*/);
-//	m_iSKIP_RANGE_ATTACK_MIN_STACK_RATIO = getDefineINT("SKIP_RANGE_ATTACK_MIN_STACK_RATIO"/*, m_iSKIP_RANGE_ATTACK_MIN_STACK_RATIO*/);
-	// MOD - END - Ranged Strike AI
 }
 
 // <advc.opt>
@@ -923,17 +915,6 @@ int CvGlobals::getTGA_CORPORATIONS()							// GAMEFONT_TGA_CORPORATIONS
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
-// rangedattack-keldath DOTO-MOD - START - Ranged Strike AI realism invictus
-/*int CvGlobals::getSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS() const
-{
-	return m_iSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS;
-}
-
-int CvGlobals::getSKIP_RANGE_ATTACK_MIN_STACK_RATIO() const
-{
-	return m_iSKIP_RANGE_ATTACK_MIN_STACK_RATIO;
-}*/
-// DOTO-MOD - END - Ranged Strike AI
 int CvGlobals::getMAX_CIV_PLAYERS()
 {
 	return MAX_CIV_PLAYERS;

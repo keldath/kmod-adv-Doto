@@ -54,7 +54,8 @@ public:
 	enum StartingPlotNormalizationLevel {
 		NORMALIZE_DEFAULT, NORMALIZE_LOW, NORMALIZE_MEDIUM, NORMALIZE_HIGH };
 	StartingPlotNormalizationLevel getStartingPlotNormalizationLevel() const;
-	void setStartingPlotNormalizationLevel(StartingPlotNormalizationLevel eLevel);
+	void setStartingPlotNormalizationLevel(
+			StartingPlotNormalizationLevel eLevel = NORMALIZE_DEFAULT);
 	// </advc.108>
 	int getStartingPlotRange() const; // advc.opt (exposed to Python via CyPlayer)
 
@@ -880,7 +881,7 @@ protected:
 	int m_iGwEventTally;		// K-Mod
 	int m_iTurnLoadedFromSave; // advc.044
 	// <advc.opt>
-	int m_iStartingPlotRange;
+	mutable int m_iStartingPlotRange;
 	int m_iCivPlayersEverAlive;
 	int m_iCivTeamsEverAlive;
 	// </advc.opt>
@@ -1005,7 +1006,7 @@ protected:
 	void initFreeState();
 	/* <advc.027> */ NormalizationTarget* /* </advc.027> */ assignStartingPlots();
 	void normalizeStartingPlots(/* advc.027: */ NormalizationTarget const* pTarget = NULL);
-	void updateStartingPlotRange(); // advc.opt
+	void updateStartingPlotRange() const; // advc.opt
 	void applyOptionEffects(bool bEnableAll = false); // advc.310
 	void doTurn();
 	void doDeals();
@@ -1033,6 +1034,7 @@ protected:
 	CvPlot* randomBarbarianPlot(CvArea const& a, Shelf const* pShelf);
 	bool killBarbarian(int iUnitsPresent, int iTiles, int iPop, CvArea& a, Shelf* pShelf);
 	UnitTypes randomBarbarianUnit(UnitAITypes eUnitAI, CvArea const& a);
+	scaled barbarianPeakLandRatio() const;
 	// </advc.300>
 
 	void verifyCivics();

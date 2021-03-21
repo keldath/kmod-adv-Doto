@@ -489,7 +489,7 @@
 		<element type="PowerBonus" minOccurs="0"/>
 		<element type="FreeBonus" minOccurs="0"/>
 		<element type="iNumFreeBonuses" minOccurs="0"/>
-<!-- prereqMust+tholish -->
+<!-- prereqMust+tholish inactive buildings-->
 		<element type="iPrereqMustAll" minOccurs="0"/>
 		<!-- lopez bonus converter start-->
 		<element type="RequiredInputBonuses" minOccurs="0"/>
@@ -563,6 +563,8 @@
 		<element type="iGlobalFreeSpecialist" minOccurs="0"/>
 		<element type="iMaintenanceModifier" minOccurs="0"/>
 		<!--DPII < global Maintenance Modifiers > -->
+		<!-- these should be for mostly national and world wonders...
+				they affect all cities...-->
 		<element type="iGlobalMaintenanceModifier" minOccurs="0"/>
 		<element type="iAreaMaintenanceModifier" minOccurs="0"/>
 		<element type="iOtherAreaMaintenanceModifier" minOccurs="0"/>

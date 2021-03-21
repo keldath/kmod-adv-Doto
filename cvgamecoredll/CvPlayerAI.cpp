@@ -1131,16 +1131,16 @@ int CvPlayerAI::AI_movementPriority(CvSelectionGroupAI const& kGroup) const // a
 	if (pHeadUnit->AI_getUnitAIType() == UNITAI_EXPLORE)
 		return 10;
 
-	if (pHeadUnit->bombardRate() > 0)
+// DOTO-MOD -rangedattack-keldath START
+	if (pHeadUnit->rangedStrike() > 0)
 		return 11;
 
-	// DOTO-MOD -rangedattack-keldath START - Ranged Strike AI realism invictus
-	if (pHeadUnit->canRangeStrikeK())
+	if (pHeadUnit->bombardRate() > 0)
 		return 12;
 
 	if (pHeadUnit->collateralDamage() > 0)
 		return 13;
-	// MOD -rangedattack-keldath END - Ranged Strike AI
+// DOTO-MOD -rangedattack-keldath end
 	if (kGroup.isStranded())
 		return 505;
 
@@ -3932,8 +3932,8 @@ TechTypes CvPlayerAI::AI_bestTech(int iMaxPathLength, bool bFreeTech, bool bAsyn
 	int iThreshold = techs[std::min(iMaxPathLength-1,
 			(int)techs.size()-1)].first;
 	// Note: this works even if depth=0 isn't big enough.
-
-	scaled rDepthRate = fixp(0.62); // advc: 0.8 in k146
+	// advc.550: 0.8 in K-Mod 1.46. AdvCiv had used 0.62 until version 0.99.
+	scaled const rDepthRate = fixp(2/3.);
 
 	for (int end_depth = 0; end_depth < iMaxPathLength; ++end_depth)
 	{
@@ -4130,8 +4130,25 @@ TechTypes CvPlayerAI::AI_bestTech(int iMaxPathLength, bool bFreeTech, bool bAsyn
 		FErrorMsg("Failed to create a tech path");
 		return NO_TECH;
 	}
-
-	TechTypes eBestTech = techs[best_path_it->second.back()].second;
+//doto advc 099 fix to 098 - Fix AI not respecting AdvCiv rule about tech requirements
+	//TechTypes eBestTech = techs[best_path_it->second.back()].second;
+	/*	<advc.126> Haven't checked the prereqs of the prereqs.
+		E.g. in Earth1000AD, India starts with Paper but w/o its prereqs.
+		Under AdvCiv rules, India is then prohibited from researching Education. */
+	TechTypes eBestTech;
+	{
+		size_t i = 0;
+		do
+		{
+			eBestTech = techs[
+				/*best_path_it->*/tech_paths[i]. // advc.550g
+					second.back()].second;
+			i++;
+		} while (i < tech_paths.size() &&
+			// K-Mod had asserted the negation of this
+			(isResearch() && getAdvancedStartPoints() >= 0 &&
+				!canResearch(eBestTech, false, bFreeTech)));
+	} // </advc.126>
 	if (gPlayerLogLevel >= 1)
 	{
 		logBBAI("  Player %d (%S) selects tech %S with value %d. (Aiming for %S)",
@@ -4141,8 +4158,10 @@ TechTypes CvPlayerAI::AI_bestTech(int iMaxPathLength, bool bFreeTech, bool bAsyn
 				GC.getInfo(techs[best_path_it->second.front()].second).
 				getDescription());
 	}
-	FAssert(!isResearch() || getAdvancedStartPoints() < 0 ||
+//doto advc 099 fix to 098 - Fix AI not respecting AdvCiv rule about tech requirements
+/*	FAssert(!isResearch() || getAdvancedStartPoints() < 0 ||
 			canResearch(eBestTech, false, bFreeTech));
+	*/
 	// </k146>
 	return eBestTech;
 }
@@ -9605,6 +9624,8 @@ bool CvPlayerAI::AI_counterPropose(PlayerTypes ePlayer,
 			!GET_TEAM(ePlayer).isGoldTrading() &&
 			rLeniency != rSecondAttempt)
 		{
+			kTheyAlsoGive.clear();
+			kWeAlsoGive.clear();
 			return AI_counterPropose(ePlayer, kTheyGive, kWeGive,
 					kTheirInventory, kOurInventory, kTheyAlsoGive, kWeAlsoGive,
 					rSecondAttempt);
@@ -10044,10 +10065,15 @@ bool CvPlayerAI::AI_balanceDeal(bool bGoldDeal, CLinkList<TradeData> const& kThe
 		}
 	} // <advc.036> Special treatment for one-for-one resource trades
 	if (bSingleResource && iTheyReceive - iWeReceive <= m_iSingleBonusTradeTolerance &&
-		((kWeWant.getLength() <= 0 && iOtherListLength == 1 &&
-		pGoldPerTurnNode != NULL) ||
-		(kWeWant.getLength() == 1 &&
-		kWeWant.head()->m_data.m_eItemType == TRADE_RESOURCES)))
+		(
+			(kWeWant.getLength() <= 0 && iOtherListLength == 1 &&
+			// Haven't added gold or unable to trade it
+			(pGoldPerTurnNode != NULL ||
+			!kPlayer.canTradeItem(getID(), TradeData(TRADE_GOLD_PER_TURN, 0))))
+		||
+			(kWeWant.getLength() == 1 &&
+			kWeWant.head()->m_data.m_eItemType == TRADE_RESOURCES)
+		))
 	{
 		return true;
 	} // </advc.036>
@@ -11495,7 +11521,7 @@ DenialTypes CvPlayerAI::AI_bonusTrade(BonusTypes eBonus, PlayerTypes eToPlayer,
 			return NO_DENIAL;
 		}
 	}
-	if (GET_TEAM(getTeam()).AI_getWorstEnemy() == TEAMID(eToPlayer))
+	if (!isHuman() && GET_TEAM(getTeam()).AI_getWorstEnemy() == TEAMID(eToPlayer))
 		return DENIAL_WORST_ENEMY;
 	// advc.036: Commented out
 	/*if (AI_corporationBonusVal(eBonus) > 0)
@@ -12438,8 +12464,8 @@ DenialTypes CvPlayerAI::AI_stopTradingTrade(TeamTypes eTradeTeam, PlayerTypes eP
 				continue;
 			bool bPeaceTreaty = false;
 			bool bAnnualPayment = false;
-			for(CLLNode<TradeData> const* pNode = d->headTradesNode(); pNode != NULL;
-				pNode = d->nextTradesNode(pNode))
+			for(CLLNode<TradeData> const* pNode = d->headGivesNode(getTeam());
+				pNode != NULL; pNode = d->nextGivesNode(pNode, getTeam()))
 			{
 				TradeableItems eItem = pNode->m_data.m_eItemType;
 				if(eItem == TRADE_PEACE_TREATY)
@@ -12710,7 +12736,8 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI, CvArea const*
 			break;
 
 		case UNITAI_COLLATERAL:
-			if (u.getCombat() > 0 && u.getCollateralDamage() > 0 &&
+			//doto keldath rangedattack + ranged immunity
+			if (u.getCombat() > 0 && (u.getCollateralDamage() > 0 || u.getRangeStrike()) &&
 				!u.isMostlyDefensive()) // advc.315
 			{
 				bValid = true;
@@ -13093,6 +13120,9 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI, CvArea const*
 		// The commented code above is K-Mod code from before the more recent changes; kept for comparison.
 		int iSiegeValue = 0;
 		iSiegeValue += iCombatValue * u.getCollateralDamage() * (4+u.getCollateralDamageMaxUnits()) / 600;
+		//doto keldath rangedattack + ranged immunity
+		iSiegeValue += u.getRangeStrike() ?
+					(((iCombatValue * iCombatValue) / 50) + iCombatValue / 2) : 0;
 		if (u.getBombardRate() > 0 && !AI_isDoStrategy(AI_STRATEGY_AIR_BLITZ))
 		{
 			int iBombardValue = (u.getBombardRate()+3) * 6;
@@ -13165,6 +13195,9 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI, CvArea const*
 		iValue += (iCombatValue * u.getMoves()) / 4;
 		iValue += (iCombatValue * u.getWithdrawalProbability()) / 25;
 		iValue -= (iCombatValue * u.getCityAttackModifier()) / 100;
+		//doto keldath rangedattack + ranged immunity
+		iValue += u.getRangeStrike() ?
+					(((iCombatValue * iCombatValue) / 50) + iCombatValue / 2) : 0;
 		break;
 
 	case UNITAI_PILLAGE:
@@ -14212,9 +14245,12 @@ bool CvPlayerAI::AI_isLandWar(CvArea const& kArea) const
 	checks. */
 bool CvPlayerAI::AI_isFocusWar(CvArea const* pArea) const
 {
-	if(!hasCapital())
+//doto advc 099 fix to 098 - Minor tweak to AI_isFocusWar
+	if (isBarbarian())
+		return true;
+	if (!hasCapital())
 		return false;
-	if(pArea == NULL)
+	if (pArea == NULL)
 		pArea = getCapital()->area();
 	/*  Chosen wars (ongoing or in preparation) are always worth focusing on;
 		others only when on the defensive. (In CvTeamAI::AI_calculateAreaAIType,
@@ -14782,6 +14818,8 @@ int CvPlayerAI::AI_localDefenceStrength(const CvPlot* pDefencePlot, TeamTypes eD
 
 	FAssert(bMoveToTarget || !bCheckMoves); // it doesn't make much sense to check moves if the defenders are meant to stay put.
 	FAssert(eDomainType != DOMAIN_AIR && eDomainType != DOMAIN_IMMOBILE); // advc: Air combat strength isn't counted
+//doto advc 099 fix to 098  -Increase AI strength estimate for defending stacks
+	int iDefenders = 0; // advc.159
 	for (SquareIter it(*pDefencePlot, iRange); it.hasNext(); ++it)
 	{
 		CvPlot const& p = *it;
@@ -14831,6 +14869,8 @@ int CvPlayerAI::AI_localDefenceStrength(const CvPlot* pDefencePlot, TeamTypes eD
 						bMoveToTarget ? pDefencePlot : &p, // </advc.159>
 						NULL, false, 0, false, iHP, bAssumePromo); // advc.139
 				iPlotTotal += iUnitStr;
+//doto advc 099 fix to 098  -Increase AI strength estimate for defending stacks
+				iDefenders++; // advc.159
 			}
 		}
 		if (!bNoCache && !isHuman() && eDefenceTeam == NO_TEAM &&
@@ -14844,8 +14884,11 @@ int CvPlayerAI::AI_localDefenceStrength(const CvPlot* pDefencePlot, TeamTypes eD
 		}
 		iTotal += iPlotTotal;
 	}
-
-	return iTotal;
+//doto advc 099 fix to 098  -Increase AI strength estimate for defending stacks
+	//return iTotal;
+	// <advc.159> Large defensive stacks are difficult to assail
+	iDefenders = std::min(iDefenders, 13);
+	return (iTotal * (75 + (iDefenders - 1))) / 75; // </advc.159>
 }
 
 // Total attack strength of units that can move iRange steps to reach pAttackPlot
@@ -20264,7 +20307,9 @@ void CvPlayerAI::AI_proposeWarTrade(PlayerTypes eHireling)
 				if (iAcquireVal <= 0) // Hireling insisting on liberation
 					continue;
 				FErrorMsg("Just to verify that this line is reachable; hasn't come up in tests yet"); // advc.test
-				int iFitness = iKeepVal - iAcquireVal;
+//doto advc 099 fix to 098 - Fix minor bug in AI city trade proposals
+				//int iFitness = iKeepVal - iAcquireVal;
+				int iFitness = iAcquireVal - iKeepVal;
 				if (iFitness > iBestFitness && (iKeepVal <= 0 ||
 					scaled(iAcquireVal, iKeepVal) - 1 > per100(iWSRating)))
 				{
@@ -23246,9 +23291,13 @@ void CvPlayerAI::AI_updateVictoryStageHash()
 
 	m_eVictoryStageHash = AI_DEFAULT_VICTORY_STAGE;
 	//m_iVictoryStrategyHashCacheTurn = GC.getGame().getGameTurn();
-
-	if (!hasCapital())
+//doto advc 099 fix to 098 - UWAI: Fix crash in games that start with free cities
+	if (!hasCapital() ||
+		// advc.115: Can't estimate yield rates on turn 0
+		GC.getGame().getElapsedGameTurns() <= 0)
+	{
 		return;
+	}
 
 	bool bStartedOtherLevel3 = false;
 	bool bStartedOtherLevel4 = false;
@@ -26611,36 +26660,28 @@ int CvPlayerAI::AI_calculateTotalBombard(DomainTypes eDomain) const
 
 void CvPlayerAI::AI_updateBonusValue(BonusTypes eBonus)
 {
-	FAssert(m_aiBonusValue != NULL);
+	FAssertEnumBounds(eBonus); // advc
+	m_aiBonusValue[eBonus] = -1;
+	m_aiBonusValueTrade[eBonus] = -1;
 	/*  <advc.036> Don't just reset; recompute them all, and never update the
-		cache in AI_baseBonusVal. This should make sure we're not going OOS. */
-	if(GC.getGame().isNetworkMultiPlayer())
+		cache in AI_baseBonusVal. This should make sure we're not going OOS.
+		Tbd.: Updating only on demand could lead to undesirable side-effects
+		in singleplayer, and the multiplayer code is perhaps not just slower,
+		but also less accurate. Implement a bConstCache param for AI_baseBonusVal?
+		Would have to add the param to AI_bonusVal and AI_corporationValue too. */
+	if (GC.getGame().isNetworkMultiPlayer())
 	{
 		m_aiBonusValue[eBonus] = AI_baseBonusVal(eBonus, false);
 		m_aiBonusValueTrade[eBonus] = AI_baseBonusVal(eBonus, true);
-	}
-	else // Reset and update on demand is faster
-	{
-	/*  Tbd.: Could lead to undesirable side-effects in singleplayer, and
-		the multiplayer code is perhaps not just slower, but also less
-		accurate. Implement a bConstCache param for AI_baseBonusVal?
-		Would have to add the param to AI_bonusVal and AI_corporationValue too. */
-	// </advc.036>
-		m_aiBonusValue[eBonus] = -1;
-		m_aiBonusValueTrade[eBonus] = -1;
-	}
+	} // </advc.036>
 }
 
 void CvPlayerAI::AI_updateBonusValue()
 {
-	PROFILE_FUNC(); // advc.036 (comment): Performance could be an issue in multiplayer
-
+	PROFILE_FUNC(); // advc.036: Slow only in multiplayer (see comment above)
 	FAssert(m_aiBonusValue != NULL);
-
-	for (int iI = 0; iI < GC.getNumBonusInfos(); iI++)
-	{
-		AI_updateBonusValue((BonusTypes)iI);
-	}
+	FOR_EACH_ENUM(Bonus)
+		AI_updateBonusValue(eLoopBonus);
 }
 
 int CvPlayerAI::AI_getUnitClassWeight(UnitClassTypes eUnitClass) const
@@ -27750,6 +27791,8 @@ bool CvPlayerAI::AI_feelsSafe() const
 	if (getNumCities() <= 1)
 		return false; // Don't mess with early-game strategy
 	CvTeamAI const& kOurTeam = GET_TEAM(getTeam());
+	if (!kOurTeam.AI_isWarPossible())
+		return true;
 	if (kOurTeam.AI_countWarPlans(NUM_WARPLAN_TYPES, true, 1) > 0)
 		return false;
 	CvGame const& kGame = GC.getGame();

@@ -964,10 +964,10 @@ public:
 	int getCorporationCommerceByCorporation(CommerceTypes eIndex, CorporationTypes eCorporation) const;				// Exposed to Python
 	int getCorporationYield(YieldTypes eIndex) const { return m_aiCorporationYield.get(eIndex); }					// Exposed to Python
 	int getCorporationYieldByCorporation(YieldTypes eIndex, CorporationTypes eCorporation) const;					// Exposed to Python
-	void updateCorporation();
+	void updateCorporation(/* advc.064d: */ bool bVerifyProduction = true);
 	void updateCorporationCommerce(CommerceTypes eIndex);
 	void updateCorporationYield(YieldTypes eIndex);
-	void updateCorporationBonus();
+	void updateCorporationBonus(/* advc.064d: */ bool bVerifyProduction = true);
 
 	int getCommerceRateModifier(CommerceTypes eIndex) const															// Exposed to Python
 	{
@@ -1088,7 +1088,7 @@ public:
 	//< DOTO-DPII Building Resource Converter Start >
 	//f1rpo 096 - added a var here to pass an param to avoid a loop - keldath
 	void changeNumBonuses(BonusTypes eBonus, int iChange,
-       bool bUpdateBuildings = true);
+       bool bVerifyProduction = true, bool bUpdateBuildings = true);
 	//< DOTO-DPII Building Resource Converter End   >
 //	void changeNumBonuses(BonusTypes eIndex, int iChange);
 	int countUniqueBonuses() const; // advc.149

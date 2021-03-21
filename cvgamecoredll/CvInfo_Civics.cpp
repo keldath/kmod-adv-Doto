@@ -105,8 +105,7 @@ CvCivicInfo::~CvCivicInfo()
 	SAFE_DELETE_ARRAY(m_piTradeYieldModifier);
 // < Civic Infos Plus Start >
 	SAFE_DELETE_ARRAY(m_piSpecialistExtraYield);
-    SAFE_DELETE_ARRAY(m_paiFreeSpecialistCount);
-	SAFE_DELETE_ARRAY(m_piStateReligionYieldModifier);
+    SAFE_DELETE_ARRAY(m_piStateReligionYieldModifier);
 	SAFE_DELETE_ARRAY(m_piStateReligionCommerceModifier);
 	SAFE_DELETE_ARRAY(m_piNonStateReligionYieldModifier);
 	SAFE_DELETE_ARRAY(m_piNonStateReligionCommerceModifier);
@@ -535,9 +534,6 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 	m_piSpecialistExtraCommerce = new int[NUM_YIELD_TYPES];
 	stream->Read(NUM_YIELD_TYPES, m_piSpecialistExtraYield);
 
-	SAFE_DELETE_ARRAY(m_paiFreeSpecialistCount);
-	m_paiFreeSpecialistCount = new int[GC.getNumSpecialistInfos()];
-	stream->Read(GC.getNumSpecialistInfos(), m_paiFreeSpecialistCount);
 	// < Civic Infos Plus End   >
 	SAFE_DELETE_ARRAY(m_piCommerceModifier);
 	m_piCommerceModifier = new int[NUM_COMMERCE_TYPES];
@@ -1019,12 +1015,6 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_pabHurry, "Hurrys", GC.getNumHurryInfos());
 	pXML->SetVariableListTagPair(&m_pabSpecialBuildingNotRequired, "SpecialBuildingNotRequireds", GC.getNumSpecialBuildingInfos());
 	pXML->SetVariableListTagPair(&m_pabSpecialistValid, "SpecialistValids", GC.getNumSpecialistInfos());
-// < Civic Infos Plus Start >
-	//keldath qa2 - removed sizeof(GC.getSpecialistInfo((SpecialistTypes)0))-f1rpo- (It was never used.)
-	//pXML->SetVariableListTagPair(&m_paiFreeSpecialistCount, "FreeSpecialistCounts", sizeof(GC.getSpecialistInfo((SpecialistTypes)0)), GC.getNumSpecialistInfos());
-	pXML->SetVariableListTagPair(&m_paiFreeSpecialistCount, "FreeSpecialistCounts", GC.getNumSpecialistInfos());
-
-// < Civic Infos Plus End   >
 	pXML->SetVariableListTagPair(&m_paiBuildingHappinessChanges, "BuildingHappinessChanges", GC.getNumBuildingClassInfos());
 	pXML->SetVariableListTagPair(&m_paiBuildingHealthChanges, "BuildingHealthChanges", GC.getNumBuildingClassInfos());
 	pXML->SetVariableListTagPair(&m_paiFeatureHappinessChanges, "FeatureHappinessChanges", GC.getNumFeatureInfos());

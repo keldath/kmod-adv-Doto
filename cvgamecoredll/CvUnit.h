@@ -333,7 +333,7 @@ public:
 	{
 		//if option is off then just send 0 ...so gameplay will be normal ranged attack
 		//very important - affects many places!
-		if (GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
+		if (GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK) || GC.getGame().isOption(GAMEOPTION_RANGED_IMMUNITY))
 		{
 			return std::max(0,(m_pUnitInfo->getRangeStrike()));
 		}
@@ -978,16 +978,13 @@ public:
 	bool canRangeStrike() const;
 	bool canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY) const;
 	bool rangeStrike(int iX, int iY);
-// DOTO-MOD - START - Ranged Strike AI realism invictus
-	// Note: These two functions are no longer protected
-	int rangeCombatDamageK(const CvUnit* pDefender) const;
-	CvUnit* rangedStrikeTargetK(const CvPlot* pPlot) const;
+// DOTO-MOD - Keldtah RangedStrike start + Ranged Immunity
+	int rangeCombatDamageK(const CvUnit* pDefender, const CvUnit* pAttacker) const;
+	bool randomRangedGen(CvUnit* pDefender, CvUnit* pAttacker) const;
+	bool rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlot* pPlot,
+					int dmg, int msgType,bool rndHit = true ) const;
 	bool isRangeStrikeCapableK() const;
-	bool canRangeStrikeK() const;
-	bool canRangeStrikeAtK(const CvPlot* pPlot, int iX, int iY) const;
-	bool rangeStrikeK(int iX, int iY);
-	bool afterRangeStrikeK(CvUnit* pAttacker);
-// MOD - END - Ranged Strike AI
+// DOTO-MOD - Keldtah RangedStrike end + Ranged Immunity
 
 	int getTriggerValue(EventTriggerTypes eTrigger, const CvPlot* pPlot, bool bCheckPlot) const;
 	bool canApplyEvent(EventTypes eEvent) const;
@@ -1028,13 +1025,11 @@ public:
 	DllExport float getHealthBarModifier() const;
 	DllExport void getLayerAnimationPaths(std::vector<AnimationPathTypes>& aAnimationPaths) const;
 	DllExport int getSelectionSoundScript() const;
-// DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
+
 	bool isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker,
 	// Lead From Behind (UncutDragon, edited for K-Mod): START
 			int* pBestDefenderRank,
-			bool bPreferUnowned = false,// advc.061
-			bool bRanged = false) const; //realism inv added branged
-// MOD - end - Ranged Strike AI
+			bool bPreferUnowned = false) const; // advc.061
 	int LFBgetAttackerRank(const CvUnit* pDefender, int& iUnadjustedRank) const;
 	int LFBgetDefenderRank(const CvUnit* pAttacker) const;
 	// unprotected by K-Mod. (I want to use the LFB value for some AI stuff)
@@ -1202,6 +1197,9 @@ protected:
 	bool isCombatVisible(const CvUnit* pDefender) const;
 	//void resolveCombat(CvUnit* pDefender, CvPlot* pPlot, CvBattleDefinition& kBattle);
 	void resolveCombat(CvUnit* pDefender, CvPlot* pPlot, bool bVisible); // K-Mod
+//DOTO - ranged-immunity
+	void resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pPlot, bool bVisible, int dmgFromRanged); // K-Mod
+//DOTO - rangeimunity
 	void addAttackSuccessMessages(CvUnit const& kDefender, bool bFought) const; // advc.010
 	void addDefenseSuccessMessages(CvUnit const& kDefender) const; // advc
 	bool suppressStackAttackSound(CvUnit const& kDefender) const; // advc.002l

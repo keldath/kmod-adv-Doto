@@ -2359,12 +2359,11 @@ int CvPlot::getFeatureProduction(BuildTypes eBuild, TeamTypes eTeam, CvCity** pp
 	return std::max(0, iProduction);
 }
 
-// DOTO-MOD - START - Ranged Strike AI realism invictus
+
 CvUnit* CvPlot::getBestDefender(PlayerTypes eOwner, PlayerTypes eAttackingPlayer,
 	CvUnit const* pAttacker, bool bTestEnemy, bool bTestPotentialEnemy,
 	/* advc.028: */ bool bTestVisible,
-	bool bTestCanAttack, bool bAny // advc: new params (for CvPlot::hasDefender)
-	, bool bRanged) const // DOTO-MOD - START - Ranged Strike AI realism invictus
+	bool bTestCanAttack, bool bAny) const // advc: new params (for CvPlot::hasDefender)
 {
 	// <advc> Ensure consistency of parameters
 	if (pAttacker != NULL)
@@ -2394,8 +2393,7 @@ CvUnit* CvPlot::getBestDefender(PlayerTypes eOwner, PlayerTypes eAttackingPlayer
 				return &kLoopUnit; // </advc>
 			if (kLoopUnit.isBetterDefenderThan(pBestUnit, pAttacker,
 				&iBestUnitRank, // UncutDragon
-// DOTO-MOD - START - Ranged Strike AI realism invictus
-				bTestVisible, bRanged)) // advc.061 //
+				bTestVisible)) // advc.061
 			{
 				pBestUnit = &kLoopUnit;
 			}
@@ -2663,7 +2661,10 @@ bool CvPlot::isWithinCultureRange(PlayerTypes ePlayer) const
 		if (isCultureRangeCity(ePlayer, eLoopCultureLevel))
 			return true;
 	}
-
+	/*	<advc.099c> Make sure that all city plots are considered to be
+		within their owner's culture range */
+	if (isCity() && getOwner() == ePlayer)
+		return true; // </advc.099c>
 	return false;
 }
 
@@ -4285,7 +4286,7 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 			if (isImproved())
 				GET_PLAYER(getOwner()).changeImprovementCount(getImprovementType(), 1);
 
-			updatePlotGroupBonus(true);
+			updatePlotGroupBonus(true, /* advc.064d */ false);
 		}
 
 		pUnitNode = headUnitNode();
@@ -6033,22 +6034,21 @@ int CvPlot::getFoundValue(PlayerTypes eIndex, /* advc.052: */ bool bRandomize) c
 	}
 	//return m_aiFoundValue[eIndex];
 	// <advc.052>
-	int r = m_aiFoundValue.get(eIndex);
+	int iResult = m_aiFoundValue.get(eIndex);
 	if(bRandomize && !GET_PLAYER(eIndex).isHuman() && GC.getGame().isScenario())
 	{	// Randomly change the value by +/- 1.5%
-		double const plusMinus = 0.015;
-		std::vector<int> hashInput;
+		scaled const rPlusMinus = per1000(15);
+		std::vector<int> aiHashInput;
 		/*  Base the random multiplier on a number that is unique
 			per game, but doesn't change throughout a game. */
-		hashInput.push_back(GC.getGame().getSorenRand().
-				getSeed());
-		hashInput.push_back(getX());
-		hashInput.push_back(getY());
-		hashInput.push_back(eIndex);
-		double randMult = 1 - plusMinus + 2 * plusMinus * ::hash(hashInput);
-		r = ::round(r * randMult);
+		aiHashInput.push_back(GC.getGame().getInitialRandSeed().first);
+		aiHashInput.push_back(getX());
+		aiHashInput.push_back(getY());
+		aiHashInput.push_back(eIndex);
+		scaled rRandMult = 1 - rPlusMinus + 2 * rPlusMinus * scaled::hash(aiHashInput);
+		iResult = (iResult * rRandMult).round();
 	}
-	return r;
+	return iResult;
 	// </advc.052>
 }
 
@@ -6168,7 +6168,8 @@ void CvPlot::setPlotGroup(PlayerTypes ePlayer, CvPlotGroup* pNewValue,
 	if (pOldPlotGroup != NULL && pCity != NULL && pCity->getOwner() == ePlayer)
 	{
 		FOR_EACH_ENUM(Bonus)
-			pCity->changeNumBonuses(eLoopBonus, -pOldPlotGroup->getNumBonuses(eLoopBonus));
+			pCity->changeNumBonuses(eLoopBonus, -pOldPlotGroup->getNumBonuses(eLoopBonus),
+				false); // advc.064d (handled by CvPlotGroup::recalculatePlots ... I hope)
 		
 		// < Building Resource Converter Start >
 		pCity->processBuildingBonuses();
@@ -6199,7 +6200,7 @@ void CvPlot::updatePlotGroup(/* advc.064d: */ bool bVerifyProduction)
 	for (PlayerIter<ALIVE> it; it.hasNext(); ++it)
 	{
 		CvPlayer& kPlayer = *it;
-		updatePlotGroup(kPlayer.getID(), /* <advc.064d> */ false);
+		updatePlotGroup(kPlayer.getID(), /* <advc.064d> */ true, false);
 		/*  When recalculation of plot groups starts with updatePlotGroup, then
 			bVerifyProduction sometimes interrupts city production prematurely;
 			not sure why exactly. Will have to verify all cities instead. */
@@ -6250,7 +6251,7 @@ void CvPlot::updatePlotGroup(PlayerTypes ePlayer, bool bRecalculate,
 
 				pPlotGroup->removePlot(this, /* advc.064d: */ bVerifyProduction);
 				if (!bEmpty)
-					pPlotGroup->recalculatePlots();
+					pPlotGroup->recalculatePlots(/* advc.064d: */ bVerifyProduction);
 			}
 		}
 		pPlotGroup = getPlotGroup(ePlayer);
@@ -6273,7 +6274,7 @@ void CvPlot::updatePlotGroup(PlayerTypes ePlayer, bool bRecalculate,
 			{
 				if (pPlotGroup == NULL)
 				{
-					pAdjacentPlotGroup->addPlot(this);
+					pAdjacentPlotGroup->addPlot(this, /* advc.064d: */ bVerifyProduction);
 					pPlotGroup = pAdjacentPlotGroup;
 					FAssert(getPlotGroup(ePlayer) == pPlotGroup);
 				}
@@ -6507,7 +6508,8 @@ bool CvPlot::isRiverCrossing(DirectionTypes eIndex) const
 {
 	if (eIndex == NO_DIRECTION)
 	{
-		FErrorMsg("Just to see if the NO_DIRECTION branch is needed"); // advc.test
+		//doto - commented out - might be connected to unit_blockade
+		//FErrorMsg("Just to see if the NO_DIRECTION branch is needed"); // advc.test
 		return false;
 	}
 	return m_abRiverCrossing.get(eIndex);
@@ -7147,8 +7149,15 @@ void CvPlot::updateFlagSymbol()
 	{
 		if (m_pFlagSymbol == NULL || gDLL->getFlagEntityIFace()->getPlayer(m_pFlagSymbol) != ePlayer)
 		{
-			if (m_pFlagSymbol != NULL)
+			if (m_pFlagSymbol != NULL &&
+//doto advc 099 fix to 098 - Fix crash upon quick-load (maybe only when debugging)
+				/*	advc.001: It seems that the update can occur while quick-loading,
+					resulting in a crash. Maybe only when debugging. Specifically, I
+					quick-loaded after stopping and continuing in pathfinding code. */
+				((pCenterUnit != NULL && pCenterUnit->getEntity() != NULL) || getNumUnits() == 0))
+			{
 				gDLL->getFlagEntityIFace()->destroy(m_pFlagSymbol);
+			}
 			m_pFlagSymbol = gDLL->getFlagEntityIFace()->create(ePlayer);
 			if (m_pFlagSymbol != NULL)
 				gDLL->getFlagEntityIFace()->setPlot(m_pFlagSymbol, this, false);
@@ -9259,7 +9268,11 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 {
 	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
 	{
-		if (pUnit->isAnimal() || pUnit->alwaysInvisible() || pUnit->isUnblocade())
+		if (pUnit->isAnimal() || pUnit->alwaysInvisible() || pUnit->isUnblocade()
+//DOTO = ADDED BY KELDATH setllers and workers should be affected.
+			|| pUnit->getUnitClassType() != GC.getInfoTypeForString("UNITCLASS_SETTLER")
+			|| pUnit->getUnitClassType() != GC.getInfoTypeForString("UNITCLASS_WORKER")
+			)
 			{return false;}
 
 		if (!isFriendlyCity(*pUnit, true))

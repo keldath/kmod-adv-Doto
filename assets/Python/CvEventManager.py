@@ -21,6 +21,10 @@ import CvWorldBuilderScreen
 import CvAdvisorUtils
 import CvTechChooser
 
+## Barbarian Civ ##
+#import BarbCiv
+## Barbarian Civ ##
+
 gc = CyGlobalContext()
 localText = CyTranslator()
 PyPlayer = PyHelpers.PyPlayer
@@ -323,6 +327,10 @@ class CvEventManager:
 	def onBeginGameTurn(self, argsList):
 		'Called at the beginning of the end of each turn'
 		iGameTurn = argsList[0]
+## Barbarian Civ ##
+#		if (gc.getGame().isOption(GameOptionTypes.GAMEOPTION_BARBARIAN_CIV)):
+#			BarbCiv.BarbCiv().checkBarb()
+## Barbarian Civ ##
 		CvTopCivs.CvTopCivs().turnChecker(iGameTurn)
 
 	def onEndGameTurn(self, argsList):
@@ -478,17 +486,17 @@ class CvEventManager:
 		pCity, iBuildingType = argsList
 		game = gc.getGame()
 ## The Duomo-pyramids new effect keldath change Start ##
-		if iBuildingType == gc.getInfoTypeForString("BUILDING_PYRAMID"):
-			pPlayer = gc.getPlayer(pCity.getOwner())
-			iStateReligion = pPlayer.getStateReligion()
-			for iPlayerX in range(gc.getMAX_CIV_PLAYERS()):
-				pPlayerX = gc.getPlayer(iPlayerX)
-				(loopCity, iter) = pPlayerX.firstCity(false)
-				while(loopCity):
-					if loopCity.isHasReligion(iStateReligion):
-						loopCity.changeCulture(iPlayerX, loopCity.getCultureThreshold() /5, true)
-					(loopCity, iter) = pPlayerX.nextCity(iter, false)
-			CyInterface().addImmediateMessage(CyTranslator().getText("TXT_KEY_BUILDING_PYRAMID",(gc.getReligionInfo(iStateReligion).getDescription(),)), None)
+#		if iBuildingType == gc.getInfoTypeForString("BUILDING_PYRAMID"):
+#			pPlayer = gc.getPlayer(pCity.getOwner())
+#			iStateReligion = pPlayer.getStateReligion()
+#			for iPlayerX in range(gc.getMAX_CIV_PLAYERS()):
+#				pPlayerX = gc.getPlayer(iPlayerX)
+#				(loopCity, iter) = pPlayerX.firstCity(false)
+#				while(loopCity):
+#					if loopCity.isHasReligion(iStateReligion):
+#						loopCity.changeCulture(iPlayerX, loopCity.getCultureThreshold() /5, true)
+#					(loopCity, iter) = pPlayerX.nextCity(iter, false)
+#			CyInterface().addImmediateMessage(CyTranslator().getText("TXT_KEY_BUILDING_PYRAMID",(gc.getReligionInfo(iStateReligion).getDescription(),)), None)
 ## The Duomo End ##
 		if ((not gc.getGame().isNetworkMultiPlayer()) and (pCity.getOwner() == gc.getGame().getActivePlayer()) and isWorldWonderClass(gc.getBuildingInfo(iBuildingType).getBuildingClassType())):
 			# If this is a wonder...
@@ -511,7 +519,7 @@ class CvEventManager:
 		'Project Completed'
 		pCity, iProjectType = argsList
 		game = gc.getGame()
-## AI Build Projects Automatically Start ##
+## doto AI Build Projects Automatically Start ##
 		if gc.getProjectInfo(iProjectType).getTechShare() == 1:
 			pPlayer = gc.getPlayer(pCity.getOwner())
 			pTeam = gc.getTeam(pPlayer.getTeam())
