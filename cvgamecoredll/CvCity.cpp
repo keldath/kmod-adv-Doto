@@ -618,7 +618,9 @@ void CvCity::doTurn()  // advc: style changes
 	else if (getPopulation() >= GC.getDefineINT("WE_LOVE_THE_KING_POPULATION_MIN_POPULATION") &&
 			GC.getGame().getSorenRandNum(GC.getDefineINT(
 			"WE_LOVE_THE_KING_RAND"), "Do We Love The King?") < getPopulation())
+	{
 		setWeLoveTheKingDay(true);
+	}
 	else setWeLoveTheKingDay(false);
 
 	CvEventReporter::getInstance().cityDoTurn(this, kOwner.getID());

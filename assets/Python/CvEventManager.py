@@ -22,7 +22,7 @@ import CvAdvisorUtils
 import CvTechChooser
 
 ## Barbarian Civ ##
-import BarbCiv
+#import BarbCiv
 ## Barbarian Civ ##
 
 gc = CyGlobalContext()
@@ -328,8 +328,8 @@ class CvEventManager:
 		'Called at the beginning of the end of each turn'
 		iGameTurn = argsList[0]
 ## Barbarian Civ ##
-		if (gc.getGame().isOption(GameOptionTypes.GAMEOPTION_BARBARIAN_CIV)):
-			BarbCiv.BarbCiv().checkBarb()
+#		if (gc.getGame().isOption(GameOptionTypes.GAMEOPTION_BARBARIAN_CIV)):
+#			BarbCiv.BarbCiv().checkBarb()
 ## Barbarian Civ ##
 		CvTopCivs.CvTopCivs().turnChecker(iGameTurn)
 

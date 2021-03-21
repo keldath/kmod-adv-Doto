@@ -37,9 +37,9 @@
 		</UpkeepInfo>
 		<UpkeepInfo>
 			<Type>UPKEEP_EXPENSSIVE</Type>
-			<Description>Very High Cost</Description>
-			<Strategy>TXT_KEY_UPKEEP_HIGH_HELP</Strategy>
-			<iPopulationPercent>20</iPopulationPercent>
+			<Description>Expenssive</Description>
+			<Strategy>Expenssive</Strategy>
+			<iPopulationPercent>16</iPopulationPercent>
 			<iCityPercent>24</iCityPercent>
 			<iminUpkeepCost>4</iminUpkeepCost>
 		</UpkeepInfo>

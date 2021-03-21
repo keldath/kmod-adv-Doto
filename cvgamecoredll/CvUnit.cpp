@@ -1665,7 +1665,7 @@ void CvUnit::updateCombat(bool bQuick)
 			}
 			else
 			{
-				resolveCombat(pDefender, pPlot, bVisible);
+			resolveCombat(pDefender, pPlot, bVisible);
 			}
 //DOTO - ranged-immunity - check if min 1 ranged unit	
 			FAssert(!bVisible || getCombatTimer() > 0);
@@ -11982,7 +11982,7 @@ int CvUnit::rangeCombatDamageK(const CvUnit* pDefender,const CvUnit* pAttacker) 
 		// pPlot valid, pAttacker == NULL (new case), when this is the defender, attacker unknown
 		// pPlot valid, pAttacker == this (new case), when the defender is unknown, but we want to calc appr
 	*/
-	CvPlot* pPlot = pDefender->plot();
+	//CvPlot* pPlot = pDefender->plot();
 	int iOurStrength = pAttacker->currCombatStr(NULL,NULL);
 	FAssertMsg(iOurStrength > 0, "Combat strength is expected to be greater than zero");
 	//int iTheirStrength = pDefender->maxCombatStr(pPlot, this);
@@ -12047,14 +12047,8 @@ bool CvUnit::isRangeStrikeCapableK() const
 bool CvUnit::randomRangedGen(CvUnit* pDefender, CvUnit* pAttacker) const
 {
 	bool hit = true;
-	if (GC.getGame().isOption(GAMEOPTION_RAND_HIT))
+	if (GC.getGame().isOption(GAMEOPTION_RAND_HIT)) 
 	{
-		int a = GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random");
-		int b = (pAttacker->baseCombatStr() * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER")* pAttacker->currHitPoints());
-		int c = pAttacker->maxHitPoints();
-		int d = (GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random"));
-		int e = ((pDefender->baseCombatStr() * pDefender->currHitPoints()) / pDefender->maxHitPoints());
-
 		hit = ((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) 
 				+ ((pAttacker->baseCombatStr() * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER")
 				* pAttacker->currHitPoints()) / pAttacker->maxHitPoints()))
@@ -12064,7 +12058,7 @@ bool CvUnit::randomRangedGen(CvUnit* pDefender, CvUnit* pAttacker) const
 	}
 	return hit;	
 }
-
+			 
 bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pPlot, int dmg,int msgType,bool rndHit) const
 {
 	int iDamage = dmg/*rangeCombatDamageK(pDefender)*/;//if we can do damage anything, abort.
@@ -12103,13 +12097,13 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot
 			CvWString szBuffer;
 			if (GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE))
 			{
-				//if missed the attack on units.
+			//if missed the attack on units.
 				szBuffer =(gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR_MISS",
 					pDefender->getNameKey(), pAttacker->getNameKey()));
-				//red icon over attacking unit
+			//red icon over attacking unit
 				gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, pAttacker->getPlot(),
 					"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("YELLOW"), pAttacker->getX(), pAttacker->getY()/*, true, true*/);
-				//white icon over defending unit
+			//white icon over defending unit
 				gDLL->UI().addMessage(pAttacker->getOwner(), false, 0, L"", pDefender->getPlot(),
 					"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY()/*, true, true*/);
 			}
@@ -12122,18 +12116,18 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot
 			CvWString szBuffer;
 			if (GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE))
 			{
-				//if the damage is none 0 and a hit.
+			//if the damage is none 0 and a hit.
 				szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR",
 					pDefender->getNameKey(), pAttacker->getNameKey(),
-					// advc.004g:
-					((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints()));
 				// advc.004g:
-				//red icon over attacking unit
+				((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints()));
+			// advc.004g:
+			//red icon over attacking unit
 				gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, pAttacker->getPlot(),
 					"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("RED"), pAttacker->getX(), pAttacker->getY()/*, true, true*/);
-				//white icon over defending unit
-				gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"", pDefender->getPlot(),
-					"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY()/*, true, true*/);
+			//white icon over defending unit
+			gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"", pDefender->getPlot(),
+				"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY()/*, true, true*/);
 			}
 			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR", pAttacker->getNameKey(), pDefender->getNameKey(),
 				// advc.004g:
