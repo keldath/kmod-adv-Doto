@@ -196,7 +196,7 @@ public:
 	int getPopulationLimit();
 	int getPopulationLimitChange();
 	/* Population Limit ModComp - End */
-	long getRealPopulation();
+	int getRealPopulation();
 
 	int getHighestPopulation();
 	void setHighestPopulation(int iNewValue);

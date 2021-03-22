@@ -211,8 +211,7 @@ public: // advc: All the const functions are exposed to Python except those adde
 	int getPermanentAllianceRefuseAttitudeThreshold() const { return m_iPermanentAllianceRefuseAttitudeThreshold; }
 	int getVassalRefuseAttitudeThreshold() const { return m_iVassalRefuseAttitudeThreshold; }
 	int getVassalPowerModifier() const { return m_iVassalPowerModifier; }
-	int getFavoriteCivic() const { return m_iFavoriteCivic; }
-	
+	CivicTypes getFavoriteCivic() const { return m_eFavoriteCivic; }
 //dune wars - hated civs
 /*	int getHatedCivic() const;				//a1021												// Exposed to Python
 	int getFavoriteCivilization() const;				//a1021												// Exposed to Python
@@ -221,7 +220,7 @@ public: // advc: All the const functions are exposed to Python except those adde
 	int getFavoriteCivilization() const { return m_iFavoriteCivilization; }
 	int getHatedCivilization() const { return m_iHatedCivilization; }										// Exposed to Python
 //dune wars - hated civs
-	int getFavoriteReligion() const { return m_iFavoriteReligion; }
+	ReligionTypes getFavoriteReligion() const { return m_eFavoriteReligion; }
 	int getFreedomAppreciation() const { return m_iFreedomAppreciation; }
 	int getLoveOfPeace() const { return m_iLoveOfPeace; } // advc.104
 
@@ -350,13 +349,13 @@ protected:
 	int m_iVassalPowerModifier;
 	int m_iFreedomAppreciation;
 	int m_iLoveOfPeace; // advc.104
-	int m_iFavoriteCivic;
+	CivicTypes m_eFavoriteCivic;
 //dune wars - hated civs
 	int m_iHatedCivic; //a1021
 	int m_iFavoriteCivilization; //a1021	
 	int m_iHatedCivilization; //a1021	
 //dune wars - hated civs
-	int m_iFavoriteReligion;
+	ReligionTypes m_eFavoriteReligion;
 
 	CvString m_szArtDefineTag;
 

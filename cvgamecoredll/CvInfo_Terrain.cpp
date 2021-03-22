@@ -948,17 +948,15 @@ m_iAdvancedStartCostIncrease(0),
 m_iValue(0),
 m_iMovementCost(0),
 m_iFlatMovementCost(0),
-m_iPrereqBonus(NO_BONUS),
+m_ePrereqBonus(NO_BONUS),
 m_piYieldChange(NULL),
-m_piTechMovementChange(NULL),
-m_piPrereqOrBonuses(NULL)
+m_piTechMovementChange(NULL)
 {}
 
 CvRouteInfo::~CvRouteInfo()
 {
 	SAFE_DELETE_ARRAY(m_piYieldChange);
 	SAFE_DELETE_ARRAY(m_piTechMovementChange);
-	SAFE_DELETE_ARRAY(m_piPrereqOrBonuses);
 }
 
 int CvRouteInfo::getAdvancedStartCost() const
@@ -987,10 +985,12 @@ int CvRouteInfo::getTechMovementChange(int i) const
 	FAssertBounds(0, GC.getNumTechInfos(), i);
 	return m_piTechMovementChange ? m_piTechMovementChange[i] : 0; // advc.003t
 }
-
-int CvRouteInfo::getPrereqOrBonus(int i) const
+// advc.003t: Calls from Python aren't going to respect the bounds
+int CvRouteInfo::py_getPrereqOrBonus(int i) const
 {
-	return m_piPrereqOrBonuses ? m_piPrereqOrBonuses[i] : NO_BONUS; // advc.003t
+	if (i < 0 || i >= getNumPrereqOrBonuses())
+		return NO_BONUS;
+	return m_aePrereqOrBonuses[i];
 }
 
 bool CvRouteInfo::read(CvXMLLoadUtility* pXML)
@@ -1005,7 +1005,7 @@ bool CvRouteInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iMovementCost, "iMovement");
 	pXML->GetChildXmlValByName(&m_iFlatMovementCost, "iFlatMovement");
 
-	pXML->SetInfoIDFromChildXmlVal(m_iPrereqBonus, "BonusType");
+	pXML->SetInfoIDFromChildXmlVal((int&)m_ePrereqBonus, "BonusType");
 
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"Yields"))
 	{
@@ -1020,19 +1020,18 @@ bool CvRouteInfo::read(CvXMLLoadUtility* pXML)
 	{
 		if (pXML->SkipToNextVal())
 		{
-			int iNumSibs = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
-			FAssertMsg(GC.getNUM_ROUTE_PREREQ_OR_BONUSES() > 0, "Allocating zero or less memory in SetGlobalUnitInfo");
-			pXML->InitList(&m_piPrereqOrBonuses, GC.getNUM_ROUTE_PREREQ_OR_BONUSES(), -1);
-
+			int const iNumSibs = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
 			if (iNumSibs > 0)
 			{
 				CvString szTextVal;
 				if (pXML->GetChildXmlVal(szTextVal))
-				{
-					FAssertMsg(iNumSibs <= GC.getNUM_ROUTE_PREREQ_OR_BONUSES(), "There are more siblings than memory allocated for them in SetGlobalUnitInfo");
+				{	// advc.003t: The DLL can handle any number, but Python maybe not.
+					FAssert(iNumSibs <= GC.getDefineINT(CvGlobals::NUM_ROUTE_PREREQ_OR_BONUSES));
 					for (int j = 0; j < iNumSibs; j++)
-					{
-						m_piPrereqOrBonuses[j] = pXML->FindInInfoClass(szTextVal);
+					{	// <advc.003t>
+						BonusTypes eBonus = (BonusTypes)pXML->FindInInfoClass(szTextVal);
+						if (eBonus != NO_BONUS)
+							m_aePrereqOrBonuses.push_back(eBonus); // </advc.003t>
 						if (!pXML->GetNextXmlVal(szTextVal))
 							break;
 					}
@@ -1271,20 +1270,10 @@ int CvImprovementInfo::getPrereqNatureYield(int i) const
 	return m_piPrereqNatureYield ? m_piPrereqNatureYield[i] : 0; // advc.003t
 }
 
-int* CvImprovementInfo::getPrereqNatureYieldArray()
-{
-	return m_piPrereqNatureYield;
-}
-
 int CvImprovementInfo::getYieldChange(int i) const
 {
 	FAssertBounds(0, NUM_YIELD_TYPES, i);
 	return m_piYieldChange ? m_piYieldChange[i] : 0; // advc.003t
-}
-
-int* CvImprovementInfo::getYieldChangeArray()
-{
-	return m_piYieldChange;
 }
 
 int CvImprovementInfo::getRiverSideYieldChange(int i) const
@@ -1293,31 +1282,16 @@ int CvImprovementInfo::getRiverSideYieldChange(int i) const
 	return m_piRiverSideYieldChange ? m_piRiverSideYieldChange[i] : 0; // advc.003t
 }
 
-int* CvImprovementInfo::getRiverSideYieldChangeArray()
-{
-	return m_piRiverSideYieldChange;
-}
-
 int CvImprovementInfo::getHillsYieldChange(int i) const
 {
 	FAssertBounds(0, NUM_YIELD_TYPES, i);
 	return m_piHillsYieldChange ? m_piHillsYieldChange[i] : 0; // advc.003t
 }
 
-int* CvImprovementInfo::getHillsYieldChangeArray()
-{
-	return m_piHillsYieldChange;
-}
-
 int CvImprovementInfo::getIrrigatedYieldChange(int i) const
 {
 	FAssertBounds(0, NUM_YIELD_TYPES, i);
 	return m_piIrrigatedChange ? m_piIrrigatedChange[i] : 0; // advc.003t
-}
-
-int* CvImprovementInfo::getIrrigatedYieldChangeArray()
-{
-	return m_piIrrigatedChange;
 }
 
 bool CvImprovementInfo::getTerrainMakesValid(int i) const
@@ -1339,8 +1313,9 @@ int CvImprovementInfo::getTechYieldChanges(int i, int j) const
 	return m_ppiTechYieldChanges[i][j];
 }
 
-int* CvImprovementInfo::getTechYieldChangesArray(int i) const
+int const* CvImprovementInfo::getTechYieldChangesArray(int i) const
 {
+	FAssertBounds(0, GC.getNumTechInfos(), i); // advc
 	return m_ppiTechYieldChanges[i];
 }
 
@@ -1351,8 +1326,9 @@ int CvImprovementInfo::getRouteYieldChanges(int i, int j) const
 	return m_ppiRouteYieldChanges[i][j];
 }
 
-int* CvImprovementInfo::getRouteYieldChangesArray(int i) const
+int const* CvImprovementInfo::getRouteYieldChangesArray(int i) const
 {
+	FAssertBounds(0, GC.getNumRouteInfos(), i); // advc
 	return m_ppiRouteYieldChanges[i];
 }
 

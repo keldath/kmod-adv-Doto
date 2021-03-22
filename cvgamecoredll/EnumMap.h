@@ -210,11 +210,7 @@ private:
 		IndexType first;
 		IndexType last;
 
-		interval()
-		{
-			first = (IndexType)0;
-			last = (IndexType)0;
-		}
+		interval() : first((IndexType)0), last((IndexType)0) {}
 	};
 
 	// bool helpers
@@ -530,7 +526,7 @@ inline EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 	// bools can only default to 0 or 1
 	BOOST_STATIC_ASSERT(SIZE != ENUMMAP_SIZE_BOOL || DEFAULT == 0 || DEFAULT == 1);
 	FAssertMsg(bINLINE_BOOL || sizeof(*this) == 4, "EnumMap is supposed to only contain a pointer");
-	FAssertMsg(getLength() >= 0 && getLength() <= getEnumLength((LengthType)0, false), "Custom length out of range");
+	FAssertMsg(getLength() >= 0 && getLength() <= getEnumLength((LengthType)0), "Custom length out of range");
 	FAssertMsg(First() >= 0 && First() <= getLength(), "Custom length out of range");
 
 	if (bINLINE)
@@ -566,7 +562,7 @@ __forceinline IndexType EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::getLength() const
 {
 	// advc: getEnumLength(T_SUBSET) returns a T_SUBSET value, so a cast is needed.
-	return (IndexType)getEnumLength((T_SUBSET)0, false);
+	return (IndexType)getEnumLength((T_SUBSET)0);
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
@@ -1195,6 +1191,7 @@ SET_XML_ENUM_SIZE1(WarPlan, Dummy)
 SET_XML_ENUM_SIZE1(CityPlot, Dummy)
 SET_XML_ENUM_SIZE1(ArtStyle, Dummy)
 SET_XML_ENUM_SIZE1(Feat, Dummy)
+SET_XML_ENUM_SIZE1(PlayerVote, Dummy)
 
 /*  2 being the default apparently does not mean that these can be omitted
 	(Tbd.: There should be some way to get rid of SET_XML_ENUM_SIZE2.) */
@@ -1223,13 +1220,9 @@ template<> struct EnumMapGetDefault<PlotNumTypes> {
 };
 #endif
 
-/*  The other getEnumLength functions are generated through macros in CvEnums.h.
-	For players and teams, I don't want the FOR_EACH_ENUM macro to be used, so
-	I'm going to make those getEnumLength function inaccessible to that macro
-	by adding a dummy call parameter. The getEnumLength functions in CvEnums.h
-	also have that parameter - but, there, it's optional. */
+// The other getEnumLength functions are generated through macros in CvEnums.h
 #define SET_NONXML_ENUM_LENGTH(TypeName, eLength) \
-	__forceinline TypeName getEnumLength(TypeName, bool bAllowFOR_EACH) { return eLength; } \
+	__forceinline TypeName getEnumLength(TypeName) { return eLength; } \
 	template <> struct EnumMapGetDefault<TypeName> \
 	{ \
 		enum { \
@@ -1239,11 +1232,9 @@ template<> struct EnumMapGetDefault<PlotNumTypes> {
 			MAX_LENGTH = eLength, \
 		}; \
 	};
-/*  Don't want to set these in CvEnums.h or anywhere in the global namespace b/c
-	the FOR_EACH_ENUM macro shouldn't be used for them */
+
 SET_NONXML_ENUM_LENGTH(PlayerTypes, MAX_PLAYERS)
 SET_NONXML_ENUM_LENGTH(TeamTypes, MAX_TEAMS)
-
 // For enum maps that exclude the Barbarians
 enum CivPlayerTypes {
 	NUM_CIV_PLAYER_TYPES = MAX_CIV_PLAYERS

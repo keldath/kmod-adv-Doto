@@ -313,7 +313,7 @@ bool CvCivilizationInfo::read(CvXMLLoadUtility* pXML)
 
 	pXML->GetChildXmlValByName(m_szArtDefineTag, "ArtDefineTag");
 
-	pXML->SetInfoIDFromChildXmlVal(m_iArtStyleType, "ArtStyleType");
+	pXML->SetGlobalTypeFromChildXmlVal(m_iArtStyleType, "ArtStyleType");
 	{
 		CvString szTextVal;
 		pXML->GetChildXmlValByName(szTextVal, "UnitArtStyleType",
@@ -515,13 +515,13 @@ m_iVassalRefuseAttitudeThreshold(NO_ATTITUDE),
 m_iVassalPowerModifier(0),
 m_iFreedomAppreciation(0),
 m_iLoveOfPeace(0),
-m_iFavoriteCivic(NO_CIVIC),
+m_eFavoriteCivic(NO_CIVIC),
 //dune wars - hated civs
 m_iHatedCivic(NO_CIVIC), //a1021
 m_iFavoriteCivilization(NO_CIVIC), //a1021
 m_iHatedCivilization(NO_CIVIC), //a1021
 //dune wars - hated civs
-m_iFavoriteReligion(NO_RELIGION),
+m_eFavoriteReligion(NO_RELIGION),
 m_pbTraits(NULL),
 m_piFlavorValue(NULL),
 m_piContactRand(NULL),
@@ -791,13 +791,13 @@ void CvLeaderHeadInfo::read(FDataStreamBase* stream)
 	// <advc.104>
 	if (uiFlag >= 3)
 		stream->Read(&m_iLoveOfPeace); // </advc.104>
-	stream->Read(&m_iFavoriteCivic);
-//dune wars - hated civs
+	stream->Read((int*)&m_eFavoriteCivic);
+//doto - dune wars - hated civs
 	stream->Read(&m_iHatedCivic); //a1021
 	stream->Read(&m_iFavoriteCivilization); //a1021
-	stream->Read(&m_iHatedCivilization); //a1021	
+	stream->Read(&m_iHatedCivil
 //dune wars - hated civs
-	stream->Read(&m_iFavoriteReligion);
+	stream->Read((int*)&m_eFavoriteReligion);
 	stream->ReadString(m_szArtDefineTag);
 	SAFE_DELETE_ARRAY(m_pbTraits);
 	m_pbTraits = new bool[GC.getNumTraitInfos()];
@@ -912,7 +912,7 @@ void CvLeaderHeadInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iShareWarAttitudeDivisor);
 	stream->Write(m_iShareWarAttitudeChangeLimit);
 	stream->Write(m_iFavoriteCivicAttitudeChange);
-//dune wars - hated civs
+//doto-dune wars - hated civs
 	stream->Write(m_iHatedCivicAttitudeChange); //a1021
 	stream->Write(m_iFavoriteCivilizationAttitudeChange); //a1021
 	stream->Write(m_iHatedCivilizationAttitudeChange); //a1021	
@@ -942,13 +942,13 @@ void CvLeaderHeadInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iVassalPowerModifier);
 	stream->Write(m_iFreedomAppreciation);
 	stream->Write(m_iLoveOfPeace); // advc.104
-	stream->Write(m_iFavoriteCivic);
+	stream->Write(m_eFavoriteCivic);
 //dune wars - hated civs
 	stream->Write(m_iHatedCivic); //a1021
 	stream->Write(m_iFavoriteCivilization); //a1021
 	stream->Write(m_iHatedCivilization); //a1021	
 //dune wars - hated civs
-	stream->Write(m_iFavoriteReligion);
+	stream->Write(m_eFavoriteReligion);
 	stream->WriteString(m_szArtDefineTag);
 	stream->Write(GC.getNumTraitInfos(), m_pbTraits);
 	stream->Write(GC.getNumFlavorTypes(), m_piFlavorValue);
@@ -1096,9 +1096,9 @@ bool CvLeaderHeadInfo::read(CvXMLLoadUtility* pXML)
 			"PermanentAllianceRefuseAttitudeThreshold");
 	pXML->SetInfoIDFromChildXmlVal(m_iVassalRefuseAttitudeThreshold,
 			"VassalRefuseAttitudeThreshold");
-	pXML->SetInfoIDFromChildXmlVal(m_iFavoriteCivic,
+	pXML->SetInfoIDFromChildXmlVal((int&)m_eFavoriteCivic,
 			"FavoriteCivic");
-{
+			{
 //a1021//dune wars - hated civs
 /*	pXML->GetChildXmlValByName(szTextVal, "HatedCivic",""); // f1rpo
 	m_iHatedCivic = pXML->FindInInfoClass(szTextVal);
@@ -1112,8 +1112,8 @@ bool CvLeaderHeadInfo::read(CvXMLLoadUtility* pXML)
     SetPassExtraFromChildXmlVal("HatedCivilization", 1);
    //a1021//dune wars - hated civs: end
 	//a1021//dune wars - hated civs
-}	
-	pXML->SetInfoIDFromChildXmlVal(m_iFavoriteReligion,
+}
+	pXML->SetInfoIDFromChildXmlVal((int&)m_eFavoriteReligion,
 			"FavoriteReligion");
 
 	pXML->SetVariableListTagPair(&m_pbTraits, "Traits", GC.getNumTraitInfos());

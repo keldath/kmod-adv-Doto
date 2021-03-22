@@ -3,9 +3,7 @@
 #include "CvGameCoreDLL.h"
 #include "CvXMLLoadUtility.h"
 #include "CvDLLXMLIFaceBase.h"
-#include <iostream>   // std::wcout
-#include <string>     // std::wstring, std::to_wstring 
-#include <wchar.h>
+
 
 CvOrganizationInfo::CvOrganizationInfo() :
 m_wcSymbol(0),
@@ -280,8 +278,7 @@ CvCorporationInfo::CvCorporationInfo() :
 m_iHeadquarterChar(0),
 m_iSpreadCost(0),
 m_iMaintenance(0),
-m_iBonusProduced(NO_BONUS),
-m_paiPrereqBonuses(NULL),
+m_eBonusProduced(NO_BONUS),
 m_paiHeadquarterCommerce(NULL),
 m_paiCommerceProduced(NULL),
 m_paiYieldProduced(NULL)
@@ -289,7 +286,6 @@ m_paiYieldProduced(NULL)
 
 CvCorporationInfo::~CvCorporationInfo()
 {
-	SAFE_DELETE_ARRAY(m_paiPrereqBonuses);
 	SAFE_DELETE_ARRAY(m_paiHeadquarterCommerce);
 	SAFE_DELETE_ARRAY(m_paiCommerceProduced);
 	SAFE_DELETE_ARRAY(m_paiYieldProduced);
@@ -329,25 +325,13 @@ void CvCorporationInfo::setHeadquarterChar(int i)
 /*************************************************************************************************/
 }
 
-int CvCorporationInfo::getSpreadCost() const
-{
-	return m_iSpreadCost;
 }
-
-int CvCorporationInfo::getMaintenance() const
+// advc.003t: Calls from Python aren't going to respect the bounds
+int CvCorporationInfo::py_getPrereqBonus(int i) const
 {
-	return m_iMaintenance;
-}
-
-int CvCorporationInfo::getBonusProduced() const
-{
-	return m_iBonusProduced;
-}
-
-int CvCorporationInfo::getPrereqBonus(int i) const
-{
-	FAssertBounds(0, GC.getNUM_CORPORATION_PREREQ_BONUSES(), i);
-	return (m_paiPrereqBonuses != NULL ? m_paiPrereqBonuses[i] : NO_BONUS); // advc.003t
+	if (i < 0 || i >= getNumPrereqBonuses())
+		return NO_BONUS;
+	return m_aePrereqBonuses[i];
 }
 
 int CvCorporationInfo::getHeadquarterCommerce(int i) const
@@ -388,8 +372,6 @@ bool CvCorporationInfo::read(CvXMLLoadUtility* pXML)
 	if (!CvOrganizationInfo::read(pXML))
 		return false;
 
-	CvString szTextVal;
-
 	pXML->GetChildXmlValByName(&m_iSpreadCost, "iSpreadCost");
 	pXML->GetChildXmlValByName(&m_iMaintenance, "iMaintenance");
 
@@ -414,34 +396,32 @@ bool CvCorporationInfo::read(CvXMLLoadUtility* pXML)
 	}
 	else pXML->InitList(&m_paiYieldProduced, NUM_YIELD_TYPES);
 
+	CvString szTextVal;
+
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "PrereqBonuses"))
 	{
 		if (pXML->SkipToNextVal())
 		{
-			int iNumSibs = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
-			FAssertMsg(GC.getNUM_CORPORATION_PREREQ_BONUSES() > 0, "Allocating zero or less memory in CvCorporationInfo::read");
-			pXML->InitList(&m_paiPrereqBonuses, GC.getNUM_CORPORATION_PREREQ_BONUSES(), -1);
-
-			if (iNumSibs > 0)
+			int const iNumSibs = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
+			if (iNumSibs > 0 && pXML->GetChildXmlVal(szTextVal))
 			{
-				if (pXML->GetChildXmlVal(szTextVal))
+				FAssert(iNumSibs <= GC.getDefineINT(CvGlobals::NUM_CORPORATION_PREREQ_BONUSES));
+				for (int j = 0; j < iNumSibs; j++)
 				{
-					FAssert(iNumSibs <= GC.getNUM_CORPORATION_PREREQ_BONUSES());
-					for (int j = 0; j < iNumSibs; j++)
-					{
-						m_paiPrereqBonuses[j] = pXML->FindInInfoClass(szTextVal);
-						if (!pXML->GetNextXmlVal(szTextVal))
-							break;
-					}
-					gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+					BonusTypes eBonus = (BonusTypes)pXML->FindInInfoClass(szTextVal);
+					if (eBonus != NO_BONUS)
+						m_aePrereqBonuses.push_back(eBonus);
+					if (!pXML->GetNextXmlVal(szTextVal))
+						break;
 				}
+				gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 			}
 		}
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
 
 	pXML->GetChildXmlValByName(szTextVal, "BonusProduced");
-	m_iBonusProduced = pXML->FindInInfoClass(szTextVal);
+	m_eBonusProduced = (BonusTypes)pXML->FindInInfoClass(szTextVal);
 
 	return true;
 }

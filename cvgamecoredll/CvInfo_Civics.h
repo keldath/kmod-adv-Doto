@@ -272,7 +272,6 @@ public:
 	}
 //keldath min civic cost when no inflation
 	int getminUpkeepCost() const; // doto keldath
-
 	bool read(CvXMLLoadUtility* pXML);
 
 protected:

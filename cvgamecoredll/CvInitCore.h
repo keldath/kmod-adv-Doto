@@ -3,16 +3,8 @@
 #ifndef CIV4_INITCORE_H
 #define CIV4_INITCORE_H
 
-/*
-Doto
-file is differenct from advciv 097b 
-mp options are arrays now, not enum 
-strange bug exits on custom game 
-*/
 
-// (K-Mod, 8/dec/10: Moved FASSERT_BOUNDS to CvGlobals.h)
-
-class CvInitCore
+class CvInitCore /* advc.003e */ : boost::noncopyable
 {
 public:
 
@@ -87,7 +79,7 @@ public:
 	DllExport void setMapScriptName(const CvWString& szMapScriptName);
 	DllExport bool getWBMapScript() const;
 	bool isPangaea() const { return m_bPangaea; } // advc
-
+	// advc (note): This appears to say whether a scenario uses random players
 	bool getWBMapNoPlayers() const { return m_bWBMapNoPlayers; }
 	void setWBMapNoPlayers(bool bValue) { m_bWBMapNoPlayers = bValue; }
 

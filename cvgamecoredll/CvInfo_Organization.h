@@ -114,7 +114,7 @@ protected:
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class CvCorporationInfo : public CvOrganizationInfo
 {
-public: // All the const functions are exposed to Python
+public: // All the const functions are exposed to Python; advc.inl: inlined some getters.
 	CvCorporationInfo();
 	virtual ~CvCorporationInfo();
 //TGA_INDEXATION -ADVC ADJUSTMENT
@@ -124,14 +124,19 @@ public: // All the const functions are exposed to Python
 	
 	int getHeadquarterChar() const;
 	void setHeadquarterChar(int i);
-	int getSpreadCost() const;
-	int getMaintenance() const;
-
-	int getBonusProduced() const;
+	int getSpreadCost() const { return m_iSpreadCost; }
+	int getMaintenance() const { return m_iMaintenance; }
+	BonusTypes getBonusProduced() const { return m_eBonusProduced; }
 
 	// Array access:
-
-	int getPrereqBonus(int i) const;
+	inline int getNumPrereqBonuses() const { return m_aePrereqBonuses.size(); }
+	BonusTypes getPrereqBonus(int i) const
+	{
+		FAssertBounds(0, getNumPrereqBonuses(), i);
+		return m_aePrereqBonuses[i];
+	}
+	int py_getPrereqBonus(int i) const;
+	// </advc.003t>
 	int getHeadquarterCommerce(int i) const;
 	int* getHeadquarterCommerceArray() const;
 	int getCommerceProduced(int i) const;
@@ -147,9 +152,9 @@ protected:
 	int m_iHeadquarterChar;
 	int m_iSpreadCost;
 	int m_iMaintenance;
-	int m_iBonusProduced;
+	BonusTypes m_eBonusProduced;
 
-	int* m_paiPrereqBonuses;
+	std::vector<BonusTypes> m_aePrereqBonuses; // advc.003t: was int*
 	int* m_paiHeadquarterCommerce;
 	int* m_paiCommerceProduced;
 	int* m_paiYieldProduced;

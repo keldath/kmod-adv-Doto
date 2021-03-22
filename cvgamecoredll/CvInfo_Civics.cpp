@@ -614,8 +614,9 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 void CvCivicInfo::write(FDataStreamBase* stream)
 {
 	CvInfoBase::write(stream);
-	uint uiFlag=2;
-	uiFlag = 3; // advc.912c
+	uint uiFlag;
+	//uiFlag = 2; // K-Mod
+	//uiFlag = 3; // advc.912c
 	uiFlag = 4; // advc.132
 	stream->Write(uiFlag);
 
@@ -1015,6 +1016,7 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_pabHurry, "Hurrys", GC.getNumHurryInfos());
 	pXML->SetVariableListTagPair(&m_pabSpecialBuildingNotRequired, "SpecialBuildingNotRequireds", GC.getNumSpecialBuildingInfos());
 	pXML->SetVariableListTagPair(&m_pabSpecialistValid, "SpecialistValids", GC.getNumSpecialistInfos());
+
 	pXML->SetVariableListTagPair(&m_paiBuildingHappinessChanges, "BuildingHappinessChanges", GC.getNumBuildingClassInfos());
 	pXML->SetVariableListTagPair(&m_paiBuildingHealthChanges, "BuildingHealthChanges", GC.getNumBuildingClassInfos());
 	pXML->SetVariableListTagPair(&m_paiFeatureHappinessChanges, "FeatureHappinessChanges", GC.getNumFeatureInfos());
