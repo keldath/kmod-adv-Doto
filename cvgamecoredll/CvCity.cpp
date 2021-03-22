@@ -616,9 +616,11 @@ void CvCity::doTurn()  // advc: style changes
 	if (isOccupation() || (angryPopulation() > 0) || (healthRate() < 0))
 		setWeLoveTheKingDay(false);
 	else if (getPopulation() >= GC.getDefineINT("WE_LOVE_THE_KING_POPULATION_MIN_POPULATION") &&
-			GC.getGame().getSorenRandNum(GC.getDefineINT(
-			"WE_LOVE_THE_KING_RAND"), "Do We Love The King?") < getPopulation())
+		GC.getGame().getSorenRandNum(GC.getDefineINT(
+		"WE_LOVE_THE_KING_RAND"), "Do We Love The King?") < getPopulation())
+	{
 		setWeLoveTheKingDay(true);
+	}
 	else setWeLoveTheKingDay(false);
 
 	CvEventReporter::getInstance().cityDoTurn(this, kOwner.getID());
@@ -8965,7 +8967,7 @@ int CvCity::getCommerceHappiness() const
 
 
 void CvCity::changeCommerceHappinessPer(CommerceTypes eIndex, int iChange)
-{
+{ 
 	if (iChange != 0)
 	{
 		m_aiCommerceHappinessPer.add(eIndex, iChange);

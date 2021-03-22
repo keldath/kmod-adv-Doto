@@ -962,7 +962,8 @@ SimulationStep* InvasionGraph::Node::step(double armyPortionDefender,
 		(and hidden knowledge unless id==weId). */
 	if(battleArea != NULL) {
 		if(remainingCitiesAtt > 0) {
-			if(!isNaval && !clashOnly) {
+			//doto 098-099 Fix some logical mix-ups in UWAI
+			if(!isNaval || clashOnly) {
 				/*  Fixme(?): getCitiesPerPlayer should be reduced based on lost
 					cities */
 				areaWeightAtt = battleArea->getCitiesPerPlayer(id) /

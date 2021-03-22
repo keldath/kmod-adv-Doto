@@ -1482,7 +1482,8 @@ void UWAICache::City::updateDistance(CvCity const& targetCity) {
 				c->getYieldRate(YIELD_PRODUCTION) < 5 + era))
 			continue;
 		CvPlot* p = c->plot();
-		int pwd = -1; // pairwise (travel) duration
+		//doto advc 098-099 Fix some issues with the calc of UWAI deployment distances
+		int pwd = MAX_INT; // pairwise (travel) duration
 		int d = -1; // set by measureDistance
 		if(measureDistance(cacheOwnerId, DOMAIN_LAND, *p, targetCity.getPlot(), &d)) {
 			double speed = estimateMovementSpeed(cacheOwnerId, DOMAIN_LAND, d);
@@ -1505,7 +1506,8 @@ void UWAICache::City::updateDistance(CvCity const& targetCity) {
 				FAssert(d >= 0);
 				d = (int)std::ceil(d / estimateMovementSpeed(cacheOwnerId, DOMAIN_SEA, d)) +
 						seaPenalty;
-				if(pwd < 0 || d < pwd) {
+				//doto advc 098-099 Fix some issues with the calc of UWAI deployment distances
+				if(d < pwd) {
 					pwd = d;
 					reachBySea = true;
 				}
@@ -1530,11 +1532,14 @@ void UWAICache::City::updateDistance(CvCity const& targetCity) {
 	double sumOfWeights = 0;
 	double weightedSum = 0;
 	// Allow distances to increase at most by 10 per rank
-	int cap = pairwDurations[0] + 10;
+	//doto advc 098-099 Fix some issues with the calc of UWAI deployment distances
+	int cap = pairwDurations[0];
 	for(size_t i = 0; i < pairwDurations.size(); i++) {
 		double w = 2.0 / (3 * (i + 1) - 1);
 		sumOfWeights += w;
+		//doto advc 098-099 Fix some issues with the calc of UWAI deployment distances
 		int d = std::min(pairwDurations[i], cap);
+		// Allow distances to increase at most by 10 per rank
 		cap = d + 10;
 		weightedSum += d * w;
 	}
