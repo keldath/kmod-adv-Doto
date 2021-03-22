@@ -737,10 +737,12 @@ double GreedForAssets::medianDistFromOurConquests(PlayerTypes civId) {
 		if(!c.canReachByLand()) // Don't worry about naval attacks
 			d += 100;
 		if(d < 0)
-			d = MAX_INT; // -1 means unreachable
+			//doto 098-099 Fix hazardous use of MAX_INT in UWAI function
+			d = 1000; // -1 means unreachable
 		distances.push_back(d);
 	}
-	double r = MAX_INT;
+	//doto 098-099 Fix hazardous use of MAX_INT in UWAI function
+	double r = 1000;
 	if(!distances.empty())
 		r = ::dMedian(distances);
 	return r;
@@ -1485,7 +1487,8 @@ void Assistance::evaluate() {
 	if(!we->isHuman() && towardsThem >= ATTITUDE_FRIENDLY) {
 		double uPureAffection = assistRatio * 20;
 		log("Utility raised to %d for pure affection", ::round(uPureAffection));
-		uMinus = std::min(uMinus, uPureAffection);
+		//doto 098-099 Fix some logical mix-ups in UWAI
+		uMinus = std::max(uMinus, uPureAffection);
 	}
 	double OBUtil = 0;
 	if(agent.isOpenBorders(TEAMID(theyId)))
@@ -1867,7 +1870,8 @@ void SuckingUp::evaluate() {
 	}
 	/*  Diplo bonus with just one civ less important in large games, but also in
 		very small games or when there are few civs left. */
-	u += ::round(uPlus / std::sqrt((double)std::min(4, nAlive)));
+//doto 098-099 Fix some logical mix-ups in UWAI
+	u += ::round(uPlus / std::sqrt((double)std::max(4, nAlive)));
 }
 
 void PreEmptiveWar::evaluate() {
@@ -1947,7 +1951,8 @@ void PreEmptiveWar::evaluate() {
 	double threatChange = sqrt((double)abs(theirGain));
 	if(theirGain < 0) threatChange *= -1;
 	log("Change in threat: %d percent", ::round(threatChange * 100));
-	double uPlus = threat * -100 * theirGain;
+//doto 098-099 Fix some logical mix-ups in UWAI
+	double uPlus = threat * -90 * threatChange;
 	double distrustFactor = 1;
 	if(!we->isHuman())
 		distrustFactor = weAI->distrustRating();
@@ -2711,23 +2716,27 @@ void IllWill::evalRevenge() {
 		long-term risk. Offering a token of goodwill might help and can't really hurt.
 		This isn't a matter of PreEmptiveWar b/c the trend of the power ratio
 		isn't relevant here - they'll always be stronger than us. */
-	if(agent.isAtWar(TEAMID(theyId)) && powRatio > 1.45 &&
-			GET_TEAM(theyId).AI_getWarSuccess(agentId) -
-			agent.AI_getWarSuccess(TEAMID(theyId)) >
-			2.4 * GC.getWAR_SUCCESS_CITY_CAPTURING()) {
-		/*	If we expect to lose further cities to them, then they're not distracted;
-			the Risk aspect will handle it. */
-		CitySet const& weLose = m->lostCities(weId);
-		for(CitySetIter it = weLose.begin(); it != weLose.end(); ++it) {
-			if(m->conqueredCities(theyId).count(*it) > 0)
+//doto 098-099 Fix some logical mix-ups in UWAI		
+	if(agent.isAtWar(TEAMID(theyId))) {
+		if(powRatio > 1.45 &&
+				GET_TEAM(theyId).AI_getWarSuccess(agentId) -
+				agent.AI_getWarSuccess(TEAMID(theyId)) >
+				2.4 * GC.getWAR_SUCCESS_CITY_CAPTURING()) {
+			/*	If we expect to lose further cities to them, then they're not distracted;
+				the Risk aspect will handle it. */
+			CitySet const& weLose = m->lostCities(weId);
+			for(CitySetIter it = weLose.begin(); it != weLose.end(); ++it) {
+				if(m->conqueredCities(theyId).count(*it) > 0)
+					return;
+			}
+			// If they're not succeeding overall, then our coalition may yet beat them.
+			if(GET_TEAM(theyId).AI_getWarSuccessRating() < 30)
 				return;
+			uMinus += (1 - we->uwai().prideRating()) * 5.5;
+					//dRange(agent.AI_getWarSuccessRating() / -10.0, 3, 6.5);//instead of 5.5?
+			log("Cost for hopeless stalemate: %d", ::round(uMinus));
 		}
-		// If they're not succeeding overall, then our coalition may yet beat them.
-		if(GET_TEAM(theyId).AI_getWarSuccessRating() < 30)
-			return;
-		uMinus += (1 - we->uwai().prideRating()) * 5.5;
-				//dRange(agent.AI_getWarSuccessRating() / -10.0, 3, 6.5);//instead of 5.5?
-		log("Cost for hopeless stalemate: %d", ::round(uMinus));
+//doto 098-099 Fix some logical mix-ups in UWAI
 		return;
 	}
 	double revengeCost = 0;
@@ -3604,12 +3613,13 @@ void TacticalSituation::evalEngagement() {
 		turn, it's still the beginning of the turn, so we can probably save
 		our units. */
 	double initiativeFactor = 0.25; // Low if they have the initiative
-	if(gDLL->isDiplomacy() || // I.e. we're negotiating with a human
-			we->isHuman() || they->isHuman())
+	//doto 098-099 Fix potential sync problem in UWAI code
+	if(we->isHuman() || they->isHuman())
 		initiativeFactor = 0.5;
 	double uPlus = (4.0 * (initiativeFactor * theirExposed -
 			(1 - initiativeFactor) * ourExposed) +
-			entangled + ourMissions) / ourTotal;
+			//doto 098-099 Fix hazardous use of MAX_INT in UWAI function
+			entangled + ourMissions) / std::max(1, ourTotal);
 	if(we->getTotalPopulation() > 0)
 		uPlus += 3.0 * (theirEvac - 1.35 * ourEvac) / we->getTotalPopulation();
 	uPlus *= 100;

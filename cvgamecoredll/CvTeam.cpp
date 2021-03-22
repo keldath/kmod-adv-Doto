@@ -4487,28 +4487,28 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,  /
 					(kGame.isOption(GAMEOPTION_FORBIDDEN_RELIGION) && !kGame.isReligionSlotTaken(eLoopReligion)))
 				{
 // end
-					int iBestValue = MAX_INT;
-					PlayerTypes eBestPlayer = NO_PLAYER;
-					for (MemberIter it(getID()); it.hasNext(); ++it)
-					{							
-						CvPlayer const& kMember = *it;
+				int iBestValue = MAX_INT;
+				PlayerTypes eBestPlayer = NO_PLAYER;
+				for (MemberIter it(getID()); it.hasNext(); ++it)
+				{
+					CvPlayer const& kMember = *it;
 // davidlallen religion forbidden to civilization 
-						if (GC.getInfo(kMember.getCivilizationType()).isForbidden(eLoopReligion))
-    						continue;								
-						int iValue = 10;
-						iValue += kGame.getSorenRandNum(10, "Found Religion (Player)");
-						for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
-							iValue += kMember.getHasReligionCount((ReligionTypes)iK) * 10;
+					if (GC.getInfo(kMember.getCivilizationType()).isForbidden(eLoopReligion))
+    					continue;															
+					int iValue = 10;
+					iValue += kGame.getSorenRandNum(10, "Found Religion (Player)");
+					for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
+						iValue += kMember.getHasReligionCount((ReligionTypes)iK) * 10;
 
-						if (kMember.getCurrentResearch() != eTech)
-							iValue *= 10;
+					if (kMember.getCurrentResearch() != eTech)
+						iValue *= 10;
 
-						if (iValue < iBestValue)
-						{
-							iBestValue = iValue;
-							eBestPlayer = kMember.getID();
-						}
+					if (iValue < iBestValue)
+					{
+						iBestValue = iValue;
+						eBestPlayer = kMember.getID();
 					}
+				}
 				if (eBestPlayer == NO_PLAYER)
 					continue;
 
@@ -4540,23 +4540,23 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,  /
 						if (pInfo != NULL)
 							gDLL->UI().addPopup(pInfo, eBestPlayer);
 					}
-				else
-				{
-    				ReligionTypes eChosenReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
-    				if (eChosenReligion != NO_RELIGION &&
-        			!GC.getInfo(GET_PLAYER(eBestPlayer).getCivilizationType()).isForbidden(eChosenReligion))
-    				{
+					else
+					{
+						ReligionTypes eChosenReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
+    					if (eChosenReligion != NO_RELIGION &&
+        				!GC.getInfo(GET_PLAYER(eBestPlayer).getCivilizationType()).isForbidden(eChosenReligion))
+    					{
         				GET_PLAYER(eBestPlayer).foundReligion(eChosenReligion, eLoopReligion, true);
+    					}
     				}
-				}
 				}
 //forbiden religion david lalen - by keldath				
 				else GET_PLAYER(eBestPlayer).foundReligion(eLoopReligion, eLoopReligion, true);
 				bReligionFounded = true;
 				bFirstPerk = true;
-			}
+				}
 // added ) for pick religion forbidden religion david lalen dune wars
-	}
+			}
 //end
 			FOR_EACH_ENUM(Corporation)
 			{
