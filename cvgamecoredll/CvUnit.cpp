@@ -11982,7 +11982,7 @@ int CvUnit::rangeCombatDamageK(const CvUnit* pDefender,const CvUnit* pAttacker) 
 		// pPlot valid, pAttacker == NULL (new case), when this is the defender, attacker unknown
 		// pPlot valid, pAttacker == this (new case), when the defender is unknown, but we want to calc appr
 	*/
-	CvPlot* pPlot = pDefender->plot();
+	//CvPlot* pPlot = pDefender->plot();
 	int iOurStrength = pAttacker->currCombatStr(NULL,NULL);
 	FAssertMsg(iOurStrength > 0, "Combat strength is expected to be greater than zero");
 	//int iTheirStrength = pDefender->maxCombatStr(pPlot, this);
@@ -12049,12 +12049,6 @@ bool CvUnit::randomRangedGen(CvUnit* pDefender, CvUnit* pAttacker) const
 	bool hit = true;
 	if (GC.getGame().isOption(GAMEOPTION_RAND_HIT))
 	{
-		int a = GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random");
-		int b = (pAttacker->baseCombatStr() * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER")* pAttacker->currHitPoints());
-		int c = pAttacker->maxHitPoints();
-		int d = (GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random"));
-		int e = ((pDefender->baseCombatStr() * pDefender->currHitPoints()) / pDefender->maxHitPoints());
-
 		hit = ((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) 
 				+ ((pAttacker->baseCombatStr() * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER")
 				* pAttacker->currHitPoints()) / pAttacker->maxHitPoints()))
