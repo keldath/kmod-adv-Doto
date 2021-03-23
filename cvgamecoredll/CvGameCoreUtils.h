@@ -305,7 +305,7 @@ DllExport void setTradeItem(TradeData* pItem, TradeableItems eItemType = TRADE_I
 
 /*	advc: Unused. Thought about moving these to CvGameTextMgr,
 	but that'll lead to more header inclusions. */
-//void setListHelp(wchar* szBuffer, const wchar* szStart, const wchar* szItem, const wchar* szSeparator, bool bFirst);
+//void setListHelp(wchar* szBuffer, const wchar* szStart, const wchar* szItem, const wchar* szSeparator, bool& bFirst); //doto advc: bool&
 void setListHelp(CvWString& szBuffer, wchar const* szStart, wchar const* szItem,
 		wchar const* szSeparator, bool& bFirst); // advc: bool&
 void setListHelp(CvWStringBuffer& szBuffer, wchar const* szStart, wchar const* szItem,

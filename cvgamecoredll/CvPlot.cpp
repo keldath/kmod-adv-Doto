@@ -9090,7 +9090,8 @@ bool CvPlot::isWithBlocaders(const CvPlot* pFromPlot, const CvPlot* pToPlot, con
 			TeamTypes eTeam = pUnit->getTeam();
 			if (!isVisible(eTeam, false))
 			{
-				if (isEnemyCity(*pUnit) && (pUnit->getDomainType() == DOMAIN_LAND) && (pUnit->getInvisibleType() == NO_INVISIBLE) && !isRiverCrossing(directionXY(*this, *pToPlot))) // 
+				//doto advc adjustment 099
+				if (pUnit->isEnemyCity(*pToPlot) /*isEnemyCity(*pUnit)*/ && (pUnit->getDomainType() == DOMAIN_LAND) && (pUnit->getInvisibleType() == NO_INVISIBLE) && !isRiverCrossing(directionXY(*this, *pToPlot))) // 
 					{return true;}
 				return false;
 			}
@@ -9155,8 +9156,8 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 			|| pUnit->getUnitClassType() != GC.getInfoTypeForString("UNITCLASS_WORKER")
 			)
 			{return false;}
-
-		if (!isFriendlyCity(*pUnit, true))
+		//keldath 099 advc adjustment - prev it checked also improvement?
+		if (pUnit->isPlotValid(pUnit->getPlot()) /*!isFriendlyCity(*pUnit, true)*/)
 		{
 			TeamTypes eOurTeam = pUnit->getTeam();
 			bool bPlotWithoutOurUnit_Wrap = true;

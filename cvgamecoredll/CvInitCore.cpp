@@ -3,6 +3,15 @@
 #include "CvPlayer.h"
 #include "CvInfo_GameOption.h"
 #include "CvDLLUtilityIFaceBase.h"
+/*************************************************************************************************/
+/** TGA_INDEXATION                          01/21/08                                MRGENIE      */
+/**                                                                                              */
+/** deleting bogus Corporations and Religions elements from the vectors                          */
+/*************************************************************************************************/
+#include "CvXMLLoadUtility.h"
+/*************************************************************************************************/
+/** TGA_INDEXATION                          END                                                  */
+/*************************************************************************************************/
 
 
 CvInitCore::CvInitCore()

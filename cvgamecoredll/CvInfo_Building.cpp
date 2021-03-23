@@ -15,7 +15,7 @@ m_ePrereqAndTech(NO_TECH),
 m_eNoBonus(NO_BONUS),
 m_ePowerBonus(NO_BONUS),
 m_eFreeBonus(NO_BONUS),
-m_eNumFreeBonuses(0),
+m_iNumFreeBonuses(0),
 //DOTO -tholish-Keldath inactive buildings
 m_iPrereqMustAll(0),
 // < Doto-Building Resource Converter Start >
@@ -82,7 +82,7 @@ m_iAssetValue(0),
 m_iPowerValue(0),
 m_eSpecialBuildingType(NO_SPECIALBUILDING),
 m_eAdvisorType(NO_ADVISOR),
-********************************************************************************/
+/********************************************************************************/
 /**		Doto-REVDCM									2/16/10				phungus420	*/
 /**																				*/
 /**		CanConstruct															*/
@@ -220,8 +220,8 @@ CvBuildingInfo::~CvBuildingInfo()
 	SAFE_DELETE_ARRAY(m_paiRequiredInputBonuses);
 	SAFE_DELETE_ARRAY(m_paiBuildingOutputBonuses);
 	// < Doto-Building Resource Converter End   >
-	SAFE_DELETE_ARRAY(m_piPrereqAndTechs);
-	SAFE_DELETE_ARRAY(m_piPrereqOrBonuses);
+//	SAFE_DELETE_ARRAY(m_piPrereqAndTechs);
+//	SAFE_DELETE_ARRAY(m_piPrereqOrBonuses);
 //	SAFE_DELETE_ARRAY(m_piPrereqOrVicinityBonuses);  //Shqype Vicinity Bonus Add
 	SAFE_DELETE_ARRAY(m_piProductionTraits);
 	SAFE_DELETE_ARRAY(m_piHappinessTraits);

@@ -1091,7 +1091,7 @@ void CvUnit::updateAirCombat(bool bQuick)
 	}
 }
 //#define LOG_COMBAT_OUTCOMES // K-Mod -- this makes the game log the odds and outcomes of every battle, to help verify the accuracy of the odds calculation.
-
+//syntax changeds in advc099
 // K-Mod. I've edited this function so that it handles the battle planning internally rather than feeding details back to the caller.
 void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pPlot, bool bVisible, 
 //DOTO - ranged-immunity start
@@ -1099,7 +1099,7 @@ void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pP
 //DOTO - ranged-immunity end
 {
 	#ifdef LOG_COMBAT_OUTCOMES
-		int iLoggedOdds = pAttacker->getCombatOdds(this, pDefender);
+		int iLoggedOdds = pAttacker->calculateCombatOdds(*this, *pDefender);
 		iLoggedOdds += (1000 - iLoggedOdds)* pAttacker->withdrawalProbability()/100;
 	#endif
 
@@ -1113,15 +1113,17 @@ void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pP
 		kBattle.setDamage(BATTLE_UNIT_ATTACKER, BATTLE_TIME_BEGIN, getDamage());
 		kBattle.setDamage(BATTLE_UNIT_DEFENDER, BATTLE_TIME_BEGIN, pDefender->getDamage());
 	}
-	std::vector<int> combat_log; // positive number for attacker hitting the defender, negative numbers for defender hitting the attacker.
+	/*	positive number for attacker hitting the defender,
+		negative numbers for defender hitting the attacker. */
+	std::vector<int> combat_log;
 	// K-Mod end
 
 	CombatDetails cdAttackerDetails;
 	CombatDetails cdDefenderDetails;
 
 	int iAttackerStrength = pAttacker->currCombatStr(NULL, NULL, &cdAttackerDetails);
-	int iAttackerFirepower = pAttacker->currFirepower(NULL, NULL);
-
+	int iAttackerFirepower = pAttacker->currFirepower();
+	
 	int iDefenderStrength=0, iAttackerDamage=0, iDefenderDamage=0, iDefenderOdds=0;
 	getDefenderCombatValues(*pDefender, pPlot, iAttackerStrength, iAttackerFirepower,
 			iDefenderOdds, iDefenderStrength, iAttackerDamage, iDefenderDamage,
@@ -1136,7 +1138,7 @@ void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pP
 		CyArgsList pyArgsCD;
 		pyArgsCD.add(gDLL->getPythonIFace()->makePythonObject(&cdAttackerDetails));
 		pyArgsCD.add(gDLL->getPythonIFace()->makePythonObject(&cdDefenderDetails));
-		pyArgsCD.add(getCombatOdds(this, pDefender));
+		pyArgsCD.add(calculateCombatOdds(*this, *pDefender));
 		CvEventReporter::getInstance().genericEvent("combatLogCalc", pyArgsCD.makeFunctionArgs());
 	}
 	//DOTO - rangeimunity - collateral damage denied if a city have defence
@@ -1155,30 +1157,38 @@ void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pP
 	//	collateralCombat(pPlot, pDefender);
 	//		
 	//DOTO - rangeimunity not sure whats this below.
-	if (	std::min(GC.getMAX_HIT_POINTS(),
+	//syntax changed in 099 advc
+	int iDamage = iDefenderDamage;
+	bool const bLimitReached = (std::min(GC.getMAX_HIT_POINTS() - 1, 
+				pDefender->getDamage() + iDamage) >= pAttacker->combatLimit());	
+	if (/*	std::min(GC.getMAX_HIT_POINTS(),
 			pDefender->getDamage() + iDefenderDamage) > pAttacker->combatLimit())
+		*/
+		/*	The above lets combat continue when the limit is
+					reached exactly. This means, if the attacker lands another hit,
+					it'll deal 0 damage (weird). Also inconsistent w/ caclulateCombatOdds. */
+		// Minus one b/c reaching MAX_HIT_POINTS mustn't be treated as a withdrawal
+		bLimitReached)				
 		{
+			iDamage = pAttacker->combatLimit() - pDefender->getDamage();
+			/*	Don't break right after the XP change; want to log the hit -
+					now that it's guaranteed to be a proper hit (positive damage). */
+			// </advc.001l>
 			pAttacker->changeExperience(0/*keldath none from withdrawl*/,
-					pDefender->maxXPValue(), true, pPlot->getOwner() == pAttacker->getOwner(),
-					!pDefender->isBarbarian());
-			combat_log.push_back(combatLimit() - pDefender->getDamage()); // K-Mod
-			pDefender->setDamage(pAttacker->combatLimit(), pAttacker->getOwner());
+			pDefender->maxXPValue(), true, pPlot->getOwner() == pAttacker->getOwner(),
+				!pDefender->isBarbarian());
 		}
 	else
 	{
-		pDefender->changeDamage(iDefenderDamage, pAttacker->getOwner());
-		combat_log.push_back(iDefenderDamage); // K-Mod
+		pDefender->changeDamage(iDamage, pAttacker->getOwner());
+		combat_log.push_back(iDamage); // K-Mod
 
 		cdDefenderDetails.iCurrHitPoints=pDefender->currHitPoints();
 
 		if (pAttacker->isHuman() || pDefender->isHuman())
-		{
-			CyArgsList pyArgs;
-			pyArgs.add(gDLL->getPythonIFace()->makePythonObject(&cdAttackerDetails));
-			pyArgs.add(gDLL->getPythonIFace()->makePythonObject(&cdDefenderDetails));
-			pyArgs.add(0);
-			pyArgs.add(iDefenderDamage);
-			CvEventReporter::getInstance().genericEvent("combatLogHit", pyArgs.makeFunctionArgs());
+		{   // advc: Moved into new function
+			CvEventReporter::getInstance().combatLogHit(
+					cdAttackerDetails, cdDefenderDetails, iDamage, false);			
 		}
 		
 //DOTO - rangeimunity
@@ -1729,6 +1739,7 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted)
 		} // <advc.130m>
 		//DOTO - need to adapt to the below function-todo. from advc 098 23082020
 		//addDefenseSuccessMessages(*pDefender); // advc: Moved into new function
+		CvWString szBuffer; //099 advc adjustment
 		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DIED_ATTACKING",
 				getNameKeyNoGG(), // advc.004u
 				pDefender->getNameKey());
@@ -1843,7 +1854,7 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted)
 
 		//addAttackSuccessMessages(*pDefender, true); // advc.010: Moved into new function
 		//DOTO-keldath new from 22082020 need to convert idw to this new fn	 - todo
-
+		CvWString szBuffer;//advc 099 adjustmnet
 		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", getNameKey(),
 				pDefender->getNameKeyNoGG()); // advc.004u
 //DOTO-
@@ -1985,7 +1996,8 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted)
 		if (bAttckerRanged)
 		{
 			rImmunityCombatCallback(pDefender, this, pDefender->plot(), dmgFromRangedA, 1, rndHitAtk);
-			changeMoves(std::max(GC.getMOVE_DENOMINATOR(), pPlot->movementCost(this, plot())));
+			//changeMoves(std::max(GC.getMOVE_DENOMINATOR(), pPlot->movementCost(this, plot())));//advc 099 adjustment
+			changeMoves(std::max(GC.getMOVE_DENOMINATOR(),pPlot->movementCost(*this, getPlot())));
 			checkRemoveSelectionAfterAttack();
 			getGroup()->clearMissionQueue();
 		}
@@ -12726,8 +12738,8 @@ float CvUnit::doVictoryInfluence(CvUnit* pLoserUnit, bool bAttacking, bool bWith
 		fWinnerPlotMultiplier *= bWithdrawalMultiplier;
 		fLoserPlotMultiplier *= bWithdrawalMultiplier;
 	}
-
-	if (pLoserPlot->isEnemyCity(*this)) // city combat
+	//doto advc 099 adjustment
+	if (isEnemyCity(*pLoserPlot)/*pLoserPlot->isEnemyCity(*this)*/) // city combat
 	{
 		if (pLoserPlot->getNumVisibleEnemyDefenders(this) > 1)
 		{

@@ -451,7 +451,6 @@ void setTradeItem(TradeData* pItem, TradeableItems eItemType, int iData)
 	pItem->m_bHidden = false;
 }
 
-
 void setListHelp(CvWString& szBuffer, wchar const* szStart, wchar const* szItem,
 	wchar const* szSeparator, bool& bFirst) // advc: bool&
 {

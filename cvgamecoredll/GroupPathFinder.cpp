@@ -40,11 +40,13 @@ bool GroupStepMetric::isValidStep(CvPlot const& kFrom, CvPlot const& kTo,
 	{	
 		if (kGroup.getNumUnits() > 0)
 		{
-			CvUnit* pLoopUnit;
-			for (CLLNode<IDInfo>* pUnitNode = kGroup.headUnitNode(); pUnitNode != NULL; pUnitNode = kGroup.nextUnitNode(pUnitNode))
+			//doto advc adjustment
+			//CvUnit* pLoopUnit;
+			FOR_EACH_UNIT_IN(pGroupUnit, kGroup)
+			//for (CLLNode<IDInfo>* pUnitNode = kGroup.headUnitNode(); pUnitNode != NULL; pUnitNode = kGroup.nextUnitNode(pUnitNode))
 			{
-				pLoopUnit = ::getUnit(pUnitNode->m_data);
-				if (pLoopUnit->cannotMoveFromPlotToPlot(&kFrom, &kTo,/*bWithdrawal*/false))
+			//	pLoopUnit = ::getUnit(pUnitNode->m_data);
+				if (pGroupUnit/*pLoopUnit*/->cannotMoveFromPlotToPlot(&kFrom, &kTo,/*bWithdrawal*/false))
 					{return FALSE;}
 			}
 		}

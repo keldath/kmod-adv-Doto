@@ -587,7 +587,7 @@ void CvCity::doTurn()
 			chooseProduction(eMostRecentUnit, eMostRecentBuilding,
 					eMostRecentProject, m_iMostRecentOrder >= 0);
 		}
-	} 
+	} // </advc.004x>
 // < Building Resource Converter Start >
 	//frpo1 added a check to avoid infinite loop
 	//keldath
@@ -596,7 +596,6 @@ void CvCity::doTurn()
 	//processBuildingBonuses(); // f1rpo: Shouldn't be needed. Could fall back on this though if the other calls turn out to be too expensive.
 	// < Building Resource Converter End   >
 	
-	} // </advc.004x>
 	if (getCultureUpdateTimer() > 0)
 		changeCultureUpdateTimer(-1);
 
@@ -7911,8 +7910,8 @@ void CvCity::changePowerYieldRateModifier(YieldTypes eYield, int iChange)
 
 // DOTO-< Civic Infos Plus Start >
 //change from f1 advc to acctually work - keldath
-int CvCity::getStateReligionYieldRateModifier(YieldTypes eIndex) const {
-   return GET_PLAYER(getOwner()).getStateReligionYieldRateModifier(eIndex);
+int CvCity::getStateReligionYieldRateModifier(YieldTypes eYield) const {
+   return GET_PLAYER(getOwner()).getStateReligionYieldRateModifier(eYield);
 }
 /*
 int CvCity::getStateReligionYieldRateModifier(YieldTypes eIndex) const
@@ -7923,20 +7922,20 @@ int CvCity::getStateReligionYieldRateModifier(YieldTypes eIndex) const
 }
 */
 
-void CvCity::changeStateReligionYieldRateModifier(YieldTypes eIndex, int iChange)
+void CvCity::changeStateReligionYieldRateModifier(YieldTypes eYield, int iChange)
 {
-	FAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
-	FAssertMsg(eIndex < NUM_YIELD_TYPES, "eIndex expected to be < NUM_YIELD_TYPES");
+	FAssertMsg(eYield >= 0, "eIndex expected to be >= 0");
+	FAssertMsg(eYield < NUM_YIELD_TYPES, "eIndex expected to be < NUM_YIELD_TYPES");
 
 	if (iChange != 0)
 	{
 		//no need anymore - f1 advc
 		//m_aiStateReligionYieldRateModifier[eIndex] = (m_aiStateReligionYieldRateModifier[eIndex] + iChange);
-		FAssert(getYieldRate(eIndex) >= 0);
+		FAssert(getYieldRate(eYield) >= 0);
 
-		GET_PLAYER(getOwner()).invalidateYieldRankCache(eIndex);
+		GET_PLAYER(getOwner()).invalidateYieldRankCache(eYield);
 
-		if (eIndex == YIELD_COMMERCE)
+		if (eYield == YIELD_COMMERCE)
 		{
 			updateCommerce();
 		}
@@ -7951,8 +7950,8 @@ void CvCity::changeStateReligionYieldRateModifier(YieldTypes eIndex, int iChange
 }
 
 //changed from f1 advc to acctualy work - keldath
-int CvCity::getNonStateReligionYieldRateModifier(YieldTypes eIndex) const {
-   return GET_PLAYER(getOwner()).getNonStateReligionYieldRateModifier(eIndex);
+int CvCity::getNonStateReligionYieldRateModifier(YieldTypes eYield) const {
+   return GET_PLAYER(getOwner()).getNonStateReligionYieldRateModifier(eYield);
 }
 /*
 int CvCity::getNonStateReligionYieldRateModifier(YieldTypes eIndex) const
@@ -7974,7 +7973,7 @@ void CvCity::changeNonStateReligionYieldRateModifier(YieldTypes eYield, int iCha
 		//m_aiNonStateReligionYieldRateModifier[eIndex] = (m_aiNonStateReligionYieldRateModifier[eIndex] + iChange);
 		FAssert(getYieldRate(eYield) >= 0);
 
-		GET_PLAYER(getOwner()).invalidateYieldRankCache(eIndex);
+		GET_PLAYER(getOwner()).invalidateYieldRankCache(eYield);
 
 		if (eYield == YIELD_COMMERCE)
 		{
@@ -8288,7 +8287,7 @@ int CvCity::getTotalCommerceRateModifier(CommerceTypes eCommerce) const
 	CvPlayer const& kOwner = GET_PLAYER(getOwner());
 	return std::max(0, getCommerceRateModifier(eCommerce) +
 			kOwner.getCommerceRateModifier(eCommerce) +
-/ < Civic Infos Plus Start >
+// < Civic Infos Plus Start >
 //changed by f1 advc for civc info plus code - keldath      
            ((kOwner.getStateReligion() != NO_RELIGION
            && isHasReligion(kOwner.getStateReligion())) ?
@@ -8597,15 +8596,15 @@ int CvCity::getStateReligionCommerceRateModifier(CommerceTypes eIndex) const
 
 void CvCity::changeStateReligionCommerceRateModifier(CommerceTypes eCommerce, int iChange)
 {
-	FAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
-	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex expected to be < NUM_COMMERCE_TYPES");
+	FAssertMsg(eCommerce >= 0, "eIndex expected to be >= 0");
+	FAssertMsg(eCommerce < NUM_COMMERCE_TYPES, "eIndex expected to be < NUM_COMMERCE_TYPES");
 
 	if (iChange != 0)
 	{
 		//no need anymore - f1 advc
 		//m_aiStateReligionCommerceRateModifier[eIndex] = (m_aiStateReligionCommerceRateModifier[eIndex] + iChange);
 		FAssert(getCommerceRate(eCommerce) >= 0);
-		updateCommerce(eIndex);	
+		updateCommerce(eCommerce);
 	}
 }
 //change from f1 advc to acctually work - keldath
@@ -9474,7 +9473,7 @@ int CvCity::getNumBonuses(BonusTypes eBonus) const
 //< Building Resource Converter Start >
 //f1rpo 096 - added a var here to pass an param to avoid a loop - keldath
 void CvCity::changeNumBonuses(BonusTypes eBonus, int iChange,
-	bool bVerifyProduction,bool bUpdateBuildings)
+	bool bVerifyProduction,bool bUpdateBuildings
 //< Building Resource Converter end >
 	) // advc.064d
 {
@@ -13427,7 +13426,7 @@ void CvCity::getCityBillboardSizeIconColors(NiColorA& kDotColor, NiColorA& kText
 		int const iFood = getFood();
 		int const iGrowthThreshold = growthThreshold();
 		/* DOTO-Population Limit ModComp - Beginning */
-		if (iFoodDifference < 0 && getPopulation() < getPopulationLimit()
+		if (iFoodDifference < 0 && getPopulation() < getPopulationLimit())
 		{
 			if (iFoodDifference == -1 && iFood * 100 >= 75 * iGrowthThreshold)
 				kDotColor = kStagnant;
@@ -15129,6 +15128,8 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 		}
 
 		eCorporation = (CorporationTypes)GC.getBuildingInfo(eBuilding).getFoundsCorporation();
+		//doto-advc 099 syntax change
+		CvCorporationInfo& kCorporation = GC.getInfo(eCorporation);
 		if (eCorporation != NO_CORPORATION)
 		{
 			if (GC.getGame().isCorporationFounded(eCorporation))
@@ -15142,7 +15143,7 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 			}
 
 			bool bValid = false;
-			for (int i = 0; i < GC.getNUM_CORPORATION_PREREQ_BONUSES(); ++i)
+			for (int i = 0; i < kCorporation.getNumPrereqBonuses(); ++i)
 			{
 				BonusTypes eBonus = (BonusTypes)GC.getCorporationInfo(eCorporation).getPrereqBonus(i);
 				if (NO_BONUS != eBonus)
@@ -15163,8 +15164,9 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 
 		bRequiresBonus = false;
 		bNeedsBonus = true;
-
-		for (iI = 0; iI < GC.getNUM_BUILDING_PREREQ_OR_BONUSES(); iI++)
+		//doto advc 099 sybtax change
+		CvBuildingInfo& kBuilding = GC.getInfo(eBuilding);
+		for (iI = 0; iI < kBuilding.getNumPrereqOrBonuses(); iI++)
 		{
 			if (GC.getBuildingInfo(eBuilding).getPrereqOrBonuses(iI) != NO_BONUS)
 			{

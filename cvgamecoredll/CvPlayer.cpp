@@ -4554,7 +4554,8 @@ bool CvPlayer::canRaze(CvCity const& kCity) const // advc: param was CvCity*
 		/************************************************************************************************/
 		//static int const iRAZING_CULTURAL_PERCENT_THRESHOLD = GC.getDefineINT("RAZING_CULTURAL_PERCENT_THRESHOLD"); // advc.opt
 		//if (kCity.calculateTeamCulturePercent(getTeam()) >= iRAZING_CULTURAL_PERCENT_THRESHOLD)
-		//	return false;	}
+		//	return false;	
+	}
 	/*  advc.003y (note): This Python function is also called from acquireCity.
 		acquireCity should arguably call CvPlayer::canRaze instead. But that seems
 		difficult to untangle. */
@@ -7591,171 +7592,171 @@ void CvPlayer::setStartingPlot(CvPlot* pNewValue, bool bUpdateStartDist)
 
 // < Civic Infos Plus Start >
 
-int CvPlayer::getBuildingYieldChange(BuildingTypes eIndex1, YieldTypes eIndex2) const
+int CvPlayer::getBuildingYieldChange(BuildingTypes eIndex1, YieldTypes eYield) const
 {
 	FAssertMsg(eIndex1 >= 0, "eIndex1 is expected to be non-negative (invalid Index)");
 	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
-	FAssertMsg(eIndex2 >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex2 < NUM_YIELD_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
-	return m_ppaaiBuildingYieldChange[eIndex1][eIndex2];
+	FAssertMsg(eYield >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
+	FAssertMsg(eYield < NUM_YIELD_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
+	return m_ppaaiBuildingYieldChange[eIndex1][eYield];
 }
 
 
-void CvPlayer::changeBuildingYieldChange(BuildingTypes eIndex1, YieldTypes eIndex2, int iChange)
+void CvPlayer::changeBuildingYieldChange(BuildingTypes eIndex1, YieldTypes eYield, int iChange)
 {
 	FAssertMsg(eIndex1 >= 0, "eIndex1 is expected to be non-negative (invalid Index)");
 	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
-	FAssertMsg(eIndex2 >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex2 < NUM_YIELD_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
+	FAssertMsg(eYield >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
+	FAssertMsg(eYield < NUM_YIELD_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
 
 	if (iChange != 0)
 	{
-		m_ppaaiBuildingYieldChange[eIndex1][eIndex2] = (m_ppaaiBuildingYieldChange[eIndex1][eIndex2] + iChange);
-		FAssert(getBuildingYieldChange(eIndex1, eIndex2) >= 0);
+		m_ppaaiBuildingYieldChange[eIndex1][eYield] = (m_ppaaiBuildingYieldChange[eIndex1][eYield] + iChange);
+		FAssert(getBuildingYieldChange(eIndex1, eYield) >= 0);
 	}
 }
 
 
-int CvPlayer::getStateReligionYieldRateModifier(YieldTypes eIndex) const
+int CvPlayer::getStateReligionYieldRateModifier(YieldTypes eYield) const
 {
-	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
-	return m_aiStateReligionYieldRateModifier[eIndex];
+	FAssertMsg(eYield >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eYield < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+	return m_aiStateReligionYieldRateModifier[eYield];
 }
 
 
-void CvPlayer::changeStateReligionYieldRateModifier(YieldTypes eIndex, int iChange)
+void CvPlayer::changeStateReligionYieldRateModifier(YieldTypes eYield, int iChange)
 {
 	CvCity* pLoopCity;
 	int iLoop;
 
-	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+	FAssertMsg(eYield >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eYield < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
 
 	if (iChange != 0)
 	{
-		m_aiStateReligionYieldRateModifier[eIndex] = (m_aiStateReligionYieldRateModifier[eIndex] + iChange);
+		m_aiStateReligionYieldRateModifier[eYield] = (m_aiStateReligionYieldRateModifier[eYield] + iChange);
 
-		invalidateYieldRankCache(eIndex);
+		invalidateYieldRankCache(eYield);
 
 		for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
 		{
-			pLoopCity->changeStateReligionYieldRateModifier(eIndex, iChange);
+			pLoopCity->changeStateReligionYieldRateModifier(eYield, iChange);
 		}
 	}
 }
 
-int CvPlayer::getStateReligionCommerceRateModifier(CommerceTypes eIndex) const
+int CvPlayer::getStateReligionCommerceRateModifier(CommerceTypes eCommerce) const
 {
-	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
-	return m_aiStateReligionCommerceRateModifier[eIndex];
+	FAssertMsg(eCommerce >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eCommerce < NUM_COMMERCE_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+	return m_aiStateReligionCommerceRateModifier[eCommerce];
 }
 
 
-void CvPlayer::changeStateReligionCommerceRateModifier(CommerceTypes eIndex, int iChange)
+void CvPlayer::changeStateReligionCommerceRateModifier(CommerceTypes eCommerce, int iChange)
 {
 	CvCity* pLoopCity;
 	int iLoop;
 
-	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+	FAssertMsg(eCommerce >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eCommerce < NUM_COMMERCE_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
 
 	if (iChange != 0)
 	{
-		m_aiStateReligionCommerceRateModifier[eIndex] = (m_aiStateReligionCommerceRateModifier[eIndex] + iChange);
-		FAssert(getStateReligionCommerceRateModifier(eIndex) >= 0);
+		m_aiStateReligionCommerceRateModifier[eCommerce] = (m_aiStateReligionCommerceRateModifier[eCommerce] + iChange);
+		FAssert(getStateReligionCommerceRateModifier(eCommerce) >= 0);
 
 		for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
 		{
-			pLoopCity->changeStateReligionCommerceRateModifier(eIndex, iChange);
+			pLoopCity->changeStateReligionCommerceRateModifier(eCommerce, iChange);
 		}
 	}
 }
 
-int CvPlayer::getNonStateReligionYieldRateModifier(YieldTypes eIndex) const
+int CvPlayer::getNonStateReligionYieldRateModifier(YieldTypes eYield) const
 {
-	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
-	return m_aiNonStateReligionYieldRateModifier[eIndex];
+	FAssertMsg(eYield >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eYield < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+	return m_aiNonStateReligionYieldRateModifier[eYield];
 }
 
 
-void CvPlayer::changeNonStateReligionYieldRateModifier(YieldTypes eIndex, int iChange)
+void CvPlayer::changeNonStateReligionYieldRateModifier(YieldTypes eYield, int iChange)
 {
 	CvCity* pLoopCity;
 	int iLoop;
 
-	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+	FAssertMsg(eYield >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eYield < NUM_YIELD_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
 
 	if (iChange != 0)
 	{
-		m_aiNonStateReligionYieldRateModifier[eIndex] = (m_aiNonStateReligionYieldRateModifier[eIndex] + iChange);
+		m_aiNonStateReligionYieldRateModifier[eYield] = (m_aiNonStateReligionYieldRateModifier[eYield] + iChange);
 
-		invalidateYieldRankCache(eIndex);
-
-		for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
-		{
-			pLoopCity->changeNonStateReligionYieldRateModifier(eIndex, iChange);
-		}
-	}
-}
-
-
-int CvPlayer::getNonStateReligionCommerceRateModifier(CommerceTypes eIndex) const
-{
-	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
-	return m_aiNonStateReligionCommerceRateModifier[eIndex];
-}
-
-
-void CvPlayer::changeNonStateReligionCommerceRateModifier(CommerceTypes eIndex, int iChange)
-{
-	CvCity* pLoopCity;
-	int iLoop;
-
-	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
-
-	if (iChange != 0)
-	{
-		m_aiNonStateReligionCommerceRateModifier[eIndex] = (m_aiNonStateReligionCommerceRateModifier[eIndex] + iChange);
-		FAssert(getNonStateReligionCommerceRateModifier(eIndex) >= 0);
+		invalidateYieldRankCache(eYield);
 
 		for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
 		{
-			pLoopCity->changeNonStateReligionCommerceRateModifier(eIndex, iChange);
+			pLoopCity->changeNonStateReligionYieldRateModifier(eYield, iChange);
 		}
 	}
 }
 
 
-int CvPlayer::getBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes eIndex2) const
+int CvPlayer::getNonStateReligionCommerceRateModifier(CommerceTypes eCommerce) const
+{
+	FAssertMsg(eCommerce >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eCommerce < NUM_COMMERCE_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+	return m_aiNonStateReligionCommerceRateModifier[eCommerce];
+}
+
+
+void CvPlayer::changeNonStateReligionCommerceRateModifier(CommerceTypes eCommerce, int iChange)
+{
+	CvCity* pLoopCity;
+	int iLoop;
+
+	FAssertMsg(eCommerce >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	FAssertMsg(eCommerce < NUM_COMMERCE_TYPES, "eIndex is expected to be within maximum bounds (invalid Index)");
+
+	if (iChange != 0)
+	{
+		m_aiNonStateReligionCommerceRateModifier[eCommerce] = (m_aiNonStateReligionCommerceRateModifier[eCommerce] + iChange);
+		FAssert(getNonStateReligionCommerceRateModifier(eCommerce) >= 0);
+
+		for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
+		{
+			pLoopCity->changeNonStateReligionCommerceRateModifier(eCommerce, iChange);
+		}
+	}
+}
+
+
+int CvPlayer::getBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes eCommerce) const
 {
 	FAssertMsg(eIndex1 >= 0, "eIndex1 is expected to be non-negative (invalid Index)");
 	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
-	FAssertMsg(eIndex2 >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex2 < NUM_COMMERCE_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
-	return m_ppaaiBuildingCommerceChange[eIndex1][eIndex2];
+	FAssertMsg(eCommerce >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
+	FAssertMsg(eCommerce < NUM_COMMERCE_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
+	return m_ppaaiBuildingCommerceChange[eIndex1][eCommerce];
 }
 
 
-void CvPlayer::changeBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes eIndex2, int iChange)
+void CvPlayer::changeBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes eCommerce, int iChange)
 {
 //	CvCity* pLoopCity;
 //	int iLoop;
 
 	FAssertMsg(eIndex1 >= 0, "eIndex1 is expected to be non-negative (invalid Index)");
 	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
-	FAssertMsg(eIndex2 >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex2 < NUM_COMMERCE_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
+	FAssertMsg(eCommerce >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
+	FAssertMsg(eCommerce < NUM_COMMERCE_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
 
 	if (iChange != 0)
 	{
-		m_ppaaiBuildingCommerceChange[eIndex1][eIndex2] = (m_ppaaiBuildingCommerceChange[eIndex1][eIndex2] + iChange);
-		FAssert(getBuildingCommerceChange(eIndex1, eIndex2) >= 0);
+		m_ppaaiBuildingCommerceChange[eIndex1][eCommerce] = (m_ppaaiBuildingCommerceChange[eIndex1][eCommerce] + iChange);
+		FAssert(getBuildingCommerceChange(eIndex1, eCommerce) >= 0);
 	}
 }
 // < Civic Infos Plus End   >
@@ -21045,7 +21046,8 @@ bool CvPlayer::canKeep(BuildingTypes eBuilding) const
 		return false;
 	}
 
-	for (iI = 0; iI < GC.getNUM_BUILDING_AND_TECH_PREREQS(); iI++)
+	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
+	for (iI = 0; iI < kBuilding.getNumPrereqAndTechs(); iI++)
 	{
 		if (GC.getBuildingInfo(eBuilding).getPrereqAndTechs(iI) != NO_TECH)
 		{

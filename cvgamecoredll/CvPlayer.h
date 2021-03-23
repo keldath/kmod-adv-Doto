@@ -969,20 +969,20 @@ public:
 	void changeCapitalYieldRateModifier(YieldTypes eYield, int iChange);
 
 	// < Civic Infos Plus Start >
-	int getStateReligionYieldRateModifier(YieldTypes eIndex) const;
-	void changeStateReligionYieldRateModifier(YieldTypes eIndex, int iChange);
+	int getStateReligionYieldRateModifier(YieldTypes eYield) const;
+	void changeStateReligionYieldRateModifier(YieldTypes eYield, int iChange);
 
-	int getStateReligionCommerceRateModifier(CommerceTypes eIndex) const;
-	void changeStateReligionCommerceRateModifier(CommerceTypes eIndex, int iChange);
+	int getStateReligionCommerceRateModifier(CommerceTypes eCommerce) const;
+	void changeStateReligionCommerceRateModifier(CommerceTypes eCommerce, int iChange);
 
-	int getNonStateReligionYieldRateModifier(YieldTypes eIndex) const;
-	void changeNonStateReligionYieldRateModifier(YieldTypes eIndex, int iChange);
+	int getNonStateReligionYieldRateModifier(YieldTypes eYield) const;
+	void changeNonStateReligionYieldRateModifier(YieldTypes eYield, int iChange);
 
-	int getNonStateReligionCommerceRateModifier(CommerceTypes eIndex) const;
-	void changeNonStateReligionCommerceRateModifier(CommerceTypes eIndex, int iChange);
+	int getNonStateReligionCommerceRateModifier(CommerceTypes eCommerce) const;
+	void changeNonStateReligionCommerceRateModifier(CommerceTypes eCommerce, int iChange);
 
-	int getSpecialistExtraYield(YieldTypes eIndex) const;
-	void changeSpecialistExtraYield(YieldTypes eIndex, int iChange);
+	int getSpecialistExtraYield(YieldTypes eYield) const;
+	void changeSpecialistExtraYield(YieldTypes eYield, int iChange);
 	// < Civic Infos Plus End   >
 	int getExtraYieldThreshold(YieldTypes eYield) const { return m_aiExtraYieldThreshold.get(eYield); }				// Exposed to Python
 	void updateExtraYieldThreshold(YieldTypes eYield);
@@ -1213,11 +1213,11 @@ public:
 	/**	CMEDIT: End																					**/
 	/*************************************************************************************************/
 	// < Civic Infos Plus Start >
-	int getBuildingYieldChange(BuildingTypes eIndex1, YieldTypes eIndex2) const;								// Exposed to Python
-	void changeBuildingYieldChange(BuildingTypes eIndex1, YieldTypes eIndex2, int iChange);
+	int getBuildingYieldChange(BuildingTypes eIndex1, YieldTypes eYield) const;								// Exposed to Python
+	void changeBuildingYieldChange(BuildingTypes eIndex1, YieldTypes eYield, int iChange);
 
-	int getBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes eIndex2) const;								// Exposed to Python
-	void changeBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes eIndex2, int iChange);
+	int getBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes eCommerce) const;								// Exposed to Python
+	void changeBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes eCommerce, int iChange);
 	// < Civic Infos Plus End   >
 	//void updateGroupCycle(CvUnit* pUnit);
 	void updateGroupCycle(CvSelectionGroup const& kGroup); // K-Mod

@@ -175,6 +175,21 @@ int CvTechInfo::py_getPrereqAndTechs(int i) const
 } // </advc.003t>
 
 // K-Mod
+//doto re introduced for some mods
+//<Tech Bonus Mod End>
+int CvTechInfo::getCommerceModifier(int i) const
+{
+	//	FAssertMsg(m_piCommerceModifier, "Tech info not initialised");
+	//	FASSERT_BOUNDS(0, NUM_COMMERCE_TYPES, i, "CvTechInfo::getCommerceModifier");
+
+	return m_piCommerceModifier ? m_piCommerceModifier[i] : 0;
+}
+
+int* CvTechInfo::getCommerceModifierArray() const
+{
+	return m_piCommerceModifier;
+}
+//end <Tech Bonus Mod End> kmod
 int CvTechInfo::getSpecialistExtraCommerce(int i) const
 {
 	FAssertBounds(0, GC.getNumFlavorTypes(), i);

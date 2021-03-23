@@ -325,7 +325,6 @@ void CvCorporationInfo::setHeadquarterChar(int i)
 /*************************************************************************************************/
 }
 
-}
 // advc.003t: Calls from Python aren't going to respect the bounds
 int CvCorporationInfo::py_getPrereqBonus(int i) const
 {

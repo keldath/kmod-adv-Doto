@@ -1033,10 +1033,10 @@ CvUnitAI* CvSelectionGroupAI::AI_ejectBestDefender(CvPlot* pDefendPlot)
 
 		iValue /= 2 + (pUnit->getLevel() *
 				// advc.mnai:
-				(pUnit->AI_getUnitAIType() == UNITAI_ATTACK_CITY ? 2 : 1));
+				(pUnit->AI_getUnitAIType() == UNITAI_ATTACK_CITY ? 2 : 1)
 		// DOTO-MOD rangedattack-keldath + ranged immunity - START --if the unit is ranged - prefer not to eject it
 				*
-				(pUnit->isRangeStrikeCapableK() ? 2 : 1)
+				(pUnit->isRangeStrikeCapableK() ? 2 : 1));
 // DOTO-MOD rangedattack-+ ranged immunity  keldath - END 	
 		if (iValue > iBestUnitValue)
 		{
