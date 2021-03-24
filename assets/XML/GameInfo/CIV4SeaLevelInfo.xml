@@ -9,35 +9,35 @@
 		<SeaLevelInfo>
 			<Type>SEALEVEL_VERY_VERY_LOW</Type>
 			<Description>Lowest</Description>
-			<iSeaLevelChange>-20</iSeaLevelChange>
+			<iSeaLevelChange>-14</iSeaLevelChange>
 			<iResearchPercent>150</iResearchPercent>
 		</SeaLevelInfo>
 		<SeaLevelInfo>
 			<Type>SEALEVEL_VERY_LOW</Type>
 			<Description>Lower</Description>
-			<iSeaLevelChange>-15</iSeaLevelChange>
-			<iResearchPercent>140</iResearchPercent>
+			<iSeaLevelChange>-10</iSeaLevelChange>
+			<iResearchPercent>130</iResearchPercent>
 		</SeaLevelInfo>
 		<SeaLevelInfo>
 			<Type>SEALEVEL_LOW</Type>
 			<Description>Low</Description>
 			<iSeaLevelChange>-8</iSeaLevelChange>
 			<!-- advc.910 -->
-			<iResearchPercent>130</iResearchPercent>
+			<iResearchPercent>117</iResearchPercent>
 		</SeaLevelInfo>
 		<SeaLevelInfo>
 			<Type>SEALEVEL_MEDIUM</Type>
 			<Description>Medium</Description>
 			<iSeaLevelChange>0</iSeaLevelChange>
 			<!-- advc.910 -->
-			<iResearchPercent>110</iResearchPercent>
+			<iResearchPercent>100</iResearchPercent>
 		</SeaLevelInfo>
 		<SeaLevelInfo>
 			<Type>SEALEVEL_HIGH</Type>
 			<Description>High</Description>
 			<iSeaLevelChange>6</iSeaLevelChange>
 			<!-- advc.910 -->
-			<iResearchPercent>90</iResearchPercent>
+			<iResearchPercent>87</iResearchPercent>
 		</SeaLevelInfo>
 	</SeaLevelInfos>
 </Civ4SeaLevelInfo>

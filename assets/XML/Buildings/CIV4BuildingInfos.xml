@@ -2669,7 +2669,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iGlobalHurryModifier>0</iGlobalHurryModifier>
 			<iExperience>0</iExperience>
 			<iGlobalExperience>0</iGlobalExperience>
-			<!-- advc.160: was 50 -->
+			<!-- advc.160: Was 50. Note that advc.912d multiplies this by 1.2
+				 in the DLL when playing with the "No Slavery" option. -->
 			<iFoodKept>40</iFoodKept>
 			<iAirlift>0</iAirlift>
 			<iAirModifier>0</iAirModifier>
@@ -6626,7 +6627,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iAirModifier>0</iAirModifier>
 			<iAirUnitCapacity>0</iAirUnitCapacity>
 			<iNukeModifier>0</iNukeModifier>
-			<iNukeExplosionRand>2000</iNukeExplosionRand>
+			<!-- advc: Was 2000. 1/1429 is ca. 0.7 permille. -->
+			<iNukeExplosionRand>1429</iNukeExplosionRand>
 			<iFreeSpecialist>0</iFreeSpecialist>
 			<iAreaFreeSpecialist>0</iAreaFreeSpecialist>
 			<iGlobalFreeSpecialist>0</iGlobalFreeSpecialist>
@@ -9610,10 +9612,11 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<GlobalCommerceModifiers/>
 			<SpecialistExtraCommerces/>
 			<StateReligionCommerces/>
+			<!-- advc.908b: was 10 culture -->
 			<CommerceHappinesses>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
-				<iCommerce>10</iCommerce>
+				<iCommerce>5</iCommerce>
 			</CommerceHappinesses>
 			<ReligionChanges/>
 			<SpecialistCounts>
@@ -9803,10 +9806,11 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<GlobalCommerceModifiers/>
 			<SpecialistExtraCommerces/>
 			<StateReligionCommerces/>
+			<!-- advc.908b: was 10 culture -->
 			<CommerceHappinesses>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
-				<iCommerce>10</iCommerce>
+				<iCommerce>5</iCommerce>
 			</CommerceHappinesses>
 			<ReligionChanges/>
 			<SpecialistCounts>
@@ -9992,17 +9996,18 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<GlobalCommerceModifiers/>
 			<SpecialistExtraCommerces/>
 			<StateReligionCommerces/>
+			<!-- advc.908b: was 20 culture -->
 			<CommerceHappinesses>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
-				<iCommerce>20</iCommerce>
+				<iCommerce>10</iCommerce>
 			</CommerceHappinesses>
 			<ReligionChanges/>
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_ARTIST</SpecialistType>
-					<!-- advc.913a: Was 0 in BtS, 2 in K-Mod. -->
-					<iSpecialistCount>1</iSpecialistCount>
+					<!-- K-Mod -->
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -10074,12 +10079,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<TechTypes/>
 			<Bonus>NONE</Bonus>
 			<PrereqBonuses/>
-			<ProductionTraits>
-				<ProductionTrait>
-					<ProductionTraitType>TRAIT_CREATIVE</ProductionTraitType>
-					<iProductionTrait>100</iProductionTrait>
-				</ProductionTrait>
-			</ProductionTraits>
+			<!-- advc.908b: Was 100 from TRAIT_CREATIVE -->
+			<ProductionTraits/>
 			<HappinessTraits/>
 			<NoBonus>NONE</NoBonus>
 			<PowerBonus>NONE</PowerBonus>
@@ -10183,10 +10184,11 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<GlobalCommerceModifiers/>
 			<SpecialistExtraCommerces/>
 			<StateReligionCommerces/>
+			<!-- advc.908b: was 5 culture -->
 			<CommerceHappinesses>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
-				<iCommerce>5</iCommerce>
+				<iCommerce>10</iCommerce>
 			</CommerceHappinesses>
 			<ReligionChanges/>
 			<SpecialistCounts/>
@@ -10247,12 +10249,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<TechTypes/>
 			<Bonus>NONE</Bonus>
 			<PrereqBonuses/>
-			<ProductionTraits>
-				<ProductionTrait>
-					<ProductionTraitType>TRAIT_CREATIVE</ProductionTraitType>
-					<iProductionTrait>100</iProductionTrait>
-				</ProductionTrait>
-			</ProductionTraits>
+			<!-- advc.908b: Was 100 from TRAIT_CREATIVE -->
+			<ProductionTraits/>
 			<HappinessTraits/>
 			<NoBonus>NONE</NoBonus>
 			<PowerBonus>NONE</PowerBonus>
@@ -10364,10 +10362,11 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<GlobalCommerceModifiers/>
 			<SpecialistExtraCommerces/>
 			<StateReligionCommerces/>
+			<!-- advc.908b: was 5 culture -->
 			<CommerceHappinesses>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
-				<iCommerce>5</iCommerce>
+				<iCommerce>10</iCommerce>
 			</CommerceHappinesses>
 			<ReligionChanges/>
 			<SpecialistCounts>
@@ -10441,12 +10440,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<TechTypes/>
 			<Bonus>NONE</Bonus>
 			<PrereqBonuses/>
-			<ProductionTraits>
-				<ProductionTrait>
-					<ProductionTraitType>TRAIT_CREATIVE</ProductionTraitType>
-					<iProductionTrait>100</iProductionTrait>
-				</ProductionTrait>
-			</ProductionTraits>
+			<!-- advc.908b: Was 100 from TRAIT_CREATIVE -->
+			<ProductionTraits/>
 			<HappinessTraits/>
 			<NoBonus>NONE</NoBonus>
 			<PowerBonus>NONE</PowerBonus>
@@ -10550,10 +10545,11 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<GlobalCommerceModifiers/>
 			<SpecialistExtraCommerces/>
 			<StateReligionCommerces/>
+			<!-- advc.908b: was 5 culture -->
 			<CommerceHappinesses>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
-				<iCommerce>5</iCommerce>
+				<iCommerce>10</iCommerce>
 			</CommerceHappinesses>
 			<ReligionChanges/>
 			<SpecialistCounts/>
@@ -10613,12 +10609,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<TechTypes/>
 			<Bonus>NONE</Bonus>
 			<PrereqBonuses/>
-			<ProductionTraits>
-				<ProductionTrait>
-					<ProductionTraitType>TRAIT_CREATIVE</ProductionTraitType>
-					<iProductionTrait>100</iProductionTrait>
-				</ProductionTrait>
-			</ProductionTraits>
+			<!-- advc.908b: Was 100 from TRAIT_CREATIVE -->
+			<ProductionTraits/>
 			<HappinessTraits/>
 			<NoBonus>NONE</NoBonus>
 			<PowerBonus>NONE</PowerBonus>
@@ -10722,10 +10714,11 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<GlobalCommerceModifiers/>
 			<SpecialistExtraCommerces/>
 			<StateReligionCommerces/>
+			<!-- advc.908b: was 5 culture -->
 			<CommerceHappinesses>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
-				<iCommerce>5</iCommerce>
+				<iCommerce>10</iCommerce>
 			</CommerceHappinesses>
 			<ReligionChanges/>
 			<SpecialistCounts/>
@@ -11019,7 +11012,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<bPrereqReligion>0</bPrereqReligion>
 			<bCenterInCity>0</bCenterInCity>
 			<iAIWeight>0</iAIWeight>
-			<iCost>150</iCost>
+			<!-- advc.911b: was 150 -->
+			<iCost>130</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
@@ -11215,7 +11209,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<bPrereqReligion>0</bPrereqReligion>
 			<bCenterInCity>0</bCenterInCity>
 			<iAIWeight>0</iAIWeight>
-			<iCost>150</iCost>
+			<!-- advc.911b: was 150 -->
+			<iCost>130</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
@@ -11415,7 +11410,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<bPrereqReligion>0</bPrereqReligion>
 			<bCenterInCity>0</bCenterInCity>
 			<iAIWeight>0</iAIWeight>
-			<iCost>150</iCost>
+			<!-- advc.911b: was 150 -->
+			<iCost>130</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
@@ -11605,7 +11601,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<bPrereqReligion>0</bPrereqReligion>
 			<bCenterInCity>0</bCenterInCity>
 			<iAIWeight>0</iAIWeight>
-			<iCost>150</iCost>
+			<!-- advc.911b: was 150 -->
+			<iCost>130</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
@@ -12600,10 +12597,11 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<StateReligionCommerces/>
 			<CommerceHappinesses/>
 			<ReligionChanges/>
+			<!-- advc.911a: was 1 spy -->
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_SPY</SpecialistType>
-					<iSpecialistCount>1</iSpecialistCount>
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -12786,10 +12784,11 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<StateReligionCommerces/>
 			<CommerceHappinesses/>
 			<ReligionChanges/>
+			<!-- advc.911a: was 1 spy -->
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_SPY</SpecialistType>
-					<iSpecialistCount>1</iSpecialistCount>
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -12973,10 +12972,11 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<StateReligionCommerces/>
 			<CommerceHappinesses/>
 			<ReligionChanges/>
+			<!-- advc.911a: was 1 spy -->
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_SPY</SpecialistType>
-					<iSpecialistCount>1</iSpecialistCount>
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -13159,10 +13159,11 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<StateReligionCommerces/>
 			<CommerceHappinesses/>
 			<ReligionChanges/>
+			<!-- advc.911a: was 1 spy -->
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_SPY</SpecialistType>
-					<iSpecialistCount>1</iSpecialistCount>
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -13351,10 +13352,11 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<StateReligionCommerces/>
 			<CommerceHappinesses/>
 			<ReligionChanges/>
+			<!-- advc.911a: was 2 spies -->
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_SPY</SpecialistType>
-					<iSpecialistCount>2</iSpecialistCount>
+					<iSpecialistCount>1</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -13538,10 +13540,11 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<StateReligionCommerces/>
 			<CommerceHappinesses/>
 			<ReligionChanges/>
+			<!-- advc.911a: was 2 spies -->
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_SPY</SpecialistType>
-					<iSpecialistCount>2</iSpecialistCount>
+					<iSpecialistCount>1</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>

@@ -142,7 +142,8 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- was 60 -->
 			<iResearchPercent>72</iResearchPercent>
 			<iTrainPercent>80</iTrainPercent>
-			<iConstructPercent>80</iConstructPercent>
+			<!-- was 80 (let's steer beginners away a bit from just playing SimCity) -->
+			<iConstructPercent>85</iConstructPercent>
 			<iCreatePercent>70</iCreatePercent>
 			<!-- advc.251 (end) -->
 			<iDistanceMaintenancePercent>45</iDistanceMaintenancePercent>
@@ -173,7 +174,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.300: was 50 -->
 			<iBarbarianCreationTurnsElapsed>55</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 55 -->
-			<iBarbarianCityCreationTurnsElapsed>50</iBarbarianCityCreationTurnsElapsed>
+			<iBarbarianCityCreationTurnsElapsed>60</iBarbarianCityCreationTurnsElapsed>
 			<iBarbarianCityCreationProb>5</iBarbarianCityCreationProb>
 			<!-- advc.313: was -70 -->
 			<iAnimalBonus>-60</iAnimalBonus>
@@ -200,7 +201,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- was 6x 160 -->
 			<iAITrainPercent>125</iAITrainPercent>
 			<iAIWorldTrainPercent>125</iAIWorldTrainPercent>
-			<iAIConstructPercent>125</iAIConstructPercent>
+			<iAIConstructPercent>120</iAIConstructPercent>
 			<iAIWorldConstructPercent>125</iAIWorldConstructPercent>
 			<iAICreatePercent>110</iAICreatePercent>
 			<iAIWorldCreatePercent>125</iAIWorldCreatePercent>
@@ -345,8 +346,8 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.300: was 45 -->
 			<iBarbarianCreationTurnsElapsed>50</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 50 -->
-			<iBarbarianCityCreationTurnsElapsed>50</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>6</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationTurnsElapsed>55</iBarbarianCityCreationTurnsElapsed>
+			<iBarbarianCityCreationProb>5</iBarbarianCityCreationProb>
 			<!-- advc.313: was -60 -->
 			<iAnimalBonus>-45</iAnimalBonus>
 			<iBarbarianBonus>-30</iBarbarianBonus>
@@ -371,7 +372,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- was 6x 130 -->
 			<iAITrainPercent>120</iAITrainPercent>
 			<iAIWorldTrainPercent>120</iAIWorldTrainPercent>
-			<iAIConstructPercent>120</iAIConstructPercent>
+			<iAIConstructPercent>115</iAIConstructPercent>
 			<iAIWorldConstructPercent>120</iAIWorldConstructPercent>
 			<iAICreatePercent>105</iAICreatePercent>
 			<iAIWorldCreatePercent>120</iAIWorldCreatePercent>
@@ -493,8 +494,8 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.300: was 40 -->
 			<iBarbarianCreationTurnsElapsed>45</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 45 -->
-			<iBarbarianCityCreationTurnsElapsed>45</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>6</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationTurnsElapsed>50</iBarbarianCityCreationTurnsElapsed>
+			<iBarbarianCityCreationProb>5</iBarbarianCityCreationProb>
 			<!-- advc.313: was -50 -->
 			<iAnimalBonus>-30</iAnimalBonus>
 			<iBarbarianBonus>-20</iBarbarianBonus>
@@ -518,7 +519,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAIResearchPercent>100</iAIResearchPercent>
 			<iAITrainPercent>110</iAITrainPercent>
 			<iAIWorldTrainPercent>110</iAIWorldTrainPercent>
-			<iAIConstructPercent>110</iAIConstructPercent>
+			<iAIConstructPercent>105</iAIConstructPercent>
 			<iAIWorldConstructPercent>110</iAIWorldConstructPercent>
 			<iAICreatePercent>100</iAICreatePercent>
 			<iAIWorldCreatePercent>110</iAIWorldCreatePercent>
@@ -618,7 +619,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iBarbarianCreationTurnsElapsed>40</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 40 -->
 			<iBarbarianCityCreationTurnsElapsed>45</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>7</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationProb>6</iBarbarianCityCreationProb>
 			<!-- advc.313: was -40 -->
 			<iAnimalBonus>-25</iAnimalBonus>
 			<iBarbarianBonus>-10</iBarbarianBonus>
@@ -737,8 +738,8 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.300: was 30 -->
 			<iBarbarianCreationTurnsElapsed>35</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 35 -->
-			<iBarbarianCityCreationTurnsElapsed>35</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>7</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationTurnsElapsed>40</iBarbarianCityCreationTurnsElapsed>
+			<iBarbarianCityCreationProb>6</iBarbarianCityCreationProb>
 			<!-- advc.313: was -30 -->
 			<iAnimalBonus>-20</iAnimalBonus>
 			<iBarbarianBonus>-5</iBarbarianBonus>
@@ -826,7 +827,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iBuildTimePercent>100</iBuildTimePercent>
 			<iBaseGrowthThresholdPercent>100</iBaseGrowthThresholdPercent>
 			<iGPThresholdPercent>100</iGPThresholdPercent>
-			<iCultureLevelPercent>110</iCultureLevelPercent>
+			<iCultureLevelPercent>106</iCultureLevelPercent>
 			<!-- advc.251 (end) -->
 			<iResearchPercent>115</iResearchPercent>
 			<!-- advc.251 (start) -->
@@ -864,7 +865,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iBarbarianCreationTurnsElapsed>30</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 30 -->
 			<iBarbarianCityCreationTurnsElapsed>35</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>8</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationProb>7</iBarbarianCityCreationProb>
 			<!-- advc.313: was -20 -->
 			<iAnimalBonus>-15</iAnimalBonus>
 			<!-- advc.313: was 0 -->
@@ -981,10 +982,10 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iBuildTimePercent>110</iBuildTimePercent>
 			<iBaseGrowthThresholdPercent>110</iBaseGrowthThresholdPercent>
 			<iGPThresholdPercent>110</iGPThresholdPercent>
-			<iCultureLevelPercent>120</iCultureLevelPercent>
+			<iCultureLevelPercent>112</iCultureLevelPercent>
 			<iResearchPercent>125</iResearchPercent>
 			<iTrainPercent>110</iTrainPercent>
-			<iConstructPercent>110</iConstructPercent>
+			<iConstructPercent>105</iConstructPercent>
 			<iCreatePercent>100</iCreatePercent>
 			<!-- advc.251 (end) -->
 			<iDistanceMaintenancePercent>95</iDistanceMaintenancePercent>
@@ -1016,7 +1017,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iBarbarianCreationTurnsElapsed>25</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 25 -->
 			<iBarbarianCityCreationTurnsElapsed>30</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>8</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationProb>7</iBarbarianCityCreationProb>
 			<iAnimalBonus>-10</iAnimalBonus>
 			<!-- advc.313: was 0 -->
 			<iBarbarianBonus>-5</iBarbarianBonus>
@@ -1045,7 +1046,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- was 100 -->
 			<iAIWorldTrainPercent>95</iAIWorldTrainPercent>
 			<!-- was 85 -->
-			<iAIConstructPercent>95</iAIConstructPercent>
+			<iAIConstructPercent>90</iAIConstructPercent>
 			<!-- was 100 -->
 			<iAIWorldConstructPercent>95</iAIWorldConstructPercent>
 			<iAICreatePercent>85</iAICreatePercent>
@@ -1138,11 +1139,11 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iBuildTimePercent>115</iBuildTimePercent>
 			<iBaseGrowthThresholdPercent>120</iBaseGrowthThresholdPercent>
 			<iGPThresholdPercent>120</iGPThresholdPercent>
-			<iCultureLevelPercent>130</iCultureLevelPercent>
+			<iCultureLevelPercent>118</iCultureLevelPercent>
 			<!-- was 125 -->
 			<iResearchPercent>135</iResearchPercent>
 			<iTrainPercent>120</iTrainPercent>
-			<iConstructPercent>120</iConstructPercent>
+			<iConstructPercent>110</iConstructPercent>
 			<iCreatePercent>110</iCreatePercent>
 			<!-- advc.251 (end) -->
 			<iDistanceMaintenancePercent>100</iDistanceMaintenancePercent>
@@ -1174,7 +1175,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iBarbarianCreationTurnsElapsed>20</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 20 -->
 			<iBarbarianCityCreationTurnsElapsed>25</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>9</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationProb>8</iBarbarianCityCreationProb>
 			<iAnimalBonus>-5</iAnimalBonus>
 			<!-- advc.313: was 0 -->
 			<iBarbarianBonus>-5</iBarbarianBonus>
@@ -1204,12 +1205,10 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAITrainPercent>90</iAITrainPercent>
 			<!-- was 100 -->
 			<iAIWorldTrainPercent>90</iAIWorldTrainPercent>
-			<!-- was 80 -->
-			<iAIConstructPercent>90</iAIConstructPercent>
+			<iAIConstructPercent>80</iAIConstructPercent>
 			<!-- was 100 -->
 			<iAIWorldConstructPercent>90</iAIWorldConstructPercent>
-			<!-- was 80 -->
-			<iAICreatePercent>85</iAICreatePercent>
+			<iAICreatePercent>80</iAICreatePercent>
 			<!-- was 100 -->
 			<iAIWorldCreatePercent>90</iAIWorldCreatePercent>
 			<!-- advc.251 (end) -->
@@ -1303,11 +1302,11 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iBuildTimePercent>120</iBuildTimePercent>
 			<iBaseGrowthThresholdPercent>130</iBaseGrowthThresholdPercent>
 			<iGPThresholdPercent>130</iGPThresholdPercent>
-			<iCultureLevelPercent>150</iCultureLevelPercent>
+			<iCultureLevelPercent>129</iCultureLevelPercent>
 			<!-- advc.251: was 130 -->
 			<iResearchPercent>150</iResearchPercent>
 			<iTrainPercent>130</iTrainPercent>
-			<iConstructPercent>130</iConstructPercent>
+			<iConstructPercent>115</iConstructPercent>
 			<iCreatePercent>120</iCreatePercent>
 			<!-- advc.251 (end) -->
 			<iDistanceMaintenancePercent>100</iDistanceMaintenancePercent>
@@ -1339,7 +1338,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iBarbarianCreationTurnsElapsed>15</iBarbarianCreationTurnsElapsed>
 			<!-- advc.300: was 15 -->
 			<iBarbarianCityCreationTurnsElapsed>25</iBarbarianCityCreationTurnsElapsed>
-			<iBarbarianCityCreationProb>9</iBarbarianCityCreationProb>
+			<iBarbarianCityCreationProb>8</iBarbarianCityCreationProb>
 			<iAnimalBonus>0</iAnimalBonus>
 			<iBarbarianBonus>0</iBarbarianBonus>
 			<!-- advc.313: was -40 -->
@@ -1368,7 +1367,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- was 100-->
 			<iAIWorldTrainPercent>85</iAIWorldTrainPercent>
 			<!-- was 60 -->
-			<iAIConstructPercent>85</iAIConstructPercent>
+			<iAIConstructPercent>75</iAIConstructPercent>
 			<!-- was 100 -->
 			<iAIWorldConstructPercent>85</iAIWorldConstructPercent>
 			<!-- was 60 -->
