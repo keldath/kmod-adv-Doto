@@ -9091,7 +9091,10 @@ bool CvPlot::isWithBlocaders(const CvPlot* pFromPlot, const CvPlot* pToPlot, con
 			if (!isVisible(eTeam, false))
 			{
 				//doto advc adjustment 099
-				if (pUnit->isEnemyCity(*pToPlot) /*isEnemyCity(*pUnit)*/ && (pUnit->getDomainType() == DOMAIN_LAND) && (pUnit->getInvisibleType() == NO_INVISIBLE) && !isRiverCrossing(directionXY(*this, *pToPlot))) // 
+				if (/*doto keldath trial : pUnit->isEnemyCity(*pToPlot)*/ 
+					/* original : isEnemyCity(*pUnit)*/ 
+					/*f1rpo suggestion:*/pUnit->isEnemyCity(*this) && getPlotCity()->isRevealed(pUnit->getTeam())
+					&& (pUnit->getDomainType() == DOMAIN_LAND) && (pUnit->getInvisibleType() == NO_INVISIBLE) && !isRiverCrossing(directionXY(*this, *pToPlot))) // 
 					{return true;}
 				return false;
 			}
@@ -9157,7 +9160,10 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 			)
 			{return false;}
 		//keldath 099 advc adjustment - prev it checked also improvement?
-		if (pUnit->isPlotValid(pUnit->getPlot()) /*!isFriendlyCity(*pUnit, true)*/)
+		if (/*keldath trial: !pUnit->isPlotValid(pUnit->getPlot()) */
+			/*f1rpo suggestion */!GET_TEAM(pUnit->getTeam()).isCityDefense(*this)
+			/*consider this : CvTeam::isCityHeal(CvPlot const& kPlot)*/
+			/*original : !isFriendlyCity(*pUnit, true)*/)
 		{
 			TeamTypes eOurTeam = pUnit->getTeam();
 			bool bPlotWithoutOurUnit_Wrap = true;
