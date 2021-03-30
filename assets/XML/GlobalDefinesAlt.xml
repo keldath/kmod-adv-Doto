@@ -372,6 +372,15 @@
 		<DefineName>RANGESTRIKE_HIT_MODIFIER</DefineName>
 		<iDefineIntVal>2</iDefineIntVal>
 	</Define>
+	<!--add constant number to make the attacker chance to hit higher
+	 this is in addition to RANGESTRIKE_HIT_MODIFIER
+	 10 default, arbitrary number, no special choise reason.
+	 should be maximum 100, but...thats always a hit.
+	-->
+	<Define>
+		<DefineName>RANGESTRIKE_ATT_MOD</DefineName>
+		<iDefineIntVal>10</iDefineIntVal>
+	</Define>
 
 	<Define>
 		<!-- Minimum attack odds of best attacker for AI to skip range attacking a city and just attack. Default: 80 -->

@@ -2474,7 +2474,7 @@ CvSelectionGroup* CvPlayer::cycleSelectionGroups(CvUnit* pUnit, bool bForward,
 	if (pbWrap != NULL)
 		*pbWrap = false;
 	// <advc.004h>
-	if(pUnit->canFound())
+	if(pUnit != NULL && pUnit->canFound())
 		pUnit->updateFoundingBorder(true); // </advc.004h>
 	// <K-Mod>
 	std::set<int>& kCycledGroups = GC.getGame().getActivePlayerCycledGroups();
@@ -6295,7 +6295,7 @@ int CvPlayer::calculateUnitCost(int& iFreeUnits, int& iFreeMilitaryUnits, int& i
 
 
 int CvPlayer::calculateUnitCost(
-		int iExtraPop, int iExtraUnits) const // advc.004b
+	int iExtraPop, int iExtraUnits) const // advc.004b
 {
 	if(isAnarchy())
 		return 0;
@@ -20296,8 +20296,9 @@ void CvPlayer::getUnitLayerColors(GlobeLayerUnitOptionTypes eOption,
 
 // advc.004z:
 bool CvPlayer::showGoodyOnResourceLayer() const
-{
-	return (isOption(PLAYEROPTION_NO_UNIT_RECOMMENDATIONS) &&
+{	/*	Let's let the player decide whether they want to show hut indicators
+		alongside action recommendations */
+	return (/*isOption(PLAYEROPTION_NO_UNIT_RECOMMENDATIONS) &&*/
 			BUGOption::isEnabled("MainInterface__TribalVillageIcons", true));
 }
 
@@ -20654,7 +20655,7 @@ double CvPlayer::estimateYieldRate(YieldTypes eYield, int iSamples) const
 	CvGame const& kGame = GC.getGame();
 	int const iGameTurn = kGame.getGameTurn();
 	int const iTurnsPlayed = iGameTurn - kGame.getStartTurn();
-	iSamples = std::min(iSamples, iTurnsPlayed - 1);
+	iSamples = std::max(0, std::min(iSamples, iTurnsPlayed - 1));
 	std::vector<double> adSamples; // double for ::dMedian
 	adSamples.reserve(iSamples);
 	/* When anarchy lasts several turns, the sample may not contain a single

@@ -343,11 +343,11 @@
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
-            <Type>GAMEOPTION_END_MOVES</Type>
-            <Description>[will be replaced]Ranged Move End</Description>
-            <Help>Units with Range Strike wont be able to move if it have more move points.(default off)</Help>
+            <Type>GAMEOPTION_NO_RANGED_COLLATERAL</Type>
+            <Description>Ranged Units cannot do Collateral Damage</Description>
+            <Help>Units with Range Strike will not be able to perform collateral attack - might be overpowerd</Help>
             <bDefault>0</bDefault>
-            <bVisible>0</bVisible> 	
+            <bVisible>1</bVisible> 	
       	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RAND_HIT</Type>

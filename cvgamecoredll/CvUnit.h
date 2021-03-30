@@ -1024,7 +1024,7 @@ public:
 	int rangeCombatDamageK(const CvUnit* pDefender, const CvUnit* pAttacker) const;
 	bool randomRangedGen(CvUnit* pDefender, CvUnit* pAttacker) const;
 	bool rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlot* pPlot,
-					int dmg, int msgType,bool rndHit = true ) const;
+					int dmg, int msgType,bool rndHit = true, int UnitPreDamage=0) const;
 	bool isRangeStrikeCapableK() const;
 // DOTO-MOD - Keldtah RangedStrike end + Ranged Immunity
 

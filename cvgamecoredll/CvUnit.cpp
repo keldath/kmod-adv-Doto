@@ -1141,35 +1141,30 @@ void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pP
 		pyArgsCD.add(calculateCombatOdds(*this, *pDefender));
 		CvEventReporter::getInstance().genericEvent("combatLogCalc", pyArgsCD.makeFunctionArgs());
 	}
-	//DOTO - rangeimunity - collateral damage denied if a city have defence
-	//CvCity* pCity = pPlot->getPlotCity();
-	//if (pCity != NULL && (bAttckerRanged && rImmunityOption ))
-	//{
-	//	//if can ignore city defense or no units in city-> collateral damage.
-	//	if (!ignoreBuildingDefense() || pCity->getDefenseModifier(false) == 0)
-	//	{
-	//		collateralCombat(pPlot,pDefender);
-	//	}
-	//}
-	//else
-	//{	
-	//	//org
-	//	collateralCombat(pPlot, pDefender);
-	//		
+	
+	//moved collateral damage to post atack.
+
 	//DOTO - rangeimunity not sure whats this below.
 	//syntax changed in 099 advc
 	int iDamage = iDefenderDamage;
+	int a = GC.getMAX_HIT_POINTS() - 1;
+	int b = pDefender->getDamage();
+	int c = pAttacker->combatLimit();
+	bool d = std::min(a, b + iDamage) >= c;
+	int n = 0;
+	/*	std::min(GC.getMAX_HIT_POINTS(),
+			pDefender->getDamage() + iDefenderDamage) > pAttacker->combatLimit())
+	*/
+	/*	The above lets combat continue when the limit is
+		reached exactly. This means, if the attacker lands another hit,
+		it'll deal 0 damage (weird). Also inconsistent w/ caclulateCombatOdds. */
+	// Minus one b/c reaching MAX_HIT_POINTS mustn't be treated as a withdrawal
 	bool const bLimitReached = (std::min(GC.getMAX_HIT_POINTS() - 1, 
 				pDefender->getDamage() + iDamage) >= pAttacker->combatLimit());	
-	if (/*	std::min(GC.getMAX_HIT_POINTS(),
-			pDefender->getDamage() + iDefenderDamage) > pAttacker->combatLimit())
-		*/
-		/*	The above lets combat continue when the limit is
-					reached exactly. This means, if the attacker lands another hit,
-					it'll deal 0 damage (weird). Also inconsistent w/ caclulateCombatOdds. */
-		// Minus one b/c reaching MAX_HIT_POINTS mustn't be treated as a withdrawal
-		bLimitReached)				
+	if (bLimitReached)				
 		{
+			d = 1;
+			n = 2;
 			iDamage = pAttacker->combatLimit() - pDefender->getDamage();
 			/*	Don't break right after the XP change; want to log the hit -
 					now that it's guaranteed to be a proper hit (positive damage). */
@@ -1178,8 +1173,6 @@ void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pP
 			pDefender->maxXPValue(), true, pPlot->getOwner() == pAttacker->getOwner(),
 				!pDefender->isBarbarian());
 		}
-	else
-	{
 		pDefender->changeDamage(iDamage, pAttacker->getOwner());
 		combat_log.push_back(iDamage); // K-Mod
 
@@ -1220,7 +1213,6 @@ void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pP
 						pPlot->getOwner() == pAttacker->getOwner(), !pDefender->isBarbarian());
 			}
 			GET_PLAYER(pAttacker->getOwner()).AI_attackMadeAgainst(*pDefender); // advc.139
-		}
 	}
 
 	// K-Mod. Finalize battle info and start the animation.
@@ -1532,13 +1524,15 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted)
 //DOTO - ranged-immunity
 	//need as global	
 	bool rImmunityOption = GC.getGame().isOption(GAMEOPTION_RANGED_IMMUNITY);
-	int dmgFromRangedA = 0;
+	int dmgFromRangedA = 0; 
 	int dmgFromRangedD = 0;
 	bool rndHitAtk = false; //means theres a hit
 	bool rndHitDef = false; //means theres a hit
 	bool bAttckerRanged = this->isRangeStrikeCapableK();
 	bool bdefenderRanged = pDefender->isRangeStrikeCapableK();
-	bool rangedBattle = bAttckerRanged || bdefenderRanged;
+	bool rangedBattle = bAttckerRanged || bdefenderRanged;//at least one side is ranged
+	int dUnitPreDamage = 0; //damage b4 combat resolve
+	int aUnitPreDamage = 0;
 //DOTO - ranged-immunity
 	//check if quick combat
 	bool const bVisible = (bQuick ? false : isCombatVisible(pDefender));
@@ -1649,6 +1643,7 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted)
 					rndHitAtk = randomRangedGen(pDefender,this);
 					dmgFromRangedA = rndHitAtk ? rangeCombatDamageK(pDefender, this) : 0; //if hit miss dont do damage
 					if (dmgFromRangedA != 0)
+						dUnitPreDamage = pDefender->getDamage();//save the unit damage before the change - needed for later messsage damage display
 						resolveRangedCombat(pDefender, this, pPlot, bVisible, dmgFromRangedA);
 				}	
 				if (bdefenderRanged && GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE))
@@ -1656,6 +1651,7 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted)
 					rndHitDef = randomRangedGen(this, pDefender);
 					dmgFromRangedD = rndHitDef ? rangeCombatDamageK(this, pDefender) : 0; //if hit miss dont do damage
 					if (dmgFromRangedD != 0)
+						aUnitPreDamage = this->getDamage();//save the unit damage before the change - needed for later messsage damage display
 						resolveRangedCombat(this,pDefender, this->plot(), bVisible, ::round(dmgFromRangedD / 2));//i decided reta;oation damage would be halfed
 				}		
 			}
@@ -1990,20 +1986,40 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted)
 				getGroup()->clearMissionQueue();
 			}
 		}//Fix added by PieceOfMind for Influence Driven War, IDW
+	//DOTO - rangeimunity-ranged immunity
 	else if (rangedBattle && rImmunityOption) 
 	{
 
 		if (bAttckerRanged)
 		{
-			rImmunityCombatCallback(pDefender, this, pDefender->plot(), dmgFromRangedA, 1, rndHitAtk);
+			rImmunityCombatCallback(pDefender, this, pDefender->plot(), dmgFromRangedA, 1, rndHitAtk, dUnitPreDamage);
 			//changeMoves(std::max(GC.getMOVE_DENOMINATOR(), pPlot->movementCost(this, plot())));//advc 099 adjustment
+			//DOTO - rangeimunity - collateral damage denied if a city have defence
+			if (!GC.getGame().isOption(GAMEOPTION_NO_RANGED_COLLATERAL))
+			{
+				CvCity* pCity = pDefender->plot()->getPlotCity();
+				if (pCity != NULL)
+				{
+					//if can ignore city defense or no units in city-> collateral damage.
+					if (!ignoreBuildingDefense() || pCity->getDefenseModifier(false) == 0)
+					{
+						collateralCombat(pPlot, pDefender);
+					}
+				}
+				else
+				{
+					//org
+					collateralCombat(pPlot, pDefender);
+				}
+			}
 			changeMoves(std::max(GC.getMOVE_DENOMINATOR(),pPlot->movementCost(*this, getPlot())));
+			setMadeAttack(true);
 			checkRemoveSelectionAfterAttack();
 			getGroup()->clearMissionQueue();
 		}
 		if (bdefenderRanged)
 		{
-			rImmunityCombatCallback(this, pDefender, this->plot(), dmgFromRangedD, 1, rndHitDef);			
+			rImmunityCombatCallback(this, pDefender, this->plot(), dmgFromRangedD, 1, rndHitDef, aUnitPreDamage);
 		}
 	}
 	
@@ -7854,13 +7870,13 @@ int CvUnit::currEffectiveStr(CvPlot const* pPlot, CvUnit const* pAttacker,
 	CombatDetails* pCombatDetails,
 	int iCurrentHP) const // advc.139
 {
-	int currStr = currCombatStr(pPlot, pAttacker, pCombatDetails);
+	int iCurrStr = currCombatStr(pPlot, pAttacker, pCombatDetails);
 
-	currStr *= (maxHitPoints() + /* advc.139: */ (iCurrentHP > 0 ? iCurrentHP :
+	iCurrStr *= (maxHitPoints() + /* advc.139: */ (iCurrentHP > 0 ? iCurrentHP :
 			currHitPoints()));
-	currStr /= (2 * maxHitPoints());
+	iCurrStr /= (2 * maxHitPoints());
 
-	return currStr;
+	return iCurrStr;
 }
 
 float CvUnit::maxCombatStrFloat(const CvPlot* pPlot, const CvUnit* pAttacker) const
@@ -12189,7 +12205,13 @@ bool CvUnit::randomRangedGen(CvUnit* pDefender, CvUnit* pAttacker) const
 	{
 		hit = ((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) 
 				+ ((pAttacker->baseCombatStr() * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER")
-				* pAttacker->currHitPoints()) / pAttacker->maxHitPoints()))
+				* pAttacker->currHitPoints()) / pAttacker->maxHitPoints())
+				/*seems there can be lots of misses when base combat is equal,
+				  and hp at max for both. even when its on RANGESTRIKE_HIT_MODIFIER= 2
+				  i saw plenty of miss, so i added another modifier to the attacker - constant one.
+				*/
+				+ GC.getDefineINT("RANGESTRIKE_ATT_MOD")
+				)
 				> 
 				((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random"))
 				+ ((pDefender->baseCombatStr() * pDefender->currHitPoints()) / pDefender->maxHitPoints()));
@@ -12197,7 +12219,7 @@ bool CvUnit::randomRangedGen(CvUnit* pDefender, CvUnit* pAttacker) const
 	return hit;	
 }
 			 
-bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pPlot, int dmg,int msgType,bool rndHit) const
+bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pPlot, int dmg,int msgType,bool rndHit, int UnitPreDamage) const
 {
 	int iDamage = dmg/*rangeCombatDamageK(pDefender)*/;//if we can do damage anything, abort.
 	bool noDmg = false; //if we cant dmg a unit, make sure not to set attack to true or waste a movement.
@@ -12216,8 +12238,24 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot
 	//could be just an else
 	else if (msgType == 1)
 	{
+
+	/*this part was added from the resolve combatranged function
+		the damaged is changed is the limit is reached.
+		previously the iunitdamage checked its own combatlinit
+		which resulted that the last strike before the limit was reached - was displayed as 0%
+		but we need to show the actual dmg that was commited, to get the defender to its combat limit.
+		i think the best course is to execute this message from withing the resolvecombat range to acoid duplicate calls here.
+	sagis doto108*/
+		bool const bLimitReached = (std::min(GC.getMAX_HIT_POINTS() - 1,
+			pDefender->getDamage() + iDamage) >= pAttacker->combatLimit());
+		if (bLimitReached)
+		{
+			iDamage =  - pAttacker->combatLimit() + UnitPreDamage/*pDefender->getDamage()*/; //get the reminder damage to complete to the combat limit
+		}
+	/*	canclled - see above re definition
 		int iUnitDamage = std::max(pDefender->getDamage(), 
 						  std::min((pDefender->getDamage() + iDamage), pAttacker->combatLimit()));
+	*/
 	//this is now an out source function		
 	/*	bool rndHit = false;
 		if (GC.getGame().isOption(GAMEOPTION_RAND_HIT))
@@ -12233,7 +12271,7 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot
 		if (!rndHit) 
 		{
 			CvWString szBuffer;
-			if (GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE))
+			if (GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE) && pDefender->isRangeStrikeCapableK())
 			{
 			//if missed the attack on units.
 				szBuffer =(gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR_MISS",
@@ -12252,13 +12290,15 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot
 		else
 		{
 			CvWString szBuffer;
-			if (GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE))
+			if (GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE) && pDefender->isRangeStrikeCapableK())
 			{
 			//if the damage is none 0 and a hit.
 				szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR",
 					pDefender->getNameKey(), pAttacker->getNameKey(),
 				// advc.004g:
-				((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints()));
+				//((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints()));
+				//doto108 change -checking the limit effect above
+					iDamage));
 			// advc.004g:
 			//red icon over attacking unit
 				gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, pAttacker->getPlot(),
@@ -12269,7 +12309,9 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot
 			}
 			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR", pAttacker->getNameKey(), pDefender->getNameKey(),
 				// advc.004g:
-				((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints());
+				//((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints());
+				//doto108 change -checking the limit effect above
+				iDamage);
 			gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, *pPlot,
 				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
 
