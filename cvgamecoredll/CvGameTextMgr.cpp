@@ -3152,7 +3152,10 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 				szString.append(NEWLINE);*/
 			// </advc.099g>
 		}
-		else if(eRevealedOwner != NO_PLAYER) // advc.099f
+		// < JCultureControl Mod Start >
+		//keldath advc 099 + 108 text adjustments 
+		else if(eRevealedOwner != NO_PLAYER && !GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL)) // advc.099f
+		// < JCultureControl Mod end >
 		{
 			CvPlayer const& kRevealOwner = GET_PLAYER(eRevealedOwner);
 			szTempBuffer.Format(SETCOLR L"%s" ENDCOLR,
@@ -3162,7 +3165,10 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 		}
 	}
 	// < JCultureControl Mod Start >
-        if (kPlot.countTotalCultureControl() > 0  && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
+		//keldath advc 099 + 108 text adjustments 
+		bool jcultureOp = GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL);
+		int jcultureAmnt = kPlot.countTotalCultureControl();
+        if (jcultureAmnt > 0  && jcultureOp)
         {
             PlayerTypes eCultureControlOwner = kPlot.findHighestCultureControlPlayer();
             if (eCultureControlOwner != NO_PLAYER)
@@ -3186,7 +3192,16 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
                 }
             }
         }
+		else if (eRevealedOwner != NO_PLAYER && jcultureAmnt < 1 && jcultureOp) // advc.099f
+		{
+			CvPlayer const& kRevealOwner = GET_PLAYER(eRevealedOwner);
+			szTempBuffer.Format(SETCOLR L"%s" ENDCOLR,
+				PLAYER_TEXT_COLOR(kRevealOwner), kRevealOwner.getCivilizationDescription());
+			szString.append(szTempBuffer);
+			szString.append(NEWLINE);
+		}
     // < JCultureControl Mod End >
+
 	CvUnit const* pHeadSelectedUnit = gDLL->UI().getHeadSelectedUnit(); // advc
 	// <advc.012>
 	TeamTypes const eDefTeam = (eRevealedOwner != NO_PLAYER ?
@@ -3577,12 +3592,12 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 				bNamedRuin = true;
 			}
 		}
-	// < JCultureControl Mod Start >
-			if (kPlot.getImprovementOwner() != NO_PLAYER && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
-			{
-			    szString.append(GET_PLAYER(kPlot.getImprovementOwner()).getCivilizationAdjective(0));
-			    szString.append(L" ");
-			}
+// < JCultureControl Mod Start >
+		if (kPlot.getImprovementOwner() != NO_PLAYER && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
+		{
+			   szString.append(GET_PLAYER(kPlot.getImprovementOwner()).getCivilizationAdjective(0));
+			   szString.append(L" ");
+		}
 // < JCultureControl Mod End >
 		if(!bNamedRuin) // from Volcano event // </advc.005c>
 			szString.append(GC.getInfo(ePlotImprovement).getDescription());
@@ -3607,7 +3622,10 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 
 		if (GC.getInfo(ePlotImprovement).getImprovementUpgrade() != NO_IMPROVEMENT)
 		{
-			if (kPlot.getUpgradeProgress() > 0 || kPlot.isBeingWorked())
+// Super Forts begin *text* *upgrade*			
+			if (kPlot.getUpgradeProgress() > 0 
+				|| kPlot.isBeingWorked()&& !GC.getInfo(ePlotImprovement).isUpgradeRequiresFortify())
+// Super Forts end
 			{
 				int iTurns = kPlot.getUpgradeTimeLeft(ePlotImprovement, eRevealedOwner);
 				// <advc.912f>
@@ -3625,7 +3643,13 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 				if (bStagnant)
 					szString.append(ENDCOLR); // </advc.912f>
 			}
-			else
+// Super Forts begin *text* *upgrade* from mnai
+			else if (GC.getInfo(ePlotImprovement).isUpgradeRequiresFortify())
+			{
+				szString.append(gDLL->getText("TXT_KEY_PLOT_FORTIFY_TO_UPGRADE", GC.getInfo((ImprovementTypes) GC.getInfo(ePlotImprovement).getImprovementUpgrade()).getTextKeyWide()));
+			}
+// Super Forts end
+            else
 			{
 				szString.append(gDLL->getText("TXT_KEY_PLOT_WORK_TO_UPGRADE",
 						GC.getInfo(GC.getInfo(ePlotImprovement).getImprovementUpgrade()).
@@ -3633,6 +3657,14 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 			}
 		}
 	}
+	// Super Forts doto add to the plot
+	if (kPlot.getCultureRangeForts(kPlot.getOwner()) > 0)
+	{
+		//szTempBuffer.Format(L"\nFort Control by: %s", GET_PLAYER(kPlot.getOwner()).getCivilizationAdjective(0));
+		szTempBuffer.Format(L"\nFort Control by:" SETCOLR L"%s" ENDCOLR,  TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"), GET_PLAYER(kPlot.getOwner()).getCivilizationAdjective(0));
+		szString.append(szTempBuffer);
+	}
+	// Super Forts end doto
 	// <advc.059>
 	if (!bHealthHappyShown)
 		setPlotHealthHappyHelp(szString, kPlot); // </advc.059>
@@ -4505,6 +4537,16 @@ void CvGameTextMgr::setPlotHelpDebug_ShiftOnly(CvWStringBuffer& szString, CvPlot
 	}
 	szTempBuffer.Format(L"\nWERiverFlow: %c", tempChar);
 	szString.append(szTempBuffer);
+
+//super forts - from mnai - doto added	
+	// Choke value
+	szTempBuffer.Format(L"\nChoke Value: %d", kPlot.getChokeValue());
+	szString.append(szTempBuffer);
+
+	// Canal value
+	szTempBuffer.Format(L"\nCanal Value: %d", kPlot.getCanalValue());
+	szString.append(szTempBuffer);
+//super forts
 
 	if(kPlot.isRoute())
 	{
@@ -16209,6 +16251,13 @@ void CvGameTextMgr::setImprovementHelp(CvWStringBuffer &szBuffer, ImprovementTyp
 		szBuffer.append(NEWLINE);
 		szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_EVOLVES",
 				GC.getInfo(kImprov.getImprovementUpgrade()).getTextKeyWide(), iTurns));
+// Super Forts begin *text* *upgrade*
+		if (kImprov.isUpgradeRequiresFortify())
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_FORTIFY_TO_UPGRADE"));
+		}
+// Super Forts end
 	}
 	{
 		bool bFirst = true;
@@ -16367,8 +16416,43 @@ void CvGameTextMgr::setImprovementHelp(CvWStringBuffer &szBuffer, ImprovementTyp
 		szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_PROTECTS_FEATURE_FROM_GW",
 				iGWFeatureProtection));
 	} // </advc.055>
+// Super Forts begin *text* *bombard*
+	if (kImprov.isBombardable() && (kImprov.getDefenseModifier() > 0))
+	{
+		szBuffer.append(NEWLINE);
+		szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_BOMBARD"));
+	}
+	if (kImprov.getUniqueRange() > 0)
+	{
+		szBuffer.append(NEWLINE);
+		szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_UNIQUE_RANGE", kImprov.getUniqueRange()));
+	}
+// Super Forts end
+
 	if (bCivilopediaText)
 	{
+// Super Forts begin *text*
+		if (kImprov.getCulture() > 0)
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_PLOT_CULTURE", kImprov.getCulture()));
+		}
+		if (kImprov.getCultureRange() > 0 && ((kImprov.getCulture() > 0) || kImprov.isActsAsCity()))
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_CULTURE_RANGE", kImprov.getCultureRange()));
+		}
+		if (kImprov.getVisibilityChange() > 0)
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_VISIBILITY_RANGE", kImprov.getVisibilityChange()));
+		}
+		if (kImprov.getSeeFrom() > 0)
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_SEE_FROM", kImprov.getSeeFrom()));
+		}
+// Super Forts end
 		if (kImprov.getPillageGold() > 0)
 		{
 			szBuffer.append(NEWLINE);
@@ -18870,7 +18954,7 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 		{
 			int iDefenseModifier = pCity->getDefenseModifier(
 					GC.getGame().selectionListIgnoreBuildingDefense());
-		////rangedattack-keldath i prefer to see thE 0 all the time
+		////rangedattack-keldath i prefer to see thE 0 all the time doto
 		//	if (iDefenseModifier != 0)
 		//	{
 				//szBuffer.append(CvWString::format(L" %c:%s%d%%", gDLL->getSymbolID(DEFENSE_CHAR), ((iDefenseModifier > 0) ? "+" : ""), iDefenseModifier));
@@ -21123,6 +21207,28 @@ void CvGameTextMgr::getPlotHelp(CvPlot* pMouseOverPlot, CvCity* pCity, CvPlot* p
 			strHelp.assign(szTempBuffer);
 		}
 	}
+// defense icon and text
+/*	if (pFlagPlot != NULL)
+	{
+		if (pFlagPlot->isVisible(GC.getGame().getActiveTeam(), true))
+		{
+			ImprovementTypes eImprovement = pFlagPlot->getImprovementType();
+			int iDefenseModifier = GC.getImprovementInfo(eImprovement).getDefenseModifier();
+
+			if (!strHelp.isEmpty())
+				strHelp.append(NEWLINE);
+			CvWString szTempBuffer;
+			szTempBuffer.Format(L"   " SETCOLR L"%s%d%%" ENDCOLR L"%c",
+				// I've tried some other colors, but they're no easier to read.
+				TEXT_COLOR("COLOR_WHITE"),
+				((iDefenseModifier > 0) ? "+" : ""),
+				iDefenseModifier,
+				gDLL->getSymbolID(DEFENSE_CHAR));
+			szTempBuffer += strHelp.getCString();
+			strHelp.assign(szTempBuffer);
+		}
+	}
+	*/
 }
 
 void CvGameTextMgr::getRebasePlotHelp(CvPlot const& kPlot,

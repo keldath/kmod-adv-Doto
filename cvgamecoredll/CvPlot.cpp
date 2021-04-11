@@ -7,6 +7,7 @@
 #include "CitySiteEvaluator.h"
 #include "CvArea.h"
 #include "CvUnit.h"
+#include "FAStarFunc.h"
 #include "CvSelectionGroup.h"
 #include "CvInfo_City.h"
 #include "CvInfo_Terrain.h"
@@ -56,6 +57,8 @@ CvPlot::CvPlot() // advc: Merged with the deleted reset function
 	// < JCultureControl Mod Start >
 	//m_aiCultureControl = NULL;
 	// < JCultureControl Mod End >
+// Super Forts *culture*
+	m_aiCultureRangeForts = NULL; // Super Forts *culture*
 	m_iFeatureVariety = 0;
 	m_iOwnershipDuration = 0;
 	m_iImprovementDuration = 0;
@@ -69,6 +72,15 @@ CvPlot::CvPlot() // advc: Merged with the deleted reset function
 	m_iRiverCrossingCount = 0;
 	m_iLatitude = -1; // advc.tsl
 	m_iTotalCulture = 0; // advc.opt
+	
+// Super Forts begin *canal* *choke*
+	m_iCanalValue = 0;
+	m_iChokeValue = 0;
+	// Super Forts end
+	// Super Forts begin *bombard*
+	m_iDefenseDamage = 0;
+	m_bBombarded = false;
+// Super Forts end
 
 	m_bStartingPlot = false;
 //keldath f1rpo-The relevant info is in m_ePlotType and can be accessed through isHills() and isPeak(); that was already the case in BtS. m_bHills was, essentially, unused.
@@ -104,6 +116,7 @@ CvPlot::CvPlot() // advc: Merged with the deleted reset function
 	m_plotCity.reset();
 	m_workingCity.reset();
 	m_workingCityOverride.reset();
+
 }
 
 
@@ -115,6 +128,9 @@ CvPlot::~CvPlot() // advc: Merged with the deleted uninit function
 	// < JCultureControl Mod Start >
 	//SAFE_DELETE_ARRAY(m_aiCultureControl);
 	// < JCultureControl Mod End >
+// Super Forts *culture*
+	SAFE_DELETE_ARRAY(m_aiCultureRangeForts); // Super Forts *culture*
+// Super Forts *culture*
 	SAFE_DELETE_ARRAY(m_paAdjList); // advc.opt
 
 	gDLL->getFeatureIFace()->destroy(m_pFeatureSymbol);
@@ -343,9 +359,39 @@ void CvPlot::doTurn()
 	if (isOwned())
 		changeOwnershipDuration(1);
 
-	if (isImproved())
-		changeImprovementDuration(1);
+// Super Forts begin *upgrade*
+	if (getOwner() != NO_PLAYER)
+	{
+		if (isImproved() && isOwned()
+			&& !GET_PLAYER(getOwner()).isAnarchy()//ADDDED - its a ctd if theres anarchy - 
+			//advc merged doupgradeimprovement into doimprovement
+			)//added own check to avoid cts
+		{
+			changeImprovementDuration(1);
+			// Super Forts begin *upgrade*
+			if (!isBeingWorked())
+			{
+				doImprovement(true);
+				//doto adjustment - code crashes if this executes
+				//advc merged the funcs but the part of the doimprovement crashes the game upon this execution
+				//so i added a bool check so only the upgarde part will be done
+				//doImprovementUpgrade();
+			}
+			// Super Forts end
+		}
+	}
+	
+// Super Forts end
 
+// Super Forts begin *bombard*
+	if (!isBombarded() && getDefenseDamage() > 0)
+	{
+		changeDefenseDamage(-(GC.getDefineINT("CITY_DEFENSE_DAMAGE_HEAL_RATE")));
+	}
+	setBombarded(false);
+// Super Forts end
+	
+	
 	doFeature();
 	doCulture();
 	verifyUnitValidPlot();
@@ -363,12 +409,17 @@ void CvPlot::doTurn()
 }
 
 
-void CvPlot::doImprovement()
+void CvPlot::doImprovement(bool bsuperForts)
 {
 	PROFILE_FUNC();
+	
+// doto add - Super Forts begin - check wihout bool - ctd on first turn
+	if(!bsuperForts)
+		FAssert(isBeingWorked());
+// doto add - Super Forts begin - check wihout bool - ctd on first turn
 
-	FAssert(isBeingWorked());
 	CvPlayer const& kOwner = GET_PLAYER(getOwner());
+
 	FAssert(!kOwner.isAnarchy()); // advc
 
 	if (isImproved() && getBonusType() == NO_BONUS)
@@ -413,8 +464,58 @@ void CvPlot::doImprovement()
 		return;
 	ImprovementTypes eImprovementUpdrade = GC.getInfo(getImprovementType()).
 			getImprovementUpgrade();
+	// doto add - Super Forts begin *upgrade* - added if-else statement
+	CvImprovementInfo &kImprovementInfo = GC.getImprovementInfo(getImprovementType());
+	ImprovementTypes eImprovementUpgrade_sf = (ImprovementTypes)kImprovementInfo.getImprovementUpgrade();
+	// doto add -Super Forts begin *upgrade* - added if-else statement
+
+	//doto qa108 super forts 0 check mnai code here - its different!
 	if (eImprovementUpdrade != NO_IMPROVEMENT)
 	{
+	   CvImprovementInfo &kImprovementUpgradeInfo = GC.getImprovementInfo(eImprovementUpgrade_sf);
+	// Super Forts begin *upgrade* - added if-else statement
+		if(kImprovementInfo.isUpgradeRequiresFortify())
+		{
+			bool bDefenderFound = false;
+			CLinkList<IDInfo> oldUnits;
+			CLLNode<IDInfo>* pUnitNode = headUnitNode();
+			CvUnit* pLoopUnit;
+
+			while (pUnitNode != NULL)
+			{
+				oldUnits.insertAtEnd(pUnitNode->m_data);
+				pUnitNode = nextUnitNode(pUnitNode);
+			}
+
+			pUnitNode = oldUnits.head();
+
+			while (pUnitNode != NULL)
+			{
+				pLoopUnit = ::getUnit(pUnitNode->m_data);
+				pUnitNode = nextUnitNode(pUnitNode);
+				if(pLoopUnit->getFortifyTurns() > 0)
+				{
+					if (pLoopUnit->getTeam() == getTeam() && pLoopUnit->canDefend())
+					{
+						bDefenderFound = true;
+						break;
+					}
+				}
+			}
+
+			if(bDefenderFound)
+			{
+				changeUpgradeProgress(GET_PLAYER(getOwner()).getImprovementUpgradeRate());
+
+				if (getUpgradeProgress() >= GC.getGame().getImprovementUpgradeTime(getImprovementType()))
+				{
+					setImprovementType(eImprovementUpgrade_sf);
+				}
+			}
+		}
+		else
+		{
+		//original code: 
 		/*	advc: Caller already ensures isBeingWorked (and isOwned()).
 			In other words, improvement upgrades outside of borders
 			aren't correctly implemented, and I'm not going to fix that. */
@@ -431,6 +532,7 @@ void CvPlot::doImprovement()
 			}
 			// < JCultureControl Mod End >
 		}
+		}
 	}
 }
 
@@ -438,10 +540,14 @@ void CvPlot::doImprovement()
 void CvPlot::updateCulture(bool bBumpUnits, bool bUpdatePlotGroups)
 {
 	PROFILE_FUNC(); // advc (There's a plot group update when the owner changes)
-
-	if(isCity())
+// Super Forts begin *culture*
+	if(/*isCityExternal(true) */
+		//doto change - added improvement specific check
+		(isCity() ||
+		isFortImprovement())
+		/*|| (getOwner() != NO_PLAYER)*/)
 		return;
-
+// Super Forts end
 	// <advc.035>
 	PlayerTypes eCulturalOwner = calculateCulturalOwner();
 	setSecondOwner(eCulturalOwner);
@@ -921,12 +1027,20 @@ void CvPlot::nukeExplosion(int iRange, CvUnit* pNukeUnit, bool bBomb)
 	}
 }
 
-
 bool CvPlot::isConnectedTo(const CvCity* pCity) const
 {
-	FAssert(isOwned());
-	return (isSamePlotGroup(*pCity->plot(), getOwner()) ||
+	// Super Forts begin *AI_worker* (had to remove the assert and replace it with an if-else)
+	//FAssert(isOwned());
+	if(isOwned())
+	{
+		return (isSamePlotGroup(*pCity->plot(), getOwner()) ||
 			isSamePlotGroup(*pCity->plot(), pCity->getOwner()));
+	}
+	else
+	{
+		return false;
+	}
+	// Super Forts end
 }
 
 
@@ -1417,6 +1531,13 @@ CvArea* CvPlot::getNearestLandArea() const
 int CvPlot::seeFromLevel(TeamTypes eTeam) const
 {
 	int iLevel = GC.getInfo(getTerrainType()).getSeeFromLevel();
+	// Super Forts begin *vision*
+	if (getImprovementType() != NO_IMPROVEMENT)
+	{
+		iLevel += GC.getImprovementInfo(getImprovementType()).getSeeFrom();
+	}
+	// Super Forts end
+
 	if (isPeak())
 		iLevel += GC.getDefineINT(CvGlobals::PEAK_SEE_FROM_CHANGE);
 	if (isHills())
@@ -2144,12 +2265,40 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible)
 		{
 			return false;
 		}
+// Super Forts begin *build*
+		if (GC.getInfo(eImprovement).getUniqueRange() > 0)
+		{
+			int iUniqueRange = GC.getImprovementInfo(eImprovement).getUniqueRange();
+			for (SquareIter it(*this, iUniqueRange); it.hasNext(); ++it)
+			{
+				CvPlot& pLoopPlot = *it;
+				if (&pLoopPlot != NULL && pLoopPlot.getImprovementType() != NO_IMPROVEMENT)
+				{
+					//doto qa108 super forts - advc changed finalimprovementupgrade i copied other ref i found and used it like this.
+					//no idea if its ok..
+					if (CvImprovementInfo::finalUpgrade(pLoopPlot.getImprovementType()) == CvImprovementInfo::finalUpgrade((ImprovementTypes)eImprovement))
+					{
+						return false;
+					}
+				}
+			}
+		}
+// Super Forts end
 		if (isImproved())
 		{
 			if (GC.getInfo(getImprovementType()).isPermanent())
 				return false;
+			// Super Forts begin *AI_worker* - prevent forts from being built over when outside culture range
+			if (GC.getImprovementInfo(getImprovementType()).isActsAsCity())
+			{
+				if (!isWithinCultureRange(ePlayer) && !(getCultureRangeForts(ePlayer) > 1))
+				{
+					return false;
+				}
+			}
+			// Super Forts end	
 			if (getImprovementType() == eImprovement)
-				return false;
+				return false;	
 			ImprovementTypes eFinalImprovementType = CvImprovementInfo::
 					finalUpgrade(getImprovementType());
 			if (eFinalImprovementType != NO_IMPROVEMENT)
@@ -2167,11 +2316,11 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible)
                 return false;
             }
         }
-        // < JImprovementLimit Mod End >
+// < JImprovementLimit Mod End >
 		if (!bTestVisible)
 		{
-			// < JImprovementLimit Mod Start >
-            //ImprovementTypes eImprovement = (ImprovementTypes) GC.getBuildInfo(eBuild).getImprovement();
+// < JImprovementLimit Mod Start >
+//ImprovementTypes eImprovement = (ImprovementTypes) GC.getBuildInfo(eBuild).getImprovement();
             if (eImprovement != NO_IMPROVEMENT)
             {
                 if (GC.getImprovementInfo(eImprovement).getMakesInvalidRange() > 0)
@@ -2201,6 +2350,42 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible)
 				}
 				else return false; //only buildable in own culture
 			}
+// Super Forts begin *AI_worker* - prevent workers from two different players from building a fort in the same plot
+			if(GC.getImprovementInfo(eImprovement).isActsAsCity())
+			{
+				CLinkList<IDInfo> oldUnits;
+				CLLNode<IDInfo>* pUnitNode = headUnitNode();
+				CvUnit* pLoopUnit;
+
+				while (pUnitNode != NULL)
+				{
+					oldUnits.insertAtEnd(pUnitNode->m_data);
+					pUnitNode = nextUnitNode(pUnitNode);
+				}
+
+				pUnitNode = oldUnits.head();
+
+				while (pUnitNode != NULL)
+				{
+					pLoopUnit = ::getUnit(pUnitNode->m_data);
+					pUnitNode = nextUnitNode(pUnitNode);
+					if(pLoopUnit->getOwner() != ePlayer)	
+					{
+						if(pLoopUnit->getBuildType() != NO_BUILD)
+						{
+							ImprovementTypes eImprovementBuild = (ImprovementTypes)(GC.getBuildInfo(pLoopUnit->getBuildType()).getImprovement());
+							if(eImprovementBuild != NO_IMPROVEMENT)
+							{
+								if(GC.getImprovementInfo(eImprovementBuild).isActsAsCity())
+								{
+									return false;
+								}
+							}
+						}
+					}
+				}
+			}
+// Super Forts end
 		}
 		bValid = true;
 	}
@@ -2455,6 +2640,520 @@ int CvPlot::getUnitPower(PlayerTypes eOwner) const
 }
 
 
+// Super Forts begin *bombard*
+//doto keldath change - added the plot to be checked for isenemy.
+bool CvPlot::isBombardable(const CvUnit* pUnit, CvPlot* kPlot) const
+{
+	ImprovementTypes eImprovement;
+
+	if (pUnit != NULL && 
+		!pUnit->isEnemy(getTeam(), *this)
+	//	pUnit->isEnemy(kPlot->getTeam(), kPlot)
+		)
+	{
+		return false;
+	}
+
+	eImprovement = getImprovementType();
+	if(eImprovement == NO_IMPROVEMENT)
+	{
+		return false;
+	}
+	else
+	{
+		if(GC.getImprovementInfo(eImprovement).isBombardable())
+		{
+			return (getDefenseDamage() < GC.getImprovementInfo(eImprovement).getDefenseModifier());
+		}
+	}
+	return false;
+}
+
+bool CvPlot::isBombarded() const
+{
+	return m_bBombarded;
+}
+
+void CvPlot::setBombarded(bool bNewValue)
+{
+	m_bBombarded = bNewValue;
+}
+
+int CvPlot::getDefenseDamage() const																
+{
+	return m_iDefenseDamage;
+}
+
+void CvPlot::changeDefenseDamage(int iChange)
+{
+	if ((iChange != 0) && (getImprovementType() != NO_IMPROVEMENT))
+	{
+		m_iDefenseDamage = range((m_iDefenseDamage + iChange), 0, GC.getImprovementInfo(getImprovementType()).getDefenseModifier());
+
+		if (iChange > 0)
+		{
+			setBombarded(true);
+		}
+	}
+}
+// Super Forts end
+
+// Super Forts begin *culture*
+int CvPlot::getCultureRangeForts(PlayerTypes ePlayer) const
+{
+	if (NULL == m_aiCultureRangeForts)
+	{
+		return 0;
+	}
+
+	return m_aiCultureRangeForts[ePlayer];
+}
+
+void CvPlot::setCultureRangeForts(PlayerTypes ePlayer, int iNewValue)
+{
+	if (getCultureRangeForts(ePlayer) != iNewValue)
+	{
+		//sagis trial
+		if (iNewValue == -1)
+		{
+			m_aiCultureRangeForts[ePlayer] = 0;
+			changeCulture(ePlayer, 0, false);
+			return;
+		}
+		
+		if(NULL == m_aiCultureRangeForts)
+		{
+			m_aiCultureRangeForts = new short[MAX_PLAYERS];
+			for (int iI = 0; iI < MAX_PLAYERS; ++iI)
+			{
+				m_aiCultureRangeForts[iI] = 0;
+			}
+		}
+
+		m_aiCultureRangeForts[ePlayer] = iNewValue;
+		if(getCulture(ePlayer) == 0)
+		{
+			changeCulture(ePlayer, 1, false);
+		}
+	}
+}
+
+void CvPlot::changeCultureRangeForts(PlayerTypes ePlayer, int iChange)
+{
+	if (0 != iChange)
+	{
+		setCultureRangeForts(ePlayer, (getCultureRangeForts(ePlayer) + iChange));
+	}
+}
+
+bool CvPlot::isWithinFortCultureRange(PlayerTypes ePlayer) const
+{
+	return (getCultureRangeForts(ePlayer) > 0);
+}
+
+void CvPlot::changeCultureRangeFortsWithinRange(PlayerTypes ePlayer, int iChange, int iRange, bool bUpdate)
+{
+	CvPlot* pLoopPlot;
+	int iDX, iDY;
+	int iCultureDistance;
+
+	if ((0 != iChange) && (iRange >= 0))
+	{
+		for (iDX = -iRange; iDX <= iRange; iDX++)
+		{
+			for (iDY = -iRange; iDY <= iRange; iDY++)
+			{
+				iCultureDistance = plotDistance(0, 0, iDX, iDY);
+
+				if(iCultureDistance <= iRange)
+				{
+					pLoopPlot = plotXY(getX(), getY(), iDX, iDY);
+
+					if (pLoopPlot != NULL)
+					{
+						pLoopPlot->changeCultureRangeForts(ePlayer, iChange);
+
+						if(bUpdate)
+						{
+							pLoopPlot->updateCulture(true,true);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void CvPlot::doImprovementCulture()
+{
+	CvPlot* pLoopPlot;
+	int iDX, iDY;
+	int iCultureDistance, iCulture, iCultureRange;
+	ImprovementTypes eImprovement;
+	PlayerTypes ePlayer;
+
+	eImprovement = getImprovementType();
+	if (eImprovement != NO_IMPROVEMENT)
+	{
+		ePlayer = getOwner();
+		if(ePlayer != NO_PLAYER)
+		{
+			iCulture = GC.getImprovementInfo(eImprovement).getCulture();
+			if(iCulture > 0)
+			{
+				iCultureRange = GC.getImprovementInfo(eImprovement).getCultureRange();
+				
+				if(iCultureRange > 0)
+				{
+					for (iDX = -iCultureRange; iDX <= iCultureRange; iDX++)
+					{
+						for (iDY = -iCultureRange; iDY <= iCultureRange; iDY++)
+						{
+							iCultureDistance = plotDistance(0, 0, iDX, iDY);
+
+							if(iCultureDistance <= iCultureRange)
+							{
+								pLoopPlot = plotXY(getX(), getY(), iDX, iDY);
+
+								if (pLoopPlot != NULL)
+								{
+									int iChange = ((iCultureRange - ((iCultureDistance == 0) ? 1 : iCultureDistance))*iCulture) + iCulture;
+									pLoopPlot->changeCulture(ePlayer,iChange,false);
+								}
+							}
+						}
+					}
+				}
+				else
+				{
+					changeCulture(ePlayer,iCulture,false);
+				}
+			}
+		}
+	}
+}
+// Super Forts end
+
+// Super Forts begin *canal* *choke*
+int CvPlot::countRegionPlots(const CvPlot* pInvalidPlot) const
+{
+	int iCount = 0;
+	int iInvalidPlot = (pInvalidPlot == NULL) ? 0 : GC.getMap().plotNum(pInvalidPlot->getX(), pInvalidPlot->getY()) + 1;
+	FAStar* pRegionFinder = gDLL->getFAStarIFace()->create();
+	gDLL->getFAStarIFace()->Initialize(pRegionFinder, GC.getMap().getGridWidth(), GC.getMap().getGridHeight(), GC.getMap().isWrapX(), GC.getMap().isWrapY(), 
+		NULL, NULL, NULL, stepValid, NULL, countPlotGroup, NULL);
+	gDLL->getFAStarIFace()->SetData(pRegionFinder, &iCount);
+	// Note to self: for GeneratePath() should bReuse be true or false?
+	gDLL->getFAStarIFace()->GeneratePath(pRegionFinder, getX(), getY(), -1, -1, false, iInvalidPlot, false);
+	gDLL->getFAStarIFace()->destroy(pRegionFinder);
+	return iCount;
+}
+
+int CvPlot::countAdjacentPassableSections(bool bWater) const
+{
+	CvPlot* pAdjacentPlot;
+	int iPassableSections = 0;
+	bool bInPassableSection = false;
+
+	// Are we looking for water passages or land passages?
+	if(bWater)
+	{
+		bool bPlotIsWater = isWater();
+		// This loop is for water
+		for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+		{
+			pAdjacentPlot = plotDirection(getX(), getY(), ((DirectionTypes)iI));
+			if(pAdjacentPlot != NULL)
+			{
+				if(pAdjacentPlot->isWater())
+				{
+					// Don't count diagonal hops across land isthmus
+					if (bPlotIsWater && !isCardinalDirection((DirectionTypes)iI))
+					{
+						if (!(GC.getMap().plot(getX(), pAdjacentPlot->getY())->isWater()) && !(GC.getMap().plot(pAdjacentPlot->getX(), getY())->isWater()))
+						{
+							continue;
+						}
+					}
+					if(pAdjacentPlot->isImpassable())
+					{
+						if(isCardinalDirection((DirectionTypes)iI))
+						{
+							bInPassableSection = false;
+						}
+					}
+					else if(!bInPassableSection)
+					{
+						bInPassableSection = true;
+						++iPassableSections;
+					}
+				}
+				else
+				{
+					bInPassableSection = false;
+				}
+			}
+		}
+	}
+	else
+	{
+		// This loop is for land
+		for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+		{
+			pAdjacentPlot = plotDirection(getX(), getY(), ((DirectionTypes)iI));
+			if(pAdjacentPlot != NULL)
+			{
+				if(pAdjacentPlot->isWater() || pAdjacentPlot->isImpassable())
+				{	
+					if(isCardinalDirection((DirectionTypes)iI))
+					{
+						bInPassableSection = false;
+					}
+				}
+				else if(!bInPassableSection)
+				{
+					bInPassableSection = true;
+					++iPassableSections;
+				}
+			}
+		}
+	}
+	// Corner Case Correction
+	pAdjacentPlot = plotDirection(getX(), getY(), DIRECTION_NORTH);
+	if(pAdjacentPlot != NULL && (bWater == pAdjacentPlot->isWater()) && !pAdjacentPlot->isImpassable())
+	{
+		pAdjacentPlot = plotDirection(getX(), getY(), DIRECTION_NORTHWEST);
+		if(pAdjacentPlot != NULL && (bWater == pAdjacentPlot->isWater()))
+		{
+			if(pAdjacentPlot->isImpassable())
+			{
+				pAdjacentPlot = plotDirection(getX(), getY(), DIRECTION_WEST);
+				if(pAdjacentPlot != NULL && (bWater == pAdjacentPlot->isWater()) && !pAdjacentPlot->isImpassable())
+				{
+					--iPassableSections;
+				}
+			}
+			else
+			{
+				--iPassableSections;
+			}
+		}
+		else if(!bWater)
+		{
+			pAdjacentPlot = plotDirection(getX(), getY(), DIRECTION_WEST);
+			if(pAdjacentPlot != NULL && !pAdjacentPlot->isWater() && !pAdjacentPlot->isImpassable())
+			{
+				--iPassableSections;
+			}
+		}
+	}
+	return iPassableSections;
+}
+
+int CvPlot::countImpassableCardinalDirections() const
+{
+	CvPlot* pAdjacentPlot;
+	int iCount = 0;
+	for(int iI = 0; iI < NUM_CARDINALDIRECTION_TYPES; ++iI)
+	{
+		pAdjacentPlot = plotCardinalDirection(getX(), getY(), ((CardinalDirectionTypes)iI));
+		if(pAdjacentPlot != NULL)
+		{
+			if(pAdjacentPlot->isImpassable() || (area() != pAdjacentPlot->area()))
+			{
+				++iCount;
+			}
+		}
+	}
+	return iCount;
+}
+// Super Forts end
+
+// Super Forts begin *canal*
+int CvPlot::getCanalValue() const																
+{
+	return m_iCanalValue;
+}
+
+void CvPlot::setCanalValue(int iNewValue)
+{
+	m_iCanalValue = iNewValue;
+}
+
+void CvPlot::calculateCanalValue()
+{
+	bool bInWaterSection;
+	CvPlot *pAdjacentPlot, *apPlotsToCheck[4];
+	int iWaterSections, iPlotsFound, iMaxDistance;
+	int iCanalValue = 0;
+
+	if(isCoastalLand() && !isImpassable())
+	{
+		iWaterSections = countAdjacentPassableSections(true);
+		if(iWaterSections > 1)
+		{
+			iMaxDistance = 0;
+			iPlotsFound = 0;
+			bInWaterSection = false;
+			// Find appropriate plots to be used for path distance calculations
+			for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+			{
+				pAdjacentPlot = plotDirection(getX(), getY(), ((DirectionTypes)iI));
+				if(pAdjacentPlot != NULL)
+				{
+					if(pAdjacentPlot->isWater())
+					{
+						if(pAdjacentPlot->isImpassable())
+						{
+							if(isCardinalDirection((DirectionTypes)iI))
+							{
+								bInWaterSection = false;
+							}
+						}
+						else if(!bInWaterSection)
+						{
+							bInWaterSection = true;
+							apPlotsToCheck[iPlotsFound] = pAdjacentPlot;
+							if((++iPlotsFound) == iWaterSections)
+								break;
+						}
+					}
+					else
+					{
+						bInWaterSection = false;
+					}
+				}
+			}
+			// Find the max path distance out of all possible pairs of plots
+			for (int iI = 0; iI < (iPlotsFound - 1); ++iI)
+			{
+				for (int iJ = iI + 1; iJ < iPlotsFound; ++iJ)
+				{
+					if(!apPlotsToCheck[iI]->isLake() || !apPlotsToCheck[iJ]->isLake())
+					{
+						int iDistance = GC.getMap().calculatePathDistance(apPlotsToCheck[iI], apPlotsToCheck[iJ]);
+						if(iDistance == -1)
+						{
+						
+							// If no path was found then value is based off the number of plots in the region minus a minimum area
+							iDistance = std::min(apPlotsToCheck[iI]->countRegionPlots(), apPlotsToCheck[iJ]->countRegionPlots()) - 7;
+							iDistance *= 4;
+						}
+						else
+						{
+							// Path already would have required 2 steps, and I don't care that much about saving just 1 or 2 moves
+							iDistance -= 4;
+						}
+						if(iDistance > iMaxDistance)
+						{
+							iMaxDistance = iDistance;
+						}
+					}
+				}
+			}
+			iCanalValue = iMaxDistance * (iPlotsFound - 1);
+		}
+	}
+
+	setCanalValue(iCanalValue);
+}
+// Super Forts end
+
+// Super Forts begin *choke*
+int CvPlot::getChokeValue() const
+{
+	return m_iChokeValue;
+}
+
+void CvPlot::setChokeValue(int iNewValue)
+{
+	m_iChokeValue = iNewValue;
+}
+
+void CvPlot::calculateChokeValue()
+{
+	bool bInPassableSection;
+	CvPlot *pAdjacentPlot, *apPlotsToCheck[4];
+	int iPassableSections, iPlotsFound, iMaxDistance;
+	int iChokeValue = 0;
+	bool bWater = isWater();
+
+	if(!isImpassable() && countImpassableCardinalDirections() > 1)
+	{
+		iPassableSections = countAdjacentPassableSections(bWater);
+		if(iPassableSections > 1)
+		{
+			iMaxDistance = 0;
+			iPlotsFound = 0;
+			bInPassableSection = false;
+			// Find appropriate plots to be used for path distance calculations
+			for (int iI = 0; iI < NUM_DIRECTION_TYPES; ++iI)
+			{
+				pAdjacentPlot = plotDirection(getX(), getY(), ((DirectionTypes)iI));
+				if(pAdjacentPlot != NULL)
+				{
+					if(pAdjacentPlot->isWater() == bWater)
+					{	
+						// Don't count diagonal hops across land isthmus
+						if (bWater && !isCardinalDirection((DirectionTypes)iI))
+						{
+							if (!(GC.getMap().plot(getX(), pAdjacentPlot->getY())->isWater()) && !(GC.getMap().plot(pAdjacentPlot->getX(), getY())->isWater()))
+							{
+								continue;
+							}
+						}
+						if(pAdjacentPlot->isImpassable())
+						{
+							if(isCardinalDirection((DirectionTypes)iI))
+							{
+								bInPassableSection = false;
+							}
+						}
+						else if(!bInPassableSection)
+						{
+							bInPassableSection = true;
+							apPlotsToCheck[iPlotsFound] = pAdjacentPlot;
+							if((++iPlotsFound) == iPassableSections)
+								break;
+						}
+					}
+					else if(bWater || isCardinalDirection((DirectionTypes)iI))
+					{
+						bInPassableSection = false;
+					}
+				}
+			}
+			// Find the max path distance out of all possible pairs of plots
+			for (int iI = 0; iI < (iPlotsFound - 1); ++iI)
+			{
+				for (int iJ = iI + 1; iJ < iPlotsFound; ++iJ)
+				{
+					int iDistance = GC.getMap().calculatePathDistance(apPlotsToCheck[iI], apPlotsToCheck[iJ], this);
+					if(iDistance == -1)
+					{
+						// If no path was found then value is based off the number of plots in the region minus a minimum area
+						iDistance = std::min(apPlotsToCheck[iI]->countRegionPlots(this), apPlotsToCheck[iJ]->countRegionPlots(this)) - 4;
+						iDistance *= 4;
+					}
+					else
+					{
+						// Path already would have required 2 steps, but we forced the enemy to go another way so there is some value
+						iDistance -= 1;
+					}
+					if(iDistance > iMaxDistance)
+					{
+						iMaxDistance = iDistance;
+					}
+				}
+			}
+			iChokeValue = iMaxDistance * (iPlotsFound - 1);
+		}
+	}
+
+	setChokeValue(iChokeValue);
+}
+// Super Forts end
+
 int CvPlot::defenseModifier(TeamTypes eDefender, bool bIgnoreBuilding,
 	TeamTypes eAttacker, // advc.012
 	bool bHelp, /* advc.500b: */ bool bGarrisonStrength) const
@@ -2483,7 +3182,10 @@ int CvPlot::defenseModifier(TeamTypes eDefender, bool bIgnoreBuilding,
 			((!isOwned() && GC.getInfo(eImprovement).isOutsideBorders()) ||
 			GET_TEAM(eDefender).isFriendlyTerritory(getTeam())))
 		{
-			iModifier += GC.getInfo(eImprovement).getDefenseModifier();
+			// Super Forts begin *bombard*
+			iModifier += GC.getInfo(eImprovement).getDefenseModifier() - getDefenseDamage();
+			// iModifier += GC.getInfo(eImprovement).getDefenseModifier(); - Original code
+			// Super Forts end
 		}
 	}
 //mountains mod
@@ -2716,8 +3418,13 @@ PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureR
 		think not the city plot itself) are set to unowned for 2 turns. This leads
 		to 0% revolt chance for a turn or two when a city is razed and a new city
 		is immediately founded near the ruins. Adding an isCity check to avoid confusion. */
-	if(!isCity() && isForceUnowned())
+
+// Super Forts begin *culture* - doto to advc adjustment
+	if((!isCity()
+		|| !isFortImprovement())
+		&& isForceUnowned())
 		return NO_PLAYER;
+// Super Forts begin *culture* - doto to advc adjustment
 
 	// <advc.035>
 	EnumMap<PlayerTypes,bool> abCityRadius;
@@ -2730,7 +3437,10 @@ PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureR
 			if(!p.isCity() || p.getPlotCity()->isOccupation())
 				continue;
 			PlayerTypes eCityOwner = p.getPlotCity()->getOwner();
-			if(isWithinCultureRange(eCityOwner))
+			// Super Forts begin *culture* - modified if statement
+			if (isWithinCultureRange(eCityOwner) || isWithinFortCultureRange(eCityOwner))
+			//if(isWithinCultureRange(eCityOwner))
+			// Super Forts end
 			{
 				abCityRadius.set(eCityOwner, true);
 				bAnyCityRadius = true;
@@ -2757,7 +3467,10 @@ PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureR
 			if (iCulture <= iBestCulture) // </advc.035>
 				continue;
 			if (/* advc.099c: */ bIgnoreCultureRange ||
-				isWithinCultureRange(ePlayer))
+				isWithinCultureRange(ePlayer)||
+// Super Forts begin *culture* - modified if statement
+			 	isWithinFortCultureRange(ePlayer))
+// Super Forts end	
 			{
 				if (iCulture > iBestCulture ||
 					(iCulture == iBestCulture && getOwner() == ePlayer))
@@ -2788,7 +3501,8 @@ PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureR
 			/*	advc.099c: 099c cares only about city tile culture, but for consistency,
 				I'm also implementing the IgnoreCultureRange switch for non-city tiles. */
 			if (!bIgnoreCultureRange &&
-				!isWithinCultureRange(pLoopCity->getOwner()))
+				!isWithinCultureRange(pLoopCity->getOwner())
+				)
 			{
 				continue;
 			}
@@ -2832,6 +3546,13 @@ PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureR
 		}
 		else return NO_PLAYER;
 	}
+//doto change for superforts
+// Super Forts begin *culture*
+	if (!GET_PLAYER(eBestPlayer).isAlive())		
+	{
+			eBestPlayer = NO_PLAYER;
+	}
+// Super Forts end	
 
 	return eBestPlayer;
 }
@@ -3060,7 +3781,8 @@ void CvPlot::removeGoody()
 		return; // </advc>
 	setImprovementType(NO_IMPROVEMENT);
 }
-
+//super forts - doto keldath - using this fn instead of iscity in someplaces
+//also usingit in unit blocade
 // advc: Deprecated; see comment in header.
 bool CvPlot::isCityExternal(bool bCheckImprovement, TeamTypes eForTeam) const
 {
@@ -3073,7 +3795,15 @@ bool CvPlot::isCityExternal(bool bCheckImprovement, TeamTypes eForTeam) const
 		return true;
 	return GET_TEAM(eForTeam).isBase(*this);
 }
-
+//super forts - doto keldath
+bool CvPlot::isFortImprovement() const
+{
+	if (!isOwned())//if no one ownds the plot - ignore it - doto - is this good?
+		return false;
+	if (!isImproved() || !GC.getInfo(getImprovementType()).isActsAsCity())
+		return false;
+	return true;
+}
 
 bool CvPlot::isOccupation() const
 {
@@ -4152,8 +4882,15 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 			}
 
 			if (isImproved())
+			{
 				GET_PLAYER(getOwner()).changeImprovementCount(getImprovementType(), -1);
-
+				// Super Forts begin *culture*
+				if (GC.getInfo(getImprovementType()).isActsAsCity())
+				{
+					changeCultureRangeFortsWithinRange(getOwner(), -1, GC.getInfo(getImprovementType()).getCultureRange(), false);
+				}
+				// Super Forts end
+			}
 			updatePlotGroupBonus(false, /* advc.064d: */ false);
 		}
 		FOR_EACH_UNIT_VAR_IN(pUnit, *this)
@@ -4196,8 +4933,15 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 			}
 
 			if (isImproved())
+			{
 				GET_PLAYER(getOwner()).changeImprovementCount(getImprovementType(), 1);
-
+				// Super Forts begin *culture*
+				if (GC.getInfo(getImprovementType()).isActsAsCity())
+				{
+					changeCultureRangeFortsWithinRange(getOwner(), 1, GC.getInfo(getImprovementType()).getCultureRange(), true);
+				}
+				// Super Forts end
+			}	
 			updatePlotGroupBonus(true, /* advc.064d */ false);
 		}
 		FOR_EACH_UNIT_VAR_IN(pUnit, *this)
@@ -4743,18 +5487,29 @@ void CvPlot::setImprovementType(ImprovementTypes eNewValue,
 		/*if (area())
 			getArea().changeNumImprovements(eOldImprovement, -1);*/
 		if (isOwned())
+		{
 			GET_PLAYER(getOwner()).changeImprovementCount(eOldImprovement, -1);
+		// Super Forts begin *culture*
+			if (GC.getInfo(getImprovementType()).isActsAsCity())
+			{
+				changeCultureRangeFortsWithinRange(getOwner(), -1, GC.getInfo(getImprovementType()).getCultureRange(), true);
+			}
+	    }
+		// Super Forts end
 	}
-
+	// Super Forts begin *vision*
+	updateSight(false, true);
+	// Super Forts end
+	
 	updatePlotGroupBonus(false, /* advc.064d: */ false);
 	m_eImprovementType = eNewValue;
 	updatePlotGroupBonus(true);
 
 // < JCultureControl Mod Start >
-		if (eOldImprovement != NO_IMPROVEMENT && getImprovementOwner() != NO_PLAYER && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
-		{
-		    clearCultureControl(getImprovementOwner(), eOldImprovement, true);
-		}
+	if (eOldImprovement != NO_IMPROVEMENT && getImprovementOwner() != NO_PLAYER && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
+	{
+		clearCultureControl(getImprovementOwner(), eOldImprovement, true);
+	}
 // < JCultureControl Mod End >
 	if (!isImproved())
 	{
@@ -4804,8 +5559,19 @@ void CvPlot::setImprovementType(ImprovementTypes eNewValue,
 		/*if (area())
 			getArea().changeNumImprovements(getImprovementType(), 1);*/
 		if (isOwned())
+		{
 			GET_PLAYER(getOwner()).changeImprovementCount(getImprovementType(), 1);
+			// Super Forts begin *culture*
+			if (GC.getInfo(getImprovementType()).isActsAsCity())
+			{
+					changeCultureRangeFortsWithinRange(getOwner(), 1, GC.getInfo(getImprovementType()).getCultureRange(), true);
+			}
+			// Super Forts end
+		}
 	}
+	// Super Forts begin *vision*
+	updateSight(true, true);
+	// Super Forts end
 
 	updateIrrigated();
 	updateYield();
@@ -7305,6 +8071,61 @@ void CvPlot::doFeature()
 
 void CvPlot::doCulture()
 {
+	// Super Forts begin *culture*
+	doImprovementCulture();
+	CLLNode<IDInfo>* pUnitNode;
+	PlayerTypes eCulturalOwner;
+	CvUnit* pLoopUnit;
+	CvWString szBuffer;
+	
+	ImprovementTypes eImprovement = getImprovementType();
+	if(eImprovement != NO_IMPROVEMENT)
+	{
+		// Check for a fort culture flip
+		if(GC.getImprovementInfo(eImprovement).isActsAsCity() && (getOwnershipDuration() > GC.getDefineINT("SUPER_FORTS_DURATION_BEFORE_REVOLT")))
+		{
+			eCulturalOwner = calculateCulturalOwner();
+			if(eCulturalOwner != NO_PLAYER)
+			{
+				if(GET_PLAYER(eCulturalOwner).getTeam() != getTeam())
+				{
+					bool bDefenderFound = false;
+					CLinkList<IDInfo> oldUnits;
+					pUnitNode = headUnitNode();
+
+					while (pUnitNode != NULL)
+					{
+						oldUnits.insertAtEnd(pUnitNode->m_data);
+						pUnitNode = nextUnitNode(pUnitNode);
+					}
+
+					pUnitNode = oldUnits.head();
+
+					while (pUnitNode != NULL)
+					{
+						pLoopUnit = ::getUnit(pUnitNode->m_data);
+						pUnitNode = nextUnitNode(pUnitNode);
+						if(pLoopUnit->canDefend(this))
+						{
+							if(pLoopUnit->getOwner() == getOwner())
+							{
+								bDefenderFound = true;
+								break;
+							}
+						}
+					}
+					if(!bDefenderFound)
+					{
+						szBuffer = gDLL->getText("TXT_KEY_MISC_CITY_REVOLTED_JOINED", GC.getImprovementInfo(getImprovementType()).getText(), GET_PLAYER(eCulturalOwner).getCivilizationDescriptionKey());
+						gDLL->getInterfaceIFace()->addMessage(getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_CULTUREFLIP", MESSAGE_TYPE_INFO, GC.getImprovementInfo(getImprovementType()).getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_RED"), getX(), getY(), true, true);
+						gDLL->getInterfaceIFace()->addMessage(eCulturalOwner, false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_CULTUREFLIP", MESSAGE_TYPE_INFO, GC.getImprovementInfo(getImprovementType()).getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_GREEN"), getX(), getY(), true, true);
+						setOwner(eCulturalOwner,true,true);
+					}
+				}
+			}
+		}
+	}
+	// Super Forts end
 	// <advc> Moved the bulk of the code into a new CvCity member function
 	CvCity* pPlotCity = getPlotCity();
 	if(pPlotCity != NULL)
@@ -7619,7 +8440,16 @@ void CvPlot::read(FDataStreamBase* pStream)
 		else pStream->Read(&m_iLatitude);
 	}
 	else m_iLatitude = calculateLatitude(); // </advc.tsl>
-
+	
+	// Super Forts begin *canal* *choke*
+	pStream->Read(&m_iCanalValue);
+	pStream->Read(&m_iChokeValue);
+	// Super Forts end
+	// Super Forts begin *bombard*
+	pStream->Read(&m_iDefenseDamage);
+	pStream->Read(&m_bBombarded);
+	// Super Forts end
+	
 	pStream->Read(&bVal);
 	m_bStartingPlot = bVal;
 	if(uiFlag < 4) // advc.opt: m_bHills removed
@@ -7743,6 +8573,15 @@ void CvPlot::read(FDataStreamBase* pStream)
 	}
 	*/
 	// < JCultureControl Mod End >
+	// Super Forts begin *culture*
+	SAFE_DELETE_ARRAY(m_aiCultureRangeForts);
+	pStream->Read(&cCount);
+	if(cCount > 0)
+	{
+		m_aiCultureRangeForts = new short[cCount];
+		pStream->Read(cCount, m_aiCultureRangeForts);
+	}
+	// Super Forts end
 	pStream->Read(&cCount);
 	if (cCount > 0)
 		m_aiFoundValue.Read(pStream, false);
@@ -7811,7 +8650,7 @@ void CvPlot::read(FDataStreamBase* pStream)
 	pStream->Read(&cCount);
 	if (cCount > 0)
 		m_aaiInvisibleVisibilityCount.Read(pStream, false, true);
-
+	
 	m_units.Read(pStream);
 }
 
@@ -7847,6 +8686,15 @@ void CvPlot::write(FDataStreamBase* pStream)
 	pStream->Write(m_iReconCount);
 	pStream->Write(m_iRiverCrossingCount);
 	pStream->Write(m_iLatitude); // advc.tsl
+
+// Super Forts begin *canal* *choke*
+	pStream->Write(m_iCanalValue);
+	pStream->Write(m_iChokeValue);
+	// Super Forts end
+	// Super Forts begin *bombard*
+	pStream->Write(m_iDefenseDamage);
+	pStream->Write(m_bBombarded);
+	// Super Forts end
 
 	pStream->Write(m_bStartingPlot);
 //keldath f1rpo-The relevant info is in m_ePlotType and can be accessed through isHills() and isPeak(); that was already the case in BtS. m_bHills was, essentially, unused.
@@ -7908,6 +8756,19 @@ void CvPlot::write(FDataStreamBase* pStream)
 		pStream->Write((char)m_aiCultureControl.getLength());
 		m_aiCultureControl.Write(pStream);
 	}
+	
+	// Super Forts begin *culture*
+	if (NULL == m_aiCultureRangeForts)
+	{
+		pStream->Write((char)0);
+	}
+	else
+	{
+		pStream->Write((char)MAX_PLAYERS);
+		pStream->Write(MAX_PLAYERS, m_aiCultureRangeForts);
+	}
+	// Super Forts end
+	
 //kedath QA-DONE -> ANSWER:
 //OK. If read is simplified (see above), then this here would just say:
 //m_aiCultureControl.Write(pStream);
@@ -9155,13 +10016,13 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 	{
 		if (pUnit->isAnimal() || pUnit->alwaysInvisible() || pUnit->isUnblocade()
 //DOTO = ADDED BY KELDATH setllers and workers should be affected.
-			|| pUnit->getUnitClassType() != GC.getInfoTypeForString("UNITCLASS_SETTLER")
-			|| pUnit->getUnitClassType() != GC.getInfoTypeForString("UNITCLASS_WORKER")
+			|| pUnit->getUnitClassType() == GC.getInfoTypeForString("UNITCLASS_SETTLER")
+			|| pUnit->getUnitClassType() == GC.getInfoTypeForString("UNITCLASS_WORKER")
 			)
 			{return false;}
 		//keldath 099 advc adjustment - prev it checked also improvement?
 		if (/*keldath trial: !pUnit->isPlotValid(pUnit->getPlot()) */
-			/*f1rpo suggestion */!GET_TEAM(pUnit->getTeam()).isCityDefense(*this)
+			/*f1rpo suggestion */isOwned() && !GET_TEAM(pUnit->getTeam()).isCityDefense(*this)
 			/*consider this : CvTeam::isCityHeal(CvPlot const& kPlot)*/
 			/*original : !isFriendlyCity(*pUnit, true)*/)
 		{

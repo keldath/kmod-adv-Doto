@@ -184,6 +184,9 @@ public:
 
 	CvCity* bombardTarget(CvPlot const& kFrom) const;														// Exposed to Python
 	bool canBombard(CvPlot const& kFrom) const;																// Exposed to Python
+	// Super Forts begin *bombard*
+	CvPlot* bombardImprovementTarget(const CvPlot* pPlot) const;
+	// Super Forts end
 	int damageToBombardTarget(CvPlot const& kFrom) const; // advc
 	bool bombard();
 
@@ -321,7 +324,12 @@ public:
 	{
 		return m_pUnitInfo->getInvisibleType();
 	}
-	int getNumSeeInvisibleTypes() const																		// Exposed to Python
+//super forts - doto - this was in mnau - u gyes uts not needed here
+/*	if (!plot()->isCity(GC.getGameINLINE().isOption(GAMEOPTION_ADVANCED_TACTICS))) // Super Forts *custom*
+	{
+		return ((InvisibleTypes)GC.getDefineINT("INVISIBLE_TYPE"));
+	}
+*/	int getNumSeeInvisibleTypes() const																		// Exposed to Python
 	{
 		return m_pUnitInfo->getNumSeeInvisibleTypes();
 	}

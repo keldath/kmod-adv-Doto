@@ -363,7 +363,7 @@ void CvGame::updateColoredPlots()
 //MOD@VET_Andera412_Blocade_Unit-begin1/1
 	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
 	{
-		for (PlotCircleIter it(*pHeadSelectedUnit, 2); it.hasNext(); ++it)
+		for (PlotCircleIter it(*pHeadSelectedUnit, 1); it.hasNext(); ++it)
 		{
 			CvPlot const& kTargetPlot = *it;
 			if (pHeadSelectedUnit->cannotMoveFromPlotToPlot(pHeadSelectedUnit->plot(), &kTargetPlot, false))

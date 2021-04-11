@@ -105,6 +105,17 @@ BOOL stepValid(FAStarNode* parent, FAStarNode* node,
 	CvPlot const& kTo = GC.getMap().getPlot(node->m_iX, node->m_iY);
 	if (kTo.isImpassable())
 		return FALSE;
+// Super Forts begin *choke* 
+	int iInvalidPlot = gDLL->getFAStarIFace()->GetInfo(finder);
+	if(iInvalidPlot > 0)
+	{
+		// 1 is subtracted because 1 was added earlier to avoid a conflict with index 0
+		if(&kTo == GC.getMap().plotByIndex((iInvalidPlot - 1)))
+		{
+			return FALSE;
+		}
+	}
+// Super Forts end - Note to mergers: Make sure you also include the code from Better BTS AI below this
 
 	CvPlot const& kFrom = GC.getMap().getPlot(parent->m_iX, parent->m_iY);
 	if (!kFrom.sameArea(kTo))

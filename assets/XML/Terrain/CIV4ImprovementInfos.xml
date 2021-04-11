@@ -19,10 +19,10 @@ iTilesPerGoody	States how many tiles must exist per goody hut generated. (E.g If
 iGoodyRange	The minimum distance between goody huts
 iFeatureGrowth	Chance for spreading local terrain feature (aka Forest) to adjacent plots. Mechanic unknown, but higher means faster.
 iUpgradeTime	The time in turns that is needed on standard gamespeed until it upgrades to another improvement
-iAirBombDefense	The defence of this improvement against attacks by air units. (it seems that if the strength of the air unit is equal to the airbombdefense, there is a 50-50 chance that it get´s destroyed on attack.)
+iAirBombDefense	The defence of this improvement against attacks by air units. (it seems that if the strength of the air unit is equal to the airbombdefense, there is a 50-50 chance that it get?s destroyed on attack.)
 iDefenseModifier	The defence percentage added to all units on the tile of the improvement
 iHappiness	The Happiness modifier that the improvement provides to the nearest city.
-iPillageGold	the base gold value that a unit get´s if this improvement is pillaged
+iPillageGold	the base gold value that a unit get?s if this improvement is pillaged
 iDiscoverRand	The chance that the resource will be discovered on the improvement plot. Each turn that the tile is worked, there is a 1/(iDiscoverRand) chance that the bonus will be added to the tile.
 Boolean
 All of these can either be 1 (on, or true) or 0 (off, or false). Be careful, as you can wind up with a double-negative, which the game will interpret as "True".
@@ -1876,15 +1876,15 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iHappiness>0</iHappiness>
 			<iPillageGold>0</iPillageGold>
 			<bOutsideBorders>1</bOutsideBorders>
-			<!-- JCultureControl Mod Start -->
+			<!-- JCultureControl Mod Start 
 			<bSpreadCultureControl>1</bSpreadCultureControl>
 			<iCultureBorderRange>1</iCultureBorderRange>
 			<iCultureControlStrength>1</iCultureControlStrength>
-			<iCultureControlCenterTileBonus>2</iCultureControlCenterTileBonus>
+			<iCultureControlCenterTileBonus>2</iCultureControlCenterTileBonus>-->
 			<!-- JCultureControl Mod End -->
-			<!-- JImprovementLimit Mod Start -->
+			<!-- JImprovementLimit Mod Start
 			<iMakesInvalidRange>1</iMakesInvalidRange>
-			<ImprovementRequired/>
+			<ImprovementRequired/>-->
 			<!-- JImprovementLimit Mod End -->
 		    <TerrainMakesValids>
 				<TerrainMakesValid>
@@ -1914,6 +1914,15 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<TechYieldChanges/>
 			<RouteYieldChanges/>
 			<bGraphicalOnly>0</bGraphicalOnly>
+			<!-- super forts Mod start -->
+			<iCulture>1</iCulture>
+			<iCultureRange>1</iCultureRange>
+			<iVisibilityChange>2</iVisibilityChange>
+			<iSeeFrom>1</iSeeFrom>
+			<iUnique>2</iUnique>
+			<bBombardable>1</bBombardable>
+			<bUpgradeRequiresFortify>0</bUpgradeRequiresFortify>
+			<!-- super forts Mod End -->
 		</ImprovementInfo>
 		<ImprovementInfo>
 			<Type>IMPROVEMENT_FOREST_PRESERVE</Type>

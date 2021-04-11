@@ -2381,7 +2381,9 @@ int CvSelectionGroup::visibilityRange() const // advc: const; return type was bo
 
 /*  BETTER_BTS_AI_MOD, General AI, 03/30/10, jdog5000: START
 	Approximate how many turns this group would take to reduce pCity's defense to zero */
-int CvSelectionGroup::getBombardTurns(CvCity const* pCity) const // advc: 2x const
+//super forts Doto addition for advc ai bombard changes start
+int CvSelectionGroup::getBombardTurns(CvCity const* pCity, CvPlot const* pPlot) const // advc: 2x const
+//super forts Doto addition for advc ai bombard changes end
 {
 	PROFILE_FUNC();
 
@@ -2395,26 +2397,57 @@ int CvSelectionGroup::getBombardTurns(CvCity const* pCity) const // advc: 2x con
 		if (pUnit->bombardRate() <= 0)
 			continue;
 		iUnitBombardRate = pUnit->bombardRate();
-		if (pUnit->ignoreBuildingDefense())
-			bIgnoreBuildingDefense = true;
+//super forts Doto addition for advc ai bombard changes start - no need to address building defence when attacking a fort...
+		if (pPlot == NULL)
+		{
+			if (pUnit->ignoreBuildingDefense())
+				//super forts Doto addition for advc ai bombard changes end
+				bIgnoreBuildingDefense = true;
+			else
+			{
+				iUnitBombardRate *= std::max(25, 100 - pCity->getBuildingBombardDefense());
+				iUnitBombardRate /= 100;
+			}
+			iTotalBombardRate += iUnitBombardRate;
+		}
 		else
 		{
-			iUnitBombardRate *= std::max(25, 100 - pCity->getBuildingBombardDefense());
-			iUnitBombardRate /= 100;
+			iTotalBombardRate += iUnitBombardRate;
 		}
-		iTotalBombardRate += iUnitBombardRate;
+//super forts Doto addition for advc ai bombard changes end
 	}
-
-
-	if (pCity->getTotalDefense(bIgnoreBuildingDefense) == 0)
-		return 0;
-
-	int iBombardTurns = pCity->getTotalDefense(bIgnoreBuildingDefense);
-
+//super forts Doto addition for advc ai bombard changes start 
+	if (pPlot == NULL)
+	{
+		if (pCity->getTotalDefense(bIgnoreBuildingDefense) == 0)
+			return 0;
+	}
+	else
+	{
+		if (pPlot->getDefenseDamage() == 0)
+			return 0;
+	}
+//super forts Doto addition for advc ai bombard changes end 
+	int iBombardTurns = 0;//pCity->getTotalDefense(bIgnoreBuildingDefense);
+//super forts Doto addition for advc ai bombard changes start 
+//basically theres not much to it - its all on the raw damge of the plot - no added stuff like bulding def ior natural deff
+	int plotdmg = 0;
+	if (pPlot != NULL)
+	{
+		plotdmg = pPlot->getDefenseDamage();
+		iBombardTurns = plotdmg;
+	}
+	else
+	{
+		iBombardTurns = pCity->getTotalDefense(bIgnoreBuildingDefense);
+	}
+//super forts Doto addition for advc ai bombard changes end 
 	if (iTotalBombardRate > 0)
 	{
-		iBombardTurns = (GC.getMAX_CITY_DEFENSE_DAMAGE() - pCity->getDefenseDamage());
-		iBombardTurns *= pCity->getTotalDefense(false);
+//super forts Doto addition for advc ai bombard changes start 
+		iBombardTurns = (GC.getMAX_CITY_DEFENSE_DAMAGE() - (pPlot == NULL ? pCity->getDefenseDamage() : plotdmg));
+		iBombardTurns *= (pPlot == NULL ?  pCity->getTotalDefense(false) : plotdmg);
+//super forts Doto addition for advc ai bombard changes end 
 		iBombardTurns += (GC.getMAX_CITY_DEFENSE_DAMAGE() * iTotalBombardRate) - 1;
 		iBombardTurns /= std::max(1, (GC.getMAX_CITY_DEFENSE_DAMAGE() * iTotalBombardRate));
 	}

@@ -1067,6 +1067,15 @@ m_bSpreadCultureControl(false),
 // Deliverator fresh water
 m_iAddsFreshWaterInRadius(-1),
 // Deliverator
+// Super Forts begin *XML*
+m_iCulture(0),
+m_iCultureRange(0),
+m_iVisibilityChange(0),
+m_iSeeFrom(0),
+m_iUniqueRange(0),
+m_bBombardable(false),
+m_bUpgradeRequiresFortify(false),
+// Super Forts end
 m_bActsAsCity(false), // advc: was true
 m_bHillsMakesValid(false),
 //===NM=====Mountain Mod===0=====
@@ -1149,6 +1158,42 @@ void CvImprovementInfo::setAddsFreshWaterInRadius(int i)
 
 
 // < JCultureControl Mod Start >
+// Super Forts begin *XML*
+int CvImprovementInfo::getCulture() const
+{
+	return m_iCulture;
+}
+
+int CvImprovementInfo::getCultureRange() const
+{
+	return m_iCultureRange;
+}
+
+int CvImprovementInfo::getVisibilityChange() const
+{
+	return m_iVisibilityChange;
+}
+
+int CvImprovementInfo::getSeeFrom() const
+{
+	return m_iSeeFrom;
+}
+
+int CvImprovementInfo::getUniqueRange() const
+{
+	return m_iUniqueRange;
+}
+
+bool CvImprovementInfo::isBombardable() const
+{
+	return m_bBombardable;
+}
+
+bool CvImprovementInfo::isUpgradeRequiresFortify() const
+{
+	return m_bUpgradeRequiresFortify;
+}
+// Super Forts end
 int CvImprovementInfo::getCultureBorderRange() const
 {
 	return m_iCultureBorderRange;
@@ -1425,6 +1470,15 @@ void CvImprovementInfo::read(FDataStreamBase* stream)
 	// Deliverator fresh wate
 	stream->Read(&m_iAddsFreshWaterInRadius);	
 	// Deliverator
+	// Super Forts begin *XML*
+	stream->Read(&m_iCulture);
+	stream->Read(&m_iCultureRange);
+	stream->Read(&m_iVisibilityChange);
+	stream->Read(&m_iSeeFrom);
+	stream->Read(&m_iUniqueRange);
+	stream->Read(&m_bBombardable);
+	stream->Read(&m_bUpgradeRequiresFortify);
+	// Super Forts end
 	stream->Read(&m_bActsAsCity);
 	stream->Read(&m_bHillsMakesValid);
 //===NM=====Mountain Mod===X=====
@@ -1532,6 +1586,15 @@ void CvImprovementInfo::write(FDataStreamBase* stream)
 	// Deliverator fresh water
 	stream->Write(m_iAddsFreshWaterInRadius);	
 	// Deliverator
+	// Super Forts begin *XML*
+	stream->Write(m_iCulture);
+	stream->Write(m_iCultureRange);
+	stream->Write(m_iVisibilityChange);
+	stream->Write(m_iSeeFrom);
+	stream->Write(m_iUniqueRange);
+	stream->Write(m_bBombardable);
+	stream->Write(m_bUpgradeRequiresFortify);
+	// Super Forts end
 	stream->Write(m_bActsAsCity);
 	stream->Write(m_bHillsMakesValid);
 //===NM=====Mountain Mod===0=====
@@ -1663,6 +1726,15 @@ bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iCultureControlCenterTileBonus, "iCultureControlCenterTileBonus", 0);
 	pXML->GetChildXmlValByName(&m_bSpreadCultureControl, "bSpreadCultureControl", false);
 	// < JCultureControl Mod End >
+	// Super Forts begin *XML*
+	pXML->GetChildXmlValByName(&m_iCulture, "iCulture",0);
+	pXML->GetChildXmlValByName(&m_iCultureRange, "iCultureRange",0);
+	pXML->GetChildXmlValByName(&m_iVisibilityChange, "iVisibilityChange",0);
+	pXML->GetChildXmlValByName(&m_iSeeFrom, "iSeeFrom",0);
+	pXML->GetChildXmlValByName(&m_iUniqueRange, "iUnique",0);
+	pXML->GetChildXmlValByName(&m_bBombardable, "bBombardable",false);
+	pXML->GetChildXmlValByName(&m_bUpgradeRequiresFortify, "bUpgradeRequiresFortify",false);
+	// Super Forts end
 // Deliverator fresh water
 	pXML->GetChildXmlValByName(&m_iAddsFreshWaterInRadius, "iAddsFreshWaterInRadius",	-1); // f1rpo
 	// Deliverator

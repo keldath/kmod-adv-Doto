@@ -11798,7 +11798,7 @@ void CvCity::doCulture()
 		// K-Mod END
 	}
 	changeCultureTimes100(getOwner(), getCommerceRateTimes100(COMMERCE_CULTURE), false, true);
-//KNOEDELbegin cultural_golder_age 1/1
+//KNOEDELbegin cultural_golden_age 1/2
 	if (GC.getGame().isOption(GAMEOPTION_CULTURE_GOLDEN_AGE)) 
 	{
 		GET_PLAYER(getOwner()).changeCultureGoldenAgeProgress(getCommerceRate(COMMERCE_CULTURE));
@@ -13847,7 +13847,12 @@ void CvCity::applyEvent(EventTypes eEvent,
 			}
 		}
 		if (kEvent.getCulture() != 0)
+		{
 			changeCulture(getOwner(), kEvent.getCulture(), true, true);
+//KNOEDELbegin cultural_golden_age 2/2
+			GET_PLAYER(getOwner()).changeCultureGoldenAgeProgress(kEvent.getCulture());	//KNOEDEL
+//KNOEDELbegin cultural_golden_age 2/2		
+		}
 	}
 	{
 		UnitClassTypes eUnitClass = (UnitClassTypes)kEvent.getUnitClass(); // advc

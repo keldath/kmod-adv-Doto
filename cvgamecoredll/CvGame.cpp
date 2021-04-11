@@ -339,6 +339,9 @@ void CvGame::regenerateMap()
 	CvEventReporter::getInstance().resetStatistics();
 
 	setInitialItems();
+// Super Forts begin *choke* *canal*
+	kMap.calculateCanalAndChokePoints();
+// Super Forts end
 
 	initScoreCalculation();
 	setFinalInitialized(true);

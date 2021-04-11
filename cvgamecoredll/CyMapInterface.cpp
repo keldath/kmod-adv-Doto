@@ -86,5 +86,8 @@ void CyMapPythonInterface()
 		.def("getMinimapWaterAlpha", &CyMap::getMinimapWaterAlpha, "float ()")
 		.def("getMinimapLandAlpha", &CyMap::getMinimapLandAlpha, "float ()")
 		// </advc.002a>
+		// Super Forts begin *canal* *choke*
+		.def("calculateCanalAndChokePoints", &CyMap::calculateCanalAndChokePoints, "void ()")
+		// Super Forts end
 		;
 }

@@ -321,6 +321,7 @@
 <!-- CULTURE_GOLDEN_AGE -->
 	</Define>
 	<Define>
+		<!-- CULTURE_GOLDEN_AGE was 500-->
 		<DefineName>CULTURE_GOLDEN_AGE_THRESHOLD</DefineName>
 		<iDefineIntVal>1200</iDefineIntVal>
 	</Define>

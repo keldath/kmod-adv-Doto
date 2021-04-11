@@ -126,7 +126,9 @@ public:
 	int visibilityRange() const;
 
 	// BETTER_BTS_AI_MOD, General AI, 08/19/09, jdog5000: START
-	int getBombardTurns(CvCity const* pCity) const;
+//super forts Doto addition for advc ai bombard changes
+	int getBombardTurns(CvCity const* pCity, CvPlot const* pPlot=NULL) const;
+//super forts Doto addition for advc ai bombard changes
 	bool isHasPathToAreaPlayerCity(PlayerTypes ePlayer, MovementFlags eFlags = NO_MOVEMENT_FLAGS,
 			int iMaxPathTurns = -1) /* Erik (CODE1): */ const;
 	// (advc: isHasPathToAreaEnemyCity moved to CvSelectionGroupAI)

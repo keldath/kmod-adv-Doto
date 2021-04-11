@@ -2072,4 +2072,18 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 		<DefineName>FORCE_UNOWNED_CITY_TIMER</DefineName>
 		<iDefineIntVal>2</iDefineIntVal>
 	</Define>
+<!-- Super Forts begin -->
+	<Define>
+		<DefineName>AI_WORKER_MAX_DISTANCE_FROM_CITY_OUT_BORDERS</DefineName>
+		<iDefineIntVal>10</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SUPER_FORTS_DURATION_BEFORE_REVOLT</DefineName>
+		<iDefineIntVal>5</iDefineIntVal>
+	</Define>
+<!-- Super Forts end - moved to globaldefinesalt
+	<Define>
+		<DefineName>CULTURE_GOLDEN_AGE_THRESHOLD</DefineName>
+		<iDefineIntVal>500</iDefineIntVal>-->
+	</Define>
 </Civ4Defines>

@@ -93,6 +93,9 @@ public:
 	float getMinimapWaterAlpha();
 	float getMinimapLandAlpha();
 	// </advc.002a>
+	// Super Forts begin *canal* *choke*
+	void calculateCanalAndChokePoints();
+	// Super Forts end
 
 	// PYTHON HELPER FUNCTIONS
 	//int getNumPlayerOwnedPlots(int /*PlayerTypes*/ iPlayer);

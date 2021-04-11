@@ -322,3 +322,13 @@ float CyMap::getMinimapLandAlpha()
 {
 	return m_kMap.getMinimapSettings().getLandAlpha();
 } // </advc.002a>
+// Super Forts begin *canal* *choke*
+void CyMap::calculateCanalAndChokePoints()
+{
+	//DOTO QA108 ADJUSTMENT - NOT SURE IF THATS FINE
+	//if(m_kMap)
+	//{
+		m_kMap.calculateCanalAndChokePoints();
+	//}
+}
+// Super Forts end

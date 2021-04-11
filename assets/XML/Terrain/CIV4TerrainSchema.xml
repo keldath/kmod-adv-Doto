@@ -471,6 +471,13 @@
 	<ElementType name="FeatureMakesValids" content="eltOnly">
 		<element type="FeatureMakesValid" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
+<!-- Super Forts begin -->
+	<ElementType name="iCulture" content="textOnly" dt:type="int"/>
+	<ElementType name="iCultureRange" content="textOnly" dt:type="int"/>
+	<ElementType name="iVisibilityChange" content="textOnly" dt:type="int"/>
+	<ElementType name="bBombardable" content="textOnly" dt:type="boolean"/>
+	<ElementType name="bUpgradeRequiresFortify" content="textOnly" dt:type="boolean"/>
+<!-- Super Forts end -->
 	<ElementType name="ImprovementInfo" content="eltOnly">
 		<element type="Type"/>
         <element type="Description" minOccurs="0"/>
@@ -538,6 +545,15 @@
 		<element type="RouteYieldChanges" minOccurs="0"/>
 		<element type="WorldSoundscapeAudioScript" minOccurs="0"/>
 		<element type="bGraphicalOnly" minOccurs="0"/>
+<!-- Super Forts begin -->
+		<element type="iCulture" minOccurs="0"/>
+		<element type="iCultureRange" minOccurs="0"/>
+		<element type="iVisibilityChange" minOccurs="0"/>
+		<element type="iSeeFrom" minOccurs="0"/>
+		<element type="iUnique" minOccurs="0"/>
+		<element type="bBombardable" minOccurs="0"/>
+		<element type="bUpgradeRequiresFortify" minOccurs="0"/>
+<!-- Super Forts end -->
 	</ElementType>
 	<ElementType name="ImprovementInfos" content="eltOnly">
 		<element type="ImprovementInfo" maxOccurs="*"/>

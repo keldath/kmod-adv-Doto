@@ -344,7 +344,7 @@
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_NO_RANGED_COLLATERAL</Type>
-            <Description>Ranged Units cannot do Collateral Damage</Description>
+            <Description>No Ranged Collateral</Description>
             <Help>Units with Range Strike will not be able to perform collateral attack - might be overpowerd</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible> 	

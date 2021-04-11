@@ -3032,8 +3032,11 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
 			if (kImprov.getDefenseModifier() != 0)
 			{
 				szBuffer.append(NEWLINE);
-				szBuffer.append(gDLL->getText("TXT_KEY_ACTION_DEFENSE_MODIFIER",
-						kImprov.getDefenseModifier()));
+// Super Forts begin *bombard* *text*
+				szBuffer.append(gDLL->getText("TXT_KEY_ACTION_DEFENSE_MODIFIER", (kImprov.getDefenseModifier() - kMissionPlot.getDefenseDamage())));
+//				szBuffer.append(gDLL->getText("TXT_KEY_ACTION_DEFENSE_MODIFIER",
+//						kImprov.getDefenseModifier()));
+// Super Forts end
 			}
 			ImprovementTypes eUpgr = kImprov.getImprovementUpgrade();
 			if (eUpgr != NO_IMPROVEMENT)
@@ -5266,8 +5269,29 @@ void CvDLLWidgetData::parseCultureHelp(CvWidgetDataStruct &widgetDataStruct, CvW
 	//KNOEDELbegin ************************ CULTURAL_GOLDEN_AGE
 	//if added by keldath
 	if (GC.getGame().isOption(GAMEOPTION_CULTURE_GOLDEN_AGE)) {
-			 szBuffer.append(L"\n=======================\n");
-			 szBuffer.append(gDLL->getText("TXT_KEY_MISC_CULTURAL_GOLDEN_AGE_PROGRESS", GET_PLAYER(pHeadSelectedCity->getOwner()).getCultureGoldenAgeProgress(), GET_PLAYER(pHeadSelectedCity->getOwner()).getCultureGoldenAgeThreshold(), GET_PLAYER(pHeadSelectedCity->getOwner()).getCommerceRate(COMMERCE_CULTURE)));
+		szBuffer.append(L"\n=======================\n");
+		szBuffer.append(gDLL->getText("TXT_KEY_MISC_CULTURAL_GOLDEN_AGE_PROGRESS", GET_PLAYER(pHeadSelectedCity->getOwner()).getCultureGoldenAgeProgress(), GET_PLAYER(pHeadSelectedCity->getOwner()).getCultureGoldenAgeThreshold(), GET_PLAYER(pHeadSelectedCity->getOwner()).getCommerceRate(COMMERCE_CULTURE)));
+		//KNOEDELstart ************************
+		//added secrtion from second release of this mod part 2021 - keldath
+		int iGlobalCultureRateTimes100 = (GET_PLAYER(pHeadSelectedCity->getOwner()).getCommerceRate(COMMERCE_CULTURE) * 100);
+		int iGlobalCultureTimes100 = (GET_PLAYER(pHeadSelectedCity->getOwner()).getCultureGoldenAgeProgress() * 100);
+		if (iGlobalCultureRateTimes100 > 0)
+		{
+			int iGlobalCultureLeftTimes100 = 100 * GET_PLAYER(pHeadSelectedCity->getOwner()).getCultureGoldenAgeThreshold() - iGlobalCultureTimes100;
+
+			if (iGlobalCultureLeftTimes100 > 0)
+			{
+				int iTurnsLeft = (iGlobalCultureLeftTimes100  + iGlobalCultureRateTimes100 - 1) / iGlobalCultureRateTimes100;
+
+				szBuffer.append(L' ');
+				szBuffer.append(gDLL->getText("INTERFACE_CITY_TURNS", std::max(1, iTurnsLeft)));
+			}
+		}
+	// ************************
+	// End Added for Planetfall
+	//KNOEDELend ************************
+	
+	
 	}
 		
 	else 

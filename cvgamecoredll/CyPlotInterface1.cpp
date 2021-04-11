@@ -276,6 +276,12 @@ void CyPlotPythonInterface1(python::class_<CyPlot>& x)
 
 		.def("getScriptData", &CyPlot::getScriptData, "str () - Get stored custom data")
 		.def("setScriptData", &CyPlot::setScriptData, "void (str) - Set stored custom data")
+		// Super Forts begin *canal* *choke*
+		.def("getCanalValue", &CyPlot::getCanalValue, "int ()")
+		.def("calculateCanalValue", &CyPlot::calculateCanalValue, "void ()")
+		.def("getChokeValue", &CyPlot::getChokeValue, "int ()")
+		.def("calculateChokeValue", &CyPlot::calculateChokeValue, "void ()")
+		// Super Forts end
 	;
 
 	// advc.enum: For CyMap::syncRandPlot
@@ -292,5 +298,5 @@ void CyPlotPythonInterface1(python::class_<CyPlot>& x)
 		.value("RANDPLOT_HABITABLE", RANDPLOT_HABITABLE)
 		.value("RANDPLOT_WATERSOURCE", RANDPLOT_WATERSOURCE)
 		/* </advc.300> */
-		;
+	;
 }

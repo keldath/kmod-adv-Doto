@@ -2091,6 +2091,19 @@ void CvPlayer::killCities()
 {
 	FOR_EACH_CITY_VAR(pLoopCity, *this)
 		pLoopCity->kill(false);
+	
+// Super Forts begin *culture* - Clears culture from forts when a player dies
+	PlayerTypes ePlayer = getID();
+	for (int iI = 0; iI < GC.getMap().numPlots(); iI++)
+	{
+		CvPlot* pLoopPlot = GC.getMap().plotByIndex(iI);
+		if (pLoopPlot->getOwner() == ePlayer)
+		{
+			pLoopPlot->setOwner(pLoopPlot->calculateCulturalOwner(), true, false);
+		}
+	}
+// Super Forts end
+	
 	GC.getGame().updatePlotGroups();
 }
 
@@ -16920,6 +16933,9 @@ void CvPlayer::applyEvent(EventTypes eEvent, int iEventTriggeredId, bool bUpdate
 				{
 					pLoopCity->changeCulture(pLoopCity->getOwner(),
 							kEvent.getCulture(), true, true);
+//KNOEDEL CULTURAL_GOLDEN_AGE
+					changeCultureGoldenAgeProgress(kEvent.getCulture());	//KNOEDEL
+//KNOEDEL CULTURAL_GOLDEN_AGE
 				}
 			}
 		}

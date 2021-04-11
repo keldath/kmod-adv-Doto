@@ -8,7 +8,8 @@
 #include "CvTeamAI.h"
 #include "AgentIterator.h"
 #include "CvMap.h"
-
+//super forts doto needed.
+#include "CvInfo_Terrain.h"
 
 CvSelectionGroupAI::CvSelectionGroupAI()
 {
@@ -311,6 +312,12 @@ int CvSelectionGroupAI::AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialE
 			true, false); // advc.028, advc.089 (same as in CvUnitAI::AI_attackOdds)
 	if (pDefender == NULL)
 		return 100;
+// DOTO-MOD rangedattack-keldath - START + ranged immunity
+	bool bARanged = pAttacker->isRangeStrikeCapableK();
+	bool bDRanged = pDefender->isRangeStrikeCapableK();
+	if (bARanged && !bDRanged)
+		return 99;
+// DOTO-MOD rangedattack-keldath - END + ranged immunity - if only attacker is ranged - its no risk
 
 	/*	<advc.114b> We shouldn't adjust the odds based on an optimistic estimate
 		(increased by AttackOddsChange) b/c that leads to Warriors attacking Tanks -
@@ -338,6 +345,21 @@ int CvSelectionGroupAI::AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialE
 		iAdjustedOdds *= 2 + getNumUnits();
 		iAdjustedOdds /= 3 + std::min(iDefenders / 2, getNumUnits());
 	}
+
+// DOTO-MOD rangedattack-keldath - START + ranged immunity - of both are ranged
+	if (bDRanged && bARanged)
+	{
+		iAdjustedOdds += std::max((pAttacker->currCombatStr() - pDefender->currCombatStr()) * 10, 0);
+		iAdjustedOdds = std::max(iAdjustedOdds, 99);
+	}
+	/*
+	else if (bDRanged && !bARanged)
+	{
+		iAdjustedOdds -= std::max((pDefender->currCombatStr() - pAttacker->currCombatStr()) * 10, 0);
+		iAdjustedOdds += std::max(iAdjustedOdds, 99);
+	}
+	*/
+// DOTO-MOD rangedattack-keldath - END + ranged immunity
 
 	iAdjustedOdds += iAttackOddsChange; // advc.114b
 	return range(iAdjustedOdds, 1, 99);
@@ -747,6 +769,12 @@ CvUnit* CvSelectionGroupAI::AI_bestUnitForMission(MissionTypes eMission,
 		}
 		case MISSION_BOMBARD:
 		{
+/* super forts Doto fix for advc */
+			if (pMissionPlot == NULL)
+			{
+				break;
+			}
+/* super forts Doto fix for advc */
 			if (!pUnit->canBombard(kAt))
 				continue;
 			/*	Some baseline to avoid precision problem when getting
@@ -756,7 +784,22 @@ CvUnit* CvSelectionGroupAI::AI_bestUnitForMission(MissionTypes eMission,
 				rPriority *= per100(pUnit->currHitPoints());
 			int const iBombard = pUnit->damageToBombardTarget(kAt);
 			// bIgnoreBuilding=false b/c iBombard already reflects that
-			int const iCurrDefense = pTargetCity->getDefenseModifier(false);
+/* super forts Doto fix for advc */			
+			//int const iCurrDefense = pTargetCity->getDefenseModifier(false);
+			int /*const*/ iCurrDefense = 0;
+			if (pTargetCity != NULL)
+			{
+				iCurrDefense = pTargetCity->getDefenseModifier(false);//sagi
+			}
+			else 
+			{	
+				if (pMissionPlot != NULL)
+				{
+					ImprovementTypes eImprovement = pMissionPlot->getImprovementType();
+					iCurrDefense = GC.getImprovementInfo(eImprovement).getDefenseModifier();
+				}
+			}
+/* super forts Doto fix for advc */			
 			int const iWaste = std::max(0, iBombard - iCurrDefense);
 			if (isHuman())
 			{	// Derive human intent from promotions

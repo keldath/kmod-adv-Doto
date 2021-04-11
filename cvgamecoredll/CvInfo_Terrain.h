@@ -468,7 +468,22 @@ public: /*  All the const functions are exposed to Python except those dealing w
 	int getAddsFreshWaterInRadius() const;				// Exposed to Python
 	void setAddsFreshWaterInRadius(int i);
 	// Deliverator
+	// Super Forts begin *XML*
+	int getCulture() const;
+	int getCultureRange() const;
+	int getVisibilityChange() const;
+	int getSeeFrom() const;
+	int getUniqueRange() const;
+	bool isBombardable() const;
+	bool isUpgradeRequiresFortify() const;
+	// Super Forts end
 	inline bool isActsAsCity() const { return m_bActsAsCity; }
+//doto check what is superfort in mnai	
+	// Super Forts begin *custom*
+//	return GC.getGameINLINE().isOption(GAMEOPTION_ADVANCED_TACTICS) ? isSuperFort() : m_bActsAsCity;
+	// return m_bActsAsCity; // Original
+	// Super Forts end
+	
 	inline bool isHillsMakesValid() const { return m_bHillsMakesValid; }
 //===NM=====Mountain Mod===0=====
 	inline bool isPeakMakesValid() const { return m_bPeakMakesValid; };
@@ -572,6 +587,15 @@ protected:
 	// Deliverator fresh water
 	int m_iAddsFreshWaterInRadius;
 	// Deliverator
+	// Super Forts begin *XML*
+	int m_iCulture;
+	int m_iCultureRange;
+	int m_iVisibilityChange;
+	int m_iSeeFrom;
+	int m_iUniqueRange;
+	bool m_bBombardable;
+	bool m_bUpgradeRequiresFortify;
+	// Super Forts end
 	bool m_bActsAsCity;
 	bool m_bHillsMakesValid;
 //===NM=====Mountain Mod===0=====
