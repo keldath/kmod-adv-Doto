@@ -340,7 +340,10 @@ void CvGame::regenerateMap()
 
 	setInitialItems();
 // Super Forts begin *choke* *canal*
-	kMap.calculateCanalAndChokePoints();
+	if (isOption(GAMEOPTION_SUPER_FORTS))
+	{
+		kMap.calculateCanalAndChokePoints();
+	}
 // Super Forts end
 
 	initScoreCalculation();

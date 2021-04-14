@@ -212,6 +212,9 @@ protected:
 	bool AI_pillageAroundCity(CvCity* pTargetCity, int iBonusValueThreshold = 0,
 			MovementFlags eFlags = NO_MOVEMENT_FLAGS, int iMaxPathTurns = MAX_INT);
 	bool AI_bombardCity();
+//super forts doto - cleaner code
+	bool AI_bombardFort();
+//super forts doto - cleaner code
 	bool AI_cityAttack(int iRange, int iOddsThreshold,
 			MovementFlags eFlags = NO_MOVEMENT_FLAGS, bool bFollow = false);
 	bool AI_anyAttack(int iRange, int iOddsThreshold,

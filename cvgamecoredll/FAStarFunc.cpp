@@ -107,7 +107,7 @@ BOOL stepValid(FAStarNode* parent, FAStarNode* node,
 		return FALSE;
 // Super Forts begin *choke* 
 	int iInvalidPlot = gDLL->getFAStarIFace()->GetInfo(finder);
-	if(iInvalidPlot > 0)
+	if(iInvalidPlot > 0 && GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
 	{
 		// 1 is subtracted because 1 was added earlier to avoid a conflict with index 0
 		if(&kTo == GC.getMap().plotByIndex((iInvalidPlot - 1)))

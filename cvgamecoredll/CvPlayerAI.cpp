@@ -25510,12 +25510,15 @@ void CvPlayerAI::AI_convertUnitAITypesForCrush()
 			}
 			// Super Forts begin *AI_defense* - don't convert units guarding a fort
 			//doto - new specific call for fortcheck.
-			else if (kPlot.isFortImprovement() 
+			else if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+			{			
+				if (kPlot.isFortImprovement() 
 					/*kPlot.isCityExternal(true)*/)
-			{
-				if (kPlot.getNumDefenders(pLoopUnit->getOwner()) == 1)
 				{
-					bValid = false;
+					if (kPlot.getNumDefenders(pLoopUnit->getOwner()) == 1)
+					{
+						bValid = false;
+					}
 				}
 			}
 			// Super Forts end
@@ -25751,7 +25754,7 @@ int CvPlayerAI::AI_getTotalFloatingDefendersNeeded(CvArea const& kArea, // advc:
 	} // </advc.099c>
 	
 // Super Forts begin *AI_defense* - Build a few extra floating defenders for occupying forts
-	rDefenders += rCityFactor / 2;
+	rDefenders += GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) ? (rCityFactor / 2) : 0 ;
 // Super Forts end
 
 	return rDefenders.round();
@@ -27709,12 +27712,15 @@ int CvPlayerAI::AI_getPlotAirbaseValue(CvPlot const& kPlot) const // advc: param
 			if (iDist == 1)
 				return 0;
 // Super Forts begin  *choke* *canal* - move iOtherCityCount outside the if statement
-/*			if (iDist < iMinFriendlyCityDistance)
+			if (!GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
 			{
-				iMinFriendlyCityDistance = iDist;
-				//pMinFriendlyCityPlot = &p;
+				if (iDist < iMinFriendlyCityDistance)
+				{
+					iMinFriendlyCityDistance = iDist;
+					//pMinFriendlyCityPlot = &p;
+				}
 			}
-*/		}
+		}
 // Super Forts 
 		else
 		{
@@ -27724,11 +27730,21 @@ int CvPlayerAI::AI_getPlotAirbaseValue(CvPlot const& kPlot) const // advc: param
 				iMinOtherCityDistance = iDist;
 				//doto - super forts - re added the pMinOtherCityPlot
 				//advc commented it out
-				pMinOtherCityPlot = &p;
-				//iOtherCityCount++;
+				if (!GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+				{
+					//pMinOtherCityPlot = &p;
+					iOtherCityCount++;
+				}
+				else
+				{
+					pMinOtherCityPlot = &p;
+				}
 // Super Forts begin  *choke* *canal* - move iOtherCityCount outside the if statement
 			}
-			iOtherCityCount++;
+			if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+			{
+				iOtherCityCount++;
+			}
 // Super Forts end
 		}
 	}
@@ -27749,37 +27765,43 @@ int CvPlayerAI::AI_getPlotAirbaseValue(CvPlot const& kPlot) const // advc: param
 			return 0;
 	}*/
 // Super Forts begin *canal* *choke*
-	if(iOtherCityCount == 1)
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
 	{
-		if (pMinOtherCityPlot != NULL)
+		if(iOtherCityCount == 1)
 		{
-			CvCity* pNearestCity = GC.getMap().findCity(pMinOtherCityPlot->getX(), pMinOtherCityPlot->getY(), NO_PLAYER, getTeam(), false);
-			if (NULL != pNearestCity)
+			if (pMinOtherCityPlot != NULL)
 			{
-				if (plotDistance(pNearestCity->getX(), pNearestCity->getY(), pMinOtherCityPlot->getX(), pMinOtherCityPlot->getY()) < iMinOtherCityDistance)
+				CvCity* pNearestCity = GC.getMap().findCity(pMinOtherCityPlot->getX(), pMinOtherCityPlot->getY(), NO_PLAYER, getTeam(), false);
+				if (NULL != pNearestCity)
 				{
-					return 0;
+					if (plotDistance(pNearestCity->getX(), pNearestCity->getY(), pMinOtherCityPlot->getX(), pMinOtherCityPlot->getY()) < iMinOtherCityDistance)
+					{
+						return 0;
+					}
 				}
 			}
 		}
 	}		
 // Super Forts end
 	int iDefenseModifier = kPlot.defenseModifier(getTeam(), false);
-// Super Forts start	
+// Super Forts start - new if check - doto	
 	int iValue = iOtherCityCount * 50;
-	iValue += iDefenseModifier;
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	{
+		iValue += iDefenseModifier;
+		return std::max(0,iValue);
+	}
 // Super Forts end	
+//original entry - but also commented out in advc
 	/*if (iDefenseModifier <= 0)
 		return 0;*/
 // Super Forts start		
-/*	Original Code		
-	int iValue = iOtherCityCount * 50;
-	iValue *= 100 + (2 * (iDefenseModifier + (kPlot.isHills() ? 25 : 0)));
-	iValue /= 100;
-	
-	return iValue;
-*/
-	return std::max(0,iValue);
+	else
+	{
+		iValue *= 100 + (2 * (iDefenseModifier + (kPlot.isHills() ? 25 : 0)));
+		iValue /= 100;
+		return iValue;
+	}	
 // Super Forts end
 }
 
@@ -27788,61 +27810,70 @@ int CvPlayerAI::AI_getPlotCanalValue(CvPlot const& kPlot) const // advc: param w
 	PROFILE_FUNC();
 	
 // Super Forts begin *canal*
-	int iCanalValue = kPlot.getCanalValue();
+	int iCanalValue = GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) ? 
+						kPlot.getCanalValue() : 1;
+						/*Doto - the value 1 is for the checl below to be true - 
+						so roginal code will kick in */ 
 	
 	if (iCanalValue > 0)
 	{
-// Super Forts end *canal*		
-	if (kPlot.isOwned())
-	{
-		if (kPlot.getTeam() != getTeam())
-			return 0;
-
-		if (kPlot.isCityRadius())
+		// Super Forts end *canal*		
+		if (kPlot.isOwned())
 		{
-			CvCityAI const* pWorkingCity = kPlot.AI_getWorkingCity();
-			if (pWorkingCity != NULL)
+			if (kPlot.getTeam() != getTeam())
+				return 0;
+
+			if (kPlot.isCityRadius())
 			{
-				/*if (pWorkingCity->AI_getBestBuild(pWorkingCity->getCityPlotIndex(kPlot)) != NO_BUILD)
-					return 0;
-				if (pPlot->getImprovementType() != NO_IMPROVEMENT) {
-					CvImprovementInfo &kImprovementInfo = GC.getInfo(pPlot->getImprovementType());
-					if (!kImprovementInfo.isActsAsCity())
+				CvCityAI const* pWorkingCity = kPlot.AI_getWorkingCity();
+				if (pWorkingCity != NULL)
+				{
+					/*if (pWorkingCity->AI_getBestBuild(pWorkingCity->getCityPlotIndex(kPlot)) != NO_BUILD)
 						return 0;
-				}*/ // BtS
-				// K-Mod
-				ImprovementTypes eBestImprovement = kPlot.getImprovementType();
-				BuildTypes eBestBuild = pWorkingCity->AI_getBestBuild(
+					if (pPlot->getImprovementType() != NO_IMPROVEMENT) {
+						CvImprovementInfo &kImprovementInfo = GC.getInfo(pPlot->getImprovementType());
+						if (!kImprovementInfo.isActsAsCity())
+							return 0;
+					}*/ // BtS
+					// K-Mod
+					ImprovementTypes eBestImprovement = kPlot.getImprovementType();
+					BuildTypes eBestBuild = pWorkingCity->AI_getBestBuild(
 						pWorkingCity->getCityPlotIndex(kPlot));
-				if (eBestBuild != NO_BUILD)
-				{
-					if (GC.getInfo(eBestBuild).getImprovement() != NO_IMPROVEMENT)
-						eBestImprovement = GC.getInfo(eBestBuild).getImprovement();
+					if (eBestBuild != NO_BUILD)
+					{
+						if (GC.getInfo(eBestBuild).getImprovement() != NO_IMPROVEMENT)
+							eBestImprovement = GC.getInfo(eBestBuild).getImprovement();
+					}
+					if (eBestImprovement != NO_IMPROVEMENT)
+					{
+						if (!GC.getInfo(eBestImprovement).isActsAsCity())
+							return 0;
+					}
+					// K-Mod end
+	// Super Forts begin *canal*	
+					// Decrease value when within radius of a city
+					//doto - added game optional
+					iCanalValue -= GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) ? 5 : 0;
+					// Super Forts end *canal*
 				}
-				if (eBestImprovement != NO_IMPROVEMENT)
-				{
-					if (!GC.getInfo(eBestImprovement).isActsAsCity())
-						return 0;
-				}
-				// K-Mod end
-// Super Forts begin *canal*	
-				// Decrease value when within radius of a city
-				iCanalValue -= 5;
-// Super Forts end *canal*
 			}
 		}
-	}
-
+	}//check if this need to close here of after keldath
 	FOR_EACH_ADJ_PLOT(kPlot)
 	{
-		if (//pAdj->isCity(true, getTeam())
-			GET_TEAM(getTeam()).isRevealedBase(*pAdj)) // advc
+// Super Forts begin *canal*		
+		/* Doto-org code - for now not using advc logic isRevealedBase
+			separated to 2 function checks */
+		if (!GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
 		{
-			return 0;
-		}
-// Super Forts begin *canal*	
-		if (/*pAdj->isCityExternal(true) */
-			//doto change - added improvement specific check
+			//original code	
+			if (//pAdj->isCity(true, getTeam())
+				GET_TEAM(getTeam()).isRevealedBase(*pAdj)) // advc
+			{
+				return 0;
+			}
+		}	
+		else if (/*pAdj->isCityExternal(true) */
 			(pAdj->isFortImprovement() || pAdj->isCity())
 			&& (pAdj->getCanalValue() > 0))
 		{
@@ -27851,23 +27882,23 @@ int CvPlayerAI::AI_getPlotCanalValue(CvPlot const& kPlot) const // advc: param w
 		}
 // Super Forts end *canal*
 	}
-// Super Forts begin *canal*
-	iCanalValue *= 10;
-// Super Forts end *canal*	
-	// Favor plots with higher defense
-	int iDefenseModifier = kPlot.defenseModifier(getTeam(), false);
-	iCanalValue += iDefenseModifier;
-	
+	if (!GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	{
+		//original code
+		CvArea* pSecondWaterArea = kPlot.secondWaterArea();
+		if (pSecondWaterArea == NULL)
+			return 0;
+		// K-Mod bugfix (was min)
+		return 10 * std::max(0, pSecondWaterArea->getNumTiles() - 2);
 	}
-// Super Forts start	
-/* original
-	CvArea* pSecondWaterArea = kPlot.secondWaterArea();
-	if (pSecondWaterArea == NULL)
-		return 0;
-	// K-Mod bugfix (was min)
-	return 10 * std::max(0, pSecondWaterArea->getNumTiles() - 2);
-*/
-    return std::max(0,iCanalValue);
+	else
+	{
+		iCanalValue *= 10;	
+		// Favor plots with higher defense
+		int iDefenseModifier = kPlot.defenseModifier(getTeam(), false);
+		iCanalValue += iDefenseModifier;
+		return std::max(0,iCanalValue);
+	}
 // Super Forts end
 }
 // Super Forts begin *canal* 
@@ -27876,87 +27907,97 @@ int CvPlayerAI::AI_getPlotChokeValue(CvPlot const& kPlot) const // advc: param w
 {
 	PROFILE_FUNC();
 	
-// Super Forts begin *canal*
-	int iChokeValue = kPlot.getChokeValue();
+// Super Forts begin *canal*	
+	int iChokeValue = GC.getGame().isOption(GAMEOPTION_SUPER_FORTS)
+						? kPlot.getChokeValue() : 1;
+						/*Doto - the value 1 is for the checl below to be true - 
+						so roginal code will kick in */ 
 	
 	if (iChokeValue > 0)
 	{
-// Super Forts end *canal*		
-	if (kPlot.isOwned())
-	{
-		if (kPlot.getTeam() != getTeam())
-			return 0;
-
-		if (kPlot.isCityRadius())
+		// Super Forts end *canal*		
+		if (kPlot.isOwned())
 		{
-			CvCityAI const* pWorkingCity = kPlot.AI_getWorkingCity();
-			if (pWorkingCity != NULL)
+			if (kPlot.getTeam() != getTeam())
+				return 0;
+
+			if (kPlot.isCityRadius())
 			{
-				/*if (pWorkingCity->AI_getBestBuild(pWorkingCity->getCityPlotIndex(kPlot)) != NO_BUILD)
-					return 0;
-				if (pPlot->getImprovementType() != NO_IMPROVEMENT) {
-					CvImprovementInfo &kImprovementInfo = GC.getInfo(pPlot->getImprovementType());
-					if (!kImprovementInfo.isActsAsCity())
+				CvCityAI const* pWorkingCity = kPlot.AI_getWorkingCity();
+				if (pWorkingCity != NULL)
+				{
+					/*if (pWorkingCity->AI_getBestBuild(pWorkingCity->getCityPlotIndex(kPlot)) != NO_BUILD)
 						return 0;
-				}*/ // BtS
-				// K-Mod
-				ImprovementTypes eBestImprovement = kPlot.getImprovementType();
-				BuildTypes eBestBuild = pWorkingCity->AI_getBestBuild(
+					if (pPlot->getImprovementType() != NO_IMPROVEMENT) {
+						CvImprovementInfo &kImprovementInfo = GC.getInfo(pPlot->getImprovementType());
+						if (!kImprovementInfo.isActsAsCity())
+							return 0;
+					}*/ // BtS
+					// K-Mod
+					ImprovementTypes eBestImprovement = kPlot.getImprovementType();
+					BuildTypes eBestBuild = pWorkingCity->AI_getBestBuild(
 						pWorkingCity->getCityPlotIndex(kPlot));
-				if (eBestBuild != NO_BUILD)
-				{
-					if (GC.getInfo(eBestBuild).getImprovement() != NO_IMPROVEMENT)
-						eBestImprovement = GC.getInfo(eBestBuild).getImprovement();
+					if (eBestBuild != NO_BUILD)
+					{
+						if (GC.getInfo(eBestBuild).getImprovement() != NO_IMPROVEMENT)
+							eBestImprovement = GC.getInfo(eBestBuild).getImprovement();
+					}
+					if (eBestImprovement != NO_IMPROVEMENT)
+					{
+						if (!GC.getInfo(eBestImprovement).isActsAsCity())
+							return 0;
+					}
+					// K-Mod end
+	// Super Forts begin *canal*	
+	//doto added option check - if false - do nothing...0
+					// Decrease value when within radius of a city
+					iChokeValue -= GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) ? 5 : 0;
+					// Super Forts end *canal*
 				}
-				if (eBestImprovement != NO_IMPROVEMENT)
-				{
-					if (!GC.getInfo(eBestImprovement).isActsAsCity())
-						return 0;
-				}
-				// K-Mod end
-// Super Forts begin *canal*	
-				// Decrease value when within radius of a city
-				iChokeValue -= 5;
-// Super Forts end *canal*
 			}
 		}
-	}
-
+	} //check if this need to close here of after keldath
 	FOR_EACH_ADJ_PLOT(kPlot)
 	{
-		if (//pAdj->isCity(true, getTeam())
-			GET_TEAM(getTeam()).isRevealedBase(*pAdj)) // advc
+		if (!GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
 		{
-			return 0;
-		}
+
+			if (//pAdj->isCity(true, getTeam())
+				GET_TEAM(getTeam()).isRevealedBase(*pAdj)) // advc
+			{
+				return 0;
+			}
 // Super Forts begin *canal*	
-		if (/*pAdj->isCityExternal(true)*/
-			//doto change - added improvement specific check
-			(pAdj->isFortImprovement() || pAdj->isCity())
-			&& (pAdj->getChokeValue() > 0))
-		{
-			// Decrease value when adjacent to a city or fort with a choke value
-			iChokeValue -= 10;
-		}
+			else if (/*pAdj->isCityExternal(true)*/
+				//doto change - added improvement specific check
+				(pAdj->isFortImprovement() || pAdj->isCity())
+				&& (pAdj->getChokeValue() > 0))
+			{
+				// Decrease value when adjacent to a city or fort with a choke value
+				iChokeValue -= 10;
+			}
 // Super Forts end *canal*
+		}
 	}
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	{
 // Super Forts begin *canal*
-	iChokeValue *= 10;
+		iChokeValue *= 10;
 // Super Forts end *canal*	
-	// Favor plots with higher defense
-	int iDefenseModifier = kPlot.defenseModifier(getTeam(), false);
-	iChokeValue += iDefenseModifier;
-	
+		// Favor plots with higher defense
+		int iDefenseModifier = kPlot.defenseModifier(getTeam(), false);
+		iChokeValue += iDefenseModifier;
+		return std::max(0,iChokeValue);
 	}
-// Super Forts start	
-/* original
-	CvArea* pSecondWaterArea = kPlot.secondWaterArea();
-	if (pSecondWaterArea == NULL)
-		return 0;
-	// K-Mod bugfix (was min)
-	return 10 * std::max(0, pSecondWaterArea->getNumTiles() - 2);
-*/
-    return std::max(0,iChokeValue);
+	else
+	{
+		CvArea* pSecondWaterArea = kPlot.secondWaterArea();
+		if (pSecondWaterArea == NULL)
+			return 0;
+		// K-Mod bugfix (was min)
+		return 10 * std::max(0, pSecondWaterArea->getNumTiles() - 2);
+	}
+    
 // Super Forts end
 }
 

@@ -3624,7 +3624,8 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 		{
 // Super Forts begin *text* *upgrade*			
 			if (kPlot.getUpgradeProgress() > 0 
-				|| kPlot.isBeingWorked()&& !GC.getInfo(ePlotImprovement).isUpgradeRequiresFortify())
+				|| kPlot.isBeingWorked()&& !GC.getInfo(ePlotImprovement).isUpgradeRequiresFortify() &&
+				  !GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
 // Super Forts end
 			{
 				int iTurns = kPlot.getUpgradeTimeLeft(ePlotImprovement, eRevealedOwner);
@@ -3644,7 +3645,7 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 					szString.append(ENDCOLR); // </advc.912f>
 			}
 // Super Forts begin *text* *upgrade* from mnai
-			else if (GC.getInfo(ePlotImprovement).isUpgradeRequiresFortify())
+			else if (GC.getInfo(ePlotImprovement).isUpgradeRequiresFortify() && GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
 			{
 				szString.append(gDLL->getText("TXT_KEY_PLOT_FORTIFY_TO_UPGRADE", GC.getInfo((ImprovementTypes) GC.getInfo(ePlotImprovement).getImprovementUpgrade()).getTextKeyWide()));
 			}
@@ -3658,7 +3659,7 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 		}
 	}
 	// Super Forts doto add to the plot
-	if (kPlot.getCultureRangeForts(kPlot.getOwner()) > 0)
+	if (kPlot.getCultureRangeForts(kPlot.getOwner()) > 0 && GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
 	{
 		//szTempBuffer.Format(L"\nFort Control by: %s", GET_PLAYER(kPlot.getOwner()).getCivilizationAdjective(0));
 		szTempBuffer.Format(L"\nFort Control by:" SETCOLR L"%s" ENDCOLR,  TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"), GET_PLAYER(kPlot.getOwner()).getCivilizationAdjective(0));
@@ -4539,13 +4540,16 @@ void CvGameTextMgr::setPlotHelpDebug_ShiftOnly(CvWStringBuffer& szString, CvPlot
 	szString.append(szTempBuffer);
 
 //super forts - from mnai - doto added	
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	{
 	// Choke value
-	szTempBuffer.Format(L"\nChoke Value: %d", kPlot.getChokeValue());
-	szString.append(szTempBuffer);
+		szTempBuffer.Format(L"\nChoke Value: %d", kPlot.getChokeValue());
+		szString.append(szTempBuffer);
 
 	// Canal value
-	szTempBuffer.Format(L"\nCanal Value: %d", kPlot.getCanalValue());
-	szString.append(szTempBuffer);
+		szTempBuffer.Format(L"\nCanal Value: %d", kPlot.getCanalValue());
+		szString.append(szTempBuffer);
+	}
 //super forts
 
 	if(kPlot.isRoute())
@@ -16252,7 +16256,7 @@ void CvGameTextMgr::setImprovementHelp(CvWStringBuffer &szBuffer, ImprovementTyp
 		szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_EVOLVES",
 				GC.getInfo(kImprov.getImprovementUpgrade()).getTextKeyWide(), iTurns));
 // Super Forts begin *text* *upgrade*
-		if (kImprov.isUpgradeRequiresFortify())
+		if (kImprov.isUpgradeRequiresFortify() && GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
 		{
 			szBuffer.append(NEWLINE);
 			szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_FORTIFY_TO_UPGRADE"));
@@ -16417,40 +16421,46 @@ void CvGameTextMgr::setImprovementHelp(CvWStringBuffer &szBuffer, ImprovementTyp
 				iGWFeatureProtection));
 	} // </advc.055>
 // Super Forts begin *text* *bombard*
-	if (kImprov.isBombardable() && (kImprov.getDefenseModifier() > 0))
+	if(GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
 	{
-		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_BOMBARD"));
-	}
-	if (kImprov.getUniqueRange() > 0)
-	{
-		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_UNIQUE_RANGE", kImprov.getUniqueRange()));
+		if (kImprov.isBombardable() && (kImprov.getDefenseModifier() > 0))
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_BOMBARD"));
+		}
+		if (kImprov.getUniqueRange() > 0)
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_UNIQUE_RANGE", kImprov.getUniqueRange()));
+		}
 	}
 // Super Forts end
 
 	if (bCivilopediaText)
 	{
 // Super Forts begin *text*
-		if (kImprov.getCulture() > 0)
+		if(GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
 		{
-			szBuffer.append(NEWLINE);
-			szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_PLOT_CULTURE", kImprov.getCulture()));
-		}
-		if (kImprov.getCultureRange() > 0 && ((kImprov.getCulture() > 0) || kImprov.isActsAsCity()))
-		{
-			szBuffer.append(NEWLINE);
-			szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_CULTURE_RANGE", kImprov.getCultureRange()));
-		}
-		if (kImprov.getVisibilityChange() > 0)
-		{
-			szBuffer.append(NEWLINE);
-			szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_VISIBILITY_RANGE", kImprov.getVisibilityChange()));
-		}
-		if (kImprov.getSeeFrom() > 0)
-		{
-			szBuffer.append(NEWLINE);
-			szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_SEE_FROM", kImprov.getSeeFrom()));
+			if (kImprov.getCulture() > 0)
+			{
+				szBuffer.append(NEWLINE);
+				szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_PLOT_CULTURE", kImprov.getCulture()));
+			}
+			if (kImprov.getCultureRange() > 0 && ((kImprov.getCulture() > 0) || kImprov.isActsAsCity()))
+			{
+				szBuffer.append(NEWLINE);
+				szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_CULTURE_RANGE", kImprov.getCultureRange()));
+			}
+			if (kImprov.getVisibilityChange() > 0)
+			{
+				szBuffer.append(NEWLINE);
+				szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_VISIBILITY_RANGE", kImprov.getVisibilityChange()));
+			}
+			if (kImprov.getSeeFrom() > 0)
+			{
+				szBuffer.append(NEWLINE);
+				szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_SEE_FROM", kImprov.getSeeFrom()));
+			}
 		}
 // Super Forts end
 		if (kImprov.getPillageGold() > 0)

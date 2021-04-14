@@ -1147,6 +1147,7 @@ void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pP
 	//DOTO - rangeimunity not sure whats this below.
 	//syntax changed in 099 advc
 	int iDamage = iDefenderDamage;
+	//keldath testing
 	int a = GC.getMAX_HIT_POINTS() - 1;
 	int b = pDefender->getDamage();
 	int c = pAttacker->combatLimit();
@@ -1163,8 +1164,8 @@ void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pP
 				pDefender->getDamage() + iDamage) >= pAttacker->combatLimit());	
 	if (bLimitReached)				
 		{
-			d = 1;
-			n = 2;
+			d = 1;//keldath test
+			n = 2;//keldath test
 			iDamage = pAttacker->combatLimit() - pDefender->getDamage();
 			/*	Don't break right after the XP change; want to log the hit -
 					now that it's guaranteed to be a proper hit (positive damage). */
@@ -2023,7 +2024,7 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted)
 			rImmunityCombatCallback(this, pDefender, this->plot(), dmgFromRangedD, 1, rndHitDef, aUnitPreDamage);
 		}
 	}
-	
+//DOTO - rangeimunity-ranged immunity
 	else
 	{
 		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_UNIT_WITHDRAW",
@@ -2923,8 +2924,9 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar,
 
 	if (isNoCityCapture())
 	{
-/*super forts keldath adjustment so attacks wont stop on forts -isenemycity also checks for improvements so i added a specific imp check*/
-		if (!bAttack && (isEnemyCity(kPlot) || !kPlot.isFortImprovement()))
+/*super forts keldath adjustment so attacks wont stop on forts -isEnemycity also checks for improvements so i added a specific imp check*/
+		if (!bAttack && (isEnemyCity(kPlot) || 
+		(GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && !kPlot.isFortImprovement())))
 			return false;
 		// K-Mod. Don't let noCapture units attack defenseless cities. (eg. cities with a worker in them)
 		/*if (pPlot->isEnemyCity(*this)) {
@@ -3104,7 +3106,7 @@ bool CvUnit::canEnterArea(CvArea const& kArea) const
 bool CvUnit::isEnemyCity(CvPlot const& kPlot) const
 {
 	
-	// Super Forts begin *culture*
+// Super Forts begin *culture*
 //doto - i decided to use the original code along with my new isFortImprovement check - see below.
 	//i guess the two methods can work.
 //	TeamTypes ePlotTeam = kPlot.getTeam();//DOTO super forts - i added a check for the team on the plot.
@@ -3121,10 +3123,10 @@ bool CvUnit::isEnemyCity(CvPlot const& kPlot) const
 	CvCity const* pCity = kPlot.getPlotCity();
 	if (pCity != NULL)
 		return isEnemy(pCity->getTeam(), kPlot);
-	if (kPlot.isFortImprovement())
+	//super forst doto	
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && kPlot.isFortImprovement())
 		return isEnemy(kPlot.getTeam(), kPlot);
 	return false;
-	
 	// Super Forts end
 }
 
@@ -4213,7 +4215,7 @@ bool CvUnit::canAirliftAt(const CvPlot* pPlot, int iX, int iY) const
 	// canMoveInto use to be here
 	
 	// Super Forts begin *airlift*
-	if (kTargetPlot.getTeam() != NO_TEAM)
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && kTargetPlot.getTeam() != NO_TEAM)
 	{
 		if (kTargetPlot.getTeam() == getTeam() || GET_TEAM(kTargetPlot.getTeam()).isVassal(getTeam()))
 		{
@@ -4265,7 +4267,7 @@ bool CvUnit::airlift(int iX, int iY)
 			pTargetCity->setAirliftTargeted(true);
 		}
 	}
-	/*org
+	/*org code
 	FAssert(pTargetPlot != NULL);
 	CvCity* pTargetCity = pTargetPlot->getPlotCity();
 	FAssert(pTargetCity != NULL);
@@ -4942,16 +4944,14 @@ CvPlot* CvUnit::bombardImprovementTarget(const CvPlot* pPlot) const
 				{
 					int iValue = pLoopPlot->getDefenseDamage();
 
-					// always prefer cities we are at war with
-					//DOTO PLOT ADJUSTMENT 
-					//also - the isBombardable above - already checks this
-					//so to make sure cities are priorotied - added city plot check...instead
-					//if (isEnemy(pLoopPlot->getTeam(), *pPlot))
-					if(pLoopPlot->isCity())
+					// always prefer fort owners we are at war with
+					/*	advc (note): Was added in BtS. Not sure if it's correct - or necessary.
+					iValue is non-negative. We're computing an argmin. CvCity::isBombardable
+					already checks isEnemy - but only for this unit's current plot. */
+					if (isEnemy(pLoopPlot->getTeam(), *pPlot))
 					{
 						iValue *= 128;
 					}
-
 					if (iValue < iBestValue)
 					{
 						iBestValue = iValue;
@@ -4977,12 +4977,19 @@ bool CvUnit::canBombard(CvPlot const& kFrom) const
 	if (isCargo())
 		return false;
 
-	// Super Forts begin *bombard*
-	if (bombardTarget(kFrom) == NULL && bombardImprovementTarget(&kFrom) == NULL)
-	// Super Forts end
-	//if (bombardTarget(kFrom) == NULL)
-		return false;
-
+// Super Forts doto start
+/*doto change to super forts before is was one if with ||
+//i decided to define that only if theres no city - look for a fort.
+//more efficiant
+//in the bombardImprovementTarget theres a city added value
+but thats not needed there now.
+*/
+	if (bombardTarget(kFrom) == NULL)
+	{
+		if (bombardImprovementTarget(&kFrom) == NULL)
+			return false;
+	}
+// Super Forts doto start	
 	return true;
 }
 
@@ -5013,6 +5020,50 @@ int CvUnit::damageToBombardTarget(CvPlot const& kFrom) const
 	return rDamage.round(); // </advc.004c>
 }
 
+bool CvUnit::bombardFort()
+{
+	//doto adjustment
+	CvPlot* pTargetPlot = bombardImprovementTarget(plot());
+	if (!isEnemy(pTargetPlot->getTeam())) // (advc: simplified)
+	{
+		//getGroup()->groupDeclareWar(pTargetPlot, true); // Disabled by K-Mod
+		return false;
+	}
+	bool bFirstBombardment = false; //doto - i dont know what that means// advc.004g
+	// advc: Moved into subroutine
+	pTargetPlot->changeDefenseDamage(bombardRate());		
+	setMadeAttack(true);
+	changeMoves(GC.getMOVE_DENOMINATOR());
+	CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_REDUCED_TO", getNameKey(),
+		(GC.getImprovementInfo(pTargetPlot->getImprovementType()).getDefenseModifier() - pTargetPlot->getDefenseDamage()),
+		GET_PLAYER(getOwner())./*getNameKey()*/getCivilizationAdjectiveKey(), // advc.004g
+		GC.getImprovementInfo(pTargetPlot->getImprovementType()).getText());
+	 gDLL->UI().addMessage(pTargetPlot->getOwner(), /* advc.004g: */ true,
+			-1, szBuffer, *pTargetPlot,
+			!bFirstBombardment ? NULL : // advc.004g: Don't bombard the owner with sound
+			"AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("RED"));
+	szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_REDUCE_CITY_DEFENSES",
+		getNameKey(), 
+		GC.getImprovementInfo(pTargetPlot->getImprovementType()).getText(),
+		(GC.getImprovementInfo(pTargetPlot->getImprovementType()).getDefenseModifier() - pTargetPlot->getDefenseDamage())); // advc.004g
+	gDLL->UI().addMessage(getOwner(), true,
+		-1, szBuffer, "AS2D_BOMBARD",
+		MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREEN"),
+		pTargetPlot->getX(), pTargetPlot->getY());
+	if (getPlot().isActiveVisible(false))
+	{
+		CvUnit *pDefender = pTargetPlot->getBestDefender(NO_PLAYER, getOwner(), this, true);
+		// Bombard entity mission
+		CvMissionDefinition kDefiniton;
+		kDefiniton.setMissionTime(GC.getInfo(MISSION_BOMBARD).getTime() * gDLL->getSecsPerTurn());
+		kDefiniton.setMissionType(MISSION_BOMBARD);
+		kDefiniton.setPlot(pTargetPlot);
+		kDefiniton.setUnit(BATTLE_UNIT_ATTACKER, this);
+		kDefiniton.setUnit(BATTLE_UNIT_DEFENDER, pDefender);
+		gDLL->getEntityIFace()->AddMission(&kDefiniton);
+	}
+	return true;
+}
 //DOTO changes for super forts - condition stuff that are coty related
 // Super Forts *bombard*
 bool CvUnit::bombard()
@@ -5021,44 +5072,28 @@ bool CvUnit::bombard()
 		return false;
 
 	CvCity* pBombardCity = bombardTarget(getPlot());
-	// Super Forts begin *bombard*
-	//doto adjustment
-	//if theres no city, check for improvement - then convert it to the city variable.
-	CvPlot* pTargetPlot = NULL;
-	if(pBombardCity == NULL)
-	{
-		pTargetPlot = bombardImprovementTarget(plot());	
-	}	
-// Super Forts begin	
-	bool bFirstBombardment = false;
-	if (pBombardCity != NULL)
-	{
-		if (!isEnemy(pBombardCity->getTeam())) // (advc: simplified)
-		{
-			//getGroup()->groupDeclareWar(pTargetPlot, true); // Disabled by K-Mod
-			return false;
-		}
-
-		/*bool */bFirstBombardment = !pBombardCity->isBombarded(); // advc.004g
-		// advc: Moved into subroutine
+// Super Forts *bombard*
+//doto cleaner code - exported to fn.
+/*if theres no city - then its a fort
+canBombard checks that.*/
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) &&
+		pBombardCity == NULL)
+	{	
+		return bombardFort();
 	}
-	// Super Forts end *bombard*
 	
-	if (pTargetPlot == NULL && pBombardCity != NULL)
+	if (!isEnemy(pBombardCity->getTeam())) // (advc: simplified)
 	{
-		pBombardCity->changeDefenseModifier(-std::max(0, damageToBombardTarget(getPlot())));
+		//getGroup()->groupDeclareWar(pTargetPlot, true); // Disabled by K-Mod
+		return false;
 	}
-	else if (pTargetPlot != NULL) 
-	{
-		pTargetPlot->changeDefenseDamage(bombardRate());
-	}	
+
+	bool bFirstBombardment = !pBombardCity->isBombarded(); // advc.004g
+	// advc: Moved into subroutine
+	pBombardCity->changeDefenseModifier(-std::max(0, damageToBombardTarget(getPlot())));
 	setMadeAttack(true);
 	changeMoves(GC.getMOVE_DENOMINATOR());
-// Super Forts begin *bombard* *text*
-//doto - if pTargetPlot - it means it found a city so no improvement bmbrd	
-	if (pTargetPlot == NULL && pBombardCity != NULL)
-	{
-// Super Forts end		
+
 	CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_REDUCED_TO",
 			getNameKey(), // advc.004g: Show unit name (idea from MNAI)
 			pBombardCity->getDefenseModifier(false),
@@ -5076,58 +5111,18 @@ bool CvUnit::bombard()
 			-1, szBuffer, "AS2D_BOMBARD",
 			MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREEN"),
 			pBombardCity->getX(), pBombardCity->getY());
-	}
-	// Super Forts begin *bombard* *text*
-	else
-	{
-	CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_REDUCED_TO", getNameKey(),
-		(GC.getImprovementInfo(pTargetPlot->getImprovementType()).getDefenseModifier() - pTargetPlot->getDefenseDamage()),
-		GET_PLAYER(getOwner())./*getNameKey()*/getCivilizationAdjectiveKey(), // advc.004g
-		GC.getImprovementInfo(pTargetPlot->getImprovementType()).getText());
-	 gDLL->UI().addMessage(pTargetPlot->getOwner(), /* advc.004g: */ true,
-			-1, szBuffer, *pTargetPlot,
-			!bFirstBombardment ? NULL : // advc.004g: Don't bombard the owner with sound
-			"AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("RED"));
-	szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_REDUCE_CITY_DEFENSES",
-		getNameKey(), 
-		GC.getImprovementInfo(pTargetPlot->getImprovementType()).getText(),
-		(GC.getImprovementInfo(pTargetPlot->getImprovementType()).getDefenseModifier() - pTargetPlot->getDefenseDamage())); // advc.004g
-	gDLL->UI().addMessage(getOwner(), true,
-		-1, szBuffer, "AS2D_BOMBARD",
-		MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREEN"),
-		pTargetPlot->getX(), pTargetPlot->getY());		
-	}
-	// Super Forts end
+
 	if (getPlot().isActiveVisible(false))
 	{
-		// Super Forts begin *bombard*
-		if (pTargetPlot == NULL && pBombardCity != NULL)
-		{
-			CvUnit *pDefender = pBombardCity->getPlot().getBestDefender(NO_PLAYER, getOwner(), this, true);//org code
-			// Bombard entity mission
-			CvMissionDefinition kDefiniton;
-			kDefiniton.setMissionTime(GC.getInfo(MISSION_BOMBARD).getTime() * gDLL->getSecsPerTurn());
-			kDefiniton.setMissionType(MISSION_BOMBARD);
-			kDefiniton.setPlot(pBombardCity->plot());
-			kDefiniton.setUnit(BATTLE_UNIT_ATTACKER, this);
-			kDefiniton.setUnit(BATTLE_UNIT_DEFENDER, pDefender);
-			gDLL->getEntityIFace()->AddMission(&kDefiniton);
-		}
-		else
-		{
-			CvUnit *pDefender = pTargetPlot->getBestDefender(NO_PLAYER, getOwner(), this, true);
-			// Super Forts end
-			// Bombard entity mission
-			CvMissionDefinition kDefiniton;
-			kDefiniton.setMissionTime(GC.getInfo(MISSION_BOMBARD).getTime() * gDLL->getSecsPerTurn());
-			kDefiniton.setMissionType(MISSION_BOMBARD);
-			// Super Forts begin *bombard*
-			kDefiniton.setPlot(pTargetPlot);
-			// Super Forts end
-			kDefiniton.setUnit(BATTLE_UNIT_ATTACKER, this);
-			kDefiniton.setUnit(BATTLE_UNIT_DEFENDER, pDefender);
-			gDLL->getEntityIFace()->AddMission(&kDefiniton);
-		}
+		CvUnit *pDefender = pBombardCity->getPlot().getBestDefender(NO_PLAYER, getOwner(), this, true);
+		// Bombard entity mission
+		CvMissionDefinition kDefiniton;
+		kDefiniton.setMissionTime(GC.getInfo(MISSION_BOMBARD).getTime() * gDLL->getSecsPerTurn());
+		kDefiniton.setMissionType(MISSION_BOMBARD);
+		kDefiniton.setPlot(pBombardCity->plot());
+		kDefiniton.setUnit(BATTLE_UNIT_ATTACKER, this);
+		kDefiniton.setUnit(BATTLE_UNIT_DEFENDER, pDefender);
+		gDLL->getEntityIFace()->AddMission(&kDefiniton);
 	}
 	return true;
 }
@@ -5378,12 +5373,14 @@ bool CvUnit::pillageImprovement()
 	kPlot.setImprovementType(GC.getInfo(kPlot.getImprovementType()).
 			getImprovementPillage());
 
-//super forts doto addition to remove culture on pillage			
-	kPlot.changeCultureRangeFortsWithinRange(prePillageOwner, -1, prePillageImprovement, false);
-	kPlot.changeCultureRangeForts(prePillageOwner, -1);
-	kPlot.updateCulture(true, false);
+//super forts doto addition to remove culture on pillage
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	{			
+		kPlot.changeCultureRangeFortsWithinRange(prePillageOwner, -1, prePillageImprovement, false);
+		kPlot.changeCultureRangeForts(prePillageOwner, -1);
+		kPlot.updateCulture(true, false);
+	}
 //super forts doto addition to remove culture on pillage	
-
 	return true;
 }
 
@@ -6827,7 +6824,8 @@ bool CvUnit::build(BuildTypes eBuild)
 	    }
 	    // < JCultureControl Mod End >
 	    // Super Forts begin *culture*
-		if (GC.getBuildInfo(eBuild).getImprovement() != NO_IMPROVEMENT)
+		if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && 
+				GC.getBuildInfo(eBuild).getImprovement() != NO_IMPROVEMENT)
 		{
 			if(GC.getImprovementInfo((ImprovementTypes)GC.getBuildInfo(eBuild).getImprovement()).isActsAsCity())
 			{
@@ -7452,15 +7450,20 @@ int CvUnit::visibilityRange() const
 {
 	// Super Forts begin *vision*
 	int iImprovementVisibilityChange = 0;
-	if(plot()->getImprovementType() != NO_IMPROVEMENT)
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
 	{
-		iImprovementVisibilityChange = GC.getImprovementInfo(plot()->getImprovementType()).getVisibilityChange();
+		if(plot()->getImprovementType() != NO_IMPROVEMENT)
+		{
+			iImprovementVisibilityChange = GC.getImprovementInfo(plot()->getImprovementType()).getVisibilityChange();
+		}
+		return (GC.getDefineINT(CvGlobals::UNIT_VISIBILITY_RANGE) + getExtraVisibilityRange() + iImprovementVisibilityChange);
 	}
-	return (GC.getDefineINT(CvGlobals::UNIT_VISIBILITY_RANGE) + getExtraVisibilityRange() + iImprovementVisibilityChange);
 	// Super Forts end
-	/* Original
-	return (GC.getDefineINT(CvGlobals::UNIT_VISIBILITY_RANGE) + getExtraVisibilityRange());
-	*/
+	else
+	{
+	/* Original*/
+		return (GC.getDefineINT(CvGlobals::UNIT_VISIBILITY_RANGE) + getExtraVisibilityRange());
+	}
 }
 
 
@@ -9368,7 +9371,8 @@ void CvUnit::setXY(int iX, int iY, bool bGroup, bool bUpdate, bool bShow, bool b
 		
 		// Super Forts begin *culture* *text*
 		ImprovementTypes eImprovement = pNewPlot->getImprovementType();
-		if(eImprovement != NO_IMPROVEMENT)
+		if(GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) &&
+			eImprovement != NO_IMPROVEMENT)
 		{
 			if(GC.getImprovementInfo(eImprovement).isActsAsCity() && !m_pUnitInfo->isNoCapture())//doto - adjustment qa 108
 			{
@@ -9387,8 +9391,7 @@ void CvUnit::setXY(int iX, int iY, bool bGroup, bool bUpdate, bool bShow, bool b
 				}
 			}
 		}
-		// Super Forts end
-		
+		// Super Forts end		
 		//update facing direction
 		if (pOldPlot != NULL)
 		{
@@ -12484,7 +12487,7 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot
 		which resulted that the last strike before the limit was reached - was displayed as 0%
 		but we need to show the actual dmg that was commited, to get the defender to its combat limit.
 		i think the best course is to execute this message from withing the resolvecombat range to acoid duplicate calls here.
-	sagis doto108*/
+	 doto108*/
 		int dmgCalc = std::min(GC.getMAX_HIT_POINTS() - 1,pDefender->getDamage() + iDamage);
 		bool const bLimitReached = (dmgCalc >= pAttacker->combatLimit());
 		if (bLimitReached)
@@ -12535,11 +12538,9 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot
 		}
 		else
 		{
-			CvWString szBuffer;
-
-			
-
-			if (GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE) && pDefender->isRangeStrikeCapableK())
+			CvWString szBuffer;			
+			if (GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE) 
+				&& pDefender->isRangeStrikeCapableK())
 			{
 				//if the damage is none 0 and a hit.
 				szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR",
@@ -13313,3 +13314,128 @@ float CvUnit::doPillageInfluence()
 /**                                                                                              */
 /** Original Author Moctezuma              End                                                   */
 /*************************************************************************************************/
+
+//
+//this is a merged fn of bombard() and super forts
+//i decided to duplicate and remove the city related code
+//so the fort bombard would be cleaner.
+//
+////DOTO changes for super forts - condition stuff that are coty related
+//// Super Forts *bombard*
+//bool CvUnit::bombard()
+//{
+//	if (!canBombard(getPlot()))
+//		return false;
+//
+//	CvCity* pBombardCity = bombardTarget(getPlot());
+//	// Super Forts begin *bombard*
+//	//doto adjustment
+//	//if theres no city, check for improvement - then convert it to the city variable.
+//	CvPlot* pTargetPlot = NULL;
+//	if(pBombardCity == NULL)
+//	{
+//		pTargetPlot = bombardImprovementTarget(plot());	
+//	}	
+//// Super Forts begin	
+//	bool bFirstBombardment = false;
+//	if (pBombardCity != NULL)
+//	{
+//		if (!isEnemy(pBombardCity->getTeam())) // (advc: simplified)
+//		{
+//			//getGroup()->groupDeclareWar(pTargetPlot, true); // Disabled by K-Mod
+//			return false;
+//		}
+//
+//		/*bool */bFirstBombardment = !pBombardCity->isBombarded(); // advc.004g
+//		// advc: Moved into subroutine
+//	}
+//	// Super Forts end *bombard*
+//	
+//	if (pTargetPlot == NULL && pBombardCity != NULL)
+//	{
+//		pBombardCity->changeDefenseModifier(-std::max(0, damageToBombardTarget(getPlot())));
+//	}
+//	else if (pTargetPlot != NULL) 
+//	{
+//		pTargetPlot->changeDefenseDamage(bombardRate());
+//	}	
+//	setMadeAttack(true);
+//	changeMoves(GC.getMOVE_DENOMINATOR());
+//// Super Forts begin *bombard* *text*
+////doto - if pTargetPlot - it means it found a city so no improvement bmbrd	
+//	if (pTargetPlot == NULL && pBombardCity != NULL)
+//	{
+//// Super Forts end		
+//	CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_REDUCED_TO",
+//			getNameKey(), // advc.004g: Show unit name (idea from MNAI)
+//			pBombardCity->getDefenseModifier(false),
+//			GET_PLAYER(getOwner())./*getNameKey()*/getCivilizationAdjectiveKey(), // advc.004g
+//			pBombardCity->getNameKey());
+//	gDLL->UI().addMessage(pBombardCity->getOwner(), /* advc.004g: */ true,
+//			-1, szBuffer, pBombardCity->getPlot(),
+//			!bFirstBombardment ? NULL : // advc.004g: Don't bombard the owner with sound
+//			"AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("RED"));
+//	szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_REDUCE_CITY_DEFENSES",
+//			getNameKey(), pBombardCity->getNameKey(),
+//			pBombardCity->getDefenseModifier(//false
+//			ignoreBuildingDefense())); // advc.004g
+//	gDLL->UI().addMessage(getOwner(), true,
+//			-1, szBuffer, "AS2D_BOMBARD",
+//			MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREEN"),
+//			pBombardCity->getX(), pBombardCity->getY());
+//	}
+//	// Super Forts begin *bombard* *text*
+//	else
+//	{
+//	CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_REDUCED_TO", getNameKey(),
+//		(GC.getImprovementInfo(pTargetPlot->getImprovementType()).getDefenseModifier() - pTargetPlot->getDefenseDamage()),
+//		GET_PLAYER(getOwner())./*getNameKey()*/getCivilizationAdjectiveKey(), // advc.004g
+//		GC.getImprovementInfo(pTargetPlot->getImprovementType()).getText());
+//	 gDLL->UI().addMessage(pTargetPlot->getOwner(), /* advc.004g: */ true,
+//			-1, szBuffer, *pTargetPlot,
+//			!bFirstBombardment ? NULL : // advc.004g: Don't bombard the owner with sound
+//			"AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("RED"));
+//	szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_REDUCE_CITY_DEFENSES",
+//		getNameKey(), 
+//		GC.getImprovementInfo(pTargetPlot->getImprovementType()).getText(),
+//		(GC.getImprovementInfo(pTargetPlot->getImprovementType()).getDefenseModifier() - pTargetPlot->getDefenseDamage())); // advc.004g
+//	gDLL->UI().addMessage(getOwner(), true,
+//		-1, szBuffer, "AS2D_BOMBARD",
+//		MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREEN"),
+//		pTargetPlot->getX(), pTargetPlot->getY());		
+//	}
+//	// Super Forts end
+//	if (getPlot().isActiveVisible(false))
+//	{
+//		// Super Forts begin *bombard*
+//		if (pTargetPlot == NULL && pBombardCity != NULL)
+//		{
+//			CvUnit *pDefender = pBombardCity->getPlot().getBestDefender(NO_PLAYER, getOwner(), this, true);//org code
+//			// Bombard entity mission
+//			CvMissionDefinition kDefiniton;
+//			kDefiniton.setMissionTime(GC.getInfo(MISSION_BOMBARD).getTime() * gDLL->getSecsPerTurn());
+//			kDefiniton.setMissionType(MISSION_BOMBARD);
+//			kDefiniton.setPlot(pBombardCity->plot());
+//			kDefiniton.setUnit(BATTLE_UNIT_ATTACKER, this);
+//			kDefiniton.setUnit(BATTLE_UNIT_DEFENDER, pDefender);
+//			gDLL->getEntityIFace()->AddMission(&kDefiniton);
+//		}
+//		else
+//		{
+//			CvUnit *pDefender = pTargetPlot->getBestDefender(NO_PLAYER, getOwner(), this, true);
+//			// Super Forts end
+//			// Bombard entity mission
+//			CvMissionDefinition kDefiniton;
+//			kDefiniton.setMissionTime(GC.getInfo(MISSION_BOMBARD).getTime() * gDLL->getSecsPerTurn());
+//			kDefiniton.setMissionType(MISSION_BOMBARD);
+//			// Super Forts begin *bombard*
+//			kDefiniton.setPlot(pTargetPlot);
+//			// Super Forts end
+//			kDefiniton.setUnit(BATTLE_UNIT_ATTACKER, this);
+//			kDefiniton.setUnit(BATTLE_UNIT_DEFENDER, pDefender);
+//			gDLL->getEntityIFace()->AddMission(&kDefiniton);
+//		}
+//	}
+//	return true;
+//}
+//

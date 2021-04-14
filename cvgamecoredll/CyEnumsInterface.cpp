@@ -571,6 +571,7 @@ void CyEnumsPythonInterface()
 		.value("GAMEOPTION_NO_SLAVERY", GAMEOPTION_NO_SLAVERY) // advc.912d
 		//MOD@VET_Andera412_Blocade_Unit-begin1/1
 		.value("GAMEOPTION_BLOCADE_UNIT", GAMEOPTION_BLOCADE_UNIT)
+		.value("GAMEOPTION_SUPER_FORTS", GAMEOPTION_SUPER_FORTS)//super forts
 //MOD@VET_Andera412_Blocade_Unit-end1/1
 		.value("GAMEOPTION_MOUNTAINS", GAMEOPTION_MOUNTAINS)//AND Mountains mod Options
         .value("GAMEOPTION_TECH_DIFFUSION", GAMEOPTION_TECH_DIFFUSION)//Tech Diffusion Option by Stolenrays

@@ -292,6 +292,8 @@ public:
 	void calculateCanalValue();
 	int getChokeValue();
 	void calculateChokeValue();
+//doto addition
+	bool isFortImprovement();
 	// Super Forts end
 
 private:

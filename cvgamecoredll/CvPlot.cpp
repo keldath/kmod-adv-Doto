@@ -7,7 +7,7 @@
 #include "CitySiteEvaluator.h"
 #include "CvArea.h"
 #include "CvUnit.h"
-#include "FAStarFunc.h"
+#include "FAStarFunc.h"//super forts needed//doto
 #include "CvSelectionGroup.h"
 #include "CvInfo_City.h"
 #include "CvInfo_Terrain.h"
@@ -358,40 +358,44 @@ void CvPlot::doTurn()
 
 	if (isOwned())
 		changeOwnershipDuration(1);
-
-// Super Forts begin *upgrade*
-	if (getOwner() != NO_PLAYER)
+// Super Forts begin *upgrade*		
+	if (!GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
 	{
-		if (isImproved() && isOwned()
-			&& !GET_PLAYER(getOwner()).isAnarchy()//ADDDED - its a ctd if theres anarchy - 
-			//advc merged doupgradeimprovement into doimprovement
-			)//added own check to avoid cts
-		{
+		if (isImproved())//org advc code
 			changeImprovementDuration(1);
-			// Super Forts begin *upgrade*
-			if (!isBeingWorked())
-			{
-				doImprovement(true);
-				//doto adjustment - code crashes if this executes
-				//advc merged the funcs but the part of the doimprovement crashes the game upon this execution
-				//so i added a bool check so only the upgarde part will be done
-				//doImprovementUpgrade();
-			}
-			// Super Forts end
-		}
 	}
-	
-// Super Forts end
-
-// Super Forts begin *bombard*
-	if (!isBombarded() && getDefenseDamage() > 0)
+	else
 	{
-		changeDefenseDamage(-(GC.getDefineINT("CITY_DEFENSE_DAMAGE_HEAL_RATE")));
-	}
-	setBombarded(false);
+// Super Forts begin *upgrade*
+		if (getOwner() != NO_PLAYER)
+		{
+			if (isImproved() && isOwned()
+				&& !GET_PLAYER(getOwner()).isAnarchy()//ADDDED - its a ctd if theres anarchy - 
+				//advc merged doupgradeimprovement into doimprovement
+				)//added own check to avoid cts
+			{
+				changeImprovementDuration(1);
+				// Super Forts begin *upgrade*
+				if (!isBeingWorked())
+				{
+					doImprovement(true);
+					//doto adjustment - code crashes if this executes
+					//advc merged the funcs but the part of the doimprovement crashes the game upon this execution
+					//so i added a bool check so only the upgarde part will be done
+					//doImprovementUpgrade();
+				}
+			// Super Forts end
+			}
+		}
 // Super Forts end
-	
-	
+// Super Forts begin *bombard*
+		if (!isBombarded() && getDefenseDamage() > 0)
+		{
+			changeDefenseDamage(-(GC.getDefineINT("CITY_DEFENSE_DAMAGE_HEAL_RATE")));
+		}
+		setBombarded(false);
+	}
+// Super Forts end
 	doFeature();
 	doCulture();
 	verifyUnitValidPlot();
@@ -408,7 +412,7 @@ void CvPlot::doTurn()
 	//#endif // XXX
 }
 
-
+//super forts doto - added bool 
 void CvPlot::doImprovement(bool bsuperForts)
 {
 	PROFILE_FUNC();
@@ -474,7 +478,8 @@ void CvPlot::doImprovement(bool bsuperForts)
 	{
 	   CvImprovementInfo &kImprovementUpgradeInfo = GC.getImprovementInfo(eImprovementUpgrade_sf);
 	// Super Forts begin *upgrade* - added if-else statement
-		if(kImprovementInfo.isUpgradeRequiresFortify())
+		if(GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) 
+			&& kImprovementInfo.isUpgradeRequiresFortify())
 		{
 			bool bDefenderFound = false;
 			CLinkList<IDInfo> oldUnits;
@@ -532,6 +537,7 @@ void CvPlot::doImprovement(bool bsuperForts)
 			}
 			// < JCultureControl Mod End >
 		}
+//super forts doto		
 		}
 	}
 }
@@ -544,8 +550,10 @@ void CvPlot::updateCulture(bool bBumpUnits, bool bUpdatePlotGroups)
 	if(/*isCityExternal(true) */
 		//doto change - added improvement specific check
 		(isCity() ||
-		isFortImprovement())
-		/*|| (getOwner() != NO_PLAYER)*/)
+		(GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && isFortImprovement()))
+		/*removed by keldath- 
+		caused pillage and surronding plots to not get culture
+		|| (getOwner() != NO_PLAYER)*/)
 		return;
 // Super Forts end
 	// <advc.035>
@@ -1030,8 +1038,14 @@ void CvPlot::nukeExplosion(int iRange, CvUnit* pNukeUnit, bool bBomb)
 bool CvPlot::isConnectedTo(const CvCity* pCity) const
 {
 	// Super Forts begin *AI_worker* (had to remove the assert and replace it with an if-else)
-	//FAssert(isOwned());
-	if(isOwned())
+	if (!GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	{
+		//original advc code
+		FAssert(isOwned());
+		return (isSamePlotGroup(*pCity->plot(), getOwner()) ||
+				isSamePlotGroup(*pCity->plot(), pCity->getOwner()));
+	}
+	else if(isOwned())
 	{
 		return (isSamePlotGroup(*pCity->plot(), getOwner()) ||
 			isSamePlotGroup(*pCity->plot(), pCity->getOwner()));
@@ -1532,7 +1546,8 @@ int CvPlot::seeFromLevel(TeamTypes eTeam) const
 {
 	int iLevel = GC.getInfo(getTerrainType()).getSeeFromLevel();
 	// Super Forts begin *vision*
-	if (getImprovementType() != NO_IMPROVEMENT)
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) 
+		&& getImprovementType() != NO_IMPROVEMENT)
 	{
 		iLevel += GC.getImprovementInfo(getImprovementType()).getSeeFrom();
 	}
@@ -2266,7 +2281,7 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible)
 			return false;
 		}
 // Super Forts begin *build*
-		if (GC.getInfo(eImprovement).getUniqueRange() > 0)
+		if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && GC.getInfo(eImprovement).getUniqueRange() > 0)
 		{
 			int iUniqueRange = GC.getImprovementInfo(eImprovement).getUniqueRange();
 			for (SquareIter it(*this, iUniqueRange); it.hasNext(); ++it)
@@ -2289,7 +2304,7 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible)
 			if (GC.getInfo(getImprovementType()).isPermanent())
 				return false;
 			// Super Forts begin *AI_worker* - prevent forts from being built over when outside culture range
-			if (GC.getImprovementInfo(getImprovementType()).isActsAsCity())
+			if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && GC.getImprovementInfo(getImprovementType()).isActsAsCity())
 			{
 				if (!isWithinCultureRange(ePlayer) && !(getCultureRangeForts(ePlayer) > 1))
 				{
@@ -2298,7 +2313,7 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible)
 			}
 			// Super Forts end	
 			if (getImprovementType() == eImprovement)
-				return false;	
+				return false;
 			ImprovementTypes eFinalImprovementType = CvImprovementInfo::
 					finalUpgrade(getImprovementType());
 			if (eFinalImprovementType != NO_IMPROVEMENT)
@@ -2351,7 +2366,8 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible)
 				else return false; //only buildable in own culture
 			}
 // Super Forts begin *AI_worker* - prevent workers from two different players from building a fort in the same plot
-			if(GC.getImprovementInfo(eImprovement).isActsAsCity())
+			if(GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && 
+				GC.getImprovementInfo(eImprovement).isActsAsCity())
 			{
 				CLinkList<IDInfo> oldUnits;
 				CLLNode<IDInfo>* pUnitNode = headUnitNode();
@@ -2643,7 +2659,7 @@ int CvPlot::getUnitPower(PlayerTypes eOwner) const
 // Super Forts begin *bombard*
 //doto keldath change - added the plot to be checked for isenemy.
 bool CvPlot::isBombardable(const CvUnit* pUnit, CvPlot* kPlot) const
-{
+{	
 	ImprovementTypes eImprovement;
 
 	if (pUnit != NULL && 
@@ -3153,7 +3169,6 @@ void CvPlot::calculateChokeValue()
 	setChokeValue(iChokeValue);
 }
 // Super Forts end
-
 int CvPlot::defenseModifier(TeamTypes eDefender, bool bIgnoreBuilding,
 	TeamTypes eAttacker, // advc.012
 	bool bHelp, /* advc.500b: */ bool bGarrisonStrength) const
@@ -3183,8 +3198,14 @@ int CvPlot::defenseModifier(TeamTypes eDefender, bool bIgnoreBuilding,
 			GET_TEAM(eDefender).isFriendlyTerritory(getTeam())))
 		{
 			// Super Forts begin *bombard*
-			iModifier += GC.getInfo(eImprovement).getDefenseModifier() - getDefenseDamage();
-			// iModifier += GC.getInfo(eImprovement).getDefenseModifier(); - Original code
+			if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+			{
+				iModifier += GC.getInfo(eImprovement).getDefenseModifier() - getDefenseDamage();
+			}
+			else
+			{
+				iModifier += GC.getInfo(eImprovement).getDefenseModifier();
+			}
 			// Super Forts end
 		}
 	}
@@ -3420,8 +3441,9 @@ PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureR
 		is immediately founded near the ruins. Adding an isCity check to avoid confusion. */
 
 // Super Forts begin *culture* - doto to advc adjustment
+	bool superForts = GC.getGame().isOption(GAMEOPTION_SUPER_FORTS);
 	if((!isCity()
-		|| !isFortImprovement())
+		|| (superForts && !isFortImprovement()))
 		&& isForceUnowned())
 		return NO_PLAYER;
 // Super Forts begin *culture* - doto to advc adjustment
@@ -3438,8 +3460,8 @@ PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureR
 				continue;
 			PlayerTypes eCityOwner = p.getPlotCity()->getOwner();
 			// Super Forts begin *culture* - modified if statement
-			if (isWithinCultureRange(eCityOwner) || isWithinFortCultureRange(eCityOwner))
-			//if(isWithinCultureRange(eCityOwner))
+			if (isWithinCultureRange(eCityOwner) 
+			|| (superForts && isWithinFortCultureRange(eCityOwner)))
 			// Super Forts end
 			{
 				abCityRadius.set(eCityOwner, true);
@@ -3469,7 +3491,7 @@ PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureR
 			if (/* advc.099c: */ bIgnoreCultureRange ||
 				isWithinCultureRange(ePlayer)||
 // Super Forts begin *culture* - modified if statement
-			 	isWithinFortCultureRange(ePlayer))
+			 	(superForts && isWithinFortCultureRange(ePlayer)))
 // Super Forts end	
 			{
 				if (iCulture > iBestCulture ||
@@ -3501,8 +3523,7 @@ PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureR
 			/*	advc.099c: 099c cares only about city tile culture, but for consistency,
 				I'm also implementing the IgnoreCultureRange switch for non-city tiles. */
 			if (!bIgnoreCultureRange &&
-				!isWithinCultureRange(pLoopCity->getOwner())
-				)
+				!isWithinCultureRange(pLoopCity->getOwner()))
 			{
 				continue;
 			}
@@ -3547,8 +3568,9 @@ PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureR
 		else return NO_PLAYER;
 	}
 //doto change for superforts
+//i hope this is the correct place for this code
 // Super Forts begin *culture*
-	if (!GET_PLAYER(eBestPlayer).isAlive())		
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && !GET_PLAYER(eBestPlayer).isAlive())		
 	{
 			eBestPlayer = NO_PLAYER;
 	}
@@ -3781,8 +3803,10 @@ void CvPlot::removeGoody()
 		return; // </advc>
 	setImprovementType(NO_IMPROVEMENT);
 }
-//super forts - doto keldath - using this fn instead of iscity in someplaces
-//also usingit in unit blocade
+//super forts - doto keldath and blocade mod
+//considered using this , since advc changed the org fn.
+//in the end i added in the isfort below. easier for me to use
+//though i could use the citydefense or revealolit something that f1rpo created
 // advc: Deprecated; see comment in header.
 bool CvPlot::isCityExternal(bool bCheckImprovement, TeamTypes eForTeam) const
 {
@@ -4885,7 +4909,7 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 			{
 				GET_PLAYER(getOwner()).changeImprovementCount(getImprovementType(), -1);
 				// Super Forts begin *culture*
-				if (GC.getInfo(getImprovementType()).isActsAsCity())
+				if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && GC.getInfo(getImprovementType()).isActsAsCity())
 				{
 					changeCultureRangeFortsWithinRange(getOwner(), -1, GC.getInfo(getImprovementType()).getCultureRange(), false);
 				}
@@ -4936,7 +4960,7 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 			{
 				GET_PLAYER(getOwner()).changeImprovementCount(getImprovementType(), 1);
 				// Super Forts begin *culture*
-				if (GC.getInfo(getImprovementType()).isActsAsCity())
+				if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && GC.getInfo(getImprovementType()).isActsAsCity())
 				{
 					changeCultureRangeFortsWithinRange(getOwner(), 1, GC.getInfo(getImprovementType()).getCultureRange(), true);
 				}
@@ -5490,7 +5514,7 @@ void CvPlot::setImprovementType(ImprovementTypes eNewValue,
 		{
 			GET_PLAYER(getOwner()).changeImprovementCount(eOldImprovement, -1);
 		// Super Forts begin *culture*
-			if (GC.getInfo(getImprovementType()).isActsAsCity())
+			if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && GC.getInfo(getImprovementType()).isActsAsCity())
 			{
 				changeCultureRangeFortsWithinRange(getOwner(), -1, GC.getInfo(getImprovementType()).getCultureRange(), true);
 			}
@@ -5498,7 +5522,10 @@ void CvPlot::setImprovementType(ImprovementTypes eNewValue,
 		// Super Forts end
 	}
 	// Super Forts begin *vision*
-	updateSight(false, true);
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	{
+		updateSight(false, true);
+	}
 	// Super Forts end
 	
 	updatePlotGroupBonus(false, /* advc.064d: */ false);
@@ -5562,7 +5589,7 @@ void CvPlot::setImprovementType(ImprovementTypes eNewValue,
 		{
 			GET_PLAYER(getOwner()).changeImprovementCount(getImprovementType(), 1);
 			// Super Forts begin *culture*
-			if (GC.getInfo(getImprovementType()).isActsAsCity())
+			if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && GC.getInfo(getImprovementType()).isActsAsCity())
 			{
 					changeCultureRangeFortsWithinRange(getOwner(), 1, GC.getInfo(getImprovementType()).getCultureRange(), true);
 			}
@@ -5570,7 +5597,10 @@ void CvPlot::setImprovementType(ImprovementTypes eNewValue,
 		}
 	}
 	// Super Forts begin *vision*
-	updateSight(true, true);
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	{
+		updateSight(true, true);
+	}
 	// Super Forts end
 
 	updateIrrigated();
@@ -8069,7 +8099,7 @@ void CvPlot::doFeature()
 	}
 }
 
-void CvPlot::doCulture()
+void  CvPlot::doImprovementControl()
 {
 	// Super Forts begin *culture*
 	doImprovementCulture();
@@ -8126,6 +8156,16 @@ void CvPlot::doCulture()
 		}
 	}
 	// Super Forts end
+}
+void CvPlot::doCulture()
+{
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	{
+		doImprovementControl(); 
+		/*keldath doto - this entore code was here
+		so i exported it to a separated fn, couldnt find a proper name since theres already
+		doImprovementCulture...*/
+	}
 	// <advc> Moved the bulk of the code into a new CvCity member function
 	CvCity* pPlotCity = getPlotCity();
 	if(pPlotCity != NULL)
@@ -8650,7 +8690,7 @@ void CvPlot::read(FDataStreamBase* pStream)
 	pStream->Read(&cCount);
 	if (cCount > 0)
 		m_aaiInvisibleVisibilityCount.Read(pStream, false, true);
-	
+
 	m_units.Read(pStream);
 }
 
@@ -8756,19 +8796,6 @@ void CvPlot::write(FDataStreamBase* pStream)
 		pStream->Write((char)m_aiCultureControl.getLength());
 		m_aiCultureControl.Write(pStream);
 	}
-	
-	// Super Forts begin *culture*
-	if (NULL == m_aiCultureRangeForts)
-	{
-		pStream->Write((char)0);
-	}
-	else
-	{
-		pStream->Write((char)MAX_PLAYERS);
-		pStream->Write(MAX_PLAYERS, m_aiCultureRangeForts);
-	}
-	// Super Forts end
-	
 //kedath QA-DONE -> ANSWER:
 //OK. If read is simplified (see above), then this here would just say:
 //m_aiCultureControl.Write(pStream);
@@ -8783,7 +8810,20 @@ void CvPlot::write(FDataStreamBase* pStream)
 		pStream->Write(MAX_PLAYERS, m_aiCultureControl);
 	}*/
     // < JCultureControl Mod End >
-
+// Super Forts begin *culture*	keldath - consider converting to advc syntax - see above
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	{
+		if (NULL == m_aiCultureRangeForts)
+		{
+			pStream->Write((char)0);
+		}
+		else
+		{
+			pStream->Write((char)MAX_PLAYERS);
+			pStream->Write(MAX_PLAYERS, m_aiCultureRangeForts);
+		}
+	}
+// Super Forts end	
 	if (!m_aiFoundValue.hasContent())
 		pStream->Write((char)0);
 	else
@@ -10022,7 +10062,8 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 			{return false;}
 		//keldath 099 advc adjustment - prev it checked also improvement?
 		if (/*keldath trial: !pUnit->isPlotValid(pUnit->getPlot()) */
-			/*f1rpo suggestion */isOwned() && !GET_TEAM(pUnit->getTeam()).isCityDefense(*this)
+			/*f1rpo suggestion */
+			isOwned() && !GET_TEAM(pUnit->getTeam()).isCityDefense(*this)
 			/*consider this : CvTeam::isCityHeal(CvPlot const& kPlot)*/
 			/*original : !isFriendlyCity(*pUnit, true)*/)
 		{

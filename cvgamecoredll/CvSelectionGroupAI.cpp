@@ -688,6 +688,9 @@ CvUnit* CvSelectionGroupAI::AI_bestUnitForMission(MissionTypes eMission,
 	PROFILE_FUNC(); // advc (neither frequently called nor expensive)
 	CvPlot const& kAt = getPlot();
 	bool bEasyCityCapture = false;
+/*super forts DOTO - we need to duplicate this bEasyCityCapture code
+for forts...
+*/
 	CvCity const* pTargetCity = (pMissionPlot == NULL ? NULL :
 			pMissionPlot->getPlotCity());
 	int iDefenders = -1;
@@ -770,7 +773,7 @@ CvUnit* CvSelectionGroupAI::AI_bestUnitForMission(MissionTypes eMission,
 		case MISSION_BOMBARD:
 		{
 /* super forts Doto fix for advc */
-			if (pMissionPlot == NULL)
+			if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && pMissionPlot == NULL)
 			{
 				break;
 			}
@@ -784,20 +787,28 @@ CvUnit* CvSelectionGroupAI::AI_bestUnitForMission(MissionTypes eMission,
 				rPriority *= per100(pUnit->currHitPoints());
 			int const iBombard = pUnit->damageToBombardTarget(kAt);
 			// bIgnoreBuilding=false b/c iBombard already reflects that
-/* super forts Doto fix for advc */			
+/* super forts Doto fix for advc */
+//i had to remove the const since im re assigning it			
 			//int const iCurrDefense = pTargetCity->getDefenseModifier(false);
 			int /*const*/ iCurrDefense = 0;
-			if (pTargetCity != NULL)
+			if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
 			{
-				iCurrDefense = pTargetCity->getDefenseModifier(false);//sagi
+				if (pTargetCity != NULL)
+				{
+					iCurrDefense = pTargetCity->getDefenseModifier(false);//sagi
+				}
+				else 
+				{	
+					if (pMissionPlot != NULL)
+					{
+						ImprovementTypes eImprovement = pMissionPlot->getImprovementType();
+						iCurrDefense = GC.getImprovementInfo(eImprovement).getDefenseModifier();
+					}
+				}
 			}
 			else 
-			{	
-				if (pMissionPlot != NULL)
-				{
-					ImprovementTypes eImprovement = pMissionPlot->getImprovementType();
-					iCurrDefense = GC.getImprovementInfo(eImprovement).getDefenseModifier();
-				}
+			{
+				iCurrDefense = pTargetCity->getDefenseModifier(false);//org advc code
 			}
 /* super forts Doto fix for advc */			
 			int const iWaste = std::max(0, iBombard - iCurrDefense);

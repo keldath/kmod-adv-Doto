@@ -185,9 +185,12 @@ public:
 	CvCity* bombardTarget(CvPlot const& kFrom) const;														// Exposed to Python
 	bool canBombard(CvPlot const& kFrom) const;																// Exposed to Python
 	// Super Forts begin *bombard*
-	CvPlot* bombardImprovementTarget(const CvPlot* pPlot) const;
+	CvPlot* bombardImprovementTarget(const CvPlot* pPlot) const;											// Exposed to Python
 	// Super Forts end
 	int damageToBombardTarget(CvPlot const& kFrom) const; // advc
+// Super Forts doto addition begin *bombard*
+	bool bombardFort();
+// Super Forts doto addition begin *bombard*
 	bool bombard();
 
 	bool canParadrop(const CvPlot* pPlot) const;															// Exposed to Python

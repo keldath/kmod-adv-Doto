@@ -985,6 +985,9 @@ protected:
 	static int m_iMaxVisibilityRangeCache; // advc.003h
 
 	void doFeature();
+//super forts doto	
+	void doImprovementControl();
+//super forst doto
 	void doCulture();
 
 	int countTotalCulture() const; // advc.opt: Was public; replaced by getTotalCulture.

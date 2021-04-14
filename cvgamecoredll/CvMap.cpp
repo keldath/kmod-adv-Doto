@@ -1056,14 +1056,15 @@ int CvMap::calculatePathDistance(CvPlot const* pSource, CvPlot const* pDest, CvP
 	// Super Forts begin *canal* *choke*
 	// 1 must be added because 0 is already being used as the default value for iInfo in GeneratePath()
 	int iInvalidPlot = (pInvalidPlot == NULL) ? 0 : GC.getMap().plotNum(pInvalidPlot->getX(), pInvalidPlot->getY()) + 1;
-
-	if (gDLL->getFAStarIFace()->GeneratePath(&GC.getStepFinder(), 
+	//doto addition - revoke the forts change - original value was 0
+	if(!GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	{
+		iInvalidPlot = 0;
+	}
+	if (gDLL->getFAStarIFace()->GeneratePath(&GC.getStepFinder(),
 		pSource->getX(), pSource->getY(), pDest->getX(), pDest->getY(), false, iInvalidPlot, true))
 	// Super Forts end
-	//org
-	/*if (gDLL->getFAStarIFace()->GeneratePath(&GC.getStepFinder(),
-		pSource->getX(), pSource->getY(), pDest->getX(), pDest->getY(), false, 0, true))
-	*/{
+	{
 		FAStarNode* pNode = gDLL->getFAStarIFace()->GetLastNode(&GC.getStepFinder());
 		if (pNode != NULL)
 			return pNode->m_iData1;

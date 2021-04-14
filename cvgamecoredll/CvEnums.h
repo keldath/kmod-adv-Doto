@@ -581,6 +581,7 @@ ENUM_START(GameOption, GAMEOPTION)
     GAMEOPTION_MOUNTAINS,//AND Mountains  Option
     GAMEOPTION_TECH_DIFFUSION, //Tech Diffusion Option by Stolenrays	
     GAMEOPTION_CULTURE_CONTROL,//Culture Control Gameoption by Stolenrays
+    GAMEOPTION_SUPER_FORTS,//Culture Control Gameoption by Stolenrays
 //Influence Driven War: Added for PIG Mod by PieceOfMind 26/10/09
 	GAMEOPTION_INFLUENCE_DRIVEN_WAR,
 	GAMEOPTION_IDW_NO_BARBARIAN,

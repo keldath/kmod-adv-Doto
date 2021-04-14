@@ -325,7 +325,7 @@ float CyMap::getMinimapLandAlpha()
 // Super Forts begin *canal* *choke*
 void CyMap::calculateCanalAndChokePoints()
 {
-	//DOTO QA108 ADJUSTMENT - NOT SURE IF THATS FINE
+	//DOTO QA108 ADJUSTMENT - NOT SURE IF THATS FINE - its fine from f1rpo
 	//if(m_kMap)
 	//{
 		m_kMap.calculateCanalAndChokePoints();

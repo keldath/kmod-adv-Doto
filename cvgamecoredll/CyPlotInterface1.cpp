@@ -281,6 +281,8 @@ void CyPlotPythonInterface1(python::class_<CyPlot>& x)
 		.def("calculateCanalValue", &CyPlot::calculateCanalValue, "void ()")
 		.def("getChokeValue", &CyPlot::getChokeValue, "int ()")
 		.def("calculateChokeValue", &CyPlot::calculateChokeValue, "void ()")
+//doto addition
+		.def("isFortImprovement", &CyPlot::isFortImprovement, "bool ()")
 		// Super Forts end
 	;
 
@@ -298,5 +300,5 @@ void CyPlotPythonInterface1(python::class_<CyPlot>& x)
 		.value("RANDPLOT_HABITABLE", RANDPLOT_HABITABLE)
 		.value("RANDPLOT_WATERSOURCE", RANDPLOT_WATERSOURCE)
 		/* </advc.300> */
-	;
+		;
 }

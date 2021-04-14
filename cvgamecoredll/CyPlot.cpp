@@ -1163,4 +1163,9 @@ void CyPlot::calculateChokeValue()
 	if (m_pPlot)
 		m_pPlot->calculateChokeValue();
 }
+//doto addition
+bool CyPlot::isFortImprovement()
+{
+	return m_pPlot ? m_pPlot->isFortImprovement() : false;
+}
 // Super Forts end
