@@ -2891,7 +2891,7 @@ void CvPlayer::doTurn()  // advc: style changes
 //KNOEDELbegin CULTURAL_GOLDEN_AGE 3/8
 //	
 //
-if (kGame.isOption(GAMEOPTION_CULTURE_GOLDEN_AGE))
+	if (kGame.isOption(GAMEOPTION_CULTURE_GOLDEN_AGE))
 	{
 		if (getCultureGoldenAgeProgress() >= getCultureGoldenAgeThreshold())
 		{
@@ -16937,7 +16937,10 @@ void CvPlayer::applyEvent(EventTypes eEvent, int iEventTriggeredId, bool bUpdate
 					pLoopCity->changeCulture(pLoopCity->getOwner(),
 							kEvent.getCulture(), true, true);
 //KNOEDEL CULTURAL_GOLDEN_AGE
-					changeCultureGoldenAgeProgress(kEvent.getCulture());	//KNOEDEL
+					if (GC.getGame().isOption(GAMEOPTION_CULTURE_GOLDEN_AGE))
+					{
+						changeCultureGoldenAgeProgress(kEvent.getCulture());	//KNOEDEL
+					}
 //KNOEDEL CULTURAL_GOLDEN_AGE
 				}
 			}

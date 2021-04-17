@@ -3543,7 +3543,7 @@ void TacticalSituation::evalEngagement() {
 					// Could do without this if it's too slow
 					(!head->canMoveInto(p, true, false, false, true, false))
 //rangedstrike keldath additions
-					&& !!head->isRangeStrikeCapableK())
+					&& !head->isRangeStrikeCapableK())
 				continue;
 			int plotNum = m.plotNum(p);
 			std::map<int,int>::iterator pos = weThreaten.find(plotNum);

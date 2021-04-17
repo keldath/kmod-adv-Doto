@@ -2775,7 +2775,10 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar,
 	bool bDangerCheck) const // advc.001k
 {
 	//PROFILE_FUNC(); // advc.003o
-
+//MOD@VET_Andera412_Blocade_Unit-begin1/1 - doto assert fix attempt in I::AI_solveBlockageProblem	
+	if (kPlot.isBlocade(this->plot(),this))
+		return false;
+//MOD@VET_Andera412_Blocade_Unit-begin1/1
 	if (atPlot(&kPlot))
 		return false;
 
@@ -2926,7 +2929,7 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar,
 	{
 /*super forts keldath adjustment so attacks wont stop on forts -isEnemycity also checks for improvements so i added a specific imp check*/
 		if (!bAttack && (isEnemyCity(kPlot) || 
-		(GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && !kPlot.isFortImprovement())))
+		(isEnemy(kPlot) && GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && kPlot.isFortImprovement())))
 			return false;
 		// K-Mod. Don't let noCapture units attack defenseless cities. (eg. cities with a worker in them)
 		/*if (pPlot->isEnemyCity(*this)) {
@@ -4986,7 +4989,10 @@ but thats not needed there now.
 */
 	if (bombardTarget(kFrom) == NULL)
 	{
-		if (bombardImprovementTarget(&kFrom) == NULL)
+		if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS)
+			&& (bombardImprovementTarget(&kFrom) == NULL))
+			return false;
+		else
 			return false;
 	}
 // Super Forts doto start	
@@ -5374,7 +5380,7 @@ bool CvUnit::pillageImprovement()
 			getImprovementPillage());
 
 //super forts doto addition to remove culture on pillage
-	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && kPlot.isFortImprovement())
 	{			
 		kPlot.changeCultureRangeFortsWithinRange(prePillageOwner, -1, prePillageImprovement, false);
 		kPlot.changeCultureRangeForts(prePillageOwner, -1);
@@ -6468,8 +6474,11 @@ bool CvUnit::greatWork()
 		pCity->changeCultureTimes100(getOwner(), iCultureToAdd, true, true);
 		GET_PLAYER(getOwner()).AI_updateCommerceWeights(); // significant culture change may cause signficant weight changes.
 		// K-Mod end
-//KNOEDELbegin CULTURAL_GOLDEN_AGE		
-		GET_PLAYER(getOwner()).changeCultureGoldenAgeProgress(getGreatWorkCulture(plot()));	//KNOEDEL
+//KNOEDELbegin CULTURAL_GOLDEN_AGE	
+		if (GC.getGame().isOption(GAMEOPTION_CULTURE_GOLDEN_AGE))
+		{
+			GET_PLAYER(getOwner()).changeCultureGoldenAgeProgress(getGreatWorkCulture(plot()));	//KNOEDEL
+		}
 //KNOEDELbegin CULTURAL_GOLDEN_AGE
 	}
 	if (getPlot().isActiveVisible(false))
@@ -7456,7 +7465,9 @@ int CvUnit::visibilityRange() const
 		{
 			iImprovementVisibilityChange = GC.getImprovementInfo(plot()->getImprovementType()).getVisibilityChange();
 		}
-		return (GC.getDefineINT(CvGlobals::UNIT_VISIBILITY_RANGE) + getExtraVisibilityRange() + iImprovementVisibilityChange);
+		//doto keldath trial at fixing an assert error.
+		int totalVis = GC.getDefineINT(CvGlobals::UNIT_VISIBILITY_RANGE) + getExtraVisibilityRange() + iImprovementVisibilityChange;
+		return totalVis > 0 ? totalVis : 0;
 	}
 	// Super Forts end
 	else

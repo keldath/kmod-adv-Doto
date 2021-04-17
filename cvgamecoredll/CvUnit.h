@@ -4,10 +4,10 @@
 #define CIV4_UNIT_H
 
 #include "CvDLLEntity.h"
-//doto-rangedattack-keldath-so i can use options
+//doto-rangedattack-keldath-so i can use options - ranged immunity
 #include "CvInfo_GameOption.h"
 #include "CvGame.h"
-//kedldath-rangedattack
+//kedldath-rangedattack ranged immunity
 
 class CvPlot;
 class CvArea;
@@ -370,7 +370,7 @@ public:
 	{
 		return (m_pUnitInfo->getAirRange() + getExtraAirRange());
 	}
-//doto-rangedattack-keldath
+//doto-rangedattack-keldath - ranged immunity
 	int rangedStrike() const																					// Exposed to Python
 	{
 		//if option is off then just send 0 ...so gameplay will be normal ranged attack

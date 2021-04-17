@@ -25,7 +25,7 @@ bool GroupStepMetric::canReuseInitialPathData(GroupPathNode const& kStart) const
 bool GroupStepMetric::isValidStep(CvPlot const& kFrom, CvPlot const& kTo,
 	CvSelectionGroup const& kGroup, MovementFlags eFlags)
 {
-		//MOD@VET_Andera412_Blocade_Unit-begin2/2
+//MOD@VET_Andera412_Blocade_Unit-begin2/2
 	//f1rpo suggested a small syntax change -check for numunits isnt needed, left the org one for now
 	//if numunits is 0 it will return null so noworries
 	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))

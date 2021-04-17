@@ -1157,7 +1157,7 @@ int CvPlayerAI::AI_movementPriority(
 	if (pHeadUnit->AI_getUnitAIType() == UNITAI_EXPLORE)
 		return 10;
 
-// DOTO-MOD -rangedattack-keldath START
+// DOTO-MOD -rangedattack-keldath START - ranged immunity
 	if (pHeadUnit->rangedStrike() > 0)
 		return 11;
 
@@ -1166,7 +1166,7 @@ int CvPlayerAI::AI_movementPriority(
 
 	if (pHeadUnit->collateralDamage() > 0)
 		return 13;
-// DOTO-MOD -rangedattack-keldath end
+// DOTO-MOD -rangedattack-keldath end - ranged immunity
 	if (kGroup.isStranded())
 		return 505;
 
@@ -13169,7 +13169,9 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 
 		case UNITAI_COLLATERAL:
 			//doto keldath rangedattack + ranged immunity
-			if (u.getCombat() > 0 && (u.getCollateralDamage() > 0 || u.getRangeStrike()) &&
+			//doto 108 - decided to remove this link to ranged units for now
+			//ai seem to sue seuge a whole lot more.
+			if (u.getCombat() > 0 && (u.getCollateralDamage() > 0 /*|| u.getRangeStrike()*/) &&
 				!u.isMostlyDefensive()) // advc.315
 			{
 				bValid = true;
@@ -13512,7 +13514,9 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 			//iValue -= iTempValue / 2;
 			// disabled by K-Mod (how is drop range a disadvantage?)
 		}
-		if (u.isFirstStrikeImmune())
+//ranged immunity doto keldath rangedstrike 
+		//first strikes are ignored for ranged immunity
+		if (u.isFirstStrikeImmune() && u.getRangeStrike() == 0)
 			iValue += (iTempValue * 8) / 100;
 		iValue += (iCombatValue * u.getCityAttackModifier()) / 75; // bbai (was 100).
 		// iValue += (iCombatValue * u.getCollateralDamage()) / 400; // (moved)
@@ -13565,9 +13569,10 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		int iSiegeValue = 0;
 		iSiegeValue += iCombatValue * u.getCollateralDamage() *
 				(4+u.getCollateralDamageMaxUnits()) / 600;
-		//doto keldath rangedattack + ranged immunity
-		iSiegeValue += u.getRangeStrike() ?
-					(((iCombatValue * iCombatValue) / 50) + iCombatValue / 2) : 0;
+//doto keldath rangedattack + ranged immunity
+//108 - moved down - sort of
+//		iSiegeValue += u.rangedStrike() > 0  ?
+//					(((iCombatValue * u.rangedStrike()) / 50) + iCombatValue / 2) : 0;
 		if (u.getBombardRate() > 0 && !AI_isDoStrategy(AI_STRATEGY_AIR_BLITZ))
 		{
 			int iBombardValue = (u.getBombardRate() + 3) * 6;
@@ -13597,7 +13602,7 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 				that all unitai_collateral are limited.
 				This whole business is an ugly kludge... I hope it works. */
 			int iNoLimitCollateral = 0;
-
+			int rangedUnits = 0;
 			CvCivilization const& kCiv = getCivilization(); // advc.003w 
 			for (int i = 0; i < kCiv.getNumUnits(); i++)
 			{
@@ -13614,6 +13619,9 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 					else if (kLoopInfo.getCollateralDamage() > 0)
 						iNoLimitCollateral = getUnitClassCount(eUnitClass);
 				}
+//doto keldath rangedattack + ranged immunity
+				if (u.getRangeStrike() > 0)
+					rangedUnits += getUnitClassCount(eUnitClass);
 			}
 
 			iLimitedUnits -= range(
@@ -13622,7 +13630,12 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 			FAssert(iLimitedUnits >= 0);
 			// floor value just to avoid division by zero
 			int iAttackUnits = std::max(1, AI_totalUnitAIs(UNITAI_ATTACK) +
-					AI_totalUnitAIs(UNITAI_ATTACK_CITY));
+					AI_totalUnitAIs(UNITAI_ATTACK_CITY)
+//doto keldath rangedattack + ranged immunity
+//trying to fix the assert of more limited untis than attack due to the 
+//ranged attackers that have no capture city attribute that ui set
+					+ ::round(rangedUnits /2 )
+			);
 			/*	this is not strictly guaranteed, but I expect it to
 				always be true under normal playing conditions. */
 			/*  advc.006: +1 added and replaced iLimitedUnits with iAttackUnits
@@ -13651,9 +13664,10 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		iValue += (iCombatValue * u.getMoves()) / 4;
 		iValue += (iCombatValue * u.getWithdrawalProbability()) / 25;
 		iValue -= (iCombatValue * u.getCityAttackModifier()) / 100;
-		//doto keldath rangedattack + ranged immunity
-		iValue += u.getRangeStrike() ?
-					(((iCombatValue * iCombatValue) / 50) + iCombatValue / 2) : 0;
+//doto keldath rangedattack + ranged immunity -  108 small tweak
+//besides i hope its fine
+		iValue += u.getRangeStrike() > 0 ?
+			(iCombatValue * u.getRangeStrike()) : 0;
 		break;
 
 	case UNITAI_PILLAGE:
@@ -27695,10 +27709,12 @@ int CvPlayerAI::AI_getPlotAirbaseValue(CvPlot const& kPlot) const // advc: param
 
 	int iMinOtherCityDistance = MAX_INT;
 	int iMinFriendlyCityDistance = MAX_INT;
-	// super forts - doto - commented back in - advc removed it.
+// super forts - doto - pMinOtherCityPlot commented back in - advc removed it.
 	CvPlot const* pMinOtherCityPlot = NULL;
 /*	CvPlot const* pMinFriendlyCityPlot = NULL;*/ // advc: unused
 
+	bool superForts = GC.getGame().isOption(GAMEOPTION_SUPER_FORTS);
+// Super Forts doto	
 	int iOtherCityCount = 0;
 	for (SquareIter it(kPlot, 4, false); it.hasNext(); ++it)
 	{
@@ -27712,7 +27728,7 @@ int CvPlayerAI::AI_getPlotAirbaseValue(CvPlot const& kPlot) const // advc: param
 			if (iDist == 1)
 				return 0;
 // Super Forts begin  *choke* *canal* - move iOtherCityCount outside the if statement
-			if (!GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+			if (!superForts)
 			{
 				if (iDist < iMinFriendlyCityDistance)
 				{
@@ -27728,9 +27744,9 @@ int CvPlayerAI::AI_getPlotAirbaseValue(CvPlot const& kPlot) const // advc: param
 			if (iDist < iMinOtherCityDistance)
 			{
 				iMinOtherCityDistance = iDist;
-				//doto - super forts - re added the pMinOtherCityPlot
+//doto - super forts - re added the pMinOtherCityPlot
 				//advc commented it out
-				if (!GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+				if (!superForts)
 				{
 					//pMinOtherCityPlot = &p;
 					iOtherCityCount++;
@@ -27741,7 +27757,7 @@ int CvPlayerAI::AI_getPlotAirbaseValue(CvPlot const& kPlot) const // advc: param
 				}
 // Super Forts begin  *choke* *canal* - move iOtherCityCount outside the if statement
 			}
-			if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+			if (superForts)
 			{
 				iOtherCityCount++;
 			}
@@ -27765,7 +27781,7 @@ int CvPlayerAI::AI_getPlotAirbaseValue(CvPlot const& kPlot) const // advc: param
 			return 0;
 	}*/
 // Super Forts begin *canal* *choke*
-	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	if (superForts)
 	{
 		if(iOtherCityCount == 1)
 		{
@@ -27786,7 +27802,7 @@ int CvPlayerAI::AI_getPlotAirbaseValue(CvPlot const& kPlot) const // advc: param
 	int iDefenseModifier = kPlot.defenseModifier(getTeam(), false);
 // Super Forts start - new if check - doto	
 	int iValue = iOtherCityCount * 50;
-	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	if (superForts)
 	{
 		iValue += iDefenseModifier;
 		return std::max(0,iValue);
@@ -27798,7 +27814,8 @@ int CvPlayerAI::AI_getPlotAirbaseValue(CvPlot const& kPlot) const // advc: param
 // Super Forts start		
 	else
 	{
-		iValue *= 100 + (2 * (iDefenseModifier + (kPlot.isHills() ? 25 : 0)));
+//mountaind mod back to service - doto update
+		iValue *= 100 + (2 * (iDefenseModifier + ((kPlot.isHills() || kPlot.isPeak())  ? 25 : 0)));
 		iValue /= 100;
 		return iValue;
 	}	
@@ -27810,14 +27827,15 @@ int CvPlayerAI::AI_getPlotCanalValue(CvPlot const& kPlot) const // advc: param w
 	PROFILE_FUNC();
 	
 // Super Forts begin *canal*
-	int iCanalValue = GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) ? 
+	bool superForts = GC.getGame().isOption(GAMEOPTION_SUPER_FORTS);
+	int iCanalValue = superForts ? 
 						kPlot.getCanalValue() : 1;
-						/*Doto - the value 1 is for the checl below to be true - 
+						/*Doto - the value 1 is for the check below to be true - 
 						so roginal code will kick in */ 
 	
 	if (iCanalValue > 0)
 	{
-		// Super Forts end *canal*		
+// Super Forts end *canal*		
 		if (kPlot.isOwned())
 		{
 			if (kPlot.getTeam() != getTeam())
@@ -27853,18 +27871,19 @@ int CvPlayerAI::AI_getPlotCanalValue(CvPlot const& kPlot) const // advc: param w
 	// Super Forts begin *canal*	
 					// Decrease value when within radius of a city
 					//doto - added game optional
-					iCanalValue -= GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) ? 5 : 0;
+					iCanalValue -= superForts ? 5 : 0;
 					// Super Forts end *canal*
 				}
 			}
 		}
 	}//check if this need to close here of after keldath
+
 	FOR_EACH_ADJ_PLOT(kPlot)
 	{
 // Super Forts begin *canal*		
 		/* Doto-org code - for now not using advc logic isRevealedBase
 			separated to 2 function checks */
-		if (!GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+		if (!superForts)
 		{
 			//original code	
 			if (//pAdj->isCity(true, getTeam())
@@ -27882,7 +27901,7 @@ int CvPlayerAI::AI_getPlotCanalValue(CvPlot const& kPlot) const // advc: param w
 		}
 // Super Forts end *canal*
 	}
-	if (!GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	if (!superForts)
 	{
 		//original code
 		CvArea* pSecondWaterArea = kPlot.secondWaterArea();
@@ -27907,8 +27926,9 @@ int CvPlayerAI::AI_getPlotChokeValue(CvPlot const& kPlot) const // advc: param w
 {
 	PROFILE_FUNC();
 	
-// Super Forts begin *canal*	
-	int iChokeValue = GC.getGame().isOption(GAMEOPTION_SUPER_FORTS)
+// Super Forts begin *canal*
+	bool superForts = GC.getGame().isOption(GAMEOPTION_SUPER_FORTS);
+	int iChokeValue = superForts
 						? kPlot.getChokeValue() : 1;
 						/*Doto - the value 1 is for the checl below to be true - 
 						so roginal code will kick in */ 
@@ -27951,7 +27971,7 @@ int CvPlayerAI::AI_getPlotChokeValue(CvPlot const& kPlot) const // advc: param w
 	// Super Forts begin *canal*	
 	//doto added option check - if false - do nothing...0
 					// Decrease value when within radius of a city
-					iChokeValue -= GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) ? 5 : 0;
+					iChokeValue -= superForts ? 5 : 0;
 					// Super Forts end *canal*
 				}
 			}
@@ -27959,9 +27979,8 @@ int CvPlayerAI::AI_getPlotChokeValue(CvPlot const& kPlot) const // advc: param w
 	} //check if this need to close here of after keldath
 	FOR_EACH_ADJ_PLOT(kPlot)
 	{
-		if (!GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+		if (!superForts)
 		{
-
 			if (//pAdj->isCity(true, getTeam())
 				GET_TEAM(getTeam()).isRevealedBase(*pAdj)) // advc
 			{
@@ -27979,7 +27998,7 @@ int CvPlayerAI::AI_getPlotChokeValue(CvPlot const& kPlot) const // advc: param w
 // Super Forts end *canal*
 		}
 	}
-	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+	if (superForts)
 	{
 // Super Forts begin *canal*
 		iChokeValue *= 10;

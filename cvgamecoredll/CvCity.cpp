@@ -4424,7 +4424,8 @@ int CvCity::getHurryCost(bool bExtra, int iProductionLeft, int iHurryModifier, i
 				only apply generic modifiers */
 				iModifier);
 		if (iExtraProduction > 0) // adjust production
-			iProduction = intdiv::uceil(SQR(iProduction), iExtraProduction);
+//doto108 attempt to fix an assert issue
+			iProduction = intdiv::uceil(SQR(abs(iProduction)), iExtraProduction);
 	}
 
 	return std::max(0, iProduction);
@@ -13850,7 +13851,10 @@ void CvCity::applyEvent(EventTypes eEvent,
 		{
 			changeCulture(getOwner(), kEvent.getCulture(), true, true);
 //KNOEDELbegin cultural_golden_age 2/2
-			GET_PLAYER(getOwner()).changeCultureGoldenAgeProgress(kEvent.getCulture());	//KNOEDEL
+			if (GC.getGame().isOption(GAMEOPTION_CULTURE_GOLDEN_AGE))
+			{
+				GET_PLAYER(getOwner()).changeCultureGoldenAgeProgress(kEvent.getCulture());	//KNOEDEL
+			}
 //KNOEDELbegin cultural_golden_age 2/2		
 		}
 	}
@@ -15134,9 +15138,9 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 
 		eCorporation = (CorporationTypes)GC.getBuildingInfo(eBuilding).getFoundsCorporation();
 		//doto-advc 099 syntax change
-		CvCorporationInfo& kCorporation = GC.getInfo(eCorporation);
 		if (eCorporation != NO_CORPORATION)
 		{
+			CvCorporationInfo& kCorporation = GC.getInfo(eCorporation);//moved - doto fix
 			if (GC.getGame().isCorporationFounded(eCorporation))
 			{
 				return false;
@@ -15219,7 +15223,9 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
 	CvGame const& kGame = GC.getGame();
 	CvPlayer& kOwner = GET_PLAYER(getOwner()); // </advc>
-	iChange *= -1;
+	//doto108 maybe if the value sent - is negetive, its wrong to do double negative?
+	if(iChange < 0)
+		iChange *= -1;
 	if (!GET_TEAM(getTeam()).isObsoleteBuilding(eBuilding) || bObsolete)
 	{
 		
@@ -15315,7 +15321,7 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 		else changeBuildingBadHealth(kBuilding.getHealth() * iChange);
 		if (kBuilding.getHappiness() > 0)
 			changeBuildingGoodHappiness(kBuilding.getHappiness() * iChange);
-		else changeBuildingBadHappiness(kBuilding.getHappiness() * iChange);
+		else changeBuildingBadHappiness(kBuilding.getHappiness() * iChange);	
 		if (kBuilding.getReligionType() != NO_RELIGION)
 		{
 			changeStateReligionHappiness(kBuilding.getReligionType(),

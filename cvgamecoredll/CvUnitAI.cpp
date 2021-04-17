@@ -2289,26 +2289,11 @@ void CvUnitAI::AI_barbAttackMove()
 		return;
 	}
 
-
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 20.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Try to ensure AI_barbAttackMove doesn't choose to heal on damaging terrain       **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-//f1rpo - no need to double check - its already in the ai heal fn
-//	if ((GC.getInfo(plot()->getTerrainType()).getTurnDamage() == 0) || (plot()->isCity()))
-	//{
 	if (AI_heal())
 	{
 		return;
 	}
-//	}
 
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 20.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
 	if (AI_guardCity(false, true, 2))
 	{
 		return;
@@ -3133,10 +3118,10 @@ void CvUnitAI::AI_attackCityMove()
 			pTargetCity = AI_pickTargetCity(eMoveFlags, MAX_INT, bHuntBarbs);
 		}
 	}
-//super forts keldath
+//super forts DOTO keldath
 	
 	CvPlot* pTargetImprovment = NULL;
-	pTargetImprovment = bombardImprovementTarget(&getPlot()); // was 12 (K-Mod)
+	pTargetImprovment = superForts ? bombardImprovementTarget(&getPlot()) : NULL; // was 12 (K-Mod)
 	
 //super forts keldath
 
@@ -3146,7 +3131,11 @@ void CvUnitAI::AI_attackCityMove()
 
 	int iStepDistToTarget = MAX_INT;
 	// K-Mod note.: I've rearranged some parts of the code below, sometimes without comment.
-	if (pTargetCity == NULL && pTargetImprovment != NULL)
+//super forts DOTO keldath
+//I duplicated this entire bulk here
+//cause there are quite a few code parts that handle only city
+//todo is to separate this bulk code into external function
+	if (superForts && pTargetCity == NULL && pTargetImprovment != NULL)
 	{
 		int iComparePostBombard = AI_getGroup()->
 				AI_compareStacks(pTargetImprovment, true);
@@ -3330,6 +3319,7 @@ void CvUnitAI::AI_attackCityMove()
 	
 	/*	K-Mod. This is used to prevent the AI from oscillating
 		between moving to attack moving to pillage. */
+//super forts DOTO keldath unbool - decalred above		
 	/*bool */bTargetTooStrong = false;
 
 	/*int*/ iStepDistToTarget = MAX_INT;
@@ -3557,25 +3547,8 @@ void CvUnitAI::AI_attackCityMove()
 		return;
 	}
 
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 20.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Try to ensure AI_attackMove doesn't choose to heal on damaging terrain           **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-	//f1rpo - no need to double check - its already in the ai heal fn
-		//if ((GC.getTerrainInfo(plot()->getTerrainType()).getTurnDamage() == 0) || (plot()->isCity()))
-		//{
-		if (AI_heal(30, 1))
-		{
-			return;
-		}
-	//	}
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 20.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/		
-	
+	if (AI_heal(30, 1))
+		return;
 
 	/*if (collateralDamage() > 0 && getPlot().getOwner() == getOwner()) {
 		if (AI_anyAttack(1, 45, eMoveFlags, 3, false, false))
@@ -3732,49 +3705,13 @@ void CvUnitAI::AI_attackCityMove()
 		}
 	}
 
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 20.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Try to ensure AI_attackCityMove doesn't choose to heal on damaging terrain       **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-//f1rpo - no need to double check - its already in the ai heal fn
-	//	if ((GC.getTerrainInfo(plot()->getTerrainType()).getTurnDamage() == 0) || (plot()->isCity()))
-	//{
 	if (AI_heal(50, 3))
-	{
 		return;
-	}
-	//}
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 20.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
-
 
 	if (!bEnemyTerritory)
 	{
-
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 20.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Try to ensure AI_attackCityMove doesn't choose to heal on damaging terrain       **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-		//f1rpo - no need to double check - its already in the ai heal fn
-		//if ((GC.getTerrainInfo(plot()->getTerrainType()).getTurnDamage() == 0) || (plot()->isCity()))
-		//{
 		if (AI_heal())
-		{
 			return;
-		}
-		//}
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 20.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
-
-
 		if (getGroup()->getNumUnits() == 1 && getTeam() != getPlot().getTeam())
 		{
 			if (AI_retreatToCity())
@@ -4067,30 +4004,12 @@ void CvUnitAI::AI_collateralMove()
 	{
 		return;
 	}
-/* see below
+
 	if (AI_heal(30, 1))
 	{
 		return;
 	}
-*/
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 20.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Try to ensure AI_collateralMove doesn't choose to heal on damaging terrain       **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-//f1rpo - no need to double check - its already in the ai heal fn
-//	if ((GC.getTerrainInfo(plot()->getTerrainType()).getTurnDamage() == 0) || (plot()->isCity()))
-	//{
-	if (AI_heal(30, 1))
-	{
-		return;
-	}
-	//}
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 20.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
+
 	if (AI_cityAttack(1, 35))
 	{
 		return;
@@ -4147,25 +4066,10 @@ void CvUnitAI::AI_collateralMove()
 	}
 	// K-Mod end
 
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 20.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Try to ensure AI_collateralMove doesn't choose to heal on damaging terrain       **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-	//f1rpo - no need to double check - its already in the ai heal fn
-	//if ((GC.getTerrainInfo(plot()->getTerrainType()).getTurnDamage() == 0) || (plot()->isCity()))
-	//{
-	//if (AI_heal(30, 1))
-	if (AI_heal()) //chnged by f1rpo
+	if (AI_heal())
 	{
 		return;
 	}
-	//}
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 20.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
 
 	/*if (!noDefensiveBonus()) {
 		if (AI_guardCity(false, false))
@@ -4239,24 +4143,10 @@ void CvUnitAI::AI_pillageMove()
 		return;
 	}
 
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 20.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Try to ensure AI_pillageMove doesn't choose to heal on damaging terrain          **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-	//f1rpo - no need to double check - its already in the ai heal fn
-	//if ((GC.getTerrainInfo(plot()->getTerrainType()).getTurnDamage() == 0) || (plot()->isCity()))
-	//{
 	if (AI_heal(30, 1))
 	{
 		return;
 	}
-	//}
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 20.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
 
 	// BBAI TODO: Shadow ATTACK_CITY stacks and pillage
 
@@ -4337,45 +4227,17 @@ void CvUnitAI::AI_pillageMove()
 		}
 	}
 
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 20.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Try to ensure AI_pillageMove doesn't choose to heal on damaging terrain          **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-	//f1rpo - no need to double check - its already in the ai heal fn
-	//if ((GC.getTerrainInfo(plot()->getTerrainType()).getTurnDamage() == 0) || (plot()->isCity()))
-	//{
 	if (AI_heal(50, 3))
 	{
 		return;
 	}
-	//}
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 20.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
 
 	if (!isEnemy(getPlot()))
 	{
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 20.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Try to ensure AI_pillageMove doesn't choose to heal on damaging terrain          **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-		//f1rpo - no need to double check - its already in the ai heal fn
-		//if ((GC.getTerrainInfo(plot()->getTerrainType()).getTurnDamage() == 0) || (plot()->isCity()))
-		//{
 		if (AI_heal())
 		{
 			return;
 		}
-		//}
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 20.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
 	}
 	/*  K-Mod: iMaxGroup was 1
 		(later, I might tell counter units to join up.) */
@@ -4393,24 +4255,10 @@ void CvUnitAI::AI_pillageMove()
 		}
 	}
 
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 20.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Try to ensure AI_pillageMove doesn't choose to heal on damaging terrain          **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-	//f1rpo - no need to double check - its already in the ai heal fn
-	//if ((GC.getTerrainInfo(plot()->getTerrainType()).getTurnDamage() == 0) || (plot()->isCity()))
-	//{
 	if (AI_heal())
 	{
 		return;
 	}
-	//}
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 20.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
 
 	if (AI_guardCity(false, true, 3))
 	{
@@ -4555,22 +4403,10 @@ void CvUnitAI::AI_reserveMove()
 	{
 		return;
 	}
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 20.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Try to ensure AI_reserveMove doesn't choose to heal on damaging terrain          **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-	//f1rpo - no need to double check - its already in the ai heal fn
-	//if ((GC.getTerrainInfo(plot()->getTerrainType()).getTurnDamage() == 0) || (plot()->isCity()))
-	//{
-	if (AI_heal(30, 1))
+	// Moved up. Shouldn't travel to future city site while badly injured.
+	if(AI_heal(30, 1))
 		return;
-	//}
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 20.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
+	// </advc.300>
 
 	if (AI_guardCitySite())
 	{
@@ -4822,23 +4658,10 @@ void CvUnitAI::AI_counterMove()
 		}
 	}
 	// BETTER_BTS_AI_MOD: END
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 20.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Try to ensure AI_counterMove doesn't choose to heal on damaging terrain          **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-	//if ((GC.getTerrainInfo(plot()->getTerrainType()).getTurnDamage() == 0) || (plot()->isCity()))
-	//{
 	if (AI_heal())
 	{
 		return;
 	}
-	//}
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 20.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
 
 	if (AI_offensiveAirlift())
 	{
@@ -5171,19 +4994,9 @@ void CvUnitAI::AI_exploreMove()
 		}
 	}
 	// <advc.299> Instead of simply healing while getDamage() > 0
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 15.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Ensure AI_exploreMove doesn't choose to heal on damaging terrain                 **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-	//f1rpo made this irrelevant by updating - CvUnit::healTurns
-	//if ((GC.getTerrainInfo(plot()->getTerrainType()).getTurnDamage() == 0) || (plot()->isCity()))
-	//{
 	if (AI_singleUnitHeal(2, 5))
 		return; // </advc.299>
-	//}
+
 	if (!isHuman())
 	{
 		//if (AI_pillageRange(1))
@@ -7191,19 +7004,9 @@ void CvUnitAI::AI_exploreSeaMove()
 	// (advc.017b: Moved the transform/ scrap block down; try nearby exploration first.)
 
 	// <advc.299> Instead of simply healing while getDamage() > 0
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 15.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Ensure AI_exploreSeaMove does choose to heal on damaging terrain                 **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-	//f1rpo made this irrelevant by updating - CvUnit::healTurns
-	//if ((GC.getInfo(plot()->getTerrainType()).getTurnDamage() == 0) || (plot()->isCity()))
-	//{
 	if (AI_singleUnitHeal(3, 5))
 		return; // </advc.299>
-	//}
+
 	if (!isHuman())
 	{
 		if (AI_pillageRange(1))
@@ -11713,6 +11516,17 @@ bool CvUnitAI::AI_singleUnitHeal(int iMaxTurnsExposed, int iMaxTurnsOutsideCity)
 		if (iHeal >= 5 && rHealPr.bernoulliSuccess(GC.getGame().getSRand(), "Barbarian Heal"))
 			bHeal = true;
 	} // </advc.306>
+/*****************************************************************************************************/
+/**  Author: TheLadiesOgre                                                                          **/
+/**  Date: 15.10.2009                                                                               **/
+/**  ModComp: TLOTags                                                                               **/
+/**  Reason Added: Ensure AI_exploreSeaMove does choose to heal on damaging terrain                 **/
+/**  Notes:                                                                                         **/
+/*****************************************************************************************************/	
+//doto addition
+	if (!(GC.getTerrainInfo(plot()->getTerrainType()).getTurnDamage() == 0) || !(plot()->isCity()))
+		bHeal = false;
+	
 	if (bHeal)
 	{
 		kGroup.pushMission(MISSION_HEAL, -1, -1, NO_MOVEMENT_FLAGS,
@@ -14222,6 +14036,14 @@ bool CvUnitAI::AI_pillageAroundCity(CvCity* pTargetCity, int iBonusValueThreshol
 					// (because declaring war will pop us some unknown distance away)
 					if (!isEnemy(kPlot) && getPlot().getTeam() == kPlot.getTeam())
 						iValue /= 10;
+/*doto Blocade_Unit addition, i got an assert from CvUnitAI::AI_considerPathDOW
+so i think that generating a path to a blocked tile, shouldnt happen.
+dunno  if if will work...
+*/
+//MOD@VET_Andera412_Blocade_Unit-end1/1
+					if (kPlot.isBlocade(&getPlot(), this))
+						iValue = 0;
+//MOD@VET_Andera412_Blocade_Unit-end1/1
 					if (iValue > iBestValue)
 					{
 						iBestValue = iValue;
@@ -18296,7 +18118,7 @@ bool CvUnitAI::AI_fortTerritory(bool bCanal, bool bAirbase)
 						{
 					//super forts -> org code - doto comment
 							iValue *= 1000;
-							iValue /= (iPathTurns + 1);	
+							iValue /= (iPathTurns + 1);
 				// Super Forts start doto
 							if (superForts)
 							{
@@ -18499,10 +18321,14 @@ bool CvUnitAI::AI_improveBonus( // K-Mod. (all that junk wasn't being used anywa
 			{
 				//sagi test it
 				// Super Forts *AI_worker* (added if statement)
-				if(kPlot.getOwner() != getOwner() || 
-					!(GC.getImprovementInfo((ImprovementTypes)GC.getBuildInfo(eLoopBuild).getImprovement()).isActsAsCity()
-					&& !GC.getImprovementInfo((ImprovementTypes)GC.getBuildInfo(eLoopBuild).getImprovement()).isOutsideBorders()))
+				if(superForts && 
+					(kPlot.getOwner() != getOwner() || 
+					(!(GC.getImprovementInfo((ImprovementTypes)GC.getBuildInfo(eLoopBuild).getImprovement()).isActsAsCity()
+					&& !GC.getImprovementInfo((ImprovementTypes)GC.getBuildInfo(eLoopBuild).getImprovement()).isOutsideBorders())))
+				)
+				{
 					continue;
+				}
 				// Super Forts (closing bracket of if statement added above)					
 				
 				///doto qa108 super forts there was a code in mnai that adresses features here - do i want it?
@@ -18523,7 +18349,8 @@ bool CvUnitAI::AI_improveBonus( // K-Mod. (all that junk wasn't being used anywa
 		if(eBestTempBuild != NO_BUILD && !canBuild(kPlot, eBestTempBuild))
 			eBestTempBuild = NO_BUILD; // </advc.121>
 		if(eBestTempBuild == NO_BUILD)
-			bDoImprove = false;		
+			bDoImprove = false;
+
 // Super Forts begin *AI_worker* (if not building an improvement and you don't own the plot then continue so the AI doesn't consider building a route)
 		if(superForts && !bDoImprove && kPlot.getOwner() != getOwner())
 		{
@@ -22001,7 +21828,8 @@ int CvUnitAI::AI_nukeValue(CvPlot* pCenterPlot, int iSearchRange, CvPlot*& pBest
 			if (p.isOwned())
 			{
 				bool bEnemy = isEnemy(p);
-				FAssert(bEnemy || p.getTeam() == getTeam()); // it is owned, and we aren't allowed to nuke neutrals; so it is either enemy or ours.
+//doto nuke every where , allow nuke friendly ?
+				//FAssert(bEnemy || p.getTeam() == getTeam()); // it is owned, and we aren't allowed to nuke neutrals; so it is either enemy or ours.
 
 				CvPlayerAI const& kPlotOwner = GET_PLAYER(p.getOwner());
 				BonusTypes eBonus = p.getNonObsoleteBonusType(getTeam());
@@ -22452,16 +22280,18 @@ bool CvUnitAI::AI_stackAttackCity(int iPowerThreshold)
 	{
 		CvPlot const& p = *it;
 		//if (!AI_plotValid(p)) continue; // advc.opt: We're a land unit looking for an adjacent city
-		if (!p.isCity()
-		// Super Forts begin *AI_offense* - modified if statement so forts are attacked too
-			//!p.isCityExternal(true) 
-			//doto change - added improvement specific check
-			&& (superForts &&
-			 !p.isFortImprovement()))
+		if (!p.isCity())
 		// Super Forts end
 		// K-Mod. We want to attack a city. We don't care about guarded forts!
 			//|| (pLoopPlot->isCity(true) && pLoopPlot->isVisibleEnemyUnit(this)))
 		{
+			// Super Forts begin *AI_offense* - modified if statement so forts are attacked too
+			//doto fix
+			if (superForts)
+			{
+				if(!p.isFortImprovement() && p.isVisibleEnemyUnit(this) && p.getTeam() == NO_TEAM)
+					continue;
+			}
 			continue;
 		}
 		if (AI_mayAttack(p.getTeam(), p))
@@ -22829,6 +22659,9 @@ bool CvUnitAI::AI_solveBlockageProblem(CvPlot* pDestPlot, bool bDeclareWar)
 				if quite close */
 			if (getPathFinder().getPathTurns() > 3)
 				pBestPlot = &getPathEndTurnPlot();
+//super forts - doto - try to avoid assert  - moving to a blocked tile
+			if (pBestPlot->isBlocade(this->plot(), this))
+				return false;
 			pushGroupMoveTo(*pBestPlot, MOVE_DIRECT_ATTACK);
 			return true;
 		}

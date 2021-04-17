@@ -127,7 +127,7 @@ public:
 	int getMinAreaSize() const { return m_iMinAreaSize; }
 	inline int getMoves() const { return m_iMoves; }
 	inline int getAirRange() const { return m_iAirRange; }
-//rangedattack-keldath
+//rangedattack-keldath - ranaged immunity - doto
 	inline int getRangeStrike() const { return m_iRangeStrike;}
 	int getAirUnitCap() const { return m_iAirUnitCap; }
 	int getDropRange() const { return m_iDropRange; }
@@ -435,7 +435,7 @@ protected:
 	int m_iMinAreaSize;
 	int m_iMoves;
 	int m_iAirRange;
-//rangedattack-keldath
+//rangedattack-keldath - ranged immunity dotp
 	int m_iRangeStrike;
 	int m_iAirUnitCap;
 	int m_iDropRange;

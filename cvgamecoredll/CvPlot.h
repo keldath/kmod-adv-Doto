@@ -662,8 +662,11 @@ public:
 	{
 		/*if (eDirection == NO_DIRECTION)
 			return false;*/ // advc.opt: Apparently not needed, so:
-//doto - commented out - might be connected to unit_blockade
 		//FAssertBounds(0, NUM_DIRECTION_TYPES, eDirection);
+//doto - commented out - might be connected to unit_blockade
+// MOD@VET_Andera412_Blocade_Unit-begin-RE INTRODUCED - KELDATH
+		if (eDirection == NO_DIRECTION)
+			return false;
 		return m_abRiverCrossing.get(eDirection);
 	}
 	void updateRiverCrossing(DirectionTypes eDirection);

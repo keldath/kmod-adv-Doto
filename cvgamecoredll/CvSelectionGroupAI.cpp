@@ -773,7 +773,7 @@ for forts...
 		case MISSION_BOMBARD:
 		{
 /* super forts Doto fix for advc */
-			if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && pMissionPlot == NULL)
+			if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && pMissionPlot == NULL && pTargetCity == NULL)
 			{
 				break;
 			}
