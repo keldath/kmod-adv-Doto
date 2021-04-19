@@ -34,7 +34,9 @@ public: // advc: All the const functions are exposed to Python
 
 	DllExport bool isAIPlayable() const;
 	DllExport bool isPlayable() const;
-
+//limited religion doto	
+	int getMaxLimitedReligions() const;
+//limited religion doto	
 	std::wstring pyGetShortDescription(uint uiForm) { return getShortDescription(uiForm); }
 	DllExport const wchar* getShortDescription(uint uiForm = 0);
 	const wchar* getShortDescriptionKey() const;
@@ -84,7 +86,9 @@ protected:
 
 	bool m_bAIPlayable;
 	bool m_bPlayable;
-
+//limited religion doto	
+	int m_iMaxLimitedReligions;
+//limited religion doto
 	CvString m_szArtDefineTag;
 	CvWString m_szShortDescriptionKey;
 	CvWString m_szAdjectiveKey;
@@ -183,10 +187,8 @@ public: // advc: All the const functions are exposed to Python except those adde
 */
 	int getHatedCivicAttitudeChange() const { return m_iHatedCivicAttitudeChange; }
 	int getFavoriteCivilizationAttitudeChange() const { return m_iFavoriteCivilizationAttitudeChange; }
-	int getHatedCivilizationAttitudeChange() const { return m_iHatedCivilizationAttitudeChange; }
-	
+	int getHatedCivilizationAttitudeChange() const { return m_iHatedCivilizationAttitudeChange; }	
 //dune wars - hated civs
-
 	int getFavoriteCivicAttitudeDivisor() const { return m_iFavoriteCivicAttitudeDivisor; }
 	int getFavoriteCivicAttitudeChangeLimit() const { return m_iFavoriteCivicAttitudeChangeLimit; }
 	int getDemandTributeAttitudeThreshold() const { return m_iDemandTributeAttitudeThreshold; }

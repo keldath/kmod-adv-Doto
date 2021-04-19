@@ -837,7 +837,10 @@ public:
 	{
 		return (m_iCapitalCityID != FFreeList::INVALID_INDEX);
 	}
-
+//limited religion doto 
+	int getCountFoundReligion() const { return m_iCountFoundReligion; }	// Exposed to Python
+	void changeCountFoundReligionModifier(int iChange);												// Exposed to Python
+//limited religion doto 	
 	int getCitiesLost() const { return m_iCitiesLost; }																// Exposed to Python
 	void changeCitiesLost(int iChange);
 
@@ -1616,6 +1619,9 @@ protected:  // <advc.210>
 	int m_iStateReligionBuildingProductionModifier;
 	int m_iStateReligionFreeExperience;
 	int m_iCapitalCityID;
+//limited religions
+	int m_iCountFoundReligion;
+//limited religion doto 
 	int m_iCitiesLost;
 	int m_iWinsVsBarbs;
 	int m_iAssets;
@@ -1630,7 +1636,9 @@ protected:  // <advc.210>
 	int m_iInflationModifier;
 	int m_iChoosingFreeTechCount; // K-Mod (based on the 'Unofficial Patch'
 	int m_iButtonPopupsRelaunching; // advc.004x
-
+	
+	
+	
 	uint m_uiStartTime;  // XXX save these?
 
 	bool m_bAlive;

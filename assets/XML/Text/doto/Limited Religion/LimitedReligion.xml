@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by lcollins (Firaxis Games) -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+		<Tag>TXT_KEY_LIMITED_RELIGION</Tag>
+		<English>[COLOR_HIGHLIGHT_TEXT]Limited Religions: Canot Found %s1 [COLOR_REVERT][NEWLINE] %s2 Max Quantity of Founded Religions is: [COLOR_HIGHLIGHT_TEXT]%d3[COLOR_REVERT]</English>	
+	</TEXT>
+</Civ4GameText>

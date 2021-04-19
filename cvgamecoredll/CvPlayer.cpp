@@ -462,6 +462,8 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_iStateReligionBuildingProductionModifier = 0;
 	m_iStateReligionFreeExperience = 0;
 	m_iCapitalCityID = FFreeList::INVALID_INDEX;
+//limited religions	
+	m_iCountFoundReligion = 0;
 	m_iCitiesLost = 0;
 	m_iWinsVsBarbs = 0;
 	m_iAssets = 0;
@@ -7222,8 +7224,21 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 	if (eCiv != NO_CIVILIZATION && GC.getCivilizationInfo(eCiv).isForbidden(eReligion))
 		return;
 //david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
+//limited religion doto begin - give a pop up to a player.
+	bool limitRel = GC.getGame().isOption(GAMEOPTION_LIMITED_RELIGION);
+	if (limitRel && getCountFoundReligion() >= GC.getCivilizationInfo(eCiv).getMaxLimitedReligions())
+	{
+		if (isHuman())
+		{
+			CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_TEXT);
+			//pInfo->setText(gDLL->getText("TXT_KEY_LIMITED_RELIGION", getCountFoundReligion(), GC.getInfo(eReligion).getAdjectiveKey()));
+			pInfo->setText(gDLL->getText("TXT_KEY_LIMITED_RELIGION", GC.getInfo(eReligion).getDescription(), GC.getCivilizationInfo(eCiv).getDescription(), getCountFoundReligion()));
 
-
+			addPopup(pInfo);
+		}
+		return;
+	}
+//limited religion doto 	
 	CvReligionInfo const& kSlotReligion = GC.getInfo(eSlotReligion);
 	CvGame& kGame = GC.getGame();
 	if (kGame.isReligionFounded(eReligion))
@@ -7268,6 +7283,10 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 		return;
 
 	kGame.setHolyCity(eReligion, pBestCity, true);
+//limited religion - update how many religions does the player have
+	if (limitRel)
+		changeCountFoundReligionModifier(1);
+//limited religion doto 	
 	if (bAward && kSlotReligion.getNumFreeUnits() > 0)
 	{
 		UnitTypes eFreeUnit = getCivilization().getUnit((UnitClassTypes)
@@ -8926,7 +8945,14 @@ void CvPlayer::changeNonStateReligionExtraHealth(int iChange)
 	}
 }
 // < Civic Infos Plus End   >
-
+//limited religions
+void CvPlayer::changeCountFoundReligionModifier(int iChange)
+{
+	if (iChange != 0)
+	{
+		m_iCountFoundReligion += iChange;
+	}
+}
 void CvPlayer::changeStateReligionUnitProductionModifier(int iChange)
 {
 	if (iChange != 0)
@@ -14932,6 +14958,8 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iStateReligionBuildingProductionModifier);
 	pStream->Read(&m_iStateReligionFreeExperience);
 	pStream->Read(&m_iCapitalCityID);
+//limited religions
+	pStream->Read(&m_iCountFoundReligion);
 	pStream->Read(&m_iCitiesLost);
 	pStream->Read(&m_iWinsVsBarbs);
 	pStream->Read(&m_iAssets);
@@ -15449,6 +15477,8 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	pStream->Write(m_iStateReligionBuildingProductionModifier);
 	pStream->Write(m_iStateReligionFreeExperience);
 	pStream->Write(m_iCapitalCityID);
+//limited religions
+	pStream->Write(m_iCountFoundReligion);
 	pStream->Write(m_iCitiesLost);
 	pStream->Write(m_iWinsVsBarbs);
 	pStream->Write(m_iAssets);

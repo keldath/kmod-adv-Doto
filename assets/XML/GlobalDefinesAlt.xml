@@ -373,7 +373,8 @@
 		<DefineName>RANGESTRIKE_HIT_MODIFIER</DefineName>
 		<iDefineIntVal>2</iDefineIntVal>
 	</Define>
-	<!--add constant number to make the attacker chance to hit higher
+	<!-- Ranged immunity
+		add constant number to make the attacker chance to hit higher
 	 this is in addition to RANGESTRIKE_HIT_MODIFIER
 	 10 default, arbitrary number, no special choise reason.
 	 should be maximum 100, but...thats always a hit.
@@ -382,7 +383,7 @@
 		<DefineName>RANGESTRIKE_ATT_MOD</DefineName>
 		<iDefineIntVal>10</iDefineIntVal>
 	</Define>
-
+<!-- all the below is unused in ranged immunity -->
 	<Define>
 		<!-- Minimum attack odds of best attacker for AI to skip range attacking a city and just attack. Default: 80 -->
 		<DefineName>SKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS</DefineName>

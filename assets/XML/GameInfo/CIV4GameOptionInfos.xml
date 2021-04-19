@@ -234,6 +234,13 @@
             <Description>Culture Control</Description>
             <Help>Allows Forts To have A ranged Culture Around Them</Help>
             <bDefault>0</bDefault>
+            <bVisible>0</bVisible>
+       	</GameOptionInfo>
+        <GameOptionInfo>
+            <Type>GAMEOPTION_SUPER_FORTS</Type>
+            <Description>Super Forts</Description>
+            <Help>Allows Forts To have A ranged Culture Around Them and Bombard + more</Help>
+            <bDefault>0</bDefault>
             <bVisible>1</bVisible>
        	</GameOptionInfo>
 		<GameOptionInfo>
@@ -293,6 +300,13 @@
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
+            <Type>GAMEOPTION_LIMITED_RELIGION</Type>
+            <Description>Limited Religion</Description>
+            <Help>Each Civ Have a Limited Amount of Religions it can found (some civs can found more than one)</Help>
+            <bDefault>1</bDefault>
+            <bVisible>1</bVisible>
+       	</GameOptionInfo>
+        <GameOptionInfo>
             <Type>GAMEOPTION_FORBIDDEN_RELIGION</Type>
             <Description>Forbidden Religion</Description>
             <Help>Each Civ has one Religion it cannot found or convert to</Help>
@@ -304,7 +318,7 @@
             <Description>Barbarian Civ</Description>
             <Help>Barbarian Cities will become Civs - see the python file BarbarianCiv.py for defs</Help>
             <bDefault>0</bDefault>
-            <bVisible>1</bVisible>
+            <bVisible>0</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_NO_POPULATION_LIMIT</Type>

@@ -1921,7 +1921,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iSeeFrom>1</iSeeFrom>
 			<iUnique>2</iUnique>
 			<bBombardable>1</bBombardable>
-			<bUpgradeRequiresFortify>0</bUpgradeRequiresFortify>
+			<bUpgradeRequiresFortify>1</bUpgradeRequiresFortify>
 			<!-- super forts Mod End -->
 		</ImprovementInfo>
 		<ImprovementInfo>

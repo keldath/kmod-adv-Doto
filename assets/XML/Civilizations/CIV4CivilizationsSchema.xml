@@ -477,6 +477,9 @@
 	</ElementType>
 	<ElementType name="bPlayable" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bAIPlayable" content="textOnly" dt:type="boolean"/>
+<!--Limited religion doto -->
+	<ElementType name="iMaxLimitedReligions" content="textOnly" dt:type="int"/>
+<!--Limited religion doto -->	
 	<ElementType name="LeaderName" content="textOnly"/>
 	<ElementType name="bLeaderAvailability" content="textOnly" dt:type="boolean"/>
 	<ElementType name="Leader" content="eltOnly">
@@ -502,6 +505,9 @@
 		<element type="UnitArtStyleType" minOccurs="0" maxOccurs="1"/>
 		<element type="bPlayable" minOccurs="0"/>
 		<element type="bAIPlayable" minOccurs="0"/>
+	<!--Limited religion doto -->
+		<element type="iMaxLimitedReligions" minOccurs="0"/>
+	<!--Limited religion doto -->
 		<element type="Cities" minOccurs="0"/>
 		<element type="Buildings" minOccurs="0"/>
 		<element type="Units" minOccurs="0"/>

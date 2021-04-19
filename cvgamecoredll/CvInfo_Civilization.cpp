@@ -16,6 +16,9 @@ m_iActionSoundScriptId(0),
 m_iDerivativeCiv(NO_CIVILIZATION),
 m_bPlayable(false),
 m_bAIPlayable(false),
+//limited religion doto
+m_iMaxLimitedReligions(0),
+//limited religion doto
 m_piCivilizationBuildings(NULL),
 m_piCivilizationUnits(NULL),
 m_piCivilizationFreeUnitsClass(NULL),
@@ -101,7 +104,12 @@ bool CvCivilizationInfo::isPlayable() const
 {
 	return m_bPlayable;
 }
-
+//limited religion doto
+int CvCivilizationInfo::getMaxLimitedReligions() const
+{
+	return m_iMaxLimitedReligions;
+}
+//limited religion doto
 const wchar* CvCivilizationInfo::getShortDescription(uint uiForm)
 {
 	while(m_aszShortDescription.size() <= uiForm)
@@ -231,6 +239,9 @@ void CvCivilizationInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iDerivativeCiv);
 	stream->Read(&m_bAIPlayable);
 	stream->Read(&m_bPlayable);
+//limited religion doto	
+	stream->Read(&m_iMaxLimitedReligions);
+//limited religion doto		
 	stream->ReadString(m_szArtDefineTag);
 	stream->ReadString(m_szShortDescriptionKey);
 	stream->ReadString(m_szAdjectiveKey);
@@ -284,6 +295,9 @@ void CvCivilizationInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iDerivativeCiv);
 	stream->Write(m_bAIPlayable);
 	stream->Write(m_bPlayable);
+//limited religion doto	
+	stream->Write(m_iMaxLimitedReligions);
+//limited religion doto	
 	stream->WriteString(m_szArtDefineTag);
 	stream->WriteString(m_szShortDescriptionKey);
 	stream->WriteString(m_szAdjectiveKey);
@@ -326,6 +340,9 @@ bool CvCivilizationInfo::read(CvXMLLoadUtility* pXML)
 	}
 	pXML->GetChildXmlValByName(&m_bPlayable, "bPlayable");
 	pXML->GetChildXmlValByName(&m_bAIPlayable, "bAIPlayable");
+//limited religion doto		by default limit to 1
+	pXML->GetChildXmlValByName(&m_iMaxLimitedReligions, "iMaxLimitedReligions", 1);
+//limited religion doto	
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "Cities"))
 	{
 		pXML->SetStringList(&m_paszCityNames, &m_iNumCityNames);

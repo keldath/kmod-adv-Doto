@@ -4412,20 +4412,21 @@ int CvCity::getHurryCost(bool bExtra, int iProductionLeft, int iHurryModifier, i
 	{	// ... but city production is going to be at least 1
 		iProductionLeft -= minPlotProduction();
 	}
-	if(iProductionLeft <= 0)
+//doto108 attempt to fix an assert issue - this value seem wierd
+//saw it on a debug session with an engulfed city with starvation
+	if(iProductionLeft <= 0 || iProductionLeft == 2147483647)
 		return 0;
 	// </advc.064b>
 	int iProduction = intdiv::uceil(iProductionLeft * iHurryModifier, 100);
 
-	if (bExtra)
+	if (bExtra )
 	{
 		int iExtraProduction = getExtraProductionDifference(iProduction,
 			/*  advc.064c (comment): Passing 0 here instead of iModifier would
 				only apply generic modifiers */
 				iModifier);
 		if (iExtraProduction > 0) // adjust production
-//doto108 attempt to fix an assert issue
-			iProduction = intdiv::uceil(SQR(abs(iProduction)), iExtraProduction);
+			iProduction = intdiv::uceil(SQR(iProduction), iExtraProduction);
 	}
 
 	return std::max(0, iProduction);
@@ -15226,6 +15227,8 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 	//doto108 maybe if the value sent - is negetive, its wrong to do double negative?
 	if(iChange < 0)
 		iChange *= -1;
+		
+	//iChange = 0;
 	if (!GET_TEAM(getTeam()).isObsoleteBuilding(eBuilding) || bObsolete)
 	{
 		
@@ -15276,8 +15279,10 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 			changeGreatPeopleRateModifier(getGreatPeopleRateModifier * iChange);
 		if (getFreeExperience != 0)
 			changeFreeExperience(getFreeExperience * iChange);
+/*
 		if (getFoodKept != 0)
 			changeMaxFoodKeptPercent(getFoodKept * iChange);
+*/
 /*
 		if (getAirlift != 0)
 			changeMaxAirlift(getAirlift * iChange);
@@ -15290,8 +15295,10 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 */
 		if (getNukeModifier != 0)
 			changeNukeModifier(getNukeModifier * iChange);
+/*
 		if (getFreeSpecialist != 0)
 			changeFreeSpecialist(getFreeSpecialist * iChange);
+*/
 		if (getMaintenanceModifier != 0)
 			changeMaintenanceModifier(getMaintenanceModifier * iChange);
 		//DPII < Maintenance Modifiers >
@@ -15410,7 +15417,7 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 				changeFreeSpecialistCount(eLoopSpecialist,
 					kBuilding.getFreeSpecialistCount(eLoopSpecialist) * iChange);
 		}
-*/		if (kBuilding.isAnyImprovementFreeSpecialist()) // advc.003t
+		if (kBuilding.isAnyImprovementFreeSpecialist()) // advc.003t
 		{
 			FOR_EACH_ENUM(Improvement)
 			{
@@ -15420,6 +15427,7 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 					getImprovementFreeSpecialist * iChange);
 			}
 		}
+*/
 		FOR_EACH_ENUM(Bonus)
 		{
 			if (!hasBonus(eLoopBonus))
