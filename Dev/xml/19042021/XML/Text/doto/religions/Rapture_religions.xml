@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by XMLSPY 2004 Professional Ed. Release 2, Installed Multi + SMP for 3 users (Firaxis Games) -->
+<!-- Sid Meier's Civilization 4 -->
+<!-- Copyright Firaxis Games 2005 -->
+<!-- -->
+<!-- Game Text Objects -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+		<Tag>TXT_KEY_RELIGION_ODIN</Tag>
+		<English>Odin</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_RELIGION_ODIN_PEDIA</Tag>
+		<English>[TAB]Odin is considered the chief god in Norse paganism. The name Odin is generally accepted as the modern translation; although, in some cases, older translations of his name may be used or preferred. His name is related to oor, meaning "fury, excitation", besides "mind", or "poetry". His role, like many of the Norse gods, is complex. He is associated with wisdom, war, battle, and death, and also magic, poetry, prophecy, victory, and the hunt.</English>
+	</TEXT>	
+	<TEXT>
+		<Tag>TXT_KEY_RELIGION_ODIN_ADJECTIVE</Tag>
+		<English>Odin</English>
+	</TEXT>	
+	<TEXT>
+		<Tag>TXT_KEY_BUILDING_ODIN_SHRINE</Tag>
+		<English>Odin Shrine</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUILDING_ODIN_SHRINE_PEDIA</Tag>
+		<English></English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUILDING_ODIN_SHRINE_STRATEGY</Tag>
+		<English></English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_ODIN_SHAMAN</Tag>
+		<English>Odin Shaman</English>
+	</TEXT>
+</Civ4GameText>
+
