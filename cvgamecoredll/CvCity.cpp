@@ -1458,6 +1458,42 @@ bool CvCity::isWorldWondersMaxed() const
 	return false;
 }
 
+//Wonder Limit - Doto
+bool CvCity::isCultureWorldWondersMaxed() const
+{
+	if (!GC.getGame().isOption(GAMEOPTION_CULTURE_WONDER_LIMIT))
+		return false;
+	if (GC.getGame().isOption(GAMEOPTION_ONE_CITY_CHALLENGE) && isHuman())
+		return false;
+	//poor == 1
+	int cultureLevelId = getCultureLevel();
+	//unused but kept it.
+	int cuktureWLimit =  GC.getInfo(getCultureLevel()).getmaxWonderCultureLimit();
+	//CvWString cultureLevelDesc = GC.getInfo(getCultureLevel()).getTextKeyWide();
+	//wonder amount according to the level of culture - controlled from the globaldefines file
+	//CultureLevelTypes
+	if (cultureLevelId == 0)
+		return true;
+	if (getNumWorldWonders() > cuktureWLimit)
+		return true;
+/* method 2
+	else if(cultureLevelId == 1 && numOfwonders > GC.getDefineINT(CvGlobals::MAX_WORLD_WONDERS_CULTURE_POOR))
+		return false;
+	else if(cultureLevelId == 2 && numOfwonders > GC.getDefineINT(CvGlobals::MAX_WORLD_WONDERS_CULTURE_FLEDGLING))
+		return false;
+	else if(cultureLevelId == 3 && numOfwonders >  GC.getDefineINT(CvGlobals::MAX_WORLD_WONDERS_CULTURE_DEVELOPING))
+		return false;
+	else if(cultureLevelId == 4 && numOfwonders >  GC.getDefineINT(CvGlobals::MAX_WORLD_WONDERS_CULTURE_REFINED))
+		return false;
+	else if(cultureLevelId == 5 && numOfwonders >  GC.getDefineINT(CvGlobals::MAX_WORLD_WONDERS_CULTURE_INFLUENTIAL))
+		return false;
+	else if (cultureLevelId == 6 && numOfwonders >  GC.getDefineINT(CvGlobals::MAX_WORLD_WONDERS_CULTURE_LEGENDARY))
+		return false;
+*/
+	return false;
+}
+//Wonder Limit - Doto
+
 
 bool CvCity::isTeamWondersMaxed() const
 {
@@ -1686,6 +1722,8 @@ bool CvCity::canConstruct(BuildingTypes eBuilding, bool bContinue,
 			if (kBuildingClass.isWorldWonder())
 			{
 				if(isWorldWondersMaxed())
+					return false;
+				if (isCultureWorldWondersMaxed())
 					return false;
 			}
 			else if (kBuildingClass.isTeamWonder())

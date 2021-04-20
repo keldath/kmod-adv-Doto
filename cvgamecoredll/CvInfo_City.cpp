@@ -193,6 +193,9 @@ bool CvSpecialistInfo::read(CvXMLLoadUtility* pXML)
 
 CvCultureLevelInfo::CvCultureLevelInfo() :
 m_iCityDefenseModifier(0),
+//Wonder Limit - Doto
+m_imaxWonderCultureLimit(0),
+//Wonder Limit - Doto
 m_paiSpeedThreshold(NULL)
 {}
 
@@ -206,6 +209,13 @@ int CvCultureLevelInfo::getCityDefenseModifier() const
 	return m_iCityDefenseModifier;
 }
 
+//Wonder Limit - Doto
+int CvCultureLevelInfo::getmaxWonderCultureLimit() const
+{
+	return m_imaxWonderCultureLimit;
+}
+//Wonder Limit - Doto
+
 int CvCultureLevelInfo::getSpeedThreshold(int i) const
 {
 	FAssertBounds(0, GC.getNumGameSpeedInfos(), i);
@@ -218,6 +228,9 @@ bool CvCultureLevelInfo::read(CvXMLLoadUtility* pXml)
 		return false;
 
 	pXml->GetChildXmlValByName(&m_iCityDefenseModifier, "iCityDefenseModifier");
+//Wonder Limit - Doto	i added the default value of MAX_WORLD_WONDERS_PER_CITY, just as safety if missed entry
+	pXml->GetChildXmlValByName(&m_imaxWonderCultureLimit, "imaxWonderCultureLimit",GC.getDefineINT(CvGlobals::MAX_WORLD_WONDERS_PER_CITY));
+//Wonder Limit - Doto
 	pXml->SetVariableListTagPair(&m_paiSpeedThreshold, "SpeedThresholds", GC.getNumGameSpeedInfos());
 
 	return true;

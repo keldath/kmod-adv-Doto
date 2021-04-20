@@ -103,9 +103,12 @@ public:
 	~CvCultureLevelInfo();
 
 	int getCityDefenseModifier() const; // Exposed to Python
+//Wonder Limit - Doto
+	int getmaxWonderCultureLimit() const; // Exposed to Python
+//Wonder Limit - Doto	
 	int getSpeedThreshold(int i) const; // Exposed to Python
 	bool read(CvXMLLoadUtility* pXML);
-	//influence driven war - added by f1rpo
+//influence driven war - added by f1rpo - doto? i dont recal adding this...wierd
 	static CultureLevelTypes finalCultureLevel()
 	{
 		FAssert(GC.getNumCultureLevelInfos() > 0);
@@ -114,6 +117,9 @@ public:
 
 protected:
 	int m_iCityDefenseModifier;
+//Wonder Limit - Doto
+	int m_imaxWonderCultureLimit;
+//Wonder Limit - Doto
 	int* m_paiSpeedThreshold;
 };
 

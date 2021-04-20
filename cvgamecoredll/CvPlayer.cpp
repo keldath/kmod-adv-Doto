@@ -7232,7 +7232,7 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 		{
 			CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_TEXT);
 			//pInfo->setText(gDLL->getText("TXT_KEY_LIMITED_RELIGION", getCountFoundReligion(), GC.getInfo(eReligion).getAdjectiveKey()));
-			pInfo->setText(gDLL->getText("TXT_KEY_LIMITED_RELIGION", GC.getInfo(eReligion).getDescription(), GC.getCivilizationInfo(eCiv).getDescription(), getCountFoundReligion()));
+			pInfo->setText(gDLL->getText("TXT_KEY_LIMITED_RELIGION", GC.getInfo(eReligion).getDescription(), GC.getCivilizationInfo(eCiv).getAdjective(), getCountFoundReligion()));
 
 			addPopup(pInfo);
 		}

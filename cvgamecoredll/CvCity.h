@@ -84,6 +84,9 @@ public:
 	UnitTypes allUpgradesAvailable(UnitTypes eUnit, int iUpgradeCount = 0,										// Exposed to Python
 			BonusTypes eAssumeVailable = NO_BONUS) const; // advc.001u
 	bool isWorldWondersMaxed() const;																			// Exposed to Python
+//Wonder Limit - Doto	
+	bool isCultureWorldWondersMaxed() const;																			// Exposed to Python
+//Wonder Limit - Doto
 	bool isTeamWondersMaxed() const;																			// Exposed to Python
 	bool isNationalWondersMaxed() const;																		// Exposed to Python
 	int getNumNationalWondersLeft() const; // advc.004w, advc.131

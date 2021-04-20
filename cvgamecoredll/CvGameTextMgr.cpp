@@ -11733,7 +11733,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 			}
 		}
 	}
-	for (iI = 0; iI < NUM_COMMERCE_TYPES; ++iI)
+	for (int iI = 0; iI < NUM_COMMERCE_TYPES; ++iI)
 	{
 		int iCommerceProduced = kBuilding.getCommerceProduced((CommerceTypes)iI);
 		if (iCommerceProduced != 0)
@@ -11996,11 +11996,21 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 			}
 		}
 	}
-////DOTO -tholish-Keldath inactive buildings show info to buildings if their build but conditions are not met.
-	if (GC.getInfo(eBuilding).getPrereqMustAll() > 0 && GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION) && pCity != NULL /*use this only when in city, other wise - its double*/) 
+	if (pCity != NULL)  /*use this only when in city, other wise - its double*/
 	{
-		buildBuildingRequiresString(szBuffer, eBuilding, bCivilopediaText, bTechChooserText, pCity);
+		////DOTO -tholish-Keldath inactive buildings show info to buildings if their build but conditions are not met.
+		//WONDER LIMIT DOTO 
+		if (GC.getInfo(eBuilding).getPrereqMustAll() > 0 && GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION)
+			||
+			pCity->isCultureWorldWondersMaxed() && GC.getGame().isOption(GAMEOPTION_CULTURE_WONDER_LIMIT)
+			)
+		{
+			buildBuildingRequiresString(szBuffer, eBuilding, bCivilopediaText, bTechChooserText, pCity);
+		}
+		//WONDER LIMIT DOTO 
+		////DOTO -tholish-Keldath inactive buildings show info to buildings if their build but conditions are not met.
 	}
+
 }
 
 
@@ -12302,14 +12312,22 @@ void CvGameTextMgr::buildBuildingRequiresString(CvWStringBuffer& szBuffer,
 			szBonusList.append(ENDCOLR);
 			szBuffer.append(szBonusList);
 		}*/
-//DOTO-prereqmustall building deletion
+//DOTO-prereqmustall building deletion inactive buildings
 		if (kBuilding.getPrereqMustAll() > 0 &&
 					GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
 		{			
 			szBuffer.append(NEWLINE);
 			szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_MUST_PREREQ_ALL"));
 		}
-//DOTO-prereqmustall building deletion
+//DOTO-prereqmustall building deletion inactive buildings
+//Wonder Limit Doto
+		if (pCity->isCultureWorldWondersMaxed() &&
+			GC.getGame().isOption(GAMEOPTION_CULTURE_WONDER_LIMIT))
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText(L"Culture Wonders Limit Reached"));
+		}
+//Wonder Limit Doto
 //DOTO-prere Game option disply
 		szBuffer.append(NEWLINE);
 		bool isoptionset = false;
@@ -12325,9 +12343,10 @@ void CvGameTextMgr::buildBuildingRequiresString(CvWStringBuffer& szBuffer,
 
 		if (isoptionset)
 		{
-			if (!GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
+			if (!GC.getGame().isOption(GAMEOPTION_EXTRA_BUILDINGS))
 				szBuffer.append(gDLL->getText("TXT_KEY_GAMEOPTION_EXTRA_BUILDINGS"));
-			else if (!GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
+			//it was else if here - cant remeber why - doto 108
+			if (!GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
 				szBuffer.append(gDLL->getText("TXT_KEY_GAMEOPTION_BUILDING_DELETION"));
 		}
 		if (isNotoptionset)
@@ -12335,7 +12354,6 @@ void CvGameTextMgr::buildBuildingRequiresString(CvWStringBuffer& szBuffer,
 			if (!GC.getGame().isOption(GAMEOPTION_NO_CORPORATIONS))
 				szBuffer.append(gDLL->getText("TXT_KEY_GAMEOPTION_NO_CORPORATIONS"));
 		}
-
 //DOTO-prere Game option disply
 //Shqype Vicinity Bonus End
 	if (bCivilopediaText)
