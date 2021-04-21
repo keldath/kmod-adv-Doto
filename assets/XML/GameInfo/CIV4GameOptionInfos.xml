@@ -286,6 +286,20 @@
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
+            <Type>GAMEOPTION_CULTURE_WONDER_LIMIT</Type>
+            <Description>Culture Wonder Limit</Description>
+            <Help>A City can Build amount of Wonders based on its Culture level</Help>
+            <bDefault>0</bDefault>
+            <bVisible>1</bVisible>
+       	</GameOptionInfo>
+        <GameOptionInfo>
+            <Type>GAMEOPTION_CULTURE_WONDER_LIMIT_OBSOLETE</Type>
+            <Description>Culture Wonder Limit Obs</Description>
+            <Help>Allow building a wonder if all but 1 of the city wonders are obsolete</Help>
+            <bDefault>0</bDefault>
+            <bVisible>1</bVisible>
+       	</GameOptionInfo>
+        <GameOptionInfo>
             <Type>GAMEOPTION_EXTRA_BUILDINGS</Type>
             <Description>Extra Bonus</Description>
             <Help>Units gets more Power with more resources of the same type. Also Requires BUILDING DELETION Game Option</Help>

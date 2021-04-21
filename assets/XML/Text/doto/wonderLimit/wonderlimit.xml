@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by XMLSPY 2004 Professional Ed. Release 2, Installed Multi + SMP for 3 users (Firaxis Games) -->
+<!-- Sid Meier's Civilization 4 -->
+<!-- Copyright Firaxis Games 2005 -->
+<!-- -->
+<!-- Game Text Infos -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+		<Tag>TXT_KEY_WONDERLIMIT_MAX</Tag>
+		<English>[COLOR_WARNING_TEXT]Culture Wonders Limit:[NEWLINE]Current#: %d1 
+Culture Level %s2 allows %d3 [COLOR_REVERT]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_CONCEPT_WONDER_LIMIT</Tag>
+		<English>[COLOR_HIGHLIGHT_TEXT]Culture Wonders Limit[COLOR_REVERT]</English>
+	</TEXT>
+</Civ4GameText>

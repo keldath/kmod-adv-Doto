@@ -1111,6 +1111,9 @@
 		<element type="UpkeepInfo" maxOccurs="*"/>
 	</ElementType>
 	<ElementType name="iCityDefenseModifier" content="textOnly" dt:type="int"/>
+<!-- doto wonder limit keldath -->
+	<ElementType name="imaxWonderCultureLimit" content="textOnly" dt:type="int"/>
+<!-- doto wonder limit keldath -->
 	<ElementType name="GameSpeedType" content="textOnly"/>
 	<ElementType name="SpeedThreshold" content="eltOnly">
 		<element type="GameSpeedType"/>
@@ -1123,6 +1126,9 @@
 		<element type="Type" minOccurs="0"/>
 		<element type="Description" minOccurs="0"/>
 		<element type="iCityDefenseModifier" minOccurs="0"/>
+<!-- doto wonder limit keldath -->
+		<element type="imaxWonderCultureLimit" minOccurs="0"/>
+<!-- doto wonder limit keldath -->
 	</ElementType>
 	<ElementType name="CultureLevelInfos" content="eltOnly">
 		<element type="CultureLevelInfo" maxOccurs="*"/>

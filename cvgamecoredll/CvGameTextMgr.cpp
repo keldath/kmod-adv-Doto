@@ -12001,9 +12001,9 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 		////DOTO -tholish-Keldath inactive buildings show info to buildings if their build but conditions are not met.
 		//WONDER LIMIT DOTO 
 		if (GC.getInfo(eBuilding).getPrereqMustAll() > 0 && GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION)
-			||
+			/*|| dont need to display it again
 			pCity->isCultureWorldWondersMaxed() && GC.getGame().isOption(GAMEOPTION_CULTURE_WONDER_LIMIT)
-			)
+			*/)
 		{
 			buildBuildingRequiresString(szBuffer, eBuilding, bCivilopediaText, bTechChooserText, pCity);
 		}
@@ -12321,11 +12321,22 @@ void CvGameTextMgr::buildBuildingRequiresString(CvWStringBuffer& szBuffer,
 		}
 //DOTO-prereqmustall building deletion inactive buildings
 //Wonder Limit Doto
-		if (pCity->isCultureWorldWondersMaxed() &&
-			GC.getGame().isOption(GAMEOPTION_CULTURE_WONDER_LIMIT))
+		if (pCity != NULL)
 		{
-			szBuffer.append(NEWLINE);
-			szBuffer.append(gDLL->getText(L"Culture Wonders Limit Reached"));
+			if (pCity->isCultureWorldWondersMaxed() &&
+				GC.getGame().isOption(GAMEOPTION_CULTURE_WONDER_LIMIT))
+			{
+				szBuffer.append(NEWLINE);
+			/*	szBuffer.append(gDLL->getText("TXT_KEY_REQUIRES"));
+				szBuffer.append(gDLL->getText(L"Culture Wonders Limit Reached:"));
+				szBuffer.append(NEWLINE);
+				szBuffer.append(wchar(GC.getInfo(pCity->getCultureLevel()).getmaxWonderCultureLimit()));
+				szBuffer.append(gDLL->getText(L"/"));
+				szBuffer.append(wchar(pCity->getNumWorldWonders()));
+				szBuffer.append(gDLL->getText("TXT_KEY_COLOR_REVERT"));*/
+				szBuffer.append(gDLL->getText("TXT_KEY_WONDERLIMIT_MAX", pCity->getNumWorldWonders(),
+					GC.getInfo(pCity->getCultureLevel()).getTextKeyWide(), GC.getInfo(pCity->getCultureLevel()).getmaxWonderCultureLimit()));
+			}
 		}
 //Wonder Limit Doto
 //DOTO-prere Game option disply

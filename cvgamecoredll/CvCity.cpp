@@ -1467,6 +1467,22 @@ bool CvCity::isCultureWorldWondersMaxed() const
 		return false;
 	//poor == 1
 	int cultureLevelId = getCultureLevel();
+	int winderCount = getNumWorldWonders();
+
+	//THIS GAME OPTION will allow construction of 1 wonder, if 
+	//all of the wonders are obsilete on a city except 1.
+	//this is a way for not blocking winders for cities with ancient none working wonders...
+	if (GC.getGame().isOption(GAMEOPTION_CULTURE_WONDER_LIMIT_OBSOLETE))
+	{
+		int obsoletecount = 0;
+		FOR_EACH_ENUM(Building)
+		{
+			obsoletecount += GET_TEAM(getTeam()).isObsoleteBuilding(eLoopBuilding)
+				&& GC.getInfo(eLoopBuilding).isWorldWonder() ? 1 : 0;
+		}
+		if ((winderCount - obsoletecount) == 1)
+			return false;
+	}
 	//unused but kept it.
 	int cuktureWLimit =  GC.getInfo(getCultureLevel()).getmaxWonderCultureLimit();
 	//CvWString cultureLevelDesc = GC.getInfo(getCultureLevel()).getTextKeyWide();
@@ -1474,7 +1490,20 @@ bool CvCity::isCultureWorldWondersMaxed() const
 	//CultureLevelTypes
 	if (cultureLevelId == 0)
 		return true;
-	if (getNumWorldWonders() > cuktureWLimit)
+	//i was thinking of limit based on world size or speed... left it off for now
+	//CvWString speed = GC.getInfo(GC.getGame().getGameSpeedType()).getDescription();
+	/*CvWString worldSize = GC.getInfo(GC.getMap().getWorldSize()).getDescription();
+
+	if (worldSize == L"WORLDSIZE_LARGE" )
+		winderCount += 1;
+	else if (worldSize == L"WORLDSIZE_STANDARD")
+		winderCount += 2;
+	else if (worldSize == L"WORLDSIZE_SMALL")
+		winderCount += 3;
+	else if (worldSize == L"WORLDSIZE_TINY" || worldSize == L"WORLDSIZE_TINY")
+		winderCount += 4;*/
+
+	if (winderCount >= cuktureWLimit)
 		return true;
 /* method 2
 	else if(cultureLevelId == 1 && numOfwonders > GC.getDefineINT(CvGlobals::MAX_WORLD_WONDERS_CULTURE_POOR))
@@ -1490,6 +1519,8 @@ bool CvCity::isCultureWorldWondersMaxed() const
 	else if (cultureLevelId == 6 && numOfwonders >  GC.getDefineINT(CvGlobals::MAX_WORLD_WONDERS_CULTURE_LEGENDARY))
 		return false;
 */
+
+
 	return false;
 }
 //Wonder Limit - Doto

@@ -2084,6 +2084,6 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 <!-- Super Forts end - moved to globaldefinesalt
 	<Define>
 		<DefineName>CULTURE_GOLDEN_AGE_THRESHOLD</DefineName>
-		<iDefineIntVal>500</iDefineIntVal>-->
-	</Define>
+		<iDefineIntVal>500</iDefineIntVal>
+	</Define>-->
 </Civ4Defines>
