@@ -482,7 +482,6 @@ void CyInfoPythonInterface2()
 /**  Reason Added: Expose new terrain tags to python                                                **/
 /**  Notes:                                                                                         **/
 /*****************************************************************************************************/
-		.def("isRequiresFlatlands", &CvTerrainInfo::isRequiresFlatlands, "bool ()")
 		.def("getTurnDamage", &CvTerrainInfo::getTurnDamage, "int ()")
 /*****************************************************************************************************/
 /**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
