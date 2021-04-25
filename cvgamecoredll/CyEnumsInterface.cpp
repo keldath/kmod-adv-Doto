@@ -429,6 +429,9 @@ void CyEnumsPythonInterface()
 		.value("WIDGET_CITY_TRADE", WIDGET_CITY_TRADE) // advc.ctr
 		.value("WIDGET_CYCLE_UNIT", WIDGET_CYCLE_UNIT) // advc.154
 		.value("NUM_WIDGET_TYPES", NUM_WIDGET_TYPES)
+//doto wonder limit - city hover help
+		.value("WIDGET_WONDER_LIMITS", WIDGET_WONDER_LIMITS)
+			//doto wonder limit - city hover help
 		;
 
 	python::enum_<ButtonPopupTypes>("ButtonPopupTypes")

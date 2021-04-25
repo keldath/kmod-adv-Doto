@@ -483,10 +483,10 @@ void CyInfoPythonInterface2()
 /**  Notes:                                                                                         **/
 /*****************************************************************************************************/
 		.def("isRequiresFlatlands", &CvTerrainInfo::isRequiresFlatlands, "bool ()")
+		.def("getTurnDamage", &CvTerrainInfo::getTurnDamage, "int ()")
 /*****************************************************************************************************/
 /**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
 /*****************************************************************************************************/
-
 		// Arrays
 
 		.def("getYield", &CvTerrainInfo::getYield, "int (int i)")

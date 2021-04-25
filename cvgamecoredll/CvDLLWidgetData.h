@@ -220,7 +220,9 @@ protected:
 	CvWString getHomePlotYieldText(CvPlot const& p, PlayerTypes eOwner) const;
 	CvWString getNetFeatureHealthText(CvPlot const& kCityPlot, PlayerTypes eOwner) const;
 	// </advc.004b>
-
+//doto wonder limit hover text
+	void parseCultureWonderLimitHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer);
+//doto wonder limit hover text
 };
 
 #endif//_CVDLLWIDGETDATA_H_

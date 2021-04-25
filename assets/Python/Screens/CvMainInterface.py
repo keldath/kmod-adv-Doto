@@ -3658,7 +3658,10 @@ class CvMainInterface:
 		screen.hide( "TradeRouteListBackground" )
 		screen.hide( "BuildingListLabel" )
 		screen.hide( "TradeRouteListLabel" )
-
+#doto - wonder limit
+		if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_CULTURE_WONDER_LIMIT):
+			screen.hide( "WonderLimit" )
+#doto - wonder limit
 		i = 0
 		for i in range( g_iNumLeftBonus ):
 			szName = "LeftBonusItem" + str(i)
@@ -3992,8 +3995,9 @@ class CvMainInterface:
 						iCount = iCount + 1
 
 				iCount = 0
-
-				screen.addTableControlGFC( "BuildingListTable", 3, 10, 317, 238, yResolution - 541, False, False, 32, 32, TableStyles.TABLE_STYLE_STANDARD )
+#doto - wonder limit - change position to make room for the wonder limit - i didnt add option check here - not critical
+				screen.addTableControlGFC( "BuildingListTable", 3, 10, 316, 238, yResolution - 559, False, False, 32, 32, TableStyles.TABLE_STYLE_STANDARD )
+#doto - wonder limit
 				screen.setStyle( "BuildingListTable", "Table_City_Style" )
 				
 # BUG - Raw Yields - start
@@ -4028,10 +4032,29 @@ class CvMainInterface:
 				screen.setTableColumnHeader( "BuildingListTable", 2, u"", 10 )
 				screen.setTableColumnRightJustify( "BuildingListTable", 1 )
 
+#doto - wonder limit start
+				if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_CULTURE_WONDER_LIMIT):
+					pHeadSelectedCity = CyInterface().getHeadSelectedCity()
+					cultureInfo = gc.getCultureLevelInfo(pHeadSelectedCity.getCultureLevel())
+					#cultureLevel = cultureInfo.getTextKey()
+					countWonder = pHeadSelectedCity.getNumWorldWonders()
+					cultureWonderLimit = cultureInfo.getmaxWonderCultureLimit()		
+					wonderLimitStatus = localText.getText("TXT_KEY_CONCEPT_WONDER_LIMIT", (gc.getCommerceInfo(CommerceTypes.COMMERCE_CULTURE).getChar(),countWonder,cultureWonderLimit,))	
+					#if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_PICK_RELIGION):
+					if (countWonder >= cultureWonderLimit):
+						wonderLimitStatus = localText.getText("TXT_KEY_CONCEPT_WONDER_LIMIT_ABOVE", (gc.getCommerceInfo(CommerceTypes.COMMERCE_CULTURE).getChar(),countWonder,cultureWonderLimit,))	
+					# justify was on 125 org	
+					#this gets the hover text from the dll: WidgetTypes.WIDGET_WONDER_LIMITS
+					screen.setLabel("WonderLimit", "Background", wonderLimitStatus, CvUtil.FONT_RIGHT_JUSTIFY, 190, self.yResolution - 234, -0.1, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_WONDER_LIMITS, -1, -1)
+					screen.hide( "WonderLimit" )#probably not needed - look below
+#doto - wonder limit end
 				screen.show( "BuildingListBackground" )
 				screen.show( "TradeRouteListBackground" )
 				screen.show( "BuildingListLabel" )
-				
+#doto - wonder limit - i should just place the code here
+				if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_CULTURE_WONDER_LIMIT):
+					screen.show( "WonderLimit" )
+#doto - wonder limit				
 # BUG - Raw Yields - start
 				if (CityScreenOpt.isShowRawYields()):
 					screen.setState("RawYieldsTrade0", not g_bYieldView)

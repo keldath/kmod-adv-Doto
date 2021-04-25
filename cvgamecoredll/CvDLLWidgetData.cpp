@@ -700,7 +700,14 @@ void CvDLLWidgetData::parseHelp(CvWStringBuffer &szBuffer, CvWidgetDataStruct &w
 		parseGoldenAgeAnarchyHelp((PlayerTypes)widgetDataStruct.m_iData1,
 				widgetDataStruct.m_iData2, true, szBuffer);
 		break;
+//doto wonder limit - city hover help
+	case WIDGET_WONDER_LIMITS:
+		parseCultureWonderLimitHelp(widgetDataStruct, szBuffer);
+		break;
+//doto wonder limit - city hover help
 	}
+	
+
 	if (GC.getGame().getActivePlayer() == NO_PLAYER)
 		return;
 	static WidgetTypes aeExpandTypes[] =
@@ -5301,7 +5308,6 @@ void CvDLLWidgetData::parseCultureHelp(CvWidgetDataStruct &widgetDataStruct, CvW
 	///KNOEDELend ************************
 }
 
-
 void CvDLLWidgetData::parseGreatPeopleHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer)
 {
 	CvCity* pHeadSelectedCity = gDLL->UI().getHeadSelectedCity();
@@ -6532,6 +6538,29 @@ CvWString CvDLLWidgetData::getNetFeatureHealthText(CvPlot const& kCityPlot,
 	}
 	return szRetVal;
 }
+
+//doto wonder limit hover text
+void CvDLLWidgetData::parseCultureWonderLimitHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer)
+{
+	/* no need - i ended up not being based of a city
+	CvCity* pHeadSelectedCity = gDLL->UI().getHeadSelectedCity();
+	if (pHeadSelectedCity == NULL)
+		return; // advc
+	*/
+	szBuffer.append(gDLL->getText("TXT_KEY_WIDGET_WONDER_LIMITS"));
+	szBuffer.append(L"\n");
+	for (int iI = 0; iI < GC.getNumCultureLevelInfos(); ++iI)
+	{
+		szBuffer.append(gDLL->getText("TXT_KEY_WIDGET_WONDER_LIMITS_LEVEL",
+			GC.getInfo((CultureLevelTypes)iI).getTextKeyWide(),
+			GC.getInfo((CultureLevelTypes)iI).getmaxWonderCultureLimit()
+		));
+		szBuffer.append(L"\n");
+	}
+	szBuffer.append(L"=======================\n");
+	szBuffer.append(gDLL->getText("TXT_KEY_WIDGET_WONDER_LIMITS_CREDIT"));
+}
+//doto wonder limit hover text
 
 CvWString CvDLLWidgetData::getHomePlotYieldText(CvPlot const& p, PlayerTypes eOwner) const
 {

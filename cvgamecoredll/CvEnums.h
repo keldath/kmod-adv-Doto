@@ -482,6 +482,9 @@ ENUM_START(Widget, WIDGET)
 	WIDGET_ANARCHY, // </advc.085>
 	WIDGET_CITY_TRADE, // advc.ctr
 	WIDGET_CYCLE_UNIT, // advc.154
+//doto wonder limit - city hover help
+	WIDGET_WONDER_LIMITS,
+//doto wonder limit - city hover help
 ENUM_END(Widget, WIDGET)
 
 ENUM_START(ButtonPopup, BUTTONPOPUP)

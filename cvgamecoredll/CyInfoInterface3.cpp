@@ -386,18 +386,9 @@ void CyInfoPythonInterface3()
 
 	python::class_<CvCultureLevelInfo, boost::noncopyable, python::bases<CvInfoBase> >("CvCultureLevelInfo")
 		.def("getCityDefenseModifier", &CvCultureLevelInfo::getCityDefenseModifier, "int ()")
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 15.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: Expose new terrain tags to python                                                **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-		.def("getHealthPercent", &CvTerrainInfo::getHealthPercent, "int ()")
-		.def("getTurnDamage", &CvTerrainInfo::getTurnDamage, "int ()")
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
+//Wonder Limit - Doto 
+		.def("getmaxWonderCultureLimit", CvCultureLevelInfo::getmaxWonderCultureLimit, "int ()")
+//Wonder Limit - Doto 
 		.def("getSpeedThreshold", &CvCultureLevelInfo::getSpeedThreshold, "int ()")
 		;
 

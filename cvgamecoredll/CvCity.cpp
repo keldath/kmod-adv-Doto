@@ -1519,8 +1519,6 @@ bool CvCity::isCultureWorldWondersMaxed() const
 	else if (cultureLevelId == 6 && numOfwonders >  GC.getDefineINT(CvGlobals::MAX_WORLD_WONDERS_CULTURE_LEGENDARY))
 		return false;
 */
-
-
 	return false;
 }
 //Wonder Limit - Doto

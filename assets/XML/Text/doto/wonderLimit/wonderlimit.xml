@@ -3,7 +3,7 @@
 <!-- Sid Meier's Civilization 4 -->
 <!-- Copyright Firaxis Games 2005 -->
 <!-- -->
-<!-- Game Text Infos -->
+<!-- Wonder Limit by Culture Infos inspired by History reWritten for Doto -->
 <Civ4GameText xmlns="http://www.firaxis.com">
 	<TEXT>
 		<Tag>TXT_KEY_WONDERLIMIT_MAX</Tag>
@@ -12,6 +12,28 @@ Culture Level %s2 allows %d3 [COLOR_REVERT]</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_CONCEPT_WONDER_LIMIT</Tag>
-		<English>[COLOR_HIGHLIGHT_TEXT]Culture Wonders Limit[COLOR_REVERT]</English>
+		<English>[COLOR_HIGHLIGHT_TEXT]%F1 Wonders Limit: %d2/%d3[COLOR_REVERT]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_CONCEPT_WONDER_LIMIT_ABOVE</Tag>
+		<English>[COLOR_HIGHLIGHT_TEXT] %F1 Wonders Limit: [COLOR_REVERT][COLOR_WARNING_TEXT]%d2/%d3[COLOR_REVERT]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WIDGET_WONDER_LIMITS</Tag>
+		<English>[COLOR_YIELD_COMMERCE]Culture Level Wonder Limits:[COLOR_REVERT]</English>
+<!--at first i couldnt make it how to get all the culture levels - so i though manually define here the amount that exists and loop the number in the c++
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WIDGET_WONDER_LIMITS_CULTURE_LEVEL_IN_MOD</Tag>
+		<English>6</English>
+		-->
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WIDGET_WONDER_LIMITS_LEVEL</Tag>
+		<English>%s1 : %d2</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_WIDGET_WONDER_LIMITS_CREDIT</Tag>
+		<English>[COLOR_POSITIVE_TEXT]Inspired by History reWritten [NEWLINE]Play it![COLOR_REVERT]</English>
 	</TEXT>
 </Civ4GameText>
