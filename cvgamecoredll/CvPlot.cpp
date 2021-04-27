@@ -5430,6 +5430,13 @@ BonusTypes CvPlot::getNonObsoleteBonusType(TeamTypes eTeam,
 	bool bCheckConnected) const // K-Mod
 {
 	FAssert(eTeam != NO_TEAM);
+//doto super forts
+//on kill civ, city change owner is executed, 
+//due to change culture.
+//so i added a safe check from an assert that popped when the team was dead
+	if(GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && !GET_TEAM(eTeam).isAlive())
+		return NO_BONUS;
+//end of doto super forts
 	FAssert(GET_TEAM(eTeam).isAlive()); // K-Mod
 
 	BonusTypes eBonus = getBonusType(eTeam);
@@ -7007,6 +7014,7 @@ void CvPlot::changeVisibilityCount(TeamTypes eTeam, int iChange,
 		or Jungle. */
 	if(getVisibilityCount(eTeam) < 0)
 	{
+		/*doto test*/int test = m_aiVisibilityCount.get(eTeam);
 		FAssert(m_aiVisibilityCount.get(eTeam) >= 0);
 		m_aiVisibilityCount.set(eTeam, 0);
 	} // </advc.006>
