@@ -80,6 +80,7 @@ class BugCityScreenOptionsTab(BugOptionsTab.BugOptionsTab):
 		self.addLabel(screen, panel, "GreatPersonBar", "Great Person Bar:")
 		self.addCheckbox(screen, panel, "CityScreen__GreatPersonTurns")
 		self.addCheckbox(screen, panel, "CityScreen__GreatPersonInfo")
+		# advc.078 (note): Merged, but always enabled.
 		#self.addCheckbox(screen, panel, "MiscHover__GreatPeopleRateBreakdown")
 		
 	def createProductionQueuePanel(self, screen, panel):
@@ -97,7 +98,8 @@ class BugCityScreenOptionsTab(BugOptionsTab.BugOptionsTab):
 	#def createCityBarPanel(self, screen, panel):
 		#self.addLabel(screen, panel, "CitybarHover", "City Bar Hover:")
 		#left, right = self.addTwoColumnLayout(screen, panel, "CityBarHover", False)
-		
+
+		# advc.186 (note): Mostly implemented, but not optional in AdvCiv.
 		#self.addCheckbox(screen, left, "CityBar__BaseValues")
 		#self.addCheckbox(screen, left, "CityBar__Health")
 		#self.addCheckbox(screen, left, "CityBar__Happiness")
@@ -107,7 +109,8 @@ class BugCityScreenOptionsTab(BugOptionsTab.BugOptionsTab):
 		#self.addCheckbox(screen, left, "CityBar__Commerce")
 		#self.addCheckbox(screen, left, "CityBar__CultureTurns")
 		#self.addCheckbox(screen, left, "CityBar__GreatPersonTurns")
-		
+
+		# advc.186 (note): These are now tied to CityScreen__Anger_Counter
 		#self.addLabel(screen, right, "Cityanger", "City Anger:")
 		#self.addCheckbox(screen, right, "CityBar__HurryAnger")
 		#self.addCheckbox(screen, right, "CityBar__DraftAnger")
@@ -116,7 +119,9 @@ class BugCityScreenOptionsTab(BugOptionsTab.BugOptionsTab):
 		#self.addCheckbox(screen, right, "CityBar__BuildingActualEffects")
 		#self.addCheckbox(screen, right, "CityBar__BuildingIcons")
 		#self.addCheckbox(screen, right, "CityBar__Specialists")
+		# Handled by advc.101 (non-optional)
 		#self.addCheckbox(screen, right, "CityBar__RevoltChance")
+		# advc.186: Replaced on the Map tab
 		#self.addCheckbox(screen, right, "CityBar__HideInstructions")
 		# EF: Airport Icons option is on Map tab
 		###self.addCheckbox(screen, right, "CityBar__AirportIcons")

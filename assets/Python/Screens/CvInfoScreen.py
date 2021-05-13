@@ -474,8 +474,8 @@ class CvInfoScreen:
 		self.TEXT_CITIES_RAZED = localText.getText("TXT_KEY_INFO_SCREEN_CITIES_RAZED", ())
 		self.TEXT_NUM_GOLDEN_AGES = localText.getText("TXT_KEY_INFO_SCREEN_NUM_GOLDEN_AGES", ())
 		self.TEXT_NUM_RELIGIONS_FOUNDED = localText.getText("TXT_KEY_INFO_SCREEN_RELIGIONS_FOUNDED", ())
-
-		self.TEXT_CURRENT = localText.getText("TXT_KEY_CURRENT", ())
+		# advc.002b: Text key was TXT_KEY_CURRENT; abbreviate.
+		self.TEXT_CURRENT = localText.getText("TXT_KEY_CURRENT_ABBR", ())
 		self.TEXT_UNITS = localText.getText("TXT_KEY_CONCEPT_UNITS", ())
 		self.TEXT_BUILDINGS = localText.getText("TXT_KEY_CONCEPT_BUILDINGS", ())
 		self.TEXT_KILLED = localText.getText("TXT_KEY_INFO_SCREEN_KILLED", ())
@@ -2944,7 +2944,8 @@ class CvInfoScreen:
 
 		# Bottom Chart
 #BUG: improvements - start
-		if AdvisorOpt.isShowImprovements():
+		#if AdvisorOpt.isShowImprovements():
+		if True: # advc.004
 			self.X_STATS_BOTTOM_CHART = 45
 			self.Y_STATS_BOTTOM_CHART = 280
 			self.W_STATS_BOTTOM_CHART_UNITS = 455
@@ -3141,7 +3142,8 @@ class CvInfoScreen:
 		screen.enableSort(szBuildingsTable)
 
 #BUG: improvements - start
-		if AdvisorOpt.isShowImprovements():
+		#if AdvisorOpt.isShowImprovements():
+		if True: # advc.004
 			szImprovementsTable = self.getNextWidgetName()
 			screen.addTableControlGFC(szImprovementsTable, self.iNumImprovementStatsChartCols, self.X_STATS_BOTTOM_CHART + self.W_STATS_BOTTOM_CHART_UNITS + self.W_STATS_BOTTOM_CHART_BUILDINGS, self.Y_STATS_BOTTOM_CHART, self.W_STATS_BOTTOM_CHART_IMPROVEMENTS, self.H_STATS_BOTTOM_CHART,
 						  True, True, 32,32, TableStyles.TABLE_STYLE_STANDARD)
@@ -3150,7 +3152,8 @@ class CvInfoScreen:
 
 		# Reducing the width a bit to leave room for the vertical scrollbar, preventing a horizontal scrollbar from also being created
 #BUG: improvements - start
-		if AdvisorOpt.isShowImprovements():
+		#if AdvisorOpt.isShowImprovements():
+		if True: # advc.004
 			iChartWidth = self.W_STATS_BOTTOM_CHART_UNITS + self.W_STATS_BOTTOM_CHART_BUILDINGS + self.W_STATS_BOTTOM_CHART_IMPROVEMENTS - 24
 
 			# Add Columns
@@ -3204,6 +3207,7 @@ class CvInfoScreen:
 
 # #BUG: improvements - start
 		# if AdvisorOpt.isShowImprovements():
+		# if True: # advc.004
 			# for i in range(self.iNumImprovementStatsChartRows):
 				# if (aiImprovementsCurrent[i] > 0):
 					# screen.appendTableRow(szImprovementsTable)
@@ -3263,7 +3267,8 @@ class CvInfoScreen:
 			iRow += 1 # K-Mod
 
 #BUG: improvements - start
-		if AdvisorOpt.isShowImprovements():
+		#if AdvisorOpt.isShowImprovements():
+		if True: # advc.004
 			# Add Improvements to table	
 			iRow = 0
 

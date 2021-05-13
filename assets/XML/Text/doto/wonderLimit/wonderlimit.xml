@@ -29,6 +29,10 @@ Culture Level %s2 allows %d3 [COLOR_REVERT]</English>
 		-->
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_CURR_CULTURE</Tag>
+		<English>[COLOR_BUILDING_TEXT]%s1 : %d2[COLOR_REVERT]</English>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_WIDGET_WONDER_LIMITS_LEVEL</Tag>
 		<English>%s1 : %d2</English>
 	</TEXT>
