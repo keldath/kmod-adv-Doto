@@ -7378,6 +7378,7 @@ void CvGame::doHolyCity()
 					continue;
 				if (kTeam.getNumCities() <= 0)
 					continue;
+
 				int iValue = getSorenRandNum(10, "Found Religion (Team)");
 				for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
 				{
@@ -7397,68 +7398,65 @@ void CvGame::doHolyCity()
 		if (eBestTeam == NO_TEAM)
 			continue;
 		}
-//david lalen forbiddan religion - dune wars end
-		int iValue = 0;
 		int iBestValue = MAX_INT;
 		PlayerTypes eBestPlayer = NO_PLAYER;
 		for (int iJ = 0; iJ < MAX_PLAYERS; iJ++)
 		{
 			CvPlayer const& kMember = GET_PLAYER((PlayerTypes)iJ);
+// david lalen forbiddan religion
 			bool teamCheck = forbRel ? false : kMember.getTeam() != eBestTeam;//this is needed for forbidden religion
 			//only check for team if forbidden religion is off...
 			if (!kMember.isAlive() || teamCheck /*kMember.getTeam() != eBestTeam */|| kMember.getNumCities() <= 0)
 				continue;
 // david lalen forbiddan religion - dune wars end - keldath fix - if religion is forbidden - pass.
 			CivilizationTypes eCiv = kMember.getCivilizationType();
-			if (eCiv != NO_CIVILIZATION && eReligion != NO_RELIGION)
+			if (eCiv != NO_CIVILIZATION && eReligion != NO_RELIGION && forbRel)
 			{
-				if (forbRel)
+				if (!GET_TEAM(kMember.getTeam()).isHasTech((TechTypes)(GC.getReligionInfo((ReligionTypes)iI).getTechPrereq())))
 				{
-					if (GET_TEAM(kMember.getTeam()).isHasTech((TechTypes)(GC.getReligionInfo((ReligionTypes)iI).getTechPrereq())))
-					{
-						if (GC.getCivilizationInfo(eCiv).isForbidden((ReligionTypes)iI))
-						{
-							continue;
-						}
-					}	
+					continue;
 				}
-			}
+				else if (GC.getCivilizationInfo(eCiv).isForbidden((ReligionTypes)iI))
+				{
+					continue;
+				}
+			}	
 //david lalen forbiddan religion - dune wars end
-			iValue = getSorenRandNum(10, "Found Religion (Player)");
-					if (!kMember.isHuman())
-						iValue += 18; // advc.138: Was 10. Need some x: 15 < x < 20.
-					for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
-					{
-						int iReligionCount = kMember.getHasReligionCount((ReligionTypes)iK);
-						if (iReligionCount > 0)
-							iValue += iReligionCount * 20;
-					}
-					iValue -= religionPriority(kMember.getID(), eReligion); // advc.138
-					if (iValue < iBestValue)
-					{
-						iBestValue = iValue;
-						eBestPlayer = kMember.getID();
-					}
-				}
+			int iValue = getSorenRandNum(10, "Found Religion (Player)");
+			if (!kMember.isHuman())
+				iValue += 18; // advc.138: Was 10. Need some x: 15 < x < 20.
+			for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
+			{
+				int iReligionCount = kMember.getHasReligionCount((ReligionTypes)iK);
+				if (iReligionCount > 0)
+					iValue += iReligionCount * 20;
+			}
+			iValue -= religionPriority(kMember.getID(), eReligion); // advc.138
+			if (iValue < iBestValue)
+			{
+				iBestValue = iValue;
+				eBestPlayer = kMember.getID();
+			}
+		}
 		if (eBestPlayer == NO_PLAYER)
 			continue;
 
 		ReligionTypes eFoundReligion = eReligion;
 		if (isOption(GAMEOPTION_PICK_RELIGION))
+		{
 			if (!isOption(GAMEOPTION_FORBIDDEN_RELIGION))
 			{
 				//org code
-			eFoundReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
+				eFoundReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
 			}
-			else 
+			else
 			{	//if pick religion make sure none forbidded is picked
-    		ReligionTypes eChosenReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
-			//check no religion fix - suggested by f1rpo
-    			if (eChosenReligion != NO_RELIGION 
-    				&& !GC.getCivilizationInfo(GET_PLAYER(eBestPlayer).getCivilizationType()).isForbidden(eChosenReligion))
-        		eFoundReligion = eChosenReligion;
+				ReligionTypes eChosenReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
+				if (eChosenReligion != NO_RELIGION
+					&& !GC.getCivilizationInfo(GET_PLAYER(eBestPlayer).getCivilizationType()).isForbidden(eChosenReligion))
+					eFoundReligion = eChosenReligion;
+			}
 		}
-
 		if (eFoundReligion != NO_RELIGION)
 //david lalen forbiddan religion - dune wars end
 //true will create free missionaries. Seems like those are normally not created when a religion is founded at game start (actually, founding gets delayed until turn 5 iirc), but, if you want to change that – sounds fair enough.

@@ -7242,6 +7242,7 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 			pInfo->setText(gDLL->getText("TXT_KEY_LIMITED_RELIGION", GC.getInfo(eReligion).getDescription(), GC.getCivilizationInfo(eCiv).getAdjective(), getCountFoundReligion()));
 
 			addPopup(pInfo);
+			return;
 		}
 		return;
 	}
