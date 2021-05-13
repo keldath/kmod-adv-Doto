@@ -177,7 +177,7 @@ public:
 	DllExport GameType getType() const { return m_eType; }
 	DllExport void setType(GameType eType);
 	DllExport void setType(const CvWString& szType);
-	bool isScenario() const; // advc.030
+	bool getScenario() const; // advc.030
 
 	GameMode getMode() const { return m_eMode; }
 	DllExport void setMode(GameMode eMode);
@@ -395,7 +395,7 @@ protected:
 };
 
 // Would increase the size of m_abMPOptions to 8 byte
-//BOOST_STATIC_ASSERT(NUM_MPOPTION_TYPES <= 32 && NUM_FORCECONTROL_TYPES <= 32);
+BOOST_STATIC_ASSERT(NUM_MPOPTION_TYPES <= 32 && NUM_FORCECONTROL_TYPES <= 32);
 /*  advc.003k: OK to increase the size of CvInitCore (and to update or remove this
 	assertion). Just make sure that new data members are added in the right place. */
 //BOOST_STATIC_ASSERT(sizeof(CvInitCore) ==

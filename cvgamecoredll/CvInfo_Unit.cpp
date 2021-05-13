@@ -1453,6 +1453,7 @@ void CvUnitInfo::write(FDataStreamBase* stream)
 	stream->Write(m_bIgnoreBuildingDefense);
 	stream->Write(m_bCanMoveImpassable);
 	stream->Write(m_bCanMoveAllTerrain);
+//mountains mod back to service
 	stream->Write(m_bCanMovePeak); //Deliverator
 	stream->Write(m_bFlatMovementCost);
 	stream->Write(m_bIgnoreTerrainCost);

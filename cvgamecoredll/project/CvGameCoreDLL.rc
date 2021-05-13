@@ -54,7 +54,7 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,9,9,0
+ FILEVERSION 1,0,0,0
  PRODUCTVERSION 3,1,9,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
@@ -71,8 +71,8 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "CompanyName", "Firaxis Games"
-            VALUE "FileDescription", "Modified DLL Advciv098_Doto_107"
-            VALUE "FileVersion", "0, 9, 9, 0"
+            VALUE "FileDescription", "Modified DLL Advciv100pre_Doto_108"
+            VALUE "FileVersion", "1, 0, 0, 0"
             VALUE "InternalName", "Sid Meier's Civilization 4 : Beyond The Sword Game Core DLL"
             VALUE "LegalCopyright", "Copyright (C) Firaxis Games.  All Rights Reserved."
             VALUE "OriginalFilename", "CvGameCoreDLL.dll"

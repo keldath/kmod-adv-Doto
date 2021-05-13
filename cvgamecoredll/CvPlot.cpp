@@ -1035,20 +1035,20 @@ void CvPlot::nukeExplosion(int iRange, CvUnit* pNukeUnit, bool bBomb)
 	}
 }
 
-bool CvPlot::isConnectedTo(const CvCity* pCity) const
+bool CvPlot::isConnectedTo(CvCity const& kCity) const
 {
 	// Super Forts begin *AI_worker* (had to remove the assert and replace it with an if-else)
 	if (!isFortImprovement())
 	{
 		//original advc code
 		FAssert(isOwned());
-		return (isSamePlotGroup(*pCity->plot(), getOwner()) ||
-				isSamePlotGroup(*pCity->plot(), pCity->getOwner()));
+		return (isSamePlotGroup(kCity.getPlot(), getOwner()) ||
+			isSamePlotGroup(kCity.getPlot(), kCity.getOwner()));
 	}
 	else if(isOwned())
 	{
-		return (isSamePlotGroup(*pCity->plot(), getOwner()) ||
-			isSamePlotGroup(*pCity->plot(), pCity->getOwner()));
+		return (isSamePlotGroup(kCity.getPlot(), getOwner()) ||
+			isSamePlotGroup(kCity.getPlot(), kCity.getOwner()));
 	}
 	else
 	{
@@ -1067,7 +1067,7 @@ bool CvPlot::isConnectedToCapital(PlayerTypes ePlayer) const
 	{
 		CvCity* pCapital = GET_PLAYER(ePlayer).getCapital();
 		if (pCapital != NULL)
-			return isConnectedTo(pCapital);
+			return isConnectedTo(*pCapital);
 	}
 
 	return false;
@@ -1949,7 +1949,9 @@ bool CvPlot::canHaveBonus(BonusTypes eBonus, bool bIgnoreLatitude,
 	{
 		if(!kBonus.isFeatureTerrain(getTerrainType()) &&
 				!kBonus.isTerrain(getTerrainType()))
+		{
 			return false;
+	}
 	}
 	else /* </advc.129> */ if (isFeature())
 	{
@@ -4285,31 +4287,39 @@ int CvPlot::getLatitude() const
 // advc.tsl: was getLatitude()
 char CvPlot::calculateLatitude() const
 {
-	/* orginal bts code
-	int iLatitude;
+	/*int iLatitude;
 	if (GC.getMap().isWrapX() || !(GC.getMap().isWrapY()))
 		iLatitude = ((getY() * 100) / GC.getMap().getGridHeight());
 	else iLatitude = ((getX() * 100) / GC.getMap().getGridWidth());
 	iLatitude = ((iLatitude * (GC.getMap().getTopLatitude() - GC.getMap().getBottomLatitude())) / 100);
-	return abs(iLatitude + GC.getMap().getBottomLatitude()); */
-	// UNOFFICIAL_PATCH, Bugfix, 07/12/09, Temudjin & jdog5000: START
-	int iLatitude;
-	double fLatitude;
-	if (GC.getMap().isWrapX() || !(GC.getMap().isWrapY()))
-		fLatitude = ((getY() * 1.0) / (GC.getMap().getGridHeight()-1));
-	else fLatitude = ((getX() * 1.0) / (GC.getMap().getGridWidth()-1));
-	fLatitude = fLatitude * (GC.getMap().getTopLatitude() - GC.getMap().getBottomLatitude());
-	iLatitude = (int)(fLatitude + 0.5);
-	return toChar(std::min(abs((iLatitude + GC.getMap().getBottomLatitude())), 90));
+	return abs(iLatitude + GC.getMap().getBottomLatitude());*/ // BtS
+	// UNOFFICIAL_PATCH (UP), Bugfix, 07/12/09, Temudjin & jdog5000: START
+	scaled rLatitude;
+	/*if (GC.getMap().isWrapX() || !GC.getMap().isWrapY())
+		rLatitude = scaled(getY(), GC.getMap().getGridHeight() - 1);
+	else rLatitude = scaled(getX(), GC.getMap().getGridWidth() - 1);
+	rLatitude *= GC.getMap().getTopLatitude() - GC.getMap().getBottomLatitude();
+	rLatitude += GC.getMap().getBottomLatitude();*/ // This would be equivalent to the UP
+	/*	<advc.129> Let top and bottom latitude refer to the _edges_ of the map.
+		I.e. the topmost and bottommost _row_ will receive smaller (absolute)
+		latitude values. */
+	rLatitude = GC.getMap().getBottomLatitude() + scaled(
+			GC.getMap().getTopLatitude() - GC.getMap().getBottomLatitude(),
+			GC.getMap().getGridHeight()) *
+			(((GC.getMap().isWrapX() || !GC.getMap().isWrapY()) ?
+			getY() : getX()) + fixp(0.5)); // </advc.129>
+	rLatitude = rLatitude.abs();
+	rLatitude.decreaseTo(90);
+	return toChar(rLatitude.round());
 	// UNOFFICIAL_PATCH: END
 }
 
 
 int CvPlot::getFOWIndex() const
 {
-	CvMap const& m = GC.getMap(); // advc
-	return (((m.getGridHeight() - 1) - getY()) *
-			m.getGridWidth() * LANDSCAPE_FOW_RESOLUTION * LANDSCAPE_FOW_RESOLUTION) +
+	CvMap const& kMap = GC.getMap();
+	return (((kMap.getGridHeight() - 1) - getY()) *
+			kMap.getGridWidth() * LANDSCAPE_FOW_RESOLUTION * LANDSCAPE_FOW_RESOLUTION) +
 			(getX() * LANDSCAPE_FOW_RESOLUTION);
 }
 
@@ -9690,7 +9700,7 @@ int CvPlot::airUnitSpaceAvailable(TeamTypes eTeam) const
 	if (pCity != NULL)
 		iMaxUnits = pCity->getAirUnitCapacity(getTeam());
 	else iMaxUnits = GC.getDefineINT(CvGlobals::CITY_AIR_UNIT_CAPACITY);
-	return (iMaxUnits - countNumAirUnits(eTeam));
+	return iMaxUnits - countNumAirUnits(eTeam);
 }
 
 // advc.081: Cut from CvPlayerAI::AI_countNumAreaHostileUnits

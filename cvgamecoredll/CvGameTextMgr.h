@@ -38,7 +38,7 @@ public:
 
 	void setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 			bool bOneLine = false, bool bShort = false,
-			bool bColorHostile = false, // advc.048
+			bool bColorAllegiance = false, // advc.048
 			bool bOmitOwner = false, // advc.061
 			bool bIndicator = false); // advc.007
 	void setPlotListHelp(CvWStringBuffer &szString, CvPlot const& kPlot, bool bOneLine, bool bShort,
@@ -58,7 +58,8 @@ public:
 	void setCannotAttackHelp(CvWStringBuffer& szHelp, CvUnit const& kAttacker,
 			CvUnit const& kDefender); // </advc.089>
 	void setPlotHelp(CvWStringBuffer &szString, CvPlot const& kPlot);
-	void setCityBarHelp(CvWStringBuffer &szString, CvCity* pCity);
+	void setCityBarHelp(CvWStringBuffer &szString, CvCity const& kCity);
+	void setRevoltHelp(CvWStringBuffer &szString, CvCity const& kCity); // advc.101
 	void setScoreHelp(CvWStringBuffer &szString, PlayerTypes ePlayer);
 
 	void parseTraits(CvWStringBuffer &szHelpString, TraitTypes eTrait, CivilizationTypes eCivilization = NO_CIVILIZATION, bool bDawnOfMan = false);
@@ -108,10 +109,10 @@ public:
 // BUG - Building Additional Health - start
 	bool setBuildingAdditionalHealthHelp(CvWStringBuffer &szBuffer, const CvCity& city, const CvWString& szStart, bool bStarted = false);
 // BUG - Building Additional Health - end
-	void setAngerHelp(CvWStringBuffer &szBuffer, CvCity& city);
-	void setHappyHelp(CvWStringBuffer &szBuffer, CvCity& city);
+	void setAngerHelp(CvWStringBuffer &szBuffer, CvCity const& kCity);
+	void setHappyHelp(CvWStringBuffer &szBuffer, CvCity const& kCity);
 // BUG - Building Additional Happiness - start
-	bool setBuildingAdditionalHappinessHelp(CvWStringBuffer &szBuffer, const CvCity& city, const CvWString& szStart, bool bStarted = false);
+	bool setBuildingAdditionalHappinessHelp(CvWStringBuffer &szBuffer, const CvCity& kCity, const CvWString& szStart, bool bStarted = false);
 // BUG - Building Additional Happiness - end
 	void setYieldChangeHelp(CvWStringBuffer &szBuffer, const CvWString& szStart, const CvWString& szSpace, const CvWString& szEnd, const int* piYieldChange, bool bPercent = false, bool bNewLine = true);
 	void setCommerceChangeHelp(CvWStringBuffer &szBuffer, const CvWString& szStart, const CvWString& szSpace, const CvWString& szEnd, const int* piCommerceChange, bool bPercent = false, bool bNewLine = true);
@@ -146,9 +147,9 @@ public:
 	void setTerrainHelp(CvWStringBuffer &szBuffer, TerrainTypes eTerrain, bool bCivilopediaText = false);
 	void setFeatureHelp(CvWStringBuffer &szBuffer, FeatureTypes eFeature, bool bCivilopediaText = false);
 	// BUG - Building Additional info - start
-	bool setBuildingAdditionalYieldHelp(CvWStringBuffer &szBuffer, const CvCity& city, YieldTypes eIndex, const CvWString& szStart, bool bStarted = false);
-	bool setBuildingAdditionalCommerceHelp(CvWStringBuffer &szBuffer, const CvCity& city, CommerceTypes eIndex, const CvWString& szStart, bool bStarted = false);
-	bool setBuildingSavedMaintenanceHelp(CvWStringBuffer &szBuffer, const CvCity& city, const CvWString& szStart, bool bStarted = false);
+	bool setBuildingAdditionalYieldHelp(CvWStringBuffer &szBuffer, const CvCity& kCity, YieldTypes eIndex, const CvWString& szStart, bool bStarted = false);
+	bool setBuildingAdditionalCommerceHelp(CvWStringBuffer &szBuffer, const CvCity& kCity, CommerceTypes eIndex, const CvWString& szStart, bool bStarted = false);
+	bool setBuildingSavedMaintenanceHelp(CvWStringBuffer &szBuffer, const CvCity& kCity, const CvWString& szStart, bool bStarted = false);
 	// BUG - Building Additional info - end
 	void setProductionHelp(CvWStringBuffer &szBuffer, CvCity const& kCity);  // advc: const city in this function and the next 2
 	void setCommerceHelp(CvWStringBuffer &szBuffer, CvCity const& kCity, CommerceTypes eCommerce);
@@ -321,10 +322,21 @@ private:
 	void setHealthChangeBuildActionHelp(CvWStringBuffer& szBuffer, int iChange,
 			int iChangePercent, int iIcon) const; // </advc.059>
 	// <advc>
-	void appendNegativeModifiers(CvWStringBuffer& szString, CvUnit const* pAttacker,
-			CvUnit const* pDefender, CvPlot const* pPlot);
-	void appendPositiveModifiers(CvWStringBuffer& szString, CvUnit const* pAttacker,
-			CvUnit const* pDefender, CvPlot const* pPlot, bool bNegative);
+	void appendCombatModifiers(CvWStringBuffer& szBuffer, CvPlot const& kPlot,
+			CvUnit const& kAttacker, CvUnit const& kDefender,
+			bool bAttackModifier, bool bACOEnabled,
+			bool bOnlyGeneric = false, bool bOnlyNonGeneric = false);
+	struct CombatModifierOutputParams
+	{
+		bool m_bAttackModifier;
+		bool m_bGenericModifier;
+		bool m_bACOEnabled;
+	};
+	void appendCombatModifier(CvWStringBuffer& szBuffer, int iModifier,
+			CombatModifierOutputParams const& kParams, char const* szTextKey,
+			wchar const* szTextArg = NULL);
+	void appendFirstStrikes(CvWStringBuffer& szBuffer,
+			CvUnit const& kFirstStriker, CvUnit const& kOther, bool bNegativeColor);
 	void setPlotListHelpDebug(CvWStringBuffer& szString, CvPlot const& kPlot);
 	// </advc>
 	// <advc.004w>

@@ -709,12 +709,19 @@ bool CvInitCore::getWBMapScript() const
 	return (gDLL->isDescFileName(CvString(m_szMapScriptName).GetCString()));
 }
 
-/*  advc.030: This only works at the start of a game b/c all savegames have
-	type GAME_..._LOAD. Use CvGame::isScenario if it's not the start of a game. */
-bool CvInitCore::isScenario() const
+/*  advc.030 (from Civ4Col): This only works at the start of a game b/c all savegames
+	have type GAME_..._LOAD. Use CvGame::isScenario if it's not the start of a game. */
+bool CvInitCore::getScenario() const
 {
-	return m_eType == GAME_SP_SCENARIO || m_eType == GAME_MP_SCENARIO ||
-			m_eType == GAME_HOTSEAT_SCENARIO || m_eType == GAME_PBEM_SCENARIO;
+	switch(m_eType)
+	{
+	case GAME_SP_SCENARIO:
+	case GAME_MP_SCENARIO:
+	case GAME_HOTSEAT_SCENARIO:
+	case GAME_PBEM_SCENARIO:
+		return true;
+	}
+	return false;
 }
 
 
@@ -1641,8 +1648,8 @@ void CvInitCore::reRandomizeCivsAndLeaders()
 	{
 		if (GC.getInfo(eCiv).isAIPlayable() != GC.getInfo(eCiv).isPlayable())
 		{
-			FErrorMsg("Not sure how to handle (non)-AI playable leaders; "
-					"falling back on BtS algorithm.");
+			/*FErrorMsg("Not sure how to handle (non)-AI playable leaders; "
+					"falling back on BtS algorithm.");*/ // Well, not exactly an error ...
 			return;
 		}
 	}

@@ -132,16 +132,18 @@ public:
 		// advc.opt: Don't check for INVALID_PLOT_COORD
 		return plotValidXY(iX + iDX, iY + iDY);
 	}
-	// K-Mod start
+	// K-Mod:
 	inline CvPlot* plotXY(const CvPlot* pPlot, int iDX, int iDY) const
 	{
 		return plotXY(pPlot->getX(), pPlot->getY(), iDX, iDY);
-	} // K-Mod end
+	}
 
 	inline DirectionTypes directionXY(int iDX, int iDY) const
 	{
 		/*if (abs(iDX) > DIRECTION_RADIUS || abs(iDY) > DIRECTION_RADIUS)
-			return NO_DIRECTION;*/ // advc.opt: Apparently can't happen, so:
+				return NO_DIRECTION;*/ /* advc.opt: Apparently can't happen
+		(so long as directionXY is used only on adjacent plots), so: */
+///Doto - unit blocade removed the below assert
 //		FAssert(!(abs(iDX) > DIRECTION_RADIUS || abs(iDY) > DIRECTION_RADIUS));
 ///Doto - unit blocade - i reintroduced this - seems its needed for unit blocade - otherwiase - err
 //MOD@VET_Andera412_Blocade_Unit
@@ -276,7 +278,7 @@ public: // advc: made several functions const
 	void doTurn();
 
 	DllExport void updateFlagSymbols();
-	//void setFlagsDirty(); // K-Mod (advc.001w: Obsolete, deleted.)
+	void setFlagsDirty(); // K-Mod
 	DllExport void updateFog();
 	void updateVisibility();																// Exposed to Python
 	DllExport void updateSymbolVisibility();
@@ -362,8 +364,12 @@ public: // advc: made several functions const
 
 	int maxPlotDistance() const;																								// Exposed to Python
 	int maxStepDistance() const;																								// Exposed to Python
-	int maxMaintenanceDistance() const; // advc.140
-	int maxTypicalDistance() const; // advc.140
+	// <advc.140>
+	int maxMaintenanceDistance() const
+	{
+		return (1 + intdiv::uround(maxTypicalDistance() * 10, 25));
+	}
+	int maxTypicalDistance() const; // </advc.140>
 
 	int getGridWidthExternal() const; // advc.inl: Exported through .def file							// Exposed to Python
 	inline int getGridWidth() const // advc.inl: Renamed from getGridWidthINLINE

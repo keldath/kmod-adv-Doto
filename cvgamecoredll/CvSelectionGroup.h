@@ -124,20 +124,8 @@ public:
 	bool canDefend() const;																																										// Exposed to Python
 	bool canBombard(CvPlot const& kPlot) const;
 	int visibilityRange() const;
-
-	// BETTER_BTS_AI_MOD, General AI, 08/19/09, jdog5000: START
-//super forts Doto addition for advc ai bombard changes
-	int getBombardTurns(CvCity const* pCity=NULL, CvPlot const* pPlot=NULL) const;
-	int getFortBombardTurns(CvPlot const* pPlot) const;
-//super forts Doto addition for advc ai bombard changes
-	bool isHasPathToAreaPlayerCity(PlayerTypes ePlayer, MovementFlags eFlags = NO_MOVEMENT_FLAGS,
-			int iMaxPathTurns = -1) /* Erik (CODE1): */ const;
-	// (advc: isHasPathToAreaEnemyCity moved to CvSelectionGroupAI)
-	bool isStranded() const; // Note: K-Mod no longer uses the stranded cache. I have a new system.
-	//void invalidateIsStrandedCache(); // deleted by K-Mod
-	//bool calculateIsStranded();
-	bool canMoveAllTerrain() const;
-	// BETTER_BTS_AI_MOD: END
+	// (advc: Other BBAI functions from same date moved to CvSelectionGroupAI)
+	bool canMoveAllTerrain() const; // BETTER_BTS_AI_MOD, General AI, 08/19/09, jdog5000
 
 	void unloadAll();
 	bool alwaysInvisible() const;																											// Exposed to Python

@@ -1158,6 +1158,41 @@ void CvImprovementInfo::setAddsFreshWaterInRadius(int i)
 
 
 // < JCultureControl Mod Start >
+int CvImprovementInfo::getCultureBorderRange() const
+{
+	return m_iCultureBorderRange;
+}
+
+void CvImprovementInfo::setCultureBorderRange(int i)
+{
+	m_iCultureBorderRange = i;
+}
+
+int CvImprovementInfo::getCultureControlStrength() const
+{
+	return m_iCultureControlStrength;
+}
+
+void CvImprovementInfo::setCultureControlStrength(int i)
+{
+	m_iCultureControlStrength = i;
+}
+
+int CvImprovementInfo::getCultureControlCenterTileBonus() const
+{
+	return m_iCultureControlCenterTileBonus;
+}
+
+void CvImprovementInfo::setCultureControlCenterTileBonus(int i)
+{
+	m_iCultureControlCenterTileBonus = i;
+}
+
+bool CvImprovementInfo::isSpreadCultureControl() const
+{
+	return m_bSpreadCultureControl;
+}
+// < JCultureControl Mod End >
 // Super Forts begin *XML*
 int CvImprovementInfo::getCulture() const
 {
@@ -1194,42 +1229,6 @@ bool CvImprovementInfo::isUpgradeRequiresFortify() const
 	return m_bUpgradeRequiresFortify;
 }
 // Super Forts end
-int CvImprovementInfo::getCultureBorderRange() const
-{
-	return m_iCultureBorderRange;
-}
-
-void CvImprovementInfo::setCultureBorderRange(int i)
-{
-	m_iCultureBorderRange = i;
-}
-
-int CvImprovementInfo::getCultureControlStrength() const
-{
-	return m_iCultureControlStrength;
-}
-
-void CvImprovementInfo::setCultureControlStrength(int i)
-{
-	m_iCultureControlStrength = i;
-}
-
-int CvImprovementInfo::getCultureControlCenterTileBonus() const
-{
-	return m_iCultureControlCenterTileBonus;
-}
-
-void CvImprovementInfo::setCultureControlCenterTileBonus(int i)
-{
-	m_iCultureControlCenterTileBonus = i;
-}
-
-bool CvImprovementInfo::isSpreadCultureControl() const
-{
-	return m_bSpreadCultureControl;
-}
-// < JCultureControl Mod End >
-
 //===NM=====Mountain Mod===0=====
 /* defined already in the .h file (f1rpo method)
 bool CvImprovementInfo::isPeakMakesValid() const
@@ -1726,6 +1725,9 @@ bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iCultureControlCenterTileBonus, "iCultureControlCenterTileBonus", 0);
 	pXML->GetChildXmlValByName(&m_bSpreadCultureControl, "bSpreadCultureControl", false);
 	// < JCultureControl Mod End >
+// Deliverator fresh water
+	pXML->GetChildXmlValByName(&m_iAddsFreshWaterInRadius, "iAddsFreshWaterInRadius",	-1); // f1rpo
+// Deliverator
 	// Super Forts begin *XML*
 	pXML->GetChildXmlValByName(&m_iCulture, "iCulture",0);
 	pXML->GetChildXmlValByName(&m_iCultureRange, "iCultureRange",0);
@@ -1735,9 +1737,7 @@ bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_bBombardable, "bBombardable",false);
 	pXML->GetChildXmlValByName(&m_bUpgradeRequiresFortify, "bUpgradeRequiresFortify",false);
 	// Super Forts end
-// Deliverator fresh water
-	pXML->GetChildXmlValByName(&m_iAddsFreshWaterInRadius, "iAddsFreshWaterInRadius",	-1); // f1rpo
-	// Deliverator
+
 	pXML->SetVariableListTagPair(&m_pbTerrainMakesValid, "TerrainMakesValids", GC.getNumTerrainInfos());
 	pXML->SetVariableListTagPair(&m_pbFeatureMakesValid, "FeatureMakesValids", GC.getNumFeatureInfos());
 

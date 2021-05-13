@@ -211,7 +211,7 @@ void CvMapGenerator::addRivers()  // advc: refactored
 	int const iRiverSourceRange = GC.getDefineINT("RIVER_SOURCE_MIN_RIVER_RANGE");
 	int const iSeaWaterRange = GC.getDefineINT("RIVER_SOURCE_MIN_SEAWATER_RANGE");
 	int const iPlotsPerRiverEdge =  GC.getDefineINT("PLOTS_PER_RIVER_EDGE");
-	// advc.129: Randomize the traversal order
+	// advc.129: Randomize the traversal
 	int* aiShuffledIndices = ::shuffle(GC.getMap().numPlots(), GC.getGame().getMapRand());
 	for (int iPass = 0; iPass < 4; iPass++)
 	{
@@ -237,12 +237,12 @@ void CvMapGenerator::addRivers()  // advc: refactored
 				break;
 			case 2:
 				bValid =  ((p.isHills() || p.isPeak()) &&
-					  p.getArea().getNumRiverEdges() < 1 +
-					  p.getArea().getNumTiles() / iPlotsPerRiverEdge);
+						p.getArea().getNumRiverEdges() <
+						1 + p.getArea().getNumTiles() / iPlotsPerRiverEdge);
 				break;
 			case 3:
-				bValid = (p.getArea().getNumRiverEdges() < 1 +
-						p.getArea().getNumTiles() / iPlotsPerRiverEdge);
+				bValid = (p.getArea().getNumRiverEdges() <
+						1 + p.getArea().getNumTiles() / iPlotsPerRiverEdge);
 				break;
 			default: FErrorMsg("Invalid iPass");
 			}
@@ -263,7 +263,8 @@ void CvMapGenerator::addRivers()  // advc: refactored
 }
 
 // pStartPlot = the plot at whose SE corner the river is starting
-void CvMapGenerator::doRiver(CvPlot *pStartPlot, CardinalDirectionTypes eLastCardinalDirection,
+void CvMapGenerator::doRiver(CvPlot* pStartPlot,
+	CardinalDirectionTypes eLastCardinalDirection,
 	CardinalDirectionTypes eOriginalCardinalDirection, short iThisRiverID)
 {
 	if (iThisRiverID == -1)
@@ -300,7 +301,7 @@ void CvMapGenerator::doRiver(CvPlot *pStartPlot, CardinalDirectionTypes eLastCar
 		pRiverPlot = plotCardinalDirection(pRiverPlot->getX(), pRiverPlot->getY(),
 				CARDINALDIRECTION_NORTH);
 	}
-	else if (eLastCardinalDirection==CARDINALDIRECTION_EAST)
+	else if (eLastCardinalDirection == CARDINALDIRECTION_EAST)
 	{
 		pRiverPlot = plotCardinalDirection(pStartPlot->getX(), pStartPlot->getY(),
 				CARDINALDIRECTION_EAST);
@@ -316,7 +317,7 @@ void CvMapGenerator::doRiver(CvPlot *pStartPlot, CardinalDirectionTypes eLastCar
 		pStartPlot->setRiverID(iThisRiverID);
 		pRiverPlot->setNOfRiver(true, eLastCardinalDirection);
 	}
-	else if (eLastCardinalDirection==CARDINALDIRECTION_SOUTH)
+	else if (eLastCardinalDirection == CARDINALDIRECTION_SOUTH)
 	{
 		pRiverPlot = plotCardinalDirection(pStartPlot->getX(), pStartPlot->getY(),
 			CARDINALDIRECTION_SOUTH);
@@ -332,7 +333,7 @@ void CvMapGenerator::doRiver(CvPlot *pStartPlot, CardinalDirectionTypes eLastCar
 		pStartPlot->setRiverID(iThisRiverID);
 		pRiverPlot->setWOfRiver(true, eLastCardinalDirection);
 	}
-	else if (eLastCardinalDirection==CARDINALDIRECTION_WEST)
+	else if (eLastCardinalDirection == CARDINALDIRECTION_WEST)
 	{
 		pRiverPlot = pStartPlot;
 		if (pRiverPlot == NULL)
@@ -402,7 +403,7 @@ void CvMapGenerator::doRiver(CvPlot *pStartPlot, CardinalDirectionTypes eLastCar
 //Although I veto'd its use since I like that you don't always
 //get fresh water starts.
 /*	advc (note): This function isn't unused though. It's a fallback
-	in case that no lake can be placed. Though I'm not sure if can
+	in case that no lake can be placed. Though I'm not sure if it can
 	succeed where CvGame::normalizeFindLakePlot fails. */
 // pFreshWaterPlot = the plot we want to give a fresh water river
 bool CvMapGenerator::addRiver(CvPlot* pFreshWaterPlot)
@@ -596,7 +597,7 @@ void CvMapGenerator::addUniqueBonusType(BonusTypes eBonus)
 	for (int iPass = 0; iPass < 2; iPass++)
 	{	/*  Two passes - just to make sure that the new per-area limit doesn't
 			lead to fewer resources overall. */
-		bool bIgnoreAreaLimit = (iPass == 1); // </advc.129>
+		bool const bIgnoreAreaLimit = (iPass == 1); // </advc.129>
 		while (/* advc.129: */kMap.getNumBonuses(eBonus) < iTarget)
 		{
 			int iBestValue = 0;
@@ -663,14 +664,14 @@ void CvMapGenerator::addUniqueBonusType(BonusTypes eBonus)
 			int const iAreaLimit = std::min(2, 3 * pBestArea->getNumTiles()) +
 					pBestArea->getNumTiles() / 25; // </advc.129>
 
-			// Place the bonuses:
+			// Place the bonuses ...
 
 			int* aiShuffledIndices = shuffle(kMap.numPlots(), kGame.getMapRand());
-			for (int iI = 0; iI < kMap.numPlots() &&
+			for (int i = 0; i < kMap.numPlots() &&
 				(bIgnoreAreaLimit || iAdded < iAreaLimit) && // advc.129
-				kMap.getNumBonuses(eBonus) < iTarget; iI++)
+				kMap.getNumBonuses(eBonus) < iTarget; i++)
 			{
-				CvPlot& kRandPlot = kMap.getPlotByIndex(aiShuffledIndices[iI]);
+				CvPlot& kRandPlot = kMap.getPlotByIndex(aiShuffledIndices[i]);
 				if (pBestArea != kRandPlot.area())
 					continue;
 				if (!canPlaceBonusAt(eBonus, kRandPlot.getX(), kRandPlot.getY(),
@@ -684,20 +685,19 @@ void CvMapGenerator::addUniqueBonusType(BonusTypes eBonus)
 					can't enforce this well b/c it doesn't know whether a cluster starts
 					(distance needs to be heeded) or continues (distance mustn't be heeded). */
 				BonusClassTypes eClassToAvoid = kBonus.getBonusClassType();
-				/*  Only resources that occur in clusters are problematic. Not sure about
-					the iClassToAvoid>0 clause. 0 is the "general" bonus class containing
-					all the clustered resources except for Gold, Silver, Gems which I've
-					moved to a separate class "precious". I.e. currently only double clusters
-					of precious bonuses are avoided. Eliminating all double clusters might
-					get in the way of (early) resource trades too much and make the map
-					less exciting than it could be. */
-				if(kBonus.getGroupRand() > 0 && eClassToAvoid != NO_BONUSCLASS)
+				/*	In BtS, all resources that occur in clusters are of the
+					"general" class, id 0. Don't want to eliminate all overlapping clusters
+					b/c that may get in the way of (early) resource trades too much and
+					make the map less exciting than it could be. So I've moved the
+					problematic resources into a new class "precious" (id greater than 0). */
+				if (kBonus.getGroupRand() > 0 && eClassToAvoid > 0)
 				{
 					bool bSkip = false;
-					/*  Can't use kUnitClass.getUniqueRange() b/c this has to be
-						0 for bonuses that appear in clusters. 5 hardcoded. */
-					int const iDist = 5;
-					for (PlotCircleIter it(kRandPlot, iDist); it.hasNext(); ++it)
+					/*	Check a range that makes it difficult to cover more than
+						one group with a single city. */
+					int const iRange = CITY_PLOTS_DIAMETER + kBonus.getGroupRange() - 1;
+					for (PlotCircleIter it(kRandPlot, iRange);
+						it.hasNext(); ++it)
 					{
 						CvPlot const& p = *it;
 						if (!p.sameArea(kRandPlot))
@@ -777,13 +777,10 @@ int CvMapGenerator::placeGroup(BonusTypes eBonus, CvPlot const& kCenter,
 	// The one in the center is already placed, but that doesn't count here.
 	int iPlaced = 0;
 	std::vector<CvPlot*> apGroupRange;
-	for (SquareIter it(kCenter, kBonus.getGroupRange()); it.hasNext(); ++it)
-	{
-		CvPlot& p = *it;
-		if(canPlaceBonusAt(eBonus, p.getX(), p.getY(), bIgnoreLatitude))
-			apGroupRange.push_back(&p);
-	}
-	int iSize = (int)apGroupRange.size();
+	// BtS used a square here (but also only used GroupRange 1)
+	for (PlotCircleIter it(kCenter, kBonus.getGroupRange()); it.hasNext(); ++it)
+		apGroupRange.push_back(&*it);
+	int const iSize = (int)apGroupRange.size();
 	if(iSize <= 0)
 		return 0;
 	std::vector<int> aiShuffled(iSize);
@@ -791,11 +788,15 @@ int CvMapGenerator::placeGroup(BonusTypes eBonus, CvPlot const& kCenter,
 	for (int j = 0; j < iSize &&
 		iLimit > 0; j++)
 	{
-		scaled pr = per100(kBonus.getGroupRand());
-		pr *= fixp(2/3.).pow(iPlaced);
-		if (pr.bernoulliSuccess(GC.getGame().getMapRand(), "addNonUniqueBonusType"))
+		CvPlot& kPlot = *apGroupRange[aiShuffled[j]];
+		if (!canPlaceBonusAt(eBonus, kPlot.getX(), kPlot.getY(), bIgnoreLatitude))
+			continue;
+		scaled rAddBonusProb = per100(kBonus.getGroupRand());
+		// Make large clusters exponentially unlikely
+		rAddBonusProb *= fixp(2/3.).pow(iPlaced);
+		if (rAddBonusProb.bernoulliSuccess(GC.getGame().getMapRand(), "addNonUniqueBonusType"))
 		{
-			apGroupRange[aiShuffled[j]]->setBonusType(eBonus);
+			kPlot.setBonusType(eBonus);
 			iLimit--;
 			iPlaced++;
 		}
@@ -1086,8 +1087,12 @@ int CvMapGenerator::calculateNumBonusesToAdd(BonusTypes eBonus)
 			iFromTiles += (iNumPossible / kBonus.getTilesPer());
 	}
 
-	int iFromPlayers = (kGame.countCivPlayersAlive() *
-			kBonus.getPercentPerPlayer()) / 100;
-	int iBonusCount = (iBaseCount * (iFromTiles + iFromPlayers)) / 100;
+	scaled rFromPlayers = kGame.countCivPlayersAlive() *
+			per100(kBonus.getPercentPerPlayer());
+	/*	<advc.129> Same as in BtS for 8 players, a bit less for high player counts,
+		a bit more for small player counts. */
+	rFromPlayers.exponentiate(fixp(0.8));
+	rFromPlayers *= fixp(1.5); // </advc.129>
+	int iBonusCount = (iBaseCount * (iFromTiles + rFromPlayers.round())) / 100;
 	return std::max(1, iBonusCount);
 }

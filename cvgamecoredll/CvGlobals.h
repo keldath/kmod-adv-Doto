@@ -88,7 +88,6 @@ public:
 	CvStatsReporter* getStatsReporterPtr();
 	DllExport CvInterface& getInterface();
 	DllExport CvInterface* getInterfacePtr();
-	DllExport int getMaxCivPlayers() const;
 	#ifdef _USRDLL // inlined for perf reasons, do not use outside of dll
 	// advc.inl: forceinline just to be sure
 	__forceinline CvMap& getMap() const { return *m_map; } // was getMapINLINE
@@ -460,14 +459,6 @@ public:
 		DO(PEACE_TREATY_LENGTH) \
 		DO(PLOT_VISIBILITY_RANGE) \
 		DO(MAX_WORLD_WONDERS_PER_CITY) \
-		/*Wonder limit - doto decided not to use this*/\
-	/*	DO(MAX_WORLD_WONDERS_CULTURE_POOR) \
-		DO(MAX_WORLD_WONDERS_CULTURE_FLEDGLING) \
-		DO(MAX_WORLD_WONDERS_CULTURE_DEVELOPING) \
-		DO(MAX_WORLD_WONDERS_CULTURE_REFINED) \
-		DO(MAX_WORLD_WONDERS_CULTURE_INFLUENTIAL) \
-		DO(MAX_WORLD_WONDERS_CULTURE_LEGENDARY)*/ \
-		/*Wonder limit - doto */\
 		DO(MAX_TEAM_WONDERS_PER_CITY) \
 		DO(MAX_NATIONAL_WONDERS_PER_CITY_FOR_OCC) \
 		DO(MAX_NATIONAL_WONDERS_PER_CITY) \
@@ -681,7 +672,7 @@ public:
 			((GetKeyState('U') & 0x8000) && shiftKey() && altKey());
 	}
 	// K-Mod end
-
+//MOD@VET_Andera412_Blocade_Unit-end1/2
 	inline int getBLOCADE_UNIT() {return m_iBLOCADE_UNIT;}									// BlocadeUnit 3/3
 //MOD@VET_Andera412_Blocade_Unit-end1/2
 /*************************************************************************************************/
@@ -696,7 +687,10 @@ public:
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
-	DllExport int getMAX_CIV_PLAYERS(); // advc: Shouldn't be used in the DLL
+	/*	advc: These two shouldn't be used in the DLL.
+		The EXE mostly seems to call the const version. */
+	DllExport int getMaxCivPlayers() const;
+	DllExport int getMAX_CIV_PLAYERS();
 	/*  The rest of these (getMAX_PLAYERS, getMAX_CIV_TEAMS, getMAX_TEAMS,
 		getBARBARIAN_PLAYER, getBARBARIAN_TEAM, getINVALID_PLOT_COORD,
 		getNUM_CITY_PLOTS, getCITY_HOME_PLOT) were only used by CyGlobalContext. */

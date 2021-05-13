@@ -148,8 +148,8 @@ bool CvSelectionGroupAI::AI_update()
 		setForceUpdate(false);
 		iAttempts++;
 		/*  <advc.001y> Moved out of the block below so I can see what the loop does
-			before it terminates. Debugger stops in CvSelectionGroup::pushMission and
-			startMission have been helpful to me. */
+			before it terminates. Debugger stops in CvSelectionGroup::pushMission,
+			startMission and in CvUnitAI::AI_update have been helpful to me. */
 		FAssertMsg(iAttempts != iMaxAttempts - 5, "Unit stuck in a loop");
 		if(iAttempts >= iMaxAttempts) // was > 100 </advc.001y>
 		{
@@ -971,10 +971,97 @@ bool CvSelectionGroupAI::AI_isDeclareWar(
 		return false;
 	}
 }
+//super forts doto new fn based off getBombardTurns
+int CvSelectionGroupAI::AI_getFortBombardTurns(CvPlot const* pPlot) const // advc: 2x const
+{
+	PROFILE_FUNC();
+	bool const bHasBomber = (getOwner() != NO_PLAYER ?
+			GET_PLAYER(getOwner()).AI_isDomainBombard(DOMAIN_AIR) : false);
+	int iTotalBombardRate = (bHasBomber ? 16 : 0);
+	//original
+	//bool bIgnoreBuildingDefense = bHasBomber;
+	int iUnitBombardRate = 0;
+	FOR_EACH_UNIT_IN(pUnit, *this)
+	{
+		if (pUnit->bombardRate() <= 0)
+			continue;
+		iUnitBombardRate = pUnit->bombardRate();
+		/*	original
+			if (pUnit->ignoreBuildingDefense())
+			bIgnoreBuildingDefense = true;
+		else
+		{
+			iUnitBombardRate *= std::max(25, 100 - pCity->getBuildingBombardDefense());
+			iUnitBombardRate /= 100;
+		}*/
+		iTotalBombardRate += iUnitBombardRate;
+	}
+	// advc (minor bugfix?): BBAI had not passed bIgnoreBuildingDefense consistently
+	//original
+	//int const iTotalDefense = pCity->getTotalDefense(bIgnoreBuildingDefense);
+	int const iTotalDefense = pPlot->getDefenseDamage();
+	if (iTotalDefense <= 0)
+		return 0;
+	int const iHP = GC.getMAX_CITY_DEFENSE_DAMAGE() - iTotalDefense /*pCity->getDefenseDamage()*/;
+	if (iHP <= 0)
+		return 0;
+	int iBombardTurns = intdiv::uceil(iHP * iTotalDefense,
+			std::max(1, GC.getMAX_CITY_DEFENSE_DAMAGE() * iTotalBombardRate));
+	//if (gUnitLogLevel > 2) logBBAI("      Bombard of %S will take %d turns at rate %d and current damage %d with bombard def %d", pCity->getName().GetCString(), iBombardTurns, iTotalBombardRate, pCity->getDefenseDamage(), (bIgnoreBuildingDefense ? 0 : pCity->getBuildingBombardDefense()));
+	return iBombardTurns;
+}
+/*	BETTER_BTS_AI_MOD, 08/19/09 and 03/30/10, jdog5000 (General AI): START
+	(advc: Moved from CvSelectionGroup) */
+// Approximate how many turns this group would take to reduce pCity's defense to zero
+//super forts doto end 
+//super forts start
+int CvSelectionGroupAI::AI_getBombardTurns(CvCity const* pCity /*super forts doto*/,CvPlot const* pPlot) const
+{
+	PROFILE_FUNC();
+		
+	/*
+super forts doto	
+	i decided to duplicate this function and cut the not needed parts it felt cleaner
+	*/
+	if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS) && pCity == NULL)
+	{
+		return AI_getFortBombardTurns(pPlot);
+	}
+//super forts doto
 
-/*	advc: Moved from CvSelectionGroup b/c this checks for the
-	group owner's war plans. Param renamed from bIgnoreMinors
-	b/c it also causes Barbarians to be ignored. */
+	bool const bHasBomber = (getOwner() != NO_PLAYER ?
+			GET_PLAYER(getOwner()).AI_isDomainBombard(DOMAIN_AIR) : false);
+	int iTotalBombardRate = (bHasBomber ? 16 : 0);
+	bool bIgnoreBuildingDefense = bHasBomber;
+	int iUnitBombardRate = 0;
+	FOR_EACH_UNIT_IN(pUnit, *this)
+	{
+		if (pUnit->bombardRate() <= 0)
+			continue;
+		iUnitBombardRate = pUnit->bombardRate();
+		if (pUnit->ignoreBuildingDefense())
+			bIgnoreBuildingDefense = true;
+		else
+		{
+			iUnitBombardRate *= std::max(25, 100 - pCity->getBuildingBombardDefense());
+			iUnitBombardRate /= 100;
+		}
+		iTotalBombardRate += iUnitBombardRate;
+	}
+	// advc (minor bugfix?): BBAI had not passed bIgnoreBuildingDefense consistently
+	int const iTotalDefense = pCity->getTotalDefense(bIgnoreBuildingDefense);
+	if (iTotalDefense <= 0)
+		return 0;
+	int const iHP = GC.getMAX_CITY_DEFENSE_DAMAGE() - pCity->getDefenseDamage();
+	if (iHP <= 0)
+		return 0;
+	int iBombardTurns = intdiv::uceil(iHP * iTotalDefense,
+			std::max(1, GC.getMAX_CITY_DEFENSE_DAMAGE() * iTotalBombardRate));
+	//if (gUnitLogLevel > 2) logBBAI("      Bombard of %S will take %d turns at rate %d and current damage %d with bombard def %d", pCity->getName().GetCString(), iBombardTurns, iTotalBombardRate, pCity->getDefenseDamage(), (bIgnoreBuildingDefense ? 0 : pCity->getBuildingBombardDefense()));
+	return iBombardTurns;
+}
+
+// advc: Param renamed from bIgnoreMinors b/c it also causes Barbarians to be ignored
 bool CvSelectionGroupAI::AI_isHasPathToAreaEnemyCity(bool bMajorOnly,
 	MovementFlags eFlags, int iMaxPathTurns) const
 {
@@ -986,7 +1073,7 @@ bool CvSelectionGroupAI::AI_isHasPathToAreaEnemyCity(bool bMajorOnly,
 		if (bMajorOnly && !it->isMajorCiv())
 			continue;
 		if (GET_TEAM(getTeam()).AI_mayAttack(it->getTeam()) &&
-			isHasPathToAreaPlayerCity(it->getID(), eFlags, iMaxPathTurns))
+			AI_isHasPathToAreaPlayerCity(it->getID(), eFlags, iMaxPathTurns))
 		{
 			return true;
 		}
@@ -995,20 +1082,56 @@ bool CvSelectionGroupAI::AI_isHasPathToAreaEnemyCity(bool bMajorOnly,
 }
 
 
-CvPlot* CvSelectionGroupAI::AI_getMissionAIPlot() /* advc: */ const
+bool CvSelectionGroupAI::AI_isHasPathToAreaPlayerCity(PlayerTypes ePlayer,
+	MovementFlags eFlags, int iMaxPathTurns) const
+{
+	PROFILE_FUNC();
+	// <advc> Instead of relying on the area checks to fail when the group has no area
+	if (getNumUnits() <= 0)
+		return false; // </advc>
+	FOR_EACH_CITY(pLoopCity, GET_PLAYER(ePlayer))
+	{
+		if (pLoopCity->isArea(*area()))
+		{
+			int iPathTurns;
+			if (generatePath(getPlot(), pLoopCity->getPlot(), eFlags, true,
+				&iPathTurns, iMaxPathTurns))
+			{
+				if (iMaxPathTurns < 0 || iPathTurns <= iMaxPathTurns)
+					return true;
+			}
+		}
+	}
+	return false;
+}
+
+
+bool CvSelectionGroupAI::AI_isStranded() const
+{
+	/*PROFILE_FUNC();
+	if (!m_bIsStrandedCacheValid){
+		m_bIsStrandedCache = calculateIsStranded();
+		m_bIsStrandedCacheValid = true;
+	}
+	return m_bIsStrandedCache; */
+	return (AI_getMissionAIType() == MISSIONAI_STRANDED); // K-Mod
+} // BETTER_BTS_AI_MOD: END
+
+
+CvPlot* CvSelectionGroupAI::AI_getMissionAIPlot() const
 {
 	return GC.getMap().plotSoren(m_iMissionAIX, m_iMissionAIY);
 }
 
 
-bool CvSelectionGroupAI::AI_isForceSeparate() /* advc: */ const
+bool CvSelectionGroupAI::AI_isForceSeparate() const
 {
 	return m_bForceSeparate;
 }
 
 
 void CvSelectionGroupAI::AI_setMissionAI(MissionAITypes eNewMissionAI,
-	CvPlot const* pNewPlot, CvUnit const* pNewUnit) // advc: 2x const
+	CvPlot const* pNewPlot, CvUnit const* pNewUnit)
 {
 	//PROFILE_FUNC();
 
@@ -1031,7 +1154,7 @@ void CvSelectionGroupAI::AI_setMissionAI(MissionAITypes eNewMissionAI,
 }
 
 
-CvUnitAI* CvSelectionGroupAI::AI_getMissionAIUnit() /* advc: */ const
+CvUnitAI* CvSelectionGroupAI::AI_getMissionAIUnit() const
 {
 	return ::AI_getUnit(m_missionAIUnit);
 }
@@ -1101,7 +1224,7 @@ CvUnitAI* CvSelectionGroupAI::AI_ejectBestDefender(CvPlot* pDefendPlot)
 		iValue /= 2 + (pUnit->getLevel() *
 				// advc.mnai:
 				(pUnit->AI_getUnitAIType() == UNITAI_ATTACK_CITY ? 2 : 1)
-		// DOTO-MOD rangedattack-keldath + ranged immunity - START --if the unit is ranged - prefer not to eject it
+// DOTO-MOD rangedattack-keldath + ranged immunity - START --if the unit is ranged - prefer not to eject it
 				*
 				(pUnit->isRangeStrikeCapableK() ? 2 : 1));
 // DOTO-MOD rangedattack-+ ranged immunity  keldath - END 	

@@ -268,7 +268,7 @@ public:
 	/*  advc.104: Moved parts of getReligionPercentAnger() into a subroutine.
 		getReligionPercentAnger(PlayerTypes) doesn't check if the city owner is
 		at war with ePlayer; can be used for predicting anger caused by a DoW. */
-	double getReligionPercentAnger(PlayerTypes ePlayer) const;
+	scaled getReligionPercentAnger(PlayerTypes ePlayer) const;
 	int getHurryPercentAnger(int iExtra = 0) const;																// Exposed to Python
 	int getConscriptPercentAnger(int iExtra = 0) const;															// Exposed to Python
 	int getDefyResolutionPercentAnger(int iExtra = 0) const;
@@ -342,7 +342,7 @@ public:
 	DllExport inline IDInfo getIDInfo() const { return IDInfo(getOwner(), getID()); }
 	// </advc.inl>
 	void setID(int iID);
-	int plotNum() const; // advc.104
+	inline PlotNumTypes plotNum() const { return m_ePlot; } // advc.104
 
 	int getXExternal() const; // advc.inl: Exported through .def file											// Exposed to Python
 	inline int getX() const { return m_iX; } // advc.inl: Renamed from getX_INLINE
@@ -362,7 +362,7 @@ public:
 	__forceinline CvPlot& getPlot() const { return *m_pPlot; } // advc
 	void updatePlot(); // advc.opt
 	CvPlotGroup* plotGroup(PlayerTypes ePlayer) const;
-	bool isConnectedTo(CvCity const* pCity) const;																// Exposed to Python
+	bool isConnectedTo(CvCity const& kCity) const;																// Exposed to Python
 	bool isConnectedToCapital(PlayerTypes ePlayer = NO_PLAYER) const;											// Exposed to Python
 	// <advc>
 	inline CvArea* area() const { return m_pArea; }																// Exposed to Python
@@ -1006,10 +1006,10 @@ public:
 	int countTotalCultureTimes100() const;																		// Exposed to Python
 	PlayerTypes findHighestCulture() const;																		// Exposed to Python
 	// advc.101:  (advc.ctr: exposed to Python)
-	double revoltProbability( // <advc.023>
+	scaled revoltProbability( // <advc.023>
 			bool bIgnoreWar = false, bool biIgnoreGarrison = false,
 			bool bIgnoreOccupation = false) const;
-	double probabilityOccupationDecrement() const; // </advc.023>
+	scaled probabilityOccupationDecrement() const; // </advc.023>
 	// K-Mod: (advc.ctr: exposed to Python)
 	bool canCultureFlip(PlayerTypes eToPlayer /* <advc.101> */ = NO_PLAYER,
 			bool bCheckPriorRevolts = true) const; // </advc.101>
@@ -1026,7 +1026,7 @@ public:
 	}
 	int getNumRevolts() const; // advc.099c
 	void changeNumRevolts(PlayerTypes ePlayer, int iChange);
-	double getRevoltTestProbability() const; // advc.101: Now between 0 and 1
+	scaled getRevoltTestProbability() const; // advc.101: between 0 and 1
 	int getRevoltProtection() const; // advc.101
 	void addRevoltFreeUnits(); // advc
 
@@ -1429,6 +1429,7 @@ protected:
 	int m_iID;
 	int m_iX;
 	int m_iY;
+	PlotNumTypes m_ePlot; // advc.104: Cached b/c frequently accessed by UWAI
 	int m_iRallyX;
 	int m_iRallyY;
 	int m_iGameTurnFounded;

@@ -184,8 +184,8 @@ void CvUnit::finalizeInit() // advc.003u: Body cut from init
 			FAssert(iAlive > 0);
 			iAlive = 7;
 		}
-		int const iStep = std::max(1, ::round(14.0 / iAlive));
-		// This gives iRand an expected value of step
+		int const iStep = std::max(1, intdiv::uround(14, iAlive));
+		// This gives iRand an expected value of iStep
 		int iRand = kGame.getSorenRandNum(2 * iStep + 1, "advc.005b");
 		/*	The index of the most recently used name isn't available; instead,
 			take iStep times the number of previously used names in order to
@@ -248,7 +248,7 @@ void CvUnit::finalizeInit() // advc.003u: Body cut from init
 	);
 
 	// advc.104: To enable more differentiated tracking of power values
-	kOwner.uwai().getCache().reportUnitCreated(*m_pUnitInfo);
+	kOwner.uwai().getCache().reportUnitCreated(getUnitType());
 	if (m_pUnitInfo->isAnyFreePromotions()) // advc.003t
 	{
 		for (int i = 0; i < GC.getNumPromotionInfos(); i++)
@@ -567,7 +567,7 @@ void CvUnit::kill(bool bDelay, PlayerTypes ePlayer)
 			/ (getDomainType() == DOMAIN_SEA ? 2 : 1))); // advc.104e
 
 	// advc.104: To enable more differentiated tracking of power values
-	kOwner.uwai().getCache().reportUnitDestroyed(*m_pUnitInfo);
+	kOwner.uwai().getCache().reportUnitDestroyed(getUnitType());
 
 	kOwner.AI_changeNumAIUnits(AI_getUnitAIType(), -1);
 
@@ -1653,7 +1653,7 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted)
 					dmgFromRangedD = rndHitDef ? rangeCombatDamageK(this, pDefender) : 0; //if hit miss dont do damage
 					if (dmgFromRangedD != 0)
 						aUnitPreDamage = this->getDamage();//save the unit damage before the change - needed for later messsage damage display
-						resolveRangedCombat(this,pDefender, this->plot(), bVisible, ::round(dmgFromRangedD / 2));//i decided reta;oation damage would be halfed
+						resolveRangedCombat(this,pDefender, this->plot(), bVisible, fmath::round(dmgFromRangedD / 2));//i decided reta;oation damage would be halfed
 				}		
 			}
 			else
@@ -2027,14 +2027,17 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted)
 //DOTO - rangeimunity-ranged immunity
 	else
 	{
+		bool const bSea = (getDomainType() == DOMAIN_SEA); // advc.002l
 		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_UNIT_WITHDRAW",
 				getNameKey(), pDefender->getNameKey()));
 		gDLL->UI().addMessage(getOwner(), true, -1, szBuffer,
+				bSea ? "AS2D_OUR_SEA_WITHDRAWL" : // advc.002l
 				"AS2D_OUR_WITHDRAWL", MESSAGE_TYPE_INFO, NULL,
 				GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
 		szBuffer = gDLL->getText("TXT_KEY_MISC_ENEMY_UNIT_WITHDRAW",
 				getNameKey(), pDefender->getNameKey());
 		gDLL->UI().addMessage(pDefender->getOwner(), true, -1, szBuffer,
+				bSea ? "AS2D_THEIR_SEA_WITHDRAWL" : // advc.002l
 				"AS2D_THEIR_WITHDRAWL", MESSAGE_TYPE_INFO, NULL,
 				GC.getColorType("RED"), pPlot->getX(), pPlot->getY());
 
@@ -3179,8 +3182,8 @@ bool CvUnit::isRevealedValidDomain(CvPlot const& kPlot) const
 
 /*	advc: Replacing CvPlot::isFriendlyCity
 	(which was always being called with bCheckImprovement=true).
-	Despite the name, isFriendlyCity had not required isFriendlyTerritory,
-	and neither does isPlotValid. */
+	Despite the name, isFriendlyCity had not required
+	CvTeam::isFriendlyTerritory, and neither does isPlotValid. */
 bool CvUnit::isPlotValid(CvPlot const& kPlot) const
 {
 	PROFILE_FUNC(); // (currently not called at all)
@@ -3995,6 +3998,9 @@ bool CvUnit::canAirPatrol(const CvPlot* pPlot) const
 
 bool CvUnit::canSeaPatrol(const CvPlot* pPlot) const
 {
+	// <advc.004k> To avoid sync issues with the BUG option
+	if (GC.getGame().isNetworkMultiPlayer())
+		return false; // </advc.004k>
 	if (!pPlot->isWater())
 		return false;
 
@@ -4642,7 +4648,7 @@ bool CvUnit::canParadropAt(const CvPlot* pPlot, int iX, int iY) const
 
 	CvPlot* pTargetPlot = GC.getMap().plot(iX, iY);
 
-	if (NULL == pTargetPlot || pTargetPlot == pPlot)
+	if (pTargetPlot == NULL || pTargetPlot == pPlot)
 		return false;
 	if (!pTargetPlot->isVisible(getTeam()))
 		return false;
@@ -7685,7 +7691,7 @@ bool CvUnit::canCoexistWithEnemyUnit(TeamTypes eTeam) const
 {
 	if (NO_TEAM == eTeam)
 		return alwaysInvisible();
-	if(isInvisible(eTeam, false))
+	if (isInvisible(eTeam, false))
 		return true;
 	return false;
 }
@@ -7748,12 +7754,7 @@ int CvUnit::maxCombatStr(CvPlot const* pPlot, CvUnit const* pAttacker,
 		pAttackedPlot = plot();
 
 	if (pCombatDetails != NULL)
-	{
-		pCombatDetails->setAllToNull(); // advc
-		pCombatDetails->eOwner = getOwner();
-		pCombatDetails->eVisualOwner = getVisualOwner();
-		pCombatDetails->sUnitName = getName().GetCString();
-	}
+		pCombatDetails->reset(getOwner(), getVisualOwner(), getName().c_str()); // advc
 
 	if (baseCombatStr() == 0)
 		return 0;
@@ -8349,15 +8350,20 @@ bool CvUnit::isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttack
 	}
 	else
 	{
-		if (!(pAttacker->immuneToFirstStrikes()))
+		if (!pAttacker->immuneToFirstStrikes())
 		{
-			iOurDefense *= 100 + (firstStrikes() * 2 + chanceFirstStrikes()) * GC.getCOMBAT_DAMAGE() * 2 / 5;
+			iOurDefense *= 100 +
+					((firstStrikes() * 2 + chanceFirstStrikes()) *
+					GC.getCOMBAT_DAMAGE() * 2) / 5;
 			iOurDefense /= 100;
 		}
 
 		if (immuneToFirstStrikes())
 		{
-			iOurDefense *= 100 + (pAttacker->firstStrikes() * 2 + pAttacker->chanceFirstStrikes()) * GC.getCOMBAT_DAMAGE() * 2 / 5;
+			iOurDefense *= 100 +
+					((pAttacker->firstStrikes() * 2 +
+					pAttacker->chanceFirstStrikes()) *
+					GC.getCOMBAT_DAMAGE() * 2) / 5;
 			iOurDefense /= 100;
 		}
 	}
@@ -10326,12 +10332,6 @@ bool CvUnit::isMadeAllAttacks() const
 } // </advc.164>
 
 
-bool CvUnit::isMadeInterception() const
-{
-	return m_bMadeInterception;
-}
-
-
 void CvUnit::setMadeInterception(bool bNewValue)
 {
 	m_bMadeInterception = bNewValue;
@@ -10409,10 +10409,6 @@ void CvUnit::setInfoBarDirty(bool bNewValue)
 	m_bInfoBarDirty = bNewValue;
 }
 
-bool CvUnit::isBlockading() const
-{
-	return m_bBlockading;
-}
 
 void CvUnit::setBlockading(bool bNewValue)
 {
@@ -10519,7 +10515,7 @@ PlayerTypes CvUnit::getCombatOwner_bulk(TeamTypes eForTeam, CvPlot const& kPlot)
 
 TeamTypes CvUnit::getTeam() const
 {
-	return GET_PLAYER(getOwner()).getTeam();
+	return TEAMID(getOwner());
 }
 
 
@@ -10534,16 +10530,6 @@ void CvUnit::setCapturingPlayer(PlayerTypes eNewValue)
 	m_eCapturingPlayer = eNewValue;
 }
 
-
-UnitClassTypes CvUnit::getUnitClassType() const
-{
-	return m_pUnitInfo->getUnitClassType();
-}
-
-const UnitTypes CvUnit::getLeaderUnitType() const
-{
-	return m_eLeaderUnitType;
-}
 
 void CvUnit::setLeaderUnitType(UnitTypes leaderUnitType)
 {
@@ -10612,7 +10598,7 @@ void CvUnit::setCombatUnit(CvUnit* pCombatUnit, bool bAttacking)
 		gDLL->UI().setCombatFocus(true);
 }
 
-// K-Mod. Return true if the combat animation should include a siege tower
+// K-Mod: Return true if the combat animation should include a siege tower
 // (code copied from setCombatUnit, above)
 bool CvUnit::showSiegeTower(CvUnit* pDefender) const
 {
@@ -10621,7 +10607,7 @@ bool CvUnit::showSiegeTower(CvUnit* pDefender) const
 		pDefender->getPlot().getPlotCity() &&
 		pDefender->getPlot().getPlotCity()->getBuildingDefense() > 0 &&
 		cityAttackModifier() >= GC.getDefineINT("MIN_CITY_ATTACK_MODIFIER_FOR_SIEGE_TOWER");
-} // K-Mod end
+}
 
 
 CvUnit const* CvUnit::getTransportUnit() const
@@ -10630,7 +10616,7 @@ CvUnit const* CvUnit::getTransportUnit() const
 }
 
 /*	advc: Const/ non-const versions of this function b/c changes to the transport unit
-	are likely to affect this unit */
+	are likely to affect *this unit */
 CvUnit* CvUnit::getTransportUnit()
 {
 	return getUnit(m_transportUnit);
@@ -10698,14 +10684,14 @@ const CvWString CvUnit::getName(uint uiForm) const
 	return szBuffer;
 }
 
-// <advc.106>
+// advc.106:
 CvWString const CvUnit::getReplayName() const
 {
 	if(m_szName.empty())
 		return m_pUnitInfo->getDescription();
 	return gDLL->getText("TXT_KEY_MISC_GP_NAME_REPLAY",
 			m_pUnitInfo->getDescription(), m_szName.GetCString());
-} // </advc.106>
+}
 
 
 const wchar* CvUnit::getNameKey() const
@@ -12120,7 +12106,7 @@ void CvUnit::getDefenderCombatValues(CvUnit const& kDefender, CvPlot const* pPlo
 	int iStrengthFactor = (iOurFirepower + iTheirFirepower + 1) / 2;
 // DOTO-MOD rangedattack-keldath - START + ranged immunity - if a unit that is being attacked is a
 //ranged unit - it will get anothe major famage factor
-	int rangedFactorDmg = kDefender.isRangeStrikeCapableK() ? ::round(GC.getCOMBAT_DAMAGE()/2) : 0;
+	int rangedFactorDmg = kDefender.isRangeStrikeCapableK() ? fmath::round(GC.getCOMBAT_DAMAGE()/2) : 0;
 	iOurDamage = std::max(1, (((GC.getCOMBAT_DAMAGE() + (rangedFactorDmg)) * (iTheirFirepower + iStrengthFactor)) /
 			(iOurFirepower + iStrengthFactor)));
 	iTheirDamage = std::max(1, ((GC.getCOMBAT_DAMAGE() * (iOurFirepower + iStrengthFactor)) /

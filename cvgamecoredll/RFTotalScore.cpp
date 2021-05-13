@@ -1,5 +1,3 @@
-// <advc.700> New class; see header file for description.
-
 #include "CvGameCoreDLL.h"
 #include "RFTotalScore.h"
 #include "CvGamePlay.h"
@@ -7,6 +5,7 @@
 #include "RiseFall.h"
 #include "RFChapterScore.h"
 
+using namespace fmath;
 
 RFTotalScore::RFTotalScore() {
 
@@ -174,4 +173,3 @@ void RFTotalScore::freezeTotal(std::vector<RFChapter*> const& chapters) {
 	frozen = true;
 }
 
-// </advc.700>

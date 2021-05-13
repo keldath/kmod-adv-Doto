@@ -79,7 +79,7 @@ public:
 
 	bool canEnterTerritory(TeamTypes eTeam, bool bIgnoreRightOfPassage = false,								// Exposed to Python
 			CvArea const* pArea = NULL) const; // advc: canEnterArea merged into canEnterTerritory
-	TeamTypes getDeclareWarMove(const CvPlot* pPlot) const;													// Exposed to Python														// Exposed to Python
+	TeamTypes getDeclareWarMove(const CvPlot* pPlot) const;													// Exposed to Python
 //MOD@VET_Andera412_Blocade_Unit-begin1/3
 	bool cannotMoveFromTo(const CvPlot* pFromPlot, const CvPlot* pToPlot) const;																		//VET CanMoveImpassable - 1/1
 	bool cannotMoveFromPlotToPlot(const CvPlot* pFromPlot, const CvPlot* pToPlot, bool bWithdrawal) const;												//VET DefenderWithdrawal - 1/1
@@ -876,7 +876,10 @@ public:
 	void setMadeAttack(bool bNewValue);																		// Exposed to Python
 	bool isMadeAllAttacks() const; // advc.164
 
-	bool isMadeInterception() const;																		// Exposed to Python
+	bool isMadeInterception() const																			// Exposed to Python
+	{
+		return m_bMadeInterception;
+	}
 	void setMadeInterception(bool bNewValue);																// Exposed to Python
 
 	bool isPromotionReadyExternal() const; // advc.002e: exported through .def file
@@ -893,7 +896,10 @@ public:
 	DllExport bool isInfoBarDirty() const;
 	DllExport void setInfoBarDirty(bool bNewValue);
 
-	bool isBlockading() const;
+	bool isBlockading() const
+	{
+		return m_bBlockading;
+	}
 	void setBlockading(bool bNewValue);
 	void collectBlockadeGold();
 
@@ -921,9 +927,15 @@ public:
 
 	DllExport inline const UnitTypes getUnitType() const { return m_eUnitType; }							// Exposed to Python
 	__forceinline CvUnitInfo& getUnitInfo() const { return *m_pUnitInfo; }
-	UnitClassTypes getUnitClassType() const;	// Exposed to Python
+	UnitClassTypes getUnitClassType() const	// Exposed to Python
+	{
+		return m_pUnitInfo->getUnitClassType();
+	}
 
-	DllExport const UnitTypes getLeaderUnitType() const;
+	DllExport const UnitTypes getLeaderUnitType() const
+	{
+		return m_eLeaderUnitType;
+	}
 	void setLeaderUnitType(UnitTypes leaderUnitType);
 
 	DllExport CvUnit* getCombatUnit() const;
@@ -1327,9 +1339,12 @@ struct CombatDetails											// Exposed to Python
 	PlayerTypes eVisualOwner;
 	std::wstring sUnitName;
 	// advc:
-	void setAllToNull()
+	void reset(PlayerTypes eOwner, PlayerTypes eVisualOwner, std::wstring sUnitName)
 	{
 		memset(this, 0, sizeof(*this));
+		this->eOwner = eOwner;
+		this->eVisualOwner = eVisualOwner;
+		this->sUnitName = sUnitName;
 	}
 };
 

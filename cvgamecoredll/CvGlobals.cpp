@@ -642,17 +642,31 @@ void CvGlobals::setXMLLoadUtility(CvXMLLoadUtility* pXML)
 
 void CvGlobals::loadOptionalXMLInfo()
 {
+	#ifdef FASSERT_ENABLE
 	bool bSuccess = false;
+	#endif
 	if (m_pXMLLoadUtility != NULL)
-		bSuccess = m_pXMLLoadUtility->LoadOptionalGlobals();
+	{
+		#ifdef FASSERT_ENABLE
+		bSuccess =
+	#endif
+			m_pXMLLoadUtility->LoadOptionalGlobals();
+	}
 	FAssertMsg(bSuccess, "Failed to load optional XML data");
 }
 
 void CvGlobals::loadThroneRoomInfo()
 {
+	#ifdef FASSERT_ENABLE
 	bool bSuccess = false;
+	#endif
 	if (m_pXMLLoadUtility != NULL)
-		bSuccess = m_pXMLLoadUtility->LoadThroneRoomInfo();
+	{
+		#ifdef FASSERT_ENABLE
+		bSuccess =
+	#endif
+			m_pXMLLoadUtility->LoadThroneRoomInfo();
+	}
 	FAssertMsg(bSuccess, "Failed to load XML data for Throne Room");
 } // </advc.003v>
 // <advc.opt>
@@ -685,6 +699,7 @@ void CvGlobals::cacheGlobalInts(char const* szChangedDefine, int iNewValue)
 	m_aiGlobalDefinesCache = new int[NUM_GLOBAL_DEFINES];
 	for (int i = 0; i < NUM_GLOBAL_DEFINES; i++)
 	{
+		int iLower = MIN_INT;
 		/*  Let's not throw away the default values from BBAI
 			(though they should of course not be needed) */
 		int iDefault = 0;
@@ -692,7 +707,10 @@ void CvGlobals::cacheGlobalInts(char const* szChangedDefine, int iNewValue)
 		{
 		// BETTER_BTS_AI_MOD, Efficiency, Options, 02/21/10, jdog5000: START
 		// BBAI AI Variables
-		case WAR_SUCCESS_CITY_CAPTURING: iDefault = 25; break;
+		case WAR_SUCCESS_CITY_CAPTURING:
+			iDefault = 25;
+			iLower = 1; // advc: 0 will crash AI code
+			break;
 		case BBAI_ATTACK_CITY_STACK_RATIO: iDefault = 110; break;
 		case BBAI_SKIP_BOMBARD_BASE_STACK_RATIO: iDefault = 300; break;
 		case BBAI_SKIP_BOMBARD_MIN_STACK_RATIO: iDefault = 140; break;
@@ -721,7 +739,8 @@ void CvGlobals::cacheGlobalInts(char const* szChangedDefine, int iNewValue)
 //MOD@VET_Andera412_Blocade_Unit-end1/2
 		// BETTER_BTS_AI_MOD: END
 		}
-		m_aiGlobalDefinesCache[i] = getDefineINT(aszGlobalDefinesTagNames[i], iDefault);
+		m_aiGlobalDefinesCache[i] = std::max(iLower,
+				getDefineINT(aszGlobalDefinesTagNames[i], iDefault));
 	}
 	m_iEventMessageTime = getDefineINT("EVENT_MESSAGE_TIME");
 } // </advc.opt>
@@ -902,6 +921,10 @@ void CvGlobals::updateCameraStartDistance(bool bReset)
 	cacheGlobalFloats(false);
 }
 
+int CvGlobals::getMaxCivPlayers() const
+{
+	return MAX_CIV_PLAYERS;
+}
 /*************************************************************************************************/
 /** TGA_INDEXATION                          11/13/07                            MRGENIE          */
 /**                                                                                              */
@@ -1048,10 +1071,6 @@ CvMap& CvGlobals::getMapExternal() { return getMap(); }
 CvGameAI& CvGlobals::getGameExternal() { return AI_getGame(); } // </advc.inl>
 CvGameAI *CvGlobals::getGamePointer() { return m_game; }
 
-int CvGlobals::getMaxCivPlayers() const
-{
-	return MAX_CIV_PLAYERS;
-}
 
 bool CvGlobals::IsGraphicsInitialized() const { return m_bGraphicsInitialized;}
 

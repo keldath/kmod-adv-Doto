@@ -601,7 +601,7 @@ void CvTeam::addTeam(TeamTypes eTeam)
 
 	AI().AI_updateWorstEnemy();
 	// <advc.104t>
-	if(getUWAI.isEnabled())
+	if(getUWAI().isEnabled())
 		AI().uwai().addTeam(eTeamLeader);
 	// </advc.104t>
 	AI().AI_updateAreaStrategies();
@@ -2281,7 +2281,7 @@ void CvTeam::updateLeaderID()
 		}
 	}
 	// <advc.104t>
-	if (m_eLeader != eFormerLeader && getUWAI.isEnabled())
+	if (m_eLeader != eFormerLeader && getUWAI().isEnabled())
 		GET_PLAYER(m_eLeader).uwai().getCache().onTeamLeaderChanged(eFormerLeader);
 	// </advc.104t>
 	if (m_eLeader == NO_PLAYER)
@@ -2388,10 +2388,29 @@ void CvTeam::changeAliveCount(int iChange)
 		GC.getGame().changeCivTeamsEverAlive(1); // </advc.opt>
 	// <advc.104> Can't do this in AI_init because alive status isn't yet set at that point
 	if (m_iAliveCount == 1 && m_iAliveCount - iChange <= 0 && isMajorCiv() &&
-		(getUWAI.isEnabled() || getUWAI.isEnabled(true)))
+		(getUWAI().isEnabled() || getUWAI().isEnabled(true)))
 	{
 		AI().uwai().init(getID());
 	} // </advc.104>
+}
+
+/*	advc.104: I'm using this function to pick members for conducting
+	war-related diplomacy -- instead of using the team leaders. bHuman causes
+	a human to be returned if this is a human team (otherwise ignored). */
+PlayerTypes CvTeam::getRandomMemberAlive(bool bHuman) const
+{
+	if (!isHuman())
+		bHuman = false;
+	int iValid = (bHuman ? PlayerIter<HUMAN,MEMBER_OF>::count(getID()) :
+			getAliveCount());
+	int iIndex = GC.getGame().getSRandNum(iValid, "CvTeam::getRandomMemberAlive");
+	for (MemberIter itMember(getID()); itMember.hasNext(); ++itMember)
+	{
+		if ((!bHuman || itMember->isHuman()) && itMember.nextIndex() >= iIndex)
+			return itMember->getID();
+	}
+	FErrorMsg("Team not alive?");
+	return NO_PLAYER;
 }
 
 
@@ -2666,9 +2685,9 @@ void CvTeam::setStolenVisibilityTimer(TeamTypes eIndex, int iNewValue)
 	if (bOldStolenVisibility != isStolenVisibility(eIndex))
 	{
 		CvMap const& kMap = GC.getMap();
-		for (int iI = 0; iI < kMap.numPlots(); iI++)
+		for (int i = 0; i < kMap.numPlots(); i++)
 		{
-			CvPlot& kPlot = kMap.getPlotByIndex(iI);
+			CvPlot& kPlot = kMap.getPlotByIndex(i);
 			if (kPlot.isVisible(eIndex))
 			{
 				kPlot.changeStolenVisibilityCount(
@@ -2685,7 +2704,8 @@ void CvTeam::changeStolenVisibilityTimer(TeamTypes eIndex, int iChange)
 }
 
 
-// (K-Mod note: units are unhappiness per 100,000 population. ie. 1000 * percent unhappiness.)
+/*	(K-Mod note: units are unhappiness per 100,000 population,
+	ie. 1000 * percent unhappiness.) */
 int CvTeam::getWarWeariness(TeamTypes eIndex, bool bUseEnemyModifer) const
 {
 	return  /* <K-Mod> */ (bUseEnemyModifer ? m_aiWarWeariness.get(eIndex) *
@@ -3431,7 +3451,7 @@ void CvTeam::setVassal(TeamTypes eMaster, bool bNewValue, bool bCapitulated)
 			{
 				/*  advc.104j: Third parties shouldn't discard their plans
 					against the master */
-				if (!getUWAI.isEnabled())
+				if (!getUWAI().isEnabled())
 					kRival.AI_setWarPlan(eMaster, NO_WARPLAN);
 			}
 		}
@@ -3662,9 +3682,11 @@ void CvTeam::freeVassal(TeamTypes eVassal) const
 	}
 	// <advc.130y>
 	if(isCapitulated() && GET_PLAYER(GET_TEAM(eVassal).getLeaderID()).
-			// Not thankful if still thankful to old master
-			AI_getMemoryAttitude(getLeaderID(), MEMORY_INDEPENDENCE) <= 0)
+		// Not thankful if still thankful to old master
+		AI_getMemoryAttitude(getLeaderID(), MEMORY_INDEPENDENCE) <= 0)
+	{
 		GET_TEAM(eVassal).AI_thankLiberator(getMasterTeam());
+	}
 	/*  Prevent freed vassal from immediately becoming someone else's vassal.
 		Want the civ that made the former master capitulate (i.e. getMasterTeam)
 		to have a right of first refusal. */
@@ -4921,7 +4943,7 @@ bool CvTeam::isRevealedBase(CvPlot const& kPlot) const
 bool CvTeam::isCityDefense(CvPlot const& kPlot) const
 {
 	/*	I'm assuming that calls happen in the context of imminent combat, and
-		then the units wouldn't be visible if the plot weren't visible as well.
+		then the combatants wouldn't be visible if the plot weren't visible as well.
 		This assertion fails, however, when center units are updated while
 		updating sight (in CvPlot). */
 	//FAssert(kPlot.isVisible(getID()));

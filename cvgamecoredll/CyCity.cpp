@@ -185,7 +185,13 @@ bool CyCity::canJoin()
 
 int CyCity::getFoodTurnsLeft()
 {
-	return m_pCity ? m_pCity->getFoodTurnsLeft() : 0;
+	if (m_pCity == NULL)
+		return 0;
+	// <advc.189>
+	int iR = m_pCity->getFoodTurnsLeft();
+	if (iR == MAX_INT)
+		return 0; // </advc.189>
+	return iR;
 }
 
 bool CyCity::isProduction()
@@ -710,7 +716,7 @@ int CyCity::cultureGarrison(int /*PlayerTypes*/ ePlayer)
 // <advc.ctr>
 float CyCity::revoltProbability()
 {
-	return m_pCity ? static_cast<float>(m_pCity->revoltProbability()) : -1;
+	return m_pCity ? m_pCity->revoltProbability().getFloat() : -1;
 }
 
 bool CyCity::canCultureFlip()
@@ -771,7 +777,8 @@ CyPlot* CyCity::plot()
 
 bool CyCity::isConnectedTo(CyCity* pCity)
 {
-	return m_pCity ? m_pCity->isConnectedTo(pCity->getCity()) : false;
+	return (m_pCity && pCity && pCity->getCity()) ?
+			m_pCity->isConnectedTo(*pCity->getCity()) : false;
 }
 
 bool CyCity::isConnectedToCapital(int /*PlayerTypes*/ ePlayer)

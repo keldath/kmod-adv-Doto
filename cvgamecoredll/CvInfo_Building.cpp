@@ -1583,7 +1583,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iNumFreeBonuses, "iNumFreeBonuses");
 //Doto-prereqMust+tholish
 	pXML->GetChildXmlValByName(&m_iPrereqMustAll, "iPrereqMustAll",0);
-// < BDoto-uilding Resource Converter Start >
+// < Doto-building Resource Converter Start >
 //keldath qa2 - done - from f1rpo - The sizeof... parameter was unused, so I've removed it.
 //	pXML->SetVariableListTagPair(&m_paiRequiredInputBonuses, "RequiredInputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
 //	pXML->SetVariableListTagPair(&m_paiBuildingOutputBonuses, "BuildingOutputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
@@ -1970,7 +1970,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 		pXML->InitList(&m_paiYieldProduced, NUM_YIELD_TYPES);
 	}
 // Doto-davidlallen: building bonus yield, commerce end
-	// Doto-<advc.006b> and keldath
+	// Doto-<advc.006b> and keldath - do no display building placeholder- i think
 	if(bPlaceHolder)
 		//pXML->setAssertMandatory(true); // </advc.006b>
 		//pXML->setAssertMandatory(true); // </advc.006b> //CODE FROM 095 - KELDATH ADJUSTMENT
@@ -2514,7 +2514,6 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iConnectedCityMaintenanceModifier, "iConnectedCityMaintenanceModifier", 0);
 	//Doto-DPII < Maintenance Modifiers >
 
-
 	pXML->SetInfoIDFromChildXmlVal(m_iEveryoneSpecialUnit, "EveryoneSpecialUnit");
 	pXML->SetInfoIDFromChildXmlVal(m_iEveryoneSpecialBuilding, "EveryoneSpecialBuilding");
 
@@ -2530,11 +2529,9 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 	
 	// Doto-davidlallen: project civilization and free unit start	
 	CvString szTextVal;
-	pXML->GetChildXmlValByName(szTextVal, "CivilizationType",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "CivilizationType",""); // f1rpo
 	m_iCivilization = pXML->FindInInfoClass(szTextVal);
-	pXML->GetChildXmlValByName(szTextVal, "FreeUnit",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "FreeUnit",""); // f1rpo
 	m_iFreeUnit = pXML->FindInInfoClass(szTextVal);
 	// Doto-davidlallen: project civilization and free unit end
 	pXML->GetChildXmlValByName(szTextVal, "CreateSound");

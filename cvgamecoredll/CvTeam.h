@@ -31,6 +31,16 @@ public:
 	static void triggerWars(/* advc: */ bool bForceUpdateAttitude = false);
 	// </kekm.26>
 
+	/*	advc (comment): Call order during (de-)initialization of CvTeam, CvPlayer:
+		+	When Civ 4 is launched, constructors are called.
+		+	When Civ 4 is exited, destructors are called.
+		+	When starting a new game, init is called.
+		+	When returning to the main menu, reset is called.
+		+	When saving a game, write is called.
+		+	When loading a saved game, read is called.
+		read, init and the constructor use reset to clear the data.
+		(Reusing classes like this is error-prone and seems ill-advised in this case,
+		but there's probably no changing it because the EXE is involved.) */
 	explicit CvTeam(TeamTypes eID);
 	virtual ~CvTeam();
 
@@ -150,6 +160,7 @@ public:
 	int getAliveCount() const { return m_iAliveCount; } // advc.155: Exposed to Python
 	inline bool isAlive() const { return (m_iAliveCount > 0); }																// Exposed to Python
 	void changeAliveCount(int iChange);
+	PlayerTypes getRandomMemberAlive(bool bHuman) const; // advc.104
 
 	inline int getEverAliveCount() const { return m_iEverAliveCount; }			
 	inline bool isEverAlive() const { return (getEverAliveCount() > 0); } // advc: return type was int												// Exposed to Python

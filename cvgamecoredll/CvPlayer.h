@@ -1476,8 +1476,6 @@ public:
 			PlayerTypes eWithPlayer = NO_PLAYER) const;
 	// BULL - Trade Hover - end
 	void checkAlert(int iAlertID, bool bSilent); // advc.210 (exposed to Python)
-	// advc.104, advc.038, advc.132; exposed to Python.
-	double estimateYieldRate(YieldTypes eYield, int iSamples = 5) const;
 	void setSavingReplay(bool b); // advc.106i
 	// <advc.085> (both exposed to Python)
 	void setScoreboardExpanded(bool b);
@@ -1636,9 +1634,7 @@ protected:  // <advc.210>
 	int m_iInflationModifier;
 	int m_iChoosingFreeTechCount; // K-Mod (based on the 'Unofficial Patch'
 	int m_iButtonPopupsRelaunching; // advc.004x
-	
-	
-	
+
 	uint m_uiStartTime;  // XXX save these?
 
 	bool m_bAlive;

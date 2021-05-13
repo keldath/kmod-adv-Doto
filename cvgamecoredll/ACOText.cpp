@@ -434,9 +434,9 @@ void CvGameTextMgr::setACOPlotHelp(CvWStringBuffer &szString,
 	float const prob2 = prob1 + 100.0f * RetreatOdds;//up to retreat odds
 
 	//float prob = 100.0f * (AttackerKillOdds+RetreatOdds + PullOutOdds); // advc: unused
-	int pixels_left = 199;// 1 less than 200 to account for right end bar
-	// 1% per pixel // subtracting one to account for left end bar
 	{
+		int pixels_left = 199;// 1 less than 200 to account for right end bar
+		// 1% per pixel // subtracting one to account for left end bar
 		int pixels = (2 * ((int)(prob1 + 0.5)))-1;
 		{
 			int fullBlocks = pixels / 10;
@@ -1279,42 +1279,12 @@ void CvGameTextMgr::setACOModifiersPlotHelp(CvWStringBuffer &szString,
 		if (BUGOption::isEnabled("ACO__ShowModifierLabels", false))
 			szString.append(gDLL->getText("TXT_ACO_AttackModifiers"));
 	}
-
-	szString.append(gDLL->getText("TXT_KEY_COLOR_POSITIVE"));
-	szString.append(L' ');
-	if (!kDefender.immuneToFirstStrikes() && kAttacker.maxFirstStrikes() > 0)
-	{
-		if (kAttacker.firstStrikes() == kAttacker.maxFirstStrikes())
-		{
-			if (kAttacker.firstStrikes() == 1)
-			{
-				szString.append(NEWLINE);
-				szString.append(gDLL->getText("TXT_KEY_UNIT_ONE_FIRST_STRIKE"));
-			}
-			else
-			{
-				szString.append(NEWLINE);
-				szString.append(gDLL->getText("TXT_KEY_UNIT_NUM_FIRST_STRIKES",
-						kAttacker.firstStrikes()));
-			}
-		}
-		else
-		{
-			szString.append(NEWLINE);
-			szString.append(gDLL->getText("TXT_KEY_UNIT_FIRST_STRIKE_CHANCES",
-					kAttacker.firstStrikes(), kAttacker.maxFirstStrikes()));
-		}
-	}
-	int iModifier = kAttacker.getExtraCombatPercent();
-	if (iModifier != 0)
-	{
-		szString.append(NEWLINE);
-		szString.append(gDLL->getText("TXT_KEY_COMBAT_PLOT_EXTRA_STRENGTH",
-				iModifier));
-	}
-	szString.append(gDLL->getText("TXT_KEY_COLOR_REVERT"));
-	szString.append(L' ');
-
+	// advc: Moved into new function (shared with non-ACO code)
+	appendFirstStrikes(szString, kAttacker, kDefender, false);
+	//int iModifier = kAttacker.getExtraCombatPercent();
+	/*	advc: (Generic modifiers of the attacker are the only ones that
+		affect the attacker's combat strength) */
+	appendCombatModifiers(szString, kPlot, kAttacker, kDefender, true, true, true);
 	// advc.048: Moved defender info above the modifier label
 	if (iView & BUGOption::getValue("ACO__ShowDefenderInfo", 3))
 	{
@@ -1333,49 +1303,15 @@ void CvGameTextMgr::setACOModifiersPlotHelp(CvWStringBuffer &szString,
 
 	if (iView & BUGOption::getValue("ACO__ShowDefenseModifiers", 3))
 	{
-		/*	if defense modifiers are enabled - recommend leaving this on
-			unless Total defense Modifier is enabled */
-		szString.append(gDLL->getText("TXT_KEY_COLOR_NEGATIVE"));
-		szString.append(L' ');
-		if (!kAttacker.immuneToFirstStrikes())
-		{
-			if (kDefender.maxFirstStrikes() > 0)
-			{
-				if (kDefender.firstStrikes() == kDefender.maxFirstStrikes())
-				{
-					if (kDefender.firstStrikes() == 1)
-					{
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_UNIT_ONE_FIRST_STRIKE"));
-					}
-					else
-					{
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_UNIT_NUM_FIRST_STRIKES",
-								kDefender.firstStrikes()));
-					}
-				}
-				else
-				{
-					szString.append(NEWLINE);
-					szString.append(gDLL->getText("TXT_KEY_UNIT_FIRST_STRIKE_CHANCES",
-							kDefender.firstStrikes(), kDefender.maxFirstStrikes()));
-				}
-			}
-		}
-		/*  advc: Some 100 LoC moved into a subroutine b/c they were
-			repeated in the !ACO_enabled branch. */
-		appendNegativeModifiers(szString, &kAttacker, &kDefender, &kPlot);
-		szString.append(gDLL->getText("TXT_KEY_COLOR_REVERT"));
-		szString.append(L' ');
-		szString.append(gDLL->getText("TXT_KEY_COLOR_POSITIVE"));
-		szString.append(L' ');//XXX
-		// advc: Another batch of repeated modifiers
-		appendPositiveModifiers(szString, &kAttacker, &kDefender, &kPlot, true);
+		appendFirstStrikes(szString, kDefender, kAttacker, true);
+		/*	<advc> Use the same functions for ACO and BtS combat modifiers.
+			(Replacing code that had been copy-pasted and slightly modified.) */
+		appendCombatModifiers(szString, kPlot, kAttacker, kDefender,
+				false, true);
+		appendCombatModifiers(szString, kPlot, kAttacker, kDefender,
+				true, true, false, true);
+		// </advc>
 	}
-
-	szString.append(gDLL->getText("TXT_KEY_COLOR_REVERT"));
-	szString.append(L' ');
 	if (iView & BUGOption::getValue("ACO__ShowTotalDefenseModifier", 2))
 	{
 		//szString.append(L' ');//XXX
