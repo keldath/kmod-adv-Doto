@@ -5433,7 +5433,7 @@ void CvGameTextMgr::setCityBarHelp(CvWStringBuffer &szString, CvCity const& kCit
 	//if (BUGOption::isEnabled("CityBar__Health", true))
 	{
 		int iHealth = kCity.goodHealth() - kCity.badHealth();
-		szTempBuffer.Format(L", %d%c", abs(iHealth),
+		szTempBuffer.Format(L", %s%d%c", iHealth >= 0 ? L"+" : L"", abs(iHealth),
 				gDLL->getSymbolID(iHealth >= 0 ? HEALTHY_CHAR : UNHEALTHY_CHAR));
 		szString.append(szTempBuffer);
 	} // BULL - Health - end
@@ -5453,7 +5453,7 @@ void CvGameTextMgr::setCityBarHelp(CvWStringBuffer &szString, CvCity const& kCit
 		else
 		{
 			int iHappy = kCity.happyLevel() - kCity.unhappyLevel();
-			szTempBuffer.Format(L", %d%c", abs(iHappy),
+			szTempBuffer.Format(L", %s%d%c", iHappy >= 0 ? L"+" : L"", abs(iHappy),
 					gDLL->getSymbolID(iHappy >= 0 ? HAPPY_CHAR : UNHAPPY_CHAR));
 			szString.append(szTempBuffer);
 		}
@@ -5512,6 +5512,9 @@ void CvGameTextMgr::setCityBarHelp(CvWStringBuffer &szString, CvCity const& kCit
 		{
 			szString.append(gDLL->getText("TXT_KEY_CITY_BAR_GROWTH",
 					kCity.getFood(), kCity.growthThreshold()));
+			szString.append(L" (");
+			szString.append(gDLL->getText("INTERFACE_CITY_STAGNANT"));
+			szString.append(L")");
 		}
 		else
 		{

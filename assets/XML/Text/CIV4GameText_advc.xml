@@ -1059,7 +1059,7 @@
 		<Italian>Governo preferito</Italian>
 		<Spanish>Principios favoritos</Spanish>
 	</TEXT>
-	
+
 	<!-- advc.002b: Based on TXT_KEY_CURRENT (CIV4GameText_Misc1.xml);
 		 translations unchanged. -->
 	<TEXT>
@@ -4491,6 +4491,28 @@
 		<Italian>Apri il menu</Italian>
 		<Spanish>Abrir men&#250;</Spanish>
 	</TEXT>
+	<!-- From CIV4GameTextInfos.xml -->
+	<TEXT>
+		<Tag>TXT_KEY_MAIN_MENU_MULTIPLAYER_INTERNET_GAMES</Tag>
+		<English>[COLOR_PLAYER_GRAY]GameSpy Login[COLOR_REVERT]</English>
+		<French>[COLOR_PLAYER_GRAY]Parties Internet[COLOR_REVERT]</French>
+		<German>[COLOR_PLAYER_GRAY]GameSpy-Netzwerk[COLOR_REVERT]</German>
+		<Italian>[COLOR_PLAYER_GRAY]Partite Internet[COLOR_REVERT]</Italian>
+		<Spanish>[COLOR_PLAYER_GRAY]Partidas en Internet[COLOR_REVERT]</Spanish>
+	</TEXT>
+	<!-- From CIV4GameText_Misc1.xml. Instead of instructions how to
+		 register with GameSpy and login, inform the player that GameSpy
+		 is gone. -->
+	<TEXT>
+		<Tag>TXT_KEY_GAMESPY_LOGIN_DESC</Tag>
+		<English>The GameSpy platform has shut down in 2014!</English>
+		<German>Das GameSpy-Netzwerk wurde 2014 abgeschaltet!</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_GAMESPY_CREATE_ACCOUNT_HELP</Tag>
+		<English>The GameSpy platform has shut down in 2014!</English>
+		<German>Das GameSpy-Netzwerk wurde 2014 abgeschaltet!</German>
+	</TEXT>
 	
 	<!-- advc.106b -->
 	<TEXT>
@@ -6535,18 +6557,18 @@
 		 when growth is stagnating. Also remove the spaces before yield icons. -->
 	<TEXT>
 		<Tag>TXT_KEY_CITY_BAR_GROWTH</Tag>
-		<English>[NEWLINE]%d1/%d2 [ICON_FOOD]</English>
-		<French>[NEWLINE]%d1/%d2 [ICON_FOOD]</French>
-		<German>[NEWLINE]%d1/%d2 [ICON_FOOD]</German>
-		<Italian>[NEWLINE]%d1/%d2 [ICON_FOOD]</Italian>
-		<Spanish>[NEWLINE]%d1/%d2 [ICON_FOOD]</Spanish>
+		<English>[NEWLINE]%d1/%d2[ICON_FOOD]</English>
+		<French>[NEWLINE]%d1/%d2[ICON_FOOD]</French>
+		<German>[NEWLINE]%d1/%d2[ICON_FOOD]</German>
+		<Italian>[NEWLINE]%d1/%d2[ICON_FOOD]</Italian>
+		<Spanish>[NEWLINE]%d1/%d2[ICON_FOOD]</Spanish>
 	</TEXT>
 	<!-- Replacing TXT_KEY_CITY_BAR_FOOD_GROWTH; Don't like the word "growth"
 		 here either. The idea is, apparently, to mirror the text for production,
 		 which names the production order and then shows the turns remaining. -->
 	<TEXT>
 		<Tag>TXT_KEY_CITY_BAR_FOOD_GROWTH</Tag>
-		<English>[NEWLINE]%d1 [ICON_FOOD]/Turn[NEWLINE]%d2/%d3 [ICON_FOOD] (%d4 [NUM4:Turn:Turns])</English>
+		<English>[NEWLINE]%d1[ICON_FOOD]/Turn[NEWLINE]%d2/%d3[ICON_FOOD] (%d4 [NUM4:Turn:Turns])</English>
 		<French>[NEWLINE]%d1[ICON_FOOD]/tour[NEWLINE]%d2/%d3[ICON_FOOD] (%d4 [NUM4:tour:tours])</French>
 		<German>[NEWLINE]%d1[ICON_FOOD]/Runde[NEWLINE]%d2/%d3[ICON_FOOD] (%d4 [NUM4:Turn:Turns])</German>
 		<Italian>[NEWLINE]%d1[ICON_FOOD]/Turno[NEWLINE]%d2/%d3[ICON_FOOD] (%d4 [NUM4:turno:turni])</Italian>
@@ -6776,7 +6798,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_CITY_BAR_ALL_DOMESTIC</Tag>
-		<English>all domestic</English>
+		<English>all Domestic</English>
 		<French>toutes domestiques</French>
 		<German>alle inländisch</German>
 		<Italian>tutte domestiche</Italian>
@@ -6784,7 +6806,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_CITY_BAR_ALL_FOREIGN</Tag>
-		<English>all foreign</English>
+		<English>all Foreign</English>
 		<French>toutes étrangères</French>
 		<German>alle ausländisch</German>
 		<Italian>tutte estere</Italian>
@@ -6792,7 +6814,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_CITY_BAR_FOREIGN_TR_COMMERCE</Tag>
-		<English>foreign: %d1[ICON_COMMERCE]</English>
+		<English>Foreign: %d1[ICON_COMMERCE]</English>
 		<French>&#233;trang&#232;res : %d1[ICON_COMMERCE]</French>
 		<German>Außenhandel: %d1[ICON_COMMERCE]</German>
 		<Italian>estere: %d1[ICON_COMMERCE]</Italian>
