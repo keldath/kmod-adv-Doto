@@ -10103,24 +10103,38 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 				{
 					szBuffer.append(NEWLINE);
 					szBuffer.append(gDLL->getText("TXT_KEY_UNIT_REQUIRES_STRING",
-						GC.getInfo(u.getPrereqAndBonus()).getTextKeyWide()));
+							GC.getInfo(u.getPrereqAndBonus()).getTextKeyWide()));
 				}
 			}
+			/*	<advc.004> (rewritten based on MNAI - lfgr fix 04/2021:
+				Don't show any OR-prereq bonus if one of them is available.)
+				This concerns units with an OR req. (which is met) and some
+				additional requirement (which isn't met). */
 			{
-				bool bFirst = true;
+				std::vector<BonusTypes> aePrereqOrBonuses;
+				bool bAnyReqFound = false;
 				for (int i = 0; i < u.getNumPrereqOrBonuses(); i++)
 				{
-					if (pCity == NULL || !pCity->hasBonus(u.getPrereqOrBonuses(i)))
+					if (pCity != NULL && pCity->hasBonus(u.getPrereqOrBonuses(i)))
 					{
-						szTempBuffer.Format(L"%s%s", NEWLINE, gDLL->getText("TXT_KEY_REQUIRES").c_str());
-						setListHelp(szBuffer, szTempBuffer,
-							GC.getInfo(u.getPrereqOrBonuses(i)).getDescription(),
-							gDLL->getText("TXT_KEY_OR").c_str(), bFirst);
+						bAnyReqFound = true;
+						break;
 					}
+					aePrereqOrBonuses.push_back(u.getPrereqOrBonuses(i));
 				}
-				if (!bFirst)
+				if (!bAnyReqFound && !aePrereqOrBonuses.empty())
+				{
+					szTempBuffer.Format(L"%s%s", NEWLINE, gDLL->getText("TXT_KEY_REQUIRES").c_str());
+					bool bFirst = true;
+					for (size_t i = 0; i < aePrereqOrBonuses.size(); i++)
+					{
+						setListHelp(szBuffer, szTempBuffer,
+								GC.getInfo(u.getPrereqOrBonuses(i)).getDescription(),
+								gDLL->getText("TXT_KEY_OR").c_str(), bFirst);
+					}
 					szBuffer.append(ENDCOLR);
-			}
+				}
+			} // </advc.004>
 		}
 	
 	{
@@ -17138,7 +17152,7 @@ void CvGameTextMgr::getAttitudeString(CvWStringBuffer& szBuffer, PlayerTypes ePl
 			MEMORY_SPY_CAUGHT, MEMORY_ACCEPTED_STOP_TRADING,
 			MEMORY_NUKED_FRIEND, MEMORY_DECLARED_WAR_ON_FRIEND,
 		};
-		int const iNumObscureMemoryTypes = ARRAY_LENGTH(aeObscureMemoryTypes);
+		int const iNumObscureMemoryTypes = ARRAYSIZE(aeObscureMemoryTypes);
 		// </advc.004q>
 		FOR_EACH_ENUM(Memory)
 		{
@@ -21986,48 +22000,48 @@ void CvGameTextMgr::getTurnTimerText(CvWString& strText)
 	}
 }
 
-
-void CvGameTextMgr::getFontSymbols(std::vector< std::vector<wchar> >& aacSymbols, std::vector<int>& aiMaxNumRows)
+void CvGameTextMgr::getFontSymbols(std::vector< std::vector<wchar> >& aacSymbols,
+	std::vector<int>& aiMaxNumRows)
 {
 	aacSymbols.push_back(std::vector<wchar>());
 	aiMaxNumRows.push_back(1);
-	for (int iI = 0; iI < NUM_YIELD_TYPES; iI++)
+	FOR_EACH_ENUM(Yield)
 	{
-		aacSymbols[aacSymbols.size() - 1].push_back((wchar) GC.getInfo((YieldTypes) iI).getChar());
+		aacSymbols[aacSymbols.size() - 1].push_back(GC.getInfo(eLoopYield).getChar());
 	}
 
 	aacSymbols.push_back(std::vector<wchar>());
 	aiMaxNumRows.push_back(2);
-	for (int iI = 0; iI < NUM_COMMERCE_TYPES; iI++)
+	FOR_EACH_ENUM(Commerce)
 	{
-		aacSymbols[aacSymbols.size() - 1].push_back((wchar) GC.getInfo((CommerceTypes) iI).getChar());
+		aacSymbols[aacSymbols.size() - 1].push_back(GC.getInfo(eLoopCommerce).getChar());
 	}
 
 	aacSymbols.push_back(std::vector<wchar>());
 	aiMaxNumRows.push_back(2);
-	for (int iI = 0; iI < GC.getNumReligionInfos(); iI++)
+	FOR_EACH_ENUM(Religion)
 	{
-		aacSymbols[aacSymbols.size() - 1].push_back((wchar) GC.getInfo((ReligionTypes) iI).getChar());
-		aacSymbols[aacSymbols.size() - 1].push_back((wchar) GC.getInfo((ReligionTypes) iI).getHolyCityChar());
+		aacSymbols[aacSymbols.size() - 1].push_back(GC.getInfo(eLoopReligion).getChar());
+		aacSymbols[aacSymbols.size() - 1].push_back(GC.getInfo(eLoopReligion).getHolyCityChar());
 	}
-	for (int iI = 0; iI < GC.getNumCorporationInfos(); iI++)
+	FOR_EACH_ENUM(Corporation)
 	{
-		aacSymbols[aacSymbols.size() - 1].push_back((wchar) GC.getInfo((CorporationTypes) iI).getChar());
-		aacSymbols[aacSymbols.size() - 1].push_back((wchar) GC.getInfo((CorporationTypes) iI).getHeadquarterChar());
-	}
-
-	aacSymbols.push_back(std::vector<wchar>());
-	aiMaxNumRows.push_back(3);
-	for (int iI = 0; iI < GC.getNumBonusInfos(); iI++)
-	{
-		aacSymbols[aacSymbols.size() - 1].push_back((wchar) GC.getInfo((BonusTypes) iI).getChar());
+		aacSymbols[aacSymbols.size() - 1].push_back(GC.getInfo(eLoopCorporation).getChar());
+		aacSymbols[aacSymbols.size() - 1].push_back(GC.getInfo(eLoopCorporation).getHeadquarterChar());
 	}
 
 	aacSymbols.push_back(std::vector<wchar>());
 	aiMaxNumRows.push_back(3);
-	for (int iI = 0; iI < MAX_NUM_SYMBOLS; iI++)
+	FOR_EACH_ENUM(Bonus)
 	{
-		aacSymbols[aacSymbols.size() - 1].push_back((wchar) gDLL->getSymbolID(iI));
+		aacSymbols[aacSymbols.size() - 1].push_back(GC.getInfo(eLoopBonus).getChar());
+	}
+
+	aacSymbols.push_back(std::vector<wchar>());
+	aiMaxNumRows.push_back(3);
+	for (int i = 0; i < MAX_NUM_SYMBOLS; i++)
+	{
+		aacSymbols[aacSymbols.size() - 1].push_back((wchar)gDLL->getSymbolID(i));
 	}
 }
 
@@ -22117,7 +22131,7 @@ void CvGameTextMgr::assignFontIds(int iFirstSymbolCode, int iPadAmount)
 		iSymbol++;
 	} while (iSymbol % iPadAmount != 0);
 
-	if(GC.getNumBonusInfos() < iPadAmount)
+	if (GC.getNumBonusInfos() < iPadAmount)
 	{
 		do
 		{
@@ -22125,7 +22139,7 @@ void CvGameTextMgr::assignFontIds(int iFirstSymbolCode, int iPadAmount)
 		} while (iSymbol % iPadAmount != 0);
 	}
 
-	if(GC.getNumBonusInfos() < 2 * iPadAmount)
+	if (GC.getNumBonusInfos() < 2 * iPadAmount)
 	{
 		do
 		{
@@ -22134,7 +22148,7 @@ void CvGameTextMgr::assignFontIds(int iFirstSymbolCode, int iPadAmount)
 	}
 
 	// set extra symbols
-	for (int i=0; i < MAX_NUM_SYMBOLS; i++)
+	for (int i = 0; i < MAX_NUM_SYMBOLS; i++)
 	{
 		gDLL->setSymbolID(i, iSymbol);
 		iSymbol++;

@@ -274,7 +274,6 @@ private:
 	template <int iSize>
 	void _Read(/* <advc> */ FDataStreamBase* pStream, bool bAsInt = true, bool bAsShort = false,
 			bool bAsFloat = false, bool bAsDouble = false/*, bool bSkipLast = false*/); // </advc>
-
 	template <int iSize>
 	void _Write(/* advc: */ FDataStreamBase* pStream, bool bAsInt = true, bool bAsFloat = false) const;
 	// <advc.fract>
@@ -638,6 +637,7 @@ inline void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 {
 	set(eIndex, get(eIndex) / tDivisor);
 }
+
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
 void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 // advc: was inline

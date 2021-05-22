@@ -236,7 +236,7 @@ void CvMapGenerator::addRivers()  // advc: refactored
 						GC.getGame().getMapRandNum(8, "addRivers") == 0);
 				break;
 			case 2:
-				bValid =  ((p.isHills() || p.isPeak()) &&
+				bValid = ((p.isHills() || p.isPeak()) &&
 						p.getArea().getNumRiverEdges() <
 						1 + p.getArea().getNumTiles() / iPlotsPerRiverEdge);
 				break;
@@ -320,7 +320,7 @@ void CvMapGenerator::doRiver(CvPlot* pStartPlot,
 	else if (eLastCardinalDirection == CARDINALDIRECTION_SOUTH)
 	{
 		pRiverPlot = plotCardinalDirection(pStartPlot->getX(), pStartPlot->getY(),
-			CARDINALDIRECTION_SOUTH);
+				CARDINALDIRECTION_SOUTH);
 		if (pRiverPlot == NULL)
 			return;
 		pAdjacentPlot = plotCardinalDirection(pRiverPlot->getX(), pRiverPlot->getY(),
@@ -665,7 +665,6 @@ void CvMapGenerator::addUniqueBonusType(BonusTypes eBonus)
 					pBestArea->getNumTiles() / 25; // </advc.129>
 
 			// Place the bonuses ...
-
 			int* aiShuffledIndices = shuffle(kMap.numPlots(), kGame.getMapRand());
 			for (int i = 0; i < kMap.numPlots() &&
 				(bIgnoreAreaLimit || iAdded < iAreaLimit) && // advc.129
@@ -781,7 +780,7 @@ int CvMapGenerator::placeGroup(BonusTypes eBonus, CvPlot const& kCenter,
 	for (PlotCircleIter it(kCenter, kBonus.getGroupRange()); it.hasNext(); ++it)
 		apGroupRange.push_back(&*it);
 	int const iSize = (int)apGroupRange.size();
-	if(iSize <= 0)
+	if (iSize <= 0)
 		return 0;
 	std::vector<int> aiShuffled(iSize);
 	::shuffleVector(aiShuffled, GC.getGame().getMapRand());

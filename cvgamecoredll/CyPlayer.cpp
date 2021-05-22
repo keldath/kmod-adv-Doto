@@ -2384,7 +2384,6 @@ void  CyPlayer::forcePeace(int iPlayer)
 }
 
 // advc.210:
-
 void CyPlayer::checkAlert(int alertId, bool silent)
 {
 	if(m_pPlayer != NULL)

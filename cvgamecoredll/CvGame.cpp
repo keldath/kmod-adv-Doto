@@ -1412,7 +1412,6 @@ void CvGame::applyStartingLocHandicaps(
 		apStartingSitesByValue.push_back(GET_PLAYER(aePlayersByStartValue[i]).
 				getStartingPlot());
 	}
-
 	// <advc.027> Try to avoid giving human players high-volatility starts
 	if (pStartValues != NULL && aePlayersByHandicap.size() > 5u &&
 		!isTeamGame())
@@ -2049,7 +2048,6 @@ void CvGame::normalizeRemoveBadTerrain()
 					iTargetFood = 1 + getMapRandNum(2, "Map Upgrade Terrain Food 4");
 				}
 				else iTargetFood = (p.isCoastalLand() ? 2 : 1);
-
 				FOR_EACH_ENUM(Terrain)
 				{
 					CvTerrainInfo const& kRepl = GC.getInfo(eLoopTerrain);
@@ -9271,7 +9269,7 @@ void CvGame::doFPCheck(int iChecksum, PlayerTypes ePlayer)
 			GC.getColorType("WARNING_TEXT"));
 } // </advc.003g
 
-// <advc.003r>
+// advc.003r:
 void CvGame::handleUpdateTimer(UpdateTimerTypes eTimerType)
 {
 	if(m_aiUpdateTimers[eTimerType] < 0)
@@ -9306,7 +9304,7 @@ void CvGame::handleUpdateTimer(UpdateTimerTypes eTimerType)
 		}
 	}
 	m_aiUpdateTimers[eTimerType]--;
-} // </advc.003r>
+}
 
 
 void CvGame::addReplayMessage(ReplayMessageTypes eType, PlayerTypes ePlayer,

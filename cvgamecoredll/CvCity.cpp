@@ -2745,13 +2745,13 @@ int CvCity::getProductionDifference(int iProductionNeeded, int iProduction,
 	//int iOverflow = (bOverflow ? (getOverflowProduction() + getFeatureProduction()) : 0);
 	// <advc.064b> Replacing the above
 	int iOverflow = 0;
-	if(bOverflow)
+	if (bOverflow)
 		iOverflow = getOverflowProduction();
 	int iFeatureProduction = 0;
 	FAssert(!bIgnoreFeatureProd || (!bForceFeatureProd && piFeatureProd == NULL));
-	if(!bIgnoreFeatureProd)
+	if (!bIgnoreFeatureProd)
 	{
-		if(bForceFeatureProd)
+		if (bForceFeatureProd)
 			iFeatureProduction = getFeatureProduction();
 		else /* Compute needed feature production (derived from the formula in the
 				return statement) */
@@ -3941,6 +3941,7 @@ scaled CvCity::getReligionPercentAnger(PlayerTypes ePlayer) const
 	return rSameReligionCityRatio * rAngerFactor;
 } // </advc.104>
 
+
 int CvCity::getHurryPercentAnger(int iExtra) const
 {
 	if (getHurryAngerTimer() == 0)
@@ -3960,6 +3961,7 @@ int CvCity::getConscriptPercentAnger(int iExtra) const
 			GC.getDefineINT(CvGlobals::CONSCRIPT_POP_ANGER) * GC.getPERCENT_ANGER_DIVISOR()) /
 			std::max(1, getPopulation() + iExtra));
 }
+
 
 int CvCity::getDefyResolutionPercentAnger(int iExtra) const
 {
@@ -4552,7 +4554,6 @@ int CvCity::flatHurryAngerLength() const
 	int iAnger = GC.getGame().getHurryAngerLength();
 	iAnger *= std::max(0, 100 + getHurryAngerModifier());
 	iAnger /= 100;
-
 	return std::max(1, iAnger);
 }
 
@@ -6083,7 +6084,7 @@ void CvCity::GPProjection(std::vector<std::pair<UnitTypes,int> >& r) const
 		int iTotalError = 100 - iRoundedPercentages;
 		if (iTotalError >= 2)
 		{
-			FAssert(abs(iTotalError) == 2);
+			FAssert(iTotalError == 2);
 			/*	I'm too lazy to handle that error properly. Adding up to 99% is OK.
 				Otherwise add 1 to the GP with the highest share. */
 			size_t iArgmax = 0;
@@ -7469,10 +7470,8 @@ int CvCity::getCultureThreshold(CultureLevelTypes eLevel)
 void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups)
 {
 	CultureLevelTypes const eOldValue = getCultureLevel();
-
 	if (eOldValue == eNewValue)
 		return;
-
 	m_eCultureLevel = eNewValue;
 	if (eOldValue != NO_CULTURELEVEL)
 	{
@@ -13449,7 +13448,7 @@ void CvCity::getVisibleEffects(ZoomLevelTypes eCurZoom,
 				"FIREWORKS_BLUE_LARGE_SLOW",
 				"FIREWORKS_BLUE_SMALL_FAST"
 			};
-			int const iNumEffects = ARRAY_LENGTH(szFireworkEffects);
+			int const iNumEffects = ARRAYSIZE(szFireworkEffects);
 			for (int i = 0; i < (iNumEffects < 3 ? iNumEffects : 3); i++)
 			{
 				kEffectNames.push_back(szFireworkEffects[kRand.get(iNumEffects)]);

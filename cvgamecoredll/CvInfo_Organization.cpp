@@ -33,6 +33,12 @@ void CvOrganizationInfo::setChar(int i)
 	m_iChar = i;
 }
 */
+/*
+void CvOrganizationInfo::setChar(wchar wc)
+{
+	m_wcSymbol = wc;
+}
+*/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
 /*************************************************************************************************/
@@ -112,7 +118,7 @@ bool CvOrganizationInfo::read(CvXMLLoadUtility* pXML)
 }
 
 CvReligionInfo::CvReligionInfo() :
-m_iHolyCityChar(0),
+m_cHolyCityChar(0),
 m_iNumFreeUnits(0),
 m_paiGlobalReligionCommerce(NULL),
 m_paiHolyCityCommerce(NULL),
@@ -136,15 +142,15 @@ void CvReligionInfo::setChar(wchar wc)
 {
 
 	//m_iChar = 8550 + m_iTGAIndex * 2;
-	m_wcSymbol = (wchar_t)(8550 + m_iTGAIndex * 2);
+	m_wcSymbol = (wchar_t)(8550 + (m_iTGAIndex * 2));
 }
 /*************************************************************************************************/
-int CvReligionInfo::getHolyCityChar() const
+wchar CvReligionInfo::getHolyCityChar() const
 {
-	return m_iHolyCityChar;
+	return m_cHolyCityChar;
 }
 
-void CvReligionInfo::setHolyCityChar(int i)
+void CvReligionInfo::setHolyCityChar(wchar c)
 {
 /*************************************************************************************************/
 /** TGA_INDEXATION                          01/21/08                                MRGENIE      */
@@ -152,9 +158,9 @@ void CvReligionInfo::setHolyCityChar(int i)
 /**                                                                                              */
 /*************************************************************************************************/
 /*
-	m_iHolyCityChar = i; 
+	m_cHolyCityChar = c; 
 */
-	m_iHolyCityChar = 8551 + (m_iTGAIndex) * 2;
+	m_cHolyCityChar = (wchar_t)(8551 + (m_iTGAIndex) * 2);
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
@@ -275,7 +281,7 @@ bool CvReligionInfo::isReligionTech(TechTypes eTech)
 }
 
 CvCorporationInfo::CvCorporationInfo() :
-m_iHeadquarterChar(0),
+m_cHeadquarterChar(0),
 m_iSpreadCost(0),
 m_iMaintenance(0),
 m_eBonusProduced(NO_BONUS),
@@ -304,12 +310,12 @@ void CvCorporationInfo::setChar(wchar wc)
 	m_wcSymbol = (wchar_t)(8550 + (TGA_RELIGIONS + m_iTGAIndex));
 }
 /*************************************************************************************************/
-int CvCorporationInfo::getHeadquarterChar() const
+wchar CvCorporationInfo::getHeadquarterChar() const
 {
-	return m_iHeadquarterChar;
+	return m_cHeadquarterChar;
 }
 
-void CvCorporationInfo::setHeadquarterChar(int i)
+void CvCorporationInfo::setHeadquarterChar(wchar c)
 {
 /*************************************************************************************************/
 /** TGA_INDEXATION                          01/21/08                                MRGENIE      */
@@ -317,14 +323,14 @@ void CvCorporationInfo::setHeadquarterChar(int i)
 /**                                                                                              */
 /*************************************************************************************************/
 /*
-	m_iHeadquarterChar = i; 
+	m_iHeadquarterChar = i;
+	m_cHeadquarterChar = c; 
 */
-	m_iHeadquarterChar = 8551 + (TGA_RELIGIONS + m_iTGAIndex) * 2;
+	m_cHeadquarterChar = (wchar_t)(8551 + (TGA_RELIGIONS + m_iTGAIndex) * 2);
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
 }
-
 // advc.003t: Calls from Python aren't going to respect the bounds
 int CvCorporationInfo::py_getPrereqBonus(int i) const
 {

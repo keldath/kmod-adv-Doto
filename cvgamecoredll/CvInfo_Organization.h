@@ -72,8 +72,8 @@ public: // All the const functions are exposed to Python
 	//void setChar(int i);
 	void setChar(/* advc: */ wchar wc);
 	
-	int getHolyCityChar() const;
-	void setHolyCityChar(int i);
+	wchar getHolyCityChar() const;
+	void setHolyCityChar(wchar c);
 	int getNumFreeUnits() const;
 
 	const TCHAR* getTechButton() const;
@@ -97,7 +97,7 @@ public: // All the const functions are exposed to Python
 	static bool isReligionTech(TechTypes eTech); // advc.003w: Moved from CvGameCoreUtils
 
 protected:
-	int m_iHolyCityChar;
+	wchar m_cHolyCityChar; // advc: was int
 	int m_iNumFreeUnits;
 
 	CvString m_szTechButton;
@@ -122,8 +122,8 @@ public: // All the const functions are exposed to Python; advc.inl: inlined some
 	//void setChar(int i);
 	void setChar(/* advc: */ wchar wc);
 	
-	int getHeadquarterChar() const;
-	void setHeadquarterChar(int i);
+	wchar getHeadquarterChar() const;
+	void setHeadquarterChar(wchar c);
 	int getSpreadCost() const { return m_iSpreadCost; }
 	int getMaintenance() const { return m_iMaintenance; }
 	BonusTypes getBonusProduced() const { return m_eBonusProduced; }
@@ -149,7 +149,7 @@ public: // All the const functions are exposed to Python; advc.inl: inlined some
 	static bool isCorporationTech(TechTypes eTech); // advc.003w: Moved from CvGameCoreUtils; unused.
 
 protected:
-	int m_iHeadquarterChar;
+	wchar m_cHeadquarterChar; // advc: was int
 	int m_iSpreadCost;
 	int m_iMaintenance;
 	BonusTypes m_eBonusProduced;

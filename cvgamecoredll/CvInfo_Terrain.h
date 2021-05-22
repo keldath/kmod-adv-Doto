@@ -42,7 +42,6 @@ public: // All the const functions are exposed to Python except for those relate
 /*****************************************************************************************************/
 /**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
 /*****************************************************************************************************/
-
 	inline bool isWater() const { return m_bWater; }
 	inline bool isImpassable() const { return m_bImpassable; }
 	inline bool isFound() const { return m_bFound; }
@@ -94,7 +93,6 @@ protected:
 /*****************************************************************************************************/
 /**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
 /*****************************************************************************************************/
-
 	bool m_bWater;
 	bool m_bImpassable;
 	bool m_bFound;

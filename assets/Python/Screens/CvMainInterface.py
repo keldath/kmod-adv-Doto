@@ -675,9 +675,7 @@ class CvMainInterface:
 		screen.hide( "MiniMapPanel" )
 		MinimapOptions.init() # advc.002a: Let DLL cache minimap options
 		self.initMinimap(screen) # advc: Moved into new function
-
 		gc.getMap().updateMinimapColor()
-
 		self.createMinimapButtons()
 
 		# Help button (always visible)
@@ -2314,6 +2312,7 @@ class CvMainInterface:
 			if pHeadSelectedCity.getOwner() == gc.getGame().getActivePlayer() or gc.getGame().isDebugMode():
 				# advc.154: Moved up a bit (needed at all?)
 				g_pSelectedUnit = 0
+
 				iBtnX = xResolution - 284
 				iBtnY = yResolution - 177
 				iBtnW = 64
@@ -5570,7 +5569,7 @@ class CvMainInterface:
 					iAtt = pPlayer.AI_getAttitude(eActivePlayer)
 					#cAtt =  unichr(ord(unichr(g.getSymbolID(FontSymbols.POWER_CHAR) + 4)) + iAtt)
 					# advc.187: I've added the airport icon as a GameFont_75 symbol and that breaks the offset used above. No cells are left for further insertions, so, I guess, at this point, the offset from POWER_CHAR can't break again - but let's do it a bit more cleanly anyway by exposing the leftmost attitude char to Python.
-					cAtt =  unichr(ord(unichr(g.getSymbolID(FontSymbols.NO_ATTITUDE_CHAR) + 1)) + iAtt)
+					cAtt =  unichr(ord(unichr(g.getSymbolID(FontSymbols.WORST_ATTITUDE_CHAR) + iAtt)))
 					szBuffer += cAtt
 					if bAlignIcons:
 						scores.setAttitude(cAtt)

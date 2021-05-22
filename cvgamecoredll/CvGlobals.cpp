@@ -649,8 +649,8 @@ void CvGlobals::loadOptionalXMLInfo()
 	{
 		#ifdef FASSERT_ENABLE
 		bSuccess =
-	#endif
-			m_pXMLLoadUtility->LoadOptionalGlobals();
+		#endif
+		m_pXMLLoadUtility->LoadOptionalGlobals();
 	}
 	FAssertMsg(bSuccess, "Failed to load optional XML data");
 }
@@ -664,8 +664,8 @@ void CvGlobals::loadThroneRoomInfo()
 	{
 		#ifdef FASSERT_ENABLE
 		bSuccess =
-	#endif
-			m_pXMLLoadUtility->LoadThroneRoomInfo();
+		#endif
+		m_pXMLLoadUtility->LoadThroneRoomInfo();
 	}
 	FAssertMsg(bSuccess, "Failed to load XML data for Throne Room");
 } // </advc.003v>
@@ -677,7 +677,7 @@ void CvGlobals::cacheGlobalInts(char const* szChangedDefine, int iNewValue)
 	const char* const aszGlobalDefinesTagNames[] = {
 		DO_FOR_EACH_GLOBAL_DEFINE(MAKE_STRING)
 	};
-	FAssert(ARRAY_LENGTH(aszGlobalDefinesTagNames) == NUM_GLOBAL_DEFINES);
+	FAssert(ARRAYSIZE(aszGlobalDefinesTagNames) == NUM_GLOBAL_DEFINES);
 
 	if (szChangedDefine != NULL) // Cache update
 	{
@@ -1070,7 +1070,6 @@ void CvGlobals::handleUnknownTypeString(char const* szType,
 CvMap& CvGlobals::getMapExternal() { return getMap(); }
 CvGameAI& CvGlobals::getGameExternal() { return AI_getGame(); } // </advc.inl>
 CvGameAI *CvGlobals::getGamePointer() { return m_game; }
-
 
 bool CvGlobals::IsGraphicsInitialized() const { return m_bGraphicsInitialized;}
 

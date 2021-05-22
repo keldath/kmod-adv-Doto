@@ -63,7 +63,7 @@
 					type="boolean" default="False"/>
 			<option id="RevoltChance" key="Revolt Chance" 
 					type="boolean" default="False"/>
-					
+
 			<option id="BuildingIcons" key="BuildingIcons" 
 					type="boolean" default="False"/>
 			<option id="HideInstructions" key="Hide Instructions" 

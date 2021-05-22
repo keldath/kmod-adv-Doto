@@ -5001,7 +5001,6 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 			FOR_EACH_ENUM(Bonus)
 			{
 				CvBonusInfo const& kBonusInfo = GC.getInfo(eLoopBonus);
-
 				if (!kFinalImprovement.isImprovementBonusMakesValid(eLoopBonus) &&
 					!kFinalImprovement.isImprovementBonusTrade(eLoopBonus))
 				{
@@ -5020,7 +5019,6 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 				if (iBonuses <= 0 || (!bRevealed && kBonusInfo.getTechReveal() != eTech))
 					continue;
 				int iBonusValue = 0;
-
 				TechTypes eConnectTech = kBonusInfo.getTechCityTrade();
 				if((kTeam.isHasTech(eConnectTech) || eConnectTech == eTech) &&
 					!kTeam.isBonusObsolete(eLoopBonus) &&
@@ -7213,7 +7211,6 @@ int CvPlayerAI::AI_refuseToTalkTurns(PlayerTypes ePlayer) const
 	}
 	return iR;
 }
-
 
 // XXX what if already at war???
 // Returns true if the AI wants to sneak attack...
@@ -16200,7 +16197,6 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 				/*	todo. put in something to do with how much happiness we can afford to lose..
 					or something like that. */
 				// K-Mod end
-
 				iValue += iTempValue;
 			}
 		}
@@ -27262,7 +27258,6 @@ int CvPlayerAI::AI_calculateTotalBombard(DomainTypes eDomain,
 		if (GC.getInfo(eLoopUnit).getDomainType() != eDomain)
 			continue;
 		UnitClassTypes const eLoopClass = kCiv.unitClassAt(i);
-
 		int iBombardRate = GC.getInfo(eLoopUnit).getBombardRate();
 		if (iBombardRate > 0)
 		{
@@ -27276,7 +27271,6 @@ int CvPlayerAI::AI_calculateTotalBombard(DomainTypes eDomain,
 			if (iTotalBombard >= iMaxCount)
 				return iMaxCount; // </advc.opt>
 		}
-
 		int iBombRate = GC.getInfo(eLoopUnit).getBombRate();
 		if (iBombRate > 0)
 		{
@@ -27322,6 +27316,7 @@ int CvPlayerAI::AI_getUnitClassWeight(UnitClassTypes eUnitClass) const
 {
 	return m_aiUnitClassWeights[eUnitClass] / 100;
 }
+
 
 int CvPlayerAI::AI_getUnitCombatWeight(UnitCombatTypes eUnitCombat) const
 {
@@ -27461,6 +27456,7 @@ void CvPlayerAI::AI_doEnemyUnitData()
 			m_aiUnitCombatWeights[eLoopUnitCombat] += 1000;
 	}
 }
+
 
 int CvPlayerAI::AI_calculateUnitAIViability(UnitAITypes eUnitAI, DomainTypes eDomain) const
 {

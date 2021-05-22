@@ -116,7 +116,6 @@ CvPlot::CvPlot() // advc: Merged with the deleted reset function
 	m_plotCity.reset();
 	m_workingCity.reset();
 	m_workingCityOverride.reset();
-
 }
 
 
@@ -1034,6 +1033,7 @@ void CvPlot::nukeExplosion(int iRange, CvUnit* pNukeUnit, bool bBomb)
 		CvEventReporter::getInstance().nukeExplosion(this, pNukeUnit);
 	}
 }
+
 
 bool CvPlot::isConnectedTo(CvCity const& kCity) const
 {

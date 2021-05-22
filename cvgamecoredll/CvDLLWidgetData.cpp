@@ -44,7 +44,7 @@ void CvDLLWidgetData::parseHelp(CvWStringBuffer &szBuffer, CvWidgetDataStruct &w
 		WIDGET_CONTACT_CIV, WIDGET_SCORE_BREAKDOWN, WIDGET_POWER_RATIO,
 		WIDGET_GOLDEN_AGE, WIDGET_ANARCHY
 	};
-	for(int i = 0; i < ARRAY_LENGTH(aePlayerAsData1); i++)
+	for(int i = 0; i < ARRAYSIZE(aePlayerAsData1); i++)
 	{
 		if(widgetDataStruct.m_eWidgetType == aePlayerAsData1[i] &&
 			(widgetDataStruct.m_iData1 <= NO_PLAYER ||
@@ -723,7 +723,7 @@ void CvDLLWidgetData::parseHelp(CvWStringBuffer &szBuffer, CvWidgetDataStruct &w
 		WIDGET_EXPAND_SCORES, WIDGET_SCORE_BREAKDOWN, WIDGET_POWER_RATIO,
 		WIDGET_GOLDEN_AGE, WIDGET_ANARCHY
 	};
-	for(int i = 0; i < ARRAY_LENGTH(aeExpandTypes); i++)
+	for(int i = 0; i < ARRAYSIZE(aeExpandTypes); i++)
 	{
 		if((widgetDataStruct.m_eWidgetType == aeExpandTypes[i] &&
 			widgetDataStruct.m_iData2 == 0) ||
@@ -1760,7 +1760,6 @@ void CvDLLWidgetData::parseHurryHelp(CvWidgetDataStruct &widgetDataStruct, CvWSt
 	if (pHeadSelectedCity == NULL)
 		return;
 	CvCity const& kCity = *pHeadSelectedCity;
-
 	szBuffer.assign(gDLL->getText("TXT_KEY_MISC_HURRY_PROD", kCity.getProductionNameKey()));
 	// <advc.064b>
 	if (kCity.isDisorder())
@@ -1785,7 +1784,6 @@ void CvDLLWidgetData::parseHurryHelp(CvWidgetDataStruct &widgetDataStruct, CvWSt
 		{
 			szBuffer.append(NEWLINE);
 			szBuffer.append(gDLL->getText("TXT_KEY_MISC_HURRY_POP", iHurryPopulation));
-
 			if (iHurryPopulation > kCity.maxHurryPopulation())
 			{
 				szBuffer.append(gDLL->getText("TXT_KEY_MISC_MAX_POP_HURRY",
@@ -5323,6 +5321,7 @@ void CvDLLWidgetData::parseCultureHelp(CvWidgetDataStruct &widgetDataStruct, CvW
 	}
 	///KNOEDELend ************************
 }
+
 
 void CvDLLWidgetData::parseGreatPeopleHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer)
 {

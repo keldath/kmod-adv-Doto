@@ -1755,7 +1755,7 @@ enum FontSymbols
 /*************************************************************************************************/
 	/*	advc.187: So that BUG doesn't need to access the attitude symbols
 		through offsets */
-	NO_ATTITUDE_CHAR,
+	WORST_ATTITUDE_CHAR,
 #ifdef _USRDLL
 	MAX_NUM_SYMBOLS
 #endif
