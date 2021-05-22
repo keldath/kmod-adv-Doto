@@ -3189,7 +3189,6 @@ void CvPlayer::updateSpecialistCivicExtraCommerce()
 /**	CMEDIT: End																					**/
 /*************************************************************************************************/
 
-
 void CvPlayer::updateBuildingCommerce()
 {
 	FOR_EACH_CITY_VAR(pLoopCity, *this)
@@ -5725,17 +5724,18 @@ int CvPlayer::getProductionNeeded(BuildingTypes eBuilding) const
 	} // </advc.251>
 /* Population Limit ModComp - Beginning : these code lines adjust buildings' costs to make them cheaper */
 // option added by keldath after f1rpo suggestion
-	if(!GC.getGame().isOption(GAMEOPTION_NO_POPULATION_LIMIT)){
-			if (GC.getBuildingInfo(eBuilding).getPopulationLimitChange() != 0)
+	if(!GC.getGame().isOption(GAMEOPTION_NO_POPULATION_LIMIT))
 	{
-		iProductionNeeded -= (((GC.getGame().getGameTurn() / 10) * (GC.getGame().getAdjustedPopulationLimitChange(GC.getBuildingInfo(eBuilding).getPopulationLimitChange()) * 10)) / 100);
-		if (!(isHuman()))
+		if (GC.getBuildingInfo(eBuilding).getPopulationLimitChange() != 0)
 		{
-			iProductionNeeded /= 2;
+			iProductionNeeded -= (((GC.getGame().getGameTurn() / 10) * (GC.getGame().getAdjustedPopulationLimitChange(GC.getBuildingInfo(eBuilding).getPopulationLimitChange()) * 10)) / 100);
+			if (!(isHuman()))
+			{
+				iProductionNeeded /= 2;
+			}
 		}
 	}
-}
-	/* Population Limit ModComp - End */
+/* Population Limit ModComp - End */
 	return std::max(1, iProductionNeeded);
 }
 

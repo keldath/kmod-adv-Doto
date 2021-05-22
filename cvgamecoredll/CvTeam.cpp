@@ -2676,12 +2676,9 @@ void CvTeam::setStolenVisibilityTimer(TeamTypes eIndex, int iNewValue)
 {
 	if(getStolenVisibilityTimer(eIndex) == iNewValue)
 		return;
-
 	bool bOldStolenVisibility = isStolenVisibility(eIndex);
-
 	m_aiStolenVisibilityTimer.set(eIndex, iNewValue);
 	FAssert(getStolenVisibilityTimer(eIndex) >= 0);
-
 	if (bOldStolenVisibility != isStolenVisibility(eIndex))
 	{
 		CvMap const& kMap = GC.getMap();
@@ -4498,17 +4495,25 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,
 
 		bool bReligionFounded = false;
 		bool bFirstPerk = false; // advc: Reneamed from bFirstBonus
+//david lalen forbidden religion dune wars - keldath change doto		
+		bool forbOp = kGame.isOption(GAMEOPTION_FORBIDDEN_RELIGION);
+//david lalen forbidden religion dune wars - keldath change doto
 		bool const bFirstToDiscover = (kGame.countKnownTechNumTeams(eTech) == 1); // advc.106
-		if (bFirst && bFirstToDiscover &&
-			!GC.getPythonCaller()->doOrganizationTech(getID(), ePlayer, eTech))
+		if ((
+			bFirst && bFirstToDiscover &&
+			!GC.getPythonCaller()->doOrganizationTech(getID(), ePlayer, eTech)
+//david lalen forbidden religion dune wars - i dont know why david lallen removed this check for forbidden religion			
+			)|| forbOp
+//david lalen forbidden religion dune wars - keldath change doto
+			)
 		{
 			FOR_EACH_ENUM(Religion)
 			{
 				if (GC.getInfo(eLoopReligion).getTechPrereq() != eTech)
 					continue;
 //david lalen forbidden religion dune wars - keldath change doto
-				if (!kGame.isOption(GAMEOPTION_FORBIDDEN_RELIGION) ||
-					(kGame.isOption(GAMEOPTION_FORBIDDEN_RELIGION) && !kGame.isReligionSlotTaken(eLoopReligion)))
+				if (!forbOp ||
+					forbOp && !kGame.isReligionSlotTaken(eLoopReligion))
 				{
 // end
 					int iBestValue = MAX_INT;
@@ -4538,7 +4543,7 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,
 
 				kGame.setReligionSlotTaken(eLoopReligion, true);
 //forbiden religion david lalen - by keldath 
-				if (kGame.isOption(GAMEOPTION_PICK_RELIGION) && !kGame.isOption(GAMEOPTION_FORBIDDEN_RELIGION))
+				if (kGame.isOption(GAMEOPTION_PICK_RELIGION) && !forbOp)
 				{
 					if (GET_PLAYER(eBestPlayer).isHuman())
 					{
@@ -4553,7 +4558,7 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,
 							GET_PLAYER(eBestPlayer).foundReligion(eFoundReligion, eLoopReligion, true);
 					}
 				}
-				else if (kGame.isOption(GAMEOPTION_PICK_RELIGION) && kGame.isOption(GAMEOPTION_FORBIDDEN_RELIGION))
+				else if (kGame.isOption(GAMEOPTION_PICK_RELIGION) && forbOp)
 //forbiden religion david lalen - by keldath
 //f1rpo said:
 //But for human players, the code for BUTTONPOPUP_FOUND_RELIGION in CvDLLButtonPopup.cpp would have to be changed.

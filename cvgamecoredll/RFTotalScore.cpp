@@ -7,6 +7,7 @@
 
 using namespace fmath;
 
+
 RFTotalScore::RFTotalScore() {
 
 	breakdownString = NULL;
@@ -172,4 +173,3 @@ void RFTotalScore::freezeTotal(std::vector<RFChapter*> const& chapters) {
 	update(chapters);
 	frozen = true;
 }
-

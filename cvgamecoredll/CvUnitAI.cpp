@@ -33,7 +33,7 @@ CvUnitAI::~CvUnitAI()
 
 // Instead of having CvUnit::init call CvUnitAI::AI_init. finalizeInit split off.
 void CvUnitAI::init(int iID, UnitTypes eUnit, UnitAITypes eUnitAI,
-		PlayerTypes eOwner, int iX, int iY, DirectionTypes eFacingDirection)
+	PlayerTypes eOwner, int iX, int iY, DirectionTypes eFacingDirection)
 {
 	CvUnit::init(iID, eUnit, eOwner, iX, iY, eFacingDirection);
 	m_eUnitAIType = eUnitAI;
@@ -109,24 +109,20 @@ bool CvUnitAI::AI_update()
 				AI_workerSeaMove();
 			else FAssert(false);
 			break;
-
 		case AUTOMATE_NETWORK:
 			AI_networkAutomated();
 			// XXX else wake up???
 			break;
-
 		case AUTOMATE_CITY:
 			AI_cityAutomated();
 			// XXX else wake up???
 			break;
-
 		case AUTOMATE_EXPLORE:
 			switch (getDomainType())
 			{
 			case DOMAIN_SEA:
 				AI_exploreSeaMove();
 				break;
-
 			case DOMAIN_AIR:
 			{
 				// If we are cargo, hold if the carrier is not done moving yet.
@@ -148,7 +144,6 @@ bool CvUnitAI::AI_update()
 			case DOMAIN_LAND:
 				AI_exploreMove();
 				break;
-
 			default:
 				FAssert(false);
 				break;
@@ -165,24 +160,21 @@ bool CvUnitAI::AI_update()
 					CvUnit* pCargoUnit = aCargoUnits[i];
 					if (pCargoUnit->getDomainType() == DOMAIN_AIR &&
 						pCargoUnit->canMove())
-						{
-							pCargoUnit->getGroup()->setAutomateType(AUTOMATE_EXPLORE);
-							pCargoUnit->getGroup()->setActivityType(ACTIVITY_AWAKE);
-						}
+					{
+						pCargoUnit->getGroup()->setAutomateType(AUTOMATE_EXPLORE);
+						pCargoUnit->getGroup()->setActivityType(ACTIVITY_AWAKE);
 					}
 				}
+			}
 			break;
-
 		case AUTOMATE_RELIGION:
 			if (AI_getUnitAIType() == UNITAI_MISSIONARY)
 				AI_missionaryMove();
 			break;
-
 		default:
 			FAssert(false);
 			break;
 		}
-
 		// if no longer automated, then we want to bail
 		return !getGroup()->isAutomated();
 	}
@@ -208,10 +200,10 @@ bool CvUnitAI::AI_update()
 			escaping untenable cities. */
 		}
 		if (bEvacAI)
-	{
-		if (AI_evacuateCity())
-			return false;
-	}
+		{
+			if (AI_evacuateCity())
+				return false;
+		}
 	} // </advc.139>
 
 	switch (eUnitAI)
@@ -219,66 +211,51 @@ bool CvUnitAI::AI_update()
 	case UNITAI_UNKNOWN:
 		getGroup()->pushMission(MISSION_SKIP);
 		break;
-
 	case UNITAI_ANIMAL:
 		AI_animalMove();
 		break;
-
 	case UNITAI_SETTLE:
 		AI_settleMove();
 		break;
-
 	case UNITAI_WORKER:
 		AI_workerMove();
 		break;
-
 	case UNITAI_ATTACK:
 		if (isBarbarian())
 			AI_barbAttackMove();
 		else AI_attackMove();
 		break;
-
 	case UNITAI_ATTACK_CITY:
 		AI_attackCityMove();
 		break;
-
 	case UNITAI_COLLATERAL:
 		AI_collateralMove();
 		break;
-
 	case UNITAI_PILLAGE:
 		AI_pillageMove();
 		break;
-
 	case UNITAI_RESERVE:
 		AI_reserveMove();
 		break;
-
 	case UNITAI_COUNTER:
 		AI_counterMove();
 		break;
-
 	case UNITAI_PARADROP:
 		AI_paratrooperMove();
 		break;
-
 	case UNITAI_CITY_DEFENSE:
 		AI_cityDefenseMove();
 		break;
-
 	case UNITAI_CITY_COUNTER:
 	case UNITAI_CITY_SPECIAL:
 		AI_cityDefenseExtraMove();
 		break;
-
 	case UNITAI_EXPLORE:
 		AI_exploreMove();
 		break;
-
 	case UNITAI_MISSIONARY:
 		AI_missionaryMove();
 		break;
-
 	case UNITAI_GENERAL:
 		AI_generalMove();
 		break;
@@ -295,77 +272,59 @@ bool CvUnitAI::AI_update()
 	case UNITAI_SPY:
 		AI_spyMove();
 		break;
-
 	case UNITAI_ICBM:
 		AI_ICBMMove();
 		break;
-
 	case UNITAI_WORKER_SEA:
 		AI_workerSeaMove();
 		break;
-
 	case UNITAI_ATTACK_SEA:
 		if (isBarbarian())
 			AI_barbAttackSeaMove();
 		else AI_attackSeaMove();
 		break;
-
 	case UNITAI_RESERVE_SEA:
 		AI_reserveSeaMove();
 		break;
-
 	case UNITAI_ESCORT_SEA:
 		AI_escortSeaMove();
 		break;
-
 	case UNITAI_EXPLORE_SEA:
 		AI_exploreSeaMove();
 		break;
-
 	case UNITAI_ASSAULT_SEA:
 		AI_assaultSeaMove();
 		break;
-
 	case UNITAI_SETTLER_SEA:
 		AI_settlerSeaMove();
 		break;
-
 	case UNITAI_MISSIONARY_SEA:
 		AI_missionarySeaMove();
 		break;
-
 	case UNITAI_SPY_SEA:
 		AI_spySeaMove();
 		break;
-
 	case UNITAI_CARRIER_SEA:
 		AI_carrierSeaMove();
 		break;
-
 	case UNITAI_MISSILE_CARRIER_SEA:
 		AI_missileCarrierSeaMove();
 		break;
-
 	case UNITAI_PIRATE_SEA:
 		AI_pirateSeaMove();
 		break;
-
 	case UNITAI_ATTACK_AIR:
 		AI_attackAirMove();
 		break;
-
 	case UNITAI_DEFENSE_AIR:
 		AI_defenseAirMove();
 		break;
-
 	case UNITAI_CARRIER_AIR:
 		AI_carrierAirMove();
 		break;
-
 	case UNITAI_MISSILE_AIR:
 		AI_missileAirMove();
 		break;
-
 	case UNITAI_ATTACK_CITY_LEMMING:
 		AI_attackCityLemmingMove();
 		break;
@@ -709,7 +668,8 @@ int CvUnitAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy) const
 //DOTO-
 //keldath - made it into a game option from xml.
 // DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
-	if (!GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND)
+	if (GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND)
+		&& !isRangeStrikeCapableK()
 	/*if (GC.getDefineBOOL(CvGlobals::LFB_ENABLE)*/ &&
 		GC.getDefineBOOL(CvGlobals::LFB_USECOMBATODDS))
 	{
@@ -1186,7 +1146,8 @@ int CvUnitAI::AI_sacrificeValue(const CvPlot* pPlot) const
 //DOTO-
 //keldath - made it into a game option from xml.
 // DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
-		if (!GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND))
+		if (!GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND)
+			)
 	//	if (!GC.getDefineBOOL(CvGlobals::LFB_ENABLE))
 		{
 			iValue *= 10; // K-Mod
@@ -1221,7 +1182,9 @@ int CvUnitAI::AI_sacrificeValue(const CvPlot* pPlot) const
 //DOTO-
 //keldath - made it into a game option from xml.
 // DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
-	if (!GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND))
+	if (GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND)
+	&& !isRangeStrikeCapableK()
+	)
 	//if (GC.getDefineBOOL(CvGlobals::LFB_ENABLE))
 	{	// Reduce the value of sacrificing 'valuable' units - based on great general, limited, healer, experience
 		/* bbai code
@@ -14212,13 +14175,11 @@ canBombard checks that.*/
 			(1 + iBombardTurns/2) * iMin * iAttackOdds) /
 			(100 + (iBombardTurns/2) * iAttackOdds);
 	int iComparison = AI_getGroup()->AI_compareStacks(pBombardCity->plot(), true);
-
 	if (iComparison > iThreshold)
 	{
 		if (gUnitLogLevel > 2) logBBAI("      Stack skipping bombard of %S with compare %d, starting odds %d, bombard turns %d, threshold %d", pBombardCity->getName().GetCString(), iComparison, iAttackOdds, iBombardTurns, iThreshold);
 		return false;
 	}
-
 	getGroup()->pushMission(MISSION_BOMBARD,  // <K-Mod>
 			-1, -1, NO_MOVEMENT_FLAGS, false, false,
 			MISSIONAI_ASSAULT, pBombardCity->plot()); // </K-Mod>
@@ -18090,7 +18051,7 @@ bool CvUnitAI::AI_fortTerritory(bool bCanal, bool bAirbase)
 					if (canBuild(kPlot, eLoopBuild) ||
 						eImprov == kPlot.getImprovementType()) // advc.121
 					{
-						/* int iValue = 10000;
+						/*int iValue = 10000;
 						iValue /= (GC.getInfo(eBuild).getTime() + 1);*/
 						// <advc.121> Replacing the above
 						int iTempBuildValue = (eImprov == kPlot.getImprovementType() ?
@@ -22303,7 +22264,7 @@ bool CvUnitAI::AI_stackAttackCity(int iPowerThreshold)
 			//doto fix
 			if (superForts)
 			{
-				if(!p.isFortImprovement() && p.isVisibleEnemyUnit(this) && p.getTeam() == NO_TEAM)
+				if(!p.isFortImprovement() && !p.isVisibleEnemyUnit(this) && p.getTeam() == NO_TEAM)
 					continue;
 			}
 			continue;

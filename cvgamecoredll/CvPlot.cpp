@@ -1392,7 +1392,7 @@ bool CvPlot::canHavePotentialIrrigation() const
 	if(isWater())
 		return false; // </advc.opt>
 	// advc: 2nd condition was !isHills. Mods might allow cities on peaks.
-	//if (isCity() && isFlatlands())
+	if (isCity() && isFlatlands())
 		return true;
 	FOR_EACH_ENUM(Improvement)
 	{
@@ -1948,10 +1948,10 @@ bool CvPlot::canHaveBonus(BonusTypes eBonus, bool bIgnoreLatitude,
 	if(bIgnoreFeature)
 	{
 		if(!kBonus.isFeatureTerrain(getTerrainType()) &&
-				!kBonus.isTerrain(getTerrainType()))
+			!kBonus.isTerrain(getTerrainType()))
 		{
 			return false;
-	}
+		}
 	}
 	else /* </advc.129> */ if (isFeature())
 	{
@@ -3558,22 +3558,37 @@ PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureR
 // < JCultureControl Mod End >
 	if(eBestPlayer != NO_PLAYER)
 		return eBestPlayer;
-
+//doto change for superforts
+//added bvalid for super forts and changed the loop from advc.
+	int bValid = true;
+//doto change for superforts	
 	FOR_EACH_ORTH_ADJ_PLOT(*this)
 	{
 		if (pAdj->isOwned())
 		{
 			if (eBestPlayer == NO_PLAYER)
+			{
 				eBestPlayer = pAdj->getOwner();
+			}
 			else if (eBestPlayer != pAdj->getOwner())
-				return NO_PLAYER;
+			{
+//doto change for superforts
+				//return NO_PLAYER; //org from advc
+				bValid = false;
+				break;
+			}
 		}
-		else return NO_PLAYER;
+		else //return NO_PLAYER; //org from advc
+		{
+//doto change for superforts
+			bValid = false;
+			break;	
+		}
 	}
 //doto change for superforts
-//i hope this is the correct place for this code
 // Super Forts begin *culture*
-	if (superForts && !GET_PLAYER(eBestPlayer).isAlive())
+	if (!bValid || 
+		superForts && !GET_PLAYER(eBestPlayer).isAlive())
 	{
 			eBestPlayer = NO_PLAYER;
 	}
@@ -7024,7 +7039,6 @@ void CvPlot::changeVisibilityCount(TeamTypes eTeam, int iChange,
 		or Jungle. */
 	if(getVisibilityCount(eTeam) < 0)
 	{
-		/*doto test*/int test = m_aiVisibilityCount.get(eTeam);
 		FAssert(m_aiVisibilityCount.get(eTeam) >= 0);
 		m_aiVisibilityCount.set(eTeam, 0);
 	} // </advc.006>
@@ -8714,7 +8728,7 @@ void CvPlot::read(FDataStreamBase* pStream)
 	pStream->Read(&cCount);
 	if (cCount > 0)
 		m_aaiInvisibleVisibilityCount.Read(pStream, false, true);
-	
+
 	m_units.Read(pStream);
 }
 

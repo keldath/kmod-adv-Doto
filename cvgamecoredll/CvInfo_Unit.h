@@ -211,6 +211,7 @@ public:
 	CorporationTypes getPrereqCorporation() const { return m_ePrereqCorporation; }
 	BuildingTypes getPrereqBuilding() const { return m_ePrereqBuilding; }
 	TechTypes getPrereqAndTech() const { return m_ePrereqAndTech; }
+//Shqype Vicinity Bonus Add
 //	int getPrereqVicinityBonus() const;  //Shqype Vicinity Bonus Add
 	bool isTechRequired(TechTypes eTech) const; // advc.003w: Replacing global isTechRequiredForUnit
 	BonusTypes getPrereqAndBonus() const { return m_ePrereqAndBonus; }
@@ -603,7 +604,6 @@ protected:
 /********************************************************************************/
 /**		REVDCM									END								*/
 /********************************************************************************/
-
 	bool* m_pbUpgradeUnitClass;
 	bool* m_pbTargetUnitClass;
 	bool* m_pbTargetUnitCombat;

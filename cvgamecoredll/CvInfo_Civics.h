@@ -177,7 +177,7 @@ protected:
 	int m_iCivicPercentAnger;
 	int m_iMaxConscript;
 	int m_iStateReligionHappiness;
-	int m_iNonStateReligionHappiness;				
+	int m_iNonStateReligionHappiness;
 // < Civic Infos Plus Start >
 	int m_iStateReligionExtraHealth;
 	int m_iNonStateReligionExtraHealth;
@@ -209,8 +209,7 @@ protected:
 	/*************************************************************************************************/
 	/**	CMEDIT: End																					**/
 	/*************************************************************************************************/
-	/*************************************************************************************************/
-	
+	/*************************************************************************************************/	
 	int* m_piYieldModifier;
 	int* m_piCapitalYieldModifier;
 	int* m_piTradeYieldModifier;

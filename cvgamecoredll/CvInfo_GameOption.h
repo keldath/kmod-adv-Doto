@@ -385,7 +385,8 @@ public: // The const functions are exposed to Python except functions added by m
 	int getHealthBonus() const;
 	int getHappyBonus() const;
 /* Population Limit ModComp - Beginning */
-	DllExport int getPopulationLimit() const;				// Exposed to Python
+	/*DllExport */
+	int getPopulationLimit() const;				// Exposed to Python
 	/* Population Limit ModComp - End */
 	int getAttitudeChange() const;
 	int getNoTechTradeModifier() const;

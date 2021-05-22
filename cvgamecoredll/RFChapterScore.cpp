@@ -7,6 +7,7 @@
 
 using namespace fmath;
 
+
 RFChapterScore::RFChapterScore() {
 
 	breakdownString = NULL;
@@ -279,4 +280,3 @@ int RFChapterScore::getScoreFromRemainingTime() const {
 
 	return fromRemainingTime;
 }
-

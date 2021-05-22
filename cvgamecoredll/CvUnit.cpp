@@ -1142,7 +1142,7 @@ void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pP
 		CvEventReporter::getInstance().genericEvent("combatLogCalc", pyArgsCD.makeFunctionArgs());
 	}
 	
-	//moved collateral damage to post atack.
+	//moved collateral damage to post attack.
 
 	//DOTO - rangeimunity not sure whats this below.
 	//syntax changed in 099 advc
@@ -5031,7 +5031,8 @@ int CvUnit::damageToBombardTarget(CvPlot const& kFrom) const
 		rDamage *= scaled(iDefWithBuildings, iDefSansBuildings);
 	return rDamage.round(); // </advc.004c>
 }
-
+//DOTO changes for super forts - condition stuff that are coty related
+// Super Forts *bombard*
 bool CvUnit::bombardFort()
 {
 	//doto adjustment
@@ -11900,7 +11901,7 @@ int CvUnit::planBattle(CvBattleDefinition& kBattle, const std::vector<int>& comb
 	//doto keldath rangedattack and ranged immunity - the assert pops cayse there is no damage to the defender when its a ranged attacker
 	//not sure what it means...
 	if (!isRangeStrikeCapableK())
-	FAssert(iDefenderDamage == kBattle.getDamage(BATTLE_UNIT_DEFENDER, BATTLE_TIME_END));
+		FAssert(iDefenderDamage == kBattle.getDamage(BATTLE_UNIT_DEFENDER, BATTLE_TIME_END));
 
 	FAssert(kBattle.getNumBattleRounds() >= 2);
 	FAssert(verifyRoundsValid(kBattle));

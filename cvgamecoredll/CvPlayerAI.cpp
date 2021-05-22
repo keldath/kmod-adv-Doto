@@ -1113,15 +1113,19 @@ int CvPlayerAI::AI_movementPriority(
 
 	if (pHeadUnit->getDomainType() != DOMAIN_LAND)
 	{
-		if (pHeadUnit->bombardRate() > 0)
+// DOTO-MOD -rangedattack-keldath START - ranged immunity
+		if (pHeadUnit->rangedStrike() > 0)
 			return 1;
+		if (pHeadUnit->bombardRate() > 0)
+			return 2;
 
 		if (pHeadUnit->hasCargo())
 		{
 			if (pHeadUnit->specialCargo() != NO_SPECIALUNIT)
-				return 2;
-			else return 3;
+				return 3;
+			else return 4;
 		}
+// DOTO-MOD -rangedattack-keldath end - ranged immunity
 
 		if (pHeadUnit->getDomainType() == DOMAIN_AIR)
 		{
@@ -13620,6 +13624,7 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 				that all unitai_collateral are limited.
 				This whole business is an ugly kludge... I hope it works. */
 			int iNoLimitCollateral = 0;
+//doto keldath rangedattack + ranged immunity
 			int rangedUnits = 0;
 			CvCivilization const& kCiv = getCivilization(); // advc.003w 
 			for (int i = 0; i < kCiv.getNumUnits(); i++)
@@ -13637,7 +13642,7 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 					else if (kLoopInfo.getCollateralDamage() > 0)
 						iNoLimitCollateral = getUnitClassCount(eUnitClass);
 				}
-//doto keldath rangedattack + ranged immunity
+//doto keldath rangedattack + ranged immunity - WILL GIVE MUCH MORE WIEGHT FOR RANGED
 				if (u.getRangeStrike() > 0)
 					rangedUnits += getUnitClassCount(eUnitClass);
 			}

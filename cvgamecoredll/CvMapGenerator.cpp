@@ -771,7 +771,7 @@ void CvMapGenerator::addNonUniqueBonusType(BonusTypes eBonus)
 
 // advc.129:
 int CvMapGenerator::placeGroup(BonusTypes eBonus, CvPlot const& kCenter,
-		bool bIgnoreLatitude, int iLimit)
+	bool bIgnoreLatitude, int iLimit)
 {
 	CvBonusInfo const& kBonus = GC.getInfo(eBonus);
 	// The one in the center is already placed, but that doesn't count here.
