@@ -981,6 +981,7 @@ int CvSelectionGroupAI::AI_getFortBombardTurns(CvPlot const* pPlot) const // adv
 	//original
 	//bool bIgnoreBuildingDefense = bHasBomber;
 	int iUnitBombardRate = 0;
+	int const iTotalDefense = pPlot->getDefenseDamage();
 	FOR_EACH_UNIT_IN(pUnit, *this)
 	{
 		if (pUnit->bombardRate() <= 0)
@@ -990,16 +991,15 @@ int CvSelectionGroupAI::AI_getFortBombardTurns(CvPlot const* pPlot) const // adv
 			if (pUnit->ignoreBuildingDefense())
 			bIgnoreBuildingDefense = true;
 		else
-		{
-			iUnitBombardRate *= std::max(25, 100 - pCity->getBuildingBombardDefense());
+		{*/
+			iUnitBombardRate *= std::max(25, 100 - iTotalDefense/*pCity->getBuildingBombardDefense()*/);
 			iUnitBombardRate /= 100;
-		}*/
+		/*}*/
 		iTotalBombardRate += iUnitBombardRate;
 	}
 	// advc (minor bugfix?): BBAI had not passed bIgnoreBuildingDefense consistently
 	//original
 	//int const iTotalDefense = pCity->getTotalDefense(bIgnoreBuildingDefense);
-	int const iTotalDefense = pPlot->getDefenseDamage();
 	if (iTotalDefense <= 0)
 		return 0;
 	int const iHP = GC.getMAX_CITY_DEFENSE_DAMAGE() - iTotalDefense /*pCity->getDefenseDamage()*/;

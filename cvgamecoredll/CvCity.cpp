@@ -5874,7 +5874,10 @@ void CvCity::updateTerrainHealth()
    for (CityPlotIter it(*this); it.hasNext(); ++it)
    {
        int iHealthPercent = GC.getInfo(it->getTerrainType()).getHealthPercent();
-       (iHealthPercent > 0 ? iNewGoodHealth : iNewBadHealth) += iHealthPercent;
+       if(iHealthPercent > 0)
+       	 iNewGoodHealth += iHealthPercent;
+       else if (iHealthPercent < 0)
+       	 iNewBadHealth += iHealthPercent;
    }
 	iNewGoodHealth /= 100;
 	iNewBadHealth /= 100;
@@ -15328,8 +15331,8 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 		int getWarWearinessModifier	= kBuilding.getWarWearinessModifier();
 		int getHurryAngerModifier	= kBuilding.getHurryAngerModifier();
 		int getHealRateChange = kBuilding.getHealRateChange();
-		
-		changeEspionageDefenseModifier(getEspionageDefenseModifier * iChange);
+		if (getEspionageDefenseModifier != 0)
+			changeEspionageDefenseModifier(getEspionageDefenseModifier * iChange);
 		if (getGreatPeopleRateModifier != 0) 
 			changeGreatPeopleRateModifier(getGreatPeopleRateModifier * iChange);
 		if (getFreeExperience != 0)
@@ -15429,7 +15432,7 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 			// < Civic Infos Plus Start >
 			//keldath QA-DONE
 			if (getBuildingYieldChangeO !=0)
-			changeBuildingYieldChange(kBuilding.getBuildingClassType(), y, getBuildingYieldChangeO);
+				changeBuildingYieldChange(kBuilding.getBuildingClassType(), y, getBuildingYieldChangeO);
 			// < Civic Infos Plus End   >
 		}
 

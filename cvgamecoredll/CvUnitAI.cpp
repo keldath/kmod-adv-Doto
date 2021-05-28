@@ -11027,7 +11027,7 @@ bool CvUnitAI::AI_guardFort(bool bSearch)
 		{
 			//original code with a var
 			plotcountCheck = getPlot().plotCount(PUF_isCityAIType, -1, -1, getOwner()) <=
-				AI_getPlotDefendersNeeded(getPlot());
+				AI_getPlotDefendersNeeded(getPlot(),0);
 		}
 //changed the if to a var
 		if (plotcountCheck)
@@ -11064,7 +11064,7 @@ bool CvUnitAI::AI_guardFort(bool bSearch)
 		int iNeeded = 0;
 		if (GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
 		{
-			iNeeded = AI_getPlotDefendersNeeded(kPlot);
+			iNeeded = AI_getPlotDefendersNeeded(kPlot,0);
 		}
 		else
 		{
@@ -12773,14 +12773,14 @@ bool CvUnitAI::AI_paradrop(int iRange)
 	for (SquareIter it(*this, AI_searchRange(iRange)); it.hasNext(); ++it)
 	{
 		CvPlot& p = *it;
+		PlayerTypes const eTargetPlayer = p.getOwner();
 		if (//!isPotentialEnemy(p.getTeam(), &p) ||
-			!kOurTeam.AI_mayAttack(p) || // advc
+			// advc:
+			eTargetPlayer == NO_PLAYER || !kOurTeam.AI_mayAttack(TEAMID(eTargetPlayer)) ||
 			!canParadropAt(plot(), p.getX(), p.getY()))
 		{
 			continue;
 		}
-		PlayerTypes const eTargetPlayer = p.getOwner();
-		FAssert(eTargetPlayer != NO_PLAYER);
 		int iValue = 0;
 		/*if (NO_BONUS != p.getBonusType())
 			iValue += GET_PLAYER(eTargetPlayer).AI_bonusVal(p.getBonusType()) - 10;*/ // BtS

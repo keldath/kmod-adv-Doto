@@ -7168,7 +7168,8 @@ bool CvPlayer::canConvert(ReligionTypes eReligion) const
 	// davidlallen religion forbidden to civilization start
 	if (eReligion != NO_RELIGION)
 	{
-		if (GC.getCivilizationInfo(getCivilizationType()).isForbidden(eReligion))
+		if (GC.getCivilizationInfo(getCivilizationType()).isForbidden(eReligion)
+			&& GC.getGame().isOption(GAMEOPTION_FORBIDDEN_RELIGION))
 		{
 			return false;
 		}
@@ -7230,7 +7231,8 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 //david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
 //keldath fix - avoid player to found forbidden religion
 	CivilizationTypes eCiv = GET_PLAYER(getID()).getCivilizationType();
-	if (eCiv != NO_CIVILIZATION && GC.getCivilizationInfo(eCiv).isForbidden(eReligion))
+	if (eCiv != NO_CIVILIZATION && GC.getCivilizationInfo(eCiv).isForbidden(eReligion)
+		&& GC.getGame().isOption(GAMEOPTION_FORBIDDEN_RELIGION))
 		return;
 //david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
 //limited religion doto begin - give a pop up to a player.

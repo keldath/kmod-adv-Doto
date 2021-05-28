@@ -7039,7 +7039,9 @@ void CvPlot::changeVisibilityCount(TeamTypes eTeam, int iChange,
 		or Jungle. */
 	if(getVisibilityCount(eTeam) < 0)
 	{
-		FAssert(m_aiVisibilityCount.get(eTeam) >= 0);
+//super forts - doto - assert ignore
+		if (!GC.getGame().isOption(GAMEOPTION_SUPER_FORTS))
+			FAssert(m_aiVisibilityCount.get(eTeam) >= 0);
 		m_aiVisibilityCount.set(eTeam, 0);
 	} // </advc.006>
 

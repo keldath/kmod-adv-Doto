@@ -972,7 +972,7 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iLocalHomeAreaMaintenanceModifier);
 	stream->Read(&m_iLocalOtherAreaMaintenanceModifier);//keldath fix?
 	stream->Read(&m_iLocalDistanceMaintenanceModifier);
-	stream->Read(&m_iLocaCoastalDistanceMaintenanceModifier);
+	stream->Read(&m_iLocalCoastalDistanceMaintenanceModifier);
 	stream->Read(&m_iLocalConnectedCityMaintenanceModifier);
 	//Doto-DPII < Maintenance Modifier >
 	stream->Read(&m_iWarWearinessModifier);
