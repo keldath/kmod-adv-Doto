@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+		<Tag>TXT_KEY_BUILDING_CRAZY_HORSE_MEMORIAL</Tag>
+		<English>Crazy Horse Memorial</English>
+		</TEXT>
+		<TEXT>
+		<Tag>TXT_KEY_BUILDING_CRAZY_HORSE_MEMORIAL_PEDIA</Tag>
+		<English>[TAB]The Crazy Horse Memorial is a mountain monument complex that is under construction on privately held land in the Black Hills, in Custer County, South Dakota. It depicts Crazy Horse, an Oglala Lakota warrior, riding a horse and pointing into the distance. The memorial was commissioned by Henry Standing Bear, a Lakota elder, to be sculpted by Korczak Ziolkowski. It is operated by the Crazy Horse Memorial Foundation, a private non-profit organization.[PARAGRAPH:2]The memorial consists of the mountain carving (monument), the Indian Museum of North America, and the Native American Cultural Center. The monument is being carved out of Thunderhead Mountain on land considered sacred by some Oglala Lakota, between Custer and Hill City, roughly 17 miles from Mount Rushmore. The sculpture's final dimensions are planned to be 641 feet (195 m) wide and 563 feet (172 m) high. The head of Crazy Horse will be 87 feet (27 m) high; by comparison, the heads of the four U.S. Presidents at Mount Rushmore are each 60 feet (18 m) high.</English>
+		</TEXT>
+		<TEXT>
+		<Tag>TXT_KEY_BUILDING_CRAZY_HORSE_MEMORIAL_STRATEGY</Tag>
+		<English>The [COLOR_BUILDING_TEXT]Crazy Horse Memorial[COLOR_REVERT] provides a free [COLOR_UNIT_TEXT]Great Artist[COLOR_REVERT] for each destroyed civilization.</English>
+		</TEXT>
+		<TEXT>
+		<Tag>TXT_KEY_BUILDING_CRAZY_HORSE_MEMORIAL_HELP</Tag>
+		<English>[ICON_BULLET]Provides a free [LINK=UNIT_ARTIST]Great Artist[\LINK] for each Destroyed Civilization</English>
+		</TEXT>
+</Civ4GameText>

@@ -2,7 +2,8 @@
 
 <!-- Joined with GlobalDefinesAlt.xml (K-Mod settings) and the various
 	 ..._GlobalDefines files upon loading Advanced Civ. Takes precedence over
-	 BtS GlobalDefines.xml. -->
+	 BtS GlobalDefines.xml. Defines that overwrite a BtS value are tagged with
+	 a "redefine" comment. -->
 
 <Civ4Defines xmlns="x-schema:CIV4GlobalDefinesSchema.xml">
 
@@ -28,7 +29,7 @@
 		 Mod-mods should use a different SAVE_VERSION, ideally a completely
 		 different one, though this currently only matters for the
 		 HOF_DISPLAY_OTHER_MOD_REPLAYS option (see below). -->
-	<Define>
+	<Define> <!-- redefine -->
 		<DefineName>SAVE_VERSION</DefineName>
 		<iDefineIntVal>14223</iDefineIntVal>
 	</Define>
@@ -80,7 +81,7 @@
 		 AdvCiv (since version 0.97) stores MINIMAP_RENDER_SIZE in
 		 replay files, so compatibility between within AdvCiv isn't
 		 an issue, but BtS can only read size 512. -->
-	<Define>
+	<Define> <!-- redefine -->
 		<DefineName>MINIMAP_RENDER_SIZE</DefineName>
 		<iDefineIntVal>512</iDefineIntVal>
 	</Define>
@@ -106,7 +107,7 @@
 		 BML.fpk. Original value: 1. If BML.fpk is removed, then this value
 		 should be set back to 1; otherwise, there will be cloud shadows without
 		 clouds. -->
-	<Define>
+	<Define> <!-- redefine -->
 		<DefineName>RENDER_GLOBEVIEW_CLOUDS</DefineName>
 		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
@@ -164,7 +165,7 @@
 		 religion in the city, i.e. a religion that differs from the city owner's
 		 state religion (no suppression if no state religion).
 		 Recommended: 50 because doubling is a bit much. -->
-	<Define>
+	<Define> <!-- redefine -->
 		<DefineName>REVOLT_OFFENSE_STATE_RELIGION_MODIFIER</DefineName>
 		<iDefineIntVal>50</iDefineIntVal>
 	</Define>
@@ -174,7 +175,7 @@
 		 that the modifiers canceled out when both applied. Now combined
 		 additively, meaning that they still cancel out because I've reduced the
 		 OFFENSE_MODIFIER. The DEFENSE_MODIFIER remains -50. -->
-	<Define>
+	<Define> <!-- redefine -->
 		<DefineName>REVOLT_DEFENSE_STATE_RELIGION_MODIFIER</DefineName>
 		<iDefineIntVal>-50</iDefineIntVal>
 	</Define>
@@ -250,12 +251,18 @@
 		 assignStartingPlots or findStartingPosition.
 		 (The advc.108 settings below are independent from this; they mostly
 		 deal with start plot "normalization" whereas starting position
-		 iteration mostly moves the BtS starting locations around.) 
-Keldath - f1rpo said to turn it off - untested properly -->
+		 iteration mostly moves the BtS starting locations around.) -->
 	<Define>
         <DefineName>ENABLE_STARTING_POSITION_ITERATION</DefineName>
         <iDefineIntVal>1</iDefineIntVal>
     </Define>
+
+	<!-- advc.137: 12 in BtS. Recommended: 10 to match the
+		 higher default player counts in AdvCiv. -->
+	<Define> <!-- redefine -->
+		<DefineName>STARTING_DISTANCE_PERCENT</DefineName>
+		<iDefineIntVal>10</iDefineIntVal>
+	</Define>
 
 	<!-- [advc.108]
 		 If set to 1 or greater, starting plots are improved ("normalized") as
@@ -392,18 +399,6 @@ Keldath - f1rpo said to turn it off - untested properly -->
         <iDefineIntVal>0</iDefineIntVal>
     </Define>
 
-	<!-- [advc.002a]
-		 Determines the color of cultural borders of water tiles on the
-		 minimap.
-		 5 means that the tile is colored at 50% opactiy.
-		 6 (recommended) is like 5 but doesn't show units on the minimap.
-		 4 is the BtS behavior: full color.
-		 3 leaves the tiles uncolored (as in Civ 3). -->
-    <Define>
-        <DefineName>MINIMAP_WATER_MODE</DefineName>
-        <iDefineIntVal>6</iDefineIntVal>
-    </Define>
-
 	<!-- [advc.004f]
 		 City celebrations ("we-love-the-king day") trigger only in cities
 		 with at least this much population. The chance is population / 1000
@@ -411,7 +406,7 @@ Keldath - f1rpo said to turn it off - untested properly -->
 		 celebrations.
 		 Recommended: a high value in order to disable celebrations;
 		 original value from GlobalDefines.xml: 8 -->
-	<Define>
+	<Define> <!-- redefine -->
 		<DefineName>WE_LOVE_THE_KING_POPULATION_MIN_POPULATION</DefineName>
 		<iDefineIntVal>100</iDefineIntVal>
 	</Define>
@@ -558,7 +553,7 @@ Keldath - f1rpo said to turn it off - untested properly -->
 	     awkward incentive to stop short of elimination when
 		 capitulation isn't possible.)
 			keldath was on 60 -->
-	<Define>
+	<Define><!-- redefine -->
 		<DefineName>AT_WAR_CULTURE_ANGER_MODIFIER</DefineName>
 		<iDefineIntVal>50</iDefineIntVal>
 	</Define>
@@ -569,7 +564,7 @@ Keldath - f1rpo said to turn it off - untested properly -->
 		 I've slightly increased the value (to 425) to even out rounding errors.
 		 I've tried 50% (520), which is a nice even value and results in 100%
 		 culture anger at wartime, but that seemed a bit too punishing. -->
-	<Define>
+	<Define> <!-- redefine -->
 		<DefineName>CULTURE_PERCENT_ANGER</DefineName>
 		<iDefineIntVal>425</iDefineIntVal>
 	</Define>
@@ -674,7 +669,7 @@ Keldath - f1rpo said to turn it off - untested properly -->
 		 Recommended: 1.
 		 NB: AdvCiv adds a restriction that prevents barbarians from appearing
 		 on tiles with 0 food yield (regardless of this parameter). -->
-	<Define>
+	<Define> <!-- redefine -->
 		<DefineName>MIN_BARBARIAN_STARTING_DISTANCE</DefineName>
 		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
@@ -739,7 +734,7 @@ Keldath - f1rpo said to turn it off - untested properly -->
 		 If reset to 10, the AI will only contact human civs to offer its
 		 map if that map is estimated to be worth at least 10 gold to the
 		 human. Perhaps that's also fine. -->
-	<Define>
+	<Define> <!-- redefine -->
 		<DefineName>DIPLOMACY_VALUE_REMAINDER</DefineName>
 		<iDefineIntVal>5</iDefineIntVal>
 	</Define>
@@ -747,7 +742,7 @@ Keldath - f1rpo said to turn it off - untested properly -->
 	<!-- [advc.250c]
 	     Originally in GlobalDefines.xml; set to 25 there. Essentially the
 		 number of start points charged per 10 culture. Recommended: 15. -->
-	<Define>
+	<Define> <!-- redefine -->
 		<DefineName>ADVANCED_START_CULTURE_COST</DefineName>
 		<iDefineIntVal>15</iDefineIntVal>
 	</Define>
@@ -764,7 +759,7 @@ Keldath - f1rpo said to turn it off - untested properly -->
 	     Originally in GlobalDefines.xml; set to 2 there, which results in a
 		 total cost of 5 initially once ADVANCED_START_VISIBILITY_COST_INCREASE is taken into account.
 		 Recommended: 1, which results in an initial cost of 2. -->
-	<Define>
+	<Define> <!-- redefine -->
 		<DefineName>ADVANCED_START_VISIBILITY_COST</DefineName>
 		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
@@ -774,7 +769,7 @@ Keldath - f1rpo said to turn it off - untested properly -->
 		 Recommended: 4, meaning the cost increases after every 25 tiles.
 		 Note that the AdvCiv DLL counts automatically revealed tiles only
 		 partially. -->
-	<Define>
+	<Define> <!-- redefine -->
 		<DefineName>ADVANCED_START_VISIBILITY_COST_INCREASE</DefineName>
 		<iDefineIntVal>4</iDefineIntVal>
 	</Define>
@@ -831,7 +826,7 @@ Keldath - f1rpo said to turn it off - untested properly -->
 		 screen when clicking the right arrow button next to the unit
 		 icons. Originally (GlobalDefines.xml) 10, recommended 100
 		 (i.e. normally show all units when pressing the button once). -->
-	<Define>
+	<Define> <!-- redefine -->
 		<DefineName>MAX_PLOT_LIST_SIZE</DefineName>
 		<iDefineIntVal>100</iDefineIntVal>
 	</Define>
@@ -875,7 +870,7 @@ Keldath - f1rpo said to turn it off - untested properly -->
 
 	<!-- [advc.023] The per-turn probability of decrementing the occupation
 		 timer is computed as 1 minus the revolt probability raised to the
-		 power of UNREST_COUNTDOWN_EXPONENT.
+		 power of OCCUPATION_COUNTDOWN_EXPONENT.
 		 Recommended: 10, which results in a countdown probability of e.g.
 		 0.35 when revolt probability is 0.1.
 		 A value of 0 will decrement the timer with certainty.
@@ -893,7 +888,7 @@ Keldath - f1rpo said to turn it off - untested properly -->
 		 Recommended: 0, i.e. no impact of population, except that a value of
 		 0 also means that population size is used as an upper bound for the
 		 occupation timer. -->
-	<Define>
+	<Define> <!-- redefine -->
 		<DefineName>OCCUPATION_TURNS_POPULATION_PERCENT</DefineName>
 		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
@@ -911,7 +906,7 @@ Keldath - f1rpo said to turn it off - untested properly -->
 		 than it normally would. 0 for BtS behavior; recommended: 25. -->
 	<Define>
 		<DefineName>AI_OFFER_EXTRA_GOLD_PERCENT</DefineName>
-		<iDefineIntVal>20</iDefineIntVal>
+		<iDefineIntVal>25</iDefineIntVal>
 	</Define>
 
 	<!-- advc.ctr: To receive a city through trade, a civ needs to have at
@@ -939,12 +934,6 @@ Keldath - f1rpo said to turn it off - untested properly -->
 	<Define>
 		<DefineName>PASSABLE_AREAS</DefineName>
 		<iDefineIntVal>1</iDefineIntVal>
-	</Define>
-
-	<!-- [advc.004t] Copied from BtS GlobalDefines.xml where it's set to 1. -->
-	<Define>
-		<DefineName>CITY_SCREEN_CLICK_WILL_EXIT</DefineName>
-		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
 
 	<!-- [advc.700] Rise & Fall parameters. The first four are applied at game

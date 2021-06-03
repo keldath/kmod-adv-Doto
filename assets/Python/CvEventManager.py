@@ -317,6 +317,9 @@ class CvEventManager:
 					popupInfo.setText(szBody)
 					popupInfo.addPopup(iPlayer)                                        
 ###starting popup - end 
+# Doto Super Forts
+		CyMap().calculateCanalAndChokePoints()
+# Doto Super Forts
 		CvAdvisorUtils.resetNoLiberateCities()
 																	
 	def onGameEnd(self, argsList):

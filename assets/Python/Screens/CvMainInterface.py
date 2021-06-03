@@ -80,6 +80,8 @@ import ProgressBarUtil
 # PLE Code
 import PLE
 
+import MinimapOptions # advc.002a
+
 # <advc.090>
 import math
 def floor(f):
@@ -122,9 +124,11 @@ NUM_SELECTION_BUTTONS = SELECTION_BUTTON_ROWS * SELECTION_BUTTON_COLUMNS
 g_iNumBuildingWidgets = MAX_DISPLAYABLE_BUILDINGS
 g_iNumTradeRouteWidgets = MAX_DISPLAYABLE_TRADE_ROUTES
 
+iBottomButtonContainerOffsetY = 113 # advc
 # END OF TURN BUTTON POSITIONS
 ######################
 iEndOfTurnButtonSize = 32
+# advc.002b (note): Also used for HORIZONTAL_MARGIN of CivicsScreen
 iEndOfTurnPosX = 296 # distance from right
 iEndOfTurnPosY = 147 # distance from bottom
 
@@ -669,10 +673,9 @@ class CvMainInterface:
 		screen.addPanel( "MiniMapPanel", u"", u"", True, False, iMiniMapPanelX, iMiniMapPanelY, iMiniMapPanelWidth, iMiniMapPanelHeight, PanelStyles.PANEL_STYLE_STANDARD )
 		screen.setStyle( "MiniMapPanel", "Panel_Game_HudMap_Style" )
 		screen.hide( "MiniMapPanel" )
-		self.initMinimap(screen) # advc
-
+		MinimapOptions.init() # advc.002a: Let DLL cache minimap options
+		self.initMinimap(screen) # advc: Moved into new function
 		gc.getMap().updateMinimapColor()
-
 		self.createMinimapButtons()
 
 		# Help button (always visible)
@@ -685,7 +688,7 @@ class CvMainInterface:
 		# Globeview buttons
 		self.createGlobeviewButtons( )
 
-		screen.addMultiListControlGFC( "BottomButtonContainer", u"", iMultiListXL, yResolution - 113, xResolution - (iMultiListXL+iMultiListXR), 100, 4, 48, 48, TableStyles.TABLE_STYLE_STANDARD )		
+		screen.addMultiListControlGFC( "BottomButtonContainer", u"", iMultiListXL, yResolution - iBottomButtonContainerOffsetY, xResolution - (iMultiListXL+iMultiListXR), 100, 4, 48, 48, TableStyles.TABLE_STYLE_STANDARD )		
 		screen.hide( "BottomButtonContainer" )
 
 		# *********************************************************************************
@@ -818,10 +821,15 @@ class CvMainInterface:
 					screen.hide( szName )
 
 # BUG - city specialist - start
-		screen.addPanel( "SpecialistBackground", u"", u"", True, False, xResolution - 243, yResolution - 423, 230, 30, PanelStyles.PANEL_STYLE_STANDARD )
+		screen.addPanel( "SpecialistBackground", u"", u"", True, False, xResolution - 243,
+				# advc.004: y position was yResolution minus 423. That works well for the stacked specialists, but not for the other options.
+				yResolution - 475, 230, 30, PanelStyles.PANEL_STYLE_STANDARD )
 		screen.setStyle( "SpecialistBackground", "Panel_City_Header_Style" )
 		screen.hide( "SpecialistBackground" )
-		screen.setLabel( "SpecialistLabel", "Background", localText.getText("TXT_KEY_CONCEPT_SPECIALISTS", ()), CvUtil.FONT_CENTER_JUSTIFY, xResolution - 128, yResolution - 415, -0.1, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+		screen.setLabel( "SpecialistLabel", "Background", localText.getText("TXT_KEY_CONCEPT_SPECIALISTS", ()),
+				CvUtil.FONT_CENTER_JUSTIFY, xResolution - 128,
+				# advc.004: y position was yResolution minus 415.
+				yResolution - 467, -0.1, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
 		screen.hide( "SpecialistLabel" )
 # BUG - city specialist - end
 
@@ -1101,6 +1109,7 @@ class CvMainInterface:
 		return 0
 
 	def initMinimap(self, screen): # advc (needed in two places)
+		# This should recreate the minimap on load games and returns if already exists -JW
 		screen.initMinimap(self.iMiniMapX1, self.iMiniMapX2, self.iMiniMapY1, self.iMiniMapY2, -0.1 )
 
 	# Will update the screen (every 250 MS)
@@ -1123,7 +1132,6 @@ class CvMainInterface:
 		yResolution = screen.getYResolution()
 #		self.m_iNumPlotListButtons = (xResolution - (iMultiListXL+iMultiListXR) - 68) / 34
 		
-		# This should recreate the minimap on load games and returns if already exists -JW
 		self.initMinimap(screen)
 
 		messageControl = CyMessageControl()
@@ -1317,12 +1325,21 @@ class CvMainInterface:
 
 # BUG - city specialist - start
 			self.updateCitizenButtons_hide()
+			# advc.004: Show the SpecialistLabel regardless of BUG options
+			bShowingCitizenButtons = False
 			if (CityScreenOpt.isCitySpecialist_Stacker()):
-				self.updateCitizenButtons_Stacker()
+				bShowingCitizenButtons = self.updateCitizenButtons_Stacker()
 			elif (CityScreenOpt.isCitySpecialist_Chevron()):
-				self.updateCitizenButtons_Chevron()
+				bShowingCitizenButtons = self.updateCitizenButtons_Chevron()
 			else:
-				self.updateCitizenButtons()
+				bShowingCitizenButtons = self.updateCitizenButtons()
+			# <advc.004>
+			if (bShowingCitizenButtons
+				# Not quite enough room for this label on low res
+				and self.yResolution > 900):
+				# Cut from updateCitizenButtons_Stacker ...
+				screen.show( "SpecialistBackground" )
+				screen.show( "SpecialistLabel" ) # </advc.004>
 # BUG - city specialist - end
 			
 			CyInterface().setDirty(InterfaceDirtyBits.CitizenButtons_DIRTY_BIT, False)
@@ -2295,12 +2312,21 @@ class CvMainInterface:
 		screen.hide( "AutomateProduction" )
 		screen.hide( "AutomateCitizens" )
 
-		if (not CyEngine().isGlobeviewUp() and pHeadSelectedCity):
-		
+		# <advc.154>
+		self.hideUnitCyclingButtons(screen)
+		# Moved up:
+		bHeadSelectionChanged = (g_pSelectedUnit != pHeadSelectedUnit)
+		g_pSelectedUnit = pHeadSelectedUnit
+		# </advc.154>
+
+		if not CyEngine().isGlobeviewUp() and pHeadSelectedCity:
+
 			self.setMinimapButtonVisibility(True)
 
-			if ((pHeadSelectedCity.getOwner() == gc.getGame().getActivePlayer()) or gc.getGame().isDebugMode()):
-			
+			if pHeadSelectedCity.getOwner() == gc.getGame().getActivePlayer() or gc.getGame().isDebugMode():
+				# advc.154: Moved up a bit (needed at all?)
+				g_pSelectedUnit = 0
+
 				iBtnX = xResolution - 284
 				iBtnY = yResolution - 177
 				iBtnW = 64
@@ -2406,7 +2432,6 @@ class CvMainInterface:
 				screen.setStyle( szButtonID, szStyle )
 				screen.hide( szButtonID )
 				
-				g_pSelectedUnit = 0
 				screen.setState( "AutomateCitizens", pHeadSelectedCity.isCitizensAutomated() )
 				screen.setState( "AutomateProduction", pHeadSelectedCity.isProductionAutomated() )
 				
@@ -2539,20 +2564,21 @@ class CvMainInterface:
 
 				screen.selectMultiList( "BottomButtonContainer", CyInterface().getCityTabSelectionRow() )
 							
-		elif (not CyEngine().isGlobeviewUp() and pHeadSelectedUnit and CyInterface().getShowInterface() != InterfaceVisibility.INTERFACE_HIDE_ALL and CyInterface().getShowInterface() != InterfaceVisibility.INTERFACE_MINIMAP_ONLY):
-
+		elif (not CyEngine().isGlobeviewUp() and CyInterface().getShowInterface() != InterfaceVisibility.INTERFACE_HIDE_ALL and CyInterface().getShowInterface() != InterfaceVisibility.INTERFACE_MINIMAP_ONLY):
 			self.setMinimapButtonVisibility(True)
+			if CyInterface().getInterfaceMode() == InterfaceModeTypes.INTERFACEMODE_SELECTION:
+				# advc.154: pHeadSelectedUnit moved from above. (Handling of g_pSelectedUnit moved up.)
+				if pHeadSelectedUnit and pHeadSelectedUnit.getOwner() == gc.getGame().getActivePlayer() and bHeadSelectionChanged:
 
-			if (CyInterface().getInterfaceMode() == InterfaceModeTypes.INTERFACEMODE_SELECTION):
-			
-				if ( pHeadSelectedUnit.getOwner() == gc.getGame().getActivePlayer() and g_pSelectedUnit != pHeadSelectedUnit ):
-				
-					g_pSelectedUnit = pHeadSelectedUnit
-					
 					iCount = 0
 
 					actions = CyInterface().getActionsToShow()
+					# advc.004: Hide the Skip button while asleep, but keep the hotkey available? Maybe better not ...
+					#bWaiting = pHeadSelectedUnit.isWaiting()
 					for i in actions:
+						# <advc.004> See above
+						#if bWaiting and gc.getActionInfo(i).getHotKey() == "KB_SPACE":
+						#	continue # </advc.004>
 						screen.appendMultiListButton( "BottomButtonContainer", gc.getActionInfo(i).getButton(), 0, WidgetTypes.WIDGET_ACTION, i, -1, False )
 						screen.show( "BottomButtonContainer" )
 				
@@ -2577,13 +2603,68 @@ class CvMainInterface:
 						screen.show( "BottomButtonContainer" )
 						
 						iCount = iCount + 1
-
+				# <advc.154>
+				pUnit = None
+				if bHeadSelectionChanged:
+					pUnit = pHeadSelectedUnit
+				self.updateUnitCyclingButtons(screen, pUnit) # </advc.154>
 		elif (CyInterface().getShowInterface() != InterfaceVisibility.INTERFACE_HIDE_ALL and CyInterface().getShowInterface() != InterfaceVisibility.INTERFACE_MINIMAP_ONLY):
-		
 			self.setMinimapButtonVisibility(True)
 
 		return 0
-		
+	# <advc.154>
+	def hideUnitCyclingButtons(self, kScreen):
+		self.hideUnitCycleButtonGFC("UnitCycle", kScreen)
+		self.hideUnitCycleButtonGFC("WorkerCycle", kScreen)
+		self.hideUnitCycleButtonGFC("Unselect", kScreen)
+
+	def updateUnitCyclingButtons(self, kScreen, pHeadSelectedUnit):
+
+		if MainOpt.isUnitCyclingButtonsDisabled():
+			return
+
+		iUnitCycleButtonMargin = 2 # Thicker margins look bad on low resolutions
+		iUnitCycleButtonSize = 32
+		iUnitCycleButtonX = kScreen.getXResolution() - iMultiListXR - iUnitCycleButtonMargin
+		iUnitCycleButtonY = kScreen.getYResolution() - iBottomButtonContainerOffsetY + iUnitCycleButtonMargin
+		pNextUnit = gc.getGame().getNextUnitInCycle(True, False)
+		if pNextUnit:
+			if pNextUnit.hasMoved():
+				szOverlay = "OVERLAY_HASMOVED"
+			else:
+				szOverlay = "OVERLAY_MOVE"
+			self.showUnitCycleButtonGFC("UnitCycle", kScreen, pNextUnit, iUnitCycleButtonX, iUnitCycleButtonY, iUnitCycleButtonSize, False, False, ArtFileMgr.getInterfaceArtInfo(szOverlay).getPath())
+			iUnitCycleButtonY += iUnitCycleButtonSize + 2 * iUnitCycleButtonMargin
+			if not MainOpt.isSingleUnitCyclingButton() and not pNextUnit.isWorker():
+				pNextWorker = gc.getGame().getNextUnitInCycle(True, True)
+				if pNextWorker and pNextWorker.getID() != pNextUnit.getID():
+					if pNextWorker.hasMoved():
+						szOverlay = "OVERLAY_HASMOVED"
+					else:
+						szOverlay = "OVERLAY_MOVE"
+					self.showUnitCycleButtonGFC("WorkerCycle", kScreen, pNextWorker, iUnitCycleButtonX, iUnitCycleButtonY, iUnitCycleButtonSize, True, False, ArtFileMgr.getInterfaceArtInfo(szOverlay).getPath())
+		# If selected unit is not expecting orders, show unselect button (advc.088).
+		elif pHeadSelectedUnit and (pHeadSelectedUnit.isWaiting() or not pHeadSelectedUnit.canMove()):
+			if pHeadSelectedUnit.canMove():
+				szOverlay = "OVERLAY_FORTIFY"
+			else:
+				szOverlay = "OVERLAY_NOMOVE"
+			self.showUnitCycleButtonGFC("Unselect", kScreen, pHeadSelectedUnit, iUnitCycleButtonX, iUnitCycleButtonY, iUnitCycleButtonSize, False, True, ArtFileMgr.getInterfaceArtInfo(szOverlay).getPath())
+
+	def showUnitCycleButtonGFC(self, szName, kScreen, kUnit, iX, iY, iSize, bWorkers, bUnselect, szOverlayPath):
+
+		iWidgetData2 = -1
+		if not bUnselect:
+			iWidgetData2 = kUnit.getID()
+		kScreen.setButtonGFC(szName + "Button", "", gc.getPlayer(kUnit.getOwner()).getUnitButton(kUnit.getUnitType()), iX, iY, iSize, iSize, WidgetTypes.WIDGET_CYCLE_UNIT, bWorkers, iWidgetData2, ButtonStyles.BUTTON_STYLE_IMAGE)
+		kScreen.addDDSGFCAt(szName + "Overlay", szName + "Button", szOverlayPath, 0, 0, 12, 12, WidgetTypes.WIDGET_CYCLE_UNIT, bWorkers, iWidgetData2, False)
+		kScreen.show(szName + "Button")
+		kScreen.show(szName + "Overlay")
+
+	def hideUnitCycleButtonGFC(self, szName, kScreen):
+		kScreen.hide(szName + "Button")
+		kScreen.hide(szName + "Overlay") # </advc.154>
+
 	# Will update the research buttons
 	def updateResearchButtons( self ):
 	
@@ -2701,10 +2782,10 @@ class CvMainInterface:
 	# Will update the citizen buttons
 	def updateCitizenButtons( self ):
 
-		if not CyInterface().isCityScreenUp(): return 0
+		if not CyInterface().isCityScreenUp(): return False
 
 		pHeadSelectedCity = CyInterface().getHeadSelectedCity()
-		if not (pHeadSelectedCity and CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW): return 0
+		if not (pHeadSelectedCity and CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW): return False
 	
 		global MAX_CITIZEN_BUTTONS
 		
@@ -2799,15 +2880,15 @@ class CvMainInterface:
 				szName = "CitizenDisabledButton" + str(i)
 				screen.show( szName )
 
-		return 0
+		return True # advc.004: Signal success
 
 # BUG - city specialist - start
 	def updateCitizenButtons_Stacker( self ):
 	
-		if not CyInterface().isCityScreenUp(): return 0
+		if not CyInterface().isCityScreenUp(): return False
 
 		pHeadSelectedCity = CyInterface().getHeadSelectedCity()
-		if not (pHeadSelectedCity and CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW): return 0
+		if not (pHeadSelectedCity and CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW): return False
 
 		global g_iSuperSpecialistCount
 		global g_iCitySpecialistCount
@@ -2920,20 +3001,19 @@ class CvMainInterface:
 					szName = "DecresseCitizenButton" + str((i * 100) + k)					
 					screen.addCheckBoxGFC( szName, gc.getSpecialistInfo(i).getTexture(), "", xResolution - (SPECIALIST_AREA_MARGIN + iXShiftVal) - (HorizontalSpacing * k), (yResolution - 282 - (SPECIALIST_ROW_HEIGHT * iYShiftVal)), 30, 30, WidgetTypes.WIDGET_CHANGE_SPECIALIST, i, -1, ButtonStyles.BUTTON_STYLE_LABEL )
 					screen.show( szName )
-					
-		screen.show( "SpecialistBackground" )
-		screen.show( "SpecialistLabel" )
-	
-		return 0
+		#screen.show( "SpecialistBackground" )
+		#screen.show( "SpecialistLabel" )
+		# advc.004: Signal to the caller that the label should be shown
+		return True
 # BUG - city specialist - end
 
 # BUG - city specialist - start
 	def updateCitizenButtons_Chevron( self ):
 	
-		if not CyInterface().isCityScreenUp(): return 0
+		if not CyInterface().isCityScreenUp(): return False
 
 		pHeadSelectedCity = CyInterface().getHeadSelectedCity()
-		if not (pHeadSelectedCity and CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW): return 0
+		if not (pHeadSelectedCity and CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_SHOW): return False
 
 		global MAX_CITIZEN_BUTTONS
 		
@@ -3068,7 +3148,7 @@ class CvMainInterface:
 				szName = "CitizenDisabledButton" + str(i)
 				screen.show( szName )
 
-		return 0
+		return True # advc.004: Signal success
 # BUG - city specialist - end
 
 	# Will update the game data strings
@@ -3145,7 +3225,7 @@ class CvMainInterface:
 					if not CyInterface().isCityScreenUp():
 						szOutText = u"<font=2>" + localText.getText("TXT_KEY_MISC_POS_GOLD_PER_TURN", (gc.getPlayer(ePlayer).getCommerceRate(CommerceTypes(eCommerce)), )) + u"</font>"
 						# <advc.004p>
-						if eCommerce == CommerceTypes.COMMERCE_CULTURE:
+						if eCommerce == CommerceTypes.COMMERCE_CULTURE and not MainOpt.isShowTotalCultureRate():
 							szOutText = u""
 						# </advc.004p>
 						szString = "RateText" + str(iI)
@@ -3186,18 +3266,19 @@ class CvMainInterface:
 					szRateText = " ("
 					szRateText += BugUtil.getText("TXT_KEY_MISC_PER_TURN", iGoldRate)
 					szRateText += ")"
-					iRateColor = MainOpt.getGoldRateBrokeColor()
-					# </advc.070>
+					# (I've removed the broke color option again in order to make room on the BUG menu)
+					#iRateColor = MainOpt.getGoldRateBrokeColor()
 					if iGoldRate >= 0:
 						iRateColor = MainOpt.getPositiveGoldRateColor()
 						#szText += BugUtil.getText("TXT_KEY_MISC_POS_GOLD_PER_TURN", iGoldRate)
-					elif iGold + iGoldRate >= 0:
+					#elif iGold + iGoldRate >= 0:
+					else:
 						iRateColor = MainOpt.getNegativeGoldRateColor()
 						#szText += BugUtil.getText("TXT_KEY_MISC_NEG_WARNING_GOLD_PER_TURN", iGoldRate)
 					#else:
 						#szText += BugUtil.getText("TXT_KEY_MISC_NEG_GOLD_PER_TURN", iGoldRate)
-					# advc.070:
 					szText += localText.changeTextColor(szRateText, iRateColor)
+					# </advc.070>
 						
 			if pPlayer.isStrike():
 				szText += BugUtil.getPlainText("TXT_KEY_MISC_STRIKE")
@@ -3588,7 +3669,10 @@ class CvMainInterface:
 		screen.hide( "TradeRouteListBackground" )
 		screen.hide( "BuildingListLabel" )
 		screen.hide( "TradeRouteListLabel" )
-
+#doto - wonder limit
+		if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_CULTURE_WONDER_LIMIT):
+			screen.hide( "WonderLimit" )
+#doto - wonder limit
 		i = 0
 		for i in range( g_iNumLeftBonus ):
 			szName = "LeftBonusItem" + str(i)
@@ -3667,10 +3751,17 @@ class CvMainInterface:
 #					if (CityUtil.willGrowThisTurn(pHeadSelectedCity)):   # K-Mod disabled this. I think 'Growth!' sounds lame.
 #						szBuffer = localText.getText("INTERFACE_CITY_GROWTH", ()) #was elif on next line
 					if (iFoodDifference > 0):
-						szBuffer = localText.getText("INTERFACE_CITY_GROWING", (pHeadSelectedCity.getFoodTurnsLeft(), ))	
+						# <advc.002f>
+						if CityUtil.avoidingGrowth(pHeadSelectedCity):
+							szBuffer = localText.getText("INTERFACE_CITY_AVOIDING_GROWTH", (pHeadSelectedCity.getFoodTurnsLeft(), ))
+						else:
+						# </advc.002f>
+							szBuffer = localText.getText("INTERFACE_CITY_GROWING", (pHeadSelectedCity.getFoodTurnsLeft(), ))
 					elif (iFoodDifference < 0):
 						if (CityScreenOpt.isShowFoodAssist()):
-							iTurnsToStarve = pHeadSelectedCity.getFood() / -iFoodDifference + 1
+							#iTurnsToStarve = pHeadSelectedCity.getFood() / -iFoodDifference + 1
+							# advc.189: The DLL can compute this now
+							iTurnsToStarve = -pHeadSelectedCity.getFoodTurnsLeft()
 							if iTurnsToStarve > 1:
 								szBuffer = localText.getText("INTERFACE_CITY_SHRINKING", (iTurnsToStarve, ))
 							else:
@@ -3848,6 +3939,8 @@ class CvMainInterface:
 					and (pHeadSelectedCity.getTeam() == gc.getGame().getActiveTeam()
 					or gc.getGame().isDebugMode())): # K-Mod
 						iAngerTimer = max(pHeadSelectedCity.getHurryAngerTimer(), pHeadSelectedCity.getConscriptAngerTimer())
+						# advc.188: Cover all temporary unhappiness (but not getHappinessTimer)
+						iAngerTimer = max(iAngerTimer, pHeadSelectedCity.getDefyResolutionAngerTimer())
 						if iAngerTimer > 0:
 							szBuffer += u" (%i)" % iAngerTimer
 # BUG - Anger Display - end
@@ -3917,8 +4010,9 @@ class CvMainInterface:
 						iCount = iCount + 1
 
 				iCount = 0
-
-				screen.addTableControlGFC( "BuildingListTable", 3, 10, 317, 238, yResolution - 541, False, False, 32, 32, TableStyles.TABLE_STYLE_STANDARD )
+#doto - wonder limit - change position to make room for the wonder limit - i didnt add option check here - not critical
+				screen.addTableControlGFC( "BuildingListTable", 3, 10, 316, 238, yResolution - 559, False, False, 32, 32, TableStyles.TABLE_STYLE_STANDARD )
+#doto - wonder limit
 				screen.setStyle( "BuildingListTable", "Table_City_Style" )
 				
 # BUG - Raw Yields - start
@@ -3953,10 +4047,29 @@ class CvMainInterface:
 				screen.setTableColumnHeader( "BuildingListTable", 2, u"", 10 )
 				screen.setTableColumnRightJustify( "BuildingListTable", 1 )
 
+#doto - wonder limit start
+				if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_CULTURE_WONDER_LIMIT):
+					pHeadSelectedCity = CyInterface().getHeadSelectedCity()
+					cultureInfo = gc.getCultureLevelInfo(pHeadSelectedCity.getCultureLevel())
+					#cultureLevel = cultureInfo.getTextKey()
+					countWonder = pHeadSelectedCity.getNumWorldWonders()
+					cultureWonderLimit = cultureInfo.getmaxWonderCultureLimit()		
+					wonderLimitStatus = localText.getText("TXT_KEY_CONCEPT_WONDER_LIMIT", (gc.getCommerceInfo(CommerceTypes.COMMERCE_CULTURE).getChar(),countWonder,cultureWonderLimit,))	
+					#if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_PICK_RELIGION):
+					if (countWonder >= cultureWonderLimit):
+						wonderLimitStatus = localText.getText("TXT_KEY_CONCEPT_WONDER_LIMIT_ABOVE", (gc.getCommerceInfo(CommerceTypes.COMMERCE_CULTURE).getChar(),countWonder,cultureWonderLimit,))	
+					# justify was on 125 org	
+					#this gets the hover text from the dll: WidgetTypes.WIDGET_WONDER_LIMITS
+					screen.setLabel("WonderLimit", "Background", wonderLimitStatus, CvUtil.FONT_RIGHT_JUSTIFY, 190, self.yResolution - 234, -0.1, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_WONDER_LIMITS, -1, -1)
+					screen.hide( "WonderLimit" )#probably not needed - look below
+#doto - wonder limit end
 				screen.show( "BuildingListBackground" )
 				screen.show( "TradeRouteListBackground" )
 				screen.show( "BuildingListLabel" )
-				
+#doto - wonder limit - i should just place the code here
+				if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_CULTURE_WONDER_LIMIT):
+					screen.show( "WonderLimit" )
+#doto - wonder limit				
 # BUG - Raw Yields - start
 				if (CityScreenOpt.isShowRawYields()):
 					screen.setState("RawYieldsTrade0", not g_bYieldView)
@@ -4301,43 +4414,43 @@ class CvMainInterface:
 						#yCoord = 42 # Origional Civ4 Code
 						
 						bEnable = True
-							
-						if (pHeadSelectedCity.isHolyCityByType(i)):
-							szTempBuffer = u"%c" %(gc.getReligionInfo(i).getHolyCityChar())
+						# <advc> Commented out all code that only adds to szBuffer - b/c that string is never used. (Already unused in Vanilla Civ 4.)
+						#if (pHeadSelectedCity.isHolyCityByType(i)):
+						#	szTempBuffer = u"%c" %(gc.getReligionInfo(i).getHolyCityChar())
 							# < 47 Religions Mod Start >
 							# This is now done below since the Holy City Overlay has to be added
 							# after the Religion Icon and can not be shown before its added
 							#szName = "ReligionHolyCityDDS" + str(i)
 							#screen.show( szName )
 							# < 47 Religions Mod Start >
-						else:
-							szTempBuffer = u"%c" %(gc.getReligionInfo(i).getChar())
-						szBuffer = szBuffer + szTempBuffer
+						#else:
+						#	szTempBuffer = u"%c" %(gc.getReligionInfo(i).getChar())
+						#szBuffer = szBuffer + szTempBuffer
 	
-						j = 0
-						for j in range(CommerceTypes.NUM_COMMERCE_TYPES):
-							iCommerce = pHeadSelectedCity.getReligionCommerceByReligion(j, i)
+						#j = 0
+						#for j in range(CommerceTypes.NUM_COMMERCE_TYPES):
+						#	iCommerce = pHeadSelectedCity.getReligionCommerceByReligion(j, i)
 	
-							if (iCommerce != 0):
-								if ( iCommerce > 0 ):
-									szTempBuffer = u",%s%d%c" %("+", iCommerce, gc.getCommerceInfo(j).getChar() )
-									szBuffer = szBuffer + szTempBuffer
-								else:
-									szTempBuffer = u",%s%d%c" %( "", iCommerce, gc.getCommerceInfo(j).getChar() )
-									szBuffer = szBuffer + szTempBuffer
+						#	if (iCommerce != 0):
+						#		if ( iCommerce > 0 ):
+						#			szTempBuffer = u",%s%d%c" %("+", iCommerce, gc.getCommerceInfo(j).getChar() )
+						#			szBuffer = szBuffer + szTempBuffer
+						#		else:
+						#			szTempBuffer = u",%s%d%c" %( "", iCommerce, gc.getCommerceInfo(j).getChar() )
+						#			szBuffer = szBuffer + szTempBuffer
 	
-						iHappiness = pHeadSelectedCity.getReligionHappiness(i)
+						#iHappiness = pHeadSelectedCity.getReligionHappiness(i)
 	
-						if (iHappiness != 0):
-							if ( iHappiness > 0 ):
-								szTempBuffer = u",+%d%c" %(iHappiness, CyGame().getSymbolID(FontSymbols.HAPPY_CHAR) )
-								szBuffer = szBuffer + szTempBuffer
-							else:
-								szTempBuffer = u",+%d%c" %(-(iHappiness), CyGame().getSymbolID(FontSymbols.UNHAPPY_CHAR) )
-								szBuffer = szBuffer + szTempBuffer
+						#if (iHappiness != 0):
+						#	if ( iHappiness > 0 ):
+						#		szTempBuffer = u",+%d%c" %(iHappiness, CyGame().getSymbolID(FontSymbols.HAPPY_CHAR) )
+						#		szBuffer = szBuffer + szTempBuffer
+						#	else:
+						#		szTempBuffer = u",+%d%c" %(-(iHappiness), CyGame().getSymbolID(FontSymbols.UNHAPPY_CHAR) )
+						#		szBuffer = szBuffer + szTempBuffer
 	
-						szBuffer = szBuffer + " "
-							
+						#szBuffer = szBuffer + " "
+						# </advc> (end of unused szBuffer code)
 						szButton = gc.getReligionInfo(i).getButton()
 	
 						szName = "ReligionDDS" + str(i)
@@ -4359,38 +4472,39 @@ class CvMainInterface:
 						bEnable = True
 							
 						if (pHeadSelectedCity.isHasReligion(i)):
+							# <advc> SzBuffer code commented out (see advc comment above)
 							if (pHeadSelectedCity.isHolyCityByType(i)):
-								szTempBuffer = u"%c" %(gc.getReligionInfo(i).getHolyCityChar())
+								#szTempBuffer = u"%c" %(gc.getReligionInfo(i).getHolyCityChar())
 								szName = "ReligionHolyCityDDS" + str(i)
 								screen.show( szName )
-							else:
-								szTempBuffer = u"%c" %(gc.getReligionInfo(i).getChar())
-							szBuffer = szBuffer + szTempBuffer
+							#else:
+							#	szTempBuffer = u"%c" %(gc.getReligionInfo(i).getChar())
+							#szBuffer = szBuffer + szTempBuffer
 	
-							j = 0
-							for j in range(CommerceTypes.NUM_COMMERCE_TYPES):
-								iCommerce = pHeadSelectedCity.getReligionCommerceByReligion(j, i)
+							#j = 0
+							#for j in range(CommerceTypes.NUM_COMMERCE_TYPES):
+							#	iCommerce = pHeadSelectedCity.getReligionCommerceByReligion(j, i)
 	
-								if (iCommerce != 0):
-									if ( iCommerce > 0 ):
-										szTempBuffer = u",%s%d%c" %("+", iCommerce, gc.getCommerceInfo(j).getChar() )
-										szBuffer = szBuffer + szTempBuffer
-									else:
-										szTempBuffer = u",%s%d%c" %( "", iCommerce, gc.getCommerceInfo(j).getChar() )
-										szBuffer = szBuffer + szTempBuffer
+							#	if (iCommerce != 0):
+							#		if ( iCommerce > 0 ):
+							#			szTempBuffer = u",%s%d%c" %("+", iCommerce, gc.getCommerceInfo(j).getChar() )
+							#			szBuffer = szBuffer + szTempBuffer
+							#		else:
+							#			szTempBuffer = u",%s%d%c" %( "", iCommerce, gc.getCommerceInfo(j).getChar() )
+							#			szBuffer = szBuffer + szTempBuffer
 	
-							iHappiness = pHeadSelectedCity.getReligionHappiness(i)
+							#iHappiness = pHeadSelectedCity.getReligionHappiness(i)
 	
-							if (iHappiness != 0):
-								if ( iHappiness > 0 ):
-									szTempBuffer = u",+%d%c" %(iHappiness, CyGame().getSymbolID(FontSymbols.HAPPY_CHAR) )
-									szBuffer = szBuffer + szTempBuffer
-								else:
-									szTempBuffer = u",+%d%c" %(-(iHappiness), CyGame().getSymbolID(FontSymbols.UNHAPPY_CHAR) )
-									szBuffer = szBuffer + szTempBuffer
+							#if (iHappiness != 0):
+							#	if ( iHappiness > 0 ):
+							#		szTempBuffer = u",+%d%c" %(iHappiness, CyGame().getSymbolID(FontSymbols.HAPPY_CHAR) )
+							#		szBuffer = szBuffer + szTempBuffer
+							#	else:
+							#		szTempBuffer = u",+%d%c" %(-(iHappiness), CyGame().getSymbolID(FontSymbols.UNHAPPY_CHAR) )
+							#		szBuffer = szBuffer + szTempBuffer
 	
-							szBuffer = szBuffer + " "
-							
+							#szBuffer = szBuffer + " "
+							# </advc> (end of unused szBuffer code)
 							szButton = gc.getReligionInfo(i).getButton()
 						
 						else:
@@ -4478,41 +4592,41 @@ class CvMainInterface:
 						#yCoord = 66 # Origional Civ4 Code
 						
 						bEnable = True
-							
-						if (pHeadSelectedCity.isHeadquartersByType(i)):
-							szTempBuffer = u"%c" %(gc.getCorporationInfo(i).getHeadquarterChar())
+						# <advc> SzBuffer code commented out (see advc comment above)
+						#if (pHeadSelectedCity.isHeadquartersByType(i)):
+						#	szTempBuffer = u"%c" %(gc.getCorporationInfo(i).getHeadquarterChar())
 							#szName = "CorporationHeadquarterDDS" + str(i)
 							#screen.show( szName )
-						else:
-							szTempBuffer = u"%c" %(gc.getCorporationInfo(i).getChar())
-						szBuffer = szBuffer + szTempBuffer
+						#else:
+						#	szTempBuffer = u"%c" %(gc.getCorporationInfo(i).getChar())
+						#szBuffer = szBuffer + szTempBuffer
 	
-						j = 0
-						for j in range(YieldTypes.NUM_YIELD_TYPES):
-							iYield = pHeadSelectedCity.getCorporationYieldByCorporation(j, i)
+						#j = 0
+						#for j in range(YieldTypes.NUM_YIELD_TYPES):
+						#	iYield = pHeadSelectedCity.getCorporationYieldByCorporation(j, i)
 	
-							if (iYield != 0):
-								if ( iYield > 0 ):
-									szTempBuffer = u",%s%d%c" %("+", iYield, gc.getYieldInfo(j).getChar() )
-									szBuffer = szBuffer + szTempBuffer
-								else:
-									szTempBuffer = u",%s%d%c" %( "", iYield, gc.getYieldInfo(j).getChar() )
-									szBuffer = szBuffer + szTempBuffer
+						#	if (iYield != 0):
+						#		if ( iYield > 0 ):
+						#			szTempBuffer = u",%s%d%c" %("+", iYield, gc.getYieldInfo(j).getChar() )
+						#			szBuffer = szBuffer + szTempBuffer
+						#		else:
+						#			szTempBuffer = u",%s%d%c" %( "", iYield, gc.getYieldInfo(j).getChar() )
+						#			szBuffer = szBuffer + szTempBuffer
 							
-						j = 0
-						for j in range(CommerceTypes.NUM_COMMERCE_TYPES):
-							iCommerce = pHeadSelectedCity.getCorporationCommerceByCorporation(j, i)
+						#j = 0
+						#for j in range(CommerceTypes.NUM_COMMERCE_TYPES):
+						#	iCommerce = pHeadSelectedCity.getCorporationCommerceByCorporation(j, i)
 	
-							if (iCommerce != 0):
-								if ( iCommerce > 0 ):
-									szTempBuffer = u",%s%d%c" %("+", iCommerce, gc.getCommerceInfo(j).getChar() )
-									szBuffer = szBuffer + szTempBuffer
-								else:
-									szTempBuffer = u",%s%d%c" %( "", iCommerce, gc.getCommerceInfo(j).getChar() )
-									szBuffer = szBuffer + szTempBuffer
+						#	if (iCommerce != 0):
+						#		if ( iCommerce > 0 ):
+						#			szTempBuffer = u",%s%d%c" %("+", iCommerce, gc.getCommerceInfo(j).getChar() )
+						#			szBuffer = szBuffer + szTempBuffer
+						#		else:
+						#			szTempBuffer = u",%s%d%c" %( "", iCommerce, gc.getCommerceInfo(j).getChar() )
+						#			szBuffer = szBuffer + szTempBuffer
 	
-						szBuffer += " "
-							
+						#szBuffer += " "
+						# </advc> (end of unused szBuffer code)
 						szButton = gc.getCorporationInfo(i).getButton()
 	
 						szName = "CorporationDDS" + str(i)
@@ -4534,38 +4648,39 @@ class CvMainInterface:
 						bEnable = True
 							
 						if (pHeadSelectedCity.isHasCorporation(i)):
+							# <advc> SzBuffer code commented out (see advc comment above)
 							if (pHeadSelectedCity.isHeadquartersByType(i)):
-								szTempBuffer = u"%c" %(gc.getCorporationInfo(i).getHeadquarterChar())
+							#	szTempBuffer = u"%c" %(gc.getCorporationInfo(i).getHeadquarterChar())
 								szName = "CorporationHeadquarterDDS" + str(i)
 								screen.show( szName )
-							else:
-								szTempBuffer = u"%c" %(gc.getCorporationInfo(i).getChar())
-							szBuffer = szBuffer + szTempBuffer
+							#else:
+							#	szTempBuffer = u"%c" %(gc.getCorporationInfo(i).getChar())
+							#szBuffer = szBuffer + szTempBuffer
 	
-							for j in range(YieldTypes.NUM_YIELD_TYPES):
-								iYield = pHeadSelectedCity.getCorporationYieldByCorporation(j, i)
+							#for j in range(YieldTypes.NUM_YIELD_TYPES):
+							#	iYield = pHeadSelectedCity.getCorporationYieldByCorporation(j, i)
 	
-								if (iYield != 0):
-									if ( iYield > 0 ):
-										szTempBuffer = u",%s%d%c" %("+", iYield, gc.getYieldInfo(j).getChar() )
-										szBuffer = szBuffer + szTempBuffer
-									else:
-										szTempBuffer = u",%s%d%c" %( "", iYield, gc.getYieldInfo(j).getChar() )
-										szBuffer = szBuffer + szTempBuffer
+							#	if (iYield != 0):
+							#		if ( iYield > 0 ):
+							#			szTempBuffer = u",%s%d%c" %("+", iYield, gc.getYieldInfo(j).getChar() )
+							#			szBuffer = szBuffer + szTempBuffer
+							#		else:
+							#			szTempBuffer = u",%s%d%c" %( "", iYield, gc.getYieldInfo(j).getChar() )
+							#			szBuffer = szBuffer + szTempBuffer
 							
-							for j in range(CommerceTypes.NUM_COMMERCE_TYPES):
-								iCommerce = pHeadSelectedCity.getCorporationCommerceByCorporation(j, i)
+							#for j in range(CommerceTypes.NUM_COMMERCE_TYPES):
+							#	iCommerce = pHeadSelectedCity.getCorporationCommerceByCorporation(j, i)
 	
-								if (iCommerce != 0):
-									if ( iCommerce > 0 ):
-										szTempBuffer = u",%s%d%c" %("+", iCommerce, gc.getCommerceInfo(j).getChar() )
-										szBuffer = szBuffer + szTempBuffer
-									else:
-										szTempBuffer = u",%s%d%c" %( "", iCommerce, gc.getCommerceInfo(j).getChar() )
-										szBuffer = szBuffer + szTempBuffer
+							#	if (iCommerce != 0):
+							#		if ( iCommerce > 0 ):
+							#			szTempBuffer = u",%s%d%c" %("+", iCommerce, gc.getCommerceInfo(j).getChar() )
+							#			szBuffer = szBuffer + szTempBuffer
+							#		else:
+							#			szTempBuffer = u",%s%d%c" %( "", iCommerce, gc.getCommerceInfo(j).getChar() )
+							#			szBuffer = szBuffer + szTempBuffer
 	
-							szBuffer += " "
-							
+							#szBuffer += " "
+							# </advc> (end of unused szBuffer code)
 							szButton = gc.getCorporationInfo(i).getButton()
 						
 						else:
@@ -5465,7 +5580,9 @@ class CvMainInterface:
 			if ScoreOpt.isShowAttitude():
 				if not pPlayer.isHuman() and eActivePlayer != ePlayer:
 					iAtt = pPlayer.AI_getAttitude(eActivePlayer)
-					cAtt =  unichr(ord(unichr(g.getSymbolID(FontSymbols.POWER_CHAR) + 4)) + iAtt)
+					#cAtt =  unichr(ord(unichr(g.getSymbolID(FontSymbols.POWER_CHAR) + 4)) + iAtt)
+					# advc.187: I've added the airport icon as a GameFont_75 symbol and that breaks the offset used above. No cells are left for further insertions, so, I guess, at this point, the offset from POWER_CHAR can't break again - but let's do it a bit more cleanly anyway by exposing the leftmost attitude char to Python.
+					cAtt =  unichr(ord(unichr(g.getSymbolID(FontSymbols.WORST_ATTITUDE_CHAR) + iAtt)))
 					szBuffer += cAtt
 					if bAlignIcons:
 						scores.setAttitude(cAtt)

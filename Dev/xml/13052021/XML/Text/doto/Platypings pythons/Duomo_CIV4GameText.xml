@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+<!--		<Tag>TXT_KEY_BUILDING_THE_DUOMO</Tag>
+		<English>The Duomo</English>
+		</TEXT>
+		<TEXT>
+		<Tag>TXT_KEY_BUILDING_THE_DUOMO_PEDIA</Tag>
+		<English>[TAB]The Basilica di Santa Maria del Fiore (English: Basilica of Saint Mary of the Flower) is the main church of Florence, Italy. The Duomo, as it is ordinarily called, was begun in 1296 in the Gothic style to the design of Arnolfo di Cambio and completed structurally in 1436 with the dome engineered by Filippo Brunelleschi. The exterior of the basilica is faced with polychrome marble panels in various shades of green and pink bordered by white and has an elaborate 19th century Gothic Revival facade by Emilio De Fabris.[PARAGRAPH:2]The cathedral complex, located in Piazza del Duomo, includes the Baptistery and Giotto's Campanile. The three buildings are part of the UNESCO World Heritage Site covering the historic centre of Florence and are a major attraction to tourists visiting the region of Tuscany. The basilica is one of Italy's largest churches, and until development of new structural materials in the modern era, the dome was the largest in the world. It remains the largest brick dome ever constructed.</English>
+		</TEXT>
+		<TEXT>
+	-->	<Tag>TXT_KEY_BUILDING_PYRAMID_STRATEGY</Tag>
+		<English>The [COLOR_BUILDING_TEXT]The Pyramids[COLOR_REVERT] increases culture to cities of all civilizations with the [COLOR_HIGHLIGHT_TEXT]State Religion[COLOR_REVERT].</English>
+		</TEXT>
+		<TEXT>
+		<Tag>TXT_KEY_BUILDING_THE_PYRAMID_HELP</Tag>
+		<English>[ICON_BULLET]+20%%[ICON_CULTURE] towards next [ICON_CULTURE] level in Cities with State [ICON_RELIGION]</English>
+		</TEXT>
+		<TEXT>
+		<Tag>TXT_DUOMO_BUILT</Tag>
+		<English>[COLOR_HIGHLIGHT_TEXT]Leaders of [COLOR_SELECTED_TEXT]%s1[COLOR_HIGHLIGHT_TEXT] have constructed [COLOR_SELECTED_TEXT]The Pyramids[COLOR_HIGHLIGHT_TEXT]![COLOR_REVERT]</English>
+		</TEXT>
+</Civ4GameText>
