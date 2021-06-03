@@ -15314,12 +15314,12 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 		int getEspionageDefenseModifier	= kBuilding.getEspionageDefenseModifier();
 		int getGreatPeopleRateModifier	= kBuilding.getGreatPeopleRateModifier();
 		int getFreeExperience	= kBuilding.getFreeExperience();
-		int getFoodKept	= kBuilding.getFoodKept();
+	//	int getFoodKept	= kBuilding.getFoodKept();
 //		int getAirlift	= kBuilding.getAirlift();
 		int getAirModifier	= kBuilding.getAirModifier();
 //		int getAirUnitCapacity	= kBuilding.getAirUnitCapacity();
 		int getNukeModifier	= kBuilding.getNukeModifier();
-		int getFreeSpecialist	= kBuilding.getFreeSpecialist();
+//		int getFreeSpecialist	= kBuilding.getFreeSpecialist();
 		int getMaintenanceModifier	= kBuilding.getMaintenanceModifier();
 		//DPII < Maintenance Modifiers >
 		int getLocalDistanceMaintenance = kBuilding.getLocalDistanceMaintenanceModifier();

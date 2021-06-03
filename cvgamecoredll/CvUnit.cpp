@@ -1639,15 +1639,22 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted)
 					if (dmgFromRangedA != 0)
 						dUnitPreDamage = pDefender->getDamage();//save the unit damage before the change - needed for later messsage damage display
 						resolveRangedCombat(pDefender, this, pPlot, bVisible, dmgFromRangedA);
-				}	
-				if (bdefenderRanged && GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE))
+				}
+				else
+				{
+					resolveCombat(pDefender, pPlot, bVisible);
+				}
+				//retalliate is only for ranged vs ranged
+				if (!pDefender->isDead() && bAttckerRanged &&
+					bdefenderRanged && GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE))
 				{
 					rndHitDef = randomRangedGen(this, pDefender);
 					dmgFromRangedD = rndHitDef ? rangeCombatDamageK(this, pDefender) : 0; //if hit miss dont do damage
 					if (dmgFromRangedD != 0)
 						aUnitPreDamage = this->getDamage();//save the unit damage before the change - needed for later messsage damage display
-						resolveRangedCombat(this,pDefender, this->plot(), bVisible, fmath::round(dmgFromRangedD / 2));//i decided reta;oation damage would be halfed
-				}		
+					resolveRangedCombat(this, pDefender, this->plot(), bVisible, fmath::round(dmgFromRangedD / 2));//i decided reta;oation damage would be halfed
+					
+				}
 			}
 			else
 			{
@@ -4312,13 +4319,12 @@ bool CvUnit::isNukeVictim(const CvPlot* pPlot, TeamTypes eTeam) const
 }
 
 
-bool CvUnit::canNukeAt(/* advc: renamed from "pPlot" */ CvPlot const* pFrom,
-	int iX, int iY) const
+bool CvUnit::canNukeAt(CvPlot const& kFrom, int iX, int iY) const
 {
-	if (!canNuke(pFrom))
+	if (!canNuke(&kFrom))
 		return false;
 
-	int iDistance = plotDistance(pFrom->getX(), pFrom->getY(), iX, iY);
+	int iDistance = plotDistance(kFrom.getX(), kFrom.getY(), iX, iY);
 	if (iDistance <= nukeRange())
 		return false;
 
@@ -4330,7 +4336,7 @@ bool CvUnit::canNukeAt(/* advc: renamed from "pPlot" */ CvPlot const* pFrom,
 	{
 		if (isNukeVictim(pTargetPlot, it->getID()))
 		{
-			if (!isEnemy(it->getID(), *pFrom))
+			if (!isEnemy(it->getID(), kFrom))
 				return false;
 		}
 	}
@@ -4341,7 +4347,7 @@ bool CvUnit::canNukeAt(/* advc: renamed from "pPlot" */ CvPlot const* pFrom,
 
 bool CvUnit::nuke(int iX, int iY)
 {
-	if(!canNukeAt(plot(), iX, iY))
+	if(!canNukeAt(getPlot(), iX, iY))
 		return false;
 
 	CvWString szBuffer;
