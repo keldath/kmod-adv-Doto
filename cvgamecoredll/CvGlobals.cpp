@@ -1119,7 +1119,9 @@ namespace // advc
 		for (std::vector<T*>::iterator it = array.begin(); it != array.end(); ++it)
 		{
 			(*it)->read(pStream);
-			setInfoTypeFromString((*it)->getType(), iIndex);
+			/*	advc (note): This function should be a CvGlobals member instead of
+				accessing the singleton instance. Well, this stuff is unused anyway. */
+			CvGlobals::getInstance().setInfoTypeFromString((*it)->getType(), iIndex);
 			++iIndex;
 		}
 
@@ -1251,6 +1253,9 @@ bool CvGlobals::readDiplomacyInfoArray(FDataStreamBase* pStream)
 
 void CvGlobals::writeDiplomacyInfoArray(FDataStreamBase* pStream)
 {
+	/*	advc.003i (note): I don't see DiplomacyInfos in the files cached by BtS;
+		it might be that the EXE discards them. (For mods, I can't get the cache
+		to do anything anyway.) */
 	writeInfoArray(pStream, m_paDiplomacyInfo);
 }
 

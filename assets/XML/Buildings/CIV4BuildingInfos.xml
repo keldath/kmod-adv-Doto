@@ -21377,7 +21377,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iGlobalExperience>0</iGlobalExperience>
 <!-- pop limit -->
 			<iPopulationLimitChange>2</iPopulationLimitChange>
-<!-- pop limit --><iFoodKept>0</iFoodKept>
+<!-- pop limit -->
+			<iFoodKept>0</iFoodKept>
 			<iAirlift>0</iAirlift>
 			<iAirModifier>0</iAirModifier>
 			<iAirUnitCapacity>0</iAirUnitCapacity>
@@ -27938,6 +27939,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<FreeStartEra>NONE</FreeStartEra>
 			<MaxStartEra>NONE</MaxStartEra>
 			<ObsoleteTech>NONE</ObsoleteTech>
+			<!-- K-Mod: was REFRIGERATION -->
 			<PrereqTech>TECH_MEDICINE</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_CORPORATION</PrereqTech>
@@ -28312,6 +28314,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<FreeStartEra>NONE</FreeStartEra>
 			<MaxStartEra>NONE</MaxStartEra>
 			<ObsoleteTech>NONE</ObsoleteTech>
+			<!-- K-Mod: was PLASTICS -->
 			<PrereqTech>TECH_COMBUSTION</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_CORPORATION</PrereqTech>
@@ -28499,6 +28502,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<FreeStartEra>NONE</FreeStartEra>
 			<MaxStartEra>NONE</MaxStartEra>
 			<ObsoleteTech>NONE</ObsoleteTech>
+			<!-- K-Mod: was COMBUSTION -->
 			<PrereqTech>TECH_STEEL</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_CORPORATION</PrereqTech>

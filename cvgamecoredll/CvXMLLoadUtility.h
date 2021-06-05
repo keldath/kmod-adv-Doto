@@ -36,7 +36,7 @@ public:
 	bool LoadOptionalGlobals();
 	bool LoadThroneRoomInfo(); // </advc.003v>
 
-	bool ReadGlobalDefines(const TCHAR* szXMLFileName, CvCacheObject* cache);
+	bool ReadGlobalDefines(TCHAR const* szXMLFileName, CvCacheObject* cache);
 	
 	DllExport bool SetGlobalDefines();
 	DllExport bool SetGlobalTypes();
@@ -89,7 +89,7 @@ public:
 		that lacks tags which, normally, are mandatory. */
 	void setAssertMandatoryEnabled(bool b);
 
-	bool LoadCivXml(FXml* pFXml, const TCHAR* szFilename);
+	bool LoadCivXml(FXml* pFXml, TCHAR const* szFilename);
 
 	bool GetXmlVal(std::wstring& r, wchar const* szDefault = NULL);
 	bool GetXmlVal(std::string& r, char const* szDefault = NULL);
@@ -106,6 +106,8 @@ public:
 	bool GetNextXmlVal(wchar* r, wchar const* szDefault = NULL);
 	// advc: Return by reference (was pointer)
 	bool GetNextXmlVal(int& r, int iDefault = 0);
+	bool GetNextXmlVal(short& r, short iDefault = 0); // advc.003t
+	bool GetNextXmlVal(char& r, char iDefault = 0); // advc.003t
 	bool GetNextXmlVal(float& r, float fDefault = 0.0f);
 	bool GetNextXmlVal(bool& r, bool bDefault = false);
 
@@ -132,7 +134,7 @@ public:
 	void SetFeatureStruct(int** ppiFeatureTech, int** ppiFeatureTime, int** ppiFeatureProduction, bool** ppbFeatureRemove);
 	void SetImprovementBonuses(CvImprovementBonusInfo** ppImprovementBonus);
 
-	static int FindInInfoClass(const TCHAR* szType, bool hideAssert = false);
+	static int FindInInfoClass(TCHAR const* szType, bool hideAssert = false);
 
 	#ifdef _USRDLL
 	template <class T>
@@ -154,9 +156,50 @@ public:
 	/*	advc: Replaced three functions with a template (inspired by rheinig's mod;
 		Civ4Col also does this) */
 	template<typename T>
-	void SetVariableListTagPair(T** pptList, const TCHAR* szRootTagName,
-			int iInfoBaseLength, T tDefaultListVal = 0);
-	void SetVariableListTagPair(CvString** ppszList, const TCHAR* szRootTagName,
+	void SetVariableListTagPair(T** pptList, TCHAR const* szRootTagName,
+			int iInfoBaseLength, T tDefaultListVal = 0,
+			// <advc.003t>
+			CvInfoMap<T>* pMap = NULL);
+	template<typename T>
+	void SetVariableListTagPair(CvInfoMap<T>& kMap, TCHAR const* szRootTagName)
+	{
+		SetVariableListTagPair<T>(NULL, szRootTagName, kMap.numKeys(),
+				kMap.getDefault(), &kMap);
+	}
+	template<typename INT>
+	void SetVariableListPerYield(CvInfoMap<INT>& kMap, TCHAR const* szRootTagName);
+	void SetVariableListPerCommerce(CvInfoMap<bool>& kMap, TCHAR const* szRootTagName);
+	template<class YieldMap_t, typename V>
+	void SetVariableListTagYield(CvInfoMap<V>& kMap, TCHAR const* szTagName,
+			TCHAR const* szKeyTagName, TCHAR const* szYieldTagName);
+	template<bool bYIELD, typename CvInfoMapType>
+	void SetShortTagList(CvInfoMapType& kMap, TCHAR const* szTagName)
+	{	// Based on BtS code repeated throughout the CvInfo classes
+		if (gDLL->getXMLIFace()->SetToChildByTagName(GetXML(), szTagName))
+		{
+			int* piArray = NULL;
+			int iValuesSet = (bYIELD ? SetYields(&piArray) : SetCommerce(&piArray));
+			if (iValuesSet > 0)
+				kMap.insert(piArray);
+			/*	These (de-)allocations are very much avoidable.
+				Tbd.: Write SetYields, SetCommerce variants for CvInfoMap. */
+			delete[] piArray;
+			gDLL->getXMLIFace()->SetToParent(GetXML());
+		}
+		kMap.finalizeInsertions();
+	}
+	template<typename MapType>
+	void SetYieldList(MapType& kMap, TCHAR const* szTagName)
+	{
+		SetShortTagList<true>(kMap, szTagName);
+	}
+	template<typename MapType>
+	void SetCommerceList(MapType& kMap, TCHAR const* szTagName)
+	{
+		SetShortTagList<false>(kMap, szTagName);
+	}
+	// </advc.003t>
+	void SetVariableListTagPair(CvString** ppszList, TCHAR const* szRootTagName,
 			int iInfoBaseLength, CvString szDefaultListVal = "");
 /************************************************************************************************/
 /* RevDCM  XMLloading                             05/05/10             phungus420               */
@@ -171,7 +214,7 @@ public:
 /************************************************************************************************/
 /* RevDCM	                                 END                                                */
 /************************************************************************************************/	
-	void SetVariableListTagPairForAudioScripts(int **ppiList, const TCHAR* szRootTagName,
+	void SetVariableListTagPairForAudioScripts(int **ppiList, TCHAR const* szRootTagName,
 			int iInfoBaseLength, int iDefaultListVal = -1);
 	/*	advc (19 Feb 2021): Deleted four versions (a fifth - AudioScripts - deleted
 		much earlier) that took a param CvString* m_paszTagList.
@@ -182,7 +225,7 @@ public:
 
 	bool SetAndLoadVar(int** ppiVar, int iDefault=0);
 	bool SetStringList(CvString** ppszStringArray, int* piSize);
-	int GetHotKeyInt(const TCHAR* pszHotKeyVal);
+	int GetHotKeyInt(TCHAR const* pszHotKeyVal);
 /************************************************************************************************/
 /* TGA_INDEXATION                          01/21/08                                MRGENIE      */
 /*                                                                                              */
@@ -238,7 +281,7 @@ private:
 	template <class T>
 	void LoadGlobalClassInfo(std::vector<T*>& aInfos, const char* szFileRoot,
 			const char* szFileDirectory, const char* szXmlPath, bool bTwoPass,
-			CvCacheObject* (CvDLLUtilityIFaceBase::*pArgFunction)(const TCHAR*) = NULL);
+			CvCacheObject* (CvDLLUtilityIFaceBase::*pArgFunction)(TCHAR const*) = NULL);
 	template <class T>
 	void SetGlobalClassInfo(std::vector<T*>& aInfos, const char* szTagName, bool bTwoPass,
 			bool bFinalCall = false); // advc.xmldefault
@@ -246,7 +289,7 @@ private:
 	void SetDiplomacyInfo(std::vector<CvDiplomacyInfo*>& DiploInfos, const char* szTagName);
 	void LoadDiplomacyInfo(std::vector<CvDiplomacyInfo*>& DiploInfos, const char* szFileRoot,
 			const char* szFileDirectory, const char* szXmlPath,
-			CvCacheObject* (CvDLLUtilityIFaceBase::*pArgFunction) (const TCHAR*));
+			CvCacheObject* (CvDLLUtilityIFaceBase::*pArgFunction) (TCHAR const*));
 	//
 	// special cases of set class info which don't use the template because of extra code they have
 	//

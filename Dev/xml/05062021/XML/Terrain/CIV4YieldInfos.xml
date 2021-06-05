@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by Jesse Smith (Firaxis Games) -->
+<!-- Sid Meier's Civilization 4 -->
+<!-- Copyright Firaxis Games 2005 -->
+<!-- -->
+<!-- Yield Infos -->
+<!--
+YieldInfos	This begins and ends the entire file.
+YieldInfo	This contains the info for each type of yield: food, hammers, and commerce.
+
+Text
+Tag Name	Description
+Type	This is the name of the yield type, used internally by the game.
+Description	This is a tag referencing an entry in the text files, describing the particular type of yield.
+ColorType	This refers to a color specified in the Civ4ColorVals file (as expected, food and commerce are somewhat orange/yield in color and hammers are bluish).
+
+Integers
+All of these tags have a numerical value. Though it sometimes can be negative, it usually is not.
+
+Tag Name	Description
+iAIWeightPercent	Used to control the AI's strategy and weighting of individual yields. For example, the AI weights hammers more than commerce.
+iCityChange	Unknown. Might affect the city center yields.
+iGoldenAgeYield	If the player enters a golden age and iGoldenAgeYieldThreshold is met, increases the output by this amount.
+iGoldenAgeYieldThreshold	The minimum number of yield per turn for the iGoldenAgeYield bonus to kick in (i.e. all tiles producing 1 or more hammers will produce an extra hammer during a golden age).
+iHillsChange	Increases the yield on hills by this amount (e.g. food has a value of -1, meaning hills produce less food).
+iLakeChange	Increases the yield on lake tiles by this amount (e.g. food has a value of 1, meaning lakes produce an extra food per turn).
+iMinCity	The minimum yield per turn that a city can have. For food, this is 2. For hammers and commerce, this is 1.
+iPeakChange	Default is 0. If not zero, increases the yield on peak/mountain tiles by this amount.
+iTradeModifier	Unknown exactly. Commerce has a value of 100, while food and hammers have values of 0. Might affect trade routes.
+
+Lists (Multi-line)
+All List tags consist of an opening/closing tag, which is shown here, and then each entry within it is another tag with the same name as the parent tag, minus the "s" (i.e. singular, rather than plural).
+
+Tag Name	Description
+SymbolPaths	This contains multiple uses of the SymbolPaths tag to list the various directory paths for yield icons.
+
+Art
+These tags are directly related to the rendering of art for the entry.
+
+Tag Name	Description
+SymbolPath	Each entry of this tag contains the directory path to a unique yield icon.
+
+-->
+<!-- advc (comments):
+	 *  The only K-Mod change in this file is that the AI weights were all set
+		to 100%
+	 *	The SymbolPaths aren't used; instead, BtS gets the symbols for the
+		Yield Display from: Art/Interface/Symbols/Vertical_Symbols.dds -->
+<Civ4YieldInfos xmlns="x-schema:CIV4TerrainSchema.xml">
+	<YieldInfos>
+		<YieldInfo>
+			<Type>YIELD_FOOD</Type>
+			<Description>TXT_KEY_YIELD_FOOD</Description>
+			<iHillsChange>-1</iHillsChange>
+			<iPeakChange>0</iPeakChange>
+			<iLakeChange>1</iLakeChange>
+			<iCityChange>0</iCityChange>
+			<iPopulationChangeOffset>0</iPopulationChangeOffset>
+			<iPopulationChangeDivisor>0</iPopulationChangeDivisor>
+			<iMinCity>2</iMinCity>
+			<iTradeModifier>0</iTradeModifier>
+			<iGoldenAgeYield>0</iGoldenAgeYield>
+			<iGoldenAgeYieldThreshold>0</iGoldenAgeYieldThreshold>
+			<iAIWeightPercent>100</iAIWeightPercent>
+			<ColorType>COLOR_YIELD_FOOD</ColorType>
+			<SymbolPaths>
+				<SymbolPath>Art/Interface/Symbols/Food/Food01.nif</SymbolPath>
+				<SymbolPath>Art/Interface/Symbols/Food/Food02.nif</SymbolPath>
+				<SymbolPath>Art/Interface/Symbols/Food/Food03.nif</SymbolPath>
+				<SymbolPath>Art/Interface/Symbols/Food/Food04.nif</SymbolPath>
+				<SymbolPath>Art/Interface/Symbols/Food/Food05.nif</SymbolPath>
+			</SymbolPaths>
+		</YieldInfo>
+		<YieldInfo>
+			<Type>YIELD_PRODUCTION</Type>
+			<Description>TXT_KEY_YIELD_PRODUCTION</Description>
+			<iHillsChange>1</iHillsChange>
+			<iPeakChange>1</iPeakChange>
+			<iLakeChange>0</iLakeChange>
+			<iCityChange>0</iCityChange>
+			<iPopulationChangeOffset>0</iPopulationChangeOffset>
+			<iPopulationChangeDivisor>0</iPopulationChangeDivisor>
+			<iMinCity>1</iMinCity>
+			<iTradeModifier>0</iTradeModifier>
+			<iGoldenAgeYield>1</iGoldenAgeYield>
+			<iGoldenAgeYieldThreshold>1</iGoldenAgeYieldThreshold>
+			<iAIWeightPercent>100</iAIWeightPercent>
+			<ColorType>COLOR_YIELD_PRODUCTION</ColorType>
+			<SymbolPaths>
+				<SymbolPath>Art/Interface/Symbols/Production/Production01.nif</SymbolPath>
+				<SymbolPath>Art/Interface/Symbols/Production/Production02.nif</SymbolPath>
+				<SymbolPath>Art/Interface/Symbols/Production/Production03.nif</SymbolPath>
+				<SymbolPath>Art/Interface/Symbols/Production/Production04.nif</SymbolPath>
+				<SymbolPath>Art/Interface/Symbols/Production/Production05.nif</SymbolPath>
+			</SymbolPaths>
+		</YieldInfo>
+		<YieldInfo>
+			<Type>YIELD_COMMERCE</Type>
+			<Description>TXT_KEY_YIELD_COMMERCE</Description>
+			<iHillsChange>0</iHillsChange>
+			<iPeakChange>0</iPeakChange>
+			<iLakeChange>0</iLakeChange>
+<!-- my game starts with 2 settlers, so this is how i hope to negate lower income -->
+			<iCityChange>0</iCityChange>
+			<iPopulationChangeOffset>0</iPopulationChangeOffset>
+			<iPopulationChangeDivisor>0</iPopulationChangeDivisor>
+			<iMinCity>1</iMinCity>
+			<iTradeModifier>100</iTradeModifier>
+			<iGoldenAgeYield>1</iGoldenAgeYield>
+			<iGoldenAgeYieldThreshold>1</iGoldenAgeYieldThreshold>
+			<iAIWeightPercent>100</iAIWeightPercent>
+			<ColorType>COLOR_YIELD_COMMERCE</ColorType>
+			<SymbolPaths>
+				<SymbolPath>Art/Interface/Symbols/Commerce/Commerce01.nif</SymbolPath>
+				<SymbolPath>Art/Interface/Symbols/Commerce/Commerce02.nif</SymbolPath>
+				<SymbolPath>Art/Interface/Symbols/Commerce/Commerce03.nif</SymbolPath>
+				<SymbolPath>Art/Interface/Symbols/Commerce/Commerce04.nif</SymbolPath>
+				<SymbolPath>Art/Interface/Symbols/Commerce/Commerce05.nif</SymbolPath>
+			</SymbolPaths>
+		</YieldInfo>
+	</YieldInfos>
+</Civ4YieldInfos>

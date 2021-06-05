@@ -1638,7 +1638,7 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted)
 					dmgFromRangedA = rndHitAtk ? rangeCombatDamageK(pDefender, this) : 0; //if hit miss dont do damage
 					if (dmgFromRangedA != 0)
 						dUnitPreDamage = pDefender->getDamage();//save the unit damage before the change - needed for later messsage damage display
-						resolveRangedCombat(pDefender, this, pPlot, bVisible, dmgFromRangedA);
+					resolveRangedCombat(pDefender, this, pPlot, bVisible, dmgFromRangedA);
 				}
 				else
 				{

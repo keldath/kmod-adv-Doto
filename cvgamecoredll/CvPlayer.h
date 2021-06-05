@@ -311,6 +311,9 @@ public:
 	int getProductionNeeded(ProjectTypes eProject) const;															// Exposed to Python
 	int getProductionModifier(UnitTypes eUnit) const;
 	int getProductionModifier(BuildingTypes eBuilding) const;
+	// <advc>
+	int getProductionTraitModifier(UnitTypes eUnit) const;
+	int getProductionTraitModifier(BuildingTypes eBuilding) const; // </advc>
 	int getProductionModifier(ProjectTypes eProject) const;
 	scaled trainingModifierFromHandicap(bool bWorldClass = false) const;
 
@@ -1693,6 +1696,8 @@ protected:  // <advc.210>
 	EnumMap<BonusTypes,int> m_aiBonusImport;
 	EnumMap<ImprovementTypes,int> m_aiImprovementCount;
 
+	/*	advc (note): These three should be per building class
+		(but it's tedious to change) */
 	EnumMap<BuildingTypes,int> m_aiFreeBuildingCount;
 	EnumMap<BuildingTypes,int> m_aiExtraBuildingHappiness;
 	EnumMap<BuildingTypes,int> m_aiExtraBuildingHealth;

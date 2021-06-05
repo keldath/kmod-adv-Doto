@@ -275,12 +275,12 @@ void CvHotkeyInfo::write(FDataStreamBase* pStream)
 	pStream->WriteString(m_szHotKeyString);
 }
 #endif
-// <advc.tag>
+// advc.tag:
 void CvHotkeyInfo::addElements(std::vector<XMLElement*>& r) const
 {
 	CvXMLInfo::addElements(r);
 	// (Could add CvHotKeyInfo elements here)
-} // </advc.tag>
+}
 
 int CvHotkeyInfo::getActionInfoIndex() const
 {
@@ -399,7 +399,7 @@ bool CvXMLInfo::XMLElement::isMandatory() const { return m_bMandatory; }
 CvXMLInfo::IntElement::IntElement(int iEnumValue, CvString szName) :
 		XMLElement(iEnumValue, szName), m_iDefaultValue(0) {}
 
-CvXMLInfo::IntElement::IntElement(int iEnumValue, CvString szName, int iDefault) :
+CvXMLInfo::IntElement::IntElement(int iEnumValue, CvString szName, short iDefault) :
 		XMLElement(iEnumValue, szName, false), m_iDefaultValue(iDefault) {}
 
 CvXMLInfo::ElementDataType CvXMLInfo::IntElement::getDataType() const
@@ -407,7 +407,7 @@ CvXMLInfo::ElementDataType CvXMLInfo::IntElement::getDataType() const
 	return INT_ELEMENT;
 }
 
-int CvXMLInfo::IntElement::getDefaultValue() const { return m_iDefaultValue; }
+short CvXMLInfo::IntElement::getDefaultValue() const { return m_iDefaultValue; }
 
 CvXMLInfo::BoolElement::BoolElement(int iEnumValue, CvString szName) :
 		XMLElement(iEnumValue, szName), m_bDefaultValue(false) {}
@@ -430,7 +430,7 @@ void CvXMLInfo::addElements(std::vector<XMLElement*>& r) const
 void CvXMLInfo::set(IntElementTypes e, int iNewValue)
 {
 	FAssertBounds(0, m_aiData.size(), e);
-	m_aiData[e] = iNewValue;
+	m_aiData[e] = toShort(iNewValue);
 }
 
 void CvXMLInfo::set(BoolElementTypes e, bool bNewValue)
@@ -478,7 +478,7 @@ bool CvXMLInfo::read(CvXMLLoadUtility* pXML)
 						static_cast<IntElement&>(kElement).getDefaultValue());
 			}
 			FAssertBounds(0, m_aiData.size(), iEnumValue);
-			m_aiData[iEnumValue] = iTmp;
+			m_aiData[iEnumValue] = toShort(iTmp);
 			break;
 		case BOOL_ELEMENT:
 			szName.insert(0, "b");
@@ -504,14 +504,30 @@ bool CvXMLInfo::read(CvXMLLoadUtility* pXML)
 void CvXMLInfo::read(FDataStreamBase* pStream)
 {
 	CvInfoBase::read(pStream);
-	pStream->Read((int)m_aiData.size(), m_aiData.data());
-	pStream->Read((int)m_abData.size(), m_abData.data());
+	for (size_t i = 0; i < m_aiData.size(); i++)
+	{
+		short iVal;
+		pStream->Read(&iVal);
+		m_aiData[i] = iVal;
+	}
+	for (size_t i = 0; i < m_abData.size(); i++)
+	{
+		bool bVal;
+		pStream->Read(&bVal);
+		m_abData[i] = bVal;
+	}
 }
 
 void CvXMLInfo::write(FDataStreamBase* pStream)
 {
 	CvInfoBase::write(pStream);
-	pStream->Write((int)m_aiData.size(), m_aiData.data());
-	pStream->Write((int)m_abData.size(), m_abData.data());
+	for (size_t i = 0; i < m_aiData.size(); i++)
+	{
+		pStream->Write(m_aiData[i]);
+	}
+	for (size_t i = 0; i < m_abData.size(); i++)
+	{
+		pStream->Write(m_abData[i]);
+	}
 }
 #endif // </advc.tag>

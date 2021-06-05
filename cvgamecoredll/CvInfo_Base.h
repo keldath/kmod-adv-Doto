@@ -4,6 +4,7 @@
 #define CV_INFO_BASE_H
 
 #include "CyInfoWrapper.h" // advc.003x
+#include "CvInfo_EnumMap.h" // advc.enum
 
 /*  advc.003x: Cut from CvInfos.h; to be precompiled.
 	CvInfoBase, CvScalableInfo, CvHotkeyInfo */
@@ -58,11 +59,10 @@ public: // All the const functions are exposed to Python
 	virtual void read(FDataStreamBase* pStream);
 	virtual void write(FDataStreamBase* pStream);
 	#endif
-	// FUNCTION:    read
-	//! \brief      Reads in a CvAnimationPathInfo definition from XML
-	//! \param      pXML Pointer to the XML loading object
-	//! \retval     true if the definition was read successfully, false otherwise
-	// (advc: Cut this comment from CvAnimationPathInfo)
+	/*	Reads in a Cv...Info definition from XML
+		param: pXML Pointer to the XML loading object
+		returns: true if the definition was read successfully, false otherwise.
+		(advc: Cut this comment from CvAnimationPathInfo) */
 	virtual bool read(CvXMLLoadUtility* pXML);
 	virtual bool readPass2(CvXMLLoadUtility* pXML)
 	{
@@ -76,7 +76,6 @@ public: // All the const functions are exposed to Python
 	}
 
 protected:
-	//bool doneReadingXML(CvXMLLoadUtility* pXML); // advc.003j: Never had an implementation
 
 	bool m_bGraphicalOnly;
 
@@ -94,6 +93,8 @@ protected:
 	mutable CvWString m_szCachedHelp;
 	mutable CvWString m_szCachedStrategy;
 	mutable CvWString m_szCachedCivilopedia;
+
+	//bool doneReadingXML(CvXMLLoadUtility* pXML); // advc.003j: Never had an implementation
 };
 
 // holds the scale for scalable objects
@@ -115,7 +116,8 @@ protected:
 };
 
 /*	advc.tag: Abstract class that allows XML elements to be added
-	and accessed through enum values */
+	and accessed through enum values
+	For elements that map an enum key to a value, see CvInfo_EnumMap.h. */
 class CvXMLInfo : public CvInfoBase
 {
 public:
@@ -128,12 +130,12 @@ public:
 	{
 		NUM_BOOL_ELEMENT_TYPES
 	};
-	__forceinline int get(IntElementTypes e) const
+	__forceinline short get(IntElementTypes e) const
 	{
 		FAssertBounds(0, m_aiData.size(), e);
 		return m_aiData[e];
 	}
-	__forceinline int get(BoolElementTypes e) const
+	__forceinline bool get(BoolElementTypes e) const
 	{
 		FAssertBounds(0, m_abData.size(), e);
 		return m_abData[e];
@@ -169,11 +171,11 @@ protected:
 	{
 	public:
 		IntElement(int iEnumValue, CvString szName);
-		IntElement(int iEnumValue, CvString szName, int iDefault);
+		IntElement(int iEnumValue, CvString szName, short iDefault);
 		ElementDataType getDataType() const;
-		int getDefaultValue() const;
+		short getDefaultValue() const;
 	private:
-		int m_iDefaultValue;
+		short m_iDefaultValue;
 	};
 	class BoolElement : public XMLElement
 	{
@@ -185,7 +187,7 @@ protected:
 	private:
 		int m_bDefaultValue;
 	};
-	/*  Derived classes that extend any of the element type enums need to override this.
+	/*	Derived classes that extend any of the element type enums need to override this.
 		The overridden function needs to call the base function and then append its
 		own elements to r. */
 	virtual void addElements(std::vector<XMLElement*>& r) const;
@@ -194,9 +196,21 @@ protected:
 	void set(BoolElementTypes e, bool bNewValue);
 
 private:
-	std::vector<int> m_aiData;
-	std::vector<bool> m_abData;
+	std::vector<short> m_aiData;
+	std::vector<bool> m_abData; // Should use a dynamic bitfield internally
 };
+
+/*	advc.tag: (To expose a tag to Python, this macro needs to be called in the
+	public section of the concrete XML info class that defines the tag, and a
+	py_get... def needs to be added in the appropriate CyInfoPythonInterface*.cpp.) */
+#define PY_GET_ELEMENT(ReturnType, TagName) \
+	private: \
+		FRIEND_CY_INFO_PYTHON_INTERFACE; \
+		ReturnType py_get##TagName() const \
+		{ \
+			return get(TagName); \
+		} \
+	public:
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //  class : CvHotkeyInfo

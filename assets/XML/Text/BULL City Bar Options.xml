@@ -37,7 +37,7 @@
 		<Italian>When checked, shows how many turns until a city will lose population if it is shrinking.</Italian>
 		<Spanish>Muestra cuántos turnos faltan para que una ciudad pierda población.</Spanish>
 	</TEXT-->
-	
+
 	<!-- advc.186: Not making these optional -->
 	<!--TEXT>
 		<Tag>TXT_KEY_BUG_OPT_CITYBAR__HEALTH_TEXT</Tag>
@@ -67,7 +67,7 @@
 		<Italian>Quando è selezionato, mostra la felicità risultante ([ICON_HAPPY] o [ICON_UNHAPPY]) per la città.</Italian>
 		<Spanish>Permite mostrar los iconos de felicidad ([ICON_HAPPY] o [ICON_UNHAPPY]) para la ciudad.</Spanish>
 	</TEXT-->
-	
+
 	<!-- advc.186: Tied to CityScreen__Anger_Counter now -->
 	<!--TEXT>
 		<Tag>TXT_KEY_BUG_OPT_CITYBAR__HURRYANGER_TEXT</Tag>
@@ -96,7 +96,7 @@
 		<German>Zeigt die Anzahl der wegen Zwangsrekrutierung unzufriedenen Bürger ([ICON_ANGRYPOP]) und die Anzahl der verbleibenden Runden an, bis diese sich wieder beruhigt haben</German>
 		<Spanish>Muestra la cantidad de población enfadada ([ICON_ANGRYPOP]) debido al reclutamiento y el número de turnos restantes de la misma.</Spanish>
 	</TEXT-->
-	
+
 	<!-- advc.186, advc.189: Partially merged, non-optional, no intention to merge fully. -->
 	<!--TEXT>
 		<Tag>TXT_KEY_BUG_OPT_CITYBAR__FOODASSIST_TEXT</Tag>
@@ -153,7 +153,7 @@
 		<German>Zeigt die effektiven Erträge von [ICON_COMMERCE], [ICON_HAPPY], [ICON_HEALTHY] und [ICON_GREATPEOPLE] eines Gebäudes an, das gerade errichtet wird</German>
 		<Spanish>Si se activa y una ciudad está construyendo un edificio, se muestran los beneficios reales esperados de [ICON_COMMERCE], [ICON_HAPPY], [ICON_HEALTHY], and [ICON_GREATPEOPLE] que produzca.</Spanish>
 	</TEXT>
-	
+
 	<!-- advc.186: Tied to CityScreen__WhipAssist now -->
 	<!--TEXT>
 		<Tag>TXT_KEY_BUG_OPT_CITYBAR__HURRYASSIST_TEXT</Tag>
@@ -183,7 +183,7 @@
 		<Italian>Quando è selezionato, include il turno corrente quando calcola il surplus ([ICON_PRODUCTION] e/o [ICON_GOLD]) per l'accelerazione da sacrifici.</Italian>
 		<Spanish>Si se activa, incluye la producción del turno actual cuando se calcule el excedente ([ICON_PRODUCTION] y/o [ICON_GOLD]) de apresurar construcción mediante sacrificio.</Spanish>
 	</TEXT-->
-	
+
 	<!-- advc.186: Don't need options for this -->
 	<!--TEXT>
 		<Tag>TXT_KEY_BUG_OPT_CITYBAR__TRADEDETAIL_TEXT</Tag>
@@ -213,7 +213,7 @@
 		<Italian>Quando è selezionato, mostra l'oro totale ([ICON_COMMERCE]) prima dei singoli tipi ([ICON_GOLD], [ICON_RESEARCH], [ICON_CULTURE], e [ICON_ESPIONAGE]).</Italian>
 		<Spanish>Muestra el comercio total ([ICON_COMMERCE]) delante de cada uno de los tipos de comercio individuales  ([ICON_GOLD], [ICON_RESEARCH], [ICON_CULTURE], y [ICON_ESPIONAGE]).</Spanish>
 	</TEXT-->
-	
+
 	<!-- advc.186: Replaced by the options below -->
 	<!--TEXT>
 		<Tag>TXT_KEY_BUG_OPT_CITYBAR__BUILDINGICONS_TEXT</Tag>
@@ -275,7 +275,7 @@
 		<Italian>Quando è selezionato, mostra le istruzioni per la selezione delle Città.</Italian>
 		<Spanish>Si se activa, mostrar las instrucciones para seleccionar ciudades.</Spanish>
 	</TEXT>
-	
+
 	<!-- advc.186: Don't need options for this -->
 	<!--TEXT>
 		<Tag>TXT_KEY_BUG_OPT_CITYBAR__CULTURETURNS_TEXT</Tag>

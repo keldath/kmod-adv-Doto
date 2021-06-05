@@ -264,7 +264,6 @@ int CvTeamAI::AI_estimateTotalYieldRate(YieldTypes eYield) const
 		Ignore turns with 0 production, because they are probably anarchy.
 		Bias towards most recent turns. */
 	int const iTurn = GC.getGame().getGameTurn();
-
 	int iTotal = 0;
 	for (MemberIter it(getID()); it.hasNext(); ++it)
 	{
@@ -843,6 +842,7 @@ void CvTeamAI::AI_updateAttitude(TeamTypes eTeam, /* advc.130e: */ bool bUpdateW
 		}
 	}
 }
+
 
 AttitudeTypes CvTeamAI::AI_getAttitude(TeamTypes eTeam, bool bForced) const
 {
@@ -2180,13 +2180,10 @@ DenialTypes CvTeamAI::AI_techTrade(TechTypes eTech, TeamTypes eToTeam) const
 			continue;
 		if (kLoopProject.isWorldProject() && getProjectMaking(eLoopProject) > 0)
 			return DENIAL_MYSTERY;
-		FOR_EACH_ENUM(Victory)
+		FOR_EACH_NON_DEFAULT_KEY(kLoopProject.getVictoryThreshold(), Victory)
 		{
-			if (GC.getGame().isVictoryValid(eLoopVictory) &&
-				kLoopProject.getVictoryThreshold(eLoopVictory))
-			{
+			if (GC.getGame().isVictoryValid(eLoopVictory))
 				return DENIAL_VICTORY;
-			}
 		}
 	}
 	return NO_DENIAL;
@@ -3792,7 +3789,6 @@ int CvTeamAI::AI_declareWarTradeVal(TeamTypes eTarget, TeamTypes eSponsor) const
 				GET_TEAM(eTarget).getMasterTeam(), getID());
 	}
 	else iTradeVal = AI_declareWarTradeValLegacy(eTarget, eSponsor);
-
 	/*	Don't charge much less than for an embargo. An embargo (weirdly)
 		would only compel one player to stop trading with the (whole) target team,
 		so we need to sum up the embargo trade values of the members of this team. */

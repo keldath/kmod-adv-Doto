@@ -1082,10 +1082,14 @@
 	</Define>
 
 	<!-- advc.162: 1 enables change 162 (see manual), 0 disables it (BtS
-		 behavior). -->
+		 behavior). 
+		 Keldath - turned on
+		according to f1rpo - 
+		On the turn that war is declared, units that enter enemy borders have all their movement points spent. That includes units in cargo, so they can't be unloaded right away. Exception: Air units and units that can explore rival territory (Caravel, Carrack, Submarines, Spy, Great Spy, Great Merchant; notably not Stealth Destroyer).
+		-->
 	<Define>
 		<DefineName>ENABLE_162</DefineName>
-		<iDefineIntVal>0</iDefineIntVal>
+		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
 
 	<!-- advc.156: When multiple members of a team are researching the same

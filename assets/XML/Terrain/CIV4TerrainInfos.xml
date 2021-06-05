@@ -316,9 +316,9 @@
 			<HillsYieldChange/>
 			<bWater>0</bWater>
 			<bImpassable>0</bImpassable>
-			<bFound>0</bFound>
-			<bFoundCoast>1</bFoundCoast>
-			<bFoundFreshWater>1</bFoundFreshWater>
+			<bFound>1</bFound>
+			<bFoundCoast>0</bFoundCoast>
+			<bFoundFreshWater>0</bFoundFreshWater>
 			<iMovement>1</iMovement>
 			<iSeeFrom>1</iSeeFrom>
 			<iSeeThrough>1</iSeeThrough>

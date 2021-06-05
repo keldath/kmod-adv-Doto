@@ -1865,21 +1865,17 @@ bool CvCity::canConstruct(BuildingTypes eBuilding, bool bContinue,
 		}*/
 //Shqype Vicinity Bonus End
 
-		if (kBuilding.isAnyBuildingClassNeededInCity()) // advc.003t
+		FOR_EACH_NON_DEFAULT_KEY(kBuilding.
+			isBuildingClassNeededInCity(), BuildingClass)
 		{
-			FOR_EACH_ENUM(BuildingClass)
-			{
-				if (!kBuilding.isBuildingClassNeededInCity(eLoopBuildingClass))
-					continue;
-				/*BuildingTypes ePrereqBuilding = (BuildingTypes)GC.getInfo(getCivilizationType()).getCivilizationBuildings(eLoopBuildingClass);
-				if (ePrereqBuilding != NO_BUILDING) {
-					if(getNumBuilding(ePrereqBuilding) <= 0)
-							//&& (bContinue || (getFirstBuildingOrder(ePrereqBuilding) == -1))) // advc (comment): This was already commented out in Vanilla Civ 4
-						return false;
-				}*/  // <advc.003w>
-				if (getNumBuilding(eLoopBuildingClass) <= 0)
-					return false; // </advc.003w>
-			}
+			/*BuildingTypes ePrereqBuilding = (BuildingTypes)GC.getInfo(getCivilizationType()).getCivilizationBuildings(eLoopBuildingClass);
+			if (ePrereqBuilding != NO_BUILDING) {
+				if(getNumBuilding(ePrereqBuilding) <= 0)
+						//&& (bContinue || (getFirstBuildingOrder(ePrereqBuilding) == -1))) // advc (comment): This was already commented out in Vanilla Civ 4
+					return false;
+			}*/  // <advc.003w>
+			if (getNumBuilding(eLoopBuildingClass) <= 0)
+				return false; // </advc.003w>
 		}
 	}
 /************************************************************************************************/
@@ -2689,16 +2685,11 @@ int CvCity::getProductionModifier(UnitTypes eUnit) const
 int CvCity::getProductionModifier(BuildingTypes eBuilding) const
 {
 	int iMultiplier = GET_PLAYER(getOwner()).getProductionModifier(eBuilding);
-	if (GC.getInfo(eBuilding).isAnyBonusProductionModifier()) // advc.003t
+	FOR_EACH_NON_DEFAULT_INFO_PAIR(GC.getInfo(eBuilding).
+		getBonusProductionModifier(), Bonus, int)
 	{
-		FOR_EACH_ENUM(Bonus)
-		{
-			if (hasBonus(eLoopBonus))
-			{
-				iMultiplier += GC.getInfo(eBuilding).
-						getBonusProductionModifier(eLoopBonus);
-			}
-		}
+		if (hasBonus(perBonusVal.first))
+			iMultiplier += perBonusVal.second;
 	}
 	CvPlayer const& kOwner = GET_PLAYER(getOwner());
 	if (kOwner.getStateReligion() != NO_RELIGION)
@@ -2717,10 +2708,11 @@ int CvCity::getProductionModifier(ProjectTypes eProject) const
 	if (GC.getInfo(eProject).isSpaceship())
 		iMultiplier += getSpaceProductionModifier();
 
-	FOR_EACH_ENUM(Bonus)
+	FOR_EACH_NON_DEFAULT_INFO_PAIR(GC.getInfo(eProject).
+		getBonusProductionModifier(), Bonus, int)
 	{
-		if (hasBonus(eLoopBonus))
-			iMultiplier += GC.getInfo(eProject).getBonusProductionModifier(eLoopBonus);
+		if (hasBonus(perBonusVal.first))
+			iMultiplier += perBonusVal.second;
 	}
 	// return std::max(0, iMultiplier);
 	return std::max(-50, iMultiplier); // UNOFFICIAL_PATCH (for mods), 05/10/10, jdog5000
@@ -3408,68 +3400,59 @@ if (buildingStatus == true)
 					kOwner.getBuildingCommerceChange(eBuilding, eLoopCommerce));
 			// < Civic Infos Plus End   >
 		}
-		if (kBuilding.isAnyReligionChange()) // advc.003t
+		FOR_EACH_NON_DEFAULT_INFO_PAIR(kBuilding.
+			getReligionChange(), Religion, int)
 		{
-			FOR_EACH_ENUM(Religion)
-			{
-				changeReligionInfluence(eLoopReligion,
-						kBuilding.getReligionChange(eLoopReligion) * iChange);
-			}
+			changeReligionInfluence(perReligionVal.first,
+					perReligionVal.second * iChange);
 		}
-		FOR_EACH_ENUM(Specialist)
+		FOR_EACH_NON_DEFAULT_INFO_PAIR(kBuilding.
+			getSpecialistCount(), Specialist, int)
 		{
-			changeMaxSpecialistCount(eLoopSpecialist,
-					kBuilding.getSpecialistCount(eLoopSpecialist) * iChange);
-			changeFreeSpecialistCount(eLoopSpecialist,
-					kBuilding.getFreeSpecialistCount(eLoopSpecialist) * iChange);
+			changeMaxSpecialistCount(perSpecialistVal.first,
+					perSpecialistVal.second * iChange);
 		}
-		if (kBuilding.isAnyImprovementFreeSpecialist()) // advc.003t
+		FOR_EACH_NON_DEFAULT_INFO_PAIR(kBuilding.
+			getFreeSpecialistCount(), Specialist, int)
 		{
-			FOR_EACH_ENUM(Improvement)
-			{
-				changeImprovementFreeSpecialists(eLoopImprovement,
-						kBuilding.getImprovementFreeSpecialist(eLoopImprovement) * iChange);
-			}
+			changeFreeSpecialistCount(perSpecialistVal.first,
+					perSpecialistVal.second * iChange);
+		}
+		FOR_EACH_NON_DEFAULT_INFO_PAIR(kBuilding.
+			getImprovementFreeSpecialist(), Improvement, int)
+		{
+			changeImprovementFreeSpecialists(perImprovementVal.first,
+					perImprovementVal.second * iChange);
 		}
 		FOR_EACH_ENUM(Bonus)
 		{
 			if (!hasBonus(eLoopBonus))
 				continue;
-
-			if (kBuilding.getBonusHealthChanges(eLoopBonus) > 0)
-			{
-				changeBonusGoodHealth(iChange *
-						kBuilding.getBonusHealthChanges(eLoopBonus));
-			}
-			else
-			{
-				changeBonusBadHealth(iChange *
-						kBuilding.getBonusHealthChanges(eLoopBonus));
-			}
-			if (kBuilding.getBonusHappinessChanges(eLoopBonus) > 0)
-			{
-				changeBonusGoodHappiness(iChange *
-						kBuilding.getBonusHappinessChanges(eLoopBonus));
-			}
-			else
-			{
-				changeBonusBadHappiness(iChange *
-						kBuilding.getBonusHappinessChanges(eLoopBonus));
-			}
+			int const iBonusHealthChange = kBuilding.getBonusHealthChanges(eLoopBonus);
+			if (iBonusHealthChange > 0)
+				changeBonusGoodHealth(iChange * iBonusHealthChange);
+			else changeBonusBadHealth(iChange * iBonusHealthChange);
+			int const iBonusHappyChange = kBuilding.getBonusHappinessChanges(eLoopBonus);
+			if (iBonusHappyChange > 0)
+				changeBonusGoodHappiness(iChange * iBonusHappyChange);
+			else changeBonusBadHappiness(iChange * iBonusHappyChange);
 			if (kBuilding.getPowerBonus() == eLoopBonus)
 				changePowerCount(iChange, kBuilding.isDirtyPower());
-
-			FOR_EACH_ENUM(Yield)
+			if (kBuilding.getBonusYieldModifier().isAnyNonDefault()) // advc.opt
 			{
-				changeBonusYieldRateModifier(eLoopYield, iChange * 
-						kBuilding.getBonusYieldModifier(eLoopBonus, eLoopYield));
+				FOR_EACH_ENUM(Yield)
+				{
+					changeBonusYieldRateModifier(eLoopYield, iChange *
+							kBuilding.getBonusYieldModifier(eLoopBonus, eLoopYield));
+				}
 			}
 		}
 
-		FOR_EACH_ENUM(UnitCombat)
+		FOR_EACH_NON_DEFAULT_INFO_PAIR(kBuilding.
+			getUnitCombatFreeExperience(), UnitCombat, int)
 		{
-			changeUnitCombatFreeExperience(eLoopUnitCombat, iChange *
-					kBuilding.getUnitCombatFreeExperience(eLoopUnitCombat));
+			changeUnitCombatFreeExperience(perUnitCombatVal.first,
+					iChange * perUnitCombatVal.second);
 		}
 
 		FOR_EACH_ENUM(Domain)
@@ -5208,13 +5191,11 @@ int CvCity::getAdditionalBaseGreatPeopleRateByBuilding(BuildingTypes eBuilding) 
 	int iExtraRate = kBuilding.getGreatPeopleRateChange();
 	if (!GET_TEAM(getTeam()).isObsoleteBuilding(eBuilding))
 	{
-		FOR_EACH_ENUM(Specialist)
+		FOR_EACH_NON_DEFAULT_INFO_PAIR(kBuilding.
+			getFreeSpecialistCount(), Specialist, int)
 		{
-			if (kBuilding.getFreeSpecialistCount(eLoopSpecialist) != 0)
-			{
-				iExtraRate += getAdditionalBaseGreatPeopleRateBySpecialist(eLoopSpecialist,
-						kBuilding.getFreeSpecialistCount(eLoopSpecialist));
-			}
+			iExtraRate += getAdditionalBaseGreatPeopleRateBySpecialist(
+					perSpecialistVal.first, perSpecialistVal.second);
 		}
 	}
 	return iExtraRate;
@@ -6444,15 +6425,14 @@ int CvCity::getAdditionalHappinessByBuilding(BuildingTypes eBuilding, int& iGood
 	}
 
 	// Bonus
-	if (kBuilding.isAnyBonusHappinessChanges()) // advc.003t
+	FOR_EACH_NON_DEFAULT_INFO_PAIR(kBuilding.
+		getBonusHappinessChanges(), Bonus, int)
 	{
-		FOR_EACH_ENUM(Bonus)
+		BonusTypes const eLoopBonus = perBonusVal.first;
+		if ((hasBonus(eLoopBonus) || kBuilding.getFreeBonus() == eLoopBonus) &&
+			kBuilding.getNoBonus() != eLoopBonus)
 		{
-			if ((hasBonus(eLoopBonus) || kBuilding.getFreeBonus() == eLoopBonus) &&
-				kBuilding.getNoBonus() != eLoopBonus)
-			{
-				addGoodOrBad(kBuilding.getBonusHappinessChanges(eLoopBonus), iGood, iBad);
-			}
+			addGoodOrBad(perBonusVal.second, iGood, iBad);
 		}
 	}
 	// Commerce
@@ -6545,19 +6525,18 @@ int CvCity::getAdditionalHealthByBuilding(BuildingTypes eBuilding, int& iGood, i
 	}
 
 	// Bonus
-	if (kBuilding.isAnyBonusHealthChanges()) // advc.003t
+	FOR_EACH_NON_DEFAULT_INFO_PAIR(kBuilding.
+		getBonusHealthChanges(), Bonus, int)
 	{
-		FOR_EACH_ENUM(Bonus)
+		BonusTypes const eLoopBonus = perBonusVal.first;
+		if ((hasBonus(eLoopBonus) || kBuilding.getFreeBonus() == eLoopBonus ||
+			// <advc.001h>
+			(bAssumeStrategicBonuses &&
+			GC.getInfo(eLoopBonus).getHappiness() == 0 &&
+			GC.getInfo(eLoopBonus).getHealth() == 0)) && // </advc.001h>
+			kBuilding.getNoBonus() != eLoopBonus)
 		{
-			if ((hasBonus(eLoopBonus) || kBuilding.getFreeBonus() == eLoopBonus ||
-				// <advc.001h>
-				(bAssumeStrategicBonuses &&
-				GC.getInfo(eLoopBonus).getHappiness() == 0 &&
-				GC.getInfo(eLoopBonus).getHealth() == 0)) && // </advc.001h>
-				kBuilding.getNoBonus() != eLoopBonus)
-			{
-				addGoodOrBad(kBuilding.getBonusHealthChanges(eLoopBonus), iGood, iBad);
-			}
+			addGoodOrBad(perBonusVal.second, iGood, iBad);
 		}
 	}
 	// advc.001h: Need this several times
@@ -7747,21 +7726,21 @@ int CvCity::getAdditionalBaseYieldRateByBuilding(YieldTypes eYield,
 		iExtraRate += iNewTotalTradeYield - iTotalTradeYield;
 	}
 
-	FOR_EACH_ENUM(Specialist)
+	FOR_EACH_NON_DEFAULT_INFO_PAIR(kBuilding.
+		getFreeSpecialistCount(), Specialist, int)
 	{
-		if (kBuilding.getFreeSpecialistCount(eLoopSpecialist) != 0)
-		{
-			iExtraRate += getAdditionalBaseYieldRateBySpecialist(eYield,
-					eLoopSpecialist, kBuilding.getFreeSpecialistCount(eLoopSpecialist));
-		}
+		iExtraRate += getAdditionalBaseYieldRateBySpecialist(eYield,
+				perSpecialistVal.first, perSpecialistVal.second);
 	}
 
 	return iExtraRate;
 }
 
-/*	Returns the additional yield rate modifier that adding one of the given buildings will provide.
-	Doesn't check if the building can be constructed in this city. */
-int CvCity::getAdditionalYieldRateModifierByBuilding(YieldTypes eYield, BuildingTypes eBuilding) const
+/*	Returns the additional yield rate modifier that adding one of
+	the given buildings will provide. Doesn't check if the building can be
+	constructed in this city. */
+int CvCity::getAdditionalYieldRateModifierByBuilding(YieldTypes eYield,
+	BuildingTypes eBuilding) const
 {
 	if (GET_TEAM(getTeam()).isObsoleteBuilding(eBuilding))
 		return 0; // advc
@@ -7794,17 +7773,17 @@ int CvCity::getAdditionalYieldRateModifierByBuilding(YieldTypes eYield, Building
 		int iMaxModifier = 0;
 		FOR_EACH_ENUM(Domain)
 		{
-			iMaxModifier = std::max(iMaxModifier,
+			iMaxModifier = std::max<int>(iMaxModifier,
 					kBuilding.getDomainProductionModifier(eLoopDomain));
 		}
 		iExtraModifier += iMaxModifier;
 	}
-	FOR_EACH_ENUM(Bonus)
+	FOR_EACH_NON_DEFAULT_INFO_PAIR(kBuilding.
+		getBonusYieldModifier(), Bonus, YieldPercentMap)
 	{
-		if (hasBonus(eLoopBonus))
-			iExtraModifier += kBuilding.getBonusYieldModifier(eLoopBonus, eYield);
+		if (hasBonus(perBonusVal.first))
+			iExtraModifier += perBonusVal.second[eYield];
 	}
-
 	return iExtraModifier;
 }
 // BUG - Building Additional Yield - end
@@ -8589,13 +8568,11 @@ int CvCity::getAdditionalBaseCommerceRateByBuildingImpl(CommerceTypes eCommerce,
 	}
 	// ignore double-time check since this assumes you are building it this turn
 
-	FOR_EACH_ENUM(Specialist)
+	FOR_EACH_NON_DEFAULT_INFO_PAIR(kBuilding.
+		getFreeSpecialistCount(), Specialist, int)
 	{
-		if (kBuilding.getFreeSpecialistCount(eLoopSpecialist) != 0)
-		{
-			iExtraRate += getAdditionalBaseCommerceRateBySpecialistImpl(eCommerce,
-					eLoopSpecialist, kBuilding.getFreeSpecialistCount(eLoopSpecialist));
-		}
+		iExtraRate += getAdditionalBaseCommerceRateBySpecialistImpl(eCommerce,
+				perSpecialistVal.first, perSpecialistVal.second);
 	}
 
 	return iExtraRate;
@@ -10153,11 +10130,9 @@ int CvCity::getAddedFreeSpecialistCount(SpecialistTypes eSpecialist) const
 	for (int i = 0; i < kCiv.getNumBuildings(); i++)
 	{
 		BuildingTypes eBuilding = kCiv.buildingAt(i);
-		if (GC.getInfo(eBuilding).getFreeSpecialistCount(eSpecialist) > 0)
-		{
-			iR -= getNumActiveBuilding(eBuilding) *
-					GC.getInfo(eBuilding).getFreeSpecialistCount(eSpecialist);
-		}
+		int iFreeSpecialists = GC.getInfo(eBuilding).getFreeSpecialistCount(eSpecialist);
+		if (iFreeSpecialists > 0)
+			iR -= getNumActiveBuilding(eBuilding) * iFreeSpecialists;
 	}
 	FAssert(iR >= 0);
 	return std::max(0, iR);
@@ -10448,13 +10423,11 @@ void CvCity::setNumRealBuildingTimed(BuildingTypes eBuilding, int iNewValue, boo
 					}
 				}
 			}
-			if (kBuilding.isAnyReligionChange()) // advc.003t
+			FOR_EACH_NON_DEFAULT_INFO_PAIR(kBuilding.
+				getReligionChange(), Religion, int)
 			{
-				FOR_EACH_ENUM(Religion)
-				{
-					if (kBuilding.getReligionChange(eLoopReligion) > 0)
-						setHasReligion(eLoopReligion, true, true, true);
-				}
+				if (perReligionVal.second > 0)
+					setHasReligion(perReligionVal.first, true, true, true);
 			}
 			int const iFreeTechs = kBuilding.getFreeTechs() * iChange; // advc
 			if (iFreeTechs > 0)
@@ -10768,10 +10741,10 @@ int CvCity::getReligionGrip(ReligionTypes eReligion) const
 			(iCurrentTurn + iTimeScale);
 
 	return iScore; // note. the random part is not included in this function.
-} // K-Mod end
+}
 
-
-void CvCity::processVoteSource(VoteSourceTypes eVoteSource, bool bActive) // advc: Renamed from "processVoteSourceBonus"
+// advc: Renamed from "processVoteSourceBonus"
+void CvCity::processVoteSource(VoteSourceTypes eVoteSource, bool bActive)
 {
 	if (!GET_PLAYER(getOwner()).isLoyalMember(eVoteSource))
 		return;
@@ -10781,8 +10754,7 @@ void CvCity::processVoteSource(VoteSourceTypes eVoteSource, bool bActive) // adv
 
 	ReligionTypes const eReligion = GC.getGame().getVoteSourceReligion(eVoteSource);
 	{
-		SpecialistTypes const eSpecialist = (SpecialistTypes)
-				GC.getInfo(eVoteSource).getFreeSpecialist();
+		SpecialistTypes const eSpecialist = GC.getInfo(eVoteSource).getFreeSpecialist();
 		if (eSpecialist != NO_SPECIALIST)
 		{
 			if (eReligion == NO_RELIGION || isHasReligion(eReligion))
@@ -12948,7 +12920,8 @@ void CvCity::read(FDataStreamBase* pStream)
 			}
 		}
 	} // </advc.310>
-	// <advc.911a>
+	/*	<advc.911a>  (Reminder: All this junk can and should be
+		deleted as soon as savegame compatibility gets broken by a release) */
 	if (uiFlag < 10)
 	{
 		SpecialistTypes eSpy = (SpecialistTypes)GC.getInfoTypeForString(
@@ -12978,8 +12951,44 @@ void CvCity::read(FDataStreamBase* pStream)
 
 				}
 			}
+		} // </advc.911a>
+		// <advc.908b>
+		BuildingTypes eHippodrome = (BuildingTypes)
+					GC.getInfoTypeForString("BUILDING_BYZANTINE_HIPPODROME");
+		if (eHippodrome != NO_BUILDING && getNumBuilding(eHippodrome) > 0 &&
+			!GET_TEAM(getTeam()).isObsoleteBuilding(eHippodrome))
+		{
+			SpecialistTypes eArtist = (SpecialistTypes)GC.getInfoTypeForString(
+					"SPECIALIST_ARTIST");
+			if (eArtist != NO_SPECIALIST)
+				changeMaxSpecialistCount(eArtist, getNumBuilding(eHippodrome));
 		}
-	} // </advc.911a>
+		std::vector<std::pair<BuildingClassTypes,int> > aeiCultureHappyMults;
+		aeiCultureHappyMults.push_back(std::make_pair((BuildingClassTypes)
+				GC.getInfoTypeForString("BUILDINGCLASS_THEATRE"),
+				50));
+		aeiCultureHappyMults.push_back(std::make_pair((BuildingClassTypes)
+				GC.getInfoTypeForString("BUILDINGCLASS_COLOSSEUM"),
+				200));
+		for (size_t i = 0; i < aeiCultureHappyMults.size(); i++)
+		{
+			BuildingClassTypes const eClass = aeiCultureHappyMults[i].first;
+			if (eClass == NO_BUILDINGCLASS || getNumBuilding(eClass) <= 0)
+				continue;
+			FOR_EACH_ENUM(Building)
+			{
+				if (GC.getInfo(eLoopBuilding).getBuildingClassType() == eClass &&
+					!GET_TEAM(getTeam()).isObsoleteBuilding(eLoopBuilding))
+				{
+					int iNewHappy = GC.getInfo(eLoopBuilding).
+							getCommerceHappiness(COMMERCE_CULTURE);
+					int iOldHappy = (iNewHappy * 100) / aeiCultureHappyMults[i].second;
+					changeCommerceHappinessPer(COMMERCE_CULTURE,
+							(iNewHappy - iOldHappy) * getNumBuilding(eLoopBuilding));
+				}
+			}
+		}
+	} // </advc.908b>
 }
 
 void CvCity::write(FDataStreamBase* pStream)
@@ -12996,7 +13005,7 @@ void CvCity::write(FDataStreamBase* pStream)
 	//uiFlag = 7; // advc.003u: m_bChooseProductionDirty
 	//uiFlag = 8; // advc.310
 	//uiFlag = 9; // advc.912d (adjust food kept)
-	uiFlag = 10; // advc.911a
+	uiFlag = 10; // advc.911a, advc.908b
 	pStream->Write(uiFlag);
 
 	pStream->Write(m_iID);
@@ -13343,8 +13352,8 @@ void CvCity::getVisibleBuildings(std::list<BuildingTypes>& kChosenVisible,
 		if (!bAllVisible && !bWonder && !bDefense)
 		{
 			bool bVisibleYieldChange = false;
-			int* aiSeaPlotYieldChanges = kBuilding.getSeaPlotYieldChangeArray();
-			int* aiRiverPlotYieldChanges = kBuilding.getRiverPlotYieldChangeArray();
+			YieldChangeMap aiSeaPlotYieldChanges = kBuilding.getSeaPlotYieldChange();
+			YieldChangeMap aiRiverPlotYieldChanges = kBuilding.getRiverPlotYieldChange();
 			FOR_EACH_ENUM(Yield)
 			{
 				if(aiRiverPlotYieldChanges[eLoopYield] != 0 ||
@@ -14723,7 +14732,7 @@ int CvCity::calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
 			iBestCapitalMaintenance = std::min(iBestCapitalMaintenance, iTempMaintenance);
 	}
 	iTempMaintenance = std::min(iWorstCityMaintenance, iBestCapitalMaintenance);*/ // BtS
-	// K-Mod end
+	// </K-Mod>
 	FAssert(iTempMaintenance >= 0);
 	return iTempMaintenance;
 }
@@ -15254,7 +15263,10 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 
 		for (iI = 0; iI < GC.getNumBuildingClassInfos(); iI++)
 		{
-			if (GC.getBuildingInfo(eBuilding).isBuildingClassNeededInCity(iI))
+			if (/*GC.getBuildingInfo(eBuilding).isBuildingClassNeededInCity(iI)*/
+				GC.getBuildingInfo(eBuilding).isBuildingClassNeededInCity((BuildingClassTypes)iI)
+			//	(BuildingClassTypes)GC.getBuildingInfo((BuildingTypes)iI) getNumBuilding((BuildingTypes)			
+				)
 			{
 				ePrereqBuilding = ((BuildingTypes)(GC.getCivilizationInfo(getCivilizationType()).getCivilizationBuildings(iI)));
 
@@ -15454,6 +15466,8 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 					getBuildingCommerceChange);
 			// < Civic Infos Plus End   >
 		}
+		/*
+	doto 109 - isAnyReligionChange was removed or moved in advc 1.00
 		if (kBuilding.isAnyReligionChange()) // advc.003t
 		{
 			FOR_EACH_ENUM(Religion)
@@ -15464,6 +15478,7 @@ void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsole
 						kBuilding.getReligionChange(eLoopReligion) * iChange);
 			}
 		}
+		*/
 /*		FOR_EACH_ENUM(Specialist)
 		{
 			int getSpecialistCount = kBuilding.getSpecialistCount(eLoopSpecialist);

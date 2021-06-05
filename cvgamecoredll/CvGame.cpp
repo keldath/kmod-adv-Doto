@@ -8800,10 +8800,9 @@ void CvGame::processVote(const VoteTriggeredData& kData, int iChange)
 		changeFreeTradeCount(iChange);
 	if (kVote.isNoNukes())
 		changeNoNukesCount(iChange);
-	FOR_EACH_ENUM(Civic)
+	FOR_EACH_NON_DEFAULT_KEY(kVote.isForceCivic(), Civic)
 	{
-		if (kVote.isForceCivic(eLoopCivic))
-			changeForceCivicCount(eLoopCivic, iChange);
+		changeForceCivicCount(eLoopCivic, iChange);
 	}
 	if (iChange <= 0)
 		return;
@@ -10945,18 +10944,11 @@ void CvGame::doVoteResults()
 					size_t pos1 = szResolution.find(L"(");
 					if(pos1 != CvWString::npos && pos1 + 1 < szResolution.length())
 					{
-						bool bForceCivic = false;
+						//doto advc 1.00 removed 
+						//bool bForceCivic = false;
 						// Mustn't remove the stuff after the dash if bForceCivic
-						for(int i = 0; i < GC.getNumCivicInfos(); i++)
-						{
-							if(kVote.isForceCivic(i))
-							{
-								bForceCivic = true;
-								break;
-							}
-						}
-						size_t pos2 = std::min((bForceCivic ? CvWString::npos :
-								szResolution.find(L" -")),
+						size_t pos2 = std::min((kVote.isForceCivic().isAnyNonDefault() ?
+								CvWString::npos : szResolution.find(L" -")),
 								szResolution.find(L")"));
 						if(pos2 > pos1)
 							szResolution = szResolution.substr(pos1 + 1, pos2 - pos1 - 1);
