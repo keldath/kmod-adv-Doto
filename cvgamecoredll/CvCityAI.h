@@ -1,7 +1,5 @@
 #pragma once
 
-// cityAI.h
-
 #ifndef CIV4_CITY_AI_H
 #define CIV4_CITY_AI_H
 
@@ -78,11 +76,11 @@ public:
 	int AI_neededCultureDefenders() const; // </advc.099c>
 	// <advc.139>
 	void AI_updateSafety(bool bUpdatePerfectSafety = true);
-	inline CitySafetyTypes AI_getSafety() const { return m_eSafety; }
-	inline bool AI_isEvacuating() const { return (m_eSafety == CITYSAFETY_EVACUATING); }
-	inline bool AI_isSafe() const { return (m_eSafety >= CITYSAFETY_SAFE); }
+	CitySafetyTypes AI_getSafety() const { return m_eSafety; }
+	bool AI_isEvacuating() const { return (m_eSafety == CITYSAFETY_EVACUATING); }
+	bool AI_isSafe() const { return (m_eSafety >= CITYSAFETY_SAFE); }
 	void AI_setCityValPercent(int iValue);
-	inline int AI_getCityValPercent() const { return m_iCityValPercent; }
+	int AI_getCityValPercent() const { return m_iCityValPercent; }
 	// </advc.139>
 
 	// advc: Moved from CvCity b/c it's part of the AI
@@ -103,6 +101,7 @@ public:
 		}
 		return (AI_getEmphasizeAvoidGrowthCount() > 0); 
 	}
+/* DOTO-Population Limit END*/
 	int AI_getEmphasizeGreatPeopleCount() const { return m_iEmphasizeGreatPeopleCount; }
 	bool AI_isEmphasizeGreatPeople() const { return (AI_getEmphasizeGreatPeopleCount() > 0); }
 
@@ -166,9 +165,8 @@ public:
 			bool bConstCache = false) const; // advc.001n
 	int AI_highestTeamCloseness(TeamTypes eTeam, // K-Mod
 			bool bConstCache) const; // advc.001n
-	// advc.003j: Both unused
-	/*bool AI_isFrontlineCity() const; // K-Mod
-	int AI_calculateMilitaryOutput() const;*/ // K-Mod
+	//bool AI_isFrontlineCity() const; // K-Mod // advc.003j: unused
+	int AI_calculateMilitaryOutput() const; // K-Mod
 	int AI_cityThreat(/*bool bDangerPercent = false*/) const; // advc: param was (and has always been) unused
 
 	int AI_getWorkersHave() const;
@@ -285,14 +283,15 @@ protected:
 	int AI_countGoodTiles(bool bHealthy, bool bUnworkedOnly, int iThreshold = 50, bool bWorkerOptimization = false) const;
 	int AI_countGoodSpecialists(bool bHealthy) const;
 	//int AI_calculateTargetCulturePerTurn() const; // disabled by K-Mod
+	int AI_nukeEplosionValue() const; // advc.650
 
 	void AI_stealPlots();
 
 	//int AI_buildingSpecialYieldChangeValue(BuildingTypes kBuilding, YieldTypes eYield) const;
 	int AI_buildingSeaYieldChangeWeight(BuildingTypes eBuilding, bool bGrowing = true) const; // K-Mod
-	// <advc.001n> was void AI_cachePlayerCloseness(int)
+	// advc.opt: was void AI_cachePlayerCloseness(int)
 	int AI_calculatePlayerCloseness(int iMaxDistance, PlayerTypes ePlayer,
-			bool bConstCache) const; // </advc.001n>
+			bool bConstCache) const; // advc.001n
 	// <advc.031b>
 	int AI_calculateSettlerPriority(int iAreaSites, int iBestAreaFoundValue,
 			int iWaterAreaSites, int iBestWaterAreaFoundValue) const; // </advc.031b>

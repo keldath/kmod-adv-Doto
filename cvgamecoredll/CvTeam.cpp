@@ -171,12 +171,15 @@ void CvTeam::reset(TeamTypes eID, bool bConstructorCall)
 	m_abNoTradeTech.reset();
 	if (!bConstructorCall && getID() != NO_TEAM)
 	{
-		for (int i = 0; i < MAX_TEAMS; i++)
+		FOR_EACH_ENUM(Team)
 		{
-			CvTeam& kLoopTeam = GET_TEAM((TeamTypes)i);
+			CvTeam& kLoopTeam = GET_TEAM(eLoopTeam);
 			kLoopTeam.m_aiStolenVisibilityTimer.reset(getID());
 			kLoopTeam.m_aiWarWeariness.reset(getID());
-			kLoopTeam.m_aiTechShareCount.reset(getID());
+			/*	advc.001: The TechShareCount does not contain info about other teams
+				but info about team counts (kekm.38: player counts).
+				So it shouldn't be reset on kLoopTeam when this team is reset. */
+			//kLoopTeam.m_aiTechShareCount.reset(getID());
 			kLoopTeam.m_aiEspionagePointsAgainstTeam.reset(getID());
 			kLoopTeam.m_aiCounterespionageTurnsLeftAgainstTeam.reset(getID());
 			kLoopTeam.m_aiCounterespionageModAgainstTeam.reset(getID());
@@ -1007,14 +1010,11 @@ bool CvTeam::canChangeWarPeace(TeamTypes eTeam, bool bAllowVassal) const
 	}
 	/*  <advc.001> Had a civ make peace with a minor civ in one game. Not sure how
 		that happened; probably through a random event. */
-	if(isMinorCiv() || GET_TEAM(eTeam).isMinorCiv())
+	if (isMinorCiv() || GET_TEAM(eTeam).isMinorCiv())
 		return false; // </advc.001>
 	// <advc.104> Don't want to have to check this separately in the UWAI code
-	if(GC.getGame().isOption(GAMEOPTION_ALWAYS_WAR) && isAtWar(eTeam) &&
-		(isHuman() || GET_TEAM(eTeam).isHuman()))
-	{
-		return false;
-	} // </advc.104>
+	if (isAtWar(eTeam) && (isAlwaysWar() || GET_TEAM(eTeam).isAlwaysWar()))
+		return false; // </advc.104>
 
 	return true;
 }
@@ -1069,7 +1069,8 @@ void CvTeam::declareWar(TeamTypes eTarget, bool bNewDiplo, WarPlanTypes eWarPlan
 		{
 			if (pLoopDeal->isBetween(getID(), eTarget))
 			{
-				pLoopDeal->kill(true, NO_PLAYER, /* <advc.002l> */ !bFirst);
+				pLoopDeal->kill(true, /* advc.130j: */ getLeaderID(),
+						/* <advc.002l> */ !bFirst);
 				bFirst = false; // </advc.002l>
 			}
 		}
@@ -1083,7 +1084,7 @@ void CvTeam::declareWar(TeamTypes eTarget, bool bNewDiplo, WarPlanTypes eWarPlan
 	setAtWar(eTarget, true);
 	kTarget.setAtWar(getID(), true);
 	// <advc.162>
-	if(GC.getDefineBOOL(CvGlobals::ENABLE_162))
+	if(GC.getDefineBOOL(CvGlobals::SPEND_ALL_MOVES_ON_INVASION))
 		m_abJustDeclaredWar.set(eTarget, true); // </advc.162>
 	// BETTER_BTS_AI_MOD (08/21/09, jdog5000, Efficiency): START
 	GC.getMap().invalidateBorderDangerCache(eTarget);
@@ -1582,7 +1583,6 @@ void CvTeam::signOpenBorders(TeamTypes eTeam, /* advc.032: */ bool bProlong)
 {
 	FAssert(eTeam != NO_TEAM);
 	FAssert(eTeam != getID());
-
 	if (!isAtWar(eTeam) && (getID() != eTeam))
 	{
 		TradeData item(TRADE_OPEN_BORDERS);
@@ -1606,7 +1606,6 @@ void CvTeam::signDefensivePact(TeamTypes eTeam, /* advc.032: */ bool bProlong)
 	FAssert(eTeam != getID());
 	if (isAtWar(eTeam))
 		return;
-
 	TradeData item(TRADE_DEFENSIVE_PACT);
 	if ((bProlong && isDefensivePact(eTeam)) || // advc.032
 		(GET_PLAYER(getLeaderID()).canTradeItem(GET_TEAM(eTeam).getLeaderID(), item) &&
@@ -1630,7 +1629,6 @@ bool CvTeam::canSignDefensivePact(TeamTypes eTeam) /* advc: */ const
 		CvTeam& kThirdTeam = *it;
 		if (kThirdTeam.getID() == getID() || kThirdTeam.getID() == eTeam)
 			continue;
-
 		if (kThirdTeam.isPermanentWarPeace(eTeam) != kThirdTeam.isPermanentWarPeace(getID()))
 			return false;
 		if (isPermanentWarPeace(kThirdTeam.getID()) != GET_TEAM(eTeam).isPermanentWarPeace(kThirdTeam.getID()))
@@ -1651,26 +1649,24 @@ int CvTeam::getAssets() const
 
 int CvTeam::getPower(bool bIncludeVassals) const
 {
-	int r = 0;
-
+	int iPow = 0;
 	for (MemberIter it(getID()); it.hasNext(); ++it)
-		r += it->getPower();
-
+		iPow += it->getPower();
 	if (bIncludeVassals)
 	{
 		for (PlayerIter<ALIVE,VASSAL_OF> it(getID()); it.hasNext(); ++it)
-			r += it->getPower();
+			iPow += it->getPower();
 	}
-	return r;
+	return iPow;
 }
 
 
-int CvTeam::getDefensivePower(TeamTypes eExcludeTeam) const  // advc: refactored
+int CvTeam::getDefensivePower(TeamTypes eExcludeTeam) const
 {
 	FAssert(eExcludeTeam != getID());
 	FAssert(!isBarbarian()); // advc
 
-	int r = 0;
+	int iPow = 0;
 	// K-Mod. only our master will have defensive pacts.
 	CvTeam const& kOurMaster = GET_TEAM(getMasterTeam());
 	for (PlayerIter<CIV_ALIVE> it; it.hasNext(); ++it)
@@ -1680,18 +1676,18 @@ int CvTeam::getDefensivePower(TeamTypes eExcludeTeam) const  // advc: refactored
 			continue;
 		TeamTypes eMaster = kPlayer.getMasterTeam();
 		if (eMaster == kOurMaster.getID() || kOurMaster.isDefensivePact(eMaster))
-			r += kPlayer.getPower();
+			iPow += kPlayer.getPower();
 	}
-	return r;
+	return iPow;
 }
 
-// advc.003j (comment): Unused. Added by the BtS expansion; looks like it was never used.
+// advc.650 (comment): AdvCiv uses this BtS function; was previously unused.
 int CvTeam::getEnemyPower() const
 {
-	int r = 0;
+	int iPow = 0;
 	for (TeamIter<CIV_ALIVE,ENEMY_OF> it(getID()); it.hasNext(); ++it)
-		r += it->getPower(false);
-	return r;
+		iPow += it->getPower(false);
+	return iPow;
 }
 
 
@@ -1738,13 +1734,13 @@ bool CvTeam::isFullMember(VoteSourceTypes eVoteSource) const
 // BETTER_BTS_AI_MOD, General AI, 07/20/09, jdog5000: START
 int CvTeam::getNumWars(bool bIgnoreMinors, bool bIgnoreVassals) const
 {	// <advc.003m> Cached
-	int r = m_iMajorWarEnemies;
+	int iCount = m_iMajorWarEnemies;
 	if(!bIgnoreMinors)
-		r += m_iMinorWarEnemies;
+		iCount += m_iMinorWarEnemies;
 	if(bIgnoreVassals)
-		r -= m_iVassalWarEnemies;
-	FAssert(r >= 0 || !GC.getGame().isAllGameDataRead());
-	return r;
+		iCount -= m_iVassalWarEnemies;
+	FAssert(iCount >= 0 || !GC.getGame().isAllGameDataRead());
+	return iCount;
 }
 
 void CvTeam::changeAtWarCount(int iChange, bool bMinorTeam, bool bVassal) {
@@ -1783,8 +1779,10 @@ bool CvTeam::allWarsShared(TeamTypes eOther, /* advc.130f: */ bool bCheckBothWay
 	{
 		CvTeam const& kLoopTeam = *it;
 		if(bCheckBothWays && // advc.130f
-				kLoopTeam.isAtWar(getID()) != kLoopTeam.isAtWar(eOther))
+			kLoopTeam.isAtWar(getID()) != kLoopTeam.isAtWar(eOther))
+		{
 			return false;
+		}
 		// <advc.130f>
 		if(!kLoopTeam.isAtWar(eOther) && kLoopTeam.isAtWar(getID()))
 			return false; // </advc.130f>
@@ -1796,10 +1794,10 @@ bool CvTeam::allWarsShared(TeamTypes eOther, /* advc.130f: */ bool bCheckBothWay
 int CvTeam::getHasMetCivCount(bool bIgnoreMinors) const
 {
 	PROFILE_FUNC(); // advc.agent: Would be easy enough to cache this
-	int r = (bIgnoreMinors ?
+	int iCount = (bIgnoreMinors ?
 			TeamIter<MAJOR_CIV,OTHER_KNOWN_TO>::count(getID()) :
 			TeamIter<CIV_ALIVE,OTHER_KNOWN_TO>::count(getID()));
-	return r;
+	return iCount;
 }
 
 
@@ -1907,24 +1905,12 @@ int CvTeam::getUnitClassMaking(UnitClassTypes eUnitClass) const
 }
 
 
-int CvTeam::getUnitClassCountPlusMaking(UnitClassTypes eIndex) const
-{
-	return getUnitClassCount(eIndex) + getUnitClassMaking(eIndex);
-}
-
-
 int CvTeam::getBuildingClassMaking(BuildingClassTypes eBuildingClass) const
 {
 	int iCount = 0;
 	for (MemberIter it(getID()); it.hasNext(); ++it)
 		iCount += it->getBuildingClassMaking(eBuildingClass);
 	return iCount;
-}
-
-
-int CvTeam::getBuildingClassCountPlusMaking(BuildingClassTypes eIndex) const
-{
-	return getBuildingClassCount(eIndex) + getBuildingClassMaking(eIndex);
 }
 
 
@@ -2046,27 +2032,6 @@ int CvTeam::countNumAIUnitsByArea(CvArea const& kArea, UnitAITypes eUnitAI) cons
 	int iCount = 0;
 	for (MemberIter it(getID()); it.hasNext(); ++it)
 		iCount += kArea.getNumAIUnits(it->getID(), eUnitAI);
-	return iCount;
-}
-
-// BETTER_BTS_AI_MOD, War strategy AI, 05/19/10, jdog5000:
-int CvTeam::countEnemyDangerByArea(CvArea const& kArea, TeamTypes eEnemyTeam) const
-{
-	PROFILE_FUNC();
-
-	int iCount = 0;
-	for (int iI = 0; iI < GC.getMap().numPlots(); iI++)
-	{
-		CvPlot const& kPlot = GC.getMap().getPlotByIndex(iI);
-		if (kPlot.isArea(kArea))
-		{
-			if (kPlot.getTeam() == getID())
-			{
-				iCount += kPlot.plotCount(PUF_canDefendEnemy, getLeaderID(),
-						false, NO_PLAYER, eEnemyTeam, PUF_isVisible, getLeaderID());
-			}
-		}
-	}
 	return iCount;
 }
 
@@ -2289,6 +2254,22 @@ void CvTeam::updateLeaderID()
 		FAssert(m_eLeader != NO_PLAYER);
 		m_eLeader = eFormerLeader; // Better than nothing (maybe)
 	}
+}
+
+// advc.127:
+bool CvTeam::isAlwaysWar() const
+{
+	if (!GC.getGame().isOption(GAMEOPTION_ALWAYS_WAR))
+		return false;
+	if (isHuman())
+		return true;
+	// Let always-war option apply during AI Auto Play
+	for (MemberIter itMember(getID()); itMember.hasNext(); ++itMember)
+	{
+		if (itMember->isHumanDisabled())
+			return true;
+	}
+	return false;
 }
 
 
@@ -2735,27 +2716,16 @@ void CvTeam::changeWarWeariness(TeamTypes eOtherTeam, const CvPlot& kPlot, int i
 	changeWarWeariness(eOtherTeam, iRatio * iFactor);
 }
 
-
-int CvTeam::getTechShareCount(TeamTypes eIndex) const
-{
-	return m_aiTechShareCount.get(eIndex);
-}
-
-
-bool CvTeam::isTechShare(TeamTypes eIndex) const
-{
-	return (getTechShareCount(eIndex) > 0);
-}
-
-
-void CvTeam::changeTechShareCount(TeamTypes eIndex, int iChange)
+// advc (for kekm.38): First param was TeamTypes eIndex; see comment in header.
+void CvTeam::changeTechShareCount(PlayerTypes eSharePlayers, int iChange)
 {
 	if (iChange == 0)
 		return;
 
-	m_aiTechShareCount.add(eIndex, iChange);
-	FAssert(getTechShareCount(eIndex) >= 0);
-	if (isTechShare(eIndex))
+	m_aiTechShareCount.add(eSharePlayers, toChar(iChange));
+	// advc: Both keys and values of the map are really player counts
+	FAssertBounds(0, MAX_PLAYERS, getTechShareCount(eSharePlayers));
+	if (isTechShare(eSharePlayers))
 		updateTechShare();
 }
 
@@ -2912,13 +2882,11 @@ void CvTeam::makeHasMet(TeamTypes eOther, bool bNewDiplo,
 		if(bShowMessage && iOnFirstContact == 1)
 			bShowMessage = false;
 	} // </advc.071>
-	if (GC.getGame().isOption(GAMEOPTION_ALWAYS_WAR))
-	{
-		if (isHuman() && getID() != eOther)
-			declareWar(eOther, false, NO_WARPLAN);
-	}  // advc: reduce indentation in else branch
-	else if (GC.getGame().isFinalInitialized() && !gDLL->GetWorldBuilderMode() &&
-		bNewDiplo && !isHuman() && !isAtWar(eOther))
+	if (isAlwaysWar() && getID() != eOther)
+		declareWar(eOther, false, NO_WARPLAN);
+	else if (!isHuman() && bNewDiplo &&
+		GC.getGame().isFinalInitialized() && !gDLL->GetWorldBuilderMode() &&
+		!isAtWar(eOther))
 	{
 		for (PlayerIter<HUMAN,MEMBER_OF> it(eOther); it.hasNext(); ++it)
 		{
@@ -3071,10 +3039,10 @@ void CvTeam::setAtWar(TeamTypes eIndex, bool bNewValue)
 		p.updatePlotGroup();
 		p.verifyUnitValidPlot();
 	}
-	for (MemberIter itOurMember(getID()); itOurMember.hasNext(); ++itOurMember)
+	for (MemberAIIter itOurMember(getID()); itOurMember.hasNext(); ++itOurMember)
 	{
 		CvPlayerAI& ourMember = *itOurMember;
-		for (MemberIter itTheirMember(eIndex); itTheirMember.hasNext(); ++itTheirMember)
+		for (MemberAIIter itTheirMember(eIndex); itTheirMember.hasNext(); ++itTheirMember)
 		{
 			CvPlayerAI& theirMember = *itTheirMember;
 			ourMember.AI_updateCloseBorderAttitude(theirMember.getID());
@@ -3082,13 +3050,6 @@ void CvTeam::setAtWar(TeamTypes eIndex, bool bNewValue)
 		}
 	} // (Attitude cache is updated by caller)
 	// </advc.035>
-}
-
-/*  advc.162: "Just" meaning on the current turn. Don't want to rely on
-	AI code (AI_getWarPlanStateCounter) for this. */
-bool CvTeam::hasJustDeclaredWar(TeamTypes eIndex) const
-{
-	return m_abJustDeclaredWar.get(eIndex);
 }
 
 
@@ -3131,7 +3092,7 @@ void CvTeam::setOpenBorders(TeamTypes eIndex, bool bNewValue)
 	bool bOldFreeTrade = isFreeTrade(eIndex);
 	m_abOpenBorders.set(eIndex, bNewValue);
 	// <advc.130p> OB affect diplo from rival trade
-	for (PlayerIter<MAJOR_CIV,NOT_SAME_TEAM_AS> itOther(getID()); itOther.hasNext(); ++itOther)
+	for (PlayerAIIter<MAJOR_CIV,NOT_SAME_TEAM_AS> itOther(getID()); itOther.hasNext(); ++itOther)
 	{
 		for (MemberIter itMember(getID()); itMember.hasNext(); ++itMember)
 			itOther->AI_updateAttitude(itMember->getID());
@@ -3226,7 +3187,7 @@ void CvTeam::setDefensivePact(TeamTypes eIndex, bool bNewValue)
 	// K-Mod. update attitude
 	if (GC.getGame().isFinalInitialized())
 	{
-		for (PlayerIter<MAJOR_CIV> it; it.hasNext(); ++it)
+		for (PlayerAIIter<MAJOR_CIV> it; it.hasNext(); ++it)
 			it->AI_updateAttitude();
 	} // K-Mod end
 }
@@ -3301,7 +3262,7 @@ void CvTeam::setVassal(TeamTypes eMaster, bool bNewValue, bool bCapitulated)
 			}
 		}
 	}  // advc: Update war and war plan counters
-	for (TeamIter<ALIVE> it; it.hasNext(); ++it)
+	for (TeamAIIter<ALIVE> it; it.hasNext(); ++it)
 	{
 		CvTeamAI& t = *it;
 		// <advc.003m>
@@ -3390,7 +3351,7 @@ void CvTeam::setVassal(TeamTypes eMaster, bool bNewValue, bool bCapitulated)
 		setForcePeace(eMaster, false);
 		GET_TEAM(eMaster).setForcePeace(getID(), false);
 		// <advc.130o> Forget tribute demands
-		for (MemberIter itMember(getID()); itMember.hasNext(); ++itMember)
+		for (MemberAIIter itMember(getID()); itMember.hasNext(); ++itMember)
 		{
 			for (PlayerIter<MAJOR_CIV> itOther; itOther.hasNext(); ++itOther)
 				itMember->AI_setMemoryCount(itOther->getID(), MEMORY_MADE_DEMAND, 0);
@@ -3436,7 +3397,7 @@ void CvTeam::setVassal(TeamTypes eMaster, bool bNewValue, bool bCapitulated)
 			}
 		}
 		triggerWars(); // kekm.26
-		for (TeamIter<MAJOR_CIV> it; it.hasNext(); ++it)
+		for (TeamAIIter<MAJOR_CIV> it; it.hasNext(); ++it)
 		{
 			CvTeamAI& kRival = *it;
 			if (!kRival.isAtWar(getID()))
@@ -3542,7 +3503,7 @@ void CvTeam::setVassal(TeamTypes eMaster, bool bNewValue, bool bCapitulated)
 		if(m_bCapitulated && AI().AI_getSharedWarSuccess(eMaster) +
 			GET_TEAM(eMaster).AI_getSharedWarSuccess(getID()) > 0)
 		{
-			for (TeamIter<MAJOR_CIV> it; it.hasNext(); ++it)
+			for (TeamAIIter<MAJOR_CIV> it; it.hasNext(); ++it)
 			{
 				CvTeamAI& kRival = *it;
 				if (kRival.getID() != getID() && kRival.getID() != eMaster)
@@ -3563,7 +3524,7 @@ void CvTeam::setVassal(TeamTypes eMaster, bool bNewValue, bool bCapitulated)
 			}
 		} // </advc.133>
 		// <advc.104j> Stop any war plans that eMaster may have forced on us
-		for (TeamIter<MAJOR_CIV,KNOWN_POTENTIAL_ENEMY_OF> it(eMaster); it.hasNext(); ++it)
+		for (TeamAIIter<MAJOR_CIV,KNOWN_POTENTIAL_ENEMY_OF> it(eMaster); it.hasNext(); ++it)
 		{
 			CvTeamAI const& kRival = *it;
 			if(!kRival.isAtWar(getID()))
@@ -3577,9 +3538,9 @@ void CvTeam::setVassal(TeamTypes eMaster, bool bNewValue, bool bCapitulated)
 	// <advc.130v> Border conflicts of capitulated vassal are held against the master
 	if (isCapitulated())
 	{
-		for (PlayerIter<MAJOR_CIV> itOther; itOther.hasNext(); ++itOther)
+		for (PlayerAIIter<MAJOR_CIV> itOther; itOther.hasNext(); ++itOther)
 		{
-			for (MemberIter itMember(eMaster); itMember.hasNext(); ++itMember)
+			for (MemberAIIter itMember(eMaster); itMember.hasNext(); ++itMember)
 				itOther->AI_updateCloseBorderAttitude(itMember->getID());
 		}
 	} // </advc.130v>
@@ -3591,9 +3552,9 @@ void CvTeam::setVassal(TeamTypes eMaster, bool bNewValue, bool bCapitulated)
 	for (TeamTypes eTeam = getID(); eTeam != NO_TEAM; eTeam =
 		(eTeam == getID() ? eMaster : NO_TEAM))
 	{
-		for (MemberIter itMember(eTeam); itMember.hasNext(); ++itMember)
+		for (MemberAIIter itMember(eTeam); itMember.hasNext(); ++itMember)
 		{
-			for (PlayerIter<MAJOR_CIV,NOT_SAME_TEAM_AS> itOther(eTeam);
+			for (PlayerAIIter<MAJOR_CIV,NOT_SAME_TEAM_AS> itOther(eTeam);
 				itOther.hasNext(); ++itOther)
 			{
 				itMember->AI_updateAttitude(itOther->getID());
@@ -3625,10 +3586,10 @@ void CvTeam::setVassal(TeamTypes eMaster, bool bNewValue, bool bCapitulated)
 	// <advc.130f> Delete stopped-trading memory
 	if(bWasCapitulated != bCapitulated)
 	{
-		for (MemberIter itMember(getID()); itMember.hasNext(); ++itMember)
+		for (MemberAIIter itMember(getID()); itMember.hasNext(); ++itMember)
 		{
 			CvPlayerAI& kOurMember = *itMember;
-			for (PlayerIter<MAJOR_CIV,NOT_SAME_TEAM_AS> itOther(getID());
+			for (PlayerAIIter<MAJOR_CIV,NOT_SAME_TEAM_AS> itOther(getID());
 				itOther.hasNext(); ++itOther)
 			{
 				CvPlayerAI& kOther = *itOther;
@@ -3688,7 +3649,7 @@ void CvTeam::freeVassal(TeamTypes eVassal) const
 		Want the civ that made the former master capitulate (i.e. getMasterTeam)
 		to have a right of first refusal. */
 	CvPlayerAI& kVassalLeader = GET_PLAYER(GET_TEAM(eVassal).getLeaderID());
-	for (PlayerIter<MAJOR_CIV> it; it.hasNext(); ++it)
+	for (PlayerAIIter<MAJOR_CIV> it; it.hasNext(); ++it)
 	{
 		CvPlayerAI const& kOther = *it;
 		if(kOther.getTeam() == getMasterTeam() || kOther.getTeam() == eVassal)
@@ -3738,7 +3699,7 @@ void CvTeam::triggerWars(bool bForceUpdateAttitude)
 	if(bWarsDeclared /* advc: */ || bForceUpdateAttitude)
 	{
 		// from declareWar (K-Mod code)
-		for (PlayerIter<MAJOR_CIV> it; it.hasNext(); ++it)
+		for (PlayerAIIter<MAJOR_CIV> it; it.hasNext(); ++it)
 			it->AI_updateAttitude();
 	}
 	bTriggeringWars = false;
@@ -3852,10 +3813,10 @@ void CvTeam::changeProjectCount(ProjectTypes eIndex, int iChange)
 	CvProjectInfo& kProject = GC.getInfo(eIndex);
 
 	changeNukeInterception(kProject.getNukeInterception() * iChange);
-
-	if (kProject.getTechShare() > 0 && kProject.getTechShare() <= MAX_TEAMS)
-		changeTechShareCount((TeamTypes)(kProject.getTechShare() - 1), iChange);
-
+	// <advc> (for kekm.38): Player counts, not team counts. And don't subtract 1.
+	if (kProject.getTechShare() > 0 && kProject.getTechShare() <= MAX_PLAYERS)
+		changeTechShareCount((PlayerTypes)kProject.getTechShare(), iChange);
+	// </advc>
 	FOR_EACH_NON_DEFAULT_KEY(kProject.getVictoryThreshold(), Victory)
 	{
 		setCanLaunch(eLoopVictory, GC.getGame().testVictory(eLoopVictory, getID()));
@@ -3868,7 +3829,7 @@ void CvTeam::changeProjectCount(ProjectTypes eIndex, int iChange)
 		GC.getGame().makeSpecialUnitValid((SpecialUnitTypes)kProject.getEveryoneSpecialUnit());
 
 	if (kProject.getEveryoneSpecialBuilding() != NO_SPECIALBUILDING)
-		GC.getGame().makeSpecialBuildingValid((SpecialBuildingTypes)kProject.getEveryoneSpecialBuilding());
+		GC.getGame().makeSpecialBuildingValid(kProject.getEveryoneSpecialBuilding());
 
 	if (kProject.isAllowsNukes())
 		GC.getGame().makeNukesValid(true);
@@ -3893,7 +3854,7 @@ void CvTeam::changeProjectCount(ProjectTypes eIndex, int iChange)
 			}
 		}
 // davidlallen: project civilization and free unit end
-	for (MemberIter it(getID()); it.hasNext(); ++it)
+	for (MemberAIIter it(getID()); it.hasNext(); ++it)
 	{
 		CvPlayerAI& kAIMember = *it;
 		
@@ -4610,7 +4571,7 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,
 			}
 		}
 
-		for (MemberIter it(getID()); it.hasNext(); ++it)
+		for (MemberAIIter it(getID()); it.hasNext(); ++it)
 		{
 			CvPlayerAI& kMember = *it;
 			if (kMember.isResearchingTech(eTech))
@@ -4685,14 +4646,13 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,
 			} // </advc.004>
 			if (bFirstPerk)
 			{
-				for (PlayerIter<CIV_ALIVE> it; it.hasNext(); ++it)
+				for (PlayerIter<CIV_ALIVE> itOther; itOther.hasNext(); ++itOther)
 				{
-					CvPlayerAI& kOther = *it;
-					if (!kOther.isHuman() && kOther.isResearchingTech(eTech))
+					if (!itOther->isHuman() && itOther->isResearchingTech(eTech))
 					{
 						/*	K-Mod note: we just want to flag it for re-evaluation.
 							Clearing the queue is currently the only way to do that. */
-						kOther.clearResearchQueue();
+						itOther->clearResearchQueue();
 					}
 				}
 			}
@@ -4902,6 +4862,18 @@ bool CvTeam::isFriendlyTerritory(TeamTypes eTerritoryOwner) const
 	return false;
 }
 
+/*	advc.183: A status between friendly territory and territory that can merely
+	be peacefully entered. Only applies wrt. a specific shared enemy. */
+bool CvTeam::isAlliedTerritory(TeamTypes eTerritoryOwner, TeamTypes eEnemy) const
+{
+	if (isFriendlyTerritory(eTerritoryOwner))
+		return true;
+	// Allow this for the callers' convenience
+	if (eEnemy == NO_TEAM || eTerritoryOwner == NO_TEAM)
+		return false;
+	return (isAtWar(eEnemy) && GET_TEAM(eTerritoryOwner).isAtWar(eEnemy));
+}
+
 /*	advc: Says whether kPlot is a land plot that sea units of this team can enter
 	-- or could enter if kPlot were adjacent to water (not checked).
 	Was previously handled by CvPlot::isCity(bool,TeamTypes). */
@@ -4935,7 +4907,7 @@ bool CvTeam::isRevealedBase(CvPlot const& kPlot) const
 	city-like defensive advantages to this team. No fog-of-war checks.
 	Was previously handled by CvPlot::isCity(bool,TeamTypes).
 	Needs to be consistent with CvPlot::defenseModifier. */
-bool CvTeam::isCityDefense(CvPlot const& kPlot) const
+bool CvTeam::isCityDefense(CvPlot const& kPlot, TeamTypes eAttacker) const
 {
 	/*	I'm assuming that calls happen in the context of imminent combat, and
 		then the combatants wouldn't be visible if the plot weren't visible as well.
@@ -4944,7 +4916,8 @@ bool CvTeam::isCityDefense(CvPlot const& kPlot) const
 	//FAssert(kPlot.isVisible(getID()));
 	if (kPlot.isOwned())
 	{
-		if (!isFriendlyTerritory(kPlot.getTeam()))
+		//if (!isFriendlyTerritory(kPlot.getTeam()))
+		if (!isAlliedTerritory(kPlot.getTeam(), eAttacker)) // advc.183
 			return false;
 		if (kPlot.isCity())
 			return true;
@@ -5226,7 +5199,7 @@ void CvTeam::doWarWeariness()
 {
 	static int const iWW_DECAY_RATE = GC.getDefineINT("WW_DECAY_RATE"); // advc.opt
 	static int const iWW_DECAY_PEACE_PERCENT = GC.getDefineINT("WW_DECAY_PEACE_PERCENT"); // advc.opt
-	CvGame const& g = GC.getGame();
+	CvGame const& kGame = GC.getGame();
 	for (TeamIter<CIV_ALIVE> it; it.hasNext(); ++it)
 	{
 		TeamTypes eLoopTeam = it->getID();
@@ -5234,7 +5207,8 @@ void CvTeam::doWarWeariness()
 		{
 			changeWarWeariness(eLoopTeam, 100 * iWW_DECAY_RATE);
 			if (!GET_TEAM(eLoopTeam).isAlive() || !isAtWar(eLoopTeam) ||
-				g.isOption(GAMEOPTION_ALWAYS_WAR) || g.isOption(GAMEOPTION_NO_CHANGING_WAR_PEACE))
+				kGame.isOption(GAMEOPTION_ALWAYS_WAR) ||
+				kGame.isOption(GAMEOPTION_NO_CHANGING_WAR_PEACE))
 			{
 				setWarWeariness(eLoopTeam, (getWarWeariness(eLoopTeam) *
 						iWW_DECAY_PEACE_PERCENT) / 100);
@@ -5333,34 +5307,24 @@ void CvTeam::doBarbarianResearch()
 	}
 }
 
-void CvTeam::updateTechShare(TechTypes eTech)
+void CvTeam::updateTechShare(TechTypes eTech,
+	int iOtherKnownThreshold) // advc.opt: Allow caller to handle this
 {
 	if (isHasTech(eTech) /* advc.opt: */ || !isAnyTechShare())
 		return;
-
-	/*  advc (comment): isTechShare(iI) means that the team gets to
-		learn all techs known by at least iI+1 other teams.
-		So iI doesn't refer to a particular team here, but to a team count. */
-	int iBestShare = MAX_INT;
-	for (int iI = 0; iI < MAX_TEAMS; iI++)
-	{
-		if (isTechShare((TeamTypes)iI))
-		{
-			iBestShare = std::min(iBestShare, iI + 1);
-			break;
-		}
-	}
-	FAssert(iBestShare < MAX_INT); // advc
-
+	// <advc.opt>
+	if (iOtherKnownThreshold < 0)
+		iOtherKnownThreshold = calculateBestTechShare(); // </advc.opt>
 	int iCount = 0;
-	for (TeamIter<CIV_ALIVE,OTHER_KNOWN_TO> it(getID()); it.hasNext(); ++it)
+	for (TeamIter<CIV_ALIVE,OTHER_KNOWN_TO> itOther(getID());
+		itOther.hasNext(); ++itOther)
 	{
-		if (it->isHasTech(eTech))
-			iCount++;
-		if (iCount >= iBestShare) // advc.opt: Moved into the loop
+		if (itOther->isHasTech(eTech))
+			iCount += itOther->getNumMembers(); // kekm.38: was +1
+		if (iCount >= iOtherKnownThreshold) // advc.opt: Moved into the loop
 		{
 			setHasTech(eTech, true, NO_PLAYER, true, true);
-			if(GET_PLAYER(getLeaderID()).isSignificantDiscovery(eTech)) // advc.550e
+			if (GET_PLAYER(getLeaderID()).isSignificantDiscovery(eTech)) // advc.550e
 				setNoTradeTech(eTech, true); // kekm.31
 			return;
 		}
@@ -5372,9 +5336,28 @@ void CvTeam::updateTechShare()
 {
 	// <advc.opt>
 	if (!isAnyTechShare())
-		return; // </advc.opt>
+		return;
+	int const iBestTechShare = calculateBestTechShare(); // </advc.opt>
 	FOR_EACH_ENUM(Tech)
-		updateTechShare(eLoopTech);
+		updateTechShare(eLoopTech, /* advc.opt: */ iBestTechShare);
+}
+
+// advc.opt: Cut from updateTechShare(TechTypes)
+int CvTeam::calculateBestTechShare() const
+{
+	int iBestShare = MAX_INT;
+	// kekm.38: Go through all player counts, not all team counts.
+	FOR_EACH_ENUM2(Player, eSharePlayers)
+	{
+		if (isTechShare(eSharePlayers))
+		{	/*	advc: No longer stored as decreased by 1, so we don't need to
+				add 1 here. */
+			iBestShare = std::min<int>(iBestShare, eSharePlayers);
+			break;
+		}
+	}
+	FAssertBounds(0, MAX_INT, iBestShare); // advc
+	return std::max(0, iBestShare);
 }
 
 // advc: Duplicate code cut from setHasTech
@@ -5707,7 +5690,7 @@ void CvTeam::processTech(TechTypes eTech, int iChange,
 		}  // <advc.121>
 		if (!bEndOfTurn) // Otherwise, CvCity::doTurn is about to be called anyway.
 		{
-			for (MemberIter it(getID()); it.hasNext(); ++it)
+			for (MemberAIIter it(getID()); it.hasNext(); ++it)
 			{
 				if (!it->isHuman())
 					it->AI_processNewBuild(eLoopBuild);
@@ -5810,7 +5793,24 @@ void CvTeam::read(FDataStreamBase* pStream)
 
 	m_aiStolenVisibilityTimer.Read(pStream);
 	m_aiWarWeariness.Read(pStream);
-	m_aiTechShareCount.Read(pStream);
+	// <advc> (for kekm.38)
+	if (uiFlag >= 15)
+		m_aiTechShareCount.Read(pStream, false);
+	else
+	{	/*	Used to be stored for each possible team count, now player count.
+			And the iTechShare from XML is no longer treated as 1 less in the DLL.
+			Also use char for the values, while we're at it. */
+		EnumMap<TeamTypes,int> aiTeamTechShareCount;
+		aiTeamTechShareCount.Read(pStream);
+		if (aiTeamTechShareCount.isAllocated())
+		{
+			for (int i = 0; i < std::min<int>(MAX_TEAMS, MAX_PLAYERS - 1); i++)
+			{
+				m_aiTechShareCount.set((PlayerTypes)(i + 1),
+						toChar(aiTeamTechShareCount.get((TeamTypes)i)));
+			}
+		}
+	} // </advc>
 	m_aiEspionagePointsAgainstTeam.Read(pStream);
 	m_aiCounterespionageTurnsLeftAgainstTeam.Read(pStream);
 	m_aiCounterespionageModAgainstTeam.Read(pStream);
@@ -5891,6 +5891,18 @@ void CvTeam::read(FDataStreamBase* pStream)
 
 	m_aiRouteChange.Read(pStream);
 	m_aiProjectCount.Read(pStream);
+	if (uiFlag < 14)
+	{	// Reduced SDI interception chance in AdvCiv 1.0
+		ProjectTypes eSDI = (ProjectTypes)GC.getInfoTypeForString("PROJECT_SDI");
+		if (eSDI != NO_PROJECT)
+		{
+			int iSDICount = m_aiProjectCount.get(eSDI);
+			if (iSDICount > 0 && getNukeInterception() >= iSDICount * 75)
+			{
+				changeNukeInterception(iSDICount * -15);
+			}
+		}
+	}
 	m_aiProjectDefaultArtTypes.Read(pStream);
 
 	//project art types
@@ -6002,7 +6014,9 @@ void CvTeam::write(FDataStreamBase* pStream)
 	//uiFlag = 10; // advc.101: m_iTechCount
 	//uiFlag = 11; // advc.opt: fix m_aiVictoryCountdown bug
 	//uiFlag = 12; // advc.091
-	uiFlag = 13; // advc.183
+	//uiFlag = 13; // advc.183
+	//uiFlag = 14; // advc.650
+	uiFlag = 15; // advc (for kekm.38)
 	pStream->Write(uiFlag);
 
 	pStream->Write(m_iNumMembers);
@@ -6046,7 +6060,7 @@ void CvTeam::write(FDataStreamBase* pStream)
 
 	m_aiStolenVisibilityTimer.Write(pStream);
 	m_aiWarWeariness.Write(pStream);
-	m_aiTechShareCount.Write(pStream);
+	m_aiTechShareCount.Write(pStream, false);
 	m_aiEspionagePointsAgainstTeam.Write(pStream);
 	m_aiCounterespionageTurnsLeftAgainstTeam.Write(pStream);
 	m_aiCounterespionageModAgainstTeam.Write(pStream);

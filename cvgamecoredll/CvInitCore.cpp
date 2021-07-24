@@ -372,6 +372,9 @@ void CvInitCore::reassignPlayer(PlayerTypes eOldID, PlayerTypes eNewID)
 	}
 }
 
+/*	advc (caveat from C2C): When launching a network game, the EXE calls this only
+	on the host. Must not add code here that needs to be synchronized.
+	(Could add it e.g. in CvGame::init instead.) */
 void CvInitCore::closeInactiveSlots()
 {
 	// Open inactive slots mean different things to different game modes and types...
@@ -1034,11 +1037,8 @@ void CvInitCore::setType(GameType eType)
 	// <advc.054>
 	// Permanent war/peace always visible in scenarios
 	CvGameOptionInfo& kPermWarPeace = GC.getInfo(GAMEOPTION_NO_CHANGING_WAR_PEACE);
-	if(eType == GAME_SP_SCENARIO || eType == GAME_MP_SCENARIO ||
-		eType == GAME_HOTSEAT_SCENARIO || eType == GAME_PBEM_SCENARIO)
-	{
+	if(getScenario())
 		kPermWarPeace.setVisible(true);
-	}
 	// Otherwise as set in XML
 	else kPermWarPeace.setVisible(kPermWarPeace.getVisibleXML());
 	// Never visible in MP

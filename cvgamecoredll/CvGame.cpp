@@ -269,7 +269,7 @@ void CvGame::setInitialItems()
 				d->setInitialGameTurn(getGameTurn());
 		} // </advc.251>
 	} // </advc.250c>
-	for (PlayerIter<CIV_ALIVE> it; it.hasNext(); ++it)
+	for (PlayerAIIter<CIV_ALIVE> it; it.hasNext(); ++it)
 		it->AI_updateFoundValues();
 }
 
@@ -397,9 +397,12 @@ void CvGame::showDawnOfMan()
 		return;
 	// Based on CvAllErasDawnOfManScreenEventManager.py
 	CvPopupInfo* pDummyPopup = new CvPopupInfo();
-	pDummyPopup->setButtonPopupType(BUTTONPOPUP_PYTHON_SCREEN);
-	pDummyPopup->setText(L"showDawnOfMan");
-	GET_PLAYER(getActivePlayer()).addPopup(pDummyPopup);
+	if (pDummyPopup != NULL)
+	{
+		pDummyPopup->setButtonPopupType(BUTTONPOPUP_PYTHON_SCREEN);
+		pDummyPopup->setText(L"showDawnOfMan");
+		GET_PLAYER(getActivePlayer()).addPopup(pDummyPopup);
+	}
 	setDawnOfManShown(true); // advc.004x
 }
 
@@ -2338,7 +2341,7 @@ void CvGame::normalizeAddExtras(/* advc.027: */ NormalizationTarget const* pTarg
 		already takes the extra hills into account */
 	for (PlayerIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
-		CvPlayerAI const& kPlayer = *itPlayer;
+		CvPlayer const& kPlayer = *itPlayer;
 		CvPlot* pStartingPlot = kPlayer.getStartingPlot();
 		if (pStartingPlot == NULL)
 			continue;
@@ -2391,7 +2394,7 @@ void CvGame::normalizeAddExtras(/* advc.027: */ NormalizationTarget const* pTarg
 		int iTotalValue = 0;
 		int iBestValue = 0;
 		int iWorstValue = MAX_INT;
-		for (PlayerIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
+		for (PlayerAIIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 		{
 			CvPlayerAI const& kPlayer = *itPlayer;
 			CvPlot const* pStartingPlot = kPlayer.getStartingPlot();
@@ -2411,7 +2414,7 @@ void CvGame::normalizeAddExtras(/* advc.027: */ NormalizationTarget const* pTarg
 		logBBAI("Adding extras to normalize starting positions. (target value: %d)", rTargetValue.round()); // K-Mod
 	}
 
-	for (PlayerIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
+	for (PlayerAIIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
 		CvPlayerAI const& kPlayer = *itPlayer;
 		CvPlot* pStartingPlot = kPlayer.getStartingPlot();
@@ -2763,7 +2766,7 @@ void CvGame::normalizeStartingPlots(NormalizationTarget const* pTarget)
 	// <advc> K-Mod logging code moved out of normalizeAddExtras
 	if (gMapLogLevel > 0)
 	{
-		for (PlayerIter<CIV_ALIVE> it; it.hasNext(); ++it)
+		for (PlayerAIIter<CIV_ALIVE> it; it.hasNext(); ++it)
 		{
 			if (it->getStartingPlot() != NULL)
 				logBBAI("    Player %d final value: %d", it->getID(), it->AI_foundValue(it->getStartingPlot()->getX(), it->getStartingPlot()->getY(), -1, false, true));
@@ -3973,11 +3976,11 @@ int CvGame::getRecommendedPlayers() const
 // advc.140:
 int CvGame::getSeaLevelChange() const
 {
-	int r = 0;
+	int iR = 0;
 	SeaLevelTypes eSeaLevel = GC.getInitCore().getSeaLevel();
 	if(eSeaLevel != NO_SEALEVEL)
-		r = GC.getInfo(eSeaLevel).getSeaLevelChange();
-	return r;
+		iR = GC.getInfo(eSeaLevel).getSeaLevelChange();
+	return iR;
 } // </advc.137>
 
 
@@ -4033,10 +4036,9 @@ int CvGame::getNumFreeBonuses(BuildingTypes eBuilding) const
 int CvGame::countReligionLevels(ReligionTypes eReligion) const
 {
 	int iCount = 0;
-	for (int iI = 0; iI < MAX_PLAYERS; iI++)
+	for (PlayerIter<ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
-		if (GET_PLAYER((PlayerTypes)iI).isAlive())
-			iCount += GET_PLAYER((PlayerTypes)iI).getHasReligionCount(eReligion);
+		iCount += itPlayer->getHasReligionCount(eReligion);
 	}
 	return iCount;
 }
@@ -4045,38 +4047,29 @@ int CvGame::countReligionLevels(ReligionTypes eReligion) const
 int CvGame::countCorporationLevels(CorporationTypes eCorporation) const
 {
 	int iCount = 0;
-	for (int iI = 0; iI < MAX_PLAYERS; iI++)
+	for (PlayerIter<ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
-		CvPlayer& kLoopPlayer = GET_PLAYER((PlayerTypes)iI);
-		if (kLoopPlayer.isAlive())
-			iCount += GET_PLAYER((PlayerTypes)iI).getHasCorporationCount(eCorporation);
+		iCount += itPlayer->getHasCorporationCount(eCorporation);
 	}
 	return iCount;
 }
 
 void CvGame::replaceCorporation(CorporationTypes eCorporation1, CorporationTypes eCorporation2)
 {
-	for (int iI = 0; iI < MAX_PLAYERS; iI++)
+	for (PlayerIter<ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
-		CvPlayer& kLoopPlayer = GET_PLAYER((PlayerTypes)iI);
-		if (kLoopPlayer.isAlive())
+		FOR_EACH_CITY_VAR(pCity, *itPlayer)
 		{
-			FOR_EACH_CITY_VAR(pCity, kLoopPlayer)
+			if (pCity->isHasCorporation(eCorporation1))
 			{
-				if (pCity->isHasCorporation(eCorporation1))
-				{
-					pCity->setHasCorporation(eCorporation1, false, false, false);
-					pCity->setHasCorporation(eCorporation2, true, true);
-				}
+				pCity->setHasCorporation(eCorporation1, false, false, false);
+				pCity->setHasCorporation(eCorporation2, true, true);
 			}
-
-			FOR_EACH_UNIT_VAR(pUnit, kLoopPlayer)
-			{
-				if (pUnit->getUnitInfo().getCorporationSpreads(eCorporation1) > 0)
-				{
-					pUnit->kill(false);
-				}
-			}
+		}
+		FOR_EACH_UNIT_VAR(pUnit, *itPlayer)
+		{
+			if (pUnit->getUnitInfo().getCorporationSpreads(eCorporation1) > 0)
+				pUnit->kill(false);
 		}
 	}
 }
@@ -4089,13 +4082,9 @@ int CvGame::calculateReligionPercent(ReligionTypes eReligion,
 		return 0;
 
 	int iCount = 0;
-	for (int iI = 0; iI < MAX_PLAYERS; iI++)
+	for (PlayerIter<ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
-		CvPlayer const& kPlayer = GET_PLAYER((PlayerTypes)iI);
-		if (!kPlayer.isAlive())
-			continue;
-
-		FOR_EACH_CITY(pLoopCity, kPlayer)
+		FOR_EACH_CITY(pLoopCity, *itPlayer)
 		{
 			if (pLoopCity->isHasReligion(eReligion))
 			{	// <advc.115b>
@@ -4256,8 +4245,10 @@ bool CvGame::isGameMultiPlayer() const
 
 bool CvGame::isTeamGame() const
 {
-	FAssert(countCivPlayersAlive() >= countCivTeamsAlive());
-	return (countCivPlayersAlive() > countCivTeamsAlive());
+	int iCivPlayersAlive = countCivPlayersAlive();
+	int iCivTeamsAlive = countCivTeamsAlive();
+	FAssert(iCivPlayersAlive >= iCivTeamsAlive);
+	return (iCivPlayersAlive > iCivTeamsAlive);
 }
 
 
@@ -4584,12 +4575,6 @@ void CvGame::changeTotalPopulation(int iChange)
 }
 
 
-int CvGame::getTradeRoutes() const
-{
-	return m_iTradeRoutes;
-}
-
-
 void CvGame::changeTradeRoutes(int iChange)
 {
 	if (iChange != 0)
@@ -4599,18 +4584,6 @@ void CvGame::changeTradeRoutes(int iChange)
 
 		updateTradeRoutes();
 	}
-}
-
-
-int CvGame::getFreeTradeCount() const
-{
-	return m_iFreeTradeCount;
-}
-
-
-bool CvGame::isFreeTrade() const
-{
-	return (getFreeTradeCount() > 0);
 }
 
 
@@ -4628,18 +4601,6 @@ void CvGame::changeFreeTradeCount(int iChange)
 	{
 		updateTradeRoutes();
 	}
-}
-
-
-int CvGame::getNoNukesCount() const
-{
-	return m_iNoNukesCount;
-}
-
-
-bool CvGame::isNoNukes() const
-{
-	return (getNoNukesCount() > 0);
 }
 
 
@@ -4850,13 +4811,12 @@ void CvGame::setAIAutoPlay(int iNewValue, /* <advc.127> */ bool bChangePlayerSta
 		GET_PLAYER(getActivePlayer()).setHumanDisabled((getAIAutoPlay() != 0));
 		return;
 	} // </advc.127>
-	for (int iI = 0; iI < MAX_CIV_PLAYERS; iI++)
+	for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
-		CvPlayer& kLoopPlayer = GET_PLAYER((PlayerTypes)iI);
-		if (kLoopPlayer.isHuman() || kLoopPlayer.isHumanDisabled())
+		if (itPlayer->isHuman() || itPlayer->isHumanDisabled())
 		{	/*  advc.127: Was GET_PLAYER(getActivePlayer()).
 				Tagging advc.001 because that was probably a bug. */
-			kLoopPlayer.setHumanDisabled((getAIAutoPlay() != 0));
+			itPlayer->setHumanDisabled(getAIAutoPlay() != 0);
 		}
 	} // AI_AUTO_PLAY_MOD: END
 }
@@ -4953,18 +4913,15 @@ void CvGame::changeGwEventTally(int iChange)
 int CvGame::calculateGlobalPollution() const
 {
 	int iGlobalPollution = 0;
-	for (int iPlayer = 0; iPlayer < MAX_PLAYERS; ++iPlayer)
+	for (PlayerIter<ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
-		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes) iPlayer);
-		if (kPlayer.isAlive())
-		{
-			iGlobalPollution += kPlayer.calculatePollution();
-		}
+		iGlobalPollution += itPlayer->calculatePollution();
 	}
 	return iGlobalPollution;
 }
 
-// if ePlayer == NO_PLAYER, all features are counted. Otherwise, only count features owned by the specified player.
+/*	if ePlayer == NO_PLAYER, all features are counted.
+	Otherwise, only count features owned by the specified player. */
 int CvGame::calculateGwLandDefence(PlayerTypes ePlayer) const
 {
 	int iTotal = 0;
@@ -4984,19 +4941,24 @@ int CvGame::calculateGwLandDefence(PlayerTypes ePlayer) const
 // again, NO_PLAYER means everyone
 int CvGame::calculateGwSustainabilityThreshold(PlayerTypes ePlayer) const
 {
-	// expect each pop to give ~10 pollution per turn at the time we cross the threshold, and ~1 pop per land tile...
-	// so default resistance should be around 10 per tile.
-	int iGlobalThreshold = GC.getMap().getLandPlots() * GC.getDefineINT("GLOBAL_WARMING_RESISTANCE");
+	/*	expect each pop to give ~10 pollution per turn at the time
+		we cross the threshold, and ~1 pop per land tile...
+		so default resistance should be around 10 per tile. */
+	int iGlobalThreshold = GC.getMap().getLandPlots() *
+			GC.getDefineINT("GLOBAL_WARMING_RESISTANCE");
 
-	// maybe we should add some points for coastal tiles as well, so that watery maps don't get too much warming
+	/*	maybe we should add some points for coastal tiles as well,
+		so that watery maps don't get too much warming */
 
 	if (ePlayer == NO_PLAYER)
 		return iGlobalThreshold;
 
-	// I have a few possible threshold distribution systems in mind:
-	// could be proportional to total natural food yield;
-	// or a combination of population, land size, total completed research, per player, etc.
-	// Currently, a player's share of the total threshold is just proportional to their land size (just like the threshold itself)
+	/*	I have a few possible threshold distribution systems in mind:
+		could be proportional to total natural food yield;
+		or a combination of population, land size, total completed research,
+		per player, etc.
+		Currently, a player's share of the total threshold is just proportional
+		to their land size (just like the threshold itself) */
 	CvPlayer& kPlayer = GET_PLAYER(ePlayer);
 	if (kPlayer.isAlive())
 	{
@@ -5117,17 +5079,15 @@ void CvGame::changeDiploVote(VoteSourceTypes eVoteSource, int iChange)
 
 	if (iChange != 0)
 	{
-		for (int iPlayer = 0; iPlayer < MAX_PLAYERS; ++iPlayer)
+		FOR_EACH_ENUM(Player)
 		{
-			GET_PLAYER((PlayerTypes)iPlayer).processVoteSource(eVoteSource, false);
+			GET_PLAYER(eLoopPlayer).processVoteSource(eVoteSource, false);
 		}
-
 		m_aiDiploVote[eVoteSource] += iChange;
 		FAssert(getDiploVoteCount(eVoteSource) >= 0);
-
-		for (int iPlayer = 0; iPlayer < MAX_PLAYERS; ++iPlayer)
+		FOR_EACH_ENUM(Player)
 		{
-			GET_PLAYER((PlayerTypes)iPlayer).processVoteSource(eVoteSource, true);
+			GET_PLAYER(eLoopPlayer).processVoteSource(eVoteSource, true);
 		}
 	}
 }
@@ -5138,14 +5098,12 @@ bool CvGame::canDoResolution(VoteSourceTypes eVoteSource, const VoteSelectionSub
 	if (kVote.isVictory())
 	{
 		int iVotesRequired = getVoteRequired(kData.eVote, eVoteSource); // K-Mod
-		for (int iTeam = 0; iTeam < MAX_CIV_TEAMS; ++iTeam)
+		for (TeamIter<MAJOR_CIV> itTeam; itTeam.hasNext(); ++itTeam)
 		{
-			CvTeam& kTeam = GET_TEAM((TeamTypes)iTeam);
-
-			if (kTeam.getVotes(kData.eVote, eVoteSource) >= iVotesRequired)
+			if (itTeam->getVotes(kData.eVote, eVoteSource) >= iVotesRequired)
 				return false; // K-Mod. same, but faster.
-			/*if (kTeam.isVotingMember(eVoteSource)) {
-				if (kTeam.getVotes(kData.eVote, eVoteSource) >= getVoteRequired(kData.eVote, eVoteSource)) {
+			/*if (itTeam->isVotingMember(eVoteSource)) {
+				if (itTeam->getVotes(kData.eVote, eVoteSource) >= getVoteRequired(kData.eVote, eVoteSource)) {
 					// Can't vote on a winner if one team already has all the votes necessary to win
 					return false;
 				}
@@ -5153,27 +5111,23 @@ bool CvGame::canDoResolution(VoteSourceTypes eVoteSource, const VoteSelectionSub
 		}
 	}
 
-	for (int iPlayer = 0; iPlayer < MAX_CIV_PLAYERS; ++iPlayer)
+	for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
-		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iPlayer);
-
-		if (kPlayer.isVotingMember(eVoteSource))
+		if (itPlayer->isVotingMember(eVoteSource))
 		{	// <kekm.25/advc>
-			if(kVote.isForceWar())
+			if (kVote.isForceWar())
 			{
-				if(GET_TEAM(kPlayer.getTeam()).isFullMember(eVoteSource) &&
-					!kPlayer.canDoResolution(eVoteSource, kData))
+				if(GET_TEAM(itPlayer->getTeam()).isFullMember(eVoteSource) &&
+					!itPlayer->canDoResolution(eVoteSource, kData))
 				{
 					return false;
 				}
 			}
 			else // </kekm.25/advc>
-			if (!kPlayer.canDoResolution(eVoteSource, kData))
-			{
+			if (!itPlayer->canDoResolution(eVoteSource, kData))
 				return false;
-			}
 		}
-		else if (kPlayer.isAlive() && !kPlayer.isBarbarian() && !kPlayer.isMinorCiv())
+		else
 		{
 			// all players need to be able to vote for a diplo victory
 			if (kVote.isVictory())
@@ -5201,20 +5155,19 @@ bool CvGame::isValidVoteSelection(VoteSourceTypes eVoteSource, VoteSelectionSubD
 			return false;
 	}
 
-	int iNumVoters = 0;
-	for (int iTeam = 0; iTeam < MAX_CIV_TEAMS; ++iTeam)
+	int iVoters = 0;
+	for (TeamIter<MAJOR_CIV> itTeam; itTeam.hasNext(); ++itTeam)
 	{
 		//if (GET_TEAM((TeamTypes)iTeam).isVotingMember(eVoteSource))
 		// K-Mod. to prevent "AP cheese", only count full members for victory votes.
-		if (GET_TEAM((TeamTypes)iTeam).isFullMember(eVoteSource) ||
+		if (itTeam->isFullMember(eVoteSource) ||
 			(!GC.getInfo(kData.eVote).isVictory() &&
-			GET_TEAM((TeamTypes)iTeam).isVotingMember(eVoteSource)))
-		// K-Mod end
+			itTeam->isVotingMember(eVoteSource))) // K-Mod end
 		{
-			++iNumVoters;
+			++iVoters;
 		}
 	}
-	if (iNumVoters  < GC.getInfo(kData.eVote).getMinVoters())
+	if (iVoters  < GC.getInfo(kData.eVote).getMinVoters())
 		return false;
 
 	if (GC.getInfo(kData.eVote).isOpenBorders())
@@ -5273,9 +5226,8 @@ bool CvGame::isValidVoteSelection(VoteSourceTypes eVoteSource, VoteSelectionSubD
 	}
 	else if (GC.getInfo(kData.eVote).isForcePeace())
 	{
-		CvPlayer& kPlayer = GET_PLAYER(kData.ePlayer);
-
-		if(kPlayer.isAVassal()) // advc
+		CvPlayer const& kPlayer = GET_PLAYER(kData.ePlayer);
+		if (kPlayer.isAVassal()) // advc
 			return false;
 		//if (!kPlayer.isFullMember(eVoteSource))
 		// kekm.25: 'These are not necessarily the same.'
@@ -5298,39 +5250,32 @@ bool CvGame::isValidVoteSelection(VoteSourceTypes eVoteSource, VoteSelectionSubD
 	}
 	else if (GC.getInfo(kData.eVote).isForceNoTrade())
 	{
-		CvPlayer& kPlayer = GET_PLAYER(kData.ePlayer);
+		CvPlayer const& kPlayer = GET_PLAYER(kData.ePlayer);
 		//if (kPlayer.isFullMember(eVoteSource))
 		// kekm.25: 'These are not necessarily the same.'
 		if (GET_TEAM(kPlayer.getTeam()).isFullMember(eVoteSource))
 			return false;
 
 		bool bNoTradeWithEveryone = true;
-		for (int iPlayer2 = 0; iPlayer2 < MAX_CIV_PLAYERS; ++iPlayer2)
+		for (PlayerIter<MAJOR_CIV,NOT_SAME_TEAM_AS> itOther(kPlayer.getTeam());
+			itOther.hasNext(); ++itOther)
 		{
-			CvPlayer& kPlayer2 = GET_PLAYER((PlayerTypes)iPlayer2);
-			if (kPlayer2.getTeam() != kPlayer.getTeam())
+			//if (itOther->isFullMember(eVoteSource))
+			// kekm.25: 'These are not necessarily the same.'
+			if (GET_TEAM(itOther->getTeam()).isFullMember(eVoteSource) &&
+				itOther->canStopTradingWithTeam(kPlayer.getTeam()))
 			{
-				//if (kPlayer2.isFullMember(eVoteSource))
-				// kekm.25: 'These are not necessarily the same.'
-				if (GET_TEAM(kPlayer2.getTeam()).isFullMember(eVoteSource))
-				{
-					if (kPlayer2.canStopTradingWithTeam(kPlayer.getTeam()))
-					{
-						bNoTradeWithEveryone = false;
-						break;
-					}
-				}
+				bNoTradeWithEveryone = false;
+				break;
 			}
 		}
-		// Not an option if already at war with everyone
 		if (bNoTradeWithEveryone)
 			return false;
 	}
 	else if (GC.getInfo(kData.eVote).isForceWar())
 	{
-		CvPlayer& kPlayer = GET_PLAYER(kData.ePlayer);
-		CvTeam& kTeam = GET_TEAM(kPlayer.getTeam());
-
+		CvPlayer const& kPlayer = GET_PLAYER(kData.ePlayer);
+		CvTeam const& kTeam = GET_TEAM(kPlayer.getTeam());
 		if (kTeam.isAVassal())
 			return false;
 		//if (kPlayer.isFullMember(eVoteSource))
@@ -5339,19 +5284,15 @@ bool CvGame::isValidVoteSelection(VoteSourceTypes eVoteSource, VoteSelectionSubD
 			return false;
 
 		bool bAtWarWithEveryone = true;
-		for (int iTeam2 = 0; iTeam2 < MAX_CIV_TEAMS; ++iTeam2)
+		for (TeamIter<MAJOR_CIV,NOT_SAME_TEAM_AS> itOther(kPlayer.getTeam());
+			itOther.hasNext(); ++itOther)
 		{
-			if (iTeam2 != kPlayer.getTeam())
+			if (itOther->isFullMember(eVoteSource) &&
+				!itOther->isAtWar(kPlayer.getTeam()) &&
+				itOther->canChangeWarPeace(kPlayer.getTeam()))
 			{
-				CvTeam& kTeam2 = GET_TEAM((TeamTypes)iTeam2);
-				if (kTeam2.isFullMember(eVoteSource))
-				{
-					if (!kTeam2.isAtWar(kPlayer.getTeam()) && kTeam2.canChangeWarPeace(kPlayer.getTeam()))
-					{
-						bAtWarWithEveryone = false;
-						break;
-					}
-				}
+				bAtWarWithEveryone = false;
+				break;
 			}
 		}
 		// Not an option if already at war with everyone
@@ -5359,67 +5300,55 @@ bool CvGame::isValidVoteSelection(VoteSourceTypes eVoteSource, VoteSelectionSubD
 			return false;
 
 		//if (!kPlayer.isVotingMember(eVoteSource))
-		// kekm.25: Replacing the above
+		// kekm.25:
 		if (!GET_TEAM(kPlayer.getTeam()).isFullMember(eVoteSource))
 		{
 			// Can be passed only if already at war with a member
 			bool bValid = false;
-			for (int iTeam2 = 0; iTeam2 < MAX_CIV_TEAMS; ++iTeam2)
+			for (TeamIter<MAJOR_CIV,ENEMY_OF> itEnemy(kPlayer.getTeam());
+				itEnemy.hasNext(); ++itEnemy)
 			{
-				if (atWar(kPlayer.getTeam(), (TeamTypes)iTeam2))
+				if (itEnemy->isFullMember(eVoteSource))
 				{
-					CvTeam& kTeam2 = GET_TEAM((TeamTypes)iTeam2);
-
-					if (kTeam2.isFullMember(eVoteSource))
-					{
-						bValid = true;
-						break;
-					}
+					bValid = true;
+					break;
 				}
 			}
-
 			if (!bValid)
 				return false;
 		}
 	}
 	else if (GC.getInfo(kData.eVote).isAssignCity())
 	{
-		CvPlayer& kPlayer = GET_PLAYER(kData.ePlayer);
+		CvPlayer const& kPlayer = GET_PLAYER(kData.ePlayer);
 		//if (kPlayer.isFullMember(eVoteSource) || !kPlayer.isVotingMember(eVoteSource))
 		// kekm.25: 'These are not necessarily the same'
-		if (GET_TEAM(kPlayer.getTeam()).isFullMember(eVoteSource) || !GET_TEAM(kPlayer.getTeam()).isVotingMember(eVoteSource))
+		if (GET_TEAM(kPlayer.getTeam()).isFullMember(eVoteSource) ||
+			!GET_TEAM(kPlayer.getTeam()).isVotingMember(eVoteSource))
+		{
 			return false;
-
-		CvCity* pCity = kPlayer.getCity(kData.iCityId);
+		}
+		CvCity const* pCity = kPlayer.getCity(kData.iCityId);
 		if (pCity == NULL)
 		{
 			FAssert(pCity != NULL);
 			return false;
 		}
-
 		if (kData.eOtherPlayer == NO_PLAYER)
 			return false;
-
 		CvPlayer& kOtherPlayer = GET_PLAYER(kData.eOtherPlayer);
 		if (kOtherPlayer.getTeam() == kPlayer.getTeam())
 			return false;
-
 		if (atWar(kPlayer.getTeam(), TEAMID(kData.eOtherPlayer)))
 			return false;
-
 		//if (!kOtherPlayer.isFullMember(eVoteSource))
 		// kekm.25: 'These are not necessarily the same'
 		if (!GET_TEAM(kOtherPlayer.getTeam()).isFullMember(eVoteSource))
 			return false;
-
-		if (kOtherPlayer.isHuman() && isOption(GAMEOPTION_ONE_CITY_CHALLENGE))
+		if (kOtherPlayer.isOneCityChallenge())
 			return false;
 	}
-
-	if (!canDoResolution(eVoteSource, kData))
-		return false;
-
-	return true;
+	return canDoResolution(eVoteSource, kData);
 }
 
 
@@ -5438,12 +5367,12 @@ void CvGame::toggleDebugMode()
 	GC.getMap().setFlagsDirty(); // K-Mod
 	updateColoredPlots(); // K-Mod
 
-	gDLL->getInterfaceIFace()->setDirty(GameData_DIRTY_BIT, true);
-	gDLL->getInterfaceIFace()->setDirty(Score_DIRTY_BIT, true);
-	gDLL->getInterfaceIFace()->setDirty(MinimapSection_DIRTY_BIT, true);
-	gDLL->getInterfaceIFace()->setDirty(UnitInfo_DIRTY_BIT, true);
-	gDLL->getInterfaceIFace()->setDirty(CityInfo_DIRTY_BIT, true);
-	gDLL->getInterfaceIFace()->setDirty(GlobeLayer_DIRTY_BIT, true);
+	gDLL->UI().setDirty(GameData_DIRTY_BIT, true);
+	gDLL->UI().setDirty(Score_DIRTY_BIT, true);
+	gDLL->UI().setDirty(MinimapSection_DIRTY_BIT, true);
+	gDLL->UI().setDirty(UnitInfo_DIRTY_BIT, true);
+	gDLL->UI().setDirty(CityInfo_DIRTY_BIT, true);
+	gDLL->UI().setDirty(GlobeLayer_DIRTY_BIT, true);
 
 	//gDLL->getEngineIFace()->SetDirty(GlobeTexture_DIRTY_BIT, true);
 	gDLL->getEngineIFace()->SetDirty(MinimapTexture_DIRTY_BIT, true);
@@ -5541,12 +5470,12 @@ void CvGame::setFinalInitialized(bool bNewValue)
 	updatePlotGroups();
 	GC.getMap().updateIrrigated();
 	// <advc.158> Replacing K-Mod code. If spawned later, CvPlayer::initInGame will handle it.
-	for (TeamIter<ALIVE> itTeam; itTeam.hasNext(); ++itTeam)
+	for (TeamAIIter<ALIVE> itTeam; itTeam.hasNext(); ++itTeam)
 	{
 		itTeam->AI_strengthMemory().init(
 				GC.getMap().numPlots(), itTeam->getID());
 	} // </advc.158>
-	for (TeamIter<ALIVE> itTeam; itTeam.hasNext(); ++itTeam)
+	for (TeamAIIter<ALIVE> itTeam; itTeam.hasNext(); ++itTeam)
 		itTeam->AI_updateAreaStrategies();
 }
 
@@ -5700,15 +5629,13 @@ void CvGame::updateActiveVisibility()
 
 void CvGame::updateUnitEnemyGlow()
 {
-	for(int i = 0; i < MAX_PLAYERS; i++)
+	for (PlayerIter<ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
-		CvPlayer const& kPlayer = GET_PLAYER((PlayerTypes)i);
-		if (!kPlayer.isAlive())
-			continue; // advc.opt
-		FOR_EACH_UNIT_VAR(pLoopUnit, kPlayer)
+		FOR_EACH_UNIT_VAR(pLoopUnit, *itPlayer)
 			gDLL->getEntityIFace()->updateEnemyGlow(pLoopUnit->getEntity());
 	}
 }
+
 
 void CvGame::setHandicapType(HandicapTypes eHandicap)
 {
@@ -5723,9 +5650,9 @@ int CvGame::getDifficultyForEndScore() const
 	// <advc.084>
 	if (getCivTeamsEverAlive() == 1)
 		r /= 4; // </advc.084>
-	if(isOption(GAMEOPTION_ONE_CITY_CHALLENGE))
+	if (isOption(GAMEOPTION_ONE_CITY_CHALLENGE))
 		r += 30;
-	if(!isOption(GAMEOPTION_SPAH))
+	if (!isOption(GAMEOPTION_SPAH))
 		return r.round();
 	std::vector<int> aiStartPointDistrib;
 	m_pSpah->distribution(aiStartPointDistrib);
@@ -5822,7 +5749,7 @@ void CvGame::setWinner(TeamTypes eNewWinner, VictoryTypes eNewVictory)
 void CvGame::setGameState(GameStateTypes eNewValue)
 {
 	if (getGameState() == eNewValue)
-		return; // advc
+		return;
 
 	m_eGameState = eNewValue;
 	if (eNewValue == GAMESTATE_OVER)
@@ -5836,14 +5763,12 @@ void CvGame::setGameState(GameStateTypes eNewValue)
 		if(isOption(GAMEOPTION_RISE_FALL))
 			m_pRiseFall->prepareForExtendedGame(); // </advc.707>
 		showEndGameSequence();
-		for (int iI = 0; iI < MAX_CIV_PLAYERS; iI++)
+		for (PlayerIter<HUMAN> itPlayer; itPlayer.hasNext(); ++itPlayer)
 		{
-			if (GET_PLAYER((PlayerTypes)iI).isHuman())
-			{	// One more turn?
-				CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_EXTENDED_GAME);
-				if (NULL != pInfo)
-					GET_PLAYER((PlayerTypes)iI).addPopup(pInfo);
-			}
+			// One more turn?
+			CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_EXTENDED_GAME);
+			if (pInfo != NULL)
+				itPlayer->addPopup(pInfo);
 		}
 	}
 	gDLL->UI().setDirty(Cursor_DIRTY_BIT, true);
@@ -6402,20 +6327,15 @@ void CvGame::makeSpecialBuildingValid(SpecialBuildingTypes eIndex, bool bAnnounc
 	if (!m_pabSpecialBuildingValid[eIndex])
 	{
 		m_pabSpecialBuildingValid[eIndex] = true;
-
-
 		if (bAnnounce)
 		{
 			CvWString szBuffer = gDLL->getText("TXT_KEY_SPECIAL_BUILDING_VALID",
 					GC.getInfo(eIndex).getTextKeyWide());
-			for (int iI = 0; iI < MAX_PLAYERS; iI++)
+			for (PlayerIter<MAJOR_CIV> itObs; itObs.hasNext(); ++itObs)
 			{
-				if (GET_PLAYER((PlayerTypes)iI).isAlive())
-				{
-					gDLL->UI().addMessage((PlayerTypes)iI, false, -1, szBuffer,
-							"AS2D_PROJECT_COMPLETED", MESSAGE_TYPE_MAJOR_EVENT, NULL,
-							GC.getColorType("HIGHLIGHT_TEXT"));
-				}
+				gDLL->UI().addMessage(itObs->getID(), false, -1, szBuffer,
+						"AS2D_PROJECT_COMPLETED", MESSAGE_TYPE_MAJOR_EVENT, NULL,
+						GC.getColorType("HIGHLIGHT_TEXT"));
 			}
 		}
 	}
@@ -6433,18 +6353,20 @@ void CvGame::makeNukesValid(bool bValid)
 	m_bNukesValid = bValid;
 }
 
+
 bool CvGame::isInAdvancedStart() const
 {
-	for (int iPlayer = 0; iPlayer < MAX_PLAYERS; ++iPlayer)
+	FOR_EACH_ENUM(Player)
 	{
-		if ((GET_PLAYER((PlayerTypes)iPlayer).getAdvancedStartPoints() >= 0) && GET_PLAYER((PlayerTypes)iPlayer).isHuman())
+		if ((GET_PLAYER(eLoopPlayer).getAdvancedStartPoints() >= 0) &&
+			GET_PLAYER(eLoopPlayer).isHuman())
 		{
 			return true;
 		}
 	}
-
 	return false;
 }
+
 
 void CvGame::setVoteChosen(int iSelection, int iVoteId)
 {
@@ -6502,14 +6424,11 @@ void CvGame::setHolyCity(ReligionTypes eIndex, CvCity* pNewValue, bool bAnnounce
 			szMsgRevealed, pHolyCity->getX(), pHolyCity->getY());
 			// advc.106: Reserve this color for treaties
 			//(ColorTypes)GC.getInfoTypeForString("COLOR_HIGHLIGHT_TEXT"));
-	for (int i = 0; i < MAX_PLAYERS; i++)
+	for (PlayerIter<MAJOR_CIV> itObs; itObs.hasNext(); ++itObs)
 	{
-		CvPlayer const& kObs = GET_PLAYER((PlayerTypes)i);
-		if (!kObs.isAlive())
-			continue;
-		bool bRevealed = (pHolyCity->isRevealed(kObs.getTeam()) ||
-				kObs.isSpectator()); // advc.127
-		gDLL->UI().addMessage(kObs.getID(), false,
+		bool bRevealed = (pHolyCity->isRevealed(itObs->getTeam()) ||
+				itObs->isSpectator()); // advc.127
+		gDLL->UI().addMessage(itObs->getID(), false,
 				-1, // advc.106: was MESSAGE_TIME_LONG
 				bRevealed ? szMsgRevealed : szMsgUnknown,
 				GC.getInfo(eIndex).getSound(), MESSAGE_TYPE_MAJOR_EVENT,
@@ -6564,95 +6483,79 @@ void CvGame::setHeadquarters(CorporationTypes eIndex, CvCity* pNewValue, bool bA
 			szMsgRevealed, pHeadquarters->getX(), pHeadquarters->getY());
 			// advc.106: Reserve this color for treaties
 			//(ColorTypes)GC.getInfoTypeForString("COLOR_HIGHLIGHT_TEXT"));
-	for (int i = 0; i < MAX_PLAYERS; i++)
+	for (PlayerIter<MAJOR_CIV> itObs; itObs.hasNext(); ++itObs)
 	{
-		CvPlayer const& kObs = GET_PLAYER((PlayerTypes)i);
-		if (!kObs.isAlive())
-			continue;
-		bool bRevealed = (pHeadquarters->isRevealed(kObs.getTeam()) ||
-				kObs.isSpectator()); // advc.127
-		gDLL->UI().addMessage(kObs.getID(), false,
+		bool bRevealed = (pHeadquarters->isRevealed(itObs->getTeam()) ||
+				itObs->isSpectator()); // advc.127
+		gDLL->UI().addMessage(itObs->getID(), false,
 				-1, // advc.106: was MESASAGE_TIME_LONG
 				bRevealed ? szMsgRevealed : szMsgUnknown,
 				GC.getInfo(eIndex).getSound(), MESSAGE_TYPE_MAJOR_EVENT,
 				GC.getInfo(eIndex).getButton(),
 				GC.getColorType("HIGHLIGHT_TEXT"),
-				bRevealed ? pHeadquarters->getX() : -1, bRevealed ? pHeadquarters->getY() : -1,
+				bRevealed ? pHeadquarters->getX() : -1,
+				bRevealed ? pHeadquarters->getY() : -1,
 				false, bRevealed);
 	}
 }
 
 
-PlayerVoteTypes CvGame::getPlayerVote(PlayerTypes eOwnerIndex, int iVoteId) const
+PlayerVoteTypes CvGame::getPlayerVote(PlayerTypes eVoter, int iVote) const
 {
-	FAssert(eOwnerIndex >= 0);
-	FAssert(eOwnerIndex < MAX_CIV_PLAYERS);
-	FAssert(NULL != getVoteTriggered(iVoteId));
-
-	return GET_PLAYER(eOwnerIndex).getVote(iVoteId);
+	FAssertEnumBounds((CivPlayerTypes)eVoter);
+	FAssert(getVoteTriggered(iVote) != NULL);
+	return GET_PLAYER(eVoter).getVote(iVote);
 }
 
 
-void CvGame::setPlayerVote(PlayerTypes eOwnerIndex, int iVoteId, PlayerVoteTypes eNewValue)
+void CvGame::setPlayerVote(PlayerTypes eVoter, int iVote, PlayerVoteTypes eNewValue)
 {
-	FAssert(eOwnerIndex >= 0);
-	FAssert(eOwnerIndex < MAX_CIV_PLAYERS);
-	FAssert(NULL != getVoteTriggered(iVoteId));
-
-	GET_PLAYER(eOwnerIndex).setVote(iVoteId, eNewValue);
+	FAssertEnumBounds((CivPlayerTypes)eVoter);
+	FAssert(getVoteTriggered(iVote) != NULL);
+	GET_PLAYER(eVoter).setVote(iVote, eNewValue);
 }
 
 
-void CvGame::castVote(PlayerTypes eOwnerIndex, int iVoteId, PlayerVoteTypes ePlayerVote)
+void CvGame::castVote(PlayerTypes eVoter, int iVote, PlayerVoteTypes ePlayerVote)
 {
-	VoteTriggeredData* pTriggeredData = getVoteTriggered(iVoteId);
-	if (NULL != pTriggeredData)
+	VoteTriggeredData const* pTriggeredData = getVoteTriggered(iVote);
+	if (pTriggeredData == NULL)
+		return;
+	TeamTypes const eVotingTeam = TEAMID(eVoter);
+	CvVoteInfo const& kVote = GC.getInfo(pTriggeredData->kVoteOption.eVote);
+	if (kVote.isAssignCity())
 	{
-		CvVoteInfo& kVote = GC.getInfo(pTriggeredData->kVoteOption.eVote);
-		if (kVote.isAssignCity())
+		CvPlayerAI& kCityPlayer = GET_PLAYER(pTriggeredData->kVoteOption.ePlayer);
+		if (eVotingTeam != kCityPlayer.getTeam())
 		{
-			FAssert(pTriggeredData->kVoteOption.ePlayer != NO_PLAYER);
-			CvPlayerAI& kCityPlayer = GET_PLAYER(pTriggeredData->kVoteOption.ePlayer);
-
-			if (GET_PLAYER(eOwnerIndex).getTeam() != kCityPlayer.getTeam())
+			switch (ePlayerVote)
 			{
-				switch (ePlayerVote)
-				{
-				/*  advc.130j (comment): Leave these alone for now. Should be based
-					on the number of votes cast. */
-				case PLAYER_VOTE_YES:
-					kCityPlayer.AI_changeMemoryCount(eOwnerIndex, MEMORY_VOTED_AGAINST_US, 1);
-					break;
-				case PLAYER_VOTE_NO:
-					kCityPlayer.AI_changeMemoryCount(eOwnerIndex, MEMORY_VOTED_FOR_US, 1);
-					break;
-				default:
-					break;
-				}
+			/*  advc.130j (comment): Leave these alone for now. Should eventually
+				be based on the number of votes cast. */
+			case PLAYER_VOTE_YES:
+				kCityPlayer.AI_changeMemoryCount(eVoter, MEMORY_VOTED_AGAINST_US, 1);
+				break;
+			case PLAYER_VOTE_NO:
+				kCityPlayer.AI_changeMemoryCount(eVoter, MEMORY_VOTED_FOR_US, 1);
+				break;
 			}
 		}
-		else if (isTeamVote(pTriggeredData->kVoteOption.eVote))
-		{
-			if ((PlayerVoteTypes)GET_PLAYER(eOwnerIndex).getTeam() != ePlayerVote)
-			{
-				for (int iPlayer = 0; iPlayer < MAX_CIV_PLAYERS; ++iPlayer)
-				{
-					CvPlayerAI& kLoopPlayer = GET_PLAYER((PlayerTypes)iPlayer);
-					if (kLoopPlayer.isAlive())
-					{
-						if (kLoopPlayer.getTeam() != GET_PLAYER(eOwnerIndex).getTeam() && kLoopPlayer.getTeam() == (TeamTypes)ePlayerVote)
-						{
-							/*  advc.130j (comment): Should not happen if there was
-								only one name on the ballot. (Tbd.) */
-							kLoopPlayer.AI_changeMemoryCount(eOwnerIndex, MEMORY_VOTED_FOR_US, 1);
-						}
-					}
-				}
-			}
-		}
-
-		setPlayerVote(eOwnerIndex, iVoteId, ePlayerVote);
 	}
+	else if (isTeamVote(pTriggeredData->kVoteOption.eVote) &&
+		ePlayerVote > NO_PLAYER_VOTE) // advc
+	{
+		TeamTypes const eTeamVotedFor = (TeamTypes)ePlayerVote;
+		if (eVotingTeam != eTeamVotedFor)
+		{
+			for (MemberAIIter itMember(eTeamVotedFor); itMember.hasNext(); ++itMember)
+			{
+				/*  advc.130j (comment): Should not happen if there was
+					only one name on the ballot. (Tbd.) */
+				itMember->AI_changeMemoryCount(eVoter, MEMORY_VOTED_FOR_US, 1);
+			}
+		}
+	}
+	setPlayerVote(eVoter, iVote, ePlayerVote);
 }
 
 
@@ -6666,6 +6569,7 @@ void CvGame::setScriptData(std::string szNewValue)
 {
 	m_szScriptData = szNewValue;
 }
+
 
 CvWString const& CvGame::getName()
 {
@@ -6682,22 +6586,20 @@ void CvGame::setName(TCHAR const* szName)
 bool CvGame::isDestroyedCityName(CvWString& szName) const
 {
 	std::vector<CvWString>::const_iterator it;
-
 	for (it = m_aszDestroyedCities.begin(); it != m_aszDestroyedCities.end(); ++it)
 	{
 		if (*it == szName)
-		{
 			return true;
-		}
 	}
-
 	return false;
 }
+
 
 void CvGame::addDestroyedCityName(const CvWString& szName)
 {
 	m_aszDestroyedCities.push_back(szName);
 }
+
 
 bool CvGame::isGreatPersonBorn(CvWString& szName) const
 {
@@ -6713,6 +6615,7 @@ bool CvGame::isGreatPersonBorn(CvWString& szName) const
 
 	return false;
 }
+
 
 void CvGame::addGreatPersonBornName(const CvWString& szName)
 {
@@ -6937,23 +6840,19 @@ void CvGame::doGlobalWarming()
 		addReplayMessage(REPLAY_MESSAGE_MAJOR_EVENT, NO_PLAYER, szBuffer,
 				-1, -1, GC.getColorType("HIGHLIGHT_TEXT"));
 
-		for (int i = 0; i < MAX_PLAYERS; i++)
+		for (PlayerIter<MAJOR_CIV> itObs; itObs.hasNext(); ++itObs)
 		{
-			if (GET_PLAYER((PlayerTypes)i).isAlive())
-			{
-				gDLL->UI().addMessage((PlayerTypes)i, false, -1, szBuffer,
-						"AS2D_GLOBALWARMING", MESSAGE_TYPE_MAJOR_EVENT, NULL,
-						GC.getColorType("HIGHLIGHT_TEXT"));
-			}
-
+			gDLL->UI().addMessage(itObs->getID(), false, -1, szBuffer,
+					"AS2D_GLOBALWARMING", MESSAGE_TYPE_MAJOR_EVENT, NULL,
+					GC.getColorType("HIGHLIGHT_TEXT"));
 			// Tell human players that the threshold has been reached
-			if (GET_PLAYER((PlayerTypes)i).isHuman() && !isNetworkMultiPlayer())
+			if (itObs->isHuman() && !isNetworkMultiPlayer())
 			{
 				CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_TEXT);
 				if (pInfo != NULL)
 				{
 					pInfo->setText(gDLL->getText("TXT_KEY_POPUP_ENVIRONMENTAL_ADVISOR"));
-					gDLL->getInterfaceIFace()->addPopup(pInfo, (PlayerTypes)i);
+					gDLL->getInterfaceIFace()->addPopup(pInfo, itObs->getID());
 				}
 			}
 		}
@@ -7366,30 +7265,27 @@ void CvGame::doHolyCity()
 		{ // scope for iBestValue
 			int iBestValue = MAX_INT;
 			/*  advc.001: Was MAX_TEAMS. Make sure Barbarians can't found a religion
-				somehow. Adopted from Mongoose SDK ReligionMod. */
-			for (int iJ = 0; iJ < MAX_CIV_TEAMS; iJ++)
+				somehow.Inspired by Mongoose SDK ReligionMod. */
+			for (TeamIter<CIV_ALIVE> itTeam; itTeam.hasNext(); ++itTeam)
 			{
-				CvTeam const& kTeam = GET_TEAM((TeamTypes)iJ);
-				if (!kTeam.isAlive())
+				if (!itTeam->isHasTech((TechTypes)GC.getInfo(eReligion).getTechPrereq()))
 					continue;
-				if (!kTeam.isHasTech((TechTypes)GC.getInfo(eReligion).getTechPrereq()))
-					continue;
-				if (kTeam.getNumCities() <= 0)
+				if (itTeam->getNumCities() <= 0)
 					continue;
 
 				int iValue = getSorenRandNum(10, "Found Religion (Team)");
-				for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
+				FOR_EACH_ENUM(Religion)
 				{
-					int iReligionCount = kTeam.getHasReligionCount((ReligionTypes)iK);
+					int iReligionCount = itTeam->getHasReligionCount(eLoopReligion);
 					if (iReligionCount > 0)
 						iValue += iReligionCount * 20;
 				}
 				// advc.138:
-				iValue -= religionPriority(kTeam.getID(), eReligion);
+				iValue -= religionPriority(itTeam->getID(), eReligion);
 				if (iValue < iBestValue)
 				{
 					iBestValue = iValue;
-					eBestTeam = kTeam.getID();
+					eBestTeam = itTeam->getID();
 				}
 			}
 		}
@@ -7398,13 +7294,15 @@ void CvGame::doHolyCity()
 		}
 		int iBestValue = MAX_INT;
 		PlayerTypes eBestPlayer = NO_PLAYER;
-		for (int iJ = 0; iJ < MAX_PLAYERS; iJ++)
+		for (MemberIter itMember(eBestTeam); itMember.hasNext(); ++itMember)
 		{
-			CvPlayer const& kMember = GET_PLAYER((PlayerTypes)iJ);
+			CvPlayer const& kMember = GET_PLAYER(itMember->getID());
 // david lalen forbiddan religion
 			bool teamCheck = forbRel ? false : kMember.getTeam() != eBestTeam;//this is needed for forbidden religion
 			//only check for team if forbidden religion is off...
-			if (!kMember.isAlive() || teamCheck /*kMember.getTeam() != eBestTeam */|| kMember.getNumCities() <= 0)
+			//org - changed in advc 1 11072021
+			//if (!kMember.isAlive() || teamCheck /*kMember.getTeam() != eBestTeam */|| kMember.getNumCities() <= 0)
+			if (itMember->getNumCities() <= 0)
 				continue;
 // david lalen forbiddan religion - dune wars end - keldath fix - if religion is forbidden - pass.
 			CivilizationTypes eCiv = kMember.getCivilizationType();
@@ -7421,19 +7319,19 @@ void CvGame::doHolyCity()
 			}	
 //david lalen forbiddan religion - dune wars end
 			int iValue = getSorenRandNum(10, "Found Religion (Player)");
-			if (!kMember.isHuman())
+			if (!itMember->isHuman())
 				iValue += 18; // advc.138: Was 10. Need some x: 15 < x < 20.
-			for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
+			FOR_EACH_ENUM(Religion)
 			{
-				int iReligionCount = kMember.getHasReligionCount((ReligionTypes)iK);
+				int iReligionCount = itMember->getHasReligionCount(eLoopReligion);
 				if (iReligionCount > 0)
 					iValue += iReligionCount * 20;
 			}
-			iValue -= religionPriority(kMember.getID(), eReligion); // advc.138
+			iValue -= religionPriority(itMember->getID(), eReligion); // advc.138
 			if (iValue < iBestValue)
 			{
 				iBestValue = iValue;
-				eBestPlayer = kMember.getID();
+				eBestPlayer = itMember->getID();
 			}
 		}
 		if (eBestPlayer == NO_PLAYER)
@@ -7492,7 +7390,7 @@ int CvGame::religionPriority(PlayerTypes ePlayer, ReligionTypes eReligion) const
 			continue;
 		}
 		iR += 5;
-		/*  Spiritual human should be sure to get a religion (so long as
+		/*	Spiritual human should be sure to get a religion (so long as
 			difficulty isn't above Noble). Not quite sure if my choice of
 			numbers in this function and in doHolyCity accomplishes that. */
 		if (kPlayer.isHuman())
@@ -7504,7 +7402,7 @@ int CvGame::religionPriority(PlayerTypes ePlayer, ReligionTypes eReligion) const
 	// With the pick-rel option, eReligion will change later on anyway.
 	if (!isOption(GAMEOPTION_PICK_RELIGION))
 	{
-		/*  Not excluding human here means that choosing a leader with an early
+		/*	Not excluding human here means that choosing a leader with an early
 			fav religion can make a difference in human getting a religion.
 			Unexpected, as fav. religions are pretty obscure knowledge. On the
 			other hand, it's a pity to assign human an arbitrary religion when
@@ -7517,7 +7415,7 @@ int CvGame::religionPriority(PlayerTypes ePlayer, ReligionTypes eReligion) const
 	return iR;
 } // </advc.138>
 
-/*  advc: Since none of the BtS corps have a prereq. tech, this function
+/*	advc: Since none of the BtS corps have a prereq. tech, this function
 	normally does nothing. It has clearly never been properly tested (I've found
 	two errors while refactoring it). I'm tempted to remove it, but corporations
 	that get founded through a tech could be interesting for XML modding. It remains
@@ -7536,23 +7434,22 @@ void CvGame::doHeadquarters()
 			continue;
 
 		TeamTypes eBestTeam = NO_TEAM;
-		{ // Scope for iBestValue
+		{
 			int iBestValue = MAX_INT;
-			for (int iJ = 0; iJ < MAX_TEAMS; iJ++)
+			for (TeamIter<CIV_ALIVE> itTeam; itTeam.hasNext(); ++itTeam)
 			{
-				CvTeam& kTeam = GET_TEAM((TeamTypes)iJ);
-				if (!kTeam.isAlive())
-					continue;
 				// advc (note): This is as far as execution gets in AdvCiv/BtS
 				if (kCorp.getTechPrereq() == NO_TECH ||
-						!kTeam.isHasTech((TechTypes)kCorp.getTechPrereq()))
+					!itTeam->isHasTech((TechTypes)kCorp.getTechPrereq()))
+				{
 					continue;
-				if (kTeam.getNumCities() <= 0)
+				}
+				if (itTeam->getNumCities() <= 0)
 					continue;
 				bool bHasBonus = false;
 				for (int i = 0; i < kCorp.getNumPrereqBonuses(); i++)
 				{
-					if (kTeam.hasBonus(kCorp.getPrereqBonus(i)))
+					if (itTeam->hasBonus(kCorp.getPrereqBonus(i)))
 					{
 						bHasBonus = true;
 						break;
@@ -7561,34 +7458,31 @@ void CvGame::doHeadquarters()
 				if (!bHasBonus)
 					continue;
 				int iValue = getSorenRandNum(10, "Found Corporation (Team)");
-				for (int iK = 0; iK < GC.getNumCorporationInfos(); iK++)
+				FOR_EACH_ENUM(Corporation)
 				{
 					int iCorporationCount = //GET_PLAYER((PlayerTypes)iJ).getHasCorporationCount((CorporationTypes)iK);
-							kTeam.getHasCorporationCount((CorporationTypes)iK); // advc.001: iJ isn't a player
+							itTeam->getHasCorporationCount(eLoopCorporation); // advc.001: iJ isn't a player
 					iValue += iCorporationCount * 20;
 				}
 				if (iValue < iBestValue)
 				{
 					iBestValue = iValue;
-					eBestTeam = kTeam.getID();
+					eBestTeam = itTeam->getID();
 				}
 			} // advc.001: Team loop needs to end here
 		}
 		if (eBestTeam == NO_TEAM)
 			continue;
-
 		int iBestValue = MAX_INT;
 		PlayerTypes eBestPlayer = NO_PLAYER;
-		for (int iJ = 0; iJ < MAX_PLAYERS; iJ++)
+		for (MemberIter itMember(eBestTeam); itMember.hasNext(); ++itMember)
 		{
-			CvPlayer& kMember = GET_PLAYER((PlayerTypes)iJ);
-			if (!kMember.isAlive() || kMember.getTeam() != eBestTeam || kMember.getNumCities() <= 0)
+			if (itMember->getNumCities() <= 0)
 				continue;
-
 			bool bHasBonus = false;
 			for (int i = 0; i < kCorp.getNumPrereqBonuses(); i++)
 			{
-				if (kMember.hasBonus(kCorp.getPrereqBonus(i)))
+				if (itMember->hasBonus(kCorp.getPrereqBonus(i)))
 				{
 					bHasBonus = true;
 					break;
@@ -7596,20 +7490,19 @@ void CvGame::doHeadquarters()
 			}
 			if (!bHasBonus)
 				continue;
-
 			int iValue = getSorenRandNum(10, "Found Corporation (Player)");
-			if (!kMember.isHuman())
+			if (!itMember->isHuman())
 				iValue += 10;
 			FOR_EACH_ENUM(Corporation)
 			{
-				int iCorporationCount = kMember.getHasCorporationCount(eLoopCorporation);
+				int iCorporationCount = itMember->getHasCorporationCount(eLoopCorporation);
 				if (iCorporationCount > 0)
 					iValue += iCorporationCount * 20;
 			}
 			if (iValue < iBestValue)
 			{
 				iBestValue = iValue;
-				eBestPlayer = kMember.getID();
+				eBestPlayer = itMember->getID();
 			}
 		}
 		if (eBestPlayer != NO_PLAYER)
@@ -8535,24 +8428,18 @@ void CvGame::updateMoves()
 
 void CvGame::verifyCivics()
 {
-	for (int iI = 0; iI < MAX_PLAYERS; iI++)
+	for (PlayerIter<ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
-		if (GET_PLAYER((PlayerTypes)iI).isAlive())
-		{
-			GET_PLAYER((PlayerTypes)iI).verifyCivics();
-		}
+		itPlayer->verifyCivics();
 	}
 }
 
 
 void CvGame::updateTimers()
 {
-	for (int iI = 0; iI < MAX_PLAYERS; iI++)
+	for (PlayerIter<ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
-		if (GET_PLAYER((PlayerTypes)iI).isAlive())
-		{
-			GET_PLAYER((PlayerTypes)iI).updateTimers();
-		}
+		itPlayer->updateTimers();
 	}
 }
 
@@ -8582,8 +8469,8 @@ void CvGame::updateTurnTimer()
 
 void CvGame::testAlive()
 {
-	for (int iI = 0; iI < MAX_PLAYERS; iI++)
-		GET_PLAYER((PlayerTypes)iI).verifyAlive();
+	FOR_EACH_ENUM(Player)
+		GET_PLAYER(eLoopPlayer).verifyAlive();
 }
 
 bool CvGame::testVictory(VictoryTypes eVictory, TeamTypes eTeam, bool* pbEndScore) const
@@ -9661,6 +9548,7 @@ void CvGame::read(FDataStreamBase* pStream)
 	if(uiFlag >= 3)
 		pStream->Read(&m_bScenario); // </advc.052>
 	m_iTurnLoadedFromSave = m_iElapsedGameTurns; // advc.044
+	GAMETEXT.setAlwaysShowPlotCulture(uiFlag >= 10); // advc.099f
 	applyOptionEffects(); // advc.310
 	m_bFPTestDone = !isNetworkMultiPlayer(); // advc.003g
 }
@@ -9678,7 +9566,8 @@ void CvGame::write(FDataStreamBase* pStream)
 	//uiFlag = 6; // advc.106h
 	//uiFlag = 7; // advc.027b
 	//uiFlag = 8; // advc.172
-	uiFlag = 9; // advc (m_aeVoteSourceReligion)
+	//uiFlag = 9; // advc (m_aeVoteSourceReligion)
+	uiFlag = 10; // advc.099f
 	pStream->Write(uiFlag);
 	REPRO_TEST_BEGIN_WRITE("Game pt1");
 	pStream->Write(m_iElapsedGameTurns);
@@ -9881,7 +9770,7 @@ void CvGame::onAllGameDataRead()
 			it->finalizeInit();
 		}
 	} // </advc.003m>  <advc.opt>
-	for (TeamIter<> it; it.hasNext(); ++it)
+	for (TeamAIIter<> it; it.hasNext(); ++it)
 	{
 		FOR_EACH_ENUM(WarPlan)
 		{
@@ -9895,22 +9784,15 @@ void CvGame::onAllGameDataRead()
 	m_bAllGameDataRead = true;
 	for (PlayerIter<HUMAN> it; it.hasNext(); ++it)
 	{
-		CvPlayerAI& kActive = *it;
+		CvPlayer& kActive = *it;
 		if (!kActive.isTurnActive())
 			continue;
-		/*	Bad idea (by me). The cache data has to be serialized instead.
-			It gets updated at the start of a turn, yes, but if we rely on
-			that, then it won't be safe to access data from another player's
-			cache (who may not have taken a turn since a savegame was loaded).
-			Could update all caches after loading, but that would result in
-			more recent data after loading than upon saving. */
-		//kActive.AI_updateCacheData();
 		kActive.validateDiplomacy(); // advc.134a
 	}
 	// <advc.127> Save created during AI Auto Play
 	if (m_iAIAutoPlay != 0 && !isNetworkMultiPlayer())
 	{
-		for (PlayerIter<MAJOR_CIV> it; it.hasNext(); ++it)
+		for (PlayerAIIter<MAJOR_CIV> it; it.hasNext(); ++it)
 			it->AI_updateAttitude();
 	}
 	m_iAIAutoPlay = 0; // </advc.127>
@@ -9955,91 +9837,82 @@ void CvGame::showEndGameSequence()
 	long iHours = getMinutesPlayed() / 60;
 	long iMinutes = getMinutesPlayed() % 60;
 
-	for (int iI = 0; iI < MAX_CIV_PLAYERS; iI++)
+	for (PlayerIter<HUMAN> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
-		CvPlayer& player = GET_PLAYER((PlayerTypes)iI);
-		if (player.isHuman())
+		CvPlayer& kPlayer = *itPlayer;
+		addReplayMessage(REPLAY_MESSAGE_MAJOR_EVENT, kPlayer.getID(),
+				gDLL->getText("TXT_KEY_MISC_TIME_SPENT", iHours, iMinutes));
+		CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_TEXT);
+		if (pInfo != NULL)
 		{
-			addReplayMessage(REPLAY_MESSAGE_MAJOR_EVENT, (PlayerTypes)iI, gDLL->getText("TXT_KEY_MISC_TIME_SPENT", iHours, iMinutes));
-
-			CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_TEXT);
-			if (NULL != pInfo)
+			if (getWinner() != NO_TEAM && getVictory() != NO_VICTORY)
 			{
-				if ((getWinner() != NO_TEAM) && (getVictory() != NO_VICTORY))
-				{
-					pInfo->setText(gDLL->getText("TXT_KEY_GAME_WON", GET_TEAM(getWinner()).getName().GetCString(), GC.getInfo(getVictory()).getTextKeyWide()));
-				}
-				else
-				{
-					pInfo->setText(gDLL->getText("TXT_KEY_MISC_DEFEAT"));
-				}
-				player.addPopup(pInfo);
+				pInfo->setText(gDLL->getText("TXT_KEY_GAME_WON",
+						GET_TEAM(getWinner()).getName().GetCString(),
+						GC.getInfo(getVictory()).getTextKeyWide()));
 			}
-
-			if (getWinner() == player.getTeam())
+			else pInfo->setText(gDLL->getText("TXT_KEY_MISC_DEFEAT"));
+			kPlayer.addPopup(pInfo);
+		}
+		if (getWinner() == kPlayer.getTeam())
+		{
+			if (!CvString(GC.getInfo(getVictory()).getMovie()).empty())
 			{
-				if (!CvString(GC.getInfo(getVictory()).getMovie()).empty())
+				// show movie
+				pInfo = new CvPopupInfo(BUTTONPOPUP_PYTHON_SCREEN);
+				if (pInfo != NULL)
 				{
-					// show movie
-					pInfo = new CvPopupInfo(BUTTONPOPUP_PYTHON_SCREEN);
-					if (NULL != pInfo)
-					{
 						pInfo->setText(L"showVictoryMovie");
 						pInfo->setData1((int)getVictory());
-						player.addPopup(pInfo);
-					}
+						kPlayer.addPopup(pInfo);
 				}
-				else if (GC.getInfo(getVictory()).isDiploVote())
+			}
+			else if (GC.getInfo(getVictory()).isDiploVote())
+			{
+				pInfo = new CvPopupInfo(BUTTONPOPUP_PYTHON_SCREEN);
+				if (pInfo != NULL)
 				{
-					pInfo = new CvPopupInfo(BUTTONPOPUP_PYTHON_SCREEN);
-					if (NULL != pInfo)
-					{
-						pInfo->setText(L"showUnVictoryScreen");
-						player.addPopup(pInfo);
-					}
+					pInfo->setText(L"showUnVictoryScreen");
+					kPlayer.addPopup(pInfo);
 				}
 			}
-
-			// show replay
-			pInfo = new CvPopupInfo(BUTTONPOPUP_PYTHON_SCREEN);
-			if (NULL != pInfo)
-			{
-				pInfo->setText(L"showReplay");
-				pInfo->setData1(iI);
-				/*  advc.106i (comment): The BtS comment below means that the HoF
-					is not shown right after the player exits from the Replay screen.
-					That it still gets shown later on is intentional (see a few
-					lines below). */
-				pInfo->setOption1(false); // don't go to HOF on exit
-				player.addPopup(pInfo);
-			}
-
-			// show top cities / stats
-			pInfo = new CvPopupInfo(BUTTONPOPUP_PYTHON_SCREEN);
-			if (NULL != pInfo)
-			{
-				pInfo->setText(L"showInfoScreen");
-				pInfo->setData1(0);
-				pInfo->setData2(1);
-				player.addPopup(pInfo);
-			}
-
-			// show Dan
-			pInfo = new CvPopupInfo(BUTTONPOPUP_PYTHON_SCREEN);
-			if (NULL != pInfo)
-			{
-				pInfo->setText(L"showDanQuayleScreen");
-				player.addPopup(pInfo);
-			}
-
-			// show Hall of Fame
-			pInfo = new CvPopupInfo(BUTTONPOPUP_PYTHON_SCREEN);
-			if (NULL != pInfo)
-			{
-				pInfo->setText(L"showHallOfFame");
-				pInfo->setData1(0); // advc.003y: Disable replay buttons
-				player.addPopup(pInfo);
-			}
+		}
+		// show replay
+		pInfo = new CvPopupInfo(BUTTONPOPUP_PYTHON_SCREEN);
+		if (pInfo != NULL)
+		{
+			pInfo->setText(L"showReplay");
+			pInfo->setData1(kPlayer.getID());
+			/*	advc.106i (comment): The BtS comment below means that the HoF
+				is not shown right after the player exits from the Replay screen.
+				That it still gets shown later on is intentional (see a few
+				lines below). */
+			pInfo->setOption1(false); // don't go to HOF on exit
+			kPlayer.addPopup(pInfo);
+		}
+		// show top cities / stats
+		pInfo = new CvPopupInfo(BUTTONPOPUP_PYTHON_SCREEN);
+		if (pInfo != NULL)
+		{
+			pInfo->setText(L"showInfoScreen");
+			pInfo->setData1(0);
+			pInfo->setData2(1);
+			kPlayer.addPopup(pInfo);
+		}
+		// show Dan
+		pInfo = new CvPopupInfo(BUTTONPOPUP_PYTHON_SCREEN);
+		if (pInfo != NULL)
+		{
+			pInfo->setText(L"showDanQuayleScreen");
+			kPlayer.addPopup(pInfo);
+		}
+		// show Hall of Fame
+		pInfo = new CvPopupInfo(BUTTONPOPUP_PYTHON_SCREEN);
+		if (pInfo != NULL)
+		{
+			pInfo->setText(L"showHallOfFame");
+			pInfo->setData1(0); // advc.003y: Disable replay buttons
+			kPlayer.addPopup(pInfo);
 		}
 	}
 }
@@ -10475,6 +10348,14 @@ int CvGame::getCultureThreshold(CultureLevelTypes eLevel) const
 	return iThreshold;
 }
 
+// advc.908b:
+int CvGame::freeCityCultureFromTrait(TraitTypes eTrait) const
+{
+	return (GC.getInfo(eTrait).get(CvTraitInfo::FREE_CITY_CULTURE) *
+			gameSpeedMultiplier()).floor();
+}
+
+
 void CvGame::doUpdateCacheOnTurn()
 {
 	// reset shrine count
@@ -10672,7 +10553,7 @@ VoteTriggeredData* CvGame::addVoteTriggered(VoteSourceTypes eVoteSource, const V
 	FAssert(pData != NULL); // advc
 	pData->eVoteSource = eVoteSource;
 	pData->kVoteOption = kOptionData;
-	for (PlayerIter<MAJOR_CIV> it; it.hasNext(); ++it)
+	for (PlayerAIIter<MAJOR_CIV> it; it.hasNext(); ++it)
 	{
 		CvPlayerAI& kVoter = *it;
 		if (!kVoter.isVotingMember(eVoteSource))
@@ -10699,8 +10580,11 @@ VoteTriggeredData* CvGame::addVoteTriggered(VoteSourceTypes eVoteSource, const V
 			}
 		} // </kekm.25>
 		CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_DIPLOVOTE);
-		pInfo->setData1(pData->getID());
-		gDLL->getInterfaceIFace()->addPopup(pInfo, kVoter.getID());
+		if (pInfo != NULL)
+		{
+			pInfo->setData1(pData->getID());
+			gDLL->getInterfaceIFace()->addPopup(pInfo, kVoter.getID());
+		}
 	}
 	return pData;
 }
@@ -10716,7 +10600,7 @@ void CvGame::doVoteResults()
 	static CvWString szTargetCityName;
 	int iLoop=-1;
 	for (VoteTriggeredData* pVoteTriggered = m_votesTriggered.beginIter(&iLoop);
-		NULL != pVoteTriggered; pVoteTriggered = m_votesTriggered.nextIter(&iLoop))
+		pVoteTriggered != NULL; pVoteTriggered = m_votesTriggered.nextIter(&iLoop))
 	{
 		CvWString szBuffer;
 		CvWString szMessage;
@@ -10727,43 +10611,39 @@ void CvGame::doVoteResults()
 
 		if (!canDoResolution(eVoteSource, subdata))
 		{
-			for (int iPlayer = 0; iPlayer < MAX_CIV_PLAYERS; ++iPlayer)
+			for (PlayerIter<MAJOR_CIV> itObs; itObs.hasNext(); ++itObs)
 			{
-				CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iPlayer);
-				if (kPlayer.isVotingMember(eVoteSource))
-				{
-					szMessage.clear();
-					szMessage.Format(L"%s: %s", gDLL->getText("TXT_KEY_ELECTION_CANCELLED").GetCString(),
-							GC.getInfo(eVote).getDescription());
-					// advc.127b:
-					std::pair<int,int> xy = getVoteSourceXY(eVoteSource, kPlayer.getTeam());
-					gDLL->UI().addMessage(kPlayer.getID(), false, -1, szMessage,
-							"AS2D_NEW_ERA", MESSAGE_TYPE_INFO, NULL,
-							GC.getColorType("HIGHLIGHT_TEXT"),
-							xy.first, xy.second); // advc.127b
-				}
+				if (!itObs->isVotingMember(eVoteSource))
+					continue;
+				szMessage.clear();
+				szMessage.Format(L"%s: %s", gDLL->getText("TXT_KEY_ELECTION_CANCELLED").GetCString(),
+						GC.getInfo(eVote).getDescription());
+				// advc.127b:
+				std::pair<int,int> xy = getVoteSourceXY(eVoteSource, itObs->getTeam());
+				gDLL->UI().addMessage(itObs->getID(), false, -1, szMessage,
+						"AS2D_NEW_ERA", MESSAGE_TYPE_INFO, NULL,
+						GC.getColorType("HIGHLIGHT_TEXT"),
+						xy.first, xy.second); // advc.127b
 			}
 		}
 		else
 		{
 			bool bAllVoted = true;
-			for (int iJ = 0; iJ < MAX_CIV_PLAYERS; iJ++)
+			for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
 			{
-				PlayerTypes ePlayer = (PlayerTypes) iJ;
-				if (GET_PLAYER(ePlayer).isVotingMember(eVoteSource))
-				{
-					if (getPlayerVote(ePlayer, pVoteTriggered->getID()) == NO_PLAYER_VOTE)
-					{
-						//give player one more turn to submit vote
-						setPlayerVote(ePlayer, pVoteTriggered->getID(), NO_PLAYER_VOTE_CHECKED);
-						bAllVoted = false;
-						break;
-					}
-					else if (getPlayerVote(ePlayer, pVoteTriggered->getID()) == NO_PLAYER_VOTE_CHECKED)
-					{
-						//default player vote to abstain
-						setPlayerVote(ePlayer, pVoteTriggered->getID(), PLAYER_VOTE_ABSTAIN);
-					}
+				if (!itPlayer->isVotingMember(eVoteSource))
+					continue;
+				PlayerTypes const ePlayer = itPlayer->getID();
+				if (getPlayerVote(ePlayer, pVoteTriggered->getID()) == NO_PLAYER_VOTE)
+				{	//give player one more turn to submit vote
+					setPlayerVote(ePlayer, pVoteTriggered->getID(), NO_PLAYER_VOTE_CHECKED);
+					bAllVoted = false;
+					break;
+				}
+				else if (getPlayerVote(ePlayer, pVoteTriggered->getID())
+					== NO_PLAYER_VOTE_CHECKED)
+				{	//default player vote to abstain
+					setPlayerVote(ePlayer, pVoteTriggered->getID(), PLAYER_VOTE_ABSTAIN);
 				}
 			}
 
@@ -10774,67 +10654,63 @@ void CvGame::doVoteResults()
 			int iVotes = -1; // </advc.150b>
 			if (isTeamVote(eVote))
 			{
-				TeamTypes eTeam = findHighestVoteTeam(*pVoteTriggered);
-
-				if (NO_TEAM != eTeam)
+				TeamTypes const eTeam = findHighestVoteTeam(*pVoteTriggered);
+				if (eTeam != NO_TEAM)
 				{	// <advc.150b> Store vote count for later
 					iVotes = countVote(*pVoteTriggered, (PlayerVoteTypes)eTeam);
 					bPassed = (iVotes >= getVoteRequired(eVote, eVoteSource));
 				}	// </advc.150b>
-
 				szBuffer = GC.getInfo(eVote).getDescription();
-
 				if (eTeam != NO_TEAM)
 				{
-					szBuffer += NEWLINE + gDLL->getText("TXT_KEY_POPUP_DIPLOMATIC_VOTING_VICTORY",
+					szBuffer.append(NEWLINE);
+					szBuffer.append(
+							gDLL->getText("TXT_KEY_POPUP_DIPLOMATIC_VOTING_VICTORY",
 							GET_TEAM(eTeam).getName().GetCString(),
 							countVote(*pVoteTriggered, (PlayerVoteTypes)eTeam),
 							getVoteRequired(eVote, eVoteSource),
-							countPossibleVote(eVote, eVoteSource));
+							countPossibleVote(eVote, eVoteSource)));
 				}
-
-				for (int iI = MAX_CIV_TEAMS; iI >= 0; --iI)
+				FOR_EACH_ENUM_REV(Team)
 				{
-					for (int iJ = 0; iJ < MAX_CIV_PLAYERS; iJ++)
+					PlayerVoteTypes const eTeamVotedFor = (PlayerVoteTypes)eLoopTeam;
+					for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
 					{
-						if (GET_PLAYER((PlayerTypes)iJ).isVotingMember(eVoteSource))
+						if (!itPlayer->isVotingMember(eVoteSource))
+							continue;
+						if (getPlayerVote(itPlayer->getID(), pVoteTriggered->getID()) ==
+							eTeamVotedFor)
 						{
-							if (getPlayerVote(((PlayerTypes)iJ), pVoteTriggered->getID()) == (PlayerVoteTypes)iI)
-							{
-								szBuffer += NEWLINE + gDLL->getText("TXT_KEY_POPUP_VOTES_FOR",
-										GET_PLAYER((PlayerTypes)iJ).getNameKey(),
-										GET_TEAM((TeamTypes)iI).getName().GetCString(),
-										GET_PLAYER((PlayerTypes)iJ).getVotes(eVote, eVoteSource));
-							}
+							szBuffer.append(NEWLINE);
+							szBuffer.append(
+									gDLL->getText("TXT_KEY_POPUP_VOTES_FOR",
+									itPlayer->getNameKey(),
+									GET_TEAM(eLoopTeam).getName().GetCString(),
+									itPlayer->getVotes(eVote, eVoteSource)));
 						}
 					}
 				}
-
-				for (int iJ = 0; iJ < MAX_CIV_PLAYERS; iJ++)
+				for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
 				{
-					if (GET_PLAYER((PlayerTypes)iJ).isVotingMember(eVoteSource))
+					if (!itPlayer->isVotingMember(eVoteSource))
+						continue;
+					PlayerTypes const eVoter = itPlayer->getID();
+					if (getPlayerVote(eVoter, pVoteTriggered->getID()) ==
+						PLAYER_VOTE_ABSTAIN)
 					{
-						if (getPlayerVote(((PlayerTypes)iJ), pVoteTriggered->getID()) == PLAYER_VOTE_ABSTAIN)
-						{
-							szBuffer += NEWLINE + gDLL->getText("TXT_KEY_POPUP_ABSTAINS",
-									GET_PLAYER((PlayerTypes)iJ).getNameKey(),
-									GET_PLAYER((PlayerTypes)iJ).getVotes(eVote, eVoteSource));
-						}
+						szBuffer.append(NEWLINE);
+						szBuffer.append(gDLL->getText("TXT_KEY_POPUP_ABSTAINS",
+								GET_PLAYER(eVoter).getNameKey(),
+								GET_PLAYER(eVoter).getVotes(eVote, eVoteSource)));
 					}
 				}
-
-				if (NO_TEAM != eTeam && bPassed)
-				{
+				if (eTeam != NO_TEAM && bPassed)
 					setVoteOutcome(*pVoteTriggered, (PlayerVoteTypes)eTeam);
-				}
-				else
-				{
-					setVoteOutcome(*pVoteTriggered, PLAYER_VOTE_ABSTAIN);
-				}
+				else setVoteOutcome(*pVoteTriggered, PLAYER_VOTE_ABSTAIN);
 			}
 			else
 			{	// <advc.150b>
-				if(subdata.ePlayer != NO_PLAYER && subdata.iCityId >= 0)
+				if (subdata.ePlayer != NO_PLAYER && subdata.iCityId >= 0)
 				{
 					CvCity* pTargetCity = GET_PLAYER(subdata.ePlayer).getCity(subdata.iCityId);
 					if(pTargetCity != NULL)
@@ -10846,87 +10722,100 @@ void CvGame::doVoteResults()
 				// Defying resolution
 				if (bPassed)
 				{
-					for (int iJ = 0; iJ < MAX_CIV_PLAYERS; iJ++)
+					for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
 					{
-						if (getPlayerVote((PlayerTypes)iJ, pVoteTriggered->getID()) == PLAYER_VOTE_NEVER)
+						if (getPlayerVote(itPlayer->getID(), pVoteTriggered->getID()) ==
+							PLAYER_VOTE_NEVER)
 						{
 							bPassed = false;
-
-							GET_PLAYER((PlayerTypes)iJ).setDefiedResolution(eVoteSource, subdata);
+							itPlayer->setDefiedResolution(eVoteSource, subdata);
 						}
 					}
 				}
-
 				if (bPassed)
 				{
-					for (int iJ = 0; iJ < MAX_CIV_PLAYERS; iJ++)
+					for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
 					{
-						if (GET_PLAYER((PlayerTypes)iJ).isVotingMember(eVoteSource))
+						if (!itPlayer->isVotingMember(eVoteSource))
+							continue;
+						if (getPlayerVote(itPlayer->getID(), pVoteTriggered->getID()) ==
+							PLAYER_VOTE_YES)
 						{
-							if (getPlayerVote(((PlayerTypes)iJ), pVoteTriggered->getID()) == PLAYER_VOTE_YES)
-							{
-								GET_PLAYER((PlayerTypes)iJ).setEndorsedResolution(eVoteSource, subdata);
-							}
+							itPlayer->setEndorsedResolution(eVoteSource, subdata);
 						}
 					}
 				}
-
-				szBuffer += NEWLINE + gDLL->getText((bPassed ? "TXT_KEY_POPUP_DIPLOMATIC_VOTING_SUCCEEDS" : "TXT_KEY_POPUP_DIPLOMATIC_VOTING_FAILURE"), GC.getInfo(eVote).getTextKeyWide(), countVote(*pVoteTriggered, PLAYER_VOTE_YES), getVoteRequired(eVote, eVoteSource), countPossibleVote(eVote, eVoteSource));
-
-				for (int iI = PLAYER_VOTE_NEVER; iI <= PLAYER_VOTE_YES; ++iI)
+				szBuffer.append(NEWLINE);
+				szBuffer.append(gDLL->getText(bPassed ?
+						"TXT_KEY_POPUP_DIPLOMATIC_VOTING_SUCCEEDS" :
+						"TXT_KEY_POPUP_DIPLOMATIC_VOTING_FAILURE",
+						GC.getInfo(eVote).getTextKeyWide(),
+						countVote(*pVoteTriggered, PLAYER_VOTE_YES),
+						getVoteRequired(eVote, eVoteSource),
+						countPossibleVote(eVote, eVoteSource)));
+				for (int i = PLAYER_VOTE_NEVER; i <= PLAYER_VOTE_YES; i++)
 				{
-					for (int iJ = 0; iJ < MAX_CIV_PLAYERS; iJ++)
+					PlayerVoteTypes ePlayerVote = (PlayerVoteTypes)i;
+					for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
 					{
-						if (GET_PLAYER((PlayerTypes)iJ).isVotingMember(eVoteSource))
+						CvPlayer const& kVoter = *itPlayer;
+						if (!kVoter.isVotingMember(eVoteSource) ||
+							getPlayerVote(kVoter.getID(), pVoteTriggered->getID()) !=
+							ePlayerVote)
 						{
-							if (getPlayerVote(((PlayerTypes)iJ), pVoteTriggered->getID()) == (PlayerVoteTypes)iI)
-							{
-								switch ((PlayerVoteTypes)iI)
-								{
-								case PLAYER_VOTE_ABSTAIN:
-									szBuffer += NEWLINE + gDLL->getText("TXT_KEY_POPUP_ABSTAINS", GET_PLAYER((PlayerTypes)iJ).getNameKey(), GET_PLAYER((PlayerTypes)iJ).getVotes(eVote, eVoteSource));
-									break;
-								case PLAYER_VOTE_NEVER:
-									szBuffer += NEWLINE + gDLL->getText("TXT_KEY_POPUP_VOTES_YES_NO", GET_PLAYER((PlayerTypes)iJ).getNameKey(), L"TXT_KEY_POPUP_VOTE_NEVER", GET_PLAYER((PlayerTypes)iJ).getVotes(eVote, eVoteSource));
-									break;
-								case PLAYER_VOTE_NO:
-									szBuffer += NEWLINE + gDLL->getText("TXT_KEY_POPUP_VOTES_YES_NO", GET_PLAYER((PlayerTypes)iJ).getNameKey(), L"TXT_KEY_POPUP_NO", GET_PLAYER((PlayerTypes)iJ).getVotes(eVote, eVoteSource));
-									break;
-								case PLAYER_VOTE_YES:
-									szBuffer += NEWLINE + gDLL->getText("TXT_KEY_POPUP_VOTES_YES_NO", GET_PLAYER((PlayerTypes)iJ).getNameKey(), L"TXT_KEY_POPUP_YES", GET_PLAYER((PlayerTypes)iJ).getVotes(eVote, eVoteSource));
-									break;
-								default:
-									FAssert(false);
-									break;
-								}
-							}
+							continue;
+						}
+						szBuffer.append(NEWLINE);
+						switch (ePlayerVote)
+						{
+						case PLAYER_VOTE_ABSTAIN:
+							szBuffer.append(gDLL->getText("TXT_KEY_POPUP_ABSTAINS",
+									kVoter.getNameKey(),
+									kVoter.getVotes(eVote, eVoteSource)));
+							break;
+						case PLAYER_VOTE_NEVER:
+							szBuffer.append(gDLL->getText("TXT_KEY_POPUP_VOTES_YES_NO",
+									kVoter.getNameKey(), L"TXT_KEY_POPUP_VOTE_NEVER",
+									kVoter.getVotes(eVote, eVoteSource)));
+							break;
+						case PLAYER_VOTE_NO:
+							szBuffer.append(gDLL->getText("TXT_KEY_POPUP_VOTES_YES_NO",
+									kVoter.getNameKey(), L"TXT_KEY_POPUP_NO",
+									kVoter.getVotes(eVote, eVoteSource)));
+							break;
+						case PLAYER_VOTE_YES:
+							szBuffer.append(gDLL->getText("TXT_KEY_POPUP_VOTES_YES_NO",
+									kVoter.getNameKey(), L"TXT_KEY_POPUP_YES",
+									kVoter.getVotes(eVote, eVoteSource)));
+							break;
+						default:
+							FAssert(false);
 						}
 					}
 				}
-
 				setVoteOutcome(*pVoteTriggered, bPassed ? PLAYER_VOTE_YES : PLAYER_VOTE_NO);
 			}
 			// <advc.150b>
 			CvVoteInfo& kVote = GC.getInfo(eVote);
-			if(bPassed && !kVote.isSecretaryGeneral())
+			if (bPassed && !kVote.isSecretaryGeneral())
 			{
 				CvWString szResolution;
 				// Special treatment for resolutions with targets
-				if(subdata.ePlayer != NO_PLAYER)
+				if (subdata.ePlayer != NO_PLAYER)
 				{
 					CvWString szKey;
-					if(kVote.isForcePeace())
+					if (kVote.isForcePeace())
 						szKey = L"TXT_KEY_POPUP_ELECTION_FORCE_PEACE";
-					else if(kVote.isForceNoTrade())
+					else if (kVote.isForceNoTrade())
 						szKey = L"TXT_KEY_POPUP_ELECTION_FORCE_NO_TRADE";
-					else if(kVote.isForceWar())
+					else if (kVote.isForceWar())
 						szKey = L"TXT_KEY_POPUP_ELECTION_FORCE_WAR";
-					if(!szKey.empty())
+					if (!szKey.empty())
 					{
 						szResolution = gDLL->getText(szKey, GET_PLAYER(subdata.ePlayer).
 								getReplayName(), 0, 0);
 					}
-					else if(kVote.isAssignCity() && !szTargetCityName.empty() &&
+					else if (kVote.isAssignCity() && !szTargetCityName.empty() &&
 							subdata.eOtherPlayer != NO_PLAYER)
 					{
 						szResolution = gDLL->getText("TXT_KEY_POPUP_ELECTION_ASSIGN_CITY",
@@ -10942,15 +10831,13 @@ void CvGame::doVoteResults()
 						"U.N. Resolution #1284 (Nuclear Non-Proliferation Treaty - Cannot Build Nuclear Weapons)
 						Only want "Nuclear Non-Proliferation Treaty". */
 					size_t pos1 = szResolution.find(L"(");
-					if(pos1 != CvWString::npos && pos1 + 1 < szResolution.length())
+					if (pos1 != CvWString::npos && pos1 + 1 < szResolution.length())
 					{
-						//doto advc 1.00 removed 
-						//bool bForceCivic = false;
 						// Mustn't remove the stuff after the dash if bForceCivic
 						size_t pos2 = std::min((kVote.isForceCivic().isAnyNonDefault() ?
 								CvWString::npos : szResolution.find(L" -")),
 								szResolution.find(L")"));
-						if(pos2 > pos1)
+						if (pos2 > pos1)
 							szResolution = szResolution.substr(pos1 + 1, pos2 - pos1 - 1);
 					}
 				}
@@ -10973,29 +10860,34 @@ void CvGame::doVoteResults()
 				addReplayMessage(REPLAY_MESSAGE_MAJOR_EVENT, NO_PLAYER, szMessage,
 						-1, -1, GC.getColorType("HIGHLIGHT_TEXT"));
 			} // </advc.150b>
-			for (int iI = 0; iI < MAX_CIV_PLAYERS; iI++)
+			for (PlayerIter<MAJOR_CIV> itObs; itObs.hasNext(); ++itObs)
 			{
-				CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iI);
-				bool bShow = kPlayer.isVotingMember(pVoteTriggered->eVoteSource);
-				if (bShow /* advc.127: */ && kPlayer.isHuman())
+				bool bShow = itObs->isVotingMember(pVoteTriggered->eVoteSource);
+				if (bShow /* advc.127: */ && itObs->isHuman())
 				{
 					CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_TEXT);
-					if (NULL != pInfo)
+					if (pInfo != NULL)
 					{
 						pInfo->setText(szBuffer);
-						gDLL->getInterfaceIFace()->addPopup(pInfo, (PlayerTypes)iI);
+						gDLL->getInterfaceIFace()->addPopup(pInfo, itObs->getID());
 					}
 				} // <advc>
-				if(!bShow && iI == subdata.ePlayer && GET_PLAYER(subdata.ePlayer).
-						isVotingMember(pVoteTriggered->eVoteSource))
-					bShow = true;
-				if(!bShow && iI == subdata.eOtherPlayer && GET_PLAYER(subdata.eOtherPlayer).
-						isVotingMember(pVoteTriggered->eVoteSource))
-					bShow = true; // </advc>
-				if (bPassed && (bShow // <advc.127>
-						|| kPlayer.isSpectator()))
+				if (!bShow && itObs->getID() == subdata.ePlayer &&
+					GET_PLAYER(subdata.ePlayer).
+					isVotingMember(pVoteTriggered->eVoteSource))
 				{
-					if(bShow || szMessage.empty() || kVote.isSecretaryGeneral())
+					bShow = true;
+				}
+				if (!bShow && itObs->getID() == subdata.eOtherPlayer &&
+					GET_PLAYER(subdata.eOtherPlayer).
+					isVotingMember(pVoteTriggered->eVoteSource))
+				{
+					bShow = true;
+				} // </advc>
+				if (bPassed && (bShow || // <advc.127>
+					itObs->isSpectator()))
+				{
+					if (bShow || szMessage.empty() || kVote.isSecretaryGeneral())
 					{	// </advc.127>
 						szMessage = gDLL->getText("TXT_KEY_VOTE_RESULTS",
 								GC.getInfo(eVoteSource).getTextKeyWide(),
@@ -11004,10 +10896,10 @@ void CvGame::doVoteResults()
 					}
 					// <advc.127b>
 					BuildingTypes eVSBuilding = getVoteSourceBuilding(eVoteSource);
-					std::pair<int,int> xy = getVoteSourceXY(eVoteSource,
-							kPlayer.getTeam(), true);
+					std::pair<int,int> iiXY = getVoteSourceXY(eVoteSource,
+							itObs->getTeam(), true);
 					// </advc.127b>
-					gDLL->UI().addMessage(kPlayer.getID(), false, -1, szMessage, "AS2D_NEW_ERA",
+					gDLL->UI().addMessage(itObs->getID(), false, -1, szMessage, "AS2D_NEW_ERA",
 							// <advc.127> was always MINOR
 							kVote.isSecretaryGeneral() ? MESSAGE_TYPE_MINOR_EVENT :
 							MESSAGE_TYPE_MAJOR_EVENT, // </advc.127>
@@ -11015,7 +10907,7 @@ void CvGame::doVoteResults()
 							eVSBuilding == NO_BUILDING ? NULL :
 							GC.getInfo(eVSBuilding).getButton(), // </advc.127b>
 							GC.getColorType("HIGHLIGHT_TEXT"),
-							xy.first, xy.second); // advc.127b
+							iiXY.first, iiXY.second); // advc.127b
 				}
 			}
 		}
@@ -11292,19 +11184,16 @@ std::pair<int,int> CvGame::getVoteSourceXY(VoteSourceTypes eVS, TeamTypes eObser
 CvCity* CvGame::getVoteSourceCity(VoteSourceTypes eVS, TeamTypes eObserver, bool bDebug) const
 {
 	BuildingTypes eVSBuilding = getVoteSourceBuilding(eVS);
-	if(eVSBuilding == NO_BUILDING)
+	if (eVSBuilding == NO_BUILDING)
 		return NULL;
-	for(int i = 0; i < MAX_PLAYERS; i++)
+	for (PlayerIter<ALIVE> itOwner; itOwner.hasNext(); ++itOwner)
 	{
-		CvPlayer const& kOwner = GET_PLAYER((PlayerTypes)i);
-		if(!kOwner.isAlive())
-			continue;
-		FOR_EACH_CITY_VAR(c, kOwner)
+		FOR_EACH_CITY_VAR(pCity, *itOwner)
 		{
-			if(eObserver != NO_TEAM && !c->isRevealed(eObserver, bDebug))
+			if (eObserver != NO_TEAM && !pCity->isRevealed(eObserver, bDebug))
 				continue;
-			if(c->getNumBuilding(eVSBuilding) > 0)
-				return c;
+			if (pCity->getNumBuilding(eVSBuilding) > 0)
+				return pCity;
 		}
 	}
 	return NULL;
@@ -11326,7 +11215,7 @@ BuildingTypes CvGame::getVoteSourceBuilding(VoteSourceTypes eVS) const
 {
 	FOR_EACH_ENUM(Building)
 	{
-		if(GC.getInfo(eLoopBuilding).getVoteSourceType() == eVS)
+		if (GC.getInfo(eLoopBuilding).getVoteSourceType() == eVS)
 			return eLoopBuilding;
 	}
 	return NO_BUILDING;

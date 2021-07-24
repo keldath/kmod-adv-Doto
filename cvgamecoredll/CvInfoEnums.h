@@ -46,7 +46,7 @@
 			eLoop##TypeName = (TypeName##Types)(eLoop##TypeName - 1))
 /*	To be used only in the body of a FOR_EACH_ENUM loop. Don't need to assert
 	array bounds then. Not really feasible though to replace all the
-	CvGlobals::getInfo calls, so ... */
+	CvGlobals::getInfo calls, so maybe better not to use this at all ... */
 /*#define LOOP_INFO(TypeName) \
 	GC.getLoopInfo(eLoop##TypeName)
 #define SET_LOOP_INFO(TypeName) \
@@ -54,6 +54,7 @@
 // To go with FOR_EACH_ENUM2
 #define SET_LOOP_INFO2(TypeName, kVar) \
 	Cv##TypeName##Info const& kVar = LOOP_INFO(TypeName)*/
+
 
 // Type lists ...
 
@@ -221,14 +222,14 @@
 #define NO_ENUM_TYPE(SUFFIX) NO_##SUFFIX = -1
 
 #define SET_ENUM_LENGTH_STATIC(Name, INFIX) \
-	__forceinline Name##Types getEnumLength(Name##Types) \
+	inline Name##Types getEnumLength(Name##Types) \
 	{ \
 		return NUM_ENUM_TYPES(INFIX); \
 	}
 /*  This gets used in CvGlobals.h. (I wanted to do it in MAKE_INFO_ENUM, which is
 	used in CvEnums.h, but that lead to a circular dependency.) */
 #define SET_ENUM_LENGTH(Name, PREFIX) \
-	__forceinline Name##Types getEnumLength(Name##Types) \
+	inline Name##Types getEnumLength(Name##Types) \
 	{ \
 		return static_cast<Name##Types>(gGlobals.getNum##Name##Infos()); \
 	}
@@ -236,23 +237,23 @@
 /*  Increment/decrement functions based on code in the "We the People" mod.
 	Used by EnumMap, otherwise mostly superseded by FOR_EACH_ENUM. */
 #define DEFINE_INCREMENT_OPERATORS(EnumType) \
-	__forceinline EnumType& operator++(EnumType& e) \
+	inline EnumType& operator++(EnumType& e) \
 	{ \
 		e = static_cast<EnumType>(e + 1); \
 		return e; \
 	} \
-	__forceinline EnumType operator++(EnumType& e, int) \
+	inline EnumType operator++(EnumType& e, int) \
 	{ \
 		EnumType eResult = e; \
 		e = static_cast<EnumType>(e + 1); \
 		return eResult; \
 	} \
-	__forceinline EnumType& operator--(EnumType& e) \
+	inline EnumType& operator--(EnumType& e) \
 	{ \
 		e = static_cast<EnumType>(e - 1); \
 		return e; \
 	} \
-	__forceinline EnumType operator--(EnumType& e, int) \
+	inline EnumType operator--(EnumType& e, int) \
 	{ \
 		EnumType eResult = e; \
 		e = static_cast<EnumType>(e - 1); \
@@ -283,17 +284,19 @@ DEFINE_INCREMENT_OPERATORS(Name##Types)
 }; \
 SET_ENUM_LENGTH_STATIC(Name, PREFIX) \
 DEFINE_INCREMENT_OPERATORS(Name##Types)
-// (Let's worry about #ifdef _USRDLL only when the source of the EXE is released, i.e. probably never.)
+/*	The original enum definitions had hidden most of the NUM_...._TYPES
+	enumerators from the EXE through _USRDLL checks. Since we can't
+	recompile the EXE, let's not bother with that. */
 
 namespace info_enum_detail
 {
 	template<typename E>
-	inline void assertEnumBounds(E eIndex)
+	void assertEnumBounds(E eIndex)
 	{
 		FAssertBounds(0, getEnumLength(eIndex), eIndex);
 	}
 	template<typename E>
-	inline void assertInfoEnum(E eIndex)
+	void assertInfoEnum(E eIndex)
 	{
 		FAssertBounds(-1, getEnumLength(eIndex), eIndex);
 	}

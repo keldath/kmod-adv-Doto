@@ -1,14 +1,17 @@
-/*  advc.enum: From the "We the People" (WtP) mod for Civ4Col, original author: Nightinggale,
-	who may still be working on the EnumMap classes. This version is from 3 Nov 2019.
+/*  advc.enum: From the "We the People" (WtP) mod for Civ4Col,
+	original author: Nightinggale. This is essentially the version 3 Nov 2019,
+	with just a few tweaks and bugfixes adopted since then.
 	I have -for now- omitted the WtP serialization functions, and uncoupled the
 	code from the Perl-generated enums that WtP uses. Instead of defining
 	ArrayLength functions, the getEnumLength functions that AdvCiv defines in
 	CvEnums.h and CvGlobals.h are used. CvEnums.h also defines enum increment operators.
 	Functions for bitwise operations moved into BitUtil.h (included in PCH);
 	WtP defines them directly in the PCH.
-	advc.fract: Disabled the INLINE_NATIVE representation for "small" enum types
+	advc.fract: Disabled the INLINE_NATIVE representation for short enum types
 	in order to allow T=ScaledNum. (As suggested to me by Nightinggale.)
-	advc.003t: I've implemented a similar class, ArrayEnumMap, for storing data
+	advc.enum: Added classes SparseEnumMap and SparseEnumMap2D to the end of this file.
+	They're dependent on the EnumMapGetDefault structs defined by the WtP enum map.
+	advc.003t: I've implemented a similar class, CvInfoEnumMap, for storing data
 	loaded from XML, see CvInfo_EnumMap.h. */
 
 #pragma once
@@ -39,8 +42,6 @@ template <class T> struct EnumMapGetDefault {};
 // EnumMap<BuildingTypes,int>
 // EnumMap<TeamTypes, PlayerTypes>
 //
-// See the end of the file for (often unneeded) additionaly features, like disabling type checks and altering default values.
-// DEFAULT is 0, except if the second parameter is an enum, in which case the default is -1 (like NO_PLAYER)
 
 enum
 {
@@ -87,7 +88,7 @@ public:
 	T get(IndexType eIndex) const;
 	void set(IndexType eIndex, T tValue);
 	// advc: Allow individual elements to be reset
-	__forceinline void reset(IndexType eIndex) { set(eIndex, (T)DEFAULT); }
+	void reset(IndexType eIndex) { set(eIndex, (T)DEFAULT); }
 	void add(IndexType eIndex, T tValue);
 	void multiply(IndexType eIndex, T tMultiplier); // advc
 	void divide(IndexType eIndex, T tDivisor); // advc
@@ -199,7 +200,7 @@ private:
 	};
 
 	// the code will technically still work if this fails, but it will waste memory
-//	BOOST_STATIC_ASSERT(sizeof(T) <= 4 /*|| bINLINE_NATIVE*/); // advc.fract
+	BOOST_STATIC_ASSERT(sizeof(T) <= 4 /*|| bINLINE_NATIVE*/); // advc.fract
 	enum
 	{
 		SAVE_ARRAY_MULTI_BYTE,
@@ -218,9 +219,9 @@ private:
 		interval() : first((IndexType)0), last((IndexType)0) {}
 	};
 
-	/*	bool helpers (advc: force-inline, if only for clarity)
+	/*	bool helpers
 		advc.003t (note): ArrayEnumMap uses the same logic */
-	__forceinline int getBoolArrayBlock(int iIndex) const
+	__inline int getBoolArrayBlock(int iIndex) const
 	{
 		if (bINLINE_BOOL && NUM_BOOL_BLOCKS == 1)
 		{
@@ -231,7 +232,7 @@ private:
 		}
 		return iIndex / 32;
 	}
-	__forceinline int getBoolArrayIndexInBlock(int iIndex) const
+	int getBoolArrayIndexInBlock(int iIndex) const
 	{
 		return iIndex & ENUMMAP_BITMASK_32_BIT;
 	}
@@ -285,10 +286,10 @@ private:
 	void _WriteRecursive(FDataStreamBase* pStream) const; // </advc.fract>
 
 	//
-	// The actual specialized impletation of the functions
+	// The actual specialized implementation of the functions
 	//
 
-	// get  (advc: were all force-inlined)
+	// get
 	template<>
 	T _get<false, ENUMMAP_SIZE_NATIVE>(int iIndex) const
 	{
@@ -310,107 +311,107 @@ private:
 		return m_pArrayBool ? BitUtil::HasBit(m_pArrayBool[getBoolArrayBlock(iIndex)], getBoolArrayIndexInBlock(iIndex)) : DEFAULT;
 	}
 	/*template<>
-	__forceinline T _get<true, ENUMMAP_SIZE_NATIVE>(int iIndex) const
+	T _get<true, ENUMMAP_SIZE_NATIVE>(int iIndex) const
 	{
 		return m_InlineNative[iIndex];
 	}*/ // advc.fract
 	template<>
-	__forceinline T _get<true, ENUMMAP_SIZE_1_BYTE>(int iIndex) const
+	T _get<true, ENUMMAP_SIZE_1_BYTE>(int iIndex) const
 	{
 		return (T)m_Inline_1_byte[iIndex];
 	}
 	template<>
-	__forceinline T _get<true, ENUMMAP_SIZE_2_BYTE>(int iIndex) const
+	T _get<true, ENUMMAP_SIZE_2_BYTE>(int iIndex) const
 	{
 		return (T)m_Inline_2_byte[iIndex];
 	}
 	template<>
-	inline T _get<true, ENUMMAP_SIZE_BOOL>(int iIndex) const
+	T _get<true, ENUMMAP_SIZE_BOOL>(int iIndex) const
 	{
 		return BitUtil::HasBit(m_InlineBoolArray[getBoolArrayBlock(iIndex)], getBoolArrayIndexInBlock(iIndex));
 	}
 
 	// set
 	template<>
-	__forceinline void _set<false, ENUMMAP_SIZE_NATIVE>(int iIndex, T tValue)
+	void _set<false, ENUMMAP_SIZE_NATIVE>(int iIndex, T tValue)
 	{
 		m_pArrayFull[iIndex] = tValue;
 	}
 	template<>
-	__forceinline void _set<false, ENUMMAP_SIZE_1_BYTE>(int iIndex, T tValue)
+	void _set<false, ENUMMAP_SIZE_1_BYTE>(int iIndex, T tValue)
 	{	// advc: Cast added to conform with /W4
 		m_pArrayChar[iIndex] = static_cast<char>(tValue);
 	}
 	template<>
-	__forceinline void _set<false, ENUMMAP_SIZE_2_BYTE>(int iIndex, T tValue)
+	void _set<false, ENUMMAP_SIZE_2_BYTE>(int iIndex, T tValue)
 	{
 		m_pArrayShort[iIndex] = static_cast<short>(tValue); // advc: cast (see above)
 	}
 	template<>
-	inline void _set<false, ENUMMAP_SIZE_BOOL>(int iIndex, T tValue)
+	void _set<false, ENUMMAP_SIZE_BOOL>(int iIndex, T tValue)
 	{
 		BitUtil::SetBit(m_pArrayBool[getBoolArrayBlock(iIndex)],
 				getBoolArrayIndexInBlock(iIndex), tValue ? 1 : 0);
 	}
 	/*template<>
-	__forceinline void _set<true, ENUMMAP_SIZE_NATIVE>(int iIndex, T tValue)
+	void _set<true, ENUMMAP_SIZE_NATIVE>(int iIndex, T tValue)
 	{
 		m_InlineNative[iIndex] = tValue;
 	}*/ // advc.fract
 	template<>
-	__forceinline void _set<true, ENUMMAP_SIZE_1_BYTE>(int iIndex, T tValue)
+	void _set<true, ENUMMAP_SIZE_1_BYTE>(int iIndex, T tValue)
 	{
 		m_Inline_1_byte[iIndex] = tValue;
 	}
 	template<>
-	__forceinline void _set<true, ENUMMAP_SIZE_2_BYTE>(int iIndex, T tValue)
+	void _set<true, ENUMMAP_SIZE_2_BYTE>(int iIndex, T tValue)
 	{
 		m_Inline_2_byte[iIndex] = tValue;
 	}
 	template<>
-	inline void _set<true, ENUMMAP_SIZE_BOOL>(int iIndex, T tValue)
+	void _set<true, ENUMMAP_SIZE_BOOL>(int iIndex, T tValue)
 	{
 		BitUtil::SetBit(m_InlineBoolArray[getBoolArrayBlock(iIndex)], getBoolArrayIndexInBlock(iIndex), tValue ? 1 : 0);
 	}
 
 	// setAll
 	template<>
-	__forceinline void _setAll<false, ENUMMAP_SIZE_NATIVE>(T tValue)
+	void _setAll<false, ENUMMAP_SIZE_NATIVE>(T tValue)
 	{
 		std::fill_n(m_pArrayFull, numElements(), tValue);
 	}
 	template<>
-	__forceinline void _setAll<false, ENUMMAP_SIZE_1_BYTE>(T tValue)
+	void _setAll<false, ENUMMAP_SIZE_1_BYTE>(T tValue)
 	{
 		std::fill_n(m_pArrayChar, numElements(), tValue);
 	}
 	template<>
-	__forceinline void _setAll<false, ENUMMAP_SIZE_2_BYTE>(T tValue)
+	void _setAll<false, ENUMMAP_SIZE_2_BYTE>(T tValue)
 	{
 		std::fill_n(m_pArrayShort, numElements(), tValue);
 	}
 	template<>
-	__forceinline void _setAll<false, ENUMMAP_SIZE_BOOL>(T tValue)
+	void _setAll<false, ENUMMAP_SIZE_BOOL>(T tValue)
 	{
 		std::fill_n(m_pArrayBool, _getNumBoolBlocks<bINLINE_BOOL>(), tValue ? MAX_UNSIGNED_INT : 0);
 	}
 	/*template<>
-	__forceinline void _setAll<true, ENUMMAP_SIZE_NATIVE>(T tValue)
+	void _setAll<true, ENUMMAP_SIZE_NATIVE>(T tValue)
 	{
 		std::fill_n(&m_InlineNative[0], numElements(), tValue);
 	}*/ // advc.fract
 	template<>
-	__forceinline void _setAll<true, ENUMMAP_SIZE_1_BYTE>(T tValue)
+	void _setAll<true, ENUMMAP_SIZE_1_BYTE>(T tValue)
 	{
 		std::fill_n(&m_Inline_1_byte[0], numElements(), tValue);
 	}
 	template<>
-	__forceinline void _setAll<true, ENUMMAP_SIZE_2_BYTE>(T tValue)
+	void _setAll<true, ENUMMAP_SIZE_2_BYTE>(T tValue)
 	{
 		std::fill_n(&m_Inline_2_byte[0], numElements(), tValue);
 	}
 	template<>
-	__forceinline void _setAll<true, ENUMMAP_SIZE_BOOL>(T tValue)
+	void _setAll<true, ENUMMAP_SIZE_BOOL>(T tValue)
 	{
 		std::fill_n(&m_InlineBoolArray[0], _getNumBoolBlocks<bINLINE>(), tValue ? MAX_UNSIGNED_INT : 0);
 	}
@@ -470,13 +471,13 @@ private:
 	////
 
 	template <>
-	__forceinline uint _getNumBoolBlocks<false>() const
+	uint _getNumBoolBlocks<false>() const
 	{
 		return (numElements() + 31) / 32;
 	}
 
 	template <>
-	__forceinline uint _getNumBoolBlocks<true>() const
+	 uint _getNumBoolBlocks<true>() const
 	{
 		return NUM_BOOL_BLOCKS;
 	}
@@ -521,15 +522,14 @@ private:
 // To actually force the compiler to inline, the keyword __forceinline can be used, but this one should really be used with care.
 // Actually inlining functions can slow down the code and inline is usually only good for very small functions, like get variable.
 //
-/*  advc: MSVC03 seems to treat member functions as implicitly inline when it comes
-	to the one-definition rule - even if the functions aren't defined within the
-	class definition. So I've removed some inline keywords b/c I don't want to
-	recommend any function with branching for inline expansion. I've also
-	downgraded some __forceinline keywords to inline. */
+/*  advc: MSVC03 seems to treat function templates and member functions of
+	class templates as implicitly inline when it comes to the one-definition rule -
+	even if the functions aren't defined within the class definition.
+	So I've removed most the (force-)inline keywords. */
 
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-inline EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::EnumMapBase() : m_pArrayFull(NULL)
 {
 	// bools can only default to 0 or 1
@@ -545,21 +545,21 @@ inline EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-inline EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::~EnumMapBase()
 {
 	reset();
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-__forceinline T EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+T EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::getDefault() const
 {
 	return (T)DEFAULT;
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-__forceinline IndexType EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+IndexType EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::First() const
 {
 	//return ArrayStart((T_SUBSET)0);
@@ -567,7 +567,7 @@ __forceinline IndexType EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-__forceinline IndexType EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+IndexType EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::getLength() const
 {
 	// advc: getEnumLength(T_SUBSET) returns a T_SUBSET value, so a cast is needed.
@@ -575,7 +575,7 @@ __forceinline IndexType EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-__forceinline IndexType EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+IndexType EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::numElements() const
 {
 	// apparently subtracting two IndexTypes results in int, not IndexType
@@ -584,7 +584,7 @@ __forceinline IndexType EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-__forceinline T EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+T EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::get(IndexType eIndex) const
 {
 	FAssert(eIndex >= First() && eIndex < getLength());
@@ -592,7 +592,6 @@ __forceinline T EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-// advc: was inline
 void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::set(IndexType eIndex, T tValue)
 {
@@ -609,7 +608,6 @@ void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-// advc: was inline
 void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::add(IndexType eIndex, T tValue)
 {
@@ -623,7 +621,7 @@ void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 
 // advc:
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-inline void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::multiply(IndexType eIndex, T tMultiplier)
 {
 	/*  In 'add', I expect that branching on tValue is better than risking a cache miss,
@@ -634,7 +632,7 @@ inline void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 
 // advc:
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-inline void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::divide(IndexType eIndex, T tDivisor)
 {
 	set(eIndex, get(eIndex) / tDivisor);
@@ -642,7 +640,6 @@ inline void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
 void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
-// advc: was inline
 ::safeSet(IndexType eIndex, T tValue)
 {
 	BOOST_STATIC_ASSERT(SIZE != ENUMMAP_SIZE_BOOL);
@@ -654,7 +651,6 @@ void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
 void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
-// advc: was inline
 ::safeAdd(IndexType eIndex, T tValue)
 {
 	BOOST_STATIC_ASSERT(SIZE != ENUMMAP_SIZE_BOOL);
@@ -665,7 +661,6 @@ void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-// advc: was inline
 void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::addAll(T tValue)
 {
@@ -679,7 +674,7 @@ void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-// advc: was inline; advc.fract: return type was int
+// advc.fract: return type was int
 T EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>::getTotal() const
 {
 	// bINLINE is set at compile time and if true, isAllocated will always be true
@@ -717,14 +712,13 @@ int EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>::getSupportSz() con
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-inline bool EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+bool EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::isAllocated() const
 {
 	return bINLINE || m_pArrayFull != NULL;
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-// advc: inline removed
 bool EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::hasContent() const
 {
@@ -775,7 +769,6 @@ bool EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-// advc: was inline
 T EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::getMin() const
 {
@@ -789,7 +782,6 @@ T EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-// advc: was inline
 T EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::getMax() const
 {
@@ -815,7 +807,6 @@ void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-// advc: was inline
 void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::keepMax(IndexType eIndex, T tValue)
 {
@@ -828,7 +819,6 @@ void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-// advc: was inline
 void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::reset()
 {
@@ -845,7 +835,6 @@ void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-// advc: was inline
 void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::setAll(T tValue)
 {
@@ -864,7 +853,7 @@ void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 }
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-inline void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::Read(/* <advc> */ FDataStreamBase* pStream, bool bAsInt, bool bAsShort,
 	bool bAsFloat, bool bAsDouble/*, bool bSkipLast*/)
 {
@@ -872,34 +861,34 @@ inline void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 }
 
 /*template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-inline void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::ReadButOne(FDataStreamBase* pStream, bool bAsInt, bool bAsFloat, bool bAsDouble)
 {
 	Read(pStream, bAsInt, false, bAsFloat, bAsDouble, true);
 }*/
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-inline void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::ReadFloat(FDataStreamBase* pStream, bool bAsDouble)
 {
 	Read(pStream, false, false, true, bAsDouble);
 } // </advc>
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-inline void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::Write(/* <advc> */ FDataStreamBase* pStream, bool bAsInt, bool bAsFloat) const
 {
 	_Write<SIZE>(pStream, bAsInt, bAsFloat); // </advc>
 }
 // <advc.fract>
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-inline void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::ReadRecursive(FDataStreamBase* pStream)
 {
 	_ReadRecursive<SIZE>(pStream);
 }
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-inline void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
+void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::WriteRecursive(FDataStreamBase* pStream) const
 {
 	_WriteRecursive<SIZE>(pStream);
@@ -927,7 +916,6 @@ void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
 template<int SIZE2>
-// advc: was inline
 void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::_Read(/* <advc> */ FDataStreamBase* pStream, bool bAsInt, bool bAsShort, bool bAsFloat,
 	bool bAsDouble/*, bool bSkipLast*/) // </advc>
@@ -995,7 +983,6 @@ void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
 template<int SIZE2>
-// advc: was inline
 void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::_Write(/* advc: */ FDataStreamBase* pStream, bool bAsInt, bool bAsFloat) const
 {
@@ -1034,7 +1021,6 @@ void EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 //
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
-// advc: was inline
 EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>&
 EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::operator=(const EnumMapBase &rhs)
@@ -1056,7 +1042,6 @@ EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
 template<class T2, int DEFAULT2>
-// advc: was inline
 EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>&
 EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::operator=(const EnumMapBase<IndexType, T2, DEFAULT2, T_SUBSET, LengthType> &rhs)
@@ -1080,7 +1065,6 @@ EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
 template<class T2, int DEFAULT2>
-// advc: was inline
 EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>&
 EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::operator+=(const EnumMapBase<IndexType, T2, DEFAULT2, T_SUBSET, LengthType> &rhs)
@@ -1104,7 +1088,6 @@ EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
 template<class T2, int DEFAULT2>
-// advc: was inline
 EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>&
 EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::operator-=(const EnumMapBase<IndexType, T2, DEFAULT2, T_SUBSET, LengthType> &rhs)
@@ -1128,7 +1111,6 @@ EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
 template<class T2, int DEFAULT2>
-// advc: was inline
 bool EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::operator==(const EnumMapBase<IndexType, T2, DEFAULT2, T_SUBSET, LengthType> &rhs) const
 {
@@ -1156,7 +1138,6 @@ bool EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
 template<class T2, int DEFAULT2>
-// advc: was inline
 bool EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 ::operator!=(const EnumMapBase<IndexType, T2, DEFAULT2, T_SUBSET, LengthType> &rhs) const
 {
@@ -1190,18 +1171,18 @@ bool EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>
 //
 //
 
-__forceinline bool ArrayDefault(bool var) { return 0; } \
+inline bool ArrayDefault(bool var) { return 0; } \
 template <> struct EnumMapGetDefault<bool> \
 { \
 enum { DEFAULT_VALUE = 0, SIZE = ENUMMAP_SIZE_BOOL, SIZE_OF_T = sizeof(char) }; \
 };
 
 #define SET_ARRAY_DEFAULT( X ) \
-__forceinline X ArrayDefault( X var) { return 0; } \
-template <> struct EnumMapGetDefault< X > \
-{ \
-	enum { DEFAULT_VALUE = 0, SIZE = ENUMMAP_SIZE_NATIVE, SIZE_OF_T = sizeof(X) }; \
-};
+	inline X ArrayDefault( X var) { return 0; } \
+	template <> struct EnumMapGetDefault< X > \
+	{ \
+		enum { DEFAULT_VALUE = 0, SIZE = ENUMMAP_SIZE_NATIVE, SIZE_OF_T = sizeof(X) }; \
+	};
 
 SET_ARRAY_DEFAULT(int);
 SET_ARRAY_DEFAULT(short);
@@ -1212,7 +1193,7 @@ SET_ARRAY_DEFAULT(byte);
 SET_ARRAY_DEFAULT(float); // advc
 // <advc.fract> (Can't pass template params into SET_ARRAY_DEFAULT)
 template<int iSCALE, typename IntType, typename EnumType>
-__forceinline ScaledNum<iSCALE,IntType,EnumType> ArrayDefault(ScaledNum<iSCALE,IntType,EnumType> var) { return 0; }
+ScaledNum<iSCALE,IntType,EnumType> ArrayDefault(ScaledNum<iSCALE,IntType,EnumType> var) { return 0; }
 template<int iSCALE, typename IntType, typename EnumType>
 struct EnumMapGetDefault<ScaledNum<iSCALE,IntType,EnumType> >
 {
@@ -1273,24 +1254,17 @@ SET_XML_ENUM_SIZE1(PlayerVote, Dummy)
 		}; \
 	};
 DO_FOR_EACH_BIG_DYN_INFO_TYPE(SET_XML_ENUM_SIZE2)
-/*	The corresponding getEnumLength function is inlined in CvMap.h.
-	2 byte allows for at most 256*128 tiles (or 181*181).
-	Larger maps really aren't playable, but let's allow them when
-	the player limit has been increased. */
-#if MAX_CIV_PLAYERS <= 18
-SET_XML_ENUM_SIZE2(PlotNum, Dummy)
-#else
+// The corresponding getEnumLength function is inlined in CvMap.h
 template<> struct EnumMapGetDefault<PlotNumTypes> {
 	enum {
 		DEFAULT_VALUE = -1, SIZE = ENUMMAP_SIZE_NATIVE, SIZE_OF_T = SIZE,
-		MAX_LENGTH = MAX_SHORT
+		MAX_LENGTH = MAX_PLOT_NUM
 	};
 };
-#endif
 
 // The other getEnumLength functions are generated through macros in CvEnums.h
 #define SET_NONXML_ENUM_LENGTH(TypeName, eLength) \
-	__forceinline TypeName getEnumLength(TypeName) { return eLength; } \
+	inline TypeName getEnumLength(TypeName) { return eLength; } \
 	DEFINE_INCREMENT_OPERATORS(TypeName) \
 	template <> struct EnumMapGetDefault<TypeName> \
 	{ \
@@ -1322,35 +1296,9 @@ SET_NONXML_ENUM_LENGTH(CivTeamTypes, NUM_CIV_TEAM_TYPES)
 #undef SET_NONXML_ENUM_LENGTH
 // </advc>
 
-
-//
-// List of various types of EnumMaps
-// In most cases it's not nice code to include all parameters from EnumMapBase.
-// Adding other classes, which always sets the default makes it easier to add EnumMaps as arguments to functions etc.
-//
-
-// The different classes:
-// EnumMap:
-///  the default, which takes a length (xml file) and type to store. Use this one as much as possible.
-// EnumMapDefault:
-///  same as EnumMap, but you can set what the default value should be (read: the value assigned by constructor/reset)
-///  Note: indexes at default value aren't saved, hence saving an EnumMap with lots of default values will take less file space
-// EnumMapInt:
-///  Allows the index to be set by int instead of the enum type
-///  Do not use if it can be avoided. The tradeoff of easier coding is that the compiler can no longer catch bugs.
-///  The index arguments are consistently set to require the correct enum types specifically to catch bugs where arguments are switched etc.
-///  Using EnumMapInt can easily end up with the compiler accepting swapped arguments etc.
-///  For this reason, only use this if you know you have to typecast anyway for each call,
-///  like when using CityPlotTypes for length [advc: EnumMap<IndexType,CityPlotTypes> shouldn't require casts in AdvCiv].
-
-template<class IndexType, class T, int DEFAULT>
-class EnumMapDefault : public EnumMapBase <IndexType, T, DEFAULT> {};
-
-template<class IndexType, class T>
-class EnumMap : public EnumMapBase <IndexType, T, EnumMapGetDefault<T>::DEFAULT_VALUE> {};
-
-template<class IndexType, class T, int DEFAULT = 0>
-class EnumMapInt : public EnumMapBase <int, T, DEFAULT, IndexType, IndexType> {};
+// DEFAULT is 0, except if the second parameter is an enum, in which case the default is -1 (like NO_PLAYER)
+template<class IndexType, class T, int DEFAULT = EnumMapGetDefault<T>::DEFAULT_VALUE>
+class EnumMap : public EnumMapBase <IndexType, T, DEFAULT> {};
 
 // <advc>
 template<class IndexType, class T, int DEFAULT, class T_SUBSET, class LengthType>
@@ -1359,9 +1307,9 @@ class SubEnumMap : public EnumMapBase <IndexType, T, DEFAULT, T_SUBSET, LengthTy
 	/*	Adapters to allow indices of T_SUBSET. Can't define those in EnumMapBase
 		because IndexType and T_SUBSET can be (and usually are) the same there. */
 public:
-	__forceinline T get(T_SUBSET eSubIndex) const { return get(static_cast<IndexType>(eSubIndex)); }
-	__forceinline void set(T_SUBSET eSubIndex, T tValue) { set(static_cast<IndexType>(eSubIndex), tValue); }
-	__forceinline void add(T_SUBSET eSubIndex, T tValue) { add(static_cast<IndexType>(eSubIndex), tValue); }
+	T get(T_SUBSET eSubIndex) const { return get(static_cast<IndexType>(eSubIndex)); }
+	void set(T_SUBSET eSubIndex, T tValue) { set(static_cast<IndexType>(eSubIndex), tValue); }
+	void add(T_SUBSET eSubIndex, T tValue) { add(static_cast<IndexType>(eSubIndex), tValue); }
 	// Unhide base class functions
 	using EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>::get;
 	using EnumMapBase<IndexType, T, DEFAULT, T_SUBSET, LengthType>::set;
@@ -1375,5 +1323,359 @@ class CivTeamMap : public SubEnumMap <TeamTypes, T, DEFAULT, CivTeamTypes, CivTe
 // </advc>
 
 typedef EnumMap<CivicOptionTypes,CivicTypes> CivicMap; // advc: Needed rather frequently
+
+
+/*	advc.enum: Base class for the list-based enum maps defined
+	at the end of this header; see comments there.
+	Akin to ListEnumMap in CvInfo_EnumMap, but that class doesn't have to deal
+	with continuous changes to its data. */
+/*	K - key; V - value; CK, CV compact representation of key and value;
+	vDEFAULT - value returned for keys not listed.
+	V needs to be an integral type (bool and long long not tested);
+	K can be any small-ish type with a suitable operator==, however, a static cast
+	from K to CK needs to be possible (not a problem if CK=K).
+	Both CK and CV need to have read and write functions in FDataStreamBase.h. */
+template<typename K, typename V, typename CK = K, typename CV = V, V vDEFAULT = 0>
+class SortedPairList : private boost::noncopyable
+{
+	static CV const cDEFAULT = static_cast<CV>(vDEFAULT);
+	short m_iSize;
+	/*	Throwing this out might be worth a test. Lists with 0 non-defaults are
+		collapsed upon reloading a savegame anyway. Could replace it with a
+		capacity variable, allowing incrementSize to allocate spare memory. */
+	short m_iNonDefaults;
+	/*	While separate arrays for keys and values increase the size of this class,
+		overall, performance seemed a little bit better when I tried it that way.
+		The code was pretty messy though. (It's still not great ... Solving many
+		of the same problems as the WtP EnumMap, but the code there isn't easily
+		reusable and I don't want to copy-paste it; so I've cut some corners.) */
+	std::pair<CK,CV>* m_pairs;
+
+public:
+	SortedPairList()
+	{
+		reset();
+	}
+
+	~SortedPairList()
+	{
+		reset();
+	}
+
+	void reset()
+	{
+		SAFE_DELETE_ARRAY(m_pairs);
+		m_iSize = 0;
+		m_iNonDefaults = 0;
+	}
+
+	V get(K key) const
+	{
+		CK const cKey = compactKey(key);
+		for (short iPos = 0; iPos < m_iSize; iPos++)
+		{
+			CK const cLoop = m_pairs[iPos].first;
+			if (cLoop == cKey)
+				return static_cast<V>(m_pairs[iPos].second);
+			if (cLoop > cKey)
+				break;
+		}
+		return vDEFAULT;
+	}
+
+	void set(K key, V value)
+	{
+		change<false>(key, value);
+	}
+
+	void add(K key, V vDelta)
+	{
+		change<true>(key, vDelta);
+	}
+
+	bool isAnyNonDefault() const
+	{
+		return (m_iNonDefaults > 0);
+	}
+
+	template<typename ValueType>
+	bool nextNonDefault(int& iIter, std::pair<K,ValueType>& nextPair) const
+	{
+		// Allow caller to use a larger (integer) type for the map values
+		BOOST_STATIC_ASSERT(sizeof(ValueType) >= sizeof(CV) &&
+				(std::numeric_limits<ValueType>::is_signed ||
+				!std::numeric_limits<CV>::is_signed));
+		if (iIter >= m_iSize)
+		{	/*	We don't update the nextPair, so let's also leave
+				the iterator position unchanged. */
+			return false;
+		}
+		nextPair.first = static_cast<K>(m_pairs[iIter].first);
+		nextPair.second = static_cast<ValueType>(m_pairs[iIter].second);
+		iIter++;
+		return true;
+	}
+
+	void Read(FDataStreamBase* pStream)
+	{
+		pStream->Read(&m_iSize);
+		if (m_iSize == 0)
+			return;
+		FAssert(m_iSize > 0 && m_pairs == NULL);
+		m_pairs = new std::pair<CK,CV>[m_iSize];
+		for (short i = 0; i < m_iSize; i++)
+		{
+			pStream->Read(&m_pairs[i]);
+			if (m_pairs[i].second != cDEFAULT)
+				m_iNonDefaults++;
+		}
+	}
+
+	void Write(FDataStreamBase* pStream) const
+	{
+		pStream->Write(m_iSize);
+		for (short i = 0; i < m_iSize; i++)
+		{
+			pStream->Write(m_pairs[i]);
+		}
+	}
+
+protected:
+	/*	Derived classes set the compact types in convoluted ways
+		that I don't want to have to type repeatedly there */
+	typedef CK CompactKeyType;
+	static CK compactKey(K key)
+	{
+		return static_cast<CK>(key);
+	}
+	typedef CV CompactValueType;
+	static CV compactValue(V value)
+	{
+		return static_cast<CV>(value);
+	}
+
+private:
+	template<bool bADD>
+	void change(K key, V value)
+	{
+		CK const cKey = compactKey(key);
+		short iPos = 0;
+		for (; iPos < m_iSize; iPos++)
+		{
+			CK cLoop = m_pairs[iPos].first;
+			if (cLoop  == cKey)
+			{
+				CV& cOldVal = m_pairs[iPos].second;
+				CV const cNewVal = compactValue(value) + (bADD ? cOldVal : 0);
+				if (cNewVal != cDEFAULT)
+					m_iNonDefaults++;
+				if (cOldVal != cDEFAULT)
+				{
+					if ((--m_iNonDefaults) == 0 &&
+						/*	Otherwise not worth the risk of having to reallocate later.
+							Well, a test suggests that this check helps marginally
+							at best and that checking >=4 would hurt more than help. */
+						m_iSize >= 2)
+					{
+						reset();
+						return;
+					}
+				}
+				cOldVal = cNewVal;
+				return;
+			}
+			if (cLoop > cKey)
+				break;
+		}
+		CV const cNewVal = compactValue(value) + (bADD ? cDEFAULT : 0);
+		if (cNewVal == cDEFAULT)
+			return;
+		m_iNonDefaults++;
+		incrementSize(iPos);
+		m_pairs[iPos].first = cKey;
+		m_pairs[iPos].second = cNewVal;
+	}
+
+	void incrementSize(short iFreePos)
+	{
+		std::pair<CK,CV>* newPairs = new std::pair<CK,CV>[m_iSize + 1];
+		if (m_iSize == 0)
+		{
+			m_pairs = newPairs;
+			m_iSize++;
+			return;
+		}
+		size_t const iPairSz = sizeof(std::pair<CK,CV>);
+		if (iFreePos > 0)
+		{
+			memcpy(newPairs, m_pairs,
+					iFreePos * iPairSz);
+		}
+		if (iFreePos < m_iSize)
+		{
+			memcpy(newPairs + iFreePos + 1, m_pairs + iFreePos,
+					(m_iSize - iFreePos) * iPairSz);
+		}
+		delete[] m_pairs;
+		m_pairs = newPairs;
+		m_iSize++;
+	}
+};
+
+/*	There's boost::is_enum in boost/type_traits.hpp,
+	but I think this will be good enough for my purposes,
+	i.e. assuming that T is an integral type.
+	(Using my own meta-programming structs from TypeChoice.h.) */
+#define IS_ENUM_TYPE(T) \
+	sizeof(V) == 4 && \
+	!is_same_type<V,int>::value && \
+	!is_same_type<V,uint>::value
+
+#define COMPACT_VALUE_TYPE \
+	typename choose_type< \
+	IS_ENUM_TYPE(V), \
+	/* Use 2 byte for the compact representation. */ \
+	/* (Using just 1 byte if the enum is short enough would be better, */ \
+	/* but that's difficult to check here b/c the compiler evaluates */ \
+	/* both branches of choose_type, so we can't use MAX_LENGTH like below.) */ \
+	short, \
+	V>::type
+
+/*	"Sparse" but not usually empty (the WtP EnumMap is better for that - and is
+	also better for boolean value type). */
+template<typename E, typename V,
+	V vDEFAULT = static_cast<V>(IS_ENUM_TYPE(V) ? -1 : 0)>
+class SparseEnumMap : public SortedPairList<E, V,
+	// Infer from enum length whether to store the enum values as 1 byte or 2 byte
+	typename choose_type<
+			EnumMapGetDefault<E>::MAX_LENGTH == 1,
+			char, short>::type,
+	COMPACT_VALUE_TYPE,
+	vDEFAULT>
+{
+public:
+	SparseEnumMap()
+	{
+		FAssert(getEnumLength((E)0) <=
+				std::numeric_limits<CompactKeyType>::max());
+	}
+
+	template<typename SizeType, typename ValueType>
+	void ReadBtS(FDataStreamBase* pStream)
+	{
+		SizeType sz;
+		pStream->Read(&sz);
+		short iSize = static_cast<short>(sz);
+		if (iSize == 0) // Only size stored if unallocated
+			return;
+		for (short i = 0; i < iSize; i++)
+		{
+			ValueType vRead;
+			pStream->Read(&vRead);
+			V v = static_cast<V>(vRead);
+			if (v != vDEFAULT)
+				set(static_cast<E>(i), v);
+		}
+	}
+};
+
+#define COMPACT_ENUM_TYPE \
+		typename choose_type< \
+		EnumMapGetDefault<E1>::MAX_LENGTH == 1 && \
+		EnumMapGetDefault<E2>::MAX_LENGTH == 1, \
+		char, short>::type
+
+/*	Will need to call some hidden base class functions
+	and the base class type is ... verbose. */
+#define SORTED_PAIR_LIST_BASE \
+		SortedPairList \
+		<std::pair<COMPACT_ENUM_TYPE,COMPACT_ENUM_TYPE>, V, \
+		std::pair<COMPACT_ENUM_TYPE,COMPACT_ENUM_TYPE>, COMPACT_VALUE_TYPE, vDEFAULT>
+
+template<typename E1, typename E2, typename V,
+	V vDEFAULT = static_cast<V>(IS_ENUM_TYPE(V) ? -1 : 0)>
+class SparseEnumMap2D : public SORTED_PAIR_LIST_BASE
+{
+public:
+	SparseEnumMap2D()
+	{
+		FAssert(std::max<int>(
+				getEnumLength((E1)0), getEnumLength((E2)0)) <=
+				std::numeric_limits<COMPACT_ENUM_TYPE>::max());
+	}
+
+	V get(E1 eFirst, E2 eSecond) const
+	{
+		return SORTED_PAIR_LIST_BASE::
+				get(std::make_pair(
+				static_cast<COMPACT_ENUM_TYPE>(eFirst),
+				static_cast<COMPACT_ENUM_TYPE>(eSecond)));
+	}
+
+	void set(E1 eFirst, E2 eSecond, V value)
+	{
+		SORTED_PAIR_LIST_BASE::
+				set(std::make_pair(
+				static_cast<COMPACT_ENUM_TYPE>(eFirst),
+				static_cast<COMPACT_ENUM_TYPE>(eSecond)), value);
+	}
+
+	void add(E1 eFirst, E2 eSecond, V vDelta)
+	{
+		SORTED_PAIR_LIST_BASE::
+				add(std::make_pair(
+				static_cast<COMPACT_ENUM_TYPE>(eFirst),
+				static_cast<COMPACT_ENUM_TYPE>(eSecond)), vDelta);
+	}
+
+	template<typename SizeType, typename ValueType>
+	void ReadBtS(FDataStreamBase* pStream)
+	{
+		BOOST_STATIC_ASSERT(sizeof(V) >= sizeof(ValueType));
+		FAssert(std::numeric_limits<ValueType>::is_signed ||
+				!std::numeric_limits<V>::is_signed);
+		SizeType sz;
+		pStream->Read(&sz);
+		short iSize = static_cast<short>(sz);
+		if (iSize == 0)
+			return;
+		for (short i = 0; i < iSize; i++)
+		{
+			/*	Up to here, it's the same as for the 1D map.
+				Not easy to let them use the same code w/o dynamic polymorphism. */
+			int iInnerSize;
+			pStream->Read(&iInnerSize);
+			for (int j = 0; j < iInnerSize; j++)
+			{
+				ValueType vRead;
+				pStream->Read(&vRead);
+				V v = static_cast<V>(vRead);
+				if (v != vDEFAULT)
+					set(static_cast<E1>(i), static_cast<E2>(j), v);
+			}
+		}
+	}
+};
+
+#undef IS_ENUM_TYPE
+#undef COMPACT_VALUE_TYPE
+#undef SORTED_PAIR_LIST_BASE
+#undef COMPACT_ENUM_TYPE
+
+#define iANON_NON_DEFAULT_ITER CONCATVARNAME(iAnonNonDefaultIter_L, __LINE__)
+/*	Similar to FOR_EACH_NON_DEFAULT_INFO_PAIR. Would sure be nice if the same
+	macro could be used for SortedPairList and CvInfoEnumMap, however,
+	merging the two macros w/ each other w/o loss of efficiency is tricky.
+	Well, so far, the macro here is unused anyway. */
+#define FOR_EACH_NON_DEFAULT_PAIR(kEnumMap, EnumPrefix, ValueType) \
+	int iANON_NON_DEFAULT_ITER = 0; \
+	for (std::pair<EnumPrefix##Types,ValueType> per##EnumPrefix##Val; \
+		kEnumMap.nextNonDefault(iANON_NON_DEFAULT_ITER, per##EnumPrefix##Val); )
+/*	Example:
+FOR_EACH_NON_DEFAULT_PAIR(m_aiBlockadedCount, Team, int)
+	expands to
+int iAnonNonDefaultIter_L3947 = 0;
+for (std::pair<TeamTypes,int> perTeamVal;
+	m_aiBlockadedCount.nextNonDefault(iAnonNonDefaultIter_L3947, perTeamVal); )*/
 
 #endif

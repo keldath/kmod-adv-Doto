@@ -1,7 +1,5 @@
 #pragma once
 
-// city.h
-
 #ifndef CIV4_CITY_H
 #define CIV4_CITY_H
 
@@ -26,7 +24,8 @@ public:
 	void kill(bool bUpdatePlotGroups, /* advc.001: */ bool bBumpUnits = true);									// Exposed to Python
 	void doTurn();
 	void doRevolt(); // advc: previously in CvPlot::doCulture
-	// K-Mod. public for the "insert culture" espionage mission. (I've also changed the functionality of it quite a bit.)
+	/*	K-Mod. public for the "insert culture" espionage mission.
+		(I've also changed the functionality of it quite a bit.) */
 	void doPlotCultureTimes100(bool bUpdate, PlayerTypes ePlayer, int iCultureRateTimes100, bool bCityCulture);
 
 	bool isCitySelected();
@@ -110,7 +109,7 @@ public:
 	bool canJoin() const;																						// Exposed to Python
 
 	int getFoodTurnsLeft() const;																				// Exposed to Python
-	bool isProduction() const { return (headOrderQueueNode() != NULL); } // advc.inl							// Exposed to Python
+	bool isProduction() const { return (headOrderQueueNode() != NULL); }										// Exposed to Python
 	bool isProductionLimited() const;																			// Exposed to Python
 	bool isProductionUnit() const;																				// Exposed to Python
 	bool isProductionBuilding() const;																			// Exposed to Python
@@ -172,7 +171,7 @@ public:
 			bool bForceFeatureProd = false, int* iFeatureProdReturn = NULL) const;
 			// </advc.064bc>
 	int getExtraProductionDifference(int iExtra) const															// Exposed to Python
-	{	// advc.inl:
+	{
 		return getExtraProductionDifference(iExtra, getProductionModifier());
 	}
 
@@ -183,7 +182,7 @@ public:
 	int computeOverflow(int iRawOverflow, int iProductionModifier, OrderTypes eOrderType,
 			int* piProductionGold = NULL, int* piLostProduction = NULL,
 			int iPopulationChange = 0) const;
-	inline int minPlotProduction() const
+	int minPlotProduction() const
 	{	// Let pop-hurry ignore guaranteed production
 		return 0;/*GC.getInfo(YIELD_PRODUCTION).getMinCity()*/
 	} // (exposed to Python) </advc.064b>  <advc.064>
@@ -242,7 +241,7 @@ public:
 	bool isHuman() const;																						// Exposed to Python
 	DllExport bool isVisible(TeamTypes eTeam, bool bDebug) const;												// Exposed to Python
 	// advc: Make bDebug=false the default
-	inline bool isVisible(TeamTypes eTeam) const
+	bool isVisible(TeamTypes eTeam) const
 	{
 		return isVisible(eTeam, false);
 	}
@@ -295,18 +294,18 @@ public:
 	int foodDifference(bool bBottom = true, bool bIgnoreProduction = false) const;	// Exposed to Python, K-Mod added bIgnoreProduction
 	int growthThreshold(/* advc.064b: */int iPopulationChange = 0) const;										// Exposed to Python
 
-	int productionLeft() const { return (getProductionNeeded() - getProduction()); } // advc.inl				// Exposed to Python
-	int hurryCost(bool bExtra) const // advc.inl																// Exposed to Python
+	int productionLeft() const { return (getProductionNeeded() - getProduction()); }							// Exposed to Python
+	int hurryCost(bool bExtra) const																			// Exposed to Python
 	{
 		return getHurryCost(bExtra, productionLeft(),
 				getHurryCostModifier(), getProductionModifier());
 	}
 	int getHurryCostModifier(bool bIgnoreNew = false) const;
-	int hurryGold(HurryTypes eHurry) const // advc.inl															// Exposed to Python
+	int hurryGold(HurryTypes eHurry) const																		// Exposed to Python
 	{
 		return getHurryGold(eHurry, hurryCost(false));
 	}
-	int hurryPopulation(HurryTypes eHurry) const // advc.inl													// Exposed to Python
+	int hurryPopulation(HurryTypes eHurry) const																// Exposed to Python
 	{
 		return getHurryPopulation(eHurry, hurryCost(true));
 	}
@@ -337,39 +336,37 @@ public:
 	int getCorporationCount() const { return m_abHasCorporation.getSupportSz(); } // advc.opt					// Exposed to Python
 	static CvCity* fromIDInfo(IDInfo id); // advc
 	// <advc.inl>
-	DllExport inline int getID() const { return m_iID; }														// Exposed to Python
-	inline int getIndex() const { return (getID() & FLTA_INDEX_MASK); }
-	DllExport inline IDInfo getIDInfo() const { return IDInfo(getOwner(), getID()); }
+	DllExport int getID() const { return m_iID; }																// Exposed to Python
+	int getIndex() const { return (getID() & FLTA_INDEX_MASK); }
+	DllExport IDInfo getIDInfo() const { return IDInfo(getOwner(), getID()); }
 	// </advc.inl>
 	void setID(int iID);
-	inline PlotNumTypes plotNum() const { return m_ePlot; } // advc.104
+	PlotNumTypes plotNum() const { return m_ePlot; } // advc.104
 
-	int getXExternal() const; // advc.inl: Exported through .def file											// Exposed to Python
-	inline int getX() const { return m_iX; } // advc.inl: Renamed from getX_INLINE
-	int getYExternal() const; // advc.inl: Exported through .def file											// Exposed to Python
-	inline int getY() const { return m_iY; } // advc.inl: Renamed from getY_INLINE
+	DllExport int getX() const { return m_iX; } // advc.inl: was "getX_INLINE"									// Exposed to Python	
+	DllExport int getY() const { return m_iY; } // advc.inl: was "getY_INLINE"									// Exposed to Python
 
-	bool at(int iX, int iY) const  { return (getX() == iX && getY() == iY); } // advc.inl						// Exposed to Python
+	bool at(int iX, int iY) const  { return (getX() == iX && getY() == iY); }									// Exposed to Python
 	bool at(CvPlot const* pPlot) const // advc: const CvPlot*													// Exposed to Python as atPlot
 	{
-		return (plot() == pPlot); // advc.inl
+		return (plot() == pPlot);
 	}  // <advc>
 	bool at(CvPlot const& kPlot) const
 	{
 		return (plot() == &kPlot);
 	} // </advc>
-	DllExport __forceinline CvPlot* plot() const { return m_pPlot; } // advc.opt: cached						// Exposed to Python
-	__forceinline CvPlot& getPlot() const { return *m_pPlot; } // advc
+	DllExport CvPlot* plot() const { return m_pPlot; } // advc.opt: cached										// Exposed to Python
+	CvPlot& getPlot() const { return *m_pPlot; } // advc
 	void updatePlot(); // advc.opt
 	CvPlotGroup* plotGroup(PlayerTypes ePlayer) const;
 	bool isConnectedTo(CvCity const& kCity) const;																// Exposed to Python
 	bool isConnectedToCapital(PlayerTypes ePlayer = NO_PLAYER) const;											// Exposed to Python
 	// <advc>
-	inline CvArea* area() const { return m_pArea; }																// Exposed to Python
+	CvArea* area() const { return m_pArea; }																	// Exposed to Python
 	//int getArea() const;
-	inline CvArea& getArea() const { return *m_pArea; }
-	inline bool isArea(CvArea const& kArea) const { return (area() == &kArea); }
-	inline bool sameArea(CvCity const& kOther) const { return (area() == kOther.area()); }
+	CvArea& getArea() const { return *m_pArea; }
+	bool isArea(CvArea const& kArea) const { return (area() == &kArea); }
+	bool sameArea(CvCity const& kOther) const { return (area() == kOther.area()); }
 	void updateArea();
 	// </advc>
 	// BETTER_BTS_AI_MOD, 01/02/09, jdog5000: START
@@ -382,14 +379,12 @@ public:
 	CvPlot* getRallyPlot() const;																				// Exposed to Python
 	void setRallyPlot(CvPlot* pPlot);
 
-	// advc.inl: Inlined most of the getters below (w/o adding inline keyword though)
-
 	int getGameTurnFounded() const { return m_iGameTurnFounded; }												// Exposed to Python
 	void setGameTurnFounded(int iNewValue);
 	int getGameTurnAcquired() const { return m_iGameTurnAcquired; }												// Exposed to Python
 	void setGameTurnAcquired(int iNewValue);
 
-	inline int getPopulation() const { return m_iPopulation; }													// Exposed to Python
+	int getPopulation() const { return m_iPopulation; }															// Exposed to Python
 	void setPopulation(int iNewValue);																			// Exposed to Python
 	void changePopulation(int iChange);																			// Exposed to Python
 /* doto-Population Limit ModComp - Beginning */
@@ -779,7 +774,6 @@ public:
 	bool isProductionAutomated() const { return m_bProductionAutomated; }										// Exposed to Python
 	void setProductionAutomated(bool bNewValue, bool bClear);													// Exposed to Python
 
-	// allows you to programmatically specify a cities walls rather than having them be generated automagically
 	DllExport bool isWallOverride() const;
 	void setWallOverride(bool bOverride);
 
@@ -788,8 +782,7 @@ public:
 	DllExport bool isLayoutDirty() const;
 	DllExport void setLayoutDirty(bool bNewValue);
 
-	PlayerTypes getOwnerExternal() const; // advc.inl: Exported through .def file								// Exposed to Python
-	inline PlayerTypes getOwner() const { return m_eOwner; } // advc.inl: Renamed from getOwnerINLINE
+	DllExport PlayerTypes getOwner() const { return m_eOwner; } // advc.inl: was "getOwnerINLINE"				// Exposed to Python
 	DllExport TeamTypes getTeam() const;																		// Exposed to Python
 	PlayerTypes getPreviousOwner() const { return m_ePreviousOwner; }											// Exposed to Python
 	void setPreviousOwner(PlayerTypes eNewValue);
@@ -797,11 +790,12 @@ public:
 	void setOriginalOwner(PlayerTypes eNewValue);
 
 	CultureLevelTypes getCultureLevel() const { return m_eCultureLevel; }										// Exposed to Python
+	CultureLevelTypes getCultureLevel(PlayerTypes ePlayer) const; // advc
 	int getCultureThreshold() const { return getCultureThreshold(getCultureLevel()); }							// Exposed to Python
 	static int getCultureThreshold(CultureLevelTypes eLevel);
 	void setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups);
 	void updateCultureLevel(bool bUpdatePlotGroups);
-	CultureLevelTypes calculateCultureLevel(PlayerTypes ePlayer) const; // advc.130f
+	CultureLevelTypes calculateCultureLevel(PlayerTypes ePlayer) const; // advc
 	int getNumPartisanUnits(PlayerTypes ePartisanPlayer) const; // advc.003y
 	int getCultureTurnsLeft() const; // advc.042
 
@@ -999,7 +993,7 @@ public:
 	{	// advc: Delegate to the Times100 function
 		return getCultureTimes100(ePlayer) / 100;
 	}
-	inline int getCultureTimes100(PlayerTypes ePlayer) const													// Exposed to Python
+	int getCultureTimes100(PlayerTypes ePlayer) const															// Exposed to Python
 	{
 		return m_aiCulture.get(ePlayer);
 	}
@@ -1043,11 +1037,11 @@ public:
 	void setEverOwned(PlayerTypes ePlayer, bool bNewValue);
 
 	DllExport bool isRevealed(TeamTypes eTeam, bool bDebug) const;												// Exposed to Python
-	// <advc.inl> Faster implementation for non-UI code
-	inline bool isRevealed(TeamTypes eToTeam) const
+	// advc.inl: Faster implementation for non-UI code
+	bool isRevealed(TeamTypes eToTeam) const
 	{
 		return m_abRevealed.get(eToTeam);
-	} // </advc.inl>
+	}
 	void setRevealed(TeamTypes eTeam, bool bNewValue);															// Exposed to Python
 
 	bool getEspionageVisibility(TeamTypes eTeam) const															// Exposed to Python
@@ -1125,8 +1119,8 @@ public:
 	{
 		return m_aiProjectProduction.get(eProject);
 	}
-	void setProjectProduction(ProjectTypes eProject, int iNewValue);											// Exposed to Python
-	void changeProjectProduction(ProjectTypes eProject, int iChange);											// Exposed to Python
+	void setProjectProduction(ProjectTypes eProject, int iNewValue);
+	void changeProjectProduction(ProjectTypes eProject, int iChange);
 
 	PlayerTypes getBuildingOriginalOwner(BuildingTypes eBuilding) const											// Exposed to Python
 	{
@@ -1144,13 +1138,20 @@ public:
 	void setUnitProduction(UnitTypes eUnit, int iNewValue);														// Exposed to Python
 	void changeUnitProduction(UnitTypes eUnit, int iChange);													// Exposed to Python
 
-	int getUnitProductionTime(UnitTypes eUnit) const															// Exposed to Python
+	int getUnitProductionTime(UnitTypes eUnit) const								// Exposed to Python (for BULL - Production Decay)
 	{
 		return m_aiUnitProductionTime.get(eUnit);
 	}
-	void setUnitProductionTime(UnitTypes eUnit, int iNewValue);													// Exposed to Python
-	void changeUnitProductionTime(UnitTypes eUnit, int iChange);												// Exposed to Python
-
+	void setUnitProductionTime(UnitTypes eUnit, int iNewValue);
+	void changeUnitProductionTime(UnitTypes eUnit, int iChange);
+	// BULL - Production Decay - start (advc.094)
+	bool isBuildingProductionDecay(BuildingTypes eBuilding) const;												// Exposed to Python
+	int getBuildingProductionDecay(BuildingTypes eBuilding) const;												// Exposed to Python
+	int getBuildingProductionDecayTurns(BuildingTypes eBuilding) const;											// Exposed to Python
+	bool isUnitProductionDecay(UnitTypes eUnit) const;															// Exposed to Python
+	int getUnitProductionDecay(UnitTypes eUnit) const;															// Exposed to Python
+	int getUnitProductionDecayTurns(UnitTypes eUnit) const;														// Exposed to Python
+	// BULL - Production Decay - end
 	bool isAnyProductionProgress(OrderTypes eOrder) const; // advc.opt
 
 	int getGreatPeopleUnitRate(UnitTypes eUnit) const															// Exposed to Python
@@ -1313,12 +1314,12 @@ public:
 	void stopHeadOrder();
 	int getOrderQueueLength() /* advc: */ const																	// Exposed to Python
 	{
-		return m_orderQueue.getLength(); // advc.inl
+		return m_orderQueue.getLength();
 	}
 	OrderData* getOrderFromQueue(int iIndex) const;																// Exposed to Python
 	CLLNode<OrderData>* nextOrderQueueNode(CLLNode<OrderData>* pNode) const
 	{
-		return m_orderQueue.next(pNode); // advc.inl
+		return m_orderQueue.next(pNode);
 	}  // <advc.003s>
 	CLLNode<OrderData> const* nextOrderQueueNode(CLLNode<OrderData> const* pNode) const
 	{
@@ -1326,11 +1327,11 @@ public:
 	} // </advc.003s>
 	CLLNode<OrderData>* headOrderQueueNode() const
 	{
-		return m_orderQueue.head(); // advc.inl
+		return m_orderQueue.head();
 	}
 	DllExport int getNumOrdersQueued() const
 	{
-		return m_orderQueue.getLength(); // advc.inl
+		return m_orderQueue.getLength();
 	}
 	DllExport OrderData getOrderData(int iIndex) const;
 
@@ -1392,7 +1393,7 @@ public:
 
 	DllExport void getBuildQueue(std::vector<std::string>& astrQueue) const;
 
-	void invalidatePopulationRankCache() { m_bPopulationRankValid = false; } // advc.inl
+	void invalidatePopulationRankCache() { m_bPopulationRankValid = false; }
 	void invalidateYieldRankCache(YieldTypes eYield = NO_YIELD);
 	void invalidateCommerceRankCache(CommerceTypes eCommerce = NO_COMMERCE);
 	//int getBestYieldAvailable(YieldTypes eYield) const; // advc.003j: obsolete
@@ -1401,13 +1402,13 @@ public:
 	// virtual for FFreeListTrashArray
 	virtual void read(FDataStreamBase* pStream); 
 	virtual void write(FDataStreamBase* pStream);
-	__forceinline CvCityAI& AI()
+	CvCityAI& AI()
 	{	//return *static_cast<CvCityAI*>(const_cast<CvCity*>(this));
 		/*  The above won't work in an inline function b/c the compiler doesn't know
 			that CvCityAI is derived from CvCity */
 		return *reinterpret_cast<CvCityAI*>(this);
 	}
-	__forceinline CvCityAI const& AI() const
+	CvCityAI const& AI() const
 	{	//return *static_cast<CvCityAI const*>(this);
 		return *reinterpret_cast<CvCityAI const*>(this);
 	}
@@ -1631,8 +1632,8 @@ protected:
 	EnumMap<BuildingTypes,PlayerTypes> m_aeBuildingOriginalOwner;
 //DOTO-prereqMust+tholish - this enum array will allow to keep tarck of shich buildings
 //were set to inactive
-	EnumMapDefault<BuildingTypes,bool,true> m_aiBuildingeActive;
-	EnumMapDefault<BuildingTypes,int,MIN_INT> m_aiBuildingOriginalTime;
+	EnumMap<BuildingTypes,bool,true> m_aiBuildingeActive;
+	EnumMap<BuildingTypes,int,MIN_INT> m_aiBuildingOriginalTime;
 	EnumMap<BuildingTypes,int> m_aiNumRealBuilding;
 	EnumMap<BuildingTypes,int> m_aiNumFreeBuilding;
 	EnumMap<UnitTypes,int> m_aiUnitProduction;
@@ -1680,11 +1681,11 @@ protected:
 	// <advc.enum>
 	/*	Made mutable (not strictly necessary b/c findBaseYieldRateRank
 		accesses them through a CvCity pointer) */
-	mutable EnumMapDefault<YieldTypes,int,-1> m_aiBaseYieldRank;
+	mutable EnumMap<YieldTypes,int,-1> m_aiBaseYieldRank;
 	mutable EnumMap<YieldTypes,bool> m_abBaseYieldRankValid;
-	mutable EnumMapDefault<YieldTypes,int,-1> m_aiYieldRank;
+	mutable EnumMap<YieldTypes,int,-1> m_aiYieldRank;
 	mutable EnumMap<YieldTypes,bool> m_abYieldRankValid;
-	mutable EnumMapDefault<CommerceTypes,int,-1> m_aiCommerceRank;
+	mutable EnumMap<CommerceTypes,int,-1> m_aiCommerceRank;
 	mutable EnumMap<CommerceTypes,bool> m_abCommerceRankValid; // </advc.enum>
 
 	void doGrowth();
@@ -1700,7 +1701,7 @@ protected:
 	void doReligion();
 	void doGreatPeople();
 	void doMeltdown();
-		// advc.inl: Allow getExtraProductionDifference to be inlined ...
+
 	int getExtraProductionDifference(int iExtra, UnitTypes eUnit) const
 	{
 		return getExtraProductionDifference(iExtra, getProductionModifier(eUnit));

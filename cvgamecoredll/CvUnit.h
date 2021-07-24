@@ -18,7 +18,6 @@ class GroupPathFinder;
 class CvUnitAI; // advc.003u
 struct CombatDetails;
 
-// (advc.inl: Inlined many getters. Only getX, getY and getOwner were inlined in K-Mod/BtS.)
 class CvUnit : public CvDLLUnitEntity
 {
 public:
@@ -144,7 +143,7 @@ public:
 	bool canUnloadAll() const;																				// Exposed to Python
 	void unloadAll();
 
-	inline bool canHold(const CvPlot* pPlot) const { return true; }											// Exposed to Python
+	bool canHold(const CvPlot* pPlot) const { return true; }												// Exposed to Python
 	bool canSleep(const CvPlot* pPlot) const;																// Exposed to Python
 	bool canFortify(const CvPlot* pPlot) const;																// Exposed to Python
 	bool canAirPatrol(const CvPlot* pPlot) const;															// Exposed to Python
@@ -170,6 +169,9 @@ public:
 	bool canNuke(CvPlot const* pFrom) const { return (nukeRange() != -1); }									// Exposed to Python
 	bool canNukeAt(CvPlot const& kFrom, int iX, int iY) const;												// Exposed to Python
 	bool nuke(int iX, int iY);
+	// <advc.650>
+	int nukeInterceptionChance(CvPlot const& kTarget, TeamTypes* pBestTeam = NULL,
+			EnumMap<TeamTypes,bool> const* pTeamsAffected = NULL) const; // <advc.650>
 
 	bool canRecon(const CvPlot* pPlot) const;																// Exposed to Python
 	bool canReconAt(const CvPlot* pPlot, int iX, int iY) const;												// Exposed to Python
@@ -315,11 +317,11 @@ public:
 		return m_pUnitInfo->getSpecialUnitType();
 	}
 	UnitTypes getCaptureUnitType(CivilizationTypes eCivilization) const;									// Exposed to Python
-	inline UnitCombatTypes getUnitCombatType() const														// Exposed to Python
+	UnitCombatTypes getUnitCombatType() const																// Exposed to Python
 	{
 		return m_pUnitInfo->getUnitCombatType();
 	}
-	DllExport __forceinline DomainTypes getDomainType() const												// Exposed to Python
+	DllExport DomainTypes getDomainType() const																// Exposed to Python
 	{
 		return m_pUnitInfo->getDomainType();
 	}
@@ -425,12 +427,10 @@ public:
 	{
 		return m_pUnitInfo->isSpy();
 	}
-	bool isFound() const;																					// Exposed to Python
-	// <advc.004h> Let only the EXE use isFound
-	bool canFound() const
+	bool isFound() const																					// Exposed to Python
 	{
 		return m_pUnitInfo->isFound();
-	} // </advc.004h>
+	}
 	bool isGoldenAge() const;																				// Exposed to Python
 	bool canCoexistWithEnemyUnit(TeamTypes eTeam) const;													// Exposed to Python
 
@@ -442,25 +442,30 @@ public:
 	DllExport bool isDefending() const;																		// Exposed to Python
 	bool isInCombat() const;																				// Exposed to Python
 
-	DllExport inline int maxHitPoints() const																// Exposed to Python
+	DllExport int maxHitPoints() const																		// Exposed to Python
 	{
 		return GC.getMAX_HIT_POINTS();
 	}
-	inline int currHitPoints() const																		// Exposed to Python
+	int currHitPoints() const																				// Exposed to Python
 	{
 		return (maxHitPoints() - getDamage());
 	}
-	inline bool isHurt() const																				// Exposed to Python
+	bool isHurt() const																						// Exposed to Python
 	{
 		return (getDamage() > 0);
 	}
-	DllExport inline bool isDead() const																	// Exposed to Python
+	DllExport bool isDead() const																			// Exposed to Python
 	{
 		return (getDamage() >= maxHitPoints());
 	}
+	// advc:
+	bool isLethalDamage(int iDamage)
+	{
+		return (currHitPoints() - iDamage <= 0);
+	}
 
 	void setBaseCombatStr(int iCombat);																		// Exposed to Python
-	inline int baseCombatStr() const																		// Exposed to Python
+	int baseCombatStr() const																				// Exposed to Python
 	{
 		return m_iBaseCombat;
 	}  // advc: Default values - to make clear that these can be NULL.
@@ -486,7 +491,7 @@ public:
 			int iOurStrength, int iOurFirepower, int& iTheirOdds, int& iTheirStrength,
 			int& iOurDamage, int& iTheirDamage, CombatDetails* pTheirDetails = NULL) const;
 
-	DllExport inline bool canFight() const																	// Exposed to Python
+	DllExport bool canFight() const																			// Exposed to Python
 	{
 		return (baseCombatStr() > 0);
 	}
@@ -501,7 +506,7 @@ public:
 			bool bTestVisible, bool bTestCanAttack) const; // </advc>
 	bool isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker) const;						// Exposed to Python
 
-	inline int airBaseCombatStr() const																		// Exposed to Python
+	int airBaseCombatStr() const																			// Exposed to Python
 	{
 		return m_pUnitInfo->getAirCombat();
 	}
@@ -565,11 +570,11 @@ public:
 	{
 		return m_pUnitInfo->isIgnoreBuildingDefense();
 	}
-	inline bool canMoveImpassable() const																	// Exposed to Python
+	bool canMoveImpassable() const																			// Exposed to Python
 	{
 		return m_pUnitInfo->canMoveImpassable();
 	}
-	inline bool canMoveAllTerrain() const																	// Exposed to Python
+	bool canMoveAllTerrain() const																			// Exposed to Python
 	{
 		return m_pUnitInfo->isCanMoveAllTerrain();
 	}
@@ -579,11 +584,11 @@ public:
 	{
 		return m_pUnitInfo->isCanMovePeak();
 	}
-	inline bool flatMovementCost() const																	// Exposed to Python
-	{
-		return m_pUnitInfo->isFlatMovementCost();
+	bool flatMovementCost() const																			// Exposed to Python
+	{	// advc.opt: Now also true for all air units
+		return m_bFlatMovement;
 	}
-	inline bool ignoreTerrainCost() const																	// Exposed to Python
+	bool ignoreTerrainCost() const																			// Exposed to Python
 	{
 		return m_pUnitInfo->isIgnoreTerrainCost();
 	}
@@ -654,7 +659,7 @@ public:
 	int getUnitAICargo(UnitAITypes eUnitAI) const;															// Exposed to Python
 
 	static CvUnit* fromIDInfo(IDInfo id); // advc
-	DllExport inline int getID() const { return m_iID; }																					// Exposed to Python
+	DllExport int getID() const { return m_iID; }															// Exposed to Python
 	int getIndex() const { return (getID() & FLTA_INDEX_MASK); }
 	DllExport IDInfo getIDInfo() const { return IDInfo(getOwner(), getID()); }
 	void setID(int iID);
@@ -674,26 +679,24 @@ public:
 
 	DllExport int getHotKeyNumber();																													// Exposed to Python
 	void setHotKeyNumber(int iNewValue);																											// Exposed to Python
-
-	int getXExternal() const; // advc.inl: Exported through .def file										// Exposed to Python
-	inline int getX() const { return m_iX; } // advc.inl: Renamed from getX_INLINE
-	int getYExternal() const; // advc.inl: Exported through .def file										// Exposed to Python
-	inline int getY() const { return m_iY; } // advc.inl: Renamed from getY_INLINE
+	
+	DllExport int getX() const { return m_iX; } // advc.inl: was "getX_INLINE"								// Exposed to Python
+	DllExport int getY() const { return m_iY; } // advc.inl: was "getY_INLINE"								// Exposed to Python
 	void setXY(int iX, int iY, bool bGroup = false, bool bUpdate = true, bool bShow = false,				// Exposed to Python
 			bool bCheckPlotVisible = false);
 	
 	bool at(int iX, int iY) const { return (getX() == iX && getY() == iY); }								// Exposed to Python
-	inline bool at(CvPlot const& kPlot) const { return atPlot(&kPlot); }
+	bool at(CvPlot const& kPlot) const { return atPlot(&kPlot); }
 	DllExport bool atPlot(const CvPlot* pPlot) const { return (plot() == pPlot); }							// Exposed to Python
-	DllExport __forceinline CvPlot* plot() const { return m_pPlot; } // advc.opt: cached					// Exposed to Python
-	__forceinline CvPlot& getPlot() const { return *m_pPlot; } // advc
+	DllExport CvPlot* plot() const { return m_pPlot; } // advc.opt: cached									// Exposed to Python
+	CvPlot& getPlot() const { return *m_pPlot; } // advc
 	void updatePlot(); // advc.opt
 	//int getArea() const;																					// Exposed to Python
 	// <advc>
-	inline CvArea& getArea() const { return *m_pArea; }
-	inline CvArea* area() const { return m_pArea; }															// Exposed to Python
-	inline bool isArea(CvArea const& kArea) const { return (area() == &kArea); }
-	inline bool sameArea(CvUnit const& kOther) const { return (area() == kOther.area()); }
+	CvArea& getArea() const { return *m_pArea; }
+	CvArea* area() const { return m_pArea; }																// Exposed to Python
+	bool isArea(CvArea const& kArea) const { return (area() == &kArea); }
+	bool sameArea(CvUnit const& kOther) const { return (area() == kOther.area()); }
 	void updateArea();
 	// </advc>
 	int getLastMoveTurn() const;
@@ -705,7 +708,7 @@ public:
 	int getGameTurnCreated() const { return m_iGameTurnCreated; }											// Exposed to Python
 	void setGameTurnCreated(int iNewValue);
 
-	DllExport inline int getDamage() const { return m_iDamage; }											// Exposed to Python
+	DllExport int getDamage() const { return m_iDamage; }													// Exposed to Python
 	void setDamage(int iNewValue, PlayerTypes ePlayer = NO_PLAYER, bool bNotifyEntity = true);				// Exposed to Python
 	void changeDamage(int iChange, PlayerTypes ePlayer = NO_PLAYER);										// Exposed to Python
 
@@ -883,7 +886,7 @@ public:
 	void setMadeInterception(bool bNewValue);																// Exposed to Python
 
 	bool isPromotionReadyExternal() const; // advc.002e: exported through .def file
-	inline bool isPromotionReady() const { return m_bPromotionReady; }										// Exposed to Python
+	bool isPromotionReady() const { return m_bPromotionReady; }												// Exposed to Python
 	void setPromotionReady(bool bNewValue);																	// Exposed to Python
 	void testPromotionReady();
 
@@ -903,20 +906,19 @@ public:
 	void setBlockading(bool bNewValue);
 	void collectBlockadeGold();
 
-	PlayerTypes getOwnerExternal() const; // advc.inl: Exported through .def file							// Exposed to Python
-	inline PlayerTypes getOwner() const // advc.inl: Renamed from getOwnerINLINE
+	DllExport PlayerTypes getOwner() const // advc.inl: was "getOwnerINLINE"								// Exposed to Python
 	{
 		return m_eOwner;
 	}
 	DllExport PlayerTypes getVisualOwner(TeamTypes eForTeam = NO_TEAM) const;								// Exposed to Python
-	inline PlayerTypes getCombatOwner(TeamTypes eForTeam, CvPlot const& kPlot) const						// Exposed to Python
+	PlayerTypes getCombatOwner(TeamTypes eForTeam, CvPlot const& kPlot) const								// Exposed to Python
 	{
 		// advc.inl: Split this function up so that part of it can be inlined
 		return (isAlwaysHostile() ? getCombatOwner_bulk(eForTeam, kPlot) : getOwner());
 	}
 
 	// advc (for convenience)
-	inline PlayerTypes getCombatOwner(TeamTypes eForTeam) const
+	PlayerTypes getCombatOwner(TeamTypes eForTeam) const
 	{
 		return getCombatOwner(eForTeam, getPlot());
 	}
@@ -925,8 +927,8 @@ public:
 	PlayerTypes getCapturingPlayer() const;
 	void setCapturingPlayer(PlayerTypes eNewValue);
 
-	DllExport inline const UnitTypes getUnitType() const { return m_eUnitType; }							// Exposed to Python
-	__forceinline CvUnitInfo& getUnitInfo() const { return *m_pUnitInfo; }
+	DllExport const UnitTypes getUnitType() const { return m_eUnitType; }									// Exposed to Python
+	CvUnitInfo& getUnitInfo() const { return *m_pUnitInfo; }
 	UnitClassTypes getUnitClassType() const	// Exposed to Python
 	{
 		return m_pUnitInfo->getUnitClassType();
@@ -944,11 +946,10 @@ public:
 
 	CvUnit const* getTransportUnit() const;																	// Exposed to Python
 	CvUnit* getTransportUnit(); // advc
-	// advc.103f: Force-inlined for CvArea::canBeEntered
-	__forceinline bool isCargo() const																		// Exposed to Python
+	bool isCargo() const																					// Exposed to Python
 	{	// advc.test: (Should perhaps simply turn m_transportUnit into a CvUnit pointer.)
-		FAssert((getTransportUnit() == NULL) == (m_transportUnit.iID == NO_PLAYER));
-		return (m_transportUnit.iID != NO_PLAYER); // avoid ::getUnit call
+		//FAssert((getTransportUnit() == NULL) == (m_transportUnit.iID == NO_PLAYER));
+		return (m_transportUnit.iID != NO_PLAYER); // advc.opt: avoid ::getUnit call
 	}
 	void setTransportUnit(CvUnit* pTransportUnit);															// Exposed to Python
 
@@ -1029,10 +1030,10 @@ public:
 	DllExport int getSubUnitsAlive() const;
 	int getSubUnitsAlive(int iDamage) const;
 
-	bool isTargetOf(const CvUnit& attacker) const;
+	bool isTargetOf(CvUnit const& kAttacker) const;
 	bool isEnemy(TeamTypes eTeam, CvPlot const& kPlot) const;
 	// advc.opt: Instead of allowing pPlot==NULL
-	inline bool isEnemy(TeamTypes eTeam) const
+	__inline bool isEnemy(TeamTypes eTeam) const
 	{
 		return isEnemy(eTeam, getPlot());
 	}
@@ -1112,13 +1113,13 @@ public:
 	// virtual for FFreeListTrashArray
 	virtual void read(FDataStreamBase* pStream);
 	virtual void write(FDataStreamBase* pStream);
-	__forceinline CvUnitAI& AI()
+	CvUnitAI& AI()
 	{	//return *static_cast<CvUnitAI*>(const_cast<CvUnit*>(this));
 		/*  The above won't work in an inline function b/c the compiler doesn't know
 			that CvUnitAI is derived from CvUnit */
 		return *reinterpret_cast<CvUnitAI*>(this);
 	}
-	__forceinline CvUnitAI const& AI() const
+	CvUnitAI const& AI() const
 	{	//return *static_cast<CvUnitAI const*>(this);
 		return *reinterpret_cast<CvUnitAI const*>(this);
 	}
@@ -1203,13 +1204,15 @@ protected:
 
 	//bool m_bMadeAttack;
 	int m_iMadeAttacks; // advc.164
-	bool m_bMadeInterception;
-	bool m_bPromotionReady;
-	bool m_bDeathDelay;
-	bool m_bCombatFocus;
-	bool m_bInfoBarDirty;
-	bool m_bBlockading;
-	bool m_bAirCombat;
+	// advc.opt: Since we have exactly 8 booleans ...
+	bool m_bMadeInterception:1;
+	bool m_bPromotionReady:1;
+	bool m_bDeathDelay:1;
+	bool m_bCombatFocus:1;
+	bool m_bInfoBarDirty:1;
+	bool m_bBlockading:1;
+	bool m_bAirCombat:1;
+	bool m_bFlatMovement:1; // advc.opt
 
 	PlayerTypes m_eCapturingPlayer;
 	UnitTypes m_eUnitType;
@@ -1287,6 +1290,7 @@ protected:
 /** Original Author Moctezuma              End                                                   */
 /*************************************************************************************************/
 	void checkRemoveSelectionAfterAttack();
+	void updateFlatMovement();
 // <advc.003u>
 private:
 	void uninitEntity(); // I don't think subclasses should ever call this

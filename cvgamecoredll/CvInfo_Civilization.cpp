@@ -1362,7 +1362,7 @@ bool CvTraitInfo::isFreePromotionUnitCombat(int i) const // advc.003t: Return ty
 
 bool CvTraitInfo::read(CvXMLLoadUtility* pXML)
 {
-	if (!CvInfoBase::read(pXML))
+	if (!base_t::read(pXML)) // advc.tag
 		return false;
 	{
 		CvString szTextVal;
@@ -1387,7 +1387,14 @@ bool CvTraitInfo::read(CvXMLLoadUtility* pXML)
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
 	else pXML->InitList(&m_paiExtraYieldThreshold, NUM_YIELD_TYPES);
-
+	// <advc.908a>
+	pXML->SetYieldList(ExtraYieldNaturalThreshold(), "ExtraYieldNaturalThresholds");
+	#ifdef FASSERT_ENABLE
+	FOR_EACH_ENUM(Yield)
+	{
+		FAssert(getExtraYieldNaturalThreshold(eLoopYield) >= 0);
+	}
+	#endif // </advc.908a>
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "TradeYieldModifiers"))
 	{
 		pXML->SetYields(&m_paiTradeYieldModifier);

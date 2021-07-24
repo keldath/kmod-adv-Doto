@@ -234,6 +234,9 @@ m_bRequiresFlatlands(false),
 m_bRequiresRiver(false),
 m_bRequiresRiverSide(false), // advc.129b
 m_bAddsFreshWater(false),
+//feature on improvement - doto
+m_bOnImprovement(false),
+//feature on improvement - doto
 m_bImpassable(false),
 m_bNoCity(false),
 m_bNoImprovement(false),
@@ -326,6 +329,12 @@ bool CvFeatureInfo::isAddsFreshWater() const
 {
 	return m_bAddsFreshWater;
 }
+//feature on improvement - doto
+bool CvFeatureInfo::isOnImprovement() const
+{
+	return m_bOnImprovement;
+}
+//feature on improvement - doto
 
 bool CvFeatureInfo::isNoCity() const
 {
@@ -462,6 +471,8 @@ bool CvFeatureInfo::read(CvXMLLoadUtility* pXML)
 	if (m_bRequiresRiverSide)
 		m_bRequiresRiver = true; // </advc.129b>
 	pXML->GetChildXmlValByName(&m_bAddsFreshWater, "bAddsFreshWater");
+//feature on improvement - doto
+	pXML->GetChildXmlValByName(&m_bOnImprovement, "bOnImprovement",false);
 	pXML->GetChildXmlValByName(&m_bImpassable, "bImpassable");
 	pXML->GetChildXmlValByName(&m_bNoCity, "bNoCity");
 	pXML->GetChildXmlValByName(&m_bNoImprovement, "bNoImprovement");
@@ -1451,7 +1462,7 @@ void CvArtInfoImprovement::setShaderNIF(const TCHAR* szDesc)
 #if ENABLE_XML_FILE_CACHE
 void CvImprovementInfo::read(FDataStreamBase* stream)
 {
-	CvXMLInfo::read(stream); // advc.tag
+	base_t::read(stream); // advc.tag
 	uint uiFlag=0;
 	stream->Read(&uiFlag);
 
@@ -1567,8 +1578,8 @@ void CvImprovementInfo::read(FDataStreamBase* stream)
 
 void CvImprovementInfo::write(FDataStreamBase* stream)
 {
-	CvXMLInfo::write(stream); // advc.tag
-	uint uiFlag=0;
+	base_t::write(stream); // advc.tag
+	uint uiFlag = 0;
 	stream->Write(uiFlag);
 
 	stream->Write(m_iAdvancedStartCost);
@@ -1643,17 +1654,10 @@ void CvImprovementInfo::write(FDataStreamBase* stream)
 		stream->Write(NUM_YIELD_TYPES, m_ppiRouteYieldChanges[i]);
 }
 #endif
-// <advc.tag>
-void CvImprovementInfo::addElements(std::vector<XMLElement*>& r) const
-{
-	CvXMLInfo::addElements(r);
-	r.push_back(new IntElement(HealthPercent, "HealthPercent", 0)); // advc.901
-	r.push_back(new IntElement(GWFeatureProtection, "GWFeatureProtection", 0)); // advc.055
-} // </advc.tag>
 
 bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 {
-	if (!CvXMLInfo::read(pXML)) // advc.tag
+	if (!base_t::read(pXML)) // advc.tag
 		return false;
 
 	pXML->GetChildXmlValByName(m_szArtDefineTag, "ArtDefineTag");

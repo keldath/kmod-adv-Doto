@@ -15,13 +15,17 @@ class CvGameTextMgr
 {
 	friend class CvGlobals;
 public:
-	DllExport static CvGameTextMgr& GetInstance(); // singleton accessor
+	DllExport static CvGameTextMgr& GetInstance() // singleton accessor
+	{
+		static CvGameTextMgr gs_GameTextMgr;
+		return gs_GameTextMgr;
+	}
 
-	CvGameTextMgr();
-	virtual ~CvGameTextMgr();
+	CvGameTextMgr() : /* advc.099f: */ m_bAlwaysShowPlotCulture(true) {}
+	virtual ~CvGameTextMgr() {}
 
-	DllExport void Initialize();
-	DllExport void DeInitialize();
+	DllExport void Initialize() {} // allocate memory
+	DllExport void DeInitialize(); // deallocate memory
 	DllExport void Reset();
 
 	int getCurrentLanguage();
@@ -58,6 +62,11 @@ public:
 	void setCannotAttackHelp(CvWStringBuffer& szHelp, CvUnit const& kAttacker,
 			CvUnit const& kDefender); // </advc.089>
 	void setPlotHelp(CvWStringBuffer &szString, CvPlot const& kPlot);
+	// <advc.099f> (only for legacy saves)
+	void setAlwaysShowPlotCulture(bool bAlwaysShowPlotCulture)
+	{
+		m_bAlwaysShowPlotCulture = bAlwaysShowPlotCulture;
+	} // </advc.099f>
 	void setCityBarHelp(CvWStringBuffer &szString, CvCity const& kCity);
 	void setRevoltHelp(CvWStringBuffer &szString, CvCity const& kCity); // advc.101
 	void setScoreHelp(CvWStringBuffer &szString, PlayerTypes ePlayer);
@@ -104,6 +113,8 @@ public:
 // BUG - Building Additional Happiness - end
 	void setProjectHelp(CvWStringBuffer &szBuffer, ProjectTypes eProject, bool bCivilopediaText = false, CvCity* pCity = NULL);
 	void setProcessHelp(CvWStringBuffer &szBuffer, ProcessTypes eProcess);
+	// BULL - Production Decay: (advc.094)
+	void setProductionDecayHelp(CvWStringBuffer &szBuffer, int iTurnsLeft, int iThreshold, int iDecay, bool bProducing);
 	void setGoodHealthHelp(CvWStringBuffer &szBuffer, CvCity& city);
 	void setBadHealthHelp(CvWStringBuffer &szBuffer, CvCity& city);
 // BUG - Building Additional Health - start
@@ -177,7 +188,9 @@ public:
 	void setVassalRevoltHelp(CvWStringBuffer& szBuffer, TeamTypes eMaster, TeamTypes eVassal);
 	void setEventHelp(CvWStringBuffer& szBuffer, EventTypes eEvent, int iEventTriggeredId, PlayerTypes ePlayer);
 	void setTradeRouteHelp(CvWStringBuffer &szBuffer, int iRoute, CvCity* pCity);
-	void setEspionageCostHelp(CvWStringBuffer &szBuffer, EspionageMissionTypes eMission, PlayerTypes eTargetPlayer, const CvPlot* pPlot, int iExtraData, const CvUnit* pSpyUnit);
+	void setEspionageCostHelp(CvWStringBuffer &szBuffer,
+			EspionageMissionTypes eMission, PlayerTypes eTargetPlayer,
+			CvPlot const* pPlot, int iExtraData, CvUnit const* pSpyUnit);
 	void setEspionageMissionHelp(CvWStringBuffer &szBuffer, const CvUnit* pUnit);
 	// advc.059:
 	void setHealthHappyBuildActionHelp(CvWStringBuffer& szBuffer, CvPlot const& kPlot, BuildTypes eBuild) const;
@@ -250,7 +263,7 @@ public:
 			char const* szTextKey, char const* szTextKeyAlt = NULL); // </advc>
 	void getVassalInfoString(CvWStringBuffer& szBuffer, PlayerTypes ePlayer); // K-Mod
 	void getWarWearinessString(CvWStringBuffer& szBuffer, PlayerTypes ePlayer, PlayerTypes eTargetPlayer) const; // K-Mod
-	void getEspionageString(CvWStringBuffer& szBuffer, PlayerTypes ePlayer, PlayerTypes eTargetPlayer);
+	//void getEspionageString(CvWStringBuffer& szBuffer, PlayerTypes ePlayer, PlayerTypes eTargetPlayer);
 	void getTradeString(CvWStringBuffer& szBuffer, const TradeData& tradeData,
 			PlayerTypes ePlayer1, PlayerTypes ePlayer2,
 			int iTurnsToCancel = -1); // advc.004w
@@ -391,6 +404,7 @@ private:
 	  static bool listFirstUnitTypeBeforeSecond(UnitTypes eFirst, UnitTypes eSecond);
 	// </advc.061>
 	std::vector<int*> m_apbPromotion;
+	bool m_bAlwaysShowPlotCulture; // advc.099f
 };
 
 // Singleton Accessor

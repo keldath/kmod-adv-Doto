@@ -13,13 +13,13 @@ using std::vector; // advc
 	the implementation of that function was:
 	srand(7297 * iSeedX + 2909  * iSeedY);
 	return (rand() % (iMax - iMin)) + iMin; */
-int intHash(vector<int> const& x, PlayerTypes ePlayer)
+int intHash(vector<int> const& kInputs, PlayerTypes ePlayer)
 {
 	int const iPrime = 31;
 	int iHashVal = 0;
-	for (size_t i = 0; i < x.size(); i++)
+	for (size_t i = 0; i < kInputs.size(); i++)
 	{
-		iHashVal += x[i];
+		iHashVal += kInputs[i];
 		iHashVal *= iPrime;
 	}
 	int iCapitalIndex = -1;
@@ -27,7 +27,7 @@ int intHash(vector<int> const& x, PlayerTypes ePlayer)
 	{
 		CvCity* pCapital = GET_PLAYER(ePlayer).getCapital();
 		if (pCapital != NULL)
-			iCapitalIndex = GC.getMap().plotNum(pCapital->getPlot());
+			iCapitalIndex = pCapital->getPlot().plotNum();
 	}
 	if (iCapitalIndex >= 0)
 	{
@@ -43,12 +43,14 @@ void contestedPlots(vector<CvPlot*>& r, TeamTypes t1, TeamTypes t2)
 		return;
 	// Sufficient to check plots around the teams' cities
 	vector<CvCity const*> apCities;
-	for(int i = 0; i < MAX_CIV_PLAYERS; i++)
+	for (MemberIter itMember1(t1); itMember1.hasNext(); ++itMember1)
 	{
-		CvPlayer& kMember = GET_PLAYER((PlayerTypes)i);
-		if(!kMember.isAlive() || (kMember.getTeam() != t1 && kMember.getTeam() != t2))
-			continue;
-		FOR_EACH_CITY(c, kMember)
+		FOR_EACH_CITY(c, *itMember1)
+			apCities.push_back(c);
+	}
+	for (MemberIter itMember2(t2); itMember2.hasNext(); ++itMember2)
+	{
+		FOR_EACH_CITY(c, *itMember2)
 			apCities.push_back(c);
 	}
 	std::set<int> seenPlots; // To avoid duplicates
@@ -337,9 +339,9 @@ bool atWar(TeamTypes eTeamA, TeamTypes eTeamB)
 	return GET_TEAM(eOurTeam).AI_mayAttack(eTheirTeam);
 }*/
 
-// K-Mod: (advc - Where do we move this? Should be a static member, not global.)
+// K-Mod: (advc - Where do we move this? Should not be global.)
 int estimateCollateralWeight(CvPlot const* pPlot, TeamTypes eAttackTeam,
-	TeamTypes eDefenceTeam)
+	TeamTypes eDefenseTeam)
 {
 	int iBaseCollateral = GC.getDefineINT(CvGlobals::COLLATERAL_COMBAT_DAMAGE); // normally 10
 	if (pPlot == NULL)
@@ -350,7 +352,7 @@ int estimateCollateralWeight(CvPlot const* pPlot, TeamTypes eAttackTeam,
 		Therefore, I'm going to inflate the value of collateral damage based
 		on a rough estimate of the defenders bonuses. */
 
-	TeamTypes ePlotBonusTeam = eDefenceTeam;
+	TeamTypes ePlotBonusTeam = eDefenseTeam;
 	if (ePlotBonusTeam == NO_TEAM)
 		ePlotBonusTeam = (pPlot->getTeam() == eAttackTeam ? NO_TEAM : pPlot->getTeam());
 
@@ -366,7 +368,7 @@ int estimateCollateralWeight(CvPlot const* pPlot, TeamTypes eAttackTeam,
 	{
 		if (!pUnit->canDefend(pPlot))
 			continue;
-		if (eDefenceTeam != NO_TEAM && pUnit->getTeam() != eDefenceTeam)
+		if (eDefenseTeam != NO_TEAM && pUnit->getTeam() != eDefenseTeam)
 			continue;
 		if (eAttackTeam != NO_TEAM && pUnit->getTeam() == eAttackTeam)
 			continue;
@@ -405,6 +407,7 @@ void setTradeItem(TradeData* pItem, TradeableItems eItemType, int iData)
 	pItem->m_bOffering = false;
 	pItem->m_bHidden = false;
 }
+
 
 void setListHelp(CvWString& szBuffer, wchar const* szStart, wchar const* szItem,
 	wchar const* szSeparator, bool& bFirst) // advc: bool&

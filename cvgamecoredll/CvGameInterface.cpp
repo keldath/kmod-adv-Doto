@@ -64,7 +64,7 @@ void CvGame::updateColoredPlots()
 			for (int i = 0; i < iPlots; i++)
 			{
 				CvPlot& kPlot = kMap.getPlotByIndex(i);
-				for (PlayerIter<CIV_ALIVE> it; it.hasNext(); ++it)
+				for (PlayerAIIter<CIV_ALIVE> it; it.hasNext(); ++it)
 				{
 					CvPlayerAI const& kPlayer = *it;
 					if (kPlayer.AI_isPlotCitySite(kPlot))
@@ -193,7 +193,7 @@ void CvGame::updateColoredPlots()
 	if (gDLL->getGraphicOption(GRAPHICOPTION_CITY_RADIUS))
 	{
 		//if (kUI.canSelectionListFound())
-		if (pHeadSelectedUnit->canFound()) // advc.004h
+		if (pHeadSelectedUnit->isFound()) // advc.004h
 		{
 			for (int iI = 0; iI < iPlots; iI++)
 			{
@@ -289,7 +289,7 @@ void CvGame::updateColoredPlots()
 		GroupPathFinder sitePath;
 		sitePath.setGroup(*pHeadSelectedUnit->getGroup(), NO_MOVEMENT_FLAGS,
 				7, GC.getMOVE_DENOMINATOR());
-		if (pHeadSelectedUnit->canFound()) // advc.004h: was isFound
+		if (pHeadSelectedUnit->isFound())
 		{
 			for (int i = 0; i < kActivePlayer.AI_getNumCitySites(); i++)
 			{
@@ -1161,8 +1161,7 @@ void CvGame::handleAction(int iAction)
 	if (kAction.getControlType() != NO_CONTROL)
 		doControl((ControlTypes)kAction.getControlType());
 
-	if (gDLL->UI().canDoInterfaceMode((InterfaceModeTypes)
-		kAction.getInterfaceModeType(),
+	if (gDLL->UI().canDoInterfaceMode((InterfaceModeTypes)kAction.getInterfaceModeType(),
 		gDLL->UI().getSelectionList()))
 	{
 		CvUnit* pHeadSelectedUnit = gDLL->UI().getHeadSelectedUnit();
@@ -2264,35 +2263,30 @@ void CvGame::cheatSpaceship() const
 		return; // </advc.007b>
 	//add one space project that is still available
 	CvTeam& kTeam = GET_TEAM(getActiveTeam());
-	for (int i = 0; i < GC.getNumProjectInfos(); i++)
+	FOR_EACH_ENUM2(Project, eProject)
 	{
-		ProjectTypes eProject = (ProjectTypes) i;
-		CvProjectInfo& kProject = GC.getInfo(eProject);
+		CvProjectInfo const& kProject = GC.getInfo(eProject);
 		if (kProject.isSpaceship())
 		{
 			//cheat required projects
-			for (int j = 0; j < GC.getNumProjectInfos(); j++)
+			FOR_EACH_ENUM2(Project, eReqProject)
 			{
-				ProjectTypes eRequiredProject = (ProjectTypes) j;
-				int iNumReqProjects = kProject.getProjectsNeeded(eRequiredProject);
-				while (kTeam.getProjectCount(eRequiredProject) < iNumReqProjects)
+				int iNumReqProjects = kProject.getProjectsNeeded(eReqProject);
+				while (kTeam.getProjectCount(eReqProject) < iNumReqProjects)
 				{
-					kTeam.changeProjectCount(eRequiredProject, 1);
+					kTeam.changeProjectCount(eReqProject, 1);
 				}
 			}
 
 			//cheat required techs
-			TechTypes eRequiredTech = (TechTypes) kProject.getTechPrereq();
+			TechTypes eRequiredTech = kProject.getTechPrereq();
 			if (!kTeam.isHasTech(eRequiredTech))
-			{
 				kTeam.setHasTech(eRequiredTech, true, getActivePlayer(), true, true);
-			}
 
 			//cheat one space component
 			if (kTeam.getProjectCount(eProject) < kProject.getMaxTeamInstances())
 			{
 				kTeam.changeProjectCount(eProject, 1);
-
 				CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_PYTHON_SCREEN, eProject);
 				pInfo->setText(L"showSpaceShip");
 				gDLL->UI().addPopup(pInfo, getActivePlayer());
@@ -2370,17 +2364,15 @@ CivilopediaWidgetShowTypes CvGame::getWidgetShow(ImprovementTypes eImprovement) 
 VictoryTypes CvGame::getSpaceVictory() const
 {
 	VictoryTypes eVictory = NO_VICTORY;
-	for (int i=0; i < GC.getNumProjectInfos(); i++)
+	FOR_EACH_ENUM(Project)
 	{
-		ProjectTypes eProject = (ProjectTypes) i;
-		if (GC.getInfo(eProject).isSpaceship())
+		if (GC.getInfo(eLoopProject).isSpaceship())
 		{
-			eVictory = (VictoryTypes) GC.getInfo(eProject).getVictoryPrereq();
+			eVictory = GC.getInfo(eLoopProject).getVictoryPrereq();
 			break;
 		}
 	}
-
-	FAssertMsg(eVictory != NO_VICTORY, "Invalid space victory type.");
+	FAssertMsg(eVictory != NO_VICTORY, "Invalid space victory type");
 	return eVictory;
 }
 

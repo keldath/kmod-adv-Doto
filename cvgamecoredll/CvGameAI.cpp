@@ -38,7 +38,7 @@ void CvGameAI::AI_init()
 void CvGameAI::AI_initScenario()
 {
 	// Citizens not properly assigned
-	for (PlayerIter<ALIVE> it; it.hasNext(); ++it)
+	for (PlayerAIIter<ALIVE> it; it.hasNext(); ++it)
 	{
 		FOR_EACH_CITYAI_VAR(c, *it)
 		{
@@ -52,7 +52,7 @@ void CvGameAI::AI_initScenario()
 			c->AI_assignWorkingPlots();
 		}
 	}
-	for (TeamIter<MAJOR_CIV> it; it.hasNext(); ++it)
+	for (TeamAIIter<MAJOR_CIV> it; it.hasNext(); ++it)
 		it->uwai().turnPre();
 } // </advc.104u>
 
@@ -106,21 +106,18 @@ void CvGameAI::AI_reset(/* advc (as in CvGame): */ bool bConstructor)
 
 void CvGameAI::AI_makeAssignWorkDirty()
 {
-	for (int iI = 0; iI < MAX_PLAYERS; iI++)
+	for (PlayerIter<ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
-		if (GET_PLAYER((PlayerTypes)iI).isAlive())
-			GET_PLAYER((PlayerTypes)iI).AI_makeAssignWorkDirty();
+		itPlayer->AI_makeAssignWorkDirty();
 	}
 }
 
 
 void CvGameAI::AI_updateAssignWork()
 {
-	for (int iI = 0; iI < MAX_PLAYERS; iI++)
+	for (PlayerAIIter<HUMAN> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
-		CvPlayerAI& kLoopPlayer = GET_PLAYER((PlayerTypes)iI);
-		if (GET_TEAM(kLoopPlayer.getTeam()).isHuman() && kLoopPlayer.isAlive())
-			kLoopPlayer.AI_updateAssignWork();
+		itPlayer->AI_updateAssignWork();
 	}
 }
 
@@ -158,7 +155,7 @@ int CvGameAI::AI_turnsPercent(int iTurns, int iPercent)
 scaled CvGameAI::AI_getCurrEraFactor() const
 {
 	scaled r;
-	PlayerIter<CIV_ALIVE> it;
+	PlayerAIIter<CIV_ALIVE> it;
 	for (; it.hasNext(); ++it)
 		r += it->AI_getCurrEraFactor();
 	int const iCount = it.nextIndex();

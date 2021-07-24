@@ -14,11 +14,10 @@ public: // All the const functions are exposed to Python
 	CvOrganizationInfo();
 
 	wchar getChar() const; // advc: return wchar (not int)
-//TGA_INDEXATION -ADVC ADJUSTMENT
-	//void setChar(/* advc: */ wchar wc);
-	inline int getTechPrereq() const { return m_iTechPrereq; } // advc.130f: inline
+	void setChar(/* advc: */ wchar wc);
+	int getTechPrereq() const { return m_iTechPrereq; }
 	int getFreeUnitClass() const;
-	inline int getSpreadFactor() const { return m_iSpreadFactor; } // advc.130f: inline
+	int getSpreadFactor() const { return m_iSpreadFactor; }
 /*************************************************************************************************/
 /** TGA_INDEXATION                          01/21/08                                MRGENIE      */
 /**                                                                                              */
@@ -114,7 +113,7 @@ protected:
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class CvCorporationInfo : public CvOrganizationInfo
 {
-public: // All the const functions are exposed to Python; advc.inl: inlined some getters.
+public: // All the const functions are exposed to Python
 	CvCorporationInfo();
 	virtual ~CvCorporationInfo();
 //TGA_INDEXATION -ADVC ADJUSTMENT
@@ -129,7 +128,7 @@ public: // All the const functions are exposed to Python; advc.inl: inlined some
 	BonusTypes getBonusProduced() const { return m_eBonusProduced; }
 
 	// Array access:
-	inline int getNumPrereqBonuses() const { return m_aePrereqBonuses.size(); }
+	int getNumPrereqBonuses() const { return m_aePrereqBonuses.size(); }
 	BonusTypes getPrereqBonus(int i) const
 	{
 		FAssertBounds(0, getNumPrereqBonuses(), i);

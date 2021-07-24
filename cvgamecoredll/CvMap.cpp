@@ -115,7 +115,7 @@ void CvMap::reset(CvMapInitData* pInitInfo)
 			m_iGridHeight *= GC.getLandscapePlotsPerCellY();
 		}
 	}
-	updatePlotNum(); // advc.opt
+	updateNumPlots(); // advc.opt
 
 	m_iLandPlots = 0;
 	m_iOwnedPlots = 0;
@@ -755,27 +755,9 @@ bool CvMap::findWater(CvPlot const* pPlot, int iRange, bool bFreshWater) // advc
 }
 
 
-bool CvMap::isPlotExternal(int iX, int iY) const // advc.inl
-{
-	return isPlot(iX, iY);
-}
-
-
 int CvMap::numPlotsExternal() const // advc.inl
 {
 	return numPlots();
-}
-
-
-int CvMap::plotX(int iIndex) const
-{
-	return iIndex % getGridWidth();
-}
-
-
-int CvMap::plotY(int iIndex) const
-{
-	return iIndex / getGridWidth();
 }
 
 
@@ -855,18 +837,6 @@ int CvMap::maxTypicalDistance() const
 	scaled r = (kWorld.getGridWidth() * kWorld.getGridHeight() * rCivRatio *
 			rSeaLvlModifier).sqrt() * fixp(3.5) - 5 * iWraps;
 	return std::max(1, r.round());
-}
-
-
-int CvMap::getGridWidthExternal() const // advc.inl
-{
-	return getGridWidth();
-}
-
-
-int CvMap::getGridHeightExternal() const // advc.inl
-{
-	return getGridHeight();
 }
 
 
@@ -979,12 +949,6 @@ void CvMap::changeNumBonusesOnLand(BonusTypes eIndex, int iChange)
 CvPlot* CvMap::plotByIndexExternal(int iIndex) const // advc.inl
 {
 	return plotByIndex(iIndex);
-}
-
-
-CvPlot* CvMap::plotExternal(int iX, int iY) const // advc.inl
-{
-	return plot(iX, iY);
 }
 
 
@@ -1181,7 +1145,7 @@ void CvMap::read(FDataStreamBase* pStream)
 	// <advc.opt>
 	if (uiFlag >= 3)
 		pStream->Read((int*)&m_ePlots);
-	else updatePlotNum(); // </advc.opt>
+	else updateNumPlots(); // </advc.opt>
 	pStream->Read(&m_iLandPlots);
 	pStream->Read(&m_iOwnedPlots);
 	pStream->Read(&m_iTopLatitude);
@@ -1293,7 +1257,7 @@ void CvMap::rebuild(int iGridW, int iGridH, int iTopLatitude, int iBottomLatitud
 }
 
 // advc.opt:
-void CvMap::updatePlotNum()
+void CvMap::updateNumPlots()
 {
 	m_ePlots = (PlotNumTypes)(getGridWidth() * getGridHeight());
 }

@@ -24,7 +24,7 @@ protected:
 
 	void setDefaults();
 
-	bool checkBounds(int iValue, int iLower, int iUpper) const // advc.inl
+	bool checkBounds(int iValue, int iLower, int iUpper) const
 	{
 		return (iLower <= iValue && iValue < iUpper);
 	}
@@ -133,7 +133,7 @@ public:
 	DllExport bool getVictory(VictoryTypes eVictory) const;
 	DllExport void setVictory(VictoryTypes eVictory, bool bVictory);
 
-	DllExport inline bool getOption(GameOptionTypes eIndex) const { return m_abOptions.get(eIndex); }
+	DllExport bool getOption(GameOptionTypes eIndex) const { return m_abOptions.get(eIndex); }
 	DllExport void setOption(GameOptionTypes eIndex, bool bOption);
 
 	DllExport bool getMPOption(MultiplayerOptionTypes eIndex) const { return m_abMPOptions.get(eIndex); }
@@ -145,7 +145,7 @@ public:
 	DllExport bool getForceControl(ForceControlTypes eIndex) const { return m_abForceControls.get(eIndex); }
 	DllExport void setForceControl(ForceControlTypes eIndex, bool bForceControl);
 
-	inline int getGameTurn() const { return m_iGameTurn; } // advc.inl
+	int getGameTurn() const { return m_iGameTurn; }
 	void setGameTurn(int iGameTurn) { m_iGameTurn = iGameTurn; }
 
 	int getMaxTurns() const { return m_iMaxTurns; }
@@ -377,7 +377,7 @@ protected:
 	EnumMap<PlayerTypes,bool> m_abMinorNationCiv;
 
 	// Unsaved player data
-	EnumMapDefault<PlayerTypes,int,-1> m_aiNetID;
+	EnumMap<PlayerTypes,int,-1> m_aiNetID;
 	EnumMap<PlayerTypes,bool> m_abReady;
 
 	CvString* m_aszPythonCheck;

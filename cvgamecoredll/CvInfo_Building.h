@@ -16,34 +16,34 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class CvBuildingClassInfo : public CvInfoBase
 {
-public: // All the const functions are exposed to Python; advc.inl: Inlined most of them.
+public: // All the const functions are exposed to Python
 	CvBuildingClassInfo();
-	
-	inline int getMaxGlobalInstances() const
+
+	int getMaxGlobalInstances() const
 	{
 		return m_iMaxGlobalInstances;
 	}
-	inline bool isWorldWonder() const // advc.003w: Replacing global isWorldWonderClass
+	bool isWorldWonder() const // advc.003w: Replacing global isWorldWonderClass
 	{
 		return (getMaxGlobalInstances() != -1);
 	}
-	inline int getMaxTeamInstances() const
+	int getMaxTeamInstances() const
 	{
 		return m_iMaxTeamInstances;
 	}
-	inline bool isTeamWonder() const // advc.003w: Replacing global isTeamWonderClass
+	bool isTeamWonder() const // advc.003w: Replacing global isTeamWonderClass
 	{
 		return (getMaxTeamInstances() != -1);
 	}
-	inline int getMaxPlayerInstances() const
+	int getMaxPlayerInstances() const
 	{
 		return m_iMaxPlayerInstances;
 	}
-	inline bool isNationalWonder() const // advc.003w: Replacing global isNationalWonderClass
+	bool isNationalWonder() const // advc.003w: Replacing global isNationalWonderClass
 	{
 		return (getMaxPlayerInstances() != -1);
 	}
-	inline bool isLimited() const // advc.003w: Replacing global isLimitedWonderClass
+	bool isLimited() const // advc.003w: Replacing global isLimitedWonderClass
 	{
 		return (isWorldWonder() || isTeamWonder() || isNationalWonder());
 	}
@@ -85,33 +85,31 @@ protected:
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class CvBuildingInfo : public CvHotkeyInfo
 {
-public: /*	All the const functions are exposed to Python. advc.inl: Inlined most of those.
-			Integers in signatures replaced with enum types (except for most of the array
-			accessors - tbd.). */
+	// <advc.tag>
+	typedef CvHotkeyInfo base_t;
+protected:
+	void addElements(ElementList& kElements) const
+	{
+		base_t::addElements(kElements);
+		kElements.addInt(RaiseDefense, "RaiseDefense"); // advc.004c
+	}
+public:
+	enum IntElementTypes
+	{
+		RaiseDefense = base_t::NUM_INT_ELEMENT_TYPES, // advc.004c
+		NUM_INT_ELEMENT_TYPES
+	};
+	int get(IntElementTypes e) const
+	{
+		return base_t::get(static_cast<base_t::IntElementTypes>(e));
+	} // </advc.tag>
+
+	/*	All the const functions are exposed to Python.
+		Integers in signatures replaced with enum types. */
 	CvBuildingInfo();
 //doto left for compatability - i need to convert my mods code to advc style
 	~CvBuildingInfo();
-	// <advc.tag>
-	enum IntElementTypes
-	{
-		RaiseDefense = CvHotkeyInfo::NUM_INT_ELEMENT_TYPES, // advc.004c
-		NUM_INT_ELEMENT_TYPES
-	};
-	enum BoolElementTypes // unused so far
-	{
-		NUM_BOOL_ELEMENT_TYPES = CvHotkeyInfo::NUM_BOOL_ELEMENT_TYPES
-	};
-	using CvXMLInfo::get; // unhide
-	__forceinline int get(IntElementTypes e) const
-	{
-		return get(static_cast<CvXMLInfo::IntElementTypes>(e));
-	}
-	__forceinline int get(BoolElementTypes e) const
-	{
-		return get(static_cast<CvXMLInfo::BoolElementTypes>(e));
-	} // </advc.tag>
-
-	inline BuildingClassTypes getBuildingClassType() const
+	BuildingClassTypes getBuildingClassType() const
 	{
 		return m_eBuildingClassType;
 	}
@@ -272,7 +270,7 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 	//original - keldath
 	//int getFreeSpecificTech() const;
 /*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
-	inline int getDefenseModifier() const { return m_iDefenseModifier; }
+	int getDefenseModifier() const { return m_iDefenseModifier; }
 	int getBombardDefenseModifier() const { return m_iBombardDefenseModifier; }
 	int getAllCityDefenseModifier() const { return m_iAllCityDefenseModifier; }
 	int getEspionageDefenseModifier() const { return m_iEspionageDefenseModifier; }
@@ -341,8 +339,8 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 	DEF_INFO_ENUM_MAP(DomainFreeExperience, Domain, char, ShortEnumMap);
 	DEF_INFO_ENUM_MAP(DomainProductionModifier, Domain, short, ShortEnumMap);
 
-	inline int getNumPrereqAndTechs() const { return m_aePrereqAndTechs.size(); }
-	inline int getNumPrereqOrBonuses() const { return m_aePrereqOrBonuses.size(); }
+	int getNumPrereqAndTechs() const { return m_aePrereqAndTechs.size(); }
+	int getNumPrereqOrBonuses() const { return m_aePrereqOrBonuses.size(); }
 	TechTypes getPrereqAndTechs(int i) const
 	{
 		FAssertBounds(0, getNumPrereqAndTechs(), i);
@@ -377,19 +375,19 @@ public: /*	All the const functions are exposed to Python. advc.inl: Inlined most
 	int getYieldProduced(int i) const;
 	// /Doto-davidlallen: building bonus yield, commerce end
 	// <advc.003w> for convenience
-	inline bool isWorldWonder() const
+	bool isWorldWonder() const
 	{
 		return GC.getInfo(getBuildingClassType()).isWorldWonder();
 	}
-	inline bool isTeamWonder() const
+	bool isTeamWonder() const
 	{
 		return GC.getInfo(getBuildingClassType()).isTeamWonder();
 	}
-	inline bool isNationalWonder() const
+	bool isNationalWonder() const
 	{
 		return GC.getInfo(getBuildingClassType()).isNationalWonder();
 	}
-	inline bool isLimited() const
+	bool isLimited() const
 	{
 		return GC.getInfo(getBuildingClassType()).isLimited();
 	} // </advc.003w>
@@ -588,13 +586,7 @@ protected:
 	int m_iBonusConsumed;
 	int* m_paiCommerceProduced;
 	int* m_paiYieldProduced;
-	//Doto-davidlallen: building bonus yield, commerce end
-	// UNOFFICIAL_PATCH, Efficiency, 06/27/10, Afforess & jdog5000: START
-	bool m_bAnySpecialistYieldChange;
-	bool m_bAnyBonusYieldModifier;
-	// UNOFFICIAL_PATCH: END
-
-	void addElements(std::vector<XMLElement*>& r) const; // advc.tag
+//Doto-davidlallen: building bonus yield, commerce end
 	// <advc.310>
 	static bool m_bEnabledAreaBorderObstacle;
 	static bool m_bEnabledAreaTradeRoutes;
@@ -607,7 +599,7 @@ protected:
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class CvSpecialBuildingInfo : public CvInfoBase
 {
-public: // All the const functions are exposed to Python. advc.inl: Inlined the non-array getters.
+public: // All the const functions are exposed to Python
 	CvSpecialBuildingInfo();
 
 	TechTypes getObsoleteTech() const { return m_eObsoleteTech; }
@@ -715,38 +707,38 @@ protected:
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class CvProjectInfo : public CvInfoBase
 {
-public: // All const functions are exposed to Python. advc.inl: Most of them inlined.
+public: // All const functions are exposed to Python
 	CvProjectInfo();
 
-	int getVictoryPrereq() const
+	VictoryTypes getVictoryPrereq() const
 	{
-		return m_iVictoryPrereq;
+		return m_eVictoryPrereq;
 	}
-	int getTechPrereq() const
+	TechTypes getTechPrereq() const
 	{
-		return m_iTechPrereq;
+		return m_eTechPrereq;
 	}
-	int getAnyoneProjectPrereq() const
+	ProjectTypes getAnyoneProjectPrereq() const
 	{
-		return m_iAnyoneProjectPrereq;
+		return m_eAnyoneProjectPrereq;
 	}
-	inline int getMaxGlobalInstances() const
+	int getMaxGlobalInstances() const
 	{
 		return m_iMaxGlobalInstances;
 	}
-	inline bool isWorldProject() const // advc.003w: Replacing global isWorldProject(ProjectTypes)
+	bool isWorldProject() const // advc.003w: Replacing global isWorldProject(ProjectTypes)
 	{
 		return (getMaxGlobalInstances() != -1);
 	}
-	inline int getMaxTeamInstances() const
+	int getMaxTeamInstances() const
 	{
 		return m_iMaxTeamInstances;
 	}
-	inline bool isTeamProject() const // advc.003w: Replacing global isTeamProject(ProjectTypes)
+	bool isTeamProject() const // advc.003w: Replacing global isTeamProject(ProjectTypes)
 	{
 		return (getMaxTeamInstances() != -1);
 	}
-	inline bool isLimited() const // advc.003w: Replacing global isLimitedProject(ProjectTypes)
+	bool isLimited() const // advc.003w: Replacing global isLimitedProject(ProjectTypes)
 	{
 		return (isWorldProject() || isTeamProject());
 	} 
@@ -758,6 +750,7 @@ public: // All const functions are exposed to Python. advc.inl: Most of them inl
 	{
 		return m_iNukeInterception;
 	}
+	// advc/ kekm38 (note): This returns a player count (not a player id)
 	int getTechShare() const
 	{
 		return m_iTechShare;
@@ -768,13 +761,13 @@ public: // All const functions are exposed to Python. advc.inl: Most of them inl
     int getNumCitiesMaintenanceModifier() const;
     int getConnectedCityMaintenanceModifier() const;
     //Doto-DPII < Maintenance Modifier >
-	int getEveryoneSpecialUnit() const
+	SpecialUnitTypes getEveryoneSpecialUnit() const
 	{
-		return m_iEveryoneSpecialUnit;
+		return m_eEveryoneSpecialUnit;
 	}
-	int getEveryoneSpecialBuilding() const
+	SpecialBuildingTypes getEveryoneSpecialBuilding() const
 	{
-		return m_iEveryoneSpecialBuilding;
+		return m_eEveryoneSpecialBuilding;
 	}
 	int getVictoryDelayPercent() const
 	{
@@ -813,9 +806,9 @@ public: // All const functions are exposed to Python. advc.inl: Most of them inl
 	bool readPass2(CvXMLLoadUtility* pXML);
 
 protected:
-	int m_iVictoryPrereq;
-	int m_iTechPrereq;
-	int m_iAnyoneProjectPrereq;
+	VictoryTypes m_eVictoryPrereq;
+	TechTypes m_eTechPrereq;
+	ProjectTypes m_eAnyoneProjectPrereq;
 	int m_iMaxGlobalInstances;
 	int m_iMaxTeamInstances;
 	int m_iProductionCost;
@@ -827,8 +820,8 @@ protected:
 	int m_iNumCitiesMaintenanceModifier;
 	int m_iConnectedCityMaintenanceModifier;
 	//Doto-DPII < Maintenance Modifiers >
-	int m_iEveryoneSpecialUnit;
-	int m_iEveryoneSpecialBuilding;
+	SpecialUnitTypes m_eEveryoneSpecialUnit;
+	SpecialBuildingTypes m_eEveryoneSpecialBuilding;
 	int m_iVictoryDelayPercent;
 	int m_iSuccessRate;
 // Doto-davidlallen: project civilization and free unit start

@@ -3,8 +3,10 @@
 #ifndef CVENUMS_h
 #define CVENUMS_h
 
-/*  advc (note): All enums in this file are -probably- exposed to Python through
-	CyEnumsInterface.cpp -- unless a comment states otherwise */
+/*  advc (note): All enum types in this file are -probably- exposed to Python
+	through CyEnumsInterface.cpp -- unless a comment states otherwise. Also,
+	the EXE might use any of the enum types (no DllExport needed), so
+	enumerators should generally only be added to the end of an enum definition. */
 // <advc.enum>
 #include "CvInfoEnums.h"
 /*************************************************************************************************/
@@ -82,12 +84,25 @@ enum FlavorTypes
 		means that it was impossible to base AI code on FLAVOR_ESPIONAGE. */
 	FLAVOR_ESPIONAGE,
 };
-// advc.enum (cf. CvMap::plotNum)
+// <advc.enum> (cf. CvMap::plotNum)
+/*	2 byte (short) allow for at most 256*128 tiles (or 181*181).
+	Larger maps really aren't playable, but let's allow them
+	if the civ limit has been increased by a lot. */
+typedef
+	#if MAX_CIV_PLAYERS >= 32
+		int
+	#else
+		short
+	#endif
+		PlotNumInt;
 enum PlotNumTypes
 {
-	NO_PLOT_NUM = -1
+	NO_PLOT_NUM = -1,
+	// -1 allows checking bounds through less-than w/o overflow
+	MAX_PLOT_NUM = integer_limits<PlotNumInt>::max - 1
 };
-DEFINE_INCREMENT_OPERATORS(PlotNumTypes)
+DEFINE_INCREMENT_OPERATORS(PlotNumTypes);
+// </advc.enum>
 
 ENUM_START(GameState, GAMESTATE)
 	GAMESTATE_ON,
@@ -1841,6 +1856,8 @@ enum ChatTargetTypes
 	CHATTARGET_TEAM = -3,
 };
 
+/*	advc (note): Nonnegative values are reserved for team votes
+	(i.e. players electing one team to become e.g. Secretary General). */
 enum PlayerVoteTypes
 {
 	NO_PLAYER_VOTE_CHECKED = -6,

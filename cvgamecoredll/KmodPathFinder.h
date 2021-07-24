@@ -31,29 +31,29 @@ class PathNodeBase
 {
 public:
 	PathNodeBase(); // public - to avoid a compiler warning (c4610), but w/o implementation.
-	__forceinline bool isState(PathNodeState eState) const
+	bool isState(PathNodeState eState) const
 	{
 		return (m_iState == eState);
 	}
-	__forceinline void setState(PathNodeState eState)
+	void setState(PathNodeState eState)
 	{
 		m_iState = static_cast<char>(eState);
 	}
 	/*	Consistent with a getPlot function added to FAStarNode.
 		To make PathNodes and FAStarNodes interchangeable as template parameters. */
-	__forceinline CvPlot& getPlot() const
+	CvPlot& getPlot() const
 	{
 		return *m_pPlot;
 	}
-	__forceinline void setPlot(CvPlot& kPlot)
+	void setPlot(CvPlot& kPlot)
 	{
 		m_pPlot = &kPlot;
 	}
-	__forceinline int getPathLength() const
+	int getPathLength() const
 	{
 		return m_iPathLength;
 	}
-	__forceinline void setPathLength(int iPathLength)
+	void setPathLength(int iPathLength)
 	{
 		m_iPathLength = iPathLength;
 	}
@@ -61,6 +61,7 @@ protected:
 	CvPlot* m_pPlot; // FAStarNode::m_iX, m_iY in K-MMod
 	int m_iPathLength; // FAStarNode::m_iData2 in K-Mod
 public: // Keeping these public (for now) for interchangeability with FAStarNode
+	// Path costs need to have a fairly high resolution; short int won't do.
 	int m_iTotalCost;
 	int m_iKnownCost;
 	int m_iHeuristicCost;
@@ -99,10 +100,10 @@ public:
 	/*	KmodPathFinder will only consider paths of this length or shorter.
 		It's up to updatePathData to compute the length and to store it
 		at the given node. */
-	inline int getMaxPath() const { return m_iMaxPath; }
+	int getMaxPath() const { return m_iMaxPath; }
 	/*	If this function is replaced, then initializePathData should be replaced
 		as well. */
-	inline int initialPathLength() const { return 1; }
+	int initialPathLength() const { return 1; }
 protected:
 	/*	Derived classes have to have a 0-argument constructor that will get called
 		when KmodPathFinder is instantiated. */
@@ -149,7 +150,7 @@ public:
 		FErrorMsg("Should've been hidden by a derived-class member");
 		return false;
 	}
-	inline bool isValidDest(CvPlot const& kStart, CvPlot const& kDest) const
+	bool isValidDest(CvPlot const& kStart, CvPlot const& kDest) const
 	{
 		FErrorMsg("Should've been hidden by a derived-class member");
 		return false;
@@ -179,7 +180,7 @@ public:
 		The new path length shouldn't be smaller than the old (kParent)
 		path length.
 		Should return true if any kNode data was changed, false otherwise. */
-	inline bool updatePathData(Node& kNode, Node const& kParent) const
+	bool updatePathData(Node& kNode, Node const& kParent) const
 	{
 		kNode.setPathLength(kParent.getPathLength() + 1); // uniform
 		return true;
@@ -188,7 +189,7 @@ public:
 		Note that the initialPathLength call is not polymorphic,
 		so derived classes that wish to change the initial path length will
 		have to replace both initialPathLength and initializePathData. */
-	inline void initializePathData(Node& kNode) const
+	void initializePathData(Node& kNode) const
 	{
 		kNode.setPathLength(initialPathLength());
 	}
@@ -196,7 +197,7 @@ public:
 		from a previous pathfinder call. Returning false will cause the
 		pathfinder's node data to be reset. Don't check kStart.getPathLength();
 		KmodPathFinder handles that. */
-	inline bool canReuseInitialPathData(Node const& kStart) const
+	bool canReuseInitialPathData(Node const& kStart) const
 	{
 		return true;
 	}
@@ -220,27 +221,48 @@ protected:
 		typedef std::vector<Node*> container_t;
 		typedef typename container_t::iterator iterator;
 		typedef typename container_t::const_iterator const_iterator;
-		inline const_iterator begin() const
+		const_iterator begin() const
 		{
 			return m_nodes.begin();
 		}
-		inline const_iterator end() const
+		const_iterator end() const
 		{
 			return m_nodes.end();
 		}
-		inline iterator begin()
+		iterator begin()
 		{
 			return m_nodes.begin();
 		}
-		inline iterator end()
+		iterator end()
 		{
 			return m_nodes.end();
 		}
-		inline void reserve(int iCapacity)
+		/*	Backwards traversal doesn't seem to help with branch prediction.
+			Was worth a try. NB: Will have to call close(--it.base())
+			when using a reverse iterator. */
+		/*typedef typename container_t::reverse_iterator reverse_iterator;
+		typedef typename container_t::const_reverse_iterator const_reverse_iterator;
+		const_reverse_iterator rbegin() const
+		{
+			return m_nodes.rbegin();
+		}
+		const_reverse_iterator rend() const
+		{
+			return m_nodes.rend();
+		}
+		reverse_iterator rbegin()
+		{
+			return m_nodes.rbegin();
+		}
+		reverse_iterator rend()
+		{
+			return m_nodes.rend();
+		}*/
+		void reserve(int iCapacity)
 		{
 			m_nodes.reserve(iCapacity);
 		}
-		inline void clear() // Does not change the state of any nodes
+		void clear() // Does not change the state of any nodes
 		{
 			/*	This erases every element. So does resize(0).
 				The only way to avoid this, I think, would be to use a raw array
@@ -248,14 +270,14 @@ protected:
 			m_nodes.clear();
 		}
 		// These functions do change the state of nodes (hence the names) ...
-		inline void open(Node& kNode)
+		void open(Node& kNode)
 		{
 			m_nodes.push_back(&kNode);
 			// Inefficient to add the same node multiple times
 			//FAssert(!kNode.isState(PATHNODE_OPEN)); // (Seems to work; can stop checking.)
 			kNode.setState(PATHNODE_OPEN);
 		}
-		inline void close(iterator pos)
+		void close(iterator pos)
 		{
 			Node& kNode = **pos;
 			FAssert(kNode.isState(PATHNODE_OPEN));
@@ -289,16 +311,16 @@ protected:
 	class NodeMap
 	{
 	public:
-		inline NodeMap(PlotNumTypes eMaxPlots) : m_eMaxPlots(eMaxPlots), m_bDirty(true)
+		NodeMap(PlotNumTypes eMaxPlots) : m_eMaxPlots(eMaxPlots), m_bDirty(true)
 		{
 			m_data = new byte[numBytes()];
 			reset();
 		}
-		inline ~NodeMap()
+		~NodeMap()
 		{
 			delete[] m_data;
 		}
-		inline Node& get(PlotNumTypes ePlot)
+		Node& get(PlotNumTypes ePlot)
 		{
 			return reinterpret_cast<Node*>(m_data)[ePlot];
 		}
@@ -318,7 +340,7 @@ protected:
 			}
 			m_bDirty = false;
 		}
-		inline void setDirty(bool bDirty)
+		void setDirty(bool bDirty)
 		{
 			m_bDirty = bDirty;
 		}
@@ -327,7 +349,7 @@ protected:
 		PlotNumTypes m_eMaxPlots;
 		bool m_bDirty; // advc.opt: Make sure we're not resetting unnecessarily
 
-		inline int numBytes()
+		int numBytes()
 		{
 			return sizeof(Node) * m_eMaxPlots;
 		}
@@ -337,7 +359,7 @@ protected:
 public:
 	/*	It's up to the derived classes to define a function for setting up m_stepMetric.
 		This constructor will only call the StepMetric default constructor. */
-	inline KmodPathFinder()
+	KmodPathFinder()
 	:	m_pStart(NULL), m_pDest(NULL),
 		/*	K-Mod: [...] Ideally the pathfinder would be initialised with a given CvMap
 			and then not refer to any global objects. [...] */
@@ -351,7 +373,7 @@ public:
 	void resetNodes();
 	bool generatePath(CvPlot const& kStart, CvPlot const& kDest);
 	bool isPathComplete() const { return (m_pEndNode != NULL); }
-	inline int getPathLength() const // advc: Was "getPathTurns"; too specific.
+	int getPathLength() const // advc: Was "getPathTurns"; too specific.
 	{
 		return m_pEndNode->getPathLength();
 	}
@@ -373,6 +395,9 @@ protected:
 
 	void recalculateHeuristics();
 	bool processNode();
+	// <advc> Cut out of process node
+	void processChild(Node& kParentNode,
+			CvPlot const& kParentPlot, CvPlot& kChildPlot); // </advc>
 	void forwardPropagate(Node& kHead, int iCostDelta);
 	//void addStartNode(); // advc: Better not to put that in a subroutine
 	// advc: Moved into NodeMap
@@ -448,7 +473,7 @@ bool KmodPathFinder<StepMetric,Node>::generatePath(
 	m_pStart = &kStart;
 	m_pDest = &kDest;
 	{
-		Node& kStartNode = m_pNodeMap->get(m_kMap.plotNum(kStart));
+		Node& kStartNode = m_pNodeMap->get(kStart.plotNum());
 		if (!kStartNode.isState(PATHNODE_UNINITIALIZED))
 		{
 			if (m_stepMetric.canReuseInitialPathData(kStartNode))
@@ -483,7 +508,7 @@ bool KmodPathFinder<StepMetric,Node>::generatePath(
 			to that destination remains open. */
 	}
 	{
-		Node& kDestNode = m_pNodeMap->get(m_kMap.plotNum(kDest));
+		Node& kDestNode = m_pNodeMap->get(kDest.plotNum());
 		if (!kDestNode.isState(PATHNODE_UNINITIALIZED))
 			m_pEndNode = &kDestNode;
 		/*	advc (note): If kDestNode is closed, then it could be that we've
@@ -544,7 +569,8 @@ bool KmodPathFinder<StepMetric,Node>::processNode()
 	OpenList::iterator itBest = m_openList.end();
 	{
 		int iLowestCost = (m_pEndNode != NULL ? m_pEndNode->m_iKnownCost : MAX_INT);
-		for (OpenList::iterator it = m_openList.begin(); it != m_openList.end(); ++it)
+		for (OpenList::iterator it = m_openList.begin();
+			it != m_openList.end(); ++it)
 		{
 			Node const& kNode = **it;
 			if (kNode.m_iTotalCost < iLowestCost &&
@@ -568,95 +594,104 @@ bool KmodPathFinder<StepMetric,Node>::processNode()
 	// Open a new node for each direction coming off the chosen node
 	FOR_EACH_ADJ_PLOT_VAR2(pChildPlot, kParentPlot)
 	{
-		if (kParent.m_pParent != NULL && pChildPlot == &kParent.m_pParent->getPlot())
-			continue; // don't backtrack
-		// advc: Moved up; no functional difference.
-		if (!m_stepMetric.isValidStep(kParentPlot, *pChildPlot))
-			continue; // Can't get to the plot from here
-		Node& kChild = m_pNodeMap->get(m_kMap.plotNum(*pChildPlot));
-		bool const bNewNode = kChild.isState(PATHNODE_UNINITIALIZED);
-		if (bNewNode) // (advc: No point in opening a node more than once)
-		{
-			// This path to the new node is valid. So we need to fill in the data.
-			//pathAdd(parent_node, child_node, ASNC_NEWADD, &settings, NULL); // K-Mod
-			kChild.setPlot(*pChildPlot);
-			m_stepMetric.updatePathData(kChild, kParent);
-			kChild.m_iKnownCost = MAX_INT;
-			kChild.m_iHeuristicCost = m_stepMetric.heuristicCost(
-					*pChildPlot, *m_pDest);
-			// Total cost will be set when the parent is set
-			if (m_stepMetric.canStepThrough(*pChildPlot, kChild))
-				m_openList.open(kChild);
-			else
-			{	// This node is a dead end
-				/*	(advc: Which is to say, we can never enter it, not even on a
-					later call to generatePath - except if it is the destination;
-					that remains to be checked.) */
-				kChild.setState(PATHNODE_CLOSED);
-			}
-		}
-		if (pChildPlot == m_pDest)
-		{
-			// We've found our destination but still need to finish our calculations
-			m_pEndNode = &kChild;
-		}
-		if (kParent.m_iKnownCost >= kChild.m_iKnownCost)
-			continue; // There must already be a faster route to the child
-
-		int const iNewCost = kParent.m_iKnownCost + m_stepMetric.cost(
-				//parent_node, child_node, 666, &settings, NULL); // K-Mod
-				kParentPlot, *pChildPlot, kParent);
-		FAssert(iNewCost > 0);
-		if (iNewCost >= kChild.m_iKnownCost)
-			continue;
-		// New minus old; negative value.
-		int const iCostDelta = iNewCost - kChild.m_iKnownCost;
-
-		kChild.m_iKnownCost = iNewCost;
-		kChild.m_iTotalCost = kChild.m_iKnownCost + kChild.m_iHeuristicCost;
-
-		// Remove child from the list of the previous parent
-		if (kChild.m_pParent != NULL)
-		{
-			FAssert(!bNewNode);
-			Node& kOldParent = *kChild.m_pParent;
-			#ifdef FASSERT_ENABLE
-			int iTemp = kOldParent.m_iNumChildren;
-			#endif
-			/*	kOldParent just lost one of its children.
-				We have to break the news to them.
-				This would easier if we had STL instead of bog arrays.
-				[advc: Could use a vector, but since karadoc has already
-				worked it out ...] */
-			for (int j = 0; j < kOldParent.m_iNumChildren; j++)
-			{
-				if (kOldParent.m_apChildren[j] == &kChild)
-				{	// Found it
-					for (j++; j < kOldParent.m_iNumChildren; j++)
-						kOldParent.m_apChildren[j - 1] = kOldParent.m_apChildren[j];
-					// Not necessary, but easy enough to keep things neat.
-					kOldParent.m_apChildren[j - 1] = 0;
-					kOldParent.m_iNumChildren--;
-				}
-			}
-			FAssert(kOldParent.m_iNumChildren == iTemp - 1);
-			// Recalculate movement points
-			//pathAdd(parent_node, child_node, ASNC_PARENTADD_UP, &settings, NULL);
-			m_stepMetric.updatePathData(kChild, kParent);
-		}
-
-		// Add child to the list of the new parent
-		FAssertBounds(0, NUM_DIRECTION_TYPES, kParent.m_iNumChildren);
-		kParent.m_apChildren[kParent.m_iNumChildren] = &kChild;
-		kParent.m_iNumChildren++;
-		kChild.m_pParent = &kParent;
-
-		// Update the new (reduced) costs for all the grandchildren.
-		FAssert(kChild.m_iNumChildren == 0 || !bNewNode);
-		forwardPropagate(kChild, iCostDelta);
-		FAssert(kChild.m_iKnownCost > kParent.m_iKnownCost);
+		processChild(kParent, kParentPlot, *pChildPlot);
 	}
 	return true;
+}
+
+template<class StepMetric, class Node>
+// advc: Cut out of processNode - but I think the compiler should leave it there.
+__forceinline
+void KmodPathFinder<StepMetric,Node>::processChild(
+	Node& kParent, CvPlot const& kParentPlot, CvPlot& kChildPlot)
+{
+	if (kParent.m_pParent != NULL && &kChildPlot == &kParent.m_pParent->getPlot())
+		return; // don't backtrack
+	// advc: Moved up; no functional difference.
+	if (!m_stepMetric.isValidStep(kParentPlot, kChildPlot))
+		return; // Can't get to the plot from here
+	Node& kChild = m_pNodeMap->get(kChildPlot.plotNum());
+	bool const bNewNode = kChild.isState(PATHNODE_UNINITIALIZED);
+	if (bNewNode) // (advc: No point in opening a node more than once)
+	{
+		// This path to the new node is valid. So we need to fill in the data.
+		//pathAdd(parent_node, child_node, ASNC_NEWADD, &settings, NULL); // K-Mod
+		kChild.setPlot(kChildPlot);
+		m_stepMetric.updatePathData(kChild, kParent);
+		kChild.m_iKnownCost = MAX_INT;
+		kChild.m_iHeuristicCost = m_stepMetric.heuristicCost(
+				kChildPlot, *m_pDest);
+		// Total cost will be set when the parent is set
+		if (m_stepMetric.canStepThrough(kChildPlot, kChild))
+			m_openList.open(kChild);
+		else
+		{	// This node is a dead end
+			/*	(advc: Which is to say, we can never enter it, not even on a
+				later call to generatePath - except if it is the destination;
+				that remains to be checked.) */
+			kChild.setState(PATHNODE_CLOSED);
+		}
+	}
+	if (&kChildPlot == m_pDest)
+	{
+		// We've found our destination but still need to finish our calculations
+		m_pEndNode = &kChild;
+	}
+	if (kParent.m_iKnownCost >= kChild.m_iKnownCost)
+		return; // There must already be a faster route to the child
+
+	int const iNewCost = kParent.m_iKnownCost + m_stepMetric.cost(
+			//parent_node, child_node, 666, &settings, NULL); // K-Mod
+			kParentPlot, kChildPlot, kParent);
+	FAssert(iNewCost > 0);
+	if (iNewCost >= kChild.m_iKnownCost)
+		return;
+	// New minus old; negative value.
+	int const iCostDelta = iNewCost - kChild.m_iKnownCost;
+
+	kChild.m_iKnownCost = iNewCost;
+	kChild.m_iTotalCost = kChild.m_iKnownCost + kChild.m_iHeuristicCost;
+
+	// Remove child from the list of the previous parent
+	if (kChild.m_pParent != NULL)
+	{
+		FAssert(!bNewNode);
+		Node& kOldParent = *kChild.m_pParent;
+		#ifdef FASSERT_ENABLE
+		int iTemp = kOldParent.m_iNumChildren;
+		#endif
+		/*	kOldParent just lost one of its children.
+			We have to break the news to them.
+			This would easier if we had STL instead of bog arrays.
+			[advc: Could use a vector, but since karadoc has already
+			worked it out ...] */
+		for (int j = 0; j < kOldParent.m_iNumChildren; j++)
+		{
+			if (kOldParent.m_apChildren[j] == &kChild)
+			{	// Found it
+				for (j++; j < kOldParent.m_iNumChildren; j++)
+					kOldParent.m_apChildren[j - 1] = kOldParent.m_apChildren[j];
+				// Not necessary, but easy enough to keep things neat.
+				kOldParent.m_apChildren[j - 1] = 0;
+				kOldParent.m_iNumChildren--;
+			}
+		}
+		FAssert(kOldParent.m_iNumChildren == iTemp - 1);
+		// Recalculate movement points
+		//pathAdd(parent_node, child_node, ASNC_PARENTADD_UP, &settings, NULL);
+		m_stepMetric.updatePathData(kChild, kParent);
+	}
+
+	// Add child to the list of the new parent
+	FAssertBounds(0, NUM_DIRECTION_TYPES, kParent.m_iNumChildren);
+	kParent.m_apChildren[kParent.m_iNumChildren] = &kChild;
+	kParent.m_iNumChildren++;
+	kChild.m_pParent = &kParent;
+
+	// Update the new (reduced) costs for all the grandchildren.
+	FAssert(kChild.m_iNumChildren == 0 || !bNewNode);
+	forwardPropagate(kChild, iCostDelta);
+	FAssert(kChild.m_iKnownCost > kParent.m_iKnownCost);
 }
 
 template<class StepMetric, class Node>

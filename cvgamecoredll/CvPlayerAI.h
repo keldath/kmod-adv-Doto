@@ -23,7 +23,7 @@ class CvPlayerAI : public CvPlayer
 {
 public:
 	// advc.003u: Renamed from getPlayer
-	static inline CvPlayerAI& AI_getPlayer(PlayerTypes ePlayer) // advc.inl
+	static CvPlayerAI& AI_getPlayer(PlayerTypes ePlayer)
 	{
 		FAssertBounds(0, MAX_PLAYERS, ePlayer);
 		return *m_aPlayers[ePlayer];
@@ -43,34 +43,34 @@ public:
 	void AI_updatePersonality(); // advc.104
 
 	// <advc.003u> Access to AI-type members. Code mostly duplicated from CvPlayer.
-	inline CvCityAI* AI_getCapital() const {
+	CvCityAI* AI_getCapital() const {
 		return AI_getCity(m_iCapitalCityID);
 	}
-	inline CvCityAI* AI_firstCity(int *pIterIdx) const {
+	CvCityAI* AI_firstCity(int *pIterIdx) const {
 		return m_cities.AI_beginIter(pIterIdx);
 	}
-	inline CvCityAI* AI_nextCity(int *pIterIdx) const {
+	CvCityAI* AI_nextCity(int *pIterIdx) const {
 		return m_cities.AI_nextIter(pIterIdx);
 	}
-	inline CvCityAI* AI_getCity(int iID) const {
+	CvCityAI* AI_getCity(int iID) const {
 		return m_cities.AI_getAt(iID);
 	}
-	inline CvUnitAI* AI_firstUnit(int *pIterIdx) const {
+	CvUnitAI* AI_firstUnit(int *pIterIdx) const {
 		return m_units.AI_beginIter(pIterIdx);
 	}
-	inline CvUnitAI* AI_nextUnit(int *pIterIdx) const {
+	CvUnitAI* AI_nextUnit(int *pIterIdx) const {
 		return m_units.AI_nextIter(pIterIdx);
 	}
-	inline CvUnitAI* AI_getUnit(int iID) const {
+	CvUnitAI* AI_getUnit(int iID) const {
 		return m_units.AI_getAt(iID);
 	}
-	inline CvSelectionGroupAI* AI_firstSelectionGroup(int *pIterIdx) const {
+	CvSelectionGroupAI* AI_firstSelectionGroup(int *pIterIdx) const {
 		return m_selectionGroups.AI_beginIter(pIterIdx);
 	}
-	inline CvSelectionGroupAI* AI_nextSelectionGroup(int *pIterIdx) const {
+	CvSelectionGroupAI* AI_nextSelectionGroup(int *pIterIdx) const {
 		return m_selectionGroups.AI_nextIter(pIterIdx);
 	}
-	inline CvSelectionGroupAI* AI_getSelectionGroup(int iID) const {
+	CvSelectionGroupAI* AI_getSelectionGroup(int iID) const {
 		return m_selectionGroups.AI_getAt(iID);
 	}
 	// </advc.003u>
@@ -148,7 +148,7 @@ public:
 	// BETTER_BTS_AI_MOD: END
 	int AI_getWaterDanger(CvPlot const& kPlot, int iRange = DANGER_RANGE,
 			/* <advc.opt> */ int iMaxCount = MAX_INT) const;
-	inline bool AI_isAnyWaterDanger(CvPlot const& kPlot, int iRange = DANGER_RANGE) const
+	bool AI_isAnyWaterDanger(CvPlot const& kPlot, int iRange = DANGER_RANGE) const
 	{
 		return (AI_getWaterDanger(kPlot, iRange, 1) >= 1);
 	} // </advc.opt>
@@ -198,7 +198,7 @@ public:
 			bool bUpdateWorstEnemy = true); // advc.130e
 	void AI_changeCachedAttitude(PlayerTypes ePlayer, int iChange); // K-Mod
 	AttitudeTypes AI_getAttitude(PlayerTypes ePlayer, bool bForced = true) const		// Exposed to Python
-	{	// advc.inl
+	{
 		FAssert(ePlayer != getID());
 		return (AI_getAttitudeFromValue(AI_getAttitudeVal(ePlayer, bForced)));
 	}
@@ -309,7 +309,7 @@ public:
 
 	uint AI_unitImpassables(UnitTypes eUnit) const;
 	// advc.057:
-	inline bool AI_isAnyImpassable(UnitTypes eUnit) const
+	bool AI_isAnyImpassable(UnitTypes eUnit) const
 	{
 		/*	BBAI note [moved from some call location]: For galleys, triremes, ironclads ...
 			unit types which are limited in what terrain they can operate in. */
@@ -331,7 +331,8 @@ public:
 	bool AI_isOutdatedUnit(UnitTypes eUnit, UnitAITypes eRole, CvArea const* pArea = NULL) const;
 	// </advc.017b>
 	// <advc.042> Moved from CvPlayer and iLookAhead param added
-	int AI_countUnimprovedBonuses(CvArea const& kArea, CvPlot* pFromPlot = NULL, int iLookAhead = 0) const;														// Exposed to Python
+	int AI_countUnimprovedBonuses(CvArea const& kArea,													// Exposed to Python
+			CvPlot const* pFromPlot = NULL, int iLookAhead = 0) const;
 	int AI_countOwnedBonuses(BonusTypes eBonus, // </advc.042>											// Exposed to Python
 			/* <advc.opt> */ int iMaxCount = MAX_INT) const;
 	bool AI_isAnyOwnedBonus(BonusTypes eBonus) const
@@ -348,6 +349,12 @@ public:
 	int AI_nukeWeight() const; // K-Mod
 	int AI_nukeDangerDivisor() const; // kekm.16
 	int AI_nukePlotValue(CvPlot const& kPlot, int iCivilianTargetWeight) const; // advc
+	// <advc.650>
+	int AI_nukeBaseDestructionWeight() const;
+	int AI_nukeExtraDestructionWeight(PlayerTypes eTarget,
+			int iTheirNukes, bool bLimited) const;
+	int AI_estimateNukeCount(PlayerTypes eOwner) const;
+	scaled AI_nukeChanceToKillUnit(int iHP, int iNukeModifier = 0) const; // </advc.650>
 
 	int AI_missionaryValue(ReligionTypes eReligion, CvArea const* pArea = NULL/*, PlayerTypes* peBestPlayer = NULL*/) const;
 	int AI_executiveValue(CorporationTypes eCorporation, CvArea const* pArea = NULL,
@@ -361,13 +368,13 @@ public:
 	//int AI_totalMissionAIs(MissionAITypes eMissionAI, CvSelectionGroup* pSkipSelectionGroup = NULL) const; // advc.003j
 	int AI_areaMissionAIs(CvArea const& kArea, MissionAITypes eMissionAI,
 			CvSelectionGroup* pSkipSelectionGroup = NULL, /* <advc.opt> */ int iMaxCount = MAX_INT) const;
-	inline bool AI_isAnyAreaMissionAI(CvArea const& kArea, MissionAITypes eMissionAI,
+	bool AI_isAnyAreaMissionAI(CvArea const& kArea, MissionAITypes eMissionAI,
 		CvSelectionGroup* pSkipSelectionGroup = NULL) const
 	{
 		return (AI_areaMissionAIs(kArea, eMissionAI, pSkipSelectionGroup, 1) >= 1);
 	} // </advc.opt>
 	// advc: TargetMissionAI counting: const CvPlot&. advc.opt: iMaxCount params added.
-	inline int AI_plotTargetMissionAIs(CvPlot const& kPlot, MissionAITypes eMissionAI,
+	int AI_plotTargetMissionAIs(CvPlot const& kPlot, MissionAITypes eMissionAI,
 		CvSelectionGroup const* pSkipSelectionGroup = NULL, int iRange = 0, int iMaxCount = MAX_INT) const
 	{
 		return AI_plotTargetMissionAIs(kPlot, &eMissionAI, 1, pSkipSelectionGroup,
@@ -378,24 +385,24 @@ public:
 			int iMissionAICount, CvSelectionGroup const* pSkipSelectionGroup = NULL,
 			int iRange = 0, int iMaxCount = MAX_INT) const;
 	// <advc.opt>
-	inline bool AI_isAnyPlotTargetMissionAI(CvPlot const& kPlot, MissionAITypes eMissionAI,
+	bool AI_isAnyPlotTargetMissionAI(CvPlot const& kPlot, MissionAITypes eMissionAI,
 		CvSelectionGroup* pSkipSelectionGroup = NULL, int iRange = 0) const
 	{
 		return (AI_plotTargetMissionAIs(kPlot, eMissionAI, pSkipSelectionGroup, iRange, 1) >= 1);
 	}
-	inline bool AI_isAnyUnitTargetMissionAI(CvUnit const& kUnit, MissionAITypes eMissionAI,
+	bool AI_isAnyUnitTargetMissionAI(CvUnit const& kUnit, MissionAITypes eMissionAI,
 		CvSelectionGroup* pSkipSelectionGroup = NULL) const
 	{
 		return (AI_unitTargetMissionAIs(kUnit, eMissionAI, pSkipSelectionGroup, 1) >= 1);
 	}
-	inline bool AI_isAnyUnitTargetMissionAI(CvUnit const& kUnit, MissionAITypes* aeMissionAI,
+	bool AI_isAnyUnitTargetMissionAI(CvUnit const& kUnit, MissionAITypes* aeMissionAI,
 		int iMissionAICount, CvSelectionGroup* pSkipSelectionGroup = NULL,
 		int iMaxPathTurns = -1) const
 	{
 		return (AI_unitTargetMissionAIs(kUnit, aeMissionAI, iMissionAICount,
 				pSkipSelectionGroup, iMaxPathTurns, 1) >= 1);
 	} // </advc.opt>
-	inline int AI_unitTargetMissionAIs(CvUnit const& kUnit, MissionAITypes eMissionAI,
+	int AI_unitTargetMissionAIs(CvUnit const& kUnit, MissionAITypes eMissionAI,
 		CvSelectionGroup* pSkipSelectionGroup = NULL, int iMaxCount = MAX_INT) const
 	{
 		return AI_unitTargetMissionAIs(kUnit, &eMissionAI, 1, pSkipSelectionGroup,
@@ -409,7 +416,7 @@ public:
 	int AI_enemyTargetMissions(TeamTypes eTargetTeam, CvSelectionGroup* pSkipSelectionGroup = NULL,
 			// <advc.opt>
 			int iMaxCount = MAX_INT) const; // BBAI end
-	inline bool AI_isAnyEnemyTargetMission(TeamTypes eTargetTeam,
+	bool AI_isAnyEnemyTargetMission(TeamTypes eTargetTeam,
 		CvSelectionGroup* pSkipSelectionGroup = NULL) const
 	{
 		return (AI_enemyTargetMissions(eTargetTeam, pSkipSelectionGroup, 1) >= 1);
@@ -517,7 +524,7 @@ public:
 	int AI_getMemoryCount(PlayerTypes eIndex1, MemoryTypes eIndex2) const;
 	void AI_changeMemoryCount(PlayerTypes eIndex1, MemoryTypes eIndex2, int iChange);
 	// advc: setter added
-	inline void AI_setMemoryCount(PlayerTypes eAboutPlayer, MemoryTypes eMemoryType, int iValue);
+	void AI_setMemoryCount(PlayerTypes eAboutPlayer, MemoryTypes eMemoryType, int iValue);
 	// advc.130j: Increases memory count according to (hardcoded) granularity
 	void AI_rememberEvent(PlayerTypes ePlayer, MemoryTypes eMemoryType);
 	void AI_rememberLiberation(CvCity const& kCity, bool bConquest); // advc.ctr
@@ -550,7 +557,7 @@ public:
 	bool AI_atVictoryStage(AIVictoryStage eStage) const;
 	bool AI_atVictoryStage4() const;
 	bool AI_atVictoryStage3() const;
-	inline AIVictoryStage AI_getVictoryStageHash() const { return m_eVictoryStageHash; }
+	AIVictoryStage AI_getVictoryStageHash() const { return m_eVictoryStageHash; }
 	void AI_updateVictoryStageHash(); // K-Mod
 	void AI_initStrategyRand(); // K-Mod
 	int AI_getStrategyRand(int iShift) const;
@@ -563,8 +570,8 @@ public:
 		aren't tagged with "advc.erai" comments. Note: Should not replace all uses of
 		era numbers in AI code with these functions. For example, a mod with only
 		3 eras	won't necessarily have more techs per era than BtS. */
-	inline scaled AI_getCurrEraFactor() const { return m_rCurrEraFactor; }
-	inline int AI_getCurrEra() const { return AI_getCurrEraFactor().uround(); }
+	scaled AI_getCurrEraFactor() const { return m_rCurrEraFactor; }
+	int AI_getCurrEra() const { return AI_getCurrEraFactor().uround(); }
 	// </advc.erai>
 
 	void AI_updateGreatPersonWeights(); // K-Mod
@@ -574,9 +581,9 @@ public:
 
 	//int AI_goldToUpgradeAllUnits(int iExpThreshold = 0) const;
 	// K-Mod
-	inline int AI_getGoldToUpgradeAllUnits() const { return m_iUpgradeUnitsCachedGold; }
+	int AI_getGoldToUpgradeAllUnits() const { return m_iUpgradeUnitsCachedGold; }
 	void AI_updateGoldToUpgradeAllUnits();
-	inline int AI_getAvailableIncome() const { return m_iAvailableIncome; }
+	int AI_getAvailableIncome() const { return m_iAvailableIncome; }
 	void AI_updateAvailableIncome();
 	int AI_estimateBreakEvenGoldPercent() const;
 	// K-Mod end
@@ -599,7 +606,7 @@ public:
 	int AI_getTotalAreaCityThreat(CvArea const& kArea) const;
 	int AI_getAreaCultureDefendersNeeded(CvArea const& kArea) const; // advc.099c
 	int AI_countNumAreaHostileUnits(CvArea const& kArea, bool bPlayer, bool bTeam, bool bNeutral, bool bHostile,
-			CvPlot* pCenter = NULL) const; // advc.081
+			CvPlot const* pCenter = NULL) const; // advc.081
 	int AI_getTotalFloatingDefendersNeeded(CvArea const& kArea,
 			bool bDebug = false) const; // advc.007
 	int AI_getTotalFloatingDefenders(CvArea const& kArea) const;
@@ -620,7 +627,7 @@ public:
 	void AI_recalculateFoundValues(int iX, int iY, int iInnerRadius, int iOuterRadius) const;
 	void AI_updateCitySites(int iMinFoundValueThreshold = -1, int iMaxSites = 4); // advc: default values
 	void AI_invalidateCitySites(int iMinFoundValueThreshold);
-	int AI_getNumCitySites() const { return m_aeAICitySites.size(); } // advc.inl
+	int AI_getNumCitySites() const { return m_aeAICitySites.size(); }
 	bool AI_isPlotCitySite(CvPlot const& kPlot) const; // advc: Made plot param const
 	int AI_getNumAreaCitySites(CvArea const& kArea, int& iBestValue) const;
 	int AI_getNumAdjacentAreaCitySites(int& iBestValue, CvArea const& kWaterArea,
@@ -678,8 +685,8 @@ public:
 	UnitTypes AI_getBestAttackUnit() const; // advc.079
 
 	// <advc.104>
-	inline UWAI::Player& uwai() { return *m_pUWAI; }
-	inline UWAI::Player const& uwai() const { return *m_pUWAI; } // </advc.104>
+	UWAI::Player& uwai() { return *m_pUWAI; }
+	UWAI::Player const& uwai() const { return *m_pUWAI; } // </advc.104>
 	// <advc.104h>
 	// Returns true if peace deal implemented (or offered to human)
 	bool AI_negotiatePeace(PlayerTypes eOther, int iTheirBenefit, int iOurBenefit);
@@ -691,9 +698,6 @@ public:
 	bool AI_isDangerFromSubmarines() const; // advc.651
 	bool AI_isPiracyTarget(PlayerTypes eTarget) const; // advc.033
 	bool AI_isUnitNeedingOpenBorders(TeamTypes eTarget) const; // advc.124
-	/* Are there cities with sufficient production to
-	   train a significant number of units of type eUnit? */
-	bool AI_canBeExpectedToTrain(UnitTypes eUnit) const; // advc.104, advc.651
 	bool AI_isDefenseFocusOnBarbarians(CvArea const& kArea) const; // advc.300
 	bool AI_hasSharedPrimaryArea(PlayerTypes eOther) const; // advc
 
@@ -813,7 +817,7 @@ protected:
 			int iLower = MIN_INT, int iUpper = MAX_INT) const; // </advc.026>
 	/*  <advc> Overlaps with CvTeamAI::roundTradeVal. Could call that function,
 		but don't want to include CvTeamAI.h here. (And want inlining.) */
-	inline void AI_roundTradeVal(int& iTradeVal) const
+	void AI_roundTradeVal(int& iTradeVal) const
 	{
 		iTradeVal -= iTradeVal % GC.getDefineINT(CvGlobals::DIPLOMACY_VALUE_REMAINDER);
 	}
@@ -908,7 +912,7 @@ protected:
 	// advc.130c:
 	int AI_knownRankDifference(PlayerTypes eOther, scaled& rOutrankingBothRatio) const;
 	// advc.042: Relies on caller to reset GC.getBorderFinder()
-	bool AI_isUnimprovedBonus(CvPlot const& p, CvPlot* pFromPlot, bool bCheckPath) const;
+	bool AI_isUnimprovedBonus(CvPlot const& p, CvPlot const* pFromPlot, bool bCheckPath) const;
 	void AI_updateCityAttitude(CvPlot const& kCityPlot); // advc.130w
 	int AI_neededExplorers_bulk(CvArea const& kArea) const; // advc.opt
 	// BETTER_BTS_AI_MOD, Victory Strategy AI, 03/17/10, jdog5000: START
@@ -919,7 +923,7 @@ protected:
 	int AI_calculateDiplomacyVictoryStage() const;
 	// BETTER_BTS_AI_MOD: END
 	// K-Mod. I've moved the bulk of AI_getStrategyHash into a new function: AI_updateStrategyHash.
-	inline AIStrategy AI_getStrategyHash() const { return m_eStrategyHash; }
+	AIStrategy AI_getStrategyHash() const { return m_eStrategyHash; }
 	void AI_updateStrategyHash();
 	void AI_calculateAverages();
 

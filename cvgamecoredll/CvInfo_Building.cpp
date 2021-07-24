@@ -187,13 +187,6 @@ CvBuildingInfo::~CvBuildingInfo()
 	SAFE_DELETE_ARRAY(m_paiYieldProduced);
 	// Doto-davidlallen: building bonus yield, commerce end
 }
-// advc.tag:
-void CvBuildingInfo::addElements(std::vector<XMLElement*>& r) const
-{
-	CvHotkeyInfo::addElements(r);
-	r.push_back(new IntElement(RaiseDefense, "RaiseDefense", 0)); // advc.004c
-}
-
 // advc.003w:
 bool CvBuildingInfo::isTechRequired(TechTypes eTech) const
 {
@@ -511,7 +504,7 @@ bool CvBuildingInfo::nameNeedsArticle() const
 #if ENABLE_XML_FILE_CACHE
 void CvBuildingInfo::read(FDataStreamBase* stream)
 {
-	CvHotkeyInfo::read(stream);
+	base_t::read(stream);
 	uint uiFlag=0;
 	stream->Read(&uiFlag);
 
@@ -756,7 +749,7 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 
 void CvBuildingInfo::write(FDataStreamBase* stream)
 {
-	CvHotkeyInfo::write(stream);
+	base_t::write(stream);
 	uint uiFlag;
 	//uiFlag = 0;
 	uiFlag = 1; // advc.003t
@@ -989,7 +982,7 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 
 bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 {
-	if (!CvHotkeyInfo::read(pXML))
+	if (!base_t::read(pXML))
 		return false;
 //Doto-code for placegolder buldingd
 	std::string szType(getType());
@@ -1548,9 +1541,9 @@ bool CvVoteInfo::read(CvXMLLoadUtility* pXML)
 }
 
 CvProjectInfo::CvProjectInfo() :
-m_iVictoryPrereq(NO_VICTORY),
-m_iTechPrereq(NO_TECH),
-m_iAnyoneProjectPrereq(NO_PROJECT),
+m_eVictoryPrereq(NO_VICTORY),
+m_eTechPrereq(NO_TECH),
+m_eAnyoneProjectPrereq(NO_PROJECT),
 m_iMaxGlobalInstances(0),
 m_iMaxTeamInstances(0),
 m_iProductionCost(0),
@@ -1562,8 +1555,8 @@ m_iDistanceMaintenanceModifier(0),
 m_iNumCitiesMaintenanceModifier(0),
 m_iConnectedCityMaintenanceModifier(0),
 //Doto-DPII < Maintenance Modifiers >
-m_iEveryoneSpecialUnit(NO_SPECIALUNIT),
-m_iEveryoneSpecialBuilding(NO_SPECIALBUILDING),
+m_eEveryoneSpecialUnit(NO_SPECIALUNIT),
+m_eEveryoneSpecialBuilding(NO_SPECIALBUILDING),
 m_iVictoryDelayPercent(0),
 m_iSuccessRate(0),
 //Doto-davidlallen: project civilization and free unit start
@@ -1638,8 +1631,8 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 	if (!CvInfoBase::read(pXML))
 		return false;
 
-	pXML->SetInfoIDFromChildXmlVal(m_iVictoryPrereq, "VictoryPrereq");
-	pXML->SetInfoIDFromChildXmlVal(m_iTechPrereq, "TechPrereq");
+	pXML->SetInfoIDFromChildXmlVal((int&)m_eVictoryPrereq, "VictoryPrereq");
+	pXML->SetInfoIDFromChildXmlVal((int&)m_eTechPrereq, "TechPrereq");
 
 	pXML->GetChildXmlValByName(&m_iMaxGlobalInstances, "iMaxGlobalInstances");
 	pXML->GetChildXmlValByName(&m_iMaxTeamInstances, "iMaxTeamInstances");
@@ -1652,9 +1645,10 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iNumCitiesMaintenanceModifier, "iNumCitiesMaintenanceModifier", 0);
 	pXML->GetChildXmlValByName(&m_iConnectedCityMaintenanceModifier, "iConnectedCityMaintenanceModifier", 0);
 	//Doto-DPII < Maintenance Modifiers >
+	FAssertBounds(0, MAX_PLAYERS, m_iTechShare); // advc
 
-	pXML->SetInfoIDFromChildXmlVal(m_iEveryoneSpecialUnit, "EveryoneSpecialUnit");
-	pXML->SetInfoIDFromChildXmlVal(m_iEveryoneSpecialBuilding, "EveryoneSpecialBuilding");
+	pXML->SetInfoIDFromChildXmlVal((int&)m_eEveryoneSpecialUnit, "EveryoneSpecialUnit");
+	pXML->SetInfoIDFromChildXmlVal((int&)m_eEveryoneSpecialBuilding, "EveryoneSpecialBuilding");
 
 	pXML->GetChildXmlValByName(&m_bSpaceship, "bSpaceship");
 	pXML->GetChildXmlValByName(&m_bAllowsNukes, "bAllowsNukes");
@@ -1698,7 +1692,7 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 bool CvProjectInfo::readPass2(CvXMLLoadUtility* pXML)
 {
 	pXML->SetVariableListTagPair(ProjectsNeeded(), "PrereqProjects");
-	pXML->SetInfoIDFromChildXmlVal(m_iAnyoneProjectPrereq, "AnyonePrereqProject");
+	pXML->SetInfoIDFromChildXmlVal((int&)m_eAnyoneProjectPrereq, "AnyonePrereqProject");
 
 	return true;
 }
