@@ -5632,10 +5632,13 @@ void CvPlot::setFeatureType(FeatureTypes eNewValue, int iVariety)
 			pLoopCity->updateSurroundingHealthHappiness();
 	}
 //feature on improvement - doto
-	if (!isFeature() && isImproved() && !GC.getFeatureInfo(eNewValue).isOnImprovement())
+	if (eNewValue != NO_FEATURE)
 	{
-		if (GC.getInfo(getImprovementType()).isRequiresFeature())
-			setImprovementType(NO_IMPROVEMENT);
+		if (!isFeature() && isImproved() && !GC.getFeatureInfo(eNewValue).isOnImprovement())
+		{
+			if (GC.getInfo(getImprovementType()).isRequiresFeature())
+				setImprovementType(NO_IMPROVEMENT);
+		}
 	}
 //feature on improvement - doto
 }

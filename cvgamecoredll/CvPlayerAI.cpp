@@ -13656,24 +13656,33 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 					kLoopInfo.getCombat() > 0 &&
 					!kLoopInfo.isMostlyDefensive()) // advc.315
 				{
-					if (kLoopInfo.getCombatLimit() < 100)
+//doto keldath rangedattack + ranged immunity - count ranged units anyway from above conditions		
+					if (kLoopInfo.getRangeStrike() > 0)
+						rangedUnits += getUnitClassCount(eUnitClass);
+//doto keldath rangedattack + ranged immunity - count ranged units anyway from above conditions
+					else if (kLoopInfo.getCombatLimit() < 100)
 						iLimitedUnits += getUnitClassCount(eUnitClass);
 					else if (kLoopInfo.getCollateralDamage() > 0)
-						iNoLimitCollateral = getUnitClassCount(eUnitClass);
+						//DOTO KELDATH fix - original kmod error i found - updated f1rpo
+						iNoLimitCollateral += getUnitClassCount(eUnitClass);
 				}
 //doto keldath rangedattack + ranged immunity - count ranged units anyway from above conditions
-				if (u.getRangeStrike() > 0)
+			/*	if (kLoopInfo.getRangeStrike() > 0)
 				 	rangedUnits += getUnitClassCount(eUnitClass);
 				   iLimitedUnits += rangedUnits; 
+				   moved above again - causes error of wrong numbers
+				  */
 				   /*added now to the limited units - lets see how the ai handles it now.
 				    with prev calc, see the below -> fmath::round(rangedUnits /2
 					the ai built quite allot of siege, which isnt bad.
 					he mixed with other units when attacking a city.
 				   */
 			}
-
+			//keldath rangedattck ranegd immunity - changed it - i hope its ojk...
+			//int rangenAndColla = (AI_totalUnitAIs(UNITAI_COLLATERAL) - iNoLimitCollateral) + rangedUnits;
 			iLimitedUnits -= range(
-					AI_totalUnitAIs(UNITAI_COLLATERAL) - iNoLimitCollateral / 2,
+						AI_totalUnitAIs(UNITAI_COLLATERAL) - iNoLimitCollateral,
+				//	rangenAndColla / 2,
 					0, iLimitedUnits);
 			FAssert(iLimitedUnits >= 0);
 			// floor value just to avoid division by zero
@@ -13682,7 +13691,7 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 //doto keldath rangedattack + ranged immunity
 //trying to fix the assert of more limited untis than attack due to the 
 //ranged attackers that have no capture city attribute that ui set
-				//	+ fmath::round(rangedUnits /2)
+					+ fmath::round(rangedUnits /2)
 			);
 			/*	this is not strictly guaranteed, but I expect it to
 				always be true under normal playing conditions. */

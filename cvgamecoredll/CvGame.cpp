@@ -5950,7 +5950,6 @@ bool CvGame::canConstruct(BuildingTypes eBuilding, bool bIgnoreCost, bool bTestV
 			return false;
 		}
 	}
-
 	if (kBuilding.getNotGameOption() != NO_GAMEOPTION)
 	{
 		if (isOption((GameOptionTypes)kBuilding.getNotGameOption()))
@@ -7260,6 +7259,8 @@ void CvGame::doHolyCity()
 		// remove test for team; assign by player instead
 		// because what if the best team's best player cannot convert?
 		// davidlallen religion forbidden to civilization start
+		int iBestValue = MAX_INT; //moved here
+		PlayerTypes eBestPlayer = NO_PLAYER; //moved here
 		if (!forbRel)//keldath addition
 		{
 		{ // scope for iBestValue
@@ -7291,33 +7292,14 @@ void CvGame::doHolyCity()
 		}
 		if (eBestTeam == NO_TEAM)
 			continue;
-		}
-		int iBestValue = MAX_INT;
-		PlayerTypes eBestPlayer = NO_PLAYER;
+		//doto forbidden religion removed type declaration - cause its now above
+		/*int*/ iBestValue = MAX_INT;
+		/*PlayerTypes*/ eBestPlayer = NO_PLAYER;
 		for (MemberIter itMember(eBestTeam); itMember.hasNext(); ++itMember)
 		{
-			CvPlayer const& kMember = GET_PLAYER(itMember->getID());
-// david lalen forbiddan religion
-			bool teamCheck = forbRel ? false : kMember.getTeam() != eBestTeam;//this is needed for forbidden religion
-			//only check for team if forbidden religion is off...
-			//org - changed in advc 1 11072021
-			//if (!kMember.isAlive() || teamCheck /*kMember.getTeam() != eBestTeam */|| kMember.getNumCities() <= 0)
 			if (itMember->getNumCities() <= 0)
 				continue;
-// david lalen forbiddan religion - dune wars end - keldath fix - if religion is forbidden - pass.
-			CivilizationTypes eCiv = kMember.getCivilizationType();
-			if (eCiv != NO_CIVILIZATION && eReligion != NO_RELIGION && forbRel)
-			{
-				if (!GET_TEAM(kMember.getTeam()).isHasTech((TechTypes)(GC.getReligionInfo((ReligionTypes)iI).getTechPrereq())))
-				{
-					continue;
-				}
-				else if (GC.getCivilizationInfo(eCiv).isForbidden((ReligionTypes)iI))
-				{
-					continue;
-				}
-			}	
-//david lalen forbiddan religion - dune wars end
+
 			int iValue = getSorenRandNum(10, "Found Religion (Player)");
 			if (!itMember->isHuman())
 				iValue += 18; // advc.138: Was 10. Need some x: 15 < x < 20.
@@ -7334,13 +7316,54 @@ void CvGame::doHolyCity()
 				eBestPlayer = itMember->getID();
 			}
 		}
+// david lalen forbiddan religion-start
+		}
+		else
+		{
+		for (PlayerIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
+		{	
+			CvPlayer const& kMember = GET_PLAYER(itPlayer->getID());
+			if (itPlayer->getNumCities() <= 0)
+				continue;
+// david lalen forbiddan religion - dune wars end - keldath fix - if religion is forbidden - pass.
+			CivilizationTypes eCiv = kMember.getCivilizationType();
+			if (eCiv != NO_CIVILIZATION && eReligion != NO_RELIGION)
+			{
+				if (!GET_TEAM(kMember.getTeam()).isHasTech((TechTypes)(GC.getReligionInfo((ReligionTypes)iI).getTechPrereq())))
+				{
+					continue;
+				}
+				else if (GC.getCivilizationInfo(eCiv).isForbidden((ReligionTypes)iI))
+				{
+					continue;
+				}
+			}	
+			int iValue = getSorenRandNum(10, "Found Religion (Player)");
+			if (!itPlayer->isHuman())
+				iValue += 18; // advc.138: Was 10. Need some x: 15 < x < 20.
+			FOR_EACH_ENUM(Religion)
+			{
+				int iReligionCount = itPlayer->getHasReligionCount(eLoopReligion);
+				if (iReligionCount > 0)
+					iValue += iReligionCount * 20;
+			}
+			iValue -= religionPriority(itPlayer->getID(), eReligion); // advc.138
+			if (iValue < iBestValue)
+			{
+				iBestValue = iValue;
+				eBestPlayer = itPlayer->getID();
+			}
+		}
+		// david lalen forbiddan religion-end			
 		if (eBestPlayer == NO_PLAYER)
 			continue;
+		}
 
 		ReligionTypes eFoundReligion = eReligion;
 		if (isOption(GAMEOPTION_PICK_RELIGION))
 		{
-			if (!isOption(GAMEOPTION_FORBIDDEN_RELIGION))
+// david lalen forbiddan religion-start
+			if (!forbRel)
 			{
 				//org code
 				eFoundReligion = GET_PLAYER(eBestPlayer).AI_chooseReligion();
@@ -7352,6 +7375,7 @@ void CvGame::doHolyCity()
 					&& !GC.getCivilizationInfo(GET_PLAYER(eBestPlayer).getCivilizationType()).isForbidden(eChosenReligion))
 					eFoundReligion = eChosenReligion;
 			}
+// david lalen forbiddan religion-end
 		}
 		if (eFoundReligion != NO_RELIGION)
 //david lalen forbiddan religion - dune wars end
