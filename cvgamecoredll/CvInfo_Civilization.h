@@ -180,10 +180,6 @@ public: // advc: All the const functions are exposed to Python except those adde
 	int getShareWarAttitudeChangeLimit() const { return m_iShareWarAttitudeChangeLimit; }
 	int getFavoriteCivicAttitudeChange() const { return m_iFavoriteCivicAttitudeChange; }
 //dune wars - hated civs
-/*	int getHatedCivicAttitudeChange() const;				// Exposed to Python a1021
-	int getFavoriteCivilizationAttitudeChange() const;				// Exposed to Python
-	int getHatedCivilizationAttitudeChange() const;				// Exposed to Python a1021	
-*/
 	int getHatedCivicAttitudeChange() const { return m_iHatedCivicAttitudeChange; }
 	int getFavoriteCivilizationAttitudeChange() const { return m_iFavoriteCivilizationAttitudeChange; }
 	int getHatedCivilizationAttitudeChange() const { return m_iHatedCivilizationAttitudeChange; }	
@@ -214,10 +210,7 @@ public: // advc: All the const functions are exposed to Python except those adde
 	int getVassalPowerModifier() const { return m_iVassalPowerModifier; }
 	CivicTypes getFavoriteCivic() const { return m_eFavoriteCivic; }
 //dune wars - hated civs
-/*	int getHatedCivic() const;				//a1021												// Exposed to Python
-	int getFavoriteCivilization() const;				//a1021												// Exposed to Python
-	int getHatedCivilization() const;				//a1021		
-*/	int getHatedCivic() const { return m_iHatedCivic; }
+	int getHatedCivic() const { return m_iHatedCivic; }
 	int getFavoriteCivilization() const { return m_iFavoriteCivilization; }
 	int getHatedCivilization() const { return m_iHatedCivilization; }										// Exposed to Python
 //dune wars - hated civs

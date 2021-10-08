@@ -428,10 +428,12 @@ void CyEnumsPythonInterface()
 		.value("WIDGET_ANARCHY", WIDGET_ANARCHY) // </advc.085>
 		.value("WIDGET_CITY_TRADE", WIDGET_CITY_TRADE) // advc.ctr
 		.value("WIDGET_CYCLE_UNIT", WIDGET_CYCLE_UNIT) // advc.154
-		.value("NUM_WIDGET_TYPES", NUM_WIDGET_TYPES)
+		// advc.186b: (for BULL - Zoom City Details)
+		.value("WIDGET_EXAMINE_CITY", WIDGET_EXAMINE_CITY)
 //doto wonder limit - city hover help
 		.value("WIDGET_WONDER_LIMITS", WIDGET_WONDER_LIMITS)
-			//doto wonder limit - city hover help
+//doto wonder limit - city hover help
+		.value("NUM_WIDGET_TYPES", NUM_WIDGET_TYPES)
 		;
 
 	python::enum_<ButtonPopupTypes>("ButtonPopupTypes")
@@ -606,6 +608,7 @@ void CyEnumsPythonInterface()
 		.value("GAMEOPTION_NO_RANGED_COLLATERAL", GAMEOPTION_NO_RANGED_COLLATERAL)
 		.value("GAMEOPTION_RAND_HIT", GAMEOPTION_RAND_HIT)
 		.value("GAMEOPTION_RAND_DMG", GAMEOPTION_RAND_DMG)
+		.value("GAMEOPTION_SCENARIO_PLAY", GAMEOPTION_SCENARIO_PLAY)
 		.value("NUM_GAMEOPTION_TYPES", NUM_GAMEOPTION_TYPES)
 		;
 

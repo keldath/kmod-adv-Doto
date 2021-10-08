@@ -370,7 +370,7 @@ public:
 		/*new NodeMap(m_kMap.numPlots())*/)
 	{}
 	virtual ~KmodPathFinder();
-	void resetNodes();
+	void reset();
 	bool generatePath(CvPlot const& kStart, CvPlot const& kDest);
 	bool isPathComplete() const { return (m_pEndNode != NULL); }
 	int getPathLength() const // advc: Was "getPathTurns"; too specific.
@@ -393,6 +393,7 @@ protected:
 	static int iAdmissibleBaseWeight;
 	static int iAdmissibleScaledWeight;
 
+	void resetNodes();
 	void recalculateHeuristics();
 	bool processNode();
 	// <advc> Cut out of process node
@@ -456,7 +457,7 @@ bool KmodPathFinder<StepMetric,Node>::generatePath(
 			(power of 2 does seem to help). K-Mod didn't reserve any memory. */
 		m_openList.reserve(128);
 	}
-	if (&kStart != m_pStart)
+	if (&kStart != m_pStart && /* advc: Don't reset twice */ m_pStart != NULL)
 	{
 		/*	Note: It may be possible to salvage some of the old data to
 			get more speed. E.g. if the moves recorded on the node match the group
@@ -522,7 +523,15 @@ bool KmodPathFinder<StepMetric,Node>::generatePath(
 	{
 		// nothing
 	}
-
+	/*	advc: Uncomment in order to inspect full node map in debugger. (I've also
+		found it helpful to inspect m_openList at the start of processNode.) */
+	/*std::vector<std::vector<Node*> > nodeMap2D;
+	nodeMap2D.resize(m_kMap.getGridWidth(),
+			std::vector<Node*>(m_kMap.getGridHeight()));
+	FOR_EACH_ENUM(PlotNum) {
+		CvPlot const& kPlot = m_kMap.getPlotByIndex(eLoopPlotNum);
+		nodeMap2D[kPlot.getX()][kPlot.getY()] = &m_pNodeMap->get(eLoopPlotNum);
+	}*/
 	if (m_pEndNode != NULL &&
 		(m_pEndNode->getPathLength() <= m_stepMetric.getMaxPath()))
 	{
@@ -547,6 +556,15 @@ void KmodPathFinder<StepMetric,Node>::resetNodes()
 		m_pNodeMap->reset();
 	m_openList.clear();
 	m_pEndNode = NULL;
+}
+
+/*	advc: Allow derived classes to make a full reset, including the start plot
+	- which the internal resetNodes function mustn't reset. */
+template<class StepMetric, class Node>
+void KmodPathFinder<StepMetric,Node>::reset()
+{
+	resetNodes();
+	m_pStart = m_pDest = NULL;
 }
 
 template<class StepMetric, class Node>
@@ -626,9 +644,14 @@ void KmodPathFinder<StepMetric,Node>::processChild(
 			m_openList.open(kChild);
 		else
 		{	// This node is a dead end
-			/*	(advc: Which is to say, we can never enter it, not even on a
+			/*	advc: Which is to say, we can never enter it, not even on a
 				later call to generatePath - except if it is the destination;
-				that remains to be checked.) */
+				that remains to be checked.
+				However: If there is plot danger to be avoided in kChildPlot,
+				then we might be able to enter via a shorter path and avoid ending
+				the turn in kChildPlot that way. I don't see a reasonably fast way
+				to address this rare problem. (And it's not really a problem
+				with this base class but with GroupPathFinder.)*/
 			kChild.setState(PATHNODE_CLOSED);
 		}
 	}

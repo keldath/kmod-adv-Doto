@@ -54,9 +54,7 @@ public: // advc: All the const functions are exposed to Python except those adde
 	bool isBridgeBuilding() const { return m_bBridgeBuilding; }
 	bool isIrrigation() const { return m_bIrrigation; }
 	/* Population Limit ModComp - Beginning */
-	inline bool isNoPopulationLimit() const { return m_bNoPopulationLimit; }
-	//original - keldath	
-	//bool isNoPopulationLimit() const;						// Exposed to Python
+	bool isNoPopulationLimit() const { return m_bNoPopulationLimit; }
 	/* Population Limit ModComp - End */
 	bool isIgnoreIrrigation() const { return m_bIgnoreIrrigation; }
 	bool isWaterWork() const { return m_bWaterWork; }

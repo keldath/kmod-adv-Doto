@@ -8,7 +8,7 @@
 	the EXE might use any of the enum types (no DllExport needed), so
 	enumerators should generally only be added to the end of an enum definition. */
 // <advc.enum>
-#include "CvInfoEnums.h"
+#include "CvEnumMacros.h"
 /*************************************************************************************************/
 /** TGA_INDEXATION                       10/16/07                                MRGENIE      */
 /**                                                                                              */
@@ -38,6 +38,7 @@ enum PlayerTypes
 	BARBARIAN_PLAYER = MAX_CIV_PLAYERS,
 	MAX_PLAYERS
 };
+DEFINE_INCREMENT_OPERATORS(PlayerTypes);
 
 enum TeamTypes
 {
@@ -46,6 +47,25 @@ enum TeamTypes
 	MAX_CIV_TEAMS = BARBARIAN_TEAM,
 	MAX_TEAMS
 };
+DEFINE_INCREMENT_OPERATORS(TeamTypes);
+
+/*  Smaller numbers may already crash the EXE; the DLL assumes in some places
+	that player ids fit in a single (signed) byte. */
+BOOST_STATIC_ASSERT(MAX_PLAYERS < MAX_CHAR && MAX_TEAMS < MAX_CHAR);
+
+// Excluding the Barbarians (mainly for EnumMap)
+enum CivPlayerTypes
+{
+	NO_CIV_PLAYER = -1,
+	NUM_CIV_PLAYER_TYPES = static_cast<CivPlayerTypes>(MAX_CIV_PLAYERS)
+};
+DEFINE_INCREMENT_OPERATORS(CivPlayerTypes);
+enum CivTeamTypes
+{
+	NO_CIV_TEAM = -1,
+	NUM_CIV_TEAM_TYPES = static_cast<CivTeamTypes>(MAX_CIV_TEAMS)
+};
+DEFINE_INCREMENT_OPERATORS(CivTeamTypes);
 
 // This generates most of the enums with associated XML data
 DO_FOR_EACH_DYN_INFO_TYPE(MAKE_INFO_ENUM)
@@ -84,17 +104,12 @@ enum FlavorTypes
 		means that it was impossible to base AI code on FLAVOR_ESPIONAGE. */
 	FLAVOR_ESPIONAGE,
 };
+DEFINE_INCREMENT_OPERATORS(FlavorTypes);
 // <advc.enum> (cf. CvMap::plotNum)
 /*	2 byte (short) allow for at most 256*128 tiles (or 181*181).
 	Larger maps really aren't playable, but let's allow them
 	if the civ limit has been increased by a lot. */
-typedef
-	#if MAX_CIV_PLAYERS >= 32
-		int
-	#else
-		short
-	#endif
-		PlotNumInt;
+typedef choose_type<(MAX_CIV_PLAYERS >= 32),int,short>::type PlotNumInt;
 enum PlotNumTypes
 {
 	NO_PLOT_NUM = -1,
@@ -500,6 +515,7 @@ ENUM_START(Widget, WIDGET)
 	WIDGET_ANARCHY, // </advc.085>
 	WIDGET_CITY_TRADE, // advc.ctr
 	WIDGET_CYCLE_UNIT, // advc.154
+	WIDGET_EXAMINE_CITY, // advc.186b (for BULL - Zoom City Details)
 //doto wonder limit - city hover help
 	WIDGET_WONDER_LIMITS,
 //doto wonder limit - city hover help
@@ -630,6 +646,7 @@ ENUM_START(GameOption, GAMEOPTION)
 	GAMEOPTION_NO_RANGED_COLLATERAL,
 	GAMEOPTION_RAND_HIT,
 	GAMEOPTION_RAND_DMG,
+	GAMEOPTION_SCENARIO_PLAY,
 
 ENUM_END(GameOption, GAMEOPTION)
 
@@ -815,7 +832,7 @@ ENUM_START(Denial, DENIAL)
 	DENIAL_TRUE_ATTITUDE, // advc.130v
 	DENIAL_NO_CURRENT_THREAT, // advc.112b
 ENUM_END(Denial, DENIAL)
-// <advc.104m>
+// advc.104m:
 ENUM_START(AIDemand, AI_DEMAND)
 	DEMAND_GOLD,
 	DEMAND_MAP,
@@ -823,7 +840,7 @@ ENUM_START(AIDemand, AI_DEMAND)
 	DEMAND_BONUS,
 	DEMAND_GOLD_PER_TURN,
 	DEMAND_CITY, // advc.ctr
-ENUM_END(AIDemand, AI_DEMAND) // </advc.104m>
+ENUM_END(AIDemand, AI_DEMAND)
 
 ENUM_START(Domain, DOMAIN)
 	DOMAIN_SEA,
@@ -1172,10 +1189,9 @@ enum TradeableItems
 	/*  advc.034: Don't need to include this in iterations over TradeableItems
 		(although I suppose it wouldn't hurt) */
 	TRADE_DISENGAGE,
-}; /* <advc.enum> Need a more regular name for this enum, but the enum itself
+}; /* advc.enum: Need a more regular name for this enum, but the enum itself
 	  can't be renamed b/c it's used in the signatures of DLL-exported functions. */
 typedef TradeableItems TradeItemTypes;
-SET_ENUM_LENGTH_STATIC(TradeItem, TRADE_ITEM)
 
 ENUM_START(DiploEvent, DIPLOEVENT)
 	DIPLOEVENT_CONTACT,
@@ -1758,8 +1774,7 @@ enum FontSymbols
 /**                                                                                              */
 /**                                                                                              */
 /*************************************************************************************************/
-	/*  <advc.002f> From BULL. Only using AIRPORT_CHAR so far, but need all of them
-		in order to be compatible with BULL's GameFont.tga */
+	// <advc.002f> from BULL
 	CITIZEN_CHAR,
 	GREAT_GENERAL_CHAR,
 	AIRPORT_CHAR, // </advc.002f>

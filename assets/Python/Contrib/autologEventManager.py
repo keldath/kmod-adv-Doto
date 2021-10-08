@@ -336,7 +336,7 @@ class AutoLogEvent(AbstractAutoLogEvent):
 			self.storeStuff()
 
 			#zcurrturn = gc.getGame().getElapsedGameTurns() + 1 + AutologOpt.get4000BCTurn()
-			# advc.004: Not sure why +1
+			# advc.004: (Not sure why +1)
 			zcurrturn = gc.getGame().getGameTurn() + 1
 			zmaxturn = gc.getGame().getMaxTurns()
 			zturn = gc.getGame().getGameTurn() + 1
@@ -780,14 +780,18 @@ class AutoLogEvent(AbstractAutoLogEvent):
 
 	def onChangeWar(self, argsList):
 		bIsWar = argsList[0]
-		iPlayer = argsList[1]
+		iTeam = argsList[1] # advc.001: was iPlayer
 		iRivalTeam = argsList[2]
+		# <advc.001> Relevant when a colonial vassal is created
+		if iTeam == gc.getBARBARIAN_TEAM():
+			return # </advc.001>
 
 		if (gc.getGame().isFinalInitialized()
 		and AutologOpt.isLogWar()):
 
 #			Civ1 declares war on Civ2
-			iCiv1 = iPlayer
+			#iCiv1 = iPlayer
+			iCiv1 = gc.getTeam(iTeam).getLeaderID() # advc.001
 			iCiv2 = gc.getTeam(iRivalTeam).getLeaderID()
 			zsCiv1 = gc.getPlayer(iCiv1).getName() + " (" + gc.getPlayer(iCiv1).getCivilizationShortDescription(0) + ")"
 			zsCiv2 = gc.getPlayer(iCiv2).getName() + " (" + gc.getPlayer(iCiv2).getCivilizationShortDescription(0) + ")"

@@ -3,7 +3,6 @@
 #include "CvGameCoreDLL.h"
 #include "CvInfo_GameOption.h"
 #include "CvXMLLoadUtility.h"
-#include "CvDLLXMLIFaceBase.h"
 #include "CvInitCore.h" // advc.137
 
 
@@ -1048,7 +1047,7 @@ bool CvHandicapInfo::isAIFreeTechs(int i) const // advc.003t: Return type was in
 #if ENABLE_XML_FILE_CACHE
 void CvHandicapInfo::read(FDataStreamBase* stream)
 {
-	CvInfoBase::read(stream);
+	base_t::read(stream); // advc.tag
 	uint uiFlag=0;
 	stream->Read(&uiFlag);
 
@@ -1059,27 +1058,16 @@ void CvHandicapInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iStartingGold);
 	stream->Read(&m_iFreeUnits);
 	stream->Read(&m_iUnitCostPercent);
-	// <advc.251>
-	if(uiFlag >= 4)
-		stream->Read(&m_iBuildTimePercent);
-	else m_iBuildTimePercent = 100;
-	if(uiFlag >= 3) {
-		stream->Read(&m_iBaseGrowthThresholdPercent);
-		stream->Read(&m_iGPThresholdPercent);
-	}
-	else m_iBaseGrowthThresholdPercent = m_iGPThresholdPercent = 100;
-	if(uiFlag >= 5)
-		stream->Read(&m_iCultureLevelPercent);
-	else m_iCultureLevelPercent = 100;
+	stream->Read(&m_iBuildTimePercent);
+	stream->Read(&m_iBaseGrowthThresholdPercent);
+	stream->Read(&m_iGPThresholdPercent);
+	stream->Read(&m_iCultureLevelPercent);
 	// </advc.251>
 	stream->Read(&m_iResearchPercent);
 	// <advc.251>
-	if(uiFlag >= 3) {
-		stream->Read(&m_iTrainPercent);
-		stream->Read(&m_iConstructPercent);
-		stream->Read(&m_iCreatePercent);
-	}
-	else m_iTrainPercent = m_iConstructPercent = m_iCreatePercent = 100;
+	stream->Read(&m_iTrainPercent);
+	stream->Read(&m_iConstructPercent);
+	stream->Read(&m_iCreatePercent);
 	// </advc.251>
 	stream->Read(&m_iDistanceMaintenancePercent);
 	stream->Read(&m_iNumCitiesMaintenancePercent);
@@ -1120,12 +1108,8 @@ void CvHandicapInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iAIWorkRateModifier);
 	stream->Read(&m_iAIGrowthPercent);
 	// <advc.251>
-	if(uiFlag >= 3)
-		stream->Read(&m_iAIGPThresholdPercent);
-	else m_iAIGPThresholdPercent = 100;
-	if(uiFlag >= 1)
-		stream->Read(&m_iAIResearchPercent);
-	else m_iAIResearchPercent = 100;
+	stream->Read(&m_iAIGPThresholdPercent);
+	stream->Read(&m_iAIResearchPercent);
 	// </advc.251>
 	stream->Read(&m_iAITrainPercent);
 	stream->Read(&m_iAIWorldTrainPercent);
@@ -1143,8 +1127,7 @@ void CvHandicapInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iAIHandicapIncrementTurns); // advc.251
 	stream->Read(&m_iAIAdvancedStartPercent);
 	// <advc.148>
-	if(uiFlag >= 2)
-		stream->Read(&m_iAIAttitudeChangePercent); // </advc.148>
+	stream->Read(&m_iAIAttitudeChangePercent); // </advc.148>
 	stream->Read(&m_iNumGoodies);
 	stream->Read(&m_iDifficulty); // advc.250a
 	stream->ReadString(m_szHandicapName);
@@ -1161,13 +1144,8 @@ void CvHandicapInfo::read(FDataStreamBase* stream)
 
 void CvHandicapInfo::write(FDataStreamBase* stream)
 {
-	CvInfoBase::write(stream);
-	uint uiFlag;
-	//uiFlag = 1; // advc.251
-	//uiFlag = 2; // advc.148
-	//uiFlag = 3; // advc.251
-	//uiFlag = 4; // advc.251 (iBuildTimePercent)
-	uiFlag = 5; // advc.251 (iCultureLevelPercent)
+	base_t::write(stream); // advc.tag
+	uint uiFlag = 0;
 	stream->Write(uiFlag);
 	stream->Write(m_iFreeWinsVsBarbs);
 	stream->Write(m_iAnimalAttackProb);
@@ -1256,7 +1234,7 @@ void CvHandicapInfo::write(FDataStreamBase* stream)
 #endif
 bool CvHandicapInfo::read(CvXMLLoadUtility* pXML)
 {
-	if (!CvInfoBase::read(pXML))
+	if (!base_t::read(pXML)) // advc.tag
 		return false;
 
 	pXML->GetChildXmlValByName(&m_iFreeWinsVsBarbs, "iFreeWinsVsBarbs");

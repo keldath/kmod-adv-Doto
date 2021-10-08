@@ -3,7 +3,6 @@
 #include "CvGameCoreDLL.h"
 #include "CvInfo_Terrain.h"
 #include "CvXMLLoadUtility.h"
-#include "CvDLLXMLIFaceBase.h"
 
 
 CvTerrainInfo::CvTerrainInfo() :
@@ -16,8 +15,6 @@ m_iDefenseModifier(0),
 /**  Author: TheLadiesOgre                                                                          **/
 /**  Date: 15.10.2009                                                                               **/
 /**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: New Tag Definition                                                               **/
-/**  Notes:                                                                                         **/
 /*****************************************************************************************************/
 m_iHealthPercent(0),
 m_iTurnDamage(0),
@@ -33,8 +30,6 @@ m_bFoundFreshWater(false),
 /**  Author: TheLadiesOgre                                                                          **/
 /**  Date: 15.10.2009                                                                               **/
 /**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: New Tag Definition                                                               **/
-/**  Notes:                                                                                         **/
 /*****************************************************************************************************/
 m_bRequiresFlatlands(false),
 /*****************************************************************************************************/
@@ -89,13 +84,10 @@ int CvTerrainInfo::get3DAudioScriptFootstepIndex(int i) const
 	return m_pi3DAudioScriptFootstepIndex ? m_pi3DAudioScriptFootstepIndex[i]
 			: 0; // advc.003t: see get3DAudioScriptFootstepIndex
 }
-//keldath QA i hope thats a good location
 /*****************************************************************************************************/
 /**  Author: TheLadiesOgre                                                                          **/
 /**  Date: 15.10.2009                                                                               **/
 /**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: New Tag Definition                                                               **/
-/**  Notes:                                                                                         **/
 /*****************************************************************************************************/
 int CvTerrainInfo::getHealthPercent() const
 {
@@ -106,20 +98,7 @@ int CvTerrainInfo::getTurnDamage() const
 {
 	return m_iTurnDamage;
 }
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 15.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: New Tag Definition                                                               **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
-/*****************************************************************************************************/
-/**  Author: TheLadiesOgre                                                                          **/
-/**  Date: 15.10.2009                                                                               **/
-/**  ModComp: TLOTags                                                                               **/
-/**  Reason Added: New Tag Definition                                                               **/
-/**  Notes:                                                                                         **/
-/*****************************************************************************************************/
+
 bool CvTerrainInfo::isRequiresFlatlands() const
 {
 	return m_bRequiresFlatlands;
@@ -134,24 +113,24 @@ bool CvTerrainInfo::read(CvXMLLoadUtility* pXML)
 
 	pXML->GetChildXmlValByName(m_szArtDefineTag, "ArtDefineTag");
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"Yields"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"Yields"))
 	{
-		pXML->SetYields(&m_piYields);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piYields);
 	}
 	else pXML->InitList(&m_piYields, NUM_YIELD_TYPES);
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"RiverYieldChange"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"RiverYieldChange"))
 	{
-		pXML->SetYields(&m_piRiverYieldChange);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piRiverYieldChange);
 	}
 	else pXML->InitList(&m_piRiverYieldChange, NUM_YIELD_TYPES);
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"HillsYieldChange"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"HillsYieldChange"))
 	{
-		pXML->SetYields(&m_piHillsYieldChange);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piHillsYieldChange);
 	}
 	else pXML->InitList(&m_piHillsYieldChange, NUM_YIELD_TYPES);
 
@@ -416,30 +395,30 @@ bool CvFeatureInfo::read(CvXMLLoadUtility* pXML)
 
 	pXML->GetChildXmlValByName(m_szArtDefineTag, "ArtDefineTag");
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"YieldChanges"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"YieldChanges"))
 	{
-		pXML->SetYields(&m_piYieldChange);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piYieldChange);
 	}
 	else
 	{
 		pXML->InitList(&m_piYieldChange, NUM_YIELD_TYPES);
 	}
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"RiverYieldChange"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"RiverYieldChange"))
 	{
-		pXML->SetYields(&m_piRiverYieldChange);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piRiverYieldChange);
 	}
 	else
 	{
 		pXML->InitList(&m_piRiverYieldChange, NUM_YIELD_TYPES);
 	}
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"HillsYieldChange"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"HillsYieldChange"))
 	{
-		pXML->SetYields(&m_piHillsYieldChange);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piHillsYieldChange);
 	}
 	else pXML->InitList(&m_piHillsYieldChange, NUM_YIELD_TYPES);
 
@@ -727,7 +706,7 @@ void CvBonusInfo::read(FDataStreamBase* stream)
 	{
 		int iSymbol;
 		stream->Read(&iSymbol);
-		m_wcSymbol = toWChar(iSymbol);
+		m_wcSymbol = safeIntCast<wchar>(iSymbol);
 	}
 	stream->Read((int*)&m_eTechReveal);
 	stream->Read((int*)&m_eTechCityTrade);
@@ -827,18 +806,18 @@ bool CvBonusInfo::read(CvXMLLoadUtility* pXML)
 	if (!CvInfoBase::read(pXML))
 		return false;
 
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eBonusClassType, "BonusClassType");
+	pXML->SetInfoIDFromChildXmlVal(m_eBonusClassType, "BonusClassType");
 
 	pXML->GetChildXmlValByName(m_szArtDefineTag, "ArtDefineTag");
 
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eTechReveal, "TechReveal");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eTechCityTrade, "TechCityTrade");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eTechObsolete, "TechObsolete");
+	pXML->SetInfoIDFromChildXmlVal(m_eTechReveal, "TechReveal");
+	pXML->SetInfoIDFromChildXmlVal(m_eTechCityTrade, "TechCityTrade");
+	pXML->SetInfoIDFromChildXmlVal(m_eTechObsolete, "TechObsolete");
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"YieldChanges"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"YieldChanges"))
 	{
-		pXML->SetYields(&m_piYieldChange);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piYieldChange);
 	}
 	else pXML->InitList(&m_piYieldChange, NUM_YIELD_TYPES);
 
@@ -1023,12 +1002,12 @@ bool CvRouteInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iMovementCost, "iMovement");
 	pXML->GetChildXmlValByName(&m_iFlatMovementCost, "iFlatMovement");
 
-	pXML->SetInfoIDFromChildXmlVal((int&)m_ePrereqBonus, "BonusType");
+	pXML->SetInfoIDFromChildXmlVal(m_ePrereqBonus, "BonusType");
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"Yields"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"Yields"))
 	{
-		pXML->SetYields(&m_piYieldChange);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piYieldChange);
 	}
 	else pXML->InitList(&m_piYieldChange, NUM_YIELD_TYPES);
 
@@ -1173,8 +1152,6 @@ void CvImprovementInfo::setAddsFreshWaterInRadius(int i)
 	m_iAddsFreshWaterInRadius = i;
 }
 // Deliverator
-
-
 // < JCultureControl Mod Start >
 int CvImprovementInfo::getCultureBorderRange() const
 {
@@ -1662,38 +1639,38 @@ bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 
 	pXML->GetChildXmlValByName(m_szArtDefineTag, "ArtDefineTag");
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"PrereqNatureYields"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"PrereqNatureYields"))
 	{
-		pXML->SetYields(&m_piPrereqNatureYield);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piPrereqNatureYield);
 	}
 	else pXML->InitList(&m_piPrereqNatureYield, NUM_YIELD_TYPES);
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"YieldChanges"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"YieldChanges"))
 	{
-		pXML->SetYields(&m_piYieldChange);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piYieldChange);
 	}
 	else pXML->InitList(&m_piYieldChange, NUM_YIELD_TYPES);
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"RiverSideYieldChange"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"RiverSideYieldChange"))
 	{
-		pXML->SetYields(&m_piRiverSideYieldChange);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piRiverSideYieldChange);
 	}
 	else pXML->InitList(&m_piRiverSideYieldChange, NUM_YIELD_TYPES);
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"HillsYieldChange"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"HillsYieldChange"))
 	{
-		pXML->SetYields(&m_piHillsYieldChange);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piHillsYieldChange);
 	}
 	else pXML->InitList(&m_piHillsYieldChange, NUM_YIELD_TYPES);
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"IrrigatedYieldChange"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"IrrigatedYieldChange"))
 	{
-		pXML->SetYields(&m_piIrrigatedChange);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piIrrigatedChange);
 	}
 	else pXML->InitList(&m_piIrrigatedChange, NUM_YIELD_TYPES);
  // < JImprovementLimit Mod Start >
@@ -1706,7 +1683,6 @@ bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_bHillsMakesValid, "bHillsMakesValid");
 //===NM=====Mountain Mod===0=====
 	pXML->GetChildXmlValByName(&m_bPeakMakesValid, "bPeakMakesValid", false);
-//===NM=====Mountain Mod===X=====
 // davidlallen: mountain limitations next line
 	pXML->GetChildXmlValByName(&m_bPeakMakesInvalid, "bPeakMakesInvalid", false);
 //===NM=====Mountain Mod===X=====
@@ -1788,8 +1764,7 @@ bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 								if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), bTech ?
 									"TechYields": "RouteYields"))
 								{
-									pXML->SetYields(&(*pppiYieldChanges)[iIndex]);
-									gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+									pXML->SetYieldArray(&(*pppiYieldChanges)[iIndex]);
 								}
 								else pXML->InitList(&(*pppiYieldChanges)[iIndex], NUM_YIELD_TYPES);
 							}

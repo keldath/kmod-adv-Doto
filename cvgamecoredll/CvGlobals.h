@@ -357,6 +357,7 @@ public:
 	CvString& getFlavorTypes(FlavorTypes e);
 
 	DllExport int& getNumArtStyleTypes();
+	int const& getNumArtStyleTypes() const { return m_iNumArtStyleTypes; } // advc
 	CvString*& getArtStyleTypes();
 	DllExport CvString& getArtStyleTypes(ArtStyleTypes e);
 
@@ -566,7 +567,8 @@ public:
 		DO(LFB_BASEDONLIMITED) DO(LFB_BASEDONHEALER) DO(LFB_DEFENSIVEADJUSTMENT) \
 		DO(LFB_USESLIDINGSCALE) DO(LFB_ADJUSTNUMERATOR) DO(LFB_ADJUSTDENOMINATOR) \
 		DO(LFB_USECOMBATODDS) /* BETTER_BTS_AI_MOD: END */ \
-		DO(POWER_CORRECTION) /* advc.104 */
+		DO(POWER_CORRECTION) /* advc.104 */ \
+		DO(RF_PLAYER_HANDICAP_ADJUSTMENT) /* advc.708 */
 	#define MAKE_ENUMERATOR(VAR) VAR,
 	enum GlobalDefines
 	{
@@ -841,7 +843,7 @@ protected:
 
 	FMPIManager * m_pFMPMgr;
 
-	CvRandomExtended* m_asyncRand; // advc.007b (was CvRandom)
+	CvRandomExtended* m_asyncRand; // advc.007c (was CvRandom)
 	CvPythonCaller* m_pPythonCaller; // advc.003y
 	CvDLLLogger* m_pLogger;
 	CvGameAI* m_game;
@@ -1002,16 +1004,6 @@ __inline CvGlobals const& CvGlobals::getConstInstance()
 {
 	return gGlobals;
 }
-
-/*  <advc.enum> These aren't member functions because they need to overload the
-	SET_ENUM_LENGTH_STATIC functions defined in CvEnums.h. I'd rather not make
-	those functions members of CvGlobals. (Though that could make it easier for
-	the compiler to remove unused functions. Hmm.) */
-DO_FOR_EACH_DYN_INFO_TYPE(SET_ENUM_LENGTH)
-// These two have a dynamic length (not known at compile time) but aren't in the DYN_INFO_TYPE list
-inline WorldSizeTypes getEnumLength(WorldSizeTypes) { return (WorldSizeTypes)gGlobals.getNumWorldInfos(); }
-inline FlavorTypes getEnumLength(FlavorTypes) { return (FlavorTypes)gGlobals.getNumFlavorTypes(); }
-// </advc.enum>
 
 
 // helpers ...

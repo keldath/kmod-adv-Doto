@@ -22,6 +22,10 @@ class UWAICity; // advc.104d
 class CvPlayerAI : public CvPlayer
 {
 public:
+
+#ifdef _DEBUG
+	__forceinline // Annoying to step into by accident
+#endif
 	// advc.003u: Renamed from getPlayer
 	static CvPlayerAI& AI_getPlayer(PlayerTypes ePlayer)
 	{
@@ -119,6 +123,9 @@ public:
 	//struct CvFoundSettings { ... } // K-Mod
 	//short AI_foundValue_bulk(int iX, int iY, const CvFoundSettings& kSet) const; // K-Mod
 	//int AI_countDeadlockedBonuses(CvPlot const* pPlot) const;
+	// Obsoleted by K-Mod:
+	/*int AI_getOurPlotStrength(CvPlot* pPlot, int iRange, bool bDefensiveBonuses, bool bTestMoves) const;
+	int AI_getEnemyPlotStrength(CvPlot* pPlot, int iRange, bool bDefensiveBonuses, bool bTestMoves) const;*/ // BtS
 
 	bool AI_isAreaAlone(CvArea const& kArea) const;
 	bool AI_isCapitalAreaAlone() const;
@@ -164,14 +171,15 @@ public:
 			PlayerTypes eFromPlayer = NO_PLAYER) const; // advc.144
 	scaled AI_getTechRank(TechTypes eTech) const; // advc.550g
 	// advc:
-	void AI_calculateOwnedBonuses(EnumMap<BonusClassTypes,int>& kBonusClassRevealed,
-			EnumMap<BonusClassTypes,int>& viBonusClassUnrevealed,
-			EnumMap<BonusClassTypes,int>& viBonusClassHave) const;
+	void AI_calculateTechRevealBonuses(
+			EagerEnumMap<BonusClassTypes,int>& kBonusClassRevealed,
+			EagerEnumMap<BonusClassTypes,int>& viBonusClassUnrevealed,
+			EagerEnumMap<BonusClassTypes,int>& viBonusClassHave) const;
 	// BETTER_BTS_AI_MOD, Tech AI, 03/18/10, jdog5000: START
 	int AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech, bool bAsync,
-			EnumMap<BonusClassTypes,int> const& kBonusClassRevealed,
-			EnumMap<BonusClassTypes,int> const& viBonusClassUnrevealed,
-			EnumMap<BonusClassTypes,int> const& viBonusClassHave,
+			EagerEnumMap<BonusClassTypes,int> const& kBonusClassRevealed,
+			EagerEnumMap<BonusClassTypes,int> const& viBonusClassUnrevealed,
+			EagerEnumMap<BonusClassTypes,int> const& viBonusClassHave,
 			PlayerTypes eFromPlayer = NO_PLAYER, // advc.144
 			bool bRandomize = true) const; // advc
 	int AI_obsoleteBuildingPenalty(TechTypes eTech, bool bConstCache) const; // K-Mod
@@ -238,6 +246,11 @@ public:
 	//int AI_getKnownPlayerRank(PlayerTypes ePlayer) const; // advc.sha
 	// END: Show Hidden Attitude Mod
 	int AI_getExpansionistAttitude(PlayerTypes ePlayer) const; // advc.130w
+	// <advc.130n>
+	void AI_updateDifferentReligionThreat(ReligionTypes eReligion = NO_RELIGION,
+			bool bUpdateAttitude = true);
+	void AI_setDifferentReligionThreat(ReligionTypes eReligion, scaled rNewValue,
+			bool bUpdateAttitude = true); // </advc.130n>
 //dune wars - hated civs
 	int AI_getHatedCivicAttitude(PlayerTypes ePlayer) const; //a1021
 	int AI_getFavoriteCivilizationAttitude(PlayerTypes ePlayer) const; //a1021
@@ -495,13 +508,16 @@ public:
 		should be changed. */
 	void AI_processPeacetimeValue(PlayerTypes eFromPlayer, int iChange,
 			bool bGrant, bool bPeace = false, TeamTypes ePeaceTradeTarget = NO_TEAM,
-			TeamTypes eWarTradeTarget = NO_TEAM); // </advc.130p>
+			TeamTypes eWarTradeTarget = NO_TEAM, bool bUpdateAttitude = true);
+	// </advc.130p>
 	int AI_getPeacetimeTradeValue(PlayerTypes eIndex) const;
 	// advc.130p: Renamed from changePeacetimeTradeValue
-	void AI_processPeacetimeTradeValue(PlayerTypes eIndex, int iChange);
+	void AI_processPeacetimeTradeValue(PlayerTypes eIndex, int iChange,
+			bool bUpdateAttitude = true); // advc.130p
 	int AI_getPeacetimeGrantValue(PlayerTypes eIndex) const;
 	// advc.130p: Renamed from changePeacetimeTradeValue
-	void AI_processPeacetimeGrantValue(PlayerTypes eIndex, int iChange);
+	void AI_processPeacetimeGrantValue(PlayerTypes eIndex, int iChange,
+			bool bUpdateAttitude = true); // advc.130p
 	// <advc.130k> To make exponential decay more convenient
 	void AI_setSameReligionCounter(PlayerTypes eIndex, int iValue);
 	void AI_setDifferentReligionCounter(PlayerTypes eIndex, int iValue);
@@ -569,7 +585,7 @@ public:
 	/*	Call locations of this function and similar functions at CvTeamAI, CvGameAI
 		aren't tagged with "advc.erai" comments. Note: Should not replace all uses of
 		era numbers in AI code with these functions. For example, a mod with only
-		3 eras	won't necessarily have more techs per era than BtS. */
+		3 eras won't necessarily have more techs per era than BtS. */
 	scaled AI_getCurrEraFactor() const { return m_rCurrEraFactor; }
 	int AI_getCurrEra() const { return AI_getCurrEraFactor().uround(); }
 	// </advc.erai>
@@ -782,6 +798,7 @@ protected:
 	int* m_aiBonusValueTrade; // advc.036
 	int* m_aiUnitClassWeights;
 	int* m_aiUnitCombatWeights;
+	ArrayEnumMap<ReligionTypes,scaled> m_arDifferentReligionThreat; // advc.130n
 	// <advc.130c>
 	bool m_abTheyFarAhead[MAX_CIV_PLAYERS];
 	bool m_abTheyBarelyAhead[MAX_CIV_PLAYERS]; // </advc.130c>

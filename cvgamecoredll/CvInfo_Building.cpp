@@ -3,7 +3,6 @@
 #include "CvGameCoreDLL.h"
 #include "CvInfo_Building.h"
 #include "CvXMLLoadUtility.h"
-#include "CvDLLXMLIFaceBase.h"
 
 CvBuildingInfo::CvBuildingInfo() :
 m_eBuildingClassType(NO_BUILDINGCLASS),
@@ -350,7 +349,6 @@ bool CvBuildingInfo::isRequiredInputBonus(int iBonus) const
 {
 	FAssertMsg(iBonus < GC.getNumBonusInfos(), "Index out of bounds");
 	FAssertMsg(iBonus > -1, "Index out of bounds");
-
 	return (getRequiredInputBonusValue(iBonus) > 0);
 }
 
@@ -381,7 +379,6 @@ bool CvBuildingInfo::isBuildingOutputBonus(int iBonus) const
 {
 	FAssertMsg(iBonus < GC.getNumBonusInfos(), "Index out of bounds");
 	FAssertMsg(iBonus > -1, "Index out of bounds");
-
 	return (getBuildingOutputBonusValues(iBonus) > 0);
 }
 
@@ -408,62 +405,6 @@ int CvBuildingInfo::getBuildingOutputBonusCount() const
 	return buildingOutputBonusCount;
 }
 // < Doto-Building Resource Converter End   >
-
-/************************************************************************************************/
-/* Doto-City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
-/************************************************************************************************/
-/*moved to the .h file - keldath
-int CvBuildingInfo::getNumCitySizeBldPrereq() const
-{
-	return m_iNumCitySizeBldPrereq;
-}
-*/
-/************************************************************************************************/
-/* Doto-City Size Prerequisite                  END                                                  */
-/************************************************************************************************/
-/* Doto-Population Limit ModComp - Beginning */
-/*moved to .h - keldath
-int CvBuildingInfo::getPopulationLimitChange() const
-{
-	return m_iPopulationLimitChange;
-}
-*/
-/* Doto-Population Limit ModComp - End */
-
-/********************************************************************************/
-/**		Doto-REVDCM									2/16/10				phungus420	*/
-/**																				*/
-/**		CanConstruct															*/
-/********************************************************************************/
-/* moved to .h file - keldath
-int CvBuildingInfo::getPrereqGameOption() const					
-{
-	return m_iPrereqGameOption;
-}
-
-int CvBuildingInfo::getNotGameOption() const			
-{
-	return m_iNotGameOption;
-}
-*/
-/********************************************************************************/
-/**		Doto-REVDCM									END								*/
-/********************************************************************************/
-
-//Doto-Shqype Vicinity Bonus Start
-/*int CvBuildingInfo::getPrereqVicinityBonus() const		
-{
-	return m_iPrereqVicinityBonus;
-}*/
-//Doto-Shqype Vicinity Bonus End
-/*** Doto-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
-/*moved to .h file - kedlath
-int CvBuildingInfo::getFreeSpecificTech() const
-{
-	return m_iFreeSpecificTech;
-}
-*/
-/*** Doto-HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
 //Doto-Shqype Vicinity Bonus Start
 //int CvBuildingInfo::getPrereqOrVicinityBonuses(int i) const		
 //{
@@ -677,18 +618,14 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->ReadString(m_szMovieDefineTag);
 	// <advc.003t>
 	int iPrereqAndTechs;
-	if (uiFlag >= 1)
-		stream->Read(&iPrereqAndTechs);
-	else iPrereqAndTechs = GC.getDefineINT(CvGlobals::NUM_BUILDING_AND_TECH_PREREQS);
+	stream->Read(&iPrereqAndTechs);
 	if (iPrereqAndTechs > 0)
 	{
 		m_aePrereqAndTechs.resize(iPrereqAndTechs);
 		stream->Read(iPrereqAndTechs, (int*)&m_aePrereqAndTechs[0]);
 	}
 	int iPrereqOrBonuses;
-	if (uiFlag >= 1)
-		stream->Read(&iPrereqOrBonuses);
-	else iPrereqOrBonuses = GC.getDefineINT(CvGlobals::NUM_BUILDING_PREREQ_OR_BONUSES);
+	stream->Read(&iPrereqOrBonuses);
 	if (iPrereqOrBonuses > 0)
 	{
 		m_aePrereqOrBonuses.resize(iPrereqOrBonuses);
@@ -728,8 +665,8 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	CommerceFlexible().read(stream);
 	CommerceChangeOriginalOwner().read(stream);
 	BuildingClassNeededInCity().read(stream);
-	SpecialistYieldChange().readEncode<YieldChangeMap>(stream);
-	BonusYieldModifier().readEncoded<YieldPercentMap>(stream);
+	SpecialistYieldChange().read(stream);
+	BonusYieldModifier().read(stream);
 	// </advc.003t>
 //Doto-Shqype Vicinity Bonus Start
 //	SAFE_DELETE_ARRAY(m_piPrereqOrVicinityBonuses);
@@ -750,9 +687,7 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 void CvBuildingInfo::write(FDataStreamBase* stream)
 {
 	base_t::write(stream);
-	uint uiFlag;
-	//uiFlag = 0;
-	uiFlag = 1; // advc.003t
+	uint uiFlag = 0;
 	stream->Write(uiFlag);
 
 	stream->Write(m_eBuildingClassType);
@@ -765,7 +700,7 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_ePowerBonus);
 	stream->Write(m_eFreeBonus);
 	stream->Write(m_iNumFreeBonuses);
-//Doto-prereqMust+tholish
+//Doto-prereqMust+tholish inactive buildings
 	stream->Write(m_iPrereqMustAll);
 	// < Doto-Building Resource Converter Start >	
 	stream->Write(GC.getNumBonusInfos(), m_paiRequiredInputBonuses);
@@ -931,10 +866,9 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 		stream->Write(iPrereqOrBonuses);
 		if (iPrereqOrBonuses > 0)
 			stream->Write(iPrereqOrBonuses, (int*)&m_aePrereqOrBonuses[0]);
-	} // </advc.003t>
-	//Doto-Shqype Vicinity Bonus Add
-	//	stream->Write(GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), m_piPrereqOrVicinityBonuses);  
 	}
+	//Doto-Shqype Vicinity Bonus Add
+	//stream->Write(GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), m_piPrereqOrVicinityBonuses);  
 	ProductionTraits().write(stream);
 	HappinessTraits().write(stream);
 	SeaPlotYieldChange().write(stream);
@@ -969,8 +903,8 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	CommerceFlexible().write(stream);
 	CommerceChangeOriginalOwner().write(stream);
 	BuildingClassNeededInCity().write(stream);
-	SpecialistYieldChange().writeEncoded<YieldChangeMap>(stream);
-	BonusYieldModifier().writeEncoded<YieldPercentMap>(stream);
+	SpecialistYieldChange().write(stream);
+	BonusYieldModifier().write(stream);
 	// </advc.003t>
 	// Doto-davidlallen: building bonus yield, commerce start
 	stream->Write(m_iBonusConsumed);
@@ -992,15 +926,9 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 		pXML->setAssertMandatoryEnabled(false);
 	CvString szTextVal;
 //keldath-qa10-the above was changed by f1rpo 097
-// < Doto-Civic Infos Plus Start > //ADDED BY KELDATH	
-//	int j=0;						//loop counter
-//	int k=0;						//loop counter
-//	int iNumSibs=0;				// the number of siblings the current xml node has
-//	int iNumChildren;				// the number of children the current node has
-// < Doto-Civic Infos Plus END > //ADDED BY KELDATH
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eBuildingClassType, "BuildingClass");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eSpecialBuildingType, "SpecialBuildingType");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eAdvisorType, "Advisor");
+	pXML->SetInfoIDFromChildXmlVal(m_eBuildingClassType, "BuildingClass");
+	pXML->SetInfoIDFromChildXmlVal(m_eSpecialBuildingType, "SpecialBuildingType");
+	pXML->SetInfoIDFromChildXmlVal(m_eAdvisorType, "Advisor");
 	pXML->GetChildXmlValByName(m_szArtDefineTag, "ArtDefineTag");
 	pXML->GetChildXmlValByName(m_szMovieDefineTag, "MovieDefineTag");
 /********************************************************************************/
@@ -1008,27 +936,26 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 /**																				*/
 /**		CanConstruct															*/
 /********************************************************************************/
-	pXML->GetChildXmlValByName(szTextVal, "PrereqGameOption",	""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "PrereqGameOption","NONE"); // f1rpo
 	m_iPrereqGameOption = pXML->FindInInfoClass(szTextVal);
-
-	pXML->GetChildXmlValByName(szTextVal, "NotGameOption",""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "NotGameOption", "NONE"); // f1rpo
 	m_iNotGameOption = pXML->FindInInfoClass(szTextVal);
 /********************************************************************************/
 /**		Doto-REVDCM									END								*/
 /********************************************************************************/
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eHolyCity, "HolyCity");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eReligionType, "ReligionType");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eStateReligion, "StateReligion");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_ePrereqReligion, "PrereqReligion");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_ePrereqCorporation, "PrereqCorporation");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eFoundsCorporation, "FoundsCorporation");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eGlobalReligionCommerce, "GlobalReligionCommerce");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eGlobalCorporationCommerce, "GlobalCorporationCommerce");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eVictoryPrereq, "VictoryPrereq");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eFreeStartEra, "FreeStartEra");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eMaxStartEra, "MaxStartEra");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eObsoleteTech, "ObsoleteTech");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_ePrereqAndTech, "PrereqTech");
+	pXML->SetInfoIDFromChildXmlVal(m_eHolyCity, "HolyCity");
+	pXML->SetInfoIDFromChildXmlVal(m_eReligionType, "ReligionType");
+	pXML->SetInfoIDFromChildXmlVal(m_eStateReligion, "StateReligion");
+	pXML->SetInfoIDFromChildXmlVal(m_ePrereqReligion, "PrereqReligion");
+	pXML->SetInfoIDFromChildXmlVal(m_ePrereqCorporation, "PrereqCorporation");
+	pXML->SetInfoIDFromChildXmlVal(m_eFoundsCorporation, "FoundsCorporation");
+	pXML->SetInfoIDFromChildXmlVal(m_eGlobalReligionCommerce, "GlobalReligionCommerce");
+	pXML->SetInfoIDFromChildXmlVal(m_eGlobalCorporationCommerce, "GlobalCorporationCommerce");
+	pXML->SetInfoIDFromChildXmlVal(m_eVictoryPrereq, "VictoryPrereq");
+	pXML->SetInfoIDFromChildXmlVal(m_eFreeStartEra, "FreeStartEra");
+	pXML->SetInfoIDFromChildXmlVal(m_eMaxStartEra, "MaxStartEra");
+	pXML->SetInfoIDFromChildXmlVal(m_eObsoleteTech, "ObsoleteTech");
+	pXML->SetInfoIDFromChildXmlVal(m_ePrereqAndTech, "PrereqTech");
 
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "TechTypes"))
 	{
@@ -1086,7 +1013,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}*/
 //Doto-Shqype Vicinity Bonus End
-	pXML->SetInfoIDFromChildXmlVal((int&)m_ePrereqAndBonus, "Bonus");
+	pXML->SetInfoIDFromChildXmlVal(m_ePrereqAndBonus, "Bonus");
 
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "PrereqBonuses"))
 	{
@@ -1117,25 +1044,23 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(ProductionTraits(), "ProductionTraits");
 	pXML->SetVariableListTagPair(HappinessTraits(), "HappinessTraits");
 
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eNoBonus, "NoBonus");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_ePowerBonus, "PowerBonus");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eFreeBonus, "FreeBonus");
+	pXML->SetInfoIDFromChildXmlVal(m_eNoBonus, "NoBonus");
+	pXML->SetInfoIDFromChildXmlVal(m_ePowerBonus, "PowerBonus");
+	pXML->SetInfoIDFromChildXmlVal(m_eFreeBonus, "FreeBonus");
 
 	pXML->GetChildXmlValByName(&m_iNumFreeBonuses, "iNumFreeBonuses");
 //Doto-prereqMust+tholish
 	pXML->GetChildXmlValByName(&m_iPrereqMustAll, "iPrereqMustAll",0);
 // < Doto-building Resource Converter Start >
 //keldath qa2 - done - from f1rpo - The sizeof... parameter was unused, so I've removed it.
-//	pXML->SetVariableListTagPair(&m_paiRequiredInputBonuses, "RequiredInputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
-//	pXML->SetVariableListTagPair(&m_paiBuildingOutputBonuses, "BuildingOutputBonuses", sizeof(GC.getBonusInfo((BonusTypes)0)), GC.getNumBonusInfos());
 	pXML->SetVariableListTagPair(&m_paiRequiredInputBonuses, "RequiredInputBonuses", GC.getNumBonusInfos());
 	pXML->SetVariableListTagPair(&m_paiBuildingOutputBonuses, "BuildingOutputBonuses", GC.getNumBonusInfos());
 	// < Doto-Building Resource Converter End   >
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eFreeBuildingClass, "FreeBuilding");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eFreePromotion, "FreePromotion");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eCivicOption, "CivicOption");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eGreatPeopleUnitClass, "GreatPeopleUnitClass");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eVoteSourceType, "DiploVoteType");
+	pXML->SetInfoIDFromChildXmlVal(m_eFreeBuildingClass, "FreeBuilding");
+	pXML->SetInfoIDFromChildXmlVal(m_eFreePromotion, "FreePromotion");
+	pXML->SetInfoIDFromChildXmlVal(m_eCivicOption, "CivicOption");
+	pXML->SetInfoIDFromChildXmlVal(m_eGreatPeopleUnitClass, "GreatPeopleUnitClass");
+	pXML->SetInfoIDFromChildXmlVal(m_eVoteSourceType, "DiploVoteType");
 
 	pXML->GetChildXmlValByName(&m_iGreatPeopleRateChange, "iGreatPeopleRateChange");
 	pXML->GetChildXmlValByName(&m_bTeamShare, "bTeamShare");
@@ -1277,7 +1202,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 
 	pXML->SetVariableListPerCommerce(CommerceFlexible(), "CommerceFlexibles");
 	pXML->SetVariableListPerCommerce(CommerceChangeOriginalOwner(), "CommerceChangeOriginalOwners");
- 
+
 	pXML->GetChildXmlValByName(m_szConstructSound, "ConstructSound");
 
 	pXML->SetVariableListTagPair(BonusHealthChanges(), "BonusHealthChanges");
@@ -1290,16 +1215,15 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(PrereqNumOfBuildingClass(), "PrereqBuildingClasses");
 	pXML->SetVariableListTagPair(BuildingClassNeededInCity(), "BuildingClassNeededs");
 
-	pXML->SetVariableListTagYield<YieldChangeMap>(SpecialistYieldChange(),
+	pXML->SetVariableListTagRate(SpecialistYieldChange(),
 			"SpecialistYieldChange", "SpecialistType", "YieldChanges");
-	pXML->SetVariableListTagYield<YieldPercentMap>(BonusYieldModifier(),
+	pXML->SetVariableListTagRate(BonusYieldModifier(),
 			"BonusYieldModifier", "BonusType", "YieldModifiers");
 	pXML->SetVariableListTagPair(FlavorValue(), "Flavors");
 	pXML->SetVariableListTagPair(ImprovementFreeSpecialist(), "ImprovementFreeSpecialists");
 	pXML->SetVariableListTagPair(BuildingHappinessChanges(), "BuildingHappinessChanges");
 // Doto-davidlallen: building bonus yield, commerce start
-	pXML->GetChildXmlValByName(szTextVal, "BonusConsumed",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "BonusConsumed",""); // f1rpo
 	m_iBonusConsumed = pXML->FindInInfoClass(szTextVal);
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "CommerceProduced"))
 	{
@@ -1322,8 +1246,6 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 // Doto-davidlallen: building bonus yield, commerce end
 	// Doto-<advc.006b> and keldath - do no display building placeholder- i think
 	if(bPlaceHolder)
-		//pXML->setAssertMandatory(true); // </advc.006b>
-		//pXML->setAssertMandatory(true); // </advc.006b> //CODE FROM 095 - KELDATH ADJUSTMENT
 		pXML->setAssertMandatoryEnabled(true);
 	return true;
 }
@@ -1429,9 +1351,9 @@ bool CvSpecialBuildingInfo::read(CvXMLLoadUtility* pXML)
 	if (!CvInfoBase::read(pXML))
 		return false;
 
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eObsoleteTech, "ObsoleteTech");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eTechPrereq, "TechPrereq");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eTechPrereqAnyone, "TechPrereqAnyone");
+	pXML->SetInfoIDFromChildXmlVal(m_eObsoleteTech, "ObsoleteTech");
+	pXML->SetInfoIDFromChildXmlVal(m_eTechPrereq, "TechPrereq");
+	pXML->SetInfoIDFromChildXmlVal(m_eTechPrereqAnyone, "TechPrereqAnyone");
 
 	pXML->GetChildXmlValByName(&m_bValid, "bValid");
 
@@ -1465,7 +1387,7 @@ bool CvVoteSourceInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(m_szPopupText, "PopupText");
 	pXML->GetChildXmlValByName(m_szSecretaryGeneralText, "SecretaryGeneralText");
 
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eFreeSpecialist, "FreeSpecialist");
+	pXML->SetInfoIDFromChildXmlVal(m_eFreeSpecialist, "FreeSpecialist");
 	{
 		CvString szTextVal;
 		pXML->GetChildXmlValByName(szTextVal, "Civic");
@@ -1631,8 +1553,8 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 	if (!CvInfoBase::read(pXML))
 		return false;
 
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eVictoryPrereq, "VictoryPrereq");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eTechPrereq, "TechPrereq");
+	pXML->SetInfoIDFromChildXmlVal(m_eVictoryPrereq, "VictoryPrereq");
+	pXML->SetInfoIDFromChildXmlVal(m_eTechPrereq, "TechPrereq");
 
 	pXML->GetChildXmlValByName(&m_iMaxGlobalInstances, "iMaxGlobalInstances");
 	pXML->GetChildXmlValByName(&m_iMaxTeamInstances, "iMaxTeamInstances");
@@ -1647,8 +1569,8 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 	//Doto-DPII < Maintenance Modifiers >
 	FAssertBounds(0, MAX_PLAYERS, m_iTechShare); // advc
 
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eEveryoneSpecialUnit, "EveryoneSpecialUnit");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eEveryoneSpecialBuilding, "EveryoneSpecialBuilding");
+	pXML->SetInfoIDFromChildXmlVal(m_eEveryoneSpecialUnit, "EveryoneSpecialUnit");
+	pXML->SetInfoIDFromChildXmlVal(m_eEveryoneSpecialBuilding, "EveryoneSpecialBuilding");
 
 	pXML->GetChildXmlValByName(&m_bSpaceship, "bSpaceship");
 	pXML->GetChildXmlValByName(&m_bAllowsNukes, "bAllowsNukes");
@@ -1658,20 +1580,16 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(VictoryThreshold(), "VictoryThresholds");
 	pXML->SetVariableListTagPair(VictoryMinThreshold(), "VictoryMinThresholds");
 	/*	<advc.003t> Min threshold defaults to the regular threshold.
-		(BtS had handled this in the getter.)
-		Awkward to write b/c CvInfoEnumMap isn't supposed to be modified
-		once loaded from XML. */
+		(BtS had handled this in the getter.) */
 	if (VictoryThreshold().isAnyNonDefault())
 	{
-		ListEnumMap<VictoryTypes,short> newMinThresh;
 		FOR_EACH_ENUM(Victory)
 		{
-			if (getVictoryMinThreshold(eLoopVictory) != 0)
-				newMinThresh.insert(eLoopVictory, getVictoryMinThreshold(eLoopVictory));
-			else newMinThresh.insert(eLoopVictory, getVictoryThreshold(eLoopVictory));
+			VictoryMinThreshold().set(eLoopVictory,
+					getVictoryMinThreshold(eLoopVictory) == 0 ?
+					getVictoryThreshold(eLoopVictory) :
+					getVictoryMinThreshold(eLoopVictory));
 		}
-		newMinThresh.finalizeInsertions();
-		VictoryMinThreshold() = newMinThresh;
 	} // </advc.003t>
 	pXML->GetChildXmlValByName(&m_iVictoryDelayPercent, "iVictoryDelayPercent");
 	pXML->GetChildXmlValByName(&m_iSuccessRate, "iSuccessRate");
@@ -1692,7 +1610,7 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 bool CvProjectInfo::readPass2(CvXMLLoadUtility* pXML)
 {
 	pXML->SetVariableListTagPair(ProjectsNeeded(), "PrereqProjects");
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eAnyoneProjectPrereq, "AnyonePrereqProject");
+	pXML->SetInfoIDFromChildXmlVal(m_eAnyoneProjectPrereq, "AnyonePrereqProject");
 
 	return true;
 }

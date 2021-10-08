@@ -933,6 +933,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<YieldChanges>
 				<iYieldChange>0</iYieldChange>
 				<iYieldChange>1</iYieldChange>
+				<!-- K-Mod: was 0 -->
 				<iYieldChange>1</iYieldChange>
 			</YieldChanges>
 			<bActsAsCity>0</bActsAsCity>
@@ -977,6 +978,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					<TechYields>
 						<iYield>0</iYield>
 						<iYield>0</iYield>
+						<!-- K-Mod: was 2 -->
 						<iYield>1</iYield>
 					</TechYields>
 				</TechYieldChange>
@@ -1659,6 +1661,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<Description>TXT_KEY_IMPROVEMENT_HAMLET</Description>
 			<Civilopedia>TXT_KEY_IMPROVEMENT_HAMLET_PEDIA</Civilopedia>
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_HAMLET</ArtDefineTag>
+			<!-- K-Mod: same requirements as for Cottage -->
 			<PrereqNatureYields>
 				<iYield>1</iYield>
 				<iYield>0</iYield>
@@ -1671,6 +1674,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			</YieldChanges>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
+			<!-- K-Mod: was 0 -->
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
@@ -1694,6 +1698,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iHappiness>0</iHappiness>
 			<iPillageGold>15</iPillageGold>
 			<bOutsideBorders>0</bOutsideBorders>
+			<!-- K-Mod -->
 			<TerrainMakesValids>
 				<TerrainMakesValid>
 					<TerrainType>TERRAIN_GRASS</TerrainType>
@@ -1716,6 +1721,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<Description>TXT_KEY_IMPROVEMENT_VILLAGE</Description>
 			<Civilopedia>TXT_KEY_IMPROVEMENT_VILLAGE_PEDIA</Civilopedia>
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_VILLAGE</ArtDefineTag>
+			<!-- K-Mod -->
 			<PrereqNatureYields>
 				<iYield>1</iYield>
 				<iYield>0</iYield>
@@ -1728,6 +1734,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			</YieldChanges>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
+			<!-- K-Mod: was 0 -->
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
@@ -1751,6 +1758,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iHappiness>0</iHappiness>
 			<iPillageGold>20</iPillageGold>
 			<bOutsideBorders>0</bOutsideBorders>
+			<!-- K-Mod -->
 			<TerrainMakesValids>
 				<TerrainMakesValid>
 					<TerrainType>TERRAIN_GRASS</TerrainType>
@@ -1782,6 +1790,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<Description>TXT_KEY_IMPROVEMENT_TOWN</Description>
 			<Civilopedia>TXT_KEY_IMPROVEMENT_TOWN_PEDIA</Civilopedia>
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_TOWN</ArtDefineTag>
+			<!-- K-Mod -->
 			<PrereqNatureYields>
 				<iYield>1</iYield>
 				<iYield>0</iYield>
@@ -1794,6 +1803,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			</YieldChanges>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
+			<!-- K-Mod: was 0 -->
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
@@ -1817,6 +1827,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iHappiness>0</iHappiness>
 			<iPillageGold>25</iPillageGold>
 			<bOutsideBorders>0</bOutsideBorders>
+			<!-- K-Mod -->
 			<TerrainMakesValids>
 				<TerrainMakesValid>
 					<TerrainType>TERRAIN_GRASS</TerrainType>
@@ -1929,13 +1940,13 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<Description>TXT_KEY_IMPROVEMENT_FOREST_PRESERVE</Description>
 			<Civilopedia>TXT_KEY_IMPROVEMENT_FOREST_PRESERVE_PEDIA</Civilopedia>
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_FOREST_PRESERVE</ArtDefineTag>
+			<!-- K-Mod -->
 			<YieldChanges>
 				<iYieldChange>0</iYieldChange>
 				<iYieldChange>0</iYieldChange>
 				<iYieldChange>1</iYieldChange>
 			</YieldChanges>
-			<!-- advc.901: Removed RiverSideYieldChange (1 commerce).
-                 YieldChanges above added by K-Mod.	-->
+			<!-- advc.901: Removed RiverSideYieldChange (1 commerce) -->
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>

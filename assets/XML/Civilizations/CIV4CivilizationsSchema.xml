@@ -278,9 +278,7 @@
 		<element type="DemandTributeAttitudeThreshold" minOccurs="0"/>
 		<element type="NoGiveHelpAttitudeThreshold" minOccurs="0"/>
 		<element type="TechRefuseAttitudeThreshold" minOccurs="0"/>
-		<!-- advc.ctr (start): These are optional. As default values, the DLL
-			 (CvGlobals constructor) assigns ATTITUDE_CAUTIOUS to the first and
-			 ATTITUDE_PLEASED to the second. -->
+		<!-- advc.ctr: start -->
 		<element type="CityRefuseAttitudeThreshold" minOccurs="0"/>
 		<element type="NativeCityRefuseAttitudeThreshold" minOccurs="0"/>
 		<!-- advc.ctr: end -->
@@ -339,10 +337,18 @@
 	<ElementType name="iMaxGlobalBuildingProductionModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iMaxTeamBuildingProductionModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iMaxPlayerBuildingProductionModifier" content="textOnly" dt:type="int"/>
+	<!-- advc.908b -->
+	<ElementType name="iFreeCityCulture" content="textOnly" dt:type="int"/>
 	<ElementType name="iExtraYieldThreshold" content="textOnly" dt:type="int"/>
 	<ElementType name="ExtraYieldThresholds" content="eltOnly">
 		<element type="iExtraYieldThreshold" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
+	<!-- advc.908a: start -->
+	<ElementType name="iExtraYieldNaturalThreshold" content="textOnly" dt:type="int"/>
+	<ElementType name="ExtraYieldNaturalThresholds" content="eltOnly">
+		<element type="iExtraYieldNaturalThreshold" minOccurs="0" maxOccurs="*"/>
+	</ElementType>
+	<!-- advc.908a: end -->
 	<ElementType name="iYield" content="textOnly" dt:type="int"/>
 	<ElementType name="TradeYieldModifiers" content="eltOnly">
 		<element type="iYield" minOccurs="0" maxOccurs="*"/>
@@ -376,6 +382,8 @@
 		<element type="Type" minOccurs="0"/>
 		<element type="Description" minOccurs="0"/>
 		<element type="ShortDescription" minOccurs="0"/>
+		<!-- advc.004y: -->
+		<element type="Civilopedia" minOccurs="0"/>
 		<element type="Help" minOccurs="0"/>
 		<element type="iHealth" minOccurs="0"/>
 		<element type="iHappiness" minOccurs="0"/>
@@ -388,7 +396,14 @@
 		<element type="iMaxGlobalBuildingProductionModifier" minOccurs="0"/>
 		<element type="iMaxTeamBuildingProductionModifier" minOccurs="0"/>
 		<element type="iMaxPlayerBuildingProductionModifier" minOccurs="0"/>
+		<!-- advc.908b: NB - gets adjusted to game speed -->
+		<element type="iFreeCityCulture" minOccurs="0"/>
 		<element type="ExtraYieldThresholds" minOccurs="0"/>
+		<!-- advc.908a: Like ExtraYieldThresholds, but the extra yield
+			 is also granted if a the _natural_ tile yield plus one
+			 reaches the threshold. Not intended to be used together with
+			 ExtraYieldThresholds; well, they would be cumulative I guess. -->
+		<element type="ExtraYieldNaturalThresholds" minOccurs="0"/>
 		<element type="TradeYieldModifiers" minOccurs="0"/>
 		<element type="CommerceChanges" minOccurs="0"/>
 		<element type="CommerceModifiers" minOccurs="0"/>

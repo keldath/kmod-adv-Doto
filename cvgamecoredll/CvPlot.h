@@ -224,7 +224,7 @@ public:
 	void setActivePlayerSafeRangeCache(int iRange) const
 	{
 		// advc.opt: char (Probably OK to do nothing here if indeed iRange > MAX_CHAR.)
-		m_iActivePlayerSafeRangeCache = toChar(iRange);
+		m_iActivePlayerSafeRangeCache = safeIntCast<char>(iRange);
 	}
 	bool getBorderDangerCache(TeamTypes eTeam) const
 	{
@@ -249,7 +249,7 @@ public:
 			PlayerTypes eOwner = NO_PLAYER, TeamTypes eTeam = NO_TEAM,
 			ConstPlotUnitFunc funcB = NULL, int iData1B = -1, int iData2B = -1) const;
 
-	bool isOwned() const // advc.inl																// Exposed to Python
+	bool isOwned() const																			// Exposed to Python
 	{
 		return (getOwner() != NO_PLAYER);
 	}
@@ -452,6 +452,9 @@ public:
 		return (PlayerTypes)m_eOwner;
 	}
 	void setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotGroup);
+	// <advc>
+	bool isActiveOwned() const { return (GC.getInitCore().getActivePlayer() == getOwner()); }
+	bool isActiveTeam() const { return (GC.getInitCore().getActiveTeam() == getTeam()); } // </advc>
 	/*  <advc.035> The returned player becomes the owner if war/peace changes
 		between that player and the current owner */
 	PlayerTypes getSecondOwner() const;
@@ -550,7 +553,7 @@ public:
 	void changeRiverCrossingCount(int iChange);
 
 	bool isHabitable(bool bIgnoreSea = false) const; // advc.300
-	//short* getYield() { return m_aiYield; } // advc.enum: now an EnumMap
+	//short* getYield() { return m_aiYield; } // advc.enum: now an enum map
 	DllExport int getYield(YieldTypes eIndex) const													// Exposed to Python
 	{
 		return m_aiYield.get(eIndex);
@@ -559,12 +562,10 @@ public:
 			bool bIgnoreFeature = false, /* advc.300: */ bool bIgnoreHills = false) const;
 	int calculateBestNatureYield(YieldTypes eIndex, TeamTypes eTeam) const;							// Exposed to Python
 	int calculateTotalBestNatureYield(TeamTypes eTeam) const;										// Exposed to Python
-	// BETTER_BTS_AI_MOD, City AI, 10/06/09, jdog5000:
-	int calculateImprovementYieldChange(ImprovementTypes eImprovement, YieldTypes eYield,			// Exposed to Python
-			PlayerTypes ePlayer = NO_PLAYER, bool bOptimal = false,
-			bool bBestRoute = false) const;
+	int calculateImprovementYieldChange(ImprovementTypes eImprovement,								// Exposed to Python
+			 YieldTypes eYield, PlayerTypes ePlayer) const;
 	int calculateYield(YieldTypes eIndex, bool bDisplay = false) const;								// Exposed to Python
-	bool hasYield() const { return m_aiYield.hasContent(); } // advc.enum							// Exposed to Python
+	bool hasYield() const { return m_aiYield.isAnyNonDefault(); } // advc.enum							// Exposed to Python
 	void updateYield();
 	int calculateCityPlotYieldChange(YieldTypes eYield,
 			int iYield, int iCityPopulation) const;
@@ -578,7 +579,7 @@ public:
 	PlayerTypes findHighestCulturePlayer(
 			bool bAlive = false) const; // advc.035
 	int calculateCulturePercent(PlayerTypes ePlayer) const;											// Exposed to Python
-	int calculateTeamCulturePercent(TeamTypes eTeam) const;										// Exposed to Python
+	int calculateTeamCulturePercent(TeamTypes eTeam) const;											// Exposed to Python
 	void setCulture(PlayerTypes eIndex, int iNewValue, bool bUpdate,								// Exposed to Python
 			bool bUpdatePlotGroups);
 	void changeCulture(PlayerTypes eIndex, int iChange, bool bUpdate);								// Exposed to Python
@@ -588,7 +589,7 @@ public:
 //keldath QA-DONE answer:
 //this maked the definition in the cpp file not to be needed.
 //so i did mark it out.
-	inline int getCultureControl(PlayerTypes eIndex) const { return m_aiCultureControl.get(eIndex); }															// Exposed to Python
+	int getCultureControl(PlayerTypes eIndex) const { return m_aiCultureControl.get(eIndex); }															// Exposed to Python
 	//int getCultureControl(PlayerTypes eIndex) const;             // Exposed to Python
 	int countTotalCultureControl() const;             // Exposed to Python
 	PlayerTypes findHighestCultureControlPlayer() const;             // Exposed to Python
@@ -957,32 +958,33 @@ protected:
 	char const* m_szScriptData; // advc: const
 	// <advc.enum>
 	// BETTER_BTS_AI_MOD, Efficiency (plot danger cache), 08/21/09, jdog5000:
-	mutable EnumMap<TeamTypes,bool> m_abBorderDangerCache;
+	mutable ArrayEnumMap<TeamTypes,bool> m_abBorderDangerCache;
 
-	EnumMap<YieldTypes,char> m_aiYield;
-	EnumMap<PlayerTypes,int> m_aiCulture;
+	YieldChangeMap m_aiYield;
+	ArrayEnumMap<PlayerTypes,int> m_aiCulture;
 	// < JCultureControl Mod Start >
-	EnumMap<PlayerTypes,int> m_aiCultureControl;
+	ArrayEnumMap<PlayerTypes,int> m_aiCultureControl;
 	//keldath QA original code
 	//int* m_aiCultureControl;
 	// < JCultureControl Mod End >
 	// Super Forts begin *culture*
-	short* m_aiCultureRangeForts;
+	//short* m_aiCultureRangeForts;
+	ArrayEnumMap<PlayerTypes,short> m_aiCultureRangeForts;
 	// Super Forts end
-	EnumMap<PlayerTypes,int,FFreeList::INVALID_INDEX> m_aiPlotGroup;
-	mutable EnumMap<PlayerTypes,short> m_aiFoundValue; // advc: mutable
-	SparseEnumMap<PlayerTypes,char> m_aiPlayerCityRadiusCount;
-	EnumMap<TeamTypes,short> m_aiVisibilityCount;
-	SparseEnumMap<TeamTypes,short> m_aiStolenVisibilityCount;
-	SparseEnumMap<TeamTypes,short> m_aiBlockadedCount;
-	EnumMap<TeamTypes,PlayerTypes> m_aiRevealedOwner;
-	SparseEnumMap<TeamTypes,ImprovementTypes> m_aeRevealedImprovementType;
-	EnumMap<TeamTypes,RouteTypes> m_aeRevealedRouteType;
-	EnumMap<TeamTypes,bool> m_abRevealed;
-	EnumMap<DirectionTypes,bool> m_abRiverCrossing;
-	EnumMap<BuildTypes,short> m_aiBuildProgress;
-	SparseEnumMap2D<PlayerTypes,CultureLevelTypes,char> m_aaiCultureRangeCities;
-	SparseEnumMap2D<TeamTypes,InvisibleTypes,short> m_aaiInvisibleVisibilityCount;
+	ArrayEnumMap<PlayerTypes,int,int,FFreeList::INVALID_INDEX> m_aiPlotGroup;
+	mutable ArrayEnumMap<PlayerTypes,short> m_aiFoundValue; // advc: mutable
+	ListEnumMap<PlayerTypes,int,char> m_aiPlayerCityRadiusCount;
+	ArrayEnumMap<TeamTypes,int,short> m_aiVisibilityCount;
+	ListEnumMap<TeamTypes,int,short> m_aiStolenVisibilityCount;
+	ListEnumMap<TeamTypes,int,short> m_aiBlockadedCount;
+	ArrayEnumMap<TeamTypes,PlayerTypes> m_aiRevealedOwner;
+	ListEnumMap<TeamTypes,ImprovementTypes> m_aeRevealedImprovementType;
+	ArrayEnumMap<TeamTypes,RouteTypes> m_aeRevealedRouteType;
+	ArrayEnumMap<TeamTypes,bool> m_abRevealed;
+	ArrayEnumMap<DirectionTypes,bool> m_abRiverCrossing;
+	ArrayEnumMap<BuildTypes,short> m_aiBuildProgress;
+	ListEnumMap2D<PlayerTypes,CultureLevelTypes,char> m_aaiCultureRangeCities;
+	ListEnumMap2D<TeamTypes,InvisibleTypes,short> m_aaiInvisibleVisibilityCount;
 	// </advc.enum>
 	CvFeature* m_pFeatureSymbol;
 	CvRoute* m_pRouteSymbol;

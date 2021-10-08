@@ -21,6 +21,7 @@ public:
 	~RiseFall();
 	void reset();
 	void init();
+	void setPlayerHandicap(PlayerTypes civId, bool bHuman, bool bIncrease);
 	void write(FDataStreamBase* pStream);
 	void read(FDataStreamBase* pStream);
 	void atGameTurnStart();
@@ -88,6 +89,7 @@ private:
 	PlayerTypes nextCivAlive(PlayerTypes startExcluded) const;
 	void setPlayerControl(PlayerTypes civId, bool b);
 	void welcomeToNextChapter(int pos);
+	void resetProductionDecay(PlayerTypes civId);
 	void centerCamera(PlayerTypes civId);
 	void showDoW();
 	void showQuests();

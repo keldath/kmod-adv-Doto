@@ -22,6 +22,7 @@
 #include "CvInfo_Terrain.h" // advc.pf (for pathfinder initialization)
 #include "CvInfo_GameOption.h"
 #include "CvReplayInfo.h" // advc.106n
+#include "BarbarianWeightMap.h" // advc.304
 #include "CvDLLIniParserIFaceBase.h"
 
 
@@ -54,7 +55,7 @@ void CvMap::init(CvMapInitData* pInitInfo)
 	m_areas.init(); // Init containers
 	setup();
 	gDLL->logMemState("CvMap before init plots");
-	FAssert(numPlots() <= (EnumMap<PlotNumTypes,scaled>::MAX_LENGTH)); // advc.enum
+	FAssert(numPlots() <= integer_limits<PlotNumInt>::max); // advc.enum
 	m_pMapPlots = new CvPlot[numPlots()];
 	for (int iX = 0; iX < getGridWidth(); iX++)
 	{
@@ -519,9 +520,11 @@ void CvMap::combinePlotGroups(PlayerTypes ePlayer, CvPlotGroup* pPlotGroup1, CvP
 CvPlot* CvMap::syncRandPlot(RandPlotFlags eFlags, CvArea const* pArea,
 	int iMinCivUnitDistance, // advc.300: Renamed from iMinUnitDistance
 	int iTimeout,
-	int* piValidCount) // advc.304: Number of valid tiles
+	/* <advc.304> */ int* piValidCount, // Number of valid tiles
+	RandPlotWeightMap const* pWeights)
 {
-	/*  <advc.304> Look exhaustively for a valid plot by default. Rationale:
+	LOCAL_REF(int, iValid, piValidCount, 0);
+	/*  Look exhaustively for a valid plot by default. Rationale:
 		The biggest maps have about 10000 plots. If there is only one valid plot,
 		then the BtS default of considering 100 plots drawn at random has only a
 		(ca.) 1% chance of success. 10000 trials - slower than exhaustive search! -
@@ -531,38 +534,37 @@ CvPlot* CvMap::syncRandPlot(RandPlotFlags eFlags, CvArea const* pArea,
 	if (iTimeout < 0)
 	{
 		std::vector<CvPlot*> apValidPlots;
-		for(int i = 0; i < numPlots(); i++)
+		std::vector<int> aiWeights;
+		for (int i = 0; i < numPlots(); i++)
 		{
 			CvPlot& kPlot = getPlotByIndex(i);
 			if (isValidRandPlot(kPlot, eFlags, pArea, iMinCivUnitDistance))
+			{
 				apValidPlots.push_back(&kPlot);
+				if (pWeights != NULL)
+					aiWeights.push_back(pWeights->getProbWeight(kPlot));
+			}
 		}
-		int iValid = (int)apValidPlots.size();
-		if(piValidCount != NULL)
-			*piValidCount = iValid;
-		if(iValid == 0)
-			return NULL;
-		return apValidPlots[GC.getGame().getSorenRandNum(iValid, "advc.304")];
+		iValid = (int)apValidPlots.size();
+		return syncRand().weightedChoice(apValidPlots,
+				pWeights == NULL ? NULL : &aiWeights);
 	}
 	FAssert(iTimeout != 0);
+	FAssert(pWeights == NULL); // Not compatible with limited trials
 	/*  BtS code (refactored): Limited number of trials
 		(can be faster or slower than the above; that's not really the point) */
 	// </advc.304>
 	for (int i = 0; i < iTimeout; i++)
 	{
 		CvPlot& kTestPlot = getPlot(
-				GC.getGame().getSorenRandNum(getGridWidth(), "Rand Plot Width"),
-				GC.getGame().getSorenRandNum(getGridHeight(), "Rand Plot Height"));
+				SyncRandNum(getGridWidth()), SyncRandNum(getGridHeight()));
 		if (isValidRandPlot(kTestPlot, eFlags, pArea, iMinCivUnitDistance))
-		{	/*  <advc.304> Not useful, but want to make sure it doesn't stay
-				uninitialized. 1 since we found only 1 valid plot. */
-			if(piValidCount != NULL)
-				*piValidCount = 1; // </advc.304>
+		{	/*  <advc.304> Not going to be useful ...
+				Use 1 to indicate that we found one valid plot. */
+			iValid = 1; // </advc.304>
 			return &kTestPlot;
 		}
-	} // <advc.304>
-	if(piValidCount != NULL)
-		*piValidCount = 0; // </advc.304>
+	}
 	return NULL;
 }
 
@@ -1178,10 +1180,20 @@ void CvMap::read(FDataStreamBase* pStream)
 	// </advc.opt>
 	pStream->Read(&m_bWrapX);
 	pStream->Read(&m_bWrapY);
-
-	m_aiNumBonus.Read(pStream);
-	m_aiNumBonusOnLand.Read(pStream);
-
+	if (uiFlag >= 4)
+	{
+		m_aiNumBonus.read(pStream);
+		m_aiNumBonusOnLand.read(pStream);
+	}
+	else
+	{
+		m_aiNumBonus.readArray<int>(pStream);
+		m_aiNumBonusOnLand.readArray<int>(pStream);
+	}
+	// <advc.304>
+	if (uiFlag >= 5)
+		GC.getGame().getBarbarianWeightMap().getActivityMap().read(pStream);
+	// </advc.304>
 	if (numPlots() > 0)
 	{
 		m_pMapPlots = new CvPlot[numPlots()];
@@ -1231,7 +1243,9 @@ void CvMap::write(FDataStreamBase* pStream)
 	uint uiFlag;
 	//uiFlag = 1; // advc.106n
 	//uiFlag = 2; // advc.opt: CvPlot::m_bAnyIsthmus
-	uiFlag = 3; // advc.opt: m_ePlots
+	//uiFlag = 3; // advc.opt: m_ePlots
+	//uiFlag = 4; // advc.enum: new enum map save behavior
+	uiFlag = 5; // advc.304: Barbarian weight map
 	pStream->Write(uiFlag);
 
 	pStream->Write(m_iGridWidth);
@@ -1247,8 +1261,11 @@ void CvMap::write(FDataStreamBase* pStream)
 	pStream->Write(m_bWrapY);
 
 	FAssertMsg((0 < GC.getNumBonusInfos()), "GC.getNumBonusInfos() is not greater than zero but an array is being allocated");
-	m_aiNumBonus.Write(pStream);
-	m_aiNumBonusOnLand.Write(pStream);
+	m_aiNumBonus.write(pStream);
+	m_aiNumBonusOnLand.write(pStream);
+	/*	advc.304: Serialize this for CvGame b/c the map size isn't known
+		when CvGame gets deserialized. (kludge) */
+	GC.getGame().getBarbarianWeightMap().getActivityMap().write(pStream);
 	REPRO_TEST_END_WRITE();
 	for (int i = 0; i < numPlots(); i++)
 		m_pMapPlots[i].write(pStream);
@@ -1464,44 +1481,44 @@ void CvMap::calculateAreas_DFS(CvPlot const& kStart)
 
 // <advc.300>
 // All shelves adjacent to a continent
-void CvMap::getShelves(CvArea const& kArea, std::vector<Shelf*>& r) const
+void CvMap::getShelves(CvArea const& kArea, std::vector<Shelf*>& kShelves) const
 {
-	int iArea = kArea.getID();
+	int const iArea = kArea.getID();
 	for(std::map<Shelf::Id,Shelf*>::const_iterator it = m_shelves.begin();
 		it != m_shelves.end(); ++it)
 	{
 		if(it->first.first == iArea)
-			r.push_back(it->second);
+			kShelves.push_back(it->second);
 	}
 }
 
 
 void CvMap::computeShelves()
 {
-	for(std::map<Shelf::Id,Shelf*>::iterator it = m_shelves.begin();
+	for (std::map<Shelf::Id,Shelf*>::iterator it = m_shelves.begin();
 		it != m_shelves.end(); ++it)
 	{
 		SAFE_DELETE(it->second);
 	}
 	m_shelves.clear();
-	for(int i = 0; i < numPlots(); i++)
+	for (int i = 0; i < numPlots(); i++)
 	{
 		CvPlot& p = getPlotByIndex(i);
-		if(!p.isWater() || p.isLake() || p.isImpassable() || !p.isHabitable())
+		if (!p.isWater() || p.isLake() || p.isImpassable() || !p.isHabitable())
 			continue;
 		// Add plot to shelves of all adjacent land areas
 		std::set<int> adjLands;
 		FOR_EACH_ADJ_PLOT(p)
 		{
-			if(!pAdj->isWater())
+			if (!pAdj->isWater())
 				adjLands.insert(pAdj->getArea().getID());
 		}
-		for(std::set<int>::iterator it = adjLands.begin(); it != adjLands.end(); ++it)
+		for (std::set<int>::iterator it = adjLands.begin(); it != adjLands.end(); ++it)
 		{
 			Shelf::Id shelfID(*it, p.getArea().getID());
 			std::map<Shelf::Id,Shelf*>::iterator shelfPos = m_shelves.find(shelfID);
 			Shelf* pShelf;
-			if(shelfPos == m_shelves.end())
+			if (shelfPos == m_shelves.end())
 			{
 				pShelf = new Shelf();
 				m_shelves.insert(std::make_pair(shelfID, pShelf));

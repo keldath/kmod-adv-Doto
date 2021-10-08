@@ -1,0 +1,14 @@
+﻿  Building source list
+  Running fastdep
+  CvGameTextMgr.cpp
+  Linking DLL
+msvcprtd.lib(nothrow.obj) : warning LNK4229: invalid directive '/FAILIFMISMATCH:_MSC_VER=1600' encountered; ignored
+msvcprtd.lib(nothrow.obj) : warning LNK4078: multiple '.CRT' sections found with different attributes (40300040)
+msvcprtd.lib(nothrow.obj) : warning LNK4229: invalid directive '/FAILIFMISMATCH:_MSC_VER=1600' encountered; ignored
+msvcprtd.lib(nothrow.obj) : warning LNK4078: multiple '.CRT' sections found with different attributes (40300040)
+     Creating library temp_files\Debug\CvGameCoreDLL.lib and object temp_files\Debug\CvGameCoreDLL.exp
+  	COPY "temp_files\Debug\CvGameCoreDLL.dll" "Debug\CvGameCoreDLL.dll"
+          1 file(s) copied.
+  	COPY "Debug\CvGameCoreDLL.dll" "\Assets\."
+  The system cannot find the path specified.
+          0 file(s) copied.

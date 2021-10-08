@@ -8,8 +8,6 @@
 #include "CvMap.h"
 #include "CvInfo_All.h"
 #include "CvXMLLoadUtility.h" // advc.003v
-#include "CvDLLUtilityIFaceBase.h"
-#include "CvDLLXMLIFaceBase.h"
 // <advc.003o>
 #ifdef USE_TSC_PROFILER
 #include "TSCProfiler.h"
@@ -231,9 +229,9 @@ void CvGlobals::init() // allocate
 
 	m_VarSystem = new FVariableSystem();
 	//m_asyncRand = new CvRandom();
-	// <advc.007b>
+	// <advc.007c>
 	m_asyncRand = new CvRandomExtended();
-	m_asyncRand->setLogFileName("ASyncRand.log"); // </advc.007b>
+	m_asyncRand->setLogFileName("ASyncRand.log"); // </advc.007c>
 	m_initCore = new CvInitCore();
 	m_loadedInitCore = new CvInitCore();
 	m_iniInitCore = new CvInitCore();
@@ -902,7 +900,7 @@ void CvGlobals::updateCameraStartDistance(bool bReset)
 	if (!bReset)
 	{
 		fNewValue = std::max(8750 - 80 * getDefineFLOAT("FIELD_OF_VIEW"), 1200.f);
-		PlayerTypes eActivePlayer = getGame().getActivePlayer();
+		PlayerTypes eActivePlayer = GC.getGame().getActivePlayer();
 		if (eActivePlayer != NO_PLAYER)
 		{	/*	Or better use getNumCities (while still calling updateCameraStartDistance
 				only upon entering a new era)? */

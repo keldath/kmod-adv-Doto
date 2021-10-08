@@ -65,9 +65,13 @@ StartingPositionIteration::StartingPositionIteration() :
 		Map scripts might depend on this order. If a map script sets the
 		starting sites, then we have to bail anyway, but we don't know that yet. */
 	vector<CvPlayer*> apCivPlayers;
-	for (PlayerIter<HUMAN,ANY_AGENT_RELATION,true> it; it.hasNext(); ++it)
+	for (PlayerRandIter<HUMAN,ANY_AGENT_RELATION> it(mapRand());
+		it.hasNext(); ++it)
+	{
 		apCivPlayers.push_back(&(*it));
-	for (PlayerIter<CIV_ALIVE,ANY_AGENT_RELATION,true> it; it.hasNext(); ++it)
+	}
+	for (PlayerRandIter<CIV_ALIVE,ANY_AGENT_RELATION> it(mapRand());
+		it.hasNext(); ++it)
 	{
 		if (!it->isHuman())
 			apCivPlayers.push_back(&*it);
@@ -156,7 +160,7 @@ StartingPositionIteration::StartingPositionIteration() :
 	/*for (size_t i = 0; i < apPotentialSites.size(); i++) // (debug) Mark alt. sites with a ruin
 		GC.getMap().getPlotByIndex(GC.getMap().plotNum(*apPotentialSites[i])).setImprovementType(GC.getRUINS_IMPROVEMENT());*/
 
-	EnumMap<PlotNumTypes,scaled> yieldValues;
+	EagerEnumMap<PlotNumTypes,scaled> yieldValues;
 	map<CvArea const*,scaled> yieldsPerArea;
 	{
 		vector<scaled> arLandYields;
@@ -308,10 +312,10 @@ StartingPositionIteration::PotentialSites::PotentialSites(
 		if (iFoundValue >= rMinFoundVal)
 		{
 			// Randomize a little - mainly so that settling in place isn't a no-brainer
-			iFoundValue = toShort(
+			iFoundValue = safeIntCast<short>(
 					(iFoundValue + iFoundValue *
 					((iFoundValue / rMinFoundVal - 1) * fixp(0.05) *
-					(scaled::rand(GC.getGame().getMapRand(), NULL) - fixp(0.5)))).
+					(scaled::rand(mapRand(), NULL) - fixp(0.5)))).
 					round());
 			m_foundValuesPerSite.insert(make_pair(eLoopPlotNum, iFoundValue));
 		}
@@ -322,7 +326,7 @@ StartingPositionIteration::PotentialSites::PotentialSites(
 
 	// "Clearing the neighborhood"
 
-	EnumMap<PlotNumTypes,scaled> arVicinityPenaltiesPerPlot;
+	EagerEnumMap<PlotNumTypes,scaled> arVicinityPenaltiesPerPlot;
 	for (map<PlotNumTypes,short>::const_iterator itSite = m_foundValuesPerSite.begin();
 		itSite != m_foundValuesPerSite.end(); ++itSite)
 	{
@@ -385,7 +389,7 @@ scaled StartingPositionIteration::PotentialSites::computeMinFoundValue()
 	happen to have it at hand.) */
 void StartingPositionIteration::PotentialSites::recordSite(
 	CvPlot const& kPlot, short iFoundValue, bool bAdd,
-	EnumMap<PlotNumTypes,scaled>& kVicinityPenaltiesPerPlot)
+	EagerEnumMap<PlotNumTypes,scaled>& kVicinityPenaltiesPerPlot)
 {
 	// Update vicinity penalties
 	int const iSign = (bAdd ? 1 : -1);
@@ -549,7 +553,7 @@ PlotNumTypes StartingPositionIteration::PotentialSites::getRemoteSite(
 
 
 void StartingPositionIteration::PotentialSites::getCurrFoundValues(
-	EnumMap<PlayerTypes,short>& kFoundValuesPerPlayer) const
+	EagerEnumMap<PlayerTypes,short>& kFoundValuesPerPlayer) const
 {
 	for (PlayerIter<CIV_ALIVE> it; it.hasNext(); ++it)
 	{
@@ -716,7 +720,7 @@ void StartingPositionIteration::DistanceTable::computeDistances(CvPlot const& kS
 	q.push(Node(kSource, 0));
 	/*	Keep track of visited nodes in order to save time. Can't use m_distances
 		for this b/c it only contains destinations; may have to visit all plots. */
-	EnumMap<PlotNumTypes,bool> abReached;
+	EagerEnumMap<PlotNumTypes,bool> abReached;
 	while (!q.empty())
 	{
 		Node v = q.top();
@@ -856,7 +860,7 @@ std::string StartingPositionIteration::Step::debugStr() const
 void StartingPositionIteration::evaluateCurrPosition(
 	SolutionAttributes& kResult, bool bLog) const
 {
-	EnumMap<PlayerTypes,short> foundValues;
+	EagerEnumMap<PlayerTypes,short> foundValues;
 	m_pPotentialSites->getCurrFoundValues(foundValues);
 	computeStartValues(foundValues, kResult, bLog);
 	kResult.m_rStartPosVal = startingPositionValue(kResult);
@@ -864,8 +868,9 @@ void StartingPositionIteration::evaluateCurrPosition(
 
 
 StartingPositionIteration::SpaceEvaluator::SpaceEvaluator(
-	DistanceTable const& kDists, EnumMap<PlotNumTypes,scaled> const& kYieldValues,
-	bool bLog) : m_kDists(kDists), m_kYieldValues(kYieldValues), m_bLog(bLog)
+	DistanceTable const& kDists,
+	EagerEnumMap<PlotNumTypes,scaled> const& kYieldValues, bool bLog)
+:	m_kDists(kDists), m_kYieldValues(kYieldValues), m_bLog(bLog)
 {
 	CvMap const& kMap = GC.getMap();
 	// Treat distances beyond this threshold as infinite in order to save time
@@ -1048,8 +1053,8 @@ StartingPositionIteration::SpaceEvaluator::cacheDelayFactors(word iMaxDist)
 
 // The results are on the scale of AIFoundValue
 void StartingPositionIteration::computeStartValues(
-	EnumMap<PlayerTypes,short> const& kFoundValues, SolutionAttributes& kResult,
-	bool bLog) const
+	EagerEnumMap<PlayerTypes,short> const& kFoundValues,
+	SolutionAttributes& kResult, bool bLog) const
 {
 	#ifdef SPI_LOG
 		std::ostringstream out;
@@ -1062,16 +1067,16 @@ void StartingPositionIteration::computeStartValues(
 
 	/*	Compute these upfront b/c it depends on the typical distance between
 		starting sites whether a given distance is "too close" */
-	EnumMap<PlayerTypes,scaled> rivalDistFactors;
+	EagerEnumMap<PlayerTypes,scaled> rivalDistFactors;
 	scaled const rTypicalDistFactor = computeRivalDistFactors(rivalDistFactors, false);
 	// Need this once for all rivals and once just for those in the same area
-	EnumMap<PlayerTypes,scaled> sameAreaRivalDistFactors;
+	EagerEnumMap<PlayerTypes,scaled> sameAreaRivalDistFactors;
 	scaled rSameAreaTargetDistFactor = computeRivalDistFactors(
 			sameAreaRivalDistFactors, true) * fixp(4/3.);
 	// Need to know the distribution before computing the actual per-player values
 	vector<scaled> arAreaYieldsPerPlayer;
-	EnumMap<PlayerTypes,scaled> areaYieldsPerPlayer;
-	EnumMap<PlayerTypes,scaled> spaceValues;
+	EagerEnumMap<PlayerTypes,scaled> areaYieldsPerPlayer;
+	EagerEnumMap<PlayerTypes,scaled> spaceValues;
 	int const iCivEverAlive = PlayerIter<CIV_ALIVE>::count();
 	for (PlayerIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
@@ -1351,7 +1356,7 @@ void StartingPositionIteration::computeStartValues(
 	on the same team. (Sites will probably get swapped around later, so same-team
 	relationships aren't reliable at this point.) */
 scaled StartingPositionIteration::computeRivalDistFactors(
-	EnumMap<PlayerTypes,scaled>& kResult, bool bSameArea) const
+	EagerEnumMap<PlayerTypes,scaled>& kResult, bool bSameArea) const
 {
 	vector<scaled> arRivalDistFactors;
 	for (PlayerIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
@@ -1405,7 +1410,8 @@ scaled StartingPositionIteration::weightedDistance(vector<short>& kDistances)
 
 
 scaled StartingPositionIteration::outlierValue(
-	EnumMap<PlayerTypes,scaled> const& kStartValues, PlayerTypes eIndex,
+	EagerEnumMap<PlayerTypes,scaled> const& kStartValues,
+	PlayerTypes eIndex,
 	scaled& rPercentage, scaled rNegativeOutlierExtraWeight,
 	scaled const* pMedian, // To save time if caller happens to have it
 	bool* pbNegativeOutlier) const // Out-param
@@ -1726,22 +1732,8 @@ bool StartingPositionIteration::considerStep(Step& kStep,
 			logStep(kStep, kCurrSolutionAttribs, newSolutionAttribs, true);
 			/*	Commit to this step (w/o considering further alternatives).
 				Tbd.: Could probably get better results by considering all alternatives. */
-			/*	Copy newSolutionAttribs into kCurrSolutionAttribs.
-				(EnumMap has no copy-ctor, and I don't want to write one right now.) */
-			kCurrSolutionAttribs.m_eWorstOutlier = newSolutionAttribs.m_eWorstOutlier;
-			kCurrSolutionAttribs.m_rAvgError = newSolutionAttribs.m_rAvgError;
-			kCurrSolutionAttribs.m_rStartPosVal = newSolutionAttribs.m_rStartPosVal;
-			for (PlayerIter<CIV_ALIVE> it; it.hasNext(); ++it)
-			{
-				kCurrSolutionAttribs.m_startValues.set(it->getID(),
-						newSolutionAttribs.m_startValues.get(it->getID()));
-				kCurrSolutionAttribs.m_foundValues.set(it->getID(),
-						newSolutionAttribs.m_foundValues.get(it->getID()));
-				kCurrSolutionAttribs.m_foundWeights.set(it->getID(),
-						newSolutionAttribs.m_foundWeights.get(it->getID()));
-				kCurrSolutionAttribs.m_rivalMultipliers.set(it->getID(),
-						newSolutionAttribs.m_rivalMultipliers.get(it->getID()));
-			}
+			// Copy newSolutionAttribs into kCurrSolutionAttribs
+			kCurrSolutionAttribs = newSolutionAttribs;
 			return true;
 		}
 	}
@@ -1818,8 +1810,7 @@ void StartingPositionIteration::doIterations(PotentialSites& kPotentialSites)
 			// Focus on negative outliers while the avg. error is high
 			scaled rNegativeOutlierExtraWeight = fixp(1.15) * 
 					(m_currSolutionAttribs.m_rAvgError - fixp(0.1));
-			// A little bit of randomness
-			if (iStepsConsidered % 2 == 0)
+			if (iStepsConsidered % 2 == 0) // A little bit of variation
 				rNegativeOutlierExtraWeight += fixp(0.25);
 			scaled rDummy;
 			scaled rOutlierVal = outlierValue(m_currSolutionAttribs.m_startValues,
@@ -2020,7 +2011,7 @@ int StartingPositionIteration::teamValue(PlayerTypes eSitePlayer, TeamTypes eFor
 {
 	CvPlot const& kSite = *GET_PLAYER(eSitePlayer).getStartingPlot();
 	int const iAreaSites = kSite.getArea().getNumStartingPlots();
-	EnumMap<TeamTypes,int> aiAreaSitesPerTeam;
+	EagerEnumMap<TeamTypes,int> aiAreaSitesPerTeam;
 	int iTeamsInArea = 0;
 	vector<scaled> arFriendlyCloseness;
 	vector<scaled> arRivalCloseness;

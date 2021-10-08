@@ -5,14 +5,18 @@
 
 // advc.fract: Header-only class template for fixed-point fractional numbers
 
-#include "TypeChoice.h"
 #include "FixedPointPowTables.h"
-/*	Other non-BtS dependencies: intdiv::round, fmath::round, intHash, all in CvGameCoreUtils.h
-	(tbd.: move those functions here?), and integer_limits in IntegerTraits.h.
-	For inclusion in PCH, one may have to define NOMINMAX before including windows.h;
-	see CvGameCoreDLL.h.
-	The bernoulliSuccess function assumes that CvRandom can include two integer values
-	in its log messages; see comment in bernoulliSuccess. */
+/*	Other non-BtS dependencies (precompiled):
+ +	The whole TypeChoice.h header.
+ +	The whole IntegerConversion.h header. Two uses of enum_traits in that header
+	can be replaced (see comment there) when porting ScaledNum into another mod.
+ +	intdiv::round, fmath::round  in ArithmeticUtils.h.
+ +	intHash in CvGameCoreUtils.h.
+ +	integer_limits in IntegerTraits.h.
+	For precompiling this header, one may have to define NOMINMAX
+	before including windows.h; see CvGameCoreDLL.h.
+	The randSuccess function assumes that CvRandom can include two integer values
+	in its log messages; see comment in randSuccess. */
 
 // Defined in BaseTsd.h. Easy to get them mixed up with ScaledNum::INTMAX, INTMIN.
 #ifdef MAXINT
@@ -35,19 +39,11 @@ class ScaledNumBase
 {
 protected:
 	static CvString szBuf;
-	/*	(Could also be global, but sizeof(OtherIntType) <= 4 shouldn't be assumed
-		in other contexts.) */
 	template<typename OtherIntType>
 	static int safeToInt(OtherIntType n)
 	{
-		BOOST_STATIC_ASSERT(sizeof(OtherIntType) <= 4);
-		// uint is the only problematic OtherIntType
-		if (!integer_limits<OtherIntType>::is_signed &&
-			sizeof(int) == sizeof(OtherIntType))
-		{
-			FAssert(n <= static_cast<OtherIntType>(MAX_INT));
-		}
-		return static_cast<int>(n);
+		// NB: uint is the only problematic OtherIntType that can occur here
+		return safeIntCast<int>(n);
 	}
 };
 template<typename Dummy>
@@ -66,7 +62,7 @@ CvString ScaledNumBase<Dummy>::szBuf = "";
 	Performance: Generally comparable to floating-point types when the scale factor is
 	a power of 2; see ScaledNumTest.cpp.
 	Overloads commonly used arithmetic operators and offers some conveniences that the
-	built-in types don't have, e.g. abs, clamp, approxEquals, bernoulliSuccess (coin flip).
+	built-in types don't have, e.g. abs, clamp, approxEquals, randSuccess (coin flip).
 	Compile-time converter from double: macro 'fixp'
 	Conversion from percentage: macro 'per100' (also 'per1000', 'per10000')
 	'scaled' and 'uscaled' typedefs for default precision.
@@ -134,6 +130,7 @@ class ScaledNum : ScaledNumBase<void> // Not named "ScaledInt" b/c what's being 
 	static IntType const INTMAX = integer_limits<IntType>::max;
 
 public:
+	typedef IntType int_t; // Expose int type for any type trait code
 	static IntType const MAX = INTMAX / SCALE;
 	static IntType const MIN = INTMIN / SCALE;
 
@@ -179,7 +176,7 @@ public:
 		r.m_i = static_cast<IntType>(kRand.get(static_cast<unsigned short>(iSCALE), szLog));
 		return r;
 	}
-	/*	See intHash (CvGameCoreUtils.h) about the parameters.
+	/*	See intHash (ArithmeticUtils.h) about the parameters.
 		Result in the half-open interval [0, 1). */
 	static ScaledNum hash(std::vector<int> const& x, PlayerTypes ePlayer = NO_PLAYER)
 	{
@@ -248,9 +245,10 @@ public:
 	}
 	int ceil() const
 	{
-		int r = floor();
-		return r + ((m_i >= 0 && m_i - r * SCALE > 0) ? 1 : 0);
+		int iR = floor();
+		return iR + ((m_i >= 0 && m_i - iR * SCALE > 0) ? 1 : 0);
 	}
+	int uceil() const;
 	bool isInt() const
 	{
 		return (m_i % SCALE == 0);
@@ -311,7 +309,7 @@ public:
 	}
 
 	// Bernoulli trial (coin flip) with success probability equal to m_i/SCALE
-	bool bernoulliSuccess(CvRandom& kRand, char const* szLog,
+	bool randSuccess(CvRandom& kRand, char const* szLog,
 			int iLogData1 = MIN_INT, int iLogData2 = MIN_INT) const;
 
 	ScaledNum pow(int iExp) const;
@@ -670,24 +668,7 @@ private:
 	template<typename OtherIntType>
 	static IntType safeCast(OtherIntType n)
 	{
-		if (integer_limits<OtherIntType>::is_signed != bSIGNED ||
-			sizeof(IntType) < sizeof(OtherIntType))
-		{
-			if (!bSIGNED && integer_limits<OtherIntType>::is_signed)
-				FAssert(n >= 0);
-			if (sizeof(IntType) < sizeof(OtherIntType) ||
-				(sizeof(IntType) == sizeof(OtherIntType) &&
-				bSIGNED && !integer_limits<OtherIntType>::is_signed))
-			{
-				/*	(No static_cast b/c it needs to compile even when IntType is bigger
-					than OtherIntType, i.e. when the conditions above are false.
-					Tbd.: Solve this problem through choose_type and specialization?) */
-				FAssert(n <= (OtherIntType)INTMAX);
-				if (bSIGNED && integer_limits<OtherIntType>::is_signed)
-					FAssert(n >= (OtherIntType)INTMIN);
-			}
-		}
-		return static_cast<IntType>(n);
+		return safeIntCast<IntType>(n);
 	}
 
 	/*	Specialize b/c the sign inversion code wouldn't compile for
@@ -876,8 +857,19 @@ int ScaledNum_T::uround() const
 	return (m_i + SCALE / 2) / SCALE;
 }
 
+
 template<ScaledNum_PARAMS>
-bool ScaledNum_T::bernoulliSuccess(CvRandom& kRand, char const* szLog,
+int ScaledNum_T::uceil() const
+{
+	BOOST_STATIC_ASSERT(bSIGNED); // Use ceil() instead
+	BOOST_STATIC_ASSERT(INTMAX >= SCALE);
+	FAssert(m_i >= 0 && m_i <= static_cast<IntType>(INTMAX - SCALE + 1));
+	return (m_i + SCALE - 1) / SCALE;
+}
+
+
+template<ScaledNum_PARAMS>
+bool ScaledNum_T::randSuccess(CvRandom& kRand, char const* szLog,
 	int iLogData1, int iLogData2) const
 {
 	// Guards for better performance and to avoid unnecessary log output
@@ -886,7 +878,7 @@ bool ScaledNum_T::bernoulliSuccess(CvRandom& kRand, char const* szLog,
 	if (m_i >= SCALE)
 		return true;
 	BOOST_STATIC_ASSERT(SCALE <= USHRT_MAX);
-	/*	When porting ScaledNum to another mod, you may want to use:
+	/*	When porting ScaledNum to another mod, one may want to use:
 		return (kRand.get(static_cast<unsigned short>(SCALE), szLog) < m_i); */
 	return (kRand.getInt(SCALE, szLog, iLogData1, iLogData2) < m_i);
 }

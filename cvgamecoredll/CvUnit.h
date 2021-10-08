@@ -118,7 +118,8 @@ public:
 	void move(CvPlot& kPlot, bool bShow, // advc: 1st param was CvPlot* (not const b/c of possible feature change)
 			bool bJump = false, bool bGroup = true); // advc.163
 	// K-Mod added bForceMove and bGroup
-	bool jumpToNearestValidPlot(bool bGroup = false, bool bForceMove = false);								// Exposed to Python
+	bool jumpToNearestValidPlot(bool bGroup = false, bool bForceMove = false,								// Exposed to Python
+			bool bFreeMove = false); // advc.163
 
 	bool canAutomate(AutomateTypes eAutomate) const;														// Exposed to Python
 	void automate(AutomateTypes eAutomate);
@@ -171,8 +172,8 @@ public:
 	bool nuke(int iX, int iY);
 	// <advc.650>
 	int nukeInterceptionChance(CvPlot const& kTarget, TeamTypes* pBestTeam = NULL,
-			EnumMap<TeamTypes,bool> const* pTeamsAffected = NULL) const; // <advc.650>
-
+			EagerEnumMap<TeamTypes,bool> const* pTeamsAffected = NULL) const;
+	// <advc.650>
 	bool canRecon(const CvPlot* pPlot) const;																// Exposed to Python
 	bool canReconAt(const CvPlot* pPlot, int iX, int iY) const;												// Exposed to Python
 	bool recon(int iX, int iY);
@@ -254,7 +255,8 @@ public:
 	bool canTrade(const CvPlot* pPlot, bool bTestVisible = false) const;									// Exposed to Python
 	bool trade();
 
-	int getGreatWorkCulture(const CvPlot* pPlot) const;														// Exposed to Python
+	int getGreatWorkCulture(const CvPlot* pPlot,															// Exposed to Python
+			int* piPerEra = NULL) const; // advc.251
 	bool canGreatWork(const CvPlot* pPlot) const;															// Exposed to Python
 	bool greatWork();
 
@@ -916,13 +918,15 @@ public:
 		// advc.inl: Split this function up so that part of it can be inlined
 		return (isAlwaysHostile() ? getCombatOwner_bulk(eForTeam, kPlot) : getOwner());
 	}
-
 	// advc (for convenience)
 	PlayerTypes getCombatOwner(TeamTypes eForTeam) const
 	{
 		return getCombatOwner(eForTeam, getPlot());
 	}
 	DllExport TeamTypes getTeam() const;																	// Exposed to Python
+	// <advc>
+	bool isActiveOwned() const { return (GC.getInitCore().getActivePlayer() == getOwner()); }
+	bool isActiveTeam() const { return (GC.getInitCore().getActiveTeam() == getTeam()); } // </advc>
 
 	PlayerTypes getCapturingPlayer() const;
 	void setCapturingPlayer(PlayerTypes eNewValue);
@@ -1204,7 +1208,7 @@ protected:
 
 	//bool m_bMadeAttack;
 	int m_iMadeAttacks; // advc.164
-	// advc.opt: Since we have exactly 8 booleans ...
+	// advc.opt: Bitfields - since we have exactly 8 booleans ...
 	bool m_bMadeInterception:1;
 	bool m_bPromotionReady:1;
 	bool m_bDeathDelay:1;
@@ -1229,16 +1233,16 @@ protected:
 	CvWString m_szName;
 	CvString m_szScriptData;
 
-	// <advc.enum> (Tbd.: short int would suffice)
-	EnumMap<PromotionTypes,bool> m_abHasPromotion;
-	EnumMap<DomainTypes,int> m_aiExtraDomainModifier;
-	EnumMap<TerrainTypes,int> m_aiTerrainDoubleMoveCount;
-	EnumMap<TerrainTypes,int> m_aiExtraTerrainAttackPercent;
-	EnumMap<TerrainTypes,int> m_aiExtraTerrainDefensePercent;
-	EnumMap<FeatureTypes,int> m_aiFeatureDoubleMoveCount;
-	EnumMap<FeatureTypes,int> m_aiExtraFeatureAttackPercent;
-	EnumMap<FeatureTypes,int> m_aiExtraFeatureDefensePercent;
-	EnumMap<UnitCombatTypes,int> m_aiExtraUnitCombatModifier;
+	// <advc.enum>
+	ArrayEnumMap<PromotionTypes,bool> m_abHasPromotion;
+	ArrayEnumMap<DomainTypes,int,short> m_aiExtraDomainModifier;
+	ArrayEnumMap<TerrainTypes,int,short> m_aiTerrainDoubleMoveCount;
+	ArrayEnumMap<TerrainTypes,int,short> m_aiExtraTerrainAttackPercent;
+	ArrayEnumMap<TerrainTypes,int,short> m_aiExtraTerrainDefensePercent;
+	ArrayEnumMap<FeatureTypes,int,short> m_aiFeatureDoubleMoveCount;
+	ArrayEnumMap<FeatureTypes,int,short> m_aiExtraFeatureAttackPercent;
+	ArrayEnumMap<FeatureTypes,int,short> m_aiExtraFeatureDefensePercent;
+	ArrayEnumMap<UnitCombatTypes,int,short> m_aiExtraUnitCombatModifier;
 	// </advc.enum>
 
 	PlayerTypes getCombatOwner_bulk(TeamTypes eForTeam, CvPlot const& kPlot) const; // advc
@@ -1345,7 +1349,10 @@ struct CombatDetails											// Exposed to Python
 	// advc:
 	void reset(PlayerTypes eOwner, PlayerTypes eVisualOwner, std::wstring sUnitName)
 	{
-		ZeroMemory(this, sizeof(*this));
+		/*	Not nice - but we mustn't zero the string, and we don't want to
+			repeat all the int members. */
+		ZeroMemory(this, 39 * sizeof(int));
+		BOOST_STATIC_ASSERT(sizeof(CombatDetails) == 39 * sizeof(int) + 2 * sizeof(PlayerTypes) + sizeof(std::wstring));
 		this->eOwner = eOwner;
 		this->eVisualOwner = eVisualOwner;
 		this->sUnitName = sUnitName;

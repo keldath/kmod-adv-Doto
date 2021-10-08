@@ -1,0 +1,15 @@
+Free Promotion: Select a unit and click Ctrl and + and the unit will be able to be promoted.
+Free Culture: Select/Open a city and click Ctrl and +, this will increase culture with 10.
+Award Techs and Gold: click Shift + T and a screen will show up. You can award techs through eras and gold to all or one of the players. To close the window just click OK.
+Seeing Everything: This can be used by opening WB or by clicking Ctrl and Z. when clicked you will see every single player, what their researching, what their building in cities..etc..
+Switching Players: to Switch players click Ctrl and Alt and Z. this will switch you to the next player.
+Wonder Movie: click Ctrl and Shift and W you will be able to see any wonder movie you want.
+Changing Graphics: by clicking Ctrl and D you will see a screen popup. It is fairly easy to understand it and there are over 100 things to do so I'll just list some of the interesting ones:
+-Going to the Throne Room
+-Launching the Space Ship (you don't win though)
+-Hiding any kind of object you want
+Debug Menu: if you click Ctrl and U the Debug Screen will show up. I'm still not sure what it can do but try it out yourself! One thing I know you can do is change the Animation and make it move muuuuuuuuch faster!
+Hiding Some Annoying Stuff: After you open the Debug Menu on the side of your screen there will be a line of random letters and numbers, to hide it click Ctrl and Shift and F.
+Increasing Gold by 1000: pressing Shift and 4 will increase your gold by 1000
+Adding 1 Population: holding Shift and + will increase the selected cities population by 1.
+Placing Objects: by pressing Ctrl and Shift and Left Clicking on a plot the Insert Screen will popup that lets you select a Unit/City to place on the plot.

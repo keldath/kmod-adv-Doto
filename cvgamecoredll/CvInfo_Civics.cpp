@@ -3,7 +3,6 @@
 #include "CvGameCoreDLL.h"
 #include "CvInfo_Civics.h"
 #include "CvXMLLoadUtility.h"
-#include "CvDLLXMLIFaceBase.h"
 
 
 CvCivicInfo::CvCivicInfo() :
@@ -195,7 +194,7 @@ const wchar* CvCivicInfo::getWeLoveTheKing()
 }
 
 /*************************************************************************************************/
-/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+/**	DOTO CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 /**																								**/
 /**																								**/
 /*************************************************************************************************/
@@ -214,7 +213,6 @@ int* CvCivicInfo::getSpecialistYieldChangeArray(int i) const
 	FAssertMsg(i > -1, "Index out of bounds");
 	return m_ppiSpecialistYieldChange[i];
 }
-
 
 int CvCivicInfo::getSpecialistCommerceChange(int i, int j) const
 {
@@ -235,7 +233,6 @@ int* CvCivicInfo::getSpecialistCommerceChangeArray(int i) const
 /*************************************************************************************************/
 /**	CMEDIT: End																					**/
 /*************************************************************************************************/
-
 int CvCivicInfo::getYieldModifier(int i) const
 {
 	FAssertBounds(0, NUM_YIELD_TYPES, i);
@@ -442,9 +439,7 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iAnarchyLength);
 	stream->Read(&m_iUpkeep);
 	stream->Read(&m_iAIWeight);
-	// <advc.132>
-	if (uiFlag >= 4)
-		stream->Read(&m_bCanAlwaysForce); // </advc.132>
+	stream->Read(&m_bCanAlwaysForce); // advc.132
 	stream->Read(&m_iGreatPeopleRateModifier);
 	stream->Read(&m_iGreatGeneralRateModifier);
 	stream->Read(&m_iDomesticGreatGeneralRateModifier);
@@ -457,8 +452,7 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 	//DPII < Maintenance Modifiers >				
 	stream->Read(&m_iCorporationMaintenanceModifier);
 	stream->Read(&m_iExtraHealth);
-	if (uiFlag >= 2)
-		stream->Read(&m_iExtraHappiness);
+	stream->Read(&m_iExtraHappiness);
 	stream->Read(&m_iFreeExperience);
 	stream->Read(&m_iWorkerSpeedModifier);
 	stream->Read(&m_iImprovementUpgradeRateModifier);
@@ -469,15 +463,8 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iFreeMilitaryUnitsPopulationPercent);
 	stream->Read(&m_iGoldPerUnit);
 	stream->Read(&m_iGoldPerMilitaryUnit);
-	if (uiFlag < 1)
-	{
-		m_iGoldPerUnit *= 100;
-		m_iGoldPerMilitaryUnit *= 100;
-	}
 	stream->Read(&m_iHappyPerMilitaryUnit);
-	// <advc.912c>
-	if(uiFlag >= 3)
-		stream->Read(&m_iLuxuryModifier); // </advc.912c>
+	stream->Read(&m_iLuxuryModifier); // advc.912c
 	stream->Read(&m_iLargestCityHappiness);
 	stream->Read(&m_iWarWearinessModifier);
 	stream->Read(&m_iFreeSpecialist);
@@ -533,7 +520,6 @@ void CvCivicInfo::read(FDataStreamBase* stream)
     SAFE_DELETE_ARRAY(m_piSpecialistExtraYield);
 	m_piSpecialistExtraCommerce = new int[NUM_YIELD_TYPES];
 	stream->Read(NUM_YIELD_TYPES, m_piSpecialistExtraYield);
-
 	// < Civic Infos Plus End   >
 	SAFE_DELETE_ARRAY(m_piCommerceModifier);
 	m_piCommerceModifier = new int[NUM_COMMERCE_TYPES];
@@ -562,8 +548,7 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 	SAFE_DELETE_ARRAY(m_pabSpecialistValid);
 	m_pabSpecialistValid = new bool[GC.getNumSpecialistInfos()];
 	stream->Read(GC.getNumSpecialistInfos(), m_pabSpecialistValid);
-
-// < Civic Infos Plus Start >
+	// < Civic Infos Plus Start >
 	int i;
 	if (m_ppiBuildingYieldChanges != NULL)
 	{
@@ -595,7 +580,6 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 		stream->Read(NUM_COMMERCE_TYPES, m_ppiBuildingCommerceChanges[i]);
 	}
 	// < Civic Infos Plus End   >
-	
 	if (m_ppiImprovementYieldChanges != NULL)
 	{
 		for(int i = 0; i < GC.getNumImprovementInfos(); i++)
@@ -614,10 +598,7 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 void CvCivicInfo::write(FDataStreamBase* stream)
 {
 	CvInfoBase::write(stream);
-	uint uiFlag;
-	//uiFlag = 2; // K-Mod
-	//uiFlag = 3; // advc.912c
-	uiFlag = 4; // advc.132
+	uint uiFlag = 0;
 	stream->Write(uiFlag);
 
 	stream->Write(m_eCivicOptionType);
@@ -637,7 +618,7 @@ void CvCivicInfo::write(FDataStreamBase* stream)
 	//DPII < Maintenance Modifiers >					
 	stream->Write(m_iCorporationMaintenanceModifier);
 	stream->Write(m_iExtraHealth);
-	stream->Write(m_iExtraHappiness); // K-Mod, uiFlag >= 2
+	stream->Write(m_iExtraHappiness); // K-Mod
 	stream->Write(m_iFreeExperience);
 	stream->Write(m_iWorkerSpeedModifier);
 	stream->Write(m_iImprovementUpgradeRateModifier);
@@ -695,7 +676,6 @@ void CvCivicInfo::write(FDataStreamBase* stream)
 	stream->Write(GC.getNumFeatureInfos(), m_paiFeatureHappinessChanges);
 	stream->Write(GC.getNumHurryInfos(), m_pabHurry);
 	stream->Write(GC.getNumSpecialBuildingInfos(), m_pabSpecialBuildingNotRequired);
-	stream->Write(GC.getNumSpecialistInfos(), m_pabSpecialistValid);
 	// < Civic Infos Plus Start >
 	for(int i=0;i<GC.getNumBuildingInfos();i++)
 	{
@@ -707,10 +687,10 @@ void CvCivicInfo::write(FDataStreamBase* stream)
 		stream->Write(NUM_COMMERCE_TYPES, m_ppiBuildingCommerceChanges[i]);
 	}
 	// < Civic Infos Plus End   >
+	stream->Write(GC.getNumSpecialistInfos(), m_pabSpecialistValid);
 	for(int i = 0;i < GC.getNumImprovementInfos(); i++)
 		stream->Write(NUM_YIELD_TYPES, m_ppiImprovementYieldChanges[i]);
 	stream->WriteString(m_szWeLoveTheKingKey);
-
 /*************************************************************************************************/
 /**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 /**																								**/
@@ -728,7 +708,6 @@ void CvCivicInfo::write(FDataStreamBase* stream)
 /*************************************************************************************************/
 /**	CMEDIT: End																					**/
 /*************************************************************************************************/
-
 }
 #endif
 bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
@@ -744,27 +723,14 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	int iIndex;
 // < Civic Infos Plus End   >
 /*************************************************************************************************/
-/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
-/**																								**/
-/**																								**/
-/*************************************************************************************************/
+//	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 	int k=0;
-/*************************************************************************************************/
-/**	CMEDIT: End																					**/
-/*************************************************************************************************/
-/*************************************************************************************************/
-/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
-/**																								**/
-/**																								**/
-/*************************************************************************************************/
 	int iNumChildren;				// the number of children the current node has
-/*************************************************************************************************/
-/**	CMEDIT: End																					**/
-/*************************************************************************************************/
+///	CMEDIT: End																					**/
 
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eCivicOptionType, "CivicOptionType");
+	pXML->SetInfoIDFromChildXmlVal(m_eCivicOptionType, "CivicOptionType");
 	FAssert(m_eCivicOptionType != NO_CIVICOPTION); // advc
-	pXML->SetInfoIDFromChildXmlVal((int&)m_eTechPrereq, "TechPrereq");
+	pXML->SetInfoIDFromChildXmlVal(m_eTechPrereq, "TechPrereq");
 
 	pXML->GetChildXmlValByName(&m_iAnarchyLength, "iAnarchyLength");
 
@@ -778,11 +744,11 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iStateReligionGreatPeopleRateModifier, "iStateReligionGreatPeopleRateModifier");
 	pXML->GetChildXmlValByName(&m_iDistanceMaintenanceModifier, "iDistanceMaintenanceModifier");
 	pXML->GetChildXmlValByName(&m_iNumCitiesMaintenanceModifier, "iNumCitiesMaintenanceModifier");
-	pXML->GetChildXmlValByName(&m_iCorporationMaintenanceModifier, "iCorporationMaintenanceModifier");
 	//DPII < Maintenance Modifiers >
 	pXML->GetChildXmlValByName(&m_iHomeAreaMaintenanceModifier, "iHomeAreaMaintenanceModifier",0);
 	pXML->GetChildXmlValByName(&m_iOtherAreaMaintenanceModifier, "iOtherAreaMaintenanceModifier",0);
 	//DPII < Maintenance Modifiers >
+	pXML->GetChildXmlValByName(&m_iCorporationMaintenanceModifier, "iCorporationMaintenanceModifier");
 	pXML->GetChildXmlValByName(&m_iExtraHealth, "iExtraHealth");
 	pXML->GetChildXmlValByName(&m_iExtraHappiness, "iExtraHappiness", 0); // K-Mod (advc: made optional)
 	pXML->GetChildXmlValByName(&m_iFreeExperience, "iFreeExperience");
@@ -813,35 +779,35 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iCivicPercentAnger, "iCivicPercentAnger");
 	pXML->GetChildXmlValByName(&m_bStateReligion, "bStateReligion");
 	pXML->GetChildXmlValByName(&m_bNoNonStateReligionSpread, "bNoNonStateReligionSpread");
-	pXML->GetChildXmlValByName(&m_iStateReligionHappiness, "iStateReligionHappiness");
-	pXML->GetChildXmlValByName(&m_iNonStateReligionHappiness, "iNonStateReligionHappiness");
 	// < Civic Infos Plus Start >
     pXML->GetChildXmlValByName(&m_iStateReligionExtraHealth, "iStateReligionExtraHealth", 0);
 	pXML->GetChildXmlValByName(&m_iNonStateReligionExtraHealth, "iNonStateReligionExtraHealth", 0);
 	// < Civic Infos Plus End   >
+	pXML->GetChildXmlValByName(&m_iStateReligionHappiness, "iStateReligionHappiness");
+	pXML->GetChildXmlValByName(&m_iNonStateReligionHappiness, "iNonStateReligionHappiness");
 	pXML->GetChildXmlValByName(&m_iStateReligionUnitProductionModifier, "iStateReligionUnitProductionModifier");
 	pXML->GetChildXmlValByName(&m_iStateReligionBuildingProductionModifier, "iStateReligionBuildingProductionModifier");
 	pXML->GetChildXmlValByName(&m_iStateReligionFreeExperience, "iStateReligionFreeExperience");
 	pXML->GetChildXmlValByName(&m_iExpInBorderModifier, "iExpInBorderModifier");
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"YieldModifiers"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"YieldModifiers"))
 	{
-		pXML->SetYields(&m_piYieldModifier);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piYieldModifier);
 	}
 	else pXML->InitList(&m_piYieldModifier, NUM_YIELD_TYPES);
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"CapitalYieldModifiers"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"CapitalYieldModifiers"))
 	{
-		pXML->SetYields(&m_piCapitalYieldModifier);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piCapitalYieldModifier);
 	}
 	else pXML->InitList(&m_piCapitalYieldModifier, NUM_YIELD_TYPES);
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"TradeYieldModifiers"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"TradeYieldModifiers"))
 	{
-		pXML->SetYields(&m_piTradeYieldModifier);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetYieldArray(&m_piTradeYieldModifier);
 	}
 	else pXML->InitList(&m_piTradeYieldModifier, NUM_YIELD_TYPES);
 // < Civic Infos Plus Start >
@@ -895,7 +861,6 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	{
 		pXML->InitList(&m_piNonStateReligionCommerceModifier, NUM_COMMERCE_TYPES);
 	}
-
 	// initialize the boolean list to the correct size and all the booleans to false
 	FAssertMsg((GC.getNumBuildingInfos() > 0) && (NUM_YIELD_TYPES) > 0,"either the number of Building infos is zero or less or the number of yield types is zero or less");
 	pXML->Init2DIntList(&m_ppiBuildingYieldChanges, GC.getNumBuildingInfos(), NUM_YIELD_TYPES);
@@ -936,11 +901,9 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 						}
 					}
 				}
-
 				gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 			}
 		}
-
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
 
@@ -977,40 +940,38 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 								pXML->InitList(&m_ppiBuildingCommerceChanges[iIndex], NUM_COMMERCE_TYPES);
 							}
 						}
-
 						if (!gDLL->getXMLIFace()->NextSibling(pXML->GetXML()))
 						{
 							break;
 						}
 					}
 				}
-
 				gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 			}
 		}
-
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
 
 	// < Civic Infos Plus End   >
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"CommerceModifiers"))
+	
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"CommerceModifiers"))
 	{
-		pXML->SetCommerce(&m_piCommerceModifier);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetCommerceArray(&m_piCommerceModifier);
 	}
 	else pXML->InitList(&m_piCommerceModifier, NUM_COMMERCE_TYPES);
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"CapitalCommerceModifiers"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"CapitalCommerceModifiers"))
 	{
-		pXML->SetCommerce(&m_piCapitalCommerceModifier);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetCommerceArray(&m_piCapitalCommerceModifier);
 	}
 	else pXML->InitList(&m_piCapitalCommerceModifier, NUM_COMMERCE_TYPES);
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"SpecialistExtraCommerces"))
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"SpecialistExtraCommerces"))
 	{
-		pXML->SetCommerce(&m_piSpecialistExtraCommerce);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+		pXML->SetCommerceArray(&m_piSpecialistExtraCommerce);
 	}
 	else pXML->InitList(&m_piSpecialistExtraCommerce, NUM_COMMERCE_TYPES);
 
@@ -1018,9 +979,7 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_pabSpecialBuildingNotRequired, "SpecialBuildingNotRequireds", GC.getNumSpecialBuildingInfos());
 	pXML->SetVariableListTagPair(&m_pabSpecialistValid, "SpecialistValids", GC.getNumSpecialistInfos());
 // < Civic Infos Plus Start >
-
 	pXML->SetVariableListTagPair(&m_paiFreeSpecialistCount, "FreeSpecialistCounts", /*sizeof(GC.getSpecialistInfo((SpecialistTypes)0)),*/ GC.getNumSpecialistInfos());
-
 // < Civic Infos Plus End   >
 	pXML->SetVariableListTagPair(&m_paiBuildingHappinessChanges, "BuildingHappinessChanges", GC.getNumBuildingClassInfos());
 	pXML->SetVariableListTagPair(&m_paiBuildingHealthChanges, "BuildingHealthChanges", GC.getNumBuildingClassInfos());
@@ -1045,10 +1004,10 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 						if (iIndex > -1)
 						{
 							SAFE_DELETE_ARRAY(m_ppiImprovementYieldChanges[iIndex]);
-							if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"ImprovementYields"))
+							if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+								"ImprovementYields"))
 							{
-								pXML->SetYields(&m_ppiImprovementYieldChanges[iIndex]);
-								gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+								pXML->SetYieldArray(&m_ppiImprovementYieldChanges[iIndex]);
 							}
 							else pXML->InitList(&m_ppiImprovementYieldChanges[iIndex], NUM_YIELD_TYPES);
 						}
@@ -1062,7 +1021,7 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
 
-	pXML->GetChildXmlValByName(m_szWeLoveTheKingKey, "WeLoveTheKing");
+	pXML->GetChildXmlValByName(m_szWeLoveTheKingKey, "WeLoveTheKing",L"");
 /*************************************************************************************************/
 /**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 /**																								**/
@@ -1077,7 +1036,7 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 		{
 			for(j=0;j<iNumChildren;j++)
 			{
-				pXML->GetChildXmlValByName(szTextVal, "SpecialistType");
+				pXML->GetChildXmlValByName(szTextVal, "SpecialistType","NONE");
 				k = pXML->FindInInfoClass(szTextVal);
 				if (k > -1)
 				{
@@ -1153,7 +1112,7 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 /**	CMEDIT: End																					**/
 /*************************************************************************************************/
 
-	return true;
+ 	return true;
 }
 
 CvCivicOptionInfo::CvCivicOptionInfo() : m_pabTraitNoUpkeep(NULL) {}
@@ -1184,7 +1143,6 @@ m_iPopulationPercent(0),
 m_iCityPercent(0),
 //keldath min civic cost when no inflation
 m_iminUpkeepCost(0)// doto keldath
-
 {}
 
 //keldath min civic cost when no inflation
@@ -1201,7 +1159,6 @@ bool CvUpkeepInfo::read(CvXMLLoadUtility* pXml)
 	pXml->GetChildXmlValByName(&m_iPopulationPercent, "iPopulationPercent");
 	pXml->GetChildXmlValByName(&m_iCityPercent, "iCityPercent");
 //keldath min civic cost when no inflation
-	pXml->GetChildXmlValByName(&m_iminUpkeepCost, "iminUpkeepCost", 0); // doto - keldath
-	
+	pXml->GetChildXmlValByName(&m_iminUpkeepCost, "iminUpkeepCost", 0); // doto - keldath	
 	return true;
 }

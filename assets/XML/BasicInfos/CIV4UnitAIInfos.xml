@@ -176,6 +176,7 @@ UNITAI_ENGINEER: Build an available wonder. If no wonder is available to rush, r
 			<Type>UNITAI_ENGINEER</Type>
 			<Description>UNITAI_ENGINEER</Description>
 		</UnitAIInfo>
+		<!-- K-Mod: -->
 		<UnitAIInfo>
 			<Type>UNITAI_GREAT_SPY</Type>
 			<Description>UNITAI_GREAT_SPY</Description>

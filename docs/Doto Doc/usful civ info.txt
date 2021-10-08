@@ -1,0 +1,14 @@
+
+CIV CACHE :
+
+I highly recommend not using the xml cache for any mod meaning disabling it for all mods is a bonus, not an issue.
+
+The xml cache saves the loaded xml files as bytestreams meaning it will not have to load xml and intrepid them. Sounds good on paper, but my guess is that the time saved on the computers we use today is less than a second. The cache is however problematic, both because updated xml files won't apply and because modders will have to maintain the read/write functions in CvInfos.cpp, something which you can't assume will be done. It's a detail, which is so easy to overlook when adding a new tag to an xml file and if overlooked once, the cache won't work as intended.
+
+The cache is used in CvXMLLoadUtilitySet.cpp. Search for gDLL->cacheRead and gDLL->cacheWrite. In theory you can change the code to remove all calls, but it's way easier to mod CvXMLLoadUtility::LoadPlayerOptions and force the config file as you would like it.
+PHP:
+gDLL->ChangeINIKeyValue("CONFIG", "HidePythonExceptions", "0");
+gDLL->ChangeINIKeyValue("CONFIG", "DisableFileCaching", "1");
+gDLL->ChangeINIKeyValue("CONFIG", "DisableCaching", "1");
+Unrelated but still worth mentioning: I always force python exceptions to be enabled. Not only will it make bug reports more useful, the game engine has a nasty habit of restoring this to the default 1, hence hiding python exceptions for yourself. The main reason I decided for force it to be always on in WTP is because I overlooked a bug because the game had decided to hide exceptions while I remembered having set it to display them.
+We the People mod for Colonization

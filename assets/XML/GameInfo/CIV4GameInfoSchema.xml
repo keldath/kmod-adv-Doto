@@ -358,6 +358,8 @@
 	<ElementType name="iHurryPercent" content="textOnly" dt:type="int"/>
 	<ElementType name="iHurryConscriptAngerPercent" content="textOnly" dt:type="int"/>
 	<ElementType name="iInflationPercent" content="textOnly" dt:type="int"/>
+	<!-- advc.101 -->
+	<ElementType name="iForeignCultureStrength" content="textOnly" dt:type="int"/>
 	<ElementType name="iHealthBonus" content="textOnly" dt:type="int"/>
 	<ElementType name="iHappyBonus" content="textOnly" dt:type="int"/>
 	<!-- Population Limit ModComp - Beginning : determine basic population limit -->
@@ -458,6 +460,8 @@
 		<element type="iCorporationMaintenancePercent" minOccurs="0"/>
 		<element type="iCivicUpkeepPercent" minOccurs="0"/>
 		<element type="iInflationPercent" minOccurs="0"/>
+		<!-- advc.101 -->
+		<element type="iForeignCultureStrength" minOccurs="0"/>
 		<element type="iHealthBonus" minOccurs="0"/>
 		<element type="iHappyBonus" minOccurs="0"/>
 		<!-- Population Limit ModComp - Beginning : determine basic population limit  -->
@@ -728,7 +732,8 @@
 	<ElementType name="iOtherAreaMaintenanceModifier" content="textOnly" dt:type="int"/>
 	<!--DPII < Maintenance Modifiers > -->
 	<ElementType name="iExtraHealth" content="textOnly" dt:type="int"/>
-	<ElementType name="iExtraHappiness" content="textOnly" dt:type="int"/> <!-- K-Mod -->
+	<!-- K-Mod -->
+	<ElementType name="iExtraHappiness" content="textOnly" dt:type="int"/>
 	<ElementType name="iFreeExperience" content="textOnly" dt:type="int"/>
 	<ElementType name="iWorkerSpeedModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iImprovementUpgradeRateModifier" content="textOnly" dt:type="int"/>
@@ -744,6 +749,7 @@
 	<ElementType name="iLuxuryModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="bMilitaryFoodProduction" content="textOnly" dt:type="boolean"/>
 	<ElementType name="iMaxConscript" content="textOnly" dt:type="int"/>
+	<!-- K-Mod -->
 	<ElementType name="iUnhealthyPopulationModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iExpInBorderModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="bBuildingOnlyHealthy" content="textOnly" dt:type="boolean"/>
@@ -941,6 +947,7 @@
 		<element type="iOtherAreaMaintenanceModifier" minOccurs="0"/>
 		<!--DPII < Maintenance Modifiers > -->
 		<element type="iExtraHealth" minOccurs="0"/>
+		<!-- K-Mod (advc: made optional) -->
 		<element type="iExtraHappiness" minOccurs="0"/> <!-- K-Mod -->
 		<element type="iFreeExperience" minOccurs="0"/>
 		<element type="iWorkerSpeedModifier" minOccurs="0"/>
@@ -1004,11 +1011,7 @@
 		<element type="FeatureHappinessChanges" minOccurs="0"/>
 		<element type="ImprovementYieldChanges" minOccurs="0"/>
 		<element type="WeLoveTheKing" minOccurs="0"/>
-<!-- CMEDIT -->
-<!-- Civic Specialist Yield & Commerces Changes -->
-		<element type="SpecialistYieldChanges" minOccurs="0"/>
-		<element type="SpecialistCommerceChanges" minOccurs="0"/>
-<!-- CMEDIT END	-->		
+<!-- CMEDIT -->		
 	</ElementType>
 	<ElementType name="CivicInfos" content="eltOnly">
 		<element type="CivicInfo" maxOccurs="*"/>
@@ -1430,6 +1433,8 @@
 	<ElementType name="iDestroyProductionCostFactor" content="textOnly" dt:type="int"/>
 	<ElementType name="iBuyUnitCostFactor" content="textOnly" dt:type="int"/>
 	<ElementType name="iBuyCityCostFactor" content="textOnly" dt:type="int"/>
+	<!-- advc (note): The DLL now uses the name "StolenGoldPercent" for this.
+		 The name of the XML element makes no sense to me. -->
 	<ElementType name="iStealTreasuryTypes" content="textOnly" dt:type="int"/>
 	<ElementType name="iCityInsertCultureAmountFactor" content="textOnly" dt:type="int"/>
 	<ElementType name="iCityInsertCultureCostFactor" content="textOnly" dt:type="int"/>

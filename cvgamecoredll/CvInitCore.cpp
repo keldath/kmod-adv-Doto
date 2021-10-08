@@ -2,7 +2,6 @@
 #include "CvInitCore.h"
 #include "CvPlayer.h"
 #include "CvInfo_GameOption.h"
-#include "CvDLLUtilityIFaceBase.h"
 /*************************************************************************************************/
 /** TGA_INDEXATION                          01/21/08                                MRGENIE      */
 /**                                                                                              */
@@ -284,7 +283,7 @@ void CvInitCore::reassignPlayer(PlayerTypes eOldID, PlayerTypes eNewID)
 	bool bPlayableCiv = m_abPlayableCiv.get(eNewID);
 	bool bMinorNationCiv = m_abMinorNationCiv.get(eNewID);
 	// Temp unsaved player data
-	int iNetID = m_aiNetID.get(eNewID);
+	PlayerTypes eNetID = m_aiNetID.get(eNewID);
 	bool bReady = m_abReady.get(eNewID);
 	CvString szPythonCheck = m_aszPythonCheck[eNewID];
 	CvString szXMLCheck = m_aszXMLCheck[eNewID];
@@ -352,7 +351,7 @@ void CvInitCore::reassignPlayer(PlayerTypes eOldID, PlayerTypes eNewID)
 	m_abPlayableCiv.set(eOldID, bPlayableCiv);
 	m_abMinorNationCiv.set(eOldID, bMinorNationCiv);
 	// New unsaved player data
-	m_aiNetID.set(eOldID, iNetID);
+	m_aiNetID.set(eOldID, eNetID);
 	m_abReady.set(eOldID, bReady);
 	m_aszPythonCheck[eOldID] = szPythonCheck;
 	m_aszXMLCheck[eOldID] = szXMLCheck;
@@ -427,7 +426,7 @@ void CvInitCore::reopenInactiveSlots()
 	}
 }
 
-void CvInitCore::resetGame()
+void CvInitCore::resetGame(/* advc.enum: */ bool bBeforeRead)
 {
 	// Descriptive strings about game and map
 	m_eType = GAME_NONE;
@@ -440,6 +439,8 @@ void CvInitCore::resetGame()
 
 	// Standard game parameters
 	m_eWorldSize = NO_WORLDSIZE;		// STANDARD_ option?
+	
+	if (!bBeforeRead) // advc.enum (doesn't really matter ...)
 	/*  <advc.003c> This function is called multiple times before XML is loaded.
 		GC.getDefineINT returns 0 then, which is fine, but now also triggers
 		a failed assertion. Therefore check if GC is done with the loading
@@ -447,14 +448,15 @@ void CvInitCore::resetGame()
 		The in-line comments "NO_ option?" below are from the Vanilla developers.
 		If I'd just set everything to NO_..., I'd have to set proper values at
 		some later point though. */
-	bool cd = GC.isCachingDone();
-	m_eClimate = cd ? (ClimateTypes)GC.getDefineINT("STANDARD_CLIMATE") : NO_CLIMATE;			// NO_ option?
-	m_eSeaLevel = cd ? (SeaLevelTypes)GC.getDefineINT("STANDARD_SEALEVEL") : NO_SEALEVEL;		// NO_ option?
-	m_eEra = cd ? (EraTypes)GC.getDefineINT("STANDARD_ERA") : NO_ERA;						// NO_ option?
-	m_eGameSpeed = cd ? (GameSpeedTypes)GC.getDefineINT("STANDARD_GAMESPEED") : NO_GAMESPEED;	// NO_ option?
-	m_eTurnTimer = cd ? (TurnTimerTypes)GC.getDefineINT("STANDARD_TURNTIMER") : NO_TURNTIMER;	// NO_ option?
-	m_eCalendar = cd ? (CalendarTypes)GC.getDefineINT("STANDARD_CALENDAR") : NO_CALENDAR;		// NO_ option?
-	// </advc.003c>
+	{
+		bool cd = GC.isCachingDone();
+		m_eClimate = cd ? (ClimateTypes)GC.getDefineINT("STANDARD_CLIMATE") : NO_CLIMATE;			// NO_ option?
+		m_eSeaLevel = cd ? (SeaLevelTypes)GC.getDefineINT("STANDARD_SEALEVEL") : NO_SEALEVEL;		// NO_ option?
+		m_eEra = cd ? (EraTypes)GC.getDefineINT("STANDARD_ERA") : NO_ERA;							// NO_ option?
+		m_eGameSpeed = cd ? (GameSpeedTypes)GC.getDefineINT("STANDARD_GAMESPEED") : NO_GAMESPEED;	// NO_ option?
+		m_eTurnTimer = cd ? (TurnTimerTypes)GC.getDefineINT("STANDARD_TURNTIMER") : NO_TURNTIMER;	// NO_ option?
+		m_eCalendar = cd ? (CalendarTypes)GC.getDefineINT("STANDARD_CALENDAR") : NO_CALENDAR;		// NO_ option?
+	} // </advc.003c>
 	// Map-specific custom parameters
 	clearCustomMapOptions();
 	/*  advc: Unused as far as I can tell, but still better to ensure that it
@@ -462,20 +464,25 @@ void CvInitCore::resetGame()
 	m_iNumHiddenCustomMapOptions = 0;
 	// Data-defined victory conditions
 	//refreshVictories();
-	/*	<advc> Rolling that function out should make it easier to use an EnumMap instead
+	/*	<advc> Unrolling that function should make it easier to use an EnumMap instead
 		-- if I ever take another stab at that, which probably I should not. */
 	SAFE_DELETE_ARRAY(m_abVictories);
-	m_iNumVictories = GC.getNumVictoryInfos();
-	if (m_iNumVictories > 0)
+	if (!bBeforeRead) // advc.enum
 	{
-		m_abVictories = new bool[m_iNumVictories];
-		for (int i = 0; i < m_iNumVictories; i++)
-			m_abVictories[i] = true;
-	} // </advc>
-
+		m_iNumVictories = GC.getNumVictoryInfos();
+		if (m_iNumVictories > 0)
+		{
+			m_abVictories = new bool[m_iNumVictories];
+			for (int i = 0; i < m_iNumVictories; i++)
+				m_abVictories[i] = true;
+		} // </advc>
+	}
 	// Standard game options
 	m_abOptions.reset();
 	m_abMPOptions.reset();
+	// <advc.enum>
+	if (bBeforeRead)
+		return; // </advc.enum>
 	m_abForceControls.reset();
 	m_iMaxCityElimination = 0;
 	m_iNumAdvancedStartPoints = 0;
@@ -494,6 +501,7 @@ void CvInitCore::resetGame()
 	m_uiSyncRandSeed = 0;
 	m_uiMapRandSeed = 0;
 	m_eActivePlayer = NO_PLAYER;
+	m_eActiveTeam = NO_TEAM; // advc.opt
 
 	// Temp vars
 	m_szTemp.clear();
@@ -570,11 +578,11 @@ void CvInitCore::resetGame(CvInitCore* pSource, bool bClear, bool bSaveGameType)
 	setMapRandSeed(pSource->getMapRandSeed());
 }
 
-void CvInitCore::resetPlayers()
+void CvInitCore::resetPlayers(/* advc.enum: */ bool bBeforeRead)
 {
 	for (int i = 0; i < MAX_PLAYERS; ++i)
 	{
-		resetPlayer((PlayerTypes)i);
+		resetPlayer((PlayerTypes)i, /* advc.enum: */ bBeforeRead);
 	}
 }
 
@@ -586,7 +594,8 @@ void CvInitCore::resetPlayers(CvInitCore * pSource, bool bClear, bool bSaveSlotI
 	}
 }
 
-void CvInitCore::resetPlayer(PlayerTypes eID)
+void CvInitCore::resetPlayer(PlayerTypes eID,
+	bool bBeforeRead) // advc.enum
 {
 	FAssertBounds(0, MAX_PLAYERS, eID);
 
@@ -599,22 +608,22 @@ void CvInitCore::resetPlayer(PlayerTypes eID)
 	m_aszEmail[eID].clear();
 	m_aszSmtpHost[eID].clear();
 
-	m_abWhiteFlag.reset(eID);
+	m_abWhiteFlag.resetVal(eID);
 	m_aszFlagDecal[eID].clear();
 
-	m_aeCiv.reset(eID);
-	m_aeLeader.reset(eID);
+	m_aeCiv.resetVal(eID);
+	m_aeLeader.resetVal(eID);
 	// <advc.190c>
-	m_abCivChosenRandomly.reset(eID);
-	m_abLeaderChosenRandomly.reset(eID);
+	m_abCivChosenRandomly.resetVal(eID);
+	m_abLeaderChosenRandomly.resetVal(eID);
 	// </advc.190c>
-	m_aeTeam.set(eID, (TeamTypes)eID);
+	m_aeTeam.set(eID, static_cast<TeamTypes>(eID));
 	// <advc.003c> See comment in resetGame
 	m_aeHandicap.set(eID, GC.isCachingDone() ?
 			(HandicapTypes)GC.getDefineINT("STANDARD_HANDICAP") : NO_HANDICAP);
 	// </advc.003c>
-	m_aeColor.reset(eID);
-	m_aeArtStyle.reset(eID);
+	m_aeColor.resetVal(eID);
+	m_aeArtStyle.resetVal(eID);
 
 
 	// Slot data
@@ -622,16 +631,23 @@ void CvInitCore::resetPlayer(PlayerTypes eID)
 	m_aeSlotClaim[eID] = SLOTCLAIM_UNASSIGNED;
 
 	// Civ flags
-	m_abPlayableCiv.reset(eID);
-	m_abMinorNationCiv.reset(eID);
+	m_abPlayableCiv.resetVal(eID);
+	m_abMinorNationCiv.resetVal(eID);
+	// <advc.001p>
+	if (bBeforeRead)
+	{	// Avoid crash when loading from within a game
+		if (GET_PLAYER(eID).isEverAlive())
+			GET_PLAYER(eID).reset(eID); // </advc.001p>
+		return; // advc.enum
+	}
 
 	// Unsaved player data
-	m_aiNetID.reset(eID);
-	m_abReady.reset(eID);
+	m_aiNetID.resetVal(eID);
+	m_abReady.resetVal(eID);
 	m_aszPythonCheck[eID].clear();
 	m_aszXMLCheck[eID].clear();
 
-	if(CvPlayer::areStaticsInitialized())
+	if (CvPlayer::areStaticsInitialized())
 	{
 		GET_PLAYER(eID).updateTeamType();
 		GET_PLAYER(eID).updateHuman();
@@ -896,18 +912,24 @@ void CvInitCore::clearCustomMapOptions()
 	m_iNumCustomMapOptions = 0;
 }
 
-void CvInitCore::refreshCustomMapOptions()  // advc.003y: refactored
+void CvInitCore::refreshCustomMapOptions()
 {
 	clearCustomMapOptions();
-
 	if (getWBMapScript())
 		return;
-
 	CvString szMapScriptNameNarrow(getMapScriptName());
 	char const* szMapScriptName = szMapScriptNameNarrow.GetCString();
 	if (!gDLL->pythonMapExists(szMapScriptName))
-	{	// advc: Map script doesn't have to be present when loading a game
-		FAssertMsg(getType() == GAME_SP_LOAD, "Map script not found");
+	{	/*	advc: GAME_NONE means we're on the opening menu. The map script actually
+			needs to be present at that point b/c that's (apparently) when the EXE
+			caches the number of custom map options. However, this won't matter
+			if the player then selects to load a savegame or start a scenario.
+			We'll get another call upon entering a non-WB game setup screen;
+			lets wait for that with the assertion - if the script can't be found
+			earlier, it still won't be found then. */
+/*DOTO - f1rpo for DOTO AND EOM FROM ADVC - fixes the usage of no public maps in the ini file of the mod.
+new assert check */
+		FAssertMsg(getType() == GAME_NONE || getType() == GAME_SP_LOAD, "Map script not found");
 		return;
 	}
 	CvPythonCaller const& py = *GC.getPythonCaller();
@@ -936,7 +958,7 @@ void CvInitCore::setCustomMapOptions(int iNumCustomMapOptions,
 	clearCustomMapOptions();
 	if (iNumCustomMapOptions > 0)
 	{
-		FAssertMsg(aeCustomMapOptions, "CustomMap Num/Pointer mismatch in CvInitCore::setCustomMapOptions");
+		FAssertMsg(aeCustomMapOptions != NULL, "CustomMap Num/Pointer mismatch in CvInitCore::setCustomMapOptions");
 		m_iNumCustomMapOptions = iNumCustomMapOptions;
 		m_aeCustomMapOptions = new CustomMapOptionTypes[m_iNumCustomMapOptions];
 		for (int i = 0; i < m_iNumCustomMapOptions; ++i)
@@ -1006,9 +1028,13 @@ void CvInitCore::setForceControl(ForceControlTypes eIndex, bool bOption)
 
 void CvInitCore::setActivePlayer(PlayerTypes eActivePlayer)
 {
+	// <advc>
+	if (m_eActivePlayer == eActivePlayer)
+		return; // </advc>
 	/*	<advc.004s>, advc.001: Player switching skips the player history updates.
 		In BtS, this merely results in a discontinuity in the graphs, but the new
-		PlayerHistory class doesn't tolerate this at all. */
+		PlayerHistory class doesn't tolerate this at all. (Tbd.: Move this to
+		CvGame::setActivePlayer? Not sure if all calls go through there ...) */
 	if (m_eActivePlayer != NO_PLAYER)
 	{
 		CvPlayer& kPrevActivePlayer = GET_PLAYER(m_eActivePlayer);
@@ -1023,9 +1049,11 @@ void CvInitCore::setActivePlayer(PlayerTypes eActivePlayer)
 	m_eActivePlayer = eActivePlayer;
 	if (m_eActivePlayer != NO_PLAYER)
 	{
+		m_eActiveTeam = GET_PLAYER(m_eActivePlayer).getTeam(); // advc.opt
 		// Automatically claim this slot
 		setSlotClaim(m_eActivePlayer, SLOTCLAIM_ASSIGNED);
 	}
+	else m_eActiveTeam = NO_TEAM; // advc.opt
 }
 
 void CvInitCore::setType(GameType eType)
@@ -1420,7 +1448,7 @@ void CvInitCore::setMinorNationCiv(PlayerTypes eID, bool bMinorNationCiv)
 
 void CvInitCore::setNetID(PlayerTypes eID, int iNetID)
 {
-	m_aiNetID.set(eID, iNetID);
+	m_aiNetID.set(eID, static_cast<PlayerTypes>(iNetID));
 }
 
 CvString const& CvInitCore::getPythonCheck(PlayerTypes eID) const
@@ -1653,7 +1681,7 @@ void CvInitCore::reRandomizeCivsAndLeaders()
 			return;
 		}
 	}
-	EnumMap<PlayerTypes,bool> abRandomize;
+	EagerEnumMap<PlayerTypes,bool> abRandomize;
 	for (int i = 0; i < MAX_CIV_PLAYERS; i++)
 	{
 		PlayerTypes const ePlayer = (PlayerTypes)i;
@@ -1664,7 +1692,7 @@ void CvInitCore::reRandomizeCivsAndLeaders()
 			abRandomize.set(ePlayer, true);
 		}
 	}
-	if (!abRandomize.hasContent())
+	if (!abRandomize.isAnyNonDefault())
 		return;
 	std::vector<PlayerTypes> aeSlotPlayers;
 	for (int i = 0; i < MAX_CIV_PLAYERS; i++)
@@ -1679,8 +1707,8 @@ void CvInitCore::reRandomizeCivsAndLeaders()
 			FAssert(getCiv(ePlayer) != NO_CIVILIZATION);
 		}
 	}
-	EnumMap<CivilizationTypes,int> aiTakersPerCiv;
-	EnumMap<LeaderHeadTypes,bool> abLeaderTaken;
+	EagerEnumMap<CivilizationTypes,int> aiTakersPerCiv;
+	EagerEnumMap<LeaderHeadTypes,bool> abLeaderTaken;
 	int iRandomLeadersNeeded = 0;
 	for (size_t i = 0; i < aeSlotPlayers.size(); i++)
 	{
@@ -1729,7 +1757,7 @@ void CvInitCore::reRandomizeCivsAndLeaders()
 		for (int iMaxTaken = 0; iMaxTaken < ((int)aeSlotPlayers.size()) &&
 			eNewCiv == NO_CIVILIZATION; iMaxTaken++)
 		{
-			EnumMap<CivilizationTypes,int> aiWeights;
+			EagerEnumMap<CivilizationTypes,int> aiWeights;
 			int iTotalWeight = 0;
 			FOR_EACH_ENUM2(Civilization, eCiv)
 			{
@@ -1805,6 +1833,12 @@ int CvInitCore::getAdvancedStartMinPoints() const
 
 void CvInitCore::read(FDataStreamBase* pStream)
 {
+	/*	<advc.enum> The EXE doesn't reset this class before calling read.
+		Need to free all dynamic memory and clear everything that doesn't get
+		fully replaced with data from pStream. */
+	resetGame(true);
+	resetPlayers(true); // </advc.enum>
+
 	uint uiFlag=0;
 	pStream->Read(&uiFlag);
 
@@ -1828,7 +1862,7 @@ void CvInitCore::read(FDataStreamBase* pStream)
 	pStream->Read((int*)&m_eTurnTimer);
 	pStream->Read((int*)&m_eCalendar);
 
-	SAFE_DELETE_ARRAY(m_aeCustomMapOptions);
+	//SAFE_DELETE_ARRAY(m_aeCustomMapOptions); // advc.enum: Now handled by resetGame
 	pStream->Read(&m_iNumCustomMapOptions);
 	pStream->Read(&m_iNumHiddenCustomMapOptions);
 	if (m_iNumCustomMapOptions > 0)
@@ -1836,7 +1870,7 @@ void CvInitCore::read(FDataStreamBase* pStream)
 		m_aeCustomMapOptions = new CustomMapOptionTypes[m_iNumCustomMapOptions];
 		pStream->Read(m_iNumCustomMapOptions, (int*)m_aeCustomMapOptions);
 	}
-	SAFE_DELETE_ARRAY(m_abVictories);
+	//SAFE_DELETE_ARRAY(m_abVictories); // advc.enum: Now handled by resetGame
 	pStream->Read(&m_iNumVictories);
 	if (m_iNumVictories > 0)
 	{
@@ -1844,8 +1878,10 @@ void CvInitCore::read(FDataStreamBase* pStream)
 		pStream->Read(m_iNumVictories, m_abVictories);
 	}
 	// <advc.enum>
-	if (uiFlag >= 4)
-		m_abOptions.Read(pStream);
+	if (uiFlag >= 6)
+		m_abOptions.read(pStream);
+	else if (uiFlag >= 4)
+		m_abOptions.readArray<int>(pStream);
 	else // </advc.enum>
 	{
 		bool abOptions[NUM_GAMEOPTION_TYPES];
@@ -1868,9 +1904,9 @@ void CvInitCore::read(FDataStreamBase* pStream)
 		FOR_EACH_ENUM(GameOption)
 			m_abOptions.set(eLoopGameOption, abOptions[eLoopGameOption]);
 	} // </advc.912d>
-
-	m_abMPOptions.Read(pStream);
-
+	if (uiFlag >= 6)
+		m_abMPOptions.read(pStream);
+	else m_abMPOptions.readArray<bool>(pStream);
 	pStream->Read(&m_bStatReporting);
 
 	pStream->Read(&m_iGameTurn);
@@ -1890,20 +1926,42 @@ void CvInitCore::read(FDataStreamBase* pStream)
 	pStream->ReadString(MAX_PLAYERS, m_aszEmail);
 	pStream->ReadString(MAX_PLAYERS, m_aszSmtpHost);
 
-	m_abWhiteFlag.Read(pStream);
+	if (uiFlag >= 6)
+		m_abWhiteFlag.read(pStream);
+	else m_abWhiteFlag.readArray<bool>(pStream);
 	pStream->ReadString(MAX_PLAYERS, m_aszFlagDecal);
 
-	m_aeCiv.Read(pStream);
-	m_aeLeader.Read(pStream);
-	m_aeTeam.Read(pStream);
-	m_aeHandicap.Read(pStream);
-	m_aeColor.Read(pStream);
-	m_aeArtStyle.Read(pStream);
+	if (uiFlag >= 6)
+	{
+		m_aeCiv.read(pStream);
+		m_aeLeader.read(pStream);
+		m_aeTeam.read(pStream);
+		m_aeHandicap.read(pStream);
+		m_aeColor.read(pStream);
+		m_aeArtStyle.read(pStream);
+	}
+	else
+	{
+		m_aeCiv.readArray<int>(pStream);
+		m_aeLeader.readArray<int>(pStream);
+		m_aeTeam.readArray<int>(pStream);
+		m_aeHandicap.readArray<int>(pStream);
+		m_aeColor.readArray<int>(pStream);
+		m_aeArtStyle.readArray<int>(pStream);
+	}
 	// <advc.190c>
 	if (uiFlag >= 5)
 	{
-		m_abCivChosenRandomly.Read(pStream);
-		m_abLeaderChosenRandomly.Read(pStream);
+		if (uiFlag >= 6)
+		{
+			m_abCivChosenRandomly.read(pStream);
+			m_abLeaderChosenRandomly.read(pStream);
+		}
+		else
+		{
+			m_abCivChosenRandomly.readArray<bool>(pStream);
+			m_abLeaderChosenRandomly.readArray<bool>(pStream);
+		}
 		pStream->Read(&m_bCivLeaderSetupKnown);
 	} // </advc.190c>
 
@@ -1915,10 +1973,16 @@ void CvInitCore::read(FDataStreamBase* pStream)
 		if (m_aeSlotClaim[i] == SLOTCLAIM_ASSIGNED)
 			m_aeSlotClaim[i] = SLOTCLAIM_RESERVED;
 	}
-
-	m_abPlayableCiv.Read(pStream);
-	m_abMinorNationCiv.Read(pStream);
-
+	if (uiFlag >= 6)
+	{
+		m_abPlayableCiv.read(pStream);
+		m_abMinorNationCiv.read(pStream);
+	}
+	else
+	{
+		m_abPlayableCiv.readArray<bool>(pStream);
+		m_abMinorNationCiv.readArray<bool>(pStream);
+	}
 	if (CvPlayer::areStaticsInitialized())
 	{
 		for (int i = 0; i < MAX_PLAYERS; i++)
@@ -1948,7 +2012,8 @@ void CvInitCore::write(FDataStreamBase* pStream)
 	//uiFlag = 2; // advc.912d
 	//uiFlag = 3; // advc: m_bPangaea
 	//uiFlag = 4; // advc.enum: m_abOptions as byte map
-	uiFlag = 5; // advc.190c
+	//uiFlag = 5; // advc.190c
+	uiFlag = 6; // advc.enum: new enum map save behavior
 
 	pStream->Write(uiFlag);
 
@@ -2002,7 +2067,7 @@ void CvInitCore::write(FDataStreamBase* pStream)
 	pStream->Write(m_iNumVictories);
 	pStream->Write(m_iNumVictories, m_abVictories);
 
-	m_abOptions.Write(pStream);
+	m_abOptions.write(pStream);
 	// <advc.test>
 	#ifdef FASSERT_ENABLE
 	if (!getGameMultiplayer())
@@ -2011,7 +2076,7 @@ void CvInitCore::write(FDataStreamBase* pStream)
 			FAssert(!m_abMPOptions.get(eLoopMPOption));
 	}
 	#endif // </advc.test>
-	m_abMPOptions.Write(pStream);
+	m_abMPOptions.write(pStream);
 
 	pStream->Write(m_bStatReporting);
 
@@ -2033,23 +2098,23 @@ void CvInitCore::write(FDataStreamBase* pStream)
 	pStream->WriteString(MAX_PLAYERS, m_aszEmail);
 	pStream->WriteString(MAX_PLAYERS, m_aszSmtpHost);
 
-	m_abWhiteFlag.Write(pStream);
+	m_abWhiteFlag.write(pStream);
 	pStream->WriteString(MAX_PLAYERS, m_aszFlagDecal);
 
-	m_aeCiv.Write(pStream);
-	m_aeLeader.Write(pStream);
-	m_aeTeam.Write(pStream);
-	m_aeHandicap.Write(pStream);
-	m_aeColor.Write(pStream);
-	m_aeArtStyle.Write(pStream);
+	m_aeCiv.write(pStream);
+	m_aeLeader.write(pStream);
+	m_aeTeam.write(pStream);
+	m_aeHandicap.write(pStream);
+	m_aeColor.write(pStream);
+	m_aeArtStyle.write(pStream);
 	// <advc.190c>
-	m_abCivChosenRandomly.Write(pStream);
-	m_abLeaderChosenRandomly.Write(pStream);
+	m_abCivChosenRandomly.write(pStream);
+	m_abLeaderChosenRandomly.write(pStream);
 	pStream->Write(m_bCivLeaderSetupKnown); // </advc.190c>
 	REPRO_TEST_END_WRITE(); // (skip slot data)
 	pStream->Write(MAX_PLAYERS, (int*)m_aeSlotStatus);
 	pStream->Write(MAX_PLAYERS, (int*)m_aeSlotClaim);
 
-	m_abPlayableCiv.Write(pStream);
-	m_abMinorNationCiv.Write(pStream);
+	m_abPlayableCiv.write(pStream);
+	m_abMinorNationCiv.write(pStream);
 }

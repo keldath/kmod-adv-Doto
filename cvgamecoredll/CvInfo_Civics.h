@@ -80,20 +80,7 @@ public: // The const functions are exposed to Python except those (to be) added 
 	const wchar* getWeLoveTheKing();
 
 	// Array access:
-	/*************************************************************************************************/
-	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
-	/**																								**/
-	/**																								**/
-	/*************************************************************************************************/
-	int getSpecialistYieldChange(int i, int j) const;			
-	int* getSpecialistYieldChangeArray(int i) const;
-	
-	int getSpecialistCommerceChange(int i, int j) const;			
-	int* getSpecialistCommerceChangeArray(int i) const;
 
-	/*************************************************************************************************/
-	/**	CMEDIT: End																					**/
-	/*************************************************************************************************/	
 	int getYieldModifier(int i) const;
 	int* getYieldModifierArray() const;
 	int getCapitalYieldModifier(int i) const;
@@ -132,6 +119,13 @@ public: // The const functions are exposed to Python except those (to be) added 
 	bool isSpecialistValid(int i) const;
 
 	int getImprovementYieldChanges(int i, int j) const;
+	/*************************************************************************************************/
+	//doto	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
+	int getSpecialistYieldChange(int i, int j) const;			
+	int* getSpecialistYieldChangeArray(int i) const;	
+	int getSpecialistCommerceChange(int i, int j) const;			
+	int* getSpecialistCommerceChangeArray(int i) const;
+	//	CMEDIT: End																					**/
 	#if ENABLE_XML_FILE_CACHE
 	void read(FDataStreamBase* stream);
 	void write(FDataStreamBase* stream);
@@ -198,17 +192,10 @@ protected:
 	bool m_bCanAlwaysForce; // advc.132
 
 	CvWString m_szWeLoveTheKingKey;
-	/*************************************************************************************************/
-	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
-	/**																								**/
-	/**																								**/
-	/*************************************************************************************************/
+	//	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 	int** m_ppiSpecialistYieldChange;
 	int** m_ppiSpecialistCommerceChange;
-	/*************************************************************************************************/
-	/**	CMEDIT: End																					**/
-	/*************************************************************************************************/
-	/*************************************************************************************************/	
+	//	CMEDIT: End																					**/
 	int* m_piYieldModifier;
 	int* m_piCapitalYieldModifier;
 	int* m_piTradeYieldModifier;

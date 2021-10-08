@@ -6,9 +6,9 @@
 #include "CvInfo_GameOption.h"
 #include "CvInfo_Building.h" // advc.erai
 
-// <advc.007b>
+// <advc.007c>
 #undef CVGAME_INSTANCE_FOR_RNG
-#define CVGAME_INSTANCE_FOR_RNG (*this) // </advc.007b>
+#define CVGAME_INSTANCE_FOR_RNG (*this) // </advc.007c>
 
 
 
@@ -52,8 +52,11 @@ void CvGameAI::AI_initScenario()
 			c->AI_assignWorkingPlots();
 		}
 	}
-	for (TeamAIIter<MAJOR_CIV> it; it.hasNext(); ++it)
-		it->uwai().turnPre();
+	if (getUWAI().isEnabled() || getUWAI().isEnabled(true))
+	{
+		for (TeamAIIter<MAJOR_CIV> it; it.hasNext(); ++it)
+			it->uwai().turnPre();
+	}
 } // </advc.104u>
 
 /*  advc.104: I'm repurposing the Aggressive AI option so that it disables UWAI
@@ -140,7 +143,7 @@ int CvGameAI::AI_combatValue(UnitTypes eUnit) /* K-Mod: */ const
 }
 
 
-int CvGameAI::AI_turnsPercent(int iTurns, int iPercent)
+int CvGameAI::AI_turnsPercent(int iTurns, int iPercent) const
 {
 	FAssert(iPercent > 0);
 	if (iTurns != MAX_INT)

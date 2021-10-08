@@ -391,5 +391,12 @@
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>
 		</GameOptionInfo>
+        <GameOptionInfo>
+            <Type>GAMEOPTION_SCENARIO_PLAY</Type>
+            <Description>Scenario Game Only</Description>
+            <Help>dev</Help>
+            <bDefault>0</bDefault>
+            <bVisible>0</bVisible>
+		</GameOptionInfo>
 	</GameOptionInfos>
 </Civ4GameOptionInfos>

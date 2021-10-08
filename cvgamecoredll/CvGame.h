@@ -15,6 +15,7 @@ class CvDeal;
 class CvCivilization; // advc.003w
 class NormalizationTarget; // advc.027
 class Shelf; // advc.300
+class BarbarianWeightMap; // advc.304
 class StartPointsAsHandicap; // advc.250b
 class RiseFall; // advc.700
 
@@ -63,6 +64,7 @@ public:
 	int getScoreComponent(int iRawScore, int iInitial, int iMax, int iMultiplier,
 			bool bExponential, bool bFinal, bool bVictory) const; // </advc.003y>
 	int getDifficultyForEndScore() const; // advc.250 (exposed to Python; hence public)
+	void updateAIHandicap(); // advc.127
 
 	DllExport void updateColoredPlots();
 	DllExport void updateBlockadedPlots();
@@ -162,47 +164,50 @@ public:
 	void clearSecretaryGeneral(VoteSourceTypes eVoteSource);
 	void updateSecretaryGeneral();
 
-	int countCivPlayersAlive() const;																		// Exposed to Python
-	int countCivPlayersEverAlive() const;																// Exposed to Python
-	int countCivTeamsAlive() const;																			// Exposed to Python
-	int countCivTeamsEverAlive() const;																	// Exposed to Python
-	int countHumanPlayersAlive() const;																	// Exposed to Python
+	int countCivPlayersAlive() const;																// Exposed to Python
+	int countCivPlayersEverAlive() const;															// Exposed to Python
+	int countCivTeamsAlive() const;																	// Exposed to Python
+	int countCivTeamsEverAlive() const;																// Exposed to Python
+	int countHumanPlayersAlive() const;																// Exposed to Python
 	int countFreeTeamsAlive() const; // K-Mod
 	// advc.137: Replaces getDefaultPlayers for most purposes
 	int getRecommendedPlayers() const;
 	int getSeaLevelChange() const; // advc.137, advc.140
 
-	int countTotalCivPower();																								// Exposed to Python
-	int countTotalNukeUnits();																							// Exposed to Python
-	int countKnownTechNumTeams(TechTypes eTech);														// Exposed to Python
-	int getNumFreeBonuses(BuildingTypes eBuilding) const;	// advc: const										// Exposed to Python
+	int countTotalCivPower() const;																	// Exposed to Python
+	int countTotalNukeUnits() const;																// Exposed to Python
+	int countKnownTechNumTeams(TechTypes eTech) const;												// Exposed to Python
+	int getNumFreeBonuses(BuildingTypes eBuilding) const;											// Exposed to Python
 
-	int countReligionLevels(ReligionTypes eReligion) /* advc: */ const;							// Exposed to Python
-	int calculateReligionPercent(ReligionTypes eReligion,								// Exposed to Python
+	int countReligionLevels(ReligionTypes eReligion) const;											// Exposed to Python
+	int calculateReligionPercent(ReligionTypes eReligion,											// Exposed to Python
 			bool bIgnoreOtherReligions = false) const; // advc.115b
-	int countCorporationLevels(CorporationTypes eCorporation) /* advc: */ const;							// Exposed to Python
+	int countCorporationLevels(CorporationTypes eCorporation) const;								// Exposed to Python
 	void replaceCorporation(CorporationTypes eCorporation1, CorporationTypes eCorporation2);
 
-	int goldenAgeLength() const;																					// Exposed to Python
-	int victoryDelay(VictoryTypes eVictory) const;										// Exposed to Python
-	int getImprovementUpgradeTime(ImprovementTypes eImprovement) const;					// Exposed to Python
+	int goldenAgeLength() const;																	// Exposed to Python
+	int victoryDelay(VictoryTypes eVictory) const;													// Exposed to Python
+	int getImprovementUpgradeTime(ImprovementTypes eImprovement) const;								// Exposed to Python
 	scaled gameSpeedMultiplier() const; // advc
 
 	bool canTrainNukes() const;																		// Exposed to Python
-	EraTypes getCurrentEra() const;														// Exposed to Python
+	EraTypes getCurrentEra() const;																	// Exposed to Python
 	EraTypes getHighestEra() const; // advc
 	scaled groundbreakingNormalizationModifier(TechTypes eTech) const; // advc.groundbr
 
-	DllExport TeamTypes getActiveTeam() const;																		// Exposed to Python
-	CivilizationTypes getActiveCivilizationType() const;								// Exposed to Python
+	DllExport TeamTypes getActiveTeam() const														// Exposed to Python
+	{
+		return GC.getInitCore().getActiveTeam(); // advc.opt (cached)
+	}
+	CivilizationTypes getActiveCivilizationType() const;											// Exposed to Python
 	CvCivilization const* getActiveCivilization() const; // advc.003w
 
-	DllExport bool isNetworkMultiPlayer() const															// Exposed to Python
+	DllExport bool isNetworkMultiPlayer() const														// Exposed to Python
 	{
 		return GC.getInitCore().getMultiplayer();
 	}
-	DllExport bool isGameMultiPlayer() const;																			// Exposed to Python
-	DllExport bool isTeamGame() const;																						// Exposed to Python
+	DllExport bool isGameMultiPlayer() const;														// Exposed to Python
+	DllExport bool isTeamGame() const;																// Exposed to Python
 
 	bool isModem() const; // advc: const
 	void setModem(bool bModem);
@@ -505,9 +510,9 @@ public:
 	bool isInBetweenTurns() const;
 	void setInBetweenTurns(bool b); // </advc.106b>
 
-	HandicapTypes getHandicapType() const { return m_eHandicap; }
+	HandicapTypes getHandicapType() const { return m_eHandicap; }									// Exposed to Python
 	void setHandicapType(HandicapTypes eHandicap);
-	HandicapTypes getAIHandicap() const { return m_eAIHandicap; } // advc.127
+	HandicapTypes getAIHandicap() const { return m_eAIHandicap; } // advc.127 (advc.708: exposed to Python)
 
 	DllExport PlayerTypes getPausePlayer() const;																			// Exposed to Python
 	DllExport bool isPaused() const;																									// Exposed to Python
@@ -620,10 +625,10 @@ public:
 		return GC.getInitCore().getVictory(eIndex);
 	}
 	void setVictoryValid(VictoryTypes eVict, bool bValid);
-												// advc: const
+
 	bool isSpecialUnitValid(SpecialUnitTypes eIndex) const;														// Exposed to Python
 	void makeSpecialUnitValid(SpecialUnitTypes eIndex);													// Exposed to Python
-												// advc: const
+
 	bool isSpecialBuildingValid(SpecialBuildingTypes eIndex) const;										// Exposed to Python
 	void makeSpecialBuildingValid(SpecialBuildingTypes eIndex, bool bAnnounce = false);									// Exposed to Python
 
@@ -671,12 +676,11 @@ public:
 	DllExport int getIndexAfterLastDeal();																								// Exposed to Python
 	int getNumDeals();																													// Exposed to Python
 
-	// advc.inl: const version, inline
 	DllExport CvDeal* getDeal(int iID)																	// Exposed to Python
 	{
 		return m_deals.getAt(iID);
 	}
-	CvDeal const* getDeal(int iID) const
+	CvDeal const* getDeal(int iID) const // advc: const version
 	{
 		return m_deals.getAt(iID);
 	}
@@ -717,16 +721,7 @@ public:
 	CvRandom& getSorenRand()																								// Exposed to Python
 	{
 		return m_sorenRand;
-	}  // <advc> Shorter. "S" could also stand for "synchronized" (or "Soren"). (Tbd.: Move to CvGlobals.)
-	CvRandom& getSRand()																										// Exposed to Python
-	{
-		return getSorenRand();
 	}
-	int getSRandNum(int iNum, const char* pszLog,
-		int iData1 = MIN_INT, int iData2 = MIN_INT)
-	{
-		return getSorenRandNum(iNum, pszLog, iData1, iData2);
-	} // </advc>
 	//  Returns a value from the half-closed interval [0,iNum)
 	int getSorenRandNum(int iNum, const char* pszLog,
 		int iData1 = MIN_INT, int iData2 = MIN_INT) // advc.007
@@ -764,7 +759,7 @@ public:
 
 	void addPlayer(PlayerTypes eNewPlayer, LeaderHeadTypes eLeader, CivilizationTypes eCiv);	// Exposed to Python
 	// BETTER_BTS_AI_MOD, Debug, 8/1/08, jdog5000:
-	void changeHumanPlayer(PlayerTypes eNewHuman);
+	void changeHumanPlayer(PlayerTypes eNewHuman, /* advc: */ bool bSetTurnActive = false);
 
 	bool testVictory(VictoryTypes eVictory, TeamTypes eTeam, bool* pbEndScore = NULL) const;
 
@@ -869,7 +864,10 @@ public:
 	StartPointsAsHandicap const& startPointsAsHandicap() const;
 	int getBarbarianStartTurn() const; // advc.300		(exposed to Python)
 	bool isBarbarianCreationEra() const; // advc.307
-	// <advc.703>
+	// <advc.304>
+	BarbarianWeightMap& getBarbarianWeightMap() { return *m_pBarbarianWeightMap; }
+	BarbarianWeightMap const& getBarbarianWeightMap() const { return *m_pBarbarianWeightMap; }
+	// </advc.304>  <advc.703>
 	RiseFall const& getRiseFall() const { return *m_pRiseFall; }
 	RiseFall& getRiseFall() { return *m_pRiseFall; }
 	// </advc.703>
@@ -949,8 +947,11 @@ protected:
 	GameStateTypes m_eGameState;
 	PlayerTypes m_eInitialActivePlayer; // advc.106h
 	GlobeLayerTypes m_eCurrentLayer; // advc.004m
-	PlayerTypes m_eEventPlayer;
+	//PlayerTypes m_eEventPlayer; // (advc: unused)
 	StartingPlotNormalizationLevel m_eNormalizationLevel; // advc.108
+
+	CvRandom m_mapRand;
+	CvRandom m_sorenRand;
 
 	CvString m_szScriptData;
 
@@ -968,8 +969,10 @@ protected:
 	int* m_paiBuildingClassCreatedCount;
 	int* m_paiProjectCreatedCount;
 	int* m_paiForceCivicCount;
-	// advc.enum:  (Tbd.: The other arrays should also be turned into EnumMaps)
-	EnumMap<VoteTypes,PlayerVoteTypes> m_aiVoteOutcome;
+	/*	advc.enum:  (Tbd.: The other arrays should also be turned into EnumMaps.
+		Mustn't use eager allocation for dynamic enum types however b/c
+		XML isn't loaded yet.) */
+	ArrayEnumMap<VoteTypes,PlayerVoteTypes> m_aiVoteOutcome;
 	int* m_paiReligionGameTurnFounded;
 	int* m_paiCorporationGameTurnFounded;
 	int* m_aiSecretaryGeneralTimer;
@@ -998,8 +1001,6 @@ protected:
 	mutable bool m_bShowingCurrentDeals;
 	// </advc.072>
 
-	CvRandom m_mapRand;
-	CvRandom m_sorenRand;
 	// <advc.027b>
 	struct InitialRandSeed
 	{
@@ -1012,10 +1013,11 @@ protected:
 	int m_iNumSessions;
 	CvHallOfFameInfo* m_pHallOfFame; // advc.106i
 
+	BarbarianWeightMap* m_pBarbarianWeightMap; // advc.304 (serialized by CvMap)
 	std::vector<PlotExtraYield> m_aPlotExtraYields;
 	std::vector<PlotExtraCost> m_aPlotExtraCosts;
 	// advc: Replacing a hash_map
-	EnumMap<VoteSourceTypes,ReligionTypes> m_aeVoteSourceReligion;
+	ArrayEnumMap<VoteSourceTypes,ReligionTypes> m_aeVoteSourceReligion;
 	std::vector<EventTriggerTypes> m_aeInactiveTriggers;
 
 	/*  K-Mod. This is used to track which groups have been cycled through in the current turn.
@@ -1065,10 +1067,11 @@ protected:
 	// <advc.300>
 	void createBarbarianCity(bool bNoCivCities, int iProbModifierPercent = 100);
 	int numBarbariansToCreate(int iTilesPerUnit, int iTiles, int iUnowned,
-			int iUnitsPresent, int iBarbarianCities = 0);
-	int createBarbarianUnits(int iUnitsToCreate, CvArea& kArea, Shelf* pShelf = NULL,
-			bool bCargoAllowed = false, bool bOnlyCargo = false);
-	CvPlot* randomBarbarianPlot(CvArea const& kArea, Shelf const* pShelf = NULL);
+			int iUnitsPresent);
+	int createBarbarianUnits(int iUnitsToCreate, int iUnitsPresent, CvArea& kArea,
+			Shelf* pShelf = NULL, bool bCargoAllowed = false, bool bOnlyCargo = false);
+	CvPlot* randomBarbarianPlot(int& iValid, CvArea const& kArea,
+			Shelf const* pShelf = NULL);
 	bool killBarbarian(int iUnitsPresent, int iTiles, int iPop,
 			CvArea& kArea, Shelf* pShelf = NULL);
 	UnitTypes randomBarbarianUnit(UnitAITypes eUnitAI, CvArea const& kArea);
@@ -1101,7 +1104,7 @@ protected:
 			std::vector<std::pair<Agent*,int> > const& kStartingLocPercentPerAgent,
 			std::vector<Agent*>& kResult); // </advc.108b>
 	int getTeamClosenessScore( // <advc>
-			EnumMap2D<PlayerTypes,PlayerTypes,int> const& kDistances,
+			ArrayEnumMap2D<PlayerTypes,PlayerTypes,int> const& kDistances,
 			std::vector<PlayerTypes> const& kStartingLocs); // </advc>
 	void normalizeAddRiver();
 	void normalizeRemovePeaks();
@@ -1136,5 +1139,59 @@ private: // advc.003u: (See comments in the private section of CvPlayer.h)
 	virtual void AI_updateAssignWorkExternal();
 	virtual int AI_combatValueExternal(UnitTypes eUnit);
 };
+
+/*	<advc.007c> Some macros to make the RNG functions of the singleton
+	CvGame instance less tedious to use */
+
+// Implementation files can re-define this to use a different CvGame instance
+#define CVGAME_INSTANCE_FOR_RNG GC.getGame()
+
+inline CvRandom& syncRand()
+{
+	return CVGAME_INSTANCE_FOR_RNG.getSorenRand();
+}
+inline CvRandom& mapRand()
+{
+	return CVGAME_INSTANCE_FOR_RNG.getMapRand();
+}
+// These have to be macros to let CALL_LOC_STR expand to the proper code location
+#define SyncRandNum(iNumOutcomes) \
+	CVGAME_INSTANCE_FOR_RNG.getSorenRandNum((iNumOutcomes), CALL_LOC_STR)
+#define SyncRandFract(ScaledNumType) \
+	ScaledNumType::rand(syncRand(), CALL_LOC_STR)
+#define SyncRandSuccess(rSuccessProb) \
+	(rSuccessProb).randSuccess(syncRand(), CALL_LOC_STR)
+/*	(Implementing this through conversion to ScaledNum would lead to
+	precision problems or unnecessary arithmetic operations.) */
+#define SyncRandSuccessRatio(iNumerator, iDenominator) \
+	((iNumerator) > 0 && ((iNumerator) >= (iDenominator) || (iNumerator) > SyncRandNum(iDenominator)))
+#define SyncRandSuccess100(iSuccessPercent) \
+	SyncRandSuccessRatio(iSuccessPercent, 100)
+#define SyncRandSuccess1000(iSuccessPermille) \
+	SyncRandSuccessRatio(iSuccessPermille, 1000)
+#define SyncRandSuccess10000(iSuccessPermyriad) \
+	SyncRandSuccessRatio(iSuccessPermyriad, 10000)
+// Not sure what to name this one. Success has 1 chance in iNumLots.
+#define SyncRandOneChanceIn(iNumLots) \
+	(SyncRandNum(iNumLots) == 0)
+
+// Same as above, replacing "Sync" with "Map".
+#define MapRandNum(iNumOutcomes) \
+	CVGAME_INSTANCE_FOR_RNG.getMapRandNum((iNumOutcomes), CALL_LOC_STR)
+#define MapRandFract(ScaledNumType) \
+	ScaledNumType::rand(mapRand(), CALL_LOC_STR)
+#define MapRandSuccess(rSuccessProb) \
+	(rSuccessProb).randSuccess(mapRand(), CALL_LOC_STR)
+#define MapRandSuccessRatio(iNumerator, iDenominator) \
+	((iNumerator) > 0 && ((iNumerator) >= (iDenominator) || (iNumerator) > MapRandNum(iDenominator)))
+#define MapRandSuccess100(iSuccessPercent) \
+	MapRandSuccessRatio(iSuccessPercent, 100)
+#define MapRandSuccess1000(iSuccessPermille) \
+	MapRandSuccessRatio(iSuccessPermille, 1000)
+#define MapRandSuccess10000(iSuccessPermyriad) \
+	MapRandSuccessRatio(iSuccessPermyriad, 10000)
+#define MapRandOneChanceIn(iNumLots) \
+	(MapRandNum(iNumLots) == 0)
+// </advc.007c>
 
 #endif

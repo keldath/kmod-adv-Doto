@@ -20,6 +20,7 @@
 #include "CvReplayInfo.h"
 #include "CvGameTextMgr.h"
 #include "CvMessageControl.h"
+#include "BarbarianWeightMap.h" // advc.304
 #include "StartingPositionIteration.h" // advc.027
 #include "StartPointsAsHandicap.h" // advc.250b
 #include "RiseFall.h" // advc.700
@@ -27,15 +28,16 @@
 #include "BBAILog.h" // BBAI
 #include "CvBugOptions.h" // K-Mod
 
-/*	<advc.007b> Use this CvGame instance instead of GC.getGame() for RNG calls.
+/*	<advc.007c> Use this CvGame instance instead of GC.getGame() for RNG calls.
 	(Won't matter so long as CvGame is a singleton class.) */
 #undef CVGAME_INSTANCE_FOR_RNG
-#define CVGAME_INSTANCE_FOR_RNG (*this) // </advc.007b>
+#define CVGAME_INSTANCE_FOR_RNG (*this) // </advc.007c>
 
 
 CvGame::CvGame() :
 	m_pRiseFall(new RiseFall()), // advc.700
-	m_pSpah(new StartPointsAsHandicap()) // advc.250b
+	m_pSpah(new StartPointsAsHandicap()), // advc.250b
+	m_pBarbarianWeightMap(new BarbarianWeightMap()) // advc.304
 {
 	m_aiRankPlayer = new int[MAX_PLAYERS];        // Ordered by rank...
 	m_aiPlayerRank = new int[MAX_PLAYERS];        // Ordered by player ID...
@@ -83,8 +85,9 @@ CvGame::~CvGame()
 	SAFE_DELETE_ARRAY(m_aiTeamRank);
 	SAFE_DELETE_ARRAY(m_aiTeamScore);
 
-	SAFE_DELETE(m_pSpah); // advc.250b
 	SAFE_DELETE(m_pRiseFall); // advc.700
+	SAFE_DELETE(m_pSpah); // advc.250b
+	SAFE_DELETE(m_pBarbarianWeightMap); // advc.304
 }
 
 void CvGame::init(HandicapTypes eHandicap)
@@ -107,9 +110,9 @@ void CvGame::init(HandicapTypes eHandicap)
 		really matter, and actually makes it easier to reproduce maps
 		as only one seed has to be read off the screen. */
 	getMapRand().init(ic.getMapRandSeed());
-	getSRand().init(ic.getSyncRandSeed());
+	getSorenRand().init(ic.getSyncRandSeed());
 	m_initialRandSeed.uiMap = getMapRand().getSeed();
-	m_initialRandSeed.uiSync = getSRand().getSeed(); // <advc.027b>
+	m_initialRandSeed.uiSync = getSorenRand().getSeed(); // <advc.027b>
 
 	// Init non-serialized data ...
 
@@ -144,7 +147,7 @@ void CvGame::init(HandicapTypes eHandicap)
 
 		for (int i = 0; i < iNumPlayers; i++)
 		{
-			int j = (getSorenRand().get(iNumPlayers - i, NULL) + i);
+			int j = getSorenRand().get(iNumPlayers - i, NULL) + i;
 			if (i != j)
 			{
 				int iTemp = aiTeams[i];
@@ -174,7 +177,7 @@ void CvGame::init(HandicapTypes eHandicap)
 			char szRandomPassword[iPasswordSize];
 			for (int i = 0; i < iPasswordSize-1; i++)
 			{
-				szRandomPassword[i] = /* advc: */ toChar(
+				szRandomPassword[i] = /* advc: */ safeIntCast<char>(
 						getSorenRandNum(CHAR_MAX + 1, NULL));
 			}
 			szRandomPassword[iPasswordSize-1] = 0;
@@ -361,7 +364,7 @@ void CvGame::regenerateMap()
 			(!isOption(GAMEOPTION_ADVANCED_START) || isOption(GAMEOPTION_SPAH)));
 	// </advc.004j>
 	// <advc.700>
-	if(isOption(GAMEOPTION_RISE_FALL))
+	if (isOption(GAMEOPTION_RISE_FALL))
 	{
 		m_pRiseFall->reset();
 		m_pRiseFall->init();
@@ -692,6 +695,8 @@ void CvGame::reset(HandicapTypes eHandicap, bool bConstructorCall)
 			m_aiSecretaryGeneralTimer[iI] = 0;
 			m_aiVoteTimer[iI] = 0;
 		}
+
+		getBarbarianWeightMap().getActivityMap().reset(); // advc.304
 	}
 
 	m_deals.removeAll();
@@ -723,7 +728,7 @@ void CvGame::reset(HandicapTypes eHandicap, bool bConstructorCall)
 	m_bDoMShown = false; // advc.004x
 	m_bFPTestDone = false; // advc.003g
 	// <advc.003r>
-	for(int i = 0; i < NUM_UPDATE_TIMER_TYPES; i++)
+	for (int i = 0; i < NUM_UPDATE_TIMER_TYPES; i++)
 		m_aiUpdateTimers[i] = -1; // </advc.003r>
 	/*  <advc.003v> No need to read data from a savegame first; CvInitCore
 		is responsible for the game options and is loaded before CvGame. */
@@ -793,7 +798,7 @@ void CvGame::initDiplomacy()
 void CvGame::setPlayerColors()
 {
 	std::vector<std::pair<PlayerTypes,int> > aeiReassign;
-	EnumMap<CivilizationTypes,int> aiPlayersPerCiv;
+	EagerEnumMap<CivilizationTypes,int> aiPlayersPerCiv;
 	for (PlayerIter<ALIVE> it; it.hasNext(); ++it)
 	{
 		CivilizationTypes eCiv = it->getCivilizationType();
@@ -834,7 +839,7 @@ void CvGame::setPlayerColors()
 					in multiplayer. That should be OK, but I'd very much prefer for
 					everyone to use the same colors, so I'm not going to use
 					GC.getASyncRand. */
-				fDiffValue += getSorenRandNum(10000, "setPlayerColors");
+				fDiffValue += SyncRandNum(10000);
 			}
 			else
 			{
@@ -887,15 +892,29 @@ void CvGame::initGameHandicap()
 		}
 		FAssertMsg(iDiv > 0, "All-AI game. Not necessarily wrong, but unexpected.");
 	} // K-Mod end
+	updateAIHandicap();
+	// <advc.708>
+	if (isOption(GAMEOPTION_RISE_FALL))
+	{
+		for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
+		{
+			m_pRiseFall->setPlayerHandicap(itPlayer->getID(), itPlayer->isHuman(), true);
+		}
+		updateAIHandicap(); // (again)
+	} // </advc.708>
+}
 
-	// Set m_eAIHandicap to the average of AI handicaps
+// advc.127: Set m_eAIHandicap to the average of AI handicaps
+void CvGame::updateAIHandicap()
+{
 	int iHandicapSum = 0;
 	int iDiv = 0;
-	for (PlayerIter<MAJOR_CIV> it; it.hasNext(); ++it)
+	FOR_EACH_ENUM(Player) // Cache for PlayerIter not yet available here
 	{
-		if (!it->isHuman())
+		CvPlayer const& kPlayer = GET_PLAYER(eLoopPlayer);
+		if (kPlayer.isAlive() && !kPlayer.isHuman() && kPlayer.isMajorCiv())
 		{
-			iHandicapSum += it->getHandicapType();
+			iHandicapSum += kPlayer.getHandicapType();
 			iDiv++;
 		}
 	}
@@ -923,12 +942,12 @@ void CvGame::initFreeState()
 		}
 	} // </advc.084>
 	// <advc.250b>
-	if(!isOption(GAMEOPTION_ADVANCED_START) ||
+	if (!isOption(GAMEOPTION_ADVANCED_START) ||
 		PlayerIter<HUMAN>::count() == PlayerIter<CIV_ALIVE>::count())
 	{
 		setOption(GAMEOPTION_SPAH, false);
 	}
-	if(isOption(GAMEOPTION_SPAH))
+	if (isOption(GAMEOPTION_SPAH))
 		// Reassigns start plots and start points
 		m_pSpah->setInitialItems(); // </advc.250b>
 	if (GC.getInitCore().getScenario())
@@ -1113,8 +1132,8 @@ NormalizationTarget* CvGame::assignStartingPlots()
 			{
 				continue;
 			}
-			// advc.027b: was getSorenRandNum
-			int iRandOffset = getMapRandNum(apStartingPlots.size(), "Starting Plot");
+			// advc.027b: instead of SyncRandNum
+			int iRandOffset = MapRandNum(apStartingPlots.size());
 			itPlayer->setStartingPlot(apStartingPlots[iRandOffset]/*, true*/); // advc.opt
 			// remove this plot from the list.
 			apStartingPlots[iRandOffset] = apStartingPlots[apStartingPlots.size() - 1];
@@ -1161,14 +1180,13 @@ NormalizationTarget* CvGame::assignStartingPlots()
 	{
 		if (!bTeamAssignmentDone) // advc.027
 		{
-			EnumMap<PlayerTypes,bool> abPlayerDone; // advc
+			EagerEnumMap<PlayerTypes,bool> abPlayerDone; // advc
 			// BtS team assignment
 			for (int iPass = 0; iPass < 2 * MAX_PLAYERS; iPass++)
 			{
 				bool bStartFound = false;
-				// advc.027b: was getSorenRandNum
-				int const iRandOffset = getMapRandNum(countCivTeamsAlive(),
-						"Team Starting Plot");
+				// advc.027b: instead of SyncRandNum
+				int const iRandOffset = MapRandNum(countCivTeamsAlive());
 				gDLL->callUpdater(); // advc
 				for (int i = 0; i < MAX_CIV_TEAMS; i++)
 				{
@@ -1337,7 +1355,7 @@ void CvGame::applyStartingLocHandicaps(
 		in multiplayer games, and the BtS random assignment of human starts
 		didn't really work - had favored player 0 when humans are in slots 0, 1 ... */
 	/*else if (isGameMultiPlayer()) {
-		int iRandOffset = getMapRandNum(PlayerIter<CIV_ALIVE>::count(), "Player Starting Plot");
+		int iRandOffset = MapRandNum(PlayerIter<CIV_ALIVE>::count());
 		// ... (deleted on 14 June 2020)
 	}
 	else
@@ -1508,7 +1526,7 @@ CvGame::sortByStartingLocHandicap(
 	{
 		bool bHuman = (iPass == 0);
 		int iLoopAgents = (bHuman ? iHumanAgents : iAIAgents);
-		int iRandOffset = getMapRandNum(iLoopAgents, "sortByStartingLocHandicap");
+		int iRandOffset = MapRandNum(iLoopAgents);
 		int iSkipped = 0;
 		for (int i = 0; i < iAgents; i++)
 		{
@@ -1566,7 +1584,7 @@ void CvGame::rearrangeTeamStarts(/* advc.027: */ bool bOnlyWithinArea, scaled rI
 		return; // </advc.opt>
 	CvMap const& kMap = GC.getMap();
 	// Precompute distances between all starting sites
-	EnumMap2D<PlayerTypes,PlayerTypes,int> aaiDistances;
+	ArrayEnumMap2D<PlayerTypes,PlayerTypes,int> aaiDistances;
 	for (PlayerIter<CIV_ALIVE> itFirstPlayer; itFirstPlayer.hasNext(); ++itFirstPlayer)
 	{
 		gDLL->callUpdater(); // allow window to update during launch
@@ -1607,13 +1625,13 @@ void CvGame::rearrangeTeamStarts(/* advc.027: */ bool bOnlyWithinArea, scaled rI
 
 	int iBestScore = getTeamClosenessScore(aaiDistances, aeStartingLocs);
 	bool bFoundSwap = true;
-	/*	<advc.027> I worry that going through the players in turn order
-		can lead to biases toward or against the (human) team of player 0.
-		(PlayerIter unfortunately only knows how to use SRand; I want MapRand here.) */
-	int aiPlayersShuffled[MAX_CIV_PLAYERS];
-	::shuffleArray(aiPlayersShuffled, MAX_CIV_PLAYERS, getMapRand()); // </advc.027>
 	while (bFoundSwap)
-	{
+	{	/*	<advc.027> I worry that going through the players in turn order
+			can lead to biases toward or against the (human) team of player 0.
+			(Not using PlayerRandIter b/c I want the outer and inner loop
+			to use the same order.) */
+		int aiPlayersShuffled[MAX_CIV_PLAYERS];
+		getMapRand().shuffle(aiPlayersShuffled, MAX_CIV_PLAYERS); // </advc.027>
 		bFoundSwap = false;
 		for (int i = 0; i < MAX_CIV_PLAYERS; i++)
 		{
@@ -1676,7 +1694,7 @@ void CvGame::rearrangeTeamStarts(/* advc.027: */ bool bOnlyWithinArea, scaled rI
 	Note: for the purposes of this function, player i will be assumed to start
 	in the location of player kStartingLocs[i] */
 int CvGame::getTeamClosenessScore(  // advc: params used to be arrays
-	EnumMap2D<PlayerTypes,PlayerTypes,int> const& kDistances,
+	ArrayEnumMap2D<PlayerTypes,PlayerTypes,int> const& kDistances,
 	std::vector<PlayerTypes> const& kStartingLocs)
 {
 	int iScore = 0;
@@ -1773,13 +1791,12 @@ void CvGame::normalizeAddRiver()
 			//CvMapGenerator::GetInstance().doRiver(pStartingPlot);
 			/*	K-Mod. If we can have a lake then we don't always need a river.
 				Also, the river shouldn't always start on the SE corner of our site. */
-			if (//getSorenRandNum(10,"...") < (pStartingPlot->isCoastalLand() ? 5 : 7))
+			if (//SyncRandNum(10) < (pStartingPlot->isCoastalLand() ? 5 : 7))
 				/*	<advc.108> The above is a 50% lake chance when coastal, 30% otherwise.
 					(Will also get a lake when no river possible or a lake already happens
 					to be present.) Note that a coastal river normally has only one segment.
 					Want to reduce the lake chance and coastal bias a bit. */
-				(pStartingPlot->isCoastalLand() ? fixp(0.62) : fixp(0.74)).
-				bernoulliSuccess(GC.getGame().getMapRand(), "normalize add river"))
+				MapRandSuccess(pStartingPlot->isCoastalLand() ? fixp(0.62) : fixp(0.74)))
 			{	// </advc.108>
 				CvPlot* pRiverPlot = pStartingPlot->getInlandCorner();
 				if (pRiverPlot != NULL)
@@ -1802,8 +1819,8 @@ void CvGame::normalizeAddRiver()
 				}
 				//if (GC.getInfo(eLoopFeature).getAppearanceProbability() == 10000)
 				// <advc.108> Cleaner to do the proper dice roll
-				if (scaled(GC.getInfo(eLoopFeature).getAppearanceProbability(), 10000).
-					bernoulliSuccess(getMapRand(), "normalize add river feature"))
+				if (MapRandSuccess(per10000(GC.getInfo(eLoopFeature).
+					getAppearanceProbability())))
 				{	// </advc.108>
 					if (kPlot.getBonusType() != NO_BONUS)
 						kPlot.setBonusType(NO_BONUS);
@@ -1832,11 +1849,8 @@ void CvGame::normalizeRemovePeaks()
 		// advc 027 (note): Range corresponds to AIFoundValue::adjustToLandAreaBoundary
 		for (SquareIter itPlot(*pStartingPlot, 3); itPlot.hasNext(); ++itPlot)
 		{
-			if (itPlot->isPeak() &&
-				rRemovalProb.bernoulliSuccess(getMapRand(), "advc.108")) // advc.108
-			{
+			if (itPlot->isPeak() && /* advc.108: */ MapRandSuccess(rRemovalProb))
 				itPlot->setPlotType(PLOT_HILLS);
-			}
 		}
 	}
 }
@@ -1945,7 +1959,7 @@ void CvGame::normalizeRemoveBadFeatures()
 					// <advc.108>
 					if (itPlot.currID() < NUM_INNER_PLOTS ||
 						(!isPowerfulStartingBonus(p, itPlayer->getID()) &&
-						(rRemovalProb.bernoulliSuccess(getMapRand(), "Remove Bad Feature 1") ||
+						(MapRandSuccess(rRemovalProb) ||
 						isWeakStartingFoodBonus(p, itPlayer->getID()))))
 					{	// </advc.108>
 						p.setFeatureType(NO_FEATURE);
@@ -1966,27 +1980,27 @@ void CvGame::normalizeRemoveBadFeatures()
 				if (p.isWater())
 				{
 					if (p.isAdjacentToLand() || (iDistance <= iCityRange + 1 &&
-						// advc.027b: was getSorenRandNum
-						fixp(0.5).bernoulliSuccess(getMapRand(), "Remove Bad Feature 2")))
+						// advc.027b: instead of SyncRandSuccess
+						MapRandSuccess(fixp(0.5))))
 					{
 						p.setFeatureType(NO_FEATURE);
 					}
 				}
 				else if (iDistance <= iCityRange + 1)
 				{
-					scaled prRemoval(1, 2);
+					scaled rRemovalProb(1, 2);
 					if (m_eNormalizationLevel > NORMALIZE_MEDIUM) // advc.108
 					{	/*	Smaller pr when there is a resource. I wonder if that's
 							really what the BtS programmer meant to do. */
-						//getSorenRandNum(2 + (p.getBonusType() == NO_BONUS ? 0 : 2),"...") == 0)
+						//SyncRandNum(2 + (p.getBonusType() == NO_BONUS ? 0 : 2)) == 0)
 						if (p.getBonusType() != NO_BONUS)
-							prRemoval = scaled(1, 4);
+							rRemovalProb = scaled(1, 4);
 					}
 					// <advc.108>
 					else if (p.getBonusType() == NO_BONUS)
-						prRemoval = scaled(1, 3); // </advc.108>
-					// advc.027b: was getSorenRandNum
-					if (prRemoval.bernoulliSuccess(getMapRand(), "Remove Bad Feature 3"))
+						rRemovalProb = scaled(1, 3); // </advc.108>
+					// advc.027b: instead of SyncRandNum
+					if (MapRandSuccess(rRemovalProb))
 						p.setFeatureType(NO_FEATURE);
 				}
 			}
@@ -2014,8 +2028,8 @@ void CvGame::normalizeRemoveBadTerrain()
 			CvPlot& p = *itPlot;
 			int iDistance = itPlot.currPlotDist();
 			if (!p.isWater() && (iDistance <= iCityRange ||
-				p.isCoastalLand() || scaled(1, 1 + iDistance - iCityRange).
-				bernoulliSuccess(getMapRand(), "Map Upgrade Terrain Food 1")))
+				p.isCoastalLand() ||
+				MapRandSuccess(scaled(1, 1 + iDistance - iCityRange))))
 			{
 				CvTerrainInfo const& kTerrain = GC.getInfo(p.getTerrainType());
 				int iPlotFood = kTerrain.getYield(YIELD_FOOD);
@@ -2033,13 +2047,13 @@ void CvGame::normalizeRemoveBadTerrain()
 				{
 					continue;
 				}
-				if (rKeepProb.bernoulliSuccess(getMapRand(), "Map Upgrade Terrain Food 2"))
+				if (MapRandSuccess(rKeepProb))
 				{
 					if (iPlotFood > 0 ||
 					/*  advc.129b: Two chances of removal for Snow river
 						(BuildModifier=50), but not for Desert river. */
 						(p.isRiver() && kTerrain.getBuildModifier() < 30) ||
-						rKeepProb.bernoulliSuccess(getMapRand(), "Map Upgrade Terrain Food 3"))
+						MapRandSuccess(rKeepProb))
 					{
 						if (!isWeakStartingFoodBonus(p, itPlayer->getID()))
 							continue;
@@ -2050,8 +2064,8 @@ void CvGame::normalizeRemoveBadTerrain()
 				if (p.getBonusType(itPlayer->getTeam()) != NO_BONUS)
 					iTargetFood = 1;
 				else if (iPlotFood == 1 || iDistance <= iCityRange)
-				{	// advc.027b: was getSorenRandNum
-					iTargetFood = 1 + getMapRandNum(2, "Map Upgrade Terrain Food 4");
+				{	// advc.027b: instead of SyncRandNum
+					iTargetFood = 1 + MapRandNum(2);
 				}
 				else iTargetFood = (p.isCoastalLand() ? 2 : 1);
 				FOR_EACH_ENUM(Terrain)
@@ -2147,15 +2161,15 @@ void CvGame::normalizeAddFoodBonuses(/* advc.027: */ NormalizationTarget const* 
 			int const iHighFoodThreshold = 2 * iFoodPerPop;
 			int const iNaturalFood = p.calculateBestNatureYield(YIELD_FOOD, kPlayer.getTeam());
 			// (+1 just as a shortcut to save time for obvious cases.)
-			bool bHighFood = iNaturalFood + 1 >= iHighFoodThreshold;
-			for (ImprovementTypes eImp = (ImprovementTypes)0;
-				!bHighFood && eImp < GC.getNumImprovementInfos();
-				eImp=(ImprovementTypes)(eImp+1))
+			bool bHighFood = (iNaturalFood + 1 >= iHighFoodThreshold);
+			FOR_EACH_ENUM2(Improvement, eImp)
 			{
+				if (bHighFood)
+					break;
 				if (GC.getInfo(eImp).isImprovementBonusTrade(eBonus))
 				{
 					bHighFood = (iNaturalFood + p.calculateImprovementYieldChange(
-							eImp, YIELD_FOOD, kPlayer.getID(), false, false) >=
+							eImp, YIELD_FOOD, kPlayer.getID()) >=
 							iHighFoodThreshold);
 				}
 			}
@@ -2180,7 +2194,7 @@ void CvGame::normalizeAddFoodBonuses(/* advc.027: */ NormalizationTarget const* 
 				++itPlot)
 			{	// <advc.108>
 				if (bInnerRingBias && itPlot.currID() >= NUM_INNER_PLOTS &&
-					fixp(0.63).bernoulliSuccess(getMapRand(), "inner ring bias food"))
+					MapRandSuccess(fixp(0.63)))
 				{
 					continue;
 				} // </advc.108>
@@ -2248,8 +2262,8 @@ void CvGame::normalizeAddFoodBonuses(/* advc.027: */ NormalizationTarget const* 
 									isImprovementBonusTrade(eLoopBonus))
 								{
 									bHighFood = (iNaturalFood +
-											p.calculateImprovementYieldChange(eLoopImprovement,
-											YIELD_FOOD, kPlayer.getID(), false, false) >=
+											p.calculateImprovementYieldChange(
+											eLoopImprovement, YIELD_FOOD, kPlayer.getID()) >=
 											iHighFoodThreshold);
 								}
 							}
@@ -2453,7 +2467,7 @@ void CvGame::normalizeAddExtras(/* advc.027: */ NormalizationTarget const* pTarg
 				CvPlot& kLoopPlot = *itPlot;
 				if (kLoopPlot.getBonusType() != NO_BONUS || kLoopPlot.isFeature())
 					continue;
-				/*if (getSRandNum(iCount + 2, "Setting Feature Type") > 1)
+				/*if (SyncRandNum(iCount + 2) > 1)
 					continue;*/ // advc.108: Replaced below
 				/*	advc.129: Randomize - for mod-mods (for forest, oasis, flood plains
 					the order doesn't matter b/c they have mutually exclusive prereqs) */
@@ -2485,17 +2499,14 @@ void CvGame::normalizeAddExtras(/* advc.027: */ NormalizationTarget const* pTarg
 					{
 						iFoodFeatures++;
 						// Add at most 1 food feature at first
-						bFoodFeatureDone = true;;
+						bFoodFeatureDone = true;
 					}
 					else
 					{
 						iProductionFeatures++;
 						// Replacing a BtS clause higher up
-						if (!scaled(1, std::max(iProductionFeatures - 2, 1)).
-							bernoulliSuccess(getSRand(), "Place Production Feature (1)"))
-						{
+						if (!SyncRandOneChanceIn(std::max(iProductionFeatures - 2, 1)))
 							bProductionFeatureDone = true;
-						}
 					}
 					break;
 				}
@@ -2543,18 +2554,20 @@ void CvGame::normalizeAddExtras(/* advc.027: */ NormalizationTarget const* pTarg
 			for (CityPlotRandIter itPlot(*pStartingPlot, getMapRand(), false);
 				itPlot.hasNext() &&
 				//iLandBonus * 3 +
-				iLandFood * 4 + (iLandBonus - iLandFood) * 3 + // advc.108
-				iOceanBonus * 2 + iCoastBonus * 3 < 12; ++itPlot) // advc.108: iCoastBonus multiplier was 2
-			{	// <advc.108>
+				// <advc.108>
+				iLandFood * 4 + (iLandBonus - iLandFood) * 3 +
+				// aiCoastBonus multiplier was 2
+				iOceanBonus * 2 + iCoastBonus * 3 < 12; ++itPlot)
+			{
 				if (bInnerRingBias && itPlot.currID() >= NUM_INNER_PLOTS &&
-					fixp(0.47).bernoulliSuccess(getMapRand(), "inner ring bias extras"))
+					MapRandSuccess(fixp(0.47)))
 				{
 					continue;
 				} // </advc.108>
 				CvPlot& p = *itPlot;
-				//if (getSorenRandNum(bLandBias && p.isWater() ? 2 : 1,"...") == 0) {
-				// advc.027b: (note that getSorenRandNum(1) is always 0)
-				if (bLandBias && p.isWater() && fixp(0.5).bernoulliSuccess(getMapRand(), "Placing Bonuses"))
+				//if (SyncRandNum(bLandBias && p.isWater() ? 2 : 1) == 0) { // BtS
+				// advc.027b: (note that SyncRandNum(1) is always 0)
+				if (bLandBias && p.isWater() && MapRandOneChanceIn(2))
 					continue;
 				if (pTarget != NULL ? pTarget->isNearlyReached(*pStartingPlot) : // advc.027
 					citySiteEval.evaluate(*pStartingPlot) >= rTargetValue)
@@ -2612,8 +2625,7 @@ void CvGame::normalizeAddExtras(/* advc.027: */ NormalizationTarget const* pTarg
 							  getYieldChange(YIELD_PRODUCTION) <= 0 ||
 							// Don't clear production features if they're scarce
 							iProductionFeatures >= 4) && // </advc.108>
-							iCoastBonus + iOceanBonus > 2 &&
-							fixp(0.5).bernoulliSuccess(getMapRand(), "Clear feature to add bonus"))
+							iCoastBonus + iOceanBonus > 2 && MapRandSuccess(fixp(0.5)))
 						{
 							// advc: Selection, clearing of feature and placement moved into auxiliary function.
 							if (placeExtraBonus(kPlayer.getID(), p, iPass == 0,
@@ -2668,20 +2680,14 @@ void CvGame::normalizeAddExtras(/* advc.027: */ NormalizationTarget const* pTarg
 				if (bFood)
 				{
 					iFoodFeatures++;
-					if (!scaled(1, std::max(iFoodFeatures, 1)).
-						bernoulliSuccess(getSRand(), "Place Food Feature"))
-					{
+					if (!SyncRandOneChanceIn(iFoodFeatures))
 						bFoodFeatureDone = true;
-					}
 				}
 				else
 				{
 					iProductionFeatures++;
-					if (!scaled(1, std::max(iProductionFeatures - 2, 1)).
-						bernoulliSuccess(getSRand(), "Place Production Feature (2)"))
-					{
+					if (!SyncRandOneChanceIn(std::max(iProductionFeatures - 2, 1)))
 						bProductionFeatureDone = true;
-					}
 				} // </advc.108>
 				if (gMapLogLevel > 0) logBBAI("    Adding %S for player %d.", GC.getInfo(eLoopFeature).getDescription(), kPlayer.getID()); // K-Mod
 				p.setFeatureType(eLoopFeature);
@@ -2868,11 +2874,8 @@ bool CvGame::skipDuplicateNormalizationBonus(CvPlot const& kStartPlot, CvPlot co
 			continue;
 		// Adjacent duplicates look especially ugly
 		int iDist = stepDistance(&*it, &kPlot);
-		if ((2 * rSkipPr / iDist).bernoulliSuccess(
-			getMapRand(), "Avoid double extra bonus"))
-		{
+		if (MapRandSuccess(2 * rSkipPr / iDist))
 			return true;
-		}
 	}
 	return false;
 }
@@ -3030,7 +3033,7 @@ void CvGame::update()
 			gDLL->UI().setInAdvancedStart(true);
 			gDLL->UI().setWorldBuilder(true);
 		} // <advc.705>
-		if(isOption(GAMEOPTION_RISE_FALL))
+		if (isOption(GAMEOPTION_RISE_FALL))
 			m_pRiseFall->restoreDiploText(); // </advc.705>
 	}
 	PROFILE_END();
@@ -3987,7 +3990,7 @@ int CvGame::getSeaLevelChange() const
 } // </advc.137>
 
 
-int CvGame::countTotalCivPower()
+int CvGame::countTotalCivPower() const
 {
 	int iCount = 0;
 	for (int iI = 0; iI < MAX_CIV_PLAYERS; iI++)
@@ -4000,7 +4003,7 @@ int CvGame::countTotalCivPower()
 }
 
 
-int CvGame::countTotalNukeUnits()
+int CvGame::countTotalNukeUnits() const
 {
 	int iCount = 0;
 	for (int iI = 0; iI < MAX_CIV_PLAYERS; iI++)
@@ -4013,7 +4016,7 @@ int CvGame::countTotalNukeUnits()
 }
 
 
-int CvGame::countKnownTechNumTeams(TechTypes eTech)
+int CvGame::countKnownTechNumTeams(TechTypes eTech) const
 {
 	int iCount = 0;
 	for (int iI = 0; iI < MAX_TEAMS; iI++)
@@ -4210,14 +4213,6 @@ scaled CvGame::groundbreakingNormalizationModifier(TechTypes eTech) const
 	if (eTechEra <= GC.getGame().getStartEra())
 		return 0;
 	return -per100(GC.getInfo(eTechEra).get(CvEraInfo::AIMaxGroundbreakingPenalty)) / 4;
-}
-
-
-TeamTypes CvGame::getActiveTeam() const
-{
-	if (getActivePlayer() == NO_PLAYER)
-		return NO_TEAM;
-	return (TeamTypes)GET_PLAYER(getActivePlayer()).getTeam();
 }
 
 
@@ -4834,7 +4829,7 @@ void CvGame::changeAIAutoPlay(int iChange, /* advc.127: */ bool changePlayerStat
 int CvGame::getCivPlayersEverAlive() const
 {
 	// Could pose a savegame compatibility problem (uiFlag<4)
-	FAssert(m_bAllGameDataRead); // But it's OK if uiFlag < 9 in CvPlayerAI
+	FAssert(m_bAllGameDataRead || m_iCivPlayersEverAlive > 0);
 	if(!m_bAllGameDataRead)
 		return countCivPlayersEverAlive();
 	return m_iCivPlayersEverAlive;
@@ -4853,7 +4848,7 @@ void CvGame::changeCivPlayersEverAlive(int iChange)
 int CvGame::getCivTeamsEverAlive() const
 {
 	// Could pose a savegame compatibility problem (uiFlag<4)
-	FAssert(m_bAllGameDataRead); // But it's OK if uiFlag < 9 in CvPlayerAI
+	FAssert(m_bAllGameDataRead || m_iCivTeamsEverAlive > 0);
 	if(!m_bAllGameDataRead)
 		return countCivTeamsEverAlive();
 	return m_iCivTeamsEverAlive;
@@ -5560,39 +5555,40 @@ void CvGame::sendPlayerOptions(bool bForce)
 
 void CvGame::setActivePlayer(PlayerTypes eNewValue, bool bForceHotSeat)
 {
-	PlayerTypes eOldActivePlayer = getActivePlayer();
-	if (eOldActivePlayer != eNewValue)
+	PlayerTypes const eOldActivePlayer = getActivePlayer();
+	if (eOldActivePlayer == eNewValue)
+		return;
+
+	int const iActiveNetId = (eOldActivePlayer != NO_PLAYER ?
+			GET_PLAYER(eOldActivePlayer).getNetID() : -1);
+	GC.getInitCore().setActivePlayer(eNewValue);
+	if (eNewValue != NO_PLAYER && // K-Mod
+		GET_PLAYER(eNewValue).isHuman() &&
+		(isHotSeat() || isPbem() || bForceHotSeat))
 	{
-		int iActiveNetId = ((NO_PLAYER != eOldActivePlayer) ? GET_PLAYER(eOldActivePlayer).getNetID() : -1);
-		GC.getInitCore().setActivePlayer(eNewValue);
+		gDLL->getPassword(eNewValue);
+		setHotPbemBetweenTurns(false);
+		gDLL->getInterfaceIFace()->dirtyTurnLog(eNewValue);
 
-		//if (GET_PLAYER(eNewValue).isHuman() && (isHotSeat() || isPbem() || bForceHotSeat))
-		if (eNewValue != NO_PLAYER && GET_PLAYER(eNewValue).isHuman() && (isHotSeat() || isPbem() || bForceHotSeat)) // K-Mod
+		if (eOldActivePlayer != NO_PLAYER)
 		{
-			gDLL->getPassword(eNewValue);
-			setHotPbemBetweenTurns(false);
-			gDLL->getInterfaceIFace()->dirtyTurnLog(eNewValue);
-
-			if (NO_PLAYER != eOldActivePlayer)
-			{
-				int iInactiveNetId = GET_PLAYER(eNewValue).getNetID();
-				GET_PLAYER(eNewValue).setNetID(iActiveNetId);
-				GET_PLAYER(eOldActivePlayer).setNetID(iInactiveNetId);
-			}
-
-			GET_PLAYER(eNewValue).showMissedMessages();
-
-			if (countHumanPlayersAlive() == 1 && isPbem())
-			{
-				// Nobody else left alive
-				GC.getInitCore().setType(GAME_HOTSEAT_NEW);
-			}
-
-			if (isHotSeat() || bForceHotSeat)
-				sendPlayerOptions(true);
+			int iInactiveNetId = GET_PLAYER(eNewValue).getNetID();
+			GET_PLAYER(eNewValue).setNetID(iActiveNetId);
+			GET_PLAYER(eOldActivePlayer).setNetID(iInactiveNetId);
 		}
-		updateActiveVisibility(); // advc.706: Moved into subroutine
+
+		GET_PLAYER(eNewValue).showMissedMessages();
+
+		if (countHumanPlayersAlive() == 1 && isPbem())
+		{
+			// Nobody else left alive
+			GC.getInitCore().setType(GAME_HOTSEAT_NEW);
+		}
+
+		if (isHotSeat() || bForceHotSeat)
+			sendPlayerOptions(true);
 	}
+	updateActiveVisibility(); // advc.706: Moved into subroutine
 }
 
 // advc.706: Cut and pasted from CvGame::setActivePlayer
@@ -6646,6 +6642,7 @@ void CvGame::doTurn()
 
 	GC.getMap().doTurn();
 
+	getBarbarianWeightMap().getActivityMap().decay(); // advc.304
 	createBarbarianCities();
 	createBarbarianUnits();
 
@@ -6686,7 +6683,7 @@ void CvGame::doTurn()
 	if (isMPOption(MPOPTION_SIMULTANEOUS_TURNS))
 	{
 		int aiShuffle[MAX_PLAYERS];
-		::shuffleArray(aiShuffle, MAX_PLAYERS, getSorenRand());
+		getSorenRand().shuffle(aiShuffle, MAX_PLAYERS);
 		std::set<TeamTypes> activeTeams; // K-Mod
 		for (int i = 0; i < MAX_PLAYERS; i++)
 		{
@@ -6781,23 +6778,16 @@ void CvGame::doDeals()
 {
 	verifyDeals();
 
-	std::set<PlayerTypes> trade_players; // K-Mod. List of players involved in trades.
 	FOR_EACH_DEAL_VAR(pLoopDeal)
 	{
-		// K-Mod
-		trade_players.insert(pLoopDeal->getFirstPlayer());
-		trade_players.insert(pLoopDeal->getSecondPlayer());
-		// K-Mod end
 		pLoopDeal->doTurn();
 	}
-
-	// K-Mod. Update the attitude cache for all trade players
-	for (std::set<PlayerTypes>::iterator it = trade_players.begin(); it != trade_players.end(); ++it)
-	{
-		FAssert(*it != NO_PLAYER);
-		GET_PLAYER(*it).AI_updateAttitude();
-	}
-	// K-Mod end
+	/*	<advc.130p> K-Mod had only done this update for players involved in any deals
+		(through an std::set), but third parties might disapprove of the deal.
+		(I think this was a minor oversight in K-Mod - but matters more in AdvCiv
+		b/c of changes to trade values of annual deals.) */
+	for (PlayerAIIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
+		itPlayer->AI_updateAttitude(); // </advc.130p>
 }
 
 // advc.055: For doGlobalWarming (needs to have external linkage)
@@ -6887,7 +6877,7 @@ void CvGame::doGlobalWarming()
 	{
 		// note, warming prob out of 1000, not percent.
 		int iLeftOdds = 10 * GC.getInfo(getGameSpeedType()).getVictoryDelayPercent();
-		if (getSorenRandNum(iLeftOdds, "Global Warming") >= GC.getDefineINT("GLOBAL_WARMING_PROB"))
+		if (SyncRandNum(iLeftOdds) >= GC.getDefineINT("GLOBAL_WARMING_PROB"))
 			continue;
 		//CvPlot* pPlot = GC.getMap().syncRandPlot(RANDPLOT_LAND | RANDPLOT_NOT_CITY);
 		/*	Global warming is no longer completely random.
@@ -6906,9 +6896,8 @@ void CvGame::doGlobalWarming()
 		CvFeatureInfo const* pProtectedFeature = NULL;
 		if (eImprov != NO_IMPROVEMENT && eFeature != NO_FEATURE)
 		{
-			if (per100(GC.getInfo(eImprov).get(
-				CvImprovementInfo::GWFeatureProtection)).bernoulliSuccess(
-				getSRand(), "GWFeatureProtection"))
+			if (SyncRandSuccess100(GC.getInfo(eImprov).get(
+				CvImprovementInfo::GWFeatureProtection)))
 			{
 				bProtectFeature = true;
 				pProtectedFeature = &GC.getInfo(eFeature);
@@ -7242,13 +7231,12 @@ void CvGame::doHolyCity()
 {
 	if (GC.getPythonCaller()->doHolyCity())
 		return;
-
 	if (getElapsedGameTurns() < 5 && !isOption(GAMEOPTION_ADVANCED_START))
 		return;
 //DOTO-david lalen forbiddan religion - dune wars start
 	bool forbRel = isOption(GAMEOPTION_FORBIDDEN_RELIGION);
 //DOTO-david lalen forbiddan religion - dune wars start
-	int iRandOffset = getSorenRandNum(GC.getNumReligionInfos(), "Holy City religion offset");
+	int iRandOffset = SyncRandNum(GC.getNumReligionInfos());
 	for (int iLoop = 0; iLoop < GC.getNumReligionInfos(); ++iLoop)
 	{
 		ReligionTypes eReligion = (ReligionTypes)(
@@ -7277,7 +7265,7 @@ void CvGame::doHolyCity()
 					continue;
 				}
 
-				int iValue = getSorenRandNum(10, "Found Religion (Team)");
+				int iValue = SyncRandNum(10);
 				FOR_EACH_ENUM(Religion)
 				{
 					int iReligionCount = itTeam->getHasReligionCount(eLoopReligion);
@@ -7302,7 +7290,7 @@ void CvGame::doHolyCity()
 			if (itMember->getNumCities() <= 0)
 				continue;
 
-			int iValue = getSorenRandNum(10, "Found Religion (Player)");
+			int iValue = SyncRandNum(10);
 			if (!itMember->isHuman())
 				iValue += 18; // advc.138: Was 10. Need some x: 15 < x < 20.
 			FOR_EACH_ENUM(Religion)
@@ -7340,7 +7328,7 @@ void CvGame::doHolyCity()
 					continue;
 				}
 			}	
-			int iValue = getSorenRandNum(10, "Found Religion (Player)");
+			int iValue = SyncRandNum(10);
 			if (!itPlayer->isHuman())
 				iValue += 18; // advc.138: Was 10. Need some x: 15 < x < 20.
 			FOR_EACH_ENUM(Religion)
@@ -7483,11 +7471,12 @@ void CvGame::doHeadquarters()
 				}
 				if (!bHasBonus)
 					continue;
-				int iValue = getSorenRandNum(10, "Found Corporation (Team)");
+				int iValue = SyncRandNum(10);
 				FOR_EACH_ENUM(Corporation)
 				{
 					int iCorporationCount = //GET_PLAYER((PlayerTypes)iJ).getHasCorporationCount((CorporationTypes)iK);
-							itTeam->getHasCorporationCount(eLoopCorporation); // advc.001: iJ isn't a player
+							// advc.001: iJ isn't a player
+							itTeam->getHasCorporationCount(eLoopCorporation);
 					iValue += iCorporationCount * 20;
 				}
 				if (iValue < iBestValue)
@@ -7516,7 +7505,7 @@ void CvGame::doHeadquarters()
 			}
 			if (!bHasBonus)
 				continue;
-			int iValue = getSorenRandNum(10, "Found Corporation (Player)");
+			int iValue = SyncRandNum(10);
 			if (!itMember->isHuman())
 				iValue += 10;
 			FOR_EACH_ENUM(Corporation)
@@ -7581,18 +7570,16 @@ void CvGame::createBarbarianCities()
 
 void CvGame::createBarbarianCity(bool bSkipCivAreas, int iProbModifierPercent)
 {
-	int iCreationProb = GC.getInfo(getHandicapType()).getBarbarianCityCreationProb();
-	/* No cities past Medieval, so it's either +0 (Ancient), +1 (Classical)
-	   or +4 (Medieval). */
-	int iEra = getCurrentEra();
-	iCreationProb += iEra * iEra;
-	iCreationProb *= iProbModifierPercent;
-	iCreationProb /= 100;
+	int const iEra = getCurrentEra();
+	scaled rCreationProb = per100(GC.getInfo(getHandicapType()).
+			/*	No cities past Medieval, so it's either +0 points (Ancient),
+				+1 (Classical) or +4 (Medieval). */
+			getBarbarianCityCreationProb() + SQR(iEra));
+	rCreationProb *= per100(iProbModifierPercent);
 	// Adjust creation prob to game speed
 	CvGameSpeedInfo const& kSpeed = GC.getInfo(getGameSpeedType());
-	iCreationProb *= kSpeed.getBarbPercent();
-	iCreationProb /= 100;
-	if(getSorenRandNum(100, "Barb City Creation") >= iCreationProb) // </advc.300>
+	rCreationProb *= per100(kSpeed.getBarbPercent());
+	if (!SyncRandSuccess(rCreationProb)) // </advc.300>
 		return;
 
 	/*  advc (comment): This multiplier expresses how close the total number of
@@ -7618,13 +7605,11 @@ void CvGame::createBarbarianCity(bool bSkipCivAreas, int iProbModifierPercent)
 
 	CitySiteEvaluator citySiteEval(GET_PLAYER(BARBARIAN_PLAYER),
 			GC.getDefineINT("MIN_BARBARIAN_CITY_STARTING_DISTANCE"));
-	/* <advc.300> Randomize penalty on short inter-city distance for more variety
-	   in Barbarian settling patterns. The expected value is 8, which is also the
-	   value K-Mod uses. */
-	citySiteEval.discourageBarbarians(5 +
-			getSorenRandNum(7, "advc.300 (discouraged range)"));
-	CvMap const& m = GC.getMap();
-	std::map<int,int> unownedPerArea; // Precomputed for efficiency
+	/*	<advc.300> Randomize penalty on short inter-city distance for more variety
+		in Barbarian settling patterns. Was 8 in K-Mod. */
+	citySiteEval.discourageBarbarians(5 + SyncRandNum(7));
+	CvMap const& kMap = GC.getMap();
+	std::map<int,int> perAreaUnowned; // Precomputed for efficiency
 	FOR_EACH_AREA(pArea)
 	{
 		/* Plots owned by Barbarians are counted in BtS, and I count them when
@@ -7635,19 +7620,21 @@ void CvGame::createBarbarianCity(bool bSkipCivAreas, int iProbModifierPercent)
 				//a.countOwnedUnownedHabitableTiles(true);
 		int iUnowned = iiOwnedUnowned.second;
 		std::vector<Shelf*> shelves;
-		m.getShelves(*pArea, shelves);
-		for(size_t i = 0; i < shelves.size(); i++)
+		kMap.getShelves(*pArea, shelves);
+		for (size_t i = 0; i < shelves.size(); i++)
+		{
 			iUnowned += shelves[i]->countUnownedPlots() / 2;
-		unownedPerArea.insert(std::make_pair(pArea->getID(), iUnowned));
+		}
+		perAreaUnowned.insert(std::make_pair(pArea->getID(), iUnowned));
 	}
 	bool bRage = isOption(GAMEOPTION_RAGING_BARBARIANS);
 	// </advc.300>
 
 	CvPlot const* pBestPlot = NULL;
 	int iBestValue = 0;
-	for (int iI = 0; iI < m.numPlots(); iI++)
+	for (int iI = 0; iI < kMap.numPlots(); iI++)
 	{
-		CvPlot& kPlot = m.getPlotByIndex(iI);
+		CvPlot& kPlot = kMap.getPlotByIndex(iI);
 		if (kPlot.isWater() || kPlot.isVisibleToCivTeam())
 			continue;
 		// <advc.300>
@@ -7656,15 +7643,13 @@ void CvGame::createBarbarianCity(bool bSkipCivAreas, int iProbModifierPercent)
 		bool bCivArea = (a.getNumCities() > a.getCitiesPerPlayer(BARBARIAN_PLAYER));
 		if (bSkipCivAreas && bCivArea)
 			continue;
-		std::map<int,int>::const_iterator unowned = unownedPerArea.find(a.getID());
-		FAssert(unowned != unownedPerArea.end());
-		int iTargetCities = unowned->second;
+		int iTargetCities = perAreaUnowned.find(a.getID())->second;
 		if (bRage) // Didn't previously affect city density
 		{
 			iTargetCities *= 7;
 			iTargetCities /= 5;
 		}
-		if(!bCivArea)
+		if (!bCivArea)
 		{
 			/*  BtS triples iTargetCities here. Want to make it era-based.
 				Important that the multiplier is rather small in the first four eras
@@ -7675,7 +7660,8 @@ void CvGame::createBarbarianCity(bool bSkipCivAreas, int iProbModifierPercent)
 			scaled rMult = per100(50) + per100(88) * iEra;
 			iTargetCities = (rMult * iTargetCities).round(); // </advc.300>
 		}
-		int iUnownedTilesThreshold = GC.getInfo(getHandicapType()).getUnownedTilesPerBarbarianCity();
+		int iUnownedTilesThreshold = GC.getInfo(getHandicapType()).
+				getUnownedTilesPerBarbarianCity();
 		if (iAreaSz < iUnownedTilesThreshold / 3)
 		{
 			iTargetCities *= iTargetCitiesMultiplier;
@@ -7702,23 +7688,21 @@ void CvGame::createBarbarianCity(bool bSkipCivAreas, int iProbModifierPercent)
 				Also, the first city placed in a previously uninhabited area is
 				placed randomly b/c each found value gets multipied with 0,
 				which is apparently a bug. Let's instead use the projected number
-				of owned tiles after placing the city (by adding 9). */
+				of owned tiles after placing the city. */
 				int iOwned = a.getNumOwnedTiles();
-				if(bSkipCivAreas)
+				if (bSkipCivAreas)
 					iValue += iOwned;
-				else iValue *= iOwned + 9; // advc.001 </advc.300>
+				else iValue *= iOwned + NUM_INNER_PLOTS; // advc.001 </advc.300>
 			}
-			/*  advc.300, advc.001: Looks like another bug; probably
-				times 1 to 1.5 was intended. (Dividing by 100 doesn't affect
-				pBestPlot, but I'd like to put iBestValue is on the scale of a
-				regular found value - although it isn't used for anything.)
-				This kind of randomization is mitigated by the fact that clusters
-				of tiles tend to have similar found values. The effect is mostly
-				local. I'm trying to get the Barbarians to also settle mediocre land
-				occasionally by randomizing CvFoundSettings.iBarbDiscouragedRange above. */
-			/*iValue += (100 + getSorenRandNum(50, "Barb City Found"));
-			iValue /= 100;*/
-			iValue *= (100 + getSorenRandNum(50, "Barb City Found")) / 100;
+			//iValue += (100 + SyncRandNum(50));
+			/*	advc.300, advc.001: Looks like another bug; probably times 1 to 1.5
+				was intended. (Dividing by 100 doesn't affect pBestPlot, but let's
+				keep iBestValue is on the scale of a regular found value - although
+				it isn't used for anything.)
+				NB: This kind of randomization works mostly locally b/c nearby tiles
+				tend to have similar found values. */
+			iValue *= 100 + SyncRandNum(50);
+			iValue /= 100;
 			if (iValue > iBestValue)
 			{
 				iBestValue = iValue;
@@ -7763,7 +7747,7 @@ void CvGame::createBarbarianUnits()
 	if (bAnimals)
 		createAnimals();
 	// <advc.300>
-	if(bAnimals)
+	if (bAnimals)
 		return;
 	CvHandicapInfo const& kGameHandicap = GC.getInfo(getHandicapType());
 	int iBaseTilesPerLandUnit = kGameHandicap.getUnownedTilesPerBarbarianUnit();
@@ -7795,8 +7779,8 @@ void CvGame::createBarbarianUnits()
 		/*  For performance -- countOwnedUnownedHabitableTiles isn't cached;
 			goes through the entire map for each land area, and archipelago-type maps
 			can have a lot of those. */
-		int iTotal = a.getNumTiles() + iTiles;
-		int iUnownedTotal = a.getNumUnownedTiles() + iUnowned;
+		int const iTotal = a.getNumTiles() + iTiles;
+		int const iUnownedTotal = a.getNumUnownedTiles() + iUnowned;
 		if (iUnownedTotal >= iTotal)
 			continue;
 
@@ -7811,21 +7795,33 @@ void CvGame::createBarbarianUnits()
 		// NB: Animals are included in this count
 		int iLandUnits = a.getUnitsPerPlayer(BARBARIAN_PLAYER);
 		//  Kill a Barbarian unit if the area gets crowded
-		if(killBarbarian(iLandUnits, iTiles,
+		if (killBarbarian(iLandUnits, iTiles,
 			a.getPopulationPerPlayer(BARBARIAN_PLAYER), a, NULL))
 		{
 			iLandUnits--;
 		}
-		if(iUnownedTotal < iBaseTilesPerLandUnit / 2)
+		if (iUnownedTotal < iBaseTilesPerLandUnit / 2)
 			continue;
-		int iBarbCities = a.getCitiesPerPlayer(BARBARIAN_PLAYER);
+		int const iBarbarianCities = a.getCitiesPerPlayer(BARBARIAN_PLAYER);
+		{
+			int const iInitialDefenders = GC.getInfo(getHandicapType()).
+					getBarbarianInitialDefenders();
+			iLandUnits = std::max(0, iLandUnits
+			/*  Don't count city defenders. Settled Barbarians being less aggressive
+				makes sense, but cities also reduce the number of unowned tiles;
+				that's enough.	(Alt. idea: Subtract half the Barbarian population
+				in this area.)	Old Firaxis to-do comment on this subject:
+				'XXX eventually need to measure	how many barbs of eBarbUnitAI we
+				have in this area...' */
+					- iBarbarianCities * std::max(0, iInitialDefenders));
+		}
 		int iNeededLand = numBarbariansToCreate(iBaseTilesPerLandUnit, iTiles,
-				iUnowned, iLandUnits, iBarbCities);
+				iUnowned, iLandUnits);
 		for (size_t i = 0; i < shelves.size(); i++)
 		{
 			int iShips = shelves[i]->countBarbarians();
-			if (killBarbarian(iShips, shelves[i]->size(), a.getPopulationPerPlayer(BARBARIAN_PLAYER),
-				a, shelves[i]))
+			if (killBarbarian(iShips, shelves[i]->size(),
+				a.getPopulationPerPlayer(BARBARIAN_PLAYER), a, shelves[i]))
 			{
 				iShips--;
 			}
@@ -7836,21 +7832,23 @@ void CvGame::createBarbarianUnits()
 			/* 'BETTER_BTS_AI_MOD 9/25/08 jdog5000
 				Limit construction of barb ships based on player navies' */
 			// advc: BBAI code deleted -- sanity check based on Barbarian cities instead:
-			if (iShips > iBarbCities + 2)
+			if (iShips > iBarbarianCities + 2)
 				iNeededSea = 0;
 			// <advc.306> Keep spawning units on ships
 			if (iNeededSea <= 0 && iNeededLand <= 0 && a.getNumCivCities() > 0)
-				createBarbarianUnits(1, a, shelves[i], true, true); // </advc.306>
-			else iNeededLand -= createBarbarianUnits(iNeededSea, a, shelves[i],
-					iNeededLand > 0); // advc.306
+				createBarbarianUnits(1, iShips, a, shelves[i], true, true); // </advc.306>
+			else
+			{
+				iNeededLand -= createBarbarianUnits(iNeededSea, iShips, a, shelves[i],
+						iNeededLand > 0); // advc.306
+			}
 		}
 		/*  Don't spawn Barbarian units on (or on shelves around) continents where
 			civs don't outnumber Barbarians */
 		int const iCivCities = a.getNumCivCities();
-		int const iBarbarianCities = a.getCitiesPerPlayer(BARBARIAN_PLAYER);
 		FAssert(iBarbarianCities >= 0);
 		if (iCivCities > iBarbarianCities && bCreateBarbarians)
-			createBarbarianUnits(iNeededLand, a, NULL);
+			createBarbarianUnits(iNeededLand, iLandUnits, a, NULL);
 		/*  Rest of the creation code: moved into functions numBarbariansToCreate and
 			createBarbarians */
 		// </advc.300>
@@ -7874,7 +7872,7 @@ void CvGame::createBarbarianUnits()
 			continue;
 		int iUnits = pCity->getPlot().getNumDefenders(BARBARIAN_PLAYER);
 		scaled rKillProb = (iUnits - scaled::max(fixp(1.5) * pCity->getPopulation(), 4)) / 4;
-		if (rKillProb.bernoulliSuccess(getSRand(), "kill random Barbarian"))
+		if (SyncRandSuccess(rKillProb))
 			pCity->getPlot().killRandomUnit(BARBARIAN_PLAYER, DOMAIN_LAND);
 	} // </advc.300>
 }
@@ -7914,9 +7912,10 @@ void CvGame::createAnimals()
 			continue;
 
 		iNeededAnimals = (iNeededAnimals / 5) + 1;
-		for (int iI = 0; iI < iNeededAnimals; iI++)
+		for (int i = 0; i < iNeededAnimals; i++)
 		{
-			CvPlot* pPlot = GC.getMap().syncRandPlot((RANDPLOT_NOT_VISIBLE_TO_CIV | RANDPLOT_PASSABLE
+			CvPlot* pPlot = GC.getMap().syncRandPlot(
+					(RANDPLOT_NOT_VISIBLE_TO_CIV | RANDPLOT_PASSABLE
 					| RANDPLOT_WATERSOURCE), // advc.300: Also use no iTimeout (try all plots)
 					pLoopArea, iMinAnimalStartingDist);
 			if (pPlot == NULL)
@@ -7925,10 +7924,10 @@ void CvGame::createAnimals()
 			UnitTypes eBestUnit = NO_UNIT;
 			int iBestValue = 0;
 			// advc (comment): This loop picks an animal that is suitable for pPlot
-			CvCivilization const& kCiv = GET_PLAYER(BARBARIAN_PLAYER).getCivilization(); // advc.003w
-			for (int i = 0; i < kCiv.getNumUnits(); i++)
+			CvCivilization const& kCiv = GET_PLAYER(BARBARIAN_PLAYER).getCivilization();
+			for (int j = 0; j < kCiv.getNumUnits(); j++)
 			{
-				UnitTypes eLoopUnit = kCiv.unitAt(i);
+				UnitTypes eLoopUnit = kCiv.unitAt(j);
 				CvUnitInfo const& kUnit = GC.getInfo(eLoopUnit);
 				if (!kUnit.getUnitAIType(UNITAI_ANIMAL))
 					continue;
@@ -7936,7 +7935,7 @@ void CvGame::createAnimals()
 					kUnit.getFeatureNative(pPlot->getFeatureType()) :
 					kUnit.getTerrainNative(pPlot->getTerrainType()))
 				{
-					int iValue = 1 + getSorenRandNum(1000, "Animal Unit Selection");
+					int iValue = 1 + SyncRandNum(1000);
 					if (iValue > iBestValue)
 					{
 						eBestUnit = eLoopUnit;
@@ -7956,7 +7955,7 @@ void CvGame::createAnimals()
 // advc.307:
 bool CvGame::isBarbarianCreationEra() const
 {
-	if(isOption(GAMEOPTION_NO_BARBARIANS))
+	if (isOption(GAMEOPTION_NO_BARBARIANS))
 		return false;
 	EraTypes eCurrentEra = getCurrentEra();
 	return (!GC.getInfo(eCurrentEra).isNoBarbUnits() &&
@@ -7989,7 +7988,7 @@ int CvGame::getBarbarianStartTurn() const
 
 // Based on code originally in createBarbarianUnits, but modified beyond recognition.
 int CvGame::numBarbariansToCreate(int iTilesPerUnit, int iTiles, int iUnowned,
-		int iUnitsPresent, int iBarbarianCities)
+	int iUnitsPresent)
 {
 	int const iOwned = iTiles - iUnowned;
 	scaled const rPeakRatio = barbarianPeakLandRatio();
@@ -8034,15 +8033,7 @@ int CvGame::numBarbariansToCreate(int iTilesPerUnit, int iTiles, int iUnowned,
 			"BARB_ACTIVITY_ADJUSTMENT"));
 	rTarget *= rAdjustment;
 
-	int iInitialDefenders = GC.getInfo(getHandicapType()).
-			getBarbarianInitialDefenders();
-	scaled r = rTarget - std::max(0, iUnitsPresent
-	/*  Don't count city defenders. Settled Barbarians being less aggressive makes
-		sense, but cities also reduce the number of unowned tiles; that's enough.
-		(Alt. idea: Subtract half the Barbarian population in this area.)
-		Old Firaxis to-do comment on this subject: 'XXX eventually need to measure
-		how many barbs of eBarbUnitAI we have in this area...' */
-			- iBarbarianCities * std::max(0, iInitialDefenders));
+	scaled r = rTarget - iUnitsPresent;
 	if (r < 1)
 		return 0; // Avoid very small creation probabilities
 	scaled rCreationRate = fixp(0.25); // the BtS rate
@@ -8053,7 +8044,7 @@ int CvGame::numBarbariansToCreate(int iTilesPerUnit, int iTiles, int iUnowned,
 		Probabilistic instead. */
 	if (r < 1)
 	{
-		if (r.bernoulliSuccess(getSRand(), "numBarbariansToCreate"))
+		if (SyncRandSuccess(r))
 			return 1;
 		return 0;
 	}
@@ -8062,8 +8053,8 @@ int CvGame::numBarbariansToCreate(int iTilesPerUnit, int iTiles, int iUnowned,
 
 /*	Returns the number of land units spawned (possibly in cargo).
 	The first half is new code. */
-int CvGame::createBarbarianUnits(int iUnitsToCreate, CvArea& kArea, Shelf* pShelf,
-	bool bCargoAllowed, bool bOnlyCargo) // </advc.300>
+int CvGame::createBarbarianUnits(int iUnitsToCreate, int iUnitsPresent,
+	CvArea& kArea, Shelf* pShelf, bool bCargoAllowed, bool bOnlyCargo) // </advc.300>
 {
 	/* <advc.306> Spawn cargo load before ships. Otherwise, the newly placed ship
 	   would always be an eligible target and too many ships would carry cargo. */
@@ -8094,11 +8085,8 @@ int CvGame::createBarbarianUnits(int iUnitsToCreate, CvArea& kArea, Shelf* pShel
 					way, i.e. a ship receiving a second passenger while travelling
 					to its target through fog of war. (I don't think that happens
 					often enough though ...) */
-				if (pTransport->getCargo() > 1 ||
-					fixp(0.7).bernoulliSuccess(getSRand(), "Barbarian on transport"))
-				{
+				if (pTransport->getCargo() > 1 || SyncRandSuccess100(70))
 					break;
-				}
 			}
 		}
 		if (bOnlyCargo)
@@ -8106,32 +8094,34 @@ int CvGame::createBarbarianUnits(int iUnitsToCreate, CvArea& kArea, Shelf* pShel
 	} // </advc.306>
 
 	for (int i = 0; i < iUnitsToCreate; i++) 
-	{
-		// <advc.300>
-		CvPlot* pPlot = NULL;
-		// Reroll twice if the tile has poor yield
-		for (int j = 0; j < 3; j++)
+	{	// <advc.300>
+		int iValid=0;
+		CvPlot* pPlot = randomBarbarianPlot(iValid, kArea, pShelf);
 		{
-			pPlot = randomBarbarianPlot(kArea, pShelf);
-			/*  If we can't find a plot once, we won't find one in a later
-				iteration either. */
-			if (pPlot == NULL)
-				return iCreated;
-			int iTotalYield = 0;
-			FOR_EACH_ENUM(Yield)
-				iTotalYield += pPlot->getYield(eLoopYield);
-			// Want to re-roll flat Tundra Forest as well
-			if (iTotalYield == 2 && !pPlot->isImproved())
+			int const iUnitsTarget = iUnitsPresent + 1; // About to create one more
+			if (pPlot != NULL)
 			{
-				iTotalYield = 0;
-				FOR_EACH_ENUM(Yield)
+				FAssert(iValid > 0);
+				// Don't create any units if far too few valid tiles remain
+				if ((pShelf != NULL && iValid * 100 < pShelf->size()) ||
+					iUnitsTarget > iValid)
 				{
-					iTotalYield += pPlot->calculateNatureYield(eLoopYield, NO_TEAM,
-							/* bIgnoreFeature=*/true);
+					pPlot = NULL;
 				}
 			}
-			if (iTotalYield >= 2)
-				break;
+			if (pPlot == NULL)
+				return iCreated;
+			/*	Skip only one unit, probabilistically. (This could probably
+				be simplified a bit.) */
+			scaled rSkipProb = std::max(scaled(iUnitsTarget, iValid),
+					// In case that both valid count and target number are very small
+					scaled(std::min(iUnitsTarget + 2, 3), iValid + 2));
+			// Don't let unguarded plots go entirely unpunished forever
+			rSkipProb.decreaseTo(fixp(0.9));
+			// Especially don't want a constant stream of units from low-weight plots
+			rSkipProb *= scaled::max(1, 2 - per100(getBarbarianWeightMap().get(*pPlot)));
+			if (SyncRandSuccess(rSkipProb))
+				continue;
 		}
 		UnitAITypes eUnitAI = UNITAI_ATTACK;
 		if (pShelf != NULL)
@@ -8142,27 +8132,31 @@ int CvGame::createBarbarianUnits(int iUnitsToCreate, CvArea& kArea, Shelf* pShel
 			return iCreated;
 		CvUnit* pNewUnit = GET_PLAYER(BARBARIAN_PLAYER).initUnit(eUnitType,
 				pPlot->getX(), pPlot->getY(), eUnitAI);
-		if (pNewUnit != NULL && !pPlot->isWater())
+		if (!pPlot->isWater())
 			iCreated++;
 		// </advc.300>
 		// K-Mod. Give a combat penalty to barbarian boats.
-		if (pNewUnit && pPlot->isWater() &&
-				!pNewUnit->getUnitInfo().isHiddenNationality()) // kekm.12
+		if (pPlot->isWater() &&
+			!pNewUnit->getUnitInfo().isHiddenNationality()) // kekm.12
 		{	// find the "disorganized" promotion. (is there a better way to do this?)
 			PromotionTypes eDisorganized = (PromotionTypes)
 					GC.getInfoTypeForString("PROMOTION_DISORGANIZED", true);
 			if (eDisorganized != NO_PROMOTION)
-			{	/*	sorry, barbarians. Free boats are just too dangerous for
+			{	/*	Sorry, barbarians. Free ships are just too dangerous for
 					real civilizations to defend against. */
 				pNewUnit->setHasPromotion(eDisorganized, true);
 			}
 		} // K-Mod end
+		// <advc.304> Discourage nearby unit placement for some time
+		getBarbarianWeightMap().getActivityMap().change(*pPlot,
+				BarbarianActivityMap::maxStrength() / 2, 2); // </advc.304>
 	}
 	return iCreated; // advc.306
 }
 
 // <advc.300>
-CvPlot* CvGame::randomBarbarianPlot(CvArea const& kArea, Shelf const* pShelf)
+CvPlot* CvGame::randomBarbarianPlot(/* out-param */int& iValid,
+	CvArea const& kArea, Shelf const* pShelf)
 {
 	RandPlotFlags const eFlags = (RANDPLOT_NOT_VISIBLE_TO_CIV |
 			/*  Shelves already ensure this and one-tile islands
@@ -8176,23 +8170,17 @@ CvPlot* CvGame::randomBarbarianPlot(CvArea const& kArea, Shelf const* pShelf)
 		no longer apply to Barbarians previously spawned; see
 		CvPlot::isVisibleToCivTeam, CvMap::isCivUnitNearby. */
 	static int const iDist = GC.getDefineINT("MIN_BARBARIAN_STARTING_DISTANCE");
-	// <advc.304> Sometimes don't pick a plot if there are few legal plots
-	int iLegal = 0;
+	// <advc.304>
 	CvPlot* pRandPlot = NULL;
 	if (pShelf == NULL)
-		pRandPlot = GC.getMap().syncRandPlot(eFlags, &kArea, iDist, -1, &iLegal);
+	{
+		pRandPlot = GC.getMap().syncRandPlot(eFlags, &kArea, iDist, -1,
+				&iValid, &getBarbarianWeightMap());
+	}
 	else
 	{
-		pRandPlot = pShelf->randomPlot(eFlags, iDist, &iLegal);
-		if (pRandPlot != NULL && iLegal * 100 < pShelf->size())
-			pRandPlot = NULL;
-	}
-	if (pRandPlot != NULL && iLegal > 0 && iLegal < 4)
-	{
-		// Tbd.: Should perhaps be based on a.getNumTiles()
-		scaled rSkipProb = 1 - scaled(1, 5 - iLegal);
-		if(rSkipProb.bernoulliSuccess(getSRand(), "randomBarbarianPlot"))
-		pRandPlot = NULL;
+		pRandPlot = pShelf->randomPlot(eFlags, iDist,
+				&iValid, &getBarbarianWeightMap());
 	}
 	return pRandPlot; // </advc.304>
 }
@@ -8211,7 +8199,7 @@ bool CvGame::killBarbarian(int iUnitsPresent, int iTiles, int iPop,
 	// Don't want large Barbarian continents crawling with units
 	rDivisor.exponentiate(fixp(0.7));
 	rDivisor *= 5;
-	if ((iUnitsPresent / rDivisor).bernoulliSuccess(getSRand(), "killBarbarian2"))
+	if (SyncRandSuccess(iUnitsPresent / rDivisor))
 	{
 		if(pShelf != NULL)
 			return pShelf->killBarbarian();
@@ -8242,33 +8230,37 @@ UnitTypes CvGame::randomBarbarianUnit(UnitAITypes eUnitAI, CvArea const& kArea)
 	case UNITAI_ATTACK: bSea = false; break;
 	default: return NO_UNIT;
 	}
-	UnitTypes r = NO_UNIT;
+	UnitTypes eR = NO_UNIT;
 	int iBestValue = 0;
-	CvCivilization const& kCiv = GET_PLAYER(BARBARIAN_PLAYER).getCivilization(); // advc.003w
+	CvCivilization const& kCiv = GET_PLAYER(BARBARIAN_PLAYER).getCivilization();
 	for (int i = 0; i < kCiv.getNumUnits(); i++)
 	{
-		UnitTypes eUnit = kCiv.unitAt(i);
+		UnitTypes const eUnit = kCiv.unitAt(i);
 		CvUnitInfo const& kUnit = GC.getInfo(eUnit);
-		DomainTypes eDomain = kUnit.getDomainType();
-		if(kUnit.getCombat() <= 0 || eDomain == DOMAIN_AIR ||
+		DomainTypes const eDomain = kUnit.getDomainType();
+		if (kUnit.getCombat() <= 0 || eDomain == DOMAIN_AIR ||
 			kUnit.isMostlyDefensive() || // advc.315
 			(eDomain == DOMAIN_SEA) != bSea ||
 			!GET_PLAYER(BARBARIAN_PLAYER).canTrain(eUnit))
 		{
 			continue;
-		}  // <advc.301>
+		}
+		// <advc.301>
 		BonusTypes const eAndBonus = kUnit.getPrereqAndBonus();
-		std::vector<TechTypes> aeAndBonusTechs(2, NO_TECH);
+		std::vector<TechTypes> aeAndBonusTechs;
 		if (eAndBonus != NO_BONUS)
 		{
 			CvBonusInfo const& kAndBonus = GC.getInfo(eAndBonus);
-			aeAndBonusTechs.push_back(kAndBonus.getTechCityTrade()); // (as in BtS)
-			aeAndBonusTechs.push_back(kAndBonus.getTechReveal());
+			TechTypes eTradeTech = kAndBonus.getTechCityTrade(); // (as in BtS)
+			if (eTradeTech != NO_TECH)
+				aeAndBonusTechs.push_back(eTradeTech);
+			TechTypes eRevealTech = kAndBonus.getTechReveal();
+			if (eRevealTech != NO_TECH)
+				aeAndBonusTechs.push_back(eRevealTech);
 			bool bValid = true;
 			for (size_t j = 0; j < aeAndBonusTechs.size(); j++)
 			{
-				if (aeAndBonusTechs[j] != NO_TECH &&
-					!GET_TEAM(BARBARIAN_TEAM).isHasTech(aeAndBonusTechs[j]))
+				if (!GET_TEAM(BARBARIAN_TEAM).isHasTech(aeAndBonusTechs[j]))
 				{
 					bValid = false;
 					break;
@@ -8277,9 +8269,9 @@ UnitTypes CvGame::randomBarbarianUnit(UnitAITypes eUnitAI, CvArea const& kArea)
 			if (!bValid || !kArea.hasAnyAreaPlayerBonus(eAndBonus))
 				continue;
 		}
-		/*  No units from more than 1 era ago (obsoletion too difficult to test).
-			hasTech already tested by canTrain, but era shouldn't be
-			tested there b/c it's OK for Barbarian cities to train outdated units
+		/*	No units from more than 1 era ago (obsolescence too difficult to test).
+			hasTech already tested by canTrain, but era shouldn't be tested there
+			b/c it's OK for Barbarian cities to train outdated units
 			(they only will if they can't train anything better). */
 		TechTypes const eAndTech = kUnit.getPrereqAndTech();
 		int iUnitEra = 0;
@@ -8287,50 +8279,39 @@ UnitTypes CvGame::randomBarbarianUnit(UnitAITypes eUnitAI, CvArea const& kArea)
 			iUnitEra = GC.getInfo(eAndTech).getEra();
 		for (size_t j = 0; j < aeAndBonusTechs.size(); j++)
 		{
-			if (aeAndBonusTechs[j] != NO_TECH)
-			{
-				iUnitEra = std::max<int>(iUnitEra,
-						GC.getInfo(aeAndBonusTechs[j]).getEra());
-			}
+			iUnitEra = std::max<int>(iUnitEra,
+					GC.getInfo(aeAndBonusTechs[j]).getEra());
 		}
 		if (iUnitEra + 1 < getCurrentEra())
 			continue; // </advc.301>
 		bool bFound = false;
 		bool bRequires = false;
 		for (int j = 0; j < kUnit.getNumPrereqOrBonuses() &&
-			!bFound; j++) // advc.301
+			!bFound; j++)
 		{
+			bRequires = true;
 			BonusTypes const eOrBonus = kUnit.getPrereqOrBonuses(j);
 			CvBonusInfo const& kOrBonus = GC.getInfo(eOrBonus);
-			// <advc.301>
-			std::vector<TechTypes> aeOrBonusTechs(2, NO_TECH);
-			aeOrBonusTechs.push_back(kOrBonus.getTechCityTrade()); // (as in BtS)
-			aeOrBonusTechs.push_back(kOrBonus.getTechReveal());
-			for (size_t k = 0; k < aeOrBonusTechs.size(); k++)
+			if (GET_TEAM(BARBARIAN_TEAM).isHasTech(kOrBonus.getTechCityTrade()) &&
+				// <advc.301>
+				GET_TEAM(BARBARIAN_TEAM).isHasTech(kOrBonus.getTechReveal()) &&
+				kArea.hasAnyAreaPlayerBonus(eOrBonus)) // </advc.301>
 			{
-				if (aeOrBonusTechs[k] == NO_TECH)
-					continue;
-				bRequires = true;
-				if (GET_TEAM(BARBARIAN_TEAM).isHasTech(aeOrBonusTechs[k]) &&
-					kArea.hasAnyAreaPlayerBonus(eOrBonus)) // </advc.301>
-				{
-					bFound = true;
-					break;
-				}
+				bFound = true;
 			}
 		}
 		if (bRequires && !bFound)
 			continue;
-		int iValue = (1 + getSorenRandNum(1000, "Barb Unit Selection"));
+		int iValue = 1 + SyncRandNum(1000);
 		if (kUnit.getUnitAIType(eUnitAI))
 			iValue += 200;
 		if (iValue > iBestValue)
 		{
-			r = eUnit;
+			eR = eUnit;
 			iBestValue = iValue;
 		}
 	}
-	return r;
+	return eR;
 }
 
 // (See documentation in XML)
@@ -8389,7 +8370,7 @@ void CvGame::updateMoves()
 {
 	int aiShuffle[MAX_PLAYERS];
 	if (isMPOption(MPOPTION_SIMULTANEOUS_TURNS))
-		shuffleArray(aiShuffle, MAX_PLAYERS, getSorenRand());
+		getSorenRand().shuffle(aiShuffle, MAX_PLAYERS);
 	else
 	{
 		for (int iI = 0; iI < MAX_PLAYERS; iI++)
@@ -8679,11 +8660,8 @@ void CvGame::testVictory()
 					kTeam.changeVictoryCountdown(eVictory, -1);
 				if (kTeam.getVictoryCountdown(eVictory) == 0)
 				{
-					if (getSorenRandNum(100, "Victory Success") <
-						kTeam.getLaunchSuccessRate(eVictory))
-					{
+					if (SyncRandSuccess100(kTeam.getLaunchSuccessRate(eVictory)))
 						aeeWinners.push_back(std::make_pair(kTeam.getID(), eVictory));
-					}
 					else kTeam.resetVictoryProgress();
 				}
 			}
@@ -8691,7 +8669,7 @@ void CvGame::testVictory()
 	}
 	if (aeeWinners.size() > 0)
 	{
-		int iWinner = getSorenRandNum(aeeWinners.size(), "Victory tie breaker");
+		int iWinner = SyncRandNum(aeeWinners.size());
 		setWinner(aeeWinners[iWinner].first, aeeWinners[iWinner].second);
 	}
 	if (getVictory() == NO_VICTORY && !bEndScore && getMaxTurns() > 0 &&
@@ -8861,9 +8839,9 @@ CvDeal* CvGame::addDeal()
 /*  advc.072: All the FAssert(false) in this function mean that we're somehow
 	out of step with the iteration that happens in the EXE. */
 CvDeal* CvGame::nextCurrentDeal(PlayerTypes eGivePlayer, PlayerTypes eReceivePlayer,
-		TradeableItems eItemType, int iData, bool bWidget)
+	TradeableItems eItemType, int iData, bool bWidget)
 {
-	if(!m_bShowingCurrentDeals)
+	if (!m_bShowingCurrentDeals)
 	{
 		m_currentDeals.clear(); // Probably not needed, but can't hurt to clear them.
 		m_currentDealsWidget.clear();
@@ -8871,30 +8849,30 @@ CvDeal* CvGame::nextCurrentDeal(PlayerTypes eGivePlayer, PlayerTypes eReceivePla
 	}
 	// Probably not needed:
 	PlayerTypes eDiploPlayer = (PlayerTypes)gDLL->getDiplomacyPlayer();
-	if(!((getActivePlayer() == eGivePlayer && eDiploPlayer == eReceivePlayer) ||
+	if (!((getActivePlayer() == eGivePlayer && eDiploPlayer == eReceivePlayer) ||
 		(getActivePlayer() == eReceivePlayer && eDiploPlayer == eGivePlayer)))
 	{
 		return NULL;
 	}
 	CLinkList<DealItemData>& kCurrentDeals = (bWidget ? m_currentDealsWidget :
 			m_currentDeals);
-	if(kCurrentDeals.getLength() <= 0)
+	if (kCurrentDeals.getLength() <= 0)
 	{
 		bool bFirstFound = false;
 		FOR_EACH_DEAL(d)
 		{
-			if(!d->isBetween(eGivePlayer, eReceivePlayer))
+			if (!d->isBetween(eGivePlayer, eReceivePlayer))
 				continue;
 			CLinkList<TradeData> const& kGiveList = (d->getFirstPlayer() == eGivePlayer ?
 					d->getFirstList() : d->getSecondList());
 			FOR_EACH_TRADE_ITEM(kGiveList)
 			{
-				if(!CvDeal::isAnnual(pItem->m_eItemType) &&
+				if (!CvDeal::isAnnual(pItem->m_eItemType) &&
 					pItem->m_eItemType != TRADE_PEACE_TREATY)
 				{
 					break;
 				}
-				if(!bFirstFound)
+				if (!bFirstFound)
 				{
 					if(pItem->m_eItemType != eItemType ||
 						pItem->m_iData != iData)
@@ -8910,24 +8888,24 @@ CvDeal* CvGame::nextCurrentDeal(PlayerTypes eGivePlayer, PlayerTypes eReceivePla
 			}
 		}
 	}
-	if(kCurrentDeals.getLength() <= 0)
+	if (kCurrentDeals.getLength() <= 0)
 	{
 		FAssert(false);
 		return NULL;
 	}
 	CLLNode<DealItemData>* pNode = kCurrentDeals.head();
 	DealItemData data = pNode->m_data;
-	if(data.eGivePlayer != eGivePlayer || data.eReceivePlayer != eReceivePlayer ||
+	if (data.eGivePlayer != eGivePlayer || data.eReceivePlayer != eReceivePlayer ||
 		data.iData != iData || data.eItemType != eItemType)
 	{
 		kCurrentDeals.clear();
 		FAssert(false);
 		return NULL;
 	}
-	CvDeal* r = getDeal(pNode->m_data.iDeal);
+	CvDeal* pNext = getDeal(pNode->m_data.iDeal);
 	kCurrentDeals.deleteNode(pNode);
-	FAssert(r != NULL);
-	return r;
+	FAssert(pNext != NULL);
+	return pNext;
 }
 
 // advc.027b:
@@ -9339,7 +9317,9 @@ void CvGame::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iInitTech);
 	pStream->Read(&m_iInitWonders);
 	pStream->Read(&m_iAIAutoPlay);
-	m_iAIAutoPlay = -1; // advc.127: allGameDataRead will handle it properly
+	// <advc.127> allGameDataRead will handle it properly
+	if (m_iAIAutoPlay != 0)
+		m_iAIAutoPlay = -1; // </advc.127>
 	pStream->Read(&m_iGlobalWarmingIndex); // K-Mod
 	pStream->Read(&m_iGwEventTally); // K-Mod
 	// <advc.opt>
@@ -9400,7 +9380,9 @@ void CvGame::read(FDataStreamBase* pStream)
 	pStream->Read(GC.getNumBuildingClassInfos(), m_paiBuildingClassCreatedCount);
 	pStream->Read(GC.getNumProjectInfos(), m_paiProjectCreatedCount);
 	pStream->Read(GC.getNumCivicInfos(), m_paiForceCivicCount);
-	m_aiVoteOutcome.Read(pStream);
+	if (uiFlag >= 11)
+		m_aiVoteOutcome.read(pStream);
+	else m_aiVoteOutcome.readArray<int>(pStream);
 	pStream->Read(GC.getNumReligionInfos(), m_paiReligionGameTurnFounded);
 	pStream->Read(GC.getNumCorporationInfos(), m_paiCorporationGameTurnFounded);
 	pStream->Read(GC.getNumVoteSourceInfos(), m_aiSecretaryGeneralTimer);
@@ -9458,10 +9440,10 @@ void CvGame::read(FDataStreamBase* pStream)
 		pStream->Read(&m_initialRandSeed.uiSync);
 	} // </advc.027b>
 	// <advc.250b>
-	if(isOption(GAMEOPTION_SPAH))
+	if (isOption(GAMEOPTION_SPAH))
 		m_pSpah->read(pStream); // </advc.250b>
 	// <advc.701>
-	if(uiFlag >= 2)
+	if (uiFlag >= 2)
 	{
 		if(isOption(GAMEOPTION_RISE_FALL))
 			m_pRiseFall->read(pStream);
@@ -9514,7 +9496,11 @@ void CvGame::read(FDataStreamBase* pStream)
 	}
 	// <advc>
 	if (uiFlag >= 9)
-		m_aeVoteSourceReligion.Read(pStream);
+	{
+		if (uiFlag >= 11)
+			m_aeVoteSourceReligion.read(pStream);
+		else m_aeVoteSourceReligion.readArray<int>(pStream);
+	}
 	else // </advc>
 	{
 		int iSize;
@@ -9593,7 +9579,9 @@ void CvGame::write(FDataStreamBase* pStream)
 	//uiFlag = 7; // advc.027b
 	//uiFlag = 8; // advc.172
 	//uiFlag = 9; // advc (m_aeVoteSourceReligion)
-	uiFlag = 10; // advc.099f
+	//uiFlag = 10; // advc.099f
+	//uiFlag = 11; // advc.enum: new enum map save behavior
+	uiFlag = 12; // advc.130n: DifferentReligionThreat added to CvPlayerAI
 	pStream->Write(uiFlag);
 	REPRO_TEST_BEGIN_WRITE("Game pt1");
 	pStream->Write(m_iElapsedGameTurns);
@@ -9661,7 +9649,7 @@ void CvGame::write(FDataStreamBase* pStream)
 	pStream->Write(GC.getNumBuildingClassInfos(), m_paiBuildingClassCreatedCount);
 	pStream->Write(GC.getNumProjectInfos(), m_paiProjectCreatedCount);
 	pStream->Write(GC.getNumCivicInfos(), m_paiForceCivicCount);
-	m_aiVoteOutcome.Write(pStream);
+	m_aiVoteOutcome.write(pStream);
 	pStream->Write(GC.getNumReligionInfos(), m_paiReligionGameTurnFounded);
 	pStream->Write(GC.getNumCorporationInfos(), m_paiCorporationGameTurnFounded);
 	pStream->Write(GC.getNumVoteSourceInfos(), m_aiSecretaryGeneralTimer);
@@ -9711,10 +9699,10 @@ void CvGame::write(FDataStreamBase* pStream)
 	pStream->Write(m_initialRandSeed.uiSync); // </advc.027b>
 	REPRO_TEST_END_WRITE();
 	// <advc.250b>
-	if(isOption(GAMEOPTION_SPAH))
+	if (isOption(GAMEOPTION_SPAH))
 		m_pSpah->write(pStream); // </advc.250b>
 	// <advc.701>
-	if(isOption(GAMEOPTION_RISE_FALL))
+	if (isOption(GAMEOPTION_RISE_FALL))
 		m_pRiseFall->write(pStream); // </advc.701>
 	ReplayMessageList::_Alloc::size_type iSize = m_listReplayMessages.size();
 	pStream->Write(iSize);
@@ -9728,6 +9716,7 @@ void CvGame::write(FDataStreamBase* pStream)
 	// m_pReplayInfo not saved
 	pStream->Write(m_iNumSessions);
 	REPRO_TEST_BEGIN_WRITE("Game pt3"); // (skip replay messages, sessions)
+
 	pStream->Write(m_aPlotExtraYields.size());
 	for (std::vector<PlotExtraYield>::iterator it = m_aPlotExtraYields.begin();
 		it != m_aPlotExtraYields.end(); ++it)
@@ -9742,7 +9731,7 @@ void CvGame::write(FDataStreamBase* pStream)
 		it->write(pStream);
 	}
 
-	m_aeVoteSourceReligion.Write(pStream); // advc
+	m_aeVoteSourceReligion.write(pStream); // advc
 
 	pStream->Write(m_aeInactiveTriggers.size());
 	for (std::vector<EventTriggerTypes>::iterator it = m_aeInactiveTriggers.begin();
@@ -9808,20 +9797,27 @@ void CvGame::onAllGameDataRead()
 		}
 	} // </advc.opt>
 	m_bAllGameDataRead = true;
-	for (PlayerIter<HUMAN> it; it.hasNext(); ++it)
-	{
-		CvPlayer& kActive = *it;
-		if (!kActive.isTurnActive())
-			continue;
-		kActive.validateDiplomacy(); // advc.134a
-	}
 	// <advc.127> Save created during AI Auto Play
-	if (m_iAIAutoPlay != 0 && !isNetworkMultiPlayer())
+	bool bUpdateAttitudeCache = (m_iAIAutoPlay != 0 && !isNetworkMultiPlayer());
+	m_iAIAutoPlay = 0; // </advc.127>
+	// <advc.130n>
+	if (m_uiSaveFlag < 12)
+	{
+		for (PlayerAIIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
+		{
+			if (itPlayer->getStateReligion() != NO_RELIGION)
+			{
+				itPlayer->AI_updateDifferentReligionThreat(NO_RELIGION, false);
+				if (!bUpdateAttitudeCache) // Don't do it twice
+					itPlayer->AI_updateAttitude();
+			}
+		}
+	} // </advc.130n>
+	if (bUpdateAttitudeCache)
 	{
 		for (PlayerAIIter<MAJOR_CIV> it; it.hasNext(); ++it)
 			it->AI_updateAttitude();
 	}
-	m_iAIAutoPlay = 0; // </advc.127>
 	// <advc.172>
 	if (m_uiSaveFlag < 8)
 	{
@@ -9831,6 +9827,12 @@ void CvGame::onAllGameDataRead()
 				pCity->updateReligionCommerce();
 		}
 	} // </advc.172>
+	// <advc.134a>
+	for (PlayerIter<HUMAN> itActive; itActive.hasNext(); ++itActive)
+	{
+		if (itActive->isTurnActive())
+			itActive->validateDiplomacy();
+	} // </advc.134a>
 }
 
 /*	advc: Called once the EXE signals that graphics have been initialized
@@ -10038,42 +10040,51 @@ void CvGame::addPlayer(PlayerTypes eNewPlayer, LeaderHeadTypes eLeader, Civiliza
 	// BETTER_BTS_AI_MOD: END
 }
 
-//	BETTER_BTS_AI_MOD, Debug, 8/1/08, jdog5000: START
-void CvGame::changeHumanPlayer(PlayerTypes eNewHuman)
+/*	BETTER_BTS_AI_MOD, Debug, 8/1/08, jdog5000: START
+	(advc: Merged with code from nextActivePlayer) */
+void CvGame::changeHumanPlayer(PlayerTypes eNewHuman,
+	bool bSetTurnActive) // advc
 {
-	PlayerTypes eCurHuman = getActivePlayer();
-	/*  <advc.127> Rearranged code b/c of a change in CvPlayer::isOption.
-		Important for advc.706. */
-	if(eNewHuman == eCurHuman)
+	PlayerTypes const eCurHuman = getActivePlayer();
+	/*	<advc> Probably not necessary, but seems cleaner to swap the
+		player options of the old and new human rather than just copying
+		from old to new. */
+	EagerEnumMap<PlayerOptionTypes,bool> aeNewHumanOldOptions;
+	FOR_EACH_ENUM(PlayerOption)
 	{
-		if(getActivePlayer() != eNewHuman)
-			setActivePlayer(eNewHuman, false);
-		GET_PLAYER(eNewHuman).setIsHuman(true);
-		GET_PLAYER(eNewHuman).updateHuman();
-		return;
+		aeNewHumanOldOptions.set(eLoopPlayerOption,
+				GET_PLAYER(eNewHuman).isOption(eLoopPlayerOption));
+	} // </advc>
+	FOR_EACH_ENUM(PlayerOption)
+	{
+		GET_PLAYER(eNewHuman).setOption(eLoopPlayerOption,
+				GET_PLAYER(eCurHuman).isOption(eLoopPlayerOption));
 	}
-	GET_PLAYER(eCurHuman).setIsHuman(true);
-	GET_PLAYER(eNewHuman).setIsHuman(true);
-	GET_PLAYER(eCurHuman).updateHuman();
-	GET_PLAYER(eNewHuman).updateHuman();
-	for (int iI = 0; iI < NUM_PLAYEROPTION_TYPES; iI++)
+	// <advc>
+	FOR_EACH_ENUM(PlayerOption)
 	{
-		GET_PLAYER(eNewHuman).setOption((PlayerOptionTypes)iI,
-				GET_PLAYER(eCurHuman).isOption((PlayerOptionTypes)iI));
-	}
-	for (int iI = 0; iI < NUM_PLAYEROPTION_TYPES; iI++)
-	{
-		gDLL->sendPlayerOption(((PlayerOptionTypes)iI),
-				GET_PLAYER(eNewHuman).isOption((PlayerOptionTypes)iI));
-	} // </advc.127>
-	// <advc.001> Otherwise, the selected unit will affect CvPlot::updateCenterUnit.
-	gDLL->getInterfaceIFace()->clearSelectionList();
-	gDLL->getInterfaceIFace()->clearSelectedCities(); // </advc.001>
-	setActivePlayer(eNewHuman, false);
-
+		GET_PLAYER(eCurHuman).setOption(eLoopPlayerOption,
+				aeNewHumanOldOptions.get(eLoopPlayerOption));
+	} // </advc>
 	GET_PLAYER(eCurHuman).setIsHuman(false, /* advc.127c: */ true);
-	GET_PLAYER(eCurHuman).updateHuman(); // advc.127
-} // BETTER_BTS_AI_MOD: END
+	GET_PLAYER(eNewHuman).setIsHuman(true, /* advc.127c: */ true);
+	// <advc> Moved from nextActivePlayer
+	if (bSetTurnActive)
+	{
+		GET_PLAYER(eCurHuman).setTurnActive(false, false);
+		GET_PLAYER(eNewHuman).setTurnActive(true, false);
+	} // </advc>
+	// <advc.127c> Otherwise, the selected unit will affect CvPlot::updateCenterUnit.
+	gDLL->getInterfaceIFace()->clearSelectionList();
+	gDLL->getInterfaceIFace()->clearSelectedCities(); 
+	setActivePlayer(eNewHuman, //false
+			/*	This makes sure that net ids are updated. Apparently, inconsistent
+				net ids can cause the diplo screen to refuse putting certain items
+				on the table. */
+			true);
+	// (advc: Send options loop deleted; bForceHotSeat above takes care of that)
+	// </advc.127c>
+}
 
 
 bool CvGame::isCompetingCorporation(
@@ -11050,13 +11061,12 @@ bool CvGame::isEventActive(EventTriggerTypes eTrigger) const
 
 void CvGame::initEvents()
 {
-	for (int iTrigger = 0; iTrigger < GC.getNumEventTriggerInfos(); ++iTrigger)
+	FOR_EACH_ENUM(EventTrigger)
 	{
 		if (isOption(GAMEOPTION_NO_EVENTS) ||
-			getSorenRandNum(100, "Event Active?") >=
-			GC.getInfo((EventTriggerTypes)iTrigger).getPercentGamesActive())
+			SyncRandNum(100) >= GC.getInfo(eLoopEventTrigger).getPercentGamesActive())
 		{
-			m_aeInactiveTriggers.push_back((EventTriggerTypes)iTrigger);
+			m_aeInactiveTriggers.push_back(eLoopEventTrigger);
 		}
 	}
 }

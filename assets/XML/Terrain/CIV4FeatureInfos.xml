@@ -568,6 +568,7 @@ EffectType	Effect that can occur when a unit enters a plot with the feature-->
 			<iDisappearance>0</iDisappearance>
 			<iGrowth>15</iGrowth>
 			<iTurnDamage>0</iTurnDamage>
+			<!-- K-Mod -->
 			<iWarmingDefense>10</iWarmingDefense>
 			<bNoCoast>0</bNoCoast>
 			<bNoRiver>0</bNoRiver>
@@ -805,6 +806,7 @@ EffectType	Effect that can occur when a unit enters a plot with the feature-->
 			<iHealthPercent>-50</iHealthPercent>
 			<iDefense>0</iDefense>
 			<iAppearance>0</iAppearance>
+			<!-- K-Mod: was 500 -->
 			<iDisappearance>250</iDisappearance>
 			<iGrowth>0</iGrowth>
 			<iTurnDamage>15</iTurnDamage>

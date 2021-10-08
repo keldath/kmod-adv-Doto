@@ -1503,7 +1503,8 @@ UNITAI changed - now will used to counter.
 			<bCanMoveAllTerrain>0</bCanMoveAllTerrain>
 			<bCanMovePeak>1</bCanMovePeak>			
 			<bFlatMovementCost>0</bFlatMovementCost>
-			<bIgnoreTerrainCost>0</bIgnoreTerrainCost>
+			<!-- advc.907c: was 0 -->
+			<bIgnoreTerrainCost>1</bIgnoreTerrainCost>
 			<bNukeImmune>0</bNukeImmune>
 			<bPrereqBonuses>0</bPrereqBonuses>
 			<bPrereqReligion>0</bPrereqReligion>
@@ -1641,8 +1642,6 @@ UNITAI changed - now will used to counter.
 			<TechTypes/>
 			<BonusType>NONE</BonusType>
 			<PrereqBonuses/>
-			<!-- advc.905b -->
-			<SpeedBonuses/>
 			<ProductionTraits>
 				<ProductionTrait>
 					<ProductionTraitType>TRAIT_EXPANSIVE</ProductionTraitType>
@@ -1656,7 +1655,8 @@ UNITAI changed - now will used to counter.
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<iMinAreaSize>-1</iMinAreaSize>
-			<iMoves>3</iMoves>
+			<!-- advc.907c: was 3 -->
+			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
 			<iAirRange>0</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
@@ -3622,6 +3622,7 @@ UNITAI changed - now will used to counter.
 			<ReligionSpreads>
 				<ReligionSpread>
 					<ReligionType>RELIGION_JUDAISM</ReligionType>
+					<!-- K-Mod: was 40 -->
 					<iReligionSpread>20</iReligionSpread>
 				</ReligionSpread>
 			</ReligionSpreads>
@@ -3798,6 +3799,7 @@ UNITAI changed - now will used to counter.
 			<ReligionSpreads>
 				<ReligionSpread>
 					<ReligionType>RELIGION_CHRISTIANITY</ReligionType>
+					<!-- K-Mod: was 40 -->
 					<iReligionSpread>20</iReligionSpread>
 				</ReligionSpread>
 			</ReligionSpreads>
@@ -3974,6 +3976,7 @@ UNITAI changed - now will used to counter.
 			<ReligionSpreads>
 				<ReligionSpread>
 					<ReligionType>RELIGION_ISLAM</ReligionType>
+					<!-- K-Mod: was 40 -->
 					<iReligionSpread>20</iReligionSpread>
 				</ReligionSpread>
 			</ReligionSpreads>
@@ -4150,6 +4153,7 @@ UNITAI changed - now will used to counter.
 			<ReligionSpreads>
 				<ReligionSpread>
 					<ReligionType>RELIGION_HINDUISM</ReligionType>
+					<!-- K-Mod: was 40 -->
 					<iReligionSpread>20</iReligionSpread>
 				</ReligionSpread>
 			</ReligionSpreads>
@@ -4326,6 +4330,7 @@ UNITAI changed - now will used to counter.
 			<ReligionSpreads>
 				<ReligionSpread>
 					<ReligionType>RELIGION_BUDDHISM</ReligionType>
+					<!-- K-Mod: was 40 -->
 					<iReligionSpread>20</iReligionSpread>
 				</ReligionSpread>
 			</ReligionSpreads>
@@ -4502,6 +4507,7 @@ UNITAI changed - now will used to counter.
 			<ReligionSpreads>
 				<ReligionSpread>
 					<ReligionType>RELIGION_CONFUCIANISM</ReligionType>
+					<!-- K-Mod: was 40 -->
 					<iReligionSpread>20</iReligionSpread>
 				</ReligionSpread>
 			</ReligionSpreads>
@@ -4678,6 +4684,7 @@ UNITAI changed - now will used to counter.
 			<ReligionSpreads>
 				<ReligionSpread>
 					<ReligionType>RELIGION_TAOISM</ReligionType>
+					<!-- K-Mod: was 40 -->
 					<iReligionSpread>20</iReligionSpread>
 				</ReligionSpread>
 			</ReligionSpreads>
@@ -5304,6 +5311,7 @@ UNITAI changed - now will used to counter.
 			<UnitClassDefenders/>
 			<UnitCombatDefenders/>
 			<FlankingStrikes/>
+			<!-- K-Mod: UNITAI_CITY_DEFENSE removed -->
 			<UnitAIs>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK</UnitAIType>
@@ -5745,6 +5753,7 @@ UNITAI changed - now will used to counter.
 			<UnitClassDefenders/>
 			<UnitCombatDefenders/>
 			<FlankingStrikes/>
+			<!-- K-Mod: UNITAI_CITY_DEFENSE removed -->
 			<UnitAIs>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK</UnitAIType>
@@ -6153,6 +6162,7 @@ UNITAI changed - now will used to counter.
 			<Capture>NONE</Capture>
 			<Combat>UNITCOMBAT_MELEE</Combat>
 			<Domain>DOMAIN_LAND</Domain>
+			<!-- K-Mod: was UNITAI_COUNTER -->
 			<DefaultUnitAI>UNITAI_ATTACK</DefaultUnitAI>
 			<Invisible>NONE</Invisible>
 			<SeeInvisible>NONE</SeeInvisible>
@@ -6391,6 +6401,7 @@ UNITAI changed - now will used to counter.
 			<Capture>NONE</Capture>
 			<Combat>UNITCOMBAT_MELEE</Combat>
 			<Domain>DOMAIN_LAND</Domain>
+			<!-- K-Mod: was UNITAI_COUNTER -->
 			<DefaultUnitAI>UNITAI_ATTACK</DefaultUnitAI>
 			<Invisible>NONE</Invisible>
 			<SeeInvisible>NONE</SeeInvisible>
@@ -6626,6 +6637,7 @@ UNITAI changed - now will used to counter.
 			<Capture>NONE</Capture>
 			<Combat>UNITCOMBAT_MELEE</Combat>
 			<Domain>DOMAIN_LAND</Domain>
+			<!-- K-Mod: was UNITAI_COUNTER -->
 			<DefaultUnitAI>UNITAI_ATTACK</DefaultUnitAI>
 			<Invisible>NONE</Invisible>
 			<SeeInvisible>NONE</SeeInvisible>
@@ -6856,6 +6868,7 @@ UNITAI changed - now will used to counter.
 			<Capture>NONE</Capture>
 			<Combat>UNITCOMBAT_MELEE</Combat>
 			<Domain>DOMAIN_LAND</Domain>
+			<!-- K-Mod: was UNITAI_COUNTER -->
 			<DefaultUnitAI>UNITAI_ATTACK</DefaultUnitAI>
 			<Invisible>NONE</Invisible>
 			<SeeInvisible>NONE</SeeInvisible>
@@ -7082,6 +7095,7 @@ UNITAI changed - now will used to counter.
 			<Capture>NONE</Capture>
 			<Combat>UNITCOMBAT_MELEE</Combat>
 			<Domain>DOMAIN_LAND</Domain>
+			<!-- K-Mod: was UNITAI_COUNTER -->
 			<DefaultUnitAI>UNITAI_ATTACK_CITY</DefaultUnitAI>
 			<Invisible>NONE</Invisible>
 			<SeeInvisible>NONE</SeeInvisible>
@@ -7325,6 +7339,7 @@ UNITAI changed - now will used to counter.
 			<Capture>NONE</Capture>
 			<Combat>UNITCOMBAT_MELEE</Combat>
 			<Domain>DOMAIN_LAND</Domain>
+			<!-- K-Mod: was UNITAI_COUNTER -->
 			<DefaultUnitAI>UNITAI_ATTACK_CITY</DefaultUnitAI>
 			<Invisible>NONE</Invisible>
 			<SeeInvisible>NONE</SeeInvisible>
@@ -7566,6 +7581,7 @@ UNITAI changed - now will used to counter.
 			<Capture>NONE</Capture>
 			<Combat>UNITCOMBAT_MELEE</Combat>
 			<Domain>DOMAIN_LAND</Domain>
+			<!-- K-Mod: was UNITAI_COUNTER -->
 			<DefaultUnitAI>UNITAI_ATTACK_CITY</DefaultUnitAI>
 			<Invisible>NONE</Invisible>
 			<SeeInvisible>NONE</SeeInvisible>
@@ -10504,6 +10520,7 @@ UNITAI changed - now will used to counter.
 			<iCollateralDamage>0</iCollateralDamage>
 			<iCollateralDamageLimit>0</iCollateralDamageLimit>
 			<iCollateralDamageMaxUnits>0</iCollateralDamageMaxUnits>
+			<!-- K-Mod: was 0 -->
 			<iCityAttack>10</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -12717,7 +12734,8 @@ UNITAI changed - now will used to counter.
 			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
-			<iFirstStrikes>1</iFirstStrikes>
+			<!-- advc.907d: was 1 -->
+			<iFirstStrikes>0</iFirstStrikes>
 			<iChanceFirstStrikes>1</iChanceFirstStrikes>
 			<iInterceptionProbability>0</iInterceptionProbability>
 			<iEvasionProbability>0</iEvasionProbability>
@@ -13938,7 +13956,8 @@ UNITAI changed - now will used to counter.
 			<bFound>0</bFound>
 			<bGoldenAge>0</bGoldenAge>
 			<bInvisible>0</bInvisible>
-			<bFirstStrikeImmune>1</bFirstStrikeImmune>
+			<!-- advc.907e: was 1 -->
+			<bFirstStrikeImmune>0</bFirstStrikeImmune>
 			<bNoDefensiveBonus>1</bNoDefensiveBonus>
 			<bIgnoreBuildingDefense>0</bIgnoreBuildingDefense>
 			<bCanMoveImpassable>0</bCanMoveImpassable>
@@ -14159,7 +14178,8 @@ UNITAI changed - now will used to counter.
 			<bFound>0</bFound>
 			<bGoldenAge>0</bGoldenAge>
 			<bInvisible>0</bInvisible>
-			<bFirstStrikeImmune>0</bFirstStrikeImmune>
+			<!-- advc.907e: was 0 -->
+			<bFirstStrikeImmune>1</bFirstStrikeImmune>
 			<bNoDefensiveBonus>0</bNoDefensiveBonus>
 			<bIgnoreBuildingDefense>0</bIgnoreBuildingDefense>
 			<bCanMoveImpassable>0</bCanMoveImpassable>
@@ -14286,7 +14306,8 @@ UNITAI changed - now will used to counter.
 			<UnitCombatMods>
 				<UnitCombatMod>
 					<UnitCombatType>UNITCOMBAT_ARCHER</UnitCombatType>
-					<iUnitCombatMod>50</iUnitCombatMod>
+					<!-- advc.907e: was 50 -->
+					<iUnitCombatMod>25</iUnitCombatMod>
 				</UnitCombatMod>
 			</UnitCombatMods>
 			<UnitCombatCollateralImmunes/>
@@ -16803,6 +16824,7 @@ UNITAI changed - now will used to counter.
 			<ProductionTraits/>
 			<Flavors/>
 			<iAIWeight>0</iAIWeight>
+			<!-- K-Mod: was 60 -->
 			<iCost>70</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
@@ -17028,6 +17050,7 @@ UNITAI changed - now will used to counter.
 			<ProductionTraits/>
 			<Flavors/>
 			<iAIWeight>0</iAIWeight>
+			<!-- K-Mod: was 60 -->
 			<iCost>70</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
@@ -17058,6 +17081,7 @@ UNITAI changed - now will used to counter.
 			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
+			<!-- K-Mod: was 0 -->
 			<iFirstStrikes>1</iFirstStrikes>
 			<iChanceFirstStrikes>0</iChanceFirstStrikes>
 			<iInterceptionProbability>0</iInterceptionProbability>
@@ -17140,10 +17164,6 @@ UNITAI changed - now will used to counter.
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
 			<bOnlyDefensive>0</bOnlyDefensive>
-			<!-- advc.315a -->
-			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
-			<!-- advc.315b -->
-			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
 			<bNoCapture>0</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
@@ -17293,8 +17313,6 @@ UNITAI changed - now will used to counter.
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
-			<!-- advc.315c -->
-			<iBarbarianCombat>0</iBarbarianCombat>
 			<iHillsAttack>0</iHillsAttack>
 			<iHillsDefense>0</iHillsDefense>
 			<TerrainNatives/>
@@ -17364,10 +17382,6 @@ UNITAI changed - now will used to counter.
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
 			<bOnlyDefensive>0</bOnlyDefensive>
-			<!-- advc.315a -->
-			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
-			<!-- advc.315b -->
-			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
 			<bNoCapture>0</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
@@ -17506,8 +17520,10 @@ UNITAI changed - now will used to counter.
 			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
-			<iFirstStrikes>1</iFirstStrikes>
-			<iChanceFirstStrikes>1</iChanceFirstStrikes>
+			<!-- advc.907f: was 0 in BtS, 1 in K-Mod -->
+			<iFirstStrikes>2</iFirstStrikes>
+			<!-- advc.907f: was 0 in BtS, 1 in K-Mod -->
+			<iChanceFirstStrikes>0</iChanceFirstStrikes>
 			<iInterceptionProbability>0</iInterceptionProbability>
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
@@ -17517,8 +17533,6 @@ UNITAI changed - now will used to counter.
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
-			<!-- advc.315c -->
-			<iBarbarianCombat>0</iBarbarianCombat>
 			<iHillsAttack>0</iHillsAttack>
 			<iHillsDefense>0</iHillsDefense>
 			<TerrainNatives/>
@@ -17570,10 +17584,11 @@ UNITAI changed - now will used to counter.
 					<PromotionType>PROMOTION_BLITZ</PromotionType>
 					<bFreePromotion>1</bFreePromotion>
 				</FreePromotion>
-				<FreePromotion>
+				<!-- advc.907f -->
+				<!--FreePromotion>
 					<PromotionType>PROMOTION_FLANKING1</PromotionType>
 					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
+				</FreePromotion-->
 			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
@@ -18879,6 +18894,7 @@ UNITAI changed - now will used to counter.
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
 			<iCollateralDamageLimit>40</iCollateralDamageLimit>
+			<!-- K-Mod: was 7 -->
 			<iCollateralDamageMaxUnits>4</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
@@ -19009,6 +19025,7 @@ UNITAI changed - now will used to counter.
 					<UnitAIType>UNITAI_CITY_SPECIAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
+				<!-- K-Mod -->
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_DEFENSE</UnitAIType>
 					<bUnitAI>1</bUnitAI>
@@ -19309,6 +19326,7 @@ UNITAI changed - now will used to counter.
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
 			<iCollateralDamageLimit>45</iCollateralDamageLimit>
+			<!-- K-Mod: was 8 -->
 			<iCollateralDamageMaxUnits>6</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
@@ -19514,6 +19532,7 @@ UNITAI changed - now will used to counter.
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
 			<iCollateralDamageLimit>50</iCollateralDamageLimit>
+			<!-- K-Mod: was 8 -->
 			<iCollateralDamageMaxUnits>7</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
@@ -19976,6 +19995,7 @@ UNITAI changed - now will used to counter.
 			<iBombardRate>0</iBombardRate>
 			<SpecialCargo>NONE</SpecialCargo>
 			<DomainCargo>DOMAIN_LAND</DomainCargo>
+			<!-- K-Mod: was 2 -->
 			<iCargo>3</iCargo>
 			<iConscription>0</iConscription>
 			<iCultureGarrison>0</iCultureGarrison>
@@ -20905,6 +20925,7 @@ UNITAI changed - now will used to counter.
 			<iBombardRate>0</iBombardRate>
 			<SpecialCargo>NONE</SpecialCargo>
 			<DomainCargo>DOMAIN_LAND</DomainCargo>
+			<!-- K-Mod: was 3 -->
 			<iCargo>4</iCargo>
 			<iConscription>0</iConscription>
 			<iCultureGarrison>0</iCultureGarrison>
@@ -22283,6 +22304,7 @@ UNITAI changed - now will used to counter.
 			<iBombardRate>0</iBombardRate>
 			<SpecialCargo>NONE</SpecialCargo>
 			<DomainCargo>DOMAIN_LAND</DomainCargo>
+			<!-- K-Mod: was 4 -->
 			<iCargo>5</iCargo>
 			<iConscription>0</iConscription>
 			<iCultureGarrison>0</iCultureGarrison>
@@ -24990,6 +25012,7 @@ UNITAI changed - now will used to counter.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
+			<!-- K-Mod: was 4 -->
 			<iAirRange>6</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
@@ -25897,7 +25920,9 @@ UNITAI changed - now will used to counter.
 			<iHurryMultiplier>0</iHurryMultiplier>
 			<iBaseTrade>0</iBaseTrade>
 			<iTradeMultiplier>0</iTradeMultiplier>
-			<iGreatWorkCulture>800</iGreatWorkCulture>
+			<!-- advc.251: Was 4000 in BtS, 800 in K-Mod and counted per era,
+				 starting at 0. Starting at 1 in AdvCiv. -->
+			<iGreatWorkCulture>700</iGreatWorkCulture>
 			<iEspionagePoints>0</iEspionagePoints>
 			<TerrainImpassables/>
 			<FeatureImpassables/>
@@ -27051,6 +27076,7 @@ UNITAI changed - now will used to counter.
 			<Capture>NONE</Capture>
 			<Combat>NONE</Combat>
 			<Domain>DOMAIN_LAND</Domain>
+			<!-- K-Mod: was UNITAI_GREAT_MERCHANT -->
 			<DefaultUnitAI>UNITAI_GREAT_SPY</DefaultUnitAI>
 			<Invisible>NONE</Invisible>
 			<SeeInvisible>NONE</SeeInvisible>
@@ -27078,6 +27104,7 @@ UNITAI changed - now will used to counter.
 			<bDestroy>0</bDestroy>
 			<bStealPlans>0</bStealPlans>
 			<bInvestigate>0</bInvestigate>
+			<!-- K-Mod: was 0 -->
 			<bCounterSpy>1</bCounterSpy>
 			<bFound>0</bFound>
 			<bGoldenAge>1</bGoldenAge>
@@ -27103,6 +27130,7 @@ UNITAI changed - now will used to counter.
 			<UnitCombatDefenders/>
 			<FlankingStrikes/>
 			<UnitAIs>
+				<!-- K-Mod: was UNITAI_GREAT_MERCHANT -->
 				<UnitAI>
 					<UnitAIType>UNITAI_GREAT_SPY</UnitAIType>
 					<bUnitAI>1</bUnitAI>

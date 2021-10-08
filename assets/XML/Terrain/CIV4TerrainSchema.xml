@@ -132,7 +132,8 @@
 	<ElementType name="iDisappearance" content="textOnly" dt:type="int"/>
 	<ElementType name="iGrowth" content="textOnly" dt:type="int"/>
 	<ElementType name="iTurnDamage" content="textOnly" dt:type="int"/>
-	<ElementType name="iWarmingDefense" content="textOnly" dt:type="int"/> <!-- GWMod new XML field M.A. -->
+	<!-- GWMod new XML field M.A. -->
+	<ElementType name="iWarmingDefense" content="textOnly" dt:type="int"/>
 	<ElementType name="bNoCoast" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bNoRiver" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bNoAdjacent" content="textOnly" dt:type="boolean"/>
@@ -175,7 +176,7 @@
 		<element type="iDisappearance" minOccurs="0"/>
 		<element type="iGrowth" minOccurs="0"/>
 		<element type="iTurnDamage" minOccurs="0"/>
-		<!-- advc: Now optional; set to 0 by default in the DLL. -->
+		<!-- GWMod (advc: now optional; 0 by default) -->
 		<element type="iWarmingDefense" minOccurs="0"/>
 		<element type="bNoCoast" minOccurs="0"/>
 		<element type="bNoRiver" minOccurs="0"/>
@@ -186,7 +187,6 @@
         <element type="bRequiresFlatlands" minOccurs="0"/>
 		<element type="bRequiresRiver" minOccurs="0"/>
 		<!-- advc.129b -->
-		<element type="bRequiresRiverSide" minOccurs="0"/>
 		<!-- advc.129b (set to false by default in the DLL)
 			 If bRequiresRiverSide is set, then the value of bRequiresRiver
 			 doesn't matter. -->

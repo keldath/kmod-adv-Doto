@@ -132,14 +132,14 @@ iEndOfTurnButtonSize = 32
 iEndOfTurnPosX = 296 # distance from right
 iEndOfTurnPosY = 147 # distance from bottom
 
-# MINIMAP BUTTON POSITIONS
+# MINIMAP BUTTON POSITIONS (advc: unused constants commented out)
 ######################
-iMinimapButtonsExtent = 228
-iMinimapButtonsX = 227
+#iMinimapButtonsExtent = 228
+#iMinimapButtonsX = 227
 iMinimapButtonsY_Regular = 160
 iMinimapButtonsY_Minimal = 32
-iMinimapButtonWidth = 24
-iMinimapButtonHeight = 24
+#iMinimapButtonWidth = 24
+#iMinimapButtonHeight = 24
 
 # Globe button
 iGlobeButtonX = 48
@@ -2629,6 +2629,9 @@ class CvMainInterface:
 		iUnitCycleButtonY = kScreen.getYResolution() - iBottomButtonContainerOffsetY + iUnitCycleButtonMargin
 		pNextUnit = gc.getGame().getNextUnitInCycle(True, False)
 		if pNextUnit:
+			# The button looks weird when the HUD is partly hidden and no unit selected. Can be a nuisance when taking screenshots.
+			if not pHeadSelectedUnit and CyInterface().getShowInterface() == InterfaceVisibility.INTERFACE_HIDE:
+				return
 			if pNextUnit.hasMoved():
 				szOverlay = "OVERLAY_HASMOVED"
 			else:
@@ -2652,7 +2655,6 @@ class CvMainInterface:
 			self.showUnitCycleButtonGFC("Unselect", kScreen, pHeadSelectedUnit, iUnitCycleButtonX, iUnitCycleButtonY, iUnitCycleButtonSize, False, True, ArtFileMgr.getInterfaceArtInfo(szOverlay).getPath())
 
 	def showUnitCycleButtonGFC(self, szName, kScreen, kUnit, iX, iY, iSize, bWorkers, bUnselect, szOverlayPath):
-
 		iWidgetData2 = -1
 		if not bUnselect:
 			iWidgetData2 = kUnit.getID()
@@ -4740,8 +4742,8 @@ class CvMainInterface:
 					szNewBuffer = szNewBuffer + "</font>"
 					screen.setLabel( "DefenseText", "Background", szBuffer, CvUtil.FONT_RIGHT_JUSTIFY, xResolution - 270, 40, -0.3, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_HELP_DEFENSE, -1, -1 )
 					screen.show( "DefenseText" )
-
-				if ( pHeadSelectedCity.getCultureLevel != CultureLevelTypes.NO_CULTURELEVEL ):
+				# advc.001: Left side was missing empty parentheses
+				if ( pHeadSelectedCity.getCultureLevel() != CultureLevelTypes.NO_CULTURELEVEL ):
 					iRate = pHeadSelectedCity.getCommerceRateTimes100(CommerceTypes.COMMERCE_CULTURE)
 					if (iRate%100 == 0):
 						szBuffer = localText.getText("INTERFACE_CITY_COMMERCE_RATE", (gc.getCommerceInfo(CommerceTypes.COMMERCE_CULTURE).getChar(), gc.getCultureLevelInfo(pHeadSelectedCity.getCultureLevel()).getTextKey(), iRate/100))
@@ -4892,7 +4894,8 @@ class CvMainInterface:
 # BUG - Production Started - end
 					
 # BUG - Production Decay - start
-					if BugDll.isPresent() and CityScreenOpt.isShowProductionDecayQueue():
+					# advc.094: BugDll.isPresent check removed; active player check added (replacing a is-human check in the DLL).
+					if CityScreenOpt.isShowProductionDecayQueue() and pHeadSelectedCity.getOwner() == gc.getGame().getActivePlayer():
 						eUnit = CyInterface().getOrderNodeData1(i)
 						if pHeadSelectedCity.getUnitProduction(eUnit) > 0:
 							if pHeadSelectedCity.isUnitProductionDecay(eUnit):
@@ -4916,8 +4919,9 @@ class CvMainInterface:
 							szRightBuffer = BugUtil.colorText(szRightBuffer, "COLOR_CYAN")
 # BUG - Production Started - end
 
-# BUG - Production Decay - start
-					if BugDll.isPresent() and CityScreenOpt.isShowProductionDecayQueue():
+# BUG - Production Decay - start 
+					# advc.094: BugDll.isPresent check removed; active player check added.
+					if CityScreenOpt.isShowProductionDecayQueue() and pHeadSelectedCity.getOwner() == gc.getGame().getActivePlayer():
 						eBuilding = CyInterface().getOrderNodeData1(i)
 						if pHeadSelectedCity.getBuildingProduction(eBuilding) > 0:
 							if pHeadSelectedCity.isBuildingProductionDecay(eBuilding):
@@ -5248,7 +5252,7 @@ class CvMainInterface:
 			bGlobeViewOptions = (iCurrentLayerID != -1 and kGLM.getLayer(iCurrentLayerID).getNumOptions() != 0 and (MainOpt.isResourceIconOptions() or kGLM.getLayer(iCurrentLayerID).getName() != "RESOURCES") and (gc.getDefineINT("SHOW_UNIT_LAYER_OPTIONS") > 0 or kGLM.getLayer(iCurrentLayerID).getName() != "UNITS"))
 			# </advc.004z>
 			# advc.004z: Globe view options clause added
-			if CyInterface().isScoresVisible() and not CyInterface().isCityScreenUp() and (not CyEngine().isGlobeviewUp() or (not bGlobeViewOptions and MainOpt.isScoresInGlobeView())):
+			if CyInterface().isScoresVisible() and not CyInterface().isCityScreenUp() and (not CyEngine().isGlobeviewUp() or (not bGlobeViewOptions and MainOpt.isScoresInGlobeView() and CyInterface().getShowInterface() != InterfaceVisibility.INTERFACE_HIDE)):
 
 # BUG - Align Icons - start
 				bAlignIcons = ScoreOpt.isAlignIcons()

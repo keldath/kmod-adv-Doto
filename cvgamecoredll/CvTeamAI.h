@@ -19,6 +19,10 @@
 class CvTeamAI : public CvTeam
 {
 public:
+
+#ifdef _DEBUG
+	__forceinline // Annoying to step into by accident
+#endif
 	// advc.003u: Renamed from getTeam
 	static CvTeamAI& AI_getTeam(TeamTypes eTeam)
 	{
@@ -187,35 +191,59 @@ public:
 	// </advc.130p>
 	// advc.130k: Public b/c CvPlayerAI needs it too
 	int AI_randomCounterChange(int iUpperCap = -1, scaled rProb = scaled(1, 2)) const;
-	int AI_getWarPlanStateCounter(TeamTypes eIndex) const { return m_aiWarPlanStateCounter.get(eIndex); }
+	int AI_getWarPlanStateCounter(TeamTypes eIndex) const
+	{
+		return m_aiWarPlanStateCounter.get(eIndex);
+	}
 	void AI_setWarPlanStateCounter(TeamTypes eIndex, int iNewValue);
 	void AI_changeWarPlanStateCounter(TeamTypes eIndex, int iChange);
 
-	int AI_getAtWarCounter(TeamTypes eIndex) const { return m_aiAtWarCounter.get(eIndex); }									// Exposed to Python
+	int AI_getAtWarCounter(TeamTypes eIndex) const											// Exposed to Python
+	{
+		return m_aiAtWarCounter.get(eIndex);
+	}
 	void AI_setAtWarCounter(TeamTypes eIndex, int iNewValue);
 	void AI_changeAtWarCounter(TeamTypes eIndex, int iChange);
 
-	int AI_getAtPeaceCounter(TeamTypes eIndex) const { return m_aiAtPeaceCounter.get(eIndex); }
+	int AI_getAtPeaceCounter(TeamTypes eIndex) const
+	{
+		return m_aiAtPeaceCounter.get(eIndex);
+	}
 	void AI_setAtPeaceCounter(TeamTypes eIndex, int iNewValue);
 	void AI_changeAtPeaceCounter(TeamTypes eIndex, int iChange);
 
-	int AI_getHasMetCounter(TeamTypes eIndex) const { return m_aiHasMetCounter.get(eIndex); }
+	int AI_getHasMetCounter(TeamTypes eIndex) const
+	{
+		return m_aiHasMetCounter.get(eIndex);
+	}
 	void AI_setHasMetCounter(TeamTypes eIndex, int iNewValue);
 	void AI_changeHasMetCounter(TeamTypes eIndex, int iChange);
 
-	int AI_getOpenBordersCounter(TeamTypes eIndex) const { return m_aiOpenBordersCounter.get(eIndex); }
+	int AI_getOpenBordersCounter(TeamTypes eIndex) const
+	{
+		return m_aiOpenBordersCounter.get(eIndex);
+	}
 	void AI_setOpenBordersCounter(TeamTypes eIndex, int iNewValue);
 	void AI_changeOpenBordersCounter(TeamTypes eIndex, int iChange);
 
-	int AI_getDefensivePactCounter(TeamTypes eIndex) const { return m_aiDefensivePactCounter.get(eIndex); }
+	int AI_getDefensivePactCounter(TeamTypes eIndex) const
+	{
+		return m_aiDefensivePactCounter.get(eIndex);
+	}
 	void AI_setDefensivePactCounter(TeamTypes eIndex, int iNewValue);
 	void AI_changeDefensivePactCounter(TeamTypes eIndex, int iChange);
 
-	int AI_getShareWarCounter(TeamTypes eIndex) const { return m_aiShareWarCounter.get(eIndex); }
+	int AI_getShareWarCounter(TeamTypes eIndex) const
+	{
+		return m_aiShareWarCounter.get(eIndex);
+	}
 	void AI_setShareWarCounter(TeamTypes eIndex, int iNewValue);
 	void AI_changeShareWarCounter(TeamTypes eIndex, int iChange);
 
-	int AI_getWarSuccess(TeamTypes eIndex) const { return m_aiWarSuccess.get(eIndex); }							 // Exposed to Python
+	int AI_getWarSuccess(TeamTypes eIndex) const										 // Exposed to Python
+	{
+		return m_aiWarSuccess.get(eIndex);
+	}
 	void AI_setWarSuccess(TeamTypes eIndex, int iNewValue);
 	void AI_changeWarSuccess(TeamTypes eIndex, int iChange);
 	int AI_countEnemyWarSuccess() const; // advc
@@ -225,19 +253,27 @@ public:
 	/*  The war success of our war ally against a shared enemy, plus the war success
 		of shared enemies against our war ally. This is quite different from AI_getWarSuccess,
 		which counts our success against team eIndex. Also on a different scale. */
-	int AI_getSharedWarSuccess(TeamTypes eWarAlly) const { return m_aiSharedWarSuccess.get(eWarAlly); }
+	int AI_getSharedWarSuccess(TeamTypes eWarAlly) const
+	{
+		return m_aiSharedWarSuccess.get(eWarAlly);
+	}
 	void AI_setSharedWarSuccess(TeamTypes eWarAlly, int iWS); // </advc.130m>
-	// <advc.130n>
-	int AI_getReligionKnownSince(ReligionTypes eReligion) const;
-	void AI_reportNewReligion(ReligionTypes eReligion);
-	// </advc.130n>
-	int AI_getEnemyPeacetimeTradeValue(TeamTypes eIndex) const { return m_aiEnemyPeacetimeTradeValue.get(eIndex); }
-	void AI_setEnemyPeacetimeTradeValue(TeamTypes eIndex, int iNewValue);
-	void AI_changeEnemyPeacetimeTradeValue(TeamTypes eIndex, int iChange);
-
-	int AI_getEnemyPeacetimeGrantValue(TeamTypes eIndex) const { return m_aiEnemyPeacetimeGrantValue.get(eIndex); }
-	void AI_setEnemyPeacetimeGrantValue(TeamTypes eIndex, int iNewValue);
-	void AI_changeEnemyPeacetimeGrantValue(TeamTypes eIndex, int iChange);
+	int AI_getEnemyPeacetimeTradeValue(TeamTypes eIndex) const
+	{
+		return m_aiEnemyPeacetimeTradeValue.get(eIndex);
+	}
+	void AI_setEnemyPeacetimeTradeValue(TeamTypes eIndex, int iNewValue,
+			bool bUpdateAttitude = true); // advc.130p
+	void AI_changeEnemyPeacetimeTradeValue(TeamTypes eIndex, int iChange,
+			bool bUpdateAttitude = true); // advc.130p
+	int AI_getEnemyPeacetimeGrantValue(TeamTypes eIndex) const
+	{
+		return m_aiEnemyPeacetimeGrantValue.get(eIndex);
+	}
+	void AI_setEnemyPeacetimeGrantValue(TeamTypes eIndex, int iNewValue,
+			bool bUpdateAttitude = true); // advc.130p
+	void AI_changeEnemyPeacetimeGrantValue(TeamTypes eIndex, int iChange,
+			bool bUpdateAttitude = true); // advc.130p
 
 	// advc: countEnemy... functions moved from CvTeam
 	int AI_countEnemyPowerByArea(CvArea const& kArea) const;												// Exposed to Python
@@ -316,24 +352,22 @@ public:
 
 protected:
 	TeamTypes m_eWorstEnemy;
-	/*  <advc.enum> (Tbd.: Should be CivTeamMap so that Barbarians are excluded;
-		the counters should be CivTeamMap<short>.) */
-	EnumMap<TeamTypes,int> m_aiWarPlanStateCounter;
-	EnumMap<TeamTypes,int> m_aiAtWarCounter;
-	EnumMap<TeamTypes,int> m_aiAtPeaceCounter;
-	EnumMap<TeamTypes,int> m_aiHasMetCounter;
-	EnumMap<TeamTypes,int> m_aiOpenBordersCounter;
-	EnumMap<TeamTypes,int> m_aiDefensivePactCounter;
-	EnumMap<TeamTypes,int> m_aiShareWarCounter;
-	EnumMap<TeamTypes,int> m_aiWarSuccess;
-	EnumMap<TeamTypes,int> m_aiSharedWarSuccess; // advc.130m
-	EnumMap<TeamTypes,int> m_aiEnemyPeacetimeTradeValue;
-	EnumMap<TeamTypes,int> m_aiEnemyPeacetimeGrantValue;
-	EnumMap<WarPlanTypes,int> m_aiWarPlanCounts; // advc.opt
-	EnumMap<TeamTypes,WarPlanTypes> m_aeWarPlan;
-	/*	Tbd.: Should be EnumMap<ReligionTypes,short> - or rather:
-		remove this whole ill-conceived (by me) mechanism. */
-	std::map<ReligionTypes,int> m_religionKnownSince; // advc.130n
+	/*	<advc.enum> (See comment in CvPlayer header about lazy allocation.)
+		(Could exclude Barbarians from diplo counters and
+		use CivTeamMaps, but I don't think it's worth the effort.) */
+	ArrayEnumMap<TeamTypes,int,short> m_aiWarPlanStateCounter;
+	ArrayEnumMap<TeamTypes,int,short> m_aiAtWarCounter;
+	ArrayEnumMap<TeamTypes,int,short> m_aiAtPeaceCounter;
+	ArrayEnumMap<TeamTypes,int,short> m_aiHasMetCounter;
+	ArrayEnumMap<TeamTypes,int,short> m_aiOpenBordersCounter;
+	ArrayEnumMap<TeamTypes,int,short> m_aiDefensivePactCounter;
+	ArrayEnumMap<TeamTypes,int,short> m_aiShareWarCounter;
+	ArrayEnumMap<TeamTypes,int> m_aiWarSuccess;
+	ArrayEnumMap<TeamTypes,int> m_aiSharedWarSuccess; // advc.130m
+	ArrayEnumMap<TeamTypes,int> m_aiEnemyPeacetimeTradeValue;
+	ArrayEnumMap<TeamTypes,int> m_aiEnemyPeacetimeGrantValue;
+	ArrayEnumMap<WarPlanTypes,int,char> m_aiWarPlanCounts; // advc.opt
+	ArrayEnumMap<TeamTypes,WarPlanTypes> m_aeWarPlan;
 	// </advc.enum>
 	bool m_bAnyWarPlan; // advc.opt
 	bool m_bLonely; // advc.109

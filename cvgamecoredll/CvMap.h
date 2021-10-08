@@ -3,10 +3,9 @@
 #ifndef CIV4_MAP_H
 #define CIV4_MAP_H
 
-//	FILE:	 CvMap.h
-//	AUTHOR:  Soren Johnson
-//	PURPOSE: Game map class
-//	Copyright (c) 2004 Firaxis Games, Inc. All rights reserved.
+/*	AUTHOR:  Soren Johnson
+	PURPOSE: Game map class
+	Copyright (c) 2004 Firaxis Games, Inc. All rights reserved. */
 
 #include "CvPlot.h"
 #include "Shelf.h" // advc.300
@@ -287,11 +286,13 @@ public: // advc: made several functions const
 	void verifyUnitValidPlot();
 	void combinePlotGroups(PlayerTypes ePlayer, CvPlotGroup* pPlotGroup1, CvPlotGroup* pPlotGroup2,
 			bool bVerifyProduction = true); // advc.064d
-
 	CvPlot* syncRandPlot(RandPlotFlags eFlags = RANDPLOT_ANY,								// Exposed to Python
 			CvArea const* pArea = NULL, // advc: was iArea
 			int iMinCivUnitDistance = -1,
-			int iTimeout = -1, int* piValidCount = NULL); // advc.304 (default timeout was 100)
+			// <advc.304> Default timeout was 100
+			int iTimeout = -1, int* piValidCount = NULL,
+			// NULL means uniform
+			RandPlotWeightMap const* pWeights = NULL); // </advc.304>
 	// <advc>
 	bool isValidRandPlot(CvPlot const& kPlot, RandPlotFlags eFlags,
 			CvArea const* pArea, int iMinCivUnitDistance) const; // </advc>
@@ -449,7 +450,7 @@ public: // advc: made several functions const
 		FAssert(isPlot(iX, iY)); // advc: Assertion added
 		return &(m_pMapPlots[plotNum(iX, iY)]);
 	} // <advc.inl> Even faster and less confusingly named; replacing the above in most places.
-	__forceinline CvPlot& getPlot(int x, int y) const
+	__inline CvPlot& getPlot(int x, int y) const
 	{
 		FAssert(isPlot(x, y));
 		return m_pMapPlots[plotNum(x, y)];
@@ -492,7 +493,7 @@ public: // advc: made several functions const
 	void recalculateAreas(bool bUpdateIsthmuses = true);												// Exposed to Python
 	// <advc.300>
 	void computeShelves();
-	void getShelves(CvArea const& kArea, std::vector<Shelf*>& r) const;
+	void getShelves(CvArea const& kArea, std::vector<Shelf*>& kShelves) const;
 	// </advc.300>
 	void resetPathDistance();																		// Exposed to Python
 	// Super Forts begin *canal* *choke*
@@ -559,9 +560,10 @@ protected:
 
 	bool m_bWrapX;
 	bool m_bWrapY;
-	// <advc.enum>
-	EnumMap<BonusTypes,int> m_aiNumBonus;
-	EnumMap<BonusTypes,int> m_aiNumBonusOnLand;
+	/*	<advc.enum> (Can't use eager allocation here b/c the map is created
+		before XML is loaded.) */
+	ArrayEnumMap<BonusTypes,int,PlotNumInt> m_aiNumBonus;
+	ArrayEnumMap<BonusTypes,int,PlotNumInt> m_aiNumBonusOnLand;
 	// </advc.enum>
 	CvPlot* m_pMapPlots;
 	std::map<Shelf::Id,Shelf*> m_shelves; // advc.300
@@ -579,10 +581,21 @@ protected:
 	void updateNumPlots(); // advc.opt
 };
 
-// advc.enum: (for EnumMap)
-inline PlotNumTypes getEnumLength(PlotNumTypes)
+/*	advc.304: Interface for CvMap::syncRandPlot weights. Would prefer to
+	nest this in CvMap, but that leads to trouble with fwd declarations. */
+class RandPlotWeightMap
 {
-	return GC.getMap().numPlots();
+public:
+	virtual int getProbWeight(CvPlot const& kPlot) const { return 100; }
+};
+
+// advc.enum:
+namespace plot_num_traits
+{
+	inline PlotNumTypes getNumMapPlots()
+	{
+		return GC.getMap().numPlots();
+	}
 }
 
 /* <advc.make> Global wrappers for distance functions. The int versions are

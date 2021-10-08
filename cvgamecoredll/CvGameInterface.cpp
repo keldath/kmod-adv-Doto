@@ -22,10 +22,10 @@
 	out of the EXE and thus exposing it to mods.
 	The near name clash with CyGameInterface.cpp is coincidental. */
 
-/*	<advc.007b> The functions in this header arguably shouldn't use any of the
+/*	<advc.007c> The functions in this header arguably shouldn't use any of the
 	synchronized RNGs that are part of CvGame. */
 #undef CVGAME_INSTANCE_FOR_RNG
-#define CVGAME_INSTANCE_FOR_RNG NULL // </advc.007b>
+#define CVGAME_INSTANCE_FOR_RNG NULL // </advc.007c>
 
 void CvGame::updateColoredPlots()
 {
@@ -56,7 +56,7 @@ void CvGame::updateColoredPlots()
 	CvMap const& kMap = GC.getMap();
 	int const iPlots = kMap.numPlots();
 	// BETTER_BTS_AI_MOD, Debug, 06/25/09, jdog5000: START
-	if(kUI.isShowYields() && !gDLL->GetWorldBuilderMode()) // advc.007
+	if (kUI.isShowYields() && !gDLL->GetWorldBuilderMode()) // advc.007
 	{
 		// City circles for debugging
 		if (isDebugMode())
@@ -247,7 +247,8 @@ void CvGame::updateColoredPlots()
 		}
 	}
 
-	if (!GET_PLAYER(getActivePlayer()).isOption(PLAYEROPTION_NO_UNIT_RECOMMENDATIONS))
+	if (!GET_PLAYER(getActivePlayer()).isOption(PLAYEROPTION_NO_UNIT_RECOMMENDATIONS) ||
+		!GET_PLAYER(getActivePlayer()).isHuman()) // advc.127
 	{
 		CvUnitAI const& kRecommendUnit = pHeadSelectedUnit->AI(); // advc.003u
 		if (kRecommendUnit.AI_getUnitAIType() == UNITAI_WORKER ||
@@ -1660,8 +1661,7 @@ void CvGame::doControl(ControlTypes eControl)
 		break;
 
 	case CONTROL_RELIGION_SCREEN:
-		// advc.004x:
-		GET_PLAYER(GC.getGame().getActivePlayer()).killAll(BUTTONPOPUP_CHANGERELIGION);
+		GET_PLAYER(getActivePlayer()).killAll(BUTTONPOPUP_CHANGERELIGION); // advc.004x
 		GC.getPythonCaller()->showPythonScreen("ReligionScreen");
 		break;
 
@@ -1670,8 +1670,7 @@ void CvGame::doControl(ControlTypes eControl)
 		break;
 
 	case CONTROL_CIVICS_SCREEN:
-		// advc.004x:
-		GET_PLAYER(GC.getGame().getActivePlayer()).killAll(BUTTONPOPUP_CHANGECIVIC);
+		GET_PLAYER(getActivePlayer()).killAll(BUTTONPOPUP_CHANGECIVIC); // advc.004x
 		GC.getPythonCaller()->showPythonScreen("CivicsScreen");
 		break;
 
@@ -1940,9 +1939,8 @@ void CvGame::startFlyoutMenu(const CvPlot* pPlot, std::vector<CvFlyoutMenuData>&
 			aFlyoutItems.push_back(CvFlyoutMenuData(FLYOUT_CONSTRUCT, eLoopBuilding,
 					pPlot->getX(), pPlot->getY(), szBuffer));
 		}
-		for (int iI = 0; iI < GC.getNumProjectInfos(); iI++)
+		FOR_EACH_ENUM(Project)
 		{
-			ProjectTypes eLoopProject = (ProjectTypes) iI;
 			if (!pCity->canCreate(eLoopProject))
 				continue;
 			szBuffer = GC.getInfo(eLoopProject).getDescription();
@@ -1952,9 +1950,8 @@ void CvGame::startFlyoutMenu(const CvPlot* pPlot, std::vector<CvFlyoutMenuData>&
 			aFlyoutItems.push_back(CvFlyoutMenuData(FLYOUT_CREATE, eLoopProject,
 					pPlot->getX(), pPlot->getY(), szBuffer));
 		}
-		for (int iI = 0; iI < GC.getNumProcessInfos(); iI++)
+		FOR_EACH_ENUM(Process)
 		{
-			ProcessTypes eLoopProcess = (ProcessTypes)iI;
 			if (!pCity->canMaintain(eLoopProcess))
 				continue;
 			szBuffer = GC.getInfo(eLoopProcess).getDescription();
@@ -1963,22 +1960,19 @@ void CvGame::startFlyoutMenu(const CvPlot* pPlot, std::vector<CvFlyoutMenuData>&
 		}
 
 		aFlyoutItems.push_back(CvFlyoutMenuData(NO_FLYOUT, -1, -1, -1, L""));
-		for (int iI = 0; iI < GC.getNumHurryInfos(); iI++)
+		FOR_EACH_ENUM(Hurry)
 		{
-			if (pCity->canHurry((HurryTypes)iI))
-			{
-				szBuffer = gDLL->getText("TXT_KEY_HURRY_PRODUCTION");
-
-				int iHurryGold = pCity->hurryGold((HurryTypes)iI);
-				if (iHurryGold > 0)
-					szBuffer += gDLL->getText("TXT_KEY_HURRY_PRODUCTION_GOLD", iHurryGold);
-
-				int iHurryPopulation = pCity->hurryPopulation((HurryTypes)iI);
-				if (iHurryPopulation > 0)
-					szBuffer += gDLL->getText("TXT_KEY_HURRY_PRODUCTION_POP", iHurryPopulation);
-
-				aFlyoutItems.push_back(CvFlyoutMenuData(FLYOUT_HURRY, iI, pPlot->getX(), pPlot->getY(), szBuffer));
-			}
+			if (!pCity->canHurry(eLoopHurry))
+				continue;
+			szBuffer = gDLL->getText("TXT_KEY_HURRY_PRODUCTION");
+			int iHurryGold = pCity->hurryGold(eLoopHurry);
+			if (iHurryGold > 0)
+				szBuffer += gDLL->getText("TXT_KEY_HURRY_PRODUCTION_GOLD", iHurryGold);
+			int iHurryPopulation = pCity->hurryPopulation(eLoopHurry);
+			if (iHurryPopulation > 0)
+				szBuffer += gDLL->getText("TXT_KEY_HURRY_PRODUCTION_POP", iHurryPopulation);
+				aFlyoutItems.push_back(CvFlyoutMenuData(FLYOUT_HURRY, eLoopHurry,
+						pPlot->getX(), pPlot->getY(), szBuffer));
 		}
 
 		if (pCity->canConscript())
@@ -2236,22 +2230,22 @@ void CvGame::loadBuildQueue(const CvString& strItem) const
 			return;
 		}
 	}
-	for (int iI = 0; iI < GC.getNumProjectInfos(); iI++)
+	FOR_EACH_ENUM(Project)
 	{
-		if (strItem == GC.getInfo((ProjectTypes)iI).getType())
+		if (strItem == GC.getInfo(eLoopProject).getType())
 		{
 			selectedCitiesGameNetMessage(GAMEMESSAGE_PUSH_ORDER, ORDER_CREATE,
-					(ProjectTypes)iI, -1, false, false, true);
+					eLoopProject, -1, false, false, true);
 			return;
 		}
 	}
 
-	for (int iI = 0; iI < GC.getNumProcessInfos(); iI++)
+	FOR_EACH_ENUM(Process)
 	{
-		if (strItem == GC.getInfo((ProcessTypes)iI).getType())
+		if (strItem == GC.getInfo(eLoopProcess).getType())
 		{
 			selectedCitiesGameNetMessage(GAMEMESSAGE_PUSH_ORDER, ORDER_MAINTAIN,
-					(ProcessTypes)iI, -1, false, false, true);
+					eLoopProcess, -1, false, false, true);
 			return;
 		}
 	}
@@ -2259,7 +2253,7 @@ void CvGame::loadBuildQueue(const CvString& strItem) const
 
 void CvGame::cheatSpaceship() const
 {	// <advc.007b> I don't know how this is triggered; it's safer to block it.
-	if(!isDebugMode())
+	if (!isDebugMode())
 		return; // </advc.007b>
 	//add one space project that is still available
 	CvTeam& kTeam = GET_TEAM(getActiveTeam());
@@ -2376,6 +2370,7 @@ VictoryTypes CvGame::getSpaceVictory() const
 	return eVictory;
 }
 
+// advc (note): Alt+Z causes the EXE to call this function
 void CvGame::nextActivePlayer(bool bForward)
 {
 	int iNewPlayer = getActivePlayer();
@@ -2389,16 +2384,8 @@ void CvGame::nextActivePlayer(bool bForward)
 		PlayerTypes eNewPlayer = (PlayerTypes)iNewPlayer;
 		if (GET_PLAYER(eNewPlayer).isAlive() && !GET_PLAYER(eNewPlayer).isBarbarian())
 		{
-			/*GC.getInitCore().setSlotStatus(getActivePlayer(), SS_COMPUTER);
-			GC.getInitCore().setSlotStatus(eNewPlayer, SS_TAKEN);*/
-			/*  <advc.210> The CHANGE_PLAYER component added a wrapper for that
-				(which now also initializes alerts) */
-			GET_PLAYER(getActivePlayer()).setIsHuman(false, true);
-			GET_PLAYER(eNewPlayer).setIsHuman(true, true);
-			// </advc.210>
-			GET_PLAYER(getActivePlayer()).setTurnActive(false, false);
-			GET_PLAYER(eNewPlayer).setTurnActive(true, false);
-			setActivePlayer(eNewPlayer, true);
+			// advc.210: Merged into BBAI function, which also takes care of alerts.
+			changeHumanPlayer(eNewPlayer);
 			break;
 		}
 	}

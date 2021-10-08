@@ -117,9 +117,11 @@ public:
 	DllExport bool canMoveOrAttackInto(CvPlot* pPlot, bool bDeclareWar = false)											// Exposed to Python
 	{
 		return canMoveOrAttackInto(*pPlot, bDeclareWar, false);
-	} // K-Mod. (avoid breaking the DllExport)			advc: 2x const, CvPlot&
-	bool canMoveOrAttackInto(CvPlot const& kPlot, bool bDeclareWar = false, bool bCheckMoves = false, bool bAssumeVisible = true) const;
-	bool canMoveThrough(CvPlot const& kPlot, bool bDeclareWar = false, bool bAssumeVisible = true) const; // Exposed to Python, K-Mod added bDeclareWar and bAssumeVisible; advc: CvPlot const&
+	} // K-Mod. (Avoid breaking the DllExport; EXE calls the above for NumPad help.)
+	bool canMoveOrAttackInto(CvPlot const& kPlot, bool bDeclareWar = false,
+			bool bCheckMoves = false, bool bAssumeVisible = true) const;
+	bool canMoveThrough(CvPlot const& kPlot,																			// Exposed to Python
+			bool bDeclareWar = false, bool bAssumeVisible = true) const; // K-Mod
 	bool canFight() const;																																										// Exposed to Python
 	bool canDefend() const;																																										// Exposed to Python
 	bool canBombard(CvPlot const& kPlot) const;
@@ -160,20 +162,22 @@ public:
 
 	RouteTypes getBestBuildRoute(CvPlot const& kPlot, BuildTypes* peBestBuild = NULL) const;	// Exposed to Python
 
+	//bool groupDeclareWar(CvPlot* pPlot, bool bForce = false); // deleted by K-Mod
 	bool groupAttack(int iX, int iY, MovementFlags eFlags, bool& bFailedAlreadyFighting,
 			bool bMaxSurvival = false); // advc.048
 	void groupMove(CvPlot* pPlot, bool bCombat, CvUnit* pCombatUnit = NULL, bool bEndMove = false);
 	bool groupPathTo(int iX, int iY, MovementFlags eFlags);
 	bool groupRoadTo(int iX, int iY, MovementFlags eFlags);
-	bool groupBuild(BuildTypes eBuild,
-			bool bFinish = true); // advc.011b
+	bool groupBuild(BuildTypes eBuild, /* advc.011b: */ bool bFinish = true);
 
-	void setTransportUnit(CvUnit* pTransportUnit, CvSelectionGroup** pOtherGroup = NULL); // bbai added pOtherGroup
+	void setTransportUnit(CvUnit* pTransportUnit,
+			CvSelectionGroup** pOtherGroup = NULL); // BBAI
+	//void setRemoteTransportUnit(CvUnit* pTransportUnit); // BBAI; deleted by K-Mod.
 
 	bool isAmphibPlot(CvPlot const* pPlot) const;																																		// Exposed to Python
 	bool groupAmphibMove(CvPlot const& kPlot, MovementFlags eFlags);
 
-	DllExport bool readyToSelect(bool bAny = false);																							// Exposed to Python
+	DllExport bool readyToSelect(bool bAny = false);														// Exposed to Python
 	bool readyToMove(bool bAny = false) const; // Exposed to Python
 	bool readyToAuto() const; // Exposed to Python
 	// K-Mod.
@@ -197,7 +201,10 @@ public:
 
 	//DllExport PlayerTypes getOwner() const; // advc.inl: Not called externally
 	PlayerTypes getOwner() const { return m_eOwner; } // advc.inl: was "getOwnerINLINE"
-	TeamTypes getTeam() const;																																					// Exposed to Python
+	TeamTypes getTeam() const;																				// Exposed to Python
+	// <advc>
+	bool isActiveOwned() const { return (GC.getInitCore().getActivePlayer() == getOwner()); }
+	bool isActiveTeam() const { return (GC.getInitCore().getActiveTeam() == getTeam()); } // </advc>
 
 	ActivityTypes getActivityType() const { return m_eActivityType; } 										// Exposed to Python
 	void setActivityType(ActivityTypes eNewValue);																											// Exposed to Python

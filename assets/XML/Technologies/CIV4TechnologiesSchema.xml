@@ -65,12 +65,14 @@
 	</ElementType>
 <!--kmod bugs mod addition -->
 	<ElementType name="iCommerce" content="textOnly" dt:type="int"/>
+<!--KELDATH - I THINK THE LINES BELOW ARE NOT NEEDED - nEED TO TEST - ADVC 1.00 -->
 	<ElementType name="CommerceModifiers" content="eltOnly">
 		<element type="iCommerce" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
 	<ElementType name="SpecialistExtraCommerces" content="eltOnly">
 		<element type="iCommerce" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
+	<!-- K-Mod end -->
 	<ElementType name="bFlexible" content="textOnly" dt:type="boolean"/>
 	<ElementType name="CommerceFlexible" content="eltOnly">
 		<element type="bFlexible" minOccurs="0" maxOccurs="*"/>
@@ -169,6 +171,7 @@
 		<element type="iGridY" minOccurs="0"/>
 		<element type="DomainExtraMoves" minOccurs="0"/>
 		<element type="CommerceModifiers" minOccurs="0"/>
+		<!-- K-Mod -->
 		<element type="SpecialistExtraCommerces" minOccurs="0"/>
 		<element type="CommerceFlexible" minOccurs="0"/>
 		<element type="TerrainTrades" minOccurs="0"/>

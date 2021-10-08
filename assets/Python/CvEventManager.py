@@ -24,7 +24,6 @@ import CvTechChooser
 ## Barbarian Civ ##
 #import BarbCiv
 ## Barbarian Civ ##
-
 gc = CyGlobalContext()
 localText = CyTranslator()
 PyPlayer = PyHelpers.PyPlayer

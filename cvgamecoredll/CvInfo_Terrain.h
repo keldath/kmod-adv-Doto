@@ -484,10 +484,8 @@ public:
 	// Super Forts end	
 	bool isHillsMakesValid() const { return m_bHillsMakesValid; }
 //===NM=====Mountain Mod===0=====
-	inline bool isPeakMakesValid() const { return m_bPeakMakesValid; };
-//===NM=====Mountain Mod===X=====
-// davidlallen: mountain limitations next line
-	inline bool isPeakMakesInvalid() const { return m_bPeakMakesInvalid; };
+	bool isPeakMakesValid() const { return m_bPeakMakesValid; }
+	bool isPeakMakesInvalid() const { return m_bPeakMakesInvalid; }
 //===NM=====Mountain Mod===X=====
 	bool isFreshWaterMakesValid() const { return m_bFreshWaterMakesValid; }
 	bool isRiverSideMakesValid() const { return m_bRiverSideMakesValid; }

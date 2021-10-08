@@ -332,8 +332,8 @@ public:
 	int getNumActiveWorldWonders(/* advc: */ int iStopCountAt = MAX_INT,
 			PlayerTypes eOwner = NO_PLAYER) const; // advc.104d: Hypothetical owner
 
-	int getReligionCount() const { return m_abHasReligion.getSupportSz(); } // advc.opt							// Exposed to Python
-	int getCorporationCount() const { return m_abHasCorporation.getSupportSz(); } // advc.opt					// Exposed to Python
+	int getReligionCount() const { return m_abHasReligion.numNonDefault(); } // advc.opt							// Exposed to Python
+	int getCorporationCount() const { return m_abHasCorporation.numNonDefault(); } // advc.opt					// Exposed to Python
 	static CvCity* fromIDInfo(IDInfo id); // advc
 	// <advc.inl>
 	DllExport int getID() const { return m_iID; }																// Exposed to Python
@@ -563,7 +563,7 @@ public:
 	// BUG - Actual Effects - end
 	// <advc.001c>
 	int GPTurnsLeft() const;
-	void GPProjection(std::vector<std::pair<UnitTypes,int> >& r) const; // (exposed to Python)
+	void GPProjection(std::vector<std::pair<UnitTypes,int> >& aeiProjection) const; // (exposed to Python)
 	// </advc.001c>
 	int getBuildingGoodHealth() const { return m_iBuildingGoodHealth; }											// Exposed to Python
 	int getBuildingBadHealth() const { return m_iBuildingBadHealth; }											// Exposed to Python
@@ -784,6 +784,9 @@ public:
 
 	DllExport PlayerTypes getOwner() const { return m_eOwner; } // advc.inl: was "getOwnerINLINE"				// Exposed to Python
 	DllExport TeamTypes getTeam() const;																		// Exposed to Python
+	// <advc>
+	bool isActiveOwned() const { return (GC.getInitCore().getActivePlayer() == getOwner()); }
+	bool isActiveTeam() const { return (GC.getInitCore().getActiveTeam() == getTeam()); } // </advc>
 	PlayerTypes getPreviousOwner() const { return m_ePreviousOwner; }											// Exposed to Python
 	void setPreviousOwner(PlayerTypes eNewValue);
 	PlayerTypes getOriginalOwner() const { return m_eOriginalOwner; }											// Exposed to Python
@@ -798,6 +801,7 @@ public:
 	CultureLevelTypes calculateCultureLevel(PlayerTypes ePlayer) const; // advc
 	int getNumPartisanUnits(PlayerTypes ePartisanPlayer) const; // advc.003y
 	int getCultureTurnsLeft() const; // advc.042
+	void initTraitCulture(); // advc.908b
 
 	int getSeaPlotYield(YieldTypes eYield) const { return m_aiSeaPlotYield.get(eYield); }						// Exposed to Python
 	void changeSeaPlotYield(YieldTypes eYield, int iChange);
@@ -1048,11 +1052,11 @@ public:
 	bool getEspionageVisibility(TeamTypes eTeam) const															// Exposed to Python
 	{
 		return m_abEspionageVisibility.get(eTeam);
-	}  // <advc.opt>
+	}
 	bool isAnyEspionageVisibility() const
-	{
-		return m_abEspionageVisibility.hasContent();
-	} // </advc.opt>
+	{	// advc.opt:
+		return m_abEspionageVisibility.isAnyNonDefault();
+	}
 	void setEspionageVisibility(TeamTypes eTeam, bool bVisible, bool bUpdatePlotGroups);
 	void updateEspionageVisibility(bool bUpdatePlotGroups);
 
@@ -1072,7 +1076,7 @@ public:
 	}  // <advc.opt>
 	bool isAnyFreeBonus() const
 	{
-		return m_aiFreeBonus.hasContent();
+		return m_aiFreeBonus.isAnyNonDefault();
 	} // </advc.opt>
 	void changeFreeBonus(BonusTypes eBonus, int iChange);														// Exposed to Python
 	int getNumBonuses(BonusTypes eBonus) const;																	// Exposed to Python
@@ -1188,7 +1192,10 @@ public:
 	{
 		return m_aiForceSpecialistCount.get(eSpecialist);
 	}
-	bool isSpecialistForced() const;																			// Exposed to Python
+	bool isSpecialistForced() const																				// Exposed to Python
+	{
+		return m_aiForceSpecialistCount.isAnyNonDefault(); // advc.opt
+	}
 	void setForceSpecialistCount(SpecialistTypes eSpecialist, int iNewValue);									// Exposed to Python
 	void changeForceSpecialistCount(SpecialistTypes eSpecialist, int iChange);									// Exposed to Python
 
@@ -1203,11 +1210,11 @@ public:
 	int getImprovementFreeSpecialists(ImprovementTypes eImprov) const											// Exposed to Python
 	{
 		return m_aiImprovementFreeSpecialists.get(eImprov);
-	}  // <advc.opt>
+	}
 	bool isAnyImprovementFreeSpecialist() const
-	{
-		return m_aiImprovementFreeSpecialists.hasContent();
-	} // </advc.opt>
+	{	// advc.opt:
+		return m_aiImprovementFreeSpecialists.isAnyNonDefault();
+	}
 	void changeImprovementFreeSpecialists(ImprovementTypes eImprov, int iChange);								// Exposed to Python
 
 	int getReligionInfluence(ReligionTypes eReligion) const														// Exposed to Python
@@ -1236,11 +1243,11 @@ public:
 	bool isFreePromotion(PromotionTypes ePromo) const															// Exposed to Python
 	{
 		return (getFreePromotionCount(ePromo) > 0);
-	}  // <advc.opt>
+	}
 	bool isAnyFreePromotion() const
-	{
-		return m_aiFreePromotionCount.hasContent();
-	} // </advc.opt>
+	{	// advc.opt:
+		return m_aiFreePromotionCount.isAnyNonDefault();
+	}
 	void changeFreePromotionCount(PromotionTypes ePromo, int iChange);
 
 	int getSpecialistFreeExperience() const																		// Exposed to Python
@@ -1361,15 +1368,27 @@ public:
 	void setEventOccured(EventTypes eEvent, bool bOccured);
 	void doPartisans(); // advc.003y
 
-	int getBuildingYieldChange(BuildingClassTypes eBuildingClass, YieldTypes eYield) const;						// Exposed to Python
+	int getBuildingYieldChange(BuildingClassTypes eBuildingClass, YieldTypes eYield) const						// Exposed to Python
+	{
+		return m_aeiiBuildingYieldChange.get(eBuildingClass, eYield);
+	}
 	void setBuildingYieldChange(BuildingClassTypes eBuildingClass, YieldTypes eYield, int iChange);				// Exposed to Python
 	void changeBuildingYieldChange(BuildingClassTypes eBuildingClass, YieldTypes eYield, int iChange);
-	int getBuildingCommerceChange(BuildingClassTypes eBuildingClass, CommerceTypes eCommerce) const;			// Exposed to Python
+	int getBuildingCommerceChange(BuildingClassTypes eBuildingClass, CommerceTypes eCommerce) const				// Exposed to Python
+	{
+		return m_aeiiBuildingCommerceChange.get(eBuildingClass, eCommerce);
+	}
 	void setBuildingCommerceChange(BuildingClassTypes eBuildingClass, CommerceTypes eCommerce, int iChange);	// Exposed to Python
 	void changeBuildingCommerceChange(BuildingClassTypes eBuildingClass, CommerceTypes eCommerce, int iChange);
-	int getBuildingHappyChange(BuildingClassTypes eBuildingClass) const;										// Exposed to Python
+	int getBuildingHappyChange(BuildingClassTypes eBuildingClass) const											// Exposed to Python
+	{
+		return m_aeiBuildingHappyChange.get(eBuildingClass);
+	}
 	void setBuildingHappyChange(BuildingClassTypes eBuildingClass, int iChange);								// Exposed to Python
-	int getBuildingHealthChange(BuildingClassTypes eBuildingClass) const;										// Exposed to Python
+	int getBuildingHealthChange(BuildingClassTypes eBuildingClass) const										// Exposed to Python
+	{
+		return m_aeiBuildingHealthChange.get(eBuildingClass);
+	}
 	void setBuildingHealthChange(BuildingClassTypes eBuildingClass, int iChange);								// Exposed to Python
 
 	PlayerTypes getLiberationPlayer(bool bConquest /* advc: */ = false) const;									// Exposed to Python
@@ -1576,32 +1595,30 @@ protected:
 	PlayerTypes m_eOriginalOwner;
 	CultureLevelTypes m_eCultureLevel;
 
-	/*	<advc.enum> (Tbd.: short int would suffice; except for m_aiCulture.
-		Also, the EnumMap<UnitTypes,...> are a bit wasteful. Consider using
-		std::map for those.) */
-	EnumMap<YieldTypes,int> m_aiSeaPlotYield;
-	EnumMap<YieldTypes,int> m_aiRiverPlotYield;
-	EnumMap<YieldTypes,int> m_aiBaseYieldRate;
-	EnumMap<YieldTypes,int> m_aiYieldRateModifier;
-	EnumMap<YieldTypes,int> m_aiPowerYieldRateModifier;
-	EnumMap<YieldTypes,int> m_aiBonusYieldRateModifier;
-    // <DOTO- Civic Infos Plus Start >
-	EnumMap<YieldTypes,int> m_aiBuildingYieldChange;
-	EnumMap<YieldTypes,int> m_aiStateReligionYieldRateModifier;
-	EnumMap<YieldTypes,int> m_aiNonStateReligionYieldRateModifier;
-	// <DOTO- Civic Infos Plus End >
-	EnumMap<YieldTypes,int> m_aiTradeYield;
-	EnumMap<YieldTypes,int> m_aiCorporationYield;
-	EnumMap<YieldTypes,int> m_aiExtraSpecialistYield;
-	EnumMap<CommerceTypes,int> m_aiCommerceRate;
-	EnumMap<CommerceTypes,int> m_aiProductionToCommerceModifier;
-	EnumMap<CommerceTypes,int> m_aiBuildingCommerce;
-	EnumMap<CommerceTypes,int> m_aiSpecialistCommerce;
-	EnumMap<CommerceTypes,int> m_aiReligionCommerce;
+	// <advc.enum>
+	YieldChangeMap m_aiSeaPlotYield;
+	YieldChangeMap m_aiRiverPlotYield;
+	YieldTotalMap m_aiBaseYieldRate;
+	YieldPercentMap m_aiYieldRateModifier;
+	YieldPercentMap m_aiPowerYieldRateModifier;
+	YieldPercentMap m_aiBonusYieldRateModifier;
 	// <DOTO- Civic Infos Plus Start >
-	EnumMap<CommerceTypes,int> m_aiBuildingCommerceChange;	
-	EnumMap<CommerceTypes,int> m_aiStateReligionCommerceRateModifier;	
-	EnumMap<CommerceTypes,int> m_aiNonStateReligionCommerceRateModifier;	
+	YieldTotalMap m_aiBuildingYieldChange;
+	YieldTotalMap m_aiStateReligionYieldRateModifier;
+	YieldTotalMap m_aiNonStateReligionYieldRateModifier;
+	// <DOTO- Civic Infos Plus End >
+	YieldTotalMap m_aiTradeYield;
+	YieldTotalMap m_aiCorporationYield;
+	YieldTotalMap m_aiExtraSpecialistYield;
+	EagerEnumMap<CommerceTypes,int> m_aiCommerceRate; // (at times-100 precision)
+	CommercePercentMap m_aiProductionToCommerceModifier;
+	CommerceTotalMap m_aiBuildingCommerce;
+	CommerceTotalMap m_aiSpecialistCommerce;
+	CommerceTotalMap m_aiReligionCommerce;
+	// <DOTO- Civic Infos Plus Start >
+	CommerceTotalMap m_aiBuildingCommerceChange;	
+	CommerceTotalMap m_aiStateReligionCommerceRateModifier;	
+	CommerceTotalMap m_aiNonStateReligionCommerceRateModifier;	
 	// <DOTO- Civic Infos Plus End   >
 /*************************************************************************************************/
 /**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
@@ -1609,72 +1626,75 @@ protected:
 /**																								**/
 /*************************************************************************************************/
 //	int* m_aiExtraSpecialistCommerce;
-	EnumMap<CommerceTypes,int> m_aiExtraSpecialistCommerce;	
+	CommerceTotalMap m_aiExtraSpecialistCommerce;	
 /*************************************************************************************************/
 /**	CMEDIT: End																					**/
 /*************************************************************************************************/
-	EnumMap<CommerceTypes,int> m_aiCorporationCommerce;
-	EnumMap<CommerceTypes,int> m_aiCommerceRateModifier;
-	EnumMap<CommerceTypes,int> m_aiCommerceHappinessPer;
-	EnumMap<DomainTypes,int> m_aiDomainFreeExperience;
-	EnumMap<DomainTypes,int> m_aiDomainProductionModifier;
-	EnumMap<PlayerTypes,int> m_aiCulture;
-	EnumMap<PlayerTypes,int> m_aiNumRevolts;
-	EnumMap<BonusTypes,int> m_aiNoBonus;
-	EnumMap<BonusTypes,int> m_aiFreeBonus;
-	EnumMap<BonusTypes,int> m_aiNumBonuses;
+	CommerceTotalMap m_aiCorporationCommerce;
+	CommercePercentMap m_aiCommerceRateModifier;
+	CommercePercentMap m_aiCommerceHappinessPer;
+	ArrayEnumMap<DomainTypes,int,char> m_aiDomainFreeExperience;
+	ArrayEnumMap<DomainTypes,int,short> m_aiDomainProductionModifier;
+	EagerEnumMap<PlayerTypes,int> m_aiCulture;
+	ListEnumMap<PlayerTypes,int,short> m_aiNumRevolts;
+	ListEnumMap<BonusTypes,int,char> m_aiNoBonus;
+	ListEnumMap<BonusTypes,int,char> m_aiFreeBonus;
+	EagerEnumMap<BonusTypes,int,short> m_aiNumBonuses;
 	// <DOTO- Building Resource Converter Start >
-	EnumMap<BonusTypes,int> m_paiBuildingOutputBonuses;
+	ArrayEnumMap<BonusTypes,int,char> m_paiBuildingOutputBonuses;
 	// <DOTO- Building Resource Converter End   >
-	EnumMap<BonusTypes,int> m_aiNumCorpProducedBonuses;
-	EnumMap<ProjectTypes,int> m_aiProjectProduction;
-	EnumMap<BuildingTypes,int> m_aiBuildingProduction;
-	EnumMap<BuildingTypes,int> m_aiBuildingProductionTime;
-	EnumMap<BuildingTypes,PlayerTypes> m_aeBuildingOriginalOwner;
-//DOTO-prereqMust+tholish - this enum array will allow to keep tarck of shich buildings
+	ListEnumMap<BonusTypes,int,short> m_aiNumCorpProducedBonuses;
+	ListEnumMap<ProjectTypes,int> m_aiProjectProduction;
+	ListEnumMap<BuildingTypes,int> m_aiBuildingProduction;
+	ListEnumMap<BuildingTypes,int,short> m_aiBuildingProductionTime;
+	ListEnumMap<BuildingTypes,PlayerTypes> m_aeBuildingOriginalOwner;
+//DOTO-prereqMust+tholish inactive buildings - this enum array will allow to keep track of shich buildings
 //were set to inactive
-	EnumMap<BuildingTypes,bool,true> m_aiBuildingeActive;
-	EnumMap<BuildingTypes,int,MIN_INT> m_aiBuildingOriginalTime;
-	EnumMap<BuildingTypes,int> m_aiNumRealBuilding;
-	EnumMap<BuildingTypes,int> m_aiNumFreeBuilding;
-	EnumMap<UnitTypes,int> m_aiUnitProduction;
-	EnumMap<UnitTypes,int> m_aiUnitProductionTime;
-	EnumMap<UnitTypes,int> m_aiGreatPeopleUnitRate;
-	EnumMap<UnitTypes,int> m_aiGreatPeopleUnitProgress;
-	EnumMap<SpecialistTypes,int> m_aiSpecialistCount;
-	EnumMap<SpecialistTypes,int> m_aiMaxSpecialistCount;
-	EnumMap<SpecialistTypes,int> m_aiForceSpecialistCount;
-	EnumMap<SpecialistTypes,int> m_aiFreeSpecialistCount;
-	EnumMap<ImprovementTypes,int> m_aiImprovementFreeSpecialists;
-	EnumMap<ReligionTypes,int> m_aiReligionInfluence;
-	EnumMap<ReligionTypes,int> m_aiStateReligionHappiness;
-	EnumMap<UnitCombatTypes,int> m_aiUnitCombatFreeExperience;
-	EnumMap<PromotionTypes,int> m_aiFreePromotionCount;
+	ArrayEnumMap<BuildingTypes,bool,void*,true> m_aiBuildingeActive;
+	// advc: Was MIN_INT as a magic number
+	static int const iBuildingOriginalTimeUnknown = MIN_SHORT;
+	EagerEnumMap<BuildingTypes,int,short,iBuildingOriginalTimeUnknown> m_aiBuildingOriginalTime;
+	EagerEnumMap<BuildingTypes,int,char> m_aiNumRealBuilding;
+	ArrayEnumMap<BuildingTypes,int,char> m_aiNumFreeBuilding;
+	ListEnumMap<UnitTypes,int> m_aiUnitProduction;
+	ListEnumMap<UnitTypes,int,short> m_aiUnitProductionTime;
+	ArrayEnumMap<UnitTypes,int,short> m_aiGreatPeopleUnitRate;
+	ArrayEnumMap<UnitTypes,int> m_aiGreatPeopleUnitProgress;
+	ArrayEnumMap<SpecialistTypes,int,short> m_aiSpecialistCount;
+	ArrayEnumMap<SpecialistTypes,int,short> m_aiMaxSpecialistCount;
+	ArrayEnumMap<SpecialistTypes,int,char> m_aiForceSpecialistCount;
+	ArrayEnumMap<SpecialistTypes,int,char> m_aiFreeSpecialistCount;
+	ListEnumMap<ImprovementTypes,int,char> m_aiImprovementFreeSpecialists;
+	ArrayEnumMap<ReligionTypes,int,char> m_aiReligionInfluence;
+	ArrayEnumMap<ReligionTypes,int,char> m_aiStateReligionHappiness;
+	ArrayEnumMap<UnitCombatTypes,int,char> m_aiUnitCombatFreeExperience;
+	ListEnumMap<PromotionTypes,int,char> m_aiFreePromotionCount;
 
-	EnumMap<PlayerTypes,bool> m_abEverOwned;
-	EnumMap<PlayerTypes,bool> m_abTradeRoute;
-	EnumMap<TeamTypes,bool> m_abRevealed;
-	EnumMap<TeamTypes,bool> m_abEspionageVisibility;
-	EnumMap<CityPlotTypes,bool> m_abWorkingPlot;
-	EnumMap<ReligionTypes,bool> m_abHasReligion;
-	EnumMap<CorporationTypes,bool> m_abHasCorporation;
+	EagerEnumMap<PlayerTypes,bool> m_abEverOwned;
+	EagerEnumMap<PlayerTypes,bool> m_abTradeRoute;
+	EagerEnumMap<TeamTypes,bool> m_abRevealed;
+	ArrayEnumMap<TeamTypes,bool> m_abEspionageVisibility;
+	EagerEnumMap<CityPlotTypes,bool> m_abWorkingPlot;
+	ArrayEnumMap<ReligionTypes,bool> m_abHasReligion;
+	ArrayEnumMap<CorporationTypes,bool> m_abHasCorporation;
 	// </advc.enum>
 	CvWString m_szPreviousName; // advc.106k
 	CvString m_szScriptData;
 	// <advc.opt>
 	CvArea* m_pArea;
 	CvPlot* m_pPlot; // </advc.opt>
+
 	std::vector<IDInfo> m_aTradeCities; // advc: was an array
-
 	mutable CLinkList<OrderData> m_orderQueue;
-
-	std::vector<std::pair<float, float> > m_kWallOverridePoints;
-
+	std::vector<std::pair<float,float> > m_kWallOverridePoints;
 	std::vector<EventTypes> m_aEventsOccured;
-	std::vector<BuildingYieldChange> m_aBuildingYieldChange;
-	std::vector<BuildingCommerceChange> m_aBuildingCommerceChange;
-	BuildingChangeArray m_aBuildingHappyChange;
-	BuildingChangeArray m_aBuildingHealthChange;
+	// <advc.enum> Replacing naked vectors of tuples
+	Enum2IntEncMap<ListEnumMap<BuildingClassTypes,YieldChangeMap::enc_t>,
+			YieldChangeMap> m_aeiiBuildingYieldChange;
+	Enum2IntEncMap<ListEnumMap<BuildingClassTypes,CommerceChangeMap::enc_t>,
+			CommerceChangeMap> m_aeiiBuildingCommerceChange;
+	ListEnumMap<BuildingClassTypes,int,char> m_aeiBuildingHappyChange;
+	ListEnumMap<BuildingClassTypes,int,char> m_aeiBuildingHealthChange; // </advc.enum>
 
 	// Rank cache
 	mutable int	m_iPopulationRank;
@@ -1682,12 +1702,12 @@ protected:
 	// <advc.enum>
 	/*	Made mutable (not strictly necessary b/c findBaseYieldRateRank
 		accesses them through a CvCity pointer) */
-	mutable EnumMap<YieldTypes,int,-1> m_aiBaseYieldRank;
-	mutable EnumMap<YieldTypes,bool> m_abBaseYieldRankValid;
-	mutable EnumMap<YieldTypes,int,-1> m_aiYieldRank;
-	mutable EnumMap<YieldTypes,bool> m_abYieldRankValid;
-	mutable EnumMap<CommerceTypes,int,-1> m_aiCommerceRank;
-	mutable EnumMap<CommerceTypes,bool> m_abCommerceRankValid; // </advc.enum>
+	mutable EagerEnumMap<YieldTypes,int,short,-1> m_aiBaseYieldRank;
+	mutable EagerEnumMap<YieldTypes,bool> m_abBaseYieldRankValid;
+	mutable EagerEnumMap<YieldTypes,int,short,-1> m_aiYieldRank;
+	mutable EagerEnumMap<YieldTypes,bool> m_abYieldRankValid;
+	mutable EagerEnumMap<CommerceTypes,int,short,-1> m_aiCommerceRank;
+	mutable EagerEnumMap<CommerceTypes,bool> m_abCommerceRankValid; // </advc.enum>
 
 	void doGrowth();
 	void doCulture();

@@ -365,12 +365,32 @@ protected:
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //  class : CvHandicapInfo
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvHandicapInfo : public CvInfoBase
+class CvHandicapInfo : public /* <advc.tag> */ CvXMLInfo
 {
-public: // The const functions are exposed to Python except functions added by mods
+	typedef CvXMLInfo base_t;
+protected:
+	void addElements(ElementList& kElements) const
+	{
+		base_t::addElements(kElements);
+		/*	(Didn't have this framework when I implemented change advc.251,
+			otherwise, I would've used it for that too.) */
+		kElements.addInt(ForeignCultureStrength, "ForeignCultureStrength"); // advc.101
+	}
+public:
+	enum IntElementTypes
+	{
+		ForeignCultureStrength = base_t::NUM_INT_ELEMENT_TYPES, // advc.101
+		NUM_INT_ELEMENT_TYPES
+	};
+	int get(IntElementTypes e) const
+	{
+		return CvXMLInfo::get(static_cast<base_t::IntElementTypes>(e));
+	} // </advc.tag>
+
 	CvHandicapInfo();
 	~CvHandicapInfo();
 
+	// (The const functions are exposed to Python except functions added by mods)
 	int getFreeWinsVsBarbs() const;
 	int getAnimalAttackProb() const;
 	int getStartingLocationPercent() const;
@@ -401,9 +421,8 @@ public: // The const functions are exposed to Python except functions added by m
 	int getHealthBonus() const;
 	int getHappyBonus() const;
 /* Population Limit ModComp - Beginning */
-	/*DllExport */
 	int getPopulationLimit() const;				// Exposed to Python
-	/* Population Limit ModComp - End */
+/* Population Limit ModComp - End */
 	int getAttitudeChange() const;
 	int getNoTechTradeModifier() const;
 	int getTechTradeKnownModifier() const;

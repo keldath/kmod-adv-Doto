@@ -27,7 +27,9 @@
 			<fZScale>1.0</fZScale>
 			<bTerrainShader>1</bTerrainShader>
 			<bUseLightmap>0</bUseLightmap>
-			<fPeakScale>0.30</fPeakScale>
+			<!--changed from civ ui remaster mini mod
+				keldath-->
+			<fPeakScale>0.24</fPeakScale>
 			<fHillScale>0.13</fHillScale>
 		</LandscapeInfo>
 	</LandscapeInfos>
