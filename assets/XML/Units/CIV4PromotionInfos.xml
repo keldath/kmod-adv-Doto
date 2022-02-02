@@ -4709,7 +4709,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>,Art/Interface/Buttons/Promotions/unblocade.dds,Art/Interface/Buttons/Promotions_Atlas.dds,4,7</Button>
+			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
 		</PromotionInfo>
 	</PromotionInfos>
 </Civ4PromotionInfos>

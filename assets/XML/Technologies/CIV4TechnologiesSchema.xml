@@ -170,9 +170,10 @@
 		<element type="iGridX" minOccurs="0"/>
 		<element type="iGridY" minOccurs="0"/>
 		<element type="DomainExtraMoves" minOccurs="0"/>
+		<!-- K-Mod: start -->
 		<element type="CommerceModifiers" minOccurs="0"/>
-		<!-- K-Mod -->
 		<element type="SpecialistExtraCommerces" minOccurs="0"/>
+		<!-- K-Mod: end -->
 		<element type="CommerceFlexible" minOccurs="0"/>
 		<element type="TerrainTrades" minOccurs="0"/>
 		<element type="bRiverTrade" minOccurs="0"/>

@@ -1588,7 +1588,9 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 	</Define>
 	<Define>
 		<DefineName>CAMERA_CITY_ZOOM_IN_DISTANCE</DefineName>
-		<fDefineFloatVal>4800</fDefineFloatVal>
+<!--doto enhanced city size Mylon Mega Mod -->
+	<!--	<fDefineFloatVal>4800</fDefineFloatVal> -->
+			<fDefineFloatVal>5500</fDefineFloatVal>
 	</Define>
 	<Define>
 		<DefineName>CAMERA_BATTLE_ZOOM_IN_DISTANCE</DefineName>

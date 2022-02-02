@@ -28,7 +28,10 @@
 			<bAIPlayable>1</bAIPlayable>
 <!--Limited religion doto -->			
 			<iMaxLimitedReligions>1</iMaxLimitedReligions>
-<!--Limited religion doto -->			
+<!--Limited religion doto -->
+<!--doto enhanced city size mylon-->
+			<iMaxCityRadius>4</iMaxCityRadius>
+<!--doto enhanced city size mylon-->						
 			<Cities>
 				<City>TXT_KEY_CITY_NAME_WASHINGTON</City>
 				<City>TXT_KEY_CITY_NAME_NEW_YORK</City>

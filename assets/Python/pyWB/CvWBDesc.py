@@ -1353,6 +1353,7 @@ class CvMapDesc:
 		self.seaLevel = None
 		self.numPlotsWritten = 0
 		self.numSignsWritten = 0
+		#DOTO RANDOMIZE RESOURCES ON SCENARIOS
 		self.bRandomizeFeatures = "false"
 		self.bRandomizeResources = "false"
 
@@ -1376,6 +1377,7 @@ class CvMapDesc:
 		f.write("\tsealevel=%s\n" %(gc.getSeaLevelInfo(map.getSeaLevel()).getType(),))
 		f.write("\tnum plots written=%d\n" %(iNumPlots,))
 		f.write("\tnum signs written=%d\n" %(iNumSigns,))
+		#DOTO RANDOMIZE RESOURCES ON SCENARIOS
 		f.write("\tRandomize Features=false\n")
 		f.write("\tRandomize Resources=false\n")
 		f.write("EndMap\n")
@@ -1447,7 +1449,7 @@ class CvMapDesc:
 			if v!=-1:
 				self.numSignsWritten = int(v)
 				continue
-
+			#DOTO RANDOMIZE RESOURCES ON SCENARIOS
 			v = parser.findTokenValue(toks, "Randomize Features")
 			if v!=-1:
 				self.bRandomizeFeatures= v
@@ -1603,12 +1605,12 @@ class CvWBDesc:
 		print "apply signs"
 		for pDesc in self.signDesc:
 			pDesc.apply()
-
+		#DOTO RANDOMIZE RESOURCES ON SCENARIOS
 		print "Randomize Features"
 		if str(self.mapDesc.bRandomizeFeatures).lower() != "false":
 			for iPlotLoop in range(CyMap().numPlots()):
 				pPlot = CyMap().plotByIndex(iPlotLoop)
-				pPlot.setFeatureType#(FeatureTypes.NO_FEATURE)
+				pPlot.setFeatureType(FeatureTypes.NO_FEATURE)
 			CyMapGenerator().addFeatures()
 
 		print "Randomize Resources"

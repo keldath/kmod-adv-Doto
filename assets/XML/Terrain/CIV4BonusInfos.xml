@@ -38,8 +38,8 @@ bNormalize	means it is used for starting location normalization (extra resources
 Rands	Unknown
 YieldChanges	Defines the change in city yield, using iYield. There are three iYield tags: the first is for food per turn change, the second for hammers per turn, and the third for commerce per turn (e.g. the Palace provides 8 free commerce per turn).
 TerrainBooleans	Defines which terrain types the resource may appear on.
-
- advc.129: Changed bonus class of Gold, Silver and Gems from "General"
+-->
+<!-- advc.129: Changed bonus class of Gold, Silver and Gems from "General"
 	 to new class "Precious". -->
 
 <Civ4BonusInfos xmlns="x-schema:CIV4TerrainSchema.xml">
@@ -435,6 +435,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<!-- advc.036: was 20 -->
 			<iAITradeModifier>0</iAITradeModifier>
 			<iAIObjective>0</iAIObjective>
+			<!-- doto was 0 -->
 			<iHealth>-1</iHealth>
 			<iHappiness>0</iHappiness>
 			<iPlacementOrder>0</iPlacementOrder>
@@ -451,7 +452,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iPlayer>150</iPlayer>
 			<iTilesPer>512</iTilesPer>
 			<iMinLandPercent>70</iMinLandPercent>
-			<!-- advc-129: was 7 -->
+			<!-- advc.129: was 7 -->
 			<iUnique>6</iUnique>
 			<iGroupRange>0</iGroupRange>
 			<iGroupRand>0</iGroupRand>
@@ -489,6 +490,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 					<TerrainType>TERRAIN_GRASS</TerrainType>
 					<bFeatureTerrain>1</bFeatureTerrain>
 				</FeatureTerrainBoolean>
+				<!-- doto -->
 				<FeatureTerrainBoolean>
 					<TerrainType>TERRAIN_MARSH</TerrainType>
 					<bFeatureTerrain>1</bFeatureTerrain>
@@ -524,7 +526,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 				<iRandApp3>0</iRandApp3>
 				<iRandApp4>0</iRandApp4>
 			</Rands>
-			<iPlayer>85</iPlayer>
+			<iPlayer>50</iPlayer>
 			<iTilesPer>0</iTilesPer>
 			<iMinLandPercent>0</iMinLandPercent>
 			<iUnique>0</iUnique>
@@ -566,6 +568,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<!-- advc.036: was 30 -->
 			<iAITradeModifier>0</iAITradeModifier>
 			<iAIObjective>0</iAIObjective>
+			<!-- doto was 0 -->
 			<iHealth>-1</iHealth>
 			<iHappiness>0</iHappiness>
 			<iPlacementOrder>2</iPlacementOrder>
@@ -587,6 +590,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>0</iGroupRand>
 			<bArea>0</bArea>
 			<bHills>1</bHills>
+			<!-- doto -->
 			<bPeaks>1</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>1</bNoRiverSide>
@@ -658,7 +662,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<YieldChanges>
 				<iYieldChange>1</iYieldChange>
 				<iYieldChange>0</iYieldChange>
-				<iYieldChange>1</iYieldChange>
+				<iYieldChange>0</iYieldChange>
 			</YieldChanges>
 			<iAITradeModifier>0</iAITradeModifier>
 			<iAIObjective>0</iAIObjective>
@@ -685,6 +689,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>0</iGroupRand>
 			<bArea>1</bArea>
 			<bHills>0</bHills>
+			<!-- doto was 0 -->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>0</bNoRiverSide>
@@ -715,15 +720,18 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<BonusClassType>BONUSCLASS_GENERAL</BonusClassType>
 			<ArtDefineTag>ART_DEF_BONUS_CLAM</ArtDefineTag>
 			<TechReveal>NONE</TechReveal>
+			<!-- doto was NONE -->
 			<TechCityTrade>TECH_FISHING</TechCityTrade>
 			<TechObsolete>NONE</TechObsolete>
 			<YieldChanges>
 				<iYieldChange>1</iYieldChange>
 				<iYieldChange>0</iYieldChange>
+			<!-- doto was 0 -->
 				<iYieldChange>2</iYieldChange>
 			</YieldChanges>
 			<iAITradeModifier>0</iAITradeModifier>
 			<iAIObjective>0</iAIObjective>
+			<!-- doto was 1 -->
 			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>
 			<iPlacementOrder>6</iPlacementOrder>
@@ -732,6 +740,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iMinLatitude>0</iMinLatitude>
 			<iMaxLatitude>50</iMaxLatitude>
 			<Rands>
+				<!-- doto was 25 -->
 				<iRandApp1>20</iRandApp1>
 				<iRandApp2>20</iRandApp2>
 				<iRandApp3>0</iRandApp3>
@@ -795,6 +804,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>0</iGroupRand>
 			<bArea>1</bArea>
 			<bHills>0</bHills>
+			<!-- doto -->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>1</bNoRiverSide>
@@ -847,6 +857,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>0</iGroupRand>
 			<bArea>1</bArea>
 			<bHills>0</bHills>
+			<!-- doto was 0 -->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>1</bNoRiverSide>
@@ -871,6 +882,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<BonusClassType>BONUSCLASS_GENERAL</BonusClassType>
 			<ArtDefineTag>ART_DEF_BONUS_CRAB</ArtDefineTag>
 			<TechReveal>NONE</TechReveal>
+			<!-- doto NONE -->
 			<TechCityTrade>TECH_FISHING</TechCityTrade>
 			<TechObsolete>NONE</TechObsolete>
 			<YieldChanges>
@@ -902,6 +914,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>0</iGroupRand>
 			<bArea>0</bArea>
 			<bHills>0</bHills>
+			<!-- doto was 0 -->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>0</bFlatlands>
 			<bNoRiverSide>0</bNoRiverSide>
@@ -926,6 +939,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<TechObsolete>NONE</TechObsolete>
 			<YieldChanges>
 				<iYieldChange>1</iYieldChange>
+				<!-- doto was 0 -->
 				<iYieldChange>1</iYieldChange>
 				<iYieldChange>0</iYieldChange>
 			</YieldChanges>
@@ -939,6 +953,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iMinLatitude>30</iMinLatitude>
 			<iMaxLatitude>90</iMaxLatitude>
 			<Rands>
+				<!-- doto was 25 -->
 				<iRandApp1>20</iRandApp1>
 				<iRandApp2>20</iRandApp2>
 				<iRandApp3>0</iRandApp3>
@@ -952,6 +967,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>0</iGroupRand>
 			<bArea>1</bArea>
 			<bHills>1</bHills>
+			<!-- doto was 0 -->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>0</bNoRiverSide>
@@ -961,6 +977,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 					<TerrainType>TERRAIN_TUNDRA</TerrainType>
 					<bTerrain>1</bTerrain>
 				</TerrainBoolean>
+				<!-- doto -->
 				<TerrainBoolean>
 					<TerrainType>TERRAIN_MARSH</TerrainType>
 					<bTerrain>1</bTerrain>
@@ -977,6 +994,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 					<TerrainType>TERRAIN_TUNDRA</TerrainType>
 					<bFeatureTerrain>1</bFeatureTerrain>
 				</FeatureTerrainBoolean>
+				<!-- doto -->
 				<FeatureTerrainBoolean>
 					<TerrainType>TERRAIN_MARSH</TerrainType>
 					<bFeatureTerrain>1</bFeatureTerrain>
@@ -990,6 +1008,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<BonusClassType>BONUSCLASS_GENERAL</BonusClassType>
 			<ArtDefineTag>ART_DEF_BONUS_FISH</ArtDefineTag>
 			<TechReveal>NONE</TechReveal>
+			<!-- doto -->
 			<TechCityTrade>TECH_FISHING</TechCityTrade>
 			<TechObsolete>NONE</TechObsolete>
 			<YieldChanges>
@@ -1077,6 +1096,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>0</iGroupRand>
 			<bArea>1</bArea>
 			<bHills>1</bHills>
+			<!-- doto -->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>1</bNoRiverSide>
@@ -1138,6 +1158,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>0</iGroupRand>
 			<bArea>1</bArea>
 			<bHills>0</bHills>
+			<!-- doto -->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>1</bNoRiverSide>
@@ -1147,6 +1168,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 					<TerrainType>TERRAIN_GRASS</TerrainType>
 					<bTerrain>1</bTerrain>
 				</TerrainBoolean>
+				<!-- doto -->
 				<TerrainBoolean>
 					<TerrainType>TERRAIN_MARSH</TerrainType>
 					<bTerrain>1</bTerrain>
@@ -1203,6 +1225,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>0</iGroupRand>
 			<bArea>1</bArea>
 			<bHills>1</bHills>
+			<!-- doto -->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>1</bNoRiverSide>
@@ -1276,6 +1299,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<Civilopedia>TXT_KEY_BONUS_DYE_PEDIA</Civilopedia>
 			<BonusClassType>BONUSCLASS_GENERAL</BonusClassType>
 			<ArtDefineTag>ART_DEF_BONUS_DYE</ArtDefineTag>
+			<!-- doto WAS NONE-->
 			<TechReveal>TECH_POTTERY</TechReveal>
 			<TechCityTrade>TECH_CALENDAR</TechCityTrade>
 			<TechObsolete>NONE</TechObsolete>
@@ -1294,6 +1318,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iMinLatitude>0</iMinLatitude>
 			<iMaxLatitude>90</iMaxLatitude>
 			<Rands>
+				<!-- doto 25-->
 				<iRandApp1>20</iRandApp1>
 				<iRandApp2>20</iRandApp2>
 				<iRandApp3>0</iRandApp3>
@@ -1304,6 +1329,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iMinLandPercent>0</iMinLandPercent>
 			<iUnique>0</iUnique>
 			<iGroupRange>1</iGroupRange>
+			<!-- doto 50-->	
 			<iGroupRand>25</iGroupRand>
 			<bArea>1</bArea>
 			<bHills>0</bHills>
@@ -1364,6 +1390,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<bArea>0</bArea>
 			<!-- advc.021b: was 1 -->
 			<bHills>0</bHills>
+			<!-- doto -->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>0</bNoRiverSide>
@@ -1377,6 +1404,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 					<TerrainType>TERRAIN_SNOW</TerrainType>
 					<bTerrain>1</bTerrain>
 				</TerrainBoolean>
+				<!-- doto -->
 				<TerrainBoolean>
 					<TerrainType>TERRAIN_MARSH</TerrainType>
 					<bTerrain>1</bTerrain>
@@ -1405,12 +1433,14 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<Civilopedia>TXT_KEY_BONUS_GEMS_PEDIA</Civilopedia>
 			<BonusClassType>BONUSCLASS_PRECIOUS</BonusClassType>
 			<ArtDefineTag>ART_DEF_BONUS_GEMS</ArtDefineTag>
+			<!-- doto NOE-->
 			<TechReveal>TECH_MINING</TechReveal>
 			<TechCityTrade>TECH_MINING</TechCityTrade>
 			<TechObsolete>NONE</TechObsolete>
 			<YieldChanges>
 				<iYieldChange>0</iYieldChange>
 				<iYieldChange>0</iYieldChange>
+				<!-- doto 1-->
 				<iYieldChange>2</iYieldChange>
 			</YieldChanges>
 			<iAITradeModifier>0</iAITradeModifier>
@@ -1423,11 +1453,13 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iMinLatitude>0</iMinLatitude>
 			<iMaxLatitude>90</iMaxLatitude>
 			<Rands>
+				<!-- doto 20-->
 				<iRandApp1>20</iRandApp1>
 				<iRandApp2>20</iRandApp2>
 				<iRandApp3>0</iRandApp3>
 				<iRandApp4>0</iRandApp4>
 			</Rands>
+			<!-- doto 67-->
 			<iPlayer>100</iPlayer>
 			<iTilesPer>0</iTilesPer>
 			<iMinLandPercent>0</iMinLandPercent>
@@ -1440,6 +1472,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<!-- advc.129: was 1 -->
 			<bArea>0</bArea>
 			<bHills>1</bHills>
+			<!-- doto -->
 			<bPeaks>1</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>0</bNoRiverSide>
@@ -1500,6 +1533,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<!-- advc.129: was 1 -->
 			<bArea>0</bArea>
 			<bHills>1</bHills>
+			<!-- doto -->
 			<bPeaks>1</bPeaks>
 			<bFlatlands>0</bFlatlands>
 			<bNoRiverSide>0</bNoRiverSide>
@@ -1560,6 +1594,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>50</iGroupRand>
 			<bArea>1</bArea>
 			<bHills>0</bHills>
+			<!-- doto -->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>0</bNoRiverSide>
@@ -1593,6 +1628,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>
 			<iPlacementOrder>5</iPlacementOrder>
+			<!-- doto 50-->
 			<iConstAppearance>100</iConstAppearance>
 			<iMinAreaSize>3</iMinAreaSize>
 			<iMinLatitude>0</iMinLatitude>
@@ -1613,6 +1649,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>17</iGroupRand>
 			<bArea>1</bArea>
 			<bHills>0</bHills>
+			<!-- doto -->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>0</bNoRiverSide>
@@ -1647,6 +1684,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<Civilopedia>TXT_KEY_BONUS_SILK_PEDIA</Civilopedia>
 			<BonusClassType>BONUSCLASS_GENERAL</BonusClassType>
 			<ArtDefineTag>ART_DEF_BONUS_SILK</ArtDefineTag>
+			<!-- doto NONE-->
 			<TechReveal>TECH_POTTERY</TechReveal>
 			<TechCityTrade>TECH_CALENDAR</TechCityTrade>
 			<TechObsolete>NONE</TechObsolete>
@@ -1678,6 +1716,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>50</iGroupRand>
 			<bArea>1</bArea>
 			<bHills>0</bHills>
+			<!-- doto -->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>0</bNoRiverSide>
@@ -1707,11 +1746,13 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<Civilopedia>TXT_KEY_BONUS_SILVER_PEDIA</Civilopedia>
 			<BonusClassType>BONUSCLASS_PRECIOUS</BonusClassType>
 			<ArtDefineTag>ART_DEF_BONUS_SILVER</ArtDefineTag>
+			<!-- doto NONE-->
 			<TechReveal>TECH_MINING</TechReveal>
 			<TechCityTrade>TECH_MINING</TechCityTrade>
 			<TechObsolete>NONE</TechObsolete>
 			<YieldChanges>
 				<iYieldChange>0</iYieldChange>
+				<!-- doto 1-->
 				<iYieldChange>1</iYieldChange>
 				<iYieldChange>1</iYieldChange>
 			</YieldChanges>
@@ -1742,6 +1783,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<!-- advc.129: was 1 -->
 			<bArea>0</bArea>
 			<bHills>1</bHills>
+			<!-- doto -->
 			<bPeaks>1</bPeaks>
 			<bFlatlands>0</bFlatlands>
 			<!-- advc.129: was 0 -->
@@ -1781,6 +1823,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<YieldChanges>
 				<iYieldChange>0</iYieldChange>
 				<iYieldChange>0</iYieldChange>
+				<!-- doto -->
 				<iYieldChange>2</iYieldChange>
 			</YieldChanges>
 			<iAITradeModifier>0</iAITradeModifier>
@@ -1806,6 +1849,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>50</iGroupRand>
 			<bArea>1</bArea>
 			<bHills>0</bHills>
+			<!-- doto -->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>0</bNoRiverSide>
@@ -1871,6 +1915,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>50</iGroupRand>
 			<bArea>1</bArea>
 			<bHills>0</bHills>
+			<!-- doto -->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>0</bNoRiverSide>
@@ -1900,6 +1945,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<Civilopedia>TXT_KEY_BONUS_WINE_PEDIA</Civilopedia>
 			<BonusClassType>BONUSCLASS_GENERAL</BonusClassType>
 			<ArtDefineTag>ART_DEF_BONUS_WINE</ArtDefineTag>
+			<!-- doto none-->
 			<TechReveal>TECH_MYSTICISM</TechReveal>
 			<TechCityTrade>TECH_MONARCHY</TechCityTrade>
 			<TechObsolete>NONE</TechObsolete>
@@ -1931,6 +1977,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>50</iGroupRand>
 			<bArea>1</bArea>
 			<bHills>1</bHills>
+			<!-- doto -->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>1</bFlatlands>
 			<bNoRiverSide>0</bNoRiverSide>
@@ -1951,8 +1998,10 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<Civilopedia>TXT_KEY_BONUS_WHALE_PEDIA</Civilopedia>
 			<BonusClassType>BONUSCLASS_GENERAL</BonusClassType>
 			<ArtDefineTag>ART_DEF_BONUS_WHALE</ArtDefineTag>
+			<!-- doto none-->
 			<TechReveal>TECH_COMPASS</TechReveal>
 			<TechCityTrade>NONE</TechCityTrade>
+			<!-- doto TECH_COMBUSTION-->
 			<TechObsolete>TECH_ECOLOGY</TechObsolete>
 			<YieldChanges>
 				<iYieldChange>1</iYieldChange>
@@ -1982,6 +2031,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>0</iGroupRand>
 			<bArea>0</bArea>
 			<bHills>0</bHills>
+			<!-- doto none-->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>0</bFlatlands>
 			<bNoRiverSide>0</bNoRiverSide>
@@ -1996,6 +2046,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<FeatureTerrainBooleans/>
 		</BonusInfo>
 		<BonusInfo>
+		<!-- doto new bonuses-->
 			<Type>BONUS_POTATO</Type>
 			<Description>Potato</Description>
 			<Civilopedia>Potato</Civilopedia>
@@ -2534,6 +2585,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<BonusClassType>BONUSCLASS_GENERAL</BonusClassType>
 			<ArtDefineTag>ART_DEF_BONUS_MUSIC</ArtDefineTag>
 			<TechReveal>NONE</TechReveal>
+			<!-- doto none-->
 			<TechCityTrade>TECH_FUSION</TechCityTrade>
 			<TechObsolete>NONE</TechObsolete>
 			<YieldChanges/>
@@ -2560,6 +2612,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iGroupRand>0</iGroupRand>
 			<bArea>0</bArea>
 			<bHills>0</bHills>
+			<!-- doto none-->
 			<bPeaks>0</bPeaks>
 			<bFlatlands>0</bFlatlands>
 			<bNoRiverSide>0</bNoRiverSide>

@@ -116,8 +116,10 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_WATER_WORKED</ArtDefineTag>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
+			<!-- doto -->
 			<bPeakMakesValid>0</bPeakMakesValid>
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
+			<!-- doto -->
 			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>				
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
@@ -160,8 +162,10 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_CITY_RUINS</ArtDefineTag>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
+			<!-- doto -->
 			<bPeakMakesValid>0</bPeakMakesValid>
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
+			<!-- doto -->
 			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>				
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
@@ -208,10 +212,12 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_GOODY_HUT</ArtDefineTag>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
+			<!-- doto -->
 			<bPeakMakesValid>0</bPeakMakesValid>
 			<bPeakMakesInvalid>1</bPeakMakesInvalid>
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
-			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>				
+			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>
+			<!-- doto -->				
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
 			<bRequiresFlatlands>0</bRequiresFlatlands>
@@ -289,8 +295,10 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			</IrrigatedYieldChange>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
+			<!-- doto -->
 			<bPeakMakesValid>0</bPeakMakesValid>
 			<bFreshWaterMakesValid>1</bFreshWaterMakesValid>
+			<!-- doto -->
 			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>				
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
@@ -358,6 +366,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
+					<!-- doto -->
 					<BonusType>BONUS_POTATO</BonusType>
 					<bBonusMakesValid>1</bBonusMakesValid>
 					<bBonusTrade>1</bBonusTrade>
@@ -402,8 +411,10 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_FISHING_BOATS</ArtDefineTag>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
+			<!-- doto -->
 			<bPeakMakesValid>0</bPeakMakesValid>
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
+			<!-- doto -->
 			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>				
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
@@ -446,7 +457,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					<YieldChanges>
 						<iYieldChange>2</iYieldChange>
 						<iYieldChange>0</iYieldChange>
-						<iYieldChange>1</iYieldChange>
+						<iYieldChange>0</iYieldChange>
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
@@ -457,10 +468,12 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					<YieldChanges>
 						<iYieldChange>2</iYieldChange>
 						<iYieldChange>0</iYieldChange>
+						<!-- doto -->
 						<iYieldChange>1</iYieldChange>
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
+					<!-- doto -->
 					<BonusType>BONUS_PEARLS</BonusType>
 					<bBonusMakesValid>1</bBonusMakesValid>
 					<bBonusTrade>1</bBonusTrade>
@@ -496,6 +509,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_WHALING_BOATS</ArtDefineTag>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
+			<!-- doto -->
             <bPeakMakesValid>0</bPeakMakesValid>		
             <bFreshWaterMakesValid>0</bFreshWaterMakesValid>
 			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>				
@@ -561,8 +575,10 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			</YieldChanges>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>1</bHillsMakesValid>
+			<!-- doto -->
 			<bPeakMakesValid>0</bPeakMakesValid>
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
+			<!-- doto -->
 			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>				
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
@@ -626,7 +642,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					<YieldChanges>
 						<iYieldChange>0</iYieldChange>
 						<iYieldChange>1</iYieldChange>
-						<iYieldChange>1</iYieldChange>
+						<iYieldChange>0</iYieldChange>
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
@@ -652,6 +668,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
+					<!-- doto -->
 					<BonusType>BONUS_SULPHUR</BonusType>
 					<bBonusMakesValid>1</bBonusMakesValid>
 					<bBonusTrade>1</bBonusTrade>
@@ -670,7 +687,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					<YieldChanges>
 						<iYieldChange>0</iYieldChange>
 						<iYieldChange>1</iYieldChange>
-						<iYieldChange>1</iYieldChange>
+						<iYieldChange>0</iYieldChange>
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
@@ -696,6 +713,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
+					<!-- doto -->
 					<BonusType>BONUS_TITANIUM</BonusType>
 					<bBonusMakesValid>1</bBonusMakesValid>
 					<bBonusTrade>1</bBonusTrade>
@@ -993,7 +1011,8 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_PLANTATION</ArtDefineTag>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
-           <bFreshWaterMakesValid>0</bFreshWaterMakesValid>
+			<!-- doto -->
+           	<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
 			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>				
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
@@ -1017,6 +1036,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iHappiness>0</iHappiness>
 			<iPillageGold>5</iPillageGold>
 			<bOutsideBorders>0</bOutsideBorders>
+			<!-- doto -->
 			<iHealthPercent>5</iHealthPercent>
 			<!-- JCultureControl Mod Start -->
 			<bSpreadCultureControl>1</bSpreadCultureControl>
@@ -1041,6 +1061,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
+					<!-- doto -->
 					<BonusType>BONUS_RUBBER</BonusType>
 					<bBonusMakesValid>1</bBonusMakesValid>
 					<bBonusTrade>1</bBonusTrade>
@@ -1131,8 +1152,10 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_QUARRY</ArtDefineTag>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
+			<!-- doto -->
             <bPeakMakesValid>0</bPeakMakesValid>
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
+			<!-- doto -->
 			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>				
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
@@ -1153,6 +1176,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iAirBombDefense>10</iAirBombDefense>
 			<iDefenseModifier>0</iDefenseModifier>
 <!-- HEALTH FROM IMPROVEMENTS -->
+			<!-- doto -->
 			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>
 			<iPillageGold>5</iPillageGold>
@@ -1191,6 +1215,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
+			<!-- doto -->
 					<BonusType>BONUS_SALT</BonusType>
 					<bBonusMakesValid>1</bBonusMakesValid>
 					<bBonusTrade>1</bBonusTrade>
@@ -1246,6 +1271,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iHappiness>0</iHappiness>
 			<iPillageGold>5</iPillageGold>
 			<bOutsideBorders>0</bOutsideBorders>
+			<!-- doto -->
 			<iHealthPercent>0</iHealthPercent>
 			<!-- JCultureControl Mod Start -->
 			<bSpreadCultureControl>0</bSpreadCultureControl>
@@ -1316,8 +1342,10 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_CAMP</ArtDefineTag>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
+			<!-- doto -->
             <bPeakMakesValid>0</bPeakMakesValid>
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
+			<!-- doto -->
 			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>				
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
@@ -1398,8 +1426,10 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_WELL</ArtDefineTag>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
+			<!-- doto -->
             <bPeakMakesValid>0</bPeakMakesValid>
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
+			<!-- doto -->
 			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>				
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
@@ -1419,10 +1449,12 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iUpgradeTime>0</iUpgradeTime>
 			<iAirBombDefense>10</iAirBombDefense>
 			<iDefenseModifier>0</iDefenseModifier>
+			<!-- doto -->
 <!--			<iHealth>-1</iHealth> -->
 			<iHappiness>0</iHappiness>
 			<iPillageGold>10</iPillageGold>
 			<bOutsideBorders>0</bOutsideBorders>
+			<!-- doto -->
 			<iHealthPercent>-10</iHealthPercent>
 			<!-- JCultureControl Mod Start -->
 			<bSpreadCultureControl>1</bSpreadCultureControl>
@@ -1447,6 +1479,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
+			<!-- doto -->
 					<BonusType>BONUS_NATURAL_GAS</BonusType>
 					<bBonusMakesValid>1</bBonusMakesValid>
 					<bBonusTrade>1</bBonusTrade>
@@ -1471,8 +1504,10 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_OFFSHORE_PLATFORM</ArtDefineTag>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
+			<!-- doto -->
            <bPeakMakesValid>0</bPeakMakesValid>
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
+			<!-- doto -->
 			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>				
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
@@ -1492,6 +1527,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iUpgradeTime>0</iUpgradeTime>
 			<iAirBombDefense>10</iAirBombDefense>
 			<iDefenseModifier>0</iDefenseModifier>
+			<!-- doto -->
 			<iHealth>-1</iHealth>
 			<iHappiness>0</iHappiness>
 			<iPillageGold>10</iPillageGold>
@@ -1520,6 +1556,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
+			<!-- doto -->
 					<BonusType>BONUS_NATURAL_GAS</BonusType>
 					<bBonusMakesValid>1</bBonusMakesValid>
 					<bBonusTrade>1</bBonusTrade>
@@ -1544,8 +1581,10 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_WINERY</ArtDefineTag>
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
+			<!-- doto -->
             <bPeakMakesValid>0</bPeakMakesValid>
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
+			<!-- doto -->
 			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>				
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
@@ -1675,7 +1714,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
 			<!-- K-Mod: was 0 -->
-			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
+			<bFreshWaterMakesValid>1</bFreshWaterMakesValid>
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
 			<bRequiresFlatlands>0</bRequiresFlatlands>
@@ -1735,7 +1774,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
 			<!-- K-Mod: was 0 -->
-			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
+			<bFreshWaterMakesValid>1</bFreshWaterMakesValid>
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
 			<bRequiresFlatlands>0</bRequiresFlatlands>
@@ -1804,7 +1843,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<bActsAsCity>0</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
 			<!-- K-Mod: was 0 -->
-			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
+			<bFreshWaterMakesValid>1</bFreshWaterMakesValid>
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
 			<bRequiresFlatlands>0</bRequiresFlatlands>
@@ -1862,8 +1901,10 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<YieldChanges/>
 			<bActsAsCity>1</bActsAsCity>
 			<bHillsMakesValid>0</bHillsMakesValid>
+			<!-- doto -->
             <bPeakMakesValid>0</bPeakMakesValid>
 			<bFreshWaterMakesValid>0</bFreshWaterMakesValid>
+			<!-- doto -->
 			<iAddsFreshWaterInRadius>-1</iAddsFreshWaterInRadius>				
 			<bRiverSideMakesValid>0</bRiverSideMakesValid>
 			<bNoFreshWater>0</bNoFreshWater>
@@ -1881,6 +1922,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iTilesPerGoody>0</iTilesPerGoody>
 			<iGoodyRange>0</iGoodyRange>
 			<iFeatureGrowth>0</iFeatureGrowth>
+			<!-- doto -->
 			<iUpgradeTime>35</iUpgradeTime>
 			<iAirBombDefense>20</iAirBombDefense>
 			<iDefenseModifier>25</iDefenseModifier>
@@ -1993,6 +2035,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<bGraphicalOnly>0</bGraphicalOnly>
 		</ImprovementInfo>
 		<ImprovementInfo>
+			<!-- doto -->
 			<Type>IMPROVEMENT_FORT2</Type>
 			<Description>Fort Level 2</Description>
 			<Civilopedia>TXT_KEY_IMPROVEMENT_CASTLE_PEDIA</Civilopedia>

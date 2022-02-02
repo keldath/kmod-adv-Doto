@@ -14,7 +14,7 @@
 			<Description>TXT_KEY_BUILD_ROAD</Description>
 			<Help/>
 			<PrereqTech>TECH_THE_WHEEL</PrereqTech>
-			<iTime>220</iTime>
+			<iTime>200</iTime>
 			<iCost>0</iCost>
 			<bKill>0</bKill>
 			<ImprovementType>NONE</ImprovementType>
@@ -62,17 +62,18 @@
 				<FeatureStruct>
 					<FeatureType>FEATURE_JUNGLE</FeatureType>
 					<PrereqTech>TECH_IRON_WORKING</PrereqTech>
-					<iTime>420</iTime>
+					<iTime>400</iTime>
 					<iProduction>0</iProduction>
 					<bRemove>1</bRemove>
 				</FeatureStruct>
 				<FeatureStruct>
 					<FeatureType>FEATURE_FOREST</FeatureType>
 					<PrereqTech>TECH_BRONZE_WORKING</PrereqTech>
-					<iTime>320</iTime>
+					<iTime>300</iTime>
 					<iProduction>30</iProduction>
 					<bRemove>1</bRemove>
 				</FeatureStruct>
+				<!-- kekm.9 -->
 				<FeatureStruct>
 					<FeatureType>FEATURE_FALLOUT</FeatureType>
 					<PrereqTech>TECH_ECOLOGY</PrereqTech>
@@ -269,6 +270,7 @@
 					<iProduction>30</iProduction>
 					<bRemove>1</bRemove>
 				</FeatureStruct>
+				<!-- kekm.9 -->
 				<FeatureStruct>
 					<FeatureType>FEATURE_FALLOUT</FeatureType>
 					<PrereqTech>TECH_ECOLOGY</PrereqTech>
@@ -488,6 +490,7 @@
 			<ImprovementType>IMPROVEMENT_CAMP</ImprovementType>
 			<RouteType>NONE</RouteType>
 			<EntityEvent>ENTITY_EVENT_BUILD</EntityEvent>
+			<!-- kekm.9 -->
 			<FeatureStructs>
 				<FeatureStruct>
 					<FeatureType>FEATURE_FALLOUT</FeatureType>
@@ -685,6 +688,7 @@
 			<ImprovementType>IMPROVEMENT_FORT</ImprovementType>
 			<RouteType>NONE</RouteType>
 			<EntityEvent>ENTITY_EVENT_BUILD</EntityEvent>
+			<!-- kekm.9 -->
 			<FeatureStructs>
 				<FeatureStruct>
 					<FeatureType>FEATURE_FALLOUT</FeatureType>

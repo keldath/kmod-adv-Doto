@@ -1777,7 +1777,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iFreeSpecialist>0</iFreeSpecialist>
 			<iAreaFreeSpecialist>0</iAreaFreeSpecialist>
 			<iGlobalFreeSpecialist>0</iGlobalFreeSpecialist>
-			<iMaintenanceModifier>-20</iMaintenanceModifier>
+			<!-- advc.exp.2: was -20 -->
+			<iMaintenanceModifier>-15</iMaintenanceModifier>
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
 			<iEnemyWarWearinessModifier>0</iEnemyWarWearinessModifier>
@@ -3231,7 +3232,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iGlobalExperience>0</iGlobalExperience>
 <!-- pop limit -->
 			<iPopulationLimitChange>2</iPopulationLimitChange>
-<!-- pop limit --><iFoodKept>0</iFoodKept>
+<!-- pop limit -->
+			<iFoodKept>0</iFoodKept>
 			<iAirlift>0</iAirlift>
 			<iAirModifier>0</iAirModifier>
 			<iAirUnitCapacity>0</iAirUnitCapacity>
@@ -3568,10 +3570,10 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iGlobalHurryModifier>0</iGlobalHurryModifier>
 			<iExperience>0</iExperience>
 			<iGlobalExperience>0</iGlobalExperience>
-
 <!-- pop limit -->
 			<iPopulationLimitChange>2</iPopulationLimitChange>
-<!-- pop limit --><iFoodKept>0</iFoodKept>
+<!-- pop limit -->
+			<iFoodKept>0</iFoodKept>
 			<iAirlift>0</iAirlift>
 			<iAirModifier>0</iAirModifier>
 			<iAirUnitCapacity>0</iAirUnitCapacity>
@@ -5381,7 +5383,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<YieldModifiers>
 				<iYield>0</iYield>
 				<iYield>20</iYield>
-				<iYield>15</iYield>
+				<iYield>10</iYield>
 			</YieldModifiers>
 			<CommerceChanges/>
 			<ObsoleteSafeCommerceChanges/>
@@ -5573,7 +5575,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<YieldModifiers>
 				<iYield>0</iYield>
 				<iYield>20</iYield>
-				<iYield>20</iYield>
+				<iYield>15</iYield>
 			</YieldModifiers>
 			<CommerceChanges/>
 			<ObsoleteSafeCommerceChanges/>
@@ -5965,12 +5967,12 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<!-- advc.200: was +2 production in K-Mod -->
 			<YieldChanges/>
 			<YieldModifiers>
-				<iYield>10</iYield>
+				<iYield>5</iYield>
 				<iYield>25</iYield>
 				<iYield>0</iYield>
 			</YieldModifiers>
 			<PowerYieldModifiers>
-				<iYield>10</iYield>
+				<iYield>5</iYield>
 				<iYield>50</iYield>
 				<iYield>0</iYield>
 			</PowerYieldModifiers>
@@ -12218,6 +12220,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<FreeSpecialistCounts/>
 			<CommerceFlexibles/>
 			<CommerceChangeOriginalOwners/>
+			<!-- BBAI: was _GROCER -->
 			<ConstructSound>AS2D_BUILD_SUPERMARKET</ConstructSound>
 			<BonusHealthChanges>
 				<BonusHealthChange>
@@ -12940,7 +12943,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iFreeSpecialist>0</iFreeSpecialist>
 			<iAreaFreeSpecialist>0</iAreaFreeSpecialist>
 			<iGlobalFreeSpecialist>0</iGlobalFreeSpecialist>
-			<iMaintenanceModifier>-75</iMaintenanceModifier>
+			<!-- advc.exp.2: was -75 -->
+			<iMaintenanceModifier>-70</iMaintenanceModifier>
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
 			<iEnemyWarWearinessModifier>0</iEnemyWarWearinessModifier>
@@ -13247,6 +13251,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<TechTypes/>
 			<Bonus>NONE</Bonus>
 			<PrereqBonuses/>
+			<!-- K-Mod -->
 			<ProductionTraits>
 				<ProductionTrait>
 					<ProductionTraitType>TRAIT_AGGRESSIVE</ProductionTraitType>
@@ -13353,6 +13358,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
+				<!-- K-Mod: was 4 -->
 				<iCommerce>2</iCommerce>
 			</CommerceChanges>
 			<ObsoleteSafeCommerceChanges/>
@@ -13435,6 +13441,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<TechTypes/>
 			<Bonus>NONE</Bonus>
 			<PrereqBonuses/>
+			<!-- K-Mod -->
 			<ProductionTraits>
 				<ProductionTrait>
 					<ProductionTraitType>TRAIT_AGGRESSIVE</ProductionTraitType>
@@ -13541,6 +13548,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
+				<!-- K-Mod: was 4 -->
 				<iCommerce>2</iCommerce>
 			</CommerceChanges>
 			<ObsoleteSafeCommerceChanges/>
@@ -14146,6 +14154,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<TechTypes/>
 			<Bonus>NONE</Bonus>
 			<PrereqBonuses/>
+			<!-- K-Mod -->
 			<ProductionTraits>
 				<ProductionTrait>
 					<ProductionTraitType>TRAIT_PROTECTIVE</ProductionTraitType>
@@ -14800,7 +14809,6 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<GlobalSeaPlotYieldChanges/>
 			<YieldChanges/>
 			<CommerceChanges/>
-			<!-- was 1 culture in K-Mod; reverted -->
 			<ObsoleteSafeCommerceChanges>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
@@ -15001,7 +15009,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_PRIEST</SpecialistType>
-					<iSpecialistCount>3</iSpecialistCount>
+					<!-- advc.179: was 3 -->
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -15745,7 +15754,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_PRIEST</SpecialistType>
-					<iSpecialistCount>3</iSpecialistCount>
+					<!-- advc.179: was 3 -->
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -16489,7 +16499,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_PRIEST</SpecialistType>
-					<iSpecialistCount>3</iSpecialistCount>
+					<!-- advc.179: was 3 -->
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -17233,7 +17244,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_PRIEST</SpecialistType>
-					<iSpecialistCount>3</iSpecialistCount>
+					<!-- advc.179: was 3 -->
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -17977,7 +17989,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_PRIEST</SpecialistType>
-					<iSpecialistCount>3</iSpecialistCount>
+					<!-- advc.179: was 3 -->
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -18721,7 +18734,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_PRIEST</SpecialistType>
-					<iSpecialistCount>3</iSpecialistCount>
+					<!-- advc.179: was 3 -->
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -19465,7 +19479,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_PRIEST</SpecialistType>
-					<iSpecialistCount>3</iSpecialistCount>
+					<!-- advc.179: was 3 -->
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -21447,16 +21462,9 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<GlobalSeaPlotYieldChanges/>
 			<YieldChanges/>
 			<CommerceChanges/>
-			<ObsoleteSafeCommerceChanges>
-				<iCommerce>0</iCommerce>
-				<iCommerce>0</iCommerce>
-				<iCommerce>2</iCommerce>
-			</ObsoleteSafeCommerceChanges>
-			<CommerceChangeDoubleTimes>
-				<iCommerce>0</iCommerce>
-				<iCommerce>0</iCommerce>
-				<iCommerce>1000</iCommerce>
-			</CommerceChangeDoubleTimes>
+			<!-- advc.201: Was 2 culture, doubling after 1000 years. -->
+			<ObsoleteSafeCommerceChanges/>
+			<CommerceChangeDoubleTimes/>
 			<CommerceModifiers/>
 			<GlobalCommerceModifiers/>
 			<SpecialistExtraCommerces/>
@@ -21684,7 +21692,6 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<Description>TXT_KEY_BUILDING_PYRAMID</Description>
 			<Civilopedia>TXT_KEY_BUILDING_PYRAMID_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_BUILDING_PYRAMID_STRATEGY</Strategy>
-			<Help>TXT_KEY_BUILDING_THE_PYRAMID_HELP</Help>
 			<Advisor>ADVISOR_ECONOMY</Advisor>
 			<ArtDefineTag>ART_DEF_BUILDING_PYRAMID</ArtDefineTag>
 			<MovieDefineTag>ART_DEF_MOVIE_PYRAMIDS</MovieDefineTag>
@@ -29285,7 +29292,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<bPrereqReligion>0</bPrereqReligion>
 			<bCenterInCity>0</bCenterInCity>
 			<iAIWeight>0</iAIWeight>
-			<iCost>400</iCost>
+			<!-- advc.179: was 400 -->
+			<iCost>350</iCost>
 			<iHurryCostModifier>300</iHurryCostModifier>
 			<iAdvancedStartCost>-1</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>3</iAdvancedStartCostIncrease>
@@ -29365,6 +29373,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<StateReligionCommerces/>
 			<CommerceHappinesses/>
 			<ReligionChanges/>
+			<!-- advc.179: was 0 -->
 			<SpecialistCounts/>
 			<FreeSpecialistCounts/>
 			<CommerceFlexibles/>
@@ -29551,7 +29560,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_PRIEST</SpecialistType>
-					<iSpecialistCount>3</iSpecialistCount>
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -29737,7 +29746,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_PRIEST</SpecialistType>
-					<iSpecialistCount>3</iSpecialistCount>
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -30651,7 +30660,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_PRIEST</SpecialistType>
-					<iSpecialistCount>3</iSpecialistCount>
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -30837,7 +30846,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_PRIEST</SpecialistType>
-					<iSpecialistCount>3</iSpecialistCount>
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>
@@ -33358,7 +33367,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<SpecialistCounts>
 				<SpecialistCount>
 					<SpecialistType>SPECIALIST_PRIEST</SpecialistType>
-					<iSpecialistCount>3</iSpecialistCount>
+					<iSpecialistCount>2</iSpecialistCount>
 				</SpecialistCount>
 			</SpecialistCounts>
 			<FreeSpecialistCounts/>

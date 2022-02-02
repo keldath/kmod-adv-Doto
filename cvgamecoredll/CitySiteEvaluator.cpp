@@ -17,6 +17,9 @@ static int const iDEFAULT_BARB_DISCOURAGED_RANGE = 8; // advc.303
 
 #define IFLOG if (gFoundLogLevel > 0 && AIFoundValue::isLoggingEnabled()) // advc.031c
 
+//mylon - local define of 2 - so all city settle will be on the basis of 2
+//the added 3-4 are bonus for city states
+
 // Body cut from K-Mod's CvPlayerAI::CvFoundSettings::CvFoundSettings
 CitySiteEvaluator::CitySiteEvaluator(CvPlayerAI const& kPlayer, int iMinRivalRange,
 	bool bStartingLoc, /* advc.031e: */ bool bNormalize)
@@ -366,9 +369,13 @@ AIFoundValue::AIFoundValue(CvPlot const& kPlot, CitySiteEvaluator const& kSettin
 	kGame(GC.getGame()), iX(kPlot.getX()), iY(kPlot.getY()), m_iResult(0)
 {
 	PROFILE_FUNC();
-	if (!kPlayer.canFound(iX, iY))
+	if (!kPlayer.canFound(kPlot, false,
+		/*	advc.001: Don't let unit action recommendations for human settlers
+			give away rival cities founded in the fog of war. */
+		!kPlayer.isHuman()))
+	{
 		return;
-
+	}
 	bBarbarian = kPlayer.isBarbarian();
 	eEra = kPlayer.getCurrentEra();
 	rAIEraFactor = kPlayer.AI_getCurrEraFactor();
@@ -469,7 +476,8 @@ short AIFoundValue::evaluate()
 	// K-Mod. (used to devalue cities which are unable to get any production.)
 	scaled rBaseProduction; // (advc.031: scaled)
 
-	FOR_EACH_ENUM(CityPlot)
+	//FOR_EACH_ENUM(CityPlot)
+	FOR_EACH_CITYPLOT(kPlayer)
 	{
 		// <advc.031>
 		CvPlot const* pLoopPlot = plotCity(iX, iY, eLoopCityPlot);
@@ -660,7 +668,7 @@ short AIFoundValue::evaluate()
 		{
 			if (!bBarbarian && // advc.303: Barbarians don't care about resource trade
 				// advc.031: Otherwise we can already trade the resource
-				p.getOwner() != ePlayer)
+				getRevealedOwner(p) != ePlayer)
 			{
 				int iBonusValue = nonYieldBonusValue(p, eBonus,
 						bCanTradeBonus, bCanSoonTradeBonus, bEasyAccess,
@@ -835,7 +843,8 @@ bool AIFoundValue::isSiteValid() const
 			IFLOG logBBAI("Can't start on goody hut");
 			return false;
 		}
-		FOR_EACH_ENUM(CityPlot)
+		//FOR_EACH_ENUM(CityPlot)
+		FOR_EACH_CITYPLOT(kPlayer)
 		{
 			CvPlot const* p = plotCity(iX, iY, eLoopCityPlot);
 			if (p == NULL)
@@ -848,12 +857,13 @@ bool AIFoundValue::isSiteValid() const
 	else // advc.031: Not relevant for StartingLoc
 	{
 		int iOwnedTiles = 0;
-		FOR_EACH_ENUM(CityPlot)
+		//FOR_EACH_ENUM(CityPlot)
+		FOR_EACH_CITYPLOT(kPlayer)
 		{
 			CvPlot const* p = plotCity(iX, iY, eLoopCityPlot);
 			if (p == NULL)
 				iOwnedTiles += 2;
-			else if (p->isOwned() && p->getTeam() != eTeam)
+			else if (getRevealedOwner(*p) != NO_PLAYER && getRevealedTeam(*p) != eTeam)
 			{
 				/*  advc.035 (comment): Would be good to check abFlip[i] here,
 					but computeOverlap is a little costly. */
@@ -924,7 +934,8 @@ bool AIFoundValue::computeOverlap()
 	{
 		FOR_EACH_CITY(c, kPlayer)
 		{
-			FOR_EACH_ENUM(CityPlot)
+			//FOR_EACH_ENUM(CityPlot)
+			FOR_EACH_CITYPLOT(kPlayer)
 			{
 				CvPlot const* p = plotCity(iX, iY, eLoopCityPlot);
 				if(p != NULL && plotDistance(p->getX(), p->getY(),
@@ -936,12 +947,13 @@ bool AIFoundValue::computeOverlap()
 		}
 		if (GC.getDefineBOOL(CvGlobals::OWN_EXCLUSIVE_RADIUS))
 		{
-			FOR_EACH_ENUM(CityPlot)
+			//FOR_EACH_ENUM(CityPlot)
+			FOR_EACH_CITYPLOT(kPlayer)
 			{
 				CvPlot const* p = plotCity(iX, iY, eLoopCityPlot);
 				abFlip[eLoopCityPlot] = (!abOwnCityRadius[eLoopCityPlot] &&
-						p != NULL && p->isOwned() &&
-						p->isCityRadius() && p->getTeam() != eTeam &&
+						p != NULL && getRevealedOwner(*p) != NO_PLAYER &&
+						p->isCityRadius() && getRevealedTeam(*p) != eTeam &&
 						(p->getSecondOwner() == ePlayer ||
 						/*  The above is enough b/c the tile may not be within the
 							culture range of one of our cities; but it will be once
@@ -971,7 +983,8 @@ int AIFoundValue::countBadTiles(/* advc.031: */ int& iInnerRadius,
 	int& iRevealedDecentLand) const // advc.040
 {
 	int iBadTiles = 0;
-	FOR_EACH_ENUM(CityPlot)
+	//FOR_EACH_ENUM(CityPlot)
+	FOR_EACH_CITYPLOT(kPlayer)
 	{
 		CvPlot const* p = plotCity(iX, iY, eLoopCityPlot);
 		// <advc.031>
@@ -1044,11 +1057,11 @@ int AIFoundValue::countBadTiles(/* advc.031: */ int& iInnerRadius,
 			if(!bCoastal)
 				iBadLoop++; // </advc.031>
 		}
-		else if (p->isOwned())
+		else if (getRevealedOwner(*p) != NO_PLAYER)
 		{
 			if(!abFlip[eLoopCityPlot]) // advc.035
 			{
-				if (p->getTeam() != eTeam || p->isBeingWorked())
+				if (getRevealedTeam(*p) != eTeam || p->isBeingWorked())
 					iBadLoop++;
 				/*  (K-Mod) note: this final condition is...
 					not something I intend to keep permanently. */
@@ -1093,14 +1106,17 @@ bool AIFoundValue::isTooManyBadTiles(int iBadTiles,
 		if(!isRevealed(p))
 			continue;
 		// <advc.031>
-		if (bInnerOnly && it.currID() >= NUM_INNER_PLOTS && p.getOwner() != ePlayer)
-			continue; // </advc.031>
+		if (bInnerOnly && it.currID() >= NUM_INNER_PLOTS &&
+			getRevealedOwner(p) != ePlayer)
+		{
+			continue;
+		} // </advc.031>
 		// <advc.303>
 		if(bBarbarian && !adjacentOrSame(p, kPlot))
 			continue; // </advc.303>
-		if(p.isOwned() &&
+		if(getRevealedOwner(p) != NO_PLAYER &&
 			// <advc.031>
-			(p.getOwner() != ePlayer ||
+			(getRevealedOwner(p) != ePlayer ||
 			p.getCityRadiusCount() > 0)) // </advc.031>
 		{
 			continue;
@@ -1185,7 +1201,7 @@ bool AIFoundValue::isUsablePlot(CityPlotTypes ePlot, int& iTakenTiles, bool& bCi
 	// </advc.035>
 	// <advc.031>
 	bCityRadius = p->isCityRadius();
-	PlayerTypes const eOwner = p->getOwner();
+	PlayerTypes const eOwner = getRevealedOwner(*p);
 	bForeignOwned = (eOwner != NO_PLAYER && eOwner != ePlayer);
 	bSteal = (bCityRadius && bForeignOwned);
 	 // </advc.031>
@@ -1226,13 +1242,18 @@ bool AIFoundValue::isUsablePlot(CityPlotTypes ePlot, int& iTakenTiles, bool& bCi
 				better wait for borders to expand. */
 			return false;
 		}
-		if (pOtherCity != NULL && (kTeam.AI_deduceCitySite(*pOtherCity) ||
+		if (pOtherCity != NULL && (kPlayer.isHuman() ? pOtherCity->isRevealed(eTeam) :
+			(kTeam.AI_deduceCitySite(*pOtherCity) ||
 			/*  At the start of the game, a single revealed tile should
 				be enough to locate the city. */
-			iCities == 0))
+			iCities == 0)))
 		{
 			bOtherInnerRing = adjacentOrSame(*p, *pOtherCity->plot());
-			FAssert(!bInnerRing || !bOtherInnerRing || !pOtherCity->isArea(kArea));
+			FAssert(!bInnerRing || !bOtherInnerRing || !pOtherCity->isArea(kArea) ||
+					/*	In that case, stealing from the inner ring should
+						perhaps be considered. (But AdvCiv uses range 2 like BtS,
+						so I'm not going to address range 1.) */
+					GC.getDefineINT(CvGlobals::MIN_CITY_RANGE) < 2);
 			if (bForeignOwned && (bOtherInnerRing ||
 				// Don't try to overlap with team member or master
 				TEAMID(eOwner) == eTeam ||
@@ -1312,7 +1333,7 @@ bool AIFoundValue::isRemovableFeature(CvPlot const& p, bool& bPersistent,
 		{
 			CvCity* pDummy;
 			iFeatureProduction = p.getFeatureProduction(eLoopBuild, eTeam, &pDummy, &kPlot, ePlayer);
-			if (p.getTeam() == eTeam)
+			if (getRevealedTeam(p) == eTeam)
 				iFeatureProduction /= 3; // Can already chop it
 		}
 		// CurrentResearch should be good enough
@@ -1342,6 +1363,23 @@ bool AIFoundValue::isRemovableFeature(CvPlot const& p, bool& bPersistent,
 bool AIFoundValue::isRevealed(CvPlot const& p) const
 {
 	return (kSet.isAllSeeing() || p.isRevealed(eTeam));
+}
+
+// (replacing all CvPlot::getOwner and isOwned calls)
+PlayerTypes AIFoundValue::getRevealedOwner(CvPlot const& p) const
+{
+	if (kSet.isAllSeeing())
+		return p.getOwner();
+	return p.getRevealedOwner(eTeam);
+}
+
+// (replacing all CvPlot::getTeam calls)
+TeamTypes AIFoundValue::getRevealedTeam(CvPlot const& p) const
+{
+	PlayerTypes ePlayer = getRevealedOwner(p);
+	if (ePlayer == NO_PLAYER)
+		return NO_TEAM;
+	return TEAMID(ePlayer);
 }
 
 // (replacing all CvPlot::getBonusType and getNonObsoleteBonusType calls)
@@ -1486,7 +1524,7 @@ int AIFoundValue::calculateCultureModifier(CvPlot const& p, bool bForeignOwned,
 				city in the loop that computes abFlip, but it should be
 				fine to assume that the owner has very little tile culture. */
 			(!bForeignOwned ? 1 :
-			p.getCulture(p.getOwner())));
+			p.getCulture(getRevealedOwner(p))));
 	// <advc.031> Don't settle near rival capital (e.g. 2nd starting settler, OCC)
 	if (bCityRadius && kGame.getElapsedGameTurns() <= 5)
 		iOtherCulture = std::max(iOtherCulture, 200);
@@ -1495,7 +1533,7 @@ int AIFoundValue::calculateCultureModifier(CvPlot const& p, bool bForeignOwned,
 	{
 		if ((pForeignCity != NULL && pForeignCity->isCapital()) ||
 			// Likely to struggle with a single colony against multiple rival cities
-			(iAreaCities <= 0 && p.getArea().getCitiesPerPlayer(p.getOwner()) > 1))
+			(iAreaCities <= 0 && p.getArea().getCitiesPerPlayer(getRevealedOwner(p)) > 1))
 		{
 			iOtherCulture = (3 * iOtherCulture) / 2;
 		}
@@ -1524,7 +1562,7 @@ int AIFoundValue::calculateCultureModifier(CvPlot const& p, bool bForeignOwned,
 		rRateModifier *= fixp(1.3);
 	/*  K-Mod had done *5/4 if EasyCulture; I think only free culture will really
 		swing culture wars. */
-	int iFreeForeignCulture = (bForeignOwned ? GET_PLAYER(p.getOwner()).
+	int iFreeForeignCulture = (bForeignOwned ? GET_PLAYER(getRevealedOwner(p)).
 			getFreeCityCommerce(COMMERCE_CULTURE) : 0);
 	if (pForeignCity != NULL && pForeignCity->isCapital())
 	{
@@ -1978,7 +2016,7 @@ int AIFoundValue::nonYieldBonusValue(CvPlot const& p, BonusTypes eBonus,
 			IFLOG logBBAI("Penalty for water resource: %d", iWaterPenalty);
 		}
 		// iCultureModifier should have this covered
-		/*if (p.getOwner() != ePlayer && ::stepDistance(&kPlot, &p) > 1) {
+		/*if (getRevealedOwner(p) != ePlayer && ::stepDistance(&kPlot, &p) > 1) {
 			if (!kSet.isEasyCulture())
 				r *= fixp(0.75);
 		}*/
@@ -2101,7 +2139,8 @@ int AIFoundValue::sumUpPlotValues(std::vector<int>& aiPlotValues) const
 	double const dExp = std::log(dMaxMultPercent - dMinMultPercent) /
 			std::log(NUM_CITY_PLOTS - 1.0);
 	int iR = 0;
-	FOR_EACH_ENUM(CityPlot)
+	//FOR_EACH_ENUM(CityPlot)
+	FOR_EACH_CITYPLOT(kPlayer)
 	{
 		int iPlotValue = aiPlotValues[eLoopCityPlot];
 		if (iPlotValue > 0)
@@ -2798,6 +2837,7 @@ int AIFoundValue::adjustToCivSurroundings(int iValue, int iStealPercent) const
 		int const iDistance = plotDistance(&kPlot, pOurNearestCity->plot());
 		/*  advc: BtS code dealing with iDistance deleted;
 			K-Mod comment: Close cities are penalised in other ways */
+		// with that max distance, we could fit a city in the middle!
 		// advc.031: Handle expansive setting below
 		int const iTargetRange = 5;//(kSet.isExpansive() ? 6 : 5);
 		int iNearestDistance = iDistance;

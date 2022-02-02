@@ -66,7 +66,7 @@
 		<element type="Type"/>
 		<element type="Description" minOccurs="0"/>
 		<element type="iSeaLevelChange" minOccurs="0"/>
-<!-- advc.910 -->
+		<!-- advc.910 -->
 		<element type="iResearchPercent" minOccurs="0"/>
 	</ElementType>
 	<ElementType name="WorldInfo" content="eltOnly">
@@ -960,10 +960,11 @@
 		<element type="iGoldPerUnit" minOccurs="0"/>
 		<element type="iGoldPerMilitaryUnit" minOccurs="0"/>
 		<element type="iHappyPerMilitaryUnit" minOccurs="0"/>
-		<!-- advc.912c -->
+		<!-- advc.912c (default is 0) -->
 		<element type="iLuxuryModifier" minOccurs="0"/>
 		<element type="bMilitaryFoodProduction" minOccurs="0"/>
 		<element type="iMaxConscript" minOccurs="0"/>
+		<!-- K-Mod (advc: made optional) -->
 		<element type="iUnhealthyPopulationModifier" minOccurs="0"/>
 		<element type="iExpInBorderModifier" minOccurs="0"/>
 		<element type="bBuildingOnlyHealthy" minOccurs="0"/>
@@ -1117,6 +1118,9 @@
 <!-- doto wonder limit keldath -->
 	<ElementType name="imaxWonderCultureLimit" content="textOnly" dt:type="int"/>
 <!-- doto wonder limit keldath -->
+<!-- doto enhanced city size mylon-->
+	<ElementType name="iCityRadius" content="textOnly" dt:type="int"/>
+<!-- doto enhanced city size mylon-->
 	<ElementType name="GameSpeedType" content="textOnly"/>
 	<ElementType name="SpeedThreshold" content="eltOnly">
 		<element type="GameSpeedType"/>
@@ -1132,6 +1136,9 @@
 <!-- doto wonder limit keldath -->
 		<element type="imaxWonderCultureLimit" minOccurs="0"/>
 <!-- doto wonder limit keldath -->
+<!-- doto enhanced city size mylon-->
+		<element type="iCityRadius" minOccurs="0"/>
+<!-- doto enhanced city size mylon-->		
 	</ElementType>
 	<ElementType name="CultureLevelInfos" content="eltOnly">
 		<element type="CultureLevelInfo" maxOccurs="*"/>

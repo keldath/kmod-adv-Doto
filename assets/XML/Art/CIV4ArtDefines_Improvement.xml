@@ -217,7 +217,7 @@
 		<ImprovementArtInfo>
 			<Type>ART_DEF_IMPROVEMENT_FORT</Type>
 			<bExtraAnimations>0</bExtraAnimations>
-			<fScale>0.8</fScale>
+			<fScale>0.5</fScale>
 			<fInterfaceScale>1.5</fInterfaceScale>
 			<NIF>Art/Structures/Improvements/Fort/eu_med_fort.nif</NIF>
 			<KFM/>

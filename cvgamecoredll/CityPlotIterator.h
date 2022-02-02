@@ -7,6 +7,7 @@
 
 #include "CvMap.h"
 #include "CvCity.h"
+#include "CvPlayer.h"
 
 /*  Iterator over the CvPlot objects in the city radius around a plot in the center.
 	NULL plots - plots whose coordinates are past the edges of the map - are skipped.
@@ -34,7 +35,8 @@ class CityPlotIterator
 public:
 	CityPlotIterator(CvCity const& kCity, bool bIncludeHomePlot = true) :
 		m_ePos(NO_CITYPLOT), m_pNext(NULL),
-		m_iCenterX(kCity.getX()), m_iCenterY(kCity.getY())
+		m_iCenterX(kCity.getX()), m_iCenterY(kCity.getY()),
+		m_eCityPlots(kCity.maxCityPlots()) //mylon
 	{
 		if (!bIncludeHomePlot)
 			++m_ePos;
@@ -45,9 +47,13 @@ public:
 		computeNext();
 	}
 
-	CityPlotIterator(CvPlot const& kCenter, bool bIncludeHomePlot = true) :
-		m_ePos(NO_CITYPLOT), m_pNext(NULL),
-		m_iCenterX(kCenter.getX()), m_iCenterY(kCenter.getY())
+	CityPlotIterator(CvPlot const& kCenter,
+		CvPlayer const* pPlayer = NULL, //mylon
+		bool bIncludeHomePlot = true)
+	:	m_ePos(NO_CITYPLOT), m_pNext(NULL),
+		m_iCenterX(kCenter.getX()), m_iCenterY(kCenter.getY()),
+		//mylon:
+		m_eCityPlots(pPlayer == NULL ? DEFAULT_NUM_CITY_PLOTS : pPlayer->numCityPlots())
 	{
 		if (!bIncludeHomePlot)
 			++m_ePos;
@@ -59,9 +65,13 @@ public:
 	}
 
 	// Constructor (only) for RAND_ORDER
-	CityPlotIterator(int iX, int iY, CvRandom& pRandom, bool bIncludeHomePlot = true) :
-		m_ePos(NO_CITYPLOT), m_pNext(NULL), m_iCenterX(iX), m_iCenterY(iY),
-		m_pRandom(&pRandom)
+	CityPlotIterator(int iX, int iY, CvRandom& pRandom,
+		CvPlayer const* pPlayer = NULL, //mylon
+		bool bIncludeHomePlot = true)
+	:	m_ePos(NO_CITYPLOT), m_pNext(NULL), m_iCenterX(iX), m_iCenterY(iY),
+		m_pRandom(&pRandom),
+		//mylon:
+		m_eCityPlots(pPlayer == NULL ? DEFAULT_NUM_CITY_PLOTS : pPlayer->numCityPlots())
 	{
 		if (eWORKING_PLOT_TYPE != ANY_CITY_PLOT)
 			FAssert(eWORKING_PLOT_TYPE == ANY_CITY_PLOT);
@@ -108,7 +118,7 @@ public:
 protected:
 	void computeNext()
 	{
-		if (m_ePos + 1 >= NUM_CITY_PLOTS)
+		if (m_ePos + 1 >= /*NUM_CITYPLOTS*/m_eCityPlots) //mylon
 		{
 			m_pNext = NULL;
 			return;
@@ -142,16 +152,18 @@ private:
 	CityPlotTypes m_ePos;
 	CvPlot* m_pNext;
 	int m_iCenterX, m_iCenterY;
+	CityPlotTypes m_eCityPlots; //mylon
 	CvCity const* m_pCity; // not used if eWORKING_PLOT_TYPE is ANY_CITY_PLOT
 	/*	Only used if bRAND_ORDER ...
 		(Could move these into a separate class at the expense of having to
 		duplicate the derived classes; see AgentIterator for reference.) */
 	CvRandom* m_pRandom;
 	int* m_aiShuffledIndices;
-
+		
 	void shuffle(bool bIncludeHomePlot)
 	{
-		m_aiShuffledIndices = m_pRandom->shuffle(NUM_CITY_PLOTS);
+		//mylon
+		m_aiShuffledIndices = m_pRandom->shuffle(/*NUM_CITY_PLOTS*/m_eCityPlots); //mylon
 		if (!bIncludeHomePlot)
 		{
 			// Swap home plot to the front, then advance past it.
@@ -188,8 +200,10 @@ public:
 	CityPlotIter(CvCity const& kCity, bool bIncludeHomePlot = true) :
 		 CityPlotIterator<>(kCity, bIncludeHomePlot) {}
 
-	CityPlotIter(CvPlot const& kCenter, bool bIncludeHomePlot = true) :
-		CityPlotIterator<>(kCenter, bIncludeHomePlot) {}
+	CityPlotIter(CvPlot const& kCenter,
+		CvPlayer const* pPlayer = NULL, //mylon
+		bool bIncludeHomePlot = true)
+	:	CityPlotIterator<>(kCenter, pPlayer, bIncludeHomePlot) {}
 
 	CityPlotIter& operator++()
 	{
@@ -231,13 +245,12 @@ public:
 class CityPlotRandIter : public CityPlotIterator<ANY_CITY_PLOT, true>
 {
 public:
-	CityPlotRandIter(CvCity const& kCity, CvRandom& pRandom, bool bIncludeHomePlot) :
+	CityPlotRandIter(CvCity const& kCity, CvRandom& pRandom, bool bIncludeHomePlot = true) :
 		CityPlotIterator<ANY_CITY_PLOT, true>(kCity.getX(), kCity.getY(),
 		pRandom, bIncludeHomePlot) {}
 
-	CityPlotRandIter(CvPlot const& kCenter, CvRandom& pRandom, bool bIncludeHomePlot) :
-		CityPlotIterator<ANY_CITY_PLOT, true>(kCenter.getX(), kCenter.getY(),
-		pRandom, bIncludeHomePlot) {}
+	CityPlotRandIter(CvPlot const& kCenter, CvRandom& pRandom,CvPlayer const* pPlayer = NULL, /*mylon*/ bool bIncludeHomePlot = true):
+		CityPlotIterator<ANY_CITY_PLOT, true>(kCenter.getX(), kCenter.getY(),pRandom, pPlayer, bIncludeHomePlot) {}
 
 	CityPlotRandIter& operator++()
 	{

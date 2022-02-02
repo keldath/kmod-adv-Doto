@@ -277,11 +277,11 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iDemandRebukedSneakProb>0</iDemandRebukedSneakProb>
 			<iDemandRebukedWarProb>0</iDemandRebukedWarProb>
 			<iRazeCityProb>10</iRazeCityProb>
-			<iBuildUnitProb>60</iBuildUnitProb>
+			<iBuildUnitProb>50</iBuildUnitProb>
 			<!-- advc.114d: was 0 -->
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
 			<!-- advc.114d: was 16 -->
-			<iAttackOddsChangeRand>30</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>18</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>0</iCloseBordersAttitudeChange>
@@ -432,13 +432,14 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iTechTradeKnownPercent>0</iTechTradeKnownPercent>
 			<iMaxGoldTradePercent>0</iMaxGoldTradePercent>
 			<iMaxGoldPerTurnTradePercent>10</iMaxGoldPerTurnTradePercent>
-			<!-- BBAI Victory Strategy -->
-			<iCultureVictoryWeight>0</iCultureVictoryWeight>
-			<iSpaceVictoryWeight>0</iSpaceVictoryWeight>
-			<iConquestVictoryWeight>0</iConquestVictoryWeight>
-			<iDominationVictoryWeight>0</iDominationVictoryWeight>
-			<iDiplomacyVictoryWeight>0</iDiplomacyVictoryWeight>
-			<!-- BBAI Victory Strategy -->
+			<!-- BBAI Victory Strategy: start -->
+			<!-- advc: Default changed from 0 to 30 -->
+			<iCultureVictoryWeight>30</iCultureVictoryWeight>
+			<iSpaceVictoryWeight>30</iSpaceVictoryWeight>
+			<iConquestVictoryWeight>30</iConquestVictoryWeight>
+			<iDominationVictoryWeight>30</iDominationVictoryWeight>
+			<iDiplomacyVictoryWeight>30</iDiplomacyVictoryWeight>
+			<!-- BBAI Victory Strategy: end -->
 			<iMaxWarRand>0</iMaxWarRand>
 			<iMaxWarNearbyPowerRatio>0</iMaxWarNearbyPowerRatio>
 			<iMaxWarDistantPowerRatio>0</iMaxWarDistantPowerRatio>
@@ -447,7 +448,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iLimitedWarPowerRatio>0</iLimitedWarPowerRatio>
 			<iDogpileWarRand>0</iDogpileWarRand>
 			<iMakePeaceRand>0</iMakePeaceRand>
-			<iDeclareWarTradeRand>0</iDeclareWarTradeRand>
+			<iDeclareWarTradeRand>40</iDeclareWarTradeRand>
 			<iDemandRebukedSneakProb>0</iDemandRebukedSneakProb>
 			<iDemandRebukedWarProb>0</iDemandRebukedWarProb>
 			<iRazeCityProb>0</iRazeCityProb>
@@ -465,9 +466,13 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
 			<iSameReligionAttitudeChangeLimit>0</iSameReligionAttitudeChangeLimit>
-			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
-			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: Was leader-specific, swapped with
+				 iDifferentReligionAttitudeChangeLimit -->
+			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
+			<!-- advc.130n: was -5 -->
+			<iDifferentReligionAttitudeDivisor>-15</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: Was -1 for all leaders, now leader-specific. -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -606,8 +611,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>50</iContactDelay>
 				</ContactDelay>
 				<ContactDelay>
+					<!-- advc.124: was 20 -->
 					<ContactType>CONTACT_OPEN_BORDERS</ContactType>
-					<iContactDelay>20</iContactDelay>
+					<iContactDelay>40</iContactDelay>
 				</ContactDelay>
 				<ContactDelay>
 					<ContactType>CONTACT_DEFENSIVE_PACT</ContactType>
@@ -1091,7 +1097,6 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iWonderConstructRand>20</iWonderConstructRand>
 			<iBaseAttitude>0</iBaseAttitude>
 			<iBasePeaceWeight>0</iBasePeaceWeight>
-			<iPeaceWeightRand>3</iPeaceWeightRand>
 			<iWarmongerRespect>2</iWarmongerRespect>
 			<iEspionageWeight>100</iEspionageWeight>
 			<iRefuseToTalkWarThreshold>8</iRefuseToTalkWarThreshold>
@@ -1134,6 +1139,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -1365,10 +1371,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>7</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 7 -->
+			<iSameReligionAttitudeChangeLimit>6</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -1380,7 +1388,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>2</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -1634,7 +1643,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -1646,7 +1656,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -1874,7 +1885,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -2108,6 +2120,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -2120,7 +2133,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>5</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>5</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -2334,10 +2348,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>6</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 6 -->
+			<iSameReligionAttitudeChangeLimit>5</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>-2</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -2560,7 +2576,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>
 			<iLostWarAttitudeChange>-1</iLostWarAttitudeChange>
 			<iAtWarAttitudeDivisor>-5</iAtWarAttitudeDivisor>
-			<iAtWarAttitudeChangeLimit>5</iAtWarAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iAtPeaceAttitudeDivisor>60</iAtPeaceAttitudeDivisor>
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
@@ -2568,7 +2585,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>5</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>-2</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -2826,10 +2844,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>6</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was  -->
+			<iSameReligionAttitudeChangeLimit>5</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>-2</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -2841,7 +2861,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>2</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -3059,6 +3080,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
 			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
@@ -3073,7 +3095,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>4</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>5</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -3295,10 +3318,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -3539,10 +3564,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -3788,7 +3815,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -3800,7 +3828,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>6</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -4023,10 +4052,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -4038,7 +4069,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>2</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_FURIOUS</TechRefuseAttitudeThreshold>
@@ -4260,9 +4292,11 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -4500,6 +4534,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -4512,7 +4547,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>2</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>6</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 6 -->
+			<iFavoriteCivicAttitudeChangeLimit>5</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>NONE</TechRefuseAttitudeThreshold>
@@ -4778,10 +4814,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -5023,9 +5061,11 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -5038,7 +5078,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_FURIOUS</TechRefuseAttitudeThreshold>
@@ -5252,9 +5293,11 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>5</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -5267,7 +5310,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -5480,6 +5524,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -5708,10 +5753,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>5</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>-2</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -5970,10 +6017,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>5</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>-2</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -5985,7 +6034,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -6216,10 +6266,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>6</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 6 -->
+			<iSameReligionAttitudeChangeLimit>5</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>-2</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -6484,6 +6536,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -6716,6 +6769,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -6945,10 +6999,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>6</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 6 -->
+			<iSameReligionAttitudeChangeLimit>5</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>-2</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -6960,7 +7016,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_FURIOUS</TechRefuseAttitudeThreshold>
@@ -7181,10 +7238,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -7196,7 +7255,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_FURIOUS</TechRefuseAttitudeThreshold>
@@ -7464,7 +7524,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>2</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -7697,7 +7758,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>-2</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -7943,10 +8005,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>6</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 6 -->
+			<iSameReligionAttitudeChangeLimit>5</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>-2</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -8176,7 +8240,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>2</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -8188,7 +8253,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>6</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 6 -->
+			<iFavoriteCivicAttitudeChangeLimit>5</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -8408,7 +8474,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>-2</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -8420,7 +8487,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>4</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -8635,7 +8703,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>2</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>-2</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -8886,10 +8955,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -8901,7 +8972,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>4</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>5</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -9123,10 +9195,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>5</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>-2</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -9138,7 +9212,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>5</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -9232,7 +9307,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<ContactType>CONTACT_PEACE_TREATY</ContactType>
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
-				</ContactDelays>
+			</ContactDelays>
 			<MemoryDecays/>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
@@ -9361,6 +9436,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -9466,7 +9542,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<ContactType>CONTACT_PEACE_TREATY</ContactType>
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
-				</ContactDelays>
+			</ContactDelays>
 			<MemoryDecays/>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
@@ -9597,6 +9673,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -9864,6 +9941,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -9876,7 +9954,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>5</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -10115,8 +10194,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>6</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 6 -->
+			<iSameReligionAttitudeChangeLimit>5</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
@@ -10130,7 +10211,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -10375,10 +10457,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>5</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -10607,7 +10691,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -10619,7 +10704,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>5</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -10847,10 +10933,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>5</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>-2</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -11111,7 +11199,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -11331,7 +11420,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>2</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -11563,7 +11653,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>2</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -11575,7 +11666,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>6</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 6 -->
+			<iFavoriteCivicAttitudeChangeLimit>5</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</TechRefuseAttitudeThreshold>
@@ -11669,7 +11761,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<ContactType>CONTACT_PEACE_TREATY</ContactType>
 					<iContactDelay>20</iContactDelay>
 				</ContactDelay>
-				</ContactDelays>
+			</ContactDelays>
 			<MemoryDecays/>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
@@ -11827,6 +11919,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>2</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -11933,7 +12026,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<ContactType>CONTACT_PEACE_TREATY</ContactType>
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
-				</ContactDelays>
+			</ContactDelays>
 			<MemoryDecays/>
 			<MemoryAttitudePercents>
 				<!-- advc.001g: Was duplicated; one said 10, the other 5. -->
@@ -12056,10 +12149,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>5</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>-2</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -12071,7 +12166,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -12321,6 +12417,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -12333,7 +12430,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>4</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>5</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</TechRefuseAttitudeThreshold>
@@ -12593,10 +12691,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -12819,6 +12919,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -12831,7 +12932,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_ANNOYED</TechRefuseAttitudeThreshold>
@@ -13050,9 +13152,11 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>5</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 5 -->
+			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
@@ -13317,7 +13421,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeChangeLimit>1</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -13547,10 +13652,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<iSameReligionAttitudeChangeLimit>7</iSameReligionAttitudeChangeLimit>
+			<!-- advc.148: was 7 -->
+			<iSameReligionAttitudeChangeLimit>6</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>-2</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
@@ -13562,7 +13669,8 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>4</iFavoriteCivicAttitudeChangeLimit>
+			<!-- advc.148: was 4 -->
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
 			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
 			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
 			<TechRefuseAttitudeThreshold>ATTITUDE_FURIOUS</TechRefuseAttitudeThreshold>
