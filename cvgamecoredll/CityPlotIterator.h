@@ -36,7 +36,7 @@ public:
 	CityPlotIterator(CvCity const& kCity, bool bIncludeHomePlot = true) :
 		m_ePos(NO_CITYPLOT), m_pNext(NULL),
 		m_iCenterX(kCity.getX()), m_iCenterY(kCity.getY()),
-		m_eCityPlots(kCity.maxCityPlots()) //mylon
+		m_eCityPlots(kCity.numCityPlots()) //mylon
 	{
 		if (!bIncludeHomePlot)
 			++m_ePos;
@@ -71,7 +71,7 @@ public:
 	:	m_ePos(NO_CITYPLOT), m_pNext(NULL), m_iCenterX(iX), m_iCenterY(iY),
 		m_pRandom(&pRandom),
 		//mylon:
-		m_eCityPlots(pPlayer == NULL ? DEFAULT_NUM_CITY_PLOTS : pPlayer->numCityPlots())
+		m_eCityPlots(pPlayer == NULL ? DEFAULT_NUM_CITY_PLOTS /*4*/ : pPlayer->numCityPlots())
 	{
 		if (eWORKING_PLOT_TYPE != ANY_CITY_PLOT)
 			FAssert(eWORKING_PLOT_TYPE == ANY_CITY_PLOT);
@@ -245,12 +245,13 @@ public:
 class CityPlotRandIter : public CityPlotIterator<ANY_CITY_PLOT, true>
 {
 public:
-	CityPlotRandIter(CvCity const& kCity, CvRandom& pRandom, bool bIncludeHomePlot = true) :
-		CityPlotIterator<ANY_CITY_PLOT, true>(kCity.getX(), kCity.getY(),
-		pRandom, bIncludeHomePlot) {}
-
-	CityPlotRandIter(CvPlot const& kCenter, CvRandom& pRandom,CvPlayer const* pPlayer = NULL, /*mylon*/ bool bIncludeHomePlot = true):
-		CityPlotIterator<ANY_CITY_PLOT, true>(kCenter.getX(), kCenter.getY(),pRandom, pPlayer, bIncludeHomePlot) {}
+	CityPlotRandIter(CvCity const& kCity, CvRandom& pRandom, bool bIncludeHomePlot = true): 
+		CityPlotIterator<ANY_CITY_PLOT, true>(kCity.getX(), kCity.getY(), pRandom,
+       &GET_PLAYER(kCity.getOwner()), // <---- (!)
+       bIncludeHomePlot) {}
+    
+    CityPlotRandIter(CvPlot const& kCenter, CvRandom& pRandom, CvPlayer const* pPlayer = NULL, /*mylon*/ bool bIncludeHomePlot = true) :
+		CityPlotIterator<ANY_CITY_PLOT, true>(kCenter.getX(), kCenter.getY(), pRandom, pPlayer, bIncludeHomePlot) {}
 
 	CityPlotRandIter& operator++()
 	{

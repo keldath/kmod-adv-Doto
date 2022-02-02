@@ -34,10 +34,14 @@ CvCityAI::CvCityAI() // advc.003u: Merged with AI_reset
 		m_iCachePlayerClosenessDistance[i] = -1; // </advc.opt>
 	// (These two were declared as arrays, but it's neater to treat them all alike.)
 	m_aiBestBuildValue = new int[NUM_CITY_PLOTS];
-	FOR_EACH_ENUM(CityPlot)
+	//mylon
+	//FOR_EACH_ENUM(CityPlot)
+	FOR_EACH_CITYPLOT(GET_PLAYER(m_eOwner))
 		m_aiBestBuildValue[eLoopCityPlot] = NO_BUILD;
 	m_aeBestBuild = new BuildTypes[NUM_CITY_PLOTS];
-	FOR_EACH_ENUM(CityPlot)
+	//mylon
+	//FOR_EACH_ENUM(CityPlot)
+	FOR_EACH_CITYPLOT(GET_PLAYER(m_eOwner))
 		m_aeBestBuild[eLoopCityPlot] = NO_BUILD;
 	m_eBestBuild = NO_BUILD; // advc.opt
 
@@ -8533,7 +8537,9 @@ void CvCityAI::AI_updateBestBuild()
 	int iBestUnworkedPlotValue = 0;
 	int aiValues[NUM_CITY_PLOTS];
 	// <advc>  Ensure initialization
-	FOR_EACH_ENUM(CityPlot)
+	//mylon
+	//FOR_EACH_ENUM(CityPlot)
+	FOR_EACH_CITYPLOT(GET_PLAYER(m_eOwner))
 		aiValues[eLoopCityPlot] = MAX_INT; // </advc>
 	int const iGrowthValue = AI_growthValuePerFood(); // K-Mod
 	for (WorkablePlotIter itPlot(*this, false); itPlot.hasNext(); ++itPlot)  // advc: Some refactoring changes in the loop body

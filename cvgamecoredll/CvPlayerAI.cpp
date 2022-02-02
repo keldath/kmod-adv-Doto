@@ -25969,7 +25969,8 @@ void CvPlayerAI::AI_calculateAverages()
 	int iTotalPopulation = 0;
 	FOR_EACH_CITYAI(pLoopCity, *this)
 	{
-		int iPopulation = std::max(pLoopCity->getPopulation(), NUM_CITY_PLOTS);
+		//mylon - added CityPlotTypes to pLoopCity 0 dunnot why...
+		int iPopulation = std::max((CityPlotTypes)pLoopCity->getPopulation(), NUM_CITY_PLOTS);
 		iTotalPopulation += iPopulation;
 		FOR_EACH_ENUM(Yield)
 		{

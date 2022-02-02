@@ -33,6 +33,8 @@
 #undef CVGAME_INSTANCE_FOR_RNG
 #define CVGAME_INSTANCE_FOR_RNG (*this) // </advc.007c>
 
+//mylon local def based on the city
+#define NUM_CITY_PLOTS 2
 
 CvGame::CvGame() :
 	m_pRiseFall(new RiseFall()), // advc.700
@@ -2392,7 +2394,8 @@ void CvGame::normalizeAddExtras(/* advc.027: */ NormalizationTarget const* pTarg
 		}
 		int iHillsAdded = 0; // advc.108
 		// advc (comment): Starting plot not excluded. I guess that's OK.
-		for (CityPlotRandIter it(*pStartingPlot, getMapRand(), true);
+		//mylon  - added kPlayer
+		for (CityPlotRandIter it(*pStartingPlot, getMapRand(), &kPlayer, true);
 			iHills < 3 && /* advc.108: */ iHillsAdded < 2 &&
 			it.hasNext(); ++it)
 		{

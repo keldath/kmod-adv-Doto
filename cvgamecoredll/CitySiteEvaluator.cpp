@@ -11,6 +11,9 @@
 #include "CvInfo_Civics.h"
 #include "BBAILog.h"
 
+//mylon local def 
+#define NUM_CITY_PLOTS 2
+
 // advc: New file; see comment in the header.
 
 static int const iDEFAULT_BARB_DISCOURAGED_RANGE = 8; // advc.303

@@ -223,7 +223,7 @@ void CvCity::init(int iID, PlayerTypes eOwner, int iX, int iY, bool bBumpUnits,
 	m_eOriginalOwner = eOwner;
 //mylon
 	CivilizationTypes eCiv = GET_PLAYER(m_eOriginalOwner).getCivilizationType();
-	int diam = GC.getCivilizationInfo(eCiv).maxDiameter();
+	int diam = GC.getCivilizationInfo(eCiv).getMaxCityRadius();
 	m_abWorkingPlot.resize(numCityPlots());
 //mylon
 	m_iX = iX;
@@ -1113,7 +1113,9 @@ void CvCity::verifyWorkingPlot(CityPlotTypes ePlot) // advc.enum: CityPlotTypes
 
 void CvCity::verifyWorkingPlots()
 {
-	FOR_EACH_ENUM(CityPlot)
+	//FOR_EACH_ENUM(CityPlot)
+	//mylon
+	FOR_EACH_CITYPLOT(GET_PLAYER(getOwner()))
 		verifyWorkingPlot(eLoopCityPlot);
 }
 
@@ -7455,6 +7457,7 @@ int CvCity::getCultureThreshold(CultureLevelTypes eLevel)
 }
 
 // CvCity.cpp (don't want to include CvPlayer.h in CvCity.h)
+//mylon
 CityPlotTypes CvCity::numCityPlots() const
 {
    return GET_PLAYER(m_eOwner).numCityPlots();
@@ -7478,7 +7481,7 @@ void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups
 	int cultureRadius = GC.getCultureLevelInfo(getCultureLevel()).getCityRadius();
 	int cultMax = 2;
 	int playerMax = 2;
-
+/*
 	if (getRadius() <= CITY_PLOTS_RADIUS_2)
 		cultMax = NUM_CITY_PLOTS_2;
 	else if (getRadius() == CITY_PLOTS_RADIUS_3)
@@ -7494,6 +7497,7 @@ void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups
 		playerMax = NUM_CITY_PLOTS_4;
 
 	m_iMaxRadiusSize = std::min(cultMax, playerMax);
+	*/
 //mylon
 	if (eOldValue != NO_CULTURELEVEL)
 	{
@@ -12817,8 +12821,8 @@ void CvCity::read(FDataStreamBase* pStream)
 	pStream->Read((int*)&m_eOriginalOwner);
 	pStream->Read((int*)&m_eCultureLevel);
 //doto enhanced city size mylon
-	pStream->Read(&m_iRadius);
-	pStream->Read(&m_iMaxRadiusSize);
+//	pStream->Read(&m_iRadius);
+//	pStream->Read(&m_iMaxRadiusSize);
 	//mylon
 
 	if (uiFlag >= 12)
@@ -13007,7 +13011,9 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiFreePromotionCount.readArray<int>(pStream);
 		m_aiNumRealBuilding.readArray<int>(pStream);
 		m_aiNumFreeBuilding.readArray<int>(pStream);
-		m_abWorkingPlot.readArray<bool>(pStream);
+		//mylon
+		// (Only the uiFlag>=12 branch matters, can delete the other branch.)
+		//m_abWorkingPlot.readArray<bool>(pStream);
 		m_abHasReligion.readArray<bool>(pStream);
 		m_abHasCorporation.readArray<bool>(pStream);
 	}
@@ -13474,8 +13480,8 @@ void CvCity::write(FDataStreamBase* pStream)
 	pStream->Write(m_eOriginalOwner);
 	pStream->Write(m_eCultureLevel);
 //doto enhanced city size mylon
-	pStream->Write(m_iRadius);
-	pStream->Write(m_iMaxRadiusSize);
+//	pStream->Write(m_iRadius);
+//	pStream->Write(m_iMaxRadiusSize);
 	//mylon
 	m_aiSeaPlotYield.write(pStream);
 	m_aiRiverPlotYield.write(pStream);
@@ -14164,7 +14170,9 @@ void CvCity::applyEvent(EventTypes eEvent,
 			for (int i = 0; i < iNumPillage; i++)
 			{
 				int iRandOffset = SyncRandNum(NUM_CITY_PLOTS);
-				FOR_EACH_ENUM(CityPlot)
+				//FOR_EACH_ENUM(CityPlot)
+				//mylon
+				FOR_EACH_CITYPLOT(GET_PLAYER(getOwner()))
 				{
 					CityPlotTypes const ePlot = (CityPlotTypes)
 							((eLoopCityPlot + iRandOffset) % NUM_CITY_PLOTS);

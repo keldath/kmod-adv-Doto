@@ -25,6 +25,9 @@
 // advc.003u: Statics moved from CvPlayerAI
 CvPlayerAI** CvPlayer::m_aPlayers = NULL;
 
+//mylon local def based on the city
+#define NUM_CITY_PLOTS numCityPlots()
+
 void CvPlayer::initStatics()
 {
 	/*  advc.003u (comment): If further concrete classes derived from CvPlayer are
@@ -836,7 +839,9 @@ void CvPlayer::resetCivTypeEffects(/* advc.003q: */ bool bInit)
 		if (GC.getInfo(eUnit).isFound())
 			setUnitExtraCost(kCiv.unitClass(eUnit), getNewCityProductionValue());
 	}
+//mylon
 	m_iCityRadius = GC.getInfo(getCivilizationType()).getMaxCityRadius();
+	FAssert(m_iCityRadius <= MAX_CITY_RADIUS);
    	m_iCityDiameter = 2 * m_iCityRadius + 1;
    	int iCityPlots = -1;
    	switch (m_iCityRadius) // Replacing compile-time definitions
@@ -848,6 +853,7 @@ void CvPlayer::resetCivTypeEffects(/* advc.003q: */ bool bInit)
       	default: FErrorMsg("Invalid city radius");
    	}
    	m_eCityPlots = (CityPlotTypes)iCityPlots;
+	FAssert(m_eCityPlots <= MAX_CITY_PLOTS);
 }
 
 // for switching the leaderhead of this player

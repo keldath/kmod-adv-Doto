@@ -20,6 +20,8 @@
 //doto-tholish prereq&& mountains mod
 #include "CvInitCore.h"
 
+//mylon local def 
+#define NUM_CITY_PLOTS 2
 
 static char* szErrorMsg; // for displaying assertion and error messages
 

@@ -192,7 +192,8 @@ namespace enum_traits_detail
 	{
 		//FAssertBounds(0, enum_traits<E>::length(), eIndex);
 		//mylon
-		FAssertBounds(0, (CityPlotTypes)numCityPlots(), eIndex);
+		FAssertBounds(0,4, eIndex);
+		//FAssertBounds(0, (CityPlotTypes)maxCityPlots(), eIndex);
 	}
 	template<typename E>
 	void assertInfoEnum(E eIndex)

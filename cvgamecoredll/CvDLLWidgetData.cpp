@@ -14,6 +14,8 @@
 #include "WarEvaluator.h" // advc.104l
 #include "RiseFall.h" // advc.706
 
+//mylon local def based on the city
+#define NUM_CITY_PLOTS 2
 
 CvDLLWidgetData* CvDLLWidgetData::m_pInst = NULL;
 

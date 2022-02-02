@@ -1273,7 +1273,7 @@ public:
 	}
 	void changeEspionageDefenseModifier(int iChange);
 	int cultureTimes100InsertedByMission(EspionageMissionTypes eMission) const; // advc
-
+	//mylon
 	bool isWorkingPlot(CityPlotTypes ePlot) const																// Exposed to Python
 	{
 		//mylon
