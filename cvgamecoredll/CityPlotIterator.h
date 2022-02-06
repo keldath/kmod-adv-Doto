@@ -36,7 +36,9 @@ public:
 	CityPlotIterator(CvCity const& kCity, bool bIncludeHomePlot = true) :
 		m_ePos(NO_CITYPLOT), m_pNext(NULL),
 		m_iCenterX(kCity.getX()), m_iCenterY(kCity.getY()),
-		m_eCityPlots(kCity.numCityPlots()) //mylon
+//mylon enhanced cities doto advc version
+//get the city plot numders
+		m_eCityPlots(kCity.numCityPlots())
 	{
 		if (!bIncludeHomePlot)
 			++m_ePos;
@@ -48,11 +50,12 @@ public:
 	}
 
 	CityPlotIterator(CvPlot const& kCenter,
-		CvPlayer const* pPlayer = NULL, //mylon
+//mylon enhanced cities doto advc version
+		CvPlayer const* pPlayer = NULL,
 		bool bIncludeHomePlot = true)
 	:	m_ePos(NO_CITYPLOT), m_pNext(NULL),
 		m_iCenterX(kCenter.getX()), m_iCenterY(kCenter.getY()),
-		//mylon:
+//mylon enhanced cities doto advc version if no player is passed use the default size.
 		m_eCityPlots(pPlayer == NULL ? DEFAULT_NUM_CITY_PLOTS : pPlayer->numCityPlots())
 	{
 		if (!bIncludeHomePlot)
@@ -152,18 +155,19 @@ private:
 	CityPlotTypes m_ePos;
 	CvPlot* m_pNext;
 	int m_iCenterX, m_iCenterY;
-	CityPlotTypes m_eCityPlots; //mylon
+//mylon enhanced cities doto advc version
+	CityPlotTypes m_eCityPlots; 
 	CvCity const* m_pCity; // not used if eWORKING_PLOT_TYPE is ANY_CITY_PLOT
 	/*	Only used if bRAND_ORDER ...
 		(Could move these into a separate class at the expense of having to
 		duplicate the derived classes; see AgentIterator for reference.) */
 	CvRandom* m_pRandom;
 	int* m_aiShuffledIndices;
-		
+
 	void shuffle(bool bIncludeHomePlot)
 	{
-		//mylon
-		m_aiShuffledIndices = m_pRandom->shuffle(/*NUM_CITY_PLOTS*/m_eCityPlots); //mylon
+//mylon enhanced cities doto advc version - was /*NUM_CITY_PLOTS*/
+		m_aiShuffledIndices = m_pRandom->shuffle(m_eCityPlots); //mylon
 		if (!bIncludeHomePlot)
 		{
 			// Swap home plot to the front, then advance past it.
@@ -201,9 +205,13 @@ public:
 		 CityPlotIterator<>(kCity, bIncludeHomePlot) {}
 
 	CityPlotIter(CvPlot const& kCenter,
-		CvPlayer const* pPlayer = NULL, //mylon
+//mylon enhanced cities doto advc version
+		CvPlayer const* pPlayer = NULL,
 		bool bIncludeHomePlot = true)
-	:	CityPlotIterator<>(kCenter, pPlayer, bIncludeHomePlot) {}
+	:	CityPlotIterator<>(kCenter,
+//mylon enhanced cities doto advc version
+					pPlayer, 
+					bIncludeHomePlot) {}
 
 	CityPlotIter& operator++()
 	{
@@ -247,17 +255,99 @@ class CityPlotRandIter : public CityPlotIterator<ANY_CITY_PLOT, true>
 public:
 	CityPlotRandIter(CvCity const& kCity, CvRandom& pRandom, bool bIncludeHomePlot = true): 
 		CityPlotIterator<ANY_CITY_PLOT, true>(kCity.getX(), kCity.getY(), pRandom,
-       &GET_PLAYER(kCity.getOwner()), // <---- (!)
+//mylon enhanced cities doto advc version
+       &GET_PLAYER(kCity.getOwner()),
        bIncludeHomePlot) {}
     
-    CityPlotRandIter(CvPlot const& kCenter, CvRandom& pRandom, CvPlayer const* pPlayer = NULL, /*mylon*/ bool bIncludeHomePlot = true) :
-		CityPlotIterator<ANY_CITY_PLOT, true>(kCenter.getX(), kCenter.getY(), pRandom, pPlayer, bIncludeHomePlot) {}
+    CityPlotRandIter(CvPlot const& kCenter, CvRandom& pRandom,
+    		//mylon enhanced cities doto advc version - if no player is passed size will be the default plot nums
+    				CvPlayer const* pPlayer = NULL,  
+    				bool bIncludeHomePlot = true) :
+		CityPlotIterator<ANY_CITY_PLOT, true>(kCenter.getX(), kCenter.getY(), pRandom, 
+//mylon enhanced cities doto advc version
+		pPlayer, 
+		bIncludeHomePlot) {}
 
 	CityPlotRandIter& operator++()
 	{
 		computeNext();
 		return *this;
 	}
+};
+
+/*	Goes through all CvCity instances on the map that have a given CvPlot
+	in their radius. (This does not imply that the cities are currently able
+	to work the plot.) Uses a CityPlotIter internally b/c relevant cities
+	can only exist within a city radius around the given plot. */
+//mylon enhanced cities doto advc version
+//original advciv class renamed - same name used in PlotRadiusIterator
+class NearbyCityIterAdvc
+{
+public:
+	NearbyCityIterAdvc(CvPlot const& kPlot)
+	:	m_kCityPlots(*new CityPlotIter(kPlot)),
+		m_pNext(NULL)
+	{
+		if (kPlot.isCityRadius()) // save time
+			computeNext();
+	}
+
+	~NearbyCityIterAdvc() { delete &m_kCityPlots; }
+
+	bool hasNext() const
+	{
+		return (m_pNext != NULL);
+	}
+
+	NearbyCityIterAdvc& operator++()
+	{
+		computeNext();
+		return *this;
+	}
+
+	CvCity& operator*() const
+	{
+		return *m_pNext;
+	}
+
+	CvCity* operator->() const
+	{
+		return m_pNext;
+	}
+
+	// Priority value of the current city for working the center plot
+	int cityPlotPriority() const
+	{
+		/*	This is the city plot index of the current city's plot as seen
+			from a (hypothetical) city in the center. Should really be the
+			city plot index of the center as seen from the current city,
+			but it doesn't matter b/c city plot priorities are symmetrical.
+			The BtS code (at the call locations) had also relied on that. */
+		CityPlotTypes eCityPlot = m_kCityPlots.currID();
+		FAssertEnumBounds(eCityPlot);
+		return GC.getCityPlotPriority()[eCityPlot];
+	}
+
+private:
+	void computeNext()
+	{
+		if (!m_kCityPlots.hasNext())
+		{
+			m_pNext = NULL;
+			return;
+		}
+		CvPlot& kCityPlot = *m_kCityPlots;
+		++m_kCityPlots;
+		m_pNext = kCityPlot.getPlotCity();
+		if (m_pNext == NULL)
+		{
+			computeNext();
+			return;
+		}
+	}
+
+   CityPlotIter& m_kCityPlots;
+   CvCity* m_pNext;
 };
 
 #endif

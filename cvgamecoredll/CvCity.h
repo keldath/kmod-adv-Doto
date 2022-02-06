@@ -1273,10 +1273,10 @@ public:
 	}
 	void changeEspionageDefenseModifier(int iChange);
 	int cultureTimes100InsertedByMission(EspionageMissionTypes eMission) const; // advc
-	//mylon
+//mylon enhanced cities doto advc version
 	bool isWorkingPlot(CityPlotTypes ePlot) const																// Exposed to Python
 	{
-		//mylon
+//mylon enhanced cities doto advc version
 		//return m_abWorkingPlot.get(ePlot);
 		FAssertBounds(0, numCityPlots(), ePlot);
 		return m_abWorkingPlot[ePlot];
@@ -1432,10 +1432,11 @@ public:
 	void invalidateYieldRankCache(YieldTypes eYield = NO_YIELD);
 	void invalidateCommerceRankCache(CommerceTypes eCommerce = NO_COMMERCE);
 	//int getBestYieldAvailable(YieldTypes eYield) const; // advc.003j: obsolete
-//mylon	
+//mylon enhanced cities doto advc version	
 	CityPlotTypes numCityPlots() const;
 	int maxRadius() const;
 	int maxDiameter() const;
+//mylon enhanced cities doto advc version
 
 	// <advc.003u>
 	// virtual for FFreeListTrashArray
@@ -1693,7 +1694,7 @@ protected:
 	EagerEnumMap<PlayerTypes,bool> m_abTradeRoute;
 	EagerEnumMap<TeamTypes,bool> m_abRevealed;
 	ArrayEnumMap<TeamTypes,bool> m_abEspionageVisibility;
-//mylon
+//mylon enhanced cities doto advc version
 	//EagerEnumMap<CityPlotTypes,bool> m_abWorkingPlot;
 	std::vector<bool> m_abWorkingPlot;
 	ArrayEnumMap<ReligionTypes,bool> m_abHasReligion;

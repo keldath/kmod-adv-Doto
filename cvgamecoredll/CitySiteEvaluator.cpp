@@ -11,17 +11,13 @@
 #include "CvInfo_Civics.h"
 #include "BBAILog.h"
 
-//mylon local def 
+//mylon enhanced cities doto advc version 
 #define NUM_CITY_PLOTS 2
-
 // advc: New file; see comment in the header.
 
 static int const iDEFAULT_BARB_DISCOURAGED_RANGE = 8; // advc.303
 
 #define IFLOG if (gFoundLogLevel > 0 && AIFoundValue::isLoggingEnabled()) // advc.031c
-
-//mylon - local define of 2 - so all city settle will be on the basis of 2
-//the added 3-4 are bonus for city states
 
 // Body cut from K-Mod's CvPlayerAI::CvFoundSettings::CvFoundSettings
 CitySiteEvaluator::CitySiteEvaluator(CvPlayerAI const& kPlayer, int iMinRivalRange,
@@ -241,7 +237,7 @@ scaled CitySiteEvaluator::evaluateWorkablePlot(CvPlot const& kPlot) const
 	int const iBestPossibleScore = (kPlot.isWater() ? 4 : 5);
 	for (CityPlotIter it(kPlot, false); it.hasNext(); ++it)
 	{
-		if (!m_kPlayer.canFound(it->getX(), it->getY()))
+		if (!m_kPlayer.canFound(*it))
 			continue;
 		int iScore = 1;
 		if (kPlot.isWater())
@@ -373,9 +369,9 @@ AIFoundValue::AIFoundValue(CvPlot const& kPlot, CitySiteEvaluator const& kSettin
 {
 	PROFILE_FUNC();
 	if (!kPlayer.canFound(kPlot, false,
-		/*	advc.001: Don't let unit action recommendations for human settlers
+		/*	advc.181: Don't let action recommendations for human settlers
 			give away rival cities founded in the fog of war. */
-		!kPlayer.isHuman()))
+		!kPlayer.isHuman() || kSet.isAllSeeing()))
 	{
 		return;
 	}
@@ -478,7 +474,9 @@ short AIFoundValue::evaluate()
 
 	// K-Mod. (used to devalue cities which are unable to get any production.)
 	scaled rBaseProduction; // (advc.031: scaled)
-
+//mylon enhanced cities doto advc version
+//these loops will now be based on a player rather then a city size.
+//since a player has the max limit his cities are allowed
 	//FOR_EACH_ENUM(CityPlot)
 	FOR_EACH_CITYPLOT(kPlayer)
 	{
@@ -846,6 +844,7 @@ bool AIFoundValue::isSiteValid() const
 			IFLOG logBBAI("Can't start on goody hut");
 			return false;
 		}
+//mylon enhanced cities doto advc version
 		//FOR_EACH_ENUM(CityPlot)
 		FOR_EACH_CITYPLOT(kPlayer)
 		{
@@ -860,6 +859,7 @@ bool AIFoundValue::isSiteValid() const
 	else // advc.031: Not relevant for StartingLoc
 	{
 		int iOwnedTiles = 0;
+//mylon enhanced cities doto advc version
 		//FOR_EACH_ENUM(CityPlot)
 		FOR_EACH_CITYPLOT(kPlayer)
 		{
@@ -937,6 +937,7 @@ bool AIFoundValue::computeOverlap()
 	{
 		FOR_EACH_CITY(c, kPlayer)
 		{
+//mylon enhanced cities doto advc version
 			//FOR_EACH_ENUM(CityPlot)
 			FOR_EACH_CITYPLOT(kPlayer)
 			{
@@ -950,6 +951,7 @@ bool AIFoundValue::computeOverlap()
 		}
 		if (GC.getDefineBOOL(CvGlobals::OWN_EXCLUSIVE_RADIUS))
 		{
+//mylon enhanced cities doto advc version
 			//FOR_EACH_ENUM(CityPlot)
 			FOR_EACH_CITYPLOT(kPlayer)
 			{
@@ -986,6 +988,7 @@ int AIFoundValue::countBadTiles(/* advc.031: */ int& iInnerRadius,
 	int& iRevealedDecentLand) const // advc.040
 {
 	int iBadTiles = 0;
+//mylon enhanced cities doto advc version
 	//FOR_EACH_ENUM(CityPlot)
 	FOR_EACH_CITYPLOT(kPlayer)
 	{
@@ -2142,6 +2145,7 @@ int AIFoundValue::sumUpPlotValues(std::vector<int>& aiPlotValues) const
 	double const dExp = std::log(dMaxMultPercent - dMinMultPercent) /
 			std::log(NUM_CITY_PLOTS - 1.0);
 	int iR = 0;
+//mylon enhanced cities doto advc version
 	//FOR_EACH_ENUM(CityPlot)
 	FOR_EACH_CITYPLOT(kPlayer)
 	{
@@ -2423,6 +2427,10 @@ int AIFoundValue::evaluateGoodies(int iGoodies) const
 	remove that obstacle; makes the site difficult to evaluate. */
 int AIFoundValue::adjustToLandAreaBoundary(int iValue) const
 {
+	/*	Change advc.030 makes this check easy to implement. Can't do it
+		if that's disabled. */
+	if (!GC.getDefineBOOL(CvGlobals::PASSABLE_AREAS))
+		return iValue;
 	std::set<int> otherLandAreas;
 	bool bFoundImpassable = false;
 	int const iReprArea = kArea.getRepresentativeArea();
@@ -2841,8 +2849,10 @@ int AIFoundValue::adjustToCivSurroundings(int iValue, int iStealPercent) const
 		/*  advc: BtS code dealing with iDistance deleted;
 			K-Mod comment: Close cities are penalised in other ways */
 		// with that max distance, we could fit a city in the middle!
-		// advc.031: Handle expansive setting below
-		int const iTargetRange = 5;//(kSet.isExpansive() ? 6 : 5);
+		int const iTargetRange = //(kSet.isExpansive() ? 6 : 5)
+				/*	advc.031: Simply 5 unless a mod changes the city radius.
+					Handle expansive setting below. */
+				(5 + CITY_PLOTS_DIAMETER) / 2;
 		int iNearestDistance = iDistance;
 		/*	<advc.031> There can already be a city "in the middle" that iDistance
 			doesn't account for - namely when it's a foreign city. */
@@ -2927,7 +2937,7 @@ int AIFoundValue::adjustToCivSurroundings(int iValue, int iStealPercent) const
 	int iDistance = /* advc.031: */ std::min(GC.getMap().maxMaintenanceDistance(),
 			::plotDistance(iX, iY, pOurNearestCity->getX(), pOurNearestCity->getY()));
 	// <advc.031> Don't discourage settling on small nearby landmasses
-	if(pCapital == NULL || pCapital->isArea(kArea) ||
+	if (pCapital == NULL || pCapital->isArea(kArea) ||
 		::plotDistance(&kPlot, pCapital->plot()) >= 10 ||
 		kArea.getNumTiles() >= NUM_CITY_PLOTS)
 	{
@@ -3117,10 +3127,8 @@ bool AIFoundValue::isDeadlockedBonus(CvPlot const& kBonusPlot, int iMinRange) co
 		if (!isRevealed(kOtherSite) && !kOtherSite.isAdjacentRevealed(eTeam))
 			continue; // </advc.031>
 		//canFound usually returns very quickly
-		if (kPlayer.canFound(kOtherSite.getX(), kOtherSite.getY(),
-				/*  advc.031: Was false; whether to check visibility of cities that
-					prevent founding in kOtherSite. */
-				kSet.isAllSeeing()))
+		if (kPlayer.canFound(kOtherSite,
+			false, kSet.isAllSeeing())) // advc.181
 		{
 			bNeverFound = false;
 			if (stepDistance(&kPlot, &kOtherSite) > iMinRange ||

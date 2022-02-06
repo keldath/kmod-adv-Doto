@@ -261,7 +261,7 @@ void CvGame::updateColoredPlots()
 				{
 					CvPlot* pBestPlot = NULL;
 					if (kRecommendUnit.AI_bestCityBuild(*pCity, &pBestPlot) &&
-						pCity->AI_getBestBuildValue(plotCityXY(pCity->getX(), pCity->getY(), *pBestPlot)) > 1)
+						pCity->AI_getBestBuildValue(pCity->getCityPlotIndex(*pBestPlot)) > 1)
 					{
 						FAssert(pBestPlot != NULL);
 						kEngine.addColoredPlot(pBestPlot->getX(), pBestPlot->getY(),
@@ -269,7 +269,7 @@ void CvGame::updateColoredPlots()
 								PLOT_STYLE_CIRCLE, PLOT_LANDSCAPE_LAYER_RECOMMENDED_PLOTS);
 						CvPlot* pNextBestPlot = NULL;
 						if (kRecommendUnit.AI_bestCityBuild(*pCity, &pNextBestPlot, NULL, pBestPlot) &&
-							pCity->AI_getBestBuildValue(plotCityXY(pCity->getX(), pCity->getY(), *pNextBestPlot)) > 1)
+							pCity->AI_getBestBuildValue(pCity->getCityPlotIndex(*pNextBestPlot)) > 1)
 						{
 							FAssert(pNextBestPlot != NULL);
 							kEngine.addColoredPlot(pNextBestPlot->getX(), pNextBestPlot->getY(),
@@ -2704,7 +2704,7 @@ void CvGame::handleCityScreenPlotPicked(CvCity* pCity, CvPlot* pPlot,
 				TASK_CHANGE_WORKING_PLOT, iIndex, -1, false, bAlt, bShift, bCtrl);
 	}
 	else //if (GC.getDefineINT("CITY_SCREEN_CLICK_WILL_EXIT"))
-	if (BUGOption::isEnabled("CityScreen__ClickMapToExit", false)) // advc.004t
+	if (BUGOption::isEnabled("CityScreen__ClickMapToExit", true)) // advc.004t
 		gDLL->UI().clearSelectedCities();
 }
 

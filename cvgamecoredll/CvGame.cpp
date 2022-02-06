@@ -22,6 +22,7 @@
 #include "CvMessageControl.h"
 #include "BarbarianWeightMap.h" // advc.304
 #include "StartingPositionIteration.h" // advc.027
+#include "TrueStarts.h" // advc.tsl
 #include "StartPointsAsHandicap.h" // advc.250b
 #include "RiseFall.h" // advc.700
 #include "CvHallOfFameInfo.h" // advc.106i
@@ -33,7 +34,9 @@
 #undef CVGAME_INSTANCE_FOR_RNG
 #define CVGAME_INSTANCE_FOR_RNG (*this) // </advc.007c>
 
-//mylon local def based on the city
+//mylon enhanced cities doto advc version
+//for calcs based in this file - we will always go with size 2 cities.
+//simpler solution then changing everything.
 #define NUM_CITY_PLOTS 2
 
 CvGame::CvGame() :
@@ -226,15 +229,40 @@ void CvGame::setInitialItems()
 	for (int i = 0; i < kMap.numPlots(); i++)
 		kMap.plotByIndex(i)->setRiverID(-1); // </advc>
 	// <advc.030> Now that ice has been placed and normalization is through
-	if(GC.getDefineBOOL("PASSABLE_AREAS"))
+	if (GC.getDefineBOOL(CvGlobals::PASSABLE_AREAS))
 //added by f1 advc to allow peaks to seperate continents
 //Mountains mod
-		if(!isOption(GAMEOPTION_MOUNTAINS)){
+	{
+		if(!isOption(GAMEOPTION_MOUNTAINS))
 			kMap.recalculateAreas(false);
 	}
 	// </advc.030>
-	// advc.tsl: Delay part of the freebies until starting sites have been assigned
-	initFreeCivState();
+	// <advc.tsl>
+	if (isOption(GAMEOPTION_TRUE_STARTS))
+	{
+		TrueStarts ts;
+		ts.changeCivs();
+		if (GC.getDefineBOOL(CvGlobals::TRUE_STARTS_SANITIZE))
+			ts.sanitize();
+	}
+	GC.getLogger().logCivLeaders(); // </advc.tsl>
+	/*	<advc.190c> Letting CvInitCore do this would be misleading b/c
+		net messages don't get delivered that early in game setup. */
+	if (isNetworkMultiPlayer())
+	{
+		CvInitCore const& kInitCore = GC.getInitCore();
+		FOR_EACH_ENUM(Player)
+		{
+			if (kInitCore.wasCivRandomlyChosen(eLoopPlayer) ||
+				kInitCore.wasLeaderRandomlyChosen(eLoopPlayer))
+			{	// We're the host
+				CvMessageControl::getInstance().sendCivLeaderSetup(kInitCore);
+				break;
+			}
+		}
+	} // </advc.190c>
+	// Delay part of the freebies until starting sites have been assigned
+	initFreeCivState(); // </advc.tsl>
 	initFreeUnits();
 	// <advc.250c>
 	if (GC.getDefineBOOL("INCREASE_START_TURN") && getStartEra() == 0)
@@ -278,10 +306,13 @@ void CvGame::setInitialItems()
 	} // </advc.250c>
 	for (PlayerAIIter<CIV_ALIVE> it; it.hasNext(); ++it)
 		it->AI_updateFoundValues();
+	// <advc.tsl>
+	if (m_iMapRegens < GC.getDefineINT("AUTO_REGEN_MAP"))
+		regenerateMap(true); // </advc.tsl>
 }
 
 
-void CvGame::regenerateMap()
+void CvGame::regenerateMap(/* advc.tsl: */ bool bAutomated)
 {
 	if (GC.getInitCore().getWBMapScript())
 		return;
@@ -345,7 +376,12 @@ void CvGame::regenerateMap()
 	setTurnSlice(0); // advc.001: Reset minutesPlayed to 0
 	CvEventReporter::getInstance().resetStatistics();
 
+	m_iMapRegens++; // advc.tsl
 	setInitialItems();
+	// <advc.tsl>
+	if (bAutomated)
+		return; // </advc.tsl>
+//ask f1rpo if here or before auto - 4cityqa
 // Super Forts begin *choke* *canal*
 	if (isOption(GAMEOPTION_SUPER_FORTS))
 	{
@@ -712,6 +748,7 @@ void CvGame::reset(HandicapTypes eHandicap, bool bConstructorCall)
 	m_initialRandSeed.uiMap = m_initialRandSeed.uiSync = 0; // advc.027b
 
 	m_iNumSessions = 1;
+	m_iMapRegens = 0; // advc.tsl
 
 	m_iShrineBuildingCount = 0;
 	m_iNumCultureVictoryCities = 0;
@@ -1055,10 +1092,23 @@ void CvGame::initFreeCivState()
 void CvGame::initScenario()
 {
 	initFreeState(); // Tech from handicap
+	// <advc.tsl>
+	if (isOption(GAMEOPTION_TRUE_STARTS) &&
+		/*	Replacing fixed players should actually be OK -
+			just so long as the scenario doesn't define any cities. */
+		//GC.getInitCore().getWBMapNoPlayers()
+		getNumCities() <= 0)
+	{
+		TrueStarts ts;
+		ts.changeCivs();
+		if (GC.getDefineBOOL(CvGlobals::TRUE_STARTS_SANITIZE_SCENARIOS))
+			ts.sanitize();
+	} // </advc.tsl>
 	// <advc.030>
 //Mountains Mod
 //added by f1 advc to allow peaks to seperate continents
-	if(GC.getDefineBOOL("PASSABLE_AREAS") && !isOption(GAMEOPTION_MOUNTAINS))
+	if(GC.getDefineBOOL(CvGlobals::PASSABLE_AREAS) 
+		&& !isOption(GAMEOPTION_MOUNTAINS))
 	{
 		/*  recalculateAreas can't handle preplaced cities. Or perhaps it can
 			(Barbarian cities are fine in most cases), but there's going to
@@ -2394,7 +2444,7 @@ void CvGame::normalizeAddExtras(/* advc.027: */ NormalizationTarget const* pTarg
 		}
 		int iHillsAdded = 0; // advc.108
 		// advc (comment): Starting plot not excluded. I guess that's OK.
-		//mylon  - added kPlayer
+//mylon enhanced cities doto advc version
 		for (CityPlotRandIter it(*pStartingPlot, getMapRand(), &kPlayer, true);
 			iHills < 3 && /* advc.108: */ iHillsAdded < 2 &&
 			it.hasNext(); ++it)
@@ -5520,7 +5570,7 @@ void CvGame::setFinalInitialized(bool bNewValue)
 	PROFILE_FUNC();
 
 	if (isFinalInitialized() == bNewValue)
-		return; // advc
+		return;
 	m_bFinalInitialized = bNewValue;
 	if (!isFinalInitialized())
 		return;
@@ -9502,20 +9552,32 @@ void CvGame::read(FDataStreamBase* pStream)
 		pStream->Read(&m_initialRandSeed.uiMap);
 		pStream->Read(&m_initialRandSeed.uiSync);
 	} // </advc.027b>
+	// <advc.tsl>, advc.701: Options have been shuffled around a few times
+	bool bNewSeed = isOption((GameOptionTypes)
+			(uiFlag < 2 || uiFlag >= 17 ? 17 : 19));
+	bool bLockMods = isOption((GameOptionTypes)
+			(uiFlag >= 15 && uiFlag < 17 ? 27 : 18));
+	bool bNoVassals = isOption((GameOptionTypes)
+			(uiFlag >= 17 ? 23 : 20));
+	bool bNoEspionage = isOption((GameOptionTypes)
+			(uiFlag >= 17 ? 27 : 23));
+	bool bRiseFall = isOption((GameOptionTypes)
+			(uiFlag < 2 ? false : (uiFlag < 17 ? 17 : 19)));
+	bool bTrueStarts = isOption((GameOptionTypes)
+			(uiFlag < 15 ? false : (uiFlag < 17 ? 18 : 20)));
+	setOption(GAMEOPTION_NEW_RANDOM_SEED, bNewSeed);
+	setOption(GAMEOPTION_LOCK_MODS, bLockMods);
+	setOption(GAMEOPTION_RISE_FALL, bRiseFall);
+	setOption(GAMEOPTION_TRUE_STARTS, bTrueStarts);
+	setOption(GAMEOPTION_NO_VASSAL_STATES, bNoVassals);
+	setOption(GAMEOPTION_NO_ESPIONAGE, bNoEspionage);
+	// </advc.tsl>
 	// <advc.250b>
 	if (isOption(GAMEOPTION_SPAH))
 		m_pSpah->read(pStream); // </advc.250b>
 	// <advc.701>
-	if (uiFlag >= 2)
-	{
-		if(isOption(GAMEOPTION_RISE_FALL))
-			m_pRiseFall->read(pStream);
-	}
-	else // Options have been shuffled around
-	{
-		setOption(GAMEOPTION_NEW_RANDOM_SEED, isOption(GAMEOPTION_RISE_FALL));
-		setOption(GAMEOPTION_RISE_FALL, false);
-	} // </advc.701>
+	if (isOption(GAMEOPTION_RISE_FALL))
+		m_pRiseFall->read(pStream); // </advc.701>
 	{
 		clearReplayMessageMap();
 		ReplayMessageList::_Alloc::size_type iSize;
@@ -9531,6 +9593,9 @@ void CvGame::read(FDataStreamBase* pStream)
 	// m_pReplayInfo not saved
 
 	pStream->Read(&m_iNumSessions);
+	// <advc.tsl>
+	if (uiFlag >= 16)
+		pStream->Read(&m_iMapRegens); // </advc.tsl>
 	if (!isNetworkMultiPlayer())
 		m_iNumSessions++;
 
@@ -9646,7 +9711,10 @@ void CvGame::write(FDataStreamBase* pStream)
 	//uiFlag = 11; // advc.enum: new enum map save behavior
 	//uiFlag = 12; // advc.130n: DifferentReligionThreat added to CvPlayerAI
 	//uiFlag = 13; // advc.148: RELATIONS_THRESH_WORST_ENEMY
-	uiFlag = 14; // advc.148, advc.130n, advc.130x (religion attitude)
+	//uiFlag = 14; // advc.148, advc.130n, advc.130x (religion attitude)
+	//uiFlag = 15; // advc.tsl: new game option
+	uiFlag = 16; // advc.tsl: map regen counter
+	uiFlag = 17; // advc.tsl: game options moved around
 	pStream->Write(uiFlag);
 	REPRO_TEST_BEGIN_WRITE("Game pt1");
 	pStream->Write(m_iElapsedGameTurns);
@@ -9780,6 +9848,9 @@ void CvGame::write(FDataStreamBase* pStream)
 	}
 	// m_pReplayInfo not saved
 	pStream->Write(m_iNumSessions);
+	/*	advc.tsl: Doesn't really have to be saved so far, but might become
+		useful in the future. */
+	pStream->Write(m_iMapRegens);
 	REPRO_TEST_BEGIN_WRITE("Game pt3"); // (skip replay messages, sessions)
 
 	pStream->Write(m_aPlotExtraYields.size());

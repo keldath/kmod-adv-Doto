@@ -24,6 +24,7 @@
 #include "CvReplayInfo.h" // advc.106n
 #include "BarbarianWeightMap.h" // advc.304
 #include "CvDLLIniParserIFaceBase.h"
+#include <boost/algorithm/string.hpp> // advc.108b
 
 
 CvMap::CvMap()
@@ -121,7 +122,7 @@ void CvMap::reset(CvMapInitData* pInitInfo)
 	m_iLandPlots = 0;
 	m_iOwnedPlots = 0;
 
-	if (pInitInfo)
+	if (pInitInfo != NULL)
 	{
 		m_iTopLatitude = pInitInfo->m_iTopLatitude;
 		m_iBottomLatitude = pInitInfo->m_iBottomLatitude;
@@ -136,6 +137,7 @@ void CvMap::reset(CvMapInitData* pInitInfo)
 	m_iTopLatitude = std::max(m_iTopLatitude, -90);
 	m_iBottomLatitude = std::min(m_iBottomLatitude, 90);
 	m_iBottomLatitude = std::max(m_iBottomLatitude, -90);
+	FAssert(m_iTopLatitude >= m_iBottomLatitude); // advc
 
 	m_iNextRiverID = 0;
 
@@ -806,12 +808,12 @@ float CvMap::getHeightCoords() const
 	return GC.getPLOT_SIZE() * getGridHeight();
 }
 
-
-int CvMap::maxPlotDistance() const
+// advc.tsl: Cut from maxPlotDistance
+int CvMap::maxPlotDistance(int iGridWidth, int iGridHeight) const
 {
 	return std::max(1, plotDistance(0, 0,
-			isWrapX() ? getGridWidth() / 2 : getGridWidth() - 1,
-			isWrapY() ? getGridHeight() / 2 : getGridHeight() - 1));
+			isWrapX() ? iGridWidth / 2 : iGridWidth - 1,
+			isWrapY() ? iGridHeight / 2 : iGridHeight - 1));
 }
 
 
@@ -855,16 +857,20 @@ void CvMap::changeOwnedPlots(int iChange)
 	FAssert(getOwnedPlots() >= 0);
 }
 
-
-int CvMap::getTopLatitude() const
+// advc.tsl:
+void CvMap::setLatitudeLimits(int iTop, int iBottom)
 {
-	return m_iTopLatitude;
-}
-
-
-int CvMap::getBottomLatitude() const
-{
-	return m_iBottomLatitude;
+	if (iBottom > iTop)
+	{
+		FErrorMsg("Invalid latitude limits");
+		return;
+	}
+	if (iTop == getTopLatitude() && iBottom == getBottomLatitude())
+		return;
+	m_iTopLatitude = iTop;
+	m_iBottomLatitude = iBottom;
+	FOR_EACH_ENUM(PlotNum)
+		getPlotByIndex(eLoopPlotNum).updateLatitude();
 }
 
 
@@ -921,18 +927,29 @@ CvWString CvMap::getNonDefaultCustomMapOptionDesc(int iOption) const
 	return py.customMapOptionDescription(szMapScriptNameNarrow.c_str(), iOption, eOptionValue);
 }
 
-/*	advc.108b: Does any custom map option have (exactly) the value szOptionsValue?
+/*	advc.108b: Does any custom map option have the value szOptionsValue?
+	Checks for an exact match ignoring case unless bCheckContains is set to true
+	or bIgnoreCase to false.
 	So that the DLL can implement special treatment for particular custom map options
 	(that may or may not be present in only one particular map script). */
-bool CvMap::isCustomMapOption(char const* szOptionsValue) const
+bool CvMap::isCustomMapOption(char const* szOptionsValue, bool bCheckContains,
+	bool bIgnoreCase) const
 {
 	CvWString wsOptionsValue(szOptionsValue);
+	if (bIgnoreCase)
+	{
+		// A pain to implement with the (2003) standard library
+		boost::algorithm::to_lower(wsOptionsValue);
+	}
 	CvString szMapScriptNameNarrow(GC.getInitCore().getMapScriptName());
 	for (int iOption = 0; iOption < getNumCustomMapOptions(); iOption++)
 	{
-		if (GC.getPythonCaller()->customMapOptionDescription(
-			szMapScriptNameNarrow.c_str(), iOption, getCustomMapOption(iOption)) ==
-			wsOptionsValue)
+		CvWString wsOptionDescr = GC.getPythonCaller()->customMapOptionDescription(
+				szMapScriptNameNarrow.c_str(), iOption, getCustomMapOption(iOption));
+		if (bIgnoreCase)
+			boost::algorithm::to_lower(wsOptionDescr);
+		if (bCheckContains ? (wsOptionDescr.find(wsOptionsValue) != CvWString::npos) :
+			(wsOptionDescr == wsOptionsValue))
 		{
 			return true;
 		}
@@ -1029,6 +1046,7 @@ void CvMap::resetPathDistance()
 {
 	gDLL->getFAStarIFace()->ForceReset(&GC.getStepFinder());
 }
+
 
 // Super Forts begin *canal* *choke*
 int CvMap::calculatePathDistance(CvPlot const* pSource, CvPlot const* pDest, CvPlot const* pInvalidPlot) const
@@ -1331,7 +1349,8 @@ void CvMap::calculateAreas()
 	PROFILE("CvMap::calculateAreas"); // <advc.030>
 //mountain mod
 //added by f1 advc to allow peaks to seperate continents
-	if(!GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && GC.getDefineINT("PASSABLE_AREAS") > 0) {
+	if(!GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && 
+		GC.getDefineBOOL(CvGlobals::PASSABLE_AREAS)) {
 			/*  Will recalculate from CvGame::setinitialItems once normalization is
 				through. But need preliminary areas because normalization is done
 				based on areas. Also, some scenarios don't call CvGame::

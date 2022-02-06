@@ -12032,6 +12032,7 @@ DenialTypes CvPlayerAI::AI_bonusTrade(BonusTypes eBonus, PlayerTypes eToPlayer,
 
 	bool bStrategic = false;
 	bool bCrucialStrategic = false; // advc.036 (NB: unused)
+	CvBonusInfo const& kBonus = GC.getInfo(eBonus);
 
 	CvCity const* pCapital = getCapital();
 	FOR_EACH_ENUM2(Unit, eUnit)
@@ -12086,25 +12087,26 @@ DenialTypes CvPlayerAI::AI_bonusTrade(BonusTypes eBonus, PlayerTypes eToPlayer,
 			if(eAttitude <= iRefusalThresh) // </advc.036>
 				return DENIAL_ATTITUDE;
 		}
-		if (GC.getInfo(eBonus).getHappiness() > 0)
-		{	// advc.036: Treat Ivory as non-crucial
-			bCrucialStrategic = false;
+		if (kBonus.getHappiness() > 0)
+		{
 			if (eAttitude <= GC.getInfo(getPersonalityType()).
 				getHappinessBonusRefuseAttitudeThreshold())
 			{
 				return DENIAL_ATTITUDE;
 			}
 		}
-		if (GC.getInfo(eBonus).getHealth() > 0)
+		if (kBonus.getHealth() > 0)
 		{
-			bCrucialStrategic = false; // advc.036
 			if (eAttitude <= GC.getInfo(getPersonalityType()).
 				getHealthBonusRefuseAttitudeThreshold())
 			{
 				return DENIAL_ATTITUDE;
 			}
 		}
-	}  // <advc.036>
+	}
+	// <advc.036>
+	if (kBonus.getPlacementOrder() > 3) // Only true strategic resources can be crucial
+		bCrucialStrategic = false;
 	int iAvailUs = getNumAvailableBonuses(eBonus);
 	// Perhaps better to combine this with iValueForUs checks
 	bool const bResistGivingOnlyCopy = (!isHuman() && iAvailUs - iChange <= 1 &&
@@ -26216,7 +26218,7 @@ int CvPlayerAI::AI_playerCloseness(PlayerTypes eIndex, int iMaxDistance,
 	we're worried, but probably shouldn't act on it much (unless we're worried
 	about several rivals). */
 int CvPlayerAI::AI_paranoiaRating(PlayerTypes eRival, int iOurDefPow,
-	bool bReduceWhenHopeless) const // advc.104
+	bool bReduceWhenHopeless, bool bConstCache) const // advc.104
 {
 	CvPlayerAI const& kRival = GET_PLAYER(eRival);
 	CvTeamAI const& kRivalTeam = GET_TEAM(eRival);
@@ -26259,7 +26261,8 @@ int CvPlayerAI::AI_paranoiaRating(PlayerTypes eRival, int iOurDefPow,
 			}
 		}
 	}
-	int iCloseness = AI_playerCloseness(eRival);
+	int iCloseness = AI_playerCloseness(eRival,
+			DEFAULT_PLAYER_CLOSENESS, bConstCache); // advc.104
 	// <advc.022>
 	if (!AI_hasSharedPrimaryArea(eRival))
 	{
@@ -26908,9 +26911,9 @@ bool CvPlayerAI::AI_advancedStartPlaceCity(CvPlot* pPlot)
 	pCity->AI_updateBestBuild(); //to account for culture expansion.
 
 	int iPlotsImproved = 0;
-	for (CityPlotIter it(*pPlot, false); it.hasNext(); ++it)
+	for (WorkablePlotIter it(*pCity, false); it.hasNext(); ++it)
 	{
-		if (it->getWorkingCity() == pCity && it->isImproved())
+		if (it->isImproved())
 			iPlotsImproved++;
 	}
 

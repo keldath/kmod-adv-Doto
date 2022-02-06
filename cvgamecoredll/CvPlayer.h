@@ -129,8 +129,10 @@ public:
 	void processTraits(int iChange); // advc.003q: Replacing the above
 	void changePersonalityType();
 	void resetCivTypeEffects(/* advc.003q: */ bool bInit);
-	void changeLeader(LeaderHeadTypes eNewLeader);
-	void changeCiv(CivilizationTypes eNewCiv);
+	void changeLeader(LeaderHeadTypes eNewLeader,
+			bool bChangeName = false); // advc.tsl
+	void changeCiv(CivilizationTypes eNewCiv,
+			bool bChangeDescr = false, bool bForceColorUpdate = false); // advc.tsl
 	void setIsHuman(bool bNewValue, /* advc.127c: */ bool bAIUpdate = false);
 	// CHANGE_PLAYER: END
 	// AI_AUTO_PLAY_MOD, 07/09/08, jdog5000: START
@@ -304,9 +306,9 @@ public:
 			GoodyTypes eTaboo = NO_GOODY);
 
 	DllExport bool canFound(int iX, int iY, bool bTestVisible = false) const;										// Exposed to Python
-	// <advc.001>
+	// <advc.181>
 	bool canFound(CvPlot const& kPlot, bool bTestVisible = false,
-			bool bIgnoreFoW = true) const; // </advc.001>
+			bool bIgnoreFoW = true) const; // </advc.181>
 	void found(int iX, int iY);																						// Exposed to Python
 
 	bool canTrain(UnitTypes eUnit, bool bContinue = false, bool bTestVisible = false,								// Exposed to Python
@@ -338,7 +340,8 @@ public:
 	void removeBuildingClass(BuildingClassTypes eBuildingClass);													// Exposed to Python
 	void processBuilding(BuildingTypes eBuilding, int iChange, CvArea& kArea);
 
-	bool canBuild(CvPlot const& kPlot, BuildTypes eBuild, bool bTestEra = false, bool bTestVisible = false) const;	// Exposed to Python
+	bool canBuild(CvPlot const& kPlot, BuildTypes eBuild, bool bTestEra = false,									// Exposed to Python
+			bool bTestVisible = false, /* advc.181: */ bool bIgnoreFoW = true) const;
 	int getBuildCost(CvPlot const& kPlot, BuildTypes eBuild) const;
 	RouteTypes getBestRoute(CvPlot const* pPlot = NULL,																// Exposed to Python
 			BuildTypes* peBestBuild = NULL) const; // advc.121

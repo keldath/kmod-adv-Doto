@@ -11,8 +11,6 @@
 #include "CvInfo_GameOption.h"
 #include "CvInfo_Civics.h"
 #include "BBAILog.h" // BETTER_BTS_AI_MOD, AI logging, 10/02/09, jdog5000
-//mylon
-#include "CitySize2Iterator.h" // includes CvCity.h
 
 
 CvCityAI::CvCityAI() // advc.003u: Merged with AI_reset
@@ -26,20 +24,20 @@ CvCityAI::CvCityAI() // advc.003u: Merged with AI_reset
 	m_aiSpecialYieldMultiplier = new int[NUM_YIELD_TYPES]();
 	m_aiPlayerCloseness = new int[MAX_PLAYERS]();
 	// <advc.opt> Store closeness cache meta data for each player separately
-	m_iCachePlayerClosenessTurn = new int[MAX_PLAYERS];
+	m_aiCachePlayerClosenessTurn = new int[MAX_PLAYERS];
 	for (int i = 0; i < MAX_PLAYERS; i++)
-		m_iCachePlayerClosenessTurn[i] = -1;
-	m_iCachePlayerClosenessDistance = new int[MAX_PLAYERS];
+		m_aiCachePlayerClosenessTurn[i] = -1;
+	m_aiCachePlayerClosenessDistance = new int[MAX_PLAYERS];
 	for (int i = 0; i < MAX_PLAYERS; i++)
-		m_iCachePlayerClosenessDistance[i] = -1; // </advc.opt>
+		m_aiCachePlayerClosenessDistance[i] = -1; // </advc.opt>
 	// (These two were declared as arrays, but it's neater to treat them all alike.)
 	m_aiBestBuildValue = new int[NUM_CITY_PLOTS];
-	//mylon
+//mylon enhanced cities doto advc version
 	//FOR_EACH_ENUM(CityPlot)
 	FOR_EACH_CITYPLOT(GET_PLAYER(m_eOwner))
 		m_aiBestBuildValue[eLoopCityPlot] = NO_BUILD;
 	m_aeBestBuild = new BuildTypes[NUM_CITY_PLOTS];
-	//mylon
+//mylon enhanced cities doto advc version
 	//FOR_EACH_ENUM(CityPlot)
 	FOR_EACH_CITYPLOT(GET_PLAYER(m_eOwner))
 		m_aeBestBuild[eLoopCityPlot] = NO_BUILD;
@@ -8537,7 +8535,7 @@ void CvCityAI::AI_updateBestBuild()
 	int iBestUnworkedPlotValue = 0;
 	int aiValues[NUM_CITY_PLOTS];
 	// <advc>  Ensure initialization
-	//mylon
+//mylon enhanced cities doto advc version
 	//FOR_EACH_ENUM(CityPlot)
 	FOR_EACH_CITYPLOT(GET_PLAYER(m_eOwner))
 		aiValues[eLoopCityPlot] = MAX_INT; // </advc>
@@ -9655,7 +9653,7 @@ bool CvCityAI::AI_removeWorstCitizen(SpecialistTypes eIgnoreSpecialist)
 		}
 	}
 
-	// check all the plots we working
+	// check all the plots we are working
 	for (WorkingPlotIter it(*this, false); it.hasNext(); ++it)
 	{
 		int iValue = AI_plotValue(*it, true, false, false, iGrowthValue);
@@ -12897,8 +12895,8 @@ int CvCityAI::AI_playerCloseness(PlayerTypes eIndex, int iMaxDistance,
 	FAssert(GET_PLAYER(eIndex).isAlive());
 
 	int iCloseness = m_aiPlayerCloseness[eIndex];
-	if ((m_iCachePlayerClosenessTurn[eIndex] != GC.getGame().getGameTurn() ||
-		m_iCachePlayerClosenessDistance[eIndex] != iMaxDistance))
+	if ((m_aiCachePlayerClosenessTurn[eIndex] != GC.getGame().getGameTurn() ||
+		m_aiCachePlayerClosenessDistance[eIndex] != iMaxDistance))
 	{
 		iCloseness = AI_calculatePlayerCloseness(iMaxDistance,
 				eIndex, bConstCache); // advc.001n
@@ -12967,8 +12965,8 @@ int CvCityAI::AI_calculatePlayerCloseness(int iMaxDistance, PlayerTypes ePlayer,
 	if (!bConstCache) // advc.001n
 	{
 		m_aiPlayerCloseness[kPlayer.getID()] = iCloseness;
-		m_iCachePlayerClosenessTurn[ePlayer] = GC.getGame().getGameTurn();
-		m_iCachePlayerClosenessDistance[ePlayer] = iMaxDistance;
+		m_aiCachePlayerClosenessTurn[ePlayer] = GC.getGame().getGameTurn();
+		m_aiCachePlayerClosenessDistance[ePlayer] = iMaxDistance;
 	}
 	return iCloseness;
 }
@@ -13633,8 +13631,8 @@ void CvCityAI::read(FDataStreamBase* pStream)
 	}
 	else
 	{
-		pStream->Read(MAX_PLAYERS, m_iCachePlayerClosenessTurn);
-		pStream->Read(MAX_PLAYERS, m_iCachePlayerClosenessDistance);
+		pStream->Read(MAX_PLAYERS, m_aiCachePlayerClosenessTurn);
+		pStream->Read(MAX_PLAYERS, m_aiCachePlayerClosenessDistance);
 	} // </advc.opt>
 	pStream->Read(MAX_PLAYERS, m_aiPlayerCloseness);
 	pStream->Read(&m_iNeededFloatingDefenders);
@@ -13702,8 +13700,11 @@ void CvCityAI::write(FDataStreamBase* pStream)
 	pStream->Write(m_eBestBuild); // advc.opt
 	pStream->Write(GC.getNumEmphasizeInfos(), m_pbEmphasize);
 	pStream->Write(NUM_YIELD_TYPES, m_aiSpecialYieldMultiplier);
-	pStream->Write(/*<advc.opt>*/MAX_PLAYERS/*</advc.opt>*/, m_iCachePlayerClosenessTurn);
-	pStream->Write(/*<advc.opt>*/MAX_PLAYERS/*</advc.opt>*/, m_iCachePlayerClosenessDistance);
+	REPRO_TEST_END_WRITE();
+	// The closeness cache is prone to OOS/ reproducibility problems
+	REPRO_TEST_BEGIN_WRITE(CvString::format("CityAI(%d,%d) caches", getX(), getY()));
+	pStream->Write(/*<advc.opt>*/MAX_PLAYERS/*</advc.opt>*/, m_aiCachePlayerClosenessTurn);
+	pStream->Write(/*<advc.opt>*/MAX_PLAYERS/*</advc.opt>*/, m_aiCachePlayerClosenessDistance);
 	pStream->Write(MAX_PLAYERS, m_aiPlayerCloseness);
 	pStream->Write(m_iNeededFloatingDefenders);
 	pStream->Write(m_iNeededFloatingDefendersCacheTurn);

@@ -2209,8 +2209,10 @@ bool CvUnit::isActionRecommended(int iAction)
 	CvPlot const* pTmpPlot = gDLL->UI().getGotoPlot();
 	if (pTmpPlot == NULL && GC.shiftKey())
 		pTmpPlot = getGroup()->lastMissionPlot();
-	CvPlot const& kPlot = (pTmpPlot == NULL ? getPlot() : *pTmpPlot);
-	// </advc>
+	CvPlot const& kPlot = (pTmpPlot == NULL ? getPlot() : *pTmpPlot); // </advc>
+	// <advc.181>
+	if (!kPlot.isRevealed(getTeam()))
+		return false; // </advc.181>
 	switch (GC.getActionInfo(iAction).getMissionType()) // advc
 	{
 	case MISSION_FORTIFY:
@@ -2245,21 +2247,19 @@ bool CvUnit::isActionRecommended(int iAction)
 		FAssert(eBuild != NO_BUILD);
 		FAssertMsg(eBuild < GC.getNumBuildInfos(), "Invalid Build");
 
-		if (!canBuild(kPlot, eBuild))
+		if (!canBuild(kPlot, eBuild, /* advc.181: */ false, false))
 			break;
-
-		// K-Mod
+		// <K-Mod>
 		if (kPlot.getBuildProgress(eBuild) > 0)
-			return true;
-		// K-Mod end
+			return true; // </K-Mod>
 
 		ImprovementTypes const eImprovement = GC.getInfo(eBuild).getImprovement();
 		RouteTypes const eRoute = GC.getInfo(eBuild).getRoute();
 		// K-Mod: was getBonusType
 		BonusTypes const eBonus = kPlot.getNonObsoleteBonusType(getTeam());
 		CvCityAI const* pWorkingCity = kPlot.AI_getWorkingCity();
-
-		// if (kPlot.getImprovementType() == NO_IMPROVEMENT) { // Disabled by K-Mod (this looks like a bug to me)
+		// Disabled by K-Mod (this looks like a bug to me)
+		// if (kPlot.getImprovementType() == NO_IMPROVEMENT) {
 		BuildTypes eBestBuild = NO_BUILD; // K-Mod. (I use this again later.)
 		if (pWorkingCity != NULL)
 		{
@@ -2304,7 +2304,6 @@ bool CvUnit::isActionRecommended(int iAction)
 					}
 				}
 			} // K-Mod end
-
 			/*if (kPlot.getImprovementType() == NO_IMPROVEMENT) {
 				if (!kPlot.isIrrigated() && kPlot.isIrrigationAvailable(true)) {
 					if (GC.getInfo(eImprovement).isCarriesIrrigation())
@@ -2329,7 +2328,6 @@ bool CvUnit::isActionRecommended(int iAction)
 			{
 				if (eBonus != NO_BONUS)
 					return true;
-
 				if (pWorkingCity != NULL)
 				{
 					if (kPlot.isRiver())
@@ -2347,9 +2345,10 @@ bool CvUnit::isActionRecommended(int iAction)
 			// K-Mod end
 			if (eFinalImprovement != NO_IMPROVEMENT)
 			{
-				if (GC.getInfo(eFinalImprovement).getRouteYieldChanges(eRoute, YIELD_FOOD) > 0 ||
-					GC.getInfo(eFinalImprovement).getRouteYieldChanges(eRoute, YIELD_PRODUCTION) > 0 ||
-					GC.getInfo(eFinalImprovement).getRouteYieldChanges(eRoute, YIELD_COMMERCE) > 0)
+				CvImprovementInfo const& kFinal = GC.getInfo(eFinalImprovement);
+				if (kFinal.getRouteYieldChanges(eRoute, YIELD_FOOD) > 0 ||
+					kFinal.getRouteYieldChanges(eRoute, YIELD_PRODUCTION) > 0 ||
+					kFinal.getRouteYieldChanges(eRoute, YIELD_COMMERCE) > 0)
 				{
 					return true;
 				}
@@ -2365,6 +2364,8 @@ bool CvUnit::isActionRecommended(int iAction)
 // advc.004h:
 void CvUnit::updateFoundingBorder(bool bForceClear) const
 {
+	if (!GC.getGame().isFinalInitialized())
+		return;
 	int iMode = BUGOption::getValue("MainInterface__FoundingBorder", 2);
 	if(BUGOption::isEnabled("MainInterface__FoundingYields", false) && iMode == 1)
 		return; // BtS behavior
@@ -6844,12 +6845,16 @@ bool CvUnit::goldenAge()
 }
 
 
-bool CvUnit::canBuild(CvPlot const& kPlot, BuildTypes eBuild, bool bTestVisible) const // advc: 1st param was pointer
+bool CvUnit::canBuild(CvPlot const& kPlot, BuildTypes eBuild, bool bTestVisible,
+	bool bIgnoreFoW) const // advc.181
 {
 	if (!m_pUnitInfo->getBuilds(eBuild))
 		return false;
-	if (!GET_PLAYER(getOwner()).canBuild(kPlot, eBuild, false, bTestVisible))
+	if (!GET_PLAYER(getOwner()).canBuild(kPlot, eBuild, false, bTestVisible,
+		bIgnoreFoW)) // advc.181
+	{
 		return false;
+	}
 	if (!isValidDomain(kPlot.isWater()))
 		return false;
 	return true;

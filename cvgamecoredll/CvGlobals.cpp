@@ -87,6 +87,9 @@ m_iNumFootstepAudioTypes(0),
 m_iActiveLandscapeID(0),
 m_iNumPlayableCivilizationInfos(0),
 m_iNumAIPlayableCivilizationInfos(0),
+// </advc>
+m_iMaxCityPlotPriority(-1), // advc
+// <advc.opt>
 //MOD@VET_Andera412_Blocade_Unit-begin1/2
 m_iBLOCADE_UNIT(0),
 //MOD@VET_Andera412_Blocade_Unit-end1/2
@@ -180,10 +183,14 @@ void CvGlobals::init() // allocate
 		5, 6, 7, 6, 5, 6, 7, 6, 5, 6, 7, 6, 5, 6, 7, 6,         //  Strand and RogerBacon
 		7, 8, 9, 10, 9, 8, 7, 8, 9, 10, 9, 8, 7, 8, 9, 10, 9, 8, 7, 8, 9, 10, 9, 8, // Mylon
 	};
-
+	// <advc>
+	for (int i = 0; i < NUM_CITY_PLOTS; i++)
+		m_iMaxCityPlotPriority = std::max(m_iMaxCityPlotPriority, aiCityPlotPriority[i]);
+	// Need to be able to go one higher than the max
+	FAssertBounds(0, MAX_INT, m_iMaxCityPlotPriority); // </advc>
 	int aaiXYCityPlot[CITY_PLOTS_DIAMETER][CITY_PLOTS_DIAMETER] =
 	{	// advc.enum: Use some of the enumerators for illustration
-/* doto enhanced city size
+/* doto enhanced city size mylon
 		{NO_CITYPLOT, 17, 18, 19, NO_CITYPLOT},
 
 		{         16,  6,  7,  8, LAST_CITY_PLOT},

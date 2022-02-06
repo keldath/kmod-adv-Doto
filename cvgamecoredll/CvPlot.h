@@ -117,7 +117,8 @@ public:
 	void updateSeeFromSight(bool bIncrement, bool bUpdatePlotGroups);
 
 	bool canHaveBonus(BonusTypes eBonus, bool bIgnoreLatitude = false,								// Exposed to Python
-			bool bIgnoreFeature = false) const; // advc.129
+			bool bIgnoreFeature = false, // advc.129
+			bool bIgnoreCurrentBonus = false) const; // advc.tsl
 	bool canHaveImprovement(ImprovementTypes eImprovement,											// Exposed to Python
 			TeamTypes eTeam = NO_TEAM, bool bPotential = false,
 			BuildTypes eBuild = NO_BUILD, bool bAnyBuild = true) const; // kekm.9
@@ -126,7 +127,8 @@ public:
 	bool isImprovementAncestor(ImprovementTypes eImprovement, ImprovementTypes eCheckImprovement) const;               // Exposed to Python
 // < JImprovementLimit Mod End >
 	bool canBuild(BuildTypes eBuild, PlayerTypes ePlayer = NO_PLAYER,								// Exposed to Python
-			bool bTestVisible = false) const;
+			bool bTestVisible = false,
+			bool bIgnoreFoW = true) const; // advc.181
 	int getBuildTime(BuildTypes eBuild,																// Exposed to Python
 			PlayerTypes ePlayer) const; // advc.251
 	
@@ -363,6 +365,7 @@ public:
 	PlotNumTypes plotNum() const { return (PlotNumTypes)m_iPlotNum; } // advc.opt
 	int getLatitude() const;																																					// Exposed to Python
 	void setLatitude(int iLatitude); // advc.tsl	(exposed to Python)
+	void updateLatitude(); // advc.tsl (public for testing)
 	int getFOWIndex() const;
 
 	//int getArea() const;
@@ -528,7 +531,7 @@ public:
 
 	DllExport CvCity* getPlotCity() const;															// Exposed to Python
 	CvCityAI* AI_getPlotCity() const;
-	void setPlotCity(CvCity* pNewValue);
+	void setPlotCity(CvCity* pNewCity);
 	void setRuinsName(CvWString const& szName); // advc.005c
 	const wchar* getRuinsName() const; // advc.005c (NULL if none)
 	CvCity* getWorkingCity() const;																	// Exposed to Python
@@ -1023,7 +1026,7 @@ protected:
 };
 
 // advc.opt: It's fine to change the size, but might want to double check if it can be avoided.
-//BOOST_STATIC_ASSERT(MAX_PLOT_NUM > MAX_SHORT || sizeof(CvPlot) <= 244);
+//BOOST_STATIC_ASSERT(MAX_PLOT_NUM > MAX_SHORT || sizeof(CvPlot) <= 268);
 
 /*	advc.enum: For functions that choose random plots.
 	Moved from CvDefines, turned into an enum, exposed to Python. */

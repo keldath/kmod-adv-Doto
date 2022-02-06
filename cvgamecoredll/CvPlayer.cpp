@@ -857,7 +857,8 @@ void CvPlayer::resetCivTypeEffects(/* advc.003q: */ bool bInit)
 }
 
 // for switching the leaderhead of this player
-void CvPlayer::changeLeader(LeaderHeadTypes eNewLeader)
+void CvPlayer::changeLeader(LeaderHeadTypes eNewLeader,
+	bool bChangeName) // advc.tsl
 {
 	LeaderHeadTypes const eOldLeader = getLeaderType();
 
@@ -867,6 +868,13 @@ void CvPlayer::changeLeader(LeaderHeadTypes eNewLeader)
 	//clearTraitBonuses(); // Clear old traits
 	processTraits(-1); // advc.003q
 	GC.getInitCore().setLeader(getID(), eNewLeader);
+	// <advc.tsl>
+	if (bChangeName && (!isHuman() || // Preserve human custom name
+		wcscmp(getName(), GC.getLeaderHeadInfo(eOldLeader).getDescription()) == 0))
+	{
+		CvWString szEmpty; // Means that leaderhead description gets used
+		GC.getInitCore().setLeaderName(getID(), szEmpty);
+	} // </advc.tsl>
 	// addTraitBonuses(); // Add new traits
 	processTraits(1); // advc.003q
 
@@ -917,10 +925,11 @@ void CvPlayer::setIsHuman(bool bNewValue, /* advc.127c: */ bool bUpdateAI)
 // CHANGE_PLAYER: END
 // CHANGE_PLAYER, 05/09/09, jdog5000: START
 // for changing the civilization of this player
-void CvPlayer::changeCiv(CivilizationTypes eNewCiv)
+void CvPlayer::changeCiv(CivilizationTypes eNewCiv,
+	bool bChangeDescr, bool bForceColorUpdate) // advc.tsl
 {
 	CivilizationTypes eOldCiv = getCivilizationType();
-	if (eOldCiv == eNewCiv)
+	if (eOldCiv == eNewCiv /* advc.tsl: */ && !bForceColorUpdate)
 		return;
 
 	PlayerColorTypes eColor = (PlayerColorTypes)GC.getInfo(eNewCiv).getDefaultPlayerColor();
@@ -957,9 +966,32 @@ void CvPlayer::changeCiv(CivilizationTypes eNewCiv)
 	}
 
 	CvInitCore& kInitCore = GC.getInitCore();
-	kInitCore.setCiv(getID(), eNewCiv);
 	kInitCore.setColor(getID(), eColor);
-	setCivilization(eNewCiv); // advc.003u
+	if (eOldCiv == eNewCiv)
+		return;
+	kInitCore.setCiv(getID(), eNewCiv);
+	// <advc.tsl>
+	if (bChangeDescr)
+	{
+		CvWString szEmpty; // Means that civ info descriptions get used
+		bool const bHuman = isHuman(); // Preserve human custom descriptions
+		if (!bHuman || wcscmp(getCivilizationDescription(),
+			GC.getInfo(eOldCiv).getDescription()) == 0)
+		{
+			kInitCore.setCivDescription(getID(), szEmpty);
+		}
+		if (!bHuman || wcscmp(getCivilizationShortDescription(),
+			GC.getInfo(eOldCiv).getShortDescription()) == 0)
+		{
+			kInitCore.setCivShortDesc(getID(), szEmpty);
+		}
+		if (!bHuman || wcscmp(getCivilizationAdjective(),
+			GC.getInfo(eOldCiv).getAdjective()) == 0)
+		{
+			kInitCore.setCivAdjective(getID(), szEmpty);
+		}
+		kInitCore.setFlagDecal(getID(), szEmpty);
+	} // </advc.tsl>
 	resetCivTypeEffects(/* advc.003q: */ false);
 	CvDLLInterfaceIFaceBase& kUI = *gDLL->getInterfaceIFace();
 	if (isAlive()) // if the player is alive and showing on scoreboard, etc
@@ -5128,7 +5160,7 @@ bool CvPlayer::canFound(int iX, int iY, bool bTestVisible) const
 
 
 bool CvPlayer::canFound(CvPlot const& kPlot, bool bTestVisible,
-	/* <advc.001> */ bool bIgnoreFoW) const
+	/* <advc.181> */ bool bIgnoreFoW) const
 {
 	if (!bIgnoreFoW)
 	{
@@ -5136,12 +5168,12 @@ bool CvPlayer::canFound(CvPlot const& kPlot, bool bTestVisible,
 		if (eRevealedOwner != NO_PLAYER && eRevealedOwner != getID())
 			return false;
 	}
-	else // </advc.001>
+	else // </advc.181>
 	if (kPlot.isOwned() && kPlot.getOwner() != getID())
 		return false;
 	// advc: Checks that don't depend on player moved into new function at CvPlot
 	if (!kPlot.canFound(bTestVisible,
-		bIgnoreFoW ? NO_TEAM : getTeam())) // advc.001
+		bIgnoreFoW ? NO_TEAM : getTeam())) // advc.181
 	{
 		return false;
 	}
@@ -6087,12 +6119,15 @@ void CvPlayer::processBuilding(BuildingTypes eBuilding, int iChange, CvArea& kAr
 }
 
 
-bool CvPlayer::canBuild(CvPlot const& kPlot, BuildTypes eBuild, bool bTestEra, bool bTestVisible) const
+bool CvPlayer::canBuild(CvPlot const& kPlot, BuildTypes eBuild, bool bTestEra,
+	bool bTestVisible, /* advc.181: */ bool bIgnoreFoW) const
 {
 	//PROFILE_FUNC(); // advc.003o
-	if (!kPlot.canBuild(eBuild, getID(), bTestVisible))
+	if (!kPlot.canBuild(eBuild, getID(), bTestVisible,
+		bIgnoreFoW)) // advc.181
+	{
 		return false;
-
+	}
 	if (GC.getInfo(eBuild).getTechPrereq() != NO_TECH)
 	{	// advc:
 		TechTypes ePrereqTech = GC.getInfo(eBuild).getTechPrereq();
@@ -9352,11 +9387,14 @@ void CvPlayer::setCombatExperience(int iExperience)
 
 		if (pBestCity != NULL)
 		{
-			int iRandOffset = SyncRandNum(GC.getNumUnitInfos());
-			FOR_EACH_ENUM(Unit)
+			/*	<advc.001> Pick a civ-specific unit type so that mods can create
+				unique Great Generals. Inspired by code by edead. */
+			CvCivilization const& kCiv = getCivilization();
+			int iRandOffset = SyncRandNum(kCiv.getNumUnits());
+			for (int i = 0; i < kCiv.getNumUnits(); i++)
 			{
-				UnitTypes eRandUnit = (UnitTypes)
-						((eLoopUnit + iRandOffset) % GC.getNumUnitInfos());
+				UnitTypes eRandUnit = kCiv.unitAt(
+						(i + iRandOffset) % kCiv.getNumUnits()); // </advc.001>
 				if (GC.getInfo(eRandUnit).getLeaderExperience() > 0 ||
 					GC.getInfo(eRandUnit).getLeaderPromotion() != NO_PROMOTION)
 				{
@@ -14070,7 +14108,7 @@ int CvPlayer::getAdvancedStartCityCost(bool bAdd, CvPlot const* pPlot) const
 		// Need valid plot to found on if adding
 		if (bAdd)
 		{
-			if (!canFound(pPlot->getX(), pPlot->getY(), false))
+			if (!canFound(*pPlot))
 				return -1;
 		}
 		// Need your own city present to remove
@@ -20039,7 +20077,7 @@ void CvPlayer::updateTradeList(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 		{
 			FOR_EACH_TRADE_ITEM2(pOfferItem, kOurOffer)
 			{
-				// Don't show vassal deals if peace treaty is already on the table
+				// Don't show peace treaty if vassal deal is already on the table
 				if (CvDeal::isVassal(pOfferItem->m_eItemType))
 				{
 					pItem->m_bHidden = true;
@@ -20064,8 +20102,11 @@ void CvPlayer::updateTradeList(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 				break;
 			FOR_EACH_TRADE_ITEM2(pOfferItem, kOurOffer)
 			{
-				// Don't show peace deals if the other player is offering to be a vassal
-				if (CvDeal::isEndWar(pOfferItem->m_eItemType))
+				// Don't show vassal deals if peace treaty is already on the table
+				if (CvDeal::isEndWar(pOfferItem->m_eItemType) &&
+					/*	advc.ctr: Peacetime peace treaty should not hide
+						vassal deals (in multiplayer) */
+					GET_TEAM(getTeam()).isAtWar(TEAMID(eOtherPlayer)))
 				{
 					pItem->m_bHidden = true;
 					break;
@@ -20116,7 +20157,7 @@ void CvPlayer::updateTradeList(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 	/*	<advc.ctr> Add PEACE_TREATY items to offers that imply a peace treaty.
 		Note that this is only done to inform the human player. There is code
 		elsewhere for signing the peace treaty upon implementation of the deal.
-		For deals that involve a human, the game will end up attemping to
+		For deals that involve a human, the game will end up attempting to
 		implement the peace treaty twice. No harm in that.
 		I don't know if updateTradeList gets called for all AI trades;
 		don't want to rely on it. */
@@ -20148,7 +20189,6 @@ void CvPlayer::updateTradeList(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 				FAssert(!abPeaceTreatyFound[i]);
 				abPeaceTreatyFound[i] = true;
 			}
-			else FAssert(!CvDeal::isEndWar(pItem->m_eItemType));
 			for (int j = 0; j < iForcePeaceSz; j++)
 			{
 				if (pItem->m_eItemType == aeForcePeace[j])

@@ -117,6 +117,19 @@ public:
 	bool GetNextXmlVal(char& r, char iDefault = 0); // advc.003t
 	bool GetNextXmlVal(float& r, float fDefault = 0.0f);
 	bool GetNextXmlVal(bool& r, bool bDefault = false);
+	/*	<advc.enum>  (Could replace most of the above functions with a template too
+		- one that doesn't get instantiated for enum types.) */
+	template<typename T>
+	bool GetNextXmlVal(T& r, T tDefault = (T)-1);
+	// Need to make these casts explicit to avoid matching the template
+	bool GetNextXmlVal(CvString& r, char const* szDefault = NULL)
+	{
+		return GetNextXmlVal(static_cast<std::string&>(r), szDefault);
+	}
+	bool GetNextXmlVal(CvWString& r, wchar const* szDefault = NULL)
+	{
+		return GetNextXmlVal(static_cast<std::wstring&>(r), szDefault);
+	} // </advc.enum>
 
 	bool GetChildXmlVal(std::string& r, char const* szDefault = NULL);
 	bool GetChildXmlVal(std::wstring& r, wchar const* szDefault = NULL);
@@ -214,7 +227,7 @@ public:
 		TCHAR m_acTextVal[256]; // (Tbd.: Could we just use a CvString?)
 		static std::pair<int,T> noPair()
 		{
-			return std::pair<int,T>(iNO_KEY, 0);
+			return std::pair<int,T>(iNO_KEY, (T)0);
 		}
 	};
 	/*	advc.enum: Load mapping from an enum key to a list of yield or commerce rates.
@@ -427,6 +440,7 @@ private:
 	{
 		bool bAssertMandatory; // advc.006b
 		bool bEventsLoaded, bThroneRoomLoaded; // advc.003v
+		bool bTrueStartsDataLoaded; // advc.tsl
 		friend CvXMLLoadUtility;
 	};
 	//int m_iCurProgressStep; // Unused, remove it to make room.
@@ -510,7 +524,7 @@ private:
 };
 
 // Size 20 also seems OK, 28 definitely not, causes Wine to crash.
-//BOOST_STATIC_ASSERT(sizeof(CvXMLLoadUtility) == 16);
+BOOST_STATIC_ASSERT(sizeof(CvXMLLoadUtility) == 16);
 
 #ifdef _USRDLL
 // inlines / templates ...

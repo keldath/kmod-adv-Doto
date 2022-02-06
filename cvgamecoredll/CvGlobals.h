@@ -172,7 +172,8 @@ public:
 	}
 	int const* getCityPlotX() const { return m_aiCityPlotX; }
 	int const* getCityPlotY() const { return m_aiCityPlotY; }
-	int const* CvGlobals::getCityPlotPriority() const { return m_aiCityPlotPriority; }
+	int const* getCityPlotPriority() const { return m_aiCityPlotPriority; }
+	int maxCityPlotPriority() const { return m_iMaxCityPlotPriority; } // advc
 	DirectionTypes const* getTurnLeftDirection() const { return m_aeTurnLeftDirection; }
 	DirectionTypes getTurnLeftDirection(int i) const
 	{
@@ -465,6 +466,7 @@ public:
 		DO(UNIT_PRODUCTION_DECAY_TIME) \
 		DO(UNIT_PRODUCTION_DECAY_PERCENT) \
 		/* </advc.094> */ \
+		DO(PASSABLE_AREAS) /* advc.030 */ \
 		/* <advc.opt> */ \
 		DO(DIPLOMACY_VALUE_REMAINDER) \
 		DO(PEACE_TREATY_LENGTH) \
@@ -569,6 +571,8 @@ public:
 		DO(LFB_USESLIDINGSCALE) DO(LFB_ADJUSTNUMERATOR) DO(LFB_ADJUSTDENOMINATOR) \
 		DO(LFB_USECOMBATODDS) /* BETTER_BTS_AI_MOD: END */ \
 		DO(POWER_CORRECTION) /* advc.104 */ \
+		DO(TRUE_STARTS_SANITIZE) /* advc.tsl */ \
+		DO(TRUE_STARTS_SANITIZE_SCENARIOS) /* advc.tsl */ \
 		DO(RF_PLAYER_HANDICAP_ADJUSTMENT) /* advc.708 */
 	#define MAKE_ENUMERATOR(VAR) VAR,
 	enum GlobalDefines
@@ -893,6 +897,7 @@ protected:
 	int m_aiCityPlotY[MAX_CITY_PLOTS];
 	int m_aiCityPlotPriority[MAX_CITY_PLOTS];
 //mylon
+	int m_iMaxCityPlotPriority; // advc
 	CityPlotTypes m_aaeXYCityPlot[CITY_PLOTS_DIAMETER][CITY_PLOTS_DIAMETER];
 	DirectionTypes m_aeTurnLeftDirection[NUM_DIRECTION_TYPES];
 	DirectionTypes m_aeTurnRightDirection[NUM_DIRECTION_TYPES];

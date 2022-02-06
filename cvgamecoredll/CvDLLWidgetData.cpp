@@ -14,8 +14,6 @@
 #include "WarEvaluator.h" // advc.104l
 #include "RiseFall.h" // advc.706
 
-//mylon local def based on the city
-#define NUM_CITY_PLOTS 2
 
 CvDLLWidgetData* CvDLLWidgetData::m_pInst = NULL;
 
@@ -1014,6 +1012,10 @@ bool CvDLLWidgetData::executeAction(CvWidgetDataStruct &widgetDataStruct)
 		break;
 
 	case WIDGET_DEAL_KILL:
+		/*	advc (note, known issue in multiplayer): The EXE seems to call this
+			on all players involved in the deal, weirdly. (Perhaps to ensure that
+			cancellation happens on all machines.) So the popups appear for both.
+			Don't think this can be worked around - we don't know who clicked. */
 		doDealKill(widgetDataStruct);
 		break;
 
@@ -2400,16 +2402,16 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
 	}
 	case MISSION_FOUND:
 	{
-		if (!kUnitOwner.canFound(kMissionPlot.getX(), kMissionPlot.getY()))
+		if (!kUnitOwner.canFound(kMissionPlot, /* advc.181: */ false, false))
 		{
 			for (SquareIter it(kMissionPlot, GC.getDefineINT(CvGlobals::MIN_CITY_RANGE));
 				it.hasNext(); ++it)
 			{
 				if (it->isCity() &&
-					/*	<advc.001> Don't give away rival cities in the fog of war.
+					/*	<advc.181> Don't give away rival cities in the fog of war.
 						And same-area check added. */
 					!kUnitOwner.canFound(kMissionPlot, false, false) &&
-					it->sameArea(kMissionPlot)) // </advc.001>
+					it->sameArea(kMissionPlot)) // </advc.181>
 				{
 					szBuffer.append(NEWLINE);
 					szBuffer.append(gDLL->getText("TXT_KEY_ACTION_CANNOT_FOUND",
@@ -2419,7 +2421,7 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
 			}
 		}
 		// <advc.004b> Show the projected increase in city maintenance
-		if (kUnitOwner.canFound(kMissionPlot, false, false))
+		else
 		{
 			// No projection for the initial city
 			if(kUnitOwner.getNumCities() > 0)

@@ -221,11 +221,11 @@ void CvCity::init(int iID, PlayerTypes eOwner, int iX, int iY, bool bBumpUnits,
 	m_iID = iID;
 	m_eOwner = eOwner;
 	m_eOriginalOwner = eOwner;
-//mylon
+//mylon enhanced cities doto advc version
 	CivilizationTypes eCiv = GET_PLAYER(m_eOriginalOwner).getCivilizationType();
 	int diam = GC.getCivilizationInfo(eCiv).getMaxCityRadius();
-	m_abWorkingPlot.resize(numCityPlots());
-//mylon
+	m_abWorkingPlot.resize(numCityPlots()); //qa_mylon - what does this mean - resize?
+//mylon enhanced cities doto advc version
 	m_iX = iX;
 	m_iY = iY;
 	// </advc.003u>
@@ -236,15 +236,6 @@ void CvCity::init(int iID, PlayerTypes eOwner, int iX, int iY, bool bBumpUnits,
 	setName(kOwner.getNewCityName(), /* advc.106k: */ false, true);
 
 	setEverOwned(getOwner(), true);
-	// <advc.908b>
-	FOR_EACH_ENUM(Trait)
-	{
-		if (!kOwner.hasTrait(eLoopTrait))
-			continue;
-		int iFreeCityCulture = GC.getGame().freeCityCultureFromTrait(eLoopTrait);
-		if (iFreeCityCulture > 0)
-			setCulture(getOwner(), iFreeCityCulture, true, false);
-	} // </advc.908b>
 	/*  advc.ctr: To prevent updateCultureLevel from bumping units in
 		surrounding tiles after trading a city under occupation. Don't call
 		setOccupationTimer though -- don't need all those updates. */
@@ -1033,9 +1024,8 @@ void CvCity::chooseProduction(UnitTypes eTrainUnit, BuildingTypes eConstructBuil
 	gDLL->UI().addPopup(pPopupInfo, getOwner(), false, bFront);
 }
 
-// advc: Can't inline these two b/c the plotCityXY functions are now at CvMap
 // advc.enum: Return type was int
-CityPlotTypes CvCity::getCityPlotIndex(CvPlot const& kPlot) const // advc: 1st param was pointer
+CityPlotTypes CvCity::getCityPlotIndex(CvPlot const& kPlot) const
 {
 	return GC.getMap().plotCityXY(getX(), getY(), kPlot);
 }
@@ -1050,12 +1040,12 @@ bool CvCity::canWork(CvPlot /* advc: */ const& kPlot) const
 {
 	if (kPlot.getWorkingCity() != this)
 		return false;
-//doto enhanced city size mylon
+//mylon enhanced cities doto advc version
 	FAssert(getCityPlotIndex(kPlot) != NO_CITYPLOT);
 	// Just in case FAssertMsg below doesn't end the function.
 	if (getCityPlotIndex(kPlot) >= maxRadius())
 		return false;
-//doto enhanced city size mylon
+//mylon enhanced cities doto advc version
 	if (kPlot.plotCheck(PUF_canSiege, getOwner()) != NULL)
 		return false;
 
@@ -1114,7 +1104,7 @@ void CvCity::verifyWorkingPlot(CityPlotTypes ePlot) // advc.enum: CityPlotTypes
 void CvCity::verifyWorkingPlots()
 {
 	//FOR_EACH_ENUM(CityPlot)
-	//mylon
+//mylon enhanced cities doto advc version
 	FOR_EACH_CITYPLOT(GET_PLAYER(getOwner()))
 		verifyWorkingPlot(eLoopCityPlot);
 }
@@ -1175,7 +1165,7 @@ int CvCity::countNumRiverPlots() const
 int CvCity::findPopulationRank() const
 {
 	if (m_bPopulationRankValid)
-		return m_iPopulationRank; // advc
+		return m_iPopulationRank;
 
 	/*int iRank = 1;
 	FOR_EACH_CITY(pLoopCity, GET_PLAYER(getOwner())) {
@@ -1188,18 +1178,20 @@ int CvCity::findPopulationRank() const
 	m_iPopulationRank = iRank;*/ // BtS
 	// K-Mod. Set all ranks at the same time.
 	CvPlayer const& kPlayer = GET_PLAYER(getOwner());
-	std::vector<std::pair<int, int> > city_scores;
+	std::vector<std::pair<int,int> > aiiCityScores;
 	FOR_EACH_CITY(pLoopCity, kPlayer)
-		city_scores.push_back(std::make_pair(-pLoopCity->getPopulation(), pLoopCity->getID()));
-	// note: we are sorting by minimum of _negative_ score, and then by min cityID.
-	std::sort(city_scores.begin(), city_scores.end());
-	FAssert(city_scores.size() == kPlayer.getNumCities());
-	for (size_t i = 0; i < city_scores.size(); i++)
 	{
-		CvCity* pLoopCity = kPlayer.getCity(city_scores[i].second);
-		pLoopCity->m_iPopulationRank = i+1;
+		aiiCityScores.push_back(std::make_pair(
+				-pLoopCity->getPopulation(), pLoopCity->getID()));
+	}
+	// note: we are sorting by minimum of _negative_ score, and then by min cityID.
+	std::sort(aiiCityScores.begin(), aiiCityScores.end());
+	FAssert(aiiCityScores.size() == kPlayer.getNumCities());
+	for (size_t i = 0; i < aiiCityScores.size(); i++)
+	{
+		CvCity* pLoopCity = kPlayer.getCity(aiiCityScores[i].second);
+		pLoopCity->m_iPopulationRank = i + 1;
 		pLoopCity->m_bPopulationRankValid = true;
-		// (It's strange that this is allowed. Aren't these values protected or something?)
 	}
 	FAssert(m_bPopulationRankValid);
 	// K-Mod end
@@ -7456,8 +7448,8 @@ int CvCity::getCultureThreshold(CultureLevelTypes eLevel)
 			std::min(eLevel + 1, GC.getNumCultureLevelInfos() - 1)));
 }
 
+//mylon enhanced cities doto advc version
 // CvCity.cpp (don't want to include CvPlayer.h in CvCity.h)
-//mylon
 CityPlotTypes CvCity::numCityPlots() const
 {
    return GET_PLAYER(m_eOwner).numCityPlots();
@@ -7470,6 +7462,7 @@ int CvCity::maxDiameter() const
 {
    return GET_PLAYER(m_eOwner).cityDiameter();
 }
+//mylon enhanced cities doto advc version
 
 void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups)
 {
@@ -7477,7 +7470,7 @@ void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups
 	if (eOldValue == eNewValue)
 		return;
 	m_eCultureLevel = eNewValue;
-//doto enhanced city size mylon
+//mylon enhanced cities doto advc version unused yet
 	int cultureRadius = GC.getCultureLevelInfo(getCultureLevel()).getCityRadius();
 	int cultMax = 2;
 	int playerMax = 2;
@@ -10099,7 +10092,7 @@ void CvCity::setSpecialistCount(SpecialistTypes eSpecialist, int iNewValue)
 {
 	int const iOldValue = getSpecialistCount(eSpecialist);
 	if (iOldValue == iNewValue)
-		return; // advc
+		return;
 
 	m_aiSpecialistCount.set(eSpecialist, iNewValue);
 	FAssert(getSpecialistCount(eSpecialist) >= 0);
@@ -10131,7 +10124,16 @@ void CvCity::alterSpecialistCount(SpecialistTypes eSpecialist, int iChange)
 
 	if (isCitizensAutomated())
 	{
-		changeForceSpecialistCount(eSpecialist, iChange);
+		changeForceSpecialistCount(eSpecialist, iChange +
+		/*	<advc.121> We're making sure below not to remove the specialist
+			we've just added, but afterwards we let the AI juggle the citizens;
+			so it can still happen that a human adds e.g. a 2nd scientist
+			- the 1st having been assigned by the AI - and ends up with just
+			1 scientist. Let's assume that any previously assigned specialists
+			of type eSpecialist should also be forced. */
+				(iChange <= 0 ? 0 :
+				std::max(getSpecialistCount(eSpecialist)
+				- getForceSpecialistCount(eSpecialist), 0))); // </advc.121>
 		//return;
 		/*	(K-Mod. Without the following block,
 			extra care is needed inside AI_assignWorkingPlots.) */
@@ -10244,7 +10246,7 @@ void CvCity::setFreeSpecialistCount(SpecialistTypes eSpecialist, int iNewValue)
 {
 	int const iOldValue = getFreeSpecialistCount(eSpecialist);
 	if (iOldValue == iNewValue)
-		return; // advc
+		return;
 
 	m_aiFreeSpecialistCount.set(eSpecialist, iNewValue);
 	FAssert(getFreeSpecialistCount(eSpecialist) >= 0);
@@ -10353,7 +10355,7 @@ void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue) // advc.enum: C
 	if(bSelected && GET_PLAYER(getOwner()).canGoldRush())
 		iOldTurns = getProductionTurnsLeft();
 	// </advc.064b>
-//mylon
+//mylon enhanced cities doto advc version
 	//m_abWorkingPlot.set(ePlot, bNewValue);
 	FAssertBounds(0, numCityPlots(), ePlot);
 	m_abWorkingPlot[ePlot] = bNewValue;
@@ -12820,10 +12822,6 @@ void CvCity::read(FDataStreamBase* pStream)
 	pStream->Read((int*)&m_ePreviousOwner);
 	pStream->Read((int*)&m_eOriginalOwner);
 	pStream->Read((int*)&m_eCultureLevel);
-//doto enhanced city size mylon
-//	pStream->Read(&m_iRadius);
-//	pStream->Read(&m_iMaxRadiusSize);
-	//mylon
 
 	if (uiFlag >= 12)
 	{
@@ -12960,7 +12958,7 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiFreePromotionCount.read(pStream);
 		m_aiNumRealBuilding.read(pStream);
 		m_aiNumFreeBuilding.read(pStream);
-//mylon	
+//mylon enhanced cities doto advc version	
 		//m_abWorkingPlot.read(pStream);
 		// (Only the uiFlag>=12 branch matters, can delete the other branch.)
 		FOR_EACH_CITYPLOT(GET_PLAYER(m_eOwner))
@@ -12969,7 +12967,7 @@ void CvCity::read(FDataStreamBase* pStream)
 			pStream->Read(&bWorkingPlot);
 			m_abWorkingPlot[eLoopCityPlot] = bWorkingPlot;
 		}
-//mylon
+//mylon enhanced cities doto advc version
 		m_abHasReligion.read(pStream);
 		m_abHasCorporation.read(pStream);
 	}
@@ -13011,7 +13009,7 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiFreePromotionCount.readArray<int>(pStream);
 		m_aiNumRealBuilding.readArray<int>(pStream);
 		m_aiNumFreeBuilding.readArray<int>(pStream);
-		//mylon
+//mylon enhanced cities doto advc version
 		// (Only the uiFlag>=12 branch matters, can delete the other branch.)
 		//m_abWorkingPlot.readArray<bool>(pStream);
 		m_abHasReligion.readArray<bool>(pStream);
@@ -13479,10 +13477,7 @@ void CvCity::write(FDataStreamBase* pStream)
 	pStream->Write(m_ePreviousOwner);
 	pStream->Write(m_eOriginalOwner);
 	pStream->Write(m_eCultureLevel);
-//doto enhanced city size mylon
-//	pStream->Write(m_iRadius);
-//	pStream->Write(m_iMaxRadiusSize);
-	//mylon
+
 	m_aiSeaPlotYield.write(pStream);
 	m_aiRiverPlotYield.write(pStream);
 	m_aiBaseYieldRate.write(pStream);
@@ -13564,13 +13559,13 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiFreePromotionCount.write(pStream);
 	m_aiNumRealBuilding.write(pStream);
 	m_aiNumFreeBuilding.write(pStream);
-//
+//mylon enhanced cities doto advc version
 	//m_abWorkingPlot.write(pStream);
 	FOR_EACH_CITYPLOT(GET_PLAYER(m_eOwner))
 	{
 		pStream->Write(m_abWorkingPlot[eLoopCityPlot]);
 	}
-//mylon
+//mylon enhanced cities doto advc version
 	m_abHasReligion.write(pStream);
 	m_abHasCorporation.write(pStream);
 
@@ -13581,7 +13576,9 @@ void CvCity::write(FDataStreamBase* pStream)
 	}
 
 	m_orderQueue.Write(pStream);
-
+	/*	These caches are (or ought to be) reliably invalidated,
+		don't need to be in-sync at all times. */
+	REPRO_TEST_END_WRITE();
 	pStream->Write(m_iPopulationRank);
 	pStream->Write(m_bPopulationRankValid);
 	m_aiBaseYieldRank.write(pStream);
@@ -13590,7 +13587,7 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_abYieldRankValid.write(pStream);
 	m_aiCommerceRank.write(pStream);
 	m_abCommerceRankValid.write(pStream);
-
+	REPRO_TEST_BEGIN_WRITE(CvString::format("City(%d,%d) pt2", getX(), getY()));
 	pStream->Write(m_aEventsOccured.size());
 	for (std::vector<EventTypes>::iterator it = m_aEventsOccured.begin();
 		it != m_aEventsOccured.end(); ++it)
@@ -14171,7 +14168,7 @@ void CvCity::applyEvent(EventTypes eEvent,
 			{
 				int iRandOffset = SyncRandNum(NUM_CITY_PLOTS);
 				//FOR_EACH_ENUM(CityPlot)
-				//mylon
+//mylon enhanced cities doto advc version
 				FOR_EACH_CITYPLOT(GET_PLAYER(getOwner()))
 				{
 					CityPlotTypes const ePlot = (CityPlotTypes)
@@ -14741,8 +14738,10 @@ int CvCity::getMusicScriptId() const
 
 int CvCity::getSoundscapeScriptId() const
 {
-	return GC.getInfo(GET_PLAYER(getOwner()).getCurrentEra()).
-			getCitySoundscapeScriptId(getCitySizeType());
+	return	// advc.002q:
+			(!BUGOption::isEnabled("CityScreen__CitySoundScapes", true) ? -1 :
+			GC.getInfo(GET_PLAYER(getOwner()).getCurrentEra()).
+			getCitySoundscapeScriptId(getCitySizeType()));
 }
 
 
