@@ -9738,6 +9738,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 	if (bRequiresBonus && bNeedsBonus)
 		return false;
 //Shqype Vicinity Bonus Start
+//if used - adjust num plots to mylon city size
 /*		if (GC.getUnitInfo(eUnit).getPrereqVicinityBonus() != NO_BONUS)
 		{
 			if (NULL == pCity)

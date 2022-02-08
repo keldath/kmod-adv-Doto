@@ -30,7 +30,7 @@ CvCityAI::CvCityAI() // advc.003u: Merged with AI_reset
 	m_aiCachePlayerClosenessDistance = new int[MAX_PLAYERS];
 	for (int i = 0; i < MAX_PLAYERS; i++)
 		m_aiCachePlayerClosenessDistance[i] = -1; // </advc.opt>
-	// (These two were declared as arrays, but it's neater to treat them all alike.)
+	// (These two were declared as arrays, but it's neater to treat them all alike.)	
 	m_aiBestBuildValue = new int[NUM_CITY_PLOTS];
 //mylon enhanced cities doto advc version
 	//FOR_EACH_ENUM(CityPlot)
@@ -5216,7 +5216,10 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags,
 				if (kBuilding.getSeaPlotYieldChange(YIELD_PRODUCTION) > 0)
 				{
 					int iNumWaterPlots = countNumWaterPlots();
-					if (!bLimitedWonder || iNumWaterPlots > NUM_CITY_PLOTS / 2)
+		//doto enhanced city size mylon	
+					int actual_num_plots = numCityPlots();// was NUM_CITY_PLOTS
+
+					if (!bLimitedWonder || iNumWaterPlots > actual_num_plots / 2)
 					{
 						iTempValue += kBuilding.getSeaPlotYieldChange(YIELD_PRODUCTION) *
 								iNumWaterPlots;
@@ -7480,7 +7483,9 @@ bool CvCityAI::AI_isGoodPlot(CityPlotTypes ePlot, int* aiYields) const // advc.e
 int CvCityAI::AI_countGoodPlots() const
 {
 	int iCount = 0;
-	for (CityPlotTypes ePlot = FIRST_ADJACENT_PLOT; ePlot < NUM_CITY_PLOTS; ++ePlot)
+//doto enhanced city size mylon	
+	int actual_num_plots = numCityPlots();// was NUM_CITY_PLOTS
+	for (CityPlotTypes ePlot = FIRST_ADJACENT_PLOT; ePlot < actual_num_plots; ++ePlot)
 		iCount += AI_isGoodPlot(ePlot) ? 1 : 0;
 	return iCount;
 }
@@ -7488,7 +7493,9 @@ int CvCityAI::AI_countGoodPlots() const
 int CvCityAI::AI_countWorkedPoorPlots() const
 {
 	int iCount = 0;
-	for (CityPlotTypes ePlot = FIRST_ADJACENT_PLOT; ePlot < NUM_CITY_PLOTS; ++ePlot)
+//doto enhanced city size mylon	
+	int actual_num_plots = numCityPlots();// was NUM_CITY_PLOTS
+	for (CityPlotTypes ePlot = FIRST_ADJACENT_PLOT; ePlot < actual_num_plots; ++ePlot)
 		iCount += (isWorkingPlot(ePlot) && !AI_isGoodPlot(ePlot) ? 1 : 0);
 	return iCount;
 }
@@ -10743,7 +10750,9 @@ int CvCityAI::AI_yieldValue(int* piYields, int* piCommerceYields, bool bRemove,
 int CvCityAI::AI_plotValue(CvPlot const& kPlot, bool bRemove, bool bIgnoreFood,
 	bool bIgnoreStarvation, int iGrowthValue) const
 {
-	FAssert(getCityPlotIndex(kPlot) < NUM_CITY_PLOTS);
+//doto enhanced city size mylon	
+	int actual_num_plots = numCityPlots();// was NUM_CITY_PLOTS
+	FAssert(getCityPlotIndex(kPlot) < actual_num_plots);
 	/*	K-Mod. To reduce code duplication, this function now uses AI_jobChangeValue.
 		(original code deleted) */
 	if (bRemove)
@@ -13593,7 +13602,10 @@ void CvCityAI::AI_ClearConstructionValueCache()
 void CvCityAI::read(FDataStreamBase* pStream)
 {
 	CvCity::read(pStream);
-
+	
+//doto enhanced city size mylon	
+	int actual_num_plots = numCityPlots();// was NUM_CITY_PLOTS
+	
 	uint uiFlag=0;
 	pStream->Read(&uiFlag);
 
@@ -13615,8 +13627,9 @@ void CvCityAI::read(FDataStreamBase* pStream)
 	pStream->Read(NUM_YIELD_TYPES, m_aiEmphasizeYieldCount);
 	pStream->Read(NUM_COMMERCE_TYPES, m_aiEmphasizeCommerceCount);
 	pStream->Read(&m_bForceEmphasizeCulture);
-	pStream->Read(NUM_CITY_PLOTS, m_aiBestBuildValue);
-	pStream->Read(NUM_CITY_PLOTS, (int*)m_aeBestBuild);
+//doto enhanced city size mylon	
+	pStream->Read(actual_num_plots, m_aiBestBuildValue);
+	pStream->Read(actual_num_plots, (int*)m_aeBestBuild);
 	// <advc.opt>
 	if(uiFlag >= 4)
 		pStream->Read((int*)&m_eBestBuild); // </advc.opt>
@@ -13673,6 +13686,9 @@ void CvCityAI::read(FDataStreamBase* pStream)
 void CvCityAI::write(FDataStreamBase* pStream)
 {
 	CvCity::write(pStream);
+//doto enhanced city size mylon	
+	int actual_num_plots = numCityPlots();// was NUM_CITY_PLOTS
+
 	uint uiFlag;;
 	//uiFlag = 1; // K-Mod: m_aiConstructionValue
 	//uiFlag = 2; // K-Mod: m_iCultureWeight
@@ -13695,8 +13711,10 @@ void CvCityAI::write(FDataStreamBase* pStream)
 	pStream->Write(NUM_YIELD_TYPES, m_aiEmphasizeYieldCount);
 	pStream->Write(NUM_COMMERCE_TYPES, m_aiEmphasizeCommerceCount);
 	pStream->Write(m_bForceEmphasizeCulture);
-	pStream->Write(NUM_CITY_PLOTS, m_aiBestBuildValue);
-	pStream->Write(NUM_CITY_PLOTS, (int*)m_aeBestBuild);
+//doto enhanced city size mylon		
+	pStream->Write(actual_num_plots, m_aiBestBuildValue);
+	pStream->Write(actual_num_plots, (int*)m_aeBestBuild);
+//doto enhanced city size mylon		
 	pStream->Write(m_eBestBuild); // advc.opt
 	pStream->Write(GC.getNumEmphasizeInfos(), m_pbEmphasize);
 	pStream->Write(NUM_YIELD_TYPES, m_aiSpecialYieldMultiplier);

@@ -22308,12 +22308,16 @@ bool CvPlayerAI::AI_intendsToCede(CvCityAI const& kCity, PlayerTypes eToPlayer,
 	CvTeamAI const& kOurTeam = GET_TEAM(getTeam());
 	CvTeam const& kToTeam = GET_TEAM(eToPlayer);
 	bool const bToVassal = kToTeam.isVassal(kOurTeam.getID());
+//doto enhanced city size mylon
+//replaces NUM_CITY_PLOTS in the entires below (default is 21)
+	int actual_plots_num = GET_PLAYER(eToPlayer).numCityPlots();
 	bool const bNonColonialVassal = (bToVassal &&
 			!kOurTeam.isParent(kToTeam.getID()));
 	if (bNonColonialVassal && kToTeam.isCapitulated() &&
 		/*	Even if they pay for the city, it's probably not worth letting a
 			a capitulated vassal go free. */
-		kToTeam.canVassalRevolt(getTeam(), false, NUM_CITY_PLOTS, kCity.getPopulation()))
+//doto enhanced city size mylon
+		kToTeam.canVassalRevolt(getTeam(), false, actual_plots_num, kCity.getPopulation()))
 	{
 		return false;
 	}
@@ -22327,7 +22331,8 @@ bool CvPlayerAI::AI_intendsToCede(CvCityAI const& kCity, PlayerTypes eToPlayer,
 			// This is a useful check also for voluntary vassals
 			if (kToTeam.canVassalRevolt(getTeam(), false,
 				// (Should perhaps play it less safely when iKeepVal is negative?)
-				(3 * NUM_CITY_PLOTS) / 2 + iToTeamCities * 4,
+//doto enhanced city size mylon	
+				(3 * actual_plots_num) / 2 + iToTeamCities * 4,
 				kCity.getPopulation() + iToTeamCities * 4))
 			{
 				return false;
@@ -27590,7 +27595,10 @@ void CvPlayerAI::AI_updateCitySites(int iMinFoundValueThreshold, int iMaxSites)
 			int iValue = kPlot.getFoundValue(getID(), /* advc.052: */ true);
 			if (iValue > iMinFoundValueThreshold && !AI_isPlotCitySite(kPlot))
 			{
-				iValue *= std::min(NUM_CITY_PLOTS * 2, kPlot.getArea().getNumUnownedTiles()
+//doto enhanced city size mylon
+//replaces NUM_CITY_PLOTS  (default is 21)
+				int actual_plots_num = GET_PLAYER(getID()).numCityPlots();
+				iValue *= std::min(actual_plots_num * 2, kPlot.getArea().getNumUnownedTiles()
 						+ 1); /* advc.031: Just b/c all tiles in the area are
 								 owned doesn't mean we can't ever settle there.
 								 Probably an oversight; tagging advc.001. */

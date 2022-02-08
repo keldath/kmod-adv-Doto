@@ -5385,7 +5385,10 @@ void CvGameTextMgr::setCityPlotYieldValueString(CvWStringBuffer &szString,
 	// advc.enum: Too many call locations; can't change the type of iPlotIndex.
 	CityPlotTypes ePlot = (CityPlotTypes)iPlotIndex;
 	CvPlot* pPlot = NULL;
-	if (ePlot >= 0 && ePlot < NUM_CITY_PLOTS)
+//doto enhanced city size mylon	
+	int actual_num_plots = pCity->numCityPlots();// was NUM_CITY_PLOTS
+	if (ePlot >= 0 && ePlot < actual_num_plots)
+//doto enhanced city size mylon
 		pPlot = pCity->getCityIndexPlot(ePlot);
 
 	if (pPlot != NULL && pPlot->getWorkingCity() == pCity)
