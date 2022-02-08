@@ -6,7 +6,7 @@
 // advc.plotr: New header
 
 #include "CvMap.h"
-//mylon required for NearbyCityIter (Doto version)
+//doto enhanced city size mylon -  required for NearbyCityIter (Doto version)
 #include "CvCity.h" 
 
 /*	SpiralPlotIterator: Iterator over the CvPlot instances within a radius around
@@ -468,7 +468,7 @@ public:
 //			but it doesn't matter b/c city plot priorities are symmetrical.
 //			The BtS code (at the call locations) had also relied on that. */
 //		CityPlotTypes eCityPlot = m_pNext->getCityPlotIndex(m_kCenter);
-//		FAssertBounds(0, MAX_NUM_CITY_PLOTS, eCityPlot);
+//		FAssertBounds(0, MAX_CITY_PLOTS, eCityPlot);
 //		return GC.getCityPlotPriority()[eCityPlot];
 //	}
 //
@@ -503,7 +503,7 @@ class NearbyCityIter
 public:
 	NearbyCityIter(CvPlot const& kPlot)
 		: m_kCenter(kPlot),
-		m_kPlotCircle(*new PlotCircleIter(kPlot, MAX_CITY_RADIUS)),
+		m_kPlotCircle(*new PlotCircleIter(kPlot, CITY_PLOTS_RADIUS4)),
 		m_pNext(NULL)
 	{
 		if (kPlot.isCityRadius()) // save time
@@ -536,7 +536,7 @@ public:
 	int cityPlotPriority() const
 	{
 		CityPlotTypes eCityPlot = m_pNext->getCityPlotIndex(m_kCenter);
-		FAssertBounds(0, MAX_NUM_CITY_PLOTS, eCityPlot);
+		FAssertBounds(0, NUM_CITY_PLOTS4, eCityPlot);
 		return GC.getCityPlotPriority()[eCityPlot];
 	}
 

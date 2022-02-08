@@ -34,10 +34,6 @@
 #undef CVGAME_INSTANCE_FOR_RNG
 #define CVGAME_INSTANCE_FOR_RNG (*this) // </advc.007c>
 
-//mylon enhanced cities doto advc version
-//for calcs based in this file - we will always go with size 2 cities.
-//simpler solution then changing everything.
-#define NUM_CITY_PLOTS 2
 
 CvGame::CvGame() :
 	m_pRiseFall(new RiseFall()), // advc.700

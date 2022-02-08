@@ -6,8 +6,6 @@
 #include "CityPlotIterator.h"
 #include "BBAILog.h" // advc.007
 #include "CvInfo_GameOption.h"
-//mylon
-#include "CitySize2Iterator.h" // includes CvCity.h
 
 // advc.035:
 void contestedPlots(std::vector<CvPlot*>& r, TeamTypes t1, TeamTypes t2)

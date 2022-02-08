@@ -109,7 +109,7 @@ public:
 //Wonder Limit - Doto
 	int getmaxWonderCultureLimit() const; // Exposed to Python
 //Wonder Limit - Doto	
-//doto enhanced city size Mylon Mega Mod
+//doto enhanced city size mylon
 	int getCityRadius() const;                // Exposed to python, hopefully
 	int getSpeedThreshold(int i) const; // Exposed to Python
 	bool read(CvXMLLoadUtility* pXML);
@@ -125,7 +125,7 @@ protected:
 //Wonder Limit - Doto
 	int m_imaxWonderCultureLimit;
 //Wonder Limit - Doto
-//doto enhanced city size Mylon Mega Mod
+//doto enhanced city size mylon
 	int m_iCityRadius;
 	int* m_paiSpeedThreshold;
 };

@@ -74,6 +74,10 @@ void CyGlobalContextPythonInterface2(python::class_<CyGlobalContext>& x)
 		.def("getBARBARIAN_TEAM", &CyGlobalContext::getBARBARIAN_TEAM, "int ()")
 		.def("getINVALID_PLOT_COORD", &CyGlobalContext::getINVALID_PLOT_COORD, "int ()")
 		.def("getNUM_CITY_PLOTS", &CyGlobalContext::getNUM_CITY_PLOTS, "int ()")
+//doto enhanced city size mylon
+		.def("getNUM_CITY_PLOTS3", &CyGlobalContext::getNUM_CITY_PLOTS3, "int ()")
+		.def("getNUM_CITY_PLOTS4", &CyGlobalContext::getNUM_CITY_PLOTS4, "int ()")
+//doto enhanced city size mylon
 		.def("getCITY_HOME_PLOT", &CyGlobalContext::getCITY_HOME_PLOT, "int ()")
 		;
 }

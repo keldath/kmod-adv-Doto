@@ -7,6 +7,7 @@
 
 #include "CvMap.h"
 #include "CvCity.h"
+//doto enhanced city size mylon
 #include "CvPlayer.h"
 
 /*  Iterator over the CvPlot objects in the city radius around a plot in the center.
@@ -36,7 +37,7 @@ public:
 	CityPlotIterator(CvCity const& kCity, bool bIncludeHomePlot = true) :
 		m_ePos(NO_CITYPLOT), m_pNext(NULL),
 		m_iCenterX(kCity.getX()), m_iCenterY(kCity.getY()),
-//mylon enhanced cities doto advc version
+//doto enhanced city size mylon
 //get the city plot numders
 		m_eCityPlots(kCity.numCityPlots())
 	{
@@ -50,13 +51,13 @@ public:
 	}
 
 	CityPlotIterator(CvPlot const& kCenter,
-//mylon enhanced cities doto advc version
+//doto enhanced city size mylon
 		CvPlayer const* pPlayer = NULL,
 		bool bIncludeHomePlot = true)
 	:	m_ePos(NO_CITYPLOT), m_pNext(NULL),
 		m_iCenterX(kCenter.getX()), m_iCenterY(kCenter.getY()),
-//mylon enhanced cities doto advc version if no player is passed use the default size.
-		m_eCityPlots(pPlayer == NULL ? DEFAULT_NUM_CITY_PLOTS : pPlayer->numCityPlots())
+//doto enhanced city size mylon if no player is passed use the default size.
+		m_eCityPlots(pPlayer == NULL ? NUM_CITY_PLOTS : pPlayer->numCityPlots())
 	{
 		if (!bIncludeHomePlot)
 			++m_ePos;
@@ -73,8 +74,8 @@ public:
 		bool bIncludeHomePlot = true)
 	:	m_ePos(NO_CITYPLOT), m_pNext(NULL), m_iCenterX(iX), m_iCenterY(iY),
 		m_pRandom(&pRandom),
-		//mylon:
-		m_eCityPlots(pPlayer == NULL ? DEFAULT_NUM_CITY_PLOTS /*4*/ : pPlayer->numCityPlots())
+//doto enhanced city size mylon
+		m_eCityPlots(pPlayer == NULL ? NUM_CITY_PLOTS /*4*/ : pPlayer->numCityPlots())
 	{
 		if (eWORKING_PLOT_TYPE != ANY_CITY_PLOT)
 			FAssert(eWORKING_PLOT_TYPE == ANY_CITY_PLOT);
@@ -121,6 +122,7 @@ public:
 protected:
 	void computeNext()
 	{
+		//doto enhanced city size mylon
 		if (m_ePos + 1 >= /*NUM_CITYPLOTS*/m_eCityPlots) //mylon
 		{
 			m_pNext = NULL;
@@ -155,7 +157,7 @@ private:
 	CityPlotTypes m_ePos;
 	CvPlot* m_pNext;
 	int m_iCenterX, m_iCenterY;
-//mylon enhanced cities doto advc version
+//doto enhanced city size mylon
 	CityPlotTypes m_eCityPlots; 
 	CvCity const* m_pCity; // not used if eWORKING_PLOT_TYPE is ANY_CITY_PLOT
 	/*	Only used if bRAND_ORDER ...
@@ -166,7 +168,7 @@ private:
 
 	void shuffle(bool bIncludeHomePlot)
 	{
-//mylon enhanced cities doto advc version - was /*NUM_CITY_PLOTS*/
+//doto enhanced city size mylon - was /*NUM_CITY_PLOTS*/
 		m_aiShuffledIndices = m_pRandom->shuffle(m_eCityPlots); //mylon
 		if (!bIncludeHomePlot)
 		{
@@ -205,11 +207,11 @@ public:
 		 CityPlotIterator<>(kCity, bIncludeHomePlot) {}
 
 	CityPlotIter(CvPlot const& kCenter,
-//mylon enhanced cities doto advc version
+//doto enhanced city size mylon
 		CvPlayer const* pPlayer = NULL,
 		bool bIncludeHomePlot = true)
 	:	CityPlotIterator<>(kCenter,
-//mylon enhanced cities doto advc version
+//doto enhanced city size mylon
 					pPlayer, 
 					bIncludeHomePlot) {}
 
@@ -255,7 +257,7 @@ class CityPlotRandIter : public CityPlotIterator<ANY_CITY_PLOT, true>
 public:
 	CityPlotRandIter(CvCity const& kCity, CvRandom& pRandom, bool bIncludeHomePlot = true): 
 		CityPlotIterator<ANY_CITY_PLOT, true>(kCity.getX(), kCity.getY(), pRandom,
-//mylon enhanced cities doto advc version
+//doto enhanced city size mylon
        &GET_PLAYER(kCity.getOwner()),
        bIncludeHomePlot) {}
     
@@ -264,7 +266,7 @@ public:
     				CvPlayer const* pPlayer = NULL,  
     				bool bIncludeHomePlot = true) :
 		CityPlotIterator<ANY_CITY_PLOT, true>(kCenter.getX(), kCenter.getY(), pRandom, 
-//mylon enhanced cities doto advc version
+//doto enhanced city size mylon
 		pPlayer, 
 		bIncludeHomePlot) {}
 
@@ -279,7 +281,7 @@ public:
 	in their radius. (This does not imply that the cities are currently able
 	to work the plot.) Uses a CityPlotIter internally b/c relevant cities
 	can only exist within a city radius around the given plot. */
-//mylon enhanced cities doto advc version
+//doto enhanced city size mylon
 //original advciv class renamed - same name used in PlotRadiusIterator
 class NearbyCityIterAdvc
 {

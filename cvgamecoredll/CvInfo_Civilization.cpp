@@ -111,6 +111,7 @@ int CvCivilizationInfo::getMaxCityRadius() const
 {
 	return m_iMaxCityRadius;
 }
+//doto enhanced city size mylon
 
 const wchar* CvCivilizationInfo::getShortDescription(uint uiForm)
 {

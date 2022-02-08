@@ -12,8 +12,6 @@
 #include "CvArea.h"
 #include "CvInfo_City.h"
 #include "CvInfo_Terrain.h"
-//mylon
-#include "CitySize2Iterator.h" // includes CvCity.h
 
 
 UWAICache::UWAICache()

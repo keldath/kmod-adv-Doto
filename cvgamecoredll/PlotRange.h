@@ -7,7 +7,5 @@
 
 #include "PlotRadiusIterator.h" // includes CvMap.h, CvPlot.h
 #include "CityPlotIterator.h" // includes CvCity.h
-//mylon
-#include "CitySize2Iterator.h" // includes CvCity.h
 
 #endif

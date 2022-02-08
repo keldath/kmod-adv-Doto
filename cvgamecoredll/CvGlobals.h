@@ -889,14 +889,14 @@ protected:
 	int m_aiPlotDirectionY[NUM_DIRECTION_TYPES];
 	int m_aiPlotCardinalDirectionX[NUM_CARDINALDIRECTION_TYPES];
 	int m_aiPlotCardinalDirectionY[NUM_CARDINALDIRECTION_TYPES];
-//mylon
+//doto enhanced city size mylon
 //	int m_aiCityPlotX[NUM_CITY_PLOTS];
 //	int m_aiCityPlotY[NUM_CITY_PLOTS];
 //	int m_aiCityPlotPriority[NUM_CITY_PLOTS];
-	int m_aiCityPlotX[MAX_CITY_PLOTS];
-	int m_aiCityPlotY[MAX_CITY_PLOTS];
-	int m_aiCityPlotPriority[MAX_CITY_PLOTS];
-//mylon
+	int m_aiCityPlotX[NUM_CITY_PLOTS4];
+	int m_aiCityPlotY[NUM_CITY_PLOTS4];
+	int m_aiCityPlotPriority[NUM_CITY_PLOTS4];
+//doto enhanced city size mylon
 	int m_iMaxCityPlotPriority; // advc
 	CityPlotTypes m_aaeXYCityPlot[CITY_PLOTS_DIAMETER][CITY_PLOTS_DIAMETER];
 	DirectionTypes m_aeTurnLeftDirection[NUM_DIRECTION_TYPES];

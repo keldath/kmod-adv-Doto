@@ -7472,25 +7472,15 @@ void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups
 	m_eCultureLevel = eNewValue;
 //mylon enhanced cities doto advc version unused yet
 	int cultureRadius = GC.getCultureLevelInfo(getCultureLevel()).getCityRadius();
-	int cultMax = 2;
-	int playerMax = 2;
+	int playerMaxRad = maxRadius();
 /*
-	if (getRadius() <= CITY_PLOTS_RADIUS_2)
-		cultMax = NUM_CITY_PLOTS_2;
-	else if (getRadius() == CITY_PLOTS_RADIUS_3)
-		cultMax = NUM_CITY_PLOTS_3;
-	else if (getRadius() == CITY_PLOTS_RADIUS_4)
-		cultMax = NUM_CITY_PLOTS_4;
-
-	if (cultureRadius <= CITY_PLOTS_RADIUS_2)
-		playerMax = NUM_CITY_PLOTS_2;
-	else if (cultureRadius == CITY_PLOTS_RADIUS_3)
-		playerMax = NUM_CITY_PLOTS_3;
-	else if (cultureRadius == CITY_PLOTS_RADIUS_4)
-		playerMax = NUM_CITY_PLOTS_4;
+	if (playerMaxRad > 2)
+	{
+		
+	}
 
 	m_iMaxRadiusSize = std::min(cultMax, playerMax);
-	*/
+*/	
 //mylon
 	if (eOldValue != NO_CULTURELEVEL)
 	{

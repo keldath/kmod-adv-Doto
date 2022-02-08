@@ -16,9 +16,6 @@ using std::vector;
 using std::pair;
 using std::make_pair;
 
-//mylon local def 
-#define NUM_CITY_PLOTS 2
-
 //#define SPI_LOG // Enables log file for starting position iteration
 
 bool StartingPositionIteration::isDebug()

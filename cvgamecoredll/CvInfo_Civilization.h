@@ -38,7 +38,7 @@ public: // advc: All the const functions are exposed to Python
 //limited religion doto	
 	int getMaxLimitedReligions() const;
 //limited religion doto	
-//doto enhanced city size MYLON	
+//doto enhanced city size mylon
 	int getMaxCityRadius() const;
 	std::wstring pyGetShortDescription(uint uiForm) { return getShortDescription(uiForm); }
 	DllExport const wchar* getShortDescription(uint uiForm = 0);

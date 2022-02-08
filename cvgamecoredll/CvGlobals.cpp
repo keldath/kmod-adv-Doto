@@ -153,8 +153,8 @@ void CvGlobals::init() // allocate
 		-1,	// CARDINALDIRECTION_SOUTH
 		0,	// CARDINALDIRECTION_WEST
 	};
-
-	int aiCityPlotX[NUM_CITY_PLOTS] =
+//doto enhanced city size mylon
+	int aiCityPlotX[NUM_CITY_PLOTS4] =
 	{
 		0,
 		0, 1, 1, 1, 0,-1,-1,-1,
@@ -163,8 +163,8 @@ void CvGlobals::init() // allocate
 		0, 1, 2, 3, 3, 3, 2, 1, 0, -1, -2, -3, -3, -3, -2, -1,   //   Strand and RogerBacon
 		0, 1, 2, 3, 3, 4, 4, 4, 3, 3, 2, 1, 0, -1, -2, -3, -3, -4, -4, -4, -3, -3, -2, -1, // Mylon
 	};
-
-	int aiCityPlotY[NUM_CITY_PLOTS] =
+//doto enhanced city size mylon
+	int aiCityPlotY[NUM_CITY_PLOTS4] =
 	{
 		0,
 		1, 1, 0,-1,-1,-1, 0, 1,
@@ -174,7 +174,7 @@ void CvGlobals::init() // allocate
 		4, 4, 3, 3, 2, 1, 0, -1, -2, -3, -3, -4, -4, -4, -3, -3, -2, -1, 0, 1, 2, 3, 3, 4, // Mylon
 	};
 
-	int aiCityPlotPriority[NUM_CITY_PLOTS] =
+	int aiCityPlotPriority[NUM_CITY_PLOTS4] =
 	{
 		0,
 		1, 2, 1, 2, 1, 2, 1, 2,
@@ -184,11 +184,13 @@ void CvGlobals::init() // allocate
 		7, 8, 9, 10, 9, 8, 7, 8, 9, 10, 9, 8, 7, 8, 9, 10, 9, 8, 7, 8, 9, 10, 9, 8, // Mylon
 	};
 	// <advc>
-	for (int i = 0; i < NUM_CITY_PLOTS; i++)
+//doto enhanced city size mylon	
+	for (int i = 0; i < NUM_CITY_PLOTS4; i++)
 		m_iMaxCityPlotPriority = std::max(m_iMaxCityPlotPriority, aiCityPlotPriority[i]);
 	// Need to be able to go one higher than the max
 	FAssertBounds(0, MAX_INT, m_iMaxCityPlotPriority); // </advc>
-	int aaiXYCityPlot[CITY_PLOTS_DIAMETER][CITY_PLOTS_DIAMETER] =
+//doto enhanced city size mylon
+	int aaiXYCityPlot[CITY_PLOTS_DIAM4][CITY_PLOTS_DIAM4] =
 	{	// advc.enum: Use some of the enumerators for illustration
 /* doto enhanced city size mylon
 		{NO_CITYPLOT, 17, 18, 19, NO_CITYPLOT},
@@ -202,15 +204,26 @@ void CvGlobals::init() // allocate
 		{NO_CITYPLOT, 13, 12,  11, NO_CITYPLOT,}
 */		
 //doto enhanced city size mylon
-		{NO_CITYPLOT, NO_CITYPLOT, NO_CITYPLOT, 54, 55, 56, NO_CITYPLOT, NO_CITYPLOT, NO_CITYPLOT},    // Mylon
-	    {NO_CITYPLOT, 52, 53, 32, 33, 34, 57, 58, NO_CITYPLOT},   //  RogerBacon
-	    {NO_CITYPLOT, 51, 31, 17, 18, 19, 35, 59, NO_CITYPLOT},
-	    {50, 30, 16, 6,   7,  8, 20, 36, LAST_CITY_PLOT},
-	    {49, 29, 15, 5,   0,  1,  NUM_INNER_PLOTS, 21, 37},
-	    {48, 28, 14, 4,   3,  2, 10, 22, 38},
-	    {NO_CITYPLOT, 47, 27, 13, 12, 11, 23, 39, NO_CITYPLOT},
-	    {NO_CITYPLOT, 46, 45, 26, 25, 24, 41, 40, NO_CITYPLOT},
-	    {NO_CITYPLOT, NO_CITYPLOT, NO_CITYPLOT, 44, 43, 42, NO_CITYPLOT, NO_CITYPLOT, NO_CITYPLOT},
+		//{NO_CITYPLOT, NO_CITYPLOT, NO_CITYPLOT, 54, 55, 56, NO_CITYPLOT, NO_CITYPLOT, NO_CITYPLOT},    // Mylon
+	 //   {NO_CITYPLOT, 52, 53, 32, 33, 34, 57, 58, NO_CITYPLOT},   //  RogerBacon
+	 //   {NO_CITYPLOT, 51, 31, 17, 18, 19, 35, 59, NO_CITYPLOT},
+	 //   {50, 30, 16, 6,   7,  8, 20, 36, LAST_CITY_PLOT},
+	 //   {49, 29, 15, 5,   0,  1,  NUM_INNER_PLOTS, 21, 37},
+	 //   {48, 28, 14, 4,   3,  2, 10, 22, 38},
+	 //   {NO_CITYPLOT, 47, 27, 13, 12, 11, 23, 39, NO_CITYPLOT},
+	 //   {NO_CITYPLOT, 46, 45, 26, 25, 24, 41, 40, NO_CITYPLOT},
+	 //   {NO_CITYPLOT, NO_CITYPLOT, NO_CITYPLOT, 44, 43, 42, NO_CITYPLOT, NO_CITYPLOT, NO_CITYPLOT},
+
+//doto enhanced city size mylon - simpler look
+		{-1, -1, -1, 54, 55, 56, -1, -1, -1},    // Mylon
+		{-1, 52, 53, 32, 33, 34, 57, 58, -1},   //  RogerBacon
+		{-1, 51, 31, 17, 18, 19, 35, 59, -1},
+		{50, 30, 16, 6,   7,  8, 20, 36, 60},
+		{49, 29, 15, 5,   0,  1,  9, 21, 37},
+		{48, 28, 14, 4,   3,  2, 10, 22, 38},
+		{-1, 47, 27, 13, 12, 11, 23, 39, -1},
+		{-1, 46, 45, 26, 25, 24, 41, 40, -1},
+		{-1, -1, -1, 44, 43, 42, -1, -1, -1},
 	};
 
 	DirectionTypes aeTurnRightDirection[NUM_DIRECTION_TYPES] =
