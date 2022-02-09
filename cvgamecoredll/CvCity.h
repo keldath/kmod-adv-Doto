@@ -1436,6 +1436,7 @@ public:
 	CityPlotTypes numCityPlots() const;
 	int maxRadius() const;
 	int maxDiameter() const;
+	CityPlotTypes getDynamicNumPlots() const;
 //mylon enhanced cities doto advc version
 
 	// <advc.003u>

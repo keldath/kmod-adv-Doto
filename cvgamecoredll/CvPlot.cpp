@@ -3794,6 +3794,14 @@ PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureR
 	bool bAnyCityRadius = false;
 	if (bOwnExclusiveRadius)
 	{
+//doto enhanced city size mylon		
+/*
+The first one has to do with the OWN_EXCLUSIVE_RADIUS option in XML 
+(regardless of culture, cities own all plots in their radius that no 
+rival city is able to work; akin to the "fixed borders" option in other mods). 
+Perhaps that doesn't need to be supported by Doto. Also, 
+assuming radius 2 might be fine. Or one could use NearbyCityIte
+*/
 		for (NearbyCityIter itCity(*this); itCity.hasNext(); ++itCity)
 		{
 			if (itCity->isOccupation())
@@ -3848,7 +3856,17 @@ PlayerTypes CvPlot::calculateCulturalOwner(/* advc.099c: */ bool bIgnoreCultureR
 	{
 		CvCity* pBestCity = NULL;
 		int iBestPriority = MAX_INT;
-		for (NearbyCityIter itCity(*this); itCity.hasNext(); ++itCity)
+//doto enhanced city size mylon		
+/*
+The first one has to do with the OWN_EXCLUSIVE_RADIUS option in XML 
+(regardless of culture, cities own all plots in their radius that no 
+rival city is able to work; akin to the "fixed borders" option in other mods). 
+Perhaps that doesn't need to be supported by Doto. Also, 
+assuming radius 2 might be fine. Or one could use NearbyCityIte
+*/
+//decided to go with advc one of radius 2 - accorging to the above.		
+		//for (NearbyCityIter itCity(*this); itCity.hasNext(); ++itCity)
+		for (NearbyCityIterAdvc itCity(*this); itCity.hasNext(); ++itCity)
 		{
 			if (itCity->getTeam() != TEAMID(eBestPlayer) &&
 				!GET_TEAM(eBestPlayer).isVassal(itCity->getTeam()))
@@ -5061,7 +5079,15 @@ bool CvPlot::isPotentialCityWorkForArea(CvArea const& kArea) const
 	PROFILE_FUNC();
 
 	static bool const bWATER_POTENTIAL_CITY_WORK_FOR_AREA = GC.getDefineBOOL("WATER_POTENTIAL_CITY_WORK_FOR_AREA"); // advc.opt
-
+//doto enhanced city size mylon
+//cultural borders can't spread from one landmass to 
+//another if the distance between the landmasses 
+//is so far that no city placed on the first landmass 
+//would ever be able to work a plot on the second 
+//landmass. Perhaps you should just disable that 
+//restriction entirely (in CvCity::doPlotCultureTimes100).
+//for now ill leave it as as. i dont want city states to be so over powers with
+// culture spreading all over.
 	for (CityPlotIter it(*this); it.hasNext(); ++it)
 	{
 		if (it->isArea(kArea) && // advc.opt: rearranged
@@ -5079,6 +5105,17 @@ void CvPlot::updatePotentialCityWork()
 	PROFILE_FUNC();
 
 	bool bValid = false;
+//doto enhanced city size mylon
+//for now we can stay with radius 2
+/*
+this determines whether yield icons are shown for Ocean plots. 
+Those that are too far away from land to ever be worked don't 
+get yield icons. The map generator also won't place bonus 
+resources on plots that can't ever be worked. For that latter part, 
+radius 2 would be best – don't want Fish, Whale and Oil in places 
+where only a city state can reach them. For the yield icons, radius 4 
+would be better, but not crucial. So radius 2 I guess.
+*/
 	for (CityPlotIter it(*this);
 		!bValid && it.hasNext(); ++it)
 	{
@@ -5104,6 +5141,15 @@ bool CvPlot::isShowCitySymbols() const
 void CvPlot::updateShowCitySymbols()
 {
 	bool bNewShowCitySymbols = false;
+//doto enhanced city size mylon
+/*
+Something about highlighting workable plots on the city screen. 
+Could use radius 4 through NearbyCityIter, but could probably 
+also be rewritten to first check which 
+city's screen (if any) is up and then to check the radius of 
+that city (CityPlotIter).
+*/
+//users nearby of doto with range 4
 	for (NearbyCityIter itCity(*this); itCity.hasNext(); ++itCity)
 	{
 		if (itCity->isCitySelected() && gDLL->UI().isCityScreenUp())
@@ -5689,6 +5735,14 @@ void CvPlot::setFeatureType(FeatureTypes eNewValue, int iVariety)
 		changeFreshWaterInRadius(1, 1);
 	}
 // Deliverator
+//doto enhanced city size mylon
+/*
+setImprovementType – As mentioned above, those should look for cities to be updated 
+within radius 4. NearbyCityIter can do that. If radius 2 is used, then city states only 
+get health from Forests and happiness from Preserves within radius 2. Will then have 
+to make sure that CvCity::updateSurroundingHealthHappiness also uses radius 2.
+*/
+// NearbyCityIter of doto uses dynamic size
 	for (NearbyCityIter itCity(*this); itCity.hasNext(); ++itCity)
 	{
 		itCity->updateSurroundingHealthHappiness();
@@ -6081,6 +6135,16 @@ void CvPlot::setPlotCity(CvCity* pNewCity)
 		return;
 	if (pOldCity != NULL)
 	{
+//doto enhanced city size mylon
+/*
+when a city is founded or killed (i.e. razed or owner changes), a cache of city 
+radius counts needs to be updated. That cache contains for each plot the number 
+of cities that have the plot in their radius. This looks like an example that 
+will lead to inconsistent behavior if radius 2 is used. Fortunately, even if a 
+city gets killed, the city still exists when setPlotCity is called, so one can 
+simply pass that city (instead of its plot) to CityPlotIter.
+*/
+//f1rpo implementer here
 		for (CityPlotIter itPlot(*pOldCity); itPlot.hasNext(); ++itPlot)
 		{
 			itPlot->changeCityRadiusCount(-1);
@@ -6125,6 +6189,7 @@ void CvPlot::setPlotCity(CvCity* pNewCity)
 	updatePlotGroupBonus(true);
 	if (pNewCity != NULL)
 	{
+//doto enhanced city size mylon see above
 		for (CityPlotIter itPlot(*pNewCity); itPlot.hasNext(); ++itPlot)
 		{
 			itPlot->changeCityRadiusCount(1);
@@ -6233,6 +6298,18 @@ CvCity const* CvPlot::defaultWorkingCity() const
 {
 	CvCity const* pBestCity = NULL;
 	int iBestPriority = MAX_INT;
+
+//doto enhanced city size mylon
+/*
+This uses the "priority" array (CvGlobals) previously discussed. Says for a 
+given plot which city gets to work that plot, ignoring overrides that a human owner 
+may have set. Should look for candidate cities within a radius of 4 and then check 
+the radius of those candidates, i.e. what NearbyCityIter does.
+*/
+// doto NearbyCityIter uses dynamic radius so its all good.
+// i think it would be so big of an issue of size 2 would have been defined here
+// size 3 and 4 are bonus for city states e.g large cities
+//so if they wont overwrite plots, so what ...
 	for (NearbyCityIter itCity(*this); itCity.hasNext(); ++itCity)
 	{
 		if (itCity->getOwner() != getOwner())
@@ -8509,6 +8586,19 @@ void CvPlot::doCultureDecay()
 			// To save time:
 			calculateCulturePercent(pWorkingCity->getOwner()) < iCulturePercentThresh)
 		{
+//doto enhanced city size mylon
+/*
+Expedited decay of plot culture in plots that can't be worked by their owner, 
+but could be worked by another player if ownership were to change. 
+This looks for any cities that are able to work a given plot, so same 
+situation as under (11).
+11 -->
+defaultWorkingCity – This uses the "priority" array (CvGlobals) previously discussed. 
+Says for a given plot which city gets to work that plot, ignoring overrides that a 
+human owner may have set. Should look for candidate cities within a radius of 4 and 
+then check the radius of those candidates, i.e. what NearbyCityIter does.
+*/
+
 			for (NearbyCityIter itCity(*this); itCity.hasNext(); ++itCity)
 			{
 				PlayerTypes const eCityOwner = itCity->getOwner();
@@ -8565,6 +8655,14 @@ int CvPlot::exclusiveRadius(PlayerTypes ePlayer) const
 		return -1;
 	}
 	int iRadius = -1;
+//doto enhanced city size mylon	
+/*
+Used so far only for a minor AI tweak that stops the AI from building 
+Forts in tiles that will probably flip soon. Could just return -1 to 
+disable that AI change. Anyway, it's another case of looking for any cities that have a 
+given plot in their radius (NearbyCityIter).
+*/
+//doto nearby uses 4 radius
 	for (NearbyCityIter itCity(*this); itCity.hasNext(); ++itCity)
 	{
 		if (itCity->getOwner() == ePlayer)
@@ -9965,6 +10063,11 @@ float CvPlot::getAqueductSourceWeight() const
 {
 	PROFILE_FUNC(); // (advc: Fine - EXE seems to call this only a few times per turn)
 	// <advc.002p> Imperfect workaround for a missing same-area check in the EXE
+//doto enhanced city size mylon
+/*
+Hack to prevent the EXE from letting Aqueduct graphics run across the sea. 
+Probably fine to always use radius 2.
+*/
 	for (CityPlotIter itPlot(*this, false); itPlot.hasNext(); ++itPlot)
 	{	/*	Sources adjacent to a city are OK (and need to be skipped here
 			because an adjacent Peak could belong to a different area

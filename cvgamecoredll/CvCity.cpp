@@ -221,11 +221,12 @@ void CvCity::init(int iID, PlayerTypes eOwner, int iX, int iY, bool bBumpUnits,
 	m_iID = iID;
 	m_eOwner = eOwner;
 	m_eOriginalOwner = eOwner;
-//mylon enhanced cities doto advc version
-	CivilizationTypes eCiv = GET_PLAYER(m_eOriginalOwner).getCivilizationType();
-	int diam = GC.getCivilizationInfo(eCiv).getMaxCityRadius();
+//doto enhanced city size mylon
+//not using these anymore
+//	CivilizationTypes eCiv = GET_PLAYER(m_eOwner).getCivilizationType();
+//	int diam = GC.getCivilizationInfo(eCiv).getMaxCityRadius();
 	m_abWorkingPlot.resize(numCityPlots()); //qa_mylon - what does this mean - resize?
-//mylon enhanced cities doto advc version
+//doto enhanced city size mylon
 	m_iX = iX;
 	m_iY = iY;
 	// </advc.003u>
@@ -1040,12 +1041,12 @@ bool CvCity::canWork(CvPlot /* advc: */ const& kPlot) const
 {
 	if (kPlot.getWorkingCity() != this)
 		return false;
-//mylon enhanced cities doto advc version
+//doto enhanced city size mylon
 	FAssert(getCityPlotIndex(kPlot) != NO_CITYPLOT);
 	// Just in case FAssertMsg below doesn't end the function.
 	if (getCityPlotIndex(kPlot) >= maxRadius())
 		return false;
-//mylon enhanced cities doto advc version
+//doto enhanced city size mylon
 	if (kPlot.plotCheck(PUF_canSiege, getOwner()) != NULL)
 		return false;
 
@@ -1104,7 +1105,7 @@ void CvCity::verifyWorkingPlot(CityPlotTypes ePlot) // advc.enum: CityPlotTypes
 void CvCity::verifyWorkingPlots()
 {
 	//FOR_EACH_ENUM(CityPlot)
-//mylon enhanced cities doto advc version
+//doto enhanced city size mylon
 	FOR_EACH_CITYPLOT(GET_PLAYER(getOwner()))
 		verifyWorkingPlot(eLoopCityPlot);
 }
@@ -1121,6 +1122,7 @@ void CvCity::clearWorkingOverride(CityPlotTypes ePlot) // advc.enum: CityPlotTyp
 int CvCity::countNumImprovedPlots(ImprovementTypes eImprovement, bool bPotential) const
 {
 	int iCount = 0;
+//doto enhanced city size mylon - defined in the custom doto cityplotiter file
 	for (WorkablePlotIter it(*this); it.hasNext(); ++it)
 	{
 		CvPlot const& kPlot = *it;
@@ -7448,21 +7450,57 @@ int CvCity::getCultureThreshold(CultureLevelTypes eLevel)
 			std::min(eLevel + 1, GC.getNumCultureLevelInfos() - 1)));
 }
 
-//mylon enhanced cities doto advc version
+//doto enhanced city size mylon
+// Mylon Mega Mod
+CityPlotTypes CvCity::getDynamicNumPlots() const
+{
+	int iRadius;
+	CityPlotTypes var_city_plots;
+	if (getCultureLevel() == -1)
+	{
+	    return NUM_INNER_PLOTS;
+	}
+    iRadius = GC.getCultureLevelInfo(getCultureLevel()).getCityRadius();
+    switch (iRadius)
+    {
+    case 4:
+        var_city_plots = NUM_CITY_PLOTS4;
+        break;
+    case 3:
+        var_city_plots = NUM_CITY_PLOTS3;
+        break;
+    case 2:
+        var_city_plots = NUM_CITY_PLOTS;
+        break;
+    case 1:
+        var_city_plots = NUM_INNER_PLOTS;
+        break;
+    default:
+        var_city_plots = NUM_CITY_PLOTS;
+        break;
+    }
+	return(var_city_plots);
+}
+// Mylon Mega Mod End
 // CvCity.cpp (don't want to include CvPlayer.h in CvCity.h)
 CityPlotTypes CvCity::numCityPlots() const
 {
-   return GET_PLAYER(m_eOwner).numCityPlots();
+	CityPlotTypes playerMaxPlots = GET_PLAYER(m_eOwner).numCityPlots();
+   return std::min(getDynamicNumPlots(), playerMaxPlots);
 }
 int CvCity::maxRadius() const
 {
-   return GET_PLAYER(m_eOwner).cityRadius();
+   int iRadius = GC.getCultureLevelInfo(getCultureLevel()).getCityRadius();	
+   int playerMaxRadius = GET_PLAYER(m_eOwner).cityRadius();
+   return std::min(iRadius, playerMaxRadius);
 }
 int CvCity::maxDiameter() const
 {
-   return GET_PLAYER(m_eOwner).cityDiameter();
+   int idiameter = 2 * maxRadius() + 1;
+   int playerMaxDiam = GET_PLAYER(m_eOwner).cityDiameter();
+   return std::min(idiameter, playerMaxDiam);
 }
-//mylon enhanced cities doto advc version
+//doto enhanced city size mylon
 
 void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups)
 {
@@ -7470,18 +7508,6 @@ void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups
 	if (eOldValue == eNewValue)
 		return;
 	m_eCultureLevel = eNewValue;
-//mylon enhanced cities doto advc version unused yet
-	int cultureRadius = GC.getCultureLevelInfo(getCultureLevel()).getCityRadius();
-	int playerMaxRad = maxRadius();
-/*
-	if (playerMaxRad > 2)
-	{
-		
-	}
-
-	m_iMaxRadiusSize = std::min(cultMax, playerMax);
-*/	
-//mylon
 	if (eOldValue != NO_CULTURELEVEL)
 	{
 		/*	advc (note): The order of processing is important here b/c
@@ -14154,15 +14180,18 @@ void CvCity::applyEvent(EventTypes eEvent,
 					SyncRandNum(kEvent.getMaxPillage() - kEvent.getMinPillage());
 
 			int iNumPillaged = 0;
+//mylon enhanced cities doto advc version
+			int player_city_plot = GET_PLAYER(getOwner()).numCityPlots();
 			for (int i = 0; i < iNumPillage; i++)
 			{
-				int iRandOffset = SyncRandNum(NUM_CITY_PLOTS);
+				int iRandOffset = SyncRandNum(player_city_plot); // was NUM_CITY_PLOTS
 				//FOR_EACH_ENUM(CityPlot)
 //mylon enhanced cities doto advc version
 				FOR_EACH_CITYPLOT(GET_PLAYER(getOwner()))
 				{
 					CityPlotTypes const ePlot = (CityPlotTypes)
-							((eLoopCityPlot + iRandOffset) % NUM_CITY_PLOTS);
+//mylon enhanced cities doto advc version
+							((eLoopCityPlot + iRandOffset) % player_city_plot /*NUM_CITY_PLOTS*/);
 					if (ePlot == CITY_HOME_PLOT)
 						continue;
 					CvPlot* pPlot = getCityIndexPlot(ePlot);

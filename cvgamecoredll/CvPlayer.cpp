@@ -846,10 +846,10 @@ void CvPlayer::resetCivTypeEffects(/* advc.003q: */ bool bInit)
    	int iCityPlots = -1;
    	switch (m_iCityRadius) // Replacing compile-time definitions
    	{
-      	case 1: iCityPlots = 9; break;
-      	case 2: iCityPlots = 21; break;
-      	case 3: iCityPlots = 37; break;
-      	case 4: iCityPlots = 61; break;
+      	case 1: iCityPlots = NUM_INNER_PLOTS; break;
+      	case 2: iCityPlots = NUM_CITY_PLOTS; break;
+      	case 3: iCityPlots = NUM_CITY_PLOTS3; break;
+      	case 4: iCityPlots = NUM_CITY_PLOTS4; break;
       	default: FErrorMsg("Invalid city radius");
    	}
    	m_eCityPlots = (CityPlotTypes)iCityPlots;
