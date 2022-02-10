@@ -190,9 +190,10 @@ namespace enum_traits_detail
 	template<typename E>
 	void assertEnumBounds(E eIndex)
 	{
-		//FAssertBounds(0, enum_traits<E>::length(), eIndex);
+		FAssertBounds(0, enum_traits<E>::length(), eIndex);
 //doto enhanced city size mylon - i dont know why it works like that - qa4city
-		FAssertBounds(0,4, (CityPlotTypes)eIndex);
+		//FAssertBounds(eIndex, 0, numCityPlots());
+		//FAssertBounds(0,4,0);
 		//FAssertBounds(numCityPlots, 0, (CityPlotTypes)eIndex)
 		//FAssertBounds(0, (CityPlotTypes)maxCityPlots(), eIndex);
 	}

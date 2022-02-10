@@ -1024,13 +1024,23 @@ void CvCity::chooseProduction(UnitTypes eTrainUnit, BuildingTypes eConstructBuil
 
 	gDLL->UI().addPopup(pPopupInfo, getOwner(), false, bFront);
 }
-
+//doto enhanced city size mylon
+// f1rpo amended this func - see below.
+//is supposed to return NO_CITYPLOT when kPlot is outside the radius. This function relies on that (maybe others do too):
+// Not going to work correctly if CvMap:: plotCityXY assumes MAX_CITY_RADIUS. However, it should be sufficient (and easier) to add a city radius check to CvCity::getCityPlotIndex:
 // advc.enum: Return type was int
+//CityPlotTypes CvCity::getCityPlotIndex(CvPlot const& kPlot) const
+//{
+//	return GC.getMap().plotCityXY(getX(), getY(), kPlot);
+//}
+//doto enhanced city size mylon
 CityPlotTypes CvCity::getCityPlotIndex(CvPlot const& kPlot) const
 {
+	if (plotDistance(&kPlot, plot()) > maxRadius())
+		return NO_CITYPLOT;
 	return GC.getMap().plotCityXY(getX(), getY(), kPlot);
 }
-
+//doto enhanced city size mylon
 CvPlot* CvCity::getCityIndexPlot(CityPlotTypes ePlot) const // advc.enum: CityPlotTypes
 {
 	return GC.getMap().plotCity(getX(), getY(), ePlot);
@@ -1089,7 +1099,9 @@ bool CvCity::canWork(CvPlot /* advc: */ const& kPlot) const
 
 void CvCity::verifyWorkingPlot(CityPlotTypes ePlot) // advc.enum: CityPlotTypes
 {
-	FAssertEnumBounds(ePlot);
+//doto enhanced city size mylon
+//	FAssertEnumBounds(ePlot);
+	FAssertBounds(ePlot, 0, numCityPlots());
 	if (isWorkingPlot(ePlot))
 	{
 		CvPlot* pPlot = getCityIndexPlot(ePlot);
@@ -10373,7 +10385,7 @@ void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue) // advc.enum: C
 	// </advc.064b>
 //mylon enhanced cities doto advc version
 	//m_abWorkingPlot.set(ePlot, bNewValue);
-	FAssertBounds(0, numCityPlots(), ePlot);
+	FAssertBounds(ePlot, 0, numCityPlots());
 	m_abWorkingPlot[ePlot] = bNewValue;
 
 	CvPlot* pPlot = getCityIndexPlot(ePlot);

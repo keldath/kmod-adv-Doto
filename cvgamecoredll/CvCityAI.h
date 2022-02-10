@@ -127,7 +127,9 @@ public:
 
 	int AI_getBestBuildValue(/* advc.enum: */ CityPlotTypes ePlot) const
 	{
-		FAssertEnumBounds(ePlot);
+		//FAssertEnumBounds(ePlot);
+//doto enhanced city size mylon
+		FAssertBounds(ePlot, 0, numCityPlots());
 		return m_aiBestBuildValue[ePlot];
 	}
 	int AI_totalBestBuildValue(CvArea const& kArea) const;

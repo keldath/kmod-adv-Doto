@@ -326,7 +326,9 @@ public:
 			but it doesn't matter b/c city plot priorities are symmetrical.
 			The BtS code (at the call locations) had also relied on that. */
 		CityPlotTypes eCityPlot = m_kCityPlots.currID();
-		FAssertEnumBounds(eCityPlot);
+		//FAssertEnumBounds(eCityPlot);
+//doto enhanced city size mylon
+		FAssertBounds(eCityPlot, 0, NUM_CITY_PLOTS);
 		return GC.getCityPlotPriority()[eCityPlot];
 	}
 
