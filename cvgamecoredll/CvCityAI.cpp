@@ -5219,10 +5219,7 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags,
 				if (kBuilding.getSeaPlotYieldChange(YIELD_PRODUCTION) > 0)
 				{
 					int iNumWaterPlots = countNumWaterPlots();
-		//doto enhanced city size mylon	
-					int actual_num_plots = numCityPlots();// was NUM_CITY_PLOTS
-
-					if (!bLimitedWonder || iNumWaterPlots > actual_num_plots / 2)
+					if (!bLimitedWonder || iNumWaterPlots > NUM_CITY_PLOTS / 2)
 					{
 						iTempValue += kBuilding.getSeaPlotYieldChange(YIELD_PRODUCTION) *
 								iNumWaterPlots;
@@ -7486,9 +7483,7 @@ bool CvCityAI::AI_isGoodPlot(CityPlotTypes ePlot, int* aiYields) const // advc.e
 int CvCityAI::AI_countGoodPlots() const
 {
 	int iCount = 0;
-//doto enhanced city size mylon	
-	int actual_num_plots = numCityPlots();// was NUM_CITY_PLOTS
-	for (CityPlotTypes ePlot = FIRST_ADJACENT_PLOT; ePlot < actual_num_plots; ++ePlot)
+	for (CityPlotTypes ePlot = FIRST_ADJACENT_PLOT; ePlot < NUM_CITY_PLOTS; ++ePlot)
 		iCount += AI_isGoodPlot(ePlot) ? 1 : 0;
 	return iCount;
 }
@@ -7496,9 +7491,7 @@ int CvCityAI::AI_countGoodPlots() const
 int CvCityAI::AI_countWorkedPoorPlots() const
 {
 	int iCount = 0;
-//doto enhanced city size mylon	
-	int actual_num_plots = numCityPlots();// was NUM_CITY_PLOTS
-	for (CityPlotTypes ePlot = FIRST_ADJACENT_PLOT; ePlot < actual_num_plots; ++ePlot)
+	for (CityPlotTypes ePlot = FIRST_ADJACENT_PLOT; ePlot < NUM_CITY_PLOTS; ++ePlot)
 		iCount += (isWorkingPlot(ePlot) && !AI_isGoodPlot(ePlot) ? 1 : 0);
 	return iCount;
 }
@@ -10751,9 +10744,7 @@ int CvCityAI::AI_yieldValue(int* piYields, int* piCommerceYields, bool bRemove,
 int CvCityAI::AI_plotValue(CvPlot const& kPlot, bool bRemove, bool bIgnoreFood,
 	bool bIgnoreStarvation, int iGrowthValue) const
 {
-//doto enhanced city size mylon	
-	int actual_num_plots = numCityPlots();// was NUM_CITY_PLOTS
-	FAssert(getCityPlotIndex(kPlot) < actual_num_plots);
+	FAssert(getCityPlotIndex(kPlot) < NUM_CITY_PLOTS);
 	/*	K-Mod. To reduce code duplication, this function now uses AI_jobChangeValue.
 		(original code deleted) */
 	if (bRemove)
@@ -13603,10 +13594,7 @@ void CvCityAI::AI_ClearConstructionValueCache()
 void CvCityAI::read(FDataStreamBase* pStream)
 {
 	CvCity::read(pStream);
-	
-//doto enhanced city size mylon	
-	int actual_num_plots = numCityPlots();// was NUM_CITY_PLOTS
-	
+
 	uint uiFlag=0;
 	pStream->Read(&uiFlag);
 
@@ -13692,8 +13680,6 @@ void CvCityAI::read(FDataStreamBase* pStream)
 void CvCityAI::write(FDataStreamBase* pStream)
 {
 	CvCity::write(pStream);
-//doto enhanced city size mylon	
-	int actual_num_plots = numCityPlots();// was NUM_CITY_PLOTS
 
 	uint uiFlag;;
 	//uiFlag = 1; // K-Mod: m_aiConstructionValue

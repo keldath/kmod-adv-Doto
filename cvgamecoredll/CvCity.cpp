@@ -226,7 +226,7 @@ void CvCity::init(int iID, PlayerTypes eOwner, int iX, int iY, bool bBumpUnits,
 //not using these anymore
 //	CivilizationTypes eCiv = GET_PLAYER(m_eOwner).getCivilizationType();
 //	int diam = GC.getCivilizationInfo(eCiv).getMaxCityRadius();
-	m_abWorkingPlot.resize(numCityPlots()); //qa_mylon - what does this mean - resize?
+	m_abWorkingPlot.resize(NUM_CITY_PLOTS); //qa_mylon - what does this mean - resize?
 //doto enhanced city size mylon
 	m_iX = iX;
 	m_iY = iY;
@@ -1120,7 +1120,7 @@ void CvCity::verifyWorkingPlots()
 {
 	//FOR_EACH_ENUM(CityPlot)
 //doto enhanced city size mylon
-	FOR_EACH_CITYPLOT(GET_PLAYER(getOwner()))
+	FOR_EACH_CITYPLOT
 		verifyWorkingPlot(eLoopCityPlot);
 }
 
@@ -7481,7 +7481,7 @@ CityPlotTypes CvCity::getDynamicNumPlots() const
     switch (iRadius)
     {
     case 4:
-        var_city_plots = NUM_CITY_PLOTS4;
+        var_city_plots = MAX_CITY_PLOTS;
         break;
     case 3:
         var_city_plots = NUM_CITY_PLOTS3;
@@ -13597,7 +13597,7 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiNumFreeBuilding.write(pStream);
 //mylon enhanced cities doto advc version
 	//m_abWorkingPlot.write(pStream);
-	FOR_EACH_CITYPLOT(GET_PLAYER(m_eOwner))
+	FOR_EACH_CITYPLOT
 	{
 		pStream->Write(m_abWorkingPlot[eLoopCityPlot]);
 	}
@@ -14200,18 +14200,16 @@ void CvCity::applyEvent(EventTypes eEvent,
 					SyncRandNum(kEvent.getMaxPillage() - kEvent.getMinPillage());
 
 			int iNumPillaged = 0;
-//mylon enhanced cities doto advc version
-			int player_city_plot = GET_PLAYER(getOwner()).numCityPlots();
+
 			for (int i = 0; i < iNumPillage; i++)
 			{
-				int iRandOffset = SyncRandNum(player_city_plot); // was NUM_CITY_PLOTS
+				int iRandOffset = SyncRandNum(NUM_CITY_PLOTS);
 				//FOR_EACH_ENUM(CityPlot)
 //mylon enhanced cities doto advc version
-				FOR_EACH_CITYPLOT(GET_PLAYER(getOwner()))
+				FOR_EACH_CITYPLOT
 				{
 					CityPlotTypes const ePlot = (CityPlotTypes)
-//mylon enhanced cities doto advc version
-							((eLoopCityPlot + iRandOffset) % player_city_plot /*NUM_CITY_PLOTS*/);
+							((eLoopCityPlot + iRandOffset) % NUM_CITY_PLOTS);
 					if (ePlot == CITY_HOME_PLOT)
 						continue;
 					CvPlot* pPlot = getCityIndexPlot(ePlot);

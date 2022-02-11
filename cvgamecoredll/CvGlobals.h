@@ -166,8 +166,9 @@ public:
 	}
 	CityPlotTypes getXYCityPlot(int i, int j) const // advc.enum: return type was int
 	{
-		FAssertBounds(0, CITY_PLOTS_DIAMETER, i);
-		FAssertBounds(0, CITY_PLOTS_DIAMETER, j);
+		//mylon doto version - max diameter
+		FAssertBounds(0, MAX_CITY_DIAM, i);
+		FAssertBounds(0, MAX_CITY_DIAM, j);
 		return m_aaeXYCityPlot[i][j];
 	}
 	int const* getCityPlotX() const { return m_aiCityPlotX; }
@@ -893,12 +894,12 @@ protected:
 //	int m_aiCityPlotX[NUM_CITY_PLOTS];
 //	int m_aiCityPlotY[NUM_CITY_PLOTS];
 //	int m_aiCityPlotPriority[NUM_CITY_PLOTS];
-	int m_aiCityPlotX[NUM_CITY_PLOTS4];
-	int m_aiCityPlotY[NUM_CITY_PLOTS4];
-	int m_aiCityPlotPriority[NUM_CITY_PLOTS4];
-//doto enhanced city size mylon
+	int m_aiCityPlotX[MAX_CITY_PLOTS];
+	int m_aiCityPlotY[MAX_CITY_PLOTS];
+	int m_aiCityPlotPriority[MAX_CITY_PLOTS];
 	int m_iMaxCityPlotPriority; // advc
-	CityPlotTypes m_aaeXYCityPlot[CITY_PLOTS_DIAMETER][CITY_PLOTS_DIAMETER];
+	CityPlotTypes m_aaeXYCityPlot[MAX_CITY_DIAM][MAX_CITY_DIAM];
+//doto enhanced city size mylon
 	DirectionTypes m_aeTurnLeftDirection[NUM_DIRECTION_TYPES];
 	DirectionTypes m_aeTurnRightDirection[NUM_DIRECTION_TYPES];
 	DirectionTypes m_aaeXYDirection[DIRECTION_DIAMETER][DIRECTION_DIAMETER];
