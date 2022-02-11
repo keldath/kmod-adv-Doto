@@ -281,9 +281,9 @@ public:
 	in their radius. (This does not imply that the cities are currently able
 	to work the plot.) Uses a CityPlotIter internally b/c relevant cities
 	can only exist within a city radius around the given plot. */
-//doto enhanced city size mylon
-//original advciv class renamed - same name used in PlotRadiusIterator
-class NearbyCityIterAdvc
+//doto enhanced city size mylon - replaced in PlotRadiusIterator.h
+#if 0
+class NearbyCityIter
 {
 public:
 	NearbyCityIterAdvc(CvPlot const& kPlot)
@@ -326,9 +326,7 @@ public:
 			but it doesn't matter b/c city plot priorities are symmetrical.
 			The BtS code (at the call locations) had also relied on that. */
 		CityPlotTypes eCityPlot = m_kCityPlots.currID();
-		//FAssertEnumBounds(eCityPlot);
-//doto enhanced city size mylon
-		FAssertBounds(eCityPlot, 0, NUM_CITY_PLOTS);
+		FAssertEnumBounds(eCityPlot);
 		return GC.getCityPlotPriority()[eCityPlot];
 	}
 
@@ -353,5 +351,6 @@ private:
    CityPlotIter& m_kCityPlots;
    CvCity* m_pNext;
 };
+#endif
 
 #endif

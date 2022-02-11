@@ -3856,17 +3856,7 @@ assuming radius 2 might be fine. Or one could use NearbyCityIte
 	{
 		CvCity* pBestCity = NULL;
 		int iBestPriority = MAX_INT;
-//doto enhanced city size mylon		
-/*
-The first one has to do with the OWN_EXCLUSIVE_RADIUS option in XML 
-(regardless of culture, cities own all plots in their radius that no 
-rival city is able to work; akin to the "fixed borders" option in other mods). 
-Perhaps that doesn't need to be supported by Doto. Also, 
-assuming radius 2 might be fine. Or one could use NearbyCityIte
-*/
-//decided to go with advc one of radius 2 - accorging to the above.		
-		//for (NearbyCityIter itCity(*this); itCity.hasNext(); ++itCity)
-		for (NearbyCityIterAdvc itCity(*this); itCity.hasNext(); ++itCity)
+		for (NearbyCityIter itCity(*this); itCity.hasNext(); ++itCity)
 		{
 			if (itCity->getTeam() != TEAMID(eBestPlayer) &&
 				!GET_TEAM(eBestPlayer).isVassal(itCity->getTeam()))
