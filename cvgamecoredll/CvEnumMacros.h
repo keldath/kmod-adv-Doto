@@ -170,11 +170,11 @@
 
 /*	Static enum types without any associated CvInfo data.
 	Not a complete list; add types here if their traits need to be accessed. */
-//mylon removed DO(CityPlot, CITYPLOT) 
 #define DO_FOR_EACH_STATIC_ENUM_TYPE(DO) \
 	DO(Direction, DIRECTION) \
 	DO(CardinalDirection, CARDINALDIRECTION) \
 	DO(WarPlan, WARPLAN) \
+	DO(CityPlot, CITYPLOT) \
 	DO(Feat, FEAT) \
 	DO(AreaAI, AREAAI) \
 	DO(MissionAI, MISSIONAI) \

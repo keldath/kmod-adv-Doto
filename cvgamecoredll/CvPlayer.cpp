@@ -26,6 +26,7 @@
 CvPlayerAI** CvPlayer::m_aPlayers = NULL;
 
 //doto enhanced city size mylon
+#undef NUM_CITY_PLOTS
 #define NUM_CITY_PLOTS numCityPlots()
 
 void CvPlayer::initStatics()
