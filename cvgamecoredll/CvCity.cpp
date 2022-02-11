@@ -7468,6 +7468,9 @@ int CvCity::getCultureThreshold(CultureLevelTypes eLevel)
 // Mylon Mega Mod
 CityPlotTypes CvCity::getDynamicNumPlots() const
 {
+	return MAX_CITY_PLOTS;
+	// cross this bridge later if we must
+#if 0
 	int iRadius;
 	CityPlotTypes var_city_plots;
 	if (getCultureLevel() == -1)
@@ -7494,27 +7497,29 @@ CityPlotTypes CvCity::getDynamicNumPlots() const
         break;
     }
 	return(var_city_plots);
+#endif
 }
-// Mylon Mega Mod End
-// CvCity.cpp (don't want to include CvPlayer.h in CvCity.h)
+
 CityPlotTypes CvCity::numCityPlots() const
 {
 	CityPlotTypes playerMaxPlots = GET_PLAYER(m_eOwner).numCityPlots();
-   return std::min(getDynamicNumPlots(), playerMaxPlots);
+	return std::min(getDynamicNumPlots(), playerMaxPlots);
 }
 int CvCity::maxRadius() const
 {
-   int iRadius = GC.getCultureLevelInfo(getCultureLevel()).getCityRadius();	
-   int playerMaxRadius = GET_PLAYER(m_eOwner).cityRadius();
-   return std::min(iRadius, playerMaxRadius);
+	return GET_PLAYER(m_eOwner).cityRadius();
+	/*int iRadius = GC.getCultureLevelInfo(getCultureLevel()).getCityRadius();	
+	int playerMaxRadius = GET_PLAYER(m_eOwner).cityRadius();
+	return std::min(iRadius, playerMaxRadius);*/
 }
 int CvCity::maxDiameter() const
 {
-   int idiameter = 2 * maxRadius() + 1;
-   int playerMaxDiam = GET_PLAYER(m_eOwner).cityDiameter();
-   return std::min(idiameter, playerMaxDiam);
+	return GET_PLAYER(m_eOwner).cityDiameter();
+	/*int idiameter = 2 * maxRadius() + 1;
+	int playerMaxDiam = GET_PLAYER(m_eOwner).cityDiameter();
+	return std::min(idiameter, playerMaxDiam);*/
 }
-//doto enhanced city size mylon
+// Mylon Mega Mod End
 
 void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups)
 {
