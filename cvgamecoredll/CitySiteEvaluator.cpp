@@ -11,18 +11,6 @@
 #include "CvInfo_Civics.h"
 #include "BBAILog.h"
 
-/*
-//mylon enhanced cities doto advc version
-//without out it plots gets a high value which causes assert
-before each FOR_EACH_CITYPLOT(kPlayer)
-		if (eLoopCityPlot > NUM_CITY_PLOTS)
-		{
-			continue;
-		}
-		i defined it to always use 21 size plot (org)
-*/
-
-
 // advc: New file; see comment in the header.
 
 static int const iDEFAULT_BARB_DISCOURAGED_RANGE = 8; // advc.303
@@ -484,17 +472,9 @@ short AIFoundValue::evaluate()
 
 	// K-Mod. (used to devalue cities which are unable to get any production.)
 	scaled rBaseProduction; // (advc.031: scaled)
-//mylon enhanced cities doto advc version
-//these loops will now be based on a player rather then a city size.
-//since a player has the max limit his cities are allowed
-	//FOR_EACH_ENUM(CityPlot)
-	FOR_EACH_CITYPLOT(kPlayer)
+	FOR_EACH_ENUM(CityPlot)
 	{
 		// <advc.031>
-		if (eLoopCityPlot > NUM_CITY_PLOTS)
-		{
-			continue;
-		}
 		CvPlot const* pLoopPlot = plotCity(iX, iY, eLoopCityPlot);
 		if (pLoopPlot != NULL && pLoopPlot->isGoody() &&
 			eLoopCityPlot != CITY_HOME_PLOT) // advc.027
@@ -858,15 +838,8 @@ bool AIFoundValue::isSiteValid() const
 			IFLOG logBBAI("Can't start on goody hut");
 			return false;
 		}
-//mylon enhanced cities doto advc version
-		//FOR_EACH_ENUM(CityPlot)
-		FOR_EACH_CITYPLOT(kPlayer)
+		FOR_EACH_ENUM(CityPlot)
 		{
-			
-			if (eLoopCityPlot > NUM_CITY_PLOTS)
-			{
-				continue;
-			}
 			CvPlot const* p = plotCity(iX, iY, eLoopCityPlot);
 			if (p == NULL)
 			{
@@ -878,15 +851,8 @@ bool AIFoundValue::isSiteValid() const
 	else // advc.031: Not relevant for StartingLoc
 	{
 		int iOwnedTiles = 0;
-//mylon enhanced cities doto advc version
-		//FOR_EACH_ENUM(CityPlot)
-		FOR_EACH_CITYPLOT(kPlayer)
+		FOR_EACH_ENUM(CityPlot)
 		{
-			
-			if (eLoopCityPlot > NUM_CITY_PLOTS)
-			{
-				continue;
-			}
 			CvPlot const* p = plotCity(iX, iY, eLoopCityPlot);
 			if (p == NULL)
 				iOwnedTiles += 2;
@@ -961,15 +927,8 @@ bool AIFoundValue::computeOverlap()
 	{
 		FOR_EACH_CITY(c, kPlayer)
 		{
-//mylon enhanced cities doto advc version
-			//FOR_EACH_ENUM(CityPlot)
-			FOR_EACH_CITYPLOT(kPlayer)
+			FOR_EACH_ENUM(CityPlot)
 			{
-				
-				if (eLoopCityPlot > NUM_CITY_PLOTS)
-				{
-					continue;
-				}
 				CvPlot const* p = plotCity(iX, iY, eLoopCityPlot);
 				if(p != NULL && plotDistance(p->getX(), p->getY(),
 					c->getX(), c->getY()) <= CITY_PLOTS_RADIUS)
@@ -980,15 +939,8 @@ bool AIFoundValue::computeOverlap()
 		}
 		if (GC.getDefineBOOL(CvGlobals::OWN_EXCLUSIVE_RADIUS))
 		{
-//mylon enhanced cities doto advc version
-			//FOR_EACH_ENUM(CityPlot)
-			FOR_EACH_CITYPLOT(kPlayer)
+			FOR_EACH_ENUM(CityPlot)
 			{
-				
-				if (eLoopCityPlot > NUM_CITY_PLOTS)
-				{
-					continue;
-				}
 				CvPlot const* p = plotCity(iX, iY, eLoopCityPlot);
 				abFlip[eLoopCityPlot] = (!abOwnCityRadius[eLoopCityPlot] &&
 						p != NULL && getRevealedOwner(*p) != NO_PLAYER &&
@@ -1022,15 +974,8 @@ int AIFoundValue::countBadTiles(/* advc.031: */ int& iInnerRadius,
 	int& iRevealedDecentLand) const // advc.040
 {
 	int iBadTiles = 0;
-//mylon enhanced cities doto advc version
-	//FOR_EACH_ENUM(CityPlot)
-	FOR_EACH_CITYPLOT(kPlayer)
+	FOR_EACH_ENUM(CityPlot)
 	{
-		
-		if (eLoopCityPlot > NUM_CITY_PLOTS)
-		{
-			continue;
-		}
 		CvPlot const* p = plotCity(iX, iY, eLoopCityPlot);
 		// <advc.031>
 		bool const bInner = (eLoopCityPlot < NUM_INNER_PLOTS);
@@ -2184,14 +2129,8 @@ int AIFoundValue::sumUpPlotValues(std::vector<int>& aiPlotValues) const
 	double const dExp = std::log(dMaxMultPercent - dMinMultPercent) /
 			std::log(NUM_CITY_PLOTS - 1.0);
 	int iR = 0;
-//mylon enhanced cities doto advc version
-	//FOR_EACH_ENUM(CityPlot)
-	FOR_EACH_CITYPLOT(kPlayer)
+	FOR_EACH_ENUM(CityPlot)
 	{
-		if (eLoopCityPlot > NUM_CITY_PLOTS)
-		{
-			continue;
-		}
 		int iPlotValue = aiPlotValues[eLoopCityPlot];
 		if (iPlotValue > 0)
 		{
