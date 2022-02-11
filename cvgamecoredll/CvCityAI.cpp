@@ -31,17 +31,9 @@ CvCityAI::CvCityAI() // advc.003u: Merged with AI_reset
 	m_aiCachePlayerClosenessDistance = new int[MAX_PLAYERS];
 	for (int i = 0; i < MAX_PLAYERS; i++)
 		m_aiCachePlayerClosenessDistance[i] = -1; // </advc.opt>
-	// (These two were declared as arrays, but it's neater to treat them all alike.)	
-	m_aiBestBuildValue = new int[NUM_CITY_PLOTS];
-//mylon enhanced cities doto advc version
-	//FOR_EACH_ENUM(CityPlot)
-	FOR_EACH_CITYPLOT(GET_PLAYER(m_eOwner))
-		m_aiBestBuildValue[eLoopCityPlot] = NO_BUILD;
-	m_aeBestBuild = new BuildTypes[NUM_CITY_PLOTS];
-//mylon enhanced cities doto advc version
-	//FOR_EACH_ENUM(CityPlot)
-	FOR_EACH_CITYPLOT(GET_PLAYER(m_eOwner))
-		m_aeBestBuild[eLoopCityPlot] = NO_BUILD;
+	//mylon doto version - Need to know owner before allocating these
+	m_aiBestBuildValue = NULL;
+	m_aeBestBuild = NULL;
 	m_eBestBuild = NO_BUILD; // advc.opt
 
 	AI_ClearConstructionValueCache(); // K-Mod
@@ -78,6 +70,16 @@ void CvCityAI::init(int iID, PlayerTypes eOwner, int iX, int iY,
 	bool bBumpUnits, bool bUpdatePlotGroups, /* advc.ctr: */ int iOccupationTimer)
 {
 	CvCity::init(iID, eOwner, iX, iY, bBumpUnits, bUpdatePlotGroups, iOccupationTimer);
+//mylon enhanced cities doto advc version
+	m_aiBestBuildValue = new int[NUM_CITY_PLOTS];
+	//FOR_EACH_ENUM(CityPlot)
+	FOR_EACH_CITYPLOT
+		m_aiBestBuildValue[eLoopCityPlot] = NO_BUILD;
+	m_aeBestBuild = new BuildTypes[NUM_CITY_PLOTS];
+//mylon enhanced cities doto advc version
+	//FOR_EACH_ENUM(CityPlot)
+	FOR_EACH_CITYPLOT
+		m_aeBestBuild[eLoopCityPlot] = NO_BUILD;
 	//AI_reset(); // advc.003u: Merged into constructor
 	AI_assignWorkingPlots();
 	// BETTER_BTS_AI_MOD, City AI, Worker AI, 11/14/09, jdog5000: calls swapped
@@ -8543,12 +8545,8 @@ void CvCityAI::AI_updateBestBuild()
 	CityPlotTypes eBestPlot = NO_CITYPLOT;
 	int iBestPlotValue = -1;
 	int iBestUnworkedPlotValue = 0;
-	int aiValues[NUM_CITY_PLOTS];
-	// <advc>  Ensure initialization
-//mylon enhanced cities doto advc version
-	//FOR_EACH_ENUM(CityPlot)
-	FOR_EACH_CITYPLOT(GET_PLAYER(m_eOwner))
-		aiValues[eLoopCityPlot] = MAX_INT; // </advc>
+	//mylon enhanced cities doto advc version
+	std::vector<int> aiValues(NUM_CITY_PLOTS, MAX_INT);
 	int const iGrowthValue = AI_growthValuePerFood(); // K-Mod
 	for (WorkablePlotIter itPlot(*this, false); itPlot.hasNext(); ++itPlot)  // advc: Some refactoring changes in the loop body
 	{
@@ -13630,9 +13628,14 @@ void CvCityAI::read(FDataStreamBase* pStream)
 	pStream->Read(NUM_YIELD_TYPES, m_aiEmphasizeYieldCount);
 	pStream->Read(NUM_COMMERCE_TYPES, m_aiEmphasizeCommerceCount);
 	pStream->Read(&m_bForceEmphasizeCulture);
-//doto enhanced city size mylon	
-	pStream->Read(actual_num_plots, m_aiBestBuildValue);
-	pStream->Read(actual_num_plots, (int*)m_aeBestBuild);
+//doto enhanced city size mylon
+	// (not allocated by ctor)
+	FAssert(m_aiBestBuildValue == NULL);
+	m_aiBestBuildValue = new int[NUM_CITY_PLOTS];
+	FAssert(m_aeBestBuild == NULL);
+	m_aeBestBuild = new BuildTypes[NUM_CITY_PLOTS];
+	pStream->Read(NUM_CITY_PLOTS, m_aiBestBuildValue);
+	pStream->Read(NUM_CITY_PLOTS, (int*)m_aeBestBuild);
 	// <advc.opt>
 	if(uiFlag >= 4)
 		pStream->Read((int*)&m_eBestBuild); // </advc.opt>
@@ -13714,10 +13717,8 @@ void CvCityAI::write(FDataStreamBase* pStream)
 	pStream->Write(NUM_YIELD_TYPES, m_aiEmphasizeYieldCount);
 	pStream->Write(NUM_COMMERCE_TYPES, m_aiEmphasizeCommerceCount);
 	pStream->Write(m_bForceEmphasizeCulture);
-//doto enhanced city size mylon		
-	pStream->Write(actual_num_plots, m_aiBestBuildValue);
-	pStream->Write(actual_num_plots, (int*)m_aeBestBuild);
-//doto enhanced city size mylon		
+	pStream->Write(NUM_CITY_PLOTS, m_aiBestBuildValue);
+	pStream->Write(NUM_CITY_PLOTS, (int*)m_aeBestBuild);	
 	pStream->Write(m_eBestBuild); // advc.opt
 	pStream->Write(GC.getNumEmphasizeInfos(), m_pbEmphasize);
 	pStream->Write(NUM_YIELD_TYPES, m_aiSpecialYieldMultiplier);

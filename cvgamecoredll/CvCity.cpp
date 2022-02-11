@@ -12990,7 +12990,8 @@ void CvCity::read(FDataStreamBase* pStream)
 //mylon enhanced cities doto advc version	
 		//m_abWorkingPlot.read(pStream);
 		// (Only the uiFlag>=12 branch matters, can delete the other branch.)
-		FOR_EACH_CITYPLOT(GET_PLAYER(m_eOwner))
+		m_abWorkingPlot.resize(NUM_CITY_PLOTS); // (not allocated by ctor)
+		FOR_EACH_CITYPLOT
 		{
 			bool bWorkingPlot;
 			pStream->Read(&bWorkingPlot);
