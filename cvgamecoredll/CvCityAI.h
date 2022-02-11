@@ -129,7 +129,7 @@ public:
 	{
 		//FAssertEnumBounds(ePlot);
 //doto enhanced city size mylon
-		FAssertBounds(ePlot, 0, numCityPlots());
+		FAssertBounds(0, numCityPlots(), ePlot);
 		return m_aiBestBuildValue[ePlot];
 	}
 	int AI_totalBestBuildValue(CvArea const& kArea) const;

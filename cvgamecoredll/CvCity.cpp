@@ -1102,7 +1102,7 @@ void CvCity::verifyWorkingPlot(CityPlotTypes ePlot) // advc.enum: CityPlotTypes
 {
 //doto enhanced city size mylon
 //	FAssertEnumBounds(ePlot);
-	FAssertBounds(ePlot, 0, numCityPlots());
+	FAssertBounds(0, NUM_CITY_PLOTS, ePlot);
 	if (isWorkingPlot(ePlot))
 	{
 		CvPlot* pPlot = getCityIndexPlot(ePlot);
@@ -10386,7 +10386,7 @@ void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue) // advc.enum: C
 	// </advc.064b>
 //mylon enhanced cities doto advc version
 	//m_abWorkingPlot.set(ePlot, bNewValue);
-	FAssertBounds(ePlot, 0, numCityPlots());
+	FAssertBounds(0, NUM_CITY_PLOTS, ePlot);
 	m_abWorkingPlot[ePlot] = bNewValue;
 
 	CvPlot* pPlot = getCityIndexPlot(ePlot);

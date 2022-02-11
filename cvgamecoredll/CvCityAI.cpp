@@ -8354,7 +8354,7 @@ BuildTypes CvCityAI::AI_getBestBuild(CityPlotTypes ePlot) const // advc.enum: Ci
 	// </advc.opt>
 //doto enhanced city size mylon
 //	FAssertEnumBounds(ePlot);
-	FAssertBounds(ePlot, 0, numCityPlots()); 
+	FAssertBounds(0, NUM_CITY_PLOTS, ePlot);
 	return m_aeBestBuild[ePlot];
 }
 
