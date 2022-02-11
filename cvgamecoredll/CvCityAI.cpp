@@ -12,6 +12,7 @@
 #include "CvInfo_Civics.h"
 #include "BBAILog.h" // BETTER_BTS_AI_MOD, AI logging, 10/02/09, jdog5000
 
+#include "CvCityMacros.h" //mylon
 
 CvCityAI::CvCityAI() // advc.003u: Merged with AI_reset
 {

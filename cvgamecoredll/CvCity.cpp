@@ -15,6 +15,7 @@
 #include "CvBugOptions.h" // advc.060
 #include "BBAILog.h" // BETTER_BTS_AI_MOD, AI logging, 10/02/09, jdog5000
 
+#include "CvCityMacros.h" //mylon
 
 CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 {
