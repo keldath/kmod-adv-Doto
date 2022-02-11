@@ -1053,10 +1053,11 @@ bool CvCity::canWork(CvPlot /* advc: */ const& kPlot) const
 	if (kPlot.getWorkingCity() != this)
 		return false;
 //doto enhanced city size mylon
-	FAssert(getCityPlotIndex(kPlot) != NO_CITYPLOT);
-	// Just in case FAssertMsg below doesn't end the function.
-	if (getCityPlotIndex(kPlot) >= maxRadius())
-		return false;
+	//FAssert(getCityPlotIndex(kPlot) != NO_CITYPLOT);
+	FAssertBounds(0, NUM_CITY_PLOTS, getCityPlotIndex(kPlot));
+	// Just in case FAssertMsg below doesn't end the function?
+	/*if (getCityPlotIndex(kPlot) >= NUM_CITY_PLOTS)
+		return false;*/
 //doto enhanced city size mylon
 	if (kPlot.plotCheck(PUF_canSiege, getOwner()) != NULL)
 		return false;
