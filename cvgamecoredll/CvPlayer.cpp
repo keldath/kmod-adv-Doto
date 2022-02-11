@@ -75,6 +75,10 @@ CvPlayer::CvPlayer(/* advc.003u: */ PlayerTypes eID) :
 	// advc: redundant
 	/*m_bDisableHuman = false; // bbai
 	m_iChoosingFreeTechCount = 0;*/ // K-Mod
+	//mylon doto version - Use the defaults so long as no civ type has been set
+	m_iCityRadius = CITY_PLOTS_RADIUS;
+	m_iCityDiameter = CITY_PLOTS_DIAMETER;
+	m_eCityPlots = NUM_CITYPLOT_TYPES;
 	reset(eID, true);
 }
 
@@ -15092,6 +15096,11 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iCapitalCityID);
 //limited religions
 	pStream->Read(&m_iCountFoundReligion);
+	//mylon doto version
+	pStream->Read(&m_iCityRadius);
+	pStream->Read(&m_iCityDiameter);
+	pStream->Read((int*)&m_eCityPlots);
+
 	pStream->Read(&m_iCitiesLost);
 	pStream->Read(&m_iWinsVsBarbs);
 	pStream->Read(&m_iAssets);
@@ -15774,6 +15783,11 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	pStream->Write(m_iCapitalCityID);
 //limited religions
 	pStream->Write(m_iCountFoundReligion);
+	//mylon doto version
+	pStream->Write(m_iCityRadius);
+	pStream->Write(m_iCityDiameter);
+	pStream->Write(m_eCityPlots);
+
 	pStream->Write(m_iCitiesLost);
 	pStream->Write(m_iWinsVsBarbs);
 	pStream->Write(m_iAssets);
