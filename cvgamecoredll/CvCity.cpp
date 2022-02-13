@@ -14,8 +14,7 @@
 #include "CvGameTextMgr.h"
 #include "CvBugOptions.h" // advc.060
 #include "BBAILog.h" // BETTER_BTS_AI_MOD, AI logging, 10/02/09, jdog5000
-
-#include "CvCityMacros.h" //mylon
+#include "CvCityMacros.h" //mylon doto version
 
 CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 {
@@ -226,7 +225,8 @@ void CvCity::init(int iID, PlayerTypes eOwner, int iX, int iY, bool bBumpUnits,
 //not using these anymore
 //	CivilizationTypes eCiv = GET_PLAYER(m_eOwner).getCivilizationType();
 //	int diam = GC.getCivilizationInfo(eCiv).getMaxCityRadius();
-	m_abWorkingPlot.resize(NUM_CITY_PLOTS); //qa_mylon - what does this mean - resize?
+	// will be handled by updateCultureLevel
+	//m_abWorkingPlot.resize(NUM_CITY_PLOTS);
 //doto enhanced city size mylon
 	m_iX = iX;
 	m_iY = iY;
@@ -1037,7 +1037,7 @@ void CvCity::chooseProduction(UnitTypes eTrainUnit, BuildingTypes eConstructBuil
 //doto enhanced city size mylon
 CityPlotTypes CvCity::getCityPlotIndex(CvPlot const& kPlot) const
 {
-	if (plotDistance(&kPlot, plot()) > maxRadius())
+	if (plotDistance(&kPlot, plot()) > getRadius())
 		return NO_CITYPLOT;
 	return GC.getMap().plotCityXY(getX(), getY(), kPlot);
 }
@@ -7464,60 +7464,42 @@ int CvCity::getCultureThreshold(CultureLevelTypes eLevel)
 			std::min(eLevel + 1, GC.getNumCultureLevelInfos() - 1)));
 }
 
-//doto enhanced city size mylon
-// Mylon Mega Mod
-CityPlotTypes CvCity::getDynamicNumPlots() const
+CityPlotTypes CvCity::maxCityPlots() const
 {
-	return MAX_CITY_PLOTS;
-	// cross this bridge later if we must
-#if 0
-	int iRadius;
-	CityPlotTypes var_city_plots;
-	if (getCultureLevel() == -1)
-	{
-	    return NUM_INNER_PLOTS;
-	}
-    iRadius = GC.getCultureLevelInfo(getCultureLevel()).getCityRadius();
-    switch (iRadius)
-    {
-    case 4:
-        var_city_plots = MAX_CITY_PLOTS;
-        break;
-    case 3:
-        var_city_plots = NUM_CITY_PLOTS3;
-        break;
-    case 2:
-        var_city_plots = NUM_CITY_PLOTS;
-        break;
-    case 1:
-        var_city_plots = NUM_INNER_PLOTS;
-        break;
-    default:
-        var_city_plots = NUM_CITY_PLOTS;
-        break;
-    }
-	return(var_city_plots);
-#endif
+	return GET_PLAYER(m_eOwner).numCityPlots();
 }
-
-CityPlotTypes CvCity::numCityPlots() const
+CityPlotTypes CvCity::cityPlotCountForRadius(int iRadius)
 {
-	CityPlotTypes playerMaxPlots = GET_PLAYER(m_eOwner).numCityPlots();
-	return std::min(getDynamicNumPlots(), playerMaxPlots);
+	switch (iRadius)
+	{
+	case 1: return NUM_INNER_PLOTS;
+	// (Not defined to be the same as NUM_CITY_PLOTS in this translation unit)
+	case 2: return NUM_CITYPLOT_TYPES;
+	case 3: return (CityPlotTypes)37;
+	case 4: return MAX_CITY_PLOTS;
+	default: FErrorMsg("Invalid city radius"); return NO_CITYPLOT;
+   	}
 }
 int CvCity::maxRadius() const
 {
 	return GET_PLAYER(m_eOwner).cityRadius();
-	/*int iRadius = GC.getCultureLevelInfo(getCultureLevel()).getCityRadius();	
-	int playerMaxRadius = GET_PLAYER(m_eOwner).cityRadius();
-	return std::min(iRadius, playerMaxRadius);*/
+}
+int CvCity::getRadius() const
+{	// Tbd.: Quite frequently used, would be better to cache this.
+	return std::min(maxRadius(),
+			getCultureLevel() == NO_CULTURELEVEL ? maxRadius() :
+			GC.getCultureLevelInfo(getCultureLevel()).getCityRadius());
 }
 int CvCity::maxDiameter() const
 {
 	return GET_PLAYER(m_eOwner).cityDiameter();
+}
+int CvCity::getDiameter() const
+{
 	/*int idiameter = 2 * maxRadius() + 1;
 	int playerMaxDiam = GET_PLAYER(m_eOwner).cityDiameter();
 	return std::min(idiameter, playerMaxDiam);*/
+	return 2 * getRadius() + 1;
 }
 // Mylon Mega Mod End
 
@@ -7527,6 +7509,33 @@ void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups
 	if (eOldValue == eNewValue)
 		return;
 	m_eCultureLevel = eNewValue;
+	//mylon doto version - start
+	{
+		int const iNewCityPlots = numCityPlots() - (int)m_abWorkingPlot.size();
+		if (iNewCityPlots > 0)
+		{
+			for (int i = 0; i < iNewCityPlots; i++)
+				m_abWorkingPlot.push_back(false);
+			/*	Change it back again briefly (not super elegant)
+				and reset this city as the city occupying the city plot
+				in order to force an update of cached city radius counts.
+				A little wasteful, but we don't do this often. */
+			if (getPlot().isCity()) // I.e. don't do it during city initialization
+			{
+				m_eCultureLevel = eOldValue;
+				getPlot().setPlotCity(NULL);
+				m_eCultureLevel = eNewValue;
+				getPlot().setPlotCity(this);
+				FOR_EACH_CITYPLOT
+				{
+					/*	Normally only done for plots we take ownership of.
+						Need to do it also for plots previously owned. */
+					getCityIndexPlot(eLoopCityPlot)->updateWorkingCity();
+				}
+			}
+			AI().AI_updateCityRadius();
+		}
+	}
 	if (eOldValue != NO_CULTURELEVEL)
 	{
 		/*	advc (note): The order of processing is important here b/c

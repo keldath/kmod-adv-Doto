@@ -1433,10 +1433,13 @@ public:
 	void invalidateCommerceRankCache(CommerceTypes eCommerce = NO_COMMERCE);
 	//int getBestYieldAvailable(YieldTypes eYield) const; // advc.003j: obsolete
 //mylon enhanced cities doto advc version	
-	CityPlotTypes numCityPlots() const;
 	int maxRadius() const;
+	int getRadius() const;
 	int maxDiameter() const;
-	CityPlotTypes getDynamicNumPlots() const;
+	int getDiameter() const;
+	CityPlotTypes maxCityPlots() const;
+	CityPlotTypes numCityPlots() const { return cityPlotCountForRadius(getRadius()); }
+	static CityPlotTypes cityPlotCountForRadius(int iRadius);
 //mylon enhanced cities doto advc version
 
 	// <advc.003u>

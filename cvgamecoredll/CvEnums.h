@@ -2399,7 +2399,7 @@ ENUM_START(CityPlot, CITYPLOT)
 ENUM_END(CityPlot, CITYPLOT)
 //doto enhanced city size mylon
 #define MAX_CITY_RADIUS 4
-#define MAX_CITY_DIAM ((CityPlotTypes)(MAX_CITY_RADIUS * 2 + 1))
+#define MAX_CITY_DIAM (MAX_CITY_RADIUS * 2 + 1)
 #define NUM_CITY_PLOTS NUM_CITYPLOT_TYPES
 #define MAX_CITY_PLOTS ((CityPlotTypes)61)
 

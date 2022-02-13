@@ -11,8 +11,7 @@
 #include "CvInfo_GameOption.h"
 #include "CvInfo_Civics.h"
 #include "BBAILog.h" // BETTER_BTS_AI_MOD, AI logging, 10/02/09, jdog5000
-
-#include "CvCityMacros.h" //mylon
+#include "CvCityMacros.h" //mylon doto version
 
 CvCityAI::CvCityAI() // advc.003u: Merged with AI_reset
 {
@@ -32,8 +31,8 @@ CvCityAI::CvCityAI() // advc.003u: Merged with AI_reset
 	for (int i = 0; i < MAX_PLAYERS; i++)
 		m_aiCachePlayerClosenessDistance[i] = -1; // </advc.opt>
 	//mylon doto version - Need to know owner before allocating these
-	m_aiBestBuildValue = NULL;
-	m_aeBestBuild = NULL;
+	/*m_aiBestBuildValue = ;
+	m_aeBestBuild = ;*/
 	m_eBestBuild = NO_BUILD; // advc.opt
 
 	AI_ClearConstructionValueCache(); // K-Mod
@@ -60,9 +59,9 @@ CvCityAI::~CvCityAI()
 	SAFE_DELETE_ARRAY(m_aiEmphasizeCommerceCount);
 	SAFE_DELETE_ARRAY(m_aiSpecialYieldMultiplier);
 	SAFE_DELETE_ARRAY(m_aiPlayerCloseness);
-
-	SAFE_DELETE_ARRAY(m_aiBestBuildValue);
-	SAFE_DELETE_ARRAY(m_aeBestBuild);
+	//mylon doto version
+	/*SAFE_DELETE_ARRAY(m_aiBestBuildValue);
+	SAFE_DELETE_ARRAY(m_aeBestBuild);*/
 }
 
 // Instead of having CvCity::init call CvCityAI::AI_init
@@ -71,15 +70,9 @@ void CvCityAI::init(int iID, PlayerTypes eOwner, int iX, int iY,
 {
 	CvCity::init(iID, eOwner, iX, iY, bBumpUnits, bUpdatePlotGroups, iOccupationTimer);
 //mylon enhanced cities doto advc version
-	m_aiBestBuildValue = new int[NUM_CITY_PLOTS];
-	//FOR_EACH_ENUM(CityPlot)
-	FOR_EACH_CITYPLOT
-		m_aiBestBuildValue[eLoopCityPlot] = NO_BUILD;
-	m_aeBestBuild = new BuildTypes[NUM_CITY_PLOTS];
+	m_aiBestBuildValue.resize(NUM_CITY_PLOTS);
+	m_aeBestBuild.resize(NUM_CITY_PLOTS, NO_BUILD);
 //mylon enhanced cities doto advc version
-	//FOR_EACH_ENUM(CityPlot)
-	FOR_EACH_CITYPLOT
-		m_aeBestBuild[eLoopCityPlot] = NO_BUILD;
 	//AI_reset(); // advc.003u: Merged into constructor
 	AI_assignWorkingPlots();
 	// BETTER_BTS_AI_MOD, City AI, Worker AI, 11/14/09, jdog5000: calls swapped
@@ -7350,6 +7343,18 @@ int CvCityAI::AI_totalBestBuildValue(CvArea const& kArea) /* advc:  */ const
 	return iTotalValue;
 }
 
+//mylon doto version
+void CvCityAI::AI_updateCityRadius()
+{
+	FAssert(m_aiBestBuildValue.size() == m_aeBestBuild.size());
+	int const iNewCityPlots = numCityPlots() - (int)m_aiBestBuildValue.size();
+	for (int i = 0; i < iNewCityPlots; i++)
+	{
+		m_aiBestBuildValue.push_back(0);
+		m_aeBestBuild.push_back(NO_BUILD);
+	}
+}
+
 
 int CvCityAI::AI_clearFeatureValue(CityPlotTypes ePlot) // advc.enum: CityPlotTypes
 {
@@ -8349,7 +8354,7 @@ BuildTypes CvCityAI::AI_getBestBuild(CityPlotTypes ePlot) const // advc.enum: Ci
 	// </advc.opt>
 //doto enhanced city size mylon
 //	FAssertEnumBounds(ePlot);
-	FAssertBounds(0, NUM_CITY_PLOTS, ePlot);
+	FAssertBounds(0, m_aeBestBuild.size(), ePlot);
 	return m_aeBestBuild[ePlot];
 }
 
@@ -13618,12 +13623,10 @@ void CvCityAI::read(FDataStreamBase* pStream)
 	pStream->Read(&m_bForceEmphasizeCulture);
 //doto enhanced city size mylon
 	// (not allocated by ctor)
-	FAssert(m_aiBestBuildValue == NULL);
-	m_aiBestBuildValue = new int[NUM_CITY_PLOTS];
-	FAssert(m_aeBestBuild == NULL);
-	m_aeBestBuild = new BuildTypes[NUM_CITY_PLOTS];
-	pStream->Read(NUM_CITY_PLOTS, m_aiBestBuildValue);
-	pStream->Read(NUM_CITY_PLOTS, (int*)m_aeBestBuild);
+	m_aiBestBuildValue.resize(NUM_CITY_PLOTS);
+	m_aeBestBuild.resize(NUM_CITY_PLOTS);
+	pStream->Read(NUM_CITY_PLOTS, &m_aiBestBuildValue[0]);
+	pStream->Read(NUM_CITY_PLOTS, (int*)&m_aeBestBuild[0]);
 	// <advc.opt>
 	if(uiFlag >= 4)
 		pStream->Read((int*)&m_eBestBuild); // </advc.opt>
@@ -13703,8 +13706,10 @@ void CvCityAI::write(FDataStreamBase* pStream)
 	pStream->Write(NUM_YIELD_TYPES, m_aiEmphasizeYieldCount);
 	pStream->Write(NUM_COMMERCE_TYPES, m_aiEmphasizeCommerceCount);
 	pStream->Write(m_bForceEmphasizeCulture);
-	pStream->Write(NUM_CITY_PLOTS, m_aiBestBuildValue);
-	pStream->Write(NUM_CITY_PLOTS, (int*)m_aeBestBuild);	
+	//mylon doto version
+	pStream->Write(NUM_CITY_PLOTS, &m_aiBestBuildValue[0]);
+	pStream->Write(NUM_CITY_PLOTS, (int*)&m_aeBestBuild[0]);
+
 	pStream->Write(m_eBestBuild); // advc.opt
 	pStream->Write(GC.getNumEmphasizeInfos(), m_pbEmphasize);
 	pStream->Write(NUM_YIELD_TYPES, m_aiSpecialYieldMultiplier);

@@ -557,7 +557,7 @@ private:
 			return;
 		}
 		m_pNext = kCityPlot.getPlotCity();
-		if (iCurrDist > m_pNext->maxRadius())
+		if (iCurrDist > m_pNext->getRadius())
 			computeNext();
 	}
 
