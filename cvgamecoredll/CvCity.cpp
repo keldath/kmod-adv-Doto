@@ -149,6 +149,10 @@ CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 	m_iPopRushHurryCount = 0; // advc.912d
 	m_iMostRecentOrder = -1; // advc.004x
 
+	//mylon doto version
+	m_iRadius = -1;
+	m_eCityPlots = NO_CITYPLOT;
+
 	m_bNeverLost = true;
 	m_bBombarded = false;
 	m_bDrafted = false;
@@ -226,6 +230,7 @@ void CvCity::init(int iID, PlayerTypes eOwner, int iX, int iY, bool bBumpUnits,
 //	CivilizationTypes eCiv = GET_PLAYER(m_eOwner).getCivilizationType();
 //	int diam = GC.getCivilizationInfo(eCiv).getMaxCityRadius();
 	// will be handled by updateCultureLevel
+	//updateRadius();
 	//m_abWorkingPlot.resize(NUM_CITY_PLOTS);
 //doto enhanced city size mylon
 	m_iX = iX;
@@ -7484,22 +7489,12 @@ int CvCity::maxRadius() const
 {
 	return GET_PLAYER(m_eOwner).cityRadius();
 }
-int CvCity::getRadius() const
-{	// Tbd.: Quite frequently used, would be better to cache this.
-	return std::min(maxRadius(),
+void CvCity::updateRadius()
+{
+	m_iRadius = std::min(maxRadius(),
 			getCultureLevel() == NO_CULTURELEVEL ? maxRadius() :
 			GC.getCultureLevelInfo(getCultureLevel()).getCityRadius());
-}
-int CvCity::maxDiameter() const
-{
-	return GET_PLAYER(m_eOwner).cityDiameter();
-}
-int CvCity::getDiameter() const
-{
-	/*int idiameter = 2 * maxRadius() + 1;
-	int playerMaxDiam = GET_PLAYER(m_eOwner).cityDiameter();
-	return std::min(idiameter, playerMaxDiam);*/
-	return 2 * getRadius() + 1;
+	m_eCityPlots = cityPlotCountForRadius(getRadius());
 }
 // Mylon Mega Mod End
 
@@ -7511,6 +7506,7 @@ void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups
 	m_eCultureLevel = eNewValue;
 	//mylon doto version - start
 	{
+		updateRadius();
 		int const iNewCityPlots = numCityPlots() - (int)m_abWorkingPlot.size();
 		if (iNewCityPlots > 0)
 		{
@@ -7523,8 +7519,10 @@ void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups
 			if (getPlot().isCity()) // I.e. don't do it during city initialization
 			{
 				m_eCultureLevel = eOldValue;
+				updateRadius();
 				getPlot().setPlotCity(NULL);
 				m_eCultureLevel = eNewValue;
+				updateRadius();
 				getPlot().setPlotCity(this);
 				FOR_EACH_CITYPLOT
 				{
@@ -7533,8 +7531,9 @@ void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups
 					getCityIndexPlot(eLoopCityPlot)->updateWorkingCity();
 				}
 			}
-			AI().AI_updateCityRadius();
+			AI().AI_updateRadius();
 		}
+		else FAssertMsg(iNewCityPlots == 0, "Shrinking city radius not supported");
 	}
 	if (eOldValue != NO_CULTURELEVEL)
 	{
@@ -13002,7 +13001,9 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiFreePromotionCount.read(pStream);
 		m_aiNumRealBuilding.read(pStream);
 		m_aiNumFreeBuilding.read(pStream);
-//mylon enhanced cities doto advc version	
+//mylon enhanced cities doto advc version
+		pStream->Read(&m_iRadius);
+		pStream->Read((int*)&m_eCityPlots);
 		//m_abWorkingPlot.read(pStream);
 		// (Only the uiFlag>=12 branch matters, can delete the other branch.)
 		m_abWorkingPlot.resize(NUM_CITY_PLOTS); // (not allocated by ctor)
@@ -13605,6 +13606,8 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiNumRealBuilding.write(pStream);
 	m_aiNumFreeBuilding.write(pStream);
 //mylon enhanced cities doto advc version
+	pStream->Write(m_iRadius);
+	pStream->Write(m_eCityPlots);
 	//m_abWorkingPlot.write(pStream);
 	FOR_EACH_CITYPLOT
 	{

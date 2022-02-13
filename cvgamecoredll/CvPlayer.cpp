@@ -77,7 +77,6 @@ CvPlayer::CvPlayer(/* advc.003u: */ PlayerTypes eID) :
 	m_iChoosingFreeTechCount = 0;*/ // K-Mod
 	//mylon doto version - Use the defaults so long as no civ type has been set
 	m_iCityRadius = CITY_PLOTS_RADIUS;
-	m_iCityDiameter = CITY_PLOTS_DIAMETER;
 	m_eCityPlots = NUM_CITYPLOT_TYPES;
 	reset(eID, true);
 }
@@ -847,7 +846,6 @@ void CvPlayer::resetCivTypeEffects(/* advc.003q: */ bool bInit)
 //doto enhanced city size mylon - will define plot size for a player
 	m_iCityRadius = GC.getInfo(getCivilizationType()).getMaxCityRadius();
 	FAssert(m_iCityRadius <= MAX_CITY_PLOTS);
-	m_iCityDiameter = 2 * m_iCityRadius + 1;
 	m_eCityPlots = (CityPlotTypes)CvCity::cityPlotCountForRadius(m_iCityRadius);
 	FAssertBounds(0, MAX_CITY_PLOTS + 1, m_eCityPlots);
 //doto enhanced city size mylon
@@ -15089,7 +15087,6 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iCountFoundReligion);
 	//mylon doto version
 	pStream->Read(&m_iCityRadius);
-	pStream->Read(&m_iCityDiameter);
 	pStream->Read((int*)&m_eCityPlots);
 
 	pStream->Read(&m_iCitiesLost);
@@ -15776,7 +15773,6 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	pStream->Write(m_iCountFoundReligion);
 	//mylon doto version
 	pStream->Write(m_iCityRadius);
-	pStream->Write(m_iCityDiameter);
 	pStream->Write(m_eCityPlots);
 
 	pStream->Write(m_iCitiesLost);

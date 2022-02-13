@@ -7344,7 +7344,7 @@ int CvCityAI::AI_totalBestBuildValue(CvArea const& kArea) /* advc:  */ const
 }
 
 //mylon doto version
-void CvCityAI::AI_updateCityRadius()
+void CvCityAI::AI_updateRadius()
 {
 	FAssert(m_aiBestBuildValue.size() == m_aeBestBuild.size());
 	int const iNewCityPlots = numCityPlots() - (int)m_aiBestBuildValue.size();

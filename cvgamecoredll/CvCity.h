@@ -1434,11 +1434,11 @@ public:
 	//int getBestYieldAvailable(YieldTypes eYield) const; // advc.003j: obsolete
 //mylon enhanced cities doto advc version	
 	int maxRadius() const;
-	int getRadius() const;
-	int maxDiameter() const;
-	int getDiameter() const;
+	int getRadius() const { return m_iRadius; }
+	int maxDiameter() const { return CITY_DIAM_FOR_RADIUS(maxRadius()); }
+	int getDiameter() const { return CITY_DIAM_FOR_RADIUS(getRadius()); }
 	CityPlotTypes maxCityPlots() const;
-	CityPlotTypes numCityPlots() const { return cityPlotCountForRadius(getRadius()); }
+	CityPlotTypes numCityPlots() const { return m_eCityPlots; }
 	static CityPlotTypes cityPlotCountForRadius(int iRadius);
 //mylon enhanced cities doto advc version
 
@@ -1599,6 +1599,10 @@ protected:
 	int m_iEspionageDefenseModifier;
 	int m_iPopRushHurryCount; // advc.912d
 	int m_iMostRecentOrder; // advc.004x
+
+	//mylon doto version
+	int m_iRadius;
+	CityPlotTypes m_eCityPlots;
 
 	bool m_bNeverLost;
 	bool m_bBombarded;
@@ -1803,6 +1807,7 @@ protected:
 	void doPopOrder(CLLNode<OrderData>* pOrder); // advc.064d
 	// advc.901:
 	std::pair<int,int> calculateSurroundingHealth(int iExtraGoodPercent = 0, int iExtraBadPercent = 0) const;
+	void updateRadius(); //mylon doto version
 };
 
 #endif

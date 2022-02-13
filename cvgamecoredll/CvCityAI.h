@@ -125,7 +125,7 @@ public:
 	void AI_setEmphasize(EmphasizeTypes eIndex, bool bNewValue);
 	//void AI_forceEmphasizeCulture(bool bNewValue); // advc.003j
 
-	void AI_updateCityRadius(); //mylon doto version
+	void AI_updateRadius(); //mylon doto version
 	int AI_getBestBuildValue(/* advc.enum: */ CityPlotTypes ePlot) const
 	{
 		//FAssertEnumBounds(ePlot);

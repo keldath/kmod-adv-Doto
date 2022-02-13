@@ -2384,6 +2384,8 @@ enum UnitSubEntityTypes
 };
 
 // <advc.enum>
+//doto enhanced city size mylon
+#define CITY_DIAM_FOR_RADIUS(iRadius) (1 + 2 * iRadius)
 /*	CityPlotTypes enum - idea from "We the People".
 	Replacing preprocessor defines in CvDefines. Note that those defines have
 	been compiled into the EXE, so, to avoid inconsistencies, the values of
@@ -2393,13 +2395,13 @@ ENUM_START(CityPlot, CITYPLOT)
 	CITY_HOME_PLOT = 0,
 	FIRST_ADJACENT_PLOT = 1,
 	CITY_PLOTS_RADIUS = 2,
-	CITY_PLOTS_DIAMETER = CITY_PLOTS_RADIUS * 2 + 1,
+	CITY_PLOTS_DIAMETER = CITY_DIAM_FOR_RADIUS(CITY_PLOTS_RADIUS),
 	NUM_INNER_PLOTS = 9,
 	LAST_CITY_PLOT = 20,
 ENUM_END(CityPlot, CITYPLOT)
 //doto enhanced city size mylon
 #define MAX_CITY_RADIUS 4
-#define MAX_CITY_DIAM (MAX_CITY_RADIUS * 2 + 1)
+#define MAX_CITY_DIAM CITY_DIAM_FOR_RADIUS(MAX_CITY_RADIUS)
 #define NUM_CITY_PLOTS NUM_CITYPLOT_TYPES
 #define MAX_CITY_PLOTS ((CityPlotTypes)61)
 
