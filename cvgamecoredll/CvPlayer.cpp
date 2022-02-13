@@ -846,7 +846,7 @@ void CvPlayer::resetCivTypeEffects(/* advc.003q: */ bool bInit)
 //doto enhanced city size mylon - will define plot size for a player
 	m_iCityRadius = GC.getInfo(getCivilizationType()).getMaxCityRadius();
 	FAssert(m_iCityRadius <= MAX_CITY_PLOTS);
-	m_eCityPlots = (CityPlotTypes)CvCity::cityPlotCountForRadius(m_iCityRadius);
+	m_eCityPlots = CvCity::cityPlotCountForRadius(m_iCityRadius);
 	FAssertBounds(0, MAX_CITY_PLOTS + 1, m_eCityPlots);
 //doto enhanced city size mylon
 }
