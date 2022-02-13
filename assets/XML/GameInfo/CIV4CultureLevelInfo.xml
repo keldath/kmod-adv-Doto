@@ -14,7 +14,7 @@
 			<imaxWonderCultureLimit>0</imaxWonderCultureLimit>
 		<!-- wonder limit - doto-->
 		<!-- doto enhanced city size mylon-->
-			<iCityRadius>1</iCityRadius>
+			<iCityRadius>2</iCityRadius>
 		<!-- doto enhanced city size mylon-->	
 			<SpeedThresholds>
 				<SpeedThreshold>
@@ -45,7 +45,7 @@
 			<iCityDefenseModifier>0</iCityDefenseModifier>
 			<imaxWonderCultureLimit>2</imaxWonderCultureLimit>
 		<!-- doto enhanced city size mylon-->
-			<iCityRadius>1</iCityRadius>
+			<iCityRadius>2</iCityRadius>
 		<!-- doto enhanced city size mylon-->
 			<SpeedThresholds>
 				<SpeedThreshold>
