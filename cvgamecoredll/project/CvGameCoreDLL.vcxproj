@@ -217,7 +217,6 @@
     <ClInclude Include="..\BoostPythonPCH.h" />
     <ClInclude Include="..\CityPlotIterator.h" />
     <ClInclude Include="..\CitySiteEvaluator.h" />
-    <ClInclude Include="..\CitySize2Iterator.h" />
     <ClInclude Include="..\CombatOdds.h" />
     <ClInclude Include="..\CoreAI.h" />
     <ClInclude Include="..\CvAgents.h" />
@@ -388,7 +387,7 @@
     <None Include="..\cpp.hint" />
     <None Include="..\FVariableSystem.inl" />
     <None Include="..\interfaceDirtyBits.inl" />
-	<None Include="CvGameCoreDLL.def" />
+    <None Include="CvGameCoreDLL.def" />
     <None Include="Makefile" />
     <None Include="Makefile.project" />
     <None Include="Makefile.settings" />
