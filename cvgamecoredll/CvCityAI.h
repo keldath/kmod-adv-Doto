@@ -124,12 +124,13 @@ public:
 	bool AI_isEmphasize(EmphasizeTypes eIndex) const;
 	void AI_setEmphasize(EmphasizeTypes eIndex, bool bNewValue);
 	//void AI_forceEmphasizeCulture(bool bNewValue); // advc.003j
-
+//doto enhanced city size mylon
+	void AI_updateRadius(); //mylon doto version
 	int AI_getBestBuildValue(/* advc.enum: */ CityPlotTypes ePlot) const
 	{
 		//FAssertEnumBounds(ePlot);
 //doto enhanced city size mylon
-		FAssertBounds(ePlot, 0, numCityPlots());
+		FAssertBounds(0, m_aiBestBuildValue.size(), ePlot);
 		return m_aiBestBuildValue[ePlot];
 	}
 	int AI_totalBestBuildValue(CvArea const& kArea) const;
@@ -204,11 +205,12 @@ protected:
 	bool m_bForceEmphasizeCulture; // advc.003j (comment): unused
 	bool* m_pbEmphasize;
 
-	BuildTypes* m_aeBestBuild;
+//doto enhanced city size mylon - easier than using naked arrays
+	std::vector<int> m_aiBestBuildValue;
+	std::vector<BuildTypes> m_aeBestBuild;
 	BuildTypes m_eBestBuild; // advc.opt
 
 	int* m_aiSpecialYieldMultiplier;
-	int* m_aiBestBuildValue;
 	int* m_aiPlayerCloseness;
 	// <advc> Made mutable (and made the cache accessor functions const)
 	mutable int* m_aiCachePlayerClosenessTurn;

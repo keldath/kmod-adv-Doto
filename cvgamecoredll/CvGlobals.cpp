@@ -154,7 +154,7 @@ void CvGlobals::init() // allocate
 		0,	// CARDINALDIRECTION_WEST
 	};
 //doto enhanced city size mylon
-	int aiCityPlotX[NUM_CITY_PLOTS4] =
+	int aiCityPlotX[MAX_CITY_PLOTS] =
 	{
 		0,
 		0, 1, 1, 1, 0,-1,-1,-1,
@@ -164,7 +164,7 @@ void CvGlobals::init() // allocate
 		0, 1, 2, 3, 3, 4, 4, 4, 3, 3, 2, 1, 0, -1, -2, -3, -3, -4, -4, -4, -3, -3, -2, -1, // Mylon
 	};
 //doto enhanced city size mylon
-	int aiCityPlotY[NUM_CITY_PLOTS4] =
+	int aiCityPlotY[MAX_CITY_PLOTS] =
 	{
 		0,
 		1, 1, 0,-1,-1,-1, 0, 1,
@@ -174,7 +174,7 @@ void CvGlobals::init() // allocate
 		4, 4, 3, 3, 2, 1, 0, -1, -2, -3, -3, -4, -4, -4, -3, -3, -2, -1, 0, 1, 2, 3, 3, 4, // Mylon
 	};
 
-	int aiCityPlotPriority[NUM_CITY_PLOTS4] =
+	int aiCityPlotPriority[MAX_CITY_PLOTS] =
 	{
 		0,
 		1, 2, 1, 2, 1, 2, 1, 2,
@@ -185,12 +185,12 @@ void CvGlobals::init() // allocate
 	};
 	// <advc>
 //doto enhanced city size mylon	
-	for (int i = 0; i < NUM_CITY_PLOTS4; i++)
+	for (int i = 0; i < MAX_CITY_PLOTS; i++)
 		m_iMaxCityPlotPriority = std::max(m_iMaxCityPlotPriority, aiCityPlotPriority[i]);
 	// Need to be able to go one higher than the max
 	FAssertBounds(0, MAX_INT, m_iMaxCityPlotPriority); // </advc>
 //doto enhanced city size mylon
-	int aaiXYCityPlot[CITY_PLOTS_DIAM4][CITY_PLOTS_DIAM4] =
+	int aaiXYCityPlot[MAX_CITY_DIAM][MAX_CITY_DIAM] =
 	{	// advc.enum: Use some of the enumerators for illustration
 /* doto enhanced city size mylon
 		{NO_CITYPLOT, 17, 18, 19, NO_CITYPLOT},

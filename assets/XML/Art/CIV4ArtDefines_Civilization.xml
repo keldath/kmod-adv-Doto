@@ -231,6 +231,13 @@
 			<Button>,Art/Interface/Buttons/Civilizations/FlagButton.dds</Button>
 			<Path>Art/Interface/TeamColor/IsraelFlag.dds</Path>
 			<bWhiteFlag>1</bWhiteFlag>
+<!-- city states begin -->
+		</CivilizationArtInfo>
+		<CivilizationArtInfo>
+			<Type>ART_DEF_CIVILIZATION_POLAND</Type>
+			<Button>Art/Interface/civilizations/Poland.dds</Button>
+			<Path>Art/Interface/civilizations/FlagDECAL_Poland.dds</Path>
+			<bWhiteFlag>0</bWhiteFlag>
 		</CivilizationArtInfo>
 	</CivilizationArtInfos>
 </Civ4ArtDefines>

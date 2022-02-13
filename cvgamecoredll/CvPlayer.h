@@ -865,7 +865,7 @@ public:
 //limited religion doto
 //doto enhanced city size mylon
 	int cityRadius() const { return m_iCityRadius; }
-	int cityDiameter() const { return m_iCityDiameter; }	
+	int cityDiameter() const { return CITY_DIAM_FOR_RADIUS(m_iCityRadius); }	
 	CityPlotTypes numCityPlots() const { return m_eCityPlots; } 	
 //doto enhanced city size mylon	
 	int getCitiesLost() const { return m_iCitiesLost; }																// Exposed to Python
@@ -1668,7 +1668,6 @@ protected:  // <advc.210>
 //limited religion doto 
 //doto enhanced city size mylon
 	int m_iCityRadius; // perhaps no good reason for treating these two as enums
-	int m_iCityDiameter;
 	CityPlotTypes m_eCityPlots;	
 //doto enhanced city size mylon
 	int m_iCitiesLost;

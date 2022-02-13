@@ -445,6 +445,15 @@
 			<KFM>art/LeaderHeads/SolomonA/asoka.kfm</KFM>
 			<NoShaderNIF>art/LeaderHeads/SolomonA/asoka.nif</NoShaderNIF>
 			<BackgroundKFM>art/LeaderHeads/SolomonA/Asoka_BG.kfm</BackgroundKFM>
+<!-- city states begin -->		
+		</LeaderheadArtInfo>
+		<LeaderheadArtInfo>
+			<Type>ART_DEF_LEADER_CASIMIR</Type>
+			<Button>Art/LeaderHeads/casimir/casimir.dds</Button>
+			<NIF>art/LeaderHeads/casimir/casimir.nif</NIF>
+			<KFM>art/LeaderHeads/casimir/casimir.kfm</KFM>
+			<NoShaderNIF>art/LeaderHeads/casimir/casimir.nif</NoShaderNIF>
+			<BackgroundKFM>art/LeaderHeads/casimir/brennus_BG.kfm</BackgroundKFM>
 		</LeaderheadArtInfo>
 	</LeaderheadArtInfos>
 </Civ4ArtDefines>

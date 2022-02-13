@@ -161,6 +161,21 @@
 						<Text>AI_DIPLO_FIRST_CONTACT_LEADER_FRANKLIN_ROOSEVELT_2</Text>
 						<Text>AI_DIPLO_FIRST_CONTACT_LEADER_FRANKLIN_ROOSEVELT_3</Text>
 					</DiplomacyText>
+<!-- city states -->
+				</Response>
+				<Response>
+					<Civilizations/>
+					<Leaders>
+						<Leader>
+							<LeaderType>LEADER_CASIMIR</LeaderType>
+							<bLeaderType>1</bLeaderType>
+						</Leader>
+					</Leaders>
+					<Attitudes/>
+					<DiplomacyPowers/>
+					<DiplomacyText>
+						<Text>AI_DIPLO_FIRST_CONTACT_LEADER_CASIMIR_1</Text>
+					</DiplomacyText>
 				</Response>
 				<Response>
 					<Civilizations/>
@@ -945,6 +960,21 @@
 						<Text>AI_DIPLO_REFUSE_TO_TALK_1</Text>
 						<Text>AI_DIPLO_REFUSE_TO_TALK_2</Text>
 						<Text>AI_DIPLO_REFUSE_TO_TALK_3</Text>
+					</DiplomacyText>
+<!-- city states -->
+				</Response>
+				<Response>
+					<Civilizations/>
+					<Leaders>
+						<Leader>
+							<LeaderType>LEADER_CASIMIR</LeaderType>
+							<bLeaderType>1</bLeaderType>
+						</Leader>
+					</Leaders>
+					<Attitudes/>
+					<DiplomacyPowers/>
+					<DiplomacyText>
+						<Text>AI_DIPLO_REFUSE_TO_TALK_LEADER_CASIMIR_1</Text>
 					</DiplomacyText>
 				</Response>
 				<Response>
@@ -1738,6 +1768,21 @@
 						<Text>AI_DIPLO_NO_PEACE_2</Text>
 						<Text>AI_DIPLO_NO_PEACE_3</Text>						
 					</DiplomacyText>
+<!-- city states -->
+				</Response>
+				<Response>
+					<Civilizations/>
+					<Leaders>
+						<Leader>
+							<LeaderType>LEADER_CASIMIR</LeaderType>
+							<bLeaderType>1</bLeaderType>
+						</Leader>
+					</Leaders>
+					<Attitudes/>
+					<DiplomacyPowers/>
+					<DiplomacyText>
+						<Text>AI_DIPLO_NO_PEACE_LEADER_CASIMIR_1</Text>
+					</DiplomacyText>
 				</Response>
 				<Response>
 					<Civilizations/>
@@ -2500,6 +2545,34 @@
 						<Text>AI_DIPLO_GREETINGS_ATT_FR_6</Text>
 						<Text>AI_DIPLO_GREETINGS_ATT_FR_7</Text>
 						<Text>AI_DIPLO_GREETINGS_ATT_FR_8</Text>						
+					</DiplomacyText>
+<!-- city states -->
+				</Response>
+				<Response>
+					<Civilizations/>
+					<Leaders>
+						<Leader>
+							<LeaderType>LEADER_CASIMIR</LeaderType>
+							<bLeaderType>1</bLeaderType>
+						</Leader>
+					</Leaders>
+					<Attitudes>
+						<Attitude>
+							<AttitudeType>ATTITUDE_FRIENDLY</AttitudeType>
+							<bAttitudeType>1</bAttitudeType>
+						</Attitude>
+						<Attitude>
+							<AttitudeType>ATTITUDE_PLEASED</AttitudeType>
+							<bAttitudeType>1</bAttitudeType>
+						</Attitude>
+						<Attitude>
+							<AttitudeType>ATTITUDE_CAUTIOUS</AttitudeType>
+							<bAttitudeType>1</bAttitudeType>
+						</Attitude>
+					</Attitudes>
+					<DiplomacyPowers/>
+					<DiplomacyText>
+						<Text>AI_DIPLO_GREETINGS_ATT_FR_LEADER_CASIMIR_1</Text>
 					</DiplomacyText>
 				</Response>
 				<Response>
@@ -3965,6 +4038,30 @@
 					<DiplomacyPowers/>
 					<DiplomacyText>
 						<Text>AI_DIPLO_GREETINGS_ATT_FUR_LEADER_ AUGUSTUS_CAESAR _1</Text>
+					</DiplomacyText>
+<!-- city states-->
+				</Response>
+				<Response>
+					<Civilizations/>
+					<Leaders>
+						<Leader>
+							<LeaderType>LEADER_CASIMIR</LeaderType>
+							<bLeaderType>1</bLeaderType>
+						</Leader>
+					</Leaders>
+					<Attitudes>
+						<Attitude>
+							<AttitudeType>ATTITUDE_ANNOYED</AttitudeType>
+							<bAttitudeType>1</bAttitudeType>
+						</Attitude>
+						<Attitude>
+							<AttitudeType>ATTITUDE_FURIOUS</AttitudeType>
+							<bAttitudeType>1</bAttitudeType>
+						</Attitude>
+					</Attitudes>
+					<DiplomacyPowers/>
+					<DiplomacyText>
+						<Text>AI_DIPLO_GREETINGS_ATT_FUR_LEADER_CASIMIR_1</Text>
 					</DiplomacyText>
 				</Response>
 				<Response>
@@ -5976,6 +6073,26 @@
 					<DiplomacyText>
 						<Text>AI_DIPLO_DEMAND_TRIBUTE_POWER_WEAKER_FRANKLIN_ROOSEVELT_1</Text>
 					</DiplomacyText>
+<!-- city states-->
+				</Response>
+				<Response>
+					<Civilizations/>
+					<Leaders>
+						<Leader>
+							<LeaderType>LEADER_CASIMIR</LeaderType>
+							<bLeaderType>1</bLeaderType>
+						</Leader>
+					</Leaders>
+					<Attitudes/>
+					<DiplomacyPowers>
+						<DiplomacyPower>
+							<DiplomacyPowerType>DIPLOMACYPOWER_WEAKER</DiplomacyPowerType>
+							<bDiplomacyPowerType>1</bDiplomacyPowerType>
+						</DiplomacyPower>
+					</DiplomacyPowers>
+					<DiplomacyText>
+						<Text>AI_DIPLO_DEMAND_TRIBUTE_POWER_WEAKER_CASIMIR_1</Text>
+					</DiplomacyText>
 				</Response>
 				<Response>
 					<Civilizations/>
@@ -6922,6 +7039,26 @@
 						<Text>AI_DIPLO_DEMAND_TRIBUTE_POWER_EQUAL_1</Text>
 						<Text>AI_DIPLO_DEMAND_TRIBUTE_POWER_EQUAL_2</Text>						
 					</DiplomacyText>
+<!-- city states -->
+				</Response>
+				<Response>
+					<Civilizations/>
+					<Leaders>
+						<Leader>
+							<LeaderType>LEADER_CASIMIR</LeaderType>
+							<bLeaderType>1</bLeaderType>
+						</Leader>
+					</Leaders>
+					<Attitudes/>
+					<DiplomacyPowers>
+						<DiplomacyPower>
+							<DiplomacyPowerType>DIPLOMACYPOWER_EQUAL</DiplomacyPowerType>
+							<bDiplomacyPowerType>1</bDiplomacyPowerType>
+						</DiplomacyPower>
+					</DiplomacyPowers>
+					<DiplomacyText>
+						<Text>AI_DIPLO_DEMAND_TRIBUTE_POWER_EQUAL_CASIMIR_1</Text>
+					</DiplomacyText>
 				</Response>
 				<Response>
 					<Civilizations/>
@@ -7867,6 +8004,26 @@
 					<DiplomacyText>
 						<Text>AI_DIPLO_DEMAND_TRIBUTE_POWER_STRONGER_1</Text>
 						<Text>AI_DIPLO_DEMAND_TRIBUTE_POWER_STRONGER_2</Text>						
+					</DiplomacyText>
+	<!-- city states -->
+				</Response>
+				<Response>
+					<Civilizations/>
+					<Leaders>
+						<Leader>
+							<LeaderType>LEADER_CASIMIR</LeaderType>
+							<bLeaderType>1</bLeaderType>
+						</Leader>
+					</Leaders>
+					<Attitudes/>
+					<DiplomacyPowers>
+						<DiplomacyPower>
+							<DiplomacyPowerType>DIPLOMACYPOWER_STRONGER</DiplomacyPowerType>
+							<bDiplomacyPowerType>1</bDiplomacyPowerType>
+						</DiplomacyPower>
+					</DiplomacyPowers>
+					<DiplomacyText>
+						<Text>AI_DIPLO_DEMAND_TRIBUTE_POWER_STRONGER_CASIMIR_1</Text>
 					</DiplomacyText>
 				</Response>
 				<Response>

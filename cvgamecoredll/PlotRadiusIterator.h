@@ -497,13 +497,13 @@ public:
 //	PlotCircleIter& m_kPlotCircle;
 //	CvCity* m_pNext;
 //};
-
+//doto enhanced city size mylon
 class NearbyCityIter
 {
 public:
 	NearbyCityIter(CvPlot const& kPlot)
 		: m_kCenter(kPlot),
-		m_kPlotCircle(*new PlotCircleIter(kPlot, CITY_PLOTS_RADIUS4)),
+		m_kPlotCircle(*new PlotCircleIter(kPlot, MAX_CITY_RADIUS)),
 		m_pNext(NULL)
 	{
 		if (kPlot.isCityRadius()) // save time
@@ -536,7 +536,7 @@ public:
 	int cityPlotPriority() const
 	{
 		CityPlotTypes eCityPlot = m_pNext->getCityPlotIndex(m_kCenter);
-		FAssertBounds(0, NUM_CITY_PLOTS4, eCityPlot);
+		FAssertBounds(0, MAX_CITY_PLOTS, eCityPlot);
 		return GC.getCityPlotPriority()[eCityPlot];
 	}
 
@@ -557,7 +557,7 @@ private:
 			return;
 		}
 		m_pNext = kCityPlot.getPlotCity();
-		if (iCurrDist > m_pNext->maxRadius())
+		if (iCurrDist > m_pNext->getRadius())
 			computeNext();
 	}
 
@@ -565,4 +565,5 @@ private:
 	PlotCircleIter& m_kPlotCircle;
 	CvCity* m_pNext;
 };
+//doto enhanced city size mylon - end
 #endif

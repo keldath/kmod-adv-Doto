@@ -2384,46 +2384,26 @@ enum UnitSubEntityTypes
 };
 
 // <advc.enum>
+//doto enhanced city size mylon
+#define CITY_DIAM_FOR_RADIUS(iRadius) (1 + 2 * iRadius)
 /*	CityPlotTypes enum - idea from "We the People".
 	Replacing preprocessor defines in CvDefines. Note that those defines have
 	been compiled into the EXE, so, to avoid inconsistencies, the values of
 	NUM_CITY_PLOTS, CITY_HOME_PLOT, CITY_PLOTS_RADIUS and CITY_PLOTS_DIAMETER
 	should never be changed. */
-//doto enhanced city size mylon
-enum CityPlotTypes
-{	
-	NO_CITYPLOT = -1,
-	CITY_HOME_PLOT = 0,
-	FIRST_ADJACENT_PLOT = 1,
-	NUM_CITY_PLOTS = 21,
-	CITY_PLOTS_RADIUS = 2,
-	CITY_PLOTS_DIAMETER = 2 * CITY_PLOTS_RADIUS + 1,
-	NUM_INNER_PLOTS = 9,
-	LAST_CITY_PLOT = 61,
-	CITY_PLOTS_RADIUS4 = 4, 
-	CITY_PLOTS_RADIUS3 = 3,
-	NUM_CITY_PLOTS3 = 37,
-	NUM_CITY_PLOTS4 = 61,
-	CITY_PLOTS_DIAM3 = 2 * CITY_PLOTS_RADIUS3 + 1,
-	CITY_PLOTS_DIAM4 = 2 * CITY_PLOTS_RADIUS4 + 1,
-};
-DEFINE_INCREMENT_OPERATORS(CityPlotTypes);
-//mylon
-#define FOR_EACH_CITYPLOT(kPlayer) \
-    for (CityPlotTypes eLoopCityPlot = CITY_HOME_PLOT; \
-         eLoopCityPlot < kPlayer.numCityPlots(); ++eLoopCityPlot)
-/* doto enhanced city size
 ENUM_START(CityPlot, CITYPLOT)
 	CITY_HOME_PLOT = 0,
 	FIRST_ADJACENT_PLOT = 1,
 	CITY_PLOTS_RADIUS = 2,
-	CITY_PLOTS_DIAMETER = CITY_PLOTS_RADIUS * 2 + 1,
+	CITY_PLOTS_DIAMETER = CITY_DIAM_FOR_RADIUS(CITY_PLOTS_RADIUS),
 	NUM_INNER_PLOTS = 9,
 	LAST_CITY_PLOT = 20,
 ENUM_END(CityPlot, CITYPLOT)
-*/
-//mylon
-//#define NUM_CITY_PLOTS ((int)NUM_CITYPLOT_TYPES)
+//doto enhanced city size mylon
+#define MAX_CITY_RADIUS 4
+#define MAX_CITY_DIAM CITY_DIAM_FOR_RADIUS(MAX_CITY_RADIUS)
+#define NUM_CITY_PLOTS NUM_CITYPLOT_TYPES
+#define MAX_CITY_PLOTS ((CityPlotTypes)61)
 
 
 #define DO_FOR_EACH_FALSE_FRIEND(DO) \

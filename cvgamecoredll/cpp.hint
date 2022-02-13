@@ -26,6 +26,9 @@
 #define FOR_EACH_ENUM_RAND(TypeName)
 #define FOR_EACH_ENUM_REV(TypeName)
 
+//mylon doto version
+#define FOR_EACH_CITYPLOT
+
 #define FOR_EACH_NON_DEFAULT_ENUM(kEnumMapSeq, EnumPrefix)
 #define FOR_EACH_NON_DEFAULT_PAIR(kEnumMap, EnumPrefix, ValueType)
 #define FOR_EACH_KEY(eKey)

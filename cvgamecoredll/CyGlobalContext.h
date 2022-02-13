@@ -317,10 +317,6 @@ public:
 	int getBARBARIAN_TEAM() const { return BARBARIAN_TEAM; }
 	int getINVALID_PLOT_COORD() const { return INVALID_PLOT_COORD; }
 	int getNUM_CITY_PLOTS() const { return NUM_CITY_PLOTS; }
-//doto enhanced city size mylon
-	int getNUM_CITY_PLOTS4() const { return NUM_CITY_PLOTS4; }
-	int getNUM_CITY_PLOTS3() const { return NUM_CITY_PLOTS3; }
-//doto enhanced city size mylon
 	int getCITY_HOME_PLOT() const { return CITY_HOME_PLOT; }
 // <advc.003t> Non-const global context (previously the member functions had used GC)
 private:
