@@ -1464,7 +1464,8 @@ CvPlot* CvPlayer::findStartingPlot(
 		}
 	}
 	//int iBestArea = -1;
-	// kekm.35: "This function is adjusted to work with a list of possible starting areas instead of a single one."
+	/*	kekm.35: "This function is adjusted to work with a list of
+		possible starting areas instead of a single one." */
 	std::vector<std::pair<int,int> > areasByValue;
 	bool bNew = false;
 	if (getStartingPlot() != NULL)
@@ -1483,6 +1484,23 @@ CvPlot* CvPlayer::findStartingPlot(
 		areasByValue = findStartingAreas( // kekm.35
 				pbAreaFoundByMapScript); // advc.027
 	}
+	// <advc.opt> Compute this upfront for kekm.35
+	int const iStartingRange = GC.getDefineINT("ADVANCED_START_SIGHT_RANGE");
+	EagerEnumMap<PlotNumTypes,bool> abPlotTaken;
+	FOR_EACH_ENUM(PlotNum)
+	{
+		CvPlot const& kPlot = GC.getMap().getPlotByIndex(eLoopPlotNum);
+		for (PlayerIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
+		{
+			if (itPlayer->getStartingPlot() != NULL &&
+				plotDistance(itPlayer->getStartingPlot(), &kPlot) <=
+				iStartingRange + 1) // (+2 in Kek-Mod)
+			{
+				abPlotTaken.set(eLoopPlotNum, true);
+				break;
+			}
+		}
+	} // </advc.opt>
 	/*  <advc.140> Cut and pasted from CvMap::maxPlotDistance. I've changed that
 		function, but I think the original formula might be needed here.
 		I'm not sure I understand the purpose of this outer loop. */
@@ -1492,17 +1510,19 @@ CvPlot* CvPlayer::findStartingPlot(
 			((m.isWrapY()) ? (m.getGridHeight() / 2) :
 			(m.getGridHeight() - 1))));
 	for(int iPass = 0; iPass < iMaxPlotDist; iPass++)*/ // </advc.140>
-	/*  <kekm.35> "First pass avoids starting locations that have very little food
+	/*  <kekm.35> "Earlier passes avoid starting locations that have low yields
 		(before normalization) to avoid starting on the edge of very bad terrain." */
-	int const iStartingRange = GC.getDefineINT("ADVANCED_START_SIGHT_RANGE");
 	CvMap const& kMap = GC.getMap();
-	int const iMaxPass = 1;
+	int const iMaxPass = 4;
 	for (int iPass = 0; iPass <= iMaxPass; iPass++)
 	{
-		for (size_t j = 0; j < areasByValue.size(); j++)
-		{ // </kekm.35>
+		FAssertMsg(iPass * 2 <= iMaxPass, "trouble finding starting plot with decent yields"); // advc
+		/*	"First try to find a starting location in the best area,
+			then second best, etc." */
+		for (size_t j = 0; j < areasByValue.size(); j++) // </kekm.35>
+		{
 			CvPlot *pBestPlot = NULL;
-			int iBestValue = iMaxPass - iPass; // advc: was 0 flat
+			int iBestValue = (iPass <= 0 ? 1 : 0); // advc: was 0 flat
 			for (int i = 0; i < kMap.numPlots(); i++)
 			{
 				CvPlot* pLoopPlot = kMap.plotByIndex(i);
@@ -1510,23 +1530,48 @@ CvPlot* CvPlayer::findStartingPlot(
 				// <kekm.35>
 				if (pLoopPlot->getArea().getID() != areasByValue[j].first)
 					continue;
-				if (iPass == 0) // "Avoid very bad terrain in the first pass."
+				// "Avoid locations with low yields in the advanced start sized area."
+				scaled rLandYield;
+				scaled rWaterYield;
+				int iLandPlots = 0;
+				int iWaterPlots = 0;
+				for (PlotCircleIter it(*pLoopPlot, iStartingRange); it.hasNext(); ++it)
 				{
-					int iTotalFood = 0;
-					int iLandPlots = 0;
-					for (PlotCircleIter it(*pLoopPlot, iStartingRange); it.hasNext(); ++it)
+					scaled& rYield = (it->isWater() ? rWaterYield : rLandYield);
+					int& iPlots = (it->isWater() ? iWaterPlots : iLandPlots);
+					iPlots++;
+					if (!abPlotTaken.get(it->plotNum()) && it->isPotentialCityWork())
 					{
-						CvPlot const& kCheckPlot = *it;
-						if (!kCheckPlot.isWater())
+						FOR_EACH_ENUM(Yield)
 						{
-							iLandPlots++;
-							iTotalFood += kCheckPlot.calculateBestNatureYield(
-									YIELD_FOOD, NO_TEAM);
+							/*	advc: Kek-Mod had used eTeam=getTeam(), I suppose
+								for a pessimistic yield count, but I want the
+								starting plots to be independent of player knowledge. */
+							rYield += it->calculateNatureYield(eLoopYield);
 						}
 					}
-					if (iTotalFood < std::max(1, iLandPlots) / 2)
-						continue;
-				} // </kekm.35>
+				}
+				scaled rMeanLandYield;
+				if (iLandPlots > 0)
+					rMeanLandYield = rLandYield / iLandPlots;
+				scaled rMeanYield;
+				{
+					int iTotalPlots = iLandPlots + iWaterPlots;
+					if (iTotalPlots > 0)
+						rMeanYield = (rLandYield + rWaterYield) / iTotalPlots;
+				}
+				scaled rYieldThresh;
+				// advc: Make this part more adjustable
+				{
+					scaled const rMaxThresh = 2;
+					scaled rStep = rMaxThresh;
+					if (iMaxPass > 0)
+						rStep /= iMaxPass;
+					rYieldThresh = rMaxThresh - iPass * rStep;
+				}
+				if (std::min(rMeanLandYield, rMeanYield) < rYieldThresh)
+					continue;
+				// </kekm.35>
 				//the distance factor is now done inside foundValue
 				int iValue = pLoopPlot->getFoundValue(getID(),
 					/*	advc.027: Replacing the randomization below, which is crude
@@ -1546,8 +1591,9 @@ CvPlot* CvPlayer::findStartingPlot(
 			}
 			if (pBestPlot != NULL)
 				return pBestPlot;
-		} // kekm.35: end of areas_by_value loop
-		FAssertMsg(iPass != 0, "CvPlayer::findStartingPlot - could not find starting plot in first pass.");
+		} // kekm.35: end of areasByValue loop
+		// advc: Replaced with an assertion at the start of the loop
+		//FAssertMsg(iPass != 0, "CvPlayer::findStartingPlot - could not find starting plot in first pass.");
 	}
 
 	FErrorMsg("Could not find starting plot.");
@@ -2320,6 +2366,8 @@ void CvPlayer::disbandUnit(bool bAnnounce)
 		{
 			continue;
 		}
+		/*	advc.500c (note): Even if GET_TEAM(getTeam()).getNoMilitaryAnger() is 0,
+			it still seems better not to knock the only military unit out. */
 		if (pLoopUnit->isMilitaryHappiness() &&
 			pLoopUnit->getPlot().plotCount(PUF_isMilitaryHappiness, -1, -1, getID()) <= 1)
 		{
@@ -4739,8 +4787,8 @@ bool CvPlayer::canReceiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit) 
 	// <advc.314>
 	int const iTrainHalved = (GC.getInfo(kGame.getGameSpeedType()).
 			getTrainPercent() + 100) / 2;
-	bool bVeryEarlyGame = (100 * kGame.getGameTurn() < 20 * iTrainHalved);
-	bool bVeryVeryEarlyGame = (100 * kGame.getGameTurn() < 10 * iTrainHalved);
+	bool bVeryEarlyGame = (100 * kGame.getGameTurn() < iTrainHalved * 16);
+	bool bVeryVeryEarlyGame = (100 * kGame.getGameTurn() < iTrainHalved * 10);
 	if (kGoody.getExperience() > 0)
 	{
 		if (pUnit == NULL || !pUnit->canAcquirePromotionAny() ||
@@ -4787,14 +4835,14 @@ bool CvPlayer::canReceiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit) 
 			return false;
 	}
 	// <advc.314>
-	if(bVeryEarlyGame && kGoody.getMinBarbarians() > 1)
+	if (bVeryEarlyGame && kGoody.getMinBarbarians() > 1)
 		return false;
 	/*  Moved up and added the era clause; a single free unit in the Medieval
 		era isn't going to be a problem. */
 	bool bEarlyMP = (GC.getGame().isGameMultiPlayer() &&
 			GC.getGame().getCurrentEra() < 2);
 	// No free unit from Spy when hut guarded
-	if(!kGoody.isBad() && (kGoody.getUnitClassType() != NO_UNITCLASS ||
+	if (!kGoody.isBad() && (kGoody.getUnitClassType() != NO_UNITCLASS ||
 		kGoody.getMinBarbarians() > 0) && pPlot->isVisibleEnemyUnit(getID()) &&
 		pUnit != NULL && pUnit->isSpy())
 	{
@@ -4815,12 +4863,12 @@ bool CvPlayer::canReceiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit) 
 				return false;
 			}
 		} // <advc.314> I guess a Worker with a slow WorkRate would be OK
-		if(bVeryEarlyGame && kUnit.getWorkRate() > 30)
+		if (bVeryEarlyGame && kUnit.getWorkRate() > 30)
 			return false; // </advc.314>
 		if (isOneCityChallenge() && kUnit.isFound())
 			return false;
 	} // <advc.314> Free unit and no UnitClassType given
-	else if(!kGoody.isBad() && kGoody.getMinBarbarians() > 0 &&
+	else if (!kGoody.isBad() && kGoody.getMinBarbarians() > 0 &&
 		(bEarlyMP || bVeryEarlyGame))
 	{
 		return false;
@@ -4837,35 +4885,39 @@ bool CvPlayer::canReceiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit) 
 		if (getNumCities() == 0)
 			return false;
 
-		if (getNumCities() == 1)
+		//if (getNumCities() == 1) // advc.314
 		{
-			CvCity* pCity = GC.getMap().findCity(pPlot->getX(), pPlot->getY(), NO_PLAYER, getTeam());
+			CvCity const* pCity = GC.getMap().findCity(
+					// advc.314: Any nearby city is a problem
+					pPlot->getX(), pPlot->getY()/*, NO_PLAYER, getTeam()*/);
 			if (pCity != NULL)
 			{
-				if (plotDistance(pPlot->getX(), pPlot->getY(), pCity->getX(), pCity->getY()) <=
-						// advc.314 (comment):
-						8 - getNumCities()) // = 7 b/c of the NumCities==1 check
+				if (plotDistance(pPlot, pCity->plot()) <= //8 - getNumCities()
+					// advc.314: Had always been 7 b/c of the NumCities==1 check
+					8 - 2 * GET_PLAYER(pCity->getOwner()).getNumCities())
+				{
 					return false;
+				}
 			}
 		}
 	} // <advc.315d> No Scout from a Scout if already 2 Scouts
-	if(pUnit != NULL && pUnit->isNoBadGoodies() && AI().AI_getNumAIUnits(UNITAI_EXPLORE) >= 2)
+	if (pUnit != NULL && pUnit->isNoBadGoodies() && AI().AI_getNumAIUnits(UNITAI_EXPLORE) >= 2)
 	{
 		UnitClassTypes eUnitClass = (UnitClassTypes)kGoody.getUnitClassType();
-		if(eUnitClass != NO_UNITCLASS)
+		if (eUnitClass != NO_UNITCLASS)
 		{
 			UnitTypes eUnit = getCivilization().getUnit(eUnitClass);
-			if(eUnit != NO_UNIT && GC.getInfo(eUnit).isNoBadGoodies())
+			if (eUnit != NO_UNIT && GC.getInfo(eUnit).isNoBadGoodies())
 				return false;
 		}
 	} // </advc.315d>
 	// <advc.315e> No map reveal at the edges of a non-wrapping map
-	if(kGoody.getMapProb() > 0)
+	if (kGoody.getMapProb() > 0)
 	{
 		int const iRange = 3;
-		for(int iDX = -iRange; iDX <= iRange; iDX++)
+		for (int iDX = -iRange; iDX <= iRange; iDX++)
 		{
-			for(int iDY = -iRange; iDY <= iRange; iDY++)
+			for (int iDY = -iRange; iDY <= iRange; iDY++)
 			{
 				CvPlot* pLoopPlot = ::plotXY(pPlot->getX(), pPlot->getY(), iDX, iDY);
 				if(pLoopPlot == NULL)
@@ -5090,7 +5142,7 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit,
 			FOR_EACH_ADJ_PLOT(*pPlot)
 			{
 				if (!pAdj->sameArea(*pPlot) || pAdj->isImpassable() ||
-					pAdj->getNumUnits() > 0)
+					pAdj->getNumVisibleUnits(BARBARIAN_PLAYER) > 0)
 				{
 					continue;
 				}
@@ -5115,6 +5167,12 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit,
 				}
 			}
 		}
+		/*	Letting CvUnitAI::AI_anyAttack handle this now: only one unit will attack.
+			Not sure if that's really a better solution. */
+		/*if (iBarbCount > 0)
+		{	// Give the unit a chance to run away
+			pUnit->changeMoves(-std::min(GC.getMOVE_DENOMINATOR(), pUnit->getMoves()));
+		}*/
 	}
 	if(bUpgrade && !bNoRecursion)
 		doGoody(pPlot, pUnit, eGoody); // </advc.314>
@@ -7463,6 +7521,10 @@ int CvPlayer::countCorporations(CorporationTypes eCorporation,
 
 void CvPlayer::foundCorporation(CorporationTypes eCorporation)
 {
+//doto no corporations
+	if (GC.getGame().isOption(GAMEOPTION_NO_CORPORATIONS))
+		return;
+
 	if (GC.getGame().isCorporationFounded(eCorporation))
 		return;
 
@@ -11029,6 +11091,8 @@ int CvPlayer::getFoodKept(BuildingTypes eBuilding) const
 {
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
 	int iFoodKept = kBuilding.getFoodKept();
+	// Reverted this in AdvCiv 1.05
+#if 0
 	if (GC.getGame().isOption(GAMEOPTION_NO_SLAVERY) &&
 		/*	Toggling this on and off during AI Auto Play
 			could lead to inconsistent data at CvCity */
@@ -11037,6 +11101,7 @@ int CvPlayer::getFoodKept(BuildingTypes eBuilding) const
 		iFoodKept *= 5;
 		iFoodKept /= 4;
 	}
+#endif
 	return iFoodKept;
 }
 

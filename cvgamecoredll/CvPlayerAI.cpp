@@ -202,7 +202,6 @@ void CvPlayerAI::AI_reset(bool bConstructor)
 		{
 			m_aeLastBrag[iI] = NO_UNIT;
 			m_aeLastWarn[iI] = NO_TEAM; // </advc.079>
-			m_abTheyFarAhead[iI] = m_abTheyBarelyAhead[iI] = false; // advc.130c
 		}
 		m_abFirstContact[iI] = false;
 		for (int iJ = 0; iJ < NUM_CONTACT_TYPES; iJ++)
@@ -231,8 +230,6 @@ void CvPlayerAI::AI_reset(bool bConstructor)
 			{
 				kLoopPlayer.m_aeLastBrag[getID()] = NO_UNIT;
 				kLoopPlayer.m_aeLastWarn[getID()] = NO_TEAM; // </advc.079>
-				// advc.130c:
-				kLoopPlayer.m_abTheyFarAhead[getID()] = kLoopPlayer.m_abTheyBarelyAhead[getID()] = false;
 			}
 			kLoopPlayer.m_abFirstContact[getID()] = false;
 			for (int iJ = 0; iJ < NUM_CONTACT_TYPES; iJ++)
@@ -2147,14 +2144,27 @@ bool CvPlayerAI::AI_acceptUnit(CvUnit const& kUnit) const
 bool CvPlayerAI::AI_captureUnit(UnitTypes eUnit, CvPlot const& kPlot) const
 {
 	FAssert(!isHuman());
-	if (kPlot.getTeam() == getTeam())
-		return true;
-	CvCity* pNearestCity = GC.getMap().findCity(
-			kPlot.getX(), kPlot.getY(), NO_PLAYER, getTeam());
-	if (pNearestCity != NULL)
+	if (kPlot.getTeam() != getTeam())
 	{
-		if (plotDistance(&kPlot, pNearestCity->plot()) <= /*4*/ 8) // advc.010
-			return true;
+		CvCity const* pNearestCity = GC.getMap().findCity(
+				kPlot.getX(), kPlot.getY(), NO_PLAYER, getTeam());
+		if (pNearestCity == NULL ||
+			plotDistance(&kPlot, pNearestCity->plot()) > /*4*/8) // advc.010
+		{
+			return false;
+		}
+	}
+	//return true;
+	// advc.010: The rest has been cut from CvUnit::kill
+	if (!kPlot.isCity() && AI_isAnyPlotDanger(kPlot))
+	{
+		//return false;
+		/*  <advc.010> If we're not clearly outnumbered, then let the enemy fight
+			over eUnit if they like. */
+		int iOurStrength = AI_localDefenceStrength(&kPlot, getTeam());
+		int iEnemyStrength = AI_localAttackStrength(&kPlot);
+		if (3 * iOurStrength < 2 * iEnemyStrength)
+			return false; // </advc.010>
 	}
 	return false;
 }
@@ -3506,19 +3516,19 @@ int CvPlayerAI::AI_countDangerousUnits(CvPlot const& kAttackerPlot, CvPlot const
 		if(isHuman() || !AI_cheatDangerVisibility(kAttackerPlot))
 			return 0;
 	} // </advc.128>
-	int r = 0;
+	int iR = 0;
 	TeamTypes const eOurMaster = GET_TEAM(eTeam).getMasterTeam(); // advc.opt
 	FOR_EACH_UNIT_IN(pLoopUnit, kAttackerPlot)
 	{
 		CvUnit const& kUnit = *pLoopUnit;
-		// advc.opt: Team check changed to masterTeam
+		// advc.opt: Team check changed to MasterTeam
 		if (GET_TEAM(kUnit.getOwner()).getMasterTeam() == eOurMaster)
 		{
 			if (!kUnit.alwaysInvisible() &&
 				kUnit.getInvisibleType() == NO_INVISIBLE)
 			{
-				FAssertMsg(r == 0, "Hostile units shouldn't be able to coexist in a plot");
-				return r;
+				FAssertMsg(iR == 0, "Hostile units shouldn't be able to coexist in a plot");
+				return iR;
 			}
 		}
 		if ( // <advc.104>
@@ -3557,12 +3567,12 @@ int CvPlayerAI::AI_countDangerousUnits(CvPlot const& kAttackerPlot, CvPlot const
 						continue;
 				}
 			}
-			r++;
-			if (r >= iLimit)
+			iR++;
+			if (iR >= iLimit)
 				return iLimit;
 		}
 	}
-	return r;
+	return iR;
 }
 
 // Never used ...
@@ -7372,19 +7382,10 @@ void CvPlayerAI::AI_updateAttitude(PlayerTypes ePlayer, /* advc.130e: */ bool bU
 	if (!GC.getGame().isFinalInitialized() || ePlayer == getID() ||
 		!isAlive() || !kPlayer.isAlive() || !GET_TEAM(getTeam()).isHasMet(kPlayer.getTeam()))
 	{
-		m_abTheyFarAhead[ePlayer] = m_abTheyBarelyAhead[ePlayer] = false; // advc.130c
 		m_aiAttitude[ePlayer] = 0;
 		return;
 	}
 	int const iOldAttitude = m_aiAttitude[ePlayer]; // advc.001
-
-	// <advc.130c> Are they (ePlayer) 150% ahead in score?
-	CvGame const& kGame = GC.getGame();
-	int iTheirScore = kGame.getPlayerScore(ePlayer);
-	int iOurScore = kGame.getPlayerScore(getID());
-	m_abTheyFarAhead[ePlayer] = (iTheirScore * 10 > iOurScore * 15);
-	m_abTheyBarelyAhead[ePlayer] = (iTheirScore > iOurScore &&
-			iTheirScore - iOurScore < 25); // </advc.130c>
 	// <advc.sha> Now computed in subroutines
 	int iAttitude = AI_getFirstImpressionAttitude(ePlayer);
 	iAttitude += AI_getTeamSizeAttitude(ePlayer);
@@ -8266,9 +8267,7 @@ int CvPlayerAI::AI_getMemoryAttitude(PlayerTypes ePlayer, MemoryTypes eMemory) c
 	if(eMemory == MEMORY_ACCEPTED_JOIN_WAR)
 	{
 		CvTeamAI const& kOurTeam = GET_TEAM(getTeam());
-		static bool bJOIN_WAR_DIPLO_BONUS = GC.getDefineBOOL("ENABLE_JOIN_WAR_DIPLO_BONUS");
-		if(!bJOIN_WAR_DIPLO_BONUS ||
-			(kOurTeam.getNumWars() > 0 && !kOurTeam.AI_shareWar(TEAMID(ePlayer))) ||
+		if ((kOurTeam.getNumWars() > 0 && !kOurTeam.AI_shareWar(TEAMID(ePlayer))) ||
 			kOurTeam.isAtWar(TEAMID(ePlayer)))
 		{
 			return 0;
@@ -8339,9 +8338,7 @@ int CvPlayerAI::AI_getTeamSizeAttitude(PlayerTypes ePlayer) const
 // advc.130c:
 int CvPlayerAI::AI_getRankDifferenceAttitude(PlayerTypes ePlayer) const
 {
-	// Cached separately to avoid updating the whole cache w/e scores change
-	if (m_abTheyFarAhead[ePlayer] || // No hate if they're way ahead
-		GET_TEAM(getTeam()).isCapitulated() || GET_TEAM(ePlayer).isCapitulated() ||
+	if (GET_TEAM(getTeam()).isCapitulated() || GET_TEAM(ePlayer).isCapitulated() ||
 		getTeam() == TEAMID(ePlayer))
 	{
 		return 0;
@@ -8353,6 +8350,10 @@ int CvPlayerAI::AI_getRankDifferenceAttitude(PlayerTypes ePlayer) const
 	int iRankDifference = AI_knownRankDifference(ePlayer, rOutrankBothRatio);
 	CvLeaderHeadInfo const& kPers = GC.getInfo(getPersonalityType());
 	CvGame const& kGame = GC.getGame();
+	int const iOurScore = kGame.getPlayerScore(getID());
+	int const iTheirScore = kGame.getPlayerScore(ePlayer);
+	scaled const rTheirScoreToOurs = (iOurScore <= 0 ? 2 :
+			scaled(iTheirScore, iOurScore));
 	// Don't count minor civs, defeated civs for rank differences.
 	int const iMajorCivsAlive = PlayerIter<MAJOR_CIV>::count();
 	// This was "+ 1" in BtS, which was arguably a bug.
@@ -8360,41 +8361,62 @@ int CvPlayerAI::AI_getRankDifferenceAttitude(PlayerTypes ePlayer) const
 	int iBase = 0;
 	scaled rMultiplier;
 	// If we're ranked worse than they are:
-	if(iRankDifference > 0)
+	if (iRankDifference > 0)
 	{
+		FAssert(rTheirScoreToOurs >= 1);
 		iBase = kPers.getWorseRankDifferenceAttitudeChange();
-		/*  Want multiplier to be 1 when the rank difference is 35% of CivPlayersEverAlive,
-			and near 0 when greater than 50% of CivPlayersEverAlive. */
-		rMultiplier = 1 -
-				(2 * iRankDifference - fixp(0.35) * iMaxRankDifference).abs() /
-				iMaxRankDifference;
-		rMultiplier.increaseTo(0);
-		// Don't hate them much when both struggling to keep up
-		rMultiplier *= fixp(5/4.) - rOutrankBothRatio;
+		if (iBase != 0) // save time
+		{
+			/*  Want multiplier to be 1 when the rank difference is 35% of
+				CivPlayersEverAlive, and near 0 when greater than 50% of
+				CivPlayersEverAlive. */
+			rMultiplier = 1 -
+					(2 * iRankDifference - fixp(0.35) * iMaxRankDifference).abs() /
+					iMaxRankDifference;
+			rMultiplier.increaseTo(0);
+			// Don't hate them much when both struggling to keep up
+			rMultiplier *= fixp(5/4.) - rOutrankBothRatio;
+			// Smoothen based on score ratio
+			scaled const rPeakScoreRatio = fixp(1.22);
+			scaled rFarAheadThresh = fixp(1.7);
+			scaled rMultFromScore = (rTheirScoreToOurs > rPeakScoreRatio ?
+					(rFarAheadThresh - rTheirScoreToOurs) /
+					(rFarAheadThresh - rPeakScoreRatio) :
+					(rTheirScoreToOurs - 1) /
+					(rPeakScoreRatio - 1));
+			rMultiplier += rMultFromScore;
+			rMultiplier /= 2;
+		}
 	}
 	/*  If we're ranked better, as in BtS, the modifier is proportional
 		to the relative rank difference. */
 	else
 	{
+		FAssert(rTheirScoreToOurs <= 1);
 		iBase = kPers.getBetterRankDifferenceAttitudeChange();
-		rMultiplier = scaled(-iRankDifference / iMaxRankDifference);
+		if (iBase != 0)
+		{
+			rMultiplier = scaled(-iRankDifference, iMaxRankDifference);
+			// Make sure not to like them if they're close in score
+			rMultiplier.decreaseTo(2 * (1 - rTheirScoreToOurs));
+		}
 	}
 	int iResult = (iBase * rMultiplier).round();
-	// Don't hate them if they're still in the first era
-	if(iResult < 0 && (GET_PLAYER(ePlayer).getCurrentEra() <= kGame.getStartEra() ||
-		/*  nor if the score difference is small (otherwise attitude
+	// Don't hate them if they're still in the first era ...
+	if (iResult < 0 && (GET_PLAYER(ePlayer).getCurrentEra() <= kGame.getStartEra() ||
+		/*	... nor if the score difference is small (otherwise attitude
 			changes too frequently in the early game) */
-		m_abTheyBarelyAhead[ePlayer]))
+		iOurScore + 25 >= iTheirScore))
 	{
 		return 0;
 	}
 	// Don't like them if we're still in the first era
-	if(iResult > 0 && (getCurrentEra() <= kGame.getStartEra() ||
+	if (iResult > 0 && (getCurrentEra() <= kGame.getStartEra() ||
 		GET_PLAYER(ePlayer).AI_atVictoryStage3()))
 	{
 		return 0;
 	}
-	if(iResult < 0 && AI_atVictoryStage3() && !GET_PLAYER(ePlayer).AI_atVictoryStage4())
+	if (iResult < 0 && AI_atVictoryStage3() && !GET_PLAYER(ePlayer).AI_atVictoryStage4())
 		return 0;
 	return iResult;
 }
@@ -12743,7 +12765,7 @@ DenialTypes CvPlayerAI::AI_cityTrade(CvCityAI const& kCity, PlayerTypes eToPlaye
 	{	// Units hostile to the new owner
 		/*	Should perhaps just check isVisibleEnemyCityAttacker(eToPlayer,...);
 			doesn't seem likely that kToPlayer has defensive units nearby. */
-		int iThirdPartyAttack = kToPlayer.AI_localAttackStrength(&kCityPlot, NO_TEAM);
+		int iThirdPartyAttack = kToPlayer.AI_localAttackStrength(&kCityPlot);
 		if (iThirdPartyAttack > 0)
 		{
 			int iToPlayerDefense = kToPlayer.AI_localDefenceStrength(&kCityPlot,
@@ -14696,7 +14718,8 @@ int CvPlayerAI::AI_unitCostPerMil() const
 	return std::max(0, iUnitCost-getNumCities()/2) * 1000 / std::max(1, iFunds);
 }
 
-/*	This function gives an approximate / recommended maximum on our unit spending.
+/*	This function gives an approximate / recommended maximum on our unit spending
+	(advc note - i.e. the ratio of unit cost to income, cf. AI_unitCostPerMil).
 	Note though that it isn't a hard cap. we might go as high has 20 point above
 	the "maximum"; and of course, the maximum might later go down.
 	So this should only be regarded as a guide. */
@@ -14798,11 +14821,9 @@ int CvPlayerAI::AI_maxUnitCostPerMil(CvArea const* pArea, int iBuildProb) const
 		}
 	}
 	// <advc.110> Anticipate a decrease in funds upon declaring war
-	if (iMaxUnitSpending > 200 &&
-		(kTeam.AI_isSneakAttackPreparing() || kTeam.AI_isSneakAttackReady()))
-	{
-		iMaxUnitSpending = 200;
-	} // </advc.110>
+	if (kTeam.AI_isSneakAttackPreparing() || kTeam.AI_isSneakAttackReady())
+		iMaxUnitSpending = std::min(iMaxUnitSpending, 200 + iBuildProb);
+	// </advc.110>
 	return iMaxUnitSpending;
 }
 
@@ -15828,7 +15849,8 @@ int CvPlayerAI::AI_plotTargetMissionAIs(CvPlot const& kPlot, MissionAITypes* aeM
 }
 
 // K-Mod
-// Total defensive strength of units that can move iRange steps to reach pDefencePlot
+/*	Total defensive strength of units friendly to us
+	that can move iRange steps to reach pDefencePlot */
 /*  advc.159 (note): This is not simply the sum of the relevant combat strength values.
 	The result should only be compared with AI_localAttackStrength, AI_localDefenceStrength,
 	AI_cityTargetStrengthByPath or CvSelectionGroupAI::AI_sumStrength. */
@@ -15917,7 +15939,8 @@ int CvPlayerAI::AI_localDefenceStrength(const CvPlot* pDefencePlot, TeamTypes eD
 	return (iTotal * (75 + (iDefenders - 1))) / 75; // </advc.159>
 }
 
-/*	Total attack strength of units that can move iRange steps to reach pAttackPlot
+/*	Total attack strength of units (potentially) hostile to us
+	that can move iRange steps to reach pAttackPlot.
 	advc.159: See note above AI_localDefenceStrength */
 int CvPlayerAI::AI_localAttackStrength(const CvPlot* pTargetPlot,
 	TeamTypes eAttackTeam, DomainTypes eDomainType, int iRange, bool bUseTarget,
@@ -22646,11 +22669,13 @@ void CvPlayerAI::read(FDataStreamBase* pStream)
 		}
 	} // </advc.079>
 	// <advc.130c>
-	if(uiFlag >= 13)
-		pStream->Read(MAX_CIV_PLAYERS, m_abTheyFarAhead);
-	if(uiFlag >= 14)
-		pStream->Read(MAX_CIV_PLAYERS, m_abTheyBarelyAhead);
-	// </advc.130c>
+	{
+		bool m_abDisusedCache[MAX_CIV_PLAYERS];
+		if (uiFlag >= 13 && uiFlag < 21)
+			pStream->Read(MAX_CIV_PLAYERS, m_abDisusedCache);
+		if (uiFlag >= 14 && uiFlag < 21)
+			pStream->Read(MAX_CIV_PLAYERS, m_abDisusedCache);
+	} // </advc.130c>
 	/*	K-Mod. Load the attitude cache. (In BBAI and the CAR Mod, this was not saved.
 		But there are rare situations in which it needs to be saved/read
 		to avoid OOS errors.) */
@@ -22802,7 +22827,8 @@ void CvPlayerAI::write(FDataStreamBase* pStream)
 	//uiFlag = 17; // advc.550g
 	//uiFlag = 18; // advc.130n
 	//uiFlag = 19; // advc.130n (mostly removed again)
-	uiFlag = 20; // advc.115f
+	//uiFlag = 20; // advc.115f
+	uiFlag = 21; // advc.130c (remove separate cache for score diff)
 	pStream->Write(uiFlag);
 
 	pStream->Write(m_iPeaceWeight);
@@ -22849,9 +22875,6 @@ void CvPlayerAI::write(FDataStreamBase* pStream)
 		pStream->Write(m_aeLastBrag[i]);
 		pStream->Write(m_aeLastWarn[i]);
 	} // </advc.079>
-	// <advc.130c>
-	pStream->Write(MAX_CIV_PLAYERS, m_abTheyFarAhead);
-	pStream->Write(MAX_CIV_PLAYERS, m_abTheyBarelyAhead); // </advc.130c>
 	// K-Mod. save the attitude cache. (to avoid OOS problems)
 	pStream->Write(MAX_PLAYERS, &m_aiAttitude[0]);
 	// K-Mod end
@@ -23949,17 +23972,23 @@ int CvPlayerAI::AI_calculateCultureVictoryStage(
 		}
 	}
 
-	//if (getCurrentEra() >= ((GC.getNumEraInfos() / 3) + iNonsense % 2))
-	if (getCurrentEra() >= (GC.getNumEraInfos() / 3 + (AI_getStrategyRand(1) % 2)) ||
+	//if (getCurrentEra() >= GC.getNumEraInfos() / 3 + iNonsense % 2)
+	if (getCurrentEra() >= GC.getNumEraInfos() / 3 + (AI_getStrategyRand(1) % 2) ||
 		iHighCultureCount >= iVictoryCities - 1)
 	{
-		if (iHighCultureCount < getCurrentEra() + iVictoryCities - GC.getNumEraInfos())
+		if (iHighCultureCount < getCurrentEra() + iVictoryCities - GC.getNumEraInfos() ||
+			// <advc.115e> Hopeless at some point if we have very few cities
+			getNumCities() <= std::min(iVictoryCities + 1,
+			getCurrentEra() + iVictoryCities - GC.getNumEraInfos() / 2)) // </advc.115e>
+		{
 			return 1;
+		}
 		return 2;
 	}
 
 	return 1;
 }
+
 
 int CvPlayerAI::AI_calculateSpaceVictoryStage() const
 {

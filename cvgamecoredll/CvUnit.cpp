@@ -568,27 +568,24 @@ void CvUnit::kill(bool bDelay, PlayerTypes ePlayer)
 	kOwner.uwai().getCache().reportUnitDestroyed(getUnitType());
 
 	kOwner.AI_changeNumAIUnits(AI_getUnitAIType(), -1);
-
-	PlayerTypes eCapturingPlayer = getCapturingPlayer();
-	UnitTypes eCaptureUnitType = (eCapturingPlayer == NO_PLAYER ? NO_UNIT :
+	PlayerTypes const eCapturingPlayer = getCapturingPlayer();
+	UnitTypes const eCaptureUnitType = (eCapturingPlayer == NO_PLAYER ? NO_UNIT :
 			getCaptureUnitType(GET_PLAYER(eCapturingPlayer).getCivilizationType()));
 
 	setXY(INVALID_PLOT_COORD, INVALID_PLOT_COORD, true);
-
 	joinGroup(NULL, false, false);
-
 	CvEventReporter::getInstance().unitLost(this);
-
 	kOwner.deleteUnit(getID());
 
 	if (eCapturingPlayer != NO_PLAYER && eCaptureUnitType != NO_UNIT &&
-		!GET_PLAYER(eCapturingPlayer).isBarbarian())
+		eCapturingPlayer != BARBARIAN_PLAYER)
 	{
-		if (GET_PLAYER(eCapturingPlayer).isHuman() ||
-			GET_PLAYER(eCapturingPlayer).AI_captureUnit(eCaptureUnitType, kPlot) ||
+		CvPlayerAI& kCaptor = GET_PLAYER(eCapturingPlayer);
+		if (kCaptor.isHuman() ||
+			kCaptor.AI_captureUnit(eCaptureUnitType, kPlot) ||
 			!GC.getDefineBOOL("AI_CAN_DISBAND_UNITS"))
 		{
-			CvUnit* pCapturedUnit = GET_PLAYER(eCapturingPlayer).initUnit(
+			CvUnit* pCapturedUnit = kCaptor.initUnit(
 					eCaptureUnitType, kPlot.getX(), kPlot.getY());
 			if (pCapturedUnit != NULL)
 			{
@@ -611,20 +608,11 @@ void CvUnit::kill(bool bDelay, PlayerTypes ePlayer)
 					gDLL->getEntityIFace()->AddMission(&kMission);
 				}
 				pCapturedUnit->finishMoves();
-				if (!GET_PLAYER(eCapturingPlayer).isHuman())
-				{
-					CvPlot const* pCapturePlot = pCapturedUnit->plot();
-					if (pCapturePlot != NULL && !pCapturePlot->isCity())
-					{
-						if (GET_PLAYER(eCapturingPlayer).AI_isAnyPlotDanger(*pCapturePlot) &&
-							GC.getDefineBOOL("AI_CAN_DISBAND_UNITS"))
-						{
-							//pkCapturedUnit->kill(false);
-							// K-Mod. roughly the same thing, but this is more appropriate.
-							pCapturedUnit->scrap();
-						}
-					}
-				}
+				// <advc.010> AI checks moved into AI_captureUnit. Rather than ...
+				/*//pkCapturedUnit->kill(false);
+				// K-Mod. roughly the same thing, but this is more appropriate.
+				pCapturedUnit->scrap();*/
+				// ... let's just not init the unit. </advc.010>
 			}
 		}
 	}
@@ -1246,6 +1234,8 @@ void CvUnit::resolveCombat(CvUnit* pDefender, CvPlot* pPlot, bool bVisible)
 		int iLoggedOdds = calculateCombatOdds(*this, *pDefender);
 		iLoggedOdds += (1000 - iLoggedOdds) * withdrawalProbability() / 100;
 	#endif
+
+	// K-Mod. Initialize battle info.
 	// Note: kBattle is only relevant if we are going to show the battle animation.
 	CvBattleDefinition kBattle;
 	if (bVisible)
@@ -1948,8 +1938,11 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted)
 			bAdvance = canAdvance(pPlot, pDefender->canDefend() ? 1 : 0);
 			if (bAdvance)
 			{
-				if (!isNoUnitCapture())
+				if (//!isNoUnitCapture())
+					SyncRandSuccess100(getCaptureOdds(*pDefender))) // advc.010
+				{
 					pDefender->setCapturingPlayer(getOwner());
+				}
 			}
 
 			pDefender->kill(false);
@@ -7497,6 +7490,25 @@ UnitTypes CvUnit::getCaptureUnitType(CivilizationTypes eCivilization) const
 			m_pUnitInfo->getUnitCaptureClassType()));
 }
 
+// advc.010:
+int CvUnit::getCaptureOdds(CvUnit const& kDefender) const
+{
+	if (isNoUnitCapture() || kDefender.getCaptureUnitType(
+		GET_PLAYER(kDefender.getOwner()).getCivilizationType()) == NO_UNIT)
+	{
+		return 0;
+	}
+	if (!isAlwaysHostile())
+	{
+		if (GET_TEAM(getTeam()).hasJustDeclaredWar(kDefender.getTeam()) ||
+			!GET_TEAM(getTeam()).isAtWar(kDefender.getTeam()))
+		{
+			return GC.getDefineINT(CvGlobals::DOW_UNIT_CAPTURE_CHANCE);
+		}
+	}
+	return GC.getDefineINT(CvGlobals::BASE_UNIT_CAPTURE_CHANCE);
+}
+
 
 bool CvUnit::isBarbarian() const
 {
@@ -7686,7 +7698,7 @@ bool CvUnit::isNoCityCapture() const
 			m_pUnitInfo->isOnlyAttackAnimals()); // advc.315a
 }
 
-// advc.315b: Allow Explorers to capture units (if worker stealing allowed; cf. advc.010)
+// advc.315b: Allow Explorers to capture units
 bool CvUnit::isNoUnitCapture() const
 {
 	return (isNoCityCapture() && !m_pUnitInfo->isOnlyAttackBarbarians());
@@ -9300,14 +9312,13 @@ void CvUnit::setXY(int iX, int iY, bool bGroup, bool bUpdate, bool bShow, bool b
 							GET_TEAM(getTeam()).AI_changeWarSuccess(pLoopUnit->getTeam(),
 									GC.getDefineINT("WAR_SUCCESS_UNIT_CAPTURING"));
 						}
-						if (!isNoUnitCapture())
-							pLoopUnit->setCapturingPlayer(getOwner());
-						// <advc.010> Report death when pLoopUnit won't be captured
-						if (pLoopUnit->getCaptureUnitType(
-							GET_PLAYER(getOwner()).getCivilizationType()) == NO_UNIT)
+						if (//!isNoUnitCapture()
+							SyncRandSuccess100(getCaptureOdds(*pLoopUnit))) // advc.010
 						{
-							addAttackSuccessMessages(*pLoopUnit, false);
-						} // </advc.010>
+							pLoopUnit->setCapturingPlayer(getOwner());
+						}
+						// advc.010: Report death
+						else addAttackSuccessMessages(*pLoopUnit, false);
 						pLoopUnit->kill(false, getOwner());
 					}
 				}

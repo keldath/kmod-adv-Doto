@@ -2258,11 +2258,14 @@
 		<Italian>No schiavismo</Italian>
 		<Spanish>Sin esclavitud</Spanish>
 	</TEXT>
+	<!-- No longer true as of AdvCiv 1.05:
+		 Human Granaries store 50%% food. (They normally store only 40%% in AdvCiv.)
+		 Kornspeicher menschlicher Spieler speichern 50%% Nahrung (anstatt der 40%%, die sie in AdvCiv ansonsten speichern).-->
 	<TEXT>
 		<Tag>TXT_KEY_GAME_OPTION_NO_SLAVERY_HELP</Tag>
-		<English>Human players cannot change their civics to Slavery. Only the Aztec Sacrificial Altar allows humans to sacrifice population. Human Granaries store 50%% food. (They normally store only 40%% in AdvCiv.)</English>
+		<English>Human players cannot change their civics to Slavery. Only the Aztec Sacrificial Altar allows humans to sacrifice population.</English>
 		<French>Les acteurs humains ne peuvent pas changer leur doctrine en esclavage. Seul l'autel sacrificiel aztèque permet aux humains de sacrifier la population.</French>
-		<German>Menschliche Spieler können nicht die Sklaverei als Staatsform wählen. Nur der aztekischer Opferaltar erlaubt menschlichen Spielern das Opfern ihrer Bevölkerung. Kornspeicher menschlicher Spieler speichern 50%% Nahrung (anstatt der 40%%, die sie in AdvCiv ansonsten speichern).</German>
+		<German>Menschliche Spieler können nicht die Sklaverei als Staatsform wählen. Nur der aztekischer Opferaltar erlaubt menschlichen Spielern das Opfern ihrer Bevölkerung.</German>
 		<Italian>I giocatori umani non possono cambiare la loro forma di governo in schiavismo. Solo l'altare sacrificale azteco permette agli umani di sacrificare la popolazione.</Italian>
 		<Spanish>Los jugadores humanos no pueden cambiar sus principios a la esclavitud. Sólo el altar de sacrificios azteca permite a los humanos sacrificar a la población.</Spanish>
 	</TEXT>
@@ -7297,6 +7300,42 @@
 		<Tag>TXT_KEY_REFUSE_GIFT_RF</Tag>
 		<English>[COLOR_WARNING_TEXT]The R&#038;F option prevents gifts to %s1_Leader.[COLOR_REVERT]</English>
 		<German>[COLOR_WARNING_TEXT]%s1_Leader kann keine Geschenke von Ihnen annehmen.[COLOR_REVERT]</German>
+	</TEXT>
+
+	<!-- advc.010 -->
+	<TEXT>
+		<Tag>TXT_KEY_MISC_UNIT_CAPTURE_ODDS</Tag>
+		<English>Chance to Capture %s1_DefenderDescr: %s2_Odds</English>
+		<French>Chance de capturer %s1_DefenderDescr: %s2_Odds</French>
+		<German>Chance %s1_DefenderDescr gefangen zu nehmen: %s2_Odds</German>
+		<Italian>Probabilità di catturare %s1_DefenderDescr: %s2_Odds</Italian>
+		<Spanish>Probabilidad de capturar %s1_DefenderDescr: %s2_Odds</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_UNIT_CAPTURE_ODDS_REPL</Tag>
+		<English>Chance to Capture as a %s1_CaptiveDescr: %s2_Odds</English>
+		<French>Chance de capturer comme %s1_CaptiveDescr: %s2_Odds</French>
+		<German>Chance %s1_CaptiveDescr gefangen zu nehmen: %s2_Odds</German>
+		<Italian>Probabilità di catturare come %s1_CaptiveDescr: %s2_Odds</Italian>
+		<Spanish>Probabilidad de capturar como %s1_CaptiveDescr: %s2_Odds</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_NO_DOW_UNIT_CAPTURE</Tag>
+		<English>(War Declared on this Turn)</English>
+		<French>(guerre déclarée ce tour-ci)</French>
+		<German>(Krieg diese Runde erst erklärt)</German>
+		<Italian>(guerra dichiarata in questo turno)</Italian>
+		<Spanish>(guerra declarada en este turno)</Spanish>
+	</TEXT>
+
+	<!-- advc.500c -->
+	<TEXT>
+		<Tag>TXT_KEY_TECH_NO_FEAR_FOR_SAFETY</Tag>
+		<English>[ICON_BULLET]No [ICON_UNHAPPY] in Cities that lack a Military Unit</English>
+		<French>[ICON_BULLET]Aucun [ICON_UNHAPPY] dans les villes qui manquent de protection militaire</French>
+		<German>[ICON_BULLET]Keine [ICON_UNHAPPY] in Städten ohne militärischen Schutz</German>
+		<Italian>[ICON_BULLET]Nessun [ICON_UNHAPPY] nelle città che mancano di difese militari</Italian>
+		<Spanish>[ICON_BULLET]Ningún [ICON_UNHAPPY] en las ciudades que carecen de protección militar</Spanish>
 	</TEXT>
 
 </Civ4GameText>

@@ -1043,17 +1043,17 @@ void CvGame::initFreeCivState()
 			{
 				for (MemberIter itMember(kTeam.getID()); itMember.hasNext(); ++itMember)
 				{
-					CvPlayer& kMember = *itMember;
 					/*  <advc.250b>, advc.250c: Always grant civ-specific tech,
 						but not tech from handicap if in Advanced Start except to
 						human civs that don't actually start Advanced (SPaH option). */
-					if (GC.getInfo(kMember.getCivilizationType()).isCivilizationFreeTechs(eLoopTech))
+					if (GC.getInfo(itMember->getCivilizationType()).
+						isCivilizationFreeTechs(eLoopTech))
 					{
 						bValid = true;
 						break;
 					}
 					// K-Mod: Give techs based on player handicap, not game handicap.
-					if (GC.getInfo(kMember.getHandicapType()).isFreeTechs(eLoopTech) &&
+					if (GC.getInfo(itMember->getHandicapType()).isFreeTechs(eLoopTech) &&
 						(!isOption(GAMEOPTION_ADVANCED_START) ||
 						(isOption(GAMEOPTION_SPAH) && kTeam.isHuman()))) // </advc.250b>
 					{
@@ -3114,11 +3114,12 @@ void CvGame::update()
 
 void CvGame::updateScore(bool bForce)
 {
+	PROFILE_FUNC(); // advc.test (Just a little worried about the attitude updates)
 	if(!isScoreDirty() && !bForce)
 		return;
 	setScoreDirty(false);
 
-	bool abPlayerScored[MAX_CIV_PLAYERS] = { false };
+	bool abPlayerScored[MAX_CIV_PLAYERS] = {};
 	std::vector<PlayerTypes> aeUpdateAttitude; // advc.001
 	for (int iI = 0; iI < MAX_CIV_PLAYERS; iI++)
 	{
@@ -3169,7 +3170,7 @@ void CvGame::updateScore(bool bForce)
 		}
 	} // </advc.001>
 
-	bool abTeamScored[MAX_CIV_TEAMS] = { false };
+	bool abTeamScored[MAX_CIV_TEAMS] = {};
 	for (int iI = 0; iI < MAX_CIV_TEAMS; iI++)
 	{
 		int iBestScore = MIN_INT;
@@ -5931,14 +5932,11 @@ void CvGame::setPlayerScore(PlayerTypes ePlayer, int iScore)
 {
 	FAssertMsg(ePlayer >= 0, "eIndex is expected to be non-negative (invalid Index)");
 	FAssertMsg(ePlayer < MAX_PLAYERS, "ePlayer is expected to be within maximum bounds (invalid Index)");
-
-	if (getPlayerScore(ePlayer) != iScore)
-	{
-		m_aiPlayerScore[ePlayer] = iScore;
-		FAssert(getPlayerScore(ePlayer) >= 0);
-
-		gDLL->getInterfaceIFace()->setDirty(Score_DIRTY_BIT, true);
-	}
+	if (getPlayerScore(ePlayer) == iScore)
+		return;
+	FAssert(iScore >= 0);
+	m_aiPlayerScore[ePlayer] = iScore;
+	gDLL->getInterfaceIFace()->setDirty(Score_DIRTY_BIT, true);
 }
 
 
@@ -7542,6 +7540,9 @@ int CvGame::religionPriority(PlayerTypes ePlayer, ReligionTypes eReligion) const
 	mostly untested though, and shares some (duplicate) code with doHlyCity. */
 void CvGame::doHeadquarters()
 {
+//doto no corporations
+	if (GC.getGame().isOption(GAMEOPTION_NO_CORPORATIONS))
+		return;
 	// advc.003y: Call to nonexistent Python function "doHeadquarters" removed
 
 	if (getElapsedGameTurns() < 5)
@@ -7660,11 +7661,13 @@ void CvGame::createBarbarianCities()
 	if (getNumCivCities() < countCivPlayersAlive() * 2)
 			return;
 
-	if (getElapsedGameTurns() <= ((kGameHandicap.getBarbarianCityCreationTurnsElapsed() *
-			GC.getInfo(getGameSpeedType()).getBarbPercent()) / 100) /
-			std::max(getStartEra() + 1, 1))
+	if (getElapsedGameTurns() * (getStartEra() + 1) * 200 <=
+		kGameHandicap.getBarbarianCityCreationTurnsElapsed() *
+		// advc.300: Add 100 to dilute effect (and times 200 on the left side)
+		(GC.getInfo(getGameSpeedType()).getBarbPercent() + 100))
+	{
 		return;
-
+	}
 	/* <advc.300> Create up to two cities per turn, though at most one in an
 	   area settled by a civ. Moved the rest of createBarbarianCities (plural)
 	   into new function createBarbarianCity (singular). */
@@ -7837,12 +7840,12 @@ void CvGame::createBarbarianUnits()
 	//if (GC.getInfo(getCurrentEra()).isNoBarbUnits()) ...
 	bool bCreateBarbarians = isBarbarianCreationEra(); // advc.307 (checked later now)
 	bool bAnimals = false;
-	if (getNumCivCities() < (3 * countCivPlayersAlive()) / 2 &&
-		!isOption(GAMEOPTION_ONE_CITY_CHALLENGE) &&
-		/*  advc.300: No need to delay Barbarians (bAnimals=true) if they start
-			slowly (PEAK_PERCENT>=35). For slow game speed settings, there is
-			now a similar check in CvUnitAI::AI_barbAttackMove. */
-		barbarianPeakLandRatio() < per100(35))
+	/*  advc.300: No need to delay Barbarians (bAnimals=true) if they start slowly.
+		For slow game speed settings, there is now a similar check in
+		CvUnitAI::AI_barbAttackMove. */
+	if (barbarianPeakLandRatio() < per100(30) &&
+		getNumCivCities() * 2 < countCivPlayersAlive() * 3 &&
+		!isOption(GAMEOPTION_ONE_CITY_CHALLENGE))
 	{
 		bAnimals = true;
 	}
@@ -8075,20 +8078,25 @@ int CvGame::getBarbarianStartTurn() const
 {
 	int iTargetElapsed = GC.getInfo(getHandicapType()).
 		   getBarbarianCreationTurnsElapsed();
-	iTargetElapsed *= GC.getInfo(getGameSpeedType()).getBarbPercent();
-	int iDivisor = 100;
+	// Dilute impact of game speed on start turn
+	iTargetElapsed *= GC.getInfo(getGameSpeedType()).getBarbPercent() + 100;
+	int iDivisor = 200;
 	/*  This term is new. Well, not entirely, it's also applied to
 		BarbarianCityCreationTurnsElapsed. */
 	iDivisor *= std::max(1, (int)getStartEra());
 	iTargetElapsed /= iDivisor;
 	int iStartTurn = getStartTurn();
-	// Have Barbarians appear earlier in Ancient Advanced Start too
-	if(isOption(GAMEOPTION_ADVANCED_START) && getStartEra() <= 0 &&
+	// Have Barbarians appear earlier in Ancient Advanced Start
+	if (isOption(GAMEOPTION_ADVANCED_START) && getStartEra() <= 0 &&
 		// advc.250b: Earlier Barbarians only if humans start Advanced too
 		!isOption(GAMEOPTION_SPAH))
 	{
 		iStartTurn /= 2;
 	}
+	// <advc.309>
+	else if (isOption(GAMEOPTION_NO_ANIMALS))
+		iTargetElapsed = intdiv::uround(iTargetElapsed * 3, 4); // </advc.309>
+	iTargetElapsed = std::max(iTargetElapsed, 9);
 	return iStartTurn + iTargetElapsed;
 }
 
@@ -9709,8 +9717,10 @@ void CvGame::write(FDataStreamBase* pStream)
 	//uiFlag = 13; // advc.148: RELATIONS_THRESH_WORST_ENEMY
 	//uiFlag = 14; // advc.148, advc.130n, advc.130x (religion attitude)
 	//uiFlag = 15; // advc.tsl: new game option
-	uiFlag = 16; // advc.tsl: map regen counter
-	uiFlag = 17; // advc.tsl: game options moved around
+	//uiFlag = 16; // advc.tsl: map regen counter
+	//uiFlag = 17; // advc.tsl: game options moved around
+	//uiFlag = 18; // advc.130c: change in rank hate calc
+	uiFlag = 19; // advc.500c: Update citizen assignments
 	pStream->Write(uiFlag);
 	REPRO_TEST_BEGIN_WRITE("Game pt1");
 	pStream->Write(m_iElapsedGameTurns);
@@ -9930,7 +9940,7 @@ void CvGame::onAllGameDataRead()
 	} // </advc.opt>
 	m_bAllGameDataRead = true;
 	// <advc.130n>, advc.148, advc.130x
-	if (m_uiSaveFlag < 14 ||
+	if (m_uiSaveFlag < 18 ||
 		// <advc.127> Save created during AI Auto Play
 		(m_iAIAutoPlay != 0 && !isNetworkMultiPlayer()))
 	{
@@ -9938,6 +9948,25 @@ void CvGame::onAllGameDataRead()
 		for (PlayerAIIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
 			itPlayer->AI_updateAttitude();
 	} // </advc.130n>
+	// <advc.500c>
+	if (m_uiSaveFlag < 19)
+	{
+		TechTypes eNationalism = (TechTypes)GC.getInfoTypeForString("TECH_NATIONALISM");
+		if (eNationalism != NO_TECH)
+		{
+			for (PlayerIter<ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
+			{
+				if (GET_TEAM(itPlayer->getTeam()).isHasTech(eNationalism))
+				{
+					FOR_EACH_CITY_VAR(pCity, *itPlayer)
+					{
+						if (pCity->getMilitaryHappinessUnits() <= 0)
+							pCity->AI_setAssignWorkDirty(true);
+					}
+				}
+			}
+		}
+	} // </advc.500c>
 	// <advc.172>
 	if (m_uiSaveFlag < 8)
 	{

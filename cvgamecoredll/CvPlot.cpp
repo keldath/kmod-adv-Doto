@@ -8605,10 +8605,11 @@ then check the radius of those candidates, i.e. what NearbyCityIter does.
 	FOR_EACH_ENUM(Player)
 	{
 		int iCulture = getCulture(eLoopPlayer);
-		if(iCulture <= 0)
+		if (iCulture <= 0)
 			continue;
 		int iDecayPerMill = iBaseDecayPerMill;
-		if(bInAnyRadius && !abInRadius[eLoopPlayer] &&
+		if (bInAnyRadius && !abInRadius[eLoopPlayer] &&
+			!isImpassable() && // Doesn't matter if no one can work impassable plots
 			iCulture >
 			scaled(100 - iCulturePercentThresh, iCulturePercentThresh) * iMaxRadiusCulture)
 		{
@@ -8617,7 +8618,7 @@ then check the radius of those candidates, i.e. what NearbyCityIter does.
 				rExclDecay += iExclDecay;
 			if(iMinDist <= 1)
 				rExclDecay += iExclDecay;
-			if(iCulture < iMaxRadiusCulture)
+			if (iCulture < iMaxRadiusCulture)
 			{
 				// Gradually throttle decay when approaching the threshold
 				rExclDecay.mulDiv(iCulture, iMaxRadiusCulture);

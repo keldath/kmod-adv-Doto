@@ -52,6 +52,8 @@
 	<!-- Population Limit ModComp - End -->
 	<ElementType name="bIgnoreIrrigation" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bWaterWork" content="textOnly" dt:type="boolean"/>
+	<!-- advc.500c -->
+	<ElementType name="bNoFearForSafety" content="textOnly" dt:type="int"/>
 	<ElementType name="iGridX" content="textOnly" dt:type="int"/>
 	<ElementType name="iGridY" content="textOnly" dt:type="int"/>
 	<ElementType name="DomainType" content="textOnly"/>
@@ -167,6 +169,8 @@
 		<!-- Population Limit ModComp - End -->
 		<element type="bIgnoreIrrigation" minOccurs="0"/>
 		<element type="bWaterWork" minOccurs="0"/>
+		<!-- advc.500c -->
+		<element type="bNoFearForSafety" minOccurs="0"/>
 		<element type="iGridX" minOccurs="0"/>
 		<element type="iGridY" minOccurs="0"/>
 		<element type="DomainExtraMoves" minOccurs="0"/>

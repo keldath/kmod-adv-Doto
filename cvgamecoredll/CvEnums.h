@@ -518,6 +518,7 @@ ENUM_START(Widget, WIDGET)
 	WIDGET_CITY_TRADE, // advc.ctr
 	WIDGET_CYCLE_UNIT, // advc.154
 	WIDGET_EXAMINE_CITY, // advc.186b (for BULL - Zoom City Details)
+	WIDGET_HELP_NO_FEAR_FOR_SAFETY, // advc.500c
 //doto wonder limit - city hover help
 	WIDGET_WONDER_LIMITS,
 //doto wonder limit - city hover help
@@ -2404,6 +2405,8 @@ ENUM_END(CityPlot, CITYPLOT)
 #define MAX_CITY_DIAM CITY_DIAM_FOR_RADIUS(MAX_CITY_RADIUS)
 #define NUM_CITY_PLOTS NUM_CITYPLOT_TYPES
 #define MAX_CITY_PLOTS ((CityPlotTypes)61)
+//#define MAX_WORK_TILES ((CityPlotTypes)20)
+#define MAX_WORK_TILES 20
 
 
 #define DO_FOR_EACH_FALSE_FRIEND(DO) \

@@ -1242,9 +1242,24 @@ TrueStarts::SurroundingsStats::SurroundingsStats(CvPlayer const& kPlayer,
 			continue;
 		if (!sameArea(*itPlot, kStart))
 		{
-			m_rDifferentAreaPlotWeights += rWeight;
+			/*	Water in the high latitudes is usually less relevant for gameplay,
+				probably won't feel like playing a maritime civ. */
+			scaled rLatMult = 1;
 			if (!itPlot->isWater()) // Count land area double
 				m_rDifferentAreaPlotWeights += rWeight;
+			else if (kTruStarts.m_bMapHasLatitudes)
+			{
+				int const iMaxLat = CvTruCivInfo::maxLatitude() / 10;
+				scaled const rTemperateLat = fixp(0.58) * iMaxLat;
+				int const iAbsPlotLat = itPlot->getLatitude();
+				// Count water that's warmer than the starting plot fully
+				if (scaled::max(rTemperateLat, kStart.getLatitude()) < iAbsPlotLat)
+				{
+					rLatMult -= ((scaled::min(iAbsPlotLat, iMaxLat) - rTemperateLat)
+							/ iMaxLat).sqrt();
+				}
+			}
+			m_rDifferentAreaPlotWeights += rWeight * rLatMult;
 			continue;
 		}
 		{
@@ -1651,6 +1666,12 @@ int TrueStarts::calcFitness(CvPlayer const& kPlayer, CivilizationTypes eCiv,
 						rOceanityWeight;
 				IFLOG logBBAI("Fitness penalty from oceanity: %d", -rFromOceanity.round());
 				iFitness += rFromOceanity.round();
+				if (rTargetOceanity <= 0 && kStart.isCoastalLand(-1))
+				{
+					int iExtra = 45;
+					IFLOG logBBAI("Extra penalty of %d for continental civ starting at coast", iExtra);
+					iFitness -= iExtra;
+				}
 			}
 			else IFLOG logBBAI("No oceanity data available");
 		}
@@ -1721,7 +1742,7 @@ int TrueStarts::calcFitness(CvPlayer const& kPlayer, CivilizationTypes eCiv,
 				// Scenarios may have enormous clumps of peaks
 				rMaxElev.decreaseTo(m_iMaxMaxElevationTarget);
 				scaled rFromMaxElev = (rMaxElev.sqrt() - scaled(iTargetMaxElev).sqrt()).
-						abs() * -2; // arbitrary weight factor
+						abs() * -fixp(2.4); // arbitrary weight factor
 				IFLOG logBBAI("Fitness penalty from max. elevation: %d (target %d m, have %d m)",
 						rFromMaxElev.round(), iTargetMaxElev, rMaxElev.round());
 				iFitness += rFromMaxElev.round();

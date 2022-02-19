@@ -32,8 +32,13 @@ CvCityAI::CvCityAI() // advc.003u: Merged with AI_reset
 	for (int i = 0; i < MAX_PLAYERS; i++)
 		m_aiCachePlayerClosenessDistance[i] = -1; // </advc.opt>
 	//mylon doto version - Need to know owner before allocating these
-	/*m_aiBestBuildValue = ;
-	m_aeBestBuild = ;*/
+	/*	These two were declared as arrays, but it's neater to treat them all alike.
+		And the build values had been set to NO_BUILD instead of 0. 
+	m_aiBestBuildValue = new int[NUM_CITY_PLOTS]();
+	m_aeBestBuild = new BuildTypes[NUM_CITY_PLOTS];
+	FOR_EACH_ENUM(CityPlot)
+		m_aeBestBuild[eLoopCityPlot] = NO_BUILD;
+	;*/
 	m_eBestBuild = NO_BUILD; // advc.opt
 
 	AI_ClearConstructionValueCache(); // K-Mod
@@ -245,6 +250,11 @@ void CvCityAI::AI_assignWorkingPlots()
 
 	// at this point, we should not be over the limit
 	FAssert((getWorkingPopulation() + getSpecialistPopulation()) <= (totalFreeSpecialists() + getPopulation()));
+	//doto mylon pop worked limit test
+	int a = getPopulation();
+	int b = angryPopulation();
+	int c = getWorkingPopulation();
+	int d = std::min(0, extraFreeSpecialists());
 	FAssert(extraPopulation() == 0); // K-Mod.
 
 	AI_setAssignWorkDirty(false);
@@ -541,7 +551,8 @@ void CvCityAI::AI_chooseProduction()
 	bool const bPrimaryArea = kPlayer.AI_isPrimaryArea(kArea);
 	bool const bFinancialTrouble = kPlayer.AI_isFinancialTrouble();
 	int const iNumCitiesInArea = kArea.getCitiesPerPlayer(getOwner());
-	bool bImportantCity = false; //be very careful about setting this.
+	// advc: Renamed from bImportantCity
+	bool bCultureCity = false; //be very careful about setting this.
 	int const iCultureRateRank = findCommerceRateRank(COMMERCE_CULTURE);
 	int const iCulturalVictoryNumCultureCities = kGame.culturalVictoryNumCultureCities();
 
@@ -636,14 +647,14 @@ void CvCityAI::AI_chooseProduction()
 		/*	if we do not have enough cities, then the highest culture city
 			will not get special attention. */
 		if (iCultureRateRank > 1 ||
-			(kPlayer.getNumCities() > (iCulturalVictoryNumCultureCities + 1)))
+			kPlayer.getNumCities() > iCulturalVictoryNumCultureCities + 1)
 		{
 			if (iNumAreaCitySites + iNumWaterAreaCitySites > 0 &&
 				kPlayer.getNumCities() < 6 && SyncRandOneChanceIn(2))
 			{
-				bImportantCity = false;
+				bCultureCity = false;
 			}
-			else bImportantCity = true;
+			else bCultureCity = true;
 		}
 	}
 
@@ -1631,8 +1642,8 @@ void CvCityAI::AI_chooseProduction()
 		}
 	}
 
-	// don't build frivolous things if this is an important city unless we at war
-	if (!bImportantCity || bLandWar || bAssault)
+	// don't build frivolous things in an important culture city unless at war
+	if (!bCultureCity || bLandWar || bAssault)
 	{
 		if (bPrimaryArea && !bFinancialTrouble)
 		{
@@ -1820,7 +1831,7 @@ void CvCityAI::AI_chooseProduction()
 		}
 	}
 	// <advc.081>
-	if(pWaterArea != NULL && !bUnitExempt && !bImportantCity &&
+	if(pWaterArea != NULL && !bUnitExempt && !bCultureCity &&
 		iEnemyPowerPerc - iWarSuccessRating < 150 && // else give up at sea
 		kTeam.getNumWars(false, true) > 0) // for performance
 	{
@@ -2094,7 +2105,7 @@ void CvCityAI::AI_chooseProduction()
 			iTrainInvaderChance += (bAggressiveAI ? 8 : 0); // advc.019: was ?15:0
 			iTrainInvaderChance += bTotalWar ? 10 : 0; // K-Mod
 			iTrainInvaderChance /= (bAssaultAssist ? 2 : 1);
-			iTrainInvaderChance /= (bImportantCity ? 2 : 1);
+			iTrainInvaderChance /= (bCultureCity ? 2 : 1);
 			iTrainInvaderChance /= (bGetBetterUnits ? 2 : 1);
 
 			// K-Mod
@@ -2132,7 +2143,8 @@ void CvCityAI::AI_chooseProduction()
 
 			if (AI_chooseLeastRepresentedUnit(invaderTypes, iTrainInvaderChance))
 			{
-				if (!bImportantCity && iUnitsToTransport >= iLocalTransports*iBestSeaAssaultCapacity)
+				if (!bCultureCity && iUnitsToTransport >=
+					iLocalTransports*iBestSeaAssaultCapacity)
 				{	// Have time to build barracks first
 					AI_chooseBuilding(BUILDINGFOCUS_EXPERIENCE, 20);
 				}
@@ -2148,8 +2160,8 @@ void CvCityAI::AI_chooseProduction()
 	int iAircraftHave = 0;
 	UnitTypes eBestAttackAircraft = NO_UNIT;
 	UnitTypes eBestMissile = NO_UNIT;
-
-	if (iUnitSpending < iMaxUnitSpending + 12 && (!bImportantCity || bDefenseWar)) // K-Mod. was +4, now +12 for the new unit spending metric
+	// K-Mod. was +4, now +12 for the new unit spending metric
+	if (iUnitSpending < iMaxUnitSpending + 12 && (!bCultureCity || bDefenseWar))
 	{
 		if (bLandWar || bAssault || iFreeAirExperience > 0 || SyncRandOneChanceIn(3))
 		{
@@ -2233,9 +2245,9 @@ void CvCityAI::AI_chooseProduction()
 	}
 
 	// Check for whether to produce planes to fill carriers
-	if ((bLandWar || bAssault) && iUnitSpending < (iMaxUnitSpending))
+	if ((bLandWar || bAssault) && iUnitSpending < iMaxUnitSpending)
 	{
-		if (iCarriers > 0 && !bImportantCity)
+		if (iCarriers > 0 && !bCultureCity)
 		{
 			UnitTypes eBestCarrierUnit = NO_UNIT;
 			kPlayer.AI_bestCityUnitAIValue(UNITAI_CARRIER_SEA, NULL, &eBestCarrierUnit);
@@ -2258,7 +2270,7 @@ void CvCityAI::AI_chooseProduction()
 		}
 	} // <kekm.15>
 	int iMissileCarriers = kPlayer.AI_totalUnitAIs(UNITAI_MISSILE_CARRIER_SEA);
-	if (!bFinancialTrouble && iMissileCarriers > 0 && !bImportantCity)
+	if (!bFinancialTrouble && iMissileCarriers > 0 && !bCultureCity)
 	{	// Bugfix(?): was '<=' in BtS
 		// advc: Make it '>=' though, not '>'.
 		if (iProductionRank >= kPlayer.getNumCities() / 2 + 1)
@@ -2332,7 +2344,7 @@ void CvCityAI::AI_chooseProduction()
 	// K-Mod end
 
 	// Assault case now completely handled above
-	if (!bAssault && (!bImportantCity || bDefenseWar) && (iUnitSpending < iMaxUnitSpending))
+	if (!bAssault && (!bCultureCity || bDefenseWar) && iUnitSpending < iMaxUnitSpending)
 	{
 		if (!bFinancialTrouble && (bLandWar || (bDagger && !bGetBetterUnits)))
 		{	// <advc.081>
@@ -2362,9 +2374,11 @@ void CvCityAI::AI_chooseProduction()
 				{
 					bAssaultAlongCoast = true;
 					UnitTypes eBestNavalSiege = AI_bestUnitAI(UNITAI_ATTACK_SEA);
-					if(eBestNavalSiege != NO_UNIT && GC.getInfo(eBestNavalSiege).
-							getBombardRate() >= 8)
+					if(eBestNavalSiege != NO_UNIT &&
+						GC.getInfo(eBestNavalSiege).getBombardRate() >= 8)
+					{
 						bNavalSiege = true;
+					}
 				} // </advc.081>
 			}
 
@@ -2690,7 +2704,7 @@ void CvCityAI::AI_chooseProduction()
 	bool bChooseUnit = false;
 	if (iUnitSpending < iMaxUnitSpending + 15) // was +5 (new metric)
 	{
-		/*	<advc> iBuildUnitProb gets used in a bunch of places.
+		/*	advc: iBuildUnitProb gets used in a bunch of places.
 			Shouldn't sneakily modify it here. */
 		int iBuildUnitProbAdjusted = iBuildUnitProb;
 		// K-Mod
@@ -8350,7 +8364,7 @@ BuildTypes CvCityAI::AI_getBestBuild(CityPlotTypes ePlot) const // advc.enum: Ci
 {
 	// <advc.opt> Now also store the best build among all city plots
 	if(ePlot == NO_CITYPLOT)
-		return m_eBestBuild;
+		return m_eBestBuild; // </advc.opt>
 	// (Tbd.: Put the part below into a separate function so that it can be inlined)
 	// </advc.opt>
 //doto enhanced city size mylon - no longer an enum values
@@ -8544,7 +8558,7 @@ void CvCityAI::AI_updateBestBuild()
 	CityPlotTypes eBestPlot = NO_CITYPLOT;
 	int iBestPlotValue = -1;
 	int iBestUnworkedPlotValue = 0;
-	//mylon enhanced cities doto advc version
+	// advc: Was naked array w/o initial values
 	std::vector<int> aiValues(NUM_CITY_PLOTS, MAX_INT);
 	int const iGrowthValue = AI_growthValuePerFood(); // K-Mod
 	for (WorkablePlotIter itPlot(*this, false); itPlot.hasNext(); ++itPlot)  // advc: Some refactoring changes in the loop body
@@ -10416,7 +10430,8 @@ int CvCityAI::AI_yieldValue(int* piYields, int* piCommerceYields, bool bRemove,
 						and that we still want to grow */
 					if (getMilitaryHappinessUnits() == 0 && kOwner.getNumCities() > 2)
 					{
-						iHappinessLevel += (GC.getDefineINT(CvGlobals::NO_MILITARY_PERCENT_ANGER) *
+						iHappinessLevel += (//GC.getDefineINT(CvGlobals::NO_MILITARY_PERCENT_ANGER)
+								GET_TEAM(getTeam()).getNoMilitaryAnger() * // advc.500c
 								(iPopulation + 1)) / GC.getPERCENT_ANGER_DIVISOR();
 					}
 
@@ -11359,7 +11374,7 @@ int CvCityAI::AI_buildUnitProb(bool bDraft)
 	/*	<advc.109> Replacing the BBAI code above. The ECONOMY_FOCUS check is from K-Mod;
 		moved from AI_chooseProduction. */
 	else if (kOwner.AI_isDoStrategy(AI_STRATEGY_ECONOMY_FOCUS) ||
-		kOwner.getNumCities() <= 1)
+		(kOwner.getNumCities() <= 1 && isCapital()))
 	{
 		r /= 2; // </advc.109>
 		bGreatlyReduced = true; // advc.017
@@ -11873,7 +11888,7 @@ void CvCityAI::AI_doPanic() // advc: Unused return type bool removed, body refac
 		return;
 	}
 	int iOurDefense = GET_PLAYER(getOwner()).AI_localDefenceStrength(plot(), getTeam());
-	int iEnemyOffense = GET_PLAYER(getOwner()).AI_localAttackStrength(plot(), NO_TEAM);
+	int iEnemyOffense = GET_PLAYER(getOwner()).AI_localAttackStrength(plot());
 	scaled rRatio(iEnemyOffense, std::max(1, iOurDefense));
 	if (rRatio <= 1)
 		return;
@@ -13628,6 +13643,8 @@ void CvCityAI::read(FDataStreamBase* pStream)
 	m_aeBestBuild.resize(NUM_CITY_PLOTS);
 	pStream->Read(NUM_CITY_PLOTS, &m_aiBestBuildValue[0]);
 	pStream->Read(NUM_CITY_PLOTS, (int*)&m_aeBestBuild[0]);
+	//pStream->Read(NUM_CITY_PLOTS, m_aiBestBuildValue);
+	//pStream->Read(NUM_CITY_PLOTS, (int*)m_aeBestBuild);
 	// <advc.opt>
 	if(uiFlag >= 4)
 		pStream->Read((int*)&m_eBestBuild); // </advc.opt>
@@ -13684,7 +13701,6 @@ void CvCityAI::read(FDataStreamBase* pStream)
 void CvCityAI::write(FDataStreamBase* pStream)
 {
 	CvCity::write(pStream);
-
 	uint uiFlag;;
 	//uiFlag = 1; // K-Mod: m_aiConstructionValue
 	//uiFlag = 2; // K-Mod: m_iCultureWeight
@@ -13710,6 +13726,8 @@ void CvCityAI::write(FDataStreamBase* pStream)
 //doto enhanced city size mylon
 	pStream->Write(NUM_CITY_PLOTS, &m_aiBestBuildValue[0]);
 	pStream->Write(NUM_CITY_PLOTS, (int*)&m_aeBestBuild[0]);
+	//pStream->Write(NUM_CITY_PLOTS, m_aiBestBuildValue);
+	//pStream->Write(NUM_CITY_PLOTS, (int*)m_aeBestBuild);
 
 	pStream->Write(m_eBestBuild); // advc.opt
 	pStream->Write(GC.getNumEmphasizeInfos(), m_pbEmphasize);

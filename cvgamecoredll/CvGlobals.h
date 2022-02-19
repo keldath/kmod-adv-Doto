@@ -169,6 +169,8 @@ public:
 //mylon doto version - max diameter
 		FAssertBounds(0, MAX_CITY_DIAM, i);
 		FAssertBounds(0, MAX_CITY_DIAM, j);
+		//FAssertBounds(0, CITY_PLOTS_DIAMETER, i);
+		//FAssertBounds(0, CITY_PLOTS_DIAMETER, j);
 		return m_aaeXYCityPlot[i][j];
 	}
 	int const* getCityPlotX() const { return m_aiCityPlotX; }
@@ -574,7 +576,9 @@ public:
 		DO(POWER_CORRECTION) /* advc.104 */ \
 		DO(TRUE_STARTS_SANITIZE) /* advc.tsl */ \
 		DO(TRUE_STARTS_SANITIZE_SCENARIOS) /* advc.tsl */ \
-		DO(RF_PLAYER_HANDICAP_ADJUSTMENT) /* advc.708 */
+		DO(RF_PLAYER_HANDICAP_ADJUSTMENT) /* advc.708 */ \
+		DO(BASE_UNIT_CAPTURE_CHANCE) /* advc.010 */ \
+		DO(DOW_UNIT_CAPTURE_CHANCE) /* advc.010 */
 	#define MAKE_ENUMERATOR(VAR) VAR,
 	enum GlobalDefines
 	{
@@ -898,6 +902,7 @@ protected:
 	int m_aiCityPlotY[MAX_CITY_PLOTS];
 	int m_aiCityPlotPriority[MAX_CITY_PLOTS];
 	int m_iMaxCityPlotPriority; // advc
+//  CityPlotTypes m_aaeXYCityPlot[CITY_PLOTS_DIAMETER][CITY_PLOTS_DIAMETER];
 	CityPlotTypes m_aaeXYCityPlot[MAX_CITY_DIAM][MAX_CITY_DIAM];
 //doto enhanced city size mylon
 	DirectionTypes m_aeTurnLeftDirection[NUM_DIRECTION_TYPES];

@@ -2670,9 +2670,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iGlobalHurryModifier>0</iGlobalHurryModifier>
 			<iExperience>0</iExperience>
 			<iGlobalExperience>0</iGlobalExperience>
-			<!-- advc.160: Was 50. Note that advc.912d multiplies this by 1.2
-				 in the DLL when playing with the "No Slavery" option. -->
-			<iFoodKept>40</iFoodKept>
+			<iFoodKept>50</iFoodKept>
 			<iAirlift>0</iAirlift>
 			<iAirModifier>0</iAirModifier>
 			<iAirUnitCapacity>0</iAirUnitCapacity>
@@ -2856,8 +2854,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iGlobalHurryModifier>0</iGlobalHurryModifier>
 			<iExperience>0</iExperience>
 			<iGlobalExperience>0</iGlobalExperience>
-			<!-- advc.160: was 50 -->
-			<iFoodKept>40</iFoodKept>
+			<iFoodKept>50</iFoodKept>
 			<iAirlift>0</iAirlift>
 			<iAirModifier>0</iAirModifier>
 			<iAirUnitCapacity>0</iAirUnitCapacity>
@@ -27976,8 +27973,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ArtDefineTag>ART_DEF_BUILDING_CORPORATION_1</ArtDefineTag>
 			<MovieDefineTag>NONE</MovieDefineTag>
 			<!-- RevolutionDCM canBuild  -->
-			<PrereqGameOption>GAMEOPTION_NO_CORPORATIONS</PrereqGameOption>
-			<NotGameOption>NONE</NotGameOption>
+			<PrereqGameOption>NONE</PrereqGameOption>
+			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
 			<!-- RevolutionDCM End  -->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
@@ -28157,8 +28154,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ArtDefineTag>ART_DEF_BUILDING_CORPORATION_2</ArtDefineTag>
 			<MovieDefineTag>NONE</MovieDefineTag>
 			<!-- RevolutionDCM canBuild  -->
-			<PrereqGameOption>GAMEOPTION_NO_CORPORATIONS</PrereqGameOption>
-			<NotGameOption>NONE</NotGameOption>
+			<PrereqGameOption>NONE</PrereqGameOption>
+			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
 			<!-- RevolutionDCM End  -->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
@@ -28338,8 +28335,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ArtDefineTag>ART_DEF_BUILDING_CORPORATION_3</ArtDefineTag>
 			<MovieDefineTag>NONE</MovieDefineTag>
 			<!-- RevolutionDCM canBuild  -->
-			<PrereqGameOption>GAMEOPTION_NO_CORPORATIONS</PrereqGameOption>
-			<NotGameOption>NONE</NotGameOption>
+			<PrereqGameOption>NONE</PrereqGameOption>
+			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
 			<!-- RevolutionDCM End  -->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
@@ -28519,8 +28516,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ArtDefineTag>ART_DEF_BUILDING_CORPORATION_4</ArtDefineTag>
 			<MovieDefineTag>NONE</MovieDefineTag>
 			<!-- RevolutionDCM canBuild  -->
-			<PrereqGameOption>GAMEOPTION_NO_CORPORATIONS</PrereqGameOption>
-			<NotGameOption>NONE</NotGameOption>
+			<PrereqGameOption>NONE</PrereqGameOption>
+			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
 			<!-- RevolutionDCM End  -->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
@@ -28700,8 +28697,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ArtDefineTag>ART_DEF_BUILDING_CORPORATION_5</ArtDefineTag>
 			<MovieDefineTag>NONE</MovieDefineTag>
 			<!-- RevolutionDCM canBuild  -->
-			<PrereqGameOption>GAMEOPTION_NO_CORPORATIONS</PrereqGameOption>
-			<NotGameOption>NONE</NotGameOption>
+			<PrereqGameOption>NONE</PrereqGameOption>
+			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
 			<!-- RevolutionDCM End  -->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
@@ -28880,8 +28877,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ArtDefineTag>ART_DEF_BUILDING_CORPORATION_6</ArtDefineTag>
 			<MovieDefineTag>NONE</MovieDefineTag>
 			<!-- RevolutionDCM canBuild  -->
-			<PrereqGameOption>GAMEOPTION_NO_CORPORATIONS</PrereqGameOption>
-			<NotGameOption>NONE</NotGameOption>
+			<PrereqGameOption>NONE</PrereqGameOption>
+			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
 			<!-- RevolutionDCM End  -->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
@@ -29060,8 +29057,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ArtDefineTag>ART_DEF_BUILDING_CORPORATION_7</ArtDefineTag>
 			<MovieDefineTag>NONE</MovieDefineTag>
 			<!-- RevolutionDCM canBuild  -->
-			<PrereqGameOption>GAMEOPTION_NO_CORPORATIONS</PrereqGameOption>
-			<NotGameOption>NONE</NotGameOption>
+			<PrereqGameOption>NONE</PrereqGameOption>
+			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
 			<!-- RevolutionDCM End  -->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>

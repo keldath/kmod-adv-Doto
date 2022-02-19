@@ -4996,6 +4996,22 @@
 			<Buildings>
 			</Buildings>
 			<Units>
+				<Unit>
+					<UnitClassType>UNITCLASS_GUIDED_MISSILE</UnitClassType>
+					<UnitType>NONE</UnitType>
+				</Unit>
+				<Unit>
+					<UnitClassType>UNITCLASS_TACTICAL_NUKE</UnitClassType>
+					<UnitType>NONE</UnitType>
+				</Unit>
+				<Unit>
+					<UnitClassType>UNITCLASS_ICBM</UnitClassType>
+					<UnitType>NONE</UnitType>
+				</Unit>
+				<Unit>
+					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
+					<UnitType>NONE</UnitType>
+				</Unit>
 			</Units>
 			<FreeUnitClasses>
 				<FreeUnitClass>
@@ -5147,20 +5163,7 @@
 				<City>TXT_KEY_CITY_NAME_TARTAR</City>
 			</Cities>
 			<Buildings/>
-			<Units>
-				<Unit>
-					<UnitClassType>UNITCLASS_GUIDED_MISSILE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_TACTICAL_NUKE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_ICBM</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-			</Units>
+			<Units/>
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>

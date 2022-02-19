@@ -281,7 +281,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- advc.114d: was 0 -->
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
 			<!-- advc.114d: was 16 -->
-			<iAttackOddsChangeRand>18</iAttackOddsChangeRand>
+			<iAttackOddsChangeRand>21</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>0</iCloseBordersAttitudeChange>
@@ -14341,7 +14341,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DiplomacyIntroMusicWar/>
 			<DiplomacyMusicWar/>
 <!-- city states start -->
-</LeaderHeadInfo>
+		</LeaderHeadInfo>
 		<LeaderHeadInfo>
 			<Type>LEADER_CASIMIR</Type>
 			<Description>TXT_KEY_LEADER_CASIMIR</Description>
@@ -14370,21 +14370,21 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iMaxWarNearbyPowerRatio>100</iMaxWarNearbyPowerRatio>
 			<iMaxWarDistantPowerRatio>30</iMaxWarDistantPowerRatio>
 			<iMaxWarMinAdjacentLandPercent>0</iMaxWarMinAdjacentLandPercent>
-			<iLimitedWarRand>120</iLimitedWarRand>
+			<iLimitedWarRand>60</iLimitedWarRand>
 			<iLimitedWarPowerRatio>100</iLimitedWarPowerRatio>
 			<iDogpileWarRand>70</iDogpileWarRand>
 			<iMakePeaceRand>10</iMakePeaceRand>
 			<iDeclareWarTradeRand>40</iDeclareWarTradeRand>
 			<iDemandRebukedSneakProb>0</iDemandRebukedSneakProb>
 			<iDemandRebukedWarProb>20</iDemandRebukedWarProb>
-			<iRazeCityProb>0</iRazeCityProb>
-			<iBuildUnitProb>20</iBuildUnitProb>
+			<iRazeCityProb>100</iRazeCityProb>
+			<iBuildUnitProb>25</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
 			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>3</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
-			<iLostWarAttitudeChange>-1</iLostWarAttitudeChange>
+			<iLostWarAttitudeChange>0</iLostWarAttitudeChange>
 			<iAtWarAttitudeDivisor>-5</iAtWarAttitudeDivisor>
 			<iAtWarAttitudeChangeLimit>5</iAtWarAttitudeChangeLimit>
 			<iAtPeaceAttitudeDivisor>60</iAtPeaceAttitudeDivisor>

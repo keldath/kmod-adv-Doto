@@ -290,6 +290,8 @@ public:
 	int happyLevel() const;																						// Exposed to Python
 	int angryPopulation(int iExtra = 0, /* advc.104: */ bool bIgnoreCultureRate = false) const;					// Exposed to Python
 	int visiblePopulation() const;
+//doto enhanced city mylon
+	int extraVisiblePopulationMylon() const;
 	int totalFreeSpecialists() const;																			// Exposed to Python
 	int extraPopulation() const;																				// Exposed to Python
 	int extraSpecialists() const;																				// Exposed to Python
@@ -1282,7 +1284,7 @@ public:
 		return m_abWorkingPlot[ePlot];
 	}
 	bool isWorkingPlot(CvPlot const& kPlot) const;																// Exposed to Python
-	void setWorkingPlot(CityPlotTypes ePlot, bool bNewValue);
+	void setWorkingPlot(CityPlotTypes ePlot, bool bNewValue, bool test = false);
 	void setWorkingPlot(CvPlot& kPlot, bool bNewValue);
 	void alterWorkingPlot(CityPlotTypes ePlot);																	// Exposed to Python
 

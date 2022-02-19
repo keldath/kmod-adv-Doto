@@ -633,10 +633,10 @@
 		 the peak percentage. Setting BARB_PEAK_PERCENT to 0 results in BtS
 		 behavior, with B maximal when Barbarians first appear and then
 		 decreasing as the civs expand.
-		 Recommended: 52 -->
+		 Recommended: 54 -->
     <Define>
         <DefineName>BARB_PEAK_PERCENT</DefineName>
-        <iDefineIntVal>52</iDefineIntVal>
+        <iDefineIntVal>54</iDefineIntVal>
     </Define>
 	<!-- Used instead of the value above when the Raging Barbarians option
 		 is enabled. Recommended: Somewhat higher, say 7 points, than
@@ -847,15 +847,6 @@
 	<Define>
 		<DefineName>ENABLE_130L</DefineName>
 		<iDefineIntVal>0</iDefineIntVal>
-	</Define>
-
-	<!-- [advc.130s] When set to 1 or higher (recommended), the relations bonus
-		 for accepting AI requests for military aid is enabled. The bonus is
-		 set to +1 for every leader in the Leaderhead XML. Set to 0 or less
-		 for no diplo bonus (BtS behavior). -->
-	<Define>
-		<DefineName>ENABLE_JOIN_WAR_DIPLO_BONUS</DefineName>
-		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
 
 	<!-- [advc.130o] MADE_DEMAND_RECENT memory is increased to this number when
@@ -1276,6 +1267,25 @@
 	<Define>
 		<DefineName>TRUE_STARTS_SANITIZE_SCENARIOS</DefineName>
 		<iDefineIntVal>1</iDefineIntVal>
+	</Define>
+
+	<!-- advc.010: Probability of capturing a unit that has a Capture Unit Class
+		 set in Civ4UnitInfos.xml, i.e. normally workers and settlers. If such a
+		 unit isn't successfully captured, it gets destroyed. Set to 100 for
+		 BtS behavior (capture always happens), recommended: 50.
+		 (In the future, this "base" probability might get adjusted dynamically,
+		 e.g. based on the distance to the territory of the capturing player;
+		 but this isn't implemented so far.) -->
+	<Define>
+		<DefineName>BASE_UNIT_CAPTURE_CHANCE</DefineName>
+		<iDefineIntVal>50</iDefineIntVal>
+	</Define>
+	<!-- Replaces the base chance above on the turn that war has been declared
+		 on a captured unit. Use 100 for BtS behavior. Recommended: 0, to
+		 discourage surprise attacks on workers. -->
+	<Define>
+		<DefineName>DOW_UNIT_CAPTURE_CHANCE</DefineName>
+		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
 
 </Civ4Defines>

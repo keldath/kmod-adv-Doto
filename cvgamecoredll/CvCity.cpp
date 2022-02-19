@@ -1053,7 +1053,7 @@ CvPlot* CvCity::getCityIndexPlot(CityPlotTypes ePlot) const // advc.enum: CityPl
 }
 
 
-bool CvCity::canWork(CvPlot /* advc: */ const& kPlot) const
+bool CvCity::canWork(CvPlot const& kPlot) const
 {
 	if (kPlot.getWorkingCity() != this)
 		return false;
@@ -3868,7 +3868,10 @@ int CvCity::getNoMilitaryPercentAnger() const
 	{
 		int iAnger = 0;
 		if (getMilitaryHappinessUnits() == 0)
-			iAnger += GC.getDefineINT(CvGlobals::NO_MILITARY_PERCENT_ANGER);
+		{
+			iAnger += //GC.getDefineINT(CvGlobals::NO_MILITARY_PERCENT_ANGER);
+					GET_TEAM(getTeam()).getNoMilitaryAnger(); // advc.500c
+		}
 		return iAnger;
 	}
 	// <advc.500b>
@@ -3881,7 +3884,7 @@ int CvCity::getNoMilitaryPercentAnger() const
 	/* Currently (as per vanilla) 334, meaning 33.4% of the population get angry.
 	   The caller adds up all the anger percentages (actually permillages)
 	   before rounding, so rounding shouldn't be a concern in this function. */
-	int iMaxAnger = GC.getDefineINT(CvGlobals::NO_MILITARY_PERCENT_ANGER);
+	int iMaxAnger = GET_TEAM(getTeam()).getNoMilitaryAnger(); // advc.500c
 	return iMaxAnger - (iMaxAnger * rActualGarrStr / rTargetGarrStr).floor();
 	// </advc.500b>
 }
@@ -4133,9 +4136,25 @@ int CvCity::angryPopulation(int iExtra, /* advc.104: */ bool bIgnoreCultureRate)
 
 int CvCity::visiblePopulation() const
 {
+	//doto enhanced city mylon count pop working limit
+	//added for test - just to see the pop stats
+	extraVisiblePopulationMylon();
 	return getPopulation() - angryPopulation() - getWorkingPopulation();
 }
-
+//doto enhanced city mylon count pop working limit
+int CvCity::extraVisiblePopulationMylon() const
+{	
+	int a = getPopulation();
+	int b = angryPopulation();
+	int c = getWorkingPopulation();
+	int d = extraFreeSpecialists();
+	bool w = getWorkingPopulation() > 20;
+	if (w)
+	{
+		return 1;
+	}
+	return 0;
+}
 
 int CvCity::totalFreeSpecialists() const
 {
@@ -4164,7 +4183,9 @@ int CvCity::totalFreeSpecialists() const
 
 
 int CvCity::extraPopulation() const
-{
+{	
+//doto mylon test
+	extraVisiblePopulationMylon();
 	return visiblePopulation() + std::min(0, extraFreeSpecialists());
 }
 
@@ -5127,6 +5148,9 @@ void CvCity::setHighestPopulation(int iNewValue)
 
 void CvCity::changeWorkingPopulation(int iChange)
 {
+//doto enhanced mylon limit pop
+	if (getWorkingPopulation() > MAX_WORK_TILES)
+		return;
 	m_iWorkingPopulation += iChange;
 	FAssert(getWorkingPopulation() >= 0);
 }
@@ -8177,7 +8201,9 @@ int CvCity::getPeaceTradeModifier(TeamTypes eTeam) const
 
 	static int const iFOREIGN_TRADE_FULL_CREDIT_PEACE_TURNS = GC.getDefineINT("FOREIGN_TRADE_FULL_CREDIT_PEACE_TURNS"); // advc.opt
 	static int const iFOREIGN_TRADE_MODIFIER = GC.getDefineINT("FOREIGN_TRADE_MODIFIER"); // advc.opt
-	int iPeaceTurns = std::min(iFOREIGN_TRADE_FULL_CREDIT_PEACE_TURNS, GET_TEAM(getTeam()).AI_getAtPeaceCounter(eTeam));
+	int iPeaceTurns = std::min(iFOREIGN_TRADE_FULL_CREDIT_PEACE_TURNS, GET_TEAM(getTeam()).
+			//AI_getAtPeaceCounter(eTeam)
+			getTurnsAtPeace(eTeam)); // advc.130k
 
 	if (GC.getGame().getElapsedGameTurns() <= iPeaceTurns)
 		return iFOREIGN_TRADE_MODIFIER;
@@ -10153,6 +10179,14 @@ void CvCity::setSpecialistCount(SpecialistTypes eSpecialist, int iNewValue)
 
 void CvCity::changeSpecialistCount(SpecialistTypes eSpecialist, int iChange)
 {
+//doto mylon pop working limit -> if the specialist is citizen
+//and there are above 21 worked tiles - do not lower the count - do now allow 
+//to loose the count or add a working tile above the limit
+//	if (eSpecialist == GC.getDEFAULT_SPECIALIST() 
+//			&&GC.getDEFAULT_SPECIALIST() != NO_SPECIALIST
+//			&& 	iChange < 1
+//			&& getWorkingPopulation() > MAX_WORK_TILES)
+//		return;
 	setSpecialistCount(eSpecialist, getSpecialistCount(eSpecialist) + iChange);
 }
 
@@ -10239,6 +10273,7 @@ bool CvCity::isSpecialistValid(SpecialistTypes eSpecialist, int iExtra) const
 
 void CvCity::changeMaxSpecialistCount(SpecialistTypes eSpecialist, int iChange)
 {
+//doto mylon - check if this needs the same rule as changeSpecialistCount
 	if (iChange != 0)
 	{
 		//m_aiMaxSpecialistCount.set(eSpecialist, std::max(0, m_aiMaxSpecialistCount.get(eSpecialist) + iChange));
@@ -10268,6 +10303,7 @@ void CvCity::setForceSpecialistCount(SpecialistTypes eSpecialist, int iNewValue)
 
 void CvCity::changeForceSpecialistCount(SpecialistTypes eSpecialist, int iChange)
 {
+//doto mylon - check if this needs the same rule as changeSpecialistCount
 	setForceSpecialistCount(eSpecialist, getForceSpecialistCount(eSpecialist) + iChange);
 }
 
@@ -10307,6 +10343,7 @@ void CvCity::setFreeSpecialistCount(SpecialistTypes eSpecialist, int iNewValue)
 
 void CvCity::changeFreeSpecialistCount(SpecialistTypes eSpecialist, int iChange)
 {
+//doto mylon - check if this needs the same rule as changeSpecialistCount
 	setFreeSpecialistCount(eSpecialist, getFreeSpecialistCount(eSpecialist) + iChange);
 }
 
@@ -10391,7 +10428,7 @@ bool CvCity::isWorkingPlot(CvPlot const& kPlot) const
 }
 
 
-void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue) // advc.enum: CityPlotTypes
+void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue, bool test) // advc.enum: CityPlotTypes
 {
 	if (isWorkingPlot(ePlot) == bNewValue)
 		return;
@@ -10405,7 +10442,28 @@ void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue) // advc.enum: C
 	//m_abWorkingPlot.set(ePlot, bNewValue);
 	FAssertBounds(0, NUM_CITY_PLOTS, ePlot);
 	m_abWorkingPlot[ePlot] = bNewValue;
-
+	
+//doto mylon pop count limit working
+	// if the working plots are above 21 and the setWorkingPlot was called with a change the tile to working (true)
+	// make sure to remove the worst tile before setting up a new one,
+	int iGrowthValue = AI().AI_growthValuePerFood();
+	int iWorstValue = MAX_INT;
+	CityPlotTypes eWorstPlot = NO_CITYPLOT;
+	if (extraVisiblePopulationMylon() == 1 
+		&& bNewValue /* && !test*/)
+	{	
+	// check all the plots we are working
+		for (WorkingPlotIter it(*this, false); it.hasNext(); ++it)
+		{
+			int iValue = AI().AI_plotValue(*it, true, false, false, iGrowthValue);
+			if (iValue < iWorstValue)
+			{
+				iWorstValue = iValue;
+				eWorstPlot = it.currID();
+			}
+		}
+		m_abWorkingPlot[eWorstPlot] = false;
+	}
 	CvPlot* pPlot = getCityIndexPlot(ePlot);
 	if (pPlot != NULL)
 	{
@@ -10441,6 +10499,15 @@ void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue) // advc.enum: C
 			gDLL->UI().setDirty(SelectionButtons_DIRTY_BIT, true);
 		// </advc.064b>
 	}
+
+	//doto mylon pop count limit working
+	// if the working plots are above 21 and the setWorkingPlot was called with a change the tile to working (true)
+	// make sure to remove the worst tile before setting up a new one,
+//	if (extraVisiblePopulationMylon() == 1 && bNewValue /* && !test*/)
+//	{
+//		AI().AI_removeWorstCitizen();
+//		return;
+//	}
 }
 
 
@@ -10450,7 +10517,7 @@ void CvCity::setWorkingPlot(CvPlot& kPlot, bool bNewValue)
 }
 
 
-void CvCity::alterWorkingPlot(CityPlotTypes ePlot) // advc.enum: CityPlotTypes
+void CvCity::alterWorkingPlot(CityPlotTypes ePlot)
 {
 	if (ePlot == CITY_HOME_PLOT)
 	{
@@ -13146,8 +13213,13 @@ void CvCity::read(FDataStreamBase* pStream)
 	// <advc.912d>
 	if(uiFlag >= 4)
 		pStream->Read(&m_iPopRushHurryCount);
-	if (uiFlag < 9 && isHuman() && GC.getGame().isOption(GAMEOPTION_NO_SLAVERY))
-		m_iFoodKept = (m_iFoodKept * 5) / 4; // </advc.912d>
+	if (uiFlag < 15 &&
+		(uiFlag < 9 || // Everyone had gotten only 40% from Granary prior to version 9
+		// After version 9, players affected by No Slavery had been exempt
+		!isHuman() || !GC.getGame().isOption(GAMEOPTION_NO_SLAVERY)))
+	{	// Now everyone gets 50% again, just like in BtS.
+		m_iMaxFoodKeptPercent = (m_iMaxFoodKeptPercent * 5) / 4;
+	} // </advc.912d>
 	// <advc.004x>
 	if(uiFlag >= 2)
 	{
@@ -13365,12 +13437,13 @@ void CvCity::write(FDataStreamBase* pStream)
 	//uiFlag = 6; // advc.103
 	//uiFlag = 7; // advc.003u: m_bChooseProductionDirty
 	//uiFlag = 8; // advc.310
-	//uiFlag = 9; // advc.912d (adjust food kept)
+	//uiFlag = 9; // advc.912d (adjust food kept; NB: should've adjusted MaxFoodKept)
 	//uiFlag = 10; // advc.911a, advc.908b
 	//uiFlag = 11; // advc.201, advc.098
 	//uiFlag = 12; // advc.enum: new enum map save behavior
 	//uiFlag = 13; // advc.201: Cathedrals restored to BtS stats
-	uiFlag = 14; // advc.179, advc.exp.1, advc.exp.2
+	//uiFlag = 14; // advc.179, advc.exp.1, advc.exp.2
+	uiFlag = 15; // advc.912d: Partly reverted, adjust MaxFoodKept.
 	pStream->Write(uiFlag);
 
 	pStream->Write(m_iID);

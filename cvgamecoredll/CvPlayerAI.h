@@ -438,10 +438,12 @@ public:
 	int AI_wakePlotTargetMissionAIs(CvPlot const& kPlot, MissionAITypes eMissionAI,
 			CvSelectionGroup* pSkipSelectionGroup = NULL) const;
 	// K-Mod start
-	int AI_localDefenceStrength(const CvPlot* pDefencePlot, TeamTypes eDefenceTeam, DomainTypes eDomainType = DOMAIN_LAND,
+	int AI_localDefenceStrength(const CvPlot* pDefencePlot,
+			TeamTypes eDefenceTeam = NO_TEAM, DomainTypes eDomainType = DOMAIN_LAND,
 			int iRange = 0, bool bMoveToTarget = true, bool bCheckMoves = false, bool bNoCache = false,
 			bool bPredictPromotions = false) const; // advc.139
-	int AI_localAttackStrength(const CvPlot* pTargetPlot, TeamTypes eAttackTeam, DomainTypes eDomainType = DOMAIN_LAND,
+	int AI_localAttackStrength(const CvPlot* pTargetPlot,
+			TeamTypes eAttackTeam = NO_TEAM, DomainTypes eDomainType = DOMAIN_LAND,
 			int iRange = 2, bool bUseTarget = true, bool bCheckMoves = false, bool bCheckCanAttack = false,
 			int* piAttackerCount = NULL) const; // advc.139
 	int AI_cityTargetStrengthByPath(CvCity const* pCity, CvSelectionGroup* pSkipSelectionGroup, int iMaxPathTurns) const;
@@ -805,9 +807,7 @@ protected:
 	int* m_aiUnitClassWeights;
 	int* m_aiUnitCombatWeights;
 	ArrayEnumMap<VictoryTypes,short> m_aiVictoryWeights; // advc.115f
-	// <advc.130c>
-	bool m_abTheyFarAhead[MAX_CIV_PLAYERS];
-	bool m_abTheyBarelyAhead[MAX_CIV_PLAYERS]; // </advc.130c>
+
 	std::map<UnitClassTypes, int> m_GreatPersonWeights; // K-Mod
 	std::map<int,int> m_neededExplorersByArea; // advc.opt
 
@@ -846,9 +846,10 @@ protected:
 	}
 	bool AI_proposeJointWar(PlayerTypes eHuman);
 	void AI_proposeWarTrade(PlayerTypes eAIPlayer); // </advc>
-	// advc.130t:
-	int AI_rivalPactAttitude(PlayerTypes ePlayer, bool bVassalPacts) const;
-	scaled AI_expansionistHate(PlayerTypes ePlayer) const;
+
+	int AI_rivalPactAttitude(PlayerTypes ePlayer, bool bVassalPacts) const; // advc.130t
+	scaled AI_expansionistHate(PlayerTypes ePlayer) const; //advc.130w
+
 	bool AI_canBeAttackedBy(CvUnit const& u) const; // advc.315
 
 	// <advc.130p>

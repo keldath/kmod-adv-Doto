@@ -955,8 +955,7 @@ UNITAI changed - now will used to counter.
 			<Type>UNIT_SETTLER</Type>
 			<UniqueNames/>
 			<Special>NONE</Special>
-			<!-- advc.010: was UNICLASS_WORKER -->
-			<Capture>NONE</Capture>
+			<Capture>UNITCLASS_WORKER</Capture>
 			<Combat>NONE</Combat>
 			<Domain>DOMAIN_LAND</Domain>
 			<DefaultUnitAI>UNITAI_SETTLE</DefaultUnitAI>
@@ -1137,8 +1136,7 @@ UNITAI changed - now will used to counter.
 			<Type>UNIT_WORKER</Type>
 			<UniqueNames/>
 			<Special>NONE</Special>
-			<!-- advc.010: was UNITCLASS_WORKER -->
-			<Capture>NONE</Capture>
+			<Capture>UNITCLASS_WORKER</Capture>
 			<Combat>NONE</Combat>
 			<Domain>DOMAIN_LAND</Domain>
 			<DefaultUnitAI>UNITAI_WORKER</DefaultUnitAI>
@@ -1413,8 +1411,7 @@ UNITAI changed - now will used to counter.
 			<Type>UNIT_INDIAN_FAST_WORKER</Type>
 			<UniqueNames/>
 			<Special>NONE</Special>
-			<!-- advc.010: was UNITCLASS_WORKER -->
-			<Capture>NONE</Capture>
+			<Capture>UNITCLASS_WORKER</Capture>
 			<Combat>NONE</Combat>
 			<Domain>DOMAIN_LAND</Domain>
 			<DefaultUnitAI>UNITAI_WORKER</DefaultUnitAI>
@@ -2317,6 +2314,33 @@ UNITAI changed - now will used to counter.
 			<GreatPeoples/>
 			<Buildings/>
 			<!--<ForceBuildings/> removed in advc097-->
+			<!-- RevDCM CanTrain -->	
+            <MaxStartEra>NONE</MaxStartEra>
+			<ForceObsoleteTech>TECH_GUNPOWDER</ForceObsoleteTech>
+			<bStateReligion>0</bStateReligion>
+			<PrereqGameOption>NONE</PrereqGameOption>
+			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
+			<PrereqOrCivics>
+				<PrereqCivic>
+					<CivicOption>NONE</CivicOption>
+					<bPrereqCivic>1</bPrereqCivic>
+				</PrereqCivic>
+			</PrereqOrCivics>
+			<PrereqBuildingClasses>
+				<PrereqBuildingClass>
+					<BuildingClassType>NONE</BuildingClassType>
+					<bPrereq>1</bPrereq>
+					<TechOverride>NONE</TechOverride>
+					<EraOverride>NONE</EraOverride>
+				</PrereqBuildingClass>
+			</PrereqBuildingClasses>
+			<ForceObsoleteUnitClasses>
+				<ForceObsoleteUnitClass>
+					<ForceObsoleteUnitClassType>NONE</ForceObsoleteUnitClassType>
+					<bForceObsoleteUnitClass>1</bForceObsoleteUnitClass>
+				</ForceObsoleteUnitClass>
+			</ForceObsoleteUnitClasses>
+			<!-- RevDCM end -->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
 			<StateReligion>NONE</StateReligion>
@@ -2489,6 +2513,33 @@ UNITAI changed - now will used to counter.
 			<GreatPeoples/>
 			<Buildings/>
 			<!--<ForceBuildings/> removed in advc097-->
+			<!-- RevDCM CanTrain -->	
+            <MaxStartEra>NONE</MaxStartEra>
+			<ForceObsoleteTech>TECH_GUNPOWDER</ForceObsoleteTech>
+			<bStateReligion>0</bStateReligion>
+			<PrereqGameOption>NONE</PrereqGameOption>
+			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
+			<PrereqOrCivics>
+				<PrereqCivic>
+					<CivicOption>NONE</CivicOption>
+					<bPrereqCivic>1</bPrereqCivic>
+				</PrereqCivic>
+			</PrereqOrCivics>
+			<PrereqBuildingClasses>
+				<PrereqBuildingClass>
+					<BuildingClassType>NONE</BuildingClassType>
+					<bPrereq>1</bPrereq>
+					<TechOverride>NONE</TechOverride>
+					<EraOverride>NONE</EraOverride>
+				</PrereqBuildingClass>
+			</PrereqBuildingClasses>
+			<ForceObsoleteUnitClasses>
+				<ForceObsoleteUnitClass>
+					<ForceObsoleteUnitClassType>NONE</ForceObsoleteUnitClassType>
+					<bForceObsoleteUnitClass>1</bForceObsoleteUnitClass>
+				</ForceObsoleteUnitClass>
+			</ForceObsoleteUnitClasses>
+			<!-- RevDCM end -->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
 			<StateReligion>NONE</StateReligion>
@@ -2657,6 +2708,33 @@ UNITAI changed - now will used to counter.
 			<GreatPeoples/>
 			<Buildings/>
 			<!--<ForceBuildings/> removed in advc097-->
+			<!-- RevDCM CanTrain -->	
+            <MaxStartEra>NONE</MaxStartEra>
+			<ForceObsoleteTech>TECH_GUNPOWDER</ForceObsoleteTech>
+			<bStateReligion>0</bStateReligion>
+			<PrereqGameOption>NONE</PrereqGameOption>
+			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
+			<PrereqOrCivics>
+				<PrereqCivic>
+					<CivicOption>NONE</CivicOption>
+					<bPrereqCivic>1</bPrereqCivic>
+				</PrereqCivic>
+			</PrereqOrCivics>
+			<PrereqBuildingClasses>
+				<PrereqBuildingClass>
+					<BuildingClassType>NONE</BuildingClassType>
+					<bPrereq>1</bPrereq>
+					<TechOverride>NONE</TechOverride>
+					<EraOverride>NONE</EraOverride>
+				</PrereqBuildingClass>
+			</PrereqBuildingClasses>
+			<ForceObsoleteUnitClasses>
+				<ForceObsoleteUnitClass>
+					<ForceObsoleteUnitClassType>NONE</ForceObsoleteUnitClassType>
+					<bForceObsoleteUnitClass>1</bForceObsoleteUnitClass>
+				</ForceObsoleteUnitClass>
+			</ForceObsoleteUnitClasses>
+			<!-- RevDCM end -->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
 			<StateReligion>NONE</StateReligion>
@@ -2827,6 +2905,33 @@ UNITAI changed - now will used to counter.
 			<GreatPeoples/>
 			<Buildings/>
 			<!--<ForceBuildings/> removed in advc097-->
+			<!-- RevDCM CanTrain -->	
+            <MaxStartEra>NONE</MaxStartEra>
+			<ForceObsoleteTech>TECH_GUNPOWDER</ForceObsoleteTech>
+			<bStateReligion>0</bStateReligion>
+			<PrereqGameOption>NONE</PrereqGameOption>
+			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
+			<PrereqOrCivics>
+				<PrereqCivic>
+					<CivicOption>NONE</CivicOption>
+					<bPrereqCivic>1</bPrereqCivic>
+				</PrereqCivic>
+			</PrereqOrCivics>
+			<PrereqBuildingClasses>
+				<PrereqBuildingClass>
+					<BuildingClassType>NONE</BuildingClassType>
+					<bPrereq>1</bPrereq>
+					<TechOverride>NONE</TechOverride>
+					<EraOverride>NONE</EraOverride>
+				</PrereqBuildingClass>
+			</PrereqBuildingClasses>
+			<ForceObsoleteUnitClasses>
+				<ForceObsoleteUnitClass>
+					<ForceObsoleteUnitClassType>NONE</ForceObsoleteUnitClassType>
+					<bForceObsoleteUnitClass>1</bForceObsoleteUnitClass>
+				</ForceObsoleteUnitClass>
+			</ForceObsoleteUnitClasses>
+			<!-- RevDCM end -->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
 			<StateReligion>NONE</StateReligion>
@@ -2996,6 +3101,33 @@ UNITAI changed - now will used to counter.
 			<GreatPeoples/>
 			<Buildings/>
 			<!--<ForceBuildings/> removed in advc097-->
+			<!-- RevDCM CanTrain -->	
+            <MaxStartEra>NONE</MaxStartEra>
+			<ForceObsoleteTech>TECH_GUNPOWDER</ForceObsoleteTech>
+			<bStateReligion>0</bStateReligion>
+			<PrereqGameOption>NONE</PrereqGameOption>
+			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
+			<PrereqOrCivics>
+				<PrereqCivic>
+					<CivicOption>NONE</CivicOption>
+					<bPrereqCivic>1</bPrereqCivic>
+				</PrereqCivic>
+			</PrereqOrCivics>
+			<PrereqBuildingClasses>
+				<PrereqBuildingClass>
+					<BuildingClassType>NONE</BuildingClassType>
+					<bPrereq>1</bPrereq>
+					<TechOverride>NONE</TechOverride>
+					<EraOverride>NONE</EraOverride>
+				</PrereqBuildingClass>
+			</PrereqBuildingClasses>
+			<ForceObsoleteUnitClasses>
+				<ForceObsoleteUnitClass>
+					<ForceObsoleteUnitClassType>NONE</ForceObsoleteUnitClassType>
+					<bForceObsoleteUnitClass>1</bForceObsoleteUnitClass>
+				</ForceObsoleteUnitClass>
+			</ForceObsoleteUnitClasses>
+			<!-- RevDCM end -->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
 			<StateReligion>NONE</StateReligion>
@@ -3165,6 +3297,33 @@ UNITAI changed - now will used to counter.
 			<GreatPeoples/>
 			<Buildings/>
 			<!--<ForceBuildings/> removed in advc097-->
+			<!-- RevDCM CanTrain -->	
+            <MaxStartEra>NONE</MaxStartEra>
+			<ForceObsoleteTech>TECH_GUNPOWDER</ForceObsoleteTech>
+			<bStateReligion>0</bStateReligion>
+			<PrereqGameOption>NONE</PrereqGameOption>
+			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
+			<PrereqOrCivics>
+				<PrereqCivic>
+					<CivicOption>NONE</CivicOption>
+					<bPrereqCivic>1</bPrereqCivic>
+				</PrereqCivic>
+			</PrereqOrCivics>
+			<PrereqBuildingClasses>
+				<PrereqBuildingClass>
+					<BuildingClassType>NONE</BuildingClassType>
+					<bPrereq>1</bPrereq>
+					<TechOverride>NONE</TechOverride>
+					<EraOverride>NONE</EraOverride>
+				</PrereqBuildingClass>
+			</PrereqBuildingClasses>
+			<ForceObsoleteUnitClasses>
+				<ForceObsoleteUnitClass>
+					<ForceObsoleteUnitClassType>NONE</ForceObsoleteUnitClassType>
+					<bForceObsoleteUnitClass>1</bForceObsoleteUnitClass>
+				</ForceObsoleteUnitClass>
+			</ForceObsoleteUnitClasses>
+			<!-- RevDCM end -->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
 			<StateReligion>NONE</StateReligion>
@@ -3334,6 +3493,33 @@ UNITAI changed - now will used to counter.
 			<GreatPeoples/>
 			<Buildings/>
 			<!--<ForceBuildings/> removed in advc097-->
+			<!-- RevDCM CanTrain -->	
+            <MaxStartEra>NONE</MaxStartEra>
+			<ForceObsoleteTech>TECH_GUNPOWDER</ForceObsoleteTech>
+			<bStateReligion>0</bStateReligion>
+			<PrereqGameOption>NONE</PrereqGameOption>
+			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
+			<PrereqOrCivics>
+				<PrereqCivic>
+					<CivicOption>NONE</CivicOption>
+					<bPrereqCivic>1</bPrereqCivic>
+				</PrereqCivic>
+			</PrereqOrCivics>
+			<PrereqBuildingClasses>
+				<PrereqBuildingClass>
+					<BuildingClassType>NONE</BuildingClassType>
+					<bPrereq>1</bPrereq>
+					<TechOverride>NONE</TechOverride>
+					<EraOverride>NONE</EraOverride>
+				</PrereqBuildingClass>
+			</PrereqBuildingClasses>
+			<ForceObsoleteUnitClasses>
+				<ForceObsoleteUnitClass>
+					<ForceObsoleteUnitClassType>NONE</ForceObsoleteUnitClassType>
+					<bForceObsoleteUnitClass>1</bForceObsoleteUnitClass>
+				</ForceObsoleteUnitClass>
+			</ForceObsoleteUnitClasses>
+			<!-- RevDCM end -->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
 			<StateReligion>NONE</StateReligion>

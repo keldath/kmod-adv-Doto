@@ -2630,11 +2630,13 @@ void CvGameTextMgr::setInterceptPlotHelp(CvPlot const& kPlot, CvUnit const& kUni
 	}
 }
 
-/*	Returns true if help was given...
-	K-Mod note: this function can change the center unit on the plot.
+/*	K-Mod note: this function can change the center unit on the plot.
 	(because of a change I made)
 	Also, I've made some unmarked structural changes to this function
-	to make it easier to read and to fix a few minor bugs. */
+	to make it easier to read and to fix a few minor bugs.
+	advc.010: Now returns true only if unit capture help was given.
+	(All callers had previously ignored the return value, which had said
+	whether any help was given.) */
 bool CvGameTextMgr::setCombatPlotHelp(CvWStringBuffer& szString, CvPlot* pPlot)
 {
 	PROFILE_FUNC();
@@ -2688,12 +2690,64 @@ bool CvGameTextMgr::setCombatPlotHelp(CvWStringBuffer& szString, CvPlot* pPlot)
 		pDefender = pPlot->getBestDefender(NO_PLAYER, pAttacker->getOwner(), pAttacker,
 				!bForceHostile, false, false, false);
 		if (pDefender != NULL)
+		{
 			setCannotAttackHelp(szString, *pAttacker, *pDefender);
-		return false;
+			return false;
+		}
 	} // </advc.089>
-	if (pDefender == NULL || !pDefender->canDefend(pPlot) || !pAttacker->canAttack(*pDefender))
+	// <advc.010> Show capture help if war not yet declared even w/o bForceHostiley
+	bool bCaptureHelpOnly = false;
+	if (pDefender == NULL)
+	{
+		pDefender = pPlot->getBestDefender(NO_PLAYER, pAttacker->getOwner(), pAttacker, false);
+		if (pDefender != NULL)
+			bCaptureHelpOnly = true;
+		else return false;
+	} // </advc.010>
+	if (!pAttacker->canAttack(*pDefender))
 		return false;
-
+	if (!pDefender->canDefend(pPlot))
+	{
+		//return false;
+		// <advc.010>
+		/*	(Would be nice to show capture help also when
+			pPlot->getNumVisibleEnemyDefenders()==1
+			i.e. when there is a proper defender and the attacker's victory will
+			immediately result in a captive. However, this gets too complicated
+			b/c there could be multiple captives. If the best defender itself
+			can be captured, then it's clear enough that the capture help refers
+			only to that one unit.) */
+		if (pAttacker->isNoUnitCapture())
+			return false;
+		UnitTypes const eCaptive = pDefender->getCaptureUnitType(
+				GET_PLAYER(pAttacker->getOwner()).getCivilizationType());
+		if (eCaptive == NO_UNIT)
+			return false;
+		int const iCaptureOdds = pAttacker->getCaptureOdds(*pDefender);
+		int const iBaseOdds = GC.getDefineINT(CvGlobals::BASE_UNIT_CAPTURE_CHANCE);
+		if (iCaptureOdds == iBaseOdds && (iBaseOdds <= 0 || iBaseOdds >= 100))
+			return false;
+		CvWString szOdds;
+		szOdds.Format(SETCOLR L"%d%%" ENDCOLR, TEXT_COLOR(iCaptureOdds > 0 ?
+				(iCaptureOdds >= 50 ? "COLOR_POSITIVE_TEXT" : "COLOR_YELLOW") :
+				"COLOR_NEGATIVE_TEXT"), iCaptureOdds);
+		szString.append(gDLL->getText(pDefender->getUnitType() == eCaptive ?
+				"TXT_KEY_MISC_UNIT_CAPTURE_ODDS" :
+				"TXT_KEY_MISC_UNIT_CAPTURE_ODDS_REPL",
+				GC.getInfo(eCaptive).getDescription(), szOdds.c_str()));
+		if (iCaptureOdds != iBaseOdds &&
+			iCaptureOdds == GC.getDefineINT(CvGlobals::DOW_UNIT_CAPTURE_CHANCE) &&
+			(GET_TEAM(pAttacker->getTeam()).hasJustDeclaredWar(pDefender->getTeam()) ||
+			!GET_TEAM(pAttacker->getTeam()).isAtWar(pDefender->getTeam())))
+		{
+			szString.append(NEWLINE);
+			szString.append(gDLL->getText("TXT_KEY_MISC_NO_DOW_UNIT_CAPTURE"));
+		}
+		return true; // </advc.010>
+	}
+	// <advc.010>
+	if (bCaptureHelpOnly)
+		return false; // </advc.010>
 	// <advc.048>
 	bool bBestOddsHelp = false;
 	if(!bMaxSurvival && GC.getDefineINT("GROUP_ATTACK_BEST_ODDS_HELP") > 0)
@@ -2887,7 +2941,8 @@ bool CvGameTextMgr::setCombatPlotHelp(CvWStringBuffer& szString, CvPlot* pPlot)
 
 	szString.append(gDLL->getText("TXT_KEY_COLOR_REVERT"));
 
-	return true;
+	//return true;
+	return false; // advc.010: see comment on top
 }
 
 /*	advc.089: Help text for the conditions checked by CvUnit::canAttack.
@@ -4660,7 +4715,7 @@ void CvGameTextMgr::setPlotHelpDebug_AltOnly(CvWStringBuffer& szString, CvPlot c
 
 		int iOurDefense = kOwner.AI_localDefenceStrength(&kPlot, kPlot.getTeam(), DOMAIN_LAND, 0,
 				true, false, true);
-		int iEnemyOffense = kOwner.AI_localAttackStrength(&kPlot, NO_TEAM);
+		int iEnemyOffense = kOwner.AI_localAttackStrength(&kPlot);
 		if (iEnemyOffense > 0)
 		{
 			szString.append(CvWString::format(SETCOLR L"\nDanger: %.2f (%d/%d)" ENDCOLR,
@@ -8574,6 +8629,8 @@ void CvGameTextMgr::setTechTradeHelp(CvWStringBuffer &szBuffer, TechTypes eTech,
 					bFirst, true, bPlayerContext);
 		}
 	}
+	// advc.500c: (Pretty minor effect, place it far down the list.)
+	buildNoFearForSafetyString(szBuffer, eTech, true, bPlayerContext);
 	/*	advc.910: Moved above SingleLineTechTreeString - so that the custom help text
 		(unused in BtS/AdvCiv btw) can't end up in the middle of cost-related info. */
 	if (!CvWString(GC.getInfo(eTech).getHelp()).empty())
@@ -13779,7 +13836,8 @@ void CvGameTextMgr::setAngerHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 		szBuffer.append(gDLL->getText("TXT_KEY_ANGER_ANARCHY"));
 		return;
 	}
-	if (kCity.unhappyLevel() <= 0)
+	int const iUnhappy = kCity.unhappyLevel();
+	if (iUnhappy <= 0)
 		return;
 
 	int iNewAngerPercent = 0;
@@ -14093,7 +14151,7 @@ void CvGameTextMgr::setAngerHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 	}
 	szBuffer.append(L"-----------------------\n");
 	szBuffer.append(gDLL->getText("TXT_KEY_ANGER_TOTAL_UNHAPPY", iNewAnger));
-	FAssert(iNewAnger == kCity.unhappyLevel());
+	FAssert(iNewAnger == iUnhappy);
 }
 
 
@@ -14101,7 +14159,8 @@ void CvGameTextMgr::setHappyHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 {
 	if (kCity.isOccupation() || GET_PLAYER(kCity.getOwner()).isAnarchy())
 		return;
-	if (kCity.happyLevel() <= 0)
+	int const iHappyLevel = kCity.happyLevel();
+	if (iHappyLevel <= 0)
 		return;
 
 	int iTotalHappy = 0;
@@ -14254,7 +14313,7 @@ void CvGameTextMgr::setHappyHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 	}
 	szBuffer.append(L"-----------------------\n");
 	szBuffer.append(gDLL->getText("TXT_KEY_HAPPY_TOTAL_HAPPY", iTotalHappy));
-	FAssert(iTotalHappy == kCity.happyLevel());
+	FAssert(iTotalHappy == iHappyLevel);
 }
 
 // BUG - Building Additional Happiness - start
@@ -15937,6 +15996,17 @@ void CvGameTextMgr::buildFreeTechString(CvWStringBuffer &szBuffer,
 			}
 		}
 	}
+}
+
+// advc.500c:
+void CvGameTextMgr::buildNoFearForSafetyString(CvWStringBuffer &szBuffer,
+	TechTypes eTech, bool bList, bool bPlayerContext)
+{
+	if (!GC.getInfo(eTech).isNoFearForSafety())
+		return;
+	if (bList)
+		szBuffer.append(NEWLINE);
+	szBuffer.append(gDLL->getText("TXT_KEY_TECH_NO_FEAR_FOR_SAFETY"));
 }
 
 void CvGameTextMgr::buildLOSString(CvWStringBuffer &szBuffer,
@@ -21808,6 +21878,10 @@ void CvGameTextMgr::getPlotHelp(CvPlot* pMouseOverPlot,
 			setCityBarHelp(strHelp, *pCity);
 		else if (pFlagPlot != NULL)
 			setPlotListHelp(strHelp, *pFlagPlot, false, true);
+		/*	<advc.010> Convenient to generate capture help along with
+			combat help, but I want to show capture help a little later. */
+		bool bCaptureHelp = false;
+		CvWStringBuffer szCombatHelp; // </advc.010>
 		if (strHelp.isEmpty() && pMouseOverPlot != NULL)
 		{
 			if (pMouseOverPlot == kUI.getGotoPlot() ||
@@ -21816,7 +21890,13 @@ void CvGameTextMgr::getPlotHelp(CvPlot* pMouseOverPlot,
 				!GC.getGame().isDebugMode())) // advc.135c
 			{
 				if (pMouseOverPlot->isActiveVisible(true))
-					setCombatPlotHelp(strHelp, pMouseOverPlot);
+				{
+					//setCombatPlotHelp(strHelp, pMouseOverPlot);
+					// <advc.010>
+					bCaptureHelp = setCombatPlotHelp(szCombatHelp, pMouseOverPlot);
+					if (!bCaptureHelp)
+						strHelp.append(szCombatHelp); // </advc.010>
+				}
 			}
 		}
 		if (strHelp.isEmpty() && pMouseOverPlot != NULL &&
@@ -21828,6 +21908,12 @@ void CvGameTextMgr::getPlotHelp(CvPlot* pMouseOverPlot,
 				if (!strHelp.isEmpty())
 					strHelp.append(NEWLINE);
 			}
+			// <advc.010>
+			if (bCaptureHelp && !szCombatHelp.isEmpty())
+			{
+				strHelp.append(szCombatHelp);
+				strHelp.append(NEWLINE);
+			} // </advc.010>
 			setPlotHelp(strHelp, *pMouseOverPlot);
 		}
 
