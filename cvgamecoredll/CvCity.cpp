@@ -1976,6 +1976,10 @@ int CvCity::getFoodTurnsLeft() const
 		return std::min(-1, -iTurnsLeft);
 	} // </advc.189>
 	int iFoodLeft = growthThreshold() - getFood();
+//doto advc fix for assert
+	if (iFoodLeft < 0)
+		FErrorMsg("keldath -  check this out");
+		return 1;
 	int iTurnsLeft = intdiv::uceil(iFoodLeft, iFoodDiff);
 	return std::max(1, iTurnsLeft);
 }
@@ -4136,20 +4140,16 @@ int CvCity::angryPopulation(int iExtra, /* advc.104: */ bool bIgnoreCultureRate)
 
 int CvCity::visiblePopulation() const
 {
-	//doto enhanced city mylon count pop working limit
-	//added for test - just to see the pop stats
-	extraVisiblePopulationMylon();
 	return getPopulation() - angryPopulation() - getWorkingPopulation();
 }
 //doto enhanced city mylon count pop working limit
 int CvCity::extraVisiblePopulationMylon() const
 {	
-	int a = getPopulation();
-	int b = angryPopulation();
-	int c = getWorkingPopulation();
-	int d = extraFreeSpecialists();
-	bool w = getWorkingPopulation() > 20;
-	if (w)
+	//int a = getPopulation();
+	//int b = angryPopulation();
+	//int c = getWorkingPopulation();
+	//int d = extraFreeSpecialists();
+	if (getWorkingPopulation() > MAX_WORK_TILES)
 	{
 		return 1;
 	}
@@ -4185,7 +4185,7 @@ int CvCity::totalFreeSpecialists() const
 int CvCity::extraPopulation() const
 {	
 //doto mylon test
-	extraVisiblePopulationMylon();
+	//extraVisiblePopulationMylon();
 	return visiblePopulation() + std::min(0, extraFreeSpecialists());
 }
 
@@ -10463,6 +10463,41 @@ void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue, bool test) // a
 			}
 		}
 		m_abWorkingPlot[eWorstPlot] = false;
+		CvPlot* pPlot = getCityIndexPlot(ePlot);
+		if (pPlot != NULL)
+		{
+			FAssertMsg(pPlot->getWorkingCity() == this, "WorkingCity is expected to be this");
+/*
+			if (isWorkingPlot(ePlot))
+			{
+				if (ePlot != CITY_HOME_PLOT)
+					changeWorkingPopulation(1);
+				FOR_EACH_ENUM(Yield)
+					changeBaseYieldRate(eLoopYield, pPlot->getYield(eLoopYield));
+				// update plot builder special case where a plot is being worked but is (a) unimproved  or (b) un-bonus'ed
+				pPlot->updatePlotBuilder();
+			}
+			else
+			{
+*/				if (ePlot != CITY_HOME_PLOT)
+					changeWorkingPopulation(-1);
+				FOR_EACH_ENUM(Yield)
+					changeBaseYieldRate(eLoopYield, -pPlot->getYield(eLoopYield));
+//			}
+
+			if (isActiveTeam() || GC.getGame().isDebugMode())
+				pPlot->updateSymbolDisplay();
+		}
+		if (bSelected)
+		{
+			gDLL->UI().setDirty(InfoPane_DIRTY_BIT, true);
+			gDLL->UI().setDirty(CityScreen_DIRTY_BIT, true);
+			gDLL->UI().setDirty(ColoredPlots_DIRTY_BIT, true);
+			// <advc.064b>
+			if(iOldTurns >= 0 && getProductionTurnsLeft() != iOldTurns)
+				gDLL->UI().setDirty(SelectionButtons_DIRTY_BIT, true);
+		// </advc.064b>
+		}
 	}
 	CvPlot* pPlot = getCityIndexPlot(ePlot);
 	if (pPlot != NULL)

@@ -156,7 +156,8 @@ void CvCityAI::AI_assignWorkingPlots()
 	}
 
 	// keep removing the worst citizen until we are not over the limit
-	while (extraPopulation() < 0)
+//doto mylon pop working limit
+	while (extraPopulation() < 0 && extraVisiblePopulationMylon() == 0)
 	{
 		if (!AI_removeWorstCitizen())
 		{
@@ -241,20 +242,24 @@ void CvCityAI::AI_assignWorkingPlots()
 			break;
 		}
 	}
-
+//doto mylon fail check
+	//extraVisiblePopulationMylon();
 	FAssertMsg(extraSpecialists() >= 0, "added too many specialists");
 
 	// if automated, look for better choices than the current ones
 	if (!isHuman() || isCitizensAutomated())
 		AI_juggleCitizens();
 
-	// at this point, we should not be over the limit
-	FAssert((getWorkingPopulation() + getSpecialistPopulation()) <= (totalFreeSpecialists() + getPopulation()));
 	//doto mylon pop worked limit test
 	int a = getPopulation();
+	int m = getSpecialistPopulation();
+	int t = totalFreeSpecialists();
 	int b = angryPopulation();
 	int c = getWorkingPopulation();
 	int d = std::min(0, extraFreeSpecialists());
+	int bb = extraPopulation();
+	// at this point, we should not be over the limit
+	FAssert((getWorkingPopulation() + getSpecialistPopulation()) <= (totalFreeSpecialists() + getPopulation()));
 	FAssert(extraPopulation() == 0); // K-Mod.
 
 	AI_setAssignWorkDirty(false);
@@ -9594,8 +9599,8 @@ bool CvCityAI::AI_addBestCitizen(bool bWorkers, bool bSpecialists,
 			}
 		}
 	}
-
-	if (eBestSpecialist != NO_SPECIALIST)
+//doto pop working limit
+	if (eBestSpecialist != NO_SPECIALIST && visiblePopulation() > 0 && extraVisiblePopulationMylon() == 0)
 	{
 		changeSpecialistCount(eBestSpecialist, 1);
 		if (peBestPlot != NULL)
@@ -9606,7 +9611,8 @@ bool CvCityAI::AI_addBestCitizen(bool bWorkers, bool bSpecialists,
 		}
 		return true;
 	}
-	else if (eBestPlot != NO_CITYPLOT)
+	//doto pop working limit
+	else if (eBestPlot != NO_CITYPLOT && extraVisiblePopulationMylon() == 0)
 	{
 		setWorkingPlot(eBestPlot, true);
 		if (peBestPlot != NULL)
@@ -9634,6 +9640,9 @@ bool CvCityAI::AI_removeWorstCitizen(SpecialistTypes eIgnoreSpecialist)
 			// is ignore something other than generic citizen?
 			if (eIgnoreSpecialist != GC.getDEFAULT_SPECIALIST())
 			{
+//doto mylon - do not remove default specialist if there are more that 20 worked tiles.
+				if (extraVisiblePopulationMylon() == 1)
+					return false;
 				// do we have at least one more generic citizen than we are forcing?
 				if (getSpecialistCount((SpecialistTypes)GC.getDEFAULT_SPECIALIST()) >
 					getForceSpecialistCount((SpecialistTypes)GC.getDEFAULT_SPECIALIST()))
@@ -9685,22 +9694,24 @@ bool CvCityAI::AI_removeWorstCitizen(SpecialistTypes eIgnoreSpecialist)
 			eWorstPlot = it.currID();
 		}
 	}
-
-	if (eWorstSpecialist != NO_SPECIALIST)
+	//remove terrain or specialist only if there are less then 21 tiles worked
+	if (extraVisiblePopulationMylon() == 0)
 	{
-		changeSpecialistCount(eWorstSpecialist, -1);
-		// K-Mod. If we had to remove a forced specialist, reduce the force count to match what we did.
-		if (getSpecialistCount(eWorstSpecialist) < getForceSpecialistCount(eWorstSpecialist))
-			setForceSpecialistCount(eWorstSpecialist, getSpecialistCount(eWorstSpecialist));
-		//
-		return true;
+		if (eWorstSpecialist != NO_SPECIALIST)
+		{
+			changeSpecialistCount(eWorstSpecialist, -1);
+			// K-Mod. If we had to remove a forced specialist, reduce the force count to match what we did.
+			if (getSpecialistCount(eWorstSpecialist) < getForceSpecialistCount(eWorstSpecialist))
+				setForceSpecialistCount(eWorstSpecialist, getSpecialistCount(eWorstSpecialist));
+			//
+			return true;
+		}
+		else if (eWorstPlot != NO_CITYPLOT)
+		{
+			setWorkingPlot(eWorstPlot, false);
+			return true;
+		}
 	}
-	else if (eWorstPlot != NO_CITYPLOT)
-	{
-		setWorkingPlot(eWorstPlot, false);
-		return true;
-	}
-
 	// if we still have not removed one, then try again, but do not ignore the one we were told to ignore
 	if (extraFreeSpecialists() < 0)
 	{
@@ -9716,12 +9727,6 @@ bool CvCityAI::AI_removeWorstCitizen(SpecialistTypes eIgnoreSpecialist)
 				eWorstPlot = NO_CITYPLOT;
 			}
 		}
-	}
-
-	if (eWorstSpecialist != NO_SPECIALIST)
-	{
-		changeSpecialistCount(eWorstSpecialist, -1);
-		return true;
 	}
 
 	return false;
@@ -9893,7 +9898,8 @@ void CvCityAI::AI_juggleCitizens()
 		else
 		{
 			// remove the current job
-			if (worked_it->second.first)
+	//doto mylon
+			if (worked_it->second.first && extraVisiblePopulationMylon() == 0)
 			{
 				FAssert(getSpecialistCount((SpecialistTypes)worked_it->second.second) > 0);
 				changeSpecialistCount((SpecialistTypes)worked_it->second.second, -1);
@@ -9905,12 +9911,14 @@ void CvCityAI::AI_juggleCitizens()
 			}
 
 			// assign the new job
-			if (unworked_it->second.first)
+	//doto mylon
+			if (unworked_it->second.first && visiblePopulation() > 0)
 			{
 				FAssert(isSpecialistValid((SpecialistTypes)unworked_it->second.second, 1));
 				changeSpecialistCount((SpecialistTypes)unworked_it->second.second, 1);
 			}
-			else
+//doto mylon
+			else if (extraVisiblePopulationMylon() == 0)
 			{
 				FAssert(!isWorkingPlot((CityPlotTypes)unworked_it->second.second));
 				setWorkingPlot((CityPlotTypes)unworked_it->second.second, true);
@@ -13453,7 +13461,8 @@ void CvCityAI::AI_updateWorkersHaveAndNeeded()
 
 		if (eBestPlot != NO_CITYPLOT)
 			setWorkingPlot(eBestPlot, false);
-		if (eBestSpecialist != NO_SPECIALIST)
+//doto mylon pop working limit
+		if (eBestSpecialist != NO_SPECIALIST && extraVisiblePopulationMylon() == 0)
 			changeSpecialistCount(eBestSpecialist, -1);
 		if (iBestPotentialPlotValue > iWorstWorkedPlotValue)
 			iWorkersNeeded += 2;
