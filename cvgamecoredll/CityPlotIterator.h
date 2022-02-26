@@ -173,7 +173,9 @@ private:
 		if (!bIncludeHomePlot)
 		{
 			// Swap home plot to the front, then advance past it.
-			for (int i = 0; i < NUM_CITY_PLOTS; i++)
+			//for (int i = 0; i < NUM_CITY_PLOTS; i++)
+//doto enhanced city size mylon - was /*NUM_CITY_PLOTS*/
+			for (int i = 0; i < m_eCityPlots; i++)
 			{
 				if (m_aiShuffledIndices[i] == CITY_HOME_PLOT)
 				{

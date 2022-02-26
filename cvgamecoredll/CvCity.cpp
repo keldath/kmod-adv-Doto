@@ -35,6 +35,8 @@ CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 	m_iHighestPopulation = 0;
 	m_iWorkingPopulation = 0;
 	m_iSpecialistPopulation = 0;
+//doto mylon
+	m_iSpecialistPopulationmylon = 0;
 	m_iNumGreatPeople = 0;
 	m_iBaseGreatPeopleRate = 0;
 	m_iGreatPeopleRateModifier = 0;
@@ -1978,8 +1980,10 @@ int CvCity::getFoodTurnsLeft() const
 	int iFoodLeft = growthThreshold() - getFood();
 //doto advc fix for assert
 	if (iFoodLeft < 0)
+	{
 		FErrorMsg("keldath -  check this out");
 		return 1;
+	}
 	int iTurnsLeft = intdiv::uceil(iFoodLeft, iFoodDiff);
 	return std::max(1, iTurnsLeft);
 }
@@ -4143,17 +4147,15 @@ int CvCity::visiblePopulation() const
 	return getPopulation() - angryPopulation() - getWorkingPopulation();
 }
 //doto enhanced city mylon count pop working limit
-int CvCity::extraVisiblePopulationMylon() const
+bool CvCity::extraVisiblePopulationMylon() const
 {	
-	//int a = getPopulation();
-	//int b = angryPopulation();
-	//int c = getWorkingPopulation();
-	//int d = extraFreeSpecialists();
-	if (getWorkingPopulation() > MAX_WORK_TILES)
-	{
-		return 1;
-	}
-	return 0;
+	//if the worked tiles are 20 and there is more pop in the city 
+	//it means that there cant be anymore worked tiles.
+	//int maxPopWork = getPopulation() >= getWorkingPopulation() + 1 //home city not included -> so +1;
+	//if (maxPopWork && getWorkingPopulation() >= MAX_WORK_TILES)
+	//	return true;
+	//return false;
+	return (getPopulation() >= MAX_WORK_TILES + 1);
 }
 
 int CvCity::totalFreeSpecialists() const
@@ -4184,8 +4186,6 @@ int CvCity::totalFreeSpecialists() const
 
 int CvCity::extraPopulation() const
 {	
-//doto mylon test
-	//extraVisiblePopulationMylon();
 	return visiblePopulation() + std::min(0, extraFreeSpecialists());
 }
 
@@ -5148,9 +5148,6 @@ void CvCity::setHighestPopulation(int iNewValue)
 
 void CvCity::changeWorkingPopulation(int iChange)
 {
-//doto enhanced mylon limit pop
-	if (getWorkingPopulation() > MAX_WORK_TILES)
-		return;
 	m_iWorkingPopulation += iChange;
 	FAssert(getWorkingPopulation() >= 0);
 }
@@ -5160,7 +5157,31 @@ void CvCity::changeSpecialistPopulation(int iChange)
 {
 	if (iChange != 0)
 	{
-		m_iSpecialistPopulation += iChange;
+//doto mylon 	
+		//m_iSpecialistPopulation += iChange;
+		if (extraVisiblePopulationMylon())
+		{
+		
+			//since there are 20 worked tiles and more pop than that
+			//the alterbative specialis pool will kick in
+			//this is to keep the normal functionality of specialists count and tiles
+			m_iSpecialistPopulationmylon += iChange;
+		}
+		else if (getSpecialistPopulationmylon() > 0 
+					&& iChange < 1)
+		{
+			//if the alternative counter is above 0
+			//and a deduction change count was sent
+			//it must take it from the alternative counter.
+			m_iSpecialistPopulationmylon += iChange;
+		}
+		else
+		{
+			//this is nornal - worked tiles are less than 20,
+			//and the alternative is at 0 count,
+			m_iSpecialistPopulation += iChange;
+		}
+//doto mylon
 		FAssert(getSpecialistPopulation() >= 0);
 		GET_PLAYER(getOwner()).invalidateYieldRankCache();
 		updateCommerce();
@@ -10428,7 +10449,7 @@ bool CvCity::isWorkingPlot(CvPlot const& kPlot) const
 }
 
 
-void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue, bool test) // advc.enum: CityPlotTypes
+void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue) // advc.enum: CityPlotTypes
 {
 	if (isWorkingPlot(ePlot) == bNewValue)
 		return;
@@ -10443,62 +10464,6 @@ void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue, bool test) // a
 	FAssertBounds(0, NUM_CITY_PLOTS, ePlot);
 	m_abWorkingPlot[ePlot] = bNewValue;
 	
-//doto mylon pop count limit working
-	// if the working plots are above 21 and the setWorkingPlot was called with a change the tile to working (true)
-	// make sure to remove the worst tile before setting up a new one,
-	int iGrowthValue = AI().AI_growthValuePerFood();
-	int iWorstValue = MAX_INT;
-	CityPlotTypes eWorstPlot = NO_CITYPLOT;
-	if (extraVisiblePopulationMylon() == 1 
-		&& bNewValue /* && !test*/)
-	{	
-	// check all the plots we are working
-		for (WorkingPlotIter it(*this, false); it.hasNext(); ++it)
-		{
-			int iValue = AI().AI_plotValue(*it, true, false, false, iGrowthValue);
-			if (iValue < iWorstValue)
-			{
-				iWorstValue = iValue;
-				eWorstPlot = it.currID();
-			}
-		}
-		m_abWorkingPlot[eWorstPlot] = false;
-		CvPlot* pPlot = getCityIndexPlot(ePlot);
-		if (pPlot != NULL)
-		{
-			FAssertMsg(pPlot->getWorkingCity() == this, "WorkingCity is expected to be this");
-/*
-			if (isWorkingPlot(ePlot))
-			{
-				if (ePlot != CITY_HOME_PLOT)
-					changeWorkingPopulation(1);
-				FOR_EACH_ENUM(Yield)
-					changeBaseYieldRate(eLoopYield, pPlot->getYield(eLoopYield));
-				// update plot builder special case where a plot is being worked but is (a) unimproved  or (b) un-bonus'ed
-				pPlot->updatePlotBuilder();
-			}
-			else
-			{
-*/				if (ePlot != CITY_HOME_PLOT)
-					changeWorkingPopulation(-1);
-				FOR_EACH_ENUM(Yield)
-					changeBaseYieldRate(eLoopYield, -pPlot->getYield(eLoopYield));
-//			}
-
-			if (isActiveTeam() || GC.getGame().isDebugMode())
-				pPlot->updateSymbolDisplay();
-		}
-		if (bSelected)
-		{
-			gDLL->UI().setDirty(InfoPane_DIRTY_BIT, true);
-			gDLL->UI().setDirty(CityScreen_DIRTY_BIT, true);
-			gDLL->UI().setDirty(ColoredPlots_DIRTY_BIT, true);
-			// <advc.064b>
-			if(iOldTurns >= 0 && getProductionTurnsLeft() != iOldTurns)
-				gDLL->UI().setDirty(SelectionButtons_DIRTY_BIT, true);
-		// </advc.064b>
-		}
-	}
 	CvPlot* pPlot = getCityIndexPlot(ePlot);
 	if (pPlot != NULL)
 	{
@@ -10534,17 +10499,87 @@ void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue, bool test) // a
 			gDLL->UI().setDirty(SelectionButtons_DIRTY_BIT, true);
 		// </advc.064b>
 	}
-
 	//doto mylon pop count limit working
 	// if the working plots are above 21 and the setWorkingPlot was called with a change the tile to working (true)
 	// make sure to remove the worst tile before setting up a new one,
-//	if (extraVisiblePopulationMylon() == 1 && bNewValue /* && !test*/)
-//	{
-//		AI().AI_removeWorstCitizen();
-//		return;
-//	}
+	if (extraVisiblePopulationMylon() && bNewValue)
+	{
+		getWorstWorkedTileMylon();
+	}
 }
+//doto mylon pop count limit working
+void CvCity::getWorstWorkedTileMylon()
+{
+//doto mylon pop count limit working
+	/*
+	int iGrowthValue = AI().AI_growthValuePerFood();
+	int iWorstValue = MAX_INT;
+	CityPlotTypes eWorstPlot = NO_CITYPLOT;
+	//check all the plots we are working
+	for (WorkingPlotIter it(*this, false); it.hasNext(); ++it)
+	{
+		int iValue = AI().AI_plotValue(*it, true, false, false, iGrowthValue);
+		if (iValue < iWorstValue)
+		{
+			iWorstValue = iValue;
+			eWorstPlot = it.currID();
+		}
+	}
+*/
+	//alternative loop from cityai
+	int iWorstValue = MAX_INT;
+	CityPlotTypes eWorstPlot = NO_CITYPLOT;
+	int iYields[NUM_YIELD_TYPES] = {};
+	int iYieldWeights[NUM_YIELD_TYPES] =
+	{
+		9, // food
+		7, // production
+		4, // commerce
+	}; // <advc.121b>
+	if (isCapital())
+		iYieldWeights[YIELD_COMMERCE]++; // </advc.121b>
+	std::vector<int> job_scores;
+	int iTotalScore = 0;
+	for (WorkingPlotIter it(*this, false); it.hasNext(); ++it)
+	{
+		CvPlot const& kPlot = *it;
+		FAssert(kPlot.getWorkingCity() == this);
+		// ideally, the plots would be scored using AI_plotValue, but I'm worried that would be too slow.
+		// so here's a really rough estimate of the plot value
+		int iPlotScore = 0;
+		for (int j = 0; j < NUM_YIELD_TYPES; j++)
+		{
+			int y = kPlot.getYield((YieldTypes)j);
+			iYields[j] += y;
+			iPlotScore += y * iYieldWeights[j];
+		}
+		if (kPlot.isImproved() &&
+			GC.getInfo(kPlot.getImprovementType()).getImprovementUpgrade() != NO_IMPROVEMENT)
+		{
+			iYields[YIELD_COMMERCE] += 2;
+			iPlotScore += 2 * iYieldWeights[YIELD_COMMERCE];
+		}
+		/*	<advc.121b> Anticipate improvement. CitySiteEvaluator has proper code
+			for this, but don't want to go through all improvements here. */
+		if (!kPlot.isImproved()
+			//doto change - no need for this.
+			//&& AI_getWorkersHave() > 0
+			)
+			iPlotScore *= 2; // </advc.121b>
+		iTotalScore += iPlotScore;
 
+		if (iTotalScore < iWorstValue)
+		{
+			iWorstValue = iTotalScore;
+			eWorstPlot = it.currID();
+		}
+	}
+
+	if (eWorstPlot != NO_CITYPLOT)
+	{
+		setWorkingPlot(eWorstPlot, false);
+	} 
+}
 
 void CvCity::setWorkingPlot(CvPlot& kPlot, bool bNewValue)
 {
@@ -12827,6 +12862,8 @@ void CvCity::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iHighestPopulation);
 	pStream->Read(&m_iWorkingPopulation);
 	pStream->Read(&m_iSpecialistPopulation);
+//doto mylon
+	pStream->Read(&m_iSpecialistPopulationmylon);
 	pStream->Read(&m_iNumGreatPeople);
 	pStream->Read(&m_iBaseGreatPeopleRate);
 	pStream->Read(&m_iGreatPeopleRateModifier);
@@ -13495,6 +13532,8 @@ void CvCity::write(FDataStreamBase* pStream)
 	pStream->Write(m_iHighestPopulation);
 	pStream->Write(m_iWorkingPopulation);
 	pStream->Write(m_iSpecialistPopulation);
+//doto mylon
+	pStream->Write(m_iSpecialistPopulationmylon);
 	pStream->Write(m_iNumGreatPeople);
 	pStream->Write(m_iBaseGreatPeopleRate);
 	pStream->Write(m_iGreatPeopleRateModifier);

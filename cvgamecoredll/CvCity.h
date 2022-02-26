@@ -291,7 +291,7 @@ public:
 	int angryPopulation(int iExtra = 0, /* advc.104: */ bool bIgnoreCultureRate = false) const;					// Exposed to Python
 	int visiblePopulation() const;
 //doto enhanced city mylon
-	int extraVisiblePopulationMylon() const;
+	bool extraVisiblePopulationMylon() const;
 	int totalFreeSpecialists() const;																			// Exposed to Python
 	int extraPopulation() const;																				// Exposed to Python
 	int extraSpecialists() const;																				// Exposed to Python
@@ -412,6 +412,8 @@ public:
 	int getWorkingPopulation() const { return m_iWorkingPopulation; }											// Exposed to Python
 	void changeWorkingPopulation(int iChange);
 	int getSpecialistPopulation() const { return m_iSpecialistPopulation; }										// Exposed to Python
+//doto mylon
+	int getSpecialistPopulationmylon() const { return m_iSpecialistPopulationmylon; }	
 	void changeSpecialistPopulation(int iChange);
 
 	int getNumGreatPeople() const { return m_iNumGreatPeople; }													// Exposed to Python
@@ -1284,8 +1286,10 @@ public:
 		return m_abWorkingPlot[ePlot];
 	}
 	bool isWorkingPlot(CvPlot const& kPlot) const;																// Exposed to Python
-	void setWorkingPlot(CityPlotTypes ePlot, bool bNewValue, bool test = false);
+	void setWorkingPlot(CityPlotTypes ePlot, bool bNewValue);
 	void setWorkingPlot(CvPlot& kPlot, bool bNewValue);
+//doto mylon pop count limit working
+	void getWorstWorkedTileMylon();
 	void alterWorkingPlot(CityPlotTypes ePlot);																	// Exposed to Python
 
 	int getNumRealBuilding(BuildingTypes eBuilding) const														// Exposed to Python
@@ -1488,6 +1492,8 @@ protected:
 	int m_iHighestPopulation;
 	int m_iWorkingPopulation;
 	int m_iSpecialistPopulation;
+//doto mylon pop wrk tile limit
+	int m_iSpecialistPopulationmylon;
 	int m_iNumGreatPeople;
 	int m_iBaseGreatPeopleRate;
 	int m_iGreatPeopleRateModifier;
