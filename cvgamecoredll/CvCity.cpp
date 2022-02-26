@@ -10614,7 +10614,10 @@ void CvCity::alterWorkingPlot(CityPlotTypes ePlot)
 			changeSpecialistCount(GC.getDEFAULT_SPECIALIST(), 1);
 		else AI().AI_addBestCitizen(false, true);
 	}
-	else if (extraPopulation() > 0 || AI().AI_removeWorstCitizen())
+	else if (extraPopulation() > 0 || AI().AI_removeWorstCitizen()
+//doto mylon pop count limit working = this should kick in when the chanhe of a toile is for another whentherea already 
+// a reach limit - the setworking will add and remove a worser tile then the chosen one here
+		|| getWorkingPopulation() >= MAX_WORK_TILES)
 		setWorkingPlot(ePlot, true);
 }
 
