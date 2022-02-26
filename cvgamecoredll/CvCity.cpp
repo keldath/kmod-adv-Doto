@@ -4151,11 +4151,9 @@ bool CvCity::extraVisiblePopulationMylon() const
 {	
 	//if the worked tiles are 20 and there is more pop in the city 
 	//it means that there cant be anymore worked tiles.
-	//int maxPopWork = getPopulation() >= getWorkingPopulation() + 1 //home city not included -> so +1;
-	//if (maxPopWork && getWorkingPopulation() >= MAX_WORK_TILES)
-	//	return true;
-	//return false;
-	return (getPopulation() >= MAX_WORK_TILES + 1);
+	 return (getPopulation() > MAX_WORK_TILES && 
+			 getWorkingPopulation() >= MAX_WORK_TILES);
+	//return (getPopulation() >= MAX_WORK_TILES + 1);
 }
 
 int CvCity::totalFreeSpecialists() const
@@ -5158,8 +5156,8 @@ void CvCity::changeSpecialistPopulation(int iChange)
 	if (iChange != 0)
 	{
 //doto mylon 	
-		//m_iSpecialistPopulation += iChange;
-		if (extraVisiblePopulationMylon())
+		m_iSpecialistPopulation += iChange;
+/*		if (extraVisiblePopulationMylon())
 		{
 		
 			//since there are 20 worked tiles and more pop than that
@@ -5180,7 +5178,7 @@ void CvCity::changeSpecialistPopulation(int iChange)
 			//this is nornal - worked tiles are less than 20,
 			//and the alternative is at 0 count,
 			m_iSpecialistPopulation += iChange;
-		}
+		}*/
 //doto mylon
 		FAssert(getSpecialistPopulation() >= 0);
 		GET_PLAYER(getOwner()).invalidateYieldRankCache();
@@ -10256,6 +10254,10 @@ void CvCity::alterSpecialistCount(SpecialistTypes eSpecialist, int iChange)
 		{
 			if (getSpecialistCount(eSpecialist) <= 0)
 				continue;
+//doto mylon pop working limit - if
+			if (extraVisiblePopulationMylon() && eSpecialist == GC.getDEFAULT_SPECIALIST()
+				&& GC.getDEFAULT_SPECIALIST() != NO_SPECIALIST)
+				continue;
 
 			changeSpecialistCount(eSpecialist, -1);
 
@@ -10500,15 +10502,15 @@ void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue) // advc.enum: C
 		// </advc.064b>
 	}
 	//doto mylon pop count limit working
-	// if the working plots are above 21 and the setWorkingPlot was called with a change the tile to working (true)
+	// if the working plots are above 20 and the setWorkingPlot was called with a change the tile to working (true)
 	// make sure to remove the worst tile before setting up a new one,
-	if (extraVisiblePopulationMylon() && bNewValue)
+	if (getWorkingPopulation() > MAX_WORK_TILES && bNewValue)
 	{
-		getWorstWorkedTileMylon();
+		getWorstWorkedTileMylon(ePlot);
 	}
 }
 //doto mylon pop count limit working
-void CvCity::getWorstWorkedTileMylon()
+void CvCity::getWorstWorkedTileMylon(CityPlotTypes ePlot)
 {
 //doto mylon pop count limit working
 	/*
@@ -10575,7 +10577,7 @@ void CvCity::getWorstWorkedTileMylon()
 		}
 	}
 
-	if (eWorstPlot != NO_CITYPLOT)
+	if (eWorstPlot != NO_CITYPLOT && eWorstPlot != ePlot)
 	{
 		setWorkingPlot(eWorstPlot, false);
 	} 

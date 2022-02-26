@@ -224,6 +224,10 @@ void CvCityAI::AI_assignWorkingPlots()
 	// do we have population unassigned
 	while (extraPopulation() > 0)
 	{
+//doto mylon pop tile work limit -> if MAX_WORK_TILES tiles are set to work
+//break the loop
+		//if (extraVisiblePopulationMylon())
+		//	break;
 		// (AI_addBestCitizen now handles forced specialist logic)
 		if (!AI_addBestCitizen(/*bWorkers*/ true, /*bSpecialists*/ true))
 		{
@@ -235,6 +239,9 @@ void CvCityAI::AI_assignWorkingPlots()
 	// if we still have population to assign, assign specialists
 	while (extraSpecialists() > 0)
 	{
+		//doto mylon pop tile work limit -> if MAX_WORK_TILES tiles are set to work
+		if (extraVisiblePopulationMylon())
+			break; 
 		if (!AI_addBestCitizen(/*bWorkers*/ false, /*bSpecialists*/ true))
 		{
 			FErrorMsg("failed to assign extra specialist");
@@ -249,10 +256,6 @@ void CvCityAI::AI_assignWorkingPlots()
 		AI_juggleCitizens();
 
 	//doto mylon pop worked limit test
-	int a = getPopulation();
-	int b = angryPopulation();
-	int c = getWorkingPopulation();
-	int d = std::min(0, extraFreeSpecialists());
 	// at this point, we should not be over the limit
 	FAssert((getWorkingPopulation() + getSpecialistPopulation()) <= (totalFreeSpecialists() + getPopulation()));
 	FAssert(extraPopulation() == 0); // K-Mod.
@@ -9608,6 +9611,10 @@ bool CvCityAI::AI_addBestCitizen(bool bWorkers, bool bSpecialists,
 	}
 	else if (eBestPlot != NO_CITYPLOT)
 	{
+//doto - if we reach max tiles that can be worked - no need to continue 
+// do not reduce a specialist or a tile
+		if (extraVisiblePopulationMylon())
+			return false;
 		setWorkingPlot(eBestPlot, true);
 		if (peBestPlot != NULL)
 		{

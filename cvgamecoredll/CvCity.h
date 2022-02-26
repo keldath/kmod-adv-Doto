@@ -1289,7 +1289,7 @@ public:
 	void setWorkingPlot(CityPlotTypes ePlot, bool bNewValue);
 	void setWorkingPlot(CvPlot& kPlot, bool bNewValue);
 //doto mylon pop count limit working
-	void getWorstWorkedTileMylon();
+	void getWorstWorkedTileMylon(CityPlotTypes ePlot);
 	void alterWorkingPlot(CityPlotTypes ePlot);																	// Exposed to Python
 
 	int getNumRealBuilding(BuildingTypes eBuilding) const														// Exposed to Python
