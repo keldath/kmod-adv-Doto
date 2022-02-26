@@ -9645,6 +9645,10 @@ bool CvCityAI::AI_removeWorstCitizen(SpecialistTypes eIgnoreSpecialist)
 				if (getSpecialistCount((SpecialistTypes)GC.getDEFAULT_SPECIALIST()) >
 					getForceSpecialistCount((SpecialistTypes)GC.getDEFAULT_SPECIALIST()))
 				{
+//doto mylon pop count limit working - do not deduct citizen if max work tiles
+					if (getWorkingPopulation() > MAX_WORK_TILES)
+						return false;
+
 					// remove the extra generic citzen
 					changeSpecialistCount((SpecialistTypes)GC.getDEFAULT_SPECIALIST(), -1);
 					return true;
