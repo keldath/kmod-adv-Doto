@@ -10569,15 +10569,17 @@ void CvCity::getWorstWorkedTileMylon(CityPlotTypes ePlot)
 			)
 			iPlotScore *= 2; // </advc.121b>
 		iTotalScore += iPlotScore;
-
-		if (iTotalScore < iWorstValue)
+		CityPlotTypes eLoopWorse = it.currID();
+		if (iTotalScore < iWorstValue
+			//never calculate the same plot that was sent as as the one that was changed
+			&& eLoopWorse != ePlot)
 		{
 			iWorstValue = iTotalScore;
-			eWorstPlot = it.currID();
+			eWorstPlot = eLoopWorse;
 		}
 	}
 
-	if (eWorstPlot != NO_CITYPLOT && eWorstPlot != ePlot)
+	if (eWorstPlot != NO_CITYPLOT)
 	{
 		setWorkingPlot(eWorstPlot, false);
 	} 
@@ -10607,18 +10609,34 @@ void CvCity::alterWorkingPlot(CityPlotTypes ePlot)
 	}
 
 	setCitizensAutomated(false);
+
+	
 	if (isWorkingPlot(ePlot))
 	{
 		setWorkingPlot(ePlot, false);
+//doto mylon pop count limit working 
+		//if this is a working plot, and the limit was reached
+		// dont add a specialist gift per click :)
+		if (getWorkingPopulation() >= MAX_WORK_TILES)
+		{
+			return;
+		}
 		if (GC.getDEFAULT_SPECIALIST() != NO_SPECIALIST)
 			changeSpecialistCount(GC.getDEFAULT_SPECIALIST(), 1);
 		else AI().AI_addBestCitizen(false, true);
 	}
-	else if (extraPopulation() > 0 || AI().AI_removeWorstCitizen()
-//doto mylon pop count limit working = this should kick in when the chanhe of a toile is for another whentherea already 
-// a reach limit - the setworking will add and remove a worser tile then the chosen one here
-		|| getWorkingPopulation() >= MAX_WORK_TILES)
+	else if (extraPopulation() > 0 || AI().AI_removeWorstCitizen())
+	{
 		setWorkingPlot(ePlot, true);
+	}
+//doto mylon pop count limit working  - need to test
+//should adress when there are max working plots and a click was made to switch positions to another
+// the setWorkingPlot will trigger a swicheru with the mylon code at its end
+	else if (getWorkingPopulation() >= MAX_WORK_TILES)
+	{
+		setWorkingPlot(ePlot, true);
+	}
+	
 }
 
 // advc.003w:
