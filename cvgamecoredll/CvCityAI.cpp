@@ -258,7 +258,11 @@ void CvCityAI::AI_assignWorkingPlots()
 	//doto mylon pop worked limit test
 	// at this point, we should not be over the limit
 	FAssert((getWorkingPopulation() + getSpecialistPopulation()) <= (totalFreeSpecialists() + getPopulation()));
-	FAssert(extraPopulation() == 0); // K-Mod.
+//doto mylon avoid assert pop worked tile limit
+	//int a = extraPopulation();
+	//FAssert(extraPopulation() == 0);
+	if (!extraVisiblePopulationMylon())
+		FAssert(extraPopulation() == 0); // K-Mod.
 
 	AI_setAssignWorkDirty(false);
 

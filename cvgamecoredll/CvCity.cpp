@@ -1057,6 +1057,19 @@ CvPlot* CvCity::getCityIndexPlot(CityPlotTypes ePlot) const // advc.enum: CityPl
 
 bool CvCity::canWork(CvPlot const& kPlot) const
 {
+//doto mylon pop working limit - do not allow a city to override other city worked tile
+	/*CvCity const *a = kPlot.getWorkingCity();
+	CvCity const *b = this;
+	int c = getID();
+	int d = kPlot.getWorkingCity() == NULL ? c : kPlot.getWorkingCity()->getID();
+	if (getCityPlotIndex(kPlot) != getCityPlotIndex(getPlot()))
+	{
+		if (c != d)
+		{
+			FErrorMsg("keldath -  dont let manual override of a worked tile from selected city to another");
+			return false;
+		}
+	}*/
 	if (kPlot.getWorkingCity() != this)
 		return false;
 //doto enhanced city size mylon
@@ -1981,7 +1994,7 @@ int CvCity::getFoodTurnsLeft() const
 //doto advc fix for assert
 	if (iFoodLeft < 0)
 	{
-		FErrorMsg("keldath -  check this out");
+		//FErrorMsg("keldath -  check this out");
 		return 1;
 	}
 	int iTurnsLeft = intdiv::uceil(iFoodLeft, iFoodDiff);
@@ -10603,8 +10616,9 @@ void CvCity::alterWorkingPlot(CityPlotTypes ePlot)
 		return;
 	if (!canWork(*pPlot))
 	{
-		if (pPlot->getOwner() == getOwner())
-			pPlot->setWorkingCityOverride(this);
+//doto mylon pop working tile limit - dont allow stealing of tiles from cities - i prefer it like this
+		//if (pPlot->getOwner() == getOwner())
+		//	pPlot->setWorkingCityOverride(this);
 		return;
 	}
 
