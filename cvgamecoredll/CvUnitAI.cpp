@@ -2194,7 +2194,7 @@ void CvUnitAI::AI_barbAttackMove()
 			/*	advc.300: Don't rage right away. (Don't recall why I had originally
 				only wanted this on slower game speed.) */
 			(//GC.getInfo(kGame.getGameSpeedType()).getBarbPercent() < 125 ||
-			rAggressionRoll < barbarianAggressionChance(rCitiesPerCiv, fixp(1.6))))
+			rAggressionRoll < barbarianAggressionChance(rCitiesPerCiv, 2)))
 		{
 			if (AI_pillageRange(4))
 			{
@@ -2227,7 +2227,9 @@ void CvUnitAI::AI_barbAttackMove()
 			}
 		}
 		else if (//iCivCities > iCivs * 3
-			rAggressionRoll < barbarianAggressionChance(rCitiesPerCiv, 3)) // advc.300
+			// <advc.300>
+			rAggressionRoll < barbarianAggressionChance(rCitiesPerCiv,
+			kGame.isOption(GAMEOPTION_RAGING_BARBARIANS) ? fixp(1.6) : 3)) // </advc.300>
 		{
 			if (AI_cityAttack(1, 15))
 			{
@@ -2265,7 +2267,9 @@ void CvUnitAI::AI_barbAttackMove()
 			}
 		}
 		else if (//iCivCities > iCivs * 2
-			rAggressionRoll < barbarianAggressionChance(rCitiesPerCiv, 2)) // advc.300
+			// <advc.300>
+			rAggressionRoll < barbarianAggressionChance(rCitiesPerCiv,
+			kGame.isOption(GAMEOPTION_RAGING_BARBARIANS) ? fixp(1.25) : 2)) // </advc.300>
 		{
 			if (AI_pillageRange(2))
 				return;
@@ -3060,7 +3064,7 @@ void CvUnitAI::AI_attackCityMove()
 					iCityCapture++;
 				if (pLoopUnit->combatLimit() >= 100)
 					iNoCombatLimit++;
-				//if (iCityCaptureCount > 5 || 3*iCityCaptureCount > getGroup()->getNumUnits())
+				//if (iCityCapture > 5 || 3 * iCityCapture > kGroup.getNumUnits())
 				if ((iCityCapture >= 3 || 2 * iCityCapture > kGroup.getNumUnits()) &&
 					(iNoCombatLimit >= 6 || 3 * iNoCombatLimit > kGroup.getNumUnits()))
 				{
@@ -3346,7 +3350,7 @@ void CvUnitAI::AI_attackCityMove()
 				With iBase == 200, bombarding a defence bonus of 100% will
 				reduce effective defence by 50% */
 		}
-//DOTO rangedStrike KELDATH- NOT SIRE IF I SHOULD PUT SOME CODE HERE
+//DOTO rangedStrike KELDATH ranged immunity- NOT SIRE IF I SHOULD PUT SOME CODE HERE
 		int iAttackRatio = GC.getDefineINT(CvGlobals::BBAI_ATTACK_CITY_STACK_RATIO);
 		int iAttackRatioSkipBombard = GC.getDefineINT(CvGlobals::BBAI_SKIP_BOMBARD_MIN_STACK_RATIO);
 		iStepDistToTarget = stepDistance(pTargetCity->plot(), plot());
@@ -3834,7 +3838,7 @@ void CvUnitAI::AI_attackCityMove()
 							until the preparations are through. Difficult to avoid the assertions below. */
 						/*  this is a last resort. I don't expect that we'll ever actually need it.
 							(it's a pretty ugly function, so I /hope/ we don't need it.) */
-//DOTO-keldath - f1 suggested to remove this assert.
+//DOTO-keldath - f1 suggested to remove this assert. ranged immunity
 						//FErrorMsg("AI_attackCityMove is resorting to AI_solveBlockageProblem");
 						if (AI_solveBlockageProblem(pAreaTargetCity->plot(),
 							(GET_TEAM(getTeam()).getNumWars() <= 0)))
@@ -19264,6 +19268,8 @@ bool CvUnitAI::AI_retreatToCity(bool bPrimary, bool bPrioritiseAirlift, int iMax
 	if (pCity != NULL && pCity->getTeam() == getTeam())
 	{
 		if (bEvac && at(pCity->getPlot()) && // scorched earth
+			 // Let's not be a griefer if we'll be dead
+			kOwner.getNumCities() > 1 &&
 			m_pUnitInfo->getUnitCaptureClassType() != NO_UNITCLASS)
 		{
 			/*	(Would be nice to check which player is about to capture the city -

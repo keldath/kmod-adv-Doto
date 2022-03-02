@@ -4,7 +4,7 @@
 #define CIV4_UNIT_H
 
 #include "CvDLLEntity.h"
-//doto-rangedattack-keldath-so i can use options - ranged immunity
+//doto-rangedattack-keldath- ranged immunity so i can use options - ranged immunity
 #include "CvInfo_GameOption.h"
 #include "CvGame.h"
 //kedldath-rangedattack ranged immunity
@@ -1275,7 +1275,7 @@ protected:
 	void resolveCombat(CvUnit* pDefender, CvPlot* pPlot, bool bVisible); // K-Mod
 //DOTO - ranged-immunity
 	void resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pPlot, bool bVisible, int dmgFromRanged); // K-Mod
-//DOTO - rangeimunity
+//DOTO - ranged imunity
 	void addAttackSuccessMessages(CvUnit const& kDefender, bool bFought) const; // advc.010
 	void addDefenseSuccessMessages(CvUnit const& kDefender) const; // advc
 	bool suppressStackAttackSound(CvUnit const& kDefender) const; // advc.002l

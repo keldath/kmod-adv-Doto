@@ -6,19 +6,19 @@
 
 CvOrganizationInfo::CvOrganizationInfo() :
 m_wcSymbol(0),
-m_iTechPrereq(NO_TECH),
-m_iFreeUnitClass(NO_UNITCLASS),
+m_eTechPrereq(NO_TECH),
+m_eFreeUnitClass(NO_UNITCLASS),
+m_eMissionType(NO_MISSION),
 m_iSpreadFactor(0),
 /*************************************************************************************************/
 /** TGA_INDEXATION                          03/17/08                                MRGENIE      */
 /**                                                                                              */
 /**                                                                                              */
 /*************************************************************************************************/
-m_iTGAIndex(-1),
+m_iTGAIndex(-1)
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
-m_iMissionType(NO_MISSION)
 {}
 
 wchar CvOrganizationInfo::getChar() const
@@ -58,19 +58,10 @@ void CvOrganizationInfo::setTGAIndex(int i)
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
 
-int CvOrganizationInfo::getFreeUnitClass() const
-{
-	return m_iFreeUnitClass;
-}
-
-int CvOrganizationInfo::getMissionType() const
-{
-	return m_iMissionType;
-}
-
 void CvOrganizationInfo::setMissionType(int iNewType)
 {
-	m_iMissionType = iNewType;
+	m_eMissionType = (MissionTypes)iNewType;
+	FAssertEnumBounds(m_eMissionType); // advc
 }
 
 const TCHAR* CvOrganizationInfo::getMovieFile() const
@@ -93,8 +84,8 @@ bool CvOrganizationInfo::read(CvXMLLoadUtility* pXML)
 	if (!base_t::read(pXML))
 		return false;
 
-	pXML->SetInfoIDFromChildXmlVal(m_iTechPrereq, "TechPrereq");
-	pXML->SetInfoIDFromChildXmlVal(m_iFreeUnitClass, "FreeUnitClass");
+	pXML->SetInfoIDFromChildXmlVal((int&)m_eTechPrereq, "TechPrereq");
+	pXML->SetInfoIDFromChildXmlVal((int&)m_eFreeUnitClass, "FreeUnitClass");
 
 	pXML->GetChildXmlValByName(&m_iSpreadFactor, "iSpreadFactor");
 
@@ -157,7 +148,7 @@ void CvReligionInfo::setHolyCityChar(wchar c)
 /**                                                                                              */
 /*************************************************************************************************/
 /*
-	m_cHolyCityChar = c; 
+	m_cHolyCityChar = c;
 */
 	m_cHolyCityChar = (wchar_t)(8551 + (m_iTGAIndex) * 2);
 /*************************************************************************************************/
@@ -323,7 +314,7 @@ void CvCorporationInfo::setHeadquarterChar(wchar c)
 /*************************************************************************************************/
 /*
 	m_iHeadquarterChar = i;
-	m_cHeadquarterChar = c; 
+	m_cHeadquarterChar = c;
 */
 	m_cHeadquarterChar = (wchar_t)(8551 + (TGA_RELIGIONS + m_iTGAIndex) * 2);
 /*************************************************************************************************/

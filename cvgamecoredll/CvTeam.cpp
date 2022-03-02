@@ -5335,7 +5335,7 @@ void CvTeam::doBarbarianResearch()
 		the barbarian tech rate.) */
 	if (iElapsed < GC.getInfo(kGame.getHandicapType()).
 		getBarbarianCreationTurnsElapsed() *
-		// advc.300: Divisor was 200. I.e, shorten the delay a bit further.
+		// advc.302: Divisor was 200. I.e, shorten the delay a bit further.
 		GC.getInfo(kGame.getGameSpeedType()).getBarbPercent() / 250)
 	{
 		return;
@@ -5683,7 +5683,8 @@ void CvTeam::processTech(TechTypes eTech, int iChange,
 		if (kTech.isCommerceFlexible(eLoopCommerce))
 			changeCommerceFlexibleCount(eLoopCommerce, iChange);
 	}
-	if (kTech.isAnyTerrainTrade()) // advc.003t
+	if (kTech.isAnyTerrainTrade() && // advc.003t
+		!isBarbarian()) // advc.300
 	{
 		FOR_EACH_ENUM(Terrain)
 		{
@@ -5691,7 +5692,7 @@ void CvTeam::processTech(TechTypes eTech, int iChange,
 				changeTerrainTradeCount(eLoopTerrain, iChange);
 		}
 	}
-	if (kTech.isRiverTrade())
+	if (kTech.isRiverTrade() /* advc.300: */ && !isBarbarian())
 		changeRiverTradeCount(iChange);
 	// <advc.500c>
 	if (kTech.isNoFearForSafety())

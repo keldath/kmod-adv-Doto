@@ -3629,7 +3629,7 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 	FOR_EACH_ENUM2(Build, eBuild)
 	{
 		if(kPlot.getBuildProgress(eBuild) <= 0 ||
-			!kPlot.canBuild(eBuild, eActivePlayer))
+			!kPlot.canBuild(eBuild, eActivePlayer, false, false))
 		{
 			continue;
 		}
@@ -3760,7 +3760,7 @@ void CvGameTextMgr::setPlotHealthHappyHelp(CvWStringBuffer& szBuffer, CvPlot con
 			FOR_EACH_ENUM(Build)
 			{
 				if (GC.getInfo(eLoopBuild).isFeatureRemove(kPlot.getFeatureType()) &&
-					pHeadSelectedUnit->canBuild(kPlot, eLoopBuild))
+					pHeadSelectedUnit->canBuild(kPlot, eLoopBuild, false, false))
 				{
 					bCanRemove = true;
 					break;
@@ -3774,16 +3774,14 @@ void CvGameTextMgr::setPlotHealthHappyHelp(CvWStringBuffer& szBuffer, CvPlot con
 	if (!bFound && !bCanRemove)
 	{
 		bool bOurCity = false;
-		for (CityPlotIter it(kPlot); it.hasNext(); ++it) // Look for a city
+		for (NearbyCityIter itCity(kPlot); itCity.hasNext(); ++itCity)
 		{
-			CvPlot const& kLoopPlot = *it;
-			if (kLoopPlot.isCity() &&
-				(kLoopPlot.getPlotCity()->getOwner() == kActivePlayer.getID() ||
+			if (itCity->getOwner() == kActivePlayer.getID() ||
 				(kPlot.getOwner() == kActivePlayer.getID() &&
-				kLoopPlot.getPlotCity()->isRevealed(kActiveTeam.getID(), true))))
+				itCity->isRevealed(kActiveTeam.getID(), true)))
 			{
 				bOurCity = true;
-				if (gDLL->UI().isCitySelected(kLoopPlot.getPlotCity()))
+				if (gDLL->UI().isCitySelected(&*itCity))
 				{
 					bNearSelectedCity = true;
 					break;
@@ -3852,26 +3850,26 @@ void CvGameTextMgr::setPlotHealthHappyHelp(CvWStringBuffer& szBuffer, CvPlot con
 }
 
 // Replacing code originally in CvWidgetData::parseActionHelp
-void CvGameTextMgr::setHealthHappyBuildActionHelp(CvWStringBuffer& szBuffer, CvPlot const& kPlot, BuildTypes eBuild) const
+void CvGameTextMgr::setHealthHappyBuildActionHelp(CvWStringBuffer& szBuffer,
+	CvPlot const& kPlot, BuildTypes eBuild) const
 {
 	CvBuildInfo const& kBuild = GC.getInfo(eBuild);
 	ImprovementTypes const eNewImprov = kBuild.getImprovement();
 	bool const bRemoveFeature = (kPlot.isFeature() &&
 			kBuild.isFeatureRemove(kPlot.getFeatureType()));
 	TeamTypes const eActiveTeam = getActiveTeam();
-	if (kPlot.isCityRadius() && (eNewImprov != NO_IMPROVEMENT || bRemoveFeature))
+	if (eNewImprov != NO_IMPROVEMENT || bRemoveFeature)
 	{
 		ImprovementTypes eOldImprov = kPlot.getRevealedImprovementType(eActiveTeam, true);
 		CvWString szNewItem;
 		szNewItem.Format(NEWLINE L"%c", gDLL->getSymbolID(BULLET_CHAR));
-		for (CityPlotIter it(kPlot, false); it.hasNext(); ++it)
+		for (NearbyCityIter itCity(kPlot); itCity.hasNext(); ++itCity)
 		{
-			CvCity* pCity = it->getPlotCity();
-			if (pCity == NULL || !pCity->isRevealed(eActiveTeam, true))
+			if (!itCity->isRevealed(eActiveTeam, true))
 				continue;
 			int iHappyChange, iUnhappyChange, iGoodHealthChange, iBadHealthChange,
 					iGoodHealthPercentChange, iBadHealthPercentChange;
-			pCity->goodBadHealthHappyChange(kPlot, eNewImprov == NO_IMPROVEMENT ?
+			itCity->goodBadHealthHappyChange(kPlot, eNewImprov == NO_IMPROVEMENT ?
 					eOldImprov : eNewImprov, eOldImprov, bRemoveFeature,
 					iHappyChange, iUnhappyChange, iGoodHealthChange, iBadHealthChange,
 					iGoodHealthPercentChange, iBadHealthPercentChange);
@@ -3907,7 +3905,7 @@ void CvGameTextMgr::setHealthHappyBuildActionHelp(CvWStringBuffer& szBuffer, CvP
 			if (!bFirst)
 			{
 				szBuffer.append(L" ");
-				szBuffer.append(gDLL->getText("TXT_KEY_IN_CITY", pCity->getNameKey()));
+				szBuffer.append(gDLL->getText("TXT_KEY_IN_CITY", itCity->getNameKey()));
 			}
 		}
 	}
@@ -7493,6 +7491,22 @@ void CvGameTextMgr::parseCivicInfo(CvWStringBuffer &szHelpText, CivicTypes eCivi
 	}
 //DPII < Maintenance Modifiers >
 
+	// <advc.912g>
+	if (kCivic.getColonyMaintenanceModifier() != 0)
+	{
+		if (kCivic.getColonyMaintenanceModifier() <= -100)
+		{
+			szHelpText.append(NEWLINE);
+			szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_COLONY_MAINT"));
+		}
+		else
+		{
+			szHelpText.append(NEWLINE);
+			szHelpText.append(gDLL->getText(
+					"TXT_KEY_CIVIC_COLONY_MAINT_MOD",
+					kCivic.getColonyMaintenanceModifier()));
+		}
+	} // </advc.912g>
 	//	Extra Health
 	if (kCivic.getExtraHealth() != 0)
 	{
@@ -10600,7 +10614,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 	if(eBuildingClass == NO_BUILDINGCLASS)
 		return;
 	CvBuildingClassInfo const& kBuildingClass = GC.getInfo(eBuildingClass);
-	/*  ePlayer is NO_PLAYER if Civilopedia accessed from main menu.
+	/*  ePlayer is NO_PLAYER if Civilopedia accessed from opening menu.
 		(bCivilopediaText is true when help text for a Civilpedia article is being
 		composed; false for Civilopedia hover text and all non-Civilopedia texts.) */
 	CvPlayer const* pPlayer = (ePlayer == NO_PLAYER ? NULL : &GET_PLAYER(ePlayer));
@@ -10810,7 +10824,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 	}
 
 	if (bCivilopediaText ||
-		ePlayer == NO_PLAYER) // advc: Civilopedia from main menu
+		ePlayer == NO_PLAYER) // advc: Civilopedia from opening menu
 	{	// advc: Already done higher up
 		/*setYieldChangeHelp(szBuffer, L"", L"", L"", kBuilding.getYieldModifierArray(), true, bCivilopediaText);
 		setCommerceChangeHelp(szBuffer, L"", L"", L"", kBuilding.getCommerceModifierArray(), true, bCivilopediaText);*/
@@ -13056,7 +13070,7 @@ void CvGameTextMgr::setProjectHelp(CvWStringBuffer &szBuffer, ProjectTypes eProj
 		szBuffer.append(szTempBuffer);
 	}
 	if (!bCivilopediaText &&
-		ePlayer != NO_PLAYER) // advc.004w: Civilopedia from main menu
+		ePlayer != NO_PLAYER) // advc.004w: Civilopedia from opening menu
 	{
 		int iMaking = GET_TEAM(ePlayer).getProjectMaking(eProject); // advc.004w
 		if (kProject.isWorldProject())
@@ -14653,7 +14667,7 @@ void CvGameTextMgr::setBonusTradeHelp(CvWStringBuffer &szBuffer, BonusTypes eBon
 		szBuffer.append(CvWString::format( SETCOLR L"%s" ENDCOLR,
 				TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"),
 				GC.getInfo(eBonus).getDescription()));
-		// advc.004w: Don't omit the basic effect in main menu Civilopedia hovers
+		// advc.004w: Don't omit the basic effect in opening menu Civilopedia hovers
 		//if (NO_PLAYER != eActivePlayer)
 
 		/*	K-Mod. Bonuses now display "(Obsolete)" instead of
@@ -14873,7 +14887,7 @@ void CvGameTextMgr::setBonusExtraHelp(CvWStringBuffer &szBuffer, BonusTypes eBon
 	CvGame const& kGame = GC.getGame();
 	CivilizationTypes const eCivilization = kGame.getActiveCivilizationType();
 	PlayerTypes const eActivePlayer = getActivePlayer();
-	// NULL when in main menu Civilopedia
+	// NULL when in opening-menu Civilopedia
 	CvPlayerAI const* pActivePlayer = NULL;
 	int iCurrentEra = 0;
 	if(eActivePlayer != NO_PLAYER)
@@ -15272,10 +15286,11 @@ void CvGameTextMgr::setReligionHelp(CvWStringBuffer &szBuffer, ReligionTypes eRe
 		{
 			szBuffer.append(NEWLINE);
 			szBuffer.append(gDLL->getText("TXT_KEY_RELIGION_FOUNDED_FIRST",
-					GC.getInfo((TechTypes)kReligion.getTechPrereq()).getTextKeyWide()));
+					GC.getInfo(kReligion.getTechPrereq()).getTextKeyWide()));
 		}
 	}
-	UnitClassTypes eFreeUnitClass = (UnitClassTypes)kReligion.getFreeUnitClass(); // advc
+
+	UnitClassTypes eFreeUnitClass = kReligion.getFreeUnitClass(); // advc
 	if (eFreeUnitClass != NO_UNITCLASS)
 	{
 		UnitTypes eFreeUnit = (getActivePlayer() != NO_PLAYER ?
@@ -15385,7 +15400,7 @@ void CvGameTextMgr::setReligionHelpCity(CvWStringBuffer &szBuffer, ReligionTypes
 			if (GC.getInfo(eReligion).getTechPrereq() != NO_TECH)
 			{
 				szBuffer.append(gDLL->getText("TXT_KEY_RELIGION_FOUNDED_FIRST",
-						GC.getInfo((TechTypes)GC.getInfo(eReligion).getTechPrereq()).
+						GC.getInfo(GC.getInfo(eReligion).getTechPrereq()).
 						getTextKeyWide()));
 			}
 		}
@@ -15610,8 +15625,7 @@ void CvGameTextMgr::setCorporationHelp(CvWStringBuffer &szBuffer,
 		{
 			szBuffer.append(NEWLINE);
 			szBuffer.append(gDLL->getText("TXT_KEY_CORPORATION_FOUNDED_FIRST",
-					GC.getInfo((TechTypes)kCorporation.getTechPrereq()).
-					getTextKeyWide()));
+					GC.getInfo(kCorporation.getTechPrereq()).getTextKeyWide()));
 		}
 	}
 /*************************************************************************************************/
@@ -15646,20 +15660,21 @@ void CvGameTextMgr::setCorporationHelp(CvWStringBuffer &szBuffer,
 		szBuffer.append(gDLL->getText("TXT_KEY_CORPORATION_BONUS_PRODUCED",
 				GC.getInfo(kCorporation.getBonusProduced()).getChar()));
 	}
-	UnitClassTypes eFreeUnitClass = (UnitClassTypes)kCorporation.getFreeUnitClass(); // advc
-	if (eFreeUnitClass != NO_UNITCLASS)
 	{
-		UnitTypes eFreeUnit = (getActivePlayer() != NO_PLAYER ? 
-				GC.getGame().getActiveCivilization()->getUnit(eFreeUnitClass) :
-				GC.getInfo(eFreeUnitClass).getDefaultUnit());
-		if (eFreeUnit != NO_UNIT)
+		UnitClassTypes const eFreeUnitClass = kCorporation.getFreeUnitClass();
+		if (eFreeUnitClass != NO_UNITCLASS)
 		{
-			szBuffer.append(NEWLINE);
-			szBuffer.append(gDLL->getText("TXT_KEY_RELIGION_FOUNDER_RECEIVES",
-					GC.getInfo(eFreeUnit).getTextKeyWide()));
+			UnitTypes eFreeUnit = (getActivePlayer() != NO_PLAYER ? 
+					GC.getGame().getActiveCivilization()->getUnit(eFreeUnitClass) :
+					GC.getInfo(eFreeUnitClass).getDefaultUnit());
+			if (eFreeUnit != NO_UNIT)
+			{
+				szBuffer.append(NEWLINE);
+				szBuffer.append(gDLL->getText("TXT_KEY_RELIGION_FOUNDER_RECEIVES",
+						GC.getInfo(eFreeUnit).getTextKeyWide()));
+			}
 		}
 	}
-
 	std::vector<CorporationTypes> aCompetingCorps;
 	bFirst = true;
 	FOR_EACH_ENUM2(Corporation, eLoopCorp)
@@ -15707,19 +15722,17 @@ void CvGameTextMgr::setCorporationHelpCity(CvWStringBuffer &szBuffer,
 				TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"), kCorporation.getDescription()));
 		szBuffer.append(NEWLINE);
 
-		if (!GC.getGame().isCorporationFounded(eCorporation))
+		if (!GC.getGame().isCorporationFounded(eCorporation) &&
+			GC.getInfo(eCorporation).getTechPrereq() != NO_TECH)
 		{
-			if (GC.getInfo(eCorporation).getTechPrereq() != NO_TECH)
-			{
-				szBuffer.append(gDLL->getText("TXT_KEY_CORPORATION_FOUNDED_FIRST",
-						GC.getInfo((TechTypes)(kCorporation.getTechPrereq())).getTextKeyWide()));
-			}
+			szBuffer.append(gDLL->getText("TXT_KEY_CORPORATION_FOUNDED_FIRST",
+					GC.getInfo(kCorporation.getTechPrereq()).getTextKeyWide()));
 		}
 	}
 
 	if (!bForceCorporation)
 	{
-		if (!(pCity->isHasCorporation(eCorporation)))
+		if (!pCity->isHasCorporation(eCorporation))
 			return;
 	}
 
@@ -17407,6 +17420,7 @@ void CvGameTextMgr::getAttitudeString(CvWStringBuffer& szBuffer, PlayerTypes ePl
 				"TXT_KEY_MISC_ATTITUDE_WAR");
 	}
 	// <advc.004q>
+#ifndef ENABLE_REPRO_TEST
 	int iTotalCached = kPlayer.AI_getAttitudeVal(eTargetPlayer, false);
 	if (!bConstCache && bSHowHiddenAttitude && !bObscurePersonality &&
 		iTotal != iTotalCached && !kGame.isNetworkMultiPlayer() &&
@@ -17420,6 +17434,7 @@ void CvGameTextMgr::getAttitudeString(CvWStringBuffer& szBuffer, PlayerTypes ePl
 		getAttitudeString(szBuffer, ePlayer, eTargetPlayer, true);
 		return;
 	}
+#endif
 	// Attitude string - append this to szBuffer before appending the breakdown
 	szBuffer.append(NEWLINE);
 	//szBuffer.append(gDLL->getText("TXT_KEY_ATTITUDE_TOWARDS", GC.getInfo(kPlayer.AI_getAttitude(eTargetPlayer)).getTextKeyWide(), GET_PLAYER(eTargetPlayer).getNameKey()));
@@ -22053,7 +22068,10 @@ void CvGameTextMgr::getNukePlotHelp(CvPlot const& kPlot,
 		TeamTypes const eVictimTeam = it->getID();
 		if (kHeadSelectedUnit.isNukeVictim(&kPlot, eVictimTeam) &&
 			!kHeadSelectedUnit.isEnemy(eVictimTeam))
-		{	// advc.130q: No newline
+		{	// <kekm.7> (advc)
+			if (eVictimTeam == kHeadSelectedUnit.getTeam())
+				szHelp.append(gDLL->getText("TXT_KEY_CANT_NUKE_OWN_TEAM"));
+			else // </kekm.7>
 			szHelp.append(gDLL->getText("TXT_KEY_CANT_NUKE_FRIENDS"));
 			break;
 		}
@@ -22073,7 +22091,7 @@ void CvGameTextMgr::getNukePlotHelp(CvPlot const& kPlot,
 					GET_TEAM(eInterceptTeam).getName().c_str(), iInterceptChance));
 		}
 	} // </advc.650>
-	szHelp += NEWLINE; // advc.130q
+	szHelp += NEWLINE; // kekm.7
 }
 
 /*	advc.004c: (Beginning based on getNukePlotHelp; the defense damage part is akin

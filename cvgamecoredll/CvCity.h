@@ -290,7 +290,7 @@ public:
 	int happyLevel() const;																						// Exposed to Python
 	int angryPopulation(int iExtra = 0, /* advc.104: */ bool bIgnoreCultureRate = false) const;					// Exposed to Python
 	int visiblePopulation() const;
-//doto enhanced city mylon
+//doto mylon enhanced City size
 	bool extraVisiblePopulationMylon() const;
 	int totalFreeSpecialists() const;																			// Exposed to Python
 	int extraPopulation() const;																				// Exposed to Python
@@ -412,8 +412,6 @@ public:
 	int getWorkingPopulation() const { return m_iWorkingPopulation; }											// Exposed to Python
 	void changeWorkingPopulation(int iChange);
 	int getSpecialistPopulation() const { return m_iSpecialistPopulation; }										// Exposed to Python
-//doto mylon
-	int getSpecialistPopulationmylon() const { return m_iSpecialistPopulationmylon; }	
 	void changeSpecialistPopulation(int iChange);
 
 	int getNumGreatPeople() const { return m_iNumGreatPeople; }													// Exposed to Python
@@ -478,7 +476,9 @@ public:
 	// <advc.004b> A projection for cities yet to be founded
 	static int calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
 	//DOTO-DPII keldath<Maintenance Modifiers> 
-			PlayerTypes eOwner, int iPopulation = -1, int iLocalDistance = 0);
+			PlayerTypes eOwner, int iPopulation = -1,
+			bool bNoPlayerModifiers = false,
+			int iLocalDistance = 0);
 	//DOTO-DPII keldath<Maintenance Modifiers> 
 	static int calculateNumCitiesMaintenanceTimes100(CvPlot const& kCityPlot,
 			PlayerTypes eOwner, int iPopulation = -1, int iExtraCities = 0);
@@ -1277,10 +1277,10 @@ public:
 	}
 	void changeEspionageDefenseModifier(int iChange);
 	int cultureTimes100InsertedByMission(EspionageMissionTypes eMission) const; // advc
-//mylon enhanced cities doto advc version
+
 	bool isWorkingPlot(CityPlotTypes ePlot) const																// Exposed to Python
 	{
-//mylon enhanced cities doto advc version
+//doto mylon enhanced City size
 		//return m_abWorkingPlot.get(ePlot);
 		FAssertBounds(0, numCityPlots(), ePlot);
 		return m_abWorkingPlot[ePlot];
@@ -1288,7 +1288,7 @@ public:
 	bool isWorkingPlot(CvPlot const& kPlot) const;																// Exposed to Python
 	void setWorkingPlot(CityPlotTypes ePlot, bool bNewValue);
 	void setWorkingPlot(CvPlot& kPlot, bool bNewValue);
-//doto mylon pop count limit working
+//doto mylon population tile working limit
 	void getWorstWorkedTileMylon(CityPlotTypes ePlot);
 	void alterWorkingPlot(CityPlotTypes ePlot);																	// Exposed to Python
 
@@ -1438,7 +1438,7 @@ public:
 	void invalidateYieldRankCache(YieldTypes eYield = NO_YIELD);
 	void invalidateCommerceRankCache(CommerceTypes eCommerce = NO_COMMERCE);
 	//int getBestYieldAvailable(YieldTypes eYield) const; // advc.003j: obsolete
-//mylon enhanced cities doto advc version	
+//doto mylon enhanced City size	
 	int maxRadius() const;
 	int getRadius() const { return m_iRadius; }
 	int maxDiameter() const { return CITY_DIAM_FOR_RADIUS(maxRadius()); }
@@ -1492,8 +1492,6 @@ protected:
 	int m_iHighestPopulation;
 	int m_iWorkingPopulation;
 	int m_iSpecialistPopulation;
-//doto mylon pop wrk tile limit
-	int m_iSpecialistPopulationmylon;
 	int m_iNumGreatPeople;
 	int m_iBaseGreatPeopleRate;
 	int m_iGreatPeopleRateModifier;
@@ -1608,10 +1606,10 @@ protected:
 	int m_iPopRushHurryCount; // advc.912d
 	int m_iMostRecentOrder; // advc.004x
 
-//doto enhanced city size mylon
+//doto mylon enhanced City size
 	int m_iRadius;
 	CityPlotTypes m_eCityPlots;
-
+//doto mylon enhanced City size
 	bool m_bNeverLost;
 	bool m_bBombarded;
 	bool m_bDrafted;
@@ -1710,7 +1708,7 @@ protected:
 	EagerEnumMap<PlayerTypes,bool> m_abTradeRoute;
 	EagerEnumMap<TeamTypes,bool> m_abRevealed;
 	ArrayEnumMap<TeamTypes,bool> m_abEspionageVisibility;
-//mylon enhanced cities doto advc version
+//doto mylon enhanced City size
 	//EagerEnumMap<CityPlotTypes,bool> m_abWorkingPlot;
 	std::vector<bool> m_abWorkingPlot;
 	ArrayEnumMap<ReligionTypes,bool> m_abHasReligion;
@@ -1815,8 +1813,8 @@ protected:
 	void doPopOrder(CLLNode<OrderData>* pOrder); // advc.064d
 	// advc.901:
 	std::pair<int,int> calculateSurroundingHealth(int iExtraGoodPercent = 0, int iExtraBadPercent = 0) const;
-//doto enhanced city size mylon
-	void updateRadius(); //mylon doto version
+//doto mylon enhanced City size
+	void updateRadius();
 };
 
 #endif

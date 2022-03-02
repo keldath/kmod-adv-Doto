@@ -739,7 +739,10 @@ public:
 
 	int getDistanceMaintenanceModifier() const { return m_iDistanceMaintenanceModifier; }							// Exposed to Python
 	void changeDistanceMaintenanceModifier(int iChange);
-
+	// <advc.912g>
+	int getColonyMaintenanceModifier() const { return m_iColonyMaintenanceModifier; }
+	void changeColonyMaintenanceModifier(int iChange);
+	// </advc.912g>
 	int getNumCitiesMaintenanceModifier() const { return m_iNumCitiesMaintenanceModifier; }							// Exposed to Python
 	void changeNumCitiesMaintenanceModifier(int iChange);
 
@@ -863,7 +866,7 @@ public:
 	int getCountFoundReligion() const { return m_iCountFoundReligion; }	// Exposed to Python
 	void changeCountFoundReligionModifier(int iChange);												// Exposed to Python
 //limited religion doto
-//doto enhanced city size mylon
+//doto mylon enhanced City
 	int cityRadius() const { return m_iCityRadius; }
 	int cityDiameter() const { return CITY_DIAM_FOR_RADIUS(m_iCityRadius); }	
 	CityPlotTypes numCityPlots() const { return m_eCityPlots; } 	
@@ -1629,6 +1632,7 @@ protected:  // <advc.210>
 	int m_iOtherAreaMaintenanceModifier;
 	//DPII < Maintenance Modifiers >
 	int m_iDistanceMaintenanceModifier;
+	int m_iColonyMaintenanceModifier; // advc.912g
 	int m_iNumCitiesMaintenanceModifier;
 	int m_iCorporationMaintenanceModifier;
 	int m_iTotalMaintenance;
@@ -1666,7 +1670,7 @@ protected:  // <advc.210>
 //limited religions
 	int m_iCountFoundReligion;
 //limited religion doto 
-//doto enhanced city size mylon
+//doto mylon enhanced City
 	int m_iCityRadius; // perhaps no good reason for treating these two as enums
 	CityPlotTypes m_eCityPlots;	
 //doto enhanced city size mylon

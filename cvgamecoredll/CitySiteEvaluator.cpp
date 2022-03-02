@@ -45,6 +45,13 @@ CitySiteEvaluator::CitySiteEvaluator(CvPlayerAI const& kPlayer, int iMinRivalRan
 		// advc.001: Make sure that personality isn't used for human or StartingLoc
 		if (!kPlayer.isHuman() || m_bDebug)
 			pPersonality = &GC.getInfo(kPlayer.getPersonalityType());
+		bool bEasyCultureFromTrait = false;
+		m_bEasyCulture = kPlayer.AI_isEasyCulture(&bEasyCultureFromTrait);
+		if (bEasyCultureFromTrait && pPersonality != NULL &&
+			pPersonality->getBasePeaceWeight() <= 5)
+		{
+			m_bAmbitious = true;
+		}
 		FOR_EACH_ENUM(Trait)
 		{
 			if (!kPlayer.hasTrait(eLoopTrait))
@@ -117,44 +124,6 @@ CitySiteEvaluator::CitySiteEvaluator(CvPlayerAI const& kPlayer, int iMinRivalRan
 				if (GC.getInfo(eUniqueBuilding).isWater())
 				{
 					m_bSeafaring = true;
-					break;
-				}
-			}
-		}
-		// Easy culture: culture process, free culture or easy artists
-		if (!m_bEasyCulture)
-		{
-			FOR_EACH_ENUM(Process)
-			{
-				CvProcessInfo const& kLoopProcess = GC.getInfo(eLoopProcess);
-				if (GET_TEAM(kPlayer.getTeam()).isHasTech(kLoopProcess.getTechPrereq()) &&
-					kLoopProcess.getProductionToCommerceModifier(COMMERCE_CULTURE) > 0)
-				{
-					m_bEasyCulture = true;
-					break;
-				}
-			}
-		}
-		if (!m_bEasyCulture)
-		{
-			FOR_EACH_ENUM(Building)
-			{
-				if (kPlayer.isBuildingFree(eLoopBuilding) && GC.getInfo(eLoopBuilding).
-					getObsoleteSafeCommerceChange(COMMERCE_CULTURE) > 0)
-				{
-					m_bEasyCulture = true;
-					break;
-				}
-			}
-		}
-		if (!m_bEasyCulture)
-		{
-			FOR_EACH_ENUM(Specialist)
-			{
-				if (kPlayer.isSpecialistValid(eLoopSpecialist) &&
-					kPlayer.specialistCommerce(eLoopSpecialist, COMMERCE_CULTURE) > 0)
-				{
-					m_bEasyCulture = true;
 					break;
 				}
 			}
@@ -472,6 +441,7 @@ short AIFoundValue::evaluate()
 
 	// K-Mod. (used to devalue cities which are unable to get any production.)
 	scaled rBaseProduction; // (advc.031: scaled)
+
 	FOR_EACH_ENUM(CityPlot)
 	{
 		// <advc.031>

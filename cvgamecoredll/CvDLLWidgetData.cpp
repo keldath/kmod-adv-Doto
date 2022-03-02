@@ -68,7 +68,7 @@ void CvDLLWidgetData::parseHelp(CvWStringBuffer &szBuffer, CvWidgetDataStruct &w
 		}
 	} // </advc.085>
 	/*	advc: (Note - Better not to assume that this is valid, widgets might perhaps
-		get triggered while returning to main menu or sth. like that.) */
+		get triggered while returning to opening menu or sth. like that.) */
 	PlayerTypes const eActivePlayer = getActivePlayer();
 	switch (widgetDataStruct.m_eWidgetType)
 	{
@@ -3956,13 +3956,13 @@ void CvDLLWidgetData::parseScoreboardCheatText(CvWidgetDataStruct &widgetDataStr
 						szWarplan.getCString(),
 						TEXT_COLOR((iOtherValue < iTheirValue) ?
 						"COLOR_POSITIVE_TEXT" : "COLOR_NEGATIVE_TEXT"),
-						iOtherValue, kTeam.AI_getWarSuccess(itEnemy->getID()),
+						iOtherValue, kTeam.AI_getWarSuccess(itEnemy->getID()).uround(),
 						TEXT_COLOR((iOtherValue < iTheirValue) ?
 						"COLOR_POSITIVE_TEXT" : "COLOR_NEGATIVE_TEXT"),
 						itEnemy->getName().GetCString(),
 						TEXT_COLOR((iTheirValue < iOtherValue) ?
 						"COLOR_POSITIVE_TEXT" : "COLOR_NEGATIVE_TEXT"),
-						iTheirValue, itEnemy->AI_getWarSuccess(eTeam)));
+						iTheirValue, itEnemy->AI_getWarSuccess(eTeam).uround()));
 			}
 		}
 		if (kTeam.AI_isAnyWarPlan()) // double space if had any war

@@ -25,7 +25,7 @@
 // advc.003u: Statics moved from CvPlayerAI
 CvPlayerAI** CvPlayer::m_aPlayers = NULL;
 
-//doto enhanced city size mylon
+//doto mylon enhanced City size
 #undef NUM_CITY_PLOTS
 #define NUM_CITY_PLOTS numCityPlots()
 
@@ -75,7 +75,8 @@ CvPlayer::CvPlayer(/* advc.003u: */ PlayerTypes eID) :
 	// advc: redundant
 	/*m_bDisableHuman = false; // bbai
 	m_iChoosingFreeTechCount = 0;*/ // K-Mod
-	//mylon doto version - Use the defaults so long as no civ type has been set
+//doto mylon enhanced City
+// - Use the defaults so long as no civ type has been set
 	m_iCityRadius = CITY_PLOTS_RADIUS;
 	m_eCityPlots = NUM_CITYPLOT_TYPES;
 	reset(eID, true);
@@ -451,6 +452,7 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_iOtherAreaMaintenanceModifier = 0;
 	//DPII < Maintenance Modifier >
 	m_iDistanceMaintenanceModifier = 0;
+	m_iColonyMaintenanceModifier = 0; // advc.912g
 	m_iNumCitiesMaintenanceModifier = 0;
 	m_iCorporationMaintenanceModifier = 0;
 	m_iTotalMaintenance = 0;
@@ -485,7 +487,7 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_iStateReligionBuildingProductionModifier = 0;
 	m_iStateReligionFreeExperience = 0;
 	m_iCapitalCityID = FFreeList::INVALID_INDEX;
-//limited religions	
+//doto limited religions	
 	m_iCountFoundReligion = 0;
 	m_iCitiesLost = 0;
 	m_iWinsVsBarbs = 0;
@@ -843,7 +845,8 @@ void CvPlayer::resetCivTypeEffects(/* advc.003q: */ bool bInit)
 		if (GC.getInfo(eUnit).isFound())
 			setUnitExtraCost(kCiv.unitClass(eUnit), getNewCityProductionValue());
 	}
-//doto enhanced city size mylon - will define plot size for a player
+//doto mylon enhanced City size
+// - will define plot size for a player
 	m_iCityRadius = GC.getInfo(getCivilizationType()).getMaxCityRadius();
 	FAssert(m_iCityRadius <= MAX_CITY_PLOTS);
 	m_eCityPlots = CvCity::cityPlotCountForRadius(m_iCityRadius);
@@ -1889,7 +1892,7 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 			if (bEverOwned)
 			{
 				GET_TEAM(eOldOwner).AI_changeWarSuccess(itOtherEnemy->getID(),
-						-std::min(GC.getWAR_SUCCESS_CITY_CAPTURING(),
+						-scaled::min(GC.getWAR_SUCCESS_CITY_CAPTURING(),
 						GET_TEAM(eOldOwner).AI_getWarSuccess(itOtherEnemy->getID())));
 			}
 		} // </advc.123d>
@@ -2076,7 +2079,7 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 		if (GC.getPythonCaller()->canRaze(kNewCity, getID()))
 		{	// auto raze based on game rules
 			if (kNewCity.isAutoRaze()
-//DOTO ENHANCED CITY - MYLON
+//doto mylon enhanced City
 // assuming city states have larger radious ( a lazy indication method....
 //city states will not be allowed to capture cities ever.
 			|| GC.getInfo(getCivilizationType()).getMaxCityRadius() > 2
@@ -4666,7 +4669,7 @@ int CvPlayer::getNumGovernmentCenters() const
 
 bool CvPlayer::canRaze(CvCity const& kCity) const // advc: param was CvCity*
 {
-//DOTO ENHANCED CITY - MYLON
+//doto mylon enhanced City
 // assuming city states have larger radious ( a lazy indication method....
 //city states will not be allowed to capture cities ever.
 	if (GC.getInfo(getCivilizationType()).getMaxCityRadius() > 2)
@@ -7440,7 +7443,7 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 	kGame.setReligionSlotTaken(eSlotReligion, true);
 
 	bool const bStarting = (kSlotReligion.getTechPrereq() == NO_TECH ||
-			GC.getInfo((TechTypes)kSlotReligion.getTechPrereq()).getEra() < kGame.getStartEra());
+			GC.getInfo(kSlotReligion.getTechPrereq()).getEra() < kGame.getStartEra());
 
 	int iBestValue = 0;
 	CvCity* pBestCity = NULL;
@@ -7473,7 +7476,7 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 //limited religion doto 	
 	if (bAward && kSlotReligion.getNumFreeUnits() > 0)
 	{
-		UnitTypes eFreeUnit = getCivilization().getUnit((UnitClassTypes)
+		UnitTypes eFreeUnit = getCivilization().getUnit(
 				GC.getInfo(eReligion).getFreeUnitClass());
 		if (eFreeUnit != NO_UNIT)
 		{
@@ -7530,8 +7533,7 @@ void CvPlayer::foundCorporation(CorporationTypes eCorporation)
 
 	CvCorporationInfo const& kCorp = GC.getInfo(eCorporation);
 	bool const bStarting = (kCorp.getTechPrereq() == NO_TECH ||
-			GC.getInfo((TechTypes)kCorp.getTechPrereq()).getEra() <
-			GC.getGame().getStartEra());
+			GC.getInfo(kCorp.getTechPrereq()).getEra() < GC.getGame().getStartEra());
 
 	int iBestValue = 0;
 	CvCity* pBestCity = NULL;
@@ -8767,12 +8769,21 @@ void CvPlayer::changeOtherAreaMaintenanceModifier(int iChange)
     }
 }
 //DPII < Maintenance Modifiers >
-
 void CvPlayer::changeDistanceMaintenanceModifier(int iChange)
 {
 	if (iChange != 0)
 	{
 		m_iDistanceMaintenanceModifier += iChange;
+		updateMaintenance();
+	}
+}
+
+// advc.912g:
+void CvPlayer::changeColonyMaintenanceModifier(int iChange)
+{
+	if (iChange != 0)
+	{
+		m_iColonyMaintenanceModifier += iChange;
 		updateMaintenance();
 	}
 }
@@ -11323,13 +11334,6 @@ int CvPlayer::getSingleCivicUpkeep(CivicTypes eCivic, bool bIgnoreAnarchy,
 		/*iUpkeep *= std::max(0, ((GC.getInfo(GC.getGame().getHandicapType()).getAIPerEraModifier() * getCurrentEra()) + 100));
 		iUpkeep /= 100;*/
 	}
-//DOTO - initial-civics-cost untill inflation starts
-//if upkeeo num is higher than num of cities, pay.
-	if (iUpkeep == 0) 
-	{
-		iUpkeep += GC.getInfo((UpkeepTypes)GC.getInfo(eCivic).getUpkeep()).getminUpkeepCost();
-	}	
-
 
 	return std::max(0, iUpkeep);
 }
@@ -11347,8 +11351,8 @@ int CvPlayer::getCivicUpkeep(CivicMap const* pCivics, bool bIgnoreAnarchy,
 		iTotalUpkeep += getSingleCivicUpkeep(pCivics->get(eLoopCivicOption),
 				bIgnoreAnarchy, /* advc.004b: */ iExtraCities);
 	}
-//DOTO - initial-civics-cost untill inflation starts
-	return fmath::round(iTotalUpkeep);
+
+	return iTotalUpkeep;
 }
 
 
@@ -14836,6 +14840,8 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	changeDomesticGreatGeneralRateModifier(GC.getInfo(eCivic).getDomesticGreatGeneralRateModifier() * iChange);
 	changeStateReligionGreatPeopleRateModifier(GC.getInfo(eCivic).getStateReligionGreatPeopleRateModifier() * iChange);
 	changeDistanceMaintenanceModifier(GC.getInfo(eCivic).getDistanceMaintenanceModifier() * iChange);
+	// advc.912g:
+	changeColonyMaintenanceModifier(GC.getInfo(eCivic).getColonyMaintenanceModifier() * iChange);
 	changeNumCitiesMaintenanceModifier(GC.getInfo(eCivic).getNumCitiesMaintenanceModifier() * iChange);
 	changeCorporationMaintenanceModifier(GC.getInfo(eCivic).getCorporationMaintenanceModifier() * iChange);
 	//DPII keldath< Maintenance Modifiers >
@@ -15125,6 +15131,9 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iOtherAreaMaintenanceModifier);
 	//DPII < Maintenance Modifiers >
 	pStream->Read(&m_iDistanceMaintenanceModifier);
+	// <advc.912g>
+	if (uiFlag >= 20)
+		pStream->Read(&m_iColonyMaintenanceModifier); // </advc.912g>
 	pStream->Read(&m_iNumCitiesMaintenanceModifier);
 	pStream->Read(&m_iCorporationMaintenanceModifier);
 	pStream->Read(&m_iTotalMaintenance);
@@ -15159,7 +15168,7 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iStateReligionBuildingProductionModifier);
 	pStream->Read(&m_iStateReligionFreeExperience);
 	pStream->Read(&m_iCapitalCityID);
-//limited religions
+//doto limited religions
 	pStream->Read(&m_iCountFoundReligion);
 	//mylon doto version
 	pStream->Read(&m_iCityRadius);
@@ -15429,6 +15438,18 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	// <advc> Future-proofing
 	if (isBarbarian())
 		m_abLoyalMember.setAll(false); // </advc>
+	// <advc.912g>
+	if (uiFlag < 20)
+	{
+		FOR_EACH_ENUM(Civic)
+		{
+			if (isCivic(eLoopCivic))
+			{
+				changeColonyMaintenanceModifier(GC.getInfo(eLoopCivic).
+						getColonyMaintenanceModifier());
+			}
+		}
+	} // </advc.912g>
 	m_groupCycle.Read(pStream);
 	m_researchQueue.Read(pStream);
 
@@ -15733,7 +15754,8 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	//uiFlag = 16; // advc.enum: new enum map save behavior
 	//uiFlag = 17; // advc.157
 	//uiFlag = 18; // advc.251 (city maintenance changed in handicap XML)
-	uiFlag = 19; // advc.708
+	//uiFlag = 19; // advc.708
+	uiFlag = 20; // advc.912g
 	pStream->Write(uiFlag);
 
 	// <advc.027>
@@ -15811,6 +15833,7 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	pStream->Write(m_iOtherAreaMaintenanceModifier);
 	//DPII < Maintenance Modifiers >
 	pStream->Write(m_iDistanceMaintenanceModifier);
+	pStream->Write(m_iColonyMaintenanceModifier); // advc.912g
 	pStream->Write(m_iNumCitiesMaintenanceModifier);
 	pStream->Write(m_iCorporationMaintenanceModifier);
 	pStream->Write(m_iTotalMaintenance);
@@ -15845,7 +15868,7 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	pStream->Write(m_iStateReligionBuildingProductionModifier);
 	pStream->Write(m_iStateReligionFreeExperience);
 	pStream->Write(m_iCapitalCityID);
-//limited religions
+//doto limited religions
 	pStream->Write(m_iCountFoundReligion);
 	//mylon doto version
 	pStream->Write(m_iCityRadius);
@@ -20278,8 +20301,11 @@ void CvPlayer::updateTradeList(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 						CvCity const* pCity = GET_PLAYER(
 								i == 0 ? getID() : eOtherPlayer).
 								getCity(pItem->m_iData);
-						if (pCity == NULL || pCity->getLiberationPlayer() == getID())
+						if (pCity == NULL || pCity->getLiberationPlayer() ==
+							(i == 0 ? eOtherPlayer : getID()))
+						{
 							continue;
+						}
 					}
 					eForcePeaceItemType = pItem->m_eItemType;
 				}

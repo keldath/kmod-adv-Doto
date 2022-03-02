@@ -124,12 +124,12 @@ public:
 	bool AI_isEmphasize(EmphasizeTypes eIndex) const;
 	void AI_setEmphasize(EmphasizeTypes eIndex, bool bNewValue);
 	//void AI_forceEmphasizeCulture(bool bNewValue); // advc.003j
-//doto enhanced city size mylon
+//doto mylon enhanced City size 
 	void AI_updateRadius(); //mylon doto version
 	int AI_getBestBuildValue(/* advc.enum: */ CityPlotTypes ePlot) const
 	{
 		//FAssertEnumBounds(ePlot);
-//doto enhanced city size mylon
+//doto mylon enhanced City size
 		FAssertBounds(0, m_aiBestBuildValue.size(), ePlot);
 		return m_aiBestBuildValue[ePlot];
 	}
@@ -159,6 +159,7 @@ public:
 	int AI_specialYieldMultiplier(YieldTypes eYield) const;
 	int AI_getCultureWeight() const { return m_iCultureWeight; } // K-Mod
 	void AI_setCultureWeight(int iWeight) { m_iCultureWeight = iWeight; } // K-Mod
+	bool AI_needsCultureToWorkFullRadius() const; // advc
 
 	int AI_countNumBonuses(BonusTypes eBonus, bool bIncludeOurs, bool bIncludeNeutral,
 			int iOtherCultureThreshold, bool bLand = true, bool bWater = true) const;
@@ -205,12 +206,16 @@ protected:
 	bool m_bForceEmphasizeCulture; // advc.003j (comment): unused
 	bool* m_pbEmphasize;
 
-//doto enhanced city size mylon - easier than using naked arrays
+//doto mylon enhanced City size 
+//- easier than using naked arrays
 	std::vector<int> m_aiBestBuildValue;
 	std::vector<BuildTypes> m_aeBestBuild;
+	//BuildTypes* m_aeBestBuild;
 	BuildTypes m_eBestBuild; // advc.opt
 
 	int* m_aiSpecialYieldMultiplier;
+//doto mylon enhanced City size 
+//	int* m_aiBestBuildValue;
 	int* m_aiPlayerCloseness;
 	// <advc> Made mutable (and made the cache accessor functions const)
 	mutable int* m_aiCachePlayerClosenessTurn;

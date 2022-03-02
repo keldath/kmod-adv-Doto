@@ -126,6 +126,7 @@ public:
 	// Obsoleted by K-Mod:
 	/*int AI_getOurPlotStrength(CvPlot* pPlot, int iRange, bool bDefensiveBonuses, bool bTestMoves) const;
 	int AI_getEnemyPlotStrength(CvPlot* pPlot, int iRange, bool bDefensiveBonuses, bool bTestMoves) const;*/ // BtS
+	bool AI_isEasyCulture(bool* pbFromTrait = NULL) const; // advc
 
 	bool AI_isAreaAlone(CvArea const& kArea) const;
 	bool AI_isCapitalAreaAlone() const;
@@ -188,6 +189,10 @@ public:
 	// BETTER_BTS_AI_MOD: END
 	// k146:
 	int AI_techProjectValue(TechTypes eTech, int iPathLength, bool &bEnablesProjectWonder) const;
+	// <advc>
+	int AI_techReligionValue(TechTypes eTech, int iPathLength,
+			int iRaceModifier, int iCityTarget,
+			CvRandom& kRand, int& iRandomMax, bool bRandomize) const; // </advc>
 	int AI_cultureVictoryTechValue(TechTypes eTech) const;
 
 	void AI_chooseFreeTech(/* advc.121: */ bool bEndOfTurn = false);
@@ -241,9 +246,9 @@ public:
 	int AI_getTeamSizeAttitude(PlayerTypes ePlayer) const;
 	// advc.sha: One function for both BetterRank and WorseRank
 	int AI_getRankDifferenceAttitude(PlayerTypes ePlayer) const;
-	//int AI_getLowRankAttitude(PlayerTypes ePlayer) const; // advc.sha
+	/*int AI_getLowRankAttitude(PlayerTypes ePlayer) const;
 	int AI_getLostWarAttitude(PlayerTypes ePlayer) const;
-	//int AI_getKnownPlayerRank(PlayerTypes ePlayer) const; // advc.sha
+	int AI_getKnownPlayerRank(PlayerTypes ePlayer) const;*/ // advc.sha
 	// END: Show Hidden Attitude Mod
 	int AI_getExpansionistAttitude(PlayerTypes ePlayer) const; // advc.130w
 	void AI_updateIdeologyAttitude(int iChange, CvCity const& kCity); // advc.130n

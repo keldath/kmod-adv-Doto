@@ -1692,6 +1692,7 @@ enum AreaBorderLayers
 	AREA_BORDER_LAYER_HIGHLIGHT_PLOT,
 	AREA_BORDER_LAYER_BLOCKADING,
 	AREA_BORDER_LAYER_BLOCKADED,
+	AREA_BORDER_LAYER_NUKE, // advc.653
 	NUM_AREA_BORDER_LAYERS
 };
 
@@ -2385,7 +2386,7 @@ enum UnitSubEntityTypes
 };
 
 // <advc.enum>
-//doto enhanced city size mylon
+//doto mylon enhanced City size 
 #define CITY_DIAM_FOR_RADIUS(iRadius) (1 + 2 * iRadius)
 /*	CityPlotTypes enum - idea from "We the People".
 	Replacing preprocessor defines in CvDefines. Note that those defines have

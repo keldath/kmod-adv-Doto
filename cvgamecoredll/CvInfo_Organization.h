@@ -16,8 +16,8 @@ public: // All the const functions are exposed to Python
 
 	wchar getChar() const; // advc: return wchar (not int)
 	void setChar(/* advc: */ wchar wc);
-	int getTechPrereq() const { return m_iTechPrereq; }
-	int getFreeUnitClass() const;
+	TechTypes getTechPrereq() const { return m_eTechPrereq; }
+	UnitClassTypes getFreeUnitClass() const { return m_eFreeUnitClass; }
 	int getSpreadFactor() const { return m_iSpreadFactor; }
 /*************************************************************************************************/
 /** TGA_INDEXATION                          01/21/08                                MRGENIE      */
@@ -29,7 +29,7 @@ public: // All the const functions are exposed to Python
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
-	int getMissionType() const;
+	MissionTypes getMissionType() const { return m_eMissionType; }
 	void setMissionType(int iNewType);
 
 	const TCHAR* getMovieFile() const;
@@ -40,8 +40,9 @@ public: // All the const functions are exposed to Python
 
 protected:
 	wchar m_wcSymbol; // advc
-	int m_iTechPrereq;
-	int m_iFreeUnitClass;
+	TechTypes m_eTechPrereq;
+	UnitClassTypes m_eFreeUnitClass;
+	MissionTypes m_eMissionType;
 	int m_iSpreadFactor;
 /*************************************************************************************************/
 /** TGA_INDEXATION                          01/21/08                                MRGENIE      */
@@ -52,8 +53,7 @@ protected:
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
-	int m_iMissionType;
-
+	
 	CvString m_szMovieFile;
 	CvString m_szMovieSound;
 	CvString m_szSound;

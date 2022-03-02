@@ -16,6 +16,7 @@ m_iGreatGeneralRateModifier(0),
 m_iDomesticGreatGeneralRateModifier(0),
 m_iStateReligionGreatPeopleRateModifier(0),
 m_iDistanceMaintenanceModifier(0),
+m_iColonyMaintenanceModifier(0), // advc.912g
 m_iNumCitiesMaintenanceModifier(0),
 //DPII < Maintenance Modifiers >
 m_iHomeAreaMaintenanceModifier(0),
@@ -445,6 +446,7 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iDomesticGreatGeneralRateModifier);
 	stream->Read(&m_iStateReligionGreatPeopleRateModifier);
 	stream->Read(&m_iDistanceMaintenanceModifier);
+	stream->Read(&m_iColonyMaintenanceModifier); // advc.912g
 	stream->Read(&m_iNumCitiesMaintenanceModifier);
 	//DPII < Maintenance Modifiers >
 	stream->Read(&m_iHomeAreaMaintenanceModifier);
@@ -611,6 +613,7 @@ void CvCivicInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iDomesticGreatGeneralRateModifier);
 	stream->Write(m_iStateReligionGreatPeopleRateModifier);
 	stream->Write(m_iDistanceMaintenanceModifier);
+	stream->Write(m_iColonyMaintenanceModifier); // advc.912g
 	stream->Write(m_iNumCitiesMaintenanceModifier);
 	//DPII < Maintenance Modifiers >
 	stream->Write(m_iHomeAreaMaintenanceModifier);
@@ -743,6 +746,8 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iDomesticGreatGeneralRateModifier, "iDomesticGreatGeneralRateModifier");
 	pXML->GetChildXmlValByName(&m_iStateReligionGreatPeopleRateModifier, "iStateReligionGreatPeopleRateModifier");
 	pXML->GetChildXmlValByName(&m_iDistanceMaintenanceModifier, "iDistanceMaintenanceModifier");
+	// advc.912g:
+	pXML->GetChildXmlValByName(&m_iColonyMaintenanceModifier, "iColonyMaintenanceModifier", 0);
 	pXML->GetChildXmlValByName(&m_iNumCitiesMaintenanceModifier, "iNumCitiesMaintenanceModifier");
 	//DPII < Maintenance Modifiers >
 	pXML->GetChildXmlValByName(&m_iHomeAreaMaintenanceModifier, "iHomeAreaMaintenanceModifier",0);
@@ -1112,7 +1117,7 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 /**	CMEDIT: End																					**/
 /*************************************************************************************************/
 
- 	return true;
+	return true;
 }
 
 CvCivicOptionInfo::CvCivicOptionInfo() : m_pabTraitNoUpkeep(NULL) {}

@@ -2363,7 +2363,6 @@ void CvUnit::updateFoundingBorder(bool bForceClear) const
 	if(BUGOption::isEnabled("MainInterface__FoundingYields", false) && iMode == 1)
 		return; // BtS behavior
 	gDLL->getEngineIFace()->clearAreaBorderPlots(AREA_BORDER_LAYER_FOUNDING_BORDER);
-	gDLL->UI().setDirty(ColoredPlots_DIRTY_BIT, true);
 	if(bForceClear || iMode <= 0 || !isFound())
 		return;
 	FOR_EACH_UNIT_IN(pUnit, *getGroup())
@@ -2383,15 +2382,13 @@ void CvUnit::updateFoundingBorder(bool bForceClear) const
 	}
 	ColorTypes eColor = GC.getInfo(GET_PLAYER(getOwner()).
 			getPlayerColor()).getColorTypePrimary();
-	NiColorA const& color = GC.getInfo(eColor).getColor();
-	for(int i = 0; i < GC.getMap().numPlots(); i++)
+	NiColorA const& kColor = GC.getInfo(eColor).getColor();
+	for (PlotCircleIter itPlot(*pCenter, iMode == 1 ? 1 : CITY_PLOTS_RADIUS);
+		itPlot.hasNext(); ++itPlot)
+
 	{
-		CvPlot const& kPlot = GC.getMap().getPlotByIndex(i);
-		if(::plotDistance(pCenter, &kPlot) <= (iMode == 1 ? 1 : CITY_PLOTS_RADIUS))
-		{
-			gDLL->getEngineIFace()->fillAreaBorderPlot(kPlot.getX(), kPlot.getY(),
-					color, AREA_BORDER_LAYER_FOUNDING_BORDER);
-		}
+		gDLL->getEngineIFace()->fillAreaBorderPlot(itPlot->getX(), itPlot->getY(),
+				kColor, AREA_BORDER_LAYER_FOUNDING_BORDER);
 	}
 }
 
@@ -4299,17 +4296,25 @@ bool CvUnit::airlift(int iX, int iY)
 	return true;
 }
 
-
+// advc (comment): Says whether eTeam is a victim of this (nuke) unit if it nukes pPlot
 bool CvUnit::isNukeVictim(const CvPlot* pPlot, TeamTypes eTeam) const
 {
-	if(!GET_TEAM(eTeam).isAlive() || eTeam == getTeam())
+	// kekm.7 (advc): Not OK to nuke our own cities or units
+	if (!GET_TEAM(eTeam).isAlive()/* || eTeam == getTeam()*/)
 		return false;
 
 	for (SquareIter it(*pPlot, nukeRange()); it.hasNext(); ++it)
 	{
 		CvPlot const& kLoopPlot	= *it;
-		if (kLoopPlot.getTeam() == eTeam)
+		if (kLoopPlot.getTeam() == eTeam &&
+			// kekm.7 (advc): OK to nuke our own land
+			(eTeam != getTeam() || kLoopPlot.isCity()))
+		{
 			return true;
+		}
+		// <kekm.7> (advc): Not OK to nuke our own units
+		if (eTeam == getTeam() && kLoopPlot.plotCheck(NULL, -1, -1, NO_PLAYER, getTeam()))
+			return true; // </kekm.7>
 		if (kLoopPlot.plotCheck(PUF_isCombatTeam, eTeam, getTeam()) != NULL &&
 			isEnemy(eTeam)) // kekm.7
 		{
@@ -4333,12 +4338,12 @@ bool CvUnit::canNukeAt(CvPlot const& kFrom, int iX, int iY) const
 		return false;
 /* DOTO-KELDATH nukes anywhere
 	CvPlot* pTargetPlot = GC.getMap().plot(iX, iY);
-	for (TeamIter<MAJOR_CIV> it; it.hasNext(); ++it)
+	for (TeamIter<MAJOR_CIV> itTeam; itTeam.hasNext(); ++itTeam)
 	{
-		if (isNukeVictim(pTargetPlot, it->getID()))
+		if (isNukeVictim(pTargetPlot, itTeam->getID()) &&
+			!isEnemy(itTeam->getID(), kFrom))
 		{
-			if (!isEnemy(it->getID(), kFrom))
-				return false;
+			return false;
 		}
 	}
 */
@@ -9418,7 +9423,8 @@ void CvUnit::setXY(int iX, int iY, bool bGroup, bool bUpdate, bool bShow, bool b
 				/*  advc.123d: Make it only +150% for capital. (Tbd.: Check if
 					it's the original capital - but how to check?) */
 				GET_TEAM(getTeam()).AI_changeWarSuccess(pNewCity->getTeam(),
-						(pNewCity->isCapital() ? 3 : 2) * GC.getWAR_SUCCESS_CITY_CAPTURING()/2);
+						(pNewCity->isCapital() ? 3 : 2) *
+						scaled(GC.getWAR_SUCCESS_CITY_CAPTURING(), 2));
 
 				PlayerTypes eNewOwner = GET_PLAYER(getOwner()).pickConqueredCityOwner(*pNewCity);
 				if (eNewOwner != NO_PLAYER)
@@ -12854,7 +12860,7 @@ int CvUnit::LFBgetDefenderOdds(const CvUnit* pAttacker) const
 		bUseAttacker = true;
 
 	int iDefense = 0;
-//DOTO
+//DOTO ranged immunity
 	if (bUseAttacker && GC.getDefineBOOL(CvGlobals::LFB_USECOMBATODDS)
 //rangedattack-keldath
 	&&	(pAttacker->getDomainType() == DOMAIN_AIR ||  (pAttacker->getDomainType() != DOMAIN_AIR  && (pAttacker->airRange() == 0 || pAttacker->rangedStrike() == 0 )))

@@ -2166,7 +2166,7 @@ bool CvPlayerAI::AI_captureUnit(UnitTypes eUnit, CvPlot const& kPlot) const
 		if (3 * iOurStrength < 2 * iEnemyStrength)
 			return false; // </advc.010>
 	}
-	return false;
+	return true;
 }
 
 
@@ -2729,6 +2729,61 @@ short CvPlayerAI::AI_foundValue(int iX, int iY, int iMinRivalRange, bool bStarti
 	CitySiteEvaluator eval(*this, iMinRivalRange, bStartingLoc, /* advc.031e: */ bNormalize);
 	return eval.evaluate(iX, iY);
 }
+
+// advc: Based on code moved from K-Mod's CvFoundSettings
+bool CvPlayerAI::AI_isEasyCulture(bool* pbFromTrait) const
+{
+	LOCAL_REF(bool, bFromTrait, pbFromTrait, false);
+	// Have to check this first in case that pbFromTrait!=NULL
+	FOR_EACH_ENUM(Trait)
+	{
+		if (!hasTrait(eLoopTrait))
+			continue;
+		if (GC.getInfo(eLoopTrait).getCommerceChange(COMMERCE_CULTURE) > 0 ||
+			// <advc.908b>
+			(GC.getNumCultureLevelInfos() >= 2 &&
+			GC.getGame().freeCityCultureFromTrait(eLoopTrait) >=
+			GC.getGame().getCultureThreshold((CultureLevelTypes)2)))
+			// </advc.908b>
+		{
+			bFromTrait = true;
+			return true;
+		}
+	}
+	if (getAdvancedStartPoints() > 0)
+		return true;
+	if (isMajorCiv() && !hasCapital())
+		return true;
+	// Easy culture: culture process, free culture or easy artists
+	FOR_EACH_ENUM(Process)
+	{
+		CvProcessInfo const& kLoopProcess = GC.getInfo(eLoopProcess);
+		if (GET_TEAM(getTeam()).isHasTech(kLoopProcess.getTechPrereq()) &&
+			kLoopProcess.getProductionToCommerceModifier(COMMERCE_CULTURE) > 0)
+		{
+			return true;
+		}
+	}
+	FOR_EACH_ENUM(Building)
+	{
+		if (isBuildingFree(eLoopBuilding) &&
+			GC.getInfo(eLoopBuilding).getObsoleteSafeCommerceChange(COMMERCE_CULTURE) +
+			GC.getInfo(eLoopBuilding).getCommerceChange(COMMERCE_CULTURE) > 0)
+		{
+			return true;
+		}
+	}
+	FOR_EACH_ENUM(Specialist)
+	{
+		if (isSpecialistValid(eLoopSpecialist) &&
+			specialistCommerce(eLoopSpecialist, COMMERCE_CULTURE) > 0)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 
 bool CvPlayerAI::AI_isAreaAlone(CvArea const& kArea) const
 {
@@ -3832,6 +3887,8 @@ struct PairSecondEq : public std::binary_function<std::pair<A, B>,std::pair<A, B
 private:
 	B _target;
 };
+// advc.550g: No longer used
+#ifdef USE_OLD_TECH_STUFF
 template <typename A, typename B>
 struct PairFirstLess : public std::binary_function<std::pair<A, B>,std::pair<A, B>,bool>
 {
@@ -3840,6 +3897,16 @@ struct PairFirstLess : public std::binary_function<std::pair<A, B>,std::pair<A, 
 		return o1.first < o2.first;
 	}
 }; // </k146>
+#endif
+// advc.550g:
+template <typename A, typename B>
+struct PairFirstGreater : public std::binary_function<std::pair<A, B>,std::pair<A, B>,bool>
+{
+	bool operator()(const std::pair<A, B>& o1, const std::pair<A, B>& o2)
+	{
+		return o1.first > o2.first;
+	}
+};
 
 // edited by K-Mod and BBAI (05/14/10, jdog5000)
 TechTypes CvPlayerAI::AI_bestTech(int iMaxPathLength, bool bFreeTech, bool bAsync, TechTypes eIgnoreTech, AdvisorTypes eIgnoreAdvisor,
@@ -4162,22 +4229,26 @@ TechTypes CvPlayerAI::AI_bestTech(int iMaxPathLength, bool bFreeTech, bool bAsyn
 	// Create a list of possible tech paths.
 	std::vector<std::pair<int,std::vector<int> > > tech_paths; // (total_value, path)
 	// Note: paths are a vector of indices referring to `techs`.
-	/*  Paths are in reverse order, for convinience in constructing them.
+	/*  Paths are in reverse order, for convenience in constructing them.
 		(ie. the first tech to research is at the end of the list.) */
 
 	// Initial threshold
 	FAssert(techs_to_depth.size() > 1);
+	// Note: this works even if depth=0 isn't big enough.
 	int iThreshold = techs[std::min(iMaxPathLength-1,
 			(int)techs.size()-1)].first;
-	// Note: this works even if depth=0 isn't big enough.
 	// advc.550: 0.8 in K-Mod 1.46. AdvCiv had used 0.62 until version 0.99.
 	scaled const rDepthRate = fixp(2/3.);
 
 	for (int end_depth = 0; end_depth < iMaxPathLength; ++end_depth)
 	{
-		// Note: at depth == 0, there are no prereqs, so we only need to consider the best option.
-		for (int i = (end_depth == 0 ? iMaxPathLength - 1 :
-			techs_to_depth[end_depth]); i < techs_to_depth[end_depth+1]; ++i)
+		/*	Note: at depth == 0, there are no prereqs,
+			so we only need to consider the best option. */
+		// advc.001: But not like this ...
+		for (int i = (/*end_depth == 0 ? iMaxPathLength - 1 :*/ techs_to_depth[end_depth]);
+			// advc.001: ... Like that, i.e. we can _stop_ at iMaxPathLength-1.
+			i < (end_depth == 0 ? iMaxPathLength :
+			techs_to_depth[end_depth+1]); ++i)
 		{
 			if (techs[i].first < iThreshold)
 				break; /* Note: the techs are sorted, so if we're below the
@@ -4319,7 +4390,6 @@ TechTypes CvPlayerAI::AI_bestTech(int iMaxPathLength, bool bFreeTech, bool bAsyn
 							if (techs[j].first <
 								techs[tech_paths.back().second[k]].first)
 							{
-
 								// Note: we'll need to recalculate the total value.
 								tech_paths.back().second.insert(
 										tech_paths.back().second.begin()+k, j);
@@ -4356,7 +4426,7 @@ TechTypes CvPlayerAI::AI_bestTech(int iMaxPathLength, bool bFreeTech, bool bAsyn
 			std::max_element(tech_paths.begin(), tech_paths.end(), PairFirstLess<int,std::vector<int> >());
 	if (best_path_it == tech_paths.end())*/
 	// <advc.550g> Need the whole thing sorted
-	std::sort(tech_paths.begin(), tech_paths.end(), PairFirstLess<int,std::vector<int> >());
+	std::sort(tech_paths.begin(), tech_paths.end(), PairFirstGreater<int,std::vector<int> >());
 	if (tech_paths.empty()) // </advc.550g>
 	{
 		FErrorMsg("Failed to create a tech path");
@@ -4478,6 +4548,7 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 		false implies that the game state mustn't be modified - may or may not be run in-sync. */
 	bool bRandomize) const
 {
+	FAssert(iPathLength >= 1); // advc
 	PROFILE_FUNC();
 
 	//long iValue = 1; // K-Mod. (the int was overflowing in parts of the calculation)
@@ -4499,7 +4570,9 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 	int const iHasMetCount = kTeam.getHasMetCivCount(true);
 	int const iCoastalCities = countNumCoastalCities();
 
-	int const iCityCount = getNumCities();
+	int const iCityCount = getNumCities() +
+			// advc.131: Look ahead a little
+			std::min(1, std::min(AI_totalUnitAIs(UNITAI_SETTLE), AI_getNumCitySites()));
 	int const iCityTarget = GC.getInfo(GC.getMap().getWorldSize()).getTargetNumCities();
 	/*	advc.007c: The RNGs write to separate log files now, so the same log messages
 		can be used for both w/o creating confusion. Though I'm not sure if randomness
@@ -4754,14 +4827,13 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 	{
 		int iConnectedForeignCities = AI_countPotentialForeignTradeCities(
 				true, AI_getFlavorValue(FLAVOR_GOLD) == 0);
-		// <advc.131>
-		int iSites = std::min(AI_getNumCitySites(), iCityCount);
-		int iSettler = std::min(AI_totalUnitAIs(UNITAI_SETTLE), iSites);
-		// </advc.131>
 		int iAddedCommerce = 2*iCityCount*kTech.getTradeRoutes() +
 				4*range(iConnectedForeignCities-2*iCityCount, 0,
-				iCityCount*kTech.getTradeRoutes())
-				+ 2 * iSettler + (iSites - iSettler); // advc.131
+				iCityCount*kTech.getTradeRoutes()) +
+				// <advc.131>
+				std::max(0, std::min(AI_getNumCitySites(), getNumCities())
+				// Up to one site already covered by iCityCount
+				- std::min(AI_totalUnitAIs(UNITAI_SETTLE), 1)); // </advc.131>
 		iValue += iAddedCommerce * (bFinancialTrouble ? 6 : 4) *
 				AI_averageYieldMultiplier(YIELD_COMMERCE)/100;
 		//iValue += (2*iCityCount*kTech.getTradeRoutes() + 4*range(iConnectedForeignCities-2*getNumCities(), 0, iCityCount*kTech.getTradeRoutes())) * (bFinancialTrouble ? 6 : 4);
@@ -4769,11 +4841,11 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 	// K-Mod end
 
 
-	if (kTech.getHealth() != 0)
-		iValue += 24 * iCityCount * AI_getHealthWeight(kTech.getHealth(), 1) / 100;
+	if (kTech.getHealth() != 0)  // advc.131: Don't use iCityCount here
+		iValue += 24 * getNumCities() * AI_getHealthWeight(kTech.getHealth(), 1) / 100;
 	if (kTech.getHappiness() != 0)
 	{	// (this part of the evaluation was completely missing from the original bts code)
-		iValue += 40 * iCityCount * AI_getHappinessWeight(kTech.getHappiness(), 1) / 100;
+		iValue += 40 * getNumCities() * AI_getHappinessWeight(kTech.getHappiness(), 1) / 100;
 	}
 
 	FOR_EACH_ENUM(Route)
@@ -4888,7 +4960,8 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 
 					// TODO: multiply by average commerce multiplier?
 
-					// 4 for upgrading local to foreign. 2 for upgrading to overseas. Divide by 3 if we don't have coastal cities.
+					/*	4 for upgrading local to foreign. 2 for upgrading to overseas.
+						Divide by 3 if we don't have coastal cities. */
 					iValue += (std::min(iLocalRoutes, iNewForeignRoutes) * 16 +
 							std::min(iNewOverseasRoutes, iCityCount * 3) * 8) /
 							(iCoastalCities > 0 ? 1 : 3);
@@ -5347,7 +5420,6 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 		// </k146>
 	}
 
-
 	/* ------------------ Building Value  ------------------ */
 	bool bEnablesWonder/* advc.001n:*/=false;
 	iValue += AI_techBuildingValue(eTech, bAsync || !bRandomize, bEnablesWonder);
@@ -5602,169 +5674,67 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 		// K-Mod
 		if (bFirst)
 		{
-			// 100 means very likely we will be first, -100 means very unlikely. 0 is 'unknown'.
+			/*	100 means very likely we will be first,
+				-100 means very unlikely. 0 is 'unknown'. */
 			int iRaceModifier = 0;
 			{
+			#if 0
 				int iCount = 0;
-				// count players even if we haven't met them. (we know they're out there...)
+				/*	count players even if we haven't met them.
+					(we know they're out there...) */
 				PlayerIter<CIV_ALIVE,NOT_SAME_TEAM_AS> itOther(getTeam());
 				for (; itOther.hasNext(); ++itOther)
 				{
 					if (kTeam.isHasMet(itOther->getTeam()) &&
-						(iPathLength <= 1 != itOther->canResearch(eTech)))
-					{
 						/*	if path is <= 1, count civs who can't research it.
 							if path > 1, count civs who can research it. */
+						(iPathLength <= 1 != itOther->canResearch(eTech)))
+					{
 						iCount++;
 					}
 				}
 				iRaceModifier = ((iPathLength <= 1 ? 100 : -100) * iCount) /
 						std::max(1, itOther.nextIndex());
-			}
-			FAssert(iRaceModifier >= -100 && iRaceModifier <= 100);
-		// K-Mod end
-			// <kekm.36>
-			// (advc: No real need for this impromptu cache)
-			/*static int iLaterReligions = MIN_INT;
-			if (iLaterReligions == MIN_INT)*/
-			// "Number of non-early religions, characterized by giving free missionaries."
-			int iLaterReligions = 0;
-			FOR_EACH_ENUM(Religion)
+			#endif
+			} // K-Mod end
+			// <advc.171> Replacing the above
+			scaled rBeatUsProb;
+			int const iRivals = PlayerIter<FREE_MAJOR_CIV,NOT_SAME_TEAM_AS>::
+					count(getTeam());
+			if (iRivals > 0)
 			{
-				if (GC.getInfo(eLoopReligion).getNumFreeUnits() > 0)
-					iLaterReligions++;
-			} // </kekm.36>
-			int iReligionValue = 0;
-			int iPotentialReligions = 0;
-			int iAvailableReligions = 0; // K-Mod
-			FOR_EACH_ENUM(Religion)
-			{
-				TechTypes eReligionTech = (TechTypes)GC.getInfo(eLoopReligion).getTechPrereq();
-				/*if (kTeam.isHasTech(eReligionTech)) {
-					if (!(GC.getGame().isReligionSlotTaken((ReligionTypes)iJ)))
-						iPotentialReligions++;
-				}*/ // BtS
-				/*	K-Mod. iPotentialReligions will only be non-zero during the
-					first few turns of advanced start games. Otherwise it is always zero.
-					Presumably that's what the original developers intended...
-					so I'm going to leave that alone, and create a new value: iAvailableReligions. */
-				if (!GC.getGame().isReligionSlotTaken(eLoopReligion))
-				{
-					iAvailableReligions++;
-					if (kTeam.isHasTech(eReligionTech))
-						iPotentialReligions++;
-				}
-				// K-Mod end
-
-				if (eReligionTech == eTech)
-				{
-					if (!GC.getGame().isReligionSlotTaken(eLoopReligion))
-					{
-						int iRoll = 150; // k146: was 400
-
-						if (!GC.getGame().isOption(GAMEOPTION_PICK_RELIGION))
-						{
-							ReligionTypes eFavorite = GC.getInfo(getLeaderType()).
-									getFavoriteReligion();
-							if (eFavorite != NO_RELIGION)
-							{
-								if (eLoopReligion == eFavorite)
-									iRoll = iRoll * 3/2;
-								else iRoll = iRoll * 2/3;
-							}
-						}
-
-						iRoll *= 200 + iRaceModifier;
-						iRoll /= 200;
-						if (iRaceModifier > 10 && AI_getFlavorValue(FLAVOR_RELIGION) > 0)
-							iReligionValue += iRoll * (iRaceModifier-10) / 300;
-						if (bRandomize)
-						{
-							iReligionValue += kRand.get(iRoll, "AI Research Religion");
-							// Note: relation value will be scaled down by other factors in the next section.
-							iRandomMax += iRoll; // (Note: this doesn't include factors used later.)
-						}
-						else iReligionValue += iRoll / 2; // advc
-					}
-				}
+				/*	Each rival is not actually less likely to beat us when there
+					are more in total. But I don't want the AI to be too shy about
+					entering races in large games. */
+				rBeatUsProb = 1 / (fixp(2.4) * scaled(iRivals).sqrt());
+				rBeatUsProb.exponentiate(scaled(1, iPathLength));
 			}
-
-			if (iReligionValue > 0)
+			scaled rWinRaceProb = 1;
+			int iKnownRivals = 0;
+			for (PlayerIter<FREE_MAJOR_CIV,NOT_SAME_TEAM_AS> itOther(getTeam());
+				itOther.hasNext(); ++itOther)
 			{
-				if (AI_atVictoryStage(AI_VICTORY_CULTURE1))
+				if (kTeam.isHasMet(itOther->getTeam()))
 				{
-					iReligionValue += 50; // k146: was 100
-
-					if (countHolyCities() < 1)
-					{
-						//iReligionValue += 200;
-						// k146: Replacing the line above
-						iReligionValue += (iCityCount > 1 ? 100 : 0);
-					}
+					if (itOther->canResearch(eTech))
+						rWinRaceProb *= (1 - rBeatUsProb);
+					iKnownRivals++;
 				}
-				else iReligionValue /= 1 + countHolyCities() + (iPotentialReligions > 0 ? 1 : 0);
-
-				if (countTotalHasReligion() == 0 && iPotentialReligions == 0)
-				{
-					bool bNeighbouringReligions = false;
-					for (PlayerIter<MAJOR_CIV,KNOWN_TO> itOther(getTeam());
-						itOther.hasNext(); ++itOther)
-					{
-						if (itOther->getID() == getID())
-							continue;
-						if (getStateReligion() != NO_RELIGION &&
-							// <advc.001>
-							((getTeam() != itOther->getTeam() &&
-							kTeam.AI_hasSharedPrimaryArea(itOther->getTeam())) ||
-							(getTeam() == itOther->getTeam() &&
-							getID() != itOther->getID() &&
-							AI_hasSharedPrimaryArea(itOther->getID()))))
-						/*  The case where both civs are on the same team previously led
-							to a failed assertion in CvTeamAI::hasSharedPrimaryArea.
-							Added a new clause that checks if the civs (not their teams)
-							share a primary area. Rationale: If a team member on the same
-							continent has already founded a religion, we should be
-							less inclined to found another (will soon spread to us). */
-							// </advc.001>
-						{
-							bNeighbouringReligions = true;
-							break;
-						}
-					}
-					if (!bNeighbouringReligions)
-					{
-						iReligionValue += 20;
-						if (AI_getFlavorValue(FLAVOR_RELIGION) > 0)
-							iReligionValue += 28 + 4 * AI_getFlavorValue(FLAVOR_RELIGION);
-						if (100 * GC.getGame().getElapsedGameTurns() >=
-							32 * GC.getInfo(GC.getGame().getGameSpeedType()).
-							getResearchPercent())
-						{
-							iReligionValue += 60;
-						}
-						if (AI_atVictoryStage(AI_VICTORY_CULTURE1))
-							iReligionValue += 84;
-					}
-					/*	kekm.36: Was <= 4.
-						"I assume that [...] means the number of non-early religions" */
-					if (iAvailableReligions <= iLaterReligions ||
-						AI_getFlavorValue(FLAVOR_RELIGION) > 0)
-					{
-						iReligionValue *= 2;
-						iReligionValue += 56 + std::max(0, 6 - iAvailableReligions)*28;
-					}
-					else
-					{
-						iReligionValue = iReligionValue*3/2;
-						iReligionValue += 28;
-					}
-				}
-
-				if (AI_isDoStrategy(AI_STRATEGY_DAGGER))
-					iReligionValue /= 2;
-				iValue += iReligionValue * std::min(iCityCount, iCityTarget) /
-						std::max(1, iCityTarget);
+				else rWinRaceProb *= (1 - rBeatUsProb / 2);
 			}
+			scaled rRaceMod = rWinRaceProb * 2 - 1;
+			if (iRivals > 0 && !bFreeTech)
+			{
+				scaled rConfidence(iKnownRivals, iRivals);
+				rRaceMod /= 2 - rConfidence;
+			}
+			iRaceModifier = rRaceMod.getPercent();
+			// </advc.171>
+			FAssert(iRaceModifier >= -100 && iRaceModifier <= 100); // K-Mod
+			// <advc> Moved into subroutine
+			iValue += AI_techReligionValue(eTech, iPathLength,
+					iRaceModifier, iCityTarget,
+					kRand, iRandomMax, bRandomize); // </advc>
 
 			/*	K-Mod note: I've moved corporation value outside of this block.
 				(because you don't need to be first to the tech to get the corp!) */
@@ -6966,6 +6936,275 @@ int CvPlayerAI::AI_techProjectValue(TechTypes eTech,
 	return iValue;
 } // </k146>
 
+// advc: Based on code cut from AI_techValue
+int CvPlayerAI::AI_techReligionValue(TechTypes eTech, int iPathLength,
+	int iRaceModifier, int iCityTarget,
+	CvRandom& kRand, int& iRandomMax, bool bRandomize) const
+{
+	CvTechInfo const& kTech = GC.getInfo(eTech);
+	ReligionTypes const eFavoriteReligion = GC.getInfo(getLeaderType()).
+			getFavoriteReligion();
+	// <advc.171>
+	bool bLateFavoriteReligion = false;
+	bool bLateReligion = false; // </advc.171>
+	// <kekm.36>
+	// (advc: No real need for this impromptu cache)
+	/*static int iLaterReligions = MIN_INT;
+	if (iLaterReligions == MIN_INT)*/
+	int iLaterReligions = 0;
+	FOR_EACH_ENUM(Religion)
+	{
+		// "Number of non-early religions, characterized by giving free missionaries."
+		// </kekm.36>
+		/*	<advc.171> That seems like a fragile criterion. Use that only
+			as a fallback. */
+		bool bLate = false;
+		TechTypes eReligionTech = GC.getInfo(eLoopReligion).getTechPrereq();
+		if (eReligionTech == NO_TECH)
+		{
+			if (GC.getInfo(eLoopReligion).getNumFreeUnits() > 0)
+				bLate = true;
+		}
+		else if (GC.getInfo(eReligionTech).getEra() * 4 >= GC.getNumEraInfos() ||
+			(GC.getInfo(eReligionTech).getEra() != GC.getGame().getStartEra() &&
+			GC.getInfo(eReligionTech).getResearchCost() >= 175))
+		{
+			bLate = true;
+		}
+		if (bLate)
+		{
+			iLaterReligions++;
+			if (eLoopReligion == eFavoriteReligion)
+				bLateFavoriteReligion = true;
+			if (eTech == GC.getInfo(eLoopReligion).getTechPrereq())
+				bLateReligion = true;
+		} // </advc.171>
+	}
+	int iReligionValue = 0;
+	int iPotentialReligions = 0;
+	int iAvailableReligions = 0; // K-Mod
+	FOR_EACH_ENUM(Religion)
+	{
+		TechTypes eReligionTech = GC.getInfo(eLoopReligion).getTechPrereq();
+		/*if (kTeam.isHasTech(eReligionTech)) {
+			if (!(GC.getGame().isReligionSlotTaken((ReligionTypes)iJ)))
+				iPotentialReligions++;
+		}*/ // BtS
+		/*	K-Mod. iPotentialReligions will only be non-zero during the
+			first few turns of advanced start games. Otherwise it is always zero.
+			Presumably that's what the original developers intended...
+			so I'm going to leave that alone, and create a new value: iAvailableReligions. */
+		if (!GC.getGame().isReligionSlotTaken(eLoopReligion))
+		{
+			iAvailableReligions++;
+			if (GET_TEAM(getTeam()).isHasTech(eReligionTech))
+				iPotentialReligions++;
+		} // K-Mod end
+		if (eReligionTech == eTech &&
+			!GC.getGame().isReligionSlotTaken(eLoopReligion))
+		{
+			int iRoll = 225; // advc.171: Was 400 in BtS, 150 in K-Mod 1.46.
+			if (!GC.getGame().isOption(GAMEOPTION_PICK_RELIGION) &&
+				eFavoriteReligion != NO_RELIGION)
+			{
+				if (eLoopReligion == eFavoriteReligion)
+				{
+					// <advc.171>
+					bool bPrereqFoundsReligion = false;
+					FOR_EACH_ENUM2(Religion, ePrereqReligion)
+					{
+						if (ePrereqReligion == eLoopReligion ||
+							GC.getGame().isReligionSlotTaken(ePrereqReligion))
+						{
+							continue;
+						}
+						TechTypes ePrereqTech = GC.getInfo(ePrereqReligion).
+								getTechPrereq();
+						if (GET_TEAM(getTeam()).isHasTech(ePrereqTech))
+							continue;
+						/*	Would like to know whether eLoopReligion requires any
+							other tech that will found a religion. Can't easily check
+							that for the full path here, so I'll only check the
+							proximate prereqs. */
+						if (kTech.getNumOrTechPrereqs() == 1)
+						{
+							if (kTech.getPrereqOrTechs(0) == ePrereqTech)
+								bPrereqFoundsReligion = true;
+						}
+						if (!bPrereqFoundsReligion)
+						{
+							for (int i = 0; i < kTech.getNumAndTechPrereqs(); i++)
+							{
+								if (kTech.getPrereqAndTechs(i) == ePrereqTech)
+								{
+									bPrereqFoundsReligion = true;
+									break;
+								}
+							}
+						}
+						if (bPrereqFoundsReligion)
+							break;
+					}
+					if (bPrereqFoundsReligion)
+						iRoll = iRoll * 3/4;
+					/*	(In addition to multi-religion
+						discouragement farther below) */
+					else if (countHolyCities() > 0)
+						iRoll = iRoll * 4/3;
+					else iRoll = iRoll * 5/3; // was *3/2
+					// </advc.171>
+				}
+				else iRoll = iRoll * /*2/3*/ 6/10; // advc.171
+			}
+			iRoll *= 200 + iRaceModifier;
+			iRoll /= 200;
+			{
+				int const iRaceModThresh = 10;
+				if (iRaceModifier > iRaceModThresh &&
+					AI_getFlavorValue(FLAVOR_RELIGION) > 0)
+				{
+					iReligionValue += (iRoll *
+							(iRaceModifier - iRaceModThresh)) / 300;
+				}
+			}
+			// <advc.171> Dial down the randomness
+			iReligionValue += (iRoll * 32) / 100;
+			iRoll = (iRoll * 36) / 100; // </advc.171>
+			if (bRandomize)
+			{
+				iReligionValue += kRand.get(iRoll, "AI Research Religion");
+				/*	Note: relation value will be scaled down by other factors
+					in the next section. */
+				iRandomMax += iRoll; // (Note: doesn't include later factors)
+			}
+			else iReligionValue += iRoll / 2; // advc
+		}
+	}
+	if (iReligionValue <= 0)
+		return 0;
+	if (AI_atVictoryStage(AI_VICTORY_CULTURE1))
+	{
+		iReligionValue += 50; // k146: was 100
+		if (countHolyCities() < 1)
+		{
+			//iReligionValue += 200;
+			// k146: Replacing the line above
+			iReligionValue += (getNumCities() > 1 ? 100 : 0);
+		}
+	}
+	else
+	{
+		iReligionValue /= 1 + countHolyCities() +
+				(iPotentialReligions > 0 ? 1 : 0);
+	}
+	if (countTotalHasReligion() == 0 && iPotentialReligions == 0)
+	{
+		bool bNeighbouringReligions = false;
+		for (PlayerIter<MAJOR_CIV,KNOWN_TO> itOther(getTeam());
+			itOther.hasNext(); ++itOther)
+		{
+			if (itOther->getID() == getID())
+				continue;
+			if (getStateReligion() != NO_RELIGION &&
+				// <advc.001>
+				((getTeam() != itOther->getTeam() &&
+				GET_TEAM(getTeam()).AI_hasSharedPrimaryArea(itOther->getTeam())) ||
+				(getTeam() == itOther->getTeam() &&
+				getID() != itOther->getID() &&
+				AI_hasSharedPrimaryArea(itOther->getID()))))
+			/*	The case where both civs are on the same team previously led to a
+				failed assertion in CvTeamAI::hasSharedPrimaryArea. Added a new clause
+				that checks if the civs (not their teams) share a primary area. Rationale:
+				If a team member on the same continent has already founded a religion,
+				we should be less inclined to found another (will soon spread to us). */
+				// </advc.001>
+			{
+				bNeighbouringReligions = true;
+				break;
+			}
+		}
+		if (!bNeighbouringReligions)
+		{
+			iReligionValue += 30; // advc.171: was 20
+			if (AI_getFlavorValue(FLAVOR_RELIGION) > 0)
+				iReligionValue += 28 + 4 * AI_getFlavorValue(FLAVOR_RELIGION);
+			if (AI_atVictoryStage(AI_VICTORY_CULTURE1))
+				iReligionValue += 84;
+		}
+		/*if (100 * GC.getGame().getElapsedGameTurns() <
+			32 * GC.getInfo(GC.getGame().getGameSpeedType()).
+			getResearchPercent())*/
+		// <advc.171> More rational behavior for early religions
+		if (!bLateReligion)
+		{
+			scaled rUtility = 30;
+			rUtility += AI_getHappinessWeight(1, 2);
+			scaled rPoorCultureCities;
+			if (!AI_isEasyCulture())
+			{
+				FOR_EACH_CITYAI(pCity, *this)
+				{
+					if (pCity->AI_needsCultureToWorkFullRadius())
+						rPoorCultureCities++;
+				}
+				if (getNumCities() == 1 && AI_getNumCitySites() > 0)
+				{	// Sanctifying the 2nd city would be best ...
+					if (AI_getNumAIUnits(UNITAI_SETTLE) > 0)
+						rPoorCultureCities++;
+					/*	... but fast border spread in the capital is also
+						likely to help. */
+					else if (AI_getNumTrainAIUnits(UNITAI_SETTLE) > 0)
+						rPoorCultureCities += fixp(0.5);
+				}
+			}
+			rUtility += rPoorCultureCities * 50;
+			scaled rAvailWeight = 2;
+			if (bLateFavoriteReligion)
+				rAvailWeight -= fixp(3/4.);
+			else if (AI_getFlavorValue(FLAVOR_RELIGION) > 0)
+				rAvailWeight += 1;
+			rUtility *= 1 + rAvailWeight * (1 - scaled(std::max(1,
+					iAvailableReligions - iLaterReligions),
+					GC.getNumReligionInfos() - iLaterReligions));
+			if (!bNeighbouringReligions)
+				rUtility *= fixp(4/3.);
+			if (AI_getFlavorValue(FLAVOR_RELIGION) > 0)
+				rUtility *= fixp(4/3.);
+			iReligionValue += rUtility.uround();
+		}
+		else
+		/*	(K-Mod had used this logic after 32 turns; now only for
+			the non-ancient religions.) */ // </advc.171>
+		{
+			if (!bNeighbouringReligions)
+				iReligionValue += 50;
+			int iAvailMult = 1;
+			/*	kekm.36: Was <= 4.
+				"I assume that [...] means the number of non-early religions" */
+			if (iAvailableReligions <= iLaterReligions ||
+				AI_getFlavorValue(FLAVOR_RELIGION) > 0)
+			{	// advc.171: Was max(0,...); future-proofing.
+				iAvailMult = std::max(1, 6 - iAvailableReligions);
+			}
+			if (iAvailMult > 1)
+			{
+				iReligionValue *= 2;
+				iReligionValue += 56;
+			}
+			else iReligionValue = iReligionValue * 3/2;
+			iReligionValue += iAvailMult * 28;
+		}
+	}
+	if (AI_isDoStrategy(AI_STRATEGY_DAGGER))
+		iReligionValue /= 2;
+	scaled rCityMult(std::min(getNumCities(), iCityTarget),
+			std::max(1, iCityTarget));
+	// <advc.171> Don't make it proportional to the city count
+	rCityMult.exponentiate(fixp(0.85));
+	rCityMult /= fixp(1.5); // </advc.171>
+	return (iReligionValue * rCityMult)/* advc.171: */.uround();
+}
+
 int CvPlayerAI::AI_cultureVictoryTechValue(TechTypes eTech) const
 {
 	if (eTech == NO_TECH)
@@ -7233,19 +7472,16 @@ int CvPlayerAI::AI_refuseToTalkTurns(PlayerTypes ePlayer) const
 	CvTeamAI const& kOurTeam = GET_TEAM(getTeam());
 	CvTeamAI const& kTheirTeam = GET_TEAM(ePlayer);
 	// advc.104: Use team average of RTT war thresh
-	int iR = kOurTeam.AI_refuseToTalkWarThreshold() *
+	scaled r = kOurTeam.AI_refuseToTalkWarThreshold() *
 			(kOurTeam.AI_isChosenWar(kTheirTeam.getID()) ? 2 : 1);
-	int iOurSuccess = 1 + kOurTeam.AI_getWarSuccess(kTheirTeam.getID());
-	int iTheirSuccess = 1 + kTheirTeam.AI_getWarSuccess(getTeam());
-	if (iTheirSuccess > iOurSuccess * 2 &&
-		/* <advc.001> */ iTheirSuccess >= GC.getWAR_SUCCESS_CITY_CAPTURING())
+	scaled rOurSuccess = kOurTeam.AI_getWarSuccess(kTheirTeam.getID());
+	scaled rTheirSuccess = kTheirTeam.AI_getWarSuccess(getTeam());
+	if (rTheirSuccess > rOurSuccess * 2 &&
+		/* advc.001: */ rTheirSuccess >= GC.getWAR_SUCCESS_CITY_CAPTURING())
 	{
-		/*  Otherwise, killing a single stray unit can be enough to lower
-			the refuse duration to three turns (ratio 5:1). </advc.001> */
-		iR *= 20 + (80 * iOurSuccess * 2) / iTheirSuccess;
-		iR /= 100;
+		r *= fixp(0.2) + fixp(0.8) * 2 * rOurSuccess / rTheirSuccess;
 	}
-	return iR;
+	return r.uround();
 }
 
 // XXX what if already at war???
@@ -7708,10 +7944,10 @@ int CvPlayerAI::AI_getWarAttitude(PlayerTypes ePlayer, /* advc.sha: */ int iPart
 		int iAttitudeChange = (GET_TEAM(getTeam()).AI_getAtWarCounter(TEAMID(ePlayer)) /
 				GC.getInfo(getPersonalityType()).getAtWarAttitudeDivisor());
 		// <advc.sha> Factor war success into WarAttitude
-		iAttitudeChange = ((-iAttitudeChange) +
+		iAttitudeChange = (((-iAttitudeChange) +
 				// Mean of time-based penalty and a penalty based on success and era
 				GET_TEAM(ePlayer).AI_getWarSuccess(getTeam()) /
-				warSuccessAttitudeDivisor()) / -2; // </advc.sha>
+				warSuccessAttitudeDivisor()) / -2).round(); // </advc.sha>
 		int iLimit = abs(GC.getInfo(getPersonalityType()).
 				getAtWarAttitudeChangeLimit()); // advc
 		iAttitude += range(iAttitudeChange, -iLimit, iLimit);
@@ -8037,7 +8273,7 @@ int CvPlayerAI::AI_getShareWarAttitude(PlayerTypes ePlayer) const
 			CvTeamAI const& t = *itEnemy;
 			/*  NB: AtWarCount is the number of teams we're at war with, whereas
 				AtWarCounter is the number of turns we've been at war. */
-			if(!t.isAtWar(eTeam) &&
+			if (!t.isAtWar(eTeam) &&
 				kOurTeam.AI_getAtWarCounter(t.getID()) >= 5 &&
 				kOurTeam.AI_getWarSuccess(t.getID()) +
 				t.AI_getWarSuccess(kOurTeam.getID()) > rWSThresh &&
@@ -8420,17 +8656,18 @@ int CvPlayerAI::AI_getRankDifferenceAttitude(PlayerTypes ePlayer) const
 		return 0;
 	return iResult;
 }
-
-int CvPlayerAI::AI_getLostWarAttitude(PlayerTypes ePlayer) const
+#if 0
+int CvPlayerAI::AI_getLostWarAttitude(PlayerTypes ePlayer) const // obsolete
 {
-	FErrorMsg("this function is obsolete");
 	if(GET_TEAM(ePlayer).AI_getWarSuccess(getTeam()) >
 		GET_TEAM(getTeam()).AI_getWarSuccess(TEAMID(ePlayer)))
 	{
 		return GC.getInfo(getPersonalityType()).getLostWarAttitudeChange();
 	}
 	return 0;
-} // END: Show Hidden Attitude Mod </advc.sha>
+}
+#endif
+// END: Show Hidden Attitude Mod </advc.sha>
 
 // advc.130c:
 int CvPlayerAI::AI_knownRankDifference(PlayerTypes eOther,
@@ -8794,8 +9031,9 @@ PlayerVoteTypes CvPlayerAI::AI_diploVote(const VoteSelectionSubData& kVoteData,
 			CvTeamAI const& kEnemy = *itEnemy; // advc (note): Could be kOurTeam
 
 			int const iPeaceTeamSuccess = GET_TEAM(ePeaceTeam).
-					AI_getWarSuccess(kEnemy.getID());
-			int const iOtherTeamSuccess = kEnemy.AI_getWarSuccess(ePeaceTeam);
+					AI_getWarSuccess(kEnemy.getID()).uround();
+			int const iOtherTeamSuccess = kEnemy.
+					AI_getWarSuccess(ePeaceTeam).uround();
 			int const iOtherTeamPower = kEnemy.getPower(true);
 			if (iPeaceTeamSuccess * iPeaceTeamPower >
 				(iOtherTeamSuccess + iSuccessScale) * iOtherTeamPower)
@@ -16360,7 +16598,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 	if (bWarPlan)
 	{
 		bWarPlan = false;
-		int iEnemyWarSuccess = 0;
+		scaled rEnemyWarSuccess;
 		for (TeamAIIter<MAJOR_CIV,KNOWN_POTENTIAL_ENEMY_OF> itEnemy(getTeam());
 			itEnemy.hasNext(); ++itEnemy)
 		{
@@ -16377,17 +16615,17 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 				bWarPlan = true;
 				break;
 			}
-			iEnemyWarSuccess += itEnemy->AI_getWarSuccess(getTeam());
+			rEnemyWarSuccess += itEnemy->AI_getWarSuccess(getTeam());
 		}
 		if (!bWarPlan)
 		{
-			if (iEnemyWarSuccess > std::min(iCities, 4) *
+			if (rEnemyWarSuccess > std::min(iCities, 4) *
 				GC.getWAR_SUCCESS_CITY_CAPTURING())
 			{
 				// Lots of fighting, so war is real
 				bWarPlan = true;
 			}
-			else if (iEnemyWarSuccess > std::min(iCities, 2) *
+			else if (rEnemyWarSuccess > std::min(iCities, 2) *
 				GC.getWAR_SUCCESS_CITY_CAPTURING())
 			{
 				if (kTeam.AI_getEnemyPowerPercent() > 120)
@@ -16429,19 +16667,14 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 		I don't know what it is meant to be a percentage of. It's roughly between 56 and 167. */
 	int const iWarmongerFactor = 25000 / std::max(100,
 			100 + GC.getInfo(getPersonalityType()).getMaxWarRand());
-
 	// <K-Mod>
-	int iMaintenanceFactor =  AI_commerceWeight(COMMERCE_GOLD) *
+	int const iMaintenanceFactor =  AI_commerceWeight(COMMERCE_GOLD) *
 			std::max(0, calculateInflationRate() + 100) / 100; // </K-Mod>
 
-	int iValue = iCities * 6;
-
-	iValue += GC.getInfo(eCivic).getAIWeight() * iCities;
-
+	int iValue = iCities * (6 + kCivic.getAIWeight());
 	// K-Mod: civic anger is counted somewhere else
 	//iValue += (getCivicPercentAnger(eCivic) / 10);
-
-	iValue -= GC.getInfo(eCivic).getAnarchyLength() * iCities;
+	iValue -= kCivic.getAnarchyLength() * iCities;
 
 	//iValue += -(getSingleCivicUpkeep(eCivic, true)*80)/100;
 	// K-Mod. (note. upkeep modifiers are included in getSingleCivicUpkeep.)
@@ -16486,7 +16719,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 		FOR_EACH_CITY(pLoopCity, *this)
 		{
 			iTemp += pLoopCity->calculateNumCitiesMaintenanceTimes100() *
-				(pLoopCity->getMaintenanceModifier() + 100) / 100;
+					(pLoopCity->getMaintenanceModifier() + 100) / 100;
 		}
 		iTemp *= 100;
 		iTemp /= std::max(1, getNumCitiesMaintenanceModifier() + 100);
@@ -16503,7 +16736,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 		FOR_EACH_CITY(pLoopCity, *this)
 		{
 			iTemp += pLoopCity->calculateDistanceMaintenanceTimes100() *
-				(pLoopCity->getMaintenanceModifier() + 100) / 100;
+					(pLoopCity->getMaintenanceModifier() + 100) / 100;
 		}
 		iTemp *= 100;
 		iTemp /= std::max(1, getDistanceMaintenanceModifier() + 100);
@@ -16550,6 +16783,25 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 		iValue -= iTemp * kCivic.getOtherAreaMaintenanceModifier() / 10000;
 	}
 //DOTO- PLAYER AI ADDITION - DPII < Maintenance Modifiers >
+	// <advc.912g>
+	if (kCivic.getColonyMaintenanceModifier() != 0)
+	{
+		PROFILE("civicValue: ColonyMaintenance");
+		int iTemp = 0;
+		FOR_EACH_CITY(pLoopCity, *this)
+		{
+			iTemp += pLoopCity->calculateColonyMaintenanceTimes100() *
+					(pLoopCity->getMaintenanceModifier() + 100) / 100;
+		}
+		iTemp *= 100;
+		iTemp /= std::max(1, getColonyMaintenanceModifier() + 100);
+
+		iTemp *= iMaintenanceFactor;
+		iTemp /= 100;
+
+		iValue -= iTemp * kCivic.getColonyMaintenanceModifier() / 10000;
+	} // </advc.912g>
+
 	/*iValue += ((kCivic.getWorkerSpeedModifier() * AI_getNumAIUnits(UNITAI_WORKER)) / 15);
 	iValue += ((kCivic.getImprovementUpgradeRateModifier() * iCities) / 50);
 	iValue += (kCivic.getMilitaryProductionModifier() * iCities * iWarmongerPercent) / (bWarPlan ? 300 : 500);
@@ -17323,7 +17575,11 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 				case YIELD_PRODUCTION:
 					/*	For production, we inflate the value a little to account
 						for the fact that it may help us win wonder races. */
-					iTemp /= 80;
+					//iTemp /= 80;
+					/*	advc.131: ^That sounds reasonable, but having a city with
+						very high production also risks running out of high-value
+						production orders. */
+					iTemp /= 100;
 					break;
 				case YIELD_COMMERCE:
 					/*	For commerce, the multiplier is compounded by
@@ -17563,14 +17819,40 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 	} */ /*	Disabled by K-Mod. This evaluation isn't accurate enough to be useful -
 			but it does sometimes cause civs to switch
 			to organized religion when they don't have a religion... */
-
-	FOR_EACH_ENUM(Specialist)
 	{
-		if (!kCivic.isSpecialistValid(eLoopSpecialist))
-			continue;
-		// K-Mod todo: the current code sucks. Fix it.
-		int iTempValue = iCities * (AI_atVictoryStage(AI_VICTORY_CULTURE3) ? 10 : 1) + 6;
-		iValue += iTempValue / 3; // advc.131: Was /2. (And yes, it's terrible.)
+		int iTempValue = 0; // advc: Moved up to reduce rounding error
+		int iMaxCultureChange = 0;
+		FOR_EACH_ENUM(Specialist)
+		{
+			if (!kCivic.isSpecialistValid(eLoopSpecialist))
+				continue;
+			// K-Mod todo: the current code sucks. Fix it.
+			//iTempValue += iCities * (AI_atVictoryStage(AI_VICTORY_CULTURE3) ? 10 : 1) + 6;
+			/*	<advc.192> For a start, let's take care just of the border pop benefit
+				and Culture victory. */
+			iMaxCultureChange = std::max(iMaxCultureChange,
+					GC.getInfo(eLoopSpecialist).getCommerceChange(COMMERCE_CULTURE));
+			iTempValue += iCities + 5; // This part is still terrible
+		}
+		if (iMaxCultureChange > 0)
+		{
+			if (!AI_isEasyCulture())
+			{
+				FOR_EACH_CITYAI(pCity, *this)
+				{
+					if (pCity->AI_needsCultureToWorkFullRadius())
+						iTempValue += 5;
+				}
+				iTempValue += 4 * std::min(AI_totalUnitAIs(UNITAI_SETTLE),
+						AI_getNumCitySites());
+			}
+			if (AI_atVictoryStage(AI_VICTORY_CULTURE3))
+			{
+				iTempValue += 5 * kGame.culturalVictoryNumCultureCities() *
+						iMaxCultureChange;
+			}
+		}
+		iValue += intdiv::uround(iTempValue, /*2*/3); // </advc.192>
 	}
 
 	/*	K-Mod. When aiming for a diplomatic victory,
@@ -19299,10 +19581,9 @@ void CvPlayerAI::AI_doMilitary()
 
 void CvPlayerAI::AI_doResearch()
 {
-	FAssertMsg(!isHuman(), "isHuman did not return false as expected");
-
-	//if (getCurrentResearch() == NO_TECH)
-	if (getCurrentResearch() == NO_TECH && isResearch() && !isAnarchy()) // K-Mod
+	FAssert(!isHuman());
+	if (getCurrentResearch() == NO_TECH &&
+		isResearch() && !isAnarchy()) // K-Mod
 	{
 		AI_chooseResearch();
 		//AI_forceUpdateStrategies(); //to account for current research.
@@ -22331,7 +22612,7 @@ bool CvPlayerAI::AI_intendsToCede(CvCityAI const& kCity, PlayerTypes eToPlayer,
 	CvTeamAI const& kOurTeam = GET_TEAM(getTeam());
 	CvTeam const& kToTeam = GET_TEAM(eToPlayer);
 	bool const bToVassal = kToTeam.isVassal(kOurTeam.getID());
-//doto enhanced city size mylon
+//doto mylon enhanced City size 
 //replaces NUM_CITY_PLOTS in the entires below (default is 21)
 	int actual_plots_num = GET_PLAYER(eToPlayer).numCityPlots();
 	bool const bNonColonialVassal = (bToVassal &&
@@ -22339,7 +22620,7 @@ bool CvPlayerAI::AI_intendsToCede(CvCityAI const& kCity, PlayerTypes eToPlayer,
 	if (bNonColonialVassal && kToTeam.isCapitulated() &&
 		/*	Even if they pay for the city, it's probably not worth letting a
 			a capitulated vassal go free. */
-//doto enhanced city size mylon
+//doto mylon enhanced City size
 		kToTeam.canVassalRevolt(getTeam(), false, actual_plots_num, kCity.getPopulation()))
 	{
 		return false;
@@ -22354,7 +22635,7 @@ bool CvPlayerAI::AI_intendsToCede(CvCityAI const& kCity, PlayerTypes eToPlayer,
 			// This is a useful check also for voluntary vassals
 			if (kToTeam.canVassalRevolt(getTeam(), false,
 				// (Should perhaps play it less safely when iKeepVal is negative?)
-//doto enhanced city size mylon	
+//doto mylon enhanced City size 	
 				(3 * actual_plots_num) / 2 + iToTeamCities * 4,
 				kCity.getPopulation() + iToTeamCities * 4))
 			{
@@ -26005,7 +26286,8 @@ void CvPlayerAI::AI_calculateAverages()
 	int iTotalPopulation = 0;
 	FOR_EACH_CITYAI(pLoopCity, *this)
 	{
-//doto enhanced city size mylon - added CityPlotTypes to pLoopCity 0 dunnot why...
+//doto mylon enhanced City size
+// - added CityPlotTypes to pLoopCity 0 dunnot why...
 		int iPopulation = std::max((CityPlotTypes)pLoopCity->getPopulation(), NUM_CITY_PLOTS);
 		iTotalPopulation += iPopulation;
 		FOR_EACH_ENUM(Yield)
@@ -26480,9 +26762,17 @@ int CvPlayerAI::AI_getTotalFloatingDefendersNeeded(CvArea const& kArea, // advc:
 				rEnemyCityFactor) / 3;
 	}
 	{
-		int const iEra = std::max(0, getCurrentEra() - kGame.getStartEra() / 2);
-		// advc.107: Was ...?3:2 in numerator, 3 in denominator.
-		rDefenders.mulDiv(iEra + (kGame.getMaxCityElimination() > 0 ? 5 : 4), 6);
+		scaled rEra(getCurrentEra() - kGame.getStartEra(), 2);
+		rEra.increaseTo(0);
+		// advc.107: Was ...?3:2
+		rDefenders *= rEra + (kGame.getMaxCityElimination() > 0 ? 5 : 4);
+		rDefenders /= 6; // advc.107: was 3
+		// <advc.107> Avoid delaying 2nd city too much
+		if (getCurrentEra() == kGame.getStartEra() &&
+			rEra == 0 && getNumCities() <= 1 && AI_getNumCitySites() > 0)
+		{
+			rDefenders *= fixp(0.83);
+		} // </advc.107>
 	}
 	// K-Mod end
 	if (eAreaAI == AREAAI_DEFENSIVE)
@@ -27624,7 +27914,7 @@ void CvPlayerAI::AI_updateCitySites(int iMinFoundValueThreshold, int iMaxSites)
 			int iValue = kPlot.getFoundValue(getID(), /* advc.052: */ true);
 			if (iValue > iMinFoundValueThreshold && !AI_isPlotCitySite(kPlot))
 			{
-//doto enhanced city size mylon
+//doto mylon enhanced City size 
 //replaces NUM_CITY_PLOTS  (default is 21)
 				int actual_plots_num = GET_PLAYER(getID()).numCityPlots();
 				iValue *= std::min(actual_plots_num * 2, kPlot.getArea().getNumUnownedTiles()
@@ -28441,10 +28731,11 @@ ReligionTypes CvPlayerAI::AI_chooseReligion()
 		//aeReligions.push_back(eLoopReligion); // BtS
 		// <advc.171>
 		int iValue = 0;
-		TechTypes eLoopTech = (TechTypes)GC.getInfo(eLoopReligion).getTechPrereq();
-		if(eLoopTech != NO_TECH)
+		TechTypes eLoopTech = GC.getInfo(eLoopReligion).getTechPrereq();
+		if (eLoopTech != NO_TECH)
 			iValue = GC.getInfo(eLoopTech).getResearchCost();
-		if(iValue < iSmallest) {
+		if (iValue < iSmallest)
+		{
 			eBestReligion = eLoopReligion;
 			iSmallest = iValue;
 		}
@@ -28833,7 +29124,7 @@ int CvPlayerAI::AI_getPlotChokeValue(CvPlot const& kPlot) const // advc: param w
 }
 
 /*	This returns approximately to the sum
-	of the percentage values of each unit
+	of the percentage values of each city
 	(there is no need to scale the output by iHappy)
 	100 * iHappy means a high value. */
 int CvPlayerAI::AI_getHappinessWeight(int iHappy, int iExtraPop, bool bPercent) const
@@ -29046,8 +29337,8 @@ bool CvPlayerAI::AI_isFirstTech(TechTypes eTech) const
 	}
 	if (GC.getGame().countKnownTechNumTeams(eTech) == 0)
 	{
-		if ((getTechFreeUnit(eTech) != NO_UNIT) ||
-			(GC.getInfo(eTech).getFirstFreeTechs() > 0))
+		if (getTechFreeUnit(eTech) != NO_UNIT ||
+			GC.getInfo(eTech).getFirstFreeTechs() > 0)
 		{
 			return true;
 		}

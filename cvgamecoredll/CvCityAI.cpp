@@ -12,7 +12,7 @@
 #include "CvInfo_Civics.h"
 #include "BBAILog.h" // BETTER_BTS_AI_MOD, AI logging, 10/02/09, jdog5000
 
-#include "CvCityMacros.h" //doto enhanced city size mylon
+#include "CvCityMacros.h" //doto mylon enhanced City
 
 CvCityAI::CvCityAI() // advc.003u: Merged with AI_reset
 {
@@ -31,7 +31,8 @@ CvCityAI::CvCityAI() // advc.003u: Merged with AI_reset
 	m_aiCachePlayerClosenessDistance = new int[MAX_PLAYERS];
 	for (int i = 0; i < MAX_PLAYERS; i++)
 		m_aiCachePlayerClosenessDistance[i] = -1; // </advc.opt>
-	//mylon doto version - Need to know owner before allocating these
+	//doto mylon enhanced City
+	// - Need to know owner before allocating these
 	/*	These two were declared as arrays, but it's neater to treat them all alike.
 		And the build values had been set to NO_BUILD instead of 0. 
 	m_aiBestBuildValue = new int[NUM_CITY_PLOTS]();
@@ -39,6 +40,7 @@ CvCityAI::CvCityAI() // advc.003u: Merged with AI_reset
 	FOR_EACH_ENUM(CityPlot)
 		m_aeBestBuild[eLoopCityPlot] = NO_BUILD;
 	;*/
+	////doto mylon enhanced City
 	m_eBestBuild = NO_BUILD; // advc.opt
 
 	AI_ClearConstructionValueCache(); // K-Mod
@@ -65,9 +67,10 @@ CvCityAI::~CvCityAI()
 	SAFE_DELETE_ARRAY(m_aiEmphasizeCommerceCount);
 	SAFE_DELETE_ARRAY(m_aiSpecialYieldMultiplier);
 	SAFE_DELETE_ARRAY(m_aiPlayerCloseness);
-	//doto enhanced city size mylon
+//doto mylon enhanced City
 	/*SAFE_DELETE_ARRAY(m_aiBestBuildValue);
 	SAFE_DELETE_ARRAY(m_aeBestBuild);*/
+//doto mylon enhanced City
 }
 
 // Instead of having CvCity::init call CvCityAI::AI_init
@@ -75,10 +78,10 @@ void CvCityAI::init(int iID, PlayerTypes eOwner, int iX, int iY,
 	bool bBumpUnits, bool bUpdatePlotGroups, /* advc.ctr: */ int iOccupationTimer)
 {
 	CvCity::init(iID, eOwner, iX, iY, bBumpUnits, bUpdatePlotGroups, iOccupationTimer);
-//mylon enhanced cities doto advc version
+//doto mylon enhanced City
 	m_aiBestBuildValue.resize(NUM_CITY_PLOTS);
 	m_aeBestBuild.resize(NUM_CITY_PLOTS, NO_BUILD);
-//mylon enhanced cities doto advc version
+//doto mylon enhanced City
 	//AI_reset(); // advc.003u: Merged into constructor
 	AI_assignWorkingPlots();
 	// BETTER_BTS_AI_MOD, City AI, Worker AI, 11/14/09, jdog5000: calls swapped
@@ -221,13 +224,8 @@ void CvCityAI::AI_assignWorkingPlots()
 		}
 	}
 
-	// do we have population unassigned
 	while (extraPopulation() > 0)
 	{
-//doto mylon pop tile work limit -> if MAX_WORK_TILES tiles are set to work
-//break the loop
-		//if (extraVisiblePopulationMylon())
-		//	break;
 		// (AI_addBestCitizen now handles forced specialist logic)
 		if (!AI_addBestCitizen(/*bWorkers*/ true, /*bSpecialists*/ true))
 		{
@@ -236,12 +234,8 @@ void CvCityAI::AI_assignWorkingPlots()
 		}
 	}
 
-	// if we still have population to assign, assign specialists
 	while (extraSpecialists() > 0)
 	{
-		//doto mylon pop tile work limit -> if MAX_WORK_TILES tiles are set to work
-		if (extraVisiblePopulationMylon())
-			break; 
 		if (!AI_addBestCitizen(/*bWorkers*/ false, /*bSpecialists*/ true))
 		{
 			FErrorMsg("failed to assign extra specialist");
@@ -255,13 +249,13 @@ void CvCityAI::AI_assignWorkingPlots()
 	if (!isHuman() || isCitizensAutomated())
 		AI_juggleCitizens();
 
-	//doto mylon pop worked limit test
 	// at this point, we should not be over the limit
 	FAssert((getWorkingPopulation() + getSpecialistPopulation()) <= (totalFreeSpecialists() + getPopulation()));
-//doto mylon avoid assert pop worked tile limit
-	//int a = extraPopulation();
+//doto mylon population tile working limit
+	int a = extraPopulation();
 	//FAssert(extraPopulation() == 0);
-	if (!extraVisiblePopulationMylon())
+	if( getPopulation() > MAX_WORK_TILES &&
+		getWorkingPopulation() <= MAX_WORK_TILES)
 		FAssert(extraPopulation() == 0); // K-Mod.
 
 	AI_setAssignWorkDirty(false);
@@ -873,15 +867,13 @@ void CvCityAI::AI_chooseProduction()
 		}
 	}
 
-	if (getPopulation() > 5 && getCommerceRate(COMMERCE_CULTURE) == 0)
+	if (getPopulation() > 5 && AI_needsCultureToWorkFullRadius() &&
+		!kPlayer.AI_isDoStrategy(AI_STRATEGY_TURTLE))
 	{
-		if (!kPlayer.AI_isDoStrategy(AI_STRATEGY_TURTLE))
+		if (AI_chooseBuilding(BUILDINGFOCUS_CULTURE, 30))
 		{
-			if (AI_chooseBuilding(BUILDINGFOCUS_CULTURE, 30))
-			{
-				if (gCityLogLevel >= 2) logBBAI("      City %S uses zero culture build", getName().GetCString());
-				return;
-			}
+			if (gCityLogLevel >= 2) logBBAI("      City %S uses zero culture build", getName().GetCString());
+			return;
 		}
 	}
 
@@ -898,7 +890,8 @@ void CvCityAI::AI_chooseProduction()
 			bCloseToNewTech = true;
 	} // </advc.113>
 	// K-Mod 10/sep/10: iLandBonuses moved up
-	int iLandBonuses = AI_countNumImprovableBonuses(true,//kPlayer.getCurrentResearch()
+	int const iLandBonuses = AI_countNumImprovableBonuses(true,
+			//kPlayer.getCurrentResearch()
 			bCloseToNewTech ? eCurrentResearch : NO_TECH); // advc.113
 
 	bool bChooseWorker = false;
@@ -1331,7 +1324,7 @@ void CvCityAI::AI_chooseProduction()
 		}
 	}
 
-	if	(!bLandWar && !bAssault && getCommerceRate(COMMERCE_CULTURE) == 0)
+	if	(!bLandWar && !bAssault && AI_needsCultureToWorkFullRadius())
 	{
 		if (AI_chooseBuilding(BUILDINGFOCUS_CULTURE,
 			bAggressiveAI ? 10 : 20, 0, bAggressiveAI ? 33 : 50))
@@ -2633,7 +2626,7 @@ void CvCityAI::AI_chooseProduction()
 	}
 
 
-	if (getCommerceRateTimes100(COMMERCE_CULTURE) == 0)
+	if (AI_needsCultureToWorkFullRadius())
 	{
 		if (AI_chooseBuilding(BUILDINGFOCUS_CULTURE, 30))
 			return;
@@ -5337,8 +5330,7 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags,
 						(but not wonders / special buildings) */
 					if (iTempValue > 0 && !bLimitedWonder &&
 						kBuilding.getProductionCost() > 0 &&
-						getCultureLevel() <= 1 &&
-						getCommerceRateTimes100(COMMERCE_CULTURE) < 100)
+						AI_needsCultureToWorkFullRadius())
 					{
 						iPriorityFactor += 25;
 						//iTempValue += 16;
@@ -5818,7 +5810,7 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags,
 							COMMERCE_ESPIONAGE) * 3;
 				}
 				//if ((getCommerceRate(COMMERCE_CULTURE) == 0) && (AI_calculateTargetCulturePerTurn() == 1))
-				if (getCommerceRate(COMMERCE_CULTURE) == 0 && iTempValue >= 3)
+				if (iTempValue >= 3 && AI_needsCultureToWorkFullRadius())
 					iTempValue += 7;
 				// K-Mod, this stuff was moved from below
 				iTempValue += ((kBuilding.getCommerceModifier(COMMERCE_CULTURE) *
@@ -7365,7 +7357,7 @@ int CvCityAI::AI_totalBestBuildValue(CvArea const& kArea) /* advc:  */ const
 	return iTotalValue;
 }
 
-//doto enhanced city size mylon
+//doto mylon enhanced City size
 void CvCityAI::AI_updateRadius()
 {
 	FAssert(m_aiBestBuildValue.size() == m_aeBestBuild.size());
@@ -7376,7 +7368,7 @@ void CvCityAI::AI_updateRadius()
 		m_aeBestBuild.push_back(NO_BUILD);
 	}
 }
-
+//doto mylon enhanced City size
 
 int CvCityAI::AI_clearFeatureValue(CityPlotTypes ePlot) // advc.enum: CityPlotTypes
 {
@@ -8372,9 +8364,8 @@ BuildTypes CvCityAI::AI_getBestBuild(CityPlotTypes ePlot) const // advc.enum: Ci
 	// <advc.opt> Now also store the best build among all city plots
 	if(ePlot == NO_CITYPLOT)
 		return m_eBestBuild; // </advc.opt>
-	// (Tbd.: Put the part below into a separate function so that it can be inlined)
-	// </advc.opt>
-//doto enhanced city size mylon - no longer an enum values
+//doto mylon enhanced City size
+// - no longer an enum values
 //	FAssertEnumBounds(ePlot);
 	FAssertBounds(0, m_aeBestBuild.size(), ePlot);
 	return m_aeBestBuild[ePlot];
@@ -9548,6 +9539,15 @@ bool CvCityAI::AI_addBestCitizen(bool bWorkers, bool bSpecialists,
 {
 	PROFILE_FUNC();
 
+//doto mylon population tile working limit
+//doto - if we reach max tiles that can be worked - no need to continue 
+// do not reduce a specialist or a tile
+	if (getWorkingPopulation() >= MAX_WORK_TILES && bWorkers)
+		bWorkers = false;
+		//return true;
+	if (extraVisiblePopulationMylon())
+		bSpecialists = true;
+
 	int iGrowthValue = AI_growthValuePerFood(); // K-Mod
 
 	int iBestValue = -1;
@@ -9615,10 +9615,6 @@ bool CvCityAI::AI_addBestCitizen(bool bWorkers, bool bSpecialists,
 	}
 	else if (eBestPlot != NO_CITYPLOT)
 	{
-//doto - if we reach max tiles that can be worked - no need to continue 
-// do not reduce a specialist or a tile
-		if (extraVisiblePopulationMylon())
-			return false;
 		setWorkingPlot(eBestPlot, true);
 		if (peBestPlot != NULL)
 		{
@@ -9629,13 +9625,18 @@ bool CvCityAI::AI_addBestCitizen(bool bWorkers, bool bSpecialists,
 		}
 		return true;
 	}
-
+	  
 	return false;
 }
 
 // Returns true if a citizen was removed from a plot...
 bool CvCityAI::AI_removeWorstCitizen(SpecialistTypes eIgnoreSpecialist)
 {
+	//int a = getFreeSpecialistCount();
+	int b = visiblePopulation();
+	int c = extraFreeSpecialists();
+	int d = totalFreeSpecialists();
+	int e = getSpecialistPopulation();
 	// if we are using more specialists than the free ones we get
 	if (extraFreeSpecialists() < 0)
 	{
@@ -9649,8 +9650,8 @@ bool CvCityAI::AI_removeWorstCitizen(SpecialistTypes eIgnoreSpecialist)
 				if (getSpecialistCount((SpecialistTypes)GC.getDEFAULT_SPECIALIST()) >
 					getForceSpecialistCount((SpecialistTypes)GC.getDEFAULT_SPECIALIST()))
 				{
-//doto mylon pop count limit working - do not deduct citizen if max work tiles
-// the statement can be == MAX_WORK_TILES - shouldnt be above
+//doto mylon population tile working limit					
+//- do not deduct citizen if max work tiles
 					if (getWorkingPopulation() >= MAX_WORK_TILES)
 						return false;
 
@@ -11945,7 +11946,7 @@ void CvCityAI::AI_buildGovernorChooseProduction()
 			AI_buildingValue(eBestBuilding);
 
 	// pop borders
-	if (getCultureLevel() <= 1 && getCommerceRate(COMMERCE_CULTURE) == 0)
+	if (AI_needsCultureToWorkFullRadius())
 	{
 		if (eBestBuilding != NO_BUILDING && AI_countGoodTiles(true, false) > 0)
 		{
@@ -12819,6 +12820,13 @@ int CvCityAI::AI_specialYieldMultiplier(YieldTypes eYield) const
 	return m_aiSpecialYieldMultiplier[eYield];
 }
 
+// advc: Similar code had been used (somewhat inconsistently) in several places
+bool CvCityAI::AI_needsCultureToWorkFullRadius() const
+{
+	return (!isDisorder() && getCommerceRate(COMMERCE_CULTURE) <= 0 &&
+			getCultureLevel() + 1 <= CITY_PLOTS_RADIUS);
+}
+
 
 int CvCityAI::AI_countNumBonuses(BonusTypes eBonus,
 	bool bIncludeOurs, bool bIncludeNeutral, int iOtherCultureThreshold,
@@ -13653,7 +13661,7 @@ void CvCityAI::read(FDataStreamBase* pStream)
 	pStream->Read(NUM_YIELD_TYPES, m_aiEmphasizeYieldCount);
 	pStream->Read(NUM_COMMERCE_TYPES, m_aiEmphasizeCommerceCount);
 	pStream->Read(&m_bForceEmphasizeCulture);
-//doto enhanced city size mylon
+//doto mylon enhanced City
 	// (not allocated by ctor)
 	m_aiBestBuildValue.resize(NUM_CITY_PLOTS);
 	m_aeBestBuild.resize(NUM_CITY_PLOTS);
@@ -13661,6 +13669,7 @@ void CvCityAI::read(FDataStreamBase* pStream)
 	pStream->Read(NUM_CITY_PLOTS, (int*)&m_aeBestBuild[0]);
 	//pStream->Read(NUM_CITY_PLOTS, m_aiBestBuildValue);
 	//pStream->Read(NUM_CITY_PLOTS, (int*)m_aeBestBuild);
+//doto mylon enhanced City
 	// <advc.opt>
 	if(uiFlag >= 4)
 		pStream->Read((int*)&m_eBestBuild); // </advc.opt>
@@ -13739,12 +13748,12 @@ void CvCityAI::write(FDataStreamBase* pStream)
 	pStream->Write(NUM_YIELD_TYPES, m_aiEmphasizeYieldCount);
 	pStream->Write(NUM_COMMERCE_TYPES, m_aiEmphasizeCommerceCount);
 	pStream->Write(m_bForceEmphasizeCulture);
-//doto enhanced city size mylon
+//doto mylon enhanced City
 	pStream->Write(NUM_CITY_PLOTS, &m_aiBestBuildValue[0]);
 	pStream->Write(NUM_CITY_PLOTS, (int*)&m_aeBestBuild[0]);
 	//pStream->Write(NUM_CITY_PLOTS, m_aiBestBuildValue);
 	//pStream->Write(NUM_CITY_PLOTS, (int*)m_aeBestBuild);
-
+//doto mylon enhanced City
 	pStream->Write(m_eBestBuild); // advc.opt
 	pStream->Write(GC.getNumEmphasizeInfos(), m_pbEmphasize);
 	pStream->Write(NUM_YIELD_TYPES, m_aiSpecialYieldMultiplier);
