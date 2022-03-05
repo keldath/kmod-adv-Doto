@@ -3607,15 +3607,6 @@ void CvCity::processSpecialist(SpecialistTypes eSpecialist, int iChange)
 		changeSpecialistCommerce(eLoopCommerce, iChange *
 				kSpecialist.getCommerceChange(eLoopCommerce));
 	}
-//doto specialists instead of pop
-// dont allow any bonuses that are not from the specialists own values.	
-	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
-	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
-	SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
-	
-	if (eFarmer == eSpecialist || eMiner == eSpecialist || eLabor == eSpecialist)
-		return;
-//doto specialists instead of pop
 	/*************************************************************************************************/
 	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 	/**																								**/
@@ -3626,7 +3617,14 @@ void CvCity::processSpecialist(SpecialistTypes eSpecialist, int iChange)
 	/**	CMEDIT: End																					**/
 	/*************************************************************************************************/
 	updateExtraSpecialistYield();
-	changeSpecialistFreeExperience(kSpecialist.getExperience() * iChange);
+//doto specialists instead of pop
+// dont allow any bonuses that are not from the specialists own values.	
+	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
+	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
+	SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);	
+	if (eFarmer != eSpecialist && eMiner != eSpecialist && eLabor != eSpecialist )
+		changeSpecialistFreeExperience(kSpecialist.getExperience() * iChange);
+//doto specialists instead of pop
 /*************************************************************************************************/
 /** Specialists Enhancements, by Supercheese 10/9/09                                                   */
 /**                                                                                              */
@@ -4374,7 +4372,14 @@ int CvCity::healthRate(bool bNoAngry, int iExtra) const
 int CvCity::foodConsumption(bool bNoAngry, int iExtra) const
 {
 //doto specialists instead of population
-	iExtra += getFreeCivilianCount(); // getFreeSpecialist(); // Free specialists consume food
+
+	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+	bool cityState = kCivilization.getIsCityState() == 1 ? true : false; 
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES)
+		&& GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && cityState)
+	{
+		iExtra += getFreeCivilianCount(); // getFreeSpecialist(); // Free specialists consume food
+	}
 	return ((getPopulation() + iExtra - (bNoAngry ? angryPopulation(iExtra) : 0)) *
 		GC.getFOOD_CONSUMPTION_PER_POPULATION()) - healthRate(bNoAngry, iExtra); 
 }
@@ -5007,20 +5012,16 @@ void CvCity::setGameTurnAcquired(int iNewValue)
 	FAssert(getGameTurnAcquired() >= 0);
 }
 
-
-void CvCity::setPopulation(int iNewValue)
-{
-/* Population Limit ModComp - Beginning : The game must warn the city's owner that the population limit is reached */		
-	CvWString szBuffer;
-/* Population Limit ModComp - End */
-	int const iOldPopulation = getPopulation();
-	if (iOldPopulation == iNewValue)
-		return;
-
-	m_iPopulation = iNewValue;
-
 //doto specialists instead of pop
-	int const iExcessPop = m_iPopulation - 5;
+int CvCity::popToSpecialists(int iOldPopulation, int m_iPopulation)
+{
+	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+	bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
+	  !GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && !cityState)
+	  return m_iPopulation;
+	  
+	int const iExcessPop = m_iPopulation - 5; //GC.getDefineINT("ENHANCED_CITY_STATES_THRESHOLD"); // should be 20 == working tiles
 	int foodY = getBaseYieldRate(YIELD_FOOD);
 	int prodY = getBaseYieldRate(YIELD_PRODUCTION);
 	int commY = getBaseYieldRate(YIELD_COMMERCE);
@@ -5083,7 +5084,7 @@ void CvCity::setPopulation(int iNewValue)
 			m_iPopulation += iStarvedSpecialists;
 			//changeFreeSpecialist(-iStarvedSpecialists);
 			//make sure not to deduct specialist that isnt listed in the getFreeSpecialistCount
-			FAssert(getFreeCivilianCount() > 0);
+			//FAssert(getFreeCivilianCount() > 0);
 			FAssert(eCounter > 0);
 			changeFreeCivilianCount(-iStarvedSpecialists); //using one counter for all of them.
 			changeFreeSpecialistCount(eDynamicRedu, -iStarvedSpecialists);
@@ -5093,9 +5094,24 @@ void CvCity::setPopulation(int iNewValue)
 			//setFreeSpecialistCount(eCivilian, -iStarvedSpecialists);
 		}
 	}
+	return m_iPopulation;
 	//getFreeCivilianCount()
 	//FAssertBounds(0, 20, m_iPopulation);
 //doto specialist instead of pop
+}
+
+void CvCity::setPopulation(int iNewValue)
+{
+/* Population Limit ModComp - Beginning : The game must warn the city's owner that the population limit is reached */		
+	CvWString szBuffer;
+/* Population Limit ModComp - End */
+	int const iOldPopulation = getPopulation();
+	if (iOldPopulation == iNewValue)
+		return;
+
+	m_iPopulation = iNewValue;
+//doto specialist instead of pop -  assign new value if there is any
+	m_iPopulation = popToSpecialists(iOldPopulation, m_iPopulation);
 
 	FAssert(getPopulation() >= 0);
 	GET_PLAYER(getOwner()).invalidatePopulationRankCache();
@@ -5188,6 +5204,12 @@ void CvCity::changePopulationLimitChange(int iChange)
 //doto specialists instead of population
 int CvCity::getFreeCivilianCount() const
 {
+	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+	bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
+		!GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && !cityState)
+		return 0;
+
 	return m_iFreeCivilianCount;
 }
 
@@ -8319,9 +8341,24 @@ int CvCity::getExtraSpecialistYield(YieldTypes eYield, SpecialistTypes eSpeciali
 void CvCity::updateExtraSpecialistYield(YieldTypes eYield)
 {
 	int iNewYield = 0;
+//doto specialists instead of pop
+// dont allow any bonuses that are not from the specialists own values.	
+	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
+	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
+	SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
+	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+	bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+//doto specialists instead of pop
 	FOR_EACH_ENUM(Specialist)
+	{
+//doto specialists instead of pop
+		if ((GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
+	  		 GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && cityState) && (
+			eFarmer ==  eLoopSpecialist || eMiner == eLoopSpecialist || 
+			eLabor == eLoopSpecialist))
+			continue;
 		iNewYield += getExtraSpecialistYield(eYield, eLoopSpecialist);
-
+	}
 	int const iChange = iNewYield - getExtraSpecialistYield(eYield); // advc
 	if (iChange != 0)
 	{
@@ -8370,9 +8407,21 @@ void CvCity::updateSpecialistCivicExtraCommerce(CommerceTypes eCommerce)
 	iOldCommerce = getSpecialistCivicExtraCommerce(eCommerce);
 
 	iNewCommerce = 0;
-
+//doto specialists instead of pop
+// dont allow any bonuses that are not from the specialists own values.	
+	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
+	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
+	SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);	
+	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+	bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+//doto specialists instead of pop
 	for (iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
 	{
+//doto specialists instead of pop
+		if ((GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
+	  		 GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && cityState) &&
+	  	     (eFarmer == (SpecialistTypes)iI || eMiner == (SpecialistTypes)iI || eLabor == (SpecialistTypes)iI))
+			continue;
 		iNewCommerce += getSpecialistCivicExtraCommerceBySpecialist(eCommerce, ((SpecialistTypes)iI));
 	}
 

@@ -14972,6 +14972,15 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	/*************************************************************************************************/	
 	for (iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
 	{
+//doto specialists instead of pop
+		SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
+		SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
+		SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);	
+		if ((eFarmer == (SpecialistTypes)iI || eMiner == (SpecialistTypes)iI || eLabor == (SpecialistTypes)iI)
+			&& GC.getGame().isOption(GAMEOPTION_CITY_STATES)
+			&& GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES))
+			continue;
+//doto specialists instead of pop
 		for (iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
 		{
 			changeSpecialistExtraYield(((SpecialistTypes)iI), ((YieldTypes)iJ), (GC.getCivicInfo(eCivic).getSpecialistYieldChange(iI, iJ) * iChange));
@@ -14980,6 +14989,15 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 
 	for (iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
 	{
+//doto specialists instead of pop
+		SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
+		SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
+		SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);	
+		if ((eFarmer == (SpecialistTypes)iI || eMiner == (SpecialistTypes)iI || eLabor == (SpecialistTypes)iI)
+			&& GC.getGame().isOption(GAMEOPTION_CITY_STATES)
+			&& GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES))
+			continue;
+//doto specialists instead of pop
 		for (iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
 		{
 			changeSpecialistCivicExtraCommerce(((SpecialistTypes)iI), ((CommerceTypes)iJ), (GC.getCivicInfo(eCivic).getSpecialistCommerceChange(iI, iJ) * iChange));

@@ -122,7 +122,7 @@
 			<Description>TXT_KEY_GAME_OPTION_ONE_CITY_CHALLENGE</Description>
 			<Help>TXT_KEY_GAME_OPTION_ONE_CITY_CHALLENGE_HELP</Help>
 			<bDefault>0</bDefault>
-			<bVisible>0</bVisible>
+			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<!-- advc.054: Visible was 1. The AdvCiv DLL makes it visible on the
 			 Custom Scenario screen in any case. -->
@@ -215,6 +215,20 @@
 			<Help>TXT_KEY_GAME_OPTION_NO_ESPIONAGE_HELP</Help>
 			<bDefault>0</bDefault>
 			<bVisible>0</bVisible>
+		</GameOptionInfo>
+		<GameOptionInfo>
+			<Type>GAMEOPTION_CITY_STATES</Type>
+			<Description>City States</Description>
+			<Help>City States</Help>
+			<bDefault>1</bDefault>
+			<bVisible>1</bVisible>
+		</GameOptionInfo>
+		<GameOptionInfo>
+			<Type>GAMEOPTION_ENHANCED_CITY_STATES</Type>
+			<Description>Enhanced City States</Description>
+			<Help>Enhanced City States</Help>
+			<bDefault>1</bDefault>
+			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
 			<Type>GAMEOPTION_BLOCADE_UNIT</Type>

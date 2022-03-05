@@ -83,14 +83,16 @@
 		<iDefineIntVal>-2</iDefineIntVal>
 	</Define>-->
 	<!-- warming prob is out of 1000, not pecent. -->
+	<!-- doto - keldath - changed was 20 -->
 	<Define> <!-- redefine -->
 		<DefineName>GLOBAL_WARMING_PROB</DefineName>
-		<iDefineIntVal>20</iDefineIntVal>
+		<iDefineIntVal>10</iDefineIntVal>
 	</Define>
 	<!-- global warming threshold is # land plots * resistance. -->
+	<!-- doto - keldath - changed was 9 -->
 	<Define>
 		<DefineName>GLOBAL_WARMING_RESISTANCE</DefineName>
-		<iDefineIntVal>9</iDefineIntVal>
+		<iDefineIntVal>20</iDefineIntVal>
 	</Define>
 	<!-- advc.055: was 500 in K-Mod -->
 	<Define>
@@ -409,6 +411,12 @@
 		<!-- ADDE VALUE TO RAISE NATURAL COMBAT LIMIT COMPARED TO AVERAGE DAMAGE OF ALL DAMAGED DEFENDER UNITS -->
 		<DefineName>RANGED_ALL_DMGED_CMLIMIT_THRESH</DefineName>
 		<iDefineIntVal>20</iDefineIntVal>
+<!-- DOTO rangedstrikeMOD - START - Improved AI Range Attack -->
+	</Define>
+	<Define>
+		<!-- DOTO SPECIALISTS INSTEAD OF POP -->
+		<DefineName>ENHANCED_CITY_STATES_THRESHOLD</DefineName>
+		<DefineTextVal>20</DefineTextVal>
 <!-- DOTO rangedstrikeMOD - START - Improved AI Range Attack -->
 	</Define>
 	

@@ -18,6 +18,9 @@ m_bAIPlayable(false),
 //limited religion doto
 m_iMaxLimitedReligions(0),
 //limited religion doto
+//doto specialists instead of pop city states
+m_isCityState(0),
+//doto specialists instead of pop city states
 m_piCivilizationBuildings(NULL),
 m_piCivilizationUnits(NULL),
 m_piCivilizationFreeUnitsClass(NULL),
@@ -104,7 +107,12 @@ int CvCivilizationInfo::getMaxLimitedReligions() const
 	return m_iMaxLimitedReligions;
 }
 //limited religion doto
-
+//doto specialists instead of pop city states
+int CvCivilizationInfo::getIsCityState() const
+{
+	return m_isCityState;
+}
+//doto specialists instead of pop city states
 const wchar* CvCivilizationInfo::getShortDescription(uint uiForm)
 {
 	while(m_aszShortDescription.size() <= uiForm)
@@ -236,7 +244,10 @@ void CvCivilizationInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_bPlayable);
 //limited religion doto	
 	stream->Read(&m_iMaxLimitedReligions);
-//limited religion doto		
+//limited religion doto	
+//doto specialists instead of pop city states
+	stream->Read(&m_isCityState);
+//doto specialists instead of pop city states
 	stream->ReadString(m_szArtDefineTag);
 	stream->ReadString(m_szShortDescriptionKey);
 	stream->ReadString(m_szAdjectiveKey);
@@ -293,6 +304,9 @@ void CvCivilizationInfo::write(FDataStreamBase* stream)
 //limited religion doto	
 	stream->Write(m_iMaxLimitedReligions);
 //limited religion doto	
+//doto specialists instead of pop city states
+	stream->Write(m_isCityState);
+//doto specialists instead of pop city states
 	stream->WriteString(m_szArtDefineTag);
 	stream->WriteString(m_szShortDescriptionKey);
 	stream->WriteString(m_szAdjectiveKey);
@@ -339,6 +353,9 @@ bool CvCivilizationInfo::read(CvXMLLoadUtility* pXML)
 //limited religion doto		by default limit to 1
 	pXML->GetChildXmlValByName(&m_iMaxLimitedReligions, "iMaxLimitedReligions", 1);
 //limited religion doto	
+//doto specialists instead of pop city states
+	pXML->GetChildXmlValByName(&m_isCityState, "isCityState", 0);
+//doto specialists instead of pop city states
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "Cities"))
 	{
 		pXML->SetStringList(&m_paszCityNames, &m_iNumCityNames);

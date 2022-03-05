@@ -28,10 +28,7 @@
 			<bAIPlayable>1</bAIPlayable>
 <!--Limited religion doto -->			
 			<iMaxLimitedReligions>1</iMaxLimitedReligions>
-<!--Limited religion doto -->
-<!--doto enhanced city size mylon-->
-			<iMaxCityRadius>4</iMaxCityRadius>
-<!--doto enhanced city size mylon-->						
+<!--Limited religion doto -->						
 			<Cities>
 				<City>TXT_KEY_CITY_NAME_WASHINGTON</City>
 				<City>TXT_KEY_CITY_NAME_NEW_YORK</City>
@@ -4973,7 +4970,7 @@
 			<DerivativeCiv>NONE</DerivativeCiv>
 			<CivilizationSelectionSound>AS3D_ARABIA_SELECT</CivilizationSelectionSound>
 			<CivilizationActionSound>AS3D_ARABIA_ORDER</CivilizationActionSound>
-<!-- city states begin -->
+<!-- doto specialists instead of pop city states begin -->
 		</CivilizationInfo>
 		<CivilizationInfo>
 			<Type>CIVILIZATION_POLAND</Type>
@@ -4987,9 +4984,9 @@
 			<UnitArtStyleType>UNIT_ARTSTYLE_MIDDLE_EAST</UnitArtStyleType>
 			<bPlayable>1</bPlayable>
 			<bAIPlayable>1</bAIPlayable>
-<!--doto enhanced city size mylon-->
-			<iMaxCityRadius>4</iMaxCityRadius>
-<!--doto enhanced city size mylon-->
+<!--doto specialists instead of pop city states -->			
+			<isCityState>1</isCityState>
+<!--doto specialists instead of pop city states -->	
 			<Cities>
 				<City>Krakow</City>
 			</Cities>

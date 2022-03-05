@@ -397,6 +397,8 @@ public:
 
 	int getPopulation() const { return m_iPopulation; }															// Exposed to Python
 	void setPopulation(int iNewValue);																			// Exposed to Python
+//doto specialists instead of pop									
+	int popToSpecialists(int iOldPopulation, int m_iPopulation);																					// Exposed to Python
 	void changePopulation(int iChange);																			// Exposed to Python
 /* doto-Population Limit ModComp - Beginning */
 	int getPopulationLimit() const;														// Exposed to Python
@@ -407,9 +409,9 @@ public:
 //doto specialists instead of population	
 	int getFreeCivilianCount() const;															// Exposed to Python
 	void setFreeCivilianCount(int iNewValue);										// Exposed to Python
-	void changeFreeCivilianCount(int iChange);		
-	void processFreeCivilianCount();
-//doto specialists instead of population
+	void changeFreeCivilianCount(int iChange);											// Exposed to Python
+	void processFreeCivilianCount();														// Exposed to Python
+//doto specialists instead of population													// Exposed to Python
 	int getRealPopulation() const;																				// Exposed to Python
 	int getHighestPopulation() const { return m_iHighestPopulation; }											// Exposed to Python
 	void setHighestPopulation(int iNewValue);

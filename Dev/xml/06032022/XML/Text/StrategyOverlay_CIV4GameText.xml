@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!-- Game text for the BUG Strategy Overlay, a.k.a. City Dotmap. -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+	    <Tag>TXT_KEY_STRATOVERLAY_TITLE</Tag>
+		<English>Strategy Overlay</English>
+		<German>Strategie-Overlay</German>
+		<Italian>Livello Strategico</Italian>
+		<Spanish>Mapa Estratégico</Spanish>
+	</TEXT>
+	<TEXT>
+	    <Tag>TXT_KEY_STRATOVERLAY_DOTMAPPER</Tag>
+		<English>Dot Mapper</English>
+		<German>Punkt-Werkzeug</German>
+		<Italian>Mappa di posizionamento</Italian>
+		<Spanish>Mapa Puntos</Spanish>
+	</TEXT>
+	<TEXT>
+	    <Tag>TXT_KEY_STRATOVERLAY_PLACECITY</Tag>
+		<English>Place City</English>
+		<German>Stadt platzieren</German>
+		<Italian>Posiziona citt&#224;</Italian>
+		<Spanish>Colocar Ciudad</Spanish>
+	</TEXT>
+	<TEXT>
+	    <Tag>TXT_KEY_STRATOVERLAY_REMOVECITY</Tag>
+		<English>Remove City</English>
+		<German>Stadt entfernen</German>
+		<Italian>Rimuovi Citt&#224;</Italian>
+		<Spanish>Eliminar Ciudad</Spanish>
+	</TEXT>
+	<TEXT>
+	    <Tag>TXT_KEY_STRATOVERLAY_COLORSELECT</Tag>
+		<English>Color Selection</English>
+		<German>Farbauswahl</German>
+		<Italian>Seleziona colore</Italian>
+		<Spanish>Seleccionar Color</Spanish>
+	</TEXT>
+	<TEXT>
+	    <Tag>TXT_KEY_STRATOVERLAY_SIGNS</Tag>
+		<English>Signs</English>
+		<German>Markierungen</German>
+		<Italian>Etichette</Italian>
+		<Spanish>Señal</Spanish>
+	</TEXT>
+	<TEXT>
+	    <Tag>TXT_KEY_STRATOVERLAY_ADDSIGN_TITLE</Tag>
+		<English>Add Overlay Sign</English>
+		<German>Overlay-Markierung hinzufügen</German>
+		<Italian>Aggiungi livello etichette</Italian>
+		<Spanish>Añadir Señal</Spanish>
+	</TEXT>
+	<TEXT>
+	    <Tag>TXT_KEY_STRATOVERLAY_ADDSIGN_BODY</Tag>
+		<English>Caption for the sign</English>
+		<German>Text der Markierung</German>
+		<Italian>Testo dell'etichetta</Italian>
+		<Spanish>Texto para la señal</Spanish>
+	</TEXT>
+	<TEXT>
+	    <Tag>TXT_KEY_STRATOVERLAY_ADDSIGN</Tag>
+		<English>Add Sign</English>
+		<German>Markierung hinzufügen</German>
+		<Italian>Aggiungi etichetta</Italian>
+		<Spanish>Añadir Señal</Spanish>
+	</TEXT>
+	<TEXT>
+	    <Tag>TXT_KEY_STRATOVERLAY_REMOVESIGN</Tag>
+		<English>Remove Sign</English>
+		<German>Markierung entfernen</German>
+		<Italian>Rimuovi etichetta</Italian>
+		<Spanish>Eliminar Señal</Spanish>
+	</TEXT>
+	<TEXT>
+	    <Tag>TXT_KEY_STRATOVERLAY_ADDSIGN_EDITBOX_HELP</Tag>
+	    <English>Enter the text to be displayed on the sign</English>
+	    <German>Eingabe des Textes, der auf der Markierung erscheinen soll</German>
+	    <Italian>Digita il testo che deve essere visualizzato sull'etichetta</Italian>
+	    <Spanish>Texto que será mostrado en la señal</Spanish>
+	</TEXT>
+
+</Civ4GameText>

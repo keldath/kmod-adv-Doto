@@ -579,6 +579,9 @@ void CyEnumsPythonInterface()
 		.value("GAMEOPTION_NO_ANIMALS", GAMEOPTION_NO_ANIMALS) // advc.309
 		.value("GAMEOPTION_NO_SLAVERY", GAMEOPTION_NO_SLAVERY) // advc.912d
 		.value("GAMEOPTION_NO_ESPIONAGE", GAMEOPTION_NO_ESPIONAGE) // advc.tsl (moved down)
+//Doto City States
+		.value("GAMEOPTION_CITY_STATES", GAMEOPTION_CITY_STATES) // advc.tsl (moved down)
+		.value("GAMEOPTION_ENHANCED_CITY_STATES", GAMEOPTION_ENHANCED_CITY_STATES) // advc.tsl (moved down)
 //MOD@VET_Andera412_Blocade_Unit-begin1/1
 		.value("GAMEOPTION_BLOCADE_UNIT", GAMEOPTION_BLOCADE_UNIT)
 		.value("GAMEOPTION_MOUNTAINS", GAMEOPTION_MOUNTAINS)//AND Mountains mod Options

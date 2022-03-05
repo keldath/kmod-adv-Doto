@@ -5151,7 +5151,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactRand>100</iContactRand>
 				</ContactRand>
 				<ContactRand>
-					<!-- advc.250a: was 500 -->
+					<!-- advc.005a: was 500 -->
 					<ContactType>CONTACT_DEMAND_TRIBUTE</ContactType>
 					<iContactRand>250</iContactRand>
 				</ContactRand>

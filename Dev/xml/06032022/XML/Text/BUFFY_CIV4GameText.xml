@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+	Warnings for BUFFY Game Settings/Map Checks
+
+	Copyright (c) 2009 The BUG Mod.
+-->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<!-- advc.009c: Deleted all keys except this one because it replaces text
+		 that was hardcoded (and untranslated) in BtS.
+		 Also deleted 'BUFFY Options.xml'. -->
+	<TEXT>
+		<Tag>TXT_KEY_BUFFYWARNING_CHECKSUM_SKIPPED</Tag>
+		<English>[COLOR_WARNING_TEXT]Skipped Checksum.[COLOR_REVERT]</English>
+		<German>[COLOR_WARNING_TEXT]Prüfsumme übersprungen.[COLOR_REVERT]</German>
+		<Italian>[COLOR_WARNING_TEXT]Checksum saltato.[COLOR_REVERT]</Italian>
+		<Spanish>[COLOR_WARNING_TEXT]Se omitió Checksum.[COLOR_REVERT]</Spanish>
+	</TEXT>
+</Civ4GameText>

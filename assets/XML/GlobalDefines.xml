@@ -1589,8 +1589,8 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 	<Define>
 		<DefineName>CAMERA_CITY_ZOOM_IN_DISTANCE</DefineName>
 <!--doto enhanced city size Mylon Mega Mod -->
-	<!--	<fDefineFloatVal>4800</fDefineFloatVal> -->
-			<fDefineFloatVal>6800</fDefineFloatVal>
+<!--	<fDefineFloatVal>4800</fDefineFloatVal> -->
+			<fDefineFloatVal>7000</fDefineFloatVal>
 	</Define>
 	<Define>
 		<DefineName>CAMERA_BATTLE_ZOOM_IN_DISTANCE</DefineName>
@@ -1931,8 +1931,9 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
 	<Define>
+<!-- doto mylon enhanced city and workpop limit was -90-->
 		<DefineName>CAMERA_SPECIAL_PITCH</DefineName>
-		<fDefineFloatVal>-90.0</fDefineFloatVal>
+		<fDefineFloatVal>-60.0</fDefineFloatVal>
 	</Define>
 	<Define>
 		<DefineName>CITY_SCREEN_CLICK_WILL_EXIT</DefineName>

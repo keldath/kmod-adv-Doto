@@ -38,6 +38,9 @@ public: // advc: All the const functions are exposed to Python
 //limited religion doto	
 	int getMaxLimitedReligions() const;
 //limited religion doto	
+//doto specialists instead of pop city states
+	int getIsCityState() const;
+//doto specialists instead of pop city states
 	std::wstring pyGetShortDescription(uint uiForm) { return getShortDescription(uiForm); }
 	DllExport const wchar* getShortDescription(uint uiForm = 0);
 	const wchar* getShortDescriptionKey() const;
@@ -90,6 +93,9 @@ protected:
 //limited religion doto	
 	int m_iMaxLimitedReligions;
 //limited religion doto
+//doto specialists instead of pop city states
+	int m_isCityState;
+//doto specialists instead of pop city states
 	CvString m_szArtDefineTag;
 	CvWString m_szShortDescriptionKey;
 	CvWString m_szAdjectiveKey;

@@ -496,9 +496,9 @@
 <!--Limited religion doto -->
 	<ElementType name="iMaxLimitedReligions" content="textOnly" dt:type="int"/>
 <!--Limited religion doto -->
-<!--doto enhanced city size mylon -->	
-	<ElementType name="iMaxCityRadius" content="textOnly" dt:type="int"/>
-<!--doto enhanced city size mylon -->
+<!--doto specialists instead of pop city states -->
+	<ElementType name="isCityState" content="textOnly" dt:type="int"/>
+<!--doto specialists instead of pop city states -->
 	<ElementType name="LeaderName" content="textOnly"/>
 	<ElementType name="bLeaderAvailability" content="textOnly" dt:type="boolean"/>
 	<ElementType name="Leader" content="eltOnly">
@@ -527,9 +527,9 @@
 	<!--Limited religion doto -->
 		<element type="iMaxLimitedReligions" minOccurs="0"/>
 	<!--Limited religion doto -->
-<!--doto enhanced city size mylon -->
-		<element type="iMaxCityRadius" minOccurs="0"/>
-<!--doto enhanced city size mylon -->
+<!--doto specialists instead of pop city states -->
+		<element type="isCityState" minOccurs="0"/>
+<!--doto specialists instead of pop city states -->
 		<element type="Cities" minOccurs="0"/>
 		<element type="Buildings" minOccurs="0"/>
 		<element type="Units" minOccurs="0"/>
