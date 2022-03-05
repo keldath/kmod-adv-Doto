@@ -290,8 +290,6 @@ public:
 	int happyLevel() const;																						// Exposed to Python
 	int angryPopulation(int iExtra = 0, /* advc.104: */ bool bIgnoreCultureRate = false) const;					// Exposed to Python
 	int visiblePopulation() const;
-//doto mylon enhanced City size
-	bool extraVisiblePopulationMylon() const;
 	int totalFreeSpecialists() const;																			// Exposed to Python
 	int extraPopulation() const;																				// Exposed to Python
 	int extraSpecialists() const;																				// Exposed to Python
@@ -406,6 +404,12 @@ public:
 	void setPopulationLimitChange(int iNewValue);										// Exposed to Python
 	void changePopulationLimitChange(int iChange);										// Exposed to Python
 	/* Population Limit ModComp - End */
+//doto specialists instead of population	
+	int getFreeCivilianCount() const;															// Exposed to Python
+	void setFreeCivilianCount(int iNewValue);										// Exposed to Python
+	void changeFreeCivilianCount(int iChange);		
+	void processFreeCivilianCount();
+//doto specialists instead of population
 	int getRealPopulation() const;																				// Exposed to Python
 	int getHighestPopulation() const { return m_iHighestPopulation; }											// Exposed to Python
 	void setHighestPopulation(int iNewValue);
@@ -1280,16 +1284,11 @@ public:
 
 	bool isWorkingPlot(CityPlotTypes ePlot) const																// Exposed to Python
 	{
-//doto mylon enhanced City size
-		//return m_abWorkingPlot.get(ePlot);
-		FAssertBounds(0, numCityPlots(), ePlot);
-		return m_abWorkingPlot[ePlot];
+		return m_abWorkingPlot.get(ePlot);
 	}
 	bool isWorkingPlot(CvPlot const& kPlot) const;																// Exposed to Python
 	void setWorkingPlot(CityPlotTypes ePlot, bool bNewValue);
 	void setWorkingPlot(CvPlot& kPlot, bool bNewValue);
-//doto mylon population tile working limit
-	void getWorstWorkedTileMylon(CityPlotTypes ePlot);
 	void alterWorkingPlot(CityPlotTypes ePlot);																	// Exposed to Python
 
 	int getNumRealBuilding(BuildingTypes eBuilding) const														// Exposed to Python
@@ -1438,15 +1437,6 @@ public:
 	void invalidateYieldRankCache(YieldTypes eYield = NO_YIELD);
 	void invalidateCommerceRankCache(CommerceTypes eCommerce = NO_COMMERCE);
 	//int getBestYieldAvailable(YieldTypes eYield) const; // advc.003j: obsolete
-//doto mylon enhanced City size	
-	int maxRadius() const;
-	int getRadius() const { return m_iRadius; }
-	int maxDiameter() const { return CITY_DIAM_FOR_RADIUS(maxRadius()); }
-	int getDiameter() const { return CITY_DIAM_FOR_RADIUS(getRadius()); }
-	CityPlotTypes maxCityPlots() const;
-	CityPlotTypes numCityPlots() const { return m_eCityPlots; }
-	static CityPlotTypes cityPlotCountForRadius(int iRadius);
-//mylon enhanced cities doto advc version
 
 	// <advc.003u>
 	// virtual for FFreeListTrashArray
@@ -1489,6 +1479,8 @@ protected:
 	/* DOTO- Population Limit ModComp - Beginning */
 	int m_iPopulationLimitChange;
 	/* DOTO Population Limit ModComp - End */
+//doto specialists instead of population
+	int m_iFreeCivilianCount;
 	int m_iHighestPopulation;
 	int m_iWorkingPopulation;
 	int m_iSpecialistPopulation;
@@ -1606,10 +1598,6 @@ protected:
 	int m_iPopRushHurryCount; // advc.912d
 	int m_iMostRecentOrder; // advc.004x
 
-//doto mylon enhanced City size
-	int m_iRadius;
-	CityPlotTypes m_eCityPlots;
-//doto mylon enhanced City size
 	bool m_bNeverLost;
 	bool m_bBombarded;
 	bool m_bDrafted;
@@ -1708,9 +1696,7 @@ protected:
 	EagerEnumMap<PlayerTypes,bool> m_abTradeRoute;
 	EagerEnumMap<TeamTypes,bool> m_abRevealed;
 	ArrayEnumMap<TeamTypes,bool> m_abEspionageVisibility;
-//doto mylon enhanced City size
-	//EagerEnumMap<CityPlotTypes,bool> m_abWorkingPlot;
-	std::vector<bool> m_abWorkingPlot;
+	EagerEnumMap<CityPlotTypes,bool> m_abWorkingPlot;
 	ArrayEnumMap<ReligionTypes,bool> m_abHasReligion;
 	ArrayEnumMap<CorporationTypes,bool> m_abHasCorporation;
 	// </advc.enum>
@@ -1813,8 +1799,6 @@ protected:
 	void doPopOrder(CLLNode<OrderData>* pOrder); // advc.064d
 	// advc.901:
 	std::pair<int,int> calculateSurroundingHealth(int iExtraGoodPercent = 0, int iExtraBadPercent = 0) const;
-//doto mylon enhanced City size
-	void updateRadius();
 };
 
 #endif

@@ -2440,8 +2440,7 @@ void CvGame::normalizeAddExtras(/* advc.027: */ NormalizationTarget const* pTarg
 		}
 		int iHillsAdded = 0; // advc.108
 		// advc (comment): Starting plot not excluded. I guess that's OK.
-//doto mylon enhanced City advc version
-		for (CityPlotRandIter it(*pStartingPlot, getMapRand(), &kPlayer, true);
+		for (CityPlotRandIter it(*pStartingPlot, getMapRand(), true);
 			iHills < 3 && /* advc.108: */ iHillsAdded < 2 &&
 			it.hasNext(); ++it)
 		{

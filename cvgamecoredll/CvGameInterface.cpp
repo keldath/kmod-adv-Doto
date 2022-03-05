@@ -164,7 +164,7 @@ void CvGame::updateColoredPlots()
 				kEngine.addColoredPlot(it->getX(), it->getY(), color,
 						PLOT_STYLE_CIRCLE, PLOT_LANDSCAPE_LAYER_BASE);
 			}
-//doto mylon worked tile limit - added color to none own / allowed working tiles
+//doto  added color to none own / allowed working tiles
 			NiColorA color2(GC.getInfo(GC.getColorType("RED")).getColor());
 			color2.a = 0.5f; // advc: Moved out of the loop below
 			for (CityPlotIter it(*pHeadSelectedCity); it.hasNext(); ++it)
@@ -174,11 +174,6 @@ void CvGame::updateColoredPlots()
 				if (!pHeadSelectedCity->canWork(kPlot) && kPlot.getWorkingCity() != pHeadSelectedCity)
 				{
 					kEngine.addColoredPlot(it->getX(), it->getY(), color2,
-						PLOT_STYLE_CIRCLE, PLOT_LANDSCAPE_LAYER_BASE);
-				}
-				else if (!pHeadSelectedCity->canWork(kPlot))
-				{
-					kEngine.addColoredPlot(it->getX(), it->getY(), GC.getInfo(GC.getColorType("HIGHLIGHT_TEXT")).getColor(),
 						PLOT_STYLE_CIRCLE, PLOT_LANDSCAPE_LAYER_BASE);
 				}
 			}

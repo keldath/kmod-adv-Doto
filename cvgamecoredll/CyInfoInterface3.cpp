@@ -391,8 +391,6 @@ void CyInfoPythonInterface3()
 //Wonder Limit - Doto 
 		.def("getmaxWonderCultureLimit", CvCultureLevelInfo::getmaxWonderCultureLimit, "int ()")
 //Wonder Limit - Doto 
-//doto enhanced city size Mylon Mega Mod
-		.def("getCityRadius", &CvCultureLevelInfo::getCityRadius, "int ()") // Mylon - For interface use
 		.def("getSpeedThreshold", &CvCultureLevelInfo::getSpeedThreshold, "int ()")
 		;
 

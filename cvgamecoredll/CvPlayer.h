@@ -866,11 +866,6 @@ public:
 	int getCountFoundReligion() const { return m_iCountFoundReligion; }	// Exposed to Python
 	void changeCountFoundReligionModifier(int iChange);												// Exposed to Python
 //limited religion doto
-//doto mylon enhanced City
-	int cityRadius() const { return m_iCityRadius; }
-	int cityDiameter() const { return CITY_DIAM_FOR_RADIUS(m_iCityRadius); }	
-	CityPlotTypes numCityPlots() const { return m_eCityPlots; } 	
-//doto enhanced city size mylon	
 	int getCitiesLost() const { return m_iCitiesLost; }																// Exposed to Python
 	void changeCitiesLost(int iChange);
 
@@ -1670,10 +1665,6 @@ protected:  // <advc.210>
 //limited religions
 	int m_iCountFoundReligion;
 //limited religion doto 
-//doto mylon enhanced City
-	int m_iCityRadius; // perhaps no good reason for treating these two as enums
-	CityPlotTypes m_eCityPlots;	
-//doto enhanced city size mylon
 	int m_iCitiesLost;
 	int m_iWinsVsBarbs;
 	int m_iAssets;

@@ -5438,10 +5438,7 @@ void CvGameTextMgr::setCityPlotYieldValueString(CvWStringBuffer &szString,
 	// advc.enum: Too many call locations; can't change the type of iPlotIndex.
 	CityPlotTypes ePlot = (CityPlotTypes)iPlotIndex;
 	CvPlot* pPlot = NULL;
-//doto enhanced city size mylon	
-	int actual_num_plots = pCity->numCityPlots();// was NUM_CITY_PLOTS
-	if (ePlot >= 0 && ePlot < actual_num_plots)
-//doto enhanced city size mylon
+	if (ePlot >= 0 && ePlot < NUM_CITY_PLOTS)
 		pPlot = pCity->getCityIndexPlot(ePlot);
 
 	if (pPlot != NULL && pPlot->getWorkingCity() == pCity)
@@ -21632,20 +21629,53 @@ void CvGameTextMgr::setFoodHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 	}
 	// Specialists
 	int iSpecialistFood = 0;
+//doto specialists instead of pop
+	int iFreeCivilian = 0;
 	for(int i = 0; i < GC.getNumSpecialistInfos(); i++)
 	{
-		iSpecialistFood += GET_PLAYER(kCity.getOwner()).specialistYield(
+//doto specialists instead of pop
+		if ((SpecialistTypes)i == (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true)
+			|| (SpecialistTypes)i == (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true)
+			|| (SpecialistTypes)i == (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true)
+			)
+		{
+			iFreeCivilian += GET_PLAYER(kCity.getOwner()).specialistYield(
+				(SpecialistTypes)i, YIELD_FOOD) *
+				kCity.getFreeCivilianCount();
+		}
+		else 
+		{
+			iSpecialistFood += GET_PLAYER(kCity.getOwner()).specialistYield(
 				(SpecialistTypes)i, YIELD_FOOD) *
 				(kCity.getSpecialistCount((SpecialistTypes)i) +
-				kCity.getFreeSpecialistCount((SpecialistTypes)i));
+					(kCity.getFreeSpecialistCount((SpecialistTypes)i) - kCity.getFreeCivilianCount()));
+		}
+//doto specialists instead of pop
 	}
 	if(iSpecialistFood != 0)
 	{
+//doto specialists instead of pop
 		bSimple = false; // advc.087
-		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_SPECIALIST_COMMERCE",
+		if ((SpecialistTypes)i == (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true)
+			|| (SpecialistTypes)i == (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true)
+			|| (SpecialistTypes)i ==(SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true)
+			)
+		{
+			iBaseRate += iFreeCivilian;
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText(L"Specialists Civilians",
+				iFreeCivilian, kFood.getChar(), L"TXT_KEY_CONCEPT_SPECIALISTS"));
+
+		}
+		else
+		{
+			iBaseRate += iSpecialistFood;
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_SPECIALIST_COMMERCE",
 				iSpecialistFood, kFood.getChar(), L"TXT_KEY_CONCEPT_SPECIALISTS"));
-		iBaseRate += iSpecialistFood;
+		}
+		
+//doto specialists instead of pop
 	}
 	// Corporations
 	int iCorporationFood = kCity.getCorporationYield(YIELD_FOOD);

@@ -180,8 +180,6 @@ m_iCityDefenseModifier(0),
 //Wonder Limit - Doto
 m_imaxWonderCultureLimit(0),
 //Wonder Limit - Doto
-//doto enhanced city size mylon
-m_iCityRadius(0),
 m_paiSpeedThreshold(NULL)
 {}
 
@@ -201,11 +199,6 @@ int CvCultureLevelInfo::getmaxWonderCultureLimit() const
 	return m_imaxWonderCultureLimit;
 }
 //Wonder Limit - Doto
-//doto enhanced city size mylon
-int CvCultureLevelInfo::getCityRadius() const
-{
-    return m_iCityRadius;
-}
 int CvCultureLevelInfo::getSpeedThreshold(int i) const
 {
 	FAssertBounds(0, GC.getNumGameSpeedInfos(), i);
@@ -221,8 +214,6 @@ bool CvCultureLevelInfo::read(CvXMLLoadUtility* pXml)
 //Wonder Limit - Doto	i added the default value of MAX_WORLD_WONDERS_PER_CITY, just as safety if missed entry
 	pXml->GetChildXmlValByName(&m_imaxWonderCultureLimit, "imaxWonderCultureLimit",GC.getDefineINT(CvGlobals::MAX_WORLD_WONDERS_PER_CITY));
 //Wonder Limit - Doto
-//doto enhanced city size mylon
-	pXml->GetChildXmlValByName(&m_iCityRadius, "iCityRadius");
 	pXml->SetVariableListTagPair(&m_paiSpeedThreshold, "SpeedThresholds", GC.getNumGameSpeedInfos());
 
 	return true;

@@ -14,7 +14,7 @@
 #include "CvGameTextMgr.h"
 #include "CvBugOptions.h" // advc.060
 #include "BBAILog.h" // BETTER_BTS_AI_MOD, AI logging, 10/02/09, jdog5000
-#include "CvCityMacros.h" //doto mylon enhanced City
+
 
 CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 {
@@ -32,6 +32,8 @@ CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 	/* Population Limit ModComp - Beginning */
 	m_iPopulationLimitChange = 0;
 	/* Population Limit ModComp - End */
+//doto specialists instead of population
+	m_iFreeCivilianCount = 0;
 	m_iHighestPopulation = 0;
 	m_iWorkingPopulation = 0;
 	m_iSpecialistPopulation = 0;
@@ -148,10 +150,6 @@ CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 	m_iEspionageDefenseModifier = 0;
 	m_iPopRushHurryCount = 0; // advc.912d
 	m_iMostRecentOrder = -1; // advc.004x
-
-//doto mylon enhanced City size
-	m_iRadius = -1;
-	m_eCityPlots = NO_CITYPLOT;
 
 	m_bNeverLost = true;
 	m_bBombarded = false;
@@ -565,6 +563,11 @@ void CvCity::doTurn()
 	doReligion();
 	doGreatPeople();
 	doMeltdown();
+	/*	advc.004: Just so that human players don't get confused when inspecting
+		an AI city. Will get updated at the start of the next turn anyway
+		(CvPlayer::doTurn). Important not to update before doProduction as that
+		would make production turns difficult to anticipate. */
+	AI().AI_assignWorkingPlots();
 
 	updateEspionageVisibility(true);
 
@@ -1026,9 +1029,6 @@ void CvCity::chooseProduction(UnitTypes eTrainUnit, BuildingTypes eConstructBuil
 // advc.enum: Return type was int
 CityPlotTypes CvCity::getCityPlotIndex(CvPlot const& kPlot) const
 {
-//doto mylon enhanced City size
-	if (plotDistance(&kPlot, plot()) > getRadius())
-		return NO_CITYPLOT;
 	return GC.getMap().plotCityXY(getX(), getY(), kPlot);
 }
 
@@ -1042,13 +1042,9 @@ bool CvCity::canWork(CvPlot const& kPlot) const
 {
 	if (kPlot.getWorkingCity() != this)
 		return false;
-//doto mylon enhanced City size
-	//FAssert(getCityPlotIndex(kPlot) != NO_CITYPLOT);
-	FAssertBounds(0, NUM_CITY_PLOTS, getCityPlotIndex(kPlot));
-	// Just in case FAssertMsg below doesn't end the function?
-	/*if (getCityPlotIndex(kPlot) >= NUM_CITY_PLOTS)
-		return false;*/
-//doto mylon enhanced City size
+
+	FAssert(getCityPlotIndex(kPlot) != NO_CITYPLOT);
+
 	if (kPlot.plotCheck(PUF_canSiege, getOwner()) != NULL)
 		return false;
 
@@ -1091,9 +1087,7 @@ bool CvCity::canWork(CvPlot const& kPlot) const
 
 void CvCity::verifyWorkingPlot(CityPlotTypes ePlot) // advc.enum: CityPlotTypes
 {
-//doto mylon enhanced City size
-//	FAssertEnumBounds(ePlot);
-	FAssertBounds(0, NUM_CITY_PLOTS, ePlot);
+	FAssertEnumBounds(ePlot);
 	if (isWorkingPlot(ePlot))
 	{
 		CvPlot* pPlot = getCityIndexPlot(ePlot);
@@ -1108,9 +1102,7 @@ void CvCity::verifyWorkingPlot(CityPlotTypes ePlot) // advc.enum: CityPlotTypes
 
 void CvCity::verifyWorkingPlots()
 {
-//doto enhanced city size mylon
-	//FOR_EACH_ENUM(CityPlot)
-	FOR_EACH_CITYPLOT
+	FOR_EACH_ENUM(CityPlot)
 		verifyWorkingPlot(eLoopCityPlot);
 }
 
@@ -3615,6 +3607,15 @@ void CvCity::processSpecialist(SpecialistTypes eSpecialist, int iChange)
 		changeSpecialistCommerce(eLoopCommerce, iChange *
 				kSpecialist.getCommerceChange(eLoopCommerce));
 	}
+//doto specialists instead of pop
+// dont allow any bonuses that are not from the specialists own values.	
+	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
+	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
+	SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
+	
+	if (eFarmer == eSpecialist || eMiner == eSpecialist || eLabor == eSpecialist)
+		return;
+//doto specialists instead of pop
 	/*************************************************************************************************/
 	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 	/**																								**/
@@ -4126,16 +4127,7 @@ int CvCity::visiblePopulation() const
 {
 	return getPopulation() - angryPopulation() - getWorkingPopulation();
 }
-//doto mylon population tile working limit
-bool CvCity::extraVisiblePopulationMylon() const
-{	
-	//if the worked tiles are 20 and there is more pop in the city 
-	//it means that there cant be anymore worked tiles.
-	 return (getPopulation() > MAX_WORK_TILES && 
-			 getWorkingPopulation() >= MAX_WORK_TILES);
-	//return (getPopulation() >= MAX_WORK_TILES + 1);
-}
-//doto mylon population tile working limit
+
 
 int CvCity::totalFreeSpecialists() const
 {
@@ -4381,8 +4373,10 @@ int CvCity::healthRate(bool bNoAngry, int iExtra) const
 
 int CvCity::foodConsumption(bool bNoAngry, int iExtra) const
 {
+//doto specialists instead of population
+	iExtra += getFreeCivilianCount(); // getFreeSpecialist(); // Free specialists consume food
 	return ((getPopulation() + iExtra - (bNoAngry ? angryPopulation(iExtra) : 0)) *
-			GC.getFOOD_CONSUMPTION_PER_POPULATION()) - healthRate(bNoAngry, iExtra);
+		GC.getFOOD_CONSUMPTION_PER_POPULATION()) - healthRate(bNoAngry, iExtra); 
 }
 
 
@@ -5024,6 +5018,85 @@ void CvCity::setPopulation(int iNewValue)
 		return;
 
 	m_iPopulation = iNewValue;
+
+//doto specialists instead of pop
+	int const iExcessPop = m_iPopulation - 5;
+	int foodY = getBaseYieldRate(YIELD_FOOD);
+	int prodY = getBaseYieldRate(YIELD_PRODUCTION);
+	int commY = getBaseYieldRate(YIELD_COMMERCE);
+	SpecialistTypes eDynamicAdd = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true); //dynamic specialist to add
+	SpecialistTypes eDynamicRedu = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);//dynamic specialist to reduce
+	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
+	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
+	SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
+	int eCounter = 0;
+	// the changeFreeSpecialistCount added the specialists as free specialists and great people
+	// must track it not to reduce a specialists that its count is 0 - see below.
+	int eMinerCount = getFreeSpecialistCount(eMiner);
+	int eLaborCount = getFreeSpecialistCount(eLabor);
+	int eFarmerCount = getFreeSpecialistCount(eFarmer);
+
+	//add the most needed specialist - food is top priority
+	if (foodY <= prodY)
+		eDynamicAdd = eFarmer;
+	else if (prodY <= commY)
+		eDynamicAdd = eLabor;
+	else
+		eDynamicAdd = eMiner;
+
+	//this is for reducing - dont allow reduction if there is no specialist if that sort....
+	//its also ranked, removal is done from Labor, Miner , Farmer (farmer gives food - so remove it last)
+	if (eMinerCount > 0)
+	{
+		eDynamicRedu = eMiner;
+		eCounter = eMinerCount;
+	}
+	else if (eLaborCount > 0)
+	{
+		eDynamicRedu = eLabor;
+		eCounter = eLaborCount;
+	}
+	else if (eFarmerCount > 0)
+	{
+		eDynamicRedu = eFarmer;
+		eCounter = eFarmerCount;
+	}
+
+	if (iExcessPop > 0)
+	{
+		m_iPopulation -= iExcessPop;
+		changeFreeCivilianCount(iExcessPop);
+		changeFreeSpecialistCount(eDynamicAdd, iExcessPop);//as great people
+		//processFreeCivilianCount();
+		//changeFreeSpecialist(iExcessPop);
+		//setSpecialistCount(eCivilian, iExcessPop);
+		//setFreeSpecialistCount(eCivilian, iExcessPop);
+		//alterSpecialistCount(eCivilian, iExcessPop);
+	}
+	else
+	{
+		int const iPopDecrease = iOldPopulation - m_iPopulation;
+		if (iPopDecrease > 0 && getFreeCivilianCount() > 0)
+		{
+			//int iStarvedSpecialists = std::min(iPopDecrease, getFreeSpecialist());
+			int iStarvedSpecialists = std::min(iPopDecrease, getFreeCivilianCount());
+			m_iPopulation += iStarvedSpecialists;
+			//changeFreeSpecialist(-iStarvedSpecialists);
+			//make sure not to deduct specialist that isnt listed in the getFreeSpecialistCount
+			FAssert(getFreeCivilianCount() > 0);
+			FAssert(eCounter > 0);
+			changeFreeCivilianCount(-iStarvedSpecialists); //using one counter for all of them.
+			changeFreeSpecialistCount(eDynamicRedu, -iStarvedSpecialists);
+			//processFreeCivilianCount();
+			//setSpecialistCount(eCivilian, -iStarvedSpecialists);
+			//alterSpecialistCount(eCivilian, -iStarvedSpecialists);
+			//setFreeSpecialistCount(eCivilian, -iStarvedSpecialists);
+		}
+	}
+	//getFreeCivilianCount()
+	//FAssertBounds(0, 20, m_iPopulation);
+//doto specialist instead of pop
+
 	FAssert(getPopulation() >= 0);
 	GET_PLAYER(getOwner()).invalidatePopulationRankCache();
 	if (getPopulation() > getHighestPopulation())
@@ -5032,7 +5105,9 @@ void CvCity::setPopulation(int iNewValue)
 	if (getPopulation() == getPopulationLimit())
 	{
 		szBuffer = gDLL->getText("TXT_KEY_CITY_GET_LIMITED", getNameKey(), getPopulationLimit());
-		gDLL->getInterfaceIFace()->addMessage(getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_UNSIGN", MESSAGE_TYPE_MINOR_EVENT, ARTFILEMGR.getInterfaceArtInfo("INTERFACE_LIMIT_CROSS")->getPath(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), getX(), getY(), true, true);
+		gDLL->getInterfaceIFace()->addMessage(getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_UNSIGN",
+			MESSAGE_TYPE_MINOR_EVENT, ARTFILEMGR.getInterfaceArtInfo("INTERFACE_LIMIT_CROSS")->getPath(), 
+			(ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), getX(), getY(), true, true);
 	}
 /* Population Limit ModComp - End */
 
@@ -5110,6 +5185,35 @@ void CvCity::changePopulationLimitChange(int iChange)
 	setPopulationLimitChange(getPopulationLimitChange() + iChange);
 }
 /* Population Limit ModComp - End */
+//doto specialists instead of population
+int CvCity::getFreeCivilianCount() const
+{
+	return m_iFreeCivilianCount;
+}
+
+void CvCity::setFreeCivilianCount(int iNewValue)
+{
+	//if (getFreeCivilianCount() != iNewValue)
+	//{
+		m_iFreeCivilianCount = iNewValue;
+	//}
+}
+void CvCity::changeFreeCivilianCount(int iChange)
+{
+	setFreeCivilianCount(getFreeCivilianCount() + iChange);
+}
+/* unused
+void CvCity::processFreeCivilianCount()
+{
+	//GC.getDefineINT("CIVILIAN")
+	SpecialistTypes eCivilian = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_CIVILIAN", true);
+	//getFreeCivilianCount()
+	processSpecialist(eCivilian, getFreeCivilianCount());
+
+*/
+
+//doto specialists instead of population
+
 // advc: Return type was long. Not helpful since sizeof(int)==sizeof(long).
 int CvCity::getRealPopulation() const
 {
@@ -7469,35 +7573,6 @@ int CvCity::getCultureThreshold(CultureLevelTypes eLevel)
 			std::min(eLevel + 1, GC.getNumCultureLevelInfos() - 1)));
 }
 
-//doto enhanced city size mylon
-CityPlotTypes CvCity::maxCityPlots() const
-{
-	return GET_PLAYER(m_eOwner).numCityPlots();
-}
-CityPlotTypes CvCity::cityPlotCountForRadius(int iRadius)
-{
-	switch (iRadius)
-	{
-	case 1: return NUM_INNER_PLOTS;
-	// (Not defined to be the same as NUM_CITY_PLOTS in this translation unit)
-	case 2: return NUM_CITYPLOT_TYPES;
-	case 3: return (CityPlotTypes)37;
-	case 4: return MAX_CITY_PLOTS;
-	default: FErrorMsg("Invalid city radius"); return NO_CITYPLOT;
-   	}
-}
-int CvCity::maxRadius() const
-{
-	return GET_PLAYER(m_eOwner).cityRadius();
-}
-void CvCity::updateRadius()
-{
-	m_iRadius = std::min(maxRadius(),
-			getCultureLevel() == NO_CULTURELEVEL ? maxRadius() :
-			GC.getCultureLevelInfo(getCultureLevel()).getCityRadius());
-	m_eCityPlots = cityPlotCountForRadius(getRadius());
-}
-//doto enhanced city size mylon
 
 void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups)
 {
@@ -7505,38 +7580,6 @@ void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups
 	if (eOldValue == eNewValue)
 		return;
 	m_eCultureLevel = eNewValue;
-//doto enhanced city size mylon - start
-	{
-		updateRadius();
-		int const iNewCityPlots = numCityPlots() - (int)m_abWorkingPlot.size();
-		if (iNewCityPlots > 0)
-		{
-			for (int i = 0; i < iNewCityPlots; i++)
-				m_abWorkingPlot.push_back(false);
-			/*	Change it back again briefly (not super elegant)
-				and reset this city as the city occupying the city plot
-				in order to force an update of cached city radius counts.
-				A little wasteful, but we don't do this often. */
-			if (getPlot().isCity()) // I.e. don't do it during city initialization
-			{
-				m_eCultureLevel = eOldValue;
-				updateRadius();
-				getPlot().setPlotCity(NULL);
-				m_eCultureLevel = eNewValue;
-				updateRadius();
-				getPlot().setPlotCity(this);
-				FOR_EACH_CITYPLOT
-				{
-					/*	Normally only done for plots we take ownership of.
-						Need to do it also for plots previously owned. */
-					getCityIndexPlot(eLoopCityPlot)->updateWorkingCity();
-				}
-			}
-			AI().AI_updateRadius();
-		}
-		else FAssertMsg(iNewCityPlots == 0, "Shrinking city radius not supported");
-	}
-//doto enhanced city size mylon
 	if (eOldValue != NO_CULTURELEVEL)
 	{
 		/*	advc (note): The order of processing is important here b/c
@@ -10202,10 +10245,6 @@ void CvCity::alterSpecialistCount(SpecialistTypes eSpecialist, int iChange)
 		{
 			if (getSpecialistCount(eSpecialist) <= 0)
 				continue;
-//doto mylon population tile working limit
-//do not allow deduction of citizens if work tile limit was reached
-			if (getWorkingPopulation() > MAX_WORK_TILES)
-				continue;
 
 			changeSpecialistCount(eSpecialist, -1);
 
@@ -10406,11 +10445,8 @@ void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue) // advc.enum: C
 	if(bSelected && GET_PLAYER(getOwner()).canGoldRush())
 		iOldTurns = getProductionTurnsLeft();
 	// </advc.064b>
-//doto enhanced city size mylon
-	//m_abWorkingPlot.set(ePlot, bNewValue);
-	FAssertBounds(0, NUM_CITY_PLOTS, ePlot);
-	m_abWorkingPlot[ePlot] = bNewValue;
-	
+	m_abWorkingPlot.set(ePlot, bNewValue);
+
 	CvPlot* pPlot = getCityIndexPlot(ePlot);
 	if (pPlot != NULL)
 	{
@@ -10446,75 +10482,8 @@ void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue) // advc.enum: C
 			gDLL->UI().setDirty(SelectionButtons_DIRTY_BIT, true);
 		// </advc.064b>
 	}
-//doto mylon population tile working limit
-//update working cities for the new tiles
-// if the working plots are above 20 and the setWorkingPlot was called with a change the tile to working (true)
-// make sure to remove the worst tile before setting up a new one,
-	if (getWorkingPopulation() > MAX_WORK_TILES && bNewValue)
-	{
-		getWorstWorkedTileMylon(ePlot);
-	}
 }
 
-//doto mylon population tile working limit
-void CvCity::getWorstWorkedTileMylon(CityPlotTypes ePlot)
-{
-	//this loop was taken from city ai
-	int iWorstValue = MAX_INT;
-	CityPlotTypes eWorstPlot = NO_CITYPLOT;
-	int iYields[NUM_YIELD_TYPES] = {};
-	int iYieldWeights[NUM_YIELD_TYPES] =
-	{
-		9, // food
-		7, // production
-		4, // commerce
-	}; // <advc.121b>
-	if (isCapital())
-		iYieldWeights[YIELD_COMMERCE]++; // </advc.121b>
-	std::vector<int> job_scores;
-	int iTotalScore = 0;
-	for (WorkingPlotIter it(*this, false); it.hasNext(); ++it)
-	{
-		CvPlot const& kPlot = *it;
-		FAssert(kPlot.getWorkingCity() == this);
-		// ideally, the plots would be scored using AI_plotValue, but I'm worried that would be too slow.
-		// so here's a really rough estimate of the plot value
-		int iPlotScore = 0;
-		for (int j = 0; j < NUM_YIELD_TYPES; j++)
-		{
-			int y = kPlot.getYield((YieldTypes)j);
-			iYields[j] += y;
-			iPlotScore += y * iYieldWeights[j];
-		}
-		if (kPlot.isImproved() &&
-			GC.getInfo(kPlot.getImprovementType()).getImprovementUpgrade() != NO_IMPROVEMENT)
-		{
-			iYields[YIELD_COMMERCE] += 2;
-			iPlotScore += 2 * iYieldWeights[YIELD_COMMERCE];
-		}
-		/*	<advc.121b> Anticipate improvement. CitySiteEvaluator has proper code
-			for this, but don't want to go through all improvements here. */
-		if (!kPlot.isImproved()
-			//doto change - no need for this.
-			//&& AI_getWorkersHave() > 0
-			)
-			iPlotScore *= 2; // </advc.121b>
-		iTotalScore += iPlotScore;
-		CityPlotTypes eLoopWorse = it.currID();
-		if (iTotalScore < iWorstValue
-			//never calculate the same plot that was sent as as the one that was changed
-			&& eLoopWorse != ePlot)
-		{
-			iWorstValue = iTotalScore;
-			eWorstPlot = eLoopWorse;
-		}
-	}
-
-	if (eWorstPlot != NO_CITYPLOT)
-	{
-		setWorkingPlot(eWorstPlot, false);
-	} 
-}
 
 void CvCity::setWorkingPlot(CvPlot& kPlot, bool bNewValue)
 {
@@ -10540,44 +10509,15 @@ void CvCity::alterWorkingPlot(CityPlotTypes ePlot)
 	}
 
 	setCitizensAutomated(false);
-	int a = extraPopulation() > 0;
 	if (isWorkingPlot(ePlot))
 	{
 		setWorkingPlot(ePlot, false);
-//doto mylon population tile working limit 
-//if this is a working plot, and the limit was reached
-// dont add a specialist gift per click :)
-		if (getWorkingPopulation() >= MAX_WORK_TILES)
-		{
-			return;
-		}
 		if (GC.getDEFAULT_SPECIALIST() != NO_SPECIALIST)
 			changeSpecialistCount(GC.getDEFAULT_SPECIALIST(), 1);
 		else AI().AI_addBestCitizen(false, true);
 	}
-//doto mylon population tile working limit 
-//	else if (extraPopulation() > 0 || AI().AI_removeWorstCitizen())
-//	{
-//		setWorkingPlot(ePlot, true);
-//	}
-//broke the original if to 2 statements
-//in case AI_removeWorstCitizen is false, and this alterworktile function was 
-//committed for a switch of tiles, 
-//and the tile usage is maxed to the limit, 
-//i want the setWorkingPlot will add a new tile work and remove a wosrer one (code at the end of setWorkingPlot)
-	else if (extraPopulation() > 0)
-	{
+	else if (extraPopulation() > 0 || AI().AI_removeWorstCitizen())
 		setWorkingPlot(ePlot, true);
-	}
-	else if (AI().AI_removeWorstCitizen())
-	{
-			setWorkingPlot(ePlot, true);
-	}
-	else if (getWorkingPopulation() >= MAX_WORK_TILES && !isWorkingPlot(ePlot))
-	{
-		//only do this if there are 20 worked tiles and the selected ePlot is not currentyly being worked.	
-		setWorkingPlot(ePlot, true);
-	}
 }
 
 // advc.003w:
@@ -12823,6 +12763,8 @@ void CvCity::read(FDataStreamBase* pStream)
 	/* DOTO-Population Limit ModComp - Beginning */
 	pStream->Read(&m_iPopulationLimitChange);
 	/* DOTO-Population Limit ModComp - End */
+//doto specialists instead of population
+	pStream->Read(&m_iFreeCivilianCount);
 	pStream->Read(&m_iHighestPopulation);
 	pStream->Read(&m_iWorkingPopulation);
 	pStream->Read(&m_iSpecialistPopulation);
@@ -13105,19 +13047,7 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiFreePromotionCount.read(pStream);
 		m_aiNumRealBuilding.read(pStream);
 		m_aiNumFreeBuilding.read(pStream);
-//doto enhanced city size mylon
-		pStream->Read(&m_iRadius);
-		pStream->Read((int*)&m_eCityPlots);
-		//m_abWorkingPlot.read(pStream);
-		// (Only the uiFlag>=12 branch matters, can delete the other branch.)
-		m_abWorkingPlot.resize(NUM_CITY_PLOTS); // (not allocated by ctor)
-		FOR_EACH_CITYPLOT
-		{
-			bool bWorkingPlot;
-			pStream->Read(&bWorkingPlot);
-			m_abWorkingPlot[eLoopCityPlot] = bWorkingPlot;
-		}
-//mylon enhanced cities doto advc version
+		m_abWorkingPlot.read(pStream);
 		m_abHasReligion.read(pStream);
 		m_abHasCorporation.read(pStream);
 	}
@@ -13159,9 +13089,7 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiFreePromotionCount.readArray<int>(pStream);
 		m_aiNumRealBuilding.readArray<int>(pStream);
 		m_aiNumFreeBuilding.readArray<int>(pStream);
-//doto enhanced city size mylon
-// (Only the uiFlag>=12 branch matters, can delete the other branch.)
-		//m_abWorkingPlot.readArray<bool>(pStream);
+		m_abWorkingPlot.readArray<bool>(pStream);
 		m_abHasReligion.readArray<bool>(pStream);
 		m_abHasCorporation.readArray<bool>(pStream);
 	}
@@ -13491,6 +13419,8 @@ void CvCity::write(FDataStreamBase* pStream)
 	/* DOTO-Population Limit ModComp - Beginning */
 	pStream->Write(m_iPopulationLimitChange);
 	/* DOTO-Population Limit ModComp - End */
+//doto specialists instead of population
+	pStream->Write(m_iFreeCivilianCount);
 	pStream->Write(m_iHighestPopulation);
 	pStream->Write(m_iWorkingPopulation);
 	pStream->Write(m_iSpecialistPopulation);
@@ -13715,15 +13645,8 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiFreePromotionCount.write(pStream);
 	m_aiNumRealBuilding.write(pStream);
 	m_aiNumFreeBuilding.write(pStream);
-//doto enhanced city size mylon
-	pStream->Write(m_iRadius);
-	pStream->Write(m_eCityPlots);
-	//m_abWorkingPlot.write(pStream);
-	FOR_EACH_CITYPLOT
-	{
-		pStream->Write(m_abWorkingPlot[eLoopCityPlot]);
-	}
-//mylon enhanced cities doto advc version
+
+	m_abWorkingPlot.write(pStream);
 	m_abHasReligion.write(pStream);
 	m_abHasCorporation.write(pStream);
 
@@ -14325,9 +14248,7 @@ void CvCity::applyEvent(EventTypes eEvent,
 			for (int i = 0; i < iNumPillage; i++)
 			{
 				int iRandOffset = SyncRandNum(NUM_CITY_PLOTS);
-//doto enhanced city size mylon
-				//FOR_EACH_ENUM(CityPlot)
-				FOR_EACH_CITYPLOT
+				FOR_EACH_ENUM(CityPlot)
 				{
 					CityPlotTypes const ePlot = (CityPlotTypes)
 							((eLoopCityPlot + iRandOffset) % NUM_CITY_PLOTS);

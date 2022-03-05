@@ -184,10 +184,9 @@ public:
 
 	CityPlotTypes plotCityXY(int iDX, int iDY) const // advc.enum: return CityPlotTypes		// Exposed to Python (CyGameCoreUtils.py)
 	{
-//mylon doto version - max radius
-		if (abs(iDX) > MAX_CITY_RADIUS || abs(iDY) > MAX_CITY_RADIUS)
+		if (abs(iDX) > CITY_PLOTS_RADIUS || abs(iDY) > CITY_PLOTS_RADIUS)
 			return NO_CITYPLOT; // advc.enum
-		return GC.getXYCityPlot(iDX + MAX_CITY_RADIUS, iDY + MAX_CITY_RADIUS);
+		return GC.getXYCityPlot(iDX + CITY_PLOTS_RADIUS, iDY + CITY_PLOTS_RADIUS);
 	}
 	// advc: 1st param (CvCity*) replaced with two ints - to allow hypothetical city sites
 	CityPlotTypes plotCityXY(int iCityX, int iCityY, CvPlot const& kPlot) const				// Exposed to Python (CyGameCoreUtils.py)

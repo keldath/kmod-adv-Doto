@@ -108,9 +108,7 @@ public:
 	int getCityDefenseModifier() const; // Exposed to Python
 //Wonder Limit - Doto
 	int getmaxWonderCultureLimit() const; // Exposed to Python
-//Wonder Limit - Doto	
-//doto enhanced city size mylon
-	int getCityRadius() const;                // Exposed to python, hopefully
+//Wonder Limit - Doto	               // Exposed to python, hopefully
 	int getSpeedThreshold(int i) const; // Exposed to Python
 	bool read(CvXMLLoadUtility* pXML);
 //influence driven war - added by f1rpo - doto? i dont recal adding this...wierd
@@ -125,8 +123,6 @@ protected:
 //Wonder Limit - Doto
 	int m_imaxWonderCultureLimit;
 //Wonder Limit - Doto
-//doto enhanced city size mylon
-	int m_iCityRadius;
 	int* m_paiSpeedThreshold;
 };
 

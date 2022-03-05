@@ -25,10 +25,6 @@
 // advc.003u: Statics moved from CvPlayerAI
 CvPlayerAI** CvPlayer::m_aPlayers = NULL;
 
-//doto mylon enhanced City size
-#undef NUM_CITY_PLOTS
-#define NUM_CITY_PLOTS numCityPlots()
-
 void CvPlayer::initStatics()
 {
 	/*  advc.003u (comment): If further concrete classes derived from CvPlayer are
@@ -75,10 +71,6 @@ CvPlayer::CvPlayer(/* advc.003u: */ PlayerTypes eID) :
 	// advc: redundant
 	/*m_bDisableHuman = false; // bbai
 	m_iChoosingFreeTechCount = 0;*/ // K-Mod
-//doto mylon enhanced City
-// - Use the defaults so long as no civ type has been set
-	m_iCityRadius = CITY_PLOTS_RADIUS;
-	m_eCityPlots = NUM_CITYPLOT_TYPES;
 	reset(eID, true);
 }
 
@@ -845,13 +837,6 @@ void CvPlayer::resetCivTypeEffects(/* advc.003q: */ bool bInit)
 		if (GC.getInfo(eUnit).isFound())
 			setUnitExtraCost(kCiv.unitClass(eUnit), getNewCityProductionValue());
 	}
-//doto mylon enhanced City size
-// - will define plot size for a player
-	m_iCityRadius = GC.getInfo(getCivilizationType()).getMaxCityRadius();
-	FAssert(m_iCityRadius <= MAX_CITY_PLOTS);
-	m_eCityPlots = CvCity::cityPlotCountForRadius(m_iCityRadius);
-	FAssertBounds(0, MAX_CITY_PLOTS + 1, m_eCityPlots);
-//doto enhanced city size mylon
 }
 
 // for switching the leaderhead of this player
@@ -2078,12 +2063,7 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 		bool bRazeImpossible = false; // advc.003y
 		if (GC.getPythonCaller()->canRaze(kNewCity, getID()))
 		{	// auto raze based on game rules
-			if (kNewCity.isAutoRaze()
-//doto mylon enhanced City
-// assuming city states have larger radious ( a lazy indication method....
-//city states will not be allowed to capture cities ever.
-			|| GC.getInfo(getCivilizationType()).getMaxCityRadius() > 2
-			)
+			if (kNewCity.isAutoRaze())
 			{
 				if (iCaptureGold > 0)
 				{
@@ -4669,12 +4649,6 @@ int CvPlayer::getNumGovernmentCenters() const
 
 bool CvPlayer::canRaze(CvCity const& kCity) const // advc: param was CvCity*
 {
-//doto mylon enhanced City
-// assuming city states have larger radious ( a lazy indication method....
-//city states will not be allowed to capture cities ever.
-	if (GC.getInfo(getCivilizationType()).getMaxCityRadius() > 2)
-		return true;
-		
 	if (!kCity.isAutoRaze())
 	{
 		if (GC.getGame().isOption(GAMEOPTION_NO_CITY_RAZING))
@@ -15170,10 +15144,6 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iCapitalCityID);
 //doto limited religions
 	pStream->Read(&m_iCountFoundReligion);
-	//mylon doto version
-	pStream->Read(&m_iCityRadius);
-	pStream->Read((int*)&m_eCityPlots);
-
 	pStream->Read(&m_iCitiesLost);
 	pStream->Read(&m_iWinsVsBarbs);
 	pStream->Read(&m_iAssets);
@@ -15870,10 +15840,6 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	pStream->Write(m_iCapitalCityID);
 //doto limited religions
 	pStream->Write(m_iCountFoundReligion);
-	//mylon doto version
-	pStream->Write(m_iCityRadius);
-	pStream->Write(m_eCityPlots);
-
 	pStream->Write(m_iCitiesLost);
 	pStream->Write(m_iWinsVsBarbs);
 	pStream->Write(m_iAssets);

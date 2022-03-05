@@ -18,8 +18,6 @@ m_bAIPlayable(false),
 //limited religion doto
 m_iMaxLimitedReligions(0),
 //limited religion doto
-//doto enhanced city size mylon
-m_iMaxCityRadius(0),
 m_piCivilizationBuildings(NULL),
 m_piCivilizationUnits(NULL),
 m_piCivilizationFreeUnitsClass(NULL),
@@ -106,12 +104,6 @@ int CvCivilizationInfo::getMaxLimitedReligions() const
 	return m_iMaxLimitedReligions;
 }
 //limited religion doto
-//doto enhanced city size mylon
-int CvCivilizationInfo::getMaxCityRadius() const
-{
-	return m_iMaxCityRadius;
-}
-//doto enhanced city size mylon
 
 const wchar* CvCivilizationInfo::getShortDescription(uint uiForm)
 {
@@ -245,9 +237,6 @@ void CvCivilizationInfo::read(FDataStreamBase* stream)
 //limited religion doto	
 	stream->Read(&m_iMaxLimitedReligions);
 //limited religion doto		
-//doto enhanced city size mylon
-	stream->Read(&m_iMaxCityRadius);	
-//doto enhanced city size mylon
 	stream->ReadString(m_szArtDefineTag);
 	stream->ReadString(m_szShortDescriptionKey);
 	stream->ReadString(m_szAdjectiveKey);
@@ -304,8 +293,6 @@ void CvCivilizationInfo::write(FDataStreamBase* stream)
 //limited religion doto	
 	stream->Write(m_iMaxLimitedReligions);
 //limited religion doto	
-//doto enhanced city size mylon	
-	stream->Write(m_iMaxCityRadius);
 	stream->WriteString(m_szArtDefineTag);
 	stream->WriteString(m_szShortDescriptionKey);
 	stream->WriteString(m_szAdjectiveKey);
@@ -352,9 +339,6 @@ bool CvCivilizationInfo::read(CvXMLLoadUtility* pXML)
 //limited religion doto		by default limit to 1
 	pXML->GetChildXmlValByName(&m_iMaxLimitedReligions, "iMaxLimitedReligions", 1);
 //limited religion doto	
-//doto enhanced city size		by default limit to 2 mylon
-	pXML->GetChildXmlValByName(&m_iMaxCityRadius, "iMaxCityRadius", 2);
-
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "Cities"))
 	{
 		pXML->SetStringList(&m_paszCityNames, &m_iNumCityNames);
