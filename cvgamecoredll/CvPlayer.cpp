@@ -4649,6 +4649,15 @@ int CvPlayer::getNumGovernmentCenters() const
 
 bool CvPlayer::canRaze(CvCity const& kCity) const // advc: param was CvCity*
 {
+//doto specialists instead of pop
+// assuming city states have larger radious ( a lazy indication method....
+//city states will not be allowed to capture cities ever.
+	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+	bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+	if (cityState && GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+		return true;
+//doto specialists instead of pop
+		
 	if (!kCity.isAutoRaze())
 	{
 		if (GC.getGame().isOption(GAMEOPTION_NO_CITY_RAZING))
@@ -7732,6 +7741,18 @@ int CvPlayer::greatPeopleThreshold(bool bMilitary) const
 
 int CvPlayer::specialistYield(SpecialistTypes eSpecialist, YieldTypes eYield) const
 {
+	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
+	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
+	SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);	
+	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+	bool cityState = kCivilization.getIsCityState() == 1 ? true : false; 
+	if ((eFarmer == eSpecialist || eMiner == eSpecialist || eLabor == eSpecialist)
+			&& (GC.getGame().isOption(GAMEOPTION_CITY_STATES)
+			&& GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && cityState))
+	{
+		return GC.getInfo(eSpecialist).getYieldChange(eYield);
+	}	
+	
 	return GC.getInfo(eSpecialist).getYieldChange(eYield) +
 			getSpecialistExtraYield(eSpecialist, eYield);
 }
@@ -7747,8 +7768,21 @@ int CvPlayer::specialistCommerce(SpecialistTypes eSpecialist, CommerceTypes eCom
 //<Original Code>	
 	//return (GC.getInfo(eSpecialist).getCommerceChange(eCommerce) + getSpecialistExtraCommerce(eCommerce));
 	//return (GC.getSpecialistInfo(eSpecialist).getCommerceChange(eCommerce) + getSpecialistExtraCommerce(eCommerce));
+	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
+	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
+	SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);	
+	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+	bool cityState = kCivilization.getIsCityState() == 1 ? true : false; 
+	if ((eFarmer == eSpecialist || eMiner == eSpecialist || eLabor == eSpecialist)
+			&& (GC.getGame().isOption(GAMEOPTION_CITY_STATES)
+			&& GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && cityState))
+	{
+		return GC.getInfo(eSpecialist).getCommerceChange(eCommerce);
+	}
 		
-	return (GC.getInfo(eSpecialist).getCommerceChange(eCommerce) + getSpecialistExtraCommerce(eCommerce) + getSpecialistCivicExtraCommerce (eSpecialist, eCommerce));
+	return (GC.getInfo(eSpecialist).getCommerceChange(eCommerce) 
+			+ getSpecialistExtraCommerce(eCommerce) 
+			+ getSpecialistCivicExtraCommerce (eSpecialist, eCommerce));
 	/*************************************************************************************************/
 	/**	CMEDIT: End																					**/
 	/*************************************************************************************************/
@@ -14881,7 +14915,17 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	changeStateReligionBuildingProductionModifier(GC.getInfo(eCivic).getStateReligionBuildingProductionModifier() * iChange);
 	changeStateReligionFreeExperience(GC.getInfo(eCivic).getStateReligionFreeExperience() * iChange);
 	changeExpInBorderModifier(GC.getInfo(eCivic).getExpInBorderModifier() * iChange);
-
+// dont allow any bonuses that are not from the specialists own values.	
+	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
+	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
+	SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
+	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+	bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+	bool isCivilian = false;
+	if ((GC.getGame().isOption(GAMEOPTION_CITY_STATES)
+			&& GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && cityState))
+			isCivilian = true;
+//doto specialists instead of pop
 	FOR_EACH_ENUM2(Yield, y)
 	{
 //DOTO- // < Civic Infos Plus Start >
@@ -14889,7 +14933,13 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 		changeNonStateReligionYieldRateModifier(y, (GC.getInfo(eCivic).getNonStateReligionYieldModifier(y) * iChange));
 		FOR_EACH_ENUM(Specialist)
 		{
-   			changeSpecialistExtraYield(eLoopSpecialist, y, (GC.getInfo(eCivic).getSpecialistExtraYield(y) * iChange));		
+	//doto specialists instead of pop
+   			if (!isCivilian &&
+				eFarmer != eLoopSpecialist && eMiner != eLoopSpecialist && eLabor != eLoopSpecialist)
+			{
+   				changeSpecialistExtraYield(eLoopSpecialist, y, (GC.getInfo(eCivic).getSpecialistExtraYield(y) * iChange));		
+			}
+	//doto specialists instead of pop
 		}
 //DOTO-	// < Civic Infos Plus End   >
 		changeYieldRateModifier(y, GC.getInfo(eCivic).getYieldModifier(y) * iChange);
@@ -14972,35 +15022,27 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	/*************************************************************************************************/	
 	for (iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
 	{
-//doto specialists instead of pop
-		SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
-		SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
-		SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);	
-		if ((eFarmer == (SpecialistTypes)iI || eMiner == (SpecialistTypes)iI || eLabor == (SpecialistTypes)iI)
-			&& GC.getGame().isOption(GAMEOPTION_CITY_STATES)
-			&& GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES))
-			continue;
-//doto specialists instead of pop
-		for (iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
-		{
-			changeSpecialistExtraYield(((SpecialistTypes)iI), ((YieldTypes)iJ), (GC.getCivicInfo(eCivic).getSpecialistYieldChange(iI, iJ) * iChange));
+//doto specialists instead of pop		
+		if (!isCivilian &&
+				eFarmer != (SpecialistTypes)iI && eMiner != (SpecialistTypes)iI && eLabor != (SpecialistTypes)iI)
+		{	
+			for (iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
+			{
+				changeSpecialistExtraYield(((SpecialistTypes)iI), ((YieldTypes)iJ), (GC.getCivicInfo(eCivic).getSpecialistYieldChange(iI, iJ) * iChange));
+			}
 		}
 	}
 
 	for (iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
 	{
 //doto specialists instead of pop
-		SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
-		SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
-		SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);	
-		if ((eFarmer == (SpecialistTypes)iI || eMiner == (SpecialistTypes)iI || eLabor == (SpecialistTypes)iI)
-			&& GC.getGame().isOption(GAMEOPTION_CITY_STATES)
-			&& GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES))
-			continue;
-//doto specialists instead of pop
-		for (iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
-		{
-			changeSpecialistCivicExtraCommerce(((SpecialistTypes)iI), ((CommerceTypes)iJ), (GC.getCivicInfo(eCivic).getSpecialistCommerceChange(iI, iJ) * iChange));
+		if (!isCivilian &&
+				eFarmer != (SpecialistTypes)iI && eMiner != (SpecialistTypes)iI && eLabor != (SpecialistTypes)iI)
+		{	
+			for (iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
+			{
+				changeSpecialistCivicExtraCommerce(((SpecialistTypes)iI), ((CommerceTypes)iJ), (GC.getCivicInfo(eCivic).getSpecialistCommerceChange(iI, iJ) * iChange));
+			}
 		}
 	}
 	/*************************************************************************************************/

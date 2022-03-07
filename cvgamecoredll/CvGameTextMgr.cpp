@@ -21637,51 +21637,57 @@ void CvGameTextMgr::setFoodHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 	// Specialists
 	int iSpecialistFood = 0;
 //doto specialists instead of pop
-	int iFreeCivilian = 0;
+	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
+	// SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
+	//SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
+	//CvCivilizationInfo & kCivilization =; //)GC.getCivilizationInfo(getCivilizationType());
+	bool cityState = GC.getCivilizationInfo(kCity.getCivilizationType()).getIsCityState() == 1 ? true : false;
+	int iFreeCivilianFood = 0;
 	for(int i = 0; i < GC.getNumSpecialistInfos(); i++)
 	{
 //doto specialists instead of pop
-		if ((SpecialistTypes)i == (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true)
-			|| (SpecialistTypes)i == (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true)
-			|| (SpecialistTypes)i == (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true)
-			)
+		if (kCity.getFreeCivilianCount() > 0
+			&& ((GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
+				GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && cityState) && 
+					eFarmer == (SpecialistTypes)i
+					/*|| eMiner == (SpecialistTypes)i || eLabor == (SpecialistTypes)i)*/
+				)
+		)
 		{
-			iFreeCivilian += GET_PLAYER(kCity.getOwner()).specialistYield(
+			iFreeCivilianFood += GET_PLAYER(kCity.getOwner()).specialistYield(
 				(SpecialistTypes)i, YIELD_FOOD) *
-				kCity.getFreeCivilianCount();
+				kCity.getFreeSpecialistCount((SpecialistTypes)i);
 		}
-		else 
+		else
 		{
 			iSpecialistFood += GET_PLAYER(kCity.getOwner()).specialistYield(
 				(SpecialistTypes)i, YIELD_FOOD) *
 				(kCity.getSpecialistCount((SpecialistTypes)i) +
-					(kCity.getFreeSpecialistCount((SpecialistTypes)i) - kCity.getFreeCivilianCount()));
+				(kCity.getFreeSpecialistCount((SpecialistTypes)i)));
 		}
 //doto specialists instead of pop
 	}
-	if(iSpecialistFood != 0)
+	if((iSpecialistFood + iFreeCivilianFood) != 0)
 	{
 //doto specialists instead of pop
 		bSimple = false; // advc.087
-		if ((SpecialistTypes)i == (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true)
-			|| (SpecialistTypes)i == (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true)
-			|| (SpecialistTypes)i ==(SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true)
-			)
+		if (iFreeCivilianFood != 0
+			&& ((GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
+				GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && cityState)
+			))
 		{
-			iBaseRate += iFreeCivilian;
-			szBuffer.append(NEWLINE);
-			szBuffer.append(gDLL->getText(L"Specialists Civilians",
-				iFreeCivilian, kFood.getChar(), L"TXT_KEY_CONCEPT_SPECIALISTS"));
-
-		}
-		else
-		{
-			iBaseRate += iSpecialistFood;
 			szBuffer.append(NEWLINE);
 			szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_SPECIALIST_COMMERCE",
-				iSpecialistFood, kFood.getChar(), L"TXT_KEY_CONCEPT_SPECIALISTS"));
+				iFreeCivilianFood, kFood.getChar(), L"From Civilians: &d"));
+
 		}
-		
+		if (iSpecialistFood != 0)
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_SPECIALIST_COMMERCE",
+				iSpecialistFood, kFood.getChar(), L"TXT_KEY_CONCEPT_SPECIALISTS"));		
+		}
+		iBaseRate += iSpecialistFood + iFreeCivilianFood;
 //doto specialists instead of pop
 	}
 	// Corporations
@@ -21738,12 +21744,24 @@ void CvGameTextMgr::setFoodHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 
 	int iFoodConsumed = 0; // Eaten
 	int iEatenFood = kCity.getPopulation() * GC.getFOOD_CONSUMPTION_PER_POPULATION();
+//doto specialists instead of pop
+	int iCivilianEaten = kCity.getFreeCivilianCount() *  GC.getFOOD_CONSUMPTION_PER_POPULATION();
 	if(iEatenFood != 0)
 	{
 		szBuffer.append(NEWLINE);
 		szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_EATEN_FOOD", iEatenFood));
-		iFoodConsumed += iEatenFood;
+		
 	}
+//doto specialists instead of pop
+	if (iCivilianEaten != 0)
+	{
+		szBuffer.append(NEWLINE);
+		szBuffer.gDLL->getText(L"From Civilians: %d", iCivilianEaten)
+		szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_EATEN_FOOD", iCivilianEaten));
+	}
+//doto specialists instead of pop
+
+	iFoodConsumed += iEatenFood + iCivilianEaten;
 	// Health
 	int iSpoiledFood = - kCity.healthRate();
 	if (iSpoiledFood != 0)

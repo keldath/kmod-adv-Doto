@@ -115,9 +115,8 @@ MAX_SELECTED_TEXT = 5
 MAX_DISPLAYABLE_BUILDINGS = 15
 MAX_DISPLAYABLE_TRADE_ROUTES = 4
 MAX_BONUS_ROWS = 10
-# doto specialis instead of pop start
-MAX_CITIZEN_BUTTONS = 11 #8
-# doto specialis instead of pop end
+MAX_CITIZEN_BUTTONS = 8
+
 SELECTION_BUTTON_COLUMNS = 8
 SELECTION_BUTTON_ROWS = 2
 NUM_SELECTION_BUTTONS = SELECTION_BUTTON_ROWS * SELECTION_BUTTON_COLUMNS
@@ -216,7 +215,9 @@ HELP_TEXT_MINIMUM_WIDTH = 300
 g_pSelectedUnit = 0
 
 # doto specialis instead of pop start
-civilians = ['Laborer', 'Farmer', 'Miner']
+civilians = ['Farmer', 'Miner', 'Laborer'] # index aligned to below - should use dict...
+civiliansIdx = ['SPECIALIST_FARMER', 'SPECIALIST_MINER', 'SPECIALIST_LABORER']
+g_iFreeCivilians = 0
 # doto specialis instead of pop end
 
 class CvMainInterface:
@@ -802,8 +803,8 @@ class CvMainInterface:
 		i = 0
 		for i in range( gc.getNumSpecialistInfos() ):
 # doto specialis instead of pop start
-			if (gc.getSpecialistInfo(i).isVisible() 
-				and gc.getSpecialistInfo(i).getDescription() not in civilians):
+			if (gc.getSpecialistInfo(i).isVisible()): 
+				#and gc.getSpecialistInfo(i).getDescription() not in civilians):
 				szName = "DecreaseSpecialist" + str(i)
 				screen.setButtonGFC( szName, u"", "", xResolution - 24, (yResolution - 270 - (26 * iCount)), 20, 20, WidgetTypes.WIDGET_CHANGE_SPECIALIST, i, -1, ButtonStyles.BUTTON_STYLE_CITY_MINUS )
 				screen.hide( szName )
@@ -816,8 +817,8 @@ class CvMainInterface:
 		i = 0
 		for i in range( gc.getNumSpecialistInfos() ):
 # doto specialis instead of pop start
-			if (gc.getSpecialistInfo(i).isVisible() 
-				and gc.getSpecialistInfo(i).getDescription() not in civilians):
+			if (gc.getSpecialistInfo(i).isVisible()): 
+				#and gc.getSpecialistInfo(i).getDescription() not in civilians):
 			
 				szName = "CitizenDisabledButton" + str(i)
 				screen.setImageButton( szName, gc.getSpecialistInfo(i).getTexture(), xResolution - 74, (yResolution - 272 - (26 * i)), 24, 24, WidgetTypes.WIDGET_DISABLED_CITIZEN, i, -1 )
@@ -833,8 +834,6 @@ class CvMainInterface:
 		screen.addPanel( "SpecialistBackground", u"", u"", True, False, xResolution - 243,
 				# advc.004: y position was yResolution minus 423. That works well for the stacked specialists, but not for the other options.
 				yResolution - 475, 230, 30, PanelStyles.PANEL_STYLE_STANDARD )
-		#screen.addPanel( "CityNameBackground", u"", u"", True, False, 260, 31, 
-		#	xResolution - (260*2), 38, PanelStyles.PANEL_STYLE_STANDARD )
 		screen.setStyle( "SpecialistBackground", "Panel_City_Header_Style" )
 		screen.hide( "SpecialistBackground" )
 		screen.setLabel( "SpecialistLabel", "Background", localText.getText("TXT_KEY_CONCEPT_SPECIALISTS", ()),
@@ -2935,9 +2934,6 @@ class CvMainInterface:
 			g_iAngryCitizensCount = currentAngryCitizenCount
 
 		iCount = 0
-# doto specialis instead of pop start
-		iCivilianCount = 0
-# doto specialis instead of pop end
 		bHandled = False
 		currentSuperSpecialistCount = 0
 
@@ -2952,20 +2948,14 @@ class CvMainInterface:
 
 		for i in range(gc.getNumSpecialistInfos()):
 			for j in range( pHeadSelectedCity.getFreeSpecialistCount(i) ):
-
-				szName = "FreeSpecialist" + str(iCount)
-		# doto specialis instead of pop start
-				if gc.getSpecialistInfo(i).getDescription() in civilians:
-					screen.setImageButton( szName, gc.getSpecialistInfo(i).getTexture(), (xResolution - 325 - (stackWidth * iCivilianCount)), yResolution - (282 - SPECIALIST_ROW_HEIGHT * 2), 30, 30, WidgetTypes.WIDGET_FREE_CITIZEN, i, 1 )
-				else:	
+				# doto specialis instead of pop start
+				if (gc.getSpecialistInfo(i).getDescription() not in civilians):
+					szName = "FreeSpecialist" + str(iCount)
 					screen.setImageButton( szName, gc.getSpecialistInfo(i).getTexture(), (xResolution - SPECIALIST_AREA_MARGIN  - (stackWidth * iCount)), yResolution - (282 - SPECIALIST_ROW_HEIGHT * 2), 30, 30, WidgetTypes.WIDGET_FREE_CITIZEN, i, 1 )
-		# doto specialis instead of pop end
-				screen.show( szName )
-				bHandled = true
+					screen.show( szName )
+					bHandled = true
 
 				iCount = iCount + 1
-		# doto specialis instead of pop start
-				iCivilianCount += 1
 
 		# update the max ever citizen counts
 		if g_iSuperSpecialistCount < iCount:
@@ -3010,14 +3000,11 @@ class CvMainInterface:
 				HorizontalSpacing = MAX_SPECIALIST_BUTTON_SPACING
 									
 			for k in range (iCount):
-				if (k  >= pHeadSelectedCity.getSpecialistCount(i)):
-					szName = "IncresseCitizenBanner" + str((i * 100) + k)
-			# doto specialis instead of pop start
-					if gc.getSpecialistInfo(i).getDescription() in civilians:
-						screen.addCheckBoxGFC( szName, gc.getSpecialistInfo(i).getTexture(), "", xResolution - (375 + iXShiftVal) - (HorizontalSpacing * k), (yResolution - 282 - (SPECIALIST_ROW_HEIGHT * iYShiftVal)), 30, 30, WidgetTypes.WIDGET_CHANGE_SPECIALIST, i, 1, ButtonStyles.BUTTON_STYLE_LABEL )
-					else:
-						screen.addCheckBoxGFC( szName, gc.getSpecialistInfo(i).getTexture(), "", xResolution - (SPECIALIST_AREA_MARGIN + iXShiftVal) - (HorizontalSpacing * k), (yResolution - 282 - (SPECIALIST_ROW_HEIGHT * iYShiftVal)), 30, 30, WidgetTypes.WIDGET_CHANGE_SPECIALIST, i, 1, ButtonStyles.BUTTON_STYLE_LABEL )				
-			# doto specialis instead of pop end
+# doto specialis instead of pop start
+				if (k  >= pHeadSelectedCity.getSpecialistCount(i) and
+					gc.getSpecialistInfo(i).getDescription() not in civilians):
+					szName = "IncresseCitizenBanner" + str((i * 100) + k)					
+					screen.addCheckBoxGFC( szName, gc.getSpecialistInfo(i).getTexture(), "", xResolution - (SPECIALIST_AREA_MARGIN + iXShiftVal) - (HorizontalSpacing * k), (yResolution - 282 - (SPECIALIST_ROW_HEIGHT * iYShiftVal)), 30, 30, WidgetTypes.WIDGET_CHANGE_SPECIALIST, i, 1, ButtonStyles.BUTTON_STYLE_LABEL )
 					screen.enable( szName, False )
 					screen.show( szName )
 					
@@ -3092,48 +3079,31 @@ class CvMainInterface:
 			iFreeSpecialistCount += pHeadSelectedCity.getFreeSpecialistCount(i)
 
 		iCount = 0
-		# doto specialis instead of pop start
-		iCivilianCount = 0
-		# doto specialis instead of pop end
+
 		bHandled = False
 		
 		if (iFreeSpecialistCount > MAX_CITIZEN_BUTTONS):
 			for i in range(gc.getNumSpecialistInfos()):
 				if (pHeadSelectedCity.getFreeSpecialistCount(i) > 0):
-		# doto specialis instead of pop start - disp;ay one gg if the max number of specialists
-					if (iCount < MAX_CITIZEN_BUTTONS):
+# doto specialis instead of pop start
+					if (iCount < MAX_CITIZEN_BUTTONS and gc.getSpecialistInfo(i).getDescription() not in civilians):
 						szName = "FreeSpecialist" + str(iCount)
-		# doto specialis instead of pop start
-						if gc.getSpecialistInfo(i).getDescription() in civilians:
-							screen.setImageButton( szName, gc.getSpecialistInfo(i).getTexture(), (xResolution - 315 - (16 * iCivilianCount)), yResolution - 224, 35, 35, WidgetTypes.WIDGET_FREE_CITIZEN, i, 1 )
-							iCivilianCount += 1
-						else:
-							screen.setImageButton( szName, gc.getSpecialistInfo(i).getTexture(), (xResolution - 34  - (26 * iCount)), yResolution - 214, 24, 24, WidgetTypes.WIDGET_FREE_CITIZEN, i, 1 )						
-							iCount += 1
-		# doto specialis instead of pop end
+						screen.setImageButton( szName, gc.getSpecialistInfo(i).getTexture(), (xResolution - 74  - (26 * iCount)), yResolution - 214, 24, 24, WidgetTypes.WIDGET_FREE_CITIZEN, i, 1 )
 						screen.show( szName )
 						bHandled = True
-		# doto specialis instead of pop start
-				#	iCount += 1
+					iCount += 1
 					
 		else:				
 			for i in range(gc.getNumSpecialistInfos()):
 				for j in range( pHeadSelectedCity.getFreeSpecialistCount(i) ):
-		# doto specialis instead of pop start
-					if (iCount < MAX_CITIZEN_BUTTONS):
+# doto specialis instead of pop start
+					if (iCount < MAX_CITIZEN_BUTTONS and gc.getSpecialistInfo(i).getDescription() not in civilians):
 						szName = "FreeSpecialist" + str(iCount)
-		# doto specialis instead of pop start
-						if gc.getSpecialistInfo(i).getDescription() in civilians:
-							screen.setImageButton( szName, gc.getSpecialistInfo(i).getTexture(), (xResolution - 315 - (16 * iCivilianCount)), yResolution - 224, 35, 35, WidgetTypes.WIDGET_FREE_CITIZEN, i, -1 )
-							iCivilianCount += 1
-						else:
-							screen.setImageButton( szName, gc.getSpecialistInfo(i).getTexture(), (xResolution - 34  - (26 * iCount)), yResolution - 214, 24, 24, WidgetTypes.WIDGET_FREE_CITIZEN, i, -1 )
-							iCount = iCount + 1
-		# doto specialis instead of pop end
+						screen.setImageButton( szName, gc.getSpecialistInfo(i).getTexture(), (xResolution - 74  - (26 * iCount)), yResolution - 214, 24, 24, WidgetTypes.WIDGET_FREE_CITIZEN, i, -1 )
 						screen.show( szName )
 						bHandled = True
-		# doto specialis instead of pop start		
-				#	iCount = iCount + 1
+
+					iCount = iCount + 1
 
 		for i in range( gc.getNumSpecialistInfos() ):
 		
@@ -3163,18 +3133,14 @@ class CvMainInterface:
 			j = 0
 			while (iCount > 0):
 				bHandled = True
-			# doto specialis instead of pop start
+
 				xCoord = xResolution - 74 - (26 * j)
 				yCoord = yResolution - 272 - (26 * i)
-
-				szName = "CitizenButton" + str((i * 100) + j)
-		# doto specialis instead of pop start
-				if gc.getSpecialistInfo(i).getDescription() in civilians:
-					screen.addCheckBoxGFC( szName, gc.getSpecialistInfo(i).getTexture(), "", xResolution - 315, yResolution - 224, 35, 35, WidgetTypes.WIDGET_CITIZEN, i, j, ButtonStyles.BUTTON_STYLE_LABEL )
-				else:
+# doto specialis instead of pop start				
+				if 1 == 1: # gc.getSpecialistInfo(i).getDescription() not in civilians:
+					szName = "CitizenButton" + str((i * 100) + j)
 					screen.addCheckBoxGFC( szName, gc.getSpecialistInfo(i).getTexture(), "", xCoord, yCoord, 24, 24, WidgetTypes.WIDGET_CITIZEN, i, j, ButtonStyles.BUTTON_STYLE_LABEL )
-		# doto specialis instead of pop end
-				screen.show( szName )
+					screen.show( szName )
 
 				szName = "CitizenChevron" + str((i * 100) + j)
 				if iCount >= 20:
@@ -3751,6 +3717,20 @@ class CvMainInterface:
 			szName = "BonusBack" + str(i)
 			screen.hide( szName )
 
+# doto specialists instead of population - for city states
+		global g_iFreeCivilians
+		i = 0
+		counter = 0
+		if g_iFreeCivilians > 0:
+			for i in range(len(civiliansIdx)):
+				ecounter = 0
+				while ecounter < g_iFreeCivilians:
+					szName = "FreeCivilians" + str(counter) + str(ecounter)
+					screen.hide( szName )
+					ecounter += 1
+				counter += 1
+# doto specialists instead of population - for city states	
+
 		i = 0
 		if ( CyInterface().isCityScreenUp() ):
 			if ( pHeadSelectedCity ):
@@ -3786,8 +3766,51 @@ class CvMainInterface:
 
 				if (pHeadSelectedCity.isPower()):
 					szBuffer += u"%c" %(CyGame().getSymbolID(FontSymbols.POWER_CHAR))
-					
-				szBuffer += u"%s: %d" %(pHeadSelectedCity.getName(), pHeadSelectedCity.getPopulation())
+
+# doto specialists instead of population - for city states					
+				cnt1 = pHeadSelectedCity.getFreeSpecialistCount(gc.getInfoTypeForString(civiliansIdx[0]))
+				cnt2 = pHeadSelectedCity.getFreeSpecialistCount(gc.getInfoTypeForString(civiliansIdx[1]))
+				cnt3 = pHeadSelectedCity.getFreeSpecialistCount(gc.getInfoTypeForString(civiliansIdx[2]))
+				iCivilianCnt = cnt1 + cnt2 + cnt3
+				
+				szBuffer += u"%s: %d -> Pop: %d" %(pHeadSelectedCity.getName(), (pHeadSelectedCity.getPopulation() + iCivilianCnt), pHeadSelectedCity.getPopulation())
+
+				# iCivilian1 = gc.getInfoTypeForString(civiliansIdx[0])
+				# iCivilian2 = gc.getInfoTypeForString(civiliansIdx[1])
+				# iCivilian3 = gc.getInfoTypeForString(civiliansIdx[2])
+				# iCivilian1Cnt = pHeadSelectedCity.getFreeSpecialistCount(iCivilian1)
+				# iCivilian2Cnt = pHeadSelectedCity.getFreeSpecialistCount(iCivilian2)
+				# iCivilian3Cnt = pHeadSelectedCity.getFreeSpecialistCount(iCivilian3)
+
+				# szBuffer += u" + Civilians: %s:%d + %s:%d + %s:%d" %(civilians[0][0].upper(), iCivilian1Cnt, civilians[1][0].upper() , iCivilian2Cnt,  civilians[2][0].upper(), iCivilian3Cnt)
+				counter = 0
+				cAmount = 0
+				prevspacing = 0
+				newspacing = 0
+				for ic in range(len(civiliansIdx)):
+					eSpecialist = gc.getInfoTypeForString(civiliansIdx[ic])
+					cAmount = pHeadSelectedCity.getFreeSpecialistCount(eSpecialist)
+					ecounter = 0
+					if (cAmount > 0):
+						while ecounter < cAmount:
+							szName = "FreeCivilians" + str(counter) + str(ecounter)
+							newspacing = counter * 30 * (ecounter+1)
+							if newspacing == prevspacing:
+								newspacing = prevspacing 
+							screen.setImageButton( szName, gc.getSpecialistInfo(eSpecialist).getTexture(), screen.centerX(512) - newspacing + (ecounter * 25), 150, 45, 40, WidgetTypes.WIDGET_FREE_CITIZEN, eSpecialist, 1 )
+							#if ecounter > 5:
+							#	screen.setText( szName, "Background", szBuffer, CvUtil.FONT_CENTER_JUSTIFY, (screen.centerX(512)) - (counter * 40) + (counter * 35), 150, FontTypes.GAME_FONT, '+', -1, -1 )
+							ecounter += 1
+						counter += 1
+
+				g_iFreeCivilians = iCivilianCnt
+
+				szBuffer += u" + Civilians: %d" %(iCivilianCnt)
+				#screen.setImageButton( szName1, gc.getSpecialistInfo(iCivilian1).getTexture(), (screen.centerX(512)) - 40, 150, 35, 35, WidgetTypes.WIDGET_FREE_CITIZEN, iCivilian1, -1 )
+				#screen.setImageButton( szName2, gc.getSpecialistInfo(iCivilian2).getTexture(), (screen.centerX(512)) , 150, 35, 35, WidgetTypes.WIDGET_FREE_CITIZEN, iCivilian2, -1 )
+				#screen.setImageButton( szName3, gc.getSpecialistInfo(iCivilian3).getTexture(), (screen.centerX(512)) + 40 , 150, 35, 35, WidgetTypes.WIDGET_FREE_CITIZEN, iCivilian3, -1 )
+		
+# doto specialists instead of population - for city states
 
 				if (pHeadSelectedCity.isOccupation()):
 					szBuffer += u" (%c:%d)" %(CyGame().getSymbolID(FontSymbols.OCCUPATION_CHAR), pHeadSelectedCity.getOccupationTimer())

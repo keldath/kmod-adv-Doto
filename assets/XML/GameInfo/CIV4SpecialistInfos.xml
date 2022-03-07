@@ -423,7 +423,7 @@
 			<Civilopedia>TXT_KEY_CONCEPT_SPECIALISTS_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_SPECIALIST_SCIENTIST_STRATEGY</Strategy>
 			<Help/>
-			<Texture>Art/Interface/MainScreen/CityScreen/scientist.dds</Texture>
+			<Texture>Art/Interface/MainScreen/CityScreen/Expert_Farmer.dds</Texture>
 			<bVisible>1</bVisible>
 			<GreatPeopleUnitClass>NONE</GreatPeopleUnitClass>
 			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
@@ -454,7 +454,7 @@
 			<Civilopedia>TXT_KEY_CONCEPT_SPECIALISTS_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_SPECIALIST_SCIENTIST_STRATEGY</Strategy>
 			<Help/>
-			<Texture>Art/Interface/MainScreen/CityScreen/scientist.dds</Texture>
+			<Texture>Art/Interface/MainScreen/CityScreen/Expert_Miner.dds</Texture>
 			<bVisible>1</bVisible>
 			<GreatPeopleUnitClass>NONE</GreatPeopleUnitClass>
 			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
@@ -485,7 +485,7 @@
 			<Civilopedia>TXT_KEY_CONCEPT_SPECIALISTS_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_SPECIALIST_SCIENTIST_STRATEGY</Strategy>
 			<Help/>
-			<Texture>Art/Interface/MainScreen/CityScreen/scientist.dds</Texture>
+			<Texture>Art/Interface/MainScreen/CityScreen/Expert_TobaccoPlanter.dds</Texture>
 			<bVisible>1</bVisible>
 			<GreatPeopleUnitClass>NONE</GreatPeopleUnitClass>
 			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
