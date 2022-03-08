@@ -1722,6 +1722,12 @@ void CvInitCore::reRandomizeCivsAndLeaders()
 					"falling back on BtS algorithm.");*/ // Well, not exactly an error ...
 			return;
 		}
+//doto specialists instead of pop -city states - dont allow randomize of city states
+		if (!GC.getInfo(eCiv).getIsCityState())
+		{
+			return;
+		}
+//doto specialists instead of pop -city states - dont allow randomize of city states
 	}
 	EagerEnumMap<PlayerTypes,bool> abRandomize;
 	for (int i = 0; i < MAX_CIV_PLAYERS; i++)
