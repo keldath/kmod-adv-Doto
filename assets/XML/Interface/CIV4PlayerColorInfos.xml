@@ -283,11 +283,11 @@
 			<TextColorType>COLOR_PLAYER_ISRAEL_BLUE_TEXT</TextColorType>
 <!-- CITY STATES -->	
 		</PlayerColorInfo>
-         <PlayerColorInfo>
-			<Type>PLAYERCOLOR_POLAND</Type>
-			<ColorTypePrimary>COLOR_PLAYER_POLAND_PRIMARY</ColorTypePrimary>
-			<ColorTypeSecondary>COLOR_PLAYER_POLAND_SECONDARY</ColorTypeSecondary>
-			<TextColorType>COLOR_PLAYER_POLAND_TEXT</TextColorType>
+		<PlayerColorInfo>
+			<Type>PLAYERCOLOR_CHOCOLATE</Type>
+			<ColorTypePrimary>COLOR_PLAYER_CHOCOLATE</ColorTypePrimary>
+			<ColorTypeSecondary>COLOR_PLAYER_PINK</ColorTypeSecondary>
+			<TextColorType>COLOR_PLAYER_CHOCOLATE</TextColorType>
 		</PlayerColorInfo>
 	</PlayerColorInfos>
 </Civ4PlayerColorInfos>

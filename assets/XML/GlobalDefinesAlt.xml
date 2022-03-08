@@ -417,7 +417,6 @@
 		<!-- DOTO SPECIALISTS INSTEAD OF POP -->
 		<DefineName>ENHANCED_CITY_STATES_THRESHOLD</DefineName>
 		<DefineTextVal>20</DefineTextVal>
-<!-- DOTO rangedstrikeMOD - START - Improved AI Range Attack -->
 	</Define>
 	
 </Civ4Defines>

@@ -958,28 +958,6 @@
 			<fGreen>0.39</fGreen>
 			<fBlue>0.47</fBlue>
 			<fAlpha>1.00</fAlpha>
-<!-- city states-->
-		</ColorVal>
-		<ColorVal>
-			<Type>COLOR_PLAYER_POLAND_PRIMARY</Type>
-			<fRed>0.83</fRed>
-			<fGreen>0.13</fGreen>
-			<fBlue>0.24</fBlue>
-			<fAlpha>1.00</fAlpha>
-		</ColorVal>	
-		<ColorVal>
-			<Type>COLOR_PLAYER_POLAND_SECONDARY</Type>
-			<fRed>0.975</fRed>
-			<fGreen>0.975</fGreen>
-			<fBlue>0.975</fBlue>
-			<fAlpha>1.00</fAlpha>
-		</ColorVal>	
-		<ColorVal>
-			<Type>COLOR_PLAYER_POLAND_TEXT</Type>
-			<fRed>0.83</fRed>
-			<fGreen>0.13</fGreen>
-			<fBlue>0.24</fBlue>
-			<fAlpha>1.00</fAlpha>
 		</ColorVal>
 		<ColorVal>
 			<Type>COLOR_PLAYER_ISRABLUE</Type>
@@ -1014,6 +992,13 @@
 			<fRed>0.191</fRed>
 			<fGreen>0.421</fGreen>
 			<fBlue>0.891</fBlue>
+			<fAlpha>1.00</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_PLAYER_CHOCOLATE</Type>
+			<fRed>0.628</fRed>
+			<fGreen>0.471</fGreen>
+			<fBlue>0.353</fBlue>
 			<fAlpha>1.00</fAlpha>
 		</ColorVal>
 	</ColorVals>

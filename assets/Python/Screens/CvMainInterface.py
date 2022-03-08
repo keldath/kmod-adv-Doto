@@ -3717,7 +3717,7 @@ class CvMainInterface:
 			szName = "BonusBack" + str(i)
 			screen.hide( szName )
 
-# doto specialists instead of population - for city states
+# doto specialists instead of population - for city states - hide when out of the city
 		global g_iFreeCivilians
 		i = 0
 		counter = 0
@@ -3785,23 +3785,21 @@ class CvMainInterface:
 				# szBuffer += u" + Civilians: %s:%d + %s:%d + %s:%d" %(civilians[0][0].upper(), iCivilian1Cnt, civilians[1][0].upper() , iCivilian2Cnt,  civilians[2][0].upper(), iCivilian3Cnt)
 				counter = 0
 				cAmount = 0
-				prevspacing = 0
-				newspacing = 0
+				prevTypeMax = 0
+				typeSpace = 0
 				for ic in range(len(civiliansIdx)):
 					eSpecialist = gc.getInfoTypeForString(civiliansIdx[ic])
 					cAmount = pHeadSelectedCity.getFreeSpecialistCount(eSpecialist)
 					ecounter = 0
+					prevTypeMax = (cAmount * 25) * counter
 					if (cAmount > 0):
 						while ecounter < cAmount:
 							szName = "FreeCivilians" + str(counter) + str(ecounter)
-							newspacing = counter * 30 * (ecounter+1)
-							if newspacing == prevspacing:
-								newspacing = prevspacing 
-							screen.setImageButton( szName, gc.getSpecialistInfo(eSpecialist).getTexture(), screen.centerX(512) - newspacing + (ecounter * 25), 150, 45, 40, WidgetTypes.WIDGET_FREE_CITIZEN, eSpecialist, 1 )
-							#if ecounter > 5:
-							#	screen.setText( szName, "Background", szBuffer, CvUtil.FONT_CENTER_JUSTIFY, (screen.centerX(512)) - (counter * 40) + (counter * 35), 150, FontTypes.GAME_FONT, '+', -1, -1 )
+							if ecounter == 0 and counter > 0:
+								typeSpace = prevTypeMax
+							screen.setImageButton( szName, gc.getSpecialistInfo(eSpecialist).getTexture(), screen.centerX(512) - 50 + typeSpace + (ecounter * 25), 150, 45, 55, WidgetTypes.WIDGET_FREE_CITIZEN, eSpecialist, 1 )	
 							ecounter += 1
-						counter += 1
+					counter += 1
 
 				g_iFreeCivilians = iCivilianCnt
 

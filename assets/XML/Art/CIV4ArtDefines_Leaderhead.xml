@@ -448,12 +448,28 @@
 <!-- city states begin -->		
 		</LeaderheadArtInfo>
 		<LeaderheadArtInfo>
-			<Type>ART_DEF_LEADER_CASIMIR</Type>
-			<Button>Art/LeaderHeads/casimir/casimir.dds</Button>
-			<NIF>art/LeaderHeads/casimir/casimir.nif</NIF>
-			<KFM>art/LeaderHeads/casimir/casimir.kfm</KFM>
-			<NoShaderNIF>art/LeaderHeads/casimir/casimir.nif</NoShaderNIF>
-			<BackgroundKFM>art/LeaderHeads/casimir/brennus_BG.kfm</BackgroundKFM>
+			<Type>ART_DEF_LEADER_POPEJOHN</Type>
+			<Button>Art/citystates/Vatican City/Pope2button.dds</Button>
+			<NIF>Art/citystates/Vatican City/pope_2.nif</NIF>
+			<KFM>Art/citystates/Vatican City/winston_churchill.kfm</KFM>
+			<NoShaderNIF>Art/citystates/Vatican City/pope_2.nif</NoShaderNIF>
+			<BackgroundKFM>Art/citystates/Vatican City/pope_bg.kfm</BackgroundKFM>
+		</LeaderheadArtInfo>
+		<LeaderheadArtInfo>
+			<Type>ART_DEF_LEADER_PIYE</Type>
+			<Button>Art/citystates/Kush/Piye/Button.dds</Button>
+			<NIF>Art/citystates/Kush/Piye/Piye.nif</NIF>
+			<KFM>Art/citystates/Kush/Piye/Piye.kfm</KFM>
+			<NoShaderNIF>Art/citystates/Kush/Piye/Piye.nif</NoShaderNIF>
+			<BackgroundKFM>Art/citystates/Kush/Piye/Piye_bg.kfm</BackgroundKFM>
+		</LeaderheadArtInfo>
+		<LeaderheadArtInfo>
+			<Type>ART_DEF_LEADER_ABU</Type>
+			<Button>Art/citystates/tunis/abu/abu.dds</Button>
+			<NIF>Art/citystates/tunis/abu/mansa_musa.nif</NIF>
+			<KFM>Art/citystates/tunis/abu/mansa_musa.kfm</KFM>
+			<NoShaderNIF>aArt/citystates/tunis/abu/mansa_musa_noshader.nif</NoShaderNIF>
+			<BackgroundKFM>Art/citystates/tunis/abu/Mansa_Musa_BG.kfm</BackgroundKFM>
 		</LeaderheadArtInfo>
 	</LeaderheadArtInfos>
 </Civ4ArtDefines>

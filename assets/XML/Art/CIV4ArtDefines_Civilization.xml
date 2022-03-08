@@ -234,9 +234,21 @@
 <!-- city states begin -->
 		</CivilizationArtInfo>
 		<CivilizationArtInfo>
-			<Type>ART_DEF_CIVILIZATION_POLAND</Type>
-			<Button>Art/Interface/civilizations/Poland.dds</Button>
-			<Path>Art/Interface/civilizations/FlagDECAL_Poland.dds</Path>
+			<Type>ART_DEF_CIVILIZATION_VATICAN</Type>
+			<Button>Art/citystates/Vatican City/vaticanbutton.dds</Button>
+			<Path>Art/citystates/Vatican City/vaticanflag.dds</Path>
+			<bWhiteFlag>0</bWhiteFlag>
+		</CivilizationArtInfo>
+		<CivilizationArtInfo>
+			<Type>ART_DEF_CIVILIZATION_KUSH</Type>
+			<Button>Art/citystates/Kush/Kush.dds</Button>
+			<Path>Art/citystates/Kush/KushFlag.dds</Path>
+			<bWhiteFlag>0</bWhiteFlag>
+		</CivilizationArtInfo>
+		<CivilizationArtInfo>
+			<Type>ART_DEF_CIVILIZATION_TUNISIA</Type>
+			<Button>Art/citystates/tunis/moon.dds</Button>
+			<Path>Art/citystates/tunis/FlagDECAL_moon.dds</Path>
 			<bWhiteFlag>0</bWhiteFlag>
 		</CivilizationArtInfo>
 	</CivilizationArtInfos>
