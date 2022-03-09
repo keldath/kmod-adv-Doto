@@ -471,5 +471,45 @@
 			<NoShaderNIF>aArt/citystates/tunis/abu/mansa_musa_noshader.nif</NoShaderNIF>
 			<BackgroundKFM>Art/citystates/tunis/abu/Mansa_Musa_BG.kfm</BackgroundKFM>
 		</LeaderheadArtInfo>
+		<LeaderheadArtInfo>
+			<Type>ART_DEF_LEADER_GUILLAUME_HENRI_DUFOUR</Type>
+			<Button>,Art/interface/LeaderHeads/Btn_LH_Germany_Bismark.dds,Art/citystates/Zurich/Actions_Builds_LeaderHeads_Specialists_Atlas.dds,7,10</Button>
+			<NIF>Art/citystates/Zurich/Dufour.dds</NIF>
+			<KFM>art/LeaderHeads/Bismarck/bismarck.kfm</KFM>
+			<NoShaderNIF>art/LeaderHeads/Bismarck/bismarck_noshader.nif</NoShaderNIF>
+			<BackgroundKFM>art/LeaderHeads/Bismarck/bismarck_bg.kfm</BackgroundKFM>
+		</LeaderheadArtInfo>
+		<LeaderheadArtInfo>
+			<Type>ART_DEF_LEADER_LUDWIG</Type>
+			<Button>Art/citystates/bavaria/Ludwig/ludwig.dds</Button>
+			<NIF>Art/citystates/bavaria/Ludwig/ludwig.nif</NIF>
+			<KFM>Art/citystates/bavaria/Ludwig/frederick_the_great.kfm</KFM>
+			<NoShaderNIF>Art/citystates/bavaria/Ludwig/ludwig.nif</NoShaderNIF>
+			<BackgroundKFM>Art/citystates/bavaria/Ludwig/frederick_the_great_BG.kfm</BackgroundKFM>
+		</LeaderheadArtInfo>
+		<LeaderheadArtInfo>
+			<Type>ART_DEF_LEADER_MACDONALD</Type>
+			<Button>Art/citystates/Quebec/MacDonald/Macdonald.dds</Button>
+			<NIF>Art/citystates/Quebec/MacDonald/george_washington.nif</NIF>
+			<KFM>Art/citystates/Quebec/MacDonald/george_washington.kfm</KFM>
+			<NoShaderNIF>Art/citystates/Quebec/MacDonald/george_washington_noshader.nif</NoShaderNIF>
+			<BackgroundKFM>Art/citystates/Quebec/MacDonald/washington_BG.kfm</BackgroundKFM>
+		</LeaderheadArtInfo>
+		<LeaderheadArtInfo>
+			<Type>ART_DEF_LEADER_SONGTSEN</Type>
+			<Button>Art/citystates/Tibet/Songtsen/Songtsen.dds</Button>
+			<NIF>Art/citystates/Tibet/Songtsen/Mao_tse_tung.nif</NIF>
+			<KFM>Art/citystates/Tibet/Songtsen/Mao_tse_tung.kfm</KFM>
+			<NoShaderNIF>Art/citystates/Tibet/Songtsen/mao_tse_tung_noshader.nif</NoShaderNIF>
+			<BackgroundKFM>Art/citystates/Tibet/Songtsen/Mao_tse_tung_BG.kfm</BackgroundKFM>
+		</LeaderheadArtInfo>
+		<LeaderheadArtInfo>
+			<Type>ART_DEF_LEADER_HECTOR</Type>
+			<Button>Art/citystates/Troy/Hector/Hector.dds</Button>
+			<NIF>Art/citystates/Troy/Hector/alexander.nif</NIF>
+			<KFM>Art/citystates/Troy/Hector/alexander.kfm</KFM>
+			<NoShaderNIF>Art/citystates/Troy/Hector/alexander_noshader.nif</NoShaderNIF>
+			<BackgroundKFM>Art/citystates/Troy/Hector/alexander_BG.kfm</BackgroundKFM>
+		</LeaderheadArtInfo>
 	</LeaderheadArtInfos>
 </Civ4ArtDefines>

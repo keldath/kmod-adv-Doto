@@ -1881,7 +1881,7 @@
 			<bAIPlayable>1</bAIPlayable>
 			<Cities>
 				<City>TXT_KEY_CITY_NAME_ATHENS</City>
-				<!--<City>TXT_KEY_CITY_NAME_SPARTA</City>-->
+				<City>TXT_KEY_CITY_NAME_SPARTA</City>
 				<City>TXT_KEY_CITY_NAME_CORINTH</City>
 				<City>TXT_KEY_CITY_NAME_THEBES</City>
 				<City>TXT_KEY_CITY_NAME_ARGOS</City>
@@ -4977,22 +4977,25 @@
 <!-- doto specialists instead of pop city states begin -->
 		</CivilizationInfo>
 		<CivilizationInfo>
-			<Type>CIVILIZATION_SPARTA</Type>
-			<Description>[CS] Sparta</Description>
-			<ShortDescription>[CS] Sparta</ShortDescription>
-			<Adjective>[CS] Spartan</Adjective>
-			<Civilopedia>This is Sparta!</Civilopedia>
-			<DefaultPlayerColor>PLAYERCOLOR_LIGHT_BLUE</DefaultPlayerColor>
-			<ArtDefineTag>ART_DEF_CIVILIZATION_GREECE</ArtDefineTag>
+			<Type>CIVILIZATION_TROY</Type>
+			<Description>[CS] Troy</Description>
+			<ShortDescription>[CS] Troy</ShortDescription>
+			<Adjective>[CS] Trojen</Adjective>
+			<Civilopedia>Troy</Civilopedia>
+			<DefaultPlayerColor>PLAYERCOLOR_TROY_GOLDENROD</DefaultPlayerColor>
+			<ArtDefineTag>ART_DEF_CIVILIZATION_TROY</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_GRECO_ROMAN</ArtStyleType>
-			<UnitArtStyleType>UNIT_ARTSTYLE_GRECO_ROMAN</UnitArtStyleType>
-			<bPlayable>1</bPlayable>
-			<bAIPlayable>0</bAIPlayable>	
+			<bPlayable>0</bPlayable>
+			<bAIPlayable>1</bAIPlayable>	
 			<isCityState>1</isCityState>
 			<Cities>
-				<City>Sparta</City>
+				<City>Troy</City>
 			</Cities>
 			<Buildings>
+				<Building>
+					<BuildingClassType>BUILDINGCLASS_THEATRE</BuildingClassType>
+					<BuildingType>BUILDING_BYZANTINE_HIPPODROME</BuildingType>
+				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -5035,7 +5038,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>2</iFreeUnits>
+					<iFreeUnits>1</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -5046,7 +5049,7 @@
 			</FreeBuildingClasses>
 			<FreeTechs>
 				<FreeTech>
-					<TechType>TECH_FISHING</TechType>
+					<TechType>TECH_THE_WHEEL</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
@@ -5054,14 +5057,14 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_ISLAM_F</TechType>
+					<TechType>TECH_JUDAISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
-            <DisableTechs/>
+			<DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-					<ReligionName>RELIGION_ISLAM</ReligionName>
+					<ReligionName>RELIGION_JUDAISM</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion> 
 			</ForbiddenReligions>
@@ -5077,7 +5080,7 @@
 			</InitialCivics>
 			<Leaders>
 				<Leader>
-					<LeaderName>LEADER_ALEXANDER</LeaderName>
+					<LeaderName>LEADER_HECTOR</LeaderName>
 					<bLeaderAvailability>1</bLeaderAvailability>
 				</Leader>
 			</Leaders>
@@ -5095,8 +5098,8 @@
 			<ArtDefineTag>ART_DEF_CIVILIZATION_KUSH</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_MIDDLE_EAST</ArtStyleType>
 			<UnitArtStyleType>UNIT_ARTSTYLE_MIDDLE_EAST</UnitArtStyleType>
-			<bPlayable>1</bPlayable>
-			<bAIPlayable>0</bAIPlayable>	
+			<bPlayable>0</bPlayable>
+			<bAIPlayable>1</bAIPlayable>	
 			<isCityState>1</isCityState>
 			<Cities>
 				<City>Thebes</City>
@@ -5148,7 +5151,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>2</iFreeUnits>
+					<iFreeUnits>1</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -5204,12 +5207,12 @@
 			<ShortDescription>[CS] Zurich</ShortDescription>
 			<Adjective>[CS] Zurich</Adjective>
 			<Civilopedia>[CS] Zurich</Civilopedia>
-			<DefaultPlayerColor>PLAYERCOLOR_DARK_LEMON</DefaultPlayerColor>
-			<ArtDefineTag>ART_DEF_CIVILIZATION_HOLY_ROMAN</ArtDefineTag>
+			<DefaultPlayerColor>PLAYERCOLOR_RED</DefaultPlayerColor>
+			<ArtDefineTag>ART_DEF_CIVILIZATION_SWITZERLAND</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_EUROPEAN</ArtStyleType>
 			<UnitArtStyleType>UNIT_ARTSTYLE_EUROPEAN</UnitArtStyleType>
-			<bPlayable>1</bPlayable>
-			<bAIPlayable>0</bAIPlayable>	
+			<bPlayable>0</bPlayable>
+			<bAIPlayable>1</bAIPlayable>	
 			<isCityState>1</isCityState>
 			<Cities>
 				<City>Zurich</City>
@@ -5281,7 +5284,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>2</iFreeUnits>
+					<iFreeUnits>1</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -5323,7 +5326,7 @@
 			</InitialCivics>
 			<Leaders>
 				<Leader>
-					<LeaderName>LEADER_CHARLEMAGNE</LeaderName>
+					<LeaderName>LEADER_GUILLAUME_HENRI_DUFOUR</LeaderName>
 					<bLeaderAvailability>1</bLeaderAvailability>
 				</Leader>
 			</Leaders>
@@ -5341,8 +5344,8 @@
 			<ArtDefineTag>ART_DEF_CIVILIZATION_VATICAN</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_GRECO_ROMAN</ArtStyleType>
 			<UnitArtStyleType>UNIT_ARTSTYLE_GRECO_ROMAN</UnitArtStyleType>
-			<bPlayable>1</bPlayable>
-			<bAIPlayable>0</bAIPlayable>	
+			<bPlayable>0</bPlayable>
+			<bAIPlayable>1</bAIPlayable>	
 			<isCityState>1</isCityState>
 			<Cities>
 				<City>Vatican</City>
@@ -5398,7 +5401,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>2</iFreeUnits>
+					<iFreeUnits>1</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -5458,8 +5461,8 @@
 			<ArtDefineTag>ART_DEF_CIVILIZATION_TUNISIA</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_MIDDLE_EAST</ArtStyleType>
 			<UnitArtStyleType>UNIT_ARTSTYLE_MIDDLE_EAST</UnitArtStyleType>
-			<bPlayable>1</bPlayable>
-			<bAIPlayable>0</bAIPlayable>	
+			<bPlayable>0</bPlayable>
+			<bAIPlayable>1</bAIPlayable>	
 			<isCityState>1</isCityState>
 			<Cities>
 				<City>Tunis</City>
@@ -5515,7 +5518,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>2</iFreeUnits>
+					<iFreeUnits>1</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -5566,20 +5569,19 @@
 			<CivilizationActionSound>AS3D_ARABIA_ORDER</CivilizationActionSound>
 		</CivilizationInfo>
 		<CivilizationInfo>
-			<Type>CIVILIZATION_SINGAPORE</Type>
-			<Description>[CS] Singapore</Description>
-			<ShortDescription>[CS] Singapore</ShortDescription>
-			<Adjective>[CS] Singapore</Adjective>
-			<Civilopedia>[CS] Singapore</Civilopedia>
-			<DefaultPlayerColor>PLAYERCOLOR_DARK_PINK</DefaultPlayerColor>
-			<ArtDefineTag>ART_DEF_CIVILIZATION_CHINA</ArtDefineTag>
+			<Type>CIVILIZATION_TIBET</Type>
+			<Description>[CS] Tibet</Description>
+			<ShortDescription>[CS] Tibet</ShortDescription>
+			<Adjective>[CS] Tibet</Adjective>
+			<Civilopedia>[CS] Tibet</Civilopedia>
+			<DefaultPlayerColor>PLAYERCOLOR_TIBET_ORANGE</DefaultPlayerColor>
+			<ArtDefineTag>ART_DEF_CIVILIZATION_TIBET</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_ASIAN</ArtStyleType>
-			<UnitArtStyleType>UNIT_ARTSTYLE_ASIAN</UnitArtStyleType>
-			<bPlayable>1</bPlayable>
-			<bAIPlayable>0</bAIPlayable>	
+			<bPlayable>0</bPlayable>
+			<bAIPlayable>1</bAIPlayable>	
 			<isCityState>1</isCityState>
 			<Cities>
-				<City>Singapore</City>
+				<City>Tibet</City>
 			</Cities>
 			<Buildings>
 				<Building>
@@ -5632,7 +5634,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>2</iFreeUnits>
+					<iFreeUnits>1</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -5643,7 +5645,7 @@
 			</FreeBuildingClasses>
 			<FreeTechs>
 				<FreeTech>
-					<TechType>TECH_AGRICULTURE</TechType>
+					<TechType>TECH_MYSTICISM</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
@@ -5651,14 +5653,14 @@
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_HELLENISM_F</TechType>
+					<TechType>TECH_CHRIST_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 			</FreeTechs>
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
-					<ReligionName>RELIGION_HELLENISM</ReligionName>
+					<ReligionName>RELIGION_CHRISTIANITY</ReligionName>
 					<bForbidden>1</bForbidden>
 				</ForbiddenReligion>
 			</ForbiddenReligions>
@@ -5674,11 +5676,7 @@
 			</InitialCivics>
 			<Leaders>
 				<Leader>
-					<LeaderName>LEADER_QIN_SHI_HUANG</LeaderName>
-					<bLeaderAvailability>1</bLeaderAvailability>
-				</Leader>
-				<Leader>
-					<LeaderName>LEADER_CHINESE_LEADER</LeaderName>
+					<LeaderName>LEADER_SONGTSEN</LeaderName>
 					<bLeaderAvailability>1</bLeaderAvailability>
 				</Leader>
 			</Leaders>
@@ -5687,20 +5685,20 @@
 			<CivilizationActionSound>AS3D_CHINA_ORDER</CivilizationActionSound>
 		</CivilizationInfo>
 		<CivilizationInfo>
-			<Type>CIVILIZATION_MONACO</Type>
-			<Description>[CS] Monaco</Description>
-			<ShortDescription>[CS] Monaco</ShortDescription>
-			<Adjective>[CS] Monaco</Adjective>
-			<Civilopedia>[CS] Monaco</Civilopedia>
-			<DefaultPlayerColor>PLAYERCOLOR_DARK_BLUE</DefaultPlayerColor>
-			<ArtDefineTag>ART_DEF_CIVILIZATION_FRANCE</ArtDefineTag>
+			<Type>CIVILIZATION_BAVARIA</Type>
+			<Description>[CS] Bavaria</Description>
+			<ShortDescription>[CS] Bavaria</ShortDescription>
+			<Adjective>[CS] Bavaria</Adjective>
+			<Civilopedia>[CS] Bavaria</Civilopedia>
+			<DefaultPlayerColor>PLAYERCOLOR_WAVES</DefaultPlayerColor>
+			<ArtDefineTag>ART_DEF_CIVILIZATION_BAVARIA</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_EUROPEAN</ArtStyleType>
 			<UnitArtStyleType>UNIT_ARTSTYLE_EUROPEAN</UnitArtStyleType>
-			<bPlayable>1</bPlayable>
-			<bAIPlayable>0</bAIPlayable>	
+			<bPlayable>0</bPlayable>
+			<bAIPlayable>1</bAIPlayable>	
 			<isCityState>1</isCityState>
 			<Cities>
-				<City>Monaco</City>
+				<City>Bavaria</City>
 			</Cities>
 			<Buildings>
 				<Building>
@@ -5708,30 +5706,32 @@
 					<BuildingType>BUILDING_FRENCH_SALON</BuildingType>
 				</Building>
 			</Buildings>
+			<Buildings>
+				<Building>
+					<BuildingClassType>BUILDINGCLASS_FACTORY</BuildingClassType>
+					<BuildingType>BUILDING_GERMAN_ASSEMBLY_PLANT</BuildingType>
+				</Building>
+			</Buildings>
 			<Units>
 				<Unit>
-					<UnitClassType>UNITCLASS_MUSKETMAN</UnitClassType>
-					<UnitType>UNIT_FRENCH_MUSKETEER</UnitType>
+					<UnitClassType>UNITCLASS_TANK</UnitClassType>
+					<UnitType>UNIT_GERMAN_PANZER</UnitType>
 				</Unit>
 				<Unit>
-					<UnitClassType>UNITCLASS_JET_FIGHTER</UnitClassType>
-					<UnitType>UNIT_MIRAGE</UnitType>		                
+					<UnitClassType>UNITCLASS_MARINE</UnitClassType>
+					<UnitType>UNIT_G36</UnitType>
 				</Unit>
 				<Unit>
-					<UnitClassType>UNITCLASS_WAR_ELEPHANT</UnitClassType>
-					<UnitType>UNIT_HEAVYHORSE</UnitType>		                
+					<UnitClassType>UNITCLASS_KNIGHT</UnitClassType>
+					<UnitType>UNIT_TEUTONIC_KNIGHT</UnitType>
 				</Unit>
 				<Unit>
-					<UnitClassType>UNITCLASS_MECHANIZED_INFANTRY</UnitClassType>
-					<UnitType>UNIT_COMMITIONER</UnitType>		                
+					<UnitClassType>UNITCLASS_SWORDSMAN</UnitClassType>
+					<UnitType>UNIT_TSWORDSMAN</UnitType>
 				</Unit>
 				<Unit>
 					<UnitClassType>UNITCLASS_INFANTRY</UnitClassType>
-					<UnitType>UNIT_FRENCHINFANTRY</UnitType>	
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_MODERN_ARMOR</UnitClassType>
-					<UnitType>UNIT_STORMSQ</UnitType>		
+					<UnitType>UNIT_TIGER</UnitType>
 				</Unit>
 				<Unit>
 					<UnitClassType>UNITCLASS_GUIDED_MISSILE</UnitClassType>
@@ -5753,7 +5753,7 @@
 			<FreeUnitClasses>
 				<FreeUnitClass>
 					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>2</iFreeUnits>
+					<iFreeUnits>1</iFreeUnits>
 				</FreeUnitClass>
 			</FreeUnitClasses>
 			<FreeBuildingClasses>
@@ -5764,11 +5764,11 @@
 			</FreeBuildingClasses>
 			<FreeTechs>
 				<FreeTech>
-					<TechType>TECH_THE_WHEEL</TechType>
+					<TechType>TECH_AGRICULTURE</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
-					<TechType>TECH_AGRICULTURE</TechType>
+					<TechType>TECH_MINING</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
 				<FreeTech>
@@ -5795,15 +5795,120 @@
 			</InitialCivics>
 			<Leaders>
 				<Leader>
-					<LeaderName>LEADER_LOUIS_XIV</LeaderName>
+					<LeaderName>LEADER_LUDWIG</LeaderName>
 					<bLeaderAvailability>1</bLeaderAvailability>
 				</Leader>
+			</Leaders>
+			<DerivativeCiv>CIVILIZATION_AMERICA</DerivativeCiv>
+			<CivilizationSelectionSound>AS3D_FRANCE_SELECT</CivilizationSelectionSound>
+			<CivilizationActionSound>AS3D_FRANCE_ORDER</CivilizationActionSound>
+		</CivilizationInfo>
+		<CivilizationInfo>
+			<Type>CIVILIZATION_QUEBEC</Type>
+			<Description>[CS] Quebec</Description>
+			<ShortDescription>[CS] Quebec</ShortDescription>
+			<Adjective>[CS] Quebecian</Adjective>
+			<Civilopedia>[CS] Quebec</Civilopedia>
+			<DefaultPlayerColor>PLAYERCOLOR_QUEBEC</DefaultPlayerColor>
+			<ArtDefineTag>ART_DEF_CIVILIZATION_QUEBEC</ArtDefineTag>
+			<ArtStyleType>ARTSTYLE_EUROPEAN</ArtStyleType>
+			<UnitArtStyleType>UNIT_ARTSTYLE_EUROPEAN</UnitArtStyleType>
+			<bPlayable>1</bPlayable>
+			<bAIPlayable>1</bAIPlayable>	
+			<isCityState>1</isCityState>
+			<Cities>
+				<City>Quebec</City>
+			</Cities>
+			<Buildings>
+				<Building>
+					<BuildingClassType>BUILDINGCLASS_BANK</BuildingClassType>
+					<BuildingType>BUILDING_ENGLISH_STOCK_EXCHANGE</BuildingType>
+				</Building>
+			</Buildings>
+			<Units>
+				<Unit>
+					<UnitClassType>UNITCLASS_RIFLEMAN</UnitClassType>
+					<UnitType>UNIT_ENGLISH_REDCOAT</UnitType>
+				</Unit>
+				<Unit>
+					<UnitClassType>UNITCLASS_BATTLESHIP</UnitClassType>
+					<UnitType>UNIT_CORVETTE</UnitType>
+				</Unit>
+				<Unit>
+					<UnitClassType>UNITCLASS_FIGHTER</UnitClassType>
+					<UnitType>UNIT_BRISTOL</UnitType>
+				</Unit>
+				<Unit>
+					<UnitClassType>UNITCLASS_MARINE</UnitClassType>
+					<UnitType>UNIT_MI6</UnitType>
+				</Unit>
+				<Unit>
+					<UnitClassType>UNITCLASS_TANK</UnitClassType>
+					<UnitType>UNIT_CROMWELL</UnitType>
+				</Unit>
+				<Unit>
+					<UnitClassType>UNITCLASS_GUIDED_MISSILE</UnitClassType>
+					<UnitType>NONE</UnitType>
+				</Unit>
+				<Unit>
+					<UnitClassType>UNITCLASS_TACTICAL_NUKE</UnitClassType>
+					<UnitType>NONE</UnitType>
+				</Unit>
+				<Unit>
+					<UnitClassType>UNITCLASS_ICBM</UnitClassType>
+					<UnitType>NONE</UnitType>
+				</Unit>
+				<Unit>
+					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
+					<UnitType>NONE</UnitType>
+				</Unit>
+			</Units>
+			<FreeUnitClasses>
+				<FreeUnitClass>
+					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
+					<iFreeUnits>1</iFreeUnits>
+				</FreeUnitClass>
+			</FreeUnitClasses>
+			<FreeBuildingClasses>
+				<FreeBuildingClass>
+					<BuildingClassType>BUILDINGCLASS_PALACE</BuildingClassType>
+					<bFreeBuildingClass>1</bFreeBuildingClass>
+				</FreeBuildingClass>
+			</FreeBuildingClasses>
+			<FreeTechs>
+				<FreeTech>
+					<TechType>TECH_FISHING</TechType>
+					<bFreeTech>1</bFreeTech>
+				</FreeTech>
+				<FreeTech>
+					<TechType>TECH_MINING</TechType>
+					<bFreeTech>1</bFreeTech>
+				</FreeTech>
+				<FreeTech>
+					<TechType>TECH_HINDU_F</TechType>
+					<bFreeTech>1</bFreeTech>
+				</FreeTech>
+			</FreeTechs>
+            <DisableTechs/>
+			<ForbiddenReligions>
+				<ForbiddenReligion>
+					<ReligionName>RELIGION_TAOISM</ReligionName>
+					<bForbidden>1</bForbidden>
+				</ForbiddenReligion> 
+			</ForbiddenReligions>
+			<InitialCivics>
+				<CivicType>CIVIC_DESPOTISM</CivicType>
+				<CivicType>CIVIC_ELDER</CivicType>
+				<CivicType>CIVIC_TRIBALISM</CivicType>
+				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
+				<CivicType>CIVIC_PAGANISM</CivicType>
+				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
+				<CivicType>CIVIC_TRADITIONAL</CivicType>
+				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+			</InitialCivics>
+			<Leaders>
 				<Leader>
-					<LeaderName>LEADER_NAPOLEON</LeaderName>
-					<bLeaderAvailability>1</bLeaderAvailability>
-				</Leader>
-				<Leader>
-					<LeaderName>LEADER_DE_GAULLE</LeaderName>
+					<LeaderName>LEADER_MACDONALD</LeaderName>
 					<bLeaderAvailability>1</bLeaderAvailability>
 				</Leader>
 			</Leaders>
@@ -6890,6 +6995,7 @@
 			<DerivativeCiv>NONE</DerivativeCiv>
 			<CivilizationSelectionSound/>
 			<CivilizationActionSound/>
+<!-- doto specialists instead of pop city states end -->
 		</CivilizationInfo>
 	</CivilizationInfos>
 </Civ4CivilizationInfos>

@@ -281,13 +281,38 @@
 			<ColorTypePrimary>COLOR_PLAYER_ISRAEL_BLUE</ColorTypePrimary>
 			<ColorTypeSecondary>COLOR_PLAYER_WHITE</ColorTypeSecondary>
 			<TextColorType>COLOR_PLAYER_ISRAEL_BLUE_TEXT</TextColorType>
-<!-- CITY STATES -->	
+<!-- CITY STATES -->
+<!-- doto specialists instead of pop city states begin -->	
 		</PlayerColorInfo>
 		<PlayerColorInfo>
 			<Type>PLAYERCOLOR_CHOCOLATE</Type>
 			<ColorTypePrimary>COLOR_PLAYER_CHOCOLATE</ColorTypePrimary>
 			<ColorTypeSecondary>COLOR_PLAYER_PINK</ColorTypeSecondary>
 			<TextColorType>COLOR_PLAYER_CHOCOLATE</TextColorType>
+		</PlayerColorInfo>
+		<PlayerColorInfo>
+			<Type>PLAYERCOLOR_WAVES</Type>
+			<ColorTypePrimary>COLOR_PLAYER_WAVES</ColorTypePrimary>
+			<ColorTypeSecondary>COLOR_PLAYER_WHITE</ColorTypeSecondary>
+			<TextColorType>COLOR_PLAYER_WAVES</TextColorType>
+		</PlayerColorInfo>
+		<PlayerColorInfo>
+			<Type>PLAYERCOLOR_QUEBEC</Type>
+			<ColorTypePrimary>COLOR_PLAYER_IVORY</ColorTypePrimary>
+			<ColorTypeSecondary>COLOR_PLAYER_VERMILION</ColorTypeSecondary>
+			<TextColorType>COLOR_PLAYER_IVORY_TEXT</TextColorType>
+		</PlayerColorInfo>
+		<PlayerColorInfo>
+			<Type>PLAYERCOLOR_TIBET_ORANGE</Type>
+			<ColorTypePrimary>COLOR_X_CORAL</ColorTypePrimary>
+			<ColorTypeSecondary>COLOR_W_NAVY</ColorTypeSecondary>
+			<TextColorType>COLOR_X_CORAL</TextColorType>
+		</PlayerColorInfo>
+		<PlayerColorInfo>
+			<Type>PLAYERCOLOR_TROY_GOLDENROD</Type>
+			<ColorTypePrimary>COLOR_X_GOLDENROD</ColorTypePrimary>
+			<ColorTypeSecondary>COLOR_X_INDIGO</ColorTypeSecondary>
+			<TextColorType>COLOR_X_GOLDENROD</TextColorType>
 		</PlayerColorInfo>
 	</PlayerColorInfos>
 </Civ4PlayerColorInfos>

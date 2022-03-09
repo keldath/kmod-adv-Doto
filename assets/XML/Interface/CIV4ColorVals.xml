@@ -1001,5 +1001,61 @@
 			<fBlue>0.353</fBlue>
 			<fAlpha>1.00</fAlpha>
 		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_PLAYER_WAVES</Type>
+			<fRed>0.643</fRed>
+			<fGreen>0.867</fGreen>
+			<fBlue>0.929</fBlue>
+			<fAlpha>1.00</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_PLAYER_IVORY</Type>
+			<fRed>1.00</fRed>
+			<fGreen>1.00</fGreen>
+			<fBlue>0.94</fBlue>
+			<fAlpha>1.00</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_PLAYER_IVORY_TEXT</Type>
+			<fRed>1.00</fRed>
+			<fGreen>0.95</fGreen>
+			<fBlue>0.98</fBlue>
+			<fAlpha>1.00</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_PLAYER_VERMILION</Type>
+			<fRed>0.89</fRed>
+			<fGreen>0.26</fGreen>
+			<fBlue>0.20</fBlue>
+			<fAlpha>1.00</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_X_CORAL</Type>
+			<fRed>1.00</fRed>
+			<fGreen>0.50</fGreen>
+			<fBlue>0.31</fBlue>
+			<fAlpha>1.00</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_W_NAVY</Type>
+			<fRed>0.00</fRed>
+			<fGreen>0.00</fGreen>
+			<fBlue>0.50</fBlue>
+			<fAlpha>1.00</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_X_GOLDENROD</Type>
+			<fRed>0.85</fRed>
+			<fGreen>0.65</fGreen>
+			<fBlue>0.13</fBlue>
+			<fAlpha>1.00</fAlpha>
+		</ColorVal>
+		<ColorVal>
+			<Type>COLOR_X_INDIGO</Type>
+			<fRed>0.29</fRed>
+			<fGreen>0.00</fGreen>
+			<fBlue>0.51</fBlue>
+			<fAlpha>1.00</fAlpha>
+		</ColorVal>
 	</ColorVals>
 </Civ4ColorVals>
