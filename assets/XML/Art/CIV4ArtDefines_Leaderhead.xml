@@ -510,6 +510,7 @@
 			<KFM>Art/citystates/Troy/Hector/alexander.kfm</KFM>
 			<NoShaderNIF>Art/citystates/Troy/Hector/alexander_noshader.nif</NoShaderNIF>
 			<BackgroundKFM>Art/citystates/Troy/Hector/alexander_BG.kfm</BackgroundKFM>
+<!-- doto specialists instead of pop city states end -->	
 		</LeaderheadArtInfo>
 	</LeaderheadArtInfos>
 </Civ4ArtDefines>

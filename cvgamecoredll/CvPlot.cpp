@@ -5367,6 +5367,22 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 	} // </advc.ctr>
 	invalidateBorderDangerCache(); // K-Mod. (based on BBAI)
 	updateSymbols();
+
+//keldath - color city states plots - START
+	NiColorA color = GC.getInfo(GC.getInfo(GET_PLAYER(getOwner()).getPlayerColor()).getColorTypePrimary()).getColor();
+	bool changeIt = false;
+	if (!isOwned())
+	{
+		// THE COLOR ISNT NEEDED here, i didnt know how to make a default null for this type of variable
+		//so the function gets it - but there is no use for it.
+		//same goes for the getplot
+		//the bool is to clear or not to clear existing color
+		color = (GC.getInfo(GC.getColorType("black")).getColor());
+		changeIt = true;
+	}
+	GC.getGame().updateCityStatesColoredPlots(changeIt, *this, color);
+//keldath - color city states plots - END
+
 }
 
 // <advc.035>

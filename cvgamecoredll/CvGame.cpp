@@ -7675,6 +7675,78 @@ void CvGame::createBarbarianCities()
 	createBarbarianCity(true, 50);
 }
 
+//doto city states start - based on createbarbariancity
+void CvGame::spawnCityState(PlayerTypes eNewPlayer)
+{
+	CvMap const& kMap = GC.getMap();
+	std::map<int,int> perAreaUnowned; // Precomputed for efficiency
+	FOR_EACH_AREA(pArea)
+	{
+		/* Plots owned by Barbarians are counted in BtS, and I count them when
+		   creating units because it makes some sense that Barbarians get fewer free
+		   units once they have cities, but for cities, I'm not sure.
+		   Keep counting them for now. */
+		std::pair<int,int> iiOwnedUnowned = pArea->countOwnedUnownedHabitableTiles();
+				//a.countOwnedUnownedHabitableTiles(true);
+		int iUnowned = iiOwnedUnowned.second;
+		std::vector<Shelf*> shelves;
+		kMap.getShelves(*pArea, shelves);
+		for (size_t i = 0; i < shelves.size(); i++)
+		{
+			iUnowned += shelves[i]->countUnownedPlots() / 2;
+		}
+		perAreaUnowned.insert(std::make_pair(pArea->getID(), iUnowned));
+	}
+	// </advc.300>
+	
+	CitySiteEvaluator citySiteEval(GET_PLAYER(eNewPlayer), -1, false, true);
+	CvPlot const* pBestPlot = NULL;
+	int iBestValue = 0;
+	for (int iI = 0; iI < kMap.numPlots(); iI++)
+	{
+		CvPlot& kPlot = kMap.getPlotByIndex(iI);
+		if (kPlot.isWater())
+			continue;
+		// <advc.300>
+		CvArea& a = kPlot.getArea();
+		int const iAreaSz = a.getNumTiles();
+		int iTargetCities = perAreaUnowned.find(a.getID())->second;
+		int iValue = citySiteEval.evaluate(kPlot);
+		/* <advc.300> This gives the area with the most owned tiles priority
+				over other areas unless the global city target is reached (rare),
+				or the most crowded area hasn't enough unowned tiles left.
+				The idea of bSkipCivAreas is to settle terrae incognitae earlier,
+				so I'm considerably reducing the impact in that case.
+				Also, the first city placed in a previously uninhabited area is
+				placed randomly b/c each found value gets multipied with 0,
+				which is apparently a bug. Let's instead use the projected number
+				of owned tiles after placing the city. */
+		int iOwned = a.getNumOwnedTiles();
+		iValue *= iOwned + NUM_INNER_PLOTS; // advc.001 </advc.300>
+			/*	advc.300, advc.001: Looks like another bug; probably times 1 to 1.5
+				was intended. (Dividing by 100 doesn't affect pBestPlot, but let's
+				keep iBestValue is on the scale of a regular found value - although
+				it isn't used for anything.)
+				NB: This kind of randomization works mostly locally b/c nearby tiles
+				tend to have similar found values. */
+		iValue *= 100 + SyncRandNum(50);
+		iValue /= 100;
+		if (iValue > iBestValue)
+		{
+			iBestValue = iValue;
+			pBestPlot = &kPlot;
+		}
+	}
+	
+
+	if (pBestPlot != NULL)
+	{
+		FAssert(iBestValue > 0); // advc.300
+		GET_PLAYER(eNewPlayer).found(pBestPlot->getX(), pBestPlot->getY());
+		logBBAI("Barbarian city created at plot %d, %d", pBestPlot->getX(), pBestPlot->getY()); // advc.300 (from MNAI)
+	}
+}
+//doto city states end
 
 void CvGame::createBarbarianCity(bool bSkipCivAreas, int iProbModifierPercent)
 {

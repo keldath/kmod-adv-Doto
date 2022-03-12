@@ -411,12 +411,25 @@
 		<!-- ADDE VALUE TO RAISE NATURAL COMBAT LIMIT COMPARED TO AVERAGE DAMAGE OF ALL DAMAGED DEFENDER UNITS -->
 		<DefineName>RANGED_ALL_DMGED_CMLIMIT_THRESH</DefineName>
 		<iDefineIntVal>20</iDefineIntVal>
-<!-- DOTO rangedstrikeMOD - START - Improved AI Range Attack -->
+<!-- DOTO city states - START  -->
 	</Define>
 	<Define>
-		<!-- DOTO SPECIALISTS INSTEAD OF POP -->
+		<!-- DOTO SPECIALISTS INSTEAD OF POP - if the city have more than population
+			than this threshold - it will add civilian specialists 
+			that provide +1 yield according to the lowest yeild count of any yield 
+			at the moment of the spwan
+			instead of population.
+			civilians consume 1 food * population consumtion multiplier -->
 		<DefineName>ENHANCED_CITY_STATES_THRESHOLD</DefineName>
 		<DefineTextVal>20</DefineTextVal>
 	</Define>
-	
+	<Define>
+		<DefineName>RANDOMIZE_CITY_STATES</DefineName>
+		<DefineTextVal>1</DefineTextVal>
+	</Define>
+	<Define>
+		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN</DefineName>
+		<DefineTextVal>4</DefineTextVal>
+<!-- DOTO city states - end  -->
+	</Define>
 </Civ4Defines>

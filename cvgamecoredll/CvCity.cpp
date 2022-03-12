@@ -14,6 +14,7 @@
 #include "CvGameTextMgr.h"
 #include "CvBugOptions.h" // advc.060
 #include "BBAILog.h" // BETTER_BTS_AI_MOD, AI logging, 10/02/09, jdog5000
+//#include "CvGame.h" ////keldath - color city states plots
 
 
 CvCity::CvCity() // advc.003u: Merged with the deleted reset function
@@ -7639,6 +7640,10 @@ void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups
 				FAssert(iCultureRange <= GC.getNumCultureLevelInfos());
 				itPlot->changeCultureRangeCities(getOwner(), (CultureLevelTypes)
 						iCultureRange, 1, bUpdatePlotGroups);
+				//CvPlot& p = *itPlot;
+//keldath - color city states plots
+//moved to CvPlot::setOwner
+			//	GC.getGame().updateCityStatesColoredPlots(*itPlot);
 			}
 		}
 	}

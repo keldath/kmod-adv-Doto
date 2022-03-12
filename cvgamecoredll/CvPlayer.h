@@ -1477,7 +1477,8 @@ public:
 
 	int getUnitExtraCost(UnitClassTypes eUnitClass) const;
 	void setUnitExtraCost(UnitClassTypes eUnitClass, int iCost);
-
+//doto city states
+	void spawnCityStatePlayer();
 	bool splitEmpire(int iArea); // advc: Keep this one around for CvMessageData
 	bool splitEmpire(CvArea& kArea);
 	bool canSplitEmpire() const;

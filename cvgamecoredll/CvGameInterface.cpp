@@ -2845,3 +2845,29 @@ void CvGame::handleDiplomacySetAIComment(DiploCommentTypes eComment) const
 	// advc.072:
 	m_bShowingCurrentDeals = (eComment == GC.getAIDiploCommentType("CURRENT_DEALS"));
 }
+
+//keldath - color city states plots
+void CvGame::updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, NiColorA &color) const
+{
+	CvDLLEngineIFaceBase& kEngine = *gDLL->getEngineIFace();
+	if (clearPlot)
+	{
+		//turn tiles to no color - for that any color will do - just the alpha needs to be 0
+		NiColorA color(GC.getInfo(GC.getColorType("WHITE")).getColor());
+		color.a = 0.0f; 
+		kEngine.fillAreaBorderPlot(kPlot.getX(), kPlot.getY(),
+			color, AREA_BORDER_CITY_STATE);
+		return;
+	}
+
+//	kEngine.clearAreaBorderPlots(AREA_BORDER_CITY_STATE);
+//  kEngine.clearColoredPlots(PLOT_LANDSCAPE_LAYER_BASE);
+	//color.a = 0.8f;
+	kEngine.fillAreaBorderPlot(kPlot.getX(), kPlot.getY(),
+		color, AREA_BORDER_CITY_STATE);
+	
+	//CvMap const& kMap = GC.getMap();
+	//CvPlot& kPlotNum = kMap.getPlotByIndex(kPlot.plotNum());
+	//kEngine.addColoredPlot(kPlotNum.getX(), kPlotNum.getY(),color,
+	//	PLOT_STYLE_CIRCLE, PLOT_LANDSCAPE_LAYER_CITY_STATE);
+}

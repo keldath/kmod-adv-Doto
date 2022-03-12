@@ -1723,10 +1723,11 @@ void CvInitCore::reRandomizeCivsAndLeaders()
 			return;
 		}
 //doto specialists instead of pop -city states - dont allow randomize of city states
-		if (!GC.getInfo(eCiv).getIsCityState())
-		{
-			return;
-		}
+// removed - f1rpt said its not perfert cuase some of the random code is in the exe.
+	//	if (GC.getInfo(eCiv).getIsCityState())
+	//	{
+	//		return;
+	//	}
 //doto specialists instead of pop -city states - dont allow randomize of city states
 	}
 	EagerEnumMap<PlayerTypes,bool> abRandomize;
