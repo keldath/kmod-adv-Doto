@@ -30,7 +30,7 @@
 			<iMaxLimitedReligions>1</iMaxLimitedReligions>
 <!--Limited religion doto -->	
 <!--doto specialists instead of pop city states -->			
-			<isCityState>1</isCityState>
+			<isCityState>0</isCityState>
 <!--doto specialists instead of pop city states -->					
 			<Cities>
 				<City>TXT_KEY_CITY_NAME_WASHINGTON</City>
@@ -4985,12 +4985,18 @@
 			<DefaultPlayerColor>PLAYERCOLOR_TROY_GOLDENROD</DefaultPlayerColor>
 			<ArtDefineTag>ART_DEF_CIVILIZATION_TROY</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_GRECO_ROMAN</ArtStyleType>
-			<bPlayable>0</bPlayable>
+<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
+		of city states params -->
+			<bPlayable>1</bPlayable>
 			<bAIPlayable>1</bAIPlayable>	
 			<isCityState>1</isCityState>
+<!-- city states - end -->
 			<Cities>
 				<City>Troy</City>
 			</Cities>
+			<LeadersNames>
+				<Lname>LEADER_HECTOR</Lname>
+			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_THEATRE</BuildingClassType>
@@ -5098,12 +5104,18 @@
 			<ArtDefineTag>ART_DEF_CIVILIZATION_KUSH</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_MIDDLE_EAST</ArtStyleType>
 			<UnitArtStyleType>UNIT_ARTSTYLE_MIDDLE_EAST</UnitArtStyleType>
-			<bPlayable>0</bPlayable>
+<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
+		of city states params -->
+			<bPlayable>1</bPlayable>
 			<bAIPlayable>1</bAIPlayable>	
 			<isCityState>1</isCityState>
+<!-- city states - end -->
 			<Cities>
-				<City>Thebes</City>
+				<City>Kushan</City>
 			</Cities>
+			<LeadersNames>
+				<Lname>LEADER_PIYE</Lname>
+			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_OBELISK</BuildingClassType>
@@ -5211,12 +5223,18 @@
 			<ArtDefineTag>ART_DEF_CIVILIZATION_SWITZERLAND</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_EUROPEAN</ArtStyleType>
 			<UnitArtStyleType>UNIT_ARTSTYLE_EUROPEAN</UnitArtStyleType>
-			<bPlayable>0</bPlayable>
+<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
+		of city states params -->
+			<bPlayable>1</bPlayable>
 			<bAIPlayable>1</bAIPlayable>	
 			<isCityState>1</isCityState>
+<!-- city states - end -->
 			<Cities>
 				<City>Zurich</City>
 			</Cities>
+			<LeadersNames>
+				<Lname>LEADER_GUILLAUME_HENRI_DUFOUR</Lname>
+			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_COURTHOUSE</BuildingClassType>
@@ -5344,12 +5362,18 @@
 			<ArtDefineTag>ART_DEF_CIVILIZATION_VATICAN</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_GRECO_ROMAN</ArtStyleType>
 			<UnitArtStyleType>UNIT_ARTSTYLE_GRECO_ROMAN</UnitArtStyleType>
-			<bPlayable>0</bPlayable>
+<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
+		of city states params -->
+			<bPlayable>1</bPlayable>
 			<bAIPlayable>1</bAIPlayable>	
 			<isCityState>1</isCityState>
+<!-- city states - end -->
 			<Cities>
 				<City>Vatican</City>
 			</Cities>
+			<LeadersNames>
+				<Lname>LEADER_POPEJOHN</Lname>
+			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_MARKET</BuildingClassType>
@@ -5455,18 +5479,24 @@
 			<Type>CIVILIZATION_TUNIS</Type>
 			<Description>[CS] Tunis</Description>
 			<ShortDescription>[CS] Tunis</ShortDescription>
-			<Adjective>[CS] Tunis</Adjective>
+			<Adjective>[CS] Tunisian</Adjective>
 			<Civilopedia>[CS] Tunis</Civilopedia>
 			<DefaultPlayerColor>PLAYERCOLOR_CHOCOLATE</DefaultPlayerColor>
 			<ArtDefineTag>ART_DEF_CIVILIZATION_TUNISIA</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_MIDDLE_EAST</ArtStyleType>
 			<UnitArtStyleType>UNIT_ARTSTYLE_MIDDLE_EAST</UnitArtStyleType>
-			<bPlayable>0</bPlayable>
+<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
+		of city states params -->
+			<bPlayable>1</bPlayable>
 			<bAIPlayable>1</bAIPlayable>	
 			<isCityState>1</isCityState>
+<!-- city states - end -->
 			<Cities>
 				<City>Tunis</City>
 			</Cities>
+			<LeadersNames>
+				<Lname>LEADER_ABU</Lname>
+			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_LIBRARY</BuildingClassType>
@@ -5572,17 +5602,23 @@
 			<Type>CIVILIZATION_TIBET</Type>
 			<Description>[CS] Tibet</Description>
 			<ShortDescription>[CS] Tibet</ShortDescription>
-			<Adjective>[CS] Tibet</Adjective>
+			<Adjective>[CS] Tibetian</Adjective>
 			<Civilopedia>[CS] Tibet</Civilopedia>
 			<DefaultPlayerColor>PLAYERCOLOR_TIBET_ORANGE</DefaultPlayerColor>
 			<ArtDefineTag>ART_DEF_CIVILIZATION_TIBET</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_ASIAN</ArtStyleType>
-			<bPlayable>0</bPlayable>
+<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
+		of city states params -->
+			<bPlayable>1</bPlayable>
 			<bAIPlayable>1</bAIPlayable>	
 			<isCityState>1</isCityState>
+<!-- city states - end -->
 			<Cities>
 				<City>Tibet</City>
 			</Cities>
+			<LeadersNames>
+				<Lname>LEADER_SONGTSEN</Lname>
+			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_THEATRE</BuildingClassType>
@@ -5694,12 +5730,18 @@
 			<ArtDefineTag>ART_DEF_CIVILIZATION_BAVARIA</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_EUROPEAN</ArtStyleType>
 			<UnitArtStyleType>UNIT_ARTSTYLE_EUROPEAN</UnitArtStyleType>
-			<bPlayable>0</bPlayable>
+<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
+		of city states params -->
+			<bPlayable>1</bPlayable>
 			<bAIPlayable>1</bAIPlayable>	
 			<isCityState>1</isCityState>
+<!-- city states - end -->
 			<Cities>
 				<City>Bavaria</City>
 			</Cities>
+			<LeadersNames>
+				<Lname>LEADER_LUDWIG</Lname>
+			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_OBSERVATORY</BuildingClassType>
@@ -5813,12 +5855,18 @@
 			<ArtDefineTag>ART_DEF_CIVILIZATION_QUEBEC</ArtDefineTag>
 			<ArtStyleType>ARTSTYLE_EUROPEAN</ArtStyleType>
 			<UnitArtStyleType>UNIT_ARTSTYLE_EUROPEAN</UnitArtStyleType>
+<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
+		of city states params -->
 			<bPlayable>1</bPlayable>
 			<bAIPlayable>1</bAIPlayable>	
 			<isCityState>1</isCityState>
+<!-- city states - end -->
 			<Cities>
 				<City>Quebec</City>
 			</Cities>
+			<LeadersNames>
+				<Lname>LEADER_MACDONALD</Lname>
+			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_BANK</BuildingClassType>

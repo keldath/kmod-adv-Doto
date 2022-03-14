@@ -74,7 +74,7 @@ public:
 //keldath - color city states plots - city states
 	void updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, NiColorA &color) const;
 //doto city states
-	void spawnCityState(PlayerTypes eNewPlayer);
+	void spawnCityState();
 	DllExport void updateBlockadedPlots();
 	bool updateNukeAreaOfEffect(CvPlot const* pPlot = NULL) const; // advc.653
 

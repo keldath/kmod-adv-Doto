@@ -6746,6 +6746,10 @@ void CvGame::doTurn()
 	GC.getMap().doTurn();
 
 	getBarbarianWeightMap().getActivityMap().decay(); // advc.304
+//doto city states	
+	if (getGameTurn() == 1)
+		spawnCityState();
+//doto city states	
 	createBarbarianCities();
 	createBarbarianUnits();
 
@@ -7676,74 +7680,149 @@ void CvGame::createBarbarianCities()
 }
 
 //doto city states start - based on createbarbariancity
-void CvGame::spawnCityState(PlayerTypes eNewPlayer)
+//void CvGame::spawnCityState(PlayerTypes eNewPlayer)
+void CvGame::spawnCityState()
 {
-	CvMap const& kMap = GC.getMap();
-	std::map<int,int> perAreaUnowned; // Precomputed for efficiency
-	FOR_EACH_AREA(pArea)
-	{
-		/* Plots owned by Barbarians are counted in BtS, and I count them when
-		   creating units because it makes some sense that Barbarians get fewer free
-		   units once they have cities, but for cities, I'm not sure.
-		   Keep counting them for now. */
-		std::pair<int,int> iiOwnedUnowned = pArea->countOwnedUnownedHabitableTiles();
-				//a.countOwnedUnownedHabitableTiles(true);
-		int iUnowned = iiOwnedUnowned.second;
-		std::vector<Shelf*> shelves;
-		kMap.getShelves(*pArea, shelves);
-		for (size_t i = 0; i < shelves.size(); i++)
-		{
-			iUnowned += shelves[i]->countUnownedPlots() / 2;
-		}
-		perAreaUnowned.insert(std::make_pair(pArea->getID(), iUnowned));
-	}
-	// </advc.300>
+	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
+		GC.getDefineINT("DISPLAY_CITY_STATES_IN_CUSTOM_GAME") == 1)
+		return;
 	
-	CitySiteEvaluator citySiteEval(GET_PLAYER(eNewPlayer), -1, false, true);
-	CvPlot const* pBestPlot = NULL;
-	int iBestValue = 0;
-	for (int iI = 0; iI < kMap.numPlots(); iI++)
-	{
-		CvPlot& kPlot = kMap.getPlotByIndex(iI);
-		if (kPlot.isWater())
-			continue;
-		// <advc.300>
-		CvArea& a = kPlot.getArea();
-		int const iAreaSz = a.getNumTiles();
-		int iTargetCities = perAreaUnowned.find(a.getID())->second;
-		int iValue = citySiteEval.evaluate(kPlot);
-		/* <advc.300> This gives the area with the most owned tiles priority
-				over other areas unless the global city target is reached (rare),
-				or the most crowded area hasn't enough unowned tiles left.
-				The idea of bSkipCivAreas is to settle terrae incognitae earlier,
-				so I'm considerably reducing the impact in that case.
-				Also, the first city placed in a previously uninhabited area is
-				placed randomly b/c each found value gets multipied with 0,
-				which is apparently a bug. Let's instead use the projected number
-				of owned tiles after placing the city. */
-		int iOwned = a.getNumOwnedTiles();
-		iValue *= iOwned + NUM_INNER_PLOTS; // advc.001 </advc.300>
-			/*	advc.300, advc.001: Looks like another bug; probably times 1 to 1.5
-				was intended. (Dividing by 100 doesn't affect pBestPlot, but let's
-				keep iBestValue is on the scale of a regular found value - although
-				it isn't used for anything.)
-				NB: This kind of randomization works mostly locally b/c nearby tiles
-				tend to have similar found values. */
-		iValue *= 100 + SyncRandNum(50);
-		iValue /= 100;
-		if (iValue > iBestValue)
-		{
-			iBestValue = iValue;
-			pBestPlot = &kPlot;
-		}
-	}
+	int numCitySpawn = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN");
 	
+	int totalPlayerCount = 0;
+	//lets see how many players are in the game.
+	// it will also make sure that if a city state exists - it wont be added -> alive.
+	for (int i = 0; i < MAX_CIV_PLAYERS; i++)
+	{
+		CvPlayerAI& kPlayer = GET_PLAYER((PlayerTypes)i);
+		if (GC.getCivilizationInfo(kPlayer.getCivilizationType()).getIsCityState() == 1)
+			//this means that city state 
+			return;
+		if (kPlayer.isAlive())
+			totalPlayerCount += 1;
+	}
+		
+	int spwanCounter = 0;
+	//loop over the numer of city states to spawn
+	for (int i = 0; i < numCitySpawn; i++)
+	{
+		//check all civ types, add only city states/
+		FOR_EACH_ENUM(Civilization)
+		{
+			//(SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
+			CvCivilizationInfo& kCivilization = GC.getCivilizationInfo(eLoopCivilization);
+			LeaderHeadTypes Leader = NO_LEADER;
+			if (kCivilization.getIsCityState() == 1)
+			{
+				//for (int j = 0; j < kCivilization.getNumLeaders(); j++)
+				///{
+				//	Leader = (LeaderHeadTypes)j;
+				//	break; //get the first leader for now(if illthere will be more - ill add some randomizer)
+				//}
+				//from  CvPlayer::getCivilizationCityName
+				int a = kCivilization.getNumLeadersNames();
+				for (int j = 0; j < kCivilization.getNumLeadersNames(); j++)
+				{
+					//CvWString szName = gDLL->getText(kCivilization.getLeadersNames(j));
+					std::string szName = kCivilization.getLeadersNames(j);
+					const char* szBuffer = szName.c_str();
+					int name = GC.getInfoTypeForString(szBuffer, true);
+					Leader = (LeaderHeadTypes)name;
+					break;
+				}
 
-	if (pBestPlot != NULL)
+				//the player number type -> must be above the existing total > between that to the added number of city states number.
+				//let say there are 2 players, 0, 1, and we want 4 city states, so theyre numbers will be 2, 3, 4, 5.
+				if (Leader != NO_LEADER)
+				{
+					addPlayer((PlayerTypes)(totalPlayerCount + i), Leader, eLoopCivilization);//eLoopCivilization is getCivilizationType()
+					spwanCounter += 1;
+				}
+				FAssert(Leader != NO_LEADER);
+			}
+		}
+	}
+	
+	// in order to find a city spot, the loop must start from the totalPlayerCount normal civs and to go over the new 
+	// added city states numbers, e.g 2,3,4,5 fromt e exmaple above.
+	int newMaxPlayers = spwanCounter + totalPlayerCount;
+	//if no players of city states are added, end the func.
+	if (MAX_CIV_PLAYERS == newMaxPlayers)
+		return;
+	for (int i = totalPlayerCount; i < newMaxPlayers; i++)
 	{
-		FAssert(iBestValue > 0); // advc.300
-		GET_PLAYER(eNewPlayer).found(pBestPlot->getX(), pBestPlot->getY());
-		logBBAI("Barbarian city created at plot %d, %d", pBestPlot->getX(), pBestPlot->getY()); // advc.300 (from MNAI)
+		CvPlayerAI& kPlayer = GET_PLAYER((PlayerTypes)i);
+		LeaderHeadTypes Leader = kPlayer.getLeaderType();
+		PlayerTypes ePlayer = kPlayer.getID();
+		
+		CvMap const& kMap = GC.getMap();
+		std::map<int,int> perAreaUnowned; // Precomputed for efficiency
+		FOR_EACH_AREA(pArea)
+		{
+			/* Plots owned by Barbarians are counted in BtS, and I count them when
+			   creating units because it makes some sense that Barbarians get fewer free
+			   units once they have cities, but for cities, I'm not sure.
+			   Keep counting them for now. */
+			std::pair<int,int> iiOwnedUnowned = pArea->countOwnedUnownedHabitableTiles();
+					//a.countOwnedUnownedHabitableTiles(true);
+			int iUnowned = iiOwnedUnowned.second;
+			std::vector<Shelf*> shelves;
+			kMap.getShelves(*pArea, shelves);
+			for (size_t i = 0; i < shelves.size(); i++)
+			{
+				iUnowned += shelves[i]->countUnownedPlots() / 2;
+			}
+			perAreaUnowned.insert(std::make_pair(pArea->getID(), iUnowned));
+		}
+		// </advc.300>
+		
+		CitySiteEvaluator citySiteEval(kPlayer, -1, false, true);
+		CvPlot const* pBestPlot = NULL;
+		int iBestValue = 0;
+		for (int iI = 0; iI < kMap.numPlots(); iI++)
+		{
+			CvPlot& kPlot = kMap.getPlotByIndex(iI);
+			if (kPlot.isWater())
+				continue;
+			// <advc.300>
+			CvArea& a = kPlot.getArea();
+			int const iAreaSz = a.getNumTiles();
+			int iTargetCities = perAreaUnowned.find(a.getID())->second;
+			int iValue = citySiteEval.evaluate(kPlot);
+			/* <advc.300> This gives the area with the most owned tiles priority
+					over other areas unless the global city target is reached (rare),
+					or the most crowded area hasn't enough unowned tiles left.
+					The idea of bSkipCivAreas is to settle terrae incognitae earlier,
+					so I'm considerably reducing the impact in that case.
+					Also, the first city placed in a previously uninhabited area is
+					placed randomly b/c each found value gets multipied with 0,
+					which is apparently a bug. Let's instead use the projected number
+					of owned tiles after placing the city. */
+			int iOwned = a.getNumOwnedTiles();
+			iValue *= iOwned + NUM_INNER_PLOTS; // advc.001 </advc.300>
+				/*	advc.300, advc.001: Looks like another bug; probably times 1 to 1.5
+					was intended. (Dividing by 100 doesn't affect pBestPlot, but let's
+					keep iBestValue is on the scale of a regular found value - although
+					it isn't used for anything.)
+					NB: This kind of randomization works mostly locally b/c nearby tiles
+					tend to have similar found values. */
+			iValue *= 100 + SyncRandNum(50);
+			iValue /= 100;
+			if (iValue > iBestValue)
+			{
+				iBestValue = iValue;
+				pBestPlot = &kPlot;
+			}
+		}
+		
+	
+		if (pBestPlot != NULL)
+		{
+			FAssert(iBestValue > 0); // advc.300
+			kPlayer.found(pBestPlot->getX(), pBestPlot->getY());
+			logBBAI("A City State was created at plot %d, %d", pBestPlot->getX(), pBestPlot->getY()); // advc.300 (from MNAI)
+		}
+		
 	}
 }
 //doto city states end

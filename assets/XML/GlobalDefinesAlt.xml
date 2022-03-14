@@ -421,15 +421,21 @@
 			instead of population.
 			civilians consume 1 food * population consumtion multiplier -->
 		<DefineName>ENHANCED_CITY_STATES_THRESHOLD</DefineName>
-		<DefineTextVal>20</DefineTextVal>
+		<iDefineIntVal>20</iDefineIntVal>
 	</Define>
 	<Define>
-		<DefineName>RANDOMIZE_CITY_STATES</DefineName>
-		<DefineTextVal>1</DefineTextVal>
+	<!-- THIS WILL control if city states are shown on the civ picker
+	on custom game - default is no, since the randimizer is turned on
+	if you want to be able to choose city states on the custom game, 
+	change this to 1 and the random to 0.
+	be sure, not to set any civ to random when you pick the civs. 
+	-->
+		<DefineName>DISPLAY_CITY_STATES_IN_CUSTOM_GAME</DefineName>
+		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN</DefineName>
-		<DefineTextVal>4</DefineTextVal>
+		<iDefineIntVal>4</iDefineIntVal>
 <!-- DOTO city states - end  -->
 	</Define>
 </Civ4Defines>

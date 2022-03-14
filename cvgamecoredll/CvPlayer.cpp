@@ -18680,10 +18680,11 @@ bool CvPlayer::splitEmpire(CvArea& kArea) // advc: was iAreaId
 }
 
 //doto city states start - add city state player
+/*
 void CvPlayer::spawnCityStatePlayer() // advc: was iAreaId
 {
 	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-		GC.getDefineINT("RANDOMIZE_CITY_STATES") != 1)
+		GC.getDefineINT("DISPLAY_CITY_STATES_IN_CUSTOM_GAME") == 1)
 		return;
 	PlayerTypes eNewPlayer = NO_PLAYER;
 	CvGame& kGame = GC.getGame();
@@ -18707,6 +18708,7 @@ void CvPlayer::spawnCityStatePlayer() // advc: was iAreaId
 		}	
 	}
 }
+*/
 //doto city states end - add city state player
 
 bool CvPlayer::isValidTriggerReligion(const CvEventTriggerInfo& kTrigger,

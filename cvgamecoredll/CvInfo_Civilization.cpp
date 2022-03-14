@@ -9,6 +9,8 @@ m_iDefaultPlayerColor(NO_PLAYERCOLOR),
 m_eArtStyleType(NO_ARTSTYLE),
 m_iUnitArtStyleType(NO_UNIT_ARTSTYLE),
 m_iNumCityNames(0),
+//doto city states
+m_iNumLeadersNames(0),
 m_iNumLeaders(0),
 m_iSelectionSoundScriptId(0),
 m_iActionSoundScriptId(0),
@@ -31,7 +33,9 @@ m_pbCivilizationFreeTechs(NULL),
 m_pbCivilizationDisableTechs(NULL),
 // davidlallen: religion forbidden to civilization next line
 m_pbForbiddenReligions(NULL),
-m_paszCityNames(NULL)
+m_paszCityNames(NULL),
+//doto city states
+m_paszLeadersNames(NULL)
 {}
 
 CvCivilizationInfo::~CvCivilizationInfo()
@@ -47,6 +51,8 @@ CvCivilizationInfo::~CvCivilizationInfo()
 	// davidlallen: religion forbidden to civilization next line
 	SAFE_DELETE_ARRAY(m_pbForbiddenReligions);
 	SAFE_DELETE_ARRAY(m_paszCityNames);
+//city states
+	SAFE_DELETE_ARRAY(m_paszLeadersNames);
 }
 
 void CvCivilizationInfo::reset()
@@ -76,6 +82,11 @@ int CvCivilizationInfo::getNumCityNames() const
 {
 	return m_iNumCityNames;
 }
+//doto city states
+int CvCivilizationInfo::getNumLeadersNames() const
+{
+	return m_iNumLeadersNames;
+}
 
 int CvCivilizationInfo::getNumLeaders() const
 {
@@ -94,11 +105,19 @@ int CvCivilizationInfo::getActionSoundScriptId() const
 
 bool CvCivilizationInfo::isAIPlayable() const
 {
+//doto city states - if the option is set to randomize	
+	if (GC.getDefineINT("DISPLAY_CITY_STATES_IN_CUSTOM_GAME") == 0
+	&& getIsCityState() == 1)
+		return false;
 	return m_bAIPlayable;
 }
 
 bool CvCivilizationInfo::isPlayable() const
 {
+//doto city states - if the option is set to randomize	
+	if (GC.getDefineINT("DISPLAY_CITY_STATES_IN_CUSTOM_GAME") == 0
+	&& getIsCityState() == 1)
+		return false;
 	return m_bPlayable;
 }
 //limited religion doto
@@ -107,7 +126,7 @@ int CvCivilizationInfo::getMaxLimitedReligions() const
 	return m_iMaxLimitedReligions;
 }
 //limited religion doto
-//doto specialists instead of pop city states
+//doto specialists instead of pop - city states
 int CvCivilizationInfo::getIsCityState() const
 {
 	return m_isCityState;
@@ -224,7 +243,13 @@ std::string CvCivilizationInfo::getCityNames(int i) const
 	FAssertMsg(i > -1, "Index out of bounds");
 	return m_paszCityNames[i];
 }
-
+//doto city states
+std::string CvCivilizationInfo::getLeadersNames(int i) const
+{
+	FAssertMsg(i < getNumLeadersNames(), "Index out of bounds");
+	FAssertMsg(i > -1, "Index out of bounds");
+	return m_paszLeadersNames[i];
+}
 #if ENABLE_XML_FILE_CACHE
 void CvCivilizationInfo::read(FDataStreamBase* stream)
 {
@@ -236,6 +261,8 @@ void CvCivilizationInfo::read(FDataStreamBase* stream)
 	stream->Read((int*)&m_eArtStyleType);
 	stream->Read(&m_iUnitArtStyleType); // FlavorUnits by Impaler[WrG]
 	stream->Read(&m_iNumCityNames);
+//doto city states
+	stream->Read(&m_iNumLeadersNames);
 	stream->Read(&m_iNumLeaders);
 	stream->Read(&m_iSelectionSoundScriptId);
 	stream->Read(&m_iActionSoundScriptId);
@@ -283,6 +310,10 @@ void CvCivilizationInfo::read(FDataStreamBase* stream)
 	SAFE_DELETE_ARRAY(m_paszCityNames);
 	m_paszCityNames = new CvString[m_iNumCityNames];
 	stream->ReadString(m_iNumCityNames, m_paszCityNames);
+//city states
+	SAFE_DELETE_ARRAY(m_paszLeadersNames);
+	m_paszLeadersNames = new CvString[m_iNumLeadersNames];
+	stream->ReadString(m_iNumLeadersNames, m_paszLeadersNames);
 }
 
 void CvCivilizationInfo::write(FDataStreamBase* stream)
@@ -295,6 +326,8 @@ void CvCivilizationInfo::write(FDataStreamBase* stream)
 	stream->Write(m_eArtStyleType);
 	stream->Write(m_iUnitArtStyleType);
 	stream->Write(m_iNumCityNames);
+//doto city states
+	stream->Write(m_iNumLeadersNames);
 	stream->Write(m_iNumLeaders);
 	stream->Write(m_iSelectionSoundScriptId);
 	stream->Write(m_iActionSoundScriptId);
@@ -321,6 +354,8 @@ void CvCivilizationInfo::write(FDataStreamBase* stream)
 	// davidlallen: religion forbidden to civilization next line
 	stream->Write(GC.getNumReligionInfos(), m_pbForbiddenReligions);
 	stream->WriteString(m_iNumCityNames, m_paszCityNames);
+//city states
+	stream->WriteString(m_iNumLeadersNames, m_paszLeadersNames);
 }
 #endif
 
@@ -359,6 +394,12 @@ bool CvCivilizationInfo::read(CvXMLLoadUtility* pXML)
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "Cities"))
 	{
 		pXML->SetStringList(&m_paszCityNames, &m_iNumCityNames);
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+//doto city states
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "LeadersNames"))
+	{
+		pXML->SetStringList(&m_paszLeadersNames, &m_iNumLeadersNames);
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
 	// advc.003: Reduce code duplication

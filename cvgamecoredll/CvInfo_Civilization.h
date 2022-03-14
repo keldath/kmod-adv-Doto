@@ -29,6 +29,8 @@ public: // advc: All the const functions are exposed to Python
 	ArtStyleTypes getArtStyleType() const { return m_eArtStyleType; }
 	int getUnitArtStyleType() const;
 	int getNumCityNames() const;
+//doto city states
+	int getNumLeadersNames() const;
 	int getNumLeaders() const;
 	int getSelectionSoundScriptId() const;
 	int getActionSoundScriptId() const;
@@ -67,6 +69,8 @@ public: // advc: All the const functions are exposed to Python
 	bool isCivilizationDisableTechs(int i) const;
 
 	std::string getCityNames(int i) const;
+//doto city states 
+	std::string getLeadersNames(int i) const;
 
 	const CvArtInfoCivilization* getArtInfo() const; // (not exposed to Python)
 	const TCHAR* getButton() const;
@@ -83,6 +87,8 @@ protected:
 	ArtStyleTypes m_eArtStyleType;
 	int m_iUnitArtStyleType; // FlavorUnits by Impaler[WrG]
 	int m_iNumCityNames;
+//doto city states
+	int m_iNumLeadersNames;
 	int m_iNumLeaders; // the number of leaders the Civ has, this is needed so that random leaders can be generated easily
 	int m_iSelectionSoundScriptId;
 	int m_iActionSoundScriptId;
@@ -113,6 +119,9 @@ protected:
 	bool* m_pbForbiddenReligions;
 
 	CvString* m_paszCityNames;
+	
+//doto city states
+	CvString* m_paszLeadersNames;
 
 	mutable std::vector<CvWString> m_aszShortDescription;
 	mutable std::vector<CvWString> m_aszAdjective;
