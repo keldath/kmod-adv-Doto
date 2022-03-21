@@ -7733,8 +7733,8 @@ void CvGame::spawnCityState()
 		{
 			CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)i);
 			//test, if spawn civ is not already alive
-			if (kPlayer.getCivilizationType() != eCiv)
-				break;
+			//if (kPlayer.getCivilizationType() != eCiv )
+			//	break;
 
 			if (!kPlayer.isAlive() && !kPlayer.isBarbarian() 
 				&& !kPlayer.isMinorCiv() )
@@ -7792,7 +7792,7 @@ void CvGame::spawnCityState()
 		CvPlayerAI& kPlayer = GET_PLAYER(cityStatePlayer);
 		//kPlayer.setAlive(true);
 		addPlayer(cityStatePlayer, cSleader, eCiv);
-
+		kPlayer.verifyAlive(); //doto - another unclear addition from keldath....
 	//doto
 	//these are some fn that are used in the split empire function (removed all the fn that is split related.
 	// im not sure what and if all below are required.
