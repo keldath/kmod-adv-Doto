@@ -18680,35 +18680,25 @@ bool CvPlayer::splitEmpire(CvArea& kArea) // advc: was iAreaId
 }
 
 //doto city states start - add city state player
-/*
-void CvPlayer::spawnCityStatePlayer() // advc: was iAreaId
-{
-	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-		GC.getDefineINT("DISPLAY_CITY_STATES_IN_CUSTOM_GAME") == 1)
-		return;
-	PlayerTypes eNewPlayer = NO_PLAYER;
-	CvGame& kGame = GC.getGame();
-	int numCitySpawn = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN");
-	int spwanCounter = 0;
-	
-	for (PlayerIter<> itPlayer; itPlayer.hasNext(); ++itPlayer)
-	{
-		if ( spwanCounter < numCitySpawn)
-		{ 
-			PlayerTypes eNewPlayer = itPlayer->getID();
-			CivilizationTypes Civ = GET_PLAYER(eNewPlayer).getCivilizationType();
-			LeaderHeadTypes Leader = GET_PLAYER(eNewPlayer).getLeaderType();
-			if (Civ != NO_CIVILIZATION && GC.getCivilizationInfo(Civ).getIsCityState() == 1)
-			{
-				CivilizationTypes eBestCiv = NO_CIVILIZATION;
-				kGame.addPlayer(eNewPlayer, Leader, Civ);
-				kGame.spawnCityState(eNewPlayer);
-				spwanCounter += 1;
-			}
-		}	
-	}
-}
-*/
+//void CvPlayer::spawnCityStatePlayer() // advc: was iAreaId
+//{
+//	
+//	PlayerTypes eNewPlayer = NO_PLAYER;
+//	CvGame& kGame = GC.getGame();
+//	
+//	for (PlayerIter<> itPlayer; itPlayer.hasNext(); ++itPlayer)
+//	{
+//		PlayerTypes eNewPlayer = itPlayer->getID();
+//		CivilizationTypes Civ = GET_PLAYER(eNewPlayer).getCivilizationType();
+//		LeaderHeadTypes Leader = GET_PLAYER(eNewPlayer).getLeaderType();
+//		if (Civ != NO_CIVILIZATION && GC.getCivilizationInfo(Civ).getIsCityState() == 1)
+//		{
+//			CivilizationTypes eBestCiv = NO_CIVILIZATION;
+//			kGame.addPlayer(eNewPlayer, Leader, Civ);
+//			kGame.spawnCityState(eNewPlayer);
+//		}	
+//	)
+//}
 //doto city states end - add city state player
 
 bool CvPlayer::isValidTriggerReligion(const CvEventTriggerInfo& kTrigger,
