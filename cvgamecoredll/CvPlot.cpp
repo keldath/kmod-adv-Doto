@@ -5368,35 +5368,37 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 	invalidateBorderDangerCache(); // K-Mod. (based on BBAI)
 	updateSymbols();
 
-//keldath - color city states plots - START
-	NiColorA color = GC.getInfo(GC.getInfo(GET_PLAYER(getOwner()).getPlayerColor()).getColorTypePrimary()).getColor();
-	CivilizationTypes oldCiv = NO_CIVILIZATION;
-	bool isOldCityState = false;
-	if (eOldOwner != NO_PLAYER)
+//doto keldath - color city states plots - START
+	if (getOwner() != NO_PLAYER)
 	{
-		oldCiv = GET_PLAYER(eOldOwner).getCivilizationType();
-		isOldCityState = GC.getCivilizationInfo(oldCiv).getIsCityState() == 1;
+		NiColorA color = GC.getInfo(GC.getInfo(GET_PLAYER(getOwner()).getPlayerColor()).getColorTypePrimary()).getColor();
+		CivilizationTypes oldCiv = NO_CIVILIZATION;
+		bool isOldCityState = false;
+		if (eOldOwner != NO_PLAYER)
+		{
+			oldCiv = GET_PLAYER(eOldOwner).getCivilizationType();
+			isOldCityState = GC.getCivilizationInfo(oldCiv).getIsCityState() == 1;
+		}
+		CivilizationTypes Civ = GET_PLAYER(getOwner()).getCivilizationType();
+		bool isCityState = GC.getCivilizationInfo(Civ).getIsCityState() == 1;
+	//	if ((!isOwned() && isCityState)
+	//		|| (isOwned() && isOldCityState && !isCityState)
+	//		)
+		if (!isOwned() || !isCityState)
+		{
+			// THE COLOR ISNT NEEDED here, i didnt know how to make a default null for this type of variable
+			//so the function gets it - but there is no use for it.
+			//same goes for the getplot
+			//the bool is to clear or not to clear existing color
+			color = (GC.getInfo(GC.getColorType("BLACK")).getColor());
+			GC.getGame().updateCityStatesColoredPlots(true, *this, color, eOldOwner);
+		}
+		else if (isCityState  && isOwned())
+		{
+			GC.getGame().updateCityStatesColoredPlots(false, *this, color, eOldOwner);
+		}
 	}
-	CivilizationTypes Civ = GET_PLAYER(getOwner()).getCivilizationType();
-	bool isCityState = GC.getCivilizationInfo(Civ).getIsCityState() == 1;
-	if ((!isOwned() && isCityState)
-		|| (isOwned() && isOldCityState && !isCityState)
-		)
-	{
-		// THE COLOR ISNT NEEDED here, i didnt know how to make a default null for this type of variable
-		//so the function gets it - but there is no use for it.
-		//same goes for the getplot
-		//the bool is to clear or not to clear existing color
-		color = (GC.getInfo(GC.getColorType("black")).getColor());
-		GC.getGame().updateCityStatesColoredPlots(true, *this, color);
-	}
-	else if (isCityState) 
-	{
-		GC.getGame().updateCityStatesColoredPlots(false, *this, color);
-	}
-	
 //keldath - color city states plots - END
-
 }
 
 // <advc.035>

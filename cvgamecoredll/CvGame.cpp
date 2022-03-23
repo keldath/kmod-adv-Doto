@@ -1177,6 +1177,7 @@ NormalizationTarget* CvGame::assignStartingPlots()
 	PROFILE_FUNC();
 	CvMap const& kMap = GC.getMap();
 	bool const bScenario = GC.getInitCore().getWBMapScript();
+
 	/*	(advc: BtS code for handling scenarios deleted)
 		K-Mod. Same functionality, but much faster and easier to read. */
 	{
@@ -6733,18 +6734,6 @@ void CvGame::doTurn()
 	if(!CvPlot::isAllFog()) // advc.706: Suppress popups
 		CvEventReporter::getInstance().beginGameTurn(getGameTurn());
 	
-//doto city states	
-	int a = getGameTurn();
-	int b = getStartYear();
-	int c = GC.getDefineINT("START_YEAR");
-	int d = getGameTurnYear();
-	int e = GC.getGame().isOption(GAMEOPTION_ADVANCED_START);
-
-	if (getGameTurn() == 1)
-	{
-		spawnCityState();
-	}
-//doto city states	
 	doUpdateCacheOnTurn();
 	updateScore();
 	doDeals();
@@ -6876,6 +6865,19 @@ void CvGame::doTurn()
 		}
 	} // (Otherwise, autosave in CvPlayer::setTurnActive.)
 	// </advc.044>
+
+	//doto city states	
+	int a = getGameTurn();
+	int b = getStartYear();
+	int c = GC.getDefineINT("START_YEAR");
+	int d = getGameTurnYear();
+	int e = GC.getGame().isOption(GAMEOPTION_ADVANCED_START);
+
+	if (getGameTurn() == 1)
+	{
+		spawnCityState();
+	}
+	//doto city states	
 }
 
 // <advc.106b>
@@ -7729,6 +7731,7 @@ void CvGame::spawnCityState()
 		*/
 
 		//get an id for the civ, only if its not alive
+		int aa = MAX_CIV_PLAYERS;
 		for (int i = 0; i < MAX_CIV_PLAYERS; i++)
 		{
 			CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)i);
@@ -7791,7 +7794,8 @@ void CvGame::spawnCityState()
 
 		CvPlayerAI& kPlayer = GET_PLAYER(cityStatePlayer);
 		//kPlayer.setAlive(true);
-		addPlayer(cityStatePlayer, cSleader, eCiv);
+		//addPlayer(cityStatePlayer, cSleader, eCiv);
+		addPlayer((PlayerTypes)PlayerIter<MAJOR_CIV>::count(), cSleader, eCiv);
 	//doto
 	//these are some fn that are used in the split empire function (removed all the fn that is split related.
 	// im not sure what and if all below are required.
@@ -7799,9 +7803,6 @@ void CvGame::spawnCityState()
 		kPlayer.AI_updateBonusValue();
 		//CvTeam& kNewTeam = GET_TEAM(eNewPlayer);
 		updatePlotGroups();
-		kPlayer.AI_updateAttitude(cityStatePlayer);
-		if (getUWAI().isEnabled())
-			getUWAI().processNewPlayerInGame(cityStatePlayer); // </advc.104r>
 		/*  <advc.127b> Moved here from above b/c I want the announcement
 			to point to the new capital */
 
@@ -7832,6 +7833,11 @@ void CvGame::spawnCityState()
 			//kPlayer.verifyAlive(); //doto - another unclear addition from keldath....
 			kPlayer.initCity(pBestPlot->getX(), pBestPlot->getY(), true,true, -1);
 			logBBAI("A City State was created at plot %d, %d", pBestPlot->getX(), pBestPlot->getY()); // advc.300 (from MNAI)
+			//f1rpo said this better be after the init city
+			kPlayer.AI_updateAttitude(cityStatePlayer);
+			if (getUWAI().isEnabled())
+				getUWAI().processNewPlayerInGame(cityStatePlayer); // </advc.104r>
+			
 			spawned += 1;
 		}
 	}

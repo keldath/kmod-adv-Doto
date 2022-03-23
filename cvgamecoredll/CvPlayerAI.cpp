@@ -4783,7 +4783,10 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 	}
 
 	if (kTech.isVassalStateTrading() &&
-		!GC.getGame().isOption(GAMEOPTION_NO_VASSAL_STATES))
+		!GC.getGame().isOption(GAMEOPTION_NO_VASSAL_STATES)
+//doto city states - cant be vassal
+		&& !GC.getGame().isOption(GAMEOPTION_CITY_STATES)
+	)
 	{
 		//iValue += 56;
 		iValue += 8 * iCityTarget; // k146: Replacing the above

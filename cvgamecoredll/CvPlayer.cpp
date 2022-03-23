@@ -7389,14 +7389,15 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 		return;
 //david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
 //keldath fix - avoid player to found forbidden religion
-	CivilizationTypes eCiv = GET_PLAYER(getID()).getCivilizationType();
-	if (eCiv != NO_CIVILIZATION && GC.getCivilizationInfo(eCiv).isForbidden(eReligion)
+	CivilizationTypes eCiv = GET_PLAYER(getID()).getCivilizationType(); //used by city states also
+	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(eCiv); //used by city states also
+	if (eCiv != NO_CIVILIZATION && kCivilization.isForbidden(eReligion)
 		&& GC.getGame().isOption(GAMEOPTION_FORBIDDEN_RELIGION))
 		return;
 //david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
 //limited religion doto begin - give a pop up to a player.
 	bool limitRel = GC.getGame().isOption(GAMEOPTION_LIMITED_RELIGION);
-	if (limitRel && getCountFoundReligion() >= GC.getCivilizationInfo(eCiv).getMaxLimitedReligions())
+	if (limitRel && getCountFoundReligion() >= kCivilization.getMaxLimitedReligions())
 	{
 		if (isHuman())
 		{
@@ -7410,6 +7411,13 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 		return;
 	}
 //limited religion doto 	
+//doto city states
+//dont allow city states to form religion
+	bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+		return;
+//doto city states
+
 	CvReligionInfo const& kSlotReligion = GC.getInfo(eSlotReligion);
 	CvGame& kGame = GC.getGame();
 	if (kGame.isReligionFounded(eReligion))
@@ -7513,6 +7521,13 @@ void CvPlayer::foundCorporation(CorporationTypes eCorporation)
 
 	if (GC.getGame().isCorporationFounded(eCorporation))
 		return;
+
+//dont allow city states to form a corp
+	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+	bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+		return;
+//doto city states
 
 	CvCorporationInfo const& kCorp = GC.getInfo(eCorporation);
 	bool const bStarting = (kCorp.getTechPrereq() == NO_TECH ||
@@ -9287,6 +9302,82 @@ void CvPlayer::setCapital(CvCity* pNewCapital)
 			}
 		}
 	} // </advc.106>
+//doto city states
+	addCityStateResource(pNewCapital, pOldCapital);
+}
+
+//doto city states - add artificial resources trade route
+// each civ in the game will get resource number equal to the number of civs in the game
+// regular civ will get X number of city states
+// city states will get x number of normal civs
+// or a custom num
+void CvPlayer::addCityStateResource(CvCity* pNewCapital, CvCity* pOldCapital, int rAmount) const
+{
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	{
+		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+		//done let normal civs get it.
+		if (!cityState)
+			return;
+		int numCitySpawn = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN");
+
+		BonusTypes UniqueBonues = NO_BONUS;
+		CvWString civName = CvWString::format(L"%s", kCivilization.getDescription());
+		
+		if ((civName.find(L"Troy") != std::string::npos))
+			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_TROY_ROUTE");
+		else if ((civName.find(L"Kush") != std::string::npos))
+			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_KUSH_ROUTE");
+		else if ((civName.find(L"Zurich") != std::string::npos))
+			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_ZURICH_ROUTE");
+		else if ((civName.find(L"Vatican") != std::string::npos))
+			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_VATICAN_ROUTE");
+		else if ((civName.find(L"Tunis") != std::string::npos))
+			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_TUNIS_ROUTE");
+		else if ((civName.find(L"Tibet") != std::string::npos))
+			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_TIBET_ROUTE");
+		else if ((civName.find(L"Bavaria") != std::string::npos))
+			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_BAVARIA_ROUTE");
+		else if ((civName.find(L"Quebec") != std::string::npos))
+			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_QUEBEC_ROUTE");
+		else
+			UniqueBonues = NO_BONUS;
+
+		//a city states will gain the amount of players that are inthe game.
+		//so it can trade with any civ minus city states - need to dissallow trade with this resource in
+		// the trade_resources if city state to city state...
+		//CvBonusInfo& kBonusInfo = GC.getInfo(UniqueBonues);
+		int howManyPlayers = 2; // (leave one for the city state)
+		for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
+		{
+			if (GC.getCivilizationInfo(itPlayer->getCivilizationType()).getIsCityState() == 1)
+				continue;
+			else
+				howManyPlayers += 1;
+		}
+		// only city states will get the routes now.
+		//int res_amount = rAmount != 0 ? rAmount : (cityState ? -MAX_PLAYERS : -numCitySpawn);
+		int res_amount = howManyPlayers;
+		//CvBonusInfo& kBonusInfo = GC.getInfo(cs);
+		if (pOldCapital != NULL || 
+			//this is suppose to clear the resource if the city state was taken by 
+			//a normal civ - or so i hope
+			pNewCapital == NULL && pOldCapital != NULL)
+		{
+			if (pOldCapital->getNumBonuses(UniqueBonues) > 0)
+			{
+				pOldCapital->changeNumBonuses(UniqueBonues, res_amount, false);
+			}
+		}
+		if (pNewCapital != NULL)
+		{
+			if (pNewCapital->getNumBonuses(UniqueBonues) < 1)
+			{
+				pNewCapital->changeNumBonuses(UniqueBonues, res_amount, false);
+			}
+		}
+	}
 }
 
 // <advc.127b>
@@ -14915,6 +15006,7 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	changeStateReligionBuildingProductionModifier(GC.getInfo(eCivic).getStateReligionBuildingProductionModifier() * iChange);
 	changeStateReligionFreeExperience(GC.getInfo(eCivic).getStateReligionFreeExperience() * iChange);
 	changeExpInBorderModifier(GC.getInfo(eCivic).getExpInBorderModifier() * iChange);
+//doto city states - specialists instead of pop
 // dont allow any bonuses that are not from the specialists own values.	
 	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
 	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
@@ -18370,6 +18462,10 @@ bool CvPlayer::canSplitEmpire() const
 	if (GC.getGame().isOption(GAMEOPTION_NO_VASSAL_STATES))
 		return false;
 
+//doto city states - cant be vassal
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+		return false;
+
 	if (isAVassal())
 		return false;
 
@@ -18563,6 +18659,7 @@ bool CvPlayer::splitEmpire(CvArea& kArea) // advc: was iAreaId
 			kLoopTeam.setEspionagePointsAgainstTeam(TEAMID(eNewPlayer), it->getEspionagePointsAgainstTeam(getTeam()));
 		}*/
 		kNewTeam.setEspionagePointsEver(GET_TEAM(getTeam()).getEspionagePointsEver());
+
 		GET_TEAM(getTeam()).assignVassal(TEAMID(eNewPlayer), false);
 		AI().AI_updateBonusValue();
 	}
@@ -18678,28 +18775,6 @@ bool CvPlayer::splitEmpire(CvArea& kArea) // advc: was iAreaId
 	} // </advc.127b>
 	return true;
 }
-
-//doto city states start - add city state player
-//void CvPlayer::spawnCityStatePlayer() // advc: was iAreaId
-//{
-//	
-//	PlayerTypes eNewPlayer = NO_PLAYER;
-//	CvGame& kGame = GC.getGame();
-//	
-//	for (PlayerIter<> itPlayer; itPlayer.hasNext(); ++itPlayer)
-//	{
-//		PlayerTypes eNewPlayer = itPlayer->getID();
-//		CivilizationTypes Civ = GET_PLAYER(eNewPlayer).getCivilizationType();
-//		LeaderHeadTypes Leader = GET_PLAYER(eNewPlayer).getLeaderType();
-//		if (Civ != NO_CIVILIZATION && GC.getCivilizationInfo(Civ).getIsCityState() == 1)
-//		{
-//			CivilizationTypes eBestCiv = NO_CIVILIZATION;
-//			kGame.addPlayer(eNewPlayer, Leader, Civ);
-//			kGame.spawnCityState(eNewPlayer);
-//		}	
-//	)
-//}
-//doto city states end - add city state player
 
 bool CvPlayer::isValidTriggerReligion(const CvEventTriggerInfo& kTrigger,
 	CvCity const* pCity, ReligionTypes eReligion) const
@@ -19279,6 +19354,10 @@ bool CvPlayer::isFullMember(VoteSourceTypes eVoteSource) const
 	if (!isLoyalMember(eVoteSource))
 		return false;
 
+//doto city states - cant be vassal - dont let city state vote - i hope it works
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+		return false;
+
 	return isVotingMember(eVoteSource);
 }
 
@@ -19798,7 +19877,9 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 			{
 				setTradeItem(&item, TRADE_RESOURCES, eLoopBonus);
 				if (!canTradeItem(eOtherPlayer, item))
+				{
 					continue;
+				}
 				// <advc.074>
 				bool const bHuman = (bOtherHuman || isHuman());
 				bool bValid = (!bHuman || getTradeDenial(eOtherPlayer, item) != DENIAL_JOKING);

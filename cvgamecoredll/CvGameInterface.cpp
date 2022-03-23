@@ -2846,8 +2846,8 @@ void CvGame::handleDiplomacySetAIComment(DiploCommentTypes eComment) const
 	m_bShowingCurrentDeals = (eComment == GC.getAIDiploCommentType("CURRENT_DEALS"));
 }
 
-//keldath - color city states plots
-void CvGame::updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, NiColorA &color) const
+//doto keldath - color city states plots
+void CvGame::updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, NiColorA &color, PlayerTypes eOldOwner) const
 {
 	CvDLLEngineIFaceBase& kEngine = *gDLL->getEngineIFace();
 	if (clearPlot)
@@ -2862,9 +2862,15 @@ void CvGame::updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, N
 
 //	kEngine.clearAreaBorderPlots(AREA_BORDER_CITY_STATE);
 //  kEngine.clearColoredPlots(PLOT_LANDSCAPE_LAYER_BASE);
-	//color.a = 0.8f;
+	//color.a = 1.0f;
+	/*if (!kPlot.isRevealed(getActiveTeam()))
+		return;*/
+	//if (kPlot.getOwner() != eOldOwner && kPlot.getOwner() != NO_PLAYER)
+	//{
 	kEngine.fillAreaBorderPlot(kPlot.getX(), kPlot.getY(),
 		color, AREA_BORDER_CITY_STATE);
+	//}
+	
 	
 	//CvMap const& kMap = GC.getMap();
 	//CvPlot& kPlotNum = kMap.getPlotByIndex(kPlot.plotNum());
