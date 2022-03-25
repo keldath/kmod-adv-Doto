@@ -7702,7 +7702,55 @@ void CvGame::spawnCityState()
 	
 	int numCitySpawn = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN");
 	int spawned = 0;
+
+//-------------------- random city states code------start---------
+
+
+	std::vector<std::pair<int, CivilizationTypes> > aiePriority; //list for all civs
+	FOR_EACH_ENUM(Civilization)
+	{
+		if (GC.getInfo(eLoopCivilization).getIsCityState() == 1)
+			aiePriority.push_back(std::make_pair(SyncRandNum(MAX_SHORT), eLoopCivilization));
+	}
+	std::sort(aiePriority.begin(), aiePriority.end());
+	std::vector<int> rndStatesList;
+	for (int i = 0; i < std::min(numCitySpawn, (int)aiePriority.size()); i++)
+		rndStatesList.push_back(aiePriority[i].second);
+
+
+	//keldath code - usinf rand which is not good - use syncrand or maprand 
+	//create a list of random civs
+	//std::vector<int> onlyStateslist; //list to hold all the city states
+	//for (int r = 0; r < GC.getNumCivilizationInfos(); ++r)
+	//{
+	//	CivilizationTypes eCiv = (CivilizationTypes)r;
+	//	CvCivilizationInfo& kCivilization = GC.getCivilizationInfo(eCiv);
+	//	if (kCivilization.getIsCityState() == 1)
+	//		onlyStateslist.push_back(r); //insert value
+	//}
+	//std::vector<int> rndStatesList; //new list size based on how many city states are wanted
+	//int citySpawnCnt = 0;
+	// if  (!onlyStateslist.empty())
+	//		return;
+	//while (citySpawnCnt < numCitySpawn)
+	//{
+	//	int index = rand() % onlyStateslist.size(); // pick a random index - random city state
+	//	int value = onlyStateslist[index]; // a random value taken from that list
+	//	
+	//	//this is just a double check for no duplicate values.
+	//	if (!(std::find(rndStatesList.begin(), rndStatesList.end(), value) != rndStatesList.end()))
+	//	{
+	//		//remove item in the index from the list (a duplicate value wont get in) -1 is to reduce idx.
+	//		//the .begin marks the start of the list - seems like its required
+	//		onlyStateslist.erase(onlyStateslist.begin() + index - 1);
+	//		rndStatesList.push_back(value);
+	//		citySpawnCnt += 1;
+	//	}
+	//}
+//-------------------- random city states code------end---------	
+
 	//check all civ types, add only city states/
+	//run it on the vector from above
 	for (int j = 0; j < GC.getNumCivilizationInfos(); ++j)
 	{
 		//if all CS were spanwed - stop
@@ -7718,6 +7766,12 @@ void CvGame::spawnCityState()
 		if (kCivilization.getIsCityState() != 1)
 			continue;
 
+		//using the random code above - if the city state in the loop iteration isnt in the list - skip it
+		//the city states are chosen in the random code.
+		if (!(std::find(rndStatesList.begin(), rndStatesList.end(), j) != rndStatesList.end()))
+		{
+			continue;
+		}
 		//CivilizationTypes const eOldCiv = GET_PLAYER(eNewPlayer).getCivilizationType();
 
 		// maybe use this :
@@ -7794,12 +7848,17 @@ void CvGame::spawnCityState()
 
 		CvPlayerAI& kPlayer = GET_PLAYER(cityStatePlayer);
 		//kPlayer.setAlive(true);
-		//addPlayer(cityStatePlayer, cSleader, eCiv);
-		addPlayer((PlayerTypes)PlayerIter<MAJOR_CIV>::count(), cSleader, eCiv);
+		cityStatePlayer = (PlayerTypes)PlayerIter<MAJOR_CIV>::count(); //overwrite the prev same car =- this is another method fo playertype id - f1rpo suggested
+		addPlayer(cityStatePlayer, cSleader, eCiv);
 	//doto
 	//these are some fn that are used in the split empire function (removed all the fn that is split related.
 	// im not sure what and if all below are required.
 		GC.getInitCore().setLeaderName(cityStatePlayer, GC.getInfo(cSleader).getTextKeyWide());
+		kPlayer.AI_updateAttitude(kPlayer.getID());
+		kPlayer.AI_updateAttitude();
+
+		if (getUWAI().isEnabled())
+			getUWAI().processNewPlayerInGame(cityStatePlayer); // </advc.104r>
 		kPlayer.AI_updateBonusValue();
 		//CvTeam& kNewTeam = GET_TEAM(eNewPlayer);
 		updatePlotGroups();
@@ -7815,7 +7874,6 @@ void CvGame::spawnCityState()
 		*/
 		//use this CvPlayer::findStartingAreas  maybe
 
-
 		
 		//using findStartingPlot as suggestted by f1rpo instead of the split empire code
 		CvPlot* pBestPlot = kPlayer.findStartingPlot();
@@ -7829,6 +7887,7 @@ void CvGame::spawnCityState()
 		}
 		else
 		{
+
 			//FAssert(iBestValue > 0); // advc.300
 			//kPlayer.verifyAlive(); //doto - another unclear addition from keldath....
 			kPlayer.initCity(pBestPlot->getX(), pBestPlot->getY(), true,true, -1);

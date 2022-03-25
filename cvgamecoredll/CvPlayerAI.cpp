@@ -12221,6 +12221,26 @@ int CvPlayerAI::AI_bonusTradeVal(BonusTypes eBonus, PlayerTypes eFromPlayer, int
 		iR = r.roundToMultiple(4);
 	}
 	else iR = r.round();
+
+//doto city states
+//dont allow city states to trade the trade resources between them selfs
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	{
+		CvBonusInfo& kBonusInfo = GC.getInfo(eBonus);
+		CvWString civName = CvWString::format(L"%s", kBonusInfo.getDescription());
+
+		if ((civName.find(L"Route") != std::string::npos))
+		{
+			CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+			bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+			//CvPlayerAI const& a = GET_PLAYER(kFromPlayer);
+			CvCivilizationInfo & fkCivilization = GC.getCivilizationInfo(kFromPlayer.getCivilizationType());
+			bool fcityState = fkCivilization.getIsCityState() == 1 ? true : false;
+			//done let normal civs get it.
+			if (!cityState && !fcityState)
+				iR = 0;
+		}
+	}
 	return iR *  GC.getDefineINT(CvGlobals::PEACE_TREATY_LENGTH);
 }
 

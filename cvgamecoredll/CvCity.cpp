@@ -33,6 +33,7 @@ CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 	/* Population Limit ModComp - Beginning */
 	m_iPopulationLimitChange = 0;
 	/* Population Limit ModComp - End */
+//doto city states
 //doto specialists instead of population
 	m_iFreeCivilianCount = 0;
 	m_iHighestPopulation = 0;
@@ -3597,7 +3598,8 @@ void CvCity::processSpecialist(SpecialistTypes eSpecialist, int iChange)
 	}
 	// advc.051: Moved into the block above
 	//changeBaseGreatPeopleRate(kSpecialist.getGreatPeopleRateChange() * iChange);
-
+//doto city states
+//doto specialists instead of pop
 	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
 	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
 	SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);	
@@ -3629,6 +3631,7 @@ void CvCity::processSpecialist(SpecialistTypes eSpecialist, int iChange)
 	/**	CMEDIT: End																					**/
 	/*************************************************************************************************/
 	updateExtraSpecialistYield();
+//doto city states
 //doto specialists instead of pop
 // dont allow any bonuses that are not from the specialists own values.	
 	if (!isCivilian)
@@ -4380,8 +4383,10 @@ int CvCity::healthRate(bool bNoAngry, int iExtra) const
 
 int CvCity::foodConsumption(bool bNoAngry, int iExtra) const
 {
-//doto specialists instead of population
 
+//doto city states
+//doto specialists instead of pop
+// civilians costs food
 	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
 	bool cityState = kCivilization.getIsCityState() == 1 ? true : false; 
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES)
@@ -5027,10 +5032,12 @@ int CvCity::popToSpecialists(int iOldPopulation, int m_iPopulation)
 	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
 	bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
 	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-	  !GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && !cityState)
-	  return m_iPopulation;
-	  
-	int const iExcessPop = m_iPopulation - 5; //GC.getDefineINT("ENHANCED_CITY_STATES_THRESHOLD"); // should be 20 == working tiles
+		!GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) &&
+		!cityState)
+	{
+		return m_iPopulation;
+	}
+	int const iExcessPop = m_iPopulation - GC.getDefineINT("ENHANCED_CITY_STATES_THRESHOLD"); // should be 20 == working tiles
 	int foodY = getBaseYieldRate(YIELD_FOOD);
 	int prodY = getBaseYieldRate(YIELD_PRODUCTION);
 	int commY = getBaseYieldRate(YIELD_COMMERCE);
@@ -12880,6 +12887,7 @@ void CvCity::read(FDataStreamBase* pStream)
 	/* DOTO-Population Limit ModComp - Beginning */
 	pStream->Read(&m_iPopulationLimitChange);
 	/* DOTO-Population Limit ModComp - End */
+//doto city states
 //doto specialists instead of population
 	pStream->Read(&m_iFreeCivilianCount);
 	pStream->Read(&m_iHighestPopulation);
@@ -13536,6 +13544,7 @@ void CvCity::write(FDataStreamBase* pStream)
 	/* DOTO-Population Limit ModComp - Beginning */
 	pStream->Write(m_iPopulationLimitChange);
 	/* DOTO-Population Limit ModComp - End */
+//doto city states
 //doto specialists instead of population
 	pStream->Write(m_iFreeCivilianCount);
 	pStream->Write(m_iHighestPopulation);

@@ -4030,6 +4030,20 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 			{	// if (GET_PLAYER(eWhoTo).getNumAvailableBonuses(eBonus) == 0)
 				bValid = true;
 			}
+//doto city states - the artificial resources for city states are not connected to the capital or something in here getNumTradeableBonuses
+//so this will make sure it will not cancel them out 
+// i know its hard coded...sucks huh....
+/*			else
+			{
+				CvBonusInfo& kBonusInfo = GC.getInfo(eBonus);
+				CvWString d = CvWString::format(L"%s", kBonusInfo.getDescription());
+				if ((d.find(L"Route") != std::string::npos))
+				{
+					bValid = true;
+				}
+			}
+			*/
+				
 		}
 		break;
 	}
@@ -4442,7 +4456,6 @@ int CvPlayer::getNumAvailableBonuses(BonusTypes eBonus) const
 			getCapital()->getPlot().getOwnerPlotGroup() : NULL);
 	if (pPlotGroup != NULL)
 		return pPlotGroup->getNumBonuses(eBonus);
-
 	return 0;
 }
 
@@ -4649,6 +4662,7 @@ int CvPlayer::getNumGovernmentCenters() const
 
 bool CvPlayer::canRaze(CvCity const& kCity) const // advc: param was CvCity*
 {
+//doto city states
 //doto specialists instead of pop
 // assuming city states have larger radious ( a lazy indication method....
 //city states will not be allowed to capture cities ever.
@@ -9359,6 +9373,7 @@ void CvPlayer::addCityStateResource(CvCity* pNewCapital, CvCity* pOldCapital, in
 		// only city states will get the routes now.
 		//int res_amount = rAmount != 0 ? rAmount : (cityState ? -MAX_PLAYERS : -numCitySpawn);
 		int res_amount = howManyPlayers;
+		//changeNumBonuses
 		//CvBonusInfo& kBonusInfo = GC.getInfo(cs);
 		if (pOldCapital != NULL || 
 			//this is suppose to clear the resource if the city state was taken by 
@@ -9367,14 +9382,14 @@ void CvPlayer::addCityStateResource(CvCity* pNewCapital, CvCity* pOldCapital, in
 		{
 			if (pOldCapital->getNumBonuses(UniqueBonues) > 0)
 			{
-				pOldCapital->changeNumBonuses(UniqueBonues, res_amount, false);
+				pOldCapital->changeFreeBonus(UniqueBonues, res_amount);
 			}
 		}
 		if (pNewCapital != NULL)
 		{
 			if (pNewCapital->getNumBonuses(UniqueBonues) < 1)
 			{
-				pNewCapital->changeNumBonuses(UniqueBonues, res_amount, false);
+				pNewCapital->changeFreeBonus(UniqueBonues, res_amount);
 			}
 		}
 	}
@@ -15025,7 +15040,9 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 		changeNonStateReligionYieldRateModifier(y, (GC.getInfo(eCivic).getNonStateReligionYieldModifier(y) * iChange));
 		FOR_EACH_ENUM(Specialist)
 		{
-	//doto specialists instead of pop
+// doto city states
+//doto specialists instead of pop	
+//deny other bonuses from the civilians
    			if (!isCivilian &&
 				eFarmer != eLoopSpecialist && eMiner != eLoopSpecialist && eLabor != eLoopSpecialist)
 			{
@@ -15114,7 +15131,9 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	/*************************************************************************************************/	
 	for (iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
 	{
-//doto specialists instead of pop		
+// doto city states
+//doto specialists instead of pop	
+//deny other bonuses from the civilians
 		if (!isCivilian &&
 				eFarmer != (SpecialistTypes)iI && eMiner != (SpecialistTypes)iI && eLabor != (SpecialistTypes)iI)
 		{	
@@ -19876,6 +19895,16 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 			FOR_EACH_ENUM(Bonus)
 			{
 				setTradeItem(&item, TRADE_RESOURCES, eLoopBonus);
+
+//doto city states - test check for the city states resources unique
+				CvBonusInfo& kBonusInfo = GC.getInfo(eLoopBonus);
+				CvWString d = CvWString::format(L"%s", kBonusInfo.getDescription());
+				int k = 0;
+				if ((d.find(L"Route") != std::string::npos))
+				{
+					k=1;
+				}
+//doto city states - test check for the city states resources unique
 				if (!canTradeItem(eOtherPlayer, item))
 				{
 					continue;
