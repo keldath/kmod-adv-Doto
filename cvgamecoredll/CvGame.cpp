@@ -6870,6 +6870,7 @@ void CvGame::doTurn()
 	if (getGameTurn() == 1 && !GC.getGame().isOption(GAMEOPTION_ADVANCED_START))
 	{
 		spawnCityState();
+		// initFreeUnits(); //will give free units
 	}
 	//doto city states	
 }
@@ -7686,7 +7687,7 @@ void CvGame::createBarbarianCities()
 }
 
 //doto city states start - based on createbarbariancity
-// this will add techs by era and free
+
 void CvGame::initFreeTechsEra(PlayerTypes ePlayer)
 {
 	AI().AI_updateVictoryWeights(); // advc.115f
@@ -7743,7 +7744,8 @@ void CvGame::spawnCityState()
 		GC.getDefineINT("DISPLAY_CITY_STATES_IN_CUSTOM_GAME") == 1)
 		return;
 	
-	int numCitySpawn = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN");
+//spawn civs amount according to the world size - start
+	int numCitySpawn = 0;//default
 	int numCitySpawnT = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN_TINY");
 	int numCitySpawnS = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN_SMALL");
 	int numCitySpawnD = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN_STANDARD");
@@ -7751,12 +7753,25 @@ void CvGame::spawnCityState()
 	int numCitySpawnH = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN_HUGE");
 	int spawned = 0;
 
-
-	CvWorldInfo const& kWorld = GC.getInfo(GC.getMap().getWorldSize());
-	scaled r = kWorld.getDefaultPlayers();
-	r *= per100(100 - 4 * getSeaLevelChange());
-	r.clamp(2, PlayerIter<>::count());
-	int rr = r.round();
+	//CvWorldInfo const& kWorld = GC.getInfo(GC.getMap().getWorldSize());
+	WorldSizeTypes worldSize = GC.getMap().getWorldSize();
+	WorldSizeTypes whichSizeT = (WorldSizeTypes)GC.getInfoTypeForString("WORLDSIZE_TINY", true);
+	WorldSizeTypes whichSizeS = (WorldSizeTypes)GC.getInfoTypeForString("WORLDSIZE_SMALL", true);
+	WorldSizeTypes whichSizeD = (WorldSizeTypes)GC.getInfoTypeForString("WORLDSIZE_STANDARD", true);
+	WorldSizeTypes whichSizeL = (WorldSizeTypes)GC.getInfoTypeForString("WORLDSIZE_LARGE", true);
+	WorldSizeTypes whichSizeH = (WorldSizeTypes)GC.getInfoTypeForString("WORLDSIZE_HUGE", true);
+	
+	if (worldSize == whichSizeT)
+		numCitySpawn = numCitySpawnT;
+	else if (worldSize == whichSizeS)
+		numCitySpawn = numCitySpawnS;
+	else if (worldSize == whichSizeD)
+		numCitySpawn = numCitySpawnD;
+	else if (worldSize == whichSizeL)
+		numCitySpawn = numCitySpawnL;
+	else if (worldSize == whichSizeH)
+		numCitySpawn = numCitySpawnH;
+//world size end
 
 //-------------------- random city states code------start---------
 
@@ -7765,7 +7780,7 @@ void CvGame::spawnCityState()
 	FOR_EACH_ENUM(Civilization)
 	{
 		if (GC.getInfo(eLoopCivilization).getIsCityState() == 1)
-			aiePriority.push_back(std::make_pair(SyncRandNum(MAX_SHORT), eLoopCivilization));
+			aiePriority.push_back(std::make_pair(SyncRandNum(MAX_SHORT), eLoopCivilization));//update a list with a new value
 	}
 	std::sort(aiePriority.begin(), aiePriority.end());
 	std::vector<int> rndStatesList;
@@ -7937,13 +7952,10 @@ void CvGame::spawnCityState()
 		if (kPlayer.isHuman() && spawned > 0)
 		{
 			CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_TEXT);
-			//pInfo->setText(gDLL->getText("TXT_KEY_LIMITED_RELIGION", getCountFoundReligion(), GC.getInfo(eReligion).getAdjectiveKey()));
-			//pInfo->setText(gDLL->getText("TXT_KEY_LIMITED_RELIGION", GC.getInfo(eReligion).getDescription(), GC.getCivilizationInfo(eCiv).getAdjective(), getCountFoundReligion()));
-			pInfo->setText(gDLL->getText(L"City States Generated"));
+			pInfo->setText(gDLL->getText("TXT_KEY_NUM_CITY_STATES_SPAWNED", spawned));
 			kPlayer.addPopup(pInfo);
 		}
 	}
-	
 }
 //doto city states end
 

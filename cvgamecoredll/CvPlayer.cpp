@@ -9334,8 +9334,7 @@ void CvPlayer::addCityStateResource(CvCity* pNewCapital, CvCity* pOldCapital, in
 		//done let normal civs get it.
 		if (!cityState)
 			return;
-		int numCitySpawn = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN");
-
+		
 		BonusTypes UniqueBonues = NO_BONUS;
 		CvWString civName = CvWString::format(L"%s", kCivilization.getDescription());
 		
