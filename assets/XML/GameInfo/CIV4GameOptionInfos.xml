@@ -226,7 +226,7 @@
 		<GameOptionInfo>
 			<Type>GAMEOPTION_ENHANCED_CITY_STATES</Type>
 			<Description>Enhanced City States</Description>
-			<Help>Enhanced City States</Help>
+			<Help>Upon Reaching Population Threshold (in globalDefinesAlt.xml) the city will grow with a civilian yield specialist instead of population.</Help>
 			<bDefault>1</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>

@@ -306,6 +306,8 @@ void CvGame::setInitialItems()
 	// <advc.tsl>
 	if (m_iMapRegens < GC.getDefineINT("AUTO_REGEN_MAP"))
 		regenerateMap(true); // </advc.tsl>
+
+
 }
 
 
@@ -6729,7 +6731,6 @@ void CvGame::addGreatPersonBornName(const CvWString& szName)
 void CvGame::doTurn()
 {
 	PROFILE_BEGIN("CvGame::doTurn()");
-
 	// END OF TURN
 	if(!CvPlot::isAllFog()) // advc.706: Suppress popups
 		CvEventReporter::getInstance().beginGameTurn(getGameTurn());
@@ -6865,17 +6866,15 @@ void CvGame::doTurn()
 		}
 	} // (Otherwise, autosave in CvPlayer::setTurnActive.)
 	// </advc.044>
-
 	//doto city states	
-	int a = getGameTurn();
-	int b = getStartYear();
-	int c = GC.getDefineINT("START_YEAR");
-	int d = getGameTurnYear();
-	int e = GC.getGame().isOption(GAMEOPTION_ADVANCED_START);
-
-	if (getGameTurn() == 1)
+	if (getGameTurn() == 1 && !GC.getGame().isOption(GAMEOPTION_ADVANCED_START))
 	{
 		spawnCityState();
+		//seems this updates some parameters due to added players
+		//initFreeCivState();
+		doUpdateCacheOnTurn();
+		updateScore();
+
 	}
 	//doto city states	
 }
@@ -7772,8 +7771,6 @@ void CvGame::spawnCityState()
 		{
 			continue;
 		}
-		//CivilizationTypes const eOldCiv = GET_PLAYER(eNewPlayer).getCivilizationType();
-
 		// maybe use this :
 		/*
 			for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
@@ -7785,14 +7782,9 @@ void CvGame::spawnCityState()
 		*/
 
 		//get an id for the civ, only if its not alive
-		int aa = MAX_CIV_PLAYERS;
 		for (int i = 0; i < MAX_CIV_PLAYERS; i++)
 		{
 			CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)i);
-			//test, if spawn civ is not already alive
-			//if (kPlayer.getCivilizationType() != eCiv )
-			//	break;
-
 			if (!kPlayer.isAlive() && !kPlayer.isBarbarian() 
 				&& !kPlayer.isMinorCiv() )
 			{
@@ -7840,40 +7832,25 @@ void CvGame::spawnCityState()
 		}*/
 
 		//loop over the numer of city states to spawn
-
-		//or use this:
-		/*
-			addPlayer(PlayerIter<MAJOR_CIV>::count(), eLoopLeader, eLoopCivilization);
-		*/
-
 		CvPlayerAI& kPlayer = GET_PLAYER(cityStatePlayer);
-		//kPlayer.setAlive(true);
-		cityStatePlayer = (PlayerTypes)PlayerIter<MAJOR_CIV>::count(); //overwrite the prev same car =- this is another method fo playertype id - f1rpo suggested
+		//overwrite the prev same car =- this is another method fo playertype id - f1rpo suggested
+		//cityStatePlayer = (PlayerTypes)PlayerIter<MAJOR_CIV>::count(); 
+		CvPlayerAI& b = GET_PLAYER(BARBARIAN_PLAYER);
+		kPlayer.setAlive(true); 
 		addPlayer(cityStatePlayer, cSleader, eCiv);
+		
 	//doto
 	//these are some fn that are used in the split empire function (removed all the fn that is split related.
 	// im not sure what and if all below are required.
 		GC.getInitCore().setLeaderName(cityStatePlayer, GC.getInfo(cSleader).getTextKeyWide());
-		kPlayer.AI_updateAttitude(kPlayer.getID());
-		kPlayer.AI_updateAttitude();
 
+		kPlayer.AI_updateAttitude(cityStatePlayer, true);
+		kPlayer.AI_updateAttitude();
 		if (getUWAI().isEnabled())
 			getUWAI().processNewPlayerInGame(cityStatePlayer); // </advc.104r>
+			
 		kPlayer.AI_updateBonusValue();
-		//CvTeam& kNewTeam = GET_TEAM(eNewPlayer);
 		updatePlotGroups();
-		/*  <advc.127b> Moved here from above b/c I want the announcement
-			to point to the new capital */
-
-
-		/*
-			
-			LeaderHeadTypes Leader = kPlayer.getLeaderType();
-			PlayerTypes ePlayer = kPlayer.getID();
-			
-		*/
-		//use this CvPlayer::findStartingAreas  maybe
-
 		
 		//using findStartingPlot as suggestted by f1rpo instead of the split empire code
 		CvPlot* pBestPlot = kPlayer.findStartingPlot();
@@ -7889,11 +7866,12 @@ void CvGame::spawnCityState()
 		{
 
 			//FAssert(iBestValue > 0); // advc.300
-			//kPlayer.verifyAlive(); //doto - another unclear addition from keldath....
 			kPlayer.initCity(pBestPlot->getX(), pBestPlot->getY(), true,true, -1);
 			logBBAI("A City State was created at plot %d, %d", pBestPlot->getX(), pBestPlot->getY()); // advc.300 (from MNAI)
 			//f1rpo said this better be after the init city
-			kPlayer.AI_updateAttitude(cityStatePlayer);
+			kPlayer.verifyAlive(); //doto - another unclear addition from keldath....
+			kPlayer.AI_updateAttitude(cityStatePlayer, true);
+			kPlayer.AI_updateAttitude();
 			if (getUWAI().isEnabled())
 				getUWAI().processNewPlayerInGame(cityStatePlayer); // </advc.104r>
 			
@@ -10434,6 +10412,12 @@ void CvGame::changeHumanPlayer(PlayerTypes eNewHuman,
 	bool bSetTurnActive) // advc
 {
 	PlayerTypes const eCurHuman = getActivePlayer();
+	/*	<advc.001> For BUG dot map update, Civ4lerts (when switching to
+		a colonial vassal). */
+	CyArgsList pyArgs;
+	pyArgs.add(eCurHuman);
+	CvEventReporter::getInstance().genericEvent(
+		"SwitchHotSeatPlayer", pyArgs.makeFunctionArgs()); // </advc.001>
 	/*	<advc> Probably not necessary, but seems cleaner to swap the
 		player options of the old and new human rather than just copying
 		from old to new. */

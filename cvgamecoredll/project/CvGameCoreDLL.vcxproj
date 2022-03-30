@@ -225,7 +225,6 @@
     <ClInclude Include="..\CvBugOptions.h" />
     <ClInclude Include="..\CvCity.h" />
     <ClInclude Include="..\CvCityAI.h" />
-    <ClInclude Include="..\CvCityMacros.h" />
     <ClInclude Include="..\CvCivilization.h" />
     <ClInclude Include="..\CvDeal.h" />
     <ClInclude Include="..\CvDefines.h" />

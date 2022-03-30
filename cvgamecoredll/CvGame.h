@@ -72,7 +72,7 @@ public:
 
 	DllExport void updateColoredPlots();
 //keldath - color city states plots - city states
-	void updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, NiColorA &color) const;
+	void updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, NiColorA &color, PlayerTypes eOldOwner) const;
 //doto city states
 	void spawnCityState();
 	DllExport void updateBlockadedPlots();

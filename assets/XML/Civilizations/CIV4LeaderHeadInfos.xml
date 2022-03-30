@@ -15351,7 +15351,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 		</LeaderHeadInfo>
 		<LeaderHeadInfo>
 			<Type>LEADER_ABU</Type>
-			<Description>TXT_KEY_LEADER_SALADIN</Description>
+			<Description>Abu</Description>
 			<Civilopedia>Abu</Civilopedia>
 			<ArtDefineTag>ART_DEF_LEADER_ABU</ArtDefineTag>
 			<iWonderConstructRand>25</iWonderConstructRand>

@@ -181,6 +181,11 @@ class AbstractStatefulAlert:
 	def __init__(self, eventManager):
 		eventManager.addEventHandler("GameStart", self.onGameStart)
 		eventManager.addEventHandler("OnLoad", self.onLoadGame)
+		# <advc.001> For colonial vassals
+		eventManager.addEventHandler("SwitchHotSeatPlayer", self.onSwitchPlayer)
+
+	def onSwitchPlayer(self, argsList):
+		self._reset() # </advc.001>
 
 	def onGameStart(self, argsList):
 		self._init()
@@ -1033,7 +1038,7 @@ class WorstEnemy(AbstractStatefulAlert):
 		try: # advc.009b
 			enemies = self.enemies[eActivePlayer]
 		# <advc.009b>
-		except AttributeError, KeyError:
+		except (AttributeError, KeyError):
 			return # </advc.009b>
 		newEnemies = AttitudeUtil.getWorstEnemyTeams()
 		delayedMessages = {}

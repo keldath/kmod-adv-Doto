@@ -852,6 +852,8 @@ public:
 		return getCapital();
 	}
 	void setCapital(CvCity* pNewCapital);
+//doto city states - trade route resource
+	void addCityStateResource(CvCity* pNewCapital, CvCity* const pOldCapital, int rAmount = 0) const;
 	// <advc.127b> -1 if no capital or (eObserver!=NO_TEAM) unrevealed to eObserver
 	int getCapitalX(TeamTypes eObserver, bool bDebug = false) const;
 	int getCapitalY(TeamTypes eObserver, bool bDebug = false) const;
