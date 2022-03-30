@@ -75,6 +75,8 @@ public:
 	void updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, NiColorA &color, PlayerTypes eOldOwner) const;
 //doto city states
 	void spawnCityState();
+	void initFreeTechsEra(PlayerTypes ePlayer);
+
 	DllExport void updateBlockadedPlots();
 	bool updateNukeAreaOfEffect(CvPlot const* pPlot = NULL) const; // advc.653
 

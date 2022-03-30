@@ -435,7 +435,27 @@
 	</Define>
 	<Define>
 		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN</DefineName>
-		<iDefineIntVal>4</iDefineIntVal>
+		<iDefineIntVal>2</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_TINY</DefineName>
+		<iDefineIntVal>0</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_SMALL</DefineName>
+		<iDefineIntVal>2</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_STANDARD</DefineName>
+		<iDefineIntVal>3</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_LARGE</DefineName>
+		<iDefineIntVal>5</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_HUGE</DefineName>
+		<iDefineIntVal>6</iDefineIntVal>
 <!-- DOTO city states - end  -->
 	</Define>
 </Civ4Defines>

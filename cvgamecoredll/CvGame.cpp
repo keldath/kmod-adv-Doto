@@ -6870,11 +6870,6 @@ void CvGame::doTurn()
 	if (getGameTurn() == 1 && !GC.getGame().isOption(GAMEOPTION_ADVANCED_START))
 	{
 		spawnCityState();
-		//seems this updates some parameters due to added players
-		//initFreeCivState();
-		doUpdateCacheOnTurn();
-		updateScore();
-
 	}
 	//doto city states	
 }
@@ -7691,7 +7686,56 @@ void CvGame::createBarbarianCities()
 }
 
 //doto city states start - based on createbarbariancity
-//void CvGame::spawnCityState(PlayerTypes eNewPlayer)
+// this will add techs by era and free
+void CvGame::initFreeTechsEra(PlayerTypes ePlayer)
+{
+	AI().AI_updateVictoryWeights(); // advc.115f
+	CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)ePlayer);
+	CvTeam& kTeam = GET_TEAM(kPlayer.getTeam());
+	FOR_EACH_ENUM(Tech)
+	{
+		if (GC.getInfo(eLoopTech).getEra() < getStartEra()
+			// disabled by K-Mod. (moved & changed. See below)
+			/*|| GC.getInfo(getHandicapType()).isFreeTechs(eLoopTech)*/)
+		{
+			kTeam.setHasTech(eLoopTech, true, NO_PLAYER, false, false);
+		}
+		// advc.tsl: Free techs from other sources now handled by initFreeCivState
+		if (GC.getInfo(eLoopTech).getEra() > getStartEra())
+					continue; // </advc.126>
+		bool bValid = false; 
+		if (!kTeam.isHuman() && GC.getInfo(getHandicapType()).isAIFreeTechs(eLoopTech) &&
+			// advc.001: Barbarians receiving free AI tech might be a bug
+			!kTeam.isBarbarian() /* advc.250c: */ && !isOption(GAMEOPTION_ADVANCED_START))
+		{
+			bValid = true;
+		}
+		if (!bValid)
+		{
+			/*  <advc.250b>, advc.250c: Always grant civ-specific tech,
+				but not tech from handicap if in Advanced Start except to
+				human civs that don't actually start Advanced (SPaH option). */
+			if (GC.getInfo(kPlayer.getCivilizationType()).isCivilizationFreeTechs(eLoopTech))
+			{
+				bValid = true;
+			}
+			// K-Mod: Give techs based on player handicap, not game handicap.
+			if (GC.getInfo(kPlayer.getHandicapType()).isFreeTechs(eLoopTech) &&
+				(!isOption(GAMEOPTION_ADVANCED_START) ||
+				(isOption(GAMEOPTION_SPAH) && kTeam.isHuman()))) // </advc.250b>
+			{
+				bValid = true;
+			}
+		}
+		if (bValid) // (advc.051: Don't take away techs granted by scenario)
+		{
+			kTeam.setHasTech(eLoopTech, true, NO_PLAYER, false, false);
+			// (advc: Already handled by setHasTech)
+			/*if (GC.getInfo(eLoopTech).isMapVisible())
+				GC.getMap().setRevealedPlots(kTeam.getID(), true, true);*/
+		}
+	}
+}
 
 void CvGame::spawnCityState()
 {
@@ -7700,7 +7744,19 @@ void CvGame::spawnCityState()
 		return;
 	
 	int numCitySpawn = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN");
+	int numCitySpawnT = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN_TINY");
+	int numCitySpawnS = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN_SMALL");
+	int numCitySpawnD = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN_STANDARD");
+	int numCitySpawnL = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN_LARGE");
+	int numCitySpawnH = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN_HUGE");
 	int spawned = 0;
+
+
+	CvWorldInfo const& kWorld = GC.getInfo(GC.getMap().getWorldSize());
+	scaled r = kWorld.getDefaultPlayers();
+	r *= per100(100 - 4 * getSeaLevelChange());
+	r.clamp(2, PlayerIter<>::count());
+	int rr = r.round();
 
 //-------------------- random city states code------start---------
 
@@ -7833,28 +7889,24 @@ void CvGame::spawnCityState()
 
 		//loop over the numer of city states to spawn
 		CvPlayerAI& kPlayer = GET_PLAYER(cityStatePlayer);
+		CvPlayer& kkPlayer = GET_PLAYER(cityStatePlayer);
 		//overwrite the prev same car =- this is another method fo playertype id - f1rpo suggested
 		//cityStatePlayer = (PlayerTypes)PlayerIter<MAJOR_CIV>::count(); 
-		CvPlayerAI& b = GET_PLAYER(BARBARIAN_PLAYER);
 		kPlayer.setAlive(true); 
 		addPlayer(cityStatePlayer, cSleader, eCiv);
 		
+		initFreeTechsEra(cityStatePlayer);
 	//doto
 	//these are some fn that are used in the split empire function (removed all the fn that is split related.
 	// im not sure what and if all below are required.
 		GC.getInitCore().setLeaderName(cityStatePlayer, GC.getInfo(cSleader).getTextKeyWide());
-
-		kPlayer.AI_updateAttitude(cityStatePlayer, true);
-		kPlayer.AI_updateAttitude();
-		if (getUWAI().isEnabled())
-			getUWAI().processNewPlayerInGame(cityStatePlayer); // </advc.104r>
-			
 		kPlayer.AI_updateBonusValue();
 		updatePlotGroups();
 		
 		//using findStartingPlot as suggestted by f1rpo instead of the split empire code
 		CvPlot* pBestPlot = kPlayer.findStartingPlot();
 		kPlayer.setStartingPlot(pBestPlot/*, true */); // advc.opt
+		kkPlayer.initFreeUnits();
 
 		if (kPlayer.getStartingPlot() == NULL)
 		{
@@ -7870,14 +7922,28 @@ void CvGame::spawnCityState()
 			logBBAI("A City State was created at plot %d, %d", pBestPlot->getX(), pBestPlot->getY()); // advc.300 (from MNAI)
 			//f1rpo said this better be after the init city
 			kPlayer.verifyAlive(); //doto - another unclear addition from keldath....
-			kPlayer.AI_updateAttitude(cityStatePlayer, true);
+			updateScore();
+			//kPlayer.AI_updateAttitude(cityStatePlayer, true);
 			kPlayer.AI_updateAttitude();
 			if (getUWAI().isEnabled())
 				getUWAI().processNewPlayerInGame(cityStatePlayer); // </advc.104r>
-			
 			spawned += 1;
 		}
 	}
+	//add a pop to annouce city gen
+	for (int i = 0; i < MAX_CIV_PLAYERS; i++)
+	{
+		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)i);
+		if (kPlayer.isHuman() && spawned > 0)
+		{
+			CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_TEXT);
+			//pInfo->setText(gDLL->getText("TXT_KEY_LIMITED_RELIGION", getCountFoundReligion(), GC.getInfo(eReligion).getAdjectiveKey()));
+			//pInfo->setText(gDLL->getText("TXT_KEY_LIMITED_RELIGION", GC.getInfo(eReligion).getDescription(), GC.getCivilizationInfo(eCiv).getAdjective(), getCountFoundReligion()));
+			pInfo->setText(gDLL->getText(L"City States Generated"));
+			kPlayer.addPopup(pInfo);
+		}
+	}
+	
 }
 //doto city states end
 
