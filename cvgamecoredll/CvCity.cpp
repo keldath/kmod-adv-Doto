@@ -545,10 +545,10 @@ void CvCity::doTurn()
 	if(!m_szPreviousName.empty() && m_szName.compare(m_szPreviousName) != 0)
 	{
 		FAssert(isHuman());
-		GC.getGame().addReplayMessage(REPLAY_MESSAGE_MAJOR_EVENT, kOwner.getID(),
-				gDLL->getText("TXT_KEY_MISC_CITY_RENAMED",
+		GC.getGame().addReplayMessage(getPlot(), REPLAY_MESSAGE_MAJOR_EVENT,
+				kOwner.getID(), gDLL->getText("TXT_KEY_MISC_CITY_RENAMED",
 				m_szPreviousName.GetCString(), m_szName.GetCString()),
-				getX(), getY(), kOwner.getPlayerTextColor());
+				kOwner.getPlayerTextColor());
 		m_szPreviousName.clear();
 	} // </advc.106k>
 	bool const bForceProduction = true; // advc.064d
@@ -3423,6 +3423,9 @@ if (buildingStatus == true)
 			changeReligionInfluence(perReligionVal.first,
 					perReligionVal.second * iChange);
 		}
+		// <advc.enum> Based on code deleted from CvGame::doUpdateCacheOnTurn
+		if (kBuilding.getHolyCity() != NO_RELIGION)
+			m_aiShrine.add(kBuilding.getReligionType(), iChange); // </advc.enum>
 		FOR_EACH_NON_DEFAULT_PAIR(kBuilding.
 			getSpecialistCount(), Specialist, int)
 		{
@@ -5124,12 +5127,12 @@ void CvCity::setPopulation(int iNewValue)
 	int const iOldPopulation = getPopulation();
 	if (iOldPopulation == iNewValue)
 		return;
-
 	m_iPopulation = iNewValue;
 //doto specialist instead of pop -  assign new value if there is any
 	m_iPopulation = popToSpecialists(iOldPopulation, m_iPopulation);
 
 	FAssert(getPopulation() >= 0);
+
 	GET_PLAYER(getOwner()).invalidatePopulationRankCache();
 	if (getPopulation() > getHighestPopulation())
 		setHighestPopulation(getPopulation());
@@ -5152,7 +5155,7 @@ void CvCity::setPopulation(int iNewValue)
 		getArea().changePower(getOwner(), -GC.getGame().getPopulationPower(iOldPopulation));
 	if (getPopulation() > 0)
 		getArea().changePower(getOwner(), GC.getGame().getPopulationPower(getPopulation()));
-
+	// advc (note): For unused iPopulationChangeDivisor (YieldInfo) I think
 	getPlot().updateYield();
 
 	updateMaintenance();
@@ -7647,10 +7650,6 @@ void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups
 				FAssert(iCultureRange <= GC.getNumCultureLevelInfos());
 				itPlot->changeCultureRangeCities(getOwner(), (CultureLevelTypes)
 						iCultureRange, 1, bUpdatePlotGroups);
-				//CvPlot& p = *itPlot;
-//keldath - color city states plots
-//moved to CvPlot::setOwner
-			//	GC.getGame().updateCityStatesColoredPlots(*itPlot);
 			}
 		}
 	}
@@ -7697,8 +7696,9 @@ void CvCity::setCultureLevel(CultureLevelTypes eNewValue, bool bUpdatePlotGroups
 							GC.getColorType("HIGHLIGHT_TEXT"));
 				}
 			} // <advc.106>
-			GC.getGame().addReplayMessage(REPLAY_MESSAGE_MAJOR_EVENT, getOwner(), szMsg,
-					getX(), getY(), GC.getColorType("HIGHLIGHT_TEXT")); // </advc.106>
+			GC.getGame().addReplayMessage(getPlot(), REPLAY_MESSAGE_MAJOR_EVENT,
+					getOwner(), szMsg, GC.getColorType("HIGHLIGHT_TEXT"));
+			// </advc.106>
 		}
 		// ONEVENT - Culture growth
 		CvEventReporter::getInstance().cultureExpansion(this, getOwner());
@@ -8988,6 +8988,7 @@ int CvCity::getAdditionalBaseCommerceRateBySpecialist(CommerceTypes eCommerce,
 int CvCity::getAdditionalBaseCommerceRateBySpecialistImpl(CommerceTypes eCommerce,
 	SpecialistTypes eSpecialist, int iChange) const
 {
+//doto city states - specialists instead of population
 	CvSpecialistInfo const& kSpecialist = GC.getInfo(eSpecialist);
 	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
 	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
@@ -9000,8 +9001,8 @@ int CvCity::getAdditionalBaseCommerceRateBySpecialistImpl(CommerceTypes eCommerc
 	{
 		return iChange * (kSpecialist.getCommerceChange(eCommerce));	
 	}
-	return iChange * (kSpecialist.getCommerceChange(eCommerce) +
-			GET_PLAYER(getOwner()).getSpecialistExtraCommerce(eCommerce));
+	// advc: Forward to CvPlayer (based on MNAI - lfgr fix 01/2022)
+	return iChange * GET_PLAYER(getOwner()).specialistCommerce(eSpecialist, eCommerce);
 }
 // BUG - Specialist Additional Commerce - end
 
@@ -9717,8 +9718,8 @@ void CvCity::doFoundMessage()
 				NULL, NO_COLOR, getX(), getY());
 	}
 	szBuffer = gDLL->getText("TXT_KEY_MISC_CITY_IS_FOUNDED", getNameKey());
-	GC.getGame().addReplayMessage(REPLAY_MESSAGE_CITY_FOUNDED, getOwner(),
-			szBuffer, getX(), getY(),
+	GC.getGame().addReplayMessage(getPlot(), REPLAY_MESSAGE_CITY_FOUNDED,
+			getOwner(), szBuffer,
 			//(ColorTypes)GC.getInfoTypeForString("COLOR_ALT_HIGHLIGHT_TEXT")
 			// advc.106: Use ALT_HIGHLIGHT for research-related stuff now
 			GET_PLAYER(getOwner()).getPlayerTextColor());
@@ -10788,8 +10789,8 @@ void CvCity::setNumRealBuildingTimed(BuildingTypes eBuilding, int iNewValue, boo
 						"TXT_KEY_MISC_COMPLETES_WONDER_THE" :
 						"TXT_KEY_MISC_COMPLETES_WONDER", // </advc.008e>
 						GET_PLAYER(getOwner()).getNameKey(), kBuilding.getTextKeyWide());
-				GC.getGame().addReplayMessage(REPLAY_MESSAGE_MAJOR_EVENT, getOwner(), szBuffer,
-						getX(), getY(), GC.getColorType("BUILDING_TEXT"));
+				GC.getGame().addReplayMessage(getPlot(), REPLAY_MESSAGE_MAJOR_EVENT,
+						getOwner(), szBuffer, GC.getColorType("BUILDING_TEXT"));
 				// <advc.106>
 				for (PlayerIter<MAJOR_CIV> it; it.hasNext(); ++it)
 				{
@@ -13167,6 +13168,9 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiFreeSpecialistCount.read(pStream);
 		m_aiImprovementFreeSpecialists.read(pStream);
 		m_aiReligionInfluence.read(pStream);
+		// <advc.enum>
+		if (uiFlag >= 16)
+			m_aiShrine.read(pStream); // </advc.enum>
 		m_aiStateReligionHappiness.read(pStream);
 		m_aiUnitCombatFreeExperience.read(pStream);
 		m_aiFreePromotionCount.read(pStream);
@@ -13218,6 +13222,21 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_abHasReligion.readArray<bool>(pStream);
 		m_abHasCorporation.readArray<bool>(pStream);
 	}
+	// <advc.enum>
+	if (uiFlag < 16 && GC.getNumUnitInfos() > 116 &&
+		// Great Prophet points. To save time. isHolyCity check not possible here.
+		getGreatPeopleUnitRate((UnitTypes)116) > 0)
+	{
+		FOR_EACH_ENUM(Building)
+		{
+			if (getNumBuilding(eLoopBuilding) > 0 &&
+				GC.getInfo(eLoopBuilding).getHolyCity() != NO_RELIGION)
+			{
+				m_aiShrine.add(GC.getInfo(eLoopBuilding).getReligionType(), 1);
+				break;
+			}
+		}
+	} // </advc.enum>
 	for (size_t i = 0; i < m_aTradeCities.size(); i++)
 	{
 		pStream->Read((int*)&m_aTradeCities[i].eOwner);
@@ -13530,7 +13549,8 @@ void CvCity::write(FDataStreamBase* pStream)
 	//uiFlag = 12; // advc.enum: new enum map save behavior
 	//uiFlag = 13; // advc.201: Cathedrals restored to BtS stats
 	//uiFlag = 14; // advc.179, advc.exp.1, advc.exp.2
-	uiFlag = 15; // advc.912d: Partly reverted, adjust MaxFoodKept.
+	//uiFlag = 15; // advc.912d: Partly reverted, adjust MaxFoodKept.
+	uiFlag = 16; // advc.enum: m_aiShrine
 	pStream->Write(uiFlag);
 
 	pStream->Write(m_iID);
@@ -13766,6 +13786,7 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiFreeSpecialistCount.write(pStream);
 	m_aiImprovementFreeSpecialists.write(pStream);
 	m_aiReligionInfluence.write(pStream);
+	m_aiShrine.write(pStream); // advc.enum
 	m_aiStateReligionHappiness.write(pStream);
 	m_aiUnitCombatFreeExperience.write(pStream);
 	m_aiFreePromotionCount.write(pStream);
@@ -14568,25 +14589,6 @@ int CvCity::getNumPartisanUnits(PlayerTypes ePartisanPlayer) const
 }
 
 
-bool CvCity::hasShrine(ReligionTypes eReligion) const
-{
-	bool bHasShrine = false;
-
-	// note, for normal XML, this count will be one, there is only one shrine of each religion
-	int	shrineBuildingCount = GC.getGame().getShrineBuildingCount(eReligion);
-	for (int i = 0; i < shrineBuildingCount; i++)
-	{
-		BuildingTypes eBuilding = GC.getGame().getShrineBuilding(i, eReligion);
-		if (getNumBuilding(eBuilding) > 0)
-		{
-			bHasShrine = true;
-			break;
-		}
-	}
-	return bHasShrine;
-}
-
-
 void CvCity::invalidateYieldRankCache(YieldTypes eYield)
 {
 	if (eYield == NO_YIELD)
@@ -14762,8 +14764,8 @@ void CvCity::liberate(bool bConquest, /* advc.ctr: */ bool bPeaceDeal)
 					GC.getColorType("HIGHLIGHT_TEXT"));
 		}
 	}
-	GC.getGame().addReplayMessage(REPLAY_MESSAGE_MAJOR_EVENT, getOwner(), szBuffer,
-			getX(), getY(), GC.getColorType("HIGHLIGHT_TEXT"));
+	GC.getGame().addReplayMessage(getPlot(), REPLAY_MESSAGE_MAJOR_EVENT,
+			getOwner(), szBuffer, GC.getColorType("HIGHLIGHT_TEXT"));
 	// <advc.ctr>
 	if (!bPeaceDeal)
 		GET_PLAYER(ePlayer).AI_rememberLiberation(*this, bConquest); // </advc.ctr>

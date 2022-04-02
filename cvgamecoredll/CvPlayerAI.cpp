@@ -33,6 +33,17 @@ bool CvPlayerAI::areStaticsInitialized()
 	return CvPlayer::areStaticsInitialized(); // advc.003u
 }
 
+// advc: Update all attitude caches
+void CvPlayerAI::AI_updateAttitudes()
+{
+	FOR_EACH_ENUM(Player) // (PlayerAIIter might not be ready yet)
+	{
+		CvPlayerAI& kLoopPlayer = GET_PLAYER(eLoopPlayer);
+		if (kLoopPlayer.isAlive() && kLoopPlayer.isMajorCiv())
+			kLoopPlayer.AI_updateAttitude();
+	}
+}
+
 
 DllExport CvPlayerAI& CvPlayerAI::getPlayerNonInl(PlayerTypes ePlayer)
 {
@@ -2719,6 +2730,12 @@ int CvPlayerAI::AI_calculateEspionageWeight() const
 		iWeight *= 100 + 2*getCommercePercent(COMMERCE_ESPIONAGE);
 		iWeight /= 110;
 	}
+	// <advc.test>
+	if (iWeight < 0)
+	{
+		iWeight = 0;
+		FErrorMsg("Negative espionage weight");
+	} // </advc.test>
 	return iWeight;
 }
 
@@ -7006,7 +7023,7 @@ int CvPlayerAI::AI_techReligionValue(TechTypes eTech, int iPathLength,
 		if (eReligionTech == eTech &&
 			!GC.getGame().isReligionSlotTaken(eLoopReligion))
 		{
-			int iRoll = 225; // advc.171: Was 400 in BtS, 150 in K-Mod 1.46.
+			int iRoll = 200; // advc.171: Was 400 in BtS, 150 in K-Mod 1.46.
 			if (!GC.getGame().isOption(GAMEOPTION_PICK_RELIGION) &&
 				eFavoriteReligion != NO_RELIGION)
 			{
@@ -21595,11 +21612,13 @@ bool CvPlayerAI::AI_proposeJointWar(PlayerTypes eHuman)
 		return false;
 	AI_changeContactTimer(eHuman, CONTACT_JOIN_WAR,
 			AI_getContactDelay(CONTACT_JOIN_WAR));
-	CvDiploParameters* pDiplo = new CvDiploParameters(getID());
-	/*  NB: The DLL never deletes CvDiploParameters objects; presumably
+	/*	NB: The DLL never deletes CvDiploParameters objects; presumably
 		handled by beginDiplomacy */
+	CvDiploParameters* pDiplo = new CvDiploParameters(getID());
+	CvPlayer const& kTargetLeader = GET_PLAYER(GET_TEAM(eBestTarget).getLeaderID());
 	pDiplo->setDiploComment(GC.getAIDiploCommentType("JOIN_WAR"),
-			GET_PLAYER(GET_TEAM(eBestTarget).getLeaderID()).getCivilizationAdjectiveKey());
+			kTargetLeader.getCivilizationAdjectiveKey(),
+			kTargetLeader.getNameKey(), ""); // advc.mnai (lfgr 11/2021)
 	pDiplo->setAIContact(true);
 	pDiplo->setData(eBestTarget);
 	gDLL->beginDiplomacy(pDiplo, eHuman);
@@ -21932,9 +21951,10 @@ bool CvPlayerAI::AI_proposeEmbargo(PlayerTypes eHuman)
 	AI_changeContactTimer(eHuman, CONTACT_STOP_TRADING,
 			AI_getContactDelay(CONTACT_STOP_TRADING));
 	CvDiploParameters* pDiplo = new CvDiploParameters(getID());
+	CvPlayer const& kTargetLeader = GET_PLAYER(GET_TEAM(eBestTeam).getLeaderID());
 	pDiplo->setDiploComment(GC.getAIDiploCommentType("STOP_TRADING"),
-			GET_PLAYER(GET_TEAM(eBestTeam).getLeaderID()).
-			getCivilizationAdjectiveKey());
+			kTargetLeader.getCivilizationAdjectiveKey(),
+			kTargetLeader.getNameKey(), ""); // advc.mnai (lfgr 11/2021)
 	pDiplo->setAIContact(true);
 	pDiplo->setData(eBestTeam);
 	gDLL->beginDiplomacy(pDiplo, eHuman);
@@ -22849,7 +22869,7 @@ scaled CvPlayerAI::AI_amortizationMultiplier(int iDelay) const
 	/*	2 would mean that amortization multiplier begins to decrease right in
 		the middle of the game, and that it will have decreased e.g. to 0.8
 		after 300 turns (normal settings). */
-	static scaled const rCoeff = fixp(1.95);
+	static scaled const rCoeff = fixp(1.9);
 	r *= rCoeff;
 	r.clamp(fixp(0.2), 1);
 	return r;
@@ -26431,8 +26451,9 @@ void CvPlayerAI::AI_convertUnitAITypesForCrush()
 		/* if (pLoopUnit->AI_getUnitAIType() == UNITAI_RESERVE
 			|| pLoopUnit->AI_isCityAIType() && (pLoopUnit->getExtraCityDefensePercent() <= 0)) */
 		// K-Mod, protective leaders might still want to use their gunpowder units...
-		if (pLoopUnit->AI_getUnitAIType() == UNITAI_RESERVE || pLoopUnit->AI_getUnitAIType() == UNITAI_COLLATERAL
-			|| (pLoopUnit->AI_isCityAIType() && pLoopUnit->getExtraCityDefensePercent()		
+		if (pLoopUnit->AI_getUnitAIType() == UNITAI_RESERVE ||
+			pLoopUnit->AI_getUnitAIType() == UNITAI_COLLATERAL ||
+			(pLoopUnit->AI_isCityAIType() && pLoopUnit->getExtraCityDefensePercent()		
 			+ pLoopUnit->getUnitInfo().getCityDefenseModifier() / 2 // cdtw
 			<= 30))
 		{
@@ -28067,7 +28088,7 @@ bool CvPlayerAI::AI_isAwfulSite(CvCity const& kCity, bool bConquest) const
 {
 	int const iEra = GC.getGame().getCurrentEra();
 	// If the city has grown, the site has somewhat proved its usefulness.
-	if (kCity.getPopulation() >= (3 * iEra + 8 - (bConquest ? 2 : 0)) / 2)
+	if (kCity.getPopulation() * 2 >= 3 * iEra + 7 - (bConquest ? 2 : 0))
 		return false;
 
 	scaled rDecentPlots = 0;
@@ -28109,10 +28130,10 @@ bool CvPlayerAI::AI_isAwfulSite(CvCity const& kCity, bool bConquest) const
 		if(bCountCoast && p.isWater() && p.isAdjacentToLand())
 			rDecentPlots += fixp(0.4);
 	}
-	int iThresh = 7;
+	scaled rThresh(20, 3);
 	if (bConquest && kCity.getPopulation() >= iEra + 4)
-		iThresh--;
-	return (rDecentPlots < iThresh);
+		rThresh--;
+	return (rDecentPlots < rThresh);
 }
 
 // advc.104:
@@ -29672,6 +29693,11 @@ bool CvPlayerAI::AI_feelsSafe() const
 	{
 		return false;
 	}
+	FOR_EACH_CITY(pCity, GET_PLAYER(BARBARIAN_PLAYER))
+	{
+		if (pCity->getPreviousOwner() == getID())
+			return false;
+	}
 	for (TeamAIIter<MAJOR_CIV,OTHER_KNOWN_TO> it(getTeam()); it.hasNext(); ++it)
 	{
 		CvTeamAI const& kRival = *it;
@@ -29729,11 +29755,10 @@ int CvPlayerAI::AI_getContactDelay(ContactTypes eContact) const
 void CvPlayerAI::AI_setHuman(bool b)
 {
 	// Some of the first-impression modifiers don't apply to human players
+	CvPlayerAI::AI_updateAttitudes();
+	// <advc.115b>, advc.115f
 	for (PlayerAIIter<MAJOR_CIV> it; it.hasNext(); ++it)
-	{
-		it->AI_updateAttitude();
-		it->AI_updateVictoryWeights(); // advc.115b, advc.115f
-	}
+		it->AI_updateVictoryWeights(); // </advc.115b>
 	if (b)
 		return;
 	/*	<advc.057> Enforce invariant: AI group head has maximal impassable count.

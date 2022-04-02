@@ -269,7 +269,8 @@ int CvTeamAI::AI_estimateTotalYieldRate(YieldTypes eYield) const
 		CvPlayerAI const& kMember = *it;
 		int iSubTotal = 0;
 		int iBase = 0;
-		for (int j = 0; j < iSampleSize; j++)
+		// advc.004s: Out-of-bounds accesses no longer allowed
+		for (int j = 0; j < std::min(iSampleSize, iTurn); j++)
 		{
 			int iSample = 0;
 			switch (eYield)
@@ -2788,9 +2789,9 @@ DenialTypes CvTeamAI::AI_surrenderTrade(TeamTypes eMasterTeam, int iPowerMultipl
 			}
 			iAttitudeModifier += std::max(0, (int)(ATTITUDE_PLEASED - eTowardUs));
 		}
-		/*  In large games, there tend to be alternative targets for dangerous civs
-			to attack. */
-		iAttitudeModifier = (7 * iAttitudeModifier) / kGame.countCivPlayersAlive();
+		// Adjust to the number of potential alt. war targets
+		iAttitudeModifier = (iAttitudeModifier * scaled(4, std::max(1,
+				TeamIter<CIV_ALIVE,OTHER_KNOWN_TO>::count(getID()))).sqrt()).round();
 		iAttitudeModifier += std::min(iLosingWarModifier, 5);
 		/*	No matter how much we like kMasterTeam, when we can safely go it alone,
 			we do. Master might not like it (and need sth. to prevent oscillation). */

@@ -4963,7 +4963,7 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags,
 							else eTowardThem = kOwner.AI_getAttitude(kBrother.getID());
 						}
 						bool bTheyAhead = (kGame.getPlayerRank(kBrother.getID()) <
-								std::min(kGame.getPlayerRank(kOwner.getID()),
+								std::min<int>(kGame.getPlayerRank(kOwner.getID()),
 								iEverAlive / 2));
 						// Don't care if they benefit from ReligionYield then
 						if(!bTheyAhead && eTowardThem <= ATTITUDE_CAUTIOUS &&
@@ -9588,18 +9588,13 @@ bool CvCityAI::AI_addBestCitizen(bool bWorkers, bool bSpecialists,
 		}
 		return true;
 	}
-	  
+
 	return false;
 }
 
 // Returns true if a citizen was removed from a plot...
 bool CvCityAI::AI_removeWorstCitizen(SpecialistTypes eIgnoreSpecialist)
 {
-	//int a = getFreeSpecialistCount();
-	int b = visiblePopulation();
-	int c = extraFreeSpecialists();
-	int d = totalFreeSpecialists();
-	int e = getSpecialistPopulation();
 	// if we are using more specialists than the free ones we get
 	if (extraFreeSpecialists() < 0)
 	{

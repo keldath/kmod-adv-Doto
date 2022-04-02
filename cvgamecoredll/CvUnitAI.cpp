@@ -3121,6 +3121,8 @@ void CvUnitAI::AI_attackCityMove()
 	/*	K-Mod. This is used to prevent the AI from oscillating
 		between moving to attack moving to pillage. */
 	bool bTargetTooStrong = false;
+	// advc.114c: Moved up. Target strength ratio for city attack.
+	int iAttackRatio = -1;
 
 	int iStepDistToTarget = MAX_INT;
 	// K-Mod note.: I've rearranged some parts of the code below, sometimes without comment.
@@ -3360,8 +3362,14 @@ void CvUnitAI::AI_attackCityMove()
 		else
 		{
 			int iAdjustment = 5;
+			int iExtraAdjustBombard = 0; // advc.114c
 			if (GET_TEAM(getTeam()).AI_getWarPlan(pTargetCity->getTeam()) == WARPLAN_LIMITED)
+			{
 				iAdjustment += 10;
+				/*	advc.114c: Shouldn't be too unwilling to sacrifice siege units
+					when fighting a limited war. Not crucial to conquer more. */
+				iExtraAdjustBombard -= 5;
+			}
 			if (kOwner.AI_isDoStrategy(AI_STRATEGY_CRUSH))
 				iAdjustment -= 10;
 			if (iAdjustment >= 0 && pTargetCity == getArea().AI_getTargetCity(getOwner()))
@@ -3372,7 +3380,7 @@ void CvUnitAI::AI_attackCityMove()
 			if (iStepDistToTarget <= 1 && pTargetCity->isOccupation())
 				iAdjustment += range(111 - (iAttackRatio + iAdjustment), -10, 0); // k146
 			iAttackRatio += iAdjustment;
-			iAttackRatioSkipBombard += iAdjustment;
+			iAttackRatioSkipBombard += iAdjustment + /* advc.114c: */ iExtraAdjustBombard;
 			FAssert(iAttackRatioSkipBombard >= iAttackRatio);
 			FAssert(iAttackRatio >= 100);
 		} // K-Mod end
@@ -3559,8 +3567,17 @@ void CvUnitAI::AI_attackCityMove()
 		return;
 
 	// K-Mod - replacing some stuff I moved / removed from the BBAI code
-	if (pTargetCity != NULL && bTargetTooStrong && iStepDistToTarget <= (bReadyToAttack ? 3 : 2))
+	if (pTargetCity != NULL && bTargetTooStrong &&
+		iStepDistToTarget <= (bReadyToAttack ? 3 : 2))
 	{
+		/*	<advc.114c> Attrition warfare is miserable for both sides,
+			rather take our chances if they're not terrible. */
+		if (getGroup()->getNumUnits() > 3 + kOwner.AI_getCurrEraFactor() / 2 &&
+			iAttackRatio > 100)
+		{
+			if (AI_stackAttackCity((iAttackRatio + 100) / 2))
+				return;
+		} // </advc.114c>
 		// Pillage around enemy city
 		if (generatePath(pTargetCity->getPlot(), eMoveFlags, true, 0, 5))
 		{
@@ -3583,7 +3600,7 @@ void CvUnitAI::AI_attackCityMove()
 
 	/*	one more thing. Sometimes a single step can cause the AI to change its target city;
 		and when it changes the target - and so sometimes they can get stuck in a loop where
-		they step towards their target, change their mind, step back to pillage something, ... repeat.
+		they step towards their target, change their mind, step back to pillage something, ...
 		Here I've made a kludge to break that cycle: */
 	if (AI_getGroup()->AI_getMissionAIType() == MISSIONAI_PILLAGE)
 	{
@@ -14309,8 +14326,19 @@ canBombard checks that.*/
 		if (gUnitLogLevel > 2) logBBAI("      Stack skipping bombard of %S with compare %d, starting odds %d, bombard turns %d, threshold %d", pBombardCity->getName().GetCString(), iComparison, iAttackOdds, iBombardTurns, iThreshold);
 		return false;
 	}
-	getGroup()->pushMission(MISSION_BOMBARD,  // <K-Mod>
-			-1, -1, NO_MOVEMENT_FLAGS, false, false,
+	// <advc.004c>
+	CvUnit* pBombardUnit = AI_getGroup()->AI_bestUnitForMission(MISSION_BOMBARD);
+	if (pBombardUnit == NULL)
+	{
+		FErrorMsg("canBombard but no bombard unit found");
+		return false;
+	}
+	// (Not sure if other types of groups would manage to reunite)
+	if (AI_getUnitAIType() == UNITAI_ATTACK_CITY)
+		pBombardUnit->joinGroup(NULL);
+	pBombardUnit-> // </advc.004c>
+			getGroup()->pushMission(MISSION_BOMBARD,
+			/* <K-Mod> */ -1, -1, NO_MOVEMENT_FLAGS, false, false,
 			MISSIONAI_ASSAULT, pBombardCity->plot()); // </K-Mod>
 	return true;
 }
@@ -19140,8 +19168,8 @@ bool CvUnitAI::AI_retreatToCity(bool bPrimary, bool bPrioritiseAirlift, int iMax
 	PROFILE_FUNC(); // (advc: iMaxPath mostly unused here; changing that could save time.)
 
 	//int iCurrentDanger = GET_PLAYER(getOwner()).AI_getPlotDanger(plot());
-	int const iCurrentDanger = getGroup()->alwaysInvisible() ? 0 : // K-Mod
-			GET_PLAYER(getOwner()).AI_getPlotDanger(getPlot()); 
+	int const iCurrentDanger = (getGroup()->alwaysInvisible() ? 0 : // K-Mod
+			GET_PLAYER(getOwner()).AI_getPlotDanger(getPlot())); 
 
 	CvCityAI const* pCity = getPlot().AI_getPlotCity();
 	if (iCurrentDanger <= 0 && pCity != NULL &&
@@ -22465,11 +22493,14 @@ bool CvUnitAI::AI_stackAttackCity(int iPowerThreshold)
 						DefenseDamage = p.getDefenseDamage();
 					}
 //super forts Doto adjustments
-					// This automatic threshold calculation is used by AI_follow; and so we can't assume this unit is the head of the group.
-					// ... But I think it's fair to assume that if our group has any bombard, it the head unit will have it.
+					/*	This automatic threshold calculation is used by AI_follow;
+						and so we can't assume this unit is the head of the group.
+						... But I think it's fair to assume that, if our group
+						has any bombard, the head unit will have it. */
 					if (getGroup()->getHeadUnit()->bombardRate() > 0)
 					{
-						// if we can bombard, then we should do a rough calculation to give us a 'skip bombard' threshold.
+						/*	if we can bombard, then we should do a rough calculation
+							to give us a 'skip bombard' threshold. */
 /*super forts Doto*/	iPowerThreshold = ((GC.getMAX_CITY_DEFENSE_DAMAGE() - DefenseDamage /*pCity->getDefenseDamage()*/) *
 								GC.getDefineINT(CvGlobals::BBAI_SKIP_BOMBARD_BASE_STACK_RATIO) +
 	/*super forts Doto*/		DefenseDamage /*pCity->getDefenseDamage()*/ * GC.getDefineINT(CvGlobals::BBAI_SKIP_BOMBARD_MIN_STACK_RATIO)) /
@@ -22486,7 +22517,8 @@ bool CvUnitAI::AI_stackAttackCity(int iPowerThreshold)
 					pCityPlot = &p;
 			}
 		}
-		break; // there can only be one city. (advc: b/c the search range is 1)
+		// there can only be one city. advc (tbd.): Not true if MIN_CITY_RANGE==1.
+		break;
 	}
 
 	if (pCityPlot != NULL)

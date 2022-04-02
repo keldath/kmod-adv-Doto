@@ -566,6 +566,8 @@ void CvMapGenerator::addBonuses()
 					addUniqueBonusType(eLoopBonus);
 				else addNonUniqueBonusType(eLoopBonus);
 			}
+			// advc.108c: Remember that this bonus gets handled by the map script
+			else GC.getMap().setBonusBalanced(eLoopBonus);
 		}
 	}
 }
@@ -905,7 +907,7 @@ void CvMapGenerator::generateRandomMap()
 	   is called during map generation, tile yields aren't yet set. */
 	GC.getMap().computeShelves();
 	// <advc.108>
-	if (py.isAnyCustomMapOptionSetTo(gDLL->getText("TXT_KEY_MAP_BALANCED")))
+	if (GC.getMap().isCustomMapOption(gDLL->getText("TXT_KEY_MAP_BALANCED")))
 		GC.getGame().setStartingPlotNormalizationLevel(CvGame::NORMALIZE_HIGH);
 	// </advc.108>
 }

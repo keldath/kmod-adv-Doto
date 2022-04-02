@@ -402,9 +402,7 @@ public:
 	bool canEverTrade(TechTypes eTech) const;
 	/*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/																								// Exposed to Python
 	bool canResearch(TechTypes eTech, bool bTrade = false,													 // K-Mod: Exposed to Python
-			bool bFree = false, // K-Mod (advc.004x: disused)
-			// advc.126: Disables the isHasTech check
-			bool bCouldResearchAgain = false) const;
+			bool bFree = false) const; // K-Mod (advc.004x: disused)
 	TechTypes getCurrentResearch() const;																			// Exposed to Python
 	bool isCurrentResearchRepeat() const;																			// Exposed to Python
 	bool isNoResearchAvailable() const;																				// Exposed to Python

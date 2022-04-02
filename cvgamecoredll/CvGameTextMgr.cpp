@@ -18491,14 +18491,16 @@ void CvGameTextMgr::parsePlayerTraits(CvWStringBuffer &szBuffer, PlayerTypes ePl
 }
 
 // K-Mod. I've rewritten most of this function.
-void CvGameTextMgr::parseLeaderHeadHelp(CvWStringBuffer &szBuffer, PlayerTypes eThisPlayer, PlayerTypes eOtherPlayer)
+void CvGameTextMgr::parseLeaderHeadHelp(CvWStringBuffer &szBuffer,
+	PlayerTypes eThisPlayer, PlayerTypes eOtherPlayer)
 {
 	if (eThisPlayer == NO_PLAYER)
 		return;
 
-	const CvPlayerAI& kPlayer = GET_PLAYER(eThisPlayer);
+	CvPlayerAI const& kPlayer = GET_PLAYER(eThisPlayer);
 
-	szBuffer.append(CvWString::format(SETCOLR L"%s" ENDCOLR, TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"), kPlayer.getName()));
+	szBuffer.append(CvWString::format(SETCOLR L"%s" ENDCOLR,
+			TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"), kPlayer.getName()));
 
 	parsePlayerTraits(szBuffer, eThisPlayer);
 
@@ -18506,7 +18508,8 @@ void CvGameTextMgr::parseLeaderHeadHelp(CvWStringBuffer &szBuffer, PlayerTypes e
 	if (/*gDLL->getChtLvl() > 0*/ GC.getGame().isDebugMode() &&// advc.135c
 		GC.altKey())
 	{
-		szBuffer.append(CvWString::format(SETCOLR SEPARATOR NEWLINE, TEXT_COLOR("COLOR_LIGHT_GREY")));
+		szBuffer.append(CvWString::format(SETCOLR SEPARATOR NEWLINE,
+				TEXT_COLOR("COLOR_LIGHT_GREY")));
 		szBuffer.append(CvWString::format(L"id=%d\n", eThisPlayer)); // advc.007
 		CitySiteEvaluator citySiteEval(kPlayer);
 
@@ -18533,7 +18536,8 @@ void CvGameTextMgr::parseLeaderHeadHelp(CvWStringBuffer &szBuffer, PlayerTypes e
 #define flavour_info(x) do { \
 	if (kPlayer.AI_getFlavorValue(FLAVOR_##x)) \
 	{ \
-		szBuffer.append(CvWString::format(L"%s"L#x L"=%d", bFirst? L"" : L", ", kPlayer.AI_getFlavorValue(FLAVOR_##x))); \
+		szBuffer.append(CvWString::format(L"%s"L#x L"=%d", bFirst? L"" : L", ", \
+				kPlayer.AI_getFlavorValue(FLAVOR_##x))); \
 		bFirst = false; \
 	} \
 } while (0)
@@ -18555,7 +18559,7 @@ void CvGameTextMgr::parseLeaderHeadHelp(CvWStringBuffer &szBuffer, PlayerTypes e
 
 	if (eOtherPlayer == NO_PLAYER)
 	{
-		getWarWearinessString(szBuffer, eThisPlayer, NO_PLAYER); // total war weariness
+		getWarWearinessString(szBuffer, eThisPlayer, NO_PLAYER); // total ww
 		return; // advc
 	}
 	CvTeam& kThisTeam = GET_TEAM(kPlayer.getTeam());
@@ -21636,7 +21640,7 @@ void CvGameTextMgr::setFoodHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 	}
 	// Specialists
 	int iSpecialistFood = 0;
-//doto specialists instead of pop
+//doto city states specialists instead of pop
 	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
 	// SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
 	//SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
@@ -21646,10 +21650,10 @@ void CvGameTextMgr::setFoodHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 	for(int i = 0; i < GC.getNumSpecialistInfos(); i++)
 	{
 //doto specialists instead of pop
-		if (kCity.getFreeCivilianCount() > 0
+		if (cityState //kCity.getFreeCivilianCount() > 0
 			&& ((GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
 				GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && cityState) 
-					//&& eFarmer == (SpecialistTypes)i
+					&& eFarmer == (SpecialistTypes)i
 					/*|| eMiner == (SpecialistTypes)i || eLabor == (SpecialistTypes)i)*/
 				)
 		)
@@ -21658,13 +21662,10 @@ void CvGameTextMgr::setFoodHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 				(SpecialistTypes)i, YIELD_FOOD) *
 				kCity.getFreeSpecialistCount((SpecialistTypes)i);
 		}
-		else
-		{
-			iSpecialistFood += GET_PLAYER(kCity.getOwner()).specialistYield(
+		iSpecialistFood += GET_PLAYER(kCity.getOwner()).specialistYield(
 				(SpecialistTypes)i, YIELD_FOOD) *
 				(kCity.getSpecialistCount((SpecialistTypes)i) +
-				(kCity.getFreeSpecialistCount((SpecialistTypes)i)));
-		}
+				kCity.getFreeSpecialistCount((SpecialistTypes)i));
 //doto specialists instead of pop
 	}
 	if((iSpecialistFood + iFreeCivilianFood) != 0)

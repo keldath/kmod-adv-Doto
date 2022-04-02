@@ -49,10 +49,16 @@ TrueStarts::TrueStarts()
 				// These scripts largely ignore latitude
 				szMapName != CvWString("Ring") && szMapName != CvWString("Wheel") &&
 				szMapName != CvWString("Arboria") && szMapName != CvWString("Caldera"));
+		// Scenario makers tend to use peaks very liberally
+		m_bAdjustPeakScore = (GC.getGame().isScenario() ||
+				/*	This earth-like script also places lots of peaks.
+					(advc.021a: Not that many anymore, but it varies quite a bit.
+					In any case, adjusting the scoring won't hurt.) */
+				szMapName == CvWString("Tectonics"));
 	}
 	m_bBonusesIgnoreLatitude = (!m_bMapHasLatitudes ||
 			GC.getPythonCaller()->isBonusIgnoreLatitude());
-	m_bBalancedResources = kMap.isCustomMapOption("Balanced");
+	m_bBalancedResources = kMap.isCustomMapOption(gDLL->getText("TXT_KEY_MAP_BALANCED"));
 	/*	Don't focus on the initial human player when
 		any civ may come under human control later on */
 	m_bPrioritizeHumans = !GC.getGame().isOption(GAMEOPTION_RISE_FALL);
@@ -535,7 +541,7 @@ void TrueStarts::sanitize()
 		CvPlot const& kPlot = kMap.getPlotByIndex(eLoopPlotNum);
 		if (kPlot.getBonusType() != NO_BONUS &&
 			(!m_bBalancedResources ||
-			GC.getInfo(kPlot.getBonusType()).getPlacementOrder() > 2))
+			!GC.getMap().isBonusBalanced(kPlot.getBonusType())))
 		{
 			EagerEnumMap<PlayerTypes,scaled> aerPlayerWeights;
 			setPlayerWeightsPerPlot(eLoopPlotNum, aerPlayerWeights);
@@ -830,6 +836,7 @@ void TrueStarts::changeCivs()
 				((szMapName == CvWString("PerfectMongoose") ||
 				szMapName == CvWString("Tectonics") ||
 				szMapName == CvWString("RandomScriptMap")) &&
+				// This will only work when playing in English
 				GC.getMap().isCustomMapOption("Old World", true)) ||
 				(szMapName == CvWString("NewWorld") &&
 				/*	If someone adds options to that map, then there might be
@@ -1718,12 +1725,10 @@ int TrueStarts::calcFitness(CvPlayer const& kPlayer, CivilizationTypes eCiv,
 			IFLOG logBBAI("Area hills and peak score: %d, %d",
 					rAreaHillScore.getPercent(), rAreaPeakScore.getPercent());
 			scaled const rTypicalPeakScore = 7;
-			/*	Some scenario makers use peaks very liberally. (See also
-				the comment a few blocks below about space preferences.) */
-			if (GC.getGame().isScenario() && m_rMedianPeakScore > 2 * rTypicalPeakScore)
+			if (m_bAdjustPeakScore && m_rMedianPeakScore > 2 * rTypicalPeakScore)
 			{
 				rAreaPeakScore *= (rTypicalPeakScore / m_rMedianPeakScore).pow(fixp(0.6));
-				IFLOG logBBAI("Peak score adjusted to scenario: %d", rAreaPeakScore.getPercent());
+				IFLOG logBBAI("Peak score adjusted to map: %d", rAreaPeakScore.getPercent());
 			}
 			scaled const rTargetMountainCover = kTruCiv.get(CvTruCivInfo::MountainousArea);
 			if (rTargetMountainCover >= 0)
