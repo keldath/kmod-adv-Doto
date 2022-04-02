@@ -499,7 +499,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_CULTURE</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>200</iCost>
+			<!-- advc.910: was 200 -->
+			<iCost>250</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_CLASSICAL</Era>
@@ -650,7 +651,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_CULTURE</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>300</iCost>
+			<!-- advc.910: was 300 -->
+			<iCost>350</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_CLASSICAL</Era>
@@ -728,9 +730,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Strategy>TXT_KEY_TECH_FEUDALISM_STRATEGY</Strategy>
 			<Advisor>ADVISOR_ECONOMY</Advisor>
 			<!-- advc.131b -->
-			<iAIWeight>-135</iAIWeight>
+			<iAIWeight>-125</iAIWeight>
 			<iAITradeModifier>10</iAITradeModifier>
-			<iCost>700</iCost>
+			<!-- advc.910: was 700 -->
+			<iCost>820</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_MEDIEVAL</Era>
@@ -1419,7 +1422,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_ECONOMY</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>1400</iCost>
+			<!-- advc.910: was 1400 -->
+			<iCost>1500</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_RENAISSANCE</Era>
@@ -1792,7 +1796,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_CULTURE</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>3600</iCost>
+			<!-- advc.910: was 3600 -->
+			<iCost>4000</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_MODERN</Era>
@@ -2834,7 +2839,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_SCIENCE</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>600</iCost>
+			<!-- advc.910: was 600 -->
+			<iCost>650</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_MEDIEVAL</Era>
@@ -2908,7 +2914,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_ECONOMY</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>700</iCost>
+			<!-- advc.910: was 700 -->
+			<iCost>800</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_MEDIEVAL</Era>
@@ -3494,7 +3501,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_SCIENCE</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>3600</iCost>
+			<!-- advc.910: was 3600 -->
+			<iCost>3850</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_INDUSTRIAL</Era>
@@ -3941,7 +3949,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iAIWeight>0</iAIWeight>
 			<!-- advc.552: was 10 -->
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>5000</iCost>
+			<!-- advc.910: was 5000 -->
+			<iCost>5500</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_MODERN</Era>
@@ -4942,7 +4951,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Help/>
 			<Strategy>TXT_KEY_TECH_IRON_WORKING_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
-			<iAIWeight>0</iAIWeight>
+			<!-- advc.131b -->
+			<iAIWeight>-30</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
 			<!-- advc.131b: was 200 -->
 			<iCost>210</iCost>

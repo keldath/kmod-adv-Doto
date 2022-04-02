@@ -434,12 +434,8 @@
 		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
 	<Define>
-		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN</DefineName>
-		<iDefineIntVal>2</iDefineIntVal>
-	</Define>
-	<Define>
 		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_TINY</DefineName>
-		<iDefineIntVal>0</iDefineIntVal>
+		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_SMALL</DefineName>

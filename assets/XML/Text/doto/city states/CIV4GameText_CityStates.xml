@@ -7,7 +7,7 @@
 <Civ4GameText xmlns="http://www.firaxis.com">
 	<TEXT>
 		<Tag>TXT_KEY_NUM_CITY_STATES_SPAWNED</Tag>
-		<English>%d City States Spawn Succesfully</English>
+		<English>%d1_spawned City States Spawn Succesfully</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_CIV_POLAND_DESC</Tag>

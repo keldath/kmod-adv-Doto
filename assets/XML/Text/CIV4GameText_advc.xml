@@ -2076,9 +2076,9 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_SEALEVEL_HIGH_RECOMMEND</Tag>
-		<English>High - fewer players recommended (-30%%)</English>
+		<English>High - fewer players recommended (-25%%)</English>
 		<French>Haut</French>
-		<German>Hoch - weniger Spieler empfohlen (-30%%)</German>
+		<German>Hoch - weniger Spieler empfohlen (-25%%)</German>
 		<Italian>Alto</Italian>
 		<Spanish>Alto</Spanish>
 	</TEXT>
@@ -3217,6 +3217,52 @@
 		<Italian>Simile alla Terra (60%% acqua)</Italian>
 		<Spanish>Similar a la Tierra (60%% agua)</Spanish>
 	</TEXT>
+	<!-- State the water percentage -->
+	<TEXT> <!-- redefine -->
+		<Tag>TXT_KEY_MAP_SCRIPT_MEDITERRANEAN</Tag>
+		<English>Mediterranean (45%% water)</English>
+		<French>Méditerranéen (45% d'eau)</French>
+		<German>Mediterran (45%% Wasser)</German>
+		<Italian>Mediterraneo (45%% acqua)</Italian>
+		<Spanish>Mediterráneo (45%% agua)</Spanish>
+	</TEXT>
+	<!-- NB: These two only gets used for Tectonics -->
+	<TEXT> <!-- redefine -->
+		<Tag>TXT_KEY_MAP_SCRIPT_PANGAEA</Tag>
+		<English>Pangaea (70%% water)</English>
+		<French>Pangée (70%% d'eau)</French>
+		<German>Pangäa (70%% Wasser)</German>
+		<Italian>Pangea (70%% acqua)</Italian>
+		<Spanish>Pangea (70%% agua)</Spanish>
+	</TEXT>
+	<!-- Also shortened this one a bit, removing the word "Actual". -->
+	<TEXT> <!-- redefine -->
+		<Tag>TXT_KEY_MAP_SCRIPT_TERRA</Tag>
+		<English>Randomized Earth (67%% water)</English>
+		<French>Randomisation de la Terre (67%% d'eau)</French>
+		<German>Zufällige Erde (67%% Wasser)</German>
+		<Italian>Terra casuale (67%% acqua)</Italian>
+		<Spanish>Tierra al azar (67%% agua)</Spanish>
+	</TEXT>
+	<!-- To be consistent with the above -->
+	<TEXT> <!-- redefine -->
+		<Tag>TXT_KEY_MAP_SCRIPT_TERRA_OLD_WORLD_START</Tag>
+		<English>Randomized Earth (Old World Start)</English>
+		<French>Randomisation de la Terre (départ : Antiquité)</French>
+		<German>Zufällige Erde (Start Alte Welt)</German>
+		<Italian>Terra casuale (partenza Vecchio Mondo)</Italian>
+		<Spanish>Tierra al azar (inicio en Viejo Mundo)</Spanish>
+	</TEXT>
+	<!-- Based on TXT_KEY_MAP_SCRIPT_ISLANDS (CIV4GameText_Misc1.xml),
+		 which is used for various map scripts. -->
+	<TEXT>
+		<Tag>TXT_KEY_MAP_SCRIPT_ISLANDS_90</Tag>
+		<English>Islands (90%% water)</English>
+		<French>Iles (90%% d'eau)</French>
+		<German>Inseln (90%% Wasser)</German>
+		<Italian>Isole (90%% acqua)</Italian>
+		<Spanish>Islas (90%% agua)</Spanish>
+	</TEXT>
 
 	<!-- advc.004g: Based on Vanilla Civ4GameTextInfos.xml -->
 	<TEXT>
@@ -4091,50 +4137,6 @@
 		<German>[COLOR_PLAYER_GRAY]BtS-Inhalte[COLOR_REVERT]</German>
 		<Italian>[COLOR_PLAYER_GRAY]Contenuti di BtS[COLOR_REVERT]</Italian>
 		<Spanish>[COLOR_PLAYER_GRAY]Contenido de BtS[COLOR_REVERT]</Spanish>
-	</TEXT>
-	<!-- From CIV4GameTextInfos.xml. Call that the "opening menu",
-		 like in TXT_KEY_OPENING_MENU. -->
-	<TEXT> <!-- redefine -->
-		<Tag>TXT_KEY_POPUP_EXIT_TO_MAIN_MENU</Tag>
-		<English>Exit to Opening Menu</English>
-		<French>Retour au menu de lancement</French>
-		<German>Zur&#252;ck zum Anfangsmen&#252;</German>
-		<Italian>Vai al menu d'apertura</Italian>
-		<Spanish>Salir al men&#250; inicial</Spanish>
-	</TEXT>
-	<!-- From CIV4GameText_Misc1.xml -->
-	<TEXT> <!-- redefine -->
-		<Tag>TXT_KEY_EXTENDED_GAME_NO_MENU</Tag>
-		<English>(Exit to Opening Menu)</English>
-		<French>(Retour au menu de lancement)</French>
-		<German>(Zur&#252;ck zum Anfangsmen&#252;)</German>
-		<Italian>(Vai al menu d'apertura)</Italian>
-		<Spanish>(Salir al men&#250; inicial)</Spanish>
-	</TEXT>
-	<!-- From CIV4GameText_Misc1.xml (x3) -->
-	<TEXT> <!-- redefine -->
-		<Tag>TXT_KEY_MAIN_MENU_FORCED_DISCONNECT_INGAME</Tag>
-		<English>Someone else has logged in using this account.  Exiting to opening menu...</English>
-		<French>Quelqu'un s'est connect&#233; en utilisant votre compte. Retour au menu de lancement...</French>
-		<German>Es ist bereits jemand auf diesem Account eingeloggt. Zur&#252;ck zum Anfangsmen&#252; ...</German>
-		<Italian>Qualcun altro ha effettuato il login usando questo account. Ritorno al menu d'apertura...</Italian>
-		<Spanish>Otra persona ha iniciado sesi&#243;n con esta cuenta.  Saliendo al men&#250; inicial...</Spanish>
-	</TEXT>
-	<TEXT> <!-- redefine -->
-		<Tag>TXT_KEY_PITBOSS_DISCONNECT</Tag>
-		<English>We have lost our connection to the PitBoss!  Exiting to opening menu...</English>
-		<French>Nous avons perdu notre connexion au PitBoss ! D&#233;connexion du menu de lancement...</French>
-		<German>Wir haben die Verbindung zum PitBoss verloren. Zur&#252;ck zum Anfangsmen&#252; ...</German>
-		<Italian>Abbiamo perso la connessione a PitBoss!  Ritorno al menu d'apertura...</Italian>
-		<Spanish>Se ha perdido la conexi&#243;n con el Pitboss.  Saliendo al men&#250; inicial...</Spanish>
-	</TEXT>
-	<TEXT> <!-- redefine -->
-		<Tag>TXT_KEY_POPUP_KICKED</Tag>
-		<English>We are being kicked from the game!  Exiting to opening menu...</English>
-		<French>Nous sommes exclus de la partie ! D&#233;connexion du menu de lancement...</French>
-		<German>Wir werden aus dem Spiel geworfen! Zur&#252;ck zum Anfangsmen&#252; ...</German>
-		<Italian>Siamo stati cacciati dal gioco! Ritorno al menu d'apertura...</Italian>
-		<Spanish>Te est&#225;n expulsando de la partida.  Saliendo al men&#250; inicial...</Spanish>
 	</TEXT>
 	<!-- From CIV4GameTextInfos.xml -->
 	<TEXT> <!-- redefine -->
@@ -6815,6 +6817,69 @@
 		<German>[ICON_BULLET]%D1_Mod%% Kolonialausgaben</German>
 		<Italian>[ICON_BULLET]%D1_Mod%% spese per le colonie</Italian>
 		<Spanish>[ICON_BULLET]%D1_Mod%% gastos coloniales</Spanish>
+	</TEXT>
+
+	<!-- advc.mnai: Name leader in war and embargo requests
+		 (to avoid ambiguity when multiple leaders of the same civ are in play).
+		 English and Spanish from MNAI, German by AdvCiv. Also made the German
+		 text less stilted (still not great).
+		 Originally in CIV4GameText_Warlords_Civ4Changed.xml, i.e. they're all: -->
+		<!-- redefine -->
+	<TEXT>
+		<Tag>AI_DIPLO_JOIN_WAR_1</Tag>
+		<English>%s2 is a threat to us all. Please join us in wiping [NUM2:him:her:them:them] out.</English>
+		<French>Les %s1 repr&#233;sentent une menace pour nous tous. Joignez-vous &#224; nous pour les &#233;liminer.</French>
+		<German>%s2 ist gemeingefährlich. Helft uns bitte, [NUM2:ihn:sie] auszuschalten!</German>
+		<Italian>I %s1 sono un pericolo per tutti. Unisciti a noi e li toglieremo di mezzo.</Italian>
+		<Spanish>%s2 [NUM2:es:son] una amenaza para todos nosotros. Un&#237;os a nosotros para borrar[NUM2:lo:la:los:las] del mapa.</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>AI_DIPLO_JOIN_WAR_2</Tag>
+		<English>Care to assist us in destroying the evil %s2?</English>
+		<French>Acceptez-vous de nous aider &#224; &#233;craser les ignobles %s1 ?</French>
+		<German>Würdet Ihr uns wohl bei der Beseitigung von %s2 zur Hand gehen?</German>
+		<Italian>Vuoi darci una mano a distruggere i malvagi %s1?</Italian>
+		<Spanish>&#191;Os importar&#237;a ayudarnos a destruir [NUM2:al malvado:a la malvada:a los malvados:a las malvadas] %s2?</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>AI_DIPLO_JOIN_WAR_3</Tag>
+		<English>Greetings, [CT_NAME]. That nuisance %s2 must be destroyed, don't you agree?</English>
+		<French>Salutations, [CT_NAME]. Ne pensez-vous pas que ces maudits %s1 doivent &#234;tre extermin&#233;s ?</French>
+		<German>%s2 und [NUM2:seine:ihre] l&#228;stige Zivilisation müssen vernichtet werden, findet Ihr nicht auch, [CT_NAME]?</German>
+		<Italian>Salve, [CT_NAME]. I fastidiosi %s1 devono essere distrutti, non sei d'accordo?</Italian>
+		<Spanish>Saludos, [CT_NAME]. [NUM2:El molesto:La molesta:Los molestos:Las molestas] %s2 [NUM2:debe ser destruido:debe ser destruida: deben ser destruidos:deben ser destruidas], &#191;no os parece?</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>AI_DIPLO_JOIN_WAR_4</Tag>
+		<English>[CT_NAME]: we urgently request mighty [CT_CIV_SHORT]'s assistance in our heroic struggle against %s2!</English>
+		<French>[CT_NAME], nous demandons d'urgence le soutien des [CT_CIV_SHORT] dans notre croisade contre les %s1 !</French>
+		<German>[CT_NAME]: Wir bitten das m&#228;chtige Volk von [CT_CIV_SHORT] dringend um Hilfe bei unserem Schicksalskampf gegen %s2!</German>
+		<Italian>[CT_NAME], chiediamo urgentemente l'aiuto del[CT_CIV_SHORT:2] per la nostra crociata contro i %s1!</Italian>
+		<Spanish>[CT_NAME], solicitamos urgentemente la ayuda de la poderosa naci&#243;n de [CT_CIV_SHORT] en nuestra cruzada contra [NUM1:el:la:los:las] %s1:3.</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>AI_DIPLO_JOIN_WAR_5</Tag>
+		<English>The treacherous %s2 must be punished for [NUM2:his:her:their:their] offences against civilization, [CT_NAME]! I assume we can count on your assistance?</English>
+		<French>Les perfides %s1 doivent &#234;tre punis pour leurs offenses envers la civilisation, [CT_NAME] ! J'imagine que nous pouvons compter sur votre aide ?</French>
+		<German>%s2 muss für seine abscheulichen Verbrechen zur Rechenschaft gezogen werden! Da können wir doch sicher auf Eure Hilfe zählen, [CT_NAME]?</German>
+		<Italian>I traditori %s1 devono essere puniti per le loro offese nei confronti delle altre civilt&#224;, [CT_NAME]! Possiamo contare sul tuo aiuto?</Italian>
+		<Spanish>&#161;Hemos de castigar [NUM2:al traicionero:a la traicionera:a los traicioneros:a las traicioneras] %s2 por sus ofensas contra la civilizaci&#243;n, [CT_NAME]! Suponemos que podemos contar con vuestra ayuda, &#191;no?</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>AI_DIPLO_JOIN_WAR_6</Tag>
+		<English>Nasty %s2 is plotting against us all, [CT_NAME]! Let us destroy [NUM2:him:her:them:them] together!</English>
+		<French>Les inf&#226;mes %s1 complotent contre nous tous, [CT_NAME] ! D&#233;truisons-les ensemble !</French>
+		<German>[NUM2:Der:Die] elende %s2 hat es auf uns alle abgesehen, [CT_NAME]! Zerstören wir [NUM2:ihn:sie] gemeinsam, ehe es zu spät ist!</German>
+		<Italian>I malvagi %s1 stanno complottando contro noi tutti, [CT_NAME]! Distruggiamoli assieme!</Italian>
+		<Spanish>&#161;[NUM2:El repugnante:La repugnante:Los repugnantes:Las repugnantes] %s2 [NUM2:est&#225;:est&#225;n] conspirando contra todos nosotros, [CT_NAME]! &#161;Destruy&#225;mos[NUM2:lo:la:los:las] juntos!</Spanish>
+	</TEXT>
+	<TEXT>
+		<Tag>AI_DIPLO_STOP_TRADING_1</Tag>
+		<English>It can no longer be tolerated - we demand that you cancel your deals with the vile %s2!</English>
+		<French>C'est intol&#233;rable. Nous vous demandons d'annuler imm&#233;diatement tous vos accords avec les m&#233;prisables %s1 !</French>
+		<German>Das kann nicht l&#228;nger toleriert werden! Wir verlangen, dass Ihr Eure Handelsbeziehungen mit [NUM2:dem:der] garstigen %s2 einstellt!</German>
+		<Italian>Questo atteggiamento non pu&#242; pi&#249; essere tollerato; ti chiediamo di annullare i tuoi accordi con [NUM1:il vile:la vile:i vili:le vili] %s1:3!</Italian>
+		<Spanish>Ya no podemos permitirnos ser tolerantes. &#161;Os exigimos que cancel&#233;is vuestro trato con [NUM2:el vil:la vil:los viles:las viles] %s2!</Spanish>
 	</TEXT>
 
 </Civ4GameText>

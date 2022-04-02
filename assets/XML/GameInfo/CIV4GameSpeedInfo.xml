@@ -101,77 +101,76 @@ iVictoryDelayPercent	Percent of space ship travel time
 			<iInflationPercent>10</iInflationPercent>
 			<iInflationOffset>-270</iInflationOffset>
 			<iVictoryDelayPercent>300</iVictoryDelayPercent>
+			<!-- advc.910: Changed all of the turn counts -->
 			<GameTurnInfos>
 				<GameTurnInfo>
 					<iMonthIncrement>180</iMonthIncrement>
-					<iTurnsPerIncrement>100</iTurnsPerIncrement>
+					<iTurnsPerIncrement>150</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>120</iMonthIncrement>
-					<iTurnsPerIncrement>300</iTurnsPerIncrement>
+					<iTurnsPerIncrement>210</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>60</iMonthIncrement>
-					<iTurnsPerIncrement>170</iTurnsPerIncrement>
+					<iTurnsPerIncrement>240</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>24</iMonthIncrement>
-					<iTurnsPerIncrement>201</iTurnsPerIncrement>
+					<iTurnsPerIncrement>100</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>12</iMonthIncrement>
-					<iTurnsPerIncrement>129</iTurnsPerIncrement>
+					<iTurnsPerIncrement>110</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>6</iMonthIncrement>
-					<iTurnsPerIncrement>180</iTurnsPerIncrement>
+					<iTurnsPerIncrement>190</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>3</iMonthIncrement>
-					<iTurnsPerIncrement>264</iTurnsPerIncrement>
+					<iTurnsPerIncrement>320</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>1</iMonthIncrement>
-					<iTurnsPerIncrement>156</iTurnsPerIncrement>
+					<iTurnsPerIncrement>180</iTurnsPerIncrement>
 				</GameTurnInfo>
 			</GameTurnInfos>
 		</GameSpeedInfo>
 		<GameSpeedInfo>
 			<Type>GAMESPEED_EPICPLUS</Type>
-<!-- ADDED BY KELDATH - I TRIED TO CALCULATE ALL THE VALUES HERE 
-	AS ACCURATE AS I COULD SO HOPEFULLY THE SPEED IS ALIGNED -->
-			<Description>Walking (1000)</Description>
+			<Description>Walking (1200)</Description>
 			<Help>TXT_KEY_GAMESPEED_EPIC_HELP</Help>
-			<iGrowthPercent>200</iGrowthPercent>
-			<iTrainPercent>167</iTrainPercent>
-			<iConstructPercent>200</iConstructPercent>
-			<iCreatePercent>200</iCreatePercent>
-			<iResearchPercent>200</iResearchPercent>
-			<iBuildPercent>200</iBuildPercent>
-			<iImprovementPercent>200</iImprovementPercent>
-			<iGreatPeoplePercent>200</iGreatPeoplePercent>
-			<iCulturePercent>200</iCulturePercent>
-			<iAnarchyPercent>167</iAnarchyPercent>
-			<iBarbPercent>200</iBarbPercent>
-			<iFeatureProductionPercent>200</iFeatureProductionPercent>
-			<iUnitDiscoverPercent>200</iUnitDiscoverPercent>
-			<iUnitHurryPercent>200</iUnitHurryPercent>
-			<iUnitTradePercent>200</iUnitTradePercent>
-			<iUnitGreatWorkPercent>200</iUnitGreatWorkPercent>
-			<iGoldenAgePercent>167</iGoldenAgePercent>
-			<iHurryPercent>42</iHurryPercent>
-			<iHurryConscriptAngerPercent>200</iHurryConscriptAngerPercent>
-			<iInflationPercent>14</iInflationPercent>
-			<iInflationOffset>-180</iInflationOffset>
-			<iVictoryDelayPercent>200</iVictoryDelayPercent>
+			<iGrowthPercent>240</iGrowthPercent>
+			<iTrainPercent>172</iTrainPercent>
+			<iConstructPercent>240</iConstructPercent>
+			<iCreatePercent>240</iCreatePercent>
+			<iResearchPercent>240</iResearchPercent>
+			<iBuildPercent>240</iBuildPercent>
+			<iImprovementPercent>240</iImprovementPercent>
+			<iGreatPeoplePercent>240</iGreatPeoplePercent>
+			<iCulturePercent>240</iCulturePercent>
+			<iAnarchyPercent>240</iAnarchyPercent>
+			<iBarbPercent>240</iBarbPercent>
+			<iFeatureProductionPercent>240</iFeatureProductionPercent>
+			<iUnitDiscoverPercent>240</iUnitDiscoverPercent>
+			<iUnitHurryPercent>240</iUnitHurryPercent>
+			<iUnitTradePercent>240</iUnitTradePercent>
+			<iUnitGreatWorkPercent>240</iUnitGreatWorkPercent>
+			<iGoldenAgePercent>172</iGoldenAgePercent>
+			<iHurryPercent>40</iHurryPercent>
+			<iHurryConscriptAngerPercent>240</iHurryConscriptAngerPercent>
+			<iInflationPercent>15</iInflationPercent>
+			<iInflationOffset>-216</iInflationOffset>
+			<iVictoryDelayPercent>240</iVictoryDelayPercent>
 			<GameTurnInfos>
 				<GameTurnInfo>
 					<iMonthIncrement>240</iMonthIncrement>
-					<iTurnsPerIncrement>154</iTurnsPerIncrement>
+					<iTurnsPerIncrement>125</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>144</iMonthIncrement>
-					<iTurnsPerIncrement>120</iTurnsPerIncrement>
+					<iTurnsPerIncrement>176</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>96</iMonthIncrement>
@@ -179,23 +178,23 @@ iVictoryDelayPercent	Percent of space ship travel time
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>60</iMonthIncrement>
-					<iTurnsPerIncrement>59</iTurnsPerIncrement>
+					<iTurnsPerIncrement>74</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>24</iMonthIncrement>
-					<iTurnsPerIncrement>80</iTurnsPerIncrement>
+					<iTurnsPerIncrement>83</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>12</iMonthIncrement>
-					<iTurnsPerIncrement>151</iTurnsPerIncrement>
+					<iTurnsPerIncrement>120</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>6</iMonthIncrement>
-					<iTurnsPerIncrement>80</iTurnsPerIncrement>
+					<iTurnsPerIncrement>170</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>3</iMonthIncrement>
-					<iTurnsPerIncrement>132</iTurnsPerIncrement>
+					<iTurnsPerIncrement>228</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>1</iMonthIncrement>
@@ -208,7 +207,7 @@ iVictoryDelayPercent	Percent of space ship travel time
 			<Description>Jogging (750)</Description>
 			<Help>TXT_KEY_GAMESPEED_EPIC_HELP</Help>
 			<iGrowthPercent>150</iGrowthPercent>
-			<iTrainPercent>160</iTrainPercent>
+			<iTrainPercent>150</iTrainPercent>
 			<iConstructPercent>150</iConstructPercent>
 			<iCreatePercent>150</iCreatePercent>
 			<iResearchPercent>150</iResearchPercent>
@@ -229,34 +228,44 @@ iVictoryDelayPercent	Percent of space ship travel time
 			<iInflationPercent>20</iInflationPercent>
 			<iInflationOffset>-135</iInflationOffset>
 			<iVictoryDelayPercent>150</iVictoryDelayPercent>
+			<!-- advc.910: Changed all of the turn counts,
+				 some of the increments. -->
 			<GameTurnInfos>
 				<GameTurnInfo>
-					<iMonthIncrement>300</iMonthIncrement>
-					<iTurnsPerIncrement>140</iTurnsPerIncrement>
+					<!-- was 300 -->
+					<iMonthIncrement>360</iMonthIncrement>
+					<iTurnsPerIncrement>90</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>180</iMonthIncrement>
-					<iTurnsPerIncrement>90</iTurnsPerIncrement>
+					<iTurnsPerIncrement>145</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>120</iMonthIncrement>
-					<iTurnsPerIncrement>40</iTurnsPerIncrement>
+					<iTurnsPerIncrement>75</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>60</iMonthIncrement>
-					<iTurnsPerIncrement>90</iTurnsPerIncrement>
+					<iTurnsPerIncrement>21</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>24</iMonthIncrement>
-					<iTurnsPerIncrement>70</iTurnsPerIncrement>
+					<iTurnsPerIncrement>57</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>12</iMonthIncrement>
-					<iTurnsPerIncrement>100</iTurnsPerIncrement>
+					<iTurnsPerIncrement>120</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>6</iMonthIncrement>
-					<iTurnsPerIncrement>220</iTurnsPerIncrement>
+					<iTurnsPerIncrement>102</iTurnsPerIncrement>
+				</GameTurnInfo>
+				<!-- Can't avoid going into quarter years if we want to
+					 maintain 1 year per turn for long enough to avoid
+					 getting ahead of the time line in the 20th century. -->
+				<GameTurnInfo>
+					<iMonthIncrement>3</iMonthIncrement>
+					<iTurnsPerIncrement>140</iTurnsPerIncrement>
 				</GameTurnInfo>
 			</GameTurnInfos>
 		</GameSpeedInfo>
@@ -286,49 +295,47 @@ iVictoryDelayPercent	Percent of space ship travel time
 			<iInflationPercent>30</iInflationPercent>
 			<iInflationOffset>-90</iInflationOffset>
 			<iVictoryDelayPercent>100</iVictoryDelayPercent>
-			<!-- advc.910: Changed 120 months from 50 to 55,
-				 60 months from 60 to 50,
-				 12 months from 120 to 115 and
-				 6 months from 60 to 70.
-				 (Can't place comments inside the GameTurnInfos.) -->
+			<!-- advc.910: Changed all of the turn counts -->
 			<GameTurnInfos>
 				<GameTurnInfo>
 					<iMonthIncrement>480</iMonthIncrement>
-					<iTurnsPerIncrement>75</iTurnsPerIncrement>
+					<iTurnsPerIncrement>65</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>300</iMonthIncrement>
-					<iTurnsPerIncrement>60</iTurnsPerIncrement>
+					<iTurnsPerIncrement>80</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>240</iMonthIncrement>
-					<iTurnsPerIncrement>25</iTurnsPerIncrement>
+					<iTurnsPerIncrement>40</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>120</iMonthIncrement>
-					<iTurnsPerIncrement>55</iTurnsPerIncrement>
+					<iTurnsPerIncrement>25</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>60</iMonthIncrement>
-					<iTurnsPerIncrement>50</iTurnsPerIncrement>
+					<!-- Avoid an odd number here - otherwise all the year numbers
+						 in the next period (2 years per turn) will be odd. -->
+					<iTurnsPerIncrement>26</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>24</iMonthIncrement>
-					<iTurnsPerIncrement>50</iTurnsPerIncrement>
+					<iTurnsPerIncrement>82</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>12</iMonthIncrement>
-					<iTurnsPerIncrement>115</iTurnsPerIncrement>
+					<iTurnsPerIncrement>30</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>6</iMonthIncrement>
-					<iTurnsPerIncrement>70</iTurnsPerIncrement>
+					<iTurnsPerIncrement>152</iTurnsPerIncrement>
 				</GameTurnInfo>
 			</GameTurnInfos>
 		</GameSpeedInfo>
 		<GameSpeedInfo>
 			<Type>GAMESPEED_QUICK</Type>
-			<Description>Sprinting (330)</Description>
+			<Description>Sprinting (335)</Description>
 			<Help>TXT_KEY_GAMESPEED_QUICK_HELP</Help>
 			<iGrowthPercent>67</iGrowthPercent>
 			<iTrainPercent>67</iTrainPercent>
@@ -353,22 +360,24 @@ iVictoryDelayPercent	Percent of space ship travel time
 			<iInflationPercent>45</iInflationPercent>
 			<iInflationOffset>-60</iInflationOffset>
 			<iVictoryDelayPercent>67</iVictoryDelayPercent>
+			<!-- advc.910: Changed most of the turn count. Now sum up to a
+				 max turn of 335 instead of 330. -->
 			<GameTurnInfos>
 				<GameTurnInfo>
 					<iMonthIncrement>720</iMonthIncrement>
-					<iTurnsPerIncrement>50</iTurnsPerIncrement>
+					<iTurnsPerIncrement>45</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>480</iMonthIncrement>
-					<iTurnsPerIncrement>30</iTurnsPerIncrement>
+					<iTurnsPerIncrement>50</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>360</iMonthIncrement>
-					<iTurnsPerIncrement>20</iTurnsPerIncrement>
+					<iTurnsPerIncrement>15</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>240</iMonthIncrement>
-					<iTurnsPerIncrement>30</iTurnsPerIncrement>
+					<iTurnsPerIncrement>15</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>120</iMonthIncrement>
@@ -376,15 +385,15 @@ iVictoryDelayPercent	Percent of space ship travel time
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>60</iMonthIncrement>
-					<iTurnsPerIncrement>40</iTurnsPerIncrement>
+					<iTurnsPerIncrement>26</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>24</iMonthIncrement>
-					<iTurnsPerIncrement>65</iTurnsPerIncrement>
+					<iTurnsPerIncrement>61</iTurnsPerIncrement>
 				</GameTurnInfo>
 				<GameTurnInfo>
 					<iMonthIncrement>12</iMonthIncrement>
-					<iTurnsPerIncrement>70</iTurnsPerIncrement>
+					<iTurnsPerIncrement>98</iTurnsPerIncrement>
 				</GameTurnInfo>
 			</GameTurnInfos>
 		</GameSpeedInfo>

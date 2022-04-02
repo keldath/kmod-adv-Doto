@@ -626,11 +626,12 @@ class SevoPediaMain(CvPediaScreen.CvPediaScreen):
 		r = []
 		for descr,i in civList:
 			info = gc.getCivilizationInfo(i)
-			if not info.isPlayable():
-				iCapitalBuildingClass = gc.getDefineINT("CAPITAL_BUILDINGCLASS")
-				if (iCapitalBuildingClass >= 0 and
-				info.isCivilizationFreeBuildingClass(iCapitalBuildingClass)):
-					continue
+#doto city states temp fix - need to expose iscitystateto py
+			# if not info.isPlayable():
+			# 	iCapitalBuildingClass = gc.getDefineINT("CAPITAL_BUILDINGCLASS")
+			# 	if (iCapitalBuildingClass >= 0 and
+			# 	info.isCivilizationFreeBuildingClass(iCapitalBuildingClass)):
+			# 		continue
 			r.append((descr,i))
 		return r # </advc.004y>
 
