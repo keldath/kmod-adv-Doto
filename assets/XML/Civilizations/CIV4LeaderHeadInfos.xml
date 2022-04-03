@@ -14344,7 +14344,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 		</LeaderHeadInfo>
 		<LeaderHeadInfo>
 			<Type>LEADER_POPEJOHN</Type>
-			<Description>John XXIII</Description>
+			<Description>[CS] John XXIII</Description>
 			<Civilopedia>TXT_KEY_LEADER_POPEJOHN_PEDIA</Civilopedia>
 			<ArtDefineTag>ART_DEF_LEADER_POPEJOHN</ArtDefineTag>
 			<iWonderConstructRand>10</iWonderConstructRand>
@@ -14829,7 +14829,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 		</LeaderHeadInfo>
 		<LeaderHeadInfo>
 			<Type>LEADER_PIYE</Type>
-			<Description>Piye</Description>
+			<Description>[CS] Piye</Description>
 			<Civilopedia>Piye</Civilopedia>
 			<ArtDefineTag>ART_DEF_LEADER_PIYE</ArtDefineTag>
 			<iWonderConstructRand>10</iWonderConstructRand>
@@ -15351,7 +15351,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 		</LeaderHeadInfo>
 		<LeaderHeadInfo>
 			<Type>LEADER_ABU</Type>
-			<Description>Abu</Description>
+			<Description>[CS] Abu</Description>
 			<Civilopedia>Abu</Civilopedia>
 			<ArtDefineTag>ART_DEF_LEADER_ABU</ArtDefineTag>
 			<iWonderConstructRand>25</iWonderConstructRand>
@@ -15871,7 +15871,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 		</LeaderHeadInfo>
 		<LeaderHeadInfo>
 			<Type>LEADER_GUILLAUME_HENRI_DUFOUR</Type>
-			<Description>Guillaume Henri Dufour</Description>
+			<Description>[CS] G. H. Dufour</Description>
 			<Civilopedia>Guillaume Henri Dufour</Civilopedia>
 			<ArtDefineTag>ART_DEF_LEADER_GUILLAUME_HENRI_DUFOUR</ArtDefineTag>
 			<iWonderConstructRand>30</iWonderConstructRand>
@@ -16326,7 +16326,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 		</LeaderHeadInfo>
 		<LeaderHeadInfo>
 			<Type>LEADER_LUDWIG</Type>
-			<Description>Ludwig</Description>
+			<Description>[CS] Ludwig</Description>
 			<Civilopedia>Ludwig</Civilopedia>
 			<ArtDefineTag>ART_DEF_LEADER_LUDWIG</ArtDefineTag>
 			<iWonderConstructRand>30</iWonderConstructRand>
@@ -16815,7 +16815,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 		</LeaderHeadInfo>
 		<LeaderHeadInfo>
 			<Type>LEADER_MACDONALD</Type>
-			<Description>MacDonald</Description>
+			<Description>[CS] MacDonald</Description>
 			<Civilopedia>MacDonald</Civilopedia>
 			<ArtDefineTag>ART_DEF_LEADER_MACDONALD</ArtDefineTag>
 			<iWonderConstructRand>20</iWonderConstructRand>
@@ -17307,7 +17307,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 		</LeaderHeadInfo>
 		<LeaderHeadInfo>
 			<Type>LEADER_SONGTSEN</Type>
-			<Description>Songtsen</Description>
+			<Description>[CS] Songtsen</Description>
 			<Civilopedia>Songtsen</Civilopedia>
 			<ArtDefineTag>ART_DEF_LEADER_SONGTSEN</ArtDefineTag>
 			<iWonderConstructRand>20</iWonderConstructRand>
@@ -17761,7 +17761,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 		</LeaderHeadInfo>
 		<LeaderHeadInfo>
 			<Type>LEADER_HECTOR</Type>
-			<Description>Hector</Description>
+			<Description>[CS] Hector</Description>
 			<Civilopedia>Hector</Civilopedia>
 			<ArtDefineTag>ART_DEF_LEADER_HECTOR</ArtDefineTag>
 			<iWonderConstructRand>20</iWonderConstructRand>

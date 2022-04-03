@@ -424,6 +424,13 @@
 		<iDefineIntVal>20</iDefineIntVal>
 	</Define>
 	<Define>
+		<!-- city state will enjoy free military units according to
+			 the number of cities on the map time this modifier - default is 3
+			 -->
+		<DefineName>FREE_UNITS_PER_STATE_MOD</DefineName>
+		<iDefineIntVal>3</iDefineIntVal>
+	</Define>
+	<Define>
 	<!-- THIS WILL control if city states are shown on the civ picker
 	on custom game - default is no, since the randimizer is turned on
 	if you want to be able to choose city states on the custom game, 

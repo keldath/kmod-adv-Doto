@@ -425,6 +425,9 @@
 			<Help/>
 			<Texture>Art/Interface/MainScreen/CityScreen/Expert_Farmer.dds</Texture>
 			<bVisible>1</bVisible>
+	<!--city state - only for city states -->
+			<bCityStater>1</bCityStater>
+	<!--city state - only for city states -->
 			<GreatPeopleUnitClass>NONE</GreatPeopleUnitClass>
 			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
 			<Yields>
@@ -456,6 +459,9 @@
 			<Help/>
 			<Texture>Art/Interface/MainScreen/CityScreen/Expert_Miner.dds</Texture>
 			<bVisible>1</bVisible>
+	<!--city state - only for city states -->
+			<bCityStater>1</bCityStater>
+	<!--city state - only for city states -->
 			<GreatPeopleUnitClass>NONE</GreatPeopleUnitClass>
 			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
 			<Yields>
@@ -487,6 +493,9 @@
 			<Help/>
 			<Texture>Art/Interface/MainScreen/CityScreen/Expert_TobaccoPlanter.dds</Texture>
 			<bVisible>1</bVisible>
+	<!--city state - only for city states -->
+			<bCityStater>1</bCityStater>
+	<!--city state - only for city states -->
 			<GreatPeopleUnitClass>NONE</GreatPeopleUnitClass>
 			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
 			<Yields>

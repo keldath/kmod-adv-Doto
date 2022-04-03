@@ -1176,6 +1176,9 @@
 	<ElementType name="iHotKeyPriorityAlt" content="textOnly" dt:type="int"/>
 	<ElementType name="iOrderPriority" content="textOnly" dt:type="int"/>
 	<ElementType name="bVisible" content="textOnly" dt:type="boolean"/>
+<!-- doto city state only specialist -->
+	<ElementType name="bCityStater" content="textOnly" dt:type="boolean"/>
+<!-- doto city state only specialist -->	
 	<ElementType name="iGreatPeopleRateChange" content="textOnly" dt:type="int"/>
 	<ElementType name="SpecialistInfo" content="eltOnly">
 		<element type="Type"/>
@@ -1185,6 +1188,9 @@
 		<element type="Help" minOccurs="0"/>
 		<element type="Texture" minOccurs="0"/>
 		<element type="bVisible" minOccurs="0"/>
+<!-- doto city state only specialist -->
+		<element type="bCityStater" minOccurs="0"/>
+<!-- doto city state only specialist -->
 		<element type="GreatPeopleUnitClass" minOccurs="0"/>
 		<element type="iGreatPeopleRateChange" minOccurs="0"/>
 		<element type="Yields" minOccurs="0"/>
