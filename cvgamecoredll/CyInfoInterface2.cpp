@@ -45,7 +45,9 @@ void CyInfoPythonInterface2()
 
 		.def("isAIPlayable", &CvCivilizationInfo::isAIPlayable, "bool ()")
 		.def("isPlayable", &CvCivilizationInfo::isPlayable, "bool ()")
-
+//doto city states - expose to python
+		.def("getIsCityState", &CvCivilizationInfo::getIsCityState, "int ()")
+//doto city states - expose to python		
 		.def("getShortDescription", &CvCivilizationInfo::pyGetShortDescription, "wstring ()")
 		.def("getShortDescriptionKey", &CvCivilizationInfo::pyGetShortDescriptionKey, "wstring ()")
 		.def("getAdjective", &CvCivilizationInfo::pyGetAdjective, "wstring ()")

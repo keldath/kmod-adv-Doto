@@ -11704,6 +11704,12 @@ int CvPlayerAI::AI_baseBonusVal(BonusTypes eBonus, /* advc.036: */ bool bTrade) 
 	if (iCorporationValue <= 0 && getNumAvailableBonuses(eBonus) > 0)
 		iValue /= 3;*/
 
+//city states - values bonus with route changes more
+	rValue +=  GC.getInfo(eBonus).getTradeRouteModifier() / 10;
+	rValue += GC.getInfo(eBonus).getForeignTradeRouteModifier() / 10;
+	rValue += (GC.getInfo(eBonus).getTradeRoutes() * 100 ) / 10;
+//city states - values bonus with route changes more
+
 	rValue /= 10;
 	// <advc.036>
 	int iValue = rValue.round();

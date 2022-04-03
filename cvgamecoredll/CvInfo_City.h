@@ -60,7 +60,9 @@ public: // All the const functions are exposed to Python
 	int getExperience() const;
 
 	bool isVisible() const;
-
+//doto city states
+	bool isCityStater() const;
+//doto city states
 	int getYieldChange(int i) const;
 	const int* getYieldChangeArray() const; // For Moose - CvWidgetData
 	int getCommerceChange(int i) const;
@@ -87,7 +89,9 @@ protected:
 	int m_iExperience;
 
 	bool m_bVisible;
-
+//doto city states
+	bool m_bCityStater;
+//doto city states
 	CvString m_szTexture;
 
 	int* m_piYieldChange;

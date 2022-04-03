@@ -71,8 +71,8 @@ public:
 	void updateAIHandicap(); // advc.127
 
 	DllExport void updateColoredPlots();
-//keldath - color city states plots - city states
-	void updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, NiColorA &color, PlayerTypes eOldOwner) const;
+//doto city states - color city states plots - city states
+	void updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, NiColorA &color) const;
 //doto city states
 	void spawnCityState();
 	void initFreeTechsEra(PlayerTypes ePlayer);

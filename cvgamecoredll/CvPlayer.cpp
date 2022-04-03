@@ -4655,15 +4655,16 @@ int CvPlayer::getNumGovernmentCenters() const
 
 bool CvPlayer::canRaze(CvCity const& kCity) const // advc: param was CvCity*
 {
+
+//doto city states will not be allowed to capture cities ever.
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	{
+		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+		if (cityState)
+			return true;
+	}
 //doto city states
-//doto specialists instead of pop
-// assuming city states have larger radious ( a lazy indication method....
-//city states will not be allowed to capture cities ever.
-	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-	bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
-	if (cityState && GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-		return true;
-//doto specialists instead of pop
 		
 	if (!kCity.isAutoRaze())
 	{
@@ -6441,6 +6442,16 @@ int CvPlayer::calculateUnitCost(int& iFreeUnits, int& iFreeMilitaryUnits, int& i
 	iFreeMilitaryUnits += (((getTotalPopulation() /* advc.004b: */ + iExtraPop) *
 			getFreeMilitaryUnitsPopulationPercent()) / 100);
 
+//doto city states - power up city states - free military units 3 times the number of cities.
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	{
+		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+		if (cityState)
+			iFreeMilitaryUnits += getNumCities() * GC.getDefineINT("FREE_UNITS_PER_STATE_MOD");
+	}	
+//doto city states 
+
 	/*if (!isHuman()) {
 		if (GET_TEAM(getTeam()).hasMetHuman()) {
 			iFreeUnits += getNumCities(); // XXX
@@ -7387,6 +7398,7 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 {
 	if (eReligion == NO_RELIGION)
 		return;
+
 //david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
 //keldath fix - avoid player to found forbidden religion
 	CivilizationTypes eCiv = GET_PLAYER(getID()).getCivilizationType(); //used by city states also
@@ -7394,6 +7406,14 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 	if (eCiv != NO_CIVILIZATION && kCivilization.isForbidden(eReligion)
 		&& GC.getGame().isOption(GAMEOPTION_FORBIDDEN_RELIGION))
 		return;
+//doto city states - dont allow to form religion - added here to use the kcivilization variable
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	{
+		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+		if (cityState)
+			return;
+	}
+//doto city states
 //david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
 //limited religion doto begin - give a pop up to a player.
 	bool limitRel = GC.getGame().isOption(GAMEOPTION_LIMITED_RELIGION);
@@ -7411,11 +7431,6 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 		return;
 	}
 //limited religion doto 	
-//doto city states
-//dont allow city states to form religion
-	bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-		return;
 //doto city states
 
 	CvReligionInfo const& kSlotReligion = GC.getInfo(eSlotReligion);
@@ -7522,11 +7537,14 @@ void CvPlayer::foundCorporation(CorporationTypes eCorporation)
 	if (GC.getGame().isCorporationFounded(eCorporation))
 		return;
 
-//dont allow city states to form a corp
-	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-	bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+//doto - city states - dont allow city states to form a corp
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-		return;
+	{
+		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+		if (cityState)
+			return;
+	}
 //doto city states
 
 	CvCorporationInfo const& kCorp = GC.getInfo(eCorporation);
@@ -7757,18 +7775,22 @@ int CvPlayer::greatPeopleThreshold(bool bMilitary) const
 int CvPlayer::specialistYield(SpecialistTypes eSpecialist, YieldTypes eYield) const
 {
 //doto city states specialists instead of population	
-	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
-	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
-	SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);	
-	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-	bool cityState = kCivilization.getIsCityState() == 1 ? true : false; 
-	if ((eFarmer == eSpecialist || eMiner == eSpecialist || eLabor == eSpecialist)
-			&& (GC.getGame().isOption(GAMEOPTION_CITY_STATES)
-			&& GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && cityState))
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
+		GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES))
 	{
-		return GC.getInfo(eSpecialist).getYieldChange(eYield);
-	}	
-	
+		SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
+		SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
+		SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
+		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+		if ((eFarmer == eSpecialist || eMiner == eSpecialist || eLabor == eSpecialist)
+			 && cityState)
+		{
+			return GC.getInfo(eSpecialist).getYieldChange(eYield);
+		}
+	}
+//doto city states specialists instead of population	
+
 	return GC.getInfo(eSpecialist).getYieldChange(eYield) +
 			getSpecialistExtraYield(eSpecialist, eYield);
 }
@@ -7784,17 +7806,21 @@ int CvPlayer::specialistCommerce(SpecialistTypes eSpecialist, CommerceTypes eCom
 //<Original Code>	
 	//return (GC.getInfo(eSpecialist).getCommerceChange(eCommerce) + getSpecialistExtraCommerce(eCommerce));
 	//return (GC.getSpecialistInfo(eSpecialist).getCommerceChange(eCommerce) + getSpecialistExtraCommerce(eCommerce));
-	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
-	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
-	SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);	
-	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-	bool cityState = kCivilization.getIsCityState() == 1 ? true : false; 
-	if ((eFarmer == eSpecialist || eMiner == eSpecialist || eLabor == eSpecialist)
-			&& (GC.getGame().isOption(GAMEOPTION_CITY_STATES)
-			&& GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && cityState))
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
+		GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES))
 	{
-		return GC.getInfo(eSpecialist).getCommerceChange(eCommerce);
+		SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
+		SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
+		SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
+		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+		if ((eFarmer == eSpecialist || eMiner == eSpecialist || eLabor == eSpecialist)
+			 && cityState)
+		{
+			return GC.getInfo(eSpecialist).getCommerceChange(eCommerce);
+		}
 	}
+	
 		
 	return (GC.getInfo(eSpecialist).getCommerceChange(eCommerce) 
 			+ getSpecialistExtraCommerce(eCommerce) 

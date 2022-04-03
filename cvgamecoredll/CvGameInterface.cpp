@@ -2846,20 +2846,23 @@ void CvGame::handleDiplomacySetAIComment(DiploCommentTypes eComment) const
 	m_bShowingCurrentDeals = (eComment == GC.getAIDiploCommentType("CURRENT_DEALS"));
 }
 
-//doto keldath - city states color plots
-void CvGame::updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, NiColorA &color, PlayerTypes eOldOwner) const
+//doto city states color plots
+void CvGame::updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, NiColorA &color) const
 {
 	CvDLLEngineIFaceBase& kEngine = *gDLL->getEngineIFace();
 	if (clearPlot)
 	{
 		//turn tiles to no color - for that any color will do - just the alpha needs to be 0
 		NiColorA color(GC.getInfo(GC.getColorType("WHITE")).getColor());
-		color.a = 0.0f; 
+		color.a = 1.0f; 
+
 		kEngine.fillAreaBorderPlot(kPlot.getX(), kPlot.getY(),
 			color, AREA_BORDER_CITY_STATE);
+		//kEngine.clearColoredPlots(AREA_BORDER_CITY_STATE)
 		return;
 	}
-	if (kPlot.isRevealed(getActiveTeam()))
-		kEngine.fillAreaBorderPlot(kPlot.getX(), kPlot.getY(),
-			color, AREA_BORDER_CITY_STATE);
+	//if (kPlot.isRevealed(getActiveTeam()))
+	kEngine.fillAreaBorderPlot(kPlot.getX(), kPlot.getY(),
+		color, AREA_BORDER_CITY_STATE);
 }
+//doto city states

@@ -32,6 +32,7 @@ public: // advc: All the const functions are exposed to Python
 //doto city states
 	int getNumLeadersNames() const;
 	int getNumLeaders() const;
+//doto city states 
 	int getSelectionSoundScriptId() const;
 	int getActionSoundScriptId() const;
 
@@ -40,9 +41,9 @@ public: // advc: All the const functions are exposed to Python
 //limited religion doto	
 	int getMaxLimitedReligions() const;
 //limited religion doto	
-//doto specialists instead of pop city states
+//doto city states
 	int getIsCityState() const;
-//doto specialists instead of pop city states
+//doto city states
 	std::wstring pyGetShortDescription(uint uiForm) { return getShortDescription(uiForm); }
 	DllExport const wchar* getShortDescription(uint uiForm = 0);
 	const wchar* getShortDescriptionKey() const;
@@ -71,7 +72,7 @@ public: // advc: All the const functions are exposed to Python
 	std::string getCityNames(int i) const;
 //doto city states 
 	std::string getLeadersNames(int i) const;
-
+//doto city states
 	const CvArtInfoCivilization* getArtInfo() const; // (not exposed to Python)
 	const TCHAR* getButton() const;
 

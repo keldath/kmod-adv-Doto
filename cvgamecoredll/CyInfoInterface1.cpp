@@ -38,7 +38,9 @@ void CyInfoPythonInterface1()
 		.def("getMissionType", &CvSpecialistInfo::getMissionType, "int ()")
 
 		.def("isVisible", &CvSpecialistInfo::isVisible, "bool ()")
-
+//doto city states - expose to python
+		.def("isCityStater", &CvSpecialistInfo::isCityStater, "bool ()")
+//doto city states - expose to python
 		.def("getYieldChange", &CvSpecialistInfo::getYieldChange, "int (int i)")
 		.def("getCommerceChange", &CvSpecialistInfo::getCommerceChange, "int (int i)")
 		.def("getExperience", &CvSpecialistInfo::getExperience, "int ()")

@@ -44,6 +44,9 @@ m_iGreatPeopleUnitClass(NO_UNITCLASS),
 m_iGreatPeopleRateChange(0),
 m_iMissionType(NO_MISSION),
 m_bVisible(false),
+//doto city states
+m_bCityStater(false),
+//doto city states
 m_piYieldChange(NULL),
 m_piCommerceChange(NULL),
 m_piFlavorValue(NULL),
@@ -108,6 +111,13 @@ bool CvSpecialistInfo::isVisible() const
 	return m_bVisible;
 }
 
+//doto city states
+bool CvSpecialistInfo::isCityStater() const
+{
+	return m_bCityStater;
+}
+//doto city states
+
 int CvSpecialistInfo::getExperience() const
 {
 	return m_iExperience;
@@ -148,6 +158,9 @@ bool CvSpecialistInfo::read(CvXMLLoadUtility* pXML)
 
 	pXML->GetChildXmlValByName(m_szTexture, "Texture");
 	pXML->GetChildXmlValByName(&m_bVisible, "bVisible");
+//doto city states
+	pXML->GetChildXmlValByName(&m_bCityStater, "bCityStater");
+//doto city states
 	{
 		CvString szTextVal;
 		pXML->GetChildXmlValByName(szTextVal, "GreatPeopleUnitClass");

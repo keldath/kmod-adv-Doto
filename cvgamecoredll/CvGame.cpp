@@ -7348,8 +7348,7 @@ void CvGame::spawnCityState()
 			//f1rpo said this better be after the init city
 			kPlayer.verifyAlive(); //doto - another unclear addition from keldath....
 			updateScore();
-			//kPlayer.AI_updateAttitude(cityStatePlayer, true);
-			kPlayer.AI_updateAttitude();
+			//kPlayer.AI_updateAttitude(); no need anymore- f1rpo did the AI_updateAttitudes
 			//update attitude of all ai after the added city - new fn from f1rpo 106
 			CvPlayerAI::AI_updateAttitudes(); // K-Mod
 			if (getUWAI().isEnabled())

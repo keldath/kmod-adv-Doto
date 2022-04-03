@@ -15075,6 +15075,28 @@ void CvGameTextMgr::setBonusExtraHelp(CvWStringBuffer &szBuffer, BonusTypes eBon
 			}
 		}
 	}
+
+//doto city states - route from bonus
+	int tr = GC.getInfo(eBonus).getTradeRoutes();
+	int btm = GC.getInfo(eBonus).getTradeRouteModifier();
+	int ftrm = GC.getInfo(eBonus).getForeignTradeRouteModifier();
+	if (tr != 0)
+	{
+		szBuffer.append(NEWLINE);
+		szBuffer.append(gDLL->getText("TXT_KEY_TRADE_ROUTE_BONUS_TR", tr));
+	}
+	if (btm != 0)
+	{
+		szBuffer.append(NEWLINE);
+		szBuffer.append(gDLL->getText("TXT_KEY_TRADE_ROUTE_BONUS_BTM", btm));
+	}
+	if (ftrm != 0)
+	{
+		szBuffer.append(NEWLINE);
+		szBuffer.append(gDLL->getText("TXT_KEY_TRADE_ROUTE_BONUS_FTRM", ftrm));
+	}
+//doto city states - route from bonus
+
 	if(bCivilopediaText)
 		return;
 	if(eActivePlayer != NO_PLAYER)
@@ -20841,6 +20863,46 @@ void CvGameTextMgr::setTradeRouteHelp(CvWStringBuffer &szBuffer, int iRoute, CvC
 			}
 		}
 	}
+
+//doto city states - route from bonus
+	//int tr_cnt = 0;
+	int btm_m = 0;
+	int ftrm_m = 0;
+	FOR_EACH_ENUM(Bonus)
+	{
+		//int tr = GC.getInfo(eLoopBonus).getTradeRoutes();
+		int btm = GC.getInfo(eLoopBonus).getTradeRouteModifier();
+		int ftrm = GC.getInfo(eLoopBonus).getForeignTradeRouteModifier();
+/*
+		if (tr != 0)
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(gDLL->getText("TXT_KEY_TRADE_ROUTE_BONUS_TR", iModifier)); 
+			tr_cnt += tr;
+		}
+*/
+		if (btm != 0)
+		{
+			btm_m += btm;
+		}
+		if (ftrm != 0)
+		{
+			ftrm_m += ftrm;
+		}
+	}
+	if (btm_m != 0)
+	{
+		szBuffer.append(NEWLINE);
+		szBuffer.append(gDLL->getText("TXT_KEY_TRADE_ROUTE_BONUS_BTM", btm_m));
+	}
+	if (ftrm_m != 0)
+	{
+		szBuffer.append(NEWLINE);
+		szBuffer.append(gDLL->getText("TXT_KEY_TRADE_ROUTE_BONUS_FTRM", ftrm_m));
+	}
+	iTotalModifier += btm_m + ftrm_m;
+//doto city states - route from bonus
+
 	FAssert(pCity->totalTradeModifier(pOtherCity) == iTotalModifier);
 	iProfit *= iTotalModifier;
 	iProfit /= 10000;
@@ -20912,6 +20974,7 @@ void CvGameTextMgr::setTradeRouteHelp(CvWStringBuffer &szBuffer, int iRoute, CvC
 		iProfit *= iTradeYieldModifier;
 		iProfit /= 100;
 	} // </advc.004>
+
 	szBuffer.append(NEWLINE);
 	szBuffer.append(gDLL->getText("TXT_KEY_TRADE_ROUTE_TOTAL", iProfit));
 }

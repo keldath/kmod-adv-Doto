@@ -9,9 +9,10 @@ m_iDefaultPlayerColor(NO_PLAYERCOLOR),
 m_eArtStyleType(NO_ARTSTYLE),
 m_iUnitArtStyleType(NO_UNIT_ARTSTYLE),
 m_iNumCityNames(0),
-//doto city states
+//doto city states - unused anymorwe - this was before i knew how to get leaders
 m_iNumLeadersNames(0),
 m_iNumLeaders(0),
+//doto city states
 m_iSelectionSoundScriptId(0),
 m_iActionSoundScriptId(0),
 m_iDerivativeCiv(NO_CIVILIZATION),
@@ -20,9 +21,9 @@ m_bAIPlayable(false),
 //limited religion doto
 m_iMaxLimitedReligions(0),
 //limited religion doto
-//doto specialists instead of pop city states
+//doto city states
 m_isCityState(0),
-//doto specialists instead of pop city states
+//doto city states
 m_piCivilizationBuildings(NULL),
 m_piCivilizationUnits(NULL),
 m_piCivilizationFreeUnitsClass(NULL),
@@ -82,7 +83,7 @@ int CvCivilizationInfo::getNumCityNames() const
 {
 	return m_iNumCityNames;
 }
-//doto city states
+//doto city states - unused anymorwe - this was before i knew how to get leaders
 int CvCivilizationInfo::getNumLeadersNames() const
 {
 	return m_iNumLeadersNames;
@@ -92,6 +93,7 @@ int CvCivilizationInfo::getNumLeaders() const
 {
 	return m_iNumLeaders;
 }
+//doto city state
 
 int CvCivilizationInfo::getSelectionSoundScriptId() const
 {
@@ -109,6 +111,7 @@ bool CvCivilizationInfo::isAIPlayable() const
 	if (GC.getDefineINT("DISPLAY_CITY_STATES_IN_CUSTOM_GAME") == 0
 	&& getIsCityState() == 1)
 		return false;
+//doto city states - if the option is set to randomize	
 	return m_bAIPlayable;
 }
 
@@ -118,6 +121,7 @@ bool CvCivilizationInfo::isPlayable() const
 	if (GC.getDefineINT("DISPLAY_CITY_STATES_IN_CUSTOM_GAME") == 0
 	&& getIsCityState() == 1)
 		return false;
+//doto city states - if the option is set to randomize	
 	return m_bPlayable;
 }
 //limited religion doto
@@ -126,12 +130,12 @@ int CvCivilizationInfo::getMaxLimitedReligions() const
 	return m_iMaxLimitedReligions;
 }
 //limited religion doto
-//doto specialists instead of pop - city states
+//doto city states
 int CvCivilizationInfo::getIsCityState() const
 {
 	return m_isCityState;
 }
-//doto specialists instead of pop city states
+//doto city states
 const wchar* CvCivilizationInfo::getShortDescription(uint uiForm)
 {
 	while(m_aszShortDescription.size() <= uiForm)
@@ -261,9 +265,10 @@ void CvCivilizationInfo::read(FDataStreamBase* stream)
 	stream->Read((int*)&m_eArtStyleType);
 	stream->Read(&m_iUnitArtStyleType); // FlavorUnits by Impaler[WrG]
 	stream->Read(&m_iNumCityNames);
-//doto city states
+//doto city states unused anymore - this was before i knew how to get leaders
 	stream->Read(&m_iNumLeadersNames);
 	stream->Read(&m_iNumLeaders);
+//doto city state
 	stream->Read(&m_iSelectionSoundScriptId);
 	stream->Read(&m_iActionSoundScriptId);
 	stream->Read(&m_iDerivativeCiv);
@@ -272,9 +277,9 @@ void CvCivilizationInfo::read(FDataStreamBase* stream)
 //limited religion doto	
 	stream->Read(&m_iMaxLimitedReligions);
 //limited religion doto	
-//doto specialists instead of pop city states
+//doto city states
 	stream->Read(&m_isCityState);
-//doto specialists instead of pop city states
+//doto city states
 	stream->ReadString(m_szArtDefineTag);
 	stream->ReadString(m_szShortDescriptionKey);
 	stream->ReadString(m_szAdjectiveKey);
@@ -310,10 +315,11 @@ void CvCivilizationInfo::read(FDataStreamBase* stream)
 	SAFE_DELETE_ARRAY(m_paszCityNames);
 	m_paszCityNames = new CvString[m_iNumCityNames];
 	stream->ReadString(m_iNumCityNames, m_paszCityNames);
-//city states
+//doto city states - unused anymore - this was before i knew how to get leaders
 	SAFE_DELETE_ARRAY(m_paszLeadersNames);
 	m_paszLeadersNames = new CvString[m_iNumLeadersNames];
 	stream->ReadString(m_iNumLeadersNames, m_paszLeadersNames);
+//doto city states  unused anymore - this was before i knew how to get leaders
 }
 
 void CvCivilizationInfo::write(FDataStreamBase* stream)
@@ -326,9 +332,10 @@ void CvCivilizationInfo::write(FDataStreamBase* stream)
 	stream->Write(m_eArtStyleType);
 	stream->Write(m_iUnitArtStyleType);
 	stream->Write(m_iNumCityNames);
-//doto city states
+//doto city states - unused anymore - this was before i knew how to get leaders
 	stream->Write(m_iNumLeadersNames);
 	stream->Write(m_iNumLeaders);
+//doto city states
 	stream->Write(m_iSelectionSoundScriptId);
 	stream->Write(m_iActionSoundScriptId);
 	stream->Write(m_iDerivativeCiv);
@@ -337,9 +344,9 @@ void CvCivilizationInfo::write(FDataStreamBase* stream)
 //limited religion doto	
 	stream->Write(m_iMaxLimitedReligions);
 //limited religion doto	
-//doto specialists instead of pop city states
+//doto city states
 	stream->Write(m_isCityState);
-//doto specialists instead of pop city states
+//doto city states
 	stream->WriteString(m_szArtDefineTag);
 	stream->WriteString(m_szShortDescriptionKey);
 	stream->WriteString(m_szAdjectiveKey);
@@ -354,7 +361,7 @@ void CvCivilizationInfo::write(FDataStreamBase* stream)
 	// davidlallen: religion forbidden to civilization next line
 	stream->Write(GC.getNumReligionInfos(), m_pbForbiddenReligions);
 	stream->WriteString(m_iNumCityNames, m_paszCityNames);
-//city states
+//city states  unused anymore - this was before i knew how to get leaders
 	stream->WriteString(m_iNumLeadersNames, m_paszLeadersNames);
 }
 #endif
@@ -388,20 +395,21 @@ bool CvCivilizationInfo::read(CvXMLLoadUtility* pXML)
 //limited religion doto		by default limit to 1
 	pXML->GetChildXmlValByName(&m_iMaxLimitedReligions, "iMaxLimitedReligions", 1);
 //limited religion doto	
-//doto specialists instead of pop city states
+//doto city states
 	pXML->GetChildXmlValByName(&m_isCityState, "isCityState", 0);
-//doto specialists instead of pop city states
+//doto city states
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "Cities"))
 	{
 		pXML->SetStringList(&m_paszCityNames, &m_iNumCityNames);
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
-//doto city states
+//doto city states  - unused anymore - this was before i knew how to get leaders
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "LeadersNames"))
 	{
 		pXML->SetStringList(&m_paszLeadersNames, &m_iNumLeadersNames);
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
+// dito city states
 	// advc.003: Reduce code duplication
 	for (int i = 0; i < 2; i++)
 	{

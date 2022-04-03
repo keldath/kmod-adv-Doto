@@ -5357,33 +5357,42 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 	updateSymbols();
 
 //doto keldath - city states color plots - START
-	bool isOldCityState = false;
-	CivilizationTypes oldCiv = NO_CIVILIZATION;
-	NiColorA color = GC.getInfo(GC.getInfo(GET_PLAYER(getOwner()).getPlayerColor()).getColorTypePrimary()).getColor();
-	if (eOldOwner != NO_PLAYER)
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 	{
-		oldCiv = GET_PLAYER(eOldOwner).getCivilizationType();
-		isOldCityState = GC.getCivilizationInfo(oldCiv).getIsCityState() == 1;
-	}
-
-	if (getOwner() != NO_PLAYER)
-	{
-		CivilizationTypes Civ = GET_PLAYER(getOwner()).getCivilizationType();
-		bool isCityState = GC.getCivilizationInfo(Civ).getIsCityState() == 1;
-
-		//if new owner is not city state an b4 it was - clean it.
-		if (!isCityState && isOldCityState)
+		bool isOldCityState = false;
+		CivilizationTypes oldCiv = NO_CIVILIZATION;
+		if (eOldOwner != NO_PLAYER)
 		{
-			GC.getGame().updateCityStatesColoredPlots(true, *this, color, eOldOwner);
+			oldCiv = GET_PLAYER(eOldOwner).getCivilizationType();
+			isOldCityState = GC.getCivilizationInfo(oldCiv).getIsCityState() == 1;
 		}
-		else if (isCityState)
+
+		if (getOwner() != NO_PLAYER)
 		{
-			GC.getGame().updateCityStatesColoredPlots(false, *this, color, eOldOwner);
+			CivilizationTypes Civ = GET_PLAYER(getOwner()).getCivilizationType();
+			NiColorA color = GC.getInfo(GC.getInfo(GET_PLAYER(getOwner()).getPlayerColor()).getColorTypePrimary()).getColor();
+			bool isCityState = GC.getCivilizationInfo(Civ).getIsCityState() == 1;
+
+			//if new owner is not city state an b4 it was - clean it.
+			if (!isCityState && isOldCityState)
+			{
+				GC.getGame().updateCityStatesColoredPlots(true, *this, color);
+			}
+			else if (isCityState)
+			{
+				GC.getGame().updateCityStatesColoredPlots(false, *this, color);
+			}
 		}
-	}
-	else if (getOwner() == NO_PLAYER && isOldCityState)
-	{
-		GC.getGame().updateCityStatesColoredPlots(true, *this, color, eOldOwner);
+		else if (getOwner() == NO_PLAYER && isOldCityState)
+		{
+			NiColorA color = GC.getInfo(GC.getInfo(GET_PLAYER(eOldOwner).getPlayerColor()).getColorTypePrimary()).getColor();
+			GC.getGame().updateCityStatesColoredPlots(true, *this, color);
+		}
+		else
+		{
+			NiColorA color = GC.getInfo(GC.getColorType("WHITE")).getColor();
+			GC.getGame().updateCityStatesColoredPlots(false, *this, color);
+		}
 	}
 //keldath - color city states plots - END
 }
