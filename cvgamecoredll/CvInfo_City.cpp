@@ -159,7 +159,7 @@ bool CvSpecialistInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(m_szTexture, "Texture");
 	pXML->GetChildXmlValByName(&m_bVisible, "bVisible");
 //doto city states
-	pXML->GetChildXmlValByName(&m_bCityStater, "bCityStater");
+	pXML->GetChildXmlValByName(&m_bCityStater, "bCityStater", 0);
 //doto city states
 	{
 		CvString szTextVal;
