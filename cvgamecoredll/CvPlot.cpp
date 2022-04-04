@@ -9774,8 +9774,8 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 		bool isCityState = GC.getCivilizationInfo(Civ).getIsCityState() == 1;
 		if (isCityState)
 		{
-			bRequiresBonus = true;
-			bNeedsBonus = true;
+			bRequiresBonus = false;
+			bNeedsBonus = false;
 		}
 	}
 //doto city state

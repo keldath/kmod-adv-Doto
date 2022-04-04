@@ -623,7 +623,6 @@ ENUM_START(GameOption, GAMEOPTION)
 	GAMEOPTION_NO_ESPIONAGE, // advc.tsl: Moved to the bottom (hidden anyway)
 //Doto City States
 	GAMEOPTION_CITY_STATES,
-	GAMEOPTION_ENHANCED_CITY_STATES,
 //MOD@VET_Andera412_Blocade_Unit-begin1/1
 	GAMEOPTION_BLOCADE_UNIT,
 //MOD@VET_Andera412_Blocade_Unit-end1/1	

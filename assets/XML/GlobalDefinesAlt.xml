@@ -421,6 +421,14 @@
 			at the moment of the spwan
 			instead of population.
 			civilians consume 1 food * population consumtion multiplier -->
+		<DefineName>SPECIALISTS_INSTEAD_OF_POPULATION</DefineName>
+		<iDefineIntVal>1</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- DOTO SPECIALISTS INSTEAD OF POP - the threshold determins what is the population limit for specialists to start replace normal population
+		the idea is that a city has 20 tiles it canwork as a maxmimum
+		since city states are single cities, this comes as a boost for the city
+		yeilds from these civilans are only food, hammers and gold -->
 		<DefineName>ENHANCED_CITY_STATES_THRESHOLD</DefineName>
 		<iDefineIntVal>20</iDefineIntVal>
 	</Define>

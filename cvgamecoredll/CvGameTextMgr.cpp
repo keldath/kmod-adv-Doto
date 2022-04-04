@@ -21715,7 +21715,7 @@ void CvGameTextMgr::setFoodHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 //doto specialists instead of pop
 		if (cityState //kCity.getFreeCivilianCount() > 0
 			&& ((GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-				GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && cityState) 
+				GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && cityState)
 					&& eFarmer == (SpecialistTypes)i
 					/*|| eMiner == (SpecialistTypes)i || eLabor == (SpecialistTypes)i)*/
 				)
@@ -21737,7 +21737,7 @@ void CvGameTextMgr::setFoodHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 		bSimple = false; // advc.087
 		if (iFreeCivilianFood != 0
 			&& ((GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-				GC.getGame().isOption(GAMEOPTION_ENHANCED_CITY_STATES) && cityState)
+				GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && cityState)
 			))
 		{
 			szBuffer.append(NEWLINE);
