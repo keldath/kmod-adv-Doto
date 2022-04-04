@@ -9765,6 +9765,21 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 			}
 		}
 	}
+
+//doto city state -allows cities to build units without bonus prereq
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
+		GC.getDefineINT("CS_BUILD_UNITS_WITH_NO_PREQ_BONUS") ==  1)
+	{
+		CivilizationTypes Civ = GET_PLAYER(getOwner()).getCivilizationType();
+		bool isCityState = GC.getCivilizationInfo(Civ).getIsCityState() == 1;
+		if (isCityState)
+		{
+			bRequiresBonus = true;
+			bNeedsBonus = true;
+		}
+	}
+//doto city state
+
 	if (bRequiresBonus && bNeedsBonus)
 		return false;
 //Shqype Vicinity Bonus Start

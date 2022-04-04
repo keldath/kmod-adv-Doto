@@ -411,6 +411,7 @@
 		<!-- ADDE VALUE TO RAISE NATURAL COMBAT LIMIT COMPARED TO AVERAGE DAMAGE OF ALL DAMAGED DEFENDER UNITS -->
 		<DefineName>RANGED_ALL_DMGED_CMLIMIT_THRESH</DefineName>
 		<iDefineIntVal>20</iDefineIntVal>
+<!-- DOTO rangedstrikeMOD - end - Improved AI Range Attack -->
 <!-- DOTO city states - START  -->
 	</Define>
 	<Define>
@@ -431,6 +432,22 @@
 		<iDefineIntVal>3</iDefineIntVal>
 	</Define>
 	<Define>
+		<!-- this will add to city states a tech diffuision modifier
+			 in addition it will add the number of civ cities minus own city 
+			 todo minus all city states
+			 -->
+		<DefineName>CITY_STATE_TECH_DIFFUSION_MOD</DefineName>
+		<iDefineIntVal>50</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- let city states build units without prereq bonus...
+			 might be over powered.
+			 will add a xml tag to tag specific units maybe.
+			 -->
+		<DefineName>CS_BUILD_UNITS_WITH_NO_PREQ_BONUS</DefineName>
+		<iDefineIntVal>1</iDefineIntVal>
+	</Define>
+	<Define>
 	<!-- THIS WILL control if city states are shown on the civ picker
 	on custom game - default is no, since the randimizer is turned on
 	if you want to be able to choose city states on the custom game, 
@@ -442,15 +459,15 @@
 	</Define>
 	<Define>
 		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_TINY</DefineName>
-		<iDefineIntVal>1</iDefineIntVal>
-	</Define>
-	<Define>
-		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_SMALL</DefineName>
 		<iDefineIntVal>2</iDefineIntVal>
 	</Define>
 	<Define>
-		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_STANDARD</DefineName>
+		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_SMALL</DefineName>
 		<iDefineIntVal>3</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_STANDARD</DefineName>
+		<iDefineIntVal>4</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_LARGE</DefineName>

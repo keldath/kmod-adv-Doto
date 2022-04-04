@@ -6692,6 +6692,16 @@ int CvPlayer::calculateResearchModifier(TechTypes eTech,  // <advc.910>
 	}
 	iModifier += *piFromOtherKnown; // advc.910
 
+//doto city states - increase chances for tech diffusion to city state
+	CivilizationTypes eCiv = GET_PLAYER(getID()).getCivilizationType(); 
+	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(eCiv); 
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	{
+		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;// 
+		iModifier += GC.getDefineINT("CITY_STATE_TECH_DIFFUSION_MOD") + std::min(0, GC.getGame().getNumCivCities()-GET_PLAYER(getID()).getNumCities());
+	}
+//doto city states 
+
 	int iPossiblePaths = 0;
 	int iUnknownPaths = 0;
 	for (int i = 0; i < GC.getInfo(eTech).getNumOrTechPrereqs(); i++)
