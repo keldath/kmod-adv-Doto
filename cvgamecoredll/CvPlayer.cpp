@@ -3506,8 +3506,8 @@ int CvPlayer::calculateScore(bool bFinal, bool bVictory) const
 	}
 		if (kCiv.getIsCityState() == 1)
 		{
-			int iLandScore = kGame.getScoreComponent(getLandScore() * (maxNumCitiesPlayer-minNumCitiesPlayer), kGame.getInitLand(),
-				kGame.getMaxLand(), iSCORE_LAND_FACTOR, true, bFinal, bVictory);
+			iLandScore += iLandScore * std::min((maxNumCitiesPlayer - minNumCitiesPlayer), 2);
+			iPopulationScore += iPopulationScore * std::min((maxNumCitiesPlayer - minNumCitiesPlayer), 2);
 		}
 	}
 //doto city states
@@ -4024,6 +4024,17 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 	bool bValid = false; // advc.opt: TradeDenial check moved down
 	CvTeam const& kOurTeam = GET_TEAM(getTeam());
 	CvTeam const& kToTeam = GET_TEAM(eWhoTo);
+
+//doto city state - dont allow city statesdo some trades
+	bool meCityState = false;
+	bool himCityState = false;
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	{
+		meCityState = GC.getCivilizationInfo(GET_PLAYER(getID()).getCivilizationType()).getIsCityState() == 1;
+		himCityState = GC.getCivilizationInfo(GET_PLAYER(eWhoTo).getCivilizationType()).getIsCityState() == 1;
+	}
+//doto city state - dont allow city statesdo some trades
+
 	switch (item.m_eItemType)
 	{
 	case TRADE_TECHNOLOGIES:
@@ -4079,6 +4090,10 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 			break;
 		}
 		bValid = canTradeCityTo(eWhoTo, *pCity); // advc.ctr;
+//doto city state - dont allow city states trade cities
+		if (meCityState || himCityState)
+			bValid = false;
+//doto city state - dont allow city states trade cities
 		break;
 	}
 	case TRADE_GOLD:
@@ -4097,6 +4112,11 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 		// advc.112: Make sure that only capitulation is possible between war enemies
 		if (!kToTeam.isAtWar(getTeam()))
 			bValid = true;
+//doto city state - dont allow city states to be a part of vassal
+		if (meCityState || himCityState)
+			bValid = false;
+		//break; //added break - was missing or not
+//doto city state - dont allow city states to be a part of vassal
 	case TRADE_SURRENDER:
 	{
 		bool bForce = (item.m_iData == 1); // Used by CvDeal::startTeamTrade
@@ -4691,8 +4711,7 @@ bool CvPlayer::canRaze(CvCity const& kCity) const // advc: param was CvCity*
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 	{
 		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
-		if (cityState)
+		if (kCivilization.getIsCityState() == 1)
 			return true;
 	}
 //doto city states
@@ -6473,13 +6492,12 @@ int CvPlayer::calculateUnitCost(int& iFreeUnits, int& iFreeMilitaryUnits, int& i
 	iFreeMilitaryUnits += (((getTotalPopulation() /* advc.004b: */ + iExtraPop) *
 			getFreeMilitaryUnitsPopulationPercent()) / 100);
 
-//doto city states - power up city states - free military units 3 times the number of cities.
+//doto city states - power up city states - free military units 3 times the TotalPopulatio.
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 	{
 		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
-		if (cityState)
-			iFreeMilitaryUnits += getNumCities() * GC.getDefineINT("FREE_UNITS_PER_STATE_MOD");
+		if (kCivilization.getIsCityState() == 1)
+			iFreeMilitaryUnits += getTotalPopulation() * GC.getDefineINT("FREE_UNITS_PER_STATE_MOD");
 	}	
 //doto city states 
 
@@ -6728,8 +6746,8 @@ int CvPlayer::calculateResearchModifier(TechTypes eTech,  // <advc.910>
 	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(eCiv); 
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 	{
-		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;// 
-		iModifier += GC.getDefineINT("CITY_STATE_TECH_DIFFUSION_MOD") + std::min(0, GC.getGame().getNumCivCities()-GET_PLAYER(getID()).getNumCities());
+		if (kCivilization.getIsCityState() == 1)
+			iModifier += GC.getDefineINT("CITY_STATE_TECH_DIFFUSION_MOD") * std::min(2, GC.getGame().getNumCivCities());
 	}
 //doto city states 
 
@@ -7450,8 +7468,7 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 //doto city states - dont allow to form religion - added here to use the kcivilization variable
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 	{
-		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
-		if (cityState)
+		if (kCivilization.getIsCityState() == 1)
 			return;
 	}
 //doto city states
@@ -7582,8 +7599,7 @@ void CvPlayer::foundCorporation(CorporationTypes eCorporation)
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 	{
 		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
-		if (cityState)
+		if (kCivilization.getIsCityState() == 1)
 			return;
 	}
 //doto city states
@@ -7823,10 +7839,9 @@ int CvPlayer::specialistYield(SpecialistTypes eSpecialist, YieldTypes eYield) co
 		//SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
 		//SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
 		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
 		if (GC.getInfo(eSpecialist).isCityStater()
 			//(eFarmer == eSpecialist || eMiner == eSpecialist || eLabor == eSpecialist)
-			 && cityState)
+			 && kCivilization.getIsCityState() == 1)
 		{
 			return GC.getInfo(eSpecialist).getYieldChange(eYield);
 		}
@@ -15092,10 +15107,9 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	//SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
 	//SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
 	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-	bool cityState = kCivilization.getIsCityState() == 1;
 	bool isCivilian = false;
 	if ((GC.getGame().isOption(GAMEOPTION_CITY_STATES)
-			&& GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && cityState))
+			&& GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && kCivilization.getIsCityState() == 1))
 			isCivilian = true;
 //doto city states specialists instead of pop
 	FOR_EACH_ENUM2(Yield, y)
@@ -18555,9 +18569,11 @@ bool CvPlayer::canSplitEmpire() const
 	if (GC.getGame().isOption(GAMEOPTION_NO_VASSAL_STATES))
 		return false;
 
-//doto city states - cant be vassal
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+//doto city states - cant be vassal sagi
+	CvCivilizationInfo & kCiv = GC.getCivilizationInfo(getCivilizationType());
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && kCiv.getIsCityState() == 1)
 		return false;
+//doto city states - cant be vassal sagi
 
 	if (isAVassal())
 		return false;
@@ -18578,6 +18594,12 @@ bool CvPlayer::canSplitEmpire() const
 bool CvPlayer::canSplitArea(CvArea const& kArea) const // advc: was iAreaId
 {
 	PROFILE_FUNC(); // advc: Moved from CvPlayerAI::AI_doSplit
+
+//doto city states - cant be vassal sagi
+	CvCivilizationInfo & kCiv = GC.getCivilizationInfo(getCivilizationType());
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && kCiv.getIsCityState() == 1)
+		return false;
+//doto city states - cant be vassal sagi
 
 	if (!hasCapital())
 		return false;
@@ -19889,7 +19911,15 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 	PROFILE_FUNC(); // advc.opt (not frequently called)
 	TradeData item;
 	bool const bOtherHuman = GET_PLAYER(eOtherPlayer).isHuman(); // advc.opt
-
+//doto city state - remove irrelevnt options.
+	bool meCityState = false;
+	bool himCityState = false;
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	{
+		meCityState = GC.getCivilizationInfo(GET_PLAYER(getID()).getCivilizationType()).getIsCityState() == 1;
+		himCityState = GC.getCivilizationInfo(GET_PLAYER(eOtherPlayer).getCivilizationType()).getIsCityState() == 1;
+	}
+//doto city state - remove irrelevnt options.
 	setTradeItem(&item, TRADE_GOLD);
 	if (canTradeItem(eOtherPlayer, item))
 		kOurInventory.insertAtEnd(item);
@@ -19902,9 +19932,14 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 	if (canTradeItem(eOtherPlayer, item))
 		kOurInventory.insertAtEnd(item);
 
-	setTradeItem(&item, TRADE_VASSAL, 0);
-	if (canTradeItem(eOtherPlayer, item))
-		kOurInventory.insertAtEnd(item);
+//doto city state 
+	if (!meCityState && !himCityState)
+	{
+		setTradeItem(&item, TRADE_VASSAL, 0);
+		if (canTradeItem(eOtherPlayer, item))
+			kOurInventory.insertAtEnd(item);
+	}
+//doto city state 
 
 	setTradeItem(&item, TRADE_OPEN_BORDERS);
 	if (canTradeItem(eOtherPlayer, item))

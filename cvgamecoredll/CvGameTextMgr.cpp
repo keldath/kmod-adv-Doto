@@ -11612,7 +11612,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 				gDLL->getSymbolID(UNHEALTHY_CHAR)));
 	}
 /* Population Limit ModComp - Beginning  */
-	if (kBuilding.getPopulationLimitChange() != 0)
+	if (kBuilding.getPopulationLimitChange() != 0 && GC.getGame().isOption(GAMEOPTION_NO_POPULATION_LIMIT))
 	{
 		int iRealValue = (ePlayer == NO_PLAYER) ? kBuilding.getPopulationLimitChange() : GC.getGame().getAdjustedPopulationLimitChange(kBuilding.getPopulationLimitChange());
 		if (bCivilopediaText || ePlayer == NO_PLAYER || !GET_TEAM(GET_PLAYER(ePlayer).getTeam()).isNoPopulationLimit())
@@ -16200,13 +16200,16 @@ void CvGameTextMgr::buildIgnoreIrrigationString(CvWStringBuffer &szBuffer,
 	}
 
 /* Population Limit ModComp - Beginning */
-	if (GC.getInfo(eTech).isNoPopulationLimit() && (!bPlayerContext || (GC.getGame().getActiveTeam() == NO_TEAM) || !(GET_TEAM(GC.getGame().getActiveTeam()).isNoPopulationLimit())))
+	if (GC.getGame().isOption(GAMEOPTION_NO_POPULATION_LIMIT))
 	{
-		if (bList)
+		if (GC.getInfo(eTech).isNoPopulationLimit() && (!bPlayerContext || (GC.getGame().getActiveTeam() == NO_TEAM) || !(GET_TEAM(GC.getGame().getActiveTeam()).isNoPopulationLimit())))
 		{
-			szBuffer.append(NEWLINE);
+			if (bList)
+			{
+				szBuffer.append(NEWLINE);
+			}
+			szBuffer.append(gDLL->getText("TXT_KEY_MISC_IS_NO_POPULATION_LIMIT"));
 		}
-		szBuffer.append(gDLL->getText("TXT_KEY_MISC_IS_NO_POPULATION_LIMIT"));
 	}
 	/* Population Limit ModComp - End */
 }
@@ -20872,7 +20875,7 @@ void CvGameTextMgr::setTradeRouteHelp(CvWStringBuffer &szBuffer, int iRoute, CvC
 	{
 		//int tr = GC.getInfo(eLoopBonus).getTradeRoutes();
 		int btm = GC.getInfo(eLoopBonus).getTradeRouteModifier();
-		int ftrm = GC.getInfo(eLoopBonus).getForeignTradeRouteModifier();
+		//int ftrm = GC.getInfo(eLoopBonus).getForeignTradeRouteModifier();
 /*
 		if (tr != 0)
 		{
@@ -20881,14 +20884,16 @@ void CvGameTextMgr::setTradeRouteHelp(CvWStringBuffer &szBuffer, int iRoute, CvC
 			tr_cnt += tr;
 		}
 */
+/*		i think we dont need this - the modifiers are included in the city trade mod already
+		causes an assert below*/
 		if (btm != 0)
 		{
 			btm_m += btm;
 		}
-		if (ftrm != 0)
+	/*	if (ftrm != 0)
 		{
 			ftrm_m += ftrm;
-		}
+		} */
 	}
 	if (btm_m != 0)
 	{
@@ -20900,9 +20905,9 @@ void CvGameTextMgr::setTradeRouteHelp(CvWStringBuffer &szBuffer, int iRoute, CvC
 		szBuffer.append(NEWLINE);
 		szBuffer.append(gDLL->getText("TXT_KEY_TRADE_ROUTE_BONUS_FTRM", ftrm_m));
 	}
-	iTotalModifier += btm_m + ftrm_m;
+	iTotalModifier += btm_m; //+ ftrm_m;
 //doto city states - route from bonus
-
+	int a = pCity->totalTradeModifier(pOtherCity);
 	FAssert(pCity->totalTradeModifier(pOtherCity) == iTotalModifier);
 	iProfit *= iTotalModifier;
 	iProfit /= 10000;

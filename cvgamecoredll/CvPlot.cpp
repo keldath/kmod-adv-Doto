@@ -9614,7 +9614,8 @@ void CvPlot::applyEvent(EventTypes eEvent)
 	}
 }
 
-
+//doto city state -allows cities to build units without bonus prereq
+//edited the parts of bonus checks
 bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 	bool bCheckAirUnitCap, // advc.001b
 	BonusTypes eAssumeAvailable) const // advc.001u
@@ -9654,17 +9655,26 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 			return false;
 	}
 
-	if (kUnit.isPrereqBonuses())
+//doto city state -allows cities to build units without bonus prereq
+	bool isCityState = false;
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
+		GC.getDefineINT("CS_BUILD_UNITS_WITH_NO_PREQ_BONUS") == 1)
+	{
+		CivilizationTypes Civ = GET_PLAYER(getOwner()).getCivilizationType();
+		isCityState = GC.getCivilizationInfo(Civ).getIsCityState() == 1;
+	}
+//doto city state -allows cities to build units without bonus prereq
+	if (kUnit.isPrereqBonuses() && !isCityState)
 	{
 		if (kUnit.getDomainType() == DOMAIN_SEA)
 		{	// advc: Moved to CvCity
-			if (bCity && !pCity->isPrereqBonusSea())
+			if (bCity && (!pCity->isPrereqBonusSea() && !isCityState))
 				return false;
 		}
 		else
 		{
 			//if (getArea().getNumTotalBonuses() > 0)
-			if(!getArea().isAnyBonus()) // advc.001
+			if(!getArea().isAnyBonus() && !isCityState) // advc.001
 				return false;
 		}
 	}
@@ -9683,7 +9693,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 	{
 		/*  Don't allow any ships to be trained at lakes, except Work Boat
 			(if there are resources in the lake; already checked above). */
-		if (kUnit.getDomainType() == DOMAIN_SEA && !kUnit.isPrereqBonuses() &&
+		if (kUnit.getDomainType() == DOMAIN_SEA && (!kUnit.isPrereqBonuses() && !isCityState) &&
 			!isAdjacentSaltWater())
 		{
 			return false;
@@ -9733,54 +9743,43 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 	if(ePrereqAndBonus != NO_BONUS &&
 		ePrereqAndBonus != eAssumeAvailable) // advc.001u
 	{
-		if (!bCity)
+		if (!bCity && !isCityState)
 		{
 			if (!isPlotGroupConnectedBonus(getOwner(), ePrereqAndBonus))
 				return false;
 		}
-		else if (!pCity->hasBonus(ePrereqAndBonus))
+		else if (!pCity->hasBonus(ePrereqAndBonus) )
 			return false;
 	}
 
 	bool bRequiresBonus = false;
 	bool bNeedsBonus = true;
-	for (int i = 0; i < kUnit.getNumPrereqOrBonuses(); i++)
+	if (!isCityState)
 	{
-		BonusTypes const ePrereqOrBonus = kUnit.getPrereqOrBonuses(i);
-		if (ePrereqOrBonus != eAssumeAvailable) // advc.001u
+		for (int i = 0; i < kUnit.getNumPrereqOrBonuses(); i++)
 		{
-			bRequiresBonus = true;
-			if (bCity)
+			BonusTypes const ePrereqOrBonus = kUnit.getPrereqOrBonuses(i);
+			if (ePrereqOrBonus != eAssumeAvailable) // advc.001u
 			{
-				if (pCity->hasBonus(ePrereqOrBonus))
+				bRequiresBonus = true;
+				if (bCity)
+				{
+					if (pCity->hasBonus(ePrereqOrBonus))
+					{
+						bNeedsBonus = false;
+						break;
+					}
+				}
+				else if (isPlotGroupConnectedBonus(getOwner(), ePrereqOrBonus))
 				{
 					bNeedsBonus = false;
 					break;
 				}
 			}
-			else if (isPlotGroupConnectedBonus(getOwner(), ePrereqOrBonus))
-			{
-				bNeedsBonus = false;
-				break;
-			}
 		}
 	}
 
-//doto city state -allows cities to build units without bonus prereq
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-		GC.getDefineINT("CS_BUILD_UNITS_WITH_NO_PREQ_BONUS") ==  1)
-	{
-		CivilizationTypes Civ = GET_PLAYER(getOwner()).getCivilizationType();
-		bool isCityState = GC.getCivilizationInfo(Civ).getIsCityState() == 1;
-		if (isCityState)
-		{
-			bRequiresBonus = false;
-			bNeedsBonus = false;
-		}
-	}
-//doto city state
-
-	if (bRequiresBonus && bNeedsBonus)
+	if (bRequiresBonus && bNeedsBonus && !isCityState)
 		return false;
 //Shqype Vicinity Bonus Start
 /*		if (GC.getUnitInfo(eUnit).getPrereqVicinityBonus() != NO_BONUS)

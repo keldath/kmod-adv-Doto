@@ -6459,20 +6459,18 @@ int CvPlayerAI::AI_techUnitValue(TechTypes eTech, int iPathLength, bool& bEnable
 					break;
 
 				case UNITAI_ICBM:
+				{
 					//iMilitaryValue += ((bWarPlan) ? 200 : 100);
 					// K-Mod
-					if (!GC.getGame().isNoNukes())
+					int const iNukeWeight = AI_nukeWeight();
+					if (iNukeWeight > 0) // advc (replacing an assertion)
 					{
 						iOffenceValue = std::max(iOffenceValue,
-								(bWarPlan ? 2 : 1) * iWeight +
-								(GC.getGame().isNukesValid() ?
-								2 * AI_nukeWeight() : 0) * iWeight / 100);
-						FAssert(!GC.getGame().isNukesValid() ||
-								kTeam.isCapitulated() || // advc.143b
-								AI_nukeWeight() > 0);
-					}
-					// K-Mod end
+							(bWarPlan ? 2 : 1) * iWeight +
+							(2 * iNukeWeight * iWeight) / 100);
+					} // K-Mod end
 					break;
+				}
 
 				case UNITAI_WORKER_SEA:
 					if (iCoastalCities > 0)
@@ -11506,6 +11504,15 @@ int CvPlayerAI::AI_bonusVal(BonusTypes eBonus, int iChange, bool bAssumeEnabled,
 	/*  advc.036: The potential for trades isn't that marginal, and the
 		base value (for the first copy of a resource) is unhelpful. */
 	iValue = std::max(iValue, iTradeVal);
+
+//city states - values bonus with route changes more
+// added here in addition to AI_baseBonusVal. in this fn the valuefor importing it is being affected by this fn
+//so by adding it here , i hope they ai would like to get this resouse.
+	iValue += std::min((GC.getInfo(eBonus).getTradeRouteModifier() / 10), 0);
+	iValue += std::min((GC.getInfo(eBonus).getForeignTradeRouteModifier() / 10), 0);
+	iValue += std::min(((GC.getInfo(eBonus).getTradeRoutes() * 100) / 10), 0);
+//city states - values bonus with route changes more
+
 	return iValue;
 }
 
@@ -11705,9 +11712,13 @@ int CvPlayerAI::AI_baseBonusVal(BonusTypes eBonus, /* advc.036: */ bool bTrade) 
 		iValue /= 3;*/
 
 //city states - values bonus with route changes more
-	rValue +=  GC.getInfo(eBonus).getTradeRouteModifier() / 10;
-	rValue += GC.getInfo(eBonus).getForeignTradeRouteModifier() / 10;
-	rValue += (GC.getInfo(eBonus).getTradeRoutes() * 100 ) / 10;
+//removing it from here - ai should think this is wothless, 
+//i added value to the bonusval fn  - which is used to asses import value
+/*
+	rValue += std::min((GC.getInfo(eBonus).getTradeRouteModifier() / 10),0);
+	rValue += std::min((GC.getInfo(eBonus).getForeignTradeRouteModifier() / 10) ,0);
+	rValue += std::min(((GC.getInfo(eBonus).getTradeRoutes() * 100 ) / 10) ,0);
+*/
 //city states - values bonus with route changes more
 
 	rValue /= 10;
@@ -12255,10 +12266,10 @@ int CvPlayerAI::AI_bonusTradeVal(BonusTypes eBonus, PlayerTypes eFromPlayer, int
 		if ((civName.find(L"Route") != std::string::npos))
 		{
 			CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-			bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
+			bool cityState = kCivilization.getIsCityState() == 1;
 			//CvPlayerAI const& a = GET_PLAYER(kFromPlayer);
 			CvCivilizationInfo & fkCivilization = GC.getCivilizationInfo(kFromPlayer.getCivilizationType());
-			bool fcityState = fkCivilization.getIsCityState() == 1 ? true : false;
+			bool fcityState = fkCivilization.getIsCityState() == 1;
 			//done let normal civs get it.
 			if (!cityState && !fcityState)
 				iR = 0;
@@ -12272,6 +12283,16 @@ DenialTypes CvPlayerAI::AI_bonusTrade(BonusTypes eBonus, PlayerTypes eToPlayer,
 	int iChange) const // advc.133
 {
 	PROFILE_FUNC();
+	//city state test
+	bool a = false;
+	if (
+		GC.getInfo(eBonus).getTradeRoutes() > 0 ||
+		GC.getInfo(eBonus).getTradeRouteModifier() > 0 ||
+		GC.getInfo(eBonus).getForeignTradeRouteModifier() > 0
+		)
+	{
+		a = true;
+	}
 
 	CvPlayerAI const& kPlayer = GET_PLAYER(eToPlayer); // advc
 	FAssertMsg(eToPlayer != getID(), "shouldn't call this function on ourselves");

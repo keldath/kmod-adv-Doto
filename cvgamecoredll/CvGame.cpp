@@ -7343,7 +7343,7 @@ void CvGame::spawnCityState()
 		{
 
 			//FAssert(iBestValue > 0); // advc.300
-			kPlayer.initCity(pBestPlot->getX(), pBestPlot->getY(), true,true, -1);
+			kPlayer.initCity(pBestPlot->getX(), pBestPlot->getY(), true,true, 0);
 			logBBAI("A City State was created at plot %d, %d", pBestPlot->getX(), pBestPlot->getY()); // advc.300 (from MNAI)
 			//f1rpo said this better be after the init city
 			kPlayer.verifyAlive(); //doto - another unclear addition from keldath....

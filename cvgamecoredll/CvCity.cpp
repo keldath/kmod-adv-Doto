@@ -711,6 +711,12 @@ int CvCity::calculateBaseYieldRate(YieldTypes eYield)
 // advc: Code cut and pasted from CvPlot::doCulture; also refactored.
 void CvCity::doRevolt()
 {
+	//doto city states - cant be vassal sagi
+	CvCivilizationInfo & kCiv = GC.getCivilizationInfo(getCivilizationType());
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && kCiv.getIsCityState() == 1)
+		return ;
+	//doto city states - cant be vassal sagi
+	
 	PROFILE_FUNC();
 	// <advc.023>
 	{
@@ -3296,9 +3302,9 @@ void CvCity::processBonus(BonusTypes eBonus, int iChange)
 				getBonusYieldRateModifier(eLoopYield, eBonus) * iChange);
 	}
 //doto city states - route from bonus
+	changeExtraTradeRoutes(GC.getInfo(eBonus).getTradeRoutes() * iChange);//this first! cause of update trade routes
 	changeTradeRouteModifier(GC.getInfo(eBonus).getTradeRouteModifier() * iChange);
 	changeForeignTradeRouteModifier(GC.getInfo(eBonus).getForeignTradeRouteModifier() * iChange);
-	changeExtraTradeRoutes(GC.getInfo(eBonus).getTradeRoutes() * iChange);
 //doto city states - route from bonus
 }
 
