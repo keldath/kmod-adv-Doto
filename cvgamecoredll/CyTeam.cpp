@@ -1042,3 +1042,14 @@ int CyTeam::AI_estimateYieldRate(int iPlayer, int iYield) const
 	return m_pTeam->AI_estimateYieldRate((PlayerTypes)iPlayer,
 			(YieldTypes)iYield).round();
 }
+
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+bool CyTeam::isFreeTradeAgreementTrading()
+{
+	return m_pTeam ? m_pTeam->isFreeTradeAgreementTrading() : false;
+}
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/

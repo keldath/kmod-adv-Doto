@@ -687,6 +687,17 @@ void CvDLLWidgetData::parseHelp(CvWStringBuffer &szBuffer, CvWidgetDataStruct &w
 		GAMETEXT.setCommerceChangeHelp(szBuffer, L"", L"", gDLL->getText("TXT_KEY_CIVIC_PER_SPECIALIST").GetCString(), GC.getInfo((TechTypes)(widgetDataStruct.m_iData1)).getSpecialistExtraCommerceArray(), false, false);
 		break;
 	// K-Mod end
+
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	case WIDGET_HELP_FREE_TRADE_AGREEMENT:
+		parseFreeTradeAgreementHelp(widgetDataStruct, szBuffer);
+		break;
+
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	// <advc.706>
 	case WIDGET_RF_CIV_CHOICE:
 		GC.getGame().getRiseFall().assignCivSelectionHelp(szBuffer,
@@ -783,15 +794,7 @@ bool CvDLLWidgetData::executeAction(CvWidgetDataStruct &widgetDataStruct)
 		break;
 
 	case WIDGET_PLOT_LIST_SHIFT:
-		gDLL->UI().changePlotListColumn(iData1 *
-			  // <advc.004n> BtS code:
-			  //((GC.ctrlKey()) ? (GC.getDefineINT("MAX_PLOT_LIST_SIZE") - 1) : 1));
-			  std::min(GC.getDefineINT("MAX_PLOT_LIST_SIZE"),
-			  gDLL->UI().getHeadSelectedCity()->getPlot().getNumUnits())
-			  /* Don't really know how to determine the number of units shown
-				 initially. Offset divided by 9 happens to work, at least for
-				 1024x768 (offset 81, 9 units) and 1280x1024 (144, 16). */
-			  - gDLL->UI().getPlotListOffset() / 9); // </advc.004n>
+		doPlotListShift(iData1); // advc: Moved into new function
 		break;
 
 	case WIDGET_CITY_SCROLL:
@@ -1259,6 +1262,46 @@ void CvDLLWidgetData::doPlotList(CvWidgetDataStruct &widgetDataStruct)
 		if (bWasCityScreenUp)
 			gDLL->UI().lookAtSelectionPlot();
 	}
+}
+
+// advc: This has gotten verbose, moving it out of executeAction.
+void CvDLLWidgetData::doPlotListShift(int iChange)
+{
+	//int iIncr = (GC.ctrlKey() ? GC.getDefineINT("MAX_PLOT_LIST_SIZE") - 1 : 1); // BtS
+	// <advc.004n>
+	if (GC.getMAX_PLOT_LIST_ROWS() <= 1)
+		return;
+	CvPlot const* pPlot = gDLL->UI().getSelectionPlot();
+	if (pPlot == NULL)
+		return;
+	int iStep = 10;
+	int const iMaxStep = GC.getDefineINT("MAX_PLOT_LIST_SIZE"); // 100
+	if (gDLL->UI().isCityScreenUp())
+	{
+		int const iPlotUnits = pPlot->getNumUnits();
+		static int iUnitsPerRow = 0;
+		if (GC.getGame().getPlotListShift() == 0 && iChange == 1)
+		{
+			/*	Unhelpfully, the offset counts backward from the maximal
+				number of units that CvMainInterface can display at once.
+				Since we know that the city screen shows 1 row initially,
+				we can figure out how many units are actually shown.*/
+			iUnitsPerRow = gDLL->UI().getPlotListOffset() /
+					(GC.getMAX_PLOT_LIST_ROWS() - 1);
+			/*	Show a total of MAX_PLOT_LIST_SIZE. (Then move in steps of 10,
+				same as on the main screen, which shows multiple rows already
+				at shift 0.) */
+			iStep = std::max(iStep, std::min(
+					iPlotUnits, iMaxStep - iUnitsPerRow));
+		}
+		else if (GC.getGame().getPlotListShift() == 1 && iChange == -1)
+		{
+			FAssert(iUnitsPerRow > 0);
+			iStep = std::min(iMaxStep, iPlotUnits) - iUnitsPerRow;
+		}
+	}
+	GC.getGame().changePlotListShift(iChange);
+	gDLL->UI().changePlotListColumn(iChange * iStep); // </advc.004n>
 }
 
 
@@ -4720,6 +4763,16 @@ void CvDLLWidgetData::parseTradeItem(CvWidgetDataStruct &widgetDataStruct,
 		szBuffer.append(gDLL->getText("TXT_KEY_TRADE_PEACE_TREATY",
 				GC.getDefineINT(CvGlobals::PEACE_TREATY_LENGTH)));
 		break;
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	case TRADE_FREE_TRADE_ZONE:
+		szBuffer.append(gDLL->getText("TXT_KEY_TRADE_FREE_TRADE_ZONE"));
+		break;
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
+
 	// <advc.034>
 	case TRADE_DISENGAGE:
 		szBuffer.append(gDLL->getText("TXT_KEY_TRADE_DISENGAGE"));
@@ -5569,6 +5622,17 @@ void CvDLLWidgetData::parseVassalStateHelp(CvWidgetDataStruct &widgetDataStruct,
 {
 	GAMETEXT.buildVassalStateString(szBuffer, (TechTypes)widgetDataStruct.m_iData1);
 }
+
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+void CvDLLWidgetData::parseFreeTradeAgreementHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer)
+{
+	GAMETEXT.buildFreeTradeAgreementString(szBuffer, ((TechTypes)(widgetDataStruct.m_iData1)));
+}
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 
 void CvDLLWidgetData::parseBuildBridgeHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer)
 {

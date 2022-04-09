@@ -240,6 +240,13 @@ public:
 	bool buildPromotionString(CvWStringBuffer& szBuffer, TechTypes eTech, PromotionTypes ePromotion, bool bFirst, bool bList = false, bool bPlayerContext = false);
 	void buildHintsList(CvWStringBuffer& szBuffer);
 	void buildBuildingRequiresString(CvWStringBuffer& szBuffer, BuildingTypes eBuilding, bool bCivilopediaText, bool bTechChooserText, const CvCity* pCity);
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	void buildFreeTradeAgreementString(CvWStringBuffer& szBuffer, TechTypes eTech, bool bList = false, bool bPlayerContext = false);
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	// <advc.179>
 	void buildBuildingReligionYieldString(CvWStringBuffer& szBuffer,
 			CvBuildingInfo const& kBuilding); // </advc.179>
@@ -309,7 +316,7 @@ public:
 
 	DllExport void getPlotHelp(CvPlot* pMouseOverPlot, CvCity* pCity, CvPlot* pFlagPlot, bool bAlt, CvWStringBuffer& strHelp);
 	void getRebasePlotHelp(CvPlot const& kPlot, CvUnit& kHeadSelectedUnit, CvWString& szHelp);
-	void getNukePlotHelp(CvPlot const& kPlot, CvUnit& kHeadSelectedUnit, CvWString& szHelp);
+	void getNukePlotHelp(CvPlot const& kPlot, CvUnit& kNuke, CvWString& szHelp);
 	// <advc.004c>
 	void getAirBombPlotHelp(CvPlot const& kPlot, CvUnit& kHeadSelectedUnit, CvWString& szHelp);
 	void getAirStrikePlotHelp(CvPlot const& kPlot, CvUnit& kHeadSelectedUnit, CvWString& szHelp);

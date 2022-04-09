@@ -300,6 +300,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>0</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>0</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>0</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>0</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>0</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>0</iShareWarAttitudeChange>
@@ -329,6 +333,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>NONE</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>NONE</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>NONE</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>0</iFreedomAppreciation>
 			<FavoriteCivic>NONE</FavoriteCivic>
@@ -477,6 +484,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy--> 
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -509,6 +520,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>NONE</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>NONE</FavoriteCivic>
@@ -801,6 +815,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<MemoryType>MEMORY_EVENT_BAD_TO_US</MemoryType>
 					<iMemoryRand>50</iMemoryRand>
 				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+				<MemoryDecay>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
 			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
@@ -936,6 +956,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_DECLARED_WAR_RECENT</MemoryType>
 					<iMemoryAttitudePercent>0</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -1253,11 +1279,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>15</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -1381,6 +1420,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy--> 
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -1411,6 +1454,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_FREE_RELIGION</FavoriteCivic>
@@ -1484,11 +1530,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+			<!-- Advanced Diplomacy-->
+			<MemoryDecay>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>5</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->			
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -1649,6 +1708,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -1679,6 +1742,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_REPRESENTATION</FavoriteCivic>
@@ -1753,11 +1819,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>15</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+				<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -1891,6 +1970,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy--> 
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -1921,6 +2004,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_NATIONHOOD</FavoriteCivic>
@@ -1990,11 +2076,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+				<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>5</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -2126,6 +2225,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy--> 
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -2156,6 +2259,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>10</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_PROVINCIAL</FavoriteCivic>
@@ -2229,11 +2335,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>15</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+				<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>15</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -2358,6 +2477,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy--> 
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -2387,6 +2510,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_ORGANIZED_RELIGION</FavoriteCivic>
@@ -2460,11 +2586,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+				<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<!-- advc.005a: was 70 at Cautious -->
@@ -2591,6 +2730,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy--> 
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -2620,6 +2763,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_ANNOYED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>-20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
@@ -2694,7 +2840,14 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+				<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_SPY_CAUGHT</MemoryType>
@@ -2731,6 +2884,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>15</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -2854,6 +3013,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy--> 
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -2884,6 +3047,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>10</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_VASSALAGE</FavoriteCivic>
@@ -2958,11 +3124,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -3088,6 +3267,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy--> 
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -3118,6 +3301,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_NATIONHOOD</FavoriteCivic>
@@ -3191,11 +3377,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>15</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -3328,6 +3527,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy--> 
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -3357,6 +3560,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_VASSALAGE</FavoriteCivic>
@@ -3429,11 +3635,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+				<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -3574,6 +3793,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy--> 
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -3603,6 +3826,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_FREE_RELIGION</FavoriteCivic>
@@ -3676,11 +3902,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<!-- advc.005a: was 100 at Pleased -->
@@ -3821,6 +4060,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy--> 
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -3851,6 +4094,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>-20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_NATIONHOOD</FavoriteCivic>
@@ -3925,11 +4171,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -4062,6 +4321,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy--> 
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -4092,6 +4355,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_FREE_RELIGION</FavoriteCivic>
@@ -4165,11 +4431,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>15</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -4302,6 +4581,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy--> 
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -4331,6 +4614,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_ANNOYED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_PROVINCIAL</FavoriteCivic>
@@ -4399,11 +4685,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>15</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -4540,6 +4839,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -4570,6 +4873,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_ANNOYED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>-20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_FUNDAMENTALISM</FavoriteCivic>
@@ -4640,7 +4946,14 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>8</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_DECLARED_WAR_ON_FRIEND</MemoryType>
@@ -4690,6 +5003,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_VOTED_AGAINST_US</MemoryType>
 					<iMemoryAttitudePercent>0</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<!-- advc.005a: was 0/30/70/100 -->
@@ -4824,6 +5143,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -4853,6 +5176,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>50</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_POLICE_STATE</FavoriteCivic>
@@ -4923,11 +5249,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -5071,6 +5410,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -5101,6 +5444,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
@@ -5175,11 +5521,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>15</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>15</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -5303,6 +5662,11 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -5333,6 +5697,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_BUREAUCRACY</FavoriteCivic>
@@ -5403,11 +5770,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -5530,6 +5910,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -5559,6 +5943,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_FREE_MARKET</FavoriteCivic>
@@ -5632,11 +6019,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>15</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>15</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -5763,6 +6163,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -5792,6 +6196,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_ORGANIZED_RELIGION</FavoriteCivic>
@@ -5865,11 +6272,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -6027,6 +6447,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -6057,6 +6481,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
@@ -6130,11 +6557,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -6276,6 +6716,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -6305,6 +6749,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_THEOCRACY</FavoriteCivic>
@@ -6374,7 +6821,14 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
@@ -6542,6 +6996,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -6571,6 +7029,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
@@ -6645,11 +7106,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>15</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -6775,6 +7249,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -6804,6 +7282,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_REPRESENTATION</FavoriteCivic>
@@ -6877,11 +7358,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>15</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -7009,6 +7503,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -7039,6 +7537,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_THEOCRACY</FavoriteCivic>
@@ -7111,11 +7612,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>15</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<!-- advc.005a: was 80 at Cautious -->
@@ -7248,6 +7762,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -7278,6 +7796,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_BUREAUCRACY</FavoriteCivic>
@@ -7351,7 +7872,14 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_REFUSED_HELP</MemoryType>
@@ -7384,6 +7912,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>15</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -7530,6 +8064,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -7559,6 +8097,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_EMANCIPATION</FavoriteCivic>
@@ -7632,11 +8173,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>15</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<!-- advc.005a: was 40 at Annoyed -->
@@ -7764,6 +8318,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -7793,6 +8351,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_ANNOYED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
@@ -7867,7 +8428,14 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_REFUSED_HELP</MemoryType>
@@ -7892,6 +8460,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -8015,6 +8589,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -8044,6 +8622,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_ANNOYED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>-20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_FREE_MARKET</FavoriteCivic>
@@ -8117,11 +8698,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>20</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -8246,6 +8840,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -8276,6 +8874,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_STATE_PROPERTY</FavoriteCivic>
@@ -8349,11 +8950,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>15</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>5</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -8480,6 +9094,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -8510,6 +9128,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_VASSALAGE</FavoriteCivic>
@@ -8583,11 +9204,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -8708,7 +9342,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
-			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -8738,6 +9375,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_POLICE_STATE</FavoriteCivic>
@@ -8812,11 +9452,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>15</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -8965,6 +9618,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -8995,6 +9652,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_REPRESENTATION</FavoriteCivic>
@@ -9069,11 +9729,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -9205,6 +9878,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -9235,6 +9912,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
@@ -9308,11 +9988,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -9442,6 +10135,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -9471,6 +10168,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_REPRESENTATION</FavoriteCivic>
@@ -9543,11 +10243,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -9679,6 +10392,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -9708,6 +10425,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->	
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_BUREAUCRACY</FavoriteCivic>
@@ -9781,11 +10501,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>20</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -9947,6 +10680,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -9977,6 +10714,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_BUREAUCRACY</FavoriteCivic>
@@ -10050,7 +10790,14 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_REFUSED_HELP</MemoryType>
@@ -10075,6 +10822,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -10204,6 +10957,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -10234,6 +10991,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_ORGANIZED_RELIGION</FavoriteCivic>
@@ -10307,11 +11067,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -10467,6 +11240,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -10496,6 +11273,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
@@ -10565,11 +11345,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>5</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -10697,6 +11490,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -10727,6 +11524,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_MERCANTILISM</FavoriteCivic>
@@ -10800,11 +11600,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>15</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<!-- advc.005a: was 50 at Cautious, 90 at Pleased -->
@@ -10943,6 +11756,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -10972,6 +11789,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_THEOCRACY</FavoriteCivic>
@@ -11046,11 +11866,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>15</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -11205,6 +12038,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -11234,6 +12071,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_POLICE_STATE</FavoriteCivic>
@@ -11304,11 +12144,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>5</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -11426,6 +12279,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -11455,6 +12312,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>50</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_ENVIRONMENTALISM</FavoriteCivic>
@@ -11529,11 +12389,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>20</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>5</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<!-- advc.005a: was 50 at Annoyed -->
@@ -11659,6 +12532,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -11689,6 +12566,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_STATE_PROPERTY</FavoriteCivic>
@@ -11762,11 +12642,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>20</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>5</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -11925,6 +12818,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -11954,6 +12851,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
@@ -12027,12 +12927,25 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<!-- advc.001g: Was duplicated; one said 10, the other 5. -->
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>7</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -12159,6 +13072,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -12189,6 +13106,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>-10</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<!-- advc.005a: was CIVIC_ORGANIZED_RELIGION -->
@@ -12266,7 +13186,14 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_REFUSED_HELP</MemoryType>
@@ -12302,6 +13229,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>8</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -12423,6 +13356,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -12453,6 +13390,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_MERCANTILISM</FavoriteCivic>
@@ -12527,7 +13467,14 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>20</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_REFUSED_HELP</MemoryType>
@@ -12561,6 +13508,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>5</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -12701,6 +13654,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -12730,6 +13687,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_REPRESENTATION</FavoriteCivic>
@@ -12802,12 +13762,25 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<!-- advc.001g: Was duplicated; one said 10, the other 5. -->
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>7</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -12925,6 +13898,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -12955,6 +13932,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_CASTE_SYSTEM</FavoriteCivic>
@@ -13029,12 +14009,25 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<!-- advc.001g: Was duplicated; one said 10, the other 5. -->
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>8</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -13162,6 +14155,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -13191,6 +14188,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_FREE_SPEECH</FavoriteCivic>
@@ -13264,12 +14264,25 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<!-- advc.001g: Was duplicated; one said 10, the other 5. -->
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>7</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -13427,6 +14440,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -13456,6 +14473,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_FREE_RELIGION</FavoriteCivic>
@@ -13528,12 +14548,25 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<!-- advc.001g: Was duplicated; one said 15, the other 5. -->
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<!-- advc.005a: was 80 at PLEASED -->
@@ -13662,6 +14695,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -13692,6 +14729,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_THEOCRACY</FavoriteCivic>
@@ -13766,12 +14806,25 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>15</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<!-- advc.001g: Was duplicated; one said 10, the other 5. -->
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>8</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -13896,6 +14949,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -13925,6 +14982,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_FRIENDLY</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_FRIENDLY</VassalRefuseAttitudeThreshold>
+<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+<!-- Advanced Diplomacy-->		
 			<iVassalPowerModifier>30</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_ORGANIZED_RELIGION</FavoriteCivic>
@@ -14003,11 +15063,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>15</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -14161,6 +15234,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -14190,6 +15267,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_REPRESENTATION</FavoriteCivic>
@@ -14263,11 +15343,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactDelay>10</iContactDelay>
 				</ContactDelay>
 			</ContactDelays>
-			<MemoryDecays/>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -14401,6 +15494,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -14432,6 +15529,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_FURIOUS</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_ANNOYED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_FREE_RELIGION</FavoriteCivic>
@@ -14658,6 +15758,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<MemoryType>MEMORY_EVENT_BAD_TO_US</MemoryType>
 					<iMemoryRand>50</iMemoryRand>
 				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+				<MemoryDecay>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
 			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
@@ -14735,6 +15841,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_LIBERATED_CITIES</MemoryType>
 					<iMemoryAttitudePercent>150</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -14887,6 +15999,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -14917,6 +16033,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
@@ -15143,6 +16262,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<MemoryType>MEMORY_EVENT_BAD_TO_US</MemoryType>
 					<iMemoryRand>50</iMemoryRand>
 				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+				<MemoryDecay>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
 			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
@@ -15256,6 +16381,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_LIBERATED_CITIES</MemoryType>
 					<iMemoryAttitudePercent>150</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -15410,6 +16541,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -15439,6 +16574,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_THEOCRACY</FavoriteCivic>
@@ -15664,6 +16802,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<MemoryType>MEMORY_EVENT_BAD_TO_US</MemoryType>
 					<iMemoryRand>50</iMemoryRand>
 				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+				<MemoryDecay>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
 			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
@@ -15777,6 +16921,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_LIBERATED_CITIES</MemoryType>
 					<iMemoryAttitudePercent>150</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -15926,6 +17076,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -15956,6 +17110,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_NATIONHOOD</FavoriteCivic>
@@ -16161,6 +17318,28 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<MemoryType>MEMORY_RECEIVED_TECH_FROM_ANY</MemoryType>
 					<iMemoryRand>20</iMemoryRand>
 				</MemoryDecay>
+				<MemoryDecay>
+					<MemoryType>MEMORY_VOTED_AGAINST_US</MemoryType>
+					<iMemoryRand>10</iMemoryRand>
+				</MemoryDecay>
+				<MemoryDecay>
+					<MemoryType>MEMORY_VOTED_FOR_US</MemoryType>
+					<iMemoryRand>10</iMemoryRand>
+				</MemoryDecay>
+				<MemoryDecay>
+					<MemoryType>MEMORY_EVENT_GOOD_TO_US</MemoryType>
+					<iMemoryRand>50</iMemoryRand>
+				</MemoryDecay>
+				<MemoryDecay>
+					<MemoryType>MEMORY_EVENT_BAD_TO_US</MemoryType>
+					<iMemoryRand>50</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+				<MemoryDecay>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
 			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
@@ -16254,6 +17433,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>5</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -16384,6 +17569,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -16414,6 +17603,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_ANNOYED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
@@ -16639,6 +17831,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<MemoryType>MEMORY_EVENT_BAD_TO_US</MemoryType>
 					<iMemoryRand>50</iMemoryRand>
 				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+				<MemoryDecay>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
 			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
@@ -16752,6 +17950,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_LIBERATED_CITIES</MemoryType>
 					<iMemoryAttitudePercent>150</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -16870,6 +18074,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -16900,6 +18108,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_FREE_MARKET</FavoriteCivic>
@@ -17125,6 +18336,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<MemoryType>MEMORY_EVENT_BAD_TO_US</MemoryType>
 					<iMemoryRand>50</iMemoryRand>
 				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+				<MemoryDecay>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
 			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
@@ -17238,6 +18455,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_LIBERATED_CITIES</MemoryType>
 					<iMemoryAttitudePercent>150</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -17362,6 +18585,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -17392,6 +18619,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_ORGANIZED_RELIGION</FavoriteCivic>
@@ -17597,6 +18827,28 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<MemoryType>MEMORY_RECEIVED_TECH_FROM_ANY</MemoryType>
 					<iMemoryRand>20</iMemoryRand>
 				</MemoryDecay>
+				<MemoryDecay>
+					<MemoryType>MEMORY_VOTED_AGAINST_US</MemoryType>
+					<iMemoryRand>10</iMemoryRand>
+				</MemoryDecay>
+				<MemoryDecay>
+					<MemoryType>MEMORY_VOTED_FOR_US</MemoryType>
+					<iMemoryRand>10</iMemoryRand>
+				</MemoryDecay>
+				<MemoryDecay>
+					<MemoryType>MEMORY_EVENT_GOOD_TO_US</MemoryType>
+					<iMemoryRand>50</iMemoryRand>
+				</MemoryDecay>
+				<MemoryDecay>
+					<MemoryType>MEMORY_EVENT_BAD_TO_US</MemoryType>
+					<iMemoryRand>50</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+				<MemoryDecay>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
 			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
@@ -17690,6 +18942,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>5</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>
@@ -17816,6 +19074,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>30</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
@@ -17845,6 +19107,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
 			<FavoriteCivic>CIVIC_REPRESENTATION</FavoriteCivic>
@@ -18054,6 +19319,28 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<MemoryType>MEMORY_RECEIVED_TECH_FROM_ANY</MemoryType>
 					<iMemoryRand>20</iMemoryRand>
 				</MemoryDecay>
+				<MemoryDecay>
+					<MemoryType>MEMORY_VOTED_AGAINST_US</MemoryType>
+					<iMemoryRand>10</iMemoryRand>
+				</MemoryDecay>
+				<MemoryDecay>
+					<MemoryType>MEMORY_VOTED_FOR_US</MemoryType>
+					<iMemoryRand>10</iMemoryRand>
+				</MemoryDecay>
+				<MemoryDecay>
+					<MemoryType>MEMORY_EVENT_GOOD_TO_US</MemoryType>
+					<iMemoryRand>50</iMemoryRand>
+				</MemoryDecay>
+				<MemoryDecay>
+					<MemoryType>MEMORY_EVENT_BAD_TO_US</MemoryType>
+					<iMemoryRand>50</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+				<MemoryDecay>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
 			</MemoryDecays>
 			<MemoryAttitudePercents>
 				<MemoryAttitudePercent>
@@ -18147,6 +19434,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				<MemoryAttitudePercent>
 					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
 					<iMemoryAttitudePercent>10</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
 				</MemoryAttitudePercent>
 			</MemoryAttitudePercents>
 			<NoWarAttitudeProbs>

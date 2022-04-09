@@ -25,6 +25,7 @@ public:
 
 	//	Actions to be executed
 	void doPlotList(CvWidgetDataStruct &widgetDataStruct);
+	void doPlotListShift(int iChange); // advc
 	void doLiberateCity();
 	void doRenameCity();
 	void doRenameUnit();
@@ -210,6 +211,13 @@ protected:
 	void parsePollutionOffsetsHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer);
 	void parsePollutionHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer);
 	// K-Mod end  <advc.ctr>
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	void parseFreeTradeAgreementHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer);
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	bool parseCityTradeHelp(CvWidgetDataStruct const& kWidget, CvCity*& pCity,
 			PlayerTypes& eWhoTo) const; // </advc.ctr>
 	// <advc.004a> Additional help text:

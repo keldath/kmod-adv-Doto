@@ -2903,7 +2903,7 @@ int CvPlayerAI::AI_targetCityValue(CvCity const& kCity, bool bRandomize,
 				}
 			}*/
 		}
-		/*	advc.104d: This (and, as a fall-back, the above) represents the
+		/*	advc.104d: This (and, as a fallback, the above) represents the
 			(strategic) economic value of kCity. Tactical aspects handled below. */
 		else iValue += pUWAICity->getAssetScore();
 	}
@@ -4733,6 +4733,33 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 				iNewTrade, // k146: was 0
 				3*iNewTrade - iExistingTrade);
 	}
+/*************************************************************************************************/
+/* Advanced Diplomacy       START                                                  				 */
+/*************************************************************************************************/
+
+/* imported from history rewritten - as is commented.
+
+	Disabling these because I don't know how to evaluate them in line with K-Mod - Xyth
+
+	if (kTechInfo.isFreeTradeAgreementTrading())
+	{
+		iValue += 200;
+	}
+*/
+	//doto taken from the below open borders method i tried to devise some
+	//evaluator for cities, which will stregthen the value for this tech.
+	//i could use the static 200 the history rewrittem commented out though..
+	//let see how it goes...
+	if (kTech.isFreeTradeAgreementTrading())
+	{
+		if (iHasMetCount > 0)
+		{
+			iValue += getTotalPopulation()  * AI_cityStateEval();
+		}
+	}
+/*************************************************************************************************/
+/* Advanced Diplomacy       START                                                  				 */
+/*************************************************************************************************/
 
 	if (kTech.isOpenBordersTrading())
 	{
@@ -6228,6 +6255,7 @@ int CvPlayerAI::AI_techBuildingValue(TechTypes eTech, bool bConstCache, bool& bE
 int CvPlayerAI::AI_techUnitValue(TechTypes eTech, int iPathLength, bool& bEnablesUnitWonder) const
 {
 	PROFILE_FUNC();
+	bEnablesUnitWonder = false;
 	CvTeamAI const& kTeam = GET_TEAM(getTeam()); // K-Mod
 
 	int const iHasMetCount = kTeam.getHasMetCivCount(true);
@@ -6466,12 +6494,11 @@ int CvPlayerAI::AI_techUnitValue(TechTypes eTech, int iPathLength, bool& bEnable
 					if (iNukeWeight > 0) // advc (replacing an assertion)
 					{
 						iOffenceValue = std::max(iOffenceValue,
-							(bWarPlan ? 2 : 1) * iWeight +
-							(2 * iNukeWeight * iWeight) / 100);
+								(bWarPlan ? 2 : 1) * iWeight +
+								(2 * iNukeWeight * iWeight) / 100);
 					} // K-Mod end
 					break;
 				}
-
 				case UNITAI_WORKER_SEA:
 					if (iCoastalCities > 0)
 					{
@@ -7665,6 +7692,14 @@ void CvPlayerAI::AI_updateAttitude(PlayerTypes ePlayer, /* advc.130e: */ bool bU
 	iAttitude += AI_getFavoriteCivicAttitude(ePlayer);
 	iAttitude += AI_getTradeAttitude(ePlayer);
 	iAttitude += AI_getRivalTradeAttitude(ePlayer);
+/*************************************************************************************************/
+/*  Advanced Diplomacy       START                                                  			 */
+/*************************************************************************************************/
+	iAttitude += AI_getFreeTradeAgreementAttitude(ePlayer);
+/************************************************************************************************/
+/* Advanced Diplomacy         END                                                               */
+/************************************************************************************************/
+
 //dune wars - start hated civs
 	iAttitude += AI_getHatedCivicAttitude(ePlayer);
 	iAttitude += AI_getFavoriteCivilizationAttitude(ePlayer); 
@@ -8060,6 +8095,29 @@ int CvPlayerAI::AI_getBonusTradeAttitude(PlayerTypes ePlayer) const
 	}
 	return 0;
 }
+
+/*************************************************************************************************/
+/** Advanced Diplomacy       START     advc - same as in open borders    						 */
+/*************************************************************************************************/
+
+int CvPlayerAI::AI_getFreeTradeAgreementAttitude(PlayerTypes ePlayer) const
+{
+	if (!atWar(getTeam(), TEAMID(ePlayer)))
+	{
+		if (GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeDivisor() != 0)
+		{
+			int iAttitudeChange = (GET_TEAM(getTeam()).AI_getFreeTradeAgreementCounter(TEAMID(ePlayer)) / 
+				GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeDivisor());
+			return range(iAttitudeChange, 
+				-(abs(GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeChangeLimit())), 
+				abs(GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeChangeLimit()));
+		}
+	}
+	return 0;
+}
+/************************************************************************************************/
+/* Advanced Diplomacy                        END                                                */
+/************************************************************************************************/
 
 
 int CvPlayerAI::AI_getOpenBordersAttitude(PlayerTypes ePlayer) const
@@ -9610,6 +9668,16 @@ int CvPlayerAI::AI_dealVal(PlayerTypes eFromPlayer, CLinkList<TradeData> const& 
 		case TRADE_RELIGION:
 			iValue += AI_religionTradeVal((ReligionTypes)pItem->m_iData, eFromPlayer);
 			break;
+/************************************************************************************************/
+/* Advanced Diplomacy         START                                                             */
+/************************************************************************************************/
+		case TRADE_FREE_TRADE_ZONE:
+			iValue += kOurTeam.AI_FreeTradeAgreementVal(eFromTeam);
+			break;
+/************************************************************************************************/
+/* Advanced Diplomacy         END                                                               */
+/************************************************************************************************/
+
 		}
 	}
 
@@ -11504,16 +11572,23 @@ int CvPlayerAI::AI_bonusVal(BonusTypes eBonus, int iChange, bool bAssumeEnabled,
 	/*  advc.036: The potential for trades isn't that marginal, and the
 		base value (for the first copy of a resource) is unhelpful. */
 	iValue = std::max(iValue, iTradeVal);
-
-//city states - values bonus with route changes more
-// added here in addition to AI_baseBonusVal. in this fn the valuefor importing it is being affected by this fn
-//so by adding it here , i hope they ai would like to get this resouse.
-	iValue += std::min((GC.getInfo(eBonus).getTradeRouteModifier() / 10), 0);
-	iValue += std::min((GC.getInfo(eBonus).getForeignTradeRouteModifier() / 10), 0);
-	iValue += std::min(((GC.getInfo(eBonus).getTradeRoutes() * 100) / 10), 0);
-//city states - values bonus with route changes more
-
 	return iValue;
+}
+
+int CvPlayerAI::AI_cityStateEval() const
+{
+	//doto - nayve this can be a cool way to value stuff for city state
+	//doto - used in advanced diplomacy now as well
+	//taken from AI_getExpansionistAttitude(
+	int iCivCities = GC.getGame().getNumCivCities() -
+		GET_TEAM(BARBARIAN_TEAM).getNumCities() ;
+	scaled rCitiesPerCiv = scaled::max(
+		GC.getInfo(GC.getMap().getWorldSize()).getTargetNumCities(),
+		scaled(iCivCities, GC.getGame().getCivTeamsEverAlive()));
+	scaled rEra = GC.AI_getGame().AI_getCurrEraFactor();
+	if (rEra <= 2)
+		rCitiesPerCiv.decreaseTo(3 * (1 + rEra));
+	return std::min(4, (rCitiesPerCiv).round()); 
 }
 
 /*	Value sans corporation
@@ -11710,16 +11785,6 @@ int CvPlayerAI::AI_baseBonusVal(BonusTypes eBonus, /* advc.036: */ bool bTrade) 
 	iValue += iCorporationValue;
 	if (iCorporationValue <= 0 && getNumAvailableBonuses(eBonus) > 0)
 		iValue /= 3;*/
-
-//city states - values bonus with route changes more
-//removing it from here - ai should think this is wothless, 
-//i added value to the bonusval fn  - which is used to asses import value
-/*
-	rValue += std::min((GC.getInfo(eBonus).getTradeRouteModifier() / 10),0);
-	rValue += std::min((GC.getInfo(eBonus).getForeignTradeRouteModifier() / 10) ,0);
-	rValue += std::min(((GC.getInfo(eBonus).getTradeRoutes() * 100 ) / 10) ,0);
-*/
-//city states - values bonus with route changes more
 
 	rValue /= 10;
 	// <advc.036>
@@ -12255,26 +12320,6 @@ int CvPlayerAI::AI_bonusTradeVal(BonusTypes eBonus, PlayerTypes eFromPlayer, int
 		iR = r.roundToMultiple(4);
 	}
 	else iR = r.round();
-
-//doto city states
-//dont allow city states to trade the trade resources between them selfs
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		CvBonusInfo& kBonusInfo = GC.getInfo(eBonus);
-		CvWString civName = CvWString::format(L"%s", kBonusInfo.getDescription());
-
-		if ((civName.find(L"Route") != std::string::npos))
-		{
-			CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-			bool cityState = kCivilization.getIsCityState() == 1;
-			//CvPlayerAI const& a = GET_PLAYER(kFromPlayer);
-			CvCivilizationInfo & fkCivilization = GC.getCivilizationInfo(kFromPlayer.getCivilizationType());
-			bool fcityState = fkCivilization.getIsCityState() == 1;
-			//done let normal civs get it.
-			if (!cityState && !fcityState)
-				iR = 0;
-		}
-	}
 	return iR *  GC.getDefineINT(CvGlobals::PEACE_TREATY_LENGTH);
 }
 
@@ -12283,16 +12328,6 @@ DenialTypes CvPlayerAI::AI_bonusTrade(BonusTypes eBonus, PlayerTypes eToPlayer,
 	int iChange) const // advc.133
 {
 	PROFILE_FUNC();
-	//city state test
-	bool a = false;
-	if (
-		GC.getInfo(eBonus).getTradeRoutes() > 0 ||
-		GC.getInfo(eBonus).getTradeRouteModifier() > 0 ||
-		GC.getInfo(eBonus).getForeignTradeRouteModifier() > 0
-		)
-	{
-		a = true;
-	}
 
 	CvPlayerAI const& kPlayer = GET_PLAYER(eToPlayer); // advc
 	FAssertMsg(eToPlayer != getID(), "shouldn't call this function on ourselves");
@@ -13210,6 +13245,20 @@ int CvPlayerAI::AI_stopTradingTradeVal(TeamTypes eTradeTeam, PlayerTypes ePlayer
 
 	if (GET_TEAM(ePlayer).isDefensivePact(eTradeTeam))
 		iValue *= 3;
+/************************************************************************************************/
+/* Advanced Diplomacy         START                                                             */
+/************************************************************************************************/
+	if (GET_TEAM(ePlayer).isFreeTradeAgreement(eTradeTeam))
+	{
+		iValue *= 3;
+		//doto - doubled this value - if i get it right, its worth while to make someone stop
+		//trading this agreement with a city state..
+		iValue *= 2;
+	}
+/************************************************************************************************/
+/* Advanced Diplomacy         END                                                               */
+/************************************************************************************************/
+
 	FOR_EACH_DEAL(pLoopDeal)
 	{
 		// <advc.001> BtS had only checked for ePlayer's team
@@ -19568,6 +19617,9 @@ scaled CvPlayerAI::AI_bonusImportValue(PlayerTypes eFrom) const
 			{
 				scaled rBonusVal = GET_PLAYER(getID()).AI_bonusVal((BonusTypes)
 						pItem->m_iData, -1);
+//city state new trade perk
+//				rBonusVal += AI_cityStateTradeRBonusVal(getID(), (BonusTypes)pItem->m_iData);
+//city state new trade perk
 				if(bTribute)
 					rBonusVal /= 2;
 				r += rBonusVal;
@@ -20793,6 +20845,10 @@ void CvPlayerAI::AI_doDiplo()
 								}
 							}
 						}
+//city state new trade perk
+//						if (AI_cityStateTradeRBonusVal(ePlayer, eLoopBonus, true))
+//							eBestGiveBonus = eLoopBonus;
+//city state new trade perk
 					}
 				}
 
@@ -20914,6 +20970,10 @@ void CvPlayerAI::AI_doDiplo()
 							eBestGiveBonus = (eLoopBonus);
 						}
 					}
+//city state new trade perk
+//					if (AI_cityStateTradeRBonusVal(ePlayer, eLoopBonus, true))
+//						eBestGiveBonus = eLoopBonus;
+//city state new trade perk
 				}
 
 				if (eBestGiveBonus != NO_BONUS)
@@ -22039,6 +22099,10 @@ bool CvPlayerAI::AI_proposeResourceTrade(PlayerTypes eTo)
 					eBestReceiveBonus = eLoopBonus;
 				}
 			}
+//city state new trade perk
+//			if (AI_cityStateTradeRBonusVal(getID(), eLoopBonus, true))
+//				eBestReceiveBonus =  eLoopBonus;
+//city state new trade perk
 		}
 	}
 	// <advc.036> Commented out
@@ -22078,6 +22142,10 @@ bool CvPlayerAI::AI_proposeResourceTrade(PlayerTypes eTo)
 					eBestGiveBonus = eLoopBonus;
 				}
 			}
+//city state new trade perk
+//			if (AI_cityStateTradeRBonusVal(getID(), eLoopBonus, true))
+//				eBestGiveBonus = eLoopBonus;
+//city state new trade perk
 		}
 	}
 	CLinkList<TradeData> weGive;
@@ -22393,6 +22461,9 @@ bool CvPlayerAI::AI_demandTribute(PlayerTypes eHuman, AIDemandTypes eDemand)
 			}
 			// <advc.104m>
 			rValue *= 1 + SyncRandFract(scaled) / 4;
+//city state new trade perk
+//			rValue += AI_cityStateTradeRBonusVal(getID(), eLoopBonus, true);
+//city state new trade perk
 			aieBonuses.push_back(std::make_pair(rValue, eLoopBonus));
 		}
 		std::sort(aieBonuses.begin(), aieBonuses.end(),

@@ -759,6 +759,16 @@ class CvTechChooser:
 		j = 0
 		k = 0
 
+# advanced diplomacy
+		# Free Trade Agreement
+		if ( gc.getTechInfo(i).isFreeTradeAgreementTrading() ):
+			szFreeTradeAgreementButton = "FreeTradeAgreement" + str(i)
+			screen.addDDSGFCAt( szFreeTradeAgreementButton , szTechRecord, ArtFileMgr.getInterfaceArtInfo("INTERFACE_TECH_FREE_TRADE_AGREEMENT").getPath(), iX + fX, iY + Y_ROW, TEXTURE_SIZE, TEXTURE_SIZE, WidgetTypes.WIDGET_HELP_FREE_TRADE_AGREEMENT, i, -1, False )
+			fX += X_INCREMENT
+
+		j = 0
+		k = 0
+# advanced diplomacy				
 		# Improvements
 		for j in range(gc.getNumBuildInfos()):
 			bTechFound = 0;

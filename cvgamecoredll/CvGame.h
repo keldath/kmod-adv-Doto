@@ -76,7 +76,7 @@ public:
 //doto city states
 	void spawnCityState();
 	void initFreeTechsEra(PlayerTypes ePlayer);
-
+//doto city states
 	DllExport void updateBlockadedPlots();
 	bool updateNukeAreaOfEffect(CvPlot const* pPlot = NULL) const; // advc.653
 
@@ -529,7 +529,10 @@ public:
 	void setScreenDimensions(int x, int y); // (exposed to Python)
 	int getScreenWidth() const;
 	int getScreenHeight() const;
-	// </advc.061>
+	// </advc.061>  <advc.004n>
+	void changePlotListShift(int iChange) { m_iPlotListShift += iChange; }
+	int getPlotListShift() const { return m_iPlotListShift; }
+	void onCityScreenChange(); // </advc.004n>
 	bool getPbemTurnSent() const;
 	DllExport void setPbemTurnSent(bool bNewValue);
 
@@ -1042,6 +1045,9 @@ protected:
 	// </advc.opt>
 	int m_iUnitUpdateAttempts; // advc.001y
 	int m_iScreenWidth, m_iScreenHeight; // advc.061
+	// <advc.004n>
+	int m_iPlotListShift;
+	bool m_bCityScreenUp; // </advc.004n>
 	unsigned int m_uiInitialTime;
 	unsigned int m_uiSaveFlag; // advc
 

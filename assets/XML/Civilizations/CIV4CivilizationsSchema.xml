@@ -59,6 +59,10 @@
 	<ElementType name="iBonusTradeAttitudeChangeLimit" content="textOnly" dt:type="int"/>
 	<ElementType name="iOpenBordersAttitudeDivisor" content="textOnly" dt:type="int"/>
 	<ElementType name="iOpenBordersAttitudeChangeLimit" content="textOnly" dt:type="int"/>
+	<!--  Advanced Diplomacy -->
+	<ElementType name="iFreeTradeAgreementAttitudeDivisor" content="textOnly" dt:type="int"/>
+	<ElementType name="iFreeTradeAgreementAttitudeChangeLimit" content="textOnly" dt:type="int"/>
+	<!--  Advanced Diplomacy -->
 	<ElementType name="iDefensivePactAttitudeDivisor" content="textOnly" dt:type="int"/>
 	<ElementType name="iDefensivePactAttitudeChangeLimit" content="textOnly" dt:type="int"/>
 	<ElementType name="iShareWarAttitudeChange" content="textOnly" dt:type="int"/>
@@ -94,6 +98,9 @@
 	<ElementType name="DefensivePactRefuseAttitudeThreshold" content="textOnly"/>
 	<ElementType name="PermanentAllianceRefuseAttitudeThreshold" content="textOnly"/>
 	<ElementType name="VassalRefuseAttitudeThreshold" content="textOnly"/>
+	<!--  Advanced Diplomacy -->
+	<ElementType name="FreeTradeAgreementRefuseAttitudeThreshold" content="textOnly"/>
+	<!--  Advanced Diplomacy -->
 	<ElementType name="iVassalPowerModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iFreedomAppreciation" content="textOnly" dt:type="int"/>
 	<ElementType name="FavoriteCivic" content="textOnly"/>
@@ -264,6 +271,10 @@
 		<element type="iBonusTradeAttitudeChangeLimit" minOccurs="0"/>
 		<element type="iOpenBordersAttitudeDivisor" minOccurs="0"/>
 		<element type="iOpenBordersAttitudeChangeLimit" minOccurs="0"/>
+		<!--  Advanced Diplomacy -->
+		<element type="iFreeTradeAgreementAttitudeDivisor" minOccurs="0"/>
+		<element type="iFreeTradeAgreementAttitudeChangeLimit" minOccurs="0"/>
+		<!--  Advanced Diplomacy -->
 		<element type="iDefensivePactAttitudeDivisor" minOccurs="0"/>
 		<element type="iDefensivePactAttitudeChangeLimit" minOccurs="0"/>
 		<element type="iShareWarAttitudeChange" minOccurs="0"/>
@@ -296,6 +307,9 @@
 		<element type="OpenBordersRefuseAttitudeThreshold" minOccurs="0"/>
 		<element type="DefensivePactRefuseAttitudeThreshold" minOccurs="0"/>
 		<element type="PermanentAllianceRefuseAttitudeThreshold" minOccurs="0"/>
+		<!--  Advanced Diplomacy -->
+		<element type="FreeTradeAgreementRefuseAttitudeThreshold" minOccurs="0"/>
+		<!--  Advanced Diplomacy -->
 		<element type="VassalRefuseAttitudeThreshold" minOccurs="0"/>
 		<element type="iVassalPowerModifier" minOccurs="0"/>
 		<element type="iFreedomAppreciation" minOccurs="0"/>

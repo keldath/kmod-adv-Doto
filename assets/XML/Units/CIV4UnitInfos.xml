@@ -9442,15 +9442,15 @@ UNITAI changed - now will used to counter.
 			<UnitCombatMods>
 				<UnitCombatMod>
 					<UnitCombatType>UNITCOMBAT_MELEE</UnitCombatType>
-					<iUnitCombatMod>20</iUnitCombatMod>
+					<iUnitCombatMod>25</iUnitCombatMod>
 				</UnitCombatMod>
 				<UnitCombatMod>
 					<UnitCombatType>UNITCOMBAT_ARCHER</UnitCombatType>
-					<iUnitCombatMod>15</iUnitCombatMod>
+					<iUnitCombatMod>25</iUnitCombatMod>
 				</UnitCombatMod>
 				<UnitCombatMod>
 					<UnitCombatType>UNITCOMBAT_MOUNTED</UnitCombatType>
-					<iUnitCombatMod>10</iUnitCombatMod>
+					<iUnitCombatMod>25</iUnitCombatMod>
 				</UnitCombatMod>
 			</UnitCombatMods>
 			<UnitCombatCollateralImmunes/>
@@ -17407,8 +17407,8 @@ UNITAI changed - now will used to counter.
 			<bFirstStrikeImmune>0</bFirstStrikeImmune>
 			<bNoDefensiveBonus>1</bNoDefensiveBonus>
 			<bIgnoreBuildingDefense>1</bIgnoreBuildingDefense>
-			<bCanMoveImpassable>1</bCanMoveImpassable>
-			<bCanMoveAllTerrain>1</bCanMoveAllTerrain>
+			<bCanMoveImpassable>0</bCanMoveImpassable>
+			<bCanMoveAllTerrain>0</bCanMoveAllTerrain>
 			<bCanMovePeak>1</bCanMovePeak>
             <bFlatMovementCost>0</bFlatMovementCost>
 			<bIgnoreTerrainCost>1</bIgnoreTerrainCost>
@@ -21198,13 +21198,13 @@ UNITAI changed - now will used to counter.
 			<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
-					<bPrereqCivic>1</bPrereqCivic>
+					<bPrereqCivic>0</bPrereqCivic>
 				</PrereqCivic>
 			</PrereqOrCivics>
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
-					<bPrereq>1</bPrereq>
+					<bPrereq>0</bPrereq>
 					<TechOverride>NONE</TechOverride>
 					<EraOverride>NONE</EraOverride>
 				</PrereqBuildingClass>
@@ -21237,12 +21237,7 @@ UNITAI changed - now will used to counter.
 				<BonusType>NONE</BonusType>
 			</PrereqBonuses>
 			<!-- advc.905b -->
-			<SpeedBonuses>
-				<SpeedBonus>
-					<BonusType>BONUS_COAL</BonusType>
-					<iExtraMoves>1</iExtraMoves>
-				</SpeedBonus>
-			</SpeedBonuses>
+			<SpeedBonuses/>
 			<ProductionTraits/>
 			<Flavors/>
 			<iAIWeight>0</iAIWeight>

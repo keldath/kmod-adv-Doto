@@ -224,6 +224,13 @@ public:
 	void AI_updateCloseBorderAttitude(); // K-Mod
 	void AI_updateCloseBorderAttitude(PlayerTypes ePlayer); // K-Mod
 	int AI_getCloseBordersAttitude(PlayerTypes ePlayer) const;
+/************************************************************************************************/
+/* Advanced Diplomacy         START                                                             */
+/************************************************************************************************/
+	int AI_getFreeTradeAgreementAttitude(PlayerTypes ePlayer) const;
+/************************************************************************************************/
+/* Advanced Diplomacy         END                                                             */
+/************************************************************************************************/
 	int warSuccessAttitudeDivisor() const; // advc.130y, advc.sha
 	int AI_getWarAttitude(PlayerTypes ePlayer,
 			int iPartialSum = MIN_INT) const; // advc.sha
@@ -290,6 +297,9 @@ public:
 			// advc.036: Whether baseBonusVal is computed for a resource trade
 			bool bTrade = false) const;
 	int AI_baseBonusVal(BonusTypes eBonus, /* advc.036: */ bool bTrade = false) const;
+//doto city states - also used in advanced diplo now
+	int AI_cityStateEval() const;
+//doto city states
 	int AI_bonusTradeVal(BonusTypes eBonus, PlayerTypes eFromPlayer, int iChange,
 			bool bExtraHappyOrHealth = false) const; // advc.036
 	DenialTypes AI_bonusTrade(BonusTypes eBonus, PlayerTypes eToPlayer,

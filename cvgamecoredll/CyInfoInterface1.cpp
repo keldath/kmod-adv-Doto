@@ -79,6 +79,13 @@ void CyInfoPythonInterface1()
 		.def("isTechTrading", &CvTechInfo::isTechTrading, "bool ()")
 		.def("isGoldTrading", &CvTechInfo::isGoldTrading, "bool ()")
 		.def("isOpenBordersTrading", &CvTechInfo::isOpenBordersTrading, "bool ()")
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+		.def("isFreeTradeAgreementTrading", &CvTechInfo::isFreeTradeAgreementTrading, "bool ()")
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 		.def("isDefensivePactTrading", &CvTechInfo::isDefensivePactTrading, "bool ()")
 		.def("isPermanentAllianceTrading", &CvTechInfo::isPermanentAllianceTrading, "bool ()")
 		.def("isVassalStateTrading", &CvTechInfo::isVassalStateTrading, "bool ()")

@@ -126,7 +126,13 @@ void CyTeamPythonInterface()
 		.def("getWaterWorkCount", &CyTeam::getWaterWorkCount, "int ()")
 		.def("isWaterWork", &CyTeam::isWaterWork, "bool ()")
 		.def("changeWaterWorkCount", &CyTeam::changeWaterWorkCount, "void (iChange)")
-
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+		.def("isFreeTradeAgreementTrading", &CyTeam::isFreeTradeAgreementTrading, "bool ()")
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 		.def("getVassalPower", &CyTeam::getVassalPower, "int ()")
 		.def("setVassalPower", &CyTeam::setVassalPower, "void (int)")
 		.def("getMasterPower", &CyTeam::getMasterPower, "int ()")

@@ -2930,6 +2930,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iPower>0</iPower>
 			<bRepeat>0</bRepeat>
 			<bTrade>1</bTrade>
+<!-- advanced diplomacy -->
+			<bFreeTradeAgreementTrading>1</bFreeTradeAgreementTrading>
 			<bDisable>0</bDisable>
 			<bGoodyTech>0</bGoodyTech>
 			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>

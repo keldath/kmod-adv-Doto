@@ -234,6 +234,15 @@ public:
 	int /*DenialTypes*/ AI_declareWarTrade(int /*TeamTypes*/ eWarTeam, int /*TeamTypes*/ eTeam) const;
 	// advc.038: Returns int b/c I'm not sure if float would cause problems
 	int AI_estimateYieldRate(int iPlayer, int iYield) const;
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	int getFreeTradeAgreementTradingCount();
+	bool isFreeTradeAgreementTrading();
+	void changeFreeTradeAgreementTradingCount(int iChange);
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 
 protected:
 

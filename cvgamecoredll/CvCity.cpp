@@ -3302,9 +3302,12 @@ void CvCity::processBonus(BonusTypes eBonus, int iChange)
 				getBonusYieldRateModifier(eLoopYield, eBonus) * iChange);
 	}
 //doto city states - route from bonus
-	changeExtraTradeRoutes(GC.getInfo(eBonus).getTradeRoutes() * iChange);//this first! cause of update trade routes
-	changeTradeRouteModifier(GC.getInfo(eBonus).getTradeRouteModifier() * iChange);
-	changeForeignTradeRouteModifier(GC.getInfo(eBonus).getForeignTradeRouteModifier() * iChange);
+	if (isCapital())
+	{
+		changeExtraTradeRoutes(GC.getInfo(eBonus).getTradeRoutes() * iChange);//this first! cause of update trade routes
+		changeTradeRouteModifier(GC.getInfo(eBonus).getTradeRouteModifier() * iChange);
+		changeForeignTradeRouteModifier(GC.getInfo(eBonus).getForeignTradeRouteModifier() * iChange);
+	}
 //doto city states - route from bonus
 }
 

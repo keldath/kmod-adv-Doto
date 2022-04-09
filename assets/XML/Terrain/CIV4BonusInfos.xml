@@ -2680,8 +2680,8 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			</YieldChanges>
 			<iAITradeModifier>100</iAITradeModifier>
 			<iAIObjective>100</iAIObjective>
-			<iHealth>0</iHealth>
-			<iHappiness>0</iHappiness>
+			<iHealth>1</iHealth>
+			<iHappiness>1</iHappiness>
 			<iPlacementOrder>-1</iPlacementOrder>
 			<iConstAppearance>0</iConstAppearance>
 			<iMinAreaSize>-1</iMinAreaSize>
@@ -2702,7 +2702,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<bArea>0</bArea>
 			<bHills>0</bHills>
 <!-- city states route changes -->
-			<iTradeRoutes>0</iTradeRoutes>
+			<iTradeRoutes>1</iTradeRoutes>
 			<iTradeRouteModifier>0</iTradeRouteModifier>
 			<iForeignTradeRouteModifier>15</iForeignTradeRouteModifier>
 <!-- city states route changes -->
@@ -2729,8 +2729,8 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			</YieldChanges>
 			<iAITradeModifier>100</iAITradeModifier>
 			<iAIObjective>100</iAIObjective>
-			<iHealth>0</iHealth>
-			<iHappiness>0</iHappiness>
+			<iHealth>1</iHealth>
+			<iHappiness>1</iHappiness>
 			<iPlacementOrder>-1</iPlacementOrder>
 			<iConstAppearance>0</iConstAppearance>
 			<iMinAreaSize>-1</iMinAreaSize>
@@ -2751,7 +2751,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<bArea>0</bArea>
 			<bHills>0</bHills>
 <!-- city states route changes -->
-			<iTradeRoutes>0</iTradeRoutes>
+			<iTradeRoutes>1</iTradeRoutes>
 			<iTradeRouteModifier>15</iTradeRouteModifier>
 			<iForeignTradeRouteModifier>0</iForeignTradeRouteModifier>
 <!-- city states route changes -->
@@ -2778,8 +2778,8 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			</YieldChanges>
 			<iAITradeModifier>100</iAITradeModifier>
 			<iAIObjective>100</iAIObjective>
-			<iHealth>0</iHealth>
-			<iHappiness>0</iHappiness>
+			<iHealth>1</iHealth>
+			<iHappiness>1</iHappiness>
 			<iPlacementOrder>-1</iPlacementOrder>
 			<iConstAppearance>0</iConstAppearance>
 			<iMinAreaSize>-1</iMinAreaSize>
@@ -2800,7 +2800,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<bArea>0</bArea>
 			<bHills>0</bHills>
 <!-- city states route changes -->
-			<iTradeRoutes>0</iTradeRoutes>
+			<iTradeRoutes>1</iTradeRoutes>
 			<iTradeRouteModifier>7</iTradeRouteModifier>
 			<iForeignTradeRouteModifier>7</iForeignTradeRouteModifier>
 <!-- city states route changes -->
@@ -2827,8 +2827,8 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			</YieldChanges>
 			<iAITradeModifier>100</iAITradeModifier>
 			<iAIObjective>100</iAIObjective>
-			<iHealth>0</iHealth>
-			<iHappiness>0</iHappiness>
+			<iHealth>1</iHealth>
+			<iHappiness>1</iHappiness>
 			<iPlacementOrder>-1</iPlacementOrder>
 			<iConstAppearance>0</iConstAppearance>
 			<iMinAreaSize>-1</iMinAreaSize>
@@ -2876,8 +2876,8 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			</YieldChanges>
 			<iAITradeModifier>100</iAITradeModifier>
 			<iAIObjective>100</iAIObjective>
-			<iHealth>0</iHealth>
-			<iHappiness>0</iHappiness>
+			<iHealth>1</iHealth>
+			<iHappiness>1</iHappiness>
 			<iPlacementOrder>-1</iPlacementOrder>
 			<iConstAppearance>0</iConstAppearance>
 			<iMinAreaSize>-1</iMinAreaSize>
@@ -2925,8 +2925,8 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			</YieldChanges>
 			<iAITradeModifier>100</iAITradeModifier>
 			<iAIObjective>100</iAIObjective>
-			<iHealth>0</iHealth>
-			<iHappiness>0</iHappiness>
+			<iHealth>1</iHealth>
+			<iHappiness>1</iHappiness>
 			<iPlacementOrder>-1</iPlacementOrder>
 			<iConstAppearance>0</iConstAppearance>
 			<iMinAreaSize>-1</iMinAreaSize>
@@ -2974,8 +2974,8 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			</YieldChanges>
 			<iAITradeModifier>100</iAITradeModifier>
 			<iAIObjective>100</iAIObjective>
-			<iHealth>0</iHealth>
-			<iHappiness>0</iHappiness>
+			<iHealth>1</iHealth>
+			<iHappiness>1</iHappiness>
 			<iPlacementOrder>-1</iPlacementOrder>
 			<iConstAppearance>0</iConstAppearance>
 			<iMinAreaSize>-1</iMinAreaSize>
@@ -2996,7 +2996,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<bArea>0</bArea>
 			<bHills>0</bHills>
 <!-- city states route changes -->
-			<iTradeRoutes>0</iTradeRoutes>
+			<iTradeRoutes>1</iTradeRoutes>
 			<iTradeRouteModifier>5</iTradeRouteModifier>
 			<iForeignTradeRouteModifier>10</iForeignTradeRouteModifier>
 <!-- city states route changes -->
@@ -3023,8 +3023,8 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			</YieldChanges>
 			<iAITradeModifier>100</iAITradeModifier>
 			<iAIObjective>100</iAIObjective>
-			<iHealth>0</iHealth>
-			<iHappiness>0</iHappiness>
+			<iHealth>1</iHealth>
+			<iHappiness>1</iHappiness>
 			<iPlacementOrder>-1</iPlacementOrder>
 			<iConstAppearance>0</iConstAppearance>
 			<iMinAreaSize>-1</iMinAreaSize>
@@ -3045,7 +3045,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<bArea>0</bArea>
 			<bHills>0</bHills>
 <!-- city states route changes -->
-			<iTradeRoutes>0</iTradeRoutes>
+			<iTradeRoutes>1</iTradeRoutes>
 			<iTradeRouteModifier>10</iTradeRouteModifier>
 			<iForeignTradeRouteModifier>5</iForeignTradeRouteModifier>
 <!-- city states route changes -->

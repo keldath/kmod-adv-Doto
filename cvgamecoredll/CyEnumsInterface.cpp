@@ -406,6 +406,13 @@ void CyEnumsPythonInterface()
 		.value("WIDGET_HELP_GLOBAL_COMMERCE_MODIFIER", WIDGET_HELP_GLOBAL_COMMERCE_MODIFIER)
 		.value("WIDGET_HELP_EXTRA_SPECIALIST_COMMERCE", WIDGET_HELP_EXTRA_SPECIALIST_COMMERCE)
 		// K-Mod end
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+		.value("WIDGET_HELP_FREE_TRADE_AGREEMENT", WIDGET_HELP_FREE_TRADE_AGREEMENT)
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 		.value("WIDGET_LH_GLANCE", WIDGET_LH_GLANCE) // advc.152
 		.value("WIDGET_SHOW_REPLAY", WIDGET_SHOW_REPLAY) // advc.106i
 		// BULL - Trade Denial - start
@@ -1388,7 +1395,14 @@ void CyEnumsPythonInterface()
 		.value("TRADE_EMBARGO", TRADE_EMBARGO)
 		.value("TRADE_CIVIC", TRADE_CIVIC)
 		.value("TRADE_RELIGION", TRADE_RELIGION)
-		.value("NUM_TRADEABLE_HEADINGS", NUM_TRADEABLE_HEADINGS)
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+		.value("TRADE_FREE_TRADE_ZONE", TRADE_FREE_TRADE_ZONE)
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
+.value("NUM_TRADEABLE_HEADINGS", NUM_TRADEABLE_HEADINGS)
 		.value("NUM_TRADEABLE_ITEMS", NUM_TRADEABLE_ITEMS)
 		;
 
@@ -1488,7 +1502,14 @@ void CyEnumsPythonInterface()
 		.value("MEMORY_EVENT_GOOD_TO_US", MEMORY_EVENT_GOOD_TO_US)
 		.value("MEMORY_EVENT_BAD_TO_US", MEMORY_EVENT_BAD_TO_US)
 		.value("MEMORY_LIBERATED_CITIES", MEMORY_LIBERATED_CITIES)
-		// advc.130p:
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+		.value("MEMORY_CANCELLED_FREE_TRADE_AGREEMENT", MEMORY_CANCELLED_FREE_TRADE_AGREEMENT)
+/************************************************************************************************/
+/* END: Advanced Diplomacy         	                                                            */
+/************************************************************************************************/
+// advc.130p:
 		.value("MEMORY_INDEPENDENCE", MEMORY_INDEPENDENCE)
 		// advc.104i:
 		.value("MEMORY_DECLARED_WAR_RECENT", MEMORY_INDEPENDENCE)

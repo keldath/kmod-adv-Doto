@@ -8405,6 +8405,14 @@ void CvGameTextMgr::setTechTradeHelp(CvWStringBuffer &szBuffer, TechTypes eTech,
 
 	//	Enables permanent alliances...
 	buildPermanentAllianceString(szBuffer, eTech, true, bPlayerContext);
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	//   Enables Free Trade...
+	buildFreeTradeAgreementString(szBuffer, eTech, true, bPlayerContext);
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 
 	//	Enables bridge building...
 	buildBridgeString(szBuffer, eTech, true, bPlayerContext);
@@ -17432,6 +17440,23 @@ void CvGameTextMgr::getAttitudeString(CvWStringBuffer& szBuffer, PlayerTypes ePl
 				iTotal += iAttitudeChange;
 			}
 		}
+/*************************************************************************************************/
+/* START: Advanced Diplomacy  - think this is handled auto in advc code              
+edit - doto - i think i need this acctually...														*/
+/*************************************************************************************************/
+		// Start bonus to Diplomacy from Free Trade Agreement
+		int iAttitudeChange = kPlayer.AI_getFreeTradeAgreementAttitude(eTargetPlayer);
+		if ((iPass == 0) ? (iAttitudeChange > 0) : (iAttitudeChange < 0))
+		{
+			szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, TEXT_COLOR((iAttitudeChange > 0) ? "COLOR_POSITIVE_TEXT" : "COLOR_NEGATIVE_TEXT"), 
+				gDLL->getText("TXT_KEY_MISC_ATTITUDE_FREE_TRADE_AGREEMENT", iAttitudeChange).GetCString());
+			szBuffer.append(NEWLINE);
+			szBuffer.append(szTempBuffer);
+		}
+/*************************************************************************************************/
+/** Advanced Diplomacy       END                                                  				 */
+/*************************************************************************************************/
+
 		// advc.sha: Moved down along with WarAttitude (see below); keep these together.
 		appendToAttitudeBreakdown(szBreakdown, iPass,
 				kPlayer.AI_getPeaceAttitude(eTargetPlayer), iTotal,
@@ -17654,6 +17679,16 @@ void CvGameTextMgr::getTradeString(CvWStringBuffer& szBuffer, const TradeData& t
 	case TRADE_RELIGION:
 		szBuffer.assign(CvWString::format(L"%s", GC.getInfo((ReligionTypes)tradeData.m_iData).getDescription()));
 		break; // <advc.034>
+/************************************************************************************************/
+/* Afforess	                  Start		 06/16/10                                               */
+/* Advanced Diplomacy                                                                           */
+/************************************************************************************************/
+	case TRADE_FREE_TRADE_ZONE:
+		szBuffer.append(gDLL->getText("TXT_KEY_MISC_FREE_TRADE_ZONE"));
+		break;
+/************************************************************************************************/
+/* Advanced Diplomacy         END                                                               */
+/************************************************************************************************/
 	case TRADE_DISENGAGE:
 	{
 		CvWString szString;
@@ -18659,6 +18694,18 @@ void CvGameTextMgr::parseLeaderLineHelp(CvWStringBuffer &szBuffer,
 			szBuffer.append(gDLL->getText("TXT_KEY_MISC_DEFENSIVE_PACT"));
 			szBuffer.append(NEWLINE);
 		}
+/*************************************************************************************************/
+/* START: Advanced Diplomacy      															     */
+/*************************************************************************************************/
+
+		if (thisTeam.isFreeTradeAgreement(otherTeam.getID()) || otherTeam.isFreeTradeAgreement(thisTeam.getID()))
+		{
+			szBuffer.append(gDLL->getText("TXT_KEY_MISC_FREE_TRADE"));
+			szBuffer.append(NEWLINE);
+		}
+/*************************************************************************************************/
+/* END: Advanced Diplomacy       															     */
+/*************************************************************************************************/
 		if (thisTeam.isOpenBorders(otherTeam.getID()))
 		{
 			szBuffer.append(gDLL->getText("TXT_KEY_MISC_OPEN_BORDERS"));
@@ -21370,6 +21417,27 @@ void CvGameTextMgr::setEspionageCostHelp(CvWStringBuffer &szBuffer,
 		iMissionCost *= iModifier;
 		iMissionCost /= 100;
 
+/************************************************************************************************/
+/* Afforess	                  Start		 07/29/10                                               */
+/* Advanced Diplomacy        
+doto - decided to use this																		*/
+/************************************************************************************************/
+		if (pCity != NULL)
+		{
+			if (kTargetTeam.isFreeTradeAgreement(kPlayer.getTeam()))
+			{
+				szBuffer.append(SEPARATOR);
+				szBuffer.append(NEWLINE);
+				szBuffer.append(gDLL->getText("TXT_KEY_FREE_TRADE_AGREEMENT_MOD", 
+					-GC.getDefineINT("FREE_TRADE_AGREEMENT_ESPIONAGE_MISSION_COST_MODIFIER")));
+
+				iModifier *= 100 - GC.getDefineINT("FREE_TRADE_AGREEMENT_ESPIONAGE_MISSION_COST_MODIFIER");
+				iModifier /= 100;
+			}
+		}
+/************************************************************************************************/
+/* Advanced Diplomacy         END                                                               */
+/************************************************************************************************/
 		FAssert(iMissionCost == kPlayer.getEspionageMissionCost(eMission, eTargetPlayer, pPlot, iExtraData, pSpyUnit));
 
 		szBuffer.append(SEPARATOR);
@@ -22118,6 +22186,7 @@ void CvGameTextMgr::getPlotHelp(CvPlot* pMouseOverPlot,
 					break;
 				case INTERFACEMODE_NUKE:
 					getNukePlotHelp(*pMouseOverPlot, *pHeadSelectedUnit, szTempBuffer);
+					szTempBuffer.append(NEWLINE); // kekm.7
 					break;
 				// <advc.004c>
 				case INTERFACEMODE_AIRBOMB:
@@ -22184,27 +22253,12 @@ void CvGameTextMgr::getRebasePlotHelp(CvPlot const& kPlot,
 }
 
 void CvGameTextMgr::getNukePlotHelp(CvPlot const& kPlot,
-	CvUnit& kHeadSelectedUnit, CvWString& szHelp)
+	CvUnit& kNuke, CvWString& szHelp)
 {
-	for (TeamIter<ALIVE> it; it.hasNext(); ++it)
-	{
-		TeamTypes const eVictimTeam = it->getID();
-		if (kHeadSelectedUnit.isNukeVictim(&kPlot, eVictimTeam) &&
-			!kHeadSelectedUnit.isEnemy(eVictimTeam))
-		{	// <kekm.7> (advc)
-			if (eVictimTeam == kHeadSelectedUnit.getTeam())
-				szHelp.append(gDLL->getText("TXT_KEY_CANT_NUKE_OWN_TEAM"));
-			else // </kekm.7>
-			szHelp.append(gDLL->getText("TXT_KEY_CANT_NUKE_FRIENDS"));
-			break;
-		}
-	}
-	// <advc.650>
-	if (kHeadSelectedUnit.canNukeAt(
-		kHeadSelectedUnit.getPlot(), kPlot.getX(), kPlot.getY()))
-	{
+	if (kNuke.canNukeAt(kNuke.getPlot(), kPlot.getX(), kPlot.getY()))
+	{	// <advc.650>
 		TeamTypes eInterceptTeam=NO_TEAM;
-		int iInterceptChance = kHeadSelectedUnit.nukeInterceptionChance(
+		int iInterceptChance = kNuke.nukeInterceptionChance(
 				kPlot, &eInterceptTeam);
 		if (eInterceptTeam != NO_TEAM)
 		{
@@ -22212,9 +22266,56 @@ void CvGameTextMgr::getNukePlotHelp(CvPlot const& kPlot,
 			szHelp.append(gDLL->getText("TXT_KEY_NUKE_INTERCEPT_CHANCE",
 					// Should perhaps show the team only when its not directly affected?
 					GET_TEAM(eInterceptTeam).getName().c_str(), iInterceptChance));
+		} // </advc.650>
+		return; // advc
+	}
+	// <kekm.7> (advc): Prioritize the explanations
+	CvWString szExplain;
+	for (int iPass = 0; iPass < 3 && szExplain.empty(); iPass++) // </kekm.7>
+	{
+		for (TeamIter<ALIVE> it; it.hasNext(); ++it)
+		{
+			TeamTypes const eVictimTeam = it->getID();
+			if (!kNuke.isNukeVictim(&kPlot, eVictimTeam))
+				continue;
+			// <kekm.7> (advc)
+			if (kNuke.isEnemy(eVictimTeam))
+			{
+				if (iPass == 0)
+				{
+					bool bCityFound = false;
+					for (SquareIter it(kPlot, kNuke.nukeRange()); it.hasNext(); ++it)
+					{
+						if (it->isCity() && kNuke.isEnemy(it->getTeam()) &&
+							it->calculateFriendlyCulturePercent(kNuke.getTeam()) >=
+							GC.getDefineINT(CvGlobals::CITY_NUKE_CULTURE_THRESH))
+						{
+							bCityFound = true;
+							break;
+						}
+					}
+					if (bCityFound)
+					{
+						szExplain.append(gDLL->getText("TXT_KEY_CANT_NUKE_OWN_POP",
+								GC.getDefineINT(CvGlobals::CITY_NUKE_CULTURE_THRESH)));
+						break;
+					}
+				}
+			}
+			else
+			{
+				if (eVictimTeam == kNuke.getTeam())
+				{
+					if (iPass == 2)
+						szExplain.append(gDLL->getText("TXT_KEY_CANT_NUKE_OWN_TEAM"));
+				}
+				else if (iPass == 1) // </kekm.7>
+					szExplain.append(gDLL->getText("TXT_KEY_CANT_NUKE_FRIENDS"));
+				break;
+			}
 		}
-	} // </advc.650>
-	szHelp += NEWLINE; // kekm.7
+	}
+	szHelp.append(szExplain);
 }
 
 /*	advc.004c: (Beginning based on getNukePlotHelp; the defense damage part is akin
@@ -23376,3 +23477,21 @@ void CvGameTextMgr::buildMaintenanceModifiersString(CvWStringBuffer &szBuffer, T
 	}
 }
 //DPII < Maintenance Modifiers >
+
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+void CvGameTextMgr::buildFreeTradeAgreementString(CvWStringBuffer &szBuffer, TechTypes eTech, bool bList, bool bPlayerContext)
+{
+	if (GC.getTechInfo(eTech).isFreeTradeAgreementTrading() && (!bPlayerContext || !(GET_TEAM(GC.getGame().getActiveTeam()).isFreeTradeAgreementTrading())))
+	{
+		if (bList)
+		{
+			szBuffer.append(NEWLINE);
+		}
+		szBuffer.append(gDLL->getText("TXT_KEY_MISC_ENABLES_FREE_TRADE_AGREEMENT"));
+	}
+}
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/

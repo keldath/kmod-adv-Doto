@@ -33,6 +33,9 @@
 	<ElementType name="iPower" content="textOnly" dt:type="int"/>
 	<ElementType name="bRepeat" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bTrade" content="textOnly" dt:type="boolean"/>
+	<!--  Advanced Diplomacy--> 
+	<ElementType name="bFreeTradeAgreementTrading" content="textOnly" dt:type="boolean"/>	
+	<!--  Advanced Diplomacy--> 
 	<ElementType name="bDisable" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bGoodyTech" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bExtraWaterSeeFrom" content="textOnly" dt:type="boolean"/>
@@ -147,6 +150,9 @@
 		<element type="iPower" minOccurs="0"/>
 		<element type="bRepeat" minOccurs="0"/>
 		<element type="bTrade" minOccurs="0"/>
+		<!--  Advanced Diplomacy--> 
+		<element type="bFreeTradeAgreementTrading" minOccurs="0"/>
+		<!--  Advanced Diplomacy--> 
 		<element type="bDisable" minOccurs="0"/>
 		<!-- advc.314 (note): If bAllGoodyTechs=1 is set in Civ4EraInfos.xml,
 			 then goody huts can grant progress to all techs of an era and

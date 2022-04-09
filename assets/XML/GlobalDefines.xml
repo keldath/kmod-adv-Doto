@@ -2089,4 +2089,14 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 		<DefineName>CULTURE_GOLDEN_AGE_THRESHOLD</DefineName>
 		<iDefineIntVal>500</iDefineIntVal>
 	</Define>-->
+	<!--  Advanced Diplomacy unused for now in doto-->
+	<Define>
+		<DefineName>FREE_TRADE_AGREEMENT_ESPIONAGE_MISSION_COST_MODIFIER</DefineName>
+		<iDefineIntVal>25</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>FREE_TRADE_AGREEMENT_TRADE_MODIFIER</DefineName>
+		<iDefineIntVal>50</iDefineIntVal>
+	</Define>
+	<!--  Advanced Diplomacy -->
 </Civ4Defines>

@@ -49,6 +49,13 @@ public: // advc: All the const functions are exposed to Python except those adde
 	bool isTechTrading() const { return m_bTechTrading; }
 	bool isGoldTrading() const { return m_bGoldTrading; }
 	bool isOpenBordersTrading() const { return m_bOpenBordersTrading; }
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	bool isFreeTradeAgreementTrading() const { return m_bFreeTradeAgreementTrading; }
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	bool isDefensivePactTrading() const { return m_bDefensivePactTrading; }
 	bool isPermanentAllianceTrading() const { return m_bPermanentAllianceTrading; }
 	bool isVassalStateTrading() const { return m_bVassalStateTrading; }
@@ -146,6 +153,14 @@ protected:
 	bool m_bTechTrading;
 	bool m_bGoldTrading;
 	bool m_bOpenBordersTrading;
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	bool m_bFreeTradeAgreementTrading;
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
+
 	bool m_bDefensivePactTrading;
 	bool m_bPermanentAllianceTrading;
 	bool m_bVassalStateTrading;

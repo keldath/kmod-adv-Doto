@@ -557,6 +557,14 @@ m_iBonusTradeAttitudeDivisor(0),
 m_iBonusTradeAttitudeChangeLimit(0),
 m_iOpenBordersAttitudeDivisor(0),
 m_iOpenBordersAttitudeChangeLimit(0),
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+m_iFreeTradeAgreementAttitudeDivisor(0),
+m_iFreeTradeAgreementAttitudeChangeLimit(0),
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 m_iDefensivePactAttitudeDivisor(0),
 m_iDefensivePactAttitudeChangeLimit(0),
 m_iShareWarAttitudeChange(0),
@@ -588,6 +596,13 @@ m_iStopTradingThemRefuseAttitudeThreshold(NO_ATTITUDE),
 m_iAdoptCivicRefuseAttitudeThreshold(NO_ATTITUDE),
 m_iConvertReligionRefuseAttitudeThreshold(NO_ATTITUDE),
 m_iOpenBordersRefuseAttitudeThreshold(NO_ATTITUDE),
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+m_iFreeTradeAgreementRefuseAttitudeThreshold(NO_ATTITUDE),
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 m_iDefensivePactRefuseAttitudeThreshold(NO_ATTITUDE),
 m_iPermanentAllianceRefuseAttitudeThreshold(NO_ATTITUDE),
 m_iVassalRefuseAttitudeThreshold(NO_ATTITUDE),
@@ -831,6 +846,14 @@ void CvLeaderHeadInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iBonusTradeAttitudeChangeLimit);
 	stream->Read(&m_iOpenBordersAttitudeDivisor);
 	stream->Read(&m_iOpenBordersAttitudeChangeLimit);
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	stream->Read(&m_iFreeTradeAgreementAttitudeDivisor);
+	stream->Read(&m_iFreeTradeAgreementAttitudeChangeLimit);
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	stream->Read(&m_iDefensivePactAttitudeDivisor);
 	stream->Read(&m_iDefensivePactAttitudeChangeLimit);
 	stream->Read(&m_iShareWarAttitudeChange);
@@ -861,6 +884,14 @@ void CvLeaderHeadInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iAdoptCivicRefuseAttitudeThreshold);
 	stream->Read(&m_iConvertReligionRefuseAttitudeThreshold);
 	stream->Read(&m_iOpenBordersRefuseAttitudeThreshold);
+/*************************************************************************************************/
+/* START: Advanced Diplomacy                                                        			 */
+/*************************************************************************************************/
+	stream->Read(&m_iSecretaryGeneralVoteRefuseAttitudeThreshold);
+	stream->Read(&m_iFreeTradeAgreementRefuseAttitudeThreshold);
+/*************************************************************************************************/
+/* END: Advanced Diplomacy       	                                                  			 */
+/*************************************************************************************************/
 	stream->Read(&m_iDefensivePactRefuseAttitudeThreshold);
 	stream->Read(&m_iPermanentAllianceRefuseAttitudeThreshold);
 	stream->Read(&m_iVassalRefuseAttitudeThreshold);
@@ -977,6 +1008,14 @@ void CvLeaderHeadInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iBonusTradeAttitudeChangeLimit);
 	stream->Write(m_iOpenBordersAttitudeDivisor);
 	stream->Write(m_iOpenBordersAttitudeChangeLimit);
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	stream->Write(m_iFreeTradeAgreementAttitudeDivisor);
+	stream->Write(m_iFreeTradeAgreementAttitudeChangeLimit);
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	stream->Write(m_iDefensivePactAttitudeDivisor);
 	stream->Write(m_iDefensivePactAttitudeChangeLimit);
 	stream->Write(m_iShareWarAttitudeChange);
@@ -1007,6 +1046,13 @@ void CvLeaderHeadInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iAdoptCivicRefuseAttitudeThreshold);
 	stream->Write(m_iConvertReligionRefuseAttitudeThreshold);
 	stream->Write(m_iOpenBordersRefuseAttitudeThreshold);
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	stream->Write(m_iFreeTradeAgreementRefuseAttitudeThreshold);
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	stream->Write(m_iDefensivePactRefuseAttitudeThreshold);
 	stream->Write(m_iPermanentAllianceRefuseAttitudeThreshold);
 	stream->Write(m_iVassalRefuseAttitudeThreshold);
@@ -1107,6 +1153,14 @@ bool CvLeaderHeadInfo::read(CvXMLLoadUtility* pXML)
 	GetChildXmlValByName(m_iBonusTradeAttitudeChangeLimit, "iBonusTradeAttitudeChangeLimit");
 	GetChildXmlValByName(m_iOpenBordersAttitudeDivisor, "iOpenBordersAttitudeDivisor");
 	GetChildXmlValByName(m_iOpenBordersAttitudeChangeLimit, "iOpenBordersAttitudeChangeLimit");
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	GetChildXmlValByName(m_iFreeTradeAgreementAttitudeDivisor, "iFreeTradeAgreementAttitudeDivisor");
+	GetChildXmlValByName(m_iFreeTradeAgreementAttitudeChangeLimit, "iFreeTradeAgreementAttitudeChangeLimit");
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	GetChildXmlValByName(m_iDefensivePactAttitudeDivisor, "iDefensivePactAttitudeDivisor");
 	GetChildXmlValByName(m_iDefensivePactAttitudeChangeLimit, "iDefensivePactAttitudeChangeLimit");
 	GetChildXmlValByName(m_iShareWarAttitudeChange, "iShareWarAttitudeChange");
@@ -1162,6 +1216,14 @@ bool CvLeaderHeadInfo::read(CvXMLLoadUtility* pXML)
 			"ConvertReligionRefuseAttitudeThreshold");
 	pXML->SetInfoIDFromChildXmlVal(m_iOpenBordersRefuseAttitudeThreshold,
 			"OpenBordersRefuseAttitudeThreshold");
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	pXML->SetInfoIDFromChildXmlVal(m_iFreeTradeAgreementRefuseAttitudeThreshold,
+		"FreeTradeAgreementRefuseAttitudeThreshold");
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	pXML->SetInfoIDFromChildXmlVal(m_iDefensivePactRefuseAttitudeThreshold,
 			"DefensivePactRefuseAttitudeThreshold");
 	pXML->SetInfoIDFromChildXmlVal(m_iPermanentAllianceRefuseAttitudeThreshold,

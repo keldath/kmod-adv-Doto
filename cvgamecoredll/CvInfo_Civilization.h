@@ -191,6 +191,14 @@ public: // advc: All the const functions are exposed to Python except those adde
 	int getBonusTradeAttitudeChangeLimit() const { return m_iBonusTradeAttitudeChangeLimit; }
 	int getOpenBordersAttitudeDivisor() const { return m_iOpenBordersAttitudeDivisor; }
 	int getOpenBordersAttitudeChangeLimit() const { return m_iOpenBordersAttitudeChangeLimit; }
+/*************************************************************************************************/
+/* START: Advanced Diplomacy                                                         			 */
+/*************************************************************************************************/
+	int getFreeTradeAgreementAttitudeDivisor() const{ return m_iFreeTradeAgreementAttitudeDivisor; }
+	int getFreeTradeAgreementAttitudeChangeLimit() const { return m_iFreeTradeAgreementAttitudeChangeLimit; }
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	int getDefensivePactAttitudeDivisor() const { return m_iDefensivePactAttitudeDivisor; }
 	int getDefensivePactAttitudeChangeLimit() const { return m_iDefensivePactAttitudeChangeLimit; }
 	int getShareWarAttitudeChange() const { return m_iShareWarAttitudeChange; }
@@ -222,6 +230,13 @@ public: // advc: All the const functions are exposed to Python except those adde
 	int getAdoptCivicRefuseAttitudeThreshold() const { return m_iAdoptCivicRefuseAttitudeThreshold; }
 	int getConvertReligionRefuseAttitudeThreshold() const { return m_iConvertReligionRefuseAttitudeThreshold; }
 	int getOpenBordersRefuseAttitudeThreshold() const { return m_iOpenBordersRefuseAttitudeThreshold; }
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	int getFreeTradeAgreementRefuseAttitudeThreshold() const { return m_iFreeTradeAgreementRefuseAttitudeThreshold; }
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	int getDefensivePactRefuseAttitudeThreshold() const { return m_iDefensivePactRefuseAttitudeThreshold; }
 	int getPermanentAllianceRefuseAttitudeThreshold() const { return m_iPermanentAllianceRefuseAttitudeThreshold; }
 	int getVassalRefuseAttitudeThreshold() const { return m_iVassalRefuseAttitudeThreshold; }
@@ -325,6 +340,14 @@ protected:
 	int m_iBonusTradeAttitudeChangeLimit;
 	int m_iOpenBordersAttitudeDivisor;
 	int m_iOpenBordersAttitudeChangeLimit;
+	/*************************************************************************************************/
+	/* START: Advanced Diplomacy                                                        			 */
+	/*************************************************************************************************/
+	int m_iFreeTradeAgreementAttitudeDivisor;
+	int m_iFreeTradeAgreementAttitudeChangeLimit;
+	/************************************************************************************************/
+	/* END: Advanced Diplomacy                                                                      */
+	/************************************************************************************************/
 	int m_iDefensivePactAttitudeDivisor;
 	int m_iDefensivePactAttitudeChangeLimit;
 	int m_iShareWarAttitudeChange;
@@ -355,6 +378,13 @@ protected:
 	int m_iAdoptCivicRefuseAttitudeThreshold;
 	int m_iConvertReligionRefuseAttitudeThreshold;
 	int m_iOpenBordersRefuseAttitudeThreshold;
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	int m_iFreeTradeAgreementRefuseAttitudeThreshold;
+/************************************************************************************************/
+/* END: Advanced Diplomacy         END                                                          */
+/************************************************************************************************/
 	int m_iDefensivePactRefuseAttitudeThreshold;
 	int m_iPermanentAllianceRefuseAttitudeThreshold;
 	int m_iVassalRefuseAttitudeThreshold;

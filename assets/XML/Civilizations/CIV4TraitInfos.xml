@@ -20,7 +20,7 @@
 			<iUpkeepModifier>0</iUpkeepModifier>
 			<iLevelExperienceModifier>0</iLevelExperienceModifier>
 			<!-- advc.908c: was 100 -->
-			<iGreatPeopleRateModifier>80</iGreatPeopleRateModifier>
+			<iGreatPeopleRateModifier>40</iGreatPeopleRateModifier>
 			<iGreatGeneralRateModifier>0</iGreatGeneralRateModifier>
 			<iDomesticGreatGeneralRateModifier>0</iDomesticGreatGeneralRateModifier>
 			<iMaxGlobalBuildingProductionModifier>0</iMaxGlobalBuildingProductionModifier>
@@ -298,7 +298,7 @@
 			<iUpkeepModifier>0</iUpkeepModifier>
 			<iLevelExperienceModifier>0</iLevelExperienceModifier>
 			<iGreatPeopleRateModifier>0</iGreatPeopleRateModifier>
-			<iGreatGeneralRateModifier>100</iGreatGeneralRateModifier>
+			<iGreatGeneralRateModifier>50</iGreatGeneralRateModifier>
 			<iDomesticGreatGeneralRateModifier>0</iDomesticGreatGeneralRateModifier>
 			<iMaxGlobalBuildingProductionModifier>0</iMaxGlobalBuildingProductionModifier>
 			<iMaxTeamBuildingProductionModifier>0</iMaxTeamBuildingProductionModifier>

@@ -498,6 +498,13 @@ ENUM_START(Widget, WIDGET)
 	WIDGET_HELP_GLOBAL_COMMERCE_MODIFIER,
 	WIDGET_HELP_EXTRA_SPECIALIST_COMMERCE,
 	// K-Mod end
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	WIDGET_HELP_FREE_TRADE_AGREEMENT,
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	WIDGET_RF_CIV_CHOICE, // advc.706
 	WIDGET_LH_GLANCE, // advc.152
 	WIDGET_SHOW_REPLAY, // advc.106i
@@ -1176,6 +1183,14 @@ enum TradeableItems
 	TRADE_DEFENSIVE_PACT,
 	TRADE_PERMANENT_ALLIANCE,
 	TRADE_PEACE_TREATY,
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	TRADE_FREE_TRADE_ZONE,
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
+
 #ifdef _USRDLL
 	/*NUM_BASIC_ITEMS,
 	TRADE_TECHNOLOGIES = NUM_BASIC_ITEMS,*/
@@ -1290,6 +1305,14 @@ ENUM_START(Memory, MEMORY)
 	MEMORY_EVENT_GOOD_TO_US,
 	MEMORY_EVENT_BAD_TO_US,
 	MEMORY_LIBERATED_CITIES,
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	MEMORY_CANCELLED_FREE_TRADE_AGREEMENT,
+/************************************************************************************************/
+/* Advanced Diplomacy         END                                                               */
+/************************************************************************************************/
+
 	MEMORY_INDEPENDENCE, // advc.130r
 	MEMORY_DECLARED_WAR_RECENT, // advc.104i
 ENUM_END(Memory, MEMORY)

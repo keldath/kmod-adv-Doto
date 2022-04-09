@@ -149,6 +149,13 @@
 			<Type>MEMORY_LIBERATED_CITIES</Type>
 			<Description>TXT_KEY_MEMORY_LIBERATED_CITIES</Description>
 		</MemoryInfo>
+		<!--Advanced Diplomacy-->
+		<!--Note to Mergers: This MUST BE IN EXACTLY THE SAME ORDER AS IN CvEnums.h!-->
+		<MemoryInfo>
+			<Type>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</Type>
+			<Description>TXT_KEY_MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</Description>
+		</MemoryInfo>
+		<!--Advanced Diplomacy-->
 		<!-- advc.130r -->
 		<MemoryInfo>
 			<Type>MEMORY_INDEPENDENCE</Type>

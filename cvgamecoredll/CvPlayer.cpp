@@ -3506,15 +3506,15 @@ int CvPlayer::calculateScore(bool bFinal, bool bVictory) const
 	}
 		if (kCiv.getIsCityState() == 1)
 		{
-			iLandScore += iLandScore * std::min((maxNumCitiesPlayer - minNumCitiesPlayer), 2);
-			iPopulationScore += iPopulationScore * std::min((maxNumCitiesPlayer - minNumCitiesPlayer), 2);
+			iLandScore += iLandScore * std::min((maxNumCitiesPlayer - minNumCitiesPlayer), 2) - iSCORE_POPULATION_FACTOR;
+			//iPopulationScore += iPopulationScore * std::min((maxNumCitiesPlayer - minNumCitiesPlayer), 2);
 		}
 	}
 //doto city states
 	int iTotal = iPopulationScore + iLandScore + iWondersScore + iTechScore;
 
 	GC.getPythonCaller()->doPlayerScore(getID(), bFinal, bVictory, iTotal); // </advc.003y>
-	//sagi
+
 	return iTotal;
 }
 
@@ -3996,6 +3996,19 @@ void CvPlayer::handleDiploEvent(DiploEventTypes eDiploEvent, PlayerTypes ePlayer
 
 bool CvPlayer::canTradeWith(PlayerTypes eWhoTo) const
 {
+/************************************************************************************************/
+/* START: Advanced Diplomacy           moved to     canTradeWith team                                                      */
+/************************************************************************************************/
+
+	//if (GET_TEAM(getTeam()).isFreeTradeAgreementTrading() || GET_TEAM(GET_PLAYER(eWhoTo).getTeam()).isFreeTradeAgreementTrading())
+	//{
+	//	return true;
+	//}
+
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
+
 	// advc: Team-level checks moved to new CvTeam function
 	if(!GET_TEAM(getTeam()).canTradeWith(TEAMID(eWhoTo)) && !canTradeNetworkWith(eWhoTo))
 		return false;
@@ -4025,7 +4038,7 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 	CvTeam const& kOurTeam = GET_TEAM(getTeam());
 	CvTeam const& kToTeam = GET_TEAM(eWhoTo);
 
-//doto city state - dont allow city statesdo some trades
+//doto city state - dont allow city states do some trades
 	bool meCityState = false;
 	bool himCityState = false;
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
@@ -4064,20 +4077,6 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 			{	// if (GET_PLAYER(eWhoTo).getNumAvailableBonuses(eBonus) == 0)
 				bValid = true;
 			}
-//doto city states - the artificial resources for city states are not connected to the capital or something in here getNumTradeableBonuses
-//so this will make sure it will not cancel them out 
-// i know its hard coded...sucks huh....
-/*			else
-			{
-				CvBonusInfo& kBonusInfo = GC.getInfo(eBonus);
-				CvWString d = CvWString::format(L"%s", kBonusInfo.getDescription());
-				if ((d.find(L"Route") != std::string::npos))
-				{
-					bValid = true;
-				}
-			}
-			*/
-				
 		}
 		break;
 	}
@@ -4115,12 +4114,12 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 //doto city state - dont allow city states to be a part of vassal
 		if (meCityState || himCityState)
 			bValid = false;
-		//break; //added break - was missing or not
+		break;
 //doto city state - dont allow city states to be a part of vassal
 	case TRADE_SURRENDER:
 	{
 		bool bForce = (item.m_iData == 1); // Used by CvDeal::startTeamTrade
-		if ((kToTeam.isAtWar(getTeam()) || bForce) && item.m_eItemType == TRADE_SURRENDER)
+		if (kToTeam.isAtWar(getTeam()) || bForce)
 			bValid = true;
 		break;
 	}
@@ -4199,6 +4198,13 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 	}
 	// advc.opt: The rest is handled by canPossiblyTradeItem
 	case TRADE_OPEN_BORDERS:
+/************************************************************************************************/
+/* START: Advanced Diplomacy      adjusted for advc                                                              */
+/************************************************************************************************/
+	case TRADE_FREE_TRADE_ZONE:
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
 	case TRADE_DEFENSIVE_PACT:
 	case TRADE_PERMANENT_ALLIANCE:
 	case TRADE_PEACE_TREATY:
@@ -4275,6 +4281,20 @@ bool CvPlayer::canPossiblyTradeItem(PlayerTypes eWhoTo, TradeableItems eItemType
 		return (getTeam() != kToTeam.getID() && !kOurTeam.isAtWar(kToTeam.getID()) &&
 				!kOurTeam.isOpenBorders(kToTeam.getID()) &&
 				(kOurTeam.isOpenBordersTrading() || kToTeam.isOpenBordersTrading()));
+/************************************************************************************************/
+/* START: Advanced Diplomacy     adjuster for advc                                                               */
+/************************************************************************************************/
+	case TRADE_FREE_TRADE_ZONE:
+
+		return (getTeam() != kToTeam.getID() && !kOurTeam.isAtWar(kToTeam.getID()) &&
+				kOurTeam.canSignFreeTradeAgreement(kToTeam.getID()) &&
+				(kOurTeam.isFreeTradeAgreementTrading() || kToTeam.isFreeTradeAgreementTrading())
+				&& !kOurTeam.isFreeTradeAgreement(kToTeam.getID())
+				);
+
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	case TRADE_DEFENSIVE_PACT:
 		if (!kOurTeam.isAVassal() && !kToTeam.isAVassal() &&
 			getTeam() != kToTeam.getID() && //!kToTeam.isVassal(getTeam()) // advc: redundant
@@ -4436,7 +4456,15 @@ DenialTypes CvPlayer::getTradeDenial(PlayerTypes eWhoTo, TradeData item) const
 
 	case TRADE_OPEN_BORDERS:
 		return kOurTeam.AI_openBordersTrade(TEAMID(eWhoTo));
-
+/*************************************************************************************************/
+/* START: Advanced Diplomacy      advc adjusted                                                  			 */
+/*************************************************************************************************/
+	case TRADE_FREE_TRADE_ZONE:
+		return kOurTeam.AI_FreeTradeAgreement(TEAMID(eWhoTo));
+		break;
+/*************************************************************************************************/
+/* START: Advanced Diplomacy                                                        			 */
+/*************************************************************************************************/
 	case TRADE_DEFENSIVE_PACT:
 		// K-Mod
 		if (!isHuman() && kOurTeam.isHuman())
@@ -13423,6 +13451,24 @@ int CvPlayer::getEspionageMissionCostModifier(EspionageMissionTypes eMission,
 	iModifier /= 100;
 	// K-Mod end
 
+/************************************************************************************************/
+/* Afforess	                  Start		 07/29/10                                               */
+/* Advanced Diplomacy    
+doto - why not lets use this - make it optional later on...										*/
+/************************************************************************************************/
+	if (pCity != NULL)
+	{
+		if (GET_TEAM(getTeam()).isFreeTradeAgreement(kTargetTeam.getID()))
+		{
+			iModifier *= 100 - GC.getDefineINT("FREE_TRADE_AGREEMENT_ESPIONAGE_MISSION_COST_MODIFIER");
+			iModifier /= 100;
+		}
+	}
+/************************************************************************************************/
+/* Advanced Diplomacy         END                                                               */
+/************************************************************************************************/
+
+
 	return iModifier;
 }
 
@@ -19940,6 +19986,16 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 			kOurInventory.insertAtEnd(item);
 	}
 //doto city state 
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	// Free Trade
+	setTradeItem(&item, TRADE_FREE_TRADE_ZONE, 0);
+	if (canTradeItem(eOtherPlayer, item))
+		kOurInventory.insertAtEnd(item);
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 
 	setTradeItem(&item, TRADE_OPEN_BORDERS);
 	if (canTradeItem(eOtherPlayer, item))
@@ -19999,16 +20055,6 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 			FOR_EACH_ENUM(Bonus)
 			{
 				setTradeItem(&item, TRADE_RESOURCES, eLoopBonus);
-
-//doto city states - test check for the city states resources unique
-				CvBonusInfo& kBonusInfo = GC.getInfo(eLoopBonus);
-				CvWString d = CvWString::format(L"%s", kBonusInfo.getDescription());
-				int k = 0;
-				if ((d.find(L"Route") != std::string::npos))
-				{
-					k=1;
-				}
-//doto city states - test check for the city states resources unique
 				if (!canTradeItem(eOtherPlayer, item))
 				{
 					continue;
@@ -20345,6 +20391,15 @@ bool CvPlayer::getItemTradeString(PlayerTypes eRecipient, bool bOffer,
 		else szString = GC.getInfo((ReligionTypes)zTradeData.m_iData).getDescription();
 		szIcon = GC.getInfo((ReligionTypes)zTradeData.m_iData).getButton();
 		break; // <advc.034>
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	case TRADE_FREE_TRADE_ZONE:
+		szString = gDLL->getText("TXT_KEY_MISC_FREE_TRADE_ZONE");
+		break;
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
 	case TRADE_DISENGAGE:
 		szString.clear();
 		GAMETEXT.buildDisengageString(szString, getID(), eRecipient);

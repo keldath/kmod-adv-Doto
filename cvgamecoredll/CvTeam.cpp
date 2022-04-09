@@ -85,6 +85,13 @@ void CvTeam::reset(TeamTypes eID, bool bConstructorCall)
 	m_iTechTradingCount = 0;
 	m_iGoldTradingCount = 0;
 	m_iOpenBordersTradingCount = 0;
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	m_iFreeTradeAgreementTradingCount = 0;
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	m_iDefensivePactTradingCount = 0;
 	m_iPermanentAllianceTradingCount = 0;
 	m_iVassalTradingCount = 0;
@@ -144,6 +151,13 @@ void CvTeam::reset(TeamTypes eID, bool bConstructorCall)
 	m_abHasSeen.reset(); // K-Mod
 	m_abPermanentWarPeace.reset();
 	m_abOpenBorders.reset();
+/*************************************************************************************************/
+/* START: Advanced Diplomacy                                                                     */
+/*************************************************************************************************/
+	m_abFreeTradeAgreement.reset();
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	m_abDisengage.reset(); // advc.034
 	m_abDefensivePact.reset();
 	m_abForcePeace.reset();
@@ -173,6 +187,13 @@ void CvTeam::reset(TeamTypes eID, bool bConstructorCall)
 			kLoopTeam.m_abJustDeclaredWar.resetVal(getID()); // advc.162
 			kLoopTeam.m_abPermanentWarPeace.resetVal(getID());
 			kLoopTeam.m_abOpenBorders.resetVal(getID());
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+			kLoopTeam.m_abFreeTradeAgreement.resetVal(getID());
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 			kLoopTeam.m_abDisengage.resetVal(getID()); // advc.034
 			kLoopTeam.m_abDefensivePact.resetVal(getID());
 			kLoopTeam.m_abForcePeace.resetVal(getID());
@@ -767,6 +788,15 @@ void CvTeam::shareCounters(TeamTypes eTeam)
 			AI().AI_setOpenBordersCounter(eLoopTeam, kShareTeam.AI_getOpenBordersCounter(eLoopTeam));
 		//else kShareTeam.AI_setOpenBordersCounter(eLoopTeam, AI_getOpenBordersCounter(eLoopTeam));
 
+/*************************************************************************************************/
+/* START: Advanced Diplomacy    moved from below - doto - seems more appropriate here   		 */
+/*************************************************************************************************/
+		if (kShareTeam.AI_getFreeTradeAgreementCounter(eLoopTeam) > AI().AI_getFreeTradeAgreementCounter(eLoopTeam))
+			AI().AI_setFreeTradeAgreementCounter(eLoopTeam, kShareTeam.AI_getFreeTradeAgreementCounter(eLoopTeam));
+/*************************************************************************************************/
+/* END: Advanced Diplomacy                                                             			 */
+/*************************************************************************************************/
+
 		if (kShareTeam.AI_getDefensivePactCounter(eLoopTeam) > AI().AI_getDefensivePactCounter(eLoopTeam))
 			AI().AI_setDefensivePactCounter(eLoopTeam, kShareTeam.AI_getDefensivePactCounter(eLoopTeam));
 		//else kShareTeam.AI_setDefensivePactCounter(eLoopTeam, AI_getDefensivePactCounter(eLoopTeam));
@@ -790,6 +820,13 @@ void CvTeam::shareCounters(TeamTypes eTeam)
 		kShareTeam.AI_setWarPlan(eLoopTeam, NO_WARPLAN, false);
 		/*	K-Mod note. presumably, the warplan is cleared under the
 			assumption that kShareTeam is going to be removed. */
+/*************************************************************************************************/
+/* START: Advanced Diplomacy                                                         			 */
+/*************************************************************************************************/
+	//soto - the above was here originally
+/*************************************************************************************************/
+/* END: Advanced Diplomacy                                                             			 */
+/*************************************************************************************************/
 	}
 
 	FOR_EACH_ENUM2(Project, eProject)
@@ -3183,7 +3220,15 @@ bool CvTeam::canTradeWith(TeamTypes eWhoTo) const
 			isOpenBordersTrading() || kToTeam.isOpenBordersTrading() ||
 			isDefensivePactTrading() || kToTeam.isDefensivePactTrading() ||
 			isPermanentAllianceTrading() || kToTeam.isPermanentAllianceTrading() ||
-			isVassalStateTrading() || kToTeam.isVassalStateTrading());
+			isVassalStateTrading() || kToTeam.isVassalStateTrading()
+/************************************************************************************************/
+/* START: Advanced Diplomacy      advc adjustment                                           */
+/************************************************************************************************/
+			|| isFreeTradeAgreementTrading() || kToTeam.isFreeTradeAgreementTrading()
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
+			);
 }
 
 
@@ -3195,7 +3240,17 @@ bool CvTeam::isFreeTrade(TeamTypes eIndex) const
 	if (!isHasMet(eIndex))
 		return false;
 
-	return (isOpenBorders(eIndex) || GC.getGame().isFreeTrade());
+	return (isOpenBorders(eIndex) || GC.getGame().isFreeTrade()
+/************************************************************************************************/
+/* START: Advanced Diplomacy   
+doto - im not so sure about this effect - maybe it allowes for free trade		
+not sure its an effect i want for this agrement type	*/
+/************************************************************************************************/
+		|| isFreeTradeAgreement(eIndex));
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
+
 }
 
 
@@ -5611,6 +5666,16 @@ void CvTeam::processTech(TechTypes eTech, int iChange,
 
 	if (kTech.isOpenBordersTrading())
 		changeOpenBordersTradingCount(iChange);
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	if (kTech.isFreeTradeAgreementTrading())
+	{
+		changeFreeTradeAgreementTradingCount(iChange);
+	}
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 
 	if (kTech.isDefensivePactTrading())
 		changeDefensivePactTradingCount(iChange);
@@ -5855,6 +5920,13 @@ void CvTeam::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iTechTradingCount);
 	pStream->Read(&m_iGoldTradingCount);
 	pStream->Read(&m_iOpenBordersTradingCount);
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	pStream->Read(&m_iFreeTradeAgreementTradingCount);
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	pStream->Read(&m_iDefensivePactTradingCount);
 	pStream->Read(&m_iPermanentAllianceTradingCount);
 	pStream->Read(&m_iVassalTradingCount);
@@ -6251,6 +6323,13 @@ void CvTeam::write(FDataStreamBase* pStream)
 	pStream->Write(m_iTechTradingCount);
 	pStream->Write(m_iGoldTradingCount);
 	pStream->Write(m_iOpenBordersTradingCount);
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	pStream->Write(m_iFreeTradeAgreementTradingCount);
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	pStream->Write(m_iDefensivePactTradingCount);
 	pStream->Write(m_iPermanentAllianceTradingCount);
 	pStream->Write(m_iVassalTradingCount);
@@ -6299,6 +6378,15 @@ void CvTeam::write(FDataStreamBase* pStream)
 	m_abJustDeclaredWar.write(pStream); // advc.162
 	m_abPermanentWarPeace.write(pStream);
 	m_abOpenBorders.write(pStream);
+/************************************************************************************************/
+/* START: Advanced Diplomacy          adjusted advciv                                                         */
+/************************************************************************************************/
+	m_abFreeTradeAgreement.write(pStream);
+	m_aiFreeTradeAgreementCounter.write(pStream);
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
+
 	m_abDisengage.write(pStream); // advc.034
 	m_abDefensivePact.write(pStream);
 	m_abForcePeace.write(pStream);
@@ -6404,3 +6492,152 @@ bool CvTeam::hasTechToClear(FeatureTypes eFeature, TechTypes eCurrentResearch) c
 	}
 	return false;
 } // </advc>
+
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+
+bool CvTeam::canSignFreeTradeAgreement(TeamTypes eTeam) const
+{
+	//doto - there were 2 limits here, embassy and open borders.
+	// i decided to remove any prereq
+	//main goal is to have the attitude value to handle this - yes or no,
+	// maybe later on, i can devise something smart for this.
+	//if (!isOpenBorders(eTeam))
+	//{
+	//	return false;
+	//}
+
+	return true;
+}
+/* seems to be unused - doto - checked
+void CvTeam::signFreeTradeAgreement(TeamTypes eTeam)
+{
+	CLinkList<TradeData> ourList;
+	CLinkList<TradeData> theirList;
+	TradeData item;
+
+	FAssert(eTeam != NO_TEAM);
+	FAssert(eTeam != getID());
+
+	if (!isAtWar(eTeam) && (getID() != eTeam) && (!isFreeTradeAgreeement(eTeam)))
+	{
+		setTradeItem(&item, TRADE_FREE_TRADE_ZONE);
+
+		if (GET_PLAYER(getLeaderID()).canTradeItem(GET_TEAM(eTeam).getLeaderID(), item) && GET_PLAYER(GET_TEAM(eTeam).getLeaderID()).canTradeItem(getLeaderID(), item))
+		{
+			ourList.clear();
+			theirList.clear();
+
+			ourList.insertAtEnd(item);
+			theirList.insertAtEnd(item);
+
+			GC.getGameINLINE().implementDeal(getLeaderID(), (GET_TEAM(eTeam).getLeaderID()), &ourList, &theirList);
+		}
+	}
+}
+*/
+int CvTeam::getFreeTradeAgreementTradingCount() const
+{
+	return m_iFreeTradeAgreementTradingCount;
+}
+
+bool CvTeam::isFreeTradeAgreementTrading() const
+{
+	return (getFreeTradeAgreementTradingCount() > 0);
+}
+
+void CvTeam::changeFreeTradeAgreementTradingCount(int iChange)
+{
+	if (iChange != 0)
+	{
+		m_iFreeTradeAgreementTradingCount = (m_iFreeTradeAgreementTradingCount + iChange);
+	}
+	//FAssert(getFreeTradeAgreementTradingCount() >= 0);
+}
+// moved to team.h
+//bool CvTeam::isFreeTradeAgreement(TeamTypes eIndex) const
+//{
+//	//FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+//	//FAssertMsg(eIndex < MAX_TEAMS, "eIndex is expected to be within maximum bounds (invalid Index)");
+//	//return m_abFreeTradeAgreement[eIndex];
+//	return m_abFreeTradeAgreement.get(eIndex);
+//}
+
+void CvTeam::setFreeTradeAgreement(TeamTypes eIndex, bool bNewValue)
+{
+	//FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	//FAssertMsg(eIndex < MAX_TEAMS, "eIndex is expected to be within maximum bounds (invalid Index)");
+	/*
+		doto - now uses advc code from openborders.
+		the original function is quite similar, just a few basic difference which i addressed in the comments.
+		---
+		in addition - for city states, im gonna do something different maybe,
+		the free routes thing is something that im not sure ill use.
+		---
+	*/
+
+	if (isFreeTradeAgreement(eIndex) != bNewValue)
+		return; // advc
+	bool bOldFreeTrade = isFreeTradeAgreement(eIndex); //advc from open borders -> isFreeTrade(eIndex);
+	m_abFreeTradeAgreement.set(eIndex, bNewValue);
+	// <advc.130p> OB affect diplo from rival trade
+	//doto - left if from open borders advciv - seems logical.
+	for (PlayerAIIter<MAJOR_CIV, NOT_SAME_TEAM_AS> itOther(getID()); itOther.hasNext(); ++itOther)
+	{
+		for (MemberIter itMember(getID()); itMember.hasNext(); ++itMember)
+			itOther->AI_updateAttitude(itMember->getID());
+	} // </advc.130p>
+
+	//AI().AI_setOpenBordersCounter(eIndex, 0);
+	//this wasmt in the advc diplo org code - its a duplication of the above from open borders
+	//which is also - unsed here cuase i dont know what its purpose
+	//edit - i did some changes in :AI_doCounter() so i enable this one now 
+	AI().AI_changeFreeTradeAgreementCounter(eIndex, 0);
+
+	GC.getMap().verifyUnitValidPlot();
+
+	if (isActive() || GET_TEAM(eIndex).isActive())
+		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
+
+	if (bOldFreeTrade != 
+		//isFreeTrade(eIndex) -from advc open borders
+		isFreeTradeAgreement(eIndex)
+		)
+	{
+		for (MemberIter it(getID()); it.hasNext(); ++it)
+			it->updateTradeRoutes();
+	} // <advc.034>
+	//doto - not sure what is the purpose - but - seems logical.
+	//if the value is true means if there was some disebgage - it gets cancelled by this
+	if (bNewValue)
+		AI().cancelDisengage(eIndex); // </advc.034>
+
+}
+
+int CvTeam::AI_getFreeTradeAgreementCounter(TeamTypes eIndex) const
+{
+	//FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	//FAssertMsg(eIndex < MAX_TEAMS, "eIndex is expected to be within maximum bounds (invalid Index)");
+	//return m_aiFreeTradeAgreementCounter[eIndex];
+	return m_aiFreeTradeAgreementCounter.get(eIndex);
+}
+
+
+void CvTeam::AI_setFreeTradeAgreementCounter(TeamTypes eIndex, int iNewValue)
+{
+	//FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	//FAssertMsg(eIndex < MAX_TEAMS, "eIndex is expected to be within maximum bounds (invalid Index)");
+	//m_aiFreeTradeAgreementCounter[eIndex] = iNewValue;
+	//FAssert(AI_getFreeTradeAgreementCounter(eIndex) >= 0);
+	m_aiFreeTradeAgreementCounter.set(eIndex, iNewValue);
+}
+
+
+void CvTeam::AI_changeFreeTradeAgreementCounter(TeamTypes eIndex, int iChange)
+{
+	AI_setFreeTradeAgreementCounter(eIndex, (AI_getFreeTradeAgreementCounter(eIndex) + iChange));
+}
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/

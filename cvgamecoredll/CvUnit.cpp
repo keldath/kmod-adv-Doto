@@ -4312,7 +4312,15 @@ bool CvUnit::isNukeVictim(const CvPlot* pPlot, TeamTypes eTeam) const
 		{
 			return true;
 		}
-		// <kekm.7> (advc): Not OK to nuke our own units
+		// <kekm.7> (advc)
+		// Can't nuke culturally owned population
+		if (kLoopPlot.isCity() &&
+			kLoopPlot.calculateFriendlyCulturePercent(eTeam) >=
+			GC.getDefineINT(CvGlobals::CITY_NUKE_CULTURE_THRESH))
+		{
+			return true;
+		}
+		// Not OK to nuke our own units
 		if (eTeam == getTeam() && kLoopPlot.plotCheck(NULL, -1, -1, NO_PLAYER, getTeam()))
 			return true; // </kekm.7>
 		if (kLoopPlot.plotCheck(PUF_isCombatTeam, eTeam, getTeam()) != NULL &&
@@ -6431,6 +6439,27 @@ int CvUnit::getTradeGold(const CvPlot* pPlot) const
 			(pCapital != NULL ? pCity->calculateTradeProfit(pCapital) : 0)));
 	iGold *= GC.getInfo(GC.getGame().getGameSpeedType()).getUnitTradePercent();
 	iGold /= 100;
+/************************************************************************************************/
+/* START: Advanced Diplomacy        doto - nice feature - so on    maybe optional later on     */
+/************************************************************************************************/
+	//More Gold From Free Trade Agreement Trade Missions
+	PlayerTypes eTargetPlayer = pPlot->getOwner();
+
+	if (GET_TEAM(getTeam()).isFreeTradeAgreement(GET_PLAYER(eTargetPlayer).getTeam()))
+	{
+		iGold *= 100 + GC.getDefineINT("FREE_TRADE_AGREEMENT_TRADE_MODIFIER");
+		iGold /= 100;
+	}
+
+	//// Gold Sound 
+	//if (plot()->isActiveVisible(false))
+	//{
+	//	gDLL->getInterfaceIFace()->playGeneralSound("AS2D_COINS");
+	//}
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
+
 	return std::max(0, iGold);
 }
 

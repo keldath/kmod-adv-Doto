@@ -302,6 +302,15 @@ public:
 	bool AI_isSneakAttackReady(TeamTypes eIndex /* K-Mod (any team): */ = NO_TEAM) const;
 	bool AI_isSneakAttackPreparing(TeamTypes eIndex /* advc: */= NO_TEAM) const;
 	void AI_setWarPlan(TeamTypes eTarget, WarPlanTypes eNewValue, bool bWar = true);
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	int AI_getFreeTradeAgreementCounter(TeamTypes eIndex) const;
+	void AI_setFreeTradeAgreementCounter(TeamTypes eIndex, int iNewValue);
+	void AI_changeFreeTradeAgreementCounter(TeamTypes eIndex, int iChange);
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	// <advc.opt>
 	bool AI_mayAttack(TeamTypes eDefender) const;
 	bool AI_mayAttack(CvPlot const& kPlot) const; // </advc.opt>
@@ -353,6 +362,18 @@ public:
 
 	void read(FDataStreamBase* pStream);
 	void write(FDataStreamBase* pStream);
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	int AI_FreeTradeAgreementVal(TeamTypes eTeam) const;
+	DenialTypes AI_FreeTradeAgreement(TeamTypes eTeam) const;
+
+	int AI_NonAggressionTradeVal(TeamTypes eTeam) const;
+	DenialTypes AI_NonAggressionTrade(TeamTypes eTeam) const;
+
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 
 protected:
 	TeamTypes m_eWorstEnemy;
@@ -364,6 +385,13 @@ protected:
 	ArrayEnumMap<TeamTypes,int,short> m_aiAtPeaceCounter;
 	ArrayEnumMap<TeamTypes,int,short> m_aiHasMetCounter;
 	ArrayEnumMap<TeamTypes,int,short> m_aiOpenBordersCounter;
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	ArrayEnumMap<TeamTypes, int, short> m_aiFreeTradeAgreementCounter;
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	ArrayEnumMap<TeamTypes,int,short> m_aiDefensivePactCounter;
 	ArrayEnumMap<TeamTypes,int,short> m_aiShareWarCounter;
 	ArrayEnumMap<TeamTypes,scaled> m_arWarSuccess; // advc.130r: was V=int
