@@ -4758,7 +4758,7 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 		}
 	}
 /*************************************************************************************************/
-/* Advanced Diplomacy       START                                                  				 */
+/* Advanced Diplomacy       end                                                  				 */
 /*************************************************************************************************/
 
 	if (kTech.isOpenBordersTrading())

@@ -4400,9 +4400,10 @@ void CvTeamAI::AI_changeShareWarCounter(TeamTypes eTeam, int iChange)
 
 int CvTeamAI::AI_getFreeTradeAgreementCounter(TeamTypes eIndex) const
 {
-	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex < MAX_TEAMS, "eIndex is expected to be within maximum bounds (invalid Index)");
-	return m_aiFreeTradeAgreementCounter[eIndex];
+	//FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
+	//FAssertMsg(eIndex < MAX_TEAMS, "eIndex is expected to be within maximum bounds (invalid Index)");
+	//return m_aiFreeTradeAgreementCounter[eIndex];
+	return m_aiFreeTradeAgreementCounter.get(eIndex);
 }
 
 

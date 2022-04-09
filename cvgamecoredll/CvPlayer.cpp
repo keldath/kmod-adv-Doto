@@ -3506,7 +3506,7 @@ int CvPlayer::calculateScore(bool bFinal, bool bVictory) const
 	}
 		if (kCiv.getIsCityState() == 1)
 		{
-			iLandScore += iLandScore * std::min((maxNumCitiesPlayer - minNumCitiesPlayer), 2) - iSCORE_POPULATION_FACTOR;
+			iLandScore += std::min(iLandScore * std::min((maxNumCitiesPlayer - minNumCitiesPlayer), 2),0) /*- iSCORE_POPULATION_FACTOR*/;
 			//iPopulationScore += iPopulationScore * std::min((maxNumCitiesPlayer - minNumCitiesPlayer), 2);
 		}
 	}
