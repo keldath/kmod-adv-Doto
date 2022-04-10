@@ -1455,6 +1455,13 @@ void CyEnumsPythonInterface()
 		.value("CONTACT_ASK_FOR_HELP", CONTACT_ASK_FOR_HELP)
 		.value("CONTACT_DEMAND_TRIBUTE", CONTACT_DEMAND_TRIBUTE)
 		.value("CONTACT_OPEN_BORDERS", CONTACT_OPEN_BORDERS)
+/************************************************************************************************/
+/* START: Advanced Diplomacy   -doto added                             */
+/************************************************************************************************/
+		.value("CONTACT_TRADE_FREE_TRADE_ZONE", CONTACT_TRADE_FREE_TRADE_ZONE)
+/************************************************************************************************/
+/* END: Advanced Diplomacy         	                                                            */
+/************************************************************************************************/
 		.value("CONTACT_DEFENSIVE_PACT", CONTACT_DEFENSIVE_PACT)
 		.value("CONTACT_PERMANENT_ALLIANCE", CONTACT_PERMANENT_ALLIANCE)
 		.value("CONTACT_PEACE_TREATY", CONTACT_PEACE_TREATY)

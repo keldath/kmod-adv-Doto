@@ -3996,19 +3996,6 @@ void CvPlayer::handleDiploEvent(DiploEventTypes eDiploEvent, PlayerTypes ePlayer
 
 bool CvPlayer::canTradeWith(PlayerTypes eWhoTo) const
 {
-/************************************************************************************************/
-/* START: Advanced Diplomacy           moved to     canTradeWith team                                                      */
-/************************************************************************************************/
-
-	//if (GET_TEAM(getTeam()).isFreeTradeAgreementTrading() || GET_TEAM(GET_PLAYER(eWhoTo).getTeam()).isFreeTradeAgreementTrading())
-	//{
-	//	return true;
-	//}
-
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
-
 	// advc: Team-level checks moved to new CvTeam function
 	if(!GET_TEAM(getTeam()).canTradeWith(TEAMID(eWhoTo)) && !canTradeNetworkWith(eWhoTo))
 		return false;
@@ -4285,13 +4272,13 @@ bool CvPlayer::canPossiblyTradeItem(PlayerTypes eWhoTo, TradeableItems eItemType
 /* START: Advanced Diplomacy     adjuster for advc                                                               */
 /************************************************************************************************/
 	case TRADE_FREE_TRADE_ZONE:
-
+	{
 		return (getTeam() != kToTeam.getID() && !kOurTeam.isAtWar(kToTeam.getID()) &&
-				kOurTeam.canSignFreeTradeAgreement(kToTeam.getID()) &&
-				(kOurTeam.isFreeTradeAgreementTrading() || kToTeam.isFreeTradeAgreementTrading())
-				&& !kOurTeam.isFreeTradeAgreement(kToTeam.getID())
-				);
-
+			kOurTeam.canSignFreeTradeAgreement(kToTeam.getID()) &&
+			(kOurTeam.isFreeTradeAgreementTrading() || kToTeam.isFreeTradeAgreementTrading())
+			&& !kOurTeam.isFreeTradeAgreement(kToTeam.getID())
+			);
+	}
 /************************************************************************************************/
 /* END: Advanced Diplomacy                                                                      */
 /************************************************************************************************/
@@ -4332,6 +4319,13 @@ bool CvPlayer::canPossiblyTradeItem(PlayerTypes eWhoTo, TradeableItems eItemType
 		return (!kToTeam.isDisengage(getTeam()) &&
 				!kToTeam.isAtWar(getTeam()) &&
 				!kToTeam.isOpenBorders(getTeam()) &&
+/************************************************************************************************/
+/* START: Advanced Diplomacy     doto added                                                      */
+/************************************************************************************************/
+				!kToTeam.isFreeTradeAgreement(getTeam()) &&
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
 				!kToTeam.isVassal(getTeam()) &&
 				!kOurTeam.isVassal(kToTeam.getID()) &&
 				kToTeam.isHasMet(getTeam()));
@@ -4461,7 +4455,6 @@ DenialTypes CvPlayer::getTradeDenial(PlayerTypes eWhoTo, TradeData item) const
 /*************************************************************************************************/
 	case TRADE_FREE_TRADE_ZONE:
 		return kOurTeam.AI_FreeTradeAgreement(TEAMID(eWhoTo));
-		break;
 /*************************************************************************************************/
 /* START: Advanced Diplomacy                                                        			 */
 /*************************************************************************************************/

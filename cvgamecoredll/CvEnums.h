@@ -1260,6 +1260,13 @@ ENUM_START(Contact, CONTACT)
 	CONTACT_ASK_FOR_HELP,
 	CONTACT_DEMAND_TRIBUTE,
 	CONTACT_OPEN_BORDERS,
+/************************************************************************************************/
+/* START: Advanced Diplomacy  -doto added                                          */
+/************************************************************************************************/
+	CONTACT_TRADE_FREE_TRADE_ZONE,
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 	CONTACT_DEFENSIVE_PACT,
 	CONTACT_PERMANENT_ALLIANCE,
 	CONTACT_PEACE_TREATY,

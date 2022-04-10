@@ -8096,29 +8096,6 @@ int CvPlayerAI::AI_getBonusTradeAttitude(PlayerTypes ePlayer) const
 	return 0;
 }
 
-/*************************************************************************************************/
-/** Advanced Diplomacy       START     advc - same as in open borders    						 */
-/*************************************************************************************************/
-
-int CvPlayerAI::AI_getFreeTradeAgreementAttitude(PlayerTypes ePlayer) const
-{
-	if (!atWar(getTeam(), TEAMID(ePlayer)))
-	{
-		if (GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeDivisor() != 0)
-		{
-			int iAttitudeChange = (GET_TEAM(getTeam()).AI_getFreeTradeAgreementCounter(TEAMID(ePlayer)) / 
-				GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeDivisor());
-			return range(iAttitudeChange, 
-				-(abs(GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeChangeLimit())), 
-				abs(GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeChangeLimit()));
-		}
-	}
-	return 0;
-}
-/************************************************************************************************/
-/* Advanced Diplomacy                        END                                                */
-/************************************************************************************************/
-
 
 int CvPlayerAI::AI_getOpenBordersAttitude(PlayerTypes ePlayer) const
 {
@@ -8136,6 +8113,28 @@ int CvPlayerAI::AI_getOpenBordersAttitude(PlayerTypes ePlayer) const
 	return 0;
 }
 
+/*************************************************************************************************/
+/** Advanced Diplomacy       START     advc - same as in open borders    						 */
+/*************************************************************************************************/
+
+int CvPlayerAI::AI_getFreeTradeAgreementAttitude(PlayerTypes ePlayer) const
+{
+	if (!atWar(getTeam(), TEAMID(ePlayer)))
+	{
+		if (GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeDivisor() != 0)
+		{
+			int iAttitudeChange = (GET_TEAM(getTeam()).AI_getFreeTradeAgreementCounter(TEAMID(ePlayer)) /
+				GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeDivisor());
+			return range(iAttitudeChange,
+				-(abs(GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeChangeLimit())),
+				abs(GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeChangeLimit()));
+		}
+	}
+	return 0;
+}
+/************************************************************************************************/
+/* Advanced Diplomacy                        END                                                */
+/************************************************************************************************/
 
 int CvPlayerAI::AI_getDefensivePactAttitude(PlayerTypes ePlayer) const
 {
@@ -8481,7 +8480,13 @@ int CvPlayerAI::AI_peacetimeTradeValDivisor(bool bRival) const
 			MEMORY_EVENT_GOOD_TO_US) * (bRival ? -1 : 1), 1, 1000);
 }
 
-
+/************************************************************************************************/
+/* START: Advanced Diplomacy   new to doto advc added to match open borders   
+	CAN GO ABOUT THE CHANGES HERE in 2 ways either consider freetrade or open borders
+	or one on top of the other if any - i went wtih ontop.
+	2 aggrements on a rivel should raise the bar more i guess...
+*/
+/************************************************************************************************/
 int CvPlayerAI::AI_getRivalTradeAttitude(PlayerTypes ePlayer) const
 {
 	CvTeamAI const& kOurTeam = GET_TEAM(getTeam());
@@ -8512,6 +8517,25 @@ int CvPlayerAI::AI_getRivalTradeAttitude(PlayerTypes ePlayer) const
 				rDualDealCounter *= fixp(1.5);
 			}
 		}
+/************************************************************************************************/
+/* START: Advanced Diplomacy   new to doto advc added to match open borders                     */
+/************************************************************************************************/
+		if (GET_TEAM(eTeam).isFreeTradeAgreement(eEnemy))
+		{
+			rDualDealCounter += std::min(20,
+				std::min(kOurTeam.AI_getHasMetCounter(eTeam),
+					GET_TEAM(eTeam).AI_getFreeTradeAgreementCounter(eEnemy)));
+			if (kOurTeam.isAtWar(eEnemy))
+			{	/*  Not happy that enemy units can move through the borders of
+					ePlayer and heal there, but only moderate increase b/c we
+					can't well afford to make further enemies when already in a war. */
+				rDualDealCounter *= fixp(1.5);
+			}
+		}
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+
 		/*  Resource trades are handled by CvDeal::doTurn (I wrote the code below
 			before realizing that) */
 		/*rDualDealCounter += scaled::min(20,
@@ -8536,6 +8560,14 @@ int CvPlayerAI::AI_getRivalTradeAttitude(PlayerTypes ePlayer) const
 				iPotentialOB++;
 				if(it->isOpenBorders(eEnemy))
 					iActualOB++;
+/************************************************************************************************/
+/* START: Advanced Diplomacy   new to doto advc added to match open borders                     */
+/************************************************************************************************/
+				if (it->isFreeTradeAgreement(eEnemy))
+					iActualOB++;
+/************************************************************************************************/
+/* END: Advanced Diplomacy   new to doto advc added to match open borders                     */
+/************************************************************************************************/
 			}
 			scaled rNonOBRatio(iPotentialOB - iActualOB, iPotentialOB);
 			rDualDealCounter = scaled::max(iCounterBound, rNonOBRatio);
@@ -8551,6 +8583,19 @@ int CvPlayerAI::AI_getRivalTradeAttitude(PlayerTypes ePlayer) const
 				if (rFromVassal > 0)
 					rVassalDealCounter += rFromVassal;
 			}
+/************************************************************************************************/
+/* START: Advanced Diplomacy   new to doto advc added to match open borders                     */
+/************************************************************************************************/
+			if (it->isCapitulated() && it->getID() != getTeam() &&
+				it->isFreeTradeAgreement(eEnemy))
+			{
+				scaled rFromVassal(it->AI_getHasMetCounter(eEnemy), 2);
+				if (rFromVassal > 0)
+					rVassalDealCounter += rFromVassal;
+			}
+/************************************************************************************************/
+/* END: Advanced Diplomacy   new to doto advc added to match open borders                     */
+/************************************************************************************************/
 		}
 		rDualDealCounter += scaled::min(rVassalDealCounter, 10);
 		// </advc.130v>
@@ -11575,6 +11620,10 @@ int CvPlayerAI::AI_bonusVal(BonusTypes eBonus, int iChange, bool bAssumeEnabled,
 	return iValue;
 }
 
+/************************************************************************************************/
+/* START: Advanced Diplomacy     DOTO-MOSTLY FOR A CITY STATE                                   */
+/************************************************************************************************/
+
 int CvPlayerAI::AI_cityStateEval() const
 {
 	//doto - nayve this can be a cool way to value stuff for city state
@@ -11590,6 +11639,9 @@ int CvPlayerAI::AI_cityStateEval() const
 		rCitiesPerCiv.decreaseTo(3 * (1 + rEra));
 	return std::min(4, (rCitiesPerCiv).round()); 
 }
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
 
 /*	Value sans corporation
 	(K-Mod note: very vague units. roughly 4x gold / turn / city.) */
@@ -13246,14 +13298,14 @@ int CvPlayerAI::AI_stopTradingTradeVal(TeamTypes eTradeTeam, PlayerTypes ePlayer
 	if (GET_TEAM(ePlayer).isDefensivePact(eTradeTeam))
 		iValue *= 3;
 /************************************************************************************************/
-/* Advanced Diplomacy         START                                                             */
+/* Advanced Diplomacy         START  rather simple - maybe look at the above openb fromadvc     */
 /************************************************************************************************/
 	if (GET_TEAM(ePlayer).isFreeTradeAgreement(eTradeTeam))
 	{
 		iValue *= 3;
 		//doto - doubled this value - if i get it right, its worth while to make someone stop
 		//trading this agreement with a city state..
-		iValue *= 2;
+		//iValue *= 2;
 	}
 /************************************************************************************************/
 /* Advanced Diplomacy         END                                                               */
@@ -20845,10 +20897,6 @@ void CvPlayerAI::AI_doDiplo()
 								}
 							}
 						}
-//city state new trade perk
-//						if (AI_cityStateTradeRBonusVal(ePlayer, eLoopBonus, true))
-//							eBestGiveBonus = eLoopBonus;
-//city state new trade perk
 					}
 				}
 
@@ -20970,10 +21018,6 @@ void CvPlayerAI::AI_doDiplo()
 							eBestGiveBonus = (eLoopBonus);
 						}
 					}
-//city state new trade perk
-//					if (AI_cityStateTradeRBonusVal(ePlayer, eLoopBonus, true))
-//						eBestGiveBonus = eLoopBonus;
-//city state new trade perk
 				}
 
 				if (eBestGiveBonus != NO_BONUS)
@@ -21300,7 +21344,39 @@ void CvPlayerAI::AI_doDiplo()
 						else kGame.implementDeal(getID(), ePlayer, weGive, theyGive);
 					}
 				}
-
+/************************************************************************************************/
+/* START: Advanced Diplomacy   -doto added    -needed for the ai to offer it                    */
+/************************************************************************************************/
+				if (AI_getContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE) == 0 &&
+					SyncRandOneChanceIn(GC.getInfo(getPersonalityType()).
+						getContactRand(CONTACT_TRADE_FREE_TRADE_ZONE)))
+				{
+					TradeData item(TRADE_FREE_TRADE_ZONE);
+					if (canTradeItem(ePlayer, item, true) &&
+						kPlayer.canTradeItem(getID(), item, true))
+					{
+						weGive.clear();
+						theyGive.clear();
+						weGive.insertAtEnd(item);
+						theyGive.insertAtEnd(item);
+						if (kPlayer.isHuman() && !abContacted[kPlayer.getTeam()])
+						{
+							AI_changeContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE,
+								AI_getContactDelay(CONTACT_TRADE_FREE_TRADE_ZONE));
+							pDiplo = new CvDiploParameters(getID());
+							pDiplo->setDiploComment(GC.getAIDiploCommentType("OFFER_DEAL"));
+							pDiplo->setAIContact(true);
+							pDiplo->setOurOfferList(theyGive);
+							pDiplo->setTheirOfferList(weGive);
+							gDLL->beginDiplomacy(pDiplo, ePlayer);
+							abContacted[kPlayer.getTeam()] = true;
+						}
+						else kGame.implementDeal(getID(), ePlayer, weGive, theyGive);
+					}
+				}
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 				if (AI_getContactTimer(ePlayer, CONTACT_DEFENSIVE_PACT) == 0)
 				{	// <cdtw.5>
 					int iRand = GC.getInfo(getPersonalityType()).getContactRand(CONTACT_DEFENSIVE_PACT);
@@ -22461,9 +22537,6 @@ bool CvPlayerAI::AI_demandTribute(PlayerTypes eHuman, AIDemandTypes eDemand)
 			}
 			// <advc.104m>
 			rValue *= 1 + SyncRandFract(scaled) / 4;
-//city state new trade perk
-//			rValue += AI_cityStateTradeRBonusVal(getID(), eLoopBonus, true);
-//city state new trade perk
 			aieBonuses.push_back(std::make_pair(rValue, eLoopBonus));
 		}
 		std::sort(aieBonuses.begin(), aieBonuses.end(),

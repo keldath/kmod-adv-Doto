@@ -936,8 +936,18 @@ bool CvDeal::startTrade(TradeData trade, PlayerTypes eFromPlayer, PlayerTypes eT
 	case TRADE_FREE_TRADE_ZONE:
 		if (trade.m_iData <= 0)// advc: was ==
 		{
+			// <advc.032>
+			if (GET_TEAM(eFromPlayer).isFreeTradeAgreement(kToPlayer.getTeam()))
+			{
+				if (kFromPlayer.resetDualDeal(eToPlayer, TRADE_FREE_TRADE_ZONE))
+				{
+					if (gTeamLogLevel >= 2) logBBAI("    Player %d (%S_1) prolongs open borders with player %d (%S_2)", eFromPlayer, kFromPlayer.getCivilizationDescription(0), eToPlayer, kToPlayer.getCivilizationDescription(0));
+					break;
+				}
+			} // </advc.032>
 			startTeamTrade(TRADE_FREE_TRADE_ZONE, kFromPlayer.getTeam(), kToPlayer.getTeam(), true);
 			GET_TEAM(eFromPlayer).setFreeTradeAgreement(kToPlayer.getTeam(), true);
+			if (gTeamLogLevel >= 2) logBBAI("    Player %d (%S_1) signs open borders due to TRADE_FREE_TRADE_ZONE with player %d (%S_2)", eFromPlayer, kFromPlayer.getCivilizationDescription(0), eToPlayer, kToPlayer.getCivilizationDescription(0));
 		}
 		else bSave = true;
 		break;
@@ -1296,9 +1306,6 @@ bool CvDeal::isAnnual(TradeableItems eItem)
 	case TRADE_VASSAL:
 	case TRADE_SURRENDER:
 	case TRADE_OPEN_BORDERS:
-	case TRADE_DISENGAGE: // advc.034
-	case TRADE_DEFENSIVE_PACT:
-	case TRADE_PERMANENT_ALLIANCE:
 /************************************************************************************************/
 /* START: Advanced Diplomacy                                                                    */
 /************************************************************************************************/
@@ -1306,6 +1313,9 @@ bool CvDeal::isAnnual(TradeableItems eItem)
 /************************************************************************************************/
 /* END: Advanced Diplomacy                                                                      */
 /************************************************************************************************/
+	case TRADE_DISENGAGE: // advc.034
+	case TRADE_DEFENSIVE_PACT:
+	case TRADE_PERMANENT_ALLIANCE:
 
 		return true;
 		break;
@@ -1344,6 +1354,13 @@ bool CvDeal::hasData(TradeableItems eItem)
 			eItem != TRADE_VASSAL &&
 			eItem != TRADE_SURRENDER &&
 			eItem != TRADE_OPEN_BORDERS &&
+/************************************************************************************************/
+/* START: Advanced Diplomacy      -added for doto                                               */
+/************************************************************************************************/
+			eItem != TRADE_FREE_TRADE_ZONE &&
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 			eItem != TRADE_DISENGAGE && // advc.034
 			eItem != TRADE_DEFENSIVE_PACT &&
 			eItem != TRADE_PERMANENT_ALLIANCE &&

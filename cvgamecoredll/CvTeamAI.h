@@ -169,6 +169,15 @@ public:
 	int AI_openBordersTradeVal(TeamTypes eTeam) const;
 	DenialTypes AI_openBordersTrade(TeamTypes eWithTeam) const;
 
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	int AI_FreeTradeAgreementVal(TeamTypes eTeam) const;
+	DenialTypes AI_FreeTradeAgreement(TeamTypes eTeam) const;
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
+
 	int AI_defensivePactTradeVal(TeamTypes eTeam) const;
 	DenialTypes AI_defensivePactTrade(TeamTypes eWithsTeam) const;
 
@@ -227,6 +236,19 @@ public:
 	}
 	void AI_setOpenBordersCounter(TeamTypes eIndex, int iNewValue);
 	void AI_changeOpenBordersCounter(TeamTypes eIndex, int iChange);
+	
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
+	int AI_getFreeTradeAgreementCounter(TeamTypes eIndex) const
+	{
+		return m_aiFreeTradeAgreementCounter.get(eIndex);
+	}
+	void AI_setFreeTradeAgreementCounter(TeamTypes eIndex, int iNewValue);
+	void AI_changeFreeTradeAgreementCounter(TeamTypes eIndex, int iChange);
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
 
 	int AI_getDefensivePactCounter(TeamTypes eIndex) const
 	{
@@ -302,15 +324,7 @@ public:
 	bool AI_isSneakAttackReady(TeamTypes eIndex /* K-Mod (any team): */ = NO_TEAM) const;
 	bool AI_isSneakAttackPreparing(TeamTypes eIndex /* advc: */= NO_TEAM) const;
 	void AI_setWarPlan(TeamTypes eTarget, WarPlanTypes eNewValue, bool bWar = true);
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	int AI_getFreeTradeAgreementCounter(TeamTypes eIndex) const;
-	void AI_setFreeTradeAgreementCounter(TeamTypes eIndex, int iNewValue);
-	void AI_changeFreeTradeAgreementCounter(TeamTypes eIndex, int iChange);
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
+
 	// <advc.opt>
 	bool AI_mayAttack(TeamTypes eDefender) const;
 	bool AI_mayAttack(CvPlot const& kPlot) const; // </advc.opt>
@@ -362,18 +376,6 @@ public:
 
 	void read(FDataStreamBase* pStream);
 	void write(FDataStreamBase* pStream);
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	int AI_FreeTradeAgreementVal(TeamTypes eTeam) const;
-	DenialTypes AI_FreeTradeAgreement(TeamTypes eTeam) const;
-
-	int AI_NonAggressionTradeVal(TeamTypes eTeam) const;
-	DenialTypes AI_NonAggressionTrade(TeamTypes eTeam) const;
-
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 
 protected:
 	TeamTypes m_eWorstEnemy;
@@ -432,6 +434,13 @@ protected:
 	int AI_declareWarTradeValLegacy(TeamTypes eWarTeam, TeamTypes eTeam) const;
 	int AI_getOpenBordersAttitudeDivisor() const; // advc.130i
 	scaled AI_getOpenBordersCounterIncrement(TeamTypes eOther) const; // advc.130z
+/************************************************************************************************/
+/* START: Advanced Diplomacy         new to doto - matching the advc openborders code           */
+/************************************************************************************************/
+	int AI_getFreeTradeAgreementAttitudeDivisor() const; // advc.130i
+/************************************************************************************************/
+/* END: Advanced Diplomacy         new to doto - matching the advc openborders code           */
+/************************************************************************************************/
 	bool AI_isTerritoryAccessible(TeamTypes eOwner) const; // advc.124
 	bool AI_isTerritoryAccessible(CvPlot const& kPlot) const; // advc.124
 	bool AI_isPursuingCircumnavigation() const; // advc.136a

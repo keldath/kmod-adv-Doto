@@ -214,7 +214,16 @@ public:
 	int getOpenBordersTradingCount() const { return m_iOpenBordersTradingCount; }															// Exposed to Python
 	bool isOpenBordersTrading() const { return (getOpenBordersTradingCount() > 0); }										// Exposed to Python
 	void changeOpenBordersTradingCount(int iChange);															// Exposed to Python
-
+/************************************************************************************************/
+/* START: Advanced Diplomacy     moved from cpp                                                 */
+/************************************************************************************************/
+	int getFreeTradeAgreementTradingCount() const { return m_iFreeTradeAgreementTradingCount; }															// Exposed to Python
+	bool isFreeTradeAgreementTrading() const { return (getFreeTradeAgreementTradingCount() > 0); }										// Exposed to Python
+	void changeFreeTradeAgreementTradingCount(int iChange);															// Exposed to Python
+/************************************************************************************************/
+/* END: Advanced Diplomacy                                                                      */
+/************************************************************************************************/
+	
 	int getDefensivePactTradingCount() const { return m_iDefensivePactTradingCount; }										// Exposed to Python
 	bool isDefensivePactTrading() const { return (getDefensivePactTradingCount() > 0); }															// Exposed to Python
 	void changeDefensivePactTradingCount(int iChange);														// Exposed to Python
@@ -348,20 +357,15 @@ public:
 	void setOpenBorders(TeamTypes eIndex, bool bNewValue);
 	// <advc.034>
 /************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
+/* START: Advanced Diplomacy    moved from cpp                                                  */
 /************************************************************************************************/
-	bool isFreeTradeAgreement(TeamTypes eIndex) const																// Exposed to Python
+	bool isFreeTradeAgreement(TeamTypes eIndex) const
 	{
 		return m_abFreeTradeAgreement.get(eIndex);
+
 	}
 	void setFreeTradeAgreement(TeamTypes eIndex, bool bNewValue);
-	/* seems to be unused - doto - checked
-	void signFreeTradeAgreement(TeamTypes eTeam); const;
-	*/
 	bool canSignFreeTradeAgreement(TeamTypes eTeam) const;
-	int getFreeTradeAgreementTradingCount() const;
-	bool isFreeTradeAgreementTrading() const;
-	void changeFreeTradeAgreementTradingCount(int iChange);
 /************************************************************************************************/
 /* END: Advanced Diplomacy                                                                    */
 /************************************************************************************************/
@@ -697,7 +701,6 @@ protected:
 	ArrayEnumMap<TerrainTypes,int,char> m_aiTerrainTradeCount;
 	ArrayEnumMap<VictoryTypes,int,short,-1> m_aiVictoryCountdown;
 	ArrayEnumMap<TeamTypes,int,short,-1> m_aiHasMetTurn; // advc.091
-
 	Enum2IntEncMap<ArrayEnumMap<ImprovementTypes,YieldChangeMap::enc_t>,
 			YieldChangeMap> m_aaiImprovementYieldChange;
 
@@ -710,7 +713,6 @@ protected:
 /* START: Advanced Diplomacy                                                                    */
 /************************************************************************************************/
 	ArrayEnumMap<TeamTypes, bool> m_abFreeTradeAgreement;
-	ArrayEnumMap<TeamTypes, int> m_aiFreeTradeAgreementCounter;
 /************************************************************************************************/
 /* END: Advanced Diplomacy                                                                    */
 /************************************************************************************************/
@@ -811,15 +813,6 @@ private: // advc.003u: (See comments in the private section of CvPlayer.h)
 	virtual bool AI_isSneakAttackReadyExternal(TeamTypes eIndex);
 	virtual void AI_setWarPlanExternal(TeamTypes eIndex, WarPlanTypes eNewValue,
 			bool bWar = true);
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	int AI_getFreeTradeAgreementCounter(TeamTypes eIndex) const;
-	void AI_setFreeTradeAgreementCounter(TeamTypes eIndex, int iNewValue);
-	void AI_changeFreeTradeAgreementCounter(TeamTypes eIndex, int iChange);
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	virtual void readExternal(FDataStreamBase* pStream);
 	virtual void writeExternal(FDataStreamBase* pStream);
 };

@@ -17374,7 +17374,20 @@ void CvGameTextMgr::getAttitudeString(CvWStringBuffer& szBuffer, PlayerTypes ePl
 		appendToAttitudeBreakdown(szBreakdown, iPass,
 			kPlayer.AI_getHatedCivilizationAttitude(eTargetPlayer), iTotal,
 			"TXT_KEY_MISC_ATTITUDE_HATED_CIVILIZATION");
-//a1021 end				
+//a1021 end		
+
+/*************************************************************************************************/
+/* START: Advanced Diplomacy  - think this is handled auto in advc code
+edit - doto - i think i need this acctually...														*/
+/*************************************************************************************************/
+		// Start bonus to Diplomacy from Free Trade Agreement
+		appendToAttitudeBreakdown(szBreakdown, iPass,
+			kPlayer.AI_getFreeTradeAgreementAttitude(eTargetPlayer), iTotal,
+			"TXT_KEY_MISC_ATTITUDE_FREE_TRADE_AGREEMENT");
+/*************************************************************************************************/
+/** Advanced Diplomacy       END                                                  				 */
+/*************************************************************************************************/
+
 		// <advc.sha> (based on: Show Hidden Attitude Mod 01/22/2010)
 		if (bSHowHiddenAttitude)
 		{
@@ -17440,22 +17453,6 @@ void CvGameTextMgr::getAttitudeString(CvWStringBuffer& szBuffer, PlayerTypes ePl
 				iTotal += iAttitudeChange;
 			}
 		}
-/*************************************************************************************************/
-/* START: Advanced Diplomacy  - think this is handled auto in advc code              
-edit - doto - i think i need this acctually...														*/
-/*************************************************************************************************/
-		// Start bonus to Diplomacy from Free Trade Agreement
-		int iAttitudeChange = kPlayer.AI_getFreeTradeAgreementAttitude(eTargetPlayer);
-		if ((iPass == 0) ? (iAttitudeChange > 0) : (iAttitudeChange < 0))
-		{
-			szTempBuffer.Format(SETCOLR L"%s" ENDCOLR, TEXT_COLOR((iAttitudeChange > 0) ? "COLOR_POSITIVE_TEXT" : "COLOR_NEGATIVE_TEXT"), 
-				gDLL->getText("TXT_KEY_MISC_ATTITUDE_FREE_TRADE_AGREEMENT", iAttitudeChange).GetCString());
-			szBuffer.append(NEWLINE);
-			szBuffer.append(szTempBuffer);
-		}
-/*************************************************************************************************/
-/** Advanced Diplomacy       END                                                  				 */
-/*************************************************************************************************/
 
 		// advc.sha: Moved down along with WarAttitude (see below); keep these together.
 		appendToAttitudeBreakdown(szBreakdown, iPass,
