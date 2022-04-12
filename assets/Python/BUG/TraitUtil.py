@@ -36,6 +36,15 @@ def init():
 	addTrait("PHILOSOPHICAL", game.getSymbolID(FontSymbols.GREAT_PEOPLE_CHAR), "Art/Interface/Buttons/TechTree/Philosophy.dds")
 	addTrait("PROTECTIVE", game.getSymbolID(FontSymbols.DEFENSE_CHAR), "Art/Interface/Buttons/Promotions/CityGarrison1.dds")
 	addTrait("SPIRITUAL", game.getSymbolID(FontSymbols.RELIGION_CHAR), "Art/Interface/Buttons/TechTree/Meditation.dds")
+# Doto City states
+	addTrait("CSTROY", game.getSymbolID(FontSymbols.STAR_CHAR), "Art/Interface/Buttons/TechTree/Monarchy.dds")
+	addTrait("CSKUSH", game.getSymbolID(FontSymbols.STRENGTH_CHAR), "Art/Interface/Buttons/TechTree/Corporation.dds")
+	addTrait("CSZURICH", game.getSymbolID(FontSymbols.BAD_GOLD_CHAR), "Art/Interface/Buttons/TechTree/Literature.dds")
+	addTrait("CSVATICAN", game.getSymbolID(FontSymbols.RELIGION_CHAR), "Art/Interface/Buttons/TechTree/Theology.dds")
+	addTrait("CSTUNIS", game.getSymbolID(FontSymbols.POWER_CHAR), "Art/Interface/Buttons/TechTree/Divine Right.dds")
+	addTrait("CSTIBET", game.getSymbolID(FontSymbols.RELIGION_CHAR), "Art/Interface/Buttons/TechTree/Feudalism.dds")
+	addTrait("CSBAVARIA", game.getSymbolID(FontSymbols.GOLDEN_AGE_CHAR), "Art/Interface/Buttons/TechTree/Code of Laws.dds")
+	addTrait("CSQUEBEC", game.getSymbolID(FontSymbols.CITIZEN_CHAR), "Art/Interface/Buttons/TechTree/Democracy.dds")
 
 def addTrait(trait, icon, button):
 	eTrait = gc.getInfoTypeForString("TRAIT_" + trait)

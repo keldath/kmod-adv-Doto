@@ -709,6 +709,20 @@ void CvPlayer::processTraits(int iChange)
 			continue;
 		CvTraitInfo const& kTrait = GC.getInfo(eTrait);
 
+/************************************************************************************************/
+/* START: Advanced Diplomacy   doto custom for city state trade agreement                       */
+/************************************************************************************************/
+		//DOTO CITY STATES ADVANCED DIPLOMACY custimization of effects 
+		//these traits will only be active when a free trade is signed.
+		//a city state will get commerce changes and a normal civ will get commerece modifier.
+		CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
+		if ((szText.find(L"Unique Trade") != std::string::npos))
+				continue;
+/************************************************************************************************/
+/* END: Advanced Diplomacy     doto custom for city state trade agreement                     */
+/************************************************************************************************/
+
+
 		changeExtraHealth(iChange * kTrait.getHealth());
 		changeExtraHappiness(iChange * kTrait.getHappiness());
 

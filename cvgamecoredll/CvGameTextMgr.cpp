@@ -6045,6 +6045,7 @@ void CvGameTextMgr::parseTraits(CvWStringBuffer &szHelpString, TraitTypes eTrait
 
 	CvWString szText = kTrait.getDescription();
 	{
+	
 		CvWString szTempBuffer;
 		if (bDawnOfMan)
 			szTempBuffer.Format(L"%s", szText.GetCString());
@@ -6060,6 +6061,23 @@ void CvGameTextMgr::parseTraits(CvWStringBuffer &szHelpString, TraitTypes eTrait
 
 	//if (!CvWString(kTrait.getHelp()).empty()) // advc: unnecessary
 	szHelpString.append(kTrait.getHelp());
+
+
+/************************************************************************************************/
+/* START: Advanced Diplomacy   doto custom for city state trade agreement                       */
+/************************************************************************************************/
+			//DOTO CITY STATES ADVANCED DIPLOMACY custimization of effects 
+			//these traits will only be active when a free trade is signed.
+			//a city state will get commerce changes and a normal civ will get commerece modifier.
+	CvWString szText2 = CvWString::format(L"%s", kTrait.getDescription());
+	if ((szText2.find(L"Unique Trade") != std::string::npos))
+	{
+		szHelpString.append(NEWLINE);
+		szHelpString.append(gDLL->getText("TXT_KEY_TRAIT_TRADE_EFFECT"));
+	}	
+/************************************************************************************************/
+/* END: Advanced Diplomacy     doto custom for city state trade agreement                     */
+/************************************************************************************************/
 
 	if (kTrait.getHealth() != 0)
 		szHelpString.append(gDLL->getText("TXT_KEY_TRAIT_HEALTH", kTrait.getHealth()));
@@ -6170,6 +6188,21 @@ void CvGameTextMgr::parseTraits(CvWStringBuffer &szHelpString, TraitTypes eTrait
 			}
 		}
 	}
+/************************************************************************************************/
+/* START: Advanced Diplomacy   doto custom for city state trade agreement                       */
+/************************************************************************************************/
+//DOTO CITY STATES ADVANCED DIPLOMACY custimization of effects 
+//these traits will only be active when a free trade is signed.
+//a city state will get commerce changes and a normal civ will get commerece modifier.
+	CvWString szText3 = CvWString::format(L"%s", kTrait.getDescription());
+	if ((szText3.find(L"Unique Trade") != std::string::npos))
+	{
+		szHelpString.append(NEWLINE);
+		szHelpString.append(gDLL->getText("TXT_KEY_TRAIT_CS"));
+	}
+
+//DOTO duplicated loop so i can insert text between
+
 	FOR_EACH_ENUM2(Commerce, eCommerce)
 	{
 		if (kTrait.getCommerceChange(eCommerce) != 0)
@@ -6178,13 +6211,40 @@ void CvGameTextMgr::parseTraits(CvWStringBuffer &szHelpString, TraitTypes eTrait
 					kTrait.getCommerceChange(eCommerce),
 					GC.getInfo(eCommerce).getChar()/*, "COMMERCE"*/)); // advc
 		}
+
+		//if (kTrait.getCommerceModifier(eCommerce) != 0)
+		//{
+		//	szHelpString.append(gDLL->getText("TXT_KEY_TRAIT_COMMERCE_MODIFIERS",
+		//			kTrait.getCommerceModifier(eCommerce),
+		//			GC.getInfo(eCommerce).getChar()/*, "COMMERCE"*/)); // advc
+		//}
+	}
+//doto city states
+	CvWString szText4 = CvWString::format(L"%s", kTrait.getDescription());
+	if ((szText4.find(L"Unique Trade") != std::string::npos))
+	{
+		szHelpString.append(NEWLINE);
+		szHelpString.append(gDLL->getText("TXT_KEY_TRAIT_NOT_CS"));
+	}
+		
+	FOR_EACH_ENUM2(Commerce, eCommerce)
+	{
+		//if (kTrait.getCommerceChange(eCommerce) != 0)
+		//{
+		//	szHelpString.append(gDLL->getText("TXT_KEY_TRAIT_COMMERCE_CHANGES",
+		//		kTrait.getCommerceChange(eCommerce),
+		//		GC.getInfo(eCommerce).getChar()/*, "COMMERCE"*/)); // advc
+		//}
 		if (kTrait.getCommerceModifier(eCommerce) != 0)
 		{
 			szHelpString.append(gDLL->getText("TXT_KEY_TRAIT_COMMERCE_MODIFIERS",
-					kTrait.getCommerceModifier(eCommerce),
-					GC.getInfo(eCommerce).getChar()/*, "COMMERCE"*/)); // advc
+				kTrait.getCommerceModifier(eCommerce),
+				GC.getInfo(eCommerce).getChar()/*, "COMMERCE"*/)); // advc
 		}
 	}
+/************************************************************************************************/
+/* END: Advanced Diplomacy     doto custom for city state trade agreement                     */
+/************************************************************************************************/
 	// <advc.908b>
 	{
 		CvGame const& kGame = GC.getGame();

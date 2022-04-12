@@ -570,6 +570,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<iContactRand>10</iContactRand>
 				</ContactRand>
 				<ContactRand>
+<!-- advanced diplomacy doto added-->
+					<ContactType>CONTACT_TRADE_FREE_TRADE_ZONE</ContactType>
+					<iContactRand>5</iContactRand>
+<!-- advanced diplomacy -->
+				</ContactRand>
+				<ContactRand>
 					<ContactType>CONTACT_DEFENSIVE_PACT</ContactType>
 					<iContactRand>80</iContactRand>
 				</ContactRand>
@@ -628,6 +634,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<!-- advc.124: was 20 -->
 					<ContactType>CONTACT_OPEN_BORDERS</ContactType>
 					<iContactDelay>40</iContactDelay>
+				</ContactDelay>
+				<ContactDelay>
+<!-- advanced diplomacy doto added-->
+					<ContactType>CONTACT_TRADE_FREE_TRADE_ZONE</ContactType>
+					<iContactDelay>30</iContactDelay>
+<!-- advanced diplomacy doto-->
 				</ContactDelay>
 				<ContactDelay>
 					<ContactType>CONTACT_DEFENSIVE_PACT</ContactType>
@@ -15545,6 +15557,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<TraitType>TRAIT_SPIRITUAL</TraitType>
 					<bTrait>1</bTrait>
 				</Trait>
+				<Trait>
+					<TraitType>TRAIT_CSVATICAN</TraitType>
+					<bTrait>1</bTrait>
+				</Trait>
 			</Traits>
 			<Flavors>
 				<Flavor>
@@ -16047,6 +16063,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				</Trait>
 				<Trait>
 					<TraitType>TRAIT_CREATIVE</TraitType>
+					<bTrait>1</bTrait>
+				</Trait>
+				<Trait>
+					<TraitType>TRAIT_CSKUSH</TraitType>
 					<bTrait>1</bTrait>
 				</Trait>
 			</Traits>
@@ -16590,6 +16610,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<TraitType>TRAIT_ORGANIZED</TraitType>
 					<bTrait>1</bTrait>
 				</Trait>
+				<Trait>
+					<TraitType>TRAIT_CSTUNIS</TraitType>
+					<bTrait>1</bTrait>
+				</Trait>
 			</Traits>
 			<Flavors>
 				<Flavor>
@@ -17126,6 +17150,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<TraitType>TRAIT_ORGANIZED</TraitType>
 					<bTrait>1</bTrait>
 				</Trait>
+				<Trait>
+					<TraitType>TRAIT_CSZURICH</TraitType>
+					<bTrait>1</bTrait>
+				</Trait>
 			</Traits>
 			<Flavors>
 				<Flavor>
@@ -17617,6 +17645,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				</Trait>
 				<Trait>
 					<TraitType>TRAIT_CREATIVE</TraitType>
+					<bTrait>1</bTrait>
+				</Trait>
+				<Trait>
+					<TraitType>TRAIT_CSBAVARIA</TraitType>
 					<bTrait>1</bTrait>
 				</Trait>
 			</Traits>
@@ -18122,6 +18154,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				</Trait>
 				<Trait>
 					<TraitType>TRAIT_PROTECTIVE</TraitType>
+					<bTrait>1</bTrait>
+				</Trait>
+				<Trait>
+					<TraitType>TRAIT_CSQUEBEC</TraitType>
 					<bTrait>1</bTrait>
 				</Trait>
 			</Traits>
@@ -18635,6 +18671,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 					<TraitType>TRAIT_INDUSTRIOUS</TraitType>
 					<bTrait>1</bTrait>
 				</Trait>
+				<Trait>
+					<TraitType>TRAIT_CSTIBET</TraitType>
+					<bTrait>1</bTrait>
+				</Trait>
 			</Traits>
 			<Flavors>
 				<Flavor>
@@ -19121,6 +19161,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 				</Trait>
 				<Trait>
 					<TraitType>TRAIT_IMPERIALIST</TraitType>
+					<bTrait>1</bTrait>
+				</Trait>
+				<Trait>
+					<TraitType>TRAIT_CSTROY</TraitType>
 					<bTrait>1</bTrait>
 				</Trait>
 			</Traits>

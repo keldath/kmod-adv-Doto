@@ -366,6 +366,7 @@ public:
 	}
 	void setFreeTradeAgreement(TeamTypes eIndex, bool bNewValue);
 	bool canSignFreeTradeAgreement(TeamTypes eTeam) const;
+	void csCapitalTradedTraits(TeamTypes eThey, bool bNewValue) const;
 /************************************************************************************************/
 /* END: Advanced Diplomacy                                                                    */
 /************************************************************************************************/

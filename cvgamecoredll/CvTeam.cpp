@@ -6591,7 +6591,9 @@ void CvTeam::setFreeTradeAgreement(TeamTypes eIndex, bool bNewValue)
 	//which is also - unsed here cuase i dont know what its purpose
 	//edit - i did some changes in :AI_doCounter() so i enable this one now 
 	//AI().setFreeTradeAgreementCounter(eIndex, 0);
-	AI().AI_changeFreeTradeAgreementCounter(eIndex, 0);
+	AI().AI_setFreeTradeAgreementCounter(eIndex, 0);
+	
+	csCapitalTradedTraits(eIndex, bNewValue); //doto unique feature
 
 	//doto - no need to verify open borders enforcment (relic from open borders code.
 	//GC.getMap().verifyUnitValidPlot();
@@ -6611,6 +6613,80 @@ void CvTeam::setFreeTradeAgreement(TeamTypes eIndex, bool bNewValue)
 	//if the value is true means if there was some disebgage - it gets cancelled by this
 	if (bNewValue)
 		AI().cancelDisengage(eIndex); // </advc.034>
+}
+
+//DOTO CITY STATES ADVANCED DIPLOMACY custimization of effects 
+//this function will pull the special trait from a trading player 
+void CvTeam::csCapitalTradedTraits(TeamTypes eThey, bool bNewValue) const
+{
+	int iChange = bNewValue ? 1 : -1;
+
+	if (getID() == eThey)
+		return;
+
+	for (MemberIter it(getID()); it.hasNext(); ++it)
+	{
+		CvPlayer& kOurTeamPlayer = GET_PLAYER(it->getID());
+		CvCivilizationInfo & kOurCiv = GC.getCivilizationInfo(kOurTeamPlayer.getCivilizationType());  
+		bool isOurCS = kOurCiv.getIsCityState() == 1;
+
+		if (!kOurTeamPlayer.isAlive())
+			continue;
+		for (MemberIter it2(eThey); it2.hasNext(); ++it2)
+		{
+			CvPlayer& kThemTeamPlayer = GET_PLAYER(it->getID());
+			CvCivilizationInfo & kThemCiv = GC.getCivilizationInfo(kOurTeamPlayer.getCivilizationType());
+			bool isThemCS = kThemCiv.getIsCityState() == 1;
+
+			FOR_EACH_ENUM2(Trait, eTrait)
+			{
+				if (!kThemTeamPlayer.hasTrait(eTrait))
+					continue;
+
+				CvTraitInfo& kTrait = GC.getInfo(eTrait);
+				CvWString szText = kTrait.getDescription();
+
+				if (szText != L"CS Unique Route")
+					continue;
+
+				FOR_EACH_ENUM(Commerce)
+				{
+
+					if (!isOurCS && isThemCS)
+					{
+						kOurTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
+							kTrait.getCommerceModifier(eLoopCommerce) * iChange);
+
+						//city states will gain a better bonus	
+						kThemTeamPlayer.changeFreeCityCommerce(eLoopCommerce,
+							iChange * kTrait.getCommerceChange(eLoopCommerce));
+						/*.changeCapitalCommerceRateModifier(eLoopCommerce,
+							kTrait.getCommerceModifier(eLoopCommerce) * iChange);*/
+
+					}
+					else if (isOurCS && !isThemCS)
+					{
+						//city states will gain a better bonus	
+						kOurTeamPlayer.changeFreeCityCommerce(eLoopCommerce,
+							iChange * kTrait.getCommerceChange(eLoopCommerce));
+						/*.changeCapitalCommerceRateModifier(eLoopCommerce,
+							kTrait.getCommerceModifier(eLoopCommerce) * iChange);*/
+
+						kThemTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
+							kTrait.getCommerceModifier(eLoopCommerce) * iChange);
+
+					}
+					else
+					{
+						FAssert(isOurCS != isThemCS); //cant have 2 city states trading this
+						FAssert(!isOurCS != !isThemCS); //cant have 2 none city states trading this
+					}
+				}
+
+			}
+
+		}
+	}
 }
 /************************************************************************************************/
 /* END: Advanced Diplomacy                                                                      */

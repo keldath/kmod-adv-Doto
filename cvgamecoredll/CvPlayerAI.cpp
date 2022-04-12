@@ -8518,7 +8518,8 @@ int CvPlayerAI::AI_getRivalTradeAttitude(PlayerTypes ePlayer) const
 			}
 		}
 /************************************************************************************************/
-/* START: Advanced Diplomacy   new to doto advc added to match open borders                     */
+/* START: Advanced Diplomacy   new to doto advc added to match open borders  
+trade agreement with the enemy raises anger higher then open borders							*/
 /************************************************************************************************/
 		if (GET_TEAM(eTeam).isFreeTradeAgreement(eEnemy))
 		{
@@ -8529,11 +8530,13 @@ int CvPlayerAI::AI_getRivalTradeAttitude(PlayerTypes ePlayer) const
 			{	/*  Not happy that enemy units can move through the borders of
 					ePlayer and heal there, but only moderate increase b/c we
 					can't well afford to make further enemies when already in a war. */
-				rDualDealCounter *= fixp(1.5);
+				rDualDealCounter *= fixp(2.0);
 			}
 		}
 /************************************************************************************************/
-/* END: Advanced Diplomacy                                                                    */
+/* END: Advanced Diplomacy       
+add here an additional penalty to all met civs, i want the trade with a civ to take a price!
+*/
 /************************************************************************************************/
 
 		/*  Resource trades are handled by CvDeal::doTurn (I wrote the code below
@@ -19589,7 +19592,15 @@ void CvPlayerAI::AI_doCounter()
 					continue;
 				// Limited decay while war ongoing
 				if((eMem == MEMORY_CANCELLED_OPEN_BORDERS ||
+
+					eMem == MEMORY_CANCELLED_FREE_TRADE_AGREEMENT ||
+/************************************************************************************************/
+/* START: Advanced Diplomacy     adjuster for advc                                                               */
+/************************************************************************************************/
 					eMem == MEMORY_CANCELLED_DEFENSIVE_PACT ||
+/************************************************************************************************/
+/* END: Advanced Diplomacy     adjuster for advc                                                               */
+/************************************************************************************************/
 					eMem == MEMORY_CANCELLED_VASSAL_AGREEMENT) &&
 					iCount <= 1)
 				{
