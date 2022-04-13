@@ -1690,6 +1690,21 @@ void CvPlayerAI::AI_makeProductionDirty()
 void CvPlayerAI::AI_conquerCity(CvCityAI& kCity,  // advc.003u: param was CvCity*
 	bool bEverOwned) // advc.ctr: We already own it; but had we ever previously owned it?
 {
+	
+//doto city states will not be allowed to capture cities ever.
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	{
+		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+		if (kCivilization.getIsCityState() == 1)
+		{
+			// K-Mod moved the log message up - otherwise it will crash due to pCity being deleted!
+			logBBAI("    Player %d (%S) decides to raze city %S!!!", getID(), getCivilizationDescription(0), kCity.getName().GetCString());
+			kCity.doTask(TASK_RAZE);
+			return;
+		}
+	}
+//doto city states
+	
 	if (!canRaze(kCity))
 	{
 		keepCity(kCity);
@@ -4736,25 +4751,19 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 /*************************************************************************************************/
 /* Advanced Diplomacy       START                                                  				 */
 /*************************************************************************************************/
-
-/* imported from history rewritten - as is commented.
-
-	Disabling these because I don't know how to evaluate them in line with K-Mod - Xyth
-
-	if (kTechInfo.isFreeTradeAgreementTrading())
-	{
-		iValue += 200;
-	}
-*/
 	//doto taken from the below open borders method i tried to devise some
 	//evaluator for cities, which will stregthen the value for this tech.
 	//i could use the static 200 the history rewrittem commented out though..
 	//let see how it goes...
-	if (kTech.isFreeTradeAgreementTrading())
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 	{
-		if (iHasMetCount > 0)
+		if (kTech.isFreeTradeAgreementTrading())
 		{
-			iValue += getTotalPopulation()  * AI_cityStateEval();
+			if (iHasMetCount > 0)
+			{
+				iValue += getTotalPopulation()  * AI_cityStateEval();
+				//iValue += 200; //org
+			}
 		}
 	}
 /*************************************************************************************************/
@@ -8521,16 +8530,19 @@ int CvPlayerAI::AI_getRivalTradeAttitude(PlayerTypes ePlayer) const
 /* START: Advanced Diplomacy   new to doto advc added to match open borders  
 trade agreement with the enemy raises anger higher then open borders							*/
 /************************************************************************************************/
-		if (GET_TEAM(eTeam).isFreeTradeAgreement(eEnemy))
+		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 		{
-			rDualDealCounter += std::min(20,
-				std::min(kOurTeam.AI_getHasMetCounter(eTeam),
-					GET_TEAM(eTeam).AI_getFreeTradeAgreementCounter(eEnemy)));
-			if (kOurTeam.isAtWar(eEnemy))
-			{	/*  Not happy that enemy units can move through the borders of
-					ePlayer and heal there, but only moderate increase b/c we
-					can't well afford to make further enemies when already in a war. */
-				rDualDealCounter *= fixp(2.0);
+			if (GET_TEAM(eTeam).isFreeTradeAgreement(eEnemy))
+			{
+				rDualDealCounter += std::min(20,
+					std::min(kOurTeam.AI_getHasMetCounter(eTeam),
+						GET_TEAM(eTeam).AI_getFreeTradeAgreementCounter(eEnemy)));
+				if (kOurTeam.isAtWar(eEnemy))
+				{	/*  Not happy that enemy units can move through the borders of
+						ePlayer and heal there, but only moderate increase b/c we
+						can't well afford to make further enemies when already in a war. */
+					rDualDealCounter *= fixp(2.0);
+				}
 			}
 		}
 /************************************************************************************************/
@@ -8589,12 +8601,15 @@ add here an additional penalty to all met civs, i want the trade with a civ to t
 /************************************************************************************************/
 /* START: Advanced Diplomacy   new to doto advc added to match open borders                     */
 /************************************************************************************************/
-			if (it->isCapitulated() && it->getID() != getTeam() &&
-				it->isFreeTradeAgreement(eEnemy))
+			if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 			{
-				scaled rFromVassal(it->AI_getHasMetCounter(eEnemy), 2);
-				if (rFromVassal > 0)
-					rVassalDealCounter += rFromVassal;
+				if (it->isCapitulated() && it->getID() != getTeam() &&
+					it->isFreeTradeAgreement(eEnemy))
+				{
+					scaled rFromVassal(it->AI_getHasMetCounter(eEnemy), 2);
+					if (rFromVassal > 0)
+						rVassalDealCounter += rFromVassal;
+				}
 			}
 /************************************************************************************************/
 /* END: Advanced Diplomacy   new to doto advc added to match open borders                     */
@@ -19593,11 +19608,11 @@ void CvPlayerAI::AI_doCounter()
 				// Limited decay while war ongoing
 				if((eMem == MEMORY_CANCELLED_OPEN_BORDERS ||
 
-					eMem == MEMORY_CANCELLED_FREE_TRADE_AGREEMENT ||
+					eMem == MEMORY_CANCELLED_DEFENSIVE_PACT ||
 /************************************************************************************************/
 /* START: Advanced Diplomacy     adjuster for advc                                                               */
 /************************************************************************************************/
-					eMem == MEMORY_CANCELLED_DEFENSIVE_PACT ||
+					eMem == MEMORY_CANCELLED_FREE_TRADE_AGREEMENT  ||
 /************************************************************************************************/
 /* END: Advanced Diplomacy     adjuster for advc                                                               */
 /************************************************************************************************/
@@ -19680,9 +19695,6 @@ scaled CvPlayerAI::AI_bonusImportValue(PlayerTypes eFrom) const
 			{
 				scaled rBonusVal = GET_PLAYER(getID()).AI_bonusVal((BonusTypes)
 						pItem->m_iData, -1);
-//city state new trade perk
-//				rBonusVal += AI_cityStateTradeRBonusVal(getID(), (BonusTypes)pItem->m_iData);
-//city state new trade perk
 				if(bTribute)
 					rBonusVal /= 2;
 				r += rBonusVal;
@@ -21358,31 +21370,34 @@ void CvPlayerAI::AI_doDiplo()
 /************************************************************************************************/
 /* START: Advanced Diplomacy   -doto added    -needed for the ai to offer it                    */
 /************************************************************************************************/
-				if (AI_getContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE) == 0 &&
-					SyncRandOneChanceIn(GC.getInfo(getPersonalityType()).
-						getContactRand(CONTACT_TRADE_FREE_TRADE_ZONE)))
+				if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 				{
-					TradeData item(TRADE_FREE_TRADE_ZONE);
-					if (canTradeItem(ePlayer, item, true) &&
-						kPlayer.canTradeItem(getID(), item, true))
+					if (AI_getContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE) == 0 &&
+						SyncRandOneChanceIn(GC.getInfo(getPersonalityType()).
+							getContactRand(CONTACT_TRADE_FREE_TRADE_ZONE)))
 					{
-						weGive.clear();
-						theyGive.clear();
-						weGive.insertAtEnd(item);
-						theyGive.insertAtEnd(item);
-						if (kPlayer.isHuman() && !abContacted[kPlayer.getTeam()])
+						TradeData item(TRADE_FREE_TRADE_ZONE);
+						if (canTradeItem(ePlayer, item, true) &&
+							kPlayer.canTradeItem(getID(), item, true))
 						{
-							AI_changeContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE,
-								AI_getContactDelay(CONTACT_TRADE_FREE_TRADE_ZONE));
-							pDiplo = new CvDiploParameters(getID());
-							pDiplo->setDiploComment(GC.getAIDiploCommentType("OFFER_DEAL"));
-							pDiplo->setAIContact(true);
-							pDiplo->setOurOfferList(theyGive);
-							pDiplo->setTheirOfferList(weGive);
-							gDLL->beginDiplomacy(pDiplo, ePlayer);
-							abContacted[kPlayer.getTeam()] = true;
+							weGive.clear();
+							theyGive.clear();
+							weGive.insertAtEnd(item);
+							theyGive.insertAtEnd(item);
+							if (kPlayer.isHuman() && !abContacted[kPlayer.getTeam()])
+							{
+								AI_changeContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE,
+									AI_getContactDelay(CONTACT_TRADE_FREE_TRADE_ZONE));
+								pDiplo = new CvDiploParameters(getID());
+								pDiplo->setDiploComment(GC.getAIDiploCommentType("OFFER_DEAL"));
+								pDiplo->setAIContact(true);
+								pDiplo->setOurOfferList(theyGive);
+								pDiplo->setTheirOfferList(weGive);
+								gDLL->beginDiplomacy(pDiplo, ePlayer);
+								abContacted[kPlayer.getTeam()] = true;
+							}
+							else kGame.implementDeal(getID(), ePlayer, weGive, theyGive);
 						}
-						else kGame.implementDeal(getID(), ePlayer, weGive, theyGive);
 					}
 				}
 /************************************************************************************************/
@@ -22186,10 +22201,6 @@ bool CvPlayerAI::AI_proposeResourceTrade(PlayerTypes eTo)
 					eBestReceiveBonus = eLoopBonus;
 				}
 			}
-//city state new trade perk
-//			if (AI_cityStateTradeRBonusVal(getID(), eLoopBonus, true))
-//				eBestReceiveBonus =  eLoopBonus;
-//city state new trade perk
 		}
 	}
 	// <advc.036> Commented out
@@ -22229,10 +22240,6 @@ bool CvPlayerAI::AI_proposeResourceTrade(PlayerTypes eTo)
 					eBestGiveBonus = eLoopBonus;
 				}
 			}
-//city state new trade perk
-//			if (AI_cityStateTradeRBonusVal(getID(), eLoopBonus, true))
-//				eBestGiveBonus = eLoopBonus;
-//city state new trade perk
 		}
 	}
 	CLinkList<TradeData> weGive;

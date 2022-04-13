@@ -4287,6 +4287,15 @@ bool CvPlayer::canPossiblyTradeItem(PlayerTypes eWhoTo, TradeableItems eItemType
 /************************************************************************************************/
 	case TRADE_FREE_TRADE_ZONE:
 	{
+		CvPlayer& kOurPlayer = GET_PLAYER(getID());
+		CvPlayer& kthemPlayer = GET_PLAYER(eWhoTo);
+		CvCivilizationInfo & kOurCiv = GC.getCivilizationInfo(kOurPlayer.getCivilizationType());
+		CvCivilizationInfo & kThemCiv = GC.getCivilizationInfo(kthemPlayer.getCivilizationType());
+		bool atleastIneCS = kOurCiv.getIsCityState() == 1 || kThemCiv.getIsCityState() == 1;
+		//atleast one of the traders gotta be a city state.
+		if (!atleastIneCS)
+			return false;
+		
 		return (getTeam() != kToTeam.getID() && !kOurTeam.isAtWar(kToTeam.getID()) &&
 			kOurTeam.canSignFreeTradeAgreement(kToTeam.getID()) &&
 			(kOurTeam.isFreeTradeAgreementTrading() || kToTeam.isFreeTradeAgreementTrading())
@@ -9422,7 +9431,7 @@ void CvPlayer::setCapital(CvCity* pNewCapital)
 			}
 		}
 	} // </advc.106>
-//doto city states
+//doto city states - add unique resource
 	addCityStateResource(pNewCapital, pOldCapital);
 }
 
@@ -13461,16 +13470,16 @@ int CvPlayer::getEspionageMissionCostModifier(EspionageMissionTypes eMission,
 /************************************************************************************************/
 /* Afforess	                  Start		 07/29/10                                               */
 /* Advanced Diplomacy    
-doto - why not lets use this - make it optional later on...										*/
+doto - nice feature - but disabled for doto.	other effects are inplace						*/
 /************************************************************************************************/
-	if (pCity != NULL)
-	{
-		if (GET_TEAM(getTeam()).isFreeTradeAgreement(kTargetTeam.getID()))
-		{
-			iModifier *= 100 - GC.getDefineINT("FREE_TRADE_AGREEMENT_ESPIONAGE_MISSION_COST_MODIFIER");
-			iModifier /= 100;
-		}
-	}
+	//if (pCity != NULL)
+	//{
+	//	if (GET_TEAM(getTeam()).isFreeTradeAgreement(kTargetTeam.getID()))
+	//	{
+	//		iModifier *= 100 - GC.getDefineINT("FREE_TRADE_AGREEMENT_ESPIONAGE_MISSION_COST_MODIFIER");
+	//		iModifier /= 100;
+	//	}
+	//}
 /************************************************************************************************/
 /* Advanced Diplomacy         END                                                               */
 /************************************************************************************************/
@@ -19996,10 +20005,13 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 /************************************************************************************************/
 /* START: Advanced Diplomacy                                                                    */
 /************************************************************************************************/
-	// Free Trade
-	setTradeItem(&item, TRADE_FREE_TRADE_ZONE, 0);
-	if (canTradeItem(eOtherPlayer, item))
-		kOurInventory.insertAtEnd(item);
+	// Free Trade - only if one trader is a city state
+	if (meCityState || himCityState)
+	{
+		setTradeItem(&item, TRADE_FREE_TRADE_ZONE, 0);
+		if (canTradeItem(eOtherPlayer, item))
+			kOurInventory.insertAtEnd(item);
+	}
 /************************************************************************************************/
 /* END: Advanced Diplomacy                                                                      */
 /************************************************************************************************/

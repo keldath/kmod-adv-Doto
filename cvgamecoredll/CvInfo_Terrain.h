@@ -285,11 +285,6 @@ public: // All the const functions are exposed to Python
 /*	DllExport also had 	// Exposed to Python */ 
     bool isPeaks() const;							
 //===NM=====Mountain Mod===X=====
-//doto city states - route from bonus
-	int getTradeRoutes() const;
-	int getTradeRouteModifier() const;
-	int getForeignTradeRouteModifier() const;
-//doto city states - route from bonus
 	bool isFlatlands() const;
 	bool isNoRiverSide() const;
 	bool isNormalize() const;
@@ -346,11 +341,6 @@ protected:
 //===NM=====Mountain Mod===0=====
 	bool m_bPeaks;
 //===NM=====Mountain Mod===X=====
-//doto city states - route from bonus
-	int m_iTradeRoutes;
-	int m_iTradeRouteModifier;
-	int m_iForeignTradeRouteModifier;
-//doto city states - route from bonus
 	bool m_bFlatlands;
 	bool m_bNoRiverSide;
 	bool m_bNormalize;

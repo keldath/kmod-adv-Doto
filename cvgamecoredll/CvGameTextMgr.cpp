@@ -6219,14 +6219,15 @@ void CvGameTextMgr::parseTraits(CvWStringBuffer &szHelpString, TraitTypes eTrait
 		//			GC.getInfo(eCommerce).getChar()/*, "COMMERCE"*/)); // advc
 		//}
 	}
-//doto city states
+//doto city states and advanved diplomacy
 	CvWString szText4 = CvWString::format(L"%s", kTrait.getDescription());
 	if ((szText4.find(L"Unique Trade") != std::string::npos))
 	{
 		szHelpString.append(NEWLINE);
 		szHelpString.append(gDLL->getText("TXT_KEY_TRAIT_NOT_CS"));
 	}
-		
+////
+
 	FOR_EACH_ENUM2(Commerce, eCommerce)
 	{
 		//if (kTrait.getCommerceChange(eCommerce) != 0)
@@ -15143,28 +15144,6 @@ void CvGameTextMgr::setBonusExtraHelp(CvWStringBuffer &szBuffer, BonusTypes eBon
 			}
 		}
 	}
-
-//doto city states - route from bonus
-	int tr = GC.getInfo(eBonus).getTradeRoutes();
-	int btm = GC.getInfo(eBonus).getTradeRouteModifier();
-	int ftrm = GC.getInfo(eBonus).getForeignTradeRouteModifier();
-	if (tr != 0)
-	{
-		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_TRADE_ROUTE_BONUS_TR", tr));
-	}
-	if (btm != 0)
-	{
-		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_TRADE_ROUTE_BONUS_BTM", btm));
-	}
-	if (ftrm != 0)
-	{
-		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_TRADE_ROUTE_BONUS_FTRM", ftrm));
-	}
-//doto city states - route from bonus
-
 	if(bCivilopediaText)
 		return;
 	if(eActivePlayer != NO_PLAYER)
@@ -18936,6 +18915,12 @@ void CvGameTextMgr::setCommerceHelp(CvWStringBuffer &szBuffer, CvCity const& kCi
 			szBuffer.append(CvWString::format(L"%d%c ",
 					iFreeCityCommerce, iCommerceChar));
 			szBuffer.append(gDLL->getText("TXT_KEY_FROM_TRAIT"));
+/////////////////////////////////////////////////////////////////////////////
+//DOTO city State and advanced diplomacy
+			if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+				szBuffer.append(gDLL->getText("TXT_KEY_AND_FROM_CS"));
+//DOTO city State and advanced diplomacy
+/////////////////////////////////////////////////////////////////////////////
 			// </advc.004g>
 			szBuffer.append(NEWLINE);
 			iBaseCommerceRate += 100 * iFreeCityCommerce;
@@ -18989,6 +18974,14 @@ void CvGameTextMgr::setCommerceHelp(CvWStringBuffer &szBuffer, CvCity const& kCi
 		if (!kCity.hasTrait(eLoopTrait))
 			continue;
 		CvTraitInfo const& kTrait = GC.getInfo(eLoopTrait);
+
+//doto city states and advanced diplomacy - i removed these types from process trait so 
+//shouldnt be an assert below
+		CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
+		if ((szText.find(L"Unique Trade") != std::string::npos))
+			continue;
+//doto city states and advanced diplomacy
+
 		int iTraitMod = kTrait.getCommerceModifier(eCommerce);
 		if (iTraitMod != 0)
 		{
@@ -20970,48 +20963,6 @@ void CvGameTextMgr::setTradeRouteHelp(CvWStringBuffer &szBuffer, int iRoute, CvC
 			}
 		}
 	}
-
-//doto city states - route from bonus
-	//int tr_cnt = 0;
-	int btm_m = 0;
-	int ftrm_m = 0;
-	FOR_EACH_ENUM(Bonus)
-	{
-		//int tr = GC.getInfo(eLoopBonus).getTradeRoutes();
-		int btm = GC.getInfo(eLoopBonus).getTradeRouteModifier();
-		//int ftrm = GC.getInfo(eLoopBonus).getForeignTradeRouteModifier();
-/*
-		if (tr != 0)
-		{
-			szBuffer.append(NEWLINE);
-			szBuffer.append(gDLL->getText("TXT_KEY_TRADE_ROUTE_BONUS_TR", iModifier)); 
-			tr_cnt += tr;
-		}
-*/
-/*		i think we dont need this - the modifiers are included in the city trade mod already
-		causes an assert below*/
-		if (btm != 0)
-		{
-			btm_m += btm;
-		}
-	/*	if (ftrm != 0)
-		{
-			ftrm_m += ftrm;
-		} */
-	}
-	if (btm_m != 0)
-	{
-		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_TRADE_ROUTE_BONUS_BTM", btm_m));
-	}
-	if (ftrm_m != 0)
-	{
-		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_TRADE_ROUTE_BONUS_FTRM", ftrm_m));
-	}
-	iTotalModifier += btm_m; //+ ftrm_m;
-//doto city states - route from bonus
-	int a = pCity->totalTradeModifier(pOtherCity);
 	FAssert(pCity->totalTradeModifier(pOtherCity) == iTotalModifier);
 	iProfit *= iTotalModifier;
 	iProfit /= 10000;

@@ -506,11 +506,6 @@ m_bHills(false),
 //===NM=====Mountain Mod===0=====
 m_bPeaks(false),
 //===NM=====Mountain Mod===X=====
-//doto city states - routes from bonus
-m_iTradeRoutes(0),
-m_iTradeRouteModifier(0),
-m_iForeignTradeRouteModifier(0),
-//doto city states - routes from bonus
 m_bFlatlands(false),
 m_bNoRiverSide(false),
 m_bNormalize(false),
@@ -638,20 +633,6 @@ bool CvBonusInfo::isPeaks() const
 	return m_bPeaks; 
 }
 //===NM=====Mountain Mod===X=====
-//doto city states - route from bonues
-int CvBonusInfo::getTradeRoutes() const
-{ 
-	return m_iTradeRoutes; 
-}
-int CvBonusInfo::getTradeRouteModifier() const
-{
-	return m_iTradeRouteModifier; 
-}
-int CvBonusInfo::getForeignTradeRouteModifier() const
-{ 
-	return m_iForeignTradeRouteModifier; 
-}
-//doto city states - route from bonues
 
 bool CvBonusInfo::isFlatlands() const
 {
@@ -755,11 +736,6 @@ void CvBonusInfo::read(FDataStreamBase* stream)
 //===NM=====Mountain Mod===0=====
 	stream->Read(&m_bPeaks);
 //===NM=====Mountain Mod===X=====
-//doto city states - route from bonus
-	stream->Read(&m_iTradeRoutes);
-	stream->Read(&m_iTradeRouteModifier);
-	stream->Read(&m_iForeignTradeRouteModifier);
-//doto city states - route from bonus
 	stream->Read(&m_bFlatlands);
 	stream->Read(&m_bNoRiverSide);
 	stream->Read(&m_bNormalize);
@@ -816,11 +792,6 @@ void CvBonusInfo::write(FDataStreamBase* stream)
 //===NM=====Mountain Mod===0=====
 	stream->Write(m_bPeaks);
 //===NM=====Mountain Mod===X=====
-//doto city states - route from bonus
-	stream->Write(m_iTradeRoutes);
-	stream->Write(m_iTradeRouteModifier);
-	stream->Write(m_iForeignTradeRouteModifier);
-//doto city states - route from bonus
 	stream->Write(m_bFlatlands);
 	stream->Write(m_bNoRiverSide);
 	stream->Write(m_bNormalize);
@@ -883,12 +854,7 @@ bool CvBonusInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_bHills, "bHills");
 //===NM=====Mountain Mod===0=====
 	pXML->GetChildXmlValByName(&m_bPeaks, "bPeaks", false);
-//===NM=====Mountain Mod===X=====
-//doto city states - route from bonus
-	pXML->GetChildXmlValByName(&m_iTradeRoutes, "iTradeRoutes", 0);
-	pXML->GetChildXmlValByName(&m_iTradeRouteModifier, "iTradeRouteModifier", 0);
-	pXML->GetChildXmlValByName(&m_iForeignTradeRouteModifier, "iForeignTradeRouteModifier", 0);
-//doto city states - route from bonus	
+//===NM=====Mountain Mod===X=====	
 	pXML->GetChildXmlValByName(&m_bFlatlands, "bFlatlands");
 	pXML->GetChildXmlValByName(&m_bNoRiverSide, "bNoRiverSide");
 	pXML->GetChildXmlValByName(&m_bNormalize, "bNormalize");

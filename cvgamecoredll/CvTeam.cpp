@@ -6593,22 +6593,24 @@ void CvTeam::setFreeTradeAgreement(TeamTypes eIndex, bool bNewValue)
 	//AI().setFreeTradeAgreementCounter(eIndex, 0);
 	AI().AI_setFreeTradeAgreementCounter(eIndex, 0);
 	
-	csCapitalTradedTraits(eIndex, bNewValue); //doto unique feature
-
 	//doto - no need to verify open borders enforcment (relic from open borders code.
 	//GC.getMap().verifyUnitValidPlot();
 
 	if (isActive() || GET_TEAM(eIndex).isActive())
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
 
-	if (bOldFreeTrade != 
-		//isFreeTrade(eIndex) -from advc open borders
-		isFreeTradeAgreement(eIndex)
-		)
+	//////
+	//doto - this oart is from the org code of advanced diplomacy -
+	//it was about improving the trade routes 
+	//it also was in open borders
+	//////
+	if (bOldFreeTrade != isFreeTradeAgreement(eIndex))
 	{
-		for (MemberIter it(getID()); it.hasNext(); ++it)
-			it->updateTradeRoutes();
-	} // <advc.034>
+	//	for (MemberIter it(getID()); it.hasNext(); ++it)
+	//		it->updateTradeRoutes();
+		csCapitalTradedTraits(eIndex, bNewValue); //doto unique feature
+	} 
+	//// <advc.034>
 	//doto - not sure what is the purpose - but - seems logical.
 	//if the value is true means if there was some disebgage - it gets cancelled by this
 	if (bNewValue)
@@ -6634,53 +6636,54 @@ void CvTeam::csCapitalTradedTraits(TeamTypes eThey, bool bNewValue) const
 			continue;
 		for (MemberIter it2(eThey); it2.hasNext(); ++it2)
 		{
-			CvPlayer& kThemTeamPlayer = GET_PLAYER(it->getID());
-			CvCivilizationInfo & kThemCiv = GC.getCivilizationInfo(kOurTeamPlayer.getCivilizationType());
+			CvPlayer& kThemTeamPlayer = GET_PLAYER(it2->getID());
+			CvCivilizationInfo & kThemCiv = GC.getCivilizationInfo(kThemTeamPlayer.getCivilizationType());
 			bool isThemCS = kThemCiv.getIsCityState() == 1;
+
+			if (it->getID() == it2->getID())
+				continue;
 
 			FOR_EACH_ENUM2(Trait, eTrait)
 			{
-				if (!kThemTeamPlayer.hasTrait(eTrait))
+				if (!kThemTeamPlayer.hasTrait(eTrait) && !kOurTeamPlayer.hasTrait(eTrait))
 					continue;
 
 				CvTraitInfo& kTrait = GC.getInfo(eTrait);
-				CvWString szText = kTrait.getDescription();
-
-				if (szText != L"CS Unique Route")
+				CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
+				if ((szText.find(L"Unique Trade") != std::string::npos))
 					continue;
 
 				FOR_EACH_ENUM(Commerce)
 				{
 
-					if (!isOurCS && isThemCS)
+					if (isOurCS && !isThemCS)
 					{
 						kOurTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
-							kTrait.getCommerceModifier(eLoopCommerce) * iChange);
+							kTrait.getCommerceModifier(eLoopCommerce) * 100 * iChange);
 
 						//city states will gain a better bonus	
 						kThemTeamPlayer.changeFreeCityCommerce(eLoopCommerce,
-							iChange * kTrait.getCommerceChange(eLoopCommerce));
+							iChange * kTrait.getCommerceChange(eLoopCommerce) * 100);
 						/*.changeCapitalCommerceRateModifier(eLoopCommerce,
 							kTrait.getCommerceModifier(eLoopCommerce) * iChange);*/
-
 					}
-					else if (isOurCS && !isThemCS)
+					else if (!isOurCS && isThemCS)
 					{
 						//city states will gain a better bonus	
-						kOurTeamPlayer.changeFreeCityCommerce(eLoopCommerce,
-							iChange * kTrait.getCommerceChange(eLoopCommerce));
+						kThemTeamPlayer.changeFreeCityCommerce(eLoopCommerce,
+							iChange * kTrait.getCommerceChange(eLoopCommerce) * 100);
 						/*.changeCapitalCommerceRateModifier(eLoopCommerce,
 							kTrait.getCommerceModifier(eLoopCommerce) * iChange);*/
 
-						kThemTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
-							kTrait.getCommerceModifier(eLoopCommerce) * iChange);
-
+						kOurTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
+							kTrait.getCommerceModifier(eLoopCommerce) * 100 * iChange);
+						
 					}
-					else
-					{
-						FAssert(isOurCS != isThemCS); //cant have 2 city states trading this
-						FAssert(!isOurCS != !isThemCS); //cant have 2 none city states trading this
-					}
+					FAssert(isOurCS != isThemCS); //cant have 2 city states trading this
+					FAssert(!isOurCS != !isThemCS); //cant have 2 none city states trading this
+					kOurTeamPlayer.updateCommerce();
+					kThemTeamPlayer.updateCommerce();
+					
 				}
 
 			}

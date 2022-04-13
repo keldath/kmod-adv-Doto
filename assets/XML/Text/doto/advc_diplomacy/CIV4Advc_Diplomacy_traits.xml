@@ -7,14 +7,18 @@
 <Civ4GameText xmlns="http://www.firaxis.com">
 	<TEXT>
 		<Tag>TXT_KEY_TRAIT_CS</Tag>
-		<English>[ICON_BULLET]Perk for City States:</English>
+		<English>[ICON_BULLET] Perk for City States:</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_TRAIT_NOT_CS</Tag>
-		<English>[ICON_BULLET]Perk Only for Normal Civ's:</English>
+		<English>[ICON_BULLET] Perk Only for Normal Civ's:</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_TRAIT_TRADE_EFFECT</Tag>
-		<English>[ICON_BULLET]Activated with Free Trade Agreement:</English>
+		<English>[ICON_BULLET] Activated with Free Trade Agreement:</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_AND_FROM_CS</Tag>
+		<English> or/and Free Trade City State</English>
 	</TEXT>     
 </Civ4GameText>
