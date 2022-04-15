@@ -6521,7 +6521,7 @@ bool CvTeam::hasTechToClear(FeatureTypes eFeature, TechTypes eCurrentResearch) c
 /* START: Advanced Diplomacy                                                                    */
 /************************************************************************************************/
 
-bool CvTeam::canSignFreeTradeAgreement(TeamTypes eTeam) const
+bool CvTeam::canSignFreeTradeAgreement(TeamTypes eToTeam) const
 {
 	//doto - there were 2 limits here, embassy and open borders.
 	// i decided to remove any prereq
@@ -6531,7 +6531,6 @@ bool CvTeam::canSignFreeTradeAgreement(TeamTypes eTeam) const
 	//{
 	//	return false;
 	//}
-
 	return true;
 }
 /* seems to be unused - doto - checked
@@ -6574,10 +6573,9 @@ void CvTeam::setFreeTradeAgreement(TeamTypes eIndex, bool bNewValue)
 		the free routes thing is something that im not sure ill use.
 		---
 	*/
-
-	if (isFreeTradeAgreement(eIndex) == bNewValue)
+	CvTeam const& kThemTeam = GET_TEAM(eIndex);
+	if (isFreeTradeAgreement(kThemTeam.getID()) == bNewValue)//if the team already has an agreement , skip
 		return; // advc
-	bool bOldFreeTrade = isFreeTradeAgreement(eIndex); //advc from open borders -> isFreeTrade(eIndex);
 	m_abFreeTradeAgreement.set(eIndex, bNewValue);
 	// <advc.130p> OB affect diplo from rival trade
 	//doto - left if from open borders advciv - seems logical.
@@ -6604,12 +6602,12 @@ void CvTeam::setFreeTradeAgreement(TeamTypes eIndex, bool bNewValue)
 	//it was about improving the trade routes 
 	//it also was in open borders
 	//////
-	if (bOldFreeTrade != isFreeTradeAgreement(eIndex))
-	{
+	//if (bOldFreeTrade != isFreeTradeAgreement(eIndex))
+	//{
 	//	for (MemberIter it(getID()); it.hasNext(); ++it)
 	//		it->updateTradeRoutes();
-		csCapitalTradedTraits(eIndex, bNewValue); //doto unique feature
-	} 
+	csTeamTraitsUpdate(eIndex, bNewValue); //doto unique feature
+	//} 
 	//// <advc.034>
 	//doto - not sure what is the purpose - but - seems logical.
 	//if the value is true means if there was some disebgage - it gets cancelled by this
@@ -6619,77 +6617,185 @@ void CvTeam::setFreeTradeAgreement(TeamTypes eIndex, bool bNewValue)
 
 //DOTO CITY STATES ADVANCED DIPLOMACY custimization of effects 
 //this function will pull the special trait from a trading player 
-void CvTeam::csCapitalTradedTraits(TeamTypes eThey, bool bNewValue) const
+//very important - this assumes there 1 member per team - need to move the entire trade functions to playerai
+//and not as teams!!!! if there are more, the trait and perks will go to the last andfirst player with trait
+void CvTeam::csTeamTraitsUpdate(TeamTypes eThey, bool bNewValue) const
 {
 	int iChange = bNewValue ? 1 : -1;
 
 	if (getID() == eThey)
 		return;
 
+	TraitTypes fTrait = NO_TRAIT;
+	PlayerTypes eOurPlayer = NO_PLAYER;
+	PlayerTypes eThemPlayer = NO_PLAYER;
+
+	//simpler method - i need to update each member with the perk of the trade...
+	//PlayerTypes ePlayerCS = NO_PLAYER;
+	//for (int i = 0; i < MAX_PLAYERS; i++)
+	//{
+	//	if (fTrait != NO_TRAIT)
+	//		break;
+
+	//	CvPlayer const& isPlayerState = GET_PLAYER((PlayerTypes)i);
+	//	//if one of the members of the teams of the trading players have the trait
+	//	if (GET_TEAM(isPlayerState.getTeam()) == GET_TEAM(eTeam) ||
+	//		GET_TEAM(getTeam()) == GET_TEAM(eTeam))
+	//	{
+	//		fTrait = isPlayerState.getMemberUniqueTrait(it->getID());
+	//		ePlayerCS = (PlayerTypes)i;
+	//	}
+	//}
+	//check if we have the unique trait
+
 	for (MemberIter it(getID()); it.hasNext(); ++it)
 	{
 		CvPlayer& kOurTeamPlayer = GET_PLAYER(it->getID());
-		CvCivilizationInfo & kOurCiv = GC.getCivilizationInfo(kOurTeamPlayer.getCivilizationType());  
-		bool isOurCS = kOurCiv.getIsCityState() == 1;
-
+		
 		if (!kOurTeamPlayer.isAlive())
 			continue;
-		for (MemberIter it2(eThey); it2.hasNext(); ++it2)
+
+		TraitTypes eTrait = kOurTeamPlayer.getMemberUniqueTrait(it->getID());
+		if 	(eTrait != NO_TRAIT)
 		{
-			CvPlayer& kThemTeamPlayer = GET_PLAYER(it2->getID());
-			CvCivilizationInfo & kThemCiv = GC.getCivilizationInfo(kThemTeamPlayer.getCivilizationType());
-			bool isThemCS = kThemCiv.getIsCityState() == 1;
-
-			if (it->getID() == it2->getID())
-				continue;
-
-			FOR_EACH_ENUM2(Trait, eTrait)
-			{
-				if (!kThemTeamPlayer.hasTrait(eTrait) && !kOurTeamPlayer.hasTrait(eTrait))
-					continue;
-
-				CvTraitInfo& kTrait = GC.getInfo(eTrait);
-				CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
-				if ((szText.find(L"Unique Trade") != std::string::npos))
-					continue;
-
-				FOR_EACH_ENUM(Commerce)
-				{
-
-					if (isOurCS && !isThemCS)
-					{
-						kOurTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
-							kTrait.getCommerceModifier(eLoopCommerce) * 100 * iChange);
-
-						//city states will gain a better bonus	
-						kThemTeamPlayer.changeFreeCityCommerce(eLoopCommerce,
-							iChange * kTrait.getCommerceChange(eLoopCommerce) * 100);
-						/*.changeCapitalCommerceRateModifier(eLoopCommerce,
-							kTrait.getCommerceModifier(eLoopCommerce) * iChange);*/
-					}
-					else if (!isOurCS && isThemCS)
-					{
-						//city states will gain a better bonus	
-						kThemTeamPlayer.changeFreeCityCommerce(eLoopCommerce,
-							iChange * kTrait.getCommerceChange(eLoopCommerce) * 100);
-						/*.changeCapitalCommerceRateModifier(eLoopCommerce,
-							kTrait.getCommerceModifier(eLoopCommerce) * iChange);*/
-
-						kOurTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
-							kTrait.getCommerceModifier(eLoopCommerce) * 100 * iChange);
-						
-					}
-					FAssert(isOurCS != isThemCS); //cant have 2 city states trading this
-					FAssert(!isOurCS != !isThemCS); //cant have 2 none city states trading this
-					kOurTeamPlayer.updateCommerce();
-					kThemTeamPlayer.updateCommerce();
-					
-				}
-
-			}
-
+			eOurPlayer = it->getID();
+			fTrait = eTrait;
 		}
+
+		//IN CASE this side doesnt has the trait
+		if (eOurPlayer == NO_PLAYER)
+			eOurPlayer = it->getID();
 	}
+	
+	//check if them have unique trait
+	for (MemberIter it(eThey); it.hasNext(); ++it)
+	{
+		CvPlayer& kThemTeamPlayer = GET_PLAYER(it->getID());
+
+		if (!kThemTeamPlayer.isAlive())
+			continue;
+
+		TraitTypes eTrait = kThemTeamPlayer.getMemberUniqueTrait(it->getID());
+		if (eTrait != NO_TRAIT)
+		{
+			eThemPlayer = it->getID();
+			fTrait = eTrait;
+		}
+			
+		//IN CASE this side doesnt has the trait
+		if(eThemPlayer == NO_PLAYER)
+			eThemPlayer = it->getID();
+	}
+	
+	CvTraitInfo& kTrait = GC.getInfo(fTrait); //we dont care to whom parties have the speciael trait...
+	CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
+	FAssert((szText.find(L"Unique Trade") != std::string::npos))//it has to be there!
+		
+	CvPlayer& kOurTeamPlayer = GET_PLAYER(eOurPlayer);
+	CvPlayer& kThemTeamPlayer = GET_PLAYER(eThemPlayer);
+
+	bool isOurCS = kOurTeamPlayer.checkCityState(eOurPlayer);
+	bool isThemCS = kThemTeamPlayer.checkCityState(eThemPlayer);
+
+	FAssert(isOurCS != isThemCS); //cant have 2 city states trading this
+	FAssert(!isOurCS != !isThemCS); //cant have 2 none city states trading this
+
+	kOurTeamPlayer.csMemberUpdateFreeTradeTraits(isOurCS, fTrait, iChange, eOurPlayer);
+	kThemTeamPlayer.csMemberUpdateFreeTradeTraits(isThemCS, fTrait, iChange, eThemPlayer);
+
+//FOR_EACH_ENUM(Commerce)
+//{
+//	if (isThemCS && !isOurCS)
+//	{
+//		//city states will gain a better bonus	
+//		if (kTrait.getCommerceChange(eLoopCommerce) > 0)
+//		{
+//			kThemTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
+//				(int)(kTrait.getCommerceModifier(eLoopCommerce) * 50 * iChange));
+//		
+//			kOurTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
+//				(int)(kTrait.getCommerceModifier(eLoopCommerce) * 50 * iChange));
+//		}
+
+//	}
+//	if (isOurCS && !isThemCS)
+//	{
+//		//city states will gain a better bonus	
+//		if (kTrait.getCommerceChange(eLoopCommerce) > 0)
+//		{
+//			kThemTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
+//				(int)(kTrait.getCommerceModifier(eLoopCommerce) * 50 * iChange));
+//		
+//			kThemTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
+//				(int)(kTrait.getCommerceModifier(eLoopCommerce) * 50 * iChange));
+//		}
+//	}
+
+	//PREV CODE STYLE
+	//for (MemberIter it(getID()); it.hasNext(); ++it)
+	//{
+	//	CvPlayer& kOurTeamPlayer = GET_PLAYER(it->getID());
+	//	CvCivilizationInfo & kOurCiv = GC.getCivilizationInfo(kOurTeamPlayer.getCivilizationType());  
+	//	bool isOurCS = kOurCiv.getIsCityState() == 1;
+
+	//	if (!kOurTeamPlayer.isAlive())
+	//		continue;
+	//	for (MemberIter it2(eThey); it2.hasNext(); ++it2)
+	//	{
+	//		CvPlayer& kThemTeamPlayer = GET_PLAYER(it2->getID());
+	//		CvCivilizationInfo & kThemCiv = GC.getCivilizationInfo(kThemTeamPlayer.getCivilizationType());
+	//		bool isThemCS = kThemCiv.getIsCityState() == 1;
+
+	//		if (it->getID() == it2->getID())
+	//			continue;
+
+	//		FOR_EACH_ENUM2(Trait, eTrait)
+	//		{
+	//			if (!kThemTeamPlayer.hasTrait(eTrait) && !kOurTeamPlayer.hasTrait(eTrait))
+	//				continue;
+
+	//			CvTraitInfo& kTrait = GC.getInfo(eTrait);
+	//			CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
+	//			if ((szText.find(L"Unique Trade") != std::string::npos))
+	//				continue;
+
+	//			FOR_EACH_ENUM(Commerce)
+	//			{
+
+	//				if (isOurCS && !isThemCS)
+	//				{
+	//					kOurTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
+	//						kTrait.getCommerceModifier(eLoopCommerce) * 100 * iChange);
+
+	//					//city states will gain a better bonus	
+	//					kThemTeamPlayer.changeFreeCityCommerce(eLoopCommerce,
+	//						iChange * kTrait.getCommerceChange(eLoopCommerce) * 100);
+	//					/*.changeCapitalCommerceRateModifier(eLoopCommerce,
+	//						kTrait.getCommerceModifier(eLoopCommerce) * iChange);*/
+	//				}
+	//				else if (!isOurCS && isThemCS)
+	//				{
+	//					//city states will gain a better bonus	
+	//					kThemTeamPlayer.changeFreeCityCommerce(eLoopCommerce,
+	//						iChange * kTrait.getCommerceChange(eLoopCommerce) * 100);
+	//					/*.changeCapitalCommerceRateModifier(eLoopCommerce,
+	//						kTrait.getCommerceModifier(eLoopCommerce) * iChange);*/
+
+	//					kOurTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
+	//						kTrait.getCommerceModifier(eLoopCommerce) * 100 * iChange);
+	//					
+	//				}
+	//				FAssert(isOurCS != isThemCS); //cant have 2 city states trading this
+	//				FAssert(!isOurCS != !isThemCS); //cant have 2 none city states trading this
+	//				kOurTeamPlayer.updateCommerce();
+	//				kThemTeamPlayer.updateCommerce();
+	//				
+	//			}
+
+	//		}
+
+	//	}
+	//}
 }
 /************************************************************************************************/
 /* END: Advanced Diplomacy                                                                      */

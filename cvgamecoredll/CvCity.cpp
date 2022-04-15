@@ -8298,6 +8298,18 @@ int CvCity::getPeaceTradeModifier(TeamTypes eTeam) const
 
 	return (iFOREIGN_TRADE_MODIFIER * iPeaceTurns) /
 			std::max(1, iFOREIGN_TRADE_FULL_CREDIT_PEACE_TURNS);
+/************************************************************************************************/
+/* START: advanced  Diplomacy     added from hr to doto                           				*/
+/************************************************************************************************/
+
+	// This mechanic has been repurposed as a bonus for the length of time with a Trade Agreement
+
+	//return (std::min(GC.getDefineINT("DIPLOMACY_TRADE_ROUTE_MODIFIER"), GET_TEAM(getTeam()).AI_getTradeAgreementCounter(eTeam)));
+
+/************************************************************************************************/
+/* END: advanced  Diplomacy     added from hr to doto                           				*/
+/************************************************************************************************/
+
 }
 
 

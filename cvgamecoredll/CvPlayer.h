@@ -1477,8 +1477,7 @@ public:
 
 	int getUnitExtraCost(UnitClassTypes eUnitClass) const;
 	void setUnitExtraCost(UnitClassTypes eUnitClass, int iCost);
-//doto city states
-//	void spawnCityStatePlayer();
+
 	bool splitEmpire(int iArea); // advc: Keep this one around for CvMessageData
 	bool splitEmpire(CvArea& kArea);
 	bool canSplitEmpire() const;
@@ -1557,6 +1556,18 @@ public:
 	{	//return *static_cast<CvPlayerAI const*>(this);
 		return *reinterpret_cast<CvPlayerAI const*>(this);
 	} // </advc.003u>	
+
+/************************************************************************************************/
+/* START: Advanced Diplomacy       doto added for city states                                   */
+/************************************************************************************************/
+	bool checkCityState(PlayerTypes ePlayer) const;
+	TraitTypes getMemberUniqueTrait(PlayerTypes ePlayer) const;
+	bool canPlayersSignFreeTradeAgreement(PlayerTypes eFrom, PlayerTypes eTo) const;
+	TraitTypes getPlayersMinUniqueTrait(PlayerTypes eFrom, PlayerTypes eTo) const;
+	void csMemberUpdateFreeTradeTraits(bool isCityState, TraitTypes eTrait, int iChange, PlayerTypes ePlayer) const;
+/************************************************************************************************/
+/* START: Advanced Diplomacy                                                                    */
+/************************************************************************************************/
 
 protected:  // <advc.210>
 	void initAlerts(bool bSilentCheck = false);

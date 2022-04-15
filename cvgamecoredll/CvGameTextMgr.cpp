@@ -6070,11 +6070,17 @@ void CvGameTextMgr::parseTraits(CvWStringBuffer &szHelpString, TraitTypes eTrait
 			//these traits will only be active when a free trade is signed.
 			//a city state will get commerce changes and a normal civ will get commerece modifier.
 	CvWString szText2 = CvWString::format(L"%s", kTrait.getDescription());
+	bool isCityStateTrait = false;
+
 	if ((szText2.find(L"Unique Trade") != std::string::npos))
+	{
+		isCityStateTrait = true;
+	}	
+	if (isCityStateTrait)
 	{
 		szHelpString.append(NEWLINE);
 		szHelpString.append(gDLL->getText("TXT_KEY_TRAIT_TRADE_EFFECT"));
-	}	
+	}
 /************************************************************************************************/
 /* END: Advanced Diplomacy     doto custom for city state trade agreement                     */
 /************************************************************************************************/
@@ -6194,13 +6200,11 @@ void CvGameTextMgr::parseTraits(CvWStringBuffer &szHelpString, TraitTypes eTrait
 //DOTO CITY STATES ADVANCED DIPLOMACY custimization of effects 
 //these traits will only be active when a free trade is signed.
 //a city state will get commerce changes and a normal civ will get commerece modifier.
-	CvWString szText3 = CvWString::format(L"%s", kTrait.getDescription());
-	if ((szText3.find(L"Unique Trade") != std::string::npos))
+	if (isCityStateTrait)
 	{
 		szHelpString.append(NEWLINE);
 		szHelpString.append(gDLL->getText("TXT_KEY_TRAIT_CS"));
 	}
-
 //DOTO duplicated loop so i can insert text between
 
 	FOR_EACH_ENUM2(Commerce, eCommerce)
@@ -6220,8 +6224,7 @@ void CvGameTextMgr::parseTraits(CvWStringBuffer &szHelpString, TraitTypes eTrait
 		//}
 	}
 //doto city states and advanved diplomacy
-	CvWString szText4 = CvWString::format(L"%s", kTrait.getDescription());
-	if ((szText4.find(L"Unique Trade") != std::string::npos))
+	if (isCityStateTrait)
 	{
 		szHelpString.append(NEWLINE);
 		szHelpString.append(gDLL->getText("TXT_KEY_TRAIT_NOT_CS"));
@@ -18916,7 +18919,7 @@ void CvGameTextMgr::setCommerceHelp(CvWStringBuffer &szBuffer, CvCity const& kCi
 					iFreeCityCommerce, iCommerceChar));
 			szBuffer.append(gDLL->getText("TXT_KEY_FROM_TRAIT"));
 /////////////////////////////////////////////////////////////////////////////
-//DOTO city State and advanced diplomacy
+//DOTO city State and advanced diplomacy add help text
 			if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 				szBuffer.append(gDLL->getText("TXT_KEY_AND_FROM_CS"));
 //DOTO city State and advanced diplomacy

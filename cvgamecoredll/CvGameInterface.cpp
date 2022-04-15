@@ -2892,12 +2892,12 @@ void CvGame::updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, N
 	if (clearPlot)
 	{
 		//turn tiles to no color - for that any color will do - just the alpha needs to be 0
-		NiColorA color(GC.getInfo(GC.getColorType("WHITE")).getColor());
-		color.a = 1.0f; 
+		/*NiColorA color(GC.getInfo(GC.getColorType("WHITE")).getColor());
+		color.a = 0.0f; 
 
 		kEngine.fillAreaBorderPlot(kPlot.getX(), kPlot.getY(),
-			color, AREA_BORDER_CITY_STATE);
-		//kEngine.clearColoredPlots(AREA_BORDER_CITY_STATE)
+			color, AREA_BORDER_CITY_STATE);*/
+		kEngine.clearAreaBorderPlots(AREA_BORDER_CITY_STATE);
 		return;
 	}
 	//if (kPlot.isRevealed(getActiveTeam()))

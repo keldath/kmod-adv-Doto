@@ -362,11 +362,10 @@ public:
 	bool isFreeTradeAgreement(TeamTypes eIndex) const
 	{
 		return m_abFreeTradeAgreement.get(eIndex);
-
 	}
 	void setFreeTradeAgreement(TeamTypes eIndex, bool bNewValue);
 	bool canSignFreeTradeAgreement(TeamTypes eTeam) const;
-	void csCapitalTradedTraits(TeamTypes eThey, bool bNewValue) const;
+	void csTeamTraitsUpdate(TeamTypes eThey, bool bNewValue) const;
 /************************************************************************************************/
 /* END: Advanced Diplomacy                                                                    */
 /************************************************************************************************/

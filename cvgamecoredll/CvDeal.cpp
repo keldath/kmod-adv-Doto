@@ -941,13 +941,16 @@ bool CvDeal::startTrade(TradeData trade, PlayerTypes eFromPlayer, PlayerTypes eT
 			{
 				if (kFromPlayer.resetDualDeal(eToPlayer, TRADE_FREE_TRADE_ZONE))
 				{
-					if (gTeamLogLevel >= 2) logBBAI("    Player %d (%S_1) prolongs open borders with player %d (%S_2)", eFromPlayer, kFromPlayer.getCivilizationDescription(0), eToPlayer, kToPlayer.getCivilizationDescription(0));
+					if (gTeamLogLevel >= 2) logBBAI("    Player %d (%S_1) prolongs Free Trade with player %d (%S_2)", eFromPlayer, kFromPlayer.getCivilizationDescription(0), eToPlayer, kToPlayer.getCivilizationDescription(0));
 					break;
 				}
 			} // </advc.032>
+			//make sure no 2 cities are involved
+			if (!kFromPlayer.canPlayersSignFreeTradeAgreement(eFromPlayer, eToPlayer))
+				break;
 			startTeamTrade(TRADE_FREE_TRADE_ZONE, kFromPlayer.getTeam(), kToPlayer.getTeam(), true);
 			GET_TEAM(eFromPlayer).setFreeTradeAgreement(kToPlayer.getTeam(), true);
-			if (gTeamLogLevel >= 2) logBBAI("    Player %d (%S_1) signs open borders due to TRADE_FREE_TRADE_ZONE with player %d (%S_2)", eFromPlayer, kFromPlayer.getCivilizationDescription(0), eToPlayer, kToPlayer.getCivilizationDescription(0));
+			if (gTeamLogLevel >= 2) logBBAI("    Player %d (%S_1) signs open borders due to Free Trade with player %d (%S_2)", eFromPlayer, kFromPlayer.getCivilizationDescription(0), eToPlayer, kToPlayer.getCivilizationDescription(0));
 		}
 		else bSave = true;
 		break;

@@ -21372,31 +21372,34 @@ void CvPlayerAI::AI_doDiplo()
 /************************************************************************************************/
 				if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 				{
-					if (AI_getContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE) == 0 &&
-						SyncRandOneChanceIn(GC.getInfo(getPersonalityType()).
-							getContactRand(CONTACT_TRADE_FREE_TRADE_ZONE)))
+					if (canPlayersSignFreeTradeAgreement(getID(), ePlayer))
 					{
-						TradeData item(TRADE_FREE_TRADE_ZONE);
-						if (canTradeItem(ePlayer, item, true) &&
-							kPlayer.canTradeItem(getID(), item, true))
+						if (AI_getContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE) == 0 &&
+							SyncRandOneChanceIn(GC.getInfo(getPersonalityType()).
+								getContactRand(CONTACT_TRADE_FREE_TRADE_ZONE)))
 						{
-							weGive.clear();
-							theyGive.clear();
-							weGive.insertAtEnd(item);
-							theyGive.insertAtEnd(item);
-							if (kPlayer.isHuman() && !abContacted[kPlayer.getTeam()])
+							TradeData item(TRADE_FREE_TRADE_ZONE);
+							if (canTradeItem(ePlayer, item, true) &&
+								kPlayer.canTradeItem(getID(), item, true))
 							{
-								AI_changeContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE,
-									AI_getContactDelay(CONTACT_TRADE_FREE_TRADE_ZONE));
-								pDiplo = new CvDiploParameters(getID());
-								pDiplo->setDiploComment(GC.getAIDiploCommentType("OFFER_DEAL"));
-								pDiplo->setAIContact(true);
-								pDiplo->setOurOfferList(theyGive);
-								pDiplo->setTheirOfferList(weGive);
-								gDLL->beginDiplomacy(pDiplo, ePlayer);
-								abContacted[kPlayer.getTeam()] = true;
+								weGive.clear();
+								theyGive.clear();
+								weGive.insertAtEnd(item);
+								theyGive.insertAtEnd(item);
+								if (kPlayer.isHuman() && !abContacted[kPlayer.getTeam()])
+								{
+									AI_changeContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE,
+										AI_getContactDelay(CONTACT_TRADE_FREE_TRADE_ZONE));
+									pDiplo = new CvDiploParameters(getID());
+									pDiplo->setDiploComment(GC.getAIDiploCommentType("OFFER_DEAL"));
+									pDiplo->setAIContact(true);
+									pDiplo->setOurOfferList(theyGive);
+									pDiplo->setTheirOfferList(weGive);
+									gDLL->beginDiplomacy(pDiplo, ePlayer);
+									abContacted[kPlayer.getTeam()] = true;
+								}
+								else kGame.implementDeal(getID(), ePlayer, weGive, theyGive);
 							}
-							else kGame.implementDeal(getID(), ePlayer, weGive, theyGive);
 						}
 					}
 				}
