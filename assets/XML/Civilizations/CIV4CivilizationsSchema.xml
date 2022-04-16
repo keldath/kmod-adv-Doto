@@ -393,6 +393,15 @@
 	<ElementType name="FreePromotionUnitCombats" content="eltOnly">
 		<element type="FreePromotionUnitCombat" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
+<!-- doto city states advanced diplomacy -->
+	<ElementType name="iFreeTradeValid" content="textOnly" dt:type="int"/>
+	<ElementType name="TradeYieldFRmodifier" content="eltOnly">
+		<element type="iYield" minOccurs="0" maxOccurs="*"/>
+	</ElementType>
+	<ElementType name="CommerceFRmodifier" content="eltOnly">
+		<element type="iCommerce" minOccurs="0" maxOccurs="*"/>
+	</ElementType>
+<!-- doto city states advanced diplomacy -->	
 	<ElementType name="TraitInfo" content="eltOnly">
 		<element type="Type" minOccurs="0"/>
 		<element type="Description" minOccurs="0"/>
@@ -424,6 +433,11 @@
 		<element type="CommerceModifiers" minOccurs="0"/>
 		<element type="FreePromotions" minOccurs="0"/>
 		<element type="FreePromotionUnitCombats" minOccurs="0"/>
+<!-- doto city states advanced diplomacy -->		
+		<element type="iFreeTradeValid" minOccurs="0"/>
+		<element type="TradeYieldFRmodifier" minOccurs="0"/>
+		<element type="CommerceFRmodifier" minOccurs="0"/>
+<!-- doto city states advanced diplomacy -->
 	</ElementType>
 	<ElementType name="TraitInfos" content="eltOnly">
 		<element type="TraitInfo" maxOccurs="*"/>
@@ -437,10 +451,12 @@
 		<element type="City" maxOccurs="*"/>
 	</ElementType>
 <!--doto specialists instead of pop city states -->
+<!-- this is not being used anymore - i should remove it -->
 	<ElementType name="Lname" content="textOnly"/>
 	<ElementType name="LeadersNames" content="eltOnly">
 		<element type="Lname" maxOccurs="*"/>
 	</ElementType>
+<!--doto specialists instead of pop city states -->
 	<ElementType name="BuildingClassType" content="textOnly"/>
 	<ElementType name="BuildingType" content="textOnly"/>
 	<ElementType name="Building" content="eltOnly">

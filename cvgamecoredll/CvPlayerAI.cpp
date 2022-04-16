@@ -8532,6 +8532,7 @@ trade agreement with the enemy raises anger higher then open borders							*/
 /************************************************************************************************/
 		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 		{
+			bool tst = GET_TEAM(eTeam).isFreeTradeAgreement(eEnemy);
 			if (GET_TEAM(eTeam).isFreeTradeAgreement(eEnemy))
 			{
 				rDualDealCounter += std::min(20,
@@ -8576,10 +8577,11 @@ add here an additional penalty to all met civs, i want the trade with a civ to t
 				if(it->isOpenBorders(eEnemy))
 					iActualOB++;
 /************************************************************************************************/
-/* START: Advanced Diplomacy   new to doto advc added to match open borders                     */
+/* START: Advanced Diplomacy   new to doto advc added to match open borders   
+edit - i dont think i should bind freetrade to this*/
 /************************************************************************************************/
-				if (it->isFreeTradeAgreement(eEnemy))
-					iActualOB++;
+			/*	if (it->isFreeTradeAgreement(eEnemy))
+					iActualOB++;*/
 /************************************************************************************************/
 /* END: Advanced Diplomacy   new to doto advc added to match open borders                     */
 /************************************************************************************************/
@@ -8599,9 +8601,10 @@ add here an additional penalty to all met civs, i want the trade with a civ to t
 					rVassalDealCounter += rFromVassal;
 			}
 /************************************************************************************************/
-/* START: Advanced Diplomacy   new to doto advc added to match open borders                     */
+/* START: Advanced Diplomacy   new to doto advc added to match open borders  
+i dont want to bind this to free trade*/
 /************************************************************************************************/
-			if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	/*		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 			{
 				if (it->isCapitulated() && it->getID() != getTeam() &&
 					it->isFreeTradeAgreement(eEnemy))
@@ -8610,7 +8613,7 @@ add here an additional penalty to all met civs, i want the trade with a civ to t
 					if (rFromVassal > 0)
 						rVassalDealCounter += rFromVassal;
 				}
-			}
+			}*/
 /************************************************************************************************/
 /* END: Advanced Diplomacy   new to doto advc added to match open borders                     */
 /************************************************************************************************/
@@ -13318,12 +13321,12 @@ int CvPlayerAI::AI_stopTradingTradeVal(TeamTypes eTradeTeam, PlayerTypes ePlayer
 /************************************************************************************************/
 /* Advanced Diplomacy         START  rather simple - maybe look at the above openb fromadvc     */
 /************************************************************************************************/
+	//value this one higher to make opponents stop with a rival
+	//doto - add some more logic?
 	if (GET_TEAM(ePlayer).isFreeTradeAgreement(eTradeTeam))
 	{
 		iValue *= 3;
-		//doto - doubled this value - if i get it right, its worth while to make someone stop
-		//trading this agreement with a city state..
-		//iValue *= 2;
+		iValue *= 2;
 	}
 /************************************************************************************************/
 /* Advanced Diplomacy         END                                                               */

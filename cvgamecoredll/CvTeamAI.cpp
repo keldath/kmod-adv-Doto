@@ -4218,10 +4218,11 @@ DenialTypes CvTeamAI::AI_defensivePactTrade(TeamTypes eWithTeam) const
 	if(!isOpenBorders(eWithTeam))
 		return DENIAL_JOKING; // </advc.130t>
 /************************************************************************************************/
-/* START: Advanced Diplomacy       added to doto dont do d-p if the  eWithTeam have trade agg   */
+/* START: Advanced Diplomacy       added to doto dont do d-p if the  eWithTeam have trade agg
+edit - removed i dint want defensive pact to consider this at all....*/
 /************************************************************************************************/
-	if (!isFreeTradeAgreement(eWithTeam))
-		return DENIAL_JOKING; // </advc.130t>
+//	if (!isFreeTradeAgreement(eWithTeam))
+//		return DENIAL_JOKING; // </advc.130t>
 /************************************************************************************************/
 /* START: Advanced Diplomacy                                                                    */
 /************************************************************************************************/
@@ -5899,41 +5900,26 @@ void CvTeamAI::AI_doCounter()
 		} // </advc.130k>
 
 /*************************************************************************************************/
-/* START: Advanced Diplomacy
-im not sure what the counter does, open borders does some randomness to the counter...	
-edit - well i decided to use the defensive pact code that gets repeated, seems ok?				 */
+/* START: Advanced Diplomacy															*/
 /*************************************************************************************************/
-		if (isFreeTradeAgreement(eOther))
+/*
+	advciv uses something else - im not sure about it - i used the original counter for now.
+		if (isFreeTradeAgreement(eOther))//should check for city states
 		{
-			if (1 != 1)//should check for city states
-			{
-				//DOTO - nore that i use open borders - i thought for none city states, this can be adjusted to
-				//advc code above.
-				scaled rProb = AI_getOpenBordersCounterIncrement(eOther) / 2;
-				int iMax = 2 * AI_getFreeTradeAgreementAttitudeDivisor() + 10;
-				AI_changeFreeTradeAgreementCounter(eOther, AI_randomCounterChange(iMax, rProb));
-			}
-			else
-			{
-				//DOTO - COULD USE AI_cityStateEval
-				//advc code above.
-				//scaled rProb = AI_getOpenBordersCounterIncrement(eOther) / 2;
-				//int iMax = 2 * AI_cityStateEval() 
-				AI_changeFreeTradeAgreementCounter(eOther, AI_randomCounterChange());
-			}
+			scaled rProb = 2;// AI_getOpenBordersCounterIncrement(eOther) / 2;
+			int iMax = 2 * AI_getFreeTradeAgreementAttitudeDivisor() + 10;
+			AI_changeFreeTradeAgreementCounter(eOther, AI_randomCounterChange(iMax, rProb));
 		}
 		else
 		{
-			AI_setFreeTradeAgreementCounter(eOther,
-				(AI_getFreeTradeAgreementCounter(eOther) * rDecayFactor).floor());
-		} // </advc.130k>
-
-/* org - left for ref
+			AI_changeFreeTradeAgreementCounter(eOther, AI_randomCounterChange());
+		}
+*/
 		if (isFreeTradeAgreement(eOther))
 		{
 			AI_changeFreeTradeAgreementCounter(eOther, 1);
 		}
-*/
+
 /*************************************************************************************************/
 /* END: Advanced Diplomacy                                                           			 */
 /*************************************************************************************************/

@@ -331,18 +331,22 @@
 			<iMaxPlayerBuildingProductionModifier>0</iMaxPlayerBuildingProductionModifier>
 			<ExtraYieldThresholds/>
 			<TradeYieldModifiers/>
-			<CommerceChanges>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>1</iCommerce>
-			</CommerceChanges>
+			<CommerceChanges/>
 			<CommerceModifiers>
                  <iCommerce>0</iCommerce>
                  <iCommerce>0</iCommerce>
-                 <iCommerce>10</iCommerce>
+                 <iCommerce>0</iCommerce>
 			</CommerceModifiers>
 			<FreePromotions/>
 			<FreePromotionUnitCombats/>
+<!-- doto city states advanced diplomacy -->
+			<iFreeTradeValid>1</iFreeTradeValid> 
+			<CommerceFRmodifier>
+				 <iCommerce>10</iCommerce>
+                 <iCommerce>0</iCommerce>
+                 <iCommerce>10</iCommerce>
+			</CommerceFRmodifier>
+<!-- doto city states advanced diplomacy -->
 		</TraitInfo>
 		<TraitInfo>
 			<Type>TRAIT_CSKUSH</Type>
@@ -362,18 +366,18 @@
 			<iMaxPlayerBuildingProductionModifier>0</iMaxPlayerBuildingProductionModifier>
 			<ExtraYieldThresholds/>
 			<TradeYieldModifiers/>
-			<CommerceChanges>
-                 <iCommerce>1</iCommerce>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>0</iCommerce>
-			</CommerceChanges>
-			<CommerceModifiers>
-                 <iCommerce>10</iCommerce>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>0</iCommerce>
-			</CommerceModifiers>
+			<CommerceChanges/>
+			<CommerceModifiers/>
 			<FreePromotions/>
 			<FreePromotionUnitCombats/>
+<!-- doto city states advanced diplomacy -->
+			<iFreeTradeValid>1</iFreeTradeValid> 
+			<CommerceFRmodifier>
+				 <iCommerce>20</iCommerce>
+                 <iCommerce>0</iCommerce>
+                 <iCommerce>0</iCommerce>
+			</CommerceFRmodifier>
+<!-- doto city states advanced diplomacy -->
 		</TraitInfo>
 		<TraitInfo>
 			<Type>TRAIT_CSZURICH</Type>
@@ -393,18 +397,18 @@
 			<iMaxPlayerBuildingProductionModifier>0</iMaxPlayerBuildingProductionModifier>
 			<ExtraYieldThresholds/>
 			<TradeYieldModifiers/>
-			<CommerceChanges>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>1</iCommerce>
-                 <iCommerce>0</iCommerce>
-			</CommerceChanges>
-			<CommerceModifiers>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>10</iCommerce>
-                 <iCommerce>0</iCommerce>
-			</CommerceModifiers>
+			<CommerceChanges/>
+			<CommerceModifiers/>
 			<FreePromotions/>
 			<FreePromotionUnitCombats/>
+<!-- doto city states advanced diplomacy -->
+			<iFreeTradeValid>1</iFreeTradeValid> 
+			<CommerceFRmodifier>
+				 <iCommerce>0</iCommerce>
+                 <iCommerce>20</iCommerce>
+                 <iCommerce>0</iCommerce>
+			</CommerceFRmodifier>
+<!-- doto city states advanced diplomacy -->
 		</TraitInfo>
 		<TraitInfo>
 			<Type>TRAIT_CSVATICAN</Type>
@@ -424,18 +428,18 @@
 			<iMaxPlayerBuildingProductionModifier>0</iMaxPlayerBuildingProductionModifier>
 			<ExtraYieldThresholds/>
 			<TradeYieldModifiers/>
-			<CommerceChanges>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>1</iCommerce>
-                 <iCommerce>0</iCommerce>
-			</CommerceChanges>
-			<CommerceModifiers>
-                 <iCommerce>5</iCommerce>
-                 <iCommerce>5</iCommerce>
-                 <iCommerce>0</iCommerce>
-			</CommerceModifiers>
+			<CommerceChanges/>
+			<CommerceModifiers/>
 			<FreePromotions/>
 			<FreePromotionUnitCombats/>
+<!-- doto city states advanced diplomacy -->
+			<iFreeTradeValid>1</iFreeTradeValid> 
+			<CommerceFRmodifier>
+				 <iCommerce>10</iCommerce>
+                 <iCommerce>10</iCommerce>
+                 <iCommerce>0</iCommerce>
+			</CommerceFRmodifier>
+<!-- doto city states advanced diplomacy -->
 		</TraitInfo>
 		<TraitInfo>
 			<Type>TRAIT_CSTUNIS</Type>
@@ -455,20 +459,18 @@
 			<iMaxPlayerBuildingProductionModifier>0</iMaxPlayerBuildingProductionModifier>
 			<ExtraYieldThresholds/>
 			<TradeYieldModifiers/>
-			<CommerceChanges>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>1</iCommerce>
-			</CommerceChanges>
-			<CommerceModifiers>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>10</iCommerce>
-			</CommerceModifiers>
+			<CommerceChanges/>
+			<CommerceModifiers/>
 			<FreePromotions/>
 			<FreePromotionUnitCombats/>
+<!-- doto city states advanced diplomacy -->
+			<iFreeTradeValid>1</iFreeTradeValid> 
+			<CommerceFRmodifier>
+				 <iCommerce>0</iCommerce>
+                 <iCommerce>0</iCommerce>
+                 <iCommerce>20</iCommerce>
+			</CommerceFRmodifier>
+<!-- doto city states advanced diplomacy -->
 		</TraitInfo>
 		<TraitInfo>
 			<Type>TRAIT_CSTIBET</Type>
@@ -488,18 +490,18 @@
 			<iMaxPlayerBuildingProductionModifier>0</iMaxPlayerBuildingProductionModifier>
 			<ExtraYieldThresholds/>
 			<TradeYieldModifiers/>
-			<CommerceChanges>
-                 <iCommerce>1</iCommerce>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>0</iCommerce>
-			</CommerceChanges>
-			<CommerceModifiers>
-                 <iCommerce>5</iCommerce>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>5</iCommerce>
-			</CommerceModifiers>
+			<CommerceChanges/>
+			<CommerceModifiers/>
 			<FreePromotions/>
 			<FreePromotionUnitCombats/>
+<!-- doto city states advanced diplomacy -->
+			<iFreeTradeValid>1</iFreeTradeValid> 
+			<CommerceFRmodifier>
+				 <iCommerce>10</iCommerce>
+                 <iCommerce>0</iCommerce>
+                 <iCommerce>10</iCommerce>
+			</CommerceFRmodifier>
+<!-- doto city states advanced diplomacy -->
 		</TraitInfo>
 		<TraitInfo>
 			<Type>TRAIT_CSBAVARIA</Type>
@@ -519,18 +521,18 @@
 			<iMaxPlayerBuildingProductionModifier>0</iMaxPlayerBuildingProductionModifier>
 			<ExtraYieldThresholds/>
 			<TradeYieldModifiers/>
-			<CommerceChanges>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>1</iCommerce>
-                 <iCommerce>0</iCommerce>
-			</CommerceChanges>
-			<CommerceModifiers>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>10</iCommerce>
-                 <iCommerce>0</iCommerce>
-			</CommerceModifiers>
+			<CommerceChanges/>
+			<CommerceModifiers/>
 			<FreePromotions/>
 			<FreePromotionUnitCombats/>
+<!-- doto city states advanced diplomacy -->
+			<iFreeTradeValid>1</iFreeTradeValid> 
+			<CommerceFRmodifier>
+				 <iCommerce>0</iCommerce>
+                 <iCommerce>10</iCommerce>
+                 <iCommerce>10</iCommerce>
+			</CommerceFRmodifier>
+<!-- doto city states advanced diplomacy -->
 		</TraitInfo>
 		<TraitInfo>
 			<Type>TRAIT_CSQUEBEC</Type>
@@ -550,18 +552,18 @@
 			<iMaxPlayerBuildingProductionModifier>0</iMaxPlayerBuildingProductionModifier>
 			<ExtraYieldThresholds/>
 			<TradeYieldModifiers/>
-			<CommerceChanges>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>1</iCommerce>
-			</CommerceChanges>
-			<CommerceModifiers>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>0</iCommerce>
-                 <iCommerce>10</iCommerce>
-			</CommerceModifiers>
+			<CommerceChanges/>
+			<CommerceModifiers/>
 			<FreePromotions/>
 			<FreePromotionUnitCombats/>
+<!-- doto city states advanced diplomacy -->
+			<iFreeTradeValid>1</iFreeTradeValid> 
+			<CommerceFRmodifier>
+				 <iCommerce>0</iCommerce>
+                 <iCommerce>20</iCommerce>
+                 <iCommerce>0</iCommerce>
+			</CommerceFRmodifier>
+<!-- doto city states advanced diplomacy -->		
 		</TraitInfo>
 	</TraitInfos>
 </Civ4TraitInfos>

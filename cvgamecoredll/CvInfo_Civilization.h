@@ -476,6 +476,11 @@ public:
 	bool isAnyFreePromotion() const { return (m_pabFreePromotion != NULL); } // advc.003t
 	bool isFreePromotionUnitCombat(int i) const; // advc.003t: Return type was int
 
+//doto city states + advanced diplomacy - given only from trade agreement
+	int getFreeTradeValid() const;
+	int getCommerceFRmodifier(int i) const;
+//doto city states + advanced diplomacy - given only from trade agreement
+
 	bool read(CvXMLLoadUtility* pXML);
 
 protected:
@@ -500,6 +505,10 @@ protected:
 
 	bool* m_pabFreePromotion;
 	bool* m_pabFreePromotionUnitCombat;
+//doto city states + advanced diplomacy - given only from trade agreement
+	int m_iFreeTradeValid;
+	int* m_paiCommerceFRmodifier;
+//doto city states + advanced diplomacy - given only from trade agreement
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

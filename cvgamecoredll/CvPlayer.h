@@ -852,6 +852,7 @@ public:
 	void setCapital(CvCity* pNewCapital);
 //doto city states - trade route resource
 	void addCityStateResource(CvCity* pNewCapital, CvCity* const pOldCapital, int rAmount = 0) const;
+//soto city states end
 	// <advc.127b> -1 if no capital or (eObserver!=NO_TEAM) unrevealed to eObserver
 	int getCapitalX(TeamTypes eObserver, bool bDebug = false) const;
 	int getCapitalY(TeamTypes eObserver, bool bDebug = false) const;
@@ -1050,6 +1051,17 @@ public:
 		return m_aiCapitalCommerceRateModifier.get(eCommerce);
 	}
 	void changeCapitalCommerceRateModifier(CommerceTypes eCommerce, int iChange);
+/************************************************************************************************/
+/* START: Advanced Diplomacy     DOTO CITY STATEs												*/
+/************************************************************************************************/
+	int getCapitalCommerceRateFTModifier(CommerceTypes eCommerce) const												// Exposed to Python
+	{
+		return m_aiCapitalCommerceRateFTModifier.get(eCommerce);
+	}
+	void changeCapitalCommerceRateFTModifier(CommerceTypes eCommerce, int iChange);
+/************************************************************************************************/
+/* END: Advanced Diplomacy     DOTO CITY STATEs												*/
+/************************************************************************************************/
 
 	int getStateReligionBuildingCommerce(CommerceTypes eCommerce) const												// Exposed to Python
 	{
@@ -1746,6 +1758,13 @@ protected:  // <advc.210>
 	EagerEnumMap<CommerceTypes,int,short> m_aiCommerceRate;
 	CommercePercentMap m_aiCommerceRateModifier;
 	CommercePercentMap m_aiCapitalCommerceRateModifier;
+/************************************************************************************************/
+/* START: Advanced Diplomacy     DOTO CITY STATEs												*/
+/************************************************************************************************/
+	CommercePercentMap m_aiCapitalCommerceRateFTModifier;
+/************************************************************************************************/
+/* END: Advanced Diplomacy     DOTO CITY STATEs												*/
+/************************************************************************************************/
 	CommerceChangeMap m_aiStateReligionBuildingCommerce;
 	CommerceChangeMap m_aiSpecialistExtraCommerce;
 	CommerceChangeMap m_aiCommerceFlexibleCount;

@@ -553,6 +553,13 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_aiCommerceRate.reset(); // advc.157
 	m_aiCommerceRateModifier.reset();
 	m_aiCapitalCommerceRateModifier.reset();
+/************************************************************************************************/
+/* START: Advanced Diplomacy     DOTO CITY STATEs												*/
+/************************************************************************************************/
+	m_aiCapitalCommerceRateFTModifier.reset();
+/************************************************************************************************/
+/* END: Advanced Diplomacy     DOTO CITY STATEs												*/
+/************************************************************************************************/
 // < Civic Infos Plus Start >
 	for (int iI = 0; iI < NUM_COMMERCE_TYPES; iI++)
 	{
@@ -715,9 +722,10 @@ void CvPlayer::processTraits(int iChange)
 		//DOTO CITY STATES ADVANCED DIPLOMACY custimization of effects 
 		//these traits will only be active when a free trade is signed.
 		//a city state will get commerce changes and a normal civ will get commerece modifier.
-		CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
-		if ((szText.find(L"Unique Trade") != std::string::npos))
-				continue;
+		//CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
+		//if ((szText.find(L"Unique Trade") != std::string::npos))
+		if(kTrait.getFreeTradeValid() > 0)
+			continue;
 /************************************************************************************************/
 /* END: Advanced Diplomacy     doto custom for city state trade agreement                     */
 /************************************************************************************************/
@@ -4301,9 +4309,9 @@ bool CvPlayer::canPossiblyTradeItem(PlayerTypes eWhoTo, TradeableItems eItemType
 		bool a = getTeam() != kToTeam.getID();
 		bool b = !kOurTeam.isAtWar(kToTeam.getID());
 		bool c = kOurTeam.canSignFreeTradeAgreement(kToTeam.getID());
-		bool d = (kOurTeam.isFreeTradeAgreementTrading();
+		bool d = kOurTeam.isFreeTradeAgreementTrading();
 		bool e = kToTeam.isFreeTradeAgreementTrading();
-		bool f = kOurTeam.isFreeTradeAgreement(kToTeam.getID();
+		bool f = !kOurTeam.isFreeTradeAgreement(kToTeam.getID());
 
 		return (getTeam() != kToTeam.getID() && !kOurTeam.isAtWar(kToTeam.getID()) &&
 			kOurTeam.canSignFreeTradeAgreement(kToTeam.getID()) &&
@@ -10983,8 +10991,24 @@ void CvPlayer::changeCapitalCommerceRateModifier(CommerceTypes eCommerce, int iC
 		pCapital->AI_setAssignWorkDirty(true);
 	}
 }
-
-
+/************************************************************************************************/
+/* START: Advanced Diplomacy     DOTO CITY STATEs												*/
+/************************************************************************************************/
+void CvPlayer::changeCapitalCommerceRateFTModifier(CommerceTypes eCommerce, int iChange)
+{
+	if (iChange == 0)
+		return;
+	m_aiCapitalCommerceRateFTModifier.add(eCommerce, iChange);
+	CvCity* pCapital = getCapital();
+	if (pCapital != NULL)
+	{
+		pCapital->updateCommerce();
+		pCapital->AI_setAssignWorkDirty(true);
+	}
+}
+/************************************************************************************************/
+/* END: Advanced Diplomacy     DOTO CITY STATEs												*/
+/************************************************************************************************/
 void CvPlayer::changeStateReligionBuildingCommerce(CommerceTypes eCommerce, int iChange)
 {
 	if (iChange != 0)
@@ -15563,6 +15587,13 @@ void CvPlayer::read(FDataStreamBase* pStream)
 		else updateCommerceRates(); // </advc.157>
 		m_aiCommerceRateModifier.read(pStream);
 		m_aiCapitalCommerceRateModifier.read(pStream);
+/************************************************************************************************/
+/* START: Advanced Diplomacy     DOTO CITY STATEs												*/
+/************************************************************************************************/
+		m_aiCapitalCommerceRateFTModifier.read(pStream);
+/************************************************************************************************/
+/* END: Advanced Diplomacy     DOTO CITY STATEs												*/
+/************************************************************************************************/
 		// < Civic Infos Plus Start >
     	pStream->Read(NUM_COMMERCE_TYPES, m_aiStateReligionCommerceRateModifier);
     	pStream->Read(NUM_COMMERCE_TYPES, m_aiNonStateReligionCommerceRateModifier);
@@ -15583,6 +15614,13 @@ void CvPlayer::read(FDataStreamBase* pStream)
 		m_aiCommerceRateTimes100.readArray<int>(pStream);
 		m_aiCommerceRateModifier.readArray<int>(pStream);
 		m_aiCapitalCommerceRateModifier.readArray<int>(pStream);
+/************************************************************************************************/
+/* START: Advanced Diplomacy     DOTO CITY STATEs												*/
+/************************************************************************************************/
+		m_aiCapitalCommerceRateFTModifier.readArray<int>(pStream);
+/************************************************************************************************/
+/* END: Advanced Diplomacy     DOTO CITY STATEs												*/
+/************************************************************************************************/
 		// < Civic Infos Plus Start >
 		//keldath - not using advc method
     	pStream->Read(NUM_COMMERCE_TYPES, m_aiStateReligionCommerceRateModifier);
@@ -16205,6 +16243,13 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	m_aiCommerceRate.write(pStream); // advc.157
 	m_aiCommerceRateModifier.write(pStream);
 	m_aiCapitalCommerceRateModifier.write(pStream);
+/************************************************************************************************/
+/* START: Advanced Diplomacy     DOTO CITY STATEs												*/
+/************************************************************************************************/
+	m_aiCapitalCommerceRateFTModifier.write(pStream);
+/************************************************************************************************/
+/* END: Advanced Diplomacy     DOTO CITY STATEs												*/
+/************************************************************************************************/
 // < Civic Infos Plus Start >
     pStream->Write(NUM_COMMERCE_TYPES, m_aiStateReligionCommerceRateModifier);
     pStream->Write(NUM_COMMERCE_TYPES, m_aiNonStateReligionCommerceRateModifier);
@@ -21952,8 +21997,9 @@ TraitTypes CvPlayer::getMemberUniqueTrait(PlayerTypes ePlayer) const
 			continue;
 
 		CvTraitInfo& kTrait = GC.getInfo(eTrait);
-		CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
-		if ((szText.find(L"Unique Trade") != std::string::npos))
+		//CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
+		//if ((szText.find(L"Unique Trade") != std::string::npos))
+		if (kTrait.getFreeTradeValid() > 0)
 		{
 			return csTrait = eTrait;
 			break;
@@ -21983,8 +22029,9 @@ bool CvPlayer::canPlayersSignFreeTradeAgreement(PlayerTypes eFrom, PlayerTypes e
 			continue;
 
 		CvTraitInfo& kTrait = GC.getInfo(eTrait);
-		CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
-		if ((szText.find(L"Unique Trade") != std::string::npos))
+		//CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
+		//if ((szText.find(L"Unique Trade") != std::string::npos))
+		if (kTrait.getFreeTradeValid() > 0)
 		{
 			gotCStrait = true;
 		}
@@ -22000,6 +22047,8 @@ bool CvPlayer::canPlayersSignFreeTradeAgreement(PlayerTypes eFrom, PlayerTypes e
 
 	return false;
 }
+//these 2 functions handle 2 trading sides - its to reduce loops for some parts in the dll
+//when we need to get the info of 2 players unlike the twin functions above for the single passed player.
 // get the city state trait for the desired perks.
 // city states cannot trade between them selfs, so there should be just one fr two sides of traders.
 TraitTypes CvPlayer::getPlayersMinUniqueTrait(PlayerTypes eFrom, PlayerTypes eTo) const
@@ -22018,8 +22067,9 @@ TraitTypes CvPlayer::getPlayersMinUniqueTrait(PlayerTypes eFrom, PlayerTypes eTo
 			continue;
 
 		CvTraitInfo& kTrait = GC.getInfo(eTrait);
-		CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
-		if ((szText.find(L"Unique Trade") != std::string::npos))
+		//CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
+		//if ((szText.find(L"Unique Trade") != std::string::npos))
+		if(kTrait.getFreeTradeValid()> 0)
 		{
 			return csTrait = eTrait;
 			break;
@@ -22035,21 +22085,38 @@ void CvPlayer::csMemberUpdateFreeTradeTraits(bool isCityState, TraitTypes eTrait
 
 	FOR_EACH_ENUM(Commerce)
 	{
-		if (kTrait.getCommerceModifier(eLoopCommerce) <= 0)
+		if (kTrait.getCommerceFRmodifier(eLoopCommerce) <= 0)
 			continue;
 
 		if (kPlayer.checkCityState(ePlayer))
 		{
 			//city states gets a double one   
-			kPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
-				(int)(kTrait.getCommerceModifier(eLoopCommerce) * 2 * iChange));
+			kPlayer.changeCapitalCommerceRateFTModifier(eLoopCommerce,
+				(int)(kTrait.getCommerceFRmodifier(eLoopCommerce) * 2 * iChange));
 		}
 		else
 		{
-			kPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
-				(int)(kTrait.getCommerceModifier(eLoopCommerce) * iChange));
+			kPlayer.changeCapitalCommerceRateFTModifier(eLoopCommerce,
+				(int)(kTrait.getCommerceFRmodifier(eLoopCommerce) * iChange));
 		}
 	}
+	//FOR_EACH_ENUM(Yield)
+	//{
+	//	if (kTrait.getCommerceModifier(eLoopCommerce) <= 0)
+	//		continue;
+
+	//	if (kPlayer.checkCityState(ePlayer))
+	//	{
+	//		//city states gets a double one   
+	//		kPlayer.getTradeYieldFRmodifier(eLoopCommerce,
+	//			(int)(kTrait.getTradeYieldFRmodifier(eLoopCommerce) + 1 * iChange));
+	//	}
+	//	else
+	//	{
+	//		kPlayer.getTradeYieldFRmodifier(eLoopCommerce,
+	//			(int)(kTrait.getTradeYieldFRmodifier(eLoopCommerce) * iChange));
+	//	}
+	//}
 }
 
 /************************************************************************************************/

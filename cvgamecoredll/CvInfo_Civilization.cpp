@@ -1358,7 +1358,11 @@ m_paiTradeYieldModifier(NULL),
 m_paiCommerceChange(NULL),
 m_paiCommerceModifier(NULL),
 m_pabFreePromotionUnitCombat(NULL),
-m_pabFreePromotion(NULL)
+m_pabFreePromotion(NULL),
+//doto city states + advanced diplomacy - given only from trade agreement
+m_iFreeTradeValid(0),
+m_paiCommerceFRmodifier(NULL)
+//doto city states + advanced diplomacy
 {}
 
 CvTraitInfo::~CvTraitInfo()
@@ -1369,6 +1373,9 @@ CvTraitInfo::~CvTraitInfo()
 	SAFE_DELETE_ARRAY(m_paiCommerceModifier);
 	SAFE_DELETE_ARRAY(m_pabFreePromotionUnitCombat);
 	SAFE_DELETE_ARRAY(m_pabFreePromotion);
+//doto city states + advanced diplomacy
+	SAFE_DELETE_ARRAY(m_paiCommerceFRmodifier);
+//doto city states + advanced diplomacy
 }
 
 int CvTraitInfo::getHealth() const
@@ -1474,6 +1481,20 @@ bool CvTraitInfo::isFreePromotionUnitCombat(int i) const // advc.003t: Return ty
 	return m_pabFreePromotionUnitCombat ? m_pabFreePromotionUnitCombat[i] : false;
 }
 
+//doto city states + advanced diplomacy - given only from trade agreement
+int CvTraitInfo::getFreeTradeValid() const
+{
+	return m_iFreeTradeValid;
+}
+
+int CvTraitInfo::getCommerceFRmodifier(int i) const
+{
+	FAssertBounds(0, NUM_COMMERCE_TYPES, i);
+	return m_paiCommerceFRmodifier ? m_paiCommerceFRmodifier[i] : 0; // advc.003t
+}
+//doto city states + advanced diplomacy
+
+
 bool CvTraitInfo::read(CvXMLLoadUtility* pXML)
 {
 	if (!base_t::read(pXML)) // advc.tag
@@ -1533,6 +1554,16 @@ bool CvTraitInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_pabFreePromotion, "FreePromotions", GC.getNumPromotionInfos());
 
 	pXML->SetVariableListTagPair(&m_pabFreePromotionUnitCombat, "FreePromotionUnitCombats", GC.getNumUnitCombatInfos());
+
+//doto city states + advanced diplomacy - given only from trade agreement
+	pXML->GetChildXmlValByName(&m_iFreeTradeValid, "iFreeTradeValid", 0);
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
+		"CommerceFRmodifier"))
+	{
+		pXML->SetCommerceArray(&m_paiCommerceFRmodifier);
+	}
+	else pXML->InitList(&m_paiCommerceModifier, NUM_COMMERCE_TYPES);
+//doto city states + advanced diplomacy
 
 	return true;
 }

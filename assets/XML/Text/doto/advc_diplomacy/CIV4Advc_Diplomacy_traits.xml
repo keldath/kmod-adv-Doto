@@ -6,19 +6,23 @@
 <!-- Game Text Diplomacy -->
 <Civ4GameText xmlns="http://www.firaxis.com">
 	<TEXT>
-		<Tag>TXT_KEY_TRAIT_CS</Tag>
-		<English>[ICON_BULLET] Perk for City States:</English>
-	</TEXT>
-	<TEXT>
-		<Tag>TXT_KEY_TRAIT_NOT_CS</Tag>
-		<English>[ICON_BULLET] Perk Only for Normal Civ's:</English>
-	</TEXT>
-	<TEXT>
 		<Tag>TXT_KEY_TRAIT_TRADE_EFFECT</Tag>
-		<English>[ICON_BULLET] Activated with Free Trade Agreement:</English>
+		<English>[ICON_BULLET] With [CS] Trade Treaty:</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_AND_FROM_CS</Tag>
-		<English> or/and Free Trade City State</English>
+		<English> or/and/if/ City State Trade Treaty</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FREE_TRADE_AGREEMENT_DIPLO_TABLE</Tag>
+		<English>  [ICON_BULLET] %s1_commerce_type: %s2%%F3</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_HELP_TRAIT_FR_CAPITAL</Tag>
+		<English>[ICON_BULLET]%D1%%%F2 from Capital [CS] Trade Treaties</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_TRAIT_FR_COMMERCE_MODIFIERS</Tag>
+		<English>[NEWLINE][SPACE][SPACE][ICON_BULLET]%D1%% %F2_commerce</English>
 	</TEXT>     
 </Civ4GameText>

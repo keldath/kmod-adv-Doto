@@ -6440,17 +6440,19 @@ int CvUnit::getTradeGold(const CvPlot* pPlot) const
 	iGold *= GC.getInfo(GC.getGame().getGameSpeedType()).getUnitTradePercent();
 	iGold /= 100;
 /************************************************************************************************/
-/* START: Advanced Diplomacy        doto - nice feature - so on    maybe optional later on     */
+/* START: Advanced Diplomacy          doto - free trade agg is for commerce changes from city states now
+code left here for the future																		*/
 /************************************************************************************************/
 	//More Gold From Free Trade Agreement Trade Missions
-	PlayerTypes eTargetPlayer = pPlot->getOwner();
+	/*PlayerTypes eTargetPlayer = pPlot->getOwner();
 
 	if (GET_TEAM(getTeam()).isFreeTradeAgreement(GET_PLAYER(eTargetPlayer).getTeam()))
 	{
 		iGold *= 100 + GC.getDefineINT("FREE_TRADE_AGREEMENT_TRADE_MODIFIER");
 		iGold /= 100;
-	}
+	}*/
 
+	//doto from advc - was off by default
 	//// Gold Sound 
 	//if (plot()->isActiveVisible(false))
 	//{

@@ -4767,8 +4767,37 @@ void CvDLLWidgetData::parseTradeItem(CvWidgetDataStruct &widgetDataStruct,
 /* START: Advanced Diplomacy                                                                    */
 /************************************************************************************************/
 	case TRADE_FREE_TRADE_ZONE:
+	{
+
 		szBuffer.append(gDLL->getText("TXT_KEY_TRADE_FREE_TRADE_ZONE"));
+		//ADDED BY DOTO to displaye unqiue trait perks
+		if (eWhoTo != NO_PLAYER && eWhoFrom != NO_PLAYER)
+		{
+			CvPlayer& kOurPlayer = GET_PLAYER(eWhoFrom);
+			TraitTypes eTrait = kOurPlayer.getPlayersMinUniqueTrait(eWhoFrom, eWhoTo);
+			if (eTrait != NO_TRAIT)
+			{
+				szBuffer.append(NEWLINE);
+				FOR_EACH_ENUM(Commerce)
+				{
+					CvTraitInfo& kTrait = GC.getInfo(eTrait);
+					CvCommerceInfo const& kCommerce = GC.getInfo(eLoopCommerce);
+					int const iCommerceChar = kCommerce.getChar();
+					if (kTrait.getCommerceFRmodifier(eLoopCommerce) > 0)
+					{
+						CvWString szCommerce = CvWString::format(L"%d", kTrait.getCommerceFRmodifier(eLoopCommerce));
+						szBuffer.append(gDLL->getText("TXT_KEY_FREE_TRADE_AGREEMENT_DIPLO_TABLE",
+							kCommerce.getTextKeyWide(), szCommerce.GetCString(), iCommerceChar));
+					}
+				}
+				szBuffer.append(NEWLINE);
+
+
+			}
+		}
+
 		break;
+	}
 /************************************************************************************************/
 /* END: Advanced Diplomacy                                                                      */
 /************************************************************************************************/

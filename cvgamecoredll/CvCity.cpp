@@ -8611,7 +8611,15 @@ int CvCity::getTotalCommerceRateModifier(CommerceTypes eCommerce) const
            && isHasReligion(kOwner.getStateReligion())) ?
            getStateReligionCommerceRateModifier(eCommerce) :
            getNonStateReligionCommerceRateModifier(eCommerce)) +
-			(isCapital() ? kOwner.getCapitalCommerceRateModifier(eCommerce) : 0) + 100);
+			(isCapital() ? kOwner.getCapitalCommerceRateModifier(eCommerce) : 0) + 100
+/************************************************************************************************/
+/* START: Advanced Diplomacy     DOTO- CITY STATE    add perks of free trade agreement treaty   */
+/************************************************************************************************/
+			+ (isCapital() ? kOwner.getCapitalCommerceRateFTModifier(eCommerce) : 0) + 100)
+/************************************************************************************************/
+/* START: Advanced Diplomacy     DOTO- CITY STATE                                   */
+/************************************************************************************************/
+			;
 }
 
 
