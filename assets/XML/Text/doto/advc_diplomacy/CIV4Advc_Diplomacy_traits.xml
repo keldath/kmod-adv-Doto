@@ -15,7 +15,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FREE_TRADE_AGREEMENT_DIPLO_TABLE</Tag>
-		<English>  [ICON_BULLET] %s1_commerce_type: %s2%%F3</English>
+		<English>  [ICON_BULLET] %s1_commerce_type: %s2%F3 %</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_HELP_TRAIT_FR_CAPITAL</Tag>

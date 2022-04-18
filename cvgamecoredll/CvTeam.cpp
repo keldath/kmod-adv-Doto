@@ -343,6 +343,26 @@ void CvTeam::addTeam(TeamTypes eTeam)
 			apOther[i]->setOpenBorders(eTeam, true);
 		}
 	}
+/************************************************************************************************/
+/* START: HR advanced Diplomacy                                                                    		*/
+/************************************************************************************************/
+	for (size_t i = 0; i < apOther.size(); i++)
+	{
+		TeamTypes const eOther = apOther[i]->getID();
+		if (GET_TEAM(eTeam).isFreeTradeAgreement(eOther))
+		{
+			setFreeTradeAgreement(eOther, true);
+			apOther[i]->setFreeTradeAgreement(getID(), true);
+		}
+		else if (isFreeTradeAgreement(eOther))
+		{
+			GET_TEAM(eTeam).setFreeTradeAgreement(eOther, true);
+			apOther[i]->setFreeTradeAgreement(eTeam, true);
+		}
+	}
+/************************************************************************************************/
+/* START: HR advanced Diplomacy                                                                    		*/
+/************************************************************************************************/
 
 	for (size_t i = 0; i < apOther.size(); i++)
 	{
@@ -1946,6 +1966,39 @@ bool CvTeam::hasMetHuman() const
 	return false;
 }
 
+/*************************************************************************************************/
+/** Advanced Diplomacy       START     doto added from hr				   						 */
+/*************************************************************************************************/
+//from hr diplomacy -> was : CvTeam::getTradeAgreementCount
+int CvTeam::getHowManyTradeAgreements(TeamTypes eTeam) const
+{
+	int iCount = 0;
+	//doro - org -> int iI;
+	//doro - org -> for (iI = 0; iI < MAX_CIV_TEAMS; iI++)
+	for (int iTeam = 0; iTeam < MAX_TEAMS; iTeam++)
+	{
+		TeamTypes iterTeam = (TeamTypes)iTeam;
+		CvTeamAI& kLoopTeam = GET_TEAM(iterTeam);
+		if (kLoopTeam.isAlive())
+		{
+			if (iTeam != getID())
+			{
+				if (isFreeTradeAgreement(iterTeam))
+				{
+					if (NO_TEAM == eTeam || GET_TEAM(eTeam).isHasMet(iterTeam))
+					{
+						iCount++;
+					}
+				}
+			}
+		}
+	}
+
+	return iCount;
+}
+/************************************************************************************************/
+/* Advanced Diplomacy                        END                                                */
+/************************************************************************************************/
 
 int CvTeam::getDefensivePactCount(TeamTypes eObs) const
 {
@@ -3255,13 +3308,16 @@ bool CvTeam::isFreeTrade(TeamTypes eIndex) const
 /************************************************************************************************/
 /* START: Advanced Diplomacy   
 doto - im not so sure about this effect - maybe it allowes for free trade		
-not sure its an effect i want for this agrement type	*/
+not sure its an effect i want for this agrement type	
+edit - i decided to remove the trade ag from allowence of free trade!
+there is enough effects to it from the trade traits
+*/
 /************************************************************************************************/
-		|| isFreeTradeAgreement(eIndex));
+//		|| isFreeTradeAgreement(eIndex)
 /************************************************************************************************/
 /* END: Advanced Diplomacy                                                                      */
 /************************************************************************************************/
-
+	);
 }
 
 
@@ -6570,12 +6626,14 @@ void CvTeam::setFreeTradeAgreement(TeamTypes eIndex, bool bNewValue)
 		the free routes thing is something that im not sure ill use.
 		---
 	*/
-	CvTeam const& kThemTeam = GET_TEAM(eIndex);
-	if (isFreeTradeAgreement(kThemTeam.getID()) == bNewValue)//if the team already has an agreement , skip
+	//CvTeam const& kThemTeam = GET_TEAM(eIndex);
+	if (isFreeTradeAgreement(eIndex) == bNewValue)//if the team already has an agreement , skip
 		return; // advc
 	m_abFreeTradeAgreement.set(eIndex, bNewValue);
+	
 	// <advc.130p> OB affect diplo from rival trade
-	//doto - left if from open borders advciv - seems logical.
+	//doto - removed this since the attitude is controlled not from rival trade anymore 
+	//but from: 
 	for (PlayerAIIter<MAJOR_CIV, NOT_SAME_TEAM_AS> itOther(getID()); itOther.hasNext(); ++itOther)
 	{
 		for (MemberIter itMember(getID()); itMember.hasNext(); ++itMember)
@@ -6588,8 +6646,8 @@ void CvTeam::setFreeTradeAgreement(TeamTypes eIndex, bool bNewValue)
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
 
 	csTeamTraitsUpdate(eIndex, bNewValue); //doto unique feature
-	
 										   //doto - not sure what is the purpose - but - seems logical.
+	//CvPlayerAI::AI_updateAttitudes();
 	//if the value is true means if there was some disebgage - it gets cancelled by this
 	if (bNewValue)
 		AI().cancelDisengage(eIndex); // </advc.034>
@@ -6606,7 +6664,8 @@ void CvTeam::csTeamTraitsUpdate(TeamTypes eThey, bool bNewValue) const
 	if (getID() == eThey)
 		return;
 
-	TraitTypes fTrait = NO_TRAIT;
+	TraitTypes fTrait = NO_TRAIT;//we dont care to whom parties have the speciael 
+								//trait... the trade agg just need one side to have it
 	PlayerTypes eOurPlayer = NO_PLAYER;
 	PlayerTypes eThemPlayer = NO_PLAYER;
 
@@ -6628,47 +6687,47 @@ void CvTeam::csTeamTraitsUpdate(TeamTypes eThey, bool bNewValue) const
 	//}
 	//check if we have the unique trait
 
+
 	for (MemberIter it(getID()); it.hasNext(); ++it)
 	{
-		CvPlayer& kOurTeamPlayer = GET_PLAYER(it->getID());
+		PlayerTypes ePlayer = it->getID();
+		CvPlayer& kOurTeamPlayer = GET_PLAYER(ePlayer);
 		
 		if (!kOurTeamPlayer.isAlive())
 			continue;
 
-		TraitTypes eTrait = kOurTeamPlayer.getMemberUniqueTrait(it->getID());
+		TraitTypes eTrait = kOurTeamPlayer.getMemberUniqueTrait(ePlayer);
 		if 	(eTrait != NO_TRAIT)
 		{
-			eOurPlayer = it->getID();
+			eOurPlayer = ePlayer;
 			fTrait = eTrait;
+			break;
 		}
-
 		//IN CASE this side doesnt has the trait
 		if (eOurPlayer == NO_PLAYER)
-			eOurPlayer = it->getID();
+			eOurPlayer = ePlayer;
 	}
 	
 	//check if them have unique trait
 	for (MemberIter it(eThey); it.hasNext(); ++it)
 	{
-		CvPlayer& kThemTeamPlayer = GET_PLAYER(it->getID());
+		PlayerTypes ePlayer = it->getID();
+		CvPlayer& kThemTeamPlayer = GET_PLAYER(ePlayer);
 
 		if (!kThemTeamPlayer.isAlive())
 			continue;
 
-		TraitTypes eTrait = kThemTeamPlayer.getMemberUniqueTrait(it->getID());
+		TraitTypes eTrait = kThemTeamPlayer.getMemberUniqueTrait(ePlayer);
 		if (eTrait != NO_TRAIT)
 		{
-			eThemPlayer = it->getID();
+			eThemPlayer = ePlayer;
 			fTrait = eTrait;
 		}
 			
 		//IN CASE this side doesnt has the trait
 		if(eThemPlayer == NO_PLAYER)
-			eThemPlayer = it->getID();
+			eThemPlayer = ePlayer;
 	}
-	
-	CvTraitInfo& kTrait = GC.getInfo(fTrait); //we dont care to whom parties have the speciael trait...
-	FAssert(kTrait.getFreeTradeValid() > 0)//it has to be there!
 		
 	CvPlayer& kOurTeamPlayer = GET_PLAYER(eOurPlayer);
 	CvPlayer& kThemTeamPlayer = GET_PLAYER(eThemPlayer);
@@ -6679,8 +6738,8 @@ void CvTeam::csTeamTraitsUpdate(TeamTypes eThey, bool bNewValue) const
 	FAssert(isOurCS != isThemCS); //cant have 2 city states trading this
 	FAssert(!isOurCS != !isThemCS); //cant have 2 none city states trading this
 
-	kOurTeamPlayer.csMemberUpdateFreeTradeTraits(isOurCS, fTrait, iChange, eOurPlayer);
-	kThemTeamPlayer.csMemberUpdateFreeTradeTraits(isThemCS, fTrait, iChange, eThemPlayer);
+	kOurTeamPlayer.csMemberUpdateFreeTradeTraits(fTrait, iChange, eOurPlayer);
+	kThemTeamPlayer.csMemberUpdateFreeTradeTraits(fTrait, iChange, eThemPlayer);
 
 //FOR_EACH_ENUM(Commerce)
 //{

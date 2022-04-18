@@ -6172,7 +6172,13 @@ void CvGameTextMgr::parseTraits(CvWStringBuffer &szHelpString, TraitTypes eTrait
 			}
 		}
 	}
-
+/************************************************************************************************/
+/* START: Advanced Diplomacy   doto custom for city state trade agreement                       */
+/************************************************************************************************/
+	bool seperator = true;
+/************************************************************************************************/
+/* END: Advanced Diplomacy     doto custom for city state trade agreement                     */
+/************************************************************************************************/
 	FOR_EACH_ENUM2(Commerce, eCommerce)
 	{
 		if (kTrait.getCommerceChange(eCommerce) != 0)
@@ -6193,7 +6199,6 @@ void CvGameTextMgr::parseTraits(CvWStringBuffer &szHelpString, TraitTypes eTrait
 //DOTO CITY STATES ADVANCED DIPLOMACY custimization of effects 
 //these traits will only be active when a free trade is signed.
 //a city state will get commerce changes and a normal civ will get commerece modifier.
-		bool seperator = true;
 		if (kTrait.getCommerceFRmodifier(eCommerce) != 0)
 		{
 			if (seperator)
@@ -17389,6 +17394,10 @@ edit - doto - i think i need this acctually...														*/
 		appendToAttitudeBreakdown(szBreakdown, iPass,
 			kPlayer.AI_getFreeTradeAgreementAttitude(eTargetPlayer), iTotal,
 			"TXT_KEY_MISC_ATTITUDE_FREE_TRADE_AGREEMENT");
+		//added from history re mod for doto
+		appendToAttitudeBreakdown(szBreakdown, iPass,
+			kPlayer.AI_getRivalTradeAgreementAttitude(eTargetPlayer), iTotal,
+			"TXT_KEY_MISC_ATTITUDE_RIVAL_TRADE_AGREEMENT");
 /*************************************************************************************************/
 /** Advanced Diplomacy       END                                                  				 */
 /*************************************************************************************************/

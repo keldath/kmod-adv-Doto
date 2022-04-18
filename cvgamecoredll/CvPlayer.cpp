@@ -9445,10 +9445,7 @@ void CvPlayer::setCapital(CvCity* pNewCapital)
 }
 
 //doto city states - add artificial resources trade route
-// each civ in the game will get resource number equal to the number of civs in the game
-// regular civ will get X number of city states
-// city states will get x number of normal civs
-// or a custom num
+// each civ in the game will get resource number (2)
 void CvPlayer::addCityStateResource(CvCity* pNewCapital, CvCity* pOldCapital, int rAmount) const
 {
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
@@ -9480,39 +9477,31 @@ void CvPlayer::addCityStateResource(CvCity* pNewCapital, CvCity* pOldCapital, in
 		else
 			UniqueBonues = NO_BONUS;
 
-		//a city states will gain the amount of players that are inthe game.
-		//so it can trade with any civ minus city states - need to dissallow trade with this resource in
-		// the trade_resources if city state to city state...
-		//CvBonusInfo& kBonusInfo = GC.getInfo(UniqueBonues);
 		int howManyPlayers = 2; // (leave one for the city state)
-		for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
+//limit 2 per city state - per player is not needed - added trade treaty diplomacy
+		/*for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
 		{
 			if (checkCityState(itPlayer->getID()))
 				continue;
 			else
 				howManyPlayers += 1;
-		}
+		}*/
+
 		// only city states will get the routes now.
-		//int res_amount = rAmount != 0 ? rAmount : (cityState ? -MAX_PLAYERS : -numCitySpawn);
 		int res_amount = howManyPlayers;
-		//changeNumBonuses
-		//CvBonusInfo& kBonusInfo = GC.getInfo(cs);
+		
 		if (pOldCapital != NULL || 
 			//this is suppose to clear the resource if the city state was taken by 
 			//a normal civ - or so i hope
 			pNewCapital == NULL && pOldCapital != NULL)
 		{
 			if (pOldCapital->getNumBonuses(UniqueBonues) > 0)
-			{
 				pOldCapital->changeFreeBonus(UniqueBonues, res_amount);
-			}
 		}
 		if (pNewCapital != NULL)
 		{
 			if (pNewCapital->getNumBonuses(UniqueBonues) < 1)
-			{
 				pNewCapital->changeFreeBonus(UniqueBonues, res_amount);
-			}
 		}
 	}
 }
@@ -22078,27 +22067,21 @@ TraitTypes CvPlayer::getPlayersMinUniqueTrait(PlayerTypes eFrom, PlayerTypes eTo
 	return NO_TRAIT;
 }
 
-void CvPlayer::csMemberUpdateFreeTradeTraits(bool isCityState, TraitTypes eTrait, int iChange, PlayerTypes ePlayer) const
+void CvPlayer::csMemberUpdateFreeTradeTraits(TraitTypes eTrait, int iChange, PlayerTypes ePlayer) const
 {
+	//doto - not using the this pointer on all uses of this funcs.
+	//need to fix it....
+	
 	CvTraitInfo& kTrait = GC.getInfo(eTrait);
-	CvPlayer& kPlayer = GET_PLAYER(ePlayer);
-
+	FAssert(kTrait.getFreeTradeValid() > 0)//it has to be there!
+	
 	FOR_EACH_ENUM(Commerce)
 	{
-		if (kTrait.getCommerceFRmodifier(eLoopCommerce) <= 0)
+		if (kTrait.getCommerceFRmodifier(eLoopCommerce) <= 0)//without it the last commerce entry will always define it - probabaly 0...
 			continue;
 
-		if (kPlayer.checkCityState(ePlayer))
-		{
-			//city states gets a double one   
-			kPlayer.changeCapitalCommerceRateFTModifier(eLoopCommerce,
-				(int)(kTrait.getCommerceFRmodifier(eLoopCommerce) * 2 * iChange));
-		}
-		else
-		{
-			kPlayer.changeCapitalCommerceRateFTModifier(eLoopCommerce,
-				(int)(kTrait.getCommerceFRmodifier(eLoopCommerce) * iChange));
-		}
+		GET_PLAYER(ePlayer).changeCapitalCommerceRateFTModifier(eLoopCommerce,
+			(((int)kTrait.getCommerceFRmodifier(eLoopCommerce) * 100) * iChange));
 	}
 	//FOR_EACH_ENUM(Yield)
 	//{

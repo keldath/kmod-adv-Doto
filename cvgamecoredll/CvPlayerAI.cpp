@@ -7702,9 +7702,10 @@ void CvPlayerAI::AI_updateAttitude(PlayerTypes ePlayer, /* advc.130e: */ bool bU
 	iAttitude += AI_getTradeAttitude(ePlayer);
 	iAttitude += AI_getRivalTradeAttitude(ePlayer);
 /*************************************************************************************************/
-/*  Advanced Diplomacy       START                                                  			 */
+/*  Advanced Diplomacy       START     + history re addition                           			 */
 /*************************************************************************************************/
 	iAttitude += AI_getFreeTradeAgreementAttitude(ePlayer);
+	iAttitude += AI_getRivalTradeAgreementAttitude(ePlayer);
 /************************************************************************************************/
 /* Advanced Diplomacy         END                                                               */
 /************************************************************************************************/
@@ -8132,6 +8133,7 @@ int CvPlayerAI::AI_getFreeTradeAgreementAttitude(PlayerTypes ePlayer) const
 	{
 		if (GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeDivisor() != 0)
 		{
+			
 			int iAttitudeChange = (GET_TEAM(getTeam()).AI_getFreeTradeAgreementCounter(TEAMID(ePlayer)) /
 				GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeDivisor());
 			return range(iAttitudeChange,
@@ -8141,6 +8143,33 @@ int CvPlayerAI::AI_getFreeTradeAgreementAttitude(PlayerTypes ePlayer) const
 	}
 	return 0;
 }
+
+//doto - added from HR mod - add rival attitude to others
+//note there is another code section where the attitude is added to rivels
+//i dont mind this to be ontop - these trades are strong...
+int CvPlayerAI::AI_getRivalTradeAgreementAttitude(PlayerTypes ePlayer) const
+{
+	int iAttitude = 0;
+
+	if (getTeam() == TEAMID(ePlayer) || GET_TEAM(getTeam()).isVassal(TEAMID(ePlayer)) ||
+			GET_TEAM(TEAMID(ePlayer)).isVassal(getTeam()))
+	{
+		return iAttitude;
+	}
+
+	if (!(GET_TEAM(getTeam()).isFreeTradeAgreement(TEAMID(ePlayer))))
+	{
+		//doto change to apply round just in case...
+		int couldBeFractionalIThink;
+		couldBeFractionalIThink = scaled((2 * GET_TEAM(TEAMID(ePlayer)).getHowManyTradeAgreements(TEAMID(ePlayer))) /
+			std::max(1, (GC.getGame().countCivTeamsAlive() - 2))).round();
+
+		iAttitude -= couldBeFractionalIThink;
+	}
+
+	return iAttitude;
+}
+
 /************************************************************************************************/
 /* Advanced Diplomacy                        END                                                */
 /************************************************************************************************/
@@ -8530,22 +8559,23 @@ int CvPlayerAI::AI_getRivalTradeAttitude(PlayerTypes ePlayer) const
 /* START: Advanced Diplomacy   new to doto advc added to match open borders  
 trade agreement with the enemy raises anger higher then open borders							*/
 /************************************************************************************************/
-		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-		{
-			bool tst = GET_TEAM(eTeam).isFreeTradeAgreement(eEnemy);
-			if (GET_TEAM(eTeam).isFreeTradeAgreement(eEnemy))
-			{
-				rDualDealCounter += std::min(20,
-					std::min(kOurTeam.AI_getHasMetCounter(eTeam),
-						GET_TEAM(eTeam).AI_getFreeTradeAgreementCounter(eEnemy)));
-				if (kOurTeam.isAtWar(eEnemy))
-				{	/*  Not happy that enemy units can move through the borders of
-						ePlayer and heal there, but only moderate increase b/c we
-						can't well afford to make further enemies when already in a war. */
-					rDualDealCounter *= fixp(2.0);
-				}
-			}
-		}
+		//decided to remove for now - the attitude have AI_getRivalTradeAgreementAttitude now 
+		//if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+		//{
+		//	bool tst = GET_TEAM(eTeam).isFreeTradeAgreement(eEnemy);
+		//	if (GET_TEAM(eTeam).isFreeTradeAgreement(eEnemy))
+		//	{
+		//		rDualDealCounter += std::min(20,
+		//			std::min(kOurTeam.AI_getHasMetCounter(eTeam),
+		//				GET_TEAM(eTeam).AI_getFreeTradeAgreementCounter(eEnemy)));
+		//		if (kOurTeam.isAtWar(eEnemy))
+		//		{	/*  Not happy that enemy units can move through the borders of
+		//				ePlayer and heal there, but only moderate increase b/c we
+		//				can't well afford to make further enemies when already in a war. */
+		//			rDualDealCounter *= fixp(2.0);
+		//		}
+		//	}
+		//}
 /************************************************************************************************/
 /* END: Advanced Diplomacy       
 add here an additional penalty to all met civs, i want the trade with a civ to take a price!
@@ -9709,6 +9739,15 @@ int CvPlayerAI::AI_dealVal(PlayerTypes eFromPlayer, CLinkList<TradeData> const& 
 		case TRADE_OPEN_BORDERS:
 			iValue += kOurTeam.AI_openBordersTradeVal(eFromTeam);
 			break;
+/************************************************************************************************/
+/* Advanced Diplomacy         START                                                             */
+/************************************************************************************************/
+		case TRADE_FREE_TRADE_ZONE:
+			iValue += kOurTeam.AI_FreeTradeAgreementVal(eFromTeam);
+			break;
+/************************************************************************************************/
+/* Advanced Diplomacy         END                                                               */
+/************************************************************************************************/
 		case TRADE_DEFENSIVE_PACT:
 			iValue += kOurTeam.AI_defensivePactTradeVal(eFromTeam);
 			break;
@@ -9734,16 +9773,6 @@ int CvPlayerAI::AI_dealVal(PlayerTypes eFromPlayer, CLinkList<TradeData> const& 
 		case TRADE_RELIGION:
 			iValue += AI_religionTradeVal((ReligionTypes)pItem->m_iData, eFromPlayer);
 			break;
-/************************************************************************************************/
-/* Advanced Diplomacy         START                                                             */
-/************************************************************************************************/
-		case TRADE_FREE_TRADE_ZONE:
-			iValue += kOurTeam.AI_FreeTradeAgreementVal(eFromTeam);
-			break;
-/************************************************************************************************/
-/* Advanced Diplomacy         END                                                               */
-/************************************************************************************************/
-
 		}
 	}
 
@@ -21377,11 +21406,23 @@ void CvPlayerAI::AI_doDiplo()
 				{
 					if (canPlayersSignFreeTradeAgreement(getID(), ePlayer))
 					{
+						//doto test
+						bool k = AI_getContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE) == 0;
+						bool n = SyncRandOneChanceIn(GC.getInfo(getPersonalityType()).getContactRand(CONTACT_TRADE_FREE_TRADE_ZONE));
+						
 						if (AI_getContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE) == 0 &&
 							SyncRandOneChanceIn(GC.getInfo(getPersonalityType()).
 								getContactRand(CONTACT_TRADE_FREE_TRADE_ZONE)))
 						{
+							
 							TradeData item(TRADE_FREE_TRADE_ZONE);
+							//doto test
+							if (ePlayer >= 2 || getID() >= 2)
+							{
+								bool a = canTradeItem(ePlayer, item, true);
+								bool b = kPlayer.canTradeItem(getID(), item, true);
+							}
+
 							if (canTradeItem(ePlayer, item, true) &&
 								kPlayer.canTradeItem(getID(), item, true))
 							{

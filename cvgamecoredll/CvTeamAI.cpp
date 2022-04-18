@@ -4219,7 +4219,7 @@ DenialTypes CvTeamAI::AI_defensivePactTrade(TeamTypes eWithTeam) const
 		return DENIAL_JOKING; // </advc.130t>
 /************************************************************************************************/
 /* START: Advanced Diplomacy       added to doto dont do d-p if the  eWithTeam have trade agg
-edit - removed i dint want defensive pact to consider this at all....*/
+edit - removed i dont want defensive pact to consider this at all....*/
 /************************************************************************************************/
 //	if (!isFreeTradeAgreement(eWithTeam))
 //		return DENIAL_JOKING; // </advc.130t>
@@ -5904,22 +5904,19 @@ void CvTeamAI::AI_doCounter()
 /*************************************************************************************************/
 /*
 	advciv uses something else - im not sure about it - i used the original counter for now.
-		if (isFreeTradeAgreement(eOther))//should check for city states
-		{
-			scaled rProb = 2;// AI_getOpenBordersCounterIncrement(eOther) / 2;
-			int iMax = 2 * AI_getFreeTradeAgreementAttitudeDivisor() + 10;
-			AI_changeFreeTradeAgreementCounter(eOther, AI_randomCounterChange(iMax, rProb));
-		}
-		else
-		{
-			AI_changeFreeTradeAgreementCounter(eOther, AI_randomCounterChange());
-		}
-*/
+	
 		if (isFreeTradeAgreement(eOther))
 		{
 			AI_changeFreeTradeAgreementCounter(eOther, 1);
-		}
-
+		}*/
+		if (isFreeTradeAgreement(eOther))
+			AI_changeFreeTradeAgreementCounter(eOther, AI_randomCounterChange());
+		// <advc.130k>
+		else
+		{
+			AI_setFreeTradeAgreementCounter(eOther,
+				(AI_getFreeTradeAgreementCounter(eOther) * rDecayFactor).floor());
+		} // </advc.130k>
 /*************************************************************************************************/
 /* END: Advanced Diplomacy                                                           			 */
 /*************************************************************************************************/

@@ -16505,24 +16505,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<Description>[CS] Abu</Description>
 			<Civilopedia>Abu</Civilopedia>
 			<ArtDefineTag>ART_DEF_LEADER_ABU</ArtDefineTag>
-			<iWonderConstructRand>25</iWonderConstructRand>
-			<iBaseAttitude>1</iBaseAttitude>
-			<iBasePeaceWeight>2</iBasePeaceWeight>
-			<iPeaceWeightRand>3</iPeaceWeightRand>
+			<iWonderConstructRand>0</iWonderConstructRand>
+			<iBaseAttitude>0</iBaseAttitude>
+			<iBasePeaceWeight>1</iBasePeaceWeight>
+			<iPeaceWeightRand>2</iPeaceWeightRand>
 			<iWarmongerRespect>2</iWarmongerRespect>
 			<iEspionageWeight>120</iEspionageWeight>
-			<iRefuseToTalkWarThreshold>8</iRefuseToTalkWarThreshold>
+			<iRefuseToTalkWarThreshold>6</iRefuseToTalkWarThreshold>
 			<iNoTechTradeThreshold>5</iNoTechTradeThreshold>
 			<iTechTradeKnownPercent>70</iTechTradeKnownPercent>
 			<iMaxGoldTradePercent>5</iMaxGoldTradePercent>
 			<iMaxGoldPerTurnTradePercent>10</iMaxGoldPerTurnTradePercent>
 			<!-- BBAI Victory Strategy -->
-			<iCultureVictoryWeight>10</iCultureVictoryWeight>
+			<iCultureVictoryWeight>50</iCultureVictoryWeight>
 			<!-- advc.005a: was 35 -->
 			<iSpaceVictoryWeight>25</iSpaceVictoryWeight>
 			<!-- advc.005a: was 55 -->
-			<iConquestVictoryWeight>45</iConquestVictoryWeight>
-			<iDominationVictoryWeight>25</iDominationVictoryWeight>
+			<iConquestVictoryWeight>10</iConquestVictoryWeight>
+			<iDominationVictoryWeight>10</iDominationVictoryWeight>
 			<!-- advc.005a: was 25 -->
 			<iDiplomacyVictoryWeight>45</iDiplomacyVictoryWeight>
 			<!-- BBAI Victory Strategy -->
@@ -16537,22 +16537,22 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iDeclareWarTradeRand>40</iDeclareWarTradeRand>
 			<iDemandRebukedSneakProb>40</iDemandRebukedSneakProb>
 			<iDemandRebukedWarProb>40</iDemandRebukedWarProb>
-			<iRazeCityProb>15</iRazeCityProb>
+			<iRazeCityProb>100</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>4</iBaseAttackOddsChange>
 			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
-			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
+			<iBetterRankDifferenceAttitudeChange>-3</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>
-			<iLostWarAttitudeChange>-1</iLostWarAttitudeChange>
+			<iLostWarAttitudeChange>-2</iLostWarAttitudeChange>
 			<iAtWarAttitudeDivisor>-5</iAtWarAttitudeDivisor>
-			<iAtWarAttitudeChangeLimit>5</iAtWarAttitudeChangeLimit>
+			<iAtWarAttitudeChangeLimit>4</iAtWarAttitudeChangeLimit>
 			<iAtPeaceAttitudeDivisor>60</iAtPeaceAttitudeDivisor>
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
 			<!-- advc.148: was 5 -->
-			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
+			<iSameReligionAttitudeChangeLimit>3</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-2</iDifferentReligionAttitudeChange>
 			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
 			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
@@ -16560,7 +16560,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
-			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<iOpenBordersAttitudeChangeLimit>1</iOpenBordersAttitudeChangeLimit>
 			<!-- Advanced Diplomacy-->
 			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
 			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
@@ -17048,23 +17048,23 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<Description>[CS] G. H. Dufour</Description>
 			<Civilopedia>Guillaume Henri Dufour</Civilopedia>
 			<ArtDefineTag>ART_DEF_LEADER_GUILLAUME_HENRI_DUFOUR</ArtDefineTag>
-			<iWonderConstructRand>30</iWonderConstructRand>
+			<iWonderConstructRand>0</iWonderConstructRand>
 			<iBaseAttitude>1</iBaseAttitude>
-			<iBasePeaceWeight>6</iBasePeaceWeight>
+			<iBasePeaceWeight>4</iBasePeaceWeight>
 			<iPeaceWeightRand>3</iPeaceWeightRand>
 			<iWarmongerRespect>1</iWarmongerRespect>
 			<iEspionageWeight>0</iEspionageWeight>
-			<iRefuseToTalkWarThreshold>10</iRefuseToTalkWarThreshold>
+			<iRefuseToTalkWarThreshold>7</iRefuseToTalkWarThreshold>
 			<iNoTechTradeThreshold>5</iNoTechTradeThreshold>
 			<iTechTradeKnownPercent>70</iTechTradeKnownPercent>
-			<iMaxGoldTradePercent>5</iMaxGoldTradePercent>
+			<iMaxGoldTradePercent>3</iMaxGoldTradePercent>
 			<iMaxGoldPerTurnTradePercent>10</iMaxGoldPerTurnTradePercent>
 			<!-- BBAI Victory Strategy -->
 			<iCultureVictoryWeight>45</iCultureVictoryWeight>
-			<iSpaceVictoryWeight>15</iSpaceVictoryWeight>
-			<iConquestVictoryWeight>20</iConquestVictoryWeight>
-			<iDominationVictoryWeight>45</iDominationVictoryWeight>
-			<iDiplomacyVictoryWeight>25</iDiplomacyVictoryWeight>
+			<iSpaceVictoryWeight>45</iSpaceVictoryWeight>
+			<iConquestVictoryWeight>0</iConquestVictoryWeight>
+			<iDominationVictoryWeight>10</iDominationVictoryWeight>
+			<iDiplomacyVictoryWeight>35</iDiplomacyVictoryWeight>
 			<!-- BBAI Victory Strategy -->
 			<iMaxWarRand>200</iMaxWarRand>
 			<iMaxWarNearbyPowerRatio>100</iMaxWarNearbyPowerRatio>
@@ -17077,11 +17077,11 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iDeclareWarTradeRand>40</iDeclareWarTradeRand>
 			<iDemandRebukedSneakProb>20</iDemandRebukedSneakProb>
 			<iDemandRebukedWarProb>25</iDemandRebukedWarProb>
-			<iRazeCityProb>0</iRazeCityProb>
+			<iRazeCityProb>100</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
 			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
-			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
+			<iWorseRankDifferenceAttitudeChange>-3</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>
 			<iLostWarAttitudeChange>-1</iLostWarAttitudeChange>
@@ -17543,24 +17543,24 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<Civilopedia>Ludwig</Civilopedia>
 			<ArtDefineTag>ART_DEF_LEADER_LUDWIG</ArtDefineTag>
 			<iWonderConstructRand>30</iWonderConstructRand>
-			<iBaseAttitude>-1</iBaseAttitude>
+			<iBaseAttitude>0</iBaseAttitude>
 			<iBasePeaceWeight>5</iBasePeaceWeight>
 			<iPeaceWeightRand>3</iPeaceWeightRand>
 			<iWarmongerRespect>1</iWarmongerRespect>
 			<iEspionageWeight>110</iEspionageWeight>
-			<iRefuseToTalkWarThreshold>8</iRefuseToTalkWarThreshold>
+			<iRefuseToTalkWarThreshold>5</iRefuseToTalkWarThreshold>
 			<iNoTechTradeThreshold>10</iNoTechTradeThreshold>
 			<iTechTradeKnownPercent>40</iTechTradeKnownPercent>
 			<iMaxGoldTradePercent>5</iMaxGoldTradePercent>
 			<iMaxGoldPerTurnTradePercent>10</iMaxGoldPerTurnTradePercent>
 			<!-- BBAI Victory Strategy -->
-			<iCultureVictoryWeight>20</iCultureVictoryWeight>
-			<iSpaceVictoryWeight>25</iSpaceVictoryWeight>
-			<iConquestVictoryWeight>25</iConquestVictoryWeight>
+			<iCultureVictoryWeight>50</iCultureVictoryWeight>
+			<iSpaceVictoryWeight>35</iSpaceVictoryWeight>
+			<iConquestVictoryWeight>10</iConquestVictoryWeight>
 			<!-- advc.005a: was 55 -->
-			<iDominationVictoryWeight>30</iDominationVictoryWeight>
+			<iDominationVictoryWeight>15</iDominationVictoryWeight>
 			<!-- advc.005a: was 25 -->
-			<iDiplomacyVictoryWeight>40</iDiplomacyVictoryWeight>
+			<iDiplomacyVictoryWeight>45</iDiplomacyVictoryWeight>
 			<!-- BBAI Victory Strategy -->
 			<iMaxWarRand>200</iMaxWarRand>
 			<iMaxWarNearbyPowerRatio>100</iMaxWarNearbyPowerRatio>
@@ -17574,15 +17574,15 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iDeclareWarTradeRand>40</iDeclareWarTradeRand>
 			<iDemandRebukedSneakProb>40</iDemandRebukedSneakProb>
 			<iDemandRebukedWarProb>10</iDemandRebukedWarProb>
-			<iRazeCityProb>0</iRazeCityProb>
+			<iRazeCityProb>100</iRazeCityProb>
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>2</iBaseAttackOddsChange>
 			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
-			<iWorseRankDifferenceAttitudeChange>-2</iWorseRankDifferenceAttitudeChange>
-			<iBetterRankDifferenceAttitudeChange>1</iBetterRankDifferenceAttitudeChange>
-			<iCloseBordersAttitudeChange>-4</iCloseBordersAttitudeChange>
+			<iWorseRankDifferenceAttitudeChange>2</iWorseRankDifferenceAttitudeChange>
+			<iBetterRankDifferenceAttitudeChange>-1</iBetterRankDifferenceAttitudeChange>
+			<iCloseBordersAttitudeChange>-3</iCloseBordersAttitudeChange>
 			<iLostWarAttitudeChange>-1</iLostWarAttitudeChange>
-			<iAtWarAttitudeDivisor>-5</iAtWarAttitudeDivisor>
+			<iAtWarAttitudeDivisor>-6</iAtWarAttitudeDivisor>
 			<iAtWarAttitudeChangeLimit>5</iAtWarAttitudeChangeLimit>
 			<iAtPeaceAttitudeDivisor>60</iAtPeaceAttitudeDivisor>
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
@@ -17590,7 +17590,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
 			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
 			<iDifferentReligionAttitudeChange>-1</iDifferentReligionAttitudeChange>
-			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<iDifferentReligionAttitudeDivisor>-2</iDifferentReligionAttitudeDivisor>
 			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
@@ -18055,22 +18055,22 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<Civilopedia>MacDonald</Civilopedia>
 			<ArtDefineTag>ART_DEF_LEADER_MACDONALD</ArtDefineTag>
 			<iWonderConstructRand>20</iWonderConstructRand>
-			<iBaseAttitude>0</iBaseAttitude>
+			<iBaseAttitude>1</iBaseAttitude>
 			<iBasePeaceWeight>8</iBasePeaceWeight>
 			<iPeaceWeightRand>3</iPeaceWeightRand>
 			<iWarmongerRespect>0</iWarmongerRespect>
 			<iEspionageWeight>100</iEspionageWeight>
-			<iRefuseToTalkWarThreshold>8</iRefuseToTalkWarThreshold>
+			<iRefuseToTalkWarThreshold>6</iRefuseToTalkWarThreshold>
 			<iNoTechTradeThreshold>5</iNoTechTradeThreshold>
 			<iTechTradeKnownPercent>30</iTechTradeKnownPercent>
 			<iMaxGoldTradePercent>5</iMaxGoldTradePercent>
 			<iMaxGoldPerTurnTradePercent>10</iMaxGoldPerTurnTradePercent>
 			<!-- BBAI Victory Strategy -->
-			<iCultureVictoryWeight>35</iCultureVictoryWeight>
+			<iCultureVictoryWeight>60</iCultureVictoryWeight>
 			<iSpaceVictoryWeight>45</iSpaceVictoryWeight>
 			<iConquestVictoryWeight>0</iConquestVictoryWeight>
-			<iDominationVictoryWeight>35</iDominationVictoryWeight>
-			<iDiplomacyVictoryWeight>35</iDiplomacyVictoryWeight>
+			<iDominationVictoryWeight>0</iDominationVictoryWeight>
+			<iDiplomacyVictoryWeight>45</iDiplomacyVictoryWeight>
 			<!-- BBAI Victory Strategy -->
 			<iMaxWarRand>200</iMaxWarRand>
 			<iMaxWarNearbyPowerRatio>90</iMaxWarNearbyPowerRatio>
@@ -18083,16 +18083,16 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iDeclareWarTradeRand>40</iDeclareWarTradeRand>
 			<iDemandRebukedSneakProb>0</iDemandRebukedSneakProb>
 			<iDemandRebukedWarProb>0</iDemandRebukedWarProb>
-			<iRazeCityProb>0</iRazeCityProb>
-			<iBuildUnitProb>25</iBuildUnitProb>
+			<iRazeCityProb>1000</iRazeCityProb>
+			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
 			<iAttackOddsChangeRand>8</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
 			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
 			<iLostWarAttitudeChange>-1</iLostWarAttitudeChange>
-			<iAtWarAttitudeDivisor>-5</iAtWarAttitudeDivisor>
-			<iAtWarAttitudeChangeLimit>5</iAtWarAttitudeChangeLimit>
+			<iAtWarAttitudeDivisor>-6</iAtWarAttitudeDivisor>
+			<iAtWarAttitudeChangeLimit>6</iAtWarAttitudeChangeLimit>
 			<iAtPeaceAttitudeDivisor>60</iAtPeaceAttitudeDivisor>
 			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
 			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
@@ -18105,15 +18105,15 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
 			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
-			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<iOpenBordersAttitudeChangeLimit>1</iOpenBordersAttitudeChangeLimit>
 			<!-- Advanced Diplomacy-->
 			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
-			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<iFreeTradeAgreementAttitudeChangeLimit>3</iFreeTradeAgreementAttitudeChangeLimit>
 			<!-- Advanced Diplomacy-->
 			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
 			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
 			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
-			<iShareWarAttitudeDivisor>8</iShareWarAttitudeDivisor>
+			<iShareWarAttitudeDivisor>6</iShareWarAttitudeDivisor>
 			<iShareWarAttitudeChangeLimit>4</iShareWarAttitudeChangeLimit>
 			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
 			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
@@ -18569,9 +18569,9 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<Description>[CS] Songtsen</Description>
 			<Civilopedia>Songtsen</Civilopedia>
 			<ArtDefineTag>ART_DEF_LEADER_SONGTSEN</ArtDefineTag>
-			<iWonderConstructRand>20</iWonderConstructRand>
+			<iWonderConstructRand>0</iWonderConstructRand>
 			<iBaseAttitude>1</iBaseAttitude>
-			<iBasePeaceWeight>8</iBasePeaceWeight>
+			<iBasePeaceWeight>4</iBasePeaceWeight>
 			<iPeaceWeightRand>3</iPeaceWeightRand>
 			<iWarmongerRespect>0</iWarmongerRespect>
 			<iEspionageWeight>90</iEspionageWeight>
@@ -18598,12 +18598,12 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iDeclareWarTradeRand>40</iDeclareWarTradeRand>
 			<iDemandRebukedSneakProb>0</iDemandRebukedSneakProb>
 			<iDemandRebukedWarProb>20</iDemandRebukedWarProb>
-			<iRazeCityProb>0</iRazeCityProb>
+			<iRazeCityProb>1000</iRazeCityProb>
 			<iBuildUnitProb>20</iBuildUnitProb>
 			<iBaseAttackOddsChange>0</iBaseAttackOddsChange>
 			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
 			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
-			<iBetterRankDifferenceAttitudeChange>3</iBetterRankDifferenceAttitudeChange>
+			<iBetterRankDifferenceAttitudeChange>-3</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
 			<iLostWarAttitudeChange>-1</iLostWarAttitudeChange>
 			<iAtWarAttitudeDivisor>-5</iAtWarAttitudeDivisor>
@@ -19062,23 +19062,23 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<Description>[CS] Hector</Description>
 			<Civilopedia>Hector</Civilopedia>
 			<ArtDefineTag>ART_DEF_LEADER_HECTOR</ArtDefineTag>
-			<iWonderConstructRand>20</iWonderConstructRand>
-			<iBaseAttitude>0</iBaseAttitude>
+			<iWonderConstructRand>0</iWonderConstructRand>
+			<iBaseAttitude>-1</iBaseAttitude>
 			<iBasePeaceWeight>4</iBasePeaceWeight>
 			<iPeaceWeightRand>5</iPeaceWeightRand>
-			<iWarmongerRespect>3</iWarmongerRespect>
+			<iWarmongerRespect>5</iWarmongerRespect>
 			<iEspionageWeight>100</iEspionageWeight>
 			<iRefuseToTalkWarThreshold>6</iRefuseToTalkWarThreshold>
 			<iNoTechTradeThreshold>20</iNoTechTradeThreshold>
-			<iTechTradeKnownPercent>20</iTechTradeKnownPercent>
-			<iMaxGoldTradePercent>5</iMaxGoldTradePercent>
+			<iTechTradeKnownPercent>25</iTechTradeKnownPercent>
+			<iMaxGoldTradePercent>3</iMaxGoldTradePercent>
 			<iMaxGoldPerTurnTradePercent>15</iMaxGoldPerTurnTradePercent>
 			<!-- BBAI Victory Strategy -->
 			<iCultureVictoryWeight>35</iCultureVictoryWeight>
 			<iSpaceVictoryWeight>45</iSpaceVictoryWeight>
 			<iConquestVictoryWeight>15</iConquestVictoryWeight>
-			<iDominationVictoryWeight>30</iDominationVictoryWeight>
-			<iDiplomacyVictoryWeight>25</iDiplomacyVictoryWeight>
+			<iDominationVictoryWeight>0</iDominationVictoryWeight>
+			<iDiplomacyVictoryWeight>45</iDiplomacyVictoryWeight>
 			<!-- BBAI Victory Strategy -->
 			<iMaxWarRand>100</iMaxWarRand>
 			<iMaxWarNearbyPowerRatio>110</iMaxWarNearbyPowerRatio>
@@ -19095,10 +19095,10 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<iBuildUnitProb>30</iBuildUnitProb>
 			<iBaseAttackOddsChange>5</iBaseAttackOddsChange>
 			<iAttackOddsChangeRand>9</iAttackOddsChangeRand>
-			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
-			<iBetterRankDifferenceAttitudeChange>0</iBetterRankDifferenceAttitudeChange>
+			<iWorseRankDifferenceAttitudeChange>0</iWorseRankDifferenceAttitudeChange>
+			<iBetterRankDifferenceAttitudeChange>-1</iBetterRankDifferenceAttitudeChange>
 			<iCloseBordersAttitudeChange>-3</iCloseBordersAttitudeChange>
-			<iLostWarAttitudeChange>-1</iLostWarAttitudeChange>
+			<iLostWarAttitudeChange>-3</iLostWarAttitudeChange>
 			<iAtWarAttitudeDivisor>-5</iAtWarAttitudeDivisor>
 			<iAtWarAttitudeChangeLimit>5</iAtWarAttitudeChangeLimit>
 			<iAtPeaceAttitudeDivisor>50</iAtPeaceAttitudeDivisor>
@@ -19111,7 +19111,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
 			<iDifferentReligionAttitudeChangeLimit>-1</iDifferentReligionAttitudeChangeLimit>
 			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
-			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
+			<iBonusTradeAttitudeChangeLimit>3</iBonusTradeAttitudeChangeLimit>
 			<iOpenBordersAttitudeDivisor>30</iOpenBordersAttitudeDivisor>
 			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
 			<!-- Advanced Diplomacy-->

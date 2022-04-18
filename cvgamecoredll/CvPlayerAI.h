@@ -228,6 +228,7 @@ public:
 /* Advanced Diplomacy         START                                                             */
 /************************************************************************************************/
 	int AI_getFreeTradeAgreementAttitude(PlayerTypes ePlayer) const;
+	int AI_getRivalTradeAgreementAttitude(PlayerTypes ePlayer) const;
 /************************************************************************************************/
 /* Advanced Diplomacy         END                                                             */
 /************************************************************************************************/

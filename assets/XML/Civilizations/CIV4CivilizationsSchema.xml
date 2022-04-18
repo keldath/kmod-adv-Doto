@@ -395,9 +395,6 @@
 	</ElementType>
 <!-- doto city states advanced diplomacy -->
 	<ElementType name="iFreeTradeValid" content="textOnly" dt:type="int"/>
-	<ElementType name="TradeYieldFRmodifier" content="eltOnly">
-		<element type="iYield" minOccurs="0" maxOccurs="*"/>
-	</ElementType>
 	<ElementType name="CommerceFRmodifier" content="eltOnly">
 		<element type="iCommerce" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
@@ -435,7 +432,6 @@
 		<element type="FreePromotionUnitCombats" minOccurs="0"/>
 <!-- doto city states advanced diplomacy -->		
 		<element type="iFreeTradeValid" minOccurs="0"/>
-		<element type="TradeYieldFRmodifier" minOccurs="0"/>
 		<element type="CommerceFRmodifier" minOccurs="0"/>
 <!-- doto city states advanced diplomacy -->
 	</ElementType>

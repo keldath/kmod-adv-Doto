@@ -14,6 +14,10 @@
 		<English>%D1: &quot;Our [CS] Trade Treaty propels our economies.&quot;</English>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_MISC_ATTITUDE_RIVAL_TRADE_AGREEMENT</Tag>
+		<English>%D1: &quot;Your[CS] Trade Treaties With Others is disturbing.&quot;</English>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_MISC_FREE_TRADE_ZONE</Tag>
 		<English>[CS] Trade Treaty</English>
 	</TEXT>
@@ -23,6 +27,6 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_TRADE_FREE_TRADE_ZONE</Tag>
-		<English>[CS] Trade Treaty:[NEWLINE][ICON_BULLET]May anger rivals[NEWLINE][ICON_BULLET]Requires Territoral connection[NEWLINE]From City State Trade Trait:</English>
+		<English>[CS] Trade Treaty:[NEWLINE][ICON_BULLET] May anger rivals[NEWLINE][ICON_BULLET] Requires Territoral connection[NEWLINE][ICON_BULLET] From City State Trade Trait:</English>
 	</TEXT>	
 </Civ4GameText>

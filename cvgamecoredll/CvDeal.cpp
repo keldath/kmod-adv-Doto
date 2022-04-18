@@ -1359,7 +1359,10 @@ bool CvDeal::hasData(TradeableItems eItem)
 			eItem != TRADE_SURRENDER &&
 			eItem != TRADE_OPEN_BORDERS &&
 /************************************************************************************************/
-/* START: Advanced Diplomacy      -added for doto                                               */
+/* START: Advanced Diplomacy      
+doto for some reason the free trade doesnt exists in this part. not sure why but if hr and advc diploc 
+didnt include it here, so i wont either.
+still dont know the logic...																	*/
 /************************************************************************************************/
 			eItem != TRADE_FREE_TRADE_ZONE &&
 /************************************************************************************************/

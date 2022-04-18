@@ -1562,7 +1562,7 @@ bool CvTraitInfo::read(CvXMLLoadUtility* pXML)
 	{
 		pXML->SetCommerceArray(&m_paiCommerceFRmodifier);
 	}
-	else pXML->InitList(&m_paiCommerceModifier, NUM_COMMERCE_TYPES);
+	else pXML->InitList(&m_paiCommerceFRmodifier, NUM_COMMERCE_TYPES);
 //doto city states + advanced diplomacy
 
 	return true;

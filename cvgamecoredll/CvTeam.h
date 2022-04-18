@@ -220,6 +220,7 @@ public:
 	int getFreeTradeAgreementTradingCount() const { return m_iFreeTradeAgreementTradingCount; }															// Exposed to Python
 	bool isFreeTradeAgreementTrading() const { return (getFreeTradeAgreementTradingCount() > 0); }										// Exposed to Python
 	void changeFreeTradeAgreementTradingCount(int iChange);															// Exposed to Python
+	int getHowManyTradeAgreements(TeamTypes eTeam) const;
 /************************************************************************************************/
 /* END: Advanced Diplomacy                                                                      */
 /************************************************************************************************/

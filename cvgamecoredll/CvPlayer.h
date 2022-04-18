@@ -1576,7 +1576,7 @@ public:
 	TraitTypes getMemberUniqueTrait(PlayerTypes ePlayer) const;
 	bool canPlayersSignFreeTradeAgreement(PlayerTypes eFrom, PlayerTypes eTo) const;
 	TraitTypes getPlayersMinUniqueTrait(PlayerTypes eFrom, PlayerTypes eTo) const;
-	void csMemberUpdateFreeTradeTraits(bool isCityState, TraitTypes eTrait, int iChange, PlayerTypes ePlayer) const;
+	void csMemberUpdateFreeTradeTraits(TraitTypes eTrait, int iChange, PlayerTypes ePlayer) const;
 /************************************************************************************************/
 /* START: Advanced Diplomacy                                                                    */
 /************************************************************************************************/

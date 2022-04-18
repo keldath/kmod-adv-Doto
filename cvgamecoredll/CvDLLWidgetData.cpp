@@ -4777,7 +4777,6 @@ void CvDLLWidgetData::parseTradeItem(CvWidgetDataStruct &widgetDataStruct,
 			TraitTypes eTrait = kOurPlayer.getPlayersMinUniqueTrait(eWhoFrom, eWhoTo);
 			if (eTrait != NO_TRAIT)
 			{
-				szBuffer.append(NEWLINE);
 				FOR_EACH_ENUM(Commerce)
 				{
 					CvTraitInfo& kTrait = GC.getInfo(eTrait);
@@ -4785,12 +4784,13 @@ void CvDLLWidgetData::parseTradeItem(CvWidgetDataStruct &widgetDataStruct,
 					int const iCommerceChar = kCommerce.getChar();
 					if (kTrait.getCommerceFRmodifier(eLoopCommerce) > 0)
 					{
+						szBuffer.append(NEWLINE); 
 						CvWString szCommerce = CvWString::format(L"%d", kTrait.getCommerceFRmodifier(eLoopCommerce));
 						szBuffer.append(gDLL->getText("TXT_KEY_FREE_TRADE_AGREEMENT_DIPLO_TABLE",
 							kCommerce.getTextKeyWide(), szCommerce.GetCString(), iCommerceChar));
 					}
 				}
-				szBuffer.append(NEWLINE);
+				
 
 
 			}
