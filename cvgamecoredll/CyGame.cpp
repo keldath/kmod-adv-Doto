@@ -1241,3 +1241,4 @@ bool CyGame::isScenario()
 {
 	return m_kGame.isScenario();
 }
+

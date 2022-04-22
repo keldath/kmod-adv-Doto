@@ -48,6 +48,10 @@ public:
 //super forts doto
 	void updateCulture(bool bBumpUnits, bool bUpdatePlotGroups);
 	void updateFog();
+//doto city states	start
+	bool isPlotinCsVicinity(PlayerTypes ePlayer);
+	int getPlotRangefromCs(PlayerTypes ePlayer);
+//doto city states	end	
 	void updateVisibility();
 	void updateSymbolDisplay();
 	void updateSymbolVisibility();

@@ -5902,21 +5902,24 @@ void CvTeamAI::AI_doCounter()
 /*************************************************************************************************/
 /* START: Advanced Diplomacy															*/
 /*************************************************************************************************/
-/*
-	advciv uses something else - im not sure about it - i used the original counter for now.
-	
-		if (isFreeTradeAgreement(eOther))
+		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 		{
-			AI_changeFreeTradeAgreementCounter(eOther, 1);
-		}*/
-		if (isFreeTradeAgreement(eOther))
-			AI_changeFreeTradeAgreementCounter(eOther, AI_randomCounterChange());
-		// <advc.130k>
-		else
-		{
-			AI_setFreeTradeAgreementCounter(eOther,
-				(AI_getFreeTradeAgreementCounter(eOther) * rDecayFactor).floor());
-		} // </advc.130k>
+			/*
+			advciv uses something else - im not sure about it - i used the original counter for now.
+
+				if (isFreeTradeAgreement(eOther))
+				{
+					AI_changeFreeTradeAgreementCounter(eOther, 1);
+				}*/
+			if (isFreeTradeAgreement(eOther))
+				AI_changeFreeTradeAgreementCounter(eOther, AI_randomCounterChange());
+			// <advc.130k>
+			else
+			{
+				AI_setFreeTradeAgreementCounter(eOther,
+					(AI_getFreeTradeAgreementCounter(eOther) * rDecayFactor).floor());
+			} // </advc.130k>
+		}
 /*************************************************************************************************/
 /* END: Advanced Diplomacy                                                           			 */
 /*************************************************************************************************/

@@ -57,7 +57,7 @@ Integer Tags
 			<!-- advc.910: was 100 -->
 			<iResearchPercent>95</iResearchPercent>
 			<!-- advc.140: was 80 -->
-			<iTradeProfitPercent>70</iTradeProfitPercent>
+			<iTradeProfitPercent>60</iTradeProfitPercent>
 			<!-- advc.140: was 50 -->
 			<iDistanceMaintenancePercent>55</iDistanceMaintenancePercent>
 			<!-- advc.140: Was 45. Note (applies to all world sizes) that the DLL
@@ -91,7 +91,7 @@ Integer Tags
 			<!-- advc.910: was 110 -->
 			<iResearchPercent>98</iResearchPercent>
 			<!-- advc.140: was 70 -->
-			<iTradeProfitPercent>63</iTradeProfitPercent>
+			<iTradeProfitPercent>53</iTradeProfitPercent>
 			<!-- advc.140: was 60 -->
 			<iDistanceMaintenancePercent>63</iDistanceMaintenancePercent>
 			<!-- advc.140: was 40 -->
@@ -122,7 +122,7 @@ Integer Tags
 			<!-- advc.910: was 120 -->
 			<iResearchPercent>102</iResearchPercent>
 			<!-- advc.140: was 60 -->
-			<iTradeProfitPercent>55</iTradeProfitPercent>
+			<iTradeProfitPercent>45</iTradeProfitPercent>
 			<!-- advc.140: was 70 -->
 			<iDistanceMaintenancePercent>70</iDistanceMaintenancePercent>
 			<!-- advc.140: was 35 -->
@@ -159,7 +159,7 @@ Integer Tags
 			<!-- advc.910: was 130 -->
 			<iResearchPercent>115</iResearchPercent>
 			<!-- advc.140: was 50 -->
-			<iTradeProfitPercent>48</iTradeProfitPercent>
+			<iTradeProfitPercent>38</iTradeProfitPercent>
 			<!-- advc.140: was 80 -->
 			<iDistanceMaintenancePercent>77</iDistanceMaintenancePercent>
 			<iNumCitiesMaintenancePercent>22</iNumCitiesMaintenancePercent>
@@ -191,7 +191,7 @@ Integer Tags
 			<iFeatureGrainChange>1</iFeatureGrainChange>
 			<!-- advc.910: was 140 -->
 			<iResearchPercent>137</iResearchPercent>
-			<iTradeProfitPercent>40</iTradeProfitPercent>
+			<iTradeProfitPercent>30</iTradeProfitPercent>
 			<!-- advc.140: was 90 -->
 			<iDistanceMaintenancePercent>84</iDistanceMaintenancePercent>
 			<!-- advc.140: was 25 -->
@@ -227,7 +227,7 @@ Integer Tags
 			<iFeatureGrainChange>2</iFeatureGrainChange>
 			<iResearchPercent>150</iResearchPercent>
 			<!-- advc.140: was 30 -->
-			<iTradeProfitPercent>33</iTradeProfitPercent>
+			<iTradeProfitPercent>23</iTradeProfitPercent>
 			<!-- advc.140: was 100 -->
 			<iDistanceMaintenancePercent>92</iDistanceMaintenancePercent>
 			<!-- advc.140: was 20 -->

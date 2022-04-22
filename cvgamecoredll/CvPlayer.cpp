@@ -15185,8 +15185,10 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	//SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
 	bool isCivilian = false;
 	if ((GC.getGame().isOption(GAMEOPTION_CITY_STATES)
-			&& GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && checkCityState(getID())))
-			isCivilian = true;
+		&& GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && checkCityState(getID())))
+	{
+		isCivilian = true;
+	}
 //doto city states specialists instead of pop
 	FOR_EACH_ENUM2(Yield, y)
 	{
@@ -21967,6 +21969,7 @@ int CvPlayer::getCultureGoldenAgeThreshold() const
 //same for the 
 bool CvPlayer::checkCityState(PlayerTypes ePlayer) const
 {
+	//FOR FUTURE CHANGE: GOTTA USE THE THIS POINTER! 
 	CvPlayer& kPlayer = GET_PLAYER(ePlayer);
 	bool isOurCityState = GC.getCivilizationInfo(kPlayer.getCivilizationType()).getIsCityState() == 1;
 	
@@ -22081,7 +22084,7 @@ void CvPlayer::csMemberUpdateFreeTradeTraits(TraitTypes eTrait, int iChange, Pla
 			continue;
 
 		GET_PLAYER(ePlayer).changeCapitalCommerceRateFTModifier(eLoopCommerce,
-			(((int)kTrait.getCommerceFRmodifier(eLoopCommerce) * 100) * iChange));
+			((int)kTrait.getCommerceFRmodifier(eLoopCommerce) * iChange));
 	}
 	//FOR_EACH_ENUM(Yield)
 	//{

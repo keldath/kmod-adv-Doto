@@ -251,11 +251,6 @@
 <!--peaks mod mountains mod-->
 	<ElementType name="bPeaks" content="textOnly" dt:type="boolean"/>
 <!--peaks mod-->
-<!-- city states route changes -->
-	<ElementType name="iTradeRoutes" content="textOnly" dt:type="int"/>
-	<ElementType name="iTradeRouteModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iForeignTradeRouteModifier" content="textOnly" dt:type="int"/>
-<!-- city states route changes -->
 	<ElementType name="bFlatlands" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bNoRiverSide" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bNormalize" content="textOnly" dt:type="boolean"/>
@@ -309,11 +304,6 @@
 <!--peaks mod  mountains mod-->
 		<element type="bPeaks" minOccurs="0"/>
 <!--peaks mod  mountains mod-->
-<!-- city states route changes -->
-		<element type="iTradeRoutes" minOccurs="0"/>
-		<element type="iTradeRouteModifier" minOccurs="0"/>
-		<element type="iForeignTradeRouteModifier" minOccurs="0"/>
-<!-- city states route changes -->
         <element type="bFlatlands" minOccurs="0"/>
 		<element type="bNoRiverSide" minOccurs="0"/>
 		<element type="bNormalize" minOccurs="0"/>

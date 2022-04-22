@@ -596,10 +596,75 @@ void CvPlot::updateCulture(bool bBumpUnits, bool bUpdatePlotGroups)
 				" should imply eSecondOwner!=NO_PLAYER");
 		}
 	}
+
+//Doto City States -break if the plot is near city state
+	if (isPlotinCsVicinity(eCulturalOwner))
+		return;
+//doto city state end
+
 	setOwner(eCulturalOwner, // </advc.035>
 			bBumpUnits, bUpdatePlotGroups);
 }
 
+//doto city state start
+//culture flip of plots in minimum radious 2 of a city state
+//logic is that we want to leave city states with a culture cross of radius 2 at all times.
+//this should be something like fixed borders for city states
+bool CvPlot::isPlotinCsVicinity(PlayerTypes ePlayer)
+{
+	PlayerTypes originalOwner = getOwner();
+	PlayerTypes eCulturalOwner = ePlayer;
+	if (originalOwner != NO_PLAYER && eCulturalOwner != NO_PLAYER
+		&& originalOwner != eCulturalOwner)
+	{
+		int iRange = 2;
+		CvPlot* pCityState = NULL;
+		for (SquareIter it(*this, iRange); it.hasNext(); ++it)
+		{
+			CvPlot& p = *it;
+			CvCity* pCity = p.getPlotCity();
+			if (pCity != NULL)
+			{
+				if (pCity->getOwner() == originalOwner)
+					break;
+			}
+		}
+		if (pCityState != NULL)
+		{
+			if (eCulturalOwner != originalOwner && GET_PLAYER(originalOwner).checkCityState(originalOwner))
+			{
+				int plotRadious = plotDistance(pCityState, this);
+				if (plotRadious >= 0 && plotRadious < 3)
+					return true;
+			}
+		}
+	}
+	return false;
+}
+//doto city state - keep range at 2 only for city states
+int CvPlot::getPlotRangefromCs(PlayerTypes ePlayer)
+{
+	if (ePlayer != NO_PLAYER)
+	{
+		CvCity* pCapitalCityState = GET_PLAYER(ePlayer).getCapital();
+		if (GET_PLAYER(ePlayer).checkCityState(ePlayer) && pCapitalCityState != NULL)
+		{
+			//if the owner is a city state and the plot is above the 2 cross culture
+			//do not enlarge the area. city ctates are allowed only range 2 cross.
+			//make it optional
+			int plotRadious = plotDistance(pCapitalCityState->plot(), this);
+			//int plotRadious = exclusiveRadius(eOwnerIndex);//barrowed code from advciv changes
+			if (plotRadious > 2)
+				return 2;//plot is outside the city state range
+			if (plotRadious < 3)
+				return 1;//plot is within the city state range
+		}
+		else
+			return 0; //not cs player.
+	}
+	return 0;
+}
+//doto city state
 
 void CvPlot::updateFog()
 {
@@ -3052,7 +3117,6 @@ void CvPlot::setCultureRangeForts(PlayerTypes ePlayer, int iNewValue)
 {
 	if (getCultureRangeForts(ePlayer) != iNewValue)
 	{
-		//sagis trial
 		if (iNewValue == -1)
 		{
 			//m_aiCultureRangeForts[ePlayer] = 0;
@@ -5360,39 +5424,32 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 	{
 		bool isOldCityState = false;
-		CivilizationTypes oldCiv = NO_CIVILIZATION;
+		NiColorA colorNew = GC.getInfo(GC.getColorType("WHITE")).getColor(); //white place holder
+		NiColorA colorClean = GC.getInfo(GC.getColorType("WHITE")).getColor();
 		if (eOldOwner != NO_PLAYER)
 		{
-			oldCiv = GET_PLAYER(eOldOwner).getCivilizationType();
-			isOldCityState = GC.getCivilizationInfo(oldCiv).getIsCityState() == 1;
+			isOldCityState = GET_PLAYER(eOldOwner).checkCityState(eOldOwner);
+		}
+		bool isNewCityState = false;
+		bool isCityState = false;
+		NiColorA color;
+		if (getOwner() != NO_PLAYER)
+		{
+			isCityState = GET_PLAYER(getOwner()).checkCityState(getOwner());
+			colorNew = GC.getInfo(GC.getInfo(GET_PLAYER(getOwner()).getPlayerColor()).getColorTypePrimary()).getColor();
 		}
 
-		if (getOwner() == NO_PLAYER && isOldCityState)
+		//if new owner is not city state an b4 it was - clean it.
+		if ((!isCityState || getOwner() == NO_PLAYER) && isOldCityState)
 		{
-			NiColorA color = GC.getInfo(GC.getColorType("WHITE")).getColor();
-			GC.getGame().updateCityStatesColoredPlots(false, *this, color); 
+			GC.getGame().updateCityStatesColoredPlots(true, *this, colorClean);
 		}
-		else if (getOwner() != NO_PLAYER)
+		else if (isCityState)
 		{
-			CivilizationTypes Civ = GET_PLAYER(getOwner()).getCivilizationType();
-			NiColorA color = GC.getInfo(GC.getInfo(GET_PLAYER(getOwner()).getPlayerColor()).getColorTypePrimary()).getColor();
-			bool isCityState = GC.getCivilizationInfo(Civ).getIsCityState() == 1;
-
-			//if new owner is not city state an b4 it was - clean it.
-			if (!isCityState && isOldCityState)
-			{
-				GC.getGame().updateCityStatesColoredPlots(true, *this, color);
-			}
-			else if (isCityState)
-			{
-				GC.getGame().updateCityStatesColoredPlots(false, *this, color);
-			}
-		}
-		
-		else
-		{
-			NiColorA color = GC.getInfo(GC.getInfo(GET_PLAYER(eOldOwner).getPlayerColor()).getColorTypePrimary()).getColor();
-			GC.getGame().updateCityStatesColoredPlots(true, *this, color);
+			if (isOldCityState)
+				GC.getGame().updateCityStatesColoredPlots(true, *this, colorClean); //if old is city state = clean it...
+			
+			GC.getGame().updateCityStatesColoredPlots(false, *this, colorNew);
 		}
 	}
 //keldath - color city states plots - END
@@ -6776,8 +6833,39 @@ void CvPlot::setCulture(PlayerTypes eIndex, int iNewValue, bool bUpdate,
 
 void CvPlot::changeCulture(PlayerTypes eIndex, int iChange, bool bUpdate)
 {
-	if(iChange != 0)
+	if (iChange != 0)
+	{
+//doto city states - do not let a tile that is out side Cs 2 range cross to top 49 % control.
+		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+		{
+			PlayerTypes eOwner = getOwner();
+			PlayerTypes expander = eIndex;
+			bool ownerIsCS = false;
+			bool expanderCS = GET_PLAYER(eIndex).checkCityState(eIndex);
+			int plotRangeOwner = 0;
+			int plotRangeExpander = getPlotRangefromCs(eIndex);
+			if (eOwner != NO_PLAYER)
+			{
+				ownerIsCS = GET_PLAYER(eOwner).checkCityState(eOwner);
+				plotRangeOwner = getPlotRangefromCs(eOwner);
+			}
+
+			if (ownerIsCS && plotRangeOwner == 1 && eOwner != eIndex)
+				return;
+			if (expanderCS && plotRangeExpander == 2)
+			{
+				if (eOwner != NO_PLAYER)
+				{
+					if (getCulture(expander) + iChange >= getCulture(eOwner))
+						return;// allow control for xs xpander only if there is other player control and do not exceed it.
+				}
+				else
+					return; //if the xpandr is cs and the target tile is not owned at all - do not allow cs to control
+			}
+		}
+//doto city states - do not let a tile that is out side Cs 2 range cross to top 49 % control.
 		setCulture(eIndex, getCulture(eIndex) + iChange, bUpdate, true);
+	}
 }
 // < JCultureControl Mod Start >
 PlayerTypes CvPlot::getImprovementOwner() const
@@ -8250,6 +8338,11 @@ void CvPlot::changeCultureRangeCities(PlayerTypes eOwnerIndex, CultureLevelTypes
 	if(iChange == 0)
 		return;
 
+//doto city state -max range 2 only for city states
+	if (getPlotRangefromCs(eOwnerIndex) == 2)
+		return;
+//doto city state
+
 	bool bOldCultureRangeCity = isCultureRangeCity(eOwnerIndex, eRangeIndex);
 	m_aaiCultureRangeCities.add(eOwnerIndex, eRangeIndex, iChange);
 	FAssert(m_aaiCultureRangeCities.get(eOwnerIndex, eRangeIndex) >= 0); // advc
@@ -9630,7 +9723,7 @@ void CvPlot::applyEvent(EventTypes eEvent)
 	}
 }
 
-//doto city state -allows cities to build units without bonus prereq
+//doto city state START -allows cities to build units without bonus prereq
 //edited the parts of bonus checks
 bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 	bool bCheckAirUnitCap, // advc.001b
@@ -9671,15 +9764,14 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 			return false;
 	}
 
-//doto city state -allows cities to build units without bonus prereq
+//doto city state START -allows cities to build units without bonus prereq
 	bool isCityState = false;
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
 		GC.getDefineINT("CS_BUILD_UNITS_WITH_NO_PREQ_BONUS") == 1)
 	{
-		CivilizationTypes Civ = GET_PLAYER(getOwner()).getCivilizationType();
-		isCityState = GC.getCivilizationInfo(Civ).getIsCityState() == 1;
+		isCityState = GET_PLAYER(getOwner()).checkCityState(getOwner());
 	}
-//doto city state -allows cities to build units without bonus prereq
+
 	if (kUnit.isPrereqBonuses() && !isCityState)
 	{
 		if (kUnit.getDomainType() == DOMAIN_SEA)
@@ -9694,6 +9786,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 				return false;
 		}
 	}
+//doto city state END -allows cities to build units without bonus prereq
 	/*if (isCity()) {
 		// ...
 	}
@@ -9756,6 +9849,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 		}
 	}
 	BonusTypes ePrereqAndBonus = kUnit.getPrereqAndBonus();
+//doto city state -allows cities to build units without bonus prereq
 	if(ePrereqAndBonus != NO_BONUS &&
 		ePrereqAndBonus != eAssumeAvailable) // advc.001u
 	{
@@ -9770,6 +9864,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 
 	bool bRequiresBonus = false;
 	bool bNeedsBonus = true;
+//doto city state -allows cities to build units without bonus prereq
 	if (!isCityState)
 	{
 		for (int i = 0; i < kUnit.getNumPrereqOrBonuses(); i++)
@@ -9794,7 +9889,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 			}
 		}
 	}
-
+//doto city state -allows cities to build units without bonus prereq
 	if (bRequiresBonus && bNeedsBonus && !isCityState)
 		return false;
 //Shqype Vicinity Bonus Start

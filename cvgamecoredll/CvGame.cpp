@@ -609,6 +609,9 @@ void CvGame::reset(HandicapTypes eHandicap, bool bConstructorCall)
 	m_bFeignSP = false; // advc.135c
 	m_bDoMShown = false; // advc.004x
 	m_bFPTestDone = false; // advc.003g
+//doto city states color plots after game is loaded - start
+	m_pColorCityStates = 0;
+//doto city states color plots after game is loaded - end
 	// <advc.003r>
 	for (int i = 0; i < NUM_UPDATE_TIMER_TYPES; i++)
 		m_aiUpdateTimers[i] = -1; // </advc.003r>
@@ -9727,6 +9730,13 @@ void CvGame::onAllGameDataRead()
 		if (itActive->isTurnActive())
 			itActive->validateDiplomacy();
 	} // </advc.134a>
+
+//doto city states color plots after game is loaded - start
+//make sure that game load turns the cache field to false.
+//in the gameinterface the coloring will run only if its true.
+//see explanation in cvgameinterface in updatecolors fn.
+	setColorsCityStates(0);
+//doto city states color plots after game is loaded - end
 }
 
 /*	advc: Called once the EXE signals that graphics have been initialized
@@ -10992,3 +11002,15 @@ std::set<int>& CvGame::getActivePlayerCycledGroups()
 {
 	return m_aiActivePlayerCycledGroups; // Was public; now protected.
 }
+
+//doto city states color plots after game is loaded - start
+//see explanation in cvgameinterface in updatecolors fn.
+void CvGame::setColorsCityStates(int iChange)
+{
+	m_pColorCityStates = m_pColorCityStates + iChange;
+}
+int CvGame::getColorsCityStates()
+{
+	return m_pColorCityStates;
+}
+//doto city states color plots after game is loaded - end

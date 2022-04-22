@@ -36,6 +36,22 @@ void CvGame::updateColoredPlots()
 	CvDLLEngineIFaceBase& kEngine = *gDLL->getEngineIFace();
 	CvDLLInterfaceIFaceBase& kUI = gDLL->UI();
 
+//doto city states color plots after game is loaded - start
+//i found that the updateColoredPlots is called 2 times on game load.
+// the second call, removed the coloring.
+//so i have made a cached field in the game file that counts .
+//it will get 2 updates and here the setUpdateCityStatesColoredPlots wont be called again after
+//the logic for this is so a loop on the entire map tiles will only be done twice on game load.
+//the field of m_pColorCityStates will be set to false on every game load in CvGame::onAllGameDataRead()
+//NOTE that i think the secind call is from python ->def updateColoredPlots(): in cvGameInterface.py.
+//i guess i could add a call for the setUpdateCityStatesColoredPlots fro there. but i already did it in this way so...
+	if (GC.getGame().getColorsCityStates() < 3)
+	{
+		setUpdateCityStatesColoredPlots();
+		GC.getGame().setColorsCityStates(1);
+	}
+//doto city states color plots after game is loaded - end
+
 	kEngine.clearColoredPlots(PLOT_LANDSCAPE_LAYER_BASE);
 	kEngine.clearAreaBorderPlots(AREA_BORDER_LAYER_CITY_RADIUS);
 	kEngine.clearAreaBorderPlots(AREA_BORDER_LAYER_RANGED);
@@ -2892,16 +2908,41 @@ void CvGame::updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, N
 	if (clearPlot)
 	{
 		//turn tiles to no color - for that any color will do - just the alpha needs to be 0
-		/*NiColorA color(GC.getInfo(GC.getColorType("WHITE")).getColor());
+		NiColorA color(GC.getInfo(GC.getColorType("WHITE")).getColor());
 		color.a = 0.0f; 
 
 		kEngine.fillAreaBorderPlot(kPlot.getX(), kPlot.getY(),
-			color, AREA_BORDER_CITY_STATE);*/
-		kEngine.clearAreaBorderPlots(AREA_BORDER_CITY_STATE);
+			color, AREA_BORDER_CITY_STATE);
+		//kEngine.clearAreaBorderPlots(AREA_BORDER_CITY_STATE);
 		return;
 	}
 	//if (kPlot.isRevealed(getActiveTeam()))
 	kEngine.fillAreaBorderPlot(kPlot.getX(), kPlot.getY(),
 		color, AREA_BORDER_CITY_STATE);
+}
+void CvGame::setUpdateCityStatesColoredPlots()
+{
+	//Doto City State s start
+	//this will run for game load and color the plots with the city states border
+	// the code co exists with the one in the city cpp similar functionality
+	//i realise this will increace load time.
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	{
+		CvMap const& kMap = GC.getMap();
+		for (int iI = 0; iI < kMap.numPlots(); iI++)
+		{
+			CvPlot& kPlot = kMap.getPlotByIndex(iI);
+			PlayerTypes ePlayer = kPlot.getOwner();
+			if (ePlayer != NO_PLAYER)
+			{
+				CvPlayer& kPlayer = GET_PLAYER(ePlayer);
+				if (kPlayer.checkCityState(ePlayer))
+				{
+					NiColorA color = GC.getInfo(GC.getInfo(kPlayer.getPlayerColor()).getColorTypePrimary()).getColor();
+					GC.getGame().updateCityStatesColoredPlots(false, kPlot, color);
+				}
+			}
+		}
+	}
 }
 //doto city states

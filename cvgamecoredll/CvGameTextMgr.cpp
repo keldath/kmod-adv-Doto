@@ -17391,10 +17391,12 @@ void CvGameTextMgr::getAttitudeString(CvWStringBuffer& szBuffer, PlayerTypes ePl
 edit - doto - i think i need this acctually...														*/
 /*************************************************************************************************/
 		// Start bonus to Diplomacy from Free Trade Agreement
+		int b = kPlayer.AI_getFreeTradeAgreementAttitude(eTargetPlayer);
 		appendToAttitudeBreakdown(szBreakdown, iPass,
 			kPlayer.AI_getFreeTradeAgreementAttitude(eTargetPlayer), iTotal,
 			"TXT_KEY_MISC_ATTITUDE_FREE_TRADE_AGREEMENT");
 		//added from history re mod for doto
+		int t = kPlayer.AI_getRivalTradeAgreementAttitude(eTargetPlayer);
 		appendToAttitudeBreakdown(szBreakdown, iPass,
 			kPlayer.AI_getRivalTradeAgreementAttitude(eTargetPlayer), iTotal,
 			"TXT_KEY_MISC_ATTITUDE_RIVAL_TRADE_AGREEMENT");

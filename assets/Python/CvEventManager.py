@@ -306,6 +306,10 @@ class CvEventManager:
 					popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_DETAILS)
 					popupInfo.setOption1(true)
 					popupInfo.addPopup(iPlayer)
+# Doto Super Forts
+		CyMap().calculateCanalAndChokePoints()
+# Doto Super Forts
+		CvAdvisorUtils.resetNoLiberateCities()
 ###doto starting popup - begin
 		if (gc.getGame().getGameTurnYear() == gc.getDefineINT("START_YEAR") and not gc.getGame().isOption(GameOptionTypes.GAMEOPTION_ADVANCED_START)):
 			for iPlayer in range(gc.getMAX_PLAYERS()):
@@ -317,10 +321,6 @@ class CvEventManager:
 					popupInfo.setText(szBody)
 					popupInfo.addPopup(iPlayer)                                        
 ###starting popup - end 
-# Doto Super Forts
-		CyMap().calculateCanalAndChokePoints()
-# Doto Super Forts
-		CvAdvisorUtils.resetNoLiberateCities()
 																	
 	def onGameEnd(self, argsList):
 		'Called at the End of the game'

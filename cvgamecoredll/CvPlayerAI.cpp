@@ -7704,8 +7704,13 @@ void CvPlayerAI::AI_updateAttitude(PlayerTypes ePlayer, /* advc.130e: */ bool bU
 /*************************************************************************************************/
 /*  Advanced Diplomacy       START     + history re addition                           			 */
 /*************************************************************************************************/
+	//if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	//{
+	int b = kPlayer.AI_getFreeTradeAgreementAttitude(ePlayer);
 	iAttitude += AI_getFreeTradeAgreementAttitude(ePlayer);
+	int t = kPlayer.AI_getRivalTradeAgreementAttitude(ePlayer);
 	iAttitude += AI_getRivalTradeAgreementAttitude(ePlayer);
+	//}
 /************************************************************************************************/
 /* Advanced Diplomacy         END                                                               */
 /************************************************************************************************/
@@ -8133,7 +8138,6 @@ int CvPlayerAI::AI_getFreeTradeAgreementAttitude(PlayerTypes ePlayer) const
 	{
 		if (GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeDivisor() != 0)
 		{
-			
 			int iAttitudeChange = (GET_TEAM(getTeam()).AI_getFreeTradeAgreementCounter(TEAMID(ePlayer)) /
 				GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeDivisor());
 			return range(iAttitudeChange,
@@ -8608,7 +8612,7 @@ add here an additional penalty to all met civs, i want the trade with a civ to t
 					iActualOB++;
 /************************************************************************************************/
 /* START: Advanced Diplomacy   new to doto advc added to match open borders   
-edit - i dont think i should bind freetrade to this*/
+edit - no need to add attitude effect when there is a true rical attitude from hr */
 /************************************************************************************************/
 			/*	if (it->isFreeTradeAgreement(eEnemy))
 					iActualOB++;*/
@@ -8632,7 +8636,7 @@ edit - i dont think i should bind freetrade to this*/
 			}
 /************************************************************************************************/
 /* START: Advanced Diplomacy   new to doto advc added to match open borders  
-i dont want to bind this to free trade*/
+no need to involve free trade in rival trade attitude - there is a proper attitude from HR instead*/
 /************************************************************************************************/
 	/*		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 			{
@@ -13354,8 +13358,11 @@ int CvPlayerAI::AI_stopTradingTradeVal(TeamTypes eTradeTeam, PlayerTypes ePlayer
 	//doto - add some more logic?
 	if (GET_TEAM(ePlayer).isFreeTradeAgreement(eTradeTeam))
 	{
-		iValue *= 3;
-		iValue *= 2;
+		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+		{
+			iValue *= 3;
+			iValue *= 2;
+		}
 	}
 /************************************************************************************************/
 /* Advanced Diplomacy         END                                                               */

@@ -3729,11 +3729,13 @@ class CvMainInterface:
 			szName = "BonusBack" + str(i)
 			screen.hide( szName )
 
-# doto specialists instead of population - for city states - hide when out of the city
+# doto specialists instead of population - for city states - hide when out of the city 1/2
+# ciunt how many specialists civiliansa are there and set the text for each count
 		global g_iFreeCivilians
 		i = 0
 		counter = 0
-		if g_iFreeCivilians > 0:
+		cityStateOption = gc.getGame().isOption(GameOptionTypes.GAMEOPTION_CITY_STATES)
+		if g_iFreeCivilians > 0 and cityStateOption:
 			for i in range(len(civiliansIdx)):
 				ecounter = 0
 				while ecounter < g_iFreeCivilians:
@@ -3741,7 +3743,7 @@ class CvMainInterface:
 					screen.hide( szName )
 					ecounter += 1
 				counter += 1
-# doto specialists instead of population - for city states	
+# doto specialists instead of population - for city states	1/2
 
 		i = 0
 		if ( CyInterface().isCityScreenUp() ):
@@ -3779,48 +3781,47 @@ class CvMainInterface:
 				if (pHeadSelectedCity.isPower()):
 					szBuffer += u"%c" %(CyGame().getSymbolID(FontSymbols.POWER_CHAR))
 
-# doto specialists instead of population - for city states					
-				cnt1 = pHeadSelectedCity.getFreeSpecialistCount(gc.getInfoTypeForString(civiliansIdx[0]))
-				cnt2 = pHeadSelectedCity.getFreeSpecialistCount(gc.getInfoTypeForString(civiliansIdx[1]))
-				cnt3 = pHeadSelectedCity.getFreeSpecialistCount(gc.getInfoTypeForString(civiliansIdx[2]))
-				iCivilianCnt = cnt1 + cnt2 + cnt3
+# doto specialists instead of population - for city states 2/2					
+# display the civilian count in the city name _ add the civilian icons on the mid top city window.		
 				
-				szBuffer += u"%s: %d -> Pop: %d" %(pHeadSelectedCity.getName(), (pHeadSelectedCity.getPopulation() + iCivilianCnt), pHeadSelectedCity.getPopulation())
+				isCityState = gc.getCivilizationInfo(gc.getPlayer(pHeadSelectedCity.getOwner()).getCivilizationType()).getIsCityState() == 1
+				if isCityState and cityStateOption:
+					cnt1 = pHeadSelectedCity.getFreeSpecialistCount(gc.getInfoTypeForString(civiliansIdx[0]))
+					cnt2 = pHeadSelectedCity.getFreeSpecialistCount(gc.getInfoTypeForString(civiliansIdx[1]))
+					cnt3 = pHeadSelectedCity.getFreeSpecialistCount(gc.getInfoTypeForString(civiliansIdx[2]))
+					iCivilianCnt = cnt1 + cnt2 + cnt3
 
-				# iCivilian1 = gc.getInfoTypeForString(civiliansIdx[0])
-				# iCivilian2 = gc.getInfoTypeForString(civiliansIdx[1])
-				# iCivilian3 = gc.getInfoTypeForString(civiliansIdx[2])
-				# iCivilian1Cnt = pHeadSelectedCity.getFreeSpecialistCount(iCivilian1)
-				# iCivilian2Cnt = pHeadSelectedCity.getFreeSpecialistCount(iCivilian2)
-				# iCivilian3Cnt = pHeadSelectedCity.getFreeSpecialistCount(iCivilian3)
+					szBuffer += u"%s: %d -> Pop: %d" %(pHeadSelectedCity.getName(), (pHeadSelectedCity.getPopulation() + iCivilianCnt), pHeadSelectedCity.getPopulation())
 
-				# szBuffer += u" + Civilians: %s:%d + %s:%d + %s:%d" %(civilians[0][0].upper(), iCivilian1Cnt, civilians[1][0].upper() , iCivilian2Cnt,  civilians[2][0].upper(), iCivilian3Cnt)
-				counter = 0
-				cAmount = 0
-				prevTypeMax = 0
-				typeSpace = 0
-				for ic in range(len(civiliansIdx)):
-					eSpecialist = gc.getInfoTypeForString(civiliansIdx[ic])
-					cAmount = pHeadSelectedCity.getFreeSpecialistCount(eSpecialist)
-					ecounter = 0
-					prevTypeMax = (cAmount * 25) * counter
-					if (cAmount > 0):
-						while ecounter < cAmount:
-							szName = "FreeCivilians" + str(counter) + str(ecounter)
-							if ecounter == 0 and counter > 0:
-								typeSpace = prevTypeMax
-							screen.setImageButton( szName, gc.getSpecialistInfo(eSpecialist).getTexture(), screen.centerX(512) - 50 + typeSpace + (ecounter * 25), 150, 45, 55, WidgetTypes.WIDGET_FREE_CITIZEN, eSpecialist, 1 )	
-							ecounter += 1
-					counter += 1
+					counter = 0
+					cAmount = 0
+					prevTypeMax = 0
+					typeSpace = 0
+					for ic in range(len(civiliansIdx)):
+						eSpecialist = gc.getInfoTypeForString(civiliansIdx[ic])
+						cAmount = pHeadSelectedCity.getFreeSpecialistCount(eSpecialist)
+						ecounter = 0
+						prevTypeMax = (cAmount * 25) * counter
+						if (cAmount > 0):
+							while ecounter < cAmount:
+								szName = "FreeCivilians" + str(counter) + str(ecounter)
+								if ecounter == 0 and counter > 0:
+									typeSpace = prevTypeMax
+								screen.setImageButton( szName, gc.getSpecialistInfo(eSpecialist).getTexture(), screen.centerX(512) - 50 + typeSpace + (ecounter * 25), 150, 45, 55, WidgetTypes.WIDGET_FREE_CITIZEN, eSpecialist, 1 )	
+								ecounter += 1
+						counter += 1
 
-				g_iFreeCivilians = iCivilianCnt
+					g_iFreeCivilians = iCivilianCnt
 
-				szBuffer += u" + Civilians: %d" %(iCivilianCnt)
+					szBuffer += u" + Civilians: %d" %(iCivilianCnt)
 				#screen.setImageButton( szName1, gc.getSpecialistInfo(iCivilian1).getTexture(), (screen.centerX(512)) - 40, 150, 35, 35, WidgetTypes.WIDGET_FREE_CITIZEN, iCivilian1, -1 )
 				#screen.setImageButton( szName2, gc.getSpecialistInfo(iCivilian2).getTexture(), (screen.centerX(512)) , 150, 35, 35, WidgetTypes.WIDGET_FREE_CITIZEN, iCivilian2, -1 )
 				#screen.setImageButton( szName3, gc.getSpecialistInfo(iCivilian3).getTexture(), (screen.centerX(512)) + 40 , 150, 35, 35, WidgetTypes.WIDGET_FREE_CITIZEN, iCivilian3, -1 )
-		
-# doto specialists instead of population - for city states
+				
+				else:
+					szBuffer += u"%s: %d" %(pHeadSelectedCity.getName(), pHeadSelectedCity.getPopulation())
+				
+# doto specialists instead of population - for city states 2/2
 
 				if (pHeadSelectedCity.isOccupation()):
 					szBuffer += u" (%c:%d)" %(CyGame().getSymbolID(FontSymbols.OCCUPATION_CHAR), pHeadSelectedCity.getOccupationTimer())

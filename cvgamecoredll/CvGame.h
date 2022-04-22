@@ -71,12 +71,13 @@ public:
 	void updateAIHandicap(); // advc.127
 
 	DllExport void updateColoredPlots();
-//doto city states - color city states plots - city states
+//doto city states - color city states plots - city states start
 	void updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, NiColorA &color) const;
-//doto city states
+	void setUpdateCityStatesColoredPlots();
+//doto city states start
 	void spawnCityState();
 	void initFreeTechsEra(PlayerTypes ePlayer);
-//doto city states
+//doto city states end
 	DllExport void updateBlockadedPlots();
 	bool updateNukeAreaOfEffect(CvPlot const* pPlot = NULL) const; // advc.653
 
@@ -301,7 +302,10 @@ public:
 	int getMinutesPlayed() const;																		// Exposed to Python
 	void setTurnSlice(int iNewValue);
 	void changeTurnSlice(int iChange);
-
+//doto city states test
+	void setColorsCityStates(int iChange);
+	int getColorsCityStates();
+	
 	int getCutoffSlice() const;
 	void setCutoffSlice(int iNewValue);
 	void changeCutoffSlice(int iChange);
@@ -1067,6 +1071,8 @@ protected:
 	bool m_bDoMShown; // advc.004x
 	bool m_bLayerFromSavegame; // advc.004m
 	bool m_bFPTestDone; // advc.003g
+//doto city state test
+	int m_pColorCityStates; 
 
 	HandicapTypes m_eHandicap;
 	HandicapTypes m_eAIHandicap; // advc.127

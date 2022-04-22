@@ -346,22 +346,25 @@ void CvTeam::addTeam(TeamTypes eTeam)
 /************************************************************************************************/
 /* START: HR advanced Diplomacy                                                                    		*/
 /************************************************************************************************/
-	for (size_t i = 0; i < apOther.size(); i++)
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 	{
-		TeamTypes const eOther = apOther[i]->getID();
-		if (GET_TEAM(eTeam).isFreeTradeAgreement(eOther))
+		for (size_t i = 0; i < apOther.size(); i++)
 		{
-			setFreeTradeAgreement(eOther, true);
-			apOther[i]->setFreeTradeAgreement(getID(), true);
-		}
-		else if (isFreeTradeAgreement(eOther))
-		{
-			GET_TEAM(eTeam).setFreeTradeAgreement(eOther, true);
-			apOther[i]->setFreeTradeAgreement(eTeam, true);
+			TeamTypes const eOther = apOther[i]->getID();
+			if (GET_TEAM(eTeam).isFreeTradeAgreement(eOther))
+			{
+				setFreeTradeAgreement(eOther, true);
+				apOther[i]->setFreeTradeAgreement(getID(), true);
+			}
+			else if (isFreeTradeAgreement(eOther))
+			{
+				GET_TEAM(eTeam).setFreeTradeAgreement(eOther, true);
+				apOther[i]->setFreeTradeAgreement(eTeam, true);
+			}
 		}
 	}
 /************************************************************************************************/
-/* START: HR advanced Diplomacy                                                                    		*/
+/* END: HR advanced Diplomacy                                                     		*/
 /************************************************************************************************/
 
 	for (size_t i = 0; i < apOther.size(); i++)
@@ -819,8 +822,11 @@ void CvTeam::shareCounters(TeamTypes eTeam)
 /*************************************************************************************************/
 /* START: Advanced Diplomacy    moved from below - doto - seems more appropriate here   		 */
 /*************************************************************************************************/
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	{
 		if (kShareTeam.AI_getFreeTradeAgreementCounter(eLoopTeam) > AI().AI_getFreeTradeAgreementCounter(eLoopTeam))
 			AI().AI_setFreeTradeAgreementCounter(eLoopTeam, kShareTeam.AI_getFreeTradeAgreementCounter(eLoopTeam));
+	}
 /*************************************************************************************************/
 /* END: Advanced Diplomacy                                                             			 */
 /*************************************************************************************************/
