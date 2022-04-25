@@ -361,7 +361,7 @@ void CvCivilizationInfo::write(FDataStreamBase* stream)
 	// davidlallen: religion forbidden to civilization next line
 	stream->Write(GC.getNumReligionInfos(), m_pbForbiddenReligions);
 	stream->WriteString(m_iNumCityNames, m_paszCityNames);
-//city states  unused anymore - this was before i knew how to get leaders
+//doto city states  unused anymore - this was before i knew how to get leaders
 	stream->WriteString(m_iNumLeadersNames, m_paszLeadersNames);
 }
 #endif

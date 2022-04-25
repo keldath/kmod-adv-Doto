@@ -143,9 +143,9 @@ public:
 		/*if (abs(iDX) > DIRECTION_RADIUS || abs(iDY) > DIRECTION_RADIUS)
 			return NO_DIRECTION;*/ /* advc.opt: Apparently can't happen
 		(so long as directionXY is used only on adjacent plots), so: */
-///Doto - unit blocade removed the below assert
+//Doto - unit blocade removed the below assert
 //		FAssert(!(abs(iDX) > DIRECTION_RADIUS || abs(iDY) > DIRECTION_RADIUS));
-///Doto - unit blocade - i reintroduced this - seems its needed for unit blocade - otherwiase - err
+//Doto - unit blocade - i reintroduced this - seems its needed for unit blocade - otherwiase - err
 //MOD@VET_Andera412_Blocade_Unit
 		if (abs(iDX) > DIRECTION_RADIUS || abs(iDY) > DIRECTION_RADIUS)
 			return NO_DIRECTION;

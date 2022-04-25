@@ -6260,7 +6260,7 @@ void CvGame::doTurn()
 		}
 	} // (Otherwise, autosave in CvPlayer::setTurnActive.)
 	// </advc.044>
-	//doto city states	
+	//doto city states	- spawn the cities
 	if (getGameTurn() == 1 && !GC.getGame().isOption(GAMEOPTION_ADVANCED_START))
 	{
 		spawnCityState();

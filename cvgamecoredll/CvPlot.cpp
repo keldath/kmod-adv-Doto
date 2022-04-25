@@ -577,6 +577,7 @@ void CvPlot::updateCulture(bool bBumpUnits, bool bUpdatePlotGroups)
 		caused pillage and surronding plots to not get culture
 		|| (getOwner() != NO_PLAYER)*/)
 		return;
+
 // Super Forts end
 	// <advc.035>
 	PlayerTypes eCulturalOwner = calculateCulturalOwner();
@@ -597,73 +598,122 @@ void CvPlot::updateCulture(bool bBumpUnits, bool bUpdatePlotGroups)
 		}
 	}
 
-//Doto City States -break if the plot is near city state
-	if (isPlotinCsVicinity(eCulturalOwner))
-		return;
-//doto city state end
-
+	//Doto City States -break if the plot is near city state
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	{
+		if (!canChangeCultureOnTile(eCulturalOwner))
+			return;
+	}
+	//doto city state end
 	setOwner(eCulturalOwner, // </advc.035>
 			bBumpUnits, bUpdatePlotGroups);
 }
 
 //doto city state start
-//culture flip of plots in minimum radious 2 of a city state
-//logic is that we want to leave city states with a culture cross of radius 2 at all times.
+//culture flip of plots in minimum radious x of a city state
+//logic is that we want to leave city states with a culture cross of radius x at all times.
 //this should be something like fixed borders for city states
-bool CvPlot::isPlotinCsVicinity(PlayerTypes ePlayer)
+int CvPlot::isPlotinCsVicinity(PlayerTypes eExpandingPlayer, int iMinRange, int iMaxRange)
 {
-	PlayerTypes originalOwner = getOwner();
-	PlayerTypes eCulturalOwner = ePlayer;
-	if (originalOwner != NO_PLAYER && eCulturalOwner != NO_PLAYER
-		&& originalOwner != eCulturalOwner)
+	if (eExpandingPlayer != NO_PLAYER)
 	{
-		int iRange = 2;
+		//this will try to check if there is a city nearby the plot
+		//dynamic parameter, means how far will it look for a city state away from the plot
 		CvPlot* pCityState = NULL;
-		for (SquareIter it(*this, iRange); it.hasNext(); ++it)
+		for (SquareIter it(*this, iMinRange); it.hasNext(); ++it)
 		{
 			CvPlot& p = *it;
 			CvCity* pCity = p.getPlotCity();
 			if (pCity != NULL)
 			{
-				if (pCity->getOwner() == originalOwner)
+				PlayerTypes cityOwner = pCity->getOwner();
+				if (cityOwner != eExpandingPlayer
+					&& GET_PLAYER(cityOwner).checkCityState(cityOwner))
+				{
+					pCityState = pCity->plot();
 					break;
+				}
 			}
 		}
 		if (pCityState != NULL)
 		{
-			if (eCulturalOwner != originalOwner && GET_PLAYER(originalOwner).checkCityState(originalOwner))
-			{
-				int plotRadious = plotDistance(pCityState, this);
-				if (plotRadious >= 0 && plotRadious < 3)
-					return true;
-			}
+			int plotRadious = plotDistance(pCityState, this);
+			//the reason for using CS_EXPAND_BORDER_RANGE and not CS_CULTURE_LEVEL_EXPAND is to
+			//allow to be able to have a minimum radious that will not be claimable by the player .
+			//so the city state wont loose its mnin city range as defined
+			if (plotRadious <= iMinRange /*< 3*/)
+				return 1;
+			if (plotRadious <= iMaxRange /*< 3*/)
+				return 2;
 		}
 	}
-	return false;
+	return 0;
 }
-//doto city state - keep range at 2 only for city states
-int CvPlot::getPlotRangefromCs(PlayerTypes ePlayer)
+int CvPlot::isInCSsafeRadious(PlayerTypes ePlayer, int iMinRange, int iMaxRange, CvPlot* toPlot)
 {
 	if (ePlayer != NO_PLAYER)
 	{
 		CvCity* pCapitalCityState = GET_PLAYER(ePlayer).getCapital();
-		if (GET_PLAYER(ePlayer).checkCityState(ePlayer) && pCapitalCityState != NULL)
+		if (pCapitalCityState != NULL)
 		{
-			//if the owner is a city state and the plot is above the 2 cross culture
-			//do not enlarge the area. city ctates are allowed only range 2 cross.
-			//make it optional
-			int plotRadious = plotDistance(pCapitalCityState->plot(), this);
-			//int plotRadious = exclusiveRadius(eOwnerIndex);//barrowed code from advciv changes
-			if (plotRadious > 2)
-				return 2;//plot is outside the city state range
-			if (plotRadious < 3)
-				return 1;//plot is within the city state range
+			int plotRadious = plotDistance(pCapitalCityState->plot(), toPlot);
+			if (plotRadious <= iMinRange)
+				return 1;
+			if (plotRadious <= iMaxRange)
+				return 2;
+			if (plotRadious > iMaxRange)
+				return 3;
 		}
-		else
-			return 0; //not cs player.
 	}
 	return 0;
 }
+bool CvPlot::canChangeCultureOnTile(PlayerTypes eExpandingPlayer)
+{
+	static int const iMinRange = GC.getDefineINT("CS_CULTURE_LEVEL_MIN_RADIOUS");
+	static int const iMaxRange = GC.getDefineINT("CS_CULTURE_LEVEL_MAX_RADIOUS");
+	bool isExpanderCS = false;
+	if (eExpandingPlayer != NO_PLAYER)
+	{
+		isExpanderCS = GET_PLAYER(eExpandingPlayer).checkCityState(eExpandingPlayer);
+		PlayerTypes tileOwner = getOwner();
+		bool isOwnerCS = false;
+
+		if (tileOwner != NO_PLAYER && tileOwner != eExpandingPlayer)
+		{
+			isOwnerCS = GET_PLAYER(tileOwner).checkCityState(tileOwner);
+			int ownerCSresult = isInCSsafeRadious(tileOwner, iMinRange, iMaxRange, this);
+
+			if (isOwnerCS && isExpanderCS)
+				return false;
+
+			if (isOwnerCS)
+			{
+				if (ownerCSresult == 1)
+					return false;
+				if (ownerCSresult > 2/*== 2*/)
+					return true;
+			}
+		}
+		if (tileOwner == NO_PLAYER || isExpanderCS)
+		{
+			if (isExpanderCS)
+			{
+				int ExpanderCSresult = isInCSsafeRadious(eExpandingPlayer, iMinRange, iMaxRange, this);
+				if (ExpanderCSresult < 3)
+					return true; 
+				if (ExpanderCSresult >= 3)
+					return false;
+			}
+			int plotResult = isPlotinCsVicinity(eExpandingPlayer, iMinRange, iMaxRange);
+			if (plotResult == 1)
+				return false;
+			if (plotResult >= 2)
+				return true;
+		}
+	}
+	return true;
+}
+
 //doto city state
 
 void CvPlot::updateFog()
@@ -5421,37 +5471,7 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 	updateSymbols();
 
 //doto keldath - city states color plots - START
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		bool isOldCityState = false;
-		NiColorA colorNew = GC.getInfo(GC.getColorType("WHITE")).getColor(); //white place holder
-		NiColorA colorClean = GC.getInfo(GC.getColorType("WHITE")).getColor();
-		if (eOldOwner != NO_PLAYER)
-		{
-			isOldCityState = GET_PLAYER(eOldOwner).checkCityState(eOldOwner);
-		}
-		bool isNewCityState = false;
-		bool isCityState = false;
-		NiColorA color;
-		if (getOwner() != NO_PLAYER)
-		{
-			isCityState = GET_PLAYER(getOwner()).checkCityState(getOwner());
-			colorNew = GC.getInfo(GC.getInfo(GET_PLAYER(getOwner()).getPlayerColor()).getColorTypePrimary()).getColor();
-		}
-
-		//if new owner is not city state an b4 it was - clean it.
-		if ((!isCityState || getOwner() == NO_PLAYER) && isOldCityState)
-		{
-			GC.getGame().updateCityStatesColoredPlots(true, *this, colorClean);
-		}
-		else if (isCityState)
-		{
-			if (isOldCityState)
-				GC.getGame().updateCityStatesColoredPlots(true, *this, colorClean); //if old is city state = clean it...
-			
-			GC.getGame().updateCityStatesColoredPlots(false, *this, colorNew);
-		}
-	}
+	colorCsPlot(eNewValue, eOldOwner);
 //keldath - color city states plots - END
 }
 
@@ -6816,6 +6836,15 @@ void CvPlot::setCulture(PlayerTypes eIndex, int iNewValue, bool bUpdate,
 
 	if(getCulture(eIndex) == iNewValue)
 		return;
+
+// doto city states - do not let a tile that is out side Cs 2 range cross to top 49 % control.
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	{
+		if (!canChangeCultureOnTile(eIndex))
+			return;
+	}
+//doto city states - do not let a tile that is out side Cs 2 range cross to top 49 % control.
+
 	 // <advc.opt>
 	if(GET_PLAYER(eIndex).isEverAlive())
 		m_iTotalCulture += iNewValue - m_aiCulture.get(eIndex); // </advc.opt>
@@ -6838,30 +6867,8 @@ void CvPlot::changeCulture(PlayerTypes eIndex, int iChange, bool bUpdate)
 //doto city states - do not let a tile that is out side Cs 2 range cross to top 49 % control.
 		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 		{
-			PlayerTypes eOwner = getOwner();
-			PlayerTypes expander = eIndex;
-			bool ownerIsCS = false;
-			bool expanderCS = GET_PLAYER(eIndex).checkCityState(eIndex);
-			int plotRangeOwner = 0;
-			int plotRangeExpander = getPlotRangefromCs(eIndex);
-			if (eOwner != NO_PLAYER)
-			{
-				ownerIsCS = GET_PLAYER(eOwner).checkCityState(eOwner);
-				plotRangeOwner = getPlotRangefromCs(eOwner);
-			}
-
-			if (ownerIsCS && plotRangeOwner == 1 && eOwner != eIndex)
+			if (!canChangeCultureOnTile(eIndex))
 				return;
-			if (expanderCS && plotRangeExpander == 2)
-			{
-				if (eOwner != NO_PLAYER)
-				{
-					if (getCulture(expander) + iChange >= getCulture(eOwner))
-						return;// allow control for xs xpander only if there is other player control and do not exceed it.
-				}
-				else
-					return; //if the xpandr is cs and the target tile is not owned at all - do not allow cs to control
-			}
 		}
 //doto city states - do not let a tile that is out side Cs 2 range cross to top 49 % control.
 		setCulture(eIndex, getCulture(eIndex) + iChange, bUpdate, true);
@@ -8338,9 +8345,10 @@ void CvPlot::changeCultureRangeCities(PlayerTypes eOwnerIndex, CultureLevelTypes
 	if(iChange == 0)
 		return;
 
-//doto city state -max range 2 only for city states
-	if (getPlotRangefromCs(eOwnerIndex) == 2)
-		return;
+//doto city state - max range (via parameter in thefuntion)  only for city states
+//different implementation
+//	if (!isInCSsafeRadious(eOwnerIndex))
+//		return;
 //doto city state
 
 	bool bOldCultureRangeCity = isCultureRangeCity(eOwnerIndex, eRangeIndex);
@@ -10638,3 +10646,39 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 	return false;
 }
 //MOD@VET_Andera412_Blocade_Unit-end1/1
+//doto keldath - city states color plots - START
+void CvPlot::colorCsPlot(PlayerTypes eNewOwner, PlayerTypes eOldOwner)
+{
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	{
+		bool isOldCityState = false;
+		NiColorA colorNew = GC.getInfo(GC.getColorType("WHITE")).getColor(); //white place holder
+		NiColorA colorClean = GC.getInfo(GC.getColorType("WHITE")).getColor();
+		if (eOldOwner != NO_PLAYER)
+		{
+			isOldCityState = GET_PLAYER(eOldOwner).checkCityState(eOldOwner);
+		}
+		bool isNewCityState = false;
+		bool isCityState = false;
+		NiColorA color;
+		if (eNewOwner != NO_PLAYER)
+		{
+			isCityState = GET_PLAYER(eNewOwner).checkCityState(eNewOwner);
+			colorNew = GC.getInfo(GC.getInfo(GET_PLAYER(eNewOwner).getPlayerColor()).getColorTypePrimary()).getColor();
+		}
+
+		//if new owner is not city state an b4 it was - clean it.
+		if ((!isCityState || eNewOwner == NO_PLAYER) && isOldCityState)
+		{
+			GC.getGame().updateCityStatesColoredPlots(true, *this, colorClean);
+		}
+		else if (isCityState)
+		{
+			if (isOldCityState)
+				GC.getGame().updateCityStatesColoredPlots(true, *this, colorClean); //if old is city state = clean it...
+
+			GC.getGame().updateCityStatesColoredPlots(false, *this, colorNew);
+		}
+	}
+}
+//keldath - color city states plots - END

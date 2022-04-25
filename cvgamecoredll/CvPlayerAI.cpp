@@ -7704,13 +7704,11 @@ void CvPlayerAI::AI_updateAttitude(PlayerTypes ePlayer, /* advc.130e: */ bool bU
 /*************************************************************************************************/
 /*  Advanced Diplomacy       START     + history re addition                           			 */
 /*************************************************************************************************/
-	//if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	//{
-	int b = kPlayer.AI_getFreeTradeAgreementAttitude(ePlayer);
-	iAttitude += AI_getFreeTradeAgreementAttitude(ePlayer);
-	int t = kPlayer.AI_getRivalTradeAgreementAttitude(ePlayer);
-	iAttitude += AI_getRivalTradeAgreementAttitude(ePlayer);
-	//}
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+	{
+		iAttitude += AI_getFreeTradeAgreementAttitude(ePlayer);
+		iAttitude += AI_getRivalTradeAgreementAttitude(ePlayer);
+	}
 /************************************************************************************************/
 /* Advanced Diplomacy         END                                                               */
 /************************************************************************************************/

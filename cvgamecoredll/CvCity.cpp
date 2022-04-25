@@ -29,12 +29,12 @@ CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 	m_iGameTurnFounded = 0;
 	m_iGameTurnAcquired = 0;
 	m_iPopulation = 0;
-	/* Population Limit ModComp - Beginning */
+/*doto Population Limit ModComp - Beginning */
 	m_iPopulationLimitChange = 0;
-	/* Population Limit ModComp - End */
+/*doto Population Limit ModComp - End */
 //doto city states - specialists instead of population - start
 	m_iFreeCivilianCount = 0;
-//doto city states - specialists instead of population - end
+//doto city states - specialists instead of population - end 
 	m_iHighestPopulation = 0;
 	m_iWorkingPopulation = 0;
 	m_iSpecialistPopulation = 0;
@@ -49,13 +49,13 @@ CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 	m_iGovernmentCenterCount = 0;
 	m_iMaintenance = 0;
 	m_iMaintenanceModifier = 0;
-	//DPII < Maintenance Modifiers >
+//doto DPII < Maintenance Modifiers >
 	m_iLocalDistanceMaintenanceModifier = 0;
 	m_iLocalCoastalDistanceMaintenanceModifier  = 0;
 	m_iLocalConnectedCityMaintenanceModifier  = 0;
 	m_iLocalHomeAreaMaintenanceModifier  = 0;
 	m_iLocalOtherAreaMaintenanceModifier  = 0;
-	//DPII < Maintenance Modifiers >
+//doto DPII < Maintenance Modifiers >
 	m_iWarWearinessModifier = 0;
 	m_iHurryAngerModifier = 0;
 	m_iHealRate = 0;
@@ -74,21 +74,15 @@ CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 /*****************************************************************************************************/
 	m_iTerrainGoodHealth = 0;
 	m_iTerrainBadHealth = 0;
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
+/*  Terrain Health Modifiers */
 /*************************************************************************************************/
 /** Specialists Enhancements, by Supercheese 10/9/09                                                   */
-/**                                                                                              */
-/**                                                                                              */
-/*************************************************************************************************/	
+/*************************************************************************************************/
 	m_iSpecialistGoodHealth = 0;
 	m_iSpecialistBadHealth = 0;
 	m_iSpecialistHappiness = 0;
 	m_iSpecialistUnhappiness = 0;
-/*************************************************************************************************/
-/** Specialists Enhancements                          END                                              */
-/*************************************************************************************************/
+/** Specialists Enhancements   END   */
 	m_iBuildingGoodHealth = 0;
 	m_iBuildingBadHealth = 0;
 	m_iPowerGoodHealth = 0;
@@ -710,7 +704,7 @@ int CvCity::calculateBaseYieldRate(YieldTypes eYield)
 // advc: Code cut and pasted from CvPlot::doCulture; also refactored.
 void CvCity::doRevolt()
 {
-//doto city states - cant be vassal start
+//doto city states - cant be vassal start 2/2
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && GET_PLAYER(getOwner()).checkCityState(getOwner()))
 		return ;
 //doto city states - cant be vassal end
@@ -1474,7 +1468,7 @@ bool CvCity::isWorldWondersMaxed() const
 //doto city states - do not allow city states to build world wonders - start
 	if (GET_PLAYER(getOwner()).checkCityState(getOwner()))
 		return true;
-//doto city states - do not allow city states to build world wonders - start
+//doto city states - do not allow city states to build world wonders - end
 	if (GET_PLAYER(getOwner()).isOneCityChallenge())
 		return false;
 	if (GC.getDefineINT(CvGlobals::MAX_WORLD_WONDERS_PER_CITY) == -1)
@@ -1484,7 +1478,7 @@ bool CvCity::isWorldWondersMaxed() const
 	return false;
 }
 
-//Wonder Limit - Doto
+//Doto Wonder Limit - start
 bool CvCity::isCultureWorldWondersMaxed() const
 {
 	if (!GC.getGame().isOption(GAMEOPTION_CULTURE_WONDER_LIMIT))
@@ -1547,8 +1541,7 @@ bool CvCity::isCultureWorldWondersMaxed() const
 */
 	return false;
 }
-//Wonder Limit - Doto
-
+//doto Wonder Limit - end
 
 bool CvCity::isTeamWondersMaxed() const
 {
@@ -1777,11 +1770,11 @@ bool CvCity::canConstruct(BuildingTypes eBuilding, bool bContinue,
 			{
 				if(isWorldWondersMaxed())
 					return false;
-//doto wonder limit
+//doto wonder limit start
 				if (isCultureWorldWondersMaxed())
 					return false;
 			}
-//doto wonder limit
+//doto wonder limit end
 			else if (kBuildingClass.isTeamWonder())
 			{
 				if(isTeamWondersMaxed())
@@ -3306,7 +3299,7 @@ void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolet
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
 	CvGame const& kGame = GC.getGame();
 	CvPlayer& kOwner = GET_PLAYER(getOwner());
-//tholish-Keldath inactive buildings start
+//Dto tholish-Keldath inactive buildings start
 //remeber - update here and in unprocessbuildings new additions!!!
 //if the prereq of a building is no more - it will stop providing.
 //if you cant keep the building, dont update its stuff.
@@ -3566,13 +3559,13 @@ if (buildingStatus == true)
 			}
 		} // </advc.004w>
 	}
-//tholish-Keldath inactive buildings
+//Doto tholish-Keldath inactive buildings start
 }	
 if (buildingStatus == false)
 {
 	UNprocessBuilding(eBuilding, iChange, bObsolete);		
 }
-//tholish-Keldath inactive buildings
+//Doto tholish-Keldath inactive buildings end
 	updateBuildingCommerce();
 	// < Building Resource Converter Start >
 	//frpo1 added a check to avoid infinite loop
@@ -4270,7 +4263,7 @@ int CvCity::goodHealth() const
 	{
 		iTotalHealth += iHealth;
 	}
-	// < Civic Infos Plus End   >
+// < Civic Infos Plus End   >
 	iHealth = getPowerGoodHealth();
 	if (iHealth > 0)
 		iTotalHealth += iHealth;
@@ -4392,11 +4385,12 @@ int CvCity::foodConsumption(bool bNoAngry, int iExtra) const
 //doto city states - specialists instead of pop - start
 // civilians costs food
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES)
-		&& GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && GET_PLAYER(getOwner()).checkCityState(getOwner()))
+		&& GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 
+		&& GET_PLAYER(getOwner()).checkCityState(getOwner()))
 	{
 		iExtra += getFreeCivilianCount(); // getFreeSpecialist(); // Free specialists consume food
 	}
-	//doto city states - specialists instead of pop - end 
+//doto city states - specialists instead of pop - end 
 
 	return ((getPopulation() + iExtra - (bNoAngry ? angryPopulation(iExtra) : 0)) *
 		GC.getFOOD_CONSUMPTION_PER_POPULATION()) - healthRate(bNoAngry, iExtra); 
@@ -5030,7 +5024,15 @@ void CvCity::setGameTurnAcquired(int iNewValue)
 	FAssert(getGameTurnAcquired() >= 0);
 }
 
-//doto specialists instead of pop
+//doto city states - specialists instead of pop start
+//version 2 below:
+//int CvCity::popToSpecialists2(int iOldPopulation, int m_iPopulation)
+//{
+//	return m_iPopulation + getFreeCivilianCount();
+//	//FAssertBounds(0, 20, m_iPopulation);
+//}
+
+//version 1 below:
 int CvCity::popToSpecialists(int iOldPopulation, int m_iPopulation)
 {
 	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
@@ -5045,11 +5047,11 @@ int CvCity::popToSpecialists(int iOldPopulation, int m_iPopulation)
 	int foodY = getBaseYieldRate(YIELD_FOOD);
 	int prodY = getBaseYieldRate(YIELD_PRODUCTION);
 	int commY = getBaseYieldRate(YIELD_COMMERCE);
-	SpecialistTypes eDynamicAdd = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true); //dynamic specialist to add
-	SpecialistTypes eDynamicRedu = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);//dynamic specialist to reduce
 	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
 	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
 	SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
+	SpecialistTypes eDynamicAdd = eFarmer; //dynamic specialist to add
+	SpecialistTypes eDynamicRedu = eFarmer;//dynamic specialist to reduce
 	int eCounter = 0;
 	// the changeFreeSpecialistCount added the specialists as free specialists and great people
 	// must track it not to reduce a specialists that its count is 0 - see below.
@@ -5088,37 +5090,25 @@ int CvCity::popToSpecialists(int iOldPopulation, int m_iPopulation)
 		m_iPopulation -= iExcessPop;
 		changeFreeCivilianCount(iExcessPop);
 		changeFreeSpecialistCount(eDynamicAdd, iExcessPop);//as great people
-		//processFreeCivilianCount();
-		//changeFreeSpecialist(iExcessPop);
-		//setSpecialistCount(eCivilian, iExcessPop);
-		//setFreeSpecialistCount(eCivilian, iExcessPop);
-		//alterSpecialistCount(eCivilian, iExcessPop);
 	}
 	else
 	{
 		int const iPopDecrease = iOldPopulation - m_iPopulation;
 		if (iPopDecrease > 0 && getFreeCivilianCount() > 0)
 		{
-			//int iStarvedSpecialists = std::min(iPopDecrease, getFreeSpecialist());
 			int iStarvedSpecialists = std::min(iPopDecrease, getFreeCivilianCount());
 			m_iPopulation += iStarvedSpecialists;
-			//changeFreeSpecialist(-iStarvedSpecialists);
 			//make sure not to deduct specialist that isnt listed in the getFreeSpecialistCount
 			//FAssert(getFreeCivilianCount() > 0);
 			FAssert(eCounter > 0);
 			changeFreeCivilianCount(-iStarvedSpecialists); //using one counter for all of them.
 			changeFreeSpecialistCount(eDynamicRedu, -iStarvedSpecialists);
-			//processFreeCivilianCount();
-			//setSpecialistCount(eCivilian, -iStarvedSpecialists);
-			//alterSpecialistCount(eCivilian, -iStarvedSpecialists);
-			//setFreeSpecialistCount(eCivilian, -iStarvedSpecialists);
 		}
 	}
 	return m_iPopulation;
-	//getFreeCivilianCount()
 	//FAssertBounds(0, 20, m_iPopulation);
-//doto specialist instead of pop
 }
+//doto specialist instead of pop end
 
 void CvCity::setPopulation(int iNewValue)
 {
@@ -5129,9 +5119,10 @@ void CvCity::setPopulation(int iNewValue)
 	if (iOldPopulation == iNewValue)
 		return;
 	m_iPopulation = iNewValue;
-//doto specialist instead of pop -  assign new value if there is any
+//doto city states - specialist instead of pop start
+//assign new value if there is any
 	m_iPopulation = popToSpecialists(iOldPopulation, m_iPopulation);
-
+//doto city states - specialist instead of pop end
 	FAssert(getPopulation() >= 0);
 
 	GET_PLAYER(getOwner()).invalidatePopulationRankCache();
@@ -7981,19 +7972,16 @@ int CvCity::getAdditionalYieldBySpecialist(YieldTypes eYield, SpecialistTypes eS
 int CvCity::getAdditionalBaseYieldRateBySpecialist(YieldTypes eYield, SpecialistTypes eSpecialist, int iChange) const
 {
 	CvSpecialistInfo& kSpecialist = GC.getInfo(eSpecialist);
+//doto City States start - specialists instead of population start
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1)
 	{
-		//SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
-		//SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
-		//SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
-		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
-		//if (cityState) && (eFarmer == eSpecialist || eMiner == eSpecialist || eLabor == eSpecialist))
-		if (cityState && kSpecialist.isCityStater())
+		if (GET_PLAYER(getOwner()).checkCityState(getOwner()) 
+			&& kSpecialist.isCityStater())
 		{
 			return iChange * (kSpecialist.getYieldChange(eYield));
 		}
 	}
+//doto City States start - specialists instead of population - end
 	return iChange * (kSpecialist.getYieldChange(eYield) +
 			GET_PLAYER(getOwner()).getSpecialistExtraYield(eSpecialist, eYield));
 }
@@ -8295,7 +8283,6 @@ int CvCity::getPeaceTradeModifier(TeamTypes eTeam) const
 /************************************************************************************************/
 /* END: advanced  Diplomacy     added from hr to doto                           				*/
 /************************************************************************************************/
-
 }
 
 
@@ -8379,21 +8366,16 @@ void CvCity::setTradeYield(YieldTypes eYield, int iNewValue)
 
 int CvCity::getExtraSpecialistYield(YieldTypes eYield, SpecialistTypes eSpecialist) const
 {
-	
+//doto city states - specialists instead of population start	
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 )
 	{
-		//SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
-		//SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
-		//SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
-		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
-		//if (cityState && (eFarmer == eSpecialist || eMiner == eSpecialist || eLabor == eSpecialist))
-		if (cityState && GC.getInfo(eSpecialist).isCityStater())
+		if (GET_PLAYER(getOwner()).checkCityState(getOwner())
+			 && GC.getInfo(eSpecialist).isCityStater())
 		{
 			return 0;
 		}
 	}
-	
+//doto city states - specialists instead of population end	
 	return (getSpecialistCount(eSpecialist) + getFreeSpecialistCount(eSpecialist)) *
 			GET_PLAYER(getOwner()).getSpecialistExtraYield(eSpecialist, eYield);
 }
@@ -8402,21 +8384,17 @@ int CvCity::getExtraSpecialistYield(YieldTypes eYield, SpecialistTypes eSpeciali
 void CvCity::updateExtraSpecialistYield(YieldTypes eYield)
 {
 	int iNewYield = 0;
-//doto specialists instead of pop
+//doto city states - specialists instead of population start
 // dont allow any bonuses that are not from the specialists own values.	
-	//SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
-	//SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
-	//SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
-	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-	bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
-//doto specialists instead of pop
+	bool cityState = GET_PLAYER(getOwner()).checkCityState(getOwner());
+//doto city states - specialists instead of population start
 	FOR_EACH_ENUM(Specialist)
 	{
-//doto specialists instead of pop
+//doto city states - specialists instead of population start
 		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-			GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && cityState &&
-			//(eFarmer ==  eLoopSpecialist || eMiner == eLoopSpecialist || eLabor == eLoopSpecialist)
-			 GC.getInfo(eLoopSpecialist).isCityStater()
+			GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && 
+			cityState &&
+			GC.getInfo(eLoopSpecialist).isCityStater()
 			)
 		{
 			continue;
@@ -8426,6 +8404,7 @@ void CvCity::updateExtraSpecialistYield(YieldTypes eYield)
 			iNewYield += getExtraSpecialistYield(eYield, eLoopSpecialist);
 		}
 	}
+//doto city states - specialists instead of population end
 	int const iChange = iNewYield - getExtraSpecialistYield(eYield); // advc
 	if (iChange != 0)
 	{
@@ -8441,6 +8420,7 @@ void CvCity::updateExtraSpecialistYield()
 	FOR_EACH_ENUM(Yield)
 		updateExtraSpecialistYield(eLoopYield);
 }
+//doto city states - code inside - note
 /*************************************************************************************************/
 /**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 /**																								**/
@@ -8460,19 +8440,17 @@ int CvCity::getSpecialistCivicExtraCommerceBySpecialist(CommerceTypes eCommerce,
 	FAssertMsg(eSpecialist >= 0, "eSpecialist expected to be >= 0");
 	FAssertMsg(eSpecialist < GC.getNumSpecialistInfos(), "GC.getNumSpecialistInfos expected to be >= 0");
 	*/
-	if (GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+//doto city states - specialists instead of population - start
+	if (GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && 
+		GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 	{
-		//SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
-		//SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
-		//SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
-		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-		bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
-		//if (cityState) && (eFarmer == eSpecialist || eMiner == eSpecialist || eLabor == eSpecialist))
-		if (cityState && GC.getInfo(eSpecialist).isCityStater())
+		if (GET_PLAYER(getOwner()).checkCityState(getOwner()) && 
+			GC.getInfo(eSpecialist).isCityStater())
 		{
 			return 0;
 		}
 	}
+//doto city state - specialists instead of population - end
 	return ((getSpecialistCount(eSpecialist) + getFreeSpecialistCount(eSpecialist)) * GET_PLAYER(getOwner()).getSpecialistCivicExtraCommerce(eSpecialist, eCommerce));
 }
 
@@ -8488,25 +8466,22 @@ void CvCity::updateSpecialistCivicExtraCommerce(CommerceTypes eCommerce)
 	iOldCommerce = getSpecialistCivicExtraCommerce(eCommerce);
 
 	iNewCommerce = 0;
-//doto specialists instead of pop
+//doto city states - specialists instead of population start 
 // dont allow any bonuses that are not from the specialists own values.	
-	//SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
-	//SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
-	//SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);	
-	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-	bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
-//doto specialists instead of pop
+	bool cityState = GET_PLAYER(getOwner()).checkCityState(getOwner());
+//doto city states - specialists instead of population - end
 	for (iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
 	{
-//doto specialists instead of pop
+//doto city states - specialists instead of population - start
 		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-			GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && cityState &&
-	  	    // (eFarmer == (SpecialistTypes)iI || eMiner == (SpecialistTypes)iI || eLabor == (SpecialistTypes)iI)
-				GC.getInfo((SpecialistTypes)iI).isCityStater()
+				GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && 
+				cityState &&
+	  	    	GC.getInfo((SpecialistTypes)iI).isCityStater()
 			)
 		{
 			continue;
 		}
+//doto city states - specialists instead of poplation - end
 		else
 		{
 			iNewCommerce += getSpecialistCivicExtraCommerceBySpecialist(eCommerce, ((SpecialistTypes)iI));
@@ -8597,13 +8572,13 @@ int CvCity::getTotalCommerceRateModifier(CommerceTypes eCommerce) const
            && isHasReligion(kOwner.getStateReligion())) ?
            getStateReligionCommerceRateModifier(eCommerce) :
            getNonStateReligionCommerceRateModifier(eCommerce)) +
-		/************************************************************************************************/
-		/* START: Advanced Diplomacy     DOTO- CITY STATE    add perks of free trade agreement treaty   */
-		/************************************************************************************************/
+/************************************************************************************************/
+/* START: Advanced Diplomacy     DOTO- CITY STATE    add perks of free trade agreement treaty   */
+/************************************************************************************************/
 		    ((isCapital() && GC.getGame().isOption(GAMEOPTION_CITY_STATES)) ? kOwner.getCapitalCommerceRateFTModifier(eCommerce) : 0) +
-		/************************************************************************************************/
-		/* START: Advanced Diplomacy     DOTO- CITY STATE                                   */
-		/************************************************************************************************/
+/************************************************************************************************/
+/* START: Advanced Diplomacy     DOTO- CITY STATE                                   */
+/************************************************************************************************/
 			(isCapital() ? kOwner.getCapitalCommerceRateModifier(eCommerce) : 0) + 100)
 			;
 }
@@ -13185,7 +13160,7 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiBuildingProduction.read(pStream);
 		m_aiBuildingProductionTime.read(pStream);
 		m_aeBuildingOriginalOwner.read(pStream);
-//tholish-Keldath inactive buildings
+//doto - tholish-Keldath inactive buildings
 		m_aiBuildingeActive.read(pStream);
 		m_aiBuildingOriginalTime.read(pStream);
 		m_aiUnitProduction.read(pStream);
@@ -13223,7 +13198,7 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiBuildingProduction.readArray<int>(pStream);
 		m_aiBuildingProductionTime.readArray<int>(pStream);
 		m_aeBuildingOriginalOwner.readArray<int>(pStream);
-//tholish-Keldath inactive buildings
+//doto - tholish-Keldath inactive buildings
 		m_aiBuildingeActive.readArray<int>(pStream);
 		EagerEnumMap<BuildingTypes,int> aiBuildingOriginalTime;
 		aiBuildingOriginalTime.readArray<int>(pStream);
@@ -13803,7 +13778,7 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiBuildingProduction.write(pStream);
 	m_aiBuildingProductionTime.write(pStream);
 	m_aeBuildingOriginalOwner.write(pStream);
-//tholish-Keldath inactive buildings
+//doto tholish-Keldath inactive buildings
 	m_aiBuildingeActive.write(pStream);
 	m_aiBuildingOriginalTime.write(pStream);
 	m_aiUnitProduction.write(pStream);
@@ -15040,8 +15015,10 @@ int CvCity::initialPopulation()
 
 // advc.004b, advc.104: Parameters added
 int CvCity::calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
-//DOTO-dpii ADDED LOCAL DISTANCE MODIFER
+//doto DPII < Maintenance Modifiers >
+//DOTO-dpii ADDED LOCAL DISTANCE MODIFER sagi
 	PlayerTypes eOwner, int iPopulation, bool bNoPlayerModifiers, int iLocalDistance)
+//doto DPII < Maintenance Modifiers >
 {
 	if(iPopulation < 0)
 		iPopulation = initialPopulation();
@@ -15070,11 +15047,13 @@ int CvCity::calculateDistanceMaintenanceTimes100(CvPlot const& kCityPlot,
 		iTempMaintenance /= 10;
 		if (!bNoPlayerModifiers) // advc
 		{
+//doto DPII < Maintenance Modifiers >			
 			//todo this syntax gt changed in advc - check the GET_PLAYER(eOwner). for the ilocaldistance
 			//DOTO- dpii ADDED LOCAL DISTANCE MODIFER
 			iTempMaintenance *= std::max(0, iLocalDistance + 100);
 			iTempMaintenance /= 100;
-			//DOTO- dpii 
+			//DOTO- dpii
+//doto DPII < Maintenance Modifiers > 
 			iTempMaintenance *= std::max(0, GET_PLAYER(eOwner).
 					getDistanceMaintenanceModifier() + 100);
 			iTempMaintenance /= 100;

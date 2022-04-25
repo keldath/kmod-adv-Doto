@@ -49,8 +49,10 @@ public:
 	void updateCulture(bool bBumpUnits, bool bUpdatePlotGroups);
 	void updateFog();
 //doto city states	start
-	bool isPlotinCsVicinity(PlayerTypes ePlayer);
-	int getPlotRangefromCs(PlayerTypes ePlayer);
+	int isPlotinCsVicinity(PlayerTypes eExpandingPlayer, int iMinRange, int iMaxRange);
+	int isInCSsafeRadious(PlayerTypes ePlayer, int iMinRange, int iMaxRange, CvPlot* toPlot);
+	bool canChangeCultureOnTile(PlayerTypes eExpandingPlayer);
+	void colorCsPlot(PlayerTypes eNewOwner, PlayerTypes eOldOwner);
 //doto city states	end	
 	void updateVisibility();
 	void updateSymbolDisplay();

@@ -430,7 +430,7 @@
 		since city states are single cities, this comes as a boost for the city
 		yeilds from these civilans are only food, hammers and gold -->
 		<DefineName>ENHANCED_CITY_STATES_THRESHOLD</DefineName>
-		<iDefineIntVal>20</iDefineIntVal>
+		<iDefineIntVal>15</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- city state will enjoy free military units according to
@@ -456,16 +456,31 @@
 		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
 	<Define>
-		<!-- maximum range a city state can 
-			grow to -1 for no limit-->
-		<DefineName>CS_MAX_BORDER_RANGE</DefineName>
-		<iDefineIntVal>2</iDefineIntVal>
+		<!-- define the plot calc  for start locations
+			if a player is a city state. 
+			the org usage is with ADVANCED_START_SIGHT_RANGE
+			which is 4. i reduced it to 2 for CS.
+			cause CS shouldnt care about 4 radious plots
+			this should be aligned with CS_CULTURE_LEVEL_MAX_RADIOUS
+			but not a must -->
+		<DefineName>CS_START_SIGHT_RANGE</DefineName>
+		<iDefineIntVal>3</iDefineIntVal>
 	</Define>
 	<Define>
-		<!-- City States plots with border range of 2 will not
-			flip its culture a.k.a no culture pressure. -1 for no effect -->
-		<DefineName>CS_MAX_BORDER_RANGE</DefineName>
+		<!-- the radious that the city can expand into with culture borders. if this value is above the min_radious, 
+		the tiles of this radious, will behave like normal tiles - meaning it can be taken by normal culture changes.
+		city state will never have larger border radious then this. -->
+		<DefineName>CS_CULTURE_LEVEL_MAX_RADIOUS</DefineName>
+		<iDefineIntVal>3</iDefineIntVal>
+	</Define>
+	<Define>
+<!-- complex culture method for city states start -->
+		<!-- this is the safe radious which a city state will never 
+		grow short, through the whole game city states will attain the size of this parameter so they wont suffer from terrain loss.
+			-->
+		<DefineName>CS_CULTURE_LEVEL_MIN_RADIOUS</DefineName>
 		<iDefineIntVal>2</iDefineIntVal>
+	<!-- complex culture method for city states end -->
 	</Define>
 	<Define>
 	<!-- THIS WILL control if city states are shown on the civ picker
@@ -478,6 +493,7 @@
 		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
 	<Define>
+	<!-- spaen civs according to world size start -->
 		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_TINY</DefineName>
 		<iDefineIntVal>2</iDefineIntVal>
 	</Define>
@@ -496,6 +512,27 @@
 	<Define>
 		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_HUGE</DefineName>
 		<iDefineIntVal>6</iDefineIntVal>
+	<!-- spaen civs according to world size end -->
+	</Define>
+	<Define>
+		<DefineName>CIVILIAN_THRESH_1</DefineName>
+		<iDefineIntVal>6</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>CIVILIAN_THRESH_2</DefineName>
+		<iDefineIntVal>10</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>CIVILIAN_THRESH_3</DefineName>
+		<iDefineIntVal>14</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>CIVILIAN_THRESH_4</DefineName>
+		<iDefineIntVal>17</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>CIVILIAN_THRESH_5</DefineName>
+		<iDefineIntVal>20</iDefineIntVal>
 <!-- DOTO city states - end  -->
 	</Define>
 </Civ4Defines>

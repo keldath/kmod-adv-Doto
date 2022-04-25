@@ -1495,7 +1495,13 @@ CvPlot* CvPlayer::findStartingPlot(
 				pbAreaFoundByMapScript); // advc.027
 	}
 	// <advc.opt> Compute this upfront for kekm.35
-	int const iStartingRange = GC.getDefineINT("ADVANCED_START_SIGHT_RANGE");
+//doto city states - reduce tile calc for start location
+//this was a recommendation from f1rpo , default is 3, could be 2 also. org is 4.
+//seee more text in the globalalt xml file.
+	int const iStartingRange_advc = GC.getDefineINT("ADVANCED_START_SIGHT_RANGE");
+	int const iStartingRange = checkCityState(getID()) ? GC.getDefineINT("CS_START_SIGHT_RANGE") : iStartingRange_advc;
+//doto city states - reduce tile calc for start location
+
 	EagerEnumMap<PlotNumTypes,bool> abPlotTaken;
 	FOR_EACH_ENUM(PlotNum)
 	{
@@ -3511,9 +3517,11 @@ int CvPlayer::calculateScore(bool bFinal, bool bVictory) const
 		int minNumCitiesPlayer = 1;
 		for (PlayerIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 		{
-			if (checkCityState(itPlayer->getID()))
+			PlayerTypes ePlayer = itPlayer->getID();
+			CvPlayer& kPlayer = GET_PLAYER(ePlayer);
+			if (checkCityState(ePlayer))
 				continue;
-			int tempNum = GET_PLAYER(itPlayer->getID()).getNumCities();
+			int tempNum = kPlayer.getNumCities();
 			if (tempNum > maxNumCitiesPlayer)
 			{
 				maxNumCitiesPlayer = tempNum;
@@ -3527,7 +3535,7 @@ int CvPlayer::calculateScore(bool bFinal, bool bVictory) const
 		if (checkCityState(getID()))
 		{
 			iLandScore += std::min(iLandScore * std::min((maxNumCitiesPlayer - minNumCitiesPlayer), 2),0) /*- iSCORE_POPULATION_FACTOR*/;
-			//iPopulationScore += iPopulationScore * std::min((maxNumCitiesPlayer - minNumCitiesPlayer), 2);
+			iPopulationScore += std::min(iPopulationScore * std::min((maxNumCitiesPlayer - minNumCitiesPlayer), 2), 0);
 		}
 	}
 //doto city states
@@ -4769,9 +4777,12 @@ bool CvPlayer::canRaze(CvCity const& kCity) const // advc: param was CvCity*
 {
 
 //doto city states will not be allowed to capture cities ever.
+//a city state player will always raze.
+//a conquered city will always be razed.
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 	{
-		if (checkCityState(getID()))
+		if (checkCityState(getID())
+			|| checkCityState(kCity.getOwner()))
 			return true;
 	}
 //doto city states
@@ -19564,6 +19575,7 @@ bool CvPlayer::isFullMember(VoteSourceTypes eVoteSource) const
 //doto city states - cant be vassal - dont let city state vote - i hope it works
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 		return false;
+//doto city states - cant be vassal - dont let city state vote - i hope it works
 
 	return isVotingMember(eVoteSource);
 }
@@ -20012,14 +20024,9 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 /* START: Advanced Diplomacy         doto added                                                 */
 /************************************************************************************************/
 //doto city state - remove irrelevnt options.
-	/*bool meCityState = false;
-	bool himCityState = false;
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		meCityState = GC.getCivilizationInfo(GET_PLAYER(getID()).getCivilizationType()).getIsCityState() == 1;
-		himCityState = GC.getCivilizationInfo(GET_PLAYER(eOtherPlayer).getCivilizationType()).getIsCityState() == 1;
-	}*/
-	//newer
+	bool meCityState = checkCityState(getID());
+	bool himCityState = checkCityState(eOtherPlayer);
+	//to be frank, the isFreeTradeValid covers the above, but it checks for the trait, so i decided to keep it below/
 	bool isFreeTradeValid = canPlayersSignFreeTradeAgreement(getID(), eOtherPlayer);
 //doto city state - remove irrelevnt options.
 /************************************************************************************************/
@@ -20041,9 +20048,7 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 /* START: Advanced Diplomacy     added for doto                                                 */
 /************************************************************************************************/
 //doto city state 
-	//if (!meCityState && !himCityState)
-	//newer
-	if (isFreeTradeValid)
+	if (!meCityState && !himCityState)
 	{
 		setTradeItem(&item, TRADE_VASSAL, 0);
 		if (canTradeItem(eOtherPlayer, item))
@@ -20051,8 +20056,6 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 	}
 //doto city state 
 	// Free Trade - only if one trader is a city state
-	//if (meCityState || himCityState)
-	//newer
 	if(isFreeTradeValid)
 	{
 		setTradeItem(&item, TRADE_FREE_TRADE_ZONE, 0);
@@ -20160,6 +20163,15 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 
 		case TRADE_CITIES:
 		{
+/************************************************************************************************/
+/* START: Advanced Diplomacy     added for doto   dont even think about trading cities          */
+/************************************************************************************************/
+			//doto city state 
+			if (meCityState || himCityState)
+				break;
+/************************************************************************************************/
+/* END: Advanced Diplomacy     added for doto                                                 */
+/************************************************************************************************/
 			FOR_EACH_CITY(pLoopCity, *this)
 			{
 				//if (AI_cityTrade(pLoopCity, eOtherPlayer) != DENIAL_NEVER) // K-Mod
@@ -21970,6 +21982,8 @@ int CvPlayer::getCultureGoldenAgeThreshold() const
 bool CvPlayer::checkCityState(PlayerTypes ePlayer) const
 {
 	//FOR FUTURE CHANGE: GOTTA USE THE THIS POINTER! 
+	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES))
+		return false;
 	CvPlayer& kPlayer = GET_PLAYER(ePlayer);
 	bool isOurCityState = GC.getCivilizationInfo(kPlayer.getCivilizationType()).getIsCityState() == 1;
 	

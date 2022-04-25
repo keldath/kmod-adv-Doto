@@ -17481,6 +17481,11 @@ edit - doto - i think i need this acctually...														*/
 	}
 	// <advc.004q>
 #ifndef ENABLE_REPRO_TEST
+
+//doto city states keldath - try to avoid the assert below. start
+	CvPlayerAI::AI_updateAttitudes();
+//doto city states keldath - end
+
 	int iTotalCached = kPlayer.AI_getAttitudeVal(eTargetPlayer, false);
 	if (!bConstCache && bSHowHiddenAttitude && !bObscurePersonality &&
 		iTotal != iTotalCached && !kGame.isNetworkMultiPlayer() &&
