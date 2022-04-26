@@ -402,7 +402,7 @@ public:
 	void setPopulation(int iNewValue);																			// Exposed to Python
 //doto specialists instead of pop	start								
 	int popToSpecialists(int iOldPopulation, int m_iPopulation);																					// Exposed to Python
-//	int popToSpecialists2(int iOldPopulation, int m_iPopulation);																					// Exposed to Python
+	int popToSpecialists2(int iOldPopulation, int m_iPopulation);																					// Exposed to Python
 //doto specialists instead of pop	end
 	void changePopulation(int iChange);																			// Exposed to Python
 /* doto-Population Limit ModComp - Beginning */

@@ -5026,11 +5026,115 @@ void CvCity::setGameTurnAcquired(int iNewValue)
 
 //doto city states - specialists instead of pop start
 //version 2 below:
-//int CvCity::popToSpecialists2(int iOldPopulation, int m_iPopulation)
-//{
-//	return m_iPopulation + getFreeCivilianCount();
-//	//FAssertBounds(0, 20, m_iPopulation);
-//}
+//this one aint good, written nice, but aint good
+int CvCity::popToSpecialists2(int iOldPopulation, int m_iPopulation)
+{
+	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
+	bool cityState = kCivilization.getIsCityState() == 1;
+	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
+		GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") != 1 &&
+		!cityState)
+	{
+		return m_iPopulation;
+	}
+
+	//HOW THIS WORKS?
+	/* a city gets to size ct3, it will get 
+	*/
+	int civiianLimit = 0;
+	static int const ct5 = GC.getDefineINT("CIVILIAN_THRESH_5"); //3 9
+	static int const ct4 = GC.getDefineINT("CIVILIAN_THRESH_4"); //2 6
+	static int const ct3 = GC.getDefineINT("CIVILIAN_THRESH_3"); //2 4
+	static int const ct2 = GC.getDefineINT("CIVILIAN_THRESH_2"); //1 2
+	static int const ct1 = GC.getDefineINT("CIVILIAN_THRESH_1"); //1 1
+
+	static int const cL5 = GC.getDefineINT("CIVILIAN_LIMIT_5"); //3 9
+	static int const cL4 = GC.getDefineINT("CIVILIAN_LIMIT_4"); //2 6
+	static int const cL3 = GC.getDefineINT("CIVILIAN_LIMIT_3"); //2 4
+	static int const cL2 = GC.getDefineINT("CIVILIAN_LIMIT_2"); //1 2
+	static int const cL1 = GC.getDefineINT("CIVILIAN_LIMIT_1"); //1 1
+	//check where is the current population is in comopare to the threhold
+	if (m_iPopulation >= ct5)
+		civiianLimit = cL5;
+	else if (m_iPopulation >= ct4)
+		civiianLimit = cL4;
+	else if (m_iPopulation >= ct3)
+		civiianLimit = cL3;
+	else if (m_iPopulation >= ct2)
+		civiianLimit = cL2;
+	else if (m_iPopulation >= ct1)
+		civiianLimit = cL1;
+	else
+		civiianLimit = 0;
+	
+	SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
+	SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
+	SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
+	SpecialistTypes eDynamicAdd = eFarmer; //dynamic specialist to add
+	SpecialistTypes eDynamicRedu = eFarmer;//dynamic specialist to reduce
+	// the changeFreeSpecialistCount added the specialists as free specialists and great people
+	// must track it not to reduce a specialists that its count is 0 - see below.
+	
+	//see what was change since last time
+	int excessCivilians = civiianLimit - getFreeCivilianCount();
+	//if nothing change then bye bye
+	if (excessCivilians == 0)
+		return m_iPopulation + getFreeCivilianCount();
+
+	//loop over the amount of current civilian thresh 
+	//NOTE that the expected is to always to be 1, unless there is a drop or growth 
+	//of over 1 population - maybe nuke or a wonder for example...
+	for (int ic = 0; ic < abs(excessCivilians); ic++)
+	{
+		//get the current yield output of the city (in the loop cause it changes if there are more then 1
+		//civilian add or reduce.
+		int foodY = getBaseYieldRate(YIELD_FOOD);
+		int prodY = getBaseYieldRate(YIELD_PRODUCTION);
+		int commY = getBaseYieldRate(YIELD_COMMERCE);
+
+		/* I SHOULD ADD UPDATE YIELDS cause it changes! for now i passed on it*/
+
+		//same as the above comment
+		int eMinerCount = getFreeSpecialistCount(eMiner);
+		int eLaborCount = getFreeSpecialistCount(eLabor);
+		int eFarmerCount = getFreeSpecialistCount(eFarmer);
+
+		if (excessCivilians < 0)
+		{
+			//reducing - dont allow reduction if there is no specialist if that sort....
+			//its also ranked, removal is done from Labor, Miner , Farmer (farmer gives food - so remove it last)
+			if (eMinerCount > 0)
+				eDynamicRedu = eMiner;
+			else if (eLaborCount > 0)
+				eDynamicRedu = eLabor;
+			else if (eFarmerCount > 0)
+				eDynamicRedu = eFarmer;
+			//reduce the numbers.
+			changeFreeCivilianCount(-1);
+			changeFreeSpecialistCount(eDynamicRedu, -1);//as great people
+		}
+		if (excessCivilians > 0)
+		{
+			//add the most needed specialist - food is top priority
+			if (foodY <= prodY)
+				eDynamicAdd = eFarmer;
+			else if (prodY <= commY)
+				eDynamicAdd = eLabor;
+			else
+				eDynamicAdd = eMiner;
+
+			changeFreeCivilianCount(1);
+			changeFreeSpecialistCount(eDynamicAdd, 1);
+		}
+		//there shouldnt be a situation where the count is different then the civilian limit.
+		//must be identical!
+		FAssert((civiianLimit - getFreeCivilianCount()) == 0);
+	}
+	//the population number will now include the new civilians - both for show of actual city size
+	//and cause the civilians consume food and for population scoring!
+	//maininterface.py handles the display of the new civilians :)
+	return m_iPopulation + getFreeCivilianCount();
+}
 
 //version 1 below:
 int CvCity::popToSpecialists(int iOldPopulation, int m_iPopulation)
