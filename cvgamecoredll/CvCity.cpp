@@ -5141,9 +5141,9 @@ int CvCity::popToSpecialists(int iOldPopulation, int m_iPopulation)
 {
 	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
 	bool cityState = kCivilization.getIsCityState() == 1;
-	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-		GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") != 1 &&
-		!cityState)
+	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES) 
+		|| !cityState
+		|| GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") != 1)
 	{
 		return m_iPopulation;
 	}
@@ -10729,7 +10729,9 @@ void CvCity::alterWorkingPlot(CityPlotTypes ePlot)
 {
 	if (ePlot == CITY_HOME_PLOT)
 	{
-		setCitizensAutomated(true);
+		setCitizensAutomated(//true
+				// advc.004t: toggle
+				!isCitizensAutomated());
 		return;
 	}
 	CvPlot* pPlot = getCityIndexPlot(ePlot);

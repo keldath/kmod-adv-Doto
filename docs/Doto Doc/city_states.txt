@@ -1,0 +1,30 @@
+
+City states can be tweaked and changed in the GlobalDefinesAlt.xml at the bottom of it.
+there are explanations per parameter.
+
+- city states will be randomly spawned at turn 1 (only Ancient era).
+- cannot grow beyond culture defined limit (parameter).
+- cannot grow under defined culture limit (parameter).
+- i conjured method to color the inner culture borders to distinct cs area controlled.
+- new free trade agreement with CS -> will provide both the CS and the trading civ a Unique Bonus commerce (displayed in the cs Trait info).
+- cs cannot build wonders.
+- cannot be vassal.
+- ai will always raze cs and vice versa (haven't done code for human player , yet).
+- new population system - cities beyond parameter defined size will begin getting special specialists named civilians instead of population.
+dynamically - there are 3 types, 1 per yield that is given to the city according to its lowest yield output.
+these consume food.
+there are several parameters - can be turned off as a game option in the GlobalDefinesAlt.xml.
+- cannot trade cs in city trade...
+- cs build units without Bonus Prereq! (i think i made it also a parameter).
+- cs gets a tech diffusion and an enhanced one as well -> is not regular tech diffusion dependent!.
+- cs scoring is based off of population and land -> with power ups to compensate for one city....
+- cannot build settlers....
+- have a unique resource to trade with other civs - provide 1 health or happy (2 per city state)
+- amount of cs is adjustable according to world size.
+- cs can be random or be chosen in the custom game mode (make sure to define it in the parameter in GlobalDefinesAlt.xml!).
+- city states leaders are less inclined for wars, lower attitude thresholds and will not chase war related victory.
+- there are 8 city states
+- city states unique units are a duplicate of existing similar civs.
+- cs palace is unique with some more perks ups.
+- cs cannot found religions.
+- cs cannot found corporations.

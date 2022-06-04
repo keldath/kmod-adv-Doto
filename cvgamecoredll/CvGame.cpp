@@ -2913,8 +2913,8 @@ void CvGame::update()
 			{
 				autoSave(true); // advc.106l
 			}
-			/*	<advc.004m> This seems to be the earliest place where bubbles can
-				be enabled w/o crashing. */
+			/*	<advc.004m> This seems to be the earliest place where plot indicators
+				can be enabled w/o crashing. */
 			if (BUGOption::isEnabled("MainInterface__StartWithResourceIcons", true))
 				gDLL->getEngineIFace()->setResourceLayer(true);
 			// </advc.004m>
@@ -3179,9 +3179,17 @@ void CvGame::testExtendedGame()
 {
 	if (getGameState() != GAMESTATE_OVER)
 		return;
-	for (PlayerIter<HUMAN> itPlayer; itPlayer.hasNext(); ++itPlayer)
+//doto temp fix for none working loop?
+//	for (PlayerIter<HUMAN> itPlayer; itPlayer.hasNext(); ++itPlayer)
+	for (int iI = 0; iI < MAX_CIV_PLAYERS; iI++)
 	{
-		if (itPlayer->isExtendedGame())
+//doto temp fix for none working loop? start
+		if (!GET_PLAYER((PlayerTypes)iI).isAlive() &&
+			!GET_PLAYER((PlayerTypes)iI).isHuman())
+			continue;	
+		//if (itPlayer->isExtendedGame())
+		if (GET_PLAYER((PlayerTypes)iI).isExtendedGame())
+//doto temp fix for none working loop? - end	
 		{
 			setGameState(GAMESTATE_EXTENDED);
 			break;
@@ -4402,11 +4410,23 @@ void CvGame::setTargetScore(int iNewValue)
 int CvGame::countNumHumanGameTurnActive() const
 {
 	int iCount = 0;
+//doto - temp fix - none working loop?
+/* 
 	for (PlayerIter<HUMAN> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
 		if (itPlayer->isTurnActive())
 			iCount++;
 	}
+*/
+	for (int iI = 0; iI < MAX_CIV_PLAYERS; iI++)
+	{
+		if (GET_PLAYER((PlayerTypes)iI).isHuman())
+		{
+			if (GET_PLAYER((PlayerTypes)iI).isTurnActive())
+				iCount++;
+		}
+	}
+//doto - temp fix - none working loop?
 	return iCount;
 }
 
@@ -5481,14 +5501,27 @@ void CvGame::setGameState(GameStateTypes eNewValue)
 		if (isOption(GAMEOPTION_RISE_FALL))
 			m_pRiseFall->prepareForExtendedGame(); // </advc.707>
 		showEndGameSequence();
-		for (PlayerIter<HUMAN> itPlayer; itPlayer.hasNext(); ++itPlayer)
+//doto - keldath temp fix to none working loop?start
+/*		for (PlayerIter<HUMAN> itPlayer; itPlayer.hasNext(); ++itPlayer)
 		{
 			// One more turn?
 			CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_EXTENDED_GAME);
 			if (pInfo != NULL)
 				itPlayer->addPopup(pInfo);
 		}
+*/
+		for (int iI = 0; iI < MAX_CIV_PLAYERS; iI++)
+		{
+			CvPlayer &testP = GET_PLAYER((PlayerTypes)iI);
+			if (GET_PLAYER((PlayerTypes)iI).isHuman())
+			{	// One more turn?
+				CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_EXTENDED_GAME);
+				if (NULL != pInfo)
+					GET_PLAYER((PlayerTypes)iI).addPopup(pInfo);
+			}
+		}
 	}
+//doto - keldath temp fix to none working loop? end
 	gDLL->UI().setDirty(Cursor_DIRTY_BIT, true);
 }
 
@@ -7261,7 +7294,7 @@ void CvGame::spawnCityState()
 			continue;
 
 		//get a random leader for the chosen civ - code from spawnCiv the_J python based
-		int rndLeader = SyncRandNum(leadersNum);
+		//int rndLeader = SyncRandNum(leadersNum);
 		int LeaderCounter = 0;
 		for (int l = 0; l < GC.getNumLeaderHeadInfos(); ++l)
 		{
@@ -9768,10 +9801,16 @@ void CvGame::showEndGameSequence()
 {
 	long iHours = getMinutesPlayed() / 60;
 	long iMinutes = getMinutesPlayed() % 60;
-
-	for (PlayerIter<HUMAN> itPlayer; itPlayer.hasNext(); ++itPlayer)
+//doto - temp fix for none working loop?
+//	for (PlayerIter<HUMAN> itPlayer; itPlayer.hasNext(); ++itPlayer)
+	for (int iI = 0; iI < MAX_CIV_PLAYERS; iI++)
 	{
-		CvPlayer& kPlayer = *itPlayer;
+//doto - temp fix for none working loop? start		
+		//CvPlayer& kPlayer = *itPlayer;
+		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iI);
+		if (!kPlayer.isHuman())
+			continue;
+//doto - temp fix for none working loop? end
 		addReplayMessage(REPLAY_MESSAGE_MAJOR_EVENT, kPlayer.getID(),
 				gDLL->getText("TXT_KEY_MISC_TIME_SPENT", iHours, iMinutes));
 		CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_TEXT);

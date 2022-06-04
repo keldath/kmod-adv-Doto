@@ -16,6 +16,7 @@
 #include "CvGameTextMgr.h"
 #include "CvMessageControl.h"
 #include "CvBugOptions.h"
+#include "SelfMod.h" // advc.092b
 #include <fstream> // advc.003d
 
 /*  advc: This file was added by patch 3.17, moving some UI functionality
@@ -2244,8 +2245,11 @@ bool CvGame::updateNukeAreaOfEffect(CvPlot const* pCenter) const
 	gDLL->getEngineIFace()->clearAreaBorderPlots(AREA_BORDER_LAYER_NUKE);
 	if (pCenter == NULL || gDLL->UI().getInterfaceMode() != INTERFACEMODE_NUKE)
 		return false;
-	if (!pNuke->canNukeAt(pNuke->getPlot(), pCenter->getX(), pCenter->getY()))
+	if (!pNuke->canNukeAt(pNuke->getPlot(), pCenter->getX(), pCenter->getY(),
+		pNuke->getTeam()))
+	{
 		return false;
+	}
 	NiColorA const& kColor = GC.getInfo(GC.getColorType("YELLOW")).getColor();
 	for (SquareIter itPlot(*pCenter, pNuke->nukeRange()); itPlot.hasNext(); ++itPlot)
 	{
@@ -2688,52 +2692,9 @@ EndTurnButtonStates CvGame::getEndTurnState() const
 // advc.095:
 void CvGame::setCityBarWidth(bool bWide)
 {
-	// The three art define tags that we have wider graphics for
-	TCHAR const* aszCityBarTags[] =
-	{
-		"INTERFACE_CITY_BAR_MODEL",
-		"INTERFACE_CITY_BAR_REGULAR_GLOW",
-		"INTERFACE_CITY_BAR_CAPITAL_GLOW"
-	};
-	int const iCityBarTags = ARRAYSIZE(aszCityBarTags);
-	CvArtInfoInterface* apCityBarArtInfos[iCityBarTags];
-	for (int i = 0; i < iCityBarTags; i++)
-	{
-		apCityBarArtInfos[i] = ARTFILEMGR.getInterfaceArtInfo(aszCityBarTags[i]);
-		if (apCityBarArtInfos[i] == NULL)
-			return; // Art file manager not ready (or tags missing in XML)
-	}
-	CvString const szPattern(bWide ? "CityBar" : "WideCityBar");
-	CvString const szPatternLC(bWide ? "citybar" : "widecitybar");
-	CvString const szReplacement(!bWide ? "CityBar" : "WideCityBar");
-	CvString const szReplacementLC(!bWide ? "citybar" : "widecitybar");
-	for (int i = 0; i < iCityBarTags; i++)
-	{
-		CvString szPath(apCityBarArtInfos[i]->getPath());
-		size_t iPos = szPath.rfind(szPattern);
-		if (iPos != CvString::npos &&
-			// Don't replace a CityBar directory name
-			iPos < szPath.length() - 1 && szPath.at(iPos + 1) != '/')
-		{
-			szPath.replace(iPos, szPattern.length(), szReplacement);
-		}
-		else
-		{
-			// Try lower case (though AdvCiv uses mixed case)
-			iPos = szPath.rfind(szPatternLC);
-			if (iPos != CvString::npos &&
-				iPos < szPath.length() - 1 && szPath.at(iPos + 1) != '/')
-			{
-				szPath.replace(iPos, szPatternLC.length(), szReplacementLC);
-			}
-			else
-			{
-				FAssert(i == 0);
-				return; // Apparently the width is already according to bWidth
-			}
-		}
-		apCityBarArtInfos[i]->setPath(szPath);
-	}
+	if (ARTFILEMGR.isCityBarPathsSwapped() == bWide)
+		return;
+	ARTFILEMGR.swapCityBarPaths();
 	for (PlayerIter<ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
 		FOR_EACH_CITY_VAR(pCity, *itPlayer)
@@ -2874,11 +2835,21 @@ bool CvGame::isAboutToShowDawnOfMan() const
 	return (!m_bDoMShown && getElapsedGameTurns() <= 0);
 } // </advc.004x>
 
-// <advc.061>
-void CvGame::setScreenDimensions(int x, int y)
-{
-	m_iScreenWidth = x;
-	m_iScreenHeight = y;
+/*	<advc.061> Could get this through winuser.h, but that's not trivial.
+	Let's just let Python provide the info to us. */
+void CvGame::setScreenDimensions(int iWidth, int iHeight)
+{	// <advc.001> Avoid warped plot indicators upon changing resolution
+	if (m_iScreenWidth != iWidth || m_iScreenHeight != iHeight)
+		gDLL->UI().setDirty(GlobeLayer_DIRTY_BIT, true); // </advc.001>
+	m_iScreenWidth = iWidth;
+	if (m_iScreenHeight != iHeight)
+	{
+		m_iScreenHeight = iHeight;
+		/*	<advc.092b> Do this as soon as we know the screen dimensions, before
+			a plot indicator gets created for the initially selected units. */
+		if (m_iScreenHeight > 0)
+			smc::BtS_EXE.patchPlotIndicatorSize(); // </advc.092b>
+	}
 }
 
 int CvGame::getScreenWidth() const
@@ -2891,7 +2862,7 @@ int CvGame::getScreenHeight() const
 	return m_iScreenHeight;
 } // </advc.061>
 
-// advc.004n: (Note - m_bCityScreenUp is already updated when this gets called.)
+// advc.004n:
 void CvGame::onCityScreenChange()
 {
 	changePlotListShift(-getPlotListShift());
@@ -2900,6 +2871,28 @@ void CvGame::onCityScreenChange()
 		(Looks like the EXE ensures a nonnegative column value. Could probably
 		get the current value via Python for a more proper reset.) */
 	gDLL->UI().changePlotListColumn(-100000);
+	/*	<advc.092> Move the camera north a bit b/c that'll center the
+		map excerpt on the city screen better. */
+	if (m_bCityScreenUp)
+	{
+		CvPlot const* pCityPlot = gDLL->UI().getSelectionPlot();
+		if (pCityPlot != NULL)
+		{
+			CvPlot const* pOneNorth = GC.getMap().plotDirection(
+					pCityPlot->getX(), pCityPlot->getY(), DIRECTION_NORTH);
+			if (pOneNorth != NULL)
+			{
+				NiPoint3 nOneNorth = pOneNorth->getPoint();
+				NiPoint3 nCity = pCityPlot->getPoint();
+				float const fDisplWeight = 0.24f +
+						(BUGOption::isEnabled("MainInterface__EnlargeHUD", true) ?
+						0.03f : 0);
+				NiPoint3 nLookAt(nCity.x,
+						nCity.y + fDisplWeight * (nOneNorth.y - nCity.y), nCity.z);
+				gDLL->UI().lookAt(nLookAt, CAMERALOOKAT_CITY_ZOOM_IN);
+			}
+		}
+	} // </advc.092>
 }
 //doto city states color plots
 void CvGame::updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, NiColorA &color) const

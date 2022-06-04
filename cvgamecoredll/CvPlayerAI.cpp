@@ -8967,7 +8967,8 @@ PlayerVoteTypes CvPlayerAI::AI_diploVote(const VoteSelectionSubData& kVoteData,
 			else
 			{
 				bFriendlyToSecretary =
-						(kOurTeam.AI_getAttitude(eSecretaryGeneral) == ATTITUDE_FRIENDLY);
+						// advc: was ==
+						(kOurTeam.AI_getAttitude(eSecretaryGeneral) >= ATTITUDE_FRIENDLY);
 			}
 		}
 	}
@@ -14248,7 +14249,10 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 			iAttackUnits = std::max(1, iAttackUnits);
 			/*	this is not strictly guaranteed, but I expect it to
 				always be true under normal playing conditions. */
-			FAssert(iAttackUnits >= iLimitedUnits || iLimitedUnits <= 3);
+			/*	advc: Rare, but fine. An AI player may have never done any
+				offensive buildup and may still have trained some siege units
+				as counterattackers. */
+			//FAssert(iAttackUnits >= iLimitedUnits || iLimitedUnits <= 3);
 
 			iValue *= std::max(1, iAttackUnits - iLimitedUnits);
 			iValue /= iAttackUnits;
@@ -21411,23 +21415,12 @@ void CvPlayerAI::AI_doDiplo()
 				{
 					if (canPlayersSignFreeTradeAgreement(getID(), ePlayer))
 					{
-						//doto test
-						bool k = AI_getContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE) == 0;
-						bool n = SyncRandOneChanceIn(GC.getInfo(getPersonalityType()).getContactRand(CONTACT_TRADE_FREE_TRADE_ZONE));
-						
 						if (AI_getContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE) == 0 &&
 							SyncRandOneChanceIn(GC.getInfo(getPersonalityType()).
 								getContactRand(CONTACT_TRADE_FREE_TRADE_ZONE)))
 						{
 							
 							TradeData item(TRADE_FREE_TRADE_ZONE);
-							//doto test
-							if (ePlayer >= 2 || getID() >= 2)
-							{
-								bool a = canTradeItem(ePlayer, item, true);
-								bool b = kPlayer.canTradeItem(getID(), item, true);
-							}
-
 							if (canTradeItem(ePlayer, item, true) &&
 								kPlayer.canTradeItem(getID(), item, true))
 							{

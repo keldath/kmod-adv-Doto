@@ -937,7 +937,6 @@ bool CvDeal::startTrade(TradeData trade, PlayerTypes eFromPlayer, PlayerTypes eT
 		if (trade.m_iData <= 0)// advc: was ==
 		{
 			// <advc.032>
-			bool tst = GET_TEAM(eFromPlayer).isFreeTradeAgreement(kToPlayer.getTeam());
 			if (GET_TEAM(eFromPlayer).isFreeTradeAgreement(kToPlayer.getTeam()))
 			{
 				if (kFromPlayer.resetDualDeal(eToPlayer, TRADE_FREE_TRADE_ZONE))

@@ -6740,10 +6740,12 @@ void CvTeam::csTeamTraitsUpdate(TeamTypes eThey, bool bNewValue) const
 
 	bool isOurCS = kOurTeamPlayer.checkCityState(eOurPlayer);
 	bool isThemCS = kThemTeamPlayer.checkCityState(eThemPlayer);
-
-	FAssert(isOurCS != isThemCS); //cant have 2 city states trading this
-	FAssert(!isOurCS != !isThemCS); //cant have 2 none city states trading this
-
+	
+	if (isOurCS != isThemCS)
+		FAssert(isOurCS != isThemCS); //cant have 2 city states trading this
+	if (!isOurCS != !isThemCS)
+		FAssert(!isOurCS != !isThemCS); //cant have 2 none city states trading this
+		
 	kOurTeamPlayer.csMemberUpdateFreeTradeTraits(fTrait, iChange, eOurPlayer);
 	kThemTeamPlayer.csMemberUpdateFreeTradeTraits(fTrait, iChange, eThemPlayer);
 

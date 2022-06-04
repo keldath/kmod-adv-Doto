@@ -838,7 +838,7 @@ int CvMap::numPlotsExternal() const // advc.inl
 }
 
 
-int CvMap::pointXToPlotX(float fX) /* advc: */ const
+int CvMap::pointXToPlotX(float fX) const
 {
 	float fWidth, fHeight;
 	gDLL->getEngineIFace()->GetLandscapeGameDimensions(fWidth, fHeight);
@@ -846,7 +846,7 @@ int CvMap::pointXToPlotX(float fX) /* advc: */ const
 }
 
 
-float CvMap::plotXToPointX(int iX) /* advc: */ const
+float CvMap::plotXToPointX(int iX) const
 {
 	float fWidth, fHeight;
 	gDLL->getEngineIFace()->GetLandscapeGameDimensions(fWidth, fHeight);
@@ -854,7 +854,7 @@ float CvMap::plotXToPointX(int iX) /* advc: */ const
 }
 
 
-int CvMap::pointYToPlotY(float fY) /* advc: */ const
+int CvMap::pointYToPlotY(float fY) const
 {
 	float fWidth, fHeight;
 	gDLL->getEngineIFace()->GetLandscapeGameDimensions(fWidth, fHeight);
@@ -862,7 +862,7 @@ int CvMap::pointYToPlotY(float fY) /* advc: */ const
 }
 
 
-float CvMap::plotYToPointY(int iY) /* advc: */ const
+float CvMap::plotYToPointY(int iY) const
 {
 	float fWidth, fHeight;
 	gDLL->getEngineIFace()->GetLandscapeGameDimensions(fWidth, fHeight);

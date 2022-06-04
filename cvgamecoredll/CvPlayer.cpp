@@ -21,6 +21,7 @@
 #include "CvDLLFlagEntityIFaceBase.h" // BBAI
 #include "BBAILog.h"
 #include "RiseFall.h" // advc.708: Needed only for savegame compatibility
+#include "SelfMod.h" // advc.092b
 
 // advc.003u: Statics moved from CvPlayerAI
 CvPlayerAI** CvPlayer::m_aPlayers = NULL;
@@ -4314,13 +4315,7 @@ bool CvPlayer::canPossiblyTradeItem(PlayerTypes eWhoTo, TradeableItems eItemType
 		//newer
 		if (!canPlayersSignFreeTradeAgreement(getID(), eWhoTo))
 			return false;
-		bool a = getTeam() != kToTeam.getID();
-		bool b = !kOurTeam.isAtWar(kToTeam.getID());
-		bool c = kOurTeam.canSignFreeTradeAgreement(kToTeam.getID());
-		bool d = kOurTeam.isFreeTradeAgreementTrading();
-		bool e = kToTeam.isFreeTradeAgreementTrading();
-		bool f = !kOurTeam.isFreeTradeAgreement(kToTeam.getID());
-
+		
 		return (getTeam() != kToTeam.getID() && !kOurTeam.isAtWar(kToTeam.getID()) &&
 			kOurTeam.canSignFreeTradeAgreement(kToTeam.getID()) &&
 			(kOurTeam.isFreeTradeAgreementTrading() || kToTeam.isFreeTradeAgreementTrading())
@@ -10796,14 +10791,11 @@ void CvPlayer::changeFreeCityCommerce(CommerceTypes eCommerce, int iChange)
 {
 	if (iChange != 0)
 	{
-		int a = getFreeCityCommerce(eCommerce);
 		m_aiFreeCityCommerce.add(eCommerce, iChange);
-		int test = getFreeCityCommerce(eCommerce);
 		FAssert(getFreeCityCommerce(eCommerce) >= 0);
 		updateCommerce(eCommerce);
 	}
 }
-
 
 /*	K-Mod. This function has been rewritten to enforce
 	the rules of flexible / inflexible commerce types. (not all changes marked) */
@@ -20823,9 +20815,14 @@ void CvPlayer::getGlobeLayerColors(GlobeLayerTypes eGlobeLayerType, int iOption,
 {
 	PROFILE_FUNC(); // advc.opt
 	CvGame const& kGame = GC.getGame();
-	// <advc.004z> Too early; player options haven't been set yet.
-	if (kGame.getTurnSlice() <= 0)
-		return; // </advc.004z>
+	// <advc.004z>
+	if (kGame.getTurnSlice() <= 0 || // Too early; player options not yet set.
+		!smc::BtS_EXE.isPlotIndicatorSizePatched()) // advc.092b
+	{	/*	(No use in setting the GlobeLayer_DIRTY_BIT - caller won't have cleared
+			it yet. But the dirty bit seems to get set again at least once before
+			initialization is through. So we're actually saving a little time here.) */
+		return;
+	} // </advc.004z>
 	/*  <advc> These get cleared by some of the subroutines, but should be
 		empty to begin with. If not, there could be a memory leak. */
 	FAssert(aColors.empty() && aIndicators.empty());
@@ -22090,7 +22087,7 @@ void CvPlayer::csMemberUpdateFreeTradeTraits(TraitTypes eTrait, int iChange, Pla
 	//need to fix it....
 	
 	CvTraitInfo& kTrait = GC.getInfo(eTrait);
-	FAssert(kTrait.getFreeTradeValid() > 0)//it has to be there!
+	FAssert(kTrait.getFreeTradeValid() > 0);//it has to be there!
 	
 	FOR_EACH_ENUM(Commerce)
 	{

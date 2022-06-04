@@ -373,13 +373,14 @@ void CvGameTextMgr::setMinimizePopupHelp(CvWString& szString, const CvPopupInfo 
 	}
 }
 
+// advc (note): This has been redundantly implemented in PLE.py (PLE.showUnitInfoPane)
 void CvGameTextMgr::setEspionageMissionHelp(CvWStringBuffer &szBuffer, const CvUnit* pUnit)
 {
-	if (pUnit->isSpy())
-	{
-		PlayerTypes eOwner =  pUnit->getPlot().getOwner();
-		if (NO_PLAYER != eOwner && GET_PLAYER(eOwner).getTeam() != pUnit->getTeam())
-		{
+	if (!pUnit->isSpy())
+		return;
+	PlayerTypes const eOwner =  pUnit->getPlot().getOwner();
+	if (eOwner == NO_PLAYER || TEAMID(eOwner) == pUnit->getTeam())
+		return;
 			if (!pUnit->canEspionage(pUnit->plot()))
 			{
 				szBuffer.append(NEWLINE);
@@ -387,16 +388,20 @@ void CvGameTextMgr::setEspionageMissionHelp(CvWStringBuffer &szBuffer, const CvU
 
 				if (pUnit->hasMoved() || pUnit->isMadeAttack())
 				{
-					szBuffer.append(gDLL->getText("TXT_KEY_UNIT_HELP_NO_ESPIONAGE_REASON_MOVED"));
+			szBuffer.append(gDLL->getText(
+					"TXT_KEY_UNIT_HELP_NO_ESPIONAGE_REASON_MOVED"));
 				}
 				else if (!pUnit->isInvisible(GET_PLAYER(eOwner).getTeam(), false))
 				{
-					szBuffer.append(gDLL->getText("TXT_KEY_UNIT_HELP_NO_ESPIONAGE_REASON_VISIBLE", GET_PLAYER(eOwner).getNameKey()));
+			szBuffer.append(gDLL->getText(
+					"TXT_KEY_UNIT_HELP_NO_ESPIONAGE_REASON_VISIBLE",
+					GET_PLAYER(eOwner).getNameKey()));
 				}
 			}
 			else if (pUnit->getFortifyTurns() > 0)
 			{
-				int iModifier = -(pUnit->getFortifyTurns() * GC.getDefineINT("ESPIONAGE_EACH_TURN_UNIT_COST_DECREASE"));
+		int iModifier = -pUnit->getFortifyTurns() *
+				GC.getDefineINT("ESPIONAGE_EACH_TURN_UNIT_COST_DECREASE");
 				if (iModifier != 0)
 				{
 					szBuffer.append(NEWLINE);
@@ -404,8 +409,6 @@ void CvGameTextMgr::setEspionageMissionHelp(CvWStringBuffer &szBuffer, const CvU
 				}
 			}
 		}
-	}
-}
 
 
 void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
@@ -1638,7 +1641,7 @@ void CvGameTextMgr::setPlotListHelpPerOwner(CvWStringBuffer& szString,
 	int iScreenHeight = kGame.getScreenHeight();
 	int iLineLimit = (iScreenHeight == 0 ? 25 :
 			fmath::round(32 * dFontFactor * kGame.getScreenHeight() / 1000.0 - 5));
-	/*  When hovering over an indicator bubble (unit layer), only info about units
+	/*  When hovering over a plot indicator (unit layer), only info about units
 		in kPlot is shown. This means more space. Same when hovering over a flag
 		(bShort). */
 	if(bIndicator || bShort)
@@ -1968,7 +1971,7 @@ void CvGameTextMgr::setPlotListHelp(CvWStringBuffer &szString, CvPlot const& kPl
 
 	if (//(gDLL->getChtLvl() > 0)
 		GC.getGame().isDebugMode() &&// advc.135c
-		!bIndicator && // advc.007: Don't attach debug info to indicator bubbles
+		!bIndicator && // advc.007: Don't attach debug info to plot indicators
 		GC.ctrlKey())
 	{
 		/*  advc: Moved into subroutine. (Note: bShort and bOneLine are unused
@@ -4191,48 +4194,60 @@ void CvGameTextMgr::setPlotHelpDebug_Ctrl(CvWStringBuffer& szString, CvPlot cons
 					iNumOtherCitySites, iOtherSiteBestValue));
 		}
 	}
-	else if (kPlot.isOwned() && pPlotCity == NULL)
+	else if (kPlot.isOwned() && pPlotCity == NULL &&
+		!kPlot.isWater()) // advc.007
 	{
 		if(bAlt && !bShift)
 		{
-			if (GET_TEAM(kPlot.getTeam()).AI_isHasPathToEnemyCity(kPlot))
+			CvTeamAI const& kPlotTeam = GET_TEAM(kPlot.getTeam());
+			// <advc.opt> Don't compute this over and over as the user inspects the text
+			static TeamTypes eCacheTeam = NO_TEAM;
+			static bool bHasPath = false;
+			static ArrayEnumMap<TeamTypes,bool> abHasPath;
+			bool const bUpdCache = (kPlotTeam.getID() != eCacheTeam);
+			eCacheTeam = kPlotTeam.getID();
+			if (bUpdCache)
+				bHasPath = kPlotTeam.AI_isHasPathToEnemyCity(kPlot); // </advc.opt>
+			if (bHasPath)
 				szString.append(CvWString::format(L"\nCan reach an enemy city\n\n"));
 			else szString.append(CvWString::format(L"\nNo reachable enemy cities\n\n"));
-			for (int iI = 0; iI < MAX_PLAYERS; ++iI)
+			for (TeamIter<ALIVE> itTarget; itTarget.hasNext(); ++itTarget)
+			{	// <advc.opt>
+				if (bUpdCache)
 			{
-				if (GET_PLAYER((PlayerTypes)iI).isAlive())
-				{
-					if (kPlot.getTeam() == TEAMID((PlayerTypes)iI) || // advc.pf
-						GET_TEAM(kPlot.getTeam()).AI_isHasPathToPlayerCity(kPlot,(PlayerTypes)iI))
+					abHasPath.set(itTarget->getID(),
+							&kPlotTeam == &*itTarget || // advc.pf
+							kPlotTeam.AI_isHasPathToEnemyCity(kPlot, *itTarget));
+				} // </advc.opt>
+				if (abHasPath.get(itTarget->getID()))
 					{
 						szString.append(CvWString::format(SETCOLR L"Can reach %s city" ENDCOLR,
-								TEXT_COLOR("COLOR_GREEN"), GET_PLAYER((PlayerTypes)iI).getName()));
+							TEXT_COLOR("COLOR_GREEN"), itTarget->getName().c_str()));
 					}
 					else
 					{
 						szString.append(CvWString::format(SETCOLR L"Cannot reach any %s city" ENDCOLR,
-								TEXT_COLOR("COLOR_NEGATIVE_TEXT"), GET_PLAYER((PlayerTypes)iI).getName()));
+							TEXT_COLOR("COLOR_NEGATIVE_TEXT"), itTarget->getName().c_str()));
 					}
-
-					if (GET_TEAM(kPlot.getTeam()).isAtWar(TEAMID((PlayerTypes)iI)))
-					{
+				if (kPlotTeam.isAtWar(itTarget->getID()))
 						szString.append(CvWString::format(L" (enemy)"));
-					}
 					szString.append(CvWString::format(L"\n"));
 					// <advc.007>
+				for (MemberIter itMember(itTarget->getID()); itMember.hasNext(); ++itMember)
+				{
 					szString.append(CvString::format("Bonus trade counter: %d\n",
-							GET_PLAYER(kPlot.getOwner()).AI_getBonusTradeCounter((PlayerTypes)iI)));
-					// </advc.007>
+							GET_PLAYER(kPlot.getOwner()).AI_getBonusTradeCounter(
+							itMember->getID())));
+				} // </advc.007>
 				}
 			}
-		}
 		else if (bShift && bAlt)
 		{
-			for (int iI = 0; iI < GC.getNumCivicInfos(); iI++)
+			FOR_EACH_ENUM(Civic)
 			{
 				szString.append(CvWString::format(L"\n %s = %d",
-						GC.getInfo((CivicTypes)iI).getDescription(),
-						GET_PLAYER(kPlot.getOwner()).AI_civicValue((CivicTypes)iI)));
+						GC.getInfo(eLoopCivic).getDescription(),
+						GET_PLAYER(kPlot.getOwner()).AI_civicValue(eLoopCivic)));
 			}
 		}
 		// advc.007: Commented out
@@ -12496,9 +12511,17 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 		GC.getGame().isDebugMode() && // advc.135c
 		GC.ctrlKey())
 	{
-		int iBuildingValue = pCity->AI().AI_buildingValue(eBuilding, 0, 0, true);
-		szBuffer.append(CvWString::format(L"\nAI Building Value = %d", iBuildingValue));
+		if (GC.ctrlKey())
+		{
+			int iBuildingValue = pCity->AI().AI_buildingValue(
+					eBuilding, 0, 0, true);
+			szBuffer.append(CvWString::format(L"\nAI Building Value = %d",
+					iBuildingValue));
 	} // K-Mod end
+		// <advc.007>
+		else if (GC.altKey())
+			szBuffer.append(CvWString::format(L"id=%d\n", eBuilding));
+	} // </advc.007>
 
 	if (bStrategyText)
 	{
@@ -17391,12 +17414,10 @@ void CvGameTextMgr::getAttitudeString(CvWStringBuffer& szBuffer, PlayerTypes ePl
 edit - doto - i think i need this acctually...														*/
 /*************************************************************************************************/
 		// Start bonus to Diplomacy from Free Trade Agreement
-		int b = kPlayer.AI_getFreeTradeAgreementAttitude(eTargetPlayer);
 		appendToAttitudeBreakdown(szBreakdown, iPass,
 			kPlayer.AI_getFreeTradeAgreementAttitude(eTargetPlayer), iTotal,
 			"TXT_KEY_MISC_ATTITUDE_FREE_TRADE_AGREEMENT");
 		//added from history re mod for doto
-		int t = kPlayer.AI_getRivalTradeAgreementAttitude(eTargetPlayer);
 		appendToAttitudeBreakdown(szBreakdown, iPass,
 			kPlayer.AI_getRivalTradeAgreementAttitude(eTargetPlayer), iTotal,
 			"TXT_KEY_MISC_ATTITUDE_RIVAL_TRADE_AGREEMENT");
@@ -22272,11 +22293,12 @@ void CvGameTextMgr::getRebasePlotHelp(CvPlot const& kPlot,
 void CvGameTextMgr::getNukePlotHelp(CvPlot const& kPlot,
 	CvUnit& kNuke, CvWString& szHelp)
 {
-	if (kNuke.canNukeAt(kNuke.getPlot(), kPlot.getX(), kPlot.getY()))
+	if (kNuke.canNukeAt(kNuke.getPlot(), kPlot.getX(), kPlot.getY(),
+		kNuke.getTeam())) // kekm.7 (advc)
 	{	// <advc.650>
 		TeamTypes eInterceptTeam=NO_TEAM;
 		int iInterceptChance = kNuke.nukeInterceptionChance(
-				kPlot, &eInterceptTeam);
+				kPlot, kNuke.getTeam(), &eInterceptTeam);
 		if (eInterceptTeam != NO_TEAM)
 		{
 			FAssert(iInterceptChance > 0);
@@ -22286,26 +22308,38 @@ void CvGameTextMgr::getNukePlotHelp(CvPlot const& kPlot,
 		} // </advc.650>
 		return; // advc
 	}
-	// <kekm.7> (advc): Prioritize the explanations
+	// <kekm.7> (advc)
 	CvWString szExplain;
-	for (int iPass = 0; iPass < 3 && szExplain.empty(); iPass++) // </kekm.7>
+	// To prevent info leaks
+	for (SquareIter it(kPlot, kNuke.nukeRange());
+		it.hasNext() && szExplain.empty(); ++it)
+	{
+		if (!it->isRevealed(kNuke.getTeam()))
+			szExplain.append(gDLL->getText("TXT_KEY_CANT_NUKE_UNREVEALED"));
+	}
+	// Prioritize the explanations
+	for (int iPass = 0; iPass < 4 && szExplain.empty(); iPass++) // </kekm.7>
 	{
 		for (TeamIter<ALIVE> it; it.hasNext(); ++it)
 		{
 			TeamTypes const eVictimTeam = it->getID();
-			if (!kNuke.isNukeVictim(&kPlot, eVictimTeam))
+			if (!kNuke.isNukeVictim(&kPlot, eVictimTeam, kNuke.getTeam()))
 				continue;
 			// <kekm.7> (advc)
 			if (kNuke.isEnemy(eVictimTeam))
 			{
-				if (iPass == 0)
+				if (iPass <= 1)
 				{
 					bool bCityFound = false;
 					for (SquareIter it(kPlot, kNuke.nukeRange()); it.hasNext(); ++it)
 					{
-						if (it->isCity() && kNuke.isEnemy(it->getTeam()) &&
+						if (it->isCity() &&
+							(iPass == 0 ?
+							(kNuke.isEnemy(it->getTeam()) &&
 							it->calculateFriendlyCulturePercent(kNuke.getTeam()) >=
-							GC.getDefineINT(CvGlobals::CITY_NUKE_CULTURE_THRESH))
+							GC.getDefineINT(CvGlobals::CITY_NUKE_CULTURE_THRESH)) :
+							!GET_TEAM(it->calculateCulturalOwner(true)).
+							isAtWar(kNuke.getTeam())))
 						{
 							bCityFound = true;
 							break;
@@ -22313,8 +22347,10 @@ void CvGameTextMgr::getNukePlotHelp(CvPlot const& kPlot,
 					}
 					if (bCityFound)
 					{
-						szExplain.append(gDLL->getText("TXT_KEY_CANT_NUKE_OWN_POP",
-								GC.getDefineINT(CvGlobals::CITY_NUKE_CULTURE_THRESH)));
+						szExplain.append(iPass == 0 ?
+								gDLL->getText("TXT_KEY_CANT_NUKE_OWN_POP",
+								GC.getDefineINT(CvGlobals::CITY_NUKE_CULTURE_THRESH)) :
+								gDLL->getText("TXT_KEY_CANT_NUKE_NEUTRAL_POP"));
 						break;
 					}
 				}
@@ -22323,10 +22359,10 @@ void CvGameTextMgr::getNukePlotHelp(CvPlot const& kPlot,
 			{
 				if (eVictimTeam == kNuke.getTeam())
 				{
-					if (iPass == 2)
+					if (iPass == 3)
 						szExplain.append(gDLL->getText("TXT_KEY_CANT_NUKE_OWN_TEAM"));
 				}
-				else if (iPass == 1) // </kekm.7>
+				else if (iPass == 2) // </kekm.7>
 					szExplain.append(gDLL->getText("TXT_KEY_CANT_NUKE_FRIENDS"));
 				break;
 			}

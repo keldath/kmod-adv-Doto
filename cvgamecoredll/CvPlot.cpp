@@ -10658,7 +10658,7 @@ void CvPlot::colorCsPlot(PlayerTypes eNewOwner, PlayerTypes eOldOwner)
 		{
 			isOldCityState = GET_PLAYER(eOldOwner).checkCityState(eOldOwner);
 		}
-		bool isNewCityState = false;
+		//bool isNewCityState = false;
 		bool isCityState = false;
 		NiColorA color;
 		if (eNewOwner != NO_PLAYER)

@@ -219,7 +219,7 @@
 		<GameOptionInfo>
 			<Type>GAMEOPTION_CITY_STATES</Type>
 			<Description>City States</Description>
-			<Help>Spawns City states: check out the parameters in GlobalDefinesAlt.xml</Help>
+			<Help>Spawns City states(only on Ancient Era). for Tweaks --> GlobalDefinesAlt.xml</Help>
 			<bDefault>1</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>

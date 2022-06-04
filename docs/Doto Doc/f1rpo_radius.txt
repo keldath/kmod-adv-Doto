@@ -1,0 +1,88 @@
+I guess this is the setup I have in mind:
+Spoiler : 
+Code:
+// CvPlayer.cpp
+void CvPlayer::resetCivTypeEffects()
+{
+   // ...
+   m_iCityRadius = GC.getInfo(getCivilizationType()).getMaxCityRadius();
+   m_iCityDiameter = 2 * m_iCityRadius + 1;
+   int iCityPlots = -1;
+   switch (m_iCityRadius) // Replacing compile-time definitions
+   {
+      case 1: iCityPlots = 9; break;
+      case 2: iCityPlots = 21; break;
+      case 3: iCityPlots = 37; break;
+      case 4: iCityPlots = 61; break;
+      default: FErrorMsg("Invalid city radius");
+   }
+   m_eCityPlots = (CityPlotTypes)iCityPlots;
+}
+
+// CvPlayer.h
+// Data members (to be initialized in constructor, reset, stored in savegames)
+int m_iCityRadius; // perhaps no good reason for treating these two as enums
+int m_iCityDiameter;
+CityPlotTypes m_eCityPlots;
+// Acessors ...
+int cityRadius() const { return m_iCityRadius; }
+int cityDiameter() const { return m_iCityDiameter; }
+CityPlotTypes numCityPlots() const { return m_eCityPlots; }
+
+// CvCity.h (wrapper functions for convenience)
+CityPlotTypes numCityPlots() const;
+int maxRadius() const;
+int maxDiameter() const;
+// CvCity.cpp (don't want to include CvPlayer.h in CvCity.h)
+CityPlotTypes CvCity::numCityPlots() const
+{
+   return GET_PLAYER(m_eOwner).numCityPlots();
+}
+int CvCity::maxRadius() const
+{
+   return GET_PLAYER(m_eOwner).cityRadius();
+}
+int CvCity::maxDiameter() const
+{
+   return GET_PLAYER(m_eOwner).cityDiameter();
+}
+
+// CvEnumMacros.h
+// Remove DO(CityPlot, CITYPLOT) from DO_FOR_EACH_STATIC_ENUM_TYPE
+// (it's not a static thing anymore)
+
+// CvEnums.h
+ENUM_START(CityPlot, CITYPLOT)
+   // These are valid and useful regardless of the city radius
+   CITY_HOME_PLOT = 0,
+   FIRST_ADJACENT_PLOT = 1,
+   NUM_INNER_PLOTS = 9,
+ENUM_END(CityPlot, CITYPLOT)
+// (No longer handled by CvEnumMacros.h)
+DEFINE_INCREMENT_OPERATORS(CityPlotTypes);
+#define FOR_EACH_CITYPLOT(kPlayer) \
+    for (CityPlotTypes eLoopCityPlot = CITY_HOME_PLOT; \
+         eLoopCityPlot < kPlayer.numCityPlots(); ++eLoopCityPlot)
+
+// cpp.hint (for full VS IntelliSense support for macros)
+#define FOR_EACH_CITYPLOT(kPlayer)
+The compiler should then complain about all uses of NUM_CITY_PLOTS, NUM_CITYPLOT_TYPES, CITY_PLOTS_RADIUS, CITY_PLOTS_DIAMETER, LAST_CITY_PLOT, FOR_EACH_ENUM(CityPlot) and EnumMap<CityPlotTypes>.
+
+In CityPlotIterator.h a member
+CityPlotTypes m_eCityPlots;​
+could be added (to replace NUM_CITY_PLOTS) and set to kCity.numCityPlots() in the constructor that takes a city. Will have to add a CvPlayer const& kPlayer param to the other two constructors (and #include CvPlayer.h) and set m_eCityPlots = kPlayer.numCityPlots();
+
+The FOR_EACH_ENUM(CityPlot) loops become FOR_EACH_CITYPLOT(kPlayer) where kPlayer is an appropriate player, depending on the context. E.g. in CvCityAI, it'll usually be GET_PLAYER(m_eOwner).
+so the owner?
+Yes.
+i can set a if null use 60 or the default 20 right?
+A default should work, but, for the AI, it'll be better to decide in each location where the iterator is used what the radius should be (e.g. by passing the player that is considering to found a city to the constructor of the iterator; see above).
+one of the things i wanna avoid lopping over 30 more tiles for nothing.
+Just for performance, using city radius 2 when no city has been founded yet will do, but that'll hurt the city state AI (because they'll actually have radius 3 or 4).
+
+Just saw your edit.
+i figure - how about, make they ai use base radius of 2 for stuff before a city is founded.
+the added tiles of 3-4 - well these are bonus ones that the ai didnt plan on.
+heck, a human player that will start thinking about 61 tiles, even 37 when placing cities for the long game where the min func distance is 3, is more to handle.
+so , keep it simple.
+Sure, it's not the bloody end of the world. :) (But the info about the future radius is also not that difficult to get, just need to pass along the future city owner. OK, fair amount of work to change all the call locations. :undecide:) Anyway, Mylon's mod treats radius 4 as the default; that's not good.

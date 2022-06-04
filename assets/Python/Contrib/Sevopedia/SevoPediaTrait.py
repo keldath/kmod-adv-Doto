@@ -130,7 +130,6 @@ class SevoPediaTrait:
 						else:
 							szSpecial += "\n"
 						szSpecial += line[2:]  # strip first two spaces
-			
 			if bFound:
 				screen.addMultilineText(listName, szSpecial, self.X_SPECIAL+5, self.Y_SPECIAL+27, self.W_SPECIAL-10, self.H_SPECIAL-32, WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_LEFT_JUSTIFY)
 

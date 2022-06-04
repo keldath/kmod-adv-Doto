@@ -1082,6 +1082,10 @@ bool CvDLLWidgetData::executeAltAction(CvWidgetDataStruct &widgetDataStruct)
 	bool bHandled = true;
 	switch (widgetDataStruct.m_eWidgetType)
 	{
+	// <advc.004n>
+	case WIDGET_PLOT_LIST_SHIFT:
+		doPlotListShift(iData1, true);
+		break; // </advc.004n>
 	case WIDGET_HELP_TECH_ENTRY:
 	case WIDGET_HELP_TECH_PREPREQ:
 	case WIDGET_RESEARCH:
@@ -1265,7 +1269,7 @@ void CvDLLWidgetData::doPlotList(CvWidgetDataStruct &widgetDataStruct)
 }
 
 // advc: This has gotten verbose, moving it out of executeAction.
-void CvDLLWidgetData::doPlotListShift(int iChange)
+void CvDLLWidgetData::doPlotListShift(int iChange, bool bMaxStep)
 {
 	//int iIncr = (GC.ctrlKey() ? GC.getDefineINT("MAX_PLOT_LIST_SIZE") - 1 : 1); // BtS
 	// <advc.004n>
@@ -1274,11 +1278,16 @@ void CvDLLWidgetData::doPlotListShift(int iChange)
 	CvPlot const* pPlot = gDLL->UI().getSelectionPlot();
 	if (pPlot == NULL)
 		return;
+	int const iPlotUnits = pPlot->getNumUnits();
 	int iStep = 10;
-	int const iMaxStep = GC.getDefineINT("MAX_PLOT_LIST_SIZE"); // 100
 	if (gDLL->UI().isCityScreenUp())
 	{
-		int const iPlotUnits = pPlot->getNumUnits();
+		// (Not sure that this is really a maximal limit of anything)
+		int const iBigStep = GC.getDefineINT("MAX_PLOT_LIST_SIZE"); // 100
+		/*	BUG drawing method will only ever show a single row on the city screen.
+			Don't want to expand rapidly upon the first right-shift then.
+			Instead, let the bMaxStep param jump to the final column. */
+		bool bBUGMethod = BUGOption::isEnabled("PLE__BUG_Style", false);
 		static int iUnitsPerRow = 0;
 		if (GC.getGame().getPlotListShift() == 0 && iChange == 1)
 		{
@@ -1291,14 +1300,22 @@ void CvDLLWidgetData::doPlotListShift(int iChange)
 			/*	Show a total of MAX_PLOT_LIST_SIZE. (Then move in steps of 10,
 				same as on the main screen, which shows multiple rows already
 				at shift 0.) */
+			if (!bBUGMethod)
+			{
 			iStep = std::max(iStep, std::min(
-					iPlotUnits, iMaxStep - iUnitsPerRow));
+						iPlotUnits, iBigStep - iUnitsPerRow));
 		}
-		else if (GC.getGame().getPlotListShift() == 1 && iChange == -1)
+			else if (bMaxStep)
+				iStep = iPlotUnits - iUnitsPerRow;
+		}
+		else if (GC.getGame().getPlotListShift() == 1 && iChange == -1 &&
+			!bBUGMethod)
 		{
 			FAssert(iUnitsPerRow > 0);
-			iStep = std::min(iMaxStep, iPlotUnits) - iUnitsPerRow;
+			iStep = std::min(iBigStep, iPlotUnits) - iUnitsPerRow;
 		}
+		else if (bBUGMethod && bMaxStep)
+			iStep = iPlotUnits - iUnitsPerRow;
 	}
 	GC.getGame().changePlotListShift(iChange);
 	gDLL->UI().changePlotListColumn(iChange * iStep); // </advc.004n>
@@ -3470,14 +3487,17 @@ void CvDLLWidgetData::parseTechTreeHelp(CvWidgetDataStruct &widgetDataStruct, Cv
 
 void CvDLLWidgetData::parseChangePercentHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer)
 {
-	if (widgetDataStruct.m_iData2 > 0)
+	int const iChange = widgetDataStruct.m_iData2;
+	szBuffer.assign(gDLL->getText(iChange > 0 ?
+			"TXT_KEY_MISC_INCREASE_RATE" : "TXT_KEY_MISC_DECREASE_RATE",
+			GC.getInfo((CommerceTypes)widgetDataStruct.m_iData1).getTextKeyWide(),
+			abs(iChange)));
+	// <advc.004> Hint about right-click behavior
+	if (!BUGOption::isEnabled("MainInterface__MinMax_Commerce", false))
 	{
-		szBuffer.assign(gDLL->getText("TXT_KEY_MISC_INCREASE_RATE", GC.getInfo((CommerceTypes) widgetDataStruct.m_iData1).getTextKeyWide(), widgetDataStruct.m_iData2));
-	}
-	else
-	{
-		szBuffer.assign(gDLL->getText("TXT_KEY_MISC_DECREASE_RATE", GC.getInfo((CommerceTypes) widgetDataStruct.m_iData1).getTextKeyWide(), -(widgetDataStruct.m_iData2)));
-	}
+		szBuffer.append(iChange > 0 ?
+				"TXT_KEY_MISC_INCREASE_RATE_HINT" : "TXT_KEY_MISC_DECREASE_RATE_HINT");
+	} // </advc.004>
 }
 
 // advc (comment): Could this function be merged into CvGameTextMgr::parseLeaderHeadHelp?
@@ -4940,7 +4960,7 @@ void CvDLLWidgetData::parseFlagHelp(CvWidgetDataStruct &widgetDataStruct, CvWStr
 /*                                                                                              */
 /************************************************************************************************/
 	// Add string showing version number
-	szTempBuffer.Format(NEWLINE SETCOLR L"%S" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), "AdvCiv 1.05 + Doto 1.09.2");
+	szTempBuffer.Format(NEWLINE SETCOLR L"%S" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), "AdvCiv 1.06(+) + Doto 1.10");
 	szBuffer.append(szTempBuffer);
 	szBuffer.append(NEWLINE);
 #ifdef LOG_AI
