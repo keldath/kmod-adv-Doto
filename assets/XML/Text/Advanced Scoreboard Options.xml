@@ -318,7 +318,7 @@
 		<Italian>Seleziona il massimo numero di Civiltà che verranno mostrate (0 significa illimitate).</Italian>
 		<Spanish>Permite seleccionar el máximo número de civilizaciones a mostrar (0 indica que no hay límite).</Spanish>
 	</TEXT>
-
+	
 	<TEXT>
 		<Tag>TXT_KEY_BUG_OPT_SCORES__DISPLAYORDER_TEXT</Tag>
 		<English>Column Order:</English>
@@ -427,7 +427,7 @@
 		<Italian>Quando è selezionato, nel Pannello del Punteggio vengono visualizzate le icone invece dei nomi delle Tecnologie ricercate dalle Civiltà (per cui ti è lecito conoscerle).</Italian>
 		<Spanish>Si se activa, muestra iconos de investigación en lugar de nombres de investigaciones.</Spanish>
 	</TEXT>
-	
+
 	<!-- advc.092: Changed the id of this option from RESEARCHICONSIZE.
 		 Now has a choice "Default" and therefore needs a choice list text key: -->
 	<TEXT>
@@ -451,7 +451,7 @@
 		<Italian>Imposta la dimensione delle Icone di Ricerca (quando queste sono visualizzate; il valore predefinito è 24).</Italian>
 		<Spanish>Tamaño de los iconos de investigación (por defecto: 24).</Spanish>
 	</TEXT>
-	
+
 	<!-- advc.092: Same deal as for the TECHBUTTONSIZE option above.
 		 The original option id was LINEHEIGHT. -->
 	<TEXT>

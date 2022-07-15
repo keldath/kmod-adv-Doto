@@ -42,41 +42,5 @@
 			</ProductionToCommerceModifiers>
 			<Button>Art/Interface/Buttons/Process/ProcessCulture.dds</Button>
 		</ProcessInfo>
-		<ProcessInfo>
-			<Type>PROCESS_WEALTH2</Type>
-			<Description>Light Wealth</Description>
-			<Strategy>TXT_KEY_PROCESS_WEALTH_STRATEGY</Strategy>
-			<TechPrereq>TECH_HORSEBACK_RIDING</TechPrereq>
-			<ProductionToCommerceModifiers>
-				<iProductionToCommerceModifier>25</iProductionToCommerceModifier>
-				<iProductionToCommerceModifier>0</iProductionToCommerceModifier>
-				<iProductionToCommerceModifier>0</iProductionToCommerceModifier>
-			</ProductionToCommerceModifiers>
-			<Button>Art/Interface/Buttons/Process/ProcessWealth.dds</Button>
-		</ProcessInfo>
-		<ProcessInfo>
-			<Type>PROCESS_RESEARCH2</Type>
-			<Description>Light Research</Description>
-			<Strategy>TXT_KEY_PROCESS_RESEARCH_STRATEGY</Strategy>
-			<TechPrereq>TECH_WRITING</TechPrereq>
-			<ProductionToCommerceModifiers>
-				<iProductionToCommerceModifier>0</iProductionToCommerceModifier>
-				<iProductionToCommerceModifier>25</iProductionToCommerceModifier>
-				<iProductionToCommerceModifier>0</iProductionToCommerceModifier>
-			</ProductionToCommerceModifiers>
-			<Button>Art/Interface/Buttons/Process/ProcessResearch.dds</Button>
-		</ProcessInfo>
-		<ProcessInfo>
-			<Type>PROCESS_CULTURE2</Type>
-			<Description>Light Culture</Description>
-			<Strategy>TXT_KEY_PROCESS_CULTURE_STRATEGY</Strategy>
-			<TechPrereq>TECH_PRIESTHOOD</TechPrereq>
-			<ProductionToCommerceModifiers>
-				<iProductionToCommerceModifier>0</iProductionToCommerceModifier>
-				<iProductionToCommerceModifier>0</iProductionToCommerceModifier>
-				<iProductionToCommerceModifier>25</iProductionToCommerceModifier>
-			</ProductionToCommerceModifiers>
-			<Button>Art/Interface/Buttons/Process/ProcessCulture.dds</Button>
-		</ProcessInfo>
 	</ProcessInfos>
 </Civ4ProcessInfo>

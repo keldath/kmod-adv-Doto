@@ -220,7 +220,7 @@
 			<Type>GAMEOPTION_CITY_STATES</Type>
 			<Description>City States</Description>
 			<Help>Spawns City states(only on Ancient Era). for Tweaks --> GlobalDefinesAlt.xml</Help>
-			<bDefault>1</bDefault>
+			<bDefault>0</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
@@ -249,48 +249,41 @@
             <Description>Culture Control</Description>
             <Help>Allows Forts To have A ranged Culture Around Them</Help>
             <bDefault>0</bDefault>
-            <bVisible>0</bVisible>
-       	</GameOptionInfo>
-        <GameOptionInfo>
-            <Type>GAMEOPTION_SUPER_FORTS</Type>
-            <Description>Super Forts</Description>
-            <Help>Allows Forts To have A ranged Culture Around Them and Bombard + more</Help>
-            <bDefault>0</bDefault>
             <bVisible>1</bVisible>
        	</GameOptionInfo>
 		<GameOptionInfo>
 			<Type>GAMEOPTION_INFLUENCE_DRIVEN_WAR</Type>
             <Description>IDW</Description>
             <Help>Influence Driver War - Allows Combat To Spread Culture Via Combat</Help>
-			<bDefault>0</bDefault>
+			<bDefault>1</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
 			<Type>GAMEOPTION_IDW_NO_BARBARIAN</Type>
             <Description>No barbarians IDW</Description>
             <Help>Barbarians battles dont affect IDW [IDW Dependant]</Help>
-			<bDefault>0</bDefault>
+			<bDefault>1</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
 			<Type>GAMEOPTION_IDW_NO_NAVAL</Type>
             <Description>No naval IDW</Description>
             <Help>naval battles dont affect IDW[IDW Dependant]</Help>
-			<bDefault>0</bDefault>
+			<bDefault>1</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
 			<Type>GAMEOPTION_IDW_PILLAGE</Type>
             <Description>Pillage IDW</Description>
             <Help>IDW from Pillaging [IDW Dependant]</Help>
-			<bDefault>0</bDefault>
+			<bDefault>1</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_BUILDING_DELETION</Type>
             <Description>Inactive Buildings</Description>
             <Help>Buildings Must have Prereq demands at all times, unless, their output would be inactive</Help>
-            <bDefault>0</bDefault>
+            <bDefault>1</bDefault>
             <bVisible>1</bVisible>
     	</GameOptionInfo>
         <GameOptionInfo>
@@ -304,14 +297,14 @@
             <Type>GAMEOPTION_CULTURE_WONDER_LIMIT</Type>
             <Description>Culture Wonder Limit</Description>
             <Help>A City can Build amount of Wonders based on its Culture level</Help>
-            <bDefault>0</bDefault>
+            <bDefault>1</bDefault>
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_CULTURE_WONDER_LIMIT_OBSOLETE</Type>
             <Description>Culture Wonder Limit Obs</Description>
             <Help>Allow building a wonder if all but 1 of the city wonders are obsolete [REQ: Culture Wonder Limit]</Help>
-            <bDefault>0</bDefault>
+            <bDefault>1</bDefault>
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
@@ -382,14 +375,14 @@
             <Type>GAMEOPTION_RANGED_RETALIATE</Type>
             <Description>Ranged Retaliate</Description>
             <Help>Ranged units can carry another attack if ther have movement</Help>
-            <bDefault>0</bDefault>
+            <bDefault>1</bDefault>
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_NO_RANGED_COLLATERAL</Type>
             <Description>No Ranged Collateral</Description>
             <Help>Units with Range Strike will not be able to perform collateral attack - might be overpowerd</Help>
-            <bDefault>0</bDefault>
+            <bDefault>1</bDefault>
             <bVisible>1</bVisible> 	
       	</GameOptionInfo>
         <GameOptionInfo>

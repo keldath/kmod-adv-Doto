@@ -133,7 +133,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iStartingLocPercent>10</iStartingLocPercent>
 			<!-- advc.250c: was 150 -->
 			<iAdvancedStartPointsMod>100</iAdvancedStartPointsMod>
-			<iGold>0</iGold>
+			<iGold>100</iGold>
 			<!-- advc.251 (start) -->
 			<!-- was 24 -->
 			<iFreeUnits>20</iFreeUnits>
@@ -318,7 +318,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iStartingLocPercent>20</iStartingLocPercent>
 			<!-- advc.250c: was 130 -->
 			<iAdvancedStartPointsMod>100</iAdvancedStartPointsMod>
-			<iGold>0</iGold>
+			<iGold>100</iGold>
 			<!-- advc.251 (start) -->
 			<!-- was 18 -->
 			<iFreeUnits>15</iFreeUnits>
@@ -478,7 +478,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iStartingLocPercent>35</iStartingLocPercent>
 			<!-- advc.250c: was 110 -->
 			<iAdvancedStartPointsMod>100</iAdvancedStartPointsMod>
-			<iGold>0</iGold>
+			<iGold>100</iGold>
 			<!-- advc.251 (start) -->
 			<!-- was 12 -->
 			<iFreeUnits>10</iFreeUnits>
@@ -609,7 +609,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.108b: was 40 -->
 			<iStartingLocPercent>49</iStartingLocPercent>
 			<iAdvancedStartPointsMod>100</iAdvancedStartPointsMod>
-			<iGold>0</iGold>
+			<iGold>100</iGold>
 			<!-- advc.251 (start) -->
 			<!-- was 8 -->
 			<iFreeUnits>7</iFreeUnits>
@@ -740,7 +740,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iStartingLocPercent>55</iStartingLocPercent>
 			<!-- advc.250c: was 95 -->
 			<iAdvancedStartPointsMod>100</iAdvancedStartPointsMod>
-			<iGold>0</iGold>
+			<iGold>100</iGold>
 			<!-- advc.251 (start) -->
 			<!-- was 6 -->
 			<iFreeUnits>5</iFreeUnits>
@@ -873,7 +873,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iStartingLocPercent>65</iStartingLocPercent>
 			<!-- advc.250c: was 90 -->
 			<iAdvancedStartPointsMod>100</iAdvancedStartPointsMod>
-			<iGold>0</iGold>
+			<iGold>100</iGold>
 			<iFreeUnits>4</iFreeUnits>
 			<!-- advc.251 (start) -->
 			<!-- was 70 -->
@@ -1034,7 +1034,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iStartingLocPercent>75</iStartingLocPercent>
 			<!-- advc.250c: was 85 -->
 			<iAdvancedStartPointsMod>100</iAdvancedStartPointsMod>
-			<iGold>0</iGold>
+			<iGold>100</iGold>
 			<iFreeUnits>3</iFreeUnits>
 			<!-- advc.251 (start) -->
 			<!-- was 80 -->
@@ -1197,7 +1197,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iStartingLocPercent>85</iStartingLocPercent>
 			<!-- advc.250c: was 80 -->
 			<iAdvancedStartPointsMod>100</iAdvancedStartPointsMod>
-			<iGold>0</iGold>
+			<iGold>100</iGold>
 			<iFreeUnits>2</iFreeUnits>
 			<!-- advc.251 (start) -->
 			<!-- was 90 -->
@@ -1367,7 +1367,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iStartingLocPercent>95</iStartingLocPercent>
 			<!-- advc.250c: was 75 -->
 			<iAdvancedStartPointsMod>100</iAdvancedStartPointsMod>
-			<iGold>0</iGold>
+			<iGold>100</iGold>
 			<iFreeUnits>1</iFreeUnits>
 			<iUnitCostPercent>100</iUnitCostPercent>
 			<!-- advc.251 (start) -->

@@ -542,7 +542,7 @@
 		<Italian>Sostituisce le informazioni sulle Unità normalmente visualizzate quando si mantiene il cursore su una Unità.</Italian>
 		<Spanish>Reemplaza la información mostrada por defecto en el texto flotante de una unidad.</Spanish>
 	</TEXT-->
-	
+
 	<!-- advc.069: Now also unused. Player shouldn't have to set this manually. -->
 	<!-- Was "Promotion Icon Offset" and in German
 		 "Beförderungen (Abstand)" - a bit long. -->

@@ -768,8 +768,9 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 		<iDefineIntVal>10</iDefineIntVal>
 	</Define>
 	<Define>
+		<!--doto reduced to 1 from 2-->
 		<DefineName>FRESH_WATER_HEALTH_CHANGE</DefineName>
-		<iDefineIntVal>2</iDefineIntVal>
+		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>POWER_HEALTH_CHANGE</DefineName>
@@ -784,8 +785,9 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
 	<Define>
+		<!--doto changed to 35 from 30 -->
 		<DefineName>MAX_DISTANCE_CITY_MAINTENANCE</DefineName>
-		<iDefineIntVal>30</iDefineIntVal>
+		<iDefineIntVal>35</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>MAX_TRADE_ROUTES</DefineName>
@@ -1280,6 +1282,7 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
 	<Define>
+		<!-- keldath doto - was 1000 -->
 		<DefineName>PERCENT_ANGER_DIVISOR</DefineName>
 		<iDefineIntVal>1000</iDefineIntVal>
 	</Define>
@@ -1559,8 +1562,9 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 	     To actually tweak the apparent-size of the globe when fully-back, you need to go into CIV4DetailManager.XML  and adjust the
 	     CAMERA_MAX_DISTANCE_FADER value. Because this variable is in the DetailManager XML, your changes will go into effect without restarting the game. -->
 	<Define>
+		<!-- doto - was 7000-->
 		<DefineName>CAMERA_SMALLEST_MAX_DISTANCE</DefineName>
-		<fDefineFloatVal>7000</fDefineFloatVal>
+		<fDefineFloatVal>4000</fDefineFloatVal>
 	</Define>
 	<Define>
 		<DefineName>CAMERA_FORCE_TO_SMALLEST_MAX_DISTANCE</DefineName>
@@ -1590,7 +1594,7 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 		<DefineName>CAMERA_CITY_ZOOM_IN_DISTANCE</DefineName>
 <!--doto enhanced city size Mylon Mega Mod -->
 <!--	<fDefineFloatVal>4800</fDefineFloatVal> -->
-			<fDefineFloatVal>7000</fDefineFloatVal>
+			<fDefineFloatVal>3400</fDefineFloatVal>
 	</Define>
 	<Define>
 		<DefineName>CAMERA_BATTLE_ZOOM_IN_DISTANCE</DefineName>
@@ -2074,15 +2078,6 @@ FORCE_UNOWNED_CITY_TIMER	Unknown
 	<Define>
 		<DefineName>FORCE_UNOWNED_CITY_TIMER</DefineName>
 		<iDefineIntVal>2</iDefineIntVal>
-	</Define>
-<!-- Super Forts begin -->
-	<Define>
-		<DefineName>AI_WORKER_MAX_DISTANCE_FROM_CITY_OUT_BORDERS</DefineName>
-		<iDefineIntVal>10</iDefineIntVal>
-	</Define>
-	<Define>
-		<DefineName>SUPER_FORTS_DURATION_BEFORE_REVOLT</DefineName>
-		<iDefineIntVal>5</iDefineIntVal>
 	</Define>
 <!-- Super Forts end - moved to globaldefinesalt
 	<Define>

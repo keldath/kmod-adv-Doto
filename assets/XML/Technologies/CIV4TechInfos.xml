@@ -1430,12 +1430,6 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iMaintenanceModifier>5</iMaintenanceModifier>
-			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
-			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iTradeRoutes>0</iTradeRoutes>
 			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>
@@ -2313,12 +2307,6 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iMaintenanceModifier>0</iMaintenanceModifier>
-			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
-			<iCoastalDistanceMaintenanceModifier>5</iCoastalDistanceMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iTradeRoutes>0</iTradeRoutes>
 			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>
@@ -2618,7 +2606,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_ECONOMY</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>350</iCost>
+			<!-- advc.174: was 350 -->
+			<iCost>300</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_CLASSICAL</Era>
@@ -2930,7 +2919,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iPower>0</iPower>
 			<bRepeat>0</bRepeat>
 			<bTrade>1</bTrade>
-<!-- advanced diplomacy -
+<!-- advanced diplomacy - city states
 			<bFreeTradeAgreementTrading>1</bFreeTradeAgreementTrading>-->
 			<bDisable>0</bDisable>
 			<bGoodyTech>0</bGoodyTech>
@@ -3735,12 +3724,6 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iMaintenanceModifier>0</iMaintenanceModifier>
-			<iDistanceMaintenanceModifier>5</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
-			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iTradeRoutes>0</iTradeRoutes>
 			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>
@@ -4737,7 +4720,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iPower>2</iPower>
 			<bRepeat>0</bRepeat>
 			<bTrade>1</bTrade>
-<!-- advanced diplomacy -->
+<!-- advanced diplomacy city states-->
 			<bFreeTradeAgreementTrading>1</bFreeTradeAgreementTrading>
 			<bDisable>0</bDisable>
 			<bGoodyTech>1</bGoodyTech>
@@ -4966,12 +4949,6 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iMaintenanceModifier>0</iMaintenanceModifier>
-			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
-			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iTradeRoutes>0</iTradeRoutes>
 			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>
@@ -5284,12 +5261,6 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iMaintenanceModifier>5</iMaintenanceModifier>
-			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
-			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iTradeRoutes>0</iTradeRoutes>
 			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>

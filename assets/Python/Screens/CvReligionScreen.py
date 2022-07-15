@@ -193,7 +193,8 @@ class CvReligionScreen:
 			self.W_RELIGION_AREA = 934
 			self.H_RELIGION_AREA = 175
 			# self.RELIGIONS = ReligionUtil.getAllReligions() + (ReligionUtil.getNumReligions(),)
-			self.RELIGIONS = range(gc.getNumReligionInfos()) # K-Mod. (the original BUG code simply doesn't run.)
+			# K-Mod. the original BUG code simply doesn't run. (advc, note: Also fixed in BUG 4.5.)
+			self.RELIGIONS = range(gc.getNumReligionInfos())
 
 		# Make the scrollable area for the religions list...
 		screen.addPanel(self.RELIGION_PANEL_ID, "", "", False, True, self.X_RELIGION_AREA, self.Y_RELIGION_AREA, self.W_RELIGION_AREA, self.H_RELIGION_AREA+5, PanelStyles.PANEL_STYLE_MAIN)
@@ -564,7 +565,6 @@ class CvReligionScreen:
 							szCityName += u"%c" %(gc.getReligionInfo(lReligions[iI]).getChar())
 
 				szCityName += pLoopCity.getName()[0:17] + "  "
-
 				# advc: Moved into subroutine
 				szCityName += self.cityHelp(lReligions, pLoopCity.GetCy(), iLinkReligion)
 
@@ -593,6 +593,7 @@ class CvReligionScreen:
 
 		# Turns of Anarchy Text...
 		screen.setLabel(self.RELIGION_ANARCHY_WIDGET, "Background", u"<font=3>" + szAnarchyTime + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, self.X_ANARCHY, self.Y_ANARCHY, self.Z_TEXT, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+
 	# advc: Cut from drawCityInfo because it's the same for the BtS and BUG screen
 	def cityHelp(self, lReligions, kCity, eHoverReligion):
 		sHelp = ""

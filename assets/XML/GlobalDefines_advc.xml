@@ -7,6 +7,14 @@
 
 <Civ4Defines xmlns="x-schema:CIV4GlobalDefinesSchema.xml">
 
+	<!-- advc: 000 in BtS - which makes sense because mods can be compatible
+		 with outdated versions of BtS. AdvCiv, however, requires v3.19.
+		 If the MIN_VERSION check (in the EXE) fails, a warning is displayed. -->
+	<Define> <!-- redefine -->
+		<DefineName>MIN_VERSION</DefineName>
+		<iDefineIntVal>319</iDefineIntVal>
+	</Define>
+
 	<!-- advc.002b: The DLL needs to know (well, it's not crucial ...) the
 		 font size of Size1_Normal in Civ4Theme_Common.thm. AdvCiv sets that
 		 to 14. If a mod-mod changes Size1_Normal, then FONT_SIZE_FACTOR should
@@ -34,23 +42,6 @@
 		<iDefineIntVal>14223</iDefineIntVal>
 	</Define>
 
-	<!-- advc.106i: If set to 1, replay files are written in such a way that
-		 they appear like unmodded replays to BtS, meaning that AdvCiv replays
-		 will show up on the Hall of Fame screen even when no mod is loaded.
-		 If any player colors are added to CIV4ColorVals.xml beyond those in
-		 BtS, then this option is automatically disabled (as if set to 0)
-		 because BtS is unable to show replays that use unfamiliar color
-		 values. AdvCiv does not add such colors, but derived mods might.
-		 Additional map sizes, victory conditions, handicap or game speed
-		 settings will also cause problems, and therefore cause this option to be
-		 disabled.
-		 Mod-mods may also want to change TXT_KEY_REPLAY_PREFIX_ADVC in
-		 Civ4GameText_advc.xml. 
-			Keldath change to 0-->
-	<Define>
-		<DefineName>HOF_STORE_REPLAYS_AS_BTS</DefineName>
-		<iDefineIntVal>0</iDefineIntVal>
-	</Define>
 	<!-- advc.106i: If set to 1, replays from unmodded BtS can be viewed
 		 through AdvCiv's Hall of Fame screen. If set to 0, unmodded replays
 		 are filtered out. -->
@@ -76,8 +67,8 @@
 		 main screen, Military Advisor and Replay screen.
 		 Recommended: 512 as in BtS. A higher value (e.g. 1024) looks
 		 better on the (maximized) replay screen, but is incompatible
-		 with HOF_STORE_REPLAYS_AS_BTS=1. Higher values also increase
-		 the size of replay files.
+		 with the "Mod Name in Replays" option (System tab of the BUG menu).
+		 Higher values also increase the size of replay files.
 		 AdvCiv (since version 0.97) stores MINIMAP_RENDER_SIZE in
 		 replay files, so compatibility between within AdvCiv isn't
 		 an issue, but BtS can only read size 512. -->
@@ -126,6 +117,15 @@
 		<DefineName>USE_KMOD_AI_NONAGGRESSIVE</DefineName>
 		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
+
+	<!-- advc.092b: Set to 1 to disable all code that modifies the EXE
+		 at runtime. In case that those modifications render the mod unplayable
+		 with some edition of BtS or operating system and no one is around to
+		 properly fix the issue. -->
+	<Define>
+		<DefineName>DISABLE_EXE_RUNTIME_MODS</DefineName>
+        <iDefineIntVal>0</iDefineIntVal>
+    </Define>
 
     <!-- [advc.100]
 		 Only relevant if UWAI disabled (or only in the background).
@@ -240,6 +240,33 @@
 	<Define>
         <DefineName>ENABLE_STARTING_POSITION_ITERATION</DefineName>
         <iDefineIntVal>1</iDefineIntVal>
+    </Define>
+	<!-- If the number of plots exceeds this threshold, then the
+		 BtS algorithm sets the starting locations, regardless of whether
+		 ENABLE_STARTING_POSITION_ITERATION is set. Recommended: 12000
+		 (At Huge world size, most map scripts create about 10000 plots.)
+		 Could go a bit higher w/o becoming prohibitively slow, but it's
+		 doubtful that the iterative algorithm will do much good on super-huge
+		 maps unless the time limit (see below) is (generously) extended. -->
+	<Define>
+        <DefineName>SPI_PLOT_LIMIT</DefineName>
+        <iDefineIntVal>12000</iDefineIntVal>
+    </Define>
+	<!-- Multiplier for the maximal number of steps considered by the
+		 Starting Position Iteration (SPI) algorithm. Each such step corresponds
+		 to a re-evaluation of the fairness (and other properties) of all
+		 starting locations assuming that one or two locations are moved.
+		 Each iteration considers several alternative steps.
+		 SPI stops once it either finds a very good position or when the
+		 maximal number of steps to be considered has been reached.
+		 This time limit is set based on the number of plots and civs
+		 and gets adjusted by this percentage. Recommended: 100.
+		 Especially for large maps, increasing the limit substantially may
+		 increase the fairness of the starting locations - at the expense of
+		 (proportionally) longer computing times. -->
+	<Define>
+        <DefineName>SPI_TIME_LIMIT_PERCENT</DefineName>
+        <iDefineIntVal>100</iDefineIntVal>
     </Define>
 
 	<!-- advc.137: 12 in BtS. Recommended: 10 to match the
@@ -424,7 +451,7 @@
 		 I guess they're on the same scale as PLOT_SIZE. -->
 	<Define> <!-- redefine -->
 		<DefineName>CAMERA_MAX_SCROLL_SPEED</DefineName>
-		<fDefineFloatVal>2800.0</fDefineFloatVal>
+		<fDefineFloatVal>2400.0</fDefineFloatVal>
 	</Define>
 	<!-- Not increasing this much b/c I still want to be able to position
 		 the camera at a precise location, e.g. for taking a screenshot. -->
@@ -435,8 +462,7 @@
 
 	<!-- advc.004m: This replaces CAMERA_CITY_ZOOM_IN_DISTANCE, which now gets
 		 set to this base value and is then adjusted to the field of view value
-		 (which gets set fully dynamically, not based on FIELD_OF_VIEW). 
-		 KELDATH - WAS 3500-->
+		 (which gets set fully dynamically, not based on FIELD_OF_VIEW). -->
 	<Define>
 		<DefineName>CAMERA_BASE_CITY_DISTANCE</DefineName>
 		<fDefineFloatVal>6500</fDefineFloatVal>

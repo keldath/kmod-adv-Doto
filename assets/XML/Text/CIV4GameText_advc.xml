@@ -616,18 +616,15 @@
 		 so I'm disabling them here. -->
 	<TEXT> <!-- redefine -->
 		<Tag>TXT_KEY_AUTOSAVING</Tag>
-		<English></English><French></French><German></German>
-		<Italian></Italian><Spanish></Spanish>
+		<English></English>
 	</TEXT>
 	<TEXT> <!-- redefine -->
 		<Tag>TXT_KEY_QUICK_SAVING</Tag>
-		<English></English><French></French><German></German>
-		<Italian></Italian><Spanish></Spanish>
+		<English></English>
 	</TEXT>
 	<TEXT> <!-- redefine -->
 		<Tag>TXT_KEY_SAVING_GAME</Tag>
-		<English></English><French></French><German></German>
-		<Italian></Italian><Spanish></Spanish>
+		<English></English>
 	</TEXT>
 	<!-- Copied from CIV4GameText_Misc1.xml and appended a "2" to the name. -->
 	<TEXT>
@@ -1099,8 +1096,19 @@
 		<Spanish>Nueva l&#237;nea</Spanish>
 	</TEXT>
 
-	<!-- advc.004: Originally in CIV4GameTextInfos.xml; info about right-click
-		 shorthand added. -->
+	<!-- advc.004g: Originally in CIV4GameTextInfos.xml, saying "creates a group"
+		 which I find confusing as only one unit is selected. Translations based
+		 on TXT_KEY_WIDGET_DELETE_GROUP in the same original file. -->
+	<TEXT> <!-- redefine -->
+		<Tag>TXT_KEY_WIDGET_CREATE_GROUP</Tag>
+		<English>Separate from Group</English>
+		<French>Séparer du groupe</French>
+		<German>Aus der Gruppe lösen</German>
+		<Italian>Separa dal gruppo</Italian>
+		<Spanish>Separa del grupo</Spanish>
+	</TEXT>
+
+	<!-- advc.004: To be appended to TXT_KEY_MISC_*CREASE_RATE_HINT -->
 	<TEXT>
 		<Tag>TXT_KEY_MISC_INCREASE_RATE_HINT</Tag>
 		<English>. (Right-click to set to 100%.)</English>
@@ -5982,6 +5990,15 @@
 		<German>Bewache angrenzende Wasser-Geländefelder. Schwächere feindliche Schiffe, die versuchen, dort eine Modernisierung zu plündern, sind gezwungen, die Einheit auf Seepatroullie anzugreifen.</German>
 		<Italian>Questo ordine far&#224; in modo che l'unit&#224; attacchi le navi nemiche che cercano di saccheggiare le caselle circostanti</Italian>
 		<Spanish>Esta orden le dir&#225; a la unidad que ataque a los barcos enemigos que intenten saquear las casillas adyacentes.</Spanish>
+	</TEXT>
+	<!-- Based on TXT_KEY_MISSION_SEAPATROL (CIV4GameText_BTS.xml) -->
+	<TEXT>
+		<Tag>TXT_KEY_PLOT_SEA_PATROLLED</Tag>
+		<English>Guarded by Sea Patrol</English>
+		<French>Gardé par patrouille des mers</French>
+		<German>Bewacht durch Seepatrouille</German>
+		<Italian>Sorvegliato da pattuglia marina</Italian>
+		<Spanish>Vigilado por patrulla mar&#237;tima</Spanish>
 	</TEXT>
 
 	<!-- advc.057 -->

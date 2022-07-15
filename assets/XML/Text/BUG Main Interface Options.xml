@@ -34,7 +34,6 @@
 		<Italian>Dottone Opzioni</Italian>
 		<Spanish>Botón Opciones</Spanish>
 	</TEXT>
-	
 	<!-- advc.004, advc.002g: Some extra info added (incl. restart) -->
 	<TEXT>
 		<Tag>TXT_KEY_BUG_OPT_MAININTERFACE__OPTIONSBUTTON_HOVER</Tag>
@@ -42,6 +41,18 @@
 		<German>Zeigt (nach dem nächsten Neustart) eine Schaltfläche zum Öffnen des BUG-Menüs in der oberen linken Ecke des Hauptbildschirms an (neben der Ereignis-Log-Schaltfläche). Das BUG-Menü lässt sich in jedem Fall vom Spielmenü [ESC] und Spieleroptionsmenü [STRG+O] aus aufrufen, und direkt per [CTRL+ALT+O].</German>
 		<Italian>Quando è selezionato, mostra il bottone della schermata opzioni del BUG.</Italian>
 		<Spanish>Permite mostrar el botón de opciones BUG en la pantalla.</Spanish>
+	</TEXT>
+
+	<!-- advc.106i -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_MAININTERFACE__MODNAMEINREPLAYS_TEXT</Tag>
+		<English>Mod Name in Replays</English>
+		<German>Mod-Name in Replays</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_MAININTERFACE__MODNAMEINREPLAYS_HOVER</Tag>
+		<English>When checked, the name of the mod's folder (normally "AdvCiv") is written into your replay files, which excludes them from the Hall of Fame screen when BtS is run without mods. (As for showing replays created by BtS or other mods on the AdvCiv Hall of Fame screen, see the [COLOR_BUILDING_TEXT]HOF_...[COLOR_REVERT] variables in [COLOR_BUILDING_TEXT]GlobalDefines_advc.xml[COLOR_REVERT].)</English>
+		<German>Speichert den Ordner-Namen des Mods (standardmäßig "AdvCiv") in [COLOR_BUILDING_TEXT]Civ4BeyondSwordReplay[COLOR_REVERT]-Dateien (Wiederholungen). Dies verhindert, dass die BtS-Ruhmeshalle AdvCiv-Replays aufführt, wenn kein Mod geladen ist. (Was die Anzeige von BtS-Replays und Replays anderer Mods in der AdvCiv-Ruhmeshalle angeht, siehe die COLOR_BUILDING_TEXT]HOF_...[COLOR_REVERT]-Variablen in [COLOR_BUILDING_TEXT]GlobalDefines_advc.xml[COLOR_REVERT].)</German>
 	</TEXT>
 
 	<!-- advc.106b -->
@@ -330,10 +341,7 @@
 	<TEXT>
 		<Tag>TXT_KEY_BUG_OPT_MAININTERFACE__CAMERA_TEXT</Tag>
 		<English>Camera</English>
-		<French>Camera</French>
-		<German>Camera</German>
-		<Italian>Camera</Italian>
-		<Spanish>Camera</Spanish>
+		<German>Kamera</German>
 	</TEXT>
 	<!-- Sadly has to be abbreviated in order to make room for advc.002f
 		 in the center column -->
@@ -344,13 +352,30 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_BUG_OPT_MAININTERFACE__DEFAULTCAMDISTANCE_HOVER</Tag>
-		<English>The camera distance at the start of a new game and after loading a savegame. Also affects the volume of music and sound effects.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Automatic[COLOR_REVERT] - Set the default distance based on the Field-of-View value. The greater the field of view, the smaller the default distance.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Close[COLOR_REVERT] - 2200 meters; as in the original game.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Medium[COLOR_REVERT] - 4100 meters[NEWLINE][COLOR_HIGHLIGHT_TEXT]Far[COLOR_REVERT] - 6000 meters; close to the Globe view boundary.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Custom[COLOR_REVERT] - Use the 'CAMERA_START_DISTANCE' value set in XML (GlobalDefines_advc.xml)</English>
-		<German>Der Kameraabstand nach dem Erstellen oder Laden eines Spiels. Wirkt sich auch auf die Lautstärke von Musik und Effekten aus.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Auto[COLOR_REVERT] - Entsprechend dem Sichtfeld-Wert. Je größer das Sichtfeld, desto kleiner der Standardabstand.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Nah[COLOR_REVERT] - 2200m; wie im Originalspiel.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Mittel[COLOR_REVERT] - 4100m[NEWLINE][COLOR_HIGHLIGHT_TEXT]Weit[COLOR_REVERT] - 6000m; nahe am Übergang zur Weltansicht.[NEWLINE][COLOR_HIGHLIGHT_TEXT]XML-Wert[COLOR_REVERT] - Verwendet den 'CAMERA_START_DISTANCE'-Wert in GlobalDefines_advc.xml.</German>
+		<English>The camera distance at the start of a new game and after loading a savegame. Also affects the volume of music and sound effects.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Automatic[COLOR_REVERT] - Set the default distance based on the Field-of-View value. The greater the field of view, the smaller the default distance.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Close[COLOR_REVERT] - 2200 meters; as in the original game.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Medium[COLOR_REVERT] - 4100 meters[NEWLINE][COLOR_HIGHLIGHT_TEXT]Far[COLOR_REVERT] - 6000 meters; close to the Globe view boundary.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Custom[COLOR_REVERT] - Use the 'CAMERA_START_DISTANCE' value set in XML ([COLOR_BUILDING_TEXT]GlobalDefines_advc.xml[COLOR_REVERT])</English>
+		<German>Der Kameraabstand nach dem Erstellen oder Laden eines Spiels. Wirkt sich auch auf die Lautstärke von Musik und Effekten aus.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Auto[COLOR_REVERT] - Entsprechend dem Sichtfeld-Wert. Je größer das Sichtfeld, desto kleiner der Standardabstand.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Nah[COLOR_REVERT] - 2200m; wie im Originalspiel.[NEWLINE][COLOR_HIGHLIGHT_TEXT]Mittel[COLOR_REVERT] - 4100m[NEWLINE][COLOR_HIGHLIGHT_TEXT]Weit[COLOR_REVERT] - 6000m; nahe am Übergang zur Weltansicht.[NEWLINE][COLOR_HIGHLIGHT_TEXT]XML-Wert[COLOR_REVERT] - Verwendet den 'CAMERA_START_DISTANCE'-Wert in [COLOR_BUILDING_TEXT]GlobalDefines_advc.xml[COLOR_REVERT].</German>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_BUG_OPT_MAININTERFACE__DEFAULTCAMDISTANCE_LIST</Tag>
 		<English>Automatic|Close|Medium|Far|Custom (XML)</English>
 		<German>Auto|Nah|Mittel|Weit|XML-Wert</German>
+	</TEXT>
+
+	<!-- advc.102b: (Would've preferred
+		 "Ignore Friendly Stacks &lt;"
+		 but labels can't include angle brackets, and "smaller than" or even
+		 "smaller" is too long.) -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_MAININTERFACE__SHOWFRIENDLYMOVESTHRESH_TEXT</Tag>
+		<English>Friendly Moves Threshold</English>
+		<German>Zeige Freundliche Bew. ab</German>
+	</TEXT>
+	<!-- (Would be nice to mention that transports are assumed to be full when
+		 counting units, but the text is already quite long.) -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_MAININTERFACE__SHOWFRIENDLYMOVESTHRESH_HOVER</Tag>
+		<English>When a unit owned by a non-hostile civ has moved, and that civ has fewer units in the destination tile than this threshold, then the [COLOR_HIGHLIGHT_TEXT]Show Friendly Moves[COLOR_REVERT] option (Ctrl+O screen) ignores the move. As the moving unit is included in the count, a threshold of [COLOR_HIGHLIGHT_TEXT]1[COLOR_REVERT] corresponds to the BtS behavior of showing all moves - except that AdvCiv always excludes worker moves and some other uninteresting moves. The threshold has no effect when [COLOR_HIGHLIGHT_TEXT]Show Friendly Moves[COLOR_REVERT] isn't enabled.</English>
+		<German>Schwelle für die BtS-Option [COLOR_HIGHLIGHT_TEXT]Freundliche Bewegungen zeigen[COLOR_REVERT] (Strg+O). Wenn eine nicht-feindliche Zivilisation eine Einheit bewegt und diese Zivilisation im Ziel-Feld dann weniger Einheiten Einheiten besitzt als der Schwellwert, dann wird diese Bewegung nicht per Kamerasprung angezeigt. Da die bewegte Einheit mitzählt, bedeutet eine Schwelle von [COLOR_HIGHLIGHT_TEXT]1[COLOR_REVERT], dass alle Bewegungen angezeigt werden, wie in BtS - abgesehen davon, dass AdvCiv bestimmte, wahrscheinlich uninteressante Bewegungen nie anzeigt, insbesondere Bautrupp-Bewegungen.</German>
 	</TEXT>
 
 	<!-- advc.002a: -->
@@ -386,8 +411,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_BUG_OPT_MAININTERFACE__UNITSONMINIMAP_HOVER</Tag>
-		<English>If checked, units outside their owners' borders are shown as colored blips on the main screen minimap.</English>
-		<German>Zeigt Einheiten, die sich außerhalb ihres Territoriums befinden, als Farbkleckse auf der Mini-Karte (Hauptbildschirm) an.</German>
+		<English>If checked, units outside their owners' borders are shown as colored blips on the main screen minimap (as in BtS).</English>
+		<German>Zeigt Einheiten, die sich außerhalb ihres Territoriums befinden, als Farbkleckse auf der Mini-Karte (Hauptbildschirm) an - wie in BtS.</German>
 	</TEXT>
 
 	<!-- advc.savem: -->
@@ -652,7 +677,8 @@
 		<Spanish>Activada, seleccionando unidades con la tecla [Mayús] sólo añadir una unidad cada vez.</Spanish>
 	</TEXT>
 
-	<!-- advc.004k: same as TXT_KEY_MISSION_SEAPATROL (CIV4GameText_BTS.xml) -->
+	<!-- advc.004k -->
+	<!-- Same as TXT_KEY_MISSION_SEAPATROL (CIV4GameText_BTS.xml) -->
 	<TEXT>
 		<Tag>TXT_KEY_BUG_OPT_MAININTERFACE__SEAPATROL_TEXT</Tag>
 		<English>Sea Patrol</English>
@@ -663,11 +689,19 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_BUG_OPT_MAININTERFACE__SEAPATROL_HOVER</Tag>
-		<English>Enables the "Sea Patrol" mission (except in network games). When disabled, the mission button is removed and the AI won't use the mission either.</English>
-		<French>Enables the "Patrouille des mers" mission. When unchecked, the mission button is removed and the AI won't use the mission either.</French>
-		<German>Erlaubt den Einheiten-Befehl "Seepatrouille" (außer in Netzwerk-Spielen)</German>
-		<Italian>Enables the "Pattuglia marina" mission. When unchecked, the mission button is removed and the AI won't use the mission either.</Italian>
-		<Spanish>Enables the "Patrulla mar&#237;tima" mission. When unchecked, the mission button is removed and the AI won't use the mission either.</Spanish>
+		<English>Uncheck this option to hide the (rarely used) Sea Patrol command button. You will still be able to issue the command through the [COLOR_HIGHLIGHT_TEXT]P[COLOR_REVERT] key.</English>
+		<German>Deaktivieren Sie diese Option, um den (selten gebrauchten) Einheiten-Befehl "Seepatrouille" auszublenden. Das Tataturkürzel [COLOR_HIGHLIGHT_TEXT]P[COLOR_REVERT] ist davon nicht betroffen.</German>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_MAININTERFACE__AUTOEXPLORE_TEXT</Tag>
+		<English>Auto-Explore</English>
+		<German>Auto-Erkundung</German>
+	</TEXT>
+	<!-- Based on TXT_KEY_ACTION_AUTOMATE_EXPLORE (CIV4GameText_BTS.xml) -->
+	<TEXT>
+		<Tag>TXT_KEY_BUG_OPT_MAININTERFACE__AUTOEXPLORE_HOVER</Tag>
+		<English>Uncheck this option to hide the "Explore (Automated)" command button. You will still be able to issue the command through the [COLOR_HIGHLIGHT_TEXT]E[COLOR_REVERT] key. (Recommended if you never automate exploration or sometimes press that button by accident.)</English>
+		<German>Deaktivieren Sie diese Option, um den Automatisierungs-Befehl "Erkunden" auszublenden. Das Tataturkürzel [COLOR_HIGHLIGHT_TEXT]E[COLOR_REVERT] ist davon nicht betroffen.</German>
 	</TEXT>
 	
 	<!-- advc.004z -->
@@ -746,7 +780,7 @@
 		<Italian>Abilita la segnalazione delle risorse all'inizio del gioco.</Italian>
 		<Spanish>Activa las marcas de recursos al inicio del juego.</Spanish>
 	</TEXT>
-	
+
 	<!-- advc.092b: Plot indicator size options -->
 	<TEXT>
 		<Tag>TXT_KEY_BUG_OPT_MAININTERFACE__PLOTINDICATORSIZE_TEXT</Tag>

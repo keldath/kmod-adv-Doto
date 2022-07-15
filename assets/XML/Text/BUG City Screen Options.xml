@@ -93,8 +93,8 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_BUG_OPT_CITYSCREEN__CITYSOUNDSCAPES_HOVER</Tag>
-		<English>If checked, the music pauses while the city screen is open and urban sounds are played instead (as in BtS). If unchecked, the music continues and no urban sounds are played. However, the change in camera distance will affect the music volume. You may want to experiment with the [COLOR_HIGHLIGHT_TEXT]Default Distance[COLOR_REVERT] option and [COLOR_HIGHLIGHT_TEXT]Field of View[COLOR_REVERT] slider on the "Map" tab to get the volume right. Toggling this option doesn't take effect while the city screen is open.</English>
-		<German>Erlaubt es, die Alltags-Geräusche abzuschalten, die normalerweise auf dem Stadtbildschirm abgespielt werden. Stattdessen läuft dann die Musik weiter. Allerdings wirkt sich der Kamera-Abstand auf die Musik-Lautstärke aus; siehe dazu auch die Optionen [COLOR_HIGHLIGHT_TEXT]Standard-Abstand[COLOR_REVERT] und [COLOR_HIGHLIGHT_TEXT]Sichtfeld[COLOR_REVERT] unter dem Reiter "Karte". Das Ein- und Ausschalten von Stadt-Geräuschen wirkt sich erst beim nächsten Öffnen des Stadtbildschirms aus (also nicht bei bereits offenem Stadtbildschirm).</German>
+		<English>If checked, the music pauses while the city screen is open and urban sounds are played instead (as in BtS). If unchecked, the music continues and no urban sounds are played. However, the change in camera distance will affect the music volume. You may want to experiment with the [COLOR_HIGHLIGHT_TEXT]Default Distance[COLOR_REVERT] option on the "Map" tab to get the volume right. Toggling this option doesn't take effect while the city screen is open.</English>
+		<German>Erlaubt es, die Alltags-Geräusche abzuschalten, die normalerweise auf dem Stadtbildschirm abgespielt werden. Stattdessen läuft dann die Musik weiter. Allerdings wirkt sich der Kamera-Abstand auf die Musik-Lautstärke aus; siehe dazu auch die Option [COLOR_HIGHLIGHT_TEXT]Standard-Abstand[COLOR_REVERT] unter dem Reiter "Karte". Das Ein- und Ausschalten von Stadt-Geräuschen wirkt sich erst beim nächsten Öffnen des Stadtbildschirms aus (also nicht bei bereits offenem Stadtbildschirm).</German>
 	</TEXT>
 	
 	<!-- advc.004: "Detailed food info" sounds a bit grand (as does "Food
@@ -228,6 +228,7 @@
 		<Italian>Quando è selezionato, mostra solo le religioni presenti nella città e consente di visualizzare oltre sette corporazioni.</Italian>
 		<Spanish>Si se activa, muestra sólo las corporaciones que están presentes en la ciudad y permite más de siete corporaciones.</Spanish>
 	</TEXT-->
+
 	<!-- advc.097: New option -->
 	<TEXT>
 		<Tag>TXT_KEY_BUG_OPT_CITYSCREEN__BUILDINGS_TEXT</Tag>
@@ -268,7 +269,6 @@
 		<Italian>Determina quanti Specialisti vengono mostrati:[NEWLINE][ICON_BULLET][COLOR_HIGHLIGHT_TEXT]Predefinito[COLOR_REVERT] - mostra gli Specialisti utilizzando il formato standard di Civ4:BtS;[NEWLINE][ICON_BULLET][COLOR_HIGHLIGHT_TEXT]Impilati[COLOR_REVERT] - mostra gli Specialisti utilizzando il formato a pile dello 'Stacked Specialist Mod';[NEWLINE][ICON_BULLET][COLOR_HIGHLIGHT_TEXT]Galloni[COLOR_REVERT] - mostra gli Specialisti raggruppati per 5, 10 e 20 utilizzando il formato a galloni dello 'Chevron Mod'.</Italian>
 		<Spanish>Determina cómo se muestra a los especialistas:[NEWLINE][ICON_BULLET][COLOR_HIGHLIGHT_TEXT]Por Defecto[COLOR_REVERT] - Muestra a los especialistas en el formato por defecto de BtS.[NEWLINE][ICON_BULLET][COLOR_HIGHLIGHT_TEXT]Apilados[COLOR_REVERT] - Muestra a los especialistas apilados empleando el mod Stacked Specialists.[NEWLINE][ICON_BULLET][COLOR_HIGHLIGHT_TEXT]Grupos[COLOR_REVERT] - Muestra a los especialistas agrupados en 5 (grupo simple), 10 (grupo con raya superior) y 20 (grupo en caja).</Spanish>
 	</TEXT>
-
 	<TEXT>
 		<Tag>TXT_KEY_BUG_OPT_CITYSCREEN__SPECIALISTS_LIST</Tag>
 		<English>BtS|Stacker|Chevron</English>

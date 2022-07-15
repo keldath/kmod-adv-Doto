@@ -18,7 +18,7 @@ FreePromotion	Allows building to give listed promotion to all units built in tha
 FreeStartEra	Building is free if you start in this Era or later.
 GlobalReligionCommerce	Earns gold from every city with this religion.
 GreatPeopleUnitClass	Type of Great Person Points the building generates.
-HolyCity	If set, the building can only be constructed in the Holy City of the religion specified.
+HolyCity	If set, the building can only be constructed in the Holy City of the religihaon specified.
 MaxStartEra	Latest Era the building can be constructed.
 MovieDefineTag	Specifies the tag in the Civ4ArtDefines_Movie file that will play when this building is constructed.
 NoBonus	The building blocks the resource from being accessed in the city. (Ex: National Park blocks coal).
@@ -203,7 +203,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<bAllowsNukes>0</bAllowsNukes>
 			<bMapCentering>0</bMapCentering>
 			<bNoUnhappiness>0</bNoUnhappiness>
-			<iUnhealthyPopulationModifier>0</iUnhealthyPopulationModifier>
+			<!--doto - reduced health a bit -->
+			<iUnhealthyPopulationModifier>-10</iUnhealthyPopulationModifier>
 			<bBuildingOnlyHealthy>0</bBuildingOnlyHealthy>
 			<bNeverCapture>0</bNeverCapture>
 			<bNukeImmune>1</bNukeImmune>
@@ -243,20 +244,6 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iAreaFreeSpecialist>0</iAreaFreeSpecialist>
 			<iGlobalFreeSpecialist>0</iGlobalFreeSpecialist>
 			<iMaintenanceModifier>0</iMaintenanceModifier>
-			<!--DPII < global Maintenance Modifiers  -->
-			<iGlobalMaintenanceModifier>0</iGlobalMaintenanceModifier>
-			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
-			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<iConnectedCityMaintenanceModifier>0</iConnectedCityMaintenanceModifier>
-			<!--DPII < global Maintenance Modifiers > -->
-			<!--DPII <Local Maintenance Modifiers  -->
-			<iLocalDistanceMaintenanceModifier>0</iLocalDistanceMaintenanceModifier>
-			<iLocalOtherAreaMaintenanceModifier>0</iLocalOtherAreaMaintenanceModifier>
-			<iLocalCoastalDistanceMaintenanceModifier>0</iLocalCoastalDistanceMaintenanceModifier>
-			<iLocalConnectedCityMaintenanceModifier>0</iLocalConnectedCityMaintenanceModifier>
-			<!--DPII <Local Maintenance Modifiers > -->
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
 			<iEnemyWarWearinessModifier>0</iEnemyWarWearinessModifier>
@@ -621,7 +608,6 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iExperience>0</iExperience>
 			<iGlobalExperience>0</iGlobalExperience>
 			<!-- pop limit -->
-
 			<iPopulationLimitChange>1</iPopulationLimitChange>
 			<!-- pop limit -->
 
@@ -4325,10 +4311,6 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 					<BonusType>BONUS_FISH</BonusType>
 					<iHealthChange>1</iHealthChange>
 				</BonusHealthChange>
-				<BonusHealthChange>
-					<BonusType>BONUS_PEARLS</BonusType>
-					<iHealthChange>1</iHealthChange>
-				</BonusHealthChange>
 			</BonusHealthChanges>
 			<BonusHappinessChanges/>
 			<BonusProductionModifiers/>
@@ -4516,10 +4498,6 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				</BonusHealthChange>
 				<BonusHealthChange>
 					<BonusType>BONUS_FISH</BonusType>
-					<iHealthChange>1</iHealthChange>
-				</BonusHealthChange>
-				<BonusHealthChange>
-					<BonusType>BONUS_PEARLS</BonusType>
 					<iHealthChange>1</iHealthChange>
 				</BonusHealthChange>
 			</BonusHealthChanges>
@@ -5603,10 +5581,6 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				</BonusHappinessChange>
 				<BonusHappinessChange>
 					<BonusType>BONUS_GOLD</BonusType>
-					<iHappinessChange>1</iHappinessChange>
-				</BonusHappinessChange>
-				<BonusHappinessChange>
-					<BonusType>BONUS_SILVER</BonusType>
 					<iHappinessChange>1</iHappinessChange>
 				</BonusHappinessChange>
 			</BonusHappinessChanges>
@@ -7002,16 +6976,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iFreeSpecialist>0</iFreeSpecialist>
 			<iAreaFreeSpecialist>0</iAreaFreeSpecialist>
 			<iGlobalFreeSpecialist>0</iGlobalFreeSpecialist>
-			<iMaintenanceModifier>0</iMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers  -->
-			<iGlobalMaintenanceModifier>1</iGlobalMaintenanceModifier>
-			<iAreaMaintenanceModifier>0</iAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
-			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<iConnectedCityMaintenanceModifier>4</iConnectedCityMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
+			<iMaintenanceModifier>5</iMaintenanceModifier>
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
 			<iEnemyWarWearinessModifier>0</iEnemyWarWearinessModifier>
@@ -7186,16 +7151,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iFreeSpecialist>0</iFreeSpecialist>
 			<iAreaFreeSpecialist>0</iAreaFreeSpecialist>
 			<iGlobalFreeSpecialist>0</iGlobalFreeSpecialist>
-			<iMaintenanceModifier>0</iMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers  -->
-			<iGlobalMaintenanceModifier>0</iGlobalMaintenanceModifier>
-			<iAreaMaintenanceModifier>0</iAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<iDistanceMaintenanceModifier>-5</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
-			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<iConnectedCityMaintenanceModifier>5</iConnectedCityMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
+			<iMaintenanceModifier>2</iMaintenanceModifier>
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
 			<iEnemyWarWearinessModifier>0</iEnemyWarWearinessModifier>
@@ -7382,15 +7338,6 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iAreaFreeSpecialist>0</iAreaFreeSpecialist>
 			<iGlobalFreeSpecialist>0</iGlobalFreeSpecialist>
 			<iMaintenanceModifier>0</iMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers  -->
-			<iGlobalMaintenanceModifier>0</iGlobalMaintenanceModifier>
-			<iAreaMaintenanceModifier>0</iAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>-5</iNumCitiesMaintenanceModifier>
-			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<iConnectedCityMaintenanceModifier>5</iConnectedCityMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
 			<iEnemyWarWearinessModifier>0</iEnemyWarWearinessModifier>
@@ -7569,16 +7516,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iFreeSpecialist>0</iFreeSpecialist>
 			<iAreaFreeSpecialist>0</iAreaFreeSpecialist>
 			<iGlobalFreeSpecialist>0</iGlobalFreeSpecialist>
-			<iMaintenanceModifier>0</iMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers  -->
-			<iGlobalMaintenanceModifier>0</iGlobalMaintenanceModifier>
-			<iAreaMaintenanceModifier>0</iAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
-			<iCoastalDistanceMaintenanceModifier>-5</iCoastalDistanceMaintenanceModifier>
-			<iConnectedCityMaintenanceModifier>-5</iConnectedCityMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
+			<iMaintenanceModifier>-5</iMaintenanceModifier>
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
 			<iEnemyWarWearinessModifier>0</iEnemyWarWearinessModifier>
@@ -11127,10 +11065,6 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 					<iHappinessChange>1</iHappinessChange>
 				</BonusHappinessChange>
 				<BonusHappinessChange>
-					<BonusType>BONUS_SALT</BonusType>
-					<iHappinessChange>1</iHappinessChange>
-				</BonusHappinessChange>
-				<BonusHappinessChange>
 					<BonusType>BONUS_WHALE</BonusType>
 					<iHappinessChange>1</iHappinessChange>
 				</BonusHappinessChange>
@@ -11321,10 +11255,6 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				</BonusHappinessChange>
 				<BonusHappinessChange>
 					<BonusType>BONUS_SILK</BonusType>
-					<iHappinessChange>1</iHappinessChange>
-				</BonusHappinessChange>
-				<BonusHappinessChange>
-					<BonusType>BONUS_SALT</BonusType>
 					<iHappinessChange>1</iHappinessChange>
 				</BonusHappinessChange>
 				<BonusHappinessChange>
@@ -11523,10 +11453,6 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 					<BonusType>BONUS_WINE</BonusType>
 					<iHealthChange>1</iHealthChange>
 				</BonusHealthChange>
-				<BonusHealthChange>
-					<BonusType>BONUS_BANANA</BonusType>
-					<iHealthChange>1</iHealthChange>
-				</BonusHealthChange>
 			</BonusHealthChanges>
 			<BonusHappinessChanges/>
 			<BonusProductionModifiers/>
@@ -11712,10 +11638,6 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				</BonusHealthChange>
 				<BonusHealthChange>
 					<BonusType>BONUS_WINE</BonusType>
-					<iHealthChange>1</iHealthChange>
-				</BonusHealthChange>
-				<BonusHealthChange>
-					<BonusType>BONUS_BANANA</BonusType>
 					<iHealthChange>1</iHealthChange>
 				</BonusHealthChange>
 			</BonusHealthChanges>
@@ -12219,7 +12141,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<CommerceChangeOriginalOwners/>
 			<!-- BBAI: was _GROCER -->
 			<ConstructSound>AS2D_BUILD_SUPERMARKET</ConstructSound>
-			<BonusHealthChanges>
+			<!-- <BonusHealthChanges>
 				<BonusHealthChange>
 					<BonusType>BONUS_COW</BonusType>
 					<iHealthChange>1</iHealthChange>
@@ -12236,7 +12158,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 					<BonusType>BONUS_SHEEP</BonusType>
 					<iHealthChange>1</iHealthChange>
 				</BonusHealthChange>
-			</BonusHealthChanges>
+			</BonusHealthChanges> -->
 			<BonusHappinessChanges/>
 			<BonusProductionModifiers/>
 			<UnitCombatFreeExperiences/>
@@ -12411,7 +12333,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<CommerceFlexibles/>
 			<CommerceChangeOriginalOwners/>
 			<ConstructSound>AS2D_BUILD_GROCERY</ConstructSound>
-			<BonusHealthChanges>
+		<!-- 	<BonusHealthChanges>
 				<BonusHealthChange>
 					<BonusType>BONUS_COW</BonusType>
 					<iHealthChange>1</iHealthChange>
@@ -12428,7 +12350,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 					<BonusType>BONUS_SHEEP</BonusType>
 					<iHealthChange>1</iHealthChange>
 				</BonusHealthChange>
-			</BonusHealthChanges>
+			</BonusHealthChanges> -->
 			<BonusHappinessChanges>
 				<BonusHappinessChange>
 					<BonusType>BONUS_DRAMA</BonusType>
@@ -21715,7 +21637,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PowerBonus>NONE</PowerBonus>
 			<FreeBonus>NONE</FreeBonus>
 			<iNumFreeBonuses>0</iNumFreeBonuses>
-			<FreeBuilding>NONE</FreeBuilding>
+			<FreeBuilding>BUILDINGCLASS_TRADE_CENTER</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
 			<CivicOption>NONE</CivicOption>
 			<GreatPeopleUnitClass>UNITCLASS_ENGINEER</GreatPeopleUnitClass>
@@ -21772,15 +21694,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iFreeSpecialist>0</iFreeSpecialist>
 			<iAreaFreeSpecialist>0</iAreaFreeSpecialist>
 			<iGlobalFreeSpecialist>0</iGlobalFreeSpecialist>
-			<iMaintenanceModifier>0</iMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers  -->
-			<iGlobalMaintenanceModifier>0</iGlobalMaintenanceModifier>
-			<iDistanceMaintenanceModifier>5</iDistanceMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
-			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<iConnectedCityMaintenanceModifier>0</iConnectedCityMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
+			<iMaintenanceModifier>5</iMaintenanceModifier>
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
 			<iEnemyWarWearinessModifier>0</iEnemyWarWearinessModifier>
@@ -21818,8 +21732,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ObsoleteSafeCommerceChanges>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
-				<!-- advc.201: K-Mod had reduced this to 5 -->
-				<iCommerce>6</iCommerce>
+				<!-- advc.201: K-Mod had reduced this to 5 kel to 4-->
+				<iCommerce>4</iCommerce>
 			</ObsoleteSafeCommerceChanges>
 			<CommerceChangeDoubleTimes>
 				<iCommerce>0</iCommerce>
@@ -21939,7 +21853,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<bPrereqReligion>0</bPrereqReligion>
 			<bCenterInCity>0</bCenterInCity>
 			<iAIWeight>0</iAIWeight>
-			<iCost>120</iCost>
+			<iCost>110</iCost>
 			<iHurryCostModifier>100</iHurryCostModifier>
 			<iAdvancedStartCost>-1</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
@@ -21971,16 +21885,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iFreeSpecialist>0</iFreeSpecialist>
 			<iAreaFreeSpecialist>0</iAreaFreeSpecialist>
 			<iGlobalFreeSpecialist>0</iGlobalFreeSpecialist>
-			<iMaintenanceModifier>0</iMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers  -->
-			<iGlobalMaintenanceModifier>0</iGlobalMaintenanceModifier>
-			<iAreaMaintenanceModifier>0</iAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>5</iOtherAreaMaintenanceModifier>
-			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
-			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<iConnectedCityMaintenanceModifier>0</iConnectedCityMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
+			<iMaintenanceModifier>5</iMaintenanceModifier>
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
 			<iEnemyWarWearinessModifier>0</iEnemyWarWearinessModifier>
@@ -22019,7 +21924,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
 				<!-- advc.201: Was 8 in BtS, 4 in K-Mod. -->
-				<iCommerce>6</iCommerce>
+				<iCommerce>4</iCommerce>
 			</ObsoleteSafeCommerceChanges>
 			<CommerceChangeDoubleTimes>
 				<iCommerce>0</iCommerce>
@@ -22046,7 +21951,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<BonusProductionModifiers>
 				<BonusProductionModifier>
 					<BonusType>BONUS_STONE</BonusType>
-					<iProductonModifier>100</iProductonModifier>
+					<iProductonModifier>50</iProductonModifier>
 				</BonusProductionModifier>
 			</BonusProductionModifiers>
 			<UnitCombatFreeExperiences/>
@@ -34046,15 +33951,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iFreeSpecialist>0</iFreeSpecialist>
 			<iAreaFreeSpecialist>0</iAreaFreeSpecialist>
 			<iGlobalFreeSpecialist>0</iGlobalFreeSpecialist>
-			<iMaintenanceModifier>0</iMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers  -->
-			<iGlobalMaintenanceModifier>0</iGlobalMaintenanceModifier>
-			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>-2</iNumCitiesMaintenanceModifier>
-			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<iConnectedCityMaintenanceModifier>0</iConnectedCityMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
+			<iMaintenanceModifier>-5</iMaintenanceModifier>
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
 			<iEnemyWarWearinessModifier>0</iEnemyWarWearinessModifier>
@@ -34173,7 +34070,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<VictoryPrereq>NONE</VictoryPrereq>
 			<FreeStartEra>NONE</FreeStartEra>
 			<MaxStartEra>NONE</MaxStartEra>
-			<ObsoleteTech>TECH_BANKING</ObsoleteTech>
+			<ObsoleteTech>TECH_ECONOMICS</ObsoleteTech>
 			<PrereqTech>TECH_THE_WHEEL</PrereqTech>
 			<TechTypes/>
 			<Bonus>NONE</Bonus>
@@ -34212,7 +34109,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<bPrereqReligion>0</bPrereqReligion>
 			<bCenterInCity>0</bCenterInCity>
 			<iAIWeight>0</iAIWeight>
-			<iCost>52</iCost>
+			<iCost>48</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>-1</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
@@ -34243,20 +34140,6 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iAreaFreeSpecialist>0</iAreaFreeSpecialist>
 			<iGlobalFreeSpecialist>0</iGlobalFreeSpecialist>
 			<iMaintenanceModifier>0</iMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers  -->
-			<iGlobalMaintenanceModifier>0</iGlobalMaintenanceModifier>
-			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
-			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<iConnectedCityMaintenanceModifier>0</iConnectedCityMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<!--DPII <Local Maintenance Modifiers  -->
-			<iLocalDistanceMaintenanceModifier>0</iLocalDistanceMaintenanceModifier>
-			<iLocalOtherAreaMaintenanceModifier>0</iLocalOtherAreaMaintenanceModifier>
-			<iLocalCoastalDistanceMaintenanceModifier>5</iLocalCoastalDistanceMaintenanceModifier>
-			<iLocalConnectedCityMaintenanceModifier>5</iLocalConnectedCityMaintenanceModifier>
-			<!--DPII <Local Maintenance Modifiers > -->
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
 			<iEnemyWarWearinessModifier>0</iEnemyWarWearinessModifier>
@@ -34354,7 +34237,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<VictoryPrereq>NONE</VictoryPrereq>
 			<FreeStartEra>NONE</FreeStartEra>
 			<MaxStartEra>NONE</MaxStartEra>
-			<ObsoleteTech>TECH_EDUCATION</ObsoleteTech>
+			<ObsoleteTech>TECH_LITERATURE</ObsoleteTech>
 			<PrereqTech>NONE</PrereqTech>
 			<TechTypes/>
 			<Bonus>NONE</Bonus>
@@ -34393,7 +34276,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<bPrereqReligion>0</bPrereqReligion>
 			<bCenterInCity>0</bCenterInCity>
 			<iAIWeight>0</iAIWeight>
-			<iCost>55</iCost>
+			<iCost>47</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
@@ -34503,7 +34386,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<BuildingClass>BUILDINGCLASS_HEALERHUT</BuildingClass>
 			<Type>BUILDING_HEALERHUT</Type>
 			<SpecialBuildingType>NONE</SpecialBuildingType>
-			<Description>Healer Hut</Description>
+			<Description>Healer's Hut</Description>
 			<Civilopedia>TXT_KEY_BUILDING_BARRACKS_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_BUILDING_BARRACKS_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
@@ -34521,7 +34404,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<VictoryPrereq>NONE</VictoryPrereq>
 			<FreeStartEra>NONE</FreeStartEra>
 			<MaxStartEra>NONE</MaxStartEra>
-			<ObsoleteTech>TECH_EDUCATION</ObsoleteTech>
+			<ObsoleteTech>TECH_PHILOSOPHY</ObsoleteTech>
 			<PrereqTech>TECH_MONOTHEISM</PrereqTech>
 			<TechTypes/>
 			<Bonus>NONE</Bonus>
@@ -34955,7 +34838,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iTradeRoutes>0</iTradeRoutes>
 			<iCoastalTradeRoutes>0</iCoastalTradeRoutes>
 			<iAreaTradeRoutes>0</iAreaTradeRoutes>
-			<iTradeRouteModifier>10</iTradeRouteModifier>
+			<iTradeRouteModifier>0</iTradeRouteModifier>
 			<iForeignTradeRouteModifier>0</iForeignTradeRouteModifier>
 			<iGlobalPopulationChange>0</iGlobalPopulationChange>
 			<iFreeTechs>0</iFreeTechs>
@@ -35132,20 +35015,6 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iAreaFreeSpecialist>0</iAreaFreeSpecialist>
 			<iGlobalFreeSpecialist>0</iGlobalFreeSpecialist>
 			<iMaintenanceModifier>0</iMaintenanceModifier>
-			<!--DPII < global Maintenance Modifiers  -->
-			<iGlobalMaintenanceModifier>0</iGlobalMaintenanceModifier>
-			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
-			<iCoastalDistanceMaintenanceModifier>0</iCoastalDistanceMaintenanceModifier>
-			<iConnectedCityMaintenanceModifier>0</iConnectedCityMaintenanceModifier>
-			<!--DPII < global Maintenance Modifiers > -->
-			<!--DPII <Local Maintenance Modifiers  -->
-			<iLocalDistanceMaintenanceModifier>0</iLocalDistanceMaintenanceModifier>
-			<iLocalOtherAreaMaintenanceModifier>0</iLocalOtherAreaMaintenanceModifier>
-			<iLocalCoastalDistanceMaintenanceModifier>0</iLocalCoastalDistanceMaintenanceModifier>
-			<iLocalConnectedCityMaintenanceModifier>0</iLocalConnectedCityMaintenanceModifier>
-			<!--DPII <Local Maintenance Modifiers > -->
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iGlobalWarWearinessModifier>0</iGlobalWarWearinessModifier>
 			<iEnemyWarWearinessModifier>0</iEnemyWarWearinessModifier>

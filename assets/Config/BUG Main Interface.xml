@@ -29,6 +29,10 @@
 			<option id="OptionsButton" key="Options Button" 
 					type="boolean" default="False"
 					get="isShowOptionsButton" set="setShowOptionsButton"/>
+
+			<!-- advc.106i -->
+			<option id="ModNameInReplays" key="Mod Name In Replays" 
+					type="boolean" default="True" />
 					
 			<!-- advc.106b -->
 			<option id="AutoOpenEventLog" key="Auto Open Event Log" 
@@ -143,6 +147,11 @@
 				<choice id="Custom"/>
 			</list>
 
+			<!-- advc.102b: -->
+			<list   id="ShowFriendlyMovesThresh" key="Show Friendly Moves Thresh" 
+					type="int" default="0" listType="int" 
+					values="1, 2, 3, 4, 5, 6, 7, 8"/>
+
 			<!-- advc.002a: -->
 			<list   id="MinimapWaterColor" key="Minimap Water Color" 
 					type="int" default="1" listType="string" 
@@ -239,9 +248,15 @@
 			<option id="SimpleSelection" key="Simple Selection"
 					type="boolean" default="True"/>
 
+			<!-- (I don't think these two are needed after all) -->
 			<!-- advc.004k -->
-			<option id="SeaPatrol" key="Sea Patrol"
-					type="boolean" default="False" dirtyBit="SelectionButtons"/>
+			<!--option id="SeaPatrol" key="Sea Patrol"
+					get="isShowSeaPatrol"
+					type="boolean" default="True" dirtyBit="SelectionButtons"/-->
+			<!-- advc.004k -->
+			<!--option id="AutoExplore" key="Auto Explore"
+					get="isShowAutoExplore"
+					type="boolean" default="True" dirtyBit="SelectionButtons"/-->
 			
 			<!-- advc.004z -->
 			<option id="ScoresInGlobeView" key="Scores in Globe View" 
@@ -283,7 +298,7 @@
 				<choice id="60"/> <choice id="65"/>
 			</list>
 			<list   id="OffScreenUnitSizeMult" key="Off Screen Unit Size Mult"
-					type="int" default="4" listType="string">
+					type="int" default="3" listType="string">
 				<change module="InputUtil" function="updatePlotIndicatorSize"/>
 				<choice id="0.8"/> <choice id="1.0"/> <choice id="1.2"/> <choice id="1.4"/>
 				<choice id="1.6"/> <choice id="1.8"/> <choice id="2.0"/> <choice id="2.2"/>

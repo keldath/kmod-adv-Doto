@@ -24,10 +24,6 @@
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCorporationMaintenanceModifier>0</iCorporationMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iHomeAreaMaintenanceModifier>0</iHomeAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iExtraHealth>0</iExtraHealth>
 			<!-- KMOD-->
 			<iExtraHappiness>0</iExtraHappiness>
@@ -125,7 +121,7 @@
 				 per every two military units. -->
 			<iHappyPerMilitaryUnit>1</iHappyPerMilitaryUnit>
 			<!-- advc.912c -->
-			<iLuxuryModifier>30</iLuxuryModifier>
+			<iLuxuryModifier>0</iLuxuryModifier>
 			<bMilitaryFoodProduction>0</bMilitaryFoodProduction>
 			<iMaxConscript>0</iMaxConscript>
 			<iUnhealthyPopulationModifier>0</iUnhealthyPopulationModifier>
@@ -196,7 +192,7 @@
 			<iUnhealthyPopulationModifier>0</iUnhealthyPopulationModifier>
 			<iExpInBorderModifier>0</iExpInBorderModifier>
 			<bBuildingOnlyHealthy>0</bBuildingOnlyHealthy>
-			<iLargestCityHappiness>3</iLargestCityHappiness>
+			<iLargestCityHappiness>2</iLargestCityHappiness>
 			<iWarWearinessModifier>0</iWarWearinessModifier>
 			<iFreeSpecialist>0</iFreeSpecialist>
 			<iTradeRoutes>0</iTradeRoutes>
@@ -252,7 +248,7 @@
 			<iFreeExperience>0</iFreeExperience>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
 			<iImprovementUpgradeRateModifier>0</iImprovementUpgradeRateModifier>
-			<iMilitaryProductionModifier>20</iMilitaryProductionModifier>
+			<iMilitaryProductionModifier>10</iMilitaryProductionModifier>
 			<iBaseFreeUnits>0</iBaseFreeUnits>
 			<iBaseFreeMilitaryUnits>0</iBaseFreeMilitaryUnits>
 			<iFreeUnitsPopulationPercent>0</iFreeUnitsPopulationPercent>
@@ -261,7 +257,7 @@
 			<iGoldPerMilitaryUnit>0</iGoldPerMilitaryUnit>
 			<iHappyPerMilitaryUnit>0</iHappyPerMilitaryUnit>
 			<bMilitaryFoodProduction>0</bMilitaryFoodProduction>
-			<iMaxConscript>0</iMaxConscript>
+			<iMaxConscript>5</iMaxConscript>
 			<iUnhealthyPopulationModifier>0</iUnhealthyPopulationModifier>
 			<iExpInBorderModifier>0</iExpInBorderModifier>
 			<bBuildingOnlyHealthy>0</bBuildingOnlyHealthy>
@@ -286,9 +282,9 @@
 			<CommerceModifiers/>
 			<CapitalCommerceModifiers>
 				<iCommerce>0</iCommerce>
-				<iCommerce>20</iCommerce>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
+				<iCommerce>10</iCommerce>
 			</CapitalCommerceModifiers>
 			<SpecialistExtraCommerces/>
 			<Hurrys/>
@@ -539,10 +535,6 @@
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCorporationMaintenanceModifier>0</iCorporationMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iHomeAreaMaintenanceModifier>0</iHomeAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>10</iOtherAreaMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iExtraHealth>0</iExtraHealth>
 			<iFreeExperience>0</iFreeExperience>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -611,10 +603,6 @@
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCorporationMaintenanceModifier>0</iCorporationMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iHomeAreaMaintenanceModifier>0</iHomeAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iExtraHealth>0</iExtraHealth>
 			<iFreeExperience>0</iFreeExperience>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -978,7 +966,7 @@
 			<Button>,Art/Interface/Buttons/Civics/Caste_System.dds,Art/Interface/Buttons/Civics_Civilizations_Religions_Atlas.dds,3,1</Button>
 			<TechPrereq>TECH_CODE_OF_LAWS</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
-			<Upkeep>UPKEEP_MEDIUM</Upkeep>
+			<Upkeep>UPKEEP_LOW</Upkeep>
 			<iAIWeight>0</iAIWeight>
 			<iGreatPeopleRateModifier>0</iGreatPeopleRateModifier>
 			<iGreatGeneralRateModifier>0</iGreatGeneralRateModifier>
@@ -987,10 +975,6 @@
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCorporationMaintenanceModifier>0</iCorporationMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iHomeAreaMaintenanceModifier>0</iHomeAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>-15</iOtherAreaMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iExtraHealth>0</iExtraHealth>
 			<iFreeExperience>0</iFreeExperience>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -1762,7 +1746,7 @@
 			<Civilopedia>TXT_KEY_CIVIC_PACIFISM_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_CIVIC_PACIFISM_STRATEGY</Strategy>
 			<Button>,Art/Interface/Buttons/Civics/Pacifism.dds,Art/Interface/Buttons/Civics_Civilizations_Religions_Atlas.dds,3,2</Button>
-			<TechPrereq>TECH_PHILOSOPHY</TechPrereq>
+			<TechPrereq>TECH_AESTHETICS</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>UPKEEP_HIGH</Upkeep>
 			<iAIWeight>0</iAIWeight>
@@ -2242,10 +2226,6 @@
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCorporationMaintenanceModifier>0</iCorporationMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iHomeAreaMaintenanceModifier>0</iHomeAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iExtraHealth>0</iExtraHealth>
 			<iFreeExperience>4</iFreeExperience>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -2300,7 +2280,7 @@
 			<Civilopedia>[TAB]Fundamentalism refers to a belief in a strict adherence to a set of basic principles (often religious in nature), sometimes as a reaction to perceived doctrinal compromises with modern social and political life.</Civilopedia>
 			<Strategy>Religious bonuses for those fundamentalists playing Civ4</Strategy>
 			<Button>Art\Interface\Buttons\Civics\FundCiv.dds</Button>
-			<TechPrereq>TECH_DIVINE_RIGHT</TechPrereq>
+			<TechPrereq>TECH_PHILOSOPHY</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>UPKEEP_HIGH</Upkeep>
 			<iAIWeight>0</iAIWeight>
@@ -2311,10 +2291,6 @@
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCorporationMaintenanceModifier>0</iCorporationMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iHomeAreaMaintenanceModifier>0</iHomeAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iExtraHealth>0</iExtraHealth>
 			<iFreeExperience>0</iFreeExperience>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -2328,7 +2304,7 @@
 			<iGoldPerMilitaryUnit>0</iGoldPerMilitaryUnit>
 			<iHappyPerMilitaryUnit>0</iHappyPerMilitaryUnit>
 			<bMilitaryFoodProduction>0</bMilitaryFoodProduction>
-			<iMaxConscript>1</iMaxConscript>
+			<iMaxConscript>0</iMaxConscript>
 			<iUnhealthyPopulationModifier>0</iUnhealthyPopulationModifier>
 			<iExpInBorderModifier>0</iExpInBorderModifier>
 			<bBuildingOnlyHealthy>0</bBuildingOnlyHealthy>
@@ -2396,10 +2372,6 @@
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>10</iNumCitiesMaintenanceModifier>
 			<iCorporationMaintenanceModifier>0</iCorporationMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iHomeAreaMaintenanceModifier>0</iHomeAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iExtraHealth>0</iExtraHealth>
 			<iFreeExperience>0</iFreeExperience>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -2477,16 +2449,12 @@
 			<Upkeep>UPKEEP_MEDIUM</Upkeep>
 			<iAIWeight>0</iAIWeight>
 			<iGreatPeopleRateModifier>0</iGreatPeopleRateModifier>
-			<iGreatGeneralRateModifier>25</iGreatGeneralRateModifier>
+			<iGreatGeneralRateModifier>0</iGreatGeneralRateModifier>
 			<iDomesticGreatGeneralRateModifier>0</iDomesticGreatGeneralRateModifier>
 			<iStateReligionGreatPeopleRateModifier>0</iStateReligionGreatPeopleRateModifier>
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCorporationMaintenanceModifier>0</iCorporationMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iHomeAreaMaintenanceModifier>0</iHomeAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iExtraHealth>0</iExtraHealth>
 			<iFreeExperience>0</iFreeExperience>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -2502,7 +2470,7 @@
 			<bMilitaryFoodProduction>0</bMilitaryFoodProduction>
 			<iMaxConscript>0</iMaxConscript>
 			<iUnhealthyPopulationModifier>0</iUnhealthyPopulationModifier>
-			<iExpInBorderModifier>25</iExpInBorderModifier>
+			<iExpInBorderModifier>30</iExpInBorderModifier>
 			<bBuildingOnlyHealthy>0</bBuildingOnlyHealthy>
 			<iLargestCityHappiness>0</iLargestCityHappiness>
 			<iWarWearinessModifier>0</iWarWearinessModifier>
@@ -2581,12 +2549,8 @@
 			<iDomesticGreatGeneralRateModifier>0</iDomesticGreatGeneralRateModifier>
 			<iStateReligionGreatPeopleRateModifier>0</iStateReligionGreatPeopleRateModifier>
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>15</iNumCitiesMaintenanceModifier>
+			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCorporationMaintenanceModifier>0</iCorporationMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iHomeAreaMaintenanceModifier>0</iHomeAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iExtraHealth>0</iExtraHealth>
 			<iFreeExperience>0</iFreeExperience>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -2639,7 +2603,7 @@
 					<ImprovementYields>
 						<iYield>0</iYield>
 						<iYield>0</iYield>
-						<iYield>2</iYield>
+						<iYield>1</iYield>
 					</ImprovementYields>
 				</ImprovementYieldChange>
 			</ImprovementYieldChanges>
@@ -2739,12 +2703,8 @@
 			<iDomesticGreatGeneralRateModifier>0</iDomesticGreatGeneralRateModifier>
 			<iStateReligionGreatPeopleRateModifier>0</iStateReligionGreatPeopleRateModifier>
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
+			<iNumCitiesMaintenanceModifier>-10</iNumCitiesMaintenanceModifier>
 			<iCorporationMaintenanceModifier>0</iCorporationMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iHomeAreaMaintenanceModifier>-20</iHomeAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iExtraHealth>0</iExtraHealth>
 			<iFreeExperience>0</iFreeExperience>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -3084,13 +3044,9 @@
 			<iGreatGeneralRateModifier>0</iGreatGeneralRateModifier>
 			<iDomesticGreatGeneralRateModifier>0</iDomesticGreatGeneralRateModifier>
 			<iStateReligionGreatPeopleRateModifier>0</iStateReligionGreatPeopleRateModifier>
-			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
+			<iDistanceMaintenanceModifier>10</iDistanceMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCorporationMaintenanceModifier>0</iCorporationMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iHomeAreaMaintenanceModifier>15</iHomeAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iExtraHealth>0</iExtraHealth>
 			<iFreeExperience>0</iFreeExperience>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -3172,12 +3128,8 @@
 			<iDomesticGreatGeneralRateModifier>0</iDomesticGreatGeneralRateModifier>
 			<iStateReligionGreatPeopleRateModifier>0</iStateReligionGreatPeopleRateModifier>
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
+			<iNumCitiesMaintenanceModifier>10</iNumCitiesMaintenanceModifier>
 			<iCorporationMaintenanceModifier>0</iCorporationMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iHomeAreaMaintenanceModifier>0</iHomeAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>15</iOtherAreaMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iExtraHealth>0</iExtraHealth>
 			<iExtraHappiness>0</iExtraHappiness>
 			<iFreeExperience>0</iFreeExperience>
@@ -3324,10 +3276,6 @@
 			<iDistanceMaintenanceModifier>0</iDistanceMaintenanceModifier>
 			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
 			<iCorporationMaintenanceModifier>0</iCorporationMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
-			<iHomeAreaMaintenanceModifier>0</iHomeAreaMaintenanceModifier>
-			<iOtherAreaMaintenanceModifier>0</iOtherAreaMaintenanceModifier>
-			<!--DPII < Maintenance Modifiers > -->
 			<iExtraHealth>0</iExtraHealth>
 			<iExtraHappiness>0</iExtraHappiness>
 			<iFreeExperience>0</iFreeExperience>
@@ -3603,7 +3551,7 @@
 			<Civilopedia>Guerrilla war</Civilopedia>
 			<Strategy>???</Strategy>
 			<Button>,Art/Interface/Buttons/Units/CamelArcher.dds,Art/Interface/Buttons/Unit_Resource_Atlas.dds,5,8</Button>
-			<TechPrereq>TECH_DIVINE_RIGHT</TechPrereq>
+			<TechPrereq>TECH_WRITING</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>UPKEEP_LOW</Upkeep>
 			<iAIWeight>5</iAIWeight>

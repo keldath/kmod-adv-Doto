@@ -922,7 +922,9 @@ class CvMainInterface:
 			# Update total width
 			fOneLineTotalWidth = (fResearchBarWidth + fThinGPBarWidth + fThinGGBarWidth +
 					2 * iThinSpacing)
-			fMultTwoLines = gRect("TopBarsMaxSpace").width() / float(fThinResearchBarWidth)
+			# Leave some room to make sure we don't overlap the Advisor buttons.
+			# Not scaled b/c, if anything, the buttons protrude more on smaller res.
+			fMultTwoLines = (gRect("TopBarsMaxSpace").width() - 15) / float(fThinResearchBarWidth)
 			fThinResearchBarWidth *= fMultTwoLines
 			fGGBarWidth *= fMultTwoLines
 		fGPBarWidth = fThinResearchBarWidth - fGGBarWidth - iSpacing
@@ -2004,15 +2006,19 @@ class CvMainInterface:
 		except AttributeError:
 			pass
 
-	def updateBottomButtonList(self):
+	# advc.004k Cut from updateBottomButtonList
+	def bottomListBtnSize(self):
 # BUG - Build/Action Icon Size - start
 		if MainOpt.isBuildIconSizeLarge():
-			iButtonSize = 64
+			return 64
 		elif MainOpt.isBuildIconSizeMedium():
-			iButtonSize = 48
-		else:
-			iButtonSize = 36
+			return 48
+		return 36
+# BUG - Build/Action Icon Size - end
 
+	def updateBottomButtonList(self):
+# BUG - Build/Action Icon Size - start
+		iButtonSize = self.bottomListBtnSize()
 		# EF: minimum icon size for disabled buttons to work is 33 so these sizes won't fly
 		# iButtonSize=32, iHeight=102
 		# iButtonSize=24, iHeight=104
@@ -3251,10 +3257,14 @@ class CvMainInterface:
 						WidgetTypes.WIDGET_HURRY, i)
 					screen.hide(szName)
 
-				self.setStyledButton("AutomateProduction", "Button_CityC3_Style",
+				self.addCheckBox("AutomateProduction", "", "",
+						ButtonStyles.BUTTON_STYLE_STANDARD,
 						WidgetTypes.WIDGET_AUTOMATE_PRODUCTION)
-				self.setStyledButton("AutomateCitizens", "Button_CityC4_Style",
+				screen.setStyle("AutomateProduction", "Button_CityC3_Style")
+				self.addCheckBox("AutomateCitizens", "", "",
+						ButtonStyles.BUTTON_STYLE_STANDARD,
 						WidgetTypes.WIDGET_AUTOMATE_CITIZENS)
+				screen.setStyle("AutomateCitizens", "Button_CityC4_Style")
 
 				for i in range(6):
 					szName = "Emphasize" + str(i)
@@ -3421,19 +3431,50 @@ class CvMainInterface:
 				if (pHeadSelectedUnit and
 						pHeadSelectedUnit.getOwner() == gc.getGame().getActivePlayer() and
 						bHeadSelectionChanged):
+					# <advc.004k>
+					bGroupButtonsDone = False
+					iMaxCols = int((gRect("BottomButtonList").width()
+							# (Safety margin - not sure if MultiListControl can use its entire width.)
+							-5) / self.bottomListBtnSize())
+					# Can display any number of them, but we don't want a scrollbar.
+					iMaxRows = int((gRect("BottomButtonList").height() - 5) /
+							self.bottomListBtnSize())
+					# </advc.004k>
 					iCount = 0
 					actions = CyInterface().getActionsToShow()
-					# advc.004: Hide the Skip button while asleep, but keep the hotkey available? Maybe better not ...
-					#bWaiting = pHeadSelectedUnit.isWaiting()
 					for i in actions:
-						# <advc.004> See above
-						#if bWaiting and gc.getActionInfo(i).getHotKey() == "KB_SPACE":
-						#	continue # </advc.004>
+						# <advc.004k>
+						# (I don't think these options are needed after all)
+						'''
+						if (gc.getActionInfo(i).getMissionType() == MissionTypes.MISSION_SEAPATROL and
+								not MainOpt.isShowSeaPatrol()):
+							continue
+						if (gc.getActionInfo(i).getAutomateType() == AutomateTypes.AUTOMATE_EXPLORE and
+								not MainOpt.isShowAutoExplore()):
+							continue
+						'''
+						# Show grouping commands before promotions, upgrades
+						if (not bGroupButtonsDone and
+								(gc.getActionInfo(i).getCommandType() == CommandTypes.COMMAND_PROMOTION or
+								gc.getActionInfo(i).getCommandType() == CommandTypes.COMMAND_UPGRADE)):
+							bGroupButtonsDone = True
+							iCount += self.appendGroupBottomButtons()
+						# Put promotions, upgrades on a separate row -
+						# if we haven't exceeded a full row already and can
+						# fit all promos and upgrades in the 2nd row.
+						if (bGroupButtonsDone and iMaxRows >= 2 and
+								iCount <= iMaxCols and
+								len(actions) - iCount <= iMaxCols):
+							iRow = 1
+						else:
+							iRow = 0
+						# </advc.004k>
 						screen.appendMultiListButton("BottomButtonList",
-								gc.getActionInfo(i).getButton(), 0,
+								gc.getActionInfo(i).getButton(),
+								iRow, # advc.004k: was 0
 								WidgetTypes.WIDGET_ACTION, i, -1, False)
 						screen.show("BottomButtonList")
-						if (not CyInterface().canHandleAction(i, False)):
+						if not CyInterface().canHandleAction(i, False):
 							screen.disableMultiListButton("BottomButtonList",
 									0, iCount, gc.getActionInfo(i).getButton())
 						if (pHeadSelectedUnit.isActionRecommended(i)
@@ -3442,24 +3483,12 @@ class CvMainInterface:
 							screen.enableMultiListPulse("BottomButtonList", True, 0, iCount)
 						else:
 							screen.enableMultiListPulse("BottomButtonList", False, 0, iCount)
-
 						iCount += 1
-
-					if (CyInterface().canCreateGroup()):
-						screen.appendMultiListButton("BottomButtonList",
-								ArtFileMgr.getInterfaceArtInfo("INTERFACE_BUTTONS_CREATEGROUP").getPath(), 0,
-								WidgetTypes.WIDGET_CREATE_GROUP, -1, -1, False)
-						screen.show("BottomButtonList")
-
-						iCount += 1
-
-					if (CyInterface().canDeleteGroup()):
-						screen.appendMultiListButton("BottomButtonList",
-								ArtFileMgr.getInterfaceArtInfo("INTERFACE_BUTTONS_SPLITGROUP").getPath(), 0,
-								WidgetTypes.WIDGET_DELETE_GROUP, -1, -1, False)
-						screen.show("BottomButtonList")
-
-						iCount += 1
+					# <advc.004k>
+					if not bGroupButtonsDone: # If no promotions, upgrades.
+						# Moved into new method
+						iCount += self.appendGroupBottomButtons()
+						screen.show("BottomButtonList") # </advc.004k>
 				# <advc.154>
 				pUnit = None
 				if bHeadSelectionChanged:
@@ -3470,6 +3499,21 @@ class CvMainInterface:
 			self.setMinimapButtonVisibility(True)
 
 		return 0
+	# advc.004k: Moved from updateSelectionButtons above
+	def appendGroupBottomButtons(self):
+		iAppended = 0
+		if CyInterface().canCreateGroup():
+			self.screen.appendMultiListButton("BottomButtonList",
+					ArtFileMgr.getInterfaceArtInfo("INTERFACE_BUTTONS_CREATEGROUP").getPath(), 0,
+					WidgetTypes.WIDGET_CREATE_GROUP, -1, -1, False)
+			iAppended += 1
+		if CyInterface().canDeleteGroup():
+			self.screen.appendMultiListButton("BottomButtonList",
+					ArtFileMgr.getInterfaceArtInfo("INTERFACE_BUTTONS_SPLITGROUP").getPath(), 0,
+					WidgetTypes.WIDGET_DELETE_GROUP, -1, -1, False)
+			iAppended += 1
+		return iAppended
+
 	# <advc.154>
 	def hideUnitCyclingButtons(self):
 		self.hideUnitCycleButtonGFC("UnitCycle")
@@ -5139,7 +5183,7 @@ class CvMainInterface:
 		'''
 		aCityBldgs = sorted(aCityBldgs, key=lambda iBuilding:
 				# AdvCiv returns -32768 for free buildings. Let's just treat
-				# all stange year numbers as 10000, which will move them
+				# all strange year numbers as 10000, which will move them
 				# to the end of the list. The and/or is a hack for a
 				# conditional expression (properly added in Python 2.5).
 				(abs(pHeadSelectedCity.getBuildingOriginalTime(iBuilding)) >= 10000 and 10000
@@ -6870,8 +6914,7 @@ class CvMainInterface:
 
 		# Hide the layer options ... all of them
 		for i in range(20):
-			szName = "GlobeLayerOption" + str(i)
-			screen.hide(szName)
+			screen.hide("GlobeLayerOption" + str(i))
 
 		# Setup the GlobeLayer panel
 		#iNumLayers = kGLM.getNumLayers() # advc: unused
@@ -6909,7 +6952,7 @@ class CvMainInterface:
 				kGLM.getLayer(iCurrentLayerID).getNumOptions() > 0 and
 				# Could instead set NumOptions to 0 in CvGame::getGlobeLayers
 				# but then the resource layer wouldn't update properly
-				# when ResourceIconOptions is toggled in the BUG menu.
+				# when ResourceIconOptions is toggled on the BUG menu.
 				(not bResourceLayer or MainOpt.isResourceIconOptions())):
 			# </advc.004z>
 			bHasOptions = True

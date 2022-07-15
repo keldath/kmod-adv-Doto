@@ -132,11 +132,6 @@ EveryoneSpecialUnit	Allows every player to train the specified type of special u
 			<iCost>2000</iCost>
 			<iNukeInterception>0</iNukeInterception>
 			<iTechShare>2</iTechShare>
-			<!-- DPII < Maintenance Modifiers > -->
-			<iGlobalMaintenanceModifier>0</iGlobalMaintenanceModifier>
-			<iDistanceMaintenanceModifier>-20</iDistanceMaintenanceModifier>
-			<iNumCitiesMaintenanceModifier>0</iNumCitiesMaintenanceModifier>
-			<!-- DPII < Maintenance Modifiers > -->
 			<EveryoneSpecialUnit>NONE</EveryoneSpecialUnit>
 			<EveryoneSpecialBuilding>NONE</EveryoneSpecialBuilding>
 			<bSpaceship>0</bSpaceship>

@@ -306,9 +306,6 @@ class CvEventManager:
 					popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_DETAILS)
 					popupInfo.setOption1(true)
 					popupInfo.addPopup(iPlayer)
-# Doto Super Forts
-		CyMap().calculateCanalAndChokePoints()
-# Doto Super Forts
 		CvAdvisorUtils.resetNoLiberateCities()
 ###doto starting popup - begin
 		if (gc.getGame().getGameTurnYear() == gc.getDefineINT("START_YEAR") and not gc.getGame().isOption(GameOptionTypes.GAMEOPTION_ADVANCED_START)):

@@ -19,12 +19,6 @@
 	<ElementType name="FirstFreeUnitClass" content="textOnly"/>
 	<ElementType name="iFeatureProductionModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iWorkerSpeedModifier" content="textOnly" dt:type="int"/>
-	<!-- DPII < Maintenance Modifiers > -->
-	<ElementType name="iMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iDistanceMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iNumCitiesMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iCoastalDistanceMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<!-- DPII < Maintenance Modifiers > -->
 	<ElementType name="iTradeRoutes" content="textOnly" dt:type="int"/>
 	<ElementType name="iHealth" content="textOnly" dt:type="int"/>
 	<ElementType name="iHappiness" content="textOnly" dt:type="int"/>
@@ -136,12 +130,6 @@
 		<element type="FirstFreeUnitClass" minOccurs="0"/>
 		<element type="iFeatureProductionModifier" minOccurs="0"/>
 		<element type="iWorkerSpeedModifier" minOccurs="0"/>
-		<!-- DPII < Maintenance Modifiers > -->
-		<element type="iMaintenanceModifier" minOccurs="0"/>
-		<element type="iDistanceMaintenanceModifier" minOccurs="0"/>
-		<element type="iNumCitiesMaintenanceModifier" minOccurs="0"/>
-		<element type="iCoastalDistanceMaintenanceModifier" minOccurs="0"/>
-		<!-- DPII < Maintenance Modifiers > -->
 		<element type="iTradeRoutes" minOccurs="0"/>
 		<element type="iHealth" minOccurs="0"/>
 		<element type="iHappiness" minOccurs="0"/>

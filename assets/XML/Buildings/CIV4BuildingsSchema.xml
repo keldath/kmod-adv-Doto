@@ -70,7 +70,7 @@
 	<ElementType name="Bonus" content="textOnly"/>
 	<ElementType name="PrereqBonuses" content="eltOnly">
 		<element type="Bonus" minOccurs="0" maxOccurs="*"/>
-  </ElementType>
+    </ElementType>
 <!-- vicinity shqype 
 	<ElementType name="VicinityBonus" content="textOnly"/>
 	<ElementType name="PrereqVicinityBonuses" content="eltOnly">
@@ -158,22 +158,6 @@
 	<ElementType name="iAreaFreeSpecialist" content="textOnly" dt:type="int"/>
 	<ElementType name="iGlobalFreeSpecialist" content="textOnly" dt:type="int"/>
 	<ElementType name="iMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<!-- DPII < Maintenance Modifiers > -->
-	<ElementType name="iGlobalMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iAreaMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iOtherAreaMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iDistanceMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iNumCitiesMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iCoastalDistanceMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iConnectedCityMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<!-- DPII < Maintenance Modifiers > -->
-	<!-- DPII < Maintenance Modifiers > -->
-	<ElementType name="iLocalHomeAreaMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iLocalOtherAreaMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iLocalDistanceMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iLocalCoastalDistanceMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iLocalConnectedCityMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<!-- DPII < Maintenance Modifiers > -->
 	<ElementType name="iWarWearinessModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iGlobalWarWearinessModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iEnemyWarWearinessModifier" content="textOnly" dt:type="int"/>
@@ -431,23 +415,6 @@
 	<ElementType name="GenericBuildingInfos" content="eltOnly">
 		<element type="GenericBuildingInfo" maxOccurs="*"/>
 	</ElementType>
-<!-- lopez bonus converter start-->
-  <ElementType name="iBonusAmount" content="textOnly" dt:type="int"/>
-  <ElementType name="RequiredInputBonus" content="eltOnly">
-    <element type="BonusType"/>
-    <element type="iBonusAmount"/>
-  </ElementType>
-  <ElementType name="BuildingOutputBonus" content="eltOnly">
-    <element type="BonusType"/>
-    <element type="iBonusAmount"/>
-  </ElementType>
-  <ElementType name="RequiredInputBonuses" content="eltOnly">
-    <element type="RequiredInputBonus" minOccurs="0"/>
-  </ElementType>
-  <ElementType name="BuildingOutputBonuses" content="eltOnly">
-    <element type="BuildingOutputBonus" minOccurs="0"/>
-<!-- lopez bonus converter end-->
-  </ElementType>
 	<ElementType name="BuildingInfo" content="eltOnly">
 		<element type="BuildingClass" minOccurs="0"/>
 		<element type="Type"/>
@@ -491,11 +458,7 @@
 		<element type="iNumFreeBonuses" minOccurs="0"/>
 <!-- prereqMust+tholish inactive buildings-->
 		<element type="iPrereqMustAll" minOccurs="0"/>
-		<!-- lopez bonus converter start-->
-		<element type="RequiredInputBonuses" minOccurs="0"/>
-    	<element type="BuildingOutputBonuses" minOccurs="0"/>
-		<!-- lopez bonus converter end-->	
-        <element type="FreeBuilding" minOccurs="0"/>
+		<element type="FreeBuilding" minOccurs="0"/>
 		<element type="FreePromotion" minOccurs="0"/>
 		<element type="CivicOption" minOccurs="0"/>
 		<element type="GreatPeopleUnitClass" minOccurs="0"/>
@@ -565,24 +528,6 @@
 		<element type="iAreaFreeSpecialist" minOccurs="0"/>
 		<element type="iGlobalFreeSpecialist" minOccurs="0"/>
 		<element type="iMaintenanceModifier" minOccurs="0"/>
-		<!--DPII < global Maintenance Modifiers > -->
-		<!-- these should be for mostly national and world wonders...
-				they affect all cities...-->
-		<element type="iGlobalMaintenanceModifier" minOccurs="0"/>
-		<element type="iAreaMaintenanceModifier" minOccurs="0"/>
-		<element type="iOtherAreaMaintenanceModifier" minOccurs="0"/>
-		<element type="iDistanceMaintenanceModifier" minOccurs="0"/>
-		<element type="iNumCitiesMaintenanceModifier" minOccurs="0"/>
-		<element type="iCoastalDistanceMaintenanceModifier" minOccurs="0"/>
-		<element type="iConnectedCityMaintenanceModifier" minOccurs="0"/>
-		<!--DPII < Maintenance Modifiers > -->
-		<!--DPII < local Maintenance Modifiers > -->
-		<element type="iLocalHomeAreaMaintenanceModifier" minOccurs="0"/>
-		<element type="iLocalOtherAreaMaintenanceModifier" minOccurs="0"/>
-		<element type="iLocalDistanceMaintenanceModifier" minOccurs="0"/>
-		<element type="iLocalCoastalDistanceMaintenanceModifier" minOccurs="0"/>
-		<element type="iLocalConnectedCityMaintenanceModifier" minOccurs="0"/>
-		<!--DPII < Maintenance Modifiers > -->
 		<element type="iWarWearinessModifier" minOccurs="0"/>
 		<element type="iGlobalWarWearinessModifier" minOccurs="0"/>
 		<element type="iEnemyWarWearinessModifier" minOccurs="0"/>

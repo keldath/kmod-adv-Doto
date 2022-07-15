@@ -689,7 +689,7 @@ EffectType	Effect that can occur when a unit enters a plot with the feature-->
 			<HillsYieldChange/>
 			<iMovement>3</iMovement>
 			<iSeeThrough>0</iSeeThrough>
-			<iHealthPercent>-50</iHealthPercent>
+			<iHealthPercent>-100</iHealthPercent>
 			<iDefense>-25</iDefense>
 			<iAppearance>1200</iAppearance>
 			<iDisappearance>0</iDisappearance>

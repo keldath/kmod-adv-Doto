@@ -57,14 +57,13 @@ Integer Tags
 			<!-- advc.910: was 100 -->
 			<iResearchPercent>95</iResearchPercent>
 			<!-- advc.140: was 80 -->
-			<iTradeProfitPercent>60</iTradeProfitPercent>
+			<iTradeProfitPercent>70</iTradeProfitPercent>
 			<!-- advc.140: was 50 -->
-			<iDistanceMaintenancePercent>55</iDistanceMaintenancePercent>
+			<iDistanceMaintenancePercent>60</iDistanceMaintenancePercent>
 			<!-- advc.140: Was 45. Note (applies to all world sizes) that the DLL
 				 adjusts this factor based on the crowdedness of the map.-->
-<!-- REDUCED BOTH DUE TO MINIMUN CIVC COST -->
-			<iNumCitiesMaintenancePercent>34</iNumCitiesMaintenancePercent>
-			<iColonyMaintenancePercent>60</iColonyMaintenancePercent>
+			<iNumCitiesMaintenancePercent>42</iNumCitiesMaintenancePercent>
+			<iColonyMaintenancePercent>67</iColonyMaintenancePercent>
 			<iCorporationMaintenancePercent>400</iCorporationMaintenancePercent>
 			<iNumCitiesAnarchyPercent>11</iNumCitiesAnarchyPercent>
 			<!-- advc.250c: was 80 -->
@@ -91,12 +90,12 @@ Integer Tags
 			<!-- advc.910: was 110 -->
 			<iResearchPercent>98</iResearchPercent>
 			<!-- advc.140: was 70 -->
-			<iTradeProfitPercent>53</iTradeProfitPercent>
+			<iTradeProfitPercent>63</iTradeProfitPercent>
 			<!-- advc.140: was 60 -->
-			<iDistanceMaintenancePercent>63</iDistanceMaintenancePercent>
+			<iDistanceMaintenancePercent>67</iDistanceMaintenancePercent>
 			<!-- advc.140: was 40 -->
-			<iNumCitiesMaintenancePercent>30</iNumCitiesMaintenancePercent>
-			<iColonyMaintenancePercent>52</iColonyMaintenancePercent>
+			<iNumCitiesMaintenancePercent>38</iNumCitiesMaintenancePercent>
+			<iColonyMaintenancePercent>60</iColonyMaintenancePercent>
 			<iCorporationMaintenancePercent>200</iCorporationMaintenancePercent>
 			<iNumCitiesAnarchyPercent>10</iNumCitiesAnarchyPercent>
 			<!-- advc.250c: was 85 -->
@@ -122,12 +121,12 @@ Integer Tags
 			<!-- advc.910: was 120 -->
 			<iResearchPercent>102</iResearchPercent>
 			<!-- advc.140: was 60 -->
-			<iTradeProfitPercent>45</iTradeProfitPercent>
+			<iTradeProfitPercent>55</iTradeProfitPercent>
 			<!-- advc.140: was 70 -->
-			<iDistanceMaintenancePercent>70</iDistanceMaintenancePercent>
+			<iDistanceMaintenancePercent>75</iDistanceMaintenancePercent>
 			<!-- advc.140: was 35 -->
-			<iNumCitiesMaintenancePercent>26</iNumCitiesMaintenancePercent>
-			<iColonyMaintenancePercent>45</iColonyMaintenancePercent>
+			<iNumCitiesMaintenancePercent>34</iNumCitiesMaintenancePercent>
+			<iColonyMaintenancePercent>52</iColonyMaintenancePercent>
 			<iCorporationMaintenancePercent>150</iCorporationMaintenancePercent>
 			<iNumCitiesAnarchyPercent>9</iNumCitiesAnarchyPercent>
 			<!-- advc.250c: was 90 -->
@@ -159,11 +158,11 @@ Integer Tags
 			<!-- advc.910: was 130 -->
 			<iResearchPercent>115</iResearchPercent>
 			<!-- advc.140: was 50 -->
-			<iTradeProfitPercent>38</iTradeProfitPercent>
+			<iTradeProfitPercent>48</iTradeProfitPercent>
 			<!-- advc.140: was 80 -->
-			<iDistanceMaintenancePercent>77</iDistanceMaintenancePercent>
-			<iNumCitiesMaintenancePercent>22</iNumCitiesMaintenancePercent>
-			<iColonyMaintenancePercent>37</iColonyMaintenancePercent>
+			<iDistanceMaintenancePercent>82</iDistanceMaintenancePercent>
+			<iNumCitiesMaintenancePercent>30</iNumCitiesMaintenancePercent>
+			<iColonyMaintenancePercent>45</iColonyMaintenancePercent>
 			<iCorporationMaintenancePercent>100</iCorporationMaintenancePercent>
 			<iNumCitiesAnarchyPercent>8</iNumCitiesAnarchyPercent>
 			<iAdvancedStartPointsMod>100</iAdvancedStartPointsMod>
@@ -191,12 +190,12 @@ Integer Tags
 			<iFeatureGrainChange>1</iFeatureGrainChange>
 			<!-- advc.910: was 140 -->
 			<iResearchPercent>137</iResearchPercent>
-			<iTradeProfitPercent>30</iTradeProfitPercent>
+			<iTradeProfitPercent>40</iTradeProfitPercent>
 			<!-- advc.140: was 90 -->
-			<iDistanceMaintenancePercent>84</iDistanceMaintenancePercent>
+			<iDistanceMaintenancePercent>89</iDistanceMaintenancePercent>
 			<!-- advc.140: was 25 -->
-			<iNumCitiesMaintenancePercent>18</iNumCitiesMaintenancePercent>
-			<iColonyMaintenancePercent>30</iColonyMaintenancePercent>
+			<iNumCitiesMaintenancePercent>26</iNumCitiesMaintenancePercent>
+			<iColonyMaintenancePercent>37</iColonyMaintenancePercent>
 			<iCorporationMaintenancePercent>75</iCorporationMaintenancePercent>
 			<iNumCitiesAnarchyPercent>7</iNumCitiesAnarchyPercent>
 			<!-- advc.250c: was 110 -->
@@ -227,12 +226,12 @@ Integer Tags
 			<iFeatureGrainChange>2</iFeatureGrainChange>
 			<iResearchPercent>150</iResearchPercent>
 			<!-- advc.140: was 30 -->
-			<iTradeProfitPercent>23</iTradeProfitPercent>
+			<iTradeProfitPercent>33</iTradeProfitPercent>
 			<!-- advc.140: was 100 -->
-			<iDistanceMaintenancePercent>92</iDistanceMaintenancePercent>
+			<iDistanceMaintenancePercent>97</iDistanceMaintenancePercent>
 			<!-- advc.140: was 20 -->
-			<iNumCitiesMaintenancePercent>14</iNumCitiesMaintenancePercent>
-			<iColonyMaintenancePercent>23</iColonyMaintenancePercent>
+			<iNumCitiesMaintenancePercent>22</iNumCitiesMaintenancePercent>
+			<iColonyMaintenancePercent>30</iColonyMaintenancePercent>
 			<iCorporationMaintenancePercent>50</iCorporationMaintenancePercent>
 			<iNumCitiesAnarchyPercent>6</iNumCitiesAnarchyPercent>
 			<!-- advc.250c: was 120 -->

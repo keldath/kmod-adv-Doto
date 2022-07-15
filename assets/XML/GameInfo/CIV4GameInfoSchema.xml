@@ -108,7 +108,7 @@
 	<ElementType name="Strategy" content="textOnly"/>
 	<ElementType name="Civilopedia" content="textOnly"/>
 	<ElementType name="TechPrereq" content="textOnly"/>
-  <ElementType name="iProductionToCommerceModifier" content="textOnly" dt:type="int"/>
+	<ElementType name="iProductionToCommerceModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="ProductionToCommerceModifiers" content="eltOnly">
 		<element type="iProductionToCommerceModifier" maxOccurs="*"/>
 	</ElementType>
@@ -564,13 +564,6 @@
 	<ElementType name="iCost" content="textOnly" dt:type="int"/>
 	<ElementType name="iNukeInterception" content="textOnly" dt:type="int"/>
 	<ElementType name="iTechShare" content="textOnly" dt:type="int"/>
-	<!--DPII < Maintenance Modifiers > -->
-	<ElementType name="iGlobalMaintenanceModifier" content="textOnly" dt:type="int"/>
-<!-- seems these are missing, need to check the dll 	
-	<ElementType name="iDistanceMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iNumCitiesMaintenanceModifier" content="textOnly" dt:type="int"/>
--->	<ElementType name="iConnectedCityMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<!--DPII < Maintenance Modifiers > -->
 	<ElementType name="EveryoneSpecialUnit" content="textOnly"/>
 	<ElementType name="EveryoneSpecialBuilding" content="textOnly"/>
 	<ElementType name="bSpaceship" content="textOnly" dt:type="boolean"/>
@@ -640,12 +633,6 @@
 		<element type="iCost" minOccurs="0"/>
 		<element type="iNukeInterception" minOccurs="0"/>
 		<element type="iTechShare" minOccurs="0"/>
-		<!--DPII < Maintenance Modifiers > -->
-		<element type="iGlobalMaintenanceModifier" minOccurs="0"/>
-		<element type="iDistanceMaintenanceModifier" minOccurs="0"/>
-		<element type="iNumCitiesMaintenanceModifier" minOccurs="0"/>
-		<element type="iConnectedCityMaintenanceModifier" minOccurs="0"/>
-		<!--DPII < Maintenance Modifiers > -->
 		<element type="EveryoneSpecialUnit" minOccurs="0"/>
 		<element type="EveryoneSpecialBuilding" minOccurs="0"/>
 		<element type="bSpaceship" minOccurs="0"/>
@@ -729,10 +716,6 @@
 	<ElementType name="iColonyMaintenanceModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iNumCitiesMaintenanceModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iCorporationMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<!--DPII < Maintenance Modifiers > -->
-	<ElementType name="iHomeAreaMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<ElementType name="iOtherAreaMaintenanceModifier" content="textOnly" dt:type="int"/>
-	<!--DPII < Maintenance Modifiers > -->
 	<ElementType name="iExtraHealth" content="textOnly" dt:type="int"/>
 	<!-- K-Mod -->
 	<ElementType name="iExtraHappiness" content="textOnly" dt:type="int"/>
@@ -946,10 +929,6 @@
 		<element type="iColonyMaintenanceModifier" minOccurs="0"/>
 		<element type="iNumCitiesMaintenanceModifier" minOccurs="0"/>
 		<element type="iCorporationMaintenanceModifier" minOccurs="0"/>
-		<!--DPII < Maintenance Modifiers > -->
-		<element type="iHomeAreaMaintenanceModifier" minOccurs="0"/>
-		<element type="iOtherAreaMaintenanceModifier" minOccurs="0"/>
-		<!--DPII < Maintenance Modifiers > -->
 		<element type="iExtraHealth" minOccurs="0"/>
 		<!-- K-Mod (advc: made optional) -->
 		<element type="iExtraHappiness" minOccurs="0"/> <!-- K-Mod -->
