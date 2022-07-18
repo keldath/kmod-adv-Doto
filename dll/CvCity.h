@@ -112,9 +112,6 @@ public:
 	bool canConstruct(BuildingTypes eBuilding, bool bContinue = false,											// Exposed to Python
 			bool bTestVisible = false, bool bIgnoreCost = false,
 			bool bIgnoreTech = false) const; // K-Mod
-//DOTO -tholish-Keldath inactive buildings START
-	bool canKeep(BuildingTypes eBuilding) const;
-//DOTO -tholish-Keldath inactive buildings END
 	bool canCreate(ProjectTypes eProject, bool bContinue = false, bool bTestVisible = false) const;				// Exposed to Python
 	bool canMaintain(ProcessTypes eProcess, bool bContinue = false) const;										// Exposed to Python
 	bool canJoin() const;																						// Exposed to Python
@@ -230,9 +227,14 @@ public:
 	int getBonusYieldRateModifier(YieldTypes eYield, BonusTypes eBonus) const;									// Exposed to Python
 
 	void processBonus(BonusTypes eBonus, int iChange);
+	void processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false);
 //DOTO -tholish-Keldath inactive buildings
-	void processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false, bool checkKeep = true);
-	void UNprocessBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false);
+	bool canKeep(BuildingTypes eBuilding) const;
+	bool shouldUnProcessBuilding(BuildingTypes eBuilding);
+	bool getBuildingActiveInactive(BuildingTypes eBuilding) const																// Exposed to Python
+	{
+		return m_aiBuildingeActive.get(eBuilding);
+	}
 //DOTO -tholish-Keldath inactive buildings
 	void processProcess(ProcessTypes eProcess, int iChange);
 	void processSpecialist(SpecialistTypes eSpecialist, int iChange);
@@ -1620,14 +1622,14 @@ protected:
 	ListEnumMap<BuildingTypes,int> m_aiBuildingProduction;
 	ListEnumMap<BuildingTypes,int,short> m_aiBuildingProductionTime;
 	ListEnumMap<BuildingTypes,PlayerTypes> m_aeBuildingOriginalOwner;
-//DOTO-prereqMust+tholish inactive buildings - this enum array will allow to keep track of shich buildings
-//were set to inactive
-	ArrayEnumMap<BuildingTypes,bool,void*,true> m_aiBuildingeActive;
 	// advc: Was MIN_INT as a magic number
 	static int const iBuildingOriginalTimeUnknown = MIN_SHORT;
 	EagerEnumMap<BuildingTypes,int,short,iBuildingOriginalTimeUnknown> m_aiBuildingOriginalTime;
 	EagerEnumMap<BuildingTypes,int,char> m_aiNumRealBuilding;
 	ArrayEnumMap<BuildingTypes,int,char> m_aiNumFreeBuilding;
+	//DOTO-prereqMust+tholish inactive buildings - this enum array will allow to keep track of shich buildings
+	//were set to inactive
+	ArrayEnumMap<BuildingTypes, int, void*, true> m_aiBuildingeActive;
 	ListEnumMap<UnitTypes,int> m_aiUnitProduction;
 	ListEnumMap<UnitTypes,int,short> m_aiUnitProductionTime;
 	ArrayEnumMap<UnitTypes,int,short> m_aiGreatPeopleUnitRate;

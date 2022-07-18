@@ -91,6 +91,7 @@ g_NumActionInfos = 0
 g_eEndTurnButtonState = -1
 g_pSelectedUnit = 0
 # doto specialis instead of pop start
+# todo - there is a tag nog for citizens
 civilians = ['Farmer', 'Miner', 'Laborer'] # index aligned to below - should use dict...
 civiliansIdx = ['SPECIALIST_FARMER', 'SPECIALIST_MINER', 'SPECIALIST_LABORER']
 g_iFreeCivilians = 0
@@ -1139,7 +1140,7 @@ class CvMainInterface:
 #doto wonder limit - make room for it not to over lap the buildings. value added to y res : -10
 		gSetRect("BuildingListTable", "CityLeftPanelContents",
 				RectLayout.CENTER,
-				1 + gRect("BuildingListBackground").yBottom() - gRect("CityLeftPanelContents").y() -2,
+				1 + gRect("BuildingListBackground").yBottom() - gRect("CityLeftPanelContents").y(),
 				-1, gRect("CultureBars").y() - gRect("BuildingListBackground").yBottom() - 1 - VSPACE(4))
 
 	def setCityTabRects(self):
@@ -5055,7 +5056,7 @@ class CvMainInterface:
 			self.iTRFontSize = 1
 			iBldgBtnSize = None
 #doto - wonder limit - change position to make room for the wonder limit - i didnt add option check here - not critical
-		screen.addTableControlGFC( "BuildingListTable", 3, 10, 316, 238, yResolution - 559, False, False, 32, 32, TableStyles.TABLE_STYLE_STANDARD )
+#		screen.addTableControlGFC( "BuildingListTable", 3, 10, 316, 238, yResolution - 559, False, False, 32, 32, TableStyles.TABLE_STYLE_STANDARD )
 #doto - wonder limit
 		self.addTable("BuildingListTable", 3, "Table_City_Style", iBldgBtnSize)
 # BUG - Raw Yields - start
@@ -5125,7 +5126,7 @@ class CvMainInterface:
 				wonderLimitStatus = localText.getText("TXT_KEY_CONCEPT_WONDER_LIMIT_ABOVE", (gc.getCommerceInfo(CommerceTypes.COMMERCE_CULTURE).getChar(),countWonder,cultureWonderLimit,))	
 			# justify was on 125 org	
 			#this gets the hover text from the dll: WidgetTypes.WIDGET_WONDER_LIMITS
-			screen.setLabel("WonderLimit", "Background", wonderLimitStatus, CvUtil.FONT_RIGHT_JUSTIFY, 190, self.yResolution - 234, -0.1, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_WONDER_LIMITS, -1, -1)
+			screen.setLabel("WonderLimit", "Background", wonderLimitStatus, CvUtil.FONT_RIGHT_JUSTIFY, 260, self.yResolution - 180, -0.1, FontTypes.GAME_FONT, WidgetTypes.WIDGET_WONDER_LIMITS, -1, -1)
 			screen.hide( "WonderLimit" )#probably not needed - look below
 #doto - wonder limit end
 		screen.show("BuildingListBackground")
@@ -5190,6 +5191,11 @@ class CvMainInterface:
 				or pHeadSelectedCity.getBuildingOriginalTime(iBuilding))
 				+ iBuilding) # id as tiebreaker
 		'''
+		# Let's at least put free and obsolete buildings at the end
+		aCityBldgs = sorted(aCityBldgs, key=lambda iBuilding:
+				iBuilding 
+				- 2000 * pHeadSelectedCity.getNumActiveBuilding(iBuilding)
+				+ 1000 * pHeadSelectedCity.getNumFreeBuilding(iBuilding))
 		# </advc.097>
 		for iBuilding in aCityBldgs:
 			for k in range(pHeadSelectedCity.getNumBuilding(iBuilding)):
@@ -5387,7 +5393,10 @@ class CvMainInterface:
 				- 1000 * pHeadSelectedCity.getNumBonuses(iBonus)
 				+ iBonus) # </advc.004>
 		# <advc.092>
-		if self.bCityBonusButtons or gRect("Top").height() > 900:
+		if (self.bCityBonusButtons or
+				gRect("Top").height() > 900
+				# Quick adjustment for mod-mods that add resources
+				+ max(0, gc.getNumBonusInfos() - 35) * 12):
 			iFontSize = 3
 		else:
 			iFontSize = 1 # (2 doesn't really increase the size of icons)

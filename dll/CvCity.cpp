@@ -3286,32 +3286,16 @@ void CvCity::processBonus(BonusTypes eBonus, int iChange)
 }
 
 
-void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete,bool checkKeep)
+void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete)
 {
-	// <advc>
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
 	CvGame const& kGame = GC.getGame();
 	CvPlayer& kOwner = GET_PLAYER(getOwner());
-//Dto tholish-Keldath inactive buildings start
-//remeber - update here and in unprocessbuildings new additions!!!
-//if the prereq of a building is no more - it will stop providing.
-//if you cant keep the building, dont update its stuff.
-	// <advc>		
-	bool buildingStatus = true;
-	bool obsoleteCheck = GET_TEAM(getTeam()).isObsoleteBuilding(eBuilding);
-	if (GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION) &&
-		!obsoleteCheck &&
-		GC.getInfo(eBuilding).getPrereqMustAll() > 0 && 
-		getNumRealBuilding(eBuilding) > 0
-	)
-	{	
-		buildingStatus = checkKeep;
-	}
-	
-if (buildingStatus == true)
-{
-//tholish-Keldath inactive buildings end
-	if (!obsoleteCheck || bObsolete)
+//Doto tholish-Keldath inactive buildings start
+//	if (!m_aiBuildingeActive.get(eBuilding))
+//		bObsolete = false;
+//Doto tholish-Keldath inactive buildings start
+	if (!GET_TEAM(getTeam()).isObsoleteBuilding(eBuilding) || bObsolete)
 	{
 		if (iChange > 0)
 		{
@@ -3388,7 +3372,6 @@ if (buildingStatus == true)
 			changeYieldRateModifier(y, kBuilding.getYieldModifier(y) * iChange);
 			changePowerYieldRateModifier(y, kBuilding.getPowerYieldModifier(y) * iChange);
 			// < Civic Infos Plus Start >
-			//keldath QA-DONE
 			changeBuildingYieldChange(kBuilding.getBuildingClassType(), y, kOwner.getBuildingYieldChange(eBuilding, y));
 			// < Civic Infos Plus End   >
 		}
@@ -3400,7 +3383,6 @@ if (buildingStatus == true)
 			changeCommerceHappinessPer(eLoopCommerce,
 					kBuilding.getCommerceHappiness(eLoopCommerce) * iChange);
 			// < Civic Infos Plus Start >
-			//keldath QA-DONE
 			changeBuildingCommerceChange(kBuilding.getBuildingClassType(), eLoopCommerce, 
 					kOwner.getBuildingCommerceChange(eBuilding, eLoopCommerce));
 			// < Civic Infos Plus End   >
@@ -3545,13 +3527,7 @@ if (buildingStatus == true)
 			}
 		} // </advc.004w>
 	}
-//Doto tholish-Keldath inactive buildings start
-}	
-if (buildingStatus == false)
-{
-	UNprocessBuilding(eBuilding, iChange, bObsolete);		
-}
-//Doto tholish-Keldath inactive buildings end
+
 	updateBuildingCommerce();
 	setLayoutDirty(true);
 }
@@ -5848,7 +5824,7 @@ std::pair<int,int> CvCity::calculateSurroundingHealth(int iGoodExtraPercent, int
 	for (CityPlotIter it(*this); it.hasNext(); ++it)
 	{
 		CvPlot const& kPlot = *it;
-//doto - added by keldath - if tile isnt of the city - skip!
+//doto 111- added by keldath - if tile isnt of the city - skip!
 		if (kPlot.getOwner() != getOwner())
 			continue;
 		{
@@ -5861,7 +5837,7 @@ std::pair<int,int> CvCity::calculateSurroundingHealth(int iGoodExtraPercent, int
 			}
 		}  // <advc.901> (based on updateFeatureHappiness)
 		ImprovementTypes eImprovement = kPlot.getImprovementType();
-//doto - added being worked - we dont want and improvement that not being used by the city to
+//doto 111- added being worked - we dont want and improvement that not being used by the city to
 // be taken into account! 
 		if (eImprovement != NO_IMPROVEMENT && isWorkingPlot(kPlot))
 		{
@@ -12191,33 +12167,10 @@ void CvCity::doDecay()
 	{
 		if (getProductionBuilding() == eLoopBuilding)
 			continue;
-
 //DOTO -tholish-Keldath inactive buildings START
-		if (GC.getInfo(eLoopBuilding).getPrereqMustAll() > 0 &&
-				getNumRealBuilding(eLoopBuilding) > 0 && 
-					GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION) &&
-					eLoopBuilding != NULL && eLoopBuilding != 0	//exclude the first building - palace
-		)
-		{
-			//keldath extended building inactive
-			//if the prereq of a building is no more - it will stop providing.
-			//works for bonux for now
-			//added fix by f1 from advc thank you so much!- keldath
-			bool keepit = canKeep(eLoopBuilding);
-			bool buildingStatus = m_aiBuildingeActive.get(eLoopBuilding);
-			if (!keepit && buildingStatus)
-			{
-				m_aiBuildingeActive.set(eLoopBuilding, false);
-				processBuilding(eLoopBuilding, 1, false, keepit);
-			}
-			else if (keepit && !buildingStatus)
-			{
-				m_aiBuildingeActive.set(eLoopBuilding,true);
-				processBuilding(eLoopBuilding, 1, false, keepit);
-			}
-		}
+//if a building lost one of its prereqs, make it temporary obsolete
+		shouldUnProcessBuilding(eLoopBuilding);
 //DOTO -tholish-Keldath inactive buildings END
-
 		if (getBuildingProduction(eLoopBuilding) > 0)
 		{
 			changeBuildingProductionTime(eLoopBuilding, 1);
@@ -12890,8 +12843,6 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiBuildingProduction.read(pStream);
 		m_aiBuildingProductionTime.read(pStream);
 		m_aeBuildingOriginalOwner.read(pStream);
-//doto - tholish-Keldath inactive buildings
-		m_aiBuildingeActive.read(pStream);
 		m_aiBuildingOriginalTime.read(pStream);
 		m_aiUnitProduction.read(pStream);
 		m_aiUnitProductionTime.read(pStream);
@@ -12911,6 +12862,8 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiFreePromotionCount.read(pStream);
 		m_aiNumRealBuilding.read(pStream);
 		m_aiNumFreeBuilding.read(pStream);
+		//doto - tholish-Keldath inactive buildings
+		m_aiBuildingeActive.read(pStream);
 		m_abWorkingPlot.read(pStream);
 		m_abHasReligion.read(pStream);
 		m_abHasCorporation.read(pStream);
@@ -12925,8 +12878,6 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiBuildingProduction.readArray<int>(pStream);
 		m_aiBuildingProductionTime.readArray<int>(pStream);
 		m_aeBuildingOriginalOwner.readArray<int>(pStream);
-//doto - tholish-Keldath inactive buildings
-		m_aiBuildingeActive.readArray<int>(pStream);
 		EagerEnumMap<BuildingTypes,int> aiBuildingOriginalTime;
 		aiBuildingOriginalTime.readArray<int>(pStream);
 		FOR_EACH_ENUM(Building)
@@ -12950,6 +12901,8 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiFreePromotionCount.readArray<int>(pStream);
 		m_aiNumRealBuilding.readArray<int>(pStream);
 		m_aiNumFreeBuilding.readArray<int>(pStream);
+		//doto - tholish-Keldath inactive buildings
+		m_aiBuildingeActive.readArray<int>(pStream);
 		m_abWorkingPlot.readArray<bool>(pStream);
 		m_abHasReligion.readArray<bool>(pStream);
 		m_abHasCorporation.readArray<bool>(pStream);
@@ -13495,8 +13448,6 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiBuildingProduction.write(pStream);
 	m_aiBuildingProductionTime.write(pStream);
 	m_aeBuildingOriginalOwner.write(pStream);
-//doto tholish-Keldath inactive buildings
-	m_aiBuildingeActive.write(pStream);
 	m_aiBuildingOriginalTime.write(pStream);
 	m_aiUnitProduction.write(pStream);
 	m_aiUnitProductionTime.write(pStream);
@@ -13514,11 +13465,13 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiFreePromotionCount.write(pStream);
 	m_aiNumRealBuilding.write(pStream);
 	m_aiNumFreeBuilding.write(pStream);
+	//doto tholish-Keldath inactive buildings
+	m_aiBuildingeActive.write(pStream);
 
 	m_abWorkingPlot.write(pStream);
 	m_abHasReligion.write(pStream);
 	m_abHasCorporation.write(pStream);
-
+	
 	for (size_t i = 0; i < m_aTradeCities.size(); i++)
 	{
 		pStream->Write(m_aTradeCities[i].eOwner);
@@ -15259,350 +15212,76 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 			}
 		}
 
-
-return true;
+	return true;
 }
-//DOTO -tholish-Keldath inactive buildings  END
-//DOTO -tholish-Keldath inactive buildings START
-//DOTO ACTIVE BULDINGS + THOLISH
-//this is a duplicated function , that sets to 0 all the items, if the prereq for a building (cankeep)
-//is false.
-// i marked some off so they wont be affected fro safety.
-void CvCity::UNprocessBuilding(BuildingTypes eBuilding,int iChange, bool bObsolete)
+
+bool CvCity::shouldUnProcessBuilding(BuildingTypes eBuilding)
 {
-	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
-	CvGame const& kGame = GC.getGame();
-	CvPlayer& kOwner = GET_PLAYER(getOwner()); // </advc>
-	//doto108 maybe if the value sent - is negetive, its wrong to do double negative?
-	if(iChange < 0)
-		iChange *= -1;
-		
-	//iChange = 0;
-	if (!GET_TEAM(getTeam()).isObsoleteBuilding(eBuilding) || bObsolete)
+	if (eBuilding == NULL)
+		return false;
+	if (!GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
+		return false;
+	if (GC.getInfo(eBuilding).getPrereqMustAll() < 1)
+		return false;
+	if (getNumRealBuilding(eBuilding) < 1)
+		return false;
+	if  (eBuilding == 0)
+		//exclude the first building - palace
+		return false;
+	// if our team has the tech of the building, its game over for this building
+	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding); //for testing
+	TechTypes eTech = kBuilding.getObsoleteTech(); //if there is no obsolete tech...
+	if (eTech != NO_TECH)
 	{
-		
-		if (kBuilding.getNoBonus() != NO_BONUS)
-			changeNoBonusCount(kBuilding.getNoBonus(), iChange);
-
-		if (kBuilding.getFreeBonus() != NO_BONUS && kGame.getNumFreeBonuses(eBuilding) > 0)
+		if (GET_TEAM(getTeam()).isHasTech(eTech))
 		{
-			changeFreeBonus(kBuilding.getFreeBonus(),
-					kGame.getNumFreeBonuses(eBuilding) * iChange);
-		}
-
-		if (kBuilding.getFreePromotion() != NO_PROMOTION)
-		{
-			changeFreePromotionCount(kBuilding.getFreePromotion(), iChange);
-		}// <advc.912d>
-/*
-		if(kGame.isOption(GAMEOPTION_NO_SLAVERY) && kOwner.isHuman() &&
-			kBuilding.getHurryAngerModifier() < 0)
-		{
-			changePopRushCount(iChange);
-		}
-*/ 
-		// </advc.912d>
-		int getEspionageDefenseModifier	= kBuilding.getEspionageDefenseModifier();
-		int getGreatPeopleRateModifier	= kBuilding.getGreatPeopleRateModifier();
-		int getFreeExperience	= kBuilding.getFreeExperience();
-	//	int getFoodKept	= kBuilding.getFoodKept();
-//		int getAirlift	= kBuilding.getAirlift();
-		int getAirModifier	= kBuilding.getAirModifier();
-//		int getAirUnitCapacity	= kBuilding.getAirUnitCapacity();
-		int getNukeModifier	= kBuilding.getNukeModifier();
-//		int getFreeSpecialist	= kBuilding.getFreeSpecialist();
-		int getMaintenanceModifier	= kBuilding.getMaintenanceModifier();
-		int getWarWearinessModifier	= kBuilding.getWarWearinessModifier();
-		int getHurryAngerModifier	= kBuilding.getHurryAngerModifier();
-		int getHealRateChange = kBuilding.getHealRateChange();
-		if (getEspionageDefenseModifier != 0)
-			changeEspionageDefenseModifier(getEspionageDefenseModifier * iChange);
-		if (getGreatPeopleRateModifier != 0) 
-			changeGreatPeopleRateModifier(getGreatPeopleRateModifier * iChange);
-		if (getFreeExperience != 0)
-			changeFreeExperience(getFreeExperience * iChange);
-/*
-		if (getFoodKept != 0)
-			changeMaxFoodKeptPercent(getFoodKept * iChange);
-*/
-/*
-		if (getAirlift != 0)
-			changeMaxAirlift(getAirlift * iChange);
-*/
-		if (getAirModifier != 0)
-			changeAirModifier(getAirModifier * iChange);
-/*
-		if (getAirUnitCapacity != 0)
-			changeAirUnitCapacity(getAirUnitCapacity * iChange);
-*/
-		if (getNukeModifier != 0)
-			changeNukeModifier(getNukeModifier * iChange);
-/*
-		if (getFreeSpecialist != 0)
-			changeFreeSpecialist(getFreeSpecialist * iChange);
-*/
-		if (getMaintenanceModifier != 0)
-			changeMaintenanceModifier(getMaintenanceModifier * iChange);
-		if (getWarWearinessModifier != 0)
-			changeWarWearinessModifier(getWarWearinessModifier * iChange);
-		if (getHurryAngerModifier != 0)
-			changeHurryAngerModifier(getHurryAngerModifier * iChange);
-		if (getHealRateChange != 0)
-			changeHealRate(getHealRateChange * iChange);
-		/* Population Limit ModComp - Beginning */
-//keep this one anyway - i dont know what will happen...
-//		changePopulationLimitChange(kGame.getAdjustedPopulationLimitChange(kBuilding.getPopulationLimitChange()) * iChange);
-		/* Population Limit ModComp - End */
-		if (kBuilding.getHealth() > 0)
-			changeBuildingGoodHealth(kBuilding.getHealth() * iChange);
-		else changeBuildingBadHealth(kBuilding.getHealth() * iChange);
-		if (kBuilding.getHappiness() > 0)
-			changeBuildingGoodHappiness(kBuilding.getHappiness() * iChange);
-		else changeBuildingBadHappiness(kBuilding.getHappiness() * iChange);	
-		if (kBuilding.getReligionType() != NO_RELIGION)
-		{
-			changeStateReligionHappiness(kBuilding.getReligionType(),
-					kBuilding.getStateReligionHappiness() * iChange);
-		}
-		changeMilitaryProductionModifier(kBuilding.getMilitaryProductionModifier() * iChange);
-		changeSpaceProductionModifier(kBuilding.getSpaceProductionModifier() * iChange);
-		changeExtraTradeRoutes(kBuilding.getTradeRoutes() * iChange);
-		changeTradeRouteModifier(kBuilding.getTradeRouteModifier() * iChange);
-		changeForeignTradeRouteModifier(kBuilding.getForeignTradeRouteModifier() * iChange);
-//keldath - safer to always set it to 0
-		changePowerCount(kBuilding.isPower() ? 0 : 0, kBuilding.isDirtyPower());
-//keldath - dont you dare changing the gov building :)
-//		changeGovernmentCenterCount(kBuilding.isGovernmentCenter() ? iChange : 0);
-//keldath - set it always to 0 it safer.
-		changeNoUnhappinessCount(kBuilding.isNoUnhappiness() ? 0 : 0);
-		//changeNoUnhealthyPopulationCount(kBuilding.isNoUnhealthyPopulation() ? iChange : 0);
-		changeUnhealthyPopulationModifier(kBuilding.getUnhealthyPopulationModifier() * iChange); // K-Mod
-//keldath - safer to set it to 0 always
-		changeBuildingOnlyHealthyCount(kBuilding.isBuildingOnlyHealthy() ? 0 : 0);
-
-
-		FOR_EACH_ENUM2(Yield, y)
-		{
-			int getSeaPlotYieldChange = kBuilding.getSeaPlotYieldChange(y);
-			int getRiverPlotYieldChange = kBuilding.getRiverPlotYieldChange(y);
-			int getYieldChangegetBuildingYieldChange = kBuilding.getYieldChange(y) +
-				getBuildingYieldChange(kBuilding.getBuildingClassType(), y);
-			int getYieldModifier = kBuilding.getYieldModifier(y);
-			int getPowerYieldModifier = kBuilding.getPowerYieldModifier(y);
-			int getBuildingYieldChangeO = kOwner.getBuildingYieldChange(eBuilding, y);
-
-			if (getSeaPlotYieldChange != 0)
-				changeSeaPlotYield(y, getSeaPlotYieldChange * iChange);
-			if(getRiverPlotYieldChange != 0)
-				changeRiverPlotYield(y, getRiverPlotYieldChange * iChange);
-			if (getYieldChangegetBuildingYieldChange !=0)
-				changeBaseYieldRate(y, (getYieldChangegetBuildingYieldChange) * iChange);
-			if(getYieldModifier != 0)
-				changeYieldRateModifier(y, getYieldModifier * iChange);
-			if (getPowerYieldModifier !=0)
-				changePowerYieldRateModifier(y, getPowerYieldModifier * iChange);
-			// < Civic Infos Plus Start >
-			//keldath QA-DONE
-			if (getBuildingYieldChangeO !=0)
-				changeBuildingYieldChange(kBuilding.getBuildingClassType(), y, getBuildingYieldChangeO);
-			// < Civic Infos Plus End   >
-		}
-
-		FOR_EACH_ENUM(Commerce)
-		{
-			int getCommerceModifier = kBuilding.getCommerceModifier(eLoopCommerce);
-			int getCommerceHappiness = kBuilding.getCommerceHappiness(eLoopCommerce);
-			int getBuildingCommerceChange = kOwner.getBuildingCommerceChange(eBuilding, eLoopCommerce);
-			if (getCommerceModifier != 0)
-				changeCommerceRateModifier(eLoopCommerce,
-					getCommerceModifier * iChange);
-			if (getCommerceHappiness != 0)
-				changeCommerceHappinessPer(eLoopCommerce,
-					getCommerceHappiness * iChange);
-			// < Civic Infos Plus Start >
-			//keldath QA-DONE
-			if (getBuildingCommerceChange !=0)
-				changeBuildingCommerceChange(kBuilding.getBuildingClassType(), eLoopCommerce, 
-					getBuildingCommerceChange);
-			// < Civic Infos Plus End   >
-		}
-		/*
-	doto 109 - isAnyReligionChange was removed or moved in advc 1.00
-		if (kBuilding.isAnyReligionChange()) // advc.003t
-		{
-			FOR_EACH_ENUM(Religion)
+			if (!m_aiBuildingeActive.get(eBuilding))
 			{
-				int getReligionChange = kBuilding.getReligionChange(eLoopReligion);
-				if (getReligionChange !=0)
-					changeReligionInfluence(eLoopReligion,
-						kBuilding.getReligionChange(eLoopReligion) * iChange);
+				//make sure to set it to true (default) for any left overs.
+				//now its truly obsolete...
+				m_aiBuildingeActive.set(eBuilding, true);  //must be before changeObsoleteBuildingCount
 			}
+			//set if to obsolete just in case (proccess tech handles that anyway)
+			//1 means add an obsolete
+			int obc = GET_TEAM(getTeam()).getObsoleteBuildingCount(eBuilding);
+			if (obc <= 0)//precuation
+			{
+				GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1 + (obc < 1 ? -1 * obc : 0));
+			}
+			return false;
 		}
-		*/
-/*		FOR_EACH_ENUM(Specialist)
-		{
-			int getSpecialistCount = kBuilding.getSpecialistCount(eLoopSpecialist);
-			int getFreeSpecialistCount = kBuilding.getFreeSpecialistCount(eLoopSpecialist);
-			if (getSpecialistCount !=0)
-				changeMaxSpecialistCount(eLoopSpecialist,
-				getSpecialistCount * iChange);
-			if(getFreeSpecialistCount != 0)
-				changeFreeSpecialistCount(eLoopSpecialist,
-					kBuilding.getFreeSpecialistCount(eLoopSpecialist) * iChange);
-		}
-		if (kBuilding.isAnyImprovementFreeSpecialist()) // advc.003t
-		{
-			FOR_EACH_ENUM(Improvement)
-			{
-				int getImprovementFreeSpecialist  = kBuilding.getImprovementFreeSpecialist(eLoopImprovement);
-				if (getImprovementFreeSpecialist !=0 )
-					changeImprovementFreeSpecialists(eLoopImprovement,
-					getImprovementFreeSpecialist * iChange);
-			}
-		}
-*/
-		FOR_EACH_ENUM(Bonus)
-		{
-			if (!hasBonus(eLoopBonus))
-				continue; // advc
-
-			int getBonusHealthChanges = kBuilding.getBonusHealthChanges(eLoopBonus);
-			if (getBonusHealthChanges !=0)
-			{
-				if (getBonusHealthChanges > 0)
-				{
-					changeBonusGoodHealth(iChange *
-						getBonusHealthChanges);
-				}
-				else
-				{
-					changeBonusBadHealth(iChange *
-						getBonusHealthChanges);
-				}
-			}
-			int getBonusHappinessChanges = (kBuilding.getBonusHappinessChanges(eLoopBonus));
-			if (getBonusHappinessChanges > 0)
-			{
-				changeBonusGoodHappiness(iChange *
-					getBonusHappinessChanges);
-			}
-			else
-			{
-				changeBonusBadHappiness(iChange *
-					getBonusHappinessChanges);
-			}
-			int dirty = kBuilding.isDirtyPower();
-			if (kBuilding.getPowerBonus() == eLoopBonus && dirty !=0)
-				changePowerCount(iChange, dirty);
-
-			FOR_EACH_ENUM(Yield)
-			{
-				int getBonusYieldModifier = kBuilding.getBonusYieldModifier(eLoopBonus, eLoopYield);
-				if(getBonusYieldModifier !=0)
-					changeBonusYieldRateModifier(eLoopYield, iChange * 
-						getBonusYieldModifier);
-			}
-		}
-
-		FOR_EACH_ENUM(UnitCombat)
-		{
-			changeUnitCombatFreeExperience(eLoopUnitCombat, iChange *
-					kBuilding.getUnitCombatFreeExperience(eLoopUnitCombat));
-		}
-
-		FOR_EACH_ENUM(Domain)
-		{
-			int exp = kBuilding.getDomainFreeExperience(eLoopDomain);
-			int prod = kBuilding.getDomainProductionModifier(eLoopDomain);
-			if (exp != 0)
-				changeDomainFreeExperience(eLoopDomain, iChange *
-					exp);
-			if (prod !=0)
-				changeDomainProductionModifier(eLoopDomain, iChange *
-					kBuilding.getDomainProductionModifier(eLoopDomain));
-		}
-
-		updateExtraBuildingHappiness();
-		updateExtraBuildingHealth();
-
-//		kOwner.changeAssets(iChange * kBuilding.getAssetValue());
-
-//		getArea().changePower(getOwner(), iChange * kBuilding.getPowerValue());
-//		kOwner.changePower(kBuilding.getPowerValue() * iChange);
-/* leave the team alone - affect only to the player
-		for (MemberIter it(getTeam()); it.hasNext(); ++it)
-		{
-			if (kBuilding.isTeamShare() || it->getID() == getOwner())
-			{
-				it->processBuilding(eBuilding, iChange, getArea());
-			}
-		}
-		GET_TEAM(getTeam()).processBuilding(eBuilding, iChange);
-		GC.getGame().processBuilding(eBuilding, iChange);
-*/	}
-
-	if (!bObsolete)
-	{
-		/*  <advc.004c> Can avoid an update (which loops over all buildings)
-			in the most common circumstances */
-		int getDefenseModifier = kBuilding.getDefenseModifier();
-		if (getDefenseModifier != 0 && getBuildingDefense() > 0)
-			updateBuildingDefense();
-		else if (getDefenseModifier !=0)// </advc.004c>
-			changeBuildingDefense(getDefenseModifier * iChange);
-		// <advc.004c>
-		if (kBuilding.get(CvBuildingInfo::RaiseDefense) > 0)
-		{
-			if (iChange >= 0)
-			{
-				changeBuildingDefense(std::max(kBuilding.get(CvBuildingInfo::RaiseDefense),
-						getBuildingDefense()) - getBuildingDefense());
-			}
-			else updateBuildingDefense();
-		} // </advc.004c>
-		int bomb = kBuilding.getBombardDefenseModifier();
-		if (bomb !=0)
-			changeBuildingBombardDefense(bomb * iChange);
-		// advc.051: Moved
-		//changeBaseGreatPeopleRate(kBuilding.getGreatPeopleRateChange() * iChange);
-		if (kBuilding.getGreatPeopleUnitClass() != NO_UNITCLASS)
-		{
-			UnitTypes eGreatPeopleUnit = getCivilization().getUnit((UnitClassTypes)
-					kBuilding.getGreatPeopleUnitClass());
-			if (eGreatPeopleUnit != NO_UNIT)
-			{
-				int getGreatPeopleRateChange = kBuilding.getGreatPeopleRateChange();
-				if (getGreatPeopleRateChange != 0)
-				{
-					changeGreatPeopleUnitRate(eGreatPeopleUnit,
-						getGreatPeopleRateChange * iChange);
-					/*  advc.051: Moved from above. Barbarians can obtain wonders, but
-						don't have GP units, and shouldn't have a positive base GP rate. */
-					changeBaseGreatPeopleRate(getGreatPeopleRateChange * iChange);
-				}
-			}
-		}
-		// <advc.004w>
-/* leave the counts for buildings as is, safer this way.
-		if (kGame.getCurrentLayer() == GLOBE_LAYER_RESOURCE)
-		{
-			// Update text of resource indicators (CvGameTextMgr::setBonusExtraHelp)
-			PlayerTypes eDirtyPlayer = NO_PLAYER;
-			if (kBuilding.isNationalWonder() &&
-				getOwner() == kGame.getActivePlayer())
-			{
-				eDirtyPlayer = getOwner();
-			}
-			else if (kBuilding.isWorldWonder())
-				eDirtyPlayer = kGame.getActivePlayer();
-			if (eDirtyPlayer != NO_PLAYER)
-			{
-				gDLL->UI().setDirty(GlobeLayer_DIRTY_BIT, true);
-				// advc.003p:
-				GET_PLAYER(getOwner()).setBonusHelpDirty();
-			}
-		} // </advc.004w>
-*/
 	}
+	/*	
+	the above hastech made this one "obsolete"
+	if (GET_TEAM(getTeam()).isObsoleteBuilding(eBuilding))
+		return false;
+	*/
+	if (canKeep(eBuilding))
+	{ 
+		//if the building can be kept and its set to none active ->
+		//re activate it and un obsolete it
+		//the if above handles true tech obsolete.
+		if (!m_aiBuildingeActive.get(eBuilding))
+			m_aiBuildingeActive.set(eBuilding, true);  //must be before changeObsoleteBuildingCount
+		int obc = GET_TEAM(getTeam()).getObsoleteBuildingCount(eBuilding);
+		if (obc > 0)
+			GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, -1 * obc);
+		return false;
+	}
+	//if its already marked, nothing to do.
+	if (!m_aiBuildingeActive.get(eBuilding))
+		return false;
+	//set the building to obsolete (the function calls process building.
+	//1 means add an obsolete
+	if (m_aiBuildingeActive.get(eBuilding))
+	{
+		int obc = GET_TEAM(getTeam()).getObsoleteBuildingCount(eBuilding);
+		m_aiBuildingeActive.set(eBuilding, false); //must be before changeObsoleteBuildingCount
+		if (obc <= 0)
+			GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1 + (obc < 1 ? -1 * obc : 0));
+		
+	}
+		
+	return true;
 }
 //DOTO active buildings

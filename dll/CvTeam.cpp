@@ -4203,6 +4203,7 @@ void CvTeam::changeObsoleteBuildingCount(BuildingTypes eIndex, int iChange)
 		{
 			if (pLoopCity->getNumBuilding(eIndex) > 0)
 			{
+				
 				pLoopCity->processBuilding(eIndex, isObsoleteBuilding(eIndex) ?
 						-pLoopCity->getNumBuilding(eIndex) :
 						pLoopCity->getNumBuilding(eIndex), true);

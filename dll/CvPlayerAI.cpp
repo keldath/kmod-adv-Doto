@@ -6305,8 +6305,6 @@ int CvPlayerAI::AI_techUnitValue(TechTypes eTech, int iPathLength, bool& bEnable
 	} // </k146>
 
 	int iValue = 0;
-
-	bEnablesUnitWonder = false;
 	CvCivilization const& kCiv = getCivilization(); // advc.003w 
 	for (int i = 0; i < kCiv.getNumUnits(); i++)
 	{
@@ -14085,7 +14083,7 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 //doto keldath rangedstrike + ranged immunity
 		if (u.getRangeStrike() > 0)
 		{
-			iValue += ((iCombatValue * (125 - u.getCombatLimit())) / 100) + u.getCombat();
+			iValue += ((iCombatValue * (125 - u.getCombatLimit())) / 100);
 		}
 		//ranged are limited, we dont want reduction of value
 		if (u.getCombatLimit() < 100 && u.getRangeStrike() < 1) 
@@ -14098,7 +14096,9 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 			int iFastMoverMultiplier = (AI_isDoStrategy(AI_STRATEGY_FASTMOVERS) ? 3 : 1);
 			iValue += iCombatValue * iFastMoverMultiplier * u.getMoves() / 8;
 		}
-		if (u.isNoCapture())
+//doto keldath rangedstrike + ranged immunity
+//r units cant capture - so do not reduce the value		
+		if (u.isNoCapture()&& u.getRangeStrike() < 1 )
 			iValue -= iCombatValue * 30 / 100;
 		// K-Mod end
 		break;
@@ -14175,7 +14175,7 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 //doto keldath rangedstrike + ranged immunity
 		if (u.getRangeStrike() > 0)
 		{
-			iSiegeValue += iCombatValue * u.getCombatLimit() + u.getCombat() / 100;
+			iSiegeValue += (100 + iCombatValue * u.getCombatLimit()) / 100;
 		}
 		if (u.getBombardRate() > 0 && !AI_isDoStrategy(AI_STRATEGY_AIR_BLITZ))
 		{

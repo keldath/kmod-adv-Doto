@@ -349,7 +349,7 @@ int CvSelectionGroupAI::AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialE
 // DOTO-MOD rangedattack-keldath - START + ranged immunity - of both are ranged
 	if (bDRanged && bARanged)
 	{
-		iAdjustedOdds += std::max((pAttacker->currCombatStr() - pDefender->currCombatStr()) + 40, 0);
+		iAdjustedOdds += std::max((pAttacker->currCombatStr() - pDefender->currCombatStr()), 0);
 		iAdjustedOdds = std::min(iAdjustedOdds, 60); //limit the change
 	}
 // DOTO-MOD rangedattack-keldath - END + ranged immunity
@@ -378,9 +378,6 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot,
 	{
 		CvUnitAI& kLoopUnit = *::AI_getUnit(pUnitNode->m_data);
 		pUnitNode = nextUnitNode(pUnitNode);
-// DOTO-MOD rangedattack-keldath - START + ranged immunity
-		bool bRanged = kLoopUnit.isRangeStrikeCapableK();
-// DOTO-MOD rangedattack-keldath - END + ranged immunity
 		if (kLoopUnit.isDead())
 			continue;
 
@@ -403,7 +400,7 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot,
 			continue;
 
 //DOTO-MOD rangedattack-keldath + ranged immunity - made it into a game option from xml. 
-//added check for ranged unit.
+		bool bRanged = kLoopUnit.isRangeStrikeCapableK();
 		// BETTER_BTS_AI_MOD, Lead From Behind (UncutDragon), 02/21/10, jdog5000: START	
 		if (GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND)
 		/*  GC.getDefineBOOL(CvGlobals::LFB_ENABLE)*/ &&
@@ -419,30 +416,22 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot,
 			int iOdds = kLoopUnit.AI_attackOdds(pPlot, bPotentialEnemy);
 			int iValue = iOdds;
 			FAssert(iValue > 0);
-// DOTO-MOD rangedattack-keldath - START + ranged immunity  111 change
-			if ((kLoopUnit.collateralDamage() > 0 || bRanged )
-				/* advc.048: */&& !bMaxSurvival)
-// DOTO-MOD rangedattack-keldath - END + ranged immunity 
+// DOTO-MOD rangedattack-keldath + ranged immunity  - START 
+			//add some extra value to ranged units.
+			if (bRanged) 
+			{
+				iValue *= (100 + (kLoopUnit.baseCombatStr() * kLoopUnit.combatLimit()));
+				iValue /= 100;
+			} 
+			if (kLoopUnit.collateralDamage() > 0 && /* advc.048: */ !bMaxSurvival)
 			{
 				int iPossibleTargets = std::min(
 						pPlot->getNumVisibleEnemyDefenders(&kLoopUnit) - 1,
 						kLoopUnit.collateralDamageMaxUnits());
 				if (iPossibleTargets > 0)
 				{
-// DOTO-MOD rangedattack-keldath + ranged immunity  - START 
-					//add lots of weight to make the ai pick the best ranged first	
-					//consider ranged to be a much more powerfull unit
-					if (bRanged) 
-					{
-						iValue *= (100 + ((kLoopUnit.baseCombatStr() * kLoopUnit.combatLimit()) * iPossibleTargets) / 2);
-						iValue /= 100;
-					} 
-					else 
-					{
-					//org
 					iValue *= (100 + (kLoopUnit.collateralDamage() * iPossibleTargets) / 5);
 					iValue /= 100;
-					}
 				}
 			}
 			/*  if non-human, prefer the last unit that has the best value
@@ -648,7 +637,7 @@ int CvSelectionGroupAI::AI_sumStrength(const CvPlot* pAttackedPlot,
 		/*  <advc.159> Call AI_currEffectiveStr instead of currEffectiveStr.
 			Adjustments for first strikes and collateral damage moved into
 			that new function. */
-		// DOTO-MOD rangedattack-keldath - START + ranged immunity - AI_currEffectiveStr have immunity code enrichment
+// DOTO-MOD rangedattack-keldath - START + ranged immunity - AI_currEffectiveStr have immunity code enrichment
 		int const iUnitStr = pUnit->AI_currEffectiveStr(pAttackedPlot, pUnit,
 				bCountCollateral, iBaseCollateral, bCheckCanAttack);
 		// </advc.159>
@@ -1128,12 +1117,12 @@ CvUnitAI* CvSelectionGroupAI::AI_ejectBestDefender(CvPlot* pDefendPlot)
 
 		iValue /= 2 + (pUnit->getLevel() *
 				// advc.mnai:
-// ranged are given more value above in the AI_currEffectiveStr
+				(pUnit->AI_getUnitAIType() == UNITAI_ATTACK_CITY ? 2 : 1));
 // DOTO-MOD ranged immunity - START --if the unit is ranged - prefer not to eject it
-				(pUnit->AI_getUnitAIType() == UNITAI_ATTACK_CITY ? 2 : 1))  ;
-		 		//*
-				//(pUnit->isRangeStrikeCapableK() ? 2 : 1);
-// DOTO-MOD anged immunity  keldath - END 	
+// ranged are given more value above in the AI_currEffectiveStr
+//if the unit is ranged, the higher the level, better not eject?
+		iValue /= pUnit->isRangeStrikeCapableK() ? 
+				(2 + (pUnit->getLevel() * 2) ): 1;	
 		if (iValue > iBestUnitValue)
 		{
 			iBestUnitValue = iValue;

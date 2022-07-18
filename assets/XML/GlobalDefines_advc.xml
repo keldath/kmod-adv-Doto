@@ -3,7 +3,12 @@
 <!-- Joined with GlobalDefinesAlt.xml (K-Mod settings) and the various
 	 ..._GlobalDefines files upon loading Advanced Civ. Takes precedence over
 	 BtS GlobalDefines.xml. Defines that overwrite a BtS value are tagged with
-	 a "redefine" comment. -->
+	 a "redefine" comment.
+
+	 Warning for network games: Changes in this file or other XML files can
+	 cause network games to go out of sync unless all participants have made
+	 the same changes. Settings that only affect the user interface or artwork
+	 are generally safe to change individually. -->
 
 <Civ4Defines xmlns="x-schema:CIV4GlobalDefinesSchema.xml">
 
@@ -465,7 +470,7 @@
 		 (which gets set fully dynamically, not based on FIELD_OF_VIEW). -->
 	<Define>
 		<DefineName>CAMERA_BASE_CITY_DISTANCE</DefineName>
-		<fDefineFloatVal>6500</fDefineFloatVal>
+		<fDefineFloatVal>3500</fDefineFloatVal>
 	</Define>
 
 	<!-- advc.002j: Was 1.25 in BtS; just a tiny adjustment. -->

@@ -110,5 +110,13 @@
     <Italian>%D1_Change[ICON_HEALTHY] dalle forme di governo</Italian>
     <Spanish>%D1_Change [ICON_HEALTHY] por principios</Spanish>
   </TEXT>
+  <TEXT>
+    <Tag>TXT_KEY_MISC_BAD_HEALTH_FROM_CIVICS</Tag>
+    <English>%D1_Change[ICON_UNHEALTHY] from Civics</English>
+    <French>%D1_Change[ICON_UNHEALTHY] (doctrine)</French>
+    <German>%D1_Change[ICON_UNHEALTHY] durch Staatsformen</German>
+    <Italian>%D1_Change[ICON_UNHEALTHY] dalle forme di governo</Italian>
+    <Spanish>%D1_Change [ICON_UNHEALTHY] por principios</Spanish>
+  </TEXT>
   
 </Civ4GameText>

@@ -7,7 +7,7 @@
 <Civ4GameText xmlns="http://www.firaxis.com">
 	<TEXT>
 		<Tag>TXT_KEY_BUILDING_MUST_PREREQ_ALL</Tag>
-		<English>[COLOR_WARNING_TEXT]All Prereq's are a Must always[COLOR_REVERT]</English>
+		<English>[COLOR_WARNING_TEXT]One or More Prereq's cannot be abcent. if so, [NEWLINE]building is temporary obsolete[COLOR_REVERT]</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_GAMEOPTION_EXTRA_BUILDINGS</Tag>

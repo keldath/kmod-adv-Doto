@@ -742,7 +742,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
 			<iTradeRoutes>0</iTradeRoutes>
 			<iHealth>0</iHealth>
-			<iHappiness>0</iHappiness>
+			<iHappiness>-1</iHappiness>
 			<iFirstFreeTechs>0</iFirstFreeTechs>
 			<iAsset>24</iAsset>
 			<iPower>0</iPower>
@@ -3795,7 +3795,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
 			<iTradeRoutes>0</iTradeRoutes>
 			<iHealth>0</iHealth>
-			<iHappiness>0</iHappiness>
+			<iHappiness>-1</iHappiness>
 			<iFirstFreeTechs>0</iFirstFreeTechs>
 			<iAsset>40</iAsset>
 			<iPower>8</iPower>

@@ -8091,8 +8091,6 @@ int CvPlayer::getBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes eCo
 
 void CvPlayer::changeBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes eCommerce, int iChange)
 {
-//	CvCity* pLoopCity;
-//	int iLoop;
 
 	FAssertMsg(eIndex1 >= 0, "eIndex1 is expected to be non-negative (invalid Index)");
 	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");

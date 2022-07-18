@@ -205,11 +205,11 @@ public:
 	void updateCommerce();
 	void updateBuildingCommerce();
 	// < Civic Infos Plus Start >
-	void updateBuildingYield();
+	//void updateBuildingYield();
 	// < Civic Infos Plus End   >
 	void updateReligionCommerce();
 	// < Civic Infos Plus Start >
-	void updateReligionYield();
+	//void updateReligionYield();
 	// < Civic Infos Plus End   >
 	void updateCorporation();
 	//void updateCityPlotYield(); // advc.003j
