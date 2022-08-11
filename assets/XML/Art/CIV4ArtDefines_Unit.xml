@@ -4224,7 +4224,8 @@
 				<AudioRunTypeLoop/>
 				<AudioRunTypeEnd/>
 			</AudioRunSounds>
-		</UnitArtInfo>
+	<!-- 	original art - exists below - doto comment
+	</UnitArtInfo>
 		<UnitArtInfo>
 			<Type>ART_DEF_UNIT_CARTHAGE_WAR_ELEPHANT</Type>
 			<Button>,Art/Interface/Buttons/Units/WarElephant.dds,Art/Interface/Buttons/Unit_Resource_Atlas.dds,7,2</Button>
@@ -4247,7 +4248,7 @@
 			<AudioRunSounds>
 				<AudioRunTypeLoop/>
 				<AudioRunTypeEnd/>
-			</AudioRunSounds>
+			</AudioRun -->Sounds>
 		</UnitArtInfo>
 		<UnitArtInfo>
 			<Type>ART_DEF_UNIT_ARCHER_ASIAN</Type>

@@ -88,6 +88,7 @@ class SevoPediaCivilization:
 	def placeTech(self):
 		screen = self.top.getScreen()
 		panelName = self.top.getNextWidgetName()
+		#doto
 		screen.addPanel(panelName, localText.getText("Special Features", ()), "", False, True, self.X_TECH, self.Y_TECH, self.W_TECH, self.H_TECH, PanelStyles.PANEL_STYLE_BLUE50)
 		screen.attachLabel(panelName, "", "  ")
 		for iTech in range(gc.getNumTechInfos()):
@@ -114,6 +115,7 @@ class SevoPediaCivilization:
 	def placeUnit(self):
 		screen = self.top.getScreen()
 		panelName = self.top.getNextWidgetName()
+		#doto
 		screen.addPanel(panelName, localText.getText("Unique Civ Features", ()), "", False, True, self.X_UNIT, self.Y_UNIT, self.W_UNIT, self.H_UNIT, PanelStyles.PANEL_STYLE_BLUE50)
 		screen.attachLabel(panelName, "", "  ")
 		for iUnit in range(gc.getNumUnitClassInfos()):
