@@ -80,6 +80,8 @@
 		<element type="iBuildingClassPrereqModifier" minOccurs="0"/>
 		<element type="iMaxConscriptModifier" minOccurs="0"/>
 		<element type="iWarWearinessModifier" minOccurs="0"/>
+		<!-- advc.252: Set to 100 by default in the DLL -->
+		<element type="iUnitCostPercent" minOccurs="0"/>
 		<element type="iGridWidth" minOccurs="0"/>
 		<element type="iGridHeight" minOccurs="0"/>
 		<element type="iTerrainGrainChange" minOccurs="0"/>
@@ -230,9 +232,9 @@
 		<element type="FreeUnitClass" minOccurs="0"/>
 		<element type="iFreeUnits" minOccurs="0"/>
 		<element type="iSpreadFactor" minOccurs="0"/>
-<!-- TGA_INDEXATION			01/21/2008			MRGENIE		-->
+<!--doto TGA_INDEXATION			01/21/2008			MRGENIE		-->
 		<element type="iTGAIndex" minOccurs="0"/>
-<!-- TGA_INDEXATION			END				MRGENIE		-->
+<!--doto TGA_INDEXATION			END				MRGENIE		-->
 		<element type="GlobalReligionCommerces" minOccurs="0"/>
 		<element type="HolyCityCommerces" minOccurs="0"/>
 		<element type="StateReligionCommerces" minOccurs="0"/>
@@ -256,9 +258,9 @@
 		<element type="iSpreadFactor" minOccurs="0"/>
 		<element type="iSpreadCost" minOccurs="0"/>
 		<element type="iMaintenance" minOccurs="0"/>
-<!-- TGA_INDEXATION			01/21/2008			MRGENIE		-->
+<!--doto TGA_INDEXATION			01/21/2008			MRGENIE		-->
 		<element type="iTGAIndex" minOccurs="0"/>
-<!-- TGA_INDEXATION			END				MRGENIE		-->
+<!--doto TGA_INDEXATION			END				MRGENIE		-->
 	    <element type="PrereqBonuses" minOccurs="0"/>
 		<element type="HeadquarterCommerces" minOccurs="0"/>
 		<element type="BonusProduced" minOccurs="0"/>
@@ -294,10 +296,10 @@
 	<ElementType name="iMapOffset" content="textOnly" dt:type="int"/>
 	<ElementType name="iMapRange" content="textOnly" dt:type="int"/>
 	<ElementType name="iMapProb" content="textOnly" dt:type="int"/>
-<!-- SPECIALIST ENHANCEMENTS				10/09/2009			SUPERCHEESE		-->
+<!--doto SPECIALIST ENHANCEMENTS				10/09/2009			SUPERCHEESE		-->
 	<ElementType name="iHealth" content="textOnly" dt:type="int"/>
 	<ElementType name="iHappiness" content="textOnly" dt:type="int"/>
-<!-- SPECIALIST ENHANCEMENTS				END							-->	
+<!--doto SPECIALIST ENHANCEMENTS				END							-->	
 	<ElementType name="iExperience" content="textOnly" dt:type="int"/>
 	<ElementType name="iHealing" content="textOnly" dt:type="int"/>
 	<ElementType name="iDamagePrereq" content="textOnly" dt:type="int"/>
@@ -336,16 +338,18 @@
 	<ElementType name="iStartingLocPercent" content="textOnly" dt:type="int"/>
 	<ElementType name="iFreeUnits" content="textOnly" dt:type="int"/>
 	<ElementType name="iUnitCostPercent" content="textOnly" dt:type="int"/>
-	<!-- advc.251: Modifier for worker build time; rounds down to
-		 a multiple of 50 time units -->
+	<!-- advc.251: start -->
+	<!-- Modifier for worker build time; rounds down to a multiple of
+		 50 time units. -->
 	<ElementType name="iBuildTimePercent" content="textOnly" dt:type="int"/>
-	<!-- advc.251: Modifier for base threshold for city growth -->
+	<!-- Modifier for base threshold for city growth -->
 	<ElementType name="iBaseGrowthThresholdPercent" content="textOnly" dt:type="int"/>
-	<!-- advc.251: Modifier for Great Person thresholds -->
+	<!-- Modifier for Great Person thresholds -->
 	<ElementType name="iGPThresholdPercent" content="textOnly" dt:type="int"/>
-	<!-- advc.251: Modifier for (human and AI) culture level thresholds
+	<!-- Modifier for (human and AI) culture level thresholds
 		 (only "Developing" and above) -->
 	<ElementType name="iCultureLevelPercent" content="textOnly" dt:type="int"/>
+	<!-- advc.251: end -->
 	<ElementType name="iMaxNumCitiesMaintenance" content="textOnly" dt:type="int"/>
 	<ElementType name="iMaxColonyMaintenance" content="textOnly" dt:type="int"/>
 	<ElementType name="iCivicUpkeepPercent" content="textOnly" dt:type="int"/>
@@ -358,13 +362,15 @@
 	<ElementType name="iHurryPercent" content="textOnly" dt:type="int"/>
 	<ElementType name="iHurryConscriptAngerPercent" content="textOnly" dt:type="int"/>
 	<ElementType name="iInflationPercent" content="textOnly" dt:type="int"/>
+	<!-- advc.252 -->
+	<ElementType name="iExtraFreeOutsideUnits" content="textOnly" dt:type="int"/>
 	<!-- advc.101 -->
 	<ElementType name="iForeignCultureStrength" content="textOnly" dt:type="int"/>
 	<ElementType name="iHealthBonus" content="textOnly" dt:type="int"/>
 	<ElementType name="iHappyBonus" content="textOnly" dt:type="int"/>
-	<!-- Population Limit ModComp - Beginning : determine basic population limit -->
+	<!--doto Population Limit ModComp - Beginning : determine basic population limit -->
 	<ElementType name="iPopulationLimit" content="textOnly" dt:type="int"/>
-	<!-- Population Limit ModComp - End -->
+	<!--doto Population Limit ModComp - End -->
 	<ElementType name="iAttitudeChange" content="textOnly" dt:type="int"/>
 	<ElementType name="iNoTechTradeModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iTechTradeKnownModifier" content="textOnly" dt:type="int"/>
@@ -377,6 +383,19 @@
 	<ElementType name="iBarbarianCityCreationProb" content="textOnly" dt:type="int"/>
 	<ElementType name="iAnimalBonus" content="textOnly" dt:type="int"/>
 	<ElementType name="iBarbarianBonus" content="textOnly" dt:type="int"/>
+	<!-- advc.313: start
+		 Refer to the strength modifiers as "bonuses" to be consistent with
+		 the two modifier elements above. Barbarian strength modifiers are
+		 additively cumulative (except that the iAI... modifiers replace
+		 their non-AI counterparts rather than add to them).
+		 Either sign should work. -->
+	<!-- Replacing CITY_BARBARIAN_DEFENSE_MODIFIER in BtS GlobalDefines -->
+	<ElementType name="iBarbarianCityAttackBonus" content="textOnly" dt:type="int"/>
+	<!-- Replacing K-Mod's Disorganized promotion -->
+	<ElementType name="iSeaBarbarianBonus" content="textOnly" dt:type="int"/>
+	<!-- Extra moves for Barbarian sea units. Can be negative. -->
+	<ElementType name="iSeaBarbarianExtraMoves" content="textOnly" dt:type="int"/>
+	<!-- advc.313: end -->
 	<ElementType name="iAIAnimalBonus" content="textOnly" dt:type="int"/>
 	<ElementType name="iAIBarbarianBonus" content="textOnly" dt:type="int"/>
 	<ElementType name="iStartingDefenseUnits" content="textOnly" dt:type="int"/>
@@ -479,6 +498,14 @@
 		<element type="iBarbarianCityCreationProb" minOccurs="0"/>
 		<element type="iAnimalBonus" minOccurs="0"/>
 		<element type="iBarbarianBonus" minOccurs="0"/>
+		<!-- advc.313: start
+			 Default values (set in the DLL), respectively:
+			 -25 (as in BtS), -10 (like the Disorganized promotion in K-Mod),
+			 -1 (negating the speed increase for ships in AdvCiv) -->
+		<element type="iBarbarianCityAttackBonus" minOccurs="0"/>
+		<element type="iSeaBarbarianBonus" minOccurs="0"/>
+		<element type="iSeaBarbarianExtraMoves" minOccurs="0"/>
+		<!-- advc.313: end -->
 		<element type="iAIAnimalBonus" minOccurs="0"/>
 		<element type="iAIBarbarianBonus" minOccurs="0"/>
 		<element type="iStartingDefenseUnits" minOccurs="0"/>
@@ -528,6 +555,8 @@
 	<ElementType name="bDiploVote" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bPermanent" content="textOnly" dt:type="boolean"/>
 	<ElementType name="iPopulationPercentLead" content="textOnly" dt:type="int"/>
+	<!-- advc.254 -->
+	<ElementType name="iLandPercentLead" content="textOnly" dt:type="int"/>
 	<ElementType name="iLandPercent" content="textOnly" dt:type="int"/>
 	<ElementType name="iMinLandPercent" content="textOnly" dt:type="int"/>
 	<ElementType name="iReligionPercent" content="textOnly" dt:type="int"/>
@@ -545,6 +574,8 @@
 		<element type="bDiploVote" minOccurs="0"/>
 		<element type="bPermanent" minOccurs="0"/>
 		<element type="iPopulationPercentLead" minOccurs="0"/>
+		<!-- advc.254 (set to 0 by default in the DLL) -->
+		<element type="iLandPercentLead" minOccurs="0"/>
 		<element type="iLandPercent" minOccurs="0"/>
 		<element type="iMinLandPercent" minOccurs="0"/>
 		<element type="iReligionPercent" minOccurs="0"/>
@@ -611,7 +642,7 @@
 	<ElementType name="iVoteIntervalPercent" content="textOnly" dt:type="int"/>
 	<!-- advc.252: end -->
 	<ElementType name="iSuccessRate" content="textOnly" dt:type="int"/>
-<!--        free unit from project                -->
+<!--  doto      free unit from project                -->
 	<ElementType name="FreeUnit" content="textOnly"/>
 	<ElementType name="PrereqBonuses" content="eltOnly">
 		<element type="BonusType" minOccurs="0" maxOccurs="*"/>
@@ -658,7 +689,7 @@
 		<element type="VictoryMinThresholds" minOccurs="0"/>
 		<element type="iVictoryDelayPercent" minOccurs="0"/>
 		<element type="iSuccessRate" minOccurs="0"/>
-  <!--      project unique civ type                  -->
+  <!-- doto     project unique civ type                  -->
 		<element type="CivilizationType" minOccurs="0"/>
 		<element type="FreeUnit" minOccurs="0"/>
   <!--      project unique civ type                  -->
@@ -763,13 +794,13 @@
 	<ElementType name="bNoNonStateReligionSpread" content="textOnly" dt:type="boolean"/>
 	<ElementType name="iStateReligionHappiness" content="textOnly" dt:type="int"/>
 	<ElementType name="iNonStateReligionHappiness" content="textOnly" dt:type="int"/>
- <!-- civic plus -->
+ <!--doto civic plus -->
     <ElementType name="iStateReligionExtraHealth" content="textOnly" dt:type="int"/>
     <ElementType name="iNonStateReligionExtraHealth" content="textOnly" dt:type="int"/>
 	<ElementType name="iStateReligionUnitProductionModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iStateReligionBuildingProductionModifier" content="textOnly" dt:type="int"/>
 	<ElementType name="iStateReligionFreeExperience" content="textOnly" dt:type="int"/>
-<!-- civic plus -->
+<!-- doto civic plus -->
   <ElementType name="StateReligionYieldModifiers" content="eltOnly">
     <element type="iYield" minOccurs="0" maxOccurs="*"/>
   </ElementType>
@@ -810,7 +841,7 @@
 	<ElementType name="CapitalYieldModifiers" content="eltOnly">
 		<element type="iYield" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
-<!-- civic plus -->
+<!-- doto civic plus -->
   <ElementType name="SpecialistExtraYields" content="eltOnly">
     <element type="iYield" minOccurs="0" maxOccurs="*"/>
   </ElementType>
@@ -891,7 +922,7 @@
 		<element type="ImprovementYieldChange" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
 	<ElementType name="WeLoveTheKing" content="textOnly"/>
-<!-- CMEDIT -->
+<!-- doto CMEDIT -->
 <!-- Civic Specialist Yield & Commerces Changes -->
 	<ElementType name="iYieldChange" content="textOnly" dt:type="int"/>
 	<ElementType name="YieldChanges" content="eltOnly">
@@ -1052,6 +1083,12 @@
 		<element type="iHurryConscriptAngerPercent" minOccurs="0"/>
 		<element type="iInflationPercent" minOccurs="0"/>
 		<element type="iInflationOffset" minOccurs="0"/>
+		<!-- advc.252: start -->
+		<!-- Set to 100 by default in the DLL -->
+		<element type="iUnitCostPercent" minOccurs="0"/>
+		<!-- Set to 0 by default in the DLL -->
+		<element type="iExtraFreeOutsideUnits" minOccurs="0"/>
+		<!-- advc.252: end -->
 		<element type="iVictoryDelayPercent" minOccurs="0"/>
 		<!-- advc: New game speed modifiers ...
 			 Set to 100 in the DLL by default. -->
@@ -1150,7 +1187,7 @@
 	</ElementType>
 	<ElementType name="iPopulationPercent" content="textOnly" dt:type="int"/>
 	<ElementType name="iCityPercent" content="textOnly" dt:type="int"/>
-<!-- keldath min civic cost -->
+<!-- doto min civic cost -->
 	<ElementType name="iminUpkeepCost" content="textOnly" dt:type="int"/>
 	<ElementType name="UpkeepInfo" content="eltOnly">
 		<element type="Type"/>
@@ -1158,7 +1195,7 @@
 		<element type="Strategy" minOccurs="0"/>
 		<element type="iPopulationPercent" minOccurs="0"/>
 		<element type="iCityPercent" minOccurs="0"/>
-<!-- keldath min civic cost -->
+<!-- doto min civic cost -->
 		<element type="iminUpkeepCost" minOccurs="0"/>
 	</ElementType>
 	<ElementType name="UpkeepInfos" content="eltOnly">

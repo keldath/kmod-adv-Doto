@@ -72,11 +72,11 @@ void CvGame::updateColoredPlots()
 
 	CvMap const& kMap = GC.getMap();
 	// BETTER_BTS_AI_MOD, Debug, 06/25/09, jdog5000: START
-	if (kUI.isShowYields() && !gDLL->GetWorldBuilderMode()) // advc.007
+	if (isDebugMode())
 	{
-		// City circles for debugging
-		if (isDebugMode())
+		if (kUI.isShowYields() && !gDLL->GetWorldBuilderMode()) // advc.007
 		{
+			// City circles for debugging
 			for (PlayerAIIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
 			{
 				for (int i = 0; i < itPlayer->AI_getNumCitySites(); i++)
@@ -88,10 +88,7 @@ void CvGame::updateColoredPlots()
 							PLOT_STYLE_CIRCLE, PLOT_LANDSCAPE_LAYER_BASE);
 				}
 			}
-		}
-		// Plot improvement replacement circles for debugging
-		if (isDebugMode())
-		{
+			// Plot improvement replacement circles for debugging
 			FOR_EACH_ENUM(PlotNum)
 			{
 				CvPlot& kPlot = kMap.getPlotByIndex(eLoopPlotNum);
@@ -433,6 +430,7 @@ void CvGame::updateSelectionList()
 	if (pHeadSelectedUnit == NULL)
 		gDLL->getEngineIFace()->clearAreaBorderPlots(AREA_BORDER_LAYER_PATROLLED);
 	// </advc.004k>
+	else pHeadSelectedUnit->onActiveSelection(); // advc
 	if (GC.suppressCycling() || // K-Mod
 		GET_PLAYER(getActivePlayer()).isOption(PLAYEROPTION_NO_UNIT_CYCLING))
 	{
@@ -1022,8 +1020,11 @@ void CvGame::selectionListGameNetMessage(int eMessage, int iData2, int iData3, i
 				}
 			} // <advc.011b>
 			bool bModified = false;
-			if (iData2 == MISSION_BUILD)
-				bModified = GC.ctrlKey(); // </advc.001b>
+			if (iData2 == MISSION_BUILD ||
+				iData2 == MISSION_PILLAGE || iData2 == MISSION_AIRBOMB) // advc.111
+			{
+				bModified = GC.ctrlKey();
+			} // </advc.011b>
 			// <advc.048>
 			if (iData2 == MISSION_MOVE_TO)
 				bModified = GC.altKey(); // </advc.048>

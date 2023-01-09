@@ -98,6 +98,7 @@ g_iFreeCivilians = 0
 # doto specialis instead of pop end
 
 g_szTimeText = ""
+gAlignedScoreboard = None # advc.085
 # BUG - NJAGC - start
 g_bShowTimeTextAlt = False
 g_iTimeTextCounter = -1
@@ -881,6 +882,9 @@ class CvMainInterface:
 			# Somehow the adjustment to map dimensions doesn't quite work out
 			iMiniMapPanelWidth += iMiniMapPanelRMargin
 			iMiniMapPanelWidth = min(iMiniMapPanelWidth, iMaxMiniMapPanelWidth)
+			# Need enough space atop the panel for the minimap buttons
+			# (would be better to calculate here how much space those actually take up ...)
+			iMiniMapPanelWidth = max(iMiniMapPanelWidth, 204)
 		# Center the panel within the available space
 		iMiniMapPanelRMargin += (iDefaultMiniMapPanelWidth - iMiniMapPanelWidth) / 2
 		# </advc.137>
@@ -1042,7 +1046,7 @@ class CvMainInterface:
 			if self.bScaleHUD:
 				# Make room for the Turn Log, whose (default) position I can't change.
 				gPoint("PercentText" + str(i)).move(0, -3)
-		iX = 35 + HSPACE(35) # Space for the PercentText label
+		iX = 36 + HSPACE(36) # Space for the PercentText label
 		for i in range(4): # Up to 4 buttons per row (2 for BUG - Min/Max Sliders)
 			lSliderBtns = ColumnLayout(gRect("Top"),
 					iX, gPoint("PercentText0").y(),
@@ -1363,15 +1367,16 @@ class CvMainInterface:
 # BUG - city specialist - end
 
 	def setCityBonusRects(self):
-		if self.isShowSpecialistLabel():
-			iSpecialistButtonsY = gRect("SpecialistLabelBackground").y()
-		else:
-			iSpecialistButtonsY = gRect("SpecialistLabelBackground").yBottom()
 		iMaxRMargin = gRect("Top").xRight() - gRect("CityRightPanelContents").x()
+		iBonusBackrOverhang = min(VSPACE(16),
+				gRect("SpecialistLabelBackground").height())
 		gSetRect("BonusPane0", "CityRightPanelContents",
 				0, 0,
 				# advc.004: Was 57; don't need quite this much space.
-				HLEN(53), -(gRect("CityRightPanelContents").yBottom() - iSpecialistButtonsY))
+				HLEN(53),
+				-(gRect("CityRightPanelContents").yBottom() -
+				(gRect("SpecialistLabelBackground").yBottom() -
+				iBonusBackrOverhang)))
 		gSetRect("BonusBack0", "CityRightPanelContents",
 				0, 0,
 				# Width was 157 in BtS. Perhaps the idea was to get all the scrollbars
@@ -1382,7 +1387,8 @@ class CvMainInterface:
 				# Scrolling is only relevant when the height is insufficient for the
 				# list of bonus resources. That should never be the case with the
 				# BtS/AdvCiv rules, even at the lowest resolution.
-				iMaxRMargin, gRect("BonusPane0").height() + VSPACE(16))
+				iMaxRMargin,
+				gRect("BonusPane0").height() + iBonusBackrOverhang)
 		gSetRect("BonusPane1", "CityRightPanelContents",
 				gRect("BonusPane0").width(), 0,
 				# advc.002b: Was 68 in BtS; need less space in the third col now
@@ -1959,7 +1965,7 @@ class CvMainInterface:
 				PanelStyles.PANEL_STYLE_HUD_HELP)
 		screen.hide("ScoreBackground")
 
-		for i in range(gc.getMAX_PLAYERS()):
+		for i in range(gc.getMAX_CIV_PLAYERS()):
 			szName = "ScoreText" + str(i)
 			screen.setText(szName, "Background",
 					u"", CvUtil.FONT_RIGHT_JUSTIFY,
@@ -2404,6 +2410,12 @@ class CvMainInterface:
 			self.updateScoreStrings()
 			CyInterface().setDirty(InterfaceDirtyBits.Score_DIRTY_BIT, False)
 			bScoreStringsUpdated = True # advc.004z
+		# <advc.085>
+		if CyInterface().isDirty(InterfaceDirtyBits.ScoreHelp_DIRTY_BIT):
+			if gAlignedScoreboard:
+				gAlignedScoreboard.hide(screen, True)
+			CyInterface().setDirty(InterfaceDirtyBits.ScoreHelp_DIRTY_BIT, False)
+		# </advc.085>
 		if (CyInterface().isDirty(InterfaceDirtyBits.GlobeInfo_DIRTY_BIT) == True):
 			# Globeview and Globelayer buttons
 			CyInterface().setDirty(InterfaceDirtyBits.GlobeInfo_DIRTY_BIT, False)
@@ -6187,12 +6199,10 @@ class CvMainInterface:
 							szRightBuffer = u"?/%d%c" %(pHeadSelectedUnit.airBaseCombatStr(),
 									CyGame().getSymbolID(FontSymbols.STRENGTH_CHAR))
 						elif (pHeadSelectedUnit.isHurt()):
-							szRightBuffer = u"%.1f/%d%c" %(
-									((float(pHeadSelectedUnit.airBaseCombatStr() *
-									pHeadSelectedUnit.currHitPoints())) /
-									(float(pHeadSelectedUnit.maxHitPoints()))),
-									pHeadSelectedUnit.airBaseCombatStr(),
-									CyGame().getSymbolID(FontSymbols.STRENGTH_CHAR))
+							# <advc.004> Replacing Python implementation
+							szRightBuffer = u"%s" %(
+									CyGameTextMgr().getHurtUnitStrength(pHeadSelectedUnit))
+							# </advc.004>
 						else:
 							szRightBuffer = u"%d%c" %(pHeadSelectedUnit.airBaseCombatStr(),
 									CyGame().getSymbolID(FontSymbols.STRENGTH_CHAR))
@@ -6203,23 +6213,10 @@ class CvMainInterface:
 							szRightBuffer = u"?/%d%c" %(pHeadSelectedUnit.baseCombatStr(),
 									CyGame().getSymbolID(FontSymbols.STRENGTH_CHAR))
 						elif (pHeadSelectedUnit.isHurt()):
-							# <advc.004> Same as in CvGameTextMgr::setUnitHelp
-							fCurrStrength = float(pHeadSelectedUnit.baseCombatStr())
-							fCurrStrength *= pHeadSelectedUnit.currHitPoints()
-							fCurrStrength /= pHeadSelectedUnit.maxHitPoints()
-							iCurrStrengthTimes100 = 100 * pHeadSelectedUnit.baseCombatStr()
-							iCurrStrengthTimes100 *= pHeadSelectedUnit.currHitPoints()
-							iCurrStrengthTimes100 /= pHeadSelectedUnit.maxHitPoints()
-							if (pHeadSelectedUnit.baseCombatStr() *
-									pHeadSelectedUnit.maxHitPoints() - iCurrStrengthTimes100 <= 5):
-								fCurrStrength = pHeadSelectedUnit.baseCombatStr() - 0.1
-							if (pHeadSelectedUnit.baseCombatStr() *
-									pHeadSelectedUnit.maxHitPoints() < 5):
-								fCurrStrength = 0.1
+							# <advc.004> Replacing Python implementation
+							szRightBuffer = u"%s" %(
+									CyGameTextMgr().getHurtUnitStrength(pHeadSelectedUnit))
 							# </advc.004>
-							szRightBuffer = u"%.1f/%d%c" %(fCurrStrength,
-									pHeadSelectedUnit.baseCombatStr(),
-									CyGame().getSymbolID(FontSymbols.STRENGTH_CHAR))
 						else:
 							szRightBuffer = u"%d%c" %(pHeadSelectedUnit.baseCombatStr(),
 									CyGame().getSymbolID(FontSymbols.STRENGTH_CHAR))
@@ -6408,79 +6405,67 @@ class CvMainInterface:
 		bAlignIcons = ScoreOpt.isAlignIcons()
 		if bAlignIcons:
 			scores = Scoreboard.Scoreboard()
+			# <advc.085>
+			global gAlignedScoreboard
+			gAlignedScoreboard = scores # </advc.085>
 		# <advc>
 		else:
 			scores = None # </advc>
 # BUG - Align Icons - end
 		# (BUG - Power Rating)  advc: Moved into the loop
 		i = gc.getMAX_CIV_TEAMS() - 1
-		while (i > -1):
+		while i > -1:
 			eTeam = gc.getGame().getRankTeam(i)
-			# advc.004v: Show members of unmet dead teams
-			if (gc.getTeam(gc.getGame().getActiveTeam()).isHasMet(eTeam) or
-					gc.getTeam(eTeam).isHuman() or
-					gc.getGame().isDebugMode() or
-					(not gc.getTeam(eTeam).isAlive() and
-					gc.getTeam(eTeam).isEverAlive() and
-					ScoreOpt.isShowDeadCivs())):
+			# advc.085: Moved to BUG Scoreboard (static method)
+			if Scoreboard.Scoreboard.isShowTeamScore(eTeam):
 # BUG - Align Icons - start
-				if (bAlignIcons):
+				if bAlignIcons:
 					scores.addTeam(gc.getTeam(eTeam), i)
 # BUG - Align Icons - end
 				j = gc.getMAX_CIV_PLAYERS() - 1
-				while (j > -1):
+				while j > -1:
 					ePlayer = gc.getGame().getRankPlayer(j)
-					if (not CyInterface().isScoresMinimized() or
-							gc.getGame().getActivePlayer() == ePlayer):
-# BUG - Dead Civs - start
-						if (gc.getPlayer(ePlayer).isEverAlive() and
-								not gc.getPlayer(ePlayer).isBarbarian()
-								and (gc.getPlayer(ePlayer).isAlive() or
-								ScoreOpt.isShowDeadCivs())):
-# BUG - Dead Civs - end
-# BUG - Minor Civs - start
-							if (not gc.getPlayer(ePlayer).isMinorCiv() or
-									ScoreOpt.isShowMinorCivs()):
-# BUG - Minor Civs - end
-								if (gc.getPlayer(ePlayer).getTeam() == eTeam):
-									szBuffer = u"<font=2>"
+					# advc.085: Moved to BUG Scoreboard
+					if (Scoreboard.Scoreboard.isShowPlayerScore(ePlayer) and
+							gc.getPlayer(ePlayer).getTeam() == eTeam):
+						szBuffer = u"<font=2>"
 # BUG - Align Icons - start
-									if (bAlignIcons):
-										scores.addPlayer(gc.getPlayer(ePlayer), j)
+						if bAlignIcons:
+							scores.addPlayer(gc.getPlayer(ePlayer), j)
 # BUG - Align Icons - end
-									# advc: Code moved into auxiliary function
-									szBuffer += self.playerScoreString(ePlayer, scores, bAlignIcons)
-									szBuffer = szBuffer + "</font>"
+						# advc: Code moved into auxiliary function
+						szBuffer += self.playerScoreString(ePlayer, scores, bAlignIcons)
+						szBuffer = szBuffer + "</font>"
 # BUG - Align Icons - start
-									if not bAlignIcons:
-										if CyInterface().determineWidth(szBuffer) > iWidth:
-											iWidth = CyInterface().determineWidth(szBuffer)
-										szName = "ScoreText" + str(ePlayer)
+						if not bAlignIcons:
+							if CyInterface().determineWidth(szBuffer) > iWidth:
+								iWidth = CyInterface().determineWidth(szBuffer)
+							szName = "ScoreText" + str(ePlayer)
 # BUG - Dead Civs - start
-										# Don't try to contact dead civs
-										if gc.getPlayer(ePlayer).isAlive():
-											iWidgetType = WidgetTypes.WIDGET_CONTACT_CIV
-											eContactPlayer = ePlayer
-										else:
-											iWidgetType = WidgetTypes.WIDGET_GENERAL
-											eContactPlayer = -1
-										yCoord = gPoint("ScoreTextLowerRight").y() - iBtnHeight
-										screen.setText(szName, "Background",
-												szBuffer, CvUtil.FONT_RIGHT_JUSTIFY,
-												gPoint("ScoreTextLowerRight").x(),
-												yCoord - iCount * iBtnHeight,
-												-0.3, FontTypes.SMALL_FONT,
-												iWidgetType, eContactPlayer, -1)
+							# Don't try to contact dead civs
+							if gc.getPlayer(ePlayer).isAlive():
+								iWidgetType = WidgetTypes.WIDGET_CONTACT_CIV
+								eContactPlayer = ePlayer
+							else:
+								iWidgetType = WidgetTypes.WIDGET_GENERAL
+								eContactPlayer = -1
+							yCoord = gPoint("ScoreTextLowerRight").y() - iBtnHeight
+							screen.setText(szName, "Background",
+									szBuffer, CvUtil.FONT_RIGHT_JUSTIFY,
+									gPoint("ScoreTextLowerRight").x(),
+									yCoord - iCount * iBtnHeight,
+									-0.3, FontTypes.SMALL_FONT,
+									iWidgetType, eContactPlayer, -1)
 # BUG - Dead Civs - end
-										screen.show(szName)
-										CyInterface().checkFlashReset(ePlayer)
-										iCount += 1
+							screen.show(szName)
+							CyInterface().checkFlashReset(ePlayer)
+							iCount += 1
 # BUG - Align Icons - end
 					j = j - 1
 			i = i - 1
 
 # BUG - Align Icons - start
-		if (bAlignIcons):
+		if bAlignIcons:
 			scores.draw(screen)
 		else:
 			self.updateScoreBackgrSize(iWidth, iBtnHeight * iCount) # advc.092

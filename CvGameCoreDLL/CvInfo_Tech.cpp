@@ -53,7 +53,6 @@ m_bNoPopulationLimit(false),
 m_bIgnoreIrrigation(false),
 m_bWaterWork(false),
 m_bRiverTrade(false),
-m_bNoFearForSafety(false), // advc.500c
 m_piDomainExtraMoves(NULL),
 // <Tech Bonus Mod Start>
 m_piYieldModifier(NULL),
@@ -139,7 +138,6 @@ int CvTechInfo::getCommerceModifier(int i) const
 {
 	//	FAssertMsg(m_piCommerceModifier, "Tech info not initialised");
 	FAssertBounds(0, NUM_COMMERCE_TYPES, i);
-
 	return m_piCommerceModifier ? m_piCommerceModifier[i] : 0;
 }
 
@@ -222,7 +220,6 @@ void CvTechInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_bIgnoreIrrigation);
 	stream->Read(&m_bWaterWork);
 	stream->Read(&m_bRiverTrade);
-	stream->Read(&m_bNoFearForSafety); // advc.500c
 	stream->Read(&m_iGridX);
 	stream->Read(&m_iGridY);
 	SAFE_DELETE_ARRAY(m_piDomainExtraMoves);
@@ -321,7 +318,6 @@ void CvTechInfo::write(FDataStreamBase* stream)
 	stream->Write(m_bIgnoreIrrigation);
 	stream->Write(m_bWaterWork);
 	stream->Write(m_bRiverTrade);
-	stream->Write(m_bNoFearForSafety); // advc.500c
 	stream->Write(m_iGridX);
 	stream->Write(m_iGridY);
 	stream->Write(NUM_DOMAIN_TYPES, m_piDomainExtraMoves);
@@ -404,8 +400,6 @@ bool CvTechInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_bIgnoreIrrigation, "bIgnoreIrrigation");
 	pXML->GetChildXmlValByName(&m_bWaterWork, "bWaterWork");
 	pXML->GetChildXmlValByName(&m_bRiverTrade, "bRiverTrade");
-	// advc.500c:
-	pXML->GetChildXmlValByName(&m_bNoFearForSafety, "bNoFearForSafety", false, false);
 	pXML->GetChildXmlValByName(&m_iGridX, "iGridX");
 	pXML->GetChildXmlValByName(&m_iGridY, "iGridY");
 //end of secondary value to xml incase its does not exists in the xml min...=0

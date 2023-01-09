@@ -721,7 +721,8 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 /*************************************************************************************************/
 /** TGA_INDEXATION                          END                                                  */
 /*************************************************************************************************/
-	LoadGlobalClassInfo(GC.m_paRouteInfo, "Civ4RouteInfos", "Misc", "Civ4RouteInfos/RouteInfos/RouteInfo", false);
+	LoadGlobalClassInfo(GC.m_paRouteInfo, "Civ4RouteInfos", "Misc", "Civ4RouteInfos/RouteInfos/RouteInfo",
+			true); // advc.255
 	LoadGlobalClassInfo(GC.m_paImprovementInfo, "CIV4ImprovementInfos", "Terrain", "Civ4ImprovementInfos/ImprovementInfos/ImprovementInfo", true, &CvDLLUtilityIFaceBase::createImprovementInfoCacheObject);
 	LoadGlobalClassInfo(GC.m_paBuildingClassInfo, "CIV4BuildingClassInfos", "Buildings", "Civ4BuildingClassInfos/BuildingClassInfos/BuildingClassInfo", false);
 	LoadGlobalClassInfo(GC.m_paBuildingInfo, "CIV4BuildingInfos", "Buildings", "Civ4BuildingInfos/BuildingInfos/BuildingInfo", false, &CvDLLUtilityIFaceBase::createBuildingInfoCacheObject);
@@ -1046,8 +1047,8 @@ void CvXMLLoadUtility::SetGlobalActionInfo()
 	/*	advc: Pasted the body of orderHotkeyInfo here, then deleted that function.
 		Also deleted the pre-BtS functions (already commented out) orderHotkeyInfoOld,
 		sortHotkeyPriorityOld. Then rewrote SetGlobalActionInfo in a less clumsy way.
-		With CvActionInfo::getSubType exported from the DLL, the approach of
-		explicitly storing (sub-)type IDs can't easily be abandoned. */
+		(With CvActionInfo::getSubType exported from the DLL, the approach of
+		explicitly storing (sub-)type IDs can't easily be abandoned.) */
 	PROFILE_FUNC();
 	logMsg("SetGlobalActionInfo\n");
 
@@ -1084,11 +1085,11 @@ void CvXMLLoadUtility::SetGlobalActionInfo()
 	std::stable_sort(aActionData.begin(), aActionData.end());
 	for (int iAction = 0; iAction < (int)aActionData.size(); iAction++)
 	{
-		CvActionInfo* pActionInfo = new CvActionInfo;
-		pActionInfo->setSubID(aActionData[iAction].m_iSubID);
-		pActionInfo->setSubType(aActionData[iAction].m_eSubType);
-		int const iSubID = pActionInfo->getSubID();
-		switch (pActionInfo->getSubType())
+		CvActionInfo& kActionInfo = *new CvActionInfo;
+		kActionInfo.setSubID(aActionData[iAction].m_iSubID);
+		kActionInfo.setSubType(aActionData[iAction].m_eSubType);
+		int const iSubID = kActionInfo.getSubID();
+		switch (kActionInfo.getSubType())
 		{
 		case ACTIONSUBTYPE_COMMAND:
 			GC.getInfo((CommandTypes)iSubID).setActionInfoIndex(iAction);
@@ -1158,7 +1159,7 @@ void CvXMLLoadUtility::SetGlobalActionInfo()
 		}
 		default: FErrorMsg("Unrecognized action subtype");
 		}
-		GC.m_paActionInfo.push_back(pActionInfo);
+		GC.m_paActionInfo.push_back(&kActionInfo);
 	}
 }
 

@@ -673,7 +673,7 @@ namespace
 	Ideally, there would be a const version returning a const unit,
 	but that would lead to a lot of duplicate code.) */
 CvUnit* CvSelectionGroupAI::AI_bestUnitForMission(MissionTypes eMission,
-	CvPlot const* pMissionPlot)
+	CvPlot const* pMissionPlot, std::vector<int> const* pUnitsToSkip)
 {
 	PROFILE_FUNC(); // advc (neither frequently called nor expensive)
 	CvPlot const& kAt = getPlot();
@@ -730,8 +730,13 @@ CvUnit* CvSelectionGroupAI::AI_bestUnitForMission(MissionTypes eMission,
 	scaled rMaxPriority = scaled::MIN;
 	FOR_EACH_UNITAI_VAR_IN(pUnit, *this)
 	{
-		if (!pUnit->canMove())
+		if (!pUnit->canMove() ||
+			(pUnitsToSkip != NULL &&
+			std::find(pUnitsToSkip->begin(), pUnitsToSkip->end(),
+			pUnit->getID()) != pUnitsToSkip->end()))
+		{
 			continue;
+		}
 		scaled rPriority;
 		switch (eMission)
 		{
@@ -870,7 +875,7 @@ bool CvSelectionGroupAI::AI_isDeclareWar(
 
 	CvUnit const* pHeadUnit = getHeadUnit();
 	if (pHeadUnit == NULL)
-		return false; // advc
+		return false;
 
 	switch (pHeadUnit->AI_getUnitAIType())
 	{

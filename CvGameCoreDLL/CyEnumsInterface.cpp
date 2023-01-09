@@ -221,6 +221,8 @@ void CyEnumsPythonInterface()
 		.value("Advanced_Start_DIRTY_BIT", Advanced_Start_DIRTY_BIT)
 		// advc.068:
 		.value("Tech_Screen_DIRTY_BIT", Tech_Screen_DIRTY_BIT)
+		// advc.085:
+		.value("ScoreHelp_DIRTY_BIT", ScoreHelp_DIRTY_BIT)
 		.value("NUM_INTERFACE_DIRTY_BITS", NUM_INTERFACE_DIRTY_BITS)
 		;
 
@@ -439,7 +441,7 @@ void CyEnumsPythonInterface()
 		.value("WIDGET_CYCLE_UNIT", WIDGET_CYCLE_UNIT) // advc.154
 		// advc.186b: (for BULL - Zoom City Details)
 		.value("WIDGET_EXAMINE_CITY", WIDGET_EXAMINE_CITY)
-// advc.500c:
+		// advc.500c:
 		.value("WIDGET_HELP_NO_FEAR_FOR_SAFETY", WIDGET_HELP_NO_FEAR_FOR_SAFETY)
 //doto wonder limit - city hover help
 		.value("WIDGET_WONDER_LIMITS", WIDGET_WONDER_LIMITS)
@@ -1401,7 +1403,7 @@ void CyEnumsPythonInterface()
 /************************************************************************************************/
 /* END: Advanced Diplomacy                                                                      */
 /************************************************************************************************/
-.value("NUM_TRADEABLE_HEADINGS", NUM_TRADEABLE_HEADINGS)
+		.value("NUM_TRADEABLE_HEADINGS", NUM_TRADEABLE_HEADINGS)
 		.value("NUM_TRADEABLE_ITEMS", NUM_TRADEABLE_ITEMS)
 		;
 
@@ -1515,7 +1517,7 @@ void CyEnumsPythonInterface()
 /************************************************************************************************/
 /* END: Advanced Diplomacy         	                                                            */
 /************************************************************************************************/
-// advc.130p:
+		// advc.130p:
 		.value("MEMORY_INDEPENDENCE", MEMORY_INDEPENDENCE)
 		// advc.104i:
 		.value("MEMORY_DECLARED_WAR_RECENT", MEMORY_INDEPENDENCE)

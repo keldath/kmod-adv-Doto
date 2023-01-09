@@ -157,6 +157,11 @@ void CyPlayerPythonInterface1(python::class_<CyPlayer>& x)
 		.def("canAdopt", &CyPlayer::canAdopt, "bool (int* (CivicTypes*) paeNewCivics)") // </advc.001>
 		.def("revolution", &CyPlayer::revolution, "void (int* (CivicTypes*) paeNewCivics, bool bForce)")
 		.def("getCivicPercentAnger", &CyPlayer::getCivicPercentAnger, "int (int /*CivicTypes*/ eCivic)")
+		// <advc.130n>
+		.def("getFavoriteCivic", &CyPlayer::getFavoriteCivic, "CivicTypes ()")
+		.def("isFavoriteCivicKnown", &CyPlayer::isFavoriteCivicKnown, "bool ()")
+		.def("getFavoriteReligion", &CyPlayer::getFavoriteReligion, "ReligionTypes ()")
+		.def("isFavoriteReligionKnown", &CyPlayer::isFavoriteReligionKnown, "bool ()") // </advc.130n>
 
 		.def("canDoReligion", &CyPlayer::canDoReligion, "int (int /*ReligionTypes*/ eReligion)")
 		.def("canChangeReligion", &CyPlayer::canChangeReligion, "bool ()")
@@ -459,12 +464,13 @@ void CyPlayerPythonInterface1(python::class_<CyPlayer>& x)
 		.def("nextSelectionGroup", &CyPlayer::nextSelectionGroup, "tuple(CySelectionGroup, int iterOut) (int iterIn, bool bReverse) - gets the next selectionGroup")
 		.def("getNumSelectionGroups", &CyPlayer::getNumSelectionGroups, "int ()")
 		.def("getSelectionGroup", &CyPlayer::getSelectionGroup, python::return_value_policy<python::manage_new_object>(), "CvSelectionGroup* (int iID)")
-
-		.def("trigger", &CyPlayer::trigger, "void (/*EventTriggerTypes*/int eEventTrigger)")
-		.def("getEventOccured", &CyPlayer::getEventOccured, python::return_value_policy<python::reference_existing_object>(), "EventTriggeredData* (int /*EventTypes*/ eEvent)")
-		.def("resetEventOccured", &CyPlayer::resetEventOccured, "void (int /*EventTypes*/ eEvent)")
-		.def("getEventTriggered", &CyPlayer::getEventTriggered, python::return_value_policy<python::reference_existing_object>(), "EventTriggeredData* (int iID)")
-		.def("initTriggeredData", &CyPlayer::initTriggeredData, python::return_value_policy<python::reference_existing_object>(), "EventTriggeredData* (int eEventTrigger, bool bFire, int iCityId, int iPlotX, int iPlotY, PlayerTypes eOtherPlayer, int iOtherPlayerCityId, ReligionTypes eReligion, CorporationTypes eCorporation, int iUnitId, BuildingTypes eBuilding)")
-		.def("getEventTriggerWeight", &CyPlayer::getEventTriggerWeight, "int getEventTriggerWeight(int eEventTrigger)")
+/* doto moved to cyplayerinterface2 due to memory -
+advc 108 added more lines to this file*/
+//		.def("trigger", &CyPlayer::trigger, "void (/*EventTriggerTypes*/int eEventTrigger)")
+//		.def("getEventOccured", &CyPlayer::getEventOccured, python::return_value_policy<python::reference_existing_object>(), "EventTriggeredData* (int /*EventTypes*/ eEvent)")
+//		.def("resetEventOccured", &CyPlayer::resetEventOccured, "void (int /*EventTypes*/ eEvent)")
+//		.def("getEventTriggered", &CyPlayer::getEventTriggered, python::return_value_policy<python::reference_existing_object>(), "EventTriggeredData* (int iID)")
+//		.def("initTriggeredData", &CyPlayer::initTriggeredData, python::return_value_policy<python::reference_existing_object>(), "EventTriggeredData* (int eEventTrigger, bool bFire, int iCityId, int iPlotX, int iPlotY, PlayerTypes eOtherPlayer, int iOtherPlayerCityId, ReligionTypes eReligion, CorporationTypes eCorporation, int iUnitId, BuildingTypes eBuilding)")
+//		.def("getEventTriggerWeight", &CyPlayer::getEventTriggerWeight, "int getEventTriggerWeight(int eEventTrigger)")
 		;
 }

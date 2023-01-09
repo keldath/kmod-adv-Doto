@@ -2845,7 +2845,7 @@ bool CvGame::isNormalizationBonus(BonusTypes eBonus, PlayerTypes eStartPlayer,
 	}
 	/*	advc: BtS had checked this only for seafood; doesn't really matter though
 		b/c all of the isNormalize resources are revealed from the start. */
-	if (!GET_TEAM(eStartPlayer).isHasTech((TechTypes)kBonus.getTechReveal()))
+	if (!GET_TEAM(eStartPlayer).isBonusRevealed(eBonus))
 		return false;
 	if (kPlot.getBonusType() == eBonus)
 	{
@@ -3004,7 +3004,6 @@ void CvGame::updateScore(bool bForce)
 	setScoreDirty(false);
 
 	EagerEnumMap<PlayerTypes,bool> abPlayerScored;
-	std::vector<PlayerTypes> aeUpdateAttitude; // advc.001
 	FOR_EACH_ENUM(CivPlayer)
 	{
 		PlayerTypes eRank = (PlayerTypes)eLoopCivPlayer;
@@ -3024,9 +3023,6 @@ void CvGame::updateScore(bool bForce)
 		}
 		FAssert(iBestScore == 0 || GET_PLAYER(eBestPlayer).isAlive()); // advc
 		abPlayerScored.set(eBestPlayer, true);
-		// <advc.001>
-		if (eRank != getPlayerRank(eBestPlayer))
-			aeUpdateAttitude.push_back(eBestPlayer); // </advc.001>
 		setRankPlayer(eRank, eBestPlayer);
 		setPlayerRank(eBestPlayer, eRank);
 		setPlayerScore(eBestPlayer, iBestScore);
@@ -3035,13 +3031,6 @@ void CvGame::updateScore(bool bForce)
 			GET_PLAYER(eBestPlayer).updateHistory(PLAYER_HISTORY_SCORE, getGameTurn());
 		// </advc.004s>
 	}
-	/*for (size_t i = 0; i < aeUpdateAttitude.size(); i++)
-		GET_PLAYER(aeUpdateAttitude[i]).AI_updateAttitude();*/
-	/*	<advc.001> The above isn't enough; the attitudes of those outside
-		aeUpdateAttitude toward those inside could also change. */
-	if (!aeUpdateAttitude.empty())
-		CvPlayerAI::AI_updateAttitudes(); // </advc.001>
-
 	EagerEnumMap<TeamTypes,bool> abTeamScored;
 	FOR_EACH_ENUM(CivTeam)
 	{
@@ -3070,6 +3059,8 @@ void CvGame::updateScore(bool bForce)
 		setTeamRank(eBestTeam, eRank);
 		setTeamScore(eBestTeam, iBestScore);
 	}
+	// advc.130c, advc.001: Difficult to narrow down which players need an update
+	CvPlayerAI::AI_updateAttitudes();
 }
 
 // advc.003y: Ported from CvUtil.py
@@ -3190,6 +3181,7 @@ void CvGame::updateGwPercentAnger()
 	instead of calling the CvEngine function directly. */
 void CvGame::autoSave(bool bInitial)
 {
+	PROFILE_FUNC();
 	/*	<advc.135c> Avoid overlapping auto-saves in test games played on a
 		single machine. Don't know how to check this properly. */
 	if (isNetworkMultiPlayer() && isDebugToolsAllowed(false) && getActivePlayer() % 2 == 0)
@@ -3538,9 +3530,9 @@ void CvGame::getGlobeviewConfigurationParameters(TeamTypes eTeam,
 
 int CvGame::getAdjustedPopulationPercent(VictoryTypes eVictory) const
 {
-	if (GC.getInfo(eVictory).getPopulationPercentLead() == 0)
+	if (GC.getInfo(eVictory).getPopulationPercentLead() <= 0)
 		return 0;
-	if (getTotalPopulation() == 0)
+	if (getTotalPopulation() <= 0)
 		return 100;
 
 	int iBestPopulation = 0;
@@ -3590,12 +3582,34 @@ int CvGame::getHurryAngerLength() const
 
 int CvGame::getAdjustedLandPercent(VictoryTypes eVictory) const
 {
-	if (GC.getInfo(eVictory).getLandPercent() == 0)
+	if (GC.getInfo(eVictory).getLandPercent() <= 0)
 		return 0;
-
+	// <advc.254>
+	int const iTotalLand = GC.getMap().getLandPlots();
+	if (iTotalLand <= 0)
+		return 0; // </advc.254>
 	int iPercent = GC.getInfo(eVictory).getLandPercent();
-	iPercent -= (getCivTeamsEverAlive() * 2);
-	return std::max(iPercent, GC.getInfo(eVictory).getMinLandPercent());
+	iPercent -= getCivTeamsEverAlive() * 2;
+	iPercent = std::max(iPercent, GC.getInfo(eVictory).getMinLandPercent());
+	// <advc.254> (Based on getAdjustedPopulationPercent)
+	int iBestLand = 0;
+	int iNextBestLand = 0;
+	for (TeamIter<CIV_ALIVE> itTeam; itTeam.hasNext(); ++itTeam)
+	{
+		int iLand = itTeam->getTotalLand();
+		if (iLand > iBestLand)
+		{
+			iNextBestLand = iBestLand;
+			iBestLand = iLand;
+		}
+		else if (iLand > iNextBestLand)
+			iNextBestLand = iLand;
+	}
+	iPercent = std::max(iPercent,
+			std::min(100, (iNextBestLand * 100) / iTotalLand +
+			GC.getInfo(eVictory).get(CvVictoryInfo::LandPercentLead)));
+	// </advc.254>
+	return iPercent;
 }
 
 // advc.178: Cut from CvPlayerAI::AI_calculateDiplomacyVictoryStage
@@ -3615,7 +3629,7 @@ VictoryTypes CvGame::getDominationVictory() const
 	FOR_EACH_ENUM(Victory)
 	{
 		if (GC.getInfo(eLoopVictory).getLandPercent() > 0 &&
-			GC.getInfo(eLoopVictory).getPopulationPercentLead())
+			GC.getInfo(eLoopVictory).getPopulationPercentLead() > 0)
 		{
 			return eLoopVictory;
 		}
@@ -4930,13 +4944,13 @@ bool CvGame::isValidVoteSelection(VoteSourceTypes eVoteSource,
 	if (kData.ePlayer!= NO_PLAYER)
 	{
 		CvPlayer& kPlayer = GET_PLAYER(kData.ePlayer);
-		if (!kPlayer.isAlive() || kPlayer.isBarbarian() || kPlayer.isMinorCiv())
+		if (!kPlayer.isAlive() || !kPlayer.isMajorCiv())
 			return false;
 	}
 	if (kData.eOtherPlayer != NO_PLAYER)
 	{
 		CvPlayer& kPlayer = GET_PLAYER(kData.eOtherPlayer);
-		if (!kPlayer.isAlive() || kPlayer.isBarbarian() || kPlayer.isMinorCiv())
+		if (!kPlayer.isAlive() || !kPlayer.isMajorCiv())
 			return false;
 	}
 	int iVoters = 0;
@@ -6950,7 +6964,7 @@ int CvGame::religionPriority(PlayerTypes ePlayer, ReligionTypes eReligion) const
 			e.g. Buddhism would fit so well for Ashoka.
 			Don't use PersonalityType here; fav. religion is always a matter
 			of LeaderType. */
-		if (GC.getInfo(kPlayer.getLeaderType()).getFavoriteReligion() == eReligion)
+		if (kPlayer.getFavoriteReligion() == eReligion)
 			iR += 6;
 	}
 	return iR;
@@ -7084,10 +7098,9 @@ void CvGame::createBarbarianCities()
 	if (getNumCivCities() < countCivPlayersAlive() * 2)
 			return;
 
-	if (getElapsedGameTurns() * (getStartEra() + 1) * 200 <=
+	if (getElapsedGameTurns() * (getStartEra() + 1) * 100 <=
 		kGameHandicap.getBarbarianCityCreationTurnsElapsed() *
-		// advc.300: Add 100 to dilute effect (and times 200 on the left side)
-		(GC.getInfo(getGameSpeedType()).getBarbPercent() + 100))
+		GC.getInfo(getGameSpeedType()).getBarbPercent())
 	{
 		return;
 	}
@@ -7576,7 +7589,8 @@ void CvGame::createBarbarianUnits()
 		if (a.isWater() || a.getNumCities() == 0)
 			continue;
 		int iUnowned = 0, iTiles = 0;
-		std::vector<Shelf*> shelves; GC.getMap().getShelves(a, shelves);
+		std::vector<Shelf*> shelves;
+		GC.getMap().getShelves(a, shelves);
 		for (size_t i = 0; i < shelves.size(); i++)
 		{
 			// Shelves also count for land Barbarians, ...
@@ -7612,21 +7626,23 @@ void CvGame::createBarbarianUnits()
 		}
 		if (iUnownedTotal < iBaseTilesPerLandUnit / 2)
 			continue;
-		int const iBarbarianCities = a.getCitiesPerPlayer(BARBARIAN_PLAYER);
 		{
-			int const iInitialDefenders = GC.getInfo(getHandicapType()).
-					getBarbarianInitialDefenders();
-			iLandUnits = std::max(0, iLandUnits
 			/*	Don't count city defenders. Settled Barbarians being less aggressive
 				makes sense, but cities also reduce the number of unowned tiles;
-				that's enough.	(Alt. idea: Subtract half the Barbarian population
-				in this area.)	Old Firaxis to-do comment on this subject:
+				that's enough. Old Firaxis to-do comment on this subject:
 				'XXX eventually need to measure	how many barbs of eBarbUnitAI we
 				have in this area...' */
-					- iBarbarianCities * std::max(0, iInitialDefenders));
+			int iDefenders = 0;
+			FOR_EACH_CITY(pCity, GET_PLAYER(BARBARIAN_PLAYER))
+			{
+				if (pCity->isArea(a))
+					iDefenders += pCity->getPlot().plotCount(PUF_isCityAIType);
+			}
+			iLandUnits = std::max(0, iLandUnits - iDefenders);
 		}
 		int iNeededLand = numBarbariansToCreate(iBaseTilesPerLandUnit, iTiles,
 				iUnowned, iLandUnits);
+		int const iBarbarianCities = a.getCitiesPerPlayer(BARBARIAN_PLAYER);
 		for (size_t i = 0; i < shelves.size(); i++)
 		{
 			int iShips = shelves[i]->countBarbarians();
@@ -7803,7 +7819,7 @@ int CvGame::numBarbariansToCreate(int iTilesPerUnit, int iTiles, int iUnowned,
 {
 	int const iOwned = iTiles - iUnowned;
 	scaled const rPeakRatio = barbarianPeakLandRatio();
-	if (iOwned == 0 || rPeakRatio == 0)
+	if (iOwned <= 0 || rPeakRatio <= 0)
 		return 0;
 	scaled rDivisor = iTilesPerUnit;
 	scaled rDividend;
@@ -7821,7 +7837,7 @@ int CvGame::numBarbariansToCreate(int iTilesPerUnit, int iTiles, int iUnowned,
 			rDividend = iOwned;
 		}
 	}
-	/*	For Rage, reduce divisor to 60% (50% in BtS), but
+	/*	For Rage, reduce divisor to 65% (50% in BtS), but
 		<advc.307> reduces it further based on the game era. */
 	if (isOption(GAMEOPTION_RAGING_BARBARIANS))
 	{
@@ -7830,7 +7846,7 @@ int CvGame::numBarbariansToCreate(int iTilesPerUnit, int iTiles, int iUnowned,
 			and Medieval starts b/c the starting defenders are mere Archers). */
 		if (iCurrentEra <= getStartEra())
 			iCurrentEra = 0;
-		scaled rRageMultiplier = fixp(0.6);
+		scaled rRageMultiplier = fixp(0.65);
 		rRageMultiplier.mulDiv(8 - iCurrentEra, 8);
 		rDivisor *= rRageMultiplier;
 		rDivisor.increaseTo(10);
@@ -7945,23 +7961,24 @@ int CvGame::createBarbarianUnits(int iUnitsToCreate, int iUnitsPresent,
 		UnitTypes eUnitType = randomBarbarianUnit(eUnitAI, *pPlot);
 		if (eUnitType == NO_UNIT)
 			return iCreated;
-		CvUnit* pNewUnit = GET_PLAYER(BARBARIAN_PLAYER).initUnit(eUnitType,
+		/*CvUnit* pNewUnit =*/GET_PLAYER(BARBARIAN_PLAYER).initUnit(eUnitType,
 				pPlot->getX(), pPlot->getY(), eUnitAI);
 		if (!pPlot->isWater())
 			iCreated++;
 		// </advc.300>
-		// K-Mod. Give a combat penalty to barbarian boats.
+	// advc.313: Replaced by a handicap-based modifier
+	#if 0
+		/*	K-Mod. Sorry, barbarians. Free ships are just too dangerous for
+			real civilizations to defend against. */
 		if (pPlot->isWater() &&
 			!pNewUnit->getUnitInfo().isHiddenNationality()) // kekm.12
-		{	// find the "disorganized" promotion. (is there a better way to do this?)
+		{
 			PromotionTypes eDisorganized = (PromotionTypes)
 					GC.getInfoTypeForString("PROMOTION_DISORGANIZED", true);
 			if (eDisorganized != NO_PROMOTION)
-			{	/*	Sorry, barbarians. Free ships are just too dangerous for
-					real civilizations to defend against. */
 				pNewUnit->setHasPromotion(eDisorganized, true);
-			}
 		} // K-Mod end
+	#endif
 		// <advc.304> Discourage nearby unit placement for some time
 		getBarbarianWeightMap().getActivityMap().change(*pPlot,
 				BarbarianActivityMap::maxStrength() / 2, 2); // </advc.304>
@@ -8014,25 +8031,43 @@ bool CvGame::killBarbarian(int iUnitsPresent, int iTiles, int iPop,
 	// Don't want large Barbarian continents crawling with units
 	rDivisor.exponentiate(fixp(0.7));
 	rDivisor *= 5;
-	if (SyncRandSuccess(iUnitsPresent / rDivisor))
+	if (!SyncRandSuccess(iUnitsPresent / rDivisor))
+		return false;
+	if (pShelf != NULL)
+		return pShelf->killBarbarian();
+	CvUnit* pVictim = NULL;
+	int iBestValue = 0;
+	/*	Same order as for animal culling. Should result in
+		first-in-first-out behavior; fair enough for breaking ties. */
+	FOR_EACH_UNIT_VAR(pUnit, GET_PLAYER(BARBARIAN_PLAYER))
 	{
-		if (pShelf != NULL)
-			return pShelf->killBarbarian();
-		/*	The same method as for animal culling. Should result
-			in first-in-first-out behavior; fair enough. */
-		FOR_EACH_UNIT_VAR(pUnit, GET_PLAYER(BARBARIAN_PLAYER))
+		CvUnit& u = *pUnit;
+		if (u.isAnimal() || !u.isArea(kArea) ||
+			u.getUnitCombatType() == NO_UNITCOMBAT)
 		{
-			CvUnit& u = *pUnit;
-			if (u.isAnimal() || !u.isArea(kArea) ||
-				u.getUnitCombatType() == NO_UNITCOMBAT)
-			{
-				continue;
-			}
-			u.kill(false);
-			return true;
+			continue;
+		}
+		int iKillValue = 1;
+		if (!u.getPlot().isVisibleToWatchingHuman())
+			iKillValue += 100;
+		if (!u.getPlot().isVisibleToCivTeam())
+			iKillValue += 10;
+		if (u.getPlot().isCity() &&
+			u.getPlot().getNumDefenders(BARBARIAN_PLAYER) >
+			GC.getInfo(getHandicapType()).getBarbarianInitialDefenders())
+		{
+			iKillValue += 5;
+		}
+		if (iKillValue > iBestValue)
+		{
+			iBestValue = iKillValue;
+			pVictim = &u;
 		}
 	}
-	return false;
+	if (pVictim == NULL)
+		return false;
+	pVictim->kill(false);
+	return true;
 }
 
 // Based on BtS code originally in createBarbarianUnits
@@ -9063,8 +9098,8 @@ void CvGame::handleUpdateTimer(UpdateTimerTypes eTimerType)
 		case UPDATE_COLLAPSE_SCORE_BOARD:
 			GET_PLAYER(getActivePlayer()).setScoreboardExpanded(false);
 			break;
-		case UPDATE_DIRTY_SCORE_BOARD:
-			gDLL->getInterfaceIFace()->setDirty(Score_DIRTY_BIT, true);
+		case UPDATE_DIRTY_SCORE_HELP:
+			gDLL->getInterfaceIFace()->setDirty(ScoreHelp_DIRTY_BIT, true);
 			break; // </advc.085>
 		// <advc.001w>
 		case UPDATE_MOUSE_FOCUS:
@@ -9305,9 +9340,18 @@ void CvGame::read(FDataStreamBase* pStream)
 		m_aiSecretaryGeneralTimer.read(pStream);
 		m_aiVoteTimer.read(pStream);
 		m_aiDiploVote.read(pStream);
-		m_abSpecialUnitValid.read(pStream);
-		m_abSpecialBuildingValid.read(pStream);
-		m_abReligionSlotTaken.read(pStream);
+		if (uiFlag >= 24)
+		{
+			m_abSpecialUnitValid.read(pStream);
+			m_abSpecialBuildingValid.read(pStream);
+			m_abReligionSlotTaken.read(pStream);
+		}
+		else
+		{
+			LegacyArrayEnumMap<SpecialUnitTypes,bool>::convert(m_abSpecialUnitValid, pStream);
+			LegacyArrayEnumMap<SpecialBuildingTypes,bool>::convert(m_abSpecialBuildingValid, pStream);
+			LegacyArrayEnumMap<ReligionTypes,bool>::convert(m_abReligionSlotTaken, pStream);
+		}
 		m_aeHolyCity.read(pStream);
 		m_aeHeadquarters.read(pStream);
 	}
@@ -9478,7 +9522,11 @@ void CvGame::read(FDataStreamBase* pStream)
 	if (uiFlag >= 21)
 	{
 		if (!isOption(GAMEOPTION_NO_EVENTS))
-			m_abInactiveTriggers.read(pStream);
+		{
+			if (uiFlag >= 24)
+				m_abInactiveTriggers.read(pStream);
+			else LegacyArrayEnumMap<EventTriggerTypes,bool>::convert(m_abInactiveTriggers, pStream);
+		}
 	}
 	else
 	{
@@ -9563,7 +9611,14 @@ void CvGame::write(FDataStreamBase* pStream)
 	//uiFlag = 19; // advc.500c: Update citizen assignments
 	//uiFlag = 20; // advc.130r: Update war attitude
 	//uiFlag = 21; // advc.enum
-	uiFlag = 22; // advc.130n: Bugfix in fave-civic attitude calc
+	//uiFlag = 22; // advc.130n: Bugfix in fave-civic attitude calc
+	//uiFlag = 23; // advc.124b: Need a plot group update for compatibility
+	/*	advc.enum: Bugfix in bool-valued ArrayEnumMap; advc.130c: tweak;
+		advc.130n: fave civic based on displayed leader type. */
+	//uiFlag = 24;
+	//uiFlag = 25; // advc.130n (bugfix)
+	//uiFlag = 26; // advc.130w: Cache for expansionist hate
+	uiFlag = 27; // advc.130w: RivalVassalAttitude tweak
 	pStream->Write(uiFlag);
 	REPRO_TEST_BEGIN_WRITE("Game pt1");
 	pStream->Write(m_iElapsedGameTurns);
@@ -9740,6 +9795,9 @@ void CvGame::onAllGameDataRead()
 			initGameHandicap();
 		}
 	} // </advc.250a>
+	// <advc.124b> River connection rules have changed
+	if (m_uiSaveFlag <= 23)
+		updatePlotGroups(); // </advc.124b>
 	// <advc.003m>
 	for (TeamIter<> it; it.hasNext(); ++it)
 	{
@@ -9778,26 +9836,23 @@ void CvGame::onAllGameDataRead()
 		}
 		SAFE_DELETE_ARRAY(m_pLegacyOrgSeatData);
 	} // </advc.enum>
-	// <advc.130n>, advc.148, advc.130x
-	if (m_uiSaveFlag < 22 ||
+	// <advc.130w>
+	bool bAttitudeUpdated = false;
+	if (m_uiSaveFlag < 26)
+	{
+		for (PlayerAIIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
+			itPlayer->AI_updateExpansionistHate();
+		bAttitudeUpdated = true;
+	} // </advc.130w>
+	// <advc.130n>, advc.148, advc.130r, advc.130x, advc.130c, advc.130w
+	if (m_uiSaveFlag < 27 ||
 		// <advc.127> Save created during AI Auto Play
 		(m_iAIAutoPlay != 0 && !isNetworkMultiPlayer()))
 	{
 		m_iAIAutoPlay = 0; // </advc.127>
-		CvPlayerAI::AI_updateAttitudes();
+		if (!bAttitudeUpdated) // advc.130w
+			CvPlayerAI::AI_updateAttitudes();
 	} // </advc.130n>
-	// <advc.130r>
-	else if (m_uiSaveFlag < 20)
-	{
-		for (TeamAIIter<MAJOR_CIV> itTeam; itTeam.hasNext(); ++itTeam)
-		{
-			for (TeamIter<MAJOR_CIV,ENEMY_OF> itEnemy(itTeam->getID());
-				itEnemy.hasNext(); ++itEnemy)
-			{
-				itTeam->AI_updateAttitude(itEnemy->getID(), false);
-			}
-		}
-	} // </advc.130r>
 	// <advc.500c>
 	if (m_uiSaveFlag < 19)
 	{
