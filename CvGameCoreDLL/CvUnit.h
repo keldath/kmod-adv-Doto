@@ -392,7 +392,7 @@ public:
 	{
 		//if option is off then just send 0 ...so gameplay will be normal ranged attack
 		//very important - affects many places!
-		if (GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK) || GC.getGame().isOption(GAMEOPTION_RANGED_IMMUNITY))
+		if (GC.getGame().isOption(GAMEOPTION_RANGED_IMMUNITY))
 		{
 			return std::max(0,(m_pUnitInfo->getRangeStrike()));
 		}

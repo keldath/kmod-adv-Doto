@@ -432,7 +432,7 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot,
 			//add some extra value to ranged units.
 			if (bRanged) 
 			{
-				iValue *= (100 + (kLoopUnit.baseCombatStr() * kLoopUnit.combatLimit()));
+				iValue *= (100 + (125 - kLoopUnit.combatLimit()));
 				iValue /= 100;
 			} 
 			if (kLoopUnit.collateralDamage() > 0 && /* advc.048: */ !bMaxSurvival)
@@ -1138,8 +1138,9 @@ CvUnitAI* CvSelectionGroupAI::AI_ejectBestDefender(CvPlot* pDefendPlot)
 // DOTO-MOD ranged immunity - START --if the unit is ranged - prefer not to eject it
 // ranged are given more value above in the AI_currEffectiveStr
 //if the unit is ranged, the higher the level, better not eject?
-		iValue /= pUnit->isRangeStrikeCapableK() ? 
-				(2 + (pUnit->getLevel() * 2) ): 1;	
+//doto 112 - caused some error - FErrorMsg("AI_ejectBestDefender failed to choose a candidate for AI_guardCity.");
+//		iValue /= pUnit->isRangeStrikeCapableK() ? 
+//				(2 + (pUnit->getLevel() * 2) ): 1;	
 		if (iValue > iBestUnitValue)
 		{
 			iBestUnitValue = iValue;

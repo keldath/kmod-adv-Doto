@@ -1,0 +1,17 @@
+
+civ4 Remaster art patch for Doto
+
+set the parameter in the globaldefinesalt :
+CIV4_REMASTER_ART >1<
+
+extract the civ4remaster_patch.zip
+overwrite the assets and resource folders.
+
+To install clouds of war shader you need to:
+1. Find shaders folder of your Beyond the Sword installation. For steam users it's usually
+C:\SteamLibrary\steamapps\common\Sid Meier's Civilization IV Beyond the Sword\Beyond the Sword\Shaders
+2. Backup original FXO folder inside folder from point 1
+3. Copy FXO folder from Civ IV Remaster.7z archive (modded FXO is located in /Shaders folder) into folder from point 1 (override existing files)
+
+
+

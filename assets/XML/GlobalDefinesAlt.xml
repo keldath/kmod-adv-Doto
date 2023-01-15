@@ -556,6 +556,13 @@
 		<iDefineIntVal>3</iDefineIntVal>
 	<!-- alternative method for civilians  NOT OPERATIONAL YET!-->
 		<!-- DOTO city states - end  -->
+<!-- civ4remaster art mod 
+	requires unzipping of the patch in the doto folder
+	-->		
+	</Define>
+	<Define>
+		<DefineName>CIV4_REMASTER_ART</DefineName>
+		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
 	
 </Civ4Defines>

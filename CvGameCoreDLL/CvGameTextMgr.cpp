@@ -19841,13 +19841,21 @@ void CvGameTextMgr::buildCityBillboardProductionString(CvWStringBuffer& szBuffer
 		szBuffer.clear();
 		return;
 	}
-
-	szBuffer.assign(pCity->getProductionName());
+//doto civ4 rematser art start
+	if (!GC.getDefineINT("CIV4_REMASTER_ART"))
+		szBuffer.assign(pCity->getProductionName());
+//doto civ4 rematser art end	
 	if (gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL))
 	{
 		int iTurns = pCity->getProductionTurnsLeft();
 		if (iTurns < MAX_INT)
-			szBuffer.append(CvWString::format(L" (%d)", iTurns));
+//doto civ4 rematser art - start
+			if (!GC.getDefineINT("CIV4_REMASTER_ART"))
+				szBuffer.append(CvWString::format(L" (%d)", iTurns));
+			else
+//doto civ4 rematser art - end
+				szBuffer.append(CvWString::format(L"%d", iTurns));
+			
 	}
 }
 

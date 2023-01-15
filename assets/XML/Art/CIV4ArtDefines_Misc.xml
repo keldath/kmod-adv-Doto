@@ -305,7 +305,7 @@
 			<Path>None</Path>
 			<!-- positive scale: city billboards use fonts from GameFont.tga -->
 			<!-- negative scale: GFC billboards (uses the interface font) -->
-			<!-- keldath changed from 1.00 -->
+			<!-- keldath changed from 1.00 also for civ4remaster-->
 			<fScale>1.25</fScale>
 			<NIF>None</NIF>
 			<KFM>None</KFM>

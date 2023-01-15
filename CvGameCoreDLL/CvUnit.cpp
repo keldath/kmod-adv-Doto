@@ -1153,11 +1153,11 @@ void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pP
 	//syntax changed in 099 advc
 	int iDamage = iDefenderDamage;
 	//keldath testing
-	int a = GC.getMAX_HIT_POINTS() - 1;
-	int b = pDefender->getDamage();
-	int c = pAttacker->combatLimit();
-	bool d = std::min(a, b + iDamage) >= c;
-	int n = 0;
+//	int a = GC.getMAX_HIT_POINTS() - 1;
+//	int b = pDefender->getDamage();
+//	int c = pAttacker->combatLimit();
+//	bool d = std::min(a, b + iDamage) >= c;
+//	int n = 0;
 	/*	std::min(GC.getMAX_HIT_POINTS(),
 			pDefender->getDamage() + iDefenderDamage) > pAttacker->combatLimit())
 	*/
@@ -1169,8 +1169,8 @@ void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pP
 				pDefender->getDamage() + iDamage) >= pAttacker->combatLimit());	
 	if (bLimitReached)				
 		{
-			d = 1;//keldath test
-			n = 2;//keldath test
+//			d = 1;//keldath test
+//			n = 2;//keldath test
 			iDamage = pAttacker->combatLimit() - pDefender->getDamage();
 			/*	Don't break right after the XP change; want to log the hit -
 					now that it's guaranteed to be a proper hit (positive damage). */
@@ -12646,8 +12646,7 @@ int CvUnit::rangeCombatDamageK(const CvUnit* pDefender,const CvUnit* pAttacker) 
 bool CvUnit::isRangeStrikeCapableK() const
 {
 	//do not include here the isMadeAllAttacks() - important for ranged immunity
-	if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK) &&
-		!GC.getGame().isOption(GAMEOPTION_RANGED_IMMUNITY))
+	if (!GC.getGame().isOption(GAMEOPTION_RANGED_IMMUNITY))
 		return false;
 	if (getDomainType() == DOMAIN_AIR || getDomainType() == DOMAIN_SEA)///for now now see.
 		return false;

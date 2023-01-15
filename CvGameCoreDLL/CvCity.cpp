@@ -13721,7 +13721,12 @@ void CvCity::getCityBillboardSizeIconColors(NiColorA& kDotColor, NiColorA& kText
 	NiColorA kWhite(1, 1, 1, 1);
 	NiColorA kBlack(0, 0, 0, 1);
 
-	if (isActiveTeam() /* advc.127: */ && isHuman())
+	if (isActiveTeam() /* advc.127: */ && isHuman()
+//doto remaster civ4 art - the if statement in the original code
+// removed this part - decided to leave it, with this remark in case id like to use it.
+// readded this since it changes the billboard color.
+		&& !GC.getDefineINT("CIV4_REMASTER_ART")
+		)
 	{
 		kTextColor = kBlack;
 		int const iFoodDifference = foodDifference();
