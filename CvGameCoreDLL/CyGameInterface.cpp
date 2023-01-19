@@ -62,6 +62,9 @@ void CyGamePythonInterface()
 
 		.def("goldenAgeLength", &CyGame::goldenAgeLength, "int ()")
 		.def("victoryDelay", &CyGame::victoryDelay, "int (int /*VictoryTypes*/ eVictory)")
+		/* doto TERRAIN-IMPROVEMENT-DECAY YUKON*/
+		.def("getImprovementDecayTime", &CyGame::getImprovementDecayTime, "int (int /*ImprovementTypes*/ eImprovement)")
+		/* END TERRAIN-IMPROVEMENT-DECAY*/
 		.def("getImprovementUpgradeTime", &CyGame::getImprovementUpgradeTime, "int (int /*ImprovementTypes*/ eImprovement)")
 		.def("canTrainNukes", &CyGame::canTrainNukes, "bool ()")
 

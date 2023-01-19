@@ -485,6 +485,14 @@ public:
 	{
 		return m_iBaseCombat;
 	}  // advc: Default values - to make clear that these can be NULL.
+//doto ranged immunity
+	int getRangedStrikeCapCounter() const { return m_iRangedStrikeCapCounter; }
+	void setRangedStrikeCapCounter(int iNewValue);				// Exposed to Python
+	void changeRangedStrikeCapCounter(int iChange);
+	int getRangedStrikeCapTimer() const { return m_iRangedStrikeCapTimer; }
+	void setRangedStrikeCapTimer(int iNewValue);				// Exposed to Python
+	void changeRangedStrikeCapTimer(int iChange);
+//doto ranged immunity 
 	int maxCombatStr(CvPlot const* pPlot = NULL, CvUnit const* pAttacker = NULL,							// Exposed to Python
 			CombatDetails* pCombatDetails = NULL,
 			bool bGarrisonStrength = false) const; // advc.500b
@@ -1222,6 +1230,10 @@ protected:
 	int m_iExperiencePercent;
 	int m_iKamikazePercent;
 	int m_iBaseCombat;
+//doto ranged immunity	
+	int m_iRangedStrikeCapCounter;
+	int m_iRangedStrikeCapTimer;
+//doto ranged immunity
 	DirectionTypes m_eFacingDirection;
 	int m_iImmobileTimer;
 

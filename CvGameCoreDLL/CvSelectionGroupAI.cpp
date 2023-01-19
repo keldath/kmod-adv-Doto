@@ -360,8 +360,11 @@ int CvSelectionGroupAI::AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialE
 // DOTO-MOD rangedattack-keldath - START + ranged immunity - of both are ranged
 	if (bDRanged && bARanged)
 	{
-		iAdjustedOdds += std::max((pAttacker->currCombatStr() - pDefender->currCombatStr()), 0);
-		iAdjustedOdds = std::min(iAdjustedOdds, 60); //limit the change
+		//iAdjustedOdds += std::max((pAttacker->currCombatStr() - pDefender->currCombatStr()), 0);
+		//iAdjustedOdds = std::min(iAdjustedOdds, 60); //limit the change
+		//doto 112
+		iAdjustedOdds += std::min((100 * (pAttacker->currCombatStr() /
+			pAttacker->currCombatStr() + pDefender->currCombatStr())) / 100, 30);
 	}
 // DOTO-MOD rangedattack-keldath - END + ranged immunity
 	iAdjustedOdds += iAttackOddsChange; // advc.114b
@@ -432,8 +435,10 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot,
 			//add some extra value to ranged units.
 			if (bRanged) 
 			{
-				iValue *= (100 + (125 - kLoopUnit.combatLimit()));
-				iValue /= 100;
+				//iValue *= (100 + (125 - kLoopUnit.combatLimit()));
+				//iValue /= 100;
+				//doto112
+				iValue *= (100 + std::max(1, kLoopUnit.rangedStrike())) / 100;
 			} 
 			if (kLoopUnit.collateralDamage() > 0 && /* advc.048: */ !bMaxSurvival)
 			{

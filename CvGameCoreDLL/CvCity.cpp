@@ -13765,6 +13765,12 @@ void CvCity::getCityBillboardSizeIconColors(NiColorA& kDotColor, NiColorA& kText
 				GC.getInfo(ePlayerColor). // advc.001
 				getColorTypeSecondary()).getColor();
 		kTextColor = kPlayerSecondaryColor;
+//doto remaster civ4 art - the if statement in the original code keldath added code
+		if (isCapital())
+		{
+			kTextColor = kDotColor;
+			kDotColor = kPlayerSecondaryColor;
+		}
 	}
 }
 

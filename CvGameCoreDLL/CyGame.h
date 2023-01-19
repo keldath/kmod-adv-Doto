@@ -68,6 +68,9 @@ public:
 
 	int goldenAgeLength();
 	int victoryDelay(int /*VictoryTypes*/ eVictory);
+	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON*/
+	int getImprovementDecayTime(int /* ImprovementTypes*/ eImprovement);
+	/* END TERRAIN-IMPROVEMENT-DECAY*/
 	int getImprovementUpgradeTime(int /* ImprovementTypes*/ eImprovement);
 	bool canTrainNukes();
 

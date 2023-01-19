@@ -203,6 +203,13 @@ int CyGame::getImprovementUpgradeTime(int /*ImprovementTypes*/ eImprovement)
 	return m_kGame.getImprovementUpgradeTime((ImprovementTypes) eImprovement);
 }
 
+/* doto TERRAIN-IMPROVEMENT-DECAY YUKON*/
+int CyGame::getImprovementDecayTime(int /*ImprovementTypes*/ eImprovement)
+{
+	return m_kGame.getImprovementDecayTime((ImprovementTypes) eImprovement);
+}
+/* END TERRAIN-IMPROVEMENT-DECAY*/
+
 bool CyGame::canTrainNukes()
 {
 	return m_kGame.canTrainNukes();

@@ -120,7 +120,7 @@ bool CyPlot::isIrrigationAvailable(bool bIgnoreSelf)
 {
 	return m_pPlot ? m_pPlot->isIrrigationAvailable(bIgnoreSelf) : false;
 }
-// Deliverator -fresh water from improvement
+// doto Deliverator -fresh water from improvement
 void CyPlot::changeFreshWaterInRadius(int iChange, int iRadius)
 {
 	if (m_pPlot)
@@ -180,7 +180,7 @@ bool CyPlot::canHaveImprovement(int /* ImprovementTypes */ eImprovement, int /*T
 	return m_pPlot ? m_pPlot->canHaveImprovement(((ImprovementTypes)eImprovement), ((TeamTypes)eTeam), bPotential) : false;
 }
 
-// < JImprovementLimit Mod Start >
+// doto < JImprovementLimit Mod Start >
 bool CyPlot::isImprovementInRange(int /* ImprovementTypes */ eImprovement, int iRange, bool bCheckBuildProgress)
 {
 	return m_pPlot ? m_pPlot->isImprovementInRange((ImprovementTypes) eImprovement, iRange, bCheckBuildProgress) : false;
@@ -537,6 +537,29 @@ void CyPlot::changeUpgradeProgress(int iChange)
 		m_pPlot->changeUpgradeProgress(iChange);
 }
 
+/*doto TERRAIN-IMPROVEMENT-DECAY YUKON */
+int CyPlot::getDecayProgress()
+{
+	return m_pPlot ? m_pPlot->getUpgradeProgress() : -1;
+}
+
+int CyPlot::getDecayTimeLeft(int /*ImprovementTypes*/ eImprovement, int /*PlayerTypes*/ ePlayer)
+{
+	return m_pPlot ? m_pPlot->getUpgradeTimeLeft((ImprovementTypes) eImprovement, (PlayerTypes) ePlayer) : -1;
+}
+void CyPlot::setDecayProgress(int iNewValue)
+{
+	if (m_pPlot)
+		m_pPlot->setDecayProgress(iNewValue);
+}
+
+void CyPlot::changeDecayProgress(int iChange)
+{
+	if (m_pPlot)
+		m_pPlot->changeDecayProgress(iChange);
+}
+/* END TERRAIN-IMPROVEMENT-DECAY */
+
 int CyPlot::getForceUnownedTimer()
 {
 	return m_pPlot ? m_pPlot->getForceUnownedTimer() : -1;
@@ -661,7 +684,7 @@ void CyPlot::setOwnerNoUnitCheck(int /*PlayerTypes*/ eNewValue)
 	if (m_pPlot)
 		m_pPlot->setOwner((PlayerTypes) eNewValue, false, true);
 }
-// < JCultureControl Mod Start >
+// doto < JCultureControl Mod Start >
 int CyPlot::getImprovementOwner()
 {
 	return m_pPlot ? m_pPlot->getImprovementOwner() : -1;

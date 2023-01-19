@@ -4116,6 +4116,21 @@ int CvGame::getSpeedPercent() const
 	return GC.getInfo(getGameSpeedType()).getResearchPercent();
 }
 
+/*DOTO */
+/* TERRAIN-IMPROVEMENT-DECAY YUKON */
+int CvGame::getImprovementDecayTime(ImprovementTypes eImprovement) const
+{
+	int iTime;
+
+	iTime = GC.getImprovementInfo(eImprovement).getDecayTime();
+
+	iTime *= GC.getGameSpeedInfo(getGameSpeedType()).getImprovementPercent();
+	iTime /= 100;
+
+	return iTime;
+}
+/* END TERRAIN-IMPROVEMENT-DECAY */
+
 bool CvGame::canTrainNukes() const
 {
 	for (PlayerIter<ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)

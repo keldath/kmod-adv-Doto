@@ -1062,6 +1062,9 @@ m_iTilesPerGoody(0),
 m_iGoodyUniqueRange(0),
 m_iFeatureGrowthProbability(0),
 m_iUpgradeTime(0),
+/*doto  TERRAIN-IMPROVEMENT-DECAY YUKON */
+m_iDecayTime(0),
+/* END TERRAIN-IMPROVEMENT-DECAY */
 m_iAirBombDefense(0),
 m_iDefenseModifier(0),
 m_iHappiness(0),
@@ -1417,6 +1420,9 @@ void CvImprovementInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iGoodyUniqueRange);
 	stream->Read(&m_iFeatureGrowthProbability);
 	stream->Read(&m_iUpgradeTime);
+	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
+	stream->Read(&m_iDecayTime);
+	/* END TERRAIN-IMPROVEMENT-DECAY */
 	stream->Read(&m_iAirBombDefense);
 	stream->Read(&m_iDefenseModifier);
 	stream->Read(&m_iHappiness);
@@ -1524,6 +1530,9 @@ void CvImprovementInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iGoodyUniqueRange);
 	stream->Write(m_iFeatureGrowthProbability);
 	stream->Write(m_iUpgradeTime);
+	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
+	stream->Write(m_iDecayTime);
+	/* END TERRAIN-IMPROVEMENT-DECAY */
 	stream->Write(m_iAirBombDefense);
 	stream->Write(m_iDefenseModifier);
 	stream->Write(m_iHappiness);
@@ -1651,6 +1660,9 @@ bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iGoodyUniqueRange, "iGoodyRange");
 	pXML->GetChildXmlValByName(&m_iFeatureGrowthProbability, "iFeatureGrowth");
 	pXML->GetChildXmlValByName(&m_iUpgradeTime, "iUpgradeTime");
+	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
+	pXML->GetChildXmlValByName(&m_iDecayTime, "iDecayTime");
+	/* END TERRAIN-IMPROVEMENT-DECAY */
 	pXML->GetChildXmlValByName(&m_iAirBombDefense, "iAirBombDefense");
 	pXML->GetChildXmlValByName(&m_iDefenseModifier, "iDefenseModifier");
 	pXML->GetChildXmlValByName(&m_iHappiness, "iHappiness");

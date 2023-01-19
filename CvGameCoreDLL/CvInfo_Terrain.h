@@ -473,6 +473,9 @@ public:
 	int getGoodyUniqueRange() const;
 	int getFeatureGrowthProbability() const;
 	int getUpgradeTime() const { return m_iUpgradeTime; }
+	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
+	int getDecayTime() const{ return m_iDecayTime; }
+	/* END TERRAIN-IMPROVEMENT-DECAY */
 	int getAirBombDefense() const { return m_iAirBombDefense; }
 	int getDefenseModifier() const { return m_iDefenseModifier; }
 	int getHappiness() const { return m_iHappiness; }
@@ -575,6 +578,9 @@ protected:
 	int m_iGoodyUniqueRange;
 	int m_iFeatureGrowthProbability;
 	int m_iUpgradeTime;
+	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON*/	
+	int m_iDecayTime;
+	/* END TERRAIN-IMPROVEMENT-DECAY*/
 	int m_iAirBombDefense;
 	int m_iDefenseModifier;
 	int m_iHappiness;

@@ -211,6 +211,9 @@ public:
 	int goldenAgeLength() const;																		// Exposed to Python
 	int victoryDelay(VictoryTypes eVictory) const;														// Exposed to Python
 	int getImprovementUpgradeTime(ImprovementTypes eImprovement) const;									// Exposed to Python
+	/*doto TERRAIN-IMPROVEMENT-DECAY YUKON */
+	int getImprovementDecayTime(ImprovementTypes eImprovement) const;		// Exposed to Python
+	/* END TERRAIN-IMPROVEMENT-DECAY*/
 	int getSpeedPercent() const; // advc.252
 
 	bool canTrainNukes() const;																			// Exposed to Python

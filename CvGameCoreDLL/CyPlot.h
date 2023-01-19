@@ -46,7 +46,7 @@ public:
 	bool isPotentialIrrigation();
 	bool canHavePotentialIrrigation();
 	bool isIrrigationAvailable(bool bIgnoreSelf);
-	// Deliverator
+	// doto Deliverator
 	void changeFreshWaterInRadius(int iChange, int Radius);
 	// Deliverator	
 	bool isRiverSide();
@@ -59,7 +59,7 @@ public:
 	int seeThroughLevel();
 	bool canHaveBonus(int /*BonusTypes*/ eBonus, bool bIgnoreLatitude);
 	bool canHaveImprovement(int /* ImprovementTypes */ eImprovement, int /*TeamTypes*/ eTeam, bool bPotential);
-	// < JImprovementLimit Mod Start >
+	// doto < JImprovementLimit Mod Start >
 	bool isImprovementInRange(int /* ImprovementTypes */ eImprovement, int iRange, bool bCheckBuildProgress);
 	bool isImprovementAncestor(int /* ImprovementTypes */ eImprovement, int /* ImprovementTypes */ eCheckImprovement);
 	// < JImprovementLimit Mod End >
@@ -154,6 +154,12 @@ public:
 
 	void setUpgradeProgress(int iNewValue);
 	void changeUpgradeProgress(int iChange);
+	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
+	int getDecayProgress();
+	int getDecayTimeLeft(int /*ImprovementTypes*/ eImprovement, int /*PlayerTypes*/ ePlayer);
+	void setDecayProgress(int iNewValue);
+	void changeDecayProgress(int iChange);
+	/* END TERRAIN-IMPROVEMENT-DECAY */
 
 	int getForceUnownedTimer();
 	bool isForceUnowned();
@@ -182,7 +188,7 @@ public:
 	int /*PlayerTypes*/ getOwner();
 	void setOwner(int /*PlayerTypes*/ eNewValue);
 	void setOwnerNoUnitCheck(int /*PlayerTypes*/ eNewValue);
-	// < JCultureControl Mod Start >
+	// doto < JCultureControl Mod Start >
 	int /*PlayerTypes*/ getImprovementOwner();
 	void setImprovementOwner(int /*PlayerTypes*/ eNewValue);
 

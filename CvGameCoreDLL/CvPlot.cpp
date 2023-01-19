@@ -74,6 +74,9 @@ CvPlot::CvPlot() // advc: Merged with the deleted reset function
 	m_iOwnershipDuration = 0;
 	m_iImprovementDuration = 0;
 	m_iUpgradeProgress = 0;
+	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
+	m_iDecayProgress = 0;
+	/* END TERRAIN-IMPROVEMENT-DECAY */
 	m_iForceUnownedTimer = 0;
 	m_iTurnsBuildsInterrupted = NO_BUILD_IN_PROGRESS; // advc.011
 	m_iCityRadiusCount = 0;
@@ -366,8 +369,15 @@ void CvPlot::doTurn()
 		changeOwnershipDuration(1);
 
 	if (isImproved())
+	{
 		changeImprovementDuration(1);
-
+		/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
+		if(!isBeingWorked() && GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_DECAY)) {
+			doImprovementDecay();
+		}
+		/* END TERRAIN-IMPROVEMENT-DECAY */
+	}
+	
 	doFeature();
 	doCulture();
 	verifyUnitValidPlot();
@@ -384,6 +394,28 @@ void CvPlot::doTurn()
 	//#endif // XXX
 }
 
+
+/*doto  TERRAIN-IMPROVEMENT-DECAY YUKON */
+void CvPlot::doImprovementDecay()
+{
+	// First undo upgrade work (if in progress):
+	ImprovementTypes eImprovementUpgrade = GC.getInfo(getImprovementType()).getImprovementUpgrade();
+	int progress = getUpgradeProgress();
+	if(eImprovementUpgrade != NO_IMPROVEMENT && progress > 0) {
+		int penalty = 4;
+		if(penalty > progress) penalty = progress;
+		changeUpgradeProgress(-penalty);
+	}
+	// Then start decaying/finish decaying:
+	else {
+		int t = GC.getImprovementInfo(getImprovementType()).getDecayTime();
+		if(t == -1) return;
+		else changeDecayProgress(1);
+		if (getDecayProgress() >= GC.getGame().getImprovementDecayTime(getImprovementType())) setImprovementType((ImprovementTypes)(GC.getInfo(getImprovementType()).getImprovementPillage()));
+			//setImprovementType(NO_IMPROVEMENT);
+	}
+}
+/* END TERRAIN-IMPROVEMENT-DECAY YUKON */
 
 void CvPlot::doImprovement()
 {
@@ -431,25 +463,48 @@ void CvPlot::doImprovement()
 		Makes clearer which conditions are ensured by the caller. */
 	if (!isImproved())
 		return;
-	ImprovementTypes eImprovementUpdrade = GC.getInfo(getImprovementType()).
+	ImprovementTypes eImprovementUpgrade = GC.getInfo(getImprovementType()).
 			getImprovementUpgrade();
-	if (eImprovementUpdrade != NO_IMPROVEMENT)
+	if (eImprovementUpgrade != NO_IMPROVEMENT)
 	{
+		/* TERRAIN-IMPROVEMENT-DECAY YUKON */
+		/* Note: code here replaces previous code */
+		if (GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_DECAY))
+		{
+			int decay = getDecayProgress();
+			int change = GET_PLAYER(getOwner()).getImprovementUpgradeRate();
+			if(decay != 0) {
+				// Excess progress over remaining decay:
+				if (change > decay) {
+					setDecayProgress(0);
+					changeUpgradeProgress(change - decay);
+				}
+				// Otherwise reduce decay
+				else {
+					changeDecayProgress(-change);
+				} 
+			}
+		}
+		else
+		{
+		/* End replacement code */
+		/* END TERRAIN-IMPROVEMENT-DECAY YUKON */	
 		/*	advc: Caller already ensures isBeingWorked (and isOwned()).
 			In other words, improvement upgrades outside of borders
 			aren't correctly implemented, and I'm not going to fix that. */
-		//if (isBeingWorked() || GC.getInfo(eImprovementUpdrade).isOutsideBorders())
-		changeUpgradeProgress(kOwner.getImprovementUpgradeRate());
+		//if (isBeingWorked() || GC.getInfo(eImprovementUpgrade).isOutsideBorders())	
+		changeUpgradeProgress(kOwner.getImprovementUpgradeRate());	
 		if (getUpgradeProgress() >= GC.getGame().
-			getImprovementUpgradeTime(getImprovementType()) * 100)
+		getImprovementUpgradeTime(getImprovementType()) * 100)
 		{
-			setImprovementType(eImprovementUpdrade);
+			setImprovementType(eImprovementUpgrade);
 			// < JCultureControl Mod Start >
 			if (getImprovementOwner() != NO_PLAYER && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
 			{
-                      addCultureControl(getImprovementOwner(), eImprovementUpdrade, true);
+                      addCultureControl(getImprovementOwner(), eImprovementUpgrade, true);
 			}
 			// < JCultureControl Mod End >
+		}//TERRAIN-IMPROVEMENT-DECAY YUKON
 		}
 	}
 }
@@ -4185,6 +4240,9 @@ int CvPlot::getUpgradeTimeLeft(ImprovementTypes eImprovement, PlayerTypes ePlaye
 			* 100 // advc.912f
 			- (getImprovementType() == eImprovement ? getUpgradeProgress() : 0);
 	// <advc.912f>
+	/* TERRAIN-IMPROVEMENT-DECAY YUKON*/
+	iUpgradeLeft += GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_DECAY) ? 0 : getDecayProgress();
+	/* END TERRAIN-IMPROVEMENT-DECAY*/
 	int iUpgradeRate = (ePlayer == NO_PLAYER ? 100 :
 			GET_PLAYER(ePlayer).getImprovementUpgradeRate());
 	int iTurnsLeft = scaled(iUpgradeLeft, iUpgradeRate > 0 ? iUpgradeRate : -100).ceil();
@@ -4205,6 +4263,39 @@ void CvPlot::changeUpgradeProgress(int iChange)
 	setUpgradeProgress(getUpgradeProgress() + iChange);
 }
 
+/* doto TERRAIN-IMPROVEMENT-DECAY YUKON*/
+int CvPlot::getDecayProgress() const {
+	return m_iDecayProgress;
+}
+
+int CvPlot::getDecayTimeLeft(ImprovementTypes eImprovement, PlayerTypes ePlayer) const {
+	int iDecayLeft;
+	//int iDecayRate;
+	//int iTurnsLeft;
+
+	iDecayLeft = (GC.getGame().getImprovementDecayTime(eImprovement) - ((getImprovementType() == eImprovement) ? getDecayProgress() : 0));
+
+	// Must decay work towards upgrade (if at all, first).
+	if(getUpgradeProgress() > 0) {
+		iDecayLeft += std::ceil(static_cast<float>(getUpgradeProgress() / 4));
+	}
+
+	if (ePlayer == NO_PLAYER)	{
+		return iDecayLeft;
+	}
+
+	return std::max(1, iDecayLeft);
+}
+
+void CvPlot::setDecayProgress(int iNewValue) {
+	m_iDecayProgress = iNewValue;
+	FAssert(getDecayProgress() >= 0);
+}
+
+void CvPlot::changeDecayProgress(int iChange) {
+	setDecayProgress(getDecayProgress() + iChange);
+}
+/* END TERRAIN-IMPROVEMENT-DECAY */
 
 bool CvPlot::isForceUnowned() const
 {
@@ -5198,12 +5289,12 @@ void CvPlot::setImprovementType(ImprovementTypes eNewValue,
 	m_eImprovementType = eNewValue;
 	updatePlotGroupBonus(true);
 
-// < JCultureControl Mod Start >
+// doto < JCultureControl Mod Start >
 	if (eOldImprovement != NO_IMPROVEMENT && getImprovementOwner() != NO_PLAYER && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
 	{
 		clearCultureControl(getImprovementOwner(), eOldImprovement, true);
 	}
-// < JCultureControl Mod End >
+// doto < JCultureControl Mod End >
 	if (!isImproved())
 	{
 		setImprovementDuration(0);
@@ -5214,7 +5305,7 @@ void CvPlot::setImprovementType(ImprovementTypes eNewValue,
         }
 // < JCultureControl Mod End >
 	}
-// Deliverator fresh water
+// doto Deliverator fresh water
 	// Remove fresh water from old improvement
 	if (eOldImprovement != NO_IMPROVEMENT) {
 		int oldFreshWaterRadius = GC.getImprovementInfo(eOldImprovement).getAddsFreshWaterInRadius();	
@@ -5232,6 +5323,9 @@ void CvPlot::setImprovementType(ImprovementTypes eNewValue,
 	}
 // Deliverator
 	setUpgradeProgress(0);
+	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
+	setDecayProgress(0);
+	/* END TERRAIN-IMPROVEMENT-DECAY */
 
 	for (TeamIter<ALIVE> it; it.hasNext(); ++it)
 	{
@@ -8016,7 +8110,7 @@ void CvPlot::read(FDataStreamBase* pStream)
 	else updatePlotNum();
 	// </advc.opt>
 	pStream->Read(&m_iArea);
-// Deliverator	freshwater
+// doto Deliverator	freshwater
 	pStream->Read(&m_iFreshWaterAmount); // Deliverator		
 	pStream->Read(&m_iFeatureVariety);
 	pStream->Read(&m_iOwnershipDuration);
@@ -8030,6 +8124,9 @@ void CvPlot::read(FDataStreamBase* pStream)
 		m_iUpgradeProgress *= 100;
 	} // </advc.912f>
 	else pStream->Read(&m_iUpgradeProgress);
+	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
+	pStream->Read(&m_iDecayProgress);
+	/* END TERRAIN-IMPROVEMENT-DECAY */
 	pStream->Read(&m_iForceUnownedTimer);
 	// <advc.opt>
 	if (uiFlag < 5)
@@ -8310,12 +8407,15 @@ void CvPlot::write(FDataStreamBase* pStream)
 	pStream->Write(m_iY);
 	pStream->Write(m_iPlotNum); // advc.opt
 	pStream->Write(areaID());
-// Deliverator	fresh water
+// doto Deliverator	fresh water
 	pStream->Write(m_iFreshWaterAmount);
 	pStream->Write(m_iFeatureVariety);
 	pStream->Write(m_iOwnershipDuration);
 	pStream->Write(m_iImprovementDuration);
 	pStream->Write(m_iUpgradeProgress);
+	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
+	pStream->Write(m_iDecayProgress);
+	/* END TERRAIN-IMPROVEMENT-DECAY */
 	pStream->Write(m_iForceUnownedTimer);
 	pStream->Write(m_iCityRadiusCount);
 	pStream->Write((int)m_iRiverID); // advc.opt (cast)
@@ -8325,7 +8425,7 @@ void CvPlot::write(FDataStreamBase* pStream)
 	pStream->Write(m_iLatitude); // advc.tsl
 
 	pStream->Write(m_bStartingPlot);
-//keldath f1rpo-The relevant info is in m_ePlotType and can be accessed through isHills() and isPeak(); that was already the case in BtS. m_bHills was, essentially, unused.
+//doto keldath f1rpo-The relevant info is in m_ePlotType and can be accessed through isHills() and isPeak(); that was already the case in BtS. m_bHills was, essentially, unused.
 //	pStream->Write(m_bHills);
 //===NM=====Mountains Mod===0=====
 //	pStream->Write(m_bPeaks);

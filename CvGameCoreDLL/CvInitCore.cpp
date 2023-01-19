@@ -1365,7 +1365,7 @@ void CvInitCore::setCiv(PlayerTypes eID, CivilizationTypes eCiv)
 	if (m_aeCiv.get(eID) != eCiv)
 	{
 		m_aeCiv.set(eID, eCiv);
-		GET_PLAYER(eID).setCivilization(eCiv); // advc.003w
+  		GET_PLAYER(eID).setCivilization(eCiv); // advc.003w
 	}
 }
 

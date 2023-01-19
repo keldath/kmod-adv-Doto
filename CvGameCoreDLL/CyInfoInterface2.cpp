@@ -273,6 +273,9 @@ void CyInfoPythonInterface2()
 		.def("getTilesPerGoody", &CvImprovementInfo::getTilesPerGoody, "int ()")
 		.def("getGoodyUniqueRange", &CvImprovementInfo::getGoodyUniqueRange, "int ()")
 		.def("getFeatureGrowthProbability", &CvImprovementInfo::getFeatureGrowthProbability, "int ()")
+		/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
+		.def("getDecayTime", &CvImprovementInfo::getDecayTime, "int ()")
+		/* END TERRAIN-IMPROVEMENT-DECAY */
 		.def("getUpgradeTime", &CvImprovementInfo::getUpgradeTime, "int ()")
 		.def("getAirBombDefense", &CvImprovementInfo::getAirBombDefense, "int ()")
 		.def("getDefenseModifier", &CvImprovementInfo::getDefenseModifier, "int ()")

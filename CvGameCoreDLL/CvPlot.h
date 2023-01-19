@@ -403,6 +403,14 @@ public:
 	void setUpgradeProgress(int iNewValue);															// Exposed to Python
 	void changeUpgradeProgress(int iChange);														// Exposed to Python
 
+	/* TERRAIN-IMPROVEMENT-DECAY YUKON */
+	int getDecayProgress() const;																													// Exposed to Python
+	int getDecayTimeLeft(ImprovementTypes eImprovement, PlayerTypes ePlayer) const;				// Exposed to Python
+
+	void setDecayProgress(int iNewValue);																														// Exposed to Python
+	void changeDecayProgress(int iChange);	
+	/* END TERRAIN-IMPROVEMENT-DECAY */
+
 	int getForceUnownedTimer() const { return m_iForceUnownedTimer; }								// Exposed to Python
 	bool isForceUnowned() const;																	// Exposed to Python
 	void setForceUnownedTimer(int iNewValue);														// Exposed to Python
@@ -939,6 +947,9 @@ protected:
 
 	// advc.912f: Was short - which would overflow too easily at times-100 precision.
 	int m_iUpgradeProgress;
+	/* TERRAIN-IMPROVEMENT-DECAY YUKON */
+	int m_iDecayProgress;
+	/* END TERRAIN-IMPROVEMENT-DECAY */
 	int m_iTotalCulture; // advc.opt
 
 	CvPlot** m_paAdjList; // advc.003s (a vector would take up 16 byte)
@@ -999,6 +1010,9 @@ protected:
 
 	int areaID() const;
 	void processArea(CvArea& kArea, int iChange);
+	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
+	void doImprovementDecay();
+	/* END TERRAIN-IMPROVEMENT-DECAY */
 	char calculateLatitude() const; // advc.tsl
 	void doCultureDecay(); // advc.099b
 	ColorTypes plotMinimapColor();

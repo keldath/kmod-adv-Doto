@@ -10933,7 +10933,7 @@ int CvCityAI::AI_jobChangeValue(std::pair<bool, int> new_job, std::pair<bool, in
 	}
 	iTotalValue += iYieldValue;
 	// (end of yield value)
-
+	
 	// Special consideration of plot improvements.
 	int iImprovementsValue = 0;
 	if (new_job.second >= 0 && !new_job.first)
@@ -11289,6 +11289,14 @@ int CvCityAI::AI_specialPlotImprovementValue(CvPlot const& kPlot) const
 			not over immediate yield differences. (kludge) */
 		iValue += kPlot.getUpgradeProgress() /
 				std::max(1, GC.getGame().getImprovementUpgradeTime(eImprovement));
+		/*DOTO TERRAIN-IMPROVEMENT-DECAY YUKON */
+		/* TODO: Scaling effect */
+		if (GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_DECAY) && kPlot.getUpgradeTimeLeft(eImprovement,NO_PLAYER) > 0)
+		{
+			iValue += 30;
+			iValue -= kPlot.getDecayTimeLeft(eImprovement, NO_PLAYER);
+		}
+		/* END TERRAIN-IMPROVEMENT-DECAY */
 	}
 	/*	small value bonus for the possibility of popping new resources.
 		(cf. CvGame::doFeature) */

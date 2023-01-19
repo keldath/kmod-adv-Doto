@@ -119,6 +119,10 @@ CvUnit::CvUnit() // advc.003u: Body cut from the deleted reset function
 	m_eLeaderUnitType = NO_UNIT;
 
 	m_iBaseCombat = 0;
+//doto ranged immunity
+	m_iRangedStrikeCapCounter = 0;
+	m_iRangedStrikeCapTimer = 0;
+//doto ranged immunity
 	m_iCargoCapacity = 0;
 	m_iLastReconTurn = -1; // advc.029
 }
@@ -727,8 +731,62 @@ void CvUnit::doTurn()
 	}
 
 	changeImmobileTimer(-1);
-
+	
+//doto ranged immunity
+// this cap will set the number of ranged attack a unit can perform
+// the vakue is derived from the unit ranged value.
+// each attack will render the counter by 1.
+//if the cap is at its max - the unit will attack with the normal battle rules
+// the cap will replenish if the unit did not attack for x turns (maybe more or other rules later on
+	if (rangedStrike() > 0 )
+	{
+		if (getPlot().isCity())
+		{
+			// reduce by 1 the coolddown length - as a defender bonus
+			if (getRangedStrikeCapTimer() > std::max(0, (GC.getDefineINT("RANGED_ATTACK_COOLDOWN")-1)))
+				setRangedStrikeCapTimer(-1); //reset the timer
+		}
+		else
+		{
+			if (getRangedStrikeCapCounter() >= rangedStrike())
+			{
+				setMadeAttack(true); //unit cant attack at all if cap was reached
+				if (getRangedStrikeCapTimer() == 0)
+				{
+					// damage the ranged unit by x% damage per strike count
+					// and only for the first time the cap is 0 (so the damage wont happen for next turn as well
+					changeDamage(GC.getDefineINT("RANGED_DAMAGE_TAKEN") * rangedStrike()
+						, getOwner());
+				}
+				changeRangedStrikeCapTimer(1); //use turn counter! old turns new turns 
+			}
+			else
+			{
+				if ((GC.getDefineINT("RANGED_ATTACK_COOLDOWN")
+					- getRangedStrikeCapTimer()) == 0)
+				{
+					setRangedStrikeCapTimer(0); //reset the timer
+					setRangedStrikeCapCounter(0); //reset the counter
+				}
+				else
+				{
+					if (!isMadeAttack() && getRangedStrikeCapTimer() > 0)
+					{
+						//if no attack was made last turn, count back the timer
+						changeRangedStrikeCapTimer(-1);
+					}
+				}
+				setMadeAttack(false);
+			}
+			
+		}
+	}
+	else
+	{
+	//org code
 	setMadeAttack(false);
+	}
+//doto ranged immunity
 	setMadeInterception(false);
 
 	//setReconPlot(NULL); // advc.029: Handled at end of turn now
@@ -1261,6 +1319,8 @@ void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pP
 		gDLL->logMsg("combat.txt", message ,false, false);
 	}
 #endif
+	//raise the cap by 1
+	changeRangedStrikeCapCounter(1);
 }
 //#define LOG_COMBAT_OUTCOMES // K-Mod -- this makes the game log the odds and outcomes of every battle, to help verify the accuracy of the odds calculation.
 
@@ -9866,6 +9926,24 @@ void CvUnit::changeDamage(int iChange, PlayerTypes ePlayer)
 	setDamage((getDamage() + iChange), ePlayer);
 }
 
+//doto ranged immunity
+void CvUnit::changeRangedStrikeCapCounter(int iChange)
+{
+	setRangedStrikeCapCounter(getRangedStrikeCapCounter() + iChange);
+}
+void CvUnit::setRangedStrikeCapCounter(int iNewValue)
+{
+	m_iRangedStrikeCapCounter = iNewValue;
+}
+void CvUnit::changeRangedStrikeCapTimer(int iChange)
+{
+	setRangedStrikeCapTimer(getRangedStrikeCapTimer() + iChange);
+}
+void CvUnit::setRangedStrikeCapTimer(int iNewValue)
+{
+	m_iRangedStrikeCapTimer = iNewValue;
+}
+//doto ranged immunity
 
 void CvUnit::setMoves(int iNewValue)
 {
@@ -11304,6 +11382,9 @@ void CvUnit::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iExperiencePercent);
 	pStream->Read(&m_iKamikazePercent);
 	pStream->Read(&m_iBaseCombat);
+//doto ranged immunity
+	pStream->Read(&m_iRangedStrikeCapCounter);
+//doto ranged immunity
 	pStream->Read((int*)&m_eFacingDirection);
 	pStream->Read(&m_iImmobileTimer);
 	//pStream->Read(&m_bMadeAttack);
@@ -11488,6 +11569,9 @@ void CvUnit::write(FDataStreamBase* pStream)
 	pStream->Write(m_iExperiencePercent);
 	pStream->Write(m_iKamikazePercent);
 	pStream->Write(m_iBaseCombat);
+//doto ranged immunity
+	pStream->Write(m_iRangedStrikeCapCounter);
+//doto ranged immunity
 	pStream->Write(m_eFacingDirection);
 	pStream->Write(m_iImmobileTimer);
 	//pStream->Write(m_bMadeAttack);
@@ -12641,6 +12725,11 @@ int CvUnit::rangeCombatDamageK(const CvUnit* pDefender,const CvUnit* pAttacker) 
 		iDamage *= (50 + GC.getGame().getSorenRandNum(100, "RandomHit"));
 		iDamage /= 100;
 	}
+
+	//doto 112 -> damage is affected by the ranged attacker hit points
+	iDamage *= currHitPoints();
+	iDamage /= 100;
+
 	return iDamage;
 }
 bool CvUnit::isRangeStrikeCapableK() const
@@ -12657,6 +12746,10 @@ bool CvUnit::isRangeStrikeCapableK() const
 	if (!canFight())
 		return false;
 	if (getDropRange() > 0) 
+		return false;
+//if the attack cap is maxed - normal battle rules should apply
+// cant carry an attack if the cap was reached, there is a cooldown of 2 turns.
+	if (getRangedStrikeCapCounter() >= rangedStrike())
 		return false;
 	return true;
 

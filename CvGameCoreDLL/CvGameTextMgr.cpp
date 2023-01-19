@@ -519,11 +519,11 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 		szString.append(gDLL->getText("TXT_KEY_UNIT_HELP_AIR_RANGE",
 				pUnit->airRange()));
 	}
-
-//rangedattack-keldath
+//rangedattack-keldath RANGED IMMUNITY
 	if (pUnit->rangedStrike() > 0)
 	{
-		szString.append(gDLL->getText("TXT_KEY_ASTRENGTH", pUnit->rangedStrike()));
+		szString.append(gDLL->getText("TXT_KEY_BARRCOUNTER", pUnit->getRangedStrikeCapCounter(), pUnit->rangedStrike()));
+		szString.append(gDLL->getText("TXT_KEY_RICOOLDOWN", pUnit->getRangedStrikeCapTimer(), (GC.getDefineINT("RANGED_ATTACK_COOLDOWN"))));
 	}
 //rangedattack-keldath
 	BuildTypes eBuild = pUnit->getBuildType();
@@ -1314,13 +1314,15 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 					szTempBuffer.GetCString()));
 		}
 	}
-//rangedattack-keldath	
+//rangedattack-keldath	 RANGED IMMUNITY not sure if its needed
 //kel098-099 see if it needs to be inside the upper {	
 /*** RANGED BOMBARDMENT - Dale START ***/
 	if (pUnit->rangedStrike() > 0)
 	{
 			szString.append(NEWLINE);
-			szString.append(gDLL->getText("TXT_KEY_IS_RANGE_BOMBARD", pUnit->rangedStrike()));
+			szString.append(gDLL->getText("TXT_KEY_IS_RANGE_STRIKE", pUnit->rangedStrike()));
+			szString.append(gDLL->getText("TXT_KEY_BARRCOUNTER_SHORT", pUnit->getRangedStrikeCapCounter(), pUnit->rangedStrike()));
+			szString.append(gDLL->getText("TXT_KEY_RICOOLDOWN_SHORT", pUnit->getRangedStrikeCapTimer(), (GC.getDefineINT("RANGED_ATTACK_COOLDOWN"))));
 	}
 /*** RANGED BOMBARDMENT - Dale END ***/
 //rangedattack-keldath
@@ -3629,6 +3631,16 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 						getTextKeyWide()));
 			}
 		}
+		/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
+		if(GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_DECAY) && 
+			!kPlot.isBeingWorked() && GC.getInfo(ePlotImprovement).getDecayTime() != -1
+		//GC.getInfo(kPlot.getImprovementType()).getDecayTime() != -1 
+		) {
+			szString.append(gDLL->getText("TXT_KEY_PLOT_IMP_DECAY", 
+			kPlot.getDecayTimeLeft(ePlotImprovement, eRevealedOwner)));
+		}
+		/* END TERRAIN-IMPROVEMENT-DECAY */
+	
 	}
 	// <advc.059>
 	if (!bHealthHappyShown)
@@ -9102,7 +9114,7 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		szBuffer.append(NEWLINE);
 		CvWString szTempBuffer;
 
-//rangedattack-keldath- different symbols for each type
+//rangedattack-keldath- different symbols for each type RANGED IMMUNITY
 		if (u.getDomainType() == DOMAIN_AIR)
 		{
 			if (u.getAirCombat() > 0)
@@ -9123,7 +9135,7 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 				szTempBuffer.Format(L"%d%c, ", u.getCombat(), gDLL->getSymbolID(STRENGTH_CHAR));
 				szBuffer.append(szTempBuffer);
 		}
-//rangedattack-keldath- different symbols for each type
+//rangedattack-keldath- different symbols for each type RANGED IMMUNITY
 		// <advc.905b>
 		bool bAllSpeedBonusesAvailable = true;
 		CvCity* pCity = gDLL->UI().getHeadSelectedCity();
@@ -9176,26 +9188,28 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 			else szBuffer.append(szSpeedBonuses);
 			szBuffer.append(L")");
 		} // </advc.905b>
-//rangedattack-keldath
+//rangedattack-keldath RANGED IMMUNITY
 	//Air range for land units -  vincentz ranged strike - keldath addition start
 /*		if (u.getAirRange() > 0 && u.getDomainType() != DOMAIN_AIR)
 		{
 			szBuffer.append(L", ");
-			szBuffer.append(gDLL->getText("TXT_KEY_ASTRENGTH", u.getCombat()));
+			szBuffer.append(gDLL->getText("TXT_KEY_BARRCOUNTER", u.getCombat()));
 		}
 		else*/
-//rangedattack-keldath
+//rangedattack-keldath RANGED IMMUNITY
 		if (u.getAirRange() > 0 )
 		{
 			szBuffer.append(L", ");
 			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIR_RANGE", u.getAirRange()));
 		}
-//rangedattack-keldath
+//rangedattack-keldath RANGED IMMUNITY
 		if (u.getRangeStrike() > 0)
 		{
 			szBuffer.append(L", ");
-			szBuffer.append(gDLL->getText("TXT_KEY_ASTRENGTH", u.getRangeStrike()));
-		}
+			szBuffer.append(gDLL->getText("TXT_KEY_BARR_CAP", u.getRangeStrike()));
+		//	szBuffer.append(gDLL->getText("TXT_KEY_BARRCOUNTER_SHORT", getRangedStrikeCapCounter(), u.rangedStrike()));
+		//	szBuffer.append(gDLL->getText("TXT_KEY_RICOOLDOWN_SHORT", u.getRangedStrikeCapTimer(), (GC.getDefineINT("RANGED_ATTACK_COOLDOWN"))));
+	}
 //rangedattack-keldath
 	}
 
@@ -9614,7 +9628,7 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_WITHDRAWL_PROBABILITY",
 				u.getWithdrawalProbability()));
 	}
-//rangedattack-keldath
+//rangedattack-keldath RANGED IMMUNITY
 	/*if(u.getDomainType() == DOMAIN_AIR && u.getAirRange() > 0 ) 
 	{
 		szBuffer.append(NEWLINE);
@@ -9628,7 +9642,7 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT",
 				(100 * u.getCombatLimit()) / GC.getMAX_HIT_POINTS()));
 	}
-//rangedattack-keldath
+//rangedattack-keldath RANGED IMMUNITY
 	if (u.getCollateralDamage() > 0)
 	{
 		szBuffer.append(NEWLINE);
@@ -16955,7 +16969,7 @@ void CvGameTextMgr::setImprovementHelp(CvWStringBuffer &szBuffer, ImprovementTyp
 		}
 		// Deliverator
 	}
-
+	
 	if (kImprov.getImprovementUpgrade() != NO_IMPROVEMENT)
 	{
 		int iTurns = GC.getGame().getImprovementUpgradeTime(eImprovement);
@@ -16964,6 +16978,14 @@ void CvGameTextMgr::setImprovementHelp(CvWStringBuffer &szBuffer, ImprovementTyp
 		szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_EVOLVES",
 				GC.getInfo(kImprov.getImprovementUpgrade()).getTextKeyWide(), iTurns));
 	}
+	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON*/
+	if (kImprov.getDecayTime() != -1 && GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_DECAY))
+	{
+		szBuffer.append(NEWLINE);
+		szBuffer.append(gDLL->getText("TXT_KEY_IMPROVEMENT_DECAYS",
+			GC.getGame().getImprovementDecayTime(eImprovement)));
+	}
+	/* END TERRAIN-IMPROVEMENT-DECAY*/
 	{
 		/*	advc: Was iLast. Since we're not showing the chance of discovery,
 			we may as well put all resources in one list even if they
@@ -19784,7 +19806,7 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 				GC.getGame().selectionListIgnoreBuildingDefense());
 		if (iDefenseModifier != 0)
 		{
-		////rangedattack-keldath i prefer to see thE 0 all the time doto
+		////rangedattack-keldath i prefer to see thE 0 all the time doto RANGED IMMUNITY
 		//	if (iDefenseModifier != 0)
 		//	{
 			//szBuffer.append(CvWString::format(L" %c:%s%d%%", gDLL->getSymbolID(DEFENSE_CHAR), ((iDefenseModifier > 0) ? "+" : ""), iDefenseModifier));
@@ -19803,8 +19825,10 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 void CvGameTextMgr::buildCityBillboardCityNameString(CvWStringBuffer& szBuffer, CvCity* pCity)
 {
 	szBuffer.assign(pCity->getName());
-	if (pCity->canBeSelected() &&
-		gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL) /*&&
+	if (pCity->canBeSelected() 
+//doto civ4remaster - option removed
+	//&& gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL)
+		 /*&&
 		pCity->foodDifference() > 0*/) // advc.189
 		{
 /* Population Limit ModComp - Beginning */
@@ -19845,8 +19869,8 @@ void CvGameTextMgr::buildCityBillboardProductionString(CvWStringBuffer& szBuffer
 	if (!GC.getDefineINT("CIV4_REMASTER_ART"))
 		szBuffer.assign(pCity->getProductionName());
 //doto civ4 rematser art end	
-	if (gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL))
-	{
+//	if (gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL))
+//	{
 		int iTurns = pCity->getProductionTurnsLeft();
 		if (iTurns < MAX_INT)
 //doto civ4 rematser art - start
@@ -19856,7 +19880,7 @@ void CvGameTextMgr::buildCityBillboardProductionString(CvWStringBuffer& szBuffer
 //doto civ4 rematser art - end
 				szBuffer.append(CvWString::format(L"%d", iTurns));
 			
-	}
+//	}
 }
 
 

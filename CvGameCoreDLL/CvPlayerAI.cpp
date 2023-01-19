@@ -14099,7 +14099,7 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		if (u.getRangeStrike() > 0)
 		{
 			//iValue += ((iCombatValue * (125 - u.getCombatLimit())) / 100);
-			iValue -= iCombatValue * 20 / 100;
+			iValue += iCombatValue * 25 / 100;
 		}
 
 		//ranged are limited, we dont want reduction of value
@@ -14140,7 +14140,9 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 			iValue += (iTempValue * 8) / 100;
 		iValue += (iCombatValue * u.getCityAttackModifier()) / 75; // bbai (was 100).
 		// iValue += (iCombatValue * u.getCollateralDamage()) / 400; // (moved)
-		iValue += (iCombatValue * u.getWithdrawalProbability()) / 150; // K-Mod (was 100)
+//doto ranged immunity doto keldath rangedstrike - no withdrawl		
+		if (u.getRangeStrike() < 1)
+			iValue += (iCombatValue * u.getWithdrawalProbability()) / 150; // K-Mod (was 100)
 		// iValue += (iCombatValue * u.getMoves() * iFastMoverMultiplier) / 4;
 		// K-Mod
 		if (u.getMoves() > 1)
@@ -14149,7 +14151,12 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 			iValue += iCombatValue * iFastMoverMultiplier * u.getMoves() / 10;
 		}
 		// K-Mod end
-
+		//doto keldath rangedstrike + ranged immunity
+		if (u.getRangeStrike() > 0)
+		{
+			//iSiegeValue += ((iCombatValue * (125 - u.getCombatLimit())) / 100);
+			iValue += (iCombatValue * 40) / 100;
+		}
 
 		/* if (!AI_isDoStrategy(AI_STRATEGY_AIR_BLITZ)) {
 			int iBombardValue = u.getBombardRate() * 8;
@@ -14189,13 +14196,6 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		int iSiegeValue = 0;
 		iSiegeValue += iCombatValue * u.getCollateralDamage() *
 				(4 + u.getCollateralDamageMaxUnits()) / 600;
-//doto keldath rangedstrike + ranged immunity
-		if (u.getRangeStrike() > 0)
-		{
-			//iSiegeValue += ((iCombatValue * (125 - u.getCombatLimit())) / 100);
-			//	(100 + iCombatValue * u.getCombatLimit()) / 100;
-			iSiegeValue += (iCombatValue * 40) / 100;
-		}
 		if (u.getBombardRate() > 0 && !AI_isDoStrategy(AI_STRATEGY_AIR_BLITZ))
 		{
 			int iBombardValue = (u.getBombardRate() + 3) * 6;
@@ -14210,8 +14210,11 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 			}
 			iSiegeValue += iBombardValue;
 		}
-//doto keldath rangedstrike + ranged immunity - handled above - dont deduct rate due to combat limit
-		if (u.getCombatLimit() < 100 ) //&& u.getRangeStrike() < 1 removed -> maybe it will mitigate the ranged construction
+//doto keldath rangedstrike + ranged immunity - 
+//although ranged untis has combat limit, i didnt add a factor if ranged to this one.
+//this will mitigate the construction of ranged units by the ai
+//consider tweaking this.
+		if (u.getCombatLimit() < 100 ) 
 		{
 			PROFILE("AI_unitValue, UNITAI_ATTACK_CITY combat limit adjustment");
 			// count the number of existing combat-limited units.
@@ -14285,14 +14288,10 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		}
 //doto keldath rangedstrike + ranged immunity
 //112 removed - there is enough buff from the attack and city_attack ai above
-		/*
 		if (u.getRangeStrike() > 0)
 		{
-			//iValue += ((iCombatValue * (125 - u.getCombatLimit())) / 100);
-				//iCombatValue * u.getCombatLimit() + u.getCombat() / 200;
-			iValue += (iCombatValue * 20) / 100;
+			iValue += (iCombatValue * 30) / 100;
 		}
-		*/
 		break;
 
 	case UNITAI_PILLAGE:

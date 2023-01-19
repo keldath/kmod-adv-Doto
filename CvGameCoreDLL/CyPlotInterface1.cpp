@@ -144,6 +144,13 @@ void CyPlotPythonInterface1(python::class_<CyPlot>& x)
 		.def("getUpgradeTimeLeft", &CyPlot::getUpgradeTimeLeft, "int (int /*ImprovementTypes*/ eImprovement, int /*PlayerTypes*/ ePlayer)")
 
 		.def("setUpgradeProgress", &CyPlot::setUpgradeProgress, "void (int iNewValue)")
+		/*doto  TERRAIN-IMPROVEMENT-DECAY YUKON */
+		.def("getDecayProgress", &CyPlot::getDecayProgress, "int ()")
+		.def("getDecayTimeLeft", &CyPlot::getDecayTimeLeft, "int (int /*ImprovementTypes*/ eImprovement, int /*PlayerTypes*/ ePlayer)")
+		.def("setDecayProgress", &CyPlot::setDecayProgress, "void (int iNewValue)")
+		.def("changeDecayProgress", &CyPlot::changeDecayProgress, "void (int iChange)")
+		/* END TERRAIN-IMPROVEMENT-DECAY */
+
 		.def("changeUpgradeProgress", &CyPlot::changeUpgradeProgress, "void (int iChange)")
 
 		.def("getForceUnownedTimer", &CyPlot::getForceUnownedTimer, "int ()")
