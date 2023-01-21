@@ -411,7 +411,8 @@ void CvPlot::doImprovementDecay()
 		int t = GC.getImprovementInfo(getImprovementType()).getDecayTime();
 		if(t == -1) return;
 		else changeDecayProgress(1);
-		if (getDecayProgress() >= GC.getGame().getImprovementDecayTime(getImprovementType())) setImprovementType((ImprovementTypes)(GC.getInfo(getImprovementType()).getImprovementPillage()));
+		if (getDecayProgress() >= GC.getGame().getImprovementDecayTime(getImprovementType())) 
+			setImprovementType((ImprovementTypes)(GC.getInfo(getImprovementType()).getImprovementPillage()));
 			//setImprovementType(NO_IMPROVEMENT);
 	}
 }

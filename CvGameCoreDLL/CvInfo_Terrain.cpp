@@ -1661,7 +1661,7 @@ bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iFeatureGrowthProbability, "iFeatureGrowth");
 	pXML->GetChildXmlValByName(&m_iUpgradeTime, "iUpgradeTime");
 	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
-	pXML->GetChildXmlValByName(&m_iDecayTime, "iDecayTime");
+	pXML->GetChildXmlValByName(&m_iDecayTime, "iDecayTime", -1); //added default -1 by keldath doto
 	/* END TERRAIN-IMPROVEMENT-DECAY */
 	pXML->GetChildXmlValByName(&m_iAirBombDefense, "iAirBombDefense");
 	pXML->GetChildXmlValByName(&m_iDefenseModifier, "iDefenseModifier");
