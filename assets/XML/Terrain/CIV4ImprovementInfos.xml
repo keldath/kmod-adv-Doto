@@ -401,6 +401,8 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			</TechYieldChanges>
 			<RouteYieldChanges/>
 			<bGraphicalOnly>0</bGraphicalOnly>
+			<!-- doto TERRAIN-IMPROVEMENT-DECAY YUKON -->
+			<iDecayTime>8</iDecayTime>
 		</ImprovementInfo>
 		<ImprovementInfo>
 			<Type>IMPROVEMENT_FISHING_BOATS</Type>
@@ -1689,6 +1691,8 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<TechYieldChanges/>
 			<RouteYieldChanges/>
 			<bGraphicalOnly>0</bGraphicalOnly>
+			<!-- doto TERRAIN-IMPROVEMENT-DECAY YUKON -->
+			<iDecayTime>12</iDecayTime>
 		</ImprovementInfo>
 		<ImprovementInfo>
 			<Type>IMPROVEMENT_HAMLET</Type>
@@ -1749,6 +1753,8 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<TechYieldChanges/>
 			<RouteYieldChanges/>
 			<bGraphicalOnly>0</bGraphicalOnly>
+			<!-- doto TERRAIN-IMPROVEMENT-DECAY YUKON -->
+			<iDecayTime>12</iDecayTime>
 		</ImprovementInfo>
 		<ImprovementInfo>
 			<Type>IMPROVEMENT_VILLAGE</Type>
@@ -1818,6 +1824,8 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			</TechYieldChanges>
 			<RouteYieldChanges/>
 			<bGraphicalOnly>0</bGraphicalOnly>
+			<!-- doto TERRAIN-IMPROVEMENT-DECAY YUKON -->
+			<iDecayTime>14</iDecayTime>
 		</ImprovementInfo>
 		<ImprovementInfo>
 			<Type>IMPROVEMENT_TOWN</Type>
@@ -1887,6 +1895,8 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			</TechYieldChanges>
 			<RouteYieldChanges/>
 			<bGraphicalOnly>0</bGraphicalOnly>
+			<!-- doto TERRAIN-IMPROVEMENT-DECAY YUKON -->
+			<iDecayTime>14</iDecayTime>
 		</ImprovementInfo>
 		<ImprovementInfo>
 			<Type>IMPROVEMENT_FORT</Type>
@@ -1962,6 +1972,8 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<TechYieldChanges/>
 			<RouteYieldChanges/>
 			<bGraphicalOnly>0</bGraphicalOnly>
+			<!-- doto TERRAIN-IMPROVEMENT-DECAY YUKON -->
+			<iDecayTime>50</iDecayTime>
 		</ImprovementInfo>
 		<ImprovementInfo>
 			<Type>IMPROVEMENT_FOREST_PRESERVE</Type>
@@ -2096,6 +2108,8 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<TechYieldChanges/>
 			<RouteYieldChanges/>
 			<bGraphicalOnly>0</bGraphicalOnly>
+			<!-- doto TERRAIN-IMPROVEMENT-DECAY YUKON -->
+			<iDecayTime>80</iDecayTime>
 		</ImprovementInfo>
 		<ImprovementInfo>
 			<Type>IMPROVEMENT_FORT3</Type>
@@ -2172,6 +2186,8 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<TechYieldChanges/>
 			<RouteYieldChanges/>
 			<bGraphicalOnly>0</bGraphicalOnly>
+			<!-- doto TERRAIN-IMPROVEMENT-DECAY YUKON -->
+			<iDecayTime>100</iDecayTime>
 		 </ImprovementInfo>
 		<ImprovementInfo>
 			<Type>IMPROVEMENT_POOL</Type>

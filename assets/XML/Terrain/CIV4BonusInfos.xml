@@ -69,12 +69,12 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iMinLatitude>0</iMinLatitude>
 			<iMaxLatitude>90</iMaxLatitude>
 			<Rands>
-				<iRandApp1>10</iRandApp1>
-				<iRandApp2>10</iRandApp2>
+				<iRandApp1>15</iRandApp1>
+				<iRandApp2>15</iRandApp2>
 				<iRandApp3>0</iRandApp3>
 				<iRandApp4>0</iRandApp4>
 			</Rands>
-			<iPlayer>100</iPlayer>
+			<iPlayer>130</iPlayer>
 			<iTilesPer>0</iTilesPer>
 			<iMinLandPercent>0</iMinLandPercent>
 			<iUnique>0</iUnique>
@@ -90,6 +90,10 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<TerrainBooleans>
 				<TerrainBoolean>
 					<TerrainType>TERRAIN_PLAINS</TerrainType>
+					<bTerrain>1</bTerrain>
+				</TerrainBoolean>
+				<TerrainBoolean>
+					<TerrainType>TERRAIN_GRASS</TerrainType>
 					<bTerrain>1</bTerrain>
 				</TerrainBoolean>
 				<TerrainBoolean>

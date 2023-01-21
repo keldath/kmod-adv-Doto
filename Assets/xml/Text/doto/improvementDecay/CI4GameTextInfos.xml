@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Civ4GameText>
+	<TEXT>
+		<Tag>TXT_KEY_IMPROVEMENT_DECAYS</Tag>
+		<English>[ICON_BULLET]Decays after %d1_Num [NUM1:Turn:Turns] if not worked.</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PLOT_IMP_DECAY</Tag>
+		<English>[SPACE](Will decay in %d1_Num [NUM1:Turn:Turns])</English>
+	</TEXT>
+</Civ4GameText>

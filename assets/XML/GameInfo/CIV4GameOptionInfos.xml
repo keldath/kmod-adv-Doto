@@ -315,6 +315,13 @@
             <bVisible>0</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
+            <Type>GAMEOPTION_IMPROVEMENT_DECAY</Type>
+            <Description>Improvment Decay</Description>
+            <Help>Imp's that are not being worked on, will be destroyed over time</Help>
+            <bDefault>0</bDefault>
+            <bVisible>1</bVisible>
+       	</GameOptionInfo>
+        <GameOptionInfo>
             <Type>GAMEOPTION_NO_CORPORATIONS</Type>
             <Description>No Corporations</Description>
             <Help>Play Without corporations</Help>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by XMLSPY 2004 Professional Ed. Release 2, Installed Multi + SMP for 3 users (Firaxis Games) -->
+<!-- Sid Meier's Civilization 4 -->
+<!-- Copyright Firaxis Games 2005 -->
+<!-- -->
+<!-- Game Text Infos -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+
+	<TEXT>
+		<Tag>TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR</Tag>
+		<English>Your %s1_UnitName was attacked by an enemy %s2_EnUName! (%d3_Damage%% Damage)</English>
+		</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR_MISS</Tag>
+		<English>An enemy %s2_EnUName attacked but missed your %s1_UnitName!</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR</Tag>
+		<English>The %s2_EnUName returned fire and hit your %s1_UnitName! (%d3_Damage%% Damage)</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR_MISS</Tag>
+		<English>The %s2_EnUName returned fire but missed your %s1_UnitName!</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_YOU_ATTACK_BY_AIR</Tag>
+		<English>Your %s1_UnitName has attacked an enemy %s2_EnUName! (%d3_Damage%% Damage)</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_YOU_ATTACK_BY_AIR_MISS</Tag>
+		<English>Your %s1_UnitName has attacked but missed an enemy %s2_EnUName!</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR</Tag>
+		<English>Your %s1_UnitName has returned fire on an enemy %s2_EnUName! (%d3_Damage%% Damage)</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR_MISS</Tag>
+		<English>Your %s1_UnitName has returned fire but missed the %s2_EnUName!</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_YOU_MAXIMUM_DAMAGE</Tag>
+		<English>Your %s1_UnitName attack on the enemy %s2_EnUName is on Max Damage!</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_ENEMY_MAXIMUM_DAMAGE</Tag>
+		<English>Enemy %s1_UnitName attack on the enemy %s2_EnUName is on Max Damage!</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BARRCOUNTER</Tag>
+		<English> %d1/%d2 (Br)</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_RICOOLDOWN</Tag>
+		<English> %d1/%d2 (Cd)</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_RICOOLDOWN_SHORT</Tag>
+		<English>Cooldown: %d1/%d2</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BARRCOUNTER_SHORT</Tag>
+		<English>Barrage: %d1/%d2 </English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BARR_CAP</Tag>
+		<English>Barrage: %d1</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_AIR_COMBAT</Tag>
+		<English>Air Combat: %d1</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_AIR_COMBATSHORT</Tag>
+		<English> %d1 (AC)</English>
+	</TEXT>
+	<TEXT>	
+		<Tag>TXT_KEY_IS_RANGE_STRIKE</Tag>
+		<English>Barrage: %d1_BombRange</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_AIRCOMBAT_LIMIT</Tag>
+		<English>[ICON_BULLET]Max Barrage %d3_Damage%% Damage to Enemy on attack</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_YOU_MISSED_CITY_DEFENSES</Tag>
+		<English>Your %s1_UnitName has missed the defenses of %s2_CityName!</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_DEFENSES_IN_CITY_MISSED</Tag>
+		<English>%s3_player has missed your defenses in %s1_CityName!</English>
+	</TEXT>
+</Civ4GameText>

@@ -1,11 +1,11 @@
 
 civ4 Remaster art patch for Doto
 
-set the parameter in the globaldefinesalt :
-CIV4_REMASTER_ART >1<
-
 extract the civ4remaster_patch.zip
-overwrite the assets and resource folders.
+and overwrite
+
+the parameter in the globaldefinesalt is set to:
+CIV4_REMASTER_ART >1<
 
 To install clouds of war shader you need to:
 1. Find shaders folder of your Beyond the Sword installation. For steam users it's usually

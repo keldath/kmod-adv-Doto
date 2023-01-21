@@ -411,6 +411,16 @@
 		<!-- ADDE VALUE TO RAISE NATURAL COMBAT LIMIT COMPARED TO AVERAGE DAMAGE OF ALL DAMAGED DEFENDER UNITS -->
 		<DefineName>RANGED_ALL_DMGED_CMLIMIT_THRESH</DefineName>
 		<iDefineIntVal>20</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- DETERMINS HOW MANY TURNS A RANGED UNIT NEEDS TO WAIT BEFORE THE ATTACK COUNTER WILL RESET AND ALLOW A NEW CYCLE OF ATTACKS -->
+		<DefineName>RANGED_ATTACK_COOLDOWN</DefineName>
+		<iDefineIntVal>1</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- DETERMINS HOW MUCH DAMAGE PER RANGE strike count THE UNIT WILL TAKE AFTER X ATTACKS (DETERMINED BY THE TANGED ATTACK VALUE) -->
+		<DefineName>RANGED_DAMAGE_TAKEN</DefineName>
+		<iDefineIntVal>10</iDefineIntVal>
 <!-- DOTO rangedstrikeMOD - end - Improved AI Range Attack -->
 <!-- DOTO city states - START  -->
 	</Define>
@@ -512,7 +522,7 @@
 	<Define>
 		<DefineName>SET_NUMBER_OF_CITY_STATES_SPAWN_HUGE</DefineName>
 		<iDefineIntVal>6</iDefineIntVal>
-	<!-- spaen civs according to world size end -->
+	<!-- spaWn civs according to world size end -->
 <!-- alternative method for civilians  NOT OPERATIONAL YET!-->
 	</Define>
 	<Define>
@@ -557,12 +567,19 @@
 	<!-- alternative method for civilians  NOT OPERATIONAL YET!-->
 		<!-- DOTO city states - end  -->
 <!-- civ4remaster art mod 
-	requires unzipping of the patch in the doto folder
+	requires unzipping of the patch in the doto folder start
 	-->		
 	</Define>
 	<Define>
 		<DefineName>CIV4_REMASTER_ART</DefineName>
 		<iDefineIntVal>1</iDefineIntVal>
+	<!-- civ4remaster art mod 
+	requires unzipping of the patch in the doto folder end
+	-->		
+	 </Define>
+	<Define>
+		<DefineName>BASE_UNIT_UPGRADE_COST</DefineName>
+		<iDefineIntVal>15</iDefineIntVal>
 	</Define>
 	
 </Civ4Defines>

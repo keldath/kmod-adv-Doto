@@ -442,6 +442,8 @@
 	<ElementType name="iAdvancedStartCostIncrease" content="textOnly" dt:type="int"/>
 	<ElementType name="iTilesPerGoody" content="textOnly" dt:type="int"/>
 	<ElementType name="iUpgradeTime" content="textOnly" dt:type="int"/>
+	<!-- doto TERRAIN-IMPROVEMENT-DECAY YUKON*  -->
+	<ElementType name="iDecayTime" content="textOnly" dt:type="int"/>
 	<!-- JImprovementLimit Mod Start -->
 	<ElementType name="bNotInsideBorders" content="textOnly" dt:type="boolean"/>
 	<ElementType name="ImprovementRequired" content="textOnly"/>
@@ -510,6 +512,8 @@
 		<!-- advc.055: (default value in DLL: 0) -->
 		<element type="iGWFeatureProtection" minOccurs="0"/>
 		<element type="iUpgradeTime" minOccurs="0"/>
+		<!-- doto TERRAIN-IMPROVEMENT-DECAY YUKON -->
+		<element type="iDecayTime" minOccurs="0"/>
 		<element type="iAirBombDefense" minOccurs="0"/>
 		<element type="iDefenseModifier" minOccurs="0"/>
         <!-- advc.tag: (default value in DLL: 0) -->

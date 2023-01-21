@@ -65,7 +65,7 @@
 		</VictoryInfo>
 		<VictoryInfo>
 			<Type>VICTORY_DOMINATION</Type>
-			<Description>Domination (75% Land + 25% Pop')</Description>
+			<Description>Domination (71% Land + 25% Pop')</Description>
 			<Civilopedia>TXT_KEY_VICTORY_DOMINATION_PEDIA</Civilopedia>
 			<bTargetScore>0</bTargetScore>
 			<bEndScore>0</bEndScore>
@@ -166,22 +166,28 @@
 		</VictoryInfo>
 		<VictoryInfo>
 		    <Type>VICTORY_HOLY</Type>
-	        <Description>Holy War (50% Land + 60% Religion)</Description>
+	        <Description>Holy War (40% Land + 60% Religion)</Description>
 	        <Civilopedia>Needs: 50% lAND 65 RELIGION</Civilopedia>
 	        <bTargetScore>0</bTargetScore>
-	        <bEndScore>0</bEndScore>
-	        <bConquest>0</bConquest>
-	        <bDiploVote>0</bDiploVote>
-	        <bPermanent>0</bPermanent>
-	        <iPopulationPercentLead>0</iPopulationPercentLead>
-	        <iLandPercent>50</iLandPercent>
-	        <iMinLandPercent>50</iMinLandPercent>
-        	<iReligionPercent>65</iReligionPercent>
-	        <CityCulture>NONE</CityCulture>
-	        <iNumCultureCities>0</iNumCultureCities>
-	        <iTotalCultureRatio>0</iTotalCultureRatio>
-	        <iVictoryDelayTurns>0</iVictoryDelayTurns>
-			<VictoryMovie/>
+			<bEndScore>0</bEndScore>
+			<bConquest>0</bConquest>
+			<bDiploVote>0</bDiploVote>
+			<bPermanent>0</bPermanent>
+			<iPopulationPercentLead>25</iPopulationPercentLead>
+			<!-- advc.254: start -->
+			<iLandPercentLead>15</iLandPercentLead>
+			<!-- was 78 -->
+			<iLandPercent>40</iLandPercent>
+			<!-- Was 51. So long as this is less than iLandPercentLead,
+				 the specific value isn't terribly relevant. -->
+			<iMinLandPercent>10</iMinLandPercent>
+			<!-- advc.254: end -->
+			<iReligionPercent>60</iReligionPercent>
+			<CityCulture>NONE</CityCulture>
+			<iNumCultureCities>0</iNumCultureCities>
+			<iTotalCultureRatio>0</iTotalCultureRatio>
+			<iVictoryDelayTurns>0</iVictoryDelayTurns>
+			<VictoryMovie>ART_DEF_MOVIE_VICTORY_DOMINATION</VictoryMovie>
 		</VictoryInfo>
 	</VictoryInfos>
 </Civ4VictoryInfo>
