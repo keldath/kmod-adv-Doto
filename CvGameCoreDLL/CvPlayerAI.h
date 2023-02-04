@@ -478,6 +478,11 @@ public:
 	scaled AI_barbarianTargetCityScore(CvArea const& kArea) const; // </advc.300>
 
 	CivicTypes AI_bestCivic(CivicOptionTypes eCivicOption, int* iBestValue = 0) const;
+/* doto Civics Dependency (Asaf) - start ) */	
+	CivicMap forceChildCivics(CivicMap ePreRevolutionMap) const;
+	//this is acctually the original fn of AI_civicValue
+	int AI_civicValue_original(CivicTypes eCivic) const;						// Exposed to Python
+/* doto Civics Dependency (Asaf) - end ) */	
 	int AI_civicValue(CivicTypes eCivic) const;						// Exposed to Python
 
 	ReligionTypes AI_bestReligion() const;
@@ -832,6 +837,9 @@ protected:
 	int* m_aiUnitClassWeights;
 	int* m_aiUnitCombatWeights;
 	ArrayEnumMap<VictoryTypes,short> m_aiVictoryWeights; // advc.115f
+/* doto Civics Dependency (Asaf) - Start */		
+//	int* m_aChildCivicsToAutoSwitch;
+/* doto Civics Dependency (Asaf) - end */		
 
 	std::map<UnitClassTypes, int> m_GreatPersonWeights; // K-Mod
 	std::map<int,int> m_neededExplorersByArea; // advc.opt

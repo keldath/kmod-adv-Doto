@@ -424,6 +424,9 @@ public:
 
 	bool isCivic(CivicTypes eCivic) const;																			// Exposed to Python
 	bool canDoCivics(CivicTypes eCivic) const;																		// Exposed to Python
+/* doto Civics Dependency (Asaf) - Start */
+//	CivicTypes getCivicParent(CivicTypes eCivic) const	;																	// Exposed to Python
+/* Civics Dependency (Asaf) - End */
 	bool canRevolution(CivicMap const& kNewCivics) const; // advc.001: Exposed to Python as canAdopt
 	bool canDoAnyRevolution() const; // advc.enum, exposed to Python as canRevolution(0).
 	void revolution(CivicMap const& kNewCivics, bool bForce = false);												// Exposed to Python

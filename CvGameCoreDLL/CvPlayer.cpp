@@ -7321,6 +7321,28 @@ bool CvPlayer::canDoAnyRevolution() const
 	return false;
 }
 
+/* Civics Dependency (Asaf) - start */
+/*CivicTypes CvPlayer::getCivicParent(CivicTypes eCivic) const
+{
+	if (GC.getCivicInfo(eCivic).getNumParentCivicsChildren() > 0)
+		return eCivic; // if the same civic is a parent
+	
+	for (int iI = 0; iI < GC.getNumCivicInfos(); ++iI)
+	{
+		int childrenCivics = GC.getCivicInfo((CivicTypes)iI).getNumParentCivicsChildren();
+		if (childrenCivics > 0)
+		{
+			for (int J = 0; J < childrenCivics; J++)
+			{
+				if ((CivicTypes)J == eCivic)
+					return (CivicTypes)iI; //return the parent of the child civic
+			}
+		}
+	}
+	return NO_CIVIC; //the civic is not a parent nor a child
+}
+*/
+/* Civics Dependency (Asaf) - End */
 
 bool CvPlayer::canRevolution(CivicMap const& kNewCivics) const 
 {

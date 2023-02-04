@@ -339,6 +339,15 @@ int CvCivicInfo::getFreeSpecialistCount(int i) const
 }
 // < Civic Infos Plus End   >
 
+/* Civics Dependency (Asaf) - Start */
+// <advc.003t> Calls from Python aren't going to respect the bounds
+int CvCivicInfo::py_getParentCivicsChildren(int i) const
+{
+	if (i < 0 || i >= getNumParentCivicsChildren())
+		return NO_CIVIC;
+	return m_aeParentCivicsChildren[i];
+}
+/* Civics Dependency (Asaf) - end */
 int CvCivicInfo::getCommerceModifier(int i) const
 {
 	FAssertBounds(0, NUM_COMMERCE_TYPES, i);
@@ -472,6 +481,15 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_bNoForeignTrade);
 	stream->Read(&m_bNoCorporations);
 	stream->Read(&m_bNoForeignCorporations);
+/* Civics Dependency (Asaf) - Start */
+	int iParentCivicChildren;
+	stream->Read(&iParentCivicChildren);
+	if (iParentCivicChildren > 0)
+	{
+		m_aeParentCivicsChildren.resize(iParentCivicChildren);
+		stream->Read(iParentCivicChildren, (int*)&m_aeParentCivicsChildren[0]);
+	}
+/* Civics Dependency (Asaf) - End */
 	stream->Read(&m_bStateReligion);
 	stream->Read(&m_bNoNonStateReligionSpread);
 	SAFE_DELETE_ARRAY(m_piYieldModifier);
@@ -635,6 +653,14 @@ void CvCivicInfo::write(FDataStreamBase* stream)
 	stream->Write(m_bNoForeignTrade);
 	stream->Write(m_bNoCorporations);
 	stream->Write(m_bNoForeignCorporations);
+/* Civics Dependency (Asaf) - Start */
+	{
+		int iParentCivicChildren = getNumParentCivicsChildren();
+		stream->Write(iParentCivicChildren);
+		if (iParentCivicChildren > 0)				   
+			stream->Write(iParentCivicChildren, (int*)&m_aeParentCivicsChildren[0]);
+	}
+/* Civics Dependency (Asaf) - end */
 	stream->Write(m_bStateReligion);
 	stream->Write(m_bNoNonStateReligionSpread);
 	stream->Write(NUM_YIELD_TYPES, m_piYieldModifier);
@@ -1092,7 +1118,37 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 
 	return true;
 }
-
+/* Civics Dependency (Asaf) - Start */
+bool CvCivicInfo::readPass2(CvXMLLoadUtility* pXML)
+{
+	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "CivicChild"))
+	{
+		if (pXML->SkipToNextVal())
+		{
+			int const iNumSibs = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
+			if (iNumSibs > 0)
+			{
+				CvString szTextVal;
+				if (pXML->GetChildXmlVal(szTextVal))
+				{	// advc.003t: The DLL can handle any number, but Python maybe not.
+					FAssert(iNumSibs <= GC.getDefineINT("NUM_OF_CIVIC_DEPENDANCIES"));
+					for (int j = 0; j < iNumSibs; j++)
+					{	// <advc.003t>
+						CivicTypes eCivic = (CivicTypes)GC.getInfoTypeForString(szTextVal);
+						if (eCivic != NO_CIVIC)
+							m_aeParentCivicsChildren.push_back(eCivic); // </advc.003t>
+						if (!pXML->GetNextXmlVal(szTextVal))
+							break;
+					}
+					gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+				}
+			}
+		}
+		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
+	}
+	return true;
+}
+/* Civics Dependency (Asaf) - End */
 CvCivicOptionInfo::CvCivicOptionInfo() : m_pabTraitNoUpkeep(NULL) {}
 
 CvCivicOptionInfo::~CvCivicOptionInfo()

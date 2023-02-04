@@ -576,10 +576,20 @@
 	<!-- civ4remaster art mod 
 	requires unzipping of the patch in the doto folder end
 	-->		
-	 </Define>
+	</Define>
 	<Define>
 		<DefineName>BASE_UNIT_UPGRADE_COST</DefineName>
 		<iDefineIntVal>15</iDefineIntVal>
+<!-- KELDATH CIVIC DEPENDANCY-->	
+	</Define>
+	<Define>
+		<DefineName>NUM_OF_CIVIC_DEPENDANCIES</DefineName>
+		<iDefineIntVal>4</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>MAX_CIVIC_OPTIONS</DefineName>
+		<iDefineIntVal>8</iDefineIntVal>
+<!-- KELDATH CIVIC DEPENDANCY-->	
 	</Define>
 	
 </Civ4Defines>

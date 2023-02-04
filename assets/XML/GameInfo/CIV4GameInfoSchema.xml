@@ -789,6 +789,12 @@
 	<ElementType name="bNoForeignTrade" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bNoCorporations" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bNoForeignCorporations" content="textOnly" dt:type="boolean"/>
+<!--Civics Dependency (Asaf) - Start -->
+<!-- <ElementType name="Type" content="textOnly"/>	 -->
+	<ElementType name="CivicChild" content="eltOnly">
+		<element type="Type" minOccurs="0" maxOccurs="*"/>
+	</ElementType>
+<!--Civics Dependency (Asaf) - Start -->
 	<ElementType name="iCivicPercentAnger" content="textOnly" dt:type="int"/>
 	<ElementType name="bStateReligion" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bNoNonStateReligionSpread" content="textOnly" dt:type="boolean"/>
@@ -1004,6 +1010,8 @@
 		<element type="bNoForeignTrade" minOccurs="0"/>
 		<element type="bNoCorporations" minOccurs="0"/>
 		<element type="bNoForeignCorporations" minOccurs="0"/>
+<!-- Civics Dependency (Asaf) - Start -->			
+		<element type="CivicChild" minOccurs="0"/>
 		<element type="iCivicPercentAnger" minOccurs="0"/>
 		<element type="bStateReligion" minOccurs="0"/>
 		<element type="bNoNonStateReligionSpread" minOccurs="0"/>

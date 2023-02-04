@@ -104,7 +104,9 @@ class CvCivicsScreen:
 		screen.setText(self.CANCEL_NAME, "Background", u"<font=4>" + localText.getText("TXT_KEY_SCREEN_CANCEL", ()).upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.X_CANCEL, self.Y_CANCEL, self.Z_TEXT, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, 1, 0)
 
 		# Header...
-		screen.setText(self.TITLE_NAME, "Background", u"<font=4b>" + localText.getText("TXT_KEY_CIVICS_SCREEN_TITLE", ()).upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.X_SCREEN, self.Y_TITLE, self.Z_TEXT, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		#screen.setText(self.TITLE_NAME, "Background", u"<font=4b>" + localText.getText("TXT_KEY_CIVICS_SCREEN_TITLE", ()).upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.X_SCREEN, self.Y_TITLE, self.Z_TEXT, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		# keldath civics dependancy
+		screen.setText(self.TITLE_NAME, "Background", u"<font=4b>" + "Goverments Table" + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.X_SCREEN, self.Y_TITLE, self.Z_TEXT, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 		
 		self.setActivePlayer(gc.getGame().getActivePlayer())						
 
@@ -129,6 +131,7 @@ class CvCivicsScreen:
 		self.drawAllButtons()
 				
 		# Draw Help Text
+		# keldath remove for test
 		self.drawAllHelpText()
 		
 		# Update Maintenance/anarchy/etc.
@@ -156,25 +159,174 @@ class CvCivicsScreen:
 	# Will draw the radio buttons (and revolution)
 	def drawAllButtons(self):				
 
-		for i in range(gc.getNumCivicOptionInfos()):
-		
-			fX = self.HEADINGS_SPACING  + (self.HEADINGS_WIDTH + self.HEADINGS_SPACING) * i
-			fY = self.HEADINGS_TOP
-			szAreaID = self.AREA_NAME + str(i)
-			screen = self.getScreen()
-			#KELDATH CIVIC POSITION
-			screen.addPanel(szAreaID, "", "", True, True, fX+5, fY, self.HEADINGS_WIDTH, self.HEADINGS_BOTTOM - self.HEADINGS_TOP, PanelStyles.PANEL_STYLE_MAIN)
-			screen.setLabel("", "Background",  u"<font=3>" + gc.getCivicOptionInfo(i).getDescription().upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, fX + self.HEADINGS_WIDTH/2, self.HEADINGS_TOP + self.TEXT_MARGIN, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+		def govcivic(i, c, section, panelLength, fY, line_seperator, civicoption, panel=PanelStyles.PANEL_STYLE_MAIN):
 
-			fY += self.TEXT_MARGIN
+			fX = (self.HEADINGS_SPACING  + (self.HEADINGS_WIDTH + self.HEADINGS_SPACING) * i ) - 5
 			
-			for j in range(gc.getNumCivicInfos()):
-				if (gc.getCivicInfo(j).getCivicOptionType() == i):										
-					fY += 2 * self.TEXT_MARGIN
+			szAreaID = self.AREA_NAME + section  + str(i) # keldath - needed section name to create a new area
+			screen.addPanel(szAreaID, "", "", True, True, fX+5, fY, self.HEADINGS_WIDTH, panelLength, panel)
+			
+			civics = range(gc.getNumCivicInfos())
+			for j in civics:
+				civicDesc = gc.getCivicInfo(j).getDescription()
+				if civicDesc in c:
+					fY += line_seperator
+					# the first civic in a sub list civic needs to be closer to the start of the panerl
+					# also for goverments itss posioning is different
+					if c[0] == civicDesc and section != "gov":
+						fY -= 15
 					screen.addCheckBoxGFC(self.getCivicsButtonName(j), gc.getCivicInfo(j).getButton(), ArtFileMgr.getInterfaceArtInfo("BUTTON_HILITE_SQUARE").getPath(), fX + self.BUTTON_SIZE/2, fY, self.BUTTON_SIZE, self.BUTTON_SIZE, WidgetTypes.WIDGET_GENERAL, -1, -1, ButtonStyles.BUTTON_STYLE_LABEL)
 					screen.setText(self.getCivicsTextName(j), "", gc.getCivicInfo(j).getDescription(), CvUtil.FONT_LEFT_JUSTIFY, fX + self.BUTTON_SIZE + self.TEXT_MARGIN, fY, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+			
+			self.drawCivicOptionButtons(civicoption)
 
-			self.drawCivicOptionButtons(i)
+		screen = self.getScreen()
+		constLength = self.HEADINGS_BOTTOM - self.HEADINGS_TOP
+		numCivicOtopns = range(gc.getNumCivicOptionInfos())
+
+		# set the goverments civic bar
+		fY = self.HEADINGS_TOP # top position start for the panel y axis
+		line_seperator = 2 * self.TEXT_MARGIN  # space between top of the panel start
+		govPnelLength = constLength - 240
+		govCivics =  [['Despotism'], ['Hereditary Rule'], ['Representation'], ['Provincial'], 
+				['Police State'], ['Chiefdom'], ['Electorial'], ['Fundamentalism']]
+		for i in xrange(len(govCivics)):
+			govcivic(i, govCivics[i], "gov", govPnelLength, fY, line_seperator - 15,  numCivicOtopns[0], PanelStyles.PANEL_STYLE_BLUE50)
+
+		# the order of the civics on the list must be according to the order of the xml.
+		# cause of the civic loop. it affects positioning		
+		# the the Legal civic section
+		screen.addPanel( "govRuleBar", u"", u"", True, False, 0, 85, self.W_SCREEN, 25, PanelStyles.PANEL_STYLE_MAIN_TAN ) # 82
+		screen.setText("rule", "", u"<font=4>" + "Govermant Rules" + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, 500, 88, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		
+		fY += 45
+		goveRulesPnelLength = constLength - 145
+		goveRulesCivics = [['RULE1', 'RULE2'], ['RULE3', 'RULE4'], ['RULE5', 'RULE6'], ['RULE7', 'RULE8'], 
+							['RULE9', 'RULE10'], ['RULE11', 'RULE12'], ['RULE13', 'RULE14'], ['RULE15', 'RULE16']]
+		for i in xrange(len(goveRulesCivics)):
+			govcivic(i, goveRulesCivics[i], "govRule", goveRulesPnelLength, fY, line_seperator, numCivicOtopns[1], PanelStyles.PANEL_STYLE_CITY_COLUMNL)
+
+		# the the Labor civic section
+		screen.addPanel( "SocietyBar", u"", u"", True, False, 0, 155, self.W_SCREEN, 25, PanelStyles.PANEL_STYLE_MAIN_TAN ) # 176
+		screen.setText("soc", "",u"<font=4>" + "Society Ideals"  + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, 500, 158, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		
+		fY += 70
+		legPnelLength = constLength - 160
+		legCivics =  [['Anarchizem', 'Traditional'], ['Fanaticism', 'Aggrerian'], ['Intellectualism', 'Residential'], ['Individualism', 'Expontional'],
+			 ['Creatism', 'Constructional'], ['Commercialism', 'Pastoral'], ['Imperialism', 'Exploitentional'], ['Pragmatism', 'Proggretional']]
+		for i in xrange(len(legCivics)):
+			govcivic(i, legCivics[i], "leg", legPnelLength, fY, line_seperator, numCivicOtopns[7], PanelStyles.PANEL_STYLE_CITY_COLUMNL)
+
+
+		# fY += 55
+		# line_seperator += 16 # need to handle first item sep
+		# legPnelLength = constLength - 200
+		# legCivics =  [['Elders Wisdom','Civil Law'], ['RULE1','RULE2'], ['Manorialism','RULE3'], ['Federal','RULE4'],
+		# 	 ['Vassalage','RULE5'], ['Bureaucracy','RULE6'], ['Nationhood', 'RUL7'], ['Free Speech']]
+		# for i in xrange(len(legCivics)):
+		# 	govcivic(i, legCivics[i], "leg", legPnelLength, fY, line_seperator, PanelStyles.PANEL_STYLE_CITY_COLUMNL)
+
+		# # the the Labor civic section
+		# screen.addPanel( "LaborBar", u"", u"", True, False, 0, 170, self.W_SCREEN, 25, PanelStyles.PANEL_STYLE_MAIN_TAN ) # 176
+		# screen.setText("labor", "", "Labor", CvUtil.FONT_LEFT_JUSTIFY, 500, 185, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		
+		# fY += 94
+		# labPnelLength = constLength - 230
+		# LaborBar =  [['Tribalism'], ['Slavery'], ['Serfdom'], ['Caste System'], ['Emancipation'], ['Free Masons'], ['Proletariat'], ['UnionShip']]
+		# for i in xrange(len(LaborBar)):
+		# 	govcivic(i, LaborBar[i], "lab", labPnelLength, fY, line_seperator, PanelStyles.PANEL_STYLE_CITY_COLUMNL) # PanelStyles.PANEL_STYLE_BLUELARGE nice one
+
+		# # the the Labor civic section
+		# screen.addPanel( "EcoBar", u"", u"", True, False, 0, 230, self.W_SCREEN, 25, PanelStyles.PANEL_STYLE_MAIN_TAN ) # PANEL_STYLE_TECH 240
+		# screen.setText("eco", "", "Economy", CvUtil.FONT_LEFT_JUSTIFY, 500, 248, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		
+		# fY += 64
+		# ecoPnelLength = constLength - 210
+		# ecoBar =  [['Local Trade'], ['Mercantilism'], ['Free Market', 'Barter'], ['State Property'], ['Enviromental'], ['Free Masons'], ['Faith Driven'], ['Commodotive']] 
+		# for i in xrange(len(ecoBar)):
+		# 	govcivic(i, ecoBar[i], "eco", ecoPnelLength, fY, line_seperator, PanelStyles.PANEL_STYLE_CITY_COLUMNL)
+
+		# # the the Labor civic section
+		# screen.addPanel( "RelBar", u"", u"", True, False, 0, 320, self.W_SCREEN, 25, PanelStyles.PANEL_STYLE_MAIN_TAN ) # 325
+		# screen.setText("rel", "", "Religion", CvUtil.FONT_LEFT_JUSTIFY, 500, 334, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		
+		# fY += 84
+		# relPnelLength = constLength - 200
+		# relBar =  [['Paganism'], ['Orthodoxian'], ['Organized'], ['Theocracy'], ['Divine Charity'], ['Free Religion'], ['Atheism'], ['Agnosticism']] 
+		# for i in xrange(len(relBar)):
+		# 	govcivic(i, relBar[i], "rel", relPnelLength, fY, line_seperator, PanelStyles.PANEL_STYLE_CITY_COLUMNL) # PanelStyles.PANEL_STYLE_DAWNTOP
+
+		# the the Labor civic section
+		# screen.addPanel( "MilBar", u"", u"", True, False, 0, 420, self.W_SCREEN, 25, PanelStyles.PANEL_STYLE_MAIN_TAN )
+		# screen.setText("mil", "", "Military", CvUtil.FONT_LEFT_JUSTIFY, 500, 430, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		
+		# fY += 100
+		# milPnelLength = constLength - 200
+		# milBar =  [['Warring Tribes'], ['Bandits'], ['Merc'], ['Levee'], ['Volunteer'], ['Professional'], ['Guerrilla'], ['Obligatory']] 
+		# for i in xrange(len(milBar)):
+		# 	govcivic(i, milBar[i], "mil", milPnelLength, fY, line_seperator, PanelStyles.PANEL_STYLE_CITY_COLUMNL)
+
+
+		# all the other normal civics
+		ignoreCivics = ['Government', 'Rules', 'Ideals']
+		#civicLi = range(gc.getNumCivicOptionInfos())
+		# the the Labor civic section
+		screen.addPanel( "otherCivics", u"", u"", True, False, 0, 235, self.W_SCREEN, 30, PanelStyles.PANEL_STYLE_MAIN_TAN ) # 176
+		screen.setText("others", "",  u"<font=4>" +" Civics Table" + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, 500, 240, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		
+		counter = 0 # keldath add - the index of the civics on the list is not from 0
+		broad_width = 100
+		const_fY = 	260
+		for i in numCivicOtopns:
+			
+			if gc.getCivicOptionInfo(i).getDescription() not in ignoreCivics:
+
+				fX = self.HEADINGS_SPACING  + ((self.HEADINGS_WIDTH + self.HEADINGS_SPACING + broad_width) * (counter)) # was * i
+				szAreaID = self.AREA_NAME + str(i)
+				fY = const_fY
+				screen = self.getScreen()
+				screen.addPanel(szAreaID, "", "", True, True, fX+5, fY, self.HEADINGS_WIDTH + broad_width, self.HEADINGS_BOTTOM - self.HEADINGS_TOP - 120, PanelStyles.PANEL_STYLE_MAIN)
+				screen.setLabel("", "Background",  u"<font=3>" + gc.getCivicOptionInfo(i).getDescription().upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, fX + self.HEADINGS_WIDTH/2 + 50, fY + self.TEXT_MARGIN, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+
+				civic_counter = 0 # start from 1
+				colum_num = 0
+				fx_box_width = fX + self.BUTTON_SIZE/2
+				fx_text_width = fX + self.BUTTON_SIZE + self.TEXT_MARGIN
+				for j in range(gc.getNumCivicInfos()):
+					if (gc.getCivicInfo(j).getCivicOptionType() == i):
+						if civic_counter > 3 and colum_num < 1:
+							fx_box_width += broad_width + 40
+							fx_text_width += broad_width + 40
+							fY = const_fY
+							colum_num = 1
+
+						fY += 2 * self.TEXT_MARGIN 
+						screen.addCheckBoxGFC(self.getCivicsButtonName(j), gc.getCivicInfo(j).getButton(), ArtFileMgr.getInterfaceArtInfo("BUTTON_HILITE_SQUARE").getPath(), fx_box_width, fY, self.BUTTON_SIZE, self.BUTTON_SIZE, WidgetTypes.WIDGET_GENERAL, -1, -1, ButtonStyles.BUTTON_STYLE_LABEL)
+						screen.setText(self.getCivicsTextName(j), "", gc.getCivicInfo(j).getDescription(), CvUtil.FONT_LEFT_JUSTIFY, fx_text_width, fY, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+						civic_counter += 1
+						self.drawCivicOptionButtons(numCivicOtopns[i])
+
+				counter += 1
+
+		# for i in range(gc.getNumCivicOptionInfos()):
+		
+		# 	fX = self.HEADINGS_SPACING  + (self.HEADINGS_WIDTH + self.HEADINGS_SPACING) * i
+		# 	fY = self.HEADINGS_TOP
+		# 	szAreaID = self.AREA_NAME + str(i)
+		# 	screen = self.getScreen()
+		# 	#KELDATH CIVIC POSITION
+		# 	screen.addPanel(szAreaID, "", "", True, True, fX+5, fY, self.HEADINGS_WIDTH, self.HEADINGS_BOTTOM - self.HEADINGS_TOP, PanelStyles.PANEL_STYLE_MAIN)
+		# 	screen.setLabel("", "Background",  u"<font=3>" + gc.getCivicOptionInfo(i).getDescription().upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, fX + self.HEADINGS_WIDTH/2, self.HEADINGS_TOP + self.TEXT_MARGIN, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+
+		# 	fY += self.TEXT_MARGIN
+			
+		# 	for j in range(gc.getNumCivicInfos()):
+		# 		if (gc.getCivicInfo(j).getCivicOptionType() == i):										
+		# 			fY += 2 * self.TEXT_MARGIN
+		# 			screen.addCheckBoxGFC(self.getCivicsButtonName(j), gc.getCivicInfo(j).getButton(), ArtFileMgr.getInterfaceArtInfo("BUTTON_HILITE_SQUARE").getPath(), fX + self.BUTTON_SIZE/2, fY, self.BUTTON_SIZE, self.BUTTON_SIZE, WidgetTypes.WIDGET_GENERAL, -1, -1, ButtonStyles.BUTTON_STYLE_LABEL)
+		# 			screen.setText(self.getCivicsTextName(j), "", gc.getCivicInfo(j).getDescription(), CvUtil.FONT_LEFT_JUSTIFY, fX + self.BUTTON_SIZE + self.TEXT_MARGIN, fY, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+
+		# 	self.drawCivicOptionButtons(i)
 					
 							
 	def highlight(self, iCivic):
@@ -242,6 +394,7 @@ class CvCivicsScreen:
 		
 	def drawHelpText(self, iCivicOption):
 		
+		#return # keldath
 		activePlayer = gc.getPlayer(self.iActivePlayer)
 		iCivic = self.m_paeDisplayCivics[iCivicOption]
 
@@ -260,7 +413,8 @@ class CvCivicsScreen:
 
 		fX = self.HEADINGS_SPACING  + (self.HEADINGS_WIDTH + self.HEADINGS_SPACING) * iCivicOption
 
-		screen.setLabel(self.HELP_HEADER_NAME + str(iCivicOption), "Background",  u"<font=3>" + gc.getCivicInfo(self.m_paeDisplayCivics[iCivicOption]).getDescription().upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, fX + self.HEADINGS_WIDTH/2, self.HELP_TOP + self.TEXT_MARGIN, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+		#screen.setLabel(self.HELP_HEADER_NAME + str(iCivicOption), "Background",  u"<font=3>" + gc.getCivicInfo(self.m_paeDisplayCivics[iCivicOption]).getDescription().upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, fX + self.HEADINGS_WIDTH/2, self.HELP_TOP + self.TEXT_MARGIN, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+		screen.setLabel(self.HELP_HEADER_NAME + str(iCivicOption), "Background",  u"<font=3>" + gc.getCivicInfo(self.m_paeDisplayCivics[iCivicOption]).getDescription().upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, fX + self.HEADINGS_WIDTH/2, self.HELP_TOP + self.TEXT_MARGIN + 90, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
 
 		fY = self.HELP_TOP - self.BIG_BUTTON_SIZE
 		szHelpImageID = self.HELP_IMAGE_NAME + str(iCivicOption)
@@ -269,11 +423,13 @@ class CvCivicsScreen:
 
 		fY = self.HELP_TOP + 3 * self.TEXT_MARGIN
 		szHelpAreaID = self.HELP_AREA_NAME + str(iCivicOption)		
-		screen.addMultilineText(szHelpAreaID, szHelpText, fX+5, fY, self.HEADINGS_WIDTH-7, self.HELP_BOTTOM - fY-2, WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_LEFT_JUSTIFY)				
+		#screen.addMultilineText(szHelpAreaID, szHelpText, fX+5, fY, self.HEADINGS_WIDTH-7, self.HELP_BOTTOM - fY-2, WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_LEFT_JUSTIFY)				
+		screen.addMultilineText(szHelpAreaID, szHelpText, fX+5, fY+90, self.HEADINGS_WIDTH-7, self.HELP_BOTTOM - fY-2+150, WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_LEFT_JUSTIFY)				
 		
 		
 	# Will draw the help text
 	def drawAllHelpText(self):
+		#return # keldath
 		for i in range (gc.getNumCivicOptionInfos()):		
 
 			fX = self.HEADINGS_SPACING  + (self.HEADINGS_WIDTH + self.HEADINGS_SPACING) * i
@@ -281,7 +437,8 @@ class CvCivicsScreen:
 			szPaneID = "CivicsHelpTextBackground" + str(i)
 			screen = self.getScreen()
 			#SCREEN CIVIC HELP POSITION
-			screen.addPanel(szPaneID, "", "", True, True, fX+5, self.HELP_TOP, self.HEADINGS_WIDTH, self.HELP_BOTTOM - self.HELP_TOP, PanelStyles.PANEL_STYLE_MAIN)
+			#screen.addPanel(szPaneID, "", "", True, True, fX+5, self.HELP_TOP, self.HEADINGS_WIDTH, self.HELP_BOTTOM - self.HELP_TOP, PanelStyles.PANEL_STYLE_MAIN)
+			screen.addPanel(szPaneID, "", "", True, True, fX+5, self.HELP_TOP+90, self.HEADINGS_WIDTH, self.HELP_BOTTOM - self.HELP_TOP-100, PanelStyles.PANEL_STYLE_MAIN)
 
 			self.drawHelpText(i)
 

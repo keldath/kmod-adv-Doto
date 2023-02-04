@@ -37,13 +37,13 @@
 			<TraitNoUpkeeps/>
 		</CivicOptionInfo>
 		<CivicOptionInfo>
-			<Type>CIVICOPTION_TERRA</Type>
-			<Description>**Terra**</Description>
+			<Type>CIVICOPTION_RULES</Type>
+			<Description>Rules</Description>
 			<TraitNoUpkeeps/>
 		</CivicOptionInfo>
 		<CivicOptionInfo>
 			<Type>CIVICOPTION_IDEALS</Type>
-			<Description>**Ideals**</Description>
+			<Description>Ideals</Description>
 			<TraitNoUpkeeps/>
 		</CivicOptionInfo>
 	</CivicOptionInfos>
