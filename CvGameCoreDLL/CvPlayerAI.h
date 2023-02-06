@@ -479,8 +479,10 @@ public:
 
 	CivicTypes AI_bestCivic(CivicOptionTypes eCivicOption, int* iBestValue = 0) const;
 /* doto Civics Dependency (Asaf) - start ) */	
-	CivicMap forceChildCivics(CivicMap ePreRevolutionMap) const;
+	//CivicMap 
+	void forceChildCivics(CivicMap& ePreRevolutionMap) const;
 	//this is acctually the original fn of AI_civicValue
+	int AI_bestChildValue(CivicTypes eCivic) const;
 	int AI_civicValue_original(CivicTypes eCivic) const;						// Exposed to Python
 /* doto Civics Dependency (Asaf) - end ) */	
 	int AI_civicValue(CivicTypes eCivic) const;						// Exposed to Python

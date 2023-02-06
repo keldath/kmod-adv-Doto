@@ -1149,7 +1149,13 @@ bool CvCivicInfo::readPass2(CvXMLLoadUtility* pXML)
 	return true;
 }
 /* Civics Dependency (Asaf) - End */
-CvCivicOptionInfo::CvCivicOptionInfo() : m_pabTraitNoUpkeep(NULL) {}
+
+CvCivicOptionInfo::CvCivicOptionInfo() : 
+m_pabTraitNoUpkeep(NULL)
+/* Civics Dependency (Asaf) - start */
+,m_iParentCivicOption(0)
+/* Civics Dependency (Asaf) - end */
+{}
 
 CvCivicOptionInfo::~CvCivicOptionInfo()
 {
@@ -1161,14 +1167,22 @@ bool CvCivicOptionInfo::getTraitNoUpkeep(int i) const
 	FAssertBounds(0, GC.getNumTraitInfos(), i);
 	return m_pabTraitNoUpkeep ? m_pabTraitNoUpkeep[i] : false;
 }
-
+/* Civics Dependency (Asaf) - start */
+int CvCivicOptionInfo::getParentCivicOption() const
+{
+	// 0 orphanm, 2 parent, 1 child
+	return m_iParentCivicOption ;
+}
+/* Civics Dependency (Asaf) - end */
 bool CvCivicOptionInfo::read(CvXMLLoadUtility* pXML)
 {
 	if (!base_t::read(pXML))
 		return false;
 
 	pXML->SetVariableListTagPair(&m_pabTraitNoUpkeep, "TraitNoUpkeeps", GC.getNumTraitInfos());
-
+/* Civics Dependency (Asaf) - start */	
+	pXML->GetChildXmlValByName(&m_iParentCivicOption, "isParentCivicOption", 0);
+/* Civics Dependency (Asaf) - End */
 	return true;
 }
 

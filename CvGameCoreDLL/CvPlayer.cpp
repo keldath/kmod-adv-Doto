@@ -3162,9 +3162,42 @@ void CvPlayer::verifyCivics()
 
 	FOR_EACH_ENUM(CivicOption)
 	{
-		if (canDoCivics(getCivics(eLoopCivicOption)))
+/* doto Civics Dependency (Asaf) - start ) 	*/
+//if a child civic is selected -> force its parent to be selected as well.	
+		CivicTypes eSelectedCivic = getCivics(eLoopCivicOption);
+		if (isCivicChild(eSelectedCivic) != NO_CIVIC)
+		{
+			for (int i = 0; i < GC.getNumCivicOptionInfos(); i++)
+			{	
+				CivicTypes eParentCivic = (CivicTypes)i;
+				CvCivicInfo& kParentCivic = GC.getCivicInfo(eParentCivic); 
+				int parentNumChildren = kParentCivic.getNumParentCivicsChildren();
+				if (parentNumChildren > 0)
+				{
+					for (int J = 0; J < parentNumChildren; J++)
+					{
+						CivicTypes eChildCivic = kParentCivic.getParentCivicsChildren(J);
+						if (eSelectedCivic == eChildCivic)
+						{
+							//check for the parent civic if another parent is not selected
+							if (getCivics(kParentCivic.getCivicOptionType()) != eParentCivic)
+							{
+								setCivics(eLoopCivicOption, eParentCivic);
+							}
+						}
+					}
+				}
+			}
+		}
+		else {
+		// need to add code that will select the best children if only the parent is selected.
+		//very similar to the ai_forcecivic code			
+			
+		//after a civic was set above, recall the current selected
+		eSelectedCivic = getCivics(eLoopCivicOption);
+		if (canDoCivics(eSelectedCivic))
 			continue; // verified
-
+/* doto Civics Dependency (Asaf) - end ) 	*/	
 		FOR_EACH_ENUM(Civic)
 		{
 			if (GC.getInfo(eLoopCivic).getCivicOptionType() == eLoopCivicOption &&
@@ -3175,6 +3208,7 @@ void CvPlayer::verifyCivics()
 			}
 		}
 	}
+}
 }
 
 // kekm.10:
@@ -7268,7 +7302,7 @@ bool CvPlayer::isCivic(CivicTypes eCivic) const
 }
 
 
-bool CvPlayer::canDoCivics(CivicTypes eCivic) const
+bool CvPlayer::canDoCivics(CivicTypes eCivic, bool ignoreChildCivic) const
 {
 	PROFILE_FUNC();
 
@@ -7302,6 +7336,23 @@ bool CvPlayer::canDoCivics(CivicTypes eCivic) const
 			}
 		}
 	} // </advc.912d>
+	
+/* Civics Dependency (Asaf) - start */
+//this is a very important part -> it measn that child civics, can never be 
+//chosen directly! only with the ai code to force selecting child civics.
+//for human code it will be different.	
+/*	if (ignoreChildCivic)
+	{
+		//NO CIVIC MEANS ITS A NORMAL CIVIC -> NOT A PARENT NOR A CHILD
+		//if a parent or 
+		if (isCivicChild(eCivic))
+		{
+			return false;
+		}
+	}
+*/
+/* Civics Dependency (Asaf) - start */
+			
 	return true;
 }
 
@@ -7322,26 +7373,24 @@ bool CvPlayer::canDoAnyRevolution() const
 }
 
 /* Civics Dependency (Asaf) - start */
-/*CivicTypes CvPlayer::getCivicParent(CivicTypes eCivic) const
+CivicTypes CvPlayer::isCivicChild(CivicTypes eCivic) const
 {
-	if (GC.getCivicInfo(eCivic).getNumParentCivicsChildren() > 0)
-		return eCivic; // if the same civic is a parent
-	
 	for (int iI = 0; iI < GC.getNumCivicInfos(); ++iI)
 	{
-		int childrenCivics = GC.getCivicInfo((CivicTypes)iI).getNumParentCivicsChildren();
-		if (childrenCivics > 0)
+		CvCivicInfo& kCivic = GC.getCivicInfo((CivicTypes)iI);
+		int eIsParent = kCivic.getNumParentCivicsChildren();
+		if (eIsParent > 0)
 		{
-			for (int J = 0; J < childrenCivics; J++)
+			for (int J = 0; J < eIsParent; J++)
 			{
-				if ((CivicTypes)J == eCivic)
-					return (CivicTypes)iI; //return the parent of the child civic
+				//if the sent civic exists as a child for any parent
+				if (kCivic.getParentCivicsChildren(J) == eCivic)
+					return eCivic; 
 			}
 		}
 	}
-	return NO_CIVIC; //the civic is not a parent nor a child
+	return NO_CIVIC;
 }
-*/
 /* Civics Dependency (Asaf) - End */
 
 bool CvPlayer::canRevolution(CivicMap const& kNewCivics) const 

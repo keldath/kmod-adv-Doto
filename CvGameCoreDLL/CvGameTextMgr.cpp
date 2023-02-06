@@ -8278,75 +8278,57 @@ void CvGameTextMgr::parseCivicInfo(CvWStringBuffer &szHelpText, CivicTypes eCivi
 					gDLL->getText("TXT_KEY_MISC_CURRENTLY").GetCString()));
 		} // </advc.912b>
 	}
-	/* Civics Dependency (Asaf) - Start */
-	int stopLoop = false;
+/* Civics Dependency (Asaf) - start */	
+	bool foundParent = false;
 	CvWString szTempBuffer_civics;
 	bool bFirst = true;
-	int parent = 0;
-	for (iI = 0; iI < GC.getNumCivicInfos(); ++iI)
+	int eNumChildren = GC.getCivicInfo(eCivic).getNumParentCivicsChildren();
+	CivicTypes eParent = NO_CIVIC;
+	if (eNumChildren > 0)
+			eParent = eCivic;
+	if (eParent	!= NO_CIVIC)
 	{
-		if (stopLoop)
-			break;
-
-		CivicTypes eParentCivic = (CivicTypes)iI;
-
-		if (eParentCivic != NO_CIVIC)
-		{
-			if (eCivic == eParentCivic)
-				parent = 1;
-				
-			int childrenExists = GC.getCivicInfo(eParentCivic).getNumParentCivicsChildren();
-			if (childrenExists > 0)
-			{
-				for (int i = 0; i < childrenExists; i++)
-				{
-					if (stopLoop)
-						break;
-
-					CivicTypes eChildCivic = GC.getInfo(eParentCivic).getParentCivicsChildren(i);
-
-					if (eChildCivic == NO_CIVIC)
-						continue;
-					
-					
-					if (eCivic == eParentCivic)
+		for (int i = 0; i < eNumChildren; i++)
 					{
+			CivicTypes eChildCivic = GC.getInfo(eParent).getParentCivicsChildren(i);
 						if (bFirst)
 							bFirst = false;
 						else szTempBuffer_civics.append(L", ");
-						//szHelpText.append(NEWLINE);
-						//szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_ALLOWS_CIVIC_CHILDREN", GC.getCivicInfo(eChildCivic).getTextKeyWide()));
 						szTempBuffer_civics.append(gDLL->getText("TXT_KEY_CIVIC_DEPENDANCY", GC.getCivicInfo(eChildCivic).getTextKeyWide()));
-						//append(gDLL->getText("TXT_KEY_CIVIC_DEPENDANCY", GC.getCivicInfo(eChildCivic).getTextKeyWide(),
-						//	GC.getCivicInfo(eChildCivic).getButton()));
 					}
-					if (eChildCivic == eCivic)
+		szHelpText.append(NEWLINE);
+		szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_ALLOWS_CIVIC_CHILDREN"));
+		szHelpText.append(szTempBuffer_civics);			
+	}
+	else
+	{				
+		for (int iI = 0; iI < GC.getNumCivicInfos(); ++iI)
 					{
-						//szHelpText.append(NEWLINE);
-						//szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_REQUIRES_CIVIC_PARENT", GC.getCivicInfo(eParentCivic).getTextKeyWide()));
-						szTempBuffer_civics.append(gDLL->getText("TXT_KEY_CIVIC_DEPENDANCY", GC.getCivicInfo(eParentCivic).getTextKeyWide()));
-						parent = 2;
-						stopLoop = true; //one parent
+			CivicTypes eParent = (CivicTypes)iI;
+			CvCivicInfo& kCivic = GC.getCivicInfo(eParent);
+			int eNumChildren = kCivic.getNumParentCivicsChildren();
+			if (eNumChildren > 0)
+			{
+				for (int J = 0; J < eNumChildren; J++)
+				{
+					//if the sent civic exists as a child for any parent
+					if (kCivic.getParentCivicsChildren(J) == eCivic)
+					{
+						szTempBuffer_civics.append(gDLL->getText("TXT_KEY_CIVIC_DEPENDANCY", GC.getCivicInfo(eParent).getTextKeyWide()));				
+						if (!foundParent)
+							foundParent = true;
 					}
 				}
-				if (parent == 1)
-				{
-					szHelpText.append(NEWLINE);
-					//gDLL->getText("TXT_KEY_CIVIC_ALLOWS_CIVIC_CHILDREN"
-					szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_ALLOWS_CIVIC_CHILDREN"));
-					szHelpText.append(szTempBuffer_civics);
 				}
-				else if (parent == 2)
+		}
+		if (foundParent)
 				{
 					szHelpText.append(NEWLINE);
-					//gDLL->getText("TXT_KEY_CIVIC_REQUIRES_CIVIC_PARENT"
 					szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_REQUIRES_CIVIC_PARENT"));
 					szHelpText.append(szTempBuffer_civics);
 				}
 			}
-		}
-	}
-	/* Civics Dependency (Asaf) - End */
+/* Civics Dependency (Asaf) - end */
 	if (!CvWString(kCivic.getHelp()).empty())
 		szHelpText.append(CvWString::format(L"%s%s", NEWLINE, kCivic.getHelp()).c_str());
 }

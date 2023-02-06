@@ -142,6 +142,14 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
+<!--Civics Dependency (Asaf) - Start -->		
+			<CivicChild>
+				<Type>CIVIC_R3</Type>
+				<Type>CIVIC_R4</Type>
+				<Type>CIVIC_FANATICISM</Type>
+				<Type>CIVIC_AGGRERIAN</Type>
+			</CivicChild>
+<!--Civics Dependency (Asaf) - END -->
 			<iCivicPercentAnger>0</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
@@ -207,6 +215,14 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
+<!--Civics Dependency (Asaf) - Start -->		
+			<CivicChild>
+				<Type>CIVIC_R5</Type>
+				<Type>CIVIC_R6</Type>
+				<Type>CIVIC_INTELECT</Type>
+				<Type>CIVIC_RESIDENTIAL</Type>
+			</CivicChild>
+<!--Civics Dependency (Asaf) - END -->
 			<iCivicPercentAnger>0</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
@@ -276,6 +292,14 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
+<!--Civics Dependency (Asaf) - Start -->		
+			<CivicChild>
+				<Type>CIVIC_R9</Type>
+				<Type>CIVIC_R10</Type>
+				<Type>CIVIC_CREATISM</Type>
+				<Type>CIVIC_CONSTRUCTIONAL</Type>
+			</CivicChild>
+<!--Civics Dependency (Asaf) - END -->
 			<iCivicPercentAnger>0</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
@@ -346,6 +370,14 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
+<!--Civics Dependency (Asaf) - Start -->		
+			<CivicChild>
+				<Type>CIVIC_R7</Type>
+				<Type>CIVIC_R8</Type>
+				<Type>CIVIC_INDIVIDUALIASM</Type>
+				<Type>CIVIC_EXPONTIONAL</Type>
+			</CivicChild>
+<!--Civics Dependency (Asaf) - END -->
 			<iCivicPercentAnger>0</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
@@ -423,6 +455,14 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
+<!--Civics Dependency (Asaf) - Start -->		
+			<CivicChild>
+				<Type>CIVIC_R15</Type>
+				<Type>CIVIC_R16</Type>
+				<Type>CIVIC_PRAGMATISM</Type>
+				<Type>CIVIC_PROGGRESSIONAL</Type>
+			</CivicChild>
+<!--Civics Dependency (Asaf) - END -->
 			<iCivicPercentAnger>0</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
@@ -504,6 +544,14 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
+<!--Civics Dependency (Asaf) - Start -->		
+			<CivicChild>
+				<Type>CIVIC_R13</Type>
+				<Type>CIVIC_R14</Type>
+				<Type>CIVIC_IMPERIALISM</Type>
+				<Type>CIVIC_EXPLOITATIONAL</Type>
+			</CivicChild>
+<!--Civics Dependency (Asaf) - END -->
 			<iCivicPercentAnger>0</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
@@ -587,6 +635,14 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
+<!--Civics Dependency (Asaf) - Start -->		
+			<CivicChild>
+				<Type>CIVIC_R11</Type>
+				<Type>CIVIC_R12</Type>
+				<Type>CIVIC_COMMERCIALISM</Type>
+				<Type>CIVIC_PASTORAL</Type>
+			</CivicChild>
+<!--Civics Dependency (Asaf) - END -->
 			<iCivicPercentAnger>0</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
@@ -5082,7 +5138,7 @@
 			<Civilopedia>TXT_KEY_CIVIC_PROARM_PEDIA</Civilopedia>
 			<Strategy>wildly excessive or irrational devotion, dedication, or enthusiasm</Strategy>
 			<Button>Art/Interface/MainScreen/CityScreen/Great_Priest.dds</Button>
-			<TechPrereq>TECH_FICTIVE_TECH</TechPrereq>
+			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>NONE</Upkeep>
 			<iAIWeight>2</iAIWeight>
@@ -5158,7 +5214,7 @@
 			<Civilopedia>TXT_KEY_CIVIC_PROARM_PEDIA</Civilopedia>
 			<Strategy>This civic is good for Empires with little GPT and big armies.</Strategy>
 			<Button>Art/Interface/MainScreen/CityScreen/Great_Scientist.dds</Button>
-			<TechPrereq>TECH_FICTIVE_TECH</TechPrereq>
+			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>NONE</Upkeep>
 			<iAIWeight>4</iAIWeight>
@@ -5234,7 +5290,7 @@
 			<Civilopedia>TXT_KEY_CIVIC_PROARM_PEDIA</Civilopedia>
 			<Strategy>This civic is good for Empires with little GPT and big armies.</Strategy>
 			<Button>Art/Interface/MainScreen/CityScreen/Great_Artist.dds</Button>
-			<TechPrereq>TECH_FICTIVE_TECH</TechPrereq>
+			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>NONE</Upkeep>
 			<iAIWeight>3</iAIWeight>
@@ -5315,7 +5371,7 @@
 						(Philosophy) the practice of moral principles without reference to religion</Civilopedia>
 			<Strategy>na</Strategy>
 			<Button>Art/Interface/MainScreen/CityScreen/Great_Engineer.dds</Button>
-			<TechPrereq>TECH_FICTIVE_TECH</TechPrereq>
+			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>NONE</Upkeep>
 			<iAIWeight>2</iAIWeight>
@@ -5392,7 +5448,7 @@
 			<Civilopedia>TXT_KEY_CIVIC_PROARM_PEDIA</Civilopedia>
 			<Strategy>This civic is good for Empires with little GPT and big armies.</Strategy>
 			<Button>Art/Interface/MainScreen/CityScreen/Great_Merchant.dds</Button>
-			<TechPrereq>TECH_FICTIVE_TECH</TechPrereq>
+			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>NONE</Upkeep>
 			<iAIWeight>3</iAIWeight>
@@ -5468,7 +5524,7 @@
 			<Civilopedia>the action or principle of asserting one's independence and individuality</Civilopedia>
 			<Strategy>na</Strategy>
 			<Button>,Art/Interface/MainScreen/CityScreen/Great_Engineer.dds,Art/Interface/Buttons/Warlords_Atlas_2.dds,2,6</Button>
-			<TechPrereq>TECH_FICTIVE_TECH</TechPrereq>
+			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>NONE</Upkeep>
 			<iAIWeight>2</iAIWeight>
@@ -5546,7 +5602,7 @@
 			<Strategy>a. the doctrine that the content of a concept consists only in its practical applicability
 b. the doctrine that truth consists not in correspondence with the facts but in successful coherence with</Strategy>
 			<Button>Art/Interface/MainScreen/CityScreen/great_spy.dds</Button>
-			<TechPrereq>TECH_FICTIVE_TECH</TechPrereq>
+			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>NONE</Upkeep>
 			<iAIWeight>4</iAIWeight>
@@ -5687,7 +5743,7 @@ b. the doctrine that truth consists not in correspondence with the facts but in 
 			<Civilopedia>TXT_KEY_CIVIC_MERC_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_CIVIC_MERC_STRATEGY</Strategy>
 			<Button>,Art/Interface/Buttons/Builds/BuildFarm.dds,Art/Interface/Buttons/Actions_Builds_LeaderHeads_Specialists_Atlas.dds,3,7</Button>
-			<TechPrereq>TECH_FICTIVE_TECH</TechPrereq>
+			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>NONE</Upkeep>
 			<iAIWeight>4</iAIWeight>
@@ -5769,7 +5825,7 @@ b. the doctrine that truth consists not in correspondence with the facts but in 
 			<Civilopedia>TXT_KEY_CIVIC_MERC_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_CIVIC_MERC_STRATEGY</Strategy>
 			<Button>,Art/Interface/Buttons/Builds/BuildVillage.dds,Art/Interface/Buttons/Actions_Builds_LeaderHeads_Specialists_Atlas.dds,5,9</Button>
-			<TechPrereq>TECH_FICTIVE_TECH</TechPrereq>
+			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>NONE</Upkeep>
 			<iAIWeight>2</iAIWeight>
@@ -5851,7 +5907,7 @@ b. the doctrine that truth consists not in correspondence with the facts but in 
 			<Civilopedia>TXT_KEY_CIVIC_MERC_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_CIVIC_MERC_STRATEGY</Strategy>
 			<Button>,Art/Interface/Buttons/Builds/BuildLumberMill.dds,Art/Interface/Buttons/Actions_Builds_LeaderHeads_Specialists_Atlas.dds,5,7</Button>
-			<TechPrereq>TECH_FICTIVE_TECH</TechPrereq>
+			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>NONE</Upkeep>
 			<iAIWeight>3</iAIWeight>
@@ -5933,7 +5989,7 @@ b. the doctrine that truth consists not in correspondence with the facts but in 
 			<Civilopedia>TXT_KEY_CIVIC_MERC_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_CIVIC_MERC_STRATEGY</Strategy>
 			<Button>,Art/Interface/Buttons/TechTree/Corporation.dds,Art/Interface/Buttons/Beyond_the_Sword_Atlas.dds,4,14</Button>
-			<TechPrereq>TECH_FICTIVE_TECH</TechPrereq>
+			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>NONE</Upkeep>
 			<iAIWeight>2</iAIWeight>
@@ -6015,7 +6071,7 @@ b. the doctrine that truth consists not in correspondence with the facts but in 
 			<Civilopedia>TXT_KEY_CIVIC_MERC_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_CIVIC_MERC_STRATEGY</Strategy>
 			<Button>,Art/Interface/Buttons/Builds/BuildPasture.dds,Art/Interface/Buttons/Actions_Builds_LeaderHeads_Specialists_Atlas.dds,8,7</Button>
-			<TechPrereq>TECH_FICTIVE_TECH</TechPrereq>
+			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>NONE</Upkeep>
 			<iAIWeight>1</iAIWeight>
@@ -6097,7 +6153,7 @@ b. the doctrine that truth consists not in correspondence with the facts but in 
 			<Civilopedia>TXT_KEY_CIVIC_MERC_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_CIVIC_MERC_STRATEGY</Strategy>
 			<Button>,Art/Interface/Buttons/Builds/BuildWell.dds,Art/Interface/Buttons/Actions_Builds_LeaderHeads_Specialists_Atlas.dds,4,8</Button>
-			<TechPrereq>TECH_FICTIVE_TECH</TechPrereq>
+			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>NONE</Upkeep>
 			<iAIWeight>3</iAIWeight>
@@ -6179,7 +6235,7 @@ b. the doctrine that truth consists not in correspondence with the facts but in 
 			<Civilopedia>TXT_KEY_CIVIC_MERC_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_CIVIC_MERC_STRATEGY</Strategy>
 			<Button>,Art/Interface/Buttons/Builds/BuildWinery.dds,Art/Interface/Buttons/Actions_Builds_LeaderHeads_Specialists_Atlas.dds,6,8</Button>
-			<TechPrereq>TECH_FICTIVE_TECH</TechPrereq>
+			<TechPrereq>NONE</TechPrereq>
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>NONE</Upkeep>
 			<iAIWeight>2</iAIWeight>

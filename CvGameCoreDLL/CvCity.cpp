@@ -1497,7 +1497,7 @@ bool CvCity::isCultureWorldWondersMaxed() const
 
 	//THIS GAME OPTION will allow construction of 1 wonder, if 
 	//all of the wonders are obsilete on a city except 1.
-	//this is a way for not blocking winders for cities with ancient none working wonders...
+	//this is a way for not blocking wonders for cities with ancient none working wonders...
 	if (GC.getGame().isOption(GAMEOPTION_CULTURE_WONDER_LIMIT_OBSOLETE))
 	{
 		int obsoletecount = 0;
@@ -1509,13 +1509,13 @@ bool CvCity::isCultureWorldWondersMaxed() const
 		if ((winderCount - obsoletecount) == 1)
 			return false;
 	}
+	//wonder amount according to the level of culture - controlled from the globaldefines file
+	//CultureLevelTypes
+	if (cultureLevelId == 0 || cultureLevelId == NO_CULTURELEVEL)
+		return true;
 	//unused but kept it.
 	int cuktureWLimit =  GC.getInfo(getCultureLevel()).getmaxWonderCultureLimit();
 	//CvWString cultureLevelDesc = GC.getInfo(getCultureLevel()).getTextKeyWide();
-	//wonder amount according to the level of culture - controlled from the globaldefines file
-	//CultureLevelTypes
-	if (cultureLevelId == 0)
-		return true;
 	//i was thinking of limit based on world size or speed... left it off for now
 	//CvWString speed = GC.getInfo(GC.getGame().getGameSpeedType()).getDescription();
 	/*CvWString worldSize = GC.getInfo(GC.getMap().getWorldSize()).getDescription();

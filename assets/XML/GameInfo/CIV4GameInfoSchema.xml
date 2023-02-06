@@ -741,10 +741,16 @@
 	<ElementType name="TraitNoUpkeeps" content="eltOnly">
 		<element type="TraitNoUpkeep" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
+<!-- Civics Dependency (Asaf) - start -->
+	<ElementType name="isParentCivicOption" content="textOnly" dt:type="int"/>
+<!-- Civics Dependency (Asaf) - end -->
 	<ElementType name="CivicOptionInfo" content="eltOnly">
 		<element type="Type"/>
 		<element type="Description" minOccurs="0"/>
 		<element type="TraitNoUpkeeps" minOccurs="0"/>
+<!-- Civics Dependency (Asaf) - start  -->
+		<element type="isParentCivicOption" minOccurs="0"/>
+<!-- Civics Dependency (Asaf) - end -->
 	</ElementType>
 	<ElementType name="CivicOptionInfos" content="eltOnly">
 		<element type="CivicOptionInfo" maxOccurs="*"/>

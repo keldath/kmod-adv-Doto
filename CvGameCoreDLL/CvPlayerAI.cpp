@@ -17020,128 +17020,121 @@ CivicTypes CvPlayerAI::AI_bestCivic(CivicOptionTypes eCivicOption, int* piBestVa
 	return eBestCivic;
 }
 
-CivicMap CvPlayerAI::forceChildCivics(CivicMap ePreRevolutionMap) const
+void CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 {
 	PROFILE_FUNC();
 	
 	FOR_EACH_ENUM(CivicOption)
 	{
-		CivicTypes eCivic = ePreRevolutionMap.get(eLoopCivicOption); //get the civic for the itered c option	
-		CvCivicInfo& kCivic = GC.getCivicInfo(eCivic); 
-		int parentNumChildren = kCivic.getNumParentCivicsChildren();
-		//CivicTypes eParent = getCivicParent(eCivic); //check if the civic is a parent
-		
+		CivicTypes eParentCivic = ePreRevolutionMap.get(eLoopCivicOption); //get the civic for the itered c option	
+		CvCivicInfo& kParentCivic = GC.getCivicInfo(eParentCivic); 
+		int parentNumChildren = kParentCivic.getNumParentCivicsChildren();	
 		int eBestChild = 0;
 		
 		if (parentNumChildren > 0)
 		{
-			//since this is a parent civic
-			//the code below, will find its children
-			// best children for each civic option that the children belongs to
-			// and it will update the ePreRevolutionMap with the best children.
-			//this will ensure that if a parent civic was chosen, it will force select its
-			// dependant children, and will switch from current none dependant children
-			//evaluate all childcivics and save their values
-			//this should save some loops below.
 			int* m_atemp = new int[parentNumChildren];
 			for (int i = 0; i < parentNumChildren; i++)
 			{
-				m_atemp[i] = AI_civicValue_original(kCivic.getParentCivicsChildren(i));
+				m_atemp[i] = AI_civicValue_original(kParentCivic.getParentCivicsChildren(i));
 			}
 				
 			//for every civicoption - lets find the best child civic with the better value	
 			for (int i = 0; i < GC.getNumCivicOptionInfos(); i++)
 			{
+				CivicOptionTypes eLoopCivicOption = (CivicOptionTypes)i;
 				// no point in wasting a loop for the parents civic option type
-				if ((CivicOptionTypes)i == kCivic.getCivicOptionType())
+				if (eLoopCivicOption == kParentCivic.getCivicOptionType())
 					continue;
 
 				int eTempBestCivicChildOption = 0;
 				for (int J = 0; J < parentNumChildren; J++)
 				{
-					CivicTypes childCivicType = kCivic.getParentCivicsChildren(J);
-					if (!canDoCivics(childCivicType))
+					CivicTypes eChildCivic = kParentCivic.getParentCivicsChildren(J);
+					if (!canDoCivics(eChildCivic, false))
 						continue;
-					if (GC.getInfo(childCivicType).getCivicOptionType() == (CivicOptionTypes)i)
+					if (GC.getInfo(eChildCivic).getCivicOptionType() == eLoopCivicOption)
 					{
 						//if another civic child belongs to the same civic option 
 						if (m_atemp[J] > eTempBestCivicChildOption)
 						{
 							// save the value -> if there is more childs to this civic option
 							eTempBestCivicChildOption =	m_atemp[J];
-							ePreRevolutionMap.set((CivicOptionTypes)i, childCivicType);
+							ePreRevolutionMap.set(eLoopCivicOption, eChildCivic);
 						}
 					}
 				}
 			}
 		}
 	}	
-	return ePreRevolutionMap;
 }
-
-/* doto Civics Dependency (Asaf) - start ) 
-	hi jack of AI_civicValue original fn.
-	this will value a parent civic with its best children dependant civics.
-	if its not a parent civic, normal value will be returned e,g AI_civicValue AI_civicValueParent
- */
-int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
+int CvPlayerAI::AI_bestChildValue(CivicTypes eCivic) const
 {
-	PROFILE_FUNC();
-	
 	CvCivicInfo& kCivic = GC.getCivicInfo(eCivic);
-	int parentNumChildren = kCivic.getNumParentCivicsChildren() > 0;
-						//getCivicParent(eCivic);
+	//is this a parent?
+	int parentNumChildren = kCivic.getNumParentCivicsChildren();
 	int eBestChild = 0;
+	
 	if (parentNumChildren > 0)
 	{
-		int eTotalCivicChildrenValue = 0; //should be one per civ option	
-		
 		//evaluate all childcivics and save their values
-		//this should save some loops below.
-		int* m_atemp = new int[parentNumChildren];
-		for (int i = 0; i < parentNumChildren; i++)
-		{
-			m_atemp[i] = AI_civicValue_original(kCivic.getParentCivicsChildren(i));
-		}
-		int eTotalValueOfChildrenBestCivics = 0; //total dependant children 1, per civic option for a parent civic.
+		//int* m_atemp = new int[parentNumChildren];
+		//for (int i = 0; i < parentNumChildren; i++)
+		//{
+		//	m_atemp[i] = AI_civicValue_original(kCivic.getParentCivicsChildren(i));
+		//}
 			
-		//this should be saved in the playerai cache so it will know
-		//to which dependant civics the revolution should take place
-		//once a parent was deemed worthi for revolution.
-		//placed here for now for codde example
-		//ArrayEnumMap<CivicOptionTypes,CivicTypes> m_aChildCivicsToAutoSwitch; // advc.130w
-	
+		int eBestChildCivicsValue = 0;
 		//for every civicoption - lets find the best child civic with the better value	
 		for (int i = 0; i < GC.getNumCivicOptionInfos(); i++)
 		{
-			if ((CivicOptionTypes)i == kCivic.getCivicOptionType())
+			CivicOptionTypes eLoopCivicOption = (CivicOptionTypes)i;
+			//if its the parent civic option, dont add its value (done in the hijacked civic value
+			if (eLoopCivicOption == kCivic.getCivicOptionType())
 				continue;
 				
 			int eTempBestCivicChildOption = 0;
 			for (int J = 0; J < parentNumChildren; J++)
 			{
-				CivicTypes childCivicType = kCivic.getParentCivicsChildren(J);
-				if (!canDoCivics(childCivicType))
+				CivicTypes eChildCivic = kCivic.getParentCivicsChildren(J);
+				//verify the child can be chosen
+				if (!canDoCivics(eChildCivic, false))
 					continue;
-				if (GC.getInfo(childCivicType).getCivicOptionType() == (CivicOptionTypes)i)
+				if (GC.getInfo(eChildCivic).getCivicOptionType() == (eLoopCivicOption))
 				{
 					//if another civic child belongs to the same civic option 
-					if (m_atemp[J] > eTempBestCivicChildOption)
+					int childValue = AI_civicValue_original(eChildCivic);
+				//	if (m_atemp[J] > eTempBestCivicChildOption)
+					if (childValue > eTempBestCivicChildOption)
 					{
-						// save the value -> if there is more childs to this civic option
-						eTempBestCivicChildOption =	m_atemp[J];
-						//m_aChildCivicsToAutoSwitch.set((CivicOptionTypes)i, childCivicType); // see above comment
-						//m_aChildCivicsToAutoSwitch[(CivicOptionTypes)i] = childCivicType;
+						//the reason fro not adding but setting it (=) is cause the value
+						//should be for 1 child civic, the highest (which later will be added to the parent)
+						eTempBestCivicChildOption =	childValue;
+						//m_atemp[J];
 					}
 				}
 			}
-			// the best civic's value that was found for a civic option
-			eTotalValueOfChildrenBestCivics += eTempBestCivicChildOption;
+			// this will be the sum of all children civics of the given parent
+			// the value allows 1 child civic per civic option no matter how many children 
+			//exists that belong to the same civic option
+			eBestChildCivicsValue += eTempBestCivicChildOption;
 		}
-		SAFE_DELETE_ARRAY(m_atemp);
-		return AI_civicValue_original(eCivic) + eTotalValueOfChildrenBestCivics;
+		//SAFE_DELETE_ARRAY(m_atemp);	
+		return eBestChildCivicsValue;
 	}	
-	return AI_civicValue_original(eCivic); //normal civic value calc.	
+	else
+		return 0;
+}
+
+/* doto Civics Dependency (Asaf) - start ) 
+	hi jack of AI_civicValue original fn.
+	this is to avoid reccursion of calls for AI_civicValue_original
+ */
+int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
+{
+	PROFILE_FUNC();
+	
+	return AI_civicValue_original(eCivic) + AI_bestChildValue(eCivic);
 }
 /* doto Civics Dependency (Asaf) - end ) */
 /*	The bulk of this function has been rewritten for K-Mod.
@@ -20794,7 +20787,8 @@ void CvPlayerAI::AI_doCivics()
 
 	/* doto Civics Dependency (Asaf) - Start */	
 	// get the civics with forced children
-	aeBestCivic = forceChildCivics(aeBestCivic);
+	//aeBestCivic = 
+	forceChildCivics(aeBestCivic);
 	/* doto Civics Dependency (Asaf) - end */
 
 	/*	finally, if our current research would give us a new civic,

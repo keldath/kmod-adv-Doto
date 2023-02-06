@@ -248,10 +248,16 @@ public:
 	~CvCivicOptionInfo();
 
 	bool getTraitNoUpkeep(int i) const; // Exposed to Python
+/* Civics Dependency (Asaf) - start */	
+	int getParentCivicOption() const; // Exposed to Python
+/* Civics Dependency (Asaf) - end */
 	bool read(CvXMLLoadUtility* pXML);
 
 protected:
 	bool* m_pabTraitNoUpkeep;
+/* Civics Dependency (Asaf) - end */	
+	int m_iParentCivicOption;
+/* Civics Dependency (Asaf) - end */
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
