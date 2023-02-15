@@ -422,10 +422,10 @@ public:
 	// advc.550e; also need it for advc.314
 	bool isSignificantDiscovery(TechTypes eTech) const;
 
-	bool isCivic(CivicTypes eCivic) const;																			// Exposed to Python
-/* doto Civics Dependency (Asaf) - Start */																		// Exposed to Python
-	bool canDoCivics(CivicTypes eCivic, bool ignoreChildCivic = true) const;
-	CivicTypes isCivicChild(CivicTypes eCivic) const	;																	// Exposed to Python
+	bool isCivic(CivicTypes eCivic) const;														// Exposed to Python	
+	bool canDoCivics(CivicTypes eCivic) const;	
+/* doto Civics Dependency (Asaf) - Start */									
+	int isCivicParentOrChild(CivicTypes eCivic) const	;																	// Exposed to Python
 /* Civics Dependency (Asaf) - End */
 	bool canRevolution(CivicMap const& kNewCivics) const; // advc.001: Exposed to Python as canAdopt
 	bool canDoAnyRevolution() const; // advc.enum, exposed to Python as canRevolution(0).

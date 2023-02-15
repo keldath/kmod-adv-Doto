@@ -88,14 +88,6 @@ CvPlayerAI::CvPlayerAI(/* advc.003u: */ PlayerTypes eID) : CvPlayer(eID)
 	m_aiUnitClassWeights = NULL;
 	m_aiUnitCombatWeights = NULL;
 	//m_aiCloseBordersAttitude = new int[MAX_PLAYERS];
-
-/* doto Civics Dependency (Asaf) - Start */	
-//	m_aChildCivicsToAutoSwitch = new int[GC.getNumCivicOptionInfos()];;
-//	for (int i = 0; i < GC.getNumCivicOptionInfos(); i++)
-//	{
-//		m_aChildCivicsToAutoSwitch[i] = -1;
-//	}
-/* doto Civics Dependency (Asaf) - end */
 	m_aiCloseBordersAttitude.resize(MAX_PLAYERS); // K-Mod
 
 	m_aiAttitude.resize(MAX_PLAYERS); // K-Mod
@@ -179,9 +171,6 @@ void CvPlayerAI::AI_uninit()
 	SAFE_DELETE_ARRAY(m_aiBonusValueTrade); // advc.036
 	SAFE_DELETE_ARRAY(m_aiUnitClassWeights);
 	SAFE_DELETE_ARRAY(m_aiUnitCombatWeights);
-/* doto Civics Dependency (Asaf) - Start */		
-//	SAFE_DELETE_ARRAY(m_aChildCivicsToAutoSwitch);
-/* doto Civics Dependency (Asaf) - end */	
 }
 
 
@@ -322,14 +311,7 @@ void CvPlayerAI::AI_reset(bool bConstructor)
 		m_aiUnitCombatWeights[iI] = 0;
 	}
 	m_aiVictoryWeights.reset(); // advc.115f
-/* doto Civics Dependency (Asaf) - Start */
-	//FAssert(m_aChildCivicsToAutoSwitch == NULL);
-//	m_aChildCivicsToAutoSwitch = new int[GC.getNumCivicOptionInfos()];
-//	for (iI = 0; iI < GC.getNumCivicOptionInfos(); iI++)
-//	{
-//		m_aChildCivicsToAutoSwitch[iI] = -1;
-//	}
-/* doto Civics Dependency (Asaf) - end */	
+
 	/*for (iI = 0; iI < MAX_PLAYERS; iI++) {
 		m_aiCloseBordersAttitude[iI] = 0;
 		if (!bConstructor && getID() != NO_PLAYER)
@@ -9027,7 +9009,7 @@ PlayerVoteTypes CvPlayerAI::AI_diploVote(const VoteSelectionSubData& kVoteData,
 			break;
 		}
 		//dune wars - hated civs					//a1021 end
-
+		
 		/* Civics Dependency (Asaf) - Start */
 		//keldath doto - consider make the loop calc ignore any child civics
 		/* Civics Dependency (Asaf) - Start */
@@ -17005,7 +16987,7 @@ CivicTypes CvPlayerAI::AI_bestCivic(CivicOptionTypes eCivicOption, int* piBestVa
 			//keldath doto - consider make the loop calc ignore any child civics
 			/* Civics Dependency (Asaf) - Start */
 			if (canDoCivics(eLoopCivic))
-			{
+				{
 				int iValue = AI_civicValue(eLoopCivic);
 				if (iValue > iBestValue)
 				{
@@ -17051,7 +17033,7 @@ void CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 				for (int J = 0; J < parentNumChildren; J++)
 				{
 					CivicTypes eChildCivic = kParentCivic.getParentCivicsChildren(J);
-					if (!canDoCivics(eChildCivic, false))
+					if (!canDoCivics(eChildCivic))
 						continue;
 					if (GC.getInfo(eChildCivic).getCivicOptionType() == eLoopCivicOption)
 					{
@@ -17068,7 +17050,8 @@ void CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 		}
 	}	
 }
-int CvPlayerAI::AI_bestChildValue(CivicTypes eCivic) const
+
+int CvPlayerAI::AI_totalBestChildrenValue(CivicTypes eCivic) const
 {
 	CvCivicInfo& kCivic = GC.getCivicInfo(eCivic);
 	//is this a parent?
@@ -17077,13 +17060,6 @@ int CvPlayerAI::AI_bestChildValue(CivicTypes eCivic) const
 	
 	if (parentNumChildren > 0)
 	{
-		//evaluate all childcivics and save their values
-		//int* m_atemp = new int[parentNumChildren];
-		//for (int i = 0; i < parentNumChildren; i++)
-		//{
-		//	m_atemp[i] = AI_civicValue_original(kCivic.getParentCivicsChildren(i));
-		//}
-			
 		int eBestChildCivicsValue = 0;
 		//for every civicoption - lets find the best child civic with the better value	
 		for (int i = 0; i < GC.getNumCivicOptionInfos(); i++)
@@ -17098,19 +17074,17 @@ int CvPlayerAI::AI_bestChildValue(CivicTypes eCivic) const
 			{
 				CivicTypes eChildCivic = kCivic.getParentCivicsChildren(J);
 				//verify the child can be chosen
-				if (!canDoCivics(eChildCivic, false))
+				if (!canDoCivics(eChildCivic))
 					continue;
 				if (GC.getInfo(eChildCivic).getCivicOptionType() == (eLoopCivicOption))
 				{
 					//if another civic child belongs to the same civic option 
 					int childValue = AI_civicValue_original(eChildCivic);
-				//	if (m_atemp[J] > eTempBestCivicChildOption)
 					if (childValue > eTempBestCivicChildOption)
 					{
 						//the reason fro not adding but setting it (=) is cause the value
 						//should be for 1 child civic, the highest (which later will be added to the parent)
 						eTempBestCivicChildOption =	childValue;
-						//m_atemp[J];
 					}
 				}
 			}
@@ -17118,10 +17092,9 @@ int CvPlayerAI::AI_bestChildValue(CivicTypes eCivic) const
 			// the value allows 1 child civic per civic option no matter how many children 
 			//exists that belong to the same civic option
 			eBestChildCivicsValue += eTempBestCivicChildOption;
-		}
-		//SAFE_DELETE_ARRAY(m_atemp);	
+		}	
 		return eBestChildCivicsValue;
-	}	
+	}
 	else
 		return 0;
 }
@@ -17134,7 +17107,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 {
 	PROFILE_FUNC();
 	
-	return AI_civicValue_original(eCivic) + AI_bestChildValue(eCivic);
+	return AI_civicValue_original(eCivic) + AI_totalBestChildrenValue(eCivic);
 }
 /* doto Civics Dependency (Asaf) - end ) */
 /*	The bulk of this function has been rewritten for K-Mod.
@@ -20790,7 +20763,7 @@ void CvPlayerAI::AI_doCivics()
 	//aeBestCivic = 
 	forceChildCivics(aeBestCivic);
 	/* doto Civics Dependency (Asaf) - end */
-
+	
 	/*	finally, if our current research would give us a new civic,
 		consider waiting for that. */
 	if (iAnarchyLength > 0 && bWillSwitch)
@@ -22656,7 +22629,7 @@ bool CvPlayerAI::AI_contactCivics(PlayerTypes eHuman)
 		return false;
 	CvPlayer& kHuman = GET_PLAYER(eHuman);
 	if(!kHuman.canDoCivics(eFavoriteCivic) || kHuman.isCivic(eFavoriteCivic) ||
-		!kHuman.canDoAnyRevolution())
+			!kHuman.canDoAnyRevolution())
 	{
 		return false;
 	}
@@ -23573,9 +23546,6 @@ void CvPlayerAI::read(FDataStreamBase* pStream)
 	if (uiFlag >= 20)
 		m_aiVictoryWeights.read(pStream);
 	else AI_updateVictoryWeights(); // </advc.115f>
-/* doto Civics Dependency (Asaf) - Start */			
-//	pStream->Read(GC.getNumCivicOptionInfos(), m_aChildCivicsToAutoSwitch);
-/* doto Civics Dependency (Asaf) - end */		
 	// <advc.130n>
 	if (uiFlag == 18)
 	{
@@ -23748,9 +23718,6 @@ void CvPlayerAI::write(FDataStreamBase* pStream)
 	pStream->Write(GC.getNumUnitClassInfos(), m_aiUnitClassWeights);
 	pStream->Write(GC.getNumUnitCombatInfos(), m_aiUnitCombatWeights);
 	m_aiVictoryWeights.write(pStream); // advc.115f
-/* doto Civics Dependency (Asaf) - Start */		
-//	pStream->Write(GC.getNumCivicOptionInfos(), m_aChildCivicsToAutoSwitch);
-/* doto Civics Dependency (Asaf) - end */	
 	// K-Mod. save great person weights.
 	{
 		int iItems = m_GreatPersonWeights.size();

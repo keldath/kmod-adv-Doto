@@ -71,7 +71,7 @@ public: // The const functions are exposed to Python except those added by AdvCi
 	bool isBuildingOnlyHealthy() const { return m_bBuildingOnlyHealthy; }
 	bool isNoForeignTrade() const { return m_bNoForeignTrade; }
 	bool isNoCorporations() const { return m_bNoCorporations; }
-	bool isNoForeignCorporations() const { return m_bNoForeignCorporations; }
+	bool isNoForeignCorporations() const { return m_bNoForeignCorporations; }	
 /* Civics Dependency (Asaf) - Start */
 	int py_getParentCivicsChildren(int i) const;
 /* Civics Dependency (Asaf) - end */
@@ -196,7 +196,7 @@ protected:
 	bool m_bMilitaryFoodProduction;
 	bool m_bBuildingOnlyHealthy;
 	bool m_bNoForeignTrade;
-	bool m_bNoCorporations;
+	bool m_bNoCorporations;	
 	bool m_bNoForeignCorporations;
 /* Civics Dependency (Asaf) - Start */
 	std::vector<CivicTypes> m_aeParentCivicsChildren;

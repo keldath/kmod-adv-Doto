@@ -8289,13 +8289,13 @@ void CvGameTextMgr::parseCivicInfo(CvWStringBuffer &szHelpText, CivicTypes eCivi
 	if (eParent	!= NO_CIVIC)
 	{
 		for (int i = 0; i < eNumChildren; i++)
-					{
+		{
 			CivicTypes eChildCivic = GC.getInfo(eParent).getParentCivicsChildren(i);
-						if (bFirst)
-							bFirst = false;
-						else szTempBuffer_civics.append(L", ");
-						szTempBuffer_civics.append(gDLL->getText("TXT_KEY_CIVIC_DEPENDANCY", GC.getCivicInfo(eChildCivic).getTextKeyWide()));
-					}
+			if (bFirst)
+				bFirst = false;
+			else szTempBuffer_civics.append(L", ");
+			szTempBuffer_civics.append(gDLL->getText("TXT_KEY_CIVIC_DEPENDANCY", GC.getCivicInfo(eChildCivic).getTextKeyWide()));
+		}
 		szHelpText.append(NEWLINE);
 		szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_ALLOWS_CIVIC_CHILDREN"));
 		szHelpText.append(szTempBuffer_civics);			
@@ -8303,7 +8303,7 @@ void CvGameTextMgr::parseCivicInfo(CvWStringBuffer &szHelpText, CivicTypes eCivi
 	else
 	{				
 		for (int iI = 0; iI < GC.getNumCivicInfos(); ++iI)
-					{
+		{
 			CivicTypes eParent = (CivicTypes)iI;
 			CvCivicInfo& kCivic = GC.getCivicInfo(eParent);
 			int eNumChildren = kCivic.getNumParentCivicsChildren();
@@ -8319,15 +8319,15 @@ void CvGameTextMgr::parseCivicInfo(CvWStringBuffer &szHelpText, CivicTypes eCivi
 							foundParent = true;
 					}
 				}
-				}
+			}
 		}
 		if (foundParent)
-				{
-					szHelpText.append(NEWLINE);
-					szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_REQUIRES_CIVIC_PARENT"));
-					szHelpText.append(szTempBuffer_civics);
-				}
-			}
+		{
+			szHelpText.append(NEWLINE);
+			szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_REQUIRES_CIVIC_PARENT"));
+			szHelpText.append(szTempBuffer_civics);
+		}
+	}
 /* Civics Dependency (Asaf) - end */
 	if (!CvWString(kCivic.getHelp()).empty())
 		szHelpText.append(CvWString::format(L"%s%s", NEWLINE, kCivic.getHelp()).c_str());

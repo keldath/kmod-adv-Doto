@@ -121,7 +121,7 @@ CvCivicInfo::~CvCivicInfo()
 		}
 		SAFE_DELETE_ARRAY(m_ppiBuildingCommerceChanges);
 	}
-	// < Civic Infos Plus End   >
+// < Civic Infos Plus End   >
 	SAFE_DELETE_ARRAY(m_piCommerceModifier);
 	SAFE_DELETE_ARRAY(m_piCapitalCommerceModifier);
 	SAFE_DELETE_ARRAY(m_piSpecialistExtraCommerce);
@@ -737,7 +737,7 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetInfoIDFromChildXmlVal(m_eCivicOptionType, "CivicOptionType");
 	FAssert(m_eCivicOptionType != NO_CIVICOPTION); // advc
 	pXML->SetInfoIDFromChildXmlVal(m_eTechPrereq, "TechPrereq");
-
+	
 	pXML->GetChildXmlValByName(&m_iAnarchyLength, "iAnarchyLength");
 
 	pXML->SetInfoIDFromChildXmlVal(m_iUpkeep, "Upkeep");
