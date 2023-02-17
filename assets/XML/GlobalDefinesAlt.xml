@@ -580,7 +580,7 @@
 	<Define>
 		<DefineName>BASE_UNIT_UPGRADE_COST</DefineName>
 		<iDefineIntVal>15</iDefineIntVal>
-<!-- KELDATH CIVIC DEPENDANCY-->	
+<!-- KELDATH CIVIC parent-->	
 	</Define>
 	<Define>
 		<DefineName>NUM_OF_CIVIC_DEPENDANCIES</DefineName>
@@ -589,7 +589,7 @@
 	<Define>
 		<DefineName>MAX_CIVIC_OPTIONS</DefineName>
 		<iDefineIntVal>8</iDefineIntVal>
-<!-- KELDATH CIVIC DEPENDANCY-->	
+<!-- KELDATH CIVIC parent-->	
 	</Define>
 	
 </Civ4Defines>

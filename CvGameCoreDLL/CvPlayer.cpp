@@ -3162,119 +3162,93 @@ void CvPlayer::verifyCivics()
 
 	FOR_EACH_ENUM(CivicOption)
 	{
-/* doto Civics Dependency (Asaf) - start ) 	*/
-//if a child civic is selected -> force its parent to be selected as well.	
+/* doto civics  parent - start*/
 		CivicTypes eSelectedCivic = getCivics(eLoopCivicOption);
-		if (GC.getInfo(eLoopCivicOption).getParentCivicOption() > 0)
+		CvCivicInfo& kParentCivic = GC.getCivicInfo(eSelectedCivic); 
+		int parentNumChildren = kParentCivic.getNumParentCivicsChildren();
+		int whichCivicOption = GC.getInfo(eLoopCivicOption).getParentCivicOption();
+		if (whichCivicOption == 2) ///double check of the civic option
 		{
 			int civicType = isCivicParentOrChild(eSelectedCivic);
-			if (civicType > 0)
+			if (civicType == 2) //selected civic's civic option is of parent type - second check to verify its a parent
 			{
-				if (civicType == 1) //selected civic's civic option is of child type
+				if (parentNumChildren > 0)
 				{
+					//the loop was added in order to handle each children civics
+					//separatly , cause the children are listed in the xml as a 
+					//list without civic option reffernce
 					for (int i = 0; i < GC.getNumCivicOptionInfos(); i++)
-					{	
-						CivicTypes eParentCivic = (CivicTypes)i;
-						CvCivicInfo& kParentCivic = GC.getCivicInfo(eParentCivic); 
-						int parentNumChildren = kParentCivic.getNumParentCivicsChildren();
-						if (parentNumChildren > 0)
-						{
-							for (int J = 0; J < parentNumChildren; J++)
+					{
+						bool properChildisSelected = false;
+						CivicOptionTypes eCurrOption = CivicOptionTypes(i);
+						
+						//checks if at least one of the child civics of the parent
+						//is selected and can be selected
+						//if none is found for this civic option
+						//then we need to find the best one (below
+						for (int J = 0; J < parentNumChildren; J++)
+						{	
+							CivicTypes eChildCivic = kParentCivic.getParentCivicsChildren(J);
+							CvCivicInfo& kChildCivic = GC.getCivicInfo(eChildCivic);
+							if (eCurrOption != kChildCivic.getCivicOptionType())
+								continue;
+							if (getCivics(eCurrOption) == eChildCivic)
 							{
-								CivicTypes eChildCivic = kParentCivic.getParentCivicsChildren(J);
-								//if one of the childs is the selected civic
-								//make sure its parent is selected.
-								if (eSelectedCivic == eChildCivic)
+								if (canDoCivics(eChildCivic))
 								{
-									//verify if the parent that is suppose to be selected is selected
-									//(cause the child is eselected)
-									//so if the parent is not selected but child is selected, this will
-									//force select the child
-									if (getCivics(kParentCivic.getCivicOptionType()) != eParentCivic)
-									{
-										setCivics(eLoopCivicOption, eParentCivic);
-										break; // parent is set, all good.
-									}
+									properChildisSelected = true;
+									break;
 								}
+							}
+						}
+						//let find the best child
+						if (!properChildisSelected)
+						{
+							int eBestChildCivicsValue = 0;
+							int eUpdatedNew = false;
+							CivicMap m_aeChildCivics;
+							
+							//for every civicoption - lets find the best child civic with the better value	
+							for (int ii = 0; ii < parentNumChildren; ii++)
+							{
+								CivicTypes eChildCivic = kParentCivic.getParentCivicsChildren(ii);
+								CvCivicInfo& kChildCivic = GC.getInfo(eChildCivic);
+								CivicOptionTypes eChildCivicOption = kChildCivic.getCivicOptionType();
+								//if the child is is not of the current civic option , pass the higher loop will handle
+								if (eCurrOption != eChildCivicOption)
+									continue;
+								//if the child cannot be chosen , pass
+								if (!canDoCivics(eChildCivic))
+									continue;
+								//use the AI to evaluate the civic.
+								int childValue = AI().AI_civicValue_original(eChildCivic);
+								//get the highest valued
+								if (childValue > eBestChildCivicsValue)
+								{
+									//the loop might overwrite its own setCivics if a better child will be found	
+									//setCivics(GC.getInfo(eChildCivic).getCivicOptionType(), eChildCivic);
+									m_aeChildCivics.set(eCurrOption, eChildCivic);
+									eUpdatedNew = true;
+								}
+							}
+							if (eUpdatedNew)
+							{
+								if (m_aeChildCivics.get(eCurrOption) != NO_CIVIC)
+									setCivics(eCurrOption, m_aeChildCivics.get(eCurrOption));
 							}
 						}
 					}
 				}
-				else if (civicType == 2) //selected civic's civic option is of Parent type
-				{
-					CvCivicInfo& kParentCivic = GC.getCivicInfo(eSelectedCivic);
-					int parentNumChildren = kParentCivic.getNumParentCivicsChildren();	
-					bool civicOptionHasAselectedChild = true; //helps find if a civic option under the parent dont have a proper child selection
-					//go over the children of the parent and see if some of them are selected
-					for (int J = 0; J < parentNumChildren; J++)
-					{
-						CivicTypes eChildCivic = kParentCivic.getParentCivicsChildren(J);
-						CvCivicInfo& kChildCivic = GC.getInfo(eChildCivic);
-						//get the child's civic option actual selected child
-						CivicOptionTypes eDerivedChildCivicOption = kChildCivic.getCivicOptionType();
-						CivicTypes eChildSelectedCivic = getCivics(eDerivedChildCivicOption);
-						for (int t = 0; t < parentNumChildren; t++)
-						{
-							//inner loop --> if the selected child, is one of the parents childred
-							//and can candocivic -> its verified child civic option selection for the 
-							// parent we are checking in this bulk (beneath civicType == 2)
-							if (kParentCivic.getParentCivicsChildren(t)== eChildSelectedCivic)
-							{
-								if (canDoCivics(eChildSelectedCivic))
-								{
-									continue;
-								}
-								else
-									civicOptionHasAselectedChild = false;	
-							}
-							else
-								civicOptionHasAselectedChild = false;	
-						}
-						// this means the parent, has a selected civic under the civic option
-						// that was derived of eChildSelectedCivic.getCivicOptionType()) 
-						// that is not one of its children
-						// so must pick a best child for this civic option
-						if (!civicOptionHasAselectedChild)
-						{
-							int eBestChildCivicsValue = 0;
-							//for every civicoption - lets find the best child civic with the better value	
-							for (int ii = 0; ii < parentNumChildren; ii++)
-							{
-								CivicTypes ePotentialChildCivic = kParentCivic.getParentCivicsChildren(ii);
-								CvCivicInfo& kPotentialChildCivic = GC.getInfo(ePotentialChildCivic);
-								CivicOptionTypes ePotentialChildCivicOption = kPotentialChildCivic.getCivicOptionType();
-								//we just want to get the best child for the specific civic option
-								//that we now realize that has no valid child selected that belong to the parent civic
-								//that is being checked now.	
-								if (eDerivedChildCivicOption != ePotentialChildCivicOption)
-									continue;
-								if (!canDoCivics(ePotentialChildCivic))
-									continue;		
-								if (kChildCivic.getCivicOptionType() == (eLoopCivicOption))
-								{
-									//if another civic child belongs to the same civic option 
-									int childValue = AI().AI_civicValue_original(eChildCivic);
-									if (childValue > eBestChildCivicsValue)
-									{
-										//the loop might overwrite its own setCivics if a better child will be found	
-										setCivics(GC.getInfo(eChildCivic).getCivicOptionType(), eChildCivic);
-									}
-								}
-							}
-						}
-					}		
-				}
 			}
 		}
-		else 
-		{		
-		//after a civic was set above, recall the current selected
-		if (GC.getInfo(eLoopCivicOption).getParentCivicOption() > 0)
-			continue; //parents and children are handled in my code above
-		eSelectedCivic = getCivics(eLoopCivicOption); //get the selected again if any changes were done
+		//not a child not a parent-> regular code
+		//child civics are not processed directly -> the parent above does that
+		else if (whichCivicOption == 0)
+		{
+/* doto civics parent - end */
 		if (canDoCivics(eSelectedCivic))
 			continue; // verified
-/* doto Civics Dependency (Asaf) - end ) 	*/	
+
 		FOR_EACH_ENUM(Civic)
 		{
 			if (GC.getInfo(eLoopCivic).getCivicOptionType() == eLoopCivicOption &&
@@ -3284,7 +3258,7 @@ void CvPlayer::verifyCivics()
 					break;
 			}
 		}
-		}
+		}//doto civic parent
 	}
 }
 
@@ -7432,7 +7406,7 @@ bool CvPlayer::canDoAnyRevolution() const
 	return false;
 }
 
-/* Civics Dependency (Asaf) - start */
+/* doto Civics  parent - start */
 int CvPlayer::isCivicParentOrChild(CivicTypes eCivic) const
 {
 	for (int iI = 0; iI < GC.getNumCivicInfos(); ++iI)
@@ -7452,7 +7426,7 @@ int CvPlayer::isCivicParentOrChild(CivicTypes eCivic) const
 	}
 	return 0;//none
 }
-/* Civics Dependency (Asaf) - End */
+/* doto Civics  parent - End */
 
 bool CvPlayer::canRevolution(CivicMap const& kNewCivics) const
 {

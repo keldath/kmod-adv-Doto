@@ -434,6 +434,9 @@ void CyInfoPythonInterface1()
 
 	python::class_<CvCivicOptionInfo, boost::noncopyable, python::bases<CvInfoBase> >("CvCivicOptionInfo")
 		.def("getTraitNoUpkeep", &CvCivicOptionInfo::getTraitNoUpkeep, "bool (int i)")
+/* doto Civics  parent - start */	
+		.def("getParentCivicOption", &CvCivicOptionInfo::getParentCivicOption, "int ()")
+/* doto Civics  parent - end */	
 		;
 
 	python::class_<CvCivicInfo, boost::noncopyable, python::bases<CvInfoBase> >("CvCivicInfo")
@@ -489,6 +492,10 @@ void CyInfoPythonInterface1()
 		.def("isNoForeignTrade", &CvCivicInfo::isNoForeignTrade, "bool ()")
 		.def("isNoCorporations", &CvCivicInfo::isNoCorporations, "bool ()")
 		.def("isNoForeignCorporations", &CvCivicInfo::isNoForeignCorporations, "bool ()")
+/* doto Civics  parent - start */	
+		.def("getNumParentCivicsChildren", &CvCivicInfo::getNumParentCivicsChildren, "int ()")
+		.def("getParentCivicsChildren", &CvCivicInfo::getParentCivicsChildren, "CivicTypes (int i)")
+/* doto Civics  parent - end */	
 		.def("isStateReligion", &CvCivicInfo::isStateReligion, "bool ()")
 		.def("isNoNonStateReligionSpread", &CvCivicInfo::isNoNonStateReligionSpread, "bool ()")
 

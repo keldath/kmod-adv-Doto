@@ -10,25 +10,25 @@
 			<Type>CIVICOPTION_GOVERNMENT</Type>
 			<Description>TXT_KEY_CIVICOPTION_GOVERNMENT</Description>
 			<TraitNoUpkeeps/>
-<!-- Civics Dependency (Asaf) - start -->
+<!-- doto civics parent - start -->
 			<isParentCivicOption>2</isParentCivicOption>
-<!-- Civics Dependency (Asaf) - end -->		
+<!-- doto civics parent - end -->		
 		</CivicOptionInfo>
 		<CivicOptionInfo>
 			<Type>CIVICOPTION_RULES</Type>
 			<Description>Rules</Description>
 			<TraitNoUpkeeps/>
-<!-- Civics Dependency (Asaf) - start -->
+<!-- doto civics parent - start -->
 			<isParentCivicOption>1</isParentCivicOption>
-<!-- Civics Dependency (Asaf) - end -->	
+<!-- doto civics parent - end -->	
 		</CivicOptionInfo>
 		<CivicOptionInfo>
 			<Type>CIVICOPTION_IDEALS</Type>
 			<Description>Ideals</Description>
 			<TraitNoUpkeeps/>
-<!-- Civics Dependency (Asaf) - start -->
+<!-- doto civics parent - start -->
 			<isParentCivicOption>1</isParentCivicOption>
-<!-- Civics Dependency (Asaf) - end -->	
+<!-- doto civics parent - end -->	
 		</CivicOptionInfo>
 		<CivicOptionInfo>
 			<Type>CIVICOPTION_LEGAL</Type>
@@ -54,11 +54,6 @@
 			<Type>CIVICOPTION_MILITARY</Type>
 			<Description>Military</Description>
 			<TraitNoUpkeeps/>
-		<!-- </CivicOptionInfo>
-		<CivicOptionInfo>
-			<Type>CIVICOPTION_TERRA</Type>
-			<Description>**Terra**</Description>
-			<TraitNoUpkeeps/> -->
 		</CivicOptionInfo>
 	</CivicOptionInfos>
 </Civ4CivicOptionInfos>

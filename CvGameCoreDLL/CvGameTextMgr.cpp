@@ -8278,7 +8278,8 @@ void CvGameTextMgr::parseCivicInfo(CvWStringBuffer &szHelpText, CivicTypes eCivi
 					gDLL->getText("TXT_KEY_MISC_CURRENTLY").GetCString()));
 		} // </advc.912b>
 	}
-/* Civics Dependency (Asaf) - start */	
+	
+/* doto Civics parent start */	
 	bool foundParent = false;
 	CvWString szTempBuffer_civics;
 	bool bFirst = true;
@@ -8328,7 +8329,7 @@ void CvGameTextMgr::parseCivicInfo(CvWStringBuffer &szHelpText, CivicTypes eCivi
 			szHelpText.append(szTempBuffer_civics);
 		}
 	}
-/* Civics Dependency (Asaf) - end */
+/* Civics parent (Asaf) - end */
 	if (!CvWString(kCivic.getHelp()).empty())
 		szHelpText.append(CvWString::format(L"%s%s", NEWLINE, kCivic.getHelp()).c_str());
 }

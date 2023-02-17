@@ -53,14 +53,14 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
-<!--Civics Dependency (Asaf) - Start -->		
+<!--doto civics parent - Start -->		
 			<CivicChild>
 				<Type>CIVIC_R1</Type>
 				<Type>CIVIC_R2</Type>
 				<Type>CIVIC_ANARCHIZEM</Type>
 				<Type>CIVIC_TRADITIONAL</Type>
 			</CivicChild>
-<!--Civics Dependency (Asaf) - END -->
+<!--doto civics parent - END -->
 			<iCivicPercentAnger>0</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
@@ -142,14 +142,14 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
-<!--Civics Dependency (Asaf) - Start -->		
+<!--doto civics parent - Start -->		
 			<CivicChild>
 				<Type>CIVIC_R3</Type>
 				<Type>CIVIC_R4</Type>
 				<Type>CIVIC_FANATICISM</Type>
 				<Type>CIVIC_AGGRERIAN</Type>
 			</CivicChild>
-<!--Civics Dependency (Asaf) - END -->
+<!--doto civics parent - END -->
 			<iCivicPercentAnger>0</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
@@ -215,14 +215,14 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
-<!--Civics Dependency (Asaf) - Start -->		
+<!--doto civics parent - Start -->		
 			<CivicChild>
 				<Type>CIVIC_R5</Type>
 				<Type>CIVIC_R6</Type>
 				<Type>CIVIC_INTELECT</Type>
 				<Type>CIVIC_RESIDENTIAL</Type>
 			</CivicChild>
-<!--Civics Dependency (Asaf) - END -->
+<!--doto civics parent - END -->
 			<iCivicPercentAnger>0</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
@@ -292,14 +292,14 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
-<!--Civics Dependency (Asaf) - Start -->		
+<!--doto civics parent - Start -->		
 			<CivicChild>
 				<Type>CIVIC_R9</Type>
 				<Type>CIVIC_R10</Type>
 				<Type>CIVIC_CREATISM</Type>
 				<Type>CIVIC_CONSTRUCTIONAL</Type>
 			</CivicChild>
-<!--Civics Dependency (Asaf) - END -->
+<!--doto civics parent - END -->
 			<iCivicPercentAnger>0</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
@@ -370,14 +370,14 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
-<!--Civics Dependency (Asaf) - Start -->		
+<!--doto civics parent - Start -->		
 			<CivicChild>
 				<Type>CIVIC_R7</Type>
 				<Type>CIVIC_R8</Type>
 				<Type>CIVIC_INDIVIDUALIASM</Type>
 				<Type>CIVIC_EXPONTIONAL</Type>
 			</CivicChild>
-<!--Civics Dependency (Asaf) - END -->
+<!--doto civics parent - END -->
 			<iCivicPercentAnger>0</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
@@ -455,14 +455,14 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
-<!--Civics Dependency (Asaf) - Start -->		
+<!--doto civics parent - Start -->		
 			<CivicChild>
 				<Type>CIVIC_R15</Type>
 				<Type>CIVIC_R16</Type>
 				<Type>CIVIC_PRAGMATISM</Type>
 				<Type>CIVIC_PROGGRESSIONAL</Type>
 			</CivicChild>
-<!--Civics Dependency (Asaf) - END -->
+<!--doto civics parent - END -->
 			<iCivicPercentAnger>0</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
@@ -544,14 +544,14 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
-<!--Civics Dependency (Asaf) - Start -->		
+<!--doto civics parent - Start -->		
 			<CivicChild>
 				<Type>CIVIC_R13</Type>
 				<Type>CIVIC_R14</Type>
 				<Type>CIVIC_IMPERIALISM</Type>
 				<Type>CIVIC_EXPLOITATIONAL</Type>
 			</CivicChild>
-<!--Civics Dependency (Asaf) - END -->
+<!--doto civics parent - END -->
 			<iCivicPercentAnger>0</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>
@@ -635,14 +635,14 @@
 			<bNoForeignTrade>0</bNoForeignTrade>
 			<bNoCorporations>0</bNoCorporations>
 			<bNoForeignCorporations>0</bNoForeignCorporations>
-<!--Civics Dependency (Asaf) - Start -->		
+<!--doto civics parent - Start -->		
 			<CivicChild>
 				<Type>CIVIC_R11</Type>
 				<Type>CIVIC_R12</Type>
 				<Type>CIVIC_COMMERCIALISM</Type>
 				<Type>CIVIC_PASTORAL</Type>
 			</CivicChild>
-<!--Civics Dependency (Asaf) - END -->
+<!--doto civics parent - END -->
 			<iCivicPercentAnger>0</iCivicPercentAnger>
 			<bStateReligion>0</bStateReligion>
 			<bNoNonStateReligionSpread>0</bNoNonStateReligionSpread>

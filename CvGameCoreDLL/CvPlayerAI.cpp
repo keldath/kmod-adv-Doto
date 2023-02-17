@@ -8994,9 +8994,9 @@ PlayerVoteTypes CvPlayerAI::AI_diploVote(const VoteSelectionSubData& kVoteData,
 	{
 		if (isCivic(eLoopCivic))
 			continue;
-		/* Civics Dependency (Asaf) - Start */
+		/* doto Civics  parent - Start */
 		//keldath doto - consider make the loop calc ignore any child civics
-		/* Civics Dependency (Asaf) - Start */
+		/* doto Civics  parent - Start */
 		CivicTypes eBestCivic = AI_bestCivic(GC.getInfo(eLoopCivic).getCivicOptionType());
 		if (eBestCivic == NO_CIVIC || eBestCivic == eLoopCivic)
 			continue;
@@ -9010,9 +9010,9 @@ PlayerVoteTypes CvPlayerAI::AI_diploVote(const VoteSelectionSubData& kVoteData,
 		}
 		//dune wars - hated civs					//a1021 end
 		
-		/* Civics Dependency (Asaf) - Start */
+		/*doto Civics  parent - Start */
 		//keldath doto - consider make the loop calc ignore any child civics
-		/* Civics Dependency (Asaf) - Start */
+		/* doto Civics  parent - Start */
 		int iBestCivicValue = AI_civicValue(eBestCivic);
 		int iNewCivicValue = AI_civicValue(eLoopCivic);
 		// BETTER_BTS_AI_MOD, Diplomacy AI, 12/30/08, jdog5000: START
@@ -13535,9 +13535,9 @@ int CvPlayerAI::AI_civicTradeVal(CivicTypes eCivic, PlayerTypes ePlayer) const
 	CivicTypes eBestCivic = kPlayer.AI_bestCivic(GC.getInfo(eCivic).getCivicOptionType());
 	if (eBestCivic != NO_CIVIC && eBestCivic != eCivic)
 	{
-		/* Civics Dependency (Asaf) - Start */
+		/* doto Civics parent - Start */
 		//keldath doto - consider make the loop calc ignore any child civics
-		/* Civics Dependency (Asaf) - Start */
+		/* doto Civics parent - Start */
 		iValue += //std::max(0, // advc.132: Handle that below
 				2 * (kPlayer.AI_civicValue(eBestCivic) - kPlayer.AI_civicValue(eCivic))
 				/*	advc.132: AI_civicValue is at a scale of 1 commerce per turn.
@@ -16983,9 +16983,9 @@ CivicTypes CvPlayerAI::AI_bestCivic(CivicOptionTypes eCivicOption, int* piBestVa
 	{
 		if (GC.getInfo(eLoopCivic).getCivicOptionType() == eCivicOption)
 		{
-			/* Civics Dependency (Asaf) - Start */
+			/* doto Civics parent - Start */
 			//keldath doto - consider make the loop calc ignore any child civics
-			/* Civics Dependency (Asaf) - Start */
+			/* doto Civics parent - Start */
 			if (canDoCivics(eLoopCivic))
 				{
 				int iValue = AI_civicValue(eLoopCivic);
@@ -17001,7 +17001,7 @@ CivicTypes CvPlayerAI::AI_bestCivic(CivicOptionTypes eCivicOption, int* piBestVa
 		*piBestValue = iBestValue;
 	return eBestCivic;
 }
-
+/* doto civics  parent - start */
 void CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 {
 	PROFILE_FUNC();
@@ -17099,7 +17099,7 @@ int CvPlayerAI::AI_totalBestChildrenValue(CivicTypes eCivic) const
 		return 0;
 }
 
-/* doto Civics Dependency (Asaf) - start ) 
+/* doto Civics parent - start ) 
 	hi jack of AI_civicValue original fn.
 	this is to avoid reccursion of calls for AI_civicValue_original
  */
@@ -17109,7 +17109,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 	
 	return AI_civicValue_original(eCivic) + AI_totalBestChildrenValue(eCivic);
 }
-/* doto Civics Dependency (Asaf) - end ) */
+/* doto Civics parent - end ) */
 /*	The bulk of this function has been rewritten for K-Mod.
 	(some original code deleted, some edited by BBAI)
 	Note: the value is roughly in units of 1 commerce per turn.
@@ -17117,10 +17117,10 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 	perhaps even faster if it calculated effects on a city-by-city basis,
 	rather than averaging effects across all cities.
 	(certainly this would work better for happiness modifiers.) */
-/* doto Civics Dependency (Asaf) - start ) */
+/* doto Civics parent - start ) */
 int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 //int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
-/* doto Civics Dependency (Asaf) - end ) */
+/* doto Civics parent - end ) */
 {
 	PROFILE_FUNC();
 
@@ -19740,9 +19740,9 @@ int CvPlayerAI::AI_calculateGoldenAgeValue(bool bConsiderRevolution) const
 		getCivics(aeBestCivics); // Start with copy of current civics
 		FOR_EACH_ENUM(CivicOption)
 		{
-			/* Civics Dependency (Asaf) - Start */
+			/* doto Civics parent - Start */
 			//keldath doto - consider make the loop calc ignore any child civics
-			/* Civics Dependency (Asaf) - Start */
+			/* doto Civics parent - Start */
 			int iCurrentValue = AI_civicValue(aeBestCivics.get(eLoopCivicOption));
 			int iBestValue;
 			CivicTypes eNewCivic = AI_bestCivic(eLoopCivicOption, &iBestValue);
@@ -20695,9 +20695,9 @@ void CvPlayerAI::AI_doCivics()
 	EagerEnumMap<CivicOptionTypes,int> aiCurrentValue; // advc.enum
 	FOR_EACH_ENUM(CivicOption)
 	{
-		/* Civics Dependency (Asaf) - Start */
+		/* doto Civics parent - Start */
 		//keldath doto - consider make the loop calc ignore any child civics
-		/* Civics Dependency (Asaf) - Start */
+		/* doto Civics parent - Start */
 		aiCurrentValue.set(eLoopCivicOption,
 				AI_civicValue(aeBestCivic.get(eLoopCivicOption)));
 	}
@@ -20758,11 +20758,11 @@ void CvPlayerAI::AI_doCivics()
 	} while (bWillSwitch && bWantSwitch);
 	// Recheck, just in case we can switch another good civic without adding more anarchy.
 
-	/* doto Civics Dependency (Asaf) - Start */	
+	/* doto Civics parent - Start */	
 	// get the civics with forced children
 	//aeBestCivic = 
 	forceChildCivics(aeBestCivic);
-	/* doto Civics Dependency (Asaf) - end */
+	/* doto Civics parent - end */
 	
 	/*	finally, if our current research would give us a new civic,
 		consider waiting for that. */

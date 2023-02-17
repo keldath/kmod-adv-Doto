@@ -71,10 +71,10 @@ public: // The const functions are exposed to Python except those added by AdvCi
 	bool isBuildingOnlyHealthy() const { return m_bBuildingOnlyHealthy; }
 	bool isNoForeignTrade() const { return m_bNoForeignTrade; }
 	bool isNoCorporations() const { return m_bNoCorporations; }
-	bool isNoForeignCorporations() const { return m_bNoForeignCorporations; }	
-/* Civics Dependency (Asaf) - Start */
+	bool isNoForeignCorporations() const { return m_bNoForeignCorporations; }
+/* doto Civics parent - Start */
 	int py_getParentCivicsChildren(int i) const;
-/* Civics Dependency (Asaf) - end */
+/* doto Civics parent - end */
 	bool isStateReligion() const { return m_bStateReligion; }
 	bool isNoNonStateReligionSpread() const { return m_bNoNonStateReligionSpread; }
 
@@ -122,14 +122,14 @@ public: // The const functions are exposed to Python except those added by AdvCi
 
 	int getImprovementYieldChanges(int i, int j) const;
 	
-/* Civics Dependency (Asaf) - Start */
+/* doto Civics parent - Start */
 	int getNumParentCivicsChildren() const { return (int)m_aeParentCivicsChildren.size(); }
 	CivicTypes getParentCivicsChildren (int i) const
 	{					 
 		FAssertBounds(0, getNumParentCivicsChildren(), i);
 		return m_aeParentCivicsChildren[i];
 	}
-/* Civics Dependency (Asaf) - end */
+/* doto Civics  parent - end */
 	/***********************************/
 	//doto	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 	int getSpecialistYieldChange(int i, int j) const;			
@@ -142,9 +142,9 @@ public: // The const functions are exposed to Python except those added by AdvCi
 	void write(FDataStreamBase* stream);
 	#endif
 	bool read(CvXMLLoadUtility* pXML);
-	/* Civics Dependency (Asaf) - Start */
+	/* doto Civics  parent - Start */
 	bool readPass2(CvXMLLoadUtility* pXML);
-	/* Civics Dependency (Asaf) - End */
+	/* doto Civics  parent - End */
 
 protected:
 	CivicOptionTypes m_eCivicOptionType;
@@ -198,9 +198,9 @@ protected:
 	bool m_bNoForeignTrade;
 	bool m_bNoCorporations;	
 	bool m_bNoForeignCorporations;
-/* Civics Dependency (Asaf) - Start */
+/* doto Civics  parent - Start */
 	std::vector<CivicTypes> m_aeParentCivicsChildren;
-/* Civics Dependency (Asaf) - end */
+/* doto Civics  parent - end */
 	bool m_bStateReligion;
 	bool m_bNoNonStateReligionSpread;
 	bool m_bCanAlwaysForce; // advc.132
@@ -248,16 +248,16 @@ public:
 	~CvCivicOptionInfo();
 
 	bool getTraitNoUpkeep(int i) const; // Exposed to Python
-/* Civics Dependency (Asaf) - start */	
+/* Civics  parent - start */	
 	int getParentCivicOption() const; // Exposed to Python
 /* Civics Dependency (Asaf) - end */
 	bool read(CvXMLLoadUtility* pXML);
 
 protected:
 	bool* m_pabTraitNoUpkeep;
-/* Civics Dependency (Asaf) - end */	
+/* doto Civics  parent - end */	
 	int m_iParentCivicOption;
-/* Civics Dependency (Asaf) - end */
+/* doto Civics  parent - end */
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -741,16 +741,16 @@
 	<ElementType name="TraitNoUpkeeps" content="eltOnly">
 		<element type="TraitNoUpkeep" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
-<!-- Civics Dependency (Asaf) - start -->
+<!-- doto civics parent - start -->
 	<ElementType name="isParentCivicOption" content="textOnly" dt:type="int"/>
-<!-- Civics Dependency (Asaf) - end -->
+<!-- doto civics parent - end -->
 	<ElementType name="CivicOptionInfo" content="eltOnly">
 		<element type="Type"/>
 		<element type="Description" minOccurs="0"/>
 		<element type="TraitNoUpkeeps" minOccurs="0"/>
-<!-- Civics Dependency (Asaf) - start  -->
+<!-- doto civics parent - start  -->
 		<element type="isParentCivicOption" minOccurs="0"/>
-<!-- Civics Dependency (Asaf) - end -->
+<!-- doto civics parent - end -->
 	</ElementType>
 	<ElementType name="CivicOptionInfos" content="eltOnly">
 		<element type="CivicOptionInfo" maxOccurs="*"/>
@@ -795,12 +795,12 @@
 	<ElementType name="bNoForeignTrade" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bNoCorporations" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bNoForeignCorporations" content="textOnly" dt:type="boolean"/>
-<!--Civics Dependency (Asaf) - Start -->
+<!--doto civics parent - Start -->
 <!-- <ElementType name="Type" content="textOnly"/>	 -->
 	<ElementType name="CivicChild" content="eltOnly">
 		<element type="Type" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
-<!--Civics Dependency (Asaf) - Start -->
+<!--doto civics parent - Start -->
 	<ElementType name="iCivicPercentAnger" content="textOnly" dt:type="int"/>
 	<ElementType name="bStateReligion" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bNoNonStateReligionSpread" content="textOnly" dt:type="boolean"/>
@@ -1016,7 +1016,7 @@
 		<element type="bNoForeignTrade" minOccurs="0"/>
 		<element type="bNoCorporations" minOccurs="0"/>
 		<element type="bNoForeignCorporations" minOccurs="0"/>
-<!-- Civics Dependency (Asaf) - Start -->			
+<!-- doto civics parent - Start -->			
 		<element type="CivicChild" minOccurs="0"/>
 		<element type="iCivicPercentAnger" minOccurs="0"/>
 		<element type="bStateReligion" minOccurs="0"/>

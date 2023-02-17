@@ -339,7 +339,7 @@ int CvCivicInfo::getFreeSpecialistCount(int i) const
 }
 // < Civic Infos Plus End   >
 
-/* Civics Dependency (Asaf) - Start */
+/*DOTO Civics parent - Start */
 // <advc.003t> Calls from Python aren't going to respect the bounds
 int CvCivicInfo::py_getParentCivicsChildren(int i) const
 {
@@ -481,7 +481,7 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_bNoForeignTrade);
 	stream->Read(&m_bNoCorporations);
 	stream->Read(&m_bNoForeignCorporations);
-/* Civics Dependency (Asaf) - Start */
+/* doto Civics parent - Start */
 	int iParentCivicChildren;
 	stream->Read(&iParentCivicChildren);
 	if (iParentCivicChildren > 0)
@@ -489,7 +489,7 @@ void CvCivicInfo::read(FDataStreamBase* stream)
 		m_aeParentCivicsChildren.resize(iParentCivicChildren);
 		stream->Read(iParentCivicChildren, (int*)&m_aeParentCivicsChildren[0]);
 	}
-/* Civics Dependency (Asaf) - End */
+/* doto Civics parent - End */
 	stream->Read(&m_bStateReligion);
 	stream->Read(&m_bNoNonStateReligionSpread);
 	SAFE_DELETE_ARRAY(m_piYieldModifier);
@@ -653,14 +653,14 @@ void CvCivicInfo::write(FDataStreamBase* stream)
 	stream->Write(m_bNoForeignTrade);
 	stream->Write(m_bNoCorporations);
 	stream->Write(m_bNoForeignCorporations);
-/* Civics Dependency (Asaf) - Start */
+/* doto Civics parent - Start */
 	{
 		int iParentCivicChildren = getNumParentCivicsChildren();
 		stream->Write(iParentCivicChildren);
 		if (iParentCivicChildren > 0)				   
 			stream->Write(iParentCivicChildren, (int*)&m_aeParentCivicsChildren[0]);
 	}
-/* Civics Dependency (Asaf) - end */
+/* doto Civics parent - end */
 	stream->Write(m_bStateReligion);
 	stream->Write(m_bNoNonStateReligionSpread);
 	stream->Write(NUM_YIELD_TYPES, m_piYieldModifier);
@@ -1118,7 +1118,7 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 
 	return true;
 }
-/* Civics Dependency (Asaf) - Start */
+/* doto Civics parent - Start */
 bool CvCivicInfo::readPass2(CvXMLLoadUtility* pXML)
 {
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "CivicChild"))
@@ -1148,13 +1148,13 @@ bool CvCivicInfo::readPass2(CvXMLLoadUtility* pXML)
 	}
 	return true;
 }
-/* Civics Dependency (Asaf) - End */
+/* doto Civics parent - End */
 
 CvCivicOptionInfo::CvCivicOptionInfo() : 
 m_pabTraitNoUpkeep(NULL)
-/* Civics Dependency (Asaf) - start */
+/* doto Civics parent - start */
 ,m_iParentCivicOption(0)
-/* Civics Dependency (Asaf) - end */
+/* doto Civics parent - end */
 {}
 
 CvCivicOptionInfo::~CvCivicOptionInfo()
@@ -1167,22 +1167,22 @@ bool CvCivicOptionInfo::getTraitNoUpkeep(int i) const
 	FAssertBounds(0, GC.getNumTraitInfos(), i);
 	return m_pabTraitNoUpkeep ? m_pabTraitNoUpkeep[i] : false;
 }
-/* Civics Dependency (Asaf) - start */
+/*doto Civics parent - start */
 int CvCivicOptionInfo::getParentCivicOption() const
 {
 	// 0 orphanm, 2 parent, 1 child
 	return m_iParentCivicOption ;
 }
-/* Civics Dependency (Asaf) - end */
+/* doto Civics parent - end */
 bool CvCivicOptionInfo::read(CvXMLLoadUtility* pXML)
 {
 	if (!base_t::read(pXML))
 		return false;
 
 	pXML->SetVariableListTagPair(&m_pabTraitNoUpkeep, "TraitNoUpkeeps", GC.getNumTraitInfos());
-/* Civics Dependency (Asaf) - start */	
+/* doto Civics parent - start */	
 	pXML->GetChildXmlValByName(&m_iParentCivicOption, "isParentCivicOption", 0);
-/* Civics Dependency (Asaf) - End */
+/* doto Civics parent - End */
 	return true;
 }
 

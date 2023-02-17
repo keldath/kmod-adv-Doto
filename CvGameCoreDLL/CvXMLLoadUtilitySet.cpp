@@ -732,7 +732,7 @@ bool CvXMLLoadUtility::LoadPreMenuGlobals()
 	//doto  davidlallen: project civilization and free unit next line
 	// CIV4ProjectInfo was here
 	//LoadGlobalClassInfo(GC.m_paProjectInfo, "CIV4ProjectInfo", "GameInfo", "Civ4ProjectInfo/ProjectInfos/ProjectInfo", true);
-/* Civics Dependency (Asaf) - Start 2PASSES 2 GET THE CIVIC DEPENDANTS */	
+/* doto Civics  parent - Start 2PASSES 2 GET THE CIVIC DEPENDANTS */	
 	LoadGlobalClassInfo(GC.m_paCivicInfo, "CIV4CivicInfos", "GameInfo", "Civ4CivicInfos/CivicInfos/CivicInfo", true, &CvDLLUtilityIFaceBase::createCivicInfoCacheObject);
 	FOR_EACH_ENUM(VoteSource)
 		GC.getInfo(eLoopVoteSource).readPass3();
