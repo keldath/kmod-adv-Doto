@@ -7406,7 +7406,46 @@ bool CvPlayer::canDoAnyRevolution() const
 	return false;
 }
 
-/* doto Civics  parent - start */
+/* doto Civics  parent - start - checks if a child can be selected 
+on the condition that the parent civic of that child is already selected*/
+bool CvPlayer::canDoChildCivic(CivicTypes eCivic) const
+{
+	if (GC.getInfo(GC.getInfo(eCivic).getCivicOptionType()).getParentCivicOption() != 1)
+		return true;
+	
+	for (int iI = 0; iI < GC.getNumCivicInfos(); ++iI)
+	{
+		CvCivicInfo& kParentCivic = GC.getCivicInfo((CivicTypes)iI);
+		int eIsParent = kParentCivic.getNumParentCivicsChildren();
+		if (eIsParent > 0)
+		{
+			//check if the selected civic in this parent civic option is the same as 
+			//this current parent.
+			CivicTypes eSelectedParentCivic = getCivics(kParentCivic.getCivicOptionType());
+			for (int J = 0; J < eIsParent; J++)
+			{
+				//since the parent is selected -> check if the current civic that got sent
+				//is a child of the selected parent.
+				if (kParentCivic.getParentCivicsChildren(J) == eCivic)
+				{
+					if (eSelectedParentCivic == (CivicTypes)iI)
+					{
+						return true; 
+					}
+					else if (eSelectedParentCivic != (CivicTypes)iI)
+					{
+						return false; 
+					}
+					
+				}
+			}
+		
+		}
+	}
+	return true;
+}
+/* doto Civics  parent - end*/
+/* doto Civics  parent - start - same as can dochildcivic*/
 int CvPlayer::isCivicParentOrChild(CivicTypes eCivic) const
 {
 	for (int iI = 0; iI < GC.getNumCivicInfos(); ++iI)

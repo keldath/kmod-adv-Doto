@@ -789,6 +789,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			</OrPreReqs>
 			<AndPreReqs>
 				<PrereqTech>TECH_WRITING</PrereqTech>
+				<PrereqTech>TECH_MACHINERY</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_FEUDALISM_QUOTE</Quote>
 			<Sound>AS2D_TECH_FEUDALISM</Sound>
@@ -2940,7 +2941,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>10</iGridX>
-			<iGridY>14</iGridY>
+			<iGridY>13</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -3227,7 +3228,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>12</iGridX>
-			<iGridY>7</iGridY>
+			<iGridY>13</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades>
@@ -3251,10 +3252,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>5</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs/>
+			<OrPreReqs>
+				<PrereqTech>TECH_OPTICS</PrereqTech>
+			</OrPreReqs>
 			<AndPreReqs>
 				<PrereqTech>TECH_CALENDAR</PrereqTech>
-				<PrereqTech>TECH_OPTICS</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_ASTRONOMY_QUOTE</Quote>
 			<Sound>AS2D_TECH_ASTRONOMY</Sound>
@@ -5829,6 +5831,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			</OrPreReqs>
 			<AndPreReqs>
 				<PrereqTech>TECH_CHEMISTRY</PrereqTech>
+				<PrereqTech>TECH_DEMOCRACY</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_STEAM_POWER_QUOTE</Quote>
 			<Sound>AS2D_TECH_STEAMPOWER</Sound>

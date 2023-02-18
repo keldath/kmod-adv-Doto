@@ -1136,7 +1136,15 @@ bool CvCivicInfo::readPass2(CvXMLLoadUtility* pXML)
 					{	// <advc.003t>
 						CivicTypes eCivic = (CivicTypes)GC.getInfoTypeForString(szTextVal);
 						if (eCivic != NO_CIVIC)
-							m_aeParentCivicsChildren.push_back(eCivic); // </advc.003t>
+						{
+							m_aeParentCivicsChildren.push_back(eCivic); // </advc.003t>				
+/* doto Civics parent - Start */
+// this is a special trick to set the tech prereq of a child civic
+// to the tech of its parent -> if the tech of that child is NONE (NO_TECH)
+							if (GC.getCivicInfo(eCivic).getTechPrereq() == NO_TECH)
+								GC.getCivicInfo(eCivic).setTechPrereq(getTechPrereq());
+/* doto Civics parent - end */
+						}
 						if (!pXML->GetNextXmlVal(szTextVal))
 							break;
 					}

@@ -424,7 +424,8 @@ public:
 
 	bool isCivic(CivicTypes eCivic) const;														// Exposed to Python	
 	bool canDoCivics(CivicTypes eCivic) const;	
-/* doto civics parent - Start */									
+/* doto civics parent - Start */
+	bool canDoChildCivic(CivicTypes eCivic) const;										
 	int isCivicParentOrChild(CivicTypes eCivic) const	;																	// Exposed to Python
 /* doto Civics parent - End */
 	bool canRevolution(CivicMap const& kNewCivics) const; // advc.001: Exposed to Python as canAdopt

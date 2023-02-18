@@ -16983,8 +16983,9 @@ CivicTypes CvPlayerAI::AI_bestCivic(CivicOptionTypes eCivicOption, int* piBestVa
 	{
 		if (GC.getInfo(eLoopCivic).getCivicOptionType() == eCivicOption)
 		{
-			/* doto Civics parent - Start */
-			//keldath doto - consider make the loop calc ignore any child civics
+			/* doto Civics parent - Start*/
+			if (!canDoChildCivic(eLoopCivic))
+					continue;
 			/* doto Civics parent - Start */
 			if (canDoCivics(eLoopCivic))
 				{
@@ -17008,6 +17009,11 @@ void CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 	
 	FOR_EACH_ENUM(CivicOption)
 	{
+		//if the civic option is not a parent - pass -> we only process parents + their 
+		//childred as a group
+		if (GC.getInfo(eLoopCivicOption).getParentCivicOption() != 2)
+			continue;
+			
 		CivicTypes eParentCivic = ePreRevolutionMap.get(eLoopCivicOption); //get the civic for the itered c option	
 		CvCivicInfo& kParentCivic = GC.getCivicInfo(eParentCivic); 
 		int parentNumChildren = kParentCivic.getNumParentCivicsChildren();	
@@ -17018,17 +17024,29 @@ void CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 			int* m_atemp = new int[parentNumChildren];
 			for (int i = 0; i < parentNumChildren; i++)
 			{
+				//this loop spared the need of running AI_civicValue_original
+				// over and over for evey civic option below, since there are a few loops
 				m_atemp[i] = AI_civicValue_original(kParentCivic.getParentCivicsChildren(i));
 			}
 				
-			//for every civicoption - lets find the best child civic with the better value	
+			//for every civicoption - lets find the best child 
+			//civic with the better value - the civicoption loop
+			//is in place so the best child will be taken from all child list in the parent
+			//and each time a specific best children for a civic option will be chosen.
+			//this is because in the xml -> i ddint hard coded the civic option of children civics
+			//in addition this loop makes it so that if by mistake
+			//the children are not listed as civic 1 , civic2 of option 1 ...n and maybe
+			// civic 1 if option a civic 2 of option b civic 3 of option a....n 	
 			for (int i = 0; i < GC.getNumCivicOptionInfos(); i++)
 			{
 				CivicOptionTypes eLoopCivicOption = (CivicOptionTypes)i;
 				// no point in wasting a loop for the parents civic option type
 				if (eLoopCivicOption == kParentCivic.getCivicOptionType())
 					continue;
-
+				//if the civic is not a child civic option - pass...
+				if (GC.getInfo(eLoopCivicOption).getParentCivicOption() != 1)
+					continue;
+					
 				int eTempBestCivicChildOption = 0;
 				for (int J = 0; J < parentNumChildren; J++)
 				{
@@ -17047,6 +17065,7 @@ void CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 					}
 				}
 			}
+			SAFE_DELETE_ARRAY(m_atemp);
 		}
 	}	
 }
@@ -19740,9 +19759,6 @@ int CvPlayerAI::AI_calculateGoldenAgeValue(bool bConsiderRevolution) const
 		getCivics(aeBestCivics); // Start with copy of current civics
 		FOR_EACH_ENUM(CivicOption)
 		{
-			/* doto Civics parent - Start */
-			//keldath doto - consider make the loop calc ignore any child civics
-			/* doto Civics parent - Start */
 			int iCurrentValue = AI_civicValue(aeBestCivics.get(eLoopCivicOption));
 			int iBestValue;
 			CivicTypes eNewCivic = AI_bestCivic(eLoopCivicOption, &iBestValue);

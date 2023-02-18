@@ -588,7 +588,7 @@
 	</Define>
 	<Define>
 		<DefineName>MAX_CIVIC_OPTIONS</DefineName>
-		<iDefineIntVal>8</iDefineIntVal>
+		<iDefineIntVal>9</iDefineIntVal>
 <!-- KELDATH CIVIC parent-->	
 	</Define>
 	

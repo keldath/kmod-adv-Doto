@@ -796,6 +796,7 @@
 	<ElementType name="bNoCorporations" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bNoForeignCorporations" content="textOnly" dt:type="boolean"/>
 <!--doto civics parent - Start -->
+<!-- very important - set the civic childs in prder of their respective civic option, the order also matters how they will appear in the civic screen layout -->
 <!-- <ElementType name="Type" content="textOnly"/>	 -->
 	<ElementType name="CivicChild" content="eltOnly">
 		<element type="Type" minOccurs="0" maxOccurs="*"/>

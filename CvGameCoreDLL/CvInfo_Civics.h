@@ -52,6 +52,10 @@ public: // The const functions are exposed to Python except those added by AdvCi
 	int getFreeSpecialist() const { return m_iFreeSpecialist; }
 	int getTradeRoutes() const { return m_iTradeRoutes; }
 	TechTypes getTechPrereq() const { return m_eTechPrereq; }
+/* doto Civics parent - Start */
+//this is a special trick to set the tech prereq of a child civic
+// to the tech of its parent -> if the tech of that child is NONE (NO_TECH)
+	TechTypes setTechPrereq(TechTypes eTech) { m_eTechPrereq = eTech; }
 	int getCivicPercentAnger() const { return m_iCivicPercentAnger; }
 	int getMaxConscript() const { return m_iMaxConscript; }
 	int getStateReligionHappiness() const { return m_iStateReligionHappiness; }
@@ -131,6 +135,9 @@ public: // The const functions are exposed to Python except those added by AdvCi
 	}
 /* doto Civics  parent - end */
 	/***********************************/
+	
+	
+	
 	//doto	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 	int getSpecialistYieldChange(int i, int j) const;			
 	int* getSpecialistYieldChangeArray(int i) const;	
@@ -248,9 +255,9 @@ public:
 	~CvCivicOptionInfo();
 
 	bool getTraitNoUpkeep(int i) const; // Exposed to Python
-/* Civics  parent - start */	
+/* doto Civics  parent - start */	
 	int getParentCivicOption() const; // Exposed to Python
-/* Civics Dependency (Asaf) - end */
+/* doto Civics Dependency (Asaf) - end */
 	bool read(CvXMLLoadUtility* pXML);
 
 protected:
