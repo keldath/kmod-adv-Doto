@@ -194,7 +194,7 @@
 			<bAssignCity>0</bAssignCity>
 			<ForceCivics>
 				<ForceCivic>
-					<CivicType>CIVIC_ELECTORIAL</CivicType>
+					<CivicType>CIVIC_ELECTORAL</CivicType>
 					<bForce>1</bForce>
 				</ForceCivic>
 			</ForceCivics>

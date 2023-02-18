@@ -4891,7 +4891,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>-20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_FUNDAMENTALISM</FavoriteCivic>
+			<FavoriteCivic>CIVIC_ELECTORAL</FavoriteCivic>
 			<FavoriteReligion>RELIGION_HINDUISM</FavoriteReligion>
 			<Traits>
 				<Trait>

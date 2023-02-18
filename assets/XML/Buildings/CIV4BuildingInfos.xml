@@ -34589,7 +34589,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iNumFreeBonuses>0</iNumFreeBonuses>
 			<FreeBuilding>NONE</FreeBuilding>
 			<FreePromotion>NONE</FreePromotion>
-			<CivicOption>CIVICOPTION_IDEALS</CivicOption>
+			<CivicOption>CIVICOPTION_GOVERNMENT_AGENDA</CivicOption>
 			<GreatPeopleUnitClass>NONE</GreatPeopleUnitClass>
 			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
 			<iHurryAngerModifier>0</iHurryAngerModifier>

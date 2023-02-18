@@ -15,16 +15,16 @@
 <!-- doto civics parent - end -->		
 		</CivicOptionInfo>
 		<CivicOptionInfo>
-			<Type>CIVICOPTION_RULES</Type>
-			<Description>Rules</Description>
+			<Type>CIVICOPTION_GOVERNMENT_TYPES</Type>
+			<Description>TXT_KEY_CIVICOPTION_GOVERNMENT_TYPES</Description>
 			<TraitNoUpkeeps/>
 <!-- doto civics parent - start -->
 			<isParentCivicOption>1</isParentCivicOption>
 <!-- doto civics parent - end -->	
 		</CivicOptionInfo>
 		<CivicOptionInfo>
-			<Type>CIVICOPTION_IDEALS</Type>
-			<Description>Ideals</Description>
+			<Type>CIVICOPTION_GOVERNMENT_AGENDA</Type>
+			<Description>TXT_KEY_CIVICOPTION_GOVERNMENT_AGENDA</Description>
 			<TraitNoUpkeeps/>
 <!-- doto civics parent - start -->
 			<isParentCivicOption>1</isParentCivicOption>

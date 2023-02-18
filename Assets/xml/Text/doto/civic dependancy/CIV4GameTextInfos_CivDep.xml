@@ -22,5 +22,21 @@
   <TEXT>
     <Tag>TXT_KEY_CIVIC_DEPENDANCY</Tag>
     <English>[LINK=literal]%s1_CivicName[\LINK]</English>
+   </TEXT>
+  <TEXT>
+    <Tag>TXT_KEY_CIVICOPTION_GOVERNMENT</Tag>
+    <English>Goverments Form (Parent Civic)</English>
+  </TEXT>
+  <TEXT>
+    <Tag>TXT_KEY_CIVICOPTION_GOVERNMENT_TYPES</Tag>
+    <English>Goverments Type (Form Dependancy)</English>
+   </TEXT>
+  <TEXT>
+    <Tag>TXT_KEY_CIVIC_POLICE_STATE</Tag>
+    <English>Autocracy</English>
+  </TEXT>
+  <TEXT>
+    <Tag>TXT_KEY_CIVICOPTION_GOVERNMENT_AGENDA</Tag>
+    <English>Goverments Agenda (Form Dependancy)</English>
   </TEXT>
 </Civ4GameText>
