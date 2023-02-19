@@ -271,13 +271,14 @@ class CvCivicsScreen:
 
 		
 		########################
-		# build normal civics section
-		screen.addPanel( "otherCivics", u"", u"", True, False, 0, 235, self.W_SCREEN, 30, PanelStyles.PANEL_STYLE_MAIN_TAN ) # 176
-		screen.setText("others", "",  u"<font=4>" + u"<color=255,255,0,255>%s</color>" % "Civics Table" + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, 570, 240, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 		
 		counter = 0 # keldath add - the index of the civics on the list is not from 0
 		broad_width = 100
-		const_fY = 	260
+		const_fY = 	360
+		# build normal civics section
+		screen.addPanel( "otherCivics", u"", u"", True, False, 0, const_fY-25, self.W_SCREEN, 30, PanelStyles.PANEL_STYLE_MAIN_TAN ) # 176
+		screen.setText("others", "",  u"<font=4>" + u"<color=255,255,0,255>%s</color>" % "Civics Table" + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, 570, const_fY - 20, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		
 		for i in numCivicOtopns:
 			
 			if gc.getCivicOptionInfo(i).getParentCivicOption() < 1:
@@ -400,34 +401,55 @@ class CvCivicsScreen:
 		return 0
 
 	def CivicsButton(self, inputClass):
-	
+		
+		# doto start
+		input_ = gc.getCivicInfo(inputClass.getID()).getCivicOptionType()
+		
+		if gc.getCivicOptionInfo(input_).getParentCivicOption() > 0:
+			return
+
+		# check when civics that are not parent child starts from
+		# this is important to position the text properly
+		idx_factor = 0
+		for i in range (gc.getNumCivicOptionInfos()):
+			if gc.getCivicOptionInfo(i).getParentCivicOption() > 0:
+				idx_factor += 1
+		# doto end
 		if (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CLICKED) :
 			if (inputClass.getFlags() & MouseFlags.MOUSE_RBUTTONUP):
 				CvScreensInterface.pediaJumpToCivic((inputClass.getID(), ))
 			else:
 				# Select button
 				self.select(inputClass.getID())
-				self.drawHelpText(gc.getCivicInfo(inputClass.getID()).getCivicOptionType())
+				self.drawHelpText(input_, input_ - idx_factor) #doto -3 cause 3 in related civics
 				self.updateAnarchy()
 		elif (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CURSOR_MOVE_ON) :
 			# Highlight this button
 			if self.highlight(inputClass.getID()):
-				self.drawHelpText(gc.getCivicInfo(inputClass.getID()).getCivicOptionType())
+				self.drawHelpText(input_, input_ - idx_factor) #doto -3 cause 3 in related civics
 				self.updateAnarchy()
 		elif (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CURSOR_MOVE_OFF) :
 			if self.unHighlight(inputClass.getID()):
-				self.drawHelpText(gc.getCivicInfo(inputClass.getID()).getCivicOptionType())
+				self.drawHelpText(input_, input_ - idx_factor) #doto -3 cause 3 in related civics
 				self.updateAnarchy()
 
 		return 0
 
 		
-	def drawHelpText(self, iCivicOption):
-		
+	def drawHelpText(self, iCivicOption, idx=-1):
+		# doto -> added idx parameter
+		# doto start
+		if idx == -1:
+			idx = iCivicOption
+		# if the civics is a parent or child - ignore
+		if gc.getCivicOptionInfo(iCivicOption).getParentCivicOption() > 0:
+			return	
+		# doto end 
+
 		activePlayer = gc.getPlayer(self.iActivePlayer)
 		iCivic = self.m_paeDisplayCivics[iCivicOption]
 
-		szPaneID = "CivicsHelpTextBackground" + str(iCivicOption)
+		szPaneID = "CivicsHelpTextBackground" + str(idx) # was iCivicOption
 		screen = self.getScreen()
 
 		szHelpText = u""
@@ -438,39 +460,56 @@ class CvCivicsScreen:
 		else:
 			szHelpText = localText.getText("TXT_KEY_CIVICS_SCREEN_NO_UPKEEP", ())
 
-		szHelpText += CyGameTextMgr().parseCivicInfo(iCivic, False, True, True)
+		# doto separated the upkeep from the civic desc
+		szUpkeepText = ' ---- ' +  szHelpText
+		# szHelpText += ..
+		szHelpText = CyGameTextMgr().parseCivicInfo(iCivic, False, True, True)
 
-		fX = self.HEADINGS_SPACING  + (self.HEADINGS_WIDTH + self.HEADINGS_SPACING) * iCivicOption
+		fX = self.HEADINGS_SPACING  + (self.HEADINGS_WIDTH + self.HEADINGS_SPACING + 100) * idx # was iCivicOption
 
 		#screen.setLabel(self.HELP_HEADER_NAME + str(iCivicOption), "Background",  u"<font=3>" + gc.getCivicInfo(self.m_paeDisplayCivics[iCivicOption]).getDescription().upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, fX + self.HEADINGS_WIDTH/2, self.HELP_TOP + self.TEXT_MARGIN, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
-		screen.setLabel(self.HELP_HEADER_NAME + str(iCivicOption), "Background",  u"<font=3>" + gc.getCivicInfo(self.m_paeDisplayCivics[iCivicOption]).getDescription().upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, fX + self.HEADINGS_WIDTH/2, self.HELP_TOP + self.TEXT_MARGIN + 90, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
-
+		screen.setLabel(self.HELP_HEADER_NAME + str(idx), "Background",  u"<font=3>" + gc.getCivicInfo(self.m_paeDisplayCivics[iCivicOption]).getDescription().upper() + szUpkeepText + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, fX + self.HEADINGS_WIDTH/2 + len(szUpkeepText) * 2 + 10, self.HELP_TOP + self.TEXT_MARGIN+190, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+										# was str(iCivicOption)
 		fY = self.HELP_TOP - self.BIG_BUTTON_SIZE
-		szHelpImageID = self.HELP_IMAGE_NAME + str(iCivicOption)
+		szHelpImageID = self.HELP_IMAGE_NAME + str(idx) # str(iCivicOption)
 		#doto KELDATH - REMOVED THE MID BTN - DONT NEED IT, JUST TAKES UP SPACE	- originally for 7 column screen	
 		#screen.setImageButton(szHelpImageID, gc.getCivicInfo(iCivic).getButton(), fX + self.HEADINGS_WIDTH/2 - self.BIG_BUTTON_SIZE/2, fY, self.BIG_BUTTON_SIZE, self.BIG_BUTTON_SIZE, WidgetTypes.WIDGET_PEDIA_JUMP_TO_CIVIC, iCivic, 1)
 
 		fY = self.HELP_TOP + 3 * self.TEXT_MARGIN
-		szHelpAreaID = self.HELP_AREA_NAME + str(iCivicOption)		
+		szHelpAreaID = self.HELP_AREA_NAME +  str(idx) # was str(iCivicOption)		
 		#screen.addMultilineText(szHelpAreaID, szHelpText, fX+5, fY, self.HEADINGS_WIDTH-7, self.HELP_BOTTOM - fY-2, WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_LEFT_JUSTIFY)				
 		#doto civic parent change
-		screen.addMultilineText(szHelpAreaID, szHelpText, fX+5, fY+90, self.HEADINGS_WIDTH-7, self.HELP_BOTTOM - fY-90-2, WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_LEFT_JUSTIFY)				
+		screen.addMultilineText(szHelpAreaID, szHelpText, fX+5, fY+165, self.HEADINGS_WIDTH-7 + 100, self.HELP_BOTTOM - fY-90-2, WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_LEFT_JUSTIFY)				
 		
 		
 	# Will draw the help text
 	def drawAllHelpText(self):
-		#return # keldath
+		counter = 0
+		broad_width = 100
+		const_fY = 	225
 		for i in range (gc.getNumCivicOptionInfos()):		
 
-			fX = self.HEADINGS_SPACING  + (self.HEADINGS_WIDTH + self.HEADINGS_SPACING) * i
+			if gc.getCivicOptionInfo(i).getParentCivicOption() < 1:	
 
-			szPaneID = "CivicsHelpTextBackground" + str(i)
-			screen = self.getScreen()
-			#doto 7 screen SCREEN CIVIC HELP POSITION
-			#screen.addPanel(szPaneID, "", "", True, True, fX+5, self.HELP_TOP, self.HEADINGS_WIDTH, self.HELP_BOTTOM - self.HELP_TOP, PanelStyles.PANEL_STYLE_MAIN)
-			screen.addPanel(szPaneID, "", "", True, True, fX+5, self.HELP_TOP+90, self.HEADINGS_WIDTH, self.HELP_BOTTOM - self.HELP_TOP-100, PanelStyles.PANEL_STYLE_MAIN)
+				# fX = self.HEADINGS_SPACING  + (self.HEADINGS_WIDTH + self.HEADINGS_SPACING) * i
 
-			self.drawHelpText(i)
+				fX = self.HEADINGS_SPACING  + ((self.HEADINGS_WIDTH + self.HEADINGS_SPACING + broad_width) * (counter)) # was * i
+				szPaneID = "CivicsHelpTextBackground" + str(counter) # was i
+				screen = self.getScreen()
+				#doto 7 screen SCREEN CIVIC HELP POSITION
+				#screen.addPanel(szPaneID, "", "", True, True, fX+5, self.HELP_TOP, self.HEADINGS_WIDTH, self.HELP_BOTTOM - self.HELP_TOP, PanelStyles.PANEL_STYLE_MAIN)
+				screen.addPanel(szPaneID, "", "", True, True, fX+5, self.HELP_TOP+190, self.HEADINGS_WIDTH + broad_width, self.HELP_BOTTOM - self.HELP_TOP - 190, PanelStyles.PANEL_STYLE_MAIN)
+				self.drawHelpText(i, counter) # was only i
+				counter += 1			
+			else:
+				fX = self.HEADINGS_SPACING  + ((self.HEADINGS_WIDTH + self.HEADINGS_SPACING + broad_width) * (i+1)) # was * i
+				szPaneID = "_CivicsHelpTextBackground_" + str(i) # was i
+				screen = self.getScreen()
+				#doto 7 screen SCREEN CIVIC HELP POSITION
+				#screen.addPanel(szPaneID, "", "", True, True, fX+5, self.HELP_TOP, self.HEADINGS_WIDTH, self.HELP_BOTTOM - self.HELP_TOP, PanelStyles.PANEL_STYLE_MAIN)
+				screen.addPanel(szPaneID, "", "", True, True, fX+5, const_fY, self.HEADINGS_WIDTH + broad_width, self.HELP_BOTTOM - self.HELP_TOP - 240, PanelStyles.PANEL_STYLE_MAIN)
+				self.drawHelpText(i, -1) # was only i
+
 
 
 	# Will Update the maintenance/anarchy/etc

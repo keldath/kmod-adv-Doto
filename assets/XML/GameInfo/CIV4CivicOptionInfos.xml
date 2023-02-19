@@ -7,6 +7,9 @@
 <Civ4CivicOptionInfos xmlns="x-schema:CIV4GameInfoSchema.xml">
 	<CivicOptionInfos>
 		<CivicOptionInfo>
+<!-- doto warning : the parent and child must be set first and one after the other
+the idx location of the parent child civics in this file affects python screen of the civics and
+t he sdk -> so do not change the order to random, 1,2....n the parent child -->
 			<Type>CIVICOPTION_GOVERNMENT</Type>
 			<Description>TXT_KEY_CIVICOPTION_GOVERNMENT</Description>
 			<TraitNoUpkeeps/>
