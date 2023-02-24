@@ -1727,36 +1727,44 @@ bool CvPlot::isAdjacentSaltWater() const
 }
 
 
-bool CvPlot::isPotentialIrrigation() const
+bool CvPlot::isPotentialIrrigation(/* advc: */ bool bIgnoreTeam) const
 {
-	// advc: 2nd condition was !isHills. Mods might allow cities on peaks.
-	//doto-keldath- left it out
-	//if ((isCity() && isFlatlands()) ||
-	//===NM=====Mountains Mod===0=====keldath - i hope thats ok
-	if ((isCity() && !(isHills() || !(GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && isPeak())))||
-	//===NM=====Mountains Mod===0=====
-		(isImproved() && GC.getInfo(getImprovementType()).isCarriesIrrigation()))
+	// advc.opt: Moved up
+	if (!isOwned() || (!GET_TEAM(getTeam()).isIrrigation() &&
+		!bIgnoreTeam)) // advc
 	{
-		if (isOwned() && GET_TEAM(getTeam()).isIrrigation())
-			return true;
+		return false;
 	}
-
-	return false;
+	// advc: 2nd condition was !isHills. Mods might allow cities on peaks.
+	return ((isCity() && isFlatlands()) ||
+			(isImproved() && GC.getInfo(getImprovementType()).isCarriesIrrigation()));
+	//doto-keldath- left it out
+	//===NM=====Mountains Mod===0=====keldath - i hope thats ok
+//doto 112 - not needed advc flat takes care of it.
+//	if ((isCity() && !(isHills() || !(GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && isPeak())))||
+	//===NM=====Mountains Mod===0=====
+	//	(isImproved() && GC.getInfo(getImprovementType()).isCarriesIrrigation()))
+//	{
+//		return true;
+//	}
 }
 
-
+// advc (note): Only used by AI code
 bool CvPlot::canHavePotentialIrrigation() const
 {
 	//PROFILE_FUNC(); // advc (not called very frequently)
-//===NM=====Mountains Mods===0=====keldath - i hope thats ok
-	if (isCity() && !(isHills() || !(GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && isPeak())))
-//===NM=====Mountains Mods===0=====
-		return true;
 	// <advc.opt>
 	if(isWater())
 		return false; // </advc.opt>
-	// advc: 2nd condition was !isHills. Mods might allow cities on peaks.
-	if (isCity() && isFlatlands())
+	// advc: Rather than repeat the flat city special rule here
+	if (isPotentialIrrigation(true))
+		return true;
+//===NM=====Mountains Mods===0=====keldath - i hope thats ok
+//doto 112 - i changed the game option from !(GC.getGame() to none (GC.getGame(), i think if its a city with peak it 
+//can be irrigated.
+//also the isPotentialIrrigation, from advc , render this part out basically, but i left it anyway
+	if (isCity() && !(isHills() || (GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && isPeak())))
+//===NM=====Mountains Mods===0=====
 		return true;
 	FOR_EACH_ENUM(Improvement)
 	{
@@ -2421,9 +2429,11 @@ bool CvPlot::canHaveImprovement(ImprovementTypes eImprovement, TeamTypes eTeam, 
 			return false;
 	}
 
-	if (getBonusType(eTeam) != NO_BONUS && GC.getInfo(eImprovement).isImprovementBonusMakesValid(getBonusType(eTeam)))
+	if (getBonusType(eTeam) != NO_BONUS &&
+		GC.getInfo(eImprovement).isImprovementBonusMakesValid(getBonusType(eTeam)))
+	{
 		return true;
-
+	}
 	if (GC.getInfo(eImprovement).isNoFreshWater() && isFreshWater())
 		return false;
 
@@ -2437,7 +2447,7 @@ bool CvPlot::canHaveImprovement(ImprovementTypes eImprovement, TeamTypes eTeam, 
 		if (GC.getInfo(eImprovement).isHillsMakesValid() && isHills())
 			bValid = true;
 //===NM=====Mountains Mod===0=====
-		if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
+		else if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
 		{
 			if (GC.getInfo(eImprovement).isPeakMakesValid() && isPeak())
 				bValid = true;
@@ -2448,14 +2458,17 @@ bool CvPlot::canHaveImprovement(ImprovementTypes eImprovement, TeamTypes eTeam, 
 // davidlallen: mountain limitations end
 		}
 //===NM=====Mountains Mod===X=====
-		if (GC.getInfo(eImprovement).isFreshWaterMakesValid() && isFreshWater())
+		else if (GC.getInfo(eImprovement).isFreshWaterMakesValid() && isFreshWater())
 			bValid = true;
-		if (GC.getInfo(eImprovement).isRiverSideMakesValid() && isRiverSide())
+		else if (GC.getInfo(eImprovement).isRiverSideMakesValid() && isRiverSide())
 			bValid = true;
-		if (GC.getInfo(eImprovement).getTerrainMakesValid(getTerrainType()))
+		else if (GC.getInfo(eImprovement).getTerrainMakesValid(getTerrainType()))
 			bValid = true;
-		if (isFeature() && GC.getInfo(eImprovement).getFeatureMakesValid(getFeatureType()))
+		else if (isFeature() &&
+			GC.getInfo(eImprovement).getFeatureMakesValid(getFeatureType()))
+		{
 			bValid = true;
+		}
 		if (!bValid)
 			return false;
 	}
@@ -2766,7 +2779,7 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible,
 	if (isFeature())
 	{
 		if (GC.getInfo(eBuild).isFeatureRemove(getFeatureType()))
-		{	/*if (isOwned() && (GET_PLAYER(ePlayer).getTeam() != getTeam()) && !atWar(GET_PLAYER(ePlayer).getTeam(), getTeam()))
+		{	/*if (isOwned() && TEAMID(ePlayer) != getTeam() && !GET_TEAM(ePlayer).isAtWar(getTeam()))
 				return false;
 			bValid = true;*/
 			// <advc.119> Replacing the above
@@ -2796,8 +2809,8 @@ int CvPlot::getBuildTime(BuildTypes eBuild, /* advc.251: */ PlayerTypes ePlayer)
 	iTime *= std::max(0, GC.getInfo(getTerrainType()).getBuildModifier() + 100);
 	iTime /= 100;
 	// <advc.251>
-	iTime = (int)(GC.getInfo(GET_PLAYER(ePlayer).getHandicapType()).
-			getBuildTimePercent() * 0.01 * iTime);
+	iTime = (per100(GC.getInfo(GET_PLAYER(ePlayer).getHandicapType()).
+			getBuildTimePercent()) * iTime).floor();
 	iTime -= (iTime % 50); // Round down to a multiple of 50
 	// </advc.251>
 	iTime *= GC.getInfo(GC.getGame().getGameSpeedType()).getBuildPercent();
@@ -7635,12 +7648,6 @@ void CvPlot::changeCultureRangeCities(PlayerTypes eOwnerIndex, CultureLevelTypes
 	if(iChange == 0)
 		return;
 
-//doto city state - max range (via parameter in thefuntion)  only for city states
-//different implementation
-//	if (!isInCSsafeRadious(eOwnerIndex))
-//		return;
-//doto city state
-
 	bool bOldCultureRangeCity = isCultureRangeCity(eOwnerIndex, eRangeIndex);
 	m_aaiCultureRangeCities.add(eOwnerIndex, eRangeIndex, iChange);
 	FAssert(m_aaiCultureRangeCities.get(eOwnerIndex, eRangeIndex) >= 0); // advc
@@ -9351,9 +9358,10 @@ float CvPlot::getAqueductSourceWeight() const
 	} // </advc.002p>
 	float fWeight = 0.0f;
 	// Deliverator - changed next line fresh water fresh water
-	if (isLake() || isPeak() || (getImprovementType() != NO_IMPROVEMENT && GC.getImprovementInfo(getImprovementType()).getAddsFreshWaterInRadius() >= 0)
+	if (isLake() || isPeak() ||
+		(getImprovementType() != NO_IMPROVEMENT && GC.getImprovementInfo(getImprovementType()).getAddsFreshWaterInRadius() >= 0) ||
 	//keldath added from bts
-		|| isFeature() && GC.getInfo(getFeatureType()).isAddsFreshWater())
+		 (isFeature() && GC.getInfo(getFeatureType()).isAddsFreshWater()))
 	{
 		fWeight = 1.0f;
 	}

@@ -247,7 +247,7 @@ class CvCivicsScreen:
 				continue
 			szAreaID = self.AREA_NAME + str(l) + str(l) + str(l)
 			# doto civic parent ->hard coded first civic option name...too tired to write a loop just for this...
-			screen.setText("", "Background",u"<font=4>" + u"<color=255,255,0,255>%s</color>" % gc.getCivicOptionInfo(0).getDescription() + u"</font>", CvUtil.FONT_RIGHT_JUSTIFY, self.GOV_CIVIC_HEADER, 28, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+			screen.setText("", "Background",u"<font=4>" + u"<color=255,255,0,255>%s</color>" % gc.getCivicOptionInfo(0).getDescription() + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, self.GOV_CIVIC_HEADER + self.PANEL_BOX_ADJUSTER-10, 28, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 			for i in xrange(len(civicList[l])):
 				doPivotLayoutCivics(i, civicList[l][i], True, govPnelLength, fY, line_seperator - 15,  l, PanelStyles.PANEL_STYLE_BLUE50)
 			# self.drawCivicOptionButtons(l)
@@ -265,7 +265,7 @@ class CvCivicsScreen:
 				civicChild_l = self.m_allChildCivics[j]
 				szAreaID = self.AREA_NAME + str(j) + str(j) + str(j)
 				screen.addPanel(szAreaID, "", "", True, False, 0, panelPos[counter_pos], self.W_SCREEN, 25, PanelStyles.PANEL_STYLE_MAIN_TAN ) # 176
-				screen.setText("", "Background",u"<font=4>" + u"<color=255,255,0,255>%s</color>" % gc.getCivicOptionInfo(j).getDescription()  + u"</font>", CvUtil.FONT_RIGHT_JUSTIFY, self.GOV_CIVIC_HEADER, panelPos[counter_pos] + 3, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+				screen.setText("", "Background",u"<font=4>" + u"<color=255,255,0,255>%s</color>" % gc.getCivicOptionInfo(j).getDescription()  + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, self.GOV_CIVIC_HEADER + self.PANEL_BOX_ADJUSTER-10, panelPos[counter_pos] + 3, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 				for i in xrange(len(civicChild_l)):
 					doPivotLayoutCivics(i, civicChild_l[i], False , panelLength_l_val, fY, line_seperator, j, PanelStyles.PANEL_STYLE_CITY_COLUMNL)
 				# # the the Labor civic section

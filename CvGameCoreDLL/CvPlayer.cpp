@@ -1100,8 +1100,10 @@ void CvPlayer::initFreeUnits()
 	// </advc.027>
 	if (kGame.isOption(GAMEOPTION_ADVANCED_START) &&
 		(!isHuman() || !kGame.isOption(GAMEOPTION_SPAH))) // advc.250b
-	{
-		int iPoints = kGame.getNumAdvancedStartPoints();
+	{	// <advc.250b> Don't overwrite pts. already assigned by SPaH
+		int iPoints = getAdvancedStartPoints();
+		if (iPoints < 0) // </advc.250b>
+			iPoints = kGame.getNumAdvancedStartPoints();
 		// advc.250b (comment): Disabled through Handicap XML
 		iPoints *= GC.getInfo(getHandicapType()).getAdvancedStartPointsMod();
 		iPoints /= 100;
@@ -2512,12 +2514,22 @@ void CvPlayer::killUnits()
 
 // advc.154: Cut from cycleSelectionGroups except for the non-const parts
 CvSelectionGroup* CvPlayer::getNextGroupInCycle(CvUnit* pUnit, bool bForward,
-	bool bWorkers, bool* pbWrap) const
+	bool bWorkers, bool* pbWrap,
+	std::set<int>* pCycledGroups) const
 {
 	FAssert(isActive() && isHuman());
 	LOCAL_REF(bool, bWrap, pbWrap, false); // K-Mod
-	// advc.154: Copy the set
-	std::set<int> kCycledGroups = GC.getGame().getActivePlayerCycledGroups(); // K-Mod
+	//std::set<int>& kCycledGroups = GC.getGame().getActivePlayerCycledGroups(); // K-Mod
+	// <advc.154>
+	std::set<int> kCycledGroupsCopy;
+	if (pCycledGroups == NULL)
+	{
+		// Don't want to mark groups as cycled; therefore make a copy.
+		kCycledGroupsCopy = GC.getGame().getActivePlayerCycledGroups();
+	}
+	std::set<int>& kCycledGroups = (pCycledGroups == NULL ?
+			kCycledGroupsCopy : *pCycledGroups);
+	// </advc.154>
 	CLLNode<int>* pSelectionGroupNode = headGroupCycleNode();
 	if (pUnit != NULL)
 	{
@@ -2558,8 +2570,8 @@ CvSelectionGroup* CvPlayer::getNextGroupInCycle(CvUnit* pUnit, bool bForward,
 				// advc.153: with moves
 				pLoopSelectionGroup->hasWorkerWithMoves())
 			{
-				/*if (pUnit && pLoopSelectionGroup == pUnit->getGroup())
-					if (pbWrap != NULL) *pbWrap = true;*/
+				/*if (pUnit != NULL && pLoopSelectionGroup == pUnit->getGroup())
+					bWrap = true;*/ // K-Mod: disabled
 				return pLoopSelectionGroup;
 			}
 		}
@@ -2569,7 +2581,7 @@ CvSelectionGroup* CvPlayer::getNextGroupInCycle(CvUnit* pUnit, bool bForward,
 			if (pSelectionGroupNode == NULL)
 			{
 				pSelectionGroupNode = headGroupCycleNode();
-				// if (pbWrap != NULL) *pbWrap = true;
+				//bWrap = true; // K-Mod: disabled
 			}
 		}
 		else
@@ -2578,17 +2590,15 @@ CvSelectionGroup* CvPlayer::getNextGroupInCycle(CvUnit* pUnit, bool bForward,
 			if (pSelectionGroupNode == NULL)
 			{
 				pSelectionGroupNode = tailGroupCycleNode();
-				// if (pbWrap != NULL) *pbWrap = true;
+				//bWrap = true; // K-Mod: disabled
 			}
 		}
 		if (pSelectionGroupNode == pFirstSelectionGroupNode)
 		{
-			// break;
-			// K-Mod
+			// break; /* <K-Mod> */
 			if (bWrap)
 				break;
-			bWrap = true;
-			// K-Mod end
+			bWrap = true; // </K-Mod>
 		}
 	}
 	return NULL;
@@ -2623,9 +2633,10 @@ CvSelectionGroup* CvPlayer::cycleSelectionGroups(CvUnit* pUnit, bool bForward,
 			pSelectionGroupNode = nextGroupCycleNode(pSelectionGroupNode);
 		}
 	}
-	// advc.154: Moved into new const function
-	CvSelectionGroup* pGroup = getNextGroupInCycle(pUnit, bForward, bWorkers, pbWrap);
-	if (pbWrap != NULL && pbWrap)
+	// <advc.154> Moved into new const function
+	CvSelectionGroup* pGroup = getNextGroupInCycle(pUnit, bForward,
+			bWorkers, pbWrap, &kCycledGroups); // </advc.154>
+	if (pbWrap != NULL && *pbWrap)
 		kCycledGroups.clear(); // </K-Mod>
 	return pGroup;
 }

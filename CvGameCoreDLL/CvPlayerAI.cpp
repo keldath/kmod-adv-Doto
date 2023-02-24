@@ -16721,8 +16721,8 @@ int CvPlayerAI::AI_neededCityAttackers(
 scaled CvPlayerAI::AI_neededCityAttackersVsBarbarians() const
 {
 	FAssert(!isBarbarian());
-	return fixp(1.25) * AI_estimateBarbarianGarrisonSize() +
-			GET_PLAYER(BARBARIAN_PLAYER).getCurrentEra() - AI_getCurrEraFactor();
+	return scaled::max(1, fixp(1.25) * AI_estimateBarbarianGarrisonSize() +
+			GET_PLAYER(BARBARIAN_PLAYER).getCurrentEra() - AI_getCurrEraFactor());
 }
 
 
@@ -17017,7 +17017,7 @@ void CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 		CivicTypes eParentCivic = ePreRevolutionMap.get(eLoopCivicOption); //get the civic for the itered c option	
 		CvCivicInfo& kParentCivic = GC.getCivicInfo(eParentCivic); 
 		int parentNumChildren = kParentCivic.getNumParentCivicsChildren();	
-		int eBestChild = 0;
+		//int eBestChild = 0;
 		
 		if (parentNumChildren > 0)
 		{
@@ -17075,7 +17075,7 @@ int CvPlayerAI::AI_totalBestChildrenValue(CivicTypes eCivic) const
 	CvCivicInfo& kCivic = GC.getCivicInfo(eCivic);
 	//is this a parent?
 	int parentNumChildren = kCivic.getNumParentCivicsChildren();
-	int eBestChild = 0;
+	//int eBestChild = 0;
 	
 	if (parentNumChildren > 0)
 	{
@@ -28075,7 +28075,7 @@ void CvPlayerAI::AI_advancedStartRouteTerritory()
 
 void CvPlayerAI::AI_doAdvancedStart(bool bNoExit)
 {
-	FAssertMsg(!isBarbarian(), "Should not be called for barbarians!");
+	FAssert(!isBarbarian());
 
 	if (getStartingPlot() == NULL)
 	{

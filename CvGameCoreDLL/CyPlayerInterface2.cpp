@@ -15,6 +15,7 @@ void CyPlayerPythonInterface2(python::class_<CyPlayer>& x)
 	// set the docstring of the current module scope
 	python::scope().attr("__doc__") = "Civilization IV Player Class";
 	x
+		// (kekm.34: Moved this block from CyPlayerInterface1.cpp)
 /* doto moved from cyplayerinterface1 due to memory -
 advc 108 added more lines to that file*/
 		.def("trigger", &CyPlayer::trigger, "void (/*EventTriggerTypes*/int eEventTrigger)")
@@ -86,6 +87,7 @@ advc 108 added more lines to that file*/
 /* REVDCM                                  END                                                  */
 /************************************************************************************************/																										// Exposed to Python
 ;
+
 	/*	K-Mod, 5/jan/11: pollution flags (advc.enum: Moved from CyEnumsInterface
 		b/c it's no longer a global type within the DLL) */
 	// (advc.enum: Keep the name "Types" in Python although it's now "Flags" in the DLL)

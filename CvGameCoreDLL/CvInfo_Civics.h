@@ -55,7 +55,7 @@ public: // The const functions are exposed to Python except those added by AdvCi
 /* doto Civics parent - Start */
 //this is a special trick to set the tech prereq of a child civic
 // to the tech of its parent -> if the tech of that child is NONE (NO_TECH)
-	TechTypes setTechPrereq(TechTypes eTech) { m_eTechPrereq = eTech; }
+	void setTechPrereq(TechTypes eTech) { m_eTechPrereq = eTech; }
 	int getCivicPercentAnger() const { return m_iCivicPercentAnger; }
 	int getMaxConscript() const { return m_iMaxConscript; }
 	int getStateReligionHappiness() const { return m_iStateReligionHappiness; }
