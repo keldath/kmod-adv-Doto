@@ -25,11 +25,11 @@
    </TEXT>
   <TEXT>
     <Tag>TXT_KEY_CIVICOPTION_GOVERNMENT</Tag>
-    <English>Goverments Form (Parent Civic)</English>
+    <English>Goverment Form</English>
   </TEXT>
   <TEXT>
     <Tag>TXT_KEY_CIVICOPTION_GOVERNMENT_TYPES</Tag>
-    <English>Goverments Type (Form Dependancy)</English>
+    <English>Gov. Type</English>
    </TEXT>
   <TEXT>
     <Tag>TXT_KEY_CIVIC_POLICE_STATE</Tag>
@@ -37,6 +37,6 @@
   </TEXT>
   <TEXT>
     <Tag>TXT_KEY_CIVICOPTION_GOVERNMENT_AGENDA</Tag>
-    <English>Goverments Agenda (Form Dependancy)</English>
+    <English>Gov. Agenda</English>
   </TEXT>
 </Civ4GameText>
