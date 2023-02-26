@@ -1217,7 +1217,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<iVassalPowerModifier>20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_VASSALAGE</FavoriteCivic>
+			<FavoriteCivic>CIVIC_PROVINCIAL</FavoriteCivic>
 	<!--	<HatedCivic>CIVIC_ARRAKIS_SPICE</HatedCivic> 
 			<FavoriteCivilization>CIVILIZATION_CHEROKEE</FavoriteCivilization>
 			<HatedCivilization>CIVILIZATION_FRANCE</HatedCivilization>	-->					
@@ -2781,7 +2781,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>-20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
+			<FavoriteCivic>CIVIC_OLIGARCHY</FavoriteCivic>
 			<FavoriteReligion>RELIGION_CHRISTIANITY</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -3319,7 +3319,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_NATIONHOOD</FavoriteCivic>
+			<FavoriteCivic>CIVIC_REPRESENTATION</FavoriteCivic>
 			<FavoriteReligion>RELIGION_CHRISTIANITY</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -3844,7 +3844,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_FREE_RELIGION</FavoriteCivic>
+			<FavoriteCivic>CIVIC_ELECTORAL</FavoriteCivic>
 			<FavoriteReligion>NONE</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -4112,7 +4112,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>-20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_NATIONHOOD</FavoriteCivic>
+			<FavoriteCivic>CIVIC_PROVINCIAL</FavoriteCivic>
 			<FavoriteReligion>RELIGION_CHRISTIANITY</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -4373,7 +4373,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_FREE_RELIGION</FavoriteCivic>
+			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
 			<FavoriteReligion>RELIGION_CHRISTIANITY</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -5720,7 +5720,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_BUREAUCRACY</FavoriteCivic>
+			<FavoriteCivic>CIVIC_OLIGARCHY</FavoriteCivic>
 			<FavoriteReligion>NONE</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -5966,7 +5966,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_FREE_MARKET</FavoriteCivic>
+			<FavoriteCivic>CIVIC_TOTALITARISM</FavoriteCivic>
 			<FavoriteReligion>NONE</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -6772,7 +6772,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_THEOCRACY</FavoriteCivic>
+			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
 			<FavoriteReligion>RELIGION_CHRISTIANITY</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -7307,7 +7307,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_REPRESENTATION</FavoriteCivic>
+			<FavoriteCivic>CIVIC_PROVINCIAL</FavoriteCivic>
 			<FavoriteReligion>NONE</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -7821,7 +7821,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_BUREAUCRACY</FavoriteCivic>
+			<FavoriteCivic>CIVIC_POLICE_STATE</FavoriteCivic>
 			<FavoriteReligion>RELIGION_BUDDHISM</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -8122,7 +8122,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_EMANCIPATION</FavoriteCivic>
+			<FavoriteCivic>CIVIC_REPRESENTATION</FavoriteCivic>
 			<FavoriteReligion>RELIGION_CHRISTIANITY</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -8647,7 +8647,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>-20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_FREE_MARKET</FavoriteCivic>
+			<FavoriteCivic>CIVIC_TOTALITARISM</FavoriteCivic>
 			<FavoriteReligion>RELIGION_ISLAM</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -9678,7 +9678,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_REPRESENTATION</FavoriteCivic>
+			<FavoriteCivic>CIVIC_OLIGARCHY</FavoriteCivic>
 			<FavoriteReligion>RELIGION_CHRISTIANITY</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -10451,7 +10451,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->	
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_BUREAUCRACY</FavoriteCivic>
+			<FavoriteCivic>CIVIC_OLIGARCHY</FavoriteCivic>
 			<FavoriteReligion>RELIGION_CHRISTIANITY</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -11017,7 +11017,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_ORGANIZED_RELIGION</FavoriteCivic>
+			<FavoriteCivic>CIVIC_PROVINCIAL</FavoriteCivic>
 			<FavoriteReligion>NONE</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -11550,7 +11550,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_MERCANTILISM</FavoriteCivic>
+			<FavoriteCivic>CIVIC_ELECTORAL</FavoriteCivic>
 			<FavoriteReligion>RELIGION_CHRISTIANITY</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -12594,7 +12594,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_STATE_PROPERTY</FavoriteCivic>
+			<FavoriteCivic>CIVIC_TOTALITARISM</FavoriteCivic>
 			<FavoriteReligion>NONE</FavoriteReligion>
 			<Traits>
 				<Trait>
@@ -13418,7 +13418,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_MERCANTILISM</FavoriteCivic>
+			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
 			<FavoriteReligion>RELIGION_BUDDHISM</FavoriteReligion>
 			<Traits>
 				<Trait>

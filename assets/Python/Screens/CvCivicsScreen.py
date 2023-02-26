@@ -249,7 +249,7 @@ class CvCivicsScreen:
 			# doto civic parent ->hard coded first civic option name...too tired to write a loop just for this...
 			screen.setText("", "Background",u"<font=4>" + u"<color=255,255,0,255>%s</color>" % gc.getCivicOptionInfo(0).getDescription() + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, self.GOV_CIVIC_HEADER + self.PANEL_BOX_ADJUSTER-10, 28, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 			for i in xrange(len(civicList[l])):
-				doPivotLayoutCivics(i, civicList[l][i], True, govPnelLength, fY, line_seperator - 15,  l, PanelStyles.PANEL_STYLE_BLUE50)
+				doPivotLayoutCivics(i, civicList[l][i], True, govPnelLength, fY, line_seperator - 15,  civicList[l], PanelStyles.PANEL_STYLE_BLUE50)
 			# self.drawCivicOptionButtons(l)
 
 		# place the children civic options
@@ -361,13 +361,20 @@ class CvCivicsScreen:
 		# if a parent is no highlighted and one of its childs
 		# is this current civic in the select - forbid it from being selected or highlighted.
 		for i in range (gc.getNumCivicInfos()):
-			numChilds = gc.getCivicInfo(i).getNumParentCivicsChildren()
-			if numChilds > 0 :
-				for j in xrange(numChilds):
-					child = gc.getCivicInfo(i).getParentCivicsChildren(j)
-					if iCivic == child:
-						if self.m_highLighterParent != i:
-							return 0
+			if gc.getCivicOptionInfo(gc.getCivicInfo(i).getCivicOptionType()).getParentCivicOption() == 2 :
+				numChilds = gc.getCivicInfo(i).getNumParentCivicsChildren()
+				if numChilds > 0 :
+					for j in xrange(numChilds):
+						child = gc.getCivicInfo(i).getParentCivicsChildren(j)
+						# check if the civic is a child od some parent
+						if iCivic == child:
+							if self.m_highLighterParent != i:
+								return 0
+		# doto civics parent start
+		# update which parent is highlighted
+		if gc.getCivicInfo(iCivic).getNumParentCivicsChildren() == 2 :
+			self.m_highLighterParent = iCivic
+		# doto parent civics end
 		# doto parent civics end
 
 		iCivicOption = gc.getCivicInfo(iCivic).getCivicOptionType()
@@ -385,12 +392,7 @@ class CvCivicsScreen:
 		# highlight the new widget
 		self.highlight(iCivic)
 
-		# doto civics parent start
-		# update which parent is highlighted
-		if gc.getCivicInfo(iCivic).getNumParentCivicsChildren() > 0 :
-			self.m_highLighterParent = iCivic
-		# doto parent civics end
-
+		
 		self.getScreen().setState(self.getCivicsButtonName(iCivic), True)
 		
 		return 0
@@ -410,6 +412,8 @@ class CvCivicsScreen:
 			if gc.getCivicOptionInfo(i).getParentCivicOption() > 0:
 				idx_factor += 1
 
+		# the idx will get the normal civics to be position
+		# on the start of x axis, since it should start from 0.		
 		if gc.getCivicOptionInfo(input_).getParentCivicOption() > 0:
 			idx = input_
 		else:
@@ -422,7 +426,7 @@ class CvCivicsScreen:
 			else:
 				# Select button
 				self.select(inputClass.getID())
-				self.drawHelpText(input_, idx) #doto -3 cause 3 in related civics
+				self.drawHelpText(input_, idx) #doto 
 				self.updateAnarchy()
 		elif (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CURSOR_MOVE_ON) :
 			# Highlight this button

@@ -88,8 +88,9 @@
   </TEXT>
   <TEXT>
     <Tag>TXT_KEY_CIVIC_BUILDING_YIELD_CHANGE</Tag>
-        <English>[ICON_BULLET]%D1_Change %F2 from[SPACE]</English>
-		<French>[ICON_BULLET]%D1_Change%F2_Icon :[SPACE]</French>
+    <!-- <English>[ICON_BULLET]%D1_Change %F2 from[SPACE]</English> -->
+		<English>[ICON_BULLET]%D1_Change%F2_Icon from[SPACE]</English>
+    <French>[ICON_BULLET]%D1_Change%F2_Icon :[SPACE]</French>
     <German>[ICON_BULLET]%D1_Change%F2_Icon durch die Modernisierung[SPACE]</German>
     <Italian>[ICON_BULLET]%D1_Change%F2_Icon da[SPACE]</Italian>
     <Spanish>[ICON_BULLET]%D1_Change %F2_Icon por[SPACE]</Spanish>

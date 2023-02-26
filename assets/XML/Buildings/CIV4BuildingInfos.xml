@@ -279,7 +279,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<YieldChanges>
 				<iYield>0</iYield>
 				<iYield>0</iYield>
-				<iYield>10</iYield>
+				<iYield>4</iYield>
 			</YieldChanges>
 			<CommerceChanges>
 				<iCommerce>0</iCommerce>
@@ -477,7 +477,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				<iCommerce>1000</iCommerce>
 			</CommerceChangeDoubleTimes>
 			<CommerceModifiers>
-				<iCommerce>15</iCommerce>
+				<iCommerce>25</iCommerce>
 			</CommerceModifiers>
 			<GlobalCommerceModifiers/>
 			<SpecialistExtraCommerces/>
@@ -1231,7 +1231,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				<iCommerce>1000</iCommerce>
 			</CommerceChangeDoubleTimes>
 			<CommerceModifiers>
-				<iCommerce>0</iCommerce>
+				<iCommerce>5</iCommerce>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
 				<iCommerce>25</iCommerce>
@@ -1434,7 +1434,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				<iCommerce>1000</iCommerce>
 			</CommerceChangeDoubleTimes>
 			<CommerceModifiers>
-				<iCommerce>0</iCommerce>
+				<iCommerce>5</iCommerce>
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
 				<iCommerce>25</iCommerce>
@@ -11033,7 +11033,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ObsoleteSafeCommerceChanges/>
 			<CommerceChangeDoubleTimes/>
 			<CommerceModifiers>
-				<iCommerce>25</iCommerce>
+				<iCommerce>30</iCommerce>
 			</CommerceModifiers>
 			<GlobalCommerceModifiers/>
 			<SpecialistExtraCommerces/>
@@ -11226,7 +11226,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ObsoleteSafeCommerceChanges/>
 			<CommerceChangeDoubleTimes/>
 			<CommerceModifiers>
-				<iCommerce>25</iCommerce>
+				<iCommerce>35</iCommerce>
 			</CommerceModifiers>
 			<GlobalCommerceModifiers/>
 			<SpecialistExtraCommerces/>
@@ -34877,7 +34877,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<CommerceModifiers/>
 			<GlobalCommerceModifiers>
 				<iCommerce>0</iCommerce>
-				<iCommerce>5</iCommerce>
+				<iCommerce>10</iCommerce>
 				<iCommerce>0</iCommerce>
 			</GlobalCommerceModifiers>
 			<SpecialistExtraCommerces/>

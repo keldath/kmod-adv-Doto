@@ -149,10 +149,10 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- was 80 (let's steer beginners away a bit from just playing SimCity) -->
 			<iConstructPercent>85</iConstructPercent>
 			<iCreatePercent>70</iCreatePercent>
-			<!-- was 45 -->
-			<iDistanceMaintenancePercent>50</iDistanceMaintenancePercent>
+			<!-- was 45- kel revert -->
+			<iDistanceMaintenancePercent>40</iDistanceMaintenancePercent>
 			<!-- was 40 -->
-			<iNumCitiesMaintenancePercent>45</iNumCitiesMaintenancePercent>
+			<iNumCitiesMaintenancePercent>35</iNumCitiesMaintenancePercent>
 			<!-- advc.251 (end) -->
 			<!-- advc.exp.1: Essentially disabled this upper bound. Can re-enable
 				 it by setting it back to the original value of 4. -->
@@ -334,9 +334,9 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iConstructPercent>95</iConstructPercent>
 			<iCreatePercent>80</iCreatePercent>
 			<!-- was 55 -->
-			<iDistanceMaintenancePercent>60</iDistanceMaintenancePercent>
+			<iDistanceMaintenancePercent>45</iDistanceMaintenancePercent>
 			<!-- was 50 -->
-			<iNumCitiesMaintenancePercent>55</iNumCitiesMaintenancePercent>
+			<iNumCitiesMaintenancePercent>40</iNumCitiesMaintenancePercent>
 			<!-- advc.251 (end) -->
 			<!-- advc.exp.1: was 4 -->
 			<iMaxNumCitiesMaintenance>4000</iMaxNumCitiesMaintenance>
@@ -493,9 +493,9 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iConstructPercent>100</iConstructPercent>
 			<iCreatePercent>90</iCreatePercent>
 			<!-- was 65 -->
-			<iDistanceMaintenancePercent>70</iDistanceMaintenancePercent>
+			<iDistanceMaintenancePercent>50</iDistanceMaintenancePercent>
 			<!-- was 60 -->
-			<iNumCitiesMaintenancePercent>65</iNumCitiesMaintenancePercent>
+			<iNumCitiesMaintenancePercent>45</iNumCitiesMaintenancePercent>
 			<!-- advc.251 (end) -->
 			<!-- advc.exp.1: was 5 -->
 			<iMaxNumCitiesMaintenance>5000</iMaxNumCitiesMaintenance>
@@ -627,9 +627,9 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iConstructPercent>100</iConstructPercent>
 			<iCreatePercent>100</iCreatePercent>
 			<!-- was 75 -->
-			<iDistanceMaintenancePercent>80</iDistanceMaintenancePercent>
+			<iDistanceMaintenancePercent>55</iDistanceMaintenancePercent>
 			<!-- was 70 -->
-			<iNumCitiesMaintenancePercent>75</iNumCitiesMaintenancePercent>
+			<iNumCitiesMaintenancePercent>50</iNumCitiesMaintenancePercent>
 			<!-- advc.251 (end) -->
 			<!-- advc.exp.1: was 5 -->
 			<iMaxNumCitiesMaintenance>5000</iMaxNumCitiesMaintenance>
@@ -756,8 +756,8 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iConstructPercent>100</iConstructPercent>
 			<iCreatePercent>100</iCreatePercent>
 			<!-- advc.251 (end) -->
-			<iDistanceMaintenancePercent>85</iDistanceMaintenancePercent>
-			<iNumCitiesMaintenancePercent>80</iNumCitiesMaintenancePercent>
+			<iDistanceMaintenancePercent>60</iDistanceMaintenancePercent>
+			<iNumCitiesMaintenancePercent>55</iNumCitiesMaintenancePercent>
 			<!-- advc.exp.1: was 6 -->
 			<iMaxNumCitiesMaintenance>6000</iMaxNumCitiesMaintenance>
 			<!-- advc.251: was 110 -->
@@ -893,8 +893,8 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iConstructPercent>100</iConstructPercent>
 			<iCreatePercent>100</iCreatePercent>
 			<!-- advc.251 (end) -->
-			<iDistanceMaintenancePercent>90</iDistanceMaintenancePercent>
-			<iNumCitiesMaintenancePercent>85</iNumCitiesMaintenancePercent>
+			<iDistanceMaintenancePercent>65</iDistanceMaintenancePercent>
+			<iNumCitiesMaintenancePercent>60</iNumCitiesMaintenancePercent>
 			<!-- advc.exp.1: was 6 -->
 			<iMaxNumCitiesMaintenance>6000</iMaxNumCitiesMaintenance>
 			<!-- advc.251: was 120 -->
@@ -1056,8 +1056,8 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iConstructPercent>105</iConstructPercent>
 			<iCreatePercent>100</iCreatePercent>
 			<!-- advc.251 (end) -->
-			<iDistanceMaintenancePercent>95</iDistanceMaintenancePercent>
-			<iNumCitiesMaintenancePercent>90</iNumCitiesMaintenancePercent>
+			<iDistanceMaintenancePercent>70</iDistanceMaintenancePercent>
+			<iNumCitiesMaintenancePercent>65</iNumCitiesMaintenancePercent>
 			<!-- advc.exp.1: was 7 -->
 			<iMaxNumCitiesMaintenance>7000</iMaxNumCitiesMaintenance>
 			<!-- advc.251: was 130 -->
@@ -1224,8 +1224,8 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iConstructPercent>110</iConstructPercent>
 			<iCreatePercent>110</iCreatePercent>
 			<!-- advc.251 (end) -->
-			<iDistanceMaintenancePercent>100</iDistanceMaintenancePercent>
-			<iNumCitiesMaintenancePercent>95</iNumCitiesMaintenancePercent>
+			<iDistanceMaintenancePercent>75</iDistanceMaintenancePercent>
+			<iNumCitiesMaintenancePercent>70</iNumCitiesMaintenancePercent>
 			<!-- advc.exp.1: was 7 -->
 			<iMaxNumCitiesMaintenance>7000</iMaxNumCitiesMaintenance>
 			<!-- advc.251: was 140 -->
@@ -1397,8 +1397,8 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iConstructPercent>115</iConstructPercent>
 			<iCreatePercent>120</iCreatePercent>
 			<!-- advc.251 (end) -->
-			<iDistanceMaintenancePercent>100</iDistanceMaintenancePercent>
-			<iNumCitiesMaintenancePercent>100</iNumCitiesMaintenancePercent>
+			<iDistanceMaintenancePercent>80</iDistanceMaintenancePercent>
+			<iNumCitiesMaintenancePercent>75</iNumCitiesMaintenancePercent>
 			<!-- advc.exp.1: was 8000 -->
 			<iMaxNumCitiesMaintenance>8000</iMaxNumCitiesMaintenance>
 			<!-- advc.251: was 150 -->

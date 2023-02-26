@@ -162,7 +162,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -305,7 +305,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -440,7 +440,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -579,7 +579,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -722,7 +722,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -862,7 +862,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -1006,7 +1006,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -1153,7 +1153,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -1313,7 +1313,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -1454,7 +1454,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -1599,7 +1599,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -1738,7 +1738,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -1898,7 +1898,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -2046,7 +2046,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -2195,7 +2195,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -2328,7 +2328,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -2524,7 +2524,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -2662,7 +2662,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -2803,7 +2803,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -2932,7 +2932,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -3061,7 +3061,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -3208,7 +3208,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -3340,7 +3340,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -3493,7 +3493,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -3638,7 +3638,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -3773,7 +3773,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -3945,7 +3945,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -4093,7 +4093,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -4247,7 +4247,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -4388,7 +4388,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -4536,7 +4536,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -4672,7 +4672,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -4810,7 +4810,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -4945,7 +4945,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -5094,7 +5094,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -5217,7 +5217,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -5336,7 +5336,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -5475,7 +5475,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -5598,7 +5598,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -5721,7 +5721,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -5843,7 +5843,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -5968,7 +5968,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -6087,7 +6087,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -6282,7 +6282,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
@@ -7167,7 +7167,7 @@
 			<InitialCivics>
 				<CivicType>CIVIC_DESPOTISM</CivicType>
 				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_ANARCHIZEM</CivicType>
+				<CivicType>CIVIC_DYNASTIICISM</CivicType>
 				<CivicType>CIVIC_ELDER</CivicType>
 				<CivicType>CIVIC_TRIBALISM</CivicType>
 				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
