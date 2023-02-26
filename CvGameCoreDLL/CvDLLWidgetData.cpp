@@ -3061,8 +3061,6 @@ void CvDLLWidgetData::parseActionHelp_Mission(CvActionInfo const& kAction,
 
 			if (kMissionPlot.isImproved())
 			{
-				 
-			
 			// < JImprovementLimit Mod Start >
                     if (kImprov.getImprovementRequired() != NO_IMPROVEMENT)
                      {

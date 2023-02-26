@@ -4711,7 +4711,7 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,
 						if (GC.getInfo(kMember.getCivilizationType()).isForbidden(eLoopReligion))
     						continue;								
 						int iValue = 10;
-						iValue += kGame.getSorenRandNum(10, "Found Religion (Player)");
+					iValue += SyncRandNum(10);
 						for (int iK = 0; iK < GC.getNumReligionInfos(); iK++)
 							iValue += kMember.getHasReligionCount((ReligionTypes)iK) * 10;
 
@@ -4808,7 +4808,7 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,
 					bFirstPerk = true;
 				}
 			}
-		}
+		}//doto
 
 		for (MemberAIIter it(getID()); it.hasNext(); ++it)
 		{

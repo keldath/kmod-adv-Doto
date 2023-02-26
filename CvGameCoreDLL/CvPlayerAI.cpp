@@ -17039,12 +17039,12 @@ void CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 			// civic 1 if option a civic 2 of option b civic 3 of option a....n 	
 			for (int i = 0; i < GC.getNumCivicOptionInfos(); i++)
 			{
-				CivicOptionTypes eLoopCivicOption = (CivicOptionTypes)i;
+				CivicOptionTypes eLoopCivicOptionChild = (CivicOptionTypes)i;
 				// no point in wasting a loop for the parents civic option type
-				if (eLoopCivicOption == kParentCivic.getCivicOptionType())
+				if (eLoopCivicOptionChild == kParentCivic.getCivicOptionType())
 					continue;
 				//if the civic is not a child civic option - pass...
-				if (GC.getInfo(eLoopCivicOption).getParentCivicOption() != 1)
+				if (GC.getInfo(eLoopCivicOptionChild).getParentCivicOption() != 1)
 					continue;
 					
 				int eTempBestCivicChildOption = 0;
@@ -17053,14 +17053,14 @@ void CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 					CivicTypes eChildCivic = kParentCivic.getParentCivicsChildren(J);
 					if (!canDoCivics(eChildCivic))
 						continue;
-					if (GC.getInfo(eChildCivic).getCivicOptionType() == eLoopCivicOption)
+					if (GC.getInfo(eChildCivic).getCivicOptionType() == eLoopCivicOptionChild)
 					{
 						//if another civic child belongs to the same civic option 
 						if (m_atemp[J] > eTempBestCivicChildOption)
 						{
 							// save the value -> if there is more childs to this civic option
 							eTempBestCivicChildOption =	m_atemp[J];
-							ePreRevolutionMap.set(eLoopCivicOption, eChildCivic);
+							ePreRevolutionMap.set(eLoopCivicOptionChild, eChildCivic);
 						}
 					}
 				}
@@ -17125,8 +17125,17 @@ int CvPlayerAI::AI_totalBestChildrenValue(CivicTypes eCivic) const
 int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 {
 	PROFILE_FUNC();
-	
-	return AI_civicValue_original(eCivic) + AI_totalBestChildrenValue(eCivic);
+	/* doto Civics parent - if a parent, value it with its children ) */
+	if (GC.getInfo(GC.getInfo(eCivic).getCivicOptionType()).getParentCivicOption() == 2)
+			return AI_civicValue_original(eCivic) + AI_totalBestChildrenValue(eCivic);
+			
+	/* doto Civics parent - if a child, value it as 0 --> children civics will be eval with its parent
+	the setting of child civics will be done with forcechildcivics right before the revolution takes place
+	need to test this more cause i dont want it to affect ai long run planning of civics ) */
+	if (GC.getInfo(GC.getInfo(eCivic).getCivicOptionType()).getParentCivicOption() == 1)
+			return 0;
+			
+	return AI_civicValue_original(eCivic);
 }
 /* doto Civics parent - end ) */
 /*	The bulk of this function has been rewritten for K-Mod.
@@ -20777,6 +20786,7 @@ void CvPlayerAI::AI_doCivics()
 	/* doto Civics parent - Start */	
 	// get the civics with forced children
 	//aeBestCivic = 
+	//child civics come out as 0 - think if this is wise for the below tech thing.
 	forceChildCivics(aeBestCivic);
 	/* doto Civics parent - end */
 	

@@ -9383,7 +9383,7 @@ void CvPlayer::changeNonStateReligionExtraHealth(int iChange)
 	}
 }
 // < Civic Infos Plus End   >
-//limited religions
+//doto limited religions
 void CvPlayer::changeCountFoundReligionModifier(int iChange)
 {
 	if (iChange != 0)
@@ -11330,6 +11330,11 @@ bool CvPlayer::isUnitClassMaxedOut(UnitClassTypes eUnitClass, int iExtra) const
 
 void CvPlayer::changeUnitClassCount(UnitClassTypes eUnitClass, int iChange)
 {
+	//doto 112 addition - got an error on a death of a great general 
+	//seems the unit count was wrong?
+	if (getUnitClassCount(eUnitClass) == 0 && iChange < 0)
+		return;
+
 	m_aiUnitClassCount.add(eUnitClass, iChange);
 	FAssert(getUnitClassCount(eUnitClass) >= 0);
 }
@@ -15295,24 +15300,26 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 		changeCapitalCommerceRateModifier(c, GC.getInfo(eCivic).getCapitalCommerceModifier(c) * iChange);
 		changeSpecialistExtraCommerce(c, GC.getInfo(eCivic).getSpecialistExtraCommerce(c) * iChange);
 	}
-	// <advc.003t>
-	if (GC.getInfo(eCivic).isAnyBuildingHappinessChanges() ||
-		GC.getInfo(eCivic).isAnyBuildingHealthChanges()) // </advc.003t>
+	
+	CvCivilization const& kCiv = getCivilization(); // advc.003w
+	for (int i = 0; i < kCiv.getNumBuildings(); i++)
 	{
-		CvCivilization const& kCiv = getCivilization(); // advc.003w
-		for (int i = 0; i < kCiv.getNumBuildings(); i++)
+		// < Civic Infos Plus Start >
+	    for (int iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
 		{
-			// < Civic Infos Plus Start >
-	    	for (int iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
-			{
-				changeBuildingYieldChange(((BuildingTypes)i), ((YieldTypes)iJ), (GC.getInfo(eCivic).getBuildingYieldChanges(i, iJ) * iChange));
-			}
+			changeBuildingYieldChange(((BuildingTypes)i), ((YieldTypes)iJ), (GC.getInfo(eCivic).getBuildingYieldChanges(i, iJ) * iChange));
+		}
 
-			for (int iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
-			{
-				changeBuildingCommerceChange(((BuildingTypes)i), ((CommerceTypes)iJ), (GC.getInfo(eCivic).getBuildingCommerceChanges(i, iJ) * iChange));
-			}
-			// < Civic Infos Plus End   >
+		for (int iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
+		{
+			changeBuildingCommerceChange(((BuildingTypes)i), ((CommerceTypes)iJ), (GC.getInfo(eCivic).getBuildingCommerceChanges(i, iJ) * iChange));
+		}
+		// < Civic Infos Plus End   >
+		// <advc.003t>
+		//doto 112 - keldath - moved code here, the buildings didnt work prior...
+		if (GC.getInfo(eCivic).isAnyBuildingHappinessChanges() ||
+			GC.getInfo(eCivic).isAnyBuildingHealthChanges()) // </advc.003t>
+		{
 			BuildingTypes eOurBuilding = kCiv.buildingAt(i);
 			BuildingClassTypes eLoopClass = kCiv.buildingClassAt(i);
 			changeExtraBuildingHappiness(eOurBuilding, GC.getInfo(eCivic).

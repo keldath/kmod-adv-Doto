@@ -52,7 +52,7 @@ CvCivilizationInfo::~CvCivilizationInfo()
 	// davidlallen: religion forbidden to civilization next line
 	SAFE_DELETE_ARRAY(m_pbForbiddenReligions);
 	SAFE_DELETE_ARRAY(m_paszCityNames);
-//city states
+//doto city states
 	SAFE_DELETE_ARRAY(m_paszLeadersNames);
 }
 

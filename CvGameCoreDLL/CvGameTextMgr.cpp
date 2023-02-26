@@ -3142,7 +3142,8 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 		}
 		// < JCultureControl Mod Start >
 		//keldath advc 099 + 108 text adjustments 
-		else if(eRevealedOwner != NO_PLAYER && !GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL)) // advc.099f
+		else if(eRevealedOwner != NO_PLAYER && 
+			!GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL)) // advc.099f
 		// < JCultureControl Mod end >
 		{
 			CvPlayer const& kRevealOwner = GET_PLAYER(eRevealedOwner);
@@ -13468,7 +13469,7 @@ namespace
 						CvImprovementInfo::HealthPercent);
 				if (!GET_TEAM(getActiveTeam()).canAccessHappyHealth(kPlot,
 					iImprovHealthPercent)
-					//DOTO 111 ADDED IMPROVEMENT MUST BE WORKED ON
+					//DOTO 111 surronding  health ADDED IMPROVEMENT MUST BE WORKED ON
 					|| !kCity.isWorkingPlot(kPlot))
 				{
 					iImprovHealthPercent = 0;

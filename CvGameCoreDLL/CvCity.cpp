@@ -4167,22 +4167,21 @@ int CvCity::totalBadBuildingHealth() const
 		return (getBuildingBadHealth() + getArea().getBuildingBadHealth(getOwner()) +
 				GET_PLAYER(getOwner()).getBuildingBadHealth() + getExtraBuildingBadHealth());
 	}
-
 	return 0;
 }
 
 
 int CvCity::goodHealth() const
 {
-	int iTotalHealth = 0;
-	int iHealth = getFreshWaterGoodHealth();
-	if (iHealth > 0)
-		iTotalHealth += iHealth;
-
-	iHealth = getSurroundingGoodHealth();
-	if (iHealth > 0)
-		iTotalHealth += iHealth;
-
+	int iHealth = 0;
+	iHealth += std::max(0, getFreshWaterGoodHealth());
+	iHealth += std::max(0, getSurroundingGoodHealth());
+	iHealth += std::max(0, getPowerGoodHealth());
+	iHealth += std::max(0, getBonusGoodHealth());
+	iHealth += std::max(0, totalGoodBuildingHealth());
+	iHealth += std::max(0,
+			GET_PLAYER(getOwner()).getExtraHealth() + getExtraHealth());
+	iHealth += std::max(0, GC.getInfo(getHandicapType()).getHealthBonus());
 /*****************************************************************************************************/
 /**  Author: TheLadiesOgre                                                                          **/
 /**  Date: 15.10.2009                                                                               **/
@@ -4190,79 +4189,39 @@ int CvCity::goodHealth() const
 /**  Reason Added: Enable Terrain Health Modifiers                                                  **/
 /**  Notes:                                                                                         **/
 /*****************************************************************************************************/
-	iHealth = getTerrainGoodHealth();
-	if (iHealth > 0)
-	{
-		iTotalHealth += iHealth;
-	}
+	iHealth += std::max(0, getTerrainGoodHealth());
 /*****************************************************************************************************/
 /**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
 /*****************************************************************************************************/
 /*************************************************************************************************/
 /** Specialists Enhancements, by Supercheese 10/9/09                                                   */
-/**                                                                                              */
-/**                                                                                              */
 /*************************************************************************************************/
-	iHealth = getSpecialistGoodHealth();
-	if (iHealth > 0)
-	{
-		iTotalHealth += iHealth;
-	}
+	iHealth += std::max(0,  getSpecialistGoodHealth());
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
 // < Civic Infos Plus Start >
-	iHealth = getReligionGoodHealth();
-	if (iHealth > 0)
-	{
-		iTotalHealth += iHealth;
-	}
+	iHealth += std::max(0,  getReligionGoodHealth());
 //getNonStateReligionExtraHealth unmarked by keldath from v104
-	iHealth = GET_PLAYER(getOwner()).getNonStateReligionExtraHealth();
-	if (iHealth > 0)
-	{
-		iTotalHealth += iHealth;
-	}
+	iHealth += std::max(0,   GET_PLAYER(getOwner()).getNonStateReligionExtraHealth());
 // < Civic Infos Plus End   >
-	iHealth = getPowerGoodHealth();
-	if (iHealth > 0)
-		iTotalHealth += iHealth;
 
-	iHealth = getBonusGoodHealth();
-	if (iHealth > 0)
-		iTotalHealth += iHealth;
-
-	iHealth = totalGoodBuildingHealth();
-	if (iHealth > 0)
-		iTotalHealth += iHealth;
-
-	iHealth = GET_PLAYER(getOwner()).getExtraHealth() + getExtraHealth();
-	if (iHealth > 0)
-		iTotalHealth += iHealth;
-
-	iHealth = GC.getInfo(getHandicapType()).getHealthBonus();
-	if (iHealth > 0)
-		iTotalHealth += iHealth;
-
-	return iTotalHealth;
+	return iHealth;
 }
 
 
 int CvCity::badHealth(bool bNoAngry, int iExtra) const
 {
-	int iTotalHealth = 0;
-	int iHealth = getEspionageHealthCounter();
-	if (iHealth > 0)
-		iTotalHealth -= iHealth;
-
-	iHealth = getFreshWaterBadHealth();
-	if (iHealth < 0)
-		iTotalHealth += iHealth;
-
-	iHealth = getSurroundingBadHealth();
-	if (iHealth < 0)
-		iTotalHealth += iHealth;
-
+	int iHealth = 0;
+	iHealth -= std::max(0, getEspionageHealthCounter());
+	iHealth += std::min(0, getFreshWaterBadHealth());
+	iHealth += std::min(0, getSurroundingBadHealth());
+	iHealth += std::min(0, getPowerBadHealth());
+	iHealth += std::min(0, getBonusBadHealth());
+	iHealth += std::min(0, totalBadBuildingHealth());
+	iHealth += std::min(0,
+			GET_PLAYER(getOwner()).getExtraHealth() + getExtraHealth());
+	iHealth += std::min(0, GC.getInfo(getHandicapType()).getHealthBonus());
 /*****************************************************************************************************/
 /**  Author: TheLadiesOgre                                                                          **/
 /**  Date: 15.10.2009                                                                               **/
@@ -4270,72 +4229,29 @@ int CvCity::badHealth(bool bNoAngry, int iExtra) const
 /**  Reason Added: Enable Terrain Health Modifiers                                                  **/
 /**  Notes:                                                                                         **/
 /*****************************************************************************************************/
-	iHealth = getTerrainBadHealth();
-	if (iHealth > 0)
-	{
-		iTotalHealth += iHealth;
-	}
-
-/*****************************************************************************************************/
-/**  TheLadiesOgre; 15.10.2009; TLOTags                                                             **/
-/*****************************************************************************************************/
+	iHealth += std::min(0, getTerrainBadHealth());
 /*************************************************************************************************/
 /** Specialists Enhancements, by Supercheese 10/9/09                                                   */
-/**                                                                                              */
-/**                                                                                              */
 /*************************************************************************************************/
-	iHealth = getSpecialistBadHealth();
-	if (iHealth < 0)
-	{
-		iTotalHealth += iHealth;
-	}
+	iHealth += std::min(0, getSpecialistBadHealth());
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
-/*************************************************************************************************/
-	iHealth = getPowerBadHealth();
-	if (iHealth < 0)
-		iTotalHealth += iHealth;
+
  // < Civic Infos Plus Start >
-// unmarked by keldath from v104	
-	iHealth = GET_PLAYER(getOwner()).getStateReligionExtraHealth();
-	if (iHealth < 0)
-	{
-		iTotalHealth += iHealth;
-	}
-	iHealth = GET_PLAYER(getOwner()).getNonStateReligionExtraHealth();
-	if (iHealth < 0)
-	{
-		iTotalHealth += iHealth;
-	}
+// unmarked by keldath from v104
+	iHealth += std::min(0, GET_PLAYER(getOwner()).getStateReligionExtraHealth());
+	iHealth += std::min(0, GET_PLAYER(getOwner()).getNonStateReligionExtraHealth());
 // < Civic Infos Plus End   >
-	iHealth = getBonusBadHealth();
-	if (iHealth < 0)
-		iTotalHealth += iHealth;
-
-	iHealth = totalBadBuildingHealth();
-	if (iHealth < 0)
-		iTotalHealth += iHealth;
-
-	iHealth = GET_PLAYER(getOwner()).getExtraHealth() + getExtraHealth();
-	if (iHealth < 0)
-		iTotalHealth += iHealth;
-
-	iHealth = GC.getInfo(getHandicapType()).getHealthBonus();
-	if (iHealth < 0)
-		iTotalHealth += iHealth;
 	/*	advc.001 (from Better BUG AI, fix by Fuyu):
 		Already counted by totalBadBuildingHealth. */
-	/*iHealth = getExtraBuildingBadHealth();
-	if (iHealth < 0)
-		iTotalHealth += iHealth;*/
-
-	return (unhealthyPopulation(bNoAngry, iExtra) - iTotalHealth);
+	//iHealth += std::min(0, getExtraBuildingBadHealth());
+	return (unhealthyPopulation(bNoAngry, iExtra) - iHealth);
 }
 
 
 int CvCity::healthRate(bool bNoAngry, int iExtra) const
 {
-	return std::min(0, (goodHealth() - badHealth(bNoAngry, iExtra)));
+	return std::min(0, goodHealth() - badHealth(bNoAngry, iExtra));
 }
 
 
@@ -4361,7 +4277,6 @@ int CvCity::foodDifference(bool bBottom, bool bIgnoreProduction) const
 {
 	if (isDisorder())
 		return 0;
-
 	int iDifference;
 	//if (isFoodProduction())
 	if (!bIgnoreProduction && isFoodProduction()) // K-Mod
@@ -4373,7 +4288,6 @@ int CvCity::foodDifference(bool bBottom, bool bIgnoreProduction) const
 		if (getPopulation() == 1 && getFood() == 0)
 			iDifference = std::max(0, iDifference);
 	}
-
 	return iDifference;
 }
 
@@ -5840,7 +5754,7 @@ std::pair<int,int> CvCity::calculateSurroundingHealth(int iGoodExtraPercent, int
 	for (CityPlotIter it(*this); it.hasNext(); ++it)
 	{
 		CvPlot const& kPlot = *it;
-//doto 111- added by keldath - if tile isnt of the city - skip!
+//doto 111 HEALTH SURRONDING- added by keldath - if tile isnt of the city - skip!
 		if (kPlot.getOwner() != getOwner())
 			continue;
 		{
@@ -5853,7 +5767,7 @@ std::pair<int,int> CvCity::calculateSurroundingHealth(int iGoodExtraPercent, int
 			}
 		}  // <advc.901> (based on updateFeatureHappiness)
 		ImprovementTypes eImprovement = kPlot.getImprovementType();
-//doto 111- added being worked - we dont want and improvement that not being used by the city to
+//doto 111 HEALTH SURRONDING- added being worked - we dont want and improvement that not being used by the city to
 // be taken into account! 
 		if (eImprovement != NO_IMPROVEMENT && isWorkingPlot(kPlot))
 		{

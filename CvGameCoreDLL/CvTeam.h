@@ -686,7 +686,6 @@ protected:
 
 	CommerceChangeMap m_aiCommerceFlexibleCount;
 // < Civic Infos Plus Start >
-//keldath QA-DONE
 	YieldChangeMap m_aiYieldRateModifier;
 	CommerceChangeMap m_aiCommerceRateModifier;
 // < Civic Infos Plus Start >

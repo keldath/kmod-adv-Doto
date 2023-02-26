@@ -1319,7 +1319,6 @@ bool CvDeal::isAnnual(TradeableItems eItem)
 	case TRADE_DISENGAGE: // advc.034
 	case TRADE_DEFENSIVE_PACT:
 	case TRADE_PERMANENT_ALLIANCE:
-
 		return true;
 		break;
 	}

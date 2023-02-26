@@ -66,7 +66,6 @@ CvPlot::CvPlot() // advc: Merged with the deleted reset function
 	m_pArea = NULL;
 //DOTO Deliverator	
 	m_iFreshWaterAmount = 0; // Deliverator
-//keldath QA-DONE
 	// < JCultureControl Mod Start >
 	//m_aiCultureControl = NULL;
 	// < JCultureControl Mod End >

@@ -484,7 +484,6 @@ public:
 	int getFreeTradeValid() const;
 	int getCommerceFRmodifier(int i) const;
 //doto city states + advanced diplomacy - given only from trade agreement
-
 	bool read(CvXMLLoadUtility* pXML);
 
 protected:
