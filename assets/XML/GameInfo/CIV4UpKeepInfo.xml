@@ -15,33 +15,33 @@
 			<Type>UPKEEP_LOW</Type>
 			<Description>TXT_KEY_UPKEEP_LOW</Description>
 			<Strategy>TXT_KEY_UPKEEP_LOW_HELP</Strategy>
-			<iPopulationPercent>10</iPopulationPercent>
-			<iCityPercent>8</iCityPercent>
-			<iminUpkeepCost>1</iminUpkeepCost>
+			<iPopulationPercent>8</iPopulationPercent>
+			<iCityPercent>6</iCityPercent>
+			<iminUpkeepCost>0</iminUpkeepCost>
 		</UpkeepInfo>
 		<UpkeepInfo>
 			<Type>UPKEEP_MEDIUM</Type>
 			<Description>TXT_KEY_UPKEEP_MEDIUM</Description>
 			<Strategy>TXT_KEY_UPKEEP_MEDIUM_HELP</Strategy>
-			<iPopulationPercent>14</iPopulationPercent>
-			<iCityPercent>10</iCityPercent>
-			<iminUpkeepCost>2</iminUpkeepCost>
+			<iPopulationPercent>10</iPopulationPercent>
+			<iCityPercent>8</iCityPercent>
+			<iminUpkeepCost>0</iminUpkeepCost>
 		</UpkeepInfo>
 		<UpkeepInfo>
 			<Type>UPKEEP_HIGH</Type>
 			<Description>TXT_KEY_UPKEEP_HIGH</Description>
 			<Strategy>TXT_KEY_UPKEEP_HIGH_HELP</Strategy>
-			<iPopulationPercent>16</iPopulationPercent>
-			<iCityPercent>12</iCityPercent>
-			<iminUpkeepCost>3</iminUpkeepCost>
+			<iPopulationPercent>12</iPopulationPercent>
+			<iCityPercent>10</iCityPercent>
+			<iminUpkeepCost>0</iminUpkeepCost>
 		</UpkeepInfo>
 		<UpkeepInfo>
 			<Type>UPKEEP_EXPENSSIVE</Type>
 			<Description>Expenssive</Description>
 			<Strategy>Expenssive</Strategy>
-			<iPopulationPercent>16</iPopulationPercent>
-			<iCityPercent>14</iCityPercent>
-			<iminUpkeepCost>4</iminUpkeepCost>
+			<iPopulationPercent>14</iPopulationPercent>
+			<iCityPercent>12</iCityPercent>
+			<iminUpkeepCost>0</iminUpkeepCost>
 		</UpkeepInfo>
 	</UpkeepInfos>
 </Civ4UpkeepInfo>

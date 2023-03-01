@@ -372,7 +372,8 @@ class CvCivicsScreen:
 								return 0
 		# doto civics parent start
 		# update which parent is highlighted
-		if gc.getCivicInfo(iCivic).getNumParentCivicsChildren() == 2 :
+		#if gc.getCivicInfo(iCivic).getNumParentCivicsChildren() == 2 :
+		if gc.getCivicOptionInfo(gc.getCivicInfo(iCivic).getCivicOptionType()).getParentCivicOption() == 2 :
 			self.m_highLighterParent = iCivic
 		# doto parent civics end
 		# doto parent civics end

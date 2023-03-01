@@ -898,7 +898,17 @@
 	<ElementType name="SpecialistValids" content="eltOnly">
 		<element type="SpecialistValid" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
-	<ElementType name="BuildingType" content="textOnly"/>
+<!-- CIVIC AND PLUS -->		
+		 <ElementType name="iFreeSpecialistCount" content="textOnly" dt:type="int"/>
+  		<ElementType name="FreeSpecialistCount" content="eltOnly">
+   		 <element type="SpecialistType"/>
+    		<element type="iFreeSpecialistCount"/>
+  		</ElementType>
+  		<ElementType name="FreeSpecialistCounts" content="eltOnly">
+    		<element type="FreeSpecialistCount" minOccurs="0" maxOccurs="*"/>
+  		</ElementType>
+ <!-- CIVIC AND PLUS -->
+ 	<ElementType name="BuildingType" content="textOnly"/>
 	<ElementType name="iHappinessChange" content="textOnly" dt:type="int"/>
 	<ElementType name="BuildingHappinessChange" content="eltOnly">
 		<element type="BuildingType"/>
@@ -1051,6 +1061,9 @@
 		<element type="Hurrys" minOccurs="0"/>
 		<element type="SpecialBuildingNotRequireds" minOccurs="0"/>
 		<element type="SpecialistValids" minOccurs="0"/>
+<!-- CIVIC AND PLUS -->
+    	<element type="FreeSpecialistCounts" minOccurs="0"/>
+<!-- CIVIC AND PLUS -->    	
     	<element type="BuildingHappinessChanges" minOccurs="0"/>
 		<element type="BuildingHealthChanges" minOccurs="0"/>
 		<element type="FeatureHappinessChanges" minOccurs="0"/>

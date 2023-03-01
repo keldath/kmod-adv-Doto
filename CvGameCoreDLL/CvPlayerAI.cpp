@@ -18420,18 +18420,22 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 	
 					iTempValue *= AI_commerceWeight(eCommerce);
 					iTempValue /= 100;
-	
+
 					iValue += iTempValue;
-				}	
+					
+					//not a 100% sure about this one
+					int iExpectedBuildings = 0;
+					if (canConstruct(eBuilding))
+					{
+						iExpectedBuildings = (iCities +
+								2*getBuildingClassCountPlusMaking(eBuildingClass))/3;
+					}
+					iValue += (10 * iExpectedBuildings * iS *
+							AI_commerceWeight(eCommerce))/100;	
+					}
+			
 			}
-			int iExpectedBuildings = 0;
-			if (canConstruct(eBuilding))
-			{
-				iExpectedBuildings = (iCities +
-						2*getBuildingClassCountPlusMaking(eBuildingClass))/3;
-			}
-			iValue += (10 * iExpectedBuildings * iS *
-					AI_commerceWeight(eCommerce))/100;
+			
 		}
 	}
 	
@@ -18458,16 +18462,19 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 					iTempValue /= 100;
 	
 					iValue += iTempValue;
+					
+					//not a 100% sure about this one
+					int iExpectedBuildings = 0;
+					if (canConstruct(eBuilding))
+					{
+						iExpectedBuildings = (iCities +
+								2*getBuildingClassCountPlusMaking(eBuildingClass))/3;
+					}
+					iValue += (10 * iExpectedBuildings * iS *
+							AI_yieldWeight(eYield))/100;
 				}	
 			}
-			int iExpectedBuildings = 0;
-			if (canConstruct(eBuilding))
-			{
-				iExpectedBuildings = (iCities +
-						2*getBuildingClassCountPlusMaking(eBuildingClass))/3;
-			}
-			iValue += (10 * iExpectedBuildings * iS *
-					AI_yieldWeight(eYield))/100;
+			
 		}
 	}
 //<!-- doto civic plus -->	end -> missing in the org code... doto112

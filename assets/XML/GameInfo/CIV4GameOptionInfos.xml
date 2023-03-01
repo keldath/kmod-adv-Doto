@@ -350,10 +350,10 @@
             <bVisible>0</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
-            <Type>GAMEOPTION_NO_POPULATION_LIMIT</Type>
-            <Description>No Pop Limit</Description>
-            <Help>If unchecked  - Cities are LImited to size 8 , with buildings and more, that limit is increased.</Help>
-            <bDefault>1</bDefault>
+            <Type>GAMEOPTION_POPULATION_LIMIT</Type>
+            <Description>Population Limit</Description>
+            <Help>Cities are Limited by growth. limit increased with buildings , civics, techs.. etc</Help>
+            <bDefault>0</bDefault>
             <bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
@@ -365,7 +365,7 @@
 		</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_ATTACK</Type>
-            <Description>[will be added]Ranged Attack</Description>
+            <Description>[obsolete_doto_112]Ranged Attack</Description>
             <Help>Siege can Attack a tile form range</Help>
             <bDefault>0</bDefault>
             <bVisible>0</bVisible>
