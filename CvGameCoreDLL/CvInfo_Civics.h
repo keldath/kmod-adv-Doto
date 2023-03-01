@@ -106,6 +106,9 @@ public: // The const functions are exposed to Python except those added by AdvCi
 	int* getNonStateReligionCommerceModifierArray() const;
 	int getBuildingYieldChanges(int i, int j) const;                  // Exposed to Python
 	int getBuildingCommerceChanges(int i, int j) const;               // Exposed to Python
+	//added by keldath - inspired by avdc isAnyBuildingHappinessChanges to spare un required loop
+	bool isAnyBuildingYieldChanges() const { return (m_ppiBuildingYieldChanges != NULL); } // advc.003t
+	bool isAnyBuildingCommerceChanges() const { return (m_ppiBuildingCommerceChanges != NULL); } // advc.003t
 	// < Civic Infos Plus End   >
 	int* getTradeYieldModifierArray() const;
 	int getCommerceModifier(int i) const;
@@ -135,8 +138,6 @@ public: // The const functions are exposed to Python except those added by AdvCi
 	}
 /* doto Civics  parent - end */
 	/***********************************/
-	
-	
 	
 	//doto	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 	int getSpecialistYieldChange(int i, int j) const;			

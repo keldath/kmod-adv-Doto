@@ -4763,7 +4763,7 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 				3*iNewTrade - iExistingTrade);
 	}
 /*************************************************************************************************/
-/* Advanced Diplomacy       START                                                  				 */
+/* Advanced Diplomacy       START   CITY STATES                                               				 */
 /*************************************************************************************************/
 	//doto taken from the below open borders method i tried to devise some
 	//evaluator for cities, which will stregthen the value for this tech.
@@ -4835,9 +4835,12 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 	}
 	// K-Mod end
 /* Population Limit ModComp - Beginning */
-	if (kTech.isNoPopulationLimit())
+	if (GC.getGame().isOption(GAMEOPTION_POPULATION_LIMIT))
 	{
-		iValue += (GC.getHandicapInfo(getHandicapType()).getPopulationLimit() * 2 * (getTotalPopulation() - (iCityCount * 2)));
+		if (kTech.isNoPopulationLimit())
+		{
+			iValue += (GC.getHandicapInfo(getHandicapType()).getPopulationLimit() * 2 * (getTotalPopulation() - (iCityCount * 2)));
+		}
 	}
 /* Population Limit ModComp - End */
 
@@ -8119,7 +8122,7 @@ int CvPlayerAI::AI_getOpenBordersAttitude(PlayerTypes ePlayer) const
 }
 
 /*************************************************************************************************/
-/** Advanced Diplomacy       START     advc - same as in open borders    						 */
+/** Advanced Diplomacy       START  CITY STATES   advc - same as in open borders    						 */
 /*************************************************************************************************/
 
 int CvPlayerAI::AI_getFreeTradeAgreementAttitude(PlayerTypes ePlayer) const
@@ -9762,7 +9765,7 @@ int CvPlayerAI::AI_dealVal(PlayerTypes eFromPlayer, CLinkList<TradeData> const& 
 			iValue += kOurTeam.AI_openBordersTradeVal(eFromTeam);
 			break;
 /************************************************************************************************/
-/* Advanced Diplomacy         START                                                             */
+/* Advanced Diplomacy         START      CITY STATES                                                       */
 /************************************************************************************************/
 		case TRADE_FREE_TRADE_ZONE:
 			iValue += kOurTeam.AI_FreeTradeAgreementVal(eFromTeam);
@@ -13375,7 +13378,7 @@ int CvPlayerAI::AI_stopTradingTradeVal(TeamTypes eTradeTeam, PlayerTypes ePlayer
 	if (GET_TEAM(ePlayer).isDefensivePact(eTradeTeam))
 		iValue *= 3;
 /************************************************************************************************/
-/* Advanced Diplomacy         START  rather simple - maybe look at the above openb fromadvc     */
+/* Advanced Diplomacy    CITY STATES     START  rather simple - maybe look at the above openb fromadvc     */
 /************************************************************************************************/
 	//value this one higher to make opponents stop with a rival
 	//doto - add some more logic?
@@ -17071,14 +17074,17 @@ void CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 }
 
 int CvPlayerAI::AI_totalBestChildrenValue(CivicTypes eCivic) const
-{
+{	
 	CvCivicInfo& kCivic = GC.getCivicInfo(eCivic);
 	//is this a parent?
 	int parentNumChildren = kCivic.getNumParentCivicsChildren();
-	//int eBestChild = 0;
 	
 	if (parentNumChildren > 0)
 	{
+		//if the parent cant be chosen....
+		if (!canDoCivics(eCivic))
+			return 0;
+		
 		int eBestChildCivicsValue = 0;
 		//for every civicoption - lets find the best child civic with the better value	
 		for (int i = 0; i < GC.getNumCivicOptionInfos(); i++)
@@ -17089,6 +17095,9 @@ int CvPlayerAI::AI_totalBestChildrenValue(CivicTypes eCivic) const
 				continue;
 				
 			int eTempBestCivicChildOption = 0;
+			//EVERY CIVIC OPTION will keep the best child value in it
+			//this way, if there is more than 1 child dependant on the parent
+			// this loop will ppick the best child per civic option
 			for (int J = 0; J < parentNumChildren; J++)
 			{
 				CivicTypes eChildCivic = kCivic.getParentCivicsChildren(J);
@@ -17133,7 +17142,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 	the setting of child civics will be done with forcechildcivics right before the revolution takes place
 	need to test this more cause i dont want it to affect ai long run planning of civics ) */
 	if (GC.getInfo(GC.getInfo(eCivic).getCivicOptionType()).getParentCivicOption() == 1)
-			return 0;
+			return 1;
 			
 	return AI_civicValue_original(eCivic);
 }
@@ -17550,8 +17559,26 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 					kCivic.getSpecialistExtraCommerce(eLoopCommerce);
 			iSpecialistValue += iRate * AI_commerceWeight(eLoopCommerce);
 		}
+//<!-- doto civic plus -->	start -> missing in the org code... doto112				
+		FOR_EACH_ENUM(Yield)
+		{
+			int iRate = getSpecialistExtraYield(eLoopYield) +
+					kCivic.getSpecialistExtraYield(eLoopYield);
+			iSpecialistValue += iRate * AI_yieldWeight(eLoopYield);
+		}
+	
 		iSpecialistValue += 2 * std::max(0, AI_averageGreatPeopleMultiplier() - 100);
 		iValue += iCities * iSpecialistValue / 100;
+		
+		FOR_EACH_ENUM(Specialist)
+		{
+			if (kCivic.getFreeSpecialistCount(eLoopSpecialist) > 0)
+			{
+				iValue += kCivic.getFreeSpecialistCount(eLoopSpecialist) * iCities;
+			}
+		}	
+		
+//<!-- doto civic plus -->	end -> missing in the org code... doto112			
 	} // K-Mod end
 
 	/*iValue += kCivic.getTradeRoutes() * (std::max(0, iConnectedForeignCities - iCities * 3) * 6 + (iCities * 2));
@@ -17937,7 +17964,16 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 				iS * kCivic.getNonStateReligionHappiness() *
 				iTotalReligonCount / std::max(1, iCities), 0) / 100;
 	} // K-Mod end
-
+//<!-- doto civic plus -->	start -> missing in the org code... doto112		
+/* moved down
+	if (kCivic.getNonStateReligionExtraHealth() != 0)
+	{
+		iValue += 12 * iCities * iS * AI_getHealthWeight(
+				iS * kCivic.getNonStateReligionExtraHealth() *
+				iTotalReligonCount / std::max(1, iCities), 0) / 100;
+	} 
+	*/
+//<!-- doto civic plus --> end
 	// K-Mod. Experience and production modifiers
 	{
 		/*	Roughly speaking these are the approximations used in this section:
@@ -18041,6 +18077,14 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 					iS * kCivic.getStateReligionHappiness(), 1) *
 					iBestReligionPopulation / std::max(1, 100 * getTotalPopulation());
 		}
+//<!-- doto civic plus -->	start -> missing in the org code... doto112	
+		if (kCivic.getStateReligionExtraHealth() != 0)
+		{
+			iValue += 10 * iCities * iS * AI_getHealthWeight(
+					iS * kCivic.getStateReligionExtraHealth(), 1) *
+					iBestReligionPopulation / std::max(1, 100 * getTotalPopulation());
+		}
+//<!-- doto civic plus -->	end	
 		int const iReligionGPRateMod = kCivic.getStateReligionGreatPeopleRateModifier();
 		if (iReligionGPRateMod != 0)
 		{
@@ -18086,10 +18130,79 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 
 				iValue += iTempValue;
 			}
+//<!-- doto civic plus -->	start -> missing in the org code... doto112			
+			int iTempValue2 = iBestReligionCities * 
+					kCivic.getStateReligionCommerceModifier(eCommerce);
+			if (iTempValue2 > 0)
+			{
+				iTempValue2 *= AI_averageCommerceMultiplier(eCommerce);
+				iTempValue2 /= 100;
+
+				iTempValue2 *= AI_commerceWeight(eCommerce);
+				iTempValue2 /= 100;
+
+				iValue += iTempValue2;
+			}	
 		}
+		FOR_EACH_ENUM2(Yield, eYield)
+		{
+			int iTempValue = iBestReligionCities *
+					kCivic.getStateReligionYieldModifier(eYield);
+			if (iTempValue > 0)
+			{
+				iTempValue *= AI_averageYieldMultiplier(eYield);
+				iTempValue /= 100;
+
+				iTempValue *= AI_yieldWeight(eYield);
+				iTempValue /= 100;
+
+				iValue += iTempValue;
+			}
+		}
+//<!-- doto civic plus -->	end
 		// K-Mod end
 	}
+//<!-- doto civic plus -->	start -> missing in the org code... doto112
+	if (getStateReligion() == NO_RELIGION)
+	{
+		FOR_EACH_ENUM2(Commerce, eCommerce)
+		{
+			int iTempValue = iCities *
+					kCivic.getNonStateReligionCommerceModifier(eCommerce);
+			if (iTempValue > 0)
+			{
+				iTempValue *= AI_averageCommerceMultiplier(eCommerce);
+				iTempValue /= 100;
 
+				iTempValue *= AI_commerceWeight(eCommerce);
+				iTempValue /= 100;
+
+				iValue += iTempValue;
+			}	
+		}
+		FOR_EACH_ENUM2(Yield, eYield)
+		{
+			int iTempValue = iCities *
+					kCivic.getNonStateReligionYieldModifier(eYield);
+			if (iTempValue > 0)
+			{
+				iTempValue *= AI_averageYieldMultiplier(eYield);
+				iTempValue /= 100;
+
+				iTempValue *= AI_yieldWeight(eYield);
+				iTempValue /= 100;
+
+				iValue += iTempValue;
+			}
+		}
+		if (kCivic.getNonStateReligionExtraHealth() != 0)
+		{
+			iValue += 12 * iCities * iS * AI_getHealthWeight(
+					iS * kCivic.getNonStateReligionExtraHealth() *
+					iTotalReligonCount / std::max(1, iCities), 0) / 100;
+		} 
+//<!-- doto civic plus -->	end
+	}	
 	FOR_EACH_ENUM2(Yield, eYield)
 	{
 		int iTempValue = 0;
@@ -18285,6 +18398,79 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 					AI_getHappinessWeight(iS * iTempValue, 1))/100;
 		}
 	}
+//<!-- doto civic plus -->	start -> missing in the org code... doto112	
+	if (kCivic.isAnyBuildingCommerceChanges())
+	{
+		// advc.003w: (Also fixes a bug; NO_BUILDING check was missing.)
+		CvCivilization const& kCiv = getCivilization();
+		for (int i = 0; i < kCiv.getNumBuildings(); i++)
+		{
+			BuildingTypes eBuilding = kCiv.buildingAt(i);
+			BuildingClassTypes eBuildingClass = kCiv.buildingClassAt(i);
+			if (eBuilding == NO_BUILDING)
+				continue;
+			int iTempValue = 0;	
+			FOR_EACH_ENUM2(Commerce, eCommerce)
+			{	
+				iTempValue = kCivic.getBuildingCommerceChanges(eBuilding, eCommerce);
+				if (iTempValue > 0)
+				{
+					iTempValue *= AI_averageCommerceMultiplier(eCommerce);
+					iTempValue /= 100;
+	
+					iTempValue *= AI_commerceWeight(eCommerce);
+					iTempValue /= 100;
+	
+					iValue += iTempValue;
+				}	
+			}
+			int iExpectedBuildings = 0;
+			if (canConstruct(eBuilding))
+			{
+				iExpectedBuildings = (iCities +
+						2*getBuildingClassCountPlusMaking(eBuildingClass))/3;
+			}
+			iValue += (10 * iExpectedBuildings * iS *
+					AI_commerceWeight(eCommerce))/100;
+		}
+	}
+	
+	if (kCivic.isAnyBuildingYieldChanges())
+	{
+		// advc.003w: (Also fixes a bug; NO_BUILDING check was missing.)
+		CvCivilization const& kCiv = getCivilization();
+		for (int i = 0; i < kCiv.getNumBuildings(); i++)
+		{
+			BuildingTypes eBuilding = kCiv.buildingAt(i);
+			BuildingClassTypes eBuildingClass = kCiv.buildingClassAt(i);
+			if (eBuilding == NO_BUILDING)
+				continue;
+			int iTempValue = 0;	
+			FOR_EACH_ENUM2(Yield, eYield)
+			{	
+				iTempValue = kCivic.getBuildingYieldChanges(eBuilding, eYield);
+				if (iTempValue > 0)
+				{
+					iTempValue *= AI_averageYieldMultiplier(eYield);
+					iTempValue /= 100;
+	
+					iTempValue *= AI_yieldWeight(eYield);
+					iTempValue /= 100;
+	
+					iValue += iTempValue;
+				}	
+			}
+			int iExpectedBuildings = 0;
+			if (canConstruct(eBuilding))
+			{
+				iExpectedBuildings = (iCities +
+						2*getBuildingClassCountPlusMaking(eBuildingClass))/3;
+			}
+			iValue += (10 * iExpectedBuildings * iS *
+					AI_yieldWeight(eYield))/100;
+		}
+	}
+//<!-- doto civic plus -->	end -> missing in the org code... doto112
 	for (int iI = 0; iI < GC.getNumFeatureInfos(); iI++)
 	{
 		int iHappiness = kCivic.getFeatureHappinessChanges(iI);
@@ -19956,7 +20142,7 @@ void CvPlayerAI::AI_doCounter()
 				if((eMem == MEMORY_CANCELLED_OPEN_BORDERS ||
 					eMem == MEMORY_CANCELLED_DEFENSIVE_PACT ||
 /************************************************************************************************/
-/* START: Advanced Diplomacy     adjuster for advc                                                               */
+/* START: Advanced Diplomacy     adjuster for advc   city states                                                            */
 /************************************************************************************************/
 					eMem == MEMORY_CANCELLED_FREE_TRADE_AGREEMENT  ||
 /************************************************************************************************/
@@ -20783,13 +20969,7 @@ void CvPlayerAI::AI_doCivics()
 	} while (bWillSwitch && bWantSwitch);
 	// Recheck, just in case we can switch another good civic without adding more anarchy.
 
-	/* doto Civics parent - Start */	
-	// get the civics with forced children
-	//aeBestCivic = 
-	//child civics come out as 0 - think if this is wise for the below tech thing.
-	forceChildCivics(aeBestCivic);
-	/* doto Civics parent - end */
-	
+
 	/*	finally, if our current research would give us a new civic,
 		consider waiting for that. */
 	if (iAnarchyLength > 0 && bWillSwitch)
@@ -20837,7 +21017,14 @@ void CvPlayerAI::AI_doCivics()
 			}
 		} // </advc.131>
 	}
-
+	
+	/* doto Civics parent - Start */	
+	// get the civics with forced children
+	//aeBestCivic = 
+	//child civics come out as 0 - think if this is wise for the below tech thing.
+	forceChildCivics(aeBestCivic);
+	/* doto Civics parent - end */
+	
 	if (canRevolution(aeBestCivic))
 	{
 		revolution(aeBestCivic);
@@ -21706,7 +21893,7 @@ void CvPlayerAI::AI_doDiplo()
 					}
 				}
 /************************************************************************************************/
-/* START: Advanced Diplomacy   -doto added    -needed for the ai to offer it                    */
+/* START: Advanced Diplomacy   -doto added    -needed for the ai to offer it      city states              */
 /************************************************************************************************/
 				if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 				{
@@ -29439,8 +29626,12 @@ int CvPlayerAI::AI_getPlotAirbaseValue(CvPlot const& kPlot) const // advc: param
 	/*if (iDefenseModifier <= 0)
 		return 0;*/
 	int iValue = iOtherCityCount * 50;
-	//mountaind mod back to service - doto update
-	iValue *= 100 + (2 * (iDefenseModifier + ((kPlot.isHills() || kPlot.isPeak()) ? 25 : 0)));
+//===NM=====Mountains Mod===0===== doto update
+	iValue *= 100 + (2 * (iDefenseModifier + (kPlot.isHills() ? 25 : 0)));
+	if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
+		iValue *= 100 + (2 * (iDefenseModifier + ((kPlot.isPeak()) ? 25 : 0)));
+//===NM=====Mountains Mod===0=====	
+	
 	iValue /= 100;
 	return iValue;
 }

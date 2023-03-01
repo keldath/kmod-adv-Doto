@@ -2832,9 +2832,10 @@ int CvTeam::getNoPopulationLimitCount() const
 //added by kedlath after f1rpo suggested
 bool CvTeam::isNoPopulationLimit() const
 {
-if(GC.getGame().isOption(GAMEOPTION_NO_POPULATION_LIMIT))
-   return true;
-return (getNoPopulationLimitCount() > 0);
+	/*doto Population Limit ModComp - Beginning */
+	if(!GC.getGame().isOption(GAMEOPTION_POPULATION_LIMIT))
+   		return true;
+	return (getNoPopulationLimitCount() > 0);
 }
 
 
@@ -2991,6 +2992,7 @@ void CvTeam::changeCommerceFlexibleCount(CommerceTypes eIndex, int iChange)
 	}
 }
 // < Civic Infos Plus Start >
+// doto 112i really have no idea why the civic stuff needs to have a function set here on this team.cpp
 int CvTeam::getYieldRateModifier(YieldTypes eIndex)
 {
 	FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
@@ -5820,9 +5822,12 @@ void CvTeam::processTech(TechTypes eTech, int iChange,
 	if (kTech.isIgnoreIrrigation())
 		changeIgnoreIrrigationCount(iChange);
 /* Population Limit ModComp - Beginning */
-	if (GC.getTechInfo(eTech).isNoPopulationLimit())
+	if (GC.getGame().isOption(GAMEOPTION_POPULATION_LIMIT))
 	{
-		changeNoPopulationLimitCount(iChange);
+		if (GC.getTechInfo(eTech).isNoPopulationLimit())
+		{
+			changeNoPopulationLimitCount(iChange);
+		}
 	}
 /* Population Limit ModComp - End */
 	if (kTech.isWaterWork())
@@ -5833,7 +5838,12 @@ void CvTeam::processTech(TechTypes eTech, int iChange,
 		changeRouteChange(eLoopRoute, GC.getInfo(eLoopRoute).getTechMovementChange(eTech) * iChange);
 	}
 // < Civic Infos Plus Start >
-    for (int iI = 0; iI < MAX_PLAYERS; iI++)
+// i have no idea what this is needed for, tech? waste of loops - todo doto112
+// doto 112 -> removed these 2 loops, 
+// kmod included the changeCommerceRateModifier in a loop below, 
+// so no need this loop
+//i added the yield loop on the same place below.
+/*    for (int iI = 0; iI < MAX_PLAYERS; iI++)
 	{
 		if (GET_PLAYER((PlayerTypes)iI).isAlive())
 		{
@@ -5846,6 +5856,7 @@ void CvTeam::processTech(TechTypes eTech, int iChange,
 			}
 		}
 	}
+
 
 	for (int iI = 0; iI < MAX_PLAYERS; iI++)
 	{
@@ -5860,6 +5871,7 @@ void CvTeam::processTech(TechTypes eTech, int iChange,
 			}
 		}
 	}
+*/
 	// < Civic Infos Plus End   >
 	FOR_EACH_ENUM(Domain)
 	{
@@ -5929,6 +5941,13 @@ void CvTeam::processTech(TechTypes eTech, int iChange,
 			kMember.changeSpecialistExtraCommerce(eLoopCommerce,
 					kTech.getSpecialistExtraCommerce(eLoopCommerce) * iChange);
 		} // K-Mod end
+// < Civic Infos Plus start - doto change from above  >
+		FOR_EACH_ENUM(Yield)
+		{
+			kMember.changeYieldRateModifier(eLoopYield,
+					kTech.getYieldModifier(eLoopYield) * iChange);
+		} 
+// < Civic Infos Plus end - doto change from above  >
 	}
 	CvMap const& kMap = GC.getMap();
 	for (int i = 0; i < kMap.numPlots(); i++)
@@ -6153,7 +6172,6 @@ void CvTeam::read(FDataStreamBase* pStream)
 // < Civic Infos Plus Start >
 //	pStream->Read(NUM_YIELD_TYPES, m_aiYieldRateModifier);
 //	pStream->Read(NUM_COMMERCE_TYPES, m_aiCommerceRateModifier);
-//keldath QA-DONE
 		m_aiYieldRateModifier.read(pStream);
 		m_aiCommerceRateModifier.read(pStream);	
 // < Civic Infos Plus End   >
@@ -6165,7 +6183,6 @@ void CvTeam::read(FDataStreamBase* pStream)
 // < Civic Infos Plus Start >
 //	pStream->Read(NUM_YIELD_TYPES, m_aiYieldRateModifier);
 //	pStream->Read(NUM_COMMERCE_TYPES, m_aiCommerceRateModifier);
-//keldath QA-DONE
 		m_aiYieldRateModifier.readArray<int>(pStream);
 		m_aiCommerceRateModifier.readArray<int>(pStream);	
 // < Civic Infos Plus End   >

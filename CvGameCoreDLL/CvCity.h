@@ -418,7 +418,7 @@ public:
 	int getFreeCivilianCount() const;															// Exposed to Python
 	void setFreeCivilianCount(int iNewValue);										// Exposed to Python
 	void changeFreeCivilianCount(int iChange);											// Exposed to Python
-	void processFreeCivilianCount();														// Exposed to Python
+//	void processFreeCivilianCount();														// Exposed to Python
 //doto specialists instead of population													// Exposed to Python
 	int getRealPopulation() const;																				// Exposed to Python
 	int getHighestPopulation() const { return m_iHighestPopulation; }											// Exposed to Python

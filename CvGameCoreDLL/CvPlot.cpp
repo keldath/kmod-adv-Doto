@@ -2320,7 +2320,7 @@ bool CvPlot::canHaveBonus(BonusTypes eBonus, bool bIgnoreLatitude,
 	if (!bIgnoreCurrentBonus && // advc.tsl
 		getBonusType() != NO_BONUS)
 		return false;
-//Mountains Start
+//===NM=====Mountains Mod===0=====
 	if (!GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
 	{
 		if (isPeak())
@@ -2353,7 +2353,7 @@ bool CvPlot::canHaveBonus(BonusTypes eBonus, bool bIgnoreLatitude,
 		if (!kBonus.isHills())
 			return false;
 	}
-//Mountains Start
+//===NM=====Mountains Mod===0=====
 	else if (isPeak())
 	{
 		if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))//AND Option

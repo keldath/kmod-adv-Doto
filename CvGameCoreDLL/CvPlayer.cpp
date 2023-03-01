@@ -6066,7 +6066,7 @@ int CvPlayer::getProductionNeeded(BuildingTypes eBuilding) const
 	} // </advc.251>
 /* Population Limit ModComp - Beginning : these code lines adjust buildings' costs to make them cheaper */
 // option added by keldath after f1rpo suggestion
-	if(!GC.getGame().isOption(GAMEOPTION_NO_POPULATION_LIMIT))
+	if(GC.getGame().isOption(GAMEOPTION_POPULATION_LIMIT))
 	{
 		if (GC.getBuildingInfo(eBuilding).getPopulationLimitChange() != 0)
 		{

@@ -3341,7 +3341,8 @@ void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolet
 		changeHurryAngerModifier(kBuilding.getHurryAngerModifier() * iChange);
 		changeHealRate(kBuilding.getHealRateChange() * iChange);
 		/* Population Limit ModComp - Beginning */
-		changePopulationLimitChange(kGame.getAdjustedPopulationLimitChange(kBuilding.getPopulationLimitChange()) * iChange);
+		if (GC.getGame().isOption(GAMEOPTION_POPULATION_LIMIT))
+			changePopulationLimitChange(kGame.getAdjustedPopulationLimitChange(kBuilding.getPopulationLimitChange()) * iChange);
 		/* Population Limit ModComp - End */
 		if (kBuilding.getHealth() > 0)
 			changeBuildingGoodHealth(kBuilding.getHealth() * iChange);
@@ -5116,7 +5117,8 @@ void CvCity::setPopulation(int iNewValue)
 	if (getPopulation() > getHighestPopulation())
 		setHighestPopulation(getPopulation());
 /* Population Limit ModComp - Beginning : The game must warn the city's owner that the population limit is reached */
-	if (getPopulation() == getPopulationLimit())
+	//doto112 change from == below to >=
+	if (getPopulation() >= getPopulationLimit() && GC.getGame().isOption(GAMEOPTION_POPULATION_LIMIT))
 	{
 		szBuffer = gDLL->getText("TXT_KEY_CITY_GET_LIMITED", getNameKey(), getPopulationLimit());
 		gDLL->getInterfaceIFace()->addMessage(getOwner(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, "AS2D_UNSIGN",
@@ -11724,9 +11726,12 @@ void CvCity::doGrowth()
 	if (GC.getPythonCaller()->doGrowth(*this))
 		return;
 /* Population Limit ModComp - Beginning : The population level can't grow if the limit is reached */
-	if (getPopulation() >= getPopulationLimit() && foodDifference() >= 0)
+	if (GC.getGame().isOption(GAMEOPTION_POPULATION_LIMIT))
 	{
-		return;
+		if (getPopulation() >= getPopulationLimit() && foodDifference() >= 0)
+		{
+			return;
+		}
 	}
 /* Population Limit ModComp - End */
 
@@ -13646,31 +13651,36 @@ void CvCity::getCityBillboardSizeIconColors(NiColorA& kDotColor, NiColorA& kText
 		int const iFoodDifference = foodDifference();
 		int const iFood = getFood();
 		int const iGrowthThreshold = growthThreshold();
-		/* DOTO-Population Limit ModComp - Beginning */
-		if (iFoodDifference < 0 && getPopulation() < getPopulationLimit())
-		{
-			if (iFoodDifference == -1 && iFood * 100 >= 75 * iGrowthThreshold)
-				kDotColor = kStagnant;
-			else kDotColor = kShrinking;
-		}
 		/* DOTO-Population Limit ModComp  */
-		else if (iFoodDifference > 0 && getPopulation() < getPopulationLimit())
-		{	// <advc.002f>
-			if (AI().AI_isEmphasizeAvoidGrowth())
-			{
-				if (iFood + iFoodDifference >= iGrowthThreshold) // Food being wasted
-					kDotColor = kShrinking;
-				else kDotColor = kStagnant; // Food will be wasted - and not growing
-			} // </advc.002f>
-			else kDotColor = kGrowing;
-		}
-		/* DOTO-Population Limit ModComp  */
-		else if (iFoodDifference == 0 || getPopulation() >= getPopulationLimit())
+		//doto 112 changed the code here, i think this is better
+		if (GC.getGame().isOption(GAMEOPTION_POPULATION_LIMIT) && 
+			(iFoodDifference >= 0 || getPopulation() >= getPopulationLimit()))
 		{
 			kDotColor = kStagnant;
 			kTextColor = kBlack;
 		}
-		else kDotColor = kStagnant;
+		else
+		{
+		/* DOTO-Population Limit ModComp - Beginning */
+			if (iFoodDifference < 0)
+			{
+				if (iFoodDifference == -1 && iFood * 100 >= 75 * iGrowthThreshold)
+					kDotColor = kStagnant;
+				else kDotColor = kShrinking;
+			}
+			else if (iFoodDifference > 0)
+			{	// <advc.002f>
+				if (AI().AI_isEmphasizeAvoidGrowth())
+				{
+					if (iFood + iFoodDifference >= iGrowthThreshold) // Food being wasted
+						kDotColor = kShrinking;
+					else kDotColor = kStagnant; // Food will be wasted - and not growing
+				} // </advc.002f>
+				else kDotColor = kGrowing;
+			}
+			else kDotColor = kStagnant;
+		}
+		/* DOTO-Population Limit ModComp - end */	
 	}
 	else
 	{
@@ -14629,12 +14639,17 @@ void CvCity::getBuildQueue(std::vector<std::string>& astrQueue) const
 // <advc.004b> See CvCity.h
 int CvCity::initialPopulation()
 {
+	/* DOTO-Population Limit ModComp - Beginning : The new cities can't have a population level higher than the authorized limit */			
+	//doesnt work, the initialPopulation is a static func and i dont know how to call the below without a compile error
+	//if (GC.getGame().isOption(GAMEOPTION_POPULATION_LIMIT))
+	//{
+	//	return std::min((GC.getDefineINT("INITIAL_CITY_POPULATION") +
+	//			GC.getEraInfo(GC.getGame().getStartEra()).getFreePopulation()), getPopulationLimit());
+	//}
+	/* DOTO-Population Limit ModComp - End */
+	
 	return GC.getDefineINT("INITIAL_CITY_POPULATION") +
 			GC.getInfo(GC.getGame().getStartEra()).getFreePopulation();
-/* DOTO-Population Limit ModComp - Beginning : The new cities can't have a population level higher than the authorized limit */			
-	/*return std::min((GC.getDefineINT("INITIAL_CITY_POPULATION") +
-			GC.getEraInfo(GC.getGame().getStartEra()).getFreePopulation()), getPopulationLimit());*/
-/* DOTO-Population Limit ModComp - End */
 }
 
 // advc.004b, advc.104: Parameters added

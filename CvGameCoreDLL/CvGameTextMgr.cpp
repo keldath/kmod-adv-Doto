@@ -5602,7 +5602,7 @@ void CvGameTextMgr::setCityBarHelp(CvWStringBuffer &szString, CvCity const& kCit
 		bool const bAvoidGrowth = kCity.AI().AI_isEmphasizeAvoidGrowth();
 /* Population Limit ModComp - Beginning */
 		//kel098-099 advc added 
-		if (kCity.getPopulation() >= kCity.getPopulationLimit() && iFoodDifference >= 0)
+		if (kCity.getPopulation() >= kCity.getPopulationLimit() && iFoodDifference >= 0 && GC.getGame().isOption(GAMEOPTION_POPULATION_LIMIT))
 		{
 			szString.append(gDLL->getText("TXT_KEY_CITY_BAR_NO_GROWTH_LIMIT"));
 		}
@@ -11598,7 +11598,7 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 				gDLL->getSymbolID(UNHEALTHY_CHAR)));
 	}
 /* Population Limit ModComp - Beginning  */
-	if (kBuilding.getPopulationLimitChange() != 0 && GC.getGame().isOption(GAMEOPTION_NO_POPULATION_LIMIT))
+	if (kBuilding.getPopulationLimitChange() != 0 && GC.getGame().isOption(GAMEOPTION_POPULATION_LIMIT))
 	{
 		int iRealValue = (ePlayer == NO_PLAYER) ? kBuilding.getPopulationLimitChange() : GC.getGame().getAdjustedPopulationLimitChange(kBuilding.getPopulationLimitChange());
 		if (bCivilopediaText || ePlayer == NO_PLAYER || !GET_TEAM(GET_PLAYER(ePlayer).getTeam()).isNoPopulationLimit())
@@ -16319,7 +16319,7 @@ void CvGameTextMgr::buildIgnoreIrrigationString(CvWStringBuffer &szBuffer,
 	}
 
 /* Population Limit ModComp - Beginning */
-	if (GC.getGame().isOption(GAMEOPTION_NO_POPULATION_LIMIT))
+	if (GC.getGame().isOption(GAMEOPTION_POPULATION_LIMIT))
 	{
 		if (GC.getInfo(eTech).isNoPopulationLimit() && (!bPlayerContext || (GC.getGame().getActiveTeam() == NO_TEAM) || !(GET_TEAM(GC.getGame().getActiveTeam()).isNoPopulationLimit())))
 		{
@@ -19890,7 +19890,7 @@ void CvGameTextMgr::buildCityBillboardCityNameString(CvWStringBuffer& szBuffer, 
 		{
 /* Population Limit ModComp - Beginning */
 //doto change! dislay on city Bar			
-			if (pCity->getPopulation() >= pCity->getPopulationLimit())
+			if (pCity->getPopulation() >= pCity->getPopulationLimit() && GC.getGame().isOption(GAMEOPTION_POPULATION_LIMIT))
 			{
 				szBuffer.append(CvWString::format(L"Population Limit Reached!"//,
 							/*	advc.189: Absolute value. Red color would be nice,

@@ -4550,20 +4550,25 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags,
 			iValue += ((kBuilding.getWorkerSpeedModifier() *
 					kOwner.AI_getNumAIUnits(UNITAI_WORKER)) / 10);
 /* DOTO-Population Limit ModComp - Beginning+ f1rpo fix */
-			if(kBuilding.getPopulationLimitChange() > 0 && getPopulationLimit() < MAX_INT) {
-   			// Loosely based on the K-Mod evaluation of iBuildingActualHappiness
-   			int iCitizenValue = 6 + iOwnerEra;
-   			int iDelta = std::max(0, getPopulationLimit() - getPopulation());
-   			if(iDelta == 0 && iHappinessLevel > 0)
-       			iValue += 4 * iCitizenValue;
-   			if(iDelta == 1 && iFoodDifference > 1 && iHappinessLevel > 0 && iHealthLevel >= 0)
-      			iValue += std::min(3, iFoodDifference) * iCitizenValue;
-   			int iPopLimitChangeValue = 10 * iCitizenValue / (3 +
-           			iDelta + iDelta / 2 + kBuilding.getPopulationLimitChange() +
-           			getPopulationLimit() +
-           			2 * (std::max(0, -iHealthLevel) + std::max(0, -iHappinessLevel)));
-   			iValue += kBuilding.getPopulationLimitChange() * std::max(0, iPopLimitChangeValue);
-}/* DOTO-Population Limit ModComp - End */
+			if (GC.getGame().isOption(GAMEOPTION_POPULATION_LIMIT))
+			{
+				if(kBuilding.getPopulationLimitChange() > 0 && getPopulationLimit() < MAX_INT) 
+				{
+	   			// Loosely based on the K-Mod evaluation of iBuildingActualHappiness
+		   			int iCitizenValue = 6 + iOwnerEra;
+		   			int iDelta = std::max(0, getPopulationLimit() - getPopulation());
+		   			if(iDelta == 0 && iHappinessLevel > 0)
+		       			iValue += 4 * iCitizenValue;
+		   			if(iDelta == 1 && iFoodDifference > 1 && iHappinessLevel > 0 && iHealthLevel >= 0)
+		      			iValue += std::min(3, iFoodDifference) * iCitizenValue;
+		   			int iPopLimitChangeValue = 10 * iCitizenValue / (3 +
+		           			iDelta + iDelta / 2 + kBuilding.getPopulationLimitChange() +
+		           			getPopulationLimit() +
+		           			2 * (std::max(0, -iHealthLevel) + std::max(0, -iHappinessLevel)));
+		   			iValue += kBuilding.getPopulationLimitChange() * std::max(0, iPopLimitChangeValue);
+				}
+			}
+/* DOTO-Population Limit ModComp - End */
 			int iMilitaryProductionModifier = kBuilding.getMilitaryProductionModifier();
 			if (iHasMetCount > 0 && iMilitaryProductionModifier > 0)
 			{
