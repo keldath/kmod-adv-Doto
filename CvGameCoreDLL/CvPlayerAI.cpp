@@ -17006,7 +17006,7 @@ CivicTypes CvPlayerAI::AI_bestCivic(CivicOptionTypes eCivicOption, int* piBestVa
 	return eBestCivic;
 }
 /* doto civics  parent - start */
-void CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
+CivicMap CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 {
 	PROFILE_FUNC();
 	
@@ -17025,11 +17025,11 @@ void CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 		if (parentNumChildren > 0)
 		{
 			int* m_atemp = new int[parentNumChildren];
-			for (int i = 0; i < parentNumChildren; i++)
+			for (int c = 0; c < parentNumChildren; c++)
 			{
 				//this loop spared the need of running AI_civicValue_original
 				// over and over for evey civic option below, since there are a few loops
-				m_atemp[i] = AI_civicValue_original(kParentCivic.getParentCivicsChildren(i));
+				m_atemp[c] = AI_civicValue_original(kParentCivic.getParentCivicsChildren(c));
 			}
 				
 			//for every civicoption - lets find the best child 
@@ -17070,7 +17070,8 @@ void CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 			}
 			SAFE_DELETE_ARRAY(m_atemp);
 		}
-	}	
+	}
+	return 	ePreRevolutionMap;
 }
 
 int CvPlayerAI::AI_totalBestChildrenValue(CivicTypes eCivic) const
@@ -17104,7 +17105,7 @@ int CvPlayerAI::AI_totalBestChildrenValue(CivicTypes eCivic) const
 				//verify the child can be chosen
 				if (!canDoCivics(eChildCivic))
 					continue;
-				if (GC.getInfo(eChildCivic).getCivicOptionType() == (eLoopCivicOption))
+				if (GC.getInfo(eChildCivic).getCivicOptionType() == eLoopCivicOption)
 				{
 					//if another civic child belongs to the same civic option 
 					int childValue = AI_civicValue_original(eChildCivic);
@@ -17141,8 +17142,9 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 	/* doto Civics parent - if a child, value it as 0 --> children civics will be eval with its parent
 	the setting of child civics will be done with forcechildcivics right before the revolution takes place
 	need to test this more cause i dont want it to affect ai long run planning of civics ) */
-	if (GC.getInfo(GC.getInfo(eCivic).getCivicOptionType()).getParentCivicOption() == 1)
-			return 1;
+	//doto edit -> i think this keeps the ai from changing civics child under a parent.
+	//if (GC.getInfo(GC.getInfo(eCivic).getCivicOptionType()).getParentCivicOption() == 1)
+	//		return 1;
 			
 	return AI_civicValue_original(eCivic);
 }
@@ -17964,15 +17966,13 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 				iS * kCivic.getNonStateReligionHappiness() *
 				iTotalReligonCount / std::max(1, iCities), 0) / 100;
 	} // K-Mod end
-//<!-- doto civic plus -->	start -> missing in the org code... doto112		
-/* moved down
+//<!-- doto civic plus -->	start -> missing in the org code... doto112	
 	if (kCivic.getNonStateReligionExtraHealth() != 0)
 	{
 		iValue += 12 * iCities * iS * AI_getHealthWeight(
 				iS * kCivic.getNonStateReligionExtraHealth() *
 				iTotalReligonCount / std::max(1, iCities), 0) / 100;
 	} 
-	*/
 //<!-- doto civic plus --> end
 	// K-Mod. Experience and production modifiers
 	{
@@ -18131,7 +18131,7 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 				iValue += iTempValue;
 			}
 //<!-- doto civic plus -->	start -> missing in the org code... doto112			
-			int iTempValue2 = iBestReligionCities * 
+			int iTempValue2 = //removed - f1rpo suggested iBestReligionCities * 
 					kCivic.getStateReligionCommerceModifier(eCommerce);
 			if (iTempValue2 > 0)
 			{
@@ -18146,7 +18146,7 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		}
 		FOR_EACH_ENUM2(Yield, eYield)
 		{
-			int iTempValue = iBestReligionCities *
+			int iTempValue = //removed f1rpo suggested iBestReligionCities *
 					kCivic.getStateReligionYieldModifier(eYield);
 			if (iTempValue > 0)
 			{
@@ -18163,11 +18163,11 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		// K-Mod end
 	}
 //<!-- doto civic plus -->	start -> missing in the org code... doto112
-	if (getStateReligion() == NO_RELIGION)
+//	if (getStateReligion() == NO_RELIGION) re,oved - f1rpo suggested
 	{
 		FOR_EACH_ENUM2(Commerce, eCommerce)
 		{
-			int iTempValue = iCities *
+			int iTempValue = //removed f1rpo suggested iCities *
 					kCivic.getNonStateReligionCommerceModifier(eCommerce);
 			if (iTempValue > 0)
 			{
@@ -18182,7 +18182,7 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		}
 		FOR_EACH_ENUM2(Yield, eYield)
 		{
-			int iTempValue = iCities *
+			int iTempValue = //removed f1rpo suggested iCities *
 					kCivic.getNonStateReligionYieldModifier(eYield);
 			if (iTempValue > 0)
 			{
@@ -18195,12 +18195,13 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 				iValue += iTempValue;
 			}
 		}
+	/*	MOVED UP - according to bts code of ExtraHappy
 		if (kCivic.getNonStateReligionExtraHealth() != 0)
 		{
 			iValue += 12 * iCities * iS * AI_getHealthWeight(
 					iS * kCivic.getNonStateReligionExtraHealth() *
 					iTotalReligonCount / std::max(1, iCities), 0) / 100;
-		} 
+		} */
 //<!-- doto civic plus -->	end
 	}	
 	FOR_EACH_ENUM2(Yield, eYield)
@@ -20976,7 +20977,12 @@ void CvPlayerAI::AI_doCivics()
 	} while (bWillSwitch && bWantSwitch);
 	// Recheck, just in case we can switch another good civic without adding more anarchy.
 
-
+	/* doto Civics parent - Start */	
+	// get the civics with forced children
+	//child civics come out as 0 - think if this is wise for the below tech thing.
+	aeBestCivic = forceChildCivics(aeBestCivic);
+	/* doto Civics parent - end */
+	
 	/*	finally, if our current research would give us a new civic,
 		consider waiting for that. */
 	if (iAnarchyLength > 0 && bWillSwitch)
@@ -21024,14 +21030,7 @@ void CvPlayerAI::AI_doCivics()
 			}
 		} // </advc.131>
 	}
-	
-	/* doto Civics parent - Start */	
-	// get the civics with forced children
-	//aeBestCivic = 
-	//child civics come out as 0 - think if this is wise for the below tech thing.
-	forceChildCivics(aeBestCivic);
-	/* doto Civics parent - end */
-	
+		
 	if (canRevolution(aeBestCivic))
 	{
 		revolution(aeBestCivic);

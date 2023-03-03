@@ -480,7 +480,7 @@ public:
 	CivicTypes AI_bestCivic(CivicOptionTypes eCivicOption, int* iBestValue = 0) const;
 /* doto Civics  parent - start ) */	
 	//CivicMap 
-	void forceChildCivics(CivicMap& ePreRevolutionMap) const;
+	CivicMap forceChildCivics(CivicMap& ePreRevolutionMap) const;
 	//this is acctually the original fn of AI_civicValue
 	int AI_totalBestChildrenValue(CivicTypes eCivic) const;
 	int AI_civicValue_original(CivicTypes eCivic) const;						// Exposed to Python

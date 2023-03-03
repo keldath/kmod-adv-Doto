@@ -202,7 +202,6 @@ class CvCivicsScreen:
 
 		screen = self.getScreen()
 		constLength = self.HEADINGS_BOTTOM - self.HEADINGS_TOP
-		numCivicOtopns = range(gc.getNumCivicOptionInfos())
 
 		# doto some starting position params
 		fY = self.HEADINGS_TOP # top position start for the panel y axis
@@ -249,7 +248,8 @@ class CvCivicsScreen:
 			# doto civic parent ->hard coded first civic option name...too tired to write a loop just for this...
 			screen.setText("", "Background",u"<font=4>" + u"<color=255,255,0,255>%s</color>" % gc.getCivicOptionInfo(0).getDescription() + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, self.GOV_CIVIC_HEADER + self.PANEL_BOX_ADJUSTER-10, 28, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 			for i in xrange(len(civicList[l])):
-				doPivotLayoutCivics(i, civicList[l][i], True, govPnelLength, fY, line_seperator - 15,  civicList[l], PanelStyles.PANEL_STYLE_BLUE50)
+				doPivotLayoutCivics(i, civicList[l][i], True, govPnelLength, fY, line_seperator - 15,  0, PanelStyles.PANEL_STYLE_BLUE50)
+																									# CAN BE ALSO->	civicList[l]
 			# self.drawCivicOptionButtons(l)
 
 		# place the children civic options
@@ -280,7 +280,7 @@ class CvCivicsScreen:
 		screen.addPanel( "otherCivics", u"", u"", True, False, 0, const_fY-22, self.W_SCREEN, 30, PanelStyles.PANEL_STYLE_MAIN_TAN ) # 176
 		screen.setText("others", "",  u"<font=4>" + u"<color=255,255,0,255>%s</color>" % "Civics Table" + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, 570, const_fY - 17, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 		
-		for i in numCivicOtopns:
+		for i in xrange(gc.getNumCivicOptionInfos()):
 			
 			if gc.getCivicOptionInfo(i).getParentCivicOption() < 1:
 
@@ -438,6 +438,7 @@ class CvCivicsScreen:
 			if self.unHighlight(inputClass.getID()):
 				self.drawHelpText(input_, idx) #doto -3 cause 3 in related civics
 				self.updateAnarchy()
+
 
 		return 0
 

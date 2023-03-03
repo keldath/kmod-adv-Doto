@@ -100,8 +100,8 @@ SymbolPath	Each entry of this tag contains the directory path to a unique yield 
 			<iHillsChange>0</iHillsChange>
 			<iPeakChange>0</iPeakChange>
 			<iLakeChange>0</iLakeChange>
-<!-- my game starts with 2 settlers, so this is how i hope to negate lower income -->
-			<iCityChange>0</iCityChange>
+<!--keldath my game starts with 2 settlers, so this is how i hope to negate lower income -->
+			<iCityChange>3</iCityChange>
 			<iPopulationChangeOffset>0</iPopulationChangeOffset>
 			<iPopulationChangeDivisor>0</iPopulationChangeDivisor>
 			<iMinCity>1</iMinCity>

@@ -7975,6 +7975,7 @@ void CvGameTextMgr::parseCivicInfo(CvWStringBuffer &szHelpText, CivicTypes eCivi
 	}
 
     // Non-State Religion Extra Health
+    /* doto 112 - seems the code here is not good - copied below code from kmod advc
 	if (kCivic.getNonStateReligionExtraHealth() != 0)
 	{
 		if (kCivic.isStateReligion())
@@ -7988,7 +7989,30 @@ void CvGameTextMgr::parseCivicInfo(CvWStringBuffer &szHelpText, CivicTypes eCivi
 			szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_NON_STATE_REL_EXTRA_HEALTH_WITH_STATE", abs(kCivic.getNonStateReligionExtraHealth()), ((kCivic.getNonStateReligionExtraHealth() > 0) ? gDLL->getSymbolID(HEALTHY_CHAR) : gDLL->getSymbolID(UNHEALTHY_CHAR))));
 		}
 	}
-
+	*/
+	if (kCivic.getNonStateReligionExtraHealth() != 0)
+	{
+		if (!kCivic.isStateReligion())
+		{
+			szHelpText.append(NEWLINE);
+			szHelpText.append(
+					gDLL->getText("TXT_KEY_CIVIC_NON_STATE_REL_EXTRA_HEALTH_NO_STATE",
+					/*	UNOFFICIAL_PATCH, Bugfix, 08/28/09, EmperorFool & jdog5000:
+						(params were missing) */
+					abs(kCivic.getNonStateReligionExtraHealth()),
+					kCivic.getNonStateReligionExtraHealth() > 0 ?
+					gDLL->getSymbolID(HEALTHY_CHAR) : gDLL->getSymbolID(UNHEALTHY_CHAR)));
+		}
+		else
+		{
+			szHelpText.append(NEWLINE);
+			szHelpText.append(
+					gDLL->getText("TXT_KEY_CIVIC_NON_STATE_REL_EXTRA_HEALTH_WITH_STATE",
+					abs(kCivic.getNonStateReligionExtraHealth()),
+					kCivic.getNonStateReligionExtraHealth() > 0 ?
+					gDLL->getSymbolID(HEALTHY_CHAR) : gDLL->getSymbolID(UNHEALTHY_CHAR)));
+		}
+	}
 	//	Specialist Yield
 	setYieldChangeHelp(szHelpText, L"", L"", gDLL->getText("TXT_KEY_CIVIC_PER_SPECIALIST").GetCString(), kCivic.getSpecialistExtraYieldArray());
 

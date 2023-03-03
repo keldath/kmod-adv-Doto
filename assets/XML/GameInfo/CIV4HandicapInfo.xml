@@ -161,7 +161,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iMaxColonyMaintenance>200</iMaxColonyMaintenance>
 			<iCorporationMaintenancePercent>60</iCorporationMaintenancePercent>
 			<!-- advc.251: was 50 -->
-			<iCivicUpkeepPercent>60</iCivicUpkeepPercent>
+			<iCivicUpkeepPercent>20</iCivicUpkeepPercent>
 			<iInflationPercent>60</iInflationPercent>
 			<!-- advc.101 -->
 			<iForeignCultureStrength>10</iForeignCultureStrength>
@@ -216,7 +216,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAICreatePercent>110</iAICreatePercent>
 			<iAIWorldCreatePercent>125</iAIWorldCreatePercent>
 			<!-- advc.251 (end) -->
-			<iAICivicUpkeepPercent>100</iAICivicUpkeepPercent>
+			<iAICivicUpkeepPercent>80</iAICivicUpkeepPercent>
 			<iAIUnitCostPercent>100</iAIUnitCostPercent>
 			<iAIUnitSupplyPercent>50</iAIUnitSupplyPercent>
 			<iAIUnitUpgradePercent>50</iAIUnitUpgradePercent>
@@ -344,7 +344,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iMaxColonyMaintenance>200</iMaxColonyMaintenance>
 			<iCorporationMaintenancePercent>80</iCorporationMaintenancePercent>
 			<!-- advc.251: was 60 -->
-			<iCivicUpkeepPercent>70</iCivicUpkeepPercent>
+			<iCivicUpkeepPercent>40</iCivicUpkeepPercent>
 			<iInflationPercent>70</iInflationPercent>
 			<!-- advc.101 -->
 			<iForeignCultureStrength>15</iForeignCultureStrength>
@@ -397,7 +397,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAICreatePercent>105</iAICreatePercent>
 			<iAIWorldCreatePercent>120</iAIWorldCreatePercent>
 			<!-- advc.251 (end) -->
-			<iAICivicUpkeepPercent>100</iAICivicUpkeepPercent>
+			<iAICivicUpkeepPercent>80</iAICivicUpkeepPercent>
 			<iAIUnitCostPercent>100</iAIUnitCostPercent>
 			<iAIUnitSupplyPercent>50</iAIUnitSupplyPercent>
 			<iAIUnitUpgradePercent>50</iAIUnitUpgradePercent>
@@ -503,7 +503,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iMaxColonyMaintenance>200</iMaxColonyMaintenance>
 			<iCorporationMaintenancePercent>90</iCorporationMaintenancePercent>
 			<!-- advc.251: was 70 -->
-			<iCivicUpkeepPercent>80</iCivicUpkeepPercent>
+			<iCivicUpkeepPercent>40</iCivicUpkeepPercent>
 			<iInflationPercent>80</iInflationPercent>
 			<!-- advc.101 -->
 			<iForeignCultureStrength>20</iForeignCultureStrength>
@@ -553,7 +553,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAIWorldConstructPercent>110</iAIWorldConstructPercent>
 			<iAICreatePercent>100</iAICreatePercent>
 			<iAIWorldCreatePercent>110</iAIWorldCreatePercent>
-			<iAICivicUpkeepPercent>100</iAICivicUpkeepPercent>
+			<iAICivicUpkeepPercent>80</iAICivicUpkeepPercent>
 			<iAIUnitCostPercent>100</iAIUnitCostPercent>
 			<iAIUnitSupplyPercent>50</iAIUnitSupplyPercent>
 			<iAIUnitUpgradePercent>50</iAIUnitUpgradePercent>
@@ -637,7 +637,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iMaxColonyMaintenance>200</iMaxColonyMaintenance>
 			<iCorporationMaintenancePercent>100</iCorporationMaintenancePercent>
 			<!-- advc.251: was 80 -->
-			<iCivicUpkeepPercent>90</iCivicUpkeepPercent>
+			<iCivicUpkeepPercent>50</iCivicUpkeepPercent>
 			<iInflationPercent>90</iInflationPercent>
 			<!-- advc.101 -->
 			<iForeignCultureStrength>25</iForeignCultureStrength>
@@ -688,7 +688,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAIWorldConstructPercent>100</iAIWorldConstructPercent>
 			<iAICreatePercent>100</iAICreatePercent>
 			<iAIWorldCreatePercent>100</iAIWorldCreatePercent>
-			<iAICivicUpkeepPercent>100</iAICivicUpkeepPercent>
+			<iAICivicUpkeepPercent>80</iAICivicUpkeepPercent>
 			<iAIUnitCostPercent>100</iAIUnitCostPercent>
 			<iAIUnitSupplyPercent>50</iAIUnitSupplyPercent>
 			<iAIUnitUpgradePercent>50</iAIUnitUpgradePercent>
@@ -766,7 +766,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.251: was 110 -->
 			<iCorporationMaintenancePercent>105</iCorporationMaintenancePercent>
 			<!-- advc.251: was 90 -->
-			<iCivicUpkeepPercent>95</iCivicUpkeepPercent>
+			<iCivicUpkeepPercent>55</iCivicUpkeepPercent>
 			<iInflationPercent>95</iInflationPercent>
 			<!-- advc.101 -->
 			<iForeignCultureStrength>29</iForeignCultureStrength>
@@ -822,7 +822,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iAIWorldConstructPercent>100</iAIWorldConstructPercent>
 			<iAICreatePercent>95</iAICreatePercent>
 			<iAIWorldCreatePercent>100</iAIWorldCreatePercent>
-			<iAICivicUpkeepPercent>95</iAICivicUpkeepPercent>
+			<iAICivicUpkeepPercent>75</iAICivicUpkeepPercent>
 			<iAIUnitCostPercent>95</iAIUnitCostPercent>
 			<iAIUnitSupplyPercent>50</iAIUnitSupplyPercent>
 			<iAIUnitUpgradePercent>50</iAIUnitUpgradePercent>
@@ -903,7 +903,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.251: was 120 -->
 			<iCorporationMaintenancePercent>110</iCorporationMaintenancePercent>
 			<!-- advc.251: was 95 -->
-			<iCivicUpkeepPercent>100</iCivicUpkeepPercent>
+			<iCivicUpkeepPercent>60</iCivicUpkeepPercent>
 			<iInflationPercent>100</iInflationPercent>
 			<!-- advc.101 -->
 			<iForeignCultureStrength>32</iForeignCultureStrength>
@@ -965,7 +965,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- was 100 -->
 			<iAIWorldCreatePercent>95</iAIWorldCreatePercent>
 			<!-- advc.251 (end) -->
-			<iAICivicUpkeepPercent>90</iAICivicUpkeepPercent>
+			<iAICivicUpkeepPercent>70</iAICivicUpkeepPercent>
 			<iAIUnitCostPercent>90</iAIUnitCostPercent>
 			<iAIUnitSupplyPercent>50</iAIUnitSupplyPercent>
 			<iAIUnitUpgradePercent>50</iAIUnitUpgradePercent>
@@ -1065,7 +1065,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iMaxColonyMaintenance>200</iMaxColonyMaintenance>
 			<!-- advc.251: was 130 -->
 			<iCorporationMaintenancePercent>115</iCorporationMaintenancePercent>
-			<iCivicUpkeepPercent>100</iCivicUpkeepPercent>
+			<iCivicUpkeepPercent>60</iCivicUpkeepPercent>
 			<iInflationPercent>100</iInflationPercent>
 			<!-- advc.101 -->
 			<iForeignCultureStrength>35</iForeignCultureStrength>
@@ -1127,7 +1127,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- was 100 -->
 			<iAIWorldCreatePercent>95</iAIWorldCreatePercent>
 			<!-- advc.251 (end) -->
-			<iAICivicUpkeepPercent>85</iAICivicUpkeepPercent>
+			<iAICivicUpkeepPercent>65</iAICivicUpkeepPercent>
 			<iAIUnitCostPercent>85</iAIUnitCostPercent>
 			<iAIUnitSupplyPercent>50</iAIUnitSupplyPercent>
 			<iAIUnitUpgradePercent>50</iAIUnitUpgradePercent>
@@ -1233,7 +1233,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iMaxColonyMaintenance>200</iMaxColonyMaintenance>
 			<!-- advc.251: was 140 -->
 			<iCorporationMaintenancePercent>120</iCorporationMaintenancePercent>
-			<iCivicUpkeepPercent>100</iCivicUpkeepPercent>
+			<iCivicUpkeepPercent>60</iCivicUpkeepPercent>
 			<iInflationPercent>100</iInflationPercent>
 			<!-- advc.101 -->
 			<iForeignCultureStrength>38</iForeignCultureStrength>
@@ -1297,7 +1297,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- was 100 -->
 			<iAIWorldCreatePercent>90</iAIWorldCreatePercent>
 			<!-- advc.251 (end) -->
-			<iAICivicUpkeepPercent>80</iAICivicUpkeepPercent>
+			<iAICivicUpkeepPercent>60</iAICivicUpkeepPercent>
 			<iAIUnitCostPercent>80</iAIUnitCostPercent>
 			<iAIUnitSupplyPercent>50</iAIUnitSupplyPercent>
 			<iAIUnitUpgradePercent>50</iAIUnitUpgradePercent>
@@ -1406,7 +1406,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iMaxColonyMaintenance>200</iMaxColonyMaintenance>
 			<!-- advc.251: was 150 -->
 			<iCorporationMaintenancePercent>130</iCorporationMaintenancePercent>
-			<iCivicUpkeepPercent>100</iCivicUpkeepPercent>
+			<iCivicUpkeepPercent>60</iCivicUpkeepPercent>
 			<iInflationPercent>100</iInflationPercent>
 			<!-- advc.101 -->
 			<iForeignCultureStrength>40</iForeignCultureStrength>
@@ -1474,7 +1474,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- was 100 -->
 			<iAIWorldCreatePercent>85</iAIWorldCreatePercent>
 			<!-- was 60 -->
-			<iAICivicUpkeepPercent>75</iAICivicUpkeepPercent>
+			<iAICivicUpkeepPercent>55</iAICivicUpkeepPercent>
 			<!-- was 60 -->
 			<iAIUnitCostPercent>75</iAIUnitCostPercent>
 			<!-- advc.251 (end) -->

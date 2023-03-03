@@ -21,7 +21,7 @@
     <German>[ICON_BULLET]%D1_Change%F2_HealthOrUn in St&#228;dten mit der Staatsreligion [ICON_RELIGION]</German>
     <Italian>[ICON_BULLET]%D1_Change di %F2_HealthOrUn nelle citt&#224; con la religione di stato [ICON_RELIGION]</Italian>
     <Spanish>[ICON_BULLET]%D1_Change %F2_HealthOrUn en las ciudades con [ICON_RELIGION] oficial</Spanish>
-  </TEXT>
+  <!-- </TEXT>
   <TEXT>
     <Tag>TXT_KEY_CIVIC_NON_STATE_REL_EXTRA_HEALTH_NO_STATE</Tag>
     <English>[ICON_BULLET]%D1_Change%F2_HealthOrUn per [ICON_RELIGION] in a City</English>
@@ -37,6 +37,23 @@
     <German>[ICON_BULLET]%D1_Change%F2_HealthOrUn je nichtstaatlicher Religion [ICON_RELIGION] in einer Stadt</German>
     <Italian>[ICON_BULLET]%D1_Change di %F2_HealthOrUn per [ICON_RELIGION] non ufficiale di una citt&#224;</Italian>
     <Spanish>[ICON_BULLET]%D1_Change %F2_HealthOrUn por cada [ICON_RELIGION] no oficial en cada ciudad</Spanish>
+  keldath change -->
+  </TEXT>
+  <TEXT>
+    <Tag>TXT_KEY_CIVIC_NON_STATE_REL_EXTRA_HEALTH_NO_STATE</Tag>
+    <English>[ICON_BULLET]%D1_Change%F2_HealthOrUn per [ICON_RELIGION] in a City</English>
+    <French>[ICON_BULLET]%D1_Change%F2_HealthOrUn par [ICON_RELIGION] dans une ville</French>
+    <German>[ICON_BULLET]%D1_Change%F2_HealthOrUn je [ICON_RELIGION]-Religion in einer Stadt</German>
+    <Italian>[ICON_BULLET]%D1_Change di %F2_HealthOrUn per [ICON_RELIGION] in una citt&#224;</Italian>
+    <Spanish>[ICON_BULLET]%D1_Change %F2_HealthOrUn por cada [ICON_RELIGION] en cada ciudad</Spanish>
+  </TEXT>
+  <TEXT>
+    <Tag>TXT_KEY_CIVIC_NON_STATE_REL_EXTRA_HEALTH_WITH_STATE</Tag>
+    <English>[ICON_BULLET]%D1_Change%F2_HealthOrUn per Non-State [ICON_RELIGION] in a City</English>
+    <French>[ICON_BULLET]%D1_Change%F2_HealthOrUn par [ICON_RELIGION] non officielle dans une ville</French>
+    <German>[ICON_BULLET]%D1_Change%F2_HealthOrUn je nichtstaatlicher Religion [ICON_RELIGION] in einer Stadt</German>
+    <Italian>[ICON_BULLET]%D1_Change di %F2_HappyOrUn per [ICON_RELIGION] non ufficiale di una citt&#224;</Italian>
+    <Spanish>[ICON_BULLET]%D1_Change %F2_HappyOrUn por cada [ICON_RELIGION] no oficial en cada ciudad</Spanish>
   </TEXT>
   <TEXT>
     <Tag>TXT_KEY_CIVIC_PER_SPECIALIST</Tag>
