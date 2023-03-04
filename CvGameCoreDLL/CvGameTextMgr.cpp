@@ -7960,35 +7960,33 @@ void CvGameTextMgr::parseCivicInfo(CvWStringBuffer &szHelpText, CivicTypes eCivi
 			kCivic.getCapitalYieldModifierArray(), true);
 // < Civic Infos Plus Start >
 	// State Religion Extra Health
+	//ORG CODE REMOVED DOTO 112 - REPLACED WITH CLEANER ADVC STRUCTURE
 	if (kCivic.getStateReligionExtraHealth() != 0)
 	{
-		if (bPlayerContext && (GET_PLAYER(GC.getGame().getActivePlayer()).getStateReligion() != NO_RELIGION))
+		if (bPlayerContext &&
+			GET_PLAYER(eActivePlayer).getStateReligion() != NO_RELIGION)
 		{
 			szHelpText.append(NEWLINE);
-            szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_STATE_RELIGION_EXTRA_HEALTH", abs(kCivic.getStateReligionExtraHealth()), ((kCivic.getStateReligionExtraHealth() > 0) ? gDLL->getSymbolID(HEALTHY_CHAR) : gDLL->getSymbolID(UNHEALTHY_CHAR)), GC.getReligionInfo(GET_PLAYER(GC.getGame().getActivePlayer()).getStateReligion()).getChar()));
+			szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_STATE_RELIGION_HAPPINESS",
+					abs(kCivic.getStateReligionExtraHealth()),
+					kCivic.getStateReligionExtraHealth() > 0 ?
+					gDLL->getSymbolID(HEALTHY_CHAR) :
+					gDLL->getSymbolID(UNHEALTHY_CHAR),
+					GC.getInfo(GET_PLAYER(eActivePlayer).getStateReligion()).getChar()));
 		}
 		else
 		{
-		    szHelpText.append(NEWLINE);
-			szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_RELIGION_EXTRA_HEALTH", abs(kCivic.getStateReligionExtraHealth()), ((kCivic.getStateReligionExtraHealth() > 0) ? gDLL->getSymbolID(HEALTHY_CHAR) : gDLL->getSymbolID(UNHEALTHY_CHAR))));
+			szHelpText.append(NEWLINE);
+			szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_RELIGION_HAPPINESS",
+					abs(kCivic.getStateReligionExtraHealth()),
+					kCivic.getStateReligionExtraHealth() > 0 ?
+					gDLL->getSymbolID(HEALTHY_CHAR) : gDLL->getSymbolID(UNHEALTHY_CHAR)));
 		}
 	}
 
     // Non-State Religion Extra Health
     /* doto 112 - seems the code here is not good - copied below code from kmod advc
-	if (kCivic.getNonStateReligionExtraHealth() != 0)
-	{
-		if (kCivic.isStateReligion())
-		{
-		    szHelpText.append(NEWLINE);
-			szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_NON_STATE_REL_EXTRA_HEALTH_NO_STATE"));
-		}
-		else
-		{
-		    szHelpText.append(NEWLINE);
-			szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_NON_STATE_REL_EXTRA_HEALTH_WITH_STATE", abs(kCivic.getNonStateReligionExtraHealth()), ((kCivic.getNonStateReligionExtraHealth() > 0) ? gDLL->getSymbolID(HEALTHY_CHAR) : gDLL->getSymbolID(UNHEALTHY_CHAR))));
-		}
-	}
+		ORG CODE REMOVED
 	*/
 	if (kCivic.getNonStateReligionExtraHealth() != 0)
 	{
@@ -8039,6 +8037,9 @@ void CvGameTextMgr::parseCivicInfo(CvWStringBuffer &szHelpText, CivicTypes eCivi
                 szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_FREE_SPECIALIST_COUNT", kCivic.getFreeSpecialistCount(iI), GC.getSpecialistInfo((SpecialistTypes) iI).getTextKeyWide()));
             }
 	}
+
+
+	
 
 	//	Building Yields
 	for (iI = 0; iI < NUM_YIELD_TYPES; iI++)

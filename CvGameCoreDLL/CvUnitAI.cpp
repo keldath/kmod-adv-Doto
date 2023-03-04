@@ -3110,10 +3110,10 @@ void CvUnitAI::AI_attackCityMove()
 			int iBase = 210;
 			if (pTargetCity->getPlot().isHills())
 				iBase += GC.getDefineINT(CvGlobals::HILLS_EXTRA_DEFENSE);
-//doto  mountain mod
+//doto  mountains mod
 			if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
 			   iBase += (pTargetCity->getPlot().isPeak() ? GC.getDefineINT(CvGlobals::PEAK_EXTRA_DEFENSE) : 0);	
-//doto  mountain mod
+//doto  mountains mod
 			iComparePostBombard *= iBase;
 			iComparePostBombard /= std::max(1,
 					// def. mod. < 200. I promise.
@@ -13550,8 +13550,7 @@ CvCity* CvUnitAI::AI_pickTargetCity(MovementFlags eFlags, int iMaxPathTurns,
 					//mountains mod - keldath addition nm back to service
 					if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
 					{
-						iMod += (pLoopCity->getPlot().isPeak() ? GC.getDefineINT(CvGlobals::PEAK_EXTRA_DEFENSE) : 0);
-			
+						iMod += (pLoopCity->getPlot().isPeak() ? GC.getDefineINT(CvGlobals::PEAK_EXTRA_DEFENSE) : 0);			
 					}
 					iValue *= std::max(25, 125 - iMod);
 					iValue /= 25; // the denominator is arbitrary, and unimportant.
@@ -18215,11 +18214,13 @@ BuildTypes CvUnitAI::AI_betterPlotBuild(CvPlot const& kPlot, BuildTypes eBuild) 
 				{
 					iValue *= 2 + iTargetWorkers +
 							((kPlot.isHills() && iTargetWorkers > 1) ?
-							2 * GC.getDefineINT(CvGlobals::HILLS_EXTRA_MOVEMENT) : 0)
-							+
+							2 * GC.getDefineINT(CvGlobals::HILLS_EXTRA_MOVEMENT) : 0);
 //===NM=====Mountains Mod===X=====keldath change to org
-							((kPlot.isPeak() && iTargetWorkers > 1) ?
+					if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
+					{
+						iValue *= ((kPlot.isPeak() && iTargetWorkers > 1) ?
 							2 * GC.getDefineINT(CvGlobals::PEAK_EXTRA_MOVEMENT) : 0);
+					}
 //===NM=====Mountains Mod===X=====
 					iValue /= 3;
 				}
@@ -21492,7 +21493,11 @@ int CvUnitAI::AI_pillageValue(CvPlot const& kPlot, int iBonusValueThreshold)
 
 	if (!kPlot.isOwned())
 		return 0;
-
+	
+	//doto-rangedattack-keldath - i dont want siege units to pillage
+	if (isRangeStrikeCapableK())
+		return 0;
+	
 	int iValue = 0;
 
 	int iBonusValue = 0;
@@ -21513,9 +21518,6 @@ int CvUnitAI::AI_pillageValue(CvPlot const& kPlot, int iBonusValueThreshold)
 			return 0;
 	}
 
-//doto-rangedattack-keldath - i dont want siege units to pillage
-	if (!isRangeStrikeCapableK())
-	{
 	if ((getDomainType() != DOMAIN_AIR ||
 		// advc.255: (Though the AI will currently not air bomb routes)
 		kPlot.getRevealedImprovementType(getTeam()) == NO_IMPROVEMENT) &&
@@ -21544,7 +21546,6 @@ int CvUnitAI::AI_pillageValue(CvPlot const& kPlot, int iBonusValueThreshold)
 			}
 		}
 	}
-	}//doto
 
 	/*if (kPlot.getImprovementDuration() > ((kPlot.isWater()) ? 20 : 5))
 		eImprovement = kPlot.getImprovementType();
@@ -21562,8 +21563,8 @@ int CvUnitAI::AI_pillageValue(CvPlot const& kPlot, int iBonusValueThreshold)
 			iValue += (kPlot.calculateImprovementYieldChange(eImprovement,
 					YIELD_COMMERCE, kPlot.getOwner()) * 3);
 		}
-//doto-rangedattack-keldath - i dont want siege units to pillage
-		if (getDomainType() != DOMAIN_AIR && !isRangeStrikeCapableK())
+
+		if (getDomainType() != DOMAIN_AIR)
 			iValue += GC.getInfo(eImprovement).getPillageGold();
 		if (eNonObsoleteBonus != NO_BONUS)
 		{

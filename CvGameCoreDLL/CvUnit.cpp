@@ -2113,7 +2113,7 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 		}
 
 		}//Fix added by PieceOfMind for Influence Driven War, IDW
-	//DOTO - ranged immunity
+//DOTO - ranged immunity
 	else if (rangedBattle && rImmunityOption) 
 	{
 
@@ -2163,14 +2163,7 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 /** Original Author Moctezuma              Start                                                 */
 /*************************************************************************************************/
 			// ------ BEGIN InfluenceDrivenWar -------------------------------
-			//PIG Mod: Changed this to a game option, by PieceOfMind for PIG Mod 26/10/09
-			//Old code.. 
-			/*
-			if (GC.getDefineINT("IDW_ENABLED"))
-			*/
-			// New code
 			if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR))
-			//End PIG Mod
 			{	
 				if (!canMove() || !isBlitz())
 				{
@@ -2183,7 +2176,6 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 					}
 				}
 			}
-			// ------ END InfluenceDrivenWar -------------------------------
 /*************************************************************************************************/
 /** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
 /**                                                                                              */
@@ -2997,9 +2989,9 @@ bool CvUnit::cannotMoveFromPlotToPlot(const CvPlot* pFromPlot, const CvPlot* pTo
 	}
 	//GC.getBLOCADE_UNIT()
 	if (GC.getDefineINT(CvGlobals::BLOCADE_UNIT) && pToPlot->isBlocade(pFromPlot, this))
-		{
-			return true;
-		}
+	{
+		return true;
+	}
 	return false;
 }
 //MOD@VET_Andera412_Blocade_Unit-end2/6
@@ -3014,8 +3006,11 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar,
 {
 	//PROFILE_FUNC(); // advc.003o
 //MOD@VET_Andera412_Blocade_Unit-begin1/1 - doto assert fix attempt in I::AI_solveBlockageProblem	
-	if (kPlot.isBlocade(this->plot(),this))
-		return false;
+	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
+	{
+		if (kPlot.isBlocade(this->plot(),this))
+			return false;
+	}
 //MOD@VET_Andera412_Blocade_Unit-begin1/1
 	if (atPlot(&kPlot))
 		return false;
@@ -3024,13 +3019,16 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar,
 //DOTO- keldath - i changed a bit the org code.
 //mountain mod back in service mod - sort off
 	// Deliverator peaks
-	if (kPlot.isPeak())
+	if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
 	{
-		if(!canMovePeak() /*|| !canMoveImpassable()*/)
+		if (kPlot.isPeak())
 		{
-			return false;
-		}
-	}	
+			if(!canMovePeak() /*|| !canMoveImpassable()*/)
+			{
+				return false;
+			}
+		}	
+	}
 // Deliverator mountains mod
 	if (m_pUnitInfo->isNoRevealMap() && willRevealAnyPlotFrom(kPlot))
 		return false;
@@ -5501,22 +5499,13 @@ bool CvUnit::pillageImprovement()
 /*************************************************************************************************/
 				// ------ BEGIN InfluenceDrivenWar -------------------------------
 				float fInfluenceRatio = 0.0f;
-				//PIG Mod: Changed this to a game option, by PieceOfMind for PIG Mod 26/10/09
-				//Old code.. 
-				/*
-				if (GC.getDefineINT("IDW_ENABLED") && GC.getDefineINT("IDW_PILLAGE_INFLUENCE_ENABLED"))
-				*/
-				// New code by kedlath
 				if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR) && GC.getGame().isOption(GAMEOPTION_IDW_PILLAGE))
-				//End PIG Mod
 				{
 					if (atWar(kPlot.getTeam(), getTeam()))
 					{
 						fInfluenceRatio = doPillageInfluence();
 					}
 				}
-				// ------ END InfluenceDrivenWar -------------------------------
-
 /*************************************************************************************************/
 /** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
 /**                                                                                              */
@@ -5531,11 +5520,14 @@ bool CvUnit::pillageImprovement()
 /** Original Author Moctezuma              Start                                                 */
 /*************************************************************************************************/
 				// ------ BEGIN InfluenceDrivenWar -------------------------------
-				if (fInfluenceRatio > 0.0f)
+				if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR) && GC.getGame().isOption(GAMEOPTION_IDW_PILLAGE))
 				{
-					CvWString szInfluence;
-					szInfluence.Format(L" Tile influence: +%.1f%%", fInfluenceRatio);
-					szBuffer += szInfluence;
+					if (fInfluenceRatio > 0.0f)
+					{
+						CvWString szInfluence;
+						szInfluence.Format(L" Tile influence: +%.1f%%", fInfluenceRatio);
+						szBuffer += szInfluence;
+					}
 				}
 				// ------ END InfluenceDrivenWar -------------------------------
 /*************************************************************************************************/
@@ -5558,11 +5550,14 @@ bool CvUnit::pillageImprovement()
 /** Original Author Moctezuma              Start                                                 */
 /*************************************************************************************************/
 					// ------ BEGIN InfluenceDrivenWar -------------------------------
-					if (fInfluenceRatio > 0.0f)
-					{
-						CvWString szInfluence;
-						szInfluence.Format(L" Tile influence: -%.1f%%", fInfluenceRatio);
-						szBuffer += szInfluence;
+					if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR) && GC.getGame().isOption(GAMEOPTION_IDW_PILLAGE))
+					{		
+						if (fInfluenceRatio > 0.0f)
+						{
+							CvWString szInfluence;
+							szInfluence.Format(L" Tile influence: -%.1f%%", fInfluenceRatio);
+							szBuffer += szInfluence;
+						}
 					}
 					// ------ END InfluenceDrivenWar -------------------------------
 /*************************************************************************************************/
@@ -7063,14 +7058,17 @@ bool CvUnit::build(BuildTypes eBuild)
 	if (bFinished)
 	{
 		// < JCultureControl Mod Start >
-	    if ((ImprovementTypes) GC.getBuildInfo(eBuild).getImprovement() != NO_IMPROVEMENT && (ImprovementTypes) GC.getBuildInfo(eBuild).getImprovement() != eOldImprovement)
-	    {
-	        if (GC.getImprovementInfo((ImprovementTypes) GC.getBuildInfo(eBuild).getImprovement()).isSpreadCultureControl()  && GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
-	        {
-                plot()->setImprovementOwner(getOwner());
-                plot()->addCultureControl(getOwner(), (ImprovementTypes) GC.getBuildInfo(eBuild).getImprovement(), true);
-	        }
-	    }
+		if (GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
+		{
+		    if ((ImprovementTypes) GC.getBuildInfo(eBuild).getImprovement() != NO_IMPROVEMENT && (ImprovementTypes) GC.getBuildInfo(eBuild).getImprovement() != eOldImprovement)
+		    {
+		        if (GC.getImprovementInfo((ImprovementTypes) GC.getBuildInfo(eBuild).getImprovement()).isSpreadCultureControl())
+		        {
+	                plot()->setImprovementOwner(getOwner());
+	                plot()->addCultureControl(getOwner(), (ImprovementTypes) GC.getBuildInfo(eBuild).getImprovement(), true);
+		        }
+		    }
+	 	}
 	    // < JCultureControl Mod End >
 		if (GC.getInfo(eBuild).isKill())
 			kill(true);
@@ -8147,7 +8145,9 @@ int CvUnit::maxCombatStr(CvPlot const* pPlot, CvUnit const* pAttacker,
 				pCombatDetails->iCityDefenseModifier = iExtraModifier;
 		}
 //DOTO--mountains mod --need to make it separate? //back to service
-		if (pPlot->isPeak() || pPlot->isHills()) // Deliverator - Hijacked, Hills -> Peak+keldath hills
+		bool peaks = GC.getGame().isOption(GAMEOPTION_MOUNTAINS) ? pPlot->isPeak() : false;
+// Deliverator - Hijacked, Hills -> Peak+keldath hills
+		if (peaks || pPlot->isHills()) 
 		{
 			iExtraModifier = hillsDefenseModifier();
 			iModifier += iExtraModifier;
@@ -8200,8 +8200,11 @@ int CvUnit::maxCombatStr(CvPlot const* pPlot, CvUnit const* pAttacker,
 				}
 			}
 		}
-//DOTO-mountains mod // back to service
-		if (pAttackedPlot->isPeak() || pAttackedPlot->isHills() ) // Deliverator - Hijacked, Hills -> Peak + hills added keldath
+//DOTO--mountains mod --need to make it separate? //back to service
+		bool peaks = GC.getGame().isOption(GAMEOPTION_MOUNTAINS) ? pAttackedPlot->isPeak() : false;
+// Deliverator - Hijacked, Hills -> Peak+keldath hills
+		if (peaks || pAttackedPlot->isHills() ) 
+// Deliverator - Hijacked, Hills -> Peak + hills added keldath
 		{
 			iExtraModifier = -pAttacker->hillsAttackModifier();
 			iTempModifier += iExtraModifier;
@@ -11140,7 +11143,7 @@ bool CvUnit::isPromotionValid(PromotionTypes ePromotion) const
 		return false;
 	}
 	//MOD@VET_Andera412_Blocade_Unit-begin1/2 - taken from the otiginal placemnt - cvgamecoreuntils
-	if (!GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
+	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
 	{
 		if (kPromo.isUnblocade())
 		{
@@ -11193,7 +11196,8 @@ void CvUnit::setHasPromotion(PromotionTypes ePromotion, bool bNewValue)
 	changeBlitzCount(GC.getInfo(ePromotion).getBlitz() * iChange);
 	changeAmphibCount((GC.getInfo(ePromotion).isAmphib()) ? iChange : 0);
 //MOD@VET_Andera412_Blocade_Unit-begin4/6
-	changeUnblocadeCount((GC.getPromotionInfo(ePromotion).isUnblocade()) ? iChange : 0);
+	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
+		changeUnblocadeCount((GC.getPromotionInfo(ePromotion).isUnblocade()) ? iChange : 0);
 //MOD@VET_Andera412_Blocade_Unit-end4/6
 	changeRiverCount((GC.getInfo(ePromotion).isRiver()) ? iChange : 0);
 	changeEnemyRouteCount((GC.getInfo(ePromotion).isEnemyRoute()) ? iChange : 0);

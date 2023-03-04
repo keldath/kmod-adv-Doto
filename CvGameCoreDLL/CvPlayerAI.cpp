@@ -5102,12 +5102,16 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 				// iAccessibility represents the number of this improvement we expect to have per city.
 				iAccessibility += ((kBuildImprovement.isHillsMakesValid()) ? 150 : 0);
 				//===NM=====Mountain Mod===0=====
-				iAccessibility += ((kBuildImprovement.isPeakMakesValid()) ? 150 : 0);
-				//===NM=====Mountain Mod===X=====
-				// davidlallen: mountain limitations next line
-				//keldath - i think i added thi swithout thinking... keldath
-				//iAccessibility += ((kBuildImprovement.isPeakMakesInvalid()) ? 150 : 0);
-				//===NM=====Mountain Mod===X=====
+				if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
+				{
+					iAccessibility += ((kBuildImprovement.isPeakMakesValid()) ? 150 : 0);
+					// davidlallen: mountain limitations next line
+					//keldath - i think i added thi swithout thinking... keldath
+					//doto112 - i guess if peak disabled an im it should have negative
+					//up until 112 it this line was off
+					iAccessibility -= ((kBuildImprovement.isPeakMakesInvalid()) ? 150 : 0);
+					//===NM=====Mountain Mod===X=====
+				}
 				iAccessibility += ((kBuildImprovement.isFreshWaterMakesValid()) ? 150 : 0);
 				iAccessibility += ((kBuildImprovement.isRiverSideMakesValid()) ? 150 : 0);
 				if (kBuildImprovement.isAnyTerrainMakesValid()) // advc.003t
@@ -16986,7 +16990,8 @@ CivicTypes CvPlayerAI::AI_bestCivic(CivicOptionTypes eCivicOption, int* piBestVa
 	{
 		if (GC.getInfo(eLoopCivic).getCivicOptionType() == eCivicOption)
 		{
-			/* doto Civics parent - Start*/
+			/* doto Civics parent - Start
+			the force civics function sets child civics automatically*/
 			if (!canDoChildCivic(eLoopCivic))
 					continue;
 			/* doto Civics parent - Start */
@@ -17571,15 +17576,6 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 	
 		iSpecialistValue += 2 * std::max(0, AI_averageGreatPeopleMultiplier() - 100);
 		iValue += iCities * iSpecialistValue / 100;
-		
-		FOR_EACH_ENUM(Specialist)
-		{
-			if (kCivic.getFreeSpecialistCount(eLoopSpecialist) > 0)
-			{
-				iValue += kCivic.getFreeSpecialistCount(eLoopSpecialist) * iCities;
-			}
-		}	
-		
 //<!-- doto civic plus -->	end -> missing in the org code... doto112			
 	} // K-Mod end
 
@@ -18131,79 +18127,20 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 				iValue += iTempValue;
 			}
 //<!-- doto civic plus -->	start -> missing in the org code... doto112			
-			int iTempValue2 = //removed - f1rpo suggested iBestReligionCities * 
-					kCivic.getStateReligionCommerceModifier(eCommerce);
-			if (iTempValue2 > 0)
-			{
-				iTempValue2 *= AI_averageCommerceMultiplier(eCommerce);
-				iTempValue2 /= 100;
-
-				iTempValue2 *= AI_commerceWeight(eCommerce);
-				iTempValue2 /= 100;
-
-				iValue += iTempValue2;
-			}	
+		iValue += ((kCivic.getStateReligionCommerceModifier(eCommerce)) *
+						100 * getCommerceRate(eCommerce)) /
+						AI_averageCommerceMultiplier(eCommerce);	
 		}
 		FOR_EACH_ENUM2(Yield, eYield)
 		{
-			int iTempValue = //removed f1rpo suggested iBestReligionCities *
-					kCivic.getStateReligionYieldModifier(eYield);
-			if (iTempValue > 0)
-			{
-				iTempValue *= AI_averageYieldMultiplier(eYield);
-				iTempValue /= 100;
-
-				iTempValue *= AI_yieldWeight(eYield);
-				iTempValue /= 100;
-
-				iValue += iTempValue;
-			}
+			iValue += (kCivic.getStateReligionYieldModifier(eYield) *
+							AI_yieldWeight(eYield) *
+									AI_averageYieldMultiplier(eYield)) / 100;
 		}
 //<!-- doto civic plus -->	end
 		// K-Mod end
 	}
-//<!-- doto civic plus -->	start -> missing in the org code... doto112
-//	if (getStateReligion() == NO_RELIGION) re,oved - f1rpo suggested
-	{
-		FOR_EACH_ENUM2(Commerce, eCommerce)
-		{
-			int iTempValue = //removed f1rpo suggested iCities *
-					kCivic.getNonStateReligionCommerceModifier(eCommerce);
-			if (iTempValue > 0)
-			{
-				iTempValue *= AI_averageCommerceMultiplier(eCommerce);
-				iTempValue /= 100;
 
-				iTempValue *= AI_commerceWeight(eCommerce);
-				iTempValue /= 100;
-
-				iValue += iTempValue;
-			}	
-		}
-		FOR_EACH_ENUM2(Yield, eYield)
-		{
-			int iTempValue = //removed f1rpo suggested iCities *
-					kCivic.getNonStateReligionYieldModifier(eYield);
-			if (iTempValue > 0)
-			{
-				iTempValue *= AI_averageYieldMultiplier(eYield);
-				iTempValue /= 100;
-
-				iTempValue *= AI_yieldWeight(eYield);
-				iTempValue /= 100;
-
-				iValue += iTempValue;
-			}
-		}
-	/*	MOVED UP - according to bts code of ExtraHappy
-		if (kCivic.getNonStateReligionExtraHealth() != 0)
-		{
-			iValue += 12 * iCities * iS * AI_getHealthWeight(
-					iS * kCivic.getNonStateReligionExtraHealth() *
-					iTotalReligonCount / std::max(1, iCities), 0) / 100;
-		} */
-//<!-- doto civic plus -->	end
-	}	
 	FOR_EACH_ENUM2(Yield, eYield)
 	{
 		int iTempValue = 0;
@@ -18254,16 +18191,16 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 					(kCivic.getImprovementYieldChanges(eImprov, eYield) *
 					(getImprovementCount(eImprov) + iCities / 2))) / 100;
 		}
+//<!-- doto civic plus -->	start -> missing in the org code... doto112		
+		iTempValue += (kCivic.getNonStateReligionYieldModifier(eYield) *
+							AI_yieldWeight(eYield) *
+							AI_averageYieldMultiplier(eYield)) / 100;
+//<!-- doto civic plus -->	start -> missing in the org code... doto112						
 /*************************************************************************************************/
 /**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 /**																								**/
 /**																								**/
 /*************************************************************************************************/
-/*		for (int iJ = 0; iJ < GC.getNumSpecialistInfos(); iJ++)
-					{
-						iTempValue += ((kCivic.getSpecialistYieldChange(iJ, iI) * getTotalPopulation()) / 5);
-					}*/
-
 		FOR_EACH_ENUM(Specialist)
 		{
    			iTempValue += (kCivic.getSpecialistYieldChange(eLoopSpecialist, eYield) *
@@ -18342,22 +18279,19 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 
 		iTempValue /= 100; // (for the 3 things above)
 
-		if (iTempValue > 0)
-		{
-			iTempValue *= AI_commerceWeight(eCommerce);
-			iTempValue /= 100;
+//<!-- doto civic plus -->	start -> missing in the org code... doto112	
+		iTempValue += ((kCivic.getNonStateReligionCommerceModifier(eCommerce)) *
+					100 * getCommerceRate(eCommerce)) /
+					AI_averageCommerceMultiplier(eCommerce);	
+//<!-- doto civic plus -->	end -> missing in the org code... doto112		
+		
 /*************************************************************************************************/
 /**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 /**																								**/
-/**																								**/
+/**		doto 112 -> moved up before if (iTempValue > 0)
+		to get the effect of AI_commerceWeight(eCommerce);									**/
 /*************************************************************************************************/
-	//misplaced this to be after ivalue... thanks for avdciv f1rpo...
-	//for enum syntax look at prev civic spe entry
-/*		for (int iJ = 0; iJ < GC.getNumSpecialistInfos(); iJ++)
-					{
-						iTempValue += ((kCivic.getSpecialistCommerceChange(iJ, iI) * getTotalPopulation()) / 15);
-					}
-*/		FOR_EACH_ENUM(Specialist)
+		FOR_EACH_ENUM(Specialist)
 		{
    			iTempValue += ((kCivic.getSpecialistCommerceChange(eLoopSpecialist, eCommerce) 
          		 * getTotalPopulation()) / 15);
@@ -18366,11 +18300,21 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 /*************************************************************************************************/
 /**	CMEDIT: End																					**/
 /*************************************************************************************************/
-
-			iValue += iTempValue;
+	
+		if (iTempValue > 0)
+		{
+			iTempValue *= AI_commerceWeight(eCommerce);
+			iTempValue /= 100;
+	
+		iValue += iTempValue;
 		}
 	}
-	if (kCivic.isAnyBuildingHappinessChanges())
+//<!-- doto civic plus -->	start -> modified this loop to accomodate new tags to spare some loops
+	bool bHc = kCivic.isAnyBuildingHappinessChanges();
+	bool bYc = kCivic.isAnyBuildingYieldChanges();
+	bool bCc = kCivic.isAnyBuildingCommerceChanges();
+	
+	if ( bHc || bYc || bCc)
 	{
 		// advc.003w: (Also fixes a bug; NO_BUILDING check was missing.)
 		CvCivilization const& kCiv = getCivilization();
@@ -18378,7 +18322,37 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		{
 			BuildingTypes eBuilding = kCiv.buildingAt(i);
 			BuildingClassTypes eBuildingClass = kCiv.buildingClassAt(i);
-			int iTempValue = kCivic.getBuildingHappinessChanges(eBuildingClass);
+//<!-- doto civic plus -->	start -> missing in the org code... doto112				
+			//int iTempValue = 0;
+			
+		//	if (eBuilding == NO_BUILDING)
+		//		continue;
+			int iTempValueC = 0;
+			int iTempValueY = 0;
+			int commerceWeight = 0;
+			int yieldWeight = 0;
+			if (bCc)
+			{	
+				FOR_EACH_ENUM2(Commerce, eCommerce)
+				{	
+					iTempValueC += ((kCivic.getBuildingCommerceChanges(eBuilding, eCommerce)) *
+								100 * getCommerceRate(eCommerce)) /
+								AI_averageCommerceMultiplier(eCommerce);
+					commerceWeight += AI_commerceWeight(eCommerce);
+				}
+			}
+			if (bYc)
+			{
+				FOR_EACH_ENUM2(Yield, eYield)
+				{	
+					iTempValueY += (kCivic.getBuildingYieldChanges(eBuilding, eYield) *
+									AI_yieldWeight(eYield) *
+										AI_averageYieldMultiplier(eYield)) / 100;
+					yieldWeight += AI_yieldWeight(eYield);			
+				}
+			}
+			int iTempValueH = kCivic.getBuildingHappinessChanges(eBuildingClass);
+//<!-- doto civic plus -->	end -> missing in the org code... doto112				
 			/*if (iTempValue != 0) {
 				// Nationalism
 				if (!isNationalWonderClass((BuildingClassTypes)iI))
@@ -18386,7 +18360,8 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 				iValue += (iTempValue * getBuildingClassCountPlusMaking((BuildingClassTypes)iI) * 2);
 			}*/ // BtS
 			// K-Mod
-			if (iTempValue == 0)
+//<!-- doto civic plus -->	start -> missing in the org code... doto112	
+			if (iTempValueH == 0 && iTempValueC == 0 && iTempValueY == 0)
 				continue;
 
 			int iExpectedBuildings = 0;
@@ -18394,91 +18369,26 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 			{
 				iExpectedBuildings = (iCities +
 						2*getBuildingClassCountPlusMaking(eBuildingClass))/3;
-			}
-			iValue += (10 * iExpectedBuildings * iS *
-					AI_getHappinessWeight(iS * iTempValue, 1))/100;
-		}
-	}
 //<!-- doto civic plus -->	start -> missing in the org code... doto112	
-	if (kCivic.isAnyBuildingCommerceChanges())
-	{
-		// advc.003w: (Also fixes a bug; NO_BUILDING check was missing.)
-		CvCivilization const& kCiv = getCivilization();
-		for (int i = 0; i < kCiv.getNumBuildings(); i++)
-		{
-			BuildingTypes eBuilding = kCiv.buildingAt(i);
-			BuildingClassTypes eBuildingClass = kCiv.buildingClassAt(i);
-			if (eBuilding == NO_BUILDING)
-				continue;
-			int iTempValue = 0;	
-			FOR_EACH_ENUM2(Commerce, eCommerce)
-			{	
-				iTempValue = kCivic.getBuildingCommerceChanges(eBuilding, eCommerce);
-				if (iTempValue > 0)
+				if (iTempValueH != 0)
 				{
-					iTempValue *= AI_averageCommerceMultiplier(eCommerce);
-					iTempValue /= 100;
-	
-					iTempValue *= AI_commerceWeight(eCommerce);
-					iTempValue /= 100;
-
-					iValue += iTempValue;
-					
-					//not a 100% sure about this one
-					int iExpectedBuildings = 0;
-					if (canConstruct(eBuilding))
-					{
-						iExpectedBuildings = (iCities +
-								2*getBuildingClassCountPlusMaking(eBuildingClass))/3;
-					}
 					iValue += (10 * iExpectedBuildings * iS *
-							AI_commerceWeight(eCommerce))/100;	
-					}
-			
+						AI_getHappinessWeight(iS * iTempValueH, 1))/100;
+				}
+				if (iTempValueC != 0)
+				{
+					iValue += (10 * iExpectedBuildings * iS *
+						commerceWeight)/100;
+				}
+				if (iTempValueY != 0)
+				{
+					iValue += (10 * iExpectedBuildings * iS *
+						yieldWeight)/100;
+				}
 			}
-			
+//<!-- doto civic plus -->	end -> missing in the org code... doto112	
 		}
 	}
-	
-	if (kCivic.isAnyBuildingYieldChanges())
-	{
-		// advc.003w: (Also fixes a bug; NO_BUILDING check was missing.)
-		CvCivilization const& kCiv = getCivilization();
-		for (int i = 0; i < kCiv.getNumBuildings(); i++)
-		{
-			BuildingTypes eBuilding = kCiv.buildingAt(i);
-			BuildingClassTypes eBuildingClass = kCiv.buildingClassAt(i);
-			if (eBuilding == NO_BUILDING)
-				continue;
-			int iTempValue = 0;	
-			FOR_EACH_ENUM2(Yield, eYield)
-			{	
-				iTempValue = kCivic.getBuildingYieldChanges(eBuilding, eYield);
-				if (iTempValue > 0)
-				{
-					iTempValue *= AI_averageYieldMultiplier(eYield);
-					iTempValue /= 100;
-	
-					iTempValue *= AI_yieldWeight(eYield);
-					iTempValue /= 100;
-	
-					iValue += iTempValue;
-					
-					//not a 100% sure about this one
-					int iExpectedBuildings = 0;
-					if (canConstruct(eBuilding))
-					{
-						iExpectedBuildings = (iCities +
-								2*getBuildingClassCountPlusMaking(eBuildingClass))/3;
-					}
-					iValue += (10 * iExpectedBuildings * iS *
-							AI_yieldWeight(eYield))/100;
-				}	
-			}
-			
-		}
-	}
-//<!-- doto civic plus -->	end -> missing in the org code... doto112
 	for (int iI = 0; iI < GC.getNumFeatureInfos(); iI++)
 	{
 		int iHappiness = kCivic.getFeatureHappinessChanges(iI);
@@ -18552,6 +18462,14 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		int iMaxCultureChange = 0;
 		FOR_EACH_ENUM(Specialist)
 		{
+			//<!-- doto civic plus -->	start -> missing in the org code... doto112	
+			//be carefull , there is a 	continue; below
+			if (kCivic.getFreeSpecialistCount(eLoopSpecialist) > 0)
+			{
+				iValue += kCivic.getFreeSpecialistCount(eLoopSpecialist) * iCities;
+			}
+			//<!-- doto civic plus -->	end -> missing in the org code... doto112	
+			
 			if (!kCivic.isSpecialistValid(eLoopSpecialist))
 				continue;
 			// K-Mod todo: the current code sucks. Fix it.
@@ -18629,17 +18547,18 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 	{
 		if (iValue > 0)
 		{
-			/*
+			
 			iValue *= 2;
 			iValue /= 3;
-			*/
 			//new values - suggested by f1rpo -0.96- keldath 
-			iValue *= 1;
-			iValue /= 2;
+			//doto 112 - decided to give hugher rate for hated civic rate
+			// instead of 50% vakue reduction, make it 66%
+			//iValue *= 1;
+			//iValue /= 2;
 		}
 	}
 //dune wars - hated civs
-	/* if (AI_atVictoryStage(AI_VICTORY_CULTURE2) && GC.getInfo(eCivic).isNoNonStateReligionSpread())
+	/* if (AI_atVictoryStage(AI_VICTORY_CULTURE2) && kCivic.isNoNonStateReligionSpread())
 		iValue /= 10;*/ // what the lol...
 
 	return iValue;
