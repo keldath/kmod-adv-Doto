@@ -16991,7 +16991,9 @@ CivicTypes CvPlayerAI::AI_bestCivic(CivicOptionTypes eCivicOption, int* piBestVa
 		if (GC.getInfo(eLoopCivic).getCivicOptionType() == eCivicOption)
 		{
 			/* doto Civics parent - Start
-			the force civics function sets child civics automatically*/
+			the force civics function sets child civics automatically
+			as for other functions, like trade or diplo
+			for now, my desicion is that it will ignore child civics*/
 			if (!canDoChildCivic(eLoopCivic))
 					continue;
 			/* doto Civics parent - Start */
@@ -17144,12 +17146,16 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 	if (GC.getInfo(GC.getInfo(eCivic).getCivicOptionType()).getParentCivicOption() == 2)
 			return AI_civicValue_original(eCivic) + AI_totalBestChildrenValue(eCivic);
 			
-	/* doto Civics parent - if a child, value it as 0 --> children civics will be eval with its parent
-	the setting of child civics will be done with forcechildcivics right before the revolution takes place
-	need to test this more cause i dont want it to affect ai long run planning of civics ) */
-	//doto edit -> i think this keeps the ai from changing civics child under a parent.
-	//if (GC.getInfo(GC.getInfo(eCivic).getCivicOptionType()).getParentCivicOption() == 1)
-	//		return 1;
+	/* doto Civics parent - if a child civic is being exhamined
+	 then its parent civ must be selected. if not, no point in running 	AI_civicValue_original
+	 which is heavy on performance...
+	 a reminder -> the forcecivics function is the one that converts to un selected children 
+	 accorging to the new chosen parent civic.*/
+	if (GC.getInfo(GC.getInfo(eCivic).getCivicOptionType()).getParentCivicOption() == 1)
+	{
+		if (!canDoChildCivic(eCivic))
+			return 0;
+	}
 			
 	return AI_civicValue_original(eCivic);
 }
@@ -17571,7 +17577,8 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		{
 			int iRate = getSpecialistExtraYield(eLoopYield) +
 					kCivic.getSpecialistExtraYield(eLoopYield);
-			iSpecialistValue += iRate * AI_yieldWeight(eLoopYield);
+			iSpecialistValue += iRate * GC.getInfo(eLoopYield).getAIWeightPercent();
+			//this func seem to take too long. AI_yieldWeight(eLoopYield);
 		}
 	
 		iSpecialistValue += 2 * std::max(0, AI_averageGreatPeopleMultiplier() - 100);
@@ -18134,7 +18141,9 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		FOR_EACH_ENUM2(Yield, eYield)
 		{
 			iValue += (kCivic.getStateReligionYieldModifier(eYield) *
-							AI_yieldWeight(eYield) *
+						//	AI_yieldWeight(eYield) *
+						// did some profiling - AI_yieldWeight seems to take longer
+							GC.getInfo(eYield).getAIWeightPercent() *
 									AI_averageYieldMultiplier(eYield)) / 100;
 		}
 //<!-- doto civic plus -->	end
@@ -18193,7 +18202,10 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		}
 //<!-- doto civic plus -->	start -> missing in the org code... doto112		
 		iTempValue += (kCivic.getNonStateReligionYieldModifier(eYield) *
-							AI_yieldWeight(eYield) *
+						//	AI_yieldWeight(eYield) *
+						//keldath
+						// AI_yieldWeight seems lomger in a profiler i tried so going with lower performance fn
+							GC.getInfo(eYield).getAIWeightPercent() *
 							AI_averageYieldMultiplier(eYield)) / 100;
 //<!-- doto civic plus -->	start -> missing in the org code... doto112						
 /*************************************************************************************************/
@@ -18346,9 +18358,13 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 				FOR_EACH_ENUM2(Yield, eYield)
 				{	
 					iTempValueY += (kCivic.getBuildingYieldChanges(eBuilding, eYield) *
-									AI_yieldWeight(eYield) *
+									//AI_yieldWeight(eYield) *
+							//keldath
+							// AI_yieldWeight seems lomger in a profiler i tried so going with lower performance fn
+									GC.getInfo(eYield).getAIWeightPercent() *
 										AI_averageYieldMultiplier(eYield)) / 100;
-					yieldWeight += AI_yieldWeight(eYield);			
+					yieldWeight += 	GC.getInfo(eYield).getAIWeightPercent();
+							//AI_yieldWeight(eYield);			
 				}
 			}
 			int iTempValueH = kCivic.getBuildingHappinessChanges(eBuildingClass);

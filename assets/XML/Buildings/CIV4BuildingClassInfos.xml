@@ -1896,7 +1896,7 @@ Affects the project success rate (see: iSuccessRate) and the delay rate (see: iV
 		</BuildingClassInfo>
 		<BuildingClassInfo>
 			<Type>BUILDINGCLASS_PALACE_CS</Type>
-			<Description>TXT_KEY_BUILDING_PALACE</Description>
+			<Description>State Palace</Description>
 			<iMaxGlobalInstances>-1</iMaxGlobalInstances>
 			<iMaxTeamInstances>-1</iMaxTeamInstances>
 			<iMaxPlayerInstances>1</iMaxPlayerInstances>

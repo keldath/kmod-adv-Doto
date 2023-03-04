@@ -1526,7 +1526,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ProductionTraits>
 				<ProductionTrait>
 					<ProductionTraitType>TRAIT_AGGRESSIVE</ProductionTraitType>
-					<iProductionTrait>100</iProductionTrait>
+					<iProductionTrait>75</iProductionTrait>
 				</ProductionTrait>
 			</ProductionTraits>
 			<HappinessTraits/>
@@ -34927,8 +34927,8 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<BuildingClass>BUILDINGCLASS_PALACE_CS</BuildingClass>
 			<Type>BUILDING_PALACE_CS</Type>
 			<SpecialBuildingType>NONE</SpecialBuildingType>
-			<Description>TXT_KEY_BUILDING_PALACE</Description>
-			<Civilopedia>TXT_KEY_BUILDING_PALACE_PEDIA</Civilopedia>
+			<Description>State Palace</Description>
+			<Civilopedia>Cirt state Palace</Civilopedia>
 			<Strategy>TXT_KEY_BUILDING_PALACE_STRATEGY</Strategy>
 			<Advisor>ADVISOR_ECONOMY</Advisor>
 			<ArtDefineTag>ART_DEF_BUILDING_PALACE</ArtDefineTag>
@@ -34981,7 +34981,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<bAllowsNukes>0</bAllowsNukes>
 			<bMapCentering>0</bMapCentering>
 			<bNoUnhappiness>0</bNoUnhappiness>
-			<iUnhealthyPopulationModifier>0</iUnhealthyPopulationModifier>
+			<iUnhealthyPopulationModifier>-15</iUnhealthyPopulationModifier>
 			<bBuildingOnlyHealthy>0</bBuildingOnlyHealthy>
 			<bNeverCapture>0</bNeverCapture>
 			<bNukeImmune>1</bNukeImmune>
@@ -35010,7 +35010,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<iExperience>0</iExperience>
 			<iGlobalExperience>0</iGlobalExperience>
 <!--population limit -->
-		    <iPopulationLimitChange>2</iPopulationLimitChange>
+		    <iPopulationLimitChange>6</iPopulationLimitChange>
 			<iFoodKept>0</iFoodKept>
 			<iAirlift>0</iAirlift>
 			<iAirModifier>0</iAirModifier>
