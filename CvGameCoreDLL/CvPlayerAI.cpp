@@ -17608,8 +17608,6 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 					kCivic.getSpecialistExtraYield(eLoopYield);
 			//doto 112 - save some time
 			iSpecialistValue += iRate * weight;
-			//another take i did b4:
-			//iSpecialistValue += iRate * GC.getInfo(eLoopYield).getAIWeightPercent();
 		}
 	
 		iSpecialistValue += 2 * std::max(0, AI_averageGreatPeopleMultiplier() - 100);
@@ -18211,12 +18209,6 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 			iValue += (kCivic.getStateReligionYieldModifier(eYield) *
 							100 * weight) /
 						AI_averageYieldMultiplier(eYield);
-		//	prev take - doto			
-		//	iValue += (kCivic.getStateReligionYieldModifier(eYield) *
-		//				//	AI_yieldWeight(eYield) *
-		//				// did some profiling - AI_yieldWeight seems to take longer
-		//					GC.getInfo(eYield).getAIWeightPercent() *
-		//							AI_averageYieldMultiplier(eYield)) / 100;
 		}
 //<!-- doto civic plus -->	end
 		// K-Mod end
@@ -18273,7 +18265,7 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 					(getImprovementCount(eImprov) + iCities / 2))) / 100;
 		}
 //<!-- doto civic plus -->	start -> missing in the org code... doto112		
-			//doto 112 - save some time
+		//doto 112 - save some time
 		int weight = 1;
 		switch(eYield)
 		{
@@ -18284,12 +18276,9 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		//doto 112 - save some time
 		iTempValue += iS * iTotalReligonCount * (kCivic.getNonStateReligionYieldModifier(eYield) - 100) 
 			/ 5 * AI_averageYieldMultiplier(eYield) * weight /*AI_yieldWeight(eYield)*/
-						/ (100*100*100);
-		
-	//		(kCivic.getNonStateReligionYieldModifier(eYield) *
-		//			GC.getInfo(eYield).getAIWeightPercent() *
-			//				AI_averageYieldMultiplier(eYield)) / 100;
-//<!-- doto civic plus -->	end -> missing in the org code... doto112						
+					 / (100*100*100);
+//<!-- doto civic plus -->	end -> missing in the org code... doto112
+						
 /*************************************************************************************************/
 /**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 /**																								**/
@@ -18315,7 +18304,7 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		}*/ // BtS
 		// K-Mod
 		
-		//doto 112 - save some time
+		//doto 112 save some time
 		iTempValue *= weight /*AI_yieldWeight(eYield)*/;
 		iTempValue /= 100;
 		// K-mod end
@@ -18387,15 +18376,7 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		}
 		iTempValue += iS * iTotalReligonCount * 
 			(kCivic.getNonStateReligionCommerceModifier(eCommerce) - 100) / 5 * 
-			AI_averageCommerceMultiplier(eCommerce) * weight / (100*100*100);
-		
-		//(12 * iCities * iS * AI_averageCommerceMultiplier(eCommerce)*
-		//			  (iS * kCivic.getNonStateReligionCommerceModifier(eCommerce) *
-		//				iTotalReligonCount / std::max(1, iCities))) / 100;
-		//				
-				//	((kCivic.getNonStateReligionCommerceModifier(eCommerce)) *
-				//	100 * getCommerceRate(eCommerce)) /
-				//	AI_averageCommerceMultiplier(eCommerce);	
+			AI_averageCommerceMultiplier(eCommerce) * weight / (100*100*100);	
 //<!-- doto civic plus -->	end -> missing in the org code... doto112		
 		
 /*************************************************************************************************/
