@@ -17186,6 +17186,16 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 	// K-Mod, sign for whether we should be considering gaining a bonus, or losing a bonus
 	int const iS = (isCivic(eCivic) ? -1 : 1);
 
+//doto 112 - save some time on executions
+//<!-- doto civic plus -->	start -> missing in the org code... doto112		
+	int cReserch = AI_commerceWeight(COMMERCE_RESEARCH);
+	int cGold = AI_commerceWeight(COMMERCE_GOLD);
+	int cCult = AI_commerceWeight(COMMERCE_CULTURE);
+	int cEsp = AI_commerceWeight(COMMERCE_ESPIONAGE);
+	int yFoo = AI_yieldWeight(YIELD_FOOD);
+	int yPro = AI_yieldWeight(YIELD_PRODUCTION);
+	int yCom = AI_yieldWeight(YIELD_COMMERCE);
+//<!-- doto civic plus -->	start -> missing in the org code... doto112
 	bool bWarPlan = kTeam.AI_isAnyWarPlan();
 	if (bWarPlan)
 	{
@@ -17260,7 +17270,8 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 	int const iWarmongerFactor = 25000 / std::max(100,
 			100 + GC.getInfo(getPersonalityType()).getMaxWarRand());
 	// <K-Mod>
-	int const iMaintenanceFactor =  AI_commerceWeight(COMMERCE_GOLD) *
+	//doto 112 - save execution
+	int const iMaintenanceFactor =  cGold /*AI_commerceWeight(COMMERCE_GOLD)*/ *
 			std::max(0, calculateInflationRate() + 100) / 100; // </K-Mod>
 
 	int iValue = iCities * (6 + kCivic.getAIWeight());
@@ -17568,17 +17579,37 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		// additional bonuses
 		FOR_EACH_ENUM(Commerce)
 		{
+			//doto 112 - save some time...
+			int weight = 1;
+			switch(eLoopCommerce)
+			{
+				case COMMERCE_RESEARCH: weight = cReserch; break;
+				case COMMERCE_GOLD: weight = cGold; break;
+				case COMMERCE_CULTURE: weight = cCult; break;
+				case COMMERCE_ESPIONAGE: weight = cEsp; break;
+			}
 			int iRate = getSpecialistExtraCommerce(eLoopCommerce) +
 					kCivic.getSpecialistExtraCommerce(eLoopCommerce);
-			iSpecialistValue += iRate * AI_commerceWeight(eLoopCommerce);
+			//doto 112 save time
+			iSpecialistValue += iRate * weight /*AI_commerceWeight(eLoopCommerce)*/;	
 		}
 //<!-- doto civic plus -->	start -> missing in the org code... doto112				
 		FOR_EACH_ENUM(Yield)
 		{
+			//doto 112 - save some time
+			int weight = 1;
+			switch(eLoopYield)
+			{
+				case YIELD_FOOD: weight = yFoo; break;
+				case YIELD_PRODUCTION: weight = yPro; break;
+				case YIELD_COMMERCE: weight = yCom; break;
+			}
 			int iRate = getSpecialistExtraYield(eLoopYield) +
 					kCivic.getSpecialistExtraYield(eLoopYield);
-			iSpecialistValue += iRate * GC.getInfo(eLoopYield).getAIWeightPercent();
-			//this func seem to take too long. AI_yieldWeight(eLoopYield);
+			//doto 112 - save some time
+			iSpecialistValue += iRate * weight;
+			//another take i did b4:
+			//iSpecialistValue += iRate * GC.getInfo(eLoopYield).getAIWeightPercent();
 		}
 	
 		iSpecialistValue += 2 * std::max(0, AI_averageGreatPeopleMultiplier() - 100);
@@ -17806,7 +17837,16 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 			FOR_EACH_ENUM2(Commerce, eCommerce)
 			{
 				int iTempValue = 0;
-
+				
+				//doto 112 - save some time...
+				int weight = 1;
+				switch(eCommerce)
+				{
+					case COMMERCE_RESEARCH: weight = cReserch; break;
+					case COMMERCE_GOLD: weight = cGold; break;
+					case COMMERCE_CULTURE: weight = cCult; break;
+					case COMMERCE_ESPIONAGE: weight = cEsp;break;
+				}
 				// loss of the headquarter bonus from our cities.
 				if (bTeamHQ &&
 					((kCivic.isNoForeignCorporations() && !bPlayerHQ) ||
@@ -17833,7 +17873,8 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 				}
 				if (iTempValue != 0)
 				{
-					iTempValue *= AI_commerceWeight(eCommerce);
+					//doto 112 - save some time
+					iTempValue *= weight /*AI_commerceWeight(eCommerce)*/;
 					iTempValue /= 100;
 					iCorpValue += iTempValue;
 				}
@@ -17847,6 +17888,14 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 				// loss of corp yield bonuses
 				FOR_EACH_ENUM2(Yield, eYield)
 				{
+					//doto 112 - save some timeint weight = 1;
+					int weight = 1;
+					switch(eYield)
+					{
+						case YIELD_FOOD: weight = yFoo; break;
+						case YIELD_PRODUCTION: weight = yPro; break;
+						case YIELD_COMMERCE: weight = yCom; break;
+					}
 					int iTempValue = -(iCorpCities *
 							kCorpInfo.getYieldProduced(eYield) * iBonuses);
 					iTempValue *= AI_averageYieldMultiplier(eYield);
@@ -17854,8 +17903,8 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 					iTempValue *= GC.getInfo(GC.getMap().getWorldSize()).
 							getCorporationMaintenancePercent();
 					iTempValue /= 10000; // getYieldProduced is x100.
-
-					iTempValue *= AI_yieldWeight(eYield);
+					//doto 112 - save some time
+					iTempValue *= weight /*AI_yieldWeight(eYield)*/;
 					iTempValue /= 100;
 
 					iCorpValue += iTempValue;
@@ -17878,7 +17927,8 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 
 			/*	(note, corp maintenance is not amplified by inflation,
 				and so we don't use iMaintenanceFactor here.) */
-			iTempValue *= AI_commerceWeight(COMMERCE_GOLD);
+			//doto 112 - save some time
+			iTempValue *= cGold /*AI_commerceWeight(COMMERCE_GOLD)*/;
 			iTempValue /= 100;
 
 			if (kCivic.isNoCorporations() ||
@@ -18014,7 +18064,8 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		iTempValue += iBestReligionPopulation * kCivic.
 				getStateReligionBuildingProductionModifier() *
 				iProductionShareBuildings / 100;
-		iTempValue *= AI_yieldWeight(YIELD_PRODUCTION);
+		//doto 112 save some time
+		iTempValue *= yPro /*AI_yieldWeight(YIELD_PRODUCTION)*/;
 		iTempValue /= 100;
 		iValue += iTempValue / 100;
 		// K-Mod end
@@ -18121,14 +18172,23 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		// Value civic based on wonders granting state religion boosts
 		FOR_EACH_ENUM2(Commerce, eCommerce)
 		{
+			//doto 112 - save some time...
+			int weight = 1;
+			switch(eCommerce)
+			{
+				case COMMERCE_RESEARCH: weight = cReserch; break;
+				case COMMERCE_GOLD: weight = cGold; break;
+				case COMMERCE_CULTURE: weight = cCult; break;
+				case COMMERCE_ESPIONAGE: weight = cEsp; break;
+			}
 			int iTempValue = iBestReligionCities *
 					getStateReligionBuildingCommerce(eCommerce);
 			if (iTempValue > 0)
 			{
 				iTempValue *= AI_averageCommerceMultiplier(eCommerce);
 				iTempValue /= 100;
-
-				iTempValue *= AI_commerceWeight(eCommerce);
+				//doto 112 save some time
+				iTempValue *= weight /*AI_commerceWeight(eCommerce)*/;
 				iTempValue /= 100;
 
 				iValue += iTempValue;
@@ -18140,11 +18200,23 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		}
 		FOR_EACH_ENUM2(Yield, eYield)
 		{
+			//doto 112 - save some time
+			int weight = 1;
+			switch(eYield)
+			{
+				case YIELD_FOOD: weight = yFoo; break;
+				case YIELD_PRODUCTION: weight = yPro; break;
+				case YIELD_COMMERCE: weight = yCom; break;
+			}
 			iValue += (kCivic.getStateReligionYieldModifier(eYield) *
-						//	AI_yieldWeight(eYield) *
-						// did some profiling - AI_yieldWeight seems to take longer
-							GC.getInfo(eYield).getAIWeightPercent() *
-									AI_averageYieldMultiplier(eYield)) / 100;
+							100 * weight) /
+						AI_averageYieldMultiplier(eYield);
+		//	prev take - doto			
+		//	iValue += (kCivic.getStateReligionYieldModifier(eYield) *
+		//				//	AI_yieldWeight(eYield) *
+		//				// did some profiling - AI_yieldWeight seems to take longer
+		//					GC.getInfo(eYield).getAIWeightPercent() *
+		//							AI_averageYieldMultiplier(eYield)) / 100;
 		}
 //<!-- doto civic plus -->	end
 		// K-Mod end
@@ -18201,13 +18273,23 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 					(getImprovementCount(eImprov) + iCities / 2))) / 100;
 		}
 //<!-- doto civic plus -->	start -> missing in the org code... doto112		
-		iTempValue += (kCivic.getNonStateReligionYieldModifier(eYield) *
-						//	AI_yieldWeight(eYield) *
-						//keldath
-						// AI_yieldWeight seems lomger in a profiler i tried so going with lower performance fn
-							GC.getInfo(eYield).getAIWeightPercent() *
-							AI_averageYieldMultiplier(eYield)) / 100;
-//<!-- doto civic plus -->	start -> missing in the org code... doto112						
+			//doto 112 - save some time
+		int weight = 1;
+		switch(eYield)
+		{
+			case YIELD_FOOD: weight = yFoo; break;
+			case YIELD_PRODUCTION: weight = yPro; break;
+			case YIELD_COMMERCE: weight = yCom; break;
+		}
+		//doto 112 - save some time
+		iTempValue += iS * iTotalReligonCount * (kCivic.getNonStateReligionYieldModifier(eYield) - 100) 
+			/ 5 * AI_averageYieldMultiplier(eYield) * weight /*AI_yieldWeight(eYield)*/
+						/ (100*100*100);
+		
+	//		(kCivic.getNonStateReligionYieldModifier(eYield) *
+		//			GC.getInfo(eYield).getAIWeightPercent() *
+			//				AI_averageYieldMultiplier(eYield)) / 100;
+//<!-- doto civic plus -->	end -> missing in the org code... doto112						
 /*************************************************************************************************/
 /**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 /**																								**/
@@ -18232,7 +18314,9 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 			iTempValue /= 3;
 		}*/ // BtS
 		// K-Mod
-		iTempValue *= AI_yieldWeight(eYield);
+		
+		//doto 112 - save some time
+		iTempValue *= weight /*AI_yieldWeight(eYield)*/;
 		iTempValue /= 100;
 		// K-mod end
 		iValue += iTempValue;
@@ -18292,9 +18376,26 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		iTempValue /= 100; // (for the 3 things above)
 
 //<!-- doto civic plus -->	start -> missing in the org code... doto112	
-		iTempValue += ((kCivic.getNonStateReligionCommerceModifier(eCommerce)) *
-					100 * getCommerceRate(eCommerce)) /
-					AI_averageCommerceMultiplier(eCommerce);	
+		//doto 112 - save some time...
+		int weight = 1;
+		switch(eCommerce)
+		{
+			case COMMERCE_RESEARCH: weight = cReserch; break;
+			case COMMERCE_GOLD: weight = cGold; break;
+			case COMMERCE_CULTURE: weight = cCult; break;
+			case COMMERCE_ESPIONAGE: weight = cEsp; break;
+		}
+		iTempValue += iS * iTotalReligonCount * 
+			(kCivic.getNonStateReligionCommerceModifier(eCommerce) - 100) / 5 * 
+			AI_averageCommerceMultiplier(eCommerce) * weight / (100*100*100);
+		
+		//(12 * iCities * iS * AI_averageCommerceMultiplier(eCommerce)*
+		//			  (iS * kCivic.getNonStateReligionCommerceModifier(eCommerce) *
+		//				iTotalReligonCount / std::max(1, iCities))) / 100;
+		//				
+				//	((kCivic.getNonStateReligionCommerceModifier(eCommerce)) *
+				//	100 * getCommerceRate(eCommerce)) /
+				//	AI_averageCommerceMultiplier(eCommerce);	
 //<!-- doto civic plus -->	end -> missing in the org code... doto112		
 		
 /*************************************************************************************************/
@@ -18315,10 +18416,20 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 	
 		if (iTempValue > 0)
 		{
-			iTempValue *= AI_commerceWeight(eCommerce);
+			//doto 112 - save some time...
+			int weight = 1;
+			switch(eCommerce)
+			{
+				case COMMERCE_RESEARCH: weight = cReserch; break;
+				case COMMERCE_GOLD: weight = cGold; break;
+				case COMMERCE_CULTURE: weight = cCult; break;
+				case COMMERCE_ESPIONAGE:weight = cEsp;break;
+			}
+			//doto 112 save some time
+			iTempValue *= weight /*AI_commerceWeight(eCommerce)*/;
 			iTempValue /= 100;
 	
-		iValue += iTempValue;
+			iValue += iTempValue;
 		}
 	}
 //<!-- doto civic plus -->	start -> modified this loop to accomodate new tags to spare some loops
@@ -18343,27 +18454,45 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 			int iTempValueY = 0;
 			int commerceWeight = 0;
 			int yieldWeight = 0;
+			
+			int weight = 1;
 			if (bCc)
 			{	
 				FOR_EACH_ENUM2(Commerce, eCommerce)
 				{	
+					//doto 112 save some time
+					int weight = 1;
+					switch(eCommerce)
+					{
+						case COMMERCE_RESEARCH: weight = cReserch; break;
+						case COMMERCE_GOLD: weight = cGold; break;
+						case COMMERCE_CULTURE: weight = cCult; break;
+						case COMMERCE_ESPIONAGE:weight = cEsp;break;
+					}
 					iTempValueC += ((kCivic.getBuildingCommerceChanges(eBuilding, eCommerce)) *
 								100 * getCommerceRate(eCommerce)) /
 								AI_averageCommerceMultiplier(eCommerce);
-					commerceWeight += AI_commerceWeight(eCommerce);
+					//doto 112 save some time
+					commerceWeight += weight /*AI_commerceWeight(eCommerce)*/;
 				}
 			}
 			if (bYc)
 			{
 				FOR_EACH_ENUM2(Yield, eYield)
 				{	
+					//doto 112 - save some time
+					int weight = 1;
+					switch(eYield)
+					{
+						case YIELD_FOOD: weight = yFoo; break;
+						case YIELD_PRODUCTION: weight = yPro; break;
+						case YIELD_COMMERCE: weight = yCom; break;
+					}
+
 					iTempValueY += (kCivic.getBuildingYieldChanges(eBuilding, eYield) *
-									//AI_yieldWeight(eYield) *
-							//keldath
-							// AI_yieldWeight seems lomger in a profiler i tried so going with lower performance fn
-									GC.getInfo(eYield).getAIWeightPercent() *
-										AI_averageYieldMultiplier(eYield)) / 100;
-					yieldWeight += 	GC.getInfo(eYield).getAIWeightPercent();
+									weight * AI_averageYieldMultiplier(eYield)) / 100;
+					//doto 112 save time the getAIWeightPercent	is an alternative		
+					yieldWeight += weight /*GC.getInfo(eYield).getAIWeightPercent()*/;
 							//AI_yieldWeight(eYield);			
 				}
 			}
@@ -18394,12 +18523,12 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 				if (iTempValueC != 0)
 				{
 					iValue += (10 * iExpectedBuildings * iS *
-						commerceWeight)/100;
+						(commerceWeight + iTempValueC))/100;
 				}
 				if (iTempValueY != 0)
 				{
 					iValue += (10 * iExpectedBuildings * iS *
-						yieldWeight)/100;
+						(yieldWeight + iTempValueY))/100;
 				}
 			}
 //<!-- doto civic plus -->	end -> missing in the org code... doto112	
@@ -18435,7 +18564,8 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 					(AI_avoidScience() ? 2000 : 1000) * iCities /
 					kHurryInfo.getGoldPerProduction();
 			iTempValue /= std::max(1, (getHurryModifier() + 100) *
-					AI_commerceWeight(COMMERCE_GOLD));
+			//doto 112 - save some time
+					cGold /*AI_commerceWeight(COMMERCE_GOLD)*/);
 		}
 
 		if (kHurryInfo.getProductionPerPopulation() > 0)
