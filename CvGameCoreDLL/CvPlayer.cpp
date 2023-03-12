@@ -3174,6 +3174,9 @@ void CvPlayer::verifyCivics()
 	FOR_EACH_ENUM(CivicOption)
 	{
 /* doto civics  parent - start*/
+//this function wont take effect casue in the python
+//the abiloty to choose a child that its parent is not highlighted is Blocked.
+//i wrote this fn just in case.
 		CivicTypes eSelectedCivic = getCivics(eLoopCivicOption);
 		CvCivicInfo& kParentCivic = GC.getCivicInfo(eSelectedCivic); 
 		int parentNumChildren = kParentCivic.getNumParentCivicsChildren();
@@ -3232,7 +3235,7 @@ void CvPlayer::verifyCivics()
 								if (!canDoCivics(eChildCivic))
 									continue;
 								//use the AI to evaluate the civic.
-								int childValue = AI().AI_civicValue_original(eChildCivic);
+								int childValue = AI().AI_civicValue(eChildCivic);
 								//get the highest valued
 								if (childValue > eBestChildCivicsValue)
 								{
@@ -7433,27 +7436,20 @@ bool CvPlayer::canDoChildCivic(CivicTypes eCivic) const
 			//check if the selected civic in this parent civic option is the same as 
 			//this current parent.
 			CivicTypes eSelectedParentCivic = getCivics(kParentCivic.getCivicOptionType());
+			if (eSelectedParentCivic == (CivicTypes)iI)
+			{
 			for (int J = 0; J < eIsParent; J++)
 			{
 				//since the parent is selected -> check if the current civic that got sent
 				//is a child of the selected parent.
 				if (kParentCivic.getParentCivicsChildren(J) == eCivic)
-				{
-					if (eSelectedParentCivic == (CivicTypes)iI)
-					{
 						return true; 
 					}
-					else if (eSelectedParentCivic != (CivicTypes)iI)
-					{
-						return false; 
 					}
 					
 				}
 			}
-		
-		}
-	}
-	return true;
+	return false;
 }
 /* doto Civics  parent - end*/
 /* doto Civics  parent - start - same as can dochildcivic*/

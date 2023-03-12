@@ -483,9 +483,10 @@ public:
 	CivicMap forceChildCivics(CivicMap& ePreRevolutionMap) const;
 	//this is acctually the original fn of AI_civicValue
 	int AI_totalBestChildrenValue(CivicTypes eCivic) const;
-	int AI_civicValue_original(CivicTypes eCivic) const;						// Exposed to Python
+	int AI_civicValueGroup(CivicTypes eCivic) const;
+// default is to ignore the group calc - to avoid loop and such
+	int AI_civicValue(CivicTypes eCivic, bool iValueGroup = true) const;						// Exposed to Python
 /* doto Civics  parent - end ) */	
-	int AI_civicValue(CivicTypes eCivic) const;						// Exposed to Python
 
 	ReligionTypes AI_bestReligion() const;
 	int AI_religionValue(ReligionTypes eReligion) const;

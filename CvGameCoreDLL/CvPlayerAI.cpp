@@ -17017,6 +17017,11 @@ CivicMap CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 {
 	PROFILE_FUNC();
 	
+	//doto - need to figure a way to combine this with AI_totalBestChildrenValue
+	// the problem is that every time we re evaluate the child civics.
+	// perhaps should be a cached map with the best childs at all times.
+	// should be easier
+	
 	FOR_EACH_ENUM(CivicOption)
 	{
 		//if the civic option is not a parent - pass -> we only process parents + their 
@@ -17034,9 +17039,9 @@ CivicMap CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 			int* m_atemp = new int[parentNumChildren];
 			for (int c = 0; c < parentNumChildren; c++)
 			{
-				//this loop spared the need of running AI_civicValue_original
+				//this loop spared the need of running AI_civicValue
 				// over and over for evey civic option below, since there are a few loops
-				m_atemp[c] = AI_civicValue_original(kParentCivic.getParentCivicsChildren(c));
+				m_atemp[c] = AI_civicValue(kParentCivic.getParentCivicsChildren(c), false);
 			}
 				
 			//for every civicoption - lets find the best child 
@@ -17084,6 +17089,7 @@ CivicMap CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
 int CvPlayerAI::AI_totalBestChildrenValue(CivicTypes eCivic) const
 {	
 	CvCivicInfo& kCivic = GC.getCivicInfo(eCivic);
+//	CvWString ecD = kCivic.getDescription();//test
 	//is this a parent?
 	int parentNumChildren = kCivic.getNumParentCivicsChildren();
 	
@@ -17101,7 +17107,9 @@ int CvPlayerAI::AI_totalBestChildrenValue(CivicTypes eCivic) const
 			//if its the parent civic option, dont add its value (done in the hijacked civic value
 			if (eLoopCivicOption == kCivic.getCivicOptionType())
 				continue;
-				
+			// process only children civic types
+			if (GC.getInfo(eLoopCivicOption).getParentCivicOption() != 1)
+				continue;
 			int eTempBestCivicChildOption = 0;
 			//EVERY CIVIC OPTION will keep the best child value in it
 			//this way, if there is more than 1 child dependant on the parent
@@ -17110,12 +17118,13 @@ int CvPlayerAI::AI_totalBestChildrenValue(CivicTypes eCivic) const
 			{
 				CivicTypes eChildCivic = kCivic.getParentCivicsChildren(J);
 				//verify the child can be chosen
+//				CvWString ccD = GC.getInfo(eChildCivic).getDescription();//test
 				if (!canDoCivics(eChildCivic))
 					continue;
 				if (GC.getInfo(eChildCivic).getCivicOptionType() == eLoopCivicOption)
 				{
 					//if another civic child belongs to the same civic option 
-					int childValue = AI_civicValue_original(eChildCivic);
+					int childValue = AI_civicValue(eChildCivic, false); //true so it wont me a reccursion loop
 					if (childValue > eTempBestCivicChildOption)
 					{
 						//the reason fro not adding but setting it (=) is cause the value
@@ -17136,28 +17145,31 @@ int CvPlayerAI::AI_totalBestChildrenValue(CivicTypes eCivic) const
 }
 
 /* doto Civics parent - start ) 
-	hi jack of AI_civicValue original fn.
-	this is to avoid reccursion of calls for AI_civicValue_original
+	value the best child civics per civic option for a parent civic
  */
-int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
+int CvPlayerAI::AI_civicValueGroup(CivicTypes eCivic) const
 {
 	PROFILE_FUNC();
+
+	CvCivicInfo const& kCivic = GC.getInfo(eCivic);//test
+	//CvWString ecD = kCivic.getDescription();//test
+
 	/* doto Civics parent - if a parent, value it with its children ) */
 	if (GC.getInfo(GC.getInfo(eCivic).getCivicOptionType()).getParentCivicOption() == 2)
-			return AI_civicValue_original(eCivic) + AI_totalBestChildrenValue(eCivic);
+			return AI_totalBestChildrenValue(eCivic);
 			
 	/* doto Civics parent - if a child civic is being exhamined
-	 then its parent civ must be selected. if not, no point in running 	AI_civicValue_original
+	 then its parent civ must be selected. if not, no point in running 	AI_civicValue
 	 which is heavy on performance...
 	 a reminder -> the forcecivics function is the one that converts to un selected children 
 	 accorging to the new chosen parent civic.*/
 	if (GC.getInfo(GC.getInfo(eCivic).getCivicOptionType()).getParentCivicOption() == 1)
 	{
 		if (!canDoChildCivic(eCivic))
-			return 0;
+			return -99999999;
 	}
-			
-	return AI_civicValue_original(eCivic);
+	//this means this is a normal civic		
+	return 0;
 }
 /* doto Civics parent - end ) */
 /*	The bulk of this function has been rewritten for K-Mod.
@@ -17168,7 +17180,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 	rather than averaging effects across all cities.
 	(certainly this would work better for happiness modifiers.) */
 /* doto Civics parent - start ) */
-int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
+int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 //int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 /* doto Civics parent - end ) */
 {
@@ -17178,8 +17190,33 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		return 1;
 	if (isBarbarian())
 		return 1;
+/* doto Civics parent - start ) */
+//the default is to value groups if exists
+//only the fucntions that value the child civics will send 	iValueGroup = false
+//that is so there wont be an infinite loop cycle
+	int groupValue = 0;
+	if (iValueGroup)
+	{
+		int tmpGroupValue = AI_civicValueGroup(eCivic);
+		if (tmpGroupValue == -99999999)
+		{
+			// this is a child civic that cannot be chosen cause its parent is not chosen.
+			// child civics are chosen automatically by the force civic function
+			return 1; 
+		}
+		groupValue += tmpGroupValue;
+	}
+	
+	CvWString ccD = GC.getInfo(eCivic).getDescription();//test
+//	if (ccD == L"Tyranny")
+//		t = 3;
+	int t = 0;
+	if (ccD == L"Provincial")
+		t = 1;
+/* doto Civics parent - end ) */
 
 	CvCivicInfo const& kCivic = GC.getInfo(eCivic);
+//	CvWString ecD = kCivic.getDescription();//test
 	CvTeamAI const& kTeam = GET_TEAM(getTeam()); // K-Mod
 	CvGameAI const& kGame = GC.AI_getGame(); // K-Mod
 	int const iCities = getNumCities();
@@ -18192,9 +18229,9 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 				iValue += iTempValue;
 			}
 //<!-- doto civic plus -->	start -> missing in the org code... doto112			
-		iValue += ((kCivic.getStateReligionCommerceModifier(eCommerce)) *
+		iValue += (((kCivic.getStateReligionCommerceModifier(eCommerce)) *
 						100 * getCommerceRate(eCommerce)) /
-						AI_averageCommerceMultiplier(eCommerce);	
+						AI_averageCommerceMultiplier(eCommerce)) * 2;	
 		}
 		FOR_EACH_ENUM2(Yield, eYield)
 		{
@@ -18206,20 +18243,23 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 				case YIELD_PRODUCTION: weight = yPro; break;
 				case YIELD_COMMERCE: weight = yCom; break;
 			}
-			iValue += (kCivic.getStateReligionYieldModifier(eYield) *
-							100 * weight) /
-						AI_averageYieldMultiplier(eYield);
+			iValue += ((kCivic.getStateReligionYieldModifier(eYield) *
+				AI_averageYieldMultiplier(eYield) *
+				weight) / (100 * 100)) * 2;
 		}
 //<!-- doto civic plus -->	end
 		// K-Mod end
 	}
 
+	int testyieldval = 0;
 	FOR_EACH_ENUM2(Yield, eYield)
 	{
 		int iTempValue = 0;
 		//iTempValue += ((kCivic.getYieldModifier(iI) * iCities) / 2);
 		// K-Mod (Still bogus, but I'd rather assume 25 yield/turn average than 50.)
 		iTempValue += kCivic.getYieldModifier(eYield) * iCities / 4;
+
+		testyieldval = kCivic.getYieldModifier(eYield) * iCities / 4;
 
 		if (pCapital != NULL)
 		{	// Bureaucracy
@@ -18274,9 +18314,15 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 			case YIELD_COMMERCE: weight = yCom; break;
 		}
 		//doto 112 - save some time
-		iTempValue += iS * iTotalReligonCount * (kCivic.getNonStateReligionYieldModifier(eYield) - 100) 
-			/ 5 * AI_averageYieldMultiplier(eYield) * weight /*AI_yieldWeight(eYield)*/
-					 / (100*100*100);
+
+		iTempValue +=(iS * iTotalReligonCount * 
+			(kCivic.getNonStateReligionYieldModifier(eYield)) 
+					* AI_averageYieldMultiplier(eYield) * weight 
+					 / (100*100*100)) * 2;
+//f1rpi suggested:
+
+		//int testval = (100 + kCivic.getNonStateReligionYieldModifier(eYield) *
+		//				weight)/ 100;
 //<!-- doto civic plus -->	end -> missing in the org code... doto112
 						
 /*************************************************************************************************/
@@ -18286,8 +18332,17 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 /*************************************************************************************************/
 		FOR_EACH_ENUM(Specialist)
 		{
-   			iTempValue += (kCivic.getSpecialistYieldChange(eLoopSpecialist, eYield) *
-         		getTotalPopulation()) / 5;
+			int getTotalSpc = 0;
+			FOR_EACH_CITYAI(pCity, *this)
+			{
+				getTotalSpc += pCity->getSpecialistCount(eLoopSpecialist) + pCity->getFreeSpecialistCount(eLoopSpecialist);
+			}
+			iTempValue += (kCivic.getSpecialistYieldChange(eLoopSpecialist, eYield) * getTotalSpc
+				* AI_averageYieldMultiplier(eYield) * weight * 5)/ (100 * 100);
+
+			//iTempValue += (kCivic.getSpecialistYieldChange(eLoopSpecialist, eYield) *
+			//	getTotalPopulation()) / 5;
+			 
 		}
 
 /*************************************************************************************************/
@@ -18374,9 +18429,9 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 			case COMMERCE_CULTURE: weight = cCult; break;
 			case COMMERCE_ESPIONAGE: weight = cEsp; break;
 		}
-		iTempValue += iS * iTotalReligonCount * 
-			(kCivic.getNonStateReligionCommerceModifier(eCommerce) - 100) / 5 * 
-			AI_averageCommerceMultiplier(eCommerce) * weight / (100*100*100);	
+		iTempValue += (iS * iTotalReligonCount * 
+			(kCivic.getNonStateReligionCommerceModifier(eCommerce)) / 5 * 
+			AI_averageCommerceMultiplier(eCommerce) * weight / (100*100*100)) * 5;	
 //<!-- doto civic plus -->	end -> missing in the org code... doto112		
 		
 /*************************************************************************************************/
@@ -18387,8 +18442,17 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 /*************************************************************************************************/
 		FOR_EACH_ENUM(Specialist)
 		{
-   			iTempValue += ((kCivic.getSpecialistCommerceChange(eLoopSpecialist, eCommerce) 
-         		 * getTotalPopulation()) / 15);
+			int getTotalSpc = 0;
+			FOR_EACH_CITYAI(pCity, *this)
+			{
+				getTotalSpc += pCity->getSpecialistCount(eLoopSpecialist) + pCity->getFreeSpecialistCount(eLoopSpecialist);
+			}
+			
+			iTempValue += (kCivic.getSpecialistCommerceChange(eLoopSpecialist, eCommerce) * getTotalSpc
+				* AI_averageCommerceMultiplier(eCommerce)  * weight * 5)/ (100 * 100);
+		
+			//iTempValue += ((kCivic.getSpecialistCommerceChange(eLoopSpecialist, eCommerce) *
+			//	* getTotalPopulation()) / 15);
 		}
 
 /*************************************************************************************************/
@@ -18450,11 +18514,16 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 						case COMMERCE_CULTURE: weight = cCult; break;
 						case COMMERCE_ESPIONAGE:weight = cEsp;break;
 					}
-					iTempValueC += ((kCivic.getBuildingCommerceChanges(eBuilding, eCommerce)) *
-								100 * getCommerceRate(eCommerce)) /
-								AI_averageCommerceMultiplier(eCommerce);
+
+					iTempValueC += (kCivic.getBuildingCommerceChanges(eBuilding, eCommerce)
+						* AI_averageCommerceMultiplier(eCommerce)
+						 * weight * 10) / (100 * 100);
+					
+					//	((kCivic.getBuildingCommerceChanges(eBuilding, eCommerce)) *
+					////			100 * getCommerceRate(eCommerce)) /
+					//			AI_averageCommerceMultiplier(eCommerce);
 					//doto 112 save some time
-					commerceWeight += weight /*AI_commerceWeight(eCommerce)*/;
+					//commerceWeight += weight /*AI_commerceWeight(eCommerce)*/;
 				}
 			}
 			if (bYc)
@@ -18469,11 +18538,12 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 						case YIELD_PRODUCTION: weight = yPro; break;
 						case YIELD_COMMERCE: weight = yCom; break;
 					}
-
 					iTempValueY += (kCivic.getBuildingYieldChanges(eBuilding, eYield) *
-									weight * AI_averageYieldMultiplier(eYield)) / 100;
+									AI_averageYieldMultiplier(eYield) *
+									 weight * 10) / (100 * 100);
+									
 					//doto 112 save time the getAIWeightPercent	is an alternative		
-					yieldWeight += weight /*GC.getInfo(eYield).getAIWeightPercent()*/;
+					//yieldWeight += weight /*GC.getInfo(eYield).getAIWeightPercent()*/;
 							//AI_yieldWeight(eYield);			
 				}
 			}
@@ -18503,12 +18573,12 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 				}
 				if (iTempValueC != 0)
 				{
-					iValue += (10 * iExpectedBuildings * iS *
+					iValue += (10 * iExpectedBuildings *
 						(commerceWeight + iTempValueC))/100;
 				}
 				if (iTempValueY != 0)
 				{
-					iValue += (10 * iExpectedBuildings * iS *
+					iValue += (10 * iExpectedBuildings *
 						(yieldWeight + iTempValueY))/100;
 				}
 			}
@@ -18664,9 +18734,17 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 			/*	advc.131> The +20 might encourage Monarchy too much (AI_techValue).
 				Also, early fav civics shouldn't need that much encouragement as
 				they have few alternatives. */
-			iValue *= 135;
-			iValue /= 100; // </advc.131>
-			iValue += 6 * iCities;
+			//iValue *= 135;
+			//iValue /= 100; // </advc.131>
+			//iValue += 6 * iCities;
+
+		//doto 112 total reduction of fav civics. i hope!
+			int tmpValue = iValue;
+			tmpValue *= 5;
+			tmpValue /= 6;
+			tmpValue = iValue - tmpValue;
+			tmpValue /= 2;
+			iValue = tmpValue + iCities;
 		}
 	}
 //dune wars - hated civs
@@ -18675,20 +18753,29 @@ int CvPlayerAI::AI_civicValue_original(CivicTypes eCivic) const
 		if (iValue > 0)
 		{
 			
-			iValue *= 2;
-			iValue /= 3;
+			//iValue *= 2;
+			//iValue /= 3;
 			//new values - suggested by f1rpo -0.96- keldath 
 			//doto 112 - decided to give hugher rate for hated civic rate
 			// instead of 50% vakue reduction, make it 66%
-			//iValue *= 1;
-			//iValue /= 2;
+			iValue *= 1;
+			iValue /= 2;
 		}
 	}
 //dune wars - hated civs
 	/* if (AI_atVictoryStage(AI_VICTORY_CULTURE2) && kCivic.isNoNonStateReligionSpread())
 		iValue /= 10;*/ // what the lol...
-
-	return iValue;
+//<!-- doto civic plus -->	start ->add the child civc value if exists (if not its 0)	
+	//FAssert((iValue + groupValue) <= 1000);
+	FAssert((iValue) <= 1000);
+//	if ((iValue + groupValue) > 1000)
+//		t = 5;
+	CvWString ccDd = GC.getInfo(eCivic).getDescription();//test
+	int tot = testyieldval;
+//	if (ccDd == L"Provincial")
+//		FAssert(false);
+	return iValue + groupValue;
+//<!-- doto civic plus -->	end 
 }
 
 /*	advc: K-Mod code cut from AI_civicValue (for advc.131).
@@ -21023,12 +21110,6 @@ void CvPlayerAI::AI_doCivics()
 	} while (bWillSwitch && bWantSwitch);
 	// Recheck, just in case we can switch another good civic without adding more anarchy.
 
-	/* doto Civics parent - Start */	
-	// get the civics with forced children
-	//child civics come out as 0 - think if this is wise for the below tech thing.
-	aeBestCivic = forceChildCivics(aeBestCivic);
-	/* doto Civics parent - end */
-	
 	/*	finally, if our current research would give us a new civic,
 		consider waiting for that. */
 	if (iAnarchyLength > 0 && bWillSwitch)
@@ -21076,7 +21157,11 @@ void CvPlayerAI::AI_doCivics()
 			}
 		} // </advc.131>
 	}
-		
+	/* doto Civics parent - Start */
+	// get the civics with forced children
+	//child civics come out as 0 - think if this is wise for the below tech thing.
+	aeBestCivic = forceChildCivics(aeBestCivic);
+	/* doto Civics parent - end */
 	if (canRevolution(aeBestCivic))
 	{
 		revolution(aeBestCivic);
