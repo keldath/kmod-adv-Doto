@@ -18081,6 +18081,16 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 		int iTempValue = getTotalPopulation() * kCivic.getMilitaryProductionModifier() +
 				iBestReligionPopulation * kCivic.getStateReligionUnitProductionModifier();
 
+//<!-- doto civic plus -->	start -> doto112	
+// decided to boost the MilitaryProduction in similar to the FreeExperience below
+// if the ai is at war it should value production of units more i think
+		if (bWarPlan && iTempValue > 0)
+		{
+			iTempValue =  2 * std::max(iWarmongerFactor, 100);
+			iTempValue /= 130;
+		}
+//<!-- doto civic plus -->	start ->  doto112	
+
 		int iExperience = getTotalPopulation() * kCivic.getFreeExperience() +
 				iBestReligionPopulation * kCivic.getStateReligionFreeExperience();
 		if (iExperience)
@@ -18257,9 +18267,12 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 		int iTempValue = 0;
 		//iTempValue += ((kCivic.getYieldModifier(iI) * iCities) / 2);
 		// K-Mod (Still bogus, but I'd rather assume 25 yield/turn average than 50.)
-		iTempValue += kCivic.getYieldModifier(eYield) * iCities / 4;
-
-		testyieldval = kCivic.getYieldModifier(eYield) * iCities / 4;
+//<!-- doto civic plus start-->
+		//org
+		//iTempValue += kCivic.getYieldModifier(eYield) * iCities / 4;
+	//raised to 6 from 4 to reduce ai eval on this. i find it to strong
+		iTempValue += kCivic.getYieldModifier(eYield) * iCities / 6;
+//<!-- doto civic plus end-->
 
 		if (pCapital != NULL)
 		{	// Bureaucracy
@@ -18292,9 +18305,16 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 				iTempValue += iTemp;
 			} // K-Mod end
 		}
-		iTempValue += (kCivic.getTradeYieldModifier(eYield) * iCities) / 11;
+//<!-- doto civic plus start-->
+		//org
+		//iTempValue += (kCivic.getTradeYieldModifier(eYield) * iCities) / 11;
+//keldath reduced to 8 - decided to give it more meaning
+//kmod didnt touch this it seems and the getYieldModifier 
+// seems to be calculated in a similar way, i though ill change it also
+		iTempValue += (kCivic.getTradeYieldModifier(eYield) * iCities) / 8;
 		/*  (K-Mod note: that denominator is bogus, but since no civics
 			currently have this modifier anyway, I'm just going to leave it.) */
+//<!-- doto civic plus end-->
 
 		FOR_EACH_ENUM2(Improvement, eImprov)
 		{
@@ -18512,7 +18532,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 						case COMMERCE_RESEARCH: weight = cReserch; break;
 						case COMMERCE_GOLD: weight = cGold; break;
 						case COMMERCE_CULTURE: weight = cCult; break;
-						case COMMERCE_ESPIONAGE:weight = cEsp;break;
+						case COMMERCE_ESPIONAGE: weight = cEsp;break;
 					}
 
 					iTempValueC += (kCivic.getBuildingCommerceChanges(eBuilding, eCommerce)
@@ -18538,7 +18558,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 						case YIELD_PRODUCTION: weight = yPro; break;
 						case YIELD_COMMERCE: weight = yCom; break;
 					}
-					iTempValueY += (kCivic.getBuildingYieldChanges(eBuilding, eYield) *
+					iTempValueY += (kCivic.getBuildingYieldChanges(eBuilding, eYield) * 
 									AI_averageYieldMultiplier(eYield) *
 									 weight * 10) / (100 * 100);
 									
@@ -18663,7 +18683,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 			//be carefull , there is a 	continue; below
 			if (kCivic.getFreeSpecialistCount(eLoopSpecialist) > 0)
 			{
-				iValue += kCivic.getFreeSpecialistCount(eLoopSpecialist) * iCities;
+				iValue += kCivic.getFreeSpecialistCount(eLoopSpecialist) * iCities + getTotalPopulation();
 			}
 			//<!-- doto civic plus -->	end -> missing in the org code... doto112	
 			
@@ -18744,7 +18764,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 			tmpValue /= 6;
 			tmpValue = iValue - tmpValue;
 			tmpValue /= 2;
-			iValue = tmpValue + iCities;
+			iValue = iValue + tmpValue + iCities;
 		}
 	}
 //dune wars - hated civs
@@ -18771,9 +18791,23 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 //	if ((iValue + groupValue) > 1000)
 //		t = 5;
 	CvWString ccDd = GC.getInfo(eCivic).getDescription();//test
-	int tot = testyieldval;
-//	if (ccDd == L"Provincial")
-//		FAssert(false);
+	//FAssert(false);
+	if (ccDd == L"Despotism")
+		t = 1;
+	if (ccDd == L"Hereditary Rule")
+		t = 1;
+	if (ccDd == L"Representation")
+		t = 1;
+	if (ccDd == L"Autocracy")
+		t = 1;
+	if (ccDd == L"Provincial")
+		t = 1;
+	if (ccDd == L"Totalitarianism")
+		t = 1;
+	if (ccDd == L"Electoral")
+		t = 1;
+	if (ccDd == L"Oligarchy")
+		t = 1;
 	return iValue + groupValue;
 //<!-- doto civic plus -->	end 
 }

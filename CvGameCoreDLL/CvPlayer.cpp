@@ -7438,17 +7438,17 @@ bool CvPlayer::canDoChildCivic(CivicTypes eCivic) const
 			CivicTypes eSelectedParentCivic = getCivics(kParentCivic.getCivicOptionType());
 			if (eSelectedParentCivic == (CivicTypes)iI)
 			{
-			for (int J = 0; J < eIsParent; J++)
-			{
-				//since the parent is selected -> check if the current civic that got sent
-				//is a child of the selected parent.
-				if (kParentCivic.getParentCivicsChildren(J) == eCivic)
-						return true; 
-					}
-					}
-					
+				for (int J = 0; J < eIsParent; J++)
+				{
+					//since the parent is selected -> check if the current civic that got sent
+					//is a child of the selected parent.
+					if (kParentCivic.getParentCivicsChildren(J) == eCivic)
+						return true;
 				}
 			}
+		
+		}
+	}
 	return false;
 }
 /* doto Civics  parent - end*/
@@ -15200,56 +15200,59 @@ int CvPlayer::doCaptureGold(CvCity const& kOldCity) // "old": city still fully i
 
 void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 {
-	changeGreatPeopleRateModifier(GC.getInfo(eCivic).getGreatPeopleRateModifier() * iChange);
-	changeGreatGeneralRateModifier(GC.getInfo(eCivic).getGreatGeneralRateModifier() * iChange);
-	changeDomesticGreatGeneralRateModifier(GC.getInfo(eCivic).getDomesticGreatGeneralRateModifier() * iChange);
-	changeStateReligionGreatPeopleRateModifier(GC.getInfo(eCivic).getStateReligionGreatPeopleRateModifier() * iChange);
-	changeDistanceMaintenanceModifier(GC.getInfo(eCivic).getDistanceMaintenanceModifier() * iChange);
+	//doto 112 -> changed to kcivic for faster code
+	CvCivicInfo const& kCivic = GC.getInfo(eCivic);
+
+	changeGreatPeopleRateModifier(kCivic.getGreatPeopleRateModifier() * iChange);
+	changeGreatGeneralRateModifier(kCivic.getGreatGeneralRateModifier() * iChange);
+	changeDomesticGreatGeneralRateModifier(kCivic.getDomesticGreatGeneralRateModifier() * iChange);
+	changeStateReligionGreatPeopleRateModifier(kCivic.getStateReligionGreatPeopleRateModifier() * iChange);
+	changeDistanceMaintenanceModifier(kCivic.getDistanceMaintenanceModifier() * iChange);
 	// advc.912g:
-	changeColonyMaintenanceModifier(GC.getInfo(eCivic).getColonyMaintenanceModifier() * iChange);
-	changeNumCitiesMaintenanceModifier(GC.getInfo(eCivic).getNumCitiesMaintenanceModifier() * iChange);
-	changeCorporationMaintenanceModifier(GC.getInfo(eCivic).getCorporationMaintenanceModifier() * iChange);
-	changeExtraHealth(GC.getInfo(eCivic).getExtraHealth() * iChange);
-	changeExtraHappiness(GC.getInfo(eCivic).getExtraHappiness() * iChange); // K-Mod
-	changeFreeExperience(GC.getInfo(eCivic).getFreeExperience() * iChange);
-	changeWorkerSpeedModifier(GC.getInfo(eCivic).getWorkerSpeedModifier() * iChange);
-	changeImprovementUpgradeRateModifier(GC.getInfo(eCivic).getImprovementUpgradeRateModifier() * iChange);
-	changeMilitaryProductionModifier(GC.getInfo(eCivic).getMilitaryProductionModifier() * iChange);
-	changeBaseFreeUnits(GC.getInfo(eCivic).getBaseFreeUnits() * iChange);
-	changeBaseFreeMilitaryUnits(GC.getInfo(eCivic).getBaseFreeMilitaryUnits() * iChange);
-	changeFreeUnitsPopulationPercent(GC.getInfo(eCivic).getFreeUnitsPopulationPercent() * iChange);
-	changeFreeMilitaryUnitsPopulationPercent(GC.getInfo(eCivic).getFreeMilitaryUnitsPopulationPercent() * iChange);
-	changeGoldPerUnit(GC.getInfo(eCivic).getGoldPerUnit() * iChange);
-	changeGoldPerMilitaryUnit(GC.getInfo(eCivic).getGoldPerMilitaryUnit() * iChange);
-	changeHappyPerMilitaryUnit(GC.getInfo(eCivic).getHappyPerMilitaryUnit() * iChange);
+	changeColonyMaintenanceModifier(kCivic.getColonyMaintenanceModifier() * iChange);
+	changeNumCitiesMaintenanceModifier(kCivic.getNumCitiesMaintenanceModifier() * iChange);
+	changeCorporationMaintenanceModifier(kCivic.getCorporationMaintenanceModifier() * iChange);
+	changeExtraHealth(kCivic.getExtraHealth() * iChange);
+	changeExtraHappiness(kCivic.getExtraHappiness() * iChange); // K-Mod
+	changeFreeExperience(kCivic.getFreeExperience() * iChange);
+	changeWorkerSpeedModifier(kCivic.getWorkerSpeedModifier() * iChange);
+	changeImprovementUpgradeRateModifier(kCivic.getImprovementUpgradeRateModifier() * iChange);
+	changeMilitaryProductionModifier(kCivic.getMilitaryProductionModifier() * iChange);
+	changeBaseFreeUnits(kCivic.getBaseFreeUnits() * iChange);
+	changeBaseFreeMilitaryUnits(kCivic.getBaseFreeMilitaryUnits() * iChange);
+	changeFreeUnitsPopulationPercent(kCivic.getFreeUnitsPopulationPercent() * iChange);
+	changeFreeMilitaryUnitsPopulationPercent(kCivic.getFreeMilitaryUnitsPopulationPercent() * iChange);
+	changeGoldPerUnit(kCivic.getGoldPerUnit() * iChange);
+	changeGoldPerMilitaryUnit(kCivic.getGoldPerMilitaryUnit() * iChange);
+	changeHappyPerMilitaryUnit(kCivic.getHappyPerMilitaryUnit() * iChange);
 	// <advc.912c>
-	changeLuxuryModifier(GC.getInfo(eCivic).getLuxuryModifier() * iChange);
-	if(GC.getInfo(eCivic).getLuxuryModifier() != 0)
+	changeLuxuryModifier(kCivic.getLuxuryModifier() * iChange);
+	if(kCivic.getLuxuryModifier() != 0)
 		AI().AI_updateBonusValue(); // </advc.912c>
-	changeMilitaryFoodProductionCount((GC.getInfo(eCivic).isMilitaryFoodProduction()) ? iChange : 0);
+	changeMilitaryFoodProductionCount((kCivic.isMilitaryFoodProduction()) ? iChange : 0);
 	changeMaxConscript(GC.getGame().getMaxConscript(eCivic) * iChange);
 	//changeNoUnhealthyPopulationCount((GC.getInfo(eCivic).isNoUnhealthyPopulation()) ? iChange : 0);
-	changeUnhealthyPopulationModifier(GC.getInfo(eCivic).getUnhealthyPopulationModifier() * iChange); // K-Mod
-	changeBuildingOnlyHealthyCount((GC.getInfo(eCivic).isBuildingOnlyHealthy()) ? iChange : 0);
-	changeLargestCityHappiness(GC.getInfo(eCivic).getLargestCityHappiness() * iChange);
-	changeWarWearinessModifier(GC.getInfo(eCivic).getWarWearinessModifier() * iChange);
-	changeFreeSpecialist(GC.getInfo(eCivic).getFreeSpecialist() * iChange);
-	changeTradeRoutes(GC.getInfo(eCivic).getTradeRoutes() * iChange);
-	changeNoForeignTradeCount(GC.getInfo(eCivic).isNoForeignTrade() * iChange);
-	changeNoCorporationsCount(GC.getInfo(eCivic).isNoCorporations() * iChange);
-	changeNoForeignCorporationsCount(GC.getInfo(eCivic).isNoForeignCorporations() * iChange);
-	changeStateReligionCount((GC.getInfo(eCivic).isStateReligion()) ? iChange : 0);
-	changeNoNonStateReligionSpreadCount((GC.getInfo(eCivic).isNoNonStateReligionSpread()) ? iChange : 0);
-	changeStateReligionHappiness(GC.getInfo(eCivic).getStateReligionHappiness() * iChange);
-	changeNonStateReligionHappiness(GC.getInfo(eCivic).getNonStateReligionHappiness() * iChange);
+	changeUnhealthyPopulationModifier(kCivic.getUnhealthyPopulationModifier() * iChange); // K-Mod
+	changeBuildingOnlyHealthyCount((kCivic.isBuildingOnlyHealthy()) ? iChange : 0);
+	changeLargestCityHappiness(kCivic.getLargestCityHappiness() * iChange);
+	changeWarWearinessModifier(kCivic.getWarWearinessModifier() * iChange);
+	changeFreeSpecialist(kCivic.getFreeSpecialist() * iChange);
+	changeTradeRoutes(kCivic.getTradeRoutes() * iChange);
+	changeNoForeignTradeCount(kCivic.isNoForeignTrade() * iChange);
+	changeNoCorporationsCount(kCivic.isNoCorporations() * iChange);
+	changeNoForeignCorporationsCount(kCivic.isNoForeignCorporations() * iChange);
+	changeStateReligionCount((kCivic.isStateReligion()) ? iChange : 0);
+	changeNoNonStateReligionSpreadCount((kCivic.isNoNonStateReligionSpread()) ? iChange : 0);
+	changeStateReligionHappiness(kCivic.getStateReligionHappiness() * iChange);
+	changeNonStateReligionHappiness(kCivic.getNonStateReligionHappiness() * iChange);
 	// < Civic Infos Plus Start >
-	changeStateReligionExtraHealth(GC.getCivicInfo(eCivic).getStateReligionExtraHealth() * iChange);
-	changeNonStateReligionExtraHealth(GC.getCivicInfo(eCivic).getNonStateReligionExtraHealth() * iChange);
+	changeStateReligionExtraHealth(kCivic.getStateReligionExtraHealth() * iChange);
+	changeNonStateReligionExtraHealth(kCivic.getNonStateReligionExtraHealth() * iChange);
 	// < Civic Infos Plus End   >
-	changeStateReligionUnitProductionModifier(GC.getInfo(eCivic).getStateReligionUnitProductionModifier() * iChange);
-	changeStateReligionBuildingProductionModifier(GC.getInfo(eCivic).getStateReligionBuildingProductionModifier() * iChange);
-	changeStateReligionFreeExperience(GC.getInfo(eCivic).getStateReligionFreeExperience() * iChange);
-	changeExpInBorderModifier(GC.getInfo(eCivic).getExpInBorderModifier() * iChange);
+	changeStateReligionUnitProductionModifier(kCivic.getStateReligionUnitProductionModifier() * iChange);
+	changeStateReligionBuildingProductionModifier(kCivic.getStateReligionBuildingProductionModifier() * iChange);
+	changeStateReligionFreeExperience(kCivic.getStateReligionFreeExperience() * iChange);
+	changeExpInBorderModifier(kCivic.getExpInBorderModifier() * iChange);
 //doto city states - specialists instead of pop
 // dont allow any bonuses that are not from the specialists own values.	
 	//SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
@@ -15265,8 +15268,8 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	FOR_EACH_ENUM2(Yield, y)
 	{
 //DOTO- // < Civic Infos Plus Start >
-		changeStateReligionYieldRateModifier(y, (GC.getInfo(eCivic).getStateReligionYieldModifier(y) * iChange));
-		changeNonStateReligionYieldRateModifier(y, (GC.getInfo(eCivic).getNonStateReligionYieldModifier(y) * iChange));
+		changeStateReligionYieldRateModifier(y, (kCivic.getStateReligionYieldModifier(y) * iChange));
+		changeNonStateReligionYieldRateModifier(y, (kCivic.getNonStateReligionYieldModifier(y) * iChange));
 		FOR_EACH_ENUM(Specialist)
 		{
 // doto city states
@@ -15277,50 +15280,58 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 				!GC.getInfo(eLoopSpecialist).isCityStater()
 				)
 			{
-   				changeSpecialistExtraYield(eLoopSpecialist, y, (GC.getInfo(eCivic).getSpecialistExtraYield(y) * iChange));		
+   				changeSpecialistExtraYield(eLoopSpecialist, y, (kCivic.getSpecialistExtraYield(y) * iChange));
 			}
 	//doto specialists instead of pop
 		}
 //DOTO-	// < Civic Infos Plus End   >
-		changeYieldRateModifier(y, GC.getInfo(eCivic).getYieldModifier(y) * iChange);
-		changeCapitalYieldRateModifier(y, GC.getInfo(eCivic).getCapitalYieldModifier(y) * iChange);
-		changeTradeYieldModifier(y, GC.getInfo(eCivic).getTradeYieldModifier(y) * iChange);
+		changeYieldRateModifier(y, kCivic.getYieldModifier(y) * iChange);
+		changeCapitalYieldRateModifier(y, kCivic.getCapitalYieldModifier(y) * iChange);
+		changeTradeYieldModifier(y, kCivic.getTradeYieldModifier(y) * iChange);
 	}
 	FOR_EACH_ENUM2(Commerce, c)
 	{
 //DOTO-	// < Civic Infos Plus Start >
-		changeStateReligionCommerceRateModifier(c, (GC.getInfo(eCivic).getStateReligionCommerceModifier(c) * iChange));
-		changeNonStateReligionCommerceRateModifier(c, (GC.getInfo(eCivic).getNonStateReligionCommerceModifier(c) * iChange));
+		changeStateReligionCommerceRateModifier(c, (kCivic.getStateReligionCommerceModifier(c) * iChange));
+		changeNonStateReligionCommerceRateModifier(c, (kCivic.getNonStateReligionCommerceModifier(c) * iChange));
 		// < Civic Infos Plus End   >
-		changeCommerceRateModifier(c, GC.getInfo(eCivic).getCommerceModifier(c) * iChange);
-		changeCapitalCommerceRateModifier(c, GC.getInfo(eCivic).getCapitalCommerceModifier(c) * iChange);
-		changeSpecialistExtraCommerce(c, GC.getInfo(eCivic).getSpecialistExtraCommerce(c) * iChange);
+		changeCommerceRateModifier(c, kCivic.getCommerceModifier(c) * iChange);
+		changeCapitalCommerceRateModifier(c, kCivic.getCapitalCommerceModifier(c) * iChange);
+		changeSpecialistExtraCommerce(c, kCivic.getSpecialistExtraCommerce(c) * iChange);
 	}
 	
 	CvCivilization const& kCiv = getCivilization(); // advc.003w
 	for (int i = 0; i < kCiv.getNumBuildings(); i++)
 	{
 		// < Civic Infos Plus Start >
-	    for (int iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
+		//doto 112 = consider adding this like in the advc code below : BuildingTypes eOurBuilding = kCiv.buildingAt(i);
+		if (kCivic.isAnyBuildingYieldChanges())
 		{
-			changeBuildingYieldChange(((BuildingTypes)i), ((YieldTypes)iJ), (GC.getInfo(eCivic).getBuildingYieldChanges(i, iJ) * iChange));
+			for (int iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
+			{
+				changeBuildingYieldChange(((BuildingTypes)i), ((YieldTypes)iJ), 
+					(kCivic.getBuildingYieldChanges(i, iJ) * iChange));
+			}
 		}
-
-		for (int iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
+		if (kCivic.isAnyBuildingCommerceChanges())
 		{
-			changeBuildingCommerceChange(((BuildingTypes)i), ((CommerceTypes)iJ), (GC.getInfo(eCivic).getBuildingCommerceChanges(i, iJ) * iChange));
+			for (int iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
+			{
+				changeBuildingCommerceChange(((BuildingTypes)i), ((CommerceTypes)iJ), 
+					(kCivic.getBuildingCommerceChanges(i, iJ) * iChange));
+			}
 		}
 		// < Civic Infos Plus End   >
 		// <advc.003t>
 		//doto 112 - keldath - moved code here, the buildings didnt work prior...
-		if (GC.getInfo(eCivic).isAnyBuildingHappinessChanges() ||
-			GC.getInfo(eCivic).isAnyBuildingHealthChanges()) // </advc.003t>
+		if (kCivic.isAnyBuildingHappinessChanges() ||
+			kCivic.isAnyBuildingHealthChanges()) // </advc.003t>
 		{
 			BuildingTypes eOurBuilding = kCiv.buildingAt(i);
 			BuildingClassTypes eLoopClass = kCiv.buildingClassAt(i);
-			changeExtraBuildingHappiness(eOurBuilding, GC.getInfo(eCivic).
+			changeExtraBuildingHappiness(eOurBuilding, kCivic.
 					getBuildingHappinessChanges(eLoopClass) * iChange);
-			changeExtraBuildingHealth(eOurBuilding, GC.getInfo(eCivic).
+			changeExtraBuildingHealth(eOurBuilding, kCivic.
 					getBuildingHealthChanges(eLoopClass) * iChange);
 		}
 	}
@@ -15328,41 +15339,81 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	FOR_EACH_ENUM(Feature)
 	{
 		changeFeatureHappiness(eLoopFeature,
-				GC.getInfo(eCivic).getFeatureHappinessChanges(eLoopFeature) * iChange);
+			kCivic.getFeatureHappinessChanges(eLoopFeature) * iChange);
 	}
 	FOR_EACH_ENUM(Hurry)
 	{
 		changeHurryCount(eLoopHurry,
-				GC.getInfo(eCivic).isHurry(eLoopHurry) ?
+			kCivic.isHurry(eLoopHurry) ?
 				iChange : 0);
 	}
 	FOR_EACH_ENUM(SpecialBuilding)
 	{
 		changeSpecialBuildingNotRequiredCount(eLoopSpecialBuilding,
-				GC.getInfo(eCivic).isSpecialBuildingNotRequired(eLoopSpecialBuilding) ?
+			kCivic.isSpecialBuildingNotRequired(eLoopSpecialBuilding) ?
 				iChange : 0);
 	}
 	FOR_EACH_ENUM(Specialist)
 	{
 		changeSpecialistValidCount(eLoopSpecialist,
-				GC.getInfo(eCivic).isSpecialistValid(eLoopSpecialist) ?
-				iChange : 0);
+			kCivic.isSpecialistValid(eLoopSpecialist) ?
+			iChange : 0);
+
+//doto 112 -> code move from below to here... it was 2 full loops for no reason!
+/**	CMEDIT: Civic Specialist Yield & Commerce Changes	**/
+
+		//added this counter to get the index of the specialist.
+		// this is a stupid way i did inorder to 
+		//avoid changing the data type of the (kCivic.getSpecialistYieldChange( and getSpecialistCommerceChange
+		//to eSpecialist , cause they are set to int.
+		//later on should update to proper data type like in advc and i can get the counter out...
+		int iI = 0;
+		//doto city states specialists instead of pop	
+		//deny other bonuses from the civilians
+		if (!isCivilian &&
+			//eFarmer != (SpecialistTypes)iI && eMiner != (SpecialistTypes)iI && eLabor != (SpecialistTypes)iI
+			!GC.getInfo(eLoopSpecialist).isCityStater()
+			)
+		{
+			for (int iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
+			{
+				changeSpecialistExtraYield((eLoopSpecialist), ((YieldTypes)iJ),
+					(kCivic.getSpecialistYieldChange(iI, iJ) * iChange));
+			}
+		}
+		//doto specialists instead of pop
+		if (!isCivilian &&
+			//	eFarmer != (SpecialistTypes)iI && eMiner != (SpecialistTypes)iI && eLabor != (SpecialistTypes)iI
+			!GC.getInfo(eLoopSpecialist).isCityStater()
+			)
+		{
+			for (int iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
+			{
+				changeSpecialistCivicExtraCommerce((eLoopSpecialist), ((CommerceTypes)iJ),
+					(kCivic.getSpecialistCommerceChange(iI, iJ) * iChange));
+			}
+		}
+
+		iI += 1; //see above
+/**	CMEDIT: End**/
+
 	}
 	FOR_EACH_ENUM(Improvement)
 	{
 		FOR_EACH_ENUM(Yield)
 		{
 			changeImprovementYieldChange(eLoopImprovement, eLoopYield,
-					GC.getInfo(eCivic).getImprovementYieldChanges(
+				kCivic.getImprovementYieldChanges(
 					eLoopImprovement, eLoopYield) * iChange);
 		}
 	}
+//moved up
 	/*************************************************************************************************/
 	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
 	/**																								**/
 	/**																								**/
 	/*************************************************************************************************/	
-	for (int iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
+/*	for (int iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
 	{
 //doto city states specialists instead of pop	
 //deny other bonuses from the civilians
@@ -15373,7 +15424,8 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 		{	
 			for (int iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
 			{
-				changeSpecialistExtraYield(((SpecialistTypes)iI), ((YieldTypes)iJ), (GC.getCivicInfo(eCivic).getSpecialistYieldChange(iI, iJ) * iChange));
+				changeSpecialistExtraYield(((SpecialistTypes)iI), ((YieldTypes)iJ), 
+					(kCivic.getSpecialistYieldChange(iI, iJ) * iChange));
 			}
 		}
 	}
@@ -15388,10 +15440,12 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 		{	
 			for (int iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
 			{
-				changeSpecialistCivicExtraCommerce(((SpecialistTypes)iI), ((CommerceTypes)iJ), (GC.getCivicInfo(eCivic).getSpecialistCommerceChange(iI, iJ) * iChange));
+				changeSpecialistCivicExtraCommerce(((SpecialistTypes)iI), ((CommerceTypes)iJ), 
+					(kCivic.getSpecialistCommerceChange(iI, iJ) * iChange));
 			}
 		}
 	}
+*/
 	/*************************************************************************************************/
 	/**	CMEDIT: End																					**/
 	/*************************************************************************************************/
