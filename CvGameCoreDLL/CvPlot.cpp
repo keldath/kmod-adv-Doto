@@ -2441,21 +2441,22 @@ bool CvPlot::canHaveImprovement(ImprovementTypes eImprovement, TeamTypes eTeam, 
 
 	if (GC.getInfo(eImprovement).isRequiresFeature() && !isFeature())
 		return false;
+
+	// davidlallen: mountain limitations start
+	if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS)
+		&& GC.getInfo(eImprovement).isPeakMakesInvalid() && isPeak())
+	{
+		return false;
+	}
+
 	{
 		bool bValid = false;
 		if (GC.getInfo(eImprovement).isHillsMakesValid() && isHills())
 			bValid = true;
-//===NM=====Mountains Mod===0=====
-		else if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
-		{
-			if (GC.getInfo(eImprovement).isPeakMakesValid() && isPeak())
-				bValid = true;
-// davidlallen: mountain limitations start
-			if (GC.getInfo(eImprovement).isPeakMakesInvalid() && isPeak())
-			//	return false;
-				bValid = false;
-// davidlallen: mountain limitations end
-		}
+//===NM=====Mountains kel added fresh water Mod===0=====
+		else if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS)
+			&& GC.getInfo(eImprovement).isPeakMakesValid() && isPeak() && isFreshWater())
+			bValid = true;
 //===NM=====Mountains Mod===X=====
 		else if (GC.getInfo(eImprovement).isFreshWaterMakesValid() && isFreshWater())
 			bValid = true;
@@ -2471,6 +2472,8 @@ bool CvPlot::canHaveImprovement(ImprovementTypes eImprovement, TeamTypes eTeam, 
 		if (!bValid)
 			return false;
 	}
+
+	// davidlallen: mountain limitations end
 	if (GC.getInfo(eImprovement).isRequiresRiverSide())
 	{
 		bool bValid = false;

@@ -451,8 +451,11 @@ public:
 	{
 		return (getObsoleteBuildingCount(eIndex) > 0);
 	}
-	void changeObsoleteBuildingCount(BuildingTypes eIndex, int iChange);
-
+//DOTO -tholish-Keldath inactive buildings START
+//Tholish UnbuildableBuildingDeletion START
+	void changeObsoleteBuildingCount(BuildingTypes eIndex, int iChange, bool ignoreAdd = false);
+//DOTO -tholish-Keldath inactive buildings START
+//Tholish UnbuildableBuildingDeletion START
 	int getResearchProgress(TechTypes eIndex) const;																						// Exposed to Python
 	void setResearchProgress(TechTypes eIndex, int iNewValue, PlayerTypes ePlayer);									// Exposed to Python
 	void changeResearchProgress(TechTypes eIndex, int iChange, PlayerTypes ePlayer);								// Exposed to Python

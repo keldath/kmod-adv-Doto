@@ -4227,14 +4227,23 @@ void CvTeam::changeBuildingClassCount(BuildingClassTypes eIndex, int iChange)
 }
 
 
-void CvTeam::changeObsoleteBuildingCount(BuildingTypes eIndex, int iChange)
+void CvTeam::changeObsoleteBuildingCount(BuildingTypes eIndex, int iChange, bool ignoreAdd)
 {
 	if(iChange == 0)
 		return;
 
 	bool bOldObsoleteBuilding = isObsoleteBuilding(eIndex);
 
-	m_aiObsoleteBuildingCount.add(eIndex, iChange);
+//DOTO -tholish-Keldath inactive buildings START
+//Tholish UnbuildableBuildingDeletion START	
+//if the change comes from the shouldUnProcessBuilding in cvcity
+//i wanna make sure i dont raise the count on an existing one.
+	if (ignoreAdd)
+		m_aiObsoleteBuildingCount.set(eIndex, iChange);
+	else
+		m_aiObsoleteBuildingCount.add(eIndex, iChange); //org bts
+//DOTO -tholish-Keldath inactive buildings START
+//Tholish UnbuildableBuildingDeletion START
 	FAssert(getObsoleteBuildingCount(eIndex) >= 0);
 
 	if (bOldObsoleteBuilding == isObsoleteBuilding(eIndex))

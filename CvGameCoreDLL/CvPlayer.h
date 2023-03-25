@@ -314,9 +314,6 @@ public:
 
 	bool canTrain(UnitTypes eUnit, bool bContinue = false, bool bTestVisible = false,								// Exposed to Python
 			bool bIgnoreCost = false) const;
-	//DOTO -tholish-Keldath inactive buildings START
-	bool canKeep(BuildingTypes eBuilding) const;
-	//DOTO -tholish-Keldath inactive buildings END
 	bool canConstruct(BuildingTypes eBuilding, bool bContinue = false, bool bTestVisible = false,					// Exposed to Python
 			bool bIgnoreCost = false, /* K-Mod: */ bool bIgnoreTech = false) const;
 	bool canCreate(ProjectTypes eProject, bool bContinue = false, bool bTestVisible = false) const;					// Exposed to Python

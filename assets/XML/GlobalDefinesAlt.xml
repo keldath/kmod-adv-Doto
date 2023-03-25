@@ -572,7 +572,7 @@
 	</Define>
 	<Define>
 		<DefineName>CIV4_REMASTER_ART</DefineName>
-		<iDefineIntVal>1</iDefineIntVal>
+		<iDefineIntVal>0</iDefineIntVal>
 	<!-- civ4remaster art mod 
 	requires unzipping of the patch in the doto folder end
 	-->		

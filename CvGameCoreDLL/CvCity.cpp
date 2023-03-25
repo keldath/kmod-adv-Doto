@@ -3294,10 +3294,6 @@ void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolet
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
 	CvGame const& kGame = GC.getGame();
 	CvPlayer& kOwner = GET_PLAYER(getOwner());
-//Doto tholish-Keldath inactive buildings start
-//	if (!m_aiBuildingeActive.get(eBuilding))
-//		bObsolete = false;
-//Doto tholish-Keldath inactive buildings start
 	if (!GET_TEAM(getTeam()).isObsoleteBuilding(eBuilding) || bObsolete)
 	{
 		if (iChange > 0)
@@ -3376,7 +3372,7 @@ void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolet
 			changeYieldRateModifier(y, kBuilding.getYieldModifier(y) * iChange);
 			changePowerYieldRateModifier(y, kBuilding.getPowerYieldModifier(y) * iChange);
 			// < Civic Infos Plus Start >
-			changeBuildingYieldChange(kBuilding.getBuildingClassType(), y, kOwner.getBuildingYieldChange(eBuilding, y));
+			changeBuildingYieldChange(kBuilding.getBuildingClassType(), y, kOwner.getBuildingYieldChange(eBuilding, y) * iChange);
 			// < Civic Infos Plus End   >
 		}
 
@@ -3388,7 +3384,7 @@ void CvCity::processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolet
 					kBuilding.getCommerceHappiness(eLoopCommerce) * iChange);
 			// < Civic Infos Plus Start >
 			changeBuildingCommerceChange(kBuilding.getBuildingClassType(), eLoopCommerce, 
-					kOwner.getBuildingCommerceChange(eBuilding, eLoopCommerce));
+					kOwner.getBuildingCommerceChange(eBuilding, eLoopCommerce) * iChange);
 			// < Civic Infos Plus End   >
 		}
 		FOR_EACH_NON_DEFAULT_PAIR(kBuilding.
@@ -13138,7 +13134,13 @@ void CvCity::read(FDataStreamBase* pStream)
 		{
 			char const* aszShrineNames[] = { "BUILDING_JEWISH_SHRINE", "BUILDING_CHRISTIAN_SHRINE",
 					"BUILDING_ISLAMIC_SHRINE", "BUILDING_HINDU_SHRINE", "BUILDING_BUDDHIST_SHRINE",
-					"BUILDING_CONFUCIAN_SHRINE", "BUILDING_TAOIST_SHRINE" };
+					"BUILDING_CONFUCIAN_SHRINE", "BUILDING_TAOIST_SHRINE",
+//doto 112 religion additions
+				"BUILDING_SHINTO_SHRINE", "BUILDINGCLASS_ZOROASTRIAN_SHRINE", "BUILDINGCLASS_DRUIDISM_SHRINE",
+				"BUILDINGCLASS_HELLENIC_SHRINE","BUILDINGCLASS_AMON_RA_SHRINE", "BUILDINGCLASS_ODIN_SHRINE",
+
+			
+			};
 			for (int i = 0; i < ARRAYSIZE(aszShrineNames); i++)
 			{
 				BuildingTypes eShrine = (BuildingTypes)GC.getInfoTypeForString(aszShrineNames[i]);
@@ -15016,28 +15018,46 @@ void CvCity::emergencyConscript()
 //Tholish UnbuildableBuildingDeletion START
 bool CvCity::canKeep(BuildingTypes eBuilding) const
 {
+	//doto112
+	//i limited the conditions to religion, corporations, bonus and needed building class. thats it.
+	
 	BuildingTypes ePrereqBuilding;
 	bool bRequiresBonus;
 	bool bNeedsBonus;
-	int iI;
 	CorporationTypes eCorporation;
+	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding);
+	CvTeamAI& currentTeam = GET_TEAM(getTeam());
 
-	if (eBuilding == NO_BUILDING)
+	//dont activate buildings that their tech is unmet - start
+	//shouldnt happen though cause the building wouldnt be able to be built.
+	//only conquered...
+	if (!(currentTeam.isHasTech((TechTypes)(kBuilding.getPrereqAndTech()))))
 	{
 		return false;
 	}
 	
-	if (!(GET_PLAYER(getOwner()).canKeep(eBuilding)))
+	for (int iI = 0; iI < kBuilding.getNumPrereqAndTechs(); iI++)
 	{
-			return false;
+		if (kBuilding.getPrereqAndTechs(iI) != NO_TECH)
+		{
+			if (!(currentTeam.isHasTech((TechTypes)(kBuilding.getPrereqAndTechs(iI)))))
+			{
+				return false;
+			}
+		}
 	}
 
-/*	if (getNumBuilding(eBuilding) >= GC.getDefineINT(CvGlobals::CITY_MAX_NUM_BUILDINGS))
+	if (kBuilding.getSpecialBuildingType() != NO_SPECIALBUILDING)
 	{
-		return false;
+		if (!(currentTeam.isHasTech((TechTypes)(GC.getSpecialBuildingInfo((SpecialBuildingTypes)kBuilding.getSpecialBuildingType()).getTechPrereq()))))
+		{
+			return false;
+		}
 	}
-	*/
-	if (GC.getBuildingInfo(eBuilding).isPrereqReligion())
+	//dont activate buildings that their tech is unmet - end
+	
+	//check the conditions that can "stop" a building:
+	if (kBuilding.isPrereqReligion())
 	{
 		if (getReligionCount() > 0)
 		{
@@ -15045,7 +15065,7 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 		}
 	}
 
-	if (GC.getBuildingInfo(eBuilding).isStateReligion())
+	if (kBuilding.isStateReligion())
 	{
 		ReligionTypes eStateReligion = GET_PLAYER(getOwner()).getStateReligion();
 		if (NO_RELIGION == eStateReligion || !isHasReligion(eStateReligion))
@@ -15053,16 +15073,24 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 			return false;
 		}
 	}
-
-	if (GC.getBuildingInfo(eBuilding).getPrereqReligion() != NO_RELIGION)
+	
+	if (kBuilding.getStateReligion() != NO_RELIGION)
 	{
-		if (!(isHasReligion((ReligionTypes)(GC.getBuildingInfo(eBuilding).getPrereqReligion()))))
+		if (GET_PLAYER(getOwner()).getStateReligion() != kBuilding.getStateReligion())
 		{
 			return false;
 		}
 	}
 
-	eCorporation = (CorporationTypes)GC.getBuildingInfo(eBuilding).getPrereqCorporation();
+	if (kBuilding.getPrereqReligion() != NO_RELIGION)
+	{
+		if (!(isHasReligion((ReligionTypes)(kBuilding.getPrereqReligion()))))
+		{
+			return false;
+		}
+	}
+
+	eCorporation = (CorporationTypes)kBuilding.getPrereqCorporation();
 	if (eCorporation != NO_CORPORATION)
 	{
 		if (!isHasCorporation(eCorporation))
@@ -15074,6 +15102,7 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 	eCorporation = (CorporationTypes)GC.getBuildingInfo(eBuilding).getFoundsCorporation();
 	if (eCorporation != NO_CORPORATION)
 	{
+		CvCorporationInfo& kCorporation = GC.getInfo(eCorporation);//moved - doto fix
 		if (GC.getGame().isCorporationFounded(eCorporation))
 		{
 			return false;
@@ -15089,118 +15118,103 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 				}
 			}
 		}
-	}
 
-	if (!getPlot().canConstruct(eBuilding))
-	{
-		return false;
-	}
-
-
-		if (GC.getBuildingInfo(eBuilding).getPrereqAndBonus() != NO_BONUS)
-		{
-			if (!hasBonus((BonusTypes)GC.getBuildingInfo(eBuilding).getPrereqAndBonus()))
-			{
-				return false;
-			}
-		}
-
-		eCorporation = (CorporationTypes)GC.getBuildingInfo(eBuilding).getFoundsCorporation();
-		//doto-advc 099 syntax change
-		if (eCorporation != NO_CORPORATION)
-		{
-			CvCorporationInfo& kCorporation = GC.getInfo(eCorporation);//moved - doto fix
-			if (GC.getGame().isCorporationFounded(eCorporation))
-			{
-				return false;
-			}
-
-			if (GET_PLAYER(getOwner()).isNoCorporations())
-			{
-				return false;
-			}
-
-			bool bValid = false;
-			for (int i = 0; i < kCorporation.getNumPrereqBonuses(); ++i)
-			{
-				BonusTypes eBonus = (BonusTypes)GC.getCorporationInfo(eCorporation).getPrereqBonus(i);
-				if (NO_BONUS != eBonus)
-				{
-					if (hasBonus(eBonus))
-					{
-						bValid = true;
-						break;
-					}
-				}
-			}
-
-			if (!bValid)
-			{
-				return false;
-			}
-		}
-
-		bRequiresBonus = false;
-		bNeedsBonus = true;
-		//doto advc 099 sybtax change
-		CvBuildingInfo& kBuilding = GC.getInfo(eBuilding);
-		for (iI = 0; iI < kBuilding.getNumPrereqOrBonuses(); iI++)
-		{
-			if (GC.getBuildingInfo(eBuilding).getPrereqOrBonuses(iI) != NO_BONUS)
-			{
-				bRequiresBonus = true;
-
-				if (hasBonus((BonusTypes)GC.getBuildingInfo(eBuilding).getPrereqOrBonuses(iI)))
-				{
-					bNeedsBonus = false;
-				}
-			}
-		}
-
-		if (bRequiresBonus && bNeedsBonus)
+		if (GET_PLAYER(getOwner()).isNoCorporations())
 		{
 			return false;
 		}
 
-		for (iI = 0; iI < GC.getNumBuildingClassInfos(); iI++)
+		bool bValid = false;
+		for (int i = 0; i < kCorporation.getNumPrereqBonuses(); ++i)
 		{
-			if (/*GC.getBuildingInfo(eBuilding).isBuildingClassNeededInCity(iI)*/
-				GC.getBuildingInfo(eBuilding).isBuildingClassNeededInCity((BuildingClassTypes)iI)
-			//	(BuildingClassTypes)GC.getBuildingInfo((BuildingTypes)iI) getNumBuilding((BuildingTypes)			
-				)
+			BonusTypes eBonus = (BonusTypes)GC.getCorporationInfo(eCorporation).getPrereqBonus(i);
+			if (NO_BONUS != eBonus)
 			{
-				ePrereqBuilding = ((BuildingTypes)(GC.getCivilizationInfo(getCivilizationType()).getCivilizationBuildings(iI)));
-
-				if (ePrereqBuilding != NO_BUILDING)
+				if (hasBonus(eBonus))
 				{
-					if (0 == getNumBuilding(ePrereqBuilding) /* && (bContinue || (getFirstBuildingOrder(ePrereqBuilding) == -1))*/)
-					{
-						return false;
-					}
+					bValid = true;
+					break;
 				}
 			}
 		}
 
+		if (!bValid)
+		{
+			return false;
+		}
+	}
+	
+	if (kBuilding.getPrereqAndBonus() != NO_BONUS)
+	{
+		if (!hasBonus((BonusTypes)kBuilding.getPrereqAndBonus()))
+		{
+			return false;
+		}
+	}
+	
+	bRequiresBonus = false;
+	bNeedsBonus = true;
+	//doto advc 099 sybtax change
+	for (int iI = 0; iI < kBuilding.getNumPrereqOrBonuses(); iI++)
+	{
+		if (GC.getBuildingInfo(eBuilding).getPrereqOrBonuses(iI) != NO_BONUS)
+		{
+			bRequiresBonus = true;
+
+			if (hasBonus((BonusTypes)kBuilding.getPrereqOrBonuses(iI)))
+			{
+				bNeedsBonus = false;
+			}
+		}
+	}
+
+	if (bRequiresBonus && bNeedsBonus)
+	{
+		return false;
+	}
+
+	for (int iI = 0; iI < GC.getNumBuildingClassInfos(); iI++)
+	{
+		if (kBuilding.isBuildingClassNeededInCity((BuildingClassTypes)iI))
+		{
+			ePrereqBuilding = ((BuildingTypes)(GC.getCivilizationInfo(getCivilizationType()).getCivilizationBuildings(iI)));
+
+			if (ePrereqBuilding != NO_BUILDING)
+			{
+				if (0 == getNumBuilding(ePrereqBuilding) /* && (bContinue || (getFirstBuildingOrder(ePrereqBuilding) == -1))*/)
+				{
+					return false;
+				}
+			}
+		}
+	}
+
 	return true;
 }
 
-bool CvCity::shouldUnProcessBuilding(BuildingTypes eBuilding)
+void CvCity::shouldUnProcessBuilding(BuildingTypes eBuilding)
 {
+	//basic checks: start
 	if (eBuilding == NULL)
-		return false;
+		return;
 	if (!GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
-		return false;
-	if (GC.getInfo(eBuilding).getPrereqMustAll() < 1)
-		return false;
-	if (getNumRealBuilding(eBuilding) < 1)
-		return false;
+		return;
 	if  (eBuilding == 0)
 		//exclude the first building - palace
-		return false;
-	// if our team has the tech of the building, its game over for this building
+		return;
 	CvBuildingInfo const& kBuilding = GC.getInfo(eBuilding); //for testing
+	if (kBuilding.getPrereqMustAll() < 1)
+		return;
+	if (getNumRealBuilding(eBuilding) < 1)
+		return;
+	// end
+	
+	// if our team has the tech of the building, its game over for this building
+	TechTypes eTechS = kBuilding.getSpecialBuildingType() == NO_SPECIALBUILDING 
+			? NO_TECH : GC.getInfo(kBuilding.getSpecialBuildingType()).getObsoleteTech();	
+		
 	TechTypes eTech = kBuilding.getObsoleteTech(); //if there is no obsolete tech...
-	if (eTech != NO_TECH)
+	if (eTech != NO_TECH || eTechS != NO_TECH)
 	{
 		if (GET_TEAM(getTeam()).isHasTech(eTech))
 		{
@@ -15213,19 +15227,25 @@ bool CvCity::shouldUnProcessBuilding(BuildingTypes eBuilding)
 			//set if to obsolete just in case (proccess tech handles that anyway)
 			//1 means add an obsolete
 			int obc = GET_TEAM(getTeam()).getObsoleteBuildingCount(eBuilding);
-			if (obc <= 0)//precuation
+			// if the building not set as obsolete, add the change (this should be managed by processtech
+			// its just a precaution here.
+			if (obc <= 0)
 			{
-				GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1 + (obc < 1 ? -1 * obc : 0));
+				//doto 112 change
+				//GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1 + (obc < 1 ? -1  * obc : 0));
+				GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1);
 			}
-			return false;
+			return;
 		}
 	}
-	/*	
-	the above hastech made this one "obsolete"
-	if (GET_TEAM(getTeam()).isObsoleteBuilding(eBuilding))
-		return false;
-	*/
-	if (canKeep(eBuilding))
+	//
+//	if (GET_TEAM(getTeam()).isObsoleteBuilding(eBuilding))
+//		return false;
+		
+//this bulk will handle the inactive building - since the above part means the building
+//is not tech obsoleted.
+	bool shouldBeActive = canKeep(eBuilding);
+	if (shouldBeActive)
 	{ 
 		//if the building can be kept and its set to none active ->
 		//re activate it and un obsolete it
@@ -15233,24 +15253,35 @@ bool CvCity::shouldUnProcessBuilding(BuildingTypes eBuilding)
 		if (!m_aiBuildingeActive.get(eBuilding))
 			m_aiBuildingeActive.set(eBuilding, true);  //must be before changeObsoleteBuildingCount
 		int obc = GET_TEAM(getTeam()).getObsoleteBuildingCount(eBuilding);
+		//doto 112 change
+		//if the building is set to obsolete
+		// then we need to unobsolete it - of course - 
+		// if the building is obsolete due to tech, the case above it will manage it 
+		// and the this if wont run - see above.
 		if (obc > 0)
-			GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, -1 * obc);
-		return false;
+		{
+			//doto 112
+			//GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, -1/* * obc*/);
+			GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, -1, true);
+		}
+		return;
 	}
-	//if its already marked, nothing to do.
-	if (!m_aiBuildingeActive.get(eBuilding))
-		return false;
-	//set the building to obsolete (the function calls process building.
-	//1 means add an obsolete
-	if (m_aiBuildingeActive.get(eBuilding))
+	//set the building to obsolete (the changeObsoleteBuildingCount calls process building.
+	else if (!shouldBeActive && m_aiBuildingeActive.get(eBuilding))
 	{
 		int obc = GET_TEAM(getTeam()).getObsoleteBuildingCount(eBuilding);
-		m_aiBuildingeActive.set(eBuilding, false); //must be before changeObsoleteBuildingCount
+		m_aiBuildingeActive.set(eBuilding, false);
 		if (obc <= 0)
-			GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1 + (obc < 1 ? -1 * obc : 0));
-		
+		{
+			//doto 112
+			//GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1 + (obc < 1 ? -1 * obc : 0));	
+			GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1, true);	
+		}
 	}
+	//if its already marked, nothing to do.
+	else if (!m_aiBuildingeActive.get(eBuilding))
+		return;
 		
-	return true;
+	return;
 }
 //DOTO active buildings

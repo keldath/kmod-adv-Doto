@@ -230,7 +230,7 @@ public:
 	void processBuilding(BuildingTypes eBuilding, int iChange, bool bObsolete = false);
 //DOTO -tholish-Keldath inactive buildings
 	bool canKeep(BuildingTypes eBuilding) const;
-	bool shouldUnProcessBuilding(BuildingTypes eBuilding);
+	void shouldUnProcessBuilding(BuildingTypes eBuilding);
 	bool getBuildingActiveInactive(BuildingTypes eBuilding) const																// Exposed to Python
 	{
 		return m_aiBuildingeActive.get(eBuilding);

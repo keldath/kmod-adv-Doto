@@ -6378,15 +6378,16 @@ class CvMainInterface:
 		# <advc.004z>
 		if not bOnlyBackgr:
 			self.hideScoreStrings() # </advc.004z>
+			# keldath - this is 109+ but for now removed cause it creates a city screen delay.
 			# <advc.085> Clear the texts in case that we'll decide not to show them.
 			# (So that we won't need to check which texts to hide-unhide when only
 			# ScoreHelp is dirty.)
-			for iPlayer in range(gc.getMAX_CIV_PLAYERS()):
-				for i in range(Scoreboard.NUM_PARTS):
-					sTextName = "ScoreText%d-%d" %(iPlayer, i)
-					screen.setText(sTextName, "Background", "",
-							CvUtil.FONT_RIGHT_JUSTIFY, 0, 0, 0, FontTypes.SMALL_FONT,
-							WidgetTypes.WIDGET_GENERAL, -1, -1)
+			#for iPlayer in range(gc.getMAX_CIV_PLAYERS()):
+			#	for i in range(Scoreboard.NUM_PARTS):
+			#		sTextName = "ScoreText%d-%d" %(iPlayer, i)
+			#		screen.setText(sTextName, "Background", "",
+			#				CvUtil.FONT_RIGHT_JUSTIFY, 0, 0, 0, FontTypes.SMALL_FONT,
+			#				WidgetTypes.WIDGET_GENERAL, -1, -1)
 			# </advc.085>
 		screen.hide("ScoreBackground")
 		eUIVis = CyInterface().getShowInterface()

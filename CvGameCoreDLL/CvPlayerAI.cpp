@@ -17151,11 +17151,11 @@ int CvPlayerAI::AI_civicValueGroup(CivicTypes eCivic) const
 {
 	PROFILE_FUNC();
 
-	CvCivicInfo const& kCivic = GC.getInfo(eCivic);//test
+	CvCivicInfo const& kCivic = GC.getInfo(eCivic);
 	//CvWString ecD = kCivic.getDescription();//test
 
 	/* doto Civics parent - if a parent, value it with its children ) */
-	if (GC.getInfo(GC.getInfo(eCivic).getCivicOptionType()).getParentCivicOption() == 2)
+	if (GC.getInfo(kCivic.getCivicOptionType()).getParentCivicOption() == 2)
 			return AI_totalBestChildrenValue(eCivic);
 			
 	/* doto Civics parent - if a child civic is being exhamined
@@ -17163,7 +17163,7 @@ int CvPlayerAI::AI_civicValueGroup(CivicTypes eCivic) const
 	 which is heavy on performance...
 	 a reminder -> the forcecivics function is the one that converts to un selected children 
 	 accorging to the new chosen parent civic.*/
-	if (GC.getInfo(GC.getInfo(eCivic).getCivicOptionType()).getParentCivicOption() == 1)
+	if (GC.getInfo(kCivic.getCivicOptionType()).getParentCivicOption() == 1)
 	{
 		if (!canDoChildCivic(eCivic))
 			return -99999999;
@@ -17207,16 +17207,9 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 		groupValue += tmpGroupValue;
 	}
 	
-	CvWString ccD = GC.getInfo(eCivic).getDescription();//test
-//	if (ccD == L"Tyranny")
-//		t = 3;
-	int t = 0;
-	if (ccD == L"Provincial")
-		t = 1;
 /* doto Civics parent - end ) */
 
 	CvCivicInfo const& kCivic = GC.getInfo(eCivic);
-//	CvWString ecD = kCivic.getDescription();//test
 	CvTeamAI const& kTeam = GET_TEAM(getTeam()); // K-Mod
 	CvGameAI const& kGame = GC.AI_getGame(); // K-Mod
 	int const iCities = getNumCities();
@@ -18261,7 +18254,6 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 		// K-Mod end
 	}
 
-	int testyieldval = 0;
 	FOR_EACH_ENUM2(Yield, eYield)
 	{
 		int iTempValue = 0;
@@ -18520,7 +18512,6 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 			int commerceWeight = 0;
 			int yieldWeight = 0;
 			
-			int weight = 1;
 			if (bCc)
 			{	
 				FOR_EACH_ENUM2(Commerce, eCommerce)
@@ -18787,9 +18778,11 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 		iValue /= 10;*/ // what the lol...
 //<!-- doto civic plus -->	start ->add the child civc value if exists (if not its 0)	
 	//FAssert((iValue + groupValue) <= 1000);
-	FAssert((iValue) <= 1000);
-//	if ((iValue + groupValue) > 1000)
-//		t = 5;
+	//FAssert((iValue) <= 1000);
+/*
+	CvWString ccD = GC.getInfo(eCivic).getDescription();//test
+	if ((iValue + groupValue) > 1000)
+		t = 5;
 	CvWString ccDd = GC.getInfo(eCivic).getDescription();//test
 	//FAssert(false);
 	if (ccDd == L"Despotism")
@@ -18808,6 +18801,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 		t = 1;
 	if (ccDd == L"Oligarchy")
 		t = 1;
+	*/
 	return iValue + groupValue;
 //<!-- doto civic plus -->	end 
 }
