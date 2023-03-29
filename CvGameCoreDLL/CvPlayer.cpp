@@ -723,8 +723,6 @@ void CvPlayer::processTraits(int iChange)
 /************************************************************************************************/
 /* END: Advanced Diplomacy     doto custom for city state trade agreement                     */
 /************************************************************************************************/
-
-
 		changeExtraHealth(iChange * kTrait.getHealth());
 		changeExtraHappiness(iChange * kTrait.getHappiness());
 
@@ -1494,8 +1492,8 @@ CvPlot* CvPlayer::findStartingPlot(
 //doto city states - reduce tile calc for start location
 //this was a recommendation from f1rpo , default is 3, could be 2 also. org is 4.
 //seee more text in the globalalt xml file.
-	int const iStartingRange_advc = GC.getDefineINT("ADVANCED_START_SIGHT_RANGE");
-	int const iStartingRange = checkCityState(getID()) ? GC.getDefineINT("CS_START_SIGHT_RANGE") : iStartingRange_advc;
+	//int const iStartingRange = GC.getDefineINT("ADVANCED_START_SIGHT_RANGE");
+	int const iStartingRange = checkCityState(getID()) ? GC.getDefineINT("CS_START_SIGHT_RANGE") : GC.getDefineINT("ADVANCED_START_SIGHT_RANGE");
 //doto city states - reduce tile calc for start location
 
 	EagerEnumMap<PlotNumTypes,bool> abPlotTaken;
@@ -3592,7 +3590,7 @@ int CvPlayer::calculateScore(bool bFinal, bool bVictory) const
 			kGame.getMaxWonders(), iSCORE_WONDER_FACTOR, false, bFinal, bVictory);
 //doto city states
 //in order to keep track of scores for city states and to give them a boost
-//i defised this -> a city state will get a modifer of the number of cities of the player with the most cities
+//i devised this -> a city state will get a modifer of the number of cities of the player with the most cities
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 	{
 		int maxNumCitiesPlayer = 1;
@@ -8047,11 +8045,7 @@ int CvPlayer::specialistYield(SpecialistTypes eSpecialist, YieldTypes eYield) co
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
 		GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1)
 	{
-		//SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
-		//SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
-		//SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
 		if (GC.getInfo(eSpecialist).isCityStater()
-			//(eFarmer == eSpecialist || eMiner == eSpecialist || eLabor == eSpecialist)
 			 && (checkCityState(getID())))
 		{
 			return GC.getInfo(eSpecialist).getYieldChange(eYield);
@@ -15255,9 +15249,6 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	changeExpInBorderModifier(kCivic.getExpInBorderModifier() * iChange);
 //doto city states - specialists instead of pop
 // dont allow any bonuses that are not from the specialists own values.	
-	//SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
-	//SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
-	//SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
 	bool isCivilian = false;
 	if ((GC.getGame().isOption(GAMEOPTION_CITY_STATES)
 		&& GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && checkCityState(getID())))
@@ -15371,8 +15362,7 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 		//doto city states specialists instead of pop	
 		//deny other bonuses from the civilians
 		if (!isCivilian &&
-			//eFarmer != (SpecialistTypes)iI && eMiner != (SpecialistTypes)iI && eLabor != (SpecialistTypes)iI
-			!GC.getInfo(eLoopSpecialist).isCityStater()
+				!GC.getInfo(eLoopSpecialist).isCityStater()
 			)
 		{
 			for (int iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
@@ -15383,8 +15373,7 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 		}
 		//doto specialists instead of pop
 		if (!isCivilian &&
-			//	eFarmer != (SpecialistTypes)iI && eMiner != (SpecialistTypes)iI && eLabor != (SpecialistTypes)iI
-			!GC.getInfo(eLoopSpecialist).isCityStater()
+				!GC.getInfo(eLoopSpecialist).isCityStater()
 			)
 		{
 			for (int iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
@@ -22059,8 +22048,11 @@ TraitTypes CvPlayer::getMemberUniqueTrait(PlayerTypes ePlayer) const
 		//if ((szText.find(L"Unique Trade") != std::string::npos))
 		if (kTrait.getFreeTradeValid() > 0)
 		{
-			return csTrait = eTrait;
-			break;
+			if (csTrait == eTrait)
+			{
+				return csTrait;
+				break;
+			}
 		}
 	}
 	return NO_TRAIT;
@@ -22129,8 +22121,11 @@ TraitTypes CvPlayer::getPlayersMinUniqueTrait(PlayerTypes eFrom, PlayerTypes eTo
 		//if ((szText.find(L"Unique Trade") != std::string::npos))
 		if(kTrait.getFreeTradeValid()> 0)
 		{
-			return csTrait = eTrait;
-			break;
+			if (csTrait == eTrait)
+			{
+				return csTrait;
+				break;
+			}
 		}
 	}
 	return NO_TRAIT;
@@ -22152,27 +22147,8 @@ void CvPlayer::csMemberUpdateFreeTradeTraits(TraitTypes eTrait, int iChange, Pla
 		GET_PLAYER(ePlayer).changeCapitalCommerceRateFTModifier(eLoopCommerce,
 			((int)kTrait.getCommerceFRmodifier(eLoopCommerce) * iChange));
 	}
-	//FOR_EACH_ENUM(Yield)
-	//{
-	//	if (kTrait.getCommerceModifier(eLoopCommerce) <= 0)
-	//		continue;
-
-	//	if (kPlayer.checkCityState(ePlayer))
-	//	{
-	//		//city states gets a double one   
-	//		kPlayer.getTradeYieldFRmodifier(eLoopCommerce,
-	//			(int)(kTrait.getTradeYieldFRmodifier(eLoopCommerce) + 1 * iChange));
-	//	}
-	//	else
-	//	{
-	//		kPlayer.getTradeYieldFRmodifier(eLoopCommerce,
-	//			(int)(kTrait.getTradeYieldFRmodifier(eLoopCommerce) * iChange));
-	//	}
-	//}
 }
 
 /************************************************************************************************/
 /* START: Advanced Diplomacy       doto added for city states                                   */
 /************************************************************************************************/
-
-

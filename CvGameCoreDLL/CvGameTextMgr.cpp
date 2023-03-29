@@ -21870,7 +21870,7 @@ void CvGameTextMgr::setFoodHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 	for(int i = 0; i < GC.getNumSpecialistInfos(); i++)
 	{
 //doto specialists instead of pop
-		if (cityState //kCity.getFreeCivilianCount() > 0
+		if (cityState
 			&& ((GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
 				GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && cityState)
 					&& eFarmer == (SpecialistTypes)i)

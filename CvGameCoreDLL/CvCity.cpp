@@ -3589,6 +3589,7 @@ void CvCity::processSpecialist(SpecialistTypes eSpecialist, int iChange)
 	updateExtraSpecialistYield();
 
 //doto city states - specialists instead of pop start
+// org changeSpecialistFreeExperience(kSpecialist.getExperience() * iChange);
 // dont allow any bonuses that are not from the specialists own values.	
 	if (!isCivilian)
 		changeSpecialistFreeExperience(kSpecialist.getExperience() * iChange);
@@ -5083,7 +5084,6 @@ int CvCity::popToSpecialists(int iOldPopulation, int m_iPopulation)
 			int iStarvedSpecialists = std::min(iPopDecrease, getFreeCivilianCount());
 			m_iPopulation += iStarvedSpecialists;
 			//make sure not to deduct specialist that isnt listed in the getFreeSpecialistCount
-			//FAssert(getFreeCivilianCount() > 0);
 			FAssert(eCounter > 0);
 			changeFreeCivilianCount(-iStarvedSpecialists); //using one counter for all of them.
 			changeFreeSpecialistCount(eDynamicRedu, -iStarvedSpecialists);
@@ -5102,10 +5102,10 @@ void CvCity::setPopulation(int iNewValue)
 	int const iOldPopulation = getPopulation();
 	if (iOldPopulation == iNewValue)
 		return;
-	m_iPopulation = iNewValue;
+//	m_iPopulation = iNewValue;
 //doto city states - specialist instead of pop start
 //assign new value if there is any
-	m_iPopulation = popToSpecialists(iOldPopulation, m_iPopulation);
+	m_iPopulation = popToSpecialists(iOldPopulation, iNewValue);
 //doto city states - specialist instead of pop end
 	FAssert(getPopulation() >= 0);
 
