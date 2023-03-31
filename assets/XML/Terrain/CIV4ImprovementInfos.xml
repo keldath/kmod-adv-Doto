@@ -596,6 +596,9 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iGoodyRange>0</iGoodyRange>
 			<iFeatureGrowth>0</iFeatureGrowth>
 			<iUpgradeTime>0</iUpgradeTime>
+			<!-- doto obsolete improvement -->
+			<TechImpObsolete>NONE</TechImpObsolete>
+			<!-- doto obsolete improvement -->
 			<iAirBombDefense>10</iAirBombDefense>
 			<iDefenseModifier>0</iDefenseModifier>
 			<!-- every 3 mines - 10 % all hill imps provide health penalty-->

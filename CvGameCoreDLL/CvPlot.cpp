@@ -371,7 +371,11 @@ void CvPlot::doTurn()
 	{
 		changeImprovementDuration(1);
 		/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
-		if(!isBeingWorked() && GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_DECAY)) {
+		if((!isBeingWorked() && GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_DECAY))
+//doto obsolete improvement start		
+			|| GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_OBSOLETE)
+//doto obsolete improvement start
+			) {
 			doImprovementDecay();
 		}
 		/* END TERRAIN-IMPROVEMENT-DECAY */
@@ -397,22 +401,47 @@ void CvPlot::doTurn()
 /*doto  TERRAIN-IMPROVEMENT-DECAY YUKON */
 void CvPlot::doImprovementDecay()
 {
-	// First undo upgrade work (if in progress):
-	ImprovementTypes eImprovementUpgrade = GC.getInfo(getImprovementType()).getImprovementUpgrade();
-	int progress = getUpgradeProgress();
-	if(eImprovementUpgrade != NO_IMPROVEMENT && progress > 0) {
-		int penalty = 4;
-		if(penalty > progress) penalty = progress;
-		changeUpgradeProgress(-penalty);
+	//doto obsolete improvement start - improvement obsoleted is stronger than decay.
+	if (GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_OBSOLETE))
+	{
+		ImprovementTypes eImp = getImprovementType();
+		if (eImp != NO_IMPROVEMENT)
+		{
+			CvImprovementInfo const& kImpr = GC.getImprovementInfo(getImprovementType());
+			TechTypes eTechObsolete = kImpr.getTechObsolete();
+			if (eTechObsolete != NO_TECH)
+			{
+			//	CvTechInfo const& kTech = GC.getTechInfo(eTechObsolete);
+				if (GET_TEAM(getTeam()).isHasTech(eTechObsolete))
+				{
+					setImprovementType((ImprovementTypes)(kImpr.getImprovementPillage()));
+					return;
+				}
+			}
+		}
 	}
-	// Then start decaying/finish decaying:
-	else {
-		int t = GC.getImprovementInfo(getImprovementType()).getDecayTime();
-		if(t == -1) return;
-		else changeDecayProgress(1);
-		if (getDecayProgress() >= GC.getGame().getImprovementDecayTime(getImprovementType())) 
-			setImprovementType((ImprovementTypes)(GC.getInfo(getImprovementType()).getImprovementPillage()));
-			//setImprovementType(NO_IMPROVEMENT);
+	//doto obsolete improvement end
+	
+	if (GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_DECAY))
+	{
+		// First undo upgrade work (if in progress):
+		ImprovementTypes eImprovementUpgrade = GC.getInfo(getImprovementType()).getImprovementUpgrade();
+		int progress = getUpgradeProgress();
+		if(eImprovementUpgrade != NO_IMPROVEMENT && progress > 0) {
+			int penalty = 4;
+			if(penalty > progress) penalty = progress;
+			changeUpgradeProgress(-penalty);
+		}
+		// Then start decaying/finish decaying:
+		else {
+			int t = GC.getImprovementInfo(getImprovementType()).getDecayTime();
+			if(t == -1) 
+				return;
+			else changeDecayProgress(1);
+			if (getDecayProgress() >= GC.getGame().getImprovementDecayTime(getImprovementType())) 
+				setImprovementType((ImprovementTypes)(GC.getInfo(getImprovementType()).getImprovementPillage()));
+				//setImprovementType(NO_IMPROVEMENT);
+		}
 	}
 }
 /* END TERRAIN-IMPROVEMENT-DECAY YUKON */

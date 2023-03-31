@@ -5134,9 +5134,6 @@
 			<Cities>
 				<City>Troy</City>
 			</Cities>
-			<LeadersNames>
-				<Lname>LEADER_HECTOR</Lname>
-			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_THEATRE</BuildingClassType>
@@ -5253,9 +5250,6 @@
 			<Cities>
 				<City>Kushan</City>
 			</Cities>
-			<LeadersNames>
-				<Lname>LEADER_PIYE</Lname>
-			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_OBELISK</BuildingClassType>
@@ -5372,9 +5366,6 @@
 			<Cities>
 				<City>Zurich</City>
 			</Cities>
-			<LeadersNames>
-				<Lname>LEADER_GUILLAUME_HENRI_DUFOUR</Lname>
-			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_COURTHOUSE</BuildingClassType>
@@ -5511,9 +5502,6 @@
 			<Cities>
 				<City>Vatican</City>
 			</Cities>
-			<LeadersNames>
-				<Lname>LEADER_POPEJOHN</Lname>
-			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_MARKET</BuildingClassType>
@@ -5634,9 +5622,6 @@
 			<Cities>
 				<City>Tunis</City>
 			</Cities>
-			<LeadersNames>
-				<Lname>LEADER_ABU</Lname>
-			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_LIBRARY</BuildingClassType>
@@ -5756,9 +5741,6 @@
 			<Cities>
 				<City>Tibet</City>
 			</Cities>
-			<LeadersNames>
-				<Lname>LEADER_SONGTSEN</Lname>
-			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_THEATRE</BuildingClassType>
@@ -5879,9 +5861,6 @@
 			<Cities>
 				<City>Bavaria</City>
 			</Cities>
-			<LeadersNames>
-				<Lname>LEADER_LUDWIG</Lname>
-			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_OBSERVATORY</BuildingClassType>
@@ -6004,9 +5983,6 @@
 			<Cities>
 				<City>Quebec</City>
 			</Cities>
-			<LeadersNames>
-				<Lname>LEADER_MACDONALD</Lname>
-			</LeadersNames>
 			<Buildings>
 				<Building>
 					<BuildingClassType>BUILDINGCLASS_BANK</BuildingClassType>

@@ -19,6 +19,8 @@ public: /*	All the const functions are exposed to Python.
 	int getTime() const { return m_iTime; }
 	int getCost() const { return m_iCost; }
 	TechTypes getTechPrereq() const { return (TechTypes)m_iTechPrereq; }
+	//doto obsolete improvement start
+	TechTypes getTechObsolete() const { return m_iTechObsolete; }
 	ImprovementTypes getImprovement() const { return (ImprovementTypes)m_iImprovement; }
 	RouteTypes getRoute() const { return (RouteTypes)m_iRoute; }
 	DllExport int getEntityEvent() const;
@@ -43,6 +45,8 @@ protected:
 	int m_iTime;
 	int m_iCost;
 	int m_iTechPrereq;
+	//doto obsolete improvement start
+	TechTypes m_iTechObsolete;
 	int m_iImprovement;
 	int m_iRoute;
 	int m_iEntityEvent;

@@ -3644,7 +3644,20 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 			kPlot.getDecayTimeLeft(ePlotImprovement, eRevealedOwner)));
 		}
 		/* END TERRAIN-IMPROVEMENT-DECAY */
-	
+		
+		//doto obsolete improvement start
+		if (GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_OBSOLETE))
+		{
+			TechTypes eTechO = (TechTypes)GC.getInfo(ePlotImprovement).getTechObsolete();
+			if(eTechO != NO_TECH)
+			{
+				szString.append(NEWLINE);
+				szString.append(CvWString::format(L"%c Obsolete by %s", 
+				gDLL->getSymbolID(BULLET_CHAR),
+				GC.getInfo(eTechO).getDescription()));			
+			}
+		}
+		//doto obsolete improvement end
 	}
 	// <advc.059>
 	if (!bHealthHappyShown)
@@ -9625,6 +9638,20 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 							gDLL->getText("TXT_KEY_UNIT_CAN").c_str());
 					setListHelp(szBuffer, szTempBuffer,
 							GC.getInfo(eLoopBuild).getDescription(), L", ", bFirst);
+					
+					//doto obsolete improvement start
+					if (GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_OBSOLETE))
+					{
+						TechTypes eTechO = (TechTypes)GC.getInfo(eLoopBuild).getTechPrereq();
+						if(eTechO != NO_TECH)
+						{
+							szTempBuffer.Format(L"%s %s", NEWLINE,
+								gDLL->getText(L"Cannot (Obsolete)").c_str());
+							setListHelp(szBuffer, szTempBuffer,
+								GC.getInfo(eLoopBuild).getDescription(), L", ", bFirst);	
+						}
+					}
+					//doto obsolete improvement end
 				}
 			}
 		}
@@ -16388,7 +16415,21 @@ void CvGameTextMgr::buildImprovementString(CvWStringBuffer &szBuffer, TechTypes 
 		if (GC.getInfo(eBuild).getTechPrereq() == eTech)
 			bTechFound = true;
 	}
-
+	//doto obsolete improvement start
+	if (GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_OBSOLETE))
+	{
+		if (GC.getInfo(eBuild).getTechObsolete() == eTech)
+		{
+			bTechFound = false;
+			if (bList)
+				szBuffer.append(NEWLINE);
+				
+			szBuffer.append(CvWString::format(L"%c %s Obsolete by %s", 
+				gDLL->getSymbolID(BULLET_CHAR), 
+				GC.getInfo(eBuild).getDescription(),
+				GC.getInfo((TechTypes)GC.getInfo(eBuild).getTechObsolete()).getDescription()));			
+		}
+	}
 	if (bTechFound)
 	{
 		if (bList)
@@ -17051,7 +17092,6 @@ void CvGameTextMgr::setImprovementHelp(CvWStringBuffer &szBuffer, ImprovementTyp
 		}
 		// Deliverator
 	}
-	
 	if (kImprov.getImprovementUpgrade() != NO_IMPROVEMENT)
 	{
 		int iTurns = GC.getGame().getImprovementUpgradeTime(eImprovement);
@@ -17068,6 +17108,21 @@ void CvGameTextMgr::setImprovementHelp(CvWStringBuffer &szBuffer, ImprovementTyp
 			GC.getGame().getImprovementDecayTime(eImprovement)));
 	}
 	/* END TERRAIN-IMPROVEMENT-DECAY*/
+	
+	//doto obsolete improvement start
+	if (GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_OBSOLETE))
+	{
+		TechTypes eTechO = (TechTypes)kImprov.getTechObsolete();
+		if(eTechO != NO_TECH)
+		{
+			szBuffer.append(NEWLINE);
+			szBuffer.append(CvWString::format(L"%c %s Obsolete by %s",
+				gDLL->getSymbolID(BULLET_CHAR),  
+				kImprov.getDescription(),
+				GC.getInfo((TechTypes)kImprov.getTechObsolete()).getDescription()));		
+		}
+	}
+	//doto obsolete improvement end
 	{
 		/*	advc: Was iLast. Since we're not showing the chance of discovery,
 			we may as well put all resources in one list even if they

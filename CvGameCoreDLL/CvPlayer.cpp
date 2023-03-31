@@ -6378,7 +6378,19 @@ bool CvPlayer::canBuild(CvPlot const& kPlot, BuildTypes eBuild, bool bTestEra,
 			}
 		}
 	}
-
+	//doto obsolete improvement start
+	if (GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_OBSOLETE))
+	{
+		if (GC.getInfo(eBuild).getTechObsolete() != NO_TECH)
+		{	// advc:
+			TechTypes eTechObsolete = GC.getInfo(eBuild).getTechObsolete();
+			if (GET_TEAM(getTeam()).isHasTech(eTechObsolete))
+			{
+				return false;
+			}
+		}
+	}
+	//doto obsolete improvement end
 	if (!bTestVisible)
 	{
 		if (kPlot.isFeature())

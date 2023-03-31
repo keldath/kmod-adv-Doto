@@ -446,13 +446,6 @@
 	<ElementType name="Cities" content="eltOnly">
 		<element type="City" maxOccurs="*"/>
 	</ElementType>
-<!--doto specialists instead of pop city states -->
-<!-- this is not being used anymore - i should remove it -->
-	<ElementType name="Lname" content="textOnly"/>
-	<ElementType name="LeadersNames" content="eltOnly">
-		<element type="Lname" maxOccurs="*"/>
-	</ElementType>
-<!--doto specialists instead of pop city states -->
 	<ElementType name="BuildingClassType" content="textOnly"/>
 	<ElementType name="BuildingType" content="textOnly"/>
 	<ElementType name="Building" content="eltOnly">
@@ -562,8 +555,6 @@
 		<element type="isCityState" minOccurs="0"/>
 <!--doto specialists instead of pop city states -->
 		<element type="Cities" minOccurs="0"/>
-<!--doto specialists instead of pop city states -->
-		<element type="LeadersNames" minOccurs="0"/>
 		<element type="Buildings" minOccurs="0"/>
 		<element type="Units" minOccurs="0"/>
 		<element type="FreeUnitClasses" minOccurs="0"/>

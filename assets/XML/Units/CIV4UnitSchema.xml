@@ -10,6 +10,9 @@
 	<ElementType name="FeatureType" content="textOnly"/>
 	<ElementType name="BonusType" content="textOnly"/>
 	<ElementType name="PrereqTech" content="textOnly"/>
+	<!-- doto obsolete improvement start-->
+	<ElementType name="TechObsolete" content="textOnly"/>
+	<!-- doto obsolete improvement end-->
 	<ElementType name="Description" content="textOnly"/>
 	<ElementType name="Civilopedia" content="textOnly"/>
 	<ElementType name="Help" content="textOnly"/>
@@ -48,6 +51,9 @@
         <element type="Description" minOccurs="0"/>
 		<element type="Help" minOccurs="0"/>
 		<element type="PrereqTech" minOccurs="0"/>
+		<!-- doto obsolete improvement start-->
+		<element type="TechObsolete" minOccurs="0"/>
+		<!-- doto obsolete improvement end-->
 		<element type="iTime" minOccurs="0"/>
 		<element type="iCost" minOccurs="0"/>
 		<element type="bKill" minOccurs="0"/>

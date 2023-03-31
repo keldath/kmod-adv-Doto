@@ -473,6 +473,9 @@ public:
 	int getGoodyUniqueRange() const;
 	int getFeatureGrowthProbability() const;
 	int getUpgradeTime() const { return m_iUpgradeTime; }
+	//doto obsolete improvement start
+	TechTypes getTechObsolete() const { return m_eTechObsolete; }
+	//doto obsolete improvement end
 	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
 	int getDecayTime() const{ return m_iDecayTime; }
 	/* END TERRAIN-IMPROVEMENT-DECAY */
@@ -578,6 +581,9 @@ protected:
 	int m_iGoodyUniqueRange;
 	int m_iFeatureGrowthProbability;
 	int m_iUpgradeTime;
+	//doto obsolete improvement start
+	TechTypes m_eTechObsolete;
+	//doto obsolete improvement end
 	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON*/	
 	int m_iDecayTime;
 	/* END TERRAIN-IMPROVEMENT-DECAY*/

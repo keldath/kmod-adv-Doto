@@ -4,6 +4,48 @@
 <!-- Copyright Firaxis Games 2005 -->
 <!-- -->
 <!-- Route Infos -->
+<!--
+RouteInfo	Main bracket for each entry
+
+Text
+Tag Name	Description
+Type	Label that is used throughout all other XML files
+Description	References the Text which contains the name of the route (eg: "Road", or "Railroad"). The text is specified in any of the Assets\XML\Text files.
+BonusType	Bonus that must always be present to build the route
+
+Lists (Multi-line)
+All List tags consist of an opening/closing tag, which is shown here, and then each entry within it is another tag with the same name as the parent tag, minus the "s" (i.e. singular, rather than plural).
+
+Tag Name	Description
+Yields	Specifies the yield bonuses for the terrain. Food / Hammer / Commerce
+TechMovementChanges	Specifies the movement changes after tech research (eg: Engineering provides 1/3 movement point cost decrease on Roads)
+<TechMovementChanges>
+ <TechMovementChange>
+  <PrereqTech>TECH_ENGINEERING</PrereqTech>
+  <iMovementChange>-10</iMovementChange>
+ </TechMovementChange>
+</TechMovementChanges>
+PrereqOrBonuses	Specifies the bonuses required to build the route (only one is needed to build the route).
+<PrereqOrBonuses>
+ <PrereqOrBonus>
+  <BonusType>BONUS_OIL</BonusType>
+ </PrereqOrBonus>
+</PrereqOrBonuses>
+
+Integers
+All of these tags have a numerical value. Though it sometimes can be negative, it usually is not.
+
+Tag Name	Description
+iValue	The "preference" for the route. That is to say, a higher value route is considered an upgrade from a lower value one.
+iAdvancedStartCost	The cost of the route when using an Advanced Start.
+iAdvancedStartCostIncrease	The cost of increasing the build level of the route in the Advanced Start. This is probably not used
+iMovement	Used in changing the amount of movement points used when moving along the route.
+iFlatMovement	Used in combination with iMovement to change the amount of movement points used when moving along the route
+Art
+These tags are directly related to the rendering of art for the entry.
+
+Tag Name	Description
+Button	The button for the route -->
 <Civ4RouteInfos xmlns="x-schema:CIV4MiscSchema.xml">
 	<RouteInfos>
 		<RouteInfo>

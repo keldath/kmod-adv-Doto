@@ -322,6 +322,13 @@
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
+            <Type>GAMEOPTION_IMPROVEMENT_OBSOLETE</Type>
+            <Description>Improvment Obsolete</Description>
+            <Help>Imp's gets Obsolete from being built. existing improvements will be pillaged</Help>
+            <bDefault>0</bDefault>
+            <bVisible>1</bVisible>
+       	</GameOptionInfo>
+        <GameOptionInfo>
             <Type>GAMEOPTION_NO_CORPORATIONS</Type>
             <Description>No Corporations</Description>
             <Help>Play Without corporations</Help>

@@ -7,6 +7,12 @@
 <Civ4NewConceptInfos xmlns="x-schema:CIV4BasicInfoSchema.xml">
 	<NewConceptInfos>
 		<NewConceptInfo>
+	<!-- doto -->		
+			<Type>CONCEPT_DOTO</Type>
+			<Description>Doto Mod</Description>
+			<Civilopedia>TXT_KEY_CONCEPT_DOTO</Civilopedia>
+		</NewConceptInfo>
+		<NewConceptInfo>
 			<Type>CONCEPT_ESPIONAGE</Type>
 			<Description>TXT_KEY_ESPIONAGE_CULTURE</Description>
 			<Civilopedia>TXT_KEY_CONCEPT_ESPIONAGE_PEDIA_SR</Civilopedia>
@@ -213,6 +219,49 @@
 			<Type>CONCEPT_TRAIT_SPIRITUAL</Type>
 			<Description>TXT_KEY_TRAIT_SPIRITUAL</Description>
 			<Civilopedia>TXT_KEY_TRAIT_SPIRITUAL_PEDIA</Civilopedia>
+	<!-- doto city states -->
+	<!-- DO NOT CHANGE THE STRING OF Unique Trade THE SDK IS USING THIS EXACTLY!
+     I GOT LAZY TO ADD AN XML TAG FOR IDENTIFING THESE TRAITS -->	
+		</NewConceptInfo>
+		<NewConceptInfo>
+			<Type>CONCEPT_TRAIT_CSTROY</Type>
+			<Description>Troy Unique Trade</Description>
+			<Civilopedia>The benefit from this trait will be given ad shared with another civ that will sign a trade agreement with the City State.</Civilopedia>
+		</NewConceptInfo>
+		<NewConceptInfo>
+			<Type>CONCEPT_TRAIT_CSKUSH</Type>
+			<Description>Kush Unique Trade</Description>
+			<Civilopedia>The benefit from this trait will be given ad shared with another civ that will sign a trade agreement with the City State.</Civilopedia>
+		</NewConceptInfo>
+		<NewConceptInfo>
+			<Type>CONCEPT_TRAIT_CSZURICH</Type>
+			<Description>Zurich Unique Trade</Description>
+			<Civilopedia>The benefit from this trait will be given ad shared with another civ that will sign a trade agreement with the City State.</Civilopedia>
+		</NewConceptInfo>
+		<NewConceptInfo>
+			<Type>CONCEPT_TRAIT_CSVATICAN</Type>
+			<Description>Vatican Unique Trade</Description>
+			<Civilopedia>The benefit from this trait will be given ad shared with another civ that will sign a trade agreement with the City State.</Civilopedia>
+		</NewConceptInfo>
+		<NewConceptInfo>
+			<Type>CONCEPT_TRAIT_CSTUNIS</Type>
+			<Description>Tunis Unique Trade</Description>
+			<Civilopedia>The benefit from this trait will be given ad shared with another civ that will sign a trade agreement with the City State.</Civilopedia>
+		</NewConceptInfo>
+		<NewConceptInfo>
+			<Type>CONCEPT_TRAIT_CSTIBET</Type>
+			<Description>Tibet Unique Route</Description>
+			<Civilopedia>The benefit from this trait will be given ad shared with another civ that will sign a trade agreement with the City State.</Civilopedia>
+		</NewConceptInfo>
+		<NewConceptInfo>
+			<Type>CONCEPT_TRAIT_CSBAVARIA</Type>
+			<Description>Bavaria Unique Trade</Description>
+			<Civilopedia>The benefit from this trait will be given ad shared with another civ that will sign a trade agreement with the City State.</Civilopedia>
+		</NewConceptInfo>
+		<NewConceptInfo>
+			<Type>CONCEPT_TRAIT_CSQUEBEC</Type>
+			<Description>Quebec Unique Trade</Description>
+			<Civilopedia>The benefit from this trait will be given ad shared with another civ that will sign a trade agreement with the City State.</Civilopedia>
 		</NewConceptInfo>
 	</NewConceptInfos>
 </Civ4NewConceptInfos>

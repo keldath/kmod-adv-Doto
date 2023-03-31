@@ -1062,6 +1062,9 @@ m_iTilesPerGoody(0),
 m_iGoodyUniqueRange(0),
 m_iFeatureGrowthProbability(0),
 m_iUpgradeTime(0),
+//doto obsolete improvement start
+m_eTechObsolete(NO_TECH),
+//doto obsolete improvement end 
 /*doto  TERRAIN-IMPROVEMENT-DECAY YUKON */
 m_iDecayTime(0),
 /* END TERRAIN-IMPROVEMENT-DECAY */
@@ -1420,6 +1423,9 @@ void CvImprovementInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iGoodyUniqueRange);
 	stream->Read(&m_iFeatureGrowthProbability);
 	stream->Read(&m_iUpgradeTime);
+	//doto obsolete improvement start
+	stream->Read((int*)&m_eTechObsolete);
+	//doto obsolete improvement end
 	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
 	stream->Read(&m_iDecayTime);
 	/* END TERRAIN-IMPROVEMENT-DECAY */
@@ -1530,6 +1536,9 @@ void CvImprovementInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iGoodyUniqueRange);
 	stream->Write(m_iFeatureGrowthProbability);
 	stream->Write(m_iUpgradeTime);
+	//doto obsolete improvement start
+	stream->Write(m_eTechObsolete);
+	//doto obsolete improvement end
 	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
 	stream->Write(m_iDecayTime);
 	/* END TERRAIN-IMPROVEMENT-DECAY */
@@ -1660,6 +1669,9 @@ bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iGoodyUniqueRange, "iGoodyRange");
 	pXML->GetChildXmlValByName(&m_iFeatureGrowthProbability, "iFeatureGrowth");
 	pXML->GetChildXmlValByName(&m_iUpgradeTime, "iUpgradeTime");
+	//doto obsolete improvement start
+	pXML->SetInfoIDFromChildXmlVal(m_eTechObsolete, "TechImpObsolete");
+	//doto obsolete improvement end
 	/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
 	pXML->GetChildXmlValByName(&m_iDecayTime, "iDecayTime", -1); //added default -1 by keldath doto
 	/* END TERRAIN-IMPROVEMENT-DECAY */

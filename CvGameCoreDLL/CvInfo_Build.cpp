@@ -9,6 +9,8 @@ CvBuildInfo::CvBuildInfo() :
 m_iTime(0),
 m_iCost(0),
 m_iTechPrereq(NO_TECH),
+//doto obsolete improvement start
+m_iTechObsolete(NO_TECH),
 m_iImprovement(NO_IMPROVEMENT),
 m_iRoute(NO_ROUTE),
 m_iEntityEvent(NO_ENTITYEVENT),
@@ -73,7 +75,9 @@ bool CvBuildInfo::read(CvXMLLoadUtility* pXML)
 		return false;
 
 	pXML->SetInfoIDFromChildXmlVal(m_iTechPrereq, "PrereqTech");
-
+	//doto obsolete improvement start
+	pXML->SetInfoIDFromChildXmlVal(m_iTechObsolete, "TechObsolete");	
+	
 	pXML->GetChildXmlValByName(&m_iTime, "iTime");
 	pXML->GetChildXmlValByName(&m_iCost, "iCost");
 	pXML->GetChildXmlValByName(&m_bKill, "bKill");

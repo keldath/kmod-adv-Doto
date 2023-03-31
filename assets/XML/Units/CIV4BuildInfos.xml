@@ -132,6 +132,9 @@
 			<Description>TXT_KEY_BUILD_MINE</Description>
 			<Help/>
 			<PrereqTech>TECH_MINING</PrereqTech>
+			<!-- doto obsolete improvement -->
+			<TechObsolete>NONE</TechObsolete>
+			<!-- doto obsolete improvement -->
 			<iTime>400</iTime>
 			<iCost>0</iCost>
 			<bKill>0</bKill>

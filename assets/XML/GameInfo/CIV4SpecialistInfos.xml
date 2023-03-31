@@ -420,7 +420,7 @@
 		<SpecialistInfo>
 			<Type>SPECIALIST_FARMER</Type>
 			<Description>Farmer</Description>
-			<Civilopedia>TXT_KEY_CONCEPT_SPECIALISTS_PEDIA</Civilopedia>
+			<Civilopedia>City States specialist that is created in the city after population 18 is reached. this will help a city state to keep growing even if its tiles are limited.</Civilopedia>
 			<Strategy>TXT_KEY_SPECIALIST_SCIENTIST_STRATEGY</Strategy>
 			<Help/>
 			<Texture>Art/Interface/MainScreen/CityScreen/Expert_Farmer.dds</Texture>
@@ -454,7 +454,7 @@
 		<SpecialistInfo>
 			<Type>SPECIALIST_LABORER</Type>
 			<Description>Laborer</Description>
-			<Civilopedia>TXT_KEY_CONCEPT_SPECIALISTS_PEDIA</Civilopedia>
+			<Civilopedia>City States specialist that is created in the city after population 18 is reached. this will help a city state to keep growing even if its tiles are limited.</Civilopedia>
 			<Strategy>TXT_KEY_SPECIALIST_SCIENTIST_STRATEGY</Strategy>
 			<Help/>
 			<Texture>Art/Interface/MainScreen/CityScreen/Expert_Miner.dds</Texture>
@@ -488,7 +488,7 @@
 		<SpecialistInfo>
 			<Type>SPECIALIST_MINER</Type>
 			<Description>Miner</Description>
-			<Civilopedia>TXT_KEY_CONCEPT_SPECIALISTS_PEDIA</Civilopedia>
+			<Civilopedia>City States specialist that is created in the city after population 18 is reached. this will help a city state to keep growing even if its tiles are limited.</Civilopedia>
 			<Strategy>TXT_KEY_SPECIALIST_SCIENTIST_STRATEGY</Strategy>
 			<Help/>
 			<Texture>Art/Interface/MainScreen/CityScreen/Expert_TobaccoPlanter.dds</Texture>

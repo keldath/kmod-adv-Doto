@@ -280,7 +280,7 @@ Button	The path of the dds file that contains the image for this civic.
 				  <SpecialistType>SPECIALIST_PRIEST</SpecialistType>
 				  <iFreeSpecialistCount>1</iFreeSpecialistCount>
 			  </FreeSpecialistCount>
-	        </FreeSpecialistCounts> -->
+	        </FreeSpecialistCounts>  -->
 			<BuildingHappinessChanges/>
 			<BuildingHealthChanges/>
 			<FeatureHappinessChanges/>
@@ -4056,10 +4056,10 @@ Button	The path of the dds file that contains the image for this civic.
      		<StateReligionYieldModifiers/>
 			<StateReligionCommerceModifiers/>
 			<NonStateReligionYieldModifiers/>
-      		<NonStateReligionCommerceModifiers/>
+			<NonStateReligionCommerceModifiers/>
 			<BuildingYieldChanges>
       			<BuildingYieldChange>
-					<BuildingType>BUILDING_PALACE</BuildingType>
+	      			<BuildingType>BUILDING_PALACE</BuildingType>
 	      			<BuildingYields>
 						<iYield>0</iYield>
 						<iYield>2</iYield>
@@ -5580,15 +5580,15 @@ Button	The path of the dds file that contains the image for this civic.
 			<ImprovementYieldChanges/>
 			<WeLoveTheKing/>
 			<SpecialistCommerceChanges>
-								<SpecialistCommerceChange>
-									<SpecialistType>SPECIALIST_GREAT_ARTIST</SpecialistType>
-									<CommerceChanges>
-										<iCommerce>1</iCommerce>
-										<iCommerce>0</iCommerce>
-										<iCommerce>0</iCommerce>
-										<iCommerce>0</iCommerce>
-									</CommerceChanges>
-								</SpecialistCommerceChange>
+				<SpecialistCommerceChange>
+					<SpecialistType>SPECIALIST_GREAT_ARTIST</SpecialistType>
+					<CommerceChanges>
+						<iCommerce>1</iCommerce>
+						<iCommerce>0</iCommerce>
+						<iCommerce>0</iCommerce>
+						<iCommerce>0</iCommerce>
+					</CommerceChanges>
+				</SpecialistCommerceChange>
 			</SpecialistCommerceChanges>
 		</CivicInfo>
 		<CivicInfo>
