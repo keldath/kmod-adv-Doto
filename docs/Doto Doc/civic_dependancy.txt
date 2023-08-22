@@ -1,0 +1,8 @@
+
+
+- goverment civics:
+-each has 2 civic dependancies
+-dependancy have 2 options per child civic
+- civic screen layout will self explain the way the system works.
+- ai code chooses parents + childs
+- special sdk code to eval these civics

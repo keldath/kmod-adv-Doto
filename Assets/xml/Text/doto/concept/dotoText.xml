@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Civ4GameText>
+	<TEXT>
+		<Tag>TXT_KEY_CONCEPT_DOTO</Tag>
+		<English>[H1]Doto Components[\H1][NEWLINE][NEWLINE][BOLD]Ranged Immunity[\BOLD][NEWLINE]no more suicidal ranged units.
+siege land units will be able to inflict one time damage without the risk of being hit back by the defender.
+the damage will be a percentage up to the combat limit (each unit has one).
+hit and/or damage can be randomized.
+if the defender is also a siege unit, it will attack back e.g. -> retaliate.
+AI code was added , seems that ai use it well.
+this is based off VIP mod and inspired by civ4 Reimagined.
+[NEWLINE][NEWLINE][BOLD]City States[\BOLD][NEWLINE]
+Unique to Doto, City states are similar to CIVV+.
+the cities will abide to several key rules. a player can have special unique trade agreement with each city to receive unique city perks along with a unique resource.
+City states can be tweaked and changed in the GlobalDefinesAlt.xml at the bottom of it.
+there are explanations per parameter.
+
+- city states will be randomly spawned at turn 1 (only Ancient era).
+- cannot grow beyond culture defined limit (parameter).
+- cannot grow under defined culture limit (parameter).
+- i conjured method to color the inner culture borders to distinct cs area controlled.
+- new free trade agreement with CS -> will provide both the CS and the trading civ a Unique Bonus commerce (displayed in the cs Trait info).
+- cs cannot build wonders.
+- cannot be vassal.
+- ai will always raze cs and vice versa (haven't done code for human player , yet).
+- new population system - cities beyond parameter defined size will begin getting special specialists named civilians instead of population.
+dynamically - there are 3 types, 1 per yield that is given to the city according to its lowest yield output.
+these consume food.
+there are several parameters - can be turned off as a game option in the GlobalDefinesAlt.xml.
+- cannot trade cs in city trade...
+- cs build units without Bonus Prereq! (i think i made it also a parameter).
+- cs gets a tech diffusion and an enhanced one as well -> is not regular tech diffusion dependent!.
+- cs scoring is based off of population and land -> with power ups to compensate for one city....
+- cannot build settlers....
+- have a unique resource to trade with other civs - provide 1 health or happy (2 per city state)
+- amount of cs is adjustable according to world size.
+- cs can be random or be chosen in the custom game mode (make sure to define it in the parameter in GlobalDefinesAlt.xml!).
+- city states leaders are less inclined for wars, lower attitude thresholds and will not chase war related victory.
+- there are 8 city states
+- city states unique units are a duplicate of existing similar civs.
+- cs palace is unique with some more perks ups.
+- cs cannot found religions.
+- cs cannot found corporations.
+[NEWLINE][NEWLINE][BOLD]Civic Dependency[\BOLD][NEWLINE]
+New Unique Government Civic system.
+each gov civic has 2 dependent civic options with each has 2 civics to choose from.
+on any given time, dependent civics can only be chosen by the parent government civic.
+new AI logic New civic screen.
+reworked all civics.
+new civic tags with new features.
+[NEWLINE][NEWLINE][BOLD]Unit Blockade[\BOLD][NEWLINE]
+Enemy units block direction of 45 degrees . meaning the player must confront and attack, or go around in a longer path.
+[NEWLINE][NEWLINE][BOLD]Influence Driven war[\BOLD][NEWLINE]
+winning battle and/or pillaging can change the target tile culture in the player favor.
+[NEWLINE][NEWLINE][BOLD]Mountains Back to service[\BOLD][NEWLINE]
+Units can walk over mountains (not all units).
+also bonuses can appear on peaks.
+[NEWLINE][NEWLINE][BOLD]Forbidden Religion[\BOLD][NEWLINE]
+each civ has one religion it cannot found nor it can convert to.
+[NEWLINE][NEWLINE][BOLD]Limited Religion[\BOLD][NEWLINE]
+Each civ can only found a limited number of religions.
+default is 1 per civ. later on ill make it that some civs can found more.
+[NEWLINE][NEWLINE][BOLD]Culture Control and Improvement Limits[\BOLD][NEWLINE]
+Forts now spread culture around them.
+Some improvements cannot be built near each other.
+[NEWLINE][NEWLINE][BOLD]Cultural Golden Age[\BOLD][NEWLINE]
+after a certain threshold , from Culture, a golden Age will be triggered.
+[NEWLINE][NEWLINE][BOLD]Wonder Limit (along with Wonder build 1:1 obsoleet)[\BOLD][NEWLINE]
+each city can build wonders limited by its culture size.
+if combined with wonder obsolete game options -> if a city has an obsolete wonder which is included in the wonder count,
+it will ignore it and open a new wonder slot -> meaning for example culture limit is 5, city has 5 wonders which 1 is obsolete -> the option will allow the construction of the 6th
+wonder in that case.
+</English>
+		</TEXT>
+</Civ4GameText>

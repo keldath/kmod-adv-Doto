@@ -683,7 +683,7 @@ void CvGame::cycleSelectionGroups(bool bClear, bool bForward, bool bWorkers)
 	{	/*	K-Mod: I've weakend this condition so that the group cycle order
 			can be refreshed by automoves.
 			(Maybe I should create & use "sendCycleRefresh" instead.) */
-		if (pNextSelectionGroup ||
+		if (pNextSelectionGroup != NULL ||
 			GET_PLAYER(getActivePlayer()).hasAutoUnit())
 		{
 			CvMessageControl::getInstance().sendAutoMoves();
@@ -2291,8 +2291,8 @@ void CvGame::updateSeaPatrolColors(CvUnit const& kSelectedUnit)
 		if (kSelectedUnit.canReachBySeaPatrol(*itPlot))
 		{
 			gDLL->getEngineIFace()->fillAreaBorderPlot(itPlot->getX(), itPlot->getY(),
-					GC.getColorInfo(GC.getInfoTypeForString("COLOR_CITY_BLUE")).getColor(),
-					AREA_BORDER_LAYER_PATROLLED);
+					GC.getInfo((ColorTypes)GC.getInfoTypeForString("COLOR_CITY_BLUE")).
+					getColor(), AREA_BORDER_LAYER_PATROLLED);
 		}
 	}
 }
@@ -2495,10 +2495,7 @@ int CvGame::getNextSoundtrack(EraTypes eLastEra, int iLastSoundtrack) const
 			aiTracks.push_back(iTrack);
 	}
 	if (aiTracks.empty())
-	{
-		FAssert(!aiTracks.empty());
 		aiTracks.push_back(iLastSoundtrack);
-	}
 	return aiTracks[GC.getASyncRand().get(
 			aiTracks.size(), "Pick Song ASYNC")]; // </advc.002o>
 }

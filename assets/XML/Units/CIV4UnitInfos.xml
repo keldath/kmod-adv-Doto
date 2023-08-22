@@ -3692,7 +3692,7 @@ UNITAI changed - now will used to counter.
 			<!--<ForceBuildings/> removed in advc097-->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
-			<StateReligion>NONE</StateReligion>
+			<StateReligion>RELIGION_JUDAISM</StateReligion>
 			<PrereqReligion>RELIGION_JUDAISM</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>BUILDING_JEWISH_MONASTERY</PrereqBuilding>
@@ -3861,7 +3861,7 @@ UNITAI changed - now will used to counter.
 			<!--<ForceBuildings/> removed in advc097-->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
-			<StateReligion>NONE</StateReligion>
+			<StateReligion>RELIGION_CHRISTIANITY</StateReligion>
 			<PrereqReligion>RELIGION_CHRISTIANITY</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>BUILDING_CHRISTIAN_MONASTERY</PrereqBuilding>
@@ -4030,7 +4030,7 @@ UNITAI changed - now will used to counter.
 			<!--<ForceBuildings/> removed in advc097-->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
-			<StateReligion>NONE</StateReligion>
+			<StateReligion>RELIGION_ISLAM</StateReligion>
 			<PrereqReligion>RELIGION_ISLAM</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>BUILDING_ISLAMIC_MONASTERY</PrereqBuilding>
@@ -4199,7 +4199,7 @@ UNITAI changed - now will used to counter.
 			<!--<ForceBuildings/> removed in advc097-->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
-			<StateReligion>NONE</StateReligion>
+			<StateReligion>RELIGION_HINDUISM</StateReligion>
 			<PrereqReligion>RELIGION_HINDUISM</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>BUILDING_HINDU_MONASTERY</PrereqBuilding>
@@ -4368,7 +4368,7 @@ UNITAI changed - now will used to counter.
 			<!--<ForceBuildings/> removed in advc097-->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
-			<StateReligion>NONE</StateReligion>
+			<StateReligion>RELIGION_BUDDHISM</StateReligion>
 			<PrereqReligion>RELIGION_BUDDHISM</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>BUILDING_BUDDHIST_MONASTERY</PrereqBuilding>
@@ -4537,7 +4537,7 @@ UNITAI changed - now will used to counter.
 			<!--<ForceBuildings/> removed in advc097-->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
-			<StateReligion>NONE</StateReligion>
+			<StateReligion>RELIGION_CONFUCIANISM</StateReligion>
 			<PrereqReligion>RELIGION_CONFUCIANISM</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>BUILDING_CONFUCIAN_MONASTERY</PrereqBuilding>
@@ -4706,7 +4706,7 @@ UNITAI changed - now will used to counter.
 			<!--<ForceBuildings/> removed in advc097-->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
-			<StateReligion>NONE</StateReligion>
+			<StateReligion>RELIGION_TAOISM</StateReligion>
 			<PrereqReligion>RELIGION_TAOISM</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>BUILDING_TAOIST_MONASTERY</PrereqBuilding>
@@ -26596,7 +26596,7 @@ UNITAI changed - now will used to counter.
 			<!--<ForceBuildings/> removed in advc097-->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
-			<StateReligion>NONE</StateReligion>
+			<StateReligion>RELIGION_AMON_RA</StateReligion>
 			<PrereqReligion>RELIGION_AMON_RA</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>BUILDING_AMON_RA_MONASTERY</PrereqBuilding>
@@ -26764,7 +26764,7 @@ UNITAI changed - now will used to counter.
 			<!--<ForceBuildings/> removed in advc097-->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
-			<StateReligion>NONE</StateReligion>
+			<StateReligion>RELIGION_ZOROASTRIANISM</StateReligion>
 			<PrereqReligion>RELIGION_ZOROASTRIANISM</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>BUILDING_ZOROASTRIAN_MONASTERY</PrereqBuilding>
@@ -26933,7 +26933,7 @@ UNITAI changed - now will used to counter.
 			<!--<ForceBuildings/> removed in advc097-->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
-			<StateReligion>NONE</StateReligion>
+			<StateReligion>RELIGION_HELLENISM</StateReligion>
 			<PrereqReligion>RELIGION_HELLENISM</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>BUILDING_HELLENIC_MONASTERY</PrereqBuilding>
@@ -27101,7 +27101,7 @@ UNITAI changed - now will used to counter.
 			<!--<ForceBuildings/> removed in advc097-->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
-			<StateReligion>NONE</StateReligion>
+			<StateReligion>RELIGION_SHINTO</StateReligion>
 			<PrereqReligion>RELIGION_SHINTO</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>BUILDING_SHINTO_MONASTERY</PrereqBuilding>
@@ -27270,7 +27270,7 @@ UNITAI changed - now will used to counter.
 			<!--<ForceBuildings/> removed in advc097-->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
-			<StateReligion>NONE</StateReligion>
+			<StateReligion>RELIGION_DRUIDISM</StateReligion>
 			<PrereqReligion>RELIGION_DRUIDISM</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>BUILDING_DRUIDISM_TEMPLE</PrereqBuilding>
@@ -59250,7 +59250,7 @@ UNITAI changed - now will used to counter.
 			<!--<ForceBuildings/> removed in advc097-->
 			<HolyCity>NONE</HolyCity>
 			<ReligionType>NONE</ReligionType>
-			<StateReligion>NONE</StateReligion>
+			<StateReligion>RELIGION_ODIN</StateReligion>
 			<PrereqReligion>RELIGION_ODIN</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>

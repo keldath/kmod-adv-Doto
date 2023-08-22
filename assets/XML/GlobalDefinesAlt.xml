@@ -73,15 +73,15 @@
 		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
 
-	<!-- The power health entries have not been changed
-	<Define>
+	<!-- The power health entries have not been changed -->
+	<!--Define>
 		<DefineName>POWER_HEALTH_CHANGE</DefineName>
 		<iDefineIntVal>-2</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>DIRTY_POWER_HEALTH_CHANGE</DefineName>
 		<iDefineIntVal>-2</iDefineIntVal>
-	</Define>-->
+	</Define-->
 	<!-- warming prob is out of 1000, not pecent. -->
 	<!-- doto - keldath - changed was 20 -->
 	<Define> <!-- redefine -->
@@ -108,11 +108,19 @@
 		<DefineName>GLOBAL_WARMING_BASE_ANGER_PERCENT</DefineName>
 		<iDefineIntVal>30</iDefineIntVal>
 	</Define>
-	<!-- unused
-	<Define>
+	<!-- No longer used: -->
+	<!--Define>
 		<DefineName>GLOBAL_WARMING_FOREST</DefineName>
 		<iDefineIntVal>25</iDefineIntVal>
-	</Define> -->
+	</Define>
+	<Define>
+		<DefineName>GLOBAL_WARMING_NUKE_WEIGHT</DefineName>
+		<iDefineIntVal>50</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>BONUS_OBSOLETE_VALUE_MODIFIER</DefineName>
+		<iDefineIntVal>150</iDefineIntVal>
+	</Define-->
 	<Define>
 		<DefineName>GLOBAL_WARMING_BUILDING_WEIGHT</DefineName>
 		<iDefineIntVal>20</iDefineIntVal>
@@ -129,14 +137,6 @@
 		<DefineName>GLOBAL_WARMING_POPULATION_WEIGHT</DefineName>
 		<iDefineIntVal>10</iDefineIntVal>
 	</Define>
-	<!--<Define>
-		<DefineName>GLOBAL_WARMING_NUKE_WEIGHT</DefineName>
-		<iDefineIntVal>50</iDefineIntVal>
-	</Define>
-	<Define>
-		<DefineName>BONUS_OBSOLETE_VALUE_MODIFIER</DefineName>
-		<iDefineIntVal>150</iDefineIntVal>
-	</Define>-->
 	<Define>
 		<DefineName>RELIGION_SPREAD_DIVISOR_BASE</DefineName>
 		<iDefineIntVal>5</iDefineIntVal>
@@ -572,7 +572,7 @@
 	</Define>
 	<Define>
 		<DefineName>CIV4_REMASTER_ART</DefineName>
-		<iDefineIntVal>0</iDefineIntVal>
+		<iDefineIntVal>1</iDefineIntVal>
 	<!-- civ4remaster art mod 
 	requires unzipping of the patch in the doto folder end
 	-->		
@@ -590,6 +590,20 @@
 		<DefineName>MAX_CIVIC_OPTIONS</DefineName>
 		<iDefineIntVal>9</iDefineIntVal>
 <!-- KELDATH CIVIC parent-->	
+<!-- doto113 keldath find the best capital enhanced start - by <Nexux>-->	
+	</Define>
+	<Define>
+		<DefineName>CAPITAL_BUILDINGCLASS_2</DefineName>
+		<iDefineIntVal>BUILDINGCLASS_GREAT_PALACE</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>CAPITAL_BUILDINGCLASS_3</DefineName>
+		<iDefineIntVal>BUILDINGCLASS_VERSAILLES</iDefineIntVal>
+<!-- doto 113 -> loose capital anarchy start by <Nexus> -->	 		
+	</Define>
+	<Define>
+		<DefineName>BASE_LOSS_CAPITAL_ANARCHY_LENGTH</DefineName>
+		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
 	
 </Civ4Defines>

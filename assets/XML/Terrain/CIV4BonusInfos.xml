@@ -1271,7 +1271,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			</YieldChanges>
 			<iAITradeModifier>0</iAITradeModifier>
 			<iAIObjective>0</iAIObjective>
-			<iHealth>1</iHealth>
+			<iHealth>0</iHealth>
 			<iHappiness>0</iHappiness>
 			<iPlacementOrder>4</iPlacementOrder>
 			<iConstAppearance>50</iConstAppearance>
@@ -2024,7 +2024,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iAITradeModifier>0</iAITradeModifier>
 			<iAIObjective>0</iAIObjective>
 			<iHealth>0</iHealth>
-			<iHappiness>1</iHappiness>
+			<iHappiness>0</iHappiness>
 			<iPlacementOrder>6</iPlacementOrder>
 			<iConstAppearance>50</iConstAppearance>
 			<iMinAreaSize>10</iMinAreaSize>
@@ -2128,7 +2128,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			</YieldChanges>
 			<iAITradeModifier>5</iAITradeModifier>
 			<iAIObjective>0</iAIObjective>
-			<iHealth>0</iHealth>
+			<iHealth>-1</iHealth>
 			<iHappiness>0</iHappiness>
 			<iPlacementOrder>0</iPlacementOrder>
 			<iConstAppearance>100</iConstAppearance>
@@ -2257,7 +2257,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			</YieldChanges>
 			<iAITradeModifier>0</iAITradeModifier>			
 			<iAIObjective>0</iAIObjective>
-			<iHealth>0</iHealth>
+			<iHealth>-1</iHealth>
 			<iHappiness>1</iHappiness>
 			<iPlacementOrder>2</iPlacementOrder>
 			<iConstAppearance>100</iConstAppearance>
@@ -2404,7 +2404,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iAITradeModifier>10</iAITradeModifier>
 			<iAIObjective>0</iAIObjective>
 			<iHealth>0</iHealth>
-			<iHappiness>0</iHappiness>
+			<iHappiness>-1</iHappiness>
 			<iPlacementOrder>0</iPlacementOrder>
 			<iConstAppearance>100</iConstAppearance>
 			<iMinAreaSize>1</iMinAreaSize>
@@ -2519,7 +2519,7 @@ TerrainBooleans	Defines which terrain types the resource may appear on.
 			<iAITradeModifier>5</iAITradeModifier>
 			<iAIObjective>0</iAIObjective>
 			<iHealth>0</iHealth>
-			<iHappiness>0</iHappiness>
+			<iHappiness>1</iHappiness>
 			<iPlacementOrder>4</iPlacementOrder>
 			<iConstAppearance>100</iConstAppearance>
 			<iMinAreaSize>10</iMinAreaSize>

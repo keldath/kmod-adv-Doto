@@ -718,7 +718,7 @@ void CvPlayer::processTraits(int iChange)
 		//a city state will get commerce changes and a normal civ will get commerece modifier.
 		//CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
 		//if ((szText.find(L"Unique Trade") != std::string::npos))
-		if(kTrait.getFreeTradeValid() > 0)
+		if (kTrait.getFreeTradeValid() > 0)
 			continue;
 /************************************************************************************************/
 /* END: Advanced Diplomacy     doto custom for city state trade agreement                     */
@@ -867,7 +867,7 @@ void CvPlayer::changeLeader(LeaderHeadTypes eNewLeader,
 	GC.getInitCore().setLeader(getID(), eNewLeader);
 	// <advc.tsl>
 	if (bChangeName && (!isHuman() || // Preserve human custom name
-		wcscmp(getName(), GC.getLeaderHeadInfo(eOldLeader).getDescription()) == 0))
+		wcscmp(getName(), GC.getInfo(eOldLeader).getDescription()) == 0))
 	{
 		CvWString szEmpty; // Means that leaderhead description gets used
 		GC.getInitCore().setLeaderName(getID(), szEmpty);
@@ -1861,7 +1861,7 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 	}
 
 	pOldCity->kill(false, /* advc.001: */ false); // Don't bump units yet
-	pOldCity = NULL; // advc: Mustn't access that past this point
+	pOldCity = NULL; // advc: Mustn't be accessed past this point
 
 	if (bTrade) // Repercussions of cession: tile culture, war success (city culture: further down)
 	{
@@ -2562,7 +2562,8 @@ CvSelectionGroup* CvPlayer::getNextGroupInCycle(CvUnit* pUnit, bool bForward,
 		CvSelectionGroup* pLoopSelectionGroup = getSelectionGroup(
 				pSelectionGroupNode->m_data);
 		if (pLoopSelectionGroup->readyToSelect(/* advc.153: */ true) &&
-			kCycledGroups.count(pSelectionGroupNode->m_data) <= 0) // K-Mod
+			(kCycledGroups.count(pSelectionGroupNode->m_data) <= 0 || // K-Mod
+			bWrap)) // advc.154: Don't want to return NULL upon wrapping
 		{
 			if (!bWorkers ||
 				// advc.153: with moves
@@ -2594,7 +2595,7 @@ CvSelectionGroup* CvPlayer::getNextGroupInCycle(CvUnit* pUnit, bool bForward,
 		if (pSelectionGroupNode == pFirstSelectionGroupNode)
 		{
 			// break; /* <K-Mod> */
-			if (bWrap)
+			if (bWrap) // (advc.154: Maybe can't occur anymore)
 				break;
 			bWrap = true; // </K-Mod>
 		}
@@ -4812,6 +4813,19 @@ void CvPlayer::findNewCapital()
 		iValue += pLoopCity->getCorporationCount();
 		iValue += (pLoopCity->getNumGreatPeople() * 2);
 
+//doto113 keldath find the best capital enhanced start - by <Nexux>
+		BuildingTypes const eCapitalBuilding2 = getCivilization().getBuilding((BuildingClassTypes)
+			GC.getDefineINT("CAPITAL_BUILDINGCLASS_2"));
+		BuildingTypes const eCapitalBuilding3 = getCivilization().getBuilding((BuildingClassTypes)
+			GC.getDefineINT("CAPITAL_BUILDINGCLASS_3"));
+		if (eCapitalBuilding2 != NO_BUILDING)
+			iValue += pLoopCity->getPopulation() * 2;
+		if (eCapitalBuilding3 != NO_BUILDING)
+			iValue += pLoopCity->getPopulation() * 2;
+		iValue += pLoopCity->getNumNationalWonders();
+		iValue += pLoopCity->getNumWorldWonders();
+//doto113 keldath find the best capital enhanced start - by <Nexux>
+
 		iValue *= (pLoopCity->calculateCulturePercent(getID()) + 100);
 		iValue /= 100;
 
@@ -4824,11 +4838,10 @@ void CvPlayer::findNewCapital()
 
 	if (pBestCity != NULL)
 	{
-		FAssert(pBestCity->getNumRealBuilding(eCapitalBuilding) == 0);
-		pBestCity->setNumRealBuilding(eCapitalBuilding, 1);
-		// advc.106: Moved down so that setCapital can announce the old capital
 		if (pOldCapital != NULL)
 			pOldCapital->setNumRealBuilding(eCapitalBuilding, 0);
+		FAssert(pBestCity->getNumRealBuilding(eCapitalBuilding) == 0);
+		pBestCity->setNumRealBuilding(eCapitalBuilding, 1);
 	}
 	// advc: Important for hasCapital after map regen
 	else setCapital(NULL);
@@ -6470,13 +6483,17 @@ int CvPlayer::getImprovementUpgradeRate() const
 }
 
 
-int CvPlayer::calculateTotalYield(YieldTypes eYield) const
+int CvPlayer::calculateTotalYield(YieldTypes eYield,
+	bool bExludeCitiesInDisorder) const // advc.001 (for Financial Advisor)
 {
 	PROFILE_FUNC();
 
 	int iTotalCommerce = 0;
 	FOR_EACH_CITY(pLoopCity, *this)
-		iTotalCommerce += pLoopCity->getYieldRate(eYield);
+	{
+		if (!bExludeCitiesInDisorder || !pLoopCity->isDisorder()) // advc.001
+			iTotalCommerce += pLoopCity->getYieldRate(eYield);
+	}
 	return iTotalCommerce;
 }
 
@@ -7484,7 +7501,7 @@ int CvPlayer::isCivicParentOrChild(CivicTypes eCivic) const
 }
 /* doto Civics  parent - End */
 
-bool CvPlayer::canRevolution(CivicMap const& kNewCivics) const
+bool CvPlayer::canRevolution(CivicMap const& kNewCivics) const 
 {
 	if (isAnarchy() || getRevolutionTimer() > 0)
 		return false;
@@ -7501,7 +7518,7 @@ bool CvPlayer::canRevolution(CivicMap const& kNewCivics) const
 	}
 	return false;
 }
-    
+
 
 void CvPlayer::revolution(CivicMap const& kNewCivics, bool bForce)
 {
@@ -7899,6 +7916,36 @@ int CvPlayer::getCivicAnarchyLength(CivicMap const& kNewCivics,
 	return range(iAnarchyLength, 1, iMaxAnarchyTurns);
 }
 
+//doto 113 -> loose capital anarchy start by <Nexus>
+int CvPlayer::getCapitalLossAnarchyLength() const // advc.132
+{
+	int const iMaxAnarchyTurns = getMaxAnarchyTurns(); // advc
+	if (iMaxAnarchyTurns == 0)
+		return 0;
+//	if (/* <advc.132> */ !bIgnoreGoldenAge && /* </advc.132> */ isGoldenAge())
+//		return 0;
+
+	int iAnarchyLength = 0;
+	
+	static int const iBASE_LOSS_CAPITAL_ANARCHY_LENGTH = GC.getDefineINT("BASE_LOSS_CAPITAL_ANARCHY_LENGTH"); // advc.opt
+	iAnarchyLength += iBASE_LOSS_CAPITAL_ANARCHY_LENGTH;
+	iAnarchyLength += ((getNumCities() * GC.getInfo(GC.getMap().
+							getWorldSize()).getNumCitiesAnarchyPercent()) / 100);
+
+	iAnarchyLength = ((iAnarchyLength * std::max(0, getAnarchyModifier() + 100)) / 100);
+
+	if (iAnarchyLength == 0)
+		return 0;
+
+	iAnarchyLength *= GC.getInfo(GC.getGame().getGameSpeedType()).getAnarchyPercent();
+	iAnarchyLength /= 100;
+
+	iAnarchyLength *= GC.getInfo(GC.getGame().getStartEra()).getAnarchyPercent();
+	iAnarchyLength /= 100;
+
+	return range(iAnarchyLength, 1, iMaxAnarchyTurns);
+}
+//doto 113 -> loose capital anarchy end
 
 int CvPlayer::getReligionAnarchyLength(/* advc.132: */ bool ignoreGoldenAge) const
 {
@@ -9466,52 +9513,6 @@ void CvPlayer::setCapital(CvCity* pNewCapital)
 		pNewCapital->updateCommerce();
 		pNewCapital->setInfoDirty(true);
 	}
-	// <advc.106> Announcement:
-	if (pOldCapital != NULL && pNewCapital != NULL)
-	{
-		CvWString szFullInfo = gDLL->getText("TXT_KEY_MISC_CAPITAL_MOVED",
-				pNewCapital->getNameKey(), getCivilizationShortDescriptionKey(),
-				pOldCapital->getNameKey());
-		CvWString szOnlyOldKnown = gDLL->getText("TXT_KEY_MISC_NO_LONGER_CAPITAL",
-				getCivilizationShortDescriptionKey(), pOldCapital->getNameKey());
-		CvWString szOnlyNewKnown = gDLL->getText("TXT_KEY_MISC_IS_NOW_CAPITAL",
-				pNewCapital->getNameKey(), getCivilizationShortDescriptionKey());
-		for (PlayerIter<MAJOR_CIV> it; it.hasNext(); ++it)
-		{
-			CvPlayer const& kObs = *it;
-			if (kObs.getID() == getID())
-				continue;
-			if (GET_TEAM(getTeam()).isHasMet(kObs.getTeam()) ||
-				 kObs.isSpectator()) // advc.127
-			{
-				CvWString* pszMsg = NULL;
-				bool bOldRevealed = pOldCapital->isRevealed(kObs.getTeam(),
-						kObs.isSpectator()); // advc.127
-				bool bNewRevealed = pNewCapital->isRevealed(kObs.getTeam(),
-						kObs.isSpectator()); // advc.127
-				if (bOldRevealed && bNewRevealed)
-					pszMsg = &szFullInfo;
-				else if (bOldRevealed)
-					pszMsg = &szOnlyOldKnown;
-				else if (bNewRevealed)
-					pszMsg = &szOnlyNewKnown;
-				if (pszMsg != NULL)
-				{
-					CvPlot const& kFlashPlot = (bNewRevealed ?
-							pNewCapital->getPlot() : pOldCapital->getPlot());
-					/*	<advc.127> Not really a major event, but minor events
-						don't get shown in spectator mode. */
-					InterfaceMessageTypes eMsgType = (kObs.isSpectator() ?
-							MESSAGE_TYPE_MAJOR_EVENT : MESSAGE_TYPE_MINOR_EVENT);
-					// </advc.127>
-					gDLL->UI().addMessage(kObs.getID(), false, -1, *pszMsg, NULL,
-							eMsgType, ARTFILEMGR.getInterfaceArtInfo(
-							"INTERFACE_CITY_BAR_CAPITAL_TEXTURE")->getPath(),
-							NO_COLOR, kFlashPlot.getX(), kFlashPlot.getY());
-				}
-			}
-		}
-	} // </advc.106>
 //doto city states - add unique resource
 	addCityStateResource(pNewCapital, pOldCapital);
 }
@@ -10974,6 +10975,16 @@ void CvPlayer::updateCommerceRates()
 	FOR_EACH_ENUM2(Commerce, eCommerce)
 	{
 		int iRate = m_aiCommerceRateTimes100.get(eCommerce);
+		// <advc>
+#ifdef FASSERT_ENABLE
+{
+		int iTotalRate = 0;
+		FOR_EACH_CITY(pCity, *this)
+			iTotalRate += pCity->getCommerceRateTimes100(eCommerce);
+		FAssertMsg(iTotalRate == iRate, "Player's special commerce did not equal the sum of their cities'");
+}
+#endif
+		// </advc>
 		if (GC.getGame().isOption(GAMEOPTION_NO_ESPIONAGE))
 		{
 			if (eCommerce == COMMERCE_CULTURE)
@@ -11658,12 +11669,31 @@ int CvPlayer::getCivicUpkeep(CivicMap const* pCivics, bool bIgnoreAnarchy,
 		pCivics = &m_aeCivics;
 
 	int iTotalUpkeep = 0;
+	//keldath min civic cost 
+	//early game civics doesnt have a vost - until inflations kicks in
+	//i find that odd. so i added a small calc to make the civics have a cost to it.
+	int totalMinUpkeep = 0;
 	FOR_EACH_ENUM(CivicOption)
 	{
-		iTotalUpkeep += getSingleCivicUpkeep(pCivics->get(eLoopCivicOption),
-				bIgnoreAnarchy, /* advc.004b: */ iExtraCities);
+		CivicTypes eCivic = pCivics->get(eLoopCivicOption); //keldath
+		iTotalUpkeep += getSingleCivicUpkeep(eCivic,//keldath
+			bIgnoreAnarchy, /* advc.004b: */ iExtraCities);
+		//keldath min civic cost bulk
+		if (eCivic != NO_CIVIC)
+		{
+			UpkeepTypes eUpkeep = (UpkeepTypes)GC.getInfo(eCivic).getUpkeep();
+			if (eUpkeep != NO_UPKEEP)
+			{
+				totalMinUpkeep += GC.getInfo(eUpkeep).getminUpkeepCost();
+			}
+		}
 	}
-
+	//keldath min civic cost when no inflation intdiv::round
+	//this will add up the total of civics and divide by 50. each upkeep has another weight
+	//the reason is cause i didnt want each civic to have a cost of 1+ cause thats too high.
+	//this way, the upkeeps has a value of 0-100, add it all up, divide by 50.
+	iTotalUpkeep += (totalMinUpkeep > 0 && getNumCities() > 0 ? fmath::round((totalMinUpkeep + (getNumCities() * 5)) / 50) : 0);
+	//keldath min civic cost bulk
 	return iTotalUpkeep;
 }
 
@@ -16162,6 +16192,20 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	} // </advc.912c>
 	if (uiFlag < 18)
 		updateMaintenance();
+	// <advc>
+	if (uiFlag < 22)
+	{
+		FOR_EACH_ENUM(Commerce)
+		{
+			m_aiCommerceRateTimes100.set(eLoopCommerce, 0);
+			FOR_EACH_CITY(pCity, *this)
+			{
+				m_aiCommerceRateTimes100.add(eLoopCommerce,
+						pCity->getCommerceRateTimes100(eLoopCommerce));
+			}
+		}
+		updateCommerceRates();
+	} // </advc>
 	// <advc.708>
 	if (uiFlag < 19 && GC.getGame().isOption(GAMEOPTION_RISE_FALL) && isAlive())
 	{
@@ -16199,7 +16243,8 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	//uiFlag = 18; // advc.251 (city maintenance changed in handicap XML)
 	//uiFlag = 19; // advc.708
 	//uiFlag = 20; // advc.912g
-	uiFlag = 21; // advc.enum: Bugfix in bool-valued ArrayEnumMap
+	//uiFlag = 21; // advc.enum: Bugfix in bool-valued ArrayEnumMap
+	uiFlag = 22; // advc: Bugs fixed with civ-wide special commerce rate cache
 	pStream->Write(uiFlag);
 
 	// <advc.027>
@@ -18796,10 +18841,10 @@ bool CvPlayer::canSplitEmpire() const
 	if (GC.getGame().isOption(GAMEOPTION_NO_VASSAL_STATES))
 		return false;
 
-//doto city states - cant be vassal sagi
+//doto city states - cant be vassal
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && checkCityState(getID()))
 		return false;
-//doto city states - cant be vassal sagi
+//doto city states - cant be vassal
 
 	if (isAVassal())
 		return false;
@@ -18821,10 +18866,10 @@ bool CvPlayer::canSplitArea(CvArea const& kArea) const // advc: was iAreaId
 {
 	PROFILE_FUNC(); // advc: Moved from CvPlayerAI::AI_doSplit
 
-//doto city states - cant be vassal sagi
+//doto city states - cant be vassal
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && checkCityState(getID()))
 		return false;
-//doto city states - cant be vassal sagi
+//doto city states - cant be vassal
 
 	if (!hasCapital())
 		return false;
@@ -19989,7 +20034,8 @@ int CvPlayer::getNewCityProductionValue() const
 }
 
 
-int CvPlayer::getGrowthThreshold(int iPopulation) const
+int CvPlayer::getGrowthThreshold(int iPopulation,
+	bool bIgnoreModifiers) const // advc.064b
 {
 	CvGame const& kGame = GC.getGame(); // advc
 	// <advc.251>
@@ -19999,19 +20045,22 @@ int CvPlayer::getGrowthThreshold(int iPopulation) const
 			GC.getInfo(getHandicapType()).getBaseGrowthThresholdPercent())).uround();
 	int iThreshold = iBaseThreshold + // </advc.251>
 			(iPopulation * iCITY_GROWTH_MULTIPLIER);
-	// <advc.251>
-	int iAIModifier = 100;
-	if (!isHuman()) // Also apply it to Barbarians
+	if (!bIgnoreModifiers) // advc.064b
 	{
-		CvHandicapInfo const& h = GC.getInfo(kGame.getHandicapType());
-		iAIModifier = h.getAIGrowthPercent() +
-				//h.getAIPerEraModifier() * getCurrentEra()
-				kGame.AIHandicapAdjustment();
-	} // Reduce rounding error:
-	iThreshold = (iThreshold * per100(iAIModifier) *
-			per100(GC.getInfo(kGame.getGameSpeedType()).getGrowthPercent()) *
-			per100(GC.getInfo(kGame.getStartEra()).getGrowthPercent())).round();
-	// </advc.251>
+		// <advc.251>
+		int iAIModifier = 100;
+		if (!isHuman()) // Also apply it to Barbarians
+		{
+			CvHandicapInfo const& h = GC.getInfo(kGame.getHandicapType());
+			iAIModifier = h.getAIGrowthPercent() +
+					//h.getAIPerEraModifier() * getCurrentEra()
+					kGame.AIHandicapAdjustment();
+		} // Reduce rounding error:
+		iThreshold = (iThreshold * per100(iAIModifier) *
+				per100(GC.getInfo(kGame.getGameSpeedType()).getGrowthPercent()) *
+				per100(GC.getInfo(kGame.getStartEra()).getGrowthPercent())).round();
+		// </advc.251>
+	}
 	return std::max(1, iThreshold);
 }
 
@@ -22048,7 +22097,7 @@ bool CvPlayer::checkCityState(PlayerTypes ePlayer) const
 TraitTypes CvPlayer::getMemberUniqueTrait(PlayerTypes ePlayer) const
 {
 	CvPlayer& kPlayer = GET_PLAYER(ePlayer);
-	TraitTypes csTrait = NO_TRAIT;
+	//TraitTypes csTrait = NO_TRAIT;
 
 	FOR_EACH_ENUM2(Trait, eTrait)
 	{
@@ -22060,11 +22109,13 @@ TraitTypes CvPlayer::getMemberUniqueTrait(PlayerTypes ePlayer) const
 		//if ((szText.find(L"Unique Trade") != std::string::npos))
 		if (kTrait.getFreeTradeValid() > 0)
 		{
-			if (csTrait == eTrait)
-			{
-				return csTrait;
-				break;
-			}
+			//if (csTrait == eTrait)
+			//{
+			//	return csTrait;
+			//	break;
+			//} removed doto 112c
+			return eTrait;
+			break;
 		}
 	}
 	return NO_TRAIT;
@@ -22118,7 +22169,7 @@ TraitTypes CvPlayer::getPlayersMinUniqueTrait(PlayerTypes eFrom, PlayerTypes eTo
 	CvPlayer& kOurPlayer = GET_PLAYER(eFrom);
 	CvPlayer& kthemPlayer = GET_PLAYER(eTo);
 	
-	TraitTypes csTrait = NO_TRAIT;
+	//TraitTypes csTrait = NO_TRAIT;
 
 	FOR_EACH_ENUM2(Trait, eTrait)
 	{
@@ -22133,11 +22184,12 @@ TraitTypes CvPlayer::getPlayersMinUniqueTrait(PlayerTypes eFrom, PlayerTypes eTo
 		//if ((szText.find(L"Unique Trade") != std::string::npos))
 		if(kTrait.getFreeTradeValid()> 0)
 		{
-			if (csTrait == eTrait)
-			{
-				return csTrait;
-				break;
-			}
+			//if (csTrait == eTrait)
+			//{
+			//	return csTrait;
+			//	break;
+			//}fixed diti 112
+			return eTrait;
 		}
 	}
 	return NO_TRAIT;

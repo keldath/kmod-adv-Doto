@@ -97,7 +97,7 @@ SymbolPath	Each entry of this tag contains the directory path to a unique yield 
 		<YieldInfo>
 			<Type>YIELD_COMMERCE</Type>
 			<Description>TXT_KEY_YIELD_COMMERCE</Description>
-			<iHillsChange>0</iHillsChange>
+			<iHillsChange>1</iHillsChange>
 			<iPeakChange>0</iPeakChange>
 			<iLakeChange>0</iLakeChange>
 <!--keldath my game starts with 2 settlers, so this is how i hope to negate lower income -->

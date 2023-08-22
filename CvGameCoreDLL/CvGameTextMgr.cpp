@@ -1732,6 +1732,13 @@ void CvGameTextMgr::setPlotListHelpPerOwner(CvWStringBuffer& szString,
 		iLineLimit--;
 	if(kPlot.isFreshWater())
 		iLineLimit--;
+	/*	<advc.101> (Can even take up 2 lines, but checking for that gets too complicated;
+		not checking MainInterface__RevoltHelp BUG option either.) */
+	if (kPlot.isCity() && kPlot.getTeam() == eActiveTeam &&
+		kPlot.getPlotCity()->revoltProbability() > 0)
+	{
+		iLineLimit--;
+	} // </advc.101>
 	for(int i = 0; i < MAX_PLAYERS; i++)
 	{
 		if(kPlot.calculateCulturePercent((PlayerTypes)i) > 0)
@@ -5975,7 +5982,7 @@ void CvGameTextMgr::setCityBarHelp(CvWStringBuffer &szString, CvCity const& kCit
 				FAssert(eMode == DISPLAY_ICONS);
 				// BULL - Building Icons - start (advc: BULL had used size 24)
 				szTempBuffer.Format(L"<img=%S size=32></img>",
-						GC.getBuildingInfo(aszeBuildingsByName[i].second).getButton());
+						GC.getInfo(aszeBuildingsByName[i].second).getButton());
 				setListHelp(szString, NEWLINE, szTempBuffer, L"", bFirst);
 				// BULL - Building Icons - end
 			}
@@ -6008,8 +6015,7 @@ void CvGameTextMgr::setCityBarHelp(CvWStringBuffer &szString, CvCity const& kCit
 }
 
 /*  advc.101: Similar to code added in CvDLLWidgetData::parseNationalityHelp;
-	replacing BULL's "Revolt Chance" code (which has never been merged into
-	K-Mod/AdvCiv). */
+	replacing BULL's "Revolt Chance" code (which was never merged into K-Mod/AdvCiv). */
 void CvGameTextMgr::setRevoltHelp(CvWStringBuffer &szString, CvCity const& kCity)
 {
 	if (!kCity.getPlot().isActiveVisible(true))
@@ -6025,6 +6031,8 @@ void CvGameTextMgr::setRevoltHelp(CvWStringBuffer &szString, CvCity const& kCity
 			kCity.cultureGarrison(eCulturalOwner) : -1);
 	int const iCultureStr = (bActiveOwned ?
 			kCity.cultureStrength(eCulturalOwner) : -1);
+	int iExcessStrength = 0;
+	CvUnit const* pSelectedUnit = gDLL->UI().getHeadSelectedUnit();
 	if (rRevoltProb > 0)
 	{
 		/*  CvCity::revoltProbability rounds probabilities that are too small to
@@ -6044,6 +6052,7 @@ void CvGameTextMgr::setRevoltHelp(CvWStringBuffer &szString, CvCity const& kCity
 			szString.append(gDLL->getText(
 					"TXT_KEY_GARRISON_STRENGTH_NEEDED_SHORT",
 					iGarrisonStrNeeded));
+			iExcessStrength = -iGarrisonStrNeeded;
 		}
 		int const iPriorRevolts = kCity.getNumRevolts();
 		if (kCity.canCultureFlip())
@@ -6074,8 +6083,7 @@ void CvGameTextMgr::setRevoltHelp(CvWStringBuffer &szString, CvCity const& kCity
 		eCulturalOwner != kCity.getOwner() && iGarrisonStr >= iCultureStr)
 	{
 		// Show it only when a local unit is selected? Eh ...
-		/*CvUnit* pSelectedUnit = gDLL->UI().getHeadSelectedUnit();
-		if (pSelectedUnit != NULL && pSelectedUnit->at(kPlot))*/
+		//if (pSelectedUnit != NULL && pSelectedUnit->at(kPlot))
 		{
 			int iSafeToRemove = iGarrisonStr - iCultureStr;
 			if (iSafeToRemove < iGarrisonStr)
@@ -6085,7 +6093,30 @@ void CvGameTextMgr::setRevoltHelp(CvWStringBuffer &szString, CvCity const& kCity
 				szString.append(gDLL->getText(
 						"TXT_KEY_GARRISON_STRENGTH_EXCESS_SHORT",
 						std::min(999, iSafeToRemove)));
+				iExcessStrength = iSafeToRemove;
 			}
+		}
+	}
+	if (iExcessStrength != 0 && pSelectedUnit != NULL)
+	{
+		int iSelected = 0;
+		int iSelectedStrength = 0;
+		FOR_EACH_UNIT_IN(pUnit, *gDLL->UI().getSelectionList())
+		{
+			int iStr = pUnit->garrisonStrength();
+			if (iStr != 0)
+			{
+				iSelectedStrength += iStr;
+				iSelected++;
+			}
+		}
+		if (iSelectedStrength != 0 && (iExcessStrength < 0 ||
+			pSelectedUnit->at(kCity.getPlot()))/* && iSelected > 1*/)
+		{
+			szString.append(NEWLINE);
+			szString.append(gDLL->getText(
+					"TXT_KEY_GARRISON_STRENGTH_SELECTED",
+					intdiv::uround(iSelectedStrength, 100)));
 		}
 	}
 }
@@ -6246,7 +6277,7 @@ void CvGameTextMgr::parseTraits(CvWStringBuffer &szHelpString, TraitTypes eTrait
 					kTrait.getCommerceModifier(eCommerce),
 					GC.getInfo(eCommerce).getChar()/*, "COMMERCE"*/)); // advc
 		}
-/************************************************************************************************/
+/******************************************************** ****************************************/
 /* START: Advanced Diplomacy   doto custom for city state trade agreement                       */
 /************************************************************************************************/
 //DOTO CITY STATES ADVANCED DIPLOMACY custimization of effects 
@@ -7357,7 +7388,7 @@ void CvGameTextMgr::parseSingleCivicRevealHelp(CvWStringBuffer& szBuffer, CivicT
 {
 	szBuffer.append(CvWString::format(SETCOLR L"%s" ENDCOLR,
 			TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"),
-			GC.getCivicInfo(eCivic).getDescription()));
+			GC.getInfo(eCivic).getDescription()));
 	CvWStringBuffer szCivicHelp;
 	GAMETEXT.parseCivicInfo(szCivicHelp, eCivic,
 			true, true, true); // bCiviliopedia=true to hide tech prereq
@@ -13520,9 +13551,10 @@ namespace
 				iImprovHealthPercent = GC.getInfo(eImprov).get(
 						CvImprovementInfo::HealthPercent);
 				if (!GET_TEAM(getActiveTeam()).canAccessHappyHealth(kPlot,
-					iImprovHealthPercent)
+					iImprovHealthPercent))
 					//DOTO 111 surronding  health ADDED IMPROVEMENT MUST BE WORKED ON
-					|| !kCity.isWorkingPlot(kPlot))
+					//--doto113 - removed due to missalign of health error
+				//	|| !kCity.isWorkingPlot(kPlot))
 				{
 					iImprovHealthPercent = 0;
 				}
@@ -18210,6 +18242,10 @@ void CvGameTextMgr::buildFinanceCivicUpkeepString(CvWStringBuffer& szBuffer, Pla
 
 	int iInflFactor = 100 + kPlayer.calculateInflationRate();
 
+	//keldath min civic cost 
+	//early game civics doesnt have a vost - until inflations kicks in
+	//i find that odd. so i added a small calc to make the civics have a cost to it.
+	int totalMinUpkeep = 0;
 	FOR_EACH_ENUM(CivicOption)
 	{
 		CivicTypes eCivic = kPlayer.getCivics(eLoopCivicOption);
@@ -18221,15 +18257,32 @@ void CvGameTextMgr::buildFinanceCivicUpkeepString(CvWStringBuffer& szBuffer, Pla
 					intdiv::round(kPlayer.getSingleCivicUpkeep(eCivic) * iInflFactor, 100),
 					GC.getInfo(COMMERCE_GOLD).getChar(), GC.getInfo(eCivic).getDescription());
 			szCivicOptionCosts += NEWLINE + szTemp;
+			//keldath min civic cost bulk
+			UpkeepTypes eUpkeep = (UpkeepTypes)GC.getInfo(eCivic).getUpkeep();
+			if (eUpkeep != NO_UPKEEP)
+			{
+				totalMinUpkeep += GC.getInfo(eUpkeep).getminUpkeepCost();
+			}
+			//keldath min civic cost bulk
 		}
 	}
 	CvWString szTmp; // advc.086
+	//keldath min civic cost 
+	szTmp.append(NEWLINE);
+	szTmp.append(gDLL->getText(L"TXT_KEY_FINANCE_ADVISOR_CIVIC_MIN_UPKEEP_COST",L"",
+			(totalMinUpkeep > 0 && kPlayer.getNumCities() > 0 ? fmath::round((totalMinUpkeep + (kPlayer.getNumCities() * 5)) / 50) : 0)));  //keldath PAY ATTENTION THAT the 50 exists also in  CvPlayer::getCivicUpkeep
+	//keldath min civic cost 
+	// K-Mod
+	// <advc.086>
+
 	szTmp.append(NEWLINE);
 	szTmp.append(gDLL->getText("TXT_KEY_FINANCE_ADVISOR_CIVIC_UPKEEP_COST",
 			szCivicOptionCosts.GetCString(),
 			//player.getCivicUpkeep()));
-			intdiv::round(kPlayer.getCivicUpkeep() * iInflFactor, 100))); // K-Mod
+			intdiv::round(kPlayer.getCivicUpkeep() * iInflFactor, 100)
+	)); // K-Mod
 	// <advc.086>
+
 	if(szBuffer.isEmpty())
 		szBuffer.assign(szTmp.substr(2, szTmp.length()));
 	else szBuffer.append(szTmp); // </advc.086>
@@ -19502,7 +19555,7 @@ void CvGameTextMgr::parseGreatPeopleHelp(CvWStringBuffer &szBuffer, CvCity const
 			{
 				iRate += (kCity.getSpecialistCount(eLoopSpecialist) +
 						kCity.getFreeSpecialistCount(eLoopSpecialist)) *
-						GC.getSpecialistInfo(eLoopSpecialist).getGreatPeopleRateChange();
+						GC.getInfo(eLoopSpecialist).getGreatPeopleRateChange();
 			}
 			if (iRate > 0)
 			{
@@ -19526,7 +19579,7 @@ void CvGameTextMgr::parseGreatPeopleHelp(CvWStringBuffer &szBuffer, CvCity const
 					!GET_TEAM(kCity.getTeam()).isObsoleteBuilding(eBuilding))
 				{
 					iRate += kCity.getNumBuilding(eBuilding) *
-							GC.getBuildingInfo(eBuilding).getGreatPeopleRateChange();
+							GC.getInfo(eBuilding).getGreatPeopleRateChange();
 				}
 			}
 			if (iRate > 0)

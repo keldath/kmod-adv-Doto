@@ -17,7 +17,7 @@
 			<Strategy>TXT_KEY_UPKEEP_LOW_HELP</Strategy>
 			<iPopulationPercent>6</iPopulationPercent>
 			<iCityPercent>4</iCityPercent>
-			<iminUpkeepCost>0</iminUpkeepCost>
+			<iminUpkeepCost>20</iminUpkeepCost>
 		</UpkeepInfo>
 		<UpkeepInfo>
 			<Type>UPKEEP_MEDIUM</Type>
@@ -25,7 +25,7 @@
 			<Strategy>TXT_KEY_UPKEEP_MEDIUM_HELP</Strategy>
 			<iPopulationPercent>8</iPopulationPercent>
 			<iCityPercent>6</iCityPercent>
-			<iminUpkeepCost>0</iminUpkeepCost>
+			<iminUpkeepCost>30</iminUpkeepCost>
 		</UpkeepInfo>
 		<UpkeepInfo>
 			<Type>UPKEEP_HIGH</Type>
@@ -33,7 +33,7 @@
 			<Strategy>TXT_KEY_UPKEEP_HIGH_HELP</Strategy>
 			<iPopulationPercent>10</iPopulationPercent>
 			<iCityPercent>8</iCityPercent>
-			<iminUpkeepCost>0</iminUpkeepCost>
+			<iminUpkeepCost>50</iminUpkeepCost>
 		</UpkeepInfo>
 		<UpkeepInfo>
 			<Type>UPKEEP_EXPENSSIVE</Type>
@@ -41,7 +41,7 @@
 			<Strategy>Expenssive</Strategy>
 			<iPopulationPercent>12</iPopulationPercent>
 			<iCityPercent>10</iCityPercent>
-			<iminUpkeepCost>0</iminUpkeepCost>
+			<iminUpkeepCost>70</iminUpkeepCost>
 		</UpkeepInfo>
 	</UpkeepInfos>
 </Civ4UpkeepInfo>

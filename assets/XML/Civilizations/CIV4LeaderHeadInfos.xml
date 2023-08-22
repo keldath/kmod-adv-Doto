@@ -334,7 +334,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>NONE</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>NONE</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>0</iFreedomAppreciation>
@@ -1467,7 +1467,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -1755,7 +1755,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -2017,7 +2017,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -2273,7 +2273,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>10</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -2524,7 +2524,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -2777,7 +2777,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_ANNOYED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>-20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -3061,7 +3061,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>10</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -3315,7 +3315,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -3574,7 +3574,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -3840,7 +3840,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -4108,7 +4108,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>-20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -4369,7 +4369,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -4628,7 +4628,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_ANNOYED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -4887,7 +4887,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_ANNOYED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>-20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -5195,7 +5195,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>50</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -5463,7 +5463,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -5716,7 +5716,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -5962,7 +5962,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -6215,7 +6215,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -6500,7 +6500,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -6768,7 +6768,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -7049,7 +7049,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -7303,7 +7303,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -7558,7 +7558,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -7817,7 +7817,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -8118,7 +8118,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -8372,7 +8372,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_ANNOYED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -8643,7 +8643,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_ANNOYED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>-20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -8895,7 +8895,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -9149,7 +9149,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -9396,7 +9396,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -9674,7 +9674,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -9934,7 +9934,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -10190,7 +10190,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -10447,7 +10447,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->	
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -10736,7 +10736,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -10919,6 +10919,255 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DiplomacyMusicWar/>
 		</LeaderHeadInfo>
 		<LeaderHeadInfo>
+			<Type>LEADER_RAGNAR</Type>
+			<Description>TXT_KEY_LEADER_RAGNAR</Description>
+			<Civilopedia>TXT_KEY_LEADER_RAGNAR_PEDIA</Civilopedia>
+			<ArtDefineTag>ART_DEF_LEADER_RAGNAR</ArtDefineTag>
+			<iWonderConstructRand>10</iWonderConstructRand>
+			<iBaseAttitude>-1</iBaseAttitude>
+			<iBasePeaceWeight>0</iBasePeaceWeight>
+			<iPeaceWeightRand>3</iPeaceWeightRand>
+			<iWarmongerRespect>2</iWarmongerRespect>
+			<iEspionageWeight>100</iEspionageWeight>
+			<iRefuseToTalkWarThreshold>10</iRefuseToTalkWarThreshold>
+			<iNoTechTradeThreshold>5</iNoTechTradeThreshold>
+			<iTechTradeKnownPercent>30</iTechTradeKnownPercent>
+			<iMaxGoldTradePercent>5</iMaxGoldTradePercent>
+			<iMaxGoldPerTurnTradePercent>10</iMaxGoldPerTurnTradePercent>
+			<!-- BBAI Victory Strategy -->
+			<iCultureVictoryWeight>10</iCultureVictoryWeight>
+			<iSpaceVictoryWeight>25</iSpaceVictoryWeight>
+			<iConquestVictoryWeight>50</iConquestVictoryWeight>
+			<iDominationVictoryWeight>40</iDominationVictoryWeight>
+			<iDiplomacyVictoryWeight>25</iDiplomacyVictoryWeight>
+			<!-- BBAI Victory Strategy -->
+			<iMaxWarRand>50</iMaxWarRand>
+			<iMaxWarNearbyPowerRatio>110</iMaxWarNearbyPowerRatio>
+			<iMaxWarDistantPowerRatio>90</iMaxWarDistantPowerRatio>
+			<iMaxWarMinAdjacentLandPercent>0</iMaxWarMinAdjacentLandPercent>
+			<iLimitedWarRand>40</iLimitedWarRand>
+			<iLimitedWarPowerRatio>100</iLimitedWarPowerRatio>
+			<iDogpileWarRand>25</iDogpileWarRand>
+			<iMakePeaceRand>80</iMakePeaceRand>
+			<iDeclareWarTradeRand>40</iDeclareWarTradeRand>
+			<iDemandRebukedSneakProb>80</iDemandRebukedSneakProb>
+			<iDemandRebukedWarProb>20</iDemandRebukedWarProb>
+			<iRazeCityProb>50</iRazeCityProb>
+			<iBuildUnitProb>40</iBuildUnitProb>
+			<iBaseAttackOddsChange>6</iBaseAttackOddsChange>
+			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
+			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
+			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
+			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
+			<iLostWarAttitudeChange>-1</iLostWarAttitudeChange>
+			<iAtWarAttitudeDivisor>-5</iAtWarAttitudeDivisor>
+			<iAtWarAttitudeChangeLimit>5</iAtWarAttitudeChangeLimit>
+			<iAtPeaceAttitudeDivisor>60</iAtPeaceAttitudeDivisor>
+			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
+			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
+			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
+			<!-- advc.148: was 5 -->
+			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
+			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
+			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
+			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
+			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
+			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
+			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
+			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
+			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
+			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
+			<!-- Advanced Diplomacy-->
+			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
+			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
+			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
+			<iShareWarAttitudeDivisor>8</iShareWarAttitudeDivisor>
+			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
+			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
+			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
+			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
+			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
+			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
+			<TechRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</TechRefuseAttitudeThreshold>
+			<!-- advc.ctr: start -->
+			<CityRefuseAttitudeThreshold>ATTITUDE_ANNOYED</CityRefuseAttitudeThreshold>
+			<NativeCityRefuseAttitudeThreshold>ATTITUDE_PLEASED</NativeCityRefuseAttitudeThreshold>
+			<!-- advc.ctr: end -->
+			<StrategicBonusRefuseAttitudeThreshold>ATTITUDE_PLEASED</StrategicBonusRefuseAttitudeThreshold>
+			<HappinessBonusRefuseAttitudeThreshold>ATTITUDE_PLEASED</HappinessBonusRefuseAttitudeThreshold>
+			<HealthBonusRefuseAttitudeThreshold>ATTITUDE_ANNOYED</HealthBonusRefuseAttitudeThreshold>
+			<MapRefuseAttitudeThreshold>ATTITUDE_PLEASED</MapRefuseAttitudeThreshold>
+			<DeclareWarRefuseAttitudeThreshold>ATTITUDE_ANNOYED</DeclareWarRefuseAttitudeThreshold>
+			<DeclareWarThemRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</DeclareWarThemRefuseAttitudeThreshold>
+			<StopTradingRefuseAttitudeThreshold>ATTITUDE_ANNOYED</StopTradingRefuseAttitudeThreshold>
+			<StopTradingThemRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</StopTradingThemRefuseAttitudeThreshold>
+			<AdoptCivicRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</AdoptCivicRefuseAttitudeThreshold>
+			<ConvertReligionRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</ConvertReligionRefuseAttitudeThreshold>
+			<OpenBordersRefuseAttitudeThreshold>ATTITUDE_FURIOUS</OpenBordersRefuseAttitudeThreshold>
+			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
+			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
+			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<!-- Advanced Diplomacy-->
+			<iVassalPowerModifier>0</iVassalPowerModifier>
+			<iFreedomAppreciation>10</iFreedomAppreciation>
+			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
+			<FavoriteReligion>NONE</FavoriteReligion>
+			<Traits>
+				<Trait>
+					<TraitType>TRAIT_FINANCIAL</TraitType>
+					<bTrait>1</bTrait>
+				</Trait>
+				<Trait>
+					<TraitType>TRAIT_AGGRESSIVE</TraitType>
+					<bTrait>1</bTrait>
+				</Trait>
+			</Traits>
+			<Flavors>
+				<Flavor>
+					<FlavorType>FLAVOR_MILITARY</FlavorType>
+					<iFlavor>10</iFlavor>
+				</Flavor>
+			</Flavors>
+			<ContactRands>
+				<ContactRand>
+					<ContactType>CONTACT_RELIGION_PRESSURE</ContactType>
+					<iContactRand>250</iContactRand>
+				</ContactRand>
+				<ContactRand>
+					<ContactType>CONTACT_CIVIC_PRESSURE</ContactType>
+					<iContactRand>250</iContactRand>
+				</ContactRand>
+				<ContactRand>
+					<ContactType>CONTACT_JOIN_WAR</ContactType>
+					<iContactRand>20</iContactRand>
+				</ContactRand>
+				<ContactRand>
+					<ContactType>CONTACT_STOP_TRADING</ContactType>
+					<iContactRand>50</iContactRand>
+				</ContactRand>
+				<ContactRand>
+					<ContactType>CONTACT_GIVE_HELP</ContactType>
+					<iContactRand>100</iContactRand>
+				</ContactRand>
+				<ContactRand>
+					<ContactType>CONTACT_ASK_FOR_HELP</ContactType>
+					<iContactRand>250</iContactRand>
+				</ContactRand>
+				<!-- advc.005a: was 1000 -->
+				<ContactRand>
+					<ContactType>CONTACT_DEMAND_TRIBUTE</ContactType>
+					<iContactRand>25</iContactRand>
+				</ContactRand>
+				<ContactRand>
+					<ContactType>CONTACT_PEACE_TREATY</ContactType>
+					<iContactRand>20</iContactRand>
+				</ContactRand>
+				<ContactRand>
+					<ContactType>CONTACT_TRADE_TECH</ContactType>
+					<iContactRand>5</iContactRand>
+				</ContactRand>
+				<ContactRand>
+					<ContactType>CONTACT_TRADE_BONUS</ContactType>
+					<iContactRand>5</iContactRand>
+				</ContactRand>
+			</ContactRands>
+			<ContactDelays>
+				<ContactDelay>
+					<ContactType>CONTACT_PEACE_TREATY</ContactType>
+					<iContactDelay>10</iContactDelay>
+				</ContactDelay>
+			</ContactDelays>
+			<MemoryDecays>
+				<MemoryDecay>
+					<!-- Advanced Diplomacy-->
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryRand>15</iMemoryRand>
+				</MemoryDecay>
+				<!-- Advanced Diplomacy-->
+			</MemoryDecays>
+			<MemoryAttitudePercents>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
+					<iMemoryAttitudePercent>5</iMemoryAttitudePercent>
+				<!-- Advanced Diplomacy-->				
+				</MemoryAttitudePercent>
+				<MemoryAttitudePercent>
+					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
+					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
+<!-- Advanced Diplomacy-->	
+				</MemoryAttitudePercent>
+			</MemoryAttitudePercents>
+			<NoWarAttitudeProbs>
+				<NoWarAttitudeProb>
+					<AttitudeType>ATTITUDE_CAUTIOUS</AttitudeType>
+					<iNoWarProb>50</iNoWarProb>
+				</NoWarAttitudeProb>
+				<NoWarAttitudeProb>
+					<AttitudeType>ATTITUDE_PLEASED</AttitudeType>
+					<iNoWarProb>90</iNoWarProb>
+				</NoWarAttitudeProb>
+			</NoWarAttitudeProbs>
+			<!-- advc.005a: was Assault Sea 100 -->
+			<UnitAIWeightModifiers>
+				<UnitAIWeightModifier>
+					<UnitAIType>UNITAI_ASSAULT_SEA</UnitAIType>
+					<iWeightModifier>25</iWeightModifier>
+				</UnitAIWeightModifier>
+				<UnitAIWeightModifier>
+					<UnitAIType>UNITAI_PILLAGE</UnitAIType>
+					<iWeightModifier>25</iWeightModifier>
+				</UnitAIWeightModifier>
+			</UnitAIWeightModifiers>
+			<!-- advc.005a: was Town -->
+			<ImprovementWeightModifiers>
+				<ImprovementWeightModifier>
+					<ImprovementType>IMPROVEMENT_FARM</ImprovementType>
+					<iWeightModifier>20</iWeightModifier>
+				</ImprovementWeightModifier>
+				<ImprovementWeightModifier>
+					<ImprovementType>IMPROVEMENT_LUMBERMILL</ImprovementType>
+					<iWeightModifier>20</iWeightModifier>
+				</ImprovementWeightModifier>
+			</ImprovementWeightModifiers>
+			<DiplomacyIntroMusicPeace/>
+			<DiplomacyMusicPeace>
+				<DiploMusicPeaceEra>
+					<EraType>ERA_ANCIENT</EraType>
+					<DiploScriptId>AS2D_DIPLO_RAGNAR_EARLY</DiploScriptId>
+				</DiploMusicPeaceEra>
+				<DiploMusicPeaceEra>
+					<EraType>ERA_CLASSICAL</EraType>
+					<DiploScriptId>AS2D_DIPLO_RAGNAR_EARLY</DiploScriptId>
+				</DiploMusicPeaceEra>
+				<DiploMusicPeaceEra>
+					<EraType>ERA_MEDIEVAL</EraType>
+					<DiploScriptId>AS2D_DIPLO_RAGNAR_MIDDLE</DiploScriptId>
+				</DiploMusicPeaceEra>
+				<DiploMusicPeaceEra>
+					<EraType>ERA_RENAISSANCE</EraType>
+					<DiploScriptId>AS2D_DIPLO_RAGNAR_MIDDLE</DiploScriptId>
+				</DiploMusicPeaceEra>
+				<DiploMusicPeaceEra>
+					<EraType>ERA_INDUSTRIAL</EraType>
+					<DiploScriptId>AS2D_DIPLO_RAGNAR_LATE</DiploScriptId>
+				</DiploMusicPeaceEra>
+				<DiploMusicPeaceEra>
+					<EraType>ERA_MODERN</EraType>
+					<DiploScriptId>AS2D_DIPLO_RAGNAR_LATE</DiploScriptId>
+				</DiploMusicPeaceEra>
+				<DiploMusicPeaceEra>
+					<EraType>ERA_FUTURE</EraType>
+					<DiploScriptId>AS2D_DIPLO_RAGNAR_LATE</DiploScriptId>
+				</DiploMusicPeaceEra>
+			</DiplomacyMusicPeace>
+			<DiplomacyIntroMusicWar/>
+			<DiplomacyMusicWar/>
+		</LeaderHeadInfo>
+		<LeaderHeadInfo>
 			<Type>LEADER_RAMESSES</Type>
 			<Description>TXT_KEY_LEADER_RAMESSES</Description>
 			<Civilopedia>TXT_KEY_LEADER_RAMESSES_II_PEDIA</Civilopedia>
@@ -11013,7 +11262,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -11204,255 +11453,6 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<DiplomacyMusicWar/>
 		</LeaderHeadInfo>
 		<LeaderHeadInfo>
-			<Type>LEADER_RAGNAR</Type>
-			<Description>TXT_KEY_LEADER_RAGNAR</Description>
-			<Civilopedia>TXT_KEY_LEADER_RAGNAR_PEDIA</Civilopedia>
-			<ArtDefineTag>ART_DEF_LEADER_RAGNAR</ArtDefineTag>
-			<iWonderConstructRand>10</iWonderConstructRand>
-			<iBaseAttitude>-1</iBaseAttitude>
-			<iBasePeaceWeight>0</iBasePeaceWeight>
-			<iPeaceWeightRand>3</iPeaceWeightRand>
-			<iWarmongerRespect>2</iWarmongerRespect>
-			<iEspionageWeight>100</iEspionageWeight>
-			<iRefuseToTalkWarThreshold>10</iRefuseToTalkWarThreshold>
-			<iNoTechTradeThreshold>5</iNoTechTradeThreshold>
-			<iTechTradeKnownPercent>30</iTechTradeKnownPercent>
-			<iMaxGoldTradePercent>5</iMaxGoldTradePercent>
-			<iMaxGoldPerTurnTradePercent>10</iMaxGoldPerTurnTradePercent>
-			<!-- BBAI Victory Strategy -->
-			<iCultureVictoryWeight>10</iCultureVictoryWeight>
-			<iSpaceVictoryWeight>25</iSpaceVictoryWeight>
-			<iConquestVictoryWeight>50</iConquestVictoryWeight>
-			<iDominationVictoryWeight>40</iDominationVictoryWeight>
-			<iDiplomacyVictoryWeight>25</iDiplomacyVictoryWeight>
-			<!-- BBAI Victory Strategy -->
-			<iMaxWarRand>50</iMaxWarRand>
-			<iMaxWarNearbyPowerRatio>110</iMaxWarNearbyPowerRatio>
-			<iMaxWarDistantPowerRatio>90</iMaxWarDistantPowerRatio>
-			<iMaxWarMinAdjacentLandPercent>0</iMaxWarMinAdjacentLandPercent>
-			<iLimitedWarRand>40</iLimitedWarRand>
-			<iLimitedWarPowerRatio>100</iLimitedWarPowerRatio>
-			<iDogpileWarRand>25</iDogpileWarRand>
-			<iMakePeaceRand>80</iMakePeaceRand>
-			<iDeclareWarTradeRand>40</iDeclareWarTradeRand>
-			<iDemandRebukedSneakProb>80</iDemandRebukedSneakProb>
-			<iDemandRebukedWarProb>20</iDemandRebukedWarProb>
-			<iRazeCityProb>50</iRazeCityProb>
-			<iBuildUnitProb>40</iBuildUnitProb>
-			<iBaseAttackOddsChange>6</iBaseAttackOddsChange>
-			<iAttackOddsChangeRand>10</iAttackOddsChangeRand>
-			<iWorseRankDifferenceAttitudeChange>-1</iWorseRankDifferenceAttitudeChange>
-			<iBetterRankDifferenceAttitudeChange>2</iBetterRankDifferenceAttitudeChange>
-			<iCloseBordersAttitudeChange>-2</iCloseBordersAttitudeChange>
-			<iLostWarAttitudeChange>-1</iLostWarAttitudeChange>
-			<iAtWarAttitudeDivisor>-5</iAtWarAttitudeDivisor>
-			<iAtWarAttitudeChangeLimit>5</iAtWarAttitudeChangeLimit>
-			<iAtPeaceAttitudeDivisor>60</iAtPeaceAttitudeDivisor>
-			<iAtPeaceAttitudeChangeLimit>1</iAtPeaceAttitudeChangeLimit>
-			<iSameReligionAttitudeChange>1</iSameReligionAttitudeChange>
-			<iSameReligionAttitudeDivisor>10</iSameReligionAttitudeDivisor>
-			<!-- advc.148: was 5 -->
-			<iSameReligionAttitudeChangeLimit>4</iSameReligionAttitudeChangeLimit>
-			<iDifferentReligionAttitudeChange>0</iDifferentReligionAttitudeChange>
-			<iDifferentReligionAttitudeDivisor>-5</iDifferentReligionAttitudeDivisor>
-			<!-- advc.130n: was iDifferentReligionAttitudeChange -->
-			<iDifferentReligionAttitudeChangeLimit>0</iDifferentReligionAttitudeChangeLimit>
-			<iBonusTradeAttitudeDivisor>50</iBonusTradeAttitudeDivisor>
-			<iBonusTradeAttitudeChangeLimit>2</iBonusTradeAttitudeChangeLimit>
-			<iOpenBordersAttitudeDivisor>25</iOpenBordersAttitudeDivisor>
-			<iOpenBordersAttitudeChangeLimit>2</iOpenBordersAttitudeChangeLimit>
-			<!-- Advanced Diplomacy-->
-			<iFreeTradeAgreementAttitudeDivisor>25</iFreeTradeAgreementAttitudeDivisor>
-			<iFreeTradeAgreementAttitudeChangeLimit>2</iFreeTradeAgreementAttitudeChangeLimit>
-			<!-- Advanced Diplomacy-->
-			<iDefensivePactAttitudeDivisor>12</iDefensivePactAttitudeDivisor>
-			<iDefensivePactAttitudeChangeLimit>2</iDefensivePactAttitudeChangeLimit>
-			<iShareWarAttitudeChange>1</iShareWarAttitudeChange>
-			<iShareWarAttitudeDivisor>8</iShareWarAttitudeDivisor>
-			<iShareWarAttitudeChangeLimit>3</iShareWarAttitudeChangeLimit>
-			<iFavoriteCivicAttitudeChange>1</iFavoriteCivicAttitudeChange>
-			<iFavoriteCivicAttitudeDivisor>10</iFavoriteCivicAttitudeDivisor>
-			<iFavoriteCivicAttitudeChangeLimit>3</iFavoriteCivicAttitudeChangeLimit>
-			<DemandTributeAttitudeThreshold>ATTITUDE_CAUTIOUS</DemandTributeAttitudeThreshold>
-			<NoGiveHelpAttitudeThreshold>ATTITUDE_CAUTIOUS</NoGiveHelpAttitudeThreshold>
-			<TechRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</TechRefuseAttitudeThreshold>
-			<!-- advc.ctr: start -->
-			<CityRefuseAttitudeThreshold>ATTITUDE_ANNOYED</CityRefuseAttitudeThreshold>
-			<NativeCityRefuseAttitudeThreshold>ATTITUDE_PLEASED</NativeCityRefuseAttitudeThreshold>
-			<!-- advc.ctr: end -->
-			<StrategicBonusRefuseAttitudeThreshold>ATTITUDE_PLEASED</StrategicBonusRefuseAttitudeThreshold>
-			<HappinessBonusRefuseAttitudeThreshold>ATTITUDE_PLEASED</HappinessBonusRefuseAttitudeThreshold>
-			<HealthBonusRefuseAttitudeThreshold>ATTITUDE_ANNOYED</HealthBonusRefuseAttitudeThreshold>
-			<MapRefuseAttitudeThreshold>ATTITUDE_PLEASED</MapRefuseAttitudeThreshold>
-			<DeclareWarRefuseAttitudeThreshold>ATTITUDE_ANNOYED</DeclareWarRefuseAttitudeThreshold>
-			<DeclareWarThemRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</DeclareWarThemRefuseAttitudeThreshold>
-			<StopTradingRefuseAttitudeThreshold>ATTITUDE_ANNOYED</StopTradingRefuseAttitudeThreshold>
-			<StopTradingThemRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</StopTradingThemRefuseAttitudeThreshold>
-			<AdoptCivicRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</AdoptCivicRefuseAttitudeThreshold>
-			<ConvertReligionRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</ConvertReligionRefuseAttitudeThreshold>
-			<OpenBordersRefuseAttitudeThreshold>ATTITUDE_FURIOUS</OpenBordersRefuseAttitudeThreshold>
-			<DefensivePactRefuseAttitudeThreshold>ATTITUDE_PLEASED</DefensivePactRefuseAttitudeThreshold>
-			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
-			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
-			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
-			<!-- Advanced Diplomacy-->
-			<iVassalPowerModifier>0</iVassalPowerModifier>
-			<iFreedomAppreciation>10</iFreedomAppreciation>
-			<FavoriteCivic>CIVIC_HEREDITARY_RULE</FavoriteCivic>
-			<FavoriteReligion>NONE</FavoriteReligion>
-			<Traits>
-				<Trait>
-					<TraitType>TRAIT_FINANCIAL</TraitType>
-					<bTrait>1</bTrait>
-				</Trait>
-				<Trait>
-					<TraitType>TRAIT_AGGRESSIVE</TraitType>
-					<bTrait>1</bTrait>
-				</Trait>
-			</Traits>
-			<Flavors>
-				<Flavor>
-					<FlavorType>FLAVOR_MILITARY</FlavorType>
-					<iFlavor>10</iFlavor>
-				</Flavor>
-			</Flavors>
-			<ContactRands>
-				<ContactRand>
-					<ContactType>CONTACT_RELIGION_PRESSURE</ContactType>
-					<iContactRand>250</iContactRand>
-				</ContactRand>
-				<ContactRand>
-					<ContactType>CONTACT_CIVIC_PRESSURE</ContactType>
-					<iContactRand>250</iContactRand>
-				</ContactRand>
-				<ContactRand>
-					<ContactType>CONTACT_JOIN_WAR</ContactType>
-					<iContactRand>20</iContactRand>
-				</ContactRand>
-				<ContactRand>
-					<ContactType>CONTACT_STOP_TRADING</ContactType>
-					<iContactRand>50</iContactRand>
-				</ContactRand>
-				<ContactRand>
-					<ContactType>CONTACT_GIVE_HELP</ContactType>
-					<iContactRand>100</iContactRand>
-				</ContactRand>
-				<ContactRand>
-					<ContactType>CONTACT_ASK_FOR_HELP</ContactType>
-					<iContactRand>250</iContactRand>
-				</ContactRand>
-				<!-- advc.005a: was 1000 -->
-				<ContactRand>
-					<ContactType>CONTACT_DEMAND_TRIBUTE</ContactType>
-					<iContactRand>25</iContactRand>
-				</ContactRand>
-				<ContactRand>
-					<ContactType>CONTACT_PEACE_TREATY</ContactType>
-					<iContactRand>20</iContactRand>
-				</ContactRand>
-				<ContactRand>
-					<ContactType>CONTACT_TRADE_TECH</ContactType>
-					<iContactRand>5</iContactRand>
-				</ContactRand>
-				<ContactRand>
-					<ContactType>CONTACT_TRADE_BONUS</ContactType>
-					<iContactRand>5</iContactRand>
-				</ContactRand>
-			</ContactRands>
-			<ContactDelays>
-				<ContactDelay>
-					<ContactType>CONTACT_PEACE_TREATY</ContactType>
-					<iContactDelay>10</iContactDelay>
-				</ContactDelay>
-			</ContactDelays>
-			<MemoryDecays>
-				<MemoryDecay>
-					<!-- Advanced Diplomacy-->
-					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
-					<iMemoryRand>15</iMemoryRand>
-				</MemoryDecay>
-				<!-- Advanced Diplomacy-->
-			</MemoryDecays>
-			<MemoryAttitudePercents>
-				<MemoryAttitudePercent>
-					<MemoryType>MEMORY_TRADED_TECH_TO_US</MemoryType>
-					<iMemoryAttitudePercent>5</iMemoryAttitudePercent>
-				<!-- Advanced Diplomacy-->				
-				</MemoryAttitudePercent>
-				<MemoryAttitudePercent>
-					<MemoryType>MEMORY_CANCELLED_FREE_TRADE_AGREEMENT</MemoryType>
-					<iMemoryAttitudePercent>-100</iMemoryAttitudePercent>
-<!-- Advanced Diplomacy-->	
-				</MemoryAttitudePercent>
-			</MemoryAttitudePercents>
-			<NoWarAttitudeProbs>
-				<NoWarAttitudeProb>
-					<AttitudeType>ATTITUDE_CAUTIOUS</AttitudeType>
-					<iNoWarProb>50</iNoWarProb>
-				</NoWarAttitudeProb>
-				<NoWarAttitudeProb>
-					<AttitudeType>ATTITUDE_PLEASED</AttitudeType>
-					<iNoWarProb>90</iNoWarProb>
-				</NoWarAttitudeProb>
-			</NoWarAttitudeProbs>
-			<!-- advc.005a: was Assault Sea 100 -->
-			<UnitAIWeightModifiers>
-				<UnitAIWeightModifier>
-					<UnitAIType>UNITAI_ASSAULT_SEA</UnitAIType>
-					<iWeightModifier>25</iWeightModifier>
-				</UnitAIWeightModifier>
-				<UnitAIWeightModifier>
-					<UnitAIType>UNITAI_PILLAGE</UnitAIType>
-					<iWeightModifier>25</iWeightModifier>
-				</UnitAIWeightModifier>
-			</UnitAIWeightModifiers>
-			<!-- advc.005a: was Town -->
-			<ImprovementWeightModifiers>
-				<ImprovementWeightModifier>
-					<ImprovementType>IMPROVEMENT_FARM</ImprovementType>
-					<iWeightModifier>20</iWeightModifier>
-				</ImprovementWeightModifier>
-				<ImprovementWeightModifier>
-					<ImprovementType>IMPROVEMENT_LUMBERMILL</ImprovementType>
-					<iWeightModifier>20</iWeightModifier>
-				</ImprovementWeightModifier>
-			</ImprovementWeightModifiers>
-			<DiplomacyIntroMusicPeace/>
-			<DiplomacyMusicPeace>
-				<DiploMusicPeaceEra>
-					<EraType>ERA_ANCIENT</EraType>
-					<DiploScriptId>AS2D_DIPLO_RAGNAR_EARLY</DiploScriptId>
-				</DiploMusicPeaceEra>
-				<DiploMusicPeaceEra>
-					<EraType>ERA_CLASSICAL</EraType>
-					<DiploScriptId>AS2D_DIPLO_RAGNAR_EARLY</DiploScriptId>
-				</DiploMusicPeaceEra>
-				<DiploMusicPeaceEra>
-					<EraType>ERA_MEDIEVAL</EraType>
-					<DiploScriptId>AS2D_DIPLO_RAGNAR_MIDDLE</DiploScriptId>
-				</DiploMusicPeaceEra>
-				<DiploMusicPeaceEra>
-					<EraType>ERA_RENAISSANCE</EraType>
-					<DiploScriptId>AS2D_DIPLO_RAGNAR_MIDDLE</DiploScriptId>
-				</DiploMusicPeaceEra>
-				<DiploMusicPeaceEra>
-					<EraType>ERA_INDUSTRIAL</EraType>
-					<DiploScriptId>AS2D_DIPLO_RAGNAR_LATE</DiploScriptId>
-				</DiploMusicPeaceEra>
-				<DiploMusicPeaceEra>
-					<EraType>ERA_MODERN</EraType>
-					<DiploScriptId>AS2D_DIPLO_RAGNAR_LATE</DiploScriptId>
-				</DiploMusicPeaceEra>
-				<DiploMusicPeaceEra>
-					<EraType>ERA_FUTURE</EraType>
-					<DiploScriptId>AS2D_DIPLO_RAGNAR_LATE</DiploScriptId>
-				</DiploMusicPeaceEra>
-			</DiplomacyMusicPeace>
-			<DiplomacyIntroMusicWar/>
-			<DiplomacyMusicWar/>
-		</LeaderHeadInfo>
-		<LeaderHeadInfo>
 			<Type>LEADER_FRANKLIN_ROOSEVELT</Type>
 			<Description>TXT_KEY_LEADER_ROOSEVELT</Description>
 			<Civilopedia>TXT_KEY_LEADER_ROOSEVELT_PEDIA</Civilopedia>
@@ -11546,7 +11546,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -11811,7 +11811,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -12094,7 +12094,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>20</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -12335,7 +12335,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>50</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -12590,7 +12590,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -12875,7 +12875,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -13130,7 +13130,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>-10</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -13414,7 +13414,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -13713,7 +13713,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -13958,7 +13958,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -14214,7 +14214,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -14499,7 +14499,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -14755,7 +14755,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -15008,7 +15008,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_FRIENDLY</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_FRIENDLY</VassalRefuseAttitudeThreshold>
 <!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 <!-- Advanced Diplomacy-->		
 			<iVassalPowerModifier>30</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -15293,7 +15293,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -15555,7 +15555,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_ANNOYED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -16063,7 +16063,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -16608,7 +16608,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -17148,7 +17148,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -17645,7 +17645,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_ANNOYED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -18154,7 +18154,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -18669,7 +18669,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_CAUTIOUS</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>
@@ -19161,7 +19161,7 @@ ArtDefineTag	Reference the graphic set to be used for this leader (his button im
 			<PermanentAllianceRefuseAttitudeThreshold>ATTITUDE_PLEASED</PermanentAllianceRefuseAttitudeThreshold>
 			<VassalRefuseAttitudeThreshold>ATTITUDE_PLEASED</VassalRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
-			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_ANNOYED</FreeTradeAgreementRefuseAttitudeThreshold>
+			<FreeTradeAgreementRefuseAttitudeThreshold>ATTITUDE_PLEASED</FreeTradeAgreementRefuseAttitudeThreshold>
 			<!-- Advanced Diplomacy-->
 			<iVassalPowerModifier>0</iVassalPowerModifier>
 			<iFreedomAppreciation>10</iFreedomAppreciation>

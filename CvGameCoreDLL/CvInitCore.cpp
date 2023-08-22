@@ -1365,7 +1365,7 @@ void CvInitCore::setCiv(PlayerTypes eID, CivilizationTypes eCiv)
 	if (m_aeCiv.get(eID) != eCiv)
 	{
 		m_aeCiv.set(eID, eCiv);
-  		GET_PLAYER(eID).setCivilization(eCiv); // advc.003w
+		GET_PLAYER(eID).setCivilization(eCiv); // advc.003w
 	}
 }
 
@@ -1768,7 +1768,7 @@ void CvInitCore::reRandomizeCivsAndLeaders()
 		bool bPlayable = false;
 		FOR_EACH_ENUM2(Civilization, eCiv)
 		{
-			if (GC.getCivilizationInfo(eCiv).isLeaders(eLeader) &&
+			if (GC.getInfo(eCiv).isLeaders(eLeader) &&
 				GC.getInfo(eCiv).isPlayable())
 			{
 				leadersPerCiv[eCiv].push_back(eLeader);

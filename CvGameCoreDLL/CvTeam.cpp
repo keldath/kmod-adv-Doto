@@ -1678,6 +1678,7 @@ void CvTeam::meet(TeamTypes eTeam, bool bNewDiplo,
 	CvPlot const* pOtherAt = kTeam.makeHasMet(getID(), bNewDiplo, pData);
 	// <advc.120l> (Not in makeHasMet b/c all the has-met data needs to be set first)
 	if (pData != NULL &&
+		GC.IsGraphicsInitialized() && // No reminder while initializing a scenario
 		BUGOption::isEnabled("Civ4lerts__EspionageReminder") &&
 		!GC.getGame().isOption(GAMEOPTION_NO_ESPIONAGE))
 	{
@@ -3169,6 +3170,7 @@ CvPlot* CvTeam::makeHasMet(TeamTypes eOther, bool bNewDiplo,
 	{
 		if (pAt1->isVisible(getID()))
 			pAt = pAt1;
+		else pAt = pAt1->plotThatRevealsOwner(getID());
 		if (ePlayerMet == NO_PLAYER)
 			ePlayerMet = pAt1->getOwner();
 	}
@@ -3176,6 +3178,7 @@ CvPlot* CvTeam::makeHasMet(TeamTypes eOther, bool bNewDiplo,
 	{
 		if (pAt2->isVisible(getID()))
 			pAt = pAt2;
+		else pAt = pAt2->plotThatRevealsOwner(getID());
 		if (ePlayerMet == NO_PLAYER)
 			ePlayerMet = pAt2->getOwner();
 	}
@@ -4229,6 +4232,8 @@ void CvTeam::changeBuildingClassCount(BuildingClassTypes eIndex, int iChange)
 
 void CvTeam::changeObsoleteBuildingCount(BuildingTypes eIndex, int iChange, bool ignoreAdd)
 {
+	//tst
+	CvBuildingInfo const& kBuilding = GC.getInfo(eIndex);
 	if(iChange == 0)
 		return;
 
@@ -4238,13 +4243,22 @@ void CvTeam::changeObsoleteBuildingCount(BuildingTypes eIndex, int iChange, bool
 //Tholish UnbuildableBuildingDeletion START	
 //if the change comes from the shouldUnProcessBuilding in cvcity
 //i wanna make sure i dont raise the count on an existing one.
+/*doto113*/
 	if (ignoreAdd)
 		m_aiObsoleteBuildingCount.set(eIndex, iChange);
 	else
+	{
 		m_aiObsoleteBuildingCount.add(eIndex, iChange); //org bts
+	}
+
 //DOTO -tholish-Keldath inactive buildings START
 //Tholish UnbuildableBuildingDeletion START
+	int tst = getObsoleteBuildingCount(eIndex);
+	
 	FAssert(getObsoleteBuildingCount(eIndex) >= 0);
+	//doto 113 -> fix the assert...just for testing  //DOTO -tholish-Keldath inactive buildings
+	if (getObsoleteBuildingCount(eIndex) < 0)
+		m_aiObsoleteBuildingCount.set(eIndex, (-1 * getObsoleteBuildingCount(eIndex)) + 1);
 
 	if (bOldObsoleteBuilding == isObsoleteBuilding(eIndex))
 		return;
@@ -6837,7 +6851,10 @@ void CvTeam::csTeamTraitsUpdate(TeamTypes eThey, bool bNewValue) const
 	if (!isOurCS != !isThemCS)
 		FAssert(!isOurCS != !isThemCS); //cant have 2 none city states trading this
 		
-	kOurTeamPlayer.csMemberUpdateFreeTradeTraits(fTrait, iChange, eOurPlayer);
+	//kOurTeamPlayer.csMemberUpdateFreeTradeTraits(fTrait, iChange, eOurPlayer);
+	//doto 112c well i found out that the code runs twice, 1 for them and one for they
+	//so this line above ->kOurTeamPlayer.csMe... isnt required cause other wise it will update twice the 
+	//trait modifiers to each side, doubling it....so just removed it. names of vars remain they, where in fatct its both on the call of this function.
 	kThemTeamPlayer.csMemberUpdateFreeTradeTraits(fTrait, iChange, eThemPlayer);
 
 //FOR_EACH_ENUM(Commerce)

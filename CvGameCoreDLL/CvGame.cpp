@@ -2395,7 +2395,7 @@ void CvGame::normalizeAddExtras(/* advc.027: */ NormalizationTarget const* pTarg
 		{
 			if (itPlot->isFeature())
 			{
-				CvFeatureInfo const& kFeature = GC.getFeatureInfo(itPlot->getFeatureType());
+				CvFeatureInfo const& kFeature = GC.getInfo(itPlot->getFeatureType());
 				if (kFeature.getYieldChange(YIELD_FOOD) > 0)
 					iFoodFeatures++;
 				if (kFeature.getYieldChange(YIELD_PRODUCTION) > 0)
@@ -2420,7 +2420,7 @@ void CvGame::normalizeAddExtras(/* advc.027: */ NormalizationTarget const* pTarg
 					if (!kLoopPlot.canHaveFeature(eLoopFeature))
 						continue;
 					// <advc.108> (Partly duplicated in the second extra feature loop)
-					CvFeatureInfo const& kFeature = GC.getFeatureInfo(eLoopFeature);
+					CvFeatureInfo const& kFeature = GC.getInfo(eLoopFeature);
 					bool bFood = (kFeature.getYieldChange(YIELD_FOOD) > 0);
 					bool bProduction = (kFeature.getYieldChange(YIELD_PRODUCTION) > 0);
 					if ((!bFood && !bProduction) ||
@@ -2563,9 +2563,9 @@ void CvGame::normalizeAddExtras(/* advc.027: */ NormalizationTarget const* pTarg
 						if (p.isFeature() &&
 							//iFeatureCount > 4 &&
 							// <advc.108> Don't clear food features
-							GC.getFeatureInfo(p.getFeatureType()).
+							GC.getInfo(p.getFeatureType()).
 							getYieldChange(YIELD_FOOD) <= 0 &&
-							(GC.getFeatureInfo(p.getFeatureType()).
+							(GC.getInfo(p.getFeatureType()).
 							getYieldChange(YIELD_PRODUCTION) <= 0 ||
 							// Don't clear production features if they're scarce
 							iProductionFeatures >= 4) && // </advc.108>
@@ -2603,7 +2603,7 @@ void CvGame::normalizeAddExtras(/* advc.027: */ NormalizationTarget const* pTarg
 				if (!p.canHaveFeature(eLoopFeature))
 					continue;
 				// <advc.108> (Similar to the first place-feature loop)
-				CvFeatureInfo const& kFeature = GC.getFeatureInfo(eLoopFeature);
+				CvFeatureInfo const& kFeature = GC.getInfo(eLoopFeature);
 				bool bFood = (kFeature.getYieldChange(YIELD_FOOD) > 0);
 				bool bProduction = (kFeature.getYieldChange(YIELD_PRODUCTION) > 0);
 				if ((!bFood && !bProduction) ||
@@ -10241,7 +10241,7 @@ int CvGame::getCultureThreshold(CultureLevelTypes eLevel) const
 		static int const iNO_ESPIONAGE_CULTURE_LEVEL_MODIFIER = GC.getDefineINT("NO_ESPIONAGE_CULTURE_LEVEL_MODIFIER"); // advc.opt
 		iThreshold *= 100 + iNO_ESPIONAGE_CULTURE_LEVEL_MODIFIER;
 		iThreshold /= 100;
-	} // <advc.126>
+	}  // <advc.126>
 	int const iExempt = 50; // Don't adjust thresholds below "developing"
 	if (iThreshold >= iExempt)
 	{
@@ -10259,6 +10259,7 @@ int CvGame::getCultureThreshold(CultureLevelTypes eLevel) const
 			iMultiple = 100;
 		else if (iThreshold > 100)
 			iMultiple = 10;
+		else iMultiple = 5;
 		iThreshold *= GC.getInfo(getHandicapType()).getCultureLevelPercent();
 		iThreshold = per100(iThreshold).roundToMultiple(iMultiple);
 		iThreshold = std::max(iThreshold, iExempt);

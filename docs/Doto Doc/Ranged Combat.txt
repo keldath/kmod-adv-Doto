@@ -28,3 +28,15 @@ todo -  optional components with game options.
            option for a ranged attack to first reduce city defense only than attack units (original vip design)
            somehow make the bombard mission to be ranged , same as air bombard.
 wish - use air strike and air bombard for land / sea units - optimal implementation for ai, existing mechanism.
+
+---
+doto 1.12:
+
+Rules:
+
+- 3 attacks for a ranged unit (3 based on xml value of the ranged attack -  tag in global defines alt)
+- 2 cooldown turns (parameter in the global defines)
+- during the cooldown, unit cannot attack (set made attack to true)
+- when attacking on the third time, the unit will get damage of 30% (regardless of the defender, also a globaldefines param)
+- cap will reduce if there is no subsequent attack (measurable by the made attack and cap above 0)
+- if a unit is in a city it gets a reduction of 1 to the cooldown

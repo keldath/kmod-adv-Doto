@@ -136,5 +136,9 @@
     <Italian>%D1_Change[ICON_UNHEALTHY] dalle forme di governo</Italian>
     <Spanish>%D1_Change [ICON_UNHEALTHY] por principios</Spanish>
   </TEXT>
+  <TEXT>
+    <Tag>TXT_KEY_FINANCE_ADVISOR_CIVIC_MIN_UPKEEP_COST</Tag>
+    <English>%s1[NEWLINE]BASIC CIVIC UPKEEP: %d2[ICON_GOLD]</English>
+  </TEXT>
   
 </Civ4GameText>

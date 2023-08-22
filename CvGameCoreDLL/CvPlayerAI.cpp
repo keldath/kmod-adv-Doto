@@ -9040,7 +9040,9 @@ PlayerVoteTypes CvPlayerAI::AI_diploVote(const VoteSelectionSubData& kVoteData,
 			// Increase odds of defiance, particularly on AggressiveAI
 			if (iBestCivicValue * 100 >
 				iNewCivicValue * (140 + SyncRandNum(
-				kGame.isOption(GAMEOPTION_AGGRESSIVE_AI) ? 60 : 80)))
+				kGame.isOption(GAMEOPTION_AGGRESSIVE_AI) ? 60 : 80)) &&
+				// advc.118b: The absolute difference should very much matter too
+				iBestCivicValue - iNewCivicValue > AI_defianceAngerCost(eVoteSource))
 			{	// BETTER_BTS_AI_MOD: END
 				bDefy = true;
 			}
@@ -9657,6 +9659,19 @@ PlayerVoteTypes CvPlayerAI::AI_diploVote(const VoteSelectionSubData& kVoteData,
 		return PLAYER_VOTE_NEVER;
 
 	return (bValid ? PLAYER_VOTE_YES : PLAYER_VOTE_NO);
+}
+
+/*	advc.118b: Ideally, all defiance decisions should take this into account.
+	So far, only used for forced civics. Scale: 1 gold per turn.
+	The calculation corresponds to CvPlayer::setDefiedResolution and
+	CvCity::getDefyResolutionPercentAnger. */
+int CvPlayerAI::AI_defianceAngerCost(VoteSourceTypes eVS) const
+{
+	ReligionTypes const eVSReligion = GC.getGame().getVoteSourceReligion(eVS);
+	int iTotalCost = 0;
+	FOR_EACH_CITYAI(pCity, *this)
+		iTotalCost += pCity->AI_defianceAngerCost(eVSReligion);
+	return iTotalCost;
 }
 
 
@@ -16265,7 +16280,7 @@ int CvPlayerAI::AI_corporationValue(CorporationTypes eCorporation,
 // advc.121:
 void CvPlayerAI::AI_processNewBuild(BuildTypes eBuild)
 {
-	bool const bRoute = (GC.getBuildInfo(eBuild).getRoute() != NO_ROUTE);
+	bool const bRoute = (GC.getInfo(eBuild).getRoute() != NO_ROUTE);
 	FOR_EACH_CITYAI_VAR(pCity, *this)
 	{
 		pCity->AI_updateBestBuild();
@@ -18742,10 +18757,10 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 			/*iValue *= 5;
 			iValue /= 4;
 			iValue += 20;*/
-			/*	advc.131> The +20 might encourage Monarchy too much (AI_techValue).
+			/*	<advc.131> The +20 might encourage Monarchy too much (AI_techValue).
 				Also, early fav civics shouldn't need that much encouragement as
 				they have few alternatives. */
-			//iValue *= 135;
+			//iValue *= 133;
 			//iValue /= 100; // </advc.131>
 			//iValue += 6 * iCities;
 
@@ -23007,7 +23022,7 @@ bool CvPlayerAI::AI_contactCivics(PlayerTypes eHuman)
 		return false;
 	CvPlayer& kHuman = GET_PLAYER(eHuman);
 	if(!kHuman.canDoCivics(eFavoriteCivic) || kHuman.isCivic(eFavoriteCivic) ||
-			!kHuman.canDoAnyRevolution())
+		!kHuman.canDoAnyRevolution())
 	{
 		return false;
 	}
@@ -23772,7 +23787,7 @@ scaled CvPlayerAI::AI_targetAmortizationTurns() const
 			kStartEra.getConstructPercent() +
 			kStartEra.getTrainPercent(), 400);
 	{
-		CvHandicapInfo const& kHandicap = GC.getHandicapInfo(getHandicapType());
+		CvHandicapInfo const& kHandicap = GC.getInfo(getHandicapType());
 		r *= scaled(kHandicap.getResearchPercent() +
 			kHandicap.getConstructPercent() +
 			kHandicap.getTrainPercent(), 300);
@@ -26069,7 +26084,7 @@ bool CvPlayerAI::AI_isDoStrategy(AIStrategy eStrategy, /* advc.007: */ bool bDeb
 // advc.erai: Cached for performance
 void CvPlayerAI::AI_updateEraFactor()
 {
-	m_rCurrEraFactor = per100(GC.getEraInfo(getCurrentEra()).get(CvEraInfo::AIEraFactor));
+	m_rCurrEraFactor = per100(GC.getInfo(getCurrentEra()).get(CvEraInfo::AIEraFactor));
 }
 
 // K-Mod. Macros to help log changes in the AI strategy.

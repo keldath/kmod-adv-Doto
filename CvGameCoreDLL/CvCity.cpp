@@ -366,7 +366,9 @@ void CvCity::reloadEntity()
 
 void CvCity::kill(bool bUpdatePlotGroups, /* advc.001: */ bool bBumpUnits)
 {
-	CvPlot& kPlot = *plot();
+	CvPlot& kPlot = getPlot();
+	PlayerTypes const eOwner = getOwner();
+	CvPlayer& kOwner = GET_PLAYER(eOwner);
 
 	if (isCitySelected())
 		gDLL->UI().clearSelectedCities();
@@ -415,6 +417,22 @@ void CvCity::kill(bool bUpdatePlotGroups, /* advc.001: */ bool bBumpUnits)
 	/*  UNOFFICIAL_PATCH, Bugfix, 08/04/09, jdog5000:
 		Need to clear trade routes of dead city, else they'll be claimed for the owner forever. */
 	clearTradeRoutes();
+	/*	<advc.001> The culture rate isn't relevant for gameplay, but let's still
+		keep a correct count. (And other commerce types can be relevant in mods.) */
+	//keldath fix for a rare situation where a trade city while occupied...doto113
+	//f1rpo said i can use this !isDisorder() --> eidt -> used isDisorder()
+	if (!isDisorder()
+		//!isOccupation()
+		)
+	{
+		FOR_EACH_ENUM(Commerce)
+		{
+			//keldath test
+			int frr = kOwner.getFreeCityCommerce(COMMERCE_CULTURE);
+			changeCommerceRateTimes100(eLoopCommerce,
+				-100 * kOwner.getFreeCityCommerce(eLoopCommerce));
+		} // </advc.001>
+	}
 
 	kPlot.setPlotCity(NULL);
 	kPlot.setRuinsName(getName()); // advc.005c
@@ -437,17 +455,17 @@ void CvCity::kill(bool bUpdatePlotGroups, /* advc.001: */ bool bBumpUnits)
 	// <advc.104>
 	for (PlayerAIIter<MAJOR_CIV> it; it.hasNext(); ++it)
 		it->AI_cityKilled(*this); // </advc.104>
-	getArea().changeCitiesPerPlayer(getOwner(), -1);
+	getArea().changeCitiesPerPlayer(eOwner, -1);
 	// <advc.030b>
 	CvArea* pWaterArea = waterArea(true);
 	/*  Can't really handle ice melted by global warming, but at least ensure
 		that CitiesPerPlayer doesn't become negative. */
-	if(pWaterArea != NULL && pWaterArea->getCitiesPerPlayer(getOwner(), true) > 0)
-		pWaterArea->changeCitiesPerPlayer(getOwner(), -1); // </advc.030b>
-	GET_TEAM(getTeam()).changeNumCities(-1);
+	if (pWaterArea != NULL && pWaterArea->getCitiesPerPlayer(eOwner, true) > 0)
+		pWaterArea->changeCitiesPerPlayer(eOwner, -1); // </advc.030b>
+	GET_TEAM(eOwner).changeNumCities(-1);
 
 	GC.getGame().changeNumCities(-1);
-
+#ifdef FASSERT_ENABLE
 	FAssert(getWorkingPopulation() == 0);
 	FAssert(!isWorkingPlot(CITY_HOME_PLOT));
 	FAssert(getSpecialistPopulation() == 0);
@@ -456,12 +474,26 @@ void CvCity::kill(bool bUpdatePlotGroups, /* advc.001: */ bool bBumpUnits)
 	FAssert(getBaseYieldRate(YIELD_PRODUCTION) == 0);
 	FAssert(getBaseYieldRate(YIELD_COMMERCE) == 0);
 	FAssert(!isProduction());
-
-	PlayerTypes const eOwner = getOwner();
+	// <advc>
+	FOR_EACH_ENUM(Commerce)
+		FAssertMsg(getCommerceRate(eLoopCommerce) == 0,
+				"Part of lost city's special commerce not subtracted from owner's cache");
+	// </advc>
+#endif
 	bool const bCapital = isCapital();
-	// <advc.106> Moved up so that the old capital can be announced
+	/*	<advc.106> For anouncement in case that capital moves.
+		(Mustn't look for a new capital until the old one has been deleted.) */
+	CvWString sNameKey;
+	EagerEnumMap<PlayerTypes,bool> abRevealed;
 	if (bCapital)
-		GET_PLAYER(eOwner).findNewCapital(); // </advc.106>
+	{
+		sNameKey = getNameKey();
+		for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
+		{
+			abRevealed.set(itPlayer->getID(), isRevealed(itPlayer->getTeam(),
+					itPlayer->isSpectator())); // advc.127
+		}
+	} // </advc.106>
 	kPlot.setImprovementType(GC.getRUINS_IMPROVEMENT());
 	// < JCultureControl Mod Start >
 	if (GC.getGame().isOption(GAMEOPTION_CULTURE_CONTROL))
@@ -472,7 +504,7 @@ void CvCity::kill(bool bUpdatePlotGroups, /* advc.001: */ bool bBumpUnits)
 	}
 	// < JCultureControl Mod End >
 	CvEventReporter::getInstance().cityLost(this);
-	GET_PLAYER(getOwner()).deleteCity(getID());
+	kOwner.deleteCity(getID());
 
 	kPlot.updateCulture(/*true*/ bBumpUnits, false); // advc.001
 	/*	advc (note): setCultureLevel already updates culture in surrounding plots.
@@ -496,13 +528,67 @@ void CvCity::kill(bool bUpdatePlotGroups, /* advc.001: */ bool bBumpUnits)
 		}
 	}
 
-	GET_PLAYER(eOwner).updateMaintenance();
+	kOwner.updateMaintenance();
 	GC.getMap().updateWorkingCity();
 	GC.getGame().AI_makeAssignWorkDirty();
 
 	if (bCapital)
 	{
-		//GET_PLAYER(eOwner).findNewCapital(); // advc.106: Moved up
+		kOwner.findNewCapital();
+		// <advc.106> Announce new (and old) capital
+		CvCity const* pNewCapital = kOwner.getCapital();
+		if (pNewCapital != NULL)
+		{
+			CvWString szFullInfo = gDLL->getText("TXT_KEY_MISC_CAPITAL_MOVED",
+					pNewCapital->getNameKey(),
+					kOwner.getCivilizationShortDescriptionKey(), sNameKey.c_str());
+			CvWString szOnlyOldKnown = gDLL->getText("TXT_KEY_MISC_NO_LONGER_CAPITAL",
+					kOwner.getCivilizationShortDescriptionKey(), sNameKey.c_str());
+			CvWString szOnlyNewKnown = gDLL->getText("TXT_KEY_MISC_IS_NOW_CAPITAL",
+					pNewCapital->getNameKey(),
+					kOwner.getCivilizationShortDescriptionKey());
+			for (PlayerIter<MAJOR_CIV> it; it.hasNext(); ++it)
+			{
+				CvPlayer const& kObs = *it;
+				if (kObs.getID() == getID())
+					continue;
+				if (GET_TEAM(getTeam()).isHasMet(kObs.getTeam()) ||
+					 kObs.isSpectator()) // advc.127
+				{
+					CvWString* pszMsg = NULL;
+					bool const bOldRevealed = abRevealed.get(kObs.getID());
+					bool const bNewRevealed = pNewCapital->isRevealed(kObs.getTeam(),
+							kObs.isSpectator()); // advc.127
+					if (bOldRevealed && bNewRevealed)
+						pszMsg = &szFullInfo;
+					else if (bOldRevealed)
+						pszMsg = &szOnlyOldKnown;
+					else if (bNewRevealed)
+						pszMsg = &szOnlyNewKnown;
+					if (pszMsg != NULL)
+					{
+						CvPlot const& kFlashPlot = (bNewRevealed ?
+								pNewCapital->getPlot() : kPlot);
+						/*	<advc.127> Not really a major event, but minor events
+							don't get shown in spectator mode. */
+						InterfaceMessageTypes eMsgType = (kObs.isSpectator() ?
+								MESSAGE_TYPE_MAJOR_EVENT : MESSAGE_TYPE_MINOR_EVENT);
+						// </advc.127>
+						gDLL->UI().addMessage(kObs.getID(), false, -1, *pszMsg, NULL,
+								eMsgType, ARTFILEMGR.getInterfaceArtInfo(
+								"INTERFACE_CITY_BAR_CAPITAL_TEXTURE")->getPath(),
+								NO_COLOR, kFlashPlot.getX(), kFlashPlot.getY());
+					}
+				}
+			}
+			//doto 113 -> loose capital anarchy start by <Nexus>
+			int const iAnarchyLength = kOwner.getCapitalLossAnarchyLength();
+			if (iAnarchyLength > 0)
+			{
+				kOwner.changeAnarchyTurns(iAnarchyLength);
+			}
+			//doto 113 -> loose capital anarchy end by <Nexus>
+		} // </advc.106>
 		GET_TEAM(eOwner).resetVictoryProgress();
 	}
 
@@ -2932,7 +3018,7 @@ int CvCity::overflowCapacity(int iProductionModifier, int iPopulationChange) con
 	// New: Take out build-specific modifiers
 	iBound1 = unmodifyOverflow(iBound1, iProductionModifier);
 	// Was the production cost of the completed order in BtS/K-Mod
-	int iBound2 = growthThreshold(iPopulationChange);
+	int iBound2 = growthThreshold(iPopulationChange, true);
 	return std::max(iBound1, iBound2);
 }
 
@@ -3232,6 +3318,9 @@ int CvCity::getBonusYieldRateModifier(YieldTypes eYield, BonusTypes eBonus) cons
 
 void CvCity::processBonus(BonusTypes eBonus, int iChange)
 {
+	//keldath test
+	if (eBonus == 35)
+		CvBonusInfo& kBonus = GC.getInfo(eBonus); 
 	CvCivilization const& kCiv = getCivilization();
 	{
 		int iValue = GC.getInfo(eBonus).getHealth();
@@ -3257,7 +3346,7 @@ void CvCity::processBonus(BonusTypes eBonus, int iChange)
 	}
 	{
 		int iValue = GC.getInfo(eBonus).getHappiness();
-		int iGoodValue = std::max(0, iValue);
+		int iGoodValue = std::max(0, iValue); 
 		int iBadValue = std::min(0, iValue);
 		for (int i = 0; i < kCiv.getNumBuildings(); i++)
 		{
@@ -3939,9 +4028,9 @@ int CvCity::getDefyResolutionPercentAnger(int iExtra) const
 	if (getDefyResolutionAngerTimer() == 0)
 		return 0;
 	// advc.opt:
-	static int const iDEFY_RESOLUTION_POP_ANGER = GC.getDefineINT("DEFY_RESOLUTION_POP_ANGER");
 	return 1 + (((((getDefyResolutionAngerTimer() - 1) / flatDefyResolutionAngerLength()) + 1) *
-			iDEFY_RESOLUTION_POP_ANGER * GC.getPERCENT_ANGER_DIVISOR()) /
+			GC.getDefineINT(CvGlobals::DEFY_RESOLUTION_POP_ANGER) *
+			GC.getPERCENT_ANGER_DIVISOR()) /
 			std::max(1, getPopulation() + iExtra));
 }
 
@@ -4290,10 +4379,11 @@ int CvCity::foodDifference(bool bBottom, bool bIgnoreProduction) const
 }
 
 
-int CvCity::growthThreshold(/* advc.064b: */ int iPopulationChange) const
+int CvCity::growthThreshold(/* <advc.064b> */ int iPopulationChange,
+	bool bIgnoreModifiers) const // </advc.064b>
 {
 	return (GET_PLAYER(getOwner()).getGrowthThreshold(getPopulation()
-			+ iPopulationChange)); // advc.064b
+			+ iPopulationChange, bIgnoreModifiers)); // advc.064b
 }
 
 
@@ -4466,9 +4556,9 @@ int CvCity::hurryAngerLength(HurryTypes eHurry) const
 
 
 int CvCity::maxHurryPopulation() const
-{
-	return std::min(3, // advc.064c: Allow at most 3 pop to be sacrificed at once
-			getPopulation() / 2);
+{	// <advc.064c>
+	static int const iMAX_HURRY_POP = GC.getDefineINT("MAX_HURRY_POP");
+	return std::min(iMAX_HURRY_POP, /* </advc.064c> */ getPopulation() / 2);
 }
 
 
@@ -5753,8 +5843,9 @@ std::pair<int,int> CvCity::calculateSurroundingHealth(int iGoodExtraPercent, int
 	{
 		CvPlot const& kPlot = *it;
 //doto 111 HEALTH SURRONDING- added by keldath - if tile isnt of the city - skip!
-		if (kPlot.getOwner() != getOwner())
-			continue;
+//--doto113 - removed due to missalign of health error
+//		if (kPlot.getOwner() != getOwner())
+//			continue;
 		{
 			FeatureTypes eFeature = kPlot.getFeatureType();
 			if (eFeature != NO_FEATURE)
@@ -5766,8 +5857,10 @@ std::pair<int,int> CvCity::calculateSurroundingHealth(int iGoodExtraPercent, int
 		}  // <advc.901> (based on updateFeatureHappiness)
 		ImprovementTypes eImprovement = kPlot.getImprovementType();
 //doto 111 HEALTH SURRONDING- added being worked - we dont want and improvement that not being used by the city to
-// be taken into account! 
-		if (eImprovement != NO_IMPROVEMENT && isWorkingPlot(kPlot))
+// be taken into account! --doto113 - removed due to missalign of health error
+		if (eImprovement != NO_IMPROVEMENT 
+			//		&& isWorkingPlot(kPlot)
+			)
 		{
 			int iHealthPercent = GC.getInfo(eImprovement).get(CvImprovementInfo::HealthPercent);
 			if (kTeam.canAccessHappyHealth(kPlot, iHealthPercent))
@@ -8435,6 +8528,26 @@ int CvCity::getCommerceRateTimes100(CommerceTypes eCommerce) const
 	return iRate;
 }
 
+// <advc> Now that these are needed in two places
+void CvCity::changeCommerceRateTimes100(CommerceTypes eCommerce, int iChange)
+{
+	//keldath test
+	int frr = GET_PLAYER(getOwner()).getFreeCityCommerce(eCommerce);
+	setCommerceRateTimes100(eCommerce, m_aiCommerceRate.get(eCommerce) + iChange);
+}
+
+// Based on code cut from updateCommerce
+void CvCity::setCommerceRateTimes100(CommerceTypes eCommerce, int iRate)
+{
+	int const iOldRate = m_aiCommerceRate.get(eCommerce);
+	if (iOldRate != iRate)
+	{
+		m_aiCommerceRate.set(eCommerce, iRate);
+		FAssert(m_aiCommerceRate.get(eCommerce) >= 0);
+		GET_PLAYER(getOwner()).changeCommerceRateTimes100(eCommerce, iRate - iOldRate);
+	}
+} // </advc>
+
 
 int CvCity::getCommerceFromPercent(CommerceTypes eCommerce, int iYieldRate) const
 {
@@ -8492,24 +8605,15 @@ int CvCity::getTotalCommerceRateModifier(CommerceTypes eCommerce) const
 
 void CvCity::updateCommerce(CommerceTypes eCommerce)
 {
+	int iNewRate = 0;
+	if (!isDisorder())
 	{
-		int const iOldRate = m_aiCommerceRate.get(eCommerce);
-		int iNewRate = 0;
-		if (!isDisorder())
-		{
-			iNewRate += (getBaseCommerceRateTimes100(eCommerce) *
-					getTotalCommerceRateModifier(eCommerce)) / 100;
-			iNewRate += getYieldRate(YIELD_PRODUCTION) *
-					getProductionToCommerceModifier(eCommerce);
-		}
-		if (iOldRate == iNewRate)
-			return;
-
-		m_aiCommerceRate.set(eCommerce, iNewRate);
-		FAssert(m_aiCommerceRate.get(eCommerce) >= 0);
-		GET_PLAYER(getOwner()).changeCommerceRateTimes100(eCommerce,
-				iNewRate - iOldRate);
+		iNewRate += (getBaseCommerceRateTimes100(eCommerce) *
+				getTotalCommerceRateModifier(eCommerce)) / 100;
+		iNewRate += getYieldRate(YIELD_PRODUCTION) *
+				getProductionToCommerceModifier(eCommerce);
 	}
+	setCommerceRateTimes100(eCommerce, iNewRate); // advc: Moved into aux. function
 	GET_PLAYER(getOwner()).invalidateCommerceRankCache(eCommerce);
 	if (isCitySelected())
 	{
@@ -9883,7 +9987,7 @@ bool CvCity::is##Order##ProductionDecay(Order##Types e##Order) const \
 			get##Order##Production(e##Order) > 0 && \
 			100 * get##Order##ProductionTime(e##Order) >= \
 			GC.getDefineINT(CvGlobals::ORDER##_PRODUCTION_DECAY_TIME) * \
-			GC.getGameSpeedInfo(GC.getGame().getGameSpeedType()).get##Verb##Percent()); \
+			GC.getInfo(GC.getGame().getGameSpeedType()).get##Verb##Percent()); \
 } \
 \
 /*	Returns the amount by which the given order will decay once it reaches the limit. */ \
@@ -9902,7 +10006,7 @@ int CvCity::get##Order##ProductionDecayTurns(Order##Types e##Order) const \
 	return 1 + std::max(0, \
 			intdiv::uceil( \
 			GC.getDefineINT(CvGlobals::ORDER##_PRODUCTION_DECAY_TIME) * \
-			GC.getGameSpeedInfo(GC.getGame().getGameSpeedType()).get##Verb##Percent(), \
+			GC.getInfo(GC.getGame().getGameSpeedType()).get##Verb##Percent(), \
 			100) \
 			- get##Order##ProductionTime(e##Order)); \
 }
@@ -11186,6 +11290,11 @@ void CvCity::popOrder(int iNum, bool bFinish,
 	case ORDER_TRAIN:
 	{
 		eTrainUnit = (UnitTypes)pOrderNode->m_data.iData1;
+		/*	<advc.064b> Moved into new function, and moved up to ensure that the
+			next order isn't already being produced when calculating production
+			modifiers for the overflow cap. */
+		handleOverflow(getUnitProduction(eTrainUnit) - getProductionNeeded(eTrainUnit),
+				getProductionModifier(eTrainUnit), eOrderType); // </advc.064b>
 		UnitAITypes eTrainAIUnit = (UnitAITypes)pOrderNode->m_data.iData2;
 		FAssert(eTrainUnit != NO_UNIT);
 		FAssert(eTrainAIUnit != NO_UNITAI);
@@ -11199,11 +11308,8 @@ void CvCity::popOrder(int iNum, bool bFinish,
 		doPopOrder(pOrderNode); // advc.064d (see case ORDER_CONSTRUCT)
 		if(!bFinish)
 			break;
-		// <advc.064b> Moved into new function
-		handleOverflow(getUnitProduction(eTrainUnit) - getProductionNeeded(eTrainUnit),
-				getProductionModifier(eTrainUnit), eOrderType);
-		// 14 March 2019: K-Mod multi-production code removed (including bugfix advc.001v)
-		// Instead restored (two lines):
+		/*	<advc.064b> 14 March 2019: K-Mod multi-production code removed
+			(including bugfix advc.001v). Instead restored (two lines): */
 		setUnitProduction(eTrainUnit, 0);
 		setUnitProductionTime(eTrainUnit, 0); // EmperorFool, Bugfix, 06/10/10
 		// </advc.064b>
@@ -11255,6 +11361,11 @@ void CvCity::popOrder(int iNum, bool bFinish,
 	case ORDER_CONSTRUCT:
 	{
 		eConstructBuilding = (BuildingTypes)pOrderNode->m_data.iData1;
+		// <advc.064b> Moved into new function (and moved up)
+		handleOverflow(getBuildingProduction(eConstructBuilding) -
+				getProductionNeeded(eConstructBuilding),
+				getProductionModifier(eConstructBuilding), eOrderType);
+		// </advc.064b>
 		BuildingClassTypes eBuildingClass = GC.getInfo(eConstructBuilding).getBuildingClassType();
 		kOwner.changeBuildingClassMaking(eBuildingClass, -1);
 		CvBuildingClassInfo const& kConstructClass = GC.getInfo(eBuildingClass);
@@ -11271,11 +11382,6 @@ void CvCity::popOrder(int iNum, bool bFinish,
 		}
 		setNumRealBuilding(eConstructBuilding, getNumRealBuilding(eConstructBuilding) + 1,
 				bEndOfTurn); // advc.001x
-		// <advc.064b> Moved into new function
-		handleOverflow(getBuildingProduction(eConstructBuilding) -
-				getProductionNeeded(eConstructBuilding),
-				getProductionModifier(eConstructBuilding), eOrderType);
-		// </advc.064b>
 		setBuildingProduction(eConstructBuilding, 0);
 		setBuildingProductionTime(eConstructBuilding, 0); // Bugfix, 06/10/10, EmperorFool
 		// <advc.123f>
@@ -11292,6 +11398,11 @@ void CvCity::popOrder(int iNum, bool bFinish,
 	case ORDER_CREATE:
 	{
 		eCreateProject = (ProjectTypes)pOrderNode->m_data.iData1;
+		// <advc.064b> Moved into new function (and moved up)
+		handleOverflow(getProjectProduction(eCreateProject) -
+				getProductionNeeded(eCreateProject),
+				getProductionModifier(eCreateProject), eOrderType);
+		// </advc.064b>
 		GET_TEAM(getTeam()).changeProjectMaking(eCreateProject, -1);
 		doPopOrder(pOrderNode); // advc.064d
 		if(!bFinish)
@@ -11345,11 +11456,6 @@ void CvCity::popOrder(int iNum, bool bFinish,
 				GET_TEAM(getTeam()).setProjectArtType(eCreateProject, iProjectCount - 1, iDefaultArtType);
 			}
 		}
-		// <advc.064b> Moved into new function
-		handleOverflow(getProjectProduction(eCreateProject) -
-				getProductionNeeded(eCreateProject),
-				getProductionModifier(eCreateProject), eOrderType);
-		// </advc.064b>
 		setProjectProduction(eCreateProject, 0);
 		// <advc.123f>
 		if(GC.getGame().isProjectMaxedOut(eCreateProject))
@@ -11891,6 +11997,36 @@ void CvCity::doPlotCultureTimes100(bool bUpdate, PlayerTypes ePlayer,
 		{
 			rCultureToAdd *= rCultureToMaster;
 		} // </advc.025>
+		// <advc.098> Don't spread too deep into foreign territory
+		if (rCultureToAdd > 0 && p.getOwner() != getOwner())
+		{
+			int const iDistToOwnedCap = plotCultureExtraRange() + 2;
+			int iDistToOwned = iDistToOwnedCap;
+			for (PlotCircleIter itInnerLoopPlot(p, iDistToOwned - 1, false);
+				itInnerLoopPlot.hasNext(); ++itInnerLoopPlot)
+			{
+				if (itInnerLoopPlot.currPlotDist() < iDistToOwned)
+				{
+					if (itInnerLoopPlot->getOwner() == getOwner() ||
+						// Needed when the city is just being founded
+						&*itInnerLoopPlot == plot())
+					{
+						iDistToOwned = itInnerLoopPlot.currPlotDist();
+					}
+				}
+				/*	Take advantage of the iterator's spiral pattern to
+					cancel the search asap */
+				else if (itInnerLoopPlot.currPlotDist() > iDistToOwned)
+					break;
+			}
+			if (iDistToOwned >= plotCultureExtraRange())
+			{
+				if (iDistToOwned >= iDistToOwnedCap)
+					continue;
+				rCultureToAdd *= scaled(iDistToOwnedCap - iDistToOwned,
+						iDistToOwnedCap - iDistToOwned + 1);
+			}
+		} // </advc.098>
 		// <kekm.23> Loss of tile culture upon city trade
 		if (rCultureToAdd.isNegative())
 			rCultureToAdd.increaseTo(-p.getCulture(ePlayer)); // </kekm.23>
@@ -13421,7 +13557,7 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_abWorkingPlot.write(pStream);
 	m_abHasReligion.write(pStream);
 	m_abHasCorporation.write(pStream);
-	
+
 	for (size_t i = 0; i < m_aTradeCities.size(); i++)
 	{
 		pStream->Write(m_aTradeCities[i].eOwner);
@@ -15218,23 +15354,37 @@ void CvCity::shouldUnProcessBuilding(BuildingTypes eBuilding)
 	{
 		if (GET_TEAM(getTeam()).isHasTech(eTech))
 		{
+			
 			if (!m_aiBuildingeActive.get(eBuilding))
 			{
 				//make sure to set it to true (default) for any left overs.
 				//now its truly obsolete...
 				m_aiBuildingeActive.set(eBuilding, true);  //must be before changeObsoleteBuildingCount
+				//set if to obsolete just in case (proccess tech handles that anyway)
+				//1 means add an obsolete
+				int obc = GET_TEAM(getTeam()).getObsoleteBuildingCount(eBuilding);
+				// if the building not set as obsolete, add the change (this should be managed by processtech
+				// its just a precaution here.
+				if (obc <= 0)
+				{
+					//doto 112 change
+					//GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1 + (obc < 1 ? -1  * obc : 0));
+					//GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1);
+					GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, -1 * obc, true); //doto113
+				}
 			}
 			//set if to obsolete just in case (proccess tech handles that anyway)
 			//1 means add an obsolete
-			int obc = GET_TEAM(getTeam()).getObsoleteBuildingCount(eBuilding);
+			//int obc = GET_TEAM(getTeam()).getObsoleteBuildingCount(eBuilding);
 			// if the building not set as obsolete, add the change (this should be managed by processtech
 			// its just a precaution here.
-			if (obc <= 0)
-			{
+			//if (obc <= 0)
+			//{
 				//doto 112 change
 				//GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1 + (obc < 1 ? -1  * obc : 0));
-				GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1);
-			}
+				//GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1);
+			//	GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, -1 * obc); //doto113
+			//}
 			return;
 		}
 	}
@@ -15245,42 +15395,53 @@ void CvCity::shouldUnProcessBuilding(BuildingTypes eBuilding)
 //this bulk will handle the inactive building - since the above part means the building
 //is not tech obsoleted.
 	bool shouldBeActive = canKeep(eBuilding);
-	if (shouldBeActive)
+	if (shouldBeActive && !m_aiBuildingeActive.get(eBuilding))
 	{ 
 		//if the building can be kept and its set to none active ->
 		//re activate it and un obsolete it
 		//the if above handles true tech obsolete.
-		if (!m_aiBuildingeActive.get(eBuilding))
-			m_aiBuildingeActive.set(eBuilding, true);  //must be before changeObsoleteBuildingCount
-		int obc = GET_TEAM(getTeam()).getObsoleteBuildingCount(eBuilding);
+
+		//if (!m_aiBuildingeActive.get(eBuilding))
+		//	m_aiBuildingeActive.set(eBuilding, true);  //must be before changeObsoleteBuildingCount
+		m_aiBuildingeActive.set(eBuilding, true);//doto113
+		GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, -1);
+
+	//doto113 removal
+	//	int obc = GET_TEAM(getTeam()).getObsoleteBuildingCount(eBuilding);
 		//doto 112 change
 		//if the building is set to obsolete
 		// then we need to unobsolete it - of course - 
 		// if the building is obsolete due to tech, the case above it will manage it 
 		// and the this if wont run - see above.
-		if (obc > 0)
-		{
+	//	if (obc > 0)
+	//	{
 			//doto 112
+			//DOTO -tholish-Keldath inactive buildings
 			//GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, -1/* * obc*/);
-			GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, -1, true);
-		}
+	//		GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, -1, true);
+	//	}
+	
 		return;
 	}
 	//set the building to obsolete (the changeObsoleteBuildingCount calls process building.
 	else if (!shouldBeActive && m_aiBuildingeActive.get(eBuilding))
 	{
-		int obc = GET_TEAM(getTeam()).getObsoleteBuildingCount(eBuilding);
 		m_aiBuildingeActive.set(eBuilding, false);
+		GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1);
+		/*doto113 rmoval
+		int obc = GET_TEAM(getTeam()).getObsoleteBuildingCount(eBuilding);
 		if (obc <= 0)
 		{
 			//doto 112
+			//DOTO -tholish-Keldath inactive buildings
 			//GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1 + (obc < 1 ? -1 * obc : 0));	
 			GET_TEAM(getTeam()).changeObsoleteBuildingCount(eBuilding, 1, true);	
 		}
+		*/
 	}
 	//if its already marked, nothing to do.
-	else if (!m_aiBuildingeActive.get(eBuilding))
-		return;
+	//else if (!m_aiBuildingeActive.get(eBuilding))
+	//	return;
 		
 	return;
 }

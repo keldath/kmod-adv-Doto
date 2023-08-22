@@ -114,10 +114,10 @@ public:
 	void killUnits();																								// Exposed to Python
 	// <advc.154>
 	CvSelectionGroup* getNextGroupInCycle(CvUnit* pUnit, bool bForward,
-			bool bWorkers, bool* pbWrap,
+			bool bWorkers, bool* pbWrap = NULL,
 			std::set<int>* pCycledGroup = NULL) const; // </advc.154>
 	CvSelectionGroup* cycleSelectionGroups(CvUnit* pUnit, bool bForward,
-			bool bWorkers, bool* pbWrap);
+			bool bWorkers, bool* pbWrap /* advc: */ = NULL);
 
 	bool hasTrait(TraitTypes eTrait) const { return GC.getInfo(getLeaderType()).hasTrait(eTrait); }					// Exposed to Python
 	// BETTER_BTS_AI_MOD, 12/30/08, jdog5000: START
@@ -345,7 +345,8 @@ public:
 			BuildTypes* peBestBuild = NULL) const; // advc.121
 	int getImprovementUpgradeRate() const;																			// Exposed to Python
 
-	int calculateTotalYield(YieldTypes eYield) const;																// Exposed to Python
+	int calculateTotalYield(YieldTypes eYield,																		// Exposed to Python
+			bool bExcludeCitiesInDisorder = false) const; // advc.001
 	int calculateTotalExports(YieldTypes eYield) const;																// Exposed to Python
 	int calculateTotalImports(YieldTypes eYield) const;																// Exposed to Python
 
@@ -461,6 +462,10 @@ public:
 
 	int getCivicAnarchyLength(CivicMap const& kNewCivics,															// Exposed to Python
 			bool bIgnoreGoldenAge = false) const; // advc.132
+//doto 113 -> loose capital anarchy start
+	int getCapitalLossAnarchyLength() const; // advc.132															// Exposed to Python
+//doto 113 -> loose capital anarchy end
+
 	int getReligionAnarchyLength(																					// Exposed to Python
 			bool bIgnoreGoldenAge = false) const; // advc.132
 	int unitsRequiredForGoldenAge() const;																			// Exposed to Python
@@ -1515,7 +1520,8 @@ public:
 	bool canSpiesEnterBorders(PlayerTypes ePlayer) const;
 	int getNewCityProductionValue() const;
 
-	int getGrowthThreshold(int iPopulation) const;
+	int getGrowthThreshold(int iPopulation,
+			bool bIgnoreModifiers = false) const; // advc.064b
 
 	void verifyUnitStacksValid();
 	UnitTypes getTechFreeUnit(TechTypes eTech) const;

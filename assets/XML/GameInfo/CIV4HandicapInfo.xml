@@ -771,7 +771,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.101 -->
 			<iForeignCultureStrength>29</iForeignCultureStrength>
 			<iHealthBonus>2</iHealthBonus>
-			<iHappyBonus>4</iHappyBonus>
+			<iHappyBonus>3</iHappyBonus>
 			<!-- population limit: was 4 -->
 			<iPopulationLimit>8</iPopulationLimit>
 			<!-- advc.148: was -1 -->
@@ -886,8 +886,9 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iBaseGrowthThresholdPercent>100</iBaseGrowthThresholdPercent>
 			<iGPThresholdPercent>100</iGPThresholdPercent>
 			<iCultureLevelPercent>106</iCultureLevelPercent>
+			<!-- was 120 -->
+			<iResearchPercent>118</iResearchPercent>
 			<!-- advc.251 (end) -->
-			<iResearchPercent>120</iResearchPercent>
 			<!-- advc.251 (start) -->
 			<iTrainPercent>100</iTrainPercent>
 			<iConstructPercent>100</iConstructPercent>
@@ -908,7 +909,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.101 -->
 			<iForeignCultureStrength>32</iForeignCultureStrength>
 			<iHealthBonus>2</iHealthBonus>
-			<iHappyBonus>4</iHappyBonus>
+			<iHappyBonus>3</iHappyBonus>
 			<!-- population limit: was 4 -->
 			<iPopulationLimit>8</iPopulationLimit>
 			<!-- advc.148: was -1 -->
@@ -1070,7 +1071,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.101 -->
 			<iForeignCultureStrength>35</iForeignCultureStrength>
 			<iHealthBonus>2</iHealthBonus>
-			<iHappyBonus>4</iHappyBonus>
+			<iHappyBonus>3</iHappyBonus>
 			<!-- population limit: was 4 -->
 			<iPopulationLimit>8</iPopulationLimit>
 			<!-- advc.148: was -1 -->
@@ -1238,7 +1239,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.101 -->
 			<iForeignCultureStrength>38</iForeignCultureStrength>
 			<iHealthBonus>2</iHealthBonus>
-			<iHappyBonus>4</iHappyBonus>
+			<iHappyBonus>3</iHappyBonus>
 			<!-- population limit: was 4 -->
 			<iPopulationLimit>8</iPopulationLimit>
 			<!-- advc.148: was -1 -->
@@ -1411,7 +1412,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.101 -->
 			<iForeignCultureStrength>40</iForeignCultureStrength>
 			<iHealthBonus>2</iHealthBonus>
-			<iHappyBonus>4</iHappyBonus>
+			<iHappyBonus>3</iHappyBonus>
 			<!-- population limit: was 4 -->
 			<iPopulationLimit>8</iPopulationLimit>
 			<!-- advc.148: was -1 -->

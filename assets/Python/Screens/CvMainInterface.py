@@ -202,7 +202,8 @@ class CvMainInterface:
 	@staticmethod
 	def _isInterfaceArtKey(s):
 		return (s.startswith("INTERFACE_") or s.startswith("BUTTON_") or
-				s.startswith("RAW_YIELDS_")) # for BUG - Raw Yields
+				s.startswith("RAW_YIELDS_") or # for BUG - Raw Yields
+				s.startswith("PLE_")) # for BUG - PLE
 	def setImageButton(self, szName,
 			szTexture, # Path or InterfaceArtInfo key
 			eWidgetType = None, iData1 = -1, iData2 = -1, szAttachTo = None):
@@ -488,7 +489,7 @@ class CvMainInterface:
 		gSetRectangle("Top", RectLayout(None, 0, 0, self.xResolution, self.yResolution))
 		self.bScaleHUD = MainOpt.isEnlargeHUD()
 		if self.bScaleHUD:
-			# Divide by the aspects that the original HUD works was (presumably)
+			# Divide by the aspects that the original HUD was (presumably)
 			# optimized for.
 			xRatio = math.pow(self.xResolution / 1024.0, 0.4)
 			yRatio = math.pow(self.yResolution / 768.0, 0.4)
@@ -853,7 +854,13 @@ class CvMainInterface:
 				iPlotListUnitBtnSz)
 		gSetRect("DefaultHelpArea", "Top",
 				HSPACE(7),
-				-(VSPACE(5) + gRect("CenterBottomPanel").height() + self.plotListUnitButtonSize()),
+				# (The center bottom panel doesn't fully scale up, so we shouldn't
+				# use that as our point of reference.)
+				#-(VSPACE(5) + gRect("CenterBottomPanel").height() + self.plotListUnitButtonSize())
+				# BtS leaves some space here, but we want the text area as low as possible
+				# to maximize the amount of text we can display (while also having tall corners
+				# for the sake of a large minimap).
+				gRect("LowerLeftCornerBackgr").y(),
 				# Default area will actually ignore this, but it's relevant
 				# for the PLE Info Pane.
 				gRect("LowerLeftCorner").width() + HLEN(6), 0)
@@ -2017,10 +2024,13 @@ class CvMainInterface:
 	def bottomListBtnSize(self):
 # BUG - Build/Action Icon Size - start
 		if MainOpt.isBuildIconSizeLarge():
-			return 64
+			iSize = 64
 		elif MainOpt.isBuildIconSizeMedium():
-			return 48
-		return 36
+			iSize = 48
+		else:
+			iSize = 36
+		# advc.092: Also apply some HUD scaling
+		return BTNSZ(iSize, 0.7)
 # BUG - Build/Action Icon Size - end
 
 	def updateBottomButtonList(self):
@@ -2029,8 +2039,6 @@ class CvMainInterface:
 		# EF: minimum icon size for disabled buttons to work is 33 so these sizes won't fly
 		# iButtonSize=32, iHeight=102
 		# iButtonSize=24, iHeight=104
-		# advc.092: Apply only some HUD scaling
-		iButtonSize = BTNSZ(iButtonSize, 0.75)
 		# advc: I don't know why the BUG heights were chosen.
 		# I think they should be multiples of the button size. That was
 		# almost exactly the case for the three button sizes above 33.
@@ -3450,7 +3458,7 @@ class CvMainInterface:
 							# (Safety margin - seems that MultiListControl can't use its entire width.)
 							-10) / self.bottomListBtnSize())
 					# Can display any number of them, but we don't want a scrollbar.
-					iMaxRows = int((gRect("BottomButtonList").height() - 5) /
+					iMaxRows = int(gRect("BottomButtonList").height() /
 							self.bottomListBtnSize())
 					iRow0Count = 0
 					iRow1Count = 0
@@ -5677,8 +5685,9 @@ class CvMainInterface:
 			aCorpRows = self.cityOrgRects(
 					len(aCorporations), gc.getNumCorporationInfos())
 			# Move corps under religions
-			for lCorpRow in aCorpRows:
-				lCorpRow.move(0, gRect("CityReligions").height() + iReligionCorpsMargin)
+			if gIsRect("CityReligions"):
+				for lCorpRow in aCorpRows:
+					lCorpRow.move(0, gRect("CityReligions").height() + iReligionCorpsMargin)
 			for i in range(len(aCorporations)):
 				lCorp = None
 				# Find next free spot

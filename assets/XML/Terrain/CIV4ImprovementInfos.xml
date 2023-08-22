@@ -1453,7 +1453,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iUpgradeTime>0</iUpgradeTime>
 			<iAirBombDefense>10</iAirBombDefense>
 			<iDefenseModifier>0</iDefenseModifier>
-			<iHealthPercent>-25</iHealthPercent>
+			<iHealthPercent>-30</iHealthPercent>
 			<iHappiness>0</iHappiness>
 			<iPillageGold>10</iPillageGold>
 			<bOutsideBorders>0</bOutsideBorders>

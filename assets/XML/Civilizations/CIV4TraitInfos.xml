@@ -98,7 +98,7 @@
 			<Description>TXT_KEY_TRAIT_EXPANSIVE</Description>
 			<ShortDescription>TXT_KEY_TRAIT_EXPANSIVE_SHORT</ShortDescription>
 			<Civilopedia>TXT_KEY_TRAIT_EXPANSIVE_PEDIA</Civilopedia>
-			<iHealth>2</iHealth>
+			<iHealth>1</iHealth>
 			<iHappiness>0</iHappiness>
 			<iMaxAnarchy>-1</iMaxAnarchy>
 			<iUpkeepModifier>0</iUpkeepModifier>
@@ -344,7 +344,7 @@
 			<CommerceFRmodifier>
 				 <iCommerce>10</iCommerce>
                  <iCommerce>0</iCommerce>
-                 <iCommerce>10</iCommerce>
+                 <iCommerce>0</iCommerce>
 			</CommerceFRmodifier>
 <!-- doto city states advanced diplomacy -->
 		</TraitInfo>
@@ -373,7 +373,7 @@
 <!-- doto city states advanced diplomacy -->
 			<iFreeTradeValid>1</iFreeTradeValid> 
 			<CommerceFRmodifier>
-				 <iCommerce>20</iCommerce>
+				 <iCommerce>10</iCommerce>
                  <iCommerce>0</iCommerce>
                  <iCommerce>0</iCommerce>
 			</CommerceFRmodifier>
@@ -405,7 +405,7 @@
 			<iFreeTradeValid>1</iFreeTradeValid> 
 			<CommerceFRmodifier>
 				 <iCommerce>0</iCommerce>
-                 <iCommerce>20</iCommerce>
+                 <iCommerce>10</iCommerce>
                  <iCommerce>0</iCommerce>
 			</CommerceFRmodifier>
 <!-- doto city states advanced diplomacy -->
@@ -436,7 +436,7 @@
 			<iFreeTradeValid>1</iFreeTradeValid> 
 			<CommerceFRmodifier>
 				 <iCommerce>10</iCommerce>
-                 <iCommerce>10</iCommerce>
+                 <iCommerce>0</iCommerce>
                  <iCommerce>0</iCommerce>
 			</CommerceFRmodifier>
 <!-- doto city states advanced diplomacy -->
@@ -468,7 +468,7 @@
 			<CommerceFRmodifier>
 				 <iCommerce>0</iCommerce>
                  <iCommerce>0</iCommerce>
-                 <iCommerce>20</iCommerce>
+                 <iCommerce>10</iCommerce>
 			</CommerceFRmodifier>
 <!-- doto city states advanced diplomacy -->
 		</TraitInfo>
@@ -497,9 +497,9 @@
 <!-- doto city states advanced diplomacy -->
 			<iFreeTradeValid>1</iFreeTradeValid> 
 			<CommerceFRmodifier>
-				 <iCommerce>10</iCommerce>
+				 <iCommerce>5</iCommerce>
                  <iCommerce>0</iCommerce>
-                 <iCommerce>10</iCommerce>
+                 <iCommerce>5</iCommerce>
 			</CommerceFRmodifier>
 <!-- doto city states advanced diplomacy -->
 		</TraitInfo>
@@ -529,8 +529,8 @@
 			<iFreeTradeValid>1</iFreeTradeValid> 
 			<CommerceFRmodifier>
 				 <iCommerce>0</iCommerce>
-                 <iCommerce>10</iCommerce>
-                 <iCommerce>10</iCommerce>
+                 <iCommerce>5</iCommerce>
+                 <iCommerce>5</iCommerce>
 			</CommerceFRmodifier>
 <!-- doto city states advanced diplomacy -->
 		</TraitInfo>
@@ -560,7 +560,7 @@
 			<iFreeTradeValid>1</iFreeTradeValid> 
 			<CommerceFRmodifier>
 				 <iCommerce>0</iCommerce>
-                 <iCommerce>20</iCommerce>
+                 <iCommerce>10</iCommerce>
                  <iCommerce>0</iCommerce>
 			</CommerceFRmodifier>
 <!-- doto city states advanced diplomacy -->		

@@ -450,7 +450,7 @@ void CvUnitAI::AI_upgrade()
 
 	if (eBestUnit != NO_UNIT)
 	{
-		if (gUnitLogLevel > 0) logBBAI("    %S (unit %d - %S) upgrading to %S (value: %d)", getName().GetCString(), getID(), GC.getUnitAIInfo(AI_getUnitAIType()).getDescription(), GC.getUnitInfo(eBestUnit).getDescription(), iBestValue); // advc.mnai
+		if (gUnitLogLevel > 0) logBBAI("    %S (unit %d - %S) upgrading to %S (value: %d)", getName().GetCString(), getID(), GC.getUnitAIInfo(AI_getUnitAIType()).getDescription(), GC.getInfo(eBestUnit).getDescription(), iBestValue); // advc.mnai
 		/*upgrade(eBestUnit);
 		doDelayedDeath(); */ // BtS
 		// K-Mod. Ungroup the unit, so that we don't cause the whole group to miss their turn.
@@ -14321,7 +14321,7 @@ bool CvUnitAI::AI_leaveAttack(int iRange, int iOddsThreshold, int iStrengthThres
 			FOR_EACH_UNIT_IN(pGroupUnit, *getGroup())
 			{
 				if (pGroupUnit->combatLimit() >= 100)
-		{
+				{
 					bAnyLethal = true;
 					break;
 				}
@@ -14329,16 +14329,16 @@ bool CvUnitAI::AI_leaveAttack(int iRange, int iOddsThreshold, int iStrengthThres
 			if (!bAnyLethal)
 				continue;
 		} // </advc.114f>
-			//iValue = getGroup()->AI_attackOdds(&p, true);
-			int iValue = AI_getGroup()->AI_getWeightedOdds(&p, false); // K-Mod
-			//if (iValue >= AI_finalOddsThreshold(&p, iOddsThreshold))
+		//iValue = getGroup()->AI_attackOdds(&p, true);
+		int iValue = AI_getGroup()->AI_getWeightedOdds(&p, false); // K-Mod
+		//if (iValue >= AI_finalOddsThreshold(&p, iOddsThreshold))
 		if (iValue >= iOddsThreshold && // K-Mod
 			iValue > iBestValue)
-				{
-					iBestValue = iValue;
-					pBestPlot = &getPathEndTurnPlot();
-				}
-			}
+		{
+			iBestValue = iValue;
+			pBestPlot = &getPathEndTurnPlot();
+		}
+	}
 
 	if (pBestPlot != NULL)
 	{
@@ -19853,7 +19853,7 @@ int CvUnitAI::AI_airStrikeValue(CvPlot const& kPlot, int iCurrentBest, bool& bBo
 			{	/*	(isRevealedCityHeal would use the same team
 					for the heal and visibility checks) */
 				ImprovementTypes eImprov = kPlot.getRevealedImprovementType(getTeam());
-				if (eImprov != NO_IMPROVEMENT && GC.getImprovementInfo(eImprov).isActsAsCity())
+				if (eImprov != NO_IMPROVEMENT && GC.getInfo(eImprov).isActsAsCity())
 				{	// </advc>
 					iStrikeValue *= 3;
 					iStrikeValue /= 4;

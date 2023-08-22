@@ -681,7 +681,7 @@ void CvDLLWidgetData::parseHelp(CvWStringBuffer &szBuffer, CvWidgetDataStruct &w
 		break;
 	// K-Mod. Global commerce modifiers, extra specialist commerce
 	case WIDGET_HELP_GLOBAL_COMMERCE_MODIFIER:
-		GAMETEXT.setCommerceChangeHelp(szBuffer, L"", L"", gDLL->getText("TXT_KEY_CIVIC_IN_ALL_CITIES").GetCString(), GC.getTechInfo((TechTypes)(widgetDataStruct.m_iData1)).getCommerceModifierArray(), true, false);
+		GAMETEXT.setCommerceChangeHelp(szBuffer, L"", L"", gDLL->getText("TXT_KEY_CIVIC_IN_ALL_CITIES").GetCString(), GC.getInfo((TechTypes)(widgetDataStruct.m_iData1)).getCommerceModifierArray(), true, false);
 		break;
 	case WIDGET_HELP_EXTRA_SPECIALIST_COMMERCE:
 		GAMETEXT.setCommerceChangeHelp(szBuffer, L"", L"", gDLL->getText("TXT_KEY_CIVIC_PER_SPECIALIST").GetCString(), GC.getInfo((TechTypes)(widgetDataStruct.m_iData1)).getSpecialistExtraCommerceArray(), false, false);
@@ -4829,10 +4829,11 @@ void CvDLLWidgetData::parseTradeItem(CvWidgetDataStruct &widgetDataStruct,
 					CvTraitInfo& kTrait = GC.getInfo(eTrait);
 					CvCommerceInfo const& kCommerce = GC.getInfo(eLoopCommerce);
 					int const iCommerceChar = kCommerce.getChar();
-					if (kTrait.getCommerceFRmodifier(eLoopCommerce) > 0)
+					int const commMod = kTrait.getCommerceFRmodifier(eLoopCommerce);
+					if (commMod > 0)
 					{
 						szBuffer.append(NEWLINE); 
-						CvWString szCommerce = CvWString::format(L"%d", kTrait.getCommerceFRmodifier(eLoopCommerce));
+						CvWString szCommerce = CvWString::format(L"%d", commMod);
 						szBuffer.append(gDLL->getText("TXT_KEY_FREE_TRADE_AGREEMENT_DIPLO_TABLE",
 							kCommerce.getTextKeyWide(), szCommerce.GetCString(), iCommerceChar));
 					}
@@ -4987,7 +4988,7 @@ void CvDLLWidgetData::parseFlagHelp(CvWidgetDataStruct &widgetDataStruct, CvWStr
 /*                                                                                              */
 /************************************************************************************************/
 	// Add string showing version number
-	szTempBuffer.Format(NEWLINE SETCOLR L"%S" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), "AdvCiv 1.09 preRelease + Doto 1.12");
+	szTempBuffer.Format(NEWLINE SETCOLR L"%S" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), "AdvCiv 1.10_10072023 + Doto 1.13");
 	szBuffer.append(szTempBuffer);
 	szBuffer.append(NEWLINE);
 #ifdef LOG_AI
