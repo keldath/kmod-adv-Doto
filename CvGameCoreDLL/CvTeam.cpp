@@ -4233,7 +4233,7 @@ void CvTeam::changeBuildingClassCount(BuildingClassTypes eIndex, int iChange)
 void CvTeam::changeObsoleteBuildingCount(BuildingTypes eIndex, int iChange, bool ignoreAdd)
 {
 	//tst
-	CvBuildingInfo const& kBuilding = GC.getInfo(eIndex);
+	//CvBuildingInfo const& kBuilding = GC.getInfo(eIndex);
 	if(iChange == 0)
 		return;
 
@@ -4253,7 +4253,7 @@ void CvTeam::changeObsoleteBuildingCount(BuildingTypes eIndex, int iChange, bool
 
 //DOTO -tholish-Keldath inactive buildings START
 //Tholish UnbuildableBuildingDeletion START
-	int tst = getObsoleteBuildingCount(eIndex);
+	//int tst = getObsoleteBuildingCount(eIndex);
 	
 	FAssert(getObsoleteBuildingCount(eIndex) >= 0);
 	//doto 113 -> fix the assert...just for testing  //DOTO -tholish-Keldath inactive buildings

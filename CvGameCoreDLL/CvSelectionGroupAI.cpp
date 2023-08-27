@@ -354,17 +354,20 @@ int CvSelectionGroupAI::AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialE
 // DOTO-MOD rangedattack-keldath - START + ranged immunity - if only attacker is ranged - its no risk
 	bool bARanged = pAttacker->isRangeStrikeCapableK();
 	bool bDRanged = pDefender->isRangeStrikeCapableK();
-	if (bARanged && !bDRanged)
-		return 99;
-// DOTO-MOD rangedattack-keldath - END + ranged immunity 
-// DOTO-MOD rangedattack-keldath - START + ranged immunity - of both are ranged
-	if (bDRanged && bARanged)
+	bool bDRangedCap = pDefender->isRangeStrikeCapableK(true);
+	if (bARanged)
 	{
-		//iAdjustedOdds += std::max((pAttacker->currCombatStr() - pDefender->currCombatStr()), 0);
-		//iAdjustedOdds = std::min(iAdjustedOdds, 60); //limit the change
-		//doto 112
-		iAdjustedOdds += std::min((100 * (pAttacker->currCombatStr() /
-			pAttacker->currCombatStr() + pDefender->currCombatStr())) / 100, 30);
+		if (!bDRanged && !bDRangedCap) //regular unit that cannot harm the attacker ranged
+			return 99;
+		else if (!bDRanged && bDRangedCap) //if the unit cap is on the defender is not maxed, it can attack us back next turn
+			iAdjustedOdds += 35;
+		else if (bDRanged && (bARanged && bDRangedCap)) //if the defender is also ranged without cap maxed
+		{
+			iAdjustedOdds += std::min((100 * (pAttacker->currCombatStr() /
+				pAttacker->currCombatStr() + pDefender->currCombatStr())) / 100, 30);
+		}
+		else 
+			iAdjustedOdds += 20; //probabaly wont happen, the statements above should cover it
 	}
 // DOTO-MOD rangedattack-keldath - END + ranged immunity
 	iAdjustedOdds += iAttackOddsChange; // advc.114b
@@ -435,11 +438,11 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot,
 			//add some extra value to ranged units.
 			if (bRanged) 
 			{
-				//iValue *= (100 + (125 - kLoopUnit.combatLimit()));
-				//iValue /= 100;
-				//doto112
-				iValue *= (100 + std::max(1, kLoopUnit.rangedStrike())) / 100;
+				//base of 20
+				iValue *= 100 + (kLoopUnit.rangedStrike() + kLoopUnit.getLevel() + 20);
+				iValue /= 100;
 			} 
+// DOTO-MOD rangedattack-keldath + ranged immunity  - end 
 			if (kLoopUnit.collateralDamage() > 0 && /* advc.048: */ !bMaxSurvival)
 			{
 				int iPossibleTargets = std::min(
@@ -1141,11 +1144,11 @@ CvUnitAI* CvSelectionGroupAI::AI_ejectBestDefender(CvPlot* pDefendPlot)
 				// advc.mnai:
 				(pUnit->AI_getUnitAIType() == UNITAI_ATTACK_CITY ? 2 : 1));
 // DOTO-MOD ranged immunity - START --if the unit is ranged - prefer not to eject it
-// ranged are given more value above in the AI_currEffectiveStr
 //if the unit is ranged, the higher the level, better not eject?
 //doto 112 - caused some error - FErrorMsg("AI_ejectBestDefender failed to choose a candidate for AI_guardCity.");
-//		iValue /= pUnit->isRangeStrikeCapableK() ? 
-//				(2 + (pUnit->getLevel() * 2) ): 1;	
+//doto 113 change, hope it will cause less free ranged units and no errors
+		if (pUnit->isRangeStrikeCapableK())
+			iValue -= pUnit->rangedStrike() + 25; //base 25
 		if (iValue > iBestUnitValue)
 		{
 			iBestUnitValue = iValue;

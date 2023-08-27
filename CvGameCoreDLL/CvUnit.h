@@ -1076,8 +1076,8 @@ public:
 	int rangeCombatDamageK(const CvUnit* pDefender, const CvUnit* pAttacker) const;
 	bool randomRangedGen(CvUnit* pDefender, CvUnit* pAttacker) const;
 	bool rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlot* pPlot,
-					int dmg, int msgType,bool rndHit = true, int UnitPreDamage=0) const;
-	bool isRangeStrikeCapableK() const;
+					int dmg, bool rndHit = true, int UnitPreDamage=0, bool iRetaliate= false) const;
+	bool isRangeStrikeCapableK(bool isRangeStrikeCapableK = false) const;
 // DOTO-MOD - Keldtah RangedStrike end + Ranged Immunity
 
 	int getTriggerValue(EventTriggerTypes eTrigger, const CvPlot* pPlot, bool bCheckPlot) const;
@@ -1303,14 +1303,19 @@ protected:
 	//void resolveCombat(CvUnit* pDefender, CvPlot* pPlot, CvBattleDefinition& kBattle);
 	void resolveCombat(CvUnit* pDefender, CvPlot* pPlot, bool bVisible); // K-Mod
 //DOTO - ranged-immunity
-	void resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pPlot, bool bVisible, int dmgFromRanged); // K-Mod
+	void resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pPlot, bool bVisible, int dmgFromRanged, bool iRetaliate); // K-Mod
 //DOTO - ranged imunity
-	void addAttackSuccessMessages(CvUnit const& kDefender, bool bFought) const; // advc.010
-	void addDefenseSuccessMessages(CvUnit const& kDefender) const; // advc
+//DOTO ADDED 2 UNITS PARAMS that the do victory required -> couldnt convert the existing dta properly
+//so just pushed it as is------ BEGIN InfluenceDrivenWar -------------------------------
+	void addAttackSuccessMessages(CvUnit const& kDefender, bool bFought, CvUnit* pDefender, CvUnit* thisUnit) const; // advc.010
+	void addDefenseSuccessMessages(CvUnit const& kDefender, CvUnit* pDefender, CvUnit* thisUnit) const; // advc
+//DOTO ------ END InfluenceDrivenWar -------------------------------
 	void addWithdrawalMessages(CvUnit const& kDefender) const; // advc
 	// <advc.048c>
+// ------ BEGIN InfluenceDrivenWar ---------------------doto 113 for advc
 	void setHasBeenDefendedAgainstMessage(CvWString& kBuffer, CvUnit const& kDefender,
-			int iAttackSuccess) const; // </advc.048c>
+			int iAttackSuccess, float fInfluenceRatio) const; // </advc.048c>
+// ------ END InfluenceDrivenWar ---------------------			
 	bool suppressStackAttackSound(CvUnit const& kDefender) const; // advc.002l
 	void resolveAirCombat(CvUnit* pInterceptor, CvPlot* pPlot, CvAirMissionDefinition& kBattle);
 /*************************************************************************************************/

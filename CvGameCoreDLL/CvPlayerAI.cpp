@@ -14130,7 +14130,7 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		if (u.getRangeStrike() > 0)
 		{
 			//iValue += ((iCombatValue * (125 - u.getCombatLimit())) / 100);
-			iValue += iCombatValue * 25 / 100;
+			iValue += iCombatValue * 20 / 100;
 		}
 
 		//ranged are limited, we dont want reduction of value
@@ -14185,8 +14185,7 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		//doto keldath rangedstrike + ranged immunity
 		if (u.getRangeStrike() > 0)
 		{
-			//iSiegeValue += ((iCombatValue * (125 - u.getCombatLimit())) / 100);
-			iValue += (iCombatValue * 40) / 100;
+			iValue += (iCombatValue * 30) / 100;
 		}
 
 		/* if (!AI_isDoStrategy(AI_STRATEGY_AIR_BLITZ)) {
@@ -14311,7 +14310,7 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		iValue += iCombatValue * u.getCollateralDamage() *
 				(1 + u.getCollateralDamageMaxUnits()) / 350; // </K-Mod>
 		iValue += (iCombatValue * u.getMoves()) / 4;
-//doto keldath rangedstrike + ranged immunity - i dont want these modifiers to be goven to ranged
+//doto keldath rangedstrike + ranged immunity - i dont want these modifiers to be given to ranged
 		if (u.getRangeStrike() < 1)
 		{
 			iValue += (iCombatValue * u.getWithdrawalProbability()) / 25;
@@ -14436,7 +14435,7 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		{
 			//iValue += ((iCombatValue * (125 - u.getCombatLimit())) / 100);
 				//(iCombatValue * u.getCombatLimit() / 300) + u.getCombat();
-			iValue += iCombatValue * 40 / 100;
+			iValue += iCombatValue * 30 / 100;
 		}
 		FOR_EACH_ENUM(UnitCombat)
 		{

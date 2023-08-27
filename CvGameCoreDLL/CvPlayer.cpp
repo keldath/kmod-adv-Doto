@@ -4814,14 +4814,24 @@ void CvPlayer::findNewCapital()
 		iValue += (pLoopCity->getNumGreatPeople() * 2);
 
 //doto113 keldath find the best capital enhanced start - by <Nexux>
-		BuildingTypes const eCapitalBuilding2 = getCivilization().getBuilding((BuildingClassTypes)
-			GC.getDefineINT("CAPITAL_BUILDINGCLASS_2"));
-		BuildingTypes const eCapitalBuilding3 = getCivilization().getBuilding((BuildingClassTypes)
-			GC.getDefineINT("CAPITAL_BUILDINGCLASS_3"));
+		//BuildingClassTypes eCapitalBuilding2 = (BuildingClassTypes)GC.getInfoTypeForString(GC.getDefineSTRING("CAPITAL_BUILDINGCLASS_2"));
+		BuildingTypes const eCapitalBuilding2 = getCivilization().getBuilding((BuildingClassTypes)GC.getInfoTypeForString(
+			GC.getDefineSTRING("CAPITAL_BUILDINGCLASS_2"))); 
 		if (eCapitalBuilding2 != NO_BUILDING)
-			iValue += pLoopCity->getPopulation() * 2;
+		{
+			int eCapitalBuilding2Amnt = pLoopCity->getNumBuilding(eCapitalBuilding2);
+			if (eCapitalBuilding2Amnt > 0)
+				iValue += pLoopCity->getPopulation() * 2;
+		}
+		//BuildingClassTypes eCapitalBuilding3 = (BuildingClassTypes)GC.getInfoTypeForString(GC.getDefineSTRING("CAPITAL_BUILDINGCLASS_3"));
+		BuildingTypes const eCapitalBuilding3 = getCivilization().getBuilding((BuildingClassTypes)GC.getInfoTypeForString(
+			GC.getDefineSTRING("CAPITAL_BUILDINGCLASS_3")));
 		if (eCapitalBuilding3 != NO_BUILDING)
-			iValue += pLoopCity->getPopulation() * 2;
+		{
+			int eCapitalBuilding3Amnt = pLoopCity->getNumBuilding(eCapitalBuilding3);
+			if (eCapitalBuilding3Amnt > 0)
+				iValue += pLoopCity->getPopulation() * 2;
+		}
 		iValue += pLoopCity->getNumNationalWonders();
 		iValue += pLoopCity->getNumWorldWonders();
 //doto113 keldath find the best capital enhanced start - by <Nexux>

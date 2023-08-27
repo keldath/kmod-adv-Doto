@@ -738,48 +738,57 @@ void CvUnit::doTurn()
 // each attack will render the counter by 1.
 //if the cap is at its max - the unit will attack with the normal battle rules
 // the cap will replenish if the unit did not attack for x turns (maybe more or other rules later on
-	if (rangedStrike() > 0 )
+//doto 113 refactor
+	int iRanged = rangedStrike();
+	int iRcd = GC.getDefineINT("RANGED_ATTACK_COOLDOWN");
+	if (iRanged > 0 )
 	{
-		if (getPlot().isCity())
+		//these 2 checks are basically debuggers actions
+		//it shouldnt happen in a normal game, i had it in a test game i kept changing
+		//and one of these got to -1, so this will always fix any wrong calcs.
+		//should run some autoplay to make sure these statements wont take effect.
+		//otherwise, should be investigated!
+		if (getRangedStrikeCapTimer() < 0)
+			setRangedStrikeCapTimer(0);
+		if (getRangedStrikeCapCounter() < 0)
+			setRangedStrikeCapCounter(0);
+		
+		int tst = getRangedStrikeCapTimer();
+		if (iRcd == getRangedStrikeCapTimer())
 		{
-			// reduce by 1 the coolddown length - as a defender bonus
-			if (getRangedStrikeCapTimer() > std::max(0, (GC.getDefineINT("RANGED_ATTACK_COOLDOWN")-1)))
-				setRangedStrikeCapTimer(-1); //reset the timer
+			if (!getPlot().isCity())
+			{
+				// damage the ranged unit by x% damage per strike count
+				// and only for the first time the cap is 0 (so the damage wont happen for next turn as well
+				//if the attcker is in a city, spare it from dmg on the cooldown
+				changeDamage(iRcd * iRanged, getOwner());
+			}
+			setRangedStrikeCapTimer(0); //reset the timer
+			setRangedStrikeCapCounter(0); //reset the counter
+			setMadeAttack(false);
+		}
+		else if (getRangedStrikeCapCounter() >= iRanged && 
+			getRangedStrikeCapTimer() < iRcd //this second checkshould be obvious but i added just in case.
+			)
+		{
+			setMadeAttack(true); //unit cant attack at all if cap was reached
+			changeRangedStrikeCapTimer(1); //use turn counter! old turns new turns
 		}
 		else
 		{
-			if (getRangedStrikeCapCounter() >= rangedStrike())
+			int iTimer = getRangedStrikeCapTimer();
+			int iCap = getRangedStrikeCapCounter();
+			if (!isMadeAttack() && (iTimer > 0 || iCap > iRanged))
 			{
-				setMadeAttack(true); //unit cant attack at all if cap was reached
-				if (getRangedStrikeCapTimer() == 0)
-				{
-					// damage the ranged unit by x% damage per strike count
-					// and only for the first time the cap is 0 (so the damage wont happen for next turn as well
-					changeDamage(GC.getDefineINT("RANGED_DAMAGE_TAKEN") * rangedStrike()
-						, getOwner());
-				}
-				changeRangedStrikeCapTimer(1); //use turn counter! old turns new turns 
+				//if no attack was made last turn, count back the timer
+				if (iTimer > 0)
+					changeRangedStrikeCapTimer(-1);
+				if (iCap >= iRanged)
+					changeRangedStrikeCapCounter(-1);
 			}
-			else
-			{
-				if ((GC.getDefineINT("RANGED_ATTACK_COOLDOWN")
-					- getRangedStrikeCapTimer()) == 0)
-				{
-					setRangedStrikeCapTimer(0); //reset the timer
-					setRangedStrikeCapCounter(0); //reset the counter
-				}
-				else
-				{
-					if (!isMadeAttack() && getRangedStrikeCapTimer() > 0)
-					{
-						//if no attack was made last turn, count back the timer
-						changeRangedStrikeCapTimer(-1);
-					}
-				}
-				setMadeAttack(false);
-			}
-			
+			setMadeAttack(false);
 		}
+			
 	}
 	else
 	{
@@ -1141,7 +1150,7 @@ void CvUnit::updateAirCombat(bool bQuick)
 // K-Mod. I've edited this function so that it handles the battle planning internally rather than feeding details back to the caller.
 void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pPlot, bool bVisible, 
 //DOTO - ranged-immunity start
-			int dmgFromRanged)
+			int dmgFromRanged, bool iRetaliate)
 //DOTO - ranged-immunity end
 {
 // <advc.048c> Preserve info for interface message (based on K-Mod code)
@@ -1319,8 +1328,11 @@ void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pP
 		gDLL->logMsg("combat.txt", message ,false, false);
 	}
 #endif
-	//raise the cap by 1
-	changeRangedStrikeCapCounter(1);
+	//raise the cap by 1 -> to the attcker only
+	//should e only for the attacker , while retaliate of the defender wont raise the cap for the defender
+	//doto 113 change
+	if (!iRetaliate)
+		pAttacker->changeRangedStrikeCapCounter(1);
 }
 //#define LOG_COMBAT_OUTCOMES // K-Mod -- this makes the game log the odds and outcomes of every battle, to help verify the accuracy of the odds calculation.
 
@@ -1630,7 +1642,7 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 	bool rndHitAtk = false; //means theres a hit
 	bool rndHitDef = false; //means theres a hit
 	bool bAttckerRanged = this->isRangeStrikeCapableK();
-	bool bdefenderRanged = pDefender->isRangeStrikeCapableK();
+	bool bdefenderRanged = pDefender->isRangeStrikeCapableK(true);
 	bool rangedBattle = bAttckerRanged || bdefenderRanged;//at least one side is ranged
 	int dUnitPreDamage = 0; //damage b4 combat resolve
 	int aUnitPreDamage = 0;
@@ -1746,7 +1758,7 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 					dmgFromRangedA = rndHitAtk ? rangeCombatDamageK(pDefender, this) : 0; //if hit miss dont do damage
 					if (dmgFromRangedA != 0)
 						dUnitPreDamage = pDefender->getDamage();//save the unit damage before the change - needed for later messsage damage display
-					resolveRangedCombat(pDefender, this, pPlot, bVisible, dmgFromRangedA);
+					resolveRangedCombat(pDefender, this, pPlot, bVisible, dmgFromRangedA, false);
 				}
 				else
 				{
@@ -1760,7 +1772,7 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 					dmgFromRangedD = rndHitDef ? rangeCombatDamageK(this, pDefender) : 0; //if hit miss dont do damage
 					if (dmgFromRangedD != 0)
 						aUnitPreDamage = this->getDamage();//save the unit damage before the change - needed for later messsage damage display
-					resolveRangedCombat(this, pDefender, this->plot(), bVisible, fmath::round(dmgFromRangedD / 2));//i decided reta;oation damage would be halfed
+					resolveRangedCombat(this, pDefender, this->plot(), bVisible, fmath::round(dmgFromRangedD / 2), true);//i decided reta;oation damage would be halfed
 					
 				}
 			}
@@ -1849,80 +1861,8 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 						iWS, getTeam(), pDefender->getTeam(), true);
 			}
 		} // <advc.130m>
-		//DOTO - need to adapt to the below function-todo. from advc 098 23082020
-		//addDefenseSuccessMessages(*pDefender); // advc: Moved into new function
-		CvWString szBuffer; //099 advc adjustment
-		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DIED_ATTACKING",
-				getNameKeyNoGG(), // advc.004u
-				pDefender->getNameKey());
-//DOTO-
-/*************************************************************************************************/
-/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
-/**                                                                                              */
-/** Original Author Moctezuma              Start                                                 */
-/*************************************************************************************************/
-			// ------ BEGIN InfluenceDrivenWar -------------------------------
-			float fInfluenceRatio = 0.0;
-			//PIG Mod: Changed this to a game option, by PieceOfMind for PIG Mod 26/10/09
-			//Old code.. 
-			/*
-			if (GC.getDefineINT("IDW_ENABLED"))
-			*/
-			// New code
-			if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR))
-			//End PIG Mod
-			{
-				fInfluenceRatio = pDefender->doVictoryInfluence(this, false, false);
-				CvWString szTempBuffer;
-				szTempBuffer.Format(L" Influence: -%.1f%%", fInfluenceRatio);
-				szBuffer += szTempBuffer;
-			}
-			// ------ END InfluenceDrivenWar ---------------------------------
-/*************************************************************************************************/
-/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
-/**                                                                                              */
-/** Original Author Moctezuma              End                                                   */
-/*************************************************************************************************/
-		gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, GC.getInfo(
-				GET_PLAYER(getOwner()) // advc.002l
-				.getCurrentEra()).getAudioUnitDefeatScript(),
-				MESSAGE_TYPE_INFO, NULL, GC.getColorType("RED"),
-				pPlot->getX(), pPlot->getY());
-		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_KILLED_ENEMY_UNIT", pDefender->getNameKey(),
-				getNameKeyNoGG(), // advc.004u
-				getVisualCivAdjective(pDefender->getTeam()));
-//DOTO-
-/*************************************************************************************************/
-/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
-/**                                                                                              */
-/** Original Author Moctezuma              Start                                                 */
-/*************************************************************************************************/
-			// ------ BEGIN InfluenceDrivenWar -------------------------------
-			//PIG Mod: Changed this to a game option, by PieceOfMind for PIG Mod 26/10/09
-			//Old code.. 
-			/*
-			if (GC.getDefineINT("IDW_ENABLED"))
-			*/
-			// New code
-			if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR))
-			//End PIG Mod
-			{
-				CvWString szTempBuffer;
-				szTempBuffer.Format(L" Influence: +%.1f%%", fInfluenceRatio);
-				szBuffer += szTempBuffer;
-			}
-			// ------ END InfluenceDrivenWar ---------------------------------
-/*************************************************************************************************/
-/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
-/**                                                                                              */
-/** Original Author Moctezuma              End                                                   */
-/*************************************************************************************************/			
-		gDLL->UI().addMessage(pDefender->getOwner(),
-				true, -1, szBuffer, GC.getInfo(
-				GET_PLAYER(pDefender->getOwner()) // advc.002l
-				.getCurrentEra()).getAudioUnitVictoryScript(),
-				MESSAGE_TYPE_INFO, NULL, GC.getColorType("GREEN"),
-				pPlot->getX(), pPlot->getY());
+//DOTO INFLUENCE_DRIVEN_WAR ADDED 2 UNITS PARAMS that the do victory required -> couldnt convert the existing dta properly
+		addDefenseSuccessMessages(*pDefender, pDefender, this); // advc: Moved into new function
 		// report event to Python, along with some other key state
 		CvEventReporter::getInstance().combatResult(pDefender, this);
 	}
@@ -1975,86 +1915,9 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 		bool bAdvance = false;
 		bool bCapture = false; // advc.010
 		if (isSuicide())
-		{  // advc.010: Moved into new function
-		//addAttackSuccessMessages(*pDefender, true);
-//DOTO-keldath new from 22082020 need to convert idw to this new fn	 - todo
-		CvWString szBuffer;//advc 099 adjustmnet
-		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", getNameKey(),
-				pDefender->getNameKeyNoGG()); // advc.004u
-//DOTO-
-/*************************************************************************************************/
-/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
-/**                                                                                              */
-/** Original Author Moctezuma              Start                                                 */
-/*************************************************************************************************/
-			// ------ BEGIN InfluenceDrivenWar -------------------------------
-			float fInfluenceRatio = 0.0;			
-			//PIG Mod: Changed this to a game option, by PieceOfMind for PIG Mod 26/10/09
-			//Old code.. 
-			/*
-			if (GC.getDefineINT("IDW_ENABLED"))
-			*/
-			// New code
-			if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR))
-			//End PIG Mod
-			{
-				fInfluenceRatio = doVictoryInfluence(pDefender, true, false);
-				CvWString szTempBuffer;
-				szTempBuffer.Format(L" Influence: +%.1f%%", fInfluenceRatio);
-				szBuffer += szTempBuffer;
-			}
-			// ------ END InfluenceDrivenWar ---------------------------------
-/*************************************************************************************************/
-/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
-/**                                                                                              */
-/** Original Author Moctezuma              End                                                   */
-/*************************************************************************************************/
-		gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, GC.getInfo(
-				GET_PLAYER(getOwner()) // advc.002l
-				.getCurrentEra()).getAudioUnitVictoryScript(), MESSAGE_TYPE_INFO, NULL,
-				GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
-		if (getVisualOwner(pDefender->getTeam()) != getOwner())
-		{
-			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_WAS_DESTROYED_UNKNOWN",
-					pDefender->getNameKeyNoGG(), // advc.004u
-					getNameKey());
-		}
-		else
-		{
-			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_WAS_DESTROYED",
-					pDefender->getNameKeyNoGG(), // advc.004u
-					getNameKey(), getVisualCivAdjective(pDefender->getTeam()));
-		}
-//DOTO-
-/*************************************************************************************************/
-/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
-/**                                                                                              */
-/** Original Author Moctezuma              Start                                                 */
-/*************************************************************************************************/
-			// ------ BEGIN InfluenceDrivenWar -------------------------------
-			//PIG Mod: Changed this to a game option, by PieceOfMind for PIG Mod 26/10/09
-			//Old code.. 
-			/*
-			if (GC.getDefineINT("IDW_ENABLED"))
-			*/
-			// New code
-			if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR))
-			//End PIG Mod
-			{
-				CvWString szTempBuffer;
-				szTempBuffer.Format(L" Influence: -%.1f%%", fInfluenceRatio);
-				szBuffer += szTempBuffer;
-			}
-			// ------ END InfluenceDrivenWar ---------------------------------
-/*************************************************************************************************/
-/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
-/**                                                                                              */
-/** Original Author Moctezuma              End                                                   */
-/*************************************************************************************************/
-		gDLL->UI().addMessage(pDefender->getOwner(), true, -1, szBuffer, GC.getInfo(
-				GET_PLAYER(pDefender->getOwner()) // advc.002l
-				.getCurrentEra()).getAudioUnitDefeatScript(), MESSAGE_TYPE_INFO, NULL,
-				GC.getColorType("RED"), pPlot->getX(), pPlot->getY());
+		{	// advc.010: Moved into new function
+//DOTO INFLUENCE_DRIVEN_WAR ADDED 2 UNITS PARAMS that the do victory required -> couldnt convert the existing dta properly
+			addAttackSuccessMessages(*pDefender, true, pDefender, this);
 			kill(true);
 			pDefender->kill(false);
 			pDefender = NULL;
@@ -2074,7 +1937,10 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 			/*	<advc.010> BtS had shown "destroyed" and then "captured" (I think).
 				We want to show only the captured message. */
 			if (!bCapture)
-				addAttackSuccessMessages(*pDefender, true); // </advc.010>
+			{
+//DOTO INFLUENCE_DRIVEN_WAR ADDED 2 UNITS PARAMS that the do victory required -> couldnt convert the existing dta properly
+				addAttackSuccessMessages(*pDefender, true, pDefender, this); // </advc.010>
+			}
 			pDefender->kill(false);
 			pDefender = NULL;
 			if (!bAdvance)
@@ -2110,16 +1976,15 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 		// This is is put before the plot advancement, the unit will always try to walk back
 		// to the square that they came from, before advancing.
 		getGroup()->clearMissionQueue();
-		}
-
 		}//Fix added by PieceOfMind for Influence Driven War, IDW
+	}
 //DOTO - ranged immunity
 	else if (rangedBattle && rImmunityOption) 
 	{
 
 		if (bAttckerRanged)
 		{
-			rImmunityCombatCallback(pDefender, this, pDefender->plot(), dmgFromRangedA, 1, rndHitAtk, dUnitPreDamage);
+			rImmunityCombatCallback(pDefender, this, pDefender->plot(), dmgFromRangedA, rndHitAtk, dUnitPreDamage, false);
 			//changeMoves(std::max(GC.getMOVE_DENOMINATOR(), pPlot->movementCost(this, plot())));//advc 099 adjustment
 			//DOTO - rangeimunity - collateral damage denied if a city have defence
 			if (!GC.getGame().isOption(GAMEOPTION_NO_RANGED_COLLATERAL))
@@ -2144,9 +2009,11 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 			checkRemoveSelectionAfterAttack();
 			getGroup()->clearMissionQueue();
 		}
-		if (bdefenderRanged)
+		//doto 113 fix - i think, only do dmg display if the defender is ranged and such
+		if (bAttckerRanged &&
+			bdefenderRanged && GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE))
 		{
-			rImmunityCombatCallback(this, pDefender, this->plot(), dmgFromRangedD, 1, rndHitDef, aUnitPreDamage);
+			rImmunityCombatCallback(this, pDefender, this->plot(), dmgFromRangedD, rndHitDef, aUnitPreDamage, true);
 		}
 	}
 //DOTO - ranged immunity
@@ -2181,17 +2048,37 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 /**                                                                                              */
 /** Original Author Moctezuma              End                                                   */
 /*************************************************************************************************/
-
 		getGroup()->clearMissionQueue();
 	}
 }
 
+//DOTO INFLUENCE_DRIVEN_WAR ADDED 2 UNITS PARAMS that the do victory required -> couldnt convert the existing dta properly
 // advc.010: Cut from resolveCombat. Used for killed noncombatants with bFought=false.
-void CvUnit::addAttackSuccessMessages(CvUnit const& kDefender, bool bFought) const
+void CvUnit::addAttackSuccessMessages(CvUnit const& kDefender, bool bFought, CvUnit* pDefender, CvUnit* thisUnit) const
 {
 	bool const bSound = !suppressStackAttackSound(kDefender); // advc.002l
 	CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY",
 			getNameKey(), /* advc.004u: */ kDefender.getNameKeyNoGG());
+/*************************************************************************************************/
+/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
+/**                                                                                              */
+/** Original Author Moctezuma              Start                                                 */
+/*************************************************************************************************/
+	// ------ BEGIN InfluenceDrivenWar -------------------------------
+	float fInfluenceRatio = 0.0;			
+	if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR))
+	{
+		fInfluenceRatio = thisUnit->doVictoryInfluence(pDefender, true, false);
+		CvWString szTempBuffer;
+		szTempBuffer.Format(L" Influence: +%.1f%%", fInfluenceRatio);
+		szBuffer += szTempBuffer;
+	}
+	// ------ END InfluenceDrivenWar ---------------------------------
+/*************************************************************************************************/
+/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
+/**                                                                                              */
+/** Original Author Moctezuma              End                                                   */
+/*************************************************************************************************/
 	CvPlot const& kPlot = kDefender.getPlot();
 	gDLL->UI().addMessage(getOwner(), bFought, -1, szBuffer, bFought &&
 			bSound ? GC.getInfo(GET_PLAYER(getOwner()) // advc.002l
@@ -2199,27 +2086,49 @@ void CvUnit::addAttackSuccessMessages(CvUnit const& kDefender, bool bFought) con
 			: NULL, // advc.010: No victory sound for killing noncombatant
 			MESSAGE_TYPE_INFO, NULL,
 			GC.getColorType("GREEN"), kPlot.getX(), kPlot.getY());
-	setHasBeenDefendedAgainstMessage(szBuffer, kDefender, 1); // advc.048c
+//DOTO InfluenceDrivenWar ADDED 1 PARAM that the do influence driven war required
+	setHasBeenDefendedAgainstMessage(szBuffer, kDefender, 1, fInfluenceRatio); // advc.048c
 	gDLL->UI().addMessage(kDefender.getOwner(), bFought, -1, szBuffer,
 			bSound ? GC.getInfo(GET_PLAYER(kDefender.getOwner()) // advc.002l
 			.getCurrentEra()).getAudioUnitDefeatScript() /* advc.002l: */ : NULL,
 			MESSAGE_TYPE_INFO, NULL, GC.getColorType("RED"), kPlot.getX(), kPlot.getY());
 }
 
+//DOTO INFLUENCE_DRIVEN_WAR ADDED 2 UNITS PARAMS that the do victory required -> couldnt convert the existing dta properly
 // <advc> Cut from resolveCombat - just to be consistent with addAttackSuccessMessages.
-void CvUnit::addDefenseSuccessMessages(CvUnit const& kDefender) const
+void CvUnit::addDefenseSuccessMessages(CvUnit const& kDefender, CvUnit* pDefender, CvUnit* thisUnit) const
 {
 	bool const bSound = !suppressStackAttackSound(kDefender);
 	CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DIED_ATTACKING",
 			getNameKeyNoGG(), // advc.004u
 			kDefender.getNameKey());
+/*************************************************************************************************/
+/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
+/**                                                                                              */
+/** Original Author Moctezuma              Start                                                 */
+/*************************************************************************************************/
+	float fInfluenceRatio = 0.0;
+	if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR))
+	{
+		fInfluenceRatio = pDefender->doVictoryInfluence(thisUnit, false, false);
+		CvWString szTempBuffer;
+		szTempBuffer.Format(L" Influence: -%.1f%%", fInfluenceRatio);
+		szBuffer += szTempBuffer;
+	}
+	// ------ END InfluenceDrivenWar ---------------------------------
+/*************************************************************************************************/
+/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
+/**                                                                                              */
+/** Original Author Moctezuma              End                                                   */
+/*************************************************************************************************/
 	CvPlot const& kPlot = kDefender.getPlot();
 	gDLL->UI().addMessage(getOwner(), true, -1, szBuffer,
 			bSound ? GC.getInfo(GET_PLAYER(getOwner()) // advc.002l
 			.getCurrentEra()).getAudioUnitDefeatScript() /* 002l: */ : NULL,
 			MESSAGE_TYPE_INFO, NULL, GC.getColorType("RED"),
 			kPlot.getX(), kPlot.getY());
-	setHasBeenDefendedAgainstMessage(szBuffer, kDefender, -1); // advc.048c
+//DOTO InfluenceDrivenWar ADDED 1 PARAM that the do influence driven war required
+	setHasBeenDefendedAgainstMessage(szBuffer, kDefender, -1, fInfluenceRatio); // advc.048c
 	gDLL->UI().addMessage(kDefender.getOwner(),
 			true, -1, szBuffer,
 			bSound ? GC.getInfo(GET_PLAYER(kDefender.getOwner()) // advc.002l
@@ -2239,7 +2148,8 @@ void CvUnit::addWithdrawalMessages(CvUnit const& kDefender) const
 			bSea ? "AS2D_OUR_SEA_WITHDRAWL" : // advc.002l
 			"AS2D_OUR_WITHDRAWL", MESSAGE_TYPE_INFO, NULL,
 			GC.getColorType("GREEN"), kPlot.getX(), kPlot.getY());
-	setHasBeenDefendedAgainstMessage(szBuffer, kDefender, 0); // advc.048c
+//DOTO InfluenceDrivenWar ADDED 1 PARAM that the do influence driven war required
+	setHasBeenDefendedAgainstMessage(szBuffer, kDefender, 0, 0); // advc.048c
 	gDLL->UI().addMessage(kDefender.getOwner(), true, -1, szBuffer,
 			bSea ? "AS2D_THEIR_SEA_WITHDRAWL" : // advc.002l
 			"AS2D_THEIR_WITHDRAWL", MESSAGE_TYPE_INFO, NULL,
@@ -2249,8 +2159,9 @@ void CvUnit::addWithdrawalMessages(CvUnit const& kDefender) const
 /*	advc.048c: Based on code originally in resolveCombat.
 	iAttackSuccess:
 	1 for defender destroyed, -1 for attacker destroyed, 0 for withdrawal. */
+//DOTO InfluenceDrivenWar ADDED 1 PARAM that the do influence driven war required
 void CvUnit::setHasBeenDefendedAgainstMessage(CvWString& kBuffer,
-	CvUnit const& kDefender, int iAttackSuccess) const
+	CvUnit const& kDefender, int iAttackSuccess,float fInfluenceRatio) const
 {
 	bool const bOdds = (GC.getDefineBOOL(CvGlobals::SHOW_ODDS_IN_COMBAT_MESSAGES) &&
 			m_iAttackOdds >= 0 && kDefender.canDefend());
@@ -2287,6 +2198,25 @@ void CvUnit::setHasBeenDefendedAgainstMessage(CvWString& kBuffer,
 					getNameKeyNoGG(), // advc.004u
 					getVisualCivAdjective(kDefender.getTeam()));
 		}
+		//DOTO-
+/*************************************************************************************************/
+/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
+/**                                                                                              */
+/** Original Author Moctezuma              Start                                                 */
+/*************************************************************************************************/
+		// ------ BEGIN InfluenceDrivenWar -------------------------------
+		if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR))
+		{
+			CvWString szTempBuffer;
+			szTempBuffer.Format(L" Influence: +%.1f%%", fInfluenceRatio);
+			kBuffer += szTempBuffer;
+		}
+		// ------ END InfluenceDrivenWar ---------------------------------
+/*************************************************************************************************/
+/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
+/**                                                                                              */
+/** Original Author Moctezuma              End                                                   */
+/*************************************************************************************************/			
 	}
 	else if (iAttackSuccess > 0)
 	{
@@ -2324,6 +2254,24 @@ void CvUnit::setHasBeenDefendedAgainstMessage(CvWString& kBuffer,
 						getVisualCivAdjective(kDefender.getTeam()));
 			}
 		}
+		//DOTO-
+/*************************************************************************************************/
+/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
+/**                                                                                              */
+/** Original Author Moctezuma              Start                                                 */
+/*************************************************************************************************/
+		if (GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR))
+		{
+			CvWString szTempBuffer;
+			szTempBuffer.Format(L" Influence: -%.1f%%", fInfluenceRatio);
+			kBuffer += szTempBuffer;
+		}
+		// ------ END InfluenceDrivenWar ---------------------------------
+/*************************************************************************************************/
+/** INFLUENCE_DRIVEN_WAR                   04/16/09                                johnysmith    */
+/**                                                                                              */
+/** Original Author Moctezuma              End                                                   */
+/*************************************************************************************************/
 	}
 	else
 	{
@@ -9521,7 +9469,8 @@ void CvUnit::setXY(int iX, int iY, bool bGroup, bool bUpdate, bool bShow, bool b
 							pLoopUnit->setCapturingPlayer(getOwner());
 						}
 						// advc.010: Report death
-						else addAttackSuccessMessages(*pLoopUnit, false);
+//DOTO INFLUENCE_DRIVEN_WAR ADDED 2 UNITS PARAMS that the do victory required -> couldnt convert the existing dta properly
+						else addAttackSuccessMessages(*pLoopUnit, false, pLoopUnit, this);
 						pLoopUnit->kill(false, getOwner());
 					}
 				}
@@ -12722,7 +12671,7 @@ int CvUnit::rangeCombatDamageK(const CvUnit* pDefender,const CvUnit* pAttacker) 
 		}
 		else if (curDef == 100)
 		{
-			iDamage = 0; ///IF DEFENCE IS ABOVE 99 - NO DAMAGE SHOULD BE INFLICTED
+			iDamage = 0; //IF DEFENCE IS ABOVE 99 - NO DAMAGE SHOULD BE INFLICTED
 		}	
 	}
 	if (GC.getGame().isOption(GAMEOPTION_RAND_DMG))
@@ -12737,12 +12686,13 @@ int CvUnit::rangeCombatDamageK(const CvUnit* pDefender,const CvUnit* pAttacker) 
 
 	return iDamage;
 }
-bool CvUnit::isRangeStrikeCapableK() const
+bool CvUnit::isRangeStrikeCapableK(bool ignoreCap) const
 {
 	//do not include here the isMadeAllAttacks() - important for ranged immunity
 	if (!GC.getGame().isOption(GAMEOPTION_RANGED_IMMUNITY))
 		return false;
-	if (getDomainType() == DOMAIN_AIR || getDomainType() == DOMAIN_SEA)///for now now see.
+	if (getDomainType() == DOMAIN_AIR )
+		//|| getDomainType() == DOMAIN_SEA doto 113 -> sea unis can ranged attack
 		return false;
 	if (rangedStrike() <= 0)
 		return false;
@@ -12754,7 +12704,8 @@ bool CvUnit::isRangeStrikeCapableK() const
 		return false;
 //if the attack cap is maxed - normal battle rules should apply
 // cant carry an attack if the cap was reached, there is a cooldown of 2 turns.
-	if (getRangedStrikeCapCounter() >= rangedStrike())
+//doto 113 -> removed cap denial of ranged retaliate from a maxed cap unit.
+	if (getRangedStrikeCapCounter() >= rangedStrike() && !ignoreCap)
 		return false;
 	return true;
 
@@ -12782,26 +12733,9 @@ bool CvUnit::randomRangedGen(CvUnit* pDefender, CvUnit* pAttacker) const
 	return hit;	
 }
 			 
-bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pPlot, int dmg,int msgType,bool rndHit, int UnitPreDamage) const
+bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlot* pPlot, int dmg, bool rndHit, int UnitPreDamage, bool iRetaliate) const
 {
 	int iDamage = dmg/*rangeCombatDamageK(pDefender)*/;//if we can do damage anything, abort.
-
-	bool noDmg = false; //if we cant dmg a unit, make sure not to set attack to true or waste a movement.
-	if ((iDamage == 0 || iDamage == NULL) && msgType == 0)//not using this in ranged immunity.
-	{
-		//in case our damage is nada, give an alert = can be due to combat limit effect.
-		//this is just a tweak - can be remove, so no mshg will pop.
-		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_MAXIMUM_DAMAGE", pDefender->getNameKey(), getNameKey()));
-		gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, getPlot(),
-			"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("GREY"), pAttacker->getX(), pAttacker->getY()/*, true, true*/);
-		szBuffer = gDLL->getText("TXT_KEY_MISC_ENEMY_MAXIMUM_DAMAGE", getNameKey(), pDefender->getNameKey());
-		gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, *pPlot,
-			"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("WHITE"), pDefender->getX(), pDefender->getY());
-		noDmg = true;
-	}
-	//could be just an else
-	else if (msgType == 1)
-	{
 
 	/*this part was added from the resolve combatranged function
 		the damaged is changed is the limit is reached.
@@ -12810,136 +12744,97 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender,CvUnit* pAttacker, CvPlot
 		but we need to show the actual dmg that was commited, to get the defender to its combat limit.
 		i think the best course is to execute this message from withing the resolvecombat range to acoid duplicate calls here.
 	 doto108*/
-		int dmgCalc = std::min(GC.getMAX_HIT_POINTS() - 1,pDefender->getDamage() + iDamage);
-		bool const bLimitReached = (dmgCalc >= pAttacker->combatLimit());
-		if (bLimitReached)
-		{
-			iDamage = (pAttacker->maxHitPoints() - UnitPreDamage)  - pAttacker->combatLimit() /*+pDefender->getDamage()*/; //get the reminder damage to complete to the combat limit
-		}
-		else
-		{
-			iDamage = dmgCalc;
-		}
-	/*	canclled - see above re definition
-		int iUnitDamage = std::max(pDefender->getDamage(), 
-						  std::min((pDefender->getDamage() + iDamage), pAttacker->combatLimit()));
-	*/
+	int dmgCalc = std::min(GC.getMAX_HIT_POINTS() - 1,pDefender->getDamage() + iDamage);
+	bool const bLimitReached = (dmgCalc >= pAttacker->combatLimit());
+	if (bLimitReached)
+	{
+		iDamage = (pAttacker->maxHitPoints() - UnitPreDamage)  - pAttacker->combatLimit() /*+pDefender->getDamage()*/; 
+		//get the reminder damage to complete to the combat limit
+	}
+	else
+	{
+		iDamage = dmgCalc;
+	}
 		
-		int damage_display_a = ((iDamage - pAttacker->getDamage()) * 100) / pAttacker->maxHitPoints();
-		int damage_display_d = ((iDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints();
-		int att_plotx = pAttacker->getX();
-		int att_ploty = pAttacker->getY();
-		int def_plotx = pDefender->getX();
-		int def_ploty = pDefender->getY();
-		bool retaliate_rcapable = GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE) && pDefender->isRangeStrikeCapableK();
-		if (!rndHit) 
+	int damage_display_a = ((iDamage - pAttacker->getDamage()) * 100) / pAttacker->maxHitPoints();
+	int damage_display_d = ((iDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints();
+	int att_plotx = pAttacker->getX();
+	int att_ploty = pAttacker->getY();
+	int def_plotx = pDefender->getX();
+	int def_ploty = pDefender->getY();
+	if (!rndHit) 
+	{
+		CvWString szBuffer;
+		if (iRetaliate)
 		{
-			CvWString szBuffer;
-			if (retaliate_rcapable)
-			{
-				//if missed the attack on units.
-				szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR_MISS",
-					pAttacker->getNameKey(), pDefender->getNameKey()));
-				//L"Your Retaliation for Ranged Attack was succesfull"
-				//yellow icon over attacking unit
-				gDLL->UI().addMessage(pAttacker->getOwner(), false, -1, szBuffer, pDefender->getPlot(),
-					"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("WHITE"), def_plotx, def_ploty/*, true, true*/);
-				////white icon over defending unit - DOTO110-not sure what this does
-				gDLL->UI().addMessage(pAttacker->getOwner(), false, 0, L"Unknown Retaliation message - debug", pDefender->getPlot(),
-					"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), GC.getColorType("YELLOW"), def_plotx, def_ploty/*, true, true*/);
-				szBuffer = gDLL->getText(L"Retaliation Attack from Enemy Ranged Attack failed", pDefender->getNameKey(), pAttacker->getNameKey());
-				//"TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR_MISS
-				gDLL->UI().addMessage(pDefender->getOwner(), true, -1, szBuffer, *pPlot,
-					"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("MAGENTA"), att_plotx, att_ploty);
-			}
-			else
-			{
-				//if missed the attack on units.
-				szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR_MISS",
-					pDefender->getNameKey(), pAttacker->getNameKey()));
-				//red icon over attacking unit
-				gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, pAttacker->getPlot(),
-					"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("WHITE"), att_plotx, att_ploty/*, true, true*/);
-				//white icon over defending unit
-				gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"Unknown Attack message - debug", pAttacker->getPlot(),
-					"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pAttacker->getButton(), GC.getColorType("YELLOW"), att_plotx, att_ploty/*, true, true*/);
-				szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR_MISS", pAttacker->getNameKey(), pDefender->getNameKey());
-				gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, *pPlot,
-					"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("RED"), def_plotx, def_ploty);
-			}
+			//if missed the attack on units.
+			szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR_MISS",
+				pAttacker->getNameKey(), pDefender->getNameKey()));
+			//yellow icon over attacking unit
+			gDLL->UI().addMessage(pAttacker->getOwner(), false, -1, szBuffer, pDefender->getPlot(),
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("YELLOW"), def_plotx, def_ploty/*, true, true*/);
+			//white icon over defending unit - DOTO110-not sure what this does
+			gDLL->UI().addMessage(pAttacker->getOwner(), false, 0, L"Unknown Retaliation message - debug", pDefender->getPlot(),
+				"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), GC.getColorType("YELLOW"), def_plotx, def_ploty/*, true, true*/);
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR_MISS", pDefender->getNameKey(), pAttacker->getNameKey());
+			gDLL->UI().addMessage(pDefender->getOwner(), true, -1, szBuffer, *pPlot,
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("MAGENTA"), att_plotx, att_ploty);
 		}
 		else
 		{
-			CvWString szBuffer;			
-			if (retaliate_rcapable)
-			{
-				//if the damage is none 0 and a hit.
-				szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR",
-					pAttacker->getNameKey(), pDefender->getNameKey(),
-					// advc.004g:
-					damage_display_a));
-					//doto108 change -checking the limit effect above
-					//iDamage));
-				// advc.004g:
-				//red icon over attacking unit
-				gDLL->UI().addMessage(pAttacker->getOwner(), false, -1, szBuffer, pDefender->getPlot(),
-					"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("GREEN"), def_plotx, def_ploty/*, true, true*/);
-				//white icon over defending unit
-				gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"", pAttacker->getPlot(),
-					"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pAttacker->getButton(), GC.getColorType("RED"), att_plotx, att_ploty/*, true, true*/);
-				szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR", pDefender->getNameKey(), pAttacker->getNameKey(),
-					// advc.004g:
-					damage_display_a);
-					//doto108 change -checking the limit effect above
-				//	iDamage);
-				gDLL->UI().addMessage(pDefender->getOwner(), true, -1, szBuffer, *pPlot,
-					"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("YELLOW"), pPlot->getX(), pPlot->getY());
-			}
-			else 
-			{
-				//if the damage is none 0 and a hit.
-				szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR",
-					pDefender->getNameKey(), pAttacker->getNameKey(),
-					// advc.004g:
-					damage_display_d));
-					//doto108 change -checking the limit effect above
-					//iDamage));
-				// advc.004g:
-				//red icon over attacking unit
-				gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, pAttacker->getPlot(),
-					"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("RED"), att_plotx, att_ploty/*, true, true*/);
-				//white icon over defending unit
-				gDLL->UI().addMessage(pAttacker->getOwner(), false, 0, L"", pDefender->getPlot(),
-					"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), GC.getColorType("WHITE"), def_plotx, def_ploty/*, true, true*/);
-				szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR", pAttacker->getNameKey(), pDefender->getNameKey(),
-					// advc.004g:
-					damage_display_d);
-					//doto108 change -checking the limit effect above
-					//iDamage);
-				gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, *pPlot,
-					"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
-			}			
-
-			//set damage but don't update entity damage visibility
-			//pDefender->setDamage(iUnitDamage, getOwner(), false);//why false?
-
-			//collateral damage effect - if a unit is not blessed with ignore citi defences - it will not be allowed to 
-			//issue collateral damage. this is a tweak i added to give city defense some more meaning.
+			//if missed the attack on units.
+			szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR_MISS",
+				pDefender->getNameKey(), pAttacker->getNameKey()));
+			//red icon over attacking unit
+			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, pAttacker->getPlot(),
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("WHITE"), att_plotx, att_ploty/*, true, true*/);
+			//white icon over defending unit
+			gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"Unknown Attack message - debug", pAttacker->getPlot(),
+				"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pAttacker->getButton(), GC.getColorType("WHITE"), att_plotx, att_ploty/*, true, true*/);
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR_MISS", pAttacker->getNameKey(), pDefender->getNameKey());
+			gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, *pPlot,
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("RED"), def_plotx, def_ploty);
 		}
 	}
-	if (pDefender->isDead() && msgType == 2)
+	else
 	{
-		//should not occur - ranged units have a max combat limit. but i left it
-		CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_UNIT_DESTROYED_ENEMY", pAttacker->getNameKey(), pDefender->getNameKey()));
-		gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, GC.getInfo(
-			GET_PLAYER(pAttacker->getOwner()) // advc.002l
-			.getCurrentEra()).getAudioUnitVictoryScript(), MESSAGE_TYPE_INFO, NULL,
-			GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
+		CvWString szBuffer;			
+		if (iRetaliate)
+		{
+			//if the damage is none 0 and a hit.
+			szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR",
+				pAttacker->getNameKey(), pDefender->getNameKey(), damage_display_d));
+				//doto108 change -checking the limit effect above
+			//red icon over attacking unit
+			gDLL->UI().addMessage(pAttacker->getOwner(), false, -1, szBuffer, pDefender->getPlot(),
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("YELLOW"), def_plotx, def_ploty/*, true, true*/);
+			//red icon over attacking unit
+			gDLL->UI().addMessage(pAttacker->getOwner(), false, 0, L"", pAttacker->getPlot(),
+				"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pAttacker->getButton(), GC.getColorType("YELLOW"), def_plotx, def_ploty/*, true, true*/);
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR", pAttacker->getNameKey(), pDefender->getNameKey(),damage_display_a);
+				//doto108 change -checking the limit effect above
+			gDLL->UI().addMessage(pDefender->getOwner(), true, -1, szBuffer, *pPlot,
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("MAGENTA"), pPlot->getX(), pPlot->getY());
+		}
+		else 
+		{
+			//if the damage is none 0 and a hit.
+			szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR",
+				pDefender->getNameKey(), pAttacker->getNameKey(),damage_display_a));
+			//red icon over attacking unit
+			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, pAttacker->getPlot(),
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("RED"), att_plotx, att_ploty/*, true, true*/);
+			//white icon over defending unit
+			gDLL->UI().addMessage(pAttacker->getOwner(), false, 0, L"", pDefender->getPlot(),
+				"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), GC.getColorType("RED"), def_plotx, def_ploty/*, true, true*/);
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR", pAttacker->getNameKey(), pDefender->getNameKey(), damage_display_d);
+				//doto108 change -checking the limit effect above
+			gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, *pPlot,
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
+		}			
 	}
 	return true;
 }
-// used by the executable for the red glow and plot indicators
-
 ///////////////////////////////////////////
 // Keldtah RangedStrike + immunity End
 ///////////////////////////////////////////	

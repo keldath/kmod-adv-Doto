@@ -428,7 +428,7 @@ void CvCity::kill(bool bUpdatePlotGroups, /* advc.001: */ bool bBumpUnits)
 		FOR_EACH_ENUM(Commerce)
 		{
 			//keldath test
-			int frr = kOwner.getFreeCityCommerce(COMMERCE_CULTURE);
+			//int frr = kOwner.getFreeCityCommerce(COMMERCE_CULTURE);
 			changeCommerceRateTimes100(eLoopCommerce,
 				-100 * kOwner.getFreeCityCommerce(eLoopCommerce));
 		} // </advc.001>
@@ -3319,8 +3319,8 @@ int CvCity::getBonusYieldRateModifier(YieldTypes eYield, BonusTypes eBonus) cons
 void CvCity::processBonus(BonusTypes eBonus, int iChange)
 {
 	//keldath test
-	if (eBonus == 35)
-		CvBonusInfo& kBonus = GC.getInfo(eBonus); 
+	//if (eBonus == 35)
+	//	CvBonusInfo& kBonus = GC.getInfo(eBonus); 
 	CvCivilization const& kCiv = getCivilization();
 	{
 		int iValue = GC.getInfo(eBonus).getHealth();
@@ -3346,7 +3346,7 @@ void CvCity::processBonus(BonusTypes eBonus, int iChange)
 	}
 	{
 		int iValue = GC.getInfo(eBonus).getHappiness();
-		int iGoodValue = std::max(0, iValue); 
+		int iGoodValue = std::max(0, iValue);
 		int iBadValue = std::min(0, iValue);
 		for (int i = 0; i < kCiv.getNumBuildings(); i++)
 		{
@@ -5960,7 +5960,7 @@ void CvCity::goodBadHealthHappyChange(CvPlot const& kPlot, ImprovementTypes eNew
 	std::pair<int,int> iiOldHealth = calculateSurroundingHealth();
 	iGoodHealthChange = iiNewHealth.first - iiOldHealth.first;
 	iBadHealthChange = iiNewHealth.second - iiOldHealth.second;
-}// </advc.901>
+} // </advc.901>
 /*****************************************************************************************************/
 /**  Author: TheLadiesOgre                                                                          **/
 /**  Date: 15.10.2009                                                                               **/
@@ -8532,7 +8532,7 @@ int CvCity::getCommerceRateTimes100(CommerceTypes eCommerce) const
 void CvCity::changeCommerceRateTimes100(CommerceTypes eCommerce, int iChange)
 {
 	//keldath test
-	int frr = GET_PLAYER(getOwner()).getFreeCityCommerce(eCommerce);
+	//int frr = GET_PLAYER(getOwner()).getFreeCityCommerce(eCommerce);
 	setCommerceRateTimes100(eCommerce, m_aiCommerceRate.get(eCommerce) + iChange);
 }
 

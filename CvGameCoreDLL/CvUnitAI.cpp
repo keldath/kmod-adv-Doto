@@ -740,20 +740,16 @@ int CvUnitAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy) const
 
 	int iOdds = (iOurStrength * 100) / (iOurStrength + iTheirStrength);
 // DOTO-MOD rangedattack-keldath - START + ranged immunity
-	if (!isRangeStrikeCapableK())
+	if (rangedStrike() <= 0)
 		iOdds += ((100 - iOdds) * withdrawalProbability()) / 100;
 	iOdds += GET_PLAYER(getOwner()).AI_getAttackOddsChange();
 // DOTO-MOD rangedattack-keldath - START + ranged immunity
+// cap is tajen into in the isRangeStrikeCapableK
 	if (isRangeStrikeCapableK())
 	{
 		iOdds += ((100 - iOdds) * 25) / 100;
-		//(maxHitPoints() - getDamage());
 		iOdds -= getDamage(); // if damaged reduce the odds
 	}
-	//{	
-	//	iOdds += (iOurStrength * 100) / (iOurStrength + iTheirStrength);
-			//(100 * baseCombatStr()) / (baseCombatStr() + (iTheirStrength/2));
-	//} 	
 // DOTO-MOD rangedattack-keldath - END + ranged immunity				
 	/*  BETTER_BTS_AI_MOD, Unit AI, 10/30/09, Mongoose & jdog5000
 		(from Mongoose SDK): */
@@ -1035,8 +1031,8 @@ int CvUnitAI::AI_currEffectiveStr(CvPlot const* pPlot, CvUnit const* pOther,
 	int iCombatStrengthPercent = currEffectiveStr(pPlot, pOther, NULL, iCurrentHP);
 // DOTO-MOD rangedattack-keldath - START + ranged immunity - dont know if this is ok...
 //doto112 - increase the value according to unit values + const 25
-	if (rangedStrike() > 0)
-		iCombatStrengthPercent *= (100 + (rangedStrike() + baseCombatStr() * 25)) / 100;
+	if (isRangeStrikeCapableK(false))
+		iCombatStrengthPercent *= (100 + (rangedStrike() + baseCombatStr() * 20)) / 100;
 // DOTO-MOD rangedattack-keldath - END + ranged immunity
 	FAssertMsg(iCombatStrengthPercent > 0, "Non-combat unit?");
 	/*  <K-Mod> (Moved from CvSelectionGroupAI::AI_sumStrength. Some of the code
@@ -1090,14 +1086,6 @@ int CvUnitAI::AI_currEffectiveStr(CvPlot const* pPlot, CvUnit const* pOther,
 	int iR = std::min(25000, // Guard against overflow problems for caller
 			(scaled(iCombatStrengthPercent).pow(rExponentAdjusted) *
 			rNormalizationFactor).round());
-// DOTO-MOD rangedattack-keldath - START + ranged immunity
-	//removed doto 112
-	//if (isRangeStrikeCapableK()) 
-//	{
-//		iR *= (100 + (baseCombatStr() * combatLimit())/100);
-//		iR /= 100;
-//	} 				
-// DOTO-MOD rangedattack-keldath - END + ranged immunity
 	return std::max(1, iR); // Don't round down to 0
 }
 
