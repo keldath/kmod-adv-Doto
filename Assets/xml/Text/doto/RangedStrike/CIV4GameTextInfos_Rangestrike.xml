@@ -7,35 +7,35 @@
 <Civ4GameText xmlns="http://www.firaxis.com">
 
 	<TEXT>
-		<Tag>TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR</Tag>
+		<Tag>TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_RANGED</Tag>
 		<English>Your %s1_UnitName was attacked by an enemy %s2_EnUName! (%d3_Damage%% Damage)</English>
-		</TEXT>
-	<TEXT>
-		<Tag>TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR_MISS</Tag>
-		<English>An enemy %s2_EnUName attacked but missed your %s1_UnitName!</English>
 	</TEXT>
 	<TEXT>
-		<Tag>TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR</Tag>
-		<English>The %s2_EnUName returned fire and hit your %s1_UnitName! (%d3_Damage%% Damage)</English>
+		<Tag>TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_RANGED_MISS</Tag>
+		<English>Enemy %s2_EnUName attacked but missed your %s1_UnitName!</English>
 	</TEXT>
 	<TEXT>
-		<Tag>TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR_MISS</Tag>
-		<English>The %s2_EnUName returned fire but missed your %s1_UnitName!</English>
+		<Tag>TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_RANGED</Tag>
+		<English>Enemy %s2_EnUName returned fire and hit your %s1_UnitName! (%d3_Damage%% Damage)</English>
 	</TEXT>
 	<TEXT>
-		<Tag>TXT_KEY_MISC_YOU_ATTACK_BY_AIR</Tag>
+		<Tag>TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_RANGED_MISS</Tag>
+		<English>Enemy %s2_EnUName returned fire but missed your %s1_UnitName!</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_YOU_ATTACK_BY_RANGED</Tag>
 		<English>Your %s1_UnitName has attacked an enemy %s2_EnUName! (%d3_Damage%% Damage)</English>
 	</TEXT>
 	<TEXT>
-		<Tag>TXT_KEY_MISC_YOU_ATTACK_BY_AIR_MISS</Tag>
+		<Tag>TXT_KEY_MISC_YOU_ATTACK_BY_RANGED_MISS</Tag>
 		<English>Your %s1_UnitName has attacked but missed an enemy %s2_EnUName!</English>
 	</TEXT>
 	<TEXT>
-		<Tag>TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR</Tag>
+		<Tag>TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_RANGED</Tag>
 		<English>Your %s1_UnitName has returned fire on an enemy %s2_EnUName! (%d3_Damage%% Damage)</English>
 	</TEXT>
 	<TEXT>
-		<Tag>TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR_MISS</Tag>
+		<Tag>TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_RANGED_MISS</Tag>
 		<English>Your %s1_UnitName has returned fire but missed the %s2_EnUName!</English>
 	</TEXT>
 	<TEXT>
@@ -48,39 +48,39 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_BARRCOUNTER</Tag>
-		<English> %d1/%d2 (Br)</English>
+		<English> %d1/%d2 (Rc) </English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_RICOOLDOWN</Tag>
-		<English> %d1/%d2 (Cd)</English>
+		<English> %d1/%d2 (Cd) </English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_RICOOLDOWN_SHORT</Tag>
-		<English>Cooldown: %d1/%d2</English>
+		<English>Cooldown: %d1/%d2 </English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_BARRCOUNTER_SHORT</Tag>
-		<English>Barrage: %d1/%d2 </English>
+		<English>RangedA: %d1/%d2 </English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_BARR_CAP</Tag>
-		<English>Barrage: %d1</English>
+		<English>RangedA: %d1 </English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNIT_AIR_COMBAT</Tag>
-		<English>Air Combat: %d1</English>
+		<English>Air Combat: %d1 </English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNIT_AIR_COMBATSHORT</Tag>
-		<English> %d1 (AC)</English>
+		<English> %d1 (AC) </English>
 	</TEXT>
 	<TEXT>	
 		<Tag>TXT_KEY_IS_RANGE_STRIKE</Tag>
-		<English>Barrage: %d1_BombRange</English>
+		<English>RangedA: %d1_BombRange </English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNIT_AIRCOMBAT_LIMIT</Tag>
-		<English>[ICON_BULLET]Max Barrage %d3_Damage%% Damage to Enemy on attack</English>
+		<English>[ICON_BULLET]Max RangedA %d3_Damage%% Damage to Enemy on attack</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_YOU_MISSED_CITY_DEFENSES</Tag>

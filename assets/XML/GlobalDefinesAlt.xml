@@ -594,11 +594,11 @@
 	</Define>
 	<Define>
 		<DefineName>CAPITAL_BUILDINGCLASS_2</DefineName>
-		<iDefineIntVal>BUILDINGCLASS_GREAT_PALACE</iDefineIntVal>
+		<DefineTextVal>BUILDINGCLASS_GREAT_PALACE</DefineTextVal>
 	</Define>
 	<Define>
 		<DefineName>CAPITAL_BUILDINGCLASS_3</DefineName>
-		<iDefineIntVal>BUILDINGCLASS_VERSAILLES</iDefineIntVal>
+		<DefineTextVal>BUILDINGCLASS_VERSAILLES</DefineTextVal>
 <!-- doto 113 -> loose capital anarchy start by <Nexus> -->	 		
 	</Define>
 	<Define>

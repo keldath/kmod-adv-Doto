@@ -753,16 +753,16 @@ void CvUnit::doTurn()
 		if (getRangedStrikeCapCounter() < 0)
 			setRangedStrikeCapCounter(0);
 		
-		int tst = getRangedStrikeCapTimer();
 		if (iRcd == getRangedStrikeCapTimer())
 		{
-			if (!getPlot().isCity())
-			{
+			//no city bonus. not fair. moved down
+			//if (!getPlot().isCity())
+			//{
 				// damage the ranged unit by x% damage per strike count
 				// and only for the first time the cap is 0 (so the damage wont happen for next turn as well
 				//if the attcker is in a city, spare it from dmg on the cooldown
-				changeDamage(iRcd * iRanged, getOwner());
-			}
+				//changeDamage(iRcd * iRanged, getOwner());
+			//}
 			setRangedStrikeCapTimer(0); //reset the timer
 			setRangedStrikeCapCounter(0); //reset the counter
 			setMadeAttack(false);
@@ -783,8 +783,20 @@ void CvUnit::doTurn()
 				//if no attack was made last turn, count back the timer
 				if (iTimer > 0)
 					changeRangedStrikeCapTimer(-1);
+				//reduce the cap if cd is 0 or max cap
+				//this will reward 
 				if (iCap >= iRanged)
 					changeRangedStrikeCapCounter(-1);
+				if (getPlot().isCity() &&
+					(getRangedStrikeCapCounter() > 0
+						||
+						getRangedStrikeCapCounter() > 0))
+				{
+					setRangedStrikeCapTimer(0); //reset the timer
+					setRangedStrikeCapCounter(0); //reset the counter
+					//on a city , and no attack was made reseet all -> faster availability for more attacks
+				}
+
 			}
 			setMadeAttack(false);
 		}
@@ -1770,9 +1782,10 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 				{
 					rndHitDef = randomRangedGen(this, pDefender);
 					dmgFromRangedD = rndHitDef ? rangeCombatDamageK(this, pDefender) : 0; //if hit miss dont do damage
+					dmgFromRangedD = fmath::round(dmgFromRangedD / 2); //i decided reta;oation damage would be halfed doto113 fix
 					if (dmgFromRangedD != 0)
 						aUnitPreDamage = this->getDamage();//save the unit damage before the change - needed for later messsage damage display
-					resolveRangedCombat(this, pDefender, this->plot(), bVisible, fmath::round(dmgFromRangedD / 2), true);//i decided reta;oation damage would be halfed
+					resolveRangedCombat(this, pDefender, this->plot(), bVisible, dmgFromRangedD, true);
 					
 				}
 			}
@@ -12735,65 +12748,49 @@ bool CvUnit::randomRangedGen(CvUnit* pDefender, CvUnit* pAttacker) const
 			 
 bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlot* pPlot, int dmg, bool rndHit, int UnitPreDamage, bool iRetaliate) const
 {
-	int iDamage = dmg/*rangeCombatDamageK(pDefender)*/;//if we can do damage anything, abort.
-
-	/*this part was added from the resolve combatranged function
-		the damaged is changed is the limit is reached.
-		previously the iunitdamage checked its own combatlinit
-		which resulted that the last strike before the limit was reached - was displayed as 0%
-		but we need to show the actual dmg that was commited, to get the defender to its combat limit.
-		i think the best course is to execute this message from withing the resolvecombat range to acoid duplicate calls here.
-	 doto108*/
-	int dmgCalc = std::min(GC.getMAX_HIT_POINTS() - 1,pDefender->getDamage() + iDamage);
-	bool const bLimitReached = (dmgCalc >= pAttacker->combatLimit());
-	if (bLimitReached)
-	{
-		iDamage = (pAttacker->maxHitPoints() - UnitPreDamage)  - pAttacker->combatLimit() /*+pDefender->getDamage()*/; 
-		//get the reminder damage to complete to the combat limit
-	}
-	else
-	{
-		iDamage = dmgCalc;
-	}
-		
-	int damage_display_a = ((iDamage - pAttacker->getDamage()) * 100) / pAttacker->maxHitPoints();
-	int damage_display_d = ((iDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints();
-	int att_plotx = pAttacker->getX();
-	int att_ploty = pAttacker->getY();
-	int def_plotx = pDefender->getX();
-	int def_ploty = pDefender->getY();
+	int iUnitDamage = std::max(pDefender->getDamage(),
+		std::min(pDefender->getDamage() + dmg, pAttacker->combatLimit()));
+	int iDamage_ = ((dmg - pDefender->getDamage()) * 100) / pDefender->maxHitPoints();
+	//int iDamage = iDamage_ == 0 ? -dmg : iDamage_;
+	int iDamage = -dmg;
 	if (!rndHit) 
 	{
 		CvWString szBuffer;
 		if (iRetaliate)
 		{
-			//if missed the attack on units.
-			szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR_MISS",
-				pAttacker->getNameKey(), pDefender->getNameKey()));
-			//yellow icon over attacking unit
-			gDLL->UI().addMessage(pAttacker->getOwner(), false, -1, szBuffer, pDefender->getPlot(),
-				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("YELLOW"), def_plotx, def_ploty/*, true, true*/);
-			//white icon over defending unit - DOTO110-not sure what this does
-			gDLL->UI().addMessage(pAttacker->getOwner(), false, 0, L"Unknown Retaliation message - debug", pDefender->getPlot(),
-				"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), GC.getColorType("YELLOW"), def_plotx, def_ploty/*, true, true*/);
-			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR_MISS", pDefender->getNameKey(), pAttacker->getNameKey());
-			gDLL->UI().addMessage(pDefender->getOwner(), true, -1, szBuffer, *pPlot,
-				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("MAGENTA"), att_plotx, att_ploty);
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_RANGED_MISS",
+				pAttacker->getNameKey(), pDefender->getNameKey(), iDamage);
+			gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, *pPlot,
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("MAGENTA"));
+			
+			//white icon over defending unit
+			gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"", pDefender->getPlot(),
+				"AS2D_COMBAT", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton());
+
+			//if the damage is none 0 and a hit.
+			szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_RANGED_MISS",
+				pDefender->getNameKey(), pAttacker->getNameKey(), iDamage));
+			//red icon over attacking unit
+			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, *pPlot,
+				"AS2D_COMBAT", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("YELLOW"));
+
+			
 		}
 		else
 		{
-			//if missed the attack on units.
-			szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR_MISS",
-				pDefender->getNameKey(), pAttacker->getNameKey()));
+			//if the damage is none 0 and a hit.
+			szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_RANGED_MISS",
+				pDefender->getNameKey(), pAttacker->getNameKey(), iDamage));
 			//red icon over attacking unit
-			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, pAttacker->getPlot(),
-				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("WHITE"), att_plotx, att_ploty/*, true, true*/);
+			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, *pPlot,
+				"AS2D_COMBAT", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("RED"));
 			//white icon over defending unit
-			gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"Unknown Attack message - debug", pAttacker->getPlot(),
-				"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pAttacker->getButton(), GC.getColorType("WHITE"), att_plotx, att_ploty/*, true, true*/);
-			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR_MISS", pAttacker->getNameKey(), pDefender->getNameKey());
+			gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"", pDefender->getPlot(),
+				"AS2D_COMBAT", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton());
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_RANGED_MISS", 
+				pAttacker->getNameKey(), pDefender->getNameKey(), iDamage);
 			gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, *pPlot,
-				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("RED"), def_plotx, def_ploty);
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("GREEN"));
 		}
 	}
 	else
@@ -12801,36 +12798,40 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlo
 		CvWString szBuffer;			
 		if (iRetaliate)
 		{
+			
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_RANGED",
+				pAttacker->getNameKey(), pDefender->getNameKey(), iDamage);
+			gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, *pPlot,
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("MAGENTA"));
+
+			//white icon over defending unit
+			gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"", pDefender->getPlot(),
+				"AS2D_COMBAT", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton());
+
 			//if the damage is none 0 and a hit.
-			szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_AIR",
-				pAttacker->getNameKey(), pDefender->getNameKey(), damage_display_d));
-				//doto108 change -checking the limit effect above
+			szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_RANGED",
+				pDefender->getNameKey(), pAttacker->getNameKey(), iDamage));
 			//red icon over attacking unit
-			gDLL->UI().addMessage(pAttacker->getOwner(), false, -1, szBuffer, pDefender->getPlot(),
-				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("YELLOW"), def_plotx, def_ploty/*, true, true*/);
-			//red icon over attacking unit
-			gDLL->UI().addMessage(pAttacker->getOwner(), false, 0, L"", pAttacker->getPlot(),
-				"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pAttacker->getButton(), GC.getColorType("YELLOW"), def_plotx, def_ploty/*, true, true*/);
-			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ARE_RETURN_ATTACKED_BY_AIR", pAttacker->getNameKey(), pDefender->getNameKey(),damage_display_a);
-				//doto108 change -checking the limit effect above
-			gDLL->UI().addMessage(pDefender->getOwner(), true, -1, szBuffer, *pPlot,
-				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("MAGENTA"), pPlot->getX(), pPlot->getY());
+			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, *pPlot,
+				"AS2D_COMBAT", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("YELLOW"));
+
+
 		}
 		else 
 		{
 			//if the damage is none 0 and a hit.
-			szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR",
-				pDefender->getNameKey(), pAttacker->getNameKey(),damage_display_a));
+			szBuffer = (gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_RANGED",
+				pDefender->getNameKey(), pAttacker->getNameKey(), iDamage));
 			//red icon over attacking unit
-			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, pAttacker->getPlot(),
-				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("RED"), att_plotx, att_ploty/*, true, true*/);
+			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, *pPlot,
+				"AS2D_COMBAT", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("RED"));
 			//white icon over defending unit
-			gDLL->UI().addMessage(pAttacker->getOwner(), false, 0, L"", pDefender->getPlot(),
-				"AS2D_BOMBARD", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton(), GC.getColorType("RED"), def_plotx, def_ploty/*, true, true*/);
-			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_AIR", pAttacker->getNameKey(), pDefender->getNameKey(), damage_display_d);
-				//doto108 change -checking the limit effect above
+			gDLL->UI().addMessage(pDefender->getOwner(), false, 0, L"", pDefender->getPlot(),
+				"AS2D_COMBAT", MESSAGE_TYPE_DISPLAY_ONLY, pDefender->getButton());
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_ATTACK_BY_RANGED", 
+				pAttacker->getNameKey(), pDefender->getNameKey(), iDamage);
 			gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, *pPlot,
-				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("GREEN"), pPlot->getX(), pPlot->getY());
+				"AS2D_BOMBARD", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("GREEN"));
 		}			
 	}
 	return true;
