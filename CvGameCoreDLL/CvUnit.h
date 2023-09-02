@@ -59,7 +59,9 @@ public:
 	void updateFoundingBorder(bool bForceClear = false) const; // advc.004h
 
 	bool isUnowned() const; // advc.061
-
+//doto governor 
+	bool cantGovernorDoCommand(int iData1 = NULL) const;
+//doto governor
 	bool canDoCommand(CommandTypes eCommand, int iData1, int iData2,										// Exposed to Python
 			bool bTestVisible = false, bool bTestBusy = true) const;
 	void doCommand(CommandTypes eCommand, int iData1, int iData2);											// Exposed to Python

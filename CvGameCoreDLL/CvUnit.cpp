@@ -2611,6 +2611,29 @@ bool CvUnit::isUnowned() const
 		return true;
 	return false;
 }
+//doto governor 
+bool CvUnit::cantGovernorDoCommand(int iData1) const
+{
+	if ((UnitTypes)iData1 != NULL && 
+		(UnitTypes)iData1 > 0
+		&& iData1 > 0)
+	{
+		if (GC.getInfo((UnitTypes)iData1).getGovernor() > 0)
+			return true;
+	}
+	else if (GC.getUnitInfo(getUnitType()).getGovernor() > 0)
+		return true;
+	//this->GC.getUnitInfo();
+	//this->GC.getUnitInfo();
+	//CvUnit const* eUnit = this;
+	//this->getPlot();
+	//CvUnit *eUnit = this;
+	//::getUnit(this);
+	//((UnitTypes)eUnit).getGovernor();
+	//eUnit.GC.getUnitInfo();
+	return false;
+}
+//doto governor
 
 bool CvUnit::canDoCommand(CommandTypes eCommand, int iData1, int iData2,
 	bool bTestVisible, bool bTestBusy) /* advc: */ const
@@ -2626,15 +2649,27 @@ bool CvUnit::canDoCommand(CommandTypes eCommand, int iData1, int iData2,
 		break;
 
 	case COMMAND_UPGRADE:
+	{
+		//doto governor - deny unit governor to do the action
+		if (cantGovernorDoCommand(iData1))
+			return false;
+		
+		//doto governor - deny unit governor to do the action
 		if (canUpgrade(((UnitTypes)iData1), bTestVisible))
 			return true;
 		break;
-
+	}
 	case COMMAND_AUTOMATE:
+	{
+		//doto governor - deny unit governor to do the action
+		//doto governor - deny unit governor to do the action
+		if (cantGovernorDoCommand(iData1))
+			return false;
+		//doto governor - deny unit governor to do the action
 		if (canAutomate((AutomateTypes)iData1))
 			return true;
 		break;
-
+	}
 	case COMMAND_WAKE:
 		if (!isAutomated() && isWaiting())
 			return true;
@@ -2647,21 +2682,42 @@ bool CvUnit::canDoCommand(CommandTypes eCommand, int iData1, int iData2,
 		break;
 
 	case COMMAND_STOP_AUTOMATION:
+	{
+		//doto governor - deny unit governor to do the action
+		//doto governor - deny unit governor to do the action
+		if (cantGovernorDoCommand(iData1))
+			return false;
+		//doto governor - deny unit governor to do the action
 		if (isAutomated())
 			return true;
 		break;
-
+	}
 	case COMMAND_DELETE:
+	{
+		//doto governor - deny unit governor to do the action
+		if (cantGovernorDoCommand(iData1))
+			return false;
+		//doto governor - deny unit governor to do the action
 		if (canScrap())
 			return true;
 		break;
-
+	}
 	case COMMAND_GIFT:
+	{
+		//doto governor - deny unit governor to do the action
+		if (cantGovernorDoCommand(iData1))
+			return false;
+		//doto governor - deny unit governor to do the action
 		if (canGift(bTestVisible))
 			return true;
 		break;
-
+	}
 	case COMMAND_LOAD:
+	{
+		//doto governor - deny unit governor to do the action
+		if (cantGovernorDoCommand(iData1))
+			return false;
+		//doto governor - deny unit governor to do the action
 		if (canLoadOntoAnyUnit(getPlot(),
 			/*  advc.123c: If a unit is moved onto a transport, canLoad gets
 				checked before the command can be issued, and again after the unit
@@ -2675,23 +2731,39 @@ bool CvUnit::canDoCommand(CommandTypes eCommand, int iData1, int iData2,
 			return true;
 		}
 		break;
-
+	}
 	case COMMAND_LOAD_UNIT:
 	{
+		//doto governor - deny unit governor to do the action
+		if (cantGovernorDoCommand(iData1))
+			return false;
+		//doto governor - deny unit governor to do the action
 		CvUnit const* pUnit = ::getUnit(IDInfo(((PlayerTypes)iData1), iData2));
 		if (pUnit != NULL && canLoadOnto(*pUnit, getPlot()))
 			return true;
 		break;
 	}
 	case COMMAND_UNLOAD:
+	{
+		//doto governor - deny unit governor to do the action
+		if (cantGovernorDoCommand(iData1))
+			return false;
+		//doto governor - deny unit governor to do the action
 		if (canUnload())
 			return true;
 		break;
+	}
 
 	case COMMAND_UNLOAD_ALL:
+	{
+		//doto governor - deny unit governor to do the action
+		if (cantGovernorDoCommand(iData1))
+			return false;
+		//doto governor - deny unit governor to do the action
 		if (canUnloadAll())
 			return true;
 		break;
+	}
 
 	case COMMAND_HOTKEY:
 		if (isGroupHead())
@@ -2721,11 +2793,19 @@ void CvUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 			break;
 
 		case COMMAND_UPGRADE:
+			//doto governor - deny unit governor to do the action
+			if (cantGovernorDoCommand(iData1))
+				break;
+			//doto governor - deny unit governor to do the action
 			upgrade((UnitTypes)iData1);
 			bCycle = true;
 			break;
 
 		case COMMAND_AUTOMATE:
+			//doto governor - deny unit governor to do the action
+			if (cantGovernorDoCommand(iData1))
+				break;
+			//doto governor - deny unit governor to do the action
 			automate((AutomateTypes)iData1);
 			bCycle = true;
 			break;
@@ -2743,25 +2823,46 @@ void CvUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 			break;
 
 		case COMMAND_STOP_AUTOMATION:
+			//doto governor - deny unit governor to do the action
+			if (cantGovernorDoCommand(iData1))
+				break;
+			//doto governor - deny unit governor to do the action
 			getGroup()->setAutomateType(NO_AUTOMATE);
 			break;
 
 		case COMMAND_DELETE:
+			//doto governor - deny unit governor to do the action
+			if (cantGovernorDoCommand(iData1))
+				break;
+			//doto governor - deny unit governor to do the action
 			scrap();
 			bCycle = true;
 			break;
 
 		case COMMAND_GIFT:
+			//doto governor - deny unit governor to do the action
+			if (cantGovernorDoCommand(iData1))
+				break;
+			//doto governor - deny unit governor to do the action
 			gift();
 			bCycle = true;
 			break;
 
 		case COMMAND_LOAD:
+			//doto governor - deny unit governor to do the action
+			if (cantGovernorDoCommand(iData1))
+				break;
+			//doto governor - deny unit governor to do the action
 			load();
 			bCycle = true;
 			break;
 
-		case COMMAND_LOAD_UNIT: {
+		case COMMAND_LOAD_UNIT: 
+		{
+			//doto governor - deny unit governor to do the action
+			if (cantGovernorDoCommand(iData1))
+				break;
+			//doto governor - deny unit governor to do the action
 			CvUnit* pUnit = ::getUnit(IDInfo(((PlayerTypes)iData1), iData2));
 			if (pUnit != NULL)
 			{
@@ -2771,11 +2872,19 @@ void CvUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 			break;
 		}
 		case COMMAND_UNLOAD:
+			//doto governor - deny unit governor to do the action
+			if (cantGovernorDoCommand(iData1))
+				break;
+			//doto governor - deny unit governor to do the action
 			unload();
 			bCycle = true;
 			break;
 
 		case COMMAND_UNLOAD_ALL:
+			//doto governor - deny unit governor to do the action
+			if (cantGovernorDoCommand(iData1))
+				break;
+			//doto governor - deny unit governor to do the action
 			unloadAll();
 			bCycle = true;
 			break;
@@ -2965,6 +3074,11 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar,
 	bool bIgnoreLoad, bool bAssumeVisible,
 	bool bDangerCheck) const // advc.001k
 {
+	//doto governor -> governer cant move anywhere...
+	if (m_pUnitInfo->getGovernor() > 0)
+		return false;
+	//doto governor -> governer cant move anywhere...
+
 	//PROFILE_FUNC(); // advc.003o
 //MOD@VET_Andera412_Blocade_Unit-begin1/1 - doto assert fix attempt in I::AI_solveBlockageProblem	
 	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
@@ -3717,10 +3831,18 @@ bool CvUnit::canAutomate(AutomateTypes eAutomate) const
 			return false;
 		break;
 	case AUTOMATE_NETWORK:
+		//doto governor
+		if (cantGovernorDoCommand())
+			return false;
+		//doto governor
 		if (AI_getUnitAIType() != UNITAI_WORKER || !canBuildRoute())
 			return false;
 		break;
 	case AUTOMATE_CITY:
+		//doto governor
+		if (cantGovernorDoCommand())
+			return false;
+		//doto governor
 		if (AI_getUnitAIType() != UNITAI_WORKER)
 			return false;
 		break;
@@ -3728,6 +3850,10 @@ bool CvUnit::canAutomate(AutomateTypes eAutomate) const
 		/*if ((!canFight() && (getDomainType() != DOMAIN_SEA)) || (getDomainType() == DOMAIN_AIR) || (getDomainType() == DOMAIN_IMMOBILE))
 			return false;
 		break;*/ // BtS
+		//doto governor
+		if (cantGovernorDoCommand())
+			return false;
+		//doto governor
 		switch (getDomainType())
 		{
 		case DOMAIN_IMMOBILE:
@@ -3741,6 +3867,10 @@ bool CvUnit::canAutomate(AutomateTypes eAutomate) const
 		}
 		break;
 	case AUTOMATE_RELIGION:
+		//doto governor
+		if (cantGovernorDoCommand())
+			return false;
+		//doto governor
 		if (AI_getUnitAIType() != UNITAI_MISSIONARY)
 			return false;
 		break;
@@ -8870,6 +9000,11 @@ bool CvUnit::isWaiting() const
 
 bool CvUnit::isFortifyable() const
 {
+	//doto governor -> allow governor to use fortify command despite having no combat strength
+	//using the sleep command will wake the unit, which is not needed.
+	if (cantGovernorDoCommand())
+		return true;
+	//doto governor
 	return (canFight() && !noDefensiveBonus() &&
 		(getDomainType() == DOMAIN_LAND || getDomainType() == DOMAIN_IMMOBILE));
 }
@@ -11144,7 +11279,7 @@ bool CvUnit::canAcquirePromotionAny() const
 	return false;
 }
 
-
+//doto - i changed this func to be more efficiant
 void CvUnit::setHasPromotion(PromotionTypes ePromotion, bool bNewValue)
 {
 	if (isHasPromotion(ePromotion) == bNewValue)
@@ -11154,79 +11289,83 @@ void CvUnit::setHasPromotion(PromotionTypes ePromotion, bool bNewValue)
 
 	int iChange = (isHasPromotion(ePromotion) ? 1 : -1);
 
+	//doto governor -> not really governor -> this is jusu efficiancy fix through out this function
+	CvPromotionInfo const& kpInfo = GC.getInfo(ePromotion);
+	//doto governor
+
 	//changeBlitzCount((GC.getInfo(eIndex).isBlitz()) ? iChange : 0);
 	// advc.164: Conveniently, CvUnit was already storing Blitz in an integer.
-	changeBlitzCount(GC.getInfo(ePromotion).getBlitz() * iChange);
-	changeAmphibCount((GC.getInfo(ePromotion).isAmphib()) ? iChange : 0);
+	changeBlitzCount(kpInfo.getBlitz() * iChange);
+	changeAmphibCount((kpInfo.isAmphib()) ? iChange : 0);
 //MOD@VET_Andera412_Blocade_Unit-begin4/6
 	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
-		changeUnblocadeCount((GC.getPromotionInfo(ePromotion).isUnblocade()) ? iChange : 0);
+		changeUnblocadeCount((kpInfo.isUnblocade()) ? iChange : 0);
 //MOD@VET_Andera412_Blocade_Unit-end4/6
-	changeRiverCount((GC.getInfo(ePromotion).isRiver()) ? iChange : 0);
-	changeEnemyRouteCount((GC.getInfo(ePromotion).isEnemyRoute()) ? iChange : 0);
-	changeAlwaysHealCount((GC.getInfo(ePromotion).isAlwaysHeal()) ? iChange : 0);
-	changeHillsDoubleMoveCount((GC.getInfo(ePromotion).isHillsDoubleMove()) ? iChange : 0);
-	changeImmuneToFirstStrikesCount((GC.getInfo(ePromotion).isImmuneToFirstStrikes()) ? iChange : 0);
+	changeRiverCount((kpInfo.isRiver()) ? iChange : 0);
+	changeEnemyRouteCount((kpInfo.isEnemyRoute()) ? iChange : 0);
+	changeAlwaysHealCount((kpInfo.isAlwaysHeal()) ? iChange : 0);
+	changeHillsDoubleMoveCount((kpInfo.isHillsDoubleMove()) ? iChange : 0);
+	changeImmuneToFirstStrikesCount((kpInfo.isImmuneToFirstStrikes()) ? iChange : 0);
 
-	changeExtraVisibilityRange(GC.getInfo(ePromotion).getVisibilityChange() * iChange);
-	changeExtraMoves(GC.getInfo(ePromotion).getMovesChange() * iChange);
-	changeExtraMoveDiscount(GC.getInfo(ePromotion).getMoveDiscountChange() * iChange);
-	changeExtraAirRange(GC.getInfo(ePromotion).getAirRangeChange() * iChange);
-	changeExtraIntercept(GC.getInfo(ePromotion).getInterceptChange() * iChange);
-	changeExtraEvasion(GC.getInfo(ePromotion).getEvasionChange() * iChange);
-	changeExtraFirstStrikes(GC.getInfo(ePromotion).getFirstStrikesChange() * iChange);
-	changeExtraChanceFirstStrikes(GC.getInfo(ePromotion).getChanceFirstStrikesChange() * iChange);
-	changeExtraWithdrawal(GC.getInfo(ePromotion).getWithdrawalChange() * iChange);
-	changeExtraCollateralDamage(GC.getInfo(ePromotion).getCollateralDamageChange() * iChange);
-	changeExtraBombardRate(GC.getInfo(ePromotion).getBombardRateChange() * iChange);
-	changeExtraEnemyHeal(GC.getInfo(ePromotion).getEnemyHealChange() * iChange);
-	changeExtraNeutralHeal(GC.getInfo(ePromotion).getNeutralHealChange() * iChange);
-	changeExtraFriendlyHeal(GC.getInfo(ePromotion).getFriendlyHealChange() * iChange);
-	changeSameTileHeal(GC.getInfo(ePromotion).getSameTileHealChange() * iChange);
-	changeAdjacentTileHeal(GC.getInfo(ePromotion).getAdjacentTileHealChange() * iChange);
-	changeExtraCombatPercent(GC.getInfo(ePromotion).getCombatPercent() * iChange);
-	changeExtraCityAttackPercent(GC.getInfo(ePromotion).getCityAttackPercent() * iChange);
-	changeExtraCityDefensePercent(GC.getInfo(ePromotion).getCityDefensePercent() * iChange);
-	changeExtraHillsAttackPercent(GC.getInfo(ePromotion).getHillsAttackPercent() * iChange);
-	changeExtraHillsDefensePercent(GC.getInfo(ePromotion).getHillsDefensePercent() * iChange);
-	changeRevoltProtection(GC.getInfo(ePromotion).getRevoltProtection() * iChange);
-	changeCollateralDamageProtection(GC.getInfo(ePromotion).getCollateralDamageProtection() * iChange);
-	changePillageChange(GC.getInfo(ePromotion).getPillageChange() * iChange);
-	changeUpgradeDiscount(GC.getInfo(ePromotion).getUpgradeDiscount() * iChange);
-	changeExperiencePercent(GC.getInfo(ePromotion).getExperiencePercent() * iChange);
-	changeKamikazePercent((GC.getInfo(ePromotion).getKamikazePercent()) * iChange);
-	changeCargoSpace(GC.getInfo(ePromotion).getCargoChange() * iChange);
+	changeExtraVisibilityRange(kpInfo.getVisibilityChange() * iChange);
+	changeExtraMoves(kpInfo.getMovesChange() * iChange);
+	changeExtraMoveDiscount(kpInfo.getMoveDiscountChange() * iChange);
+	changeExtraAirRange(kpInfo.getAirRangeChange() * iChange);
+	changeExtraIntercept(kpInfo.getInterceptChange() * iChange);
+	changeExtraEvasion(kpInfo.getEvasionChange() * iChange);
+	changeExtraFirstStrikes(kpInfo.getFirstStrikesChange() * iChange);
+	changeExtraChanceFirstStrikes(kpInfo.getChanceFirstStrikesChange() * iChange);
+	changeExtraWithdrawal(kpInfo.getWithdrawalChange() * iChange);
+	changeExtraCollateralDamage(kpInfo.getCollateralDamageChange() * iChange);
+	changeExtraBombardRate(kpInfo.getBombardRateChange() * iChange);
+	changeExtraEnemyHeal(kpInfo.getEnemyHealChange() * iChange);
+	changeExtraNeutralHeal(kpInfo.getNeutralHealChange() * iChange);
+	changeExtraFriendlyHeal(kpInfo.getFriendlyHealChange() * iChange);
+	changeSameTileHeal(kpInfo.getSameTileHealChange() * iChange);
+	changeAdjacentTileHeal(kpInfo.getAdjacentTileHealChange() * iChange);
+	changeExtraCombatPercent(kpInfo.getCombatPercent() * iChange);
+	changeExtraCityAttackPercent(kpInfo.getCityAttackPercent() * iChange);
+	changeExtraCityDefensePercent(kpInfo.getCityDefensePercent() * iChange);
+	changeExtraHillsAttackPercent(kpInfo.getHillsAttackPercent() * iChange);
+	changeExtraHillsDefensePercent(kpInfo.getHillsDefensePercent() * iChange);
+	changeRevoltProtection(kpInfo.getRevoltProtection() * iChange);
+	changeCollateralDamageProtection(kpInfo.getCollateralDamageProtection() * iChange);
+	changePillageChange(kpInfo.getPillageChange() * iChange);
+	changeUpgradeDiscount(kpInfo.getUpgradeDiscount() * iChange);
+	changeExperiencePercent(kpInfo.getExperiencePercent() * iChange);
+	changeKamikazePercent((kpInfo.getKamikazePercent()) * iChange);
+	changeCargoSpace(kpInfo.getCargoChange() * iChange);
 
 	FOR_EACH_ENUM(Terrain)
 	{
 		changeExtraTerrainAttackPercent(eLoopTerrain,
-				GC.getInfo(ePromotion).getTerrainAttackPercent(eLoopTerrain) * iChange);
+			kpInfo.getTerrainAttackPercent(eLoopTerrain) * iChange);
 		changeExtraTerrainDefensePercent(eLoopTerrain,
-				GC.getInfo(ePromotion).getTerrainDefensePercent(eLoopTerrain) * iChange);
+			kpInfo.getTerrainDefensePercent(eLoopTerrain) * iChange);
 		changeTerrainDoubleMoveCount(eLoopTerrain,
-				GC.getInfo(ePromotion).getTerrainDoubleMove(eLoopTerrain) ? iChange : 0);
+			kpInfo.getTerrainDoubleMove(eLoopTerrain) ? iChange : 0);
 	}
 
 	FOR_EACH_ENUM(Feature)
 	{
 		changeExtraFeatureAttackPercent(eLoopFeature,
-				GC.getInfo(ePromotion).getFeatureAttackPercent(eLoopFeature) * iChange);
+			kpInfo.getFeatureAttackPercent(eLoopFeature) * iChange);
 		changeExtraFeatureDefensePercent(eLoopFeature,
-				GC.getInfo(ePromotion).getFeatureDefensePercent(eLoopFeature) * iChange);
+			kpInfo.getFeatureDefensePercent(eLoopFeature) * iChange);
 		changeFeatureDoubleMoveCount(eLoopFeature,
-				GC.getInfo(ePromotion).getFeatureDoubleMove(eLoopFeature) ? iChange : 0);
+			kpInfo.getFeatureDoubleMove(eLoopFeature) ? iChange : 0);
 	}
 
 	FOR_EACH_ENUM(UnitCombat)
 	{
 		changeExtraUnitCombatModifier(eLoopUnitCombat,
-				GC.getInfo(ePromotion).getUnitCombatModifierPercent(eLoopUnitCombat) * iChange);
+			kpInfo.getUnitCombatModifierPercent(eLoopUnitCombat) * iChange);
 	}
 
 	FOR_EACH_ENUM(Domain)
 	{
 		changeExtraDomainModifier(eLoopDomain,
-				GC.getInfo(ePromotion).getDomainModifierPercent(eLoopDomain) * iChange);
+			kpInfo.getDomainModifierPercent(eLoopDomain) * iChange);
 	}
 
 	if (IsSelected())
@@ -11235,6 +11374,19 @@ void CvUnit::setHasPromotion(PromotionTypes ePromotion, bool bNewValue)
 		gDLL->UI().setDirty(InfoPane_DIRTY_BIT, true);
 	}
 
+	//doto governor
+	//my system is kinda silly -> instead of working each promo on a promotion
+	//for every promo - the governor is being removed (the great person, not the unit)
+	//and it runs over all of the units current promotions and adds up their effect.
+	//in the future i should do changepromotion properly .
+	//but its no so bad cause this reloop in the city for promotions will run only when th governor is promoted
+	//so its occasionally...so not that impactfull in terms of permormance i guess
+	CvCity* pCity = getPlot().getPlotCity();
+	//it should never be null...governor must be on a city plot!
+	if (pCity != NULL && m_pUnitInfo->getGovernor() > 0)
+		pCity->processGovernor(this);
+	//doto governor
+	
 	//update graphics
 	gDLL->getEntityIFace()->updatePromotionLayers(getEntity());
 }
@@ -12797,8 +12949,7 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlo
 	{
 		CvWString szBuffer;			
 		if (iRetaliate)
-		{
-			
+		{	
 			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_RETURN_ATTACK_BY_RANGED",
 				pAttacker->getNameKey(), pDefender->getNameKey(), iDamage);
 			gDLL->UI().addMessage(pAttacker->getOwner(), true, -1, szBuffer, *pPlot,
@@ -12814,8 +12965,6 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlo
 			//red icon over attacking unit
 			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, *pPlot,
 				"AS2D_COMBAT", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("YELLOW"));
-
-
 		}
 		else 
 		{

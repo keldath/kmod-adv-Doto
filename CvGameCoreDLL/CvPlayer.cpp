@@ -1636,6 +1636,7 @@ CvCity* CvPlayer::initCity(int iX, int iY, bool bBumpUnits, bool bUpdatePlotGrou
 	/*  advc.104: Moved out of CvCity::init so that the new city is
 		already fully initialized */
 	setFoundedFirstCity(true);
+
 	return pCity;
 }
 

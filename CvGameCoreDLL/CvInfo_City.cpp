@@ -86,6 +86,7 @@ int CvSpecialistInfo::getHappiness() const
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
+
 int CvSpecialistInfo::getGreatPeopleUnitClass() const
 {
 	return m_iGreatPeopleUnitClass;

@@ -57,6 +57,7 @@ public: // All the const functions are exposed to Python
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
+
 	int getExperience() const;
 
 	bool isVisible() const;

@@ -35,6 +35,10 @@ CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 //doto city states - specialists instead of population - start
 	m_iFreeCivilianCount = 0;
 //doto city states - specialists instead of population - end 
+//doto governor
+	m_iGovernorUnitLevl = -1;
+	m_iGovernorUnitCount = 0;
+//doto governor
 	m_iHighestPopulation = 0;
 	m_iWorkingPopulation = 0;
 	m_iSpecialistPopulation = 0;
@@ -76,6 +80,12 @@ CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 	m_iSpecialistHappiness = 0;
 	m_iSpecialistUnhappiness = 0;
 /** Specialists Enhancements   END   */
+//doto governor start
+	m_iGreatPeopleRateChangeC = 0;
+	m_iHealthC = 0;
+	m_iHappinessC = 0;
+	m_iExperienceC = 0;
+//doto governor start
 	m_iBuildingGoodHealth = 0;
 	m_iBuildingBadHealth = 0;
 	m_iPowerGoodHealth = 0;
@@ -333,6 +343,10 @@ void CvCity::init(int iID, PlayerTypes eOwner, int iX, int iY, bool bBumpUnits,
 		} // </advc.124g>
 	}
 
+	//doto governer - add governor
+	CvCityCreateGovernor();
+	//doto governer
+
 	updateEspionageVisibility(false);
 
 	if (bUpdatePlotGroups)
@@ -369,7 +383,9 @@ void CvCity::kill(bool bUpdatePlotGroups, /* advc.001: */ bool bBumpUnits)
 	CvPlot& kPlot = getPlot();
 	PlayerTypes const eOwner = getOwner();
 	CvPlayer& kOwner = GET_PLAYER(eOwner);
-
+	//doto governor kill the governor as well to clean up all the perks from it
+	killGovernor();
+	//doto governor
 	if (isCitySelected())
 		gDLL->UI().clearSelectedCities();
 
@@ -642,6 +658,7 @@ void CvCity::doTurn()
 	doReligion();
 	doGreatPeople();
 	doMeltdown();
+
 	/*	advc.004: Just so that human players don't get confused when inspecting
 		an AI city. Will get updated at the start of the next turn anyway
 		(CvPlayer::doTurn). Important not to update before doProduction as that
@@ -777,6 +794,10 @@ int CvCity::calculateBaseYieldRate(YieldTypes eYield)
 	}
 	iR += getTradeYield(eYield);
 	iR += getCorporationYield(eYield);
+	//doto governor -> all the checks for yields must be equal and take care of the added governoer yield
+	iR += getYieldChangeC(eYield);
+	//doto governor	
+
 	return iR;
 }
 
@@ -4127,7 +4148,9 @@ int CvCity::unhappyLevel(int iExtra) const
 	iUnhappiness -= std::min(0, GC.getInfo(getHandicapType()).getHappyBonus());
 	iUnhappiness += std::max(0, getVassalUnhappiness());
 	iUnhappiness += std::max(0, getEspionageHappinessCounter());
-
+	//doto governor	
+	iUnhappiness -= std::max(0, getHappinessC());
+	//doto governor		
 	return std::max(0, iUnhappiness);
 }
 
@@ -4158,7 +4181,9 @@ int CvCity::happyLevel() const
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
-
+//doto governor	
+	iHappiness += std::max(0, getHappinessC());
+//doto governor		
 	if (getHappinessTimer() > 0)
 	{
 		static int const iTEMP_HAPPY = GC.getDefineINT("TEMP_HAPPY"); // advc.opt
@@ -4287,6 +4312,9 @@ int CvCity::goodHealth() const
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
+//doto governor	
+	iHealth += std::max(0, getHealthC());
+//doto governor
 // < Civic Infos Plus Start >
 	iHealth += std::max(0,  getReligionGoodHealth());
 //getNonStateReligionExtraHealth unmarked by keldath from v104
@@ -4323,8 +4351,10 @@ int CvCity::badHealth(bool bNoAngry, int iExtra) const
 	iHealth += std::min(0, getSpecialistBadHealth());
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
-
- // < Civic Infos Plus Start >
+//doto governor	
+	iHealth += std::min(0, getHealthC());
+ //doto governor
+// < Civic Infos Plus Start >
 // unmarked by keldath from v104
 	iHealth += std::min(0, GET_PLAYER(getOwner()).getStateReligionExtraHealth());
 	iHealth += std::min(0, GET_PLAYER(getOwner()).getNonStateReligionExtraHealth());
@@ -5322,6 +5352,222 @@ void CvCity::processFreeCivilianCount()
 
 //doto specialists instead of population
 
+//doto governor start
+int CvCity::getGovernorUnitLevl() const
+{
+	return m_iGovernorUnitLevl;
+}
+
+void CvCity::setGovernorUnitLevl(int iNewValue)
+{
+	m_iGovernorUnitLevl = iNewValue;
+}
+void CvCity::changeGovernorUnitLevl(int iChange)
+{
+	setGovernorUnitLevl(getGovernorUnitLevl() + iChange);
+}
+//
+int CvCity::getGovernoUnitCount() const
+{
+	return m_iGovernorUnitCount;
+}
+
+void CvCity::setGovernoUnitCount(int iNewValue)
+{
+	m_iGovernorUnitCount = iNewValue;
+}
+void CvCity::changeGovernoUnitCount(int iChange)
+{
+	setGovernorUnitLevl(getGovernoUnitCount() + iChange);
+}
+//doto governor start
+void CvCity::CvCityCreateGovernor()
+{
+	//DOTO gOVERNOR - create a governor if a specialist governor doesnt exist
+	//temp placement in city create
+	UnitTypes eGovernorU = (UnitTypes)GC.getInfoTypeForString("UNIT_GOVERNOR", true);
+	GET_PLAYER(getOwner()).initUnit(eGovernorU, getX(), getY());
+	processGovernor();
+}
+
+void CvCity::killGovernor()
+{
+	SpecialistTypes eGovernorS = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_GOVERNOR", true);
+
+	//if there is a governor - remove it (can be from city conquer or something that gine wrong.
+	if (getGovernoUnitCount() > 0)
+	{
+		//remove the governer - should be only one...
+		//governer is counter in both the counter of it
+		//and in the freespecialists counter
+		//the issue is that in order for all specialists tags that affect
+		//stuff for all present specialists in the city, 
+		//i need to make sure the multipliers wont count the governer
+		//cause i dont want it to get side perks.
+		//so i will manually deduct the freespecialists count when its called for
+		//everywhere in the code of relevant files
+		setFreeSpecialistCount(eGovernorS, 0);
+		setGovernoUnitCount(0);
+		//reset all values
+		setGreatPeopleRateChangeC(0);
+
+		FOR_EACH_ENUM(Yield)
+		{
+			setYieldChangeC(eLoopYield, 0);
+		}
+		FOR_EACH_ENUM(Commerce)
+		{
+			setCommerceChangeC(eLoopCommerce, 0);
+		}
+
+		setHealthC(0);
+		setHappinessC(0);
+		setExperienceC(0);
+	}
+}
+void CvCity::processGovernorPromotions(const CvUnit* pUnit)
+{
+	for (int ePromotion = 0; ePromotion < GC.getNumPromotionInfos(); ePromotion++)
+	{
+		CvPromotionInfo const& kpInfo = GC.getInfo((PromotionTypes)ePromotion);
+		if (kpInfo.getGovernor() == 1)
+		{
+			if (pUnit->isHasPromotion((PromotionTypes)ePromotion))
+			{
+				//add up all the values from existing promotions of govener
+				//and change the xmls
+				int gp = kpInfo.getGreatPeopleRateChange();
+				int hl = kpInfo.getHealth();
+				int hp = kpInfo.getHappiness();
+				int xp = kpInfo.getExperience();
+
+				if (gp != 0)
+					changeGreatPeopleRateChangeC(gp);
+				if (hl != 0)
+					changeHealthC(hl);
+				if (hp != 0)
+					changeHappinessC(hp);
+				if (xp != 0)
+					changeExperienceC(xp);
+
+				FOR_EACH_ENUM(Yield)
+				{
+					changeYieldChangeC(eLoopYield,
+						kpInfo.getYieldChange(eLoopYield)
+					);
+				}
+				FOR_EACH_ENUM(Commerce)
+				{
+					changeCommerceChangeC(eLoopCommerce,
+						kpInfo.getCommerceChange(eLoopCommerce)
+					);
+				}
+			}
+		}
+	}
+}
+
+void CvCity::processGovernor(const CvUnit* bdoUnitPromote)
+{
+	SpecialistTypes eGovernorS = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_GOVERNOR", true);
+	killGovernor();
+	
+	if (bdoUnitPromote == NULL)
+	{
+		FOR_EACH_UNIT_IN(pUnit, getPlot())
+		{
+			// Exclude naval units but not Explorer and Gunship
+			//if (pUnit->getNameKey() == L'Governor')
+			CvUnitInfo const& kInfo = pUnit->getUnitInfo();
+			//CvUnit const& kUnit = *pUnit;
+			if (kInfo.getGovernor() && pUnit->getOwner() == getOwner())
+			{
+				/* moved to external func
+				for (int ePromotion = 0; ePromotion < GC.getNumPromotionInfos(); ePromotion++)
+				{
+					CvPromotionInfo const& kpInfo = GC.getInfo((PromotionTypes)ePromotion);
+					if (kpInfo.getGovernor() == 1)
+					{
+						if (pUnit->isHasPromotion((PromotionTypes)ePromotion))
+						{
+							//add up all the values from existing promotions of govener
+							//and change the xmls
+							int gp = GC.getInfo((PromotionTypes)ePromotion).getGreatPeopleRateChange();
+							int hl = GC.getInfo((PromotionTypes)ePromotion).getHealth();
+							int hp = GC.getInfo((PromotionTypes)ePromotion).getHappiness();
+							int xp = GC.getInfo((PromotionTypes)ePromotion).getExperience();
+
+							if (gp != 0)
+								changeGreatPeopleRateChangeC(gp);
+							if (hl != 0)
+								changeHealthC(hl);
+							if (hp != 0)
+								changeHappinessC(hp);
+							if (xp != 0)
+								changeExperienceC(xp);
+
+							FOR_EACH_ENUM(Yield)
+							{
+								changeYieldChangeC(eLoopYield,
+									GC.getInfo((PromotionTypes)ePromotion).getYieldChange(eLoopYield)
+								);
+							}
+							FOR_EACH_ENUM(Commerce)
+							{
+								changeCommerceChangeC(eLoopCommerce,
+									GC.getInfo((PromotionTypes)ePromotion).getCommerceChange(eLoopCommerce)
+								);
+							}
+						}
+					}
+				}
+				*/
+				processGovernorPromotions(pUnit);
+				//placed out side the loop above to spare loop run for every promotion
+				FOR_EACH_ENUM(Yield)
+				{
+					changeBaseYieldRate(eLoopYield, getYieldChangeC(eLoopYield));
+				}
+				FOR_EACH_ENUM(Commerce)
+				{
+					updateCommerce(eLoopCommerce);
+				}
+				//experience change for the governor:
+				//city size and city amount and cotteges amount dependant
+				//used the setExperience instaed of changeExperience cause i didnt want 
+				//the levels wont be affeced by any xp modifiers...
+				//below are some experiments i had to do toconvert the pUnit type cause i had to.
+				//CvUnit const* eUnit = pUnit;
+				//int x = eUnit->getExperience();
+				//CvUnit& iUnit = const_cast<CvUnit&>(*eUnit);
+				int startXp = getPopulation();
+				//give started xp in case city is at a certain size (advance start, conquering...etc
+				int xpAmount = 0;
+				if (startXp == 5)
+					xpAmount += 1;
+				else if (startXp > 5 && startXp <= 8)
+					xpAmount += 2;
+				else if (startXp > 8 && startXp <= 12)
+					xpAmount += 3;
+				else if (startXp > 12 && startXp < 20)
+					xpAmount += 4;
+				else
+					xpAmount += 5;
+				CvUnit* eiUnit = const_cast<CvUnit*>(pUnit);
+				eiUnit->setExperience((eiUnit->getExperience() + 3));
+				break; // one gov per city
+			}
+		}
+	}
+	//is the func was called from getting a new promotion run this.
+	if (bdoUnitPromote != NULL)
+		processGovernorPromotions(bdoUnitPromote);
+	setGovernoUnitCount(1);
+	setFreeSpecialistCount(eGovernorS, 1);
+}
+
+//doto governor end
+
 // advc: Return type was long. Not helpful since sizeof(int)==sizeof(long).
 int CvCity::getRealPopulation() const
 {
@@ -6246,6 +6492,61 @@ void CvCity::GPProjection(std::vector<std::pair<UnitTypes,int> >& aeiProjection)
 	}
 } // </advc.001c>
 
+
+//doto governor start
+void CvCity::changeGreatPeopleRateChangeC(int iChange)
+{
+	if (iChange != 0)
+	{
+		m_iGreatPeopleRateChangeC += iChange;
+		FAssert(getBonusGoodHappiness() >= 0);
+	//	AI_setAssignWorkDirty(true);
+	}
+}
+void CvCity::changeHealthC(int iChange)
+{
+	if (iChange != 0)
+	{
+		m_iHealthC += iChange;
+		FAssert(getHealthC() >= 0);
+	//	AI_setAssignWorkDirty(true);
+	}
+}
+void CvCity::changeHappinessC(int iChange)
+{
+	if (iChange != 0)
+	{
+		m_iHappinessC += iChange;
+		FAssert(getHappinessC() >= 0);
+		//AI_setAssignWorkDirty(true);
+	}
+}
+void CvCity::changeExperienceC(int iChange)
+{
+	if (iChange != 0)
+	{
+		m_iExperienceC += iChange;
+		FAssert(getExperienceC() >= 0);
+		//AI_setAssignWorkDirty(true);
+	}
+}
+void CvCity::setGreatPeopleRateChangeC(int iChange)
+{
+	m_iGreatPeopleRateChangeC = iChange;
+}
+void CvCity::setHealthC(int iChange)
+{
+	m_iHealthC = iChange;
+}
+void CvCity::setHappinessC(int iChange)
+{
+	m_iHappinessC = iChange;
+}
+void CvCity::setExperienceC(int iChange)
+{
+	m_iExperienceC = iChange;
+}
+//doto governor end
 
 int CvCity::getBuildingHealth(BuildingTypes eBuilding) const
 {
@@ -8361,7 +8662,46 @@ void CvCity::setTradeYield(YieldTypes eYield, int iNewValue)
 		changeBaseYieldRate(eYield, iNewValue - iOldValue);
 	}
 }
+//doto governor
+void CvCity::setYieldChangeC(YieldTypes eYield, int iNewValue)
+{
+	int const iOldValue = getYieldChangeC(eYield);
+	if (iOldValue != iNewValue)
+	{
+		m_piYieldChangeC.set(eYield, iNewValue);
+		FAssert(getYieldChangeC(eYield) >= 0);
+		//changeBaseYieldRate(eYield, iNewValue - iOldValue);
+		//i moved it to the lopp of the promots
+		// this way it wont need to update this after each promotion check.. better performance
+		// also, easier reseting of the value from promotions
+	}
+}
 
+void CvCity::changeYieldChangeC(YieldTypes eYield, int iChange)
+{
+	setYieldChangeC(eYield,
+		getYieldChangeC(eYield) + iChange);
+}
+
+void CvCity::setCommerceChangeC(CommerceTypes eCommerce, int iNewValue)
+{
+	int const iOldValue = getCommerceChangeC(eCommerce);
+	if (iOldValue != iNewValue)
+	{
+		m_piCommerceChangeC.set(eCommerce, iNewValue);
+		FAssert(getCommerceChangeC(eCommerce) >= 0);
+		//updateCommerce(eCommerce); 
+		//i moved it to the lopp of the promots
+		// this way it wont need to update this after each promotion check.. better performance
+		// also, easier reseting of the value from promotions
+	}
+}
+void CvCity::changeCommerceChangeC(CommerceTypes eCommerce, int iChange)
+{
+	setCommerceChangeC(eCommerce,
+		getCommerceChangeC(eCommerce) + iChange);
+}
+//doto governor
 
 int CvCity::getExtraSpecialistYield(YieldTypes eYield, SpecialistTypes eSpecialist) const
 {
@@ -8570,12 +8910,23 @@ int CvCity::getBaseCommerceRateTimes100(CommerceTypes eCommerce) const
 			getYieldRate(YIELD_COMMERCE) * 100);
 	iBaseCommerceRate += 100 * ((getSpecialistPopulation() + getNumGreatPeople()) *
 			GET_PLAYER(getOwner()).getSpecialistExtraCommerce(eCommerce));
+	//doto governor
+	if (getGovernoUnitCount() > 0)
+	{
+		iBaseCommerceRate += 100 * (-getGovernoUnitCount() *
+			GET_PLAYER(getOwner()).getSpecialistExtraCommerce(eCommerce));
+	}
+	//doto governor
 	iBaseCommerceRate += 100 *
 			(getBuildingCommerce(eCommerce) +
 			getSpecialistCommerce(eCommerce) +
 			getReligionCommerce(eCommerce) +
 			getCorporationCommerce(eCommerce) +
-			GET_PLAYER(getOwner()).getFreeCityCommerce(eCommerce));
+			GET_PLAYER(getOwner()).getFreeCityCommerce(eCommerce)
+			//doto governor
+			+ getCommerceChangeC(eCommerce)
+			//doto governor
+			);
 	return iBaseCommerceRate;
 }
 
@@ -12660,6 +13011,10 @@ void CvCity::read(FDataStreamBase* pStream)
 //doto city states - specialists instead of population start
 	pStream->Read(&m_iFreeCivilianCount);
 //doto city states - specialists instead of population end
+//doto governor
+	pStream->Read(&m_iGovernorUnitLevl);
+	pStream->Read(&m_iGovernorUnitCount);
+//doto governor
 	pStream->Read(&m_iHighestPopulation);
 	pStream->Read(&m_iWorkingPopulation);
 	pStream->Read(&m_iSpecialistPopulation);
@@ -12730,6 +13085,12 @@ void CvCity::read(FDataStreamBase* pStream)
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
+	//doto governor start
+	pStream->Read(&m_iGreatPeopleRateChangeC);
+	pStream->Read(&m_iHealthC);
+	pStream->Read(&m_iHappinessC);
+	pStream->Read(&m_iExperienceC);
+	//doto governor start
 	pStream->Read(&m_iBuildingGoodHappiness);
 	pStream->Read(&m_iBuildingBadHappiness);
 	pStream->Read(&m_iExtraBuildingGoodHappiness);
@@ -12814,6 +13175,10 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiStateReligionYieldRateModifier.read(pStream);
 		m_aiNonStateReligionYieldRateModifier.read(pStream);
 	// DOTO-< Civic Infos Plus End   >
+	//doto governor
+		m_piYieldChangeC.read(pStream);
+		m_piCommerceChangeC.read(pStream);
+	//doto governor
 		m_aiTradeYield.read(pStream);
 		m_aiCorporationYield.read(pStream);
 		m_aiExtraSpecialistYield.read(pStream);
@@ -12863,6 +13228,10 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiStateReligionYieldRateModifier.readArray<int>(pStream);
 		m_aiNonStateReligionYieldRateModifier.readArray<int>(pStream);
 	// DOTO-< Civic Infos Plus End   >
+	//doto governor
+		m_piYieldChangeC.readArray<int>(pStream);
+		m_piCommerceChangeC.readArray<int>(pStream);
+	//doto governor
 		m_aiTradeYield.readArray<int>(pStream);
 		m_aiCorporationYield.readArray<int>(pStream);
 		m_aiExtraSpecialistYield.readArray<int>(pStream);
@@ -13338,6 +13707,10 @@ void CvCity::write(FDataStreamBase* pStream)
 //doto city states - specialists instead of population start
 	pStream->Write(m_iFreeCivilianCount);
 //doto city states - specialists instead of population end
+//doto governor
+	pStream->Write(m_iGovernorUnitLevl);
+	pStream->Write(m_iGovernorUnitCount);
+//doto governor
 	pStream->Write(m_iHighestPopulation);
 	pStream->Write(m_iWorkingPopulation);
 	pStream->Write(m_iSpecialistPopulation);
@@ -13408,6 +13781,12 @@ void CvCity::write(FDataStreamBase* pStream)
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
+	//doto governor start
+	pStream->Write(m_iGreatPeopleRateChangeC);
+	pStream->Write(m_iHealthC);
+	pStream->Write(m_iHappinessC);
+	pStream->Write(m_iExperienceC);
+	//doto governor end
 	pStream->Write(m_iBuildingGoodHappiness);
 	pStream->Write(m_iBuildingBadHappiness);
 	pStream->Write(m_iExtraBuildingGoodHappiness);
@@ -13486,6 +13865,10 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiStateReligionYieldRateModifier.write(pStream);
 	m_aiNonStateReligionYieldRateModifier.write(pStream);
 	// DOTO-< Civic Infos Plus End   >
+	//doto governor
+	m_piYieldChangeC.write(pStream);
+	m_piCommerceChangeC.write(pStream);
+	//doto governor
 	m_aiTradeYield.write(pStream);
 	m_aiCorporationYield.write(pStream);
 	m_aiExtraSpecialistYield.write(pStream);

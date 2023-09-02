@@ -1833,6 +1833,12 @@ bool CvSelectionGroup::canDoInterfaceMode(InterfaceModeTypes eInterfaceMode)
 
 	FOR_EACH_UNIT_IN(pUnit, *this)
 	{
+		//doto governor
+		//if (GC.getUnitInfo(getUnitType()).cantGovernorDoCommand(pUnit->getUnitType()))
+		//pUnit->getUnitType()
+		if (pUnit->cantGovernorDoCommand())
+			break;
+		//doto governor - deny unit governor to do any of these actions
 		switch (eInterfaceMode)
 		{
 		case INTERFACEMODE_GO_TO:
@@ -1937,6 +1943,10 @@ bool CvSelectionGroup::canDoInterfaceModeAt(InterfaceModeTypes eInterfaceMode, C
 	{
 		if (pUnit == NULL)
 			continue;
+		//doto governor - deny unit governor to do the action
+		if (pUnit->cantGovernorDoCommand())
+			break;
+		//doto governor - deny unit governor to do the action
 		switch (eInterfaceMode)
 		{
 		case INTERFACEMODE_AIRLIFT:
@@ -3298,6 +3308,10 @@ bool CvSelectionGroup::canDoMission(MissionTypes eMission, int iData1, int iData
 		case MISSION_MOVE_TO:
 			if (!bValid)
 			{
+				//doto governor
+				if (pUnit->cantGovernorDoCommand())
+					break;
+				//doto governor - deny unit governor to do any of these actions
 				if (pPlot->at(iData1, iData2))
 					return false;
 				if (!bCheckMoves)
@@ -3312,6 +3326,10 @@ bool CvSelectionGroup::canDoMission(MissionTypes eMission, int iData1, int iData
 		case MISSION_ROUTE_TO:
 			if (!bValid)
 			{
+				//doto governor
+				if (pUnit->cantGovernorDoCommand())
+					break;
+				//doto governor - deny unit governor to do any of these actions
 				if (pPlot->at(iData1, iData2) &&
 					getBestBuildRoute(*pPlot) == NO_ROUTE)
 				{
@@ -3328,6 +3346,10 @@ bool CvSelectionGroup::canDoMission(MissionTypes eMission, int iData1, int iData
 		case MISSION_MOVE_TO_UNIT:
 		{
 			FAssert(iData1 > NO_PLAYER);
+			//doto governor
+			if (pUnit->cantGovernorDoCommand())
+				break;
+			//doto governor - deny unit governor to do any of these actions
 			CvUnit* pTargetUnit = GET_PLAYER((PlayerTypes)iData1).getUnit(iData2);
 			if (!bValid)
 			{
@@ -3348,6 +3370,10 @@ bool CvSelectionGroup::canDoMission(MissionTypes eMission, int iData1, int iData
 			break;
 
 		case MISSION_SLEEP:
+			//doto governor
+			if (pUnit->cantGovernorDoCommand())
+				break;
+			//doto governor - deny unit governor to do any of these actions
 			if (pUnit->canSleep(pPlot))
 				return true;
 			break;
@@ -3391,6 +3417,10 @@ bool CvSelectionGroup::canDoMission(MissionTypes eMission, int iData1, int iData
 			break;
 		// </advc.004l>
 		case MISSION_SENTRY:
+			//doto governor
+			if (pUnit->cantGovernorDoCommand())
+				break;
+			//doto governor - deny unit governor to do any of these actions
 			if (pUnit->canSentry(pPlot))
 				return true;
 			break;

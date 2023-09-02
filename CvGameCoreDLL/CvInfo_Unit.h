@@ -127,6 +127,8 @@ public:
 /* City Size Prerequisite                  END                                                  */
 /************************************************************************************************/
 	int getMinAreaSize() const { return m_iMinAreaSize; }
+//doto governor
+	int getGovernor() const { return m_iGovernor; }
 	int getMoves() const { return m_iMoves; }
 	int getAirRange() const { return m_iAirRange; }
 //rangedattack-keldath - ranaged immunity - doto
@@ -437,6 +439,8 @@ protected:
 /* City Size Prerequisite                  END                                                  */
 /************************************************************************************************/
 	int m_iMinAreaSize;
+//doto governor
+	int m_iGovernor;
 	int m_iMoves;
 	int m_iAirRange;
 //rangedattack-keldath - ranged immunity dotp
@@ -705,6 +709,15 @@ public: // All the const functions are exposed to Python
 	int getPrereqOrPromotion2() const;
 	int getPrereqOrPromotion3() const; // K-Mod, 7/jan/11
 	int getTechPrereq() const;
+	//doto governor start
+	int getGovernor() const;
+	int getGreatPeopleRateChange() const;
+	int getYieldChange(int iYield) const;
+	int getCommerceChange(int iCommerce) const;
+	int getHealth() const;
+	int getHappiness() const;
+	int getExperience() const;
+	//doto governor
 	int getStateReligionPrereq() const;
 	int getVisibilityChange() const;
 	int getMovesChange() const;
@@ -778,8 +791,16 @@ protected:
 	int m_iPrereqOrPromotion1;
 	int m_iPrereqOrPromotion2;
 	int m_iPrereqOrPromotion3; // K-Mod
-
 	int m_iTechPrereq;
+	//doto governor start
+	int m_iGovernor;
+	int m_iGreatPeopleRateChange;
+	int* m_piYieldChange;
+	int* m_piCommerceChange;
+	int m_iHealth;
+	int m_iHappiness;
+	int m_iExperience;
+	//doto governor start
 	int m_iStateReligionPrereq;
 	int m_iVisibilityChange;
 	int m_iMovesChange;
