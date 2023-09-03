@@ -2193,6 +2193,10 @@ int CvCity::getProductionExperience(UnitTypes eUnit, /* <advc.002f> */
 		}
 		iExperience += getDomainFreeExperience(GC.getInfo(eUnit).getDomainType());
 		//iExperience += getSpecialistFreeExperience();
+		
+		//doto governor
+		iExperience += getExperienceC();
+		//doto governor
 	}
 	// <advc.002f> AI score for comparing cities wrt. their free XP
 	else if (bScore)
@@ -5554,7 +5558,7 @@ void CvCity::processGovernor(const CvUnit* bdoUnitPromote)
 				else
 					xpAmount += 5;
 				CvUnit* eiUnit = const_cast<CvUnit*>(pUnit);
-				eiUnit->setExperience((eiUnit->getExperience() + 3));
+				eiUnit->setExperience((eiUnit->getExperience() + xpAmount));
 				break; // one gov per city
 			}
 		}

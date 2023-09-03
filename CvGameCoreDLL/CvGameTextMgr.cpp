@@ -1089,6 +1089,78 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 		}
 	}
 
+	//doto governor promo text
+	for (int ePromotion = 0; ePromotion < GC.getNumPromotionInfos(); ePromotion++)
+	{
+		CvPromotionInfo const& kpInfo = GC.getInfo((PromotionTypes)ePromotion);
+		if (kpInfo.getGovernor() == 1)
+		{
+			if (pUnit->isHasPromotion((PromotionTypes)ePromotion))
+			{
+				//add up all the values from existing promotions of govener
+				//and change the xmls
+				int gp = kpInfo.getGreatPeopleRateChange();
+				int hl = kpInfo.getHealth();
+				int hp = kpInfo.getHappiness();
+				int xp = kpInfo.getExperience();
+
+				if (gp != 0) // </advc.164>
+				{
+
+					szString.append(NEWLINE);
+					szString.append(gDLL->getText("TXT_KEY_PROMOTION_GREAT_PEOPLE_RATE",
+						gp, gDLL->getSymbolID(GREAT_PEOPLE_CHAR)));
+				}
+				if (hl != 0) // </advc.164>
+				{
+					szString.append(NEWLINE);
+					szString.append(gDLL->getText("TXT_KEY_PROMOTION_HEALTH",
+						abs(hl),
+						hl > 0 ?
+						gDLL->getSymbolID(HEALTHY_CHAR) :
+						gDLL->getSymbolID(UNHEALTHY_CHAR)));
+				}
+				if (hp != 0) // </advc.164>
+				{
+					szString.append(NEWLINE);
+					szString.append(gDLL->getText("TXT_KEY_PROMOTION_HAPPINESS",
+						abs(hp),
+						hp > 0 ?
+						gDLL->getSymbolID(HAPPY_CHAR) :
+						gDLL->getSymbolID(UNHAPPY_CHAR)));
+				}
+				if (xp != 0) // </advc.164>
+				{
+					szString.append(NEWLINE);
+					szString.append(gDLL->getText("TXT_KEY_PROMOTION_EXPERIENCE",
+						xp));
+				}
+				FOR_EACH_ENUM(Yield)
+				{
+					int yChange = kpInfo.getYieldChange(eLoopYield);
+					if (yChange != 0)
+					{
+						szString.append(NEWLINE);
+						szString.append(gDLL->getText("TXT_KEY_PROMOTION_YIELD",
+							yChange, GC.getInfo(eLoopYield).getChar()));
+					}
+				}
+				FOR_EACH_ENUM(Commerce)
+				{
+					int cChange = kpInfo.getCommerceChange(eLoopCommerce);
+					if (cChange != 0)
+					{
+						szString.append(NEWLINE);
+						szString.append(gDLL->getText("TXT_KEY_PROMOTION_COMMERCE",
+							cChange, GC.getInfo(eLoopCommerce).getChar()));
+					}
+				}
+			}
+		}
+	}
+	//doto governor end
+
+
 	if (pUnit->animalCombatModifier() != 0)
 	{
 		szString.append(NEWLINE);
@@ -7006,6 +7078,63 @@ void CvGameTextMgr::parsePromotionHelp(CvWStringBuffer &szBuffer,
 		return;
 
 	CvPromotionInfo const& kPromo = GC.getInfo(ePromo);
+
+	//doto governor promo text
+	int gp = kPromo.getGreatPeopleRateChange();
+	int hl = kPromo.getHealth();
+	int hp = kPromo.getHappiness();
+	int xp = kPromo.getExperience();
+	if (gp != 0) // </advc.164>
+	{
+		szBuffer.append(pcNewline);
+		szBuffer.append(gDLL->getText("TXT_KEY_PROMOTION_GREAT_PEOPLE_RATE",
+			gp, gDLL->getSymbolID(GREAT_PEOPLE_CHAR)));
+	}
+	if (hl != 0) // </advc.164>
+	{
+		szBuffer.append(pcNewline);
+		szBuffer.append(gDLL->getText("TXT_KEY_PROMOTION_HEALTH",
+			abs(hl),
+			hl > 0 ?
+			gDLL->getSymbolID(HEALTHY_CHAR) :
+			gDLL->getSymbolID(UNHEALTHY_CHAR)));
+	}
+	if (hp != 0) // </advc.164>
+	{
+		szBuffer.append(pcNewline);
+		szBuffer.append(gDLL->getText("TXT_KEY_PROMOTION_HAPPINESS",
+			abs(hp),
+			hp > 0 ?
+			gDLL->getSymbolID(HAPPY_CHAR) :
+			gDLL->getSymbolID(UNHAPPY_CHAR)));
+	}
+	if (xp != 0) // </advc.164>
+	{
+		szBuffer.append(pcNewline);
+		szBuffer.append(gDLL->getText("TXT_KEY_PROMOTION_EXPERIENCE",
+			xp));
+	}
+	FOR_EACH_ENUM(Yield)
+	{
+		int yChange = kPromo.getYieldChange(eLoopYield);
+		if (yChange != 0)
+		{
+			szBuffer.append(pcNewline);
+			szBuffer.append(gDLL->getText("TXT_KEY_PROMOTION_YIELD",
+				yChange, GC.getInfo(eLoopYield).getChar()));
+		}	
+	}
+	FOR_EACH_ENUM(Commerce)
+	{
+		int cChange = kPromo.getCommerceChange(eLoopCommerce);
+		if (cChange != 0)
+		{
+			szBuffer.append(pcNewline);
+			szBuffer.append(gDLL->getText("TXT_KEY_PROMOTION_COMMERCE",
+				cChange, GC.getInfo(eLoopCommerce).getChar()));
+		}
+	}
+	//doto governor end
 
 	//if (kPromo.isBlitz())
 	// <advc.164>
