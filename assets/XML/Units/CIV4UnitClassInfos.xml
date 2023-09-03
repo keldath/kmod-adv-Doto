@@ -875,5 +875,14 @@
 			<iInstanceCostModifier>0</iInstanceCostModifier>
 			<DefaultUnit>UNIT_PELTAST</DefaultUnit>
     	</UnitClassInfo>
+		<UnitClassInfo>
+		    <Type>UNITCLASS_GOVERNOR</Type>
+			<Description>Governor</Description>
+			<iMaxGlobalInstances>-1</iMaxGlobalInstances>
+			<iMaxTeamInstances>-1</iMaxTeamInstances>
+			<iMaxPlayerInstances>-1</iMaxPlayerInstances>
+			<iInstanceCostModifier>0</iInstanceCostModifier>
+			<DefaultUnit>UNIT_GOVERNOR</DefaultUnit>
+    	</UnitClassInfo>
 	</UnitClassInfos>
 </Civ4UnitClassInfos>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+	Various Interface Label Translations
+
+  -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+		<Tag>TXT_KEY_GOVERNER_HEALTHY</Tag>
+		<English>[ICON_BULLET]%D1_Change[ICON_HEALTHY]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_GOVERNER_UNHEALTHY</Tag>
+		<English>[ICON_BULLET]%D1_Change[ICON_UNHEALTHY]</English>	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_GOVERNER_SPECIALISTS</Tag>
+		<English>+%d1_Change[ICON_UNHAPPY]: "We are angered by some citizens' occupations!"</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_HEALTHY_GOVERNER</Tag>
+		<English>+%d1_Change[ICON_HEALTHY] from Governor</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNHEALTHY_GOVERNER</Tag>
+		<English>+%d1_Change[ICON_UNHEALTHY] from Governor</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_GOVERNER_HAPPY</Tag>
+		<English>[ICON_BULLET]%D1_Change[ICON_HAPPY]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_GOVERNER_UNHAPPY</Tag>
+		<English>[ICON_BULLET]%D1_Change[ICON_UNHAPPY]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNHAPPY_GOVERNOR</Tag>
+		<English>+%d1_Change[ICON_UNHAPPY]: The Governer is not helping our City!</English>
+	</TEXT>
+
+	<TEXT>
+		<Tag>TXT_KEY_HAPPY_GOVERNER</Tag>
+		<English>+%d1_Change[ICON_HAPPY]: The Governer is making us Proud!</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_HELP_GOVERNOR_COMMERCE</Tag>
+		<English>[ICON_BULLET]%D1%F2 from %s3_Governor</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_CONCEPT_GOVERNOR</Tag>
+		<English>Governor</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_HELP_GOVERNOR_COMMERCE</Tag>
+		<English>[ICON_BULLET]%D1%F2 from %s3_Governor</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_HEADING_GOVERNOR</Tag>
+		<English>Governor</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISC_HELP_PROD_GOVERNOR</Tag>
+		<English>Governor %s1_yield_type: %d2%F3</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_GREAT_PEOPLE_RATE</Tag>
+		<English>[ICON_BULLET]%D1%F2</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_HEALTH</Tag>
+		<English>[ICON_BULLET]%D1%F2</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_HAPPINESS</Tag>
+		<English>[ICON_BULLET]%D1%F2</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_EXPERIENCE</Tag>
+		<English>[ICON_BULLET]%D1 XP</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_YIELD</Tag>
+		<English>[ICON_BULLET]%D1%F2</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_COMMERCE</Tag>
+		<English>[ICON_BULLET]%D1%F2</English>
+	</TEXT>
+</Civ4GameText>

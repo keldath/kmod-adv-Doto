@@ -376,6 +376,9 @@
 	<ElementType name="iAdvancedStartCost" content="textOnly" dt:type="int"/>
 	<ElementType name="iAdvancedStartCostIncrease" content="textOnly" dt:type="int"/>
 	<ElementType name="iMinAreaSize" content="textOnly" dt:type="int"/>
+<!-- doto governor -->
+	<ElementType name="iGovernoru" content="textOnly" dt:type="int"/>
+<!-- doto governor -->
 	<ElementType name="iMoves" content="textOnly" dt:type="int"/>
 	<ElementType name="bNoRevealMap" content="textOnly" dt:type="boolean"/>
 	<ElementType name="iAirRange" content="textOnly" dt:type="int"/>
@@ -706,6 +709,8 @@
 		<element type="iAdvancedStartCost" minOccurs="0"/>
 		<element type="iAdvancedStartCostIncrease" minOccurs="0"/>
 		<element type="iMinAreaSize" minOccurs="0"/>
+<!-- doto governor -->
+		<element type="iGovernoru" minOccurs="0"/>
 		<element type="iMoves" minOccurs="0"/>
 		<element type="bNoRevealMap" minOccurs="0"/>
 		<element type="iAirRange" minOccurs="0"/>
@@ -895,13 +900,28 @@
 	<ElementType name="PromotionPrereqOr2" content="textOnly"/>
 	<!-- K-Mod -->
 	<ElementType name="PromotionPrereqOr3" content="textOnly"/>
-	<ElementType name="TechPrereq" content="textOnly"/>
 	<ElementType name="StateReligionPrereq" content="textOnly"/>
 	<ElementType name="bLeader" content="textOnly" dt:type="boolean"/>
 	<!-- advc.164: was boolean -->
 	<ElementType name="iBlitz" content="textOnly" dt:type="int"/>
 	<ElementType name="bAmphib" content="textOnly" dt:type="boolean"/>
-<!-- blocade mod -->
+<!--doto  blocade mod -->
+	<ElementType name="TechPrereq" content="textOnly"/>
+<!--doto governor	start	-->
+	<ElementType name="iGovernor" content="textOnly" dt:type="int"/>
+	<ElementType name="iGreatPeopleRateChange" content="textOnly" dt:type="int"/>
+	<ElementType name="cityYield" content="textOnly" dt:type="int"/>
+	<ElementType name="cityYields" content="eltOnly">
+		<element type="cityYield" minOccurs="0" maxOccurs="*"/>
+	</ElementType>
+	<ElementType name="cityCommerce" content="textOnly" dt:type="int"/>
+	<ElementType name="cityCommerces" content="eltOnly">
+		<element type="cityCommerce" minOccurs="0" maxOccurs="*"/>
+	</ElementType>
+	<ElementType name="iHealth" content="textOnly" dt:type="int"/>
+	<ElementType name="iHappiness" content="textOnly" dt:type="int"/>
+	<ElementType name="iExperience" content="textOnly" dt:type="int"/>
+<!--doto governor	start			-->		
 	<ElementType name="bUnblocade" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bRiver" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bEnemyRoute" content="textOnly" dt:type="boolean"/>
@@ -962,6 +982,15 @@
 		<!-- K-Mod (advc: optional) -->
 		<element type="PromotionPrereqOr3" minOccurs="0"/>
 		<element type="TechPrereq" minOccurs="0"/>
+<!-- doto governor	start		-->
+		<element type="iGovernor" minOccurs="0"/>
+		<element type="iGreatPeopleRateChange" minOccurs="0"/>
+		<element type="cityYields" minOccurs="0"/>
+		<element type="cityCommerces" minOccurs="0"/>
+		<element type="iHealth" minOccurs="0"/>
+		<element type="iHappiness" minOccurs="0"/>	
+		<element type="iExperience" minOccurs="0"/>
+<!-- doto governor	end		-->	
 		<element type="StateReligionPrereq" minOccurs="0"/>
 		<element type="bLeader" minOccurs="0"/>
 		<!-- advc.164 -->
