@@ -425,10 +425,15 @@ public:
 	int getGovernorUnitLevl() const;															// Exposed to Python
 	void setGovernorUnitLevl(int iNewValue);										// Exposed to Python
 	void changeGovernorUnitLevl(int iChange);											// Exposed to Python
+	int getGovernoXPfromImprovements() const;															// Exposed to Python
+	void setGovernoXPfromImprovements(int iNewValue);										// Exposed to Python
+	void changeGovernoXPfromImprovements(int iChange);											// Exposed to Python
 	int getGovernoUnitCount() const;															// Exposed to Python
 	void setGovernoUnitCount(int iNewValue);										// Exposed to Python
 	void changeGovernoUnitCount(int iChange);											// Exposed to Python
+	int getXPfromImprovementsThreshold();												// Exposed to Python
 	void CvCityCreateGovernor();												// Exposed to Python
+	void giveXpBasedCitySize(int iOldPopulation, int iNewValue);												// Exposed to Python
 	void killGovernor();												// Exposed to Python
 	void processGovernorPromotions(const CvUnit* pUnit);											// Exposed to Python	
 	void processGovernor(const CvUnit* bdoUnitPromote = NULL);											// Exposed to Python	
@@ -1484,6 +1489,7 @@ protected:
 	int m_iFreeCivilianCount;
 //doto governor
 	int m_iGovernorUnitLevl;
+	int m_iGovernoXPfromImprovements;
 	int m_iGovernorUnitCount;
 //doto governor
 	int m_iHighestPopulation;

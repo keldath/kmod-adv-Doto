@@ -1062,6 +1062,9 @@ m_iTilesPerGoody(0),
 m_iGoodyUniqueRange(0),
 m_iFeatureGrowthProbability(0),
 m_iUpgradeTime(0),
+//doto governor
+m_iGovernorXp(0),
+//doto governor
 //doto obsolete improvement start
 m_eTechObsolete(NO_TECH),
 //doto obsolete improvement end 
@@ -1423,6 +1426,9 @@ void CvImprovementInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iGoodyUniqueRange);
 	stream->Read(&m_iFeatureGrowthProbability);
 	stream->Read(&m_iUpgradeTime);
+	//doto governor
+	stream->Read(&m_iGovernorXp);
+	//doto governor
 	//doto obsolete improvement start
 	stream->Read((int*)&m_eTechObsolete);
 	//doto obsolete improvement end
@@ -1536,6 +1542,9 @@ void CvImprovementInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iGoodyUniqueRange);
 	stream->Write(m_iFeatureGrowthProbability);
 	stream->Write(m_iUpgradeTime);
+	//doto goverbor
+	stream->Write(m_iGovernorXp);
+	//doto governor
 	//doto obsolete improvement start
 	stream->Write(m_eTechObsolete);
 	//doto obsolete improvement end
@@ -1669,6 +1678,9 @@ bool CvImprovementInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iGoodyUniqueRange, "iGoodyRange");
 	pXML->GetChildXmlValByName(&m_iFeatureGrowthProbability, "iFeatureGrowth");
 	pXML->GetChildXmlValByName(&m_iUpgradeTime, "iUpgradeTime");
+	//doto governor
+	pXML->GetChildXmlValByName(&m_iGovernorXp, "iGovernorXp", 0);
+	//doto governor
 	//doto obsolete improvement start
 	pXML->SetInfoIDFromChildXmlVal(m_eTechObsolete, "TechImpObsolete");
 	//doto obsolete improvement end

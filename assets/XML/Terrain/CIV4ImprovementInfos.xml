@@ -1673,6 +1673,9 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iGoodyRange>0</iGoodyRange>
 			<iFeatureGrowth>0</iFeatureGrowth>
 			<iUpgradeTime>10</iUpgradeTime>
+			<!-- //doto governor -->
+			<iGovernorXp>1</iGovernorXp>
+			<!-- //doto governor -->
 			<iAirBombDefense>5</iAirBombDefense>
 			<iDefenseModifier>0</iDefenseModifier>
 			<iHappiness>0</iHappiness>
@@ -1734,6 +1737,9 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iGoodyRange>0</iGoodyRange>
 			<iFeatureGrowth>0</iFeatureGrowth>
 			<iUpgradeTime>20</iUpgradeTime>
+			<!-- //doto governor -->
+			<iGovernorXp>1</iGovernorXp>
+			<!-- //doto governor -->
 			<iAirBombDefense>5</iAirBombDefense>
 			<iDefenseModifier>0</iDefenseModifier>
 			<iHappiness>0</iHappiness>
@@ -1796,6 +1802,9 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iGoodyRange>0</iGoodyRange>
 			<iFeatureGrowth>0</iFeatureGrowth>
 			<iUpgradeTime>40</iUpgradeTime>
+			<!-- //doto governor -->
+			<iGovernorXp>1</iGovernorXp>
+			<!-- //doto governor -->
 			<iAirBombDefense>5</iAirBombDefense>
 			<iDefenseModifier>0</iDefenseModifier>
 			<iHappiness>0</iHappiness>
@@ -1867,6 +1876,9 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iGoodyRange>0</iGoodyRange>
 			<iFeatureGrowth>0</iFeatureGrowth>
 			<iUpgradeTime>0</iUpgradeTime>
+			<!-- //doto governor -->
+			<iGovernorXp>1</iGovernorXp>
+			<!-- //doto governor -->
 			<iAirBombDefense>5</iAirBombDefense>
 			<iDefenseModifier>0</iDefenseModifier>
 			<iHappiness>0</iHappiness>

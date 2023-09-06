@@ -36,7 +36,8 @@ CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 	m_iFreeCivilianCount = 0;
 //doto city states - specialists instead of population - end 
 //doto governor
-	m_iGovernorUnitLevl = -1;
+	m_iGovernorUnitLevl = 0;
+	m_iGovernoXPfromImprovements = 0;
 	m_iGovernorUnitCount = 0;
 //doto governor
 	m_iHighestPopulation = 0;
@@ -345,6 +346,7 @@ void CvCity::init(int iID, PlayerTypes eOwner, int iX, int iY, bool bBumpUnits,
 
 	//doto governer - add governor
 	CvCityCreateGovernor();
+	giveXpBasedCitySize(0, getPopulation());
 	//doto governer
 
 	updateEspionageVisibility(false);
@@ -724,7 +726,7 @@ void CvCity::doTurn()
 
 	if (getEspionageHappinessCounter() > 0)
 		changeEspionageHappinessCounter(-1);
-
+//doto governor -> using surrounding for xp from improvements
 	updateSurroundingHealthHappiness(); // advc.901
 
 //doto 111 theladiesogre tlo terrainhealth
@@ -795,6 +797,7 @@ int CvCity::calculateBaseYieldRate(YieldTypes eYield)
 	iR += getTradeYield(eYield);
 	iR += getCorporationYield(eYield);
 	//doto governor -> all the checks for yields must be equal and take care of the added governoer yield
+	//add the perks from the gp to the total yields from the coty gp governor
 	iR += getYieldChangeC(eYield);
 	//doto governor	
 
@@ -2194,7 +2197,7 @@ int CvCity::getProductionExperience(UnitTypes eUnit, /* <advc.002f> */
 		iExperience += getDomainFreeExperience(GC.getInfo(eUnit).getDomainType());
 		//iExperience += getSpecialistFreeExperience();
 		
-		//doto governor
+		//doto governor add the xp given to the production
 		iExperience += getExperienceC();
 		//doto governor
 	}
@@ -5218,6 +5221,73 @@ int CvCity::popToSpecialists(int iOldPopulation, int m_iPopulation)
 }
 //doto specialist instead of pop end
 
+//doto governor -> give the governor unit xp base on city size metrix below.
+//the xp will also increase through cottages improvements.
+void CvCity::giveXpBasedCitySize(int iOldPopulation, int iNewValue)
+{
+	int xpAmount = 0;
+	if (iOldPopulation == 0)
+	{
+		//if the city is in advanced era start
+		if (iNewValue > 3)
+			xpAmount = 1;
+	}
+	else
+	{
+		switch (m_iPopulation)
+		{
+		case 3:
+		case 6:
+			xpAmount = 1;
+			break;
+		case 8:
+		case 10:
+			xpAmount = 1;
+			break;
+		case 12:
+			xpAmount = 2;
+			break;
+		case 14:
+		case 16:
+			xpAmount = 1;
+			break;
+		case 18:
+		case 19:
+		case 20:
+			xpAmount = 1;
+			break;
+		case 22:
+		case 24:
+			xpAmount = 1;
+			break;
+		case 26:
+			xpAmount = 2;
+			break;
+		default:
+			xpAmount = 0;
+			break;
+		}
+	}
+	//if nothing fits the case above -> check:
+	if (m_iPopulation > 28 && m_iPopulation < 30 && xpAmount == 0)
+		xpAmount = 1;
+
+	//if there xp to give lets look for the governor dude.
+	if (xpAmount > 0)
+	{
+		FOR_EACH_UNIT_IN(pUnit, getPlot())
+		{
+			CvUnitInfo const& kInfo = pUnit->getUnitInfo();
+			if (kInfo.getGovernor() && pUnit->getOwner() == getOwner())
+			{
+				CvUnit* eiUnit = const_cast<CvUnit*>(pUnit);
+				eiUnit->setExperience((eiUnit->getExperience() + xpAmount));
+			}
+		}
+	}
+}
+//doto governor
+
 void CvCity::setPopulation(int iNewValue)
 {
 /* Population Limit ModComp - Beginning : The game must warn the city's owner that the population limit is reached */		
@@ -5232,6 +5302,10 @@ void CvCity::setPopulation(int iNewValue)
 	m_iPopulation = popToSpecialists(iOldPopulation, iNewValue);
 //doto city states - specialist instead of pop end
 	FAssert(getPopulation() >= 0);
+
+	//doto governor process xp for the governor unit
+	giveXpBasedCitySize(iOldPopulation, iNewValue);
+	//doto governor
 
 	GET_PLAYER(getOwner()).invalidatePopulationRankCache();
 	if (getPopulation() > getHighestPopulation())
@@ -5371,6 +5445,20 @@ void CvCity::changeGovernorUnitLevl(int iChange)
 	setGovernorUnitLevl(getGovernorUnitLevl() + iChange);
 }
 //
+void CvCity::setGovernoXPfromImprovements(int iNewValue)
+{
+	m_iGovernoXPfromImprovements = iNewValue;
+}
+void CvCity::changeGovernoXPfromImprovements(int iChange)
+{
+	setGovernoXPfromImprovements(getGovernoXPfromImprovements() + iChange);
+}
+//
+int CvCity::getGovernoXPfromImprovements() const
+{
+	return m_iGovernoXPfromImprovements;
+}
+//
 int CvCity::getGovernoUnitCount() const
 {
 	return m_iGovernorUnitCount;
@@ -5380,11 +5468,49 @@ void CvCity::setGovernoUnitCount(int iNewValue)
 {
 	m_iGovernorUnitCount = iNewValue;
 }
+
+int CvCity::getXPfromImprovementsThreshold()
+{
+	//calculate what is the threshold based on the current level of the governor
+	CvGameSpeedInfo const& kSpeed = GC.getInfo(GC.getGame().getGameSpeedType());
+	int speedTurns = 0;
+	for (int i = 0; i < kSpeed.getNumTurnIncrements(); i++)
+		speedTurns += kSpeed.getGameTurnInfo(i).iNumGameTurnsPerIncrement;
+	int speedModifier = 100;
+	int baseModifier = 400; //100 * 4 improvement scale
+	//kSpeedName.getDescription()
+	switch (speedTurns)
+	{
+		case 1250:
+			speedModifier = 65;
+			break;
+		case 1000:
+			speedModifier = 60;
+			break;
+		case 750:
+			speedModifier = 50;
+			break;
+		case 500:
+			speedModifier = 40;
+			break;
+		case 335:
+			speedModifier = 30;
+			break;
+		default:
+			break;
+	};
+
+	int currGovernorLevel = getGovernorUnitLevl() + 1 * 10; //one is for the next level cause it starts from 0
+	int speedParsed = (speedModifier * baseModifier) / 100;
+	int currentThreshold = ((currGovernorLevel / 100) * speedParsed) + speedParsed;
+	return currentThreshold;
+}
+
 void CvCity::changeGovernoUnitCount(int iChange)
 {
 	setGovernorUnitLevl(getGovernoUnitCount() + iChange);
 }
-//doto governor start
+//doto governor start2
 void CvCity::CvCityCreateGovernor()
 {
 	//DOTO gOVERNOR - create a governor if a specialist governor doesnt exist
@@ -5412,6 +5538,7 @@ void CvCity::killGovernor()
 		//everywhere in the code of relevant files
 		setFreeSpecialistCount(eGovernorS, 0);
 		setGovernoUnitCount(0);
+		setGovernorUnitLevl(0); //make sure the xp gained by an owner wont pass on to the next owner.
 		//reset all values
 		setGreatPeopleRateChangeC(0);
 
@@ -5544,8 +5671,11 @@ void CvCity::processGovernor(const CvUnit* bdoUnitPromote)
 				//CvUnit const* eUnit = pUnit;
 				//int x = eUnit->getExperience();
 				//CvUnit& iUnit = const_cast<CvUnit&>(*eUnit);
-				int startXp = getPopulation();
 				//give started xp in case city is at a certain size (advance start, conquering...etc
+				
+				/* moved to setPopulation function-> when a city is created and grows
+				   xp from improvements is done via surrondinghealthandhappiness function located in the doTurn
+				int startXp = getPopulation();
 				int xpAmount = 0;
 				if (startXp == 5)
 					xpAmount += 1;
@@ -5559,6 +5689,7 @@ void CvCity::processGovernor(const CvUnit* bdoUnitPromote)
 					xpAmount += 5;
 				CvUnit* eiUnit = const_cast<CvUnit*>(pUnit);
 				eiUnit->setExperience((eiUnit->getExperience() + xpAmount));
+				*/
 				break; // one gov per city
 			}
 		}
@@ -6049,9 +6180,40 @@ void CvCity::updateSurroundingHealthHappiness()
 				int iHappy = GC.getInfo(eImprovement).getHappiness();
 				if (kTeam.canAccessHappyHealth(kPlot, iHappy)) // advc.901
 					(iHappy > 0 ? iNewGoodHappiness : iNewBadHappiness) += iHappy;
+				
+				//doto governor - placed here cause the loop already runs over all improvements
+				//in surrounding function
+				//will add xp to the governor unit progress counter in the city cache
+				if (GC.getInfo(eImprovement).getGovernorXp() > 0 && kPlot.isBeingWorked())
+					changeGovernoXPfromImprovements(1);
+				//doto governor
 			}
 		}
 	}
+
+	//doto governor
+	int xpThresh = getXPfromImprovementsThreshold();
+	int totalFromImprovements = getGovernoXPfromImprovements();
+	//if the current xp prog is above or eq to the thresh, give xp to the unit governor
+	if (totalFromImprovements >= xpThresh)
+	{
+		changeGovernorUnitLevl(1); //raise the level of the city cache to save the current level -> need to to it for the governor unit also
+		setGovernoXPfromImprovements(0);//reset the progress bar for next level progress
+		//look for the governor and add 1 point of xp to it.
+		FOR_EACH_UNIT_IN(pUnit, getPlot())
+		{
+			CvUnitInfo const& kInfo = pUnit->getUnitInfo();
+			if (kInfo.getGovernor() && pUnit->getOwner() == getOwner())
+			{
+				CvUnit* eiUnit = const_cast<CvUnit*>(pUnit);
+				eiUnit->setExperience((eiUnit->getExperience() + 1));
+			}
+		}
+		if ((totalFromImprovements - xpThresh) > 0)
+			changeGovernoXPfromImprovements((totalFromImprovements - xpThresh)); //if there was excess xp -> add it to the reset progress
+	}
+	//doto
+
 	bool bDirty = false;
 	if (getSurroundingGoodHappiness() != iNewGoodHappiness)
 	{
@@ -8914,7 +9076,8 @@ int CvCity::getBaseCommerceRateTimes100(CommerceTypes eCommerce) const
 			getYieldRate(YIELD_COMMERCE) * 100);
 	iBaseCommerceRate += 100 * ((getSpecialistPopulation() + getNumGreatPeople()) *
 			GET_PLAYER(getOwner()).getSpecialistExtraCommerce(eCommerce));
-	//doto governor
+	//doto governor - deduct the values that comes from the governor great person
+	//we dont want duplicate perks...
 	if (getGovernoUnitCount() > 0)
 	{
 		iBaseCommerceRate += 100 * (-getGovernoUnitCount() *
@@ -8927,7 +9090,7 @@ int CvCity::getBaseCommerceRateTimes100(CommerceTypes eCommerce) const
 			getReligionCommerce(eCommerce) +
 			getCorporationCommerce(eCommerce) +
 			GET_PLAYER(getOwner()).getFreeCityCommerce(eCommerce)
-			//doto governor
+			//doto governor -> add here the gp governor perks
 			+ getCommerceChangeC(eCommerce)
 			//doto governor
 			);
@@ -13017,6 +13180,7 @@ void CvCity::read(FDataStreamBase* pStream)
 //doto city states - specialists instead of population end
 //doto governor
 	pStream->Read(&m_iGovernorUnitLevl);
+	pStream->Read(&m_iGovernoXPfromImprovements);
 	pStream->Read(&m_iGovernorUnitCount);
 //doto governor
 	pStream->Read(&m_iHighestPopulation);
@@ -13713,6 +13877,7 @@ void CvCity::write(FDataStreamBase* pStream)
 //doto city states - specialists instead of population end
 //doto governor
 	pStream->Write(m_iGovernorUnitLevl);
+	pStream->Write(m_iGovernoXPfromImprovements);
 	pStream->Write(m_iGovernorUnitCount);
 //doto governor
 	pStream->Write(m_iHighestPopulation);
