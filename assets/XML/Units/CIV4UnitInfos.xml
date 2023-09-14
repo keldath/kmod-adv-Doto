@@ -59603,7 +59603,201 @@ UNITAI changed - now will used to counter.
 		<UnitInfo>
 			<Class>UNITCLASS_GOVERNOR</Class>
 			<Type>UNIT_GOVERNOR</Type>
-			<UniqueNames/>
+			<UniqueNames>
+<!-- linked to the dllm based on the name it will give gp points
+if the promo for gp + is chosen -->
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<UniqueName>Governor Artist</UniqueName>
+				<UniqueName>Governor Merchant</UniqueName>
+				<UniqueName>Governor Scientist</UniqueName>
+				<UniqueName>Governor Engineer</UniqueName>
+				<UniqueName>Governor Spy</UniqueName>
+				<UniqueName>Governor Prophet</UniqueName>
+				<UniqueName>Governor General</UniqueName>
+				<!-- <UniqueName>Arnold</UniqueName>
+				<UniqueName>Bibi</UniqueName>
+				<UniqueName>Biden</UniqueName>
+				<UniqueName>George</UniqueName>
+				<UniqueName>Ivan</UniqueName>
+				<UniqueName>Rambo</UniqueName>
+				<UniqueName>Indiana</UniqueName>
+				<UniqueName>Mcfky</UniqueName>
+				<UniqueName>Mua'dib</UniqueName>
+				<UniqueName>Emmet</UniqueName>
+				<UniqueName>Slater</UniqueName>
+				<UniqueName>Mua'dib</UniqueName>
+				<UniqueName>Anakeen</UniqueName>
+				<UniqueName>Obi</UniqueName>
+				<UniqueName>Mua'dib</UniqueName>
+				<UniqueName>Jabba</UniqueName>
+				<UniqueName>Mua'dib</UniqueName>
+				<UniqueName>Eric</UniqueName>
+				<UniqueName>Nostromo</UniqueName>
+				<UniqueName>Ripley</UniqueName>
+				<UniqueName>Bishop</UniqueName>
+				<UniqueName>Sulacu</UniqueName>
+				<UniqueName>Optimus</UniqueName>
+				<UniqueName>Sheridan</UniqueName>
+				<UniqueName>Picard</UniqueName>
+				<UniqueName>Seven</UniqueName>
+				<UniqueName>Sly</UniqueName>
+				<UniqueName>Ryan</UniqueName>
+				<UniqueName>Wilder</UniqueName>
+				<UniqueName>S.king</UniqueName> -->
+			</UniqueNames>
 			<Special>NONE</Special>
 			<Capture>UNITCLASS_WORKER</Capture>
 			<Combat>UNITCOMBAT_GOVERNOR</Combat>
@@ -59759,11 +59953,10 @@ UNITAI changed - now will used to counter.
 				<fMaxSpeed>1.75</fMaxSpeed>
 				<fPadTime>1</fPadTime>
 				<iMeleeWaveSize>1</iMeleeWaveSize>
-				<iRangedWaveSize>0</iRangedWaveSize>
+				<iRangedWaveSize>1</iRangedWaveSize>
 				<UnitMeshGroup>
 					<iRequired>1</iRequired>
-					<EarlyArtDefineTag>ART_DEF_UNIT_WORKER</EarlyArtDefineTag>
-					<LateArtDefineTag>ART_DEF_UNIT_WORKERMODERN</LateArtDefineTag>
+					<EarlyArtDefineTag>ART_DEF_UNIT_GOVERNOR</EarlyArtDefineTag>
 				</UnitMeshGroup>
 			</UnitMeshGroups>
 			<FormationType>FORMATION_TYPE_DEFAULT</FormationType>

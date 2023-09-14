@@ -371,6 +371,13 @@
             <bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
+            <Type>GAMEOPTION_GOVERNOR</Type>
+            <Description>Governor</Description>
+            <Help>A special Unit and GP is born when a city is founded. the governer gets a promotion tree by xp from city size growth and specific surronding improvements.</Help>
+            <bDefault>1</bDefault>
+            <bVisible>1</bVisible>
+		</GameOptionInfo>
+        <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_ATTACK</Type>
             <Description>[obsolete_doto_112]Ranged Attack</Description>
             <Help>Siege can Attack a tile form range</Help>

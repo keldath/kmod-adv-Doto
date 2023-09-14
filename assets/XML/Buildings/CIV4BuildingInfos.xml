@@ -3836,7 +3836,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ProductionTraits>
 				<ProductionTrait>
 					<ProductionTraitType>TRAIT_ORGANIZED</ProductionTraitType>
-					<iProductionTrait>100</iProductionTrait>
+					<iProductionTrait>50</iProductionTrait>
 				</ProductionTrait>
 			</ProductionTraits>
 			<HappinessTraits/>
@@ -4007,7 +4007,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ProductionTraits>
 				<ProductionTrait>
 					<ProductionTraitType>TRAIT_ORGANIZED</ProductionTraitType>
-					<iProductionTrait>100</iProductionTrait>
+					<iProductionTrait>50</iProductionTrait>
 				</ProductionTrait>
 			</ProductionTraits>
 			<HappinessTraits/>
@@ -5640,7 +5640,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ProductionTraits>
 				<ProductionTrait>
 					<ProductionTraitType>TRAIT_ORGANIZED</ProductionTraitType>
-					<iProductionTrait>100</iProductionTrait>
+					<iProductionTrait>50</iProductionTrait>
 				</ProductionTrait>
 			</ProductionTraits>
 			<HappinessTraits/>
@@ -5836,7 +5836,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ProductionTraits>
 				<ProductionTrait>
 					<ProductionTraitType>TRAIT_ORGANIZED</ProductionTraitType>
-					<iProductionTrait>100</iProductionTrait>
+					<iProductionTrait>50</iProductionTrait>
 				</ProductionTrait>
 			</ProductionTraits>
 			<HappinessTraits/>
@@ -12426,7 +12426,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ProductionTraits>
 				<ProductionTrait>
 					<ProductionTraitType>TRAIT_ORGANIZED</ProductionTraitType>
-					<iProductionTrait>100</iProductionTrait>
+					<iProductionTrait>50</iProductionTrait>
 				</ProductionTrait>
 			</ProductionTraits>
 			<HappinessTraits/>
@@ -12613,7 +12613,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ProductionTraits>
 				<ProductionTrait>
 					<ProductionTraitType>TRAIT_ORGANIZED</ProductionTraitType>
-					<iProductionTrait>100</iProductionTrait>
+					<iProductionTrait>50</iProductionTrait>
 				</ProductionTrait>
 			</ProductionTraits>
 			<HappinessTraits/>
@@ -12801,7 +12801,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ProductionTraits>
 				<ProductionTrait>
 					<ProductionTraitType>TRAIT_ORGANIZED</ProductionTraitType>
-					<iProductionTrait>100</iProductionTrait>
+					<iProductionTrait>50</iProductionTrait>
 				</ProductionTrait>
 			</ProductionTraits>
 			<HappinessTraits/>
@@ -12989,7 +12989,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<ProductionTraits>
 				<ProductionTrait>
 					<ProductionTraitType>TRAIT_ORGANIZED</ProductionTraitType>
-					<iProductionTrait>100</iProductionTrait>
+					<iProductionTrait>50</iProductionTrait>
 				</ProductionTrait>
 			</ProductionTraits>
 			<HappinessTraits/>

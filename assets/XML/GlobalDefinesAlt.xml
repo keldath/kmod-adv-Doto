@@ -599,11 +599,45 @@
 	<Define>
 		<DefineName>CAPITAL_BUILDINGCLASS_3</DefineName>
 		<DefineTextVal>BUILDINGCLASS_VERSAILLES</DefineTextVal>
-<!-- doto 113 -> loose capital anarchy start by <Nexus> -->	 		
+<!-- doto 113 -> loose capital anarchy start by <Nexus> end -->	 
+<!-- doto governor speed compensation balance -->
 	</Define>
 	<Define>
 		<DefineName>BASE_LOSS_CAPITAL_ANARCHY_LENGTH</DefineName>
 		<iDefineIntVal>1</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>BASE_GROWTH_THRESHOLD</DefineName>
+		<iDefineIntVal>15</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>BASE_GP_THRESHOLD</DefineName>
+		<iDefineIntVal>25</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>BASE_CULTURE_LEVEL_PERCENT</DefineName>
+		<iDefineIntVal>15</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>BASE_RESEARCH_PRECENT</DefineName>
+		<iDefineIntVal>15</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>BASE_CREATE_PRECENT</DefineName>
+		<iDefineIntVal>15</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>BASE_TRAIN_PRECENT</DefineName>
+		<iDefineIntVal>15</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>BASE_CONSTRUCT_PERCENT</DefineName>
+		<iDefineIntVal>15</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>BASE_ANGER_PERCENT</DefineName>
+		<iDefineIntVal>15</iDefineIntVal>
+<!-- doto governor speed compensation balance end -->
 	</Define>
 	
 </Civ4Defines>
