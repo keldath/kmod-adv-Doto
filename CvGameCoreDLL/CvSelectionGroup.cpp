@@ -220,6 +220,10 @@ void CvSelectionGroup::doTurn()
 			pUnit->doTurn();
 			if (pUnit->isHurt())
 				bHurt = true;
+
+			//doto governor testfortifyModifier :isWaiting() ->movesLeft() >isWaiting()
+			if (GC.getInfo((UnitTypes)pUnit->getUnitType()).getGovernor() > 0 && !pUnit->getGroup()->isWaiting())
+				pushMission(MISSION_FORTIFY, -1, -1, NO_MOVEMENT_FLAGS, false, false, NO_MISSIONAI, 0);
 		}
 	}
 
@@ -1833,11 +1837,14 @@ bool CvSelectionGroup::canDoInterfaceMode(InterfaceModeTypes eInterfaceMode)
 
 	FOR_EACH_UNIT_IN(pUnit, *this)
 	{
-		//doto governor
+		//doto governor - remove commands for the unit
 		//if (GC.getUnitInfo(getUnitType()).cantGovernorDoCommand(pUnit->getUnitType()))
 		//pUnit->getUnitType()
-		if (pUnit->cantGovernorDoCommand())
-			break;
+		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+		{
+			if (pUnit->cantGovernorDoCommand())
+				break;
+		}
 		//doto governor - deny unit governor to do any of these actions
 		switch (eInterfaceMode)
 		{
@@ -1944,8 +1951,11 @@ bool CvSelectionGroup::canDoInterfaceModeAt(InterfaceModeTypes eInterfaceMode, C
 		if (pUnit == NULL)
 			continue;
 		//doto governor - deny unit governor to do the action
-		if (pUnit->cantGovernorDoCommand())
-			break;
+		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+		{
+			if (pUnit->cantGovernorDoCommand())
+				break;
+		}
 		//doto governor - deny unit governor to do the action
 		switch (eInterfaceMode)
 		{
@@ -3309,8 +3319,11 @@ bool CvSelectionGroup::canDoMission(MissionTypes eMission, int iData1, int iData
 			if (!bValid)
 			{
 				//doto governor
-				if (pUnit->cantGovernorDoCommand())
-					break;
+				if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+				{
+					if (pUnit->cantGovernorDoCommand())
+						break;
+				}
 				//doto governor - deny unit governor to do any of these actions
 				if (pPlot->at(iData1, iData2))
 					return false;
@@ -3327,8 +3340,11 @@ bool CvSelectionGroup::canDoMission(MissionTypes eMission, int iData1, int iData
 			if (!bValid)
 			{
 				//doto governor
-				if (pUnit->cantGovernorDoCommand())
-					break;
+				if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+				{
+					if (pUnit->cantGovernorDoCommand())
+						break;
+				}
 				//doto governor - deny unit governor to do any of these actions
 				if (pPlot->at(iData1, iData2) &&
 					getBestBuildRoute(*pPlot) == NO_ROUTE)
@@ -3347,8 +3363,11 @@ bool CvSelectionGroup::canDoMission(MissionTypes eMission, int iData1, int iData
 		{
 			FAssert(iData1 > NO_PLAYER);
 			//doto governor
-			if (pUnit->cantGovernorDoCommand())
-				break;
+			if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+			{
+				if (pUnit->cantGovernorDoCommand())
+					break;
+			}
 			//doto governor - deny unit governor to do any of these actions
 			CvUnit* pTargetUnit = GET_PLAYER((PlayerTypes)iData1).getUnit(iData2);
 			if (!bValid)
@@ -3371,8 +3390,11 @@ bool CvSelectionGroup::canDoMission(MissionTypes eMission, int iData1, int iData
 
 		case MISSION_SLEEP:
 			//doto governor
-			if (pUnit->cantGovernorDoCommand())
-				break;
+			if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+			{
+				if (pUnit->cantGovernorDoCommand())
+					break;
+			}
 			//doto governor - deny unit governor to do any of these actions
 			if (pUnit->canSleep(pPlot))
 				return true;
@@ -3418,8 +3440,11 @@ bool CvSelectionGroup::canDoMission(MissionTypes eMission, int iData1, int iData
 		// </advc.004l>
 		case MISSION_SENTRY:
 			//doto governor
-			if (pUnit->cantGovernorDoCommand())
-				break;
+			if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+			{
+				if (pUnit->cantGovernorDoCommand())
+					break;
+			}
 			//doto governor - deny unit governor to do any of these actions
 			if (pUnit->canSentry(pPlot))
 				return true;

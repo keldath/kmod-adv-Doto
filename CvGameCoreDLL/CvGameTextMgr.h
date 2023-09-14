@@ -82,6 +82,9 @@ public:
 	void appendUniqueDesc(CvWStringBuffer& szBuffer, bool bSeparator, bool bDawnOfMan, bool bLinks,
 			wchar const* szUniqueDesc, wchar const* szDefaultDesc = NULL); // </advc>
 	void parseSpecialistHelp(CvWStringBuffer &szHelpString, SpecialistTypes eSpecialist, CvCity* pCity, bool bCivilopediaText = false);
+	//doto governor cloned function parseSpecialistHelp
+	void parseGovernorpecialistHelp(CvWStringBuffer &szHelpString, SpecialistTypes eSpecialist, CvCity* pCity, bool bCivilopediaText = false);
+	//doto governor
 	void parseFreeSpecialistHelp(CvWStringBuffer &szHelpString, const CvCity& kCity);
 	void parsePromotionHelp(CvWStringBuffer &szBuffer, PromotionTypes ePromo, const wchar* pcNewline = NEWLINE);
 	void parseSingleCivicRevealHelp(CvWStringBuffer& szBuffer, CivicTypes eCivic); // advc.mnai

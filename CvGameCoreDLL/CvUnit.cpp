@@ -297,6 +297,7 @@ void CvUnit::finalizeInit() // advc.003u: Body cut from init
 			}
 		}
 	}
+	/* DOto 113 efficiancy change see below, spare one loop....
 	if (getUnitCombatType() != NO_UNITCOMBAT)
 	{
 		FOR_EACH_ENUM(Promotion)
@@ -314,6 +315,27 @@ void CvUnit::finalizeInit() // advc.003u: Body cut from init
 				setHasPromotion(eLoopPromotion, true);
 		}
 	}
+
+	*/
+	if (getUnitCombatType() != NO_UNITCOMBAT || getUnitClassType() != NO_UNITCLASS)
+	{
+		FOR_EACH_ENUM(Promotion)
+		{
+
+			if (getUnitCombatType() != NO_UNITCOMBAT)
+			{
+				if (kOwner.isFreePromotion(getUnitCombatType(), eLoopPromotion))
+					setHasPromotion(eLoopPromotion, true);
+			}
+			if (getUnitClassType() != NO_UNITCLASS)
+			{
+				if (kOwner.isFreePromotion(getUnitClassType(), eLoopPromotion))
+					setHasPromotion(eLoopPromotion, true);
+			}
+		}
+	}
+	//doto 113 efficiancy change end
+
 	if (getDomainType() == DOMAIN_LAND && baseCombatStr() > 0)
 	{
 		if (kGame.getBestLandUnit() == NO_UNIT || baseCombatStr() >
@@ -755,7 +777,7 @@ void CvUnit::doTurn()
 		
 		if (iRcd == getRangedStrikeCapTimer())
 		{
-			//no city bonus. not fair. moved down
+			//no city bonus. not fair. moved down doto 113
 			//if (!getPlot().isCity())
 			//{
 				// damage the ranged unit by x% damage per strike count
@@ -783,7 +805,7 @@ void CvUnit::doTurn()
 				//if no attack was made last turn, count back the timer
 				if (iTimer > 0)
 					changeRangedStrikeCapTimer(-1);
-				//reduce the cap if cd is 0 or max cap
+				//reduce the cap if cd is 0 or max cap doto 113
 				//this will reward 
 				if (iCap >= iRanged)
 					changeRangedStrikeCapCounter(-1);
@@ -1782,7 +1804,7 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 				{
 					rndHitDef = randomRangedGen(this, pDefender);
 					dmgFromRangedD = rndHitDef ? rangeCombatDamageK(this, pDefender) : 0; //if hit miss dont do damage
-					dmgFromRangedD = fmath::round(dmgFromRangedD / 2); //i decided reta;oation damage would be halfed doto113 fix
+					dmgFromRangedD = fmath::round(dmgFromRangedD / 2); //i decided retaloation damage would be halfed doto113 fix for dmg to attacker..
 					if (dmgFromRangedD != 0)
 						aUnitPreDamage = this->getDamage();//save the unit damage before the change - needed for later messsage damage display
 					resolveRangedCombat(this, pDefender, this->plot(), bVisible, dmgFromRangedD, true);
@@ -2614,6 +2636,9 @@ bool CvUnit::isUnowned() const
 //doto governor 
 bool CvUnit::cantGovernorDoCommand(int iData1) const
 {
+	if (!GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+		return false;
+		
 	if ((UnitTypes)iData1 != NULL && 
 		(UnitTypes)iData1 > 0
 		&& iData1 > 0)
@@ -2653,7 +2678,6 @@ bool CvUnit::canDoCommand(CommandTypes eCommand, int iData1, int iData2,
 		//doto governor - deny unit governor to do the action
 		if (cantGovernorDoCommand(iData1))
 			return false;
-		
 		//doto governor - deny unit governor to do the action
 		if (canUpgrade(((UnitTypes)iData1), bTestVisible))
 			return true;
@@ -2661,7 +2685,6 @@ bool CvUnit::canDoCommand(CommandTypes eCommand, int iData1, int iData2,
 	}
 	case COMMAND_AUTOMATE:
 	{
-		//doto governor - deny unit governor to do the action
 		//doto governor - deny unit governor to do the action
 		if (cantGovernorDoCommand(iData1))
 			return false;
@@ -2683,7 +2706,6 @@ bool CvUnit::canDoCommand(CommandTypes eCommand, int iData1, int iData2,
 
 	case COMMAND_STOP_AUTOMATION:
 	{
-		//doto governor - deny unit governor to do the action
 		//doto governor - deny unit governor to do the action
 		if (cantGovernorDoCommand(iData1))
 			return false;
@@ -3075,8 +3097,11 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar,
 	bool bDangerCheck) const // advc.001k
 {
 	//doto governor -> governer cant move anywhere...
-	if (m_pUnitInfo->getGovernor() > 0)
-		return false;
+	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+	{
+		if (m_pUnitInfo->getGovernor() > 0)
+			return false;
+	}
 	//doto governor -> governer cant move anywhere...
 
 	//PROFILE_FUNC(); // advc.003o
@@ -11279,7 +11304,7 @@ bool CvUnit::canAcquirePromotionAny() const
 	return false;
 }
 
-//doto - i changed this func to be more efficiant
+//doto113 - i changed this func to be more efficiant
 void CvUnit::setHasPromotion(PromotionTypes ePromotion, bool bNewValue)
 {
 	if (isHasPromotion(ePromotion) == bNewValue)
@@ -11381,10 +11406,18 @@ void CvUnit::setHasPromotion(PromotionTypes ePromotion, bool bNewValue)
 	//in the future i should do changepromotion properly .
 	//but its no so bad cause this reloop in the city for promotions will run only when th governor is promoted
 	//so its occasionally...so not that impactfull in terms of permormance i guess
-	CvCity* pCity = getPlot().getPlotCity();
-	//it should never be null...governor must be on a city plot!
-	if (pCity != NULL && m_pUnitInfo->getGovernor() > 0)
-		pCity->processGovernor(this);
+	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+	{
+		CvCity* pCity = getPlot().getPlotCity();
+		//it should never be null...governor must be on a city plot!
+		if (pCity != NULL && m_pUnitInfo->getGovernor() > 0
+			//make sure not to reprocess free start promotions -> the processGovernor
+			//already fires after the unit is created - so it will be double xec of the processGovernor...
+			//thus this check
+			&& !m_pUnitInfo->getFreePromotions(ePromotion)
+			)
+			pCity->processGovernor(this);
+	}
 	//doto governor
 	
 	//update graphics
@@ -12897,7 +12930,8 @@ bool CvUnit::randomRangedGen(CvUnit* pDefender, CvUnit* pAttacker) const
 	}
 	return hit;	
 }
-			 
+
+//doto 113 clean up			 
 bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlot* pPlot, int dmg, bool rndHit, int UnitPreDamage, bool iRetaliate) const
 {
 	int iUnitDamage = std::max(pDefender->getDamage(),

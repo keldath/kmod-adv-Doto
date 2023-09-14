@@ -8,6 +8,10 @@
 	CvGameOptionInfo, CvMPOptionInfo, CvEraInfo, CvGameSpeedInfo, CvTurnTimerInfo,
 	CvVictoryInfo, CvHandicapInfo, CvWorldInfo, CvClimateInfo, CvSeaLevelInfo */
 
+//doto governor added to adjust speeds for the governor presence
+//would have been better to just use an external xml value than hetting this file here.
+#include "CvGame.h"
+//doto governor added to adjust speeds for the governor presence
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //  class : CvGameOptionInfo - Game options and their default values
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -471,15 +475,56 @@ public:
 	int getUnitCostPercent() const;
 	// <advc.251>
 	int getBuildTimePercent() const { return m_iBuildTimePercent; }
-	int getBaseGrowthThresholdPercent() const { return m_iBaseGrowthThresholdPercent; }
-	int getGPThresholdPercent() const { return m_iGPThresholdPercent; }
-	int getCultureLevelPercent() const { return m_iCultureLevelPercent; }
+//doto governor compencation SPEEDS - SINCE I ADDED NEW PERKS - GOTTA BALANCE IT
+//
+	int getBaseGrowthThresholdPercent() const {
+		
+		int m_iBaseGrowthThresholdPercent_ = m_iBaseGrowthThresholdPercent;
+		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+			m_iBaseGrowthThresholdPercent_ += GC.getDefineINT("BASE_GROWTH_THRESHOLD");
+		return  m_iBaseGrowthThresholdPercent_;
+	}
+	int getGPThresholdPercent() const {
+
+		int m_iGPThresholdPercent_ = m_iGPThresholdPercent;
+		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+			m_iGPThresholdPercent_ += GC.getDefineINT("BASE_GP_THRESHOLD");
+		return  m_iGPThresholdPercent_;
+	}
+	int getCultureLevelPercent() const { 
+		int m_iCultureLevelPercent_ = m_iCultureLevelPercent;
+		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+			m_iCultureLevelPercent_ += GC.getDefineINT("BASE_CULTURE_LEVEL_PERCENT");
+		return  m_iCultureLevelPercent_;
+	}
 	// </advc.251>
-	int getResearchPercent() const { return m_iResearchPercent; }
+	int getResearchPercent() const {
+		int m_iResearchPercent_ = m_iResearchPercent;
+		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+			m_iResearchPercent_ += GC.getDefineINT("BASE_RESEARCH_PRECENT");
+		return  m_iResearchPercent_;
+	}
 	// <advc.251>
-	int getTrainPercent() const { return m_iTrainPercent; }
-	int getConstructPercent() const { return m_iConstructPercent; }
-	int getCreatePercent() const { return m_iCreatePercent; }
+	int getTrainPercent() const {
+		int m_iTrainPercent_ = m_iTrainPercent;
+		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+			m_iTrainPercent_ += GC.getDefineINT("BASE_TRAIN_PRECENT");
+		return m_iTrainPercent_;
+	}
+	int getConstructPercent() const { 
+		int m_iConstructPercent_ = m_iConstructPercent;
+		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+			m_iConstructPercent_ += GC.getDefineINT("BASE_CONSTRUCT_PERCENT");
+		return m_iConstructPercent_;
+	}
+	int getCreatePercent() const { 
+		int m_iCreatePercent_ = m_iCreatePercent;
+		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+			m_iCreatePercent_ += GC.getDefineINT("BASE_CREATE_PRECENT");
+		return m_iCreatePercent_;
+	}
+//
+//doto governor compencation
 	// </advc.251>
 	int getDistanceMaintenancePercent() const;
 	int getNumCitiesMaintenancePercent() const;
@@ -521,8 +566,20 @@ public:
 	int getAIWorkRateModifier() const;
 	int getAIGrowthPercent() const;
 	// <advc.251>
-	int getAIGPThresholdPercent() const { return m_iAIGPThresholdPercent; }
-	int getAIResearchPercent() const { return m_iAIResearchPercent; }
+	//doto govenrnor - compendation to speeds
+	int getAIGPThresholdPercent() const { 
+		int m_iAIGPThresholdPercent_ = m_iAIGPThresholdPercent;
+		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+			m_iAIGPThresholdPercent_ += GC.getDefineINT("BASE_GP_THRESHOLD");
+		return m_iAIGPThresholdPercent_;
+	}
+	int getAIResearchPercent() const { 
+		int m_iAIResearchPercent_ = m_iAIResearchPercent;
+		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+			m_iAIResearchPercent_ += GC.getDefineINT("BASE_RESEARCH_PRECENT");
+		return m_iAIResearchPercent;
+	}
+	//doto governor
 	// </advc.251>
 	int getAITrainPercent() const;
 	int getAIWorldTrainPercent() const;

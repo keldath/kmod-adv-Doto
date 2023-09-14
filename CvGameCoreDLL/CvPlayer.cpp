@@ -52,8 +52,6 @@ CvPlayer::CvPlayer(/* advc.003u: */ PlayerTypes eID) :
 	m_aiStateReligionCommerceRateModifier = new int[NUM_COMMERCE_TYPES];
 	m_aiNonStateReligionYieldRateModifier = new int[NUM_YIELD_TYPES];
 	m_aiNonStateReligionCommerceRateModifier = new int[NUM_COMMERCE_TYPES];
-	// < Civic Infos Plus End   >
-	// < Civic Infos Plus Start >
 	m_aiSpecialistExtraYield = new int[NUM_YIELD_TYPES];
 	// < Civic Infos Plus End   >
 	/*************************************************************************************************/
@@ -81,12 +79,10 @@ CvPlayer::~CvPlayer()
 	uninit();
 	// < Civic Infos Plus Start >
 	SAFE_DELETE_ARRAY(m_aiStateReligionYieldRateModifier);
-	SAFE_DELETE_ARRAY(m_aiSpecialistExtraYield);
-	SAFE_DELETE_ARRAY(m_aiNonStateReligionYieldRateModifier);
-	// < Civic Infos Plus End   >
-	// < Civic Infos Plus Start >
 	SAFE_DELETE_ARRAY(m_aiStateReligionCommerceRateModifier);
+	SAFE_DELETE_ARRAY(m_aiNonStateReligionYieldRateModifier);
 	SAFE_DELETE_ARRAY(m_aiNonStateReligionCommerceRateModifier);
+	SAFE_DELETE_ARRAY(m_aiSpecialistExtraYield);
 	// < Civic Infos Plus End   >
 	SAFE_DELETE(m_pCivilization); // advc.003w
 }
@@ -526,11 +522,9 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 // < Civic Infos Plus Start >
 	for (int iI = 0; iI < NUM_YIELD_TYPES; iI++)
 	{
-		// < Civic Infos Plus Start >
 		m_aiStateReligionYieldRateModifier[iI] = 0;
 		m_aiNonStateReligionYieldRateModifier[iI] = 0;
 		m_aiSpecialistExtraYield[iI] = 0;
-		// < Civic Infos Plus End   >
 	}
 // < Civic Infos Plus Start >	
 	m_szScriptData = "";
@@ -557,10 +551,8 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 // < Civic Infos Plus Start >
 	for (int iI = 0; iI < NUM_COMMERCE_TYPES; iI++)
 	{
-		// < Civic Infos Plus Start >
 		m_aiStateReligionCommerceRateModifier[iI] = 0;
 		m_aiNonStateReligionCommerceRateModifier[iI] = 0;
-		// < Civic Infos Plus End   >
 	}
 // < Civic Infos Plus Start >
 	m_aiStateReligionBuildingCommerce.reset();
@@ -644,6 +636,27 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 			m_aszBonusHelp[i] = NULL;
 		// </advc.003p>  <advc.004s>
 		// < Civic Infos Plus Start >
+		//doto 113
+		FAssertMsg(m_ppaaiBuildingYieldChange == NULL, "about to leak memory, CvPlayer::m_ppaaiBuildingYieldChange");
+		m_ppaaiBuildingYieldChange = new int*[GC.getNumBuildingInfos()];
+		FAssertMsg(m_ppaaiBuildingCommerceChange == NULL, "about to leak memory, CvPlayer::m_ppaaiBuildingCommerceChange");
+		m_ppaaiBuildingCommerceChange = new int*[GC.getNumBuildingInfos()];
+		for (int iI = 0; iI < GC.getNumBuildingInfos(); iI++)
+		{
+			m_ppaaiBuildingYieldChange[iI] = new int[NUM_YIELD_TYPES];
+			for (int iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
+			{
+				m_ppaaiBuildingYieldChange[iI][iJ] = 0;
+			}
+
+			m_ppaaiBuildingCommerceChange[iI] = new int[NUM_COMMERCE_TYPES];
+			for (int iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
+			{
+				m_ppaaiBuildingCommerceChange[iI][iJ] = 0;
+			}
+		}
+
+		/*doto 113 moved up no need for 2 loops....
 		FAssertMsg(m_ppaaiBuildingYieldChange==NULL, "about to leak memory, CvPlayer::m_ppaaiBuildingYieldChange");
 		m_ppaaiBuildingYieldChange = new int*[GC.getNumBuildingInfos()];
 		for (int iI = 0; iI < GC.getNumBuildingInfos(); iI++)
@@ -665,6 +678,7 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 				m_ppaaiBuildingCommerceChange[iI][iJ] = 0;
 			}
 		}
+		*/
         // < Civic Infos Plus End   >
 		FOR_EACH_ENUM(PlayerHistory)
 		{
@@ -5612,6 +5626,14 @@ bool CvPlayer::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible, bool
 
 	UnitClassTypes const eUnitClass = GC.getInfo(eUnit).getUnitClassType();
 
+	//doto governor -> for some reason on ai auto turns ai could build those
+	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+	{
+		if (GC.getInfo(eUnit).getGovernor() > 0)
+			return false;
+	}
+	//doto governor
+
 	/*	K-Mod note. This assert can fail if team games when checking whether this city can
 		upgrade a unit to one of our team member's UUs. */
 	//FAssert(GC.getInfo(getCivilizationType()).getCivilizationUnits(eUnitClass) == eUnit);
@@ -8070,7 +8092,6 @@ void CvPlayer::killGoldenAgeUnits(CvUnit* pUnitAlive)
 		}
 	}
 }
-
 
 int CvPlayer::greatPeopleThreshold(bool bMilitary) const
 {
@@ -15440,6 +15461,38 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 /**	CMEDIT: End**/
 
 	}
+	// < Civic Infos Plus Start >
+	//doto 113 this was missing!!! from all versions before
+	int iLoop;
+	for (CvCity* pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
+	{
+		
+		for (int iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
+		{
+//doto governor
+			if (pLoopCity->getFreeSpecialistCount((SpecialistTypes)iI) > 0)
+			{
+				if ((SpecialistTypes)iI != (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_GOVERNOR", true)
+					//doto fix
+					&& GC.getCivicInfo(eCivic).getFreeSpecialistCount(iI) > 0
+					)
+				{
+					//doto governor
+					pLoopCity->changeFreeSpecialistCount((SpecialistTypes)iI, (GC.getCivicInfo(eCivic).getFreeSpecialistCount(iI) * iChange));
+				}
+				else
+				{
+					//probably redundent, but just incase when switching to a 
+					//civic with no free from one that had a free -> make sure to rest the count //probably redundent, but just incase when switching to a 
+					pLoopCity->changeFreeSpecialistCount((SpecialistTypes)iI, 0);
+				}
+			}
+		}
+		pLoopCity->updateBuildingCommerceChange(eCivic, iChange);
+		pLoopCity->updateBuildingYieldChange(eCivic, iChange);
+	}
+	// < Civic Infos Plus End   >
+
 	FOR_EACH_ENUM(Improvement)
 	{
 		FOR_EACH_ENUM(Yield)

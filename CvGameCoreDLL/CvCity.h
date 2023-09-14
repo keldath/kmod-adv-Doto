@@ -434,7 +434,7 @@ public:
 	int getXPfromImprovementsThreshold();												// Exposed to Python
 	void CvCityCreateGovernor();												// Exposed to Python
 	void giveXpBasedCitySize(int iOldPopulation, int iNewValue);												// Exposed to Python
-	void killGovernor();												// Exposed to Python
+	void killGovernor(const CvUnit* bdoUnitPromote = NULL);												// Exposed to Python
 	void processGovernorPromotions(const CvUnit* pUnit);											// Exposed to Python	
 	void processGovernor(const CvUnit* bdoUnitPromote = NULL);											// Exposed to Python	
 //doto governor start
@@ -507,7 +507,13 @@ public:
 	int calculateCorporationMaintenanceTimes100() const;														// Exposed to Python
 	int calculateBaseMaintenanceTimes100(
 			PlayerTypes eOwner = NO_PLAYER) const; // advc.ctr
-	int getMaintenanceModifier() const { return m_iMaintenanceModifier; }										// Exposed to Python
+	//doto governor -> compensate for added govenor perks of income
+	int getMaintenanceModifier() const {
+		return m_iMaintenanceModifier 
+			 + m_iGovernorUnitCount > 0 ? 10 : 0
+			;
+	}										// Exposed to Python
+	//doto governor -> compensate for added govenor perks of income
 	void changeMaintenanceModifier(int iChange);
 
 	int getWarWearinessModifier() const { return m_iWarWearinessModifier; }										// Exposed to Python
@@ -583,11 +589,11 @@ public:
 	int getHealthC() const { return m_iHealthC; }											// Exposed to Python
 	int getHappinessC() const { return m_iHappinessC; }											// Exposed to Python
 	int getExperienceC() const { return m_iExperienceC; }											// Exposed to Python
-	void setGreatPeopleRateChangeC(int iChange);											// Exposed to Python
 	void setHealthC(int iChange);										// Exposed to Python
 	void setHappinessC(int iChange);											// Exposed to Python
 	void setExperienceC(int iChange);										// Exposed to Python
-	void changeGreatPeopleRateChangeC (int iChange);										// Exposed to Python
+	//must be default 1
+	void setGreatPeopleRateChangeC(int value, int iChange = 1);										// Exposed to Python
 	void changeHealthC (int iChange);											// Exposed to Python
 	void changeHappinessC(int iChange);									// Exposed to Python
 	void changeExperienceC(int iChange);											// Exposed to Python
@@ -1659,7 +1665,6 @@ protected:
 /**																								**/
 /**																								**/
 /*************************************************************************************************/
-//	int* m_aiExtraSpecialistCommerce;
 	CommerceTotalMap m_aiExtraSpecialistCommerce;	
 /*************************************************************************************************/
 /**	CMEDIT: End																					**/

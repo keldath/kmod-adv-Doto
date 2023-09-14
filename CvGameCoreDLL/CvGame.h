@@ -311,7 +311,7 @@ public:
 //doto city states test
 	void setColorsCityStates(int iChange);
 	int getColorsCityStates();
-	
+//doto city states
 	int getCutoffSlice() const;
 	void setCutoffSlice(int iNewValue);
 	void changeCutoffSlice(int iChange);

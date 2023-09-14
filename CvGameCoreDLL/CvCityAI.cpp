@@ -8163,6 +8163,14 @@ int CvCityAI::AI_getImprovementValue(CvPlot const& kPlot, ImprovementTypes eImpr
 				//iValue /= 100;
 				rValue += (rValue * ((iCommercePriority - 100) *
 						weightedYieldDiffs.get(YIELD_COMMERCE))) / 200;
+
+//doto governor - small tweak for the ai to build improvements with xp to governor
+//plaved under this case cause its better not to affect the value of food prioroties and such.
+			if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+			{	
+				rValue += GC.getInfo(eImprovement).getGovernorXp() > 0 ? (5 + GC.getInfo(eImprovement).getGovernorXp()) : 0;
+			}
+//doto governor
 			}
 		}
 		/* else if (aiFinalYields[YIELD_FOOD] < GC.getFOOD_CONSUMPTION_PER_POPULATION()) {

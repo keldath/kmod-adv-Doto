@@ -5960,7 +5960,7 @@ void CvTeam::processTech(TechTypes eTech, int iChange,
 		FOR_EACH_ENUM(Commerce)
 		{
 			kMember.changeCommerceRateModifier(eLoopCommerce,
-					kTech.getCommerceModifier(eLoopCommerce) * iChange);
+					kTech.getCommerceModifier(eLoopCommerce) * iChange); //doto civic plus also in Civic Infos Plus marked bulk above
 			kMember.changeSpecialistExtraCommerce(eLoopCommerce,
 					kTech.getSpecialistExtraCommerce(eLoopCommerce) * iChange);
 		} // K-Mod end

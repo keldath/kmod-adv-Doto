@@ -9003,35 +9003,38 @@ int CvUnitAI::AI_promotionValue(PromotionTypes ePromotion)
 		return 0;
 	}
 	int iValue = 0;
-
-	//doto governor evaluate governor promotions
-	CvPromotionInfo const& kpInfo = GC.getInfo(ePromotion);
-	if (kpInfo.getGovernor() == 1)
+	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
 	{
-		//add up all the values from existing promotions of govener
-		CvCityAI* pPlotCity = getPlot().AI_getPlotCity();
-		if (pPlotCity != NULL && pPlotCity->getOwner() == getOwner())
+		
+		//doto governor evaluate governor promotions
+		CvPromotionInfo const& kpInfo = GC.getInfo(ePromotion);
+		if (kpInfo.getGovernor() == 1)
 		{
-			//the logics i did is , if a city got lots of the same value, than its score would be lower, 
-			//this the 100 - x
-			iValue += kpInfo.getGreatPeopleRateChange() + (100 - pPlotCity->getGreatPeopleRate());
-			iValue += kpInfo.getHealth() + pPlotCity->badHealth() > 0 ? 100 : 10; //pPlotCity.goodHealth()
-			iValue += kpInfo.getHappiness() + pPlotCity->unhappyLevel() > 0 ? 100 : 10; // pPlotCity().happyLevel
-			//CvTeamAI const& kTeam = GET_TEAM(kOwner.getTeam());
-			iValue += kpInfo.getExperience() + (GET_TEAM(GET_PLAYER(getOwner()).getTeam())).getNumWars(false, true) + 100;
-
-			FOR_EACH_ENUM(Yield)
+			//add up all the values from existing promotions of govener
+			CvCityAI* pPlotCity = getPlot().AI_getPlotCity();
+			if (pPlotCity != NULL && pPlotCity->getOwner() == getOwner())
 			{
-				int getLowestValue = 100 - pPlotCity->getBaseYieldRate(eLoopYield);
-				iValue += kpInfo.getYieldChange(eLoopYield) + getLowestValue;
+				//the logics i did is , if a city got lots of the same value, than its score would be lower, 
+				//this the 100 - x
+				iValue += kpInfo.getGreatPeopleRateChange() + (100 - pPlotCity->getGreatPeopleRate());
+				iValue += kpInfo.getHealth() + pPlotCity->badHealth() > 0 ? 100 : 10; //pPlotCity.goodHealth()
+				iValue += kpInfo.getHappiness() + pPlotCity->unhappyLevel() > 0 ? 100 : 10; // pPlotCity().happyLevel
+				//CvTeamAI const& kTeam = GET_TEAM(kOwner.getTeam());
+				iValue += kpInfo.getExperience() + (GET_TEAM(GET_PLAYER(getOwner()).getTeam())).getNumWars(false, true) + 100;
+	
+				FOR_EACH_ENUM(Yield)
+				{
+					int getLowestValue = 100 - pPlotCity->getBaseYieldRate(eLoopYield);
+					iValue += kpInfo.getYieldChange(eLoopYield) + getLowestValue;
+				}
+				FOR_EACH_ENUM(Commerce)
+				{
+					int getLowestValue = 100 - pPlotCity->getCommerceRate(eLoopCommerce);
+					iValue += kpInfo.getCommerceChange(eLoopCommerce) + getLowestValue;
+				}
+				if (iValue >0 )
+					return iValue;
 			}
-			FOR_EACH_ENUM(Commerce)
-			{
-				int getLowestValue = 100 - pPlotCity->getCommerceRate(eLoopCommerce);
-				iValue += kpInfo.getCommerceChange(eLoopCommerce) + getLowestValue;
-			}
-			if (iValue >0 )
-				return iValue;
 		}
 	}
 	//doto governor
