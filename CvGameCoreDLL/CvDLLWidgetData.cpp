@@ -4988,7 +4988,7 @@ void CvDLLWidgetData::parseFlagHelp(CvWidgetDataStruct &widgetDataStruct, CvWStr
 /*                                                                                              */
 /************************************************************************************************/
 	// Add string showing version number
-	szTempBuffer.Format(NEWLINE SETCOLR L"%S" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), "AdvCiv 1.10_10072023 + Doto 1.13");
+	szTempBuffer.Format(NEWLINE SETCOLR L"%S" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), "AdvCiv 1.10_17092023 + Doto 1.13");
 	szBuffer.append(szTempBuffer);
 	szBuffer.append(NEWLINE);
 #ifdef LOG_AI

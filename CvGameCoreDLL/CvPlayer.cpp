@@ -11013,7 +11013,8 @@ void CvPlayer::updateCommerceRates()
 		int iTotalRate = 0;
 		FOR_EACH_CITY(pCity, *this)
 			iTotalRate += pCity->getCommerceRateTimes100(eCommerce);
-		FAssertMsg(iTotalRate == iRate, "Player's special commerce did not equal the sum of their cities'");
+		FAssertMsg(!GC.getGame().isAllGameDataRead() || // advc.201: Updates may occur while loading old saves
+				iTotalRate == iRate, "Player's special commerce did not equal the sum of their cities'");
 }
 #endif
 		// </advc>
@@ -16254,8 +16255,6 @@ void CvPlayer::read(FDataStreamBase* pStream)
 			changeLuxuryModifier(kCivic.getLuxuryModifier() - iPreviousLux);
 		}
 	} // </advc.912c>
-	if (uiFlag < 18)
-		updateMaintenance();
 	// <advc>
 	if (uiFlag < 22)
 	{
@@ -21033,7 +21032,7 @@ void CvPlayer::markTradeOffers(CLinkList<TradeData>& kOurInventory,
 int CvPlayer::getIntroMusicScriptId(PlayerTypes eForPlayer) const
 {
 	EraTypes eEra = GET_PLAYER(eForPlayer).getCurrentEra();
-	CvLeaderHeadInfo const& kLeader = GC.getInfo(getPersonalityType());
+	CvLeaderHeadInfo const& kLeader = GC.getInfo(getLeaderType());
 	if (GET_TEAM(eForPlayer).isAtWar(getTeam()))
 		return kLeader.getDiploWarIntroMusicScriptIds(eEra);
 	return kLeader.getDiploPeaceIntroMusicScriptIds(eEra);

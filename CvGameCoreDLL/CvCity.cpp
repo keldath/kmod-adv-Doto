@@ -411,20 +411,16 @@ void CvCity::kill(bool bUpdatePlotGroups, /* advc.001: */ bool bBumpUnits)
 	clearTradeRoutes();
 	/*	<advc.001> The culture rate isn't relevant for gameplay, but let's still
 		keep a correct count. (And other commerce types can be relevant in mods.) */
-	//keldath fix for a rare situation where a trade city while occupied...doto113
-	//f1rpo said i can use this !isDisorder() --> eidt -> used isDisorder()
-	if (!isDisorder()
-		//!isOccupation()
-		)
+	/*	When in disorder the trait culture should already have been subtracted -
+		or may never have been added when razing a city. (fix by keldath) */
+	if (!isDisorder())
 	{
 		FOR_EACH_ENUM(Commerce)
 		{
-			//keldath test
-			//int frr = kOwner.getFreeCityCommerce(COMMERCE_CULTURE);
 			changeCommerceRateTimes100(eLoopCommerce,
-				-100 * kOwner.getFreeCityCommerce(eLoopCommerce));
-		} // </advc.001>
-	}
+					-100 * kOwner.getFreeCityCommerce(eLoopCommerce));
+		}
+	} // </advc.001>
 
 	kPlot.setPlotCity(NULL);
 	kPlot.setRuinsName(getName()); // advc.005c
@@ -4856,8 +4852,12 @@ int CvCity::cultureGarrison(PlayerTypes ePlayer) const
 	int iGarrison = 0; // was 1
 	FOR_EACH_UNIT_IN(pUnit, getPlot())
 	{
-		if (pUnit->getTeam() == getTeam()) // advc.184: Had been counting all units
+		// <advc.184> Had been counting all units
+		if (pUnit->getTeam() != TEAMID(ePlayer) &&
+			pUnit->isGarrisonInTeamCity()) // </advc.184>
+		{
 			iGarrison += pUnit->garrisonStrength();
+		}
 	}
 	/*if (atWar(TEAMID(ePlayer), getTeam()))
 		iGarrison *= 2;*/ // advc.023: commented out

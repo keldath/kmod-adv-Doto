@@ -1755,14 +1755,12 @@ bool CvPlot::isAdjacentSaltWater() const
 }
 
 
-bool CvPlot::isPotentialIrrigation(/* advc: */ bool bIgnoreTeam) const
+bool CvPlot::isPotentialIrrigation(/* advc: */ bool bIgnoreTech) const
 {
-	// advc.opt: Moved up
-	if (!isOwned() || (!GET_TEAM(getTeam()).isIrrigation() &&
-		!bIgnoreTeam)) // advc
-	{
+	if (!isOwned()) // advc.opt: Moved up
 		return false;
-	}
+	if (!GET_TEAM(getTeam()).isIrrigation() && /* advc: */ !bIgnoreTech)
+		return false;
 	// advc: 2nd condition was !isHills. Mods might allow cities on peaks.
 	return ((isCity() && isFlatlands()) ||
 			(isImproved() && GC.getInfo(getImprovementType()).isCarriesIrrigation()));
@@ -1782,7 +1780,7 @@ bool CvPlot::canHavePotentialIrrigation() const
 {
 	//PROFILE_FUNC(); // advc (not called very frequently)
 	// <advc.opt>
-	if(isWater())
+	if (isWater())
 		return false; // </advc.opt>
 	// advc: Rather than repeat the flat city special rule here
 	if (isPotentialIrrigation(true))
@@ -4529,10 +4527,14 @@ void CvPlot::setIrrigated(bool bNewValue)
 	if(isIrrigated() == bNewValue)
 		return;
 	m_bIrrigated = bNewValue;
-	FOR_EACH_ADJ_PLOT_VAR(*this)
+	/*	advc (note): When updating the yield, isIrrigationAvailable checks the
+		isIrrigated status of adjacent plots, not just of the plot that is being
+		updated. To be consistent with that, we need to update yields of adjacent
+		plots here, not just of *this plot, whose isIrrigated status has changed. */
+	for (SquareIter itPlot(*this, 1); itPlot.hasNext(); ++itPlot)
 	{
-		pAdj->updateYield();
-		pAdj->setLayoutDirty(true);
+		itPlot->updateYield();
+		itPlot->setLayoutDirty(true);
 	}
 }
 
