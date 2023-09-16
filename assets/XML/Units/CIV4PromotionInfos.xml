@@ -4800,7 +4800,8 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<!-- <Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button> -->
+			<Button>,Art/Interface/Buttons/TechTree/Future Tech.dds,Art/Interface/Buttons/TechTree_Atlas.dds,2,4</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_ARTISAN1</Type>
@@ -4887,7 +4888,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,4,1</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_ARTISAN2</Type>
@@ -4974,7 +4975,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,5,1</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_ARTISAN3</Type>
@@ -5061,7 +5062,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,6,1</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_FARMER1</Type>
@@ -5148,7 +5149,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,1,1</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_FARMER2</Type>
@@ -5235,7 +5236,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,2,1</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_FARMER3</Type>
@@ -5322,7 +5323,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,3,1</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_ECONOMIST1</Type>
@@ -5409,7 +5410,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,7,1</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_ECONOMIST2</Type>
@@ -5496,7 +5497,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,8,1</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_ECONOMIST3</Type>
@@ -5583,7 +5584,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,1,2</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_SCHOLAR1</Type>
@@ -5670,7 +5671,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,2,2</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_SCHOLAR2</Type>
@@ -5757,7 +5758,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,3,2</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_SCHOLAR3</Type>
@@ -5844,7 +5845,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,4,2</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_CURATOR1</Type>
@@ -5931,7 +5932,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,5,2</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_CURATOR2</Type>
@@ -6018,7 +6019,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,6,2</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_CURATOR3</Type>
@@ -6105,7 +6106,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,7,2</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_INVESTOR1</Type>
@@ -6192,7 +6193,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,3,3</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_INVESTOR2</Type>
@@ -6279,7 +6280,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,4,3</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_INVESTOR3</Type>
@@ -6366,7 +6367,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,5,3</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_INVESTIGATOR1</Type>
@@ -6453,7 +6454,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,8,2</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_INVESTIGATOR2</Type>
@@ -6540,7 +6541,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,1,3</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_INVESTIGATOR3</Type>
@@ -6627,7 +6628,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,2,3</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_HEALER1</Type>
@@ -6714,7 +6715,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,6,3</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_HEALER2</Type>
@@ -6801,7 +6802,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,7,3</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_HEALER3</Type>
@@ -6888,7 +6889,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,8,3</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_ENTERTAINER1</Type>
@@ -6975,7 +6976,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,1,4</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_ENTERTAINER2</Type>
@@ -7062,7 +7063,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,2,4</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_ENTERTAINER3</Type>
@@ -7149,7 +7150,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,3,4</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_ACADEMIC1</Type>
@@ -7236,7 +7237,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,4,4</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_ACADEMIC2</Type>
@@ -7323,7 +7324,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,5,4</Button>
 		</PromotionInfo>
 		<PromotionInfo>
 			<Type>PROMOTION_GOVERNOR_ACADEMIC3</Type>
@@ -7410,7 +7411,268 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,6,4</Button>
+		</PromotionInfo>
+		<PromotionInfo>
+			<Type>PROMOTION_GOVERNOR_GENERAL1</Type>
+			<Description>General I</Description>
+			<Sound>AS2D_IF_LEVELUP</Sound>
+			<LayerAnimationPath>NONE</LayerAnimationPath>
+			<PromotionPrereq>PROMOTION_GOVERNOR</PromotionPrereq>
+			<PromotionPrereqOr1>NONE</PromotionPrereqOr1>
+			<PromotionPrereqOr2>NONE</PromotionPrereqOr2>
+			<PromotionPrereqOr3>NONE</PromotionPrereqOr3>
+			<TechPrereq>NONE</TechPrereq>
+<!-- doto governor start -->
+			<iGovernor>1</iGovernor>
+			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
+			<cityYields>
+				<cityYield>0</cityYield>
+				<cityYield>0</cityYield>
+				<cityYield>0</cityYield>
+			</cityYields>
+			<cityCommerces>
+				<cityCommerce>0</cityCommerce>
+				<cityCommerce>0</cityCommerce>
+				<cityCommerce>0</cityCommerce>
+				<cityCommerce>0</cityCommerce>
+			</cityCommerces>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iExperience>1</iExperience>
+<!-- doto governor end -->
+			<StateReligionPrereq>NONE</StateReligionPrereq>
+			<bLeader>0</bLeader>
+			<iBlitz>0</iBlitz>
+			<bAmphib>0</bAmphib>
+			<bUnblocade>0</bUnblocade>
+			<bRiver>0</bRiver>
+			<bEnemyRoute>0</bEnemyRoute>
+			<bAlwaysHeal>0</bAlwaysHeal>
+			<bHillsDoubleMove>0</bHillsDoubleMove>
+			<bImmuneToFirstStrikes>0</bImmuneToFirstStrikes>
+			<iVisibilityChange>0</iVisibilityChange>
+			<iMovesChange>0</iMovesChange>
+			<iMoveDiscountChange>0</iMoveDiscountChange>
+			<iAirRangeChange>0</iAirRangeChange>
+			<iInterceptChange>0</iInterceptChange>
+			<iEvasionChange>0</iEvasionChange>
+			<iWithdrawalChange>0</iWithdrawalChange>
+			<iCargoChange>0</iCargoChange>
+			<iCollateralDamageChange>0</iCollateralDamageChange>
+			<iBombardRateChange>0</iBombardRateChange>
+			<iFirstStrikesChange>0</iFirstStrikesChange>
+			<iChanceFirstStrikesChange>0</iChanceFirstStrikesChange>
+			<iEnemyHealChange>0</iEnemyHealChange>
+			<iNeutralHealChange>0</iNeutralHealChange>
+			<iFriendlyHealChange>0</iFriendlyHealChange>
+			<iSameTileHealChange>0</iSameTileHealChange>
+			<iAdjacentTileHealChange>0</iAdjacentTileHealChange>
+			<iCombatPercent>0</iCombatPercent>
+			<iCityAttack>0</iCityAttack>
+			<iCityDefense>0</iCityDefense>
+			<iHillsAttack>0</iHillsAttack>
+			<iHillsDefense>0</iHillsDefense>
+			<iKamikazePercent>0</iKamikazePercent>
+			<iRevoltProtection>0</iRevoltProtection>
+			<iCollateralDamageProtection>0</iCollateralDamageProtection>
+			<iPillageChange>0</iPillageChange>
+			<iUpgradeDiscount>0</iUpgradeDiscount>
+			<iExperiencePercent>0</iExperiencePercent>
+			<TerrainAttacks/>
+			<TerrainDefenses/>
+			<FeatureAttacks/>
+			<FeatureDefenses/>
+			<UnitCombatMods/>
+			<DomainMods/>
+			<TerrainDoubleMoves/>
+			<FeatureDoubleMoves/>
+			<UnitCombats>
+				<UnitCombat>
+					<UnitCombatType>UNITCOMBAT_GOVERNOR</UnitCombatType>
+					<bUnitCombat>1</bUnitCombat>
+				</UnitCombat>
+			</UnitCombats>
+			<HotKey/>
+			<bAltDown>0</bAltDown>
+			<bShiftDown>0</bShiftDown>
+			<bCtrlDown>0</bCtrlDown>
+			<iHotKeyPriority>0</iHotKeyPriority>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,7,4</Button>
+		</PromotionInfo>
+		<PromotionInfo>
+			<Type>PROMOTION_GOVERNOR_GENERAL2</Type>
+			<Description>General II</Description>
+			<Sound>AS2D_IF_LEVELUP</Sound>
+			<LayerAnimationPath>NONE</LayerAnimationPath>
+			<PromotionPrereq>PROMOTION_GOVERNOR_GENERAL1</PromotionPrereq>
+			<PromotionPrereqOr1>NONE</PromotionPrereqOr1>
+			<PromotionPrereqOr2>NONE</PromotionPrereqOr2>
+			<PromotionPrereqOr3>NONE</PromotionPrereqOr3>
+			<TechPrereq>NONE</TechPrereq>
+<!-- doto governor start -->
+			<iGovernor>1</iGovernor>
+			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
+			<cityYields>
+				<cityYield>0</cityYield>
+				<cityYield>0</cityYield>
+				<cityYield>0</cityYield>
+			</cityYields>
+			<cityCommerces>
+				<cityCommerce>0</cityCommerce>
+				<cityCommerce>0</cityCommerce>
+				<cityCommerce>0</cityCommerce>
+				<cityCommerce>0</cityCommerce>
+			</cityCommerces>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iExperience>1</iExperience>
+<!-- doto governor end -->
+			<StateReligionPrereq>NONE</StateReligionPrereq>
+			<bLeader>0</bLeader>
+			<iBlitz>0</iBlitz>
+			<bAmphib>0</bAmphib>
+			<bUnblocade>0</bUnblocade>
+			<bRiver>0</bRiver>
+			<bEnemyRoute>0</bEnemyRoute>
+			<bAlwaysHeal>0</bAlwaysHeal>
+			<bHillsDoubleMove>0</bHillsDoubleMove>
+			<bImmuneToFirstStrikes>0</bImmuneToFirstStrikes>
+			<iVisibilityChange>0</iVisibilityChange>
+			<iMovesChange>0</iMovesChange>
+			<iMoveDiscountChange>0</iMoveDiscountChange>
+			<iAirRangeChange>0</iAirRangeChange>
+			<iInterceptChange>0</iInterceptChange>
+			<iEvasionChange>0</iEvasionChange>
+			<iWithdrawalChange>0</iWithdrawalChange>
+			<iCargoChange>0</iCargoChange>
+			<iCollateralDamageChange>0</iCollateralDamageChange>
+			<iBombardRateChange>0</iBombardRateChange>
+			<iFirstStrikesChange>0</iFirstStrikesChange>
+			<iChanceFirstStrikesChange>0</iChanceFirstStrikesChange>
+			<iEnemyHealChange>0</iEnemyHealChange>
+			<iNeutralHealChange>0</iNeutralHealChange>
+			<iFriendlyHealChange>0</iFriendlyHealChange>
+			<iSameTileHealChange>0</iSameTileHealChange>
+			<iAdjacentTileHealChange>0</iAdjacentTileHealChange>
+			<iCombatPercent>0</iCombatPercent>
+			<iCityAttack>0</iCityAttack>
+			<iCityDefense>0</iCityDefense>
+			<iHillsAttack>0</iHillsAttack>
+			<iHillsDefense>0</iHillsDefense>
+			<iKamikazePercent>0</iKamikazePercent>
+			<iRevoltProtection>0</iRevoltProtection>
+			<iCollateralDamageProtection>0</iCollateralDamageProtection>
+			<iPillageChange>0</iPillageChange>
+			<iUpgradeDiscount>0</iUpgradeDiscount>
+			<iExperiencePercent>0</iExperiencePercent>
+			<TerrainAttacks/>
+			<TerrainDefenses/>
+			<FeatureAttacks/>
+			<FeatureDefenses/>
+			<UnitCombatMods/>
+			<DomainMods/>
+			<TerrainDoubleMoves/>
+			<FeatureDoubleMoves/>
+			<UnitCombats>
+				<UnitCombat>
+					<UnitCombatType>UNITCOMBAT_GOVERNOR</UnitCombatType>
+					<bUnitCombat>1</bUnitCombat>
+				</UnitCombat>
+			</UnitCombats>
+			<HotKey/>
+			<bAltDown>0</bAltDown>
+			<bShiftDown>0</bShiftDown>
+			<bCtrlDown>0</bCtrlDown>
+			<iHotKeyPriority>0</iHotKeyPriority>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,8,4</Button>
+		</PromotionInfo>
+		<PromotionInfo>
+			<Type>PROMOTION_GOVERNOR_GENERAL3</Type>
+			<Description>General III</Description>
+			<Sound>AS2D_IF_LEVELUP</Sound>
+			<LayerAnimationPath>NONE</LayerAnimationPath>
+			<PromotionPrereq>PROMOTION_GOVERNOR_GENERAL2</PromotionPrereq>
+			<PromotionPrereqOr1>NONE</PromotionPrereqOr1>
+			<PromotionPrereqOr2>NONE</PromotionPrereqOr2>
+			<PromotionPrereqOr3>NONE</PromotionPrereqOr3>
+			<TechPrereq>NONE</TechPrereq>
+<!-- doto governor start -->
+			<iGovernor>1</iGovernor>
+			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
+			<cityYields>
+				<cityYield>0</cityYield>
+				<cityYield>0</cityYield>
+				<cityYield>0</cityYield>
+			</cityYields>
+			<cityCommerces>
+				<cityCommerce>0</cityCommerce>
+				<cityCommerce>0</cityCommerce>
+				<cityCommerce>0</cityCommerce>
+				<cityCommerce>0</cityCommerce>
+			</cityCommerces>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iExperience>1</iExperience>
+<!-- doto governor end -->
+			<StateReligionPrereq>NONE</StateReligionPrereq>
+			<bLeader>0</bLeader>
+			<iBlitz>0</iBlitz>
+			<bAmphib>0</bAmphib>
+			<bUnblocade>0</bUnblocade>
+			<bRiver>0</bRiver>
+			<bEnemyRoute>0</bEnemyRoute>
+			<bAlwaysHeal>0</bAlwaysHeal>
+			<bHillsDoubleMove>0</bHillsDoubleMove>
+			<bImmuneToFirstStrikes>0</bImmuneToFirstStrikes>
+			<iVisibilityChange>0</iVisibilityChange>
+			<iMovesChange>0</iMovesChange>
+			<iMoveDiscountChange>0</iMoveDiscountChange>
+			<iAirRangeChange>0</iAirRangeChange>
+			<iInterceptChange>0</iInterceptChange>
+			<iEvasionChange>0</iEvasionChange>
+			<iWithdrawalChange>0</iWithdrawalChange>
+			<iCargoChange>0</iCargoChange>
+			<iCollateralDamageChange>0</iCollateralDamageChange>
+			<iBombardRateChange>0</iBombardRateChange>
+			<iFirstStrikesChange>0</iFirstStrikesChange>
+			<iChanceFirstStrikesChange>0</iChanceFirstStrikesChange>
+			<iEnemyHealChange>0</iEnemyHealChange>
+			<iNeutralHealChange>0</iNeutralHealChange>
+			<iFriendlyHealChange>0</iFriendlyHealChange>
+			<iSameTileHealChange>0</iSameTileHealChange>
+			<iAdjacentTileHealChange>0</iAdjacentTileHealChange>
+			<iCombatPercent>0</iCombatPercent>
+			<iCityAttack>0</iCityAttack>
+			<iCityDefense>0</iCityDefense>
+			<iHillsAttack>0</iHillsAttack>
+			<iHillsDefense>0</iHillsDefense>
+			<iKamikazePercent>0</iKamikazePercent>
+			<iRevoltProtection>0</iRevoltProtection>
+			<iCollateralDamageProtection>0</iCollateralDamageProtection>
+			<iPillageChange>0</iPillageChange>
+			<iUpgradeDiscount>0</iUpgradeDiscount>
+			<iExperiencePercent>0</iExperiencePercent>
+			<TerrainAttacks/>
+			<TerrainDefenses/>
+			<FeatureAttacks/>
+			<FeatureDefenses/>
+			<UnitCombatMods/>
+			<DomainMods/>
+			<TerrainDoubleMoves/>
+			<FeatureDoubleMoves/>
+			<UnitCombats>
+				<UnitCombat>
+					<UnitCombatType>UNITCOMBAT_GOVERNOR</UnitCombatType>
+					<bUnitCombat>1</bUnitCombat>
+				</UnitCombat>
+			</UnitCombats>
+			<HotKey/>
+			<bAltDown>0</bAltDown>
+			<bShiftDown>0</bShiftDown>
+			<bCtrlDown>0</bCtrlDown>
+			<iHotKeyPriority>0</iHotKeyPriority>
+			<Button>,dummy.dds,art/interface/buttons/promotions/Governor_promotions.dds,1,5</Button>
 		</PromotionInfo>
 	</PromotionInfos>
 </Civ4PromotionInfos>

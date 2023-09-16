@@ -13,15 +13,15 @@
 		<English>[ICON_BULLET]%D1_Change[ICON_UNHEALTHY]</English>	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_GOVERNER_SPECIALISTS</Tag>
-		<English>+%d1_Change[ICON_UNHAPPY]: "We are angered by some citizens' occupations!"</English>
+		<English>[ICON_BULLET] +%d1_Change[ICON_UNHAPPY]: "We are angered by some citizens' occupations!"</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HEALTHY_GOVERNER</Tag>
-		<English>+%d1_Change[ICON_HEALTHY] from Governor</English>
+		<English>[ICON_BULLET] +%d1_Change[ICON_HEALTHY] from Governor</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNHEALTHY_GOVERNER</Tag>
-		<English>+%d1_Change[ICON_UNHEALTHY] from Governor</English>
+		<English>[ICON_BULLET] +%d1_Change[ICON_UNHEALTHY] from Governor</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_GOVERNER_HAPPY</Tag>
@@ -33,12 +33,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNHAPPY_GOVERNOR</Tag>
-		<English>+%d1_Change[ICON_UNHAPPY]: The Governer is not helping our City!</English>
+		<English>[ICON_BULLET] +%d1_Change[ICON_UNHAPPY]: The Governer is not helping our City!</English>
 	</TEXT>
 
 	<TEXT>
 		<Tag>TXT_KEY_HAPPY_GOVERNER</Tag>
-		<English>+%d1_Change[ICON_HAPPY]: The Governer is making us Proud!</English>
+		<English>[ICON_BULLET] +%d1_Change[ICON_HAPPY]: The Governer is making us Proud!</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_HELP_GOVERNOR_COMMERCE</Tag>
@@ -58,7 +58,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_HELP_PROD_GOVERNOR</Tag>
-		<English>Governor %s1_yield_type: %d2%F3</English>
+		<English>[ICON_BULLET] Governor %s1_yield_type: %d2%F3</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PROMOTION_GREAT_PEOPLE_RATE</Tag>
@@ -77,6 +77,10 @@
 		<English>[ICON_BULLET]%D1 XP</English>
 	</TEXT>
 	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_EXPERIENCE_UNIT</Tag>
+		<English>[ICON_BULLET]next level from improvements: %D1/%D2</English>
+	</TEXT>
+	<TEXT>
 		<Tag>TXT_KEY_PROMOTION_YIELD</Tag>
 		<English>[ICON_BULLET]%D1%F2</English>
 	</TEXT>
@@ -90,10 +94,10 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_GOVERNER_EXPERIENCE</Tag>
-		<English>[ICON_BULLET]Provides %d1 XP to Govener per turn if tile is worked by the city</English>
+		<English>[ICON_BULLET]Provides %d1 XP Score to Govener XP level from improvements[NEWLINE][ICON_BULLET] per turn, if Tile is Worked{</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_ANGER_GOVERNOR</Tag>
-		<English>+%d1_Change[ICON_UNHAPPY]: "We didnt vote for this Governor!"</English>
+		<English>[ICON_BULLET] +%d1_Change[ICON_UNHAPPY]: "We didnt vote for this Governor!"</English>
 	</TEXT>
 </Civ4GameText>
