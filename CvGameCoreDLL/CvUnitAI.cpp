@@ -9017,8 +9017,8 @@ int CvUnitAI::AI_promotionValue(PromotionTypes ePromotion)
 				//the logics i did is , if a city got lots of the same value, than its score would be lower, 
 				//this the 100 - x
 				iValue += kpInfo.getGreatPeopleRateChange() + (100 - pPlotCity->getGreatPeopleRate());
-				iValue += kpInfo.getHealth() + pPlotCity->badHealth() > 0 ? 100 : 10; //pPlotCity.goodHealth()
-				iValue += kpInfo.getHappiness() + pPlotCity->unhappyLevel() > 0 ? 100 : 10; // pPlotCity().happyLevel
+				iValue += kpInfo.getHealth() + pPlotCity->badHealth() >= 0 ? 100 : 10; //pPlotCity.goodHealth()
+				iValue += kpInfo.getHappiness() + pPlotCity->unhappyLevel() >= 0 ? 100 : 10; // pPlotCity().happyLevel
 				//CvTeamAI const& kTeam = GET_TEAM(kOwner.getTeam());
 				iValue += kpInfo.getExperience() + (GET_TEAM(GET_PLAYER(getOwner()).getTeam())).getNumWars(false, true) + 100;
 	
@@ -9032,7 +9032,7 @@ int CvUnitAI::AI_promotionValue(PromotionTypes ePromotion)
 					int getLowestValue = 100 - pPlotCity->getCommerceRate(eLoopCommerce);
 					iValue += kpInfo.getCommerceChange(eLoopCommerce) + getLowestValue;
 				}
-				if (iValue >0 )
+				if (iValue > 0 )
 					return iValue;
 			}
 		}

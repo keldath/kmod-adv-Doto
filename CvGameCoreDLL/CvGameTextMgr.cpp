@@ -632,14 +632,31 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 	szString.append(szTempBuffer);
 	}
 	{
+		
 		bool bFirst = true; // advc.004
+		//doto governor
+		bool bGovernorPromo = false;
+		//doto governor
 		FOR_EACH_ENUM(Promotion)
 		{
-			if (pUnit->isHasPromotion(eLoopPromotion))
+			//doto governor
+			CvPromotionInfo const& kpInfo = GC.getInfo((PromotionTypes)eLoopPromotion);
+			if (GC.getGame().isOption(GAMEOPTION_GOVERNOR) && !bGovernorPromo && pUnit->isHasPromotion(eLoopPromotion))
+			{
+				if (kInfo.getGovernor() > 0)
+				{
+					bGovernorPromo = true;
+					szString.append(NEWLINE);
+					szString.append(L"Promo effects are displayed below:");
+					continue;
+				}
+			}
+			if (pUnit->isHasPromotion(eLoopPromotion) && !(kInfo.getGovernor() > 0))
+			//doto governor
 			{
 				CvWString szTempBuffer;
 				szTempBuffer.Format(L"<img=%S size=16 />",
-						GC.getInfo(eLoopPromotion).getButton());
+					kpInfo.getButton()); //doto governor
 				// <advc.004>
 				if (bFirst)
 				{
@@ -649,6 +666,109 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 				szString.append(szTempBuffer);
 			}
 		}
+		//doto governor
+		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+		{
+			CvCity* pCity = pUnit->getPlot().getPlotCity();
+			//it should never be null...governor must be on a city plot!
+			if (pCity != NULL && kInfo.getGovernor() > 0)
+			{
+				if (kInfo.getGovernor() && pUnit->getOwner() == pCity->getOwner())
+				{
+					int gp = pCity->getGreatPeopleRateChangeC();
+					int hl = pCity->getHealthC();
+					int hp = pCity->getHappinessC();
+					int xp = pCity->getExperienceC();
+					int fdy = pCity->getYieldChangeC(YIELD_FOOD);
+					int pdy = pCity->getYieldChangeC(YIELD_PRODUCTION);
+					int cdy = pCity->getYieldChangeC(YIELD_COMMERCE);
+					int cdc = pCity->getCommerceChangeC(COMMERCE_CULTURE);
+					int edc = pCity->getCommerceChangeC(COMMERCE_ESPIONAGE);
+					int ddc = pCity->getCommerceChangeC(COMMERCE_GOLD);
+					int cdr = pCity->getCommerceChangeC(COMMERCE_RESEARCH);
+
+					if (gp != 0) // </advc.164>
+					{
+
+						szString.append(NEWLINE);
+						szString.append(gDLL->getText("TXT_KEY_PROMOTION_GREAT_PEOPLE_RATE",
+							gp, gDLL->getSymbolID(GREAT_PEOPLE_CHAR)));
+					}
+					if (hl != 0) // </advc.164>
+					{
+						szString.append(NEWLINE);
+						szString.append(gDLL->getText("TXT_KEY_PROMOTION_HEALTH",
+							abs(hl),
+							hl > 0 ?
+							gDLL->getSymbolID(HEALTHY_CHAR) :
+							gDLL->getSymbolID(UNHEALTHY_CHAR)));
+					}
+					if (hp != 0) // </advc.164>
+					{
+						szString.append(NEWLINE);
+						szString.append(gDLL->getText("TXT_KEY_PROMOTION_HAPPINESS",
+							abs(hp),
+							hp > 0 ?
+							gDLL->getSymbolID(HAPPY_CHAR) :
+							gDLL->getSymbolID(UNHAPPY_CHAR)));
+					}
+					if (xp != 0) // </advc.164>
+					{
+						szString.append(NEWLINE);
+						szString.append(gDLL->getText("TXT_KEY_PROMOTION_EXPERIENCE",
+							xp));
+					}
+					
+					szString.append(NEWLINE);
+					szString.append(gDLL->getText("TXT_KEY_PROMOTION_EXPERIENCE_UNIT",
+						pCity->getGovernoXPfromImprovements(), pCity->getXPfromImprovementsThreshold()));
+
+					if (fdy != 0)
+					{
+						szString.append(NEWLINE);
+						szString.append(gDLL->getText("TXT_KEY_PROMOTION_YIELD",
+							fdy, GC.getInfo(YIELD_FOOD).getChar()));
+					}
+					if (pdy != 0)
+					{
+						szString.append(NEWLINE);
+						szString.append(gDLL->getText("TXT_KEY_PROMOTION_YIELD",
+							pdy, GC.getInfo(YIELD_PRODUCTION).getChar()));
+					}
+					if (cdy != 0)
+					{
+						szString.append(NEWLINE);
+						szString.append(gDLL->getText("TXT_KEY_PROMOTION_YIELD",
+							cdy, GC.getInfo(YIELD_COMMERCE).getChar()));
+					}
+					if (cdc != 0)
+					{
+						szString.append(NEWLINE);
+						szString.append(gDLL->getText("TXT_KEY_PROMOTION_COMMERCE",
+							cdc, GC.getInfo(COMMERCE_CULTURE).getChar()));
+					}
+					if (edc != 0)
+					{
+						szString.append(NEWLINE);
+						szString.append(gDLL->getText("TXT_KEY_PROMOTION_COMMERCE",
+							edc, GC.getInfo(COMMERCE_ESPIONAGE).getChar()));
+					}
+					if (ddc != 0)
+					{
+						szString.append(NEWLINE);
+						szString.append(gDLL->getText("TXT_KEY_PROMOTION_COMMERCE",
+							ddc, GC.getInfo(COMMERCE_GOLD).getChar()));
+					}
+					if (cdr != 0)
+					{
+						szString.append(NEWLINE);
+						szString.append(gDLL->getText("TXT_KEY_PROMOTION_COMMERCE",
+							cdr, GC.getInfo(COMMERCE_RESEARCH).getChar()));
+					}
+				}
+			}
+		}
+		//doto governor
 	}
 	if (bAlt && /*(gDLL->getChtLvl() > 0))*/ /* advc.135c: */ bDebugMode)
 	{
@@ -3719,27 +3839,38 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 		/* doto TERRAIN-IMPROVEMENT-DECAY YUKON */
 		if(GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_DECAY) && 
 			!kPlot.isBeingWorked() && GC.getInfo(ePlotImprovement).getDecayTime() != -1
-		//GC.getInfo(kPlot.getImprovementType()).getDecayTime() != -1 
 		) {
 			szString.append(gDLL->getText("TXT_KEY_PLOT_IMP_DECAY", 
 			kPlot.getDecayTimeLeft(ePlotImprovement, eRevealedOwner)));
 		}
 		/* END TERRAIN-IMPROVEMENT-DECAY */
-		
 		//doto obsolete improvement start
 		if (GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_OBSOLETE))
 		{
 			TechTypes eTechO = (TechTypes)GC.getInfo(ePlotImprovement).getTechObsolete();
-			if(eTechO != NO_TECH)
+			if (eTechO != NO_TECH)
 			{
 				szString.append(NEWLINE);
-				szString.append(CvWString::format(L"%c Obsolete by %s", 
-				gDLL->getSymbolID(BULLET_CHAR),
-				GC.getInfo(eTechO).getDescription()));			
+				szString.append(CvWString::format(L"%c Obsolete by %s",
+					gDLL->getSymbolID(BULLET_CHAR),
+					GC.getInfo(eTechO).getDescription()));
 			}
 		}
 		//doto obsolete improvement end
+		//doto governor
+		if (GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_OBSOLETE))
+		{
+			int eGovXP = GC.getInfo(ePlotImprovement).getGovernorXp();
+			if (eGovXP != 0)
+			{
+				szString.append(NEWLINE);
+				szString.append(gDLL->getText("TXT_KEY_GOVERNER_EXPERIENCE",
+					eGovXP));
+			}
+		}
+		//doto governor
 	}
+	
 	// <advc.059>
 	if (!bHealthHappyShown)
 		setPlotHealthHappyHelp(szString, kPlot); // </advc.059>
