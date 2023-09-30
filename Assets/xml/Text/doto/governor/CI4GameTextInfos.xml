@@ -17,11 +17,11 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_HEALTHY_GOVERNER</Tag>
-		<English>[ICON_BULLET] +%d1_Change[ICON_HEALTHY] from Governor</English>
+		<English>+%d1_Change[ICON_HEALTHY] from Governor</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNHEALTHY_GOVERNER</Tag>
-		<English>[ICON_BULLET] +%d1_Change[ICON_UNHEALTHY] from Governor</English>
+		<English>+%d1_Change[ICON_UNHEALTHY] from Governor</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_GOVERNER_HAPPY</Tag>
@@ -33,12 +33,12 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_UNHAPPY_GOVERNOR</Tag>
-		<English>[ICON_BULLET] +%d1_Change[ICON_UNHAPPY]: The Governer is not helping our City!</English>
+		<English>+%d1_Change[ICON_UNHAPPY]: The Governer is not helping our City!</English>
 	</TEXT>
 
 	<TEXT>
 		<Tag>TXT_KEY_HAPPY_GOVERNER</Tag>
-		<English>[ICON_BULLET] +%d1_Change[ICON_HAPPY]: The Governer is making us Proud!</English>
+		<English>+%d1_Change[ICON_HAPPY]: The Governer is making us Proud!</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_HELP_GOVERNOR_COMMERCE</Tag>

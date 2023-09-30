@@ -4739,8 +4739,8 @@
 				<cityCommerce>0</cityCommerce>
 				<cityCommerce>0</cityCommerce>
 			</cityCommerces>
-			<iHealth>1</iHealth>
-			<iHappiness>1</iHappiness>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
 			<iExperience>0</iExperience>
 <!-- doto governor end -->
 			<StateReligionPrereq>NONE</StateReligionPrereq>
@@ -4776,7 +4776,7 @@
 			<iHillsAttack>0</iHillsAttack>
 			<iHillsDefense>0</iHillsDefense>
 			<iKamikazePercent>0</iKamikazePercent>
-			<iRevoltProtection>1</iRevoltProtection>
+			<iRevoltProtection>0</iRevoltProtection>
 			<iCollateralDamageProtection>100</iCollateralDamageProtection>
 			<iPillageChange>0</iPillageChange>
 			<iUpgradeDiscount>0</iUpgradeDiscount>
@@ -4899,7 +4899,7 @@
 			<PromotionPrereqOr1>NONE</PromotionPrereqOr1>
 			<PromotionPrereqOr2>NONE</PromotionPrereqOr2>
 			<PromotionPrereqOr3>NONE</PromotionPrereqOr3>
-			<TechPrereq>NONE</TechPrereq>
+			<TechPrereq>TECH_CIVIL_SERVICE</TechPrereq>
 <!-- doto governor start -->
 			<iGovernor>1</iGovernor>
 			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
@@ -5421,7 +5421,7 @@
 			<PromotionPrereqOr1>NONE</PromotionPrereqOr1>
 			<PromotionPrereqOr2>NONE</PromotionPrereqOr2>
 			<PromotionPrereqOr3>NONE</PromotionPrereqOr3>
-			<TechPrereq>NONE</TechPrereq>
+			<TechPrereq>TECH_CURRENCY</TechPrereq>
 <!-- doto governor start -->
 			<iGovernor>1</iGovernor>
 			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
@@ -5682,7 +5682,7 @@
 			<PromotionPrereqOr1>NONE</PromotionPrereqOr1>
 			<PromotionPrereqOr2>NONE</PromotionPrereqOr2>
 			<PromotionPrereqOr3>NONE</PromotionPrereqOr3>
-			<TechPrereq>NONE</TechPrereq>
+			<TechPrereq>TECH_DIVINE_RIGHT</TechPrereq>
 <!-- doto governor start -->
 			<iGovernor>1</iGovernor>
 			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
@@ -5943,7 +5943,7 @@
 			<PromotionPrereqOr1>NONE</PromotionPrereqOr1>
 			<PromotionPrereqOr2>NONE</PromotionPrereqOr2>
 			<PromotionPrereqOr3>NONE</PromotionPrereqOr3>
-			<TechPrereq>NONE</TechPrereq>
+			<TechPrereq>TECH_DRAMA</TechPrereq>
 <!-- doto governor start -->
 			<iGovernor>1</iGovernor>
 			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
@@ -6204,7 +6204,7 @@
 			<PromotionPrereqOr1>NONE</PromotionPrereqOr1>
 			<PromotionPrereqOr2>NONE</PromotionPrereqOr2>
 			<PromotionPrereqOr3>NONE</PromotionPrereqOr3>
-			<TechPrereq>NONE</TechPrereq>
+			<TechPrereq>TECH_RAILROAD</TechPrereq>
 <!-- doto governor start -->
 			<iGovernor>1</iGovernor>
 			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
@@ -6465,7 +6465,7 @@
 			<PromotionPrereqOr1>NONE</PromotionPrereqOr1>
 			<PromotionPrereqOr2>NONE</PromotionPrereqOr2>
 			<PromotionPrereqOr3>NONE</PromotionPrereqOr3>
-			<TechPrereq>NONE</TechPrereq>
+			<TechPrereq>TECH_GUNPOWDER</TechPrereq>
 <!-- doto governor start -->
 			<iGovernor>1</iGovernor>
 			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
@@ -7161,7 +7161,7 @@
 			<PromotionPrereqOr1>NONE</PromotionPrereqOr1>
 			<PromotionPrereqOr2>NONE</PromotionPrereqOr2>
 			<PromotionPrereqOr3>NONE</PromotionPrereqOr3>
-			<TechPrereq>NONE</TechPrereq>
+			<TechPrereq>TECH_MUSIC</TechPrereq>
 <!-- doto governor start -->
 			<iGovernor>1</iGovernor>
 			<iGreatPeopleRateChange>1</iGreatPeopleRateChange>
@@ -7248,7 +7248,7 @@
 			<PromotionPrereqOr1>NONE</PromotionPrereqOr1>
 			<PromotionPrereqOr2>NONE</PromotionPrereqOr2>
 			<PromotionPrereqOr3>NONE</PromotionPrereqOr3>
-			<TechPrereq>NONE</TechPrereq>
+			<TechPrereq>TECH_MATHEMATICS</TechPrereq>
 <!-- doto governor start -->
 			<iGovernor>1</iGovernor>
 			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>
@@ -7596,7 +7596,7 @@
 			<PromotionPrereqOr1>NONE</PromotionPrereqOr1>
 			<PromotionPrereqOr2>NONE</PromotionPrereqOr2>
 			<PromotionPrereqOr3>NONE</PromotionPrereqOr3>
-			<TechPrereq>NONE</TechPrereq>
+			<TechPrereq>TECH_MILITARY_TRADITION</TechPrereq>
 <!-- doto governor start -->
 			<iGovernor>1</iGovernor>
 			<iGreatPeopleRateChange>0</iGreatPeopleRateChange>

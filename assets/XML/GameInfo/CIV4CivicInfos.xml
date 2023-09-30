@@ -3770,7 +3770,7 @@ Button	The path of the dds file that contains the image for this civic.
 			<iAnarchyLength>1</iAnarchyLength>
 			<Upkeep>UPKEEP_LOW</Upkeep>
 			<iAIWeight>1</iAIWeight>
-			<iGreatPeopleRateModifier>-50</iGreatPeopleRateModifier>
+			<iGreatPeopleRateModifier>-40</iGreatPeopleRateModifier>
 			<iGreatGeneralRateModifier>0</iGreatGeneralRateModifier>
 			<iDomesticGreatGeneralRateModifier>0</iDomesticGreatGeneralRateModifier>
 			<iStateReligionGreatPeopleRateModifier>0</iStateReligionGreatPeopleRateModifier>

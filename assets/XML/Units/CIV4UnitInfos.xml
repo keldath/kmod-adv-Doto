@@ -59801,7 +59801,7 @@ if the promo for gp + is chosen -->
 			<Special>NONE</Special>
 			<Capture>UNITCLASS_WORKER</Capture>
 			<Combat>UNITCOMBAT_GOVERNOR</Combat>
-			<Domain>DOMAIN_LAND</Domain>
+			<Domain>DOMAIN_AIR</Domain>
 			<!-- doto governor -> this ai sts the unit to remain in cities -->
 			<!-- just to make sure ai wont do  none relevant calculations -->
 			<!-- UNITAI_CITY_SPECIAL -->

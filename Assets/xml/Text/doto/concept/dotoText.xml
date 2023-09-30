@@ -2,13 +2,48 @@
 <Civ4GameText>
 	<TEXT>
 		<Tag>TXT_KEY_CONCEPT_DOTO</Tag>
-		<English>[H1]Doto Components[\H1][NEWLINE][NEWLINE][BOLD]Ranged Immunity[\BOLD][NEWLINE]no more suicidal ranged units.
+		<English>[H1][BOLD]*** Doto Features ***[\BOLD][\H1]
+[NEWLINE][NEWLINE][BOLD]Ranged Immunity[\BOLD][NEWLINE]no more suicidal ranged units.
 siege land units will be able to inflict one time damage without the risk of being hit back by the defender.
 the damage will be a percentage up to the combat limit (each unit has one).
 hit and/or damage can be randomized.
 if the defender is also a siege unit, it will attack back e.g. -> retaliate.
-AI code was added , seems that ai use it well.
+[NEWLINE]
+key features:
+[ICON_BULLET] each ranged attack has a number of free ranged attacks (3 default).
+[ICON_BULLET] each unit has a cool down of 2 (default).
+[ICON_BULLET] after a unit attack the max attack rounds - 3/3, 
+[NEWLINE] the count down of the cooldown will start its count per turn. when CD is done,
+the unit attack count will reset
+[ICON_BULLET] if a unit wont attack at its turn -> the attack count will be reduced.
+[ICON_BULLET] on the third attack, a precentage of damage will be dealt to the attacker.
+[NEWLINE][BOLD] Game options: [\BOLD]
+[ICON_BULLET] Raned immunity
+[ICON_BULLET] Random Hit -> not every hit is succesful
+[ICON_BULLET] Random Damage -> not evey Damage dealt is the same
+[ICON_BULLET] Ranged Retaliate -> if the defender is a siege ranged immunity unit ->
+unlike regular unit, it will strike back the siege ranged attacker.
+[ICON_BULLET] AI code was added , seems that ai use it well.
+
 this is based off VIP mod and inspired by civ4 Reimagined.
+
+[NEWLINE][NEWLINE][BOLD]Governor[\BOLD][NEWLINE]
+The governor is a unit that is spawned when a city is created.
+in addition to the unit, it will generate a greate people specialist in the city.
+this is to represent the city perks it will get from the unit map promotions.
+the position of this governor specialist is located at the right left view in the city.
+[ICON_BULLET] the unit cannot be moved or do any action but skip or fortify.
+[ICON_BULLET] the governor will get xp from 2 parts:
+					[NEWLINE] city growth in size (fixed incremental growth steps) for example on size 3 it will get 1 xp point
+					[NEWLINE] Cottages / Towns etc give the city 1 xp score per turn if the city works the tiles they are on.
+					the score is accumilated for the governor unit to a special threshold.
+					once it is reached, the governor will get xp.
+					this can happen up to 10 times -> 10 xp points in total.
+					the more cottegaes , the faster the xp will be given.
+[ICON_BULLET] once the unit will get a xp level up, it willbe able to choose to promote to a specific governor promotion tree. these promotions are city perks improvements.
+and will be reflected on the freat person icon of the governor.
+[ICON_BULLET] the governor will not get any other perks given to all specialist via civics and such.
+
 [NEWLINE][NEWLINE][BOLD]City States[\BOLD][NEWLINE]
 Unique to Doto, City states are similar to CIVV+.
 the cities will abide to several key rules. a player can have special unique trade agreement with each city to receive unique city perks along with a unique resource.
@@ -70,6 +105,17 @@ each city can build wonders limited by its culture size.
 if combined with wonder obsolete game options -> if a city has an obsolete wonder which is included in the wonder count,
 it will ignore it and open a new wonder slot -> meaning for example culture limit is 5, city has 5 wonders which 1 is obsolete -> the option will allow the construction of the 6th
 wonder in that case.
+
+[NEWLINE][NEWLINE][BOLD]Improvement Decay:[\BOLD][NEWLINE]
+Improvements will dimish to none is not worked for a set number of turns.
+its a game option.
+
+
+[NEWLINE][NEWLINE][BOLD]Tech Obsolete Improvement:[\BOLD][NEWLINE]
+Improvements will go obsolete with a specific tech. i did not implement this.
+its a code i created for Chrinicles of Mankind by Nexus.
+its a game option.
+
 </English>
 		</TEXT>
 </Civ4GameText>
