@@ -45059,7 +45059,7 @@ UNITAI changed - now will used to counter.
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
-		<UnitInfo><!-- SAGIS -->
+		<UnitInfo>
 			<Class>UNITCLASS_MECHANIZED_INFANTRY</Class>
 			<Type>UNIT_DAE-JANG</Type>
 			<UniqueNames/>
@@ -50689,7 +50689,7 @@ UNITAI changed - now will used to counter.
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
-		<UnitInfo><!--SAGIS2-->
+		<UnitInfo>
 			<Class>UNITCLASS_MECHANIZED_INFANTRY</Class>
 			<Type>UNIT_DESERT_CRAWLER</Type>
 			<UniqueNames/>
