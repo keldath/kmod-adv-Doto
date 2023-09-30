@@ -3674,7 +3674,7 @@ void CvCity::processSpecialist(SpecialistTypes eSpecialist, int iChange)
 			}
 		}
 	}		
-	//doto governor -> if process a goverbor
+	//doto governor -> if process a governor
 
 	if (eGPClass != NO_UNITCLASS)
 	{
@@ -5274,24 +5274,27 @@ void CvCity::giveXpBasedCitySize(int iOldPopulation, int iNewValue)
 			switch (m_iPopulation)
 			{
 			case 3:
-			case 6:
+			case 4:
 				xpAmount = 1;
+				break;
+			case 6:
+				xpAmount = 2;
 				break;
 			case 8:
 			case 10:
 				xpAmount = 1;
 				break;
-			case 12:
+			case 14:
 				xpAmount = 2;
 				break;
-			case 14:
+			case 15:
 			case 16:
 				xpAmount = 1;
 				break;
 			case 18:
 			case 19:
 			case 20:
-				xpAmount = 1;
+				xpAmount = 2;
 				break;
 			case 22:
 			case 24:
@@ -6617,7 +6620,7 @@ int CvCity::getAdditionalStarvation(int iSpoiledFood) const
 	CvGameTextMgr::parseGreatPeopleHelp */
 int CvCity::GPTurnsLeft() const
 {
-	if(getGreatPeopleRate() <= 0)
+ 	if (getGreatPeopleRate() <= 0)
 		return -1;
 	int iGPPLeft = GET_PLAYER(getOwner()).greatPeopleThreshold(false) - getGreatPeopleProgress();
 	if (iGPPLeft <= 0)

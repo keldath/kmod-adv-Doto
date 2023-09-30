@@ -7051,7 +7051,10 @@ void CvGameTextMgr::parseSpecialistHelp(CvWStringBuffer &szHelpString,
 		//doto governor -> if we wont check if the unit is a governer, it will display the tags to all...
 		SpecialistTypes eGovernorS = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_GOVERNOR", true);
 		if (pCity != NULL && eGovernorS == eSpecialist)
+		{
 			parseGovernorpecialistHelp(szHelpString, eSpecialist, pCity, bCivilopediaText);
+			return;
+		}
 		else
 		{
 			//doto governor
@@ -7273,39 +7276,43 @@ void CvGameTextMgr::parseFreeSpecialistHelp(CvWStringBuffer &szHelpString,
 
 	FOR_EACH_ENUM2(Specialist, eSpecialist)
 	{
-		int iNumSpecialists = kCity.getFreeSpecialistCount(eSpecialist);
-
-		if (iNumSpecialists > 0)
+		//doto governor -> the widget should not shou the governor info.
+		if (eSpecialist != (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_GOVERNOR", true))
 		{
-			szHelpString.append(NEWLINE);
-			szHelpString.append(CvWString::format(L"%s (%d): ",
+			int iNumSpecialists = kCity.getFreeSpecialistCount(eSpecialist);
+
+			if (iNumSpecialists > 0)
+			{
+				szHelpString.append(NEWLINE);
+				szHelpString.append(CvWString::format(L"%s (%d): ",
 					GC.getInfo(eSpecialist).getDescription(), iNumSpecialists));
-			int aiYields[NUM_YIELD_TYPES];
-			FOR_EACH_ENUM(Yield)
-			{
-				aiYields[eLoopYield] = iNumSpecialists * GET_PLAYER(kCity.getOwner()).
+				int aiYields[NUM_YIELD_TYPES];
+				FOR_EACH_ENUM(Yield)
+				{
+					aiYields[eLoopYield] = iNumSpecialists * GET_PLAYER(kCity.getOwner()).
 						specialistYield(eSpecialist, eLoopYield);
-			}
-			CvWStringBuffer szYield;
-			setYieldChangeHelp(szYield, L"", L"", L"", aiYields, false, false);
-			szHelpString.append(szYield);
-			int aiCommerces[NUM_COMMERCE_TYPES];
-			FOR_EACH_ENUM(Commerce)
-			{
-				aiCommerces[eLoopCommerce] = iNumSpecialists * GET_PLAYER(kCity.getOwner()).
+				}
+				CvWStringBuffer szYield;
+				setYieldChangeHelp(szYield, L"", L"", L"", aiYields, false, false);
+				szHelpString.append(szYield);
+				int aiCommerces[NUM_COMMERCE_TYPES];
+				FOR_EACH_ENUM(Commerce)
+				{
+					aiCommerces[eLoopCommerce] = iNumSpecialists * GET_PLAYER(kCity.getOwner()).
 						specialistCommerce(eSpecialist, eLoopCommerce);
-			}
-			CvWStringBuffer szCommerceString;
-			setCommerceChangeHelp(szCommerceString, L"", L"", L"", aiCommerces, false, false);
-			if (!szYield.isEmpty() && !szCommerceString.isEmpty())
-				szHelpString.append(L", ");
-			szHelpString.append(szCommerceString);
-			if (GC.getInfo(eSpecialist).getExperience() > 0)
-			{	// kmodx: was !szYield.isEmpty()
-				if (!szYield.isEmpty() || !szCommerceString.isEmpty())
+				}
+				CvWStringBuffer szCommerceString;
+				setCommerceChangeHelp(szCommerceString, L"", L"", L"", aiCommerces, false, false);
+				if (!szYield.isEmpty() && !szCommerceString.isEmpty())
 					szHelpString.append(L", ");
-				szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_EXPERIENCE_SHORT",
+				szHelpString.append(szCommerceString);
+				if (GC.getInfo(eSpecialist).getExperience() > 0)
+				{	// kmodx: was !szYield.isEmpty()
+					if (!szYield.isEmpty() || !szCommerceString.isEmpty())
+						szHelpString.append(L", ");
+					szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_EXPERIENCE_SHORT",
 						iNumSpecialists * GC.getInfo(eSpecialist).getExperience()));
+				}
 			}
 		}
 	}

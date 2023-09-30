@@ -9002,6 +9002,9 @@ int CvUnitAI::AI_promotionValue(PromotionTypes ePromotion)
 		// Don't consume the leader as a regular promotion
 		return 0;
 	}
+	if (isHasPromotion(ePromotion))
+		return 0;
+
 	int iValue = 0;
 	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
 	{
@@ -9012,25 +9015,78 @@ int CvUnitAI::AI_promotionValue(PromotionTypes ePromotion)
 		{
 			//add up all the values from existing promotions of govener
 			CvCityAI* pPlotCity = getPlot().AI_getPlotCity();
+			const CvPlayerAI& kOwner = GET_PLAYER(getOwner()); 
 			if (pPlotCity != NULL && pPlotCity->getOwner() == getOwner())
 			{
 				//the logics i did is , if a city got lots of the same value, than its score would be lower, 
 				//this the 100 - x
-				iValue += kpInfo.getGreatPeopleRateChange() + (100 - pPlotCity->getGreatPeopleRate());
-				iValue += kpInfo.getHealth() + pPlotCity->badHealth() >= 0 ? 100 : 10; //pPlotCity.goodHealth()
-				iValue += kpInfo.getHappiness() + pPlotCity->unhappyLevel() >= 0 ? 100 : 10; // pPlotCity().happyLevel
+				//int getHealthC() 
+				//int getHappinessC() 
+				//int getExperienceC() 
+				if (kpInfo.getGreatPeopleRateChange() > 0)
+				{
+					//iValue += kpInfo.getGreatPeopleRateChange() + (100 - pPlotCity->getBaseGreatPeopleRate());
+					//the more specialists the lower the worth -> if there are lots of specialists we dont need more.
+					//using the city pop as a basis
+					iValue += kpInfo.getGreatPeopleRateChange() + ((pPlotCity->getPopulation() * 4)
+						- (pPlotCity->getSpecialistPopulation() - pPlotCity->totalFreeSpecialists()));
+				}
+				if (kpInfo.getHealth() > 0)
+					iValue += kpInfo.getHealth() + abs(pPlotCity->badHealth()) >= 0 ? (150 + abs(pPlotCity->badHealth())) : 10; //pPlotCity.goodHealth()
+				if (kpInfo.getHappiness() > 0)
+					iValue += kpInfo.getHappiness() + abs(pPlotCity->unhappyLevel()) >= 0 ? (150 + abs(pPlotCity->unhappyLevel())) : 10; // pPlotCity().happyLevel
 				//CvTeamAI const& kTeam = GET_TEAM(kOwner.getTeam());
-				iValue += kpInfo.getExperience() + (GET_TEAM(GET_PLAYER(getOwner()).getTeam())).getNumWars(false, true) + 100;
+				if (kpInfo.getExperience() > 0)
+					iValue += kpInfo.getExperience() + GET_TEAM(kOwner.getTeam()).getNumWars(false, true) * 100;
 	
 				FOR_EACH_ENUM(Yield)
 				{
-					int getLowestValue = 100 - pPlotCity->getBaseYieldRate(eLoopYield);
-					iValue += kpInfo.getYieldChange(eLoopYield) + getLowestValue;
+					
+					//if (eLoopYield == YIELD_FOOD)
+					//	iValue += (pPlotCity->getYieldRate(YIELD_FOOD) - pPlotCity->foodConsumption() * 10);
+					//if (eLoopYield == YIELD_PRODUCTION)
+					//	iValue += 10;
+					//if (eLoopYield == YIELD_COMMERCE)
+					//	iValue += 5;
+					//iValue += kpInfo.getYieldChange(eLoopYield) + kOwner.AI_yieldWeight(eLoopYield, pPlotCity);
+					if (kpInfo.getYieldChange(eLoopYield) > 0)
+					{
+						int yel = kpInfo.getYieldChange(eLoopYield) + (60 - pPlotCity->getBaseYieldRate(eLoopYield)) 
+							- (pPlotCity->getYieldChangeC(eLoopYield) * 2);
+						if (eLoopYield == YIELD_PRODUCTION && pPlotCity->getYieldChangeC(YIELD_COMMERCE) > 1)
+							yel += 10; //ai picks always prod, so ill reduce it just a bit
+						if (eLoopYield == YIELD_FOOD && pPlotCity->getYieldChangeC(YIELD_PRODUCTION) > 1)
+							yel += 13;
+						if (eLoopYield == YIELD_COMMERCE && pPlotCity->getYieldChangeC(YIELD_FOOD) > 1)
+							yel += 15;
+						iValue += yel;
+					}
+					//int getLowestValue = 100 - (pPlotCity->getBaseYieldRate(eLoopYield) * 10);
+					//iValue += kpInfo.getYieldChange(eLoopYield) + getLowestValue;
 				}
 				FOR_EACH_ENUM(Commerce)
 				{
-					int getLowestValue = 100 - pPlotCity->getCommerceRate(eLoopCommerce);
-					iValue += kpInfo.getCommerceChange(eLoopCommerce) + getLowestValue;
+					//iValue += kpInfo.getCommerceChange(eLoopCommerce) + kOwner.AI_commerceWeight(eLoopCommerce, pPlotCity);
+					//iValue += kpInfo.getCommerceChange(eLoopCommerce) + (100 - kOwner.getCommercePercent(eLoopCommerce));
+					//int tst1 = pPlotCity->getTotalCommerceRateModifier(eLoopCommerce);
+					if (kpInfo.getCommerceChange(eLoopCommerce) > 0)
+					{
+						int com = kpInfo.getCommerceChange(eLoopCommerce) + (100 - pPlotCity->getBaseCommerceRate(eLoopCommerce)
+							- (pPlotCity->getCommerceChangeC(eLoopCommerce) * 2)
+							);
+						//some reduction
+						if (eLoopCommerce == COMMERCE_ESPIONAGE && pPlotCity->getCommerceChangeC(COMMERCE_GOLD) > 1)
+							com -= 15;
+						if (eLoopCommerce == COMMERCE_CULTURE && pPlotCity->getCommerceChangeC(COMMERCE_ESPIONAGE) > 1)
+							com += 10;
+						if (eLoopCommerce == COMMERCE_RESEARCH && pPlotCity->getCommerceChangeC(COMMERCE_CULTURE) > 1)
+							com += 20;
+						if (eLoopCommerce == COMMERCE_GOLD && pPlotCity->getCommerceChangeC(COMMERCE_CULTURE) > 1)
+							com += 10;
+						iValue += com;
+					}
+					//int getLowestValue = 100 - pPlotCity->getCommerceRate(eLoopCommerce);
+					//iValue += kpInfo.getCommerceChange(eLoopCommerce) + getLowestValue;
 				}
 				if (iValue > 0 )
 					return iValue;

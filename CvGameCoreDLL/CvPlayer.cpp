@@ -1673,6 +1673,12 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 			pUnit->kill(false, getID());
 		}
 	}
+
+	//doto governor start --> it has to kill all th governor great people - do not move position
+	//otherwise conquered city will count up the governor again .
+	pOldCity->killGovernor();
+	//doto governor end
+
 	if (bConquest) // Force to be unowned after conquest
 	{
 		int const iRange = pOldCity->getCultureLevel();
@@ -1874,7 +1880,6 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 		aiBuildingHealthChange.set(eBuildingClass,
 				pOldCity->getBuildingHealthChange(eBuildingClass));
 	}
-
 	pOldCity->kill(false, /* advc.001: */ false); // Don't bump units yet
 	pOldCity = NULL; // advc: Mustn't be accessed past this point
 
@@ -15471,8 +15476,8 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 		for (int iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
 		{
 //doto governor
-			if (pLoopCity->getFreeSpecialistCount((SpecialistTypes)iI) > 0)
-			{
+//			if (pLoopCity->getFreeSpecialistCount((SpecialistTypes)iI) > 0)
+//			{
 				if ((SpecialistTypes)iI != (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_GOVERNOR", true)
 					//doto fix
 					&& GC.getCivicInfo(eCivic).getFreeSpecialistCount(iI) > 0
@@ -15481,13 +15486,13 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 					//doto governor
 					pLoopCity->changeFreeSpecialistCount((SpecialistTypes)iI, (GC.getCivicInfo(eCivic).getFreeSpecialistCount(iI) * iChange));
 				}
-				else
-				{
+//				else
+//				{
 					//probably redundent, but just incase when switching to a 
 					//civic with no free from one that had a free -> make sure to rest the count //probably redundent, but just incase when switching to a 
-					pLoopCity->changeFreeSpecialistCount((SpecialistTypes)iI, 0);
-				}
-			}
+//					pLoopCity->changeFreeSpecialistCount((SpecialistTypes)iI, 0);
+//				}
+//			}
 		}
 		pLoopCity->updateBuildingCommerceChange(eCivic, iChange);
 		pLoopCity->updateBuildingYieldChange(eCivic, iChange);
