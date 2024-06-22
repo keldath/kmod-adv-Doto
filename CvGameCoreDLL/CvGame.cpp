@@ -43,6 +43,12 @@ CvGame::CvGame() :
 	m_pReplayInfo = NULL;
 	m_pHallOfFame = NULL; // advc.106i
 	m_pLegacyOrgSeatData = NULL; // advc.enum
+//doto units bonus cap	
+	m_aiBonusThatArePrereqForUnits = NULL;
+//doto units bonus cap
+//doto special events
+	m_aeSpecialEvents = new int[2]; // expected 2 events. gotta change it if im gonna add more exists in other places!
+//doto special events	
 	reset(NO_HANDICAP, true);
 }
 
@@ -169,6 +175,9 @@ void CvGame::init(HandicapTypes eHandicap)
 		if (GC.getInfo(eLoopSpecialBuilding).isValid())
 			makeSpecialBuildingValid(eLoopSpecialBuilding);
 	}
+//doto special events - find the special events
+	setSpecialEvents();
+//doto special events
 
 	AI().AI_init();
 
@@ -264,6 +273,40 @@ void CvGame::setInitialItems()
 				d->setInitialGameTurn(getGameTurn());
 		} // </advc.251>
 	} // </advc.250c>
+	
+//doto units bonus cap	
+	if (isOption(GAMEOPTION_UNITS_BONUS_CAP))
+	{
+		for (PlayerIter<ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
+		{
+			CvCivilization const& kCiv = itPlayer->getCivilization(); // advc.003w	
+			for (int j = 0; j < kCiv.getNumUnits(); j++)
+			{
+				UnitTypes eLoopUnit = kCiv.unitAt(j);
+				CvUnitInfo const& kUnit = GC.getInfo(eLoopUnit);
+				
+				BonusTypes ePrereqAndBonus = kUnit.getPrereqAndBonus();
+				if (ePrereqAndBonus != NO_BONUS)
+				{
+					m_aiBonusThatArePrereqForUnits[ePrereqAndBonus] = 1;
+				}	
+				for (int i = 0; i < kUnit.getNumPrereqOrBonuses(); i++)
+				{
+					BonusTypes const ePrereqOrBonus = kUnit.getPrereqOrBonuses(i);
+					if (ePrereqOrBonus == NO_BONUS)
+						continue;
+					m_aiBonusThatArePrereqForUnits[ePrereqOrBonus] = 1;
+					
+				}	
+			}	
+		}
+	}
+
+//doto units bonus cap
+	
+//doto special events - find the special events
+	setSpecialEvents();
+//doto special events
 	for (PlayerAIIter<CIV_ALIVE> it; it.hasNext(); ++it)
 		it->AI_updateFoundValues();
 	// <advc.tsl>
@@ -456,6 +499,12 @@ void CvGame::uninit()
 	/*	advc.700: Need to call this explicitly due to the unusual way that
 		RiseFall is initialized (from updateBlockadedPlots) */
 	m_pRiseFall->reset();
+//doto units bonus cap	
+	SAFE_DELETE_ARRAY(m_aiBonusThatArePrereqForUnits);
+//doto units bonus cap
+//doto special events
+	SAFE_DELETE_ARRAY(m_aeSpecialEvents);
+//doto special events
 }
 
 // advc: Cut from CvGame::init
@@ -578,7 +627,21 @@ void CvGame::reset(HandicapTypes eHandicap, bool bConstructorCall)
 	m_eInitialActivePlayer = NO_PLAYER; // advc.106h
 	m_eNormalizationLevel = NORMALIZE_DEFAULT; // advc.108
 	m_szScriptData = "";
+//doto units bonus cap		
+	FAssertMsg(m_aiBonusThatArePrereqForUnits==NULL, "about to leak memory, CvPlayer::m_paiBonusImport");
+	m_aiBonusThatArePrereqForUnits = new int [GC.getNumBonusInfos()];
+	for (int iI = 0; iI < GC.getNumBonusInfos(); iI++)
+	{
+		m_aiBonusThatArePrereqForUnits[iI] = 0;
+	}
+//doto units bonus cap
 
+//doto special events -reset the list
+	numSpecialEvents = 2;
+	m_aeSpecialEvents = new int[2];
+//doto special events
+	setSpecialEvents();
+//doto special events
 	if (!bConstructorCall)
 	{
 		m_aeRankPlayer.reset();
@@ -979,7 +1042,7 @@ void CvGame::initScenario()
 	if(GC.getDefineBOOL(CvGlobals::PASSABLE_AREAS) 
 		&& !isOption(GAMEOPTION_MOUNTAINS))
 	{
-		/*  recalculateAreas can't handle preplaced cities. Or perhaps it can
+		/*	recalculateAreas can't handle preplaced cities. Or perhaps it can
 			(Barbarian cities are fine in most cases), but there's going to
 			be other stuff, like free units, that'll cause problems. */
 		bool bRecalc = true;
@@ -2940,12 +3003,18 @@ void CvGame::update()
 			{
 				autoSave(true); // advc.106l
 			}
-			/*	<advc.004m> This seems to be the earliest place where plot indicators
-				can be enabled w/o crashing. */
+		}
+		/*	<advc.004m> Slice 0 seems to be the earliest time when plot indicators
+			can be enabled w/o crashing. But it appears that, for some players,
+			the indicators do not actually appear then - race condition? Slice 1
+			doesn't seem to help either. Try 2? (It's a continuous count.) */
+		if (getTurnSlice() == 2 &&
+			// Leave it up to the savegame when loading an initial autosave
+			m_iTurnLoadedFromSave != m_iElapsedGameTurns)
+		{
 			if (BUGOption::isEnabled("MainInterface__StartWithResourceIcons", true))
 				gDLL->getEngineIFace()->setResourceLayer(true);
-			// </advc.004m>
-		}
+		} // </advc.004m>
 		if (getNumGameTurnActive() == 0)
 		{
 			if (!isPbem() || !getPbemTurnSent())
@@ -7184,16 +7253,16 @@ void CvGame::spawnCityState()
 	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 		return;
 	//will allow the city states, but will not spawn them...let ht player set them
-	if (GC.getDefineINT("DISPLAY_CITY_STATES_IN_CUSTOM_GAME") == 1)
+	if (GC.getDISPLAY_CITY_STATES_IN_CUSTOM_GAME() == 1)
 		return;
 	
 //spawn civs amount according to the world size - start
 	int numCitySpawn = 0;//default
-	int numCitySpawnT = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN_TINY");
-	int numCitySpawnS = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN_SMALL");
-	int numCitySpawnD = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN_STANDARD");
-	int numCitySpawnL = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN_LARGE");
-	int numCitySpawnH = GC.getDefineINT("SET_NUMBER_OF_CITY_STATES_SPAWN_HUGE");
+	int numCitySpawnT = GC.getSET_NUMBER_OF_CITY_STATES_SPAWN_TINY();
+	int numCitySpawnS = GC.getSET_NUMBER_OF_CITY_STATES_SPAWN_SMALL();
+	int numCitySpawnD = GC.getSET_NUMBER_OF_CITY_STATES_SPAWN_STANDARD();
+	int numCitySpawnL = GC.getSET_NUMBER_OF_CITY_STATES_SPAWN_LARGE();
+	int numCitySpawnH = GC.getSET_NUMBER_OF_CITY_STATES_SPAWN_HUGE();
 	int spawned = 0;
 
 	//CvWorldInfo const& kWorld = GC.getInfo(GC.getMap().getWorldSize());
@@ -7349,10 +7418,12 @@ void CvGame::spawnCityState()
 		CvPlayerAI& kPlayer = GET_PLAYER(cityStatePlayer);
 		CvPlayer& kkPlayer = GET_PLAYER(cityStatePlayer);
 		//overwrite the prev same car =- this is another method fo playertype id - f1rpo suggested
-		//cityStatePlayer = (PlayerTypes)PlayerIter<MAJOR_CIV>::count(); 
-		kPlayer.setAlive(true); 
+		//cityStatePlayer = (PlayerTypes)PlayerIter<MAJOR_CIV>::count();
+		//fixes to work in mp
+		kPlayer.setPersonalityType(cSleader);
 		addPlayer(cityStatePlayer, cSleader, eCiv);
-		
+		kPlayer.setAlive(true);
+
 		initFreeTechsEra(cityStatePlayer);
 	//doto
 	//these are some fn that are used in the split empire function (removed all the fn that is split related.
@@ -9311,7 +9382,12 @@ void CvGame::read(FDataStreamBase* pStream)
 			m_bLayerFromSavegame = true;
 	} // </advc.004m>
 	pStream->ReadString(m_szScriptData);
-
+//doto units bonus cap	
+	pStream->Read(GC.getNumBonusInfos(), m_aiBonusThatArePrereqForUnits);
+//doto units bonus cap	
+//doto special events
+	pStream->Read(2, m_aeSpecialEvents);
+//doto special events	
 	if (uiFlag < 1)
 	{
 		std::vector<int> aiEndTurnMessagesReceived(MAX_PLAYERS);
@@ -9688,7 +9764,12 @@ void CvGame::write(FDataStreamBase* pStream)
 	pStream->Write(m_eCurrentLayer); // advc.004m
 
 	pStream->WriteString(m_szScriptData);
-
+//doto units bonus cap	
+	pStream->Write(GC.getNumBonusInfos(), m_aiBonusThatArePrereqForUnits);
+//doto units bonus cap	
+//doto special events
+	pStream->Write(2, m_aeSpecialEvents);
+//doto special events
 	m_aeRankPlayer.write(pStream);
 	m_aePlayerRank.write(pStream);
 	m_aiPlayerScore.write(pStream);
@@ -9915,6 +9996,9 @@ void CvGame::onAllGameDataRead()
 //see explanation in cvgameinterface in updatecolors fn.
 	setColorsCityStates(0);
 //doto city states color plots after game is loaded - end
+//doto special events - find the special events
+	setSpecialEvents();
+//doto special events - find the special events
 }
 
 /*	advc: Called once the EXE signals that graphics have been initialized
@@ -10230,12 +10314,28 @@ void CvGame::setVoteSourceReligion(VoteSourceTypes eVoteSource,
 	}
 }
 
+// advc.001: For culturalVictoryNumCultureCities. Infinity that doesn't easily overflow.
+namespace
+{
+	enum CultVictCityThresh
+	{
+		CULT_VICT_CITY_TRESH_INFINITE = arithm_traits<short>::max,
+	};
+}
+
+
+int CvGame::culturalVictoryNumCultureCities() const
+{
+	//return m_iNumCultureVictoryCities;
+	/*	advc.001: Easier to return infinity here than to ensure that all
+		call locations check for culturalVictoryValid */
+	return (culturalVictoryValid() ? m_iNumCultureVictoryCities : CULT_VICT_CITY_TRESH_INFINITE);
+}
+
 
 CultureLevelTypes CvGame::culturalVictoryCultureLevel() const
 {
-	if (m_iNumCultureVictoryCities > 0)
-		return m_eCultureVictoryCultureLevel;
-	return NO_CULTURELEVEL;
+	return (culturalVictoryValid() ? m_eCultureVictoryCultureLevel : NO_CULTURELEVEL);
 }
 
 
@@ -10458,8 +10558,18 @@ void CvGame::deleteVoteSelection(int iID)
 {
 	m_voteSelections.removeAt(iID);
 }
-
-
+//doto units bonus cap
+int CvGame::getBonusThatArePrereqForUnits(BonusTypes eBonus) const
+{
+	return m_aiBonusThatArePrereqForUnits[eBonus];
+}
+//doto units bonus cap
+//doto special events
+int CvGame::getSpecialEvents(int eIdx) const
+{
+	return m_aeSpecialEvents[eIdx];
+}
+//doto special events
 VoteTriggeredData* CvGame::getVoteTriggered(int iID) const
 {
 	return m_votesTriggered.getAt(iID);
@@ -11197,3 +11307,38 @@ int CvGame::getColorsCityStates()
 	return m_pColorCityStates;
 }
 //doto city states color plots after game is loaded - end
+
+void CvGame::setSpecialEvents()
+{
+	//doto special events - find the special events
+	int bPartisanFound = false;
+	int bPalaceFound = false;
+	int idx = 0; 
+	//set the index of the found event, its value will be the index of the wanted event in the global events
+	//list, which will then be used to trigger this event.
+	for (int actualEventIds = 0; actualEventIds < GC.getNumEventTriggerInfos(); ++actualEventIds)
+	{
+		CvEventTriggerInfo& kTrigger = GC.getEventTriggerInfo((EventTriggerTypes)actualEventIds);
+		CvString eventName = kTrigger.getType();
+		if (eventName == CvString(L"EVENTTRIGGER_PARTISANS"))
+		{
+			m_aeSpecialEvents[idx] = actualEventIds;
+			//set the event to active (its relevant mostly to partisans
+			m_abInactiveTriggers.set((EventTriggerTypes)actualEventIds, true);
+			numSpecialEvents += 1;
+			bPartisanFound = true;
+			idx++;
+		}
+		if (eventName == CvString(L"EVENTTRIGGER_PALACE_UPGRADE"))
+		{
+			m_aeSpecialEvents[idx] = actualEventIds;
+			//set the event to active (its relevant mostly to partisans
+			m_abInactiveTriggers.set((EventTriggerTypes)actualEventIds, true);
+			numSpecialEvents += 1;
+			bPalaceFound = true;
+			idx++;
+		}
+		if (bPalaceFound && bPartisanFound)
+			break;
+	} 
+}	

@@ -579,6 +579,10 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	}
 	m_aiBonusExport.reset();
 	m_aiBonusImport.reset();
+//doto units bonus cap	
+	m_aiUnitBonusCaps.reset();
+	m_aiTotalPlayerBonus.reset();
+//doto units bonus cap	
 	m_aiImprovementCount.reset();
 	m_aiFreeBuildingCount.reset();
 	m_aiExtraBuildingHappiness.reset();
@@ -692,10 +696,7 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 		m_aVote.clear();
 		m_aUnitExtraCosts.clear();
 		m_triggersFired.clear();
-		// <advc.106b>
-		for(size_t i = 0; i < m_aMajorMsgs.size(); i++)
-			SAFE_DELETE(m_aMajorMsgs[i]);
-		m_aMajorMsgs.clear(); // </advc.106b>
+		clearMessageCopies(); // advc.106b
 	}
 
 	m_plotGroups.removeAll();
@@ -1507,7 +1508,7 @@ CvPlot* CvPlayer::findStartingPlot(
 //this was a recommendation from f1rpo , default is 3, could be 2 also. org is 4.
 //seee more text in the globalalt xml file.
 	//int const iStartingRange = GC.getDefineINT("ADVANCED_START_SIGHT_RANGE");
-	int const iStartingRange = checkCityState(getID()) ? GC.getDefineINT("CS_START_SIGHT_RANGE") : GC.getDefineINT("ADVANCED_START_SIGHT_RANGE");
+	int const iStartingRange = checkCityState(getID()) ? GC.getCS_START_SIGHT_RANGE() : GC.getDefineINT("ADVANCED_START_SIGHT_RANGE");
 //doto city states - reduce tile calc for start location
 
 	EagerEnumMap<PlotNumTypes,bool> abPlotTaken;
@@ -1673,12 +1674,6 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 			pUnit->kill(false, getID());
 		}
 	}
-
-	//doto governor start --> it has to kill all th governor great people - do not move position
-	//otherwise conquered city will count up the governor again .
-	pOldCity->killGovernor();
-	//doto governor end
-
 	if (bConquest) // Force to be unowned after conquest
 	{
 		int const iRange = pOldCity->getCultureLevel();
@@ -2367,6 +2362,37 @@ CvUnit* CvPlayer::initUnit(UnitTypes eUnit, int iX, int iY, UnitAITypes eUnitAI,
 	pUnit->init(pUnit->getID(), eUnit, (UnitAITypes)
 			(eUnitAI == NO_UNITAI ? GC.getInfo(eUnit).getDefaultUnitAIType() : eUnitAI),
 			getID(), iX, iY, eFacingDirection);
+	
+//doto units bonus cap
+//add the bonus back to the pool
+	if (GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP))
+	{		
+		CvPlayer& kPlayer = GET_PLAYER(getID());
+		CvUnitInfo& kUnit = GC.getUnitInfo(eUnit);
+		BonusTypes ePrereqAndBonus = kUnit.getPrereqAndBonus();
+		if (ePrereqAndBonus != NO_BONUS)
+		{
+			//int eTotalBonus = kPlayer.getTotalPlayerBonus(ePrereqAndBonus);
+			//int eBonusCap = kPlayer.getNumUnitBonusCaps(ePrereqAndBonus);
+			kPlayer.changeNumUnitBonusCaps(ePrereqAndBonus, 1);
+		}	
+		for (int i = 0; i < kUnit.getNumPrereqOrBonuses(); i++)
+		{
+			BonusTypes const ePrereqOrBonus = kUnit.getPrereqOrBonuses(i);
+			if (ePrereqOrBonus == NO_BONUS)
+				continue;
+			int eTotalBonus = kPlayer.getTotalPlayerBonus(ePrereqOrBonus);
+			int eBonusCap = kPlayer.getNumUnitBonusCaps(ePrereqOrBonus);
+			if (eBonusCap < eTotalBonus && eTotalBonus > 0)
+			{
+				//pUnit->getID()getIDInfo() m_pUnitInfo pUnit->getUnitInfo()
+				pUnit->changeBonusUsedForPrereqOrCap(ePrereqOrBonus); //gotta cache which or bonus was used, for when the unit is killed off.
+				kPlayer.changeNumUnitBonusCaps(ePrereqOrBonus, 1);
+				break;//since this is an or, if we got 1 of the or bonuses that has a cap , use it and end.
+			}
+		}
+	}
+//doto units bonus cap
 	return pUnit;
 }
 
@@ -2995,7 +3021,7 @@ void CvPlayer::doTurn()
 		m_iNewMessages = 0;
 	/*  This way, NewMessages is never reset for non-humans. It is reset in
 		setHumanDisabled though, i.e. when coming out of AI Auto Play. */
-	if (isHuman())
+	if (isHuman() && isActive())
 		gDLL->UI().clearEventMessages();
 	// </advc.106b>
 
@@ -3029,8 +3055,35 @@ void CvPlayer::doTurn()
 	doResearch();
 	doEspionagePoints();
 
+//doto units bonus cap
+	//alternative code for the changeTotalPlayerBonus(eBonus); inner logic
+	//reset the the numbers befroe getting the updated numbers.
+/*	FOR_EACH_ENUM(Bonus)
+	{
+		changeTotalPlayerBonus(eLoopBonus, getTotalPlayerBonus(eLoopBonus) * -1);
+	}
+*/
+//doto units bonus cap
 	FOR_EACH_CITY_VAR(pLoopCity, *this)
-		pLoopCity->doTurn();
+	{
+		pLoopCity->doTurn(); //org code //doto units bonus cap
+		/* doto units bonus cap
+		//alternative code for the changeTotalPlayerBonus(eBonus); inner logic
+		FOR_EACH_ENUM(Bonus)
+		{
+			if (GC.getGame().getBonusThatArePrereqForUnits(eLoopBonus) > 0)
+			{
+				int eCurrentTotal = getTotalPlayerBonus(eLoopBonus);
+				int cityTotal = getNumBonuses(eLoopBonus);
+				//the goal is to get the city that has the highest number of iron
+				//and on that base the cap. i didnt take the capital as the source for the cap
+				//so it wont be dependant on capital connection, which can be pillaged and blockded.
+				if (cityTotal >= eCurrentTotal)
+					changeTotalPlayerBonus(eLoopBonus, iChange * 3);
+			}
+		}*/
+	}
+//doto units bonus cap
 
 	if (getGoldenAgeTurns() > 0)
 		changeGoldenAgeTurns(-1);
@@ -3566,12 +3619,12 @@ bool CvPlayer::hasBusyUnit() const
 
 void CvPlayer::chooseTech(int iDiscover, CvWString szText, bool bFront)
 {
-	// K-Mod
+	// <K-Mod> (based on UNOFFICIAL_PATCH, Free Tech Popup Fix, 12/07/09, EmperorFool)
 	FAssert(isHuman());
 	if (iDiscover > 0)
-	{	// note: if iDiscover is > 1, this function will be called again with iDiscover-=1
+	{	// (K-Mod note: if iDiscover is > 1, this function will be called again with iDiscover-=1)
 		changeChoosingFreeTechCount(1);
-	} // K-Mod end
+	} // </K-Mod>
 
 	CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_CHOOSETECH);
 	if (pInfo != NULL)
@@ -4836,7 +4889,9 @@ void CvPlayer::findNewCapital()
 //doto113 keldath find the best capital enhanced start - by <Nexux>
 		//BuildingClassTypes eCapitalBuilding2 = (BuildingClassTypes)GC.getInfoTypeForString(GC.getDefineSTRING("CAPITAL_BUILDINGCLASS_2"));
 		BuildingTypes const eCapitalBuilding2 = getCivilization().getBuilding((BuildingClassTypes)GC.getInfoTypeForString(
-			GC.getDefineSTRING("CAPITAL_BUILDINGCLASS_2"))); 
+			//GC.getDefineSTRING("CAPITAL_BUILDINGCLASS_2")
+			GC.getDefineSTRING("CAPITAL_BUILDINGCLASS_2")
+		)); 
 		if (eCapitalBuilding2 != NO_BUILDING)
 		{
 			int eCapitalBuilding2Amnt = pLoopCity->getNumBuilding(eCapitalBuilding2);
@@ -4845,7 +4900,9 @@ void CvPlayer::findNewCapital()
 		}
 		//BuildingClassTypes eCapitalBuilding3 = (BuildingClassTypes)GC.getInfoTypeForString(GC.getDefineSTRING("CAPITAL_BUILDINGCLASS_3"));
 		BuildingTypes const eCapitalBuilding3 = getCivilization().getBuilding((BuildingClassTypes)GC.getInfoTypeForString(
-			GC.getDefineSTRING("CAPITAL_BUILDINGCLASS_3")));
+			//GC.getDefineSTRING("CAPITAL_BUILDINGCLASS_3")
+			GC.getDefineSTRING("CAPITAL_BUILDINGCLASS_3")
+		));
 		if (eCapitalBuilding3 != NO_BUILDING)
 		{
 			int eCapitalBuilding3Amnt = pLoopCity->getNumBuilding(eCapitalBuilding3);
@@ -5483,7 +5540,7 @@ bool CvPlayer::canFound(CvPlot const& kPlot, bool bTestVisible,
 		if (GC.getGame().isOption(GAMEOPTION_MOUNTAINS))//AND Mountains Option
 			{
 			//if (GC.getDefineINT(CvGlobals::MIN_CITY_RANGE)== 0)	
-			if (GC.getDefineINT("PEAK_CAN_FOUND_CITY") == 0)
+			if (GC.getPEAK_CAN_FOUND_CITY() == 0)
 			{
 				return false;
 			}
@@ -5630,14 +5687,6 @@ bool CvPlayer::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible, bool
  **/
 
 	UnitClassTypes const eUnitClass = GC.getInfo(eUnit).getUnitClassType();
-
-	//doto governor -> for some reason on ai auto turns ai could build those
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		if (GC.getInfo(eUnit).getGovernor() > 0)
-			return false;
-	}
-	//doto governor
 
 	/*	K-Mod note. This assert can fail if team games when checking whether this city can
 		upgrade a unit to one of our team member's UUs. */
@@ -5911,6 +5960,15 @@ bool CvPlayer::canConstruct(BuildingTypes eBuilding, bool bContinue, bool bTestV
 				return false;
 			}
 		}
+//doto building not in the city if the pre building exists in the city, the building
+//we wanna build, cannot be built
+		FOR_EACH_NON_DEFAULT_KEY(GC.getInfo(eBuilding).
+					isBuildingClassNotInCity(), BuildingClass)
+		{
+			if (getBuildingClassCount(eLoopBuildingClass) > 0)
+				return false;
+		}
+//doto building not in the city
 	}
 
 	return true;
@@ -6699,7 +6757,7 @@ int CvPlayer::calculateUnitCost(int& iFreeUnits, int& iFreeMilitaryUnits, int& i
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 	{
 		if (checkCityState(getID()))
-			iFreeMilitaryUnits += getTotalPopulation() * GC.getDefineINT("FREE_UNITS_PER_STATE_MOD");
+			iFreeMilitaryUnits += getTotalPopulation() * GC.getFREE_UNITS_PER_STATE_MOD();
 	}	
 //doto city states 
 
@@ -6714,6 +6772,25 @@ int CvPlayer::calculateUnitCost(int& iFreeUnits, int& iFreeMilitaryUnits, int& i
 			iExtraUnits); // advc.004b
 	iPaidMilitaryUnits = std::max(0, getNumMilitaryUnits() - iFreeMilitaryUnits +
 			iExtraUnits); // advc.004b
+
+//doto units bonus cap
+	if (GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP))
+	{
+		for (int i = 0; i < GC.getNumBonusInfos(); i++)
+		{
+			int eCap = getNumUnitBonusCaps((BonusTypes)i);
+			int eTotalCap = getTotalPlayerBonus((BonusTypes)i);
+			//if (eTotalCap != NULL || eCap != NULL)
+			if (GC.getGame().getBonusThatArePrereqForUnits((BonusTypes)i) > 0)
+			{
+				//doto units bonus cap - if the cap is above the cap these units will cost more...tweak to manage when loosing a source.
+				//meed to check how does that impact the AI.
+				iPaidMilitaryUnits += eCap > eTotalCap ? eCap - eTotalCap : 0;
+			}
+		}
+	}
+//doto units bonus cap
+
 	//iSupport = 0;
 	/*iBaseUnitCost = iPaidUnits * getGoldPerUnit();
 	iMilitaryCost = iPaidMilitaryUnits * getGoldPerMilitaryUnit();
@@ -6945,7 +7022,7 @@ int CvPlayer::calculateResearchModifier(TechTypes eTech,  // <advc.910>
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 	{
 		if (checkCityState(getID()))
-			iModifier += GC.getDefineINT("CITY_STATE_TECH_DIFFUSION_MOD") * std::min(2, GC.getGame().getNumCivCities());
+			iModifier += GC.getCITY_STATE_TECH_DIFFUSION_MOD() * std::min(2, GC.getGame().getNumCivCities());
 	}
 //doto city states 
 
@@ -7702,7 +7779,8 @@ void CvPlayer::convert(ReligionTypes eReligion, /* <advc.001v> */ bool bForce)
 	if (isActive())
 	{
 		killAll(BUTTONPOPUP_CHANGERELIGION);
-		if(iAnarchyLength > 0) {
+		if (iAnarchyLength > 0)
+		{
 			killAll(BUTTONPOPUP_CHOOSEPRODUCTION);
 			killAll(BUTTONPOPUP_CHOOSETECH);
 		}
@@ -7964,8 +8042,9 @@ int CvPlayer::getCapitalLossAnarchyLength() const // advc.132
 //		return 0;
 
 	int iAnarchyLength = 0;
-	
-	static int const iBASE_LOSS_CAPITAL_ANARCHY_LENGTH = GC.getDefineINT("BASE_LOSS_CAPITAL_ANARCHY_LENGTH"); // advc.opt
+	//DOTO cache
+	static int const iBASE_LOSS_CAPITAL_ANARCHY_LENGTH = GC.getBASE_LOSS_CAPITAL_ANARCHY_LENGTH();
+				//GC.getDefineINT("BASE_LOSS_CAPITAL_ANARCHY_LENGTH"); // advc.opt
 	iAnarchyLength += iBASE_LOSS_CAPITAL_ANARCHY_LENGTH;
 	iAnarchyLength += ((getNumCities() * GC.getInfo(GC.getMap().
 							getWorldSize()).getNumCitiesAnarchyPercent()) / 100);
@@ -10110,8 +10189,16 @@ void CvPlayer::setTurnActive(bool bNewValue, bool bDoTurn)
 
 			if (kGame.getElapsedGameTurns() > 0 && isAlive())
 			{
-					if (kGame.isMPOption(MPOPTION_SIMULTANEOUS_TURNS))
+				if (kGame.isMPOption(MPOPTION_SIMULTANEOUS_TURNS))
+				{
+//doto city states	-- seems that im mp game on the FIRST turn , there is an issue here.
+					//so if its as such skip the doturn here for these civs
+					if (!checkCityState(getID()))
 						doTurn();
+					else if (checkCityState(getID()) && kGame.getGameTurn() != 1)
+						doTurn();
+//doto city states
+				}
 				/*	K-Mod. Call CvTeam::doTurn at the start of this team's turn.
 					ie. when the leader's turn is activated.
 					Note: in simultaneous turns mode this is called by CvGame::doTurn,
@@ -10148,7 +10235,9 @@ void CvPlayer::setTurnActive(bool bNewValue, bool bDoTurn)
 					if (isActive())
 					{
 						/*  Make sure that Python events like Civ4lerts are
-							triggered before processing messages */
+							triggered before processing messages. Don't consider
+							those to be in-between-turn messages, however. */
+						GC.getGame().setInBetweenTurns(false);
 						CyArgsList pyArgs;
 						pyArgs.add(kGame.getTurnSlice());
 						CvEventReporter::getInstance().genericEvent("gameUpdate", pyArgs.makeFunctionArgs());
@@ -10167,10 +10256,8 @@ void CvPlayer::setTurnActive(bool bNewValue, bool bDoTurn)
 				else if (kGame.isFinalInitialized()) // No initial autosave here
 					kGame.autoSave(); // <advc.106l>
 			} // </advc.044>
-			// <advc.106b> Clear messages in any case (in particular during AIAutoPlay)
-			for (size_t i = 0; i < m_aMajorMsgs.size(); i++)
-				SAFE_DELETE(m_aMajorMsgs[i]);
-			m_aMajorMsgs.clear(); // </106b>
+			// advc.106b: Clear messages in any case (in particular during AIAutoPlay)
+			clearMessageCopies();
 		}
 
 		if (isActive())
@@ -11303,6 +11390,80 @@ void CvPlayer::changeBonusImport(BonusTypes eBonus, int iChange)
 		AI().AI_updateBonusValue(); // </advc.036>
 }
 
+//doto units bonus cap	
+void CvPlayer::changeNumUnitBonusCaps(BonusTypes eBonus, int iChange)
+{
+	if(iChange == 0)
+		return;	
+	m_aiUnitBonusCaps.add(eBonus, iChange);
+	FAssert(getNumUnitBonusCaps(eBonus) >= 0);
+}
+
+void CvPlayer::changeTotalPlayerBonus(BonusTypes eBonus)
+{
+	/*
+		since its hard to keep track of cities that may or may not be connected,
+		i decided to set the rule as, 
+		the cap will be based on the highest number of bonus that is available at one city, 
+		and that will be the cap of the empire.
+		meaning , lets say 2 cities, 1 with 3 iron and one not connected to the capital, with 1 iron.
+		the cap will be the 3 iron for the empire.
+		there were 2 options, loop on all the cities per player per change CvCity::changeNumBonuses
+		or run on the CvPlayer::doturn() 2 loops to reset and reassign the caps with the same logic of 
+		max(number of bonus in one city) for the empires cap.
+		maybe this is more efficiant.
+		another thing which is ok, that the city with iron that is not connected to the rest of the empire - 
+		its iron wont be added to the epmpires cap. also, if the city does not 
+		have iron, it will not act as a cap multiplier.
+	*/
+	//int eCurrent = m_aiTotalPlayerBonus.get(eBonus);
+	int eTempAmount = 0;
+	int eBestAmount = 0; // the highest amnount exists in all the cities
+	int eCityCount = 0; //number of cities with the bonus
+	int eCityPopTotal = 0; //to calcl the avg pop
+	int highestPop = 0; //to act as another modifier.
+	FOR_EACH_CITY_VAR(pLoopCity, *this)
+	{
+		eTempAmount = pLoopCity->getNumBonuses(eBonus);
+		if (eTempAmount > 0)
+		{
+			int eCityPop = pLoopCity->getPopulation();
+			eCityCount += 1;
+			eCityPopTotal += eCityPop;
+			if (eCityPop > highestPop)
+				highestPop = eCityPop;
+		}
+		if (eTempAmount >= eBestAmount)
+		{
+			eBestAmount = eTempAmount;
+		}
+	}  
+	//changed static only city num based to a more pop to city algoritem
+	if (eCityPopTotal == 0)
+	{
+		m_aiTotalPlayerBonus.set(eBonus, 0);
+		return;
+	}
+	int eAvgPop = (eCityPopTotal / eCityCount) + 1;//round up!
+	//m_aiTotalPlayerBonus.set(eBonus, (eBestAmount * eCityCount) * 2);
+	//int eMultip = eCityCount >= eAvgPop ? ((eCityCount * 2) - eAvgPop) + eAvgPop : eAvgPop; //give empires with more cities than avg pop an advantage + multiplier
+	int eMultip = eCityCount + eAvgPop; //give empires with more cities than avg pop an advantage
+	int eModifier = (eBestAmount * eAvgPop) + eMultip;
+	CvBonusInfo const& kBonus = GC.getInfo(eBonus);
+	//some specific bonus limitations
+	CvWString szString = kBonus.getDescription();
+	if (szString == gDLL->getText("TXT_KEY_BONUS_URANIUM"))
+		eModifier = eBestAmount + (highestPop - eAvgPop); 
+	else if (szString == L"Sulphur")
+		eModifier += 10;
+	else if (szString == L"Titanium")
+		eModifier += 15;
+	else if (szString == gDLL->getText("TXT_KEY_BONUS_IVORY"))
+		eModifier = eBestAmount + eCityCount;
+	
+	m_aiTotalPlayerBonus.set(eBonus, eModifier);
+}
+//doto units bonus cap
 
 void CvPlayer::changeImprovementCount(ImprovementTypes eImprov, int iChange)
 {
@@ -12326,7 +12487,7 @@ void CvPlayer::addMessage(CvTalkingHeadMessage const& kMessage)
 {
 	// <advc.706> Remove messages arriving during interlude from display immediately
 	CvGame const& kGame = GC.getGame();
-	if(kGame.isOption(GAMEOPTION_RISE_FALL) && isActive() &&
+	if (kGame.isOption(GAMEOPTION_RISE_FALL) && isActive() &&
 		kGame.getRiseFall().getInterludeCountdown() >= 0)
 	{
 		gDLL->UI().clearEventMessages();
@@ -12334,19 +12495,25 @@ void CvPlayer::addMessage(CvTalkingHeadMessage const& kMessage)
 	m_listGameMessages.push_back(kMessage);
 	// <advc.106b>
 	// Special treatment only for events in other civs' turns.
-	if(!kGame.isInBetweenTurns() && isActive())
+	if (!kGame.isInBetweenTurns() && isActive())
 		return;
 	/* DISPLAY_ONLY, COMBAT, CHAT, QUEST don't show up on the Event tab
 	   of the Turn Log, and therefore shouldn't count.
 	   (That is assuming that quests also send INFO messages, which I haven't
 	   verified - tbd.) */
 	InterfaceMessageTypes eMessage = kMessage.getMessageType();
-	if(eMessage == MESSAGE_TYPE_INFO || eMessage == MESSAGE_TYPE_MINOR_EVENT ||
+	if (eMessage == MESSAGE_TYPE_INFO || eMessage == MESSAGE_TYPE_MINOR_EVENT ||
 		eMessage == MESSAGE_TYPE_MAJOR_EVENT || eMessage == MESSAGE_TYPE_MAJOR_EVENT_LOG_ONLY)
 	{
 		m_iNewMessages++; // See comment in postProcessBeginTurnEvents
 	}
-	if(eMessage == MESSAGE_TYPE_MAJOR_EVENT)
+	/*	Hotseat clears some messages before players get to see them; we'll show them
+		again at the start of the recipient's next turn. */
+	bool const bMissedMsg = (kGame.isHotSeat() && isActive() &&
+			(eMessage == MESSAGE_TYPE_MINOR_EVENT ||
+			eMessage == MESSAGE_TYPE_MAJOR_EVENT ||
+			eMessage == MESSAGE_TYPE_INFO));
+	if (eMessage == MESSAGE_TYPE_MAJOR_EVENT || bMissedMsg)
 	{
 		/*  Need to make a copy b/c, apparently, the EXE deletes the original
 			before postProcessBeginTurnEvents gets called. */
@@ -12357,11 +12524,40 @@ void CvPlayer::addMessage(CvTalkingHeadMessage const& kMessage)
 				MESSAGE_TYPE_MAJOR_EVENT, kMessage.getIcon(), kMessage.getFlashColor(),
 				kMessage.getX(), kMessage.getY(), kMessage.getOffScreenArrows(),
 				kMessage.getOnScreenArrows());
-		m_aMajorMsgs.push_back(pCopy);
+		if (eMessage == MESSAGE_TYPE_MAJOR_EVENT)
+			m_aMajorMsgs.push_back(pCopy);
+		if (bMissedMsg)
+			m_aHotSeatMsgs.push_back(pCopy);
 	} // </advc.106b>
 }
 
 // <advc.106b>
+void CvPlayer::clearMessageCopies(std::vector<CvTalkingHeadMessage*>* pContainer)
+{
+	if (pContainer == NULL)
+	{
+		clearMessageCopies(&m_aMajorMsgs);
+		clearMessageCopies(&m_aHotSeatMsgs);
+		return;
+	}
+	for(size_t i = 0; i < pContainer->size(); i++)
+		SAFE_DELETE((*pContainer)[i]);
+	pContainer->clear();
+}
+
+void CvPlayer::showMessageCopies(std::vector<CvTalkingHeadMessage*>* pContainer)
+{
+	if (pContainer == NULL)
+	{
+		showMessageCopies(&m_aMajorMsgs);
+		showMessageCopies(&m_aHotSeatMsgs);
+		return;
+	}
+	for (size_t i = 0; i < pContainer->size(); i++)
+		gDLL->UI().showMessage(*(*pContainer)[i]);
+}
+
+
 void CvPlayer::postProcessMessages()
 {
 	/* Determining how many messages are being displayed:
@@ -12380,33 +12576,33 @@ void CvPlayer::postProcessMessages()
 	   b/c of the splash screen. Don't want to suppress it b/c it should go
 	   into the log, but don't count it when deciding whether to open the log
 	   b/c the tech finished message doesn't take up much attention. */
-	if(getCurrentResearch() == NO_TECH)
+	if (getCurrentResearch() == NO_TECH)
 		m_iNewMessages--;
 	// Don't open the Turn Log when there's only first-contact diplo
 	bool bRelevantDiplo = false;
-	if(!m_listDiplomacy.empty() && m_iNewMessages > 0)
+	if (!m_listDiplomacy.empty() && m_iNewMessages > 0)
 	{
 		TCHAR const* aszRelevantNonOffers[] = { "CANCEL_DEAL", "RELIGION_PRESSURE",
 			"CIVIC_PRESSURE", "JOIN_WAR", "STOP_TRADING",
 		};
-		for(CvDiploQueue::const_iterator it = m_listDiplomacy.begin(); it !=
+		for (CvDiploQueue::const_iterator it = m_listDiplomacy.begin(); it !=
 			m_listDiplomacy.end(); ++it)
 		{
 			CvDiploParameters* dp = *it;
-			if(dp == NULL)
+			if (dp == NULL)
 			{
 				FAssert(dp != NULL);
 				continue;
 			}
-			if(dp->getHumanDiplo() || dp->getOurOfferList().getLength() > 0 ||
+			if (dp->getHumanDiplo() || dp->getOurOfferList().getLength() > 0 ||
 				dp->getTheirOfferList().getLength() > 0)
 			{
 				bRelevantDiplo = true;
 				break;
 			}
-			for(int i = 0; i < ARRAYSIZE(aszRelevantNonOffers); i++)
+			for (int i = 0; i < ARRAYSIZE(aszRelevantNonOffers); i++)
 			{
-				if(dp->getDiploComment() == GC.getAIDiploCommentType(aszRelevantNonOffers[i]))
+				if (dp->getDiploComment() == GC.getAIDiploCommentType(aszRelevantNonOffers[i]))
 				{
 					bRelevantDiplo = true;
 					break;
@@ -12414,37 +12610,33 @@ void CvPlayer::postProcessMessages()
 			}
 		}
 	}
-	if (!GC.getGame().getAIAutoPlay() && iLimit >= 0 && (m_iNewMessages > iLimit ||
-		(m_iNewMessages > 0 && (bRelevantDiplo ||
-		/*  Hotseat seems to show messages only if there hasn't been another
-			human turn since the message was triggered (can't check that here;
-			have to show the Turn Log in all cases). */
-		GC.getGame().isHotSeat()))))
+	bool const bHotSeat = GC.getGame().isHotSeat();
+	if (!GC.getGame().getAIAutoPlay())
 	{
-		gDLL->UI().clearEventMessages();
-		if(!GC.getGame().isHotSeat())
+		if (iLimit >= 0 && (m_iNewMessages > iLimit ||
+			(m_iNewMessages > 0 && bRelevantDiplo)))
 		{
+			gDLL->UI().clearEventMessages();
 			/*  Show major events even if the Turn Log gets opened. As with
 				NewMessages, CvPlayer needs to keep track of the recent messages;
 				use aMajorMsgs for that. */
-			for(size_t i = 0; i < m_aMajorMsgs.size(); i++)
-				gDLL->UI().showMessage(*m_aMajorMsgs[i]);
+			showMessageCopies(&m_aMajorMsgs);
+			gDLL->UI().showTurnLog();
 		}
-		gDLL->UI().showTurnLog();
+		// Messages that were missed b/c they were cleared too early
+		else if (bHotSeat)
+			showMessageCopies(&m_aHotSeatMsgs);
 	}
 	// Clear messages in any case
-	for(size_t i = 0; i < m_aMajorMsgs.size(); i++)
-		SAFE_DELETE(m_aMajorMsgs[i]);
-	m_aMajorMsgs.clear();
-	GC.getGame().setInBetweenTurns(false);
+	clearMessageCopies();
 }
 
 int CvPlayer::getStartOfTurnMessageLimit() const
 {
-	if(!BUGOption::isEnabled("MainInterface__AutoOpenEventLog", true))
+	if (!BUGOption::isEnabled("MainInterface__AutoOpenEventLog", true))
 		return -1;
 	int iR = BUGOption::getValue("MainInterface__MessageLimit", 3);
-	if(!isOption(PLAYEROPTION_MINIMIZE_POP_UPS) &&
+	if (!isOption(PLAYEROPTION_MINIMIZE_POP_UPS) &&
 		GC.getDefineINT("MESSAGE_LIMIT_WITHOUT_MPU") == 0)
 	{
 		return -1;
@@ -15472,28 +15664,6 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	int iLoop;
 	for (CvCity* pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
 	{
-		
-		for (int iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
-		{
-//doto governor
-//			if (pLoopCity->getFreeSpecialistCount((SpecialistTypes)iI) > 0)
-//			{
-				if ((SpecialistTypes)iI != (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_GOVERNOR", true)
-					//doto fix
-					&& GC.getCivicInfo(eCivic).getFreeSpecialistCount(iI) > 0
-					)
-				{
-					//doto governor
-					pLoopCity->changeFreeSpecialistCount((SpecialistTypes)iI, (GC.getCivicInfo(eCivic).getFreeSpecialistCount(iI) * iChange));
-				}
-//				else
-//				{
-					//probably redundent, but just incase when switching to a 
-					//civic with no free from one that had a free -> make sure to rest the count //probably redundent, but just incase when switching to a 
-//					pLoopCity->changeFreeSpecialistCount((SpecialistTypes)iI, 0);
-//				}
-//			}
-		}
 		pLoopCity->updateBuildingCommerceChange(eCivic, iChange);
 		pLoopCity->updateBuildingYieldChange(eCivic, iChange);
 	}
@@ -15852,6 +16022,10 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	{
 		m_aiBonusExport.read(pStream);
 		m_aiBonusImport.read(pStream);
+//doto units bonus cap		
+		m_aiUnitBonusCaps.read(pStream);
+		m_aiTotalPlayerBonus.read(pStream);
+//doto units bonus cap		
 		m_aiImprovementCount.read(pStream);
 		m_aiFreeBuildingCount.read(pStream);
 		m_aiExtraBuildingHappiness.read(pStream);
@@ -15877,6 +16051,10 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	{
 		m_aiBonusExport.readArray<int>(pStream);
 		m_aiBonusImport.readArray<int>(pStream);
+//doto units bonus cap			
+		m_aiUnitBonusCaps.readArray<int>(pStream);
+		m_aiTotalPlayerBonus.readArray<int>(pStream);
+//doto units bonus cap			
 		m_aiImprovementCount.readArray<int>(pStream);
 		m_aiFreeBuildingCount.readArray<int>(pStream);
 		m_aiExtraBuildingHappiness.readArray<int>(pStream);
@@ -16490,6 +16668,10 @@ void CvPlayer::write(FDataStreamBase* pStream)
 
 	m_aiBonusExport.write(pStream);
 	m_aiBonusImport.write(pStream);
+//doto units bonus cap	
+	m_aiUnitBonusCaps.write(pStream);
+	m_aiTotalPlayerBonus.write(pStream);
+//doto units bonus cap	
 	m_aiImprovementCount.write(pStream);
 	m_aiFreeBuildingCount.write(pStream);
 	m_aiExtraBuildingHappiness.write(pStream);
@@ -16579,7 +16761,7 @@ void CvPlayer::write(FDataStreamBase* pStream)
 		/*	<advc.001> Don't store popups for AI players. The EXE sometimes adds popups
 			to AI players through CvPlayer::getPopups; not sure when and why. Those popups
 			linger and appear when switching to an AI player through Alt+Z. */
-		if (!isActive())
+		if (!isHuman())
 		{
 			currentPopups.clear();
 			clearPopups();
@@ -20360,9 +20542,7 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 			{
 				setTradeItem(&item, TRADE_RESOURCES, eLoopBonus);
 				if (!canTradeItem(eOtherPlayer, item))
-				{
 					continue;
-				}
 				// <advc.074>
 				bool const bHuman = (bOtherHuman || isHuman());
 				bool bValid = (!bHuman || getTradeDenial(eOtherPlayer, item) != DENIAL_JOKING);
@@ -22128,7 +22308,7 @@ int CvPlayer::getCultureGoldenAgeThreshold() const
 {
 	int iThreshold;
 
-	iThreshold = (GC.getDefineINT("CULTURE_GOLDEN_AGE_THRESHOLD") * std::max(0, (getCultureGoldenAgesStarted())));
+	iThreshold = (GC.getCULTURE_GOLDEN_AGE_THRESHOLD() * std::max(0, (getCultureGoldenAgesStarted())));
 
 	iThreshold *= GC.getGameSpeedInfo(GC.getGame().getGameSpeedType()).getGreatPeoplePercent();
 	iThreshold /= 100;
@@ -22155,11 +22335,15 @@ bool CvPlayer::checkCityState(PlayerTypes ePlayer) const
 	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 		return false;
 	CvPlayer& kPlayer = GET_PLAYER(ePlayer);
-	bool isOurCityState = GC.getCivilizationInfo(kPlayer.getCivilizationType()).getIsCityState() == 1;
+	CivilizationTypes eCiv = kPlayer.getCivilizationType();
+	if (eCiv == NO_CIVILIZATION)
+		return false;
+	CvCivilizationInfo & kCivInfo = GC.getCivilizationInfo(eCiv);
+	return kCivInfo.getIsCityState() == 1;
 	
-	if (isOurCityState)
-		return true;
-	return false;
+	//if (isOurCityState)
+	//	return true;
+	//return false;
 }
 
 TraitTypes CvPlayer::getMemberUniqueTrait(PlayerTypes ePlayer) const

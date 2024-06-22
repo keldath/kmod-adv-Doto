@@ -192,6 +192,20 @@ public:
 	CvUnit* getBestDefender(PlayerTypes eOwner, DefenderFilters& kFilters) const;
 	// </advc>
 	// BETTER_BTS_AI_MOD, Lead From Behind (UncutDragon), 02/21/10, jdog5000:
+// MOD - START - Ranged Strike AI	
+// i had to duplicate the function getBestDefender - see text in cvplot cpp.
+//i should try to use the advciv function ...but i got tired trying
+	CvUnit* getBestDefenderVsRanged(PlayerTypes eOwner, PlayerTypes eAttackingPlayer = NO_PLAYER, CvUnit const* pAttacker = NULL,
+			bool bTestEnemy = false, bool bTestPotentialEnemy = false,
+			bool bTestVisible = false, // advc.028
+			/*	advc: New params to allow hasDefender checks.
+				advc.089: bTestCanAttack = true by default. */
+			bool bTestCanAttack = true, bool bTestAny = false,
+			/*	(Ideally, this should be swapped with bTestVisible to stay closer
+				to the original code. bTestCanMove had been unused for a while.
+				Not going to change this now, too error-prone.) */
+			bool bTestCanMove = false) const;
+// MOD - END - Ranged Strike AI
 	bool hasDefender(bool bTestCanAttack, PlayerTypes eOwner,
 			PlayerTypes eAttackingPlayer = NO_PLAYER, const CvUnit* pAttacker = NULL,
 			bool bTestAtWar = false, bool bTestPotentialEnemy = false

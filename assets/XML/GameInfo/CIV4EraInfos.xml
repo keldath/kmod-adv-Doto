@@ -65,7 +65,7 @@ era trans faster
 			<iAdvancedStartPoints>400</iAdvancedStartPoints>
 			<iStartingUnitMultiplier>1</iStartingUnitMultiplier>
 			<iStartingDefenseUnits>1</iStartingDefenseUnits>
-			<iStartingWorkerUnits>1</iStartingWorkerUnits>
+			<iStartingWorkerUnits>0</iStartingWorkerUnits>
 			<iStartingExploreUnits>1</iStartingExploreUnits>
 			<iStartingGold>0</iStartingGold>
 			<iFreePopulation>0</iFreePopulation>

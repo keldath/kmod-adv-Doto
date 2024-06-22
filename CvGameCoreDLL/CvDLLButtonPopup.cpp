@@ -1357,7 +1357,8 @@ bool CvDLLButtonPopup::launchDiploVotePopup(CvPopup* pPopup, CvPopupInfo &info)
 			if (!GC.getGame().isTeamVoteEligible(itTeam->getID(), eVoteSource))
 				continue;
 			if (eMasterTeam == NO_TEAM || eMasterTeam == itTeam->getID() ||
-				itTeam->isActive())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+				itTeam->getID() == GC.getGame().getActiveTeam())
 			{
 				m_kUI.popupAddGenericButton(pPopup, itTeam->getName().GetCString(),
 						NULL, itTeam->getID(), WIDGET_GENERAL);

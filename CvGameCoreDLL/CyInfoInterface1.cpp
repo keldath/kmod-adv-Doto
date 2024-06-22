@@ -508,7 +508,6 @@ void CyInfoPythonInterface1()
 		.def("getTradeYieldModifier", &CvCivicInfo::getTradeYieldModifier, "int (int i)")
 		// < Civic Infos Plus Start >
 		.def("getSpecialistExtraYields", &CvCivicInfo::getSpecialistExtraYield, "int (int i)")
-		.def("getFreeSpecialistCount", &CvCivicInfo::getFreeSpecialistCount, "int (int i)")
 		.def("getStateReligionYieldModifier", &CvCivicInfo::getStateReligionYieldModifier, "int (int i)")
 		.def("getStateReligionCommerceModifier", &CvCivicInfo::getStateReligionCommerceModifier, "int (int i)")
 		.def("getNonStateReligionYieldModifier", &CvCivicInfo::getNonStateReligionYieldModifier, "int (int i)")

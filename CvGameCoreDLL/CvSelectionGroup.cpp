@@ -13,6 +13,8 @@
 #include "CvInfo_Terrain.h" // for getBestBuildRoute
 //#include "CvInfo_Unit.h" // for canAnyMoveAllTerrain (now in PCH)
 #include "CySelectionGroup.h"
+//doto Range Strike
+#include "CvInfo_GameOption.h"
 
 // K-Mod:
 GroupPathFinder* CvSelectionGroup::m_pPathFinder = NULL; // advc.pf: pointer
@@ -220,10 +222,6 @@ void CvSelectionGroup::doTurn()
 			pUnit->doTurn();
 			if (pUnit->isHurt())
 				bHurt = true;
-
-			//doto governor testfortifyModifier :isWaiting() ->movesLeft() >isWaiting()
-			if (GC.getInfo((UnitTypes)pUnit->getUnitType()).getGovernor() > 0 && !pUnit->getGroup()->isWaiting())
-				pushMission(MISSION_FORTIFY, -1, -1, NO_MOVEMENT_FLAGS, false, false, NO_MISSIONAI, 0);
 		}
 	}
 
@@ -1837,15 +1835,6 @@ bool CvSelectionGroup::canDoInterfaceMode(InterfaceModeTypes eInterfaceMode)
 
 	FOR_EACH_UNIT_IN(pUnit, *this)
 	{
-		//doto governor - remove commands for the unit
-		//if (GC.getUnitInfo(getUnitType()).cantGovernorDoCommand(pUnit->getUnitType()))
-		//pUnit->getUnitType()
-		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-		{
-			if (pUnit->cantGovernorDoCommand())
-				break;
-		}
-		//doto governor - deny unit governor to do any of these actions
 		switch (eInterfaceMode)
 		{
 		case INTERFACEMODE_GO_TO:
@@ -1950,13 +1939,6 @@ bool CvSelectionGroup::canDoInterfaceModeAt(InterfaceModeTypes eInterfaceMode, C
 	{
 		if (pUnit == NULL)
 			continue;
-		//doto governor - deny unit governor to do the action
-		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-		{
-			if (pUnit->cantGovernorDoCommand())
-				break;
-		}
-		//doto governor - deny unit governor to do the action
 		switch (eInterfaceMode)
 		{
 		case INTERFACEMODE_AIRLIFT:
@@ -2404,7 +2386,28 @@ bool CvSelectionGroup::canBombard(CvPlot const& kPlot) const
 	}
 	return false;
 }
-
+//doto Range Strike
+bool CvSelectionGroup::canRanged(const CvPlot* pPlot, int ix, int iy) const // advc: CvPlot reference, const.
+{
+	//if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK)) 
+	//{
+	//	return false;
+	//}
+	for (CLLNode<IDInfo> const* pUnitNode = headUnitNode(); pUnitNode != NULL;
+		pUnitNode = nextUnitNode(pUnitNode))
+	{
+		CvUnit const* pLoopUnit = ::getUnit(pUnitNode->m_data);
+		if (pPlot != NULL && ix != NULL && iy != NULL)
+		{
+			if (pLoopUnit->canRangeStrikeAt(pPlot, ix, iy))
+				return true;
+		}
+		if (pLoopUnit->canRangeStrike())
+			return true;
+	}
+	return false;
+}
+//doto Range Strike
 int CvSelectionGroup::visibilityRange() const // advc: const; return type was bool
 {
 	int iMaxRange = 0;
@@ -2702,6 +2705,36 @@ bool CvSelectionGroup::groupAttack(int iX, int iY, MovementFlags eFlags,
 			// advc.048: AI_getBestGroupSacrifice moved into AI_getBestGroupAttacker
 
 			bAttack = true;
+
+			// MOD - START - Ranged Strike AI
+			// TODO: Add a hotkey to allow humans to auto-fire their ranged attacks first?
+			if (!isHuman())
+			{
+				if (iAttackOdds < GC.getDefineINT(CvGlobals::SKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS))
+				{
+					CvUnit* pBestRangedUnit = AI().AI_getBestGroupRangeAttacker(pDestPlot);
+
+					bool bRangeStrike = false;
+					while (pBestRangedUnit != NULL && pBestRangedUnit->rangeStrike(pDestPlot->getX(), pDestPlot->getY()))
+					{
+						bRangeStrike = true;
+						pBestRangedUnit = AI().AI_getBestGroupRangeAttacker(pDestPlot);
+					}
+
+					if (bRangeStrike)
+					{
+						pBestAttackUnit = AI().AI_getBestGroupAttacker(pDestPlot, false,
+												iAttackOdds, false, /* advc.164: */ !bBlitz,
+														!bMaxSurvival, bMaxSurvival); // advc.048
+						if (pBestAttackUnit == NULL)
+						{
+							// There aren't any attack units left with moves after range striking
+							break;
+						}
+					}
+				}
+			}
+			// MOD - END - Ranged Strike AI
 
 			if (GC.getPythonCaller()->doCombat(*this, *pDestPlot))
 				break;
@@ -3318,13 +3351,6 @@ bool CvSelectionGroup::canDoMission(MissionTypes eMission, int iData1, int iData
 		case MISSION_MOVE_TO:
 			if (!bValid)
 			{
-				//doto governor
-				if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-				{
-					if (pUnit->cantGovernorDoCommand())
-						break;
-				}
-				//doto governor - deny unit governor to do any of these actions
 				if (pPlot->at(iData1, iData2))
 					return false;
 				if (!bCheckMoves)
@@ -3339,13 +3365,6 @@ bool CvSelectionGroup::canDoMission(MissionTypes eMission, int iData1, int iData
 		case MISSION_ROUTE_TO:
 			if (!bValid)
 			{
-				//doto governor
-				if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-				{
-					if (pUnit->cantGovernorDoCommand())
-						break;
-				}
-				//doto governor - deny unit governor to do any of these actions
 				if (pPlot->at(iData1, iData2) &&
 					getBestBuildRoute(*pPlot) == NO_ROUTE)
 				{
@@ -3362,13 +3381,6 @@ bool CvSelectionGroup::canDoMission(MissionTypes eMission, int iData1, int iData
 		case MISSION_MOVE_TO_UNIT:
 		{
 			FAssert(iData1 > NO_PLAYER);
-			//doto governor
-			if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-			{
-				if (pUnit->cantGovernorDoCommand())
-					break;
-			}
-			//doto governor - deny unit governor to do any of these actions
 			CvUnit* pTargetUnit = GET_PLAYER((PlayerTypes)iData1).getUnit(iData2);
 			if (!bValid)
 			{
@@ -3389,13 +3401,6 @@ bool CvSelectionGroup::canDoMission(MissionTypes eMission, int iData1, int iData
 			break;
 
 		case MISSION_SLEEP:
-			//doto governor
-			if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-			{
-				if (pUnit->cantGovernorDoCommand())
-					break;
-			}
-			//doto governor - deny unit governor to do any of these actions
 			if (pUnit->canSleep(pPlot))
 				return true;
 			break;
@@ -3439,13 +3444,6 @@ bool CvSelectionGroup::canDoMission(MissionTypes eMission, int iData1, int iData
 			break;
 		// </advc.004l>
 		case MISSION_SENTRY:
-			//doto governor
-			if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-			{
-				if (pUnit->cantGovernorDoCommand())
-					break;
-			}
-			//doto governor - deny unit governor to do any of these actions
 			if (pUnit->canSentry(pPlot))
 				return true;
 			break;
@@ -3827,7 +3825,7 @@ void CvSelectionGroup::setActivityType(ActivityTypes eNewValue)
 				pUnit->NotifyEntity(MISSION_IDLE); // don't idle intercept animation
 			}
 		}
-		if (isActiveTeam())
+		if (getTeam() == GC.getGame().getActiveTeam() /* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */)
 		{
 			if (pPlot != NULL) // advc (note): This can occur
 				pPlot->setFlagDirty(true);

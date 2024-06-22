@@ -96,10 +96,6 @@ civilians = ['Farmer', 'Miner', 'Laborer'] # index aligned to below - should use
 civiliansIdx = ['SPECIALIST_FARMER', 'SPECIALIST_MINER', 'SPECIALIST_LABORER']
 g_iFreeCivilians = 0
 # doto specialis instead of pop end
-# DOTO governor start
-governor = ['Governor', 'SPECIALIST_GOVERNOR']
-
-# DOTO governor end
 
 g_szTimeText = ""
 gAlignedScoreboard = None # advc.085
@@ -1287,12 +1283,10 @@ class CvMainInterface:
 
 		self.visibleSpecialists = []
 		for i in range(gc.getNumSpecialistInfos() - 1, -1, -1):
-# doto specialis instead of pop start - city state - do not display civiliazns
-			spec_desc = gc.getSpecialistInfo(i).getDescription()
 			if (gc.getSpecialistInfo(i).isVisible() and
-			 spec_desc not in civilians 
-			 and spec_desc not in governor):
-				self.visibleSpecialists.append(i)
+# doto specialis instead of pop start - city state - do not display civiliazns
+				gc.getSpecialistInfo(i).getDescription() not in civilians):
+					self.visibleSpecialists.append(i)
 		# Lots of buttons on the right panel; need to be careful about scaling those up.
 		iCitizenBtnSize = BTNSZ(24, 0.3)
 		iAdjustBtnSize = (20 * iCitizenBtnSize) / 24
@@ -2634,6 +2628,10 @@ class CvMainInterface:
 			screen.hide("FoVSliderText")
 			screen.hide("FoVSlider")
 # BUG - field of view slider - end
+# doto units bonus cap
+			if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_UNITS_BONUS_CAP):
+				screen.hide("UnitsBonusesCap")
+# doto units bonus cap
 		elif (CyInterface().isCityScreenUp()):
 			screen.show("LowerLeftCornerPanel")
 			#screen.show("LowerLeftCornerBackgr")
@@ -3777,12 +3775,9 @@ class CvMainInterface:
 		lFirstFreeSpecialist = gRect("FirstFreeSpecialist")
 		if iFreeSpecialistCount > MAX_CITIZEN_BUTTONS:
 			for iSpecialist in range(gc.getNumSpecialistInfos()):
-				spec_desc = gc.getSpecialistInfo(iSpecialist).getDescription()
-				if pHeadSelectedCity.getFreeSpecialistCount(iSpecialist) > 0:			
+				if pHeadSelectedCity.getFreeSpecialistCount(iSpecialist) > 0:
 # doto specialis instead of pop start - city states	
-# doto governor		
-					if (iCount < MAX_CITIZEN_BUTTONS and spec_desc not in civilians			
-			 				and spec_desc not in governor):
+					if (iCount < MAX_CITIZEN_BUTTONS and gc.getSpecialistInfo(iSpecialist).getDescription() not in civilians):
 						szName = "FreeSpecialist" + str(iCount)
 						screen.setImageButton(szName,
 								gc.getSpecialistInfo(iSpecialist).getTexture(),
@@ -3795,12 +3790,9 @@ class CvMainInterface:
 					iCount += 1
 		else:
 			for iSpecialist in range(gc.getNumSpecialistInfos()):
-				spec_desc = gc.getSpecialistInfo(iSpecialist).getDescription()
 				for j in range(pHeadSelectedCity.getFreeSpecialistCount(iSpecialist)):
-# doto specialis instead of pop start - city state 
-# doto governor	added line also			
-					if (iCount < MAX_CITIZEN_BUTTONS and spec_desc not in civilians				
-			 				and spec_desc not in governor):
+# doto specialis instead of pop start - city state					
+					if (iCount < MAX_CITIZEN_BUTTONS and gc.getSpecialistInfo(iSpecialist).getDescription() not in civilians):
 						szName = "FreeSpecialist" + str(iCount)
 						screen.setImageButton(szName,
 								gc.getSpecialistInfo(iSpecialist).getTexture(),
@@ -3926,11 +3918,8 @@ class CvMainInterface:
 		iFreeSpecialists = 0
 		for iSpecialist in range(gc.getNumSpecialistInfos()):
 # doto specialis instead of pop start - city states
-#doto governor	added line		
-			spec_desc = gc.getSpecialistInfo(iSpecialist).getDescription()
-			if (spec_desc not in civilians and spec_desc not in governor):
+			if gc.getSpecialistInfo(iSpecialist).getDescription() not in civilians:	
 				iFreeSpecialists += pHeadSelectedCity.getFreeSpecialistCount(iSpecialist)
-# doto specialists instead if pop start - city states
 		if iFreeSpecialists > 0:
 			iStackWidth = min(gRect("StackerRows").width() / iFreeSpecialists,
 					MAX_SPECIALIST_BUTTON_SPACING)
@@ -3943,11 +3932,9 @@ class CvMainInterface:
 			g_iMaxEverFreeSpecialists = max(g_iMaxEverFreeSpecialists, iFreeSpecialists)
 		iCount = 0
 		for iSpecialist in range(gc.getNumSpecialistInfos() - 1, -1, -1):
-			spec_desc = gc.getSpecialistInfo(iSpecialist).getDescription()
 			for j in range(pHeadSelectedCity.getFreeSpecialistCount(iSpecialist)):
-# doto specialis instead of pop start - city states
-#doto governor ALSO ADDED A LINE			
-				if (spec_desc not in civilians and spec_desc not in governor):
+# doto specialis instead of pop start - city states			
+				if gc.getSpecialistInfo(iSpecialist).getDescription() not in civilians:	
 					szName = "Stacker_FreeSpecialist" + str(iCount)
 					gSetRectangle(szName, lFreeSpecialistButtons.next())
 					self.setImageButton(szName, gc.getSpecialistInfo(iSpecialist).getTexture(),
@@ -4011,11 +3998,9 @@ class CvMainInterface:
 				#	gRect("GreatPeopleBar").height()#27  164  | 91-34=57  57-34=23  23-34=-11
 				#iYOffset = 282
 				lRect = lSpecialistButtons.next()
-# doto specialis instead of pop start -city states
-# doto governor also added a line	
-				spec_desc = gc.getSpecialistInfo(iSpecialist).getDescription()
+# doto specialis instead of pop start -city states		
 				if (k >= pHeadSelectedCity.getSpecialistCount(iSpecialist) and
-					spec_desc not in civilians and spec_desc not in governor):
+					gc.getSpecialistInfo(iSpecialist).getDescription() not in civilians):
 # doto specialis instead of pop start -city states
 					szName = "IncrCitizenBanner" + szIndex
 					gSetRectangle(szName, lRect)
@@ -4572,6 +4557,10 @@ class CvMainInterface:
 		if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_CULTURE_WONDER_LIMIT):
 			screen.hide( "WonderLimit" )
 #doto - wonder limit
+# doto units bonus cap
+		if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_UNITS_BONUS_CAP):
+			screen.hide("UnitsBonusesCap")
+# doto units bonus cap	
 		for i in range(g_iNumLeftBonus):
 			szName = "LeftBonusItem" + str(i)
 			screen.hide(szName)
@@ -4629,10 +4618,6 @@ class CvMainInterface:
 					ecounter += 1
 				counter += 1
 # doto specialists instead of population - for city states	1/2
-# DOTO governor
-		if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_GOVERNOR):
-			screen.hide("Governor")	
-# DOTO governor
 
 		# advc: Deal with the non-city branch first (to reduce indentation)
 		if not CyInterface().isCityScreenUp():
@@ -4737,10 +4722,7 @@ class CvMainInterface:
 		else:
 			szBuffer += u"%s: %d" %(pHeadSelectedCity.getName(), pHeadSelectedCity.getPopulation())
 # doto specialists instead of population - for city states 2/2
-# doto governor
-		if (gc.getGame().isOption(GameOptionTypes.GAMEOPTION_GOVERNOR)):
-			screen.setImageButton("Governor", gc.getSpecialistInfo(gc.getInfoTypeForString(governor[1])).getTexture(), screen.centerX(512) + 350 + 25 + (1 * 25), 150, 45, 55, WidgetTypes.WIDGET_FREE_CITIZEN, 14, 1 )
-# doto governor
+
 		if (pHeadSelectedCity.isOccupation()):
 			szBuffer += u" (%c:%d)" %(CyGame().getSymbolID(FontSymbols.OCCUPATION_CHAR),
 					pHeadSelectedCity.getOccupationTimer())
@@ -5185,16 +5167,19 @@ class CvMainInterface:
 				wonderLimitStatus = localText.getText("TXT_KEY_CONCEPT_WONDER_LIMIT_ABOVE", (gc.getCommerceInfo(CommerceTypes.COMMERCE_CULTURE).getChar(),countWonder,cultureWonderLimit,))	
 			# justify was on 125 org	
 			#this gets the hover text from the dll: WidgetTypes.WIDGET_WONDER_LIMITS
-			screen.setLabel("WonderLimit", "Background", wonderLimitStatus, CvUtil.FONT_RIGHT_JUSTIFY, 260, self.yResolution - 180, -0.1, FontTypes.GAME_FONT, WidgetTypes.WIDGET_WONDER_LIMITS, -1, -1)
-			screen.hide( "WonderLimit" )#probably not needed - look below
+			screen.setLabel("WonderLimit", "Background", wonderLimitStatus, CvUtil.FONT_LEFT_JUSTIFY, gRect("CityLeftPanelContents").width() + 18, int(screen.getYResolution() / 4) - 20, -0.1, FontTypes.GAME_FONT, WidgetTypes.WIDGET_WONDER_LIMITS, -1, -1)			
+			screen.show( "WonderLimit" )	
 #doto - wonder limit end
 		screen.show("BuildingListBackground")
 		screen.show("TradeRouteListBackground")
 		screen.show("BuildingListLabel")
-#doto - wonder limit - i should just place the code here
-		if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_CULTURE_WONDER_LIMIT):
-			screen.show( "WonderLimit" )
-#doto - wonder limit	
+# doto units bonus cap
+		if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_UNITS_BONUS_CAP):
+			eCapText = localText.getText("TXT_KEY_UNITS_BONUS_CAP_CONCEPT", (gc.getYieldInfo(YieldTypes.YIELD_PRODUCTION).getChar(), ))
+			screen.setLabel("UnitsBonusesCap", "Background", eCapText, CvUtil.FONT_LEFT_JUSTIFY, gRect("CityLeftPanelContents").width() + 18 ,int(screen.getYResolution() / 4) , -0.1,
+											 FontTypes.GAME_FONT, WidgetTypes.WIDGET_TRAIN_UNITS_CAP, -1, -1)
+			screen.show("UnitsBonusesCap")
+# doto units bonus cap			
 # BUG - Raw Yields - start
 		if (CityScreenOpt.isShowRawYields()):
 			screen.setState("RawYieldsTrade0", not g_bYieldView)

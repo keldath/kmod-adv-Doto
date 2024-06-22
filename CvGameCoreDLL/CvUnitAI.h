@@ -219,7 +219,14 @@ protected:
 			MovementFlags eFlags = NO_MOVEMENT_FLAGS, int iMinStack = 0,
 			bool bAllowCities = true, bool bFollow = false);
 	// BETTER_BTS_AI_MOD: END
-	bool AI_rangeAttack(int iRange);
+	// MOD - START - Ranged Strike AI
+	CvPlot* AI_rangeStrikeTargetPlot();
+	bool AI_rangeAttack(MovementFlags iFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
+	bool AI_rangeAttackCity();
+	bool AI_rangeAttackOrSkip(MovementFlags iFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
+	bool AI_rangeAttackOrFortify(MovementFlags iFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
+	
+	// MOD - END - Ranged Strike AI
 	bool AI_leaveAttack(int iRange, int iThreshold, int iStrengthThreshold);
 	bool AI_defensiveCollateral(int iThreshold, int iSearchRange); // K-Mod
 	bool AI_evacuateCity(); // advc.139

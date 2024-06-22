@@ -2,7 +2,35 @@
 <!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by Jesse Smith (Firaxis Games) -->
 <!-- Sid Meier's Civilization 4 -->
 <!-- Copyright Firaxis Games 2005 -->
-<!-- -->
+<!--
+VictoryInfos	This tag begins and ends the file. All other tags are contained within the opening and closing VictoryInfos tags.
+VictoryInfo	This contains the information for each victory condition.
+Text
+Tag Name	Description
+Type	This tag declares the internal name of the victory condition. It is used to refer to this specific victory condition in other files.
+Description	This text tag is a reference to an entry in the text files that controls the display name in various languages for the victory condition.
+Civilopedia	Another text tag which refers to the multi-language Civilopedia entry for this victory condition.
+CityCulture	Sets the minimum culturelevel a city needs to atain to count towards a cultural victory. If NONE, there is no prerequisite culture level for iNumCultureCities number of cities in order to achieve victory. The standard culture victory has the tag CULTURELEVEL_LEGENDARY, indicating that cities need to have Legendary culture to reach victory.
+VictoryMovie	This declares a text tag in the Civ4ArtDefines_Movie file which references the movie played after this victory is reached.
+Integers
+All of these tags have a numerical value. Though it sometimes can be negative, it usually is not.
+Tag Name	Description
+iPopulationPercentLead	Presumably how much more population you must have over the next most populous civilization to win.
+iLandPercent	Indicates the total percentage of land you and your vassals must control to achieve this victory.
+iMinLandPercent	Indicates the minimum percentage of land that you personally must control to achieve victory.
+iReligionPercent	Indicates the total percentage of cities that must be following your state religion (when you control the holy city) in order to win.
+iNumCultureCities	This integer tag contains the number of cities that must meet the CityCulture tag's level of culture points.
+iTotalCultureRatio	Unknown. All standard victory conditions have a value of 0.
+iVictoryDelayTurns	Number of turns before the victory is registered officially by the game and a win is triggered. This is used for the Spaceship victory condition.
+Boolean
+All of these can either be 1 (on, or true) or 0 (off, or false). Be careful, as you can wind up with a double-negative, which the game will interpret as "True".
+Tag Name	Description
+bTargetScore	If set to 1, the victory will trigger if a team reaches a target score as defined in a wouldbuildersave file.
+bEndScore	If set to 1, the victory is based on the player with the highest score at the end of the game (2050 by default).
+bConquest	If 1, this victory requires the elimination of all enemies and qualifies as a Conquest win.
+bDiploVote	If 1, this victory requires the player to be elected in a worldwide vote and qualifies as a Diplomatic win.
+bPermanent	Unknown. The only standard condition with a value of 1 is VICTORY_SCORE.
+ -->
 <!-- Victory Infos -->
 <Civ4VictoryInfo xmlns="x-schema:CIV4GameInfoSchema.xml">
 	<VictoryInfos>
@@ -27,7 +55,7 @@
 		</VictoryInfo>
 		<VictoryInfo>
 			<Type>VICTORY_TIME</Type>
-			<Description>Time-Highest Score(2050 AD)</Description>
+			<Description>TXT_KEY_VICTORY_TIME</Description>
 			<Civilopedia>TXT_KEY_VICTORY_TIME_PEDIA</Civilopedia>
 			<bTargetScore>0</bTargetScore>
 			<bEndScore>1</bEndScore>
@@ -46,7 +74,7 @@
 		</VictoryInfo>
 		<VictoryInfo>
 			<Type>VICTORY_CONQUEST</Type>
-			<Description>Conquest (Killem All)</Description>
+			<Description>TXT_KEY_VICTORY_CONQUEST</Description>
 			<Civilopedia>TXT_KEY_VICTORY_CONQUEST_PEDIA</Civilopedia>
 			<bTargetScore>0</bTargetScore>
 			<bEndScore>0</bEndScore>
@@ -65,7 +93,7 @@
 		</VictoryInfo>
 		<VictoryInfo>
 			<Type>VICTORY_DOMINATION</Type>
-			<Description>Domination (71% Land + 25% Pop')</Description>
+			<Description>TXT_KEY_VICTORY_DOMINATION</Description>
 			<Civilopedia>TXT_KEY_VICTORY_DOMINATION_PEDIA</Civilopedia>
 			<bTargetScore>0</bTargetScore>
 			<bEndScore>0</bEndScore>
@@ -90,7 +118,7 @@
 		</VictoryInfo>
 		<VictoryInfo>
 			<Type>VICTORY_CULTURAL</Type>
-			<Description>Cultural (3 Legendary Cities)</Description>
+			<Description>TXT_KEY_VICTORY_CULTURAL</Description>
 			<Civilopedia>TXT_KEY_VICTORY_CULTURAL_PEDIA</Civilopedia>
 			<bTargetScore>0</bTargetScore>
 			<bEndScore>0</bEndScore>
@@ -123,7 +151,7 @@
 			<CityCulture>NONE</CityCulture>
 			<iNumCultureCities>0</iNumCultureCities>
 			<iTotalCultureRatio>0</iTotalCultureRatio>
-			<iVictoryDelayTurns>20</iVictoryDelayTurns>
+			<iVictoryDelayTurns>10</iVictoryDelayTurns>
 			<VictoryMovie>ART_DEF_MOVIE_VICTORY_SPACE_RACE</VictoryMovie>
 		</VictoryInfo>
 		<VictoryInfo>
@@ -147,7 +175,7 @@
 		</VictoryInfo>
 		<VictoryInfo>
 			<Type>VICTORY_RELIGIOUS</Type>
-			<Description>Religious (50%)</Description>
+			<Description>Religious (55%)</Description>
 			<Civilopedia>TXT_KEY_VICTORY_RELIGIOS_PEDIA</Civilopedia>
 			<bTargetScore>0</bTargetScore>
 			<bEndScore>0</bEndScore>
@@ -157,7 +185,7 @@
 			<iPopulationPercentLead>0</iPopulationPercentLead>
 			<iLandPercent>0</iLandPercent>
 			<iMinLandPercent>0</iMinLandPercent>
-			<iReligionPercent>70</iReligionPercent>
+			<iReligionPercent>80</iReligionPercent>
 			<CityCulture>NONE</CityCulture>
 			<iNumCultureCities>0</iNumCultureCities>
 			<iTotalCultureRatio>0</iTotalCultureRatio>
@@ -166,23 +194,23 @@
 		</VictoryInfo>
 		<VictoryInfo>
 		    <Type>VICTORY_HOLY</Type>
-	        <Description>Holy War (40% Land + 60% Religion)</Description>
+	        <Description>Holy War (35% Land + 55% Religion)</Description>
 	        <Civilopedia>Needs: 50% lAND 65 RELIGION</Civilopedia>
 	        <bTargetScore>0</bTargetScore>
 			<bEndScore>0</bEndScore>
 			<bConquest>0</bConquest>
 			<bDiploVote>0</bDiploVote>
 			<bPermanent>0</bPermanent>
-			<iPopulationPercentLead>25</iPopulationPercentLead>
+			<iPopulationPercentLead>15</iPopulationPercentLead>
 			<!-- advc.254: start -->
-			<iLandPercentLead>15</iLandPercentLead>
+			<iLandPercentLead>20</iLandPercentLead>
 			<!-- was 78 -->
-			<iLandPercent>40</iLandPercent>
+			<iLandPercent>51</iLandPercent>
 			<!-- Was 51. So long as this is less than iLandPercentLead,
 				 the specific value isn't terribly relevant. -->
 			<iMinLandPercent>10</iMinLandPercent>
 			<!-- advc.254: end -->
-			<iReligionPercent>60</iReligionPercent>
+			<iReligionPercent>55</iReligionPercent>
 			<CityCulture>NONE</CityCulture>
 			<iNumCultureCities>0</iNumCultureCities>
 			<iTotalCultureRatio>0</iTotalCultureRatio>

@@ -4787,6 +4787,10 @@ int CvCityAI::AI_buildingValue(BuildingTypes eBuilding, int iFocusFlags,
 							getPrereqNumOfBuildingClass(eBuildingClass);
 					if ((iPrereqNumOfBuildingClass <= 0 &&
 						!kLoopBuilding.isBuildingClassNeededInCity(eBuildingClass)) ||
+//doto building not in the city	- start			
+						(iPrereqNumOfBuildingClass > 0 &&
+						!kLoopBuilding.isBuildingClassNotInCity(eBuildingClass)) ||
+//doto building not in the city	- end							
 						(iLimitForLoopBuilding > 0 &&
 						// advc.opt: Was getBuildingClassMaking; no need to call canConstruct for that.
 						kOwner.getBuildingClassCountPlusMaking(eLoopClass) >= iLimitForLoopBuilding) ||
@@ -7337,6 +7341,9 @@ void CvCityAI::AI_setEmphasize(EmphasizeTypes eIndex, bool bNewValue)
 	{
 		m_iEmphasizeAvoidGrowthCount += (AI_isEmphasize(eIndex) ? 1 : -1);
 		FAssert(AI_getEmphasizeAvoidGrowthCount() >= 0);
+		// <advc.002f> Can affect label of the food bar or city bar icon
+		gDLL->UI().setDirty(gDLL->UI().isCityScreenUp() ?
+				CityScreen_DIRTY_BIT : CityInfo_DIRTY_BIT, true); // </advc.002f>
 	}
 
 	if (GC.getInfo(eIndex).isGreatPeople())
@@ -8163,14 +8170,6 @@ int CvCityAI::AI_getImprovementValue(CvPlot const& kPlot, ImprovementTypes eImpr
 				//iValue /= 100;
 				rValue += (rValue * ((iCommercePriority - 100) *
 						weightedYieldDiffs.get(YIELD_COMMERCE))) / 200;
-
-//doto governor - small tweak for the ai to build improvements with xp to governor
-//plaved under this case cause its better not to affect the value of food prioroties and such.
-			if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-			{	
-				rValue += GC.getInfo(eImprovement).getGovernorXp() > 0 ? (5 + GC.getInfo(eImprovement).getGovernorXp()) : 0;
-			}
-//doto governor
 			}
 		}
 		/* else if (aiFinalYields[YIELD_FOOD] < GC.getFOOD_CONSUMPTION_PER_POPULATION()) {
@@ -11663,7 +11662,7 @@ void CvCityAI::AI_bestPlotBuild(CvPlot const& kPlot, int* piBestValue, BuildType
 								{
 									/*	could use more sophisticated logic
 										however this would rely on things like 
-										mart irrigation chaining of out-of-city plots */
+										smart irrigation chaining of out-of-city plots */
 									eBestIrrigationPlot = pDistTwoPlot;
 									break;
 								}

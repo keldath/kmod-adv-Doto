@@ -99,7 +99,6 @@ public: // The const functions are exposed to Python except those added by AdvCi
 	int* getNonStateReligionYieldModifierArray() const;
 	int getSpecialistExtraYield(int i) const;				// Exposed to Python
 	int* getSpecialistExtraYieldArray() const;
-	int getFreeSpecialistCount(int i) const;				// Exposed to Python
 	int getStateReligionCommerceModifier(int i) const;             // Exposed to Python
 	int* getStateReligionCommerceModifierArray() const;
 	int getNonStateReligionCommerceModifier(int i) const;             // Exposed to Python
@@ -223,7 +222,6 @@ protected:
 	int* m_piTradeYieldModifier;
 	// < Civic Infos Plus Start >
 	int* m_piSpecialistExtraYield;
-	int* m_paiFreeSpecialistCount;
 	int* m_piStateReligionYieldModifier;
 	int* m_piStateReligionCommerceModifier;
 	int* m_piNonStateReligionYieldModifier;

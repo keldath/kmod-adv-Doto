@@ -1163,7 +1163,9 @@ void CvTeam::declareWar(TeamTypes eTarget, bool bNewDiplo, WarPlanTypes eWarPlan
 
 	GC.getGame().AI_makeAssignWorkDirty();
 
-	if (isActive() || GET_TEAM(eTarget).isActive())
+/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
+	if (getID() == GC.getGame().getActiveTeam() || GET_TEAM(eTarget).getID() == GC.getGame().getActiveTeam())
+	//if (isActive() || GET_TEAM(eTarget).isActive())
 	{
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
 		gDLL->UI().setDirty(CityInfo_DIRTY_BIT, true);
@@ -1349,7 +1351,9 @@ void CvTeam::makePeace(TeamTypes eTarget, bool bBumpUnits,  // advc: refactored
 
 	GC.getGame().AI_makeAssignWorkDirty();
 
-	if (isActive() || GET_TEAM(eTarget).isActive())
+/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
+	if (getID() == GC.getGame().getActiveTeam() || GET_TEAM(eTarget).getID() == GC.getGame().getActiveTeam())
+	//if (isActive() || GET_TEAM(eTarget).isActive())
 	{
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
 		gDLL->UI().setDirty(CityInfo_DIRTY_BIT, true);
@@ -2881,7 +2885,10 @@ void CvTeam::setMapCentering(bool bNewValue)
 	if (isMapCentering() != bNewValue)
 	{
 		m_bMapCentering = bNewValue;
-		if (isActive())
+		
+/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
+		//if (isActive())
+		if (getID() == GC.getGame().getActiveTeam())
 			gDLL->UI().setDirty(MinimapSection_DIRTY_BIT, true);
 	}
 }
@@ -2986,7 +2993,9 @@ void CvTeam::changeCommerceFlexibleCount(CommerceTypes eIndex, int iChange)
 	m_aiCommerceFlexibleCount.add(eIndex, iChange);
 	FAssert(getCommerceFlexibleCount(eIndex) >= 0);
 
-	if (isActive())
+/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
+	if (getID() == GC.getGame().getActiveTeam())
+	//if (isActive())
 	{
 		gDLL->UI().setDirty(PercentButtons_DIRTY_BIT, true);
 		gDLL->UI().setDirty(GameData_DIRTY_BIT, true);
@@ -3104,7 +3113,9 @@ CvPlot* CvTeam::makeHasMet(TeamTypes eOther, bool bNewDiplo,
 	// K-Mod: Initialize attitude cache for players on our team towards player's on their team.
 	// advc.001: Too early for that. Moved to caller (CvTeam::meet).
 
-	if (isActive() || GET_TEAM(eOther).isActive())
+/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
+	if (getID() == GC.getGame().getActiveTeam() || GET_TEAM(eOther).getID() == GC.getGame().getActiveTeam())
+	//if (isActive() || GET_TEAM(eOther).isActive())
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
 	// <advc.071>
 	bool bShowMessage = (isHuman() && pData != NULL);
@@ -3374,7 +3385,9 @@ void CvTeam::setOpenBorders(TeamTypes eIndex, bool bNewValue)
 
 	GC.getMap().verifyUnitValidPlot();
 
-	if (isActive() || GET_TEAM(eIndex).isActive())
+/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
+	if (getID() == GC.getGame().getActiveTeam() || GET_TEAM(eIndex).getID() == GC.getGame().getActiveTeam())
+	//if (isActive() || GET_TEAM(eIndex).isActive())
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
 
 	if (bOldFreeTrade != isFreeTrade(eIndex))
@@ -3413,7 +3426,10 @@ void CvTeam::setDefensivePact(TeamTypes eIndex, bool bNewValue)
 	if (isDefensivePact(eIndex) == bNewValue)
 		return; // advc
 	m_abDefensivePact.set(eIndex, bNewValue);
-	if (isActive() || GET_TEAM(eIndex).isActive())
+
+/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
+	if (getID() == GC.getGame().getActiveTeam() ||  GET_TEAM(eIndex).getID() == GC.getGame().getActiveTeam())
+	//if (isActive() || GET_TEAM(eIndex).isActive())
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
 	CvTeam const& kOther = GET_TEAM(eIndex); // advc
 	if (bNewValue && !kOther.isDefensivePact(getID()))
@@ -4296,7 +4312,9 @@ void CvTeam::setResearchProgress(TechTypes eIndex, int iNewValue, PlayerTypes eP
 	m_aiResearchProgress.set(eIndex, iNewValue);
 	FAssert(getResearchProgress(eIndex) >= 0);
 
-	if (isActive())
+/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
+	if (getID() == GC.getGame().getActiveTeam())
+	//if (isActive())
 	{
 		gDLL->UI().setDirty(GameData_DIRTY_BIT, true);
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
@@ -5003,7 +5021,10 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,
 		}
 		/*  advc.004x: Don't check bAnnounce for civics popup. FinalInitialized:
 			Let CvPlayer::doChangeCivicsPopup handle that. */
-		if (!gDLL->GetWorldBuilderMode() && isActive())
+
+/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
+		if (!gDLL->GetWorldBuilderMode() && getID() == kGame.getActiveTeam())
+		//if (!gDLL->GetWorldBuilderMode() && isActive())
 		{
 			for (PlayerIter<HUMAN,MEMBER_OF> it(getID()); it.hasNext(); ++it)
 			{	// advc: Un-nested the conditions
@@ -5059,7 +5080,9 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,
 		}
 	}
 
-	if (isActive())
+/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
+	if (getID() == kGame.getActiveTeam())
+	//if (isActive())
 	{
 		gDLL->UI().setDirty(MiscButtons_DIRTY_BIT, true);
 		gDLL->UI().setDirty(SelectionButtons_DIRTY_BIT, true);
@@ -6030,7 +6053,8 @@ void CvTeam::changeNoFearForSafetyCount(int iChange)
 			if (pCity->getMilitaryHappinessUnits() <= 0)
 			{
 				pCity->AI_setAssignWorkDirty(true);
-				if (isActive())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+			if (getID() == GC.getGame().getActiveTeam())
 					pCity->setInfoDirty(true);
 			}
 		}
@@ -6752,8 +6776,8 @@ void CvTeam::setFreeTradeAgreement(TeamTypes eIndex, bool bNewValue)
 	} // </advc.130p>
 
 	AI().AI_setFreeTradeAgreementCounter(eIndex, 0);
-	
-	if (isActive() || GET_TEAM(eIndex).isActive())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (getID() == GC.getGame().getActiveTeam() || GET_TEAM(eIndex).getID() == GC.getGame().getActiveTeam())
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
 
 	csTeamTraitsUpdate(eIndex, bNewValue); //doto unique feature

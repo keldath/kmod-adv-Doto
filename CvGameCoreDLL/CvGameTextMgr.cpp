@@ -433,7 +433,8 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 	{
 		szColTag = (//pUnit->isEnemy(getActiveTeam()) ?
 				// For combat odds at peace (Alt hover)
-				!pUnit->isActiveTeam() ?
+/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 --not sure about that !*/
+				pUnit->getTeam() != kGame.getActiveTeam() ?
 				"COLOR_NEGATIVE_TEXT" : "COLOR_POSITIVE_TEXT");
 	} // </advc.048>
 	{
@@ -447,20 +448,25 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 
 	if (pUnit->getDomainType() == DOMAIN_AIR)
 	{
-		if (pUnit->airBaseCombatStr() > 0)
+// MOD doto - START - Ranged Strike AI
+		if (pUnit->airBaseCombatStr() > 0 &&
+			!(pUnit->getDomainType() == DOMAIN_LAND &&
+				kInfo.getAirCombat() > 0)
+// MOD - END - Ranged Strike AI
+			)
 		{
 			CvWString szTempBuffer;
 			if (pUnit->isFighting())
 			{
 				szTempBuffer.Format(L"?/%d%c", pUnit->airBaseCombatStr(),
-						gDLL->getSymbolID(STRENGTH_CHAR));
+						gDLL->getSymbolID(AIRPORT_CHAR));
 			}
 			else if (pUnit->isHurt())
 				setHurtUnitStrength(szTempBuffer, *pUnit); // advc.004
 			else
 			{
 				szTempBuffer.Format(L"%d%c", pUnit->airBaseCombatStr(),
-						gDLL->getSymbolID(STRENGTH_CHAR));
+						gDLL->getSymbolID(AIRPORT_CHAR));
 			}
 			szString.append(szTempBuffer);
 			szString.append(L", "); // advc.004
@@ -487,6 +493,30 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 			szString.append(L", "); // advc.004
 		}
 	}
+// MOD - START - Ranged Strike AI
+	if (pUnit->airBaseCombatStr() > 0 && 
+		(pUnit->getDomainType() == DOMAIN_LAND &&
+			kInfo.getAirCombat() > 0))
+	{
+		CvWString szTempBuffer;
+		if (pUnit->isFighting())
+		{
+			szTempBuffer.Format(L"?/%d%c", pUnit->airBaseCombatStr(),
+				gDLL->getSymbolID(AIRPORT_CHAR));
+		}
+		// range units ait power isnt the unit strength hp.
+		//else if (pUnit->isHurt())
+		//	setHurtUnitStrength(szTempBuffer, *pUnit); // advc.004
+		else
+		{
+			szTempBuffer.Format(L"%d%c", pUnit->airBaseCombatStr(),
+				gDLL->getSymbolID(AIRPORT_CHAR));
+		}
+		szString.append(szTempBuffer);
+		szString.append(L", "); // advc.004
+	}
+
+// MOD - START - Ranged Strike AI
 	int const iDenom = GC.getMOVE_DENOMINATOR(); // advc
 	int const iCurrMoves = (pUnit->movesLeft() / iDenom) +
 			(((pUnit->movesLeft() % iDenom) > 0) ? 1 : 0);
@@ -495,7 +525,8 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 		bool const bFract = BUGOption::isEnabled("MainInterface__UnitMovementPointsFraction", true);
 		CvWString szTempBuffer;
 		if(pUnit->baseMoves() == (bFract ? pUnit->movesLeft() : iCurrMoves) || // </advc.069>
-			!pUnit->isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+			pUnit->getTeam() != kGame.getActiveTeam())
 		{
 			szTempBuffer.Format(L"%d%c", pUnit->baseMoves(), gDLL->getSymbolID(MOVES_CHAR));
 		}
@@ -519,13 +550,7 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 		szString.append(gDLL->getText("TXT_KEY_UNIT_HELP_AIR_RANGE",
 				pUnit->airRange()));
 	}
-//rangedattack-keldath RANGED IMMUNITY
-	if (pUnit->rangedStrike() > 0)
-	{
-		szString.append(gDLL->getText("TXT_KEY_BARRCOUNTER", pUnit->getRangedStrikeCapCounter(), pUnit->rangedStrike()));
-		szString.append(gDLL->getText("TXT_KEY_RICOOLDOWN", pUnit->getRangedStrikeCapTimer(), (GC.getDefineINT("RANGED_ATTACK_COOLDOWN"))));
-	}
-//rangedattack-keldath
+
 	BuildTypes eBuild = pUnit->getBuildType();
 
 	if (eBuild != NO_BUILD)
@@ -581,7 +606,8 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 		szString.append(szTempBuffer);
 	}*/
 
-	if (pUnit->isActiveTeam() || (bDebugMode && /* advc.007: */ !bOneLine))
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (pUnit->getTeam() == kGame.getActiveTeam() || (bDebugMode && /* advc.007: */ !bOneLine))
 	{
 		if (pUnit->getExperience() > 0 && !pUnit->isFighting())
 		{
@@ -632,31 +658,14 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 	szString.append(szTempBuffer);
 	}
 	{
-		
 		bool bFirst = true; // advc.004
-		//doto governor
-		bool bGovernorPromo = false;
-		//doto governor
 		FOR_EACH_ENUM(Promotion)
 		{
-			//doto governor
-			CvPromotionInfo const& kpInfo = GC.getInfo((PromotionTypes)eLoopPromotion);
-			if (GC.getGame().isOption(GAMEOPTION_GOVERNOR) && !bGovernorPromo && pUnit->isHasPromotion(eLoopPromotion))
-			{
-				if (kInfo.getGovernor() > 0)
-				{
-					bGovernorPromo = true;
-					szString.append(NEWLINE);
-					szString.append(L"Promo effects are displayed below:");
-					continue;
-				}
-			}
-			if (pUnit->isHasPromotion(eLoopPromotion) && !(kInfo.getGovernor() > 0))
-			//doto governor
+			if (pUnit->isHasPromotion(eLoopPromotion))
 			{
 				CvWString szTempBuffer;
 				szTempBuffer.Format(L"<img=%S size=16 />",
-					kpInfo.getButton()); //doto governor
+						GC.getInfo(eLoopPromotion).getButton());
 				// <advc.004>
 				if (bFirst)
 				{
@@ -666,109 +675,6 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 				szString.append(szTempBuffer);
 			}
 		}
-		//doto governor
-		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-		{
-			CvCity* pCity = pUnit->getPlot().getPlotCity();
-			//it should never be null...governor must be on a city plot!
-			if (pCity != NULL && kInfo.getGovernor() > 0)
-			{
-				if (kInfo.getGovernor() && pUnit->getOwner() == pCity->getOwner())
-				{
-					int gp = pCity->getGreatPeopleRateChangeC();
-					int hl = pCity->getHealthC();
-					int hp = pCity->getHappinessC();
-					int xp = pCity->getExperienceC();
-					int fdy = pCity->getYieldChangeC(YIELD_FOOD);
-					int pdy = pCity->getYieldChangeC(YIELD_PRODUCTION);
-					int cdy = pCity->getYieldChangeC(YIELD_COMMERCE);
-					int cdc = pCity->getCommerceChangeC(COMMERCE_CULTURE);
-					int edc = pCity->getCommerceChangeC(COMMERCE_ESPIONAGE);
-					int ddc = pCity->getCommerceChangeC(COMMERCE_GOLD);
-					int cdr = pCity->getCommerceChangeC(COMMERCE_RESEARCH);
-
-					if (gp != 0) // </advc.164>
-					{
-
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_PROMOTION_GREAT_PEOPLE_RATE",
-							gp, gDLL->getSymbolID(GREAT_PEOPLE_CHAR)));
-					}
-					if (hl != 0) // </advc.164>
-					{
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_PROMOTION_HEALTH",
-							abs(hl),
-							hl > 0 ?
-							gDLL->getSymbolID(HEALTHY_CHAR) :
-							gDLL->getSymbolID(UNHEALTHY_CHAR)));
-					}
-					if (hp != 0) // </advc.164>
-					{
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_PROMOTION_HAPPINESS",
-							abs(hp),
-							hp > 0 ?
-							gDLL->getSymbolID(HAPPY_CHAR) :
-							gDLL->getSymbolID(UNHAPPY_CHAR)));
-					}
-					if (xp != 0) // </advc.164>
-					{
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_PROMOTION_EXPERIENCE",
-							xp));
-					}
-					
-					szString.append(NEWLINE);
-					szString.append(gDLL->getText("TXT_KEY_PROMOTION_EXPERIENCE_UNIT",
-						pCity->getGovernoXPfromImprovements(), pCity->getXPfromImprovementsThreshold()));
-
-					if (fdy != 0)
-					{
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_PROMOTION_YIELD",
-							fdy, GC.getInfo(YIELD_FOOD).getChar()));
-					}
-					if (pdy != 0)
-					{
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_PROMOTION_YIELD",
-							pdy, GC.getInfo(YIELD_PRODUCTION).getChar()));
-					}
-					if (cdy != 0)
-					{
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_PROMOTION_YIELD",
-							cdy, GC.getInfo(YIELD_COMMERCE).getChar()));
-					}
-					if (cdc != 0)
-					{
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_PROMOTION_COMMERCE",
-							cdc, GC.getInfo(COMMERCE_CULTURE).getChar()));
-					}
-					if (edc != 0)
-					{
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_PROMOTION_COMMERCE",
-							edc, GC.getInfo(COMMERCE_ESPIONAGE).getChar()));
-					}
-					if (ddc != 0)
-					{
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_PROMOTION_COMMERCE",
-							ddc, GC.getInfo(COMMERCE_GOLD).getChar()));
-					}
-					if (cdr != 0)
-					{
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_PROMOTION_COMMERCE",
-							cdr, GC.getInfo(COMMERCE_RESEARCH).getChar()));
-					}
-				}
-			}
-		}
-		//doto governor
 	}
 	if (bAlt && /*(gDLL->getChtLvl() > 0))*/ /* advc.135c: */ bDebugMode)
 	{
@@ -789,7 +695,8 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 		return;
 
 	// advc.007: Don't show rival spy test in Debug mode
-	if (pUnit->isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (pUnit->getTeam() == kGame.getActiveTeam())
 		setEspionageMissionHelp(szString, pUnit);
 
 	// <advc.313>
@@ -821,7 +728,8 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 	if (pUnit->cargoSpace() > 0)
 	{
 		CvWString szTempBuffer;
-		if (pUnit->isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+		if (pUnit->getTeam() == kGame.getActiveTeam())
 		{
 			szTempBuffer = NEWLINE + gDLL->getText("TXT_KEY_UNIT_HELP_CARGO_SPACE",
 					pUnit->getCargo(), pUnit->cargoSpace());
@@ -923,12 +831,16 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 	}
 
 	if (!bShort)
+// MOD - START - Ranged Strike AI
 	{	// <advc.315> Whether a unit can attack is too important to omit
-		if (pUnit->isOnlyDefensive())
+		if (pUnit->isOnlyDefensive() && 
+		!(pUnit->getDomainType() == DOMAIN_LAND && 
+			kInfo.getAirCombat() > 0))
 		{
 			szString.append(NEWLINE);
 			szString.append(gDLL->getText("TXT_KEY_UNIT_ONLY_DEFENSIVE"));
 		} // </advc.315>
+// MOD - END - Ranged Strike AI
 		// <advc.315a> Same code as under setBasicUnitHelp
 		if (kInfo.isOnlyAttackAnimals())
 		{
@@ -1209,80 +1121,6 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 		}
 	}
 
-	//doto governor promo text
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		for (int ePromotion = 0; ePromotion < GC.getNumPromotionInfos(); ePromotion++)
-		{
-			CvPromotionInfo const& kpInfo = GC.getInfo((PromotionTypes)ePromotion);
-			if (kpInfo.getGovernor() == 1)
-			{
-				if (pUnit->isHasPromotion((PromotionTypes)ePromotion))
-				{
-					//add up all the values from existing promotions of govener
-					//and change the xmls
-					int gp = kpInfo.getGreatPeopleRateChange();
-					int hl = kpInfo.getHealth();
-					int hp = kpInfo.getHappiness();
-					int xp = kpInfo.getExperience();
-	
-					if (gp != 0) // </advc.164>
-					{
-	
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_PROMOTION_GREAT_PEOPLE_RATE",
-							gp, gDLL->getSymbolID(GREAT_PEOPLE_CHAR)));
-					}
-					if (hl != 0) // </advc.164>
-					{
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_PROMOTION_HEALTH",
-							abs(hl),
-							hl > 0 ?
-							gDLL->getSymbolID(HEALTHY_CHAR) :
-							gDLL->getSymbolID(UNHEALTHY_CHAR)));
-					}
-					if (hp != 0) // </advc.164>
-					{
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_PROMOTION_HAPPINESS",
-							abs(hp),
-							hp > 0 ?
-							gDLL->getSymbolID(HAPPY_CHAR) :
-							gDLL->getSymbolID(UNHAPPY_CHAR)));
-					}
-					if (xp != 0) // </advc.164>
-					{
-						szString.append(NEWLINE);
-						szString.append(gDLL->getText("TXT_KEY_PROMOTION_EXPERIENCE",
-							xp));
-					}
-					FOR_EACH_ENUM(Yield)
-					{
-						int yChange = kpInfo.getYieldChange(eLoopYield);
-						if (yChange != 0)
-						{
-							szString.append(NEWLINE);
-							szString.append(gDLL->getText("TXT_KEY_PROMOTION_YIELD",
-								yChange, GC.getInfo(eLoopYield).getChar()));
-						}
-					}
-					FOR_EACH_ENUM(Commerce)
-					{
-						int cChange = kpInfo.getCommerceChange(eLoopCommerce);
-						if (cChange != 0)
-						{
-							szString.append(NEWLINE);
-							szString.append(gDLL->getText("TXT_KEY_PROMOTION_COMMERCE",
-								cChange, GC.getInfo(eLoopCommerce).getChar()));
-						}
-					}
-				}
-			}
-		}
-	}
-	//doto governor end
-
 	if (pUnit->animalCombatModifier() != 0)
 	{
 		szString.append(NEWLINE);
@@ -1508,18 +1346,6 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szString, const CvUnit* pUnit,
 					szTempBuffer.GetCString()));
 		}
 	}
-//rangedattack-keldath	 RANGED IMMUNITY not sure if its needed
-//kel098-099 see if it needs to be inside the upper {	
-/*** RANGED BOMBARDMENT - Dale START ***/
-	if (pUnit->rangedStrike() > 0)
-	{
-			szString.append(NEWLINE);
-			szString.append(gDLL->getText("TXT_KEY_IS_RANGE_STRIKE", pUnit->rangedStrike()));
-			szString.append(gDLL->getText("TXT_KEY_BARRCOUNTER_SHORT", pUnit->getRangedStrikeCapCounter(), pUnit->rangedStrike()));
-			szString.append(gDLL->getText("TXT_KEY_RICOOLDOWN_SHORT", pUnit->getRangedStrikeCapTimer(), (GC.getDefineINT("RANGED_ATTACK_COOLDOWN"))));
-	}
-/*** RANGED BOMBARDMENT - Dale END ***/
-//rangedattack-keldath
 	{
 		int iBombRate = pUnit->bombardRate();
 		// <advc.004c>
@@ -3857,18 +3683,6 @@ void CvGameTextMgr::setPlotHelp(CvWStringBuffer& szString, CvPlot const& kPlot)
 			}
 		}
 		//doto obsolete improvement end
-		//doto governor
-		if (GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_OBSOLETE))
-		{
-			int eGovXP = GC.getInfo(ePlotImprovement).getGovernorXp();
-			if (eGovXP != 0)
-			{
-				szString.append(NEWLINE);
-				szString.append(gDLL->getText("TXT_KEY_GOVERNER_EXPERIENCE",
-					eGovXP));
-			}
-		}
-		//doto governor
 	}
 	
 	// <advc.059>
@@ -6942,103 +6756,7 @@ void CvGameTextMgr::appendUniqueDesc(CvWStringBuffer& szBuffer, bool bSeparator,
 	}
 }
 
-//doto govenor -> clones the function of parsepecialistHelp with only governor related stuff.
-void CvGameTextMgr::parseGovernorpecialistHelp(CvWStringBuffer &szHelpString,
-	SpecialistTypes eSpecialist, CvCity* pCity, bool bCivilopediaText)
-{
-	CvSpecialistInfo const& kSpecialist = GC.getInfo(eSpecialist); // K-Mod
-	if (!bCivilopediaText)
-	{
-		szHelpString.append(kSpecialist.getDescription());
-	}
-	{
-		int aiYields[NUM_YIELD_TYPES];
 
-		FOR_EACH_ENUM(Yield)
-		{
-			aiYields[eLoopYield] = pCity->getYieldChangeC(eLoopYield);
-		}
-		setYieldChangeHelp(szHelpString, L"", L"", L"", aiYields);
-	}
-	{
-		int aiCommerces[NUM_COMMERCE_TYPES];
-		FOR_EACH_ENUM(Commerce)
-		{
-			aiCommerces[eLoopCommerce] = pCity->getCommerceChangeC(eLoopCommerce);
-		}
-		setCommerceChangeHelp(szHelpString, L"", L"", L"", aiCommerces);
-	}
-	if (kSpecialist.getExperience() > 0)
-	{
-		szHelpString.append(NEWLINE);
-		szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_EXPERIENCE",
-			kSpecialist.getExperience()));
-	}
-
-	if (pCity->getGreatPeopleRateChangeC() != 0)
-	{
-		szHelpString.append(NEWLINE);
-		szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_BIRTH_RATE",
-			pCity->getGreatPeopleRateChangeC()));
-
-		// K-Mod
-		if (!bCivilopediaText && //gDLL->getChtLvl() > 0
-			GC.getGame().isDebugMode() && // advc.135c
-			GC.ctrlKey())
-		{
-			szHelpString.append(NEWLINE);
-			szHelpString.append(CvWString::format(L"weight: %d", GET_PLAYER(
-				pCity != NULL ? pCity->getOwner() :
-				getActivePlayer()).
-				AI_getGreatPersonWeight((UnitClassTypes)
-					kSpecialist.getGreatPeopleUnitClass())));
-		}
-		// K-Mod end
-	}
-//doto governor - fake tags, drawn from promotions of governor unit to city cache tags
-	{
-		//exists in the altered bulk above
-		//if (pCity->getGreatPeopleRateChangeC() != 0)
-		//{
-		//	szHelpString.append(NEWLINE);
-		//	szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_BIRTH_RATE", (pCity->getGreatPeopleRateChangeC())));
-		//}
-		if (pCity->getHealthC() > 0)
-		{
-			szHelpString.append(NEWLINE);
-			szHelpString.append(gDLL->getText("TXT_KEY_GOVERNER_HEALTHY", pCity->getHealthC()));
-		}
-		if (pCity->getHealthC() < 0)
-		{
-			szHelpString.append(NEWLINE);
-			szHelpString.append(gDLL->getText("TXT_KEY_GOVERNER_UNHEALTHY", pCity->getHealthC()));
-		}
-		if (pCity->getHappinessC() > 0)
-		{
-			szHelpString.append(NEWLINE);
-			szHelpString.append(gDLL->getText("TXT_KEY_GOVERNER_HAPPY", pCity->getHappinessC()));
-		}
-		if (pCity->getHappinessC() < 0)
-		{
-			szHelpString.append(NEWLINE);
-			szHelpString.append(gDLL->getText("TXT_KEY_GOVERNER_UNHAPPY", pCity->getHappinessC()));
-		}
-		if (pCity->getExperienceC() > 0)
-		{
-			szHelpString.append(NEWLINE);
-			szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_EXPERIENCE", (pCity->getExperienceC() > 0)));
-		}
-
-	}
-	//doto governor
-	if (!CvWString(kSpecialist.getHelp()).empty() && !bCivilopediaText)
-	{
-		szHelpString.append(NEWLINE);
-		szHelpString.append(kSpecialist.getHelp());
-	}
-}
-//doto governor end of cloned function
-//doto govenor function clone and redirect if governor
 void CvGameTextMgr::parseSpecialistHelp(CvWStringBuffer &szHelpString,
 	SpecialistTypes eSpecialist, CvCity* pCity, bool bCivilopediaText)
 {
@@ -7048,223 +6766,148 @@ void CvGameTextMgr::parseSpecialistHelp(CvWStringBuffer &szHelpString,
 
 	if (eSpecialist != NO_SPECIALIST)
 	{
-		//doto governor -> if we wont check if the unit is a governer, it will display the tags to all...
-		SpecialistTypes eGovernorS = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_GOVERNOR", true);
-		if (pCity != NULL && eGovernorS == eSpecialist)
+		if (!bCivilopediaText)
 		{
-			parseGovernorpecialistHelp(szHelpString, eSpecialist, pCity, bCivilopediaText);
-			return;
+			szHelpString.append(kSpecialist.getDescription());
 		}
-		else
 		{
-			//doto governor
-			if (!bCivilopediaText)
+			int aiYields[NUM_YIELD_TYPES];
+			FOR_EACH_ENUM(Yield)
 			{
-				szHelpString.append(kSpecialist.getDescription());
-			}
-			{
-				int aiYields[NUM_YIELD_TYPES];
-				//doto governor
-				//int aiYieldsGovernor[NUM_YIELD_TYPES];
-				//doto governor
-
-				FOR_EACH_ENUM(Yield)
+				if (getActivePlayer() == NO_PLAYER)
+					aiYields[eLoopYield] = kSpecialist.getYieldChange(eLoopYield);
+				else
 				{
-					if (getActivePlayer() == NO_PLAYER)
-					{
-						aiYields[eLoopYield] = kSpecialist.getYieldChange(eLoopYield);
-					}
-					else
-					{
-						aiYields[eLoopYield] =
+					aiYields[eLoopYield] =
 							GET_PLAYER(pCity != NULL ? pCity->getOwner() :
-								getActivePlayer()).
+							getActivePlayer()).
 							specialistYield(eSpecialist, eLoopYield);
-						//doto governor
-						//if (pCity != NULL && eGovernorS == eSpecialist)
-						//	aiYieldsGovernor[eLoopYield] = pCity->getYieldChangeC(eLoopYield);
-						//doto governor
-					}
 				}
-				setYieldChangeHelp(szHelpString, L"", L"", L"", aiYields);
-				//doto governor
-				//if (pCity != NULL && eGovernorS == eSpecialist)
-				//	setYieldChangeHelp(szHelpString, L"", L"", L"", aiYieldsGovernor);
 			}
+			setYieldChangeHelp(szHelpString, L"", L"", L"", aiYields);
+		}
+		{
+			int aiCommerces[NUM_COMMERCE_TYPES];
+			FOR_EACH_ENUM(Commerce)
 			{
-				int aiCommerces[NUM_COMMERCE_TYPES];
-				//doto governor
-				//int aiCommercesGovernor[NUM_COMMERCE_TYPES];
-				//doto governor
-				FOR_EACH_ENUM(Commerce)
+				if (getActivePlayer() == NO_PLAYER)
 				{
-					if (getActivePlayer() == NO_PLAYER)
-					{
-						aiCommerces[eLoopCommerce] = kSpecialist.getCommerceChange(
+					aiCommerces[eLoopCommerce] = kSpecialist.getCommerceChange(
 							eLoopCommerce);
-					}
-					else
-					{
-						//doto governor
-						//if (pCity != NULL && eGovernorS == eSpecialist)
-						//	aiCommercesGovernor[eLoopCommerce] = pCity->getCommerceChangeC(eLoopCommerce);
-						//else:
-						//doto governor
-						aiCommerces[eLoopCommerce] = GET_PLAYER(
-						pCity != NULL ? pCity->getOwner() :
+				}
+				else
+				{
+					aiCommerces[eLoopCommerce] = GET_PLAYER(
+							pCity != NULL ? pCity->getOwner() :
 							getActivePlayer()).
 							specialistCommerce(eSpecialist, eLoopCommerce);
-
-					}
 				}
-				setCommerceChangeHelp(szHelpString, L"", L"", L"", aiCommerces);
-				//doto governor
-				//if (pCity != NULL && eGovernorS == eSpecialist)
-				//	setCommerceChangeHelp(szHelpString, L"", L"", L"", aiCommercesGovernor);
-				//doto governor
 			}
-			if (kSpecialist.getExperience() > 0)
-			{
-				szHelpString.append(NEWLINE);
-				szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_EXPERIENCE",
+			setCommerceChangeHelp(szHelpString, L"", L"", L"", aiCommerces);
+		}
+		if (kSpecialist.getExperience() > 0)
+		{
+			szHelpString.append(NEWLINE);
+			szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_EXPERIENCE",
 					kSpecialist.getExperience()));
-			}
+		}
 
-			if (kSpecialist.getGreatPeopleRateChange() != 0)
-			{
-				szHelpString.append(NEWLINE);
-				szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_BIRTH_RATE",
+		if (kSpecialist.getGreatPeopleRateChange() != 0)
+		{
+			szHelpString.append(NEWLINE);
+			szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_BIRTH_RATE",
 					kSpecialist.getGreatPeopleRateChange()));
 
-				// K-Mod
-				if (!bCivilopediaText && //gDLL->getChtLvl() > 0
-					GC.getGame().isDebugMode() && // advc.135c
-					GC.ctrlKey())
-				{
-					szHelpString.append(NEWLINE);
-					szHelpString.append(CvWString::format(L"weight: %d", GET_PLAYER(
+			// K-Mod
+			if (!bCivilopediaText && //gDLL->getChtLvl() > 0
+				GC.getGame().isDebugMode() && // advc.135c
+				GC.ctrlKey())
+			{
+				szHelpString.append(NEWLINE);
+				szHelpString.append(CvWString::format(L"weight: %d", GET_PLAYER(
 						pCity != NULL ? pCity->getOwner() :
 						getActivePlayer()).
 						AI_getGreatPersonWeight((UnitClassTypes)
-							kSpecialist.getGreatPeopleUnitClass())));
-				}
-				// K-Mod end
+						kSpecialist.getGreatPeopleUnitClass())));
 			}
+			// K-Mod end
+		}
 
-			/*************************************************************************************************/
-			/** Specialists Enhancements, by Supercheese 10/9/09                                                   */
-			/**              doto                                                                                */
-			/**                                                                                              */
-			/*************************************************************************************************/
-			if (kSpecialist.getHealth() > 0)
-			{
-				szHelpString.append(NEWLINE);
-				szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_HEALTHY", kSpecialist.getHealth()));
-			}
-			if (kSpecialist.getHealth() < 0)
-			{
-				szHelpString.append(NEWLINE);
-				szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_UNHEALTHY", -(kSpecialist.getHealth())));
-			}
-			if (kSpecialist.getHappiness() > 0)
-			{
-				szHelpString.append(NEWLINE);
-				szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_HAPPY", kSpecialist.getHappiness()));
-			}
-			if (kSpecialist.getHappiness() < 0)
-			{
-				szHelpString.append(NEWLINE);
-				szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_UNHAPPY", -(kSpecialist.getHappiness())));
-			}
-			/*************************************************************************************************/
-			/** Specialists Enhancements                          END                                              */
-			/*************************************************************************************************/
-	//doto governor - fake tags, drawn from promotions of governor unit to city cache tags
-	/*		if (pCity != NULL && eGovernorS == eSpecialist)
-			{
-				if (pCity->getGreatPeopleRateChangeC() != 0)
-				{
-					szHelpString.append(NEWLINE);
-					szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_BIRTH_RATE", (pCity->getGreatPeopleRateChangeC())));
-				}
-				if (pCity->getHealthC() > 0)
-				{
-					szHelpString.append(NEWLINE);
-					szHelpString.append(gDLL->getText("TXT_KEY_GOVERNER_HEALTHY", pCity->getHealthC()));
-				}
-				if (pCity->getHealthC() < 0)
-				{
-					szHelpString.append(NEWLINE);
-					szHelpString.append(gDLL->getText("TXT_KEY_GOVERNER_UNHEALTHY", pCity->getHealthC()));
-				}
-				if (pCity->getHappinessC() > 0)
-				{
-					szHelpString.append(NEWLINE);
-					szHelpString.append(gDLL->getText("TXT_KEY_GOVERNER_HAPPY", pCity->getHappinessC()));
-				}
-				if (pCity->getHappinessC() < 0)
-				{
-					szHelpString.append(NEWLINE);
-					szHelpString.append(gDLL->getText("TXT_KEY_GOVERNER_UNHAPPY", pCity->getHappinessC()));
-				}
-				if (pCity->getExperienceC() > 0)
-				{
-					szHelpString.append(NEWLINE);
-					szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_EXPERIENCE", (pCity->getExperienceC() > 0)));
-				}
-
-			}
-			*/
-			//doto governor
-
-			// BUG - Specialist Actual Effects - start
-			if (pCity != NULL &&
-				(GC.altKey() ||
-					BUGOption::isEnabled("MiscHover__SpecialistActualEffects", false)) &&
-					(pCity->isActiveOwned() || //gDLL->getChtLvl() > 0))
-						GC.getGame().isDebugMode())) // advc.135c
-			{
-				bool bStarted = false;
-				CvWString szStart;
-				szStart.Format(L"\n"SETCOLR L"(%s", TEXT_COLOR("COLOR_LIGHT_GREY"),
+/*************************************************************************************************/
+/** Specialists Enhancements, by Supercheese 10/9/09                                                   */
+/**                                                                                              */
+/**                                                                                              */
+/*************************************************************************************************/
+		if (kSpecialist.getHealth() > 0)
+		{
+			szHelpString.append(NEWLINE);
+			szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_HEALTHY", kSpecialist.getHealth()));
+		}
+		if (kSpecialist.getHealth() < 0)
+		{
+			szHelpString.append(NEWLINE);
+			szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_UNHEALTHY", -(kSpecialist.getHealth())));
+		}
+		if (kSpecialist.getHappiness() > 0)
+		{
+			szHelpString.append(NEWLINE);
+			szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_HAPPY", kSpecialist.getHappiness()));
+		}
+		if (kSpecialist.getHappiness() < 0)
+		{
+			szHelpString.append(NEWLINE);
+			szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_UNHAPPY", -(kSpecialist.getHappiness())));
+		}
+/*************************************************************************************************/
+/** Specialists Enhancements                          END                                              */
+/*************************************************************************************************/
+		// BUG - Specialist Actual Effects - start
+		if (pCity != NULL &&
+			(GC.altKey() ||
+			BUGOption::isEnabled("MiscHover__SpecialistActualEffects", false)) &&
+			(pCity->isActiveOwned() || //gDLL->getChtLvl() > 0))
+			GC.getGame().isDebugMode())) // advc.135c
+		{
+			bool bStarted = false;
+			CvWString szStart;
+			szStart.Format(L"\n"SETCOLR L"(%s", TEXT_COLOR("COLOR_LIGHT_GREY"),
 					gDLL->getText("TXT_KEY_ACTUAL_EFFECTS").GetCString());
-				{
-					int aiYields[NUM_YIELD_TYPES];
-					FOR_EACH_ENUM(Yield)
-					{
-						aiYields[eLoopYield] = pCity->getAdditionalYieldBySpecialist(
-							eLoopYield, eSpecialist);
-					}
-					bStarted = setYieldChangeHelp(szHelpString, szStart,
-						L": ", L"", aiYields, false, false, bStarted);
-				}
-				{
-					int aiCommerces[NUM_COMMERCE_TYPES];
-					FOR_EACH_ENUM(Commerce)
-					{
-						aiCommerces[eLoopCommerce] = pCity->
-							getAdditionalCommerceTimes100BySpecialist(
-								eLoopCommerce, eSpecialist);
-					}
-					bStarted = setCommerceTimes100ChangeHelp(szHelpString, szStart,
-						L": ", L"", aiCommerces, false, bStarted);
-				}
-				// Great People
-				int iGreatPeopleRate = pCity->
-					getAdditionalGreatPeopleRateBySpecialist(eSpecialist);
-				bStarted = setValueChangeHelp(szHelpString, szStart, L": ", L"",
-					iGreatPeopleRate, gDLL->getSymbolID(
-						GREAT_PEOPLE_CHAR), false, false, bStarted);
-
-				if (bStarted)
-					szHelpString.append(L")" ENDCOLR);
-			} // BUG - Specialist Actual Effects - end
-
-			if (!CvWString(kSpecialist.getHelp()).empty() && !bCivilopediaText)
 			{
-				szHelpString.append(NEWLINE);
-				szHelpString.append(kSpecialist.getHelp());
+				int aiYields[NUM_YIELD_TYPES];
+				FOR_EACH_ENUM(Yield)
+				{
+					aiYields[eLoopYield] = pCity->getAdditionalYieldBySpecialist(
+							eLoopYield, eSpecialist);
+				}
+				bStarted = setYieldChangeHelp(szHelpString, szStart,
+						L": ", L"", aiYields, false, false, bStarted);
 			}
+			{
+				int aiCommerces[NUM_COMMERCE_TYPES];
+				FOR_EACH_ENUM(Commerce)
+				{
+					aiCommerces[eLoopCommerce] = pCity->
+							getAdditionalCommerceTimes100BySpecialist(
+							eLoopCommerce, eSpecialist);
+				}
+				bStarted = setCommerceTimes100ChangeHelp(szHelpString, szStart,
+						L": ", L"", aiCommerces, false, bStarted);
+			}
+			// Great People
+			int iGreatPeopleRate = pCity->
+					getAdditionalGreatPeopleRateBySpecialist(eSpecialist);
+			bStarted = setValueChangeHelp(szHelpString, szStart, L": ", L"",
+					iGreatPeopleRate, gDLL->getSymbolID(
+					GREAT_PEOPLE_CHAR), false, false, bStarted);
+
+			if (bStarted)
+				szHelpString.append(L")" ENDCOLR);
+		} // BUG - Specialist Actual Effects - end
+
+		if (!CvWString(kSpecialist.getHelp()).empty() && !bCivilopediaText)
+		{
+			szHelpString.append(NEWLINE);
+			szHelpString.append(kSpecialist.getHelp());
 		}
 	}
 }
@@ -7276,43 +6919,39 @@ void CvGameTextMgr::parseFreeSpecialistHelp(CvWStringBuffer &szHelpString,
 
 	FOR_EACH_ENUM2(Specialist, eSpecialist)
 	{
-		//doto governor -> the widget should not shou the governor info.
-		if (eSpecialist != (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_GOVERNOR", true))
-		{
-			int iNumSpecialists = kCity.getFreeSpecialistCount(eSpecialist);
+		int iNumSpecialists = kCity.getFreeSpecialistCount(eSpecialist);
 
-			if (iNumSpecialists > 0)
-			{
-				szHelpString.append(NEWLINE);
-				szHelpString.append(CvWString::format(L"%s (%d): ",
+		if (iNumSpecialists > 0)
+		{
+			szHelpString.append(NEWLINE);
+			szHelpString.append(CvWString::format(L"%s (%d): ",
 					GC.getInfo(eSpecialist).getDescription(), iNumSpecialists));
-				int aiYields[NUM_YIELD_TYPES];
-				FOR_EACH_ENUM(Yield)
-				{
-					aiYields[eLoopYield] = iNumSpecialists * GET_PLAYER(kCity.getOwner()).
+			int aiYields[NUM_YIELD_TYPES];
+			FOR_EACH_ENUM(Yield)
+			{
+				aiYields[eLoopYield] = iNumSpecialists * GET_PLAYER(kCity.getOwner()).
 						specialistYield(eSpecialist, eLoopYield);
-				}
-				CvWStringBuffer szYield;
-				setYieldChangeHelp(szYield, L"", L"", L"", aiYields, false, false);
-				szHelpString.append(szYield);
-				int aiCommerces[NUM_COMMERCE_TYPES];
-				FOR_EACH_ENUM(Commerce)
-				{
-					aiCommerces[eLoopCommerce] = iNumSpecialists * GET_PLAYER(kCity.getOwner()).
+			}
+			CvWStringBuffer szYield;
+			setYieldChangeHelp(szYield, L"", L"", L"", aiYields, false, false);
+			szHelpString.append(szYield);
+			int aiCommerces[NUM_COMMERCE_TYPES];
+			FOR_EACH_ENUM(Commerce)
+			{
+				aiCommerces[eLoopCommerce] = iNumSpecialists * GET_PLAYER(kCity.getOwner()).
 						specialistCommerce(eSpecialist, eLoopCommerce);
-				}
-				CvWStringBuffer szCommerceString;
-				setCommerceChangeHelp(szCommerceString, L"", L"", L"", aiCommerces, false, false);
-				if (!szYield.isEmpty() && !szCommerceString.isEmpty())
+			}
+			CvWStringBuffer szCommerceString;
+			setCommerceChangeHelp(szCommerceString, L"", L"", L"", aiCommerces, false, false);
+			if (!szYield.isEmpty() && !szCommerceString.isEmpty())
+				szHelpString.append(L", ");
+			szHelpString.append(szCommerceString);
+			if (GC.getInfo(eSpecialist).getExperience() > 0)
+			{	// kmodx: was !szYield.isEmpty()
+				if (!szYield.isEmpty() || !szCommerceString.isEmpty())
 					szHelpString.append(L", ");
-				szHelpString.append(szCommerceString);
-				if (GC.getInfo(eSpecialist).getExperience() > 0)
-				{	// kmodx: was !szYield.isEmpty()
-					if (!szYield.isEmpty() || !szCommerceString.isEmpty())
-						szHelpString.append(L", ");
-					szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_EXPERIENCE_SHORT",
+				szHelpString.append(gDLL->getText("TXT_KEY_SPECIALIST_EXPERIENCE_SHORT",
 						iNumSpecialists * GC.getInfo(eSpecialist).getExperience()));
-				}
 			}
 		}
 	}
@@ -7328,63 +6967,6 @@ void CvGameTextMgr::parsePromotionHelp(CvWStringBuffer &szBuffer,
 		return;
 
 	CvPromotionInfo const& kPromo = GC.getInfo(ePromo);
-
-	//doto governor promo text
-	int gp = kPromo.getGreatPeopleRateChange();
-	int hl = kPromo.getHealth();
-	int hp = kPromo.getHappiness();
-	int xp = kPromo.getExperience();
-	if (gp != 0) // </advc.164>
-	{
-		szBuffer.append(pcNewline);
-		szBuffer.append(gDLL->getText("TXT_KEY_PROMOTION_GREAT_PEOPLE_RATE",
-			gp, gDLL->getSymbolID(GREAT_PEOPLE_CHAR)));
-	}
-	if (hl != 0) // </advc.164>
-	{
-		szBuffer.append(pcNewline);
-		szBuffer.append(gDLL->getText("TXT_KEY_PROMOTION_HEALTH",
-			abs(hl),
-			hl > 0 ?
-			gDLL->getSymbolID(HEALTHY_CHAR) :
-			gDLL->getSymbolID(UNHEALTHY_CHAR)));
-	}
-	if (hp != 0) // </advc.164>
-	{
-		szBuffer.append(pcNewline);
-		szBuffer.append(gDLL->getText("TXT_KEY_PROMOTION_HAPPINESS",
-			abs(hp),
-			hp > 0 ?
-			gDLL->getSymbolID(HAPPY_CHAR) :
-			gDLL->getSymbolID(UNHAPPY_CHAR)));
-	}
-	if (xp != 0) // </advc.164>
-	{
-		szBuffer.append(pcNewline);
-		szBuffer.append(gDLL->getText("TXT_KEY_PROMOTION_EXPERIENCE",
-			xp));
-	}
-	FOR_EACH_ENUM(Yield)
-	{
-		int yChange = kPromo.getYieldChange(eLoopYield);
-		if (yChange != 0)
-		{
-			szBuffer.append(pcNewline);
-			szBuffer.append(gDLL->getText("TXT_KEY_PROMOTION_YIELD",
-				yChange, GC.getInfo(eLoopYield).getChar()));
-		}	
-	}
-	FOR_EACH_ENUM(Commerce)
-	{
-		int cChange = kPromo.getCommerceChange(eLoopCommerce);
-		if (cChange != 0)
-		{
-			szBuffer.append(pcNewline);
-			szBuffer.append(gDLL->getText("TXT_KEY_PROMOTION_COMMERCE",
-				cChange, GC.getInfo(eLoopCommerce).getChar()));
-		}
-	}
-	//doto governor end
 
 	//if (kPromo.isBlitz())
 	// <advc.164>
@@ -8507,27 +8089,12 @@ void CvGameTextMgr::parseCivicInfo(CvWStringBuffer &szHelpText, CivicTypes eCivi
 	//	Non State Religion Commerce Modifiers
 	setCommerceChangeHelp(szHelpText, L"", L"", gDLL->getText("TXT_KEY_CIVIC_NON_STATE_REL_COMMERCE_MOD").GetCString(), kCivic.getNonStateReligionCommerceModifierArray(), true);
 
-	//	Free Specialist Counts
-	int iI;//added due to change of advc enum
-	int iJ;
-	for (iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
-	{
-        if (kCivic.getFreeSpecialistCount(iI) > 0)
-            {
-                szHelpText.append(NEWLINE);
-                szHelpText.append(gDLL->getText("TXT_KEY_CIVIC_FREE_SPECIALIST_COUNT", kCivic.getFreeSpecialistCount(iI), GC.getSpecialistInfo((SpecialistTypes) iI).getTextKeyWide()));
-            }
-	}
-
-
-	
-
 	//	Building Yields
-	for (iI = 0; iI < NUM_YIELD_TYPES; iI++)
+	for (int iI = 0; iI < NUM_YIELD_TYPES; iI++)
 	{
 		int iLast = 0;
 		bool check = true;
-		for (iJ = 0; iJ < GC.getNumBuildingInfos(); iJ++)
+		for (int iJ = 0; iJ < GC.getNumBuildingInfos(); iJ++)
 		{
 			if (kCivic.getBuildingYieldChanges(iJ, iI) != 0)
 			{
@@ -8542,11 +8109,11 @@ void CvGameTextMgr::parseCivicInfo(CvWStringBuffer &szHelpText, CivicTypes eCivi
 	}
 
 	//	Building Commerces
-	for (iI = 0; iI < NUM_COMMERCE_TYPES; iI++)
+	for (int iI = 0; iI < NUM_COMMERCE_TYPES; iI++)
 	{
 		int iLast = 0;
 		bool check = true;
-		for (iJ = 0; iJ < GC.getNumBuildingInfos(); iJ++)
+		for (int iJ = 0; iJ < GC.getNumBuildingInfos(); iJ++)
 		{
 			if (kCivic.getBuildingCommerceChanges(iJ, iI) != 0)
 			{
@@ -9677,28 +9244,29 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		szBuffer.append(NEWLINE);
 		CvWString szTempBuffer;
 
-//rangedattack-keldath- different symbols for each type RANGED IMMUNITY
-		if (u.getDomainType() == DOMAIN_AIR)
-		{
+// MOD - START - Ranged Strike AI
+		//if (u.getDomainType() == DOMAIN_AIR)
+		//{
 			if (u.getAirCombat() > 0)
 			{
+				if (u.getCombat() > 0)
+				{
+					szTempBuffer.Format(L"%d%c, ", u.getCombat(), gDLL->getSymbolID(STRENGTH_CHAR));
+					szBuffer.append(szTempBuffer);
+				}
 				szTempBuffer.Format(L"%d%c, ", u.getAirCombat(), gDLL->getSymbolID(AIRPORT_CHAR));
 				szBuffer.append(szTempBuffer);
 			}
-		}
-		//rangedstrike-keldath Air range for land units -  vincentz  - keldath addition
-		else if (u.getDomainType() != DOMAIN_AIR && (u.getRangeStrike() > 0 || u.getAirRange() > 0))
+		//}
+// MOD - END - Ranged Strike AI
+		else
 		{
-				szTempBuffer.Format(L"%d%c, ", u.getCombat(), gDLL->getSymbolID(DEFENSE_CHAR));
-				szBuffer.append(szTempBuffer);
-		}
-		
-		else if (u.getCombat() > 0)
+			if (u.getCombat() > 0)
 		{
 				szTempBuffer.Format(L"%d%c, ", u.getCombat(), gDLL->getSymbolID(STRENGTH_CHAR));
 				szBuffer.append(szTempBuffer);
 		}
-//rangedattack-keldath- different symbols for each type RANGED IMMUNITY
+		}
 		// <advc.905b>
 		bool bAllSpeedBonusesAvailable = true;
 		CvCity* pCity = gDLL->UI().getHeadSelectedCity();
@@ -9751,29 +9319,11 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 			else szBuffer.append(szSpeedBonuses);
 			szBuffer.append(L")");
 		} // </advc.905b>
-//rangedattack-keldath RANGED IMMUNITY
-	//Air range for land units -  vincentz ranged strike - keldath addition start
-/*		if (u.getAirRange() > 0 && u.getDomainType() != DOMAIN_AIR)
-		{
-			szBuffer.append(L", ");
-			szBuffer.append(gDLL->getText("TXT_KEY_BARRCOUNTER", u.getCombat()));
-		}
-		else*/
-//rangedattack-keldath RANGED IMMUNITY
 		if (u.getAirRange() > 0 )
 		{
 			szBuffer.append(L", ");
 			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIR_RANGE", u.getAirRange()));
 		}
-//rangedattack-keldath RANGED IMMUNITY
-		if (u.getRangeStrike() > 0)
-		{
-			szBuffer.append(L", ");
-			szBuffer.append(gDLL->getText("TXT_KEY_BARR_CAP", u.getRangeStrike()));
-		//	szBuffer.append(gDLL->getText("TXT_KEY_BARRCOUNTER_SHORT", getRangedStrikeCapCounter(), u.rangedStrike()));
-		//	szBuffer.append(gDLL->getText("TXT_KEY_RICOOLDOWN_SHORT", u.getRangedStrikeCapTimer(), (GC.getDefineINT("RANGED_ATTACK_COOLDOWN"))));
-	}
-//rangedattack-keldath
 	}
 
 	if (u.isGoldenAge())
@@ -10035,12 +9585,14 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 			szBuffer.append(gDLL->getText("TXT_KEY_UNIT_CAN_PLUNDER"));
 		} // </advc.033>
 	}
-
-	if (u.isOnlyDefensive())
+// MOD - START - Ranged Strike AI
+	if (u.isOnlyDefensive() && !(u.getDomainType() == DOMAIN_LAND &&
+		u.getAirCombat() > 0))
 	{
 		szBuffer.append(NEWLINE);
 		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_ONLY_DEFENSIVE"));
 	}
+// MOD - START - Ranged Strike AI
 	// <advc.315a>
 	if (u.isOnlyAttackAnimals())
 	{
@@ -10205,13 +9757,7 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_WITHDRAWL_PROBABILITY",
 				u.getWithdrawalProbability()));
 	}
-//rangedattack-keldath RANGED IMMUNITY
-	/*if(u.getDomainType() == DOMAIN_AIR && u.getAirRange() > 0 ) 
-	{
-		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_AIRCOMBAT_LIMIT", u.getAirCombatLimit()));
-	}
-	else*/ 
+
 	if (u.getCombatLimit() < GC.getMAX_HIT_POINTS() &&
 		u.getCombat() > 0 && !u.isOnlyDefensive())
 	{
@@ -10219,7 +9765,7 @@ void CvGameTextMgr::setBasicUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		szBuffer.append(gDLL->getText("TXT_KEY_UNIT_COMBAT_LIMIT",
 				(100 * u.getCombatLimit()) / GC.getMAX_HIT_POINTS()));
 	}
-//rangedattack-keldath RANGED IMMUNITY
+
 	if (u.getCollateralDamage() > 0)
 	{
 		szBuffer.append(NEWLINE);
@@ -10972,14 +10518,40 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		 ** End: Unit Civic Prereq
 		 **/
 		{
-			if (u.getPrereqAndBonus() != NO_BONUS)
+//doto 114 efficiancy
+			BonusTypes ePrereqAndBonus = u.getPrereqAndBonus();
+//doto units bonus cap	
+			if (ePrereqAndBonus != NO_BONUS)
 			{
-				if (pCity == NULL || !pCity->hasBonus(u.getPrereqAndBonus()))
+				if (pCity == NULL || !pCity->hasBonus(ePrereqAndBonus))
 				{
 					szBuffer.append(NEWLINE);
 					szBuffer.append(gDLL->getText("TXT_KEY_UNIT_REQUIRES_STRING",
-							GC.getInfo(u.getPrereqAndBonus()).getTextKeyWide()));
+							GC.getInfo(ePrereqAndBonus).getTextKeyWide()));					
 				}
+				
+				if (ePlayer != NO_PLAYER || pCity != NULL)
+				{
+					bool capOn = GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP);
+					if (capOn)
+					{
+						int eBonusCap = GET_PLAYER(ePlayer).getNumUnitBonusCaps(ePrereqAndBonus);
+						int eTotalBonus = GET_PLAYER(ePlayer).getTotalPlayerBonus(ePrereqAndBonus);
+						if (eBonusCap >= eTotalBonus || eTotalBonus == 0)
+						{
+							szBuffer.append(NEWLINE);
+							szBuffer.append(gDLL->getText("TXT_KEY_UNIT_REQUIRES_UNIT_CAP_REACHED_STRING",
+								GC.getInfo(ePrereqAndBonus).getTextKeyWide()));
+						}
+					}
+				}
+				else
+				{
+					szBuffer.append(NEWLINE);
+					szBuffer.append(gDLL->getText("TXT_KEY_UNIT_REQUIRES_UNIT_CAP_REACHED_PEDIA",
+						GC.getInfo(ePrereqAndBonus).getTextKeyWide()));
+				}
+//doto 114 efficiancy
 			}
 			/*	<advc.004> (rewritten based on MNAI - lfgr fix 04/2021:
 				Don't show any OR-prereq bonus if one of them is available.)
@@ -10988,9 +10560,23 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 			{
 				std::vector<BonusTypes> aePrereqOrBonuses;
 				bool bAnyReqFound = false;
+//doto units bonus cap				
+				bool bAnyCapReqFound = false;
+//doto units bonus cap		
 				for (int i = 0; i < u.getNumPrereqOrBonuses(); i++)
 				{
-					if (pCity != NULL && pCity->hasBonus(u.getPrereqOrBonuses(i)))
+					BonusTypes ePrereqAndBonus = u.getPrereqOrBonuses(i);
+					if (GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP) && pCity != NULL)
+					{
+						int eBonusCap = GET_PLAYER(ePlayer).getNumUnitBonusCaps(ePrereqAndBonus);
+						int eTotalBonus = GET_PLAYER(ePlayer).getTotalPlayerBonus(ePrereqAndBonus);
+						if (eBonusCap >= eTotalBonus && eTotalBonus > 0)
+						{
+							bAnyCapReqFound = true;
+							break;
+						}
+					}
+					else if (pCity != NULL && pCity->hasBonus(ePrereqAndBonus))
 					{
 						bAnyReqFound = true;
 						break;
@@ -11006,9 +10592,33 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 						setListHelp(szBuffer, szTempBuffer,
 								GC.getInfo(u.getPrereqOrBonuses(i)).getDescription(),
 								gDLL->getText("TXT_KEY_OR").c_str(), bFirst);
+						bFirst = false;
 					}
-					szBuffer.append(ENDCOLR);
+					//szBuffer.append(ENDCOLR);
+					if (!bFirst)
+						szBuffer.append(ENDCOLR);
 				}
+//doto units bonus cap				
+				if (!bAnyCapReqFound && !aePrereqOrBonuses.empty())
+				{
+					if (pCity != NULL && GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP))
+						szTempBuffer.Format(L"%s%s", NEWLINE, gDLL->getText("TXT_KEY_UNIT_CAP_REQUIRES").c_str());
+					else
+						szTempBuffer.Format(L"%s%s", NEWLINE, gDLL->getText("TXT_KEY_UNIT_REQUIRES_UNIT_CAP_REACHED_STRING_PEDIA").c_str());
+
+					bool bFirst = true;
+					for (size_t i = 0; i < aePrereqOrBonuses.size(); i++)
+					{
+						setListHelp(szBuffer, szTempBuffer,
+								GC.getInfo(u.getPrereqOrBonuses(i)).getDescription(),
+								gDLL->getText("TXT_KEY_OR").c_str(), bFirst);
+						bFirst = false;
+					}
+					//szBuffer.append(ENDCOLR);
+					if (!bFirst)
+						szBuffer.append(ENDCOLR);
+				}
+//doto units bonus cap				
 			} // </advc.004>
 		}
 	
@@ -11028,7 +10638,8 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 						szTempBuffer.Format(L"%s%s", NEWLINE, gDLL->getText("TXT_KEY_REQUIRES").c_str());
 						setListHelp(szBuffer, szTempBuffer, GC.getCivicInfo((CivicTypes(iI))).getDescription(), gDLL->getText("TXT_KEY_OR").c_str(), bFirst);
 						bFirst = false;
-					} else
+					} 
+					else
 					{
 						if( !GET_PLAYER(ePlayer).isCivic((CivicTypes(iI))) )
 						{
@@ -11058,7 +10669,7 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 						}
 						else
 						{
-						// show default building
+							// show default building
 							eRequiredBuilding = (BuildingTypes)GC.getBuildingClassInfo((BuildingClassTypes)iI).getDefaultBuilding()/*getDefaultBuildingIndex()*/;
 						}
 					}
@@ -12662,19 +12273,39 @@ void CvGameTextMgr::setBuildingHelpActual(CvWStringBuffer &szBuffer,
 					GC.getInfo(eLoopBuildingClass).getDefaultBuilding());
 			if(eLoopBuilding == NO_BUILDING)
 				continue; // advc
-			if (GC.getInfo(eLoopBuilding).isBuildingClassNeededInCity(eBuildingClass) &&
+	//doto efficiancy 114
+			CvBuildingInfo const& kBuilding2 = GC.getInfo(eLoopBuilding);
+//doto building not in the city	
+			bool eValid = pCity == NULL || pCity->canConstruct(eLoopBuilding, false, true);
+			//bool test = kBuilding2.isBuildingClassNeededInCity(eBuildingClass);
+			//bool test2 = kBuilding2.isBuildingClassNotInCity(eBuildingClass);
+			if (kBuilding2.isBuildingClassNeededInCity(eBuildingClass) &&
 				!bInBuildingList) // advc.004w
 			{
-				if (pCity == NULL || pCity->canConstruct(eLoopBuilding, false, true))
+//doto building not in the city	
+				if (eValid)
 				{
 					szFirstBuffer.Format(L"%s%s", NEWLINE,
 							gDLL->getText("TXT_KEY_BUILDING_REQUIRED_TO_BUILD").c_str());
 					szTempBuffer.Format(SETCOLR L"<link=literal>%s</link>" ENDCOLR,
 							TEXT_COLOR("COLOR_BUILDING_TEXT"),
-							GC.getInfo(eLoopBuilding).getDescription());
+						kBuilding2.getDescription());
 					setListHelp(szBuffer, szFirstBuffer, szTempBuffer, L", ", bFirst);
 				}
 			}
+//doto building not in the city	- start						
+			if (kBuilding2.isBuildingClassNotInCity(eBuildingClass)
+				//&& !bInBuildingList
+				) // advc.004w
+			{
+				if (eValid)
+				{
+					szBuffer.append(NEWLINE);
+					szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_DISABLE_BUILD_OF",
+									GC.getBuildingClassInfo(eBuildingClass).getDescription(), kBuilding2.getDescription()));
+				}
+			}
+//doto building not in the city	- end		
 		}
 	}
 	if (bCivilopediaText)
@@ -13162,16 +12793,31 @@ void CvGameTextMgr::buildBuildingRequiresString(CvWStringBuffer& szBuffer,
 			}
 		}
 		// UNOFFICIAL_PATCH, Bugfix (bShowedPrereq), 06/10/10, EmperorFool: START
+//doto building not in the city
+		bool eValid = pCity == NULL || pCity->getNumBuilding(eLoopBuilding) <= 0;
 		if (!bShowedPrereq &&
 			kBuilding.isBuildingClassNeededInCity(eLoopBuildingClass))
 		{
-			if (pCity == NULL || pCity->getNumBuilding(eLoopBuilding) <= 0)
+			if (eValid)
 			{
 				szBuffer.append(NEWLINE);
 				szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_REQUIRES_STRING",
 						GC.getInfo(eLoopBuilding).getTextKeyWide()));
 			}
-		} // UNOFFICIAL_PATCH: END
+		} 
+//doto building not in the city	- start
+		if (!bShowedPrereq &&
+			kBuilding.isBuildingClassNotInCity(eLoopBuildingClass))
+		{
+			if (eValid)
+			{
+				szBuffer.append(NEWLINE);
+				szBuffer.append(gDLL->getText("TXT_KEY_BUILDING_CANNOT_BE_BUILT_IF_STRING",
+					GC.getInfo(eLoopBuilding).getTextKeyWide()));
+			}
+		}
+//doto building not in the city - end	
+		// UNOFFICIAL_PATCH: END
 	}
 
 	if (kBuilding.isStateReligion())
@@ -13357,8 +13003,8 @@ void CvGameTextMgr::buildBuildingRequiresString(CvWStringBuffer& szBuffer,
 
 		if (isoptionset)
 		{
-			if (!GC.getGame().isOption(GAMEOPTION_EXTRA_BUILDINGS))
-				szBuffer.append(gDLL->getText("TXT_KEY_GAMEOPTION_EXTRA_BUILDINGS"));
+			//if (!GC.getGame().isOption(GAMEOPTION_EXTRA_BUILDINGS)) //obsolete doto 114
+			//	szBuffer.append(gDLL->getText("TXT_KEY_GAMEOPTION_EXTRA_BUILDINGS"));
 			//it was else if here - cant remeber why - doto 108
 			if (!GC.getGame().isOption(GAMEOPTION_BUILDING_DELETION))
 				szBuffer.append(gDLL->getText("TXT_KEY_GAMEOPTION_BUILDING_DELETION"));
@@ -14131,16 +13777,6 @@ void CvGameTextMgr::setBadHealthHelp(CvWStringBuffer &szBuffer, CvCity const& kC
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
-//doto governor
-	{
-		int iBadHealth = kCity.getHealthC();
-		if (iBadHealth < 0)
-		{
-			szBuffer.append(gDLL->getText("TXT_KEY_UNHEALTHY_GOVERNER", iBadHealth));
-			szBuffer.append(NEWLINE);
-		}
-	}
-//doto governor
 // < Civic Infos Plus Start > //NEW IN DOTO111...
 	{
 		int iBadHealth = kCity.getReligionBadHealth();
@@ -14276,16 +13912,6 @@ void CvGameTextMgr::setGoodHealthHelp(CvWStringBuffer &szBuffer, CvCity const& k
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
-	//doto governor
-	{
-		int iHealth = kCity.getHealthC();
-		if (iHealth > 0)
-		{
-			szBuffer.append(gDLL->getText("TXT_KEY_HEALTHY_GOVERNER", iHealth));
-			szBuffer.append(NEWLINE);
-		}
-	}
-	//doto governor
 // < Civic Infos Plus Start >
 	{
 		int iHealth = kCity.getReligionGoodHealth();
@@ -14720,21 +14346,6 @@ void CvGameTextMgr::setAngerHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 			szBuffer.append(NEWLINE);
 		}
 	}
-	//doto governor - note that its aliged unhappyLevel
-	{
-		int const iOldAngerPercent = iNewAngerPercent;
-		int const iOldAnger = iNewAnger;
-		iNewAngerPercent += std::max(0, GC.getDefineINT("BASE_ANGER_PERCENT"));
-		iNewAnger += (iNewAngerPercent * kCity.getPopulation()) / GC.getPERCENT_ANGER_DIVISOR()
-			- (iOldAngerPercent * kCity.getPopulation()) / GC.getPERCENT_ANGER_DIVISOR();
-		int iAnger = iNewAnger - iOldAnger + std::min(0, iOldAnger);
-		if (iAnger > 0)
-		{
-			szBuffer.append(gDLL->getText("TXT_KEY_ANGER_GOVERNOR", iAnger));
-			szBuffer.append(NEWLINE);
-		}
-	}
-	//doto governor
 	{
 		int const iOldAnger = iNewAnger;
 		iNewAnger -= std::min(0, kCity.getLargestCityHappiness());
@@ -14815,21 +14426,6 @@ void CvGameTextMgr::setAngerHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
-	//doto governor start
-	{
-		if (kCity.getHappinessC() < 0)
-		{
-			int const iOldAnger = iNewAnger;
-			iNewAnger += std::min(0, abs(kCity.getHappinessC())); //value here could be negative, thus the +
-			int iAnger = ((iNewAnger - iOldAnger) + std::min(0, iOldAnger));
-			if (iAnger > 0)
-			{
-				szBuffer.append(gDLL->getText("TXT_KEY_UNHAPPY_GOVERNOR", iAnger));
-				szBuffer.append(NEWLINE);
-			}
-		}
-	}
-	//doto governor end
 	{
 		int const iOldAnger = iNewAnger;
 		iNewAnger -= std::min(0, kCity.getReligionBadHappiness());
@@ -14988,17 +14584,6 @@ void CvGameTextMgr::setHappyHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
-	//doto governor
-	{
-		int iHappy = kCity.getHappinessC();
-		if (iHappy > 0)
-		{
-			iTotalHappy += iHappy;
-			szBuffer.append(gDLL->getText("TXT_KEY_HAPPY_GOVERNER", iHappy));
-			szBuffer.append(NEWLINE);
-		}
-	}
-	//doto governor
 	{
 		int iHappy = kCity.getReligionGoodHappiness();
 		if (iHappy > 0)
@@ -17653,18 +17238,6 @@ void CvGameTextMgr::setImprovementHelp(CvWStringBuffer &szBuffer, ImprovementTyp
 		}
 	}
 	//doto obsolete improvement end
-	//doto governor
-	if (GC.getGame().isOption(GAMEOPTION_IMPROVEMENT_OBSOLETE))
-	{
-		int eGovXP = kImprov.getGovernorXp();
-		if (eGovXP != 0)
-		{
-			szBuffer.append(NEWLINE);
-			szBuffer.append(gDLL->getText("TXT_KEY_GOVERNER_EXPERIENCE",
-				eGovXP));
-		}
-	}
-	//doto governor
 	{
 		/*	advc: Was iLast. Since we're not showing the chance of discovery,
 			we may as well put all resources in one list even if they
@@ -19507,30 +19080,16 @@ void CvGameTextMgr::setCommerceHelp(CvWStringBuffer &szBuffer, CvCity const& kCi
 	bool bNeedSubtotal = false; // BUG - Base Commerce
 	{
 		int iSpecialistCommerce = kCity.getSpecialistCommerce(eCommerce) +
-			(kCity.getSpecialistPopulation() + kCity.getNumGreatPeople()) *
-			kOwner.getSpecialistExtraCommerce(eCommerce);
-		//doto governor - deduct any other perks from Govener count
-		int iGovernorDeduct = (kCity.getGovernoUnitCount() * kOwner.getSpecialistExtraCommerce(eCommerce));
-		iSpecialistCommerce -= iGovernorDeduct; //this is being deducted in getBaseCommerceRateTimes100(CommerceTypes) also
-		int iGovernorCommerceCity = kCity.getCommerceChangeC(eCommerce);
-		if (iSpecialistCommerce != 0 || iGovernorCommerceCity != 0)
+				(kCity.getSpecialistPopulation() + kCity.getNumGreatPeople()) *
+				kOwner.getSpecialistExtraCommerce(eCommerce);
+		if (iSpecialistCommerce != 0)
 		{
-			if (iSpecialistCommerce != 0)
-			{
-				szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_SPECIALIST_COMMERCE",
+			szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_SPECIALIST_COMMERCE",
 					iSpecialistCommerce, iCommerceChar, L"TXT_KEY_CONCEPT_SPECIALISTS"));
-				szBuffer.append(NEWLINE);
-			}
-			if (iGovernorCommerceCity != 0)
-			{
-				szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_GOVERNOR_COMMERCE",
-					iGovernorCommerceCity, iCommerceChar, L"TXT_KEY_CONCEPT_GOVERNOR"));
-				szBuffer.append(NEWLINE);
-			}
-			iBaseCommerceRate += 100 * (iSpecialistCommerce + iGovernorCommerceCity);
+			szBuffer.append(NEWLINE);
+			iBaseCommerceRate += 100 * iSpecialistCommerce;
 			bNeedSubtotal = true; // BUG - Base Commerce
 		}
-		//doto governor
 	}
 	{
 		int iReligionCommerce = kCity.getReligionCommerce(eCommerce);
@@ -19563,19 +19122,9 @@ void CvGameTextMgr::setCommerceHelp(CvWStringBuffer &szBuffer, CvCity const& kCi
 		FOR_EACH_ENUM(Building)
 		{
     		
-			int bb = kCity.getNumActiveBuilding(eLoopBuilding);
-			int cc = kCity.getBuildingCommerceChange(
-				GC.getInfo(eLoopBuilding).getBuildingClassType(), eCommerce);
 			iBuildingCommerceCivics += kCity.getNumActiveBuilding(eLoopBuilding) *
             		kCity.getBuildingCommerceChange(
             			GC.getInfo(eLoopBuilding).getBuildingClassType(), eCommerce);
-			//sagis test
-			CvBuildingInfo const& kBuilding = GC.getInfo(eLoopBuilding);
-			int koko = kCity.getNumActiveBuilding(eLoopBuilding) *
-				kCity.getBuildingCommerceChange(
-					GC.getInfo(eLoopBuilding).getBuildingClassType(), eCommerce);
-			if (koko > 0)
-				int a = 1;
 		}
 		//added by keldath and changed org - had to balance out both visual and both iBaseCommerceRate
 		//other wise - the assert on the end will fire.
@@ -19648,8 +19197,7 @@ void CvGameTextMgr::setCommerceHelp(CvWStringBuffer &szBuffer, CvCity const& kCi
 		
 		szBuffer.append(NEWLINE);
 	} // BUG - Base Commerce - end
-		//sagis test
-	int b = kCity.getBaseCommerceRateTimes100(eCommerce);
+	//int b = kCity.getBaseCommerceRateTimes100(eCommerce);
 	FAssertMsg(kCity.getBaseCommerceRateTimes100(eCommerce) == iBaseCommerceRate,
 			"Base Commerce rate does not agree with actual value");
 
@@ -19846,30 +19394,9 @@ void CvGameTextMgr::setYieldHelp(CvWStringBuffer &szBuffer, CvCity const& kCity,
 	CvPlayer const& kOwner = GET_PLAYER(kCity.getOwner());
 
 	int iBaseYieldRate = kCity.getBaseYieldRate(eYield);
-
-	//doto governor break the base yields to governer
-	//since the yields from it are being added over the getBaseYieldRate
-	//so for visual, this comes before the base text is calcualated
-	int iGovernorProd = kCity.getYieldChangeC(eYield);
-	if (iGovernorProd != 0)
-	{
-		szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_PROD_GOVERNOR",
-			kYield.getTextKeyWide(), iGovernorProd, iYieldChar));
-		szBuffer.append(NEWLINE);
-		iBaseYieldRate -= iGovernorProd; //deduct the governer's part out
-	}
-	//doto governor
 	szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_BASE_YIELD",
 			kYield.getTextKeyWide(), iBaseYieldRate, iYieldChar));
 	szBuffer.append(NEWLINE);
-
-	//doto governor
-	// re adding the deducted part of the governer so the data will be synced 
-	// and properly calculated.
-	//other wise there will be assert issue in the end of this function.
-	if (iGovernorProd != 0)
-		iBaseYieldRate += iGovernorProd;
-	//doto governor
 
 	int iBaseModifier = 100;
 	{
@@ -20068,12 +19595,6 @@ void CvGameTextMgr::parseGreatPeopleHelp(CvWStringBuffer &szBuffer, CvCity const
 	szBuffer.assign(gDLL->getText("TXT_KEY_MISC_GREAT_PERSON", kCity.getGreatPeopleProgress(),
 			kOwner.greatPeopleThreshold(false)));
 	int iTurnsLeft = kCity.GPTurnsLeft(); // advc.001c
-
-	//doto governor --need to rebalance it due to governer
-	int const iGPBaseRate = kCity.getBaseGreatPeopleRate();
-	int const iGovernorRate = kCity.getGreatPeopleRateChangeC();
-	//doto governor
-
 	int const iGPRate = kCity.getGreatPeopleRate();
 	if (iGPRate > 0)
 	{
@@ -20144,17 +19665,6 @@ void CvGameTextMgr::parseGreatPeopleHelp(CvWStringBuffer &szBuffer, CvCity const
 						iRate, gDLL->getSymbolID(GREAT_PEOPLE_CHAR),
 						L"TXT_KEY_CONCEPT_SPECIALISTS"));
 			}
-
-			//doto governor - visually deduct the rate given from Governor -> to be displayed separatly
-			if (iGovernorRate != 0)
-			{
-				szBuffer.append(NEWLINE);
-				szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_GOVERNER_COMMERCE",
-					iGovernorRate, gDLL->getSymbolID(GREAT_PEOPLE_CHAR)
-					));
-			}
-			//doto governor
-
 		}
 		{
 			int iRate = 0;
@@ -20188,14 +19698,7 @@ void CvGameTextMgr::parseGreatPeopleHelp(CvWStringBuffer &szBuffer, CvCity const
 	if (iTotalGreatPeopleRateModifier != 100) // </advc.004>
 	{
 		szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_GREATPEOPLE_BASE_RATE",
-		//doto governor - visually deduct the rate given from Governor -> to be displayed separatly
-			//kCity.getBaseGreatPeopleRate()
-				(//iGPBaseRate
-				//	- iGovernorRate
-					iGPBaseRate > 0 ? (iGPBaseRate - iGovernorRate) : 0
-					)
-		//doto governor
-		));
+				kCity.getBaseGreatPeopleRate()));
 		szBuffer.append(NEWLINE);
 	}
 	int iModifier = 100;
@@ -20231,7 +19734,6 @@ void CvGameTextMgr::parseGreatPeopleHelp(CvWStringBuffer &szBuffer, CvCity const
 			iModifier += iBuildingMod;
 		}
 	}
-
 	{
 		int iCivicMod = 0;
 		FOR_EACH_ENUM(CivicOption)
@@ -20281,17 +19783,8 @@ void CvGameTextMgr::parseGreatPeopleHelp(CvWStringBuffer &szBuffer, CvCity const
 			iModifier += iGoldenAgeMod;
 		}
 	}
-
 	FAssert(iModifier == iTotalGreatPeopleRateModifier); // advc
-	int iModGreatPeople = (iModifier * 
-	//doto governor -> rebalance the base, cause it included the governor already
-			iGPBaseRate 
-		//- iGovernorRate //revert
-	//doto governor
-		) / 100;
-	//sagis test
-	int aa = (iGovernorRate * kCity.getTotalGreatPeopleRateModifier()) / 100;
-	int gg = kCity.getGreatPeopleRate();
+	int iModGreatPeople = (iModifier * kCity.getBaseGreatPeopleRate()) / 100;
 	FAssertMsg(iModGreatPeople == kCity.getGreatPeopleRate(), "Great person rate does not match actual value");
 
 	szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_GREATPEOPLE_FINAL", iModGreatPeople));
@@ -20581,7 +20074,8 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 			}
 		}
 	}
-	if (pCity->isActiveTeam() && pCity->isPower())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (pCity->getTeam() == GC.getGame().getActiveTeam() && pCity->isPower())
 	{
 		szBuffer.append(CvWString::format(L"%c",
 				gDLL->getSymbolID(POWER_CHAR)));
@@ -20593,15 +20087,13 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 	}
 	// defense icon and text
 	//if (!pCity->isActiveTeam()) {
-	if (pCity->isVisible(getActiveTeam(), true))
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (pCity->isVisible(GC.getGame().getActiveTeam(), true))
 	{
 		int iDefenseModifier = pCity->getDefenseModifier(
 				GC.getGame().selectionListIgnoreBuildingDefense());
 		if (iDefenseModifier != 0)
 		{
-		////rangedattack-keldath i prefer to see thE 0 all the time doto RANGED IMMUNITY
-		//	if (iDefenseModifier != 0)
-		//	{
 			//szBuffer.append(CvWString::format(L" %c:%s%d%%", gDLL->getSymbolID(DEFENSE_CHAR), ((iDefenseModifier > 0) ? "+" : ""), iDefenseModifier));
 			// <advc.002f>
 			szBuffer.append(CvWString::format(L"   " SETCOLR L"%s%d%%" ENDCOLR L"%c",
@@ -20610,7 +20102,6 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 					((iDefenseModifier > 0) ? "+" : ""),
 					iDefenseModifier,
 					gDLL->getSymbolID(DEFENSE_CHAR))); // </advc.002f>
-		////rangedattack-keldath	}
 		}
 	}
 }
@@ -20618,11 +20109,14 @@ void CvGameTextMgr::buildCityBillboardIconString( CvWStringBuffer& szBuffer, CvC
 void CvGameTextMgr::buildCityBillboardCityNameString(CvWStringBuffer& szBuffer, CvCity* pCity)
 {
 	szBuffer.assign(pCity->getName());
-	if (pCity->canBeSelected() 
+
+//doto 114 got the original line of the option
+if (pCity->canBeSelected() &&
+		gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL)
 //doto civ4remaster - option removed
+//	if (pCity->canBeSelected() 
 	//&& gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL)
-		 /*&&
-		pCity->foodDifference() > 0*/) // advc.189
+		 /*&& pCity->foodDifference() > 0*/) // advc.189
 		{
 /* Population Limit ModComp - Beginning */
 //doto change! dislay on city Bar			
@@ -20658,10 +20152,20 @@ void CvGameTextMgr::buildCityBillboardProductionString(CvWStringBuffer& szBuffer
 		szBuffer.clear();
 		return;
 	}
+//doto 114 comment org code below, remaster marked out after it
+	szBuffer.assign(pCity->getProductionName());
+	if (gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL))
+	{
+		int iTurns = pCity->getProductionTurnsLeft();
+		if (iTurns < MAX_INT)
+			szBuffer.append(CvWString::format(L" (%d)", iTurns));
+	}
+	
+/*	doto 114 removed, brought back the org above
 //doto civ4 rematser art start
 	if (!GC.getDefineINT("CIV4_REMASTER_ART"))
 		szBuffer.assign(pCity->getProductionName());
-//doto civ4 rematser art end	
+//doto civ4 rematser art end	 civ4rematser
 //	if (gDLL->getGraphicOption(GRAPHICOPTION_CITY_DETAIL))
 //	{
 		int iTurns = pCity->getProductionTurnsLeft();
@@ -20674,6 +20178,7 @@ void CvGameTextMgr::buildCityBillboardProductionString(CvWStringBuffer& szBuffer
 				szBuffer.append(CvWString::format(L"%d", iTurns));
 			
 //	}
+*/
 }
 
 
@@ -22583,7 +22088,7 @@ void CvGameTextMgr::setFoodHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 //doto specialists instead of pop
 		if (cityState
 			&& ((GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-				GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && cityState)
+				GC.getSPECIALISTS_INSTEAD_OF_POPULATION() == 1 && cityState)
 					&& eFarmer == (SpecialistTypes)i)
 		)
 		{
@@ -22603,7 +22108,7 @@ void CvGameTextMgr::setFoodHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 		bSimple = false; // advc.087
 		if (iFreeCivilianFood != 0
 			&& ((GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-				GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && cityState)
+				GC.getSPECIALISTS_INSTEAD_OF_POPULATION() == 1 && cityState)
 			))
 		{
 			szBuffer.append(NEWLINE);
@@ -22620,17 +22125,6 @@ void CvGameTextMgr::setFoodHelp(CvWStringBuffer &szBuffer, CvCity const& kCity)
 		iBaseRate += iSpecialistFood + iFreeCivilianFood;
 //doto specialists instead of pop
 	}
-	//doto governor
-	int iGovernorFood = kCity.getYieldChangeC(YIELD_FOOD);
-	if (iGovernorFood != 0)
-	{
-		bSimple = false; // advc.087
-		szBuffer.append(NEWLINE);
-		szBuffer.append(gDLL->getText("TXT_KEY_MISC_HELP_GOVERNOR_COMMERCE",
-			iGovernorFood, kFood.getChar(), L"TXT_KEY_MISC_HEADING_GOVERNOR"));
-		iBaseRate += iGovernorFood;
-	}
-	//doto governor
 	// Corporations
 	int iCorporationFood = kCity.getCorporationYield(YIELD_FOOD);
 	if(iCorporationFood != 0)

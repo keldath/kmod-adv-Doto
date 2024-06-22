@@ -80,7 +80,6 @@ m_piNonStateReligionYieldModifier(NULL),
 m_piNonStateReligionCommerceModifier(NULL),
 m_ppiBuildingYieldChanges(NULL),
 m_ppiBuildingCommerceChanges(NULL),
-m_paiFreeSpecialistCount(NULL),
 // < Civic Infos Plus End   >
 m_piCommerceModifier(NULL),
 m_piCapitalCommerceModifier(NULL),
@@ -329,13 +328,6 @@ int CvCivicInfo::getSpecialistExtraYield(int i) const
 int* CvCivicInfo::getSpecialistExtraYieldArray() const
 {
 	return m_piSpecialistExtraYield;
-}
-
-int CvCivicInfo::getFreeSpecialistCount(int i) const
-{
-	FAssertMsg(i < GC.getNumSpecialistInfos(), "Index out of bounds");
-	FAssertMsg(i > -1, "Index out of bounds");
-	return m_paiFreeSpecialistCount ? m_paiFreeSpecialistCount[i] : -1;
 }
 // < Civic Infos Plus End   >
 
@@ -672,7 +664,6 @@ void CvCivicInfo::write(FDataStreamBase* stream)
 	stream->Write(NUM_YIELD_TYPES, m_piNonStateReligionYieldModifier);
 	stream->Write(NUM_COMMERCE_TYPES, m_piNonStateReligionCommerceModifier);
 	stream->Write(NUM_YIELD_TYPES, m_piSpecialistExtraYield);
-	stream->Write(GC.getNumSpecialistInfos(), m_paiFreeSpecialistCount);
 	// < Civic Infos Plus End   >
 	stream->Write(NUM_COMMERCE_TYPES, m_piCommerceModifier);
 	stream->Write(NUM_COMMERCE_TYPES, m_piCapitalCommerceModifier);
@@ -982,9 +973,6 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_pabHurry, "Hurrys", GC.getNumHurryInfos());
 	pXML->SetVariableListTagPair(&m_pabSpecialBuildingNotRequired, "SpecialBuildingNotRequireds", GC.getNumSpecialBuildingInfos());
 	pXML->SetVariableListTagPair(&m_pabSpecialistValid, "SpecialistValids", GC.getNumSpecialistInfos());
-// < Civic Infos Plus Start >
-	pXML->SetVariableListTagPair(&m_paiFreeSpecialistCount, "FreeSpecialistCounts", /*sizeof(GC.getSpecialistInfo((SpecialistTypes)0)),*/ GC.getNumSpecialistInfos());
-// < Civic Infos Plus End   >
 	pXML->SetVariableListTagPair(&m_paiBuildingHappinessChanges, "BuildingHappinessChanges", GC.getNumBuildingClassInfos());
 	pXML->SetVariableListTagPair(&m_paiBuildingHealthChanges, "BuildingHealthChanges", GC.getNumBuildingClassInfos());
 	pXML->SetVariableListTagPair(&m_paiFeatureHappinessChanges, "FeatureHappinessChanges", GC.getNumFeatureInfos());

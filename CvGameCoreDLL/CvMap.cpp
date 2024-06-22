@@ -430,11 +430,6 @@ void CvMap::updateCenterUnit()
 	{
 		CvUnit const& kLoopUnit = *::getUnit(pNode->m_data);
 		//if (kLoopUnit.getDomainType() == DOMAIN_AIR)
-//DOTO-rangedattack-keldath rangedstrike
-// ranged immunity - doto113 -> no need to search for best defenders that are larger than 0 range
-//this is acctually from an older ranged attck version i did wtih actual range
-//		if (std::max(kLoopUnit.airRange(),kLoopUnit.rangedStrike()) > 0) // advc.rstr
-//			iRange = std::max(std::max(iRange, kLoopUnit.airRange()),kLoopUnit.rangedStrike());
 		if (kLoopUnit.airRange() > 0) // advc.rstr
 			iRange = std::max(iRange, kLoopUnit.airRange());
 		DomainTypes eLoopDomain = kLoopUnit.getDomainType();
@@ -1139,8 +1134,9 @@ void CvMap::resetPathDistance()
 
 int CvMap::calculatePathDistance(CvPlot const* pSource, CvPlot const* pDest) const
 {
-	if(pSource == NULL || pDest == NULL)
+	if (pSource == NULL || pDest == NULL)
 		return -1;
+	// advc.pf (tbd.): Replace with TeamPathFinder for better performance?
 	if (gDLL->getFAStarIFace()->GeneratePath(&GC.getStepFinder(),
 		pSource->getX(), pSource->getY(), pDest->getX(), pDest->getY(), false, 0, true))
 	{

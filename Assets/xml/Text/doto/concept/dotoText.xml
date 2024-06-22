@@ -3,10 +3,11 @@
 	<TEXT>
 		<Tag>TXT_KEY_CONCEPT_DOTO</Tag>
 		<English>[H1][BOLD]*** Doto Features ***[\BOLD][\H1]
-[NEWLINE][NEWLINE][BOLD]Ranged Immunity[\BOLD][NEWLINE]no more suicidal ranged units.
-siege land units will be able to inflict one time damage without the risk of being hit back by the defender.
+[NEWLINE][NEWLINE][BOLD]Ranged Attack[\BOLD][NEWLINE]
+siege land/Sea units will be able to inflict one time damage without the risk of being hit back by the defenderwith a ranged strike.
 the damage will be a percentage up to the combat limit (each unit has one).
 hit and/or damage can be randomized.
+optional seige unit retaliation:
 if the defender is also a siege unit, it will attack back e.g. -> retaliate.
 [NEWLINE]
 key features:
@@ -115,6 +116,38 @@ its a game option.
 Improvements will go obsolete with a specific tech. i did not implement this.
 its a code i created for Chrinicles of Mankind by Nexus.
 its a game option.
+
+[NEWLINE][NEWLINE][BOLD]Bonus Units Production Cap:[\BOLD][NEWLINE]
+Each Bonus will have a cap that will limit units constructions.
+Each resource provides a cap amount times 2 per city.
+For example, 2 cities, 1 iron, will provide 4 iron for the empire.
+if a city is not connected to the capital , its number wont be used as a multiplier ->
+3 cities, 3 iron, 2 of the iron is available to 2 connected cities, the 3rd city, also has the 3rd iron.
+the cap will be 2 X 3 = 6. meaning, the empire cap will be 6, as the not connected iron wont be counted.
+it will always get the highest number of provided iron in all the cities. thus the max is 2.
+
+AI:
+the cap affects ai the same. tweaks were made to make the AI not to trade a cap production bonus if 
+its got only a one third of available free cap or none. meaning if the ai used most of its available cap, 
+it will not trade the resource.
+aside that, the value trade for the bonuses that are used as units prereq bonus will have half of the value that it normally calculate
+when doing diplomacy.
+
+Unit upgrade, kill and train, 
+each of the actions will deduct or raise the cap if possible.
+if the cap is above the possible cap, like 5 / 2 (2 is the availabe cap to use), 
+when a unit is killed, it will not add to the 5 cap since its already above 2 -> this can happen if 
+for example a bonus that was previously available, was removed. a city had 2 iron , then it got 1.
+
+the current cap can be seens by hovering at the widget text "View Train Units Cap" near the great general / tech bars on the top middle.
+
+[NEWLINE][NEWLINE][BOLD]Building not in the city:[\BOLD][NEWLINE]
+there is a code that allows a building not to be able to be built in a city,
+if a specific building exists in a city.
+its the opposite of building needed in a city.
+the goal was to create some optional choise buildings when constructing.
+wanted to create some diversity.
+its not yet implemented with such buildings.
 
 </English>
 		</TEXT>

@@ -1803,7 +1803,16 @@ int CyPlayer::getBonusImport(int /*BonusTypes*/ iIndex)
 {
 	return m_pPlayer ? m_pPlayer->getBonusImport((BonusTypes)iIndex) : -1;
 }
-
+//doto units bonus cap	
+int CyPlayer::getNumUnitBonusCaps(int /*BonusTypes*/ iIndex)
+{
+	return m_pPlayer ? m_pPlayer->getNumUnitBonusCaps((BonusTypes)iIndex) : -1;
+}
+int CyPlayer::getTotalPlayerBonus(int /*BonusTypes*/ iIndex)
+{
+	return m_pPlayer ? m_pPlayer->getTotalPlayerBonus((BonusTypes)iIndex) : -1;
+}
+//doto units bonus cap	
 int CyPlayer::getImprovementCount(int /*ImprovementTypes*/ iIndex)
 {
 	return m_pPlayer ? m_pPlayer->getImprovementCount((ImprovementTypes)iIndex) : -1;

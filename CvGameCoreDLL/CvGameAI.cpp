@@ -154,7 +154,17 @@ int CvGameAI::AI_combatValue(UnitTypes eUnit) /* K-Mod: */ const
 	iValue /= getBestLandUnitCombat();
 	return iValue;
 }
-
+// MOD - START - Ranged Strike AI - doto addition
+int CvGameAI::AI_combatRangedValue(UnitTypes eUnit) /* K-Mod: */ const
+{
+	int iValue = 100;
+	int eAir = GC.getInfo(eUnit).getAirCombat();
+	if (eAir != DOMAIN_AIR && eAir > 0)
+		iValue *= eAir;
+	iValue /= getBestLandUnitCombat();
+	return iValue;
+}
+// MOD - END - Ranged Strike AI
 
 int CvGameAI::AI_turnsPercent(int iTurns, int iPercent) const
 {

@@ -188,12 +188,6 @@ Button	The path of the dds file that contains the image for this civic.
 			<CommerceModifiers/>
 			<CapitalCommerceModifiers/>
 			<SpecialistExtraCommerces/>
-	<!-- 	<FreeSpecialistCounts>
-		  <FreeSpecialistCount>
-			  <SpecialistType>SPECIALIST_PRIEST</SpecialistType>
-			  <iFreeSpecialistCount>2</iFreeSpecialistCount>
-		  </FreeSpecialistCount>
-      </FreeSpecialistCounts> -->
 			<Hurrys/>
 			<SpecialBuildingNotRequireds/>
 			<SpecialistValids/>
@@ -275,12 +269,6 @@ Button	The path of the dds file that contains the image for this civic.
 			<Hurrys/>
 			<SpecialBuildingNotRequireds/>
 			<SpecialistValids/>
-			<!-- <FreeSpecialistCounts>
-			  <FreeSpecialistCount>
-				  <SpecialistType>SPECIALIST_PRIEST</SpecialistType>
-				  <iFreeSpecialistCount>1</iFreeSpecialistCount>
-			  </FreeSpecialistCount>
-	        </FreeSpecialistCounts>  -->
 			<BuildingHappinessChanges/>
 			<BuildingHealthChanges/>
 			<FeatureHappinessChanges/>
@@ -1493,12 +1481,6 @@ Button	The path of the dds file that contains the image for this civic.
 					<bValid>1</bValid> -->
 				</SpecialistValid>
 			</SpecialistValids>
-			<FreeSpecialistCounts>
-			  <FreeSpecialistCount>
-				  <SpecialistType>SPECIALIST_MERCHANT</SpecialistType>
-				  <iFreeSpecialistCount>1</iFreeSpecialistCount>
-			  </FreeSpecialistCount>
-	        </FreeSpecialistCounts>
 			<BuildingHappinessChanges/>
 			<BuildingHealthChanges/>
 			<FeatureHappinessChanges/>
@@ -4340,12 +4322,7 @@ Button	The path of the dds file that contains the image for this civic.
 			</SpecialistExtraCommerces> -->
 			<Hurrys/>
 			<SpecialBuildingNotRequireds/>
-			<SpecialistValids/><FreeSpecialistCounts>
-			  <FreeSpecialistCount>
-				  <SpecialistType>SPECIALIST_SCIENTIST</SpecialistType>
-				  <iFreeSpecialistCount>1</iFreeSpecialistCount>
-			  </FreeSpecialistCount>
-	        </FreeSpecialistCounts>
+			<SpecialistValids/>
 			<BuildingHappinessChanges/>
 			<BuildingHealthChanges/>
 			<FeatureHappinessChanges/>

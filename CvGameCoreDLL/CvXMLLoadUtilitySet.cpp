@@ -927,6 +927,11 @@ bool CvXMLLoadUtility::LoadOptionalGlobals()
 	bool bFXmlCreated = false; // Perhaps better not to do this twice
 	if (!m->bEventsLoaded &&
 		(!GC.getGame().isOption(GAMEOPTION_NO_EVENTS) ||
+//doto special events - allow either one of these to trigger event class loading
+			GC.getGame().isOption(GAMEOPTION_PARTISANS)
+			|| GC.getGame().isOption(GAMEOPTION_PALACE_UPGRADE) ||
+//doto special events - allow either one of these.
+
 		/*	Don't risk sync issue that might arise from one player having
 			loaded the data through a previously started game */
 		GC.getGame().isNetworkMultiPlayer()))

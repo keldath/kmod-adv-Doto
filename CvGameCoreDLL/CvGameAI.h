@@ -23,6 +23,9 @@ public:
 	void AI_updateAssignWork();
 
 	int AI_combatValue(UnitTypes eUnit) const;
+// MOD - START - Ranged Strike AI - doto addition
+	int AI_combatRangedValue(UnitTypes eUnit) const;
+// MOD - END - Ranged Strike AI
 
 	int AI_turnsPercent(int iTurns, int iPercent) const;
 	// <advc.erai>

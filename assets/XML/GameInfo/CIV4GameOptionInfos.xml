@@ -308,11 +308,11 @@
             <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
-            <Type>GAMEOPTION_EXTRA_BUILDINGS</Type>
-            <Description>Extra Bonus</Description>
-            <Help>Units gets more Power with more resources of the same type. Also Requires BUILDING DELETION Game Option</Help>
+            <Type>GAMEOPTION_PALACE_UPGRADE</Type>
+            <Description>Palace Upgrade</Description>
+            <Help>Palace can be Upgarded with benefits every incremental grwosn of city population. [NEWLINW] Growth at: 3,6,9,12,16,10,14,18 of City Sizes.</Help>
             <bDefault>0</bDefault>
-            <bVisible>0</bVisible>
+            <bVisible>1</bVisible>
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_IMPROVEMENT_DECAY</Type>
@@ -371,24 +371,25 @@
             <bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
-            <Type>GAMEOPTION_GOVERNOR</Type>
-            <Description>Governor</Description>
-            <Help>A special Unit and GP is born when a city is founded. the governer gets a promotion tree by xp from city size growth and specific surronding improvements.</Help>
+            <Type>GAMEOPTION_UNITS_BONUS_CAP</Type>
+            <Description>Units Bonus Cap Limit</Description>
+            <Help>Units that have Bonus prereq will have a limit cap based on a factor of Cities and Population.</Help>
+            <bDefault>0</bDefault>
+            <bVisible>1</bVisible>
+
+<!--rangedattack-keldath  most options are left overs from prev versions -->
+        </GameOptionInfo>
+        <GameOptionInfo>
+            <Type>GAMEOPTION_PARTISANS</Type>
+            <Description>Partisans Event</Description>
+            <Help>Play with Partisans EVEN if you play with NO Events.[WONT wont IN MP game]</Help>
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
-            <Type>GAMEOPTION_RANGED_ATTACK</Type>
-            <Description>[obsolete_doto_112]Ranged Attack</Description>
-            <Help>Siege can Attack a tile form range</Help>
-            <bDefault>0</bDefault>
-            <bVisible>0</bVisible>
-<!--rangedattack-keldath-->
-		</GameOptionInfo>
-        <GameOptionInfo>
-            <Type>GAMEOPTION_RANGED_IMMUNITY</Type>
-            <Description>Ranged Immunity</Description>
-            <Help>Ranged Units Attack will not sustain damage from target [to be used with retaliate-rand hit-rand dmd game options]</Help>
+            <Type>GAMEOPTION_RANGED_NO_LIMIT</Type>
+            <Description>Ranged No Limit</Description>
+            <Help>Ranged Units Attack That are attacking enemy units that reached the attackers Combat limit [NEWLINE] will be able to attack with a reduced damage (dependant on the % of the combat limit it self)</Help>
             <bDefault>1</bDefault>
             <bVisible>1</bVisible>
 		</GameOptionInfo>
@@ -403,7 +404,7 @@
             <Type>GAMEOPTION_NO_RANGED_COLLATERAL</Type>
             <Description>No Ranged Collateral</Description>
             <Help>Units with Range Strike will not be able to perform collateral attack - might be overpowerd</Help>
-            <bDefault>1</bDefault>
+            <bDefault>0</bDefault>
             <bVisible>1</bVisible> 	
       	</GameOptionInfo>
         <GameOptionInfo>

@@ -1137,19 +1137,15 @@ int CvPlayerAI::AI_movementPriority(
 
 	if (pHeadUnit->getDomainType() != DOMAIN_LAND)
 	{
-// DOTO-MOD -rangedattack-keldath START - ranged immunity
-		if (pHeadUnit->rangedStrike() > 0)
-			return 1;
 		if (pHeadUnit->bombardRate() > 0)
-			return 2;
+			return 1;
 
 		if (pHeadUnit->hasCargo())
 		{
 			if (pHeadUnit->specialCargo() != NO_SPECIALUNIT)
-				return 3;
-			else return 4;
+				return 2;
+			else return 3;
 		}
-// DOTO-MOD -rangedattack-keldath end - ranged immunity
 
 		if (pHeadUnit->getDomainType() == DOMAIN_AIR)
 		{
@@ -1166,16 +1162,12 @@ int CvPlayerAI::AI_movementPriority(
 
 		if (pHeadUnit->canFight())
 		{
-// DOTO-MOD -rangedattack-keldath START - ranged immunity
-			if (pHeadUnit->rangedStrike() > 0)
-				return 6;
 			if (pHeadUnit->collateralDamage() > 0)
-				return 7;
-			else return 8;
+				return 6;
+			else return 7;
 		}
 		else
-			return 9;
-// DOTO-MOD -rangedattack-keldath START - ranged immunity
+			return 8;
 	}
 
 	FAssert(pHeadUnit->getDomainType() == DOMAIN_LAND);
@@ -1190,16 +1182,16 @@ int CvPlayerAI::AI_movementPriority(
 	if (pHeadUnit->AI_getUnitAIType() == UNITAI_EXPLORE)
 		return 10;
 
-// DOTO-MOD -rangedattack-keldath START - ranged immunity
-	if (pHeadUnit->rangedStrike() > 0)
+	if (pHeadUnit->bombardRate() > 0)
 		return 11;
 
-	if (pHeadUnit->bombardRate() > 0)
+// MOD - START - Ranged Strike AI
+	if (pHeadUnit->canRangeStrike())
 		return 12;
 
 	if (pHeadUnit->collateralDamage() > 0)
 		return 13;
-// DOTO-MOD -rangedattack-keldath end - ranged immunity
+// MOD - END - Ranged Strike AI
 	if (kGroup.AI_isStranded())
 		return 505;
 
@@ -1293,14 +1285,18 @@ void CvPlayerAI::AI_unitUpdate()
 		{
 			CvSelectionGroupAI* pLoopSelectionGroup = AI_getSelectionGroup(pCurrUnitNode->m_data);
 			pCurrUnitNode = nextGroupCycleNode(pCurrUnitNode);
-
-			if (pLoopSelectionGroup->AI_isForceSeparate())
+//DODO 114 FIX - i spotted a null here on game load that crashed the game rarely
+//so added a fix
+			if (pLoopSelectionGroup != NULL)
 			{
-				if (pLoopSelectionGroup->isForceUpdate() ||
-					// do not split groups that are in the midst of attacking
-					!pLoopSelectionGroup->AI_isGroupAttack())
+				if (pLoopSelectionGroup->AI_isForceSeparate())
 				{
-					pLoopSelectionGroup->AI_separate();	// pointers could become invalid...
+					if (pLoopSelectionGroup->isForceUpdate() ||
+						// do not split groups that are in the midst of attacking
+						!pLoopSelectionGroup->AI_isGroupAttack())
+					{
+						pLoopSelectionGroup->AI_separate();	// pointers could become invalid...
+					}
 				}
 			}
 		}
@@ -2478,10 +2474,12 @@ void CvPlayerAI::AI_updateCommerceWeights()
 	int const iVictoryCities = kGame.culturalVictoryNumCultureCities();
 
 	// Use culture slider to decide whether a human player is going for cultural victory
-	bool const bUseCultureRank = (AI_atVictoryStage(AI_VICTORY_CULTURE2) ||
-			getCommercePercent(COMMERCE_CULTURE) >= 40);
-	bool const bC3 = (AI_atVictoryStage(AI_VICTORY_CULTURE3) ||
-			getCommercePercent(COMMERCE_CULTURE) >= 70);
+	bool const bUseCultureRank = ((AI_atVictoryStage(AI_VICTORY_CULTURE2) ||
+			getCommercePercent(COMMERCE_CULTURE) >= 40) &&
+			kGame.culturalVictoryValid()); // advc.001
+	bool const bC3 = ((AI_atVictoryStage(AI_VICTORY_CULTURE3) ||
+			getCommercePercent(COMMERCE_CULTURE) >= 70) &&
+			bUseCultureRank); // advc.001
 	bool const bWarPlans = AI_isFocusWar(); // advc.105
 			//GET_TEAM(getTeam()).getAnyWarPlanCount(true) > 0;
 
@@ -6677,9 +6675,8 @@ int CvPlayerAI::AI_techUnitValue(TechTypes eTech, int iPathLength, bool& bEnable
 				iOffenceValue /= 3;
 			} // </advc.131>
 			// <k146>
-// DOTO-MOD -rangedattack-keldath START - ranged immunity
 			iMilitaryValue += iOffenceValue + iDefenceValue;
-			if ((kLoopUnit.getBombardRate() > 0 || kLoopUnit.getRangeStrike() > 0)&&
+			if (kLoopUnit.getBombardRate() > 0 &&
 				!AI_isDoStrategy(AI_STRATEGY_ECONOMY_FOCUS))
 			{	// block moved from UNITAI_ATTACK_CITY:
 				iMilitaryValue += std::min(iOffenceValue, 100); // was straight 200
@@ -7045,7 +7042,10 @@ int CvPlayerAI::AI_techReligionValue(TechTypes eTech, int iPathLength,
 		{
 			iLaterReligions++;
 			if (eLoopReligion == eFavoriteReligion)
+			{	/*	Even if bChooseReligion? Yes, I think; will play better
+					with some leaders aiming for the later techs. */
 				bLateFavoriteReligion = true;
+			}
 			if (eTech == GC.getInfo(eLoopReligion).getTechPrereq())
 				bLateReligion = true;
 		} // </advc.171>
@@ -7057,7 +7057,7 @@ int CvPlayerAI::AI_techReligionValue(TechTypes eTech, int iPathLength,
 	{
 		TechTypes eReligionTech = GC.getInfo(eLoopReligion).getTechPrereq();
 		/*if (kTeam.isHasTech(eReligionTech)) {
-			if (!(GC.getGame().isReligionSlotTaken((ReligionTypes)iJ)))
+			if (!GC.getGame().isReligionSlotTaken(eLoopReligion))
 				iPotentialReligions++;
 		}*/ // BtS
 		/*	K-Mod. iPotentialReligions will only be non-zero during the
@@ -7117,10 +7117,11 @@ int CvPlayerAI::AI_techReligionValue(TechTypes eTech, int iPathLength,
 					}
 					if (bPrereqFoundsReligion)
 						iRoll = iRoll * 3/4;
-					/*	(In addition to multi-religion
+					/*	Encourage only a little (NB: there's further multi-religion
 						discouragement farther below) */
 					else if (countHolyCities() > 0)
 						iRoll = iRoll * 4/3;
+					// Full encouragement
 					else iRoll = iRoll * 5/3; // was *3/2
 					// </advc.171>
 				}
@@ -9738,6 +9739,25 @@ int CvPlayerAI::AI_dealVal(PlayerTypes eFromPlayer, CLinkList<TradeData> const& 
 					(std::abs(iHappyBonuses) > 1 && kBonus.getHappiness() > 0) ||
 					(std::abs(iHealthBonuses) > 1 && kBonus.getHealth() > 0));
 					// </advc.036>
+//doto units bonus cap	ai should value deals of stratigic with less value
+// need to check if this is fo value givern from the fromplayer or this is the current player, the giver.
+/*			if (GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP))
+			{
+				iValue -= GC.getGame().getBonusThatArePrereqForUnits(eBonus) > 0 ? (iValue / 2) : 0;
+				int egetNumUnitBonusCaps = getNumUnitBonusCaps(eBonus);
+				int egetTotalPlayerBonus = getTotalPlayerBonus(eBonus);
+				if ((egetNumUnitBonusCaps >= egetTotalPlayerBonus 
+					|| 
+				//	at least a 1/3 of the cap should be free if ai gonna trade the stratigic bonus
+					(egetTotalPlayerBonus - egetNumUnitBonusCaps) <= (egetTotalPlayerBonus / 3)) //20 
+					&& egetNumUnitBonusCaps >= 0
+					&& egetTotalPlayerBonus >= 0)
+				{
+					iValue = 0;
+				}
+			}
+*/
+//doto units bonus cap	
 			break;
 		}
 		case TRADE_CITIES:
@@ -10790,6 +10810,27 @@ bool CvPlayerAI::AI_balanceDeal(bool bGoldDeal,
 				iItemValue = AI_bonusTradeVal(eBonus, ePlayer, 1,
 						(kBonus.getHealth() > 0 && iHealthLeft == 1) ||
 						(kBonus.getHappiness() > 0 && iHappyLeft == 1));
+						
+//doto units bonus cap	ai should value deals of stratigic with less value
+/* need to check if this if balance the giver or taker?
+				if (GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP))
+				{
+					iItemValue -= GC.getGame().getBonusThatArePrereqForUnits(eBonus) > 0 ? (iItemValue / 2) : 0;
+					int egetNumUnitBonusCaps = getNumUnitBonusCaps(eBonus);
+					int egetTotalPlayerBonus = getTotalPlayerBonus(eBonus);
+					if ((egetNumUnitBonusCaps >= egetTotalPlayerBonus 
+						|| 
+					//	at least a 1/3 of the cap should be free if ai gonna trade the stratigic bonus
+						(egetTotalPlayerBonus - egetNumUnitBonusCaps) <= (egetTotalPlayerBonus / 3)) //20 
+						&& egetNumUnitBonusCaps >= 0
+						&& egetTotalPlayerBonus >= 0)
+					{
+						iItemValue = 0;
+					}
+				}
+			*?
+//doto units bonus cap	
+					
 				/*  Bias AI-AI trades against resources that are of low value
 					to the recipient; should rather try to trade these to
 					someone else. */
@@ -11684,7 +11725,21 @@ int CvPlayerAI::AI_bonusVal(BonusTypes eBonus, int iChange, bool bAssumeEnabled,
 			2 * (iBonusCount + iChange)))).sqrt()).round(); // </advc.036>
 	if (iChange == 0 || (iChange == 1 && iBonusCount == 0) ||
 		(iChange == -1 && iBonusCount == 1) ||
-		iChange + iBonusCount < 1) // advc.036: Cover all strange cases here
+		iChange + iBonusCount < 1
+		
+		//doto units bonus cap
+		/* value the bonus if we have cap peaked or we dont have a total cap for this bonus.
+			this means the bonus is valubale for us or so i hope*/
+		||
+		((GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP) && GC.getGame().getBonusThatArePrereqForUnits(eBonus) > 0)
+		&& ((getNumUnitBonusCaps(eBonus) >= getTotalPlayerBonus(eBonus)) 
+			|| (getTotalPlayerBonus(eBonus) > 0 && (getTotalPlayerBonus(eBonus) - getNumUnitBonusCaps(eBonus)) <= getNumCities() * 2) //keep a buffer for the player to be able to build units
+			|| (getTotalPlayerBonus(eBonus) == 0 && iChange >= 1)
+			//|| getNumWars(true, true) > 0 maybe at war time bonus is higher?
+			))
+		//doto units bonus cap
+
+		) // advc.036: Cover all strange cases here
 	{
 		//This is assuming the none-to-one or one-to-none case.
 		iValue += AI_baseBonusVal(eBonus, /* advc.036: */ bTrade);
@@ -12358,6 +12413,16 @@ int CvPlayerAI::AI_bonusTradeVal(BonusTypes eBonus, PlayerTypes eFromPlayer, int
 		}
 	}
 	CvPlayerAI const& kFromPlayer = GET_PLAYER(eFromPlayer);
+
+	//doto units bonus cap 
+	//i hope this will make the ai consider getting more copies of the same resource if its a cap bonus .
+	//i hope -> edit might be worth to reduce this.
+	if (GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP))
+	{
+		bUseOurBonusVal = GC.getGame().getBonusThatArePrereqForUnits(eBonus) > 0 ?  false : true;
+	}
+	//doto units bonus cap
+
 	scaled rOurVal = (bUseOurBonusVal ? AI_bonusVal(eBonus, iChange, false, true) :
 			// Use FromPlayer's value as a substitute
 			kFromPlayer.AI_bonusVal(eBonus, 0, false, true));
@@ -12465,8 +12530,9 @@ int CvPlayerAI::AI_bonusTradeVal(BonusTypes eBonus, PlayerTypes eFromPlayer, int
 	/*  To make resource vs. resource trades more compatible. A multiple of 5
 		would lead to a rounding error when gold is paid for a resource b/c
 		2 gpt correspond to 1 tradeVal. */
-	if (r >= 3 && !GET_TEAM(getTeam()).isGoldTrading() &&
-		!GET_TEAM(eFromPlayer).isGoldTrading())
+	// Let's actually apply this even once gold trading is available
+	if (r >= 3 /*&& !GET_TEAM(getTeam()).isGoldTrading() &&
+		!GET_TEAM(eFromPlayer).isGoldTrading()*/)
 	{
 		iR = r.roundToMultiple(4);
 	}
@@ -14095,7 +14161,9 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		return 0;
 
 	int const iCombatValue = GC.AI_getGame().AI_combatValue(eUnit);
-
+// MOD - START - Ranged Strike AI - doto addition	
+	int const iCombatRangedValue = GC.AI_getGame().AI_combatRangedValue(eUnit);
+// MOD - START - Ranged Strike AI
 	int iValue = 1;
 
 	iValue += u.getAIWeight();
@@ -14123,30 +14191,31 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 
 		iValue += iCombatValue;
 		// advc.131: From MNAI. Divisor was 100; MNAI uses 25.
-//doto keldath rangedstrike + ranged immunity - dont add withdrawl rate to the calc
-		if (u.getRangeStrike() < 1)
-			iValue += (iCombatValue * u.getWithdrawalProbability()) / 50;
-//doto keldath rangedstrike + ranged immunity
-		if (u.getRangeStrike() > 0)
+		iValue += (iCombatValue * u.getWithdrawalProbability()) / 50;
+		
+// MOD - START - Ranged Strike AI - doto give ranged some more value		
+		if (u.getDomainType() == DOMAIN_LAND && u.getAirCombat() > 0)
 		{
-			//iValue += ((iCombatValue * (125 - u.getCombatLimit())) / 100);
-			iValue += iCombatValue * 20 / 100;
+			//based on air attack below. didnt add ait limit value cause its not a real limit - see info on the airlimit effect in 
+			//the ranged functions
+			//int iRangeValue = iCombatRangedValue;
+			//iRangeValue += (u.getCollateralDamage() * iCombatRangedValue) / 200;
+			int iRangeValue = (iCombatRangedValue * (100 + 2 * u.getCollateralDamage()) *
+					u.getAirRange()) / 150;
+			iValue += (iRangeValue * 10 / 100); //add 10% of the iRangeValue -> so ai wont buy only ranged.
 		}
-
-		//ranged are limited, we dont want reduction of value
-		if (u.getCombatLimit() < 100 && u.getRangeStrike() < 1) 
+// MOD - START - Ranged Strike AI - doto give ranged some more value
+		
+		if (u.getCombatLimit() < 100)
 			iValue -= (iCombatValue * (125 - u.getCombatLimit())) / 100;
 		// K-Mod
-//doto keldath rangedstrike + ranged immunity
 		if (u.getMoves() > 1)
 		{
 			// (the bts / bbai bonus was too high)
 			int iFastMoverMultiplier = (AI_isDoStrategy(AI_STRATEGY_FASTMOVERS) ? 3 : 1);
 			iValue += iCombatValue * iFastMoverMultiplier * u.getMoves() / 8;
 		}
-//doto keldath rangedstrike + ranged immunity
-//r units cant capture - so do not reduce the value		
-		if (u.isNoCapture() && u.getRangeStrike() > 0 )
+		if (u.isNoCapture())
 			iValue -= iCombatValue * 30 / 100;
 		// K-Mod end
 		break;
@@ -14165,15 +14234,11 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 			//iValue -= iTempValue / 2;
 			// disabled by K-Mod (how is drop range a disadvantage?)
 		}
-//doto ranged immunity doto keldath rangedstrike 
-//first strikes are ignored for ranged immunity
-		if (u.isFirstStrikeImmune() && u.getRangeStrike() < 1)
+		if (u.isFirstStrikeImmune())
 			iValue += (iTempValue * 8) / 100;
 		iValue += (iCombatValue * u.getCityAttackModifier()) / 75; // bbai (was 100).
 		// iValue += (iCombatValue * u.getCollateralDamage()) / 400; // (moved)
-//doto ranged immunity doto keldath rangedstrike - no withdrawl		
-		if (u.getRangeStrike() < 1)
-			iValue += (iCombatValue * u.getWithdrawalProbability()) / 150; // K-Mod (was 100)
+		iValue += (iCombatValue * u.getWithdrawalProbability()) / 150; // K-Mod (was 100)
 		// iValue += (iCombatValue * u.getMoves() * iFastMoverMultiplier) / 4;
 		// K-Mod
 		if (u.getMoves() > 1)
@@ -14182,11 +14247,7 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 			iValue += iCombatValue * iFastMoverMultiplier * u.getMoves() / 10;
 		}
 		// K-Mod end
-		//doto keldath rangedstrike + ranged immunity
-		if (u.getRangeStrike() > 0)
-		{
-			iValue += (iCombatValue * 30) / 100;
-		}
+
 
 		/* if (!AI_isDoStrategy(AI_STRATEGY_AIR_BLITZ)) {
 			int iBombardValue = u.getBombardRate() * 8;
@@ -14240,11 +14301,7 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 			}
 			iSiegeValue += iBombardValue;
 		}
-//doto keldath rangedstrike + ranged immunity - 
-//although ranged untis has combat limit, i didnt add a factor if ranged to this one.
-//this will mitigate the construction of ranged units by the ai
-//consider tweaking this.
-		if (u.getCombatLimit() < 100 ) 
+		if (u.getCombatLimit() < 100)
 		{
 			PROFILE("AI_unitValue, UNITAI_ATTACK_CITY combat limit adjustment");
 			// count the number of existing combat-limited units.
@@ -14299,7 +14356,20 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 			iSiegeValue /= iAttackUnits + 2 * iLimitedUnits;
 		}
 		iValue += iSiegeValue;
-
+		
+// MOD - START - Ranged Strike AI - doto give ranged some more value		
+		if (u.getDomainType() == DOMAIN_LAND && u.getAirCombat() > 0)
+		{
+			//based on air attack below.
+			//int iRangeValue = iCombatRangedValue;
+			//iRangeValue += (u.getCollateralDamage() * iCombatRangedValue) / 100;
+			//iRangeValue += 2 * u.getBombRate();
+			int iRangeValue = ((iCombatRangedValue * (100 + u.getCollateralDamage()) *
+					u.getAirRange()) + u.getBombRate()) / 200;
+			iValue += (iRangeValue * 10 / 100); //add 10% of the iRangeValue -> so ai wont buy only ranged.
+		}
+// MOD - START - Ranged Strike AI - doto give ranged some more value
+		
 		break;
 	}
 
@@ -14310,18 +14380,8 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		iValue += iCombatValue * u.getCollateralDamage() *
 				(1 + u.getCollateralDamageMaxUnits()) / 350; // </K-Mod>
 		iValue += (iCombatValue * u.getMoves()) / 4;
-//doto keldath rangedstrike + ranged immunity - i dont want these modifiers to be given to ranged
-		if (u.getRangeStrike() < 1)
-		{
-			iValue += (iCombatValue * u.getWithdrawalProbability()) / 25;
-			iValue -= (iCombatValue * u.getCityAttackModifier()) / 100;
-		}
-//doto keldath rangedstrike + ranged immunity
-//112 removed - there is enough buff from the attack and city_attack ai above
-		if (u.getRangeStrike() > 0)
-		{
-			iValue += (iCombatValue * 30) / 100;
-		}
+		iValue += (iCombatValue * u.getWithdrawalProbability()) / 25;
+		iValue -= (iCombatValue * u.getCityAttackModifier()) / 100;
 		break;
 
 	case UNITAI_PILLAGE:
@@ -14430,13 +14490,17 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		iValue += (iCombatValue * 2) / 3;
 		iValue += (iCombatValue * u.getCityDefenseModifier()) / 75;
 		// K-Mod. Value for collateral immunity
-//doto keldath rangedstrike + ranged immunity
-		if (u.getRangeStrike() > 0)
+// MOD - START - Ranged Strike AI - doto give ranged some more value		
+		if (u.getDomainType() == DOMAIN_LAND && u.getAirCombat() > 0)
 		{
-			//iValue += ((iCombatValue * (125 - u.getCombatLimit())) / 100);
-				//(iCombatValue * u.getCombatLimit() / 300) + u.getCombat();
-			iValue += iCombatValue * 30 / 100;
+			//based on air attack below.
+			//int iRangeValue = iCombatRangedValue;
+			//iRangeValue += (u.getCollateralDamage() * iCombatRangedValue) / 150;
+			int iRangeValue = (iCombatRangedValue * (100 + u.getCollateralDamage()) *
+					u.getAirRange()) / 200;
+			iValue += (iRangeValue * 15 / 100); //add 15% of the iRangeValue -> so ai wont buy only ranged.
 		}
+// MOD - START - Ranged Strike AI - doto give ranged some more value
 		FOR_EACH_ENUM(UnitCombat)
 		{
 			if (u.getUnitCombatCollateralImmune(eLoopUnitCombat))
@@ -16516,7 +16580,6 @@ int CvPlayerAI::AI_localAttackStrength(const CvPlot* pTargetPlot,
 					/*  <advc.159> Call AI_currEffectiveStr instead of currEffectiveStr.
 						Adjustments for first strikes and collateral damage are handled
 						by that new function. */
-//doto ranged immunity - ranged units gets more value here AI_currEffectiveStr
 					int const iUnitStr = kUnit.AI_currEffectiveStr(
 							bUseTarget ? pTargetPlot : NULL, bUseTarget ? &kUnit : NULL,
 							true, iBaseCollateral, bCheckCanAttack); // </advc.159>
@@ -17012,7 +17075,7 @@ CivicTypes CvPlayerAI::AI_bestCivic(CivicOptionTypes eCivicOption, int* piBestVa
 					continue;
 			/* doto Civics parent - Start */
 			if (canDoCivics(eLoopCivic))
-				{
+			{
 				int iValue = AI_civicValue(eLoopCivic);
 				if (iValue > iBestValue)
 				{
@@ -18684,13 +18747,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 		int iMaxCultureChange = 0;
 		FOR_EACH_ENUM(Specialist)
 		{
-			//<!-- doto civic plus -->	start -> missing in the org code... doto112	
-			//be carefull , there is a 	continue; below
-			if (kCivic.getFreeSpecialistCount(eLoopSpecialist) > 0)
-			{
-				iValue += kCivic.getFreeSpecialistCount(eLoopSpecialist) * iCities + getTotalPopulation();
-			}
-			//<!-- doto civic plus -->	end -> missing in the org code... doto112	
+			//<!-- doto civic plus -->	start 
 			
 			if (!kCivic.isSpecialistValid(eLoopSpecialist))
 				continue;
@@ -21151,6 +21208,7 @@ void CvPlayerAI::AI_doCivics()
 		bFirstPass = false;
 	} while (bWillSwitch && bWantSwitch);
 	// Recheck, just in case we can switch another good civic without adding more anarchy.
+
 
 	/*	finally, if our current research would give us a new civic,
 		consider waiting for that. */

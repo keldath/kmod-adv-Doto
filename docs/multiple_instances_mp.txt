@@ -1,0 +1,5 @@
+by the way - im trying to remember what was the execution of civ parameter addition (in a shortcut) that allowed the execution of 2 instances or more of civ, for mp tests.
+multiple
+E.g. my Windows shortcut for MP tests has this in the Target field:
+Code:
+"C:\Program Files (x86)\Sid Meier's Civilization 4\Beyond the Sword\Civ4BeyondSword.exe" ini=advcMP.ini multiple

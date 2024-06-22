@@ -119,10 +119,9 @@ CvUnit::CvUnit() // advc.003u: Body cut from the deleted reset function
 	m_eLeaderUnitType = NO_UNIT;
 
 	m_iBaseCombat = 0;
-//doto ranged immunity
-	m_iRangedStrikeCapCounter = 0;
-	m_iRangedStrikeCapTimer = 0;
-//doto ranged immunity
+//doto units bonus cap		
+	m_iBonusUsedForPrereqOrCap = NULL;
+//doto units bonus cap	
 	m_iCargoCapacity = 0;
 	m_iLastReconTurn = -1; // advc.029
 }
@@ -612,7 +611,41 @@ void CvUnit::kill(bool bDelay, PlayerTypes ePlayer)
 	joinGroup(NULL, false, false);
 	CvEventReporter::getInstance().unitLost(this);
 	kOwner.deleteUnit(getID());
-
+	
+//doto units bonus cap
+//reduce the cap on a kill	
+	if (GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP))
+	{	
+		BonusTypes ePrereqAndBonus = m_pUnitInfo->getPrereqAndBonus();
+		if (ePrereqAndBonus != NO_BONUS)
+		{
+			int eBonusCap = kOwner.getNumUnitBonusCaps(ePrereqAndBonus); 
+			//int eTotalBonus = kOwner.getTotalPlayerBonus(ePrereqAndBonus);
+			if (eBonusCap > 0
+				//&& eTotalBonus > 0
+				)
+				kOwner.changeNumUnitBonusCaps(ePrereqAndBonus, -1);
+			FAssert(kOwner.getNumUnitBonusCaps(ePrereqAndBonus) >= 0);
+		}	
+		for (int i = 0; i < m_pUnitInfo->getNumPrereqOrBonuses(); i++)
+		{
+			BonusTypes const ePrereqOrBonus = m_pUnitInfo->getPrereqOrBonuses(i);
+			if (ePrereqOrBonus == NO_BONUS)
+				continue;
+			BonusTypes const ePrereqOrBonusUsed = (BonusTypes)getBonusUsedForPrereqOrCap();
+			if (ePrereqOrBonusUsed != ePrereqOrBonus)
+				 continue;
+			int eBonusCap = kOwner.getNumUnitBonusCaps(ePrereqOrBonus); 
+			//int eTotalBonus = kOwner.getTotalPlayerBonus(ePrereqOrBonus);
+			if (eBonusCap > 0 
+				//&& eTotalBonus > 0
+				)
+				kOwner.changeNumUnitBonusCaps(ePrereqOrBonus, -1);
+			FAssert(kOwner.getNumUnitBonusCaps(ePrereqOrBonus) >= 0);
+		}
+	}
+//doto units bonus cap		
+	
 	if (eCapturingPlayer != NO_PLAYER && eCaptureUnitType != NO_UNIT &&
 		eCapturingPlayer != BARBARIAN_PLAYER)
 	{
@@ -754,82 +787,7 @@ void CvUnit::doTurn()
 
 	changeImmobileTimer(-1);
 	
-//doto ranged immunity
-// this cap will set the number of ranged attack a unit can perform
-// the vakue is derived from the unit ranged value.
-// each attack will render the counter by 1.
-//if the cap is at its max - the unit will attack with the normal battle rules
-// the cap will replenish if the unit did not attack for x turns (maybe more or other rules later on
-//doto 113 refactor
-	int iRanged = rangedStrike();
-	int iRcd = GC.getDefineINT("RANGED_ATTACK_COOLDOWN");
-	if (iRanged > 0 )
-	{
-		//these 2 checks are basically debuggers actions
-		//it shouldnt happen in a normal game, i had it in a test game i kept changing
-		//and one of these got to -1, so this will always fix any wrong calcs.
-		//should run some autoplay to make sure these statements wont take effect.
-		//otherwise, should be investigated!
-		if (getRangedStrikeCapTimer() < 0)
-			setRangedStrikeCapTimer(0);
-		if (getRangedStrikeCapCounter() < 0)
-			setRangedStrikeCapCounter(0);
-		
-		if (iRcd == getRangedStrikeCapTimer())
-		{
-			//no city bonus. not fair. moved down doto 113
-			//if (!getPlot().isCity())
-			//{
-				// damage the ranged unit by x% damage per strike count
-				// and only for the first time the cap is 0 (so the damage wont happen for next turn as well
-				//if the attcker is in a city, spare it from dmg on the cooldown
-				//changeDamage(iRcd * iRanged, getOwner());
-			//}
-			setRangedStrikeCapTimer(0); //reset the timer
-			setRangedStrikeCapCounter(0); //reset the counter
-			setMadeAttack(false);
-		}
-		else if (getRangedStrikeCapCounter() >= iRanged && 
-			getRangedStrikeCapTimer() < iRcd //this second checkshould be obvious but i added just in case.
-			)
-		{
-			setMadeAttack(true); //unit cant attack at all if cap was reached
-			changeRangedStrikeCapTimer(1); //use turn counter! old turns new turns
-		}
-		else
-		{
-			int iTimer = getRangedStrikeCapTimer();
-			int iCap = getRangedStrikeCapCounter();
-			if (!isMadeAttack() && (iTimer > 0 || iCap > iRanged))
-			{
-				//if no attack was made last turn, count back the timer
-				if (iTimer > 0)
-					changeRangedStrikeCapTimer(-1);
-				//reduce the cap if cd is 0 or max cap doto 113
-				//this will reward 
-				if (iCap >= iRanged)
-					changeRangedStrikeCapCounter(-1);
-				if (getPlot().isCity() &&
-					(getRangedStrikeCapCounter() > 0
-						||
-						getRangedStrikeCapCounter() > 0))
-				{
-					setRangedStrikeCapTimer(0); //reset the timer
-					setRangedStrikeCapCounter(0); //reset the counter
-					//on a city , and no attack was made reseet all -> faster availability for more attacks
-				}
-
-			}
-			setMadeAttack(false);
-		}
-			
-	}
-	else
-	{
-	//org code
 	setMadeAttack(false);
-	}
-//doto ranged immunity
 	setMadeInterception(false);
 
 	//setReconPlot(NULL); // advc.029: Handled at end of turn now
@@ -1179,196 +1137,6 @@ void CvUnit::updateAirCombat(bool bQuick)
 			kill(true);
 	}
 }
-//#define LOG_COMBAT_OUTCOMES // K-Mod -- this makes the game log the odds and outcomes of every battle, to help verify the accuracy of the odds calculation.
-//syntax changeds in advc099
-// K-Mod. I've edited this function so that it handles the battle planning internally rather than feeding details back to the caller.
-void CvUnit::resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pPlot, bool bVisible, 
-//DOTO - ranged-immunity start
-			int dmgFromRanged, bool iRetaliate)
-//DOTO - ranged-immunity end
-{
-// <advc.048c> Preserve info for interface message (based on K-Mod code)
-	m_iAttackOdds = -1;
-#ifndef LOG_COMBAT_OUTCOMES
-	if (GC.getDefineBOOL(CvGlobals::SHOW_ODDS_IN_COMBAT_MESSAGES) &&
-		/*	To save time. addMessage will sometimes deliver messages to AI players,
-			but it's OK (with me) to omit odds from those messages. */
-		(isHuman() || pDefender->isHuman()))
-	{
-#endif
-		m_iAttackOdds = calculateCombatOdds(*this, *pDefender,
-				false); // Do reveal free wins vs. Barbarians
-		m_iAttackOdds += ((GC.getCOMBAT_DIE_SIDES() - m_iAttackOdds) *
-				withdrawalProbability()) / 100;
-		m_iPreCombatHP = currHitPoints();
-		pDefender->m_iPreCombatHP = pDefender->currHitPoints();
-#ifndef LOG_COMBAT_OUTCOMES
-	}
-#endif
-	// </advc.048c>
-
-	// K-Mod. Initialize battle info.
-	// Note: kBattle is only relevant if we are going to show the battle animation.
-	CvBattleDefinition kBattle;
-	if (bVisible)
-	{
-		kBattle.setUnit(BATTLE_UNIT_ATTACKER, this);
-		kBattle.setUnit(BATTLE_UNIT_DEFENDER, pDefender);
-		kBattle.setDamage(BATTLE_UNIT_ATTACKER, BATTLE_TIME_BEGIN, getDamage());
-		kBattle.setDamage(BATTLE_UNIT_DEFENDER, BATTLE_TIME_BEGIN, pDefender->getDamage());
-	}
-	/*	positive number for attacker hitting the defender,
-		negative numbers for defender hitting the attacker. */
-	std::vector<int> combat_log;
-	// K-Mod end
-
-	CombatDetails cdAttackerDetails;
-	CombatDetails cdDefenderDetails;
-
-	int iAttackerStrength = pAttacker->currCombatStr(NULL, NULL, &cdAttackerDetails);
-	int iAttackerFirepower = pAttacker->currFirepower();
-	
-	int iDefenderStrength=0, iAttackerDamage=0, iDefenderDamage=0, iDefenderOdds=0;
-	getDefenderCombatValues(*pDefender, pPlot, iAttackerStrength, iAttackerFirepower,
-			iDefenderOdds, iDefenderStrength, iAttackerDamage, iDefenderDamage,
-			&cdDefenderDetails);
-	int iAttackerKillOdds = iDefenderOdds * (100 - pAttacker->withdrawalProbability()) / 100;
-
-	iDefenderDamage = dmgFromRanged;
-
-	//if (pAttacker->isHuman() || pDefender->isHuman())
-	// advc.001: Replacing isHuman checks
-	if (isActiveOwned() || pDefender->isActiveOwned())
-	{
-		//Added ST
-		CyArgsList pyArgsCD;
-		pyArgsCD.add(gDLL->getPythonIFace()->makePythonObject(&cdAttackerDetails));
-		pyArgsCD.add(gDLL->getPythonIFace()->makePythonObject(&cdDefenderDetails));
-		pyArgsCD.add(calculateCombatOdds(*this, *pDefender));
-		CvEventReporter::getInstance().genericEvent("combatLogCalc", pyArgsCD.makeFunctionArgs());
-	}
-	
-	//moved collateral damage to post attack.
-
-	//DOTO - rangeimunity not sure whats this below.
-	//syntax changed in 099 advc
-	int iDamage = iDefenderDamage;
-	//keldath testing
-//	int a = GC.getMAX_HIT_POINTS() - 1;
-//	int b = pDefender->getDamage();
-//	int c = pAttacker->combatLimit();
-//	bool d = std::min(a, b + iDamage) >= c;
-//	int n = 0;
-	/*	std::min(GC.getMAX_HIT_POINTS(),
-			pDefender->getDamage() + iDefenderDamage) > pAttacker->combatLimit())
-	*/
-	/*	The above lets combat continue when the limit is
-		reached exactly. This means, if the attacker lands another hit,
-		it'll deal 0 damage (weird). Also inconsistent w/ caclulateCombatOdds. */
-	// Minus one b/c reaching MAX_HIT_POINTS mustn't be treated as a withdrawal
-	bool const bLimitReached = (std::min(GC.getMAX_HIT_POINTS() - 1, 
-				pDefender->getDamage() + iDamage) >= pAttacker->combatLimit());	
-	if (bLimitReached)				
-		{
-//			d = 1;//keldath test
-//			n = 2;//keldath test
-			iDamage = pAttacker->combatLimit() - pDefender->getDamage();
-			/*	Don't break right after the XP change; want to log the hit -
-					now that it's guaranteed to be a proper hit (positive damage). */
-			// </advc.001l>
-			pAttacker->changeExperience(0/*keldath none from withdrawl*/,
-			pDefender->maxXPValue(), true, pPlot->getOwner() == pAttacker->getOwner(),
-				//!pDefender->isBarbarian()
-				pDefender->getGlobalXPPercent()); // advc.312
-
-		}
-		pDefender->changeDamage(iDamage, pAttacker->getOwner());
-		combat_log.push_back(iDamage); // K-Mod
-
-		cdDefenderDetails.iCurrHitPoints=pDefender->currHitPoints();
-
-		if (pAttacker->isHuman() || pDefender->isHuman())
-		{   // advc: Moved into new function
-			CvEventReporter::getInstance().combatLogHit(
-					cdAttackerDetails, cdDefenderDetails, iDamage, false);			
-		}
-		
-//DOTO - ranged immunity
-		if (pAttacker->isDead() || pDefender->isDead())
-		{
-			if (pAttacker->isDead())
-			{
-				int iExperience = defenseXPValue();
-				iExperience = ((iExperience * iAttackerStrength) / iDefenderStrength);
-				iExperience = range(iExperience,
-						GC.getDefineINT(CvGlobals::MIN_EXPERIENCE_PER_COMBAT),
-						GC.getDefineINT(CvGlobals::MAX_EXPERIENCE_PER_COMBAT)
-						- (pAttacker->isBarbarian() && !pAttacker->isAnimal() ? 4 : 0)); // advc.312
-					pDefender->changeExperience(iExperience, maxXPValue(), true,
-						pPlot->getOwner() == pDefender->getOwner(), 
-						//!pAttacker->isBarbarian()
-						pDefender->getGlobalXPPercent()); // advc.312
-			}
-			else
-			{
-				flankingStrikeCombat(pPlot, iAttackerStrength, iAttackerFirepower,
-						iAttackerKillOdds, iDefenderDamage, pDefender);
-
-				int iExperience = pDefender->attackXPValue();
-				iExperience = ((iExperience * iDefenderStrength) / iAttackerStrength);
-				iExperience = range(iExperience,
-						GC.getDefineINT(CvGlobals::MIN_EXPERIENCE_PER_COMBAT),
-						GC.getDefineINT(CvGlobals::MAX_EXPERIENCE_PER_COMBAT)
-						// advc.312:
-						/ (pDefender->isBarbarian() && !pDefender->isAnimal() ? 2 : 1));
-				changeExperience(iExperience, pDefender->maxXPValue(), true,
-						pPlot->getOwner() == pAttacker->getOwner(), 
-						//!pDefender->isBarbarian()
-						pAttacker->getGlobalXPPercent()); // advc.312
-						
-			}
-			GET_PLAYER(pAttacker->getOwner()).AI_attackMadeAgainst(*pDefender); // advc.139
-	}
-
-	// K-Mod. Finalize battle info and start the animation.
-	if (bVisible)
-	{
-//DOTO - ranged immunity
-//if a ranged unit kills its enemy, not likely due to combat limit.
-//it will not take the defeated plot.	
-		kBattle.setDamage(BATTLE_UNIT_DEFENDER, BATTLE_TIME_END, pDefender->getDamage());
-		// note: BATTLE_TIME_RANGED damage is now set inside planBattle; (not that it actually does anything...)
-
-		int iTurns = planBattle(kBattle, combat_log);
-		kBattle.setMissionTime(iTurns * gDLL->getSecsPerTurn());
-		setCombatTimer(iTurns);
-
-		GC.getGame().incrementTurnTimer(getCombatTimer()); // additional time for multiplayer turn timer.
-
-		if (pPlot->isActiveVisible(false))
-		{
-			ExecuteMove(0.5f, true);
-			gDLL->getEntityIFace()->AddMission(&kBattle);
-		}
-	}
-#ifdef LOG_COMBAT_OUTCOMES
-	// (don't log barb battles, because they have special rules.)
-	if (!isBarbarian() && !pDefender->isBarbarian())
-	{
-		TCHAR message[20];
-		_snprintf(message, 20, "%.2f\t%d\n",
-				m_iAttackOdds / (float)GC.getCOMBAT_DIE_SIDES(),
-				isDead() ? 0 : 1);
-		gDLL->logMsg("combat.txt", message ,false, false);
-	}
-#endif
-	//raise the cap by 1 -> to the attcker only
-	//should e only for the attacker , while retaliate of the defender wont raise the cap for the defender
-	//doto 113 change
-	if (!iRetaliate)
-		pAttacker->changeRangedStrikeCapCounter(1);
-}
-//#define LOG_COMBAT_OUTCOMES // K-Mod -- this makes the game log the odds and outcomes of every battle, to help verify the accuracy of the odds calculation.
 
 /*	K-Mod -- this makes the game log the odds and outcomes of every battle,
 	to help verify the accuracy of the odds calculation. */
@@ -1668,19 +1436,7 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 		getGroup()->clearMissionQueue();
 		return;
 	}
-//DOTO - ranged-immunity
-	//need as global	
-	bool rImmunityOption = GC.getGame().isOption(GAMEOPTION_RANGED_IMMUNITY);
-	int dmgFromRangedA = 0; 
-	int dmgFromRangedD = 0;
-	bool rndHitAtk = false; //means theres a hit
-	bool rndHitDef = false; //means theres a hit
-	bool bAttckerRanged = this->isRangeStrikeCapableK();
-	bool bdefenderRanged = pDefender->isRangeStrikeCapableK(true);
-	bool rangedBattle = bAttckerRanged || bdefenderRanged;//at least one side is ranged
-	int dUnitPreDamage = 0; //damage b4 combat resolve
-	int aUnitPreDamage = 0;
-//DOTO - ranged-immunity
+
 	//check if quick combat
 	bool const bVisible = (bQuick ? false : isCombatVisible(pDefender,
 			bSeaPatrol)); // advc.004k
@@ -1782,40 +1538,7 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 		}
 		else
 		{
-//DOTO - ranged imunity
-//check the def and atkr for ranged skill
-			if (rImmunityOption && rangedBattle)
-			{	
-				if (bAttckerRanged)
-				{
-					rndHitAtk = randomRangedGen(pDefender,this);
-					dmgFromRangedA = rndHitAtk ? rangeCombatDamageK(pDefender, this) : 0; //if hit miss dont do damage
-					if (dmgFromRangedA != 0)
-						dUnitPreDamage = pDefender->getDamage();//save the unit damage before the change - needed for later messsage damage display
-					resolveRangedCombat(pDefender, this, pPlot, bVisible, dmgFromRangedA, false);
-				}
-				else
-				{
-					resolveCombat(pDefender, pPlot, bVisible);
-				}
-				//retalliate is only for ranged vs ranged
-				if (!pDefender->isDead() && bAttckerRanged &&
-					bdefenderRanged && GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE))
-				{
-					rndHitDef = randomRangedGen(this, pDefender);
-					dmgFromRangedD = rndHitDef ? rangeCombatDamageK(this, pDefender) : 0; //if hit miss dont do damage
-					dmgFromRangedD = fmath::round(dmgFromRangedD / 2); //i decided retaloation damage would be halfed doto113 fix for dmg to attacker..
-					if (dmgFromRangedD != 0)
-						aUnitPreDamage = this->getDamage();//save the unit damage before the change - needed for later messsage damage display
-					resolveRangedCombat(this, pDefender, this->plot(), bVisible, dmgFromRangedD, true);
-					
-				}
-			}
-			else
-			{
 			resolveCombat(pDefender, pPlot, bVisible);
-			}
-//DOTO - ranged-immunity - check if min 1 ranged unit	
 			FAssert(!bVisible || getCombatTimer() > 0);
 			if (!bVisible)
 				bFinish = true;
@@ -2013,45 +1736,6 @@ void CvUnit::updateCombat(bool bQuick, /* <advc.004c> */ bool* pbIntercepted,
 		getGroup()->clearMissionQueue();
 		}//Fix added by PieceOfMind for Influence Driven War, IDW
 	}
-//DOTO - ranged immunity
-	else if (rangedBattle && rImmunityOption) 
-	{
-
-		if (bAttckerRanged)
-		{
-			rImmunityCombatCallback(pDefender, this, pDefender->plot(), dmgFromRangedA, rndHitAtk, dUnitPreDamage, false);
-			//changeMoves(std::max(GC.getMOVE_DENOMINATOR(), pPlot->movementCost(this, plot())));//advc 099 adjustment
-			//DOTO - rangeimunity - collateral damage denied if a city have defence
-			if (!GC.getGame().isOption(GAMEOPTION_NO_RANGED_COLLATERAL))
-			{
-				CvCity* pCity = pDefender->plot()->getPlotCity();
-				if (pCity != NULL)
-				{
-					//if can ignore city defense or no units in city-> collateral damage.
-					if (!ignoreBuildingDefense() || pCity->getDefenseModifier(false) == 0)
-					{
-						collateralCombat(pPlot, pDefender);
-					}
-				}
-				else
-				{
-					//org
-					collateralCombat(pPlot, pDefender);
-				}
-			}
-			changeMoves(std::max(GC.getMOVE_DENOMINATOR(),pPlot->movementCost(*this, getPlot())));
-			setMadeAttack(true);
-			checkRemoveSelectionAfterAttack();
-			getGroup()->clearMissionQueue();
-		}
-		//doto 113 fix - i think, only do dmg display if the defender is ranged and such
-		if (bAttckerRanged &&
-			bdefenderRanged && GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE))
-		{
-			rImmunityCombatCallback(this, pDefender, this->plot(), dmgFromRangedD, rndHitDef, aUnitPreDamage, true);
-		}
-	}
-//DOTO - ranged immunity
 	else
 	{
 		addWithdrawalMessages(*pDefender); // advc: Moved into new function
@@ -2633,32 +2317,6 @@ bool CvUnit::isUnowned() const
 		return true;
 	return false;
 }
-//doto governor 
-bool CvUnit::cantGovernorDoCommand(int iData1) const
-{
-	if (!GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-		return false;
-		
-	if ((UnitTypes)iData1 != NULL && 
-		(UnitTypes)iData1 > 0
-		&& iData1 > 0)
-	{
-		if (GC.getInfo((UnitTypes)iData1).getGovernor() > 0)
-			return true;
-	}
-	else if (GC.getUnitInfo(getUnitType()).getGovernor() > 0)
-		return true;
-	//this->GC.getUnitInfo();
-	//this->GC.getUnitInfo();
-	//CvUnit const* eUnit = this;
-	//this->getPlot();
-	//CvUnit *eUnit = this;
-	//::getUnit(this);
-	//((UnitTypes)eUnit).getGovernor();
-	//eUnit.GC.getUnitInfo();
-	return false;
-}
-//doto governor
 
 bool CvUnit::canDoCommand(CommandTypes eCommand, int iData1, int iData2,
 	bool bTestVisible, bool bTestBusy) /* advc: */ const
@@ -2674,25 +2332,15 @@ bool CvUnit::canDoCommand(CommandTypes eCommand, int iData1, int iData2,
 		break;
 
 	case COMMAND_UPGRADE:
-	{
-		//doto governor - deny unit governor to do the action
-		if (cantGovernorDoCommand(iData1))
-			return false;
-		//doto governor - deny unit governor to do the action
 		if (canUpgrade(((UnitTypes)iData1), bTestVisible))
 			return true;
 		break;
-	}
+
 	case COMMAND_AUTOMATE:
-	{
-		//doto governor - deny unit governor to do the action
-		if (cantGovernorDoCommand(iData1))
-			return false;
-		//doto governor - deny unit governor to do the action
 		if (canAutomate((AutomateTypes)iData1))
 			return true;
 		break;
-	}
+
 	case COMMAND_WAKE:
 		if (!isAutomated() && isWaiting())
 			return true;
@@ -2705,41 +2353,21 @@ bool CvUnit::canDoCommand(CommandTypes eCommand, int iData1, int iData2,
 		break;
 
 	case COMMAND_STOP_AUTOMATION:
-	{
-		//doto governor - deny unit governor to do the action
-		if (cantGovernorDoCommand(iData1))
-			return false;
-		//doto governor - deny unit governor to do the action
 		if (isAutomated())
 			return true;
 		break;
-	}
+
 	case COMMAND_DELETE:
-	{
-		//doto governor - deny unit governor to do the action
-		if (cantGovernorDoCommand(iData1))
-			return false;
-		//doto governor - deny unit governor to do the action
 		if (canScrap())
 			return true;
 		break;
-	}
+
 	case COMMAND_GIFT:
-	{
-		//doto governor - deny unit governor to do the action
-		if (cantGovernorDoCommand(iData1))
-			return false;
-		//doto governor - deny unit governor to do the action
 		if (canGift(bTestVisible))
 			return true;
 		break;
-	}
+
 	case COMMAND_LOAD:
-	{
-		//doto governor - deny unit governor to do the action
-		if (cantGovernorDoCommand(iData1))
-			return false;
-		//doto governor - deny unit governor to do the action
 		if (canLoadOntoAnyUnit(getPlot(),
 			/*  advc.123c: If a unit is moved onto a transport, canLoad gets
 				checked before the command can be issued, and again after the unit
@@ -2753,39 +2381,23 @@ bool CvUnit::canDoCommand(CommandTypes eCommand, int iData1, int iData2,
 			return true;
 		}
 		break;
-	}
+
 	case COMMAND_LOAD_UNIT:
 	{
-		//doto governor - deny unit governor to do the action
-		if (cantGovernorDoCommand(iData1))
-			return false;
-		//doto governor - deny unit governor to do the action
 		CvUnit const* pUnit = ::getUnit(IDInfo(((PlayerTypes)iData1), iData2));
 		if (pUnit != NULL && canLoadOnto(*pUnit, getPlot()))
 			return true;
 		break;
 	}
 	case COMMAND_UNLOAD:
-	{
-		//doto governor - deny unit governor to do the action
-		if (cantGovernorDoCommand(iData1))
-			return false;
-		//doto governor - deny unit governor to do the action
 		if (canUnload())
 			return true;
 		break;
-	}
 
 	case COMMAND_UNLOAD_ALL:
-	{
-		//doto governor - deny unit governor to do the action
-		if (cantGovernorDoCommand(iData1))
-			return false;
-		//doto governor - deny unit governor to do the action
 		if (canUnloadAll())
 			return true;
 		break;
-	}
 
 	case COMMAND_HOTKEY:
 		if (isGroupHead())
@@ -2815,19 +2427,11 @@ void CvUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 			break;
 
 		case COMMAND_UPGRADE:
-			//doto governor - deny unit governor to do the action
-			if (cantGovernorDoCommand(iData1))
-				break;
-			//doto governor - deny unit governor to do the action
 			upgrade((UnitTypes)iData1);
 			bCycle = true;
 			break;
 
 		case COMMAND_AUTOMATE:
-			//doto governor - deny unit governor to do the action
-			if (cantGovernorDoCommand(iData1))
-				break;
-			//doto governor - deny unit governor to do the action
 			automate((AutomateTypes)iData1);
 			bCycle = true;
 			break;
@@ -2845,46 +2449,25 @@ void CvUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 			break;
 
 		case COMMAND_STOP_AUTOMATION:
-			//doto governor - deny unit governor to do the action
-			if (cantGovernorDoCommand(iData1))
-				break;
-			//doto governor - deny unit governor to do the action
 			getGroup()->setAutomateType(NO_AUTOMATE);
 			break;
 
 		case COMMAND_DELETE:
-			//doto governor - deny unit governor to do the action
-			if (cantGovernorDoCommand(iData1))
-				break;
-			//doto governor - deny unit governor to do the action
 			scrap();
 			bCycle = true;
 			break;
 
 		case COMMAND_GIFT:
-			//doto governor - deny unit governor to do the action
-			if (cantGovernorDoCommand(iData1))
-				break;
-			//doto governor - deny unit governor to do the action
 			gift();
 			bCycle = true;
 			break;
 
 		case COMMAND_LOAD:
-			//doto governor - deny unit governor to do the action
-			if (cantGovernorDoCommand(iData1))
-				break;
-			//doto governor - deny unit governor to do the action
 			load();
 			bCycle = true;
 			break;
 
-		case COMMAND_LOAD_UNIT: 
-		{
-			//doto governor - deny unit governor to do the action
-			if (cantGovernorDoCommand(iData1))
-				break;
-			//doto governor - deny unit governor to do the action
+		case COMMAND_LOAD_UNIT: {
 			CvUnit* pUnit = ::getUnit(IDInfo(((PlayerTypes)iData1), iData2));
 			if (pUnit != NULL)
 			{
@@ -2894,19 +2477,11 @@ void CvUnit::doCommand(CommandTypes eCommand, int iData1, int iData2)
 			break;
 		}
 		case COMMAND_UNLOAD:
-			//doto governor - deny unit governor to do the action
-			if (cantGovernorDoCommand(iData1))
-				break;
-			//doto governor - deny unit governor to do the action
 			unload();
 			bCycle = true;
 			break;
 
 		case COMMAND_UNLOAD_ALL:
-			//doto governor - deny unit governor to do the action
-			if (cantGovernorDoCommand(iData1))
-				break;
-			//doto governor - deny unit governor to do the action
 			unloadAll();
 			bCycle = true;
 			break;
@@ -2959,7 +2534,8 @@ void CvUnit::pushGroupMoveTo(CvPlot const& kTo, MovementFlags eFlags,
 	CvPlot const* pMissionAIPlot, CvUnit const* pMissionAIUnit,
 	bool bModified)
 {
-	FAssert(!at(kTo));
+	//DOTO RANGED STRIKE -> REMOVED. this pops. not sure why. this advc addition
+	//FAssert(!at(kTo));
 	getGroup()->pushMission(MISSION_MOVE_TO, kTo.getX(), kTo.getY(), eFlags,
 			bAppend, bManual, eMissionAI, pMissionAIPlot, pMissionAIUnit, bModified);
 }
@@ -3096,14 +2672,6 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar,
 	bool bIgnoreLoad, bool bAssumeVisible,
 	bool bDangerCheck) const // advc.001k
 {
-	//doto governor -> governer cant move anywhere...
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		if (m_pUnitInfo->getGovernor() > 0)
-			return false;
-	}
-	//doto governor -> governer cant move anywhere...
-
 	//PROFILE_FUNC(); // advc.003o
 //MOD@VET_Andera412_Blocade_Unit-begin1/1 - doto assert fix attempt in I::AI_solveBlockageProblem	
 	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
@@ -3307,7 +2875,16 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar,
 		}
 	}
 	// UNOFFICIAL_PATCH: END
-
+//doto Range Strike
+//	if (bAttack)
+//	{
+//		if ((getDomainType() == DOMAIN_LAND) && (canRangeStrike()))
+//		{
+//			return false;
+//		}
+//	}
+//doto Range Strike
+	
 	if (getDomainType() == DOMAIN_AIR)
 	{
 		if (bAttack)
@@ -3333,17 +2910,17 @@ bool CvUnit::canMoveInto(CvPlot const& kPlot, bool bAttack, bool bDeclareWar,
 						// I think the rule should be that bAttack means we have to actually fight an enemy unit. Capturing an undefended city doesn't count.
 						// (there is no "isVisiblePotentialEnemyUnit" function, so I just wrote the code directly.)
 						if (!bAttack || !bDeclareWar || !kOurTeam.AI_mayAttack(kPlot))
-						// K-Mod end
+							// K-Mod end
 						{
 							return false;
 						}
 					} // <advc.315>
-					else if(bAttack && ( // <advc.315b>
+					else if (bAttack && ( // <advc.315b>
 						(m_pUnitInfo->isOnlyAttackBarbarians() &&
-						kPlot.plotCheck(PUF_isPlayer, BARBARIAN_PLAYER) == NULL) ||
+							kPlot.plotCheck(PUF_isPlayer, BARBARIAN_PLAYER) == NULL) ||
 						// </advc.315b> <advc.315a>
-						(m_pUnitInfo->isOnlyAttackAnimals() &&
-						kPlot.plotCheck(PUF_isAnimal) == NULL))) // </advc.315a>
+							(m_pUnitInfo->isOnlyAttackAnimals() &&
+								kPlot.plotCheck(PUF_isAnimal) == NULL))) // </advc.315a>
 					{
 						return false;
 					} // </advc.315>
@@ -3856,18 +3433,10 @@ bool CvUnit::canAutomate(AutomateTypes eAutomate) const
 			return false;
 		break;
 	case AUTOMATE_NETWORK:
-		//doto governor
-		if (cantGovernorDoCommand())
-			return false;
-		//doto governor
 		if (AI_getUnitAIType() != UNITAI_WORKER || !canBuildRoute())
 			return false;
 		break;
 	case AUTOMATE_CITY:
-		//doto governor
-		if (cantGovernorDoCommand())
-			return false;
-		//doto governor
 		if (AI_getUnitAIType() != UNITAI_WORKER)
 			return false;
 		break;
@@ -3875,10 +3444,6 @@ bool CvUnit::canAutomate(AutomateTypes eAutomate) const
 		/*if ((!canFight() && (getDomainType() != DOMAIN_SEA)) || (getDomainType() == DOMAIN_AIR) || (getDomainType() == DOMAIN_IMMOBILE))
 			return false;
 		break;*/ // BtS
-		//doto governor
-		if (cantGovernorDoCommand())
-			return false;
-		//doto governor
 		switch (getDomainType())
 		{
 		case DOMAIN_IMMOBILE:
@@ -3892,10 +3457,6 @@ bool CvUnit::canAutomate(AutomateTypes eAutomate) const
 		}
 		break;
 	case AUTOMATE_RELIGION:
-		//doto governor
-		if (cantGovernorDoCommand())
-			return false;
-		//doto governor
 		if (AI_getUnitAIType() != UNITAI_MISSIONARY)
 			return false;
 		break;
@@ -5232,9 +4793,74 @@ bool CvUnit::airBomb(CvPlot& kTarget, /* advc.004c: */ bool* pbIntercepted,
 	CvCity* pCity = kTarget.getPlotCity();
 	if (pCity != NULL)
 	{
+//doto Range Strike Randomized Airbomb hit and dmg
+		bool bFirstBombardment = !pCity->isBombarded();
+		bool bIgnore = ignoreBuildingDefense();
+
+		bool RandomBombardChanceSuccess = false;
+		if (GC.getGame().isOption(GAMEOPTION_RAND_HIT)) 
+		{
+			RandomBombardChanceSuccess = GC.getGame().getSorenRandNum(100, "RandomHit") > (airBombCurrRate() + GC.getDefineINT("BOMBARD_HIT_CHANCE"));
+		}
+		else 
+		{
+			RandomBombardChanceSuccess = false;
+		}
+	
+		if (RandomBombardChanceSuccess)
+		{
+			CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_MISSED", 
+				  getNameKey(), // advc.004g: Show unit name  (idea from MNAI)
+				  pCity->getDefenseModifier(false), 
+				  //GET_PLAYER(getOwner()).getNameKey()); 
+				  GET_PLAYER(getOwner())./*getNameKey()*/getCivilizationAdjectiveKey(), // advc.004g
+				  pCity->getNameKey()); 
+			gDLL->UI().addMessage(pCity->getOwner(), /* advc.004g: */ true,
+				-1, szBuffer, pCity->getPlot(),
+				!bFirstBombardment ? NULL : // advc.004g: Don't bombard the owner with sound
+				"AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREEN"));
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_MISSED_CITY_DEFENSES", 
+				getNameKey(), pCity->getNameKey(), 
+				pCity->getDefenseModifier(bIgnore)); // advc.004g: arg was false
+			gDLL->UI().addMessage(getOwner(), true,
+				-1, szBuffer, "AS2D_BOMBARD",
+				MESSAGE_TYPE_INFO, getButton(), GC.getColorType("RED"),
+				pCity->getX(), pCity->getY());
+		}
+		else
+		{
+			CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_DEFENSES_IN_CITY_REDUCED_TO",
+				getNameKey(), // advc.004g: Show unit name (idea from MNAI)
+				pCity->getDefenseModifier(false),
+				GET_PLAYER(getOwner())./*getNameKey()*/getCivilizationAdjectiveKey(), // advc.004g
+				pCity->getNameKey());
+			gDLL->UI().addMessage(pCity->getOwner(), /* advc.004g: */ true,
+				-1, szBuffer, pCity->getPlot(),
+				!bFirstBombardment ? NULL : // advc.004g: Don't bombard the owner with sound
+				"AS2D_BOMBARDED", MESSAGE_TYPE_INFO, getButton(), GC.getColorType("RED"));
+			szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_REDUCE_CITY_DEFENSES",
+				getNameKey(), pCity->getNameKey(),
+				pCity->getDefenseModifier(bIgnore)); // advc.004g: arg was false
+			gDLL->UI().addMessage(getOwner(), true,
+				-1, szBuffer, "AS2D_BOMBARD",
+				MESSAGE_TYPE_INFO, getButton(), GC.getColorType("GREEN"),
+				pCity->getX(), pCity->getY());
+		}
+//doto Range Strike Randomized Airbomb
+		int dmg = airBombDefenseDamage(*pCity); 
+		if (GC.getGame().isOption(GAMEOPTION_RAND_DMG))
+		{
+			//min dmg of 50%
+			dmg *= std::max(50, GC.getGame().getSorenRandNum(100, "AirBomRandom")) + 100;
+			dmg /= 100;
+		}
 		//pCity->changeDefenseModifier(-airBombCurrRate());
 		// advc.004c:
-		pCity->changeDefenseModifier(-std::max(0, airBombDefenseDamage(*pCity)));	
+		//kel 114
+		//pCity->changeDefenseModifier(-std::max(0, airBombDefenseDamage(*pCity)));	
+		pCity->changeDefenseModifier(-std::max(0, dmg));	
+//doto Range Strike Randomized Airbomb
+		
 		szBuffer = gDLL->getText("TXT_KEY_MISC_YOU_DEFENSES_REDUCED_TO",
 				pCity->getNameKey(), pCity->getDefenseModifier(false), getNameKey());
 		gDLL->UI().addMessage(pCity->getOwner(), true, // advc.004g: was false
@@ -6969,8 +6595,9 @@ bool CvUnit::espionage(EspionageMissionTypes eMission, int iData)
 							MESSAGE_TYPE_INFO, getButton());
 				}
 			}
-			// K-Mod
-			if (isActiveTeam())
+			// K-Mod 
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+			if (getTeam() == GC.getGame().getActiveTeam())
 				gDLL->UI().setDirty(CityInfo_DIRTY_BIT, true);
 			// K-Mod end
 			return true;
@@ -7524,6 +7151,44 @@ bool CvUnit::canUpgrade(UnitTypes eUnit, bool bTestVisible) const
 	if (hasUpgrade(eUnit))
 		return true;
 
+//doto units bonus cap -- cant upgrade if no bonus cap is available
+	bool eOptionCap = GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP);
+	if (eOptionCap)
+	{
+		CvUnitInfo const& kUnit = GC.getInfo(eUnit); 
+		BonusTypes ePrereqAndBonus = kUnit.getPrereqAndBonus();
+		CvPlayer& kPlayer = GET_PLAYER(getOwner());
+		if (ePrereqAndBonus != NO_BONUS) // advc.001u
+		{
+			int egetNumUnitBonusCaps = kPlayer.getNumUnitBonusCaps(ePrereqAndBonus);
+			int egetTotalPlayerBonus = kPlayer.getTotalPlayerBonus(ePrereqAndBonus);
+			if ((egetNumUnitBonusCaps >= egetTotalPlayerBonus
+				&& egetTotalPlayerBonus > 0)
+				|| egetTotalPlayerBonus == 0
+				)
+			{
+				return false;
+				//break;
+			}
+		}
+		bool bNeedsBonus = true;
+		for (int i = 0; i < kUnit.getNumPrereqOrBonuses(); i++)
+		{
+			BonusTypes const ePrereqOrBonus = kUnit.getPrereqOrBonuses(i);
+			int egetNumUnitBonusCaps = kPlayer.getNumUnitBonusCaps(ePrereqOrBonus);
+			int egetTotalPlayerBonus = kPlayer.getTotalPlayerBonus(ePrereqOrBonus);
+			
+			if (egetNumUnitBonusCaps < egetTotalPlayerBonus
+				&& egetTotalPlayerBonus > 0
+			)
+			{
+				bNeedsBonus = false;
+			}
+		}
+		if (bNeedsBonus)
+			return false;
+	}
+//doto units bonus cap
 	return false;
 }
 
@@ -8536,10 +8201,16 @@ bool CvUnit::canAttack() const
 bool CvUnit::canAttack(const CvUnit& kDefender) const
 {
 	//PROFILE_FUNC(); // advc: Called "only" a few hundred thousand times per turn; pretty fast.
-	//if (!canAttack())
-	if (!canCombat() || isOnlyDefensive()) // advc.089: Need to handle air units
-		return false;
-	// <advc.315a>
+//doto Range Strike - doto advc adapt -> isOnlyDefensive
+	bool bRanged = canRangeStrike();
+	if (!bRanged)
+	{
+		//if (!canAttack())
+		if (!canCombat() || isOnlyDefensive()) // advc.089: Need to handle air units
+			return false;
+		// <advc.315a>
+	}
+//doto Range Strike
 	if (m_pUnitInfo->isOnlyAttackAnimals() && !kDefender.isAnimal())
 		return false; // </advc.315a>
 	// <advc.315b>
@@ -8550,10 +8221,33 @@ bool CvUnit::canAttack(const CvUnit& kDefender) const
 		(For units that have both a ranged attack and regular attack ability,
 		the mode of attack would have to be known in order to check the proper
 		damage limit here. So such units aren't supported.) */
-	if (kDefender.getDamage() >= std::max(combatLimit(), airCombatLimit()))
-		return false; // </advc.089>
+
+//doto Range Strike - IF GAMEOPTION_RANGED_NO_LIMIT is off combat limit for ranged units
+	//is set by airlimit.
+	//if the option is on, no combat limit will apply to the ranged unit
+	//if the unti is not ranged, vanillla dvc code.
+	int eDamage = kDefender.getDamage(); 
+	if (bRanged)
+	{
+		if (!GC.getGame().isOption(GAMEOPTION_RANGED_NO_LIMIT))
+		{
+			if (eDamage >= airCombatLimit())
+				return false;
+		}
+	}
+	else
+	{
+		if (eDamage >= std::max(combatLimit(), airCombatLimit()))
+			return false; // </advc.089>
+			//org code
+	}
+//doto Range Strike
 	// Artillery can't amphibious attack
-	if (combatLimit() < 100 && /* advc.089: */ getDomainType() == DOMAIN_LAND &&
+	if (
+		//combatLimit() < 100 && /* advc.089: */ 
+//doto ranged strike - if the unit is ranged, dont allor it to attack from water.
+		bRanged &&
+		getDomainType() == DOMAIN_LAND &&
 		getPlot().isWater() && !kDefender.getPlot().isWater())
 	{
 		return false;
@@ -8641,7 +8335,11 @@ bool CvUnit::canBeAttackedBy(PlayerTypes eAttackingPlayer,
 
 bool CvUnit::isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker,
 	int* pBestDefenderRank, // Lead From Behind by UncutDragon
-	bool bPreferUnowned) const // advc.061
+	bool bPreferUnowned
+//doto Range Strike	
+	, bool bRanged
+//doto Range Strike	
+	) const // advc.061
 {
 	TeamTypes eAttackerTeam = NO_TEAM;
 	if (pAttacker != NULL)
@@ -8708,10 +8406,13 @@ bool CvUnit::isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttack
 	// To cut down on changes to existing code, we just short-circuit the method
 	// and this point and call our own version instead
 	//if (GC.getDefineBOOL(CvGlobals::LFB_ENABLE))
-//DOTO-
-//keldath - made it into a game option from xml.
-// DOTO-MOD rangedattack-keldath - START - Ranged Strike AI realism invictus
-	if (!pDefender->isRangeStrikeCapableK() && GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND))
+//DOTO- made it into a game option from xml.
+	if (
+//doto Range Strike		
+		!bRanged &&
+//doto Range Strike		
+		GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND)		
+		)
 		return LFBisBetterDefenderThan(pDefender, pAttacker, pBestDefenderRank);
 	// /UncutDragon
 
@@ -8796,25 +8497,13 @@ bool CvUnit::isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttack
 			iTheirDefense /= 100;
 		}
 	}
-// DOTO-MOD rangedattack-keldath - start - if is a ranged unit, lets reduce its defender value
-//not sure if -50 is ok, i guess i should do *100 + combatstr ..as the above calcs
+//doto Range Strike - start - if is a ranged unit, lets reduce its defender value
 //but im afraid of oos
-	bool pDefRanged = pDefender == NULL ? false : pDefender->isRangeStrikeCapableK();
-	bool pAranged = pAttacker == NULL ? false : pAttacker->isRangeStrikeCapableK();
-	if (!pAranged && pDefRanged)
+	if (pDefender->canRangeStrike())
 	{
-		iOurDefense -= pDefender->combatLimit() ;
+		iOurDefense *= ((airBaseCombatStr()* 20 ) + 100) / 100;
 	}
-	if (pAranged && !pDefRanged)
-	{
-		iTheirDefense -= pAttacker->combatLimit();
-	}
-	if (pAranged && pDefRanged)
-	{
-		iOurDefense += pAttacker->baseCombatStr();
-		iTheirDefense += pDefender->baseCombatStr();
-	}
-// DOTO-MOD rangedattack-keldath - START - 	
+//doto Range Strike	
 	iAssetValue = std::max(1, pDefender->getUnitInfo().getAssetValue());
 	iCargoAssetValue = 0;
 	pDefender->getCargoUnits(aCargoUnits);
@@ -8926,6 +8615,14 @@ int CvUnit::airCombatDamage(const CvUnit* pDefender) const
 		iDamage *= std::max(0, (pCity->getAirModifier() + 100));
 		iDamage /= 100;
 	}
+//doto Range Strike Random Damage Start
+	if(GC.getGame().isOption(GAMEOPTION_RAND_DMG))
+	{ 
+		//cut damage up to 50% min
+		iDamage *= std::max(50, GC.getGame().getSorenRandNum(100, "RandomHit")) + 100;
+		iDamage /= 100;
+	}
+//doto Range Strike Random Damage End
 
 	return iDamage;
 }
@@ -9009,7 +8706,12 @@ CvUnit* CvUnit::bestSeaPillageInterceptor(CvUnit* pPillager, int iMinOdds) const
 			{
 				if (pBestUnit == NULL || pLoopUnit->isBetterDefenderThan(pBestUnit, this,
 					// BETTER_BTS_AI_MOD, Lead From Behind (UncutDragon), 02/21/10, jdog5000:
-					&iBestUnitRank))
+					&iBestUnitRank
+//doto Range Strike				
+					,false
+					,false
+//doto Range Strike			
+					))
 				{
 					if (calculateCombatOdds(*pPillager, *pLoopUnit) < iMinOdds)
 						pBestUnit = pLoopUnit;
@@ -9035,11 +8737,6 @@ bool CvUnit::isWaiting() const
 
 bool CvUnit::isFortifyable() const
 {
-	//doto governor -> allow governor to use fortify command despite having no combat strength
-	//using the sleep command will wake the unit, which is not needed.
-	if (cantGovernorDoCommand())
-		return true;
-	//doto governor
 	return (canFight() && !noDefensiveBonus() &&
 		(getDomainType() == DOMAIN_LAND || getDomainType() == DOMAIN_IMMOBILE));
 }
@@ -9096,22 +8793,17 @@ int CvUnit::maxXPValue() const
 	return iMaxValue;
 }
 
-// DOTO-MOD rangedattack-keldath - START + ranged immunity 
+
 bool CvUnit::isRanged() const
 {
 	for (int i = 0; i < m_pUnitInfo->getGroupDefinitions(); i++)
 	{
-		if (!getArtInfo(i, GET_PLAYER(getOwner()).getCurrentEra())->getActAsRanged()
-			// DOTO-MOD rangedattack-keldath - START + ranged immunity 
-			//seems that we need to define true is its a ranged for this function and more -> CvUnit::planBattle
-			//interesting to know this is used from an xml tag in the art unit file
-			&& isRangeStrikeCapableK()
-			)
+		if (!getArtInfo(i, GET_PLAYER(getOwner()).getCurrentEra())->getActAsRanged())
 			return false;
 	}
 	return true;
 }
-// DOTO-MOD rangedattack-keldath - START + ranged immunity 
+
 
 bool CvUnit::immuneToFirstStrikes() const
 {
@@ -9515,7 +9207,8 @@ void CvUnit::joinGroup(CvSelectionGroup* pSelectionGroup, bool bRemoveSelected, 
 			//else GET_PLAYER(getOwner()).updateGroupCycle(this); // BtS
 		}
 
-		if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+		if (getTeam() == GC.getGame().getActiveTeam())
 		{
 			if (pPlot != NULL)
 				pPlot->setFlagDirty(true);
@@ -10062,25 +9755,14 @@ void CvUnit::changeDamage(int iChange, PlayerTypes ePlayer)
 	setDamage((getDamage() + iChange), ePlayer);
 }
 
-//doto ranged immunity
-void CvUnit::changeRangedStrikeCapCounter(int iChange)
-{
-	setRangedStrikeCapCounter(getRangedStrikeCapCounter() + iChange);
-}
-void CvUnit::setRangedStrikeCapCounter(int iNewValue)
-{
-	m_iRangedStrikeCapCounter = iNewValue;
-}
-void CvUnit::changeRangedStrikeCapTimer(int iChange)
-{
-	setRangedStrikeCapTimer(getRangedStrikeCapTimer() + iChange);
-}
-void CvUnit::setRangedStrikeCapTimer(int iNewValue)
-{
-	m_iRangedStrikeCapTimer = iNewValue;
-}
-//doto ranged immunity
 
+
+//doto units bonus cap 
+void CvUnit::changeBonusUsedForPrereqOrCap(int eIndex)
+{
+	m_iBonusUsedForPrereqOrCap = eIndex;
+}
+//doto units bonus cap
 void CvUnit::setMoves(int iNewValue)
 {
 	if(getMoves() == iNewValue)
@@ -10090,7 +9772,8 @@ void CvUnit::setMoves(int iNewValue)
 	FAssert(getMoves() >= 0);
 
 	CvPlot* pPlot = plot();
-	if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (getTeam() == GC.getGame().getActiveTeam())
 	{
 		if (pPlot != NULL)
 			pPlot->setFlagDirty(true);
@@ -11324,9 +11007,9 @@ void CvUnit::setHasPromotion(PromotionTypes ePromotion, bool bNewValue)
 
 	int iChange = (isHasPromotion(ePromotion) ? 1 : -1);
 
-	//doto governor -> not really governor -> this is jusu efficiancy fix through out this function
+	//doto efficiancy fix through out this function
 	CvPromotionInfo const& kpInfo = GC.getInfo(ePromotion);
-	//doto governor
+	//doto
 
 	//changeBlitzCount((GC.getInfo(eIndex).isBlitz()) ? iChange : 0);
 	// advc.164: Conveniently, CvUnit was already storing Blitz in an integer.
@@ -11409,27 +11092,6 @@ void CvUnit::setHasPromotion(PromotionTypes ePromotion, bool bNewValue)
 		gDLL->UI().setDirty(InfoPane_DIRTY_BIT, true);
 	}
 
-	//doto governor
-	//my system is kinda silly -> instead of working each promo on a promotion
-	//for every promo - the governor is being removed (the great person, not the unit)
-	//and it runs over all of the units current promotions and adds up their effect.
-	//in the future i should do changepromotion properly .
-	//but its no so bad cause this reloop in the city for promotions will run only when th governor is promoted
-	//so its occasionally...so not that impactfull in terms of permormance i guess
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		CvCity* pCity = getPlot().getPlotCity();
-		//it should never be null...governor must be on a city plot!
-		if (pCity != NULL && m_pUnitInfo->getGovernor() > 0
-			//make sure not to reprocess free start promotions -> the processGovernor
-			//already fires after the unit is created - so it will be double xec of the processGovernor...
-			//thus this check
-			&& !m_pUnitInfo->getFreePromotions(ePromotion)
-			)
-			pCity->processGovernor(this);
-	}
-	//doto governor
-	
 	//update graphics
 	gDLL->getEntityIFace()->updatePromotionLayers(getEntity());
 }
@@ -11544,9 +11206,9 @@ void CvUnit::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iExperiencePercent);
 	pStream->Read(&m_iKamikazePercent);
 	pStream->Read(&m_iBaseCombat);
-//doto ranged immunity
-	pStream->Read(&m_iRangedStrikeCapCounter);
-//doto ranged immunity
+//doto units bonus cap	
+	pStream->Read(&m_iBonusUsedForPrereqOrCap);
+//doto units bonus cap	
 	pStream->Read((int*)&m_eFacingDirection);
 	pStream->Read(&m_iImmobileTimer);
 	//pStream->Read(&m_bMadeAttack);
@@ -11731,9 +11393,9 @@ void CvUnit::write(FDataStreamBase* pStream)
 	pStream->Write(m_iExperiencePercent);
 	pStream->Write(m_iKamikazePercent);
 	pStream->Write(m_iBaseCombat);
-//doto ranged immunity
-	pStream->Write(m_iRangedStrikeCapCounter);
-//doto ranged immunity
+//doto units bonus cap	
+	pStream->Write(m_iBonusUsedForPrereqOrCap);
+//doto units bonus cap	
 	pStream->Write(m_eFacingDirection);
 	pStream->Write(m_iImmobileTimer);
 	//pStream->Write(m_bMadeAttack);
@@ -11837,38 +11499,38 @@ void CvUnit::collateralCombat(CvPlot const* pPlot, CvUnit const* pSkipUnit)
 	for (int i = 0; i < iPossibleTargets; i++)
 	{
 		CvUnit& kTargetUnit = *::getUnit(aTargetUnits[i].second);
-
-		if (getUnitCombatType() == NO_UNITCOMBAT ||
-			!kTargetUnit.m_pUnitInfo->getUnitCombatCollateralImmune(getUnitCombatType()))
+		if (getUnitCombatType() != NO_UNITCOMBAT &&
+			kTargetUnit.m_pUnitInfo->getUnitCombatCollateralImmune(getUnitCombatType()))
 		{
-			int iTheirStrength = kTargetUnit.baseCombatStr();
-			int iStrengthFactor = ((iCollateralStrength + iTheirStrength + 1) / 2);
-			/*	advc (note): This makes the damage proportional to (3*r + 1) / (3 + r)
-				where r is the ratio of the attacker's to the defender's base combat str.
-				This ratio is used again a few lines below in the iMaxDamage formula. */
-			int iCollateralDamage = (GC.getDefineINT(CvGlobals::COLLATERAL_COMBAT_DAMAGE) *
-					(iCollateralStrength + iStrengthFactor)) /
-					(iTheirStrength + iStrengthFactor);
-			iCollateralDamage *= 100 + getExtraCollateralDamage();
-			iCollateralDamage *= std::max(0, 100 - kTargetUnit.getCollateralDamageProtection());
+			continue;
+		}
+		int iTheirStrength = kTargetUnit.baseCombatStr();
+		int iStrengthFactor = ((iCollateralStrength + iTheirStrength + 1) / 2);
+		/*	advc (note): This makes the damage proportional to (3*r + 1) / (3 + r)
+			where r is the ratio of the attacker's to the defender's base combat str.
+			This ratio is used again a few lines below in the iMaxDamage formula. */
+		int iCollateralDamage = (GC.getDefineINT(CvGlobals::COLLATERAL_COMBAT_DAMAGE) *
+				(iCollateralStrength + iStrengthFactor)) /
+				(iTheirStrength + iStrengthFactor);
+		iCollateralDamage *= 100 + getExtraCollateralDamage();
+		iCollateralDamage *= std::max(0, 100 - kTargetUnit.getCollateralDamageProtection());
+		iCollateralDamage /= 100;
+		if (pCity != NULL)
+		{
+			iCollateralDamage *= 100 + pCity->getAirModifier();
 			iCollateralDamage /= 100;
-			if (pCity != NULL)
-			{
-				iCollateralDamage *= 100 + pCity->getAirModifier();
-				iCollateralDamage /= 100;
-			}
-			iCollateralDamage = std::max(0, iCollateralDamage/100);
-			int iMaxDamage = std::min(collateralDamageLimit(),
-					(collateralDamageLimit() *
-					(iCollateralStrength + iStrengthFactor)) /
-					(iTheirStrength + iStrengthFactor));
-			int iUnitDamage = std::max(kTargetUnit.getDamage(),
-					std::min(kTargetUnit.getDamage() + iCollateralDamage, iMaxDamage));
-			if (kTargetUnit.getDamage() != iUnitDamage)
-			{
-				kTargetUnit.setDamage(iUnitDamage, getOwner());
-				iDamageCount++;
-			}
+		}
+		iCollateralDamage = std::max(0, iCollateralDamage/100);
+		int iMaxDamage = std::min(collateralDamageLimit(),
+				(collateralDamageLimit() *
+				(iCollateralStrength + iStrengthFactor)) /
+				(iTheirStrength + iStrengthFactor));
+		int iUnitDamage = std::max(kTargetUnit.getDamage(),
+				std::min(kTargetUnit.getDamage() + iCollateralDamage, iMaxDamage));
+		if (kTargetUnit.getDamage() != iUnitDamage)
+		{
+			kTargetUnit.setDamage(iUnitDamage, getOwner());
+			iDamageCount++;
 		}
 	}
 
@@ -12014,7 +11676,7 @@ CvUnit* CvUnit::airStrikeTarget(CvPlot const& kPlot) const // advc: was CvPlot c
 	{
 		if (pDefender->canDefend())
 			return pDefender;
-	}
+		}
 	return NULL;
 }
 
@@ -12082,16 +11744,41 @@ bool CvUnit::airStrike(CvPlot& kPlot, /* <advc.004c> */ bool* pbIntercepted)
 	return true;
 }
 
+//doto Range Strike
 bool CvUnit::canRangeStrike() const
 {
+//doto Range Strike
 	if (getDomainType() == DOMAIN_AIR)
 		return false;
+
+	if (rangedStrike() <= 0)
+		return false;
+
 	if (airRange() <= 0)
 		return false;
+
 	if (airBaseCombatStr() <= 0)
 		return false;
+
+	if (isCargo())
+	{
+		return false;
+		// Below is an alternative that allows cargoed artillery to range strike while in a city even if loaded
+		/*
+		CvPlot* pPlot = plot();
+		if (!pPlot->isValidDomainForLocation(*this) || (pPlot->isImpassable() && !canMoveImpassable()))
+		{
+			return false;
+		}
+		*/
+	}
+
 	if (!canFight())
 		return false;
+
+	if (getDropRange() > 0)
+		return false;
+
 	if (//isMadeAttack() && !isBlitz()
 		isMadeAllAttacks()) // advc.164
 	{
@@ -12099,6 +11786,7 @@ bool CvUnit::canRangeStrike() const
 	}
 	if (!canMove() && getMoves() > 0)
 		return false;
+
 	return true;
 }
 
@@ -12120,11 +11808,23 @@ bool CvUnit::canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY) const
 	// UNOFFICIAL_PATCH: END
 	if (plotDistance(pPlot, pTargetPlot) > airRange())
 		return false;
-
-	CvUnit* pDefender = airStrikeTarget(*pTargetPlot);
+//doto Range Strike
+	CvUnit* pDefender = rangedStrikeTargetK(*pTargetPlot);
 	if (pDefender == NULL)
 		return false;
-
+	
+	// check war status with owner -doto added-> dunno if i should
+	if (pTargetPlot->isOwned())
+	{
+		if(pTargetPlot->getTeam() != getTeam())
+		{
+			if (!atWar(pTargetPlot->getTeam(), getTeam()))
+			{
+				return false;
+			}
+		}
+	}
+//doto Range Strike	
 	/*	advc.rstr: The facing direction shouldn't matter. If we want to check for
 		obstacles in the line of sight, GC.getMap().directionXY(*pPlot, *pTargetPlot)
 		could be used instead of getFacingDirection, but a strike at range 2 should
@@ -12151,9 +11851,9 @@ bool CvUnit::rangeStrike(int iX, int iY)
 	{
 		return false;
 	} // UNOFFICIAL_PATCH: END
-
-	CvUnit* pDefender = airStrikeTarget(*pPlot);
-
+//doto Range Strike
+	CvUnit* pDefender = rangedStrikeTargetK(*pPlot);
+//doto Range Strike
 	FAssert(pDefender != NULL);
 	FAssert(pDefender->canDefend());
 
@@ -12162,12 +11862,30 @@ bool CvUnit::rangeStrike(int iX, int iY)
 		setMadeAttack(true);
 	}
 	changeMoves(GC.getMOVE_DENOMINATOR());
+//doto Range Strike
+	//int iDamage = rangeCombatDamage(pDefender);
+	int rndHitAtk = randomRangedGen(pDefender,this);
+	int iDamage = rndHitAtk ? rangeCombatDamageK(pDefender, this) : 0; //if hit miss dont do damage
+	int eAirLimit = airCombatLimit();
+	int eCurrDamage = pDefender->getDamage();
+	int iUnitDamage = std::max(eCurrDamage, std::min(eCurrDamage + iDamage, eAirLimit));
+	//in the can attack function , ranged units that reached the air limit can still attack
+	//but the damage is reducedby 50 %.
+	int reducedDamage = 0;
+	if (GC.getGame().isOption(GAMEOPTION_RANGED_NO_LIMIT))
+	{
+		if (eAirLimit < (eCurrDamage + iDamage))
+		{
+			reducedDamage = (iDamage * 50) / 100;
+			iUnitDamage = eCurrDamage + reducedDamage;
+		}
+	}
 
-	int iDamage = rangeCombatDamage(pDefender);
+	rImmunityCombatCallback(pDefender, this, pDefender->plot(), 
+		(((iUnitDamage - eCurrDamage) * 100) / pDefender->maxHitPoints()),
+		rndHitAtk, false);
 
-	int iUnitDamage = std::max(pDefender->getDamage(),
-			std::min(pDefender->getDamage() + iDamage, airCombatLimit()));
-
+/*	//doto Range Strike -> removed the below		
 	CvWString szBuffer(gDLL->getText("TXT_KEY_MISC_YOU_ARE_ATTACKED_BY_AIR",
 			pDefender->getNameKey(), getNameKey(),
 			// advc.004g:
@@ -12184,12 +11902,34 @@ bool CvUnit::rangeStrike(int iX, int iY)
 			((iUnitDamage - pDefender->getDamage()) * 100) / pDefender->maxHitPoints());
 	gDLL->UI().addMessage(getOwner(), true, -1, szBuffer, *pPlot,
 			"AS2D_COMBAT", MESSAGE_TYPE_INFO, pDefender->getButton(), GC.getColorType("GREEN"));
-
-	collateralCombat(pPlot, pDefender);
-
+*/
+//doto Range Strike - collateral damage denied if a city have defence
+	if (!GC.getGame().isOption(GAMEOPTION_NO_RANGED_COLLATERAL))
+	{
+		CvCity* pCity = pDefender->plot()->getPlotCity();
+		if (pCity != NULL)
+		{
+			//if can ignore city defense or no units in city-> collateral damage.
+			if (!ignoreBuildingDefense() || pCity->getDefenseModifier(false) == 0)
+			{
+				collateralCombat(pPlot, pDefender);
+			}
+		}
+		else
+		{
+			//org
+			collateralCombat(pPlot, pDefender);
+		}
+	}
 	//set damage but don't update entity damage visibility
-	pDefender->setDamage(iUnitDamage, getOwner(), false);
-
+//doto Range Strike
+	if (iDamage > 0)
+		pDefender->setDamage(iUnitDamage, getOwner(), false);
+	//doto Range Strike Ranged Combat Experience
+	// Note: Ranged attacks provide the same amount of experience as a withdrawl
+	changeExperience(GC.getDefineINT("EXPERIENCE_FROM_WITHDRAWL"), pDefender->maxXPValue(), true, pPlot->getOwner() == getOwner(), !pDefender->isAnimal());
+	// MOD - END - Ranged Combat Experience
+//doto Range Strike
 	if (pPlot->isActiveVisible(false))
 	{
 		// Range strike entity mission
@@ -12209,6 +11949,41 @@ bool CvUnit::rangeStrike(int iX, int iY)
 		//pDefender->getGroup()->setMissionTimer(GC.getInfo(MISSION_RANGE_ATTACK).getTime()); // BtS
 	}
 
+//doto Range Strike - if the defender is a ranged unit -> retaliate (nocollateral dmg.
+	if ( pDefender->canRangeStrike() &&
+		GC.getGame().isOption(GAMEOPTION_RANGED_RETALIATE) && (!pDefender->isDead()
+			&& pDefender->currHitPoints() > 0))
+	{
+			int rndHitAtk_d = randomRangedGen(pDefender,this);
+			int iDamage_d = rndHitAtk_d ? rangeCombatDamageK(this, pDefender) : 0; //if hit miss dont do damage
+			int dDamage = this->getDamage();
+			int eCLimit = pDefender->airCombatLimit();
+			//for the retalliator, only allow to attack up to its own Air Combat Limit.
+			//this as opppose to this game option -> GAMEOPTION_RANGED_NO_LIMIT
+			//to keep some attackers advantage.
+			if ((dDamage + iDamage_d) < eCLimit)
+			{
+				//retalliate damage should be smaller then damage the attacker inflicted -> 30 % of it.
+				
+				if (iDamage_d >= reducedDamage)
+					iDamage_d = (reducedDamage * 30) / 100;
+				int iUnitDamage_d = std::max(dDamage, std::min(dDamage + iDamage_d, eCLimit));
+				//set damage but don't update entity damage visibility
+				if (iDamage_d > 0)
+				{
+					this->setDamage(iUnitDamage_d, pDefender->getOwner(), false);
+					//rImmunityCombatCallback(this, pDefender, this->plot(), iUnitDamage_d, rndHitAtk_d, true);
+				}
+				rImmunityCombatCallback(this, pDefender, this->plot(), iUnitDamage_d, rndHitAtk_d, true);
+			}
+	}
+	if (pDefender->isDead())
+	{
+		addAttackSuccessMessages(*pDefender, true, pDefender, this);
+		pDefender->addDefenseSuccessMessages(*this, this, pDefender);
+	}
+//doto Range Strike
+	
 	return true;
 }
 
@@ -12361,11 +12136,12 @@ int CvUnit::planBattle(CvBattleDefinition& kBattle, const std::vector<int>& comb
 	}
 	//FAssert(iBattleRound == iTotalBattleRounds);
 	FAssert(iAttackerDamage == kBattle.getDamage(BATTLE_UNIT_ATTACKER, BATTLE_TIME_END));
+//doto Range Strike
 	//doto keldath rangedattack and ranged immunity - the assert pops cayse there is no damage to the defender when its a ranged attacker
 	//not sure what it means...
-	if (!isRangeStrikeCapableK())
+	if (!canRangeStrike())
 		FAssert(iDefenderDamage == kBattle.getDamage(BATTLE_UNIT_DEFENDER, BATTLE_TIME_END));
-
+//doto Range Strike
 	FAssert(kBattle.getNumBattleRounds() >= 2);
 	FAssert(verifyRoundsValid(kBattle));
 
@@ -12388,9 +12164,12 @@ int CvUnit::planBattle(CvBattleDefinition& kBattle, const std::vector<int>& comb
 			kBattle.getNumRangedRounds() * BATTLE_TURNS_MELEE +
 			extraTime;
 	// <advc.002m>
-	static int const iTruncate = GC.getDefineINT("TRUNCATE_ANIMATIONS");
-	static int const iTruncateEra = GC.getDefineINT("TRUNCATE_ANIMATIONS_ERA");
-	static int const iTruncateTurns = std::max(2, GC.getDefineINT("TRUNCATE_ANIMATION_TURNS"));
+//doto efficiancy
+	static int const iTruncate = GC.getCULTURE_GOLDEN_AGE_THRESHOLD(); //GC.getDefineINT("TRUNCATE_ANIMATIONS");
+	static int const iTruncateEra = GC.getTRUNCATE_ANIMATIONS_ERA(); // GC.getDefineINT("TRUNCATE_ANIMATIONS_ERA");
+	static int const iTruncateTurns = std::max(2, GC.getTRUNCATE_ANIMATION_TURNS());
+		//std::max(2, GC.getDefineINT("TRUNCATE_ANIMATION_TURNS"));
+//doto efficiancy
 	if(iTruncate <= 0 || iEra < iTruncateEra)
 		return r;
 	bool bHumanDefense = pDefenceUnit->isHuman();
@@ -12569,10 +12348,13 @@ void CvUnit::getDefenderCombatValues(CvUnit const& kDefender, CvPlot const* pPlo
 	}
 
 	int iStrengthFactor = (iOurFirepower + iTheirFirepower + 1) / 2;
-// DOTO-MOD rangedattack-keldath - START + ranged immunity - if a unit that is being attacked is a
+
+//doto Range Strike - if a unit that is being attacked is a
+//114 removed for now
 //ranged unit - it will get anothe major famage factor
-	int rangedFactorDmg = kDefender.isRangeStrikeCapableK() ? fmath::round(GC.getCOMBAT_DAMAGE()/2) : 0;
-	iOurDamage = std::max(1, (((GC.getCOMBAT_DAMAGE() + (rangedFactorDmg)) * (iTheirFirepower + iStrengthFactor)) /
+//	int rangedFactorDmg = kDefender.isRangeStrikeCapableK() ? ::round(GC.getCOMBAT_DAMAGE()/2) : 0;
+//	iOurDamage = std::max(1, (((GC.getCOMBAT_DAMAGE() + (rangedFactorDmg)) * (iTheirFirepower + iStrengthFactor)) /
+	iOurDamage = std::max(1, ((GC.getCOMBAT_DAMAGE() * (iTheirFirepower + iStrengthFactor)) /
 			(iOurFirepower + iStrengthFactor)));
 	iTheirDamage = std::max(1, ((GC.getCOMBAT_DAMAGE() * (iOurFirepower + iStrengthFactor)) /
 			(iTheirFirepower + iStrengthFactor)));
@@ -12822,7 +12604,9 @@ bool CvUnit::isCombatVisible(CvUnit const* pDefender,
 			else if (pDefender != NULL && pDefender->isHuman())
 			{
 				if (!GET_PLAYER(pDefender->getOwner()).isOption(PLAYEROPTION_QUICK_DEFENSE) &&
-					!gDLL->getEngineIFace()->isGlobeviewUp()) // advc.102
+					!gDLL->getEngineIFace()->isGlobeviewUp() && // advc.102
+					// advc.001: Camera won't catch AI-vs-human combat in Hotseat
+					(isHuman() || !GC.getGame().isHotSeat()))
 				{
 					bVisible = true;
 				}
@@ -12833,10 +12617,8 @@ bool CvUnit::isCombatVisible(CvUnit const* pDefender,
 }
 
 ///////////////////////////////////////////
-// Keldtah RangedStrike start + Ranged Immunity
-// DOTO-MOD - rangedattack and ranged imunity functions start
+//doto Range Strike
 ///////////////////////////////////////////	
-//doto-rangedattack-keldath function start
 //based on the original rangeCombatDamage + airCombatDamage
 int CvUnit::rangeCombatDamageK(const CvUnit* pDefender,const CvUnit* pAttacker) const
 {
@@ -12848,106 +12630,99 @@ int CvUnit::rangeCombatDamageK(const CvUnit* pDefender,const CvUnit* pAttacker) 
 		// pPlot valid, pAttacker == this (new case), when the defender is unknown, but we want to calc appr
 	*/
 	//CvPlot* pPlot = pDefender->plot();
-	int iOurStrength = pAttacker->currCombatStr(NULL,NULL);
+	//int iOurStrength = airCurrCombatStr(pDefender);
+	int iOurStrength = pAttacker->airCurrCombatStr(pDefender);
 	FAssertMsg(iOurStrength > 0, "Combat strength is expected to be greater than zero");
-	//int iTheirStrength = pDefender->maxCombatStr(pPlot, this);
-	//bug fix
+	//int iTheirStrength = pDefender->maxCombatStr(plot(), this);
 	int iTheirStrength = pDefender->maxCombatStr(plot(), pAttacker);
 
 	int iStrengthFactor = (iOurStrength + iTheirStrength + 1) / 2;
-	//check syntax to original
-	int iDamage = std::max(1, ((GC.getDefineINT("RANGE_COMBAT_DAMAGE") *
-		(iOurStrength + iStrengthFactor)) / (iTheirStrength + iStrengthFactor)));
-	//CvCity const* pCity = pPlot->getPlotCity();
-	//bug fix
+	static int const iRANGE_COMBAT_DAMAGE = GC.getDefineINT(CvGlobals::RANGE_COMBAT_DAMAGE);
+	int iDamage = std::max(1, ((iRANGE_COMBAT_DAMAGE * (iOurStrength + iStrengthFactor)) /
+			(iTheirStrength + iStrengthFactor)));
+	
 	CvCity const* pCity = getPlot().getPlotCity();
 	
 	if (pCity != NULL)
 	{
-		//which comes first?? its opposite in air? - qa8
-		//check if thers defense - i should check for ignore b defence ffor attacker.
+		//check if thers defense - i should check for ignore b defence for attacker.
 		int curDef = /*pCity->getBuildingDefense()*/pCity->getDefenseDamage();
 		if (curDef < 100 && curDef > 0)
 		{
 			iDamage *= std::max(0, (100 - curDef + 100));
 			iDamage /= 100;
-			//maybe it should be ?:
-			/*
-			iDamage /= std::max(0, (pPlot->getPlotCity()->getBuildingDefense() + 100));
-			iDamage *= 100;
-			*/
 		}
 		else if (curDef == 100)
 		{
-			iDamage = 0; //IF DEFENCE IS ABOVE 99 - NO DAMAGE SHOULD BE INFLICTED
+			iDamage = 0;
 		}	
 	}
 	if (GC.getGame().isOption(GAMEOPTION_RAND_DMG))
 	{	
-		iDamage *= (50 + GC.getGame().getSorenRandNum(100, "RandomHit"));
-		iDamage /= 100;
+		//up to 40 % reduction of expected damage. 
+		int eRand = GC.getGame().getSorenRandNum(iDamage, "RandomHit");
+		int min_dmg = (iDamage * 70) / 100;
+		int rnd_iDamage = std::max(min_dmg, eRand); //dont allow less than 30 % reduction of the damage
+		iDamage = rnd_iDamage;
 	}
 
-	//doto 112 -> damage is affected by the ranged attacker hit points
+	//damage is affected by the ranged attacker hit points
 	iDamage *= currHitPoints();
 	iDamage /= 100;
 
 	return iDamage;
 }
-bool CvUnit::isRangeStrikeCapableK(bool ignoreCap) const
-{
-	//do not include here the isMadeAllAttacks() - important for ranged immunity
-	if (!GC.getGame().isOption(GAMEOPTION_RANGED_IMMUNITY))
-		return false;
-	if (getDomainType() == DOMAIN_AIR )
-		//|| getDomainType() == DOMAIN_SEA doto 113 -> sea unis can ranged attack
-		return false;
-	if (rangedStrike() <= 0)
-		return false;
-	if (baseCombatStr() <= 0)
-		return false;
-	if (!canFight())
-		return false;
-	if (getDropRange() > 0) 
-		return false;
-//if the attack cap is maxed - normal battle rules should apply
-// cant carry an attack if the cap was reached, there is a cooldown of 2 turns.
-//doto 113 -> removed cap denial of ranged retaliate from a maxed cap unit.
-	if (getRangedStrikeCapCounter() >= rangedStrike() && !ignoreCap)
-		return false;
-	return true;
-
-}
-
 bool CvUnit::randomRangedGen(CvUnit* pDefender, CvUnit* pAttacker) const
 {
 	bool hit = true;
 	if (GC.getGame().isOption(GAMEOPTION_RAND_HIT)) 
 	{
-
-		hit = ((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random")) 
-				+ ((pAttacker->baseCombatStr() * GC.getDefineINT("RANGESTRIKE_HIT_MODIFIER")
+		//for the range unit still using the base combat to cacl hit prc
+		int eDice = GC.getDefineINT(CvGlobals::RANGESTRIKE_DICE);
+		hit = ((GC.getGame().getSorenRandNum(eDice, "Random")) 
+					//pAttacker->airBaseCombatStr()-> use the normal combat since air is lower
+				+ ((pAttacker->baseCombatStr() * GC.getDefineINT(CvGlobals::RANGESTRIKE_HIT_MODIFIER)
 				* pAttacker->currHitPoints()) / pAttacker->maxHitPoints())
 				/*seems there can be lots of misses when base combat is equal,
 				  and hp at max for both. even when its on RANGESTRIKE_HIT_MODIFIER= 2
 				  i saw plenty of miss, so i added another modifier to the attacker - constant one.
 				*/
-				+ GC.getDefineINT("RANGESTRIKE_ATT_MOD")
+				+ GC.getDefineINT(CvGlobals::RANGESTRIKE_ATT_MOD)
 				)
 				> 
-				((GC.getGame().getSorenRandNum(GC.getDefineINT("RANGESTRIKE_DICE"), "Random"))
+				((GC.getGame().getSorenRandNum(eDice, "Random"))
 				+ ((pDefender->baseCombatStr() * pDefender->currHitPoints()) / pDefender->maxHitPoints()));
 	}
 	return hit;	
 }
-
-//doto 113 clean up			 
-bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlot* pPlot, int dmg, bool rndHit, int UnitPreDamage, bool iRetaliate) const
+//doto Range Strike based on airStrikeTarget
+//CvUnit* CvUnit::airStrikeTarget(const CvPlot* pPlot) const
+//CvUnit* CvUnit::rangedStrikeTargetK(const CvPlot* pPlot) const
+CvUnit* CvUnit::rangedStrikeTargetK(CvPlot const& kPlot) const // advc: was CvPlot const*
 {
-	int iUnitDamage = std::max(pDefender->getDamage(),
-		std::min(pDefender->getDamage() + dmg, pAttacker->combatLimit()));
-	int iDamage_ = ((dmg - pDefender->getDamage()) * 100) / pDefender->maxHitPoints();
-	//int iDamage = iDamage_ == 0 ? -dmg : iDamage_;
+	//CvUnit* pDefender = pPlot->getBestDefender(NO_PLAYER, getOwner(), this, true);
+	//CvUnit* pDefender = pPlot->getBestDefender(NO_PLAYER, getOwner(), this, true, false, false, true);
+	//duplicated so i can send "true" for ranged battle
+	CvUnit* pDefender = kPlot.getBestDefenderVsRanged(NO_PLAYER, getOwner(), this, true);
+	if (pDefender != NULL && !pDefender->isDead())
+	{
+		if (pDefender->canDefend())
+		{
+			if ((pDefender->getDamage() < airCombatLimit())
+				||
+				//special case if ranged limit passed allow range unit to attack with reduced damage
+				(GC.getGame().isOption(GAMEOPTION_RANGED_NO_LIMIT) && canRangeStrike())
+				)
+			{
+				return pDefender; //if dmg is reached limit, cannot strike no more
+			}
+		}
+	}
+	return NULL;
+}
+
+bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlot* pPlot, int dmg, bool rndHit, bool iRetaliate) const
+{
 	int iDamage = -dmg;
 	if (!rndHit) 
 	{
@@ -12968,9 +12743,7 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlo
 				pDefender->getNameKey(), pAttacker->getNameKey(), iDamage));
 			//red icon over attacking unit
 			gDLL->UI().addMessage(pDefender->getOwner(), false, -1, szBuffer, *pPlot,
-				"AS2D_COMBAT", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("YELLOW"));
-
-			
+				"AS2D_COMBAT", MESSAGE_TYPE_INFO, pAttacker->getButton(), GC.getColorType("YELLOW"));		
 		}
 		else
 		{
@@ -13030,9 +12803,9 @@ bool CvUnit::rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlo
 	return true;
 }
 ///////////////////////////////////////////
-// Keldtah RangedStrike + immunity End
+//doto Range Strike
 ///////////////////////////////////////////	
-
+// used by the executable for the red glow and plot indicators
 bool CvUnit::shouldShowEnemyGlow(TeamTypes eForTeam) const
 {
 	if (isDelayedDeath())
@@ -13117,7 +12890,10 @@ bool CvUnit::isWorker() const
 	now just a pass-through */
 bool CvUnit::isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker) const
 {
-	return isBetterDefenderThan(pDefender, pAttacker, NULL);
+//doto Range Strike -> dont send true for ranged combat
+	//return isBetterDefenderThan(pDefender, pAttacker, NULL);
+	return isBetterDefenderThan(pDefender, pAttacker, NULL, false, false);
+//doto Range Strike
 }
 
 /*	Modified version of best defender code (minus the initial boolean tests,
@@ -13194,12 +12970,9 @@ int CvUnit::LFBgetDefenderOdds(const CvUnit* pAttacker) const
 		bUseAttacker = true;
 
 	int iDefense = 0;
-//DOTO ranged immunity
-	if (bUseAttacker && GC.getDefineBOOL(CvGlobals::LFB_USECOMBATODDS)
-//DOTO ranged immunity
-		&& !isRangeStrikeCapableK()
-//DOTO ranged immunity
-		)
+//doto Range Strike - not sure if needed to deny this from ranged
+//had it in ranged immunity
+	if (bUseAttacker && GC.getDefineBOOL(CvGlobals::LFB_USECOMBATODDS))
 	{
 		// We start with straight combat odds
 		// advc: Replacing call to deleted (and redundant) LFBgetDefenderCombatOdds
@@ -13465,12 +13238,12 @@ float CvUnit::doVictoryInfluence(CvUnit* pLoserUnit, bool bAttacking, bool bWith
 	int iWinnerCultureBefore = pDefenderPlot->getCulture(getOwner()); //used later for influence %
 
 	float fWinnerPlotMultiplier = 1.0f; // by default: same influence in WinnerPlot and LoserPlot
-	if (GC.getDefineFLOAT("IDW_WINNER_PLOT_MULTIPLIER"))
-		fWinnerPlotMultiplier = GC.getDefineFLOAT("IDW_WINNER_PLOT_MULTIPLIER");
+	if (GC.getIDW_WINNER_PLOT_MULTIPLIER())
+		fWinnerPlotMultiplier = GC.getIDW_WINNER_PLOT_MULTIPLIER();
 
 	float fLoserPlotMultiplier = 1.0f; // by default: same influence in WinnerPlot and LoserPlot
-	if (GC.getDefineFLOAT("IDW_LOSER_PLOT_MULTIPLIER"))
-		fLoserPlotMultiplier = GC.getDefineFLOAT("IDW_LOSER_PLOT_MULTIPLIER");
+	if (GC.getIDW_LOSER_PLOT_MULTIPLIER())
+		fLoserPlotMultiplier = GC.getIDW_LOSER_PLOT_MULTIPLIER();
 
 	float bWithdrawalMultiplier = 0.5f;
 	if (bWithdrawal)
@@ -13491,14 +13264,14 @@ float CvUnit::doVictoryInfluence(CvUnit* pLoserUnit, bool bAttacking, bool bWith
 		else // last defender is dead
 		{
 			float fNoCityDefenderMultiplier = 2.5; // default: 250%
-			if (GC.getDefineFLOAT("IDW_NO_CITY_DEFENDER_MULTIPLIER"))
-				fNoCityDefenderMultiplier = GC.getDefineFLOAT("IDW_NO_CITY_DEFENDER_MULTIPLIER");
+			if (GC.getIDW_NO_CITY_DEFENDER_MULTIPLIER())
+				fNoCityDefenderMultiplier = GC.getIDW_NO_CITY_DEFENDER_MULTIPLIER();
 
 			// last city defender is dead -> influence is increased
 			influencePlots(pLoserPlot, pLoserUnit->getOwner(), fLoserPlotMultiplier * fNoCityDefenderMultiplier);
 			influencePlots(pWinnerPlot, pLoserUnit->getOwner(), fWinnerPlotMultiplier * fNoCityDefenderMultiplier);
 
-			if (GC.getDefineINT("IDW_EMERGENCY_DRAFT_ENABLED"))
+			if (GC.getDefineINT(CvGlobals::IDW_EMERGENCY_DRAFT_ENABLED))
 			{
 				int iDefenderCulture = pLoserPlot->getCulture(pLoserUnit->getOwner());
 				int iAttackerCulture = pLoserPlot->getCulture(getOwner());
@@ -13541,8 +13314,8 @@ float CvUnit::doVictoryInfluence(CvUnit* pLoserUnit, bool bAttacking, bool bWith
 		{
 			// fort captured
 			float fFortCaptureMultiplier = 2.0f; // default: 200%
-			if (GC.getDefineFLOAT("IDW_FORT_CAPTURE_MULTIPLIER"))
-				fFortCaptureMultiplier = GC.getDefineFLOAT("IDW_FORT_CAPTURE_MULTIPLIER");
+			if (GC.getIDW_FORT_CAPTURE_MULTIPLIER())
+				fFortCaptureMultiplier = GC.getIDW_FORT_CAPTURE_MULTIPLIER();
 
 			// influence is increased
 			influencePlots(pLoserPlot, pLoserUnit->getOwner(), fLoserPlotMultiplier * fFortCaptureMultiplier);
@@ -13573,8 +13346,8 @@ float CvUnit::doVictoryInfluence(CvUnit* pLoserUnit, bool bAttacking, bool bWith
 void CvUnit::influencePlots(CvPlot* pCentralPlot, PlayerTypes eTargetPlayer, float fLocationMultiplier)
 {
 	float fBaseCombatInfluence = 4.0f;
-	if (GC.getDefineFLOAT("IDW_BASE_COMBAT_INFLUENCE"))
-        fBaseCombatInfluence = GC.getDefineFLOAT("IDW_BASE_COMBAT_INFLUENCE");
+	if (GC.getIDW_BASE_COMBAT_INFLUENCE())
+        fBaseCombatInfluence = GC.getIDW_BASE_COMBAT_INFLUENCE();
 
 	// calculate base multiplier used for all plots
 	float fGameSpeedMultiplier = (float) GC.getGameSpeedInfo(GC.getGame().getGameSpeedType()).getConstructPercent();
@@ -13584,16 +13357,16 @@ void CvUnit::influencePlots(CvPlot* pCentralPlot, PlayerTypes eTargetPlayer, flo
 	fGameSpeedMultiplier = sqrt(fGameSpeedMultiplier);
 
 	float fExperienceFactor = 0.01f;  // default: each point of experience increases influence by 1%
-	if (GC.getDefineFLOAT("IDW_EXPERIENCE_FACTOR"))
-        fExperienceFactor = GC.getDefineFLOAT("IDW_EXPERIENCE_FACTOR");
+	if (GC.getIDW_EXPERIENCE_FACTOR())
+        fExperienceFactor = GC.getIDW_EXPERIENCE_FACTOR();
 	float fExperienceMultiplier = 1.0f + (getExperience() * 0.01f);
 
 	float fWarlordMultiplier = 1.0;
 	if (NO_UNIT != getLeaderUnitType()) // warlord is here
 	{
 		fWarlordMultiplier = 1.5; // default: +50%
-		if (GC.getDefineFLOAT("IDW_WARLORD_MULTIPLIER"))
-			fWarlordMultiplier = GC.getDefineFLOAT("IDW_WARLORD_MULTIPLIER");
+		if (GC.getIDW_WARLORD_MULTIPLIER())
+			fWarlordMultiplier = GC.getIDW_WARLORD_MULTIPLIER();
 	}
 
 	float fBaseMultiplier = fBaseCombatInfluence * fGameSpeedMultiplier * fLocationMultiplier * fExperienceMultiplier * fWarlordMultiplier;
@@ -13602,14 +13375,14 @@ void CvUnit::influencePlots(CvPlot* pCentralPlot, PlayerTypes eTargetPlayer, flo
 
 	// get influence radius
 	int iInfluenceRadius = 2; // default: like 2square city workable radius
-	if (GC.getDefineINT("IDW_INFLUENCE_RADIUS"))
-		iInfluenceRadius = GC.getDefineINT("IDW_INFLUENCE_RADIUS");
+	if (GC.getIDW_INFLUENCE_RADIUS())
+		iInfluenceRadius = GC.getIDW_INFLUENCE_RADIUS();
 	if (iInfluenceRadius < 0)
 		return;
 
 	float fPlotDistanceFactor = 0.2f; // default: influence decreases by 20% with plot distance
-	if (GC.getDefineFLOAT("IDW_PLOT_DISTANCE_FACTOR"))
-        fPlotDistanceFactor = GC.getDefineFLOAT("IDW_PLOT_DISTANCE_FACTOR");
+	if (GC.getIDW_PLOT_DISTANCE_FACTOR())
+        fPlotDistanceFactor = GC.getIDW_PLOT_DISTANCE_FACTOR();
 
 //	CvWString szBuffer;
 //	szBuffer.Format(L"Factors: %.1f, %.1f, %.1f, %.1f, %.1f, %.1f, %.3f, %d", fBaseCombatInfluence, fLocationMultiplier, fGameSpeedMultiplier, fPlotDistanceFactor, fExperienceMultiplier, fWarlordMultiplier, fBaseMultiplier, iInfluenceRadius);
@@ -13672,11 +13445,17 @@ void CvUnit::influencePlots(CvPlot* pCentralPlot, PlayerTypes eTargetPlayer, flo
 // returns influence % in current plot
 float CvUnit::doPillageInfluence()
 {
-	if (isBarbarian() && GC.getDefineINT("IDW_NO_BARBARIAN_INFLUENCE"))
+	if (isBarbarian() && 
+		//GC.getDefineINT(CvGlobals:IDW_NO_BARBARIAN_INFLUENCE)
+			GC.getGame().isOption(GAMEOPTION_IDW_NO_BARBARIAN)
+		)
 	{
 		return 0.0f;
 	}
-	if ((DOMAIN_SEA == getDomainType()) && GC.getDefineINT("IDW_NO_NAVAL_INFLUENCE"))
+	if ((DOMAIN_SEA == getDomainType()) && 
+		//GC.getDefineINT(CvGlobals:IDW_NO_NAVAL_INFLUENCE)
+			GC.getGame().isOption(GAMEOPTION_IDW_NO_NAVAL)
+		)
 	{
 		return 0.0f;
 	}
@@ -13691,8 +13470,8 @@ float CvUnit::doPillageInfluence()
 	int iOurCultureBefore = pPlot->getCulture(getOwner()); //used later for influence %
 
 	float fBasePillageInfluence = 2.0f;
-	if (GC.getDefineFLOAT("IDW_BASE_PILLAGE_INFLUENCE"))
-        fBasePillageInfluence = GC.getDefineFLOAT("IDW_BASE_PILLAGE_INFLUENCE");
+	if (GC.getIDW_BASE_PILLAGE_INFLUENCE())
+        fBasePillageInfluence = GC.getIDW_BASE_PILLAGE_INFLUENCE();
 
 	float fGameSpeedMultiplier = (float) GC.getGameSpeedInfo(GC.getGame().getGameSpeedType()).getConstructPercent();
 	fGameSpeedMultiplier /= 100;
@@ -13721,7 +13500,7 @@ float CvUnit::doPillageInfluence()
 
 	// calculate influence % in pillaged plot (to be displayed in game log)
     int iOurCultureAfter = pPlot->getCulture(getOwner());
-	//pre-adv-keldat: float fInfluenceRatio = ((iOurCultureAfter-iOurCultureBefore)*100.0f)/pPlot->countTotalCulture();
+	//pre-adv-keldath: float fInfluenceRatio = ((iOurCultureAfter-iOurCultureBefore)*100.0f)/pPlot->countTotalCulture();
 	float fInfluenceRatio = ((iOurCultureAfter-iOurCultureBefore)*100.0f)/pPlot->getTotalCulture();
 
 //	CvWString szBuffer;

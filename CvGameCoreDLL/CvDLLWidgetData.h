@@ -223,6 +223,9 @@ protected:
 //doto wonder limit hover text
 	void parseCultureWonderLimitHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer);
 //doto wonder limit hover text
+//doto units bonus cap
+	void parseTrainUnitCapHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer);
+//doto units bonus cap
 };
 
 #endif

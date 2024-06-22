@@ -473,9 +473,6 @@ public:
 	int getGoodyUniqueRange() const;
 	int getFeatureGrowthProbability() const;
 	int getUpgradeTime() const { return m_iUpgradeTime; }
-	//doto governor
-	int getGovernorXp() const { return m_iGovernorXp; }
-	//doto governor
 	//doto obsolete improvement start
 	TechTypes getTechObsolete() const { return m_eTechObsolete; }
 	//doto obsolete improvement end
@@ -584,9 +581,6 @@ protected:
 	int m_iGoodyUniqueRange;
 	int m_iFeatureGrowthProbability;
 	int m_iUpgradeTime;
-	//doto governor
-	int m_iGovernorXp;
-	//doto governor
 	//doto obsolete improvement start
 	TechTypes m_eTechObsolete;
 	//doto obsolete improvement end

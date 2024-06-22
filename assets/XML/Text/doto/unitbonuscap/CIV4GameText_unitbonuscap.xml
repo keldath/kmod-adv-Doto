@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by XMLSPY 2004 Professional Ed. Release 2, Installed Multi + SMP for 3 users (Firaxis Games) -->
+<!-- Sid Meier's Civilization 4 -->
+<!-- Copyright Firaxis Games 2005 -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+		<Tag>TXT_KEY_UNITS_BONUS_CAP_CONCEPT</Tag>
+		<English>[COLOR_HIGHLIGHT_TEXT]%F1 Unit Caps[COLOR_REVERT]</English>
+	</TEXT>
+	<TEXT>	
+	<Tag>TXT_KEY_UNIT_REQUIRES_UNIT_CAP_REACHED_STRING</Tag>
+		<English>[COLOR_WARNING_TEXT]No Bonus Cap available %s1_Text[COLOR_REVERT]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_CAP_REQUIRES</Tag>
+		<English>[COLOR_WARNING_TEXT]No Bonus Cap available (And/Or):[SPACE]</English>
+	</TEXT>
+	<TEXT>	
+	<Tag>TXT_KEY_UNIT_REQUIRES_UNIT_CAP_REACHED_PEDIA</Tag>
+		<English>[COLOR_WARNING_TEXT]with game option of Bonus Unit Cap on: [NEWLINE]Limited by Unit Bonus %s1_Text[COLOR_REVERT]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_REQUIRES_UNIT_CAP_REACHED_STRING_PEDIA</Tag>
+		<English>[COLOR_WARNING_TEXT]with game option of Bonus Unit Cap on: [NEWLINE]Limited by Unit Bonus Cap (And/Or):[SPACE]</English>
+	</TEXT>
+</Civ4GameText>

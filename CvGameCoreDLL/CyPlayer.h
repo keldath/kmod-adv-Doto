@@ -428,7 +428,10 @@ public:
 	void setPlayable(bool bNewValue);
 	int getBonusExport(int /*BonusTypes*/ iIndex);
 	int getBonusImport(int /*BonusTypes*/ iIndex);
-
+//doto units bonus cap
+	int getNumUnitBonusCaps(int /*BonusTypes*/ iIndex);
+	int getTotalPlayerBonus(int /*BonusTypes*/ iIndex);
+//doto units bonus cap	
 	int getImprovementCount(int /*ImprovementTypes*/ iIndex);
 
 	bool isBuildingFree(int /*BuildingTypes*/ iIndex);

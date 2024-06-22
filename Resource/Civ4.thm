@@ -2,7 +2,8 @@
    Civ4Theme_....thm files in the BtS/Resource/Themes/Civ4 folder instead -
    I'm only modifying Civ4Theme_Common.thm. Can't figure out how, and
    other mods also copy all those files. At least I've gotten rid of the
-   copied tga files. */
+   copied tga files.
+   resource_path "../Resource"; */
 
 resource_path "../Resource";
 /* For some obscure reason, the includes in Civ4Theme.thm can't be moved here

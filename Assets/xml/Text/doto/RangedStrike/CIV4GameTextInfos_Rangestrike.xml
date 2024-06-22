@@ -90,4 +90,8 @@
 		<Tag>TXT_KEY_MISC_DEFENSES_IN_CITY_MISSED</Tag>
 		<English>%s3_player has missed your defenses in %s1_CityName!</English>
 	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PEDIA_AIRCOMBAT</Tag>
+		<English>Range Strength: %d1_Num</English>
+	</TEXT>
 </Civ4GameText>

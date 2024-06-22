@@ -341,7 +341,7 @@
 			<NIF>Art/Terrain/Resources/Tobacco/tobacco.nif</NIF>
 			<KFM/>
 			<Button>,Art/Interface/Buttons/WorldBuilder/Spices.dds,Art/Interface/Buttons/Warlords_Atlas_1.dds,2,14</Button>
-			<FontButtonIndex>238</FontButtonIndex>
+			<FontButtonIndex>185</FontButtonIndex>
 		</BonusArtInfo>
 		<BonusArtInfo>
 			<Type>ART_DEF_BONUS_OLIVES</Type>
@@ -350,7 +350,7 @@
 			<NIF>Art/Terrain/Resources/Olives/olives.nif</NIF>
 			<KFM/>
 			<Button>,Art/Interface/Buttons/WorldBuilder/Spices.dds,Art/Interface/Buttons/Warlords_Atlas_1.dds,1,14</Button>
-			<FontButtonIndex>201</FontButtonIndex>
+			<FontButtonIndex>01</FontButtonIndex>
 		</BonusArtInfo>
 		<BonusArtInfo>
 			<Type>ART_DEF_BONUS_VICTORY_BLUE</Type>
@@ -408,14 +408,14 @@
 			<FontButtonIndex>187</FontButtonIndex>
 		</BonusArtInfo>
 		<BonusArtInfo>
-			<Type>ART_DEF_BONUS_TIN</Type>
+			<Type>ART_DEF_BONUS_TITANIUM</Type>
 			<fScale>1.0</fScale>
 			<fInterfaceScale>1.5</fInterfaceScale>
 			<NIF>Art/Terrain/Resources/Tin/copper.nif</NIF>
 			<KFM>Art/Terrain/Resources/Tin/copper.kfm</KFM>
 			<SHADERNIF>Art/Terrain/Resources/Tin/copper.nif</SHADERNIF>
 			<Button>Art/Interface/Buttons/WorldBuilder/tin.dds</Button>
-			<FontButtonIndex>233</FontButtonIndex>
+			<FontButtonIndex>208</FontButtonIndex>
 		</BonusArtInfo>
 		<BonusArtInfo>
 			<Type>ART_DEF_BONUS_RUBBER</Type>
@@ -425,7 +425,7 @@
 			<KFM>Art/Terrain/Resources/Rubber/silk.kfm</KFM>
 			<SHADERNIF>Art/Terrain/Resources/Rubber/silk.nif</SHADERNIF>
 			<Button>Art/Interface/Buttons/WorldBuilder/Rubber.dds</Button>
-			<FontButtonIndex>206</FontButtonIndex>
+			<FontButtonIndex>194</FontButtonIndex>
 		</BonusArtInfo>
 		<BonusArtInfo>
 			<Type>ART_DEF_BONUS_NATURAL_GAS</Type>
@@ -443,7 +443,7 @@
 			<NIF>Art/Terrain/Resources/Sulphur/Silver.nif</NIF>
 			<KFM>Art/Terrain/Resources/Sulphur/Silver.kfm</KFM>
 			<Button>Art/Interface/Buttons/WorldBuilder/sulphur.dds</Button>
-			<FontButtonIndex>174</FontButtonIndex>
+			<FontButtonIndex>189</FontButtonIndex>
 		</BonusArtInfo>	
 		<BonusArtInfo>
 			<Type>ART_DEF_BONUS_SALT</Type>

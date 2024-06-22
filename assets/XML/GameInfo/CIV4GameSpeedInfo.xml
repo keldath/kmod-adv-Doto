@@ -79,7 +79,7 @@ iVictoryDelayPercent	Percent of space ship travel time
 				 change, the GAMESPEED_MARATHON element below this one can be
 				 uncommented.) -->
 			<iGrowthPercent>250</iGrowthPercent>
-			<iTrainPercent>200</iTrainPercent>
+			<iTrainPercent>220</iTrainPercent>
 			<iConstructPercent>250</iConstructPercent>
 			<iCreatePercent>250</iCreatePercent>
 			<iResearchPercent>250</iResearchPercent>
@@ -247,7 +247,7 @@ iVictoryDelayPercent	Percent of space ship travel time
 			<Help>TXT_KEY_GAMESPEED_EPIC_HELP</Help>
 			<!-- advc.252: all 300 percentages reduced to 250 -->
 			<iGrowthPercent>250</iGrowthPercent>
-			<iTrainPercent>200</iTrainPercent>
+			<iTrainPercent>210</iTrainPercent>
 			<iConstructPercent>250</iConstructPercent>
 			<iCreatePercent>250</iCreatePercent>
 			<iResearchPercent>250</iResearchPercent>
@@ -338,7 +338,7 @@ iVictoryDelayPercent	Percent of space ship travel time
 			<Description>Jogging (750)</Description>
 			<Help>TXT_KEY_GAMESPEED_EPIC_HELP</Help>
 			<iGrowthPercent>150</iGrowthPercent>
-			<iTrainPercent>150</iTrainPercent>
+			<iTrainPercent>170</iTrainPercent>
 			<iConstructPercent>150</iConstructPercent>
 			<iCreatePercent>150</iCreatePercent>
 			<iResearchPercent>150</iResearchPercent>
@@ -421,7 +421,7 @@ iVictoryDelayPercent	Percent of space ship travel time
 			<Description>Running (500)</Description>
 			<Help>TXT_KEY_GAMESPEED_NORMAL_HELP</Help>
 			<iGrowthPercent>100</iGrowthPercent>
-			<iTrainPercent>100</iTrainPercent>
+			<iTrainPercent>120</iTrainPercent>
 			<iConstructPercent>100</iConstructPercent>
 			<iCreatePercent>100</iCreatePercent>
 			<iResearchPercent>100</iResearchPercent>
@@ -485,7 +485,7 @@ iVictoryDelayPercent	Percent of space ship travel time
 			<Description>Sprinting (335)</Description>
 			<Help>TXT_KEY_GAMESPEED_QUICK_HELP</Help>
 			<iGrowthPercent>67</iGrowthPercent>
-			<iTrainPercent>67</iTrainPercent>
+			<iTrainPercent>80</iTrainPercent>
 			<iConstructPercent>67</iConstructPercent>
 			<iCreatePercent>67</iCreatePercent>
 			<iResearchPercent>67</iResearchPercent>

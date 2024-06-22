@@ -353,20 +353,25 @@
 		<DefineName>TRUNCATE_ANIMATION_TURNS</DefineName>
 		<iDefineIntVal>14</iDefineIntVal>
 <!-- Vincentz Ranged Strike -->
-<!-- DOTO rangedstrikeMOD - START - Improved AI Range Attack -->
-	</Define>
-	<!--CHANCE OF SUCCESFUL BOMBARD 
+<!-- //doto Range Strike 
+CHANCE OF SUCCESFUL BOMBARD 
 		adds to the mitigation of randomness if gameoption is on
-	-->
+-->
+	</Define>
 	<Define>
 		<DefineName>BOMBARD_HIT_CHANCE</DefineName>
-		<iDefineIntVal>50</iDefineIntVal>
+		<iDefineIntVal>50</iDefineIntVal> 
 	</Define>
+<!-- //doto Range Strike -->
 	<!--SIZE OF THE ATTACK-DICE, THE HIGHER, THE LESS AIRSTRENGTH/STRENGHT IS A FACTOR 
 		IF GAMEOPTION RANDOM HIT IS ON-->
 	<Define>
 		<DefineName>RANGESTRIKE_DICE</DefineName>
 		<iDefineIntVal>100</iDefineIntVal>
+	</Define>
+	<Define>
+		<DefineName>RANGE_COMBAT_DAMAGE</DefineName>
+		<iDefineIntVal>30</iDefineIntVal>
 	</Define>
 	<!--1 FOR EQUAL ATTACK/DEFENSE (LOTS OF MISSES), >1 FOR EASIER HIT
 		IF GAMEOPTION RANDOM HIT
@@ -383,18 +388,7 @@
 	-->
 	<Define>
 		<DefineName>RANGESTRIKE_ATT_MOD</DefineName>
-		<iDefineIntVal>10</iDefineIntVal>
-	</Define>
-<!-- all the below is unused in ranged immunity -->
-	<Define>
-		<!-- Minimum attack odds of best attacker for AI to skip range attacking a city and just attack. Default: 80 -->
-		<DefineName>SKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS</DefineName>
-		<iDefineIntVal>70</iDefineIntVal>
-	</Define>
-	<Define>
-		<!-- Minimum stack strength ratio for AI to skip range attacking a city and just attack, higher is more conservative.  Default: 150 -->
-		<DefineName>SKIP_RANGE_ATTACK_MIN_STACK_RATIO</DefineName>
-		<iDefineIntVal>150</iDefineIntVal>
+		<iDefineIntVal>15</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- MINIMUM RATIO OF ATTACKER to defender. if the defender is almost equal to the rate of bith enemy and attacker total strength
@@ -421,7 +415,17 @@
 		<!-- DETERMINS HOW MUCH DAMAGE PER RANGE strike count THE UNIT WILL TAKE AFTER X ATTACKS (DETERMINED BY THE TANGED ATTACK VALUE) -->
 		<DefineName>RANGED_DAMAGE_TAKEN</DefineName>
 		<iDefineIntVal>10</iDefineIntVal>
-<!-- DOTO rangedstrikeMOD - end - Improved AI Range Attack -->
+	</Define>
+	<Define>
+		<!-- Minimum attack odds of best attacker for AI to skip range attacking a city and just attack. Default: 80 -->
+		<DefineName>SKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS</DefineName>
+		<iDefineIntVal>80</iDefineIntVal>
+	</Define>
+	<Define>
+		<!-- Minimum stack strength ratio for AI to skip range attacking a city and just attack, higher is more conservative.  Default: 150 -->
+		<DefineName>SKIP_RANGE_ATTACK_MIN_STACK_RATIO</DefineName>
+		<iDefineIntVal>150</iDefineIntVal>
+<!-- //doto Range Strike -->
 <!-- DOTO city states - START  -->
 	</Define>
 	<Define>
@@ -600,44 +604,11 @@
 		<DefineName>CAPITAL_BUILDINGCLASS_3</DefineName>
 		<DefineTextVal>BUILDINGCLASS_VERSAILLES</DefineTextVal>
 <!-- doto 113 -> loose capital anarchy start by <Nexus> end -->	 
-<!-- doto governor speed compensation balance -->
+<!-- doto anarchy after capital loss -->
 	</Define>
 	<Define>
 		<DefineName>BASE_LOSS_CAPITAL_ANARCHY_LENGTH</DefineName>
 		<iDefineIntVal>1</iDefineIntVal>
-	</Define>
-	<Define>
-		<DefineName>BASE_GROWTH_THRESHOLD</DefineName>
-		<iDefineIntVal>15</iDefineIntVal>
-	</Define>
-	<Define>
-		<DefineName>BASE_GP_THRESHOLD</DefineName>
-		<iDefineIntVal>0</iDefineIntVal>
-	</Define>
-	<Define>
-		<DefineName>BASE_CULTURE_LEVEL_PERCENT</DefineName>
-		<iDefineIntVal>15</iDefineIntVal>
-	</Define>
-	<Define>
-		<DefineName>BASE_RESEARCH_PRECENT</DefineName>
-		<iDefineIntVal>15</iDefineIntVal>
-	</Define>
-	<Define>
-		<DefineName>BASE_CREATE_PRECENT</DefineName>
-		<iDefineIntVal>15</iDefineIntVal>
-	</Define>
-	<Define>
-		<DefineName>BASE_TRAIN_PRECENT</DefineName>
-		<iDefineIntVal>15</iDefineIntVal>
-	</Define>
-	<Define>
-		<DefineName>BASE_CONSTRUCT_PERCENT</DefineName>
-		<iDefineIntVal>15</iDefineIntVal>
-	</Define>
-	<Define>
-		<DefineName>BASE_ANGER_PERCENT</DefineName>
-		<iDefineIntVal>15</iDefineIntVal>
-<!-- doto governor speed compensation balance end -->
 	</Define>
 	
 </Civ4Defines>

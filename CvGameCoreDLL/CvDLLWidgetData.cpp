@@ -755,6 +755,11 @@ void CvDLLWidgetData::parseHelp(CvWStringBuffer &szBuffer, CvWidgetDataStruct &w
 		parseCultureWonderLimitHelp(widgetDataStruct, szBuffer);
 		break;
 //doto wonder limit - city hover help
+//doto units bonus cap
+	case WIDGET_TRAIN_UNITS_CAP:
+		parseTrainUnitCapHelp(widgetDataStruct, szBuffer);
+		break;
+//doto units bonus cap
 	}
 	if (getActivePlayer() == NO_PLAYER)
 		return;
@@ -4988,9 +4993,28 @@ void CvDLLWidgetData::parseFlagHelp(CvWidgetDataStruct &widgetDataStruct, CvWStr
 /*                                                                                              */
 /************************************************************************************************/
 	// Add string showing version number
-	szTempBuffer.Format(NEWLINE SETCOLR L"%S" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), "AdvCiv 1.10_17092023 + Doto 1.13");
+	szTempBuffer.Format(NEWLINE SETCOLR L"%S" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), "AdvCiv 1.10_17092023 + Doto 1.14");
 	szBuffer.append(szTempBuffer);
 	szBuffer.append(NEWLINE);
+//doto units bonus cap
+	/* used for testing 
+	if (GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP))
+	{
+		for(int i = 0; i < GC.getNumBonusInfos(); i++)
+		{
+			int eCap = GET_PLAYER(GC.getGame().getActivePlayer()).getNumUnitBonusCaps((BonusTypes)i);
+			int eTotalCap = GET_PLAYER(GC.getGame().getActivePlayer()).getTotalPlayerBonus((BonusTypes)i);
+			//if (eTotalCap != NULL || eCap != NULL)
+			if (GC.getGame().getBonusThatArePrereqForUnits((BonusTypes)i) > 0)
+			{
+				//szTempBuffer.Format(NEWLINE SETCOLR L"%d/%d" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), eCap, eTotalCap );
+				szTempBuffer.Format(L"%c " SETCOLR L"%s" ENDCOLR L" %d/%d", GC.getInfo((BonusTypes)i).getChar(), TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"), GC.getInfo((BonusTypes)i).getDescription(), eCap, eTotalCap);
+				szBuffer.append(szTempBuffer);
+				szBuffer.append(NEWLINE);
+			}
+		}
+	}*/
+//doto units bonus cap
 #ifdef LOG_AI
 	szTempBuffer.Format(NEWLINE L"%c", gDLL->getSymbolID(BULLET_CHAR));
 	szBuffer.append(szTempBuffer);
@@ -5254,7 +5278,7 @@ void CvDLLWidgetData::parseNationalityHelp(CvWidgetDataStruct &widgetDataStruct,
 				szKey = "TXT_KEY_REVOLT_CHANCE_AFTER_WAR_OCCUPATION";
 			else if (c.isMartialLaw(eCulturalOwner))
 				szKey = "TXT_KEY_REVOLT_CHANCE_AFTER_WAR";
-			else szKey = "TXT_KEY_REVOLT_CHANCE_AFTER_OCCUPTAION";
+			else szKey = "TXT_KEY_REVOLT_CHANCE_AFTER_OCCUPATION";
 			szBuffer.append(gDLL->getText(szKey, szTempBuffer));
 		} // </advc.023>
 		// <advc.101>
@@ -6501,3 +6525,30 @@ void CvDLLWidgetData::parseCultureWonderLimitHelp(CvWidgetDataStruct &widgetData
 	szBuffer.append(gDLL->getText("TXT_KEY_WIDGET_WONDER_LIMITS_CREDIT"));
 }
 //doto wonder limit hover text
+//doto units bonus cap
+void CvDLLWidgetData::parseTrainUnitCapHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer)
+{
+	CvWString szTempBuffer;
+	CvPlayer& kPlayer = GET_PLAYER(GC.getGame().getActivePlayer());
+	for (int i = 0; i < GC.getNumBonusInfos(); i++)
+	{
+		int eCap = kPlayer.getNumUnitBonusCaps((BonusTypes)i);
+		int eTotalCap = kPlayer.getTotalPlayerBonus((BonusTypes)i);
+		//if (eTotalCap != NULL || eCap != NULL)
+		bool bFirst = true;
+		if (GC.getGame().getBonusThatArePrereqForUnits((BonusTypes)i) > 0)
+		{
+			CvBonusInfo& kBonus = GC.getBonusInfo((BonusTypes)i);
+			if (!(GET_TEAM(kPlayer.getTeam()).isHasTech((TechTypes)(kBonus.getTechReveal()))))
+				continue;
+			//szTempBuffer.Format(NEWLINE SETCOLR L"%d/%d" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), eCap, eTotalCap );
+			szTempBuffer.Format(L"%c " SETCOLR L"%s" ENDCOLR L" %d/%d", kBonus.getChar(), TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"), kBonus.getDescription(), eCap, eTotalCap);
+			szBuffer.append(szTempBuffer);
+			bFirst = false;
+		}
+		if (!bFirst)
+			szBuffer.append(NEWLINE);
+	}
+	
+}
+//doto units bonus cap

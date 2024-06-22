@@ -508,6 +508,14 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 					<bNeededInCity>1</bNeededInCity>
 				</BuildingClassNeeded>
 			</BuildingClassNeededs>
+<!-- //doto building not in the city	- start		 -->
+			<BuildingClassNotCitys>
+				<BuildingClassNotCity>
+					<BuildingClassType>BUILDINGCLASS_PALACE</BuildingClassType>
+					<bNotInCity>1</bNotInCity>
+				</BuildingClassNotCity>
+			</BuildingClassNotCitys>
+<!-- //doto building not in the city	- end -->
 			<SpecialistYieldChanges/>
 			<BonusYieldModifiers/>
 			<ImprovementFreeSpecialists/>
@@ -5741,13 +5749,13 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<GlobalSeaPlotYieldChanges/>
 			<YieldChanges/>
 			<YieldModifiers>
-				<iYield>10</iYield>
-				<iYield>25</iYield>
+				<iYield>0</iYield>
+				<iYield>15</iYield>
 				<iYield>0</iYield>
 			</YieldModifiers>
 			<PowerYieldModifiers>
 				<iYield>5</iYield>
-				<iYield>50</iYield>
+				<iYield>10</iYield>
 				<iYield>0</iYield>
 			</PowerYieldModifiers>
 			<CommerceChanges/>
@@ -5776,11 +5784,11 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				</BonusHealthChange>
 				<BonusHealthChange>
 					<BonusType>BONUS_COAL</BonusType>
-					<iHealthChange>-2</iHealthChange>
-				</BonusHealthChange>
+					<iHealthChange>-1</iHealthChange>
+				<!-- </BonusHealthChange>
 				<BonusHealthChange>
 					<BonusType>BONUS_TITANIUM</BonusType>
-					<iHealthChange>1</iHealthChange>
+					<iHealthChange>1</iHealthChange> -->
 				</BonusHealthChange>
 			</BonusHealthChanges>
 			<BonusHappinessChanges/>
@@ -5973,7 +5981,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				</BonusHealthChange>
 				<BonusHealthChange>
 					<BonusType>BONUS_COAL</BonusType>
-					<iHealthChange>-2</iHealthChange>
+					<iHealthChange>-1</iHealthChange>
 				</BonusHealthChange>
 			</BonusHealthChanges>
 			<BonusHappinessChanges/>
@@ -6030,7 +6038,9 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<PrereqTech>TECH_ASSEMBLY_LINE</PrereqTech>
 			<TechTypes/>
 			<Bonus>NONE</Bonus>
-			<PrereqBonuses/>
+			<PrereqBonuses>
+				<BonusType>BONUS_COAL</BonusType>
+			</PrereqBonuses>
 			<ProductionTraits/>
 			<HappinessTraits/>
 			<NoBonus>NONE</NoBonus>
@@ -6128,6 +6138,11 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<RiverPlotYieldChanges/>
 			<GlobalSeaPlotYieldChanges/>
 			<YieldChanges/>
+			<YieldModifiers>
+				<iYield>0</iYield>
+				<iYield>10</iYield>
+				<iYield>0</iYield>
+			</YieldModifiers>
 			<CommerceChanges/>
 			<ObsoleteSafeCommerceChanges/>
 			<CommerceChangeDoubleTimes/>
@@ -21669,7 +21684,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<bPrereqReligion>0</bPrereqReligion>
 			<bCenterInCity>0</bCenterInCity>
 			<iAIWeight>0</iAIWeight>
-			<iCost>410</iCost>
+			<iCost>325</iCost>
 			<iHurryCostModifier>100</iHurryCostModifier>
 			<iAdvancedStartCost>-1</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
@@ -21819,7 +21834,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<MaxStartEra>ERA_ANCIENT</MaxStartEra>
 			<!-- K-Mod: was Astronomy -->
 			<ObsoleteTech>NONE</ObsoleteTech>
-			<PrereqTech>TECH_MYSTICISM</PrereqTech>
+			<PrereqTech>TECH_ARCHERY</PrereqTech>
 			<TechTypes/>
 			<Bonus>NONE</Bonus>
 			<PrereqBonuses/>
@@ -21857,7 +21872,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<bPrereqReligion>0</bPrereqReligion>
 			<bCenterInCity>0</bCenterInCity>
 			<iAIWeight>0</iAIWeight>
-			<iCost>110</iCost>
+			<iCost>130</iCost>
 			<iHurryCostModifier>100</iHurryCostModifier>
 			<iAdvancedStartCost>-1</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
@@ -22110,7 +22125,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
 				<!-- advc.201: K-Mod had reduced this to 6 -->
-				<iCommerce>8</iCommerce>
+				<iCommerce>7</iCommerce>
 			</ObsoleteSafeCommerceChanges>
 			<CommerceChangeDoubleTimes>
 				<iCommerce>0</iCommerce>
@@ -22572,7 +22587,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<MaxStartEra>ERA_MEDIEVAL</MaxStartEra>
 			<!-- advc.310: Was Astronomy -->
 			<ObsoleteTech>TECH_CHEMISTRY</ObsoleteTech>
-			<PrereqTech>TECH_METAL_CASTING</PrereqTech>
+			<PrereqTech>TECH_IRON_WORKING</PrereqTech>
 			<TechTypes/>
 			<Bonus>NONE</Bonus>
 			<PrereqBonuses/>
@@ -22868,7 +22883,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
 				<!-- K-Mod: was 8 -->
-				<iCommerce>6</iCommerce>
+				<iCommerce>5</iCommerce>
 			</ObsoleteSafeCommerceChanges>
 			<CommerceChangeDoubleTimes>
 				<iCommerce>0</iCommerce>
@@ -26420,7 +26435,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<bPrereqReligion>0</bPrereqReligion>
 			<bCenterInCity>0</bCenterInCity>
 			<iAIWeight>0</iAIWeight>
-			<iCost>350</iCost>
+			<iCost>300</iCost>
 			<iHurryCostModifier>100</iHurryCostModifier>
 			<iAdvancedStartCost>-1</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
@@ -26759,7 +26774,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<!-- advc.310: Was NONE -->
 			<ObsoleteTech>TECH_CORPORATION</ObsoleteTech>
 			<!-- advc.310: Was TECH_MASONRY -->
-			<PrereqTech>TECH_ARCHERY</PrereqTech>
+			<PrereqTech>TECH_METAL_CASTING</PrereqTech>
 			<TechTypes/>
 			<Bonus>NONE</Bonus>
 			<PrereqBonuses/>
@@ -27070,7 +27085,7 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 				<iCommerce>0</iCommerce>
 				<iCommerce>0</iCommerce>
 				<!-- K-Mod: was 10 -->
-				<iCommerce>8</iCommerce>
+				<iCommerce>6</iCommerce>
 			</ObsoleteSafeCommerceChanges>
 			<CommerceChangeDoubleTimes>
 				<iCommerce>0</iCommerce>
@@ -34205,6 +34220,15 @@ fVisibilityPriority	Used to give certain buildings priority when drawing them on
 			<BuildingHappinessChanges/>
 			<PrereqBuildingClasses/>
 			<BuildingClassNeededs/>
+	<!-- //doto building not in the city	- start		 -->
+	<!-- EXAMPLE -->
+	<!-- 		<BuildingClassNotCitys>
+				<BuildingClassNotCity>
+					<BuildingClassType>BUILDINGCLASS_HARBOR</BuildingClassType>
+					<bNotInCity>1</bNotInCity>
+				</BuildingClassNotCity>
+			</BuildingClassNotCitys> -->
+	<!-- //doto building not in the city	- end -->
 			<SpecialistYieldChanges/>
 			<BonusYieldModifiers/>
 			<ImprovementFreeSpecialists/>

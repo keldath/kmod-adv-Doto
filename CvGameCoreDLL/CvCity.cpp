@@ -35,11 +35,6 @@ CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 //doto city states - specialists instead of population - start
 	m_iFreeCivilianCount = 0;
 //doto city states - specialists instead of population - end 
-//doto governor
-	m_iGovernorUnitLevl = 0;
-	m_iGovernoXPfromImprovements = 0;
-	m_iGovernorUnitCount = 0;
-//doto governor
 	m_iHighestPopulation = 0;
 	m_iWorkingPopulation = 0;
 	m_iSpecialistPopulation = 0;
@@ -81,12 +76,6 @@ CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 	m_iSpecialistHappiness = 0;
 	m_iSpecialistUnhappiness = 0;
 /** Specialists Enhancements   END   */
-//doto governor start
-	m_iGreatPeopleRateChangeC = 0;
-	m_iHealthC = 0;
-	m_iHappinessC = 0;
-	m_iExperienceC = 0;
-//doto governor start
 	m_iBuildingGoodHealth = 0;
 	m_iBuildingBadHealth = 0;
 	m_iPowerGoodHealth = 0;
@@ -315,20 +304,16 @@ void CvCity::init(int iID, PlayerTypes eOwner, int iX, int iY, bool bBumpUnits,
 		} // </advc.124g>
 	}
 
-	//doto governer - add governor and provide xp based on the city size
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		CvCityCreateGovernor();
-		giveXpBasedCitySize(0, getPopulation());
-	}
-	//doto governer
-
 	updateEspionageVisibility(false);
 
 	if (bUpdatePlotGroups)
 		kGame.updatePlotGroups();
 
 	GC.getLogger().logCityBuilt(*this); // advc.003t: Moved down so that just a single param needs to be passed
+
+	//doto units bonus cap - if city is built, adjust the cap
+	resetBonusCap();
+	//doto units bonus cap
 }
 
 // graphical only setup
@@ -359,9 +344,7 @@ void CvCity::kill(bool bUpdatePlotGroups, /* advc.001: */ bool bBumpUnits)
 	CvPlot& kPlot = getPlot();
 	PlayerTypes const eOwner = getOwner();
 	CvPlayer& kOwner = GET_PLAYER(eOwner);
-	//doto governor kill the governor as well to clean up all the perks from it
-	killGovernor();
-	//doto governor
+
 	if (isCitySelected())
 		gDLL->UI().clearSelectedCities();
 
@@ -585,6 +568,10 @@ void CvCity::kill(bool bUpdatePlotGroups, /* advc.001: */ bool bBumpUnits)
 
 	if (isActiveOwned())
 		gDLL->UI().setDirty(SelectionButtons_DIRTY_BIT, true);
+
+	//doto units bonus cap - if city is gone, adjust the cap
+	resetBonusCap();
+	//doto units bonus cap
 }
 
 
@@ -605,6 +592,8 @@ void CvCity::doTurn()
 	AI().AI_doTurn();
 
 	CvPlayer const& kOwner = GET_PLAYER(getOwner());
+//dotospecial events test
+//	doPalaceUpgrade();
 
 	// <advc.106k>
 	if(!m_szPreviousName.empty() && m_szName.compare(m_szPreviousName) != 0)
@@ -630,7 +619,6 @@ void CvCity::doTurn()
 	doReligion();
 	doGreatPeople();
 	doMeltdown();
-
 	/*	advc.004: Just so that human players don't get confused when inspecting
 		an AI city. Will get updated at the start of the next turn anyway
 		(CvPlayer::doTurn). Important not to update before doProduction as that
@@ -696,7 +684,7 @@ void CvCity::doTurn()
 
 	if (getEspionageHappinessCounter() > 0)
 		changeEspionageHappinessCounter(-1);
-//doto governor -> using surrounding for xp from improvements
+
 	updateSurroundingHealthHappiness(); // advc.901
 
 //doto 111 theladiesogre tlo terrainhealth
@@ -766,11 +754,6 @@ int CvCity::calculateBaseYieldRate(YieldTypes eYield)
 	}
 	iR += getTradeYield(eYield);
 	iR += getCorporationYield(eYield);
-	//doto governor -> all the checks for yields must be equal and take care of the added governoer yield
-	//add the perks from the gp to the total yields from the coty gp governor
-	iR += getYieldChangeC(eYield);
-	//doto governor	
-
 	return iR;
 }
 
@@ -913,15 +896,15 @@ bool CvCity::isCitySelected()
 
 bool CvCity::canBeSelected() const
 {
+	//doto fix for teams - reverse for advc 1.00 date 31.08.2021
 	CvGame const& kGame = GC.getGame();
-
-	if (m_bInvestigate || // advc.103
-		isActiveTeam() || kGame.isDebugMode())
+	TeamTypes eActiveTeam = kGame.getActiveTeam();
+	if(m_bInvestigate || // advc.103
+		getTeam() == eActiveTeam || kGame.isDebugMode())
 	{
 		return true;
 	}
-	TeamTypes const eActiveTeam = kGame.getActiveTeam();
-	if (eActiveTeam != NO_TEAM && getPlot().isInvestigate(eActiveTeam))
+	if(eActiveTeam != NO_TEAM && getPlot().isInvestigate(eActiveTeam))
 		return true;
 
 	FOR_EACH_ENUM(EspionageMission)
@@ -1979,6 +1962,14 @@ bool CvCity::canConstruct(BuildingTypes eBuilding, bool bContinue,
 			if (getNumBuilding(eLoopBuildingClass) <= 0)
 				return false; // </advc.003w>
 		}
+//doto building not in the city			
+		FOR_EACH_NON_DEFAULT_KEY(kBuilding.
+			isBuildingClassNotInCity(), BuildingClass)
+		{
+			//CvBuildingClassInfo& kBuildingClass = GC.getInfo(eLoopBuildingClass);
+			if (getNumBuilding(eLoopBuildingClass) > 0)
+				return false;
+		}
 	}
 /************************************************************************************************/
 /* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
@@ -2166,12 +2157,6 @@ int CvCity::getProductionExperience(UnitTypes eUnit, /* <advc.002f> */
 		}
 		iExperience += getDomainFreeExperience(GC.getInfo(eUnit).getDomainType());
 		//iExperience += getSpecialistFreeExperience();
-		//doto governor add the xp given to the production
-		if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-		{		
-			iExperience += getExperienceC();
-		}
-		//doto governor
 	}
 	// <advc.002f> AI score for comparing cities wrt. their free XP
 	else if (bScore)
@@ -3636,46 +3621,6 @@ void CvCity::processSpecialist(SpecialistTypes eSpecialist, int iChange)
 {
 	CvSpecialistInfo const& kSpecialist = GC.getInfo(eSpecialist);
 	UnitClassTypes eGPClass = (UnitClassTypes)kSpecialist.getGreatPeopleUnitClass();
-
-	//doto governor -> WHEN A GOVERNOR IS created -> pick a great person to lonk it with
-	//for the gp bonus it migt get from promors. uses unique names of units to find which gp...:)
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		SpecialistTypes eGovernorS = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_GOVERNOR", true);
-		if (eGovernorS == eSpecialist)
-		{
-			FOR_EACH_UNIT_IN(pUnit, getPlot())
-			{
-				CvUnitInfo const& kInfo = pUnit->getUnitInfo();
-				//CvUnit const& kUnit =
-				if (kInfo.getGovernor() && pUnit->getOwner() == getOwner())
-				{
-					//CvWString szName = gDLL->getText(m_pUnitInfo->getUnitNames(i)
-					//.getName().c_str()kUnit.getNameKey()
-					CvWString szName = pUnit->getName().GetCString();
-					if (szName == L"Governor Artist (Governor)")
-						eGPClass = (UnitClassTypes)GC.getInfoTypeForString("UNITCLASS_ARTIST", true);
-					else if (szName == L"Governor Prophet (Governor)")
-						eGPClass = (UnitClassTypes)GC.getInfoTypeForString("UNITCLASS_PROPHET", true);
-					else if (szName == L"Governor Scientist (Governor)")
-						eGPClass = (UnitClassTypes)GC.getInfoTypeForString("UNITCLASS_SCIENTIST", true);
-					else if (szName == L"Governor Merchant (Governor)")
-						eGPClass = (UnitClassTypes)GC.getInfoTypeForString("UNITCLASS_MERCHANT", true);
-					else if (szName == L"Governor Engineer (Governor)")
-						eGPClass = (UnitClassTypes)GC.getInfoTypeForString("UNITCLASS_ENGINEER", true);
-					else if (szName == L"Governor General (Governor)")
-						eGPClass = (UnitClassTypes)GC.getInfoTypeForString("UNITCLASS_GREAT_GENERAL", true);
-					else if (szName == L"Governor Spy (Governor)")
-						eGPClass = (UnitClassTypes)GC.getInfoTypeForString("UNITCLASS_GREAT_SPY", true);
-					else
-						eGPClass = (UnitClassTypes)GC.getInfoTypeForString("UNITCLASS_ARTIST", true);
-					break; // one gov per city
-				}
-			}
-		}
-	}		
-	//doto governor -> if process a governor
-
 	if (eGPClass != NO_UNITCLASS)
 	{
 		UnitTypes eGreatPeopleUnit = getCivilization().getUnit(eGPClass);
@@ -3691,7 +3636,7 @@ void CvCity::processSpecialist(SpecialistTypes eSpecialist, int iChange)
 	//changeBaseGreatPeopleRate(kSpecialist.getGreatPeopleRateChange() * iChange);
 //doto city states - specialists instead of pop - start
 	bool isCivilian = false;
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && GC.getSPECIALISTS_INSTEAD_OF_POPULATION() == 1
 		&& GET_PLAYER(getOwner()).checkCityState(getOwner()))
 	{
 		if (kSpecialist.isCityStater())
@@ -4141,11 +4086,6 @@ int CvCity::unhappyLevel(int iExtra) const
 		iAngerPercent += GET_PLAYER(getOwner()).getCivicPercentAnger(eLoopCivic);
 	}
 
-	//doto governor - some compensation for the governors happy possible promo
-	//should be a parameter in the xml
-	iAngerPercent += GC.getDefineINT("BASE_ANGER_PERCENT");
-	//doto governor
-
 	int iUnhappiness = (iAngerPercent * (getPopulation() + iExtra)) / GC.getPERCENT_ANGER_DIVISOR();
 
 	iUnhappiness -= std::min(0, getLargestCityHappiness());
@@ -4172,14 +4112,7 @@ int CvCity::unhappyLevel(int iExtra) const
 	iUnhappiness -= std::min(0, GC.getInfo(getHandicapType()).getHappyBonus());
 	iUnhappiness += std::max(0, getVassalUnhappiness());
 	iUnhappiness += std::max(0, getEspionageHappinessCounter());
-	//doto governor	
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		int getUnhappyC = getHappinessC();
-		if (getUnhappyC < 0)
-			iUnhappiness -= std::min(0, getUnhappyC); //using same value - if unhappiness it will be negative
-	}
-	//doto governor		
+
 	return std::max(0, iUnhappiness);
 }
 
@@ -4210,12 +4143,7 @@ int CvCity::happyLevel() const
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
-//doto governor	
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		iHappiness += std::max(0, getHappinessC());
-	}
-//doto governor		
+
 	if (getHappinessTimer() > 0)
 	{
 		static int const iTEMP_HAPPY = GC.getDefineINT("TEMP_HAPPY"); // advc.opt
@@ -4344,15 +4272,9 @@ int CvCity::goodHealth() const
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
-//doto governor	
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		iHealth += std::max(0, getHealthC());
-	}
-//doto governor
 // < Civic Infos Plus Start >
 	iHealth += std::max(0,  getReligionGoodHealth());
-//getNonStateReligionExtraHealth unmarked by keldath from v104 //org is marked
+//getNonStateReligionExtraHealth unmarked by keldath from v104
 	iHealth += std::max(0,   GET_PLAYER(getOwner()).getNonStateReligionExtraHealth());
 // < Civic Infos Plus End   >
 
@@ -4386,13 +4308,8 @@ int CvCity::badHealth(bool bNoAngry, int iExtra) const
 	iHealth += std::min(0, getSpecialistBadHealth());
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
-//doto governor	
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		iHealth += std::min(0, getHealthC());
-	}
- //doto governor
-// < Civic Infos Plus Start >
+
+ // < Civic Infos Plus Start >
 // unmarked by keldath from v104
 	iHealth += std::min(0, GET_PLAYER(getOwner()).getStateReligionExtraHealth());
 	iHealth += std::min(0, GET_PLAYER(getOwner()).getNonStateReligionExtraHealth());
@@ -4416,7 +4333,7 @@ int CvCity::foodConsumption(bool bNoAngry, int iExtra) const
 //doto city states - specialists instead of pop - start
 // civilians costs food
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES)
-		&& GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 
+		&& GC.getSPECIALISTS_INSTEAD_OF_POPULATION() == 1
 		&& GET_PLAYER(getOwner()).checkCityState(getOwner()))
 	{
 		iExtra += getFreeCivilianCount(); // getFreeSpecialist(); // Free specialists consume food
@@ -5075,7 +4992,7 @@ int CvCity::popToSpecialists2(int iOldPopulation, int m_iPopulation)
 	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
 	bool cityState = kCivilization.getIsCityState() == 1;
 	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-		GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") != 1 &&
+		GC.getSPECIALISTS_INSTEAD_OF_POPULATION() != 1 &&
 		!cityState)
 	{
 		return m_iPopulation;
@@ -5186,11 +5103,11 @@ int CvCity::popToSpecialists(int iOldPopulation, int m_iPopulation)
 	bool cityState = kCivilization.getIsCityState() == 1;
 	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES) 
 		|| !cityState
-		|| GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") != 1)
+		|| GC.getSPECIALISTS_INSTEAD_OF_POPULATION() != 1)
 	{
 		return m_iPopulation;
 	}
-	int const iExcessPop = m_iPopulation - GC.getDefineINT("ENHANCED_CITY_STATES_THRESHOLD"); // should be 20 == working tiles
+	int const iExcessPop = m_iPopulation - GC.getENHANCED_CITY_STATES_THRESHOLD(); // should be 20 == working tiles
 	int foodY = getBaseYieldRate(YIELD_FOOD);
 	int prodY = getBaseYieldRate(YIELD_PRODUCTION);
 	int commY = getBaseYieldRate(YIELD_COMMERCE);
@@ -5256,78 +5173,75 @@ int CvCity::popToSpecialists(int iOldPopulation, int m_iPopulation)
 }
 //doto specialist instead of pop end
 
-//doto governor -> give the governor unit xp base on city size metrix below.
-//the xp will also increase through cottages improvements.
-void CvCity::giveXpBasedCitySize(int iOldPopulation, int iNewValue)
+//doto units bonus cap
+//when a city is built or destroyed(given also) or population change
+//we gotta rest the cap for all cities oof the player.
+//the basis calc is the city number per players
+//maybe i should not limit it to players but to world size and other bonuses.
+//it will be faster...maybe
+void CvCity::resetBonusCap()
 {
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
+	if (GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP))
 	{
-		int xpAmount = 0;
-		if (iOldPopulation == 0)
+		CvPlayer& kOwner = GET_PLAYER(getOwner()); 
+		for (int i = 0; i < GC.getNumBonusInfos(); i++)
 		{
-			//if the city is in advanced era start
-			if (iNewValue > 3)
-				xpAmount = 1;
-		}
-		else
-		{
-			switch (m_iPopulation)
-			{
-			case 3:
-			case 4:
-				xpAmount = 1;
-				break;
-			case 6:
-				xpAmount = 2;
-				break;
-			case 8:
-			case 10:
-				xpAmount = 1;
-				break;
-			case 14:
-				xpAmount = 2;
-				break;
-			case 15:
-			case 16:
-				xpAmount = 1;
-				break;
-			case 18:
-			case 19:
-			case 20:
-				xpAmount = 2;
-				break;
-			case 22:
-			case 24:
-				xpAmount = 1;
-				break;
-			case 26:
-				xpAmount = 2;
-				break;
-			default:
-				xpAmount = 0;
-				break;
-			}
-		}
-		//if nothing fits the case above -> check:
-		if (m_iPopulation > 28 && m_iPopulation < 30 && xpAmount == 0)
-			xpAmount = 1;
-	
-		//if there xp to give lets look for the governor dude.
-		if (xpAmount > 0)
-		{
-			FOR_EACH_UNIT_IN(pUnit, getPlot())
-			{
-				CvUnitInfo const& kInfo = pUnit->getUnitInfo();
-				if (kInfo.getGovernor() && pUnit->getOwner() == getOwner())
-				{
-					CvUnit* eiUnit = const_cast<CvUnit*>(pUnit);
-					eiUnit->setExperience((eiUnit->getExperience() + xpAmount));
-				}
-			}
+			BonusTypes eLoopBonus = (BonusTypes)i;
+			if (GC.getGame().getBonusThatArePrereqForUnits(eLoopBonus) > 0)
+				kOwner.changeTotalPlayerBonus(eLoopBonus);
 		}
 	}
 }
-//doto governor
+//doto units bonus cap	
+//doto special events palace upgrade
+void CvCity::upgradePalace(int iOldPopulation, int iNewValue)
+{
+	if (!GC.getGame().isOption(GAMEOPTION_PALACE_UPGRADE))
+		return;
+
+	int bUpgrade = false;
+	if (iOldPopulation == 0)
+	{
+		//if the city is in advanced era start
+		if (iNewValue > 3)
+			bUpgrade = true;
+	}
+	else
+	{
+		switch (m_iPopulation)
+		{
+		case 3:
+			bUpgrade = true;
+			break;
+		case 6:
+			bUpgrade = true;
+			break;
+		case 9:
+			bUpgrade = true;
+			break;
+		case 12:
+			bUpgrade = true;
+			break;
+		case 16:
+			bUpgrade = true;
+			break;
+		case 20:
+			bUpgrade = true;
+			break;
+		case 24:
+			bUpgrade = true;
+			break;
+		case 28:
+			bUpgrade = true;
+			break;
+		default:
+			break;
+		}
+	}
+	if (bUpgrade)
+		doPalaceUpgrade();
+}
+//doto special events  palace upgrade
 
 void CvCity::setPopulation(int iNewValue)
 {
@@ -5344,13 +5258,11 @@ void CvCity::setPopulation(int iNewValue)
 //doto city states - specialist instead of pop end
 	FAssert(getPopulation() >= 0);
 
-	//doto governor process xp for the governor unit
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		giveXpBasedCitySize(iOldPopulation, iNewValue);
-	}
-	//doto governor
-
+	
+	//doto special events palace upgrade
+	upgradePalace(iOldPopulation, iNewValue);
+	//doto palace upgrade
+	
 	GET_PLAYER(getOwner()).invalidatePopulationRankCache();
 	if (getPopulation() > getHighestPopulation())
 		setHighestPopulation(getPopulation());
@@ -5375,6 +5287,11 @@ void CvCity::setPopulation(int iNewValue)
 	if (getPopulation() > 0)
 		getArea().changePower(getOwner(), GC.getGame().getPopulationPower(getPopulation()));
 	// advc (note): For unused iPopulationChangeDivisor (YieldInfo) I think
+	
+	//doto units bonus cap - if city size was changed, we gotta adjust the caps.
+	resetBonusCap();
+	//doto units bonus cap
+	
 	getPlot().updateYield();
 
 	updateMaintenance();
@@ -5445,7 +5362,7 @@ int CvCity::getFreeCivilianCount() const
 	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
 	bool cityState = kCivilization.getIsCityState() == 1 ? true : false;
 	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-		GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") != 1 && !cityState)
+		GC.getSPECIALISTS_INSTEAD_OF_POPULATION() != 1 && !cityState)
 		return 0;
 
 	return m_iFreeCivilianCount;
@@ -5473,255 +5390,6 @@ void CvCity::processFreeCivilianCount()
 */
 
 //doto specialists instead of population
-
-//doto governor start
-int CvCity::getGovernorUnitLevl() const
-{
-	return m_iGovernorUnitLevl;
-}
-
-void CvCity::setGovernorUnitLevl(int iNewValue)
-{
-	m_iGovernorUnitLevl = iNewValue;
-}
-void CvCity::changeGovernorUnitLevl(int iChange)
-{
-	setGovernorUnitLevl(getGovernorUnitLevl() + iChange);
-}
-//
-void CvCity::setGovernoXPfromImprovements(int iNewValue)
-{
-	m_iGovernoXPfromImprovements = iNewValue;
-}
-void CvCity::changeGovernoXPfromImprovements(int iChange)
-{
-	setGovernoXPfromImprovements(getGovernoXPfromImprovements() + iChange);
-}
-//
-int CvCity::getGovernoXPfromImprovements() const
-{
-	return m_iGovernoXPfromImprovements;
-}
-//
-int CvCity::getGovernoUnitCount() const
-{
-	return m_iGovernorUnitCount;
-}
-
-void CvCity::setGovernoUnitCount(int iNewValue)
-{
-	m_iGovernorUnitCount = iNewValue;
-}
-
-int CvCity::getXPfromImprovementsThreshold()
-{
-	//calculate what is the threshold based on the current level of the governor
-	int currentThreshold = 999999999;
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		CvGameSpeedInfo const& kSpeed = GC.getInfo(GC.getGame().getGameSpeedType());
-		int speedTurns = 0;
-		for (int i = 0; i < kSpeed.getNumTurnIncrements(); i++)
-			speedTurns += kSpeed.getGameTurnInfo(i).iNumGameTurnsPerIncrement;
-		int speedModifier = 100;
-		int baseModifier = 400; //100 * 4 improvement scale
-		//kSpeedName.getDescription()
-		switch (speedTurns)
-		{
-			case 1250:
-				speedModifier = 65;
-				break;
-			case 1000:
-				speedModifier = 60;
-				break;
-			case 750:
-				speedModifier = 50;
-				break;
-			case 500:
-				speedModifier = 40;
-				break;
-			case 335:
-				speedModifier = 30;
-				break;
-			default:
-				break;
-		};
-	
-		int currGovernorLevel = getGovernorUnitLevl() + 1 * 10; //one is for the next level cause it starts from 0
-		int speedParsed = (speedModifier * baseModifier) / 100;
-		currentThreshold = ((currGovernorLevel / 100) * speedParsed) + speedParsed;
-	}
-
-	return currentThreshold;
-}
-
-void CvCity::changeGovernoUnitCount(int iChange)
-{
-	setGovernorUnitLevl(getGovernoUnitCount() + iChange);
-}
-
-//doto governor start
-void CvCity::CvCityCreateGovernor()
-{
-	//DOTO gOVERNOR - create a governor if a specialist governor doesnt exist
-	//temp placement in city create
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		UnitTypes eGovernorU = (UnitTypes)GC.getInfoTypeForString("UNIT_GOVERNOR", true);
-		GET_PLAYER(getOwner()).initUnit(eGovernorU, getX(), getY());
-		processGovernor(); //this was fired from unit free promos, look at the note there -> danger of double exec...
-	}
-}
-
-void CvCity::killGovernor(const CvUnit* bdoUnitPromote)
-{
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		SpecialistTypes eGovernorS = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_GOVERNOR", true);
-		//if there is a governor - remove it (can be from city conquer or something that gine wrong.
-		int govCount = getGovernoUnitCount();
-		if (govCount > 0)
-		{
-			//remove the governer - should be only one...
-			//governer is counter in both the counter of it
-			//and in the freespecialists counter
-			//the issue is that in order for all specialists tags that affect
-			//stuff for all present specialists in the city, 
-			//i need to make sure the multipliers wont count the governer
-			//cause i dont want it to get side perks.
-			//so i will manually deduct the freespecialists count when its called for
-			//everywhere in the code of relevant files
-			setFreeSpecialistCount(eGovernorS, 0);
-			setGovernoUnitCount(0);
-	
-			//if the kill comes from unit being promoted, the xp for that unit needs to be kept
-			//so if the unit is null it means the function call came from a city init
-			//without this check , every time the governor unit will be promoted, the xp level from improvements
-			//will be reset...we dont want that.
-			//make sure the xp gained by an owner wont pass on to the next owner.
-			if (bdoUnitPromote == NULL)
-				setGovernorUnitLevl(0);
-			//reset all values
-			setGreatPeopleRateChangeC(getGreatPeopleRateChangeC(), -1); //get the existing value and deduct it. see comment in the chage
-	
-			FOR_EACH_ENUM(Yield)
-			{
-				//gotta be before the reduction to 0
-				if (getYieldChangeC(eLoopYield) != 0)
-					changeBaseYieldRate(eLoopYield, -getYieldChangeC(eLoopYield));
-				setYieldChangeC(eLoopYield, 0);
-			}
-			FOR_EACH_ENUM(Commerce)
-			{
-				setCommerceChangeC(eLoopCommerce, 0);
-				updateCommerce(eLoopCommerce);
-			}	
-	
-			setHealthC(0);
-			setHappinessC(0);
-			setExperienceC(0);
-
-			//
-			changeUnhealthyPopulationModifier(-10);
-		}
-	}
-}
-void CvCity::processGovernorPromotions(const CvUnit* pUnit)
-{
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		for (int ePromotion = 0; ePromotion < GC.getNumPromotionInfos(); ePromotion++)
-		{
-			CvPromotionInfo const& kpInfo = GC.getInfo((PromotionTypes)ePromotion);
-			if (kpInfo.getGovernor() == 1)
-			{
-				if (pUnit->isHasPromotion((PromotionTypes)ePromotion))
-				{
-					//add up all the values from existing promotions of govener
-					//and change the xmls
-					int gp = kpInfo.getGreatPeopleRateChange();
-					int hl = kpInfo.getHealth();
-					int hp = kpInfo.getHappiness();
-					int xp = kpInfo.getExperience();
-					//i decided not to se aloop on the commerce and yield 
-					//maybe faster, also for debugging
-					int fdy = kpInfo.getYieldChange(YIELD_FOOD);
-					int pdy = kpInfo.getYieldChange(YIELD_PRODUCTION);
-					int cdy = kpInfo.getYieldChange(YIELD_COMMERCE);
-					int cdc = kpInfo.getCommerceChange(COMMERCE_CULTURE);
-					int edc = kpInfo.getCommerceChange(COMMERCE_ESPIONAGE);
-					int ddc = kpInfo.getCommerceChange(COMMERCE_GOLD);
-					int cdr = kpInfo.getCommerceChange(COMMERCE_RESEARCH);
-	
-					if (gp != 0)
-						setGreatPeopleRateChangeC(gp);
-					if (hl != 0)
-						changeHealthC(hl);
-					if (hp != 0)
-						changeHappinessC(hp);
-					if (xp != 0)
-						changeExperienceC(xp);
-					if (fdy != 0)
-						changeYieldChangeC(YIELD_FOOD, fdy);
-					if (pdy != 0)
-						changeYieldChangeC(YIELD_PRODUCTION, pdy);
-					if (cdy != 0)
-						changeYieldChangeC(YIELD_COMMERCE, cdy);
-					if (cdc != 0)
-						changeCommerceChangeC(COMMERCE_CULTURE, cdc);
-					if (edc != 0)
-						changeCommerceChangeC(COMMERCE_ESPIONAGE, edc);
-					if (ddc != 0)
-						changeCommerceChangeC(COMMERCE_GOLD, ddc);
-					if (cdr != 0)	
-						changeCommerceChangeC(COMMERCE_RESEARCH, cdr);
-				}
-			}
-		}
-	}
-}
-
-void CvCity::processGovernor(const CvUnit* bdoUnitPromote)
-{
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		SpecialistTypes eGovernorS = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_GOVERNOR", true);
-		killGovernor(bdoUnitPromote);
-		
-		//is the func was called from getting a new promotion then we already got the unit.
-		if (bdoUnitPromote == NULL)
-		{
-			//find the governor unit
-			FOR_EACH_UNIT_IN(pUnit, getPlot())
-			{
-				CvUnitInfo const& kInfo = pUnit->getUnitInfo();
-				if (kInfo.getGovernor() && pUnit->getOwner() == getOwner())
-				{
-					bdoUnitPromote = pUnit;
-					break; // one gov per city
-				}
-			}
-		}
-		processGovernorPromotions(bdoUnitPromote);
-		setGovernoUnitCount(1);
-		setFreeSpecialistCount(eGovernorS, 1);
-	
-		//update the city BaseYieldRate and Commerce with the new additions
-		FOR_EACH_ENUM(Yield)
-		{
-			changeBaseYieldRate(eLoopYield, getYieldChangeC(eLoopYield));
-		}
-		FOR_EACH_ENUM(Commerce)
-		{
-			updateCommerce(eLoopCommerce);
-		}
-
-
-		changeUnhealthyPopulationModifier(10);
-	}
-}
-
-//doto governor end
 
 // advc: Return type was long. Not helpful since sizeof(int)==sizeof(long).
 int CvCity::getRealPopulation() const
@@ -6168,8 +5836,8 @@ void CvCity::updateFreshWaterHealth()
 		FAssert(getFreshWaterBadHealth() <= 0);
 
 		AI_setAssignWorkDirty(true);
-
-		if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+		if (getTeam() == GC.getGame().getActiveTeam())
 			setInfoDirty(true);
 	}
 }
@@ -6200,47 +5868,9 @@ void CvCity::updateSurroundingHealthHappiness()
 				int iHappy = GC.getInfo(eImprovement).getHappiness();
 				if (kTeam.canAccessHappyHealth(kPlot, iHappy)) // advc.901
 					(iHappy > 0 ? iNewGoodHappiness : iNewBadHappiness) += iHappy;
-				
-				//doto governor - placed here cause the loop already runs over all improvements
-				//in surrounding function
-				//will add xp to the governor unit progress counter in the city cache
-				if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-				{
-					if (GC.getInfo(eImprovement).getGovernorXp() > 0 && kPlot.isBeingWorked())
-						changeGovernoXPfromImprovements(1);
-				}
-				//doto governor
 			}
 		}
 	}
-
-	//doto governor -> update the xp of a governor and check if it should 
-	//jump a level
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		int xpThresh = getXPfromImprovementsThreshold();
-		int totalFromImprovements = getGovernoXPfromImprovements();
-		//if the current xp prog is above or eq to the thresh, give xp to the unit governor
-		if (totalFromImprovements >= xpThresh)
-		{
-			changeGovernorUnitLevl(1); //raise the level of the city cache to save the current level -> need to to it for the governor unit also
-			setGovernoXPfromImprovements(0);//reset the progress bar for next level progress
-			//look for the governor and add 1 point of xp to it.
-			FOR_EACH_UNIT_IN(pUnit, getPlot())
-			{
-				CvUnitInfo const& kInfo = pUnit->getUnitInfo();
-				if (kInfo.getGovernor() && pUnit->getOwner() == getOwner())
-				{
-					CvUnit* eiUnit = const_cast<CvUnit*>(pUnit);
-					eiUnit->setExperience((eiUnit->getExperience() + 1));
-				}
-			}
-			if ((totalFromImprovements - xpThresh) > 0)
-				changeGovernoXPfromImprovements((totalFromImprovements - xpThresh)); //if there was excess xp -> add it to the reset progress
-		}
-	}
-	//doto governor
-
 	bool bDirty = false;
 	if (getSurroundingGoodHappiness() != iNewGoodHappiness)
 	{
@@ -6267,7 +5897,8 @@ void CvCity::updateSurroundingHealthHappiness()
 	if (bDirty)
 	{
 		AI_setAssignWorkDirty(true);
-		if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+		if (getTeam() == GC.getGame().getActiveTeam())
 			setInfoDirty(true);
 	}
 }
@@ -6686,106 +6317,6 @@ void CvCity::GPProjection(std::vector<std::pair<UnitTypes,int> >& aeiProjection)
 } // </advc.001c>
 
 
-//doto governor start
-void CvCity::setGreatPeopleRateChangeC(int value, int iChange)
-{
-	//this is a set function and not a change function since
-	//for every promo change or city loss
-	//i always recalculate all the promos together, so its not
-	//updates to existing for every promotion. thus the set .
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-	
-		if (iChange != 0)
-		{
-			m_iGreatPeopleRateChangeC = (iChange * value);
-			//add to the basic city value -> if negetaive - it will deduct
-			//this method allows me not to add code all over the place. its risky, but works
-			//its also how i applied other changes.
-			//i edited the text to split the values by deduction and re add.
-			//the ichange is motly for when a rest is done to the great governor.
-			//regulatr changes, from promos, from city init, will just use 1 as i change default
-			//getBaseGreatPeopleRate() + 
-	
-			//seems there has to be a predefined unit GP i didnt add that tag so i picked artist for now..
-			//changeGreatPeopleUnitRate((UnitTypes)GC.getInfoTypeForString("UNIT_ARTIST", true), 
-			//	m_iGreatPeopleRateChangeC);
-	
-			FOR_EACH_UNIT_IN(pUnit, getPlot())
-			{
-				CvUnitInfo const& kInfo = pUnit->getUnitInfo();
-				//CvUnit const& kUnit =
-				if (kInfo.getGovernor() && pUnit->getOwner() == getOwner())
-				{
-					//CvWString szName = gDLL->getText(m_pUnitInfo->getUnitNames(i)
-					//.getName().c_str()kUnit.getNameKey()
-					CvWString szName = pUnit->getName().GetCString();
-					if (szName == L"Governor Artist (Governor)")
-						changeGreatPeopleUnitRate((UnitTypes)GC.getInfoTypeForString("UNIT_ARTIST", true),m_iGreatPeopleRateChangeC);
-					else if (szName == L"Governor Prophet (Governor)")
-						changeGreatPeopleUnitRate((UnitTypes)GC.getInfoTypeForString("UNIT_PROPHET", true), m_iGreatPeopleRateChangeC);
-					else if (szName == L"Governor Scientist (Governor)")
-						changeGreatPeopleUnitRate((UnitTypes)GC.getInfoTypeForString("UNIT_SCIENTIST", true), m_iGreatPeopleRateChangeC);
-					else if (szName == L"Governor Merchant (Governor)")
-						changeGreatPeopleUnitRate((UnitTypes)GC.getInfoTypeForString("UNIT_MERCHANT", true), m_iGreatPeopleRateChangeC);
-					else if (szName == L"GovernorEngineer (Governor)")
-						changeGreatPeopleUnitRate((UnitTypes)GC.getInfoTypeForString("UNIT_ENGINEER", true), m_iGreatPeopleRateChangeC);
-					else if (szName == L"Governor General (Governor)")
-						changeGreatPeopleUnitRate((UnitTypes)GC.getInfoTypeForString("UNIT_GREAT_GENERAL", true), m_iGreatPeopleRateChangeC);
-					else if (szName == L"Governor Spy (Governor)")
-						changeGreatPeopleUnitRate((UnitTypes)GC.getInfoTypeForString("UNIT_GREAT_SPY", true), m_iGreatPeopleRateChangeC);
-					else
-						changeGreatPeopleUnitRate((UnitTypes)GC.getInfoTypeForString("UNIT_ARTIST", true), m_iGreatPeopleRateChangeC);
-					break; // one gov per city
-				}
-			}
-	
-			changeBaseGreatPeopleRate(m_iGreatPeopleRateChangeC);
-		//	AI_setAssignWorkDirty(true);
-		}
-	}
-}
-void CvCity::changeHealthC(int iChange)
-{
-	if (iChange != 0)
-	{
-		m_iHealthC += iChange;
-		FAssert(getHealthC() >= 0);
-	//	AI_setAssignWorkDirty(true);
-	}
-}
-void CvCity::changeHappinessC(int iChange)
-{
-	if (iChange != 0)
-	{
-		m_iHappinessC += iChange;
-		FAssert(getHappinessC() >= 0);
-		//AI_setAssignWorkDirty(true);
-	}
-}
-void CvCity::changeExperienceC(int iChange)
-{
-	if (iChange != 0)
-	{
-		m_iExperienceC += iChange;
-		FAssert(getExperienceC() >= 0);
-		//AI_setAssignWorkDirty(true);
-	}
-}
-void CvCity::setHealthC(int iChange)
-{
-	m_iHealthC = iChange;
-}
-void CvCity::setHappinessC(int iChange)
-{
-	m_iHappinessC = iChange;
-}
-void CvCity::setExperienceC(int iChange)
-{
-	m_iExperienceC = iChange;
-}
-//doto governor end
-
 int CvCity::getBuildingHealth(BuildingTypes eBuilding) const
 {
 	int iHealth = getBuildingGoodHealth(eBuilding);
@@ -6821,7 +6352,8 @@ void CvCity::changeBuildingGoodHealth(int iChange)
 	m_iBuildingGoodHealth += iChange;
 	FAssert(getBuildingGoodHealth() >= 0);
 	AI_setAssignWorkDirty(true);
-	if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (getTeam() == GC.getGame().getActiveTeam())
 		setInfoDirty(true);
 }
 
@@ -6833,7 +6365,8 @@ void CvCity::changeBuildingBadHealth(int iChange)
 	m_iBuildingBadHealth += iChange;
 	FAssert(getBuildingBadHealth() <= 0);
 	AI_setAssignWorkDirty(true);
-	if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (getTeam() == GC.getGame().getActiveTeam())
 		setInfoDirty(true);
 }
 
@@ -6867,7 +6400,8 @@ void CvCity::updatePowerHealth()
 		FAssert(getPowerGoodHealth() >= 0);
 		FAssert(getPowerBadHealth() <= 0);
 		AI_setAssignWorkDirty(true);
-		if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (getTeam() == GC.getGame().getActiveTeam())	
 			setInfoDirty(true);
 	}
 }
@@ -6880,7 +6414,8 @@ void CvCity::changeBonusGoodHealth(int iChange)
 	m_iBonusGoodHealth += iChange;
 	FAssert(getBonusGoodHealth() >= 0);
 	AI_setAssignWorkDirty(true);
-	if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (getTeam() == GC.getGame().getActiveTeam())	
 		setInfoDirty(true);
 }
 
@@ -6892,7 +6427,8 @@ void CvCity::changeBonusBadHealth(int iChange)
 	m_iBonusBadHealth += iChange;
 	FAssert(getBonusBadHealth() <= 0);
 	AI_setAssignWorkDirty(true);
-	if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (getTeam() == GC.getGame().getActiveTeam())	
 		setInfoDirty(true);
 }
 
@@ -7528,7 +7064,8 @@ void CvCity::setFood(int iNewValue)
 	if (getFood() != iNewValue)
 	{
 		m_iFood = iNewValue;
-		if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+		if (getTeam() == GC.getGame().getActiveTeam())
 			setInfoDirty(true);
 	}
 }
@@ -7793,7 +7330,8 @@ void CvCity::changePowerCount(int iChange, bool bDirty)
 	{
 		GET_PLAYER(getOwner()).invalidateYieldRankCache();
 		updateCommerce();
-		if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+		if (getTeam() == GC.getGame().getActiveTeam())
 			setInfoDirty(true);
 	}
 
@@ -8509,7 +8047,7 @@ int CvCity::getAdditionalBaseYieldRateBySpecialist(YieldTypes eYield, Specialist
 {
 	CvSpecialistInfo& kSpecialist = GC.getInfo(eSpecialist);
 //doto City States start - specialists instead of population start
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1)
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && GC.getSPECIALISTS_INSTEAD_OF_POPULATION() == 1)
 	{
 		if (GET_PLAYER(getOwner()).checkCityState(getOwner()) 
 			&& kSpecialist.isCityStater())
@@ -8574,7 +8112,8 @@ void CvCity::setBaseYieldRate(YieldTypes eYield, int iNewValue)
 
 	updateCommerce();
 
-	if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (getTeam() == GC.getGame().getActiveTeam())
 	{
 		setInfoDirty(true);
 		if (isCitySelected())
@@ -8636,7 +8175,8 @@ void CvCity::changeYieldRateModifier(YieldTypes eYield, int iChange)
 		updateCommerce();
 	AI_setAssignWorkDirty(true);
 
-	if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+		if (getTeam() == GC.getGame().getActiveTeam())
 		setInfoDirty(true);
 }
 
@@ -8654,7 +8194,8 @@ void CvCity::changePowerYieldRateModifier(YieldTypes eYield, int iChange)
 		updateCommerce();
 	AI_setAssignWorkDirty(true);
 
-	if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+		if (getTeam() == GC.getGame().getActiveTeam())
 		setInfoDirty(true);
 }
 
@@ -8752,7 +8293,8 @@ void CvCity::changeBonusYieldRateModifier(YieldTypes eYield, int iChange)
 		updateCommerce();
 	AI_setAssignWorkDirty(true);
 
-	if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+		if (getTeam() == GC.getGame().getActiveTeam())
 		setInfoDirty(true);
 }
 
@@ -8903,51 +8445,12 @@ void CvCity::setTradeYield(YieldTypes eYield, int iNewValue)
 		changeBaseYieldRate(eYield, iNewValue - iOldValue);
 	}
 }
-//doto governor
-void CvCity::setYieldChangeC(YieldTypes eYield, int iNewValue)
-{
-	int const iOldValue = getYieldChangeC(eYield);
-	if (iOldValue != iNewValue)
-	{
-		m_piYieldChangeC.set(eYield, iNewValue);
-		FAssert(getYieldChangeC(eYield) >= 0);
-		//changeBaseYieldRate(eYield, iNewValue - iOldValue);
-		//i moved it to the lopp of the promots
-		// this way it wont need to update this after each promotion check.. better performance
-		// also, easier reseting of the value from promotions
-	}
-}
 
-void CvCity::changeYieldChangeC(YieldTypes eYield, int iChange)
-{
-	setYieldChangeC(eYield,
-		getYieldChangeC(eYield) + iChange);
-}
-
-void CvCity::setCommerceChangeC(CommerceTypes eCommerce, int iNewValue)
-{
-	int const iOldValue = getCommerceChangeC(eCommerce);
-	if (iOldValue != iNewValue)
-	{
-		m_piCommerceChangeC.set(eCommerce, iNewValue);
-		FAssert(getCommerceChangeC(eCommerce) >= 0);
-		//updateCommerce(eCommerce); 
-		//i moved it to the lopp of the promots
-		// this way it wont need to update this after each promotion check.. better performance
-		// also, easier reseting of the value from promotions
-	}
-}
-void CvCity::changeCommerceChangeC(CommerceTypes eCommerce, int iChange)
-{
-	setCommerceChangeC(eCommerce,
-		getCommerceChangeC(eCommerce) + iChange);
-}
-//doto governor
 
 int CvCity::getExtraSpecialistYield(YieldTypes eYield, SpecialistTypes eSpecialist) const
 {
 //doto city states - specialists instead of population start	
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 )
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && GC.getSPECIALISTS_INSTEAD_OF_POPULATION() == 1 )
 	{
 		if (GET_PLAYER(getOwner()).checkCityState(getOwner())
 			 && GC.getInfo(eSpecialist).isCityStater())
@@ -8972,7 +8475,7 @@ void CvCity::updateExtraSpecialistYield(YieldTypes eYield)
 	{
 //doto city states - specialists instead of population start
 		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-			GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && 
+			GC.getSPECIALISTS_INSTEAD_OF_POPULATION() == 1 &&
 			cityState &&
 			GC.getInfo(eLoopSpecialist).isCityStater()
 			)
@@ -9021,7 +8524,7 @@ int CvCity::getSpecialistCivicExtraCommerceBySpecialist(CommerceTypes eCommerce,
 	FAssertMsg(eSpecialist < GC.getNumSpecialistInfos(), "GC.getNumSpecialistInfos expected to be >= 0");
 	*/
 //doto city states - specialists instead of population - start
-	if (GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && 
+	if (GC.getSPECIALISTS_INSTEAD_OF_POPULATION() == 1 &&
 		GC.getGame().isOption(GAMEOPTION_CITY_STATES))
 	{
 		if (GET_PLAYER(getOwner()).checkCityState(getOwner()) && 
@@ -9054,7 +8557,7 @@ void CvCity::updateSpecialistCivicExtraCommerce(CommerceTypes eCommerce)
 	{
 //doto city states - specialists instead of population - start
 		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-				GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && 
+				GC.getSPECIALISTS_INSTEAD_OF_POPULATION() == 1 &&
 				cityState &&
 	  	    	GC.getInfo((SpecialistTypes)iI).isCityStater()
 			)
@@ -9149,36 +8652,14 @@ int CvCity::getBaseCommerceRateTimes100(CommerceTypes eCommerce) const
 {
 	int iBaseCommerceRate = getCommerceFromPercent(eCommerce,
 			getYieldRate(YIELD_COMMERCE) * 100);
-
-	//doto governor  -> overwrite gp governor should not be giving any regular extra bonus
-	//the calc is a value for total number of specialists - among them is the governor...
-	int iBaseCommerceRateSpecialists = 100 * ((getSpecialistPopulation() + getNumGreatPeople()) *
-					GET_PLAYER(getOwner()).getSpecialistExtraCommerce(eCommerce));
-	int commerceChangeGov = 0;
-	if (GC.getGame().isOption(GAMEOPTION_GOVERNOR))
-	{
-		//deduct the values that comes from the governor great person
-		//we dont want duplicate perks...
-		//only deduct if there from what to deduct.
-		if (getGovernoUnitCount() > 0 && iBaseCommerceRateSpecialists != 0)
-		{
-			iBaseCommerceRate -= 100 * (getGovernoUnitCount() *
-				GET_PLAYER(getOwner()).getSpecialistExtraCommerce(eCommerce));
-		}
-		commerceChangeGov = getCommerceChangeC(eCommerce);
-	}
-	iBaseCommerceRate += iBaseCommerceRateSpecialists;
-	//doto governor
+	iBaseCommerceRate += 100 * ((getSpecialistPopulation() + getNumGreatPeople()) *
+			GET_PLAYER(getOwner()).getSpecialistExtraCommerce(eCommerce));
 	iBaseCommerceRate += 100 *
 			(getBuildingCommerce(eCommerce) +
 			getSpecialistCommerce(eCommerce) +
 			getReligionCommerce(eCommerce) +
 			getCorporationCommerce(eCommerce) +
-			GET_PLAYER(getOwner()).getFreeCityCommerce(eCommerce)
-			//doto governor -> add here the gp actual governor perks
-			+ commerceChangeGov
-			//doto governor
-			);
+			GET_PLAYER(getOwner()).getFreeCityCommerce(eCommerce));
 	return iBaseCommerceRate;
 }
 
@@ -9189,7 +8670,8 @@ int CvCity::getTotalCommerceRateModifier(CommerceTypes eCommerce) const
 	return std::max(0, getCommerceRateModifier(eCommerce) +
 			kOwner.getCommerceRateModifier(eCommerce) +
 // < Civic Infos Plus Start >    
-           ((kOwner.getStateReligion() != NO_RELIGION && isHasReligion(kOwner.getStateReligion())) ?
+           ((kOwner.getStateReligion() != NO_RELIGION 
+           && isHasReligion(kOwner.getStateReligion())) ?
 					 getStateReligionCommerceRateModifier(eCommerce) :
 					getNonStateReligionCommerceRateModifier(eCommerce)) 
 		    +
@@ -9605,7 +9087,7 @@ int CvCity::getAdditionalBaseCommerceRateBySpecialistImpl(CommerceTypes eCommerc
 {
 //doto city states - specialists instead of population - start
 	CvSpecialistInfo const& kSpecialist = GC.getInfo(eSpecialist);
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1)
+	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && GC.getSPECIALISTS_INSTEAD_OF_POPULATION() == 1)
 	{
 		if (GET_PLAYER(getOwner()).checkCityState(getOwner()) && kSpecialist.isCityStater())
 		{
@@ -10417,6 +9899,24 @@ void CvCity::changeNumBonuses(BonusTypes eBonus, int iChange,
 
 	if (isCorporationBonus(eBonus))
 		updateCorporation(/* advc.06d: */ bVerifyProduction);
+//doto units bonus cap	change the available bonus cap with modifier for larger number of units
+//remember this is per city , not a bonus.
+//the nation can have 1 iron but 2 cities, so its 6 to the changeTotalPlayerBonus
+	CvPlayer& kOwner = GET_PLAYER(getOwner());
+	if (GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP))
+	{
+		if (GC.getGame().getBonusThatArePrereqForUnits(eBonus) > 0)
+		{
+			//dont mess with none stratigic bonuses that are not used by units at all...
+			//CvBonusInfo& kBonus = GC.getInfo(eBonus);
+			//int amnt = kOwner.getTotalPlayerBonus(eBonus);
+			kOwner.changeTotalPlayerBonus(eBonus);
+			//int post_total = kOwner.getTotalPlayerBonus(eBonus);
+			//isConnectedToCapital()
+			// (isCapital())
+		}
+	}
+//doto units bonus cap		
 }
 
 // advc.149:
@@ -10490,7 +9990,8 @@ void CvCity::setBuildingProduction(BuildingTypes eBuilding, int iNewValue)
 	m_aiBuildingProduction.set(eBuilding, iNewValue);
 	FAssert(getBuildingProduction(eBuilding) >= 0);
 
-	if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+		if (getTeam() == GC.getGame().getActiveTeam())
 		setInfoDirty(true);
 
 	if (isActiveOwned() && isCitySelected())
@@ -10525,7 +10026,8 @@ void CvCity::setProjectProduction(ProjectTypes eProject, int iNewValue)
 	m_aiProjectProduction.set(eProject, iNewValue);
 	FAssert(getProjectProduction(eProject) >= 0);
 
-	if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+		if (getTeam() == GC.getGame().getActiveTeam())
 		setInfoDirty(true);
 
 	if (isActiveOwned() && isCitySelected())
@@ -10547,7 +10049,8 @@ void CvCity::setUnitProduction(UnitTypes eUnit, int iNewValue)
 	m_aiUnitProduction.set(eUnit, iNewValue);
 	FAssert(getUnitProduction(eUnit) >= 0);
 
-	if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+		if (getTeam() == GC.getGame().getActiveTeam())
 		setInfoDirty(true);
 
 	if (isActiveOwned() && isCitySelected())
@@ -10949,7 +10452,9 @@ void CvCity::setWorkingPlot(CityPlotTypes ePlot, bool bNewValue) // advc.enum: C
 				changeBaseYieldRate(eLoopYield, -pPlot->getYield(eLoopYield));
 		}
 
-		if (isActiveTeam() || GC.getGame().isDebugMode())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+		if (getTeam() == GC.getGame().getActiveTeam()
+			|| GC.getGame().isDebugMode())
 			pPlot->updateSymbolDisplay();
 	}
 	if (bSelected)
@@ -11701,7 +11206,10 @@ void CvCity::clearOrderQueue()
 	{
 		popOrder(0);
 	}
-	if (isActiveTeam() || GC.getGame().isDebugMode())
+
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (getTeam() == GC.getGame().getActiveTeam()
+		|| GC.getGame().isDebugMode())
 		setInfoDirty(true);
 }
 
@@ -11829,7 +11337,10 @@ void CvCity::pushOrder(OrderTypes eOrder, int iData1, int iData2, bool bSave,
 	else if (bBuildingBuilding)
 		CvEventReporter::getInstance().cityBuildingBuilding(this, (BuildingTypes)iData1);
 	// </advc.test>
-	if (isActiveTeam() || GC.getGame().isDebugMode())
+	
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+		if (getTeam() == GC.getGame().getActiveTeam()
+		 || GC.getGame().isDebugMode())
 	{
 		setInfoDirty(true);
 		if (isCitySelected())
@@ -12134,7 +11645,9 @@ void CvCity::popOrder(int iNum, bool bFinish,
 	} // </advc.123f>
 
 	CvDLLInterfaceIFaceBase& kUI = gDLL->UI();
-	if (isActiveTeam() || GC.getGame().isDebugMode())
+
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+		if (getTeam() == GC.getGame().getActiveTeam() || GC.getGame().isDebugMode())
 	{
 		setInfoDirty(true);
 		if (isCitySelected())
@@ -12225,7 +11738,8 @@ void CvCity::popOrder(int iNum, bool bFinish,
 				szIcon);
 	}
 
-	if (isActiveTeam() || GC.getGame().isDebugMode())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (getTeam() == GC.getGame().getActiveTeam() || GC.getGame().isDebugMode())
 	{
 		setInfoDirty(true);
 		if (isCitySelected())
@@ -13258,11 +12772,6 @@ void CvCity::read(FDataStreamBase* pStream)
 //doto city states - specialists instead of population start
 	pStream->Read(&m_iFreeCivilianCount);
 //doto city states - specialists instead of population end
-//doto governor
-	pStream->Read(&m_iGovernorUnitLevl);
-	pStream->Read(&m_iGovernoXPfromImprovements);
-	pStream->Read(&m_iGovernorUnitCount);
-//doto governor
 	pStream->Read(&m_iHighestPopulation);
 	pStream->Read(&m_iWorkingPopulation);
 	pStream->Read(&m_iSpecialistPopulation);
@@ -13333,12 +12842,6 @@ void CvCity::read(FDataStreamBase* pStream)
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
-	//doto governor start
-	pStream->Read(&m_iGreatPeopleRateChangeC);
-	pStream->Read(&m_iHealthC);
-	pStream->Read(&m_iHappinessC);
-	pStream->Read(&m_iExperienceC);
-	//doto governor start
 	pStream->Read(&m_iBuildingGoodHappiness);
 	pStream->Read(&m_iBuildingBadHappiness);
 	pStream->Read(&m_iExtraBuildingGoodHappiness);
@@ -13423,10 +12926,6 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiStateReligionYieldRateModifier.read(pStream);
 		m_aiNonStateReligionYieldRateModifier.read(pStream);
 	// DOTO-< Civic Infos Plus End   >
-	//doto governor
-		m_piYieldChangeC.read(pStream);
-		m_piCommerceChangeC.read(pStream);
-	//doto governor
 		m_aiTradeYield.read(pStream);
 		m_aiCorporationYield.read(pStream);
 		m_aiExtraSpecialistYield.read(pStream);
@@ -13476,10 +12975,6 @@ void CvCity::read(FDataStreamBase* pStream)
 		m_aiStateReligionYieldRateModifier.readArray<int>(pStream);
 		m_aiNonStateReligionYieldRateModifier.readArray<int>(pStream);
 	// DOTO-< Civic Infos Plus End   >
-	//doto governor
-		m_piYieldChangeC.readArray<int>(pStream);
-		m_piCommerceChangeC.readArray<int>(pStream);
-	//doto governor
 		m_aiTradeYield.readArray<int>(pStream);
 		m_aiCorporationYield.readArray<int>(pStream);
 		m_aiExtraSpecialistYield.readArray<int>(pStream);
@@ -13605,7 +13100,7 @@ void CvCity::read(FDataStreamBase* pStream)
 	}
 	// <advc.enum>
 	//doto check -> is 116 truly a prophet?
-	UnitTypes eProhpet = (UnitTypes)GC.getInfoTypeForString("UNIT_PROPHET", true);
+	//UnitTypes eProhpet = (UnitTypes)GC.getInfoTypeForString("UNIT_PROPHET", true);
 	if (uiFlag < 16 && GC.getNumUnitInfos() > 116 &&
 		// Great Prophet points. To save time. isHolyCity check not possible here.
 		getGreatPeopleUnitRate((UnitTypes)116) > 0)
@@ -13957,11 +13452,6 @@ void CvCity::write(FDataStreamBase* pStream)
 //doto city states - specialists instead of population start
 	pStream->Write(m_iFreeCivilianCount);
 //doto city states - specialists instead of population end
-//doto governor
-	pStream->Write(m_iGovernorUnitLevl);
-	pStream->Write(m_iGovernoXPfromImprovements);
-	pStream->Write(m_iGovernorUnitCount);
-//doto governor
 	pStream->Write(m_iHighestPopulation);
 	pStream->Write(m_iWorkingPopulation);
 	pStream->Write(m_iSpecialistPopulation);
@@ -14032,12 +13522,6 @@ void CvCity::write(FDataStreamBase* pStream)
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
-	//doto governor start
-	pStream->Write(m_iGreatPeopleRateChangeC);
-	pStream->Write(m_iHealthC);
-	pStream->Write(m_iHappinessC);
-	pStream->Write(m_iExperienceC);
-	//doto governor end
 	pStream->Write(m_iBuildingGoodHappiness);
 	pStream->Write(m_iBuildingBadHappiness);
 	pStream->Write(m_iExtraBuildingGoodHappiness);
@@ -14116,10 +13600,6 @@ void CvCity::write(FDataStreamBase* pStream)
 	m_aiStateReligionYieldRateModifier.write(pStream);
 	m_aiNonStateReligionYieldRateModifier.write(pStream);
 	// DOTO-< Civic Infos Plus End   >
-	//doto governor
-	m_piYieldChangeC.write(pStream);
-	m_piCommerceChangeC.write(pStream);
-	//doto governor
 	m_aiTradeYield.write(pStream);
 	m_aiCorporationYield.write(pStream);
 	m_aiExtraSpecialistYield.write(pStream);
@@ -14358,7 +13838,8 @@ void CvCity::getVisibleEffects(ZoomLevelTypes eCurZoom,
 		return;
 	}
 
-	if (isActiveTeam() || GC.getGame().isDebugMode())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (getTeam() == GC.getGame().getActiveTeam() || GC.getGame().isDebugMode())
 	{
 		if (angryPopulation() > 0)
 			kEffectNames.push_back("EFFECT_CITY_BURNING_SMOKE");
@@ -14412,11 +13893,14 @@ void CvCity::getCityBillboardSizeIconColors(NiColorA& kDotColor, NiColorA& kText
 	NiColorA kWhite(1, 1, 1, 1);
 	NiColorA kBlack(0, 0, 0, 1);
 
-	if (isActiveTeam() /* advc.127: */ && isHuman()
+
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (getTeam() == GC.getGame().getActiveTeam() /* advc.127: */ && isHuman()
 //doto remaster civ4 art - the if statement in the original code
 // removed this part - decided to leave it, with this remark in case id like to use it.
 // readded this since it changes the billboard color.
-		&& !GC.getDefineINT("CIV4_REMASTER_ART")
+//doto 114 removed , dont want it
+	//	&& !GC.getDefineINT("CIV4_REMASTER_ART")
 		)
 	{
 		kTextColor = kBlack;
@@ -14955,11 +14439,15 @@ void CvCity::setEventOccured(EventTypes eEvent, bool bOccured)
 		m_aEventsOccured.push_back(eEvent);
 }
 
+//doto special events changes
 // advc.003y: Ported from CvEventManager.py; Python code there deleted.
 void CvCity::doPartisans()
 {
-	if (GC.getGame().isOption(GAMEOPTION_NO_EVENTS))
+//doto allow tp have partisans despite no events
+	//if (GC.getGame().isOption(GAMEOPTION_NO_EVENTS));
+	if (!GC.getGame().isOption(GAMEOPTION_PARTISANS))
 		return;
+//doto allow tp have partisans despite no events
 	/*	(advc.001: The population check in CvEventManager had had no effect b/c of a typo.
 		Note that population loss from conquest will have already occurred when razing.) */
 	if (getPopulation() <= 1 || isBarbarian())
@@ -14977,17 +14465,43 @@ void CvCity::doPartisans()
 	// advc: Important now that getNumPartisanUnits subtracts 1 from the culture level
 	if (getNumPartisanUnits(kPartisanPlayer.getID()) <= 0)
 		return;
-
-	EventTriggerTypes eTrigger = (EventTriggerTypes)GC.getInfoTypeForString("EVENTTRIGGER_PARTISANS");
-	FAssert(eTrigger != NO_EVENTTRIGGER);
-	if (!GC.getGame().isEventActive(eTrigger) ||
+//doto special events changes
+	//org	
+	//EventTriggerTypes eTrigger = (EventTriggerTypes)GC.getInfoTypeForString("EVENTTRIGGER_PARTISANS");
+	//FAssert(eTrigger != NO_EVENTTRIGGER);
+	//if (!GC.getGame().isEventActive(eTrigger) ||
 		/*  Non-negative probability means, apparently, that the event is
 			not supposed to be triggered manually like this. */
-		kPartisanPlayer.getEventTriggerWeight(eTrigger) >= 0)
+	//	kPartisanPlayer.getEventTriggerWeight(eTrigger) >= 0)
+	//{
+	//	return;
+	//}
+	//kPartisanPlayer.initTriggeredData(eTrigger, /*bFire=*/true, -1, getX(), getY(), getOwner(), getID());
+		
+	EventTriggerTypes relevantEvent = (EventTriggerTypes)NULL;
+	for (int i = 0; i < GC.getGame().getNumSpecialEvents(); ++i)
 	{
-		return;
+		EventTriggerTypes eventIdx = (EventTriggerTypes)GC.getGame().getSpecialEvents(i);
+		CvEventTriggerInfo& kTrigger = GC.getEventTriggerInfo(eventIdx);
+		CvString eventName = kTrigger.getType();
+		
+		if (eventName == CvString(L"EVENTTRIGGER_PARTISANS"))
+		{
+			FAssert(eventIdx != NO_EVENTTRIGGER);
+			if (!GC.getGame().isEventActive(eventIdx) ||
+				/*  Non-negative probability means, apparently, that the event is
+					not supposed to be triggered manually like this. */
+				kPartisanPlayer.getEventTriggerWeight(eventIdx) >= 0)
+			{
+				return;
+			}
+			relevantEvent = eventIdx;
+			break;
+		}
 	}
-	kPartisanPlayer.initTriggeredData(eTrigger, /*bFire=*/true, -1, getX(), getY(), getOwner(), getID());
+	if (relevantEvent != NULL)
+		kPartisanPlayer.initTriggeredData(relevantEvent, /*bFire=*/true, -1, getX(), getY(), getOwner(), getID());	
+//doto special events changes
 }
 
 /*	advc.003y: Ported from CvRandomEventInterface.py; Python code there deleted.
@@ -14998,7 +14512,41 @@ int CvCity::getNumPartisanUnits(PlayerTypes ePartisanPlayer) const
 	// advc.001: The culture level computation in Python was erroneous
 	return std::max(0, calculateCultureLevel(ePartisanPlayer) - 1);
 }
-
+//doto special events upgrade palace START
+void CvCity::doPalaceUpgrade()
+{
+	/*	(advc.001: The population check in CvEventManager had had no effect b/c of a typo.
+			Note that population loss from conquest will have already occurred when razing.) */
+	if (!GC.getGame().isOption(GAMEOPTION_PALACE_UPGRADE))
+		return;
+	if (!isCapital())
+		return;
+	if (getPopulation() <= 1 || isBarbarian())
+		return;
+	
+	CvPlayer& kPlayer = GET_PLAYER(getOwner());
+	// advc.099: alive check
+	if (!kPlayer.isAlive() || kPlayer.getNumCities() <= 0)
+		return;
+	//doto - if no events game option is on, the EventTriggerTypesenum is disabled so i cant use it.
+	//so, just using int. based on the advc event of dopartisan (which i also chaged to work with events option off)
+	//int eTrigger = (EventTriggerTypes)GC.getInfoTypeForString("EVENTTRIGGER_PALACE_UPGRADE");
+	EventTriggerTypes relevantEvent = (EventTriggerTypes)NULL;
+	for (int i = 0; i < GC.getGame().getNumSpecialEvents(); ++i)
+	{
+		EventTriggerTypes eventIdx = (EventTriggerTypes)GC.getGame().getSpecialEvents(i);
+		CvEventTriggerInfo& kTrigger = GC.getEventTriggerInfo(eventIdx);
+		CvString eventName = kTrigger.getType();
+		if (eventName == CvString(L"EVENTTRIGGER_PALACE_UPGRADE"))
+		{
+			relevantEvent = eventIdx;
+			break;
+		}
+	}
+	if (relevantEvent != NULL)
+		kPlayer.initTriggeredData(relevantEvent, /*bFire=*/true);
+}
+//doto upgrade palace END
 
 void CvCity::invalidateYieldRankCache(YieldTypes eYield)
 {
@@ -15336,7 +14884,8 @@ bool CvCity::isAutoRaze(/* <advc> */ PlayerTypes eConqueror) const
 int CvCity::getMusicScriptId() const
 {
 	bool bHappy = true;
-	if (isActiveTeam())
+//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	if (getTeam() == GC.getGame().getActiveTeam())
 	{
 		if (angryPopulation() > 0)
 			bHappy = false;
@@ -15725,8 +15274,8 @@ void CvCity::emergencyConscript()
 	UnitTypes eConscriptUnit;
 
 	int iEmergencyDraftMinPopulation = 2; // minimal city size to draft militia 
-	if (GC.getDefineINT("IDW_EMERGENCY_DRAFT_MIN_POPULATION"))
-		iEmergencyDraftMinPopulation = GC.getDefineINT("IDW_EMERGENCY_DRAFT_MIN_POPULATION");
+	if (GC.getIDW_EMERGENCY_DRAFT_MIN_POPULATION())
+		iEmergencyDraftMinPopulation = GC.getIDW_EMERGENCY_DRAFT_MIN_POPULATION();
 
 	if (getPopulation() < iEmergencyDraftMinPopulation)
 	{
@@ -15741,8 +15290,8 @@ void CvCity::emergencyConscript()
 	changePopulation(-1);
 
 	float fEmergencyDraftAngerMultiplier = 0.5; // default: 50% of normal conscription anger
-	if (GC.getDefineFLOAT("IDW_EMERGENCY_DRAFT_ANGER_MULTIPLIER"))
-		fEmergencyDraftAngerMultiplier = GC.getDefineFLOAT("IDW_EMERGENCY_DRAFT_ANGER_MULTIPLIER");
+	if (GC.getIDW_EMERGENCY_DRAFT_ANGER_MULTIPLIER())
+		fEmergencyDraftAngerMultiplier = GC.getIDW_EMERGENCY_DRAFT_ANGER_MULTIPLIER();
 		
 	changeConscriptAngerTimer(int(flatConscriptAngerLength() * fEmergencyDraftAngerMultiplier));
 
@@ -15773,8 +15322,8 @@ void CvCity::emergencyConscript()
 	pUnit->setMoves(0);
 
 	float fEmergencyDraftStrength = 0.25f; // default: 25% of full health: represents very low training level
-	if (GC.getDefineFLOAT("IDW_EMERGENCY_DRAFT_STRENGTH"))
-		fEmergencyDraftStrength = GC.getDefineFLOAT("IDW_EMERGENCY_DRAFT_STRENGTH");
+	if (GC.getIDW_EMERGENCY_DRAFT_STRENGTH())
+		fEmergencyDraftStrength = GC.getIDW_EMERGENCY_DRAFT_STRENGTH();
 
 	pUnit->setDamage(int((1 - fEmergencyDraftStrength) * pUnit->maxHitPoints()), getOwner());
 }
@@ -15791,7 +15340,7 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 	//doto112
 	//i limited the conditions to religion, corporations, bonus and needed building class. thats it.
 	
-	BuildingTypes ePrereqBuilding;
+	//BuildingTypes ePrereqBuilding;
 	bool bRequiresBonus;
 	bool bNeedsBonus;
 	CorporationTypes eCorporation;
@@ -15938,26 +15487,30 @@ bool CvCity::canKeep(BuildingTypes eBuilding) const
 		}
 	}
 
-	if (bRequiresBonus && bNeedsBonus)
-	{
-		return false;
-	}
-
-	for (int iI = 0; iI < GC.getNumBuildingClassInfos(); iI++)
-	{
-		if (kBuilding.isBuildingClassNeededInCity((BuildingClassTypes)iI))
-		{
-			ePrereqBuilding = ((BuildingTypes)(GC.getCivilizationInfo(getCivilizationType()).getCivilizationBuildings(iI)));
-
-			if (ePrereqBuilding != NO_BUILDING)
-			{
-				if (0 == getNumBuilding(ePrereqBuilding) /* && (bContinue || (getFirstBuildingOrder(ePrereqBuilding) == -1))*/)
-				{
-					return false;
-				}
-			}
-		}
-	}
+//	if (bRequiresBonus && bNeedsBonus)
+//	{
+//		return false;
+//	}
+/*doto 114 decided to remove this since if its build its build.
+ its probabaly a situation that wont happen anyway so i wont waste another loop on it
+*/
+//	for (int iI = 0; iI < GC.getNumBuildingClassInfos(); iI++)
+//	{
+//		if (kBuilding.isBuildingClassNeededInCity((BuildingClassTypes)iI))
+//		{
+//			ePrereqBuilding = ((BuildingTypes)(GC.getCivilizationInfo(getCivilizationType()).getCivilizationBuildings(iI)));
+//
+//			if (ePrereqBuilding != NO_BUILDING)
+//			{
+//				if (0 == getNumBuilding(ePrereqBuilding) 
+//					/* && (bContinue || (getFirstBuildingOrder(ePrereqBuilding) == -1))*/
+//					)
+//				{
+//					return false;
+//				}
+//			}
+//		}
+//	}
 
 	return true;
 }

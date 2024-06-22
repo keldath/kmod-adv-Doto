@@ -136,10 +136,13 @@ CvPlot::~CvPlot() // advc: Merged with the deleted uninit function
 	gDLL->getFeatureIFace()->destroy(m_pFeatureSymbol);
 	if(m_pPlotBuilder != NULL)
 		gDLL->getPlotBuilderIFace()->destroy(m_pPlotBuilder);
-	gDLL->getRouteIFace()->destroy(m_pRouteSymbol);
+	//DOTO 114 crash fix for advciv
+	if (m_pRouteSymbol != NULL)
+		gDLL->getRouteIFace()->destroy(m_pRouteSymbol);
 	gDLL->getRiverIFace()->destroy(m_pRiverSymbol);
 	gDLL->getFlagEntityIFace()->destroy(m_pFlagSymbol);
 	gDLL->getFlagEntityIFace()->destroy(m_pFlagSymbolOffset);
+
 	m_pCenterUnit = NULL;
 
 	deleteAllSymbols();
@@ -639,8 +642,8 @@ int CvPlot::isInCSsafeRadious(PlayerTypes ePlayer, int iMinRange, int iMaxRange,
 }
 bool CvPlot::canChangeCultureOnTile(PlayerTypes eExpandingPlayer)
 {
-	static int const iMinRange = GC.getDefineINT("CS_CULTURE_LEVEL_MIN_RADIOUS");
-	static int const iMaxRange = GC.getDefineINT("CS_CULTURE_LEVEL_MAX_RADIOUS");
+	static int const iMinRange = GC.getCS_CULTURE_LEVEL_MIN_RADIOUS();
+	static int const iMaxRange = GC.getCS_CULTURE_LEVEL_MAX_RADIOUS();
 	bool isExpanderCS = false;
 	if (eExpandingPlayer != NO_PLAYER)
 	{
@@ -871,23 +874,26 @@ void CvPlot::updateCenterUnit()
 	}
 	if (setCenterUnit(getBestDefender(eActivePlayer)))
 		return;
+	CvUnit const* pHeadSelected = gDLL->UI().getHeadSelectedUnit();
+	// <advc.001> Can occur when loading a Hotseat savegame
+	if (pHeadSelected != NULL && pHeadSelected->getOwner() != eActivePlayer)
+		pHeadSelected = NULL; // </advc.001>
 	{
-		//setCenterUnit(getBestDefender(NO_PLAYER, eActivePlayer, gDLL->UI().getHeadSelectedUnit(), true));
+		//setCenterUnit(getBestDefender(NO_PLAYER, eActivePlayer, pHeadSelected, true));
 		/*	disabled by K-Mod. I don't think it's relevant
 			whether or not the best defender can move. */
 		/*	advc.001: Restored the code (with some changes for advc.028).
 			This is not the code that karadoc had meant to disable. */
 		// <advc.028>
-		DefenderFilters defFilters(eActivePlayer, gDLL->UI().getHeadSelectedUnit(),
-				true);
+		DefenderFilters defFilters(eActivePlayer, pHeadSelected, true);
 		defFilters.m_bTestVisible = true; // advc.061
 		if (setCenterUnit(getBestDefender(NO_PLAYER, defFilters)))
 			return; // </advc.028>
 	}
 	{
-		//setCenterUnit(getBestDefender(NO_PLAYER, eActivePlayer, gDLL->UI().getHeadSelectedUnit()));
+		//setCenterUnit(getBestDefender(NO_PLAYER, eActivePlayer, pHeadSelected));
 		// <advc.028>
-		DefenderFilters defFilters(eActivePlayer, gDLL->UI().getHeadSelectedUnit());
+		DefenderFilters defFilters(eActivePlayer, pHeadSelected);
 		defFilters.m_bTestVisible = true; // advc.061
 		if (setCenterUnit(getBestDefender(NO_PLAYER, defFilters)))
 			return; // </advc.028>
@@ -1626,7 +1632,8 @@ bool CvPlot::isVisibleWorked() const
 {
 	if (isBeingWorked())
 	{
-		if (isActiveTeam() || GC.getGame().isDebugMode())
+		/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */
+		if (getTeam() == GC.getGame().getActiveTeam() || GC.getGame().isDebugMode())
 			return true;
 	}
 	return false;
@@ -2837,7 +2844,7 @@ int CvPlot::getBuildTime(BuildTypes eBuild, /* advc.251: */ PlayerTypes ePlayer)
 //===NM=====Mountains Mod===0=====
 	if (isPeak() && GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
 	{
-		iTime *= std::max(0, (GC.getDefineINT("PEAK_BUILD_TIME_MODIFIER") + 100));
+		iTime *= std::max(0, (GC.getPEAK_BUILD_TIME_MODIFIER() + 100));
 		iTime /= 100;
 	}
 //===NM=====Mountains Mod===X=====
@@ -3005,6 +3012,69 @@ CvUnit* CvPlot::getBestDefender(PlayerTypes eOwner,
 	return pBestUnit;
 }
 
+// MOD - START - Ranged Strike AI
+// i had to duplicate the function getBestDefender
+//and this is cause i couldnt get the filters used in advciv to pass the
+//branged properly, i got crash on air attacks and more.
+//so i just duplicated the function with a regulart parameter pass.
+//the whole thing is just to pass isBetterDefenderThan with "true" bRanged.
+//this is also a waste, cause i can just check if the attacker is ranged with some indication at the
+//branged check in isBetterDefenderThan at the part of the left from behind check .
+//the ideas was not to use left from behind for the attack of a ranged attack...!
+CvUnit* CvPlot::getBestDefenderVsRanged(PlayerTypes eOwner, PlayerTypes eAttackingPlayer, CvUnit const* pAttacker,
+			bool bTestEnemy, bool bTestPotentialEnemy,
+			bool bTestVisible, // advc.028
+			/*	advc: New params to allow hasDefender checks.
+				advc.089: bTestCanAttack=true by default. */
+			bool bTestCanAttack, bool bTestAny,
+			/*	(Ideally, this should be swapped with bTestVisible to stay closer
+				to the original code. bTestCanMove had been unused for a while.
+				Not going to change this now, too error-prone.) */
+			bool bTestCanMove) const
+{
+	PROFILE_FUNC();
+	// Ensure consistency of parameters
+	if (pAttacker != NULL)
+	{
+		FAssert(pAttacker->getOwner() == eAttackingPlayer);
+		eAttackingPlayer = pAttacker->getOwner();
+	}
+	// isEnemy implies isPotentialEnemy
+	FAssert(!bTestEnemy || !bTestPotentialEnemy); // </advc>
+	// BETTER_BTS_AI_MOD, Lead From Behind (UncutDragon), 02/21/10, jdog5000
+	int iBestUnitRank = -1;
+	CvUnit* pBestUnit = NULL;
+	FOR_EACH_UNIT_VAR_IN(pLoopUnit, *this)
+	{
+		CvUnit& kUnit = *pLoopUnit;
+		if (eOwner != NO_PLAYER && kUnit.getOwner() != eOwner)
+			continue;
+		if (kUnit.isCargo()) // advc: Was previously only checked with TestCanMove
+			continue;
+		if (bTestCanMove && !kUnit.canMove())
+			continue;
+		// <advc> Moved the other conditions into CvUnit::canBeAttackedBy (new function)
+		if (eAttackingPlayer == NO_PLAYER ||
+			kUnit.canBeAttackedBy(eAttackingPlayer,
+			pAttacker, bTestEnemy, bTestPotentialEnemy,
+			bTestVisible, // advc.028
+			bTestCanAttack))
+		{
+			if (bTestAny)
+				return &kUnit; // </advc>
+			if (kUnit.isBetterDefenderThan(pBestUnit, pAttacker,
+				&iBestUnitRank, // UncutDragon
+// MOD - START - Ranged Strike AI				
+				bTestVisible, true)) // advc.061
+// MOD - START - Ranged Strike AI
+			{
+				pBestUnit = &kUnit;
+			}
+		}
+	}
+	// BETTER_BTS_AI_MOD: END
+	return pBestUnit;
+}
 
 CvUnit* CvPlot::getSelectedUnit() const
 {
@@ -6257,7 +6327,7 @@ PlayerTypes CvPlot::findHighestCultureControlPlayer() const
 {
 	if (getImprovementOwner() != NO_PLAYER && getImprovementType() != NO_IMPROVEMENT)
 	{
-	    if (GC.getDefineINT("CULTURE_CONTROL_IMPROVEMENT_ALWAYS_KEEP_OWNER_BORDER") > 0)
+	    if (GC.getCULTURE_CONTROL_IMPROVEMENT_ALWAYS_KEEP_OWNER_BORDER() > 0)
 	    {
 	        return getImprovementOwner();
 	    }
@@ -6418,7 +6488,8 @@ void CvPlot::addCultureControl(PlayerTypes ePlayer, ImprovementTypes eImprovemen
                 for (iDY = -iRange; iDY <= iRange; iDY++)
                 {
                     // This will make it skip the 4 corner Plots
-                    if ((GC.getDefineINT("CULTURE_CONTROL_IMPROVEMENT_CULTURE_BORDER_SQUARE") < 1 && iRange > 1) && (iDX == iRange || iDX == -iRange) && (iDY == iRange || iDY == -iRange))
+                    if ((GC.getCULTURE_CONTROL_IMPROVEMENT_CULTURE_BORDER_SQUARE() < 1 && iRange > 1)
+						&& (iDX == iRange || iDX == -iRange) && (iDY == iRange || iDY == -iRange))
                     {
                         continue;
                     }
@@ -6456,7 +6527,8 @@ void CvPlot::clearCultureControl(PlayerTypes ePlayer, ImprovementTypes eImprovem
                 for (iDY = -iRange; iDY <= iRange; iDY++)
                 {
                     // This will make it skip the 4 corner Plots
-                    if ((GC.getDefineINT("CULTURE_CONTROL_IMPROVEMENT_CULTURE_BORDER_SQUARE") < 1 && iRange > 1) && (iDX == iRange || iDX == -iRange) && (iDY == iRange || iDY == -iRange))
+                    if ((GC.getCULTURE_CONTROL_IMPROVEMENT_CULTURE_BORDER_SQUARE() < 1 && iRange > 1) && 
+						(iDX == iRange || iDX == -iRange) && (iDY == iRange || iDY == -iRange))
                     {
                         continue;
                     }
@@ -9031,7 +9103,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 //doto city state START -allows cities to build units without bonus prereq
 	bool isCityState = false;
 	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-		GC.getDefineINT("CS_BUILD_UNITS_WITH_NO_PREQ_BONUS") == 1)
+		GC.getCS_BUILD_UNITS_WITH_NO_PREQ_BONUS() == 1)
 	{
 		isCityState = GET_PLAYER(getOwner()).checkCityState(getOwner());
 	}
@@ -9114,17 +9186,47 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 		}
 	}
 	BonusTypes ePrereqAndBonus = kUnit.getPrereqAndBonus();
+//doto units bonus cap	
+	bool eOptionCap = GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP);
+//doto units bonus cap		
 //doto city state -allows cities to build units without bonus prereq
 	if(ePrereqAndBonus != NO_BONUS &&
 		ePrereqAndBonus != eAssumeAvailable) // advc.001u
 	{
+//doto units bonus cap
+		CvPlayer& kPlayer = bCity ? GET_PLAYER(pCity->getOwner()) : GET_PLAYER(getOwner());
+		int egetNumUnitBonusCaps = kPlayer.getNumUnitBonusCaps(ePrereqAndBonus);
+		int egetTotalPlayerBonus = kPlayer.getTotalPlayerBonus(ePrereqAndBonus);
+//doto units bonus cap
 		if (!bCity && !isCityState)
 		{
 			if (!isPlotGroupConnectedBonus(getOwner(), ePrereqAndBonus))
 				return false;
+//doto units bonus cap
+			//decided to go with the plot owner. it doesnt matter
+			//CvPlayer& kPlayer = GET_PLAYER(pCity->getOwner()
+			if (eOptionCap)
+			{	
+				if ((egetNumUnitBonusCaps >= egetTotalPlayerBonus
+						&& egetTotalPlayerBonus > 0)
+						|| egetTotalPlayerBonus == 0
+				)
+					return false;
+			}
+//doto units bonus cap	
 		}
 		else if (!pCity->hasBonus(ePrereqAndBonus) )
 			return false;
+//doto units bonus cap	
+		else if (eOptionCap)
+		{
+			if ((egetNumUnitBonusCaps >= egetTotalPlayerBonus
+					&& egetNumUnitBonusCaps > 0)
+					|| egetTotalPlayerBonus == 0
+			)
+				return false;
+		}
+//doto units bonus cap	
 	}
 
 	bool bRequiresBonus = false;
@@ -9138,16 +9240,49 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 			if (ePrereqOrBonus != eAssumeAvailable) // advc.001u
 			{
 				bRequiresBonus = true;
+//doto units bonus cap
+				CvPlayer& kPlayer = bCity ? GET_PLAYER(pCity->getOwner()) : GET_PLAYER(getOwner());
+				bool eOptionCap = GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP);
+				int egetNumUnitBonusCaps = kPlayer.getNumUnitBonusCaps(ePrereqOrBonus);
+				int egetTotalPlayerBonus = kPlayer.getTotalPlayerBonus(ePrereqOrBonus);
+//doto units bonus cap
 				if (bCity)
 				{
 					if (pCity->hasBonus(ePrereqOrBonus))
 					{
+//doto units bonus cap	- there must be cap to fill and there has to be a bonus suppliy to use of atleast one of the prereq or.
+						if (eOptionCap)
+						{
+							if (egetNumUnitBonusCaps < egetTotalPlayerBonus
+								&& egetTotalPlayerBonus > 0
+							)
+							{
+								bNeedsBonus = false;
+								break;
+							}
+							else continue;
+								
+						}
+//doto units bonus cap
 						bNeedsBonus = false;
 						break;
 					}
 				}
 				else if (isPlotGroupConnectedBonus(getOwner(), ePrereqOrBonus))
 				{
+//doto units bonus cap
+					if (eOptionCap)
+					{
+						if (egetNumUnitBonusCaps < egetTotalPlayerBonus
+								&& egetTotalPlayerBonus < 0
+						)
+						{
+							bNeedsBonus = false;
+							break;
+						}
+						else continue;
+					}
+//doto units bonus cap
 					bNeedsBonus = false;
 					break;
 				}

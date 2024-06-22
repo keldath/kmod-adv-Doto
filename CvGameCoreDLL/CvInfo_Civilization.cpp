@@ -96,7 +96,7 @@ int CvCivilizationInfo::getActionSoundScriptId() const
 bool CvCivilizationInfo::isAIPlayable() const
 {
 //doto city states - if the option is set to randomize	
-	if (GC.getDefineINT("DISPLAY_CITY_STATES_IN_CUSTOM_GAME") == 0
+	if (GC.getDISPLAY_CITY_STATES_IN_CUSTOM_GAME() == 0
 	&& getIsCityState() == 1)
 		return false;
 //doto city states - if the option is set to randomize	
@@ -106,7 +106,7 @@ bool CvCivilizationInfo::isAIPlayable() const
 bool CvCivilizationInfo::isPlayable() const
 {
 //doto city states - if the option is set to randomize	
-	if (GC.getDefineINT("DISPLAY_CITY_STATES_IN_CUSTOM_GAME") == 0
+	if (GC.getDISPLAY_CITY_STATES_IN_CUSTOM_GAME() == 0
 	&& getIsCityState() == 1)
 		return false;
 //doto city states - if the option is set to randomize	

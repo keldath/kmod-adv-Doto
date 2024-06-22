@@ -25,11 +25,9 @@ m_iNumCitySizeUnitPrereq(0),
 /* City Size Prerequisite                  END                                                  */
 /************************************************************************************************/
 m_iMinAreaSize(0),
-//doto governor
-m_iGovernor(0),
 m_iMoves(0),
 m_iAirRange(0),
-//rangedattack-keldath
+//doto Range Strike
 m_iRangeStrike(0),
 m_iAirUnitCap(0),
 m_iDropRange(0),
@@ -973,11 +971,9 @@ void CvUnitInfo::read(FDataStreamBase* stream)
 /* City Size Prerequisite                  END                                                  */
 /************************************************************************************************/
 	stream->Read(&m_iMinAreaSize);
-	//doto governor
-	stream->Read(&m_iGovernor);
 	stream->Read(&m_iMoves);
 	stream->Read(&m_iAirRange);
-//rangedattack-keldath
+//doto Range Strike
 	stream->Read(&m_iRangeStrike);
 	stream->Read(&m_iAirUnitCap);
 	stream->Read(&m_iDropRange);
@@ -1328,11 +1324,9 @@ void CvUnitInfo::write(FDataStreamBase* stream)
 /* City Size Prerequisite                  END                                                  */
 /************************************************************************************************/
 	stream->Write(m_iMinAreaSize);
-	//doto governor
-	stream->Write(m_iGovernor);
 	stream->Write(m_iMoves);
 	stream->Write(m_iAirRange);
-//rangedattack-keldath
+//doto Range Strike
 	stream->Write(m_iRangeStrike);
 	stream->Write(m_iAirUnitCap);
 	stream->Write(m_iDropRange);
@@ -1898,7 +1892,6 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 	}*/
 //Shqype Vicinity Bonus End
 	// <advc.905b>
-//doto keldath qa4 - why is there an error from f1rpo code?
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "SpeedBonuses"))
 	{
 		if(pXML->SkipToNextVal())
@@ -1944,11 +1937,9 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 /* City Size Prerequisite                  END                                                  */
 /************************************************************************************************/
 	pXML->GetChildXmlValByName(&m_iMinAreaSize, "iMinAreaSize");
-//doto governor
-	pXML->GetChildXmlValByName(&m_iGovernor, "iGovernoru", 0);
 	pXML->GetChildXmlValByName(&m_iMoves, "iMoves");
-	pXML->GetChildXmlValByName(&m_iAirRange, "iAirRange",0);
-//rangedattack-keldath
+	pXML->GetChildXmlValByName(&m_iAirRange, "iAirRange", 0);
+//doto Range Strike
 	pXML->GetChildXmlValByName(&m_iRangeStrike, "iRangeStrike",0);
 	pXML->GetChildXmlValByName(&m_iAirUnitCap, "iAirUnitCap");
 	pXML->GetChildXmlValByName(&m_iDropRange, "iDropRange");
@@ -2371,15 +2362,6 @@ m_iPrereqOrPromotion1(NO_PROMOTION),
 m_iPrereqOrPromotion2(NO_PROMOTION),
 m_iPrereqOrPromotion3(NO_PROMOTION), // K-Mod
 m_iTechPrereq(NO_TECH),
-//doto governor start
-m_iGovernor(0),
-m_iGreatPeopleRateChange(0),
-m_piYieldChange(NULL),
-m_piCommerceChange(NULL),
-m_iHealth(0),
-m_iHappiness(0),
-m_iExperience(0),
-//doto governor start
 m_iStateReligionPrereq(NO_RELIGION),
 m_iVisibilityChange(0),
 m_iMovesChange(0),
@@ -2443,10 +2425,6 @@ CvPromotionInfo::~CvPromotionInfo()
 	SAFE_DELETE_ARRAY(m_pbTerrainDoubleMove);
 	SAFE_DELETE_ARRAY(m_pbFeatureDoubleMove);
 	SAFE_DELETE_ARRAY(m_pbUnitCombat);
-	//doto governor start
-	SAFE_DELETE_ARRAY(m_piYieldChange);
-	SAFE_DELETE_ARRAY(m_piCommerceChange);
-	//doto governor end
 }
 
 int CvPromotionInfo::getLayerAnimationPath() const
@@ -2479,38 +2457,7 @@ int CvPromotionInfo::getTechPrereq() const
 {
 	return m_iTechPrereq;
 }
-//doto governor start
-int CvPromotionInfo::getGovernor() const
-{
-	return m_iGovernor;
-}
-int CvPromotionInfo::getGreatPeopleRateChange() const
-{
-	return m_iGreatPeopleRateChange;
-}
-int CvPromotionInfo::getYieldChange(int iYield) const
-{
-	FAssertBounds(0, NUM_YIELD_TYPES, iYield);
-	return m_piYieldChange ? m_piYieldChange[iYield] : 0; // advc.003t
-}
-int CvPromotionInfo::getCommerceChange(int iCommerce) const
-{
-	FAssertBounds(0, NUM_COMMERCE_TYPES, iCommerce);
-	return m_piCommerceChange ? m_piCommerceChange[iCommerce] : 0; // advc.003t
-}
-int CvPromotionInfo::getHealth() const
-{
-	return m_iHealth;
-}
-int CvPromotionInfo::getHappiness() const
-{
-	return m_iHappiness;
-}
-int CvPromotionInfo::getExperience() const
-{
-	return m_iExperience;
-}
-//doto Governor end
+
 int CvPromotionInfo::getStateReligionPrereq() const
 {
 	return m_iStateReligionPrereq;
@@ -2784,19 +2731,6 @@ void CvPromotionInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iPrereqOrPromotion2);
 	stream->Read(&m_iPrereqOrPromotion3); // K-Mod
 	stream->Read(&m_iTechPrereq);
-	//doto governor start
-	stream->Read(&m_iGovernor);
-	stream->Read(&m_iGreatPeopleRateChange);
-	SAFE_DELETE_ARRAY(m_piYieldChange);
-	m_piYieldChange = new int[NUM_YIELD_TYPES];
-	stream->Read(NUM_YIELD_TYPES, m_piYieldChange);
-	SAFE_DELETE_ARRAY(m_piCommerceChange);
-	m_piCommerceChange = new int[NUM_COMMERCE_TYPES];
-	stream->Read(NUM_COMMERCE_TYPES, m_piCommerceChange);
-	stream->Read(&m_iHealth);
-	stream->Read(&m_iHappiness);
-	stream->Read(&m_iExperience);
-	//doto governor start
 	stream->Read(&m_iStateReligionPrereq);
 	stream->Read(&m_iVisibilityChange);
 	stream->Read(&m_iMovesChange);
@@ -2880,15 +2814,6 @@ void CvPromotionInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iPrereqOrPromotion2);
 	stream->Write(m_iPrereqOrPromotion3); // K-Mod
 	stream->Write(m_iTechPrereq);
-//doto governor start
-	stream->Write(m_iGovernor);
-	stream->Write(m_iGreatPeopleRateChange);
-	stream->Write(NUM_YIELD_TYPES, m_piYieldChange);
-	stream->Write(NUM_COMMERCE_TYPES, m_piCommerceChange);
-	stream->Write(m_iHealth);
-	stream->Write(m_iHappiness);
-	stream->Write(m_iExperience);
-//doto governor end
 	stream->Write(m_iStateReligionPrereq);
 	stream->Write(m_iVisibilityChange);
 	stream->Write(m_iMovesChange);
@@ -2951,20 +2876,6 @@ bool CvPromotionInfo::read(CvXMLLoadUtility* pXML)
 
 	pXML->SetInfoIDFromChildXmlVal(m_iLayerAnimationPath, "LayerAnimationPath");
 	pXML->SetInfoIDFromChildXmlVal(m_iTechPrereq, "TechPrereq");
-//doto governor start
-	pXML->GetChildXmlValByName(&m_iGovernor, "iGovernor", 0);
-	pXML->GetChildXmlValByName(&m_iGreatPeopleRateChange, "iGreatPeopleRateChange",0);
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "cityYields"))
-		pXML->SetYieldArray(&m_piYieldChange);
-	else pXML->InitList(&m_piYieldChange, NUM_YIELD_TYPES);
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "cityCommerces"))
-		pXML->SetCommerceArray(&m_piCommerceChange);
-	else pXML->InitList(&m_piCommerceChange, NUM_COMMERCE_TYPES);
-	pXML->GetChildXmlValByName(&m_iHealth, "iHealth", 0);
-	pXML->GetChildXmlValByName(&m_iHappiness, "iHappiness", 0);
-	pXML->GetChildXmlValByName(&m_iExperience, "iExperience", 0);
-//doto governor end
-	
 	pXML->SetInfoIDFromChildXmlVal(m_iStateReligionPrereq, "StateReligionPrereq");
 
 	pXML->GetChildXmlValByName(&m_bLeader, "bLeader");

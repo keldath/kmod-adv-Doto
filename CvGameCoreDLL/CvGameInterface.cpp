@@ -230,6 +230,9 @@ void CvGame::updateColoredPlots()
 			}
 		}
 	}
+//MOD - START - Ranged Strike AI - DOTO
+//this blockwill replace the refrance to units with air range or air domain(original two blocks of code)
+
 	/*	advc.rstr: Merged air range with ranged strike code so that the maximal range
 		is highlighted also for range-strikers */
 	if (pHeadSelectedUnit->airRange() > 0)
@@ -245,6 +248,11 @@ void CvGame::updateColoredPlots()
 		if (iMaxAirRange > 0)
 		{
 			bool const bAir = (pHeadSelectedUnit->getDomainType() == DOMAIN_AIR);
+// MOD - START - Ranged Strike AI-keldath addition
+			bool const bLand = (pHeadSelectedUnit->getDomainType() == DOMAIN_LAND);
+			bool const bSea = (pHeadSelectedUnit->getDomainType() == DOMAIN_SEA);
+			char * color = "GREEN";
+// MOD - START - Ranged Strike AI-keldath addition			
 			for (PlotCircleIter it(*pHeadSelectedUnit, iMaxAirRange); it.hasNext(); ++it)
 			{
 				CvPlot const& kTargetPlot = *it;
@@ -255,10 +263,41 @@ void CvGame::updateColoredPlots()
 					&kTargetPlot, pHeadSelectedUnit->getTeam(), iMaxAirRange,
 					pHeadSelectedUnit->getFacingDirection(true))*/))
 				{
-					NiColorA color(GC.getInfo(GC.getColorType("YELLOW")).getColor());
-					color.a = 0.5f;
+// MOD - START - Ranged Strike AI-keldath addition keldath addition - i wanted different colors :)
+					if (bAir)
+					{
+						color = "YELLOW";
+					}
+					else if (bLand) 
+					{
+						color = "RED";
+					}
+					else if (bSea)
+					{
+						color = "BLUE";
+					}
+					//NiColorA color(GC.getInfo(GC.getColorType("YELLOW")).getColor());
+					//color.a = 0.5f;
+					NiColorA color(GC.getInfo(GC.getColorType(color)).getColor());
+					color.a = 0.7f;
+					
+					//kEngine.fillAreaBorderPlot(kTargetPlot.getX(), kTargetPlot.getY(),
+					//		color, AREA_BORDER_LAYER_RANGED);
+					
+					if (bAir) 
+					{
 					kEngine.fillAreaBorderPlot(kTargetPlot.getX(), kTargetPlot.getY(),
 							color, AREA_BORDER_LAYER_RANGED);
+					}	
+					else if (bLand)
+					{	kEngine.addColoredPlot(kTargetPlot.getX(), kTargetPlot.getY(), color,
+							PLOT_STYLE_TARGET, PLOT_LANDSCAPE_LAYER_BASE);	
+					}
+					else if (bSea)
+					{	kEngine.addColoredPlot(kTargetPlot.getX(), kTargetPlot.getY(), color,
+							PLOT_STYLE_TARGET, PLOT_LANDSCAPE_LAYER_BASE);	
+					}
+// MOD - START - Ranged Strike AI-keldath addition
 				}
 			}
 		}

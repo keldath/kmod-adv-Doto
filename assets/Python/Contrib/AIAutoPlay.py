@@ -259,7 +259,10 @@ class AIAutoPlay :
 		self.bBenchmark = False # advc (for BM1)
 		theKey=int(key)
 		# advc: B for benchmark added (for BM1)
-		if theKey == int(InputTypes.KB_X) or theKey == int(InputTypes.KB_B):
+
+		# keldath doto key swap for ai auto play . ctrl + shift + x didnt work on my cpu
+		# CvUtil.pyPrint(str(key))
+		if theKey == int(InputTypes.KB_Z) or theKey == int(InputTypes.KB_B):
 			if game.getAIAutoPlay() > 0:
 				if self.refortify:
 					doRefortify(game.getActivePlayer())

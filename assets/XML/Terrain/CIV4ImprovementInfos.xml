@@ -364,18 +364,6 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
-					<!-- doto -->
-					<BonusType>BONUS_POTATO</BonusType>
-					<bBonusMakesValid>1</bBonusMakesValid>
-					<bBonusTrade>1</bBonusTrade>
-					<iDiscoverRand>0</iDiscoverRand>
-					<YieldChanges>
-						<iYieldChange>2</iYieldChange>
-						<iYieldChange>0</iYieldChange>
-						<iYieldChange>0</iYieldChange>
-					</YieldChanges>
-				</BonusTypeStruct>
-				<BonusTypeStruct>
 					<BonusType>BONUS_WHEAT</BonusType>
 					<bBonusMakesValid>1</bBonusMakesValid>
 					<bBonusTrade>1</bBonusTrade>
@@ -618,17 +606,6 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<FeatureMakesValids/>
 			<BonusTypeStructs>
 				<BonusTypeStruct>
-					<BonusType>BONUS_ALUMINUM</BonusType>
-					<bBonusMakesValid>1</bBonusMakesValid>
-					<bBonusTrade>1</bBonusTrade>
-					<iDiscoverRand>10000</iDiscoverRand>
-					<YieldChanges>
-						<iYieldChange>0</iYieldChange>
-						<iYieldChange>1</iYieldChange>
-						<iYieldChange>1</iYieldChange>
-					</YieldChanges>
-				</BonusTypeStruct>
-				<BonusTypeStruct>
 					<BonusType>BONUS_COAL</BonusType>
 					<bBonusMakesValid>1</bBonusMakesValid>
 					<bBonusTrade>1</bBonusTrade>
@@ -662,17 +639,6 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
-					<BonusType>BONUS_GOLD</BonusType>
-					<bBonusMakesValid>1</bBonusMakesValid>
-					<bBonusTrade>1</bBonusTrade>
-					<iDiscoverRand>10000</iDiscoverRand>
-					<YieldChanges>
-						<iYieldChange>0</iYieldChange>
-						<iYieldChange>-1</iYieldChange>
-						<iYieldChange>6</iYieldChange>
-					</YieldChanges>
-				</BonusTypeStruct>
-				<BonusTypeStruct>
 					<!-- doto -->
 					<BonusType>BONUS_SULPHUR</BonusType>
 					<bBonusMakesValid>1</bBonusMakesValid>
@@ -693,40 +659,6 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 						<iYieldChange>0</iYieldChange>
 						<iYieldChange>1</iYieldChange>
 						<iYieldChange>0</iYieldChange>
-					</YieldChanges>
-				</BonusTypeStruct>
-				<BonusTypeStruct>
-					<BonusType>BONUS_SILVER</BonusType>
-					<bBonusMakesValid>1</bBonusMakesValid>
-					<bBonusTrade>1</bBonusTrade>
-					<iDiscoverRand>10000</iDiscoverRand>
-					<YieldChanges>
-						<iYieldChange>0</iYieldChange>
-						<iYieldChange>-1</iYieldChange>
-						<iYieldChange>4</iYieldChange>
-					</YieldChanges>
-				</BonusTypeStruct>
-				<BonusTypeStruct>
-					<BonusType>BONUS_URANIUM</BonusType>
-					<bBonusMakesValid>1</bBonusMakesValid>
-					<bBonusTrade>1</bBonusTrade>
-					<iDiscoverRand>10000</iDiscoverRand>
-					<YieldChanges>
-						<iYieldChange>0</iYieldChange>
-						<iYieldChange>0</iYieldChange>
-						<iYieldChange>3</iYieldChange>
-					</YieldChanges>
-				</BonusTypeStruct>
-				<BonusTypeStruct>
-					<!-- doto -->
-					<BonusType>BONUS_TITANIUM</BonusType>
-					<bBonusMakesValid>1</bBonusMakesValid>
-					<bBonusTrade>1</bBonusTrade>
-					<iDiscoverRand>0</iDiscoverRand>
-					<YieldChanges>
-						<iYieldChange>0</iYieldChange>
-						<iYieldChange>0</iYieldChange>
-						<iYieldChange>3</iYieldChange>
 					</YieldChanges>
 				</BonusTypeStruct>
 			</BonusTypeStructs>
@@ -1142,6 +1074,18 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 						<iYieldChange>1</iYieldChange>
 						<iYieldChange>0</iYieldChange>
 						<iYieldChange>1</iYieldChange>
+					</YieldChanges>
+				</BonusTypeStruct>
+				<BonusTypeStruct>
+					<!-- doto -->
+					<BonusType>BONUS_POTATO</BonusType>
+					<bBonusMakesValid>1</bBonusMakesValid>
+					<bBonusTrade>1</bBonusTrade>
+					<iDiscoverRand>0</iDiscoverRand>
+					<YieldChanges>
+						<iYieldChange>2</iYieldChange>
+						<iYieldChange>0</iYieldChange>
+						<iYieldChange>0</iYieldChange>
 					</YieldChanges>
 				</BonusTypeStruct>
 			</BonusTypeStructs>
@@ -1673,9 +1617,6 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iGoodyRange>0</iGoodyRange>
 			<iFeatureGrowth>0</iFeatureGrowth>
 			<iUpgradeTime>10</iUpgradeTime>
-			<!-- //doto governor -->
-			<iGovernorXp>1</iGovernorXp>
-			<!-- //doto governor -->
 			<iAirBombDefense>5</iAirBombDefense>
 			<iDefenseModifier>0</iDefenseModifier>
 			<iHappiness>0</iHappiness>
@@ -1737,9 +1678,6 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iGoodyRange>0</iGoodyRange>
 			<iFeatureGrowth>0</iFeatureGrowth>
 			<iUpgradeTime>20</iUpgradeTime>
-			<!-- //doto governor -->
-			<iGovernorXp>1</iGovernorXp>
-			<!-- //doto governor -->
 			<iAirBombDefense>5</iAirBombDefense>
 			<iDefenseModifier>0</iDefenseModifier>
 			<iHappiness>0</iHappiness>
@@ -1802,9 +1740,6 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iGoodyRange>0</iGoodyRange>
 			<iFeatureGrowth>0</iFeatureGrowth>
 			<iUpgradeTime>40</iUpgradeTime>
-			<!-- //doto governor -->
-			<iGovernorXp>1</iGovernorXp>
-			<!-- //doto governor -->
 			<iAirBombDefense>5</iAirBombDefense>
 			<iDefenseModifier>0</iDefenseModifier>
 			<iHappiness>0</iHappiness>
@@ -1876,9 +1811,6 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<iGoodyRange>0</iGoodyRange>
 			<iFeatureGrowth>0</iFeatureGrowth>
 			<iUpgradeTime>0</iUpgradeTime>
-			<!-- //doto governor -->
-			<iGovernorXp>1</iGovernorXp>
-			<!-- //doto governor -->
 			<iAirBombDefense>5</iAirBombDefense>
 			<iDefenseModifier>0</iDefenseModifier>
 			<iHappiness>0</iHappiness>
@@ -2206,8 +2138,8 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 		 </ImprovementInfo>
 		<ImprovementInfo>
 			<Type>IMPROVEMENT_POOL</Type>
-			<Description>Resorvoir</Description>
-			<Civilopedia>Resorvoir</Civilopedia>
+			<Description>PipeDrip</Description>
+			<Civilopedia>PipeDrip</Civilopedia>
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_POOL</ArtDefineTag>
 			<PrereqNatureYields>
 				<iYield>1</iYield>
@@ -2281,19 +2213,6 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 				</TerrainMakesValid>
 			</TerrainMakesValids>
 			<FeatureMakesValids/>
-			<BonusTypeStructs>
-				<BonusTypeStruct>
-					<BonusType>BONUS_FUR</BonusType>
-					<bBonusMakesValid>1</bBonusMakesValid>
-					<bBonusTrade>1</bBonusTrade>
-					<iDiscoverRand>0</iDiscoverRand>
-					<YieldChanges>
-						<iYieldChange>1</iYieldChange>
-						<iYieldChange>0</iYieldChange>
-						<iYieldChange>0</iYieldChange>
-					</YieldChanges>
-				</BonusTypeStruct>
-			</BonusTypeStructs>
 			<ImprovementPillage/>
 			<ImprovementUpgrade/>
 			<TechYieldChanges/>
@@ -2302,8 +2221,8 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 		</ImprovementInfo>
 		<ImprovementInfo>
 			<Type>IMPROVEMENT_MOUNT_MINE</Type>
-			<Description>Mountain Mine</Description>
-			<Civilopedia>Mountain Mine</Civilopedia>
+			<Description>Deep Mine</Description>
+			<Civilopedia>Deep Mine</Civilopedia>
 			<ArtDefineTag>ART_DEF_IMPROVEMENT_MINE</ArtDefineTag>
 			<YieldChanges>
 				<iYieldChange>0</iYieldChange>
@@ -2350,25 +2269,14 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 			<FeatureMakesValids/>
 			<BonusTypeStructs>
 				<BonusTypeStruct>
-					<BonusType>BONUS_COAL</BonusType>
+					<BonusType>BONUS_ALUMINUM</BonusType>
 					<bBonusMakesValid>1</bBonusMakesValid>
 					<bBonusTrade>1</bBonusTrade>
-					<iDiscoverRand>50000</iDiscoverRand>
+					<iDiscoverRand>10000</iDiscoverRand>
 					<YieldChanges>
-						<iYieldChange>0</iYieldChange>
 						<iYieldChange>0</iYieldChange>
 						<iYieldChange>1</iYieldChange>
-					</YieldChanges>
-				</BonusTypeStruct>
-				<BonusTypeStruct>
-					<BonusType>BONUS_GEMS</BonusType>
-					<bBonusMakesValid>1</bBonusMakesValid>
-					<bBonusTrade>1</bBonusTrade>
-					<iDiscoverRand>20000</iDiscoverRand>
-					<YieldChanges>
-						<iYieldChange>0</iYieldChange>
-						<iYieldChange>0</iYieldChange>
-						<iYieldChange>3</iYieldChange>
+						<iYieldChange>1</iYieldChange>
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
@@ -2378,19 +2286,8 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					<iDiscoverRand>20000</iDiscoverRand>
 					<YieldChanges>
 						<iYieldChange>0</iYieldChange>
-						<iYieldChange>0</iYieldChange>
-						<iYieldChange>3</iYieldChange>
-					</YieldChanges>
-				</BonusTypeStruct>
-				<BonusTypeStruct>
-					<BonusType>BONUS_IRON</BonusType>
-					<bBonusMakesValid>1</bBonusMakesValid>
-					<bBonusTrade>1</bBonusTrade>
-					<iDiscoverRand>10000</iDiscoverRand>
-					<YieldChanges>
-						<iYieldChange>0</iYieldChange>
-						<iYieldChange>0</iYieldChange>
 						<iYieldChange>1</iYieldChange>
+						<iYieldChange>4</iYieldChange>
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
@@ -2400,8 +2297,8 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					<iDiscoverRand>50000</iDiscoverRand>
 					<YieldChanges>
 						<iYieldChange>0</iYieldChange>
-						<iYieldChange>0</iYieldChange>
-						<iYieldChange>4</iYieldChange>
+						<iYieldChange>1</iYieldChange>
+						<iYieldChange>3</iYieldChange>
 					</YieldChanges>
 				</BonusTypeStruct>
 				<BonusTypeStruct>
@@ -2422,7 +2319,7 @@ RouteYieldChanges	Food, production, commerce changes if a road or railroad was b
 					<iDiscoverRand>20000</iDiscoverRand>
 					<YieldChanges>
 						<iYieldChange>0</iYieldChange>
-						<iYieldChange>0</iYieldChange>
+						<iYieldChange>1</iYieldChange>
 						<iYieldChange>1</iYieldChange>
 					</YieldChanges>
 				</BonusTypeStruct>

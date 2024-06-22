@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by XMLSPY 2004 Professional Ed. Release 2, Installed Multi + SMP for 3 users (Firaxis Games) -->
+<!-- Sid Meier's Civilization 4 -->
+<!-- Copyright Firaxis Games 2005 -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+		<Tag>TXT_KEY_BUILDING_DISABLE_BUILD_OF</Tag>
+		<English>[ICON_BULLET]Once a [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] is build in The City, it will disable the buildings of: [COLOR_HIGHLIGHT_TEXT]%s2[COLOR_REVERT][SPACE]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUILDING_CANNOT_BE_BUILT_IF_STRING</Tag>
+		<English>[ICON_BULLET]Cannot be built if a [COLOR_HIGHLIGHT_TEXT]%s1[COLOR_REVERT] is present in the City [SPACE]</English>
+	</TEXT>
+</Civ4GameText>

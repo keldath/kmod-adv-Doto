@@ -30,13 +30,17 @@ public:
 	bool AI_update();
 
 	int AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy) const;
-	int AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialEnemy = false); // K-Mod
+// MOD - START - Ranged Strike AI - added a bool
+	int AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialEnemy = false, bool rangedCombat = false); // K-Mod
 	// advc.003u: These two had returned CvUnit*
 	CvUnitAI* AI_getBestGroupAttacker(const CvPlot* pPlot, bool bPotentialEnemy,
 			int& iUnitOdds, bool bForce = false, bool bNoBlitz = false,
 			bool bSacrifice = false, bool bMaxSurvival = false) const; // advc.048
 	CvUnitAI* AI_getBestGroupSacrifice(const CvPlot* pPlot, bool bPotentialEnemy,
 			bool bForce = false, bool bNoBlitz = false) const;
+	// MOD - START - Ranged Strike AI
+	CvUnitAI* AI_getBestGroupRangeAttacker(const CvPlot* pPlot) const;
+	// MOD - END - Ranged Strike AI
 	// K-Mod has removed bCheckCanMove param from these two and bPotentialEnemy from AI_compareStacks
 	int AI_compareStacks(const CvPlot* pPlot, bool bCheckCanAttack = false,
 			bool bConstCache = false) const; // advc.001n

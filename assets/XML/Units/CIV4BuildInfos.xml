@@ -14,7 +14,7 @@
 			<Description>TXT_KEY_BUILD_ROAD</Description>
 			<Help/>
 			<PrereqTech>TECH_THE_WHEEL</PrereqTech>
-			<iTime>200</iTime>
+			<iTime>340</iTime>
 			<iCost>0</iCost>
 			<bKill>0</bKill>
 			<ImprovementType>NONE</ImprovementType>
@@ -33,7 +33,7 @@
 			<Description>TXT_KEY_BUILD_RAILROAD</Description>
 			<Help/>
 			<PrereqTech>TECH_RAILROAD</PrereqTech>
-			<iTime>300</iTime>
+			<iTime>400</iTime>
 			<iCost>0</iCost>
 			<bKill>0</bKill>
 			<ImprovementType>NONE</ImprovementType>
@@ -52,7 +52,7 @@
 			<Description>TXT_KEY_BUILD_FARM</Description>
 			<Help/>
 			<PrereqTech>TECH_AGRICULTURE</PrereqTech>
-			<iTime>500</iTime>
+			<iTime>550</iTime>
 			<iCost>0</iCost>
 			<bKill>0</bKill>
 			<ImprovementType>IMPROVEMENT_FARM</ImprovementType>
@@ -135,7 +135,7 @@
 			<!-- doto obsolete improvement -->
 			<TechObsolete>NONE</TechObsolete>
 			<!-- doto obsolete improvement -->
-			<iTime>400</iTime>
+			<iTime>600</iTime>
 			<iCost>0</iCost>
 			<bKill>0</bKill>
 			<ImprovementType>IMPROVEMENT_MINE</ImprovementType>
@@ -343,7 +343,7 @@
 			<Description>TXT_KEY_BUILD_PLANTATION</Description>
 			<Help/>
 			<PrereqTech>TECH_CALENDAR</PrereqTech>
-			<iTime>500</iTime>
+			<iTime>530</iTime>
 			<iCost>0</iCost>
 			<bKill>0</bKill>
 			<ImprovementType>IMPROVEMENT_PLANTATION</ImprovementType>
@@ -391,7 +391,7 @@
 			<Description>TXT_KEY_BUILD_QUARRY</Description>
 			<Help/>
 			<PrereqTech>TECH_MASONRY</PrereqTech>
-			<iTime>600</iTime>
+			<iTime>610</iTime>
 			<iCost>0</iCost>
 			<bKill>0</bKill>
 			<ImprovementType>IMPROVEMENT_QUARRY</ImprovementType>
@@ -439,7 +439,7 @@
 			<Description>TXT_KEY_BUILD_PASTURE</Description>
 			<Help/>
 			<PrereqTech>TECH_ANIMAL_HUSBANDRY</PrereqTech>
-			<iTime>400</iTime>
+			<iTime>515</iTime>
 			<iCost>0</iCost>
 			<bKill>0</bKill>
 			<ImprovementType>IMPROVEMENT_PASTURE</ImprovementType>
@@ -487,7 +487,7 @@
 			<Description>TXT_KEY_BUILD_CAMP</Description>
 			<Help/>
 			<PrereqTech>TECH_HUNTING</PrereqTech>
-			<iTime>400</iTime>
+			<iTime>500</iTime>
 			<iCost>0</iCost>
 			<bKill>0</bKill>
 			<ImprovementType>IMPROVEMENT_CAMP</ImprovementType>
@@ -589,7 +589,7 @@
 			<Description>TXT_KEY_BUILD_WINERY</Description>
 			<Help/>
 			<PrereqTech>TECH_MONARCHY</PrereqTech>
-			<iTime>500</iTime>
+			<iTime>600</iTime>
 			<iCost>0</iCost>
 			<bKill>0</bKill>
 			<ImprovementType>IMPROVEMENT_WINERY</ImprovementType>
@@ -637,7 +637,7 @@
 			<Description>TXT_KEY_BUILD_COTTAGE</Description>
 			<Help/>
 			<PrereqTech>TECH_POTTERY</PrereqTech>
-			<iTime>400</iTime>
+			<iTime>500</iTime>
 			<iCost>0</iCost>
 			<bKill>0</bKill>
 			<ImprovementType>IMPROVEMENT_COTTAGE</ImprovementType>
@@ -876,7 +876,7 @@
 		</BuildInfo>
 		<BuildInfo>
 			<Type>BUILD_POOL</Type>
-			<Description>Resorvoir</Description>
+			<Description>PipeDrip</Description>
 			<Help/>
 			<PrereqTech>TECH_ECOLOGY</PrereqTech>
 			<iTime>500</iTime>
@@ -910,10 +910,10 @@
 		</BuildInfo>
 		<BuildInfo>
 			<Type>BUILD_MOUNT_MINE</Type>
-			<Description>Mountain Mine</Description>
+			<Description>Deep Mine</Description>
 			<Help/>
 			<PrereqTech>TECH_METAL_CASTING</PrereqTech>
-			<iTime>550</iTime>
+			<iTime>610</iTime>
 			<iCost>0</iCost>
 			<bKill>0</bKill>
 			<ImprovementType>IMPROVEMENT_MOUNT_MINE</ImprovementType>

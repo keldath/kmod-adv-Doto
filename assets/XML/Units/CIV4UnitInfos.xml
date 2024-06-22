@@ -195,17 +195,8 @@ MiddleArtDefineTag	From CIV4ArtDefinesUnit - what the unit looks like in-game du
 UnitMeshGroups	The ART_DEF tag for the unit's model/animation/etc information.
 
 KELDATH NOTES:
-vINCETZ RANGED STRIKE IS DESGINED HERE - 
-SIEGE UNITS FORST TARGET , OTHER SIEGE UNITS
-SIEGE UNITS CAN RETURN FIRE
-ALL SEIGE HAVE the same COMBAT LIMIT AND AIR LIMIT 
-	(TO AVOID RANGED ATTACK TO DESTROY UNITS COMPLETLEY and for ai usage properly)
-	MAKE SURE AIR COMBAT AND COMBAT HAVE THE SAME VALUE - FOR AI EVALUATIONS.
-ranged attacks , bombard and air have a random hit chance.
-COLLATERAL DAMAGE STARTS FROM 25 WITH CATAPULTS
-UNITAI changed - now will used to counter.
-			for now - not using city defense (special should cover it).	
-			
+rangedstrike tag is from mu old ranged strike mod
+now used ri based that is on airrange vanilla
 -->
 <!-- advc.101:  (unused since AdvCiv 0.97)
 <iCultureGarrison>5</iCultureGarrison>
@@ -11180,7 +11171,7 @@ UNITAI changed - now will used to counter.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>1</iAirRange>
+			<iAirRange>0</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -17615,14 +17606,14 @@ UNITAI changed - now will used to counter.
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>0</bOnlyDefensive>
+			<bOnlyDefensive>1</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>0</bPillage>
+			<bPillage>1</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -17655,16 +17646,7 @@ UNITAI changed - now will used to counter.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-			</UnitCombatDefenders>
+			<UnitCombatDefenders/>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -17672,7 +17654,11 @@ UNITAI changed - now will used to counter.
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
-					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<UnitAIType>UNITAI_RESERVE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -17722,7 +17708,7 @@ UNITAI changed - now will used to counter.
 			<PrereqBonuses/>
 			<ProductionTraits/>
 			<Flavors/>
-			<iAIWeight>0</iAIWeight>
+			<iAIWeight>20</iAIWeight>
 			<iCost>50</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
@@ -17730,9 +17716,9 @@ UNITAI changed - now will used to counter.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
+			<iAirRange>1</iAirRange>
+<!--//doto Range Strike-->
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -17750,9 +17736,9 @@ UNITAI changed - now will used to counter.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>5</iCombat>
-			<iCombatLimit>50</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>100</iCombatLimit>
+			<iAirCombat>6</iAirCombat>
+			<iAirCombatLimit>20</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -17760,9 +17746,9 @@ UNITAI changed - now will used to counter.
 			<iInterceptionProbability>0</iInterceptionProbability>
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
-			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>25</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
+			<iCollateralDamage>0</iCollateralDamage>
+			<iCollateralDamageLimit>0</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>0</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -17813,7 +17799,12 @@ UNITAI changed - now will used to counter.
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions/>
+			<FreePromotions>
+				<FreePromotion>
+					<PromotionType>PROMOTION_SENTRY</PromotionType>
+					<bFreePromotion>1</bFreePromotion>
+				</FreePromotion>
+			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -17835,14 +17826,14 @@ UNITAI changed - now will used to counter.
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>0</bOnlyDefensive>
+			<bOnlyDefensive>1</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>0</bPillage>
+			<bPillage>1</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -17875,16 +17866,7 @@ UNITAI changed - now will used to counter.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-			</UnitCombatDefenders>
+			<UnitCombatDefenders/>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -17892,7 +17874,7 @@ UNITAI changed - now will used to counter.
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
-					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<UnitAIType>UNITAI_RESERVE</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
@@ -17946,7 +17928,7 @@ UNITAI changed - now will used to counter.
 			<PrereqBonuses/>
 			<ProductionTraits/>
 			<Flavors/>
-			<iAIWeight>0</iAIWeight>
+			<iAIWeight>20</iAIWeight>
 			<iCost>50</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
@@ -17954,9 +17936,9 @@ UNITAI changed - now will used to counter.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
+			<iAirRange>1</iAirRange>
+<!--//doto Range Strike -->
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -17974,9 +17956,9 @@ UNITAI changed - now will used to counter.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>5</iCombat>
-			<iCombatLimit>50</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>100</iCombatLimit>
+			<iAirCombat>6</iAirCombat>
+			<iAirCombatLimit>25</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -17985,8 +17967,8 @@ UNITAI changed - now will used to counter.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>30</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>10</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>1</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -18042,7 +18024,12 @@ UNITAI changed - now will used to counter.
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions/>
+			<FreePromotions>
+				<FreePromotion>
+					<PromotionType>PROMOTION_SENTRY</PromotionType>
+					<bFreePromotion>1</bFreePromotion>
+				</FreePromotion>
+			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -18064,14 +18051,14 @@ UNITAI changed - now will used to counter.
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>0</bOnlyDefensive>
+			<bOnlyDefensive>1</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>0</bPillage>
+			<bPillage>1</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -18120,17 +18107,11 @@ UNITAI changed - now will used to counter.
 					<UnitAIType>UNITAI_ATTACK_CITY</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_RESERVE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
 			</UnitAIs>
-			<NotUnitAIs>
-				<UnitAI>
-					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
-					<bUnitAI>1</bUnitAI>
-				</UnitAI>
-				<UnitAI>
-					<UnitAIType>UNITAI_ATTACK</UnitAIType>
-					<bUnitAI>1</bUnitAI>
-				</UnitAI>
-			</NotUnitAIs>
 			<Builds/>
 			<ReligionSpreads/>
 			<CorporationSpreads/>
@@ -18176,7 +18157,7 @@ UNITAI changed - now will used to counter.
 			<PrereqBonuses/>
 			<ProductionTraits/>
 			<Flavors/>
-			<iAIWeight>0</iAIWeight>
+			<iAIWeight>20</iAIWeight>
 			<iCost>80</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
@@ -18185,8 +18166,8 @@ UNITAI changed - now will used to counter.
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
 			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
+<!--//doto Range Strike -->
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -18204,7 +18185,7 @@ UNITAI changed - now will used to counter.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>4</iCombat>
-			<iCombatLimit>50</iCombatLimit>
+			<iCombatLimit>75</iCombatLimit>
 			<iAirCombat>0</iAirCombat>
 			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
@@ -18214,10 +18195,10 @@ UNITAI changed - now will used to counter.
 			<iInterceptionProbability>0</iInterceptionProbability>
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
-			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>30</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>4</iCollateralDamageMaxUnits>
-			<iCityAttack>100</iCityAttack>
+			<iCollateralDamage>0</iCollateralDamage>
+			<iCollateralDamageLimit>0</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>0</iCollateralDamageMaxUnits>
+			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
 			<iHillsAttack>0</iHillsAttack>
@@ -18268,7 +18249,12 @@ UNITAI changed - now will used to counter.
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions/>
+			<FreePromotions>
+				<FreePromotion>
+					<PromotionType>PROMOTION_SENTRY</PromotionType>
+					<bFreePromotion>1</bFreePromotion>
+				</FreePromotion>
+			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -18290,14 +18276,14 @@ UNITAI changed - now will used to counter.
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>0</bOnlyDefensive>
+			<bOnlyDefensive>1</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>0</bPillage>
+			<bPillage>1</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -18317,7 +18303,7 @@ UNITAI changed - now will used to counter.
 			<bNukeImmune>0</bNukeImmune>
 			<bPrereqBonuses>0</bPrereqBonuses>
 			<bPrereqReligion>0</bPrereqReligion>
-			<bMechanized>0</bMechanized>
+			<bMechanized>1</bMechanized>
 			<bSuicide>0</bSuicide>
 			<bHiddenNationality>0</bHiddenNationality>
 			<bAlwaysHostile>0</bAlwaysHostile>
@@ -18330,16 +18316,7 @@ UNITAI changed - now will used to counter.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-			</UnitCombatDefenders>
+			<UnitCombatDefenders/>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -18347,7 +18324,15 @@ UNITAI changed - now will used to counter.
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
-					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_RESERVE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -18397,17 +18382,17 @@ UNITAI changed - now will used to counter.
 			<PrereqBonuses/>
 			<ProductionTraits/>
 			<Flavors/>
-			<iAIWeight>0</iAIWeight>
-			<iCost>100</iCost>
+			<iAIWeight>20</iAIWeight>
+			<iCost>105</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
+			<iAirRange>1</iAirRange>
+<!--//doto Range Strike -->
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -18424,10 +18409,10 @@ UNITAI changed - now will used to counter.
 			<FeatureImpassables/>
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
-			<iCombat>12</iCombat>
-			<iCombatLimit>50</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombat>10</iCombat>
+			<iCombatLimit>100</iCombatLimit>
+			<iAirCombat>8</iAirCombat>
+			<iAirCombatLimit>25</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -18436,9 +18421,9 @@ UNITAI changed - now will used to counter.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>40</iCollateralDamageLimit>
+			<iCollateralDamageLimit>10</iCollateralDamageLimit>
 			<!-- K-Mod: was 7 -->
-			<iCollateralDamageMaxUnits>4</iCollateralDamageMaxUnits>
+			<iCollateralDamageMaxUnits>1</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -18489,7 +18474,12 @@ UNITAI changed - now will used to counter.
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions/>
+			<FreePromotions>
+				<FreePromotion>
+					<PromotionType>PROMOTION_SENTRY</PromotionType>
+					<bFreePromotion>1</bFreePromotion>
+				</FreePromotion>
+			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -18707,14 +18697,14 @@ UNITAI changed - now will used to counter.
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>0</bOnlyDefensive>
+			<bOnlyDefensive>1</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>0</bPillage>
+			<bPillage>1</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -18747,16 +18737,7 @@ UNITAI changed - now will used to counter.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-			</UnitCombatDefenders>
+			<UnitCombatDefenders/>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -18764,7 +18745,15 @@ UNITAI changed - now will used to counter.
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
-					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_RESERVE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -18814,7 +18803,7 @@ UNITAI changed - now will used to counter.
 			<PrereqBonuses/>
 			<ProductionTraits/>
 			<Flavors/>
-			<iAIWeight>0</iAIWeight>
+			<iAIWeight>20</iAIWeight>
 			<iCost>150</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
@@ -18822,9 +18811,9 @@ UNITAI changed - now will used to counter.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
+			<iAirRange>1</iAirRange>
+<!--//doto Range Strike -->
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -18842,9 +18831,9 @@ UNITAI changed - now will used to counter.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>50</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>100</iCombatLimit>
+			<iAirCombat>15</iAirCombat>
+			<iAirCombatLimit>30</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -18853,9 +18842,9 @@ UNITAI changed - now will used to counter.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>45</iCollateralDamageLimit>
+			<iCollateralDamageLimit>20</iCollateralDamageLimit>
 			<!-- K-Mod: was 8 -->
-			<iCollateralDamageMaxUnits>6</iCollateralDamageMaxUnits>
+			<iCollateralDamageMaxUnits>1</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -18884,7 +18873,7 @@ UNITAI changed - now will used to counter.
 			<DomainMods/>
 			<BonusProductionModifiers/>
 			<iBombRate>0</iBombRate>
-			<iBombardRate>16</iBombardRate>
+			<iBombardRate>14</iBombardRate>
 			<SpecialCargo>NONE</SpecialCargo>
 			<DomainCargo>NONE</DomainCargo>
 			<iCargo>0</iCargo>
@@ -18911,7 +18900,12 @@ UNITAI changed - now will used to counter.
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions/>
+			<FreePromotions>
+				<FreePromotion>
+					<PromotionType>PROMOTION_SENTRY</PromotionType>
+					<bFreePromotion>1</bFreePromotion>
+				</FreePromotion>
+			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -18933,14 +18927,14 @@ UNITAI changed - now will used to counter.
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>0</bOnlyDefensive>
+			<bOnlyDefensive>1</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>0</bPillage>
+			<bPillage>1</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -18968,16 +18962,7 @@ UNITAI changed - now will used to counter.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-			</UnitCombatDefenders>
+			<UnitCombatDefenders/>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -18985,7 +18970,15 @@ UNITAI changed - now will used to counter.
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
-					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_RESERVE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -19012,17 +19005,17 @@ UNITAI changed - now will used to counter.
 			<PrereqBonuses/>
 			<ProductionTraits/>
 			<Flavors/>
-			<iAIWeight>0</iAIWeight>
-			<iCost>200</iCost>
+			<iAIWeight>20</iAIWeight>
+			<iCost>220</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
+			<iAirRange>3</iAirRange>
+<!--//doto Range Strike -->
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -19039,10 +19032,10 @@ UNITAI changed - now will used to counter.
 			<FeatureImpassables/>
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
-			<iCombat>26</iCombat>
-			<iCombatLimit>50</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombat>24</iCombat>
+			<iCombatLimit>100</iCombatLimit>
+			<iAirCombat>20</iAirCombat>
+			<iAirCombatLimit>70</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -19050,10 +19043,10 @@ UNITAI changed - now will used to counter.
 			<iInterceptionProbability>0</iInterceptionProbability>
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
-			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>50</iCollateralDamageLimit>
+			<iCollateralDamage>200</iCollateralDamage>
+			<iCollateralDamageLimit>30</iCollateralDamageLimit>
 			<!-- K-Mod: was 8 -->
-			<iCollateralDamageMaxUnits>7</iCollateralDamageMaxUnits>
+			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -19073,25 +19066,26 @@ UNITAI changed - now will used to counter.
 					<iUnitCombatMod>50</iUnitCombatMod>
 				</UnitCombatMod>
 			</UnitCombatMods>
-			<UnitCombatCollateralImmunes>
+			<!-- <UnitCombatCollateralImmunes>
 				<UnitCombatCollateralImmune>
 					<UnitCombatType>UNITCOMBAT_SIEGE</UnitCombatType>
 					<iUnitCombatCollateralImmune>1</iUnitCombatCollateralImmune>
 				</UnitCombatCollateralImmune>
-			</UnitCombatCollateralImmunes>
+			</UnitCombatCollateralImmunes> -->
+			<UnitCombatCollateralImmunes/>
 			<DomainMods/>
 			<BonusProductionModifiers/>
 			<iBombRate>0</iBombRate>
-			<iBombardRate>16</iBombardRate>
+			<iBombardRate>0</iBombardRate>
 			<SpecialCargo>NONE</SpecialCargo>
 			<DomainCargo>NONE</DomainCargo>
 			<iCargo>0</iCargo>
 			<iConscription>0</iConscription>
 			<!-- advc.101: was 12 (unused since AdvCiv 0.97) -->
 			<iCultureGarrison>6</iCultureGarrison>
-			<iExtraCost>0</iExtraCost>
+			<iExtraCost>1</iExtraCost>
 			<iAsset>5</iAsset>
-			<iPower>26</iPower>
+			<iPower>22</iPower>
 			<UnitMeshGroups>
 				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
@@ -19109,7 +19103,12 @@ UNITAI changed - now will used to counter.
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions/>
+			<FreePromotions>
+				<FreePromotion>
+					<PromotionType>PROMOTION_SENTRY</PromotionType>
+					<bFreePromotion>1</bFreePromotion>
+				</FreePromotion>
+			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -20583,8 +20582,6 @@ UNITAI changed - now will used to counter.
 			<iMoves>5</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
 			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>2</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -21034,8 +21031,6 @@ UNITAI changed - now will used to counter.
 			<iMoves>5</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
 			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>2</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -21255,8 +21250,6 @@ UNITAI changed - now will used to counter.
 			<iMoves>4</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
 			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>0</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -21485,8 +21478,6 @@ UNITAI changed - now will used to counter.
 			<iMoves>3</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
 			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -22082,8 +22073,6 @@ UNITAI changed - now will used to counter.
 			<iMoves>6</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
 			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -22265,8 +22254,6 @@ UNITAI changed - now will used to counter.
 			<iMoves>7</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
 			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>4</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -30336,18 +30323,14 @@ UNITAI changed - now will used to counter.
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>0</bOnlyDefensive>
-			<!-- advc.315a -->
-			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
-			<!-- advc.315b -->
-			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
+			<bOnlyDefensive>1</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>0</bPillage>
+			<bPillage>1</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -30380,16 +30363,7 @@ UNITAI changed - now will used to counter.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-			</UnitCombatDefenders>
+			<UnitCombatDefenders/>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -30397,7 +30371,15 @@ UNITAI changed - now will used to counter.
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
-					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_RESERVE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -30449,7 +30431,7 @@ UNITAI changed - now will used to counter.
 			<SpeedBonuses/>
 			<ProductionTraits/>
 			<Flavors/>
-			<iAIWeight>0</iAIWeight>
+			<iAIWeight>20</iAIWeight>
 			<iCost>145</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
@@ -30457,9 +30439,9 @@ UNITAI changed - now will used to counter.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
+			<iAirRange>1</iAirRange>
+<!--//doto Range Strike -->
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -30477,9 +30459,9 @@ UNITAI changed - now will used to counter.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>55</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>100</iCombatLimit>
+			<iAirCombat>15</iAirCombat>
+			<iAirCombatLimit>40</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -30488,8 +30470,9 @@ UNITAI changed - now will used to counter.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>45</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>5</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>20</iCollateralDamageLimit>
+			<!-- K-Mod: was 8 -->
+			<iCollateralDamageMaxUnits>1</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -30520,12 +30503,12 @@ UNITAI changed - now will used to counter.
 			<DomainMods/>
 			<BonusProductionModifiers/>
 			<iBombRate>0</iBombRate>
-			<iBombardRate>16</iBombardRate>
+			<iBombardRate>14</iBombardRate>
 			<SpecialCargo>NONE</SpecialCargo>
 			<DomainCargo>NONE</DomainCargo>
 			<iCargo>0</iCargo>
 			<iConscription>0</iConscription>
-			<!-- advc.101: was 10 -->
+			<!-- advc.101: was 10 (unused since AdvCiv 0.97) -->
 			<iCultureGarrison>5</iCultureGarrison>
 			<iExtraCost>0</iExtraCost>
 			<iAsset>4</iAsset>
@@ -30547,7 +30530,12 @@ UNITAI changed - now will used to counter.
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions/>
+			<FreePromotions>
+				<FreePromotion>
+					<PromotionType>PROMOTION_SENTRY</PromotionType>
+					<bFreePromotion>1</bFreePromotion>
+				</FreePromotion>
+			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -30669,8 +30657,6 @@ UNITAI changed - now will used to counter.
 			<iMoves>8</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
 			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -31432,18 +31418,14 @@ UNITAI changed - now will used to counter.
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>0</bOnlyDefensive>
-			<!-- advc.315a -->
-			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
-			<!-- advc.315b -->
-			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
+			<bOnlyDefensive>1</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>0</bPillage>
+			<bPillage>1</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -31463,7 +31445,7 @@ UNITAI changed - now will used to counter.
 			<bNukeImmune>0</bNukeImmune>
 			<bPrereqBonuses>0</bPrereqBonuses>
 			<bPrereqReligion>0</bPrereqReligion>
-			<bMechanized>0</bMechanized>
+			<bMechanized>1</bMechanized>
 			<bSuicide>0</bSuicide>
 			<bHiddenNationality>0</bHiddenNationality>
 			<bAlwaysHostile>0</bAlwaysHostile>
@@ -31476,16 +31458,7 @@ UNITAI changed - now will used to counter.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-			</UnitCombatDefenders>
+			<UnitCombatDefenders/>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -31493,7 +31466,15 @@ UNITAI changed - now will used to counter.
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
-					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_RESERVE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -31545,7 +31526,7 @@ UNITAI changed - now will used to counter.
 			<SpeedBonuses/>
 			<ProductionTraits/>
 			<Flavors/>
-			<iAIWeight>0</iAIWeight>
+			<iAIWeight>20</iAIWeight>
 			<iCost>100</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
@@ -31553,9 +31534,9 @@ UNITAI changed - now will used to counter.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
+			<iAirRange>1</iAirRange>
+<!--//doto Range Strike -->
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -31572,10 +31553,10 @@ UNITAI changed - now will used to counter.
 			<FeatureImpassables/>
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
-			<iCombat>12</iCombat>
-			<iCombatLimit>50</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombat>10</iCombat>
+			<iCombatLimit>100</iCombatLimit>
+			<iAirCombat>8</iAirCombat>
+			<iAirCombatLimit>35</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -31584,8 +31565,9 @@ UNITAI changed - now will used to counter.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>50</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>5</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>10</iCollateralDamageLimit>
+			<!-- K-Mod: was 7 -->
+			<iCollateralDamageMaxUnits>1</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -31638,7 +31620,12 @@ UNITAI changed - now will used to counter.
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions/>
+			<FreePromotions>
+				<FreePromotion>
+					<PromotionType>PROMOTION_SENTRY</PromotionType>
+					<bFreePromotion>1</bFreePromotion>
+				</FreePromotion>
+			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -32427,8 +32414,6 @@ UNITAI changed - now will used to counter.
 			<iMoves>5</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
 			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>2</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -35510,8 +35495,6 @@ UNITAI changed - now will used to counter.
 			<iMoves>7</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
 			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -44184,18 +44167,14 @@ UNITAI changed - now will used to counter.
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>0</bOnlyDefensive>
-			<!-- advc.315a -->
-			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
-			<!-- advc.315b -->
-			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
+			<bOnlyDefensive>1</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>0</bPillage>
+			<bPillage>1</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -44228,16 +44207,7 @@ UNITAI changed - now will used to counter.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-			</UnitCombatDefenders>
+			<UnitCombatDefenders/>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -44245,7 +44215,15 @@ UNITAI changed - now will used to counter.
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
-					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_RESERVE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -44297,7 +44275,7 @@ UNITAI changed - now will used to counter.
 			<SpeedBonuses/>
 			<ProductionTraits/>
 			<Flavors/>
-			<iAIWeight>0</iAIWeight>
+			<iAIWeight>20</iAIWeight>
 			<iCost>158</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
@@ -44305,9 +44283,9 @@ UNITAI changed - now will used to counter.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
+			<iAirRange>1</iAirRange>
+<!--//doto Range Strike -->
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -44325,9 +44303,9 @@ UNITAI changed - now will used to counter.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>50</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>100</iCombatLimit>
+			<iAirCombat>15</iAirCombat>
+			<iAirCombatLimit>40</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -44336,8 +44314,9 @@ UNITAI changed - now will used to counter.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>40</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>8</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>20</iCollateralDamageLimit>
+			<!-- K-Mod: was 8 -->
+			<iCollateralDamageMaxUnits>1</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -44368,12 +44347,12 @@ UNITAI changed - now will used to counter.
 			<DomainMods/>
 			<BonusProductionModifiers/>
 			<iBombRate>0</iBombRate>
-			<iBombardRate>16</iBombardRate>
+			<iBombardRate>15</iBombardRate>
 			<SpecialCargo>NONE</SpecialCargo>
 			<DomainCargo>NONE</DomainCargo>
 			<iCargo>0</iCargo>
 			<iConscription>0</iConscription>
-			<!-- advc.101: was 10 -->
+			<!-- advc.101: was 10 (unused since AdvCiv 0.97) -->
 			<iCultureGarrison>5</iCultureGarrison>
 			<iExtraCost>0</iExtraCost>
 			<iAsset>4</iAsset>
@@ -44395,7 +44374,12 @@ UNITAI changed - now will used to counter.
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions/>
+			<FreePromotions>
+				<FreePromotion>
+					<PromotionType>PROMOTION_SENTRY</PromotionType>
+					<bFreePromotion>1</bFreePromotion>
+				</FreePromotion>
+			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -44964,8 +44948,6 @@ UNITAI changed - now will used to counter.
 			<iMoves>3</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
 			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -46457,18 +46439,14 @@ UNITAI changed - now will used to counter.
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>0</bOnlyDefensive>
-			<!-- advc.315a -->
-			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
-			<!-- advc.315b -->
-			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
+			<bOnlyDefensive>1</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>0</bPillage>
+			<bPillage>1</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -46501,16 +46479,7 @@ UNITAI changed - now will used to counter.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-			</UnitCombatDefenders>
+			<UnitCombatDefenders/>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -46518,7 +46487,15 @@ UNITAI changed - now will used to counter.
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
-					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_RESERVE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -46570,17 +46547,17 @@ UNITAI changed - now will used to counter.
 			<SpeedBonuses/>
 			<ProductionTraits/>
 			<Flavors/>
-			<iAIWeight>0</iAIWeight>
-			<iCost>135</iCost>
+			<iAIWeight>20</iAIWeight>
+			<iCost>130</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
+			<iAirRange>1</iAirRange>
+<!--//doto Range Strike -->
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -46598,9 +46575,9 @@ UNITAI changed - now will used to counter.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>50</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>100</iCombatLimit>
+			<iAirCombat>15</iAirCombat>
+			<iAirCombatLimit>30</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -46609,8 +46586,9 @@ UNITAI changed - now will used to counter.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>60</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>4</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>15</iCollateralDamageLimit>
+			<!-- K-Mod: was 8 -->
+			<iCollateralDamageMaxUnits>1</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -46668,7 +46646,12 @@ UNITAI changed - now will used to counter.
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions/>
+			<FreePromotions>
+				<FreePromotion>
+					<PromotionType>PROMOTION_SENTRY</PromotionType>
+					<bFreePromotion>1</bFreePromotion>
+				</FreePromotion>
+			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -50052,18 +50035,14 @@ UNITAI changed - now will used to counter.
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>0</bOnlyDefensive>
-			<!-- advc.315a -->
-			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
-			<!-- advc.315b -->
-			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
+			<bOnlyDefensive>1</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>0</bPillage>
+			<bPillage>1</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -50083,7 +50062,7 @@ UNITAI changed - now will used to counter.
 			<bNukeImmune>0</bNukeImmune>
 			<bPrereqBonuses>0</bPrereqBonuses>
 			<bPrereqReligion>0</bPrereqReligion>
-			<bMechanized>0</bMechanized>
+			<bMechanized>1</bMechanized>
 			<bSuicide>0</bSuicide>
 			<bHiddenNationality>0</bHiddenNationality>
 			<bAlwaysHostile>0</bAlwaysHostile>
@@ -50096,16 +50075,7 @@ UNITAI changed - now will used to counter.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-			</UnitCombatDefenders>
+			<UnitCombatDefenders/>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -50113,7 +50083,15 @@ UNITAI changed - now will used to counter.
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
-					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_RESERVE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -50165,7 +50143,7 @@ UNITAI changed - now will used to counter.
 			<SpeedBonuses/>
 			<ProductionTraits/>
 			<Flavors/>
-			<iAIWeight>0</iAIWeight>
+			<iAIWeight>20</iAIWeight>
 			<iCost>100</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
@@ -50173,9 +50151,9 @@ UNITAI changed - now will used to counter.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
+			<iAirRange>1</iAirRange>
+<!--//doto Range Strike -->
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -50192,10 +50170,10 @@ UNITAI changed - now will used to counter.
 			<FeatureImpassables/>
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
-			<iCombat>12</iCombat>
-			<iCombatLimit>50</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombat>10</iCombat>
+			<iCombatLimit>100</iCombatLimit>
+			<iAirCombat>10</iAirCombat>
+			<iAirCombatLimit>25</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -50204,8 +50182,9 @@ UNITAI changed - now will used to counter.
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>35</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>10</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>15</iCollateralDamageLimit>
+			<!-- K-Mod: was 7 -->
+			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -50258,7 +50237,12 @@ UNITAI changed - now will used to counter.
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions/>
+			<FreePromotions>
+				<FreePromotion>
+					<PromotionType>PROMOTION_SENTRY</PromotionType>
+					<bFreePromotion>1</bFreePromotion>
+				</FreePromotion>
+			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -53101,14 +53085,16 @@ UNITAI changed - now will used to counter.
 			<ProductionTraits/>
 			<Flavors/>
 			<iAIWeight>0</iAIWeight>
-			<iCost>230</iCost>
+			<iCost>240</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>1</iAirRange>
+			<iAirRange>3</iAirRange>
+<!--//doto Range Strike -->
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -53127,8 +53113,8 @@ UNITAI changed - now will used to counter.
 			<FeaturePassableTechs/>
 			<iCombat>22</iCombat>
 			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iAirCombat>18</iAirCombat>
+			<iAirCombatLimit>75</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -53195,7 +53181,12 @@ UNITAI changed - now will used to counter.
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions/>
+			<FreePromotions>
+				<FreePromotion>
+					<PromotionType>PROMOTION_SENTRY</PromotionType>
+					<bFreePromotion>1</bFreePromotion>
+				</FreePromotion>
+			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -54139,18 +54130,14 @@ UNITAI changed - now will used to counter.
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>0</bOnlyDefensive>
-			<!-- advc.315a -->
-			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
-			<!-- advc.315b -->
-			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
+			<bOnlyDefensive>1</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>0</bPillage>
+			<bPillage>1</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -54178,16 +54165,7 @@ UNITAI changed - now will used to counter.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-			</UnitCombatDefenders>
+			<UnitCombatDefenders/>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -54195,7 +54173,15 @@ UNITAI changed - now will used to counter.
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
-					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_RESERVE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -54224,17 +54210,17 @@ UNITAI changed - now will used to counter.
 			<SpeedBonuses/>
 			<ProductionTraits/>
 			<Flavors/>
-			<iAIWeight>0</iAIWeight>
-			<iCost>195</iCost>
+			<iAIWeight>20</iAIWeight>
+			<iCost>190</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
+			<iAirRange>2</iAirRange>
+<!--//doto Range Strike -->
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -54252,9 +54238,9 @@ UNITAI changed - now will used to counter.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>26</iCombat>
-			<iCombatLimit>50</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>100</iCombatLimit>
+			<iAirCombat>22</iAirCombat>
+			<iAirCombatLimit>38</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -54262,9 +54248,10 @@ UNITAI changed - now will used to counter.
 			<iInterceptionProbability>0</iInterceptionProbability>
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
-			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>60</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>4</iCollateralDamageMaxUnits>
+			<iCollateralDamage>180</iCollateralDamage>
+			<iCollateralDamageLimit>35</iCollateralDamageLimit>
+			<!-- K-Mod: was 8 -->
+			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -54300,11 +54287,11 @@ UNITAI changed - now will used to counter.
 			<DomainCargo>NONE</DomainCargo>
 			<iCargo>0</iCargo>
 			<iConscription>0</iConscription>
-			<!-- advc.101: was 12 -->
+			<!-- advc.101: was 12 (unused since AdvCiv 0.97) -->
 			<iCultureGarrison>6</iCultureGarrison>
-			<iExtraCost>0</iExtraCost>
+			<iExtraCost>1</iExtraCost>
 			<iAsset>5</iAsset>
-			<iPower>26</iPower>
+			<iPower>24</iPower>
 			<UnitMeshGroups>
 				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
@@ -54322,7 +54309,12 @@ UNITAI changed - now will used to counter.
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions/>
+			<FreePromotions>
+				<FreePromotion>
+					<PromotionType>PROMOTION_SENTRY</PromotionType>
+					<bFreePromotion>1</bFreePromotion>
+				</FreePromotion>
+			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -55367,8 +55359,6 @@ UNITAI changed - now will used to counter.
 			<iMoves>5</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
 			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -56777,18 +56767,14 @@ UNITAI changed - now will used to counter.
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>0</bOnlyDefensive>
-			<!-- advc.315a -->
-			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
-			<!-- advc.315b -->
-			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
+			<bOnlyDefensive>1</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>0</bPillage>
+			<bPillage>1</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -56816,16 +56802,7 @@ UNITAI changed - now will used to counter.
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-				<UnitCombatDefender>
-					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
-					<bUnitCombatDefender>1</bUnitCombatDefender>
-				</UnitCombatDefender>
-			</UnitCombatDefenders>
+			<UnitCombatDefenders/>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -56833,7 +56810,15 @@ UNITAI changed - now will used to counter.
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
-					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<UnitAIType>UNITAI_ATTACK</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_RESERVE</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -56862,7 +56847,7 @@ UNITAI changed - now will used to counter.
 			<SpeedBonuses/>
 			<ProductionTraits/>
 			<Flavors/>
-			<iAIWeight>0</iAIWeight>
+			<iAIWeight>20</iAIWeight>
 			<iCost>210</iCost>
 			<iHurryCostModifier>0</iHurryCostModifier>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
@@ -56870,9 +56855,9 @@ UNITAI changed - now will used to counter.
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
-<!--ranged attack keldath -->
-			<iRangeStrike>3</iRangeStrike>
+			<iAirRange>2</iAirRange>
+<!--//doto Range Strike -->
+			<iRangeStrike>1</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -56890,9 +56875,9 @@ UNITAI changed - now will used to counter.
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>26</iCombat>
-			<iCombatLimit>50</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
+			<iCombatLimit>100</iCombatLimit>
+			<iAirCombat>24</iAirCombat>
+			<iAirCombatLimit>35</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -56900,9 +56885,10 @@ UNITAI changed - now will used to counter.
 			<iInterceptionProbability>0</iInterceptionProbability>
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
-			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>65</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>5</iCollateralDamageMaxUnits>
+			<iCollateralDamage>200</iCollateralDamage>
+			<iCollateralDamageLimit>35</iCollateralDamageLimit>
+			<!-- K-Mod: was 8 -->
+			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -56933,16 +56919,16 @@ UNITAI changed - now will used to counter.
 			<DomainMods/>
 			<BonusProductionModifiers/>
 			<iBombRate>0</iBombRate>
-			<iBombardRate>20</iBombardRate>
+			<iBombardRate>16</iBombardRate>
 			<SpecialCargo>NONE</SpecialCargo>
 			<DomainCargo>NONE</DomainCargo>
 			<iCargo>0</iCargo>
 			<iConscription>0</iConscription>
-			<!-- advc.101: was 12 -->
+			<!-- advc.101: was 12 (unused since AdvCiv 0.97) -->
 			<iCultureGarrison>6</iCultureGarrison>
-			<iExtraCost>0</iExtraCost>
+			<iExtraCost>1</iExtraCost>
 			<iAsset>5</iAsset>
-			<iPower>26</iPower>
+			<iPower>24</iPower>
 			<UnitMeshGroups>
 				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
@@ -56960,7 +56946,12 @@ UNITAI changed - now will used to counter.
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions/>
+			<FreePromotions>
+				<FreePromotion>
+					<PromotionType>PROMOTION_SENTRY</PromotionType>
+					<bFreePromotion>1</bFreePromotion>
+				</FreePromotion>
+			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -59595,382 +59586,6 @@ UNITAI changed - now will used to counter.
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
 			<FreePromotions/>
-			<LeaderPromotion>NONE</LeaderPromotion>
-			<iLeaderExperience>0</iLeaderExperience>
-<!-- doto governor the unit params are very sensitive for ai and human usage
-	handle with care-->
-		</UnitInfo>
-		<UnitInfo>
-			<Class>UNITCLASS_GOVERNOR</Class>
-			<Type>UNIT_GOVERNOR</Type>
-			<UniqueNames>
-<!-- linked to the dllm based on the name it will give gp points
-if the promo for gp + is chosen -->
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<UniqueName>Governor Artist</UniqueName>
-				<UniqueName>Governor Merchant</UniqueName>
-				<UniqueName>Governor Scientist</UniqueName>
-				<UniqueName>Governor Engineer</UniqueName>
-				<UniqueName>Governor Spy</UniqueName>
-				<UniqueName>Governor Prophet</UniqueName>
-				<UniqueName>Governor General</UniqueName>
-				<!-- <UniqueName>Arnold</UniqueName>
-				<UniqueName>Bibi</UniqueName>
-				<UniqueName>Biden</UniqueName>
-				<UniqueName>George</UniqueName>
-				<UniqueName>Ivan</UniqueName>
-				<UniqueName>Rambo</UniqueName>
-				<UniqueName>Indiana</UniqueName>
-				<UniqueName>Mcfky</UniqueName>
-				<UniqueName>Mua'dib</UniqueName>
-				<UniqueName>Emmet</UniqueName>
-				<UniqueName>Slater</UniqueName>
-				<UniqueName>Mua'dib</UniqueName>
-				<UniqueName>Anakeen</UniqueName>
-				<UniqueName>Obi</UniqueName>
-				<UniqueName>Mua'dib</UniqueName>
-				<UniqueName>Jabba</UniqueName>
-				<UniqueName>Mua'dib</UniqueName>
-				<UniqueName>Eric</UniqueName>
-				<UniqueName>Nostromo</UniqueName>
-				<UniqueName>Ripley</UniqueName>
-				<UniqueName>Bishop</UniqueName>
-				<UniqueName>Sulacu</UniqueName>
-				<UniqueName>Optimus</UniqueName>
-				<UniqueName>Sheridan</UniqueName>
-				<UniqueName>Picard</UniqueName>
-				<UniqueName>Seven</UniqueName>
-				<UniqueName>Sly</UniqueName>
-				<UniqueName>Ryan</UniqueName>
-				<UniqueName>Wilder</UniqueName>
-				<UniqueName>S.king</UniqueName> -->
-			</UniqueNames>
-			<Special>NONE</Special>
-			<Capture>UNITCLASS_WORKER</Capture>
-			<Combat>UNITCOMBAT_GOVERNOR</Combat>
-			<Domain>DOMAIN_AIR</Domain>
-			<!-- doto governor -> this ai sts the unit to remain in cities -->
-			<!-- just to make sure ai wont do  none relevant calculations -->
-			<!-- UNITAI_CITY_SPECIAL -->
-			<DefaultUnitAI>UNITAI_UNKNOWN</DefaultUnitAI>
-			<Invisible>NONE</Invisible>
-			<SeeInvisible>NONE</SeeInvisible>
-			<Description>Governor</Description>
-			<Civilopedia>Governor</Civilopedia>
-			<Strategy>Governor</Strategy>
-			<Advisor>ADVISOR_ECONOMY</Advisor>
-			<bAnimal>0</bAnimal>
-			<bFood>0</bFood>
-			<bNoBadGoodies>0</bNoBadGoodies>
-			<!-- combat is now 0, no need to use this (will cause an assert also...) -->
-			<bOnlyDefensive>0</bOnlyDefensive>
-			<bNoCapture>0</bNoCapture>
-			<bQuickCombat>0</bQuickCombat>
-			<bRivalTerritory>0</bRivalTerritory>
-			<bMilitaryHappiness>0</bMilitaryHappiness>
-			<bMilitarySupport>0</bMilitarySupport>
-			<bMilitaryProduction>0</bMilitaryProduction>
-			<bPillage>0</bPillage>
-			<bSpy>0</bSpy>
-			<bSabotage>0</bSabotage>
-			<bDestroy>0</bDestroy>
-			<bStealPlans>0</bStealPlans>
-			<bInvestigate>0</bInvestigate>
-			<bCounterSpy>0</bCounterSpy>
-			<bFound>0</bFound>
-			<bGoldenAge>0</bGoldenAge>
-			<bInvisible>0</bInvisible>
-			<bFirstStrikeImmune>0</bFirstStrikeImmune>
-			<bNoDefensiveBonus>0</bNoDefensiveBonus>
-			<bIgnoreBuildingDefense>0</bIgnoreBuildingDefense>
-			<bCanMoveImpassable>0</bCanMoveImpassable>
-			<bCanMoveAllTerrain>0</bCanMoveAllTerrain>
-			<bCanMovePeak>0</bCanMovePeak>			
-			<bFlatMovementCost>0</bFlatMovementCost>
-			<bIgnoreTerrainCost>0</bIgnoreTerrainCost>
-			<bNukeImmune>0</bNukeImmune>
-			<bPrereqBonuses>0</bPrereqBonuses>
-			<bPrereqReligion>0</bPrereqReligion>
-			<bMechanized>0</bMechanized>
-			<bSuicide>0</bSuicide>
-			<bHiddenNationality>0</bHiddenNationality>
-			<bAlwaysHostile>0</bAlwaysHostile>
-			<UnitClassUpgrades/>
-			<UnitClassTargets/>
-			<UnitCombatTargets/>
-			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
-			<FlankingStrikes/>
-			<UnitAIs>
-				<UnitAI>
-					<UnitAIType>UNITAI_UNKNOWN</UnitAIType>
-					<bUnitAI>1</bUnitAI>
-				</UnitAI>
-			</UnitAIs>
-			<NotUnitAIs/>
-			<Builds/>
-			<ReligionSpreads/>
-			<CorporationSpreads/>
-			<GreatPeoples/>
-			<Buildings/>
-			<!--<ForceBuildings/> removed in advc097-->
-			<HolyCity>NONE</HolyCity>
-			<ReligionType>NONE</ReligionType>
-			<StateReligion>NONE</StateReligion>
-			<PrereqReligion>NONE</PrereqReligion>
-			<PrereqCorporation>NONE</PrereqCorporation>
-			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>NONE</PrereqTech>
-			<TechTypes/>
-			<BonusType>NONE</BonusType>
-			<PrereqBonuses/>
-			<ProductionTraits/>
-			<Flavors/>
-			<iAIWeight>0</iAIWeight>
-			<iCost>-1</iCost>
-			<iHurryCostModifier>0</iHurryCostModifier>
-			<iAdvancedStartCost>100</iAdvancedStartCost>
-			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<iMinAreaSize>-1</iMinAreaSize>
-	<!-- doto governor identify the unit as governor-->
-			<iGovernoru>1</iGovernoru>
-	<!-- doto governor -->
-			<iMoves>1</iMoves>
-			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
-			<iAirUnitCap>0</iAirUnitCap>
-			<iDropRange>0</iDropRange>
-			<iNukeRange>-1</iNukeRange>
-			<iWorkRate>0</iWorkRate>
-			<iBaseDiscover>0</iBaseDiscover>
-			<iDiscoverMultiplier>0</iDiscoverMultiplier>
-			<iBaseHurry>0</iBaseHurry>
-			<iHurryMultiplier>0</iHurryMultiplier>
-			<iBaseTrade>0</iBaseTrade>
-			<iTradeMultiplier>0</iTradeMultiplier>
-			<iGreatWorkCulture>0</iGreatWorkCulture>
-			<iEspionagePoints>0</iEspionagePoints>
-			<TerrainImpassables/>
-			<FeatureImpassables/>
-			<TerrainPassableTechs/>
-			<FeaturePassableTechs/>
-			<iCombat>0</iCombat>
-			<iCombatLimit>0</iCombatLimit>
-			<iAirCombat>0</iAirCombat>
-			<iAirCombatLimit>0</iAirCombatLimit>
-			<iXPValueAttack>0</iXPValueAttack>
-			<iXPValueDefense>0</iXPValueDefense>
-			<iFirstStrikes>0</iFirstStrikes>
-			<iChanceFirstStrikes>0</iChanceFirstStrikes>
-			<iInterceptionProbability>0</iInterceptionProbability>
-			<iEvasionProbability>0</iEvasionProbability>
-			<iWithdrawalProb>0</iWithdrawalProb>
-			<iCollateralDamage>0</iCollateralDamage>
-			<iCollateralDamageLimit>0</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>0</iCollateralDamageMaxUnits>
-			<iCityAttack>0</iCityAttack>
-			<iCityDefense>0</iCityDefense>
-			<iAnimalCombat>0</iAnimalCombat>
-			<iHillsAttack>0</iHillsAttack>
-			<iHillsDefense>0</iHillsDefense>
-			<TerrainNatives/>
-			<FeatureNatives/>
-			<TerrainAttacks/>
-			<TerrainDefenses/>
-			<FeatureAttacks/>
-			<FeatureDefenses/>
-			<UnitClassAttackMods/>
-			<UnitClassDefenseMods/>
-			<UnitCombatMods/>
-			<UnitCombatCollateralImmunes/>
-			<DomainMods/>
-			<BonusProductionModifiers/>
-			<iBombRate>0</iBombRate>
-			<iBombardRate>0</iBombardRate>
-			<SpecialCargo>NONE</SpecialCargo>
-			<DomainCargo>NONE</DomainCargo>
-			<iCargo>0</iCargo>
-			<iConscription>0</iConscription>
-			<iCultureGarrison>0</iCultureGarrison>
-			<iExtraCost>0</iExtraCost>
-			<iAsset>2</iAsset>
-			<iPower>0</iPower>
-			<UnitMeshGroups>
-				<iGroupSize>1</iGroupSize>
-				<fMaxSpeed>1.75</fMaxSpeed>
-				<fPadTime>1</fPadTime>
-				<iMeleeWaveSize>1</iMeleeWaveSize>
-				<iRangedWaveSize>1</iRangedWaveSize>
-				<UnitMeshGroup>
-					<iRequired>1</iRequired>
-					<EarlyArtDefineTag>ART_DEF_UNIT_GOVERNOR</EarlyArtDefineTag>
-				</UnitMeshGroup>
-			</UnitMeshGroups>
-			<FormationType>FORMATION_TYPE_DEFAULT</FormationType>
-			<HotKey/>
-			<bAltDown>0</bAltDown>
-			<bShiftDown>0</bShiftDown>
-			<bCtrlDown>0</bCtrlDown>
-			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions>
-				<FreePromotion>
-					<PromotionType>PROMOTION_GOVERNOR</PromotionType>
-					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
-			</FreePromotions>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>

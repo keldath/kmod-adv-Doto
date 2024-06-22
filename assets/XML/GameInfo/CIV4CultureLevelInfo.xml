@@ -82,24 +82,24 @@
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_MARATHON</GameSpeedType>
 					<!-- advc.251: was 30 -->
-					<iThreshold>20</iThreshold>
+					<iThreshold>300</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_EPICPLUS</GameSpeedType>
-					<iThreshold>17</iThreshold>
+					<iThreshold>250</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_EPIC</GameSpeedType>
-					<iThreshold>15</iThreshold>
+					<iThreshold>200</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_NORMAL</GameSpeedType>
-					<iThreshold>10</iThreshold>
+					<iThreshold>120</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_QUICK</GameSpeedType>
 					<!-- advc.251: was 5 -->
-					<iThreshold>6</iThreshold>
+					<iThreshold>60</iThreshold>
 				</SpeedThreshold>
 			</SpeedThresholds>
 		</CultureLevelInfo>
@@ -115,24 +115,24 @@
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_MARATHON</GameSpeedType>
 					<!-- advc.251: was 300 -->
-					<iThreshold>200</iThreshold>
+					<iThreshold>370</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_EPICPLUS</GameSpeedType>
-					<iThreshold>210</iThreshold>
+					<iThreshold>330</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_EPIC</GameSpeedType>
-					<iThreshold>150</iThreshold>
+					<iThreshold>280</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_NORMAL</GameSpeedType>
-					<iThreshold>100</iThreshold>
+					<iThreshold>220</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_QUICK</GameSpeedType>
 					<!-- advc.251: was 50 -->
-					<iThreshold>60</iThreshold>
+					<iThreshold>160</iThreshold>
 				</SpeedThreshold>
 			</SpeedThresholds>
 		</CultureLevelInfo>
@@ -148,24 +148,24 @@
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_MARATHON</GameSpeedType>
 					<!-- advc.251: was 1500 -->
-					<iThreshold>1000</iThreshold>
+					<iThreshold>1110</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_EPICPLUS</GameSpeedType>
-					<iThreshold>900</iThreshold>
+					<iThreshold>1010</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_EPIC</GameSpeedType>
-					<iThreshold>750</iThreshold>
+					<iThreshold>830</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_NORMAL</GameSpeedType>
-					<iThreshold>500</iThreshold>
+					<iThreshold>580</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_QUICK</GameSpeedType>
 					<!-- advc.251: was 250 -->
-					<iThreshold>300</iThreshold>
+					<iThreshold>380</iThreshold>
 				</SpeedThreshold>
 			</SpeedThresholds>
 		</CultureLevelInfo>

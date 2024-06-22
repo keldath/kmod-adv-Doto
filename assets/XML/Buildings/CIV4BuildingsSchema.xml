@@ -367,9 +367,21 @@
 		<element type="BuildingClassType"/>
 		<element type="bNeededInCity"/>
 	</ElementType>
+<!-- doto BuildingClassNotCity start-->
+	<ElementType name="bNotInCity" content="textOnly" dt:type="boolean"/>
+	<ElementType name="BuildingClassNotCity" content="eltOnly">
+		<element type="BuildingClassType"/>
+		<element type="bNotInCity"/>
+	</ElementType>
+<!-- doto BuildingClassNotCity end-->
 	<ElementType name="BuildingClassNeededs" content="eltOnly">
 		<element type="BuildingClassNeeded" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
+<!-- doto BuildingClassNotCity start-->
+	<ElementType name="BuildingClassNotCitys" content="eltOnly">
+		<element type="BuildingClassNotCity" minOccurs="0" maxOccurs="*"/>
+	</ElementType>
+<!-- doto BuildingClassNotCity end-->
 	<ElementType name="SpecialistYieldChange" content="eltOnly">
 		<element type="SpecialistType"/>
 		<element type="YieldChanges"/>
@@ -599,6 +611,9 @@
 		<element type="BuildingHappinessChanges" minOccurs="0"/>
 		<element type="PrereqBuildingClasses" minOccurs="0"/>
 		<element type="BuildingClassNeededs" minOccurs="0"/>
+<!-- doto BuildingClassNotCity start-->
+		<element type="BuildingClassNotCitys" minOccurs="0"/>
+<!-- doto BuildingClassNotCity end-->
 		<element type="SpecialistYieldChanges" minOccurs="0"/>
 		<element type="BonusYieldModifiers" minOccurs="0"/>
 		<element type="ImprovementFreeSpecialists" minOccurs="0"/>

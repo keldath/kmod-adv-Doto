@@ -224,10 +224,8 @@ public:
 	bool hasAutoUnit() const;
 	DllExport bool hasBusyUnit() const;
 
-	// K-Mod
-	bool isChoosingFreeTech() const { return m_iChoosingFreeTechCount > 0; }
-	void changeChoosingFreeTechCount(int iChange) { m_iChoosingFreeTechCount += iChange; }
-	// K-Mod end
+	bool isChoosingFreeTech() const { return m_iChoosingFreeTechCount > 0; } // K-Mod
+	void changeChoosingFreeTechCount(int iChange) { m_iChoosingFreeTechCount += iChange; } // K-Mod
 
 	void chooseTech(int iDiscover = 0, CvWString szText = "", bool bFront = false);									// Exposed to Python
 
@@ -1113,6 +1111,13 @@ public:
 	int getBonusImport(BonusTypes eBonus) const { return m_aiBonusImport.get(eBonus); }								// Exposed to Python
 	void changeBonusImport(BonusTypes eBonus, int iChange);
 
+//doto units bonus cap	
+	int getNumUnitBonusCaps(BonusTypes eBonus) const { return m_aiUnitBonusCaps.get(eBonus); }													// Exposed to Python												// Exposed to Python
+	int getTotalPlayerBonus(BonusTypes eBonus) const { return m_aiTotalPlayerBonus.get(eBonus); }													// Exposed to Python												// Exposed to Python
+	void changeNumUnitBonusCaps(BonusTypes eBonus, int iChange);
+	void changeTotalPlayerBonus(BonusTypes eBonus);
+//doto units bonus cap	
+
 	int getImprovementCount(ImprovementTypes eImprov) const { return m_aiImprovementCount.get(eImprov); }			// Exposed to Python
 	void changeImprovementCount(ImprovementTypes eImprov, int iChange);
 
@@ -1764,6 +1769,10 @@ protected:  // <advc.210>
 	// advc.120: K-Mod had used default 1; now 0 again.
 	ArrayEnumMap<TeamTypes,int,short> m_aiEspionageSpendingWeightAgainstTeam;
 	ArrayEnumMap<BonusTypes,int,char> m_aiBonusExport;
+//doto units bonus cap	
+	ArrayEnumMap<BonusTypes,int,char> m_aiUnitBonusCaps;
+	ArrayEnumMap<BonusTypes,int,char> m_aiTotalPlayerBonus;
+//doto units bonus cap		
 	ArrayEnumMap<BonusTypes,int,char> m_aiBonusImport;
 	ArrayEnumMap<ImprovementTypes,int,short> m_aiImprovementCount;
 
@@ -1806,6 +1815,7 @@ protected:  // <advc.210>
 	std::vector<AdvCiv4lert*> m_paAlerts; // advc.210
 	// <advc.106b>
 	std::vector<CvTalkingHeadMessage*> m_aMajorMsgs;
+	std::vector<CvTalkingHeadMessage*> m_aHotSeatMsgs;
 	int m_iNewMessages; // </advc.106b>
 	// advc.074:
 	mutable CLinkList<std::pair<PlayerTypes,BonusTypes> > m_cancelingExport;
@@ -1860,6 +1870,8 @@ protected:  // <advc.210>
 	void doWarnings();
 	void doEvents();
 	// <advc.106b>
+	void clearMessageCopies(std::vector<CvTalkingHeadMessage*>* pContainer = NULL);
+	void showMessageCopies(std::vector<CvTalkingHeadMessage*>* pContainer = NULL);
 	void postProcessMessages();
 	int getStartOfTurnMessageLimit() const;
 	// </advc.106b>

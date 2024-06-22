@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Game Text - New -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+		<Tag>TXT_EVENTTRIGGER_PALACE_UPGRADE</Tag>
+		<English>The people has offered to upgrade the Palace for us!</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_PALACE_UPGRADE1</Tag>
+		<English>+1[ICON_GOLD]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_PALACE_UPGRADE2</Tag>
+		<English>+1[ICON_RESEARCH]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_PALACE_UPGRADE3</Tag>
+		<English>+1[ICON_CULTURE]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_PALACE_UPGRADE4</Tag>
+		<English>+1[ICON_ESPIONAGE]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_PALACE_UPGRADE5</Tag>
+		<English>+1[ICON_FOOD]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_PALACE_UPGRADE6</Tag>
+		<English>+1[ICON_PRODUCTION]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_PALACE_UPGRADE7</Tag>
+		<English>+1[ICON_COMMERCE]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_PALACE_UPGRADE8</Tag>
+		<English>+1[ICON_HEALTHY]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_EVENT_PALACE_UPGRADE9</Tag>
+		<English>+1[ICON_HAPPY]</English>
+	</TEXT>
+</Civ4GameText>

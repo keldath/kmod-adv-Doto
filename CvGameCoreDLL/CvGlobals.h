@@ -491,9 +491,6 @@ public:
 		DO(ESPIONAGE_SPY_INTERCEPT_MOD) \
 		DO(ESPIONAGE_SPY_NO_INTRUDE_INTERCEPT_MOD) \
 		DO(USE_SPIES_NO_ENTER_BORDERS) \
-/*MOD@VET_Andera412_Blocade_Unit-begin */ \
-		DO(BLOCADE_UNIT) \
-/*MOD@VET_Andera412_Blocade_Unit-end*/	 \
 		DO(MIN_EXPERIENCE_PER_COMBAT) \
 		DO(MAX_EXPERIENCE_PER_COMBAT) \
 		DO(EXPERIENCE_FROM_WITHDRAWL) \
@@ -501,6 +498,22 @@ public:
 		DO(BASE_UNIT_UPGRADE_COST) \
 		DO(UNIT_UPGRADE_COST_PER_PRODUCTION) \
 		DO(AIR_COMBAT_DAMAGE) \
+/*MOD@VET_Andera412_Blocade_Unit-begin */ \
+		DO(BLOCADE_UNIT) \
+/*MOD@VET_Andera412_Blocade_Unit-end*/	 \
+/*MOD - START - Ranged Strike AI */ \
+		DO(SKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS) \
+		DO(SKIP_RANGE_ATTACK_MIN_STACK_RATIO) \
+		DO(RANGESTRIKE_HIT_MODIFIER) \
+		DO(RANGESTRIKE_DICE) \
+		DO(RANGE_COMBAT_DAMAGE) \
+		DO(RANGESTRIKE_ATT_MOD) \
+/*MOD - start - INFLUENCE DRIVEN WAR CACHE*/	 \
+		DO(IDW_EMERGENCY_DRAFT_ENABLED) \
+		DO(IDW_INFLUENCE_RADIUS) \
+		DO(IDW_NO_BARBARIAN_INFLUENCE) \
+		DO(IDW_NO_NAVAL_INFLUENCE) \
+/*MOD - END - INFLUENCE DRIVEN WAR CACHE*/	 \
 		DO(SHIP_BLOCKADE_RANGE) \
 		DO(MAX_TRADE_ROUTES) \
 		DO(ENABLE_DEBUG_TOOLS_MULTIPLAYER) \
@@ -700,13 +713,77 @@ public:
 //MOD@VET_Andera412_Blocade_Unit-end1/2
 	inline int getBLOCADE_UNIT() {return m_iBLOCADE_UNIT;}									// BlocadeUnit 3/3
 //MOD@VET_Andera412_Blocade_Unit-end1/2
+// MOD - START - Ranged Strike AI
+	inline int getSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS() {return m_iSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS;}	
+	inline int getSKIP_RANGE_ATTACK_MIN_STACK_RATIO() {return m_iSKIP_RANGE_ATTACK_MIN_STACK_RATIO;}	
+	inline int getRANGESTRIKE_HIT_MODIFIER() {return m_iRANGESTRIKE_HIT_MODIFIER;}	
+	inline int getRANGESTRIKE_DICE() {return m_iRANGESTRIKE_DICE;}	
+	inline int getRANGE_COMBAT_DAMAGE() {return m_iRANGE_COMBAT_DAMAGE;}	
+	inline int getRANGESTRIKE_ATT_MOD() {return m_iRANGESTRIKE_ATT_MOD;}		
+// MOD - END - Ranged Strike AI
+/* MOD - START - INFLUENCE DRIVEN WAR CACHE*/	
+	inline int getIDW_EMERGENCY_DRAFT_ENABLED() {return m_iIDW_EMERGENCY_DRAFT_ENABLED;}	
+	inline int getIDW_EMERGENCY_DRAFT_MIN_POPULATION() const {return m_iIDW_EMERGENCY_DRAFT_MIN_POPULATION;}	
+	inline float getIDW_NO_CITY_DEFENDER_MULTIPLIER() const {return m_fIDW_NO_CITY_DEFENDER_MULTIPLIER;}	
+	inline float getIDW_FORT_CAPTURE_MULTIPLIER() const {return m_fIDW_FORT_CAPTURE_MULTIPLIER;}	
+	inline float getIDW_BASE_COMBAT_INFLUENCE() const {return m_fIDW_BASE_COMBAT_INFLUENCE;}	
+	inline float getIDW_EXPERIENCE_FACTOR() const {return m_fIDW_EXPERIENCE_FACTOR;}	
+	inline int getIDW_INFLUENCE_RADIUS() const {return m_iIDW_INFLUENCE_RADIUS;}	
+	inline float getIDW_PLOT_DISTANCE_FACTOR() const {return m_fIDW_PLOT_DISTANCE_FACTOR;}	
+	inline int getIDW_NO_BARBARIAN_INFLUENCE() {return m_iIDW_NO_BARBARIAN_INFLUENCE;}	
+	inline int getIDW_NO_NAVAL_INFLUENCE() {return m_iIDW_NO_NAVAL_INFLUENCE;}	
+	inline float getIDW_BASE_PILLAGE_INFLUENCE() const {return m_fIDW_BASE_PILLAGE_INFLUENCE;}	
+	inline float getIDW_WINNER_PLOT_MULTIPLIER() const {return m_fIDW_WINNER_PLOT_MULTIPLIER;}	
+	inline float getIDW_LOSER_PLOT_MULTIPLIER() const {return m_fIDW_LOSER_PLOT_MULTIPLIER;}	
+	inline float getIDW_WARLORD_MULTIPLIER() const {return m_fIDW_WARLORD_MULTIPLIER;}	
+	inline float getIDW_EMERGENCY_DRAFT_ANGER_MULTIPLIER() const {return m_fIDW_EMERGENCY_DRAFT_ANGER_MULTIPLIER;}	
+	inline float getIDW_EMERGENCY_DRAFT_STRENGTH() const {return m_fIDW_EMERGENCY_DRAFT_STRENGTH;}	
+/* MOD - END - INFLUENCE DRIVEN WAR CACHE*/	
+//capital alternative building
+	inline CvString getCAPITAL_BUILDINGCLASS_2() const {return m_cCAPITAL_BUILDINGCLASS_2;}	
+	inline CvString getCAPITAL_BUILDINGCLASS_3() const {return m_cCAPITAL_BUILDINGCLASS_3;}	
+	inline int getBASE_LOSS_CAPITAL_ANARCHY_LENGTH() const {return m_iBASE_LOSS_CAPITAL_ANARCHY_LENGTH;}	
+	inline int getCULTURE_CONTROL_IMPROVEMENT_CULTURE_BORDER_SQUARE() const {return m_iCULTURE_CONTROL_IMPROVEMENT_CULTURE_BORDER_SQUARE;}	
+	inline int getCULTURE_CONTROL_IMPROVEMENT_ALWAYS_KEEP_OWNER_BORDER() const {return m_iCULTURE_CONTROL_IMPROVEMENT_ALWAYS_KEEP_OWNER_BORDER;}	
+	inline int getPEAK_EXTRA_DEFENSE() const {return m_iPEAK_EXTRA_DEFENSE;}	
+	inline int getPEAK_EXTRA_MOVEMENT() const {return m_iPEAK_EXTRA_MOVEMENT;}	
+	inline int getPEAK_CAN_FOUND_CITY() const {return m_iPEAK_CAN_FOUND_CITY;}	
+	inline int getPEAK_BUILD_TIME_MODIFIER() const {return m_iPEAK_BUILD_TIME_MODIFIER;}	
+	inline int getCULTURE_GOLDEN_AGE_THRESHOLD() const {return m_iCULTURE_GOLDEN_AGE_THRESHOLD;}	
+	inline int getTRUNCATE_ANIMATIONS_ERA() const {return m_iTRUNCATE_ANIMATIONS_ERA;}	
+	inline int getTRUNCATE_ANIMATION_TURNS() const {return m_iTRUNCATE_ANIMATION_TURNS;}	
+	
+	inline int getSPECIALISTS_INSTEAD_OF_POPULATION() const {return m_iSPECIALISTS_INSTEAD_OF_POPULATION;}		
+	inline int getENHANCED_CITY_STATES_THRESHOLD() const {return m_iENHANCED_CITY_STATES_THRESHOLD;}		
+	inline int getFREE_UNITS_PER_STATE_MOD() const {return m_iFREE_UNITS_PER_STATE_MOD;}		
+	inline int getCITY_STATE_TECH_DIFFUSION_MOD() const {return m_iCITY_STATE_TECH_DIFFUSION_MOD;}		
+	inline int getCS_BUILD_UNITS_WITH_NO_PREQ_BONUS() const {return m_iCS_BUILD_UNITS_WITH_NO_PREQ_BONUS;}		
+	inline int getCS_START_SIGHT_RANGE() const {return m_iCS_START_SIGHT_RANGE;}		
+	inline int getCS_CULTURE_LEVEL_MIN_RADIOUS() const {return m_iCS_CULTURE_LEVEL_MIN_RADIOUS;}		
+	inline int getCS_CULTURE_LEVEL_MAX_RADIOUS() const {return m_iCS_CULTURE_LEVEL_MAX_RADIOUS;}		
+	inline int getDISPLAY_CITY_STATES_IN_CUSTOM_GAME() const {return m_iDISPLAY_CITY_STATES_IN_CUSTOM_GAME;}		
+	inline int getSET_NUMBER_OF_CITY_STATES_SPAWN_TINY() const {return m_iSET_NUMBER_OF_CITY_STATES_SPAWN_TINY;}		
+	inline int getSET_NUMBER_OF_CITY_STATES_SPAWN_SMALL() const {return m_iSET_NUMBER_OF_CITY_STATES_SPAWN_SMALL;}		
+	inline int getSET_NUMBER_OF_CITY_STATES_SPAWN_STANDARD() const {return m_iSET_NUMBER_OF_CITY_STATES_SPAWN_STANDARD;}		
+	inline int getSET_NUMBER_OF_CITY_STATES_SPAWN_LARGE() const {return m_iSET_NUMBER_OF_CITY_STATES_SPAWN_LARGE;}		
+	inline int getSET_NUMBER_OF_CITY_STATES_SPAWN_HUGE() const {return m_iSET_NUMBER_OF_CITY_STATES_SPAWN_HUGE;}		
+/*
+	inline int getCIVILIAN_THRESH_1() const {return m_iCIVILIAN_THRESH_1;}		
+	inline int getCIVILIAN_THRESH_2() const {return m_iCIVILIAN_THRESH_2;}		
+	inline int getCIVILIAN_THRESH_3() const {return m_iCIVILIAN_THRESH_3;}		
+	inline int getCIVILIAN_THRESH_4() const {return m_iCIVILIAN_THRESH_4;}		
+	inline int getCIVILIAN_THRESH_5() const {return m_iCIVILIAN_THRESH_5;}		
+	inline int getCIVILIAN_LIMIT_1() const {return m_iCIVILIAN_LIMIT_1;}		
+	inline int getCIVILIAN_LIMIT_2() const {return m_iCIVILIAN_LIMIT_2;}		
+	inline int getCIVILIAN_LIMIT_3() const {return m_iCIVILIAN_LIMIT_3;}		
+	inline int getCIVILIAN_LIMIT_4() const {return m_iCIVILIAN_LIMIT_4;}		
+	inline int getCIVILIAN_LIMIT_5() const {return m_iCIVILIAN_LIMIT_5;}
+*/	
 /*************************************************************************************************/
 /** TGA_INDEXATION                          11/13/07                            MRGENIE          */
 /**                                                                                              */
 /**                                                                                              */
 /*************************************************************************************************/
-//	int getTGA_RELIGIONS();								// GAMEFONT
-//	int getTGA_CORPORATIONS();							// GAMEFONT
 	inline int getTGA_RELIGIONS() {return m_iTGA_RELIGIONS;}	// GAMEFONT
 	inline int getTGA_CORPORATIONS() {return m_iTGA_CORPORATIONS;}	// GAMEFONT
 /*************************************************************************************************/
@@ -986,8 +1063,73 @@ protected:
 	float m_fCAMERA_START_DISTANCE;
 //MOD@VET_Andera412_Blocade_Unit-begin2/2
 	int m_iBLOCADE_UNIT;
-//MOD@VET_Andera412_Blocade_Unit-end2/2	
-
+//MOD@VET_Andera412_Blocade_Unit-end2/2
+// MOD - START - Ranged Strike AI
+	int m_iSKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS;
+	int m_iSKIP_RANGE_ATTACK_MIN_STACK_RATIO;
+	int m_iRANGESTRIKE_HIT_MODIFIER;
+	int m_iRANGESTRIKE_DICE;
+	int m_iRANGE_COMBAT_DAMAGE;
+	int m_iRANGESTRIKE_ATT_MOD;
+/* MOD - END - Ranged Strike AI*/
+/* MOD - START - INFLUENCE DRIVEN WAR CACHE*/	
+	int m_iIDW_EMERGENCY_DRAFT_ENABLED;	
+	int m_iIDW_EMERGENCY_DRAFT_MIN_POPULATION;	
+	float m_fIDW_NO_CITY_DEFENDER_MULTIPLIER;	
+	float m_fIDW_FORT_CAPTURE_MULTIPLIER;	
+	float m_fIDW_BASE_COMBAT_INFLUENCE;	
+	float m_fIDW_EXPERIENCE_FACTOR;	
+	int m_iIDW_INFLUENCE_RADIUS;	
+	float m_fIDW_PLOT_DISTANCE_FACTOR;	
+	int m_iIDW_NO_BARBARIAN_INFLUENCE;	
+	int m_iIDW_NO_NAVAL_INFLUENCE;	
+	float m_fIDW_BASE_PILLAGE_INFLUENCE;	
+	float m_fIDW_WINNER_PLOT_MULTIPLIER;	
+	float m_fIDW_LOSER_PLOT_MULTIPLIER;	
+	float m_fIDW_WARLORD_MULTIPLIER;	
+	float m_fIDW_EMERGENCY_DRAFT_ANGER_MULTIPLIER;	
+	float m_fIDW_EMERGENCY_DRAFT_STRENGTH;	
+/* MOD - END - INFLUENCE DRIVEN WAR CACHE*/
+//capital alternative building	
+	CvString m_cCAPITAL_BUILDINGCLASS_2;
+	CvString m_cCAPITAL_BUILDINGCLASS_3;
+	int m_iBASE_LOSS_CAPITAL_ANARCHY_LENGTH;
+	int m_iCULTURE_CONTROL_IMPROVEMENT_CULTURE_BORDER_SQUARE;
+	int m_iCULTURE_CONTROL_IMPROVEMENT_ALWAYS_KEEP_OWNER_BORDER;
+	int m_iPEAK_EXTRA_DEFENSE;
+	int m_iPEAK_EXTRA_MOVEMENT;	
+	int m_iPEAK_CAN_FOUND_CITY;	
+	int m_iPEAK_BUILD_TIME_MODIFIER;	
+	int m_iCULTURE_GOLDEN_AGE_THRESHOLD;	
+	int m_iTRUNCATE_ANIMATIONS;	
+	int m_iTRUNCATE_ANIMATIONS_ERA;	
+	int m_iTRUNCATE_ANIMATION_TURNS;	
+	int m_iSPECIALISTS_INSTEAD_OF_POPULATION;	
+	int m_iENHANCED_CITY_STATES_THRESHOLD;	
+	int m_iFREE_UNITS_PER_STATE_MOD;	
+	int m_iCITY_STATE_TECH_DIFFUSION_MOD;	
+	int m_iCS_BUILD_UNITS_WITH_NO_PREQ_BONUS;	
+	int m_iCS_START_SIGHT_RANGE;	
+	int m_iCS_CULTURE_LEVEL_MIN_RADIOUS;	
+	int m_iCS_CULTURE_LEVEL_MAX_RADIOUS;	
+	int m_iDISPLAY_CITY_STATES_IN_CUSTOM_GAME;	
+	int m_iSET_NUMBER_OF_CITY_STATES_SPAWN_TINY;	
+	int m_iSET_NUMBER_OF_CITY_STATES_SPAWN_SMALL;	
+	int m_iSET_NUMBER_OF_CITY_STATES_SPAWN_STANDARD;	
+	int m_iSET_NUMBER_OF_CITY_STATES_SPAWN_LARGE;	
+	int m_iSET_NUMBER_OF_CITY_STATES_SPAWN_HUGE;	
+/*
+	int m_iCIVILIAN_THRESH_1;	
+	int m_iCIVILIAN_THRESH_2;	
+	int m_iCIVILIAN_THRESH_3;	
+	int m_iCIVILIAN_THRESH_4;	
+	int m_iCIVILIAN_THRESH_5;	
+	int m_iCIVILIAN_LIMIT_1;	
+	int m_iCIVILIAN_LIMIT_2;	
+	int m_iCIVILIAN_LIMIT_3;	
+	int m_iCIVILIAN_LIMIT_4;	
+	int m_iCIVILIAN_LIMIT_5;	
+*/
 	CvXMLLoadUtility* m_pXMLLoadUtility; // advc.003v
 
 	CvDLLUtilityIFaceBase* m_pDLL;

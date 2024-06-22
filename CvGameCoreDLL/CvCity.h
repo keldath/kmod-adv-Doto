@@ -403,11 +403,17 @@ public:
 	void setGameTurnAcquired(int iNewValue);
 
 	int getPopulation() const { return m_iPopulation; }															// Exposed to Python
+//doto upgrade palace	
+	void upgradePalace(int iOldPopulation, int iNewValue);
+//doto upgrade palace	
 	void setPopulation(int iNewValue);																			// Exposed to Python
 //doto specialists instead of pop	start								
 	int popToSpecialists(int iOldPopulation, int m_iPopulation);																					// Exposed to Python
 	int popToSpecialists2(int iOldPopulation, int m_iPopulation);																					// Exposed to Python
 //doto specialists instead of pop	end
+//doto start units bonus cap	
+	void resetBonusCap();
+//doto end units bonus cap	
 	void changePopulation(int iChange);																			// Exposed to Python
 /* doto-Population Limit ModComp - Beginning */
 	int getPopulationLimit() const;														// Exposed to Python
@@ -421,23 +427,6 @@ public:
 	void changeFreeCivilianCount(int iChange);											// Exposed to Python
 //	void processFreeCivilianCount();														// Exposed to Python
 //doto specialists instead of population													// Exposed to Python
-//doto governor start
-	int getGovernorUnitLevl() const;															// Exposed to Python
-	void setGovernorUnitLevl(int iNewValue);										// Exposed to Python
-	void changeGovernorUnitLevl(int iChange);											// Exposed to Python
-	int getGovernoXPfromImprovements() const;															// Exposed to Python
-	void setGovernoXPfromImprovements(int iNewValue);										// Exposed to Python
-	void changeGovernoXPfromImprovements(int iChange);											// Exposed to Python
-	int getGovernoUnitCount() const;															// Exposed to Python
-	void setGovernoUnitCount(int iNewValue);										// Exposed to Python
-	void changeGovernoUnitCount(int iChange);											// Exposed to Python
-	int getXPfromImprovementsThreshold();												// Exposed to Python
-	void CvCityCreateGovernor();												// Exposed to Python
-	void giveXpBasedCitySize(int iOldPopulation, int iNewValue);												// Exposed to Python
-	void killGovernor(const CvUnit* bdoUnitPromote = NULL);												// Exposed to Python
-	void processGovernorPromotions(const CvUnit* pUnit);											// Exposed to Python	
-	void processGovernor(const CvUnit* bdoUnitPromote = NULL);											// Exposed to Python	
-//doto governor start
 	int getRealPopulation() const;																				// Exposed to Python
 	int getHighestPopulation() const { return m_iHighestPopulation; }											// Exposed to Python
 	void setHighestPopulation(int iNewValue);
@@ -507,13 +496,7 @@ public:
 	int calculateCorporationMaintenanceTimes100() const;														// Exposed to Python
 	int calculateBaseMaintenanceTimes100(
 			PlayerTypes eOwner = NO_PLAYER) const; // advc.ctr
-	//doto governor -> compensate for added govenor perks of income
-	int getMaintenanceModifier() const {
-		return m_iMaintenanceModifier 
-			 + m_iGovernorUnitCount > 0 ? 10 : 0
-			;
-	}										// Exposed to Python
-	//doto governor -> compensate for added govenor perks of income
+	int getMaintenanceModifier() const { return m_iMaintenanceModifier; }										// Exposed to Python
 	void changeMaintenanceModifier(int iChange);
 
 	int getWarWearinessModifier() const { return m_iWarWearinessModifier; }										// Exposed to Python
@@ -583,22 +566,6 @@ public:
 	int GPTurnsLeft() const;
 	void GPProjection(std::vector<std::pair<UnitTypes,int> >& aeiProjection) const; // (exposed to Python)
 	// </advc.001c>
-
-	//doto governor start
-	int getGreatPeopleRateChangeC() const { return m_iGreatPeopleRateChangeC; }											// Exposed to Python
-	int getHealthC() const { return m_iHealthC; }											// Exposed to Python
-	int getHappinessC() const { return m_iHappinessC; }											// Exposed to Python
-	int getExperienceC() const { return m_iExperienceC; }											// Exposed to Python
-	void setHealthC(int iChange);										// Exposed to Python
-	void setHappinessC(int iChange);											// Exposed to Python
-	void setExperienceC(int iChange);										// Exposed to Python
-	//must be default 1
-	void setGreatPeopleRateChangeC(int value, int iChange = 1);										// Exposed to Python
-	void changeHealthC (int iChange);											// Exposed to Python
-	void changeHappinessC(int iChange);									// Exposed to Python
-	void changeExperienceC(int iChange);											// Exposed to Python
-	//doto Governor end
-	
 	int getBuildingGoodHealth() const { return m_iBuildingGoodHealth; }											// Exposed to Python
 	int getBuildingBadHealth() const { return m_iBuildingBadHealth; }											// Exposed to Python
 	int getBuildingHealth(BuildingTypes eBuilding) const;														// Exposed to Python
@@ -820,7 +787,8 @@ public:
 	DllExport TeamTypes getTeam() const;																		// Exposed to Python
 	// <advc>
 	bool isActiveOwned() const { return (GC.getInitCore().getActivePlayer() == getOwner()); }
-	bool isActiveTeam() const { return (GC.getInitCore().getActiveTeam() == getTeam()); } // </advc>
+	//doto fix for teams - reverse for advc 1.00 date 31.08.2021
+	//bool isActiveTeam() const { return (GC.getInitCore().getActiveTeam() == getTeam()); } // </advc>
 	PlayerTypes getPreviousOwner() const { return m_ePreviousOwner; }											// Exposed to Python
 	void setPreviousOwner(PlayerTypes eNewValue);
 	PlayerTypes getOriginalOwner() const { return m_eOriginalOwner; }											// Exposed to Python
@@ -891,10 +859,6 @@ public:
 	void updateBuildingYieldChange(CivicTypes eCivic, int iChange);
 	void updateBuildingCommerceChange(CivicTypes eCivic, int iChange);
 // < Civic Infos Plus End   >
-//doto governor
-	int getYieldChangeC(YieldTypes eYield) const { return m_piYieldChangeC.get(eYield); }							// Exposed to Python
-	int getCommerceChangeC(CommerceTypes eCommerce) const { return m_piCommerceChangeC.get(eCommerce); }							// Exposed to Python
-//doto governor
 	int getTradeYield(YieldTypes eYield) const { return m_aiTradeYield.get(eYield); }							// Exposed to Python
 	int totalTradeModifier(CvCity const* pOtherCity = NULL) const;												// Exposed to Python
 	int getPopulationTradeModifier() const;
@@ -910,13 +874,6 @@ public:
 	void calculateTradeTotals(YieldTypes eYield, int& iDomesticYield, int& iDomesticRoutes,
 			int& iForeignYield, int& iForeignRoutes, PlayerTypes eWithPlayer = NO_PLAYER) const;
 	// BULL - Trade Hover - end
-	//doto governor
-	void setYieldChangeC(YieldTypes eYield, int iNewValue);
-	void changeYieldChangeC(YieldTypes eYield, int iChange);
-	void setCommerceChangeC(CommerceTypes eCommerce, int iNewValue);
-	void changeCommerceChangeC(CommerceTypes eCommerce, int iChange);
-	//doto governor
-
 	void setTradeYield(YieldTypes eYield, int iNewValue);
 
 	int getExtraSpecialistYield(YieldTypes eYield) const														// Exposed to Python
@@ -1399,6 +1356,9 @@ public:
 	bool isEventOccured(EventTypes eEvent) const;
 	void setEventOccured(EventTypes eEvent, bool bOccured);
 	void doPartisans(); // advc.003y
+//doto start governor based on platyping palace upgrade	
+	void doPalaceUpgrade();
+//doto End governor based on platyping palace upgrade
 
 	int getBuildingYieldChange(BuildingClassTypes eBuildingClass, YieldTypes eYield) const						// Exposed to Python
 	{
@@ -1493,11 +1453,6 @@ protected:
 	/* DOTO Population Limit ModComp - End */
 //doto city states specialists instead of population
 	int m_iFreeCivilianCount;
-//doto governor
-	int m_iGovernorUnitLevl;
-	int m_iGovernoXPfromImprovements;
-	int m_iGovernorUnitCount;
-//doto governor
 	int m_iHighestPopulation;
 	int m_iWorkingPopulation;
 	int m_iSpecialistPopulation;
@@ -1545,14 +1500,6 @@ protected:
 /*************************************************************************************************/
 /** Specialists Enhancements                          END                                              */
 /*************************************************************************************************/
-	//doto governor start
-	int m_iGreatPeopleRateChangeC;
-	YieldTotalMap m_piYieldChangeC;
-	CommerceTotalMap m_piCommerceChangeC;
-	int m_iHealthC;
-	int m_iHappinessC;
-	int m_iExperienceC;
-	//doto governor start
 	int m_iBuildingGoodHealth;
 	int m_iBuildingBadHealth;
 	// <DOTO- Civic Infos Plus Start >

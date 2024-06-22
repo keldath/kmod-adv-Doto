@@ -504,6 +504,8 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	CommerceFlexible().read(stream);
 	CommerceChangeOriginalOwner().read(stream);
 	BuildingClassNeededInCity().read(stream);
+//doto building not in the city	
+	BuildingClassNotInCity().read(stream);
 	SpecialistYieldChange().read(stream);
 	BonusYieldModifier().read(stream);
 	// </advc.003t>
@@ -722,6 +724,8 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	CommerceFlexible().write(stream);
 	CommerceChangeOriginalOwner().write(stream);
 	BuildingClassNeededInCity().write(stream);
+//doto building not in the city	
+	BuildingClassNotInCity().write(stream);
 	SpecialistYieldChange().write(stream);
 	BonusYieldModifier().write(stream);
 	// </advc.003t>
@@ -1012,6 +1016,8 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 
 	pXML->SetVariableListTagPair(PrereqNumOfBuildingClass(), "PrereqBuildingClasses");
 	pXML->SetVariableListTagPair(BuildingClassNeededInCity(), "BuildingClassNeededs");
+//doto building not in the city	
+	pXML->SetVariableListTagPair(BuildingClassNotInCity(), "BuildingClassNotCitys");
 
 	pXML->SetVariableListTagRate(SpecialistYieldChange(),
 			"SpecialistYieldChange", "SpecialistType", "YieldChanges");

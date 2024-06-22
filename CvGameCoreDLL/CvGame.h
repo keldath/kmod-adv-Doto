@@ -312,6 +312,9 @@ public:
 	void setColorsCityStates(int iChange);
 	int getColorsCityStates();
 //doto city states
+//doto special events
+	void setSpecialEvents();
+//doto special events
 	int getCutoffSlice() const;
 	void setCutoffSlice(int iNewValue);
 	void changeCutoffSlice(int iChange);
@@ -817,7 +820,15 @@ public:
 	}
 	VoteSelectionData* addVoteSelection(VoteSourceTypes eVoteSource);
 	void deleteVoteSelection(int iID);
-
+//doto units bonus cap	
+	int getBonusThatArePrereqForUnits(BonusTypes eBonus) const;
+//doto units bonus cap	
+//doto special events
+	int getSpecialEvents(int eTrigger) const;
+//doto special events
+//doto special events
+	int getNumSpecialEvents() const { return numSpecialEvents; };
+//doto special events		
 	VoteTriggeredData* getVoteTriggered(int iID) const;
 	VoteTriggeredData* addVoteTriggered(VoteSelectionData const& kData, int iChoice);
 	VoteTriggeredData* addVoteTriggered(VoteSourceTypes eVoteSource,
@@ -892,13 +903,10 @@ public:
 	void changeShrineBuilding(BuildingTypes eBuilding, ReligionTypes eReligion, bool bRemove = false);*/
 
 	bool culturalVictoryValid() const
-	{
+	{	// (advc, note: Important not to call culturalVictoryNumCultureCities here.)
 		return (m_iNumCultureVictoryCities > 0);
 	}
-	int culturalVictoryNumCultureCities() const
-	{
-		return m_iNumCultureVictoryCities;
-	}
+	int culturalVictoryNumCultureCities() const;
 	CultureLevelTypes culturalVictoryCultureLevel() const;
 	int getCultureThreshold(CultureLevelTypes eLevel) const;
 	int freeCityCultureFromTrait(TraitTypes eTrait) const; // advc.908b
@@ -1080,7 +1088,9 @@ protected:
 	bool m_bFPTestDone; // advc.003g
 //doto city state test
 	int m_pColorCityStates; 
-
+//doto special events	
+	int numSpecialEvents; 
+//doto special events
 	HandicapTypes m_eHandicap;
 	HandicapTypes m_eAIHandicap; // advc.127
 	PlayerTypes m_ePausePlayer;
@@ -1097,7 +1107,20 @@ protected:
 	CvRandom m_sorenRand;
 
 	CvString m_szScriptData;
-
+//doto units bonus cap
+//the idea is to have an array that will list all the bonus in the game
+//that units use as prereq
+//in this way, it will be easy to display the widget of these stratigic bonuses
+//even when they have 0 count.
+//in the code of the widget -> it runs over all bonuses
+//and i dont wanna display all the bonuses or stratific bonuses that are supllied to the user
+//so this list will make sure that ill only show stratigic resources
+//smart eh?	
+	int* m_aiBonusThatArePrereqForUnits;
+//doto units bonus cap
+//doto special events
+	int* m_aeSpecialEvents;
+//doto special events
 	int m_aiUpdateTimers[NUM_UPDATE_TIMER_TYPES]; // advc.003r
 	/*	<advc.enum> (NB: Mustn't use eager allocation for dynamic enum types
 		b/c XML isn't loaded yet.) */
