@@ -3697,7 +3697,16 @@ void CvUnitAI::AI_attackCityMove()
 						and that'll fail b/c AI_safety has already failed. */
 					CvCity* pAreaTargetCity = getArea().AI_getTargetCity(getOwner());
 					if (pAreaTargetCity != NULL)
-					{	/*  advc: One way that this can happen: Owner is at war with a civ that
+					{	
+//doto ranged attack ranged strike	
+//looks like that ranged units gets to this loop for some reason. maybe caus ethey cant attack or something.
+//not sure so,trying this trail
+						if (AI_rangeAttack())
+						{
+							return;
+						}
+//doto ranged attack ranged strike
+						/*  advc: One way that this can happen: Owner is at war with a civ that
 							it can only reach through the territory of a third party (no OB) and
 							is preparing war against the third party.
 							AI_pickTargetCity will then pick a city of the current war enemy, but
@@ -18963,6 +18972,19 @@ bool CvUnitAI::AI_retreatToCity(bool bPrimary, bool bPrioritiseAirlift, int iMax
 					iPass >= 2 ? MOVE_IGNORE_DANGER : NO_MOVEMENT_FLAGS,
 					false, false, MISSIONAI_RETREAT);
 		}
+
+//doto 
+		//unit stuck in a loop work around
+		//had a worker stuck in a loop after its nearest city got conquered.
+		//it got stuck. so added this.
+		//it the unit can still move, then it means pushGroupMoveTo didnt do anything.
+		//to what ever called the AI_retreatToCity will try other stuff - ai_saftey, ai_habdlestrandad
+		if (canMove())
+			pushGroupMoveTo(*pBestPlot,
+				MOVE_IGNORE_DANGER,
+				false, false, MISSIONAI_RETREAT);
+			//return false;
+
 		return true;
 	}
 
