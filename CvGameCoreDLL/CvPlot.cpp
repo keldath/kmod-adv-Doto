@@ -5713,9 +5713,12 @@ void CvPlot::updateWorkingCity()
 		pBestCity = defaultWorkingCity(); // advc: Moved into new function
 
 	CvCity* pOldWorkingCity = getWorkingCity();
-	if (pOldWorkingCity == pBestCity)
+	if (pOldWorkingCity == pBestCity &&
+		// advc.001 (from WtP): Allow proper update upon CvCity::kill
+		(pOldWorkingCity != NULL || !m_workingCity.isIDSet()))
+	{
 		return;
-
+	}
 	if (pOldWorkingCity != NULL)
 		pOldWorkingCity->setWorkingPlot(*this, false);
 
@@ -5774,15 +5777,15 @@ CvCity const* CvPlot::defaultWorkingCity() const
 }
 
 
-void CvPlot::setWorkingCityOverride( const CvCity* pNewValue)
+void CvPlot::setWorkingCityOverride(CvCity* pCity)
 {
-	if (getWorkingCityOverride() == pNewValue)
+	if (getWorkingCityOverride() == pCity)
 		return; // advc
 
-	if (pNewValue != NULL)
+	if (pCity != NULL)
 	{
-		FAssert(pNewValue->getOwner() == getOwner());
-		m_workingCityOverride = pNewValue->getIDInfo();
+		FAssert(pCity->getOwner() == getOwner());
+		m_workingCityOverride = pCity->getIDInfo();
 	}
 	else m_workingCityOverride.reset();
 
@@ -6599,7 +6602,11 @@ int CvPlot::getFoundValue(PlayerTypes eIndex, /* advc.052: */ bool bRandomize) c
 	{
 		short iValue = GC.getPythonCaller()->AI_foundValue(eIndex, *this);
 		if (iValue == -1)
+		{
+			// advc: Otherwise bStartingLoc=true probably isn't correct
+			FAssert(GC.getGame().getElapsedGameTurns() <= 0);
 			m_aiFoundValue.set(eIndex, GET_PLAYER(eIndex).AI_foundValue(getX(), getY(), -1, true));
+		}
 		if (m_aiFoundValue.get(eIndex) > getArea().getBestFoundValue(eIndex))
 			getArea().setBestFoundValue(eIndex, m_aiFoundValue.get(eIndex));
 	}

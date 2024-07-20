@@ -2975,8 +2975,37 @@ void CvGame::update()
 {
 	startProfilingDLL(false);
 	PROFILE_BEGIN("CvGame::update");
+	// <advc.256> Based on C2C, originally mostly from Rise of Mankind, I think.
+	CvPlayer const& kActivePlayer = GET_PLAYER(getActivePlayer());
+	int iSuccessiveUpdates = 1;
+	if (getTurnSlice() > 0) // Wait for BUG initialization
+	{
+		// Needs to match the value range set in XML
+		int const iDefaultGraphicsUpdateRate = 12;
+		int iGraphicsUpdateRate = BUGOption::getValue("MainInterface__GraphicsUpdateRate",
+				iDefaultGraphicsUpdateRate);
+		if (iGraphicsUpdateRate <= 0)
+			iSuccessiveUpdates = 128; // Not quite infinite, but a lot in a row.
+		else iSuccessiveUpdates = iDefaultGraphicsUpdateRate / iGraphicsUpdateRate;
+	}
+	if (isGameMultiPlayer() || !kActivePlayer.isAlive())
+		iSuccessiveUpdates = 1;
+	if (kActivePlayer.isTurnActive() &&
+		(!kActivePlayer.isAutoMoves() ||
+		!kActivePlayer.isOption(PLAYEROPTION_QUICK_MOVES)))
+	{
+		iSuccessiveUpdates = 1;
+	}
+	if (gDLL->GetWorldBuilderMode() && !isInAdvancedStart()) // As in BtS
+		iSuccessiveUpdates = 0;
+	for (int i = 0; i < iSuccessiveUpdates; i++)
+		updateUnprofiled(); // </advc.256>
+	PROFILE_END();
+	stopProfilingDLL(false);
+}
 
-	if (!gDLL->GetWorldBuilderMode() || isInAdvancedStart())
+// advc.256: Cut from update
+void CvGame::updateUnprofiled()
 	{
 		sendPlayerOptions();
 
@@ -3060,9 +3089,6 @@ void CvGame::update()
 		if (isOption(GAMEOPTION_RISE_FALL))
 			m_pRiseFall->restoreDiploText(); // </advc.705>
 	}
-	PROFILE_END();
-	stopProfilingDLL(false);
-}
 
 
 void CvGame::updateScore(bool bForce)
@@ -6880,8 +6906,9 @@ void CvGame::doHolyCity()
 		{
 		{ // scope for iBestValue
 			int iBestValue = MAX_INT;
-			/*	advc.001: Was MAX_TEAMS. Make sure Barbarians can't found a religion
-				somehow. Inspired by Mongoose SDK ReligionMod. */
+			/*	advc.001: Was MAX_TEAMS. Make sure Barbarians don't get a religion
+				here somehow. Inspired by Mongoose SDK ReligionMod. Though they can
+				still get one through CvPlayer::doResearch and CvTeam::setHasTech. */
 			for (TeamIter<CIV_ALIVE> itTeam; itTeam.hasNext(); ++itTeam)
 			{
 				if (!itTeam->isHasTech(GC.getInfo(eReligion).getTechPrereq()) ||

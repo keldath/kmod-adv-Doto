@@ -54,6 +54,14 @@ public:
 			bool bCountCollateral = false, int iBaseCollateral = 0,
 			bool bCheckCanAttack = false,
 			int iCurrentHP = -1, bool bAssumePromotion = false) const; // advc.139
+	/*	collateralDamage no longer includes promotions since BtS 3.17, but
+		the AI should take promotions into account when estimating coll. damage.
+		Not currently used for deciding whether a unit deals _any_ coll. damage. */
+	int AI_collateralDmgFactor() const
+	{	/*	Multiplication would be closer to how collateralCombat works, but,
+			for most units, it won't matter much, and addition is faster. */
+		return collateralDamage() + getExtraCollateralDamage();
+	}
 	// </advc.159>
 	int AI_sacrificeValue(const CvPlot* pPlot) const;
 	// Lead From Behind by UncutDragon (edited for K-Mod):

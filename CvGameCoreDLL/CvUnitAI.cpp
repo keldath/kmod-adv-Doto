@@ -465,7 +465,8 @@ void CvUnitAI::AI_upgrade()
 				pUpgradeUnit->joinGroup(NULL);
 				/*	indicate that the unit intends to rejoin the old group
 					(although it might not actually do so...) */
-				pUpgradeUnit->getGroup()->AI().AI_setMissionAI(MISSIONAI_GROUP, 0, pGroup->getHeadUnit());
+				pUpgradeUnit->getGroup()->AI().AI_setMissionAI(MISSIONAI_GROUP, NULL,
+						pGroup->getHeadUnit());
 			}
 		}
 	}
@@ -813,10 +814,10 @@ bool CvUnitAI::AI_bestCityBuild(CvCityAI const& kCity,
 		- and for that I do not want to disrupt the standard pathfinder.
 		(because I'm paranoid about OOS bugs.) */
 	//GroupPathFinder altFinder;
-	GroupPathFinder& pathFinder = (getGroup()->AI_isControlled() ?
+	GroupPathFinder& pathFinder = (getGroup()->isAIControlled() ?
 			CvSelectionGroup::pathFinder() :
 			CvSelectionGroup::getClearPathFinder()); // advc.opt
-	if (getGroup()->AI_isControlled())
+	if (getGroup()->isAIControlled())
 	{
 		// standard settings. cf. CvUnit::generatePath
 		pathFinder.setGroup(*getGroup(), NO_MOVEMENT_FLAGS);
@@ -1100,8 +1101,10 @@ int CvUnitAI::AI_currEffectiveStr(CvPlot const* pPlot, CvUnit const* pOther,
 		{
 			/*	collateral damage is not trivial to calculate. This estimate is pretty rough.
 				(Note: collateralDamage() and iBaseCollateral both include factors of 100.) */
-			iCombatStrengthPercent += baseCombatStr() * iBaseCollateral *
-					collateralDamage() * iPossibleTargets / 10000;
+			iCombatStrengthPercent += (baseCombatStr() * iBaseCollateral *
+					iPossibleTargets * //collateralDamage()
+					AI_collateralDmgFactor()) // advc.159
+					/ 10000;
 		}
 	} // </K-Mod>
 	FAssert(iCombatStrengthPercent < 100000); // A conservative guard against overflow
@@ -1268,7 +1271,9 @@ void CvUnitAI::LFBgetBetterAttacker(CvUnitAI** ppAttacker, // advc.003u: param w
 				collateralDamageMaxUnits());
 		if (iPossibleTargets > 0)
 		{
-			iValue *= 100 + (collateralDamage() * iPossibleTargets) / 5;
+			iValue *= 100 + (//collateralDamage()
+					AI_collateralDmgFactor() // advc.159
+					* iPossibleTargets) / 5;
 			iValue /= 100;
 		}
 	}
@@ -1284,7 +1289,7 @@ void CvUnitAI::LFBgetBetterAttacker(CvUnitAI** ppAttacker, // advc.003u: param w
 /*  K-Mod - test if we should declare war before moving to the target plot.
 	(originally, DOW were made inside the unit movement mechanics.
 	To me, that seems like a really dumb idea.) */
-bool CvUnitAI::AI_considerDOW(CvPlot const& kPlot) // advc: param was CvPlot*
+bool CvUnitAI::AI_considerDOW(CvPlot const& kPlot)
 {
 	CvTeamAI& kOurTeam = GET_TEAM(getTeam());
 	TeamTypes ePlotTeam = kPlot.getTeam();
@@ -3699,10 +3704,12 @@ void CvUnitAI::AI_attackCityMove()
 					if (pAreaTargetCity != NULL)
 					{	
 //doto ranged attack ranged strike	
-//looks like that ranged units gets to this loop for some reason. maybe caus ethey cant attack or something.
-//not sure so,trying this trail
-						if (AI_rangeAttack())
+//after range units strike a city and the code gets here, the range unit can move but no attack
+//but since the ai is in a group and attacking, it gets stuck without any move command.
+//to avoid the AI_solveBlockageProblem loop it will try to attack ok exit the function before the loop.
+						if (rangeStrikeCapable())
 						{
+							AI_rangeAttack();
 							return;
 						}
 //doto ranged attack ranged strike
@@ -5669,9 +5676,7 @@ void CvUnitAI::AI_spyMove()
 				break;
 			case MISSIONAI_EXPLORE:
 				/*if (atPlot(pMissionPlot))
-				{
-					getGroup()->AI_setMissionAI(NO_MISSIONAI, 0, 0);
-				}*/
+					getGroup()->AI_setMissionAI(NO_MISSIONAI, NULL, NULL);*/
 				break;
 			case MISSIONAI_LOAD_SPECIAL:
 				if (AI_load(UNITAI_SPY_SEA, MISSIONAI_LOAD_SPECIAL))
@@ -6066,7 +6071,8 @@ void CvUnitAI::AI_workerSeaMove()
 	{
 		// BETTER_BTS_AI_MOD, Unit AI, Efficiency, 08/20/09, jdog5000: was AI_getPlotDanger
 		//if (GET_PLAYER(getOwner()).AI_isAnyPlotDanger(getPlot()))
-		// advc.mnai (bugfix arguably; tagging advc.001)
+		/*	advc.mnai (for performance, arguably; tagging advc.opt)
+			Tbd.: Maybe plot danger should really be used; it's more accurate. */
 		if (GET_PLAYER(getOwner()).AI_isAnyWaterDanger(getPlot()))
 		{
 			if (AI_retreatToCity())
@@ -6465,6 +6471,7 @@ void CvUnitAI::AI_attackSeaMove()
 			int iAttackers = getPlot().plotCount(PUF_isUnitAIType, UNITAI_ATTACK_SEA, -1, NO_PLAYER, getTeam());
 			// advc.114a: Why count only group heads? Need to count all attackers!
 					//PUF_isGroupHead, -1, -1);
+			// advc (tbd.): Use AI_getPlotDanger? It's more accurate but slower.
 			int iBlockaders = kOwner.AI_getWaterDanger(getPlot(), 4);
 			//if (iAttackers > iBlockaders + 2)
 			// advc.114a: Replacing the above
@@ -6639,7 +6646,8 @@ void CvUnitAI::AI_reserveSeaMove()
 	} // BETTER_BTS_AI_MOD: END
 
 	/*  <advc.017b> Defend bonus if it's threatened, otherwise, consider a bunch of
-		other activities first. (K-Mod's AI_guardBonus(15) moved down instead.) */
+		other activities first. (K-Mod's AI_guardBonus(15) moved down instead.)
+		Tbd.: Use PlotDanger instead? More accurate but slower. */
 	if(kOwner.AI_isAnyWaterDanger(
 		getPlot(), std::min(maxMoves(), CvPlayerAI::DANGER_RANGE)) &&
 		AI_guardBonus(10))
@@ -7286,6 +7294,7 @@ void CvUnitAI::AI_assaultSeaMove()
 
 			MissionAITypes eMissionAIType = MISSIONAI_GROUP;
 			if (kOwner.AI_isAnyUnitTargetMissionAI(*this, &eMissionAIType, 1, getGroup(), 3) ||
+				// advc (tbd.): Use PlotDanger instead? More accurate but slower.
 				kOwner.AI_isAnyWaterDanger(getPlot(), 4))
 			{
 				// Loaded but with no escort, wait for others joining us soon or avoid dangerous waters
@@ -7527,7 +7536,7 @@ void CvUnitAI::AI_assaultSeaMove()
 			MissionAITypes eMissionAIType = MISSIONAI_GROUP;
 			if (kOwner.AI_isAnyUnitTargetMissionAI(
 				*this, &eMissionAIType, 1, getGroup(), 1))
-			{
+			{	// advc (tbd.): Use PlotDanger instead? More accurate but slower.
 				if (iEscorts < kOwner.AI_getWaterDanger(getPlot(), 2))
 				{
 					// Wait for units which are joining our group this turn (hopefully escorts)
@@ -9122,6 +9131,8 @@ int CvUnitAI::AI_promotionValue(PromotionTypes ePromotion)
 		// Don't consume the leader as a regular promotion
 		return 0;
 	}
+//doto 114 comment - i dont remember why i added it - possibly for governer
+//which i have removed. i dont se harm here as its ok no to count a promo the uni already own.
 	if (isHasPromotion(ePromotion))
 		return 0;
 
@@ -9844,8 +9855,9 @@ bool CvUnitAI::AI_omniGroup(UnitAITypes eUnitAI, int iMaxGroup, int iMaxOwnUnitA
 		if (!AI_allowGroup(*pLoopUnit, eUnitAI))
 			continue;
 
-		// K-Mod. I've restructed this wad of conditions so that it is easier for me to read. // advc: Made a few more edits - parts of it were still off-screen ...
-		/*	((removed ((heaps) of parentheses) (etc)).)
+		/*	K-Mod. I've restructed this wad of conditions so that it is easier for me to read.
+				advc: Made a few more edits - parts of it were still off-screen ...
+			((removed ((heaps) of parentheses) (etc)).)
 			also, I've rearranged the order to be slightly faster for failed checks.
 			Note: the iMaxGroups & OwnUnitAI check is apparently off-by-one.
 			This is for backwards compatibility for the original code. */
@@ -16452,7 +16464,7 @@ bool CvUnitAI::AI_transportGoTo(CvPlot const& kEndTurnPlot, CvPlot const& kTarge
 						!pLoopGroup->isFull())
 					{
 						pLoopGroup->clearMissionQueue();
-						pLoopGroup->AI_setMissionAI(NO_MISSIONAI, 0, 0);
+						pLoopGroup->AI_setMissionAI(NO_MISSIONAI, NULL, NULL);
 					}
 				}
 			}
@@ -18973,7 +18985,7 @@ bool CvUnitAI::AI_retreatToCity(bool bPrimary, bool bPrioritiseAirlift, int iMax
 					false, false, MISSIONAI_RETREAT);
 		}
 
-//doto 
+//doto unit stuck in a loop rare issue 
 		//unit stuck in a loop work around
 		//had a worker stuck in a loop after its nearest city got conquered.
 		//it got stuck. so added this.
@@ -18984,7 +18996,9 @@ bool CvUnitAI::AI_retreatToCity(bool bPrimary, bool bPrioritiseAirlift, int iMax
 				MOVE_IGNORE_DANGER,
 				false, false, MISSIONAI_RETREAT);
 			//return false;
-
+		if (canMove())
+			return false;
+//doto unit stuck in a loop rare issue 
 		return true;
 	}
 
@@ -20092,7 +20106,7 @@ int CvUnitAI::AI_airStrikeValue(CvPlot const& kPlot, int iCurrentBest, bool& bBo
 			iStrikeValue = std::max(0,
 					std::min(pDefender->getDamage() + iDamage, airCombatLimit())
 					- pDefender->getDamage());
-			iStrikeValue += iDamage * collateralDamage() *
+			iStrikeValue += iDamage * AI_collateralDmgFactor() *
 					std::min(iDefenders - 1, collateralDamageMaxUnits()) / 200;
 			iStrikeValue *= (3 + iAdjacentAttackers + iAssaultEnRoute / 2);
 			iStrikeValue /= (iAdjacentAttackers + iAssaultEnRoute > 0 ? 4 : 6) +
@@ -20199,7 +20213,7 @@ bool CvUnitAI::AI_defendBaseAirStrike()
 		int const iDamage = airCombatDamage(pDefender);
 		iValue = std::max(0, (std::min((pDefender->getDamage() + iDamage),
 				airCombatLimit()) - pDefender->getDamage()));
-		iValue += ((iDamage * collateralDamage()) *
+		iValue += ((iDamage * AI_collateralDmgFactor()) *
 				std::min((p.getNumVisibleEnemyDefenders(this) - 1),
 				collateralDamageMaxUnits())) / (2*100);
 
@@ -22002,17 +22016,17 @@ bool CvUnitAI::AI_plotValid(CvPlot const* pPlot) /* advc: */ const
 int CvUnitAI::AI_opportuneOdds(int iActualOdds, CvUnit const& kDefender) const
 {
 	int const iOdds = iActualOdds; // abbreviate
-	int r = iOdds;
+	int iR = iOdds;
 	// adjust the values based on the relative production cost of the units.
 	{
 		int iOurCost = getUnitInfo().getProductionCost();
 		int iTheirCost = kDefender.getUnitInfo().getProductionCost();
 		if (iOurCost > 0 && iTheirCost > 0 && iOurCost != iTheirCost)
 		{
-			//r += iOdds * (100 - iOdds) * 2 * iTheirCost / (iOurCost + iTheirCost) / 100;
-			//r -= iOdds * (100 - iOdds) * 2 * iOurCost / (iOurCost + iTheirCost) / 100;
+			//iR += iOdds * (100 - iOdds) * 2 * iTheirCost / (iOurCost + iTheirCost) / 100;
+			//iR -= iOdds * (100 - iOdds) * 2 * iOurCost / (iOurCost + iTheirCost) / 100;
 			int x = iOdds * (100 - iOdds) * 2 / (iOurCost + iTheirCost + 20);
-			r += x * (iTheirCost - iOurCost) / 100;
+			iR += x * (iTheirCost - iOurCost) / 100;
 		}
 	}
 	// similarly, adjust based on the LFB value (slightly diluted)
@@ -22026,7 +22040,7 @@ int CvUnitAI::AI_opportuneOdds(int iActualOdds, CvUnit const& kDefender) const
 		int iTheirValue = kDefender.LFBgetRelativeValueRating() + iDilution;
 
 		int x = iOdds * (100 - iOdds) * 2 / std::max(1, iOurValue + iTheirValue);
-		r += x * (iTheirValue - iOurValue) / 100;
+		iR += x * (iTheirValue - iOurValue) / 100;
 	}
 
 	CvPlot const& kDefenderPlot = *kDefender.plot();
@@ -22034,22 +22048,22 @@ int CvUnitAI::AI_opportuneOdds(int iActualOdds, CvUnit const& kDefender) const
 	// adjust down if the enemy is on a defensive tile - we'd prefer to attack them on open ground.
 	if (!kDefender.noDefensiveBonus())
 	{
-		r -= (100 - iOdds) * kDefenderPlot.defenseModifier(kDefender.getTeam(), false,
+		iR -= (100 - iOdds) * kDefenderPlot.defenseModifier(kDefender.getTeam(), false,
 			getTeam()) // advc.012
 			/ (getDomainType() == DOMAIN_SEA ? 100 : 300);
 	}
 
 	// adjust the odds up if the enemy is wounded. We want to attack them now before they heal.
-	r += iOdds * (100 - iOdds) * kDefender.getDamage() / (100 * kDefender.maxHitPoints());
+	iR += iOdds * (100 - iOdds) * kDefender.getDamage() / (100 * kDefender.maxHitPoints());
 	// adjust the odds down if our attacker is wounded - but only if healing is viable.
 	if (isHurt() && healRate() > 10)
-		r -= iOdds * (100 - iOdds) * getDamage() / (100 * maxHitPoints());
+		iR -= iOdds * (100 - iOdds) * getDamage() / (100 * maxHitPoints());
 
 	// We're extra keen to take cites when we can...
 	if (kDefenderPlot.isCity() && AI_countEnemyDefenders(kDefenderPlot) == 1)
-		r += (100 - iOdds) / 3;
+		iR += (100 - iOdds) / 3;
 
-	return r;
+	return iR;
 }
 
 // K-Mod. A simple hash of the unit's birthmark.

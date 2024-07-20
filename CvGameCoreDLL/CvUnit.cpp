@@ -476,6 +476,10 @@ void CvUnit::kill(bool bDelay, PlayerTypes ePlayer)
 			pLoopUnit->kill(false, ePlayer);
 		}
 	}
+	/*	advc (note - known issue): We're not checking whether this unit was set
+		as the m_missionAIUnit of a CvSelectionGroup. This becomes a problem
+		only if our FFreeList ID gets assigned to a new unit. Unknown if this
+		ever actually happens. Don't want to loop through all groups just in case. */
 
 	CvPlayerAI& kOwner = GET_PLAYER(getOwner()); // advc
 	if (ePlayer != NO_PLAYER)
@@ -8425,13 +8429,13 @@ bool CvUnit::isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttack
 	{
 		if (pDefender->collateralDamage() > 0)
 		{
-			iOurDefense *= (100 + pDefender->collateralDamage());
+			iOurDefense *= 100 + pDefender->collateralDamage();
 			iOurDefense /= 100;
 		}
 
 		if (pDefender->currInterceptionProbability() > 0)
 		{
-			iOurDefense *= (100 + pDefender->currInterceptionProbability());
+			iOurDefense *= 100 + pDefender->currInterceptionProbability();
 			iOurDefense /= 100;
 		}
 	}
@@ -9089,7 +9093,7 @@ bool CvUnit::isBeforeUnitCycle(CvUnit const& kOther) const
 }
 
 
-bool CvUnit::canJoinGroup(const CvPlot* pPlot, CvSelectionGroup const* pSelectionGroup) const // advc: const pSelectionGroup
+bool CvUnit::canJoinGroup(const CvPlot* pPlot, CvSelectionGroup const* pSelectionGroup) const
 {
 	// do not allow someone to join a group that is about to be split apart
 	// this prevents a case of a never-ending turn
@@ -11744,10 +11748,8 @@ bool CvUnit::airStrike(CvPlot& kPlot, /* <advc.004c> */ bool* pbIntercepted)
 	return true;
 }
 
-//doto Range Strike
-bool CvUnit::canRangeStrike() const
+bool CvUnit::rangeStrikeCapable() const
 {
-//doto Range Strike
 	if (getDomainType() == DOMAIN_AIR)
 		return false;
 
@@ -11758,6 +11760,17 @@ bool CvUnit::canRangeStrike() const
 		return false;
 
 	if (airBaseCombatStr() <= 0)
+		return false;
+
+	return true;
+}
+
+
+//doto Range Strike
+bool CvUnit::canRangeStrike() const
+{
+//doto Range Strike
+	if (!rangeStrikeCapable())
 		return false;
 
 	if (isCargo())

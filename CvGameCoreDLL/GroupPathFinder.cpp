@@ -57,12 +57,9 @@ bool GroupStepMetric::isValidStep(CvPlot const& kFrom, CvPlot const& kTo,
 			kGroup.canMoveAllTerrain());
 }
 
-/*	"pathValid_source" in K-Mod
-	advc.pf (note): Checks based on the path data are problematic in this function.
-	In rare circumstances, the plot danger check can cause the pathfinder to fail;
-	see comment in KmodPathFinder::processChild. */
+// "pathValid_source" in K-Mod
 bool GroupStepMetric::canStepThrough(CvPlot const& kPlot, CvSelectionGroup const& kGroup,
-	MovementFlags eFlags, int iMoves, int iPathTurns)
+	MovementFlags eFlags)
 {
 	//PROFILE_FUNC(); // advc.003o
 
@@ -94,23 +91,11 @@ bool GroupStepMetric::canStepThrough(CvPlot const& kPlot, CvSelectionGroup const
 	{
 		return false;
 	}
-	bool const bAIControl = kGroup.AI_isControlled();
-	if (bAIControl)
-	{
-		if (iPathTurns > 1 || iMoves == 0)
-		{
-			if (!(eFlags & MOVE_IGNORE_DANGER) &&
-				(!kGroup.canFight() ||
-				(eFlags & MOVE_AVOID_DANGER)) && // advc.031d
-				!kGroup.alwaysInvisible() &&
-				GET_PLAYER(kGroup.getHeadOwner()).AI_isAnyPlotDanger(kPlot))
-			{
-				return false;
-			}
-		}
-	}
 
-	if (bAIControl || kPlot.isRevealed(kGroup.getHeadTeam()))
+	/*	(advc.pf: Danger checks based on path data moved into a
+		separate function) */
+
+	if (kGroup.isAIControlled() || kPlot.isRevealed(kGroup.getHeadTeam()))
 	{
 		if (eFlags & (MOVE_THROUGH_ENEMY /* K-Mod: */ | MOVE_ATTACK_STACK))
 		{
@@ -164,6 +149,25 @@ bool GroupStepMetric::canStepThrough(CvPlot const& kPlot, CvSelectionGroup const
 	return true;
 }
 
+/*	advc.pf: Cut from pathValid_source. Given how the pathfinder uses that function
+	(that is: to close off plots entirely after visiting from only one neighbor),
+	it mustn't take into account path data. Doing so had lead to rare pathfinding
+	failures in K-Mod. */
+bool GroupStepMetric::canStepThrough(CvPlot const& kPlot, CvSelectionGroup const& kGroup,
+	MovementFlags eFlags, int iMoves, int iPathTurns)
+{
+	if ((iPathTurns > 1 || iMoves == 0) &&
+		kGroup.isAIControlled() &&
+		!(eFlags & MOVE_IGNORE_DANGER) &&
+		(!kGroup.canFight() || /* advc.031d: */ (eFlags & MOVE_AVOID_DANGER)) &&
+		!kGroup.alwaysInvisible() &&
+		GET_PLAYER(kGroup.getHeadOwner()).AI_isAnyPlotDanger(kPlot))
+	{
+		return false;
+	}
+	return true;
+}
+
 // "pathDestValid" in BtS/ K-Mod
 bool GroupStepMetric::isValidDest(CvPlot const& kPlot, CvSelectionGroup const& kGroup,
 	MovementFlags eFlags)
@@ -177,7 +181,7 @@ bool GroupStepMetric::isValidDest(CvPlot const& kPlot, CvSelectionGroup const& k
 	if (eDomain == DOMAIN_IMMOBILE)
 		return false;
 
-	bool const bAIControl = kGroup.AI_isControlled();
+	bool const bAIControl = kGroup.isAIControlled();
 
 	if (bAIControl)
 	{	/*  BETTER_BTS_AI_MOD, Efficiency, 11/04/09, jdog5000: START
@@ -416,7 +420,7 @@ int GroupStepMetric::cost(CvPlot const& kFrom, CvPlot const& kTo,
 		However, diagonal zig-zags will probably seem unnatural and weird to humans
 		who are just trying to move in a straight line.
 		So let the pathfinding for human groups prefer cardinal movement. */
-	bool const bAIControl = kGroup.AI_isControlled();
+	bool const bAIControl = kGroup.isAIControlled();
 	/*	advc.pf: AI map visibility is generally unimportant and a relatively
 		high weight makes it harder to give routes the proper weight (see below). */
 	if (/*bAIControl*/ iExploreModifier < 3)

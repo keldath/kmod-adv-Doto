@@ -3555,6 +3555,13 @@ void CvPlayer::updatePlunder(int iChange, bool bUpdatePlotGroups)
 	}
 }
 
+// advc.184:
+void CvPlayer::updateMilitaryHappinessUnits()
+{
+	FOR_EACH_CITY_VAR(pCity, *this)
+		pCity->updateMilitaryHappinessUnits();
+}
+
 void CvPlayer::updateTimers()
 {
 	FOR_EACH_GROUP_VAR(pLoopSelectionGroup, *this)
@@ -3840,23 +3847,6 @@ int CvPlayer::countTotalCulture() const
 	FOR_EACH_CITY(pLoopCity, *this)
 		iCount += pLoopCity->getCultureTimes100(getID());
 	return iCount/100;
-}
-
-
-int CvPlayer::countCityFeatures(FeatureTypes eFeature) const
-{
-	PROFILE_FUNC();
-
-	int iCount = 0;
-	FOR_EACH_CITY(pLoopCity, *this)
-	{
-		for (CityPlotIter it(*pLoopCity); it.hasNext(); ++it)
-		{
-			if (it->getFeatureType() == eFeature)
-				iCount++;
-		}
-	}
-	return iCount;
 }
 
 

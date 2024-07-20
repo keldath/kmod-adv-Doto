@@ -3478,7 +3478,7 @@ int CvPlayerAI::AI_getPlotDanger(/* BtS parameters: */ CvPlot const& kPlot, int 
 	// advc.opt: Since the SafeRangeCache is disabled, let's not waste any time with this.
 
 	TeamTypes const eTeam = getTeam();
-	int r = 0;
+	int iR = 0;
 	bCheckBorder = (bCheckBorder &&
 			// advc: Cities were excluded in AI_getAnyPlotDanger, but not in AI_getPlotDanger.
 			// K-Mod: "Cities need to be excluded for some legacy AI code"
@@ -3487,6 +3487,8 @@ int CvPlayerAI::AI_getPlotDanger(/* BtS parameters: */ CvPlot const& kPlot, int 
 			/*	advc.300: Let civs not worry about Barbarian borders and vice versa
 				No need then to check for border danger at peacetime. */
 			GET_TEAM(getTeam()).getNumWars(false) > 0 && !isBarbarian() &&
+			// advc: Maybe (force-)disable the border check for water units?
+			//!kPlot.isWater() &&
 			//bool bCheckBorder = (!isHuman() && !kPlot.isCity());
 			/*  K-Mod. I don't want auto-workers on the frontline.
 				So count border danger for humans too, unless the plot is defended. */
@@ -3501,7 +3503,7 @@ int CvPlayerAI::AI_getPlotDanger(/* BtS parameters: */ CvPlot const& kPlot, int 
 			// <advc>
 			if (iLimit == 1)
 				return 1;
-			r++; // As in K-Mod, border danger can add at most 1 to the danger count.
+			iR++; // As in K-Mod, border danger can add at most 1 to the danger count.
 			// (K-Mod: "I don't think two border tiles are really more dangerous than one border tile.")
 			bCheckBorder = false; // </advc>
 		}
@@ -3561,8 +3563,8 @@ int CvPlayerAI::AI_getPlotDanger(/* BtS parameters: */ CvPlot const& kPlot, int 
 								kPlot.setBorderDangerCache(eActualLoopTeam, true);
 							}
 						}  // <advc>
-						r++;
-						if (r >= iLimit)
+						iR++;
+						if (iR >= iLimit)
 							return iLimit;
 						// Count at most 1 for border danger
 						bCheckBorder = false; 
@@ -3572,8 +3574,8 @@ int CvPlayerAI::AI_getPlotDanger(/* BtS parameters: */ CvPlot const& kPlot, int 
 			if (p.isUnit()) // Redundant but fast (inlined)
 			{
 				// Code moved into auxiliary function
-				r += AI_countDangerousUnits(p, kPlot, bTestMoves, iLimit, eAttackPlayer);
-				if (r >= iLimit)
+				iR += AI_countDangerousUnits(p, kPlot, bTestMoves, iLimit, eAttackPlayer);
+				if (iR >= iLimit)
 					return iLimit;
 			} // </advc>
 		}
@@ -3581,7 +3583,7 @@ int CvPlayerAI::AI_getPlotDanger(/* BtS parameters: */ CvPlot const& kPlot, int 
 			but is this really ever going to be a problem? */
 		/*else if (p.isUnit() && kPlotArea.canBeEntered(p.getArea()))
 		{
-			r += AI_countDangerousUnits(p, kPlot, bTestMoves, 1, eAttackPlayer);
+			iR += AI_countDangerousUnits(p, kPlot, bTestMoves, 1, eAttackPlayer);
 			// ... (copy from above)
 		}*/ // </advc.030>
 	}
@@ -3601,7 +3603,7 @@ int CvPlayerAI::AI_getPlotDanger(/* BtS parameters: */ CvPlot const& kPlot, int 
 		of what iRange is and then reports that the plot is safe for any iRange <= DANGER_RANGE. */
 	/*if (isSafeRangeCacheValid() && iRange > kPlot.getActivePlayerSafeRangeCache())
 		kPlot.setActivePlayerSafeRangeCache(iRange);*/ // advc.opt: SafeRangeCache is disabled
-	return std::min(r, iLimit); // advc.104: May have counted past the limit
+	return std::min(iR, iLimit); // advc.104: May have counted past the limit
 }
 
 // advc: from AI_getAnyPlotDanger
@@ -3694,7 +3696,11 @@ int CvPlayerAI::AI_getWaterDanger(CvPlot const& kPlot, int iRange,
 	{
 		CvPlot const& p = *it;
 		if (!p.isWater() || /* advc.opt: */ !p.isUnit() ||
-			!p.isAdjacentToArea(p.getArea()))
+			/*	advc: More for clarity than for 1-plot lakes (which aren't adjacent
+				to their own area). Or perhaps better to restrict this function to
+				kPlot being land and to use AI_getPlotDanger for water? */
+			(kPlot.isWater() ? !kPlot.sameArea(p) :
+			!kPlot.isAdjacentToArea(p.getArea())))
 		{
 			continue;
 		}
@@ -5398,7 +5404,7 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 					planned sites - but even that isn't exactly what we want. */
 				iBuildValue += 28; // advc: instead of 40
 			}
-			iBuildValue += 4 + iChopValue * (countCityFeatures(eFeature) + 4);
+			iBuildValue += 4 + iChopValue * (AI_countCityFeatures(eFeature) + 4);
 			/*  <advc.129> Very early game: Is the feature blocking a resource?
 				(especially Silver, which can now appear on Grassland Forest) */
 			if (pCapital != NULL && getNumCities() <= 2)
@@ -7580,8 +7586,8 @@ bool CvPlayerAI::AI_demandRebukedSneak(PlayerTypes ePlayer) const
 		//if (GET_TEAM(getTeam()).getPower(true) > GET_TEAM(GET_PLAYER(ePlayer).getTeam()).getDefensivePower(getTeam()))
 		/*	K-Mod. Don't start a war if we're already busy;
 			and use AI_startWarVal to evaluate, rather than just power.
-			The 50 value is arbitrary. zero would probably be fine.
-			50 war rating is also arbitrary, but zero would be too low! */
+			The 50 start-war value is arbitrary. zero would probably be fine.
+			50 war rating is also arbitrary, but, here, zero would be too low! */
 		CvTeamAI const& kTeam = GET_TEAM(getTeam());
 		if (kTeam.AI_getWarPlan(GET_PLAYER(ePlayer).getTeam()) == NO_WARPLAN  &&
 			(!kTeam.AI_isAnyWarPlan() || kTeam.AI_getWarSuccessRating() > 50) &&
@@ -8797,9 +8803,8 @@ int CvPlayerAI::AI_getRankDifferenceAttitude(PlayerTypes ePlayer) const
 		iBase = kPers.getWorseRankDifferenceAttitudeChange();
 		if (iBase != 0) // save time
 		{
-			/*  Want multiplier to be 1 when the rank difference is 35% of
-				CivPlayersEverAlive, and near 0 when greater than 50% of
-				CivPlayersEverAlive. */
+			/*  Want multiplier to be 1 when the rank difference is 35% of its
+				maximum, and near 0 when greater than 50% of its maximum. */
 			rMultiplier = 1 -
 					(2 * iRankDifference - fixp(0.35) * iMaxRankDifference).abs() /
 					iMaxRankDifference;
@@ -15153,6 +15158,24 @@ bool CvPlayerAI::AI_isUnimprovedBonus(CvPlot const& p, CvPlot const* pFromPlot,
 	return false;
 }
 
+/*	advc.042: Moved from CvPlayer, to be consistent with other AI counts moved.
+	May in the future want to exclude rival-owned plots unlikely to flip. */
+int CvPlayerAI::AI_countCityFeatures(FeatureTypes eFeature) const
+{
+	PROFILE_FUNC();
+
+	int iCount = 0;
+	FOR_EACH_CITY(pLoopCity, *this)
+	{
+		for (CityPlotIter it(*pLoopCity); it.hasNext(); ++it)
+		{
+			if (it->getFeatureType() == eFeature)
+				iCount++;
+		}
+	}
+	return iCount;
+}
+
 
 int CvPlayerAI::AI_neededWorkers(CvArea const& kArea) const
 {
@@ -18673,13 +18696,11 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 //<!-- doto civic plus -->	end -> missing in the org code... doto112	
 		}
 	}
-	for (int iI = 0; iI < GC.getNumFeatureInfos(); iI++)
-	{
-		int iHappiness = kCivic.getFeatureHappinessChanges(iI);
-		if (iHappiness != 0)
+	FOR_EACH_ENUM(Feature)
 		{
-			iValue += (iHappiness * countCityFeatures((FeatureTypes)iI) * 5);
-		}
+		int iHappiness = kCivic.getFeatureHappinessChanges(eLoopFeature);
+		if (iHappiness != 0) // (time saving)
+			iValue += (iHappiness * AI_countCityFeatures(eLoopFeature) * 5);
 	}
 
 	FOR_EACH_ENUM(Hurry)
