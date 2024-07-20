@@ -122,7 +122,7 @@
 		savegames that have that option enabled. -->
 	<Define>
 		<DefineName>IGNORE_NEW_RANDOM_SEED_OPTION</DefineName>
-		<iDefineIntVal>0</iDefineIntVal>
+		<iDefineIntVal>1</iDefineIntVal>
 	</Define>
 
 </Civ4Defines>
