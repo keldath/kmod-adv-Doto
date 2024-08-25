@@ -2351,7 +2351,7 @@ void CvUnitAI::AI_attackMove()
 		if (bDanger && getPlot().isCity())
 		{
 //doto Range Strike		
-			if (AI_rangeAttack())
+			if (AI_rangeAttack(55))
 				return;
 //doto Range Strike
 			if (AI_leaveAttack(2, 55, 105))
@@ -3525,7 +3525,7 @@ void CvUnitAI::AI_attackCityMove()
 				if (AI_leaveAttack(1, 51, 100))
 					return;
 //doto Range Strike
-				if (AI_rangeAttack())
+				if (AI_rangeAttack(75))
 					return;
 //doto Range Strike
 				if (AI_defendTerritory(70, eMoveFlags, 3))
@@ -3709,7 +3709,7 @@ void CvUnitAI::AI_attackCityMove()
 //to avoid the AI_solveBlockageProblem loop it will try to attack ok exit the function before the loop.
 						if (rangeStrikeCapable())
 						{
-							AI_rangeAttack();
+							AI_rangeAttack(40);
 							return;
 						}
 //doto ranged attack ranged strike
@@ -3889,7 +3889,7 @@ void CvUnitAI::AI_collateralMove()
 	}
 	// MOD - END - Non-Collateral Siege AI
 	// K-Mod end
-	if (AI_rangeAttack())
+	if (AI_rangeAttack(51))
 	{
 		return;
 	}	
@@ -4228,7 +4228,7 @@ void CvUnitAI::AI_reserveMove()
 	if (AI_guardCityOnlyDefender())
 		return; // K-Mod end
 //doto Range Strike ri
-	if (AI_rangeAttack())
+	if (AI_rangeAttack(60))
 	{
 		return;
 	}
@@ -4424,7 +4424,7 @@ void CvUnitAI::AI_counterMove()
 	}
 
 	//doto Range Strike ri
-	if (AI_rangeAttack())
+	if (AI_rangeAttack(65))
 	{
 		return;
 	}
@@ -4774,7 +4774,7 @@ void CvUnitAI::AI_cityDefenseMove()
 		return;
 	}
 //doto Range Strike	
-	if (AI_rangeAttack())
+	if (AI_rangeAttack(30))
 	{
 		return;
 	}
@@ -14214,7 +14214,9 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, MovementFlags eFlags
 		
 	FAssert(canMove());
 //doto Range Strike
-	if (AI_rangeAttack())
+	//reduce the threshold if the attack came from AI_anyAttack
+	//or minimum of 30 to attack.
+	if (AI_rangeAttack(std::max((iOddsThreshold-15),30)))
 	{
 		return true;
 	}
@@ -14356,36 +14358,21 @@ bool CvUnitAI::AI_anyAttack(int iRange, int iOddsThreshold, MovementFlags eFlags
 }
 
 // MOD - START - Ranged Strike AI
-CvPlot* CvUnitAI::AI_rangeStrikeTargetPlot()
+CvPlot* CvUnitAI::AI_rangeStrikeTargetPlot(int iStrengthThreshold)
 {
 	CvPlot* pBestPlot = NULL;
 	int iBestValue = 0;
-		for (SquareIter it(*this, airRange() , false);it.hasNext(); ++it)
+	for (SquareIter it(*this, airRange(), false);it.hasNext(); ++it)
 	{
 		CvPlot& kLoopPlot = *it;
 		if (kLoopPlot.isVisibleEnemyUnit(this) /*|| // K-Mod: disabled
 			(kLoopPlot.isCity() && AI_potentialEnemy(kLoopPlot.getTeam()))*/)
 		{
-			{	//advc 1.10
-				/*	advc.rstr: A bit better? Still pretty dumb to always shoot
-					the softest target ... */
+			{
 				//doto RI added condition
 				if (!at(kLoopPlot) && canRangeStrikeAt(plot(), kLoopPlot.getX(), kLoopPlot.getY()))
 				{
-					//keldath - mark it as a ranged attack so the ai will know to find its best ranged attacker on the plot.
-					bool rangedCombat = true;
-					int iValue = AI_getGroup()->AI_getWeightedOdds(&kLoopPlot, false, rangedCombat);
-
-					//doto in RI this replaced the above.
-					//int iValue = GET_PLAYER(getOwnerINLINE()).AI_localDefenceStrength(plot(), NO_TEAM, DOMAIN_LAND, 0);
-					//iValue += 1000;
-
-					if (isEnemyCity(kLoopPlot))
-					{
-						// Always prefer to target cities
-						iValue += 1000;
-					}
-
+					int iValue = AI_rangeStrikeValue(&kLoopPlot);
 					if (iValue > iBestValue)
 					{
 						iBestValue = iValue;
@@ -14400,9 +14387,31 @@ CvPlot* CvUnitAI::AI_rangeStrikeTargetPlot()
 }
 // MOD - END - Ranged Strike AI
 
+//doto 114 -> based on any_attack
+int CvUnitAI::AI_rangeStrikeValue(CvPlot const* plot)
+{
+	PROFILE_FUNC();
+	int rangedCombat = true;
+	int iValue = AI_getGroup()->AI_getWeightedOdds(plot, false, rangedCombat);
+//	iValue += GET_PLAYER(getOwner()).AI_localDefenceStrength(plot(), NO_TEAM, DOMAIN_LAND, 0, false);
+//	iValue +=  GET_PLAYER(getOwner()).AI_localDefenceStrength(
+//		plot(), getTeam(), DOMAIN_LAND, 0);
+	// 101 for cities, because that's a better thing to capture.
+	iValue += isEnemyCity(*plot) ? 100 : 0;
+	
+	return iValue;
+}
+
+
 // Returns true if a mission was pushed...
 // MOD - START - Ranged Strike AI
-bool CvUnitAI::AI_rangeAttack(MovementFlags iFlags, bool bAppend, bool bManual, MissionAITypes eMissionAI, CvPlot* pMissionAIPlot, CvUnit* pMissionAIUnit)
+bool CvUnitAI::AI_rangeAttack(int iRangedThreshold)
+{
+	return AI_rangeAttack(NO_MOVEMENT_FLAGS, false, false, NO_MISSIONAI, NULL, NULL, iRangedThreshold);
+}
+
+bool CvUnitAI::AI_rangeAttack(MovementFlags iFlags, bool bAppend, bool bManual, MissionAITypes eMissionAI, CvPlot* pMissionAIPlot, 
+	CvUnit* pMissionAIUnit, int iRangedThreshold)
 {
 	//ranged units are not able to attack moveinto tile attack
 	//FAssert(canMove());
@@ -14411,11 +14420,17 @@ bool CvUnitAI::AI_rangeAttack(MovementFlags iFlags, bool bAppend, bool bManual, 
 	{
 		return false;
 	}
+	CvPlayerAI const& kOwner = GET_PLAYER(getOwner()); // K-Mod
+	int iOurDefence = kOwner.AI_localDefenceStrength(plot(), getTeam()) + 10; //raise the risk some
+	int iEnemyStrength = kOwner.AI_localAttackStrength(plot(), NO_TEAM, DOMAIN_LAND, airRange());
+	//keldath - mark it as a ranged attack so the ai will know to find its best ranged attacker on the plot.
+	if (iEnemyStrength > 0)
+	{
+		if (iOurDefence * 100 / iEnemyStrength < iRangedThreshold)
+			return false; //dont attack if there is too much danger around the ranged attacker.
+	}
 
-	if (AI_rangeAttackCity())
-		return false;
-	
-	CvPlot* pBestPlot = AI_rangeStrikeTargetPlot();
+	CvPlot* pBestPlot = AI_rangeStrikeTargetPlot(iRangedThreshold);
 	if (pBestPlot != NULL)
 	{
 		FAssert(!atPlot(pBestPlot));
@@ -14425,6 +14440,7 @@ bool CvUnitAI::AI_rangeAttack(MovementFlags iFlags, bool bAppend, bool bManual, 
 
 	return false;
 }
+
 bool CvUnitAI::AI_rangeAttackCity()
 {
 	FAssert(canMove());
@@ -14473,7 +14489,7 @@ bool CvUnitAI::AI_rangeAttackCity()
 
 bool CvUnitAI::AI_rangeAttackOrSkip(MovementFlags iFlags, bool bAppend, bool bManual, MissionAITypes eMissionAI, CvPlot* pMissionAIPlot, CvUnit* pMissionAIUnit)
 {
-	if (AI_rangeAttack(iFlags, bAppend, bManual, eMissionAI, pMissionAIPlot, pMissionAIUnit))
+	if (AI_rangeAttack(iFlags, bAppend, bManual, eMissionAI, pMissionAIPlot, pMissionAIUnit, 31))
 	{
 		return true;
 	}
@@ -14486,7 +14502,7 @@ bool CvUnitAI::AI_rangeAttackOrSkip(MovementFlags iFlags, bool bAppend, bool bMa
 
 bool CvUnitAI::AI_rangeAttackOrFortify(MovementFlags iFlags, bool bAppend, bool bManual, MissionAITypes eMissionAI, CvPlot* pMissionAIPlot, CvUnit* pMissionAIUnit)
 {
-	if (AI_rangeAttack(iFlags, bAppend, bManual, eMissionAI, pMissionAIPlot, pMissionAIUnit))
+	if (AI_rangeAttack(iFlags, bAppend, bManual, eMissionAI, pMissionAIPlot, pMissionAIUnit, 80))
 	{
 		return true;
 	}
@@ -14502,7 +14518,9 @@ bool CvUnitAI::AI_rangeAttackOrFortify(MovementFlags iFlags, bool bAppend, bool 
 // (heavily edited for K-Mod)
 bool CvUnitAI::AI_leaveAttack(int iRange, int iOddsThreshold, int iStrengthThreshold)
 {
-	FAssert(canMove());
+//doto 114 got it from tutrle check in attack city move.
+	if (!rangeStrikeCapable())
+		FAssert(canMove());
 	CvPlayerAI const& kOwner = GET_PLAYER(getOwner()); // K-Mod
 	// <advc.300>
 	if (isBarbarian() && iOddsThreshold > 1)

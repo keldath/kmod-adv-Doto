@@ -254,6 +254,10 @@ public:
 	void changeNumUnitGoldenAges(int iChange);
 	int getAnarchyTurns();
 	bool isAnarchy();
+//doto 115 happiness golden age
+	int getHappinessGoldenAgeThresh();
+	int getHappinessGoldenAgeProgress();
+//doto 115 happiness golden age
 	void changeAnarchyTurns(int iChange);
 	int getStrikeTurns();
 	int getMaxAnarchyTurns();
@@ -429,7 +433,7 @@ public:
 	int getBonusExport(int /*BonusTypes*/ iIndex);
 	int getBonusImport(int /*BonusTypes*/ iIndex);
 //doto units bonus cap
-	int getNumUnitBonusCaps(int /*BonusTypes*/ iIndex);
+	int getNumUnitBonusCaps(DomainTypes kDomain, int /*BonusTypes*/ iIndex);
 	int getTotalPlayerBonus(int /*BonusTypes*/ iIndex);
 //doto units bonus cap	
 	int getImprovementCount(int /*ImprovementTypes*/ iIndex);

@@ -641,6 +641,12 @@ public:
 	void changeDefyResolutionAngerTimer(int iChange);															// Exposed to Python
 	int flatDefyResolutionAngerLength() const;																	// Exposed to Python
 	int getHappinessTimer() const { return m_iHappinessTimer; }													// Exposed to Python
+//doto 115 golden age hapiness
+	int getiHappiness() { return m_iHappiness; }													// Exposed to Python
+	void changeUnHappyness (int iChange = 0 ) ;
+	int getUnHappyness() { return m_iUnHappyness; }													// Exposed to Python
+	void changeHappiness(int iChange = 0);
+//doto 115 golden age hapiness	
 	void changeHappinessTimer(int iChange);																		// Exposed to Python
 	int getNoUnhappinessCount() const { return m_iNoUnhappinessCount; }			
 	bool isNoUnhappiness() const { return (getNoUnhappinessCount() > 0); }										// Exposed to Python
@@ -1515,6 +1521,12 @@ protected:
 	int m_iConscriptAngerTimer;
 	int m_iDefyResolutionAngerTimer;
 	int m_iHappinessTimer;
+//doto 115 golden age hapiness
+public:
+	int m_iHappiness;
+	int m_iUnHappyness;
+protected:
+//doto 115 golden age hapiness
 	int m_iMilitaryHappinessUnits;
 	int m_iBuildingGoodHappiness;
 	int m_iBuildingBadHappiness;

@@ -749,7 +749,10 @@ public:
 	inline int getPEAK_EXTRA_MOVEMENT() const {return m_iPEAK_EXTRA_MOVEMENT;}	
 	inline int getPEAK_CAN_FOUND_CITY() const {return m_iPEAK_CAN_FOUND_CITY;}	
 	inline int getPEAK_BUILD_TIME_MODIFIER() const {return m_iPEAK_BUILD_TIME_MODIFIER;}	
-	inline int getCULTURE_GOLDEN_AGE_THRESHOLD() const {return m_iCULTURE_GOLDEN_AGE_THRESHOLD;}	
+	inline int getCULTURE_GOLDEN_AGE_THRESHOLD() const {return m_iCULTURE_GOLDEN_AGE_THRESHOLD;}
+	//DOTO 114 happyness golden age
+	inline int getHAPPYNESS_GOLDEN_AGE_THRESHOLD() const { return m_iHAPPYNESS_GOLDEN_AGE_THRESHOLD; }
+
 	inline int getTRUNCATE_ANIMATIONS_ERA() const {return m_iTRUNCATE_ANIMATIONS_ERA;}	
 	inline int getTRUNCATE_ANIMATION_TURNS() const {return m_iTRUNCATE_ANIMATION_TURNS;}	
 	
@@ -1100,7 +1103,9 @@ protected:
 	int m_iPEAK_EXTRA_MOVEMENT;	
 	int m_iPEAK_CAN_FOUND_CITY;	
 	int m_iPEAK_BUILD_TIME_MODIFIER;	
-	int m_iCULTURE_GOLDEN_AGE_THRESHOLD;	
+	int m_iCULTURE_GOLDEN_AGE_THRESHOLD;
+//DOTO 114 happyness golden age
+	int m_iHAPPYNESS_GOLDEN_AGE_THRESHOLD;
 	int m_iTRUNCATE_ANIMATIONS;	
 	int m_iTRUNCATE_ANIMATIONS_ERA;	
 	int m_iTRUNCATE_ANIMATION_TURNS;	

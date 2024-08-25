@@ -536,6 +536,9 @@ ENUM_START(Widget, WIDGET)
 //doto units bonus cap
 	WIDGET_TRAIN_UNITS_CAP,
 //doto units bonus cap
+//doto 115 happiness golden age
+	WIDGET_HAPPYNESS_GOLDEN_AGE,
+//doto 115 happiness golden age
 ENUM_END(Widget, WIDGET)
 
 ENUM_START(ButtonPopup, BUTTONPOPUP)
@@ -648,6 +651,8 @@ ENUM_START(GameOption, GAMEOPTION)
 //DOTO -tholish-Keldath inactive buildings
 	GAMEOPTION_BUILDING_DELETION,
 	GAMEOPTION_CULTURE_GOLDEN_AGE,
+//doto 115 happyness golden age
+	GAMEOPTION_HAPPYNESS_GOLDEN_AGE,
 //tholih building deletion keldath added as an option
 //by keldath
 	GAMEOPTION_CULTURE_WONDER_LIMIT,

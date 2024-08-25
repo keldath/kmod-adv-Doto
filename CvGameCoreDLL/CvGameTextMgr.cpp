@@ -10146,6 +10146,9 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 		return;
 	CvWString szTempBuffer;
 	CvUnitInfo const& u = GC.getInfo(eUnit);
+//doto 115 code efficiancy
+	DomainTypes kDomain = u.getDomainType();
+//doto units bonus cap	
 	PlayerTypes ePlayer = NO_PLAYER;
 	if (pCity != NULL)
 		ePlayer = pCity->getOwner();
@@ -10535,7 +10538,8 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 					bool capOn = GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP);
 					if (capOn)
 					{
-						int eBonusCap = GET_PLAYER(ePlayer).getNumUnitBonusCaps(ePrereqAndBonus);
+						int eBonusCap = GET_PLAYER(ePlayer).getNumUnitBonusCaps(kDomain, ePrereqAndBonus);
+
 						int eTotalBonus = GET_PLAYER(ePlayer).getTotalPlayerBonus(ePrereqAndBonus);
 						if (eBonusCap >= eTotalBonus || eTotalBonus == 0)
 						{
@@ -10560,15 +10564,14 @@ void CvGameTextMgr::setUnitHelp(CvWStringBuffer &szBuffer, UnitTypes eUnit,
 			{
 				std::vector<BonusTypes> aePrereqOrBonuses;
 				bool bAnyReqFound = false;
-//doto units bonus cap				
-				bool bAnyCapReqFound = false;
 //doto units bonus cap		
+				bool bAnyCapReqFound = false;
 				for (int i = 0; i < u.getNumPrereqOrBonuses(); i++)
 				{
 					BonusTypes ePrereqAndBonus = u.getPrereqOrBonuses(i);
 					if (GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP) && pCity != NULL)
 					{
-						int eBonusCap = GET_PLAYER(ePlayer).getNumUnitBonusCaps(ePrereqAndBonus);
+						int eBonusCap = GET_PLAYER(ePlayer).getNumUnitBonusCaps(kDomain, ePrereqAndBonus);
 						int eTotalBonus = GET_PLAYER(ePlayer).getTotalPlayerBonus(ePrereqAndBonus);
 						if (eBonusCap >= eTotalBonus && eTotalBonus > 0)
 						{

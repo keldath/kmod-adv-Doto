@@ -760,7 +760,13 @@ void CvDLLWidgetData::parseHelp(CvWStringBuffer &szBuffer, CvWidgetDataStruct &w
 		parseTrainUnitCapHelp(widgetDataStruct, szBuffer);
 		break;
 //doto units bonus cap
+//doto 115 happiness golden age
+	case WIDGET_HAPPYNESS_GOLDEN_AGE:
+		parseHappyGoldenAge(widgetDataStruct, szBuffer);
+		break;
+		//doto units bonus cap
 	}
+//doto 115 happiness golden age
 	if (getActivePlayer() == NO_PLAYER)
 		return;
 	static WidgetTypes aeExpandTypes[] =
@@ -4993,7 +4999,7 @@ void CvDLLWidgetData::parseFlagHelp(CvWidgetDataStruct &widgetDataStruct, CvWStr
 /*                                                                                              */
 /************************************************************************************************/
 	// Add string showing version number
-	szTempBuffer.Format(NEWLINE SETCOLR L"%S" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), "AdvCiv 1.10_17092023 + Doto 1.14");
+	szTempBuffer.Format(NEWLINE SETCOLR L"%S" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), "AdvCiv 1.11 pre + Doto 1.14");
 	szBuffer.append(szTempBuffer);
 	szBuffer.append(NEWLINE);
 //doto units bonus cap
@@ -6532,23 +6538,48 @@ void CvDLLWidgetData::parseTrainUnitCapHelp(CvWidgetDataStruct &widgetDataStruct
 	CvPlayer& kPlayer = GET_PLAYER(GC.getGame().getActivePlayer());
 	for (int i = 0; i < GC.getNumBonusInfos(); i++)
 	{
-		int eCap = kPlayer.getNumUnitBonusCaps((BonusTypes)i);
+		int eCap = kPlayer.getNumUnitBonusCaps(DOMAIN_LAND, (BonusTypes)i);
+		int eAirCap = kPlayer.getNumUnitBonusCaps(DOMAIN_AIR, (BonusTypes)i);
+		int eSeaCap = kPlayer.getNumUnitBonusCaps(DOMAIN_SEA, (BonusTypes)i);
 		int eTotalCap = kPlayer.getTotalPlayerBonus((BonusTypes)i);
-		//if (eTotalCap != NULL || eCap != NULL)
+
 		bool bFirst = true;
 		if (GC.getGame().getBonusThatArePrereqForUnits((BonusTypes)i) > 0)
 		{
 			CvBonusInfo& kBonus = GC.getBonusInfo((BonusTypes)i);
 			if (!(GET_TEAM(kPlayer.getTeam()).isHasTech((TechTypes)(kBonus.getTechReveal()))))
 				continue;
-			//szTempBuffer.Format(NEWLINE SETCOLR L"%d/%d" ENDCOLR, TEXT_COLOR("COLOR_POSITIVE_TEXT"), eCap, eTotalCap );
-			szTempBuffer.Format(L"%c " SETCOLR L"%s" ENDCOLR L" %d/%d", kBonus.getChar(), TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"), kBonus.getDescription(), eCap, eTotalCap);
+			szTempBuffer.Format(SETCOLR L" [ Total ] / [ Land | Sea | Air ]" ENDCOLR, TEXT_COLOR("COLOR_UNIT_TEXT"));
+			szBuffer.append(szTempBuffer);
+			szBuffer.append(NEWLINE);
+			szTempBuffer.Format(L"%c " SETCOLR L"%s " ENDCOLR L"[ %d ] / [ %d | %d | %d ]", kBonus.getChar(), TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"), kBonus.getDescription(), eTotalCap, eCap, eSeaCap, eAirCap);
 			szBuffer.append(szTempBuffer);
 			bFirst = false;
 		}
 		if (!bFirst)
 			szBuffer.append(NEWLINE);
 	}
-	
 }
-//doto units bonus cap
+//doto 115 happiness golden age
+void CvDLLWidgetData::parseHappyGoldenAge(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer)
+{
+	CvWString szTempBuffer;
+	CvPlayer& kPlayer = GET_PLAYER(GC.getGame().getActivePlayer());
+	
+	int golden_thresh = kPlayer.getHappinessGoldenAgeThresh();
+	int golden_prgress = kPlayer.getHappinessGoldenAgeProgress();
+	szTempBuffer.Format(SETCOLR L" Global Happyness Golden Age" ENDCOLR, TEXT_COLOR("COLOR_UNIT_TEXT"));
+	szBuffer.append(szTempBuffer);
+	szBuffer.append(NEWLINE);
+	szTempBuffer.Format(L"Happynes Current Progress: " SETCOLR L"%s " ENDCOLR , TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"), golden_prgress);
+	szBuffer.append(szTempBuffer);
+	szBuffer.append(NEWLINE);
+	szTempBuffer.Format(L": Required Happyness for next level: " SETCOLR L"%s " ENDCOLR, TEXT_COLOR("COLOR_HIGHLIGHT_TEXT"), golden_thresh);
+	szBuffer.append(szTempBuffer);
+	szBuffer.append(NEWLINE);
+	szTempBuffer.Format(L": Happyness progress is provided from all cities happyness surplus. negetive surplus will lower the progress" SETCOLR L"%s " ENDCOLR, TEXT_COLOR("COLOR_UNIT_TEXT"));
+	szBuffer.append(szTempBuffer);
+	szBuffer.append(NEWLINE);
+	szTempBuffer.Format(L": Threshold is determind by speed, world size and great people" SETCOLR L"%s " ENDCOLR, TEXT_COLOR("COLOR_UNIT_TEXT"));
+	szBuffer.append(szTempBuffer);
+}

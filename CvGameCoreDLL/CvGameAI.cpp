@@ -161,6 +161,8 @@ int CvGameAI::AI_combatRangedValue(UnitTypes eUnit) /* K-Mod: */ const
 	int eAir = GC.getInfo(eUnit).getAirCombat();
 	if (eAir != DOMAIN_AIR && eAir > 0)
 		iValue *= eAir;
+	else
+		return 0;
 	iValue /= getBestLandUnitCombat();
 	return iValue;
 }

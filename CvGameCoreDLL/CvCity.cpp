@@ -86,6 +86,13 @@ CvCity::CvCity() // advc.003u: Merged with the deleted reset function
 	m_iConscriptAngerTimer = 0;
 	m_iDefyResolutionAngerTimer = 0;
 	m_iHappinessTimer = 0;
+//doto 115 golden age hapiness
+//total happyness will now be cached so it can be called from
+//player.cpp per city instead of each turn calculating it per city.
+//this makes the happyness golden age code better.
+	m_iHappiness = 0;
+	m_iUnHappyness = 0;
+//doto 115 golden age hapiness
 	m_iMilitaryHappinessUnits = 0;
 	m_iBuildingGoodHappiness = 0;
 	m_iBuildingBadHappiness = 0;
@@ -3303,9 +3310,6 @@ int CvCity::getBonusYieldRateModifier(YieldTypes eYield, BonusTypes eBonus) cons
 
 void CvCity::processBonus(BonusTypes eBonus, int iChange)
 {
-	//keldath test
-	//if (eBonus == 35)
-	//	CvBonusInfo& kBonus = GC.getInfo(eBonus); 
 	CvCivilization const& kCiv = getCivilization();
 	{
 		int iValue = GC.getInfo(eBonus).getHealth();
@@ -4061,12 +4065,28 @@ int CvCity::getVassalUnhappiness() const
 	return 0; // </advc.opt>
 }
 
+//doto 115 happyness golden age
+void CvCity::changeUnHappyness(int iChange)
+{
+	m_iUnHappyness = iChange;
+}
+void CvCity::changeHappiness(int iChange)
+{
+	m_iHappiness = iChange;
+}
+//doto 115 happyness golden age
 
 int CvCity::unhappyLevel(int iExtra) const
 {
 	if (isNoUnhappiness())
+	{
+//doto 115 happyness golden age -> cache the happyness
+		CvCity* pCity = getPlot().getPlotCity();//had to concert to none const
+		FAssert(pCity == this);
+		pCity->changeUnHappyness(0);
+//doto 115 happyness golden age -> cache the happyness
 		return 0; // advc
-
+	}
 	int iAngerPercent = 0;
 	iAngerPercent += getOvercrowdingPercentAnger(iExtra);
 	iAngerPercent += getNoMilitaryPercentAnger();
@@ -4113,6 +4133,12 @@ int CvCity::unhappyLevel(int iExtra) const
 	iUnhappiness += std::max(0, getVassalUnhappiness());
 	iUnhappiness += std::max(0, getEspionageHappinessCounter());
 
+	//doto 115 happyness golden age -> cache the happyness
+	CvCity* pCity = getPlot().getPlotCity();
+	FAssert(pCity == this);
+	pCity->changeUnHappyness(std::max(0, iUnhappiness));
+	//doto 115 happyness golden age -> cache the happyness
+
 	return std::max(0, iUnhappiness);
 }
 
@@ -4149,6 +4175,11 @@ int CvCity::happyLevel() const
 		static int const iTEMP_HAPPY = GC.getDefineINT("TEMP_HAPPY"); // advc.opt
 		iHappiness += iTEMP_HAPPY;
 	}
+//doto 115 happyness golden age -> cache the happyness
+	CvCity* pCity = getPlot().getPlotCity();//had to concert to none const
+	FAssert(pCity == this);
+	pCity->changeHappiness(std::max(0, iHappiness));
+//doto 115 happyness golden age -> cache the happyness
 
 	return std::max(0, iHappiness);
 }
@@ -12842,6 +12873,10 @@ void CvCity::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iConscriptAngerTimer);
 	pStream->Read(&m_iDefyResolutionAngerTimer);
 	pStream->Read(&m_iHappinessTimer);
+//doto 115 golden age hapiness
+	pStream->Read(&m_iHappiness);
+	pStream->Read(&m_iUnHappyness);
+//doto 115 golden age hapiness
 	pStream->Read(&m_iMilitaryHappinessUnits);
 /*************************************************************************************************/
 /** Specialists Enhancements, by Supercheese 10/9/09                                                   */
@@ -13522,6 +13557,10 @@ void CvCity::write(FDataStreamBase* pStream)
 	pStream->Write(m_iConscriptAngerTimer);
 	pStream->Write(m_iDefyResolutionAngerTimer);
 	pStream->Write(m_iHappinessTimer);
+//doto 115 golden age hapiness
+	pStream->Write(m_iHappiness);
+	pStream->Write(m_iUnHappyness);
+//doto 115 golden age hapiness
 	pStream->Write(m_iMilitaryHappinessUnits);
 /*************************************************************************************************/
 /** Specialists Enhancements, by Supercheese 10/9/09                                                   */

@@ -294,6 +294,10 @@ public:
 	int AI_maxGoldPerTurnTrade(PlayerTypes ePlayer,										// Exposed to Python
 			bool bCheckOverdraft = false) const; // advc.133
 	int AI_goldPerTurnTradeVal(int iGoldPerTurn) const;
+//doto units bonus cap
+	int AI_bonuesCapValue(BonusTypes eBonus, int value, int change) const;
+//doto units bonus cap
+
 	int AI_bonusVal(BonusTypes eBonus, int iChange,
 			bool bAssumeEnabled = false, // K-Mod
 			// advc.036: Whether baseBonusVal is computed for a resource trade

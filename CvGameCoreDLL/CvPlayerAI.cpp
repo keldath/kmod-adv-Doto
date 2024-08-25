@@ -11658,42 +11658,42 @@ int CvPlayerAI::AI_maxGoldPerTurnTrade(PlayerTypes ePlayer,
 		part had no effect. The AI shouldn't make assumptions about human
 		finances anyway. Let human use the gold slider to communicate how much
 		gpt the AI can ask for in trade proposals. */
-	scaled rAvailable(
-			AI_getAvailableIncome() - getGoldPerTurn() - calculateInflatedCosts(), 3);
-	// Included in AvailableIncome, but don't want to divide it by 3.
-	rAvailable += getGoldPerTurn();
-	scaled rGoldRate;
-	{
-		rGoldRate = calculateGoldRate();
-		rGoldRate.decreaseTo(rGoldRate / 3 +
-				scaled(getGold(), GC.getDefineINT(CvGlobals::PEACE_TREATY_LENGTH)));
-		rGoldRate.increaseTo(0);
-	}
-	rAvailable.increaseTo(rGoldRate);
-	// </advc.036>
-	//rAvailable = calculateGoldRate(); // BtS
-	// <advc.104w>
-	if (getUWAI().isEnabled() && GET_TEAM(ePlayer).isAtWar(getTeam()))
-		return rAvailable.toMultipleFloor(5); // </advc.104w>
-	scaled rMaxGoldPerTurn;
-	{
-		rMaxGoldPerTurn = getTotalPopulation();
-		rMaxGoldPerTurn *= 4; // advc.036
-		rMaxGoldPerTurn.mulDiv(GC.getInfo(getPersonalityType()).
-				getMaxGoldPerTurnTradePercent(), 100);
-		rMaxGoldPerTurn += std::min(0, getGoldPerTurnByPlayer(ePlayer));
-	}
-	// <advc.036>
-	int iMax = AI_adjustTradeGoldToDiplo(rMaxGoldPerTurn.floor(), ePlayer);
-	int iAvailable = rAvailable.floor();
-	// <advc.133> Don't increase to 0 if we're interested in excess payments
-	if (bCheckOverdraft)
-		return std::min(iMax, iAvailable); // </advc.133>
-	int iR = ::range(iMax, 0, iAvailable);
-	// This will only be relevant in the late game
-	if (iR > 10 * GC.getDefineINT(CvGlobals::DIPLOMACY_VALUE_REMAINDER))
-		AI_roundTradeVal(iR);
-	return iR; // </advc.036>
+scaled rAvailable(
+	AI_getAvailableIncome() - getGoldPerTurn() - calculateInflatedCosts(), 3);
+// Included in AvailableIncome, but don't want to divide it by 3.
+rAvailable += getGoldPerTurn();
+scaled rGoldRate;
+{
+	rGoldRate = calculateGoldRate();
+	rGoldRate.decreaseTo(rGoldRate / 3 +
+		scaled(getGold(), GC.getDefineINT(CvGlobals::PEACE_TREATY_LENGTH)));
+	rGoldRate.increaseTo(0);
+}
+rAvailable.increaseTo(rGoldRate);
+// </advc.036>
+//rAvailable = calculateGoldRate(); // BtS
+// <advc.104w>
+if (getUWAI().isEnabled() && GET_TEAM(ePlayer).isAtWar(getTeam()))
+return rAvailable.toMultipleFloor(5); // </advc.104w>
+scaled rMaxGoldPerTurn;
+{
+	rMaxGoldPerTurn = getTotalPopulation();
+	rMaxGoldPerTurn *= 4; // advc.036
+	rMaxGoldPerTurn.mulDiv(GC.getInfo(getPersonalityType()).
+		getMaxGoldPerTurnTradePercent(), 100);
+	rMaxGoldPerTurn += std::min(0, getGoldPerTurnByPlayer(ePlayer));
+}
+// <advc.036>
+int iMax = AI_adjustTradeGoldToDiplo(rMaxGoldPerTurn.floor(), ePlayer);
+int iAvailable = rAvailable.floor();
+// <advc.133> Don't increase to 0 if we're interested in excess payments
+if (bCheckOverdraft)
+return std::min(iMax, iAvailable); // </advc.133>
+int iR = ::range(iMax, 0, iAvailable);
+// This will only be relevant in the late game
+if (iR > 10 * GC.getDefineINT(CvGlobals::DIPLOMACY_VALUE_REMAINDER))
+AI_roundTradeVal(iR);
+return iR; // </advc.036>
 }
 
 
@@ -11705,6 +11705,43 @@ int CvPlayerAI::AI_goldPerTurnTradeVal(int iGoldPerTurn) const
 
 	return iValue;
 }
+
+//doto units bonus cap
+int CvPlayerAI::AI_bonuesCapValue(BonusTypes eBonus,  int value, int change) const
+{
+	if (GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP) && GC.getGame().getBonusThatArePrereqForUnits(eBonus) > 0)
+	{
+		/*  in doto 114 these were all just check conditions. here i made it as
+		an added value to value*/
+		int eCap = getNumUnitBonusCaps(DOMAIN_LAND, eBonus);
+		int eAirCap = getNumUnitBonusCaps(DOMAIN_AIR, eBonus);
+		int eSeaCap = getNumUnitBonusCaps(DOMAIN_SEA, eBonus);
+		int eTotalPlayerBonus = getTotalPlayerBonus(eBonus);
+
+		int doubleUp = 1;
+		int weAreShortOn = 0;
+		if (eCap >= eTotalPlayerBonus)
+			weAreShortOn += (eCap - eTotalPlayerBonus) + 20;
+		if (eAirCap >= eTotalPlayerBonus)
+			weAreShortOn += (eCap - eTotalPlayerBonus) + 10;
+		if (eSeaCap >= eTotalPlayerBonus)
+			weAreShortOn += (eCap - eTotalPlayerBonus) + 5;
+
+		if ((eTotalPlayerBonus == 0 && change >= 1) || weAreShortOn > 0)
+			doubleUp = 2;
+
+		return (value * doubleUp) + weAreShortOn;
+
+		/* decided to ignore this from doto114
+		if eTotalPlayerBonus > 0 && (eTotalPlayerBonus - eCap) <= getNumCities() * 2
+		if eTotalPlayerBonus > 0 && (eTotalPlayerBonus - eAirCap) <= getNumCities() * 2
+		if eTotalPlayerBonus > 0 && (eTotalPlayerBonus - eSeaCap) <= getNumCities() * 2
+		s*/
+	}
+	return value;
+	//doto units bonus cap
+}
+//doto units bonus cap
 
 // (very roughly 4x gold / turn / city)
 int CvPlayerAI::AI_bonusVal(BonusTypes eBonus, int iChange, bool bAssumeEnabled,
@@ -11727,29 +11764,16 @@ int CvPlayerAI::AI_bonusVal(BonusTypes eBonus, int iChange, bool bAssumeEnabled,
 			iSurplus += std::max(0, getNumTradeableBonuses(eLoopBonus) - 1);
 	}
 	iTradeVal = (4 / (scaled::max(1, std::max(iSurplus,
-			2 * (iBonusCount + iChange)))).sqrt()).round(); // </advc.036>
+		2 * (iBonusCount + iChange)))).sqrt()).round(); // </advc.036>
 	if (iChange == 0 || (iChange == 1 && iBonusCount == 0) ||
 		(iChange == -1 && iBonusCount == 1) ||
 		iChange + iBonusCount < 1
-		
-		//doto units bonus cap
-		/* value the bonus if we have cap peaked or we dont have a total cap for this bonus.
-			this means the bonus is valubale for us or so i hope*/
-		||
-		((GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP) && GC.getGame().getBonusThatArePrereqForUnits(eBonus) > 0)
-		&& ((getNumUnitBonusCaps(eBonus) >= getTotalPlayerBonus(eBonus)) 
-			|| (getTotalPlayerBonus(eBonus) > 0 && (getTotalPlayerBonus(eBonus) - getNumUnitBonusCaps(eBonus)) <= getNumCities() * 2) //keep a buffer for the player to be able to build units
-			|| (getTotalPlayerBonus(eBonus) == 0 && iChange >= 1)
-			//|| getNumWars(true, true) > 0 maybe at war time bonus is higher?
-			))
-		//doto units bonus cap
-
 		) // advc.036: Cover all strange cases here
 	{
 		//This is assuming the none-to-one or one-to-none case.
 		iValue += AI_baseBonusVal(eBonus, /* advc.036: */ bTrade);
 		iValue += AI_corporationBonusVal(eBonus, /* advc.036: */ bTrade);
-		if(!bTrade)
+		if (!bTrade)
 			iValue = std::max(iValue, iTradeVal); // advc.036
 		// K-Mod.
 		if (!bAssumeEnabled)
@@ -11764,8 +11788,17 @@ int CvPlayerAI::AI_bonusVal(BonusTypes eBonus, int iChange, bool bAssumeEnabled,
 			if (!kTeam.isHasTech(GC.getInfo(eBonus).getTechCityTrade()))
 				iValue /= (bTrade ? 3 : 2); // advc.036: was /=2
 		} // K-Mod end
+
+//doto units bonus cap
+		iValue = AI_bonuesCapValue(eBonus, iValue, iChange);
+//doto units bonus cap
+
 		return iValue;
 	}
+
+//doto units bonus cap
+	iValue = AI_bonuesCapValue(eBonus, iValue, iChange);
+//doto units bonus cap
 
 	iValue += AI_corporationBonusVal(eBonus, /* advc.036: */ true);
 	//This is basically the marginal value of an additional instance of a bonus.
@@ -14203,11 +14236,10 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		{
 			//based on air attack below. didnt add ait limit value cause its not a real limit - see info on the airlimit effect in 
 			//the ranged functions
-			//int iRangeValue = iCombatRangedValue;
-			//iRangeValue += (u.getCollateralDamage() * iCombatRangedValue) / 200;
-			int iRangeValue = (iCombatRangedValue * (100 + 2 * u.getCollateralDamage()) *
-					u.getAirRange()) / 150;
-			iValue += (iRangeValue * 10 / 100); //add 10% of the iRangeValue -> so ai wont buy only ranged.
+			//int iRangeValue = (iCombatRangedValue * (100 + 2 * u.getCollateralDamage()) *
+			//		u.getAirRange()) / 150;
+			//iValue += (iRangeValue * 10 / 100); //add 10% of the iRangeValue -> so ai wont buy only ranged.
+			iValue += (iCombatRangedValue * 25) / 100;
 		}
 // MOD - START - Ranged Strike AI - doto give ranged some more value
 		
@@ -14366,12 +14398,10 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		if (u.getDomainType() == DOMAIN_LAND && u.getAirCombat() > 0)
 		{
 			//based on air attack below.
-			//int iRangeValue = iCombatRangedValue;
-			//iRangeValue += (u.getCollateralDamage() * iCombatRangedValue) / 100;
-			//iRangeValue += 2 * u.getBombRate();
-			int iRangeValue = ((iCombatRangedValue * (100 + u.getCollateralDamage()) *
-					u.getAirRange()) + u.getBombRate()) / 200;
-			iValue += (iRangeValue * 10 / 100); //add 10% of the iRangeValue -> so ai wont buy only ranged.
+			//int iRangeValue = ((iCombatRangedValue * (100 + u.getCollateralDamage()) *
+			//		u.getAirRange()) + u.getBombRate()) / 200;
+			//iValue += (iRangeValue * 10 / 100); //add 10% of the iRangeValue -> so ai wont buy only ranged.
+			iValue += (iCombatRangedValue * 10) / 75;
 		}
 // MOD - START - Ranged Strike AI - doto give ranged some more value
 		
@@ -14499,11 +14529,10 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		if (u.getDomainType() == DOMAIN_LAND && u.getAirCombat() > 0)
 		{
 			//based on air attack below.
-			//int iRangeValue = iCombatRangedValue;
-			//iRangeValue += (u.getCollateralDamage() * iCombatRangedValue) / 150;
-			int iRangeValue = (iCombatRangedValue * (100 + u.getCollateralDamage()) *
-					u.getAirRange()) / 200;
-			iValue += (iRangeValue * 15 / 100); //add 15% of the iRangeValue -> so ai wont buy only ranged.
+			//int iRangeValue = (iCombatRangedValue * (100 + u.getCollateralDamage()) *
+			//		u.getAirRange()) / 200;
+			//iValue += (iRangeValue * 15 / 100); //add 15% of the iRangeValue -> so ai wont buy only ranged.
+			iValue += (iCombatRangedValue * 20) / 150;
 		}
 // MOD - START - Ranged Strike AI - doto give ranged some more value
 		FOR_EACH_ENUM(UnitCombat)

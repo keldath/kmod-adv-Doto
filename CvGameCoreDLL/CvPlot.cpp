@@ -9088,6 +9088,10 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 /************************************************************************************************/
 	bool const bCity = (pCity != NULL);
 	CvUnitInfo const& kUnit = GC.getInfo(eUnit);
+//doto efifciancy
+	DomainTypes kDomain = kUnit.getDomainType();
+//doto units bonus cap
+
 	if (kUnit.isPrereqReligion())
 	{
 		if (!bCity || //pCity->getReligionCount() > 0)
@@ -9117,7 +9121,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 
 	if (kUnit.isPrereqBonuses() && !isCityState)
 	{
-		if (kUnit.getDomainType() == DOMAIN_SEA)
+		if (kDomain == DOMAIN_SEA)
 		{	// advc: Moved to CvCity
 			if (bCity && (!pCity->isPrereqBonusSea() && !isCityState))
 				return false;
@@ -9146,7 +9150,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 		/*  Don't allow any ships to be trained at lakes, except Work Boat
 			(if there are resources in the lake; already checked above). */
 //doto city state
-		if (kUnit.getDomainType() == DOMAIN_SEA && (!kUnit.isPrereqBonuses() && !isCityState) &&
+		if (kDomain == DOMAIN_SEA && (!kUnit.isPrereqBonuses() && !isCityState) &&
 			!isAdjacentSaltWater())
 		{
 			return false;
@@ -9154,12 +9158,12 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 	}
 	else // </advc.041>
 	{
-		if (kUnit.getDomainType() == DOMAIN_SEA)
+		if (kDomain == DOMAIN_SEA)
 		{
 			if (!isWater())
 				return false;
 		}
-		else if (kUnit.getDomainType() == DOMAIN_LAND)
+		else if (kDomain == DOMAIN_LAND)
 		{
 			if (isWater())
 				return false;
@@ -9202,7 +9206,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 	{
 //doto units bonus cap
 		CvPlayer& kPlayer = bCity ? GET_PLAYER(pCity->getOwner()) : GET_PLAYER(getOwner());
-		int egetNumUnitBonusCaps = kPlayer.getNumUnitBonusCaps(ePrereqAndBonus);
+		int egetNumUnitBonusCaps = kPlayer.getNumUnitBonusCaps(kDomain, ePrereqAndBonus);
 		int egetTotalPlayerBonus = kPlayer.getTotalPlayerBonus(ePrereqAndBonus);
 //doto units bonus cap
 		if (!bCity && !isCityState)
@@ -9249,8 +9253,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 				bRequiresBonus = true;
 //doto units bonus cap
 				CvPlayer& kPlayer = bCity ? GET_PLAYER(pCity->getOwner()) : GET_PLAYER(getOwner());
-				bool eOptionCap = GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP);
-				int egetNumUnitBonusCaps = kPlayer.getNumUnitBonusCaps(ePrereqOrBonus);
+				int egetNumUnitBonusCaps = kPlayer.getNumUnitBonusCaps(kDomain, ePrereqOrBonus);
 				int egetTotalPlayerBonus = kPlayer.getTotalPlayerBonus(ePrereqOrBonus);
 //doto units bonus cap
 				if (bCity)

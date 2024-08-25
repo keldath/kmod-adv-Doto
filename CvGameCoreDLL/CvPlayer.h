@@ -1113,9 +1113,15 @@ public:
 	void changeBonusImport(BonusTypes eBonus, int iChange);
 
 //doto units bonus cap	
-	int getNumUnitBonusCaps(BonusTypes eBonus) const { return m_aiUnitBonusCaps.get(eBonus); }													// Exposed to Python												// Exposed to Python
-	int getTotalPlayerBonus(BonusTypes eBonus) const { return m_aiTotalPlayerBonus.get(eBonus); }													// Exposed to Python												// Exposed to Python
-	void changeNumUnitBonusCaps(BonusTypes eBonus, int iChange);
+	int getNumUnitBonusCaps(DomainTypes kDomain, BonusTypes eBonus) const {
+		if (kDomain == DOMAIN_AIR)
+			return m_aiAirUnitBonusCaps.get(eBonus);
+		if (kDomain == DOMAIN_SEA)
+			return m_aiSeaUnitBonusCaps.get(eBonus);
+		return m_aiUnitBonusCaps.get(eBonus);
+	}													// Exposed to Python				
+	int getTotalPlayerBonus(BonusTypes eBonus) const { return m_aiTotalPlayerBonus.get(eBonus); }													// Exposed to Python								
+	void changeNumUnitBonusCaps(DomainTypes kDomain, BonusTypes eBonus, int iChange);
 	void changeTotalPlayerBonus(BonusTypes eBonus);
 //doto units bonus cap	
 
@@ -1773,6 +1779,8 @@ protected:  // <advc.210>
 //doto units bonus cap	
 	ArrayEnumMap<BonusTypes,int,char> m_aiUnitBonusCaps;
 	ArrayEnumMap<BonusTypes,int,char> m_aiTotalPlayerBonus;
+	ArrayEnumMap<BonusTypes, int, char> m_aiAirUnitBonusCaps;
+	ArrayEnumMap<BonusTypes, int, char> m_aiSeaUnitBonusCaps;
 //doto units bonus cap		
 	ArrayEnumMap<BonusTypes,int,char> m_aiBonusImport;
 	ArrayEnumMap<ImprovementTypes,int,short> m_aiImprovementCount;
@@ -1928,10 +1936,23 @@ public:
 	int getCultureGoldenAgesStarted() const;																																		// Exposed to Python
 	void incrementCultureGoldenAgeStarted();
 
+//doto 115 happynes golden age
+	int calcHappinessGoldenAgeThreshold() const;
+	int getHappinessGoldenAgeThresh() const;
+	void incrementHappinessGoldenAgeStarted();
+	int getHappinessGoldenAgesStarted() const;
+	int getHappinessGoldenAgeProgress() const;
+	void updateNetNationHappiness(int iHappy, int iUnhappy);
+	
 protected:
 	int m_iCultureGoldenAgeProgress;
 	int m_iCultureGoldenAgesStarted;
 //KNOEDELend
+//doto 115 happynes golden age
+	int m_iHappinessGoldenAgeProgress;
+	int m_iHappinessGoldenAgeThresh;
+	int m_iHappinessGoldenAgesStarted;
+//doto 115 golden age
 
 private:
 	/*  advc.003u: The remaining virtual functions should not be called within

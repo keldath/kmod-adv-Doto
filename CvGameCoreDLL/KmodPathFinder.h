@@ -116,7 +116,7 @@ public:
 		ensure the following:
 		-	For two adjacent plots p and q that both aren't the path destination
 			and a path w from the start to p,
-			isValidStep(p, q) && canStepThrough(p)
+			isValidStep(p, q) && canStepThrough(p, w)
 			needs to be true if and only if the step from p to q can be added to w.
 		-	If q is the path destination, then the conjunction above needs to be
 			true if and only if the step _could_ be added to w if some plot other

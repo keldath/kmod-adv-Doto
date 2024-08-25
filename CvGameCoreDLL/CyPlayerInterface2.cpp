@@ -86,6 +86,10 @@ advc 108 added more lines to that file*/
 /************************************************************************************************/
 /* REVDCM                                  END                                                  */
 /************************************************************************************************/																										// Exposed to Python
+//doto 115 happiness golden age
+		.def("getHappinessGoldenAgeThresh", &CyPlayer::getHappinessGoldenAgeThresh, "int ()")
+		.def("getHappinessGoldenAgeProgress", &CyPlayer::getHappinessGoldenAgeProgress, "int ()")
+//doto 115 happiness golden age
 ;
 
 	/*	K-Mod, 5/jan/11: pollution flags (advc.enum: Moved from CyEnumsInterface

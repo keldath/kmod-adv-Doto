@@ -621,15 +621,13 @@ void CvUnit::kill(bool bDelay, PlayerTypes ePlayer)
 	if (GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP))
 	{	
 		BonusTypes ePrereqAndBonus = m_pUnitInfo->getPrereqAndBonus();
+		DomainTypes kDomain = getDomainType();
 		if (ePrereqAndBonus != NO_BONUS)
 		{
-			int eBonusCap = kOwner.getNumUnitBonusCaps(ePrereqAndBonus); 
-			//int eTotalBonus = kOwner.getTotalPlayerBonus(ePrereqAndBonus);
-			if (eBonusCap > 0
-				//&& eTotalBonus > 0
-				)
-				kOwner.changeNumUnitBonusCaps(ePrereqAndBonus, -1);
-			FAssert(kOwner.getNumUnitBonusCaps(ePrereqAndBonus) >= 0);
+			int eBonusCap = kOwner.getNumUnitBonusCaps(kDomain, ePrereqAndBonus);
+			if (eBonusCap > 0)
+				kOwner.changeNumUnitBonusCaps(kDomain, ePrereqAndBonus, -1);
+			FAssert(kOwner.getNumUnitBonusCaps(kDomain, ePrereqAndBonus) >= 0);
 		}	
 		for (int i = 0; i < m_pUnitInfo->getNumPrereqOrBonuses(); i++)
 		{
@@ -639,13 +637,11 @@ void CvUnit::kill(bool bDelay, PlayerTypes ePlayer)
 			BonusTypes const ePrereqOrBonusUsed = (BonusTypes)getBonusUsedForPrereqOrCap();
 			if (ePrereqOrBonusUsed != ePrereqOrBonus)
 				 continue;
-			int eBonusCap = kOwner.getNumUnitBonusCaps(ePrereqOrBonus); 
-			//int eTotalBonus = kOwner.getTotalPlayerBonus(ePrereqOrBonus);
-			if (eBonusCap > 0 
-				//&& eTotalBonus > 0
-				)
-				kOwner.changeNumUnitBonusCaps(ePrereqOrBonus, -1);
-			FAssert(kOwner.getNumUnitBonusCaps(ePrereqOrBonus) >= 0);
+			int eBonusCap = kOwner.getNumUnitBonusCaps(kDomain, ePrereqOrBonus);
+			if (eBonusCap > 0)
+				kOwner.changeNumUnitBonusCaps(kDomain, ePrereqOrBonus, -1);
+
+			FAssert(kOwner.getNumUnitBonusCaps(kDomain, ePrereqOrBonus) >= 0);
 		}
 	}
 //doto units bonus cap		
@@ -7160,12 +7156,13 @@ bool CvUnit::canUpgrade(UnitTypes eUnit, bool bTestVisible) const
 	if (eOptionCap)
 	{
 		CvUnitInfo const& kUnit = GC.getInfo(eUnit); 
+		DomainTypes kDomain = kUnit.getDomainType();
 		BonusTypes ePrereqAndBonus = kUnit.getPrereqAndBonus();
 		CvPlayer& kPlayer = GET_PLAYER(getOwner());
 		if (ePrereqAndBonus != NO_BONUS) // advc.001u
 		{
-			int egetNumUnitBonusCaps = kPlayer.getNumUnitBonusCaps(ePrereqAndBonus);
-			int egetTotalPlayerBonus = kPlayer.getTotalPlayerBonus(ePrereqAndBonus);
+			int egetNumUnitBonusCaps = kPlayer.getNumUnitBonusCaps(kDomain, ePrereqAndBonus);
+			int egetTotalPlayerBonus = kPlayer.getTotalPlayerBonus( ePrereqAndBonus);
 			if ((egetNumUnitBonusCaps >= egetTotalPlayerBonus
 				&& egetTotalPlayerBonus > 0)
 				|| egetTotalPlayerBonus == 0
@@ -7179,7 +7176,7 @@ bool CvUnit::canUpgrade(UnitTypes eUnit, bool bTestVisible) const
 		for (int i = 0; i < kUnit.getNumPrereqOrBonuses(); i++)
 		{
 			BonusTypes const ePrereqOrBonus = kUnit.getPrereqOrBonuses(i);
-			int egetNumUnitBonusCaps = kPlayer.getNumUnitBonusCaps(ePrereqOrBonus);
+			int egetNumUnitBonusCaps = kPlayer.getNumUnitBonusCaps(kDomain, ePrereqOrBonus);
 			int egetTotalPlayerBonus = kPlayer.getTotalPlayerBonus(ePrereqOrBonus);
 			
 			if (egetNumUnitBonusCaps < egetTotalPlayerBonus
@@ -9777,7 +9774,9 @@ void CvUnit::setMoves(int iNewValue)
 
 	CvPlot* pPlot = plot();
 //doto fix for teams - reverse for advc 1.00 date 31.08.2021
+//doto 114 fixed in advciv
 	if (getTeam() == GC.getGame().getActiveTeam())
+//	if (isActiveTeam())
 	{
 		if (pPlot != NULL)
 			pPlot->setFlagDirty(true);

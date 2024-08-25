@@ -1043,6 +1043,17 @@ void CyPlayer::changeNumUnitGoldenAges(int iChange)
 		m_pPlayer->changeNumUnitGoldenAges(iChange);
 }
 
+//doto 115 happiness golden age
+int CyPlayer::getHappinessGoldenAgeThresh()
+{
+	return m_pPlayer ? m_pPlayer->getHappinessGoldenAgeThresh() : -1;
+}
+
+int CyPlayer::getHappinessGoldenAgeProgress()
+{
+	return m_pPlayer ? m_pPlayer->getHappinessGoldenAgeProgress() : -1;
+}
+//doto 115 happiness golden age
 int CyPlayer::getAnarchyTurns()
 {
 	return m_pPlayer ? m_pPlayer->getAnarchyTurns() : -1;
@@ -1806,9 +1817,9 @@ int CyPlayer::getBonusImport(int /*BonusTypes*/ iIndex)
 	return m_pPlayer ? m_pPlayer->getBonusImport((BonusTypes)iIndex) : -1;
 }
 //doto units bonus cap	
-int CyPlayer::getNumUnitBonusCaps(int /*BonusTypes*/ iIndex)
+int CyPlayer::getNumUnitBonusCaps(DomainTypes kDomain, int /*BonusTypes*/ iIndex)
 {
-	return m_pPlayer ? m_pPlayer->getNumUnitBonusCaps((BonusTypes)iIndex) : -1;
+	return m_pPlayer ? m_pPlayer->getNumUnitBonusCaps(kDomain, (BonusTypes)iIndex) : -1;
 }
 int CyPlayer::getTotalPlayerBonus(int /*BonusTypes*/ iIndex)
 {

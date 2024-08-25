@@ -508,6 +508,11 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_iCultureGoldenAgeProgress = 0;	
 	m_iCultureGoldenAgesStarted = 2;	
 //KNOEDEL CULTURAL_GOLDEN_AGE 2/8
+//doto 115 happyness golden age
+	m_iHappinessGoldenAgeProgress = 0;
+	m_iHappinessGoldenAgeThresh = 0;
+	m_iHappinessGoldenAgesStarted = 2;
+//doto 115 happyness golden age
 	m_eID = eID;
 	updateTeamType();
 	updateHuman();
@@ -582,6 +587,8 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 //doto units bonus cap	
 	m_aiUnitBonusCaps.reset();
 	m_aiTotalPlayerBonus.reset();
+	m_aiAirUnitBonusCaps.reset();
+	m_aiSeaUnitBonusCaps.reset();
 //doto units bonus cap	
 	m_aiImprovementCount.reset();
 	m_aiFreeBuildingCount.reset();
@@ -2370,11 +2377,10 @@ CvUnit* CvPlayer::initUnit(UnitTypes eUnit, int iX, int iY, UnitAITypes eUnitAI,
 		CvPlayer& kPlayer = GET_PLAYER(getID());
 		CvUnitInfo& kUnit = GC.getUnitInfo(eUnit);
 		BonusTypes ePrereqAndBonus = kUnit.getPrereqAndBonus();
+		DomainTypes kDomain = kUnit.getDomainType();
 		if (ePrereqAndBonus != NO_BONUS)
 		{
-			//int eTotalBonus = kPlayer.getTotalPlayerBonus(ePrereqAndBonus);
-			//int eBonusCap = kPlayer.getNumUnitBonusCaps(ePrereqAndBonus);
-			kPlayer.changeNumUnitBonusCaps(ePrereqAndBonus, 1);
+			kPlayer.changeNumUnitBonusCaps(kDomain, ePrereqAndBonus, 1);
 		}	
 		for (int i = 0; i < kUnit.getNumPrereqOrBonuses(); i++)
 		{
@@ -2382,12 +2388,12 @@ CvUnit* CvPlayer::initUnit(UnitTypes eUnit, int iX, int iY, UnitAITypes eUnitAI,
 			if (ePrereqOrBonus == NO_BONUS)
 				continue;
 			int eTotalBonus = kPlayer.getTotalPlayerBonus(ePrereqOrBonus);
-			int eBonusCap = kPlayer.getNumUnitBonusCaps(ePrereqOrBonus);
+			int eBonusCap = kPlayer.getNumUnitBonusCaps(kDomain, ePrereqOrBonus);
 			if (eBonusCap < eTotalBonus && eTotalBonus > 0)
 			{
 				//pUnit->getID()getIDInfo() m_pUnitInfo pUnit->getUnitInfo()
 				pUnit->changeBonusUsedForPrereqOrCap(ePrereqOrBonus); //gotta cache which or bonus was used, for when the unit is killed off.
-				kPlayer.changeNumUnitBonusCaps(ePrereqOrBonus, 1);
+				kPlayer.changeNumUnitBonusCaps(kDomain, ePrereqOrBonus, 1);
 				break;//since this is an or, if we got 1 of the or bonuses that has a cap , use it and end.
 			}
 		}
@@ -3055,44 +3061,51 @@ void CvPlayer::doTurn()
 	doResearch();
 	doEspionagePoints();
 
-//doto units bonus cap
-	//alternative code for the changeTotalPlayerBonus(eBonus); inner logic
-	//reset the the numbers befroe getting the updated numbers.
-/*	FOR_EACH_ENUM(Bonus)
-	{
-		changeTotalPlayerBonus(eLoopBonus, getTotalPlayerBonus(eLoopBonus) * -1);
-	}
-*/
-//doto units bonus cap
+	//doto game options
+	bool happyGoldenOption = kGame.isOption(GAMEOPTION_HAPPYNESS_GOLDEN_AGE);
+	bool cultureGoldenOption = kGame.isOption(GAMEOPTION_CULTURE_GOLDEN_AGE);
+
 	FOR_EACH_CITY_VAR(pLoopCity, *this)
 	{
-		pLoopCity->doTurn(); //org code //doto units bonus cap
-		/* doto units bonus cap
-		//alternative code for the changeTotalPlayerBonus(eBonus); inner logic
-		FOR_EACH_ENUM(Bonus)
+		pLoopCity->doTurn(); //org code
+//doto 115 happiness golden age		
+		if (happyGoldenOption && !cultureGoldenOption || happyGoldenOption && cultureGoldenOption)
 		{
-			if (GC.getGame().getBonusThatArePrereqForUnits(eLoopBonus) > 0)
-			{
-				int eCurrentTotal = getTotalPlayerBonus(eLoopBonus);
-				int cityTotal = getNumBonuses(eLoopBonus);
-				//the goal is to get the city that has the highest number of iron
-				//and on that base the cap. i didnt take the capital as the source for the cap
-				//so it wont be dependant on capital connection, which can be pillaged and blockded.
-				if (cityTotal >= eCurrentTotal)
-					changeTotalPlayerBonus(eLoopBonus, iChange * 3);
-			}
-		}*/
+			//add net happyness from each city to the progress.
+			updateNetNationHappiness(pLoopCity->getiHappiness(), pLoopCity->getUnHappyness());
+		}
+//doto 115 happiness golden age
 	}
-//doto units bonus cap
 
 	if (getGoldenAgeTurns() > 0)
 		changeGoldenAgeTurns(-1);
 	if (getAnarchyTurns() > 0)
 		changeAnarchyTurns(-1);
+
+//doto 115 happiness golden age
+
+	if (happyGoldenOption && !cultureGoldenOption
+		|| happyGoldenOption && cultureGoldenOption
+		)
+	{
+		//first time calc
+		if (getHappinessGoldenAgeThresh() == 0)
+			m_iHappinessGoldenAgeThresh = calcHappinessGoldenAgeThreshold();
+
+		if (getHappinessGoldenAgeProgress() >= getHappinessGoldenAgeThresh())
+		{
+			m_iHappinessGoldenAgeProgress -= getHappinessGoldenAgeThresh(); // reset the progress as we struck golden age.
+			FAssert(m_iHappinessGoldenAgeProgress >= 0);
+			incrementHappinessGoldenAgeStarted();
+			m_iHappinessGoldenAgeThresh = calcHappinessGoldenAgeThreshold();
+			changeGoldenAgeTurns(getGoldenAgeLength());
+		}
+	}
+//doto 115 happiness golden age
 //KNOEDELbegin CULTURAL_GOLDEN_AGE 3/8
 //	
 //
-	if (kGame.isOption(GAMEOPTION_CULTURE_GOLDEN_AGE))
+	if (cultureGoldenOption && !happyGoldenOption)
 	{
 		if (getCultureGoldenAgeProgress() >= getCultureGoldenAgeThreshold())
 		{
@@ -6763,22 +6776,24 @@ int CvPlayer::calculateUnitCost(int& iFreeUnits, int& iFreeMilitaryUnits, int& i
 	iPaidMilitaryUnits = std::max(0, getNumMilitaryUnits() - iFreeMilitaryUnits +
 			iExtraUnits); // advc.004b
 
+//doto 1.15 removed - now there is a limit per domain
+//and i cant get it to here. also, thinking about it...i dont want to raise the cost if the cap is above anyway.
+//there are enough money issues.
 //doto units bonus cap
-	if (GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP))
-	{
-		for (int i = 0; i < GC.getNumBonusInfos(); i++)
-		{
-			int eCap = getNumUnitBonusCaps((BonusTypes)i);
-			int eTotalCap = getTotalPlayerBonus((BonusTypes)i);
-			//if (eTotalCap != NULL || eCap != NULL)
-			if (GC.getGame().getBonusThatArePrereqForUnits((BonusTypes)i) > 0)
-			{
+//	if (GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP))
+//	{
+//		for (int i = 0; i < GC.getNumBonusInfos(); i++)
+//		{
+//			int eCap = getNumUnitBonusCaps((BonusTypes)i);
+//			int eTotalCap = getTotalPlayerBonus((BonusTypes)i);
+//			if (GC.getGame().getBonusThatArePrereqForUnits((BonusTypes)i) > 0)
+//			{
 				//doto units bonus cap - if the cap is above the cap these units will cost more...tweak to manage when loosing a source.
 				//meed to check how does that impact the AI.
-				iPaidMilitaryUnits += eCap > eTotalCap ? eCap - eTotalCap : 0;
-			}
-		}
-	}
+//				iPaidMilitaryUnits += eCap > eTotalCap ? eCap - eTotalCap : 0;
+//			}
+//		}
+//	}
 //doto units bonus cap
 
 	//iSupport = 0;
@@ -11381,12 +11396,24 @@ void CvPlayer::changeBonusImport(BonusTypes eBonus, int iChange)
 }
 
 //doto units bonus cap	
-void CvPlayer::changeNumUnitBonusCaps(BonusTypes eBonus, int iChange)
+void CvPlayer::changeNumUnitBonusCaps(DomainTypes kDomain, BonusTypes eBonus, int iChange)
 {
 	if(iChange == 0)
 		return;	
-	m_aiUnitBonusCaps.add(eBonus, iChange);
-	FAssert(getNumUnitBonusCaps(eBonus) >= 0);
+	if (kDomain == DOMAIN_AIR)
+	{
+		m_aiAirUnitBonusCaps.add(eBonus, iChange);
+	}
+	else if (kDomain == DOMAIN_SEA)
+	{
+		m_aiSeaUnitBonusCaps.add(eBonus, iChange);
+	}
+	else
+	{
+		m_aiUnitBonusCaps.add(eBonus, iChange);
+		//Land or immobile
+	}
+	FAssert(getNumUnitBonusCaps(kDomain, eBonus) >= 0);
 }
 
 void CvPlayer::changeTotalPlayerBonus(BonusTypes eBonus)
@@ -11434,20 +11461,20 @@ void CvPlayer::changeTotalPlayerBonus(BonusTypes eBonus)
 		m_aiTotalPlayerBonus.set(eBonus, 0);
 		return;
 	}
+
 	int eAvgPop = (eCityPopTotal / eCityCount) + 1;//round up!
-	//m_aiTotalPlayerBonus.set(eBonus, (eBestAmount * eCityCount) * 2);
-	//int eMultip = eCityCount >= eAvgPop ? ((eCityCount * 2) - eAvgPop) + eAvgPop : eAvgPop; //give empires with more cities than avg pop an advantage + multiplier
 	int eMultip = eCityCount + eAvgPop; //give empires with more cities than avg pop an advantage
 	int eModifier = (eBestAmount * eAvgPop) + eMultip;
 	CvBonusInfo const& kBonus = GC.getInfo(eBonus);
+
 	//some specific bonus limitations
 	CvWString szString = kBonus.getDescription();
 	if (szString == gDLL->getText("TXT_KEY_BONUS_URANIUM"))
 		eModifier = eBestAmount + (highestPop - eAvgPop); 
 	else if (szString == L"Sulphur")
-		eModifier += 10;
+		eModifier += 8;
 	else if (szString == L"Titanium")
-		eModifier += 15;
+		eModifier += 10;
 	else if (szString == gDLL->getText("TXT_KEY_BONUS_IVORY"))
 		eModifier = eBestAmount + eCityCount;
 	
@@ -16015,6 +16042,8 @@ void CvPlayer::read(FDataStreamBase* pStream)
 //doto units bonus cap		
 		m_aiUnitBonusCaps.read(pStream);
 		m_aiTotalPlayerBonus.read(pStream);
+		m_aiAirUnitBonusCaps.read(pStream);
+		m_aiSeaUnitBonusCaps.read(pStream);
 //doto units bonus cap		
 		m_aiImprovementCount.read(pStream);
 		m_aiFreeBuildingCount.read(pStream);
@@ -16044,6 +16073,8 @@ void CvPlayer::read(FDataStreamBase* pStream)
 //doto units bonus cap			
 		m_aiUnitBonusCaps.readArray<int>(pStream);
 		m_aiTotalPlayerBonus.readArray<int>(pStream);
+		m_aiAirUnitBonusCaps.readArray<int>(pStream);
+		m_aiSeaUnitBonusCaps.readArray<int>(pStream);
 //doto units bonus cap			
 		m_aiImprovementCount.readArray<int>(pStream);
 		m_aiFreeBuildingCount.readArray<int>(pStream);
@@ -16383,6 +16414,13 @@ void CvPlayer::read(FDataStreamBase* pStream)
 //KNOEDEL CULTURAL_GOLDEN_AGE
 	pStream->Read(&m_iCultureGoldenAgeProgress);	//KNOEDEL CULTURAL_GOLDEN_AGE 4/8
 	pStream->Read(&m_iCultureGoldenAgesStarted);	//KNOEDEL CULTURAL_GOLDEN_AGE 5/8
+//KNOEDEL CULTURAL_GOLDEN_AGE
+
+//doto 115 happyness golden age
+	pStream->Read(&m_iHappinessGoldenAgeProgress);
+	pStream->Read(&m_iHappinessGoldenAgeThresh);
+	pStream->Read(&m_iHappinessGoldenAgesStarted);
+//doto 115 happyness golden age
 
 	if(!isAlive())
 		return; // advc
@@ -16661,6 +16699,8 @@ void CvPlayer::write(FDataStreamBase* pStream)
 //doto units bonus cap	
 	m_aiUnitBonusCaps.write(pStream);
 	m_aiTotalPlayerBonus.write(pStream);
+	m_aiAirUnitBonusCaps.write(pStream);
+	m_aiSeaUnitBonusCaps.write(pStream);
 //doto units bonus cap	
 	m_aiImprovementCount.write(pStream);
 	m_aiFreeBuildingCount.write(pStream);
@@ -16867,9 +16907,17 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	pStream->Write(m_iPopRushHurryCount);
 	pStream->Write(m_iGoldRushHurryCount); // advc.064b
 	pStream->Write(m_iInflationModifier);
-//CULTURAL_GOLDEN_AGE
+//KNOEDEL CULTURAL_GOLDEN_AGE
 	pStream->Write(m_iCultureGoldenAgeProgress);	//KNOEDEL 6/8
 	pStream->Write(m_iCultureGoldenAgesStarted);	//KNOEDEL 7/8
+//KNOEDEL CULTURAL_GOLDEN_AGE
+
+//doto 115 happynes golden age
+	pStream->Write(m_iHappinessGoldenAgeProgress);
+	pStream->Write(m_iHappinessGoldenAgeThresh);
+	pStream->Write(m_iHappinessGoldenAgesStarted);	
+//doto 115 happynes golden age
+	
 	REPRO_TEST_END_WRITE();
 }
 
@@ -22264,6 +22312,59 @@ bool CvPlayer::hasValidCivics(UnitTypes eUnit) const
 /**
  ** End: Unit Civic Prereq
  **/
+
+//doto 115 happiness golden age
+void CvPlayer::updateNetNationHappiness(int iHappy, int iUnhappy)
+{
+	m_iHappinessGoldenAgeProgress += (iHappy - iUnhappy);
+}
+
+int CvPlayer::calcHappinessGoldenAgeThreshold() const
+{
+	int iThreshold;
+
+	iThreshold = (GC.getHAPPYNESS_GOLDEN_AGE_THRESHOLD() * std::max(0, (getHappinessGoldenAgesStarted())));
+
+	iThreshold *= GC.getGameSpeedInfo(GC.getGame().getGameSpeedType()).getGreatPeoplePercent();
+	//iThreshold /= 100;
+	//keldath doto 115 , reduce it a bit
+	iThreshold /= 150;
+
+	iThreshold *= GC.getEraInfo(GC.getGame().getStartEra()).getGreatPeoplePercent();
+	iThreshold /= 100;
+
+	iThreshold *= GC.getWorldInfo(GC.getMap().getWorldSize()).getResearchPercent();
+	iThreshold /= 130; // research percent standard size
+
+	return std::max(1, iThreshold);
+}
+void CvPlayer::incrementHappinessGoldenAgeStarted()
+{
+	if (m_iHappinessGoldenAgesStarted > 100)
+	{
+		m_iHappinessGoldenAgesStarted = 200;
+	}
+	else
+	{
+		m_iHappinessGoldenAgesStarted *= 2;
+	}
+}
+
+int CvPlayer::getHappinessGoldenAgesStarted() const
+{
+	return m_iHappinessGoldenAgesStarted;
+}
+int CvPlayer::getHappinessGoldenAgeProgress() const
+{
+	return m_iHappinessGoldenAgeProgress;
+}
+
+int CvPlayer::getHappinessGoldenAgeThresh() const
+{
+	return m_iHappinessGoldenAgeThresh;
+}
+//doto 115 happiness golden age
+
 //KNOEDELbegin CULTURAL_GOLDEN_AGE 8/8
 int CvPlayer::getCultureGoldenAgeProgress() const
 {
@@ -22301,7 +22402,9 @@ int CvPlayer::getCultureGoldenAgeThreshold() const
 	iThreshold = (GC.getCULTURE_GOLDEN_AGE_THRESHOLD() * std::max(0, (getCultureGoldenAgesStarted())));
 
 	iThreshold *= GC.getGameSpeedInfo(GC.getGame().getGameSpeedType()).getGreatPeoplePercent();
-	iThreshold /= 100;
+	//iThreshold /= 100;
+	//keldath doto 115 , reduce it a bit
+	iThreshold /= 150;
 
 	iThreshold *= GC.getEraInfo(GC.getGame().getStartEra()).getGreatPeoplePercent();
 	iThreshold /= 100;

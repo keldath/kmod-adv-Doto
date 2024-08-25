@@ -226,6 +226,9 @@ protected:
 //doto units bonus cap
 	void parseTrainUnitCapHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer);
 //doto units bonus cap
+//doto units bonus cap
+	void parseHappyGoldenAge(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer);
+	//doto units bonus cap
 };
 
 #endif

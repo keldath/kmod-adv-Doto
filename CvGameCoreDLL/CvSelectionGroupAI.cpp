@@ -335,7 +335,10 @@ int CvSelectionGroupAI::AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialE
 		pAttackerRanged = AI_getBestGroupRangeAttacker(pPlot);
 		if (pAttackerRanged == NULL)
 		{
-			return 0;
+			//doto 114 -> find the best ranged, if not, find the best none ranged
+			pAttackerRanged = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds);
+			if (pAttackerRanged == NULL)
+				return 0;
 		}
 	}
 	pAttacker = RangedCombat ? pAttackerRanged : pAttackerNotRanged;

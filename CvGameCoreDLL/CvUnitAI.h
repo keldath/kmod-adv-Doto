@@ -228,8 +228,11 @@ protected:
 			bool bAllowCities = true, bool bFollow = false);
 	// BETTER_BTS_AI_MOD: END
 	// MOD - START - Ranged Strike AI
-	CvPlot* AI_rangeStrikeTargetPlot();
-	bool AI_rangeAttack(MovementFlags iFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
+	CvPlot* AI_rangeStrikeTargetPlot(int iStrengthThreshold);
+	bool AI_rangeAttack(int iRangedThreshold = 70); //wrapper
+	bool AI_rangeAttack(MovementFlags iFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI,
+		CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL, int iRangedThreshold = 70);
+	int AI_rangeStrikeValue(CvPlot const* plot);
 	bool AI_rangeAttackCity();
 	bool AI_rangeAttackOrSkip(MovementFlags iFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
 	bool AI_rangeAttackOrFortify(MovementFlags iFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
