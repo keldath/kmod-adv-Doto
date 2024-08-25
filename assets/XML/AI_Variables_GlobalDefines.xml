@@ -55,7 +55,7 @@
 			 This covers Domination, Conquest and Diplomatic victory; Diplo
 			 victory also factors into ILL_WILL. -->
 		<DefineName>UWAI_WEIGHT_MILITARY_VICTORY</DefineName>
-		<iDefineIntVal>125</iDefineIntVal>
+		<iDefineIntVal>100</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- Protect our partners because we want to continue trading with
@@ -89,7 +89,7 @@
 			 and dangerous to attack our partners. 
 			keldath was 125-->
 		<DefineName>UWAI_WEIGHT_FIDELITY</DefineName>
-		<iDefineIntVal>100</iDefineIntVal>
+		<iDefineIntVal>110</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- We continue a war because we've been paid for it. (Or maybe, rather,
@@ -100,7 +100,7 @@
 	<Define>
 		<!-- By conquering cities, we reduce culture pressure on our cities. -->
 		<DefineName>UWAI_WEIGHT_BORDER_DISPUTES</DefineName>
-		<iDefineIntVal>115</iDefineIntVal>
+		<iDefineIntVal>100</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- Fight a joint war for the "mutual struggle" diplo bonus. -->
@@ -180,7 +180,7 @@
 		<!-- Discourages early war against humans; not fair when the AI has a
 			 head start. -->
 		<DefineName>UWAI_WEIGHT_FAIR_PLAY</DefineName>
-		<iDefineIntVal>90</iDefineIntVal>
+		<iDefineIntVal>100</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- War as its own purpose. Before this aspect was added, there was too
@@ -280,7 +280,7 @@
 			 advc.130r: Reduce a little. Caveat: Should be careful about
 			 changing this value, it's used as a baseline in many places. -->
 		<DefineName>WAR_SUCCESS_CITY_CAPTURING</DefineName>
-		<iDefineIntVal>25</iDefineIntVal>
+		<iDefineIntVal>22</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- Ratio of enemy power to team power for AI to consider running TURTLE (all out defense, no offensive forays) strategy.  

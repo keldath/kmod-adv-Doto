@@ -771,7 +771,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.101 -->
 			<iForeignCultureStrength>29</iForeignCultureStrength>
 			<iHealthBonus>2</iHealthBonus>
-			<iHappyBonus>3</iHappyBonus>
+			<iHappyBonus>2</iHappyBonus>
 			<!-- population limit: was 4 -->
 			<iPopulationLimit>8</iPopulationLimit>
 			<!-- advc.148: was -1 -->
@@ -909,7 +909,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.101 -->
 			<iForeignCultureStrength>32</iForeignCultureStrength>
 			<iHealthBonus>2</iHealthBonus>
-			<iHappyBonus>3</iHappyBonus>
+			<iHappyBonus>2</iHappyBonus>
 			<!-- population limit: was 4 -->
 			<iPopulationLimit>8</iPopulationLimit>
 			<!-- advc.148: was -1 -->
@@ -1071,7 +1071,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.101 -->
 			<iForeignCultureStrength>35</iForeignCultureStrength>
 			<iHealthBonus>2</iHealthBonus>
-			<iHappyBonus>3</iHappyBonus>
+			<iHappyBonus>2</iHappyBonus>
 			<!-- population limit: was 4 -->
 			<iPopulationLimit>8</iPopulationLimit>
 			<!-- advc.148: was -1 -->
@@ -1239,7 +1239,7 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<!-- advc.101 -->
 			<iForeignCultureStrength>38</iForeignCultureStrength>
 			<iHealthBonus>2</iHealthBonus>
-			<iHappyBonus>3</iHappyBonus>
+			<iHappyBonus>2</iHappyBonus>
 			<!-- population limit: was 4 -->
 			<iPopulationLimit>8</iPopulationLimit>
 			<!-- advc.148: was -1 -->
@@ -1411,8 +1411,8 @@ iUnownedWaterTilesPerBarbarianUnit	A factor that determines how many barbarian s
 			<iInflationPercent>100</iInflationPercent>
 			<!-- advc.101 -->
 			<iForeignCultureStrength>40</iForeignCultureStrength>
-			<iHealthBonus>2</iHealthBonus>
-			<iHappyBonus>3</iHappyBonus>
+			<iHealthBonus>1</iHealthBonus>
+			<iHappyBonus>2</iHappyBonus>
 			<!-- population limit: was 4 -->
 			<iPopulationLimit>8</iPopulationLimit>
 			<!-- advc.148: was -1 -->

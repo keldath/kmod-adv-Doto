@@ -289,7 +289,14 @@
         <GameOptionInfo>
             <Type>GAMEOPTION_CULTURE_GOLDEN_AGE</Type>
             <Description>Culture Golden Age</Description>
-            <Help>Converts excess Culture into Golden Age</Help>
+            <Help>Converts excess Culture into Golden Age [make sure Happy Golden Age is off]</Help>
+            <bDefault>0</bDefault>
+            <bVisible>1</bVisible>
+    	</GameOptionInfo>
+        <GameOptionInfo>
+            <Type>GAMEOPTION_HAPPYNESS_GOLDEN_AGE</Type>
+            <Description>Happy Golden Age</Description>
+            <Help>Converts excess Happy from each City into Golden Age [make sure Culture Golden Age is off]</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>
        	</GameOptionInfo>

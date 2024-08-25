@@ -74,7 +74,7 @@
 			<Type>CULTURELEVEL_FLEDGLING</Type>
 			<Description>TXT_KEY_CULTURELEVEL_FLEDGLING</Description>
 			<iCityDefenseModifier>20</iCityDefenseModifier>
-			<imaxWonderCultureLimit>3</imaxWonderCultureLimit>
+			<imaxWonderCultureLimit>4</imaxWonderCultureLimit>
 		<!-- doto enhanced city size mylon-->
 			<iCityRadius>2</iCityRadius>
 		<!-- doto enhanced city size mylon-->
@@ -115,24 +115,24 @@
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_MARATHON</GameSpeedType>
 					<!-- advc.251: was 300 -->
-					<iThreshold>370</iThreshold>
+					<iThreshold>500</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_EPICPLUS</GameSpeedType>
-					<iThreshold>330</iThreshold>
+					<iThreshold>450</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_EPIC</GameSpeedType>
-					<iThreshold>280</iThreshold>
+					<iThreshold>350</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_NORMAL</GameSpeedType>
-					<iThreshold>220</iThreshold>
+					<iThreshold>250</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_QUICK</GameSpeedType>
 					<!-- advc.251: was 50 -->
-					<iThreshold>160</iThreshold>
+					<iThreshold>200</iThreshold>
 				</SpeedThreshold>
 			</SpeedThresholds>
 		</CultureLevelInfo>
@@ -148,24 +148,24 @@
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_MARATHON</GameSpeedType>
 					<!-- advc.251: was 1500 -->
-					<iThreshold>1110</iThreshold>
+					<iThreshold>1200</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_EPICPLUS</GameSpeedType>
-					<iThreshold>1010</iThreshold>
+					<iThreshold>1000</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_EPIC</GameSpeedType>
-					<iThreshold>830</iThreshold>
+					<iThreshold>750</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_NORMAL</GameSpeedType>
-					<iThreshold>580</iThreshold>
+					<iThreshold>500</iThreshold>
 				</SpeedThreshold>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_QUICK</GameSpeedType>
 					<!-- advc.251: was 250 -->
-					<iThreshold>380</iThreshold>
+					<iThreshold>300</iThreshold>
 				</SpeedThreshold>
 			</SpeedThresholds>
 		</CultureLevelInfo>

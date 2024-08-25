@@ -4037,6 +4037,11 @@ class CvMainInterface:
 		screen.hide("GoldText")
 		screen.hide("TimeText")
 		screen.hide("TwoLineResearchBar")
+
+## Happy Golden Age ##
+		screen.hide("GoldenAgeBar")
+## Happy Golden Age ##	
+
 # BUG - NJAGC - start
 		screen.hide("EraText")
 # BUG - NJAGC - end
@@ -4261,6 +4266,29 @@ class CvMainInterface:
 # BUG - Progress Bar - Tick Marks - end
 		self.updateGreatPersonBar(screen) # BUG - Great Person Bar
 		self.updateGreatGeneralBar(screen) # BUG - Great General Bar
+
+## Happy Golden Age ##
+		if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_HAPPYNESS_GOLDEN_AGE):
+			if not CyInterface().isCityScreenUp():
+				szText = ""
+				iHappyProgress = pPlayer.getHappinessGoldenAgeProgress()
+				iHappyThreshold = pPlayer.getHappinessGoldenAgeThresh()
+				if pPlayer.isAnarchy():
+					szText = localText.getText("TXT_KEY_IS_ANARCHY", ())
+				elif pPlayer.isGoldenAge():
+					szText = localText.getText("TXT_KEY_IS_GOLDEN_AGE", ())
+				else:
+					szText = localText.getText("TXT_KEY_HAPPY_GOLDEN_AGE", (CyGame().getSymbolID(FontSymbols.GOLDEN_AGE_CHAR), iHappyProgress, iHappyThreshold))
+				# screen.setLabel("GoldenAgeBar", "Background", szText, CvUtil.FONT_LEFT_JUSTIFY, int(screen.getYResolution() / 4), int(screen.getYResolution() / 4) - 20, -0.1, FontTypes.GAME_FONT, WidgetTypes.WIDGET_HELP_POPULATION, -1, -1)	
+				screen.setLabel("GoldenAgeBar", "Background", szText, CvUtil.FONT_LEFT_JUSTIFY, 10, int(screen.getYResolution() / 4) - 20, -0.1, FontTypes.GAME_FONT, WidgetTypes.WIDGET_HAPPYNESS_GOLDEN_AGE, -1, -1)			
+				CvUtil.pyPrint("doto GoldenAgeBar show")
+				screen.show("GoldenAgeBar")
+			else:
+				screen.hide("GoldenAgeBar")
+				CvUtil.pyPrint("doto GoldenAgeBar hide")
+
+## Happy Golden Age ##
+
 		return
 
 # BUG - Great Person Bar - start
@@ -4561,6 +4589,10 @@ class CvMainInterface:
 		if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_UNITS_BONUS_CAP):
 			screen.hide("UnitsBonusesCap")
 # doto units bonus cap	
+## Happy Golden Age ##
+		if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_HAPPYNESS_GOLDEN_AGE):
+			screen.show("GoldenAgeBar")
+## Happy Golden Age ##			
 		for i in range(g_iNumLeftBonus):
 			szName = "LeftBonusItem" + str(i)
 			screen.hide(szName)
@@ -5180,6 +5212,10 @@ class CvMainInterface:
 											 FontTypes.GAME_FONT, WidgetTypes.WIDGET_TRAIN_UNITS_CAP, -1, -1)
 			screen.show("UnitsBonusesCap")
 # doto units bonus cap			
+## Happy Golden Age ##
+		if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_HAPPYNESS_GOLDEN_AGE):
+			screen.hide("GoldenAgeBar")
+## Happy Golden Age ##						
 # BUG - Raw Yields - start
 		if (CityScreenOpt.isShowRawYields()):
 			screen.setState("RawYieldsTrade0", not g_bYieldView)

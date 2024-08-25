@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Game Text - New -->
+<Civ4GameText xmlns="http://www.firaxis.com">
+	<TEXT>
+		<Tag>TXT_KEY_HAPPY_GOLDEN_AGE</Tag>
+		<English>[ICON_GOLDENAGE]: ([COLOR_POSITIVE_TEXT]%d2[COLOR_REVERT]) / %d3</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_IS_GOLDEN_AGE</Tag>
+		<English>[ICON_GOLDENAGE][ICON_GOLDENAGE][ICON_HAPPY]Golden Age[ICON_HAPPY][ICON_GOLDENAGE][ICON_GOLDENAGE]</English>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_IS_ANARCHY</Tag>
+		<English>[ICON_UNHAPPY][ICON_UNHAPPY][ICON_UNHAPPY]Anarchy[ICON_UNHAPPY][ICON_UNHAPPY][ICON_UNHAPPY]</English>
+	</TEXT>
+</Civ4GameText>
