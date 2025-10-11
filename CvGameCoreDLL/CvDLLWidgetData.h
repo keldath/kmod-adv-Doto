@@ -13,14 +13,12 @@ public:
 	DllExport static void freeInstance();
 
 	//	This will parse the help for the widget
-	DllExport void parseHelp(CvWStringBuffer &szBuffer, CvWidgetDataStruct &widgetDataStruct);
-
+	DllExport void parseHelp(CvWStringBuffer &szBuffer,
+			CvWidgetDataStruct &widgetDataExternal);
 	//	This will execute the action for the widget
-	DllExport bool executeAction(CvWidgetDataStruct &widgetDataStruct);
-
+	DllExport bool executeAction(CvWidgetDataStruct &widgetDataStructExternal);
 	//	This will execute an alternate action for the widget
-	DllExport bool executeAltAction(CvWidgetDataStruct &widgetDataStruct);
-
+	DllExport bool executeAltAction(CvWidgetDataStruct &widgetDataStructExternal);
 	DllExport bool isLink(const CvWidgetDataStruct &widgetDataStruct) const;
 
 	//	Actions to be executed
@@ -211,13 +209,6 @@ protected:
 	void parsePollutionOffsetsHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer);
 	void parsePollutionHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer);
 	// K-Mod end  <advc.ctr>
-/************************************************************************************************/
-/* START: Advanced Diplomacy doto city states                                                                   */
-/************************************************************************************************/
-	void parseFreeTradeAgreementHelp(CvWidgetDataStruct &widgetDataStruct, CvWStringBuffer &szBuffer);
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	bool parseCityTradeHelp(CvWidgetDataStruct const& kWidget, CvCity*& pCity,
 			PlayerTypes& eWhoTo) const; // </advc.ctr>
 //doto wonder limit hover text

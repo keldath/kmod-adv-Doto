@@ -642,8 +642,6 @@
 	<ElementType name="iVoteIntervalPercent" content="textOnly" dt:type="int"/>
 	<!-- advc.252: end -->
 	<ElementType name="iSuccessRate" content="textOnly" dt:type="int"/>
-<!--  doto      free unit from project                -->
-	<ElementType name="FreeUnit" content="textOnly"/>
 	<ElementType name="PrereqBonuses" content="eltOnly">
 		<element type="BonusType" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
@@ -663,14 +661,6 @@
 		<element type="Description" minOccurs="0"/>
 		<element type="Civilopedia" minOccurs="0"/>
 		<element type="Strategy" minOccurs="0"/>
-    <!--                        -->
-    <!-- Project Help Tag Start -->
-    <!--                        -->
-    <element type="Help" minOccurs="0"/>
-    <!--                        -->
-    <!-- Project Help Tag End   -->
-    <!--                        -->
-    
         <element type="VictoryPrereq" minOccurs="0"/>
 		<element type="TechPrereq" minOccurs="0"/>
 		<element type="AnyonePrereqProject" minOccurs="0"/>
@@ -689,10 +679,6 @@
 		<element type="VictoryMinThresholds" minOccurs="0"/>
 		<element type="iVictoryDelayPercent" minOccurs="0"/>
 		<element type="iSuccessRate" minOccurs="0"/>
-  <!-- doto     project unique civ type                  -->
-		<element type="CivilizationType" minOccurs="0"/>
-		<element type="FreeUnit" minOccurs="0"/>
-  <!--      project unique civ type                  -->
 		<element type="BonusProductionModifiers" minOccurs="0"/>
 		<element type="CreateSound" minOccurs="0"/>
 		<element type="MovieDefineTag" minOccurs="0"/>
@@ -741,16 +727,16 @@
 	<ElementType name="TraitNoUpkeeps" content="eltOnly">
 		<element type="TraitNoUpkeep" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
-<!-- doto civics parent - start -->
+<!-- doto civics dependnecy - start -->
 	<ElementType name="isParentCivicOption" content="textOnly" dt:type="int"/>
 <!-- doto civics parent - end -->
 	<ElementType name="CivicOptionInfo" content="eltOnly">
 		<element type="Type"/>
 		<element type="Description" minOccurs="0"/>
 		<element type="TraitNoUpkeeps" minOccurs="0"/>
-<!-- doto civics parent - start  -->
+<!-- doto civics dependnecy - start  -->
 		<element type="isParentCivicOption" minOccurs="0"/>
-<!-- doto civics parent - end -->
+<!-- doto civics dependnecy - end -->
 	</ElementType>
 	<ElementType name="CivicOptionInfos" content="eltOnly">
 		<element type="CivicOptionInfo" maxOccurs="*"/>
@@ -795,13 +781,13 @@
 	<ElementType name="bNoForeignTrade" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bNoCorporations" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bNoForeignCorporations" content="textOnly" dt:type="boolean"/>
-<!--doto civics parent - Start -->
+<!--doto civics dependnecy - Start -->
 <!-- very important - set the civic childs in prder of their respective civic option, the order also matters how they will appear in the civic screen layout -->
 <!-- <ElementType name="Type" content="textOnly"/>	 -->
 	<ElementType name="CivicChild" content="eltOnly">
 		<element type="Type" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
-<!--doto civics parent - Start -->
+<!--doto civics dependnecy - Start -->
 	<ElementType name="iCivicPercentAnger" content="textOnly" dt:type="int"/>
 	<ElementType name="bStateReligion" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bNoNonStateReligionSpread" content="textOnly" dt:type="boolean"/>
@@ -898,7 +884,7 @@
 	<ElementType name="SpecialistValids" content="eltOnly">
 		<element type="SpecialistValid" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
- 	<ElementType name="BuildingType" content="textOnly"/>
+	<ElementType name="BuildingType" content="textOnly"/>
 	<ElementType name="iHappinessChange" content="textOnly" dt:type="int"/>
 	<ElementType name="BuildingHappinessChange" content="eltOnly">
 		<element type="BuildingType"/>
@@ -1017,7 +1003,7 @@
 		<element type="bNoForeignTrade" minOccurs="0"/>
 		<element type="bNoCorporations" minOccurs="0"/>
 		<element type="bNoForeignCorporations" minOccurs="0"/>
-<!-- doto civics parent - Start -->			
+<!-- doto civics dependnecy - Start -->			
 		<element type="CivicChild" minOccurs="0"/>
 		<element type="iCivicPercentAnger" minOccurs="0"/>
 		<element type="bStateReligion" minOccurs="0"/>
@@ -1220,9 +1206,6 @@
 <!-- doto wonder limit keldath -->
 	<ElementType name="imaxWonderCultureLimit" content="textOnly" dt:type="int"/>
 <!-- doto wonder limit keldath -->
-<!-- doto enhanced city size mylon-->
-	<ElementType name="iCityRadius" content="textOnly" dt:type="int"/>
-<!-- doto enhanced city size mylon-->
 	<ElementType name="GameSpeedType" content="textOnly"/>
 	<ElementType name="SpeedThreshold" content="eltOnly">
 		<element type="GameSpeedType"/>
@@ -1237,10 +1220,7 @@
 		<element type="iCityDefenseModifier" minOccurs="0"/>
 <!-- doto wonder limit keldath -->
 		<element type="imaxWonderCultureLimit" minOccurs="0"/>
-<!-- doto wonder limit keldath -->
-<!-- doto enhanced city size mylon-->
-		<element type="iCityRadius" minOccurs="0"/>
-<!-- doto enhanced city size mylon-->		
+<!-- doto wonder limit keldath -->		
 	</ElementType>
 	<ElementType name="CultureLevelInfos" content="eltOnly">
 		<element type="CultureLevelInfo" maxOccurs="*"/>
@@ -1274,9 +1254,6 @@
 	<ElementType name="iHotKeyPriorityAlt" content="textOnly" dt:type="int"/>
 	<ElementType name="iOrderPriority" content="textOnly" dt:type="int"/>
 	<ElementType name="bVisible" content="textOnly" dt:type="boolean"/>
-<!-- doto city state only specialist -->
-	<ElementType name="bCityStater" content="textOnly" dt:type="boolean"/>
-<!-- doto city state only specialist -->	
 	<ElementType name="iGreatPeopleRateChange" content="textOnly" dt:type="int"/>
 	<ElementType name="SpecialistInfo" content="eltOnly">
 		<element type="Type"/>
@@ -1286,17 +1263,14 @@
 		<element type="Help" minOccurs="0"/>
 		<element type="Texture" minOccurs="0"/>
 		<element type="bVisible" minOccurs="0"/>
-<!-- doto city state only specialist -->
-		<element type="bCityStater" minOccurs="0"/>
-<!-- doto city state only specialist -->
 		<element type="GreatPeopleUnitClass" minOccurs="0"/>
 		<element type="iGreatPeopleRateChange" minOccurs="0"/>
 		<element type="Yields" minOccurs="0"/>
 		<element type="Commerces" minOccurs="0"/>
-<!-- SPECIALIST ENHANCEMENTS				10/09/2009			SUPERCHEESE		-->
+<!-- SPECIALIST ENHANCEMENTS	-->
 		<element type="iHealth" minOccurs="0"/>
 		<element type="iHappiness" minOccurs="0"/>
-<!-- SPECIALIST ENHANCEMENTS				END							-->		
+<!-- SPECIALIST ENHANCEMENTS	-->		
 		<element type="iExperience" minOccurs="0"/>
 		<element type="Flavors" minOccurs="0"/>
 		<element type="HotKey" minOccurs="0"/>
@@ -1403,6 +1377,7 @@
 	<ElementType name="bAIAgeOfFertility" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bAIAgeOfGuns" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bAIAtomicAge" content="textOnly" dt:type="boolean"/>
+	<ElementType name="bAIAgeOfProduction" content="textOnly" dt:type="boolean"/>
 	<!-- advc.erai: end -->
 	<ElementType name="EraInfo" content="eltOnly">
 		<element type="Type"/>
@@ -1476,6 +1451,9 @@
 		<element type="bAIAgeOfGuns" minOccurs="0"/>
 		<!-- Should be 1 for the era during which nukes become available. -->
 		<element type="bAIAtomicAge" minOccurs="0"/>
+		<!-- Should be 1 for the era during which several improvements receive
+			 a production boost from railroads or otherwise. -->
+		<element type="bAIAgeOfProduction" minOccurs="0"/>
 		<!-- advc.erai: end -->
 		<element type="iSoundtrackSpace" minOccurs="0"/>
 		<element type="bFirstSoundtrackFirst" minOccurs="0"/>

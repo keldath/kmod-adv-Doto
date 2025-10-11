@@ -2105,7 +2105,7 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>GAMEOPTION_NO_ESPIONAGE</NotGameOption>
-<!--			<PrereqOrCivics>
+<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
@@ -2311,12 +2311,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
-			<PrereqOrCivics>
+<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -2510,12 +2510,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
-			<PrereqOrCivics>
+<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -2705,12 +2705,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -2902,12 +2902,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -3098,12 +3098,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -3294,12 +3294,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -3490,12 +3490,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>GAMEOPTION_NO_CORPORATIONS</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -4883,12 +4883,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -5097,12 +5097,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -5318,12 +5318,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -5529,12 +5529,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -5744,12 +5744,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -5975,12 +5975,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -6198,12 +6198,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -6429,12 +6429,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -6657,12 +6657,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -6880,12 +6880,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -7108,12 +7108,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -7344,12 +7344,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -7579,12 +7579,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -7807,12 +7807,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -7834,7 +7834,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_HUNTING</PrereqTech>
+			<PrereqTech>TECH_BRONZE_WORKING</PrereqTech>
 			<TechTypes/>
 			<BonusType>NONE</BonusType>
 			<PrereqBonuses>
@@ -8029,12 +8029,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -8056,7 +8056,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_HUNTING</PrereqTech>
+			<PrereqTech>TECH_BRONZE_WORKING</PrereqTech>
 			<TechTypes/>
 			<BonusType>NONE</BonusType>
 			<PrereqBonuses>
@@ -8252,12 +8252,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -8279,9 +8279,9 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_HUNTING</PrereqTech>
+			<PrereqTech>TECH_BRONZE_WORKING</PrereqTech>
 			<TechTypes>
-				<PrereqTech>TECH_BRONZE_WORKING</PrereqTech>
+				<PrereqTech>NONE</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
 			</TechTypes>
@@ -8473,12 +8473,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -8695,12 +8695,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -8912,12 +8912,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -9130,12 +9130,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -9345,12 +9345,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -9566,12 +9566,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -9810,12 +9810,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -10033,12 +10033,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -10258,12 +10258,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -10472,12 +10472,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -10699,12 +10699,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -10918,12 +10918,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -11126,12 +11126,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -11171,7 +11171,7 @@ now used ri based that is on airrange vanilla
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>0</iAirRange>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -11342,12 +11342,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -11571,12 +11571,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -11792,12 +11792,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -11819,10 +11819,10 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_FASCISM</PrereqTech>
+			<PrereqTech>TECH_FLIGHT</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_RIFLING</PrereqTech>
-				<PrereqTech>TECH_FLIGHT</PrereqTech>
+				<PrereqTech>NONE</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
 			</TechTypes>
 			<BonusType>NONE</BonusType>
@@ -12193,12 +12193,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -12401,12 +12401,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -12610,12 +12610,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -12819,12 +12819,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -13039,12 +13039,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -13264,12 +13264,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -13481,12 +13481,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -13508,7 +13508,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_THE_WHEEL</PrereqTech>
+			<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 			<TechTypes/>
 			<BonusType>BONUS_HORSE</BonusType>
 			<PrereqBonuses/>
@@ -13695,12 +13695,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -13722,7 +13722,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_THE_WHEEL</PrereqTech>
+			<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 			<TechTypes/>
 			<BonusType>BONUS_HORSE</BonusType>
 			<PrereqBonuses/>
@@ -13913,7 +13913,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_THE_WHEEL</PrereqTech>
+			<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 			<TechTypes/>
 			<BonusType>BONUS_HORSE</BonusType>
 			<PrereqBonuses/>
@@ -14110,12 +14110,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -14336,12 +14336,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -14568,12 +14568,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -14790,12 +14790,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -14817,7 +14817,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_GUILDS</PrereqTech>
+			<PrereqTech>TECH_CHIVALRY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -15012,12 +15012,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -15039,7 +15039,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_GUILDS</PrereqTech>
+			<PrereqTech>TECH_CHIVALRY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 				<PrereqTech>TECH_ARCHERY</PrereqTech>
@@ -15229,12 +15229,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -15256,7 +15256,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_GUILDS</PrereqTech>
+			<PrereqTech>TECH_CHIVALRY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -15468,12 +15468,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -15495,7 +15495,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_MILITARY_TRADITION</PrereqTech>
+			<PrereqTech>TECH_LIBERALISM</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_GUNPOWDER</PrereqTech>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
@@ -15699,12 +15699,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -15726,7 +15726,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_MILITARY_TRADITION</PrereqTech>
+			<PrereqTech>TECH_LIBERALISM</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_GUNPOWDER</PrereqTech>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
@@ -15924,12 +15924,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -16154,12 +16154,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -16376,12 +16376,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -16594,12 +16594,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -16812,12 +16812,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -17028,12 +17028,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -17457,12 +17457,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -17606,14 +17606,14 @@ now used ri based that is on airrange vanilla
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>1</bOnlyDefensive>
+			<bOnlyDefensive>0</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -17646,7 +17646,16 @@ now used ri based that is on airrange vanilla
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -17659,6 +17668,10 @@ now used ri based that is on airrange vanilla
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -17675,12 +17688,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -17716,9 +17729,9 @@ now used ri based that is on airrange vanilla
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>1</iAirRange>
-<!--//doto Range Strike-->
-			<iRangeStrike>1</iRangeStrike>
+			<iAirRange>0</iAirRange>
+<!--ranged attack keldath -->
+			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -17736,9 +17749,9 @@ now used ri based that is on airrange vanilla
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>5</iCombat>
-			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>6</iAirCombat>
-			<iAirCombatLimit>20</iAirCombatLimit>
+			<iCombatLimit>75</iCombatLimit>
+			<iAirCombat>0</iAirCombat>
+			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -17746,9 +17759,9 @@ now used ri based that is on airrange vanilla
 			<iInterceptionProbability>0</iInterceptionProbability>
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
-			<iCollateralDamage>0</iCollateralDamage>
-			<iCollateralDamageLimit>0</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>0</iCollateralDamageMaxUnits>
+			<iCollateralDamage>100</iCollateralDamage>
+			<iCollateralDamageLimit>15</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>1</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -17799,12 +17812,7 @@ now used ri based that is on airrange vanilla
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions>
-				<FreePromotion>
-					<PromotionType>PROMOTION_SENTRY</PromotionType>
-					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
-			</FreePromotions>
+			<FreePromotions/>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -17826,14 +17834,14 @@ now used ri based that is on airrange vanilla
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>1</bOnlyDefensive>
+			<bOnlyDefensive>0</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -17866,11 +17874,24 @@ now used ri based that is on airrange vanilla
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
 					<UnitAIType>UNITAI_ATTACK_CITY</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 				<UnitAI>
@@ -17895,12 +17916,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -17936,9 +17957,9 @@ now used ri based that is on airrange vanilla
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>1</iAirRange>
-<!--//doto Range Strike -->
-			<iRangeStrike>1</iRangeStrike>
+			<iAirRange>0</iAirRange>
+<!--ranged attack keldath -->
+			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -17956,9 +17977,9 @@ now used ri based that is on airrange vanilla
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>5</iCombat>
-			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>6</iAirCombat>
-			<iAirCombatLimit>25</iAirCombatLimit>
+			<iCombatLimit>50</iCombatLimit>
+			<iAirCombat>0</iAirCombat>
+			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -17967,8 +17988,8 @@ now used ri based that is on airrange vanilla
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>10</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>1</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>15</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -18024,12 +18045,7 @@ now used ri based that is on airrange vanilla
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions>
-				<FreePromotion>
-					<PromotionType>PROMOTION_SENTRY</PromotionType>
-					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
-			</FreePromotions>
+			<FreePromotions/>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -18051,14 +18067,14 @@ now used ri based that is on airrange vanilla
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>1</bOnlyDefensive>
+			<bOnlyDefensive>0</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -18111,6 +18127,10 @@ now used ri based that is on airrange vanilla
 					<UnitAIType>UNITAI_RESERVE</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
 			</UnitAIs>
 			<Builds/>
 			<ReligionSpreads/>
@@ -18124,12 +18144,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -18151,7 +18171,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_ENGINEERING</PrereqTech>
+			<PrereqTech>TECH_INVENTION</PrereqTech>
 			<TechTypes/>
 			<BonusType>NONE</BonusType>
 			<PrereqBonuses/>
@@ -18165,9 +18185,9 @@ now used ri based that is on airrange vanilla
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>1</iAirRange>
-<!--//doto Range Strike -->
-			<iRangeStrike>1</iRangeStrike>
+			<iAirRange>0</iAirRange>
+<!--ranged attack keldath -->
+			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -18186,8 +18206,8 @@ now used ri based that is on airrange vanilla
 			<FeaturePassableTechs/>
 			<iCombat>4</iCombat>
 			<iCombatLimit>75</iCombatLimit>
-			<iAirCombat>7</iAirCombat>
-			<iAirCombatLimit>25</iAirCombatLimit>
+			<iAirCombat>0</iAirCombat>
+			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -18195,10 +18215,10 @@ now used ri based that is on airrange vanilla
 			<iInterceptionProbability>0</iInterceptionProbability>
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
-			<iCollateralDamage>20</iCollateralDamage>
-			<iCollateralDamageLimit>0</iCollateralDamageLimit>
-			<iCollateralDamageMaxUnits>3</iCollateralDamageMaxUnits>
-			<iCityAttack>0</iCityAttack>
+			<iCollateralDamage>100</iCollateralDamage>
+			<iCollateralDamageLimit>25</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
+			<iCityAttack>25</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
 			<iHillsAttack>0</iHillsAttack>
@@ -18249,12 +18269,7 @@ now used ri based that is on airrange vanilla
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions>
-				<FreePromotion>
-					<PromotionType>PROMOTION_SENTRY</PromotionType>
-					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
-			</FreePromotions>
+			<FreePromotions/>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -18276,14 +18291,14 @@ now used ri based that is on airrange vanilla
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>1</bOnlyDefensive>
+			<bOnlyDefensive>0</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -18316,7 +18331,16 @@ now used ri based that is on airrange vanilla
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -18335,6 +18359,10 @@ now used ri based that is on airrange vanilla
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
 			</UnitAIs>
 			<NotUnitAIs/>
 			<Builds/>
@@ -18349,12 +18377,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -18390,9 +18418,9 @@ now used ri based that is on airrange vanilla
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>1</iAirRange>
-<!--//doto Range Strike -->
-			<iRangeStrike>1</iRangeStrike>
+			<iAirRange>0</iAirRange>
+<!--ranged attack keldath -->
+			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -18409,10 +18437,10 @@ now used ri based that is on airrange vanilla
 			<FeatureImpassables/>
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
-			<iCombat>10</iCombat>
-			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>8</iAirCombat>
-			<iAirCombatLimit>25</iAirCombatLimit>
+			<iCombat>12</iCombat>
+			<iCombatLimit>65</iCombatLimit>
+			<iAirCombat>0</iAirCombat>
+			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -18421,9 +18449,9 @@ now used ri based that is on airrange vanilla
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>10</iCollateralDamageLimit>
+			<iCollateralDamageLimit>30</iCollateralDamageLimit>
 			<!-- K-Mod: was 7 -->
-			<iCollateralDamageMaxUnits>1</iCollateralDamageMaxUnits>
+			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -18474,12 +18502,7 @@ now used ri based that is on airrange vanilla
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions>
-				<FreePromotion>
-					<PromotionType>PROMOTION_SENTRY</PromotionType>
-					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
-			</FreePromotions>
+			<FreePromotions/>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -18571,7 +18594,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_RAILROAD</PrereqTech>
+			<PrereqTech>TECH_EXPLOSIVES</PrereqTech>
 			<TechTypes/>
 			<BonusType>NONE</BonusType>
 			<PrereqBonuses/>
@@ -18697,14 +18720,14 @@ now used ri based that is on airrange vanilla
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>1</bOnlyDefensive>
+			<bOnlyDefensive>0</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -18737,7 +18760,16 @@ now used ri based that is on airrange vanilla
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -18756,6 +18788,10 @@ now used ri based that is on airrange vanilla
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
 			</UnitAIs>
 			<NotUnitAIs/>
 			<Builds/>
@@ -18770,12 +18806,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -18803,7 +18839,7 @@ now used ri based that is on airrange vanilla
 			<PrereqBonuses>
 				<BonusType>NONE</BonusType>
 				<BonusType>NONE</BonusType>
-			<BonusType>NONE</BonusType>
+				<BonusType>NONE</BonusType>
 				<BonusType>NONE</BonusType>
 			</PrereqBonuses>
 			<ProductionTraits/>
@@ -18816,9 +18852,9 @@ now used ri based that is on airrange vanilla
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>1</iAirRange>
-<!--//doto Range Strike -->
-			<iRangeStrike>1</iRangeStrike>
+			<iAirRange>0</iAirRange>
+<!--ranged attack keldath -->
+			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -18836,9 +18872,9 @@ now used ri based that is on airrange vanilla
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>15</iAirCombat>
-			<iAirCombatLimit>50</iAirCombatLimit>
+			<iCombatLimit>70</iCombatLimit>
+			<iAirCombat>0</iAirCombat>
+			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -18847,9 +18883,9 @@ now used ri based that is on airrange vanilla
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>20</iCollateralDamageLimit>
+			<iCollateralDamageLimit>40</iCollateralDamageLimit>
 			<!-- K-Mod: was 8 -->
-			<iCollateralDamageMaxUnits>1</iCollateralDamageMaxUnits>
+			<iCollateralDamageMaxUnits>4</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -18905,12 +18941,7 @@ now used ri based that is on airrange vanilla
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions>
-				<FreePromotion>
-					<PromotionType>PROMOTION_SENTRY</PromotionType>
-					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
-			</FreePromotions>
+			<FreePromotions/>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -18932,14 +18963,14 @@ now used ri based that is on airrange vanilla
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>1</bOnlyDefensive>
+			<bOnlyDefensive>0</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -18967,7 +18998,16 @@ now used ri based that is on airrange vanilla
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -18984,6 +19024,10 @@ now used ri based that is on airrange vanilla
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -19018,9 +19062,9 @@ now used ri based that is on airrange vanilla
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>3</iAirRange>
-<!--//doto Range Strike -->
-			<iRangeStrike>1</iRangeStrike>
+			<iAirRange>0</iAirRange>
+<!--ranged attack keldath -->
+			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -19037,10 +19081,10 @@ now used ri based that is on airrange vanilla
 			<FeatureImpassables/>
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
-			<iCombat>24</iCombat>
-			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>20</iAirCombat>
-			<iAirCombatLimit>45</iAirCombatLimit>
+			<iCombat>26</iCombat>
+			<iCombatLimit>70</iCombatLimit>
+			<iAirCombat>0</iAirCombat>
+			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -19048,10 +19092,10 @@ now used ri based that is on airrange vanilla
 			<iInterceptionProbability>0</iInterceptionProbability>
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
-			<iCollateralDamage>200</iCollateralDamage>
-			<iCollateralDamageLimit>30</iCollateralDamageLimit>
+			<iCollateralDamage>100</iCollateralDamage>
+			<iCollateralDamageLimit>50</iCollateralDamageLimit>
 			<!-- K-Mod: was 8 -->
-			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
+			<iCollateralDamageMaxUnits>4</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -19071,17 +19115,16 @@ now used ri based that is on airrange vanilla
 					<iUnitCombatMod>50</iUnitCombatMod>
 				</UnitCombatMod>
 			</UnitCombatMods>
-			<!-- <UnitCombatCollateralImmunes>
+			<UnitCombatCollateralImmunes>
 				<UnitCombatCollateralImmune>
 					<UnitCombatType>UNITCOMBAT_SIEGE</UnitCombatType>
 					<iUnitCombatCollateralImmune>1</iUnitCombatCollateralImmune>
 				</UnitCombatCollateralImmune>
-			</UnitCombatCollateralImmunes> -->
-			<UnitCombatCollateralImmunes/>
+			</UnitCombatCollateralImmunes>
 			<DomainMods/>
 			<BonusProductionModifiers/>
 			<iBombRate>0</iBombRate>
-			<iBombardRate>0</iBombardRate>
+			<iBombardRate>14</iBombardRate>
 			<SpecialCargo>NONE</SpecialCargo>
 			<DomainCargo>NONE</DomainCargo>
 			<iCargo>0</iCargo>
@@ -19108,12 +19151,7 @@ now used ri based that is on airrange vanilla
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions>
-				<FreePromotion>
-					<PromotionType>PROMOTION_SENTRY</PromotionType>
-					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
-			</FreePromotions>
+			<FreePromotions/>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -19400,12 +19438,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -19626,12 +19664,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -19861,12 +19899,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -20095,12 +20133,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -20305,12 +20343,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -20538,12 +20576,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -20762,12 +20800,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -20989,12 +21027,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -21199,12 +21237,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>0</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -21430,12 +21468,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -21843,12 +21881,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -22057,7 +22095,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_INDUSTRIALISM</PrereqTech>
+			<PrereqTech>TECH_REFRIGERATION</PrereqTech>
 			<TechTypes/>
 			<BonusType>NONE</BonusType>
 			<PrereqBonuses>
@@ -22627,12 +22665,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -22655,7 +22693,7 @@ now used ri based that is on airrange vanilla
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
 			<!-- advc.906: was ROCKETRY plus RADIO and COMBUSTION -->
-			<PrereqTech>TECH_RADIO</PrereqTech>
+			<PrereqTech>TECH_REFRIGERATION</PrereqTech>
 			<TechTypes>
 				<PrereqTech>NONE</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -22870,12 +22908,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -23092,12 +23130,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -23296,12 +23334,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -23499,12 +23537,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -23697,12 +23735,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -23901,12 +23939,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -24284,12 +24322,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -24654,7 +24692,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_FISSION</PrereqTech>
+			<PrereqTech>TECH_NUCLEAR_POWER</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_ROCKETRY</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -26091,10 +26129,6 @@ now used ri based that is on airrange vanilla
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
 			<bOnlyDefensive>0</bOnlyDefensive>
-			<!-- advc.315a -->
-			<bOnlyAttackAnimals>0</bOnlyAttackAnimals>
-			<!-- advc.315b -->
-			<bOnlyAttackBarbarians>0</bOnlyAttackBarbarians>
 			<bNoCapture>0</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
@@ -27656,12 +27690,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -27882,12 +27916,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -27909,7 +27943,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_GUILDS</PrereqTech>
+			<PrereqTech>TECH_CHIVALRY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -28107,12 +28141,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -28322,12 +28356,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -28555,12 +28589,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -28582,7 +28616,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_ASSEMBLY_LINE</PrereqTech>
+			<PrereqTech>TECH_SOCIOLOGY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_RIFLING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -28790,12 +28824,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -29016,12 +29050,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -29241,12 +29275,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -29456,12 +29490,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -29685,12 +29719,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -29923,12 +29957,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -30171,12 +30205,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -30328,14 +30362,14 @@ now used ri based that is on airrange vanilla
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>1</bOnlyDefensive>
+			<bOnlyDefensive>0</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -30368,7 +30402,16 @@ now used ri based that is on airrange vanilla
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -30387,6 +30430,10 @@ now used ri based that is on airrange vanilla
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
 			</UnitAIs>
 			<NotUnitAIs/>
 			<Builds/>
@@ -30401,12 +30448,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -30433,7 +30480,7 @@ now used ri based that is on airrange vanilla
 			<BonusType>BONUS_IRON</BonusType>
 			<PrereqBonuses>
 				<BonusType>NONE</BonusType>
-			<BonusType>NONE</BonusType>
+				<BonusType>NONE</BonusType>
 				<BonusType>NONE</BonusType>
 				<BonusType>NONE</BonusType>
 			</PrereqBonuses>
@@ -30449,9 +30496,9 @@ now used ri based that is on airrange vanilla
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>1</iAirRange>
-<!--//doto Range Strike -->
-			<iRangeStrike>1</iRangeStrike>
+			<iAirRange>0</iAirRange>
+<!--ranged attack keldath -->
+			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -30469,9 +30516,9 @@ now used ri based that is on airrange vanilla
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>15</iAirCombat>
-			<iAirCombatLimit>40</iAirCombatLimit>
+			<iCombatLimit>70</iCombatLimit>
+			<iAirCombat>0</iAirCombat>
+			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -30480,9 +30527,8 @@ now used ri based that is on airrange vanilla
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>20</iCollateralDamageLimit>
-			<!-- K-Mod: was 8 -->
-			<iCollateralDamageMaxUnits>1</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>45</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>5</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -30540,12 +30586,7 @@ now used ri based that is on airrange vanilla
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions>
-				<FreePromotion>
-					<PromotionType>PROMOTION_SENTRY</PromotionType>
-					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
-			</FreePromotions>
+			<FreePromotions/>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -31047,12 +31088,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -31277,12 +31318,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -31304,7 +31345,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_MILITARY_TRADITION</PrereqTech>
+			<PrereqTech>TECH_LIBERALISM</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_GUNPOWDER</PrereqTech>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
@@ -31428,14 +31469,14 @@ now used ri based that is on airrange vanilla
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>1</bOnlyDefensive>
+			<bOnlyDefensive>0</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -31468,7 +31509,16 @@ now used ri based that is on airrange vanilla
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -31487,6 +31537,10 @@ now used ri based that is on airrange vanilla
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
 			</UnitAIs>
 			<NotUnitAIs/>
 			<Builds/>
@@ -31501,12 +31555,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -31544,9 +31598,9 @@ now used ri based that is on airrange vanilla
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>1</iAirRange>
-<!--//doto Range Strike -->
-			<iRangeStrike>1</iRangeStrike>
+			<iAirRange>0</iAirRange>
+<!--ranged attack keldath -->
+			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -31563,10 +31617,10 @@ now used ri based that is on airrange vanilla
 			<FeatureImpassables/>
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
-			<iCombat>10</iCombat>
-			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>8</iAirCombat>
-			<iAirCombatLimit>35</iAirCombatLimit>
+			<iCombat>12</iCombat>
+			<iCombatLimit>65</iCombatLimit>
+			<iAirCombat>0</iAirCombat>
+			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -31575,9 +31629,8 @@ now used ri based that is on airrange vanilla
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>10</iCollateralDamageLimit>
-			<!-- K-Mod: was 7 -->
-			<iCollateralDamageMaxUnits>1</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>30</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>4</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -31630,12 +31683,7 @@ now used ri based that is on airrange vanilla
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions>
-				<FreePromotion>
-					<PromotionType>PROMOTION_SENTRY</PromotionType>
-					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
-			</FreePromotions>
+			<FreePromotions/>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -31923,12 +31971,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -32147,12 +32195,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -32376,12 +32424,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -32605,12 +32653,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -32632,7 +32680,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_ASSEMBLY_LINE</PrereqTech>
+			<PrereqTech>TECH_SOCIOLOGY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_RIFLING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -32828,12 +32876,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -33038,12 +33086,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -33255,12 +33303,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -33493,12 +33541,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -33526,7 +33574,7 @@ now used ri based that is on airrange vanilla
 				<PrereqTech>NONE</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
 			</TechTypes>
-			<BonusType>BONUS_IVORY</BonusType>
+			<BonusType>BONUS_HORSE</BonusType>
 			<PrereqBonuses/>
 			<!-- advc.905b -->
 			<SpeedBonuses/>
@@ -33730,12 +33778,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -34355,12 +34403,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -34584,12 +34632,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -34611,7 +34659,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_ASSEMBLY_LINE</PrereqTech>
+			<PrereqTech>TECH_SOCIOLOGY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_RIFLING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -34819,12 +34867,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -35059,12 +35107,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -35086,7 +35134,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_GUILDS</PrereqTech>
+			<PrereqTech>TECH_CHIVALRY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -35482,7 +35530,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_INDUSTRIALISM</PrereqTech>
+			<PrereqTech>TECH_REFRIGERATION</PrereqTech>
 			<TechTypes/>
 			<BonusType>NONE</BonusType>
 			<PrereqBonuses>
@@ -35672,12 +35720,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -35887,12 +35935,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -36124,12 +36172,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -36344,12 +36392,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -36574,12 +36622,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -36601,7 +36649,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_GUILDS</PrereqTech>
+			<PrereqTech>TECH_CHIVALRY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -36807,12 +36855,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -36834,7 +36882,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_ASSEMBLY_LINE</PrereqTech>
+			<PrereqTech>TECH_SOCIOLOGY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_RIFLING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -37037,12 +37085,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -37265,12 +37313,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -37481,12 +37529,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -37514,7 +37562,7 @@ now used ri based that is on airrange vanilla
 				<PrereqTech>NONE</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
 			</TechTypes>
-			<BonusType>BONUS_IVORY</BonusType>
+			<BonusType>BONUS_HORSE</BonusType>
 			<PrereqBonuses/>
 			<!-- advc.905b -->
 			<SpeedBonuses/>
@@ -37916,12 +37964,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -37943,7 +37991,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_ASSEMBLY_LINE</PrereqTech>
+			<PrereqTech>TECH_SOCIOLOGY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_RIFLING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -38142,12 +38190,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -38385,12 +38433,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -38412,7 +38460,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_GUILDS</PrereqTech>
+			<PrereqTech>TECH_CHIVALRY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -38610,12 +38658,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -38835,12 +38883,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -38862,7 +38910,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_ASSEMBLY_LINE</PrereqTech>
+			<PrereqTech>TECH_SOCIOLOGY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_RIFLING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -39071,12 +39119,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -39497,12 +39545,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -39950,12 +39998,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -40180,12 +40228,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -40207,7 +40255,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_THE_WHEEL</PrereqTech>
+			<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 			<TechTypes/>
 			<BonusType>BONUS_HORSE</BonusType>
 			<PrereqBonuses/>
@@ -40401,12 +40449,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -40823,12 +40871,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -41056,12 +41104,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -41294,12 +41342,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -41533,12 +41581,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -41968,12 +42016,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -42184,12 +42232,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -42414,12 +42462,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -42639,12 +42687,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -42864,12 +42912,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -43093,12 +43141,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -43341,12 +43389,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -43368,7 +43416,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_MILITARY_TRADITION</PrereqTech>
+			<PrereqTech>TECH_LIBERALISM</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_GUNPOWDER</PrereqTech>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
@@ -43581,12 +43629,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -43824,12 +43872,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -43851,7 +43899,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_MILITARY_TRADITION</PrereqTech>
+			<PrereqTech>TECH_LIBERALISM</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_GUNPOWDER</PrereqTech>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
@@ -44177,14 +44225,14 @@ now used ri based that is on airrange vanilla
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>1</bOnlyDefensive>
+			<bOnlyDefensive>0</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -44217,7 +44265,16 @@ now used ri based that is on airrange vanilla
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -44236,6 +44293,10 @@ now used ri based that is on airrange vanilla
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
 			</UnitAIs>
 			<NotUnitAIs/>
 			<Builds/>
@@ -44250,12 +44311,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -44283,7 +44344,7 @@ now used ri based that is on airrange vanilla
 			<PrereqBonuses>
 				<BonusType>NONE</BonusType>
 				<BonusType>NONE</BonusType>
-			<BonusType>NONE</BonusType>
+				<BonusType>NONE</BonusType>
 				<BonusType>NONE</BonusType>
 			</PrereqBonuses>
 			<!-- advc.905b -->
@@ -44298,9 +44359,9 @@ now used ri based that is on airrange vanilla
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>1</iAirRange>
-<!--//doto Range Strike -->
-			<iRangeStrike>1</iRangeStrike>
+			<iAirRange>0</iAirRange>
+<!--ranged attack keldath -->
+			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -44318,9 +44379,9 @@ now used ri based that is on airrange vanilla
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>15</iAirCombat>
-			<iAirCombatLimit>40</iAirCombatLimit>
+			<iCombatLimit>75</iCombatLimit>
+			<iAirCombat>0</iAirCombat>
+			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -44329,9 +44390,8 @@ now used ri based that is on airrange vanilla
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>20</iCollateralDamageLimit>
-			<!-- K-Mod: was 8 -->
-			<iCollateralDamageMaxUnits>1</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>45</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>5</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -44389,12 +44449,7 @@ now used ri based that is on airrange vanilla
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions>
-				<FreePromotion>
-					<PromotionType>PROMOTION_SENTRY</PromotionType>
-					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
-			</FreePromotions>
+			<FreePromotions/>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -44687,12 +44742,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -44908,12 +44963,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -45349,12 +45404,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -45600,12 +45655,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -45838,12 +45893,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -46077,12 +46132,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -46303,12 +46358,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -46330,7 +46385,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_GUILDS</PrereqTech>
+			<PrereqTech>TECH_CHIVALRY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -46454,14 +46509,14 @@ now used ri based that is on airrange vanilla
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>1</bOnlyDefensive>
+			<bOnlyDefensive>0</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -46494,7 +46549,16 @@ now used ri based that is on airrange vanilla
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -46513,6 +46577,10 @@ now used ri based that is on airrange vanilla
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
 			</UnitAIs>
 			<NotUnitAIs/>
 			<Builds/>
@@ -46527,12 +46595,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -46560,7 +46628,7 @@ now used ri based that is on airrange vanilla
 			<PrereqBonuses>
 				<BonusType>NONE</BonusType>
 				<BonusType>NONE</BonusType>
-			<BonusType>NONE</BonusType>
+				<BonusType>NONE</BonusType>
 				<BonusType>NONE</BonusType>
 			</PrereqBonuses>
 			<!-- advc.905b -->
@@ -46575,9 +46643,9 @@ now used ri based that is on airrange vanilla
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>1</iAirRange>
-<!--//doto Range Strike -->
-			<iRangeStrike>1</iRangeStrike>
+			<iAirRange>0</iAirRange>
+<!--ranged attack keldath -->
+			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -46595,9 +46663,9 @@ now used ri based that is on airrange vanilla
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>18</iCombat>
-			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>15</iAirCombat>
-			<iAirCombatLimit>45</iAirCombatLimit>
+			<iCombatLimit>85</iCombatLimit>
+			<iAirCombat>0</iAirCombat>
+			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -46606,9 +46674,8 @@ now used ri based that is on airrange vanilla
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>15</iCollateralDamageLimit>
-			<!-- K-Mod: was 8 -->
-			<iCollateralDamageMaxUnits>1</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>40</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -46666,12 +46733,7 @@ now used ri based that is on airrange vanilla
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions>
-				<FreePromotion>
-					<PromotionType>PROMOTION_SENTRY</PromotionType>
-					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
-			</FreePromotions>
+			<FreePromotions/>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -46775,12 +46837,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -47197,12 +47259,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -47640,12 +47702,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -47878,12 +47940,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -48117,12 +48179,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -48346,12 +48408,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -48566,12 +48628,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -48812,12 +48874,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -48839,7 +48901,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_ASSEMBLY_LINE</PrereqTech>
+			<PrereqTech>TECH_SOCIOLOGY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_RIFLING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -49046,12 +49108,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -49275,12 +49337,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -49902,12 +49964,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -49929,7 +49991,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_ASSEMBLY_LINE</PrereqTech>
+			<PrereqTech>TECH_SOCIOLOGY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_RIFLING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -50055,14 +50117,14 @@ now used ri based that is on airrange vanilla
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>1</bOnlyDefensive>
+			<bOnlyDefensive>0</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -50095,7 +50157,16 @@ now used ri based that is on airrange vanilla
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -50114,6 +50185,10 @@ now used ri based that is on airrange vanilla
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
 			</UnitAIs>
 			<NotUnitAIs/>
 			<Builds/>
@@ -50128,12 +50203,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -50171,9 +50246,9 @@ now used ri based that is on airrange vanilla
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>1</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>1</iAirRange>
-<!--//doto Range Strike -->
-			<iRangeStrike>1</iRangeStrike>
+			<iAirRange>0</iAirRange>
+<!--ranged attack keldath -->
+			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -50190,10 +50265,10 @@ now used ri based that is on airrange vanilla
 			<FeatureImpassables/>
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
-			<iCombat>10</iCombat>
-			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>10</iAirCombat>
-			<iAirCombatLimit>25</iAirCombatLimit>
+			<iCombat>12</iCombat>
+			<iCombatLimit>65</iCombatLimit>
+			<iAirCombat>0</iAirCombat>
+			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -50202,9 +50277,8 @@ now used ri based that is on airrange vanilla
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
 			<iCollateralDamage>100</iCollateralDamage>
-			<iCollateralDamageLimit>15</iCollateralDamageLimit>
-			<!-- K-Mod: was 7 -->
-			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
+			<iCollateralDamageLimit>35</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>3</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -50257,12 +50331,7 @@ now used ri based that is on airrange vanilla
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions>
-				<FreePromotion>
-					<PromotionType>PROMOTION_SENTRY</PromotionType>
-					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
-			</FreePromotions>
+			<FreePromotions/>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -50363,12 +50432,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -50390,7 +50459,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_GUILDS</PrereqTech>
+			<PrereqTech>TECH_CHIVALRY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -50990,12 +51059,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -51228,12 +51297,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -51449,12 +51518,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -51679,12 +51748,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -51706,7 +51775,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_GUILDS</PrereqTech>
+			<PrereqTech>TECH_CHIVALRY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -52123,12 +52192,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -52367,12 +52436,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -52606,12 +52675,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -52839,12 +52908,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -53065,12 +53134,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -53112,9 +53181,7 @@ now used ri based that is on airrange vanilla
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>3</iAirRange>
-<!--//doto Range Strike -->
-			<iRangeStrike>1</iRangeStrike>
+			<iAirRange>1</iAirRange>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -53133,8 +53200,8 @@ now used ri based that is on airrange vanilla
 			<FeaturePassableTechs/>
 			<iCombat>22</iCombat>
 			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>18</iAirCombat>
-			<iAirCombatLimit>75</iAirCombatLimit>
+			<iAirCombat>0</iAirCombat>
+			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -53201,12 +53268,7 @@ now used ri based that is on airrange vanilla
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions>
-				<FreePromotion>
-					<PromotionType>PROMOTION_SENTRY</PromotionType>
-					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
-			</FreePromotions>
+			<FreePromotions/>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -53292,12 +53354,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -53512,12 +53574,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -53745,12 +53807,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -53969,12 +54031,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -53997,7 +54059,7 @@ now used ri based that is on airrange vanilla
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
 			<!-- advc.906: was ROCKETRY plus RADIO and COMBUSTION -->
-			<PrereqTech>TECH_RADIO</PrereqTech>
+			<PrereqTech>TECH_REFRIGERATION</PrereqTech>
 			<TechTypes>
 				<PrereqTech>NONE</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -54150,14 +54212,14 @@ now used ri based that is on airrange vanilla
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>1</bOnlyDefensive>
+			<bOnlyDefensive>0</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -54185,7 +54247,16 @@ now used ri based that is on airrange vanilla
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -54202,6 +54273,10 @@ now used ri based that is on airrange vanilla
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -54238,9 +54313,9 @@ now used ri based that is on airrange vanilla
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>2</iAirRange>
-<!--//doto Range Strike -->
-			<iRangeStrike>1</iRangeStrike>
+			<iAirRange>0</iAirRange>
+<!--ranged attack keldath -->
+			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -54258,9 +54333,9 @@ now used ri based that is on airrange vanilla
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>26</iCombat>
-			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>22</iAirCombat>
-			<iAirCombatLimit>42</iAirCombatLimit>
+			<iCombatLimit>70</iCombatLimit>
+			<iAirCombat>0</iAirCombat>
+			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -54268,10 +54343,9 @@ now used ri based that is on airrange vanilla
 			<iInterceptionProbability>0</iInterceptionProbability>
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
-			<iCollateralDamage>180</iCollateralDamage>
-			<iCollateralDamageLimit>35</iCollateralDamageLimit>
-			<!-- K-Mod: was 8 -->
-			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
+			<iCollateralDamage>100</iCollateralDamage>
+			<iCollateralDamageLimit>80</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>3</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -54329,12 +54403,7 @@ now used ri based that is on airrange vanilla
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions>
-				<FreePromotion>
-					<PromotionType>PROMOTION_SENTRY</PromotionType>
-					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
-			</FreePromotions>
+			<FreePromotions/>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -54635,12 +54704,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -54868,12 +54937,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -55102,12 +55171,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -55331,12 +55400,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -55548,12 +55617,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -55772,12 +55841,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -56202,12 +56271,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -56441,12 +56510,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -56787,14 +56856,14 @@ now used ri based that is on airrange vanilla
 			<bAnimal>0</bAnimal>
 			<bFood>0</bFood>
 			<bNoBadGoodies>0</bNoBadGoodies>
-			<bOnlyDefensive>1</bOnlyDefensive>
+			<bOnlyDefensive>0</bOnlyDefensive>
 			<bNoCapture>1</bNoCapture>
 			<bQuickCombat>0</bQuickCombat>
 			<bRivalTerritory>0</bRivalTerritory>
 			<bMilitaryHappiness>1</bMilitaryHappiness>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
-			<bPillage>1</bPillage>
+			<bPillage>0</bPillage>
 			<bSpy>0</bSpy>
 			<bSabotage>0</bSabotage>
 			<bDestroy>0</bDestroy>
@@ -56822,7 +56891,16 @@ now used ri based that is on airrange vanilla
 			<UnitClassTargets/>
 			<UnitCombatTargets/>
 			<UnitClassDefenders/>
-			<UnitCombatDefenders/>
+			<UnitCombatDefenders>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_SIEGE</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+				<UnitCombatDefender>
+					<UnitCombatDefenderType>UNITCOMBAT_NAVAL</UnitCombatDefenderType>
+					<bUnitCombatDefender>1</bUnitCombatDefender>
+				</UnitCombatDefender>
+			</UnitCombatDefenders>
 			<FlankingStrikes/>
 			<UnitAIs>
 				<UnitAI>
@@ -56839,6 +56917,10 @@ now used ri based that is on airrange vanilla
 				</UnitAI>
 				<UnitAI>
 					<UnitAIType>UNITAI_CITY_COUNTER</UnitAIType>
+					<bUnitAI>1</bUnitAI>
+				</UnitAI>
+				<UnitAI>
+					<UnitAIType>UNITAI_COLLATERAL</UnitAIType>
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
@@ -56875,9 +56957,9 @@ now used ri based that is on airrange vanilla
 			<iMinAreaSize>-1</iMinAreaSize>
 			<iMoves>2</iMoves>
 			<bNoRevealMap>0</bNoRevealMap>
-			<iAirRange>2</iAirRange>
-<!--//doto Range Strike -->
-			<iRangeStrike>1</iRangeStrike>
+			<iAirRange>0</iAirRange>
+<!--ranged attack keldath -->
+			<iRangeStrike>3</iRangeStrike>
 			<iAirUnitCap>0</iAirUnitCap>
 			<iDropRange>0</iDropRange>
 			<iNukeRange>-1</iNukeRange>
@@ -56895,9 +56977,9 @@ now used ri based that is on airrange vanilla
 			<TerrainPassableTechs/>
 			<FeaturePassableTechs/>
 			<iCombat>26</iCombat>
-			<iCombatLimit>100</iCombatLimit>
-			<iAirCombat>24</iAirCombat>
-			<iAirCombatLimit>46</iAirCombatLimit>
+			<iCombatLimit>70</iCombatLimit>
+			<iAirCombat>0</iAirCombat>
+			<iAirCombatLimit>0</iAirCombatLimit>
 			<iXPValueAttack>4</iXPValueAttack>
 			<iXPValueDefense>2</iXPValueDefense>
 			<iFirstStrikes>0</iFirstStrikes>
@@ -56905,10 +56987,9 @@ now used ri based that is on airrange vanilla
 			<iInterceptionProbability>0</iInterceptionProbability>
 			<iEvasionProbability>0</iEvasionProbability>
 			<iWithdrawalProb>0</iWithdrawalProb>
-			<iCollateralDamage>200</iCollateralDamage>
-			<iCollateralDamageLimit>35</iCollateralDamageLimit>
-			<!-- K-Mod: was 8 -->
-			<iCollateralDamageMaxUnits>2</iCollateralDamageMaxUnits>
+			<iCollateralDamage>100</iCollateralDamage>
+			<iCollateralDamageLimit>65</iCollateralDamageLimit>
+			<iCollateralDamageMaxUnits>5</iCollateralDamageMaxUnits>
 			<iCityAttack>0</iCityAttack>
 			<iCityDefense>0</iCityDefense>
 			<iAnimalCombat>0</iAnimalCombat>
@@ -56939,7 +57020,7 @@ now used ri based that is on airrange vanilla
 			<DomainMods/>
 			<BonusProductionModifiers/>
 			<iBombRate>0</iBombRate>
-			<iBombardRate>16</iBombardRate>
+			<iBombardRate>15</iBombardRate>
 			<SpecialCargo>NONE</SpecialCargo>
 			<DomainCargo>NONE</DomainCargo>
 			<iCargo>0</iCargo>
@@ -56948,7 +57029,7 @@ now used ri based that is on airrange vanilla
 			<iCultureGarrison>6</iCultureGarrison>
 			<iExtraCost>1</iExtraCost>
 			<iAsset>5</iAsset>
-			<iPower>24</iPower>
+			<iPower>26</iPower>
 			<UnitMeshGroups>
 				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>1.75</fMaxSpeed>
@@ -56966,12 +57047,7 @@ now used ri based that is on airrange vanilla
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<FreePromotions>
-				<FreePromotion>
-					<PromotionType>PROMOTION_SENTRY</PromotionType>
-					<bFreePromotion>1</bFreePromotion>
-				</FreePromotion>
-			</FreePromotions>
+			<FreePromotions/>
 			<LeaderPromotion>NONE</LeaderPromotion>
 			<iLeaderExperience>0</iLeaderExperience>
 		</UnitInfo>
@@ -57072,12 +57148,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -57099,7 +57175,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_GUILDS</PrereqTech>
+			<PrereqTech>TECH_CHIVALRY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -57513,12 +57589,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -57540,7 +57616,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_GUILDS</PrereqTech>
+			<PrereqTech>TECH_CHIVALRY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -57746,12 +57822,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -57988,12 +58064,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -58015,7 +58091,7 @@ now used ri based that is on airrange vanilla
 			<PrereqReligion>NONE</PrereqReligion>
 			<PrereqCorporation>NONE</PrereqCorporation>
 			<PrereqBuilding>NONE</PrereqBuilding>
-			<PrereqTech>TECH_ASSEMBLY_LINE</PrereqTech>
+			<PrereqTech>TECH_SOCIOLOGY</PrereqTech>
 			<TechTypes>
 				<PrereqTech>TECH_RIFLING</PrereqTech>
 				<PrereqTech>NONE</PrereqTech>
@@ -58417,12 +58493,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -58820,12 +58896,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -59040,12 +59116,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>
@@ -59458,12 +59534,12 @@ now used ri based that is on airrange vanilla
 			<bStateReligion>0</bStateReligion>
 			<PrereqGameOption>NONE</PrereqGameOption>
 			<NotGameOption>NONE</NotGameOption>
-			<PrereqOrCivics>
+			<!--<PrereqOrCivics>
 				<PrereqCivic>
 					<CivicOption>NONE</CivicOption>
 					<bPrereqCivic>1</bPrereqCivic>
 				</PrereqCivic>
-			</PrereqOrCivics>
+			</PrereqOrCivics>-->
 			<PrereqBuildingClasses>
 				<PrereqBuildingClass>
 					<BuildingClassType>NONE</BuildingClassType>

@@ -164,7 +164,16 @@ public:
 	bool hasEverSeenDemographics(int iPlayer) const; // advc.091
 
 	bool isCivic(int /*CivicTypes*/ eCivic);
-	bool canDoCivics(int /*CivicTypes*/ eCivic);
+//doto 115 goverment screencivic dependency
+/*
+cvgovermentscreen sends a call from drawCivicOptionButtons which checks if to draw the civic buttons.
+i added the true , cvgovermentscreen_ignore_hide so the display of civics would display despite the
+getGovermentConversionCounter being 0. that is because if the counter is 0 it would show the civics as attainable,
+which is true, but its confusing cause it feels like player just havnt learnt them yet.
+*/
+	bool canDoCivics(int /*CivicTypes*/ eCivic, bool cvgovermentscreen_ignore_hide = false);
+//doto 115 goverment screen FOR THE PYTHON SCREEN
+	CivicTypes getCivicParent(int eCivic);
 	//bool canRevolution(int /*CivicTypes**/ paeNewCivics);
 	//void revolution(int /*CivicTypes**/ paeNewCivics, bool bForce);
 	/*	<advc.001> These need to take a list of civics as parameter,
@@ -258,6 +267,9 @@ public:
 	int getHappinessGoldenAgeThresh();
 	int getHappinessGoldenAgeProgress();
 //doto 115 happiness golden age
+//doto 115 civic dependency goverment screen
+	int getGovermentConversionCounter(int eCivicOption);
+//doto 115 goverment screen
 	void changeAnarchyTurns(int iChange);
 	int getStrikeTurns();
 	int getMaxAnarchyTurns();

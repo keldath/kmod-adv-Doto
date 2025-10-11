@@ -626,12 +626,11 @@ class SevoPediaMain(CvPediaScreen.CvPediaScreen):
 		r = []
 		for descr,i in civList:
 			info = gc.getCivilizationInfo(i)
-#doto city states temp fix - need to expose iscitystateto py
-			# if not info.isPlayable():
-			# 	iCapitalBuildingClass = gc.getDefineINT("CAPITAL_BUILDINGCLASS")
-			# 	if (iCapitalBuildingClass >= 0 and
-			# 	info.isCivilizationFreeBuildingClass(iCapitalBuildingClass)):
-			# 		continue
+			if not info.isPlayable():
+				iCapitalBuildingClass = gc.getDefineINT("CAPITAL_BUILDINGCLASS")
+				if (iCapitalBuildingClass >= 0 and
+				info.isCivilizationFreeBuildingClass(iCapitalBuildingClass)):
+					continue
 			r.append((descr,i))
 		return r # </advc.004y>
 
@@ -768,14 +767,19 @@ class SevoPediaMain(CvPediaScreen.CvPediaScreen):
 
 		i = 0
 		for item in self.list:
+			data1 = item[1] # advc.001: Moved up
 			if info == gc.getConceptInfo:
 				data1 = CivilopediaPageTypes.CIVILOPEDIA_PAGE_CONCEPT
 				data2 = item[1]
 			elif info == self.getNewConceptInfo or info == self.getShortcutInfo or info == self.getTraitInfo: # advc
 				data1 = CivilopediaPageTypes.CIVILOPEDIA_PAGE_CONCEPT_NEW
 				data2 = item[1]
+			# <advc.001> Widget help for leaders needs the civ ID in data2 (from Taurus)
+			elif (info == gc.getLeaderHeadInfo):
+				data2 = SevoPediaLeader.SevoPediaLeader.getCiv(item[1]) # </advc.001>
 			else:
-				data1 = item[1]
+				# advc (note): 0 tends to mean no tooltip (or an empty one?).
+				#    -1 should also work as the default; BULL likes to use 1.
 				data2 = 1
 			screen.appendTableRow(self.ITEM_LIST_ID)
 			screen.setTableText(self.ITEM_LIST_ID, 0, i, u"<font=3>" + item[0] + u"</font>", info(item[1]).getButton(), widget, data1, data2, CvUtil.FONT_LEFT_JUSTIFY)

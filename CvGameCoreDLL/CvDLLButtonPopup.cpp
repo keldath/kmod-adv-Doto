@@ -1357,8 +1357,7 @@ bool CvDLLButtonPopup::launchDiploVotePopup(CvPopup* pPopup, CvPopupInfo &info)
 			if (!GC.getGame().isTeamVoteEligible(itTeam->getID(), eVoteSource))
 				continue;
 			if (eMasterTeam == NO_TEAM || eMasterTeam == itTeam->getID() ||
-//doto fix for teams - reverse for advc 1.00 date 31.08.2021
-				itTeam->getID() == GC.getGame().getActiveTeam())
+				itTeam->isActive())
 			{
 				m_kUI.popupAddGenericButton(pPopup, itTeam->getName().GetCString(),
 						NULL, itTeam->getID(), WIDGET_GENERAL);
@@ -2606,10 +2605,15 @@ bool CvDLLButtonPopup::launchEventPopup(CvPopup* pPopup, CvPopupInfo &info)
 	EventTriggeredData* pTriggeredData = kActivePlayer.getEventTriggered(info.getData1());
 	if (pTriggeredData == NULL)
 		return false;
-
 	if (pTriggeredData->m_eTrigger == NO_EVENTTRIGGER)
 		return false;
-
+	// <advc.001> Double-check trigger conditions
+	if (kActivePlayer.initTriggeredData(pTriggeredData->m_eTrigger) == NULL)
+	{
+		kActivePlayer.deleteEventTriggered(pTriggeredData->getID());
+		FErrorMsg("Canceling event; is this legit (recently added code)?"); // advc.test
+		return false;
+	} // </advc.001>
 	CvEventTriggerInfo& kTrigger = GC.getInfo(pTriggeredData->m_eTrigger);
 
 	gDLL->UI().popupSetBodyString(pPopup, pTriggeredData->m_szText);
@@ -2636,8 +2640,10 @@ bool CvDLLButtonPopup::launchEventPopup(CvPopup* pPopup, CvPopupInfo &info)
 	}
 
 	if (!bEventAvailable)
+	{	// advc.001: Don't count this as having been triggered
+		kActivePlayer.deleteEventTriggered(pTriggeredData->getID());
 		return false;
-
+	}
 	if (kTrigger.isPickCity())
 	{
 		CvCity* pCity = kActivePlayer.getCity(pTriggeredData->m_iCityId);
@@ -2772,7 +2778,6 @@ bool CvDLLButtonPopup::launchFoundReligionPopup(CvPopup* pPopup, CvPopupInfo &in
 	for (int iReligion = 0; iReligion < GC.getNumReligionInfos(); iReligion++)
 	{
 		CvReligionInfo& kReligion = GC.getInfo((ReligionTypes)iReligion);
-//david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
 //keldath fix - DONT ADD FORBIDDEN RELIGION TO THE POPUP		
 		CvPlayer& kActivePlayer = GET_PLAYER(GC.getGame().getActivePlayer());
 		CivilizationTypes eCiv = kActivePlayer.getCivilizationType();
@@ -2782,7 +2787,6 @@ bool CvDLLButtonPopup::launchFoundReligionPopup(CvPopup* pPopup, CvPopupInfo &in
 			&& GC.getGame().isOption(GAMEOPTION_FORBIDDEN_RELIGION))
 			)
 		{
-//david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
 //keldath fix - DONT ADD FORBIDDEN RELIGION TO THE POPUP	
 			m_kUI.popupAddGenericButton(pPopup,
 					kReligion.getDescription(), kReligion.getButton(), iReligion, WIDGET_GENERAL);

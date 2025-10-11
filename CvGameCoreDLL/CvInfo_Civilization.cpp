@@ -10,7 +10,6 @@ m_eArtStyleType(NO_ARTSTYLE),
 m_iUnitArtStyleType(NO_UNIT_ARTSTYLE),
 m_iNumCityNames(0),
 m_iNumLeaders(0),
-//doto city states
 m_iSelectionSoundScriptId(0),
 m_iActionSoundScriptId(0),
 m_iDerivativeCiv(NO_CIVILIZATION),
@@ -19,9 +18,6 @@ m_bAIPlayable(false),
 //limited religion doto
 m_iMaxLimitedReligions(0),
 //limited religion doto
-//doto city states
-m_isCityState(0),
-//doto city states
 m_piCivilizationBuildings(NULL),
 m_piCivilizationUnits(NULL),
 m_piCivilizationFreeUnitsClass(NULL),
@@ -95,21 +91,11 @@ int CvCivilizationInfo::getActionSoundScriptId() const
 
 bool CvCivilizationInfo::isAIPlayable() const
 {
-//doto city states - if the option is set to randomize	
-	if (GC.getDISPLAY_CITY_STATES_IN_CUSTOM_GAME() == 0
-	&& getIsCityState() == 1)
-		return false;
-//doto city states - if the option is set to randomize	
 	return m_bAIPlayable;
 }
 
 bool CvCivilizationInfo::isPlayable() const
 {
-//doto city states - if the option is set to randomize	
-	if (GC.getDISPLAY_CITY_STATES_IN_CUSTOM_GAME() == 0
-	&& getIsCityState() == 1)
-		return false;
-//doto city states - if the option is set to randomize	
 	return m_bPlayable;
 }
 //limited religion doto
@@ -118,12 +104,6 @@ int CvCivilizationInfo::getMaxLimitedReligions() const
 	return m_iMaxLimitedReligions;
 }
 //limited religion doto
-//doto city states
-int CvCivilizationInfo::getIsCityState() const
-{
-	return m_isCityState;
-}
-//doto city states
 const wchar* CvCivilizationInfo::getShortDescription(uint uiForm)
 {
 	while(m_aszShortDescription.size() <= uiForm)
@@ -255,10 +235,7 @@ void CvCivilizationInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_bPlayable);
 //limited religion doto	
 	stream->Read(&m_iMaxLimitedReligions);
-//limited religion doto	
-//doto city states
-	stream->Read(&m_isCityState);
-//doto city states
+//limited religion doto
 	stream->ReadString(m_szArtDefineTag);
 	stream->ReadString(m_szShortDescriptionKey);
 	stream->ReadString(m_szAdjectiveKey);
@@ -314,10 +291,7 @@ void CvCivilizationInfo::write(FDataStreamBase* stream)
 	stream->Write(m_bPlayable);
 //limited religion doto	
 	stream->Write(m_iMaxLimitedReligions);
-//limited religion doto	
-//doto city states
-	stream->Write(m_isCityState);
-//doto city states
+//limited religion doto
 	stream->WriteString(m_szArtDefineTag);
 	stream->WriteString(m_szShortDescriptionKey);
 	stream->WriteString(m_szAdjectiveKey);
@@ -363,10 +337,7 @@ bool CvCivilizationInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_bAIPlayable, "bAIPlayable");
 //limited religion doto		by default limit to 1
 	pXML->GetChildXmlValByName(&m_iMaxLimitedReligions, "iMaxLimitedReligions", 1);
-//limited religion doto	
-//doto city states
-	pXML->GetChildXmlValByName(&m_isCityState, "isCityState", 0);
-//doto city states
+//limited religion doto
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "Cities"))
 	{
 		pXML->SetStringList(&m_paszCityNames, &m_iNumCityNames);
@@ -519,14 +490,6 @@ m_iBonusTradeAttitudeDivisor(0),
 m_iBonusTradeAttitudeChangeLimit(0),
 m_iOpenBordersAttitudeDivisor(0),
 m_iOpenBordersAttitudeChangeLimit(0),
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-m_iFreeTradeAgreementAttitudeDivisor(0),
-m_iFreeTradeAgreementAttitudeChangeLimit(0),
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 m_iDefensivePactAttitudeDivisor(0),
 m_iDefensivePactAttitudeChangeLimit(0),
 m_iShareWarAttitudeChange(0),
@@ -558,13 +521,6 @@ m_iStopTradingThemRefuseAttitudeThreshold(NO_ATTITUDE),
 m_iAdoptCivicRefuseAttitudeThreshold(NO_ATTITUDE),
 m_iConvertReligionRefuseAttitudeThreshold(NO_ATTITUDE),
 m_iOpenBordersRefuseAttitudeThreshold(NO_ATTITUDE),
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-m_iFreeTradeAgreementRefuseAttitudeThreshold(NO_ATTITUDE),
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 m_iDefensivePactRefuseAttitudeThreshold(NO_ATTITUDE),
 m_iPermanentAllianceRefuseAttitudeThreshold(NO_ATTITUDE),
 m_iVassalRefuseAttitudeThreshold(NO_ATTITUDE),
@@ -808,14 +764,6 @@ void CvLeaderHeadInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iBonusTradeAttitudeChangeLimit);
 	stream->Read(&m_iOpenBordersAttitudeDivisor);
 	stream->Read(&m_iOpenBordersAttitudeChangeLimit);
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	stream->Read(&m_iFreeTradeAgreementAttitudeDivisor);
-	stream->Read(&m_iFreeTradeAgreementAttitudeChangeLimit);
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	stream->Read(&m_iDefensivePactAttitudeDivisor);
 	stream->Read(&m_iDefensivePactAttitudeChangeLimit);
 	stream->Read(&m_iShareWarAttitudeChange);
@@ -846,14 +794,6 @@ void CvLeaderHeadInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_iAdoptCivicRefuseAttitudeThreshold);
 	stream->Read(&m_iConvertReligionRefuseAttitudeThreshold);
 	stream->Read(&m_iOpenBordersRefuseAttitudeThreshold);
-/*************************************************************************************************/
-/* START: Advanced Diplomacy                                                        			 */
-/*************************************************************************************************/
-	stream->Read(&m_iSecretaryGeneralVoteRefuseAttitudeThreshold);
-	stream->Read(&m_iFreeTradeAgreementRefuseAttitudeThreshold);
-/*************************************************************************************************/
-/* END: Advanced Diplomacy       	                                                  			 */
-/*************************************************************************************************/
 	stream->Read(&m_iDefensivePactRefuseAttitudeThreshold);
 	stream->Read(&m_iPermanentAllianceRefuseAttitudeThreshold);
 	stream->Read(&m_iVassalRefuseAttitudeThreshold);
@@ -970,14 +910,6 @@ void CvLeaderHeadInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iBonusTradeAttitudeChangeLimit);
 	stream->Write(m_iOpenBordersAttitudeDivisor);
 	stream->Write(m_iOpenBordersAttitudeChangeLimit);
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	stream->Write(m_iFreeTradeAgreementAttitudeDivisor);
-	stream->Write(m_iFreeTradeAgreementAttitudeChangeLimit);
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	stream->Write(m_iDefensivePactAttitudeDivisor);
 	stream->Write(m_iDefensivePactAttitudeChangeLimit);
 	stream->Write(m_iShareWarAttitudeChange);
@@ -1008,13 +940,6 @@ void CvLeaderHeadInfo::write(FDataStreamBase* stream)
 	stream->Write(m_iAdoptCivicRefuseAttitudeThreshold);
 	stream->Write(m_iConvertReligionRefuseAttitudeThreshold);
 	stream->Write(m_iOpenBordersRefuseAttitudeThreshold);
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	stream->Write(m_iFreeTradeAgreementRefuseAttitudeThreshold);
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	stream->Write(m_iDefensivePactRefuseAttitudeThreshold);
 	stream->Write(m_iPermanentAllianceRefuseAttitudeThreshold);
 	stream->Write(m_iVassalRefuseAttitudeThreshold);
@@ -1115,14 +1040,6 @@ bool CvLeaderHeadInfo::read(CvXMLLoadUtility* pXML)
 	GetChildXmlValByName(m_iBonusTradeAttitudeChangeLimit, "iBonusTradeAttitudeChangeLimit");
 	GetChildXmlValByName(m_iOpenBordersAttitudeDivisor, "iOpenBordersAttitudeDivisor");
 	GetChildXmlValByName(m_iOpenBordersAttitudeChangeLimit, "iOpenBordersAttitudeChangeLimit");
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	GetChildXmlValByName(m_iFreeTradeAgreementAttitudeDivisor, "iFreeTradeAgreementAttitudeDivisor");
-	GetChildXmlValByName(m_iFreeTradeAgreementAttitudeChangeLimit, "iFreeTradeAgreementAttitudeChangeLimit");
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	GetChildXmlValByName(m_iDefensivePactAttitudeDivisor, "iDefensivePactAttitudeDivisor");
 	GetChildXmlValByName(m_iDefensivePactAttitudeChangeLimit, "iDefensivePactAttitudeChangeLimit");
 	GetChildXmlValByName(m_iShareWarAttitudeChange, "iShareWarAttitudeChange");
@@ -1178,14 +1095,6 @@ bool CvLeaderHeadInfo::read(CvXMLLoadUtility* pXML)
 			"ConvertReligionRefuseAttitudeThreshold");
 	pXML->SetInfoIDFromChildXmlVal(m_iOpenBordersRefuseAttitudeThreshold,
 			"OpenBordersRefuseAttitudeThreshold");
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	pXML->SetInfoIDFromChildXmlVal(m_iFreeTradeAgreementRefuseAttitudeThreshold,
-		"FreeTradeAgreementRefuseAttitudeThreshold");
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	pXML->SetInfoIDFromChildXmlVal(m_iDefensivePactRefuseAttitudeThreshold,
 			"DefensivePactRefuseAttitudeThreshold");
 	pXML->SetInfoIDFromChildXmlVal(m_iPermanentAllianceRefuseAttitudeThreshold,
@@ -1196,18 +1105,10 @@ bool CvLeaderHeadInfo::read(CvXMLLoadUtility* pXML)
 			"FavoriteCivic");
 	{
 //a1021//dune wars - hated civs
-/*	pXML->GetChildXmlValByName(szTextVal, "HatedCivic",""); // f1rpo
-	m_iHatedCivic = pXML->FindInInfoClass(szTextVal);
-	pXML->GetChildXmlValByName(szTextVal, "FavoriteCivilization",""); // f1rpo
-	m_aszExtraXMLforPass3.push_back(szTextVal);
-	pXML->GetChildXmlValByName(szTextVal, "HatedCivilization",""); // f1rpo
-	m_aszExtraXMLforPass3.push_back(szTextVal);	
-*/	//o97 syntax change
-	pXML->SetInfoIDFromChildXmlVal(m_iHatedCivic,"HatedCivic");
-	SetPassExtraFromChildXmlVal("FavoriteCivilization", 0);
-    SetPassExtraFromChildXmlVal("HatedCivilization", 1);
-   //a1021//dune wars - hated civs: end
-	//a1021//dune wars - hated civs
+		pXML->SetInfoIDFromChildXmlVal(m_iHatedCivic,"HatedCivic");
+		SetPassExtraFromChildXmlVal("FavoriteCivilization", 0);
+	    SetPassExtraFromChildXmlVal("HatedCivilization", 1);
+//a1021//dune wars - hated civs
 	}
 	pXML->SetInfoIDFromChildXmlVal(m_eFavoriteReligion,
 			"FavoriteReligion");
@@ -1289,20 +1190,7 @@ bool CvLeaderHeadInfo::readPass3() // dune wars - HATED CIVS
    m_aszExtraXMLforPass3.clear();
    return true;
 }
-/*original version the above is f1rpo's
-bool CvLeaderHeadInfo::readPass3()
-{
-	if (m_aszExtraXMLforPass3.size() > 0)
-	{
-		m_iFavoriteCivilization = GC.getInfoTypeForString(m_aszExtraXMLforPass3[0].GetCString());
-		m_iHatedCivilization = GC.getInfoTypeForString(m_aszExtraXMLforPass3[1].GetCString());
-	}
-	m_aszExtraXMLforPass3.clear();
-
-	return true;
 // HATED CIVS
-}
-*/
 CvTraitInfo::CvTraitInfo() :
 m_iHealth(0),
 m_iHappiness(0),
@@ -1320,11 +1208,7 @@ m_paiTradeYieldModifier(NULL),
 m_paiCommerceChange(NULL),
 m_paiCommerceModifier(NULL),
 m_pabFreePromotionUnitCombat(NULL),
-m_pabFreePromotion(NULL),
-//doto city states + advanced diplomacy - given only from trade agreement
-m_iFreeTradeValid(0),
-m_paiCommerceFRmodifier(NULL)
-//doto city states + advanced diplomacy
+m_pabFreePromotion(NULL)
 {}
 
 CvTraitInfo::~CvTraitInfo()
@@ -1335,9 +1219,6 @@ CvTraitInfo::~CvTraitInfo()
 	SAFE_DELETE_ARRAY(m_paiCommerceModifier);
 	SAFE_DELETE_ARRAY(m_pabFreePromotionUnitCombat);
 	SAFE_DELETE_ARRAY(m_pabFreePromotion);
-//doto city states + advanced diplomacy
-	SAFE_DELETE_ARRAY(m_paiCommerceFRmodifier);
-//doto city states + advanced diplomacy
 }
 
 int CvTraitInfo::getHealth() const
@@ -1443,20 +1324,6 @@ bool CvTraitInfo::isFreePromotionUnitCombat(int i) const // advc.003t: Return ty
 	return m_pabFreePromotionUnitCombat ? m_pabFreePromotionUnitCombat[i] : false;
 }
 
-//doto city states + advanced diplomacy - given only from trade agreement
-int CvTraitInfo::getFreeTradeValid() const
-{
-	return m_iFreeTradeValid;
-}
-
-int CvTraitInfo::getCommerceFRmodifier(int i) const
-{
-	FAssertBounds(0, NUM_COMMERCE_TYPES, i);
-	return m_paiCommerceFRmodifier ? m_paiCommerceFRmodifier[i] : 0; // advc.003t
-}
-//doto city states + advanced diplomacy
-
-
 bool CvTraitInfo::read(CvXMLLoadUtility* pXML)
 {
 	if (!base_t::read(pXML)) // advc.tag
@@ -1516,16 +1383,6 @@ bool CvTraitInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_pabFreePromotion, "FreePromotions", GC.getNumPromotionInfos());
 
 	pXML->SetVariableListTagPair(&m_pabFreePromotionUnitCombat, "FreePromotionUnitCombats", GC.getNumUnitCombatInfos());
-
-//doto city states + advanced diplomacy - given only from trade agreement
-	pXML->GetChildXmlValByName(&m_iFreeTradeValid, "iFreeTradeValid", 0);
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),
-		"CommerceFRmodifier"))
-	{
-		pXML->SetCommerceArray(&m_paiCommerceFRmodifier);
-	}
-	else pXML->InitList(&m_paiCommerceFRmodifier, NUM_COMMERCE_TYPES);
-//doto city states + advanced diplomacy
 
 	return true;
 }

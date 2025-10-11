@@ -6,10 +6,6 @@
 <!-- Game Text - New -->
 <Civ4GameText xmlns="http://www.firaxis.com">
 	<TEXT>
-		<Tag>TXT_KEY_NUM_CITY_STATES_SPAWNED</Tag>
-		<English>%d1_spawned City States Spawn Succesfully</English>
-	</TEXT>
-	<TEXT>
 		<Tag>TXT_KEY_TRADE_ROUTE_BONUS_TR</Tag>
 		<English>%d1 Trade Routes</English>
 	</TEXT>
@@ -20,109 +16,5 @@
 	<TEXT>
 		<Tag>TXT_KEY_TRADE_ROUTE_BONUS_FTRM</Tag>
 		<English>%D1%% From Foreign Trade Routes</English>
-	</TEXT>
-	<TEXT>
-		<Tag>TXT_KEY_CIV_POLAND_DESC</Tag>
-		<English>[Dynasty]Polish</English>
-		<French>
-			<Text>Imperium Polskie</Text>
-			<Gender>Male</Gender>
-			<Plural>1</Plural>
-		</French>
-		<German>
-			<Text>[Dynasty]Polish Empire</Text>
-			<Gender>Neuter</Gender>
-			<Plural>1</Plural>
-		</German>
-		<Italian>
-			<Text>[Dynasty]Imperium Polskie</Text>
-			<Gender>Male</Gender>
-			<Plural>1</Plural>
-		</Italian>
-		<Spanish>
-			<Text>[Dynasty]Polish Empire</Text>
-			<Gender>Male</Gender>
-			<Plural>1</Plural>
-		</Spanish>
-	</TEXT>
-	<TEXT>
-		<Tag>TXT_KEY_CIV_POLAND_SHORT_DESC</Tag>
-		<English>[Dynasty]Poland</English>
-		<French>
-			<Text>Polska</Text>
-			<Gender>Male</Gender>
-			<Plural>1</Plural>
-		</French>
-		<German>
-			<Text>[Dynasty]Poland</Text>
-			<Gender>Neuter</Gender>
-			<Plural>1</Plural>
-		</German>
-		<Italian>
-			<Text>Polska</Text>
-			<Gender>Male</Gender>
-			<Plural>1</Plural>
-		</Italian>
-		<Spanish>
-			<Text>Poland</Text>
-			<Gender>Male</Gender>
-			<Plural>1</Plural>
-		</Spanish>
-	</TEXT>
-	<TEXT>
-		<Tag>TXT_KEY_CIV_POLAND_ADJECTIVE</Tag>
-		<English>[Dynasty]Polish</English>
-		<French>
-			<Text>Polak&#243;w</Text>
-			<Gender>Male</Gender>
-			<Plural>1</Plural>
-		</French>
-		<German>
-			<Text>Polish</Text>
-			<Gender>Neuter</Gender>
-			<Plural>1</Plural>
-		</German>
-		<Italian>
-			<Text>Polak&#243;w</Text>
-			<Gender>Male</Gender>
-			<Plural>1</Plural>
-		</Italian>
-		<Spanish>
-			<Text>Polish</Text>
-			<Gender>Male</Gender>
-			<Plural>1</Plural>
-		</Spanish>
-	</TEXT>
-	<TEXT>
-		<Tag>TXT_KEY_LEADER_CASIMIR</Tag>
-		<English>[Dynasty]Casimir</English>
-		<French>
-			<Text>Kazimierz III Wielki</Text>
-			<Gender>Male</Gender>
-			<Plural>1</Plural>
-		</French>
-		<German>
-			<Text>Casimir</Text>
-			<Gender>Neuter</Gender>
-			<Plural>1</Plural>
-		</German>
-		<Italian>
-			<Text>Kazimierz III Wielki</Text>
-			<Gender>Male</Gender>
-			<Plural>1</Plural>
-		</Italian>
-		<Spanish>
-			<Text>Casimir</Text>
-			<Gender>Male</Gender>
-			<Plural>1</Plural>
-		</Spanish>
-	</TEXT>
-	<TEXT>
-		<Tag>TXT_KEY_CIV_POLAND_PEDIA</Tag>
-		<English>[TAB]The nation that is now known as Poles was originally a group of Slavic tribes with territories situated approximately within the current borders of the modern country. These factions were in the 10th century unified under the leadership of Mieszko I of Piast dynasty. Mieszko converted the Poles in 966 to Christianity in order to compete better with the crusading Germans. This date is being recognized as the year in which the country came to existence. Since the formation of the state, Poland, due to its unfortunate central position, was forced to combat its neighbours. The first major battle recorded was that of Cedynia in 972, the aggressor being the margrave of Brandenburg, ended in an outstanding victory of the young Polish army. 12th and 13th centuries saw Poland divided into a throng of small principalities, which were later united under Wladyslaw I. He and his son {Casimir}, the only one who deserved to be called {the Great} in Polish historiography, initiated important administrative, judicial, and legislative reforms and founded the first Polish university (Europe's 37th). Next dynasty to rule Poland were the Jagiellons - grand dukes of Lithuania, which remained in personal union with Poland till 18th century. The rule of this dynasty, brought Poland to great heights of power and cultural magnificence. This was also the age of great battles with the 'eternal Polish foe' - Teutonic knights. The most important of them being the battle of Gr? 1410, which ended with decisive Polish victory. In this period Polish nobility begun to consolidates its rights and privileges and a parliamentary body - Sejm - emerged. In the mid XVI century Poland united with Lithuania and was officially termed Commonwealth. This was the peak of renowned Polish tolerance, which displayed in the fact that Poland remained the only country at that time where no witch-hunts took place. With the death of Sigmund II, ended the Jagiellon dynasty and began the queerest period of Polish history. Poland was strong, rich and its boundaries stretched from Baltic to the Black Sea. Yet, the weird political system led to a quick decline. [PARAGRAPH:2]The power was vested in the hands of an elected king, who was chosen by the bicameral parliament. A distinguished Polish invention was Liberum Veto, which made it possible for any MP to prevent the passage of legislation. Those two specific principles led to enormous corruption, anarchy and consolidation of power in the hands of practically autonomous magnates. 17th and 18th century saw the decline of Poland thorn by endless wars with Sweden, Russia, and the Ukrainian Cossacks. Still, in this whole mess some bright points shone splendid mainly due to specific Polish cavalry unit - {the Hussars}. This light cavalry kindled terror among its foes with their high-speed charge and queer garment of leopard hides, light armour and lofty wings attached to arms or saddle (need for speed). Thanks to this unit were John Casimir and John Sobieski able to wage victorious battles with the Ottomans, the grandest of which was the battle of Vienna (mid. 17th c.), which halted a serious threat to Christendom in central Europe. From 1697 the Electors of Saxony took the title of king and partition between Russia, Austria, and Prussia followed in 1772. Despite this hopeless situation Sejm, supported by Stanis3aw II Augustus, Polish king and a lover of Catherine the Great issued a Constitution on May 3, 1791 - second one in the world. This act and a brief revolutionary war for recovery (1794) led by Kosciusko were followed by further partitions (1793, 1795-97), which finally led to complete disappearance of Poland from the European map. [PARAGRAPH:2]After the Vienna Congress Kingdom of Poland was created with its own administration but a Russian Tsar as king. Bloody uprisings, which took place in 1830, 1846-9, and 1863 were suppressed but this did not prevent the rise of democratic parties, which demanded independence and were ready to seize the power after WWI, when Poland finally, after 123 years, regained freedom. War against Russia (1920-1) with the famous battle of Warsaw, was followed by the dictatorship of Marshal Pilsudski. Poland by the terms of Versailles Treaty had access to the port of Danzig via a Polish Corridor, which became a [casus belli] for Hitler to attack Poland and start WWII. After the war Poland was drawn into the Soviet sphere of interests. Political opposition was neutralized, and in 1952 a Soviet-style constitution was adopted. Waves of workers' strikes in 1956 and 1970 led to the rigidification of communism and only after Karol Wojtyla became the first Polish pope in 1979 was the regime eased. Governmental crisis, which followed the imposition of Martial Law by PM Jaruzelski, led to legalization of 'Solidarity' (Poland's first free labour union and active opposition) and Round Table talks with all groups. Multi-party parliament was established and Lech Walesa was elected president. Since then democratisation of Poland continues despite constant economical problems. A few years ago Poland joined NATO and is now in the European Union.</English>
-	</TEXT>
-	<TEXT>
-		<Tag>TXT_KEY_LEADER_CASIMIR_PEDIA</Tag>
-		<English>[H1]Casimir III the Great [\H1][NEWLINE][BOLD]King of Poland [\BOLD][NEWLINE][BOLD]Lived: [\BOLD] 1310 - 1370[NEWLINE][PARAGRAPH:2][BOLD]Background:[\BOLD][NEWLINE][TAB]Last of the Piast Dynasty, king of Poland from 1333, the son of Wladyslaw I the Short (Wladyslaw I Lokietek). [PARAGRAPH:1]Casimir is the only Polish king who did receive and maintain the title of the great in Polish history (Boleslaw I Chrobry was once also called the great, but not today), and the title is well deserved. When he received the crown, his hold on it was in danger, as even his neighbours did not recognise his title and instead called him "king of Krakow The economy was ruined, and country was depopulated and tired with wars. At the time of his death, it had doubled in land area (mostly through joining lands in today's Ukraine, then Duchy of Halicz), grew prosperous, wealthy and had great prospects to the future. Although he is depicted as a peaceful king in children books, he in fact waged many victorious wars and was preparing other ones just before he died. [PARAGRAPH:1]He built many new castles, reformed the Polish army, as well as Polish civil and criminal laws. At the Sejm in Wislica, March 11, 1347, he introduced salutary legal reforms in the jurisprudence of his country. He sanctioned a code of laws for Great and Little Poland, which gained for him the title of "the Polish Justinian". He founded the University of Krakow although his death stalled the development of the university (and that's why today it is called Jagiellonian instead of Casimirian).He organised a meeting of kings in Krakow in 1364 which showed the wealth of Polish kingdom. [PARAGRAPH:1]Casimir was sonless. Apparently he deemed his own descendants either unsuitable to inherit or too young. Thus, and in order to provide a clear line of succession instead of problems of uncertainty, he arranged his sister Elisabeth, Dowager Queen of Hungary, and her son Louis king of Hungary to be his successors in Poland. Louis was proclaimed king in Casimir's death 1370, and Elisabeth held much of the practical power until her death in 1380.</English>
 	</TEXT>
 </Civ4GameText>

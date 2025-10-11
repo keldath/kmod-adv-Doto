@@ -61,13 +61,6 @@ void CvTeamAI::AI_reset(bool bConstructor)
 	m_aiAtPeaceCounter.reset();
 	m_aiHasMetCounter.reset();
 	m_aiOpenBordersCounter.reset();
-/*************************************************************************************************/
-/* START: Advanced Diplomacy                                                        			 */
-/*************************************************************************************************/
-	m_aiFreeTradeAgreementCounter.reset();
-/*************************************************************************************************/
-/* END: Advanced Diplomacy      	                                                 			 */
-/*************************************************************************************************/
 	m_aiDefensivePactCounter.reset();
 	m_aiShareWarCounter.reset();
 	m_arWarSuccess.reset();
@@ -85,13 +78,6 @@ void CvTeamAI::AI_reset(bool bConstructor)
 			kLoopTeam.m_aiAtPeaceCounter.set(getID(), 0);
 			kLoopTeam.m_aiHasMetCounter.set(getID(), 0);
 			kLoopTeam.m_aiOpenBordersCounter.set(getID(), 0);
-/*************************************************************************************************/
-/* START: Advanced Diplomacy                                                        			 */
-/*************************************************************************************************/
-			kLoopTeam.m_aiFreeTradeAgreementCounter.set(getID(), 0);
-/*************************************************************************************************/
-/* END: Advanced Diplomacy      	                                                 			 */
-/*************************************************************************************************/
 			kLoopTeam.m_aiDefensivePactCounter.set(getID(), 0);
 			kLoopTeam.m_aiShareWarCounter.set(getID(), 0);
 			kLoopTeam.m_arWarSuccess.set(getID(), 0);
@@ -2856,13 +2842,38 @@ DenialTypes CvTeamAI::AI_surrenderTrade(TeamTypes eMasterTeam, int iPowerMultipl
 				The cached utility values don't account for the peace with 3rd parties
 				(implied by capitulation), and it's out of date on a human master's turn,
 				so this is all a bit fuzzy. */
-			if (uwai().leaderUWAI().getCache().
-				warUtilityIgnoringDistraction(eMasterTeam) > -40 ||
-				// Expect to tire master out
-				kMasterTeam.uwai().leaderUWAI().getCache().
+			int iOurUtil = uwai().leaderUWAI().getCache().
+					warUtilityIgnoringDistraction(eMasterTeam);
+			if (iOurUtil > -40)
+			{
+				// Let's better sum up all our negative utility values
+				for (TeamIter<MAJOR_CIV, ENEMY_OF> itEnemy(getID()); itEnemy.hasNext();
+					++itEnemy)
+				{
+					if (!itEnemy->isAVassal() && itEnemy->getID() != eMasterTeam)
+					{
+						iOurUtil += std::min(0, uwai().leaderUWAI().getCache().
+								warUtilityIgnoringDistraction(itEnemy->getID()));
+						if (iOurUtil > -50)
+							return DENIAL_POWER_US;
+					}
+				}
+			}
+			if (kMasterTeam.uwai().leaderUWAI().getCache().
 				warUtilityIgnoringDistraction(getID()) < -25)
 			{
-				return DENIAL_POWER_US;
+				// Expect to tire master out - if we can hold out.
+				if (getNumMembers() > 1 ||
+					(getNumCities() > 1 && getNumCities() * 3 > kMasterTeam.getNumCities()))
+				{
+					return DENIAL_POWER_US;
+				}
+				CvCity const* pCapital = GET_PLAYER(getLeaderID()).getCapital();
+				if (pCapital != NULL &&
+					pCapital->getArea().getCitiesPerPlayer(getLeaderID()) != getNumCities())
+				{
+					return DENIAL_POWER_US;
+				}
 			}
 			// </advc.104>  <advc.104o> Take into account past wars
 			int iPastWarScore = GET_PLAYER(getLeaderID()).uwai().getCache().
@@ -3032,7 +3043,7 @@ int CvTeamAI::AI_getEnemyPowerPercent(bool bConsiderOthers) const
 		else if(AI_isChosenWar(kEnemy.getID()) && // Haven't declared war yet
 			/*  advc.104j: getDefensivePower counts vassals already.
 				If planning war against multiple civs, DP allies could also be
-				double counted (fixme). Could collect the war enemies in a std::set
+				double-counted (fixme). Could collect the war enemies in a std::set
 				in a first pass; though it sucks to implement the vassal/DP logic
 				multiple times (already in getDefensivePower and MilitaryAnalyst).
 				Also, the computation for bConsiderOthers above can be way off. */
@@ -4033,105 +4044,6 @@ DenialTypes CvTeamAI::AI_openBordersTrade(TeamTypes eWithTeam) const
 	return NO_DENIAL;
 }
 
-
-/************************************************************************************************/
-/* START: Advanced Diplomacy  need to duplicate from open borders                                                                  */
-/************************************************************************************************/
-int CvTeamAI::AI_FreeTradeAgreementVal(TeamTypes eTeam) const
-{
-	int iValue = 0;
-
-	//iValue = (getNumCities() + GET_TEAM(eTeam).getNumCities());
-
-	//doto
-	//im not why this is counted here, why does free trade routes matter?
-	//of halfs the value?
-	//if (isFreeTrade(eTeam))
-	//{
-	//	iValue /= 2;
-	//}
-
-	//doto
-	//for the time being i want ai to take the trade aggrement and value it high
-	//since, its a perk that is given from city states
-	//basically i want the attitue to be the mostly affecting issue on the trade agg to take place.
-	iValue = 100;
-	return std::max(0, iValue);
-}
-
-
-DenialTypes CvTeamAI::AI_FreeTradeAgreement(TeamTypes eTeam) const
-{
-	//complety changed the syntax of this fn - took the content of it
-	// from advc code for open borders.
-	//for this to be allowed - there has to be a connection to the teams territory.
-
-	//PROFILE_FUNC(); // advc.003o
-	FAssertMsg(eTeam != getID(), "shouldn't call this function on ourselves");
-
-	if (isHuman() || isVassal(eTeam))
-		return NO_DENIAL;
-
-	/*if (AI_shareWar(eTeam))
-		return NO_DENIAL;*/ // advc.124: Handled below
-
-	if (AI_getMemoryCount(eTeam, MEMORY_CANCELLED_FREE_TRADE_AGREEMENT) > 0 &&
-		!AI_shareWar(eTeam)) // advc.124
-	{
-		return DENIAL_RECENT_CANCEL;
-	}
-	if (AI_getWorstEnemy() == eTeam)
-		return DENIAL_WORST_ENEMY;
-
-	int iOurAttitude = AI_getAttitude(eTeam);
-	for (MemberIter it(getID()); it.hasNext(); ++it)
-	{
-		// <advc.124>
-		int const iAttitudeThresh = GC.getInfo(it->getPersonalityType()).
-			getFreeTradeAgreementRefuseAttitudeThreshold();
-		if (iOurAttitude < iAttitudeThresh)
-			return DENIAL_ATTITUDE;
-		if (iOurAttitude > iAttitudeThresh + 1)
-			continue;
-		{	/*	Attitude not where it needs to be, and no shared war
-				(with accessible territory) either to make up for it. */
-			if (iOurAttitude == iAttitudeThresh &&
-				(!AI_shareWar(eTeam) || !AI_isTerritoryAccessible(eTeam)))
-			{
-				return DENIAL_ATTITUDE;
-			}
-			// Attitude just where it needs to be, but no territorial access.
-			if (iOurAttitude == iAttitudeThresh + 1 &&
-				!AI_isTerritoryAccessible(eTeam))
-			{
-				return DENIAL_NO_GAIN;
-			}
-		} // </advc.124>
-
-		//doto - this is from the original function of adv diplo - 
-		//in short it required the capitals of the teams to be connected directly.
-		//for doto the free trade will be different usage.
-		/*
-		if (GET_PLAYER(getLeaderID()).getCapitalCity() != NULL)
-		{
-			if (GET_PLAYER(GET_TEAM(eTeam).getLeaderID()).getCapitalCity() != NULL)
-			{
-				if (!GET_PLAYER(getLeaderID()).getCapitalCity()->isConnectedTo(*GET_PLAYER(GET_TEAM(eTeam).getLeaderID()).getCapitalCity()))
-				{
-					return DENIAL_JOKING;
-				}
-			}
-		}
-		*/
-	}
-
-	return NO_DENIAL;
-
-}
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
-
 // advc.124:
 bool CvTeamAI::AI_isTerritoryAccessible(TeamTypes eOwner) const
 {
@@ -4220,15 +4132,6 @@ DenialTypes CvTeamAI::AI_defensivePactTrade(TeamTypes eWithTeam) const
 	// <advc.130t>
 	if(!isOpenBorders(eWithTeam))
 		return DENIAL_JOKING; // </advc.130t>
-/************************************************************************************************/
-/* START: Advanced Diplomacy       added to doto dont do d-p if the  eWithTeam have trade agg
-edit - removed i dont want defensive pact to consider this at all....*/
-/************************************************************************************************/
-//	if (!isFreeTradeAgreement(eWithTeam))
-//		return DENIAL_JOKING; // </advc.130t>
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
 	if (AI_getWorstEnemy() == eWithTeam)
 		return DENIAL_WORST_ENEMY;
 
@@ -4480,22 +4383,6 @@ void CvTeamAI::AI_changeOpenBordersCounter(TeamTypes eIndex, int iChange)
 	AI_setOpenBordersCounter(eIndex, (AI_getOpenBordersCounter(eIndex) + iChange));
 }
 
-/*************************************************************************************************/
-/* START: Advanced Diplomacy                                                         			 */
-/*************************************************************************************************/
-void CvTeamAI::AI_setFreeTradeAgreementCounter(TeamTypes eIndex, int iNewValue)
-{
-	m_aiFreeTradeAgreementCounter.set(eIndex, iNewValue);
-	FAssert(AI_getFreeTradeAgreementCounter(eIndex) >= 0);
-}
-
-void CvTeamAI::AI_changeFreeTradeAgreementCounter(TeamTypes eIndex, int iChange)
-{
-	AI_setFreeTradeAgreementCounter(eIndex, (AI_getFreeTradeAgreementCounter(eIndex) + iChange));
-}
-/*************************************************************************************************/
-/* END: Advanced Diplomacy                                                           			 */
-/*************************************************************************************************/
 
 void CvTeamAI::AI_setDefensivePactCounter(TeamTypes eIndex, int iNewValue)
 {
@@ -4568,8 +4455,7 @@ void CvTeamAI::AI_changeWarSuccess(TeamTypes eTeam, scaled rChange)
 			apAffectedTeams.push_back(&kWarAlly);
 		}
 	}
-	/*	Attitude cache update - relevant for WarAttitude (advc.sha) and
-		ShareWarAttitude (advc.130m). */
+	// Attitude cache update; also relevant for WarAttitude (advc.sha).
 	/*	To save time. Not crucial to keep AI attitude up to date during AI turns.
 		Note that network games are treated as never being in between turns. */
 	if (!GC.getGame().isInBetweenTurns() &&
@@ -4843,8 +4729,11 @@ bool CvTeamAI::AI_isSneakAttackReady(TeamTypes eIndex) const
 {
 	//return (AI_isChosenWar(eIndex) && !(AI_isSneakAttackPreparing(eIndex))); // BtS
 	// K-Mod (advc: originally in an overloaded function)
-	if(eIndex != NO_TEAM)
-		return !isAtWar(eIndex) && AI_isChosenWar(eIndex) && !AI_isSneakAttackPreparing(eIndex); // K-Mod
+	if (eIndex != NO_TEAM)
+	{
+		return !isAtWar(eIndex) && AI_isChosenWar(eIndex) &&
+				!AI_isSneakAttackPreparing(eIndex);
+	}
 	for (TeamIter<MAJOR_CIV> it; it.hasNext(); ++it)
 	{
 		if (AI_isSneakAttackReady(it->getID()))
@@ -4857,7 +4746,7 @@ bool CvTeamAI::AI_isSneakAttackReady(TeamTypes eIndex) const
 
 bool CvTeamAI::AI_isSneakAttackPreparing(TeamTypes eIndex) const
 {
-	if(eIndex != NO_TEAM)
+	if (eIndex != NO_TEAM)
 	{
 		WarPlanTypes eWarPlan = AI_getWarPlan(GET_TEAM(eIndex).getMasterTeam()); // advc.104j
 		return (eWarPlan == WARPLAN_PREPARING_LIMITED || eWarPlan == WARPLAN_PREPARING_TOTAL);
@@ -5106,13 +4995,6 @@ void CvTeamAI::read(FDataStreamBase* pStream)
 		m_aiAtPeaceCounter.read(pStream);
 		m_aiHasMetCounter.read(pStream);
 		m_aiOpenBordersCounter.read(pStream);
-/*************************************************************************************************/
-/* START: Advanced Diplomacy                                                         			 */
-/*************************************************************************************************/
-		m_aiFreeTradeAgreementCounter.read(pStream);
-/*************************************************************************************************/
-/* END: Advanced Diplomacy                                                           			 */
-/*************************************************************************************************/
 		m_aiDefensivePactCounter.read(pStream);
 		m_aiShareWarCounter.read(pStream);
 		if (uiFlag >= 9) // advc.130r
@@ -5134,13 +5016,6 @@ void CvTeamAI::read(FDataStreamBase* pStream)
 		m_aiAtPeaceCounter.readArray<int>(pStream);
 		m_aiHasMetCounter.readArray<int>(pStream);
 		m_aiOpenBordersCounter.readArray<int>(pStream);
-/*************************************************************************************************/
-/* START: Advanced Diplomacy                                                         			 */
-/*************************************************************************************************/
-		m_aiFreeTradeAgreementCounter.readArray<int>(pStream);
-/*************************************************************************************************/
-/* END: Advanced Diplomacy                                                           			 */
-/*************************************************************************************************/
 		m_aiDefensivePactCounter.readArray<int>(pStream);
 		m_aiShareWarCounter.readArray<int>(pStream);
 		// <advc.130r>
@@ -5254,14 +5129,6 @@ void CvTeamAI::write(FDataStreamBase* pStream)
 	m_aiAtPeaceCounter.write(pStream);
 	m_aiHasMetCounter.write(pStream);
 	m_aiOpenBordersCounter.write(pStream);
-/*************************************************************************************************/
-/* START: Advanced Diplomacy                                                         			 */
-/*************************************************************************************************/
-	m_aiFreeTradeAgreementCounter.write(pStream);
-/*************************************************************************************************/
-/* END: Advanced Diplomacy                                                           			 */
-/*************************************************************************************************/
-/*************************************************************************************************/
 	m_aiDefensivePactCounter.write(pStream);
 	m_aiShareWarCounter.write(pStream);
 	m_arWarSuccess.write(pStream);
@@ -5761,16 +5628,7 @@ int CvTeamAI::AI_noWarProbAdjusted(TeamTypes eOther) const
 {
 	AttitudeTypes eTowardThem = AI_getAttitude(eOther, true);
 	int iR = AI_noWarAttitudeProb(eTowardThem);
-	if (iR < 100 || isOpenBorders(eOther) 
-/************************************************************************************************/
-/* START: Advanced Diplomacy          doto advc new
-i guess this reduces chances of war when there is a trade aggreement							*/
-/************************************************************************************************/
-		|| isFreeTradeAgreement(eOther)
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-		|| eTowardThem == 0)
+	if (iR < 100 || isOpenBorders(eOther) || eTowardThem == 0)
 		return iR;
 	return AI_noWarAttitudeProb((AttitudeTypes)(eTowardThem - 1));
 }
@@ -5843,23 +5701,6 @@ scaled CvTeamAI::AI_getOpenBordersCounterIncrement(TeamTypes eOther) const
 	return scaled::clamp(rFromTrade + rFromCloseness, fixp(1/6.), fixp(8/6.));
 } // </advc.130i>
 
-/************************************************************************************************/
-/* START: Advanced Diplomacy         new to doto - matching the advc openborders code           */
-/************************************************************************************************/
-int CvTeamAI::AI_getFreeTradeAgreementAttitudeDivisor() const
-{
-	int r = 0;
-	for (MemberIter it(getID()); it.hasNext(); ++it)
-		r = std::max(r, GC.getInfo(it->getPersonalityType()).getFreeTradeAgreementAttitudeDivisor());
-	return r;
-}
-/************************************************************************************************/
-/* START: Advanced Diplomacy         new to doto - matching the advc openborders code  
-NO NEED TO DO scaled CvTeamAI::AI_getFreeTradeAgreementCounterIncrement(TeamTypes eOther) const
-I think i can use the AI_getOpenBordersCounterIncrement
-*/
-/************************************************************************************************/
-
 /*  advc.130k: Random number to add or subtract from state counters
 	(instead of just incrementing or decrementing). Binomial distribution
 	with 2 trials and a probability of pr.
@@ -5928,31 +5769,6 @@ void CvTeamAI::AI_doCounter()
 			AI_setOpenBordersCounter(eOther,
 					(AI_getOpenBordersCounter(eOther) * rDecayFactor).floor());
 		} // </advc.130k>
-
-/*************************************************************************************************/
-/* START: Advanced Diplomacy															*/
-/*************************************************************************************************/
-		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-		{
-			/*
-			advciv uses something else - im not sure about it - i used the original counter for now.
-
-				if (isFreeTradeAgreement(eOther))
-				{
-					AI_changeFreeTradeAgreementCounter(eOther, 1);
-				}*/
-			if (isFreeTradeAgreement(eOther))
-				AI_changeFreeTradeAgreementCounter(eOther, AI_randomCounterChange());
-			// <advc.130k>
-			else
-			{
-				AI_setFreeTradeAgreementCounter(eOther,
-					(AI_getFreeTradeAgreementCounter(eOther) * rDecayFactor).floor());
-			} // </advc.130k>
-		}
-/*************************************************************************************************/
-/* END: Advanced Diplomacy                                                           			 */
-/*************************************************************************************************/
 		if(isDefensivePact(eOther))
 			AI_changeDefensivePactCounter(eOther, AI_randomCounterChange());
 		// <advc.130k>

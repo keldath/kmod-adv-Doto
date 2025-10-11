@@ -929,34 +929,6 @@ bool CvDeal::startTrade(TradeData trade, PlayerTypes eFromPlayer, PlayerTypes eT
 		}
 		else bSave = true;
 		break;
-	/************************************************************************************************/
-	/* START: Advanced Diplomacy                                                                    */
-	/************************************************************************************************/
-
-	case TRADE_FREE_TRADE_ZONE:
-		if (trade.m_iData <= 0)// advc: was ==
-		{
-			// <advc.032>
-			if (GET_TEAM(eFromPlayer).isFreeTradeAgreement(kToPlayer.getTeam()))
-			{
-				if (kFromPlayer.resetDualDeal(eToPlayer, TRADE_FREE_TRADE_ZONE))
-				{
-					if (gTeamLogLevel >= 2) logBBAI("    Player %d (%S_1) prolongs Free Trade with player %d (%S_2)", eFromPlayer, kFromPlayer.getCivilizationDescription(0), eToPlayer, kToPlayer.getCivilizationDescription(0));
-					break;
-				}
-			} // </advc.032>
-			//make sure no 2 cities are involved
-			if (!kFromPlayer.canPlayersSignFreeTradeAgreement(eFromPlayer, eToPlayer))
-				break;
-			startTeamTrade(TRADE_FREE_TRADE_ZONE, kFromPlayer.getTeam(), kToPlayer.getTeam(), true);
-			GET_TEAM(eFromPlayer).setFreeTradeAgreement(kToPlayer.getTeam(), true);
-			if (gTeamLogLevel >= 2) logBBAI("    Player %d (%S_1) signs open borders due to Free Trade with player %d (%S_2)", eFromPlayer, kFromPlayer.getCivilizationDescription(0), eToPlayer, kToPlayer.getCivilizationDescription(0));
-		}
-		else bSave = true;
-		break;
-	/************************************************************************************************/
-	/* END: Advanced Diplomacy                                                                      */
-	/************************************************************************************************/
 
 	case TRADE_DEFENSIVE_PACT:
 		if (trade.m_iData <= 0) // advc: was ==
@@ -1025,14 +997,6 @@ namespace
 				itEndingMember.hasNext(); ++itEndingMember)
 			{
 				MemoryTypes eMemory = MEMORY_CANCELLED_OPEN_BORDERS;
-/************************************************************************************************/
-/* START: Advanced Diplomacy            ADJUSTER FOR ADVCIV                                                        */
-/************************************************************************************************/
-				if (eItemType == TRADE_FREE_TRADE_ZONE)
-					eMemory = MEMORY_CANCELLED_FREE_TRADE_AGREEMENT;
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 				if (eItemType == TRADE_DEFENSIVE_PACT)
 					eMemory = MEMORY_CANCELLED_DEFENSIVE_PACT;
 				else if(eItemType == TRADE_VASSAL)
@@ -1134,27 +1098,6 @@ void CvDeal::endTrade(TradeData trade, PlayerTypes eFromPlayer,
 			// </advc.130p>
 		}
 		break;
-/************************************************************************************************/
-/* START: Advanced Diplomacy        ADJUSTED FOR ADVCIV                                                            */
-/************************************************************************************************/
-
-	case TRADE_FREE_TRADE_ZONE:
-		GET_TEAM(eFromPlayer).setFreeTradeAgreement(TEAMID(eToPlayer), false);
-		if (bTeam)
-		{
-			endTeamTrade(TRADE_FREE_TRADE_ZONE, TEAMID(eFromPlayer), TEAMID(eToPlayer));
-			bTeamTradeEnded = true; // advc.133
-
-			if (bAlive)
-			{
-				addEndTradeMemory(eFromPlayer, eToPlayer, TRADE_FREE_TRADE_ZONE,
-					eCancelPlayer != eFromPlayer); 
-			}
-		}
-		break;
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 
 	case TRADE_DEFENSIVE_PACT:
 		GET_TEAM(eFromPlayer).setDefensivePact(TEAMID(eToPlayer), false);
@@ -1309,13 +1252,6 @@ bool CvDeal::isAnnual(TradeableItems eItem)
 	case TRADE_VASSAL:
 	case TRADE_SURRENDER:
 	case TRADE_OPEN_BORDERS:
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	case TRADE_FREE_TRADE_ZONE:
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	case TRADE_DISENGAGE: // advc.034
 	case TRADE_DEFENSIVE_PACT:
 	case TRADE_PERMANENT_ALLIANCE:
@@ -1334,14 +1270,6 @@ bool CvDeal::isDual(TradeableItems eItem, bool bExcludePeace)
 	case TRADE_DISENGAGE: // advc.034
 	case TRADE_DEFENSIVE_PACT:
 	case TRADE_PERMANENT_ALLIANCE:
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	case TRADE_FREE_TRADE_ZONE:
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
-
 		return true;
 	case TRADE_PEACE_TREATY:
 		return (!bExcludePeace);
@@ -1356,16 +1284,6 @@ bool CvDeal::hasData(TradeableItems eItem)
 			eItem != TRADE_VASSAL &&
 			eItem != TRADE_SURRENDER &&
 			eItem != TRADE_OPEN_BORDERS &&
-/************************************************************************************************/
-/* START: Advanced Diplomacy      
-doto for some reason the free trade doesnt exists in this part. not sure why but if hr and advc diploc 
-didnt include it here, so i wont either.
-still dont know the logic...																	*/
-/************************************************************************************************/
-			eItem != TRADE_FREE_TRADE_ZONE &&
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 			eItem != TRADE_DISENGAGE && // advc.034
 			eItem != TRADE_DEFENSIVE_PACT &&
 			eItem != TRADE_PERMANENT_ALLIANCE &&

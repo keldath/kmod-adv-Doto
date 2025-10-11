@@ -145,21 +145,14 @@ class SevoPediaUnit:
 			screen.setText(self.top.getNextWidgetName(), "", u"<font=3>" + gc.getUnitCombatInfo(iCombatType).getDescription() + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, self.X_STATS_PANE + 37, self.Y_STATS_PANE - 30, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_PEDIA_JUMP_TO_UNIT_COMBAT, iCombatType, 0)
 		screen.addListBoxGFC(panelName, "", self.X_STATS_PANE, self.Y_STATS_PANE, self.W_STATS_PANE, self.H_STATS_PANE, TableStyles.TABLE_STYLE_EMPTY)
 		screen.enableSelect(panelName, False)
-
-# MOD - START - Ranged Strike - Keldath addition for Doto
-		airCombat = gc.getUnitInfo(self.iUnit).getAirCombat()
-		regularCombat = gc.getUnitInfo(self.iUnit).getCombat()
-		airRange = gc.getUnitInfo(self.iUnit).getAirRange()
-		# if (airCombat > 0 and regularCombat == 0):
-		# 	iStrength = airCombat
-		# else:
-		# 	iStrength = regularCombat
-		iStrength = regularCombat
+		if (gc.getUnitInfo(self.iUnit).getAirCombat() > 0 and gc.getUnitInfo(self.iUnit).getCombat() == 0):
+			iStrength = gc.getUnitInfo(self.iUnit).getAirCombat()
+		else:
+			iStrength = gc.getUnitInfo(self.iUnit).getCombat()
 		if iStrength > 0: # advc.004y: Don't show 0 strength for nukes
 			szName = self.top.getNextWidgetName()
 			szStrength = localText.getText("TXT_KEY_PEDIA_STRENGTH", (iStrength,))
 			screen.appendListBoxStringNoUpdate(panelName, u"<font=4>" + szStrength.upper() + u"%c" % CyGame().getSymbolID(FontSymbols.STRENGTH_CHAR) + u"</font>", WidgetTypes.WIDGET_GENERAL, 0, 0, CvUtil.FONT_LEFT_JUSTIFY)
-
 		eDomain = gc.getUnitInfo(self.iUnit).getDomainType()
 		# <advc.004y>
 		if eDomain == DomainTypes.DOMAIN_IMMOBILE: # Show "immobile" instead of 1 move
@@ -172,13 +165,7 @@ class SevoPediaUnit:
 			szMovement = localText.getText("TXT_KEY_PEDIA_MOVEMENT", (gc.getUnitInfo(self.iUnit).getMoves(),))
 			screen.appendListBoxStringNoUpdate(panelName, u"<font=4>" + szMovement.upper() + u"%c" % CyGame().getSymbolID(FontSymbols.MOVES_CHAR) + u"</font>", WidgetTypes.WIDGET_GENERAL, 0, 0, CvUtil.FONT_LEFT_JUSTIFY)
 		# advc.004y: Moved range above production cost. Condition for ICBM added.
-		if airRange > 0 or gc.getUnitInfo(self.iUnit).getNukeRange() >= 0:
-			
-			if airCombat > 0: # advc.004y: Don't show 0 strength for nukes
-				szName = self.top.getNextWidgetName()
-				szStrength = localText.getText("TXT_KEY_PEDIA_AIRCOMBAT", (airCombat,))
-				screen.appendListBoxStringNoUpdate(panelName, u"<font=4>" + szStrength.upper() + u"%c" % CyGame().getSymbolID(FontSymbols.AIRPORT_CHAR) + u"</font>", WidgetTypes.WIDGET_GENERAL, 0, 0, CvUtil.FONT_LEFT_JUSTIFY)	
-
+		if gc.getUnitInfo(self.iUnit).getAirRange() > 0 or gc.getUnitInfo(self.iUnit).getNukeRange() >= 0:
 			szName = self.top.getNextWidgetName()
 			iRange = gc.getUnitInfo(self.iUnit).getAirRange()
 			if iRange > 0: # advc.004y
@@ -187,7 +174,6 @@ class SevoPediaUnit:
 			else:
 				szRange = localText.getText("TXT_KEY_PEDIA_RANGE_UNLIMITED", ())
 			# </advc.004y>
-# MOD - START - Ranged Strike - Keldath addition for Doto
 			screen.appendListBoxStringNoUpdate(panelName, u"<font=4>" + szRange.upper() + u"</font>", WidgetTypes.WIDGET_GENERAL, 0, 0, CvUtil.FONT_LEFT_JUSTIFY)
 		if (gc.getUnitInfo(self.iUnit).getProductionCost() >= 0 and not gc.getUnitInfo(self.iUnit).isFound()):
 			szName = self.top.getNextWidgetName()

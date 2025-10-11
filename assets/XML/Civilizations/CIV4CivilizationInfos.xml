@@ -28,10 +28,7 @@
 			<bAIPlayable>1</bAIPlayable>
 <!--Limited religion doto -->			
 			<iMaxLimitedReligions>1</iMaxLimitedReligions>
-<!--Limited religion doto -->	
-<!--doto specialists instead of pop city states -->			
-			<isCityState>0</isCityState>
-<!--doto specialists instead of pop city states -->					
+<!--Limited religion doto -->					
 			<Cities>
 				<City>TXT_KEY_CITY_NAME_WASHINGTON</City>
 				<City>TXT_KEY_CITY_NAME_NEW_YORK</City>
@@ -99,10 +96,6 @@
 					<BuildingClassType>BUILDINGCLASS_SUPERMARKET</BuildingClassType>
 					<BuildingType>BUILDING_AMERICAN_MALL</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -138,7 +131,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_FISHING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -151,7 +144,7 @@
 					<TechType>TECH_ISLAM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech> 
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -242,10 +235,6 @@
 					<BuildingClassType>BUILDINGCLASS_LIBRARY</BuildingClassType>
 					<BuildingType>BUILDING_ARABIAN_MADRASSA</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -281,7 +270,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_THE_WHEEL</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -294,7 +283,7 @@
 					<TechType>TECH_CHRIST_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -377,10 +366,6 @@
 					<BuildingClassType>BUILDINGCLASS_COURTHOUSE</BuildingClassType>
 					<BuildingType>BUILDING_AZTEC_SACRIFICIAL_ALTAR</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -416,7 +401,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_MYSTICISM</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -429,7 +414,7 @@
 					<TechType>TECH_ZORO_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -516,10 +501,6 @@
 					<BuildingClassType>BUILDINGCLASS_COLOSSEUM</BuildingClassType>
 					<BuildingType>BUILDING_BABYLON_GARDEN</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -555,7 +536,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_AGRICULTURE</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -568,7 +549,7 @@
 					<TechType>TECH_DRUIDISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -659,10 +640,6 @@
 					<BuildingClassType>BUILDINGCLASS_THEATRE</BuildingClassType>
 					<BuildingType>BUILDING_BYZANTINE_HIPPODROME</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -698,7 +675,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_THE_WHEEL</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -711,7 +688,7 @@
 					<TechType>TECH_BUDDHISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -799,10 +776,6 @@
 					<BuildingClassType>BUILDINGCLASS_HARBOR</BuildingClassType>
 					<BuildingType>BUILDING_CARTHAGE_COTHON</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -838,7 +811,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_FISHING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -851,7 +824,7 @@
 					<TechType>TECH_SHINTO_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -943,10 +916,6 @@
 					<BuildingClassType>BUILDINGCLASS_WALLS</BuildingClassType>
 					<BuildingType>BUILDING_CELTIC_DUN</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -982,7 +951,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_HUNTING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -995,7 +964,7 @@
 					<TechType>TECH_CONFUCIANISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 				<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -1090,10 +1059,6 @@
 					<BuildingClassType>BUILDINGCLASS_THEATRE</BuildingClassType>
 					<BuildingType>BUILDING_CHINESE_PAVILLION</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -1129,7 +1094,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_AGRICULTURE</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -1142,7 +1107,7 @@
 					<TechType>TECH_HELLENISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -1250,10 +1215,6 @@
 					<BuildingClassType>BUILDINGCLASS_OBELISK</BuildingClassType>
 					<BuildingType>BUILDING_EGYPTIAN_OBELISK</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -1289,7 +1250,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_THE_WHEEL</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -1302,7 +1263,7 @@
 					<TechType>TECH_JUDAISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
 			<DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -1391,10 +1352,6 @@
 					<BuildingClassType>BUILDINGCLASS_BANK</BuildingClassType>
 					<BuildingType>BUILDING_ENGLISH_STOCK_EXCHANGE</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -1430,7 +1387,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_FISHING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -1443,7 +1400,7 @@
 					<TechType>TECH_AMONRA_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -1536,10 +1493,6 @@
 					<BuildingClassType>BUILDINGCLASS_OBELISK</BuildingClassType>
 					<BuildingType>BUILDING_ETHIOPIAN_STELE</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -1575,7 +1528,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_HUNTING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -1588,7 +1541,7 @@
 					<TechType>TECH_DRUIDISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -1675,10 +1628,6 @@
 					<BuildingClassType>BUILDINGCLASS_OBSERVATORY</BuildingClassType>
 					<BuildingType>BUILDING_FRENCH_SALON</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -1714,7 +1663,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_THE_WHEEL</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -1727,7 +1676,7 @@
 					<TechType>TECH_HINDU_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -1835,10 +1784,6 @@
 					<BuildingClassType>BUILDINGCLASS_FACTORY</BuildingClassType>
 					<BuildingType>BUILDING_GERMAN_ASSEMBLY_PLANT</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -1874,7 +1819,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_HUNTING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -1887,7 +1832,7 @@
 					<TechType>TECH_TAOISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -1983,10 +1928,6 @@
 					<BuildingClassType>BUILDINGCLASS_COLOSSEUM</BuildingClassType>
 					<BuildingType>BUILDING_GREEK_ODEON</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -2022,7 +1963,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_FISHING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -2035,7 +1976,7 @@
 					<TechType>TECH_ISLAM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -2132,10 +2073,6 @@
 					<BuildingClassType>BUILDINGCLASS_COURTHOUSE</BuildingClassType>
 					<BuildingType>BUILDING_HOLY_ROMAN_RATHAUS</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -2171,7 +2108,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_MYSTICISM</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -2184,7 +2121,7 @@
 					<TechType>TECH_HINDU_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -2265,10 +2202,6 @@
 					<BuildingClassType>BUILDINGCLASS_GRANARY</BuildingClassType>
 					<BuildingType>BUILDING_INCAN_TERRACE</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -2304,7 +2237,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_AGRICULTURE</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -2317,7 +2250,7 @@
 					<TechType>TECH_ZORO_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -2461,10 +2394,6 @@
 					<BuildingClassType>BUILDINGCLASS_JAIL</BuildingClassType>
 					<BuildingType>BUILDING_INDIAN_MAUSOLEUM</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -2500,7 +2429,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_MYSTICISM</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -2513,7 +2442,7 @@
 					<TechType>TECH_DRUIDISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -2599,10 +2528,6 @@
 					<BuildingClassType>BUILDINGCLASS_COAL_PLANT</BuildingClassType>
 					<BuildingType>BUILDING_JAPANESE_SHALE_PLANT</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -2638,7 +2563,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_FISHING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -2651,7 +2576,7 @@
 					<TechType>TECH_AMONRA_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -2740,10 +2665,6 @@
 					<BuildingClassType>BUILDINGCLASS_AQUEDUCT</BuildingClassType>
 					<BuildingType>BUILDING_KHMER_BARAY</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -2779,7 +2700,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_HUNTING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -2792,7 +2713,7 @@
 					<TechType>TECH_ODIN_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -2869,10 +2790,6 @@
 					<BuildingClassType>BUILDINGCLASS_UNIVERSITY</BuildingClassType>
 					<BuildingType>BUILDING_KOREAN_SEOWON</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -2908,7 +2825,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_MINING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -2921,7 +2838,7 @@
 					<TechType>TECH_AMONRA_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -2998,10 +2915,6 @@
 					<BuildingClassType>BUILDINGCLASS_FORGE</BuildingClassType>
 					<BuildingType>BUILDING_MALI_MINT</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -3037,7 +2950,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_THE_WHEEL</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -3050,7 +2963,7 @@
 					<TechType>TECH_ZORO_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -3141,10 +3054,6 @@
 					<BuildingClassType>BUILDINGCLASS_COLOSSEUM</BuildingClassType>
 					<BuildingType>BUILDING_MAYA_BALL_COURT</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -3180,7 +3089,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_MINING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -3193,7 +3102,7 @@
 					<TechType>TECH_JUDAISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -3277,10 +3186,6 @@
 					<BuildingClassType>BUILDINGCLASS_STABLE</BuildingClassType>
 					<BuildingType>BUILDING_MONGOL_GER</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -3300,7 +3205,7 @@
 					<UnitType>UNIT_SIKORSKY</UnitType>
 				</Unit>
 				<Unit>
-					<UnitClassType>UNITCLASS_KNIGHT</UnitClassType>
+					<UnitClassType>UNITCLASS_MACEMAN</UnitClassType>
 					<UnitType>UNIT_HEAVYKESHIK</UnitType>
 				</Unit>
 			</Units>
@@ -3316,7 +3221,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_THE_WHEEL</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -3329,7 +3234,7 @@
 					<TechType>TECH_DRUIDISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -3430,10 +3335,6 @@
 					<BuildingClassType>BUILDINGCLASS_OBELISK</BuildingClassType>
 					<BuildingType>BUILDING_NATIVE_AMERICA_TOTEM</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -3469,7 +3370,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_AGRICULTURE</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -3482,7 +3383,7 @@
 					<TechType>TECH_TAOISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -3574,10 +3475,6 @@
 					<BuildingClassType>BUILDINGCLASS_LEVEE</BuildingClassType>
 					<BuildingType>BUILDING_NETHERLANDS_DIKE</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -3614,7 +3511,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_AGRICULTURE</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -3627,7 +3524,7 @@
 					<TechType>TECH_BUDDHISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -3710,10 +3607,6 @@
 					<BuildingClassType>BUILDINGCLASS_AQUEDUCT</BuildingClassType>
 					<BuildingType>BUILDING_OTTOMAN_HAMMAM</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -3749,7 +3642,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_THE_WHEEL</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -3762,7 +3655,7 @@
 					<TechType>TECH_CHRIST_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -3878,10 +3771,6 @@
 					<BuildingClassType>BUILDINGCLASS_GROCER</BuildingClassType>
 					<BuildingType>BUILDING_PERSIAN_APOTHECARY</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -3921,7 +3810,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_AGRICULTURE</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -3934,7 +3823,7 @@
 					<TechType>TECH_CONFUCIANISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -4030,10 +3919,6 @@
 					<BuildingClassType>BUILDINGCLASS_CUSTOM_HOUSE</BuildingClassType>
 					<BuildingType>BUILDING_PORTUGAL_FEITORIA</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -4069,7 +3954,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_FISHING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -4082,7 +3967,7 @@
 					<TechType>TECH_ISLAM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
 			<DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -4184,10 +4069,6 @@
 					<BuildingClassType>BUILDINGCLASS_MARKET</BuildingClassType>
 					<BuildingType>BUILDING_ROMAN_FORUM</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -4223,7 +4104,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_FISHING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -4236,7 +4117,7 @@
 					<TechType>TECH_JUDAISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
 			<DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -4325,10 +4206,6 @@
 					<BuildingClassType>BUILDINGCLASS_LABORATORY</BuildingClassType>
 					<BuildingType>BUILDING_RUSSIAN_RESEARCH_INSTITUTE</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -4364,7 +4241,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_HUNTING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -4377,7 +4254,7 @@
 					<TechType>TECH_DRUIDISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -4473,10 +4350,6 @@
 					<BuildingClassType>BUILDINGCLASS_CASTLE</BuildingClassType>
 					<BuildingType>BUILDING_SPANISH_CITADEL</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -4512,7 +4385,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_FISHING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -4525,7 +4398,7 @@
 					<TechType>TECH_TAOISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech> 
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -4609,10 +4482,6 @@
 					<BuildingClassType>BUILDINGCLASS_COURTHOUSE</BuildingClassType>
 					<BuildingType>BUILDING_SUMERIAN_ZIGGURAT</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -4648,7 +4517,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_AGRICULTURE</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -4661,7 +4530,7 @@
 					<TechType>TECH_HELLENISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -4747,10 +4616,6 @@
 					<BuildingClassType>BUILDINGCLASS_LIGHTHOUSE</BuildingClassType>
 					<BuildingType>BUILDING_VIKING_TRADING_POST</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -4786,7 +4651,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_FISHING</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -4799,7 +4664,7 @@
 					<TechType>TECH_HELLENISM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -4882,10 +4747,6 @@
 					<BuildingClassType>BUILDINGCLASS_BARRACKS</BuildingClassType>
 					<BuildingType>BUILDING_ZULU_IKHANDA</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -4921,7 +4782,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_AGRICULTURE</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -4934,7 +4795,7 @@
 					<TechType>TECH_ODIN_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -5031,10 +4892,6 @@
 					<BuildingClassType>BUILDINGCLASS_AIRPORT</BuildingClassType>
 					<BuildingType>BUILDING_ISRAEL_AIRBASE</BuildingType>
 				</Building>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<BuildingType>NONE</BuildingType>
-				</Building>
 			</Buildings>
 			<Units>
 				<Unit>
@@ -5070,7 +4927,7 @@
 					<bFreeBuildingClass>1</bFreeBuildingClass>
 				</FreeBuildingClass>
 			</FreeBuildingClasses>
-			<FreeTechs>
+			<!-- <FreeTechs>
 				<FreeTech>
 					<TechType>TECH_MYSTICISM</TechType>
 					<bFreeTech>1</bFreeTech>
@@ -5083,7 +4940,7 @@
 					<TechType>TECH_ISLAM_F</TechType>
 					<bFreeTech>1</bFreeTech>
 				</FreeTech>
-			</FreeTechs>
+			</FreeTechs> -->
             <DisableTechs/>
 			<ForbiddenReligions>
 				<ForbiddenReligion>
@@ -5114,971 +4971,6 @@
 			<DerivativeCiv>NONE</DerivativeCiv>
 			<CivilizationSelectionSound>AS3D_ARABIA_SELECT</CivilizationSelectionSound>
 			<CivilizationActionSound>AS3D_ARABIA_ORDER</CivilizationActionSound>
-<!-- doto city states begin -->
-		</CivilizationInfo>
-		<CivilizationInfo>
-			<Type>CIVILIZATION_TROY</Type>
-			<Description>[CS] Troy</Description>
-			<ShortDescription>[CS] Troy</ShortDescription>
-			<Adjective>[CS] Trojen</Adjective>
-			<Civilopedia>Troy</Civilopedia>
-			<DefaultPlayerColor>PLAYERCOLOR_TROY_GOLDENROD</DefaultPlayerColor>
-			<ArtDefineTag>ART_DEF_CIVILIZATION_TROY</ArtDefineTag>
-			<ArtStyleType>ARTSTYLE_GRECO_ROMAN</ArtStyleType>
-<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
-		of city states params -->
-			<bPlayable>1</bPlayable>
-			<bAIPlayable>1</bAIPlayable>	
-			<isCityState>1</isCityState>
-<!-- city states - end -->
-			<Cities>
-				<City>Troy</City>
-			</Cities>
-			<Buildings>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_THEATRE</BuildingClassType>
-					<BuildingType>BUILDING_BYZANTINE_HIPPODROME</BuildingType>
-				</Building>
-			</Buildings>
-			<Units>
-				<Unit>
-					<UnitClassType>UNITCLASS_AXEMAN</UnitClassType>
-					<UnitType>UNIT_GREEK_PHALANX</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_PIKEMAN</UnitClassType>
-					<UnitType>UNIT_SPARTAN</UnitType>		
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_MECHANIZED_INFANTRY</UnitClassType>
-					<UnitType>UNIT_AVENGER</UnitType>		
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_CAVALRY</UnitClassType>
-					<UnitType>UNIT_GREEKCAVALRY</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_MODERN_ARMOR</UnitClassType>
-					<UnitType>UNIT_STORMSQ</UnitType>		
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_GUIDED_MISSILE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_TACTICAL_NUKE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_ICBM</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-			</Units>
-			<FreeUnitClasses>
-				<FreeUnitClass>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
-				</FreeUnitClass>
-			</FreeUnitClasses>
-			<FreeBuildingClasses>
-				<FreeBuildingClass>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<bFreeBuildingClass>1</bFreeBuildingClass>
-				</FreeBuildingClass>
-			</FreeBuildingClasses>
-			<FreeTechs>
-				<FreeTech>
-					<TechType>TECH_THE_WHEEL</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HUNTING</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_JUDAISM_F</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-			</FreeTechs>
-			<DisableTechs/>
-			<ForbiddenReligions>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_JUDAISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion> 
-			</ForbiddenReligions>
-			<InitialCivics>
-				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_DYNASTIICISM</CivicType>
-				<CivicType>CIVIC_ELDER</CivicType>
-				<CivicType>CIVIC_TRIBALISM</CivicType>
-				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
-				<CivicType>CIVIC_PAGANISM</CivicType>
-				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
-			</InitialCivics>
-			<Leaders>
-				<Leader>
-					<LeaderName>LEADER_HECTOR</LeaderName>
-					<bLeaderAvailability>1</bLeaderAvailability>
-				</Leader>
-			</Leaders>
-			<DerivativeCiv>NONE</DerivativeCiv>
-			<CivilizationSelectionSound>AS3D_GREECE_SELECT</CivilizationSelectionSound>
-			<CivilizationActionSound>AS3D_GREECE_ORDER</CivilizationActionSound>
-	 	</CivilizationInfo>
-		<CivilizationInfo>
-			<Type>CIVILIZATION_KUSH</Type>
-			<Description>[CS] Kushan</Description>
-			<ShortDescription>[CS] Kush</ShortDescription>
-			<Adjective>[CS] Kushan</Adjective>
-			<Civilopedia>Kush</Civilopedia>
-			<DefaultPlayerColor>PLAYERCOLOR_DARK_DARK_GREEN</DefaultPlayerColor>
-			<ArtDefineTag>ART_DEF_CIVILIZATION_KUSH</ArtDefineTag>
-			<ArtStyleType>ARTSTYLE_MIDDLE_EAST</ArtStyleType>
-			<UnitArtStyleType>UNIT_ARTSTYLE_MIDDLE_EAST</UnitArtStyleType>
-<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
-		of city states params -->
-			<bPlayable>1</bPlayable>
-			<bAIPlayable>1</bAIPlayable>	
-			<isCityState>1</isCityState>
-<!-- city states - end -->
-			<Cities>
-				<City>Kushan</City>
-			</Cities>
-			<Buildings>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_OBELISK</BuildingClassType>
-					<BuildingType>BUILDING_EGYPTIAN_OBELISK</BuildingType>
-				</Building>
-			</Buildings>
-			<Units>
-				<Unit>
-					<UnitClassType>UNITCLASS_CHARIOT</UnitClassType>
-					<UnitType>UNIT_EGYPT_WARCHARIOT</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_INFANTRY</UnitClassType>
-					<UnitType>UNIT_GUARDS</UnitType>				
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_CAVALRY</UnitClassType>
-					<UnitType>UNIT_ARABCAVALRY</UnitType>				
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_KNIGHT</UnitClassType>
-					<UnitType>UNIT_AZADIN</UnitType>				
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_MODERN_ARMOR</UnitClassType>
-					<UnitType>UNIT_BLACK_EAGLE</UnitType>	
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_GUIDED_MISSILE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_TACTICAL_NUKE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_ICBM</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-			</Units>
-			<FreeUnitClasses>
-				<FreeUnitClass>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
-				</FreeUnitClass>
-			</FreeUnitClasses>
-			<FreeBuildingClasses>
-				<FreeBuildingClass>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<bFreeBuildingClass>1</bFreeBuildingClass>
-				</FreeBuildingClass>
-			</FreeBuildingClasses>
-			<FreeTechs>
-				<FreeTech>
-					<TechType>TECH_THE_WHEEL</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_AGRICULTURE</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_JUDAISM_F</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-			</FreeTechs>
-			<DisableTechs/>
-			<ForbiddenReligions>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_JUDAISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion> 
-			</ForbiddenReligions>
-			<InitialCivics>
-				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_DYNASTIICISM</CivicType>
-				<CivicType>CIVIC_ELDER</CivicType>
-				<CivicType>CIVIC_TRIBALISM</CivicType>
-				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
-				<CivicType>CIVIC_PAGANISM</CivicType>
-				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
-			</InitialCivics>
-			<Leaders>
-				<Leader>
-					<LeaderName>LEADER_PIYE</LeaderName>
-					<bLeaderAvailability>1</bLeaderAvailability>
-				</Leader>
-			</Leaders>
-			<DerivativeCiv>NONE</DerivativeCiv>
-			<CivilizationSelectionSound>AS3D_EGYPT_SELECT</CivilizationSelectionSound>
-			<CivilizationActionSound>AS3D_EGYPT_ORDER</CivilizationActionSound>
-		</CivilizationInfo>
-		<CivilizationInfo>
-			<Type>CIVILIZATION_ZURICH</Type>
-			<Description>[CS] Zurich</Description>
-			<ShortDescription>[CS] Zurich</ShortDescription>
-			<Adjective>[CS] Zurich</Adjective>
-			<Civilopedia>[CS] Zurich</Civilopedia>
-			<DefaultPlayerColor>PLAYERCOLOR_RED</DefaultPlayerColor>
-			<ArtDefineTag>ART_DEF_CIVILIZATION_SWITZERLAND</ArtDefineTag>
-			<ArtStyleType>ARTSTYLE_EUROPEAN</ArtStyleType>
-			<UnitArtStyleType>UNIT_ARTSTYLE_EUROPEAN</UnitArtStyleType>
-<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
-		of city states params -->
-			<bPlayable>1</bPlayable>
-			<bAIPlayable>1</bAIPlayable>	
-			<isCityState>1</isCityState>
-<!-- city states - end -->
-			<Cities>
-				<City>Zurich</City>
-			</Cities>
-			<Buildings>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_COURTHOUSE</BuildingClassType>
-					<BuildingType>BUILDING_HOLY_ROMAN_RATHAUS</BuildingType>
-				</Building>
-			</Buildings>
-			<Units>
-				<Unit>
-					<UnitClassType>UNITCLASS_PIKEMAN</UnitClassType>
-					<UnitType>UNIT_HOLY_ROMAN_LANDSKNECHT</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_CAVALRY</UnitClassType>
-					<UnitType>UNIT_VATICAN</UnitType>			
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_CHARIOT</UnitClassType>
-					<UnitType>UNIT_BCHARIOT</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_DESTROYER</UnitClassType>
-					<UnitType>UNIT_ROMANHMS</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_MODERN_ARMOR</UnitClassType>
-					<UnitType>UNIT_BMP3</UnitType>			
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_GUIDED_MISSILE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_TACTICAL_NUKE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_ICBM</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_MODERN_ARMOR</UnitClassType>
-					<UnitType>UNIT_STORMSQ</UnitType>		
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_GUIDED_MISSILE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_TACTICAL_NUKE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_ICBM</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-			</Units>
-			<FreeUnitClasses>
-				<FreeUnitClass>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
-				</FreeUnitClass>
-			</FreeUnitClasses>
-			<FreeBuildingClasses>
-				<FreeBuildingClass>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<bFreeBuildingClass>1</bFreeBuildingClass>
-				</FreeBuildingClass>
-			</FreeBuildingClasses>
-			<FreeTechs>
-				<FreeTech>
-					<TechType>TECH_MYSTICISM</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HUNTING</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HINDU_F</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-			</FreeTechs>
-            <DisableTechs/>
-			<ForbiddenReligions>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_HINDUISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion> 
-			</ForbiddenReligions>
-			<InitialCivics>
-				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_DYNASTIICISM</CivicType>
-				<CivicType>CIVIC_ELDER</CivicType>
-				<CivicType>CIVIC_TRIBALISM</CivicType>
-				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
-				<CivicType>CIVIC_PAGANISM</CivicType>
-				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
-			</InitialCivics>
-			<Leaders>
-				<Leader>
-					<LeaderName>LEADER_GUILLAUME_HENRI_DUFOUR</LeaderName>
-					<bLeaderAvailability>1</bLeaderAvailability>
-				</Leader>
-			</Leaders>
-			<DerivativeCiv>NONE</DerivativeCiv>
-			<CivilizationSelectionSound>AS3D_HOLY_ROMAN_SELECT</CivilizationSelectionSound>
-			<CivilizationActionSound>AS3D_HOLY_ROMAN_ORDER</CivilizationActionSound>
-		</CivilizationInfo>
-		<CivilizationInfo>
-			<Type>CIVILIZATION_VATICAN</Type>
-			<Description>[CS] Vatican</Description>
-			<ShortDescription>[CS] Vatican</ShortDescription>
-			<Adjective>[CS] Vatican</Adjective>
-			<Civilopedia>[CS] Vatican</Civilopedia>
-			<DefaultPlayerColor>PLAYERCOLOR_DARK_PURPLE</DefaultPlayerColor>
-			<ArtDefineTag>ART_DEF_CIVILIZATION_VATICAN</ArtDefineTag>
-			<ArtStyleType>ARTSTYLE_GRECO_ROMAN</ArtStyleType>
-			<UnitArtStyleType>UNIT_ARTSTYLE_GRECO_ROMAN</UnitArtStyleType>
-<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
-		of city states params -->
-			<bPlayable>1</bPlayable>
-			<bAIPlayable>1</bAIPlayable>	
-			<isCityState>1</isCityState>
-<!-- city states - end -->
-			<Cities>
-				<City>Vatican</City>
-			</Cities>
-			<Buildings>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_MARKET</BuildingClassType>
-					<BuildingType>BUILDING_ROMAN_FORUM</BuildingType>
-				</Building>
-			</Buildings>
-			<Units>
-				<Unit>
-					<UnitClassType>UNITCLASS_SWORDSMAN</UnitClassType>
-					<UnitType>UNIT_ROME_PRAETORIAN</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_MACEMAN</UnitClassType>
-					<UnitType>UNIT_CENTURIONS</UnitType>	
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_MOBILE_SAM</UnitClassType>
-					<UnitType>UNIT_ASTROS</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_JET_FIGHTER</UnitClassType>
-					<UnitType>UNIT_MIG21</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_TANK</UnitClassType>
-					<UnitType>UNIT_ITALIAN_TANK</UnitType>	
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_MODERN_ARMOR</UnitClassType>
-					<UnitType>UNIT_STORMSQ</UnitType>		
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_GUIDED_MISSILE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_TACTICAL_NUKE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_ICBM</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-			</Units>
-			<FreeUnitClasses>
-				<FreeUnitClass>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
-				</FreeUnitClass>
-			</FreeUnitClasses>
-			<FreeBuildingClasses>
-				<FreeBuildingClass>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<bFreeBuildingClass>1</bFreeBuildingClass>
-				</FreeBuildingClass>
-			</FreeBuildingClasses>
-			<FreeTechs>
-				<FreeTech>
-					<TechType>TECH_FISHING</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_MINING</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_JUDAISM_F</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-			</FreeTechs>
-			<DisableTechs/>
-			<ForbiddenReligions>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_JUDAISM</ReligionName>
-					<bForbidden>1</bForbidden> 
-				</ForbiddenReligion>
-			</ForbiddenReligions>
-			<InitialCivics>
-				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_DYNASTIICISM</CivicType>
-				<CivicType>CIVIC_ELDER</CivicType>
-				<CivicType>CIVIC_TRIBALISM</CivicType>
-				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
-				<CivicType>CIVIC_PAGANISM</CivicType>
-				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
-			</InitialCivics>
-			<Leaders>
-				<Leader>
-					<LeaderName>LEADER_POPEJOHN</LeaderName>
-					<bLeaderAvailability>1</bLeaderAvailability>
-				</Leader>
-			</Leaders>
-			<DerivativeCiv>NONE</DerivativeCiv>
-			<CivilizationSelectionSound>AS3D_ROME_SELECT</CivilizationSelectionSound>
-			<CivilizationActionSound>AS3D_ROME_ORDER</CivilizationActionSound>
-		</CivilizationInfo>
-		<CivilizationInfo>
-			<Type>CIVILIZATION_TUNIS</Type>
-			<Description>[CS] Tunis</Description>
-			<ShortDescription>[CS] Tunis</ShortDescription>
-			<Adjective>[CS] Tunisian</Adjective>
-			<Civilopedia>[CS] Tunis</Civilopedia>
-			<DefaultPlayerColor>PLAYERCOLOR_CHOCOLATE</DefaultPlayerColor>
-			<ArtDefineTag>ART_DEF_CIVILIZATION_TUNISIA</ArtDefineTag>
-			<ArtStyleType>ARTSTYLE_MIDDLE_EAST</ArtStyleType>
-			<UnitArtStyleType>UNIT_ARTSTYLE_MIDDLE_EAST</UnitArtStyleType>
-<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
-		of city states params -->
-			<bPlayable>1</bPlayable>
-			<bAIPlayable>1</bAIPlayable>	
-			<isCityState>1</isCityState>
-<!-- city states - end -->
-			<Cities>
-				<City>Tunis</City>
-			</Cities>
-			<Buildings>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_LIBRARY</BuildingClassType>
-					<BuildingType>BUILDING_ARABIAN_MADRASSA</BuildingType>
-				</Building>
-			</Buildings>
-			<Units>
-				<Unit>
-					<UnitClassType>UNITCLASS_KNIGHT</UnitClassType>
-					<UnitType>UNIT_ARABIA_CAMELARCHER</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_TANK</UnitClassType>
-					<UnitType>UNIT_MKIV</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_INFANTRY</UnitClassType>
-					<UnitType>UNIT_DESERTSOLD</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_GRENADIER</UnitClassType>
-					<UnitType>UNIT_ARABGRENADIER</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_HORSE_ARCHER</UnitClassType>
-					<UnitType>UNIT_ARABIA_ANSAR</UnitType>
-			    </Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_MODERN_ARMOR</UnitClassType>
-					<UnitType>UNIT_STORMSQ</UnitType>		
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_GUIDED_MISSILE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_TACTICAL_NUKE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_ICBM</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-			</Units>
-			<FreeUnitClasses>
-				<FreeUnitClass>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
-				</FreeUnitClass>
-			</FreeUnitClasses>
-			<FreeBuildingClasses>
-				<FreeBuildingClass>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<bFreeBuildingClass>1</bFreeBuildingClass>
-				</FreeBuildingClass>
-			</FreeBuildingClasses>
-			<FreeTechs>
-				<FreeTech>
-					<TechType>TECH_HUNTING</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_MYSTICISM</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_CHRIST_F</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-			</FreeTechs>
-            <DisableTechs/>
-			<ForbiddenReligions>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_CHRISTIANITY</ReligionName>
-					<bForbidden>1</bForbidden> 
-				</ForbiddenReligion> 
-			</ForbiddenReligions>
-			<InitialCivics>
-				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_DYNASTIICISM</CivicType>
-				<CivicType>CIVIC_ELDER</CivicType>
-				<CivicType>CIVIC_TRIBALISM</CivicType>
-				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
-				<CivicType>CIVIC_PAGANISM</CivicType>
-				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
-			</InitialCivics>
-			<Leaders>
-				<Leader>
-					<LeaderName>LEADER_ABU</LeaderName>
-					<bLeaderAvailability>1</bLeaderAvailability>
-				</Leader>
-			</Leaders>
-			<DerivativeCiv>NONE</DerivativeCiv>
-			<CivilizationSelectionSound>AS3D_ARABIA_SELECT</CivilizationSelectionSound>
-			<CivilizationActionSound>AS3D_ARABIA_ORDER</CivilizationActionSound>
-		</CivilizationInfo>
-		<CivilizationInfo>
-			<Type>CIVILIZATION_TIBET</Type>
-			<Description>[CS] Tibet</Description>
-			<ShortDescription>[CS] Tibet</ShortDescription>
-			<Adjective>[CS] Tibetian</Adjective>
-			<Civilopedia>[CS] Tibet</Civilopedia>
-			<DefaultPlayerColor>PLAYERCOLOR_TIBET_ORANGE</DefaultPlayerColor>
-			<ArtDefineTag>ART_DEF_CIVILIZATION_TIBET</ArtDefineTag>
-			<ArtStyleType>ARTSTYLE_ASIAN</ArtStyleType>
-<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
-		of city states params -->
-			<bPlayable>1</bPlayable>
-			<bAIPlayable>1</bAIPlayable>	
-			<isCityState>1</isCityState>
-<!-- city states - end -->
-			<Cities>
-				<City>Tibet</City>
-			</Cities>
-			<Buildings>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_THEATRE</BuildingClassType>
-					<BuildingType>BUILDING_CHINESE_PAVILLION</BuildingType>
-				</Building>
-			</Buildings>
-			<Units>
-				<Unit>
-					<UnitClassType>UNITCLASS_MACEMAN</UnitClassType>
-					<UnitType>UNIT_NINJA</UnitType>			    
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_CROSSBOWMAN</UnitClassType>
-					<UnitType>UNIT_CHINA_CHOKONU</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_MODERN_ARMOR</UnitClassType>
-					<UnitType>UNIT_TYPE90</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_MECHANIZED_INFANTRY</UnitClassType>
-					<UnitType>UNIT_LINCE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_DESTROYER</UnitClassType>
-					<UnitType>UNIT_CHINADESTROYER</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_MODERN_ARMOR</UnitClassType>
-					<UnitType>UNIT_STORMSQ</UnitType>		
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_GUIDED_MISSILE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_TACTICAL_NUKE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_ICBM</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-			</Units>
-			<FreeUnitClasses>
-				<FreeUnitClass>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
-				</FreeUnitClass>
-			</FreeUnitClasses>
-			<FreeBuildingClasses>
-				<FreeBuildingClass>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<bFreeBuildingClass>1</bFreeBuildingClass>
-				</FreeBuildingClass>
-			</FreeBuildingClasses>
-			<FreeTechs>
-				<FreeTech>
-					<TechType>TECH_MYSTICISM</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_MINING</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_CHRIST_F</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-			</FreeTechs>
-            <DisableTechs/>
-			<ForbiddenReligions>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_CHRISTIANITY</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion>
-			</ForbiddenReligions>
-			<InitialCivics>
-				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_DYNASTIICISM</CivicType>
-				<CivicType>CIVIC_ELDER</CivicType>
-				<CivicType>CIVIC_TRIBALISM</CivicType>
-				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
-				<CivicType>CIVIC_PAGANISM</CivicType>
-				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
-			</InitialCivics>
-			<Leaders>
-				<Leader>
-					<LeaderName>LEADER_SONGTSEN</LeaderName>
-					<bLeaderAvailability>1</bLeaderAvailability>
-				</Leader>
-			</Leaders>
-			<DerivativeCiv>NONE</DerivativeCiv>
-			<CivilizationSelectionSound>AS3D_CHINA_SELECT</CivilizationSelectionSound>
-			<CivilizationActionSound>AS3D_CHINA_ORDER</CivilizationActionSound>
-		</CivilizationInfo>
-		<CivilizationInfo>
-			<Type>CIVILIZATION_BAVARIA</Type>
-			<Description>[CS] Bavaria</Description>
-			<ShortDescription>[CS] Bavaria</ShortDescription>
-			<Adjective>[CS] Bavaria</Adjective>
-			<Civilopedia>[CS] Bavaria</Civilopedia>
-			<DefaultPlayerColor>PLAYERCOLOR_WAVES</DefaultPlayerColor>
-			<ArtDefineTag>ART_DEF_CIVILIZATION_BAVARIA</ArtDefineTag>
-			<ArtStyleType>ARTSTYLE_EUROPEAN</ArtStyleType>
-			<UnitArtStyleType>UNIT_ARTSTYLE_EUROPEAN</UnitArtStyleType>
-<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
-		of city states params -->
-			<bPlayable>1</bPlayable>
-			<bAIPlayable>1</bAIPlayable>	
-			<isCityState>1</isCityState>
-<!-- city states - end -->
-			<Cities>
-				<City>Bavaria</City>
-			</Cities>
-			<Buildings>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_OBSERVATORY</BuildingClassType>
-					<BuildingType>BUILDING_FRENCH_SALON</BuildingType>
-				</Building>
-			</Buildings>
-			<Buildings>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_FACTORY</BuildingClassType>
-					<BuildingType>BUILDING_GERMAN_ASSEMBLY_PLANT</BuildingType>
-				</Building>
-			</Buildings>
-			<Units>
-				<Unit>
-					<UnitClassType>UNITCLASS_TANK</UnitClassType>
-					<UnitType>UNIT_GERMAN_PANZER</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_MARINE</UnitClassType>
-					<UnitType>UNIT_G36</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_KNIGHT</UnitClassType>
-					<UnitType>UNIT_TEUTONIC_KNIGHT</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_SWORDSMAN</UnitClassType>
-					<UnitType>UNIT_TSWORDSMAN</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_INFANTRY</UnitClassType>
-					<UnitType>UNIT_TIGER</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_GUIDED_MISSILE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_TACTICAL_NUKE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_ICBM</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-			</Units>
-			<FreeUnitClasses>
-				<FreeUnitClass>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
-				</FreeUnitClass>
-			</FreeUnitClasses>
-			<FreeBuildingClasses>
-				<FreeBuildingClass>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<bFreeBuildingClass>1</bFreeBuildingClass>
-				</FreeBuildingClass>
-			</FreeBuildingClasses>
-			<FreeTechs>
-				<FreeTech>
-					<TechType>TECH_AGRICULTURE</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_MINING</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HINDU_F</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-			</FreeTechs>
-            <DisableTechs/>
-			<ForbiddenReligions>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_HINDUISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion> 
-			</ForbiddenReligions>
-			<InitialCivics>
-				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_DYNASTIICISM</CivicType>
-				<CivicType>CIVIC_ELDER</CivicType>
-				<CivicType>CIVIC_TRIBALISM</CivicType>
-				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
-				<CivicType>CIVIC_PAGANISM</CivicType>
-				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
-			</InitialCivics>
-			<Leaders>
-				<Leader>
-					<LeaderName>LEADER_LUDWIG</LeaderName>
-					<bLeaderAvailability>1</bLeaderAvailability>
-				</Leader>
-			</Leaders>
-			<DerivativeCiv>NONE</DerivativeCiv>
-			<CivilizationSelectionSound>AS3D_FRANCE_SELECT</CivilizationSelectionSound>
-			<CivilizationActionSound>AS3D_FRANCE_ORDER</CivilizationActionSound>
-		</CivilizationInfo>
-		<CivilizationInfo>
-			<Type>CIVILIZATION_QUEBEC</Type>
-			<Description>[CS] Quebec</Description>
-			<ShortDescription>[CS] Quebec</ShortDescription>
-			<Adjective>[CS] Quebecian</Adjective>
-			<Civilopedia>[CS] Quebec</Civilopedia>
-			<DefaultPlayerColor>PLAYERCOLOR_QUEBEC</DefaultPlayerColor>
-			<ArtDefineTag>ART_DEF_CIVILIZATION_QUEBEC</ArtDefineTag>
-			<ArtStyleType>ARTSTYLE_EUROPEAN</ArtStyleType>
-			<UnitArtStyleType>UNIT_ARTSTYLE_EUROPEAN</UnitArtStyleType>
-<!-- city states - these 3 are hard coded in the dll - see the globaldefnesalt file
-		of city states params -->
-			<bPlayable>1</bPlayable>
-			<bAIPlayable>1</bAIPlayable>	
-			<isCityState>1</isCityState>
-<!-- city states - end -->
-			<Cities>
-				<City>Quebec</City>
-			</Cities>
-			<Buildings>
-				<Building>
-					<BuildingClassType>BUILDINGCLASS_BANK</BuildingClassType>
-					<BuildingType>BUILDING_ENGLISH_STOCK_EXCHANGE</BuildingType>
-				</Building>
-			</Buildings>
-			<Units>
-				<Unit>
-					<UnitClassType>UNITCLASS_RIFLEMAN</UnitClassType>
-					<UnitType>UNIT_ENGLISH_REDCOAT</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_BATTLESHIP</UnitClassType>
-					<UnitType>UNIT_CORVETTE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_FIGHTER</UnitClassType>
-					<UnitType>UNIT_BRISTOL</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_MARINE</UnitClassType>
-					<UnitType>UNIT_MI6</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_TANK</UnitClassType>
-					<UnitType>UNIT_CROMWELL</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_GUIDED_MISSILE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_TACTICAL_NUKE</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_ICBM</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-				<Unit>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<UnitType>NONE</UnitType>
-				</Unit>
-			</Units>
-			<FreeUnitClasses>
-				<FreeUnitClass>
-					<UnitClassType>UNITCLASS_SETTLER</UnitClassType>
-					<iFreeUnits>1</iFreeUnits>
-				</FreeUnitClass>
-			</FreeUnitClasses>
-			<FreeBuildingClasses>
-				<FreeBuildingClass>
-					<BuildingClassType>BUILDINGCLASS_PALACE_CS</BuildingClassType>
-					<bFreeBuildingClass>1</bFreeBuildingClass>
-				</FreeBuildingClass>
-			</FreeBuildingClasses>
-			<FreeTechs>
-				<FreeTech>
-					<TechType>TECH_FISHING</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_MINING</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-				<FreeTech>
-					<TechType>TECH_HINDU_F</TechType>
-					<bFreeTech>1</bFreeTech>
-				</FreeTech>
-			</FreeTechs>
-            <DisableTechs/>
-			<ForbiddenReligions>
-				<ForbiddenReligion>
-					<ReligionName>RELIGION_TAOISM</ReligionName>
-					<bForbidden>1</bForbidden>
-				</ForbiddenReligion> 
-			</ForbiddenReligions>
-			<InitialCivics>
-				<CivicType>CIVIC_DESPOTISM</CivicType>
-				<CivicType>CIVIC_SOVEREIGNTY</CivicType>
-				<CivicType>CIVIC_DYNASTIICISM</CivicType>
-				<CivicType>CIVIC_ELDER</CivicType>
-				<CivicType>CIVIC_TRIBALISM</CivicType>
-				<CivicType>CIVIC_DECENTRALIZATION</CivicType>
-				<CivicType>CIVIC_PAGANISM</CivicType>
-				<CivicType>CIVIC_WARRINGTRIBES</CivicType>
-			</InitialCivics>
-			<Leaders>
-				<Leader>
-					<LeaderName>LEADER_MACDONALD</LeaderName>
-					<bLeaderAvailability>1</bLeaderAvailability>
-				</Leader>
-			</Leaders>
-			<DerivativeCiv>NONE</DerivativeCiv>
-			<CivilizationSelectionSound>AS3D_FRANCE_SELECT</CivilizationSelectionSound>
-			<CivilizationActionSound>AS3D_FRANCE_ORDER</CivilizationActionSound>
 		</CivilizationInfo>
 		<CivilizationInfo>
 			<Type>CIVILIZATION_MINOR</Type>
@@ -7159,7 +6051,6 @@
 			<DerivativeCiv>NONE</DerivativeCiv>
 			<CivilizationSelectionSound/>
 			<CivilizationActionSound/>
-<!-- doto specialists instead of pop city states end -->
 		</CivilizationInfo>
 	</CivilizationInfos>
 </Civ4CivilizationInfos>

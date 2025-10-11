@@ -217,17 +217,7 @@ public:
 	int getOpenBordersTradingCount() const { return m_iOpenBordersTradingCount; }															// Exposed to Python
 	bool isOpenBordersTrading() const { return (getOpenBordersTradingCount() > 0); }										// Exposed to Python
 	void changeOpenBordersTradingCount(int iChange);															// Exposed to Python
-/************************************************************************************************/
-/* START: Advanced Diplomacy     moved from cpp                                                 */
-/************************************************************************************************/
-	int getFreeTradeAgreementTradingCount() const { return m_iFreeTradeAgreementTradingCount; }															// Exposed to Python
-	bool isFreeTradeAgreementTrading() const { return (getFreeTradeAgreementTradingCount() > 0); }										// Exposed to Python
-	void changeFreeTradeAgreementTradingCount(int iChange);															// Exposed to Python
-	int getHowManyTradeAgreements(TeamTypes eTeam) const;
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
-	
+
 	int getDefensivePactTradingCount() const { return m_iDefensivePactTradingCount; }										// Exposed to Python
 	bool isDefensivePactTrading() const { return (getDefensivePactTradingCount() > 0); }															// Exposed to Python
 	void changeDefensivePactTradingCount(int iChange);														// Exposed to Python
@@ -316,7 +306,7 @@ public:
 	{
 		return (m_aiHasMetTurn.get(eOther) >= 0); // advc.091
 	}
-	int getHasMetTurn(TeamTypes eOther) { return m_aiHasMetTurn.get(eOther); } // advc.091  (exposed to Python)
+	int getHasMetTurn(TeamTypes eOther) const { return m_aiHasMetTurn.get(eOther); } // advc.091  (exposed to Python)
 	// advc.071: Return value, 2nd param added.
 	CvPlot* makeHasMet(TeamTypes eOther, bool bNewDiplo, FirstContactData* pData = NULL);
 	bool isHasSeen(TeamTypes eOther) const { return m_abHasSeen.get(eOther); }; // K-Mod
@@ -360,19 +350,6 @@ public:
 	}
 	void setOpenBorders(TeamTypes eIndex, bool bNewValue);
 	// <advc.034>
-/************************************************************************************************/
-/* START: Advanced Diplomacy    moved from cpp                                                  */
-/************************************************************************************************/
-	bool isFreeTradeAgreement(TeamTypes eIndex) const
-	{
-		return m_abFreeTradeAgreement.get(eIndex);
-	}
-	void setFreeTradeAgreement(TeamTypes eIndex, bool bNewValue);
-	bool canSignFreeTradeAgreement(TeamTypes eTeam) const;
-	void csTeamTraitsUpdate(TeamTypes eThey, bool bNewValue) const;
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
 	bool isDisengage(TeamTypes eIndex) const { return m_abDisengage.get(eIndex); }
 	void setDisengage(TeamTypes eIndex, bool bNewValue);
 	void cancelDisengage(TeamTypes otherId);
@@ -541,6 +518,7 @@ public:
 	}
 	bool isFriendlyTerritory(TeamTypes eTerritoryOwner) const;
 	bool isAlliedTerritory(TeamTypes eTerritoryOwner, TeamTypes eEnemy) const; // advc.183
+	void updateActivePaths(TeamTypes eOtherTeam = NO_TEAM); // advc.001w
 	// <advc> Same as isRevealedBase (but doesn't have to be)
 	bool isRevealedAirBase(CvPlot const& kPlot) const { return isRevealedBase(kPlot); }
 	bool isRevealedCityHeal(CvPlot const& kPlot) const { return isRevealedBase(kPlot); }
@@ -639,14 +617,6 @@ protected:
 	int m_iTechTradingCount;
 	int m_iGoldTradingCount;
 	int m_iOpenBordersTradingCount;
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-/************************************************************************************************/
-	int m_iFreeTradeAgreementTradingCount;
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	int m_iDefensivePactTradingCount;
 	int m_iPermanentAllianceTradingCount;
 	int m_iVassalTradingCount;
@@ -718,13 +688,6 @@ protected:
 	ArrayEnumMap<TeamTypes,bool> m_abHasSeen; // K-Mod
 	ArrayEnumMap<TeamTypes,bool> m_abPermanentWarPeace;
 	ArrayEnumMap<TeamTypes,bool> m_abOpenBorders;
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	ArrayEnumMap<TeamTypes, bool> m_abFreeTradeAgreement;
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
 	ArrayEnumMap<TeamTypes,bool> m_abDisengage; // advc.034
 	ArrayEnumMap<TeamTypes,bool> m_abDefensivePact;
 	ArrayEnumMap<TeamTypes,bool> m_abForcePeace;
@@ -773,6 +736,7 @@ protected:
 	// <advc.039>
 	CvWString const tradeItemString(TradeableItems eItem, int iData,
 			TeamTypes eFrom) const; // </advc.039>
+	bool isTechSplash() const; // advc
 	void announceTechToPlayers(TechTypes eIndex,
 			PlayerTypes eDiscoverPlayer, // advc.156
 			bool bPartial = false);

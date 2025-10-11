@@ -12,10 +12,7 @@
 			<iCityDefenseModifier>0</iCityDefenseModifier>
 		<!-- wonder limit - doto - its in every culture level-->
 			<imaxWonderCultureLimit>0</imaxWonderCultureLimit>
-		<!-- wonder limit - doto-->
-		<!-- doto enhanced city size mylon-->
-			<iCityRadius>2</iCityRadius>
-		<!-- doto enhanced city size mylon-->	
+		<!-- wonder limit - doto-->	
 			<SpeedThresholds>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_MARATHON</GameSpeedType>
@@ -44,9 +41,6 @@
 			<Description>TXT_KEY_CULTURELEVEL_POOR</Description>
 			<iCityDefenseModifier>0</iCityDefenseModifier>
 			<imaxWonderCultureLimit>2</imaxWonderCultureLimit>
-		<!-- doto enhanced city size mylon-->
-			<iCityRadius>2</iCityRadius>
-		<!-- doto enhanced city size mylon-->
 			<SpeedThresholds>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_MARATHON</GameSpeedType>
@@ -75,9 +69,6 @@
 			<Description>TXT_KEY_CULTURELEVEL_FLEDGLING</Description>
 			<iCityDefenseModifier>20</iCityDefenseModifier>
 			<imaxWonderCultureLimit>4</imaxWonderCultureLimit>
-		<!-- doto enhanced city size mylon-->
-			<iCityRadius>2</iCityRadius>
-		<!-- doto enhanced city size mylon-->
 			<SpeedThresholds>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_MARATHON</GameSpeedType>
@@ -108,9 +99,6 @@
 			<Description>TXT_KEY_CULTURELEVEL_DEVELOPING</Description>
 			<iCityDefenseModifier>40</iCityDefenseModifier>
 			<imaxWonderCultureLimit>5</imaxWonderCultureLimit>
-		<!-- doto enhanced city size mylon-->
-			<iCityRadius>2</iCityRadius>
-		<!-- doto enhanced city size mylon-->
 			<SpeedThresholds>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_MARATHON</GameSpeedType>
@@ -141,9 +129,6 @@
 			<Description>TXT_KEY_CULTURELEVEL_REFINED</Description>
 			<iCityDefenseModifier>60</iCityDefenseModifier>
 			<imaxWonderCultureLimit>7</imaxWonderCultureLimit>
-		<!-- doto enhanced city size mylon-->
-			<iCityRadius>3</iCityRadius>
-		<!-- doto enhanced city size mylon-->
 			<SpeedThresholds>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_MARATHON</GameSpeedType>
@@ -174,9 +159,6 @@
 			<Description>TXT_KEY_CULTURELEVEL_INFLUENTIAL</Description>
 			<iCityDefenseModifier>80</iCityDefenseModifier>
 			<imaxWonderCultureLimit>8</imaxWonderCultureLimit>
-		<!-- doto enhanced city size mylon-->
-			<iCityRadius>3</iCityRadius>
-		<!-- doto enhanced city size mylon-->
 			<SpeedThresholds>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_MARATHON</GameSpeedType>
@@ -209,9 +191,6 @@
 			<Description>TXT_KEY_CULTURELEVEL_LEGENDARY</Description>
 			<iCityDefenseModifier>100</iCityDefenseModifier>
 			<imaxWonderCultureLimit>10</imaxWonderCultureLimit>
-		<!-- doto enhanced city size mylon-->
-			<iCityRadius>4</iCityRadius>
-		<!-- doto enhanced city size mylon-->
 			<SpeedThresholds>
 				<SpeedThreshold>
 					<GameSpeedType>GAMESPEED_MARATHON</GameSpeedType>

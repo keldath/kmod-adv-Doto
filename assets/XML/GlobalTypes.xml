@@ -63,15 +63,15 @@
 		<ContactType>CONTACT_ASK_FOR_HELP</ContactType>
 		<ContactType>CONTACT_DEMAND_TRIBUTE</ContactType>
 		<ContactType>CONTACT_OPEN_BORDERS</ContactType>
-<!-- advanced diplomacy doto added-->
-		<ContactType>CONTACT_TRADE_FREE_TRADE_ZONE</ContactType>
-<!-- advanced diplomacy-->
 		<ContactType>CONTACT_DEFENSIVE_PACT</ContactType>
 		<ContactType>CONTACT_PERMANENT_ALLIANCE</ContactType>
 		<ContactType>CONTACT_PEACE_TREATY</ContactType>
 		<ContactType>CONTACT_TRADE_TECH</ContactType>
 		<ContactType>CONTACT_TRADE_BONUS</ContactType>
 		<ContactType>CONTACT_TRADE_MAP</ContactType>
+<!-- advanced diplomacy doto added FREE TRADE ZONE-->
+		<ContactType>CONTACT_TRADE_FREE_TRADE_ZONE</ContactType>
+<!-- advanced diplomacy-->
 	</ContactTypes>
 	<DiplomacyPowerTypes>
 		<!--Changes must be reflected in CvEnums.h-->

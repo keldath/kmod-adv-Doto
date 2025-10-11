@@ -728,7 +728,7 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetInfoIDFromChildXmlVal(m_eCivicOptionType, "CivicOptionType");
 	FAssert(m_eCivicOptionType != NO_CIVICOPTION); // advc
 	pXML->SetInfoIDFromChildXmlVal(m_eTechPrereq, "TechPrereq");
-	
+
 	pXML->GetChildXmlValByName(&m_iAnarchyLength, "iAnarchyLength");
 
 	pXML->SetInfoIDFromChildXmlVal(m_iUpkeep, "Upkeep");
@@ -973,6 +973,7 @@ bool CvCivicInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(&m_pabHurry, "Hurrys", GC.getNumHurryInfos());
 	pXML->SetVariableListTagPair(&m_pabSpecialBuildingNotRequired, "SpecialBuildingNotRequireds", GC.getNumSpecialBuildingInfos());
 	pXML->SetVariableListTagPair(&m_pabSpecialistValid, "SpecialistValids", GC.getNumSpecialistInfos());
+
 	pXML->SetVariableListTagPair(&m_paiBuildingHappinessChanges, "BuildingHappinessChanges", GC.getNumBuildingClassInfos());
 	pXML->SetVariableListTagPair(&m_paiBuildingHealthChanges, "BuildingHealthChanges", GC.getNumBuildingClassInfos());
 	pXML->SetVariableListTagPair(&m_paiFeatureHappinessChanges, "FeatureHappinessChanges", GC.getNumFeatureInfos());
@@ -1148,7 +1149,7 @@ bool CvCivicInfo::readPass2(CvXMLLoadUtility* pXML)
 
 CvCivicOptionInfo::CvCivicOptionInfo() : 
 m_pabTraitNoUpkeep(NULL)
-/* doto Civics parent - start */
+/* doto Civics dependency parent - start */
 ,m_iParentCivicOption(0)
 /* doto Civics parent - end */
 {}
@@ -1163,7 +1164,7 @@ bool CvCivicOptionInfo::getTraitNoUpkeep(int i) const
 	FAssertBounds(0, GC.getNumTraitInfos(), i);
 	return m_pabTraitNoUpkeep ? m_pabTraitNoUpkeep[i] : false;
 }
-/*doto Civics parent - start */
+/*doto Civics dependency parent - start */
 int CvCivicOptionInfo::getParentCivicOption() const
 {
 	// 0 orphanm, 2 parent, 1 child
@@ -1176,7 +1177,7 @@ bool CvCivicOptionInfo::read(CvXMLLoadUtility* pXML)
 		return false;
 
 	pXML->SetVariableListTagPair(&m_pabTraitNoUpkeep, "TraitNoUpkeeps", GC.getNumTraitInfos());
-/* doto Civics parent - start */	
+/* doto Civics dependency parent - start */	
 	pXML->GetChildXmlValByName(&m_iParentCivicOption, "isParentCivicOption", 0);
 /* doto Civics parent - End */
 	return true;

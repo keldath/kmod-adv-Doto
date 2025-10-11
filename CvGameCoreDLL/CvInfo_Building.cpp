@@ -96,8 +96,6 @@ m_eFoundsCorporation(NO_CORPORATION),
 m_eGlobalReligionCommerce(/* advc (was 0): */ NO_RELIGION),
 m_eGlobalCorporationCommerce(/* advc (was 0): */ NO_CORPORATION),
 m_ePrereqAndBonus(NO_BONUS),
-//Doto-Shqype Vicinity Bonus Add
-//m_iPrereqVicinityBonus(NO_BONUS)
 m_eGreatPeopleUnitClass(NO_UNITCLASS),
 m_iGreatPeopleRateChange(0),
 m_iConquestProbability(0),
@@ -143,25 +141,9 @@ m_bNukeImmune(false),
 m_bPrereqReligion(false),
 m_bCenterInCity(false),
 m_bStateReligion(false),
-m_bAllowsNukes(false),//doto added comma  advc 1.00 adjust
-//Doto-Shqype Vicinity Bonus Add
-//m_piPrereqOrVicinityBonuses(NULL),  
-// Doto-davidlallen: building bonus yield, commerce start
-m_iBonusConsumed(NO_BONUS),
-m_paiCommerceProduced(NULL),
-m_paiYieldProduced(NULL)/*, doto advc 1.00 adjust*/
-// Doto-davidlallen: building bonus yield, commerce end
+m_bAllowsNukes(false)
 {}
 
-CvBuildingInfo::~CvBuildingInfo()
-{
-//Shqype Vicinity Bonus Add
-//	SAFE_DELETE_ARRAY(m_piPrereqOrVicinityBonuses);  
-// Doto-davidlallen: building bonus yield, commerce start
-	SAFE_DELETE_ARRAY(m_paiCommerceProduced);
-	SAFE_DELETE_ARRAY(m_paiYieldProduced);
-	// Doto-davidlallen: building bonus yield, commerce end
-}
 // advc.003w:
 bool CvBuildingInfo::isTechRequired(TechTypes eTech) const
 {
@@ -277,24 +259,6 @@ const TCHAR* CvBuildingInfo::getMovie() const
 //	return m_piPrereqOrVicinityBonuses ? m_piPrereqOrVicinityBonuses[i] : -1;
 //}
 //Doto-Shqype Vicinity Bonus End
-
-// Doto-davidlallen: building bonus yield, commerce start
-int CvBuildingInfo::getBonusConsumed() const {
-	return m_iBonusConsumed;
-}
-
-int CvBuildingInfo::getCommerceProduced(int i) const {
-	FAssertMsg(i < NUM_COMMERCE_TYPES, "Index out of bounds");
-	FAssertMsg(i > -1, "Index out of bounds");
-	return m_paiCommerceProduced ? m_paiCommerceProduced[i] : 0;
-}
-
-int CvBuildingInfo::getYieldProduced(int i) const {
-	FAssertMsg(i < NUM_YIELD_TYPES, "Index out of bounds");
-	FAssertMsg(i > -1, "Index out of bounds");
-	return m_paiYieldProduced ? m_paiYieldProduced[i] : 0;
-}
-// Doto-davidlallen: building bonus yield, commerce end
 // advc.008e:
 bool CvBuildingInfo::nameNeedsArticle() const
 {
@@ -323,7 +287,7 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read((int*)&m_ePowerBonus);
 	stream->Read((int*)&m_eFreeBonus);
 	stream->Read((int*)&m_iNumFreeBonuses);
-//Doto-prereqMust+tholish
+//DOTO -tholish-Keldath inactive buildings
 	stream->Read(&m_iPrereqMustAll);
 	stream->Read((int*)&m_eFreeBuildingClass);
 	stream->Read((int*)&m_eFreePromotion);
@@ -404,8 +368,6 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	stream->Read((int*)&m_eGlobalReligionCommerce);
 	stream->Read((int*)&m_eGlobalCorporationCommerce);
 	stream->Read((int*)&m_ePrereqAndBonus);
-//Doto-Shqype Vicinity Bonus Add
-//	stream->Read(&m_iPrereqVicinityBonus);
 	stream->Read((int*)&m_eGreatPeopleUnitClass);
 	stream->Read(&m_iGreatPeopleRateChange);
 	stream->Read(&m_iConquestProbability);
@@ -509,20 +471,6 @@ void CvBuildingInfo::read(FDataStreamBase* stream)
 	SpecialistYieldChange().read(stream);
 	BonusYieldModifier().read(stream);
 	// </advc.003t>
-//Doto-Shqype Vicinity Bonus Start
-//	SAFE_DELETE_ARRAY(m_piPrereqOrVicinityBonuses);
-//	m_piPrereqOrVicinityBonuses = new int[GC.getNUM_BUILDING_PREREQ_OR_BONUSES()];
-//	stream->Read(GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), m_piPrereqOrVicinityBonuses);
-//Doto-Shqype Vicinity Bonus End
-// Doto-davidlallen: building bonus yield, commerce start
-	stream->Read(&m_iBonusConsumed);
-	SAFE_DELETE_ARRAY(m_paiCommerceProduced);
-	m_paiCommerceProduced = new int[NUM_COMMERCE_TYPES];
-	stream->Read(NUM_COMMERCE_TYPES, m_paiCommerceProduced);
-	SAFE_DELETE_ARRAY(m_paiYieldProduced);
-	m_paiYieldProduced = new int[NUM_YIELD_TYPES];
-	stream->Read(NUM_YIELD_TYPES, m_paiYieldProduced);
-// Doto-davidlallen: building bonus yield, commerce end
 }
 
 void CvBuildingInfo::write(FDataStreamBase* stream)
@@ -541,7 +489,7 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_ePowerBonus);
 	stream->Write(m_eFreeBonus);
 	stream->Write(m_iNumFreeBonuses);
-//Doto-prereqMust+tholish inactive buildings
+//DOTO -tholish-Keldath inactive buildings
 	stream->Write(m_iPrereqMustAll);
 	stream->Write(m_eFreeBuildingClass);
 	stream->Write(m_eFreePromotion);
@@ -622,8 +570,6 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	stream->Write(m_eGlobalReligionCommerce);
 	stream->Write(m_eGlobalCorporationCommerce);
 	stream->Write(m_ePrereqAndBonus);
-//Doto-Shqype Vicinity Bonus Add
-//	stream->Write(m_iPrereqVicinityBonus);	
 	stream->Write(m_eGreatPeopleUnitClass);
 	stream->Write(m_iGreatPeopleRateChange);
 	stream->Write(m_iConquestProbability);
@@ -688,8 +634,6 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 		if (iPrereqOrBonuses > 0)
 			stream->Write(iPrereqOrBonuses, (int*)&m_aePrereqOrBonuses[0]);
 	}
-	//Doto-Shqype Vicinity Bonus Add
-	//stream->Write(GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), m_piPrereqOrVicinityBonuses);  
 	ProductionTraits().write(stream);
 	HappinessTraits().write(stream);
 	SeaPlotYieldChange().write(stream);
@@ -729,11 +673,6 @@ void CvBuildingInfo::write(FDataStreamBase* stream)
 	SpecialistYieldChange().write(stream);
 	BonusYieldModifier().write(stream);
 	// </advc.003t>
-	// Doto-davidlallen: building bonus yield, commerce start
-	stream->Write(m_iBonusConsumed);
-	stream->Write(NUM_COMMERCE_TYPES, m_paiCommerceProduced);
-	stream->Write(NUM_YIELD_TYPES, m_paiYieldProduced);
-	// Doto-davidlallen: building bonus yield, commerce end
 }
 #endif
 
@@ -741,14 +680,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 {
 	if (!base_t::read(pXML))
 		return false;
-//Doto-code for placegolder buldingd
-	std::string szType(getType());
-	bool bPlaceHolder = (szType.rfind("BUILDING_PLACEHOLDER", 0) == 0);
-	if(bPlaceHolder)
-		//pXML->setAssertMandatory(false); // </advc.006b> //CODE FROM 095 - KELDATH ADJUSTMENT
-		pXML->setAssertMandatoryEnabled(false);
-	CvString szTextVal;
-//keldath-qa10-the above was changed by f1rpo 097
+
 	pXML->SetInfoIDFromChildXmlVal(m_eBuildingClassType, "BuildingClass");
 	pXML->SetInfoIDFromChildXmlVal(m_eSpecialBuildingType, "SpecialBuildingType");
 	pXML->SetInfoIDFromChildXmlVal(m_eAdvisorType, "Advisor");
@@ -759,6 +691,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 /**																				*/
 /**		CanConstruct															*/
 /********************************************************************************/
+	CvString szTextVal;
 	pXML->GetChildXmlValByName(szTextVal, "PrereqGameOption","NONE"); // f1rpo
 	m_iPrereqGameOption = pXML->FindInInfoClass(szTextVal);
 	pXML->GetChildXmlValByName(szTextVal, "NotGameOption", "NONE"); // f1rpo
@@ -805,37 +738,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 		}
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
-//Doto-Shqype Vicinity Bonus Start
-/*	pXML->GetChildXmlValByName(szTextVal, "VicinityBonus");
-	m_iPrereqVicinityBonus = pXML->FindInInfoClass(szTextVal);
 
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"PrereqVicinityBonuses"))
-	{
-		if (pXML->SkipToNextVal())
-		{
-			iNumChildren = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
-			pXML->InitList(&m_piPrereqOrVicinityBonuses, GC.getNUM_BUILDING_PREREQ_OR_BONUSES(), -1);
-
-			if (0 < iNumChildren)
-			{
-				if (pXML->GetChildXmlVal(szTextVal))
-				{
-					FAssertMsg((iNumChildren <= GC.getNUM_BUILDING_PREREQ_OR_BONUSES()),"For loop iterator is greater than array size");
-					for (j=0;j<iNumChildren;j++)
-					{
-						m_piPrereqOrVicinityBonuses[j] = pXML->FindInInfoClass(szTextVal);
-						if (!pXML->GetNextXmlVal(szTextVal))
-						{
-							break;
-						}
-					}
-					gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
-				}
-			}
-		}
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
-	}*/
-//Doto-Shqype Vicinity Bonus End
 	pXML->SetInfoIDFromChildXmlVal(m_ePrereqAndBonus, "Bonus");
 
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "PrereqBonuses"))
@@ -872,7 +775,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetInfoIDFromChildXmlVal(m_eFreeBonus, "FreeBonus");
 
 	pXML->GetChildXmlValByName(&m_iNumFreeBonuses, "iNumFreeBonuses");
-//Doto-prereqMust+tholish
+//DOTO -tholish-Keldath inactive buildings
 	pXML->GetChildXmlValByName(&m_iPrereqMustAll, "iPrereqMustAll",0);
 	pXML->SetInfoIDFromChildXmlVal(m_eFreeBuildingClass, "FreeBuilding");
 	pXML->SetInfoIDFromChildXmlVal(m_eFreePromotion, "FreePromotion");
@@ -1026,31 +929,7 @@ bool CvBuildingInfo::read(CvXMLLoadUtility* pXML)
 	pXML->SetVariableListTagPair(FlavorValue(), "Flavors");
 	pXML->SetVariableListTagPair(ImprovementFreeSpecialist(), "ImprovementFreeSpecialists");
 	pXML->SetVariableListTagPair(BuildingHappinessChanges(), "BuildingHappinessChanges");
-// Doto-davidlallen: building bonus yield, commerce start
-	pXML->GetChildXmlValByName(szTextVal, "BonusConsumed",""); // f1rpo
-	m_iBonusConsumed = pXML->FindInInfoClass(szTextVal);
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "CommerceProduced"))
-	{
-		pXML->SetCommerce(&m_paiCommerceProduced);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
-	}
-	else
-	{
-		pXML->InitList(&m_paiCommerceProduced, NUM_COMMERCE_TYPES);
-	}
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"YieldProduced"))
-	{
-		pXML->SetYields(&m_paiYieldProduced);
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
-	}
-	else
-	{
-		pXML->InitList(&m_paiYieldProduced, NUM_YIELD_TYPES);
-	}
-// Doto-davidlallen: building bonus yield, commerce end
-	// Doto-<advc.006b> and keldath - do no display building placeholder- i think
-	if(bPlaceHolder)
-		pXML->setAssertMandatoryEnabled(true);
+
 	return true;
 }
 // <advc.310>
@@ -1279,10 +1158,6 @@ m_eEveryoneSpecialUnit(NO_SPECIALUNIT),
 m_eEveryoneSpecialBuilding(NO_SPECIALBUILDING),
 m_iVictoryDelayPercent(0),
 m_iSuccessRate(0),
-//Doto-davidlallen: project civilization and free unit start
-m_iCivilization(NO_CIVILIZATION),
-m_iFreeUnit(NO_UNIT),
-//Doto-davidlallen: project civilization and free unit start
 m_bSpaceship(false),
 m_bAllowsNukes(false)
 {}
@@ -1312,17 +1187,6 @@ bool CvProjectInfo::nameNeedsArticle() const
 	CvWString szText = gDLL->getText(szKey + L"_NA");
 	return (szText.compare(L".") != 0);
 }
-// Doto-davidlallen: project civilization and free unit start
-int CvProjectInfo::getCivilization() const
-{
-	return m_iCivilization;
-}
-
-int CvProjectInfo::getFreeUnit() const
-{
-	return m_iFreeUnit;
-}
-// Doto-davidlallen: project civilization and free unit end
 
 bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 {
@@ -1364,13 +1228,7 @@ bool CvProjectInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iVictoryDelayPercent, "iVictoryDelayPercent");
 	pXML->GetChildXmlValByName(&m_iSuccessRate, "iSuccessRate");
 
-	// Doto-davidlallen: project civilization and free unit start	
 	CvString szTextVal;
-	pXML->GetChildXmlValByName(szTextVal, "CivilizationType",""); // f1rpo
-	m_iCivilization = pXML->FindInInfoClass(szTextVal);
-	pXML->GetChildXmlValByName(szTextVal, "FreeUnit",""); // f1rpo
-	m_iFreeUnit = pXML->FindInInfoClass(szTextVal);
-	// Doto-davidlallen: project civilization and free unit end
 	pXML->GetChildXmlValByName(szTextVal, "CreateSound");
 	setCreateSound(szTextVal);
 

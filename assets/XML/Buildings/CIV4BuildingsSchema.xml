@@ -70,12 +70,7 @@
 	<ElementType name="Bonus" content="textOnly"/>
 	<ElementType name="PrereqBonuses" content="eltOnly">
 		<element type="Bonus" minOccurs="0" maxOccurs="*"/>
-    </ElementType>
-<!-- vicinity shqype 
-	<ElementType name="VicinityBonus" content="textOnly"/>
-	<ElementType name="PrereqVicinityBonuses" content="eltOnly">
-		<element type="VicinityBonus" minOccurs="0" maxOccurs="*"/>
-	</ElementType>-->
+	</ElementType>
 	<ElementType name="ProductionTraitType" content="textOnly"/>
 	<ElementType name="iProductionTrait" content="textOnly" dt:type="int"/>
 	<ElementType name="ProductionTrait" content="eltOnly">
@@ -98,7 +93,7 @@
 	<ElementType name="PowerBonus" content="textOnly"/>
 	<ElementType name="FreeBonus" content="textOnly"/>
 	<ElementType name="iNumFreeBonuses" content="textOnly" dt:type="int"/>
-<!-- prereqMust+tholish -->
+<!-- prereq Must+tholish inactive buildings-->
 	<ElementType name="iPrereqMustAll" content="textOnly" dt:type="int"/>
 	<ElementType name="FreeBuilding" content="textOnly"/>
 	<ElementType name="bTeamShare" content="textOnly" dt:type="boolean"/>
@@ -253,15 +248,6 @@
 	<ElementType name="CommerceHappinesses" content="eltOnly">
 		<element type="iCommerce" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
-	<!-- davidlallen: building bonus yield, commerce start -->
-	<ElementType name="BonusConsumed" content="textOnly"/>
-	<ElementType name="CommerceProduced" content="eltOnly">
-		<element type="iCommerce" minOccurs="0" maxOccurs="*"/>
-	</ElementType>
-	<ElementType name="YieldProduced" content="eltOnly">
-		<element type="iYield" minOccurs="0" maxOccurs="*"/>
-	</ElementType>
-	<!-- davidlallen: building bonus yield, commerce end -->
 	<ElementType name="iReligionChange" content="textOnly" dt:type="int"/>
 	<ElementType name="ReligionChange" content="eltOnly">
 		<element type="ReligionType"/>
@@ -459,9 +445,6 @@
 		<element type="TechTypes" minOccurs="0"/>
 		<element type="Bonus" minOccurs="0"/>
 		<element type="PrereqBonuses" minOccurs="0"/>
-		<!-- shqype vicinity 
-		<element type="VicinityBonus" minOccurs="0"/>
-		<element type="PrereqVicinityBonuses" minOccurs="0"/>-->
 		<element type="ProductionTraits" minOccurs="0"/>
 		<element type="HappinessTraits" minOccurs="0"/>
 		<element type="NoBonus" minOccurs="0"/>
@@ -591,11 +574,6 @@
 		<element type="SpecialistExtraCommerces" minOccurs="0"/>
 		<element type="StateReligionCommerces" minOccurs="0"/>
 		<element type="CommerceHappinesses" minOccurs="0"/>
-		<!-- davidlallen: building bonus yield, commerce end -->
-		<element type="BonusConsumed" minOccurs="0"/>
-		<element type="CommerceProduced" minOccurs="0"/>
-		<element type="YieldProduced" minOccurs="0"/>
-		<!-- davidlallen: building bonus yield, commerce end -->
 		<element type="ReligionChanges" minOccurs="0"/>
 		<element type="SpecialistCounts" minOccurs="0"/>
 		<element type="FreeSpecialistCounts" minOccurs="0"/>

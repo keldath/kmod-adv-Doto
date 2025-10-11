@@ -161,7 +161,8 @@ protected:
 	bool AI_guardCityOnlyDefender(); // K-Mod
 	bool AI_guardCityMinDefender(bool bSearch = true);
 	bool AI_guardCity(bool bLeave = false, bool bSearch = false, int iMaxPath = MAX_INT,
-			MovementFlags eFlags = NO_MOVEMENT_FLAGS);
+			MovementFlags eFlags = NO_MOVEMENT_FLAGS,
+			int iExtraDefenders = 0); // advc.300
 	bool AI_guardCityAirlift();
 	// <K-Mod>
 	bool AI_guardCoast(bool bPrimaryOnly = false,
@@ -227,17 +228,7 @@ protected:
 			MovementFlags eFlags = NO_MOVEMENT_FLAGS, int iMinStack = 0,
 			bool bAllowCities = true, bool bFollow = false);
 	// BETTER_BTS_AI_MOD: END
-	// MOD - START - Ranged Strike AI
-	CvPlot* AI_rangeStrikeTargetPlot(int iStrengthThreshold);
-	bool AI_rangeAttack(int iRangedThreshold = 70); //wrapper
-	bool AI_rangeAttack(MovementFlags iFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI,
-		CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL, int iRangedThreshold = 70);
-	int AI_rangeStrikeValue(CvPlot const* plot);
-	bool AI_rangeAttackCity();
-	bool AI_rangeAttackOrSkip(MovementFlags iFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
-	bool AI_rangeAttackOrFortify(MovementFlags iFlags = NO_MOVEMENT_FLAGS, bool bAppend = false, bool bManual = false, MissionAITypes eMissionAI = NO_MISSIONAI, CvPlot* pMissionAIPlot = NULL, CvUnit* pMissionAIUnit = NULL);
-	
-	// MOD - END - Ranged Strike AI
+	bool AI_rangeAttack(int iRange);
 	bool AI_leaveAttack(int iRange, int iThreshold, int iStrengthThreshold);
 	bool AI_defensiveCollateral(int iThreshold, int iSearchRange); // K-Mod
 	bool AI_evacuateCity(); // advc.139
@@ -397,6 +388,11 @@ protected:
 
 	bool AI_canGroupWithAIType(UnitAITypes eUnitAI) const;
 	bool AI_allowGroup(CvUnitAI const& kUnit, UnitAITypes eUnitAI) const;
+	// <advc>
+	bool AI_shouldRouteWhileImproving(CvPlot const& kDest, MovementFlags& eFlags,
+			CvCity const* pDestCity = NULL) const; // </advc>
+	// advc.pf:
+	bool AI_canRouteThroughSafeTerritory(CvPlot const& kDest, MovementFlags& eFlags) const;
 	bool AI_moveSettlerToCoast(int iMaxPathTurns = 5); // advc.040
 
 	// added so under cheat mode we can call protected functions for testing

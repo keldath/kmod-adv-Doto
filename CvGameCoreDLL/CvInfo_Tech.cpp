@@ -35,13 +35,6 @@ m_bMapTrading(false),
 m_bTechTrading(false),
 m_bGoldTrading(false),
 m_bOpenBordersTrading(false),
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-m_bFreeTradeAgreementTrading(false),
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 m_bDefensivePactTrading(false),
 m_bPermanentAllianceTrading(false),
 m_bVassalStateTrading(false),
@@ -136,7 +129,6 @@ int CvTechInfo::py_getPrereqAndTechs(int i) const
 //<Tech Bonus Mod End>
 int CvTechInfo::getCommerceModifier(int i) const
 {
-	//	FAssertMsg(m_piCommerceModifier, "Tech info not initialised");
 	FAssertBounds(0, NUM_COMMERCE_TYPES, i);
 	return m_piCommerceModifier ? m_piCommerceModifier[i] : 0;
 }
@@ -202,13 +194,6 @@ void CvTechInfo::read(FDataStreamBase* stream)
 	stream->Read(&m_bTechTrading);
 	stream->Read(&m_bGoldTrading);
 	stream->Read(&m_bOpenBordersTrading);
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	stream->Read(&m_bFreeTradeAgreementTrading);
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	stream->Read(&m_bDefensivePactTrading);
 	stream->Read(&m_bPermanentAllianceTrading);
 	stream->Read(&m_bVassalStateTrading);
@@ -300,13 +285,6 @@ void CvTechInfo::write(FDataStreamBase* stream)
 	stream->Write(m_bTechTrading);
 	stream->Write(m_bGoldTrading);
 	stream->Write(m_bOpenBordersTrading);
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	stream->Write(m_bFreeTradeAgreementTrading);
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	stream->Write(m_bDefensivePactTrading);
 	stream->Write(m_bPermanentAllianceTrading);
 	stream->Write(m_bVassalStateTrading);
@@ -382,13 +360,6 @@ bool CvTechInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_bTechTrading, "bTechTrading");
 	pXML->GetChildXmlValByName(&m_bGoldTrading, "bGoldTrading");
 	pXML->GetChildXmlValByName(&m_bOpenBordersTrading, "bOpenBordersTrading");
-/************************************************************************************************/
-/* START: Advanced Diplomacy - 0 default val                                                                   */
-/************************************************************************************************/
-	pXML->GetChildXmlValByName(&m_bFreeTradeAgreementTrading, "bFreeTradeAgreementTrading", 0);
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/***********************************************************************************************/
 	pXML->GetChildXmlValByName(&m_bDefensivePactTrading, "bDefensivePactTrading");
 	pXML->GetChildXmlValByName(&m_bPermanentAllianceTrading, "bPermanentAllianceTrading");
 	pXML->GetChildXmlValByName(&m_bVassalStateTrading, "bVassalTrading");

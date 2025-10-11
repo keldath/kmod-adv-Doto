@@ -21,9 +21,6 @@ import CvWorldBuilderScreen
 import CvAdvisorUtils
 import CvTechChooser
 
-## Barbarian Civ ##
-#import BarbCiv
-## Barbarian Civ ##
 gc = CyGlobalContext()
 localText = CyTranslator()
 PyPlayer = PyHelpers.PyPlayer
@@ -328,10 +325,6 @@ class CvEventManager:
 	def onBeginGameTurn(self, argsList):
 		'Called at the beginning of the end of each turn'
 		iGameTurn = argsList[0]
-## Barbarian Civ ##
-#		if (gc.getGame().isOption(GameOptionTypes.GAMEOPTION_BARBARIAN_CIV)):
-#			BarbCiv.BarbCiv().checkBarb()
-## Barbarian Civ ##
 		CvTopCivs.CvTopCivs().turnChecker(iGameTurn)
 
 	def onEndGameTurn(self, argsList):
@@ -486,19 +479,6 @@ class CvEventManager:
 		'Building Completed'
 		pCity, iBuildingType = argsList
 		game = gc.getGame()
-## The Duomo-pyramids new effect keldath change Start ##
-#		if iBuildingType == gc.getInfoTypeForString("BUILDING_PYRAMID"):
-#			pPlayer = gc.getPlayer(pCity.getOwner())
-#			iStateReligion = pPlayer.getStateReligion()
-#			for iPlayerX in range(gc.getMAX_CIV_PLAYERS()):
-#				pPlayerX = gc.getPlayer(iPlayerX)
-#				(loopCity, iter) = pPlayerX.firstCity(false)
-#				while(loopCity):
-#					if loopCity.isHasReligion(iStateReligion):
-#						loopCity.changeCulture(iPlayerX, loopCity.getCultureThreshold() /5, true)
-#					(loopCity, iter) = pPlayerX.nextCity(iter, false)
-#			CyInterface().addImmediateMessage(CyTranslator().getText("TXT_KEY_BUILDING_PYRAMID",(gc.getReligionInfo(iStateReligion).getDescription(),)), None)
-## The Duomo End ##
 		if ((not gc.getGame().isNetworkMultiPlayer()) and (pCity.getOwner() == gc.getGame().getActivePlayer()) and isWorldWonderClass(gc.getBuildingInfo(iBuildingType).getBuildingClassType())):
 			# If this is a wonder...
 			popupInfo = CyPopupInfo()
@@ -520,12 +500,6 @@ class CvEventManager:
 		'Project Completed'
 		pCity, iProjectType = argsList
 		game = gc.getGame()
-## doto AI Build Projects Automatically Start ##
-		if gc.getProjectInfo(iProjectType).getTechShare() == 1:
-			pPlayer = gc.getPlayer(pCity.getOwner())
-			pTeam = gc.getTeam(pPlayer.getTeam())
-			pTeam.changeTechShareCount(0, -1)
-## AI Build Projects Automatically End ##
 		if ((not gc.getGame().isNetworkMultiPlayer()) and (pCity.getOwner() == gc.getGame().getActivePlayer())):
 			popupInfo = CyPopupInfo()
 			popupInfo.setButtonPopupType(ButtonPopupTypes.BUTTONPOPUP_PYTHON_SCREEN)
@@ -681,6 +655,7 @@ class CvEventManager:
 		# Note that iPlayer may be NULL (-1) and not a refer to a player object
 		
 		# Show tech splash when applicable
+		# (advc - note: CvTeam::setHasTech may now also show the tech splash)
 		if (iPlayer > -1 and bAnnounce and not CyInterface().noTechSplash()):
 			if (gc.getGame().isFinalInitialized() and not gc.getGame().GetWorldBuilderMode()):
 				if ((not gc.getGame().isNetworkMultiPlayer()) and (iPlayer == gc.getGame().getActivePlayer())):
@@ -822,16 +797,6 @@ class CvEventManager:
 	def onCityBuilt(self, argsList):
 		'City Built'
 		city = argsList[0]
-##keldath free special building on found start.
-		#iPlayer = city.getOwner()
-		#pPlayer = gc.getPlayer(iPlayer)
-		#iBuildingA = gc.getInfoTypeForString("BUILDINGCLASS_CASTIRON")
-		#iBuildingB = gc.getCivilizationInfo(pPlayer.getCivilizationType()).getCivilizationBuildings(iBuildingA)
-		#the below is a check if all prereq conditions for the buildings are met -i removed
-		#if city.canConstruct(iBuildingB, True, False, False):
-		#		city.setNumRealBuilding(iBuildingB, 1)
-		#city.setNumRealBuilding(iBuildingB, 1)
-##keldath free special building on found end.		
 		if (city.getOwner() == gc.getGame().getActivePlayer()):
 			self.__eventEditCityNameBegin(city, False)
 		# <advc.007>

@@ -7,11 +7,11 @@
 <Civ4GameText xmlns="http://www.firaxis.com">
 	<TEXT>
 		<Tag>TXT_KEY_TRAIT_TRADE_EFFECT</Tag>
-		<English>[ICON_BULLET] With [CS] Trade Treaty:</English>
+		<English>[ICON_BULLET] With Trade Treaty:</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_AND_FROM_CS</Tag>
-		<English> or/and/if/ City State Trade Treaty</English>
+		<English> or/and/if/ Trade Treaty</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_FREE_TRADE_AGREEMENT_DIPLO_TABLE</Tag>

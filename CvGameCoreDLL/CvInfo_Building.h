@@ -108,8 +108,7 @@ public:
 	/*	All the const functions are exposed to Python.
 		Integers in signatures replaced with enum types. */
 	CvBuildingInfo();
-//doto left for compatability - i need to convert my mods code to advc style
-	~CvBuildingInfo();
+
 	BuildingClassTypes getBuildingClassType() const
 	{
 		return m_eBuildingClassType;
@@ -222,8 +221,6 @@ public:
 		return m_eGlobalCorporationCommerce;
 	}
 	BonusTypes getPrereqAndBonus() const { return m_ePrereqAndBonus; }
-//Doto-Shqype Vicinity Bonus Add
-//	int getPrereqVicinityBonus() const { return m_iPrereqVicinityBonus; }
 	UnitClassTypes getGreatPeopleUnitClass() const { return m_eGreatPeopleUnitClass; }
 	int getGreatPeopleRateChange() const { return m_iGreatPeopleRateChange; }
 	int getConquestProbability() const { return m_iConquestProbability; }
@@ -323,9 +320,6 @@ public:
 	}
 	int py_getPrereqAndTechs(int i) const;
 	int py_getPrereqOrBonuses(int i) const;
-	// </advc.003t>
-//Doto-Shqype Vicinity Bonus Add
-//	int getPrereqOrVicinityBonuses(int i) const;  
 
 	DEF_INFO_ENUM_MAP(ProductionTraits, Trait, int, short, NonDefaultEnumMap);
 	DEF_INFO_ENUM_MAP(HappinessTraits, Trait, int, char, NonDefaultEnumMap);
@@ -341,12 +335,6 @@ public:
 	// (Replacing optimizations by UNOFFICIAL_PATCH, 06/27/10, Afforess & jdog5000)
 	DEF_INFO_ENUM2SHORT_MAP(SpecialistYieldChange, Specialist, Yield, YieldChangeMap, NonDefaultEnumMap);
 	DEF_INFO_ENUM2SHORT_MAP(BonusYieldModifier, Bonus, Yield, YieldPercentMap, NonDefaultEnumMap);
-	
-	// /Doto-davidlallen: building bonus yield, commerce start
-	int getBonusConsumed() const;
-	int getCommerceProduced(int i) const;
-	int getYieldProduced(int i) const;
-	// /Doto-davidlallen: building bonus yield, commerce end
 	// <advc.003w> for convenience
 	bool isWorldWonder() const
 	{
@@ -477,8 +465,6 @@ protected:
 	ReligionTypes m_eGlobalReligionCommerce;
 	CorporationTypes m_eGlobalCorporationCommerce;
 	BonusTypes m_ePrereqAndBonus;
-//Doto-Shqype Vicinity Bonus Add
-//	int m_iPrereqVicinityBonus;
 	UnitClassTypes m_eGreatPeopleUnitClass;
 	int m_iGreatPeopleRateChange;
 	int m_iConquestProbability;
@@ -533,13 +519,6 @@ protected:
 
 	std::vector<TechTypes> m_aePrereqAndTechs;
 	std::vector<BonusTypes> m_aePrereqOrBonuses;
-//Doto-Shqype Vicinity Bonus Add
-//	int* m_piPrereqOrVicinityBonuses;  
-	// Doto-davidlallen: building bonus yield, commerce start
-	int m_iBonusConsumed;
-	int* m_paiCommerceProduced;
-	int* m_paiYieldProduced;
-//Doto-davidlallen: building bonus yield, commerce end
 	// <advc.310>
 	static bool m_bEnabledAreaBorderObstacle;
 	static bool m_bEnabledAreaTradeRoutes;
@@ -728,10 +707,6 @@ public: // All const functions are exposed to Python
 	{
 		return m_iSuccessRate;
 	}
-// Doto-davidlallen: project civilization and free unit start
-	int getCivilization() const;
-	int getFreeUnit() const;
-// Doto-davidlallen: project civilization and free unit end
 	bool isSpaceship() const
 	{
 		return m_bSpaceship;
@@ -769,10 +744,6 @@ protected:
 	SpecialBuildingTypes m_eEveryoneSpecialBuilding;
 	int m_iVictoryDelayPercent;
 	int m_iSuccessRate;
-// Doto-davidlallen: project civilization and free unit start
-	int m_iCivilization;
-	int m_iFreeUnit;
-// Doto-davidlallen: project civilization and free unit end
 
 	bool m_bSpaceship;
 	bool m_bAllowsNukes;

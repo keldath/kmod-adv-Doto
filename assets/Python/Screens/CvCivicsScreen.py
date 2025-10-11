@@ -4,649 +4,550 @@ from CvPythonExtensions import *
 import CvUtil
 import ScreenInput
 import CvScreenEnums
-import string
 import CvScreensInterface
+from LayoutDict import gRect # advc.002b
 
 # globals
 gc = CyGlobalContext()
-ArtFileMgr = CyArtFileMgr()
-localText = CyTranslator()
-
-class CvCivicsScreen:
-	"Civics Screen"
-
-	def __init__(self):
-		self.SCREEN_NAME = "CivicsScreen"
-		self.CANCEL_NAME = "CivicsCancel"
-		self.EXIT_NAME = "CivicsExit"
-		self.TITLE_NAME = "CivicsTitleHeader"
-		self.BUTTON_NAME = "CivicsScreenButton"
-		self.TEXT_NAME = "CivicsScreenText"
-		self.AREA_NAME = "CivicsScreenArea"
-		self.HELP_AREA_NAME = "CivicsScreenHelpArea"
-		self.HELP_IMAGE_NAME = "CivicsScreenCivicOptionImage"
-		self.DEBUG_DROPDOWN_ID =  "CivicsDropdownWidget"
-		self.BACKGROUND_ID = "CivicsBackground"
-		self.HELP_HEADER_NAME = "CivicsScreenHeaderName"
-
-		self.HEADINGS_WIDTH = 174 #199 #192 #176 #199 #171
-		self.HEADINGS_TOP = 50 #70
-		self.HEADINGS_SPACING = -4 #5 #0
-		self.HEADINGS_BOTTOM = 330 #285 #305 #280
-		self.HELP_TOP = 325 #350 #370 # 300
-		self.HELP_BOTTOM = 680 #700 #610
-		self.TEXT_MARGIN = 14 #15
-		self.BUTTON_SIZE = 24
-		self.BIG_BUTTON_SIZE = 44 #64
-		self.BOTTOM_LINE_TOP = 675 #700 #630 #700
-		self.BOTTOM_LINE_WIDTH = 1370 #6 * self.HEADINGS_WIDTH + 5 * self.HEADINGS_SPACING #990 #693 #1014 ##1024
-		self.BOTTOM_LINE_HEIGHT = 40 #60 # 60
-
-		self.X_EXIT = 1300 #994
-		self.Y_EXIT = 726 #726 ##715
-
-		self.X_CANCEL = 750 #552
-		self.Y_CANCEL = 726 #726
-
-		self.X_SCREEN = 200
-		self.Y_SCREEN = 396
-		self.W_SCREEN = 1360 #1124 #1024 #SCREEN WIDTH
-		self.H_SCREEN = 768
-		self.Z_SCREEN = -6.1
-		self.Y_TITLE = 8	
-		#KELDATH CHANGE	
-		self.Z_TEXT = self.Z_SCREEN - 0.2 + 10
-
-		self.CivicsScreenInputMap = {
-			self.BUTTON_NAME		: self.CivicsButton,
-			self.TEXT_NAME			: self.CivicsButton,
-			self.EXIT_NAME			: self.Revolution,
-			self.CANCEL_NAME		: self.Cancel,
-			}
-
-		self.iActivePlayer = -1
-
-		self.m_paeCurrentCivics = []
-		self.m_paeDisplayCivics = []
-		self.m_paeOriginalCivics = []
-
-		# doto civics start:
-		self.m_allParentsCivics = []
-		self.m_allChildCivics = {}
-		self.m_highLighterParent = 0 # []
-		self.GOV_CIVIC_HEADER = 480
-		self.PANEL_BOX_ADJUSTER = 100
-		# doto civics end:
-
-	def getScreen(self):
-		return CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.CIVICS_SCREEN)
-
-	def setActivePlayer(self, iPlayer):
-
-		self.iActivePlayer = iPlayer
-		activePlayer = gc.getPlayer(iPlayer)
-
-		self.m_paeCurrentCivics = []
-		self.m_paeDisplayCivics = []
-		self.m_paeOriginalCivics = []
-		# doto civics
-		self.m_highLighterParent = 0 # []
-		self.m_allChildCivics = {}
-		for i in range (gc.getNumCivicOptionInfos()):
-			self.m_paeCurrentCivics.append(activePlayer.getCivics(i));
-			self.m_paeDisplayCivics.append(activePlayer.getCivics(i));
-			self.m_paeOriginalCivics.append(activePlayer.getCivics(i));
-			# doto civics start - im gonna assume my mod has 1 parent...
-			if gc.getCivicOptionInfo(i).getParentCivicOption() == 2:
-				self.m_highLighterParent = activePlayer.getCivics(i);
-			#self.m_highLighterParent.append(activePlayer.getCivics(i));
-			self.m_allChildCivics[i] = [];
-			# doto civics end
-
-	def interfaceScreen (self):
-
-		screen = self.getScreen()
-		if screen.isActive():
-			return
-		screen.setRenderInterfaceOnly(True);
-		screen.showScreen( PopupStates.POPUPSTATE_IMMEDIATE, False)
-	
-		# Set the background and exit button, and show the screen
-		#Doto KELDATH - POSITION THE SCREEN - originally was for 7 civic columns
-		screen.setDimensions(screen.centerX(-170), screen.centerY(0), self.W_SCREEN, self.H_SCREEN)
-		screen.addDDSGFC(self.BACKGROUND_ID, ArtFileMgr.getInterfaceArtInfo("MAINMENU_SLIDESHOW_LOAD").getPath(), 0, 0, self.W_SCREEN, self.H_SCREEN, WidgetTypes.WIDGET_GENERAL, -1, -1 )
-		screen.addPanel( "TechTopPanel", u"", u"", True, False, 0, 0, self.W_SCREEN, 55, PanelStyles.PANEL_STYLE_TOPBAR )
-		screen.addPanel( "TechBottomPanel", u"", u"", True, False, 0, 713, self.W_SCREEN, 55, PanelStyles.PANEL_STYLE_BOTTOMBAR )
-		screen.showWindowBackground(False)
-		screen.setText(self.CANCEL_NAME, "Background", u"<font=4>" + localText.getText("TXT_KEY_SCREEN_CANCEL", ()).upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.X_CANCEL+10, self.Y_CANCEL+5, self.Z_TEXT, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, 1, 0)
-
-		# Header...
-		#screen.setText(self.TITLE_NAME, "Background", u"<font=4b>" + localText.getText("TXT_KEY_CIVICS_SCREEN_TITLE", ()).upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.X_SCREEN, self.Y_TITLE, self.Z_TEXT, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-		# keldath doto civics dependancy - - originally was for 7 civic columns
-		#screen.setText(self.TITLE_NAME, "Background", u"<font=4b>" + "Goverments Dependancy and Civics by Keldath" + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.X_SCREEN, self.Y_TITLE, self.Z_TEXT, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-		screen.setText(self.TITLE_NAME, "Background",u"<font=3b>" + u"<color=205,180,55,255>%s</color>" % "Goverments Dependancy and Civics by Keldath"  + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, self.GOV_CIVIC_HEADER, self.Y_TITLE-5, self.Z_TEXT, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-			
-		self.setActivePlayer(gc.getGame().getActivePlayer())						
-
-		if (CyGame().isDebugMode()):
-			self.szDropdownName = self.DEBUG_DROPDOWN_ID
-			screen.addDropDownBoxGFC(self.szDropdownName, 22, 12, 300, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
-			for j in range(gc.getMAX_PLAYERS()):
-				if (gc.getPlayer(j).isAlive()):
-					screen.addPullDownString(self.szDropdownName, gc.getPlayer(j).getName(), j, j, False )
-
-		screen.addPanel("CivicsBottomLine", "", "", True, True, self.HEADINGS_SPACING, self.BOTTOM_LINE_TOP, self.BOTTOM_LINE_WIDTH, self.BOTTOM_LINE_HEIGHT, PanelStyles.PANEL_STYLE_MAIN)
-
-		# Draw Contents
-		self.drawContents()
-
-		return 0
-
-	# Draw the contents...
-	def drawContents(self):
-	
-		# Draw the radio buttons
-		self.drawAllButtons()
-				
-		# Draw Help Text
-		self.drawAllHelpText()
-		
-		# Update Maintenance/anarchy/etc.
-		self.updateAnarchy()
-
-	def drawCivicOptionButtons(self, iCivicOption):
-
-		activePlayer = gc.getPlayer(self.iActivePlayer)
-		screen = self.getScreen()
-		
-		for j in range(gc.getNumCivicInfos()):
-
-			if (gc.getCivicInfo(j).getCivicOptionType() == iCivicOption):										
-				screen.setState(self.getCivicsButtonName(j), self.m_paeCurrentCivics[iCivicOption] == j)
-							
-				if (self.m_paeDisplayCivics[iCivicOption] == j):
-					#screen.setState(self.getCivicsButtonName(j), True)
-					screen.show(self.getCivicsButtonName(j))
-				elif (activePlayer.canDoCivics(j)):
-					#screen.setState(self.getCivicsButtonName(j), False)
-					screen.show(self.getCivicsButtonName(j))
-				else:
-					screen.hide(self.getCivicsButtonName(j))
-								
-	# Will draw the radio buttons (and revolution)
-	def drawAllButtons(self):				
-		# Doto start civic parent mod
-		# this function was heavily modified for Doto keldath parent and dependant civic mod of goverments
-		# it is based on index placment in the xml and uses sdk code that was written for this.
-		def doPivotLayoutCivics(civicIdx, civicName_l, firstRow, panelLength, fY, line_seperator, civicoption, panel=PanelStyles.PANEL_STYLE_MAIN):
-			# this will populate the column in a pivotal method and create the panels of it.
-			fX = (self.HEADINGS_SPACING  + (self.HEADINGS_WIDTH + self.HEADINGS_SPACING) * civicIdx ) - 5
-			
-			szAreaID = self.AREA_NAME + str(civicoption)  + str(civicIdx) # keldath - needed section name to create a new area
-			screen.addPanel(szAreaID, "", "", True, True, fX+5, fY, self.HEADINGS_WIDTH, panelLength, panel)
-			
-			civics = range(gc.getNumCivicInfos())
-			for j in civics:
-				civicDesc = gc.getCivicInfo(j).getDescription()
-				if civicDesc in civicName_l:
-					fY += line_seperator
-					# the first civic in a sub list civic needs to be closer to the start of the panerl
-					# also for goverments itss posioning is different
-					if civicName_l[0] == civicDesc and not firstRow:
-						fY -= 15
-					screen.addCheckBoxGFC(self.getCivicsButtonName(j), gc.getCivicInfo(j).getButton(), ArtFileMgr.getInterfaceArtInfo("BUTTON_HILITE_SQUARE").getPath(), fX + self.BUTTON_SIZE/2, fY, self.BUTTON_SIZE, self.BUTTON_SIZE, WidgetTypes.WIDGET_GENERAL, -1, -1, ButtonStyles.BUTTON_STYLE_LABEL)
-					screen.setText(self.getCivicsTextName(j), "", gc.getCivicInfo(j).getDescription(), CvUtil.FONT_LEFT_JUSTIFY, fX + self.BUTTON_SIZE + self.TEXT_MARGIN, fY, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-			
-			self.drawCivicOptionButtons(civicoption)
-
-
-		screen = self.getScreen()
-		constLength = self.HEADINGS_BOTTOM - self.HEADINGS_TOP
-
-		# doto some starting position params
-		fY = self.HEADINGS_TOP # top position start for the panel y axis
-		line_seperator = 2 * self.TEXT_MARGIN  # space between top of the panel start
-		govPnelLength = constLength - 240
-
-
-		# create a list of civic options and its civics in an orderly fashion
-		# the reason for the civic option loop is to ste the nested list in order.
-		# the out put will be:
-		# self.m_allParentsCivics = [['Despotism'], ['Hereditary Rule']....n]
-		# self.m_allChildCivics = { 0: [], 1: [['RULE1', 'RULE2'], ['RULE3', 'RULE4'] ....n]}
-		for i in range (gc.getNumCivicOptionInfos()):
-			tempCivicOption_l = [] # all the civics of this civic option
-			for j in range(gc.getNumCivicInfos()):
-				if i == gc.getCivicInfo(j).getCivicOptionType() :
-					childNum = gc.getCivicInfo(j).getNumParentCivicsChildren()
-					if childNum > 0 :
-						tempCivicOption_l.append([gc.getCivicInfo(j).getDescription()])
-						# populate the child civics , each nested list is a column of the 
-						# parent dependant civic (same index of the list of m_allParentsCivics)
-						for m in range (gc.getNumCivicOptionInfos()):
-							if gc.getCivicOptionInfo(m).getParentCivicOption() != 1 : # child civic option
-								continue
-							# fill in all the child civics for a specific parent under the current civic
-							tmpChildCivicsOfCivicOption = []
-							for c in xrange(childNum) :
-								# loop in ann the children
-								childCivic = gc.getCivicInfo(gc.getCivicInfo(j).getParentCivicsChildren(c))
-								if childCivic.getCivicOptionType() == m :
-									tmpChildCivicsOfCivicOption.append(childCivic.getDescription())
-							if len(tmpChildCivicsOfCivicOption) < 1:
-								return # safty check
-							self.m_allChildCivics[m].append(tmpChildCivicsOfCivicOption)
-
-			self.m_allParentsCivics.append(tempCivicOption_l)
-
-		# build the parent (goverment civic option latyout)
-		civicList = self.m_allParentsCivics
-		for l in xrange(len(civicList)):
-			if len(civicList[l]) < 1 :
-				continue
-			szAreaID = self.AREA_NAME + str(l) + str(l) + str(l)
-			# doto civic parent ->hard coded first civic option name...too tired to write a loop just for this...
-			screen.setText("", "Background",u"<font=4>" + u"<color=255,255,0,255>%s</color>" % gc.getCivicOptionInfo(0).getDescription() + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, self.GOV_CIVIC_HEADER + self.PANEL_BOX_ADJUSTER-10, 28, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-			for i in xrange(len(civicList[l])):
-				doPivotLayoutCivics(i, civicList[l][i], True, govPnelLength, fY, line_seperator - 15,  0, PanelStyles.PANEL_STYLE_BLUE50)
-																									# CAN BE ALSO->	civicList[l]
-			# self.drawCivicOptionButtons(l)
-
-		# place the children civic options
-		# hard coded position parameters for 2 children civic options
-		fy_l = [45, 70]
-		panelLength_l = [145, 160]
-		panelPos = [85, 155]
-		counter_pos = 0
-		for j in self.m_allChildCivics.keys():
-			if len(self.m_allChildCivics[j]) > 0:
-				fY += fy_l[counter_pos]
-				panelLength_l_val = constLength - panelLength_l[counter_pos]
-				civicChild_l = self.m_allChildCivics[j]
-				szAreaID = self.AREA_NAME + str(j) + str(j) + str(j)
-				screen.addPanel(szAreaID, "", "", True, False, 0, panelPos[counter_pos], self.W_SCREEN, 25, PanelStyles.PANEL_STYLE_MAIN_TAN ) # 176
-				screen.setText("", "Background",u"<font=4>" + u"<color=255,255,0,255>%s</color>" % gc.getCivicOptionInfo(j).getDescription()  + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, self.GOV_CIVIC_HEADER + self.PANEL_BOX_ADJUSTER-10, panelPos[counter_pos] + 3, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-				for i in xrange(len(civicChild_l)):
-					doPivotLayoutCivics(i, civicChild_l[i], False , panelLength_l_val, fY, line_seperator, j, PanelStyles.PANEL_STYLE_CITY_COLUMNL)
-				# # the the Labor civic section
-				counter_pos += 1
-
-		
-		########################
-		
-		counter = 0 # keldath add - the index of the civics on the list is not from 0
-		const_fY = 	370
-		# build normal civics section
-		screen.addPanel( "otherCivics", u"", u"", True, False, 0, const_fY-22, self.W_SCREEN, 30, PanelStyles.PANEL_STYLE_MAIN_TAN ) # 176
-		screen.setText("others", "",  u"<font=4>" + u"<color=255,255,0,255>%s</color>" % "Civics Table" + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, 570, const_fY - 17, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-		
-		for i in xrange(gc.getNumCivicOptionInfos()):
-			
-			if gc.getCivicOptionInfo(i).getParentCivicOption() < 1:
-
-				fX = self.HEADINGS_SPACING  + ((self.HEADINGS_WIDTH + self.HEADINGS_SPACING + self.PANEL_BOX_ADJUSTER) * (counter)) # was * i
-				szAreaID = self.AREA_NAME + str(i)
-				fY = const_fY
-				screen = self.getScreen()
-				screen.addPanel(szAreaID, "", "", True, True, fX+5, fY, self.HEADINGS_WIDTH + self.PANEL_BOX_ADJUSTER, self.HEADINGS_BOTTOM - self.HEADINGS_TOP - 130, PanelStyles.PANEL_STYLE_MAIN)
-				screen.setLabel("", "Background",  u"<font=3>" + gc.getCivicOptionInfo(i).getDescription().upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, fX + self.HEADINGS_WIDTH/2 + 50, fY + self.TEXT_MARGIN, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
-
-				civic_counter = 0 # start from 1
-				colum_num = 0
-				fx_box_width = fX + self.BUTTON_SIZE/2
-				fx_text_width = fX + self.BUTTON_SIZE + self.TEXT_MARGIN
-				for j in range(gc.getNumCivicInfos()):
-					if (gc.getCivicInfo(j).getCivicOptionType() == i):
-						# split to a new column if 4 civics has been placed
-						if civic_counter > 3 and colum_num < 1:
-							fx_box_width += self.PANEL_BOX_ADJUSTER + 40
-							fx_text_width += self.PANEL_BOX_ADJUSTER + 40
-							fY = const_fY
-							colum_num = 1
-
-						fY += 2 * self.TEXT_MARGIN 
-						screen.addCheckBoxGFC(self.getCivicsButtonName(j), gc.getCivicInfo(j).getButton(), ArtFileMgr.getInterfaceArtInfo("BUTTON_HILITE_SQUARE").getPath(), fx_box_width, fY, self.BUTTON_SIZE, self.BUTTON_SIZE, WidgetTypes.WIDGET_GENERAL, -1, -1, ButtonStyles.BUTTON_STYLE_LABEL)
-						screen.setText(self.getCivicsTextName(j), "", gc.getCivicInfo(j).getDescription(), CvUtil.FONT_LEFT_JUSTIFY, fx_text_width, fY, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-						civic_counter += 1
-
-				counter += 1
-				self.drawCivicOptionButtons(i)
-
-		# bts/advc original code for this function:
-		# for i in range(gc.getNumCivicOptionInfos()):
-		
-		# 	fX = self.HEADINGS_SPACING  + (self.HEADINGS_WIDTH + self.HEADINGS_SPACING) * i
-		# 	fY = self.HEADINGS_TOP
-		# 	szAreaID = self.AREA_NAME + str(i)
-		# 	screen = self.getScreen()
-		# 	#KELDATH CIVIC POSITION
-		# 	screen.addPanel(szAreaID, "", "", True, True, fX+5, fY, self.HEADINGS_WIDTH, self.HEADINGS_BOTTOM - self.HEADINGS_TOP, PanelStyles.PANEL_STYLE_MAIN)
-		# 	screen.setLabel("", "Background",  u"<font=3>" + gc.getCivicOptionInfo(i).getDescription().upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, fX + self.HEADINGS_WIDTH/2, self.HEADINGS_TOP + self.TEXT_MARGIN, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
-
-		# 	fY += self.TEXT_MARGIN
-			
-		# 	for j in range(gc.getNumCivicInfos()):
-		# 		if (gc.getCivicInfo(j).getCivicOptionType() == i):										
-		# 			fY += 2 * self.TEXT_MARGIN
-		# 			screen.addCheckBoxGFC(self.getCivicsButtonName(j), gc.getCivicInfo(j).getButton(), ArtFileMgr.getInterfaceArtInfo("BUTTON_HILITE_SQUARE").getPath(), fX + self.BUTTON_SIZE/2, fY, self.BUTTON_SIZE, self.BUTTON_SIZE, WidgetTypes.WIDGET_GENERAL, -1, -1, ButtonStyles.BUTTON_STYLE_LABEL)
-		# 			screen.setText(self.getCivicsTextName(j), "", gc.getCivicInfo(j).getDescription(), CvUtil.FONT_LEFT_JUSTIFY, fX + self.BUTTON_SIZE + self.TEXT_MARGIN, fY, 0, FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-
-		# 	self.drawCivicOptionButtons(i)
-		
-		# Doto end			
-							
-	def highlight(self, iCivic):
-		iCivicOption = gc.getCivicInfo(iCivic).getCivicOptionType()
-		if self.m_paeDisplayCivics[iCivicOption] != iCivic:
-			self.m_paeDisplayCivics[iCivicOption] = iCivic
-			self.drawCivicOptionButtons(iCivicOption)
-			return True
-		return False
-		
-	def unHighlight(self, iCivic):		
-		iCivicOption = gc.getCivicInfo(iCivic).getCivicOptionType()
-		if self.m_paeDisplayCivics[iCivicOption] != self.m_paeCurrentCivics[iCivicOption]:
-			self.m_paeDisplayCivics[iCivicOption] = self.m_paeCurrentCivics[iCivicOption]
-			self.drawCivicOptionButtons(iCivicOption)
-			return True
-		return False
-		
-	def select(self, iCivic):
-		activePlayer = gc.getPlayer(self.iActivePlayer)
-		if (not activePlayer.canDoCivics(iCivic)):
-			# If you can't even do this, get out....
-			return 0
-
-		# doto civics parent start
-		# if a parent is no highlighted and one of its childs
-		# is this current civic in the select - forbid it from being selected or highlighted.
-		for i in range (gc.getNumCivicInfos()):
-			if gc.getCivicOptionInfo(gc.getCivicInfo(i).getCivicOptionType()).getParentCivicOption() == 2 :
-				numChilds = gc.getCivicInfo(i).getNumParentCivicsChildren()
-				if numChilds > 0 :
-					for j in xrange(numChilds):
-						child = gc.getCivicInfo(i).getParentCivicsChildren(j)
-						# check if the civic is a child od some parent
-						if iCivic == child:
-							if self.m_highLighterParent != i:
-								return 0
-		# doto civics parent start
-		# update which parent is highlighted
-		#if gc.getCivicInfo(iCivic).getNumParentCivicsChildren() == 2 :
-		if gc.getCivicOptionInfo(gc.getCivicInfo(iCivic).getCivicOptionType()).getParentCivicOption() == 2 :
-			self.m_highLighterParent = iCivic
-		# doto parent civics end
-		# doto parent civics end
-
-		iCivicOption = gc.getCivicInfo(iCivic).getCivicOptionType()
-		
-		# Set the previous widget
-		iCivicPrev = self.m_paeCurrentCivics[iCivicOption]
-		
-		# Switch the widgets
-		self.m_paeCurrentCivics[iCivicOption] = iCivic
-		
-		# Unighlight the previous widget
-		self.unHighlight(iCivicPrev)
-		self.getScreen().setState(self.getCivicsButtonName(iCivicPrev), False)
-
-		# highlight the new widget
-		self.highlight(iCivic)
-
-		
-		self.getScreen().setState(self.getCivicsButtonName(iCivic), True)
-		
-		return 0
-
-	def CivicsButton(self, inputClass):
-		
-		# doto start
-		input_ = gc.getCivicInfo(inputClass.getID()).getCivicOptionType()
-		
-		#if gc.getCivicOptionInfo(input_).getParentCivicOption() > 0:
-		#	return
-
-		# check when civics that are not parent child starts from
-		# this is important to position the text properly
-		idx_factor = 0
-		for i in range (gc.getNumCivicOptionInfos()):
-			if gc.getCivicOptionInfo(i).getParentCivicOption() > 0:
-				idx_factor += 1
-
-		# the idx will get the normal civics to be position
-		# on the start of x axis, since it should start from 0.		
-		if gc.getCivicOptionInfo(input_).getParentCivicOption() > 0:
-			idx = input_
-		else:
-			idx = input_ - idx_factor
-
-		# doto end
-		if (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CLICKED) :
-			if (inputClass.getFlags() & MouseFlags.MOUSE_RBUTTONUP):
-				CvScreensInterface.pediaJumpToCivic((inputClass.getID(), ))
-			else:
-				# Select button
-				self.select(inputClass.getID())
-				self.drawHelpText(input_, idx) #doto 
-				self.updateAnarchy()
-		elif (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CURSOR_MOVE_ON) :
-			# Highlight this button
-			if self.highlight(inputClass.getID()):
-				self.drawHelpText(input_, idx) #doto -3 cause 3 in related civics
-				self.updateAnarchy()
-		elif (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CURSOR_MOVE_OFF) :
-			if self.unHighlight(inputClass.getID()):
-				self.drawHelpText(input_, idx) #doto -3 cause 3 in related civics
-				self.updateAnarchy()
-
-
-		return 0
-
-		
-	def drawHelpText(self, iCivicOption, idx=-1):
-		# doto 
-		# heavily edited for doto, complete rewrite
-		# doto start
-		if idx == -1:
-			idx = iCivicOption # normal civics are higher index then the idx , parent, are the same
-		# normal civics parameters
-		multiLineY = 165 # y height  of the civic text
-		multiLineX = 5 # x poistionif the civic text 
-		multiLineW = 100 # text box width -> civic text 
-		multiLineL = 120 # text box text end civic text 
-		labelY = 190 # civic name text header y height 
-		fx_adjust = 100 # adjuster for x 
-		labelX = 10 # civic name text header x start
-		szPaneID = "CivicsHelpTextBackground1" + str(iCivicOption) + str(idx) 
-		# parent and child civics parameters
-		if gc.getCivicOptionInfo(iCivicOption).getParentCivicOption() > 0:
-			multiLineX = 10
-			#5 #280
-			multiLineW = self.PANEL_BOX_ADJUSTER * 2 + self.PANEL_BOX_ADJUSTER/2 + 20#120
-			multiLineL = 205 # higher value -> longer gov text area
-			labelY = -100
-			multiLineY = - fx_adjust - 30
-			fx_adjust = self.PANEL_BOX_ADJUSTER * 2 + self.PANEL_BOX_ADJUSTER/2 + 30
-			labelX = 15 #* (idx+1) #270
-			szPaneID = "CivicsHelpTextBackground2" + str(iCivicOption) + str(idx) 
-			#return	
-		# doto end 
-
-		activePlayer = gc.getPlayer(self.iActivePlayer)
-		iCivic = self.m_paeDisplayCivics[iCivicOption]
-
-		#szPaneID = "CivicsHelpTextBackground" + str(iCivicOption) + str(idx) # was iCivicOption
-		screen = self.getScreen()
-
-		szHelpText = u""
-
-		# Upkeep string
-		if ((gc.getCivicInfo(iCivic).getUpkeep() != -1) and not activePlayer.isNoCivicUpkeep(iCivicOption)):
-			szHelpText = gc.getUpkeepInfo(gc.getCivicInfo(iCivic).getUpkeep()).getDescription()
-		else:
-			szHelpText = localText.getText("TXT_KEY_CIVICS_SCREEN_NO_UPKEEP", ())
-
-		# doto separated the upkeep from the civic desc
-		szUpkeepText = ' ---- ' +  szHelpText
-		# szHelpText += ..
-		szHelpText = CyGameTextMgr().parseCivicInfo(iCivic, False, True, True)
-
-		fX = self.HEADINGS_SPACING  + (self.HEADINGS_WIDTH + self.HEADINGS_SPACING + fx_adjust) * idx # was iCivicOption
-
-		#screen.setLabel(self.HELP_HEADER_NAME + str(iCivicOption), "Background",  u"<font=3>" + gc.getCivicInfo(self.m_paeDisplayCivics[iCivicOption]).getDescription().upper() + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, fX + self.HEADINGS_WIDTH/2, self.HELP_TOP + self.TEXT_MARGIN, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
-		screen.setLabel(self.HELP_HEADER_NAME + str(iCivicOption), "Background",  u"<font=3>" + gc.getCivicInfo(self.m_paeDisplayCivics[iCivicOption]).getDescription().upper() + szUpkeepText + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, fX + self.HEADINGS_WIDTH/2 + labelX  + len(szUpkeepText) * 3, self.HELP_TOP + self.TEXT_MARGIN + labelY, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
-										# was str(iCivicOption)
-		fY = self.HELP_TOP - self.BIG_BUTTON_SIZE
-		szHelpImageID = self.HELP_IMAGE_NAME + str(iCivicOption) # str(iCivicOption)
-		#doto KELDATH - REMOVED THE MID BTN - DONT NEED IT, JUST TAKES UP SPACE	- originally for 7 column screen	
-		#screen.setImageButton(szHelpImageID, gc.getCivicInfo(iCivic).getButton(), fX + self.HEADINGS_WIDTH/2 - self.BIG_BUTTON_SIZE/2, fY, self.BIG_BUTTON_SIZE, self.BIG_BUTTON_SIZE, WidgetTypes.WIDGET_PEDIA_JUMP_TO_CIVIC, iCivic, 1)
-
-		fY = self.HELP_TOP + 3 * self.TEXT_MARGIN
-		szHelpAreaID = self.HELP_AREA_NAME +  str(iCivicOption) # was str(iCivicOption)		
-		#screen.addMultilineText(szHelpAreaID, szHelpText, fX+5, fY, self.HEADINGS_WIDTH-7, self.HELP_BOTTOM - fY-2, WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_LEFT_JUSTIFY)				
-		#doto civic parent change
-		screen.addMultilineText(szHelpAreaID, szHelpText, fX+multiLineX, fY+multiLineY, self.HEADINGS_WIDTH-7 + multiLineW, self.HELP_BOTTOM - fY- multiLineL , WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_LEFT_JUSTIFY)				
-		#screen.addScrollPanel( "CivicList", u"", self.PANEL_WIDTH/8 * 7, self.PANEL_HEIGHT/8 * 7, self.W_SCREEN, self.Y_CORPORATION_AREA + self.H_CORPORATION_AREA + 5, PanelStyles.PANEL_STYLE_EXTERNAL )
-		
-		
-	# Will draw the help text
-	def drawAllHelpText(self):
-		# doto 
-		# heavily edited for doto, complete rewrite
-
-		counter_dependant = 0
-		counter_normal_civics = 0
-		broad_width = 100
-		const_fY = 	225
-		civicsPanel = 190
-		width_adjuster = 30
-		for i in range (gc.getNumCivicOptionInfos()):		
-
-			if gc.getCivicOptionInfo(i).getParentCivicOption() < 1:	
-				# normal civics
-				# fX = self.HEADINGS_SPACING  + (self.HEADINGS_WIDTH + self.HEADINGS_SPACING) * i
-
-				fX = self.HEADINGS_SPACING  + ((self.HEADINGS_WIDTH + self.HEADINGS_SPACING + self.PANEL_BOX_ADJUSTER) * (counter_normal_civics)) + 5# was * i
-				szPaneID = "CivicsHelpTextBackground1" + str(counter_normal_civics)  + str(i)# was i
-				screen = self.getScreen()
-				#doto 7 screen SCREEN CIVIC HELP POSITION
-				#screen.addPanel(szPaneID, "", "", True, True, fX+5, self.HELP_TOP, self.HEADINGS_WIDTH, self.HELP_BOTTOM - self.HELP_TOP, PanelStyles.PANEL_STYLE_MAIN)
-				screen.addPanel(szPaneID, "", "", True, True, fX, self.HELP_TOP+civicsPanel, self.HEADINGS_WIDTH + self.PANEL_BOX_ADJUSTER, self.HELP_BOTTOM - self.HELP_TOP - civicsPanel, PanelStyles.PANEL_STYLE_MAIN)
-				self.drawHelpText(i, counter_normal_civics) # was only i
-				counter_normal_civics += 1			
-			if gc.getCivicOptionInfo(i).getParentCivicOption() > 0:
-				# parent child civics
-				fX = (self.HEADINGS_SPACING  + ((self.HEADINGS_WIDTH + self.HEADINGS_SPACING + self.PANEL_BOX_ADJUSTER * 2 + self.PANEL_BOX_ADJUSTER/2 + width_adjuster) * (counter_dependant)))
-				szPaneID = "CivicsHelpTextBackground2" + str(counter_dependant) + str(i) # was i
-				screen = self.getScreen()
-				#doto 7 screen SCREEN CIVIC HELP POSITION
-				#screen.addPanel(szPaneID, "", "", True, True, fX+5, self.HELP_TOP, self.HEADINGS_WIDTH, self.HELP_BOTTOM - self.HELP_TOP, PanelStyles.PANEL_STYLE_MAIN)
-				screen.addPanel(szPaneID, "", "", True, True, fX, const_fY, self.HEADINGS_WIDTH + self.PANEL_BOX_ADJUSTER * 2 + self.PANEL_BOX_ADJUSTER/2 + width_adjuster, self.HELP_BOTTOM - self.HELP_TOP - const_fY, PanelStyles.PANEL_STYLE_MAIN)
-				self.drawHelpText(i, counter_dependant) # was only i
-				counter_dependant += 1	
-
-
-	# Will Update the maintenance/anarchy/etc
-	def updateAnarchy(self):
-
-		screen = self.getScreen()
-
-		activePlayer = gc.getPlayer(self.iActivePlayer)
-
-		bChange = False
-		i = 0
-		while (i  < gc.getNumCivicOptionInfos() and not bChange):
-			if (self.m_paeCurrentCivics[i] != self.m_paeOriginalCivics[i]):
-				bChange = True
-			i += 1		
-		
-		# Make the revolution button
-		screen.deleteWidget(self.EXIT_NAME)
-		if (activePlayer.canRevolution(0) and bChange):			
-			screen.setText(self.EXIT_NAME, "Background", u"<font=4>" + localText.getText("TXT_KEY_CONCEPT_REVOLUTION", ( )).upper() + u"</font>", CvUtil.FONT_RIGHT_JUSTIFY, self.X_EXIT, self.Y_EXIT, self.Z_TEXT, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_REVOLUTION, 1, 0)
-			screen.show(self.CANCEL_NAME)
-		else:
-			screen.setText(self.EXIT_NAME, "Background", u"<font=4>" + localText.getText("TXT_KEY_PEDIA_SCREEN_EXIT", ( )).upper() + u"</font>", CvUtil.FONT_RIGHT_JUSTIFY, self.X_EXIT, self.Y_EXIT, self.Z_TEXT, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, 1, -1)
-			screen.hide(self.CANCEL_NAME)
-
-		# Anarchy
-		iTurns = activePlayer.getCivicAnarchyLength(self.m_paeDisplayCivics);
-		
-		if (activePlayer.canRevolution(0)):
-			szText = localText.getText("TXT_KEY_ANARCHY_TURNS", (iTurns, ))
-		else:
-			szText = CyGameTextMgr().setRevolutionHelp(self.iActivePlayer)
-		#DOTO - 7 screen column KELDATH CHANGES
-		screen.setLabel("CivicsRevText", "Background", u"<font=3>" + szText + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, 700, self.BOTTOM_LINE_TOP + 5 + self.TEXT_MARGIN//2, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-
-		# Maintenance		
-		#szText = localText.getText("TXT_KEY_CIVIC_SCREEN_UPKEEP", (activePlayer.getCivicUpkeep(self.m_paeDisplayCivics, True), ))
-		szText = localText.getText("TXT_KEY_CIVIC_SCREEN_UPKEEP", (activePlayer.getCivicUpkeep(self.m_paeDisplayCivics, True)*(100+activePlayer.calculateInflationRate())/100, )) # K-Mod
-		#doto 7 column KELDATH CHANGE
-		screen.setLabel("CivicsUpkeepText", "Background", u"<font=3>" + szText + u"</font>", CvUtil.FONT_LEFT_JUSTIFY, 100, self.BOTTOM_LINE_TOP - 6 + self.BOTTOM_LINE_HEIGHT - 2 * self.TEXT_MARGIN, 0, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-		
-	# Revolution!!!
-	def Revolution(self, inputClass):
-
-		activePlayer = gc.getPlayer(self.iActivePlayer)
-
-		if (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CLICKED) :
-			# advc.001d: Clause added to prevent revolution when viewing another civ's civics through the Debug menu
-			if self.iActivePlayer == gc.getGame().getActivePlayer() and activePlayer.canRevolution(0):
-				messageControl = CyMessageControl()
-				messageControl.sendUpdateCivics(self.m_paeDisplayCivics)			
-			screen = self.getScreen()
-			screen.hideScreen()
-
-	def Cancel(self, inputClass):
-		screen = self.getScreen()
-		if (inputClass.getNotifyCode() == NotifyCode.NOTIFY_CLICKED) :
-			# doto civics parent start
-			# gotta rest all params
-			activePlayer = gc.getPlayer(gc.getGame().getActivePlayer())
-			self.m_allParentsCivics = []
-			self.m_highLighterParent = 0
-			self.m_allChildCivics = {}
-			# doto civics parent end
-			for i in range (gc.getNumCivicOptionInfos()):
-				self.m_paeCurrentCivics[i] = self.m_paeOriginalCivics[i]
-				self.m_paeDisplayCivics[i] = self.m_paeOriginalCivics[i]
-				# doto civics parent start - im gonna assume my mod has 1 parent...
-				if gc.getCivicOptionInfo(i).getParentCivicOption() == 2:
-					self.m_highLighterParent = activePlayer.getCivics(i);
-				self.m_allChildCivics[i] = [];
-				# doto civics parent end
-
-			self.drawContents()
-			
-	def getCivicsButtonName(self, iCivic):
-		szName = self.BUTTON_NAME + str(iCivic)
-		return szName
-
-	def getCivicsTextName(self, iCivic):
-		szName = self.TEXT_NAME + str(iCivic)
-		return szName
-
-	# Will handle the input for this screen...
-	def handleInput(self, inputClass):
-		if (inputClass.getNotifyCode() == NotifyCode.NOTIFY_LISTBOX_ITEM_SELECTED):
-			screen = self.getScreen()
-			iIndex = screen.getSelectedPullDownID(self.DEBUG_DROPDOWN_ID)
-			self.setActivePlayer(screen.getPullDownData(self.DEBUG_DROPDOWN_ID, iIndex))
-			self.drawContents()
-			return 1
-		elif (self.CivicsScreenInputMap.has_key(inputClass.getFunctionName())):	
-			'Calls function mapped in CvCivicsScreen'
-			# only get from the map if it has the key		
-
-			# get bound function from map and call it
-			self.CivicsScreenInputMap.get(inputClass.getFunctionName())(inputClass)
-			return 1
-		return 0
-		
-	def update(self, fDelta):
-		return
-
-
-
-
+art_file_mgr = CyArtFileMgr()
+local_text = CyTranslator()
+
+# --- CONSTANTS ---
+# Use ALL_CAPS for module-level constants
+SCREEN_NAME = "RegularCivicScreen"
+CANCEL_WIDGET_ID = "RegularCivicsCancel"
+RESET_WIDGET_ID = "RegularReset"
+EXIT_WIDGET_ID = "RegularCivicsExit"
+TITLE_WIDGET_ID = "RegularCivicsTitleHeader"
+BUTTON_WIDGET_PREFIX = "RegularCivicsScreenButton"
+TEXT_WIDGET_PREFIX = "RegularCivicsScreenText"
+AREA_WIDGET_PREFIX = "RegularCivicsScreenArea"
+HELP_AREA_PREFIX = "RegularCivicsScreenHelpArea"
+HELP_IMAGE_PREFIX = "RegularCivicsScreenCivicOptionImage"
+DEBUG_DROPDOWN_ID = "RegularCivicsDropdownWidget"
+BACKGROUND_ID = "RegularCivicsBackground"
+HELP_HEADER_PREFIX = "RegularCivicsScreenHeaderName"
+
+# Visual Constants (Vertical/Spacing)
+H_SCREEN_DEFAULT = 768
+CIVIC_LIST_PANEL_WIDTH = 200
+
+HEADINGS_TOP = 50
+HEADINGS_SPACING = -4
+HEADINGS_BOTTOM = 330
+HELP_TOP = 325
+HELP_BOTTOM = 655
+TEXT_MARGIN = 14
+BUTTON_SIZE = 24
+BIG_BUTTON_SIZE = 44
+BOTTOM_LINE_TOP = 660
+BOTTOM_LINE_HEIGHT = 60
+
+Y_EXIT = 726
+Y_TITLE = 8
+Z_SCREEN = -6.1
+Z_TEXT = Z_SCREEN - 0.2
+# -------------------
+
+class CvRegularCivicScreen:
+    "Regular Civics Screen"
+
+    def __init__(self):
+        # Widget IDs (kept as instance vars for legacy access)
+        self.SCREEN_NAME = SCREEN_NAME
+        self.CANCEL_NAME = CANCEL_WIDGET_ID
+        self.RESET_NAME = RESET_WIDGET_ID
+        self.EXIT_NAME = EXIT_WIDGET_ID
+        self.TITLE_NAME = TITLE_WIDGET_ID
+        
+        # UI Metrics
+        self.H_SCREEN = H_SCREEN_DEFAULT
+        self.CIVIC_LIST_PANEL_WIDTH = CIVIC_LIST_PANEL_WIDTH
+
+        # Dynamic/Calculated Screen Metrics
+        self.x_resolution = 0
+        self.y_resolution = 0
+        # New variable for custom screen start X (screen.centerX(-170))
+        self.x_start = 0 
+        self.horizontal_margin = 0
+        self.screen_width = 0
+        self.headings_width = 0
+        self.x_exit = 0
+        self.x_cancel = 0
+        self.x_center = 0
+        self.Y_EXIT = Y_EXIT
+
+        # State Variables
+        self.active_player_id = -1
+        self.current_civics = []
+        self.display_civics = []
+        self.original_civics = []
+        self.absolute_original_civics = []
+        self.all_delivered_civics = []
+
+        # Custom Mod Doto
+        self.parent_civics = [] 
+        self.child_civics = {}
+
+        self.input_map = {
+            BUTTON_WIDGET_PREFIX: self.handle_civics_button_click,
+            TEXT_WIDGET_PREFIX: self.handle_civics_button_click,
+            EXIT_WIDGET_ID: self.handle_revolution_click,
+            CANCEL_WIDGET_ID: self.cancel_changes,
+            RESET_WIDGET_ID: self.reset_to_original
+        }
+
+    def set_active_player(self, player_id, delivered_civics = None):
+        self.active_player_id = player_id
+        active_player = gc.getPlayer(player_id)
+        
+        # Reset state lists
+        self.current_civics = []
+        self.display_civics = []
+        self.original_civics = []
+        self.all_delivered_civics = []
+        self.absolute_original_civics = []
+
+        num_civic_options = gc.getNumCivicOptionInfos()
+        
+        # Determine the source for the current state (delivered list or active player)
+        source_civics = delivered_civics or [active_player.getCivics(i) for i in range(num_civic_options)]
+
+        for civic_id in source_civics:
+            self.current_civics.append(civic_id)
+            self.display_civics.append(civic_id)
+            self.original_civics.append(civic_id)
+            self.all_delivered_civics.append(civic_id)
+            
+        # Absolute originals are always the player's currently active civics
+        self.absolute_original_civics = [active_player.getCivics(i) for i in range(num_civic_options)]
+        
+        # Reset custom mod variables
+        self.parent_civics = []
+        self.child_civics = {}
+        for i in range(num_civic_options):
+            self.child_civics[i] = []
+
+    def calculate_screen_metrics(self, screen):
+        """
+        Calculates dynamic screen dimensions, using full resolution as the basis.
+        """
+        self.x_resolution = screen.getXResolution()
+        self.y_resolution = screen.getYResolution()
+
+        # Set the screen width to the full resolution width
+        self.screen_width = self.x_resolution
+        
+        # When using full width, the screen starts at X=0
+        self.x_start = 0 
+
+        # We must now redefine the content area width if we want it less than full screen.
+        # However, to avoid complexity, we'll let the main panel take up the full screen, 
+        # and keep the text/button centering relative to that full width.
+
+        self.bottom_line_width = self.screen_width - 10
+        self.x_exit = self.screen_width - 30
+        self.x_cancel = self.screen_width // 2
+        self.x_center = self.screen_width // 2
+
+        # Calculate dynamic column width based on number of visible options
+        num_visible_civic_options = gc.getNumCivicOptionInfos() - self.get_parent_child_civic_options_count()
+        if num_visible_civic_options > 0:
+            # Note: This will make headings very wide on large resolutions.
+            self.headings_width = (self.screen_width - HEADINGS_SPACING) / num_visible_civic_options - HEADINGS_SPACING
+        else:
+            self.headings_width = self.screen_width
+
+# ----------------------------------------------------------------------
+# (interfaceScreen function updated)
+# ----------------------------------------------------------------------
+
+    def interfaceScreen (self, civics = None):
+        # The screen object is created here directly.
+        screen = CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.REGULAR_CIVICS_SCREEN)
+        
+        if screen.isActive():
+            return
+
+        screen.setRenderInterfaceOnly(True)
+        screen.showScreen(PopupStates.POPUPSTATE_IMMEDIATE, False)
+
+        # 1. Calculate Dynamic Metrics
+        self.calculate_screen_metrics(screen)
+        
+        # 2. Set Active Player and Civic State
+        self.set_active_player(gc.getGame().getActivePlayer(), civics)
+
+        # 3. Setup Screen Layout
+        # Use X=0 and full resolution width. The Y position is still centered.
+        screen.setDimensions(self.x_start, screen.centerY(0), self.screen_width, self.H_SCREEN)
+        
+        # All internal panels now use the full screen width.
+        screen.addDDSGFC(BACKGROUND_ID, art_file_mgr.getInterfaceArtInfo("MAINMENU_SLIDESHOW_LOAD").getPath(), 0, 0, self.screen_width, self.H_SCREEN, WidgetTypes.WIDGET_GENERAL, -1, -1)
+        screen.addPanel("CivicsTopPanel", u"", u"", True, False, 0, 0, self.screen_width, 55, PanelStyles.PANEL_STYLE_TOPBAR)
+        screen.addPanel("CivicsBottomPanel", u"", u"", True, False, 0, 713, self.screen_width, 55, PanelStyles.PANEL_STYLE_BOTTOMBAR)
+        screen.showWindowBackground(False)
+        
+        # Title
+        screen.setText(TITLE_WIDGET_ID, "Background", u"<font=4b>" + "CIVICS" + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.x_center, Y_TITLE, Z_TEXT, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+
+        # Bottom Line Buttons (Cancel, Reset)
+        screen.setText(CANCEL_WIDGET_ID, "Background", u"<font=4>" + "PREV SELECT" + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.x_cancel, self.Y_EXIT, Z_TEXT, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, 1, 0)
+        screen.setText(RESET_WIDGET_ID, "Background", u"<font=4>" + "RESET" + u"</font>", CvUtil.FONT_CENTER_JUSTIFY, self.x_cancel // 2, self.Y_EXIT, Z_TEXT, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, 1, 0)
+
+        # Debug Dropdown
+        if CyGame().isDebugMode():
+            screen.addDropDownBoxGFC(DEBUG_DROPDOWN_ID, 22, 12, 300, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
+            for j in range(gc.getMAX_PLAYERS()):
+                if gc.getPlayer(j).isAlive():
+                    screen.addPullDownString(DEBUG_DROPDOWN_ID, gc.getPlayer(j).getName(), j, j, False)
+
+        screen.addPanel("CivicsBottomLine", "", "", True, True, HEADINGS_SPACING, BOTTOM_LINE_TOP, self.bottom_line_width, BOTTOM_LINE_HEIGHT, PanelStyles.PANEL_STYLE_MAIN)
+
+        # 4. Draw Contents - Pass the screen object to drawing functions that need it
+        self.draw_contents(screen)
+
+        return 0
+
+    def draw_contents(self, screen): # Now requires 'screen' argument
+        self.draw_all_civic_options(screen)
+        self.draw_all_help_text(screen)
+        self.update_anarchy_and_buttons(screen)
+    
+    def draw_all_civic_options(self, screen): # Now requires 'screen' argument
+        active_player = gc.getPlayer(self.active_player_id)
+        reindex = 0
+        
+        # Clear existing buttons
+        for i in range(gc.getNumCivicInfos()):
+            screen.deleteWidget(self.get_civics_button_name(i))
+            screen.deleteWidget(self.get_civics_text_name(i))
+
+        for option_id in range(gc.getNumCivicOptionInfos()):
+            if self.is_parent_child_civic_option(option_id):
+                continue
+
+            # --- ADJUSTED LOGIC START ---
+            
+            # The width of the civic panel will now be the dynamically calculated self.headings_width
+            civic_panel_width = self.headings_width
+            
+            # Calculate horizontal position: 
+            # X_position = HEADINGS_SPACING + (self.headings_width + HEADINGS_SPACING) * reindex
+            x_pos = HEADINGS_SPACING + (self.headings_width + HEADINGS_SPACING) * reindex
+
+            # --- ADJUSTED LOGIC END ---
+
+            y_pos = HEADINGS_TOP
+
+            # Main Panel for the Civic Option
+            area_id = AREA_WIDGET_PREFIX + str(reindex)
+            screen.addPanel(area_id, "", "", True, True,
+                            x_pos, y_pos, civic_panel_width, HEADINGS_BOTTOM - HEADINGS_TOP,
+                            PanelStyles.PANEL_STYLE_MAIN)
+            
+            # Header Label for the Civic Option
+            y_pos += TEXT_MARGIN
+            # FIX: Replaced f-string with Python 2.4 '%' formatting
+            screen.setLabel("%s_Header" % area_id, "Background", 
+                            u"<font=3>" + gc.getCivicOptionInfo(option_id).getDescription().upper() + u"</font>",
+                            CvUtil.FONT_CENTER_JUSTIFY,
+                            # Center the header text using the new civic_panel_width
+                            x_pos + civic_panel_width // 2, y_pos, 0,
+                            FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+            
+            y_pos += TEXT_MARGIN
+            
+            # Draw individual Civics
+            for civic_id in range(gc.getNumCivicInfos()):
+                civic_info = gc.getCivicInfo(civic_id)
+                if civic_info.getCivicOptionType() == option_id:
+                    
+                    can_do_civic = active_player.canDoCivics(civic_id, False)
+                    is_displayed_civic = self.display_civics[option_id] == civic_id
+                    
+                    if can_do_civic or is_displayed_civic:
+                        y_pos += 2 * TEXT_MARGIN
+                        
+                        button_name = self.get_civics_button_name(civic_id)
+                        text_name = self.get_civics_text_name(civic_id)
+                        
+                        # Checkbox Button
+                        screen.addCheckBoxGFC(button_name, civic_info.getButton(), art_file_mgr.getInterfaceArtInfo("BUTTON_HILITE_SQUARE").getPath(), 
+                                              x_pos + BUTTON_SIZE // 2, y_pos, BUTTON_SIZE, BUTTON_SIZE, 
+                                              WidgetTypes.WIDGET_GENERAL, civic_id, -1, ButtonStyles.BUTTON_STYLE_LABEL)
+                        
+                        # Text Label
+                        screen.setText(text_name, "", civic_info.getDescription(), 
+                                       CvUtil.FONT_LEFT_JUSTIFY, 
+                                       x_pos + BUTTON_SIZE + TEXT_MARGIN, y_pos, 0, 
+                                       FontTypes.SMALL_FONT, WidgetTypes.WIDGET_GENERAL, civic_id, -1)
+                        
+                        # Set State
+                        screen.setState(button_name, self.current_civics[option_id] == civic_id)
+                    
+            reindex += 1
+            
+    def highlight_civic(self, civic_id):
+        """Highlights a civic for help text. Returns True if a change was made."""
+        option_id = gc.getCivicInfo(civic_id).getCivicOptionType()
+        if self.display_civics[option_id] != civic_id:
+            self.display_civics[option_id] = civic_id
+            return True
+        return False
+        
+    def unhighlight_civic(self, civic_id):
+        """Unhighlights a civic, reverting display to the current selection. Returns True if a change was made."""
+        option_id = gc.getCivicInfo(civic_id).getCivicOptionType()
+        current_selection_id = self.current_civics[option_id]
+        if self.display_civics[option_id] != current_selection_id:
+            self.display_civics[option_id] = current_selection_id
+            return True
+        return False
+        
+    def select_civic(self, civic_id):
+        """Selects a new civic, updating internal state and UI."""
+        active_player = gc.getPlayer(self.active_player_id)
+        
+        if not active_player.canDoCivics(civic_id, False):
+            return 0
+            
+        option_id = gc.getCivicInfo(civic_id).getCivicOptionType()
+        
+        previous_civic_id = self.current_civics[option_id]
+        
+        # 1. Update State
+        self.current_civics[option_id] = civic_id
+        
+        # 2. Update UI
+        screen = CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.REGULAR_CIVICS_SCREEN) # Must create here
+        
+        # Unselect previous
+        screen.setState(self.get_civics_button_name(previous_civic_id), False)
+        
+        # Select new (highlights it and sets display_civics)
+        self.highlight_civic(civic_id)
+        screen.setState(self.get_civics_button_name(civic_id), True)
+        
+        return 0
+
+    def handle_civics_button_click(self, input_class):
+        civic_id = input_class.getID()
+        option_id = gc.getCivicInfo(civic_id).getCivicOptionType()
+        
+        reindex = option_id - self.get_parent_child_civic_options_count()
+
+        notify_code = input_class.getNotifyCode()
+
+        if notify_code == NotifyCode.NOTIFY_CLICKED:
+            if input_class.getFlags() & MouseFlags.MOUSE_RBUTTONUP:
+                CvScreensInterface.pediaJumpToCivic((civic_id, ))
+            else:
+                self.select_civic(civic_id)
+                screen = CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.REGULAR_CIVICS_SCREEN) # Must create here
+                self.draw_help_text(screen, option_id, reindex)
+                self.update_anarchy_and_buttons(screen)
+        elif notify_code == NotifyCode.NOTIFY_CURSOR_MOVE_ON:
+            if self.highlight_civic(civic_id):
+                screen = CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.REGULAR_CIVICS_SCREEN) # Must create here
+                self.draw_help_text(screen, option_id, reindex)
+                self.update_anarchy_and_buttons(screen)
+        elif notify_code == NotifyCode.NOTIFY_CURSOR_MOVE_OFF:
+            if self.unhighlight_civic(civic_id):
+                screen = CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.REGULAR_CIVICS_SCREEN) # Must create here
+                self.draw_help_text(screen, option_id, reindex)
+                self.update_anarchy_and_buttons(screen)
+
+        return 0
+        
+    def draw_help_text(self, screen, option_id, reindex = -1):
+        """Draws the help text for a single civic option column."""
+        
+        if reindex == -1:
+            reindex = option_id - self.get_parent_child_civic_options_count()
+
+        civic_id = self.display_civics[option_id]
+        civic_info = gc.getCivicInfo(civic_id)
+        active_player = gc.getPlayer(self.active_player_id)
+
+        # 1. Build Help Text String
+        # Upkeep
+        if civic_info.getUpkeep() != -1 and not active_player.isNoCivicUpkeep(option_id):
+            upkeep_desc = gc.getUpkeepInfo(civic_info.getUpkeep()).getDescription()
+        else:
+            upkeep_desc = local_text.getText("TXT_KEY_CIVICS_SCREEN_NO_UPKEEP", ())
+
+        help_text = upkeep_desc
+        # Civic Effects
+        help_text += CyGameTextMgr().parseCivicInfo(civic_id, False, True, True)
+
+        # 2. Calculate Position
+        x_pos = HEADINGS_SPACING + (self.headings_width + HEADINGS_SPACING) * reindex 
+        
+        # 3. Draw Header
+        screen.setLabel(HELP_HEADER_PREFIX + str(reindex), "Background", 
+                        u"<font=3>" + civic_info.getDescription().upper() + u"</font>", 
+                        CvUtil.FONT_CENTER_JUSTIFY, 
+                        x_pos + self.headings_width // 2, HELP_TOP + TEXT_MARGIN, 0, 
+                        FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+
+        # 4. Draw Multiline Text Area
+        y_text_start = HELP_TOP + 3 * TEXT_MARGIN
+        screen.addMultilineText(HELP_AREA_PREFIX + str(reindex), help_text, 
+                                x_pos + 5, y_text_start, 
+                                self.headings_width - 7, HELP_BOTTOM - y_text_start - 2, 
+                                WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_LEFT_JUSTIFY)
+        
+    def draw_all_help_text(self, screen):
+        """Initial draw for all help text columns."""
+        reindex = 0
+        for option_id in range (gc.getNumCivicOptionInfos()):
+            if self.is_parent_child_civic_option(option_id):
+                continue
+
+            x_pos = HEADINGS_SPACING + (self.headings_width + HEADINGS_SPACING) * reindex 
+            
+            # Background panel for help text
+            pane_id = "CivicsHelpTextBackground" + str(reindex)
+            screen.addPanel(pane_id, "", "", True, True, 
+                            x_pos, HELP_TOP, self.headings_width, HELP_BOTTOM - HELP_TOP, 
+                            PanelStyles.PANEL_STYLE_MAIN)
+            
+            self.draw_help_text(screen, option_id, reindex)
+            reindex += 1
+
+    def update_anarchy_and_buttons(self, screen):
+        """Updates the revolution button, anarchy text, and upkeep text."""
+
+        active_player = gc.getPlayer(self.active_player_id)
+        
+        # Check for any change from the *absolute original* civics
+        # Python 2.4-compliant loop replacing any()
+        has_change = False
+        for i in range(gc.getNumCivicOptionInfos()):
+            if self.current_civics[i] != self.absolute_original_civics[i]:
+                has_change = True
+                break
+        
+        # Make the revolution/back button
+        screen.deleteWidget(EXIT_WIDGET_ID)
+        
+        if active_player.canRevolution(0) and has_change:
+            # Show "SET CIVICS" and support buttons
+            screen.setText(EXIT_WIDGET_ID, "Background", u"<font=4>" + "SET_CIVICS" + u"</font>", 
+                           CvUtil.FONT_RIGHT_JUSTIFY, self.x_exit, self.Y_EXIT, Z_TEXT, 
+                           FontTypes.TITLE_FONT, WidgetTypes.WIDGET_REVOLUTION, 1, 0)
+            screen.show(CANCEL_WIDGET_ID)
+            screen.show(RESET_WIDGET_ID)
+        else:
+            # Show "BACK" and hide support buttons
+            screen.setText(EXIT_WIDGET_ID, "Background", u"<font=4>"+ "BACK" + u"</font>", 
+                           CvUtil.FONT_RIGHT_JUSTIFY, self.x_exit, self.Y_EXIT, Z_TEXT, 
+                           FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, 1, -1)
+            screen.hide(CANCEL_WIDGET_ID)
+            screen.hide(RESET_WIDGET_ID)
+
+        # --- Anarchy Text ---
+        anarchy_turns = active_player.getCivicAnarchyLength(self.display_civics)
+
+        if active_player.canRevolution(0):
+            anarchy_text = local_text.getText("TXT_KEY_ANARCHY_TURNS", (anarchy_turns, ))
+        else:
+            anarchy_text = CyGameTextMgr().setRevolutionHelp(self.active_player_id)
+
+        screen.setLabel("CivicsRevText", "Background", u"<font=3>" + anarchy_text + u"</font>", 
+                        CvUtil.FONT_CENTER_JUSTIFY, self.x_center, BOTTOM_LINE_TOP + TEXT_MARGIN // 2, 0, 
+                        FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+
+        # --- Maintenance/Upkeep Text ---
+        upkeep_gold = active_player.getCivicUpkeep(self.display_civics, True)
+        upkeep_inflation_adjusted = upkeep_gold * (100 + active_player.calculateInflationRate()) // 100
+        upkeep_text = local_text.getText("TXT_KEY_CIVIC_SCREEN_UPKEEP", (upkeep_inflation_adjusted, ))
+        
+        screen.setLabel("CivicsUpkeepText", "Background", u"<font=3>" + upkeep_text + u"</font>", 
+                        CvUtil.FONT_CENTER_JUSTIFY, self.x_center, BOTTOM_LINE_TOP + BOTTOM_LINE_HEIGHT - 2 * TEXT_MARGIN, 0, 
+                        FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+        
+
+    def handle_revolution_click(self, input_class):
+        """Handles the 'SET CIVICS' or 'BACK' button click."""
+        if input_class.getNotifyCode() == NotifyCode.NOTIFY_CLICKED:
+            # Update the delivered civics list with the new selections
+            for i, civic_id in enumerate(self.current_civics):
+                if civic_id != self.all_delivered_civics[i]:
+                    self.all_delivered_civics[i] = civic_id
+
+            screen = CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.REGULAR_CIVICS_SCREEN) # Must create here
+            screen.hideScreen()
+            CvScreensInterface.showCivicsScreen(self.all_delivered_civics, 'regularcivics')
+
+    def cancel_changes(self, input_class):
+        """Reverts current and display civics to the state when the screen was opened (original_civics)."""
+        if input_class.getNotifyCode() == NotifyCode.NOTIFY_CLICKED:
+            for i in range (gc.getNumCivicOptionInfos()):
+                self.current_civics[i] = self.original_civics[i]
+                self.display_civics[i] = self.original_civics[i]
+            
+            screen = CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.REGULAR_CIVICS_SCREEN) # Must create here
+            self.draw_contents(screen)
+    
+    def reset_to_original(self, input_class):
+        """Reverts current and display civics to the player's actually active civics (absolute_original_civics)."""
+        if input_class.getNotifyCode() == NotifyCode.NOTIFY_CLICKED:
+            for i in range (gc.getNumCivicOptionInfos()):
+                self.current_civics[i] = self.absolute_original_civics[i]
+                self.display_civics[i] = self.absolute_original_civics[i]
+            
+            # doto civics parent reset (your mod logic)
+            for i in range (gc.getNumCivicOptionInfos()):
+                self.child_civics[i] = []
+
+            screen = CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.REGULAR_CIVICS_SCREEN) # Must create here
+            self.draw_contents(screen)
+            self.update_anarchy_and_buttons(screen) 
+
+    # --- Utility Functions ---
+    def get_civics_button_name(self, civic_id):
+        """Standardized naming for civic button widgets."""
+        return BUTTON_WIDGET_PREFIX + str(civic_id)
+
+    def get_civics_text_name(self, civic_id):
+        """Standardized naming for civic text widgets."""
+        return TEXT_WIDGET_PREFIX + str(civic_id)
+
+    def handleInput(self, inputClass):
+        """Handles input events (pulldowns, buttons)."""
+        
+        # In Civ4 style, you often need the screen object to get values/change it
+        screen = CyGInterfaceScreen(self.SCREEN_NAME, CvScreenEnums.REGULAR_CIVICS_SCREEN)
+
+        if inputClass.getNotifyCode() == NotifyCode.NOTIFY_LISTBOX_ITEM_SELECTED:
+            index = screen.getSelectedPullDownID(DEBUG_DROPDOWN_ID)
+            self.set_active_player(screen.getPullDownData(DEBUG_DROPDOWN_ID, index))
+            self.draw_contents(screen)
+            return 1
+        
+        function_name = inputClass.getFunctionName()
+        # Find the function based on the prefix/name.
+        for key, func in self.input_map.items():
+            if function_name.startswith(key):
+                func(inputClass)
+                return 1
+        
+        return 0
+        
+    def update(self, fDelta):
+        pass
+
+    # --- Custom Mod Logic ---
+    def is_parent_child_civic_option(self, option_id):
+        """Checks if a Civic Option is a Parent or Child for your mod logic."""
+        parent_civic_option = gc.getCivicOptionInfo(option_id).getParentCivicOption()
+        return bool(parent_civic_option and parent_civic_option > 0)
+        
+    def get_parent_child_civic_options_count(self):
+        """Calculates the number of Civic Options that are Parent/Child and should be skipped."""
+        
+        # FIX for Python 2.4: Replace generator expression with list comprehension if sum() is used on it.
+        # While the current code might work, explicit list creation is safer for older Python 2 versions.
+        return len([i for i in range(gc.getNumCivicOptionInfos()) if self.is_parent_child_civic_option(i)])

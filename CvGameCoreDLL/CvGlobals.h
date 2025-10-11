@@ -696,20 +696,24 @@ public:
 #pragma endregion GlobalDefines
 	/*	K-Mod: more reliable versions of the 'gDLL->xxxKey' functions
 		NOTE: I've replaced all calls to the gDLL key functions with calls to these functions. */
-	bool altKey() const { return (GetKeyState(VK_MENU) & 0x8000); }
-	bool ctrlKey() const { return (GetKeyState(VK_CONTROL) & 0x8000); }
-	bool shiftKey() const { return (GetKeyState(VK_SHIFT) & 0x8000); }
+	// advc: Helper function (let's make it public; why not).
+	bool isKeyDown(int iVirtualKey) const
+	{
+		return (GetKeyState(iVirtualKey) & 0x8000);
+	}
+	bool altKey() const { return isKeyDown(VK_MENU); }
+	bool ctrlKey() const { return isKeyDown(VK_CONTROL); }
+	bool shiftKey() const { return isKeyDown(VK_SHIFT); }
 	// hold X to temporarily suppress automatic unit cycling.
 	bool suppressCycling() const
 	{
-		return (GetKeyState('X') & 0x8000) ||
+		return (isKeyDown('X') ||
 			/*	advc.088: Needs to be consistent with GC.getInfo(CONTROL_UNSELECT_ALL).
 				getHotKeyVal(), isAltDown() etc. Could check those here, but not in-line.
 				Not quite sure if performance matters here. If it doesn't, then key X
 				should perhaps also be a ControlInfo. */
-			((GetKeyState('U') & 0x8000) && shiftKey() && altKey());
-	}
-	// K-Mod end
+			(isKeyDown('U') && shiftKey() && altKey()));
+	} // K-Mod end
 //MOD@VET_Andera412_Blocade_Unit-end1/2
 	inline int getBLOCADE_UNIT() {return m_iBLOCADE_UNIT;}									// BlocadeUnit 3/3
 //MOD@VET_Andera412_Blocade_Unit-end1/2
@@ -754,34 +758,8 @@ public:
 	inline int getHAPPYNESS_GOLDEN_AGE_THRESHOLD() const { return m_iHAPPYNESS_GOLDEN_AGE_THRESHOLD; }
 
 	inline int getTRUNCATE_ANIMATIONS_ERA() const {return m_iTRUNCATE_ANIMATIONS_ERA;}	
-	inline int getTRUNCATE_ANIMATION_TURNS() const {return m_iTRUNCATE_ANIMATION_TURNS;}	
-	
-	inline int getSPECIALISTS_INSTEAD_OF_POPULATION() const {return m_iSPECIALISTS_INSTEAD_OF_POPULATION;}		
-	inline int getENHANCED_CITY_STATES_THRESHOLD() const {return m_iENHANCED_CITY_STATES_THRESHOLD;}		
-	inline int getFREE_UNITS_PER_STATE_MOD() const {return m_iFREE_UNITS_PER_STATE_MOD;}		
-	inline int getCITY_STATE_TECH_DIFFUSION_MOD() const {return m_iCITY_STATE_TECH_DIFFUSION_MOD;}		
-	inline int getCS_BUILD_UNITS_WITH_NO_PREQ_BONUS() const {return m_iCS_BUILD_UNITS_WITH_NO_PREQ_BONUS;}		
-	inline int getCS_START_SIGHT_RANGE() const {return m_iCS_START_SIGHT_RANGE;}		
-	inline int getCS_CULTURE_LEVEL_MIN_RADIOUS() const {return m_iCS_CULTURE_LEVEL_MIN_RADIOUS;}		
-	inline int getCS_CULTURE_LEVEL_MAX_RADIOUS() const {return m_iCS_CULTURE_LEVEL_MAX_RADIOUS;}		
-	inline int getDISPLAY_CITY_STATES_IN_CUSTOM_GAME() const {return m_iDISPLAY_CITY_STATES_IN_CUSTOM_GAME;}		
-	inline int getSET_NUMBER_OF_CITY_STATES_SPAWN_TINY() const {return m_iSET_NUMBER_OF_CITY_STATES_SPAWN_TINY;}		
-	inline int getSET_NUMBER_OF_CITY_STATES_SPAWN_SMALL() const {return m_iSET_NUMBER_OF_CITY_STATES_SPAWN_SMALL;}		
-	inline int getSET_NUMBER_OF_CITY_STATES_SPAWN_STANDARD() const {return m_iSET_NUMBER_OF_CITY_STATES_SPAWN_STANDARD;}		
-	inline int getSET_NUMBER_OF_CITY_STATES_SPAWN_LARGE() const {return m_iSET_NUMBER_OF_CITY_STATES_SPAWN_LARGE;}		
-	inline int getSET_NUMBER_OF_CITY_STATES_SPAWN_HUGE() const {return m_iSET_NUMBER_OF_CITY_STATES_SPAWN_HUGE;}		
-/*
-	inline int getCIVILIAN_THRESH_1() const {return m_iCIVILIAN_THRESH_1;}		
-	inline int getCIVILIAN_THRESH_2() const {return m_iCIVILIAN_THRESH_2;}		
-	inline int getCIVILIAN_THRESH_3() const {return m_iCIVILIAN_THRESH_3;}		
-	inline int getCIVILIAN_THRESH_4() const {return m_iCIVILIAN_THRESH_4;}		
-	inline int getCIVILIAN_THRESH_5() const {return m_iCIVILIAN_THRESH_5;}		
-	inline int getCIVILIAN_LIMIT_1() const {return m_iCIVILIAN_LIMIT_1;}		
-	inline int getCIVILIAN_LIMIT_2() const {return m_iCIVILIAN_LIMIT_2;}		
-	inline int getCIVILIAN_LIMIT_3() const {return m_iCIVILIAN_LIMIT_3;}		
-	inline int getCIVILIAN_LIMIT_4() const {return m_iCIVILIAN_LIMIT_4;}		
-	inline int getCIVILIAN_LIMIT_5() const {return m_iCIVILIAN_LIMIT_5;}
-*/	
+	inline int getTRUNCATE_ANIMATION_TURNS() const {return m_iTRUNCATE_ANIMATION_TURNS;}			
+
 /*************************************************************************************************/
 /** TGA_INDEXATION                          11/13/07                            MRGENIE          */
 /**                                                                                              */
@@ -1109,32 +1087,6 @@ protected:
 	int m_iTRUNCATE_ANIMATIONS;	
 	int m_iTRUNCATE_ANIMATIONS_ERA;	
 	int m_iTRUNCATE_ANIMATION_TURNS;	
-	int m_iSPECIALISTS_INSTEAD_OF_POPULATION;	
-	int m_iENHANCED_CITY_STATES_THRESHOLD;	
-	int m_iFREE_UNITS_PER_STATE_MOD;	
-	int m_iCITY_STATE_TECH_DIFFUSION_MOD;	
-	int m_iCS_BUILD_UNITS_WITH_NO_PREQ_BONUS;	
-	int m_iCS_START_SIGHT_RANGE;	
-	int m_iCS_CULTURE_LEVEL_MIN_RADIOUS;	
-	int m_iCS_CULTURE_LEVEL_MAX_RADIOUS;	
-	int m_iDISPLAY_CITY_STATES_IN_CUSTOM_GAME;	
-	int m_iSET_NUMBER_OF_CITY_STATES_SPAWN_TINY;	
-	int m_iSET_NUMBER_OF_CITY_STATES_SPAWN_SMALL;	
-	int m_iSET_NUMBER_OF_CITY_STATES_SPAWN_STANDARD;	
-	int m_iSET_NUMBER_OF_CITY_STATES_SPAWN_LARGE;	
-	int m_iSET_NUMBER_OF_CITY_STATES_SPAWN_HUGE;	
-/*
-	int m_iCIVILIAN_THRESH_1;	
-	int m_iCIVILIAN_THRESH_2;	
-	int m_iCIVILIAN_THRESH_3;	
-	int m_iCIVILIAN_THRESH_4;	
-	int m_iCIVILIAN_THRESH_5;	
-	int m_iCIVILIAN_LIMIT_1;	
-	int m_iCIVILIAN_LIMIT_2;	
-	int m_iCIVILIAN_LIMIT_3;	
-	int m_iCIVILIAN_LIMIT_4;	
-	int m_iCIVILIAN_LIMIT_5;	
-*/
 	CvXMLLoadUtility* m_pXMLLoadUtility; // advc.003v
 
 	CvDLLUtilityIFaceBase* m_pDLL;

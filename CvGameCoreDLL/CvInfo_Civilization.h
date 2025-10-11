@@ -37,10 +37,7 @@ public: // advc: All the const functions are exposed to Python
 	DllExport bool isPlayable() const;
 //limited religion doto	
 	int getMaxLimitedReligions() const;
-//limited religion doto	
-//doto city states
-	int getIsCityState() const;
-//doto city states
+//limited religion doto
 	std::wstring pyGetShortDescription(uint uiForm) { return getShortDescription(uiForm); }
 	DllExport const wchar* getShortDescription(uint uiForm = 0);
 	const wchar* getShortDescriptionKey() const;
@@ -93,9 +90,6 @@ protected:
 //limited religion doto	
 	int m_iMaxLimitedReligions;
 //limited religion doto
-//doto specialists instead of pop city states
-	int m_isCityState;
-//doto specialists instead of pop city states
 	CvString m_szArtDefineTag;
 	CvWString m_szShortDescriptionKey;
 	CvWString m_szAdjectiveKey;
@@ -181,14 +175,6 @@ public: // advc: All the const functions are exposed to Python except those adde
 	int getBonusTradeAttitudeChangeLimit() const { return m_iBonusTradeAttitudeChangeLimit; }
 	int getOpenBordersAttitudeDivisor() const { return m_iOpenBordersAttitudeDivisor; }
 	int getOpenBordersAttitudeChangeLimit() const { return m_iOpenBordersAttitudeChangeLimit; }
-/*************************************************************************************************/
-/* START: Advanced Diplomacy                                                         			 */
-/*************************************************************************************************/
-	int getFreeTradeAgreementAttitudeDivisor() const{ return m_iFreeTradeAgreementAttitudeDivisor; }
-	int getFreeTradeAgreementAttitudeChangeLimit() const { return m_iFreeTradeAgreementAttitudeChangeLimit; }
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	int getDefensivePactAttitudeDivisor() const { return m_iDefensivePactAttitudeDivisor; }
 	int getDefensivePactAttitudeChangeLimit() const { return m_iDefensivePactAttitudeChangeLimit; }
 	int getShareWarAttitudeChange() const { return m_iShareWarAttitudeChange; }
@@ -220,13 +206,6 @@ public: // advc: All the const functions are exposed to Python except those adde
 	int getAdoptCivicRefuseAttitudeThreshold() const { return m_iAdoptCivicRefuseAttitudeThreshold; }
 	int getConvertReligionRefuseAttitudeThreshold() const { return m_iConvertReligionRefuseAttitudeThreshold; }
 	int getOpenBordersRefuseAttitudeThreshold() const { return m_iOpenBordersRefuseAttitudeThreshold; }
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	int getFreeTradeAgreementRefuseAttitudeThreshold() const { return m_iFreeTradeAgreementRefuseAttitudeThreshold; }
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	int getDefensivePactRefuseAttitudeThreshold() const { return m_iDefensivePactRefuseAttitudeThreshold; }
 	int getPermanentAllianceRefuseAttitudeThreshold() const { return m_iPermanentAllianceRefuseAttitudeThreshold; }
 	int getVassalRefuseAttitudeThreshold() const { return m_iVassalRefuseAttitudeThreshold; }
@@ -332,14 +311,6 @@ protected:
 	int m_iBonusTradeAttitudeChangeLimit;
 	int m_iOpenBordersAttitudeDivisor;
 	int m_iOpenBordersAttitudeChangeLimit;
-	/*************************************************************************************************/
-	/* START: Advanced Diplomacy                                                        			 */
-	/*************************************************************************************************/
-	int m_iFreeTradeAgreementAttitudeDivisor;
-	int m_iFreeTradeAgreementAttitudeChangeLimit;
-	/************************************************************************************************/
-	/* END: Advanced Diplomacy                                                                      */
-	/************************************************************************************************/
 	int m_iDefensivePactAttitudeDivisor;
 	int m_iDefensivePactAttitudeChangeLimit;
 	int m_iShareWarAttitudeChange;
@@ -370,13 +341,6 @@ protected:
 	int m_iAdoptCivicRefuseAttitudeThreshold;
 	int m_iConvertReligionRefuseAttitudeThreshold;
 	int m_iOpenBordersRefuseAttitudeThreshold;
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	int m_iFreeTradeAgreementRefuseAttitudeThreshold;
-/************************************************************************************************/
-/* END: Advanced Diplomacy         END                                                          */
-/************************************************************************************************/
 	int m_iDefensivePactRefuseAttitudeThreshold;
 	int m_iPermanentAllianceRefuseAttitudeThreshold;
 	int m_iVassalRefuseAttitudeThreshold;
@@ -470,10 +434,6 @@ public:
 	bool isAnyFreePromotion() const { return (m_pabFreePromotion != NULL); } // advc.003t
 	bool isFreePromotionUnitCombat(int i) const; // advc.003t: Return type was int
 
-//doto city states + advanced diplomacy - given only from trade agreement
-	int getFreeTradeValid() const;
-	int getCommerceFRmodifier(int i) const;
-//doto city states + advanced diplomacy - given only from trade agreement
 	bool read(CvXMLLoadUtility* pXML);
 
 protected:
@@ -498,10 +458,6 @@ protected:
 
 	bool* m_pabFreePromotion;
 	bool* m_pabFreePromotionUnitCombat;
-//doto city states + advanced diplomacy - given only from trade agreement
-	int m_iFreeTradeValid;
-	int* m_paiCommerceFRmodifier;
-//doto city states + advanced diplomacy - given only from trade agreement
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

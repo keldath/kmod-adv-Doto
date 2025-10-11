@@ -63,18 +63,7 @@ protected: // advc.003u: Can't easily move these past AI_makeAssignWorkDirty (th
 public:
 	// advc.003u: Keep one pure virtual function so that this class is abstract
 	virtual void AI_makeAssignWorkDirty() = 0;
-/****************************************
- *  Archid Mod: 10 Jun 2012
- *  Functionality: Unit Civic Prereq - Archid
- *		Based on code by Afforess
- *	Source:
- *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
- *
- ****************************************/
-	bool hasValidCivics(UnitTypes eUnit) const;
-/**
- ** End: Unit Civic Prereq
- **/
+
 	DllExport void init(PlayerTypes eID);
 	DllExport void setupGraphical();
 	DllExport void reset(PlayerTypes eID = NO_PLAYER, bool bConstructorCall = false);
@@ -105,7 +94,7 @@ public:
 	void killCities();																								// Exposed to Python
 	CvWString getNewCityName() const;																				// Exposed to Python
 	void getCivilizationCityName(CvWString& szBuffer, CivilizationTypes eCivilization) const;
-	bool isCityNameValid(CvWString& szName, bool bTestDestroyed = true) const;
+	bool isCityNameValid(CvWString& szName, bool bTestPast = true) const;
 
 	CvUnit* initUnit(UnitTypes eUnit, int iX, int iY, UnitAITypes eUnitAI = NO_UNITAI,								// Exposed to Python
 			// advc.003u: Set this default here rather than in CvUnit::init
@@ -178,8 +167,8 @@ public:
 
 	void doTurn();
 	void doTurnUnits();
-
-	void verifyCivics();
+/* doto civics  dependency - start*/
+	void verifyCivics(CivicTypes specificParent = NO_CIVIC);
 	void verifyStateReligion(); // kekm.10
 	void verifyCityProduction(); // advc.064d
 	void updatePlotGroups();
@@ -421,11 +410,18 @@ public:
 	bool isSignificantDiscovery(TechTypes eTech) const;
 
 	bool isCivic(CivicTypes eCivic) const;														// Exposed to Python	
-	bool canDoCivics(CivicTypes eCivic) const;	
-/* doto civics parent - Start */
+//doto 115 goverment screen civic dependency
+/*
+cvgovermentscreen sends a call from drawCivicOptionButtons which checks if to draw the civic buttons.
+i added the true , cvgovermentscreen_ignore_hide so the display of civics would display despite the
+getGovermentConversionCounter being 0. that is because if the counter is 0 it would show the civics as attainable,
+which is true, but its confusing cause it feels like player just havnt learnt them yet.
+*/
+	bool canDoCivics(CivicTypes eCivic, bool cvgovermentscreen_ignore_hide = false) const;
 	bool canDoChildCivic(CivicTypes eCivic) const;										
-	int isCivicParentOrChild(CivicTypes eCivic) const	;																	// Exposed to Python
-/* doto Civics parent - End */
+	int isCivicParentOrChild(CivicTypes eCivic) const	;
+	CivicTypes getCivicParent(CivicTypes eCivic) const;																		// Exposed to Python
+/* doto civic dependency - End */
 	bool canRevolution(CivicMap const& kNewCivics) const; // advc.001: Exposed to Python as canAdopt
 	bool canDoAnyRevolution() const; // advc.enum, exposed to Python as canRevolution(0).
 	void revolution(CivicMap const& kNewCivics, bool bForce = false);												// Exposed to Python
@@ -845,9 +841,6 @@ public:
 		return getCapital();
 	}
 	void setCapital(CvCity* pNewCapital);
-//doto city states - trade route resource
-	void addCityStateResource(CvCity* pNewCapital, CvCity* const pOldCapital, int rAmount = 0) const;
-//soto city states end
 	// <advc.127b> -1 if no capital or (eObserver!=NO_TEAM) unrevealed to eObserver
 	int getCapitalX(TeamTypes eObserver, bool bDebug = false) const;
 	int getCapitalY(TeamTypes eObserver, bool bDebug = false) const;
@@ -957,7 +950,18 @@ public:
 
 	DllExport EraTypes getCurrentEra() const { return m_eCurrentEra; }												// Exposed to Python
 	void setCurrentEra(EraTypes eNewValue);
-
+//doto 115 goverment screen civic dependency
+	int getGovermentConversionCounter(CivicOptionTypes eCivicOption) const
+	{
+		return m_aiGovermentConversionCounter.get(eCivicOption);
+	}
+	void setGovermentConversionCounter(CivicOptionTypes eCivicOption, int iValue);
+	void changeGovermentConversionCounter(CivicOptionTypes eCivicOption, int iChange)
+	{
+		setGovermentConversionCounter(eCivicOption, getGovermentConversionCounter(eCivicOption) + iChange);
+	}
+	void updateGovermentConversionCounter(CivicOptionTypes eCivicOption = NO_CIVICOPTION, EraTypes eNewValue = NO_ERA, int reduceAfterConvert = NULL );
+//doto 115 goverment screen civic dependency
 	ReligionTypes getLastStateReligion() const { return m_eLastStateReligion; }
 	ReligionTypes getStateReligion() const																			// Exposed to Python
 	{
@@ -1046,17 +1050,6 @@ public:
 		return m_aiCapitalCommerceRateModifier.get(eCommerce);
 	}
 	void changeCapitalCommerceRateModifier(CommerceTypes eCommerce, int iChange);
-/************************************************************************************************/
-/* START: Advanced Diplomacy     DOTO CITY STATEs												*/
-/************************************************************************************************/
-	int getCapitalCommerceRateFTModifier(CommerceTypes eCommerce) const												// Exposed to Python
-	{
-		return m_aiCapitalCommerceRateFTModifier.get(eCommerce);
-	}
-	void changeCapitalCommerceRateFTModifier(CommerceTypes eCommerce, int iChange);
-/************************************************************************************************/
-/* END: Advanced Diplomacy     DOTO CITY STATEs												*/
-/************************************************************************************************/
 
 	int getStateReligionBuildingCommerce(CommerceTypes eCommerce) const												// Exposed to Python
 	{
@@ -1255,7 +1248,7 @@ public:
 			int iExtraCities = 0) const; // advc.004b
 	int getCivicUpkeep(CivicMap const* pCivics = NULL, bool bIgnoreAnarchy = false, 									// Exposed to Python
 			int iExtraCities = 0) const; // advc.004b
-	void setCivics(CivicOptionTypes eCivicOption, CivicTypes eNewValue);											// Exposed to Python
+	void setCivics(CivicOptionTypes eCivicOption, CivicTypes eNewValue);			// Exposed to Python
 
 	int getSpecialistExtraYield(SpecialistTypes eSpecialist, YieldTypes eYield) const								// Exposed to Python
 	{
@@ -1580,17 +1573,10 @@ public:
 		return *reinterpret_cast<CvPlayerAI const*>(this);
 	} // </advc.003u>	
 
-/************************************************************************************************/
-/* START: Advanced Diplomacy       doto added for city states                                   */
-/************************************************************************************************/
-	bool checkCityState(PlayerTypes ePlayer) const;
-	TraitTypes getMemberUniqueTrait(PlayerTypes ePlayer) const;
-	bool canPlayersSignFreeTradeAgreement(PlayerTypes eFrom, PlayerTypes eTo) const;
-	TraitTypes getPlayersMinUniqueTrait(PlayerTypes eFrom, PlayerTypes eTo) const;
-	void csMemberUpdateFreeTradeTraits(TraitTypes eTrait, int iChange, PlayerTypes ePlayer) const;
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
+
+	//doto 115 goverment screen civic dependency
+	ArrayEnumMap<CivicOptionTypes,int,void*,1> m_aiGovermentConversionCounter;
+	//doto 115 goverment screen civic dependency
 
 protected:  // <advc.210>
 	void initAlerts(bool bSilentCheck = false);
@@ -1692,7 +1678,7 @@ protected:  // <advc.210>
 	int m_iCapitalCityID;
 //limited religions
 	int m_iCountFoundReligion;
-//limited religion doto 
+//limited religion doto
 	int m_iCitiesLost;
 	int m_iWinsVsBarbs;
 	int m_iAssets;
@@ -1762,13 +1748,6 @@ protected:  // <advc.210>
 	EagerEnumMap<CommerceTypes,int,short> m_aiCommerceRate;
 	CommercePercentMap m_aiCommerceRateModifier;
 	CommercePercentMap m_aiCapitalCommerceRateModifier;
-/************************************************************************************************/
-/* START: Advanced Diplomacy     DOTO CITY STATEs												*/
-/************************************************************************************************/
-	CommercePercentMap m_aiCapitalCommerceRateFTModifier;
-/************************************************************************************************/
-/* END: Advanced Diplomacy     DOTO CITY STATEs												*/
-/************************************************************************************************/
 	CommerceChangeMap m_aiStateReligionBuildingCommerce;
 	CommerceChangeMap m_aiSpecialistExtraCommerce;
 	CommerceChangeMap m_aiCommerceFlexibleCount;

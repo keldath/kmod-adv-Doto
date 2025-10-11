@@ -127,7 +127,6 @@ CvPlot::~CvPlot() // advc: Merged with the deleted uninit function
 {
 	SAFE_DELETE_ARRAY(m_szScriptData);
 	SAFE_DELETE_ARRAY(m_szMostRecentCityName); // advc.005c
-//keldath QA this was onCvPlot::uninit() - i think im using f1rpo method now...hope its a good merge.
 	// < JCultureControl Mod Start >
 	//SAFE_DELETE_ARRAY(m_aiCultureControl);
 	// < JCultureControl Mod End >
@@ -136,13 +135,10 @@ CvPlot::~CvPlot() // advc: Merged with the deleted uninit function
 	gDLL->getFeatureIFace()->destroy(m_pFeatureSymbol);
 	if(m_pPlotBuilder != NULL)
 		gDLL->getPlotBuilderIFace()->destroy(m_pPlotBuilder);
-	//DOTO 114 crash fix for advciv
-	if (m_pRouteSymbol != NULL)
-		gDLL->getRouteIFace()->destroy(m_pRouteSymbol);
+	gDLL->getRouteIFace()->destroy(m_pRouteSymbol);
 	gDLL->getRiverIFace()->destroy(m_pRiverSymbol);
 	gDLL->getFlagEntityIFace()->destroy(m_pFlagSymbol);
 	gDLL->getFlagEntityIFace()->destroy(m_pFlagSymbolOffset);
-
 	m_pCenterUnit = NULL;
 
 	deleteAllSymbols();
@@ -472,7 +468,7 @@ void CvPlot::doImprovement()
 				continue;
 			// <advc.rom3>
 			//Afforess: check for valid terrains for this bonus before discovering it
-			if (!canHaveBonus(eLoopBonus), false, /* advc.129: */ true)
+			if (!canHaveBonus(eLoopBonus, false, /* advc.129: */ true))
 				continue; // </advc.rom3>
 			iOdds *= GC.getGame().getSpeedPercent();
 			iOdds /= 100;
@@ -570,124 +566,10 @@ void CvPlot::updateCulture(bool bBumpUnits, bool bUpdatePlotGroups)
 				" should imply eSecondOwner!=NO_PLAYER");
 		}
 	}
-
-	//Doto City States -break if the plot is near city state
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		if (!canChangeCultureOnTile(eCulturalOwner))
-			return;
-	}
-	//doto city state end
 	setOwner(eCulturalOwner, // </advc.035>
 			bBumpUnits, bUpdatePlotGroups);
 }
 
-//doto city state start
-//culture flip of plots in minimum radious x of a city state
-//logic is that we want to leave city states with a culture cross of radius x at all times.
-//this should be something like fixed borders for city states
-int CvPlot::isPlotinCsVicinity(PlayerTypes eExpandingPlayer, int iMinRange, int iMaxRange)
-{
-	if (eExpandingPlayer != NO_PLAYER)
-	{
-		//this will try to check if there is a city nearby the plot
-		//dynamic parameter, means how far will it look for a city state away from the plot
-		CvPlot* pCityState = NULL;
-		for (SquareIter it(*this, iMinRange); it.hasNext(); ++it)
-		{
-			CvPlot& p = *it;
-			CvCity* pCity = p.getPlotCity();
-			if (pCity != NULL)
-			{
-				PlayerTypes cityOwner = pCity->getOwner();
-				if (cityOwner != eExpandingPlayer
-					&& GET_PLAYER(cityOwner).checkCityState(cityOwner))
-				{
-					pCityState = pCity->plot();
-					break;
-				}
-			}
-		}
-		if (pCityState != NULL)
-		{
-			int plotRadious = plotDistance(pCityState, this);
-			//the reason for using CS_EXPAND_BORDER_RANGE and not CS_CULTURE_LEVEL_EXPAND is to
-			//allow to be able to have a minimum radious that will not be claimable by the player .
-			//so the city state wont loose its mnin city range as defined
-			if (plotRadious <= iMinRange /*< 3*/)
-				return 1;
-			if (plotRadious <= iMaxRange /*< 3*/)
-				return 2;
-		}
-	}
-	return 0;
-}
-int CvPlot::isInCSsafeRadious(PlayerTypes ePlayer, int iMinRange, int iMaxRange, CvPlot* toPlot)
-{
-	if (ePlayer != NO_PLAYER)
-	{
-		CvCity* pCapitalCityState = GET_PLAYER(ePlayer).getCapital();
-		if (pCapitalCityState != NULL)
-		{
-			int plotRadious = plotDistance(pCapitalCityState->plot(), toPlot);
-			if (plotRadious <= iMinRange)
-				return 1;
-			if (plotRadious <= iMaxRange)
-				return 2;
-			if (plotRadious > iMaxRange)
-				return 3;
-		}
-	}
-	return 0;
-}
-bool CvPlot::canChangeCultureOnTile(PlayerTypes eExpandingPlayer)
-{
-	static int const iMinRange = GC.getCS_CULTURE_LEVEL_MIN_RADIOUS();
-	static int const iMaxRange = GC.getCS_CULTURE_LEVEL_MAX_RADIOUS();
-	bool isExpanderCS = false;
-	if (eExpandingPlayer != NO_PLAYER)
-	{
-		isExpanderCS = GET_PLAYER(eExpandingPlayer).checkCityState(eExpandingPlayer);
-		PlayerTypes tileOwner = getOwner();
-		bool isOwnerCS = false;
-
-		if (tileOwner != NO_PLAYER && tileOwner != eExpandingPlayer)
-		{
-			isOwnerCS = GET_PLAYER(tileOwner).checkCityState(tileOwner);
-			int ownerCSresult = isInCSsafeRadious(tileOwner, iMinRange, iMaxRange, this);
-
-			if (isOwnerCS && isExpanderCS)
-				return false;
-
-			if (isOwnerCS)
-			{
-				if (ownerCSresult == 1)
-					return false;
-				if (ownerCSresult > 2/*== 2*/)
-					return true;
-			}
-		}
-		if (tileOwner == NO_PLAYER || isExpanderCS)
-		{
-			if (isExpanderCS)
-			{
-				int ExpanderCSresult = isInCSsafeRadious(eExpandingPlayer, iMinRange, iMaxRange, this);
-				if (ExpanderCSresult < 3)
-					return true; 
-				if (ExpanderCSresult >= 3)
-					return false;
-			}
-			int plotResult = isPlotinCsVicinity(eExpandingPlayer, iMinRange, iMaxRange);
-			if (plotResult == 1)
-				return false;
-			if (plotResult >= 2)
-				return true;
-		}
-	}
-	return true;
-}
-
-//doto city state
 
 void CvPlot::updateFog()
 {
@@ -1632,8 +1514,7 @@ bool CvPlot::isVisibleWorked() const
 {
 	if (isBeingWorked())
 	{
-		/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */
-		if (getTeam() == GC.getGame().getActiveTeam() || GC.getGame().isDebugMode())
+		if (isActiveTeam() || GC.getGame().isDebugMode())
 			return true;
 	}
 	return false;
@@ -1714,12 +1595,10 @@ bool CvPlot::isFreshWater() const
 		Caching this in a variable bool m_bFreshWater:1 would save some time,
 		but not quite trivial to keep it updated, so probably not worth it. */
 	//PROFILE_FUNC();
-	// davidlallen: fresh water on ocean: remove test isLand()
-    if (isWater())
+	if (isWater())
 		return false;
 
-	// davidlallen: fresh water on ocean: remove test isLand()
-   if (isImpassable())
+	if (isImpassable())
 		return false;
 
 	if (isRiver())
@@ -1736,7 +1615,7 @@ bool CvPlot::isFreshWater() const
 		}
 	}
 
-	return false;/* if u want no fresh water from lakes and ocean mark out up to here ->*/
+	return false;
 }
 
 // advc.108:
@@ -2353,7 +2232,9 @@ bool CvPlot::canHaveBonus(BonusTypes eBonus, bool bIgnoreLatitude,
 
 	if (!bIgnoreCurrentBonus && // advc.tsl
 		getBonusType() != NO_BONUS)
+	{
 		return false;
+	}
 //===NM=====Mountains Mod===0=====
 	if (!GC.getGame().isOption(GAMEOPTION_MOUNTAINS))
 	{
@@ -2763,7 +2644,7 @@ bool CvPlot::canBuild(BuildTypes eBuild, PlayerTypes ePlayer, bool bTestVisible,
                 }
             }
             // < JImprovementLimit Mod End >
-			if (TEAMID(ePlayer) != getTeam())
+			if (eTeam != ePlotTeam)
 			{
 				//outside borders can't be built in other's culture
 				if (GC.getInfo(eImprovement).isOutsideBorders())
@@ -3012,69 +2893,6 @@ CvUnit* CvPlot::getBestDefender(PlayerTypes eOwner,
 	return pBestUnit;
 }
 
-// MOD - START - Ranged Strike AI
-// i had to duplicate the function getBestDefender
-//and this is cause i couldnt get the filters used in advciv to pass the
-//branged properly, i got crash on air attacks and more.
-//so i just duplicated the function with a regulart parameter pass.
-//the whole thing is just to pass isBetterDefenderThan with "true" bRanged.
-//this is also a waste, cause i can just check if the attacker is ranged with some indication at the
-//branged check in isBetterDefenderThan at the part of the left from behind check .
-//the ideas was not to use left from behind for the attack of a ranged attack...!
-CvUnit* CvPlot::getBestDefenderVsRanged(PlayerTypes eOwner, PlayerTypes eAttackingPlayer, CvUnit const* pAttacker,
-			bool bTestEnemy, bool bTestPotentialEnemy,
-			bool bTestVisible, // advc.028
-			/*	advc: New params to allow hasDefender checks.
-				advc.089: bTestCanAttack=true by default. */
-			bool bTestCanAttack, bool bTestAny,
-			/*	(Ideally, this should be swapped with bTestVisible to stay closer
-				to the original code. bTestCanMove had been unused for a while.
-				Not going to change this now, too error-prone.) */
-			bool bTestCanMove) const
-{
-	PROFILE_FUNC();
-	// Ensure consistency of parameters
-	if (pAttacker != NULL)
-	{
-		FAssert(pAttacker->getOwner() == eAttackingPlayer);
-		eAttackingPlayer = pAttacker->getOwner();
-	}
-	// isEnemy implies isPotentialEnemy
-	FAssert(!bTestEnemy || !bTestPotentialEnemy); // </advc>
-	// BETTER_BTS_AI_MOD, Lead From Behind (UncutDragon), 02/21/10, jdog5000
-	int iBestUnitRank = -1;
-	CvUnit* pBestUnit = NULL;
-	FOR_EACH_UNIT_VAR_IN(pLoopUnit, *this)
-	{
-		CvUnit& kUnit = *pLoopUnit;
-		if (eOwner != NO_PLAYER && kUnit.getOwner() != eOwner)
-			continue;
-		if (kUnit.isCargo()) // advc: Was previously only checked with TestCanMove
-			continue;
-		if (bTestCanMove && !kUnit.canMove())
-			continue;
-		// <advc> Moved the other conditions into CvUnit::canBeAttackedBy (new function)
-		if (eAttackingPlayer == NO_PLAYER ||
-			kUnit.canBeAttackedBy(eAttackingPlayer,
-			pAttacker, bTestEnemy, bTestPotentialEnemy,
-			bTestVisible, // advc.028
-			bTestCanAttack))
-		{
-			if (bTestAny)
-				return &kUnit; // </advc>
-			if (kUnit.isBetterDefenderThan(pBestUnit, pAttacker,
-				&iBestUnitRank, // UncutDragon
-// MOD - START - Ranged Strike AI				
-				bTestVisible, true)) // advc.061
-// MOD - START - Ranged Strike AI
-			{
-				pBestUnit = &kUnit;
-			}
-		}
-	}
-	// BETTER_BTS_AI_MOD: END
-	return pBestUnit;
-}
 
 CvUnit* CvPlot::getSelectedUnit() const
 {
@@ -3157,7 +2975,8 @@ int CvPlot::defenseModifier(TeamTypes eDefender, bool bIgnoreBuilding,
 
 
 int CvPlot::movementCost(CvUnit const& kUnit, CvPlot const& kFrom,
-	bool bAssumeRevealed) const // advc.001i
+	bool bAssumeRevealed, // advc.001i
+	bool bIgnoresRoute) const // advc.001t
 {
 	// <advc.162>
 	if(kUnit.isInvasionMove(kFrom, *this))
@@ -3239,7 +3058,8 @@ int CvPlot::movementCost(CvUnit const& kUnit, CvPlot const& kFrom,
 	if (kFrom.isValidRoute(&kUnit, bAssumeRevealed) &&
 		isValidRoute(&kUnit, bAssumeRevealed) && // </advc.001i>
 		(GET_TEAM(eTeam).isBridgeBuilding() ||
-		!kFrom.isRiverCrossing(directionXY(kFrom, *this))))
+		!kFrom.isRiverCrossing(directionXY(kFrom, *this))) &&
+		!bIgnoresRoute) // advc.001t
 	{	// <advc.001i>
 		RouteTypes eFromRoute = (bAssumeRevealed ? kFrom.getRouteType() :
 				kFrom.getRevealedRouteType(eTeam));
@@ -4918,10 +4738,6 @@ void CvPlot::setOwner(PlayerTypes eNewValue, bool bCheckUnits, bool bUpdatePlotG
 	} // </advc.ctr>
 	invalidateBorderDangerCache(); // K-Mod. (based on BBAI)
 	updateSymbols();
-
-//doto keldath - city states color plots - START
-	colorCsPlot(eNewValue, eOldOwner);
-//keldath - color city states plots - END
 }
 
 // <advc.035>
@@ -5395,7 +5211,7 @@ void CvPlot::setImprovementType(ImprovementTypes eNewValue,
 	bool bUpdateInFoW) // advc.055
 {
 	ImprovementTypes const eOldImprovement = getImprovementType();
-	if(getImprovementType() == eNewValue)
+	if (getImprovementType() == eNewValue)
 		return;
 	// <advc.183>
 	bool const bActedAsCity = (eOldImprovement != NO_IMPROVEMENT &&
@@ -6040,7 +5856,7 @@ int CvPlot::calculateYield(YieldTypes eYield, bool bDisplay) const
 		eImprovement = getImprovementType();
 		eRoute = getRouteType();
 	}
-	int iNatureYield = // advc.908a: Preserve this for later
+	int const iNatureYield = // advc.908a: Preserve this for later
 			calculateNatureYield(eYield,
 			bDisplay ? getActiveTeam() : // advc.182
 			/*	(advc: Note that NO_TEAM means that bonus resources are ignored.
@@ -6098,7 +5914,7 @@ int CvPlot::calculateYield(YieldTypes eYield, bool bDisplay) const
 			int iThresh = GET_PLAYER(ePlayer).getExtraYieldThreshold(eYield);
 			if (iThresh > 0)
 			{
-				if(iYield >= iThresh)
+				if (iYield >= iThresh)
 					iYield += GC.getDefineINT(CvGlobals::EXTRA_YIELD);
 			}
 		}
@@ -6254,15 +6070,6 @@ void CvPlot::setCulture(PlayerTypes eIndex, int iNewValue, bool bUpdate,
 
 	if(getCulture(eIndex) == iNewValue)
 		return;
-
-// doto city states - do not let a tile that is out side Cs 2 range cross to top 49 % control.
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		if (!canChangeCultureOnTile(eIndex))
-			return;
-	}
-//doto city states - do not let a tile that is out side Cs 2 range cross to top 49 % control.
-
 	 // <advc.opt>
 	if(GET_PLAYER(eIndex).isEverAlive())
 		m_iTotalCulture += iNewValue - m_aiCulture.get(eIndex); // </advc.opt>
@@ -6281,17 +6088,9 @@ void CvPlot::setCulture(PlayerTypes eIndex, int iNewValue, bool bUpdate,
 void CvPlot::changeCulture(PlayerTypes eIndex, int iChange, bool bUpdate)
 {
 	if(iChange != 0)
-	{
-//doto city states - do not let a tile that is out side Cs 2 range cross to top 49 % control.
-		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-		{
-			if (!canChangeCultureOnTile(eIndex))
-				return;
-		}
-//doto city states - do not let a tile that is out side Cs 2 range cross to top 49 % control.
 		setCulture(eIndex, getCulture(eIndex) + iChange, bUpdate, true);
-	}
 }
+
 // < JCultureControl Mod Start >
 PlayerTypes CvPlot::getImprovementOwner() const
 {
@@ -6908,6 +6707,10 @@ void CvPlot::changeVisibilityCount(TeamTypes eTeam, int iChange,
 			GET_TEAM(getTeam()).meet(eTeam, true, /* advc.071: */ &fcData);
 		}
 		// K-Mod. Meet the owner of any units you can see.
+		/*	advc.071: When border spread grants visibility, any unit spotted
+			could move away before the next graphics update. Confusing, then,
+			to trigger a meeting at this point. */
+		if (pUnit != NULL)
 		{
 			PROFILE("CvPlot::changeVisibility -- meet units"); // (this is new, so I want to time it.)
 			FOR_EACH_UNIT_IN(pLoopUnit, *this)
@@ -9066,8 +8869,7 @@ void CvPlot::applyEvent(EventTypes eEvent)
 	}
 }
 
-//doto city state START -allows cities to build units without bonus prereq
-//edited the parts of bonus checks
+
 bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 	bool bCheckAirUnitCap, // advc.001b
 	BonusTypes eAssumeAvailable) const // advc.001u
@@ -9111,29 +8913,20 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 			return false;
 	}
 
-//doto city state START -allows cities to build units without bonus prereq
-	bool isCityState = false;
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-		GC.getCS_BUILD_UNITS_WITH_NO_PREQ_BONUS() == 1)
+	if (kUnit.isPrereqBonuses())
 	{
-		isCityState = GET_PLAYER(getOwner()).checkCityState(getOwner());
-	}
-
-	if (kUnit.isPrereqBonuses() && !isCityState)
-	{
-		if (kDomain == DOMAIN_SEA)
+		if (kUnit.getDomainType() == DOMAIN_SEA)
 		{	// advc: Moved to CvCity
-			if (bCity && (!pCity->isPrereqBonusSea() && !isCityState))
+			if (bCity && !pCity->isPrereqBonusSea())
 				return false;
 		}
 		else
 		{
 			//if (getArea().getNumTotalBonuses() > 0)
-			if(!getArea().isAnyBonus() && !isCityState) // advc.001
+			if(!getArea().isAnyBonus()) // advc.001
 				return false;
 		}
 	}
-//doto city state END -allows cities to build units without bonus prereq
 	/*if (isCity()) {
 		// ...
 	}
@@ -9149,8 +8942,8 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 	{
 		/*  Don't allow any ships to be trained at lakes, except Work Boat
 			(if there are resources in the lake; already checked above). */
-//doto city state
-		if (kDomain == DOMAIN_SEA && (!kUnit.isPrereqBonuses() && !isCityState) &&
+//doto efifciancy
+		if (kDomain == DOMAIN_SEA && !kUnit.isPrereqBonuses() &&
 			!isAdjacentSaltWater())
 		{
 			return false;
@@ -9200,7 +8993,6 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 //doto units bonus cap	
 	bool eOptionCap = GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP);
 //doto units bonus cap		
-//doto city state -allows cities to build units without bonus prereq
 	if(ePrereqAndBonus != NO_BONUS &&
 		ePrereqAndBonus != eAssumeAvailable) // advc.001u
 	{
@@ -9209,7 +9001,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 		int egetNumUnitBonusCaps = kPlayer.getNumUnitBonusCaps(kDomain, ePrereqAndBonus);
 		int egetTotalPlayerBonus = kPlayer.getTotalPlayerBonus(ePrereqAndBonus);
 //doto units bonus cap
-		if (!bCity && !isCityState)
+		if (!bCity)
 		{
 			if (!isPlotGroupConnectedBonus(getOwner(), ePrereqAndBonus))
 				return false;
@@ -9226,7 +9018,7 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 			}
 //doto units bonus cap	
 		}
-		else if (!pCity->hasBonus(ePrereqAndBonus) )
+		else if (!pCity->hasBonus(ePrereqAndBonus))
 			return false;
 //doto units bonus cap	
 		else if (eOptionCap)
@@ -9242,49 +9034,26 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 
 	bool bRequiresBonus = false;
 	bool bNeedsBonus = true;
-//doto city state -allows cities to build units without bonus prereq
-	if (!isCityState)
+	for (int i = 0; i < kUnit.getNumPrereqOrBonuses(); i++)
 	{
-		for (int i = 0; i < kUnit.getNumPrereqOrBonuses(); i++)
+		BonusTypes const ePrereqOrBonus = kUnit.getPrereqOrBonuses(i);
+		if (ePrereqOrBonus != eAssumeAvailable) // advc.001u
 		{
-			BonusTypes const ePrereqOrBonus = kUnit.getPrereqOrBonuses(i);
-			if (ePrereqOrBonus != eAssumeAvailable) // advc.001u
+			bRequiresBonus = true;
+//doto units bonus cap
+			CvPlayer& kPlayer = bCity ? GET_PLAYER(pCity->getOwner()) : GET_PLAYER(getOwner());
+			int egetNumUnitBonusCaps = kPlayer.getNumUnitBonusCaps(kDomain, ePrereqOrBonus);
+			int egetTotalPlayerBonus = kPlayer.getTotalPlayerBonus(ePrereqOrBonus);
+//doto units bonus cap
+			if (bCity)
 			{
-				bRequiresBonus = true;
-//doto units bonus cap
-				CvPlayer& kPlayer = bCity ? GET_PLAYER(pCity->getOwner()) : GET_PLAYER(getOwner());
-				int egetNumUnitBonusCaps = kPlayer.getNumUnitBonusCaps(kDomain, ePrereqOrBonus);
-				int egetTotalPlayerBonus = kPlayer.getTotalPlayerBonus(ePrereqOrBonus);
-//doto units bonus cap
-				if (bCity)
+				if (pCity->hasBonus(ePrereqOrBonus))
 				{
-					if (pCity->hasBonus(ePrereqOrBonus))
-					{
 //doto units bonus cap	- there must be cap to fill and there has to be a bonus suppliy to use of atleast one of the prereq or.
-						if (eOptionCap)
-						{
-							if (egetNumUnitBonusCaps < egetTotalPlayerBonus
-								&& egetTotalPlayerBonus > 0
-							)
-							{
-								bNeedsBonus = false;
-								break;
-							}
-							else continue;
-								
-						}
-//doto units bonus cap
-						bNeedsBonus = false;
-						break;
-					}
-				}
-				else if (isPlotGroupConnectedBonus(getOwner(), ePrereqOrBonus))
-				{
-//doto units bonus cap
 					if (eOptionCap)
 					{
 						if (egetNumUnitBonusCaps < egetTotalPlayerBonus
-								&& egetTotalPlayerBonus < 0
+								&& egetTotalPlayerBonus > 0
 						)
 						{
 							bNeedsBonus = false;
@@ -9297,85 +9066,28 @@ bool CvPlot::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible,
 					break;
 				}
 			}
-		}
-	}
-//doto city state -allows cities to build units without bonus prereq
-	if (bRequiresBonus && bNeedsBonus && !isCityState)
-		return false;
-//Shqype Vicinity Bonus Start
-/*		if (GC.getUnitInfo(eUnit).getPrereqVicinityBonus() != NO_BONUS)
-		{
-			if (NULL == pCity)
+			else if (isPlotGroupConnectedBonus(getOwner(), ePrereqOrBonus))
 			{
-				if (!isHasValidBonus())
-				//if (!isPlotGroupConnectedBonus(getOwner(), (BonusTypes)GC.getUnitInfo(eUnit).getPrereqVicinityBonus()))
+//doto units bonus cap
+				if (eOptionCap)
 				{
-					return false;
-				}
-			}
-			else
-			{
-				if (GC.getUnitInfo(eUnit).getPrereqVicinityBonus() != NO_BONUS)
-				{
-					for (int iI = 0; iI < NUM_CITY_PLOTS; ++iI)
-					{
-						CvPlot* pLoopPlot = plotCity(getX(), getY(), iI);
-						if (pLoopPlot->getBonusType() == GC.getUnitInfo(eUnit).getPrereqVicinityBonus())
-						{
-							CvCity* pCity = GC.getMap().findCity(getX(), getY(), getOwner(), NO_TEAM, false);
-							if (pLoopPlot->isHasValidBonus() && pLoopPlot->isConnectedTo(pCity))
-							{
-								return true;
-							}
-						}
-					}
-					return false;
-				}
-			}
-		}
-		
-		bRequiresBonus = false;
-		bNeedsBonus = true;
-
-		for (int iI = 0; iI < GC.getNUM_UNIT_PREREQ_OR_BONUSES(); ++iI)
-		{
-			if (GC.getUnitInfo(eUnit).getPrereqOrVicinityBonuses(iI) != NO_BONUS)
-			{
-				bRequiresBonus = true;
-
-				if (NULL == pCity)
-				{
-					if (!isHasValidBonus())
+					if (egetNumUnitBonusCaps < egetTotalPlayerBonus
+							&& egetTotalPlayerBonus < 0
+					)
 					{
 						bNeedsBonus = false;
 						break;
 					}
+						else continue;
 				}
-				else
-				{
-					for (int iJ = 0; iJ < NUM_CITY_PLOTS; ++iJ)
-					{
-						CvPlot* pLoopPlot = plotCity(getX(), getY(), iJ);
-						if (pLoopPlot->getBonusType() == GC.getUnitInfo(eUnit).getPrereqOrVicinityBonuses(iI))
-						{
-							CvCity* pCity = GC.getMap().findCity(getX(), getY(), getOwner(), NO_TEAM, false);
-							if (pLoopPlot->isHasValidBonus() && pLoopPlot->isConnectedTo(pCity))
-							{
-								bNeedsBonus = false;
-								return true;
-							}
-						}
-					}
-					bNeedsBonus = true;
-				}
+//doto units bonus cap
+				bNeedsBonus = false;
+				break;
 			}
 		}
-
-		if (bRequiresBonus && bNeedsBonus)
-		{
-			return false;
-		}*/
-//Shqype Vicinity Bonus End
+	}
+	if (bRequiresBonus && bNeedsBonus)
+		return false;
 	// <advc.001b>
 	if (bCheckAirUnitCap &&
 		GC.getDefineBOOL(CvGlobals::CAN_TRAIN_CHECKS_AIR_UNIT_CAP) &&
@@ -9734,36 +9446,6 @@ wchar const* CvPlot::debugStr() const
 		out << L" (" << GET_PLAYER(getOwner()).getCivilizationShortDescription() << L")";
 	return out.str().c_str();
 }
-//Shqype Vicinity Bonus Start
-/*bool CvPlot::isHasValidBonus() const
-{
-	if (getBonusType() == NO_BONUS)
-	{
-		return false;
-	}
-	if (getImprovementType() == NO_IMPROVEMENT)
-	{
-		return false;
-	}
-	if (!isBonusNetwork(getTeam()))
-	{
-		return false;
-	}
-	if (!isWithinTeamCityRadius(getTeam()))
-	{
-		return false;
-	}
-	if (GET_TEAM(getTeam()).isHasTech((TechTypes)(GC.getBonusInfo((BonusTypes)m_eBonusType).getTechReveal())))
-	{
-        if (GC.getImprovementInfo(getImprovementType()).isImprovementBonusMakesValid(getBonusType()))
-		{
-			return true;
-		}
-	}
-
-	return false;
-}*/
-//Shqype Vicinity Bonus End
 //MOD@VET_Andera412_Blocade_Unit-begin1/1
 bool CvPlot::isWithBlocaders(const CvPlot* pFromPlot, const CvPlot* pToPlot, const CvUnit* const pUnit, bool bToWater) const //
 {
@@ -9845,17 +9527,10 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 {
 	if (GC.getGame().isOption(GAMEOPTION_BLOCADE_UNIT))
 	{
-		//doto change to avoid errors in scenarios with no settler or worker
-		//see advc comment on BUILDINGCLASS_AIRPORT in cvgametextmgr.cpp file
-		bool bHideAssert = false;
-		if (GC.getGame().isOption(GAMEOPTION_SCENARIO_PLAY))
-		{
-			bHideAssert = true;
-		}
 		if (pUnit->isAnimal() || pUnit->alwaysInvisible() || pUnit->isUnblocade()
 //DOTO = ADDED BY KELDATH setllers and workers should be affected.
-			|| pUnit->getUnitClassType() == GC.getInfoTypeForString("UNITCLASS_SETTLER", bHideAssert)
-			|| pUnit->getUnitClassType() == GC.getInfoTypeForString("UNITCLASS_WORKER", bHideAssert)
+			|| pUnit->getUnitClassType() == GC.getInfoTypeForString("UNITCLASS_SETTLER", false)
+			|| pUnit->getUnitClassType() == GC.getInfoTypeForString("UNITCLASS_WORKER", false)
 			)
 			{return false;}
 		//keldath 099 advc adjustment - prev it checked also improvement?
@@ -10050,39 +9725,3 @@ bool CvPlot::isBlocade(const CvPlot* pFromPlot, const CvUnit* const pUnit) const
 	return false;
 }
 //MOD@VET_Andera412_Blocade_Unit-end1/1
-//doto keldath - city states color plots - START
-void CvPlot::colorCsPlot(PlayerTypes eNewOwner, PlayerTypes eOldOwner)
-{
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		bool isOldCityState = false;
-		NiColorA colorNew = GC.getInfo(GC.getColorType("WHITE")).getColor(); //white place holder
-		NiColorA colorClean = GC.getInfo(GC.getColorType("WHITE")).getColor();
-		if (eOldOwner != NO_PLAYER)
-		{
-			isOldCityState = GET_PLAYER(eOldOwner).checkCityState(eOldOwner);
-		}
-		//bool isNewCityState = false;
-		bool isCityState = false;
-		NiColorA color;
-		if (eNewOwner != NO_PLAYER)
-		{
-			isCityState = GET_PLAYER(eNewOwner).checkCityState(eNewOwner);
-			colorNew = GC.getInfo(GC.getInfo(GET_PLAYER(eNewOwner).getPlayerColor()).getColorTypePrimary()).getColor();
-		}
-
-		//if new owner is not city state an b4 it was - clean it.
-		if ((!isCityState || eNewOwner == NO_PLAYER) && isOldCityState)
-		{
-			GC.getGame().updateCityStatesColoredPlots(true, *this, colorClean);
-		}
-		else if (isCityState)
-		{
-			if (isOldCityState)
-				GC.getGame().updateCityStatesColoredPlots(true, *this, colorClean); //if old is city state = clean it...
-
-			GC.getGame().updateCityStatesColoredPlots(false, *this, colorNew);
-		}
-	}
-}
-//keldath - color city states plots - END

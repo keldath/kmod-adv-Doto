@@ -216,7 +216,7 @@ with GFC_Control_Panel
 					DestCombine		= 	GColorCombine(BlendSource,Disable);
 					FactorCombine	= 	GColorCombine(Modulate,Modulate);
 					FactorColor		= 	SF_CtrlTheme_Civ4_Control_Color_BG;					
-					Image			= 	GBitmap("../../../../Resource/Civ4/win_bg_TBsides.tga", HVGrid, 1, 1, 0, 0);
+				//	Image			= 	GBitmap("../../../../Resource/Civ4/win_bg_TBsides.tga", HVGrid, 1, 1, 0, 0);
 					Margin			= 	GRectMargin(0,32,0,32);
 					Indent			=	GRectMargin(0,11,0,0);
 				}
@@ -224,7 +224,7 @@ with GFC_Control_Panel
 				{
 					LayerFlags		= 	GFlags(GCtrlBitmapSkin, GFC_BITMAPSKIN_CENTER_EMPTY, GFC_BITMAPSKIN_SIDES_BILINEAR);
 					DestCombine		= 	GColorCombine(BlendSource,Disable);
-					Image			= 	GBitmap("../../../../Resource/Civ4/HUD/HUD_bottom.tga", HVGrid, 1, 1, 0, 0);
+				//	Image			= 	GBitmap("../../../../Resource/Civ4/HUD/HUD_bottom.tga", HVGrid, 1, 1, 0, 0);
 					Margin			= 	GRectMargin(0,12,0,0);
 				}
 			}

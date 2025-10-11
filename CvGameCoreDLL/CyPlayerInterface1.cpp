@@ -151,7 +151,14 @@ void CyPlayerPythonInterface1(python::class_<CyPlayer>& x)
 		.def("hasEverSeenDemographics", &CyPlayer::hasEverSeenDemographics, "bool (int /*PlayerTypes*/ iPlayer)")
 
 		.def("isCivic", &CyPlayer::isCivic, "bool (int (CivicTypes) eCivic)")
-		.def("canDoCivics", &CyPlayer::canDoCivics, "bool (int (CivicTypes) eCivic)")
+//doto 115 goverment screen civic dependency
+/*
+cvgovermentscreen sends a call from drawCivicOptionButtons which checks if to draw the civic buttons.
+i added the true , cvgovermentscreen_ignore_hide so the display of civics would display despite the
+getGovermentConversionCounter being 0. that is because if the counter is 0 it would show the civics as attainable,
+which is true, but its confusing cause it feels like player just havnt learnt them yet.
+*/
+		.def("canDoCivics", &CyPlayer::canDoCivics, "bool (int (CivicTypes) eCivic, bool cvgovermentscreen_ignore_hide)")
 		 /*	<advc> For compatibility with BtS Python code. int param is needed but ignored.
 			Corresponds to CvPlayer::canDoAnyRevolution. */
 		.def("canRevolution", &CyPlayer::canRevolution, "bool (int iDummy)")

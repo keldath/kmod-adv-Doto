@@ -88,7 +88,7 @@
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_MISC_DEFENSES_IN_CITY_MISSED</Tag>
-		<English>%s3_player has missed your defenses in %s1_CityName!</English>
+		<English>%s1_UnitName of %s2_player has missed your defenses in %s3_CivAdj!</English>
 	</TEXT>
 	<TEXT>
 		<Tag>TXT_KEY_PEDIA_AIRCOMBAT</Tag>

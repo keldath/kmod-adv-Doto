@@ -13,8 +13,6 @@
 #include "CvInfo_Terrain.h" // for getBestBuildRoute
 //#include "CvInfo_Unit.h" // for canAnyMoveAllTerrain (now in PCH)
 #include "CySelectionGroup.h"
-//doto Range Strike
-#include "CvInfo_GameOption.h"
 
 // K-Mod:
 GroupPathFinder* CvSelectionGroup::m_pPathFinder = NULL; // advc.pf: pointer
@@ -190,7 +188,7 @@ void CvSelectionGroup::doTurn()
 
 	FAssert(getOwner() != NO_PLAYER);
 	// <advc>
-	if(getNumUnits() <= 0)
+	if (getNumUnits() <= 0)
 	{
 		doDelayedDeath();
 		return;
@@ -2412,8 +2410,13 @@ bool CvSelectionGroup::canDefend() /* advc: */ const
 	return false;
 }
 
+
 bool CvSelectionGroup::canBombard(CvPlot const& kPlot) const
 {
+	/*	advc.001j (note): For AI units, it's usually enough to check the head
+		unit - due to the group ordering imposed by addUnit. There are exceptions
+		though (sea units in particular). Will have to leave it up to callers
+		to decide whether they need fast or reliable results. */
 	FOR_EACH_UNIT_IN(pUnit, *this)
 	{
 		if (pUnit->canBombard(kPlot))
@@ -2421,28 +2424,8 @@ bool CvSelectionGroup::canBombard(CvPlot const& kPlot) const
 	}
 	return false;
 }
-//doto Range Strike
-bool CvSelectionGroup::canRanged(const CvPlot* pPlot, int ix, int iy) const // advc: CvPlot reference, const.
-{
-	//if (!GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK)) 
-	//{
-	//	return false;
-	//}
-	for (CLLNode<IDInfo> const* pUnitNode = headUnitNode(); pUnitNode != NULL;
-		pUnitNode = nextUnitNode(pUnitNode))
-	{
-		CvUnit const* pLoopUnit = ::getUnit(pUnitNode->m_data);
-		if (pPlot != NULL && ix != NULL && iy != NULL)
-		{
-			if (pLoopUnit->canRangeStrikeAt(pPlot, ix, iy))
-				return true;
-		}
-		if (pLoopUnit->canRangeStrike())
-			return true;
-	}
-	return false;
-}
-//doto Range Strike
+
+
 int CvSelectionGroup::visibilityRange() const // advc: const; return type was bool
 {
 	int iMaxRange = 0;
@@ -2474,9 +2457,9 @@ void CvSelectionGroup::unloadAll()
 {
 	FOR_EACH_UNIT_VAR_IN(pUnit, *this)
 	{
-		if (pUnit != NULL)
-			pUnit->unloadAll();
-		else FAssertMsg(pUnit != NULL, "Can this happen?"); // advc.test
+		//if (pUnit != NULL) // advc: Never seen this happen in years
+		pUnit->unloadAll();
+		//else FAssert(pUnit != NULL);
 	}
 }
 
@@ -2484,7 +2467,7 @@ void CvSelectionGroup::unloadAll()
 bool CvSelectionGroup::alwaysInvisible() const
 {
 	//PROFILE_FUNC(); // advc.003o
-	if(getNumUnits() <= 0)
+	if (getNumUnits() <= 0)
 		return false;
 	FOR_EACH_UNIT_IN(pUnit, *this)
 	{
@@ -2740,36 +2723,6 @@ bool CvSelectionGroup::groupAttack(int iX, int iY, MovementFlags eFlags,
 			// advc.048: AI_getBestGroupSacrifice moved into AI_getBestGroupAttacker
 
 			bAttack = true;
-
-			// MOD - START - Ranged Strike AI
-			// TODO: Add a hotkey to allow humans to auto-fire their ranged attacks first?
-			if (!isHuman())
-			{
-				if (iAttackOdds < GC.getDefineINT(CvGlobals::SKIP_RANGE_ATTACK_MIN_BEST_ATTACK_ODDS))
-				{
-					CvUnit* pBestRangedUnit = AI().AI_getBestGroupRangeAttacker(pDestPlot);
-
-					bool bRangeStrike = false;
-					while (pBestRangedUnit != NULL && pBestRangedUnit->rangeStrike(pDestPlot->getX(), pDestPlot->getY()))
-					{
-						bRangeStrike = true;
-						pBestRangedUnit = AI().AI_getBestGroupRangeAttacker(pDestPlot);
-					}
-
-					if (bRangeStrike)
-					{
-						pBestAttackUnit = AI().AI_getBestGroupAttacker(pDestPlot, false,
-												iAttackOdds, false, /* advc.164: */ !bBlitz,
-														!bMaxSurvival, bMaxSurvival); // advc.048
-						if (pBestAttackUnit == NULL)
-						{
-							// There aren't any attack units left with moves after range striking
-							break;
-						}
-					}
-				}
-			}
-			// MOD - END - Ranged Strike AI
 
 			if (GC.getPythonCaller()->doCombat(*this, *pDestPlot))
 				break;
@@ -3057,11 +3010,9 @@ bool CvSelectionGroup::groupRoadTo(int iX, int iY, MovementFlags eFlags)
 			return true;
 		}
 	}
-	return groupPathTo(iX, iY, eFlags
-			/*  advc.pf: In the debugger, I'm seeing this function get called via
-				continueMission without any flags set, and these calls cause
-				the AI to build roads through foreign territory. */
-			| MOVE_ROUTE_TO);
+	// advc.pf: Don't want the AI to route through foreign territory
+	FAssert((eFlags & MOVE_SAFE_TERRITORY) || isHuman());
+	return groupPathTo(iX, iY, eFlags);
 }
 
 
@@ -3180,12 +3131,11 @@ void CvSelectionGroup::setTransportUnit(CvUnit* pTransportUnit,
 		{
 			CvSelectionGroup* pSplitGroup = splitGroup(iCargoSpaceAvailable, NULL,
 					pOtherGroup); // BETTER_BTS_AI_MOD, General AI, 04/18/10, jdog5000
-			if (pSplitGroup != NULL)
-				pSplitGroup->setTransportUnit(pTransportUnit);
-			/*	advc.test: We shouldn't have split the group then; not sure how to
-				guard against that though. Cf. issue #329 on the C2C GitHub page.
-				Let's first of all see if this even occurs in AdvCiv. */
-			FAssertMsg(pSplitGroup != NULL, "Probably no error but sth. to investigate");
+			/*	advc: We shouldn't have split the group then. But it seems that
+				this can't happen anyway; I've had an assertion in place for years.
+				C2C did have this problem (see issue #329 on their GitHub page). */
+			//if (pSplitGroup != NULL)
+			pSplitGroup->setTransportUnit(pTransportUnit);
 			return;
 		}
 
@@ -3852,8 +3802,6 @@ void CvSelectionGroup::setActivityType(ActivityTypes eNewValue)
 			}
 		}
 		if (isActiveTeam())
-		//if (getTeam() == GC.getGame().getActiveTeam() /* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */)
-		//edit 114 f1 already fixed this i missed it
 		{
 			if (pPlot != NULL) // advc (note): This can occur
 				pPlot->setFlagDirty(true);
@@ -4627,6 +4575,21 @@ void CvSelectionGroup::read(FDataStreamBase* pStream)
 	}
 	else // </advc.011b>
 		m_missionQueue.Read(pStream);
+	// <advc.pf>
+	if (uiFlag < 3)
+	{	// Replace removed movement flag with SAFE_TERRITORY
+		MovementFlags const MOVE_ROUTE_TO = static_cast<MovementFlags>(1 << 14);
+		for (CLLNode<MissionData>* pNode = headMissionQueueNode(); pNode != NULL;
+			pNode = nextMissionQueueNode(pNode))
+		{
+			MissionData& md = pNode->m_data;
+			if (md.eMissionType == MISSION_ROUTE_TO || (md.eFlags & MOVE_ROUTE_TO))
+			{
+				md.eFlags |= MOVE_SAFE_TERRITORY;
+				md.eFlags &= ~MOVE_ROUTE_TO;
+			}
+		}
+	} // </advc.pf>
 }
 
 
@@ -4634,7 +4597,8 @@ void CvSelectionGroup::write(FDataStreamBase* pStream)
 {
 	uint uiFlag;
 	//uiFlag = 1; // advc.011b
-	uiFlag = 2; // advc.004l
+	//uiFlag = 2; // advc.004l
+	uiFlag = 3; // advc.pf (MOVE_ROUTE_TO removed)
 	pStream->Write(uiFlag);
 	REPRO_TEST_BEGIN_WRITE(CvString::format("SelGroup(%d,%d,%d)", getID(), getX(), getY()));
 	pStream->Write(m_iID);

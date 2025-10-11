@@ -113,7 +113,7 @@ EveryoneSpecialUnit	Allows every player to train the specified type of special u
 			<BonusProductionModifiers>
 				<BonusProductionModifier>
 					<BonusType>BONUS_URANIUM</BonusType>
-					<iProductonModifier>100</iProductonModifier>
+					<iProductonModifier>60</iProductonModifier>
 				</BonusProductionModifier>
 			</BonusProductionModifiers>
 			<CreateSound/>
@@ -142,8 +142,6 @@ EveryoneSpecialUnit	Allows every player to train the specified type of special u
 			<VictoryMinThresholds/>
 			<iVictoryDelayPercent>0</iVictoryDelayPercent>
 			<iSuccessRate>0</iSuccessRate>
-			<!--<CivilizationType>CIVILIZATION_UNION</CivilizationType>
-			<FreeUnit>UNIT_ENGINEER</FreeUnit>-->
 			<BonusProductionModifiers>
 				<BonusProductionModifier>
 					<BonusType>BONUS_COPPER</BonusType>
@@ -193,7 +191,7 @@ EveryoneSpecialUnit	Allows every player to train the specified type of special u
 			<Civilopedia>TXT_KEY_PROJECT_APOLLO_PROGRAM_PEDIA</Civilopedia>
 			<Strategy>TXT_KEY_PROJECT_APOLLO_PROGRAM_STRATEGY</Strategy>
 			<VictoryPrereq>VICTORY_SPACE_RACE</VictoryPrereq>
-			<TechPrereq>TECH_ROCKETRY</TechPrereq>
+			<TechPrereq>TECH_SPACE_FLIGHT</TechPrereq>
 			<AnyonePrereqProject>NONE</AnyonePrereqProject>
 			<iMaxGlobalInstances>-1</iMaxGlobalInstances>
 			<iMaxTeamInstances>1</iMaxTeamInstances>
@@ -213,7 +211,7 @@ EveryoneSpecialUnit	Allows every player to train the specified type of special u
 			<BonusProductionModifiers>
 				<BonusProductionModifier>
 					<BonusType>BONUS_ALUMINUM</BonusType>
-					<iProductonModifier>100</iProductonModifier>
+					<iProductonModifier>50</iProductonModifier>
 				</BonusProductionModifier>
 			</BonusProductionModifiers>
 			<CreateSound/>

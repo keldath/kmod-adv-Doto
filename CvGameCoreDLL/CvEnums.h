@@ -34,11 +34,7 @@ enum PlayerTypes
 	/*  advc.056 (note): Scenario (WB) files are now compatible so long
 		as the player ids in the WB file don't exceed MAX_CIV_PLAYERS in the DLL.
 		Savegames are still incompatible. */
-	//MAX_CIV_PLAYERS = 18,
-/*doto city states 
- just if in theory some player would choose to play with 18 civc + 8 City States...
-*/
-	MAX_CIV_PLAYERS = 26, 
+	MAX_CIV_PLAYERS = 18,
 	BARBARIAN_PLAYER = MAX_CIV_PLAYERS,
 	MAX_PLAYERS
 };
@@ -498,13 +494,6 @@ ENUM_START(Widget, WIDGET)
 	WIDGET_HELP_GLOBAL_COMMERCE_MODIFIER,
 	WIDGET_HELP_EXTRA_SPECIALIST_COMMERCE,
 	// K-Mod end
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	WIDGET_HELP_FREE_TRADE_AGREEMENT,
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	WIDGET_RF_CIV_CHOICE, // advc.706
 	WIDGET_LH_GLANCE, // advc.152
 	WIDGET_SHOW_REPLAY, // advc.106i
@@ -563,8 +552,11 @@ ENUM_START(ButtonPopup, BUTTONPOPUP)
 	BUTTONPOPUP_DEAL_CANCELED,
 	BUTTONPOPUP_PYTHON,
 	BUTTONPOPUP_PYTHON_SCREEN,
-	BUTTONPOPUP_DETAILS,
-	BUTTONPOPUP_ADMIN,
+	/*	<advc> These two are apparently hardcoded in the EXE
+		(CvInterface::showDetails, showAdminDetails). Perhaps others too.
+		Best only to append to the end. */
+	BUTTONPOPUP_DETAILS = 21,
+	BUTTONPOPUP_ADMIN = 22, // </advc>
 	BUTTONPOPUP_ADMIN_PASSWORD,
 	BUTTONPOPUP_EXTENDED_GAME,
 	BUTTONPOPUP_DIPLOMACY,
@@ -634,8 +626,6 @@ ENUM_START(GameOption, GAMEOPTION)
 	GAMEOPTION_NO_ANIMALS, // advc.309
 	GAMEOPTION_NO_SLAVERY, // advc.912d
 	GAMEOPTION_NO_ESPIONAGE, // advc.tsl: Moved to the bottom (hidden anyway)
-//Doto City States
-	GAMEOPTION_CITY_STATES,
 //MOD@VET_Andera412_Blocade_Unit-begin1/1
 	GAMEOPTION_BLOCADE_UNIT,
 //MOD@VET_Andera412_Blocade_Unit-end1/1	
@@ -670,12 +660,11 @@ ENUM_START(GameOption, GAMEOPTION)
 //rangedattack-keldath
 	GAMEOPTION_PARTISANS,
 	GAMEOPTION_RANGED_NO_LIMIT,
+	GAMEOPTION_RANGED_IMMUNITY,
 	GAMEOPTION_RANGED_RETALIATE,
 	GAMEOPTION_NO_RANGED_COLLATERAL,
 	GAMEOPTION_RAND_HIT,
 	GAMEOPTION_RAND_DMG,
-	GAMEOPTION_SCENARIO_PLAY,
-
 ENUM_END(GameOption, GAMEOPTION)
 
 ENUM_START(MultiplayerOption, MPOPTION)
@@ -1132,6 +1121,8 @@ ENUM_START(Control, CONTROL)
 	CONTROL_FREE_COLONY,
 	CONTROL_UNSELECT_ALL, // advc.154
 	// Any additions need to be reflected in XML\Units\Civ4ControlInfos.xml
+//doto 115 goverment screen
+	CONTROL_GOVERMENT_SCREEN,
 ENUM_END(Control, CONTROL)
 
 ENUM_START(WarPlan, WARPLAN)
@@ -1194,14 +1185,6 @@ enum TradeableItems
 	TRADE_DEFENSIVE_PACT,
 	TRADE_PERMANENT_ALLIANCE,
 	TRADE_PEACE_TREATY,
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	TRADE_FREE_TRADE_ZONE,
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
-
 #ifdef _USRDLL
 	/*NUM_BASIC_ITEMS,
 	TRADE_TECHNOLOGIES = NUM_BASIC_ITEMS,*/
@@ -1271,13 +1254,6 @@ ENUM_START(Contact, CONTACT)
 	CONTACT_ASK_FOR_HELP,
 	CONTACT_DEMAND_TRIBUTE,
 	CONTACT_OPEN_BORDERS,
-/************************************************************************************************/
-/* START: Advanced Diplomacy  -doto added                                          */
-/************************************************************************************************/
-	CONTACT_TRADE_FREE_TRADE_ZONE,
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	CONTACT_DEFENSIVE_PACT,
 	CONTACT_PERMANENT_ALLIANCE,
 	CONTACT_PEACE_TREATY,
@@ -1323,14 +1299,6 @@ ENUM_START(Memory, MEMORY)
 	MEMORY_EVENT_GOOD_TO_US,
 	MEMORY_EVENT_BAD_TO_US,
 	MEMORY_LIBERATED_CITIES,
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	MEMORY_CANCELLED_FREE_TRADE_AGREEMENT,
-/************************************************************************************************/
-/* Advanced Diplomacy         END                                                               */
-/************************************************************************************************/
-
 	MEMORY_INDEPENDENCE, // advc.130r
 	MEMORY_DECLARED_WAR_RECENT, // advc.104i
 ENUM_END(Memory, MEMORY)
@@ -1727,7 +1695,6 @@ enum PlotLandscapeLayers
 	PLOT_LANDSCAPE_LAYER_WORLD_BUILDER = 2,
 	PLOT_LANDSCAPE_LAYER_NUMPAD_HELP = 2,
 	PLOT_LANDSCAPE_LAYER_REVEALED_PLOTS = 1,
-	PLOT_LANDSCAPE_LAYER_CITY_STATE = 0, //keldath - color city states plots
 };
 
 enum AreaBorderLayers
@@ -1742,7 +1709,6 @@ enum AreaBorderLayers
 	AREA_BORDER_LAYER_BLOCKADED,
 	AREA_BORDER_LAYER_NUKE, // advc.653
 	AREA_BORDER_LAYER_PATROLLED, // advc.004k
-	AREA_BORDER_CITY_STATE, //keldath - color city states plots
 	NUM_AREA_BORDER_LAYERS
 };
 
@@ -2295,9 +2261,10 @@ enum AudioTag
 	AUDIOTAG_COUNT,
 };
 
+// advc (caveat): Should add only to the end of this enum
 enum ActionSubTypes
 {
-	NO_ACTIONSUBTYPE,
+	NO_ACTIONSUBTYPE = -1,
 	ACTIONSUBTYPE_INTERFACEMODE,
 	ACTIONSUBTYPE_COMMAND,
 	ACTIONSUBTYPE_BUILD,
@@ -2307,6 +2274,8 @@ enum ActionSubTypes
 	ACTIONSUBTYPE_CORPORATION,
 	ACTIONSUBTYPE_SPECIALIST,
 	ACTIONSUBTYPE_BUILDING,
+	/*	This appears to be hardcoded in the EXE in code that opens an Advisor screen
+		while another Advisor screen is already open */
 	ACTIONSUBTYPE_CONTROL,
 	ACTIONSUBTYPE_AUTOMATE,
 	ACTIONSUBTYPE_MISSION,

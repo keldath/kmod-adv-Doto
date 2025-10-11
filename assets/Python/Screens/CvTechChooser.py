@@ -402,7 +402,7 @@ class CvTechChooser:
 
 			if bTechName:
 				szTechID = sPanelWidget + "TechID" + str(i)
-				szTechString = "<font=1>"
+				szTechString = "<font=2>" # advc.002b: was 1
 				if ( gc.getPlayer(self.iCivSelected).isResearchingTech(i) ):
 					szTechString = szTechString + str(gc.getPlayer(self.iCivSelected).getQueuePosition(i)) + ". "
 				szTechString += gc.getTechInfo(i).getDescription()
@@ -759,16 +759,6 @@ class CvTechChooser:
 		j = 0
 		k = 0
 
-# advanced diplomacy
-		# Free Trade Agreement
-		if ( gc.getTechInfo(i).isFreeTradeAgreementTrading() ):
-			szFreeTradeAgreementButton = "FreeTradeAgreement" + str(i)
-			screen.addDDSGFCAt( szFreeTradeAgreementButton , szTechRecord, ArtFileMgr.getInterfaceArtInfo("INTERFACE_TECH_FREE_TRADE_AGREEMENT").getPath(), iX + fX, iY + Y_ROW, TEXTURE_SIZE, TEXTURE_SIZE, WidgetTypes.WIDGET_HELP_FREE_TRADE_AGREEMENT, i, -1, False )
-			fX += X_INCREMENT
-
-		j = 0
-		k = 0
-# advanced diplomacy				
 		# Improvements
 		for j in range(gc.getNumBuildInfos()):
 			bTechFound = 0;
@@ -999,7 +989,7 @@ class CvTechChooser:
 				# Create and place a tech in its proper location
 				szTechRecord = "TechRecord" + str(i)
 				szTechID = "TechID" + str(i)
-				szTechString = "<font=1>"
+				szTechString = "<font=2>" # advc.002b: was 1
 
 				if ( gc.getPlayer(self.iCivSelected).isResearchingTech(i) ):
 					szTechString = szTechString + unicode(gc.getPlayer(self.iCivSelected).getQueuePosition(i)) + ". "
@@ -1081,8 +1071,8 @@ class CvTechChooser:
 			j = 0
 
 			if bORPreReq:
-				for j in range( gc.getNUM_OR_TECH_PREREQS() ):
-					eTech = gc.getTechInfo(i).getPrereqOrTechs(j)
+				for j in range( gc.getNUM_AND_TECH_PREREQS() ):
+					eTech = gc.getTechInfo(i).getPrereqAndTechs(j)
 					if ( eTech > -1 ):
 						iX = 24 + ( (gc.getTechInfo(eTech).getGridX() - 1) * ( ( self.BOX_INCREMENT_X_SPACING + self.BOX_INCREMENT_WIDTH ) * self.PIXEL_INCREMENT ) )
 						iY = ( gc.getTechInfo(eTech).getGridY() - 1 ) * ( self.BOX_INCREMENT_Y_SPACING * self.PIXEL_INCREMENT ) + 5

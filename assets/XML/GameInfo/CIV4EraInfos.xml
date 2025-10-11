@@ -133,7 +133,7 @@ era trans faster
 			<iGrowthPercent>90</iGrowthPercent>
 			<iTrainPercent>100</iTrainPercent>
 			<iConstructPercent>100</iConstructPercent>
-			<iCreatePercent>90</iCreatePercent>
+			<iCreatePercent>100</iCreatePercent>
 			<iResearchPercent>90</iResearchPercent>
 			<iTechCostModifier>0</iTechCostModifier>
 			<!-- advc.groundbr: start -->
@@ -212,8 +212,8 @@ era trans faster
 			<iConstructPercent>100</iConstructPercent>
 			<iCreatePercent>90</iCreatePercent>
 			<iResearchPercent>80</iResearchPercent>
-			<!-- advc.910: Was 4 in BBAI, 6 in K-Mod. -->
-			<iTechCostModifier>5</iTechCostModifier>
+			<!-- BBAI: (was 6 in K-Mod) -->
+			<iTechCostModifier>4</iTechCostModifier>
 			<!-- advc.groundbr: start -->
 			<iAIMaxGroundbreakingPenalty>15</iAIMaxGroundbreakingPenalty>
 			<!-- 20 in DoC -->
@@ -296,7 +296,7 @@ era trans faster
 			<iCreatePercent>90</iCreatePercent>
 			<iResearchPercent>70</iResearchPercent>
 			<!-- advc.910: Was 12 in K-Mod, 9 in BBAI. -->
-			<iTechCostModifier>16</iTechCostModifier>
+			<iTechCostModifier>15</iTechCostModifier>
 			<!-- advc.groundbr: start -->
 			<iAIMaxGroundbreakingPenalty>25</iAIMaxGroundbreakingPenalty>
 			<!-- as in DoC -->
@@ -394,6 +394,7 @@ era trans faster
 			<bAIAgeOfPollution>1</bAIAgeOfPollution>
 			<bAIAgeOfFertility>1</bAIAgeOfFertility>
 			<bAIAgeOfGuns>1</bAIAgeOfGuns>
+			<bAIAgeOfProduction>1</bAIAgeOfProduction>
 			<!-- advc.erai: end -->
 			<iSoundtrackSpace>120</iSoundtrackSpace>
 			<bFirstSoundtrackFirst>0</bFirstSoundtrackFirst>

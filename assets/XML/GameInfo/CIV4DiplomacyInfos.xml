@@ -185,14 +185,6 @@
 							<LeaderType>LEADER_SALADIN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_ABU</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_PIYE</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers/>
@@ -219,10 +211,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_QIN_SHI_HUANG</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_SONGTSEN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -332,14 +320,6 @@
 							<LeaderType>LEADER_BISMARCK</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_LUDWIG</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_GUILLAUME_HENRI_DUFOUR</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers/>
@@ -444,10 +424,6 @@
 							<LeaderType>LEADER_MANSA_MUSA</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_ABU</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers/>
@@ -502,11 +478,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_JULIUS_CAESAR</LeaderType>
-							<bLeaderType>1</bLeaderType>
-<!-- city states -->
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_POPEJOHN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -695,10 +666,6 @@
 							<LeaderType>LEADER_CHURCHILL</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_MACDONALD</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers/>
@@ -827,10 +794,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_PERICLES</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_HECTOR</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -1005,14 +968,6 @@
 							<LeaderType>LEADER_SALADIN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_ABU</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_PIYE</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers/>
@@ -1039,10 +994,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_QIN_SHI_HUANG</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_SONGTSEN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -1144,14 +1095,6 @@
 							<LeaderType>LEADER_BISMARCK</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_LUDWIG</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_GUILLAUME_HENRI_DUFOUR</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers/>
@@ -1250,10 +1193,6 @@
 							<LeaderType>LEADER_MANSA_MUSA</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_ABU</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers/>
@@ -1308,11 +1247,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_JULIUS_CAESAR</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-<!-- city states -->
-							<LeaderType>LEADER_POPEJOHN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -1511,10 +1445,6 @@
 							<LeaderType>LEADER_CHURCHILL</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_MACDONALD</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers/>
@@ -1527,10 +1457,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_CHURCHILL</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_MACDONALD</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -1629,10 +1555,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_PERICLES</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_HECTOR</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -1852,14 +1774,6 @@
 							<LeaderType>LEADER_SALADIN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_ABU</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_PIYE</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers/>
@@ -1886,10 +1800,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_QIN_SHI_HUANG</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_SONGTSEN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -1991,14 +1901,6 @@
 							<LeaderType>LEADER_BISMARCK</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_LUDWIG</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_GUILLAUME_HENRI_DUFOUR</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers/>
@@ -2097,10 +1999,6 @@
 							<LeaderType>LEADER_MANSA_MUSA</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_ABU</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers/>
@@ -2155,11 +2053,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_JULIUS_CAESAR</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-<!-- city states -->
-							<LeaderType>LEADER_POPEJOHN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -2344,10 +2237,6 @@
 							<LeaderType>LEADER_CHURCHILL</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_MACDONALD</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers/>
@@ -2444,10 +2333,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_PERICLES</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_HECTOR</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -2678,14 +2563,6 @@
 							<LeaderType>LEADER_SALADIN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_ABU</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_PIYE</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes>
 						<Attitude>
@@ -2738,10 +2615,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_QIN_SHI_HUANG</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_SONGTSEN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -2933,14 +2806,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_BISMARCK</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_LUDWIG</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_GUILLAUME_HENRI_DUFOUR</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -3136,10 +3001,6 @@
 							<LeaderType>LEADER_MANSA_MUSA</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_ABU</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes>
 						<Attitude>
@@ -3246,11 +3107,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_JULIUS_CAESAR</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-<!-- city states -->
-							<LeaderType>LEADER_POPEJOHN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -3606,10 +3462,6 @@
 							<LeaderType>LEADER_CHURCHILL</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_MACDONALD</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes>
 						<Attitude>
@@ -3800,10 +3652,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_PERICLES</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_HECTOR</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -4172,14 +4020,6 @@
 							<LeaderType>LEADER_SALADIN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_ABU</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_PIYE</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes>
 						<Attitude>
@@ -4224,10 +4064,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_QIN_SHI_HUANG</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_SONGTSEN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -4393,14 +4229,6 @@
 							<LeaderType>LEADER_BISMARCK</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_LUDWIG</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_GUILLAUME_HENRI_DUFOUR</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes>
 						<Attitude>
@@ -4563,10 +4391,6 @@
 							<LeaderType>LEADER_MANSA_MUSA</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_ABU</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes>
 						<Attitude>
@@ -4657,11 +4481,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_JULIUS_CAESAR</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-<!-- city states -->
-							<LeaderType>LEADER_POPEJOHN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -4941,10 +4760,6 @@
 							<LeaderType>LEADER_CHURCHILL</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_MACDONALD</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes>
 						<Attitude>
@@ -5107,10 +4922,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_PERICLES</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_HECTOR</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -6211,10 +6022,6 @@
 							<LeaderType>LEADER_QIN_SHI_HUANG</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_SONGTSEN</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers>
@@ -6327,14 +6134,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_BISMARCK</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_LUDWIG</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_GUILLAUME_HENRI_DUFOUR</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -6470,10 +6269,6 @@
 							<LeaderType>LEADER_MANSA_MUSA</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_ABU</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers>
@@ -6548,11 +6343,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_JULIUS_CAESAR</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-<!-- city states -->
-							<LeaderType>LEADER_POPEJOHN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -6802,10 +6592,6 @@
 							<LeaderType>LEADER_CHURCHILL</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_MACDONALD</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers>
@@ -6937,10 +6723,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_PERICLES</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_HECTOR</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -7186,14 +6968,6 @@
 							<LeaderType>LEADER_SALADIN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_ABU</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_PIYE</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers>
@@ -7325,14 +7099,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_BISMARCK</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_LUDWIG</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_GUILLAUME_HENRI_DUFOUR</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -7468,10 +7234,6 @@
 							<LeaderType>LEADER_MANSA_MUSA</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_ABU</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers>
@@ -7527,11 +7289,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_JULIUS_CAESAR</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-<!-- city states -->
-							<LeaderType>LEADER_POPEJOHN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -7781,10 +7538,6 @@
 							<LeaderType>LEADER_CHURCHILL</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_MACDONALD</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers>
@@ -7916,10 +7669,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_PERICLES</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_HECTOR</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -8165,14 +7914,6 @@
 							<LeaderType>LEADER_SALADIN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_ABU</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_PIYE</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers>
@@ -8209,10 +7950,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_QIN_SHI_HUANG</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_SONGTSEN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -8329,14 +8066,6 @@
 							<LeaderType>LEADER_BISMARCK</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_LUDWIG</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_GUILLAUME_HENRI_DUFOUR</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers>
@@ -8451,10 +8180,6 @@
 							<LeaderType>LEADER_MANSA_MUSA</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_ABU</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers>
@@ -8510,11 +8235,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_JULIUS_CAESAR</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-<!-- city states -->
-							<LeaderType>LEADER_POPEJOHN</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>
@@ -8745,10 +8465,6 @@
 							<LeaderType>LEADER_CHURCHILL</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
-						<Leader>
-							<LeaderType>LEADER_MACDONALD</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
 					</Leaders>
 					<Attitudes/>
 					<DiplomacyPowers>
@@ -8880,10 +8596,6 @@
 					<Leaders>
 						<Leader>
 							<LeaderType>LEADER_PERICLES</LeaderType>
-							<bLeaderType>1</bLeaderType>
-						</Leader>
-						<Leader>
-							<LeaderType>LEADER_HECTOR</LeaderType>
 							<bLeaderType>1</bLeaderType>
 						</Leader>
 					</Leaders>

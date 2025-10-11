@@ -931,8 +931,6 @@ void CvInitCore::refreshCustomMapOptions()
 			We'll get another call upon entering a non-WB game setup screen;
 			lets wait for that with the assertion - if the script can't be found
 			earlier, it still won't be found then. */
-/*DOTO - f1rpo for DOTO AND EOM FROM ADVC - fixes the usage of no public maps in the ini file of the mod.
-new assert check */
 		FAssertMsg(getType() == GAME_NONE || getType() == GAME_SP_LOAD, "Map script not found");
 		return;
 	}
@@ -1116,8 +1114,11 @@ void CvInitCore::setType(CvWString const& szType)
 		setType(GAME_SP_NEW);
 	else if (wcsicmp(szType.GetCString(), L"spload") == 0)
 		setType(GAME_SP_LOAD);
-	//FErrorMsg(false, "Invalid game type in ini file!");
-	setType(GAME_NONE);
+	else
+	{
+		//FErrorMsg(false, "Invalid game type in ini file!");
+		setType(GAME_NONE);
+	}
 }
 
 void CvInitCore::setMode(GameMode eMode)
@@ -1722,13 +1723,6 @@ void CvInitCore::reRandomizeCivsAndLeaders()
 					"falling back on BtS algorithm.");*/ // Well, not exactly an error ...
 			return;
 		}
-//doto specialists instead of pop -city states - dont allow randomize of city states
-// removed - f1rpt said its not perfert cuase some of the random code is in the exe.
-	//	if (GC.getInfo(eCiv).getIsCityState())
-	//	{
-	//		return;
-	//	}
-//doto specialists instead of pop -city states - dont allow randomize of city states
 	}
 	EagerEnumMap<PlayerTypes,bool> abRandomize;
 	for (int i = 0; i < MAX_CIV_PLAYERS; i++)
@@ -1871,9 +1865,9 @@ int CvInitCore::getAdvancedStartMinPoints() const
 {
 	FOR_EACH_ENUM(UnitClass)
 	{
-		CvUnitInfo const& u = GC.getInfo(GC.getInfo(eLoopUnitClass).getDefaultUnit());
-		if (u.isFound())
-			return u.getAdvancedStartCost();
+		UnitTypes eDefault = GC.getInfo(eLoopUnitClass).getDefaultUnit();
+		if (eDefault != NO_UNIT && GC.getInfo(eDefault).isFound())
+			return GC.getInfo(eDefault).getAdvancedStartCost();
 	}
 	FAssert(false);
 	return -1;

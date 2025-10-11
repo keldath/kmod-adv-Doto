@@ -225,14 +225,6 @@ public:
 	void AI_updateCloseBorderAttitude(); // K-Mod
 	void AI_updateCloseBorderAttitude(PlayerTypes ePlayer); // K-Mod
 	int AI_getCloseBordersAttitude(PlayerTypes ePlayer) const;
-/************************************************************************************************/
-/* Advanced Diplomacy         START                                                             */
-/************************************************************************************************/
-	int AI_getFreeTradeAgreementAttitude(PlayerTypes ePlayer) const;
-	int AI_getRivalTradeAgreementAttitude(PlayerTypes ePlayer) const;
-/************************************************************************************************/
-/* Advanced Diplomacy         END                                                             */
-/************************************************************************************************/
 	int warSuccessAttitudeDivisor() const; // advc.130y, advc.sha
 	int AI_getWarAttitude(PlayerTypes ePlayer,
 			int iPartialSum = MIN_INT) const; // advc.sha
@@ -297,15 +289,11 @@ public:
 //doto units bonus cap
 	int AI_bonuesCapValue(BonusTypes eBonus, int value, int change) const;
 //doto units bonus cap
-
 	int AI_bonusVal(BonusTypes eBonus, int iChange,
 			bool bAssumeEnabled = false, // K-Mod
 			// advc.036: Whether baseBonusVal is computed for a resource trade
 			bool bTrade = false) const;
 	int AI_baseBonusVal(BonusTypes eBonus, /* advc.036: */ bool bTrade = false) const;
-//doto city states - also used in advanced diplo now
-	int AI_cityStateEval() const;
-//doto city states
 	int AI_bonusTradeVal(BonusTypes eBonus, PlayerTypes eFromPlayer, int iChange,
 			bool bExtraHappyOrHealth = false) const; // advc.036
 	DenialTypes AI_bonusTrade(BonusTypes eBonus, PlayerTypes eToPlayer,
@@ -490,7 +478,7 @@ public:
 	int AI_totalBestChildrenValue(CivicTypes eCivic) const;
 	int AI_civicValueGroup(CivicTypes eCivic) const;
 // default is to ignore the group calc - to avoid loop and such
-	int AI_civicValue(CivicTypes eCivic, bool iValueGroup = true) const;						// Exposed to Python
+	int AI_civicValue(CivicTypes eCivic) const;						// Exposed to Python
 /* doto Civics  parent - end ) */	
 
 	ReligionTypes AI_bestReligion() const;
@@ -868,7 +856,14 @@ protected:
 	void AI_doCounter();
 	void AI_doMilitary();
 	void AI_doResearch();
-	void AI_doCivics();
+//doto civic dependency doto115
+	CivicMap AI_doCivics();
+	CivicMap AI_bestValueParentsChildCivics(CivicTypes parentCivic, CivicOptionTypes parentOption, int* iBestChildrenGroupValue);
+	CivicMap AI_bestGroupCivics(CivicOptionTypes parentCivicOption, int* iBestGroupValue);
+	void AI_doRevolution(CivicMap aeNormalCivics, CivicMap aeDependentCivics);
+	void AI_DoAllCivics();
+	CivicMap AI_doDependentCivics();
+//doto civic dependency doto115
 	void AI_doReligion();
 	void AI_doDiplo();
 	void AI_doCheckFinancialTrouble();

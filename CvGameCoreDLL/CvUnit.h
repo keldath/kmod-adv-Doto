@@ -21,23 +21,7 @@ public:
 
 	void setupGraphical();
 	void reloadEntity();
-/****************************************
- *  Archid Mod: 10 Jun 2012
- *  Functionality: Unit Civic Prereq - Archid
- *		
- *	Source:
- *	  Archid
- *
- ****************************************/
-	void setCivicEnabled(bool bEnable);
-	bool isCivicEnabled() const;
-	bool isEnabled() const;
-protected:
-	bool m_bCivicEnabled;
-public:
-/**
- ** End: Unit Civic Prereq
- **/
+
 	void convert(CvUnit* pUnit);																			// Exposed to Python
 	void kill(bool bDelay, PlayerTypes ePlayer = NO_PLAYER);												// Exposed to Python
 
@@ -194,12 +178,8 @@ public:
 	bool airBomb(CvPlot& kTarget, /* advc.004c: */ bool* pbIntercepted = NULL,
 			bool bForceImprovement = false); // advc.111
 
-//doto Range Strike
-	/*
-	bool canAirStrike(CvPlot const& kPlot) const;// (advc.004c: was protected)
-	*/
-//doto Range Strike
-	
+	bool canAirStrike(CvPlot const& kPlot) const; // (advc.004c: was protected)
+
 	CvCity* bombardTarget(CvPlot const& kFrom) const;														// Exposed to Python
 	bool canBombard(CvPlot const& kFrom) const;																// Exposed to Python
 	int damageToBombardTarget(CvPlot const& kFrom) const; // advc
@@ -391,16 +371,6 @@ public:
 	int rangedStrike() const																					// Exposed to Python
 	{
 		return std::max(0,(m_pUnitInfo->getRangeStrike()));
-		//if option is off then just send 0 ...so gameplay will be normal ranged attack
-		//very important - affects many places!
-		//if (GC.getGame().isOption(GAMEOPTION_RANGED_ATTACK))
-		//{
-		//	return std::max(0,(m_pUnitInfo->getRangeStrike()));
-		//}
-		//else 
-		//{
-		//	return 0;
-		//}
 	}
 //doto Range Strike
 	int nukeRange() const																					// Exposed to Python
@@ -487,7 +457,15 @@ public:
 	int baseCombatStr() const																				// Exposed to Python
 	{
 		return m_iBaseCombat;
-	}  // advc: Default values - to make clear that these can be NULL. 
+	}  // advc: Default values - to make clear that these can be NULL.
+//doto ranged immunity
+	int getRangedStrikeCapCounter() const { return m_iRangedStrikeCapCounter; }
+	void setRangedStrikeCapCounter(int iNewValue);				// Exposed to Python
+	void changeRangedStrikeCapCounter(int iChange);
+	int getRangedStrikeCapTimer() const { return m_iRangedStrikeCapTimer; }
+	void setRangedStrikeCapTimer(int iNewValue);				// Exposed to Python
+	void changeRangedStrikeCapTimer(int iChange);
+//doto ranged immunity 
 //doto units bonus cap	
 	int getBonusUsedForPrereqOrCap() const { return m_iBonusUsedForPrereqOrCap; }
 	void changeBonusUsedForPrereqOrCap(int eIndex);
@@ -949,8 +927,7 @@ public:
 	DllExport TeamTypes getTeam() const;																	// Exposed to Python
 	// <advc>
 	bool isActiveOwned() const { return (GC.getInitCore().getActivePlayer() == getOwner()); }
-/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
-//	bool isActiveTeam() const { return (GC.getInitCore().getActiveTeam() == getTeam()); } // </advc>
+	bool isActiveTeam() const { return (GC.getInitCore().getActiveTeam() == getTeam()); } // </advc>
 
 	PlayerTypes getCapturingPlayer() const;
 	void setCapturingPlayer(PlayerTypes eNewValue);
@@ -1068,24 +1045,17 @@ public:
 	// advc.opt: Instead of allowing eTeam==NO_TEAM above
 	bool isEnemy(CvPlot const& kPlot) const;
 	// (advc: isPotentialEnemy moved to CvUnitAI)
-	
-//doto Range Strike
-	// Note: These two functions are no longer protected
-	CvUnit* airStrikeTarget(CvPlot const& kPlot) const;
-	bool airStrike(CvPlot& kPlot, /* advc.004c: */ bool* pbIntercepted = NULL);//org
-	bool canAirStrike(CvPlot const& kPlot) const;
-//doto Range Strike
-	bool rangeStrikeCapable() const;
+
 	bool canRangeStrike() const;
 	bool canRangeStrikeAt(const CvPlot* pPlot, int iX, int iY) const;
 	bool rangeStrike(int iX, int iY);
-//doto Range Strike
+// DOTO-MOD - Keldtah RangedStrike start + Ranged Immunity
 	int rangeCombatDamageK(const CvUnit* pDefender, const CvUnit* pAttacker) const;
 	bool randomRangedGen(CvUnit* pDefender, CvUnit* pAttacker) const;
 	bool rImmunityCombatCallback(CvUnit* pDefender, CvUnit* pAttacker, CvPlot* pPlot,
 					int dmg, bool rndHit = true, bool iRetaliate= false) const;
-	CvUnit* rangedStrikeTargetK(CvPlot const& kPlot) const;					
-//doto Range Strike
+	bool isRangeStrikeCapableK(bool isRangeStrikeCapableK = false) const;
+// DOTO-MOD - Keldtah RangedStrike end + Ranged Immunity
 
 	int getTriggerValue(EventTriggerTypes eTrigger, const CvPlot* pPlot, bool bCheckPlot) const;
 	bool canApplyEvent(EventTypes eEvent) const;
@@ -1129,13 +1099,10 @@ public:
 
 	bool isWorker() const; // advc.154  (Exposed to Python)
 
-//doto Range Strike
 	bool isBetterDefenderThan(const CvUnit* pDefender, const CvUnit* pAttacker,
 	// Lead From Behind (UncutDragon, edited for K-Mod): START
 			int* pBestDefenderRank,
-			bool bPreferUnowned = false
-			, bool bRanged = false) const; // advc.061
-//doto Range Strike	
+			bool bPreferUnowned = false) const; // advc.061
 	int LFBgetAttackerRank(const CvUnit* pDefender, int& iUnadjustedRank) const;
 	int LFBgetDefenderRank(const CvUnit* pAttacker) const;
 	// unprotected by K-Mod. (I want to use the LFB value for some AI stuff)
@@ -1240,6 +1207,10 @@ protected:
 	int m_iExperiencePercent;
 	int m_iKamikazePercent;
 	int m_iBaseCombat;
+//doto ranged immunity	
+	int m_iRangedStrikeCapCounter;
+	int m_iRangedStrikeCapTimer;
+//doto ranged immunity
 //doto units bonus cap		
 	int m_iBonusUsedForPrereqOrCap;
 //doto units bonus cap	
@@ -1297,15 +1268,9 @@ protected:
 			CvUnit const* pSkipUnit = NULL);
 
 	bool interceptTest(CvPlot const& kPlot, /* advc.004c: */ IDInfo* pInterceptorID = NULL);
-//doto Range Strike
-	/*
 	CvUnit* airStrikeTarget(CvPlot const& kPlot) const;
-	bool airStrike(CvPlot& kPlot, 
-		// advc.004c: 
-		bool* pbIntercepted = NULL);
-	
-	*/
-//doto Range Strike
+	bool airStrike(CvPlot& kPlot, /* advc.004c: */ bool* pbIntercepted = NULL);
+
 	int planBattle(CvBattleDefinition& kBattle,
 			const std::vector<int>& combat_log) const; // K-Mod
 	int computeUnitsToDie(const CvBattleDefinition & kDefinition, bool bRanged,
@@ -1317,6 +1282,9 @@ protected:
 			bool bSeaPatrol = false) const; // advc.004k
 	//void resolveCombat(CvUnit* pDefender, CvPlot* pPlot, CvBattleDefinition& kBattle);
 	void resolveCombat(CvUnit* pDefender, CvPlot* pPlot, bool bVisible); // K-Mod
+//DOTO - ranged-immunity
+	void resolveRangedCombat(CvUnit* pDefender,CvUnit* pAttacker, CvPlot* pPlot, bool bVisible, int dmgFromRanged, bool iRetaliate); // K-Mod
+//DOTO - ranged imunity
 //DOTO ADDED 2 UNITS PARAMS that the do victory required -> couldnt convert the existing dta properly
 //so just pushed it as is------ BEGIN InfluenceDrivenWar -------------------------------
 	void addAttackSuccessMessages(CvUnit const& kDefender, bool bFought, CvUnit* pDefender, CvUnit* thisUnit) const; // advc.010

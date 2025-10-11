@@ -85,13 +85,6 @@ void CvTeam::reset(TeamTypes eID, bool bConstructorCall)
 	m_iTechTradingCount = 0;
 	m_iGoldTradingCount = 0;
 	m_iOpenBordersTradingCount = 0;
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	m_iFreeTradeAgreementTradingCount = 0;
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	m_iDefensivePactTradingCount = 0;
 	m_iPermanentAllianceTradingCount = 0;
 	m_iVassalTradingCount = 0;
@@ -151,13 +144,6 @@ void CvTeam::reset(TeamTypes eID, bool bConstructorCall)
 	m_abHasSeen.reset(); // K-Mod
 	m_abPermanentWarPeace.reset();
 	m_abOpenBorders.reset();
-/*************************************************************************************************/
-/* START: Advanced Diplomacy                                                                     */
-/*************************************************************************************************/
-	m_abFreeTradeAgreement.reset();
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	m_abDisengage.reset(); // advc.034
 	m_abDefensivePact.reset();
 	m_abForcePeace.reset();
@@ -187,13 +173,6 @@ void CvTeam::reset(TeamTypes eID, bool bConstructorCall)
 			kLoopTeam.m_abJustDeclaredWar.resetVal(getID()); // advc.162
 			kLoopTeam.m_abPermanentWarPeace.resetVal(getID());
 			kLoopTeam.m_abOpenBorders.resetVal(getID());
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-			kLoopTeam.m_abFreeTradeAgreement.resetVal(getID());
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                   */
-/************************************************************************************************/
 			kLoopTeam.m_abDisengage.resetVal(getID()); // advc.034
 			kLoopTeam.m_abDefensivePact.resetVal(getID());
 			kLoopTeam.m_abForcePeace.resetVal(getID());
@@ -342,29 +321,6 @@ void CvTeam::addTeam(TeamTypes eTeam)
 			apOther[i]->setOpenBorders(eTeam, true);
 		}
 	}
-/************************************************************************************************/
-/* START: HR advanced Diplomacy                                                                    		*/
-/************************************************************************************************/
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		for (size_t i = 0; i < apOther.size(); i++)
-		{
-			TeamTypes const eOther = apOther[i]->getID();
-			if (GET_TEAM(eTeam).isFreeTradeAgreement(eOther))
-			{
-				setFreeTradeAgreement(eOther, true);
-				apOther[i]->setFreeTradeAgreement(getID(), true);
-			}
-			else if (isFreeTradeAgreement(eOther))
-			{
-				GET_TEAM(eTeam).setFreeTradeAgreement(eOther, true);
-				apOther[i]->setFreeTradeAgreement(eTeam, true);
-			}
-		}
-	}
-/************************************************************************************************/
-/* END: HR advanced Diplomacy                                                     		*/
-/************************************************************************************************/
 
 	for (size_t i = 0; i < apOther.size(); i++)
 	{
@@ -513,13 +469,6 @@ void CvTeam::addTeam(TeamTypes eTeam)
 			TradeableItems eType = pItem->m_eItemType;
 			if (eType == TRADE_OPEN_BORDERS || eType == TRADE_DEFENSIVE_PACT ||
 				eType == TRADE_PEACE_TREATY || eType == TRADE_VASSAL ||
-/************************************************************************************************/
-/* START: Advanced Diplomacy            advc adjustment                                        */
-/************************************************************************************************/
-				eType == TRADE_FREE_TRADE_ZONE ||
-/************************************************************************************************/
-/* END: Advanced Diplomacy        				                                                */
-/************************************************************************************************/
 				eType == TRADE_SURRENDER ||
 				// advc.034: Simplest to just cancel it
 				eType == TRADE_DISENGAGE)
@@ -817,18 +766,6 @@ void CvTeam::shareCounters(TeamTypes eTeam)
 		if (kShareTeam.AI_getOpenBordersCounter(eLoopTeam) > AI().AI_getOpenBordersCounter(eLoopTeam))
 			AI().AI_setOpenBordersCounter(eLoopTeam, kShareTeam.AI_getOpenBordersCounter(eLoopTeam));
 		//else kShareTeam.AI_setOpenBordersCounter(eLoopTeam, AI_getOpenBordersCounter(eLoopTeam));
-
-/*************************************************************************************************/
-/* START: Advanced Diplomacy    moved from below - doto - seems more appropriate here   		 */
-/*************************************************************************************************/
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		if (kShareTeam.AI_getFreeTradeAgreementCounter(eLoopTeam) > AI().AI_getFreeTradeAgreementCounter(eLoopTeam))
-			AI().AI_setFreeTradeAgreementCounter(eLoopTeam, kShareTeam.AI_getFreeTradeAgreementCounter(eLoopTeam));
-	}
-/*************************************************************************************************/
-/* END: Advanced Diplomacy                                                             			 */
-/*************************************************************************************************/
 
 		if (kShareTeam.AI_getDefensivePactCounter(eLoopTeam) > AI().AI_getDefensivePactCounter(eLoopTeam))
 			AI().AI_setDefensivePactCounter(eLoopTeam, kShareTeam.AI_getDefensivePactCounter(eLoopTeam));
@@ -1163,17 +1100,14 @@ void CvTeam::declareWar(TeamTypes eTarget, bool bNewDiplo, WarPlanTypes eWarPlan
 
 	GC.getGame().AI_makeAssignWorkDirty();
 
-/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
-	if (getID() == GC.getGame().getActiveTeam() || GET_TEAM(eTarget).getID() == GC.getGame().getActiveTeam())
-	//if (isActive() || GET_TEAM(eTarget).isActive())
+	if (isActive() || GET_TEAM(eTarget).isActive())
 	{
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
 		gDLL->UI().setDirty(CityInfo_DIRTY_BIT, true);
-		// advc.001w: Can now enter each other's territory
-		gDLL->UI().setDirty(Waypoints_DIRTY_BIT, true);
-		// advc.162: DoW increases certain path costs
-		CvSelectionGroup::resetPath();
 	}
+	// advc.001w: Can now enter each other's territory (important for advc.162)
+	updateActivePaths(eTarget);
+	CvSelectionGroup::resetPath(); // advc.162
 	// advc.003j: Obsolete
 	/*for (iI = 0; iI < MAX_PLAYERS; iI++) {
 		if (GET_PLAYER((PlayerTypes)iI).isAlive()) {
@@ -1351,9 +1285,7 @@ void CvTeam::makePeace(TeamTypes eTarget, bool bBumpUnits,  // advc: refactored
 
 	GC.getGame().AI_makeAssignWorkDirty();
 
-/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
-	if (getID() == GC.getGame().getActiveTeam() || GET_TEAM(eTarget).getID() == GC.getGame().getActiveTeam())
-	//if (isActive() || GET_TEAM(eTarget).isActive())
+	if (isActive() || GET_TEAM(eTarget).isActive())
 	{
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
 		gDLL->UI().setDirty(CityInfo_DIRTY_BIT, true);
@@ -1992,39 +1924,6 @@ bool CvTeam::hasMetHuman() const
 	return false;
 }
 
-/*************************************************************************************************/
-/** Advanced Diplomacy       START     doto added from hr				   						 */
-/*************************************************************************************************/
-//from hr diplomacy -> was : CvTeam::getTradeAgreementCount
-int CvTeam::getHowManyTradeAgreements(TeamTypes eTeam) const
-{
-	int iCount = 0;
-	//doro - org -> int iI;
-	//doro - org -> for (iI = 0; iI < MAX_CIV_TEAMS; iI++)
-	for (int iTeam = 0; iTeam < MAX_TEAMS; iTeam++)
-	{
-		TeamTypes iterTeam = (TeamTypes)iTeam;
-		CvTeamAI& kLoopTeam = GET_TEAM(iterTeam);
-		if (kLoopTeam.isAlive())
-		{
-			if (iTeam != getID())
-			{
-				if (isFreeTradeAgreement(iterTeam))
-				{
-					if (NO_TEAM == eTeam || GET_TEAM(eTeam).isHasMet(iterTeam))
-					{
-						iCount++;
-					}
-				}
-			}
-		}
-	}
-
-	return iCount;
-}
-/************************************************************************************************/
-/* Advanced Diplomacy                        END                                                */
-/************************************************************************************************/
 
 int CvTeam::getDefensivePactCount(TeamTypes eObs) const
 {
@@ -2757,17 +2656,7 @@ void CvTeam::changeOpenBordersTradingCount(int iChange)
 	m_iOpenBordersTradingCount = (m_iOpenBordersTradingCount + iChange);
 	FAssert(getOpenBordersTradingCount() >= 0);
 }
-/************************************************************************************************/
-/* START: Advanced Diplomacy     doto - moved here                                              */
-/************************************************************************************************/
-void CvTeam::changeFreeTradeAgreementTradingCount(int iChange)
-{
-	m_iFreeTradeAgreementTradingCount = (m_iFreeTradeAgreementTradingCount + iChange);
-	FAssert(getFreeTradeAgreementTradingCount() >= 0);
-}
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
+
 
 void CvTeam::changeDefensivePactTradingCount(int iChange)
 {
@@ -2885,10 +2774,7 @@ void CvTeam::setMapCentering(bool bNewValue)
 	if (isMapCentering() != bNewValue)
 	{
 		m_bMapCentering = bNewValue;
-		
-/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
-		//if (isActive())
-		if (getID() == GC.getGame().getActiveTeam())
+		if (isActive())
 			gDLL->UI().setDirty(MinimapSection_DIRTY_BIT, true);
 	}
 }
@@ -2993,9 +2879,7 @@ void CvTeam::changeCommerceFlexibleCount(CommerceTypes eIndex, int iChange)
 	m_aiCommerceFlexibleCount.add(eIndex, iChange);
 	FAssert(getCommerceFlexibleCount(eIndex) >= 0);
 
-/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
-	if (getID() == GC.getGame().getActiveTeam())
-	//if (isActive())
+	if (isActive())
 	{
 		gDLL->UI().setDirty(PercentButtons_DIRTY_BIT, true);
 		gDLL->UI().setDirty(GameData_DIRTY_BIT, true);
@@ -3113,22 +2997,23 @@ CvPlot* CvTeam::makeHasMet(TeamTypes eOther, bool bNewDiplo,
 	// K-Mod: Initialize attitude cache for players on our team towards player's on their team.
 	// advc.001: Too early for that. Moved to caller (CvTeam::meet).
 
-/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
-	if (getID() == GC.getGame().getActiveTeam() || GET_TEAM(eOther).getID() == GC.getGame().getActiveTeam())
-	//if (isActive() || GET_TEAM(eOther).isActive())
+	if (isActive() || GET_TEAM(eOther).isActive())
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
 	// <advc.071>
-	bool bShowMessage = (isHuman() && pData != NULL);
-	if (bShowMessage || bNewDiplo)
+	bool bShowMessage = false;
+	if (bNewDiplo &&
+		((isHuman() || GET_TEAM(eOther).isHuman()))) // save time
 	{
 		int iOnFirstContact = 1;
 		// If met during the placement of free starting units, show only a diplo popup.
-		if(GC.IsGraphicsInitialized())
+		if (GC.IsGraphicsInitialized())
 			iOnFirstContact = BUGOption::getValue("Civ4lerts__OnFirstContact", 2);
-		if(bNewDiplo && iOnFirstContact == 0)
-			bNewDiplo = false;
-		if(bShowMessage && iOnFirstContact == 1)
-			bShowMessage = false;
+		if (iOnFirstContact != 1)
+		{
+			bShowMessage = (pData != NULL && isHuman());
+			if (iOnFirstContact == 0)
+				bNewDiplo = false;
+		}	
 	} // </advc.071>
 	if (isAlwaysWar() && getID() != eOther)
 		declareWar(eOther, false, NO_WARPLAN);
@@ -3214,6 +3099,16 @@ CvPlot* CvTeam::makeHasMet(TeamTypes eOther, bool bNewDiplo,
 			pAt = pUnit2->plot();
 		}
 	}
+	// Don't indicate a plot if we can't tell how it was spotted
+	if ((pAt1 == NULL || pAt2 == NULL) && pUnit1 == NULL && pUnit2 == NULL)
+		pAt = NULL;
+	// Can't generally tell where meetings occur with simultaneous turns
+	// ... But still no harm, I guess, in letting players know?
+	/*if (GC.getGame().isMPOption(MPOPTION_SIMULTANEOUS_TURNS))
+	{
+		pAt = NULL;
+		pUnitMet = NULL;
+	}*/
 	if (!bShowMessage)
 		return pAt;
 	CvWString szMsg = gDLL->getText("TXT_KEY_MISC_TEAM_MET",
@@ -3332,15 +3227,7 @@ bool CvTeam::canTradeWith(TeamTypes eWhoTo) const
 			isOpenBordersTrading() || kToTeam.isOpenBordersTrading() ||
 			isDefensivePactTrading() || kToTeam.isDefensivePactTrading() ||
 			isPermanentAllianceTrading() || kToTeam.isPermanentAllianceTrading() ||
-			isVassalStateTrading() || kToTeam.isVassalStateTrading()
-/************************************************************************************************/
-/* START: Advanced Diplomacy      advc adjustment                                           */
-/************************************************************************************************/
-			|| isFreeTradeAgreementTrading() || kToTeam.isFreeTradeAgreementTrading()
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
-			);
+			isVassalStateTrading() || kToTeam.isVassalStateTrading());
 }
 
 
@@ -3352,26 +3239,13 @@ bool CvTeam::isFreeTrade(TeamTypes eIndex) const
 	if (!isHasMet(eIndex))
 		return false;
 
-	return (isOpenBorders(eIndex) || GC.getGame().isFreeTrade()
-/************************************************************************************************/
-/* START: Advanced Diplomacy   
-doto - im not so sure about this effect - maybe it allowes for free trade		
-not sure its an effect i want for this agrement type	
-edit - i decided to remove the trade ag from allowence of free trade!
-there is enough effects to it from the trade traits
-*/
-/************************************************************************************************/
-//		|| isFreeTradeAgreement(eIndex)
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
-	);
+	return (isOpenBorders(eIndex) || GC.getGame().isFreeTrade());
 }
 
 
 void CvTeam::setOpenBorders(TeamTypes eIndex, bool bNewValue)
 {
-	if(isOpenBorders(eIndex) == bNewValue)
+	if (isOpenBorders(eIndex) == bNewValue)
 		return; // advc
 	bool bOldFreeTrade = isFreeTrade(eIndex);
 	m_abOpenBorders.set(eIndex, bNewValue);
@@ -3382,12 +3256,11 @@ void CvTeam::setOpenBorders(TeamTypes eIndex, bool bNewValue)
 			itOther->AI_updateAttitude(itMember->getID());
 	} // </advc.130p>
 	AI().AI_setOpenBordersCounter(eIndex, 0);
-
 	GC.getMap().verifyUnitValidPlot();
-
-/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
-	if (getID() == GC.getGame().getActiveTeam() || GET_TEAM(eIndex).getID() == GC.getGame().getActiveTeam())
-	//if (isActive() || GET_TEAM(eIndex).isActive())
+	// <advc.001w>
+	if (isOpenBorders(eIndex))
+		updateActivePaths(eIndex); // </advc.001w>
+	if (isActive() || GET_TEAM(eIndex).isActive())
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
 
 	if (bOldFreeTrade != isFreeTrade(eIndex))
@@ -3426,10 +3299,7 @@ void CvTeam::setDefensivePact(TeamTypes eIndex, bool bNewValue)
 	if (isDefensivePact(eIndex) == bNewValue)
 		return; // advc
 	m_abDefensivePact.set(eIndex, bNewValue);
-
-/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
-	if (getID() == GC.getGame().getActiveTeam() ||  GET_TEAM(eIndex).getID() == GC.getGame().getActiveTeam())
-	//if (isActive() || GET_TEAM(eIndex).isActive())
+	if (isActive() || GET_TEAM(eIndex).isActive())
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
 	CvTeam const& kOther = GET_TEAM(eIndex); // advc
 	if (bNewValue && !kOther.isDefensivePact(getID()))
@@ -3601,6 +3471,8 @@ void CvTeam::setVassal(TeamTypes eMaster, bool bNewValue, bool bCapitulated)
 
 	for (MemberIter it(getID()); it.hasNext(); ++it)
 		it->updateCitySight(true, false);
+	// advc.001w: (No change in movement rules for the vassal)
+	GET_TEAM(eMaster).updateActivePaths();
 	// <advc.184>
 	updateMilitaryHappinessUnits();
 	GET_TEAM(eMaster).updateMilitaryHappinessUnits(); // </advc.184>
@@ -4138,27 +4010,7 @@ void CvTeam::changeProjectCount(ProjectTypes eProject, int iChange)
 
 	if (kProject.isAllowsNukes())
 		GC.getGame().makeNukesValid(true);
-// davidlallen: project civilization and free unit start
-	if (kProject.getFreeUnit() != NO_UNIT)
-		{
-			for (int iI = 0; iI < MAX_PLAYERS; iI++)
-			{
-				if (GET_PLAYER((PlayerTypes)iI).isAlive())
-				{
-					if (GET_PLAYER((PlayerTypes)iI).getTeam() == getID())
-					{
-						if (GET_PLAYER((PlayerTypes)iI).getCivilizationType() == kProject.getCivilization())
-						{
-							UnitTypes eFreeUnit = (UnitTypes)(kProject.getFreeUnit());
-							CvCity* pCapitalCity = GET_PLAYER((PlayerTypes)iI).getCapitalCity();
-							GET_PLAYER((PlayerTypes)iI).initUnit(eFreeUnit, pCapitalCity->getX(), pCapitalCity->getY());
-							break; // sorry, only first player of correct type gets it
-						}
-					}
-				}
-			}
-		}
-// davidlallen: project civilization and free unit end
+
 	for (MemberAIIter it(getID()); it.hasNext(); ++it)
 	{
 		CvPlayerAI& kAIMember = *it;
@@ -4248,7 +4100,7 @@ void CvTeam::changeBuildingClassCount(BuildingClassTypes eIndex, int iChange)
 	FAssert(!GC.getInfo(eIndex).isTeamWonder() || getBuildingClassCount(eIndex) <= GC.getInfo(eIndex).getMaxTeamInstances());
 }
 
-
+//DOTO -tholish-Keldath inactive buildings 
 void CvTeam::changeObsoleteBuildingCount(BuildingTypes eIndex, int iChange, bool ignoreAdd)
 {
 	//tst
@@ -4315,9 +4167,7 @@ void CvTeam::setResearchProgress(TechTypes eIndex, int iNewValue, PlayerTypes eP
 	m_aiResearchProgress.set(eIndex, iNewValue);
 	FAssert(getResearchProgress(eIndex) >= 0);
 
-/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
-	if (getID() == GC.getGame().getActiveTeam())
-	//if (isActive())
+	if (isActive())
 	{
 		gDLL->UI().setDirty(GameData_DIRTY_BIT, true);
 		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
@@ -4629,15 +4479,29 @@ CvWString const CvTeam::tradeItemString(TradeableItems eItem, int iData, TeamTyp
 	return L"";
 }
 
+// advc (from Taurus):
+bool CvTeam::isTechSplash() const
+{
+	CvGame const& kGame = GC.getGame();
+	// Cut from announceTechToPlayers
+	if (GC.getGame().isNetworkMultiPlayer() || gDLL->UI().noTechSplash())
+		return false;
+	// Never makes sense to show popups to AI teams
+	if (!isHuman())
+		return false;
+	// Queueing them for a (currently) nonactive team in Hot Seat can make sense
+	if (!isActive() && !kGame.isHotSeat())
+		return false;
+	return true;
+}
+
 void CvTeam::announceTechToPlayers(TechTypes eIndex, /* advc.156: */ PlayerTypes eDiscoverPlayer,
 	bool bPartial)
 {
-	CvGame const& kGame = GC.getGame();
-	bool bSound = ((kGame.isNetworkMultiPlayer() ||
+	bool bSound = ((!isTechSplash() ||
 			/*  advc.156: I think HotSeat doesn't play sounds along with messages,
 				but let's try. */
-			kGame.isHotSeat() ||
-			gDLL->UI().noTechSplash()) && !bPartial);
+			GC.getGame().isHotSeat()) && !bPartial);
 	for (MemberIter it(getID()); it.hasNext(); ++it)
 	{
 		CvPlayer const& kPlayer = *it;
@@ -5024,10 +4888,7 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,
 		}
 		/*  advc.004x: Don't check bAnnounce for civics popup. FinalInitialized:
 			Let CvPlayer::doChangeCivicsPopup handle that. */
-
-/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
-		if (!gDLL->GetWorldBuilderMode() && getID() == kGame.getActiveTeam())
-		//if (!gDLL->GetWorldBuilderMode() && isActive())
+		if (!gDLL->GetWorldBuilderMode() && isActive())
 		{
 			for (PlayerIter<HUMAN,MEMBER_OF> it(getID()); it.hasNext(); ++it)
 			{	// advc: Un-nested the conditions
@@ -5070,22 +4931,42 @@ void CvTeam::setHasTech(TechTypes eTech, bool bNewValue, PlayerTypes ePlayer,
 		} // </advc.106>
 	}
 
-	if (bNewValue && bAnnounce && kGame.isFinalInitialized() &&
-		!gDLL->GetWorldBuilderMode())
+	if (bNewValue && bAnnounce && /* advc: */ isHuman() &&
+		kGame.isFinalInitialized() && !gDLL->GetWorldBuilderMode())
 	{
-		FAssert(ePlayer != NO_PLAYER);
-		if (GET_PLAYER(ePlayer).isResearch() &&
-			GET_PLAYER(ePlayer).getCurrentResearch() == NO_TECH &&
-			GET_PLAYER(ePlayer).isHuman()) // K-Mod
+		// <advc.001> (from Taurus) Humans always do the choosing in human-AI teams
+		if (!GET_PLAYER(ePlayer).isHuman())
+		{
+			CvPlayer& kLeader = GET_PLAYER(getLeaderID());
+			if (kLeader.isActive() || kGame.isHotSeat()) // Avoid multiple popups
+			{
+				ePlayer = kLeader.getID();
+				/*	Easier to handle the missing tech splash popup here than in
+					CvEventManager.py. Debatable whether this is really a bugfix;
+					also tagging advc.155. */
+				if (isTechSplash())
+				{
+					CvPopupInfo* pTechSplash = new CvPopupInfo();
+					if (pTechSplash != NULL)
+					{
+						pTechSplash->setButtonPopupType(BUTTONPOPUP_PYTHON_SCREEN);
+						pTechSplash->setData1(eTech);
+						pTechSplash->setText(L"showTechSplash");
+						kLeader.addPopup(pTechSplash);
+					}
+				}
+			}
+		} // </advc.001>
+		CvPlayer const& kPlayer = GET_PLAYER(ePlayer);
+		if (kPlayer.isResearch() && kPlayer.getCurrentResearch() == NO_TECH &&
+			kPlayer.isHuman()) // K-Mod
 		{
 			CvWString szBuffer = gDLL->getText("TXT_KEY_MISC_WHAT_TO_RESEARCH_NEXT");
 			GET_PLAYER(ePlayer).chooseTech(0, szBuffer);
 		}
 	}
 
-/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
-	if (getID() == kGame.getActiveTeam())
-	//if (isActive())
+	if (isActive())
 	{
 		gDLL->UI().setDirty(MiscButtons_DIRTY_BIT, true);
 		gDLL->UI().setDirty(SelectionButtons_DIRTY_BIT, true);
@@ -5167,6 +5048,20 @@ bool CvTeam::isAlliedTerritory(TeamTypes eTerritoryOwner, TeamTypes eEnemy) cons
 	if (eEnemy == NO_TEAM || eTerritoryOwner == NO_TEAM)
 		return false;
 	return (isAtWar(eEnemy) && GET_TEAM(eTerritoryOwner).isAtWar(eEnemy));
+}
+
+/*	advc.001w: I think only situations in which the active player may have gained
+	access to new tiles need to be covered */
+void CvTeam::updateActivePaths(TeamTypes eOtherTeam)
+{
+	if (isActive() || (eOtherTeam != NO_TEAM && GET_TEAM(eOtherTeam).isActive()))
+	{
+		gDLL->UI().setDirty(Waypoints_DIRTY_BIT, true);
+		/*	Only thing that'll update waypoints after signing OB.
+			Resetting/ invalidating the K-Mod or original pathfinder
+			doesn't seem to help (and could also cause OOS problems). */
+		gDLL->UI().makeSelectionListDirty();
+	}
 }
 
 /*	advc: Says whether kPlot is a land plot that sea units of this team can enter
@@ -5849,16 +5744,6 @@ void CvTeam::processTech(TechTypes eTech, int iChange,
 
 	if (kTech.isOpenBordersTrading())
 		changeOpenBordersTradingCount(iChange);
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	if (kTech.isFreeTradeAgreementTrading())
-	{
-		changeFreeTradeAgreementTradingCount(iChange);
-	}
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 
 	if (kTech.isDefensivePactTrading())
 		changeDefensivePactTradingCount(iChange);
@@ -5993,7 +5878,7 @@ void CvTeam::processTech(TechTypes eTech, int iChange,
 		FOR_EACH_ENUM(Commerce)
 		{
 			kMember.changeCommerceRateModifier(eLoopCommerce,
-					kTech.getCommerceModifier(eLoopCommerce) * iChange); //doto civic plus also in Civic Infos Plus marked bulk above
+					kTech.getCommerceModifier(eLoopCommerce) * iChange);
 			kMember.changeSpecialistExtraCommerce(eLoopCommerce,
 					kTech.getSpecialistExtraCommerce(eLoopCommerce) * iChange);
 		} // K-Mod end
@@ -6063,8 +5948,7 @@ void CvTeam::changeNoFearForSafetyCount(int iChange)
 			if (pCity->getMilitaryHappinessUnits() <= 0)
 			{
 				pCity->AI_setAssignWorkDirty(true);
-//doto fix for teams - reverse for advc 1.00 date 31.08.2021
-			if (getID() == GC.getGame().getActiveTeam())
+				if (isActive())
 					pCity->setInfoDirty(true);
 			}
 		}
@@ -6121,13 +6005,6 @@ void CvTeam::read(FDataStreamBase* pStream)
 	pStream->Read(&m_iTechTradingCount);
 	pStream->Read(&m_iGoldTradingCount);
 	pStream->Read(&m_iOpenBordersTradingCount);
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	pStream->Read(&m_iFreeTradeAgreementTradingCount);
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	pStream->Read(&m_iDefensivePactTradingCount);
 	pStream->Read(&m_iPermanentAllianceTradingCount);
 	pStream->Read(&m_iVassalTradingCount);
@@ -6304,20 +6181,6 @@ void CvTeam::read(FDataStreamBase* pStream)
 		m_abOpenBorders.readArray<bool>(pStream);
 	}
 	// <advc.034>
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	if (uiFlag >= 16)
-	{
-		m_abFreeTradeAgreement.read(pStream);
-	}
-	else
-	{
-		m_abFreeTradeAgreement.readArray<bool>(pStream);
-	}
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
 	if(uiFlag >= 3)
 	{
 		if (uiFlag >= 9)
@@ -6549,13 +6412,6 @@ void CvTeam::write(FDataStreamBase* pStream)
 	pStream->Write(m_iTechTradingCount);
 	pStream->Write(m_iGoldTradingCount);
 	pStream->Write(m_iOpenBordersTradingCount);
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	pStream->Write(m_iFreeTradeAgreementTradingCount);
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	pStream->Write(m_iDefensivePactTradingCount);
 	pStream->Write(m_iPermanentAllianceTradingCount);
 	pStream->Write(m_iVassalTradingCount);
@@ -6604,14 +6460,6 @@ void CvTeam::write(FDataStreamBase* pStream)
 	m_abJustDeclaredWar.write(pStream); // advc.162
 	m_abPermanentWarPeace.write(pStream);
 	m_abOpenBorders.write(pStream);
-/************************************************************************************************/
-/* START: Advanced Diplomacy          adjusted advciv                                                         */
-/************************************************************************************************/
-	m_abFreeTradeAgreement.write(pStream);
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
-
 	m_abDisengage.write(pStream); // advc.034
 	m_abDefensivePact.write(pStream);
 	m_abForcePeace.write(pStream);
@@ -6717,209 +6565,3 @@ bool CvTeam::hasTechToClear(FeatureTypes eFeature, TechTypes eCurrentResearch) c
 	}
 	return false;
 } // </advc>
-
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-
-bool CvTeam::canSignFreeTradeAgreement(TeamTypes eToTeam) const
-{
-	//doto - there were 2 limits here, embassy and open borders.
-	// i decided to remove any prereq
-	//main goal is to have the attitude value to handle this - yes or no,
-	// maybe later on, i can devise something smart for this.
-	
-	return true;
-}
-/* seems to be unused - doto - checked
-void CvTeam::signFreeTradeAgreement(TeamTypes eTeam)
-{
-	CLinkList<TradeData> ourList;
-	CLinkList<TradeData> theirList;
-	TradeData item;
-
-	FAssert(eTeam != NO_TEAM);
-	FAssert(eTeam != getID());
-
-	if (!isAtWar(eTeam) && (getID() != eTeam) && (!isFreeTradeAgreeement(eTeam)))
-	{
-		setTradeItem(&item, TRADE_FREE_TRADE_ZONE);
-
-		if (GET_PLAYER(getLeaderID()).canTradeItem(GET_TEAM(eTeam).getLeaderID(), item) && GET_PLAYER(GET_TEAM(eTeam).getLeaderID()).canTradeItem(getLeaderID(), item))
-		{
-			ourList.clear();
-			theirList.clear();
-
-			ourList.insertAtEnd(item);
-			theirList.insertAtEnd(item);
-
-			GC.getGameINLINE().implementDeal(getLeaderID(), (GET_TEAM(eTeam).getLeaderID()), &ourList, &theirList);
-		}
-	}
-}
-*/
-
-void CvTeam::setFreeTradeAgreement(TeamTypes eIndex, bool bNewValue)
-{
-	//FAssertMsg(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
-	//FAssertMsg(eIndex < MAX_TEAMS, "eIndex is expected to be within maximum bounds (invalid Index)");
-	/*
-		doto - now uses advc code from openborders.
-		the original function is quite similar, just a few basic difference which i addressed in the comments.
-		---
-		in addition - for city states, im gonna do something different maybe,
-		the free routes thing is something that im not sure ill use.
-		---
-	*/
-	//CvTeam const& kThemTeam = GET_TEAM(eIndex);
-	if (isFreeTradeAgreement(eIndex) == bNewValue)//if the team already has an agreement , skip
-		return; // advc
-	m_abFreeTradeAgreement.set(eIndex, bNewValue);
-	
-	// <advc.130p> OB affect diplo from rival trade
-	//doto - removed this since the attitude is controlled not from rival trade anymore 
-	//but from: 
-	for (PlayerAIIter<MAJOR_CIV, NOT_SAME_TEAM_AS> itOther(getID()); itOther.hasNext(); ++itOther)
-	{
-		for (MemberIter itMember(getID()); itMember.hasNext(); ++itMember)
-			itOther->AI_updateAttitude(itMember->getID());
-	} // </advc.130p>
-
-	AI().AI_setFreeTradeAgreementCounter(eIndex, 0);
-//doto fix for teams - reverse for advc 1.00 date 31.08.2021
-	if (getID() == GC.getGame().getActiveTeam() || GET_TEAM(eIndex).getID() == GC.getGame().getActiveTeam())
-		gDLL->UI().setDirty(Score_DIRTY_BIT, true);
-
-	csTeamTraitsUpdate(eIndex, bNewValue); //doto unique feature
-										   //doto - not sure what is the purpose - but - seems logical.
-	//CvPlayerAI::AI_updateAttitudes();
-	//if the value is true means if there was some disebgage - it gets cancelled by this
-	if (bNewValue)
-		AI().cancelDisengage(eIndex); // </advc.034>
-}
-
-//DOTO CITY STATES ADVANCED DIPLOMACY custimization of effects 
-//this function will pull the special trait from a trading player 
-//very important - this assumes there 1 member per team - need to move the entire trade functions to playerai
-//and not as teams!!!! if there are more, the trait and perks will go to the last andfirst player with trait
-void CvTeam::csTeamTraitsUpdate(TeamTypes eThey, bool bNewValue) const
-{
-	int iChange = bNewValue ? 1 : -1;
-
-	if (getID() == eThey)
-		return;
-
-	TraitTypes fTrait = NO_TRAIT;//we dont care to whom parties have the speciael 
-								//trait... the trade agg just need one side to have it
-	PlayerTypes eOurPlayer = NO_PLAYER;
-	PlayerTypes eThemPlayer = NO_PLAYER;
-
-	//simpler method - i need to update each member with the perk of the trade...
-	//PlayerTypes ePlayerCS = NO_PLAYER;
-	//for (int i = 0; i < MAX_PLAYERS; i++)
-	//{
-	//	if (fTrait != NO_TRAIT)
-	//		break;
-
-	//	CvPlayer const& isPlayerState = GET_PLAYER((PlayerTypes)i);
-	//	//if one of the members of the teams of the trading players have the trait
-	//	if (GET_TEAM(isPlayerState.getTeam()) == GET_TEAM(eTeam) ||
-	//		GET_TEAM(getTeam()) == GET_TEAM(eTeam))
-	//	{
-	//		fTrait = isPlayerState.getMemberUniqueTrait(it->getID());
-	//		ePlayerCS = (PlayerTypes)i;
-	//	}
-	//}
-	//check if we have the unique trait
-
-
-	for (MemberIter it(getID()); it.hasNext(); ++it)
-	{
-		PlayerTypes ePlayer = it->getID();
-		CvPlayer& kOurTeamPlayer = GET_PLAYER(ePlayer);
-		
-		if (!kOurTeamPlayer.isAlive())
-			continue;
-
-		TraitTypes eTrait = kOurTeamPlayer.getMemberUniqueTrait(ePlayer);
-		if 	(eTrait != NO_TRAIT)
-		{
-			eOurPlayer = ePlayer;
-			fTrait = eTrait;
-			break;
-		}
-		//IN CASE this side doesnt has the trait
-		if (eOurPlayer == NO_PLAYER)
-			eOurPlayer = ePlayer;
-	}
-	
-	//check if them have unique trait
-	for (MemberIter it(eThey); it.hasNext(); ++it)
-	{
-		PlayerTypes ePlayer = it->getID();
-		CvPlayer& kThemTeamPlayer = GET_PLAYER(ePlayer);
-
-		if (!kThemTeamPlayer.isAlive())
-			continue;
-
-		TraitTypes eTrait = kThemTeamPlayer.getMemberUniqueTrait(ePlayer);
-		if (eTrait != NO_TRAIT)
-		{
-			eThemPlayer = ePlayer;
-			fTrait = eTrait;
-		}
-			
-		//IN CASE this side doesnt has the trait
-		if(eThemPlayer == NO_PLAYER)
-			eThemPlayer = ePlayer;
-	}
-		
-	CvPlayer& kOurTeamPlayer = GET_PLAYER(eOurPlayer);
-	CvPlayer& kThemTeamPlayer = GET_PLAYER(eThemPlayer);
-
-	bool isOurCS = kOurTeamPlayer.checkCityState(eOurPlayer);
-	bool isThemCS = kThemTeamPlayer.checkCityState(eThemPlayer);
-	
-	if (isOurCS != isThemCS)
-		FAssert(isOurCS != isThemCS); //cant have 2 city states trading this
-	if (!isOurCS != !isThemCS)
-		FAssert(!isOurCS != !isThemCS); //cant have 2 none city states trading this
-		
-	//kOurTeamPlayer.csMemberUpdateFreeTradeTraits(fTrait, iChange, eOurPlayer);
-	//doto 112c well i found out that the code runs twice, 1 for them and one for they
-	//so this line above ->kOurTeamPlayer.csMe... isnt required cause other wise it will update twice the 
-	//trait modifiers to each side, doubling it....so just removed it. names of vars remain they, where in fatct its both on the call of this function.
-	kThemTeamPlayer.csMemberUpdateFreeTradeTraits(fTrait, iChange, eThemPlayer);
-
-//FOR_EACH_ENUM(Commerce)
-//{
-//	if (isThemCS && !isOurCS)
-//	{
-//		//city states will gain a better bonus	
-//		if (kTrait.getCommerceChange(eLoopCommerce) > 0)
-//		{
-//			kThemTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
-//				(int)(kTrait.getCommerceModifier(eLoopCommerce) * 50 * iChange));
-//		
-//			kOurTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
-//				(int)(kTrait.getCommerceModifier(eLoopCommerce) * 50 * iChange));
-//		}
-
-//	}
-//	if (isOurCS && !isThemCS)
-//	{
-//		//city states will gain a better bonus	
-//		if (kTrait.getCommerceChange(eLoopCommerce) > 0)
-//		{
-//			kThemTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
-//				(int)(kTrait.getCommerceModifier(eLoopCommerce) * 50 * iChange));
-//		
-//			kThemTeamPlayer.changeCapitalCommerceRateModifier(eLoopCommerce,
-//				(int)(kTrait.getCommerceModifier(eLoopCommerce) * 50 * iChange));
-//		}
-//	}
-
-}
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/

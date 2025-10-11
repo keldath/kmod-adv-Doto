@@ -408,13 +408,6 @@ void CyEnumsPythonInterface()
 		.value("WIDGET_HELP_GLOBAL_COMMERCE_MODIFIER", WIDGET_HELP_GLOBAL_COMMERCE_MODIFIER)
 		.value("WIDGET_HELP_EXTRA_SPECIALIST_COMMERCE", WIDGET_HELP_EXTRA_SPECIALIST_COMMERCE)
 		// K-Mod end
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-		.value("WIDGET_HELP_FREE_TRADE_AGREEMENT", WIDGET_HELP_FREE_TRADE_AGREEMENT)
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 		.value("WIDGET_LH_GLANCE", WIDGET_LH_GLANCE) // advc.152
 		.value("WIDGET_SHOW_REPLAY", WIDGET_SHOW_REPLAY) // advc.106i
 		// BULL - Trade Denial - start
@@ -449,6 +442,9 @@ void CyEnumsPythonInterface()
 //doto units bonus cap
 		.value("WIDGET_TRAIN_UNITS_CAP", WIDGET_TRAIN_UNITS_CAP)
 //doto units bonus cap
+//doto 115 happiness golden age
+.value("WIDGET_HAPPYNESS_GOLDEN_AGE", WIDGET_HAPPYNESS_GOLDEN_AGE)
+//doto 115 happiness golden age
 		.value("NUM_WIDGET_TYPES", NUM_WIDGET_TYPES)
 		;
 
@@ -591,8 +587,6 @@ void CyEnumsPythonInterface()
 		.value("GAMEOPTION_NO_ANIMALS", GAMEOPTION_NO_ANIMALS) // advc.309
 		.value("GAMEOPTION_NO_SLAVERY", GAMEOPTION_NO_SLAVERY) // advc.912d
 		.value("GAMEOPTION_NO_ESPIONAGE", GAMEOPTION_NO_ESPIONAGE) // advc.tsl (moved down)
-//Doto City States
-		.value("GAMEOPTION_CITY_STATES", GAMEOPTION_CITY_STATES)
 //MOD@VET_Andera412_Blocade_Unit-begin1/1
 		.value("GAMEOPTION_BLOCADE_UNIT", GAMEOPTION_BLOCADE_UNIT)
 		.value("GAMEOPTION_MOUNTAINS", GAMEOPTION_MOUNTAINS)//AND Mountains mod Options
@@ -626,11 +620,11 @@ void CyEnumsPythonInterface()
 		.value("GAMEOPTION_UNITS_BONUS_CAP", GAMEOPTION_UNITS_BONUS_CAP)	
 		.value("GAMEOPTION_PARTISANS", GAMEOPTION_PARTISANS)
 		.value("GAMEOPTION_RANGED_NO_LIMIT", GAMEOPTION_RANGED_NO_LIMIT)
+		.value("GAMEOPTION_RANGED_IMMUNITY", GAMEOPTION_RANGED_IMMUNITY)
 		.value("GAMEOPTION_RANGED_RETALIATE", GAMEOPTION_RANGED_RETALIATE)
 		.value("GAMEOPTION_NO_RANGED_COLLATERAL", GAMEOPTION_NO_RANGED_COLLATERAL)
 		.value("GAMEOPTION_RAND_HIT", GAMEOPTION_RAND_HIT)
 		.value("GAMEOPTION_RAND_DMG", GAMEOPTION_RAND_DMG)
-		.value("GAMEOPTION_SCENARIO_PLAY", GAMEOPTION_SCENARIO_PLAY)
 		.value("NUM_GAMEOPTION_TYPES", NUM_GAMEOPTION_TYPES)
 		;
 
@@ -1403,13 +1397,6 @@ void CyEnumsPythonInterface()
 		.value("TRADE_EMBARGO", TRADE_EMBARGO)
 		.value("TRADE_CIVIC", TRADE_CIVIC)
 		.value("TRADE_RELIGION", TRADE_RELIGION)
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-		.value("TRADE_FREE_TRADE_ZONE", TRADE_FREE_TRADE_ZONE)
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 		.value("NUM_TRADEABLE_HEADINGS", NUM_TRADEABLE_HEADINGS)
 		.value("NUM_TRADEABLE_ITEMS", NUM_TRADEABLE_ITEMS)
 		;
@@ -1463,13 +1450,6 @@ void CyEnumsPythonInterface()
 		.value("CONTACT_ASK_FOR_HELP", CONTACT_ASK_FOR_HELP)
 		.value("CONTACT_DEMAND_TRIBUTE", CONTACT_DEMAND_TRIBUTE)
 		.value("CONTACT_OPEN_BORDERS", CONTACT_OPEN_BORDERS)
-/************************************************************************************************/
-/* START: Advanced Diplomacy   -doto added                             */
-/************************************************************************************************/
-		.value("CONTACT_TRADE_FREE_TRADE_ZONE", CONTACT_TRADE_FREE_TRADE_ZONE)
-/************************************************************************************************/
-/* END: Advanced Diplomacy         	                                                            */
-/************************************************************************************************/
 		.value("CONTACT_DEFENSIVE_PACT", CONTACT_DEFENSIVE_PACT)
 		.value("CONTACT_PERMANENT_ALLIANCE", CONTACT_PERMANENT_ALLIANCE)
 		.value("CONTACT_PEACE_TREATY", CONTACT_PEACE_TREATY)
@@ -1517,13 +1497,6 @@ void CyEnumsPythonInterface()
 		.value("MEMORY_EVENT_GOOD_TO_US", MEMORY_EVENT_GOOD_TO_US)
 		.value("MEMORY_EVENT_BAD_TO_US", MEMORY_EVENT_BAD_TO_US)
 		.value("MEMORY_LIBERATED_CITIES", MEMORY_LIBERATED_CITIES)
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-		.value("MEMORY_CANCELLED_FREE_TRADE_AGREEMENT", MEMORY_CANCELLED_FREE_TRADE_AGREEMENT)
-/************************************************************************************************/
-/* END: Advanced Diplomacy         	                                                            */
-/************************************************************************************************/
 		// advc.130p:
 		.value("MEMORY_INDEPENDENCE", MEMORY_INDEPENDENCE)
 		// advc.104i:
@@ -2045,7 +2018,8 @@ void CyEnumsPythonInterface()
 		;
 
 	python::enum_<EventTriggerTypes>("EventTriggerTypes")
-		.value("NO_EVENTTRIGGER", NO_EVENTTRIGGER);
+		.value("NO_EVENTTRIGGER", NO_EVENTTRIGGER)
+		;
 
 	python::enum_<EspionageMissionTypes>("EspionageMissionTypes")
 		.value("NO_ESPIONAGEMISSION", NO_ESPIONAGEMISSION)
@@ -2077,7 +2051,7 @@ void CyEnumsPythonInterface()
 		.value("NUM_GLOBE_LAYER_TYPES", NUM_GLOBE_LAYER_TYPES)
 		.value("NO_GLOBE_LAYER", NUM_GLOBE_LAYER_TYPES)
 		;
-	// advc.pf: If generatePath (CvUnit, CvSelectionGroup) is exposed, so should be this.
+	// advc.pf: If generatePath (CvUnit, CvSelectionGroup) is exposed, so should this be.
 	python::enum_<MovementFlags>("MovementFlags")
 		.value("NO_MOVEMENT_FLAGS", NO_MOVEMENT_FLAGS)
 		.value("MOVE_IGNORE_DANGER", MOVE_IGNORE_DANGER)
@@ -2094,6 +2068,5 @@ void CyEnumsPythonInterface()
 		.value("MOVE_NO_ATTACK", MOVE_NO_ATTACK)
 		.value("MOVE_HAS_STEPPED", MOVE_HAS_STEPPED)
 		.value("MOVE_ASSUME_VISIBLE", MOVE_ASSUME_VISIBLE)
-		.value("MOVE_ROUTE_TO", MOVE_ROUTE_TO)
 		;
 }

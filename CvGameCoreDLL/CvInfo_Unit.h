@@ -81,39 +81,6 @@ public: /*  All const functions are exposed to Python except some related to art
 	CvUnitInfo();
 	~CvUnitInfo();
 
-/****************************************
- *  Archid Mod: 10 Jun 2012
- *  Functionality: Unit Civic Prereq - Archid
- *		Based on code by Afforess
- *	Source:
- *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
- *
- ****************************************/
-	bool isPrereqOrCivics(int iCivic) const;
-	bool isPrereqAndCivics(int iCivic) const;
-
-	std::vector<CvString> m_aszPrereqOrCivicsforPass3;
-	std::vector<bool> m_abPrereqOrCivicsforPass3;
-	
-	int isPrereqOrCivicsVectorSize();
-	CvString isPrereqOrCivicsNamesVectorElement(int i);
-	int isPrereqOrCivicsValuesVectorElement(int i);
-	
-	int isPrereqAndCivicsVectorSize();
-	CvString isPrereqAndCivicsNamesVectorElement(int i);
-	int isPrereqAndCivicsValuesVectorElement(int i);
-	
-	std::vector<CvString> m_aszPrereqAndCivicsforPass3;
-	std::vector<bool> m_abPrereqAndCivicsforPass3;
-
-	bool readPass3();
-protected:
-	bool* m_pbPrereqOrCivics;
-	bool* m_pbPrereqAndCivics;
-public:
-/**
- ** End: Unit Civic Prereq
- **/
 	int getAIWeight() const { return m_iAIWeight; }
 	int getProductionCost() const { return m_iProductionCost; }
 	int getHurryCostModifier() const { return m_iHurryCostModifier; }
@@ -214,8 +181,6 @@ public:
 	CorporationTypes getPrereqCorporation() const { return m_ePrereqCorporation; }
 	BuildingTypes getPrereqBuilding() const { return m_ePrereqBuilding; }
 	TechTypes getPrereqAndTech() const { return m_ePrereqAndTech; }
-//Shqype Vicinity Bonus Add
-//	int getPrereqVicinityBonus() const;  //Shqype Vicinity Bonus Add
 	bool isTechRequired(TechTypes eTech) const; // advc.003w: Replacing global isTechRequiredForUnit
 	BonusTypes getPrereqAndBonus() const { return m_ePrereqAndBonus; }
 	int getGroupSize() const; // the initial number of individuals in the unit group
@@ -289,8 +254,6 @@ public:
 		FAssertBounds(0, getNumPrereqAndTechs(), i);
 		return m_aePrereqAndTechs[i];
 	}
-//Shqype Vicinity Bonus Add	
-//	int getPrereqOrVicinityBonuses(int i) const;  //Shqype Vicinity Bonus Add
 	BonusTypes getPrereqOrBonuses(int i) const
 	{
 		FAssertBounds(0, getNumPrereqOrBonuses(), i);
@@ -513,8 +476,6 @@ protected:
 	BuildingTypes m_ePrereqBuilding;
 	TechTypes m_ePrereqAndTech;
 	BonusTypes m_ePrereqAndBonus;
-//Shqype Vicinity Bonus Add	
-//	int m_iPrereqVicinityBonus;  //Shqype Vicinity Bonus Add
 	int m_iGroupSize;
 	int m_iGroupDefinitions;
 	int m_iUnitMeleeWaveSize;
@@ -572,8 +533,6 @@ protected:
 
 	std::vector<TechTypes> m_aePrereqAndTechs; // advc.003t: was int*
 	std::vector<BonusTypes> m_aePrereqOrBonuses; // advc.003t: was int*
-//Shqype Vicinity Bonus Add	
-//	int* m_piPrereqOrVicinityBonuses;  //Shqype Vicinity Bonus Add
 	std::vector<std::pair<BonusTypes,int> > m_aeiSpeedBonuses; // advc.905b
 	int* m_piProductionTraits;
 	int* m_piFlavorValue;

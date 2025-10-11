@@ -40,7 +40,7 @@ public:
 	DllExport void reset(HandicapTypes eHandicap, bool bConstructorCall = false);
 
 	DllExport void setInitialItems();
-	DllExport void regenerateMap()
+	DllExport void regenerateMap() // call from WorldBuilder
 	{	// <advc.tsl>
 		regenerateMap(false);
 	}
@@ -71,13 +71,6 @@ public:
 	void updateAIHandicap(); // advc.127
 
 	DllExport void updateColoredPlots();
-//doto city states - color city states plots - city states start
-	void updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, NiColorA &color) const;
-	void setUpdateCityStatesColoredPlots();
-//doto city states start
-	void spawnCityState();
-	void initFreeTechsEra(PlayerTypes ePlayer);
-//doto city states end
 	DllExport void updateBlockadedPlots();
 	bool updateNukeAreaOfEffect(CvPlot const* pPlot = NULL) const; // advc.653
 	void updateSeaPatrolColors(CvUnit const& kSelectedUnit); // advc.004k
@@ -308,13 +301,7 @@ public:
 	int getMinutesPlayed() const;																		// Exposed to Python
 	void setTurnSlice(int iNewValue);
 	void changeTurnSlice(int iChange);
-//doto city states test
-	void setColorsCityStates(int iChange);
-	int getColorsCityStates();
-//doto city states
-//doto special events
-	void setSpecialEvents();
-//doto special events
+
 	int getCutoffSlice() const;
 	void setCutoffSlice(int iNewValue);
 	void changeCutoffSlice(int iChange);
@@ -780,8 +767,8 @@ public:
 	std::string getScriptData() const;																	// Exposed to Python
 	void setScriptData(std::string szNewValue);															// Exposed to Python
 
-	bool isDestroyedCityName(CvWString& szName) const;
-	void addDestroyedCityName(CvWString const& szName);
+	bool isPastCityName(CvWString& szName) const; // advc.005c: was "isDestroyedCityName"
+	void addPastCityName(CvWString const& szName); // advc.005c: was "addDestroyedCityName"
 
 	bool isGreatPersonBorn(CvWString& szName) const;
 	void addGreatPersonBornName(CvWString const& szName);
@@ -823,12 +810,6 @@ public:
 //doto units bonus cap	
 	int getBonusThatArePrereqForUnits(BonusTypes eBonus) const;
 //doto units bonus cap	
-//doto special events
-	int getSpecialEvents(int eTrigger) const;
-//doto special events
-//doto special events
-	int getNumSpecialEvents() const { return numSpecialEvents; };
-//doto special events		
 	VoteTriggeredData* getVoteTriggered(int iID) const;
 	VoteTriggeredData* addVoteTriggered(VoteSelectionData const& kData, int iChoice);
 	VoteTriggeredData* addVoteTriggered(VoteSourceTypes eVoteSource,
@@ -987,6 +968,7 @@ public:
 			bool bAlt, bool bShift, bool bCtrl) const;
 	DllExport void handleMiddleMouse(bool bCtrl, bool bAlt, bool bShift);
 	DllExport void handleDiplomacySetAIComment(DiploCommentTypes eComment) const;
+	void setHelpTextAreaWidth(float fWidth); // advc.092c (exposed to Python)
 
 	scaled goodyHutEffectFactor(bool bSpeedAdjust = true) const; // advc.314
 	// <advc.004m>
@@ -1086,11 +1068,7 @@ protected:
 	bool m_bDoMShown; // advc.004x
 	bool m_bLayerFromSavegame; // advc.004m
 	bool m_bFPTestDone; // advc.003g
-//doto city state test
-	int m_pColorCityStates; 
-//doto special events	
-	int numSpecialEvents; 
-//doto special events
+
 	HandicapTypes m_eHandicap;
 	HandicapTypes m_eAIHandicap; // advc.127
 	PlayerTypes m_ePausePlayer;
@@ -1118,9 +1096,6 @@ protected:
 //smart eh?	
 	int* m_aiBonusThatArePrereqForUnits;
 //doto units bonus cap
-//doto special events
-	int* m_aeSpecialEvents;
-//doto special events
 	int m_aiUpdateTimers[NUM_UPDATE_TIMER_TYPES]; // advc.003r
 	/*	<advc.enum> (NB: Mustn't use eager allocation for dynamic enum types
 		b/c XML isn't loaded yet.) */
@@ -1154,7 +1129,8 @@ protected:
 	IDInfo* m_pLegacyOrgSeatData;
 	//int** m_apaiPlayerVote; // obsoleted by BtS
 	// </advc.enum>
-	std::vector<CvWString> m_aszDestroyedCities;
+	// advc.005c: Renamed from "DestroyedCities"
+	std::vector<CvWString> m_aszPastCities;
 	std::vector<CvWString> m_aszGreatPeopleBorn;
 
 	FFreeListTrashArray<VoteSelectionData> m_voteSelections;

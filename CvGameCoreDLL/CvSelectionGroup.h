@@ -126,9 +126,6 @@ public:
 	bool canFight() const;																																										// Exposed to Python
 	bool canDefend() const;																																										// Exposed to Python
 	bool canBombard(CvPlot const& kPlot) const;
-//doto Range Strike
-	bool canRanged(const CvPlot* pPlot = NULL, int ix = INVALID_PLOT_COORD, int iy = INVALID_PLOT_COORD) const;
-//doto Range Strike	
 	int visibilityRange() const;
 	// (advc: Other BBAI functions from same date moved to CvSelectionGroupAI)
 	bool canMoveAllTerrain() const; // BETTER_BTS_AI_MOD, General AI, 08/19/09, jdog5000
@@ -208,8 +205,6 @@ public:
 	TeamTypes getTeam() const;																				// Exposed to Python
 	// <advc>
 	bool isActiveOwned() const { return (GC.getInitCore().getActivePlayer() == getOwner()); }
-/* doto fix for teams - reverse for advc 1.00 date 31.08.2021 */	
-//re added, f1 fixed it	
 	bool isActiveTeam() const { return (GC.getInitCore().getActiveTeam() == getTeam()); } // </advc>
 
 	ActivityTypes getActivityType() const { return m_eActivityType; } 										// Exposed to Python

@@ -7,6 +7,10 @@ import CvExoticForeignAdvisor
 import CvReligionScreen
 import CvCorporationScreen
 import CvCivicsScreen
+#doto 115 civic dependency goverment screen
+import CvGovermentScreen
+import CvMainCivicsScreen
+#doto 115 goverment screen
 import CvVictoryScreen
 import CvEspionageAdvisor
 
@@ -97,10 +101,22 @@ hallOfFameScreen = CvHallOfFameScreen.CvHallOfFameScreen(HALL_OF_FAME)
 def showHallOfFame(argsList):
 	hallOfFameScreen.interfaceScreen(argsList[0])
 
-civicScreen = CvCivicsScreen.CvCivicsScreen()
-def showCivicsScreen():
+#doto 115 civic dependency goverment screen
+civicScreen = CvMainCivicsScreen.CvCivicsScreen()
+def showCivicsScreen(civics=None, source=None):
 	if (-1 != CyGame().getActivePlayer()):
-		civicScreen.interfaceScreen()
+		civicScreen.interfaceScreen(civics, source)
+
+govermentScreen = CvGovermentScreen.CvGovermentScreen()
+def showGovermentScreen(civics=None):
+	if (-1 != CyGame().getActivePlayer()):
+		govermentScreen.interfaceScreen(civics)
+
+regularCivicScreen = CvCivicsScreen.CvRegularCivicScreen()
+def showRegularCivicScreen(civics=None):
+	if (-1 != CyGame().getActivePlayer()):
+		regularCivicScreen.interfaceScreen(civics)
+#doto 115 goverment screen
 
 religionScreen = CvReligionScreen.CvReligionScreen()
 def showReligionScreen():
@@ -1157,11 +1173,15 @@ HandleCloseMap = {  DAWN_OF_MAN : dawnOfMan,
 #######################################################################################
 ## Handle Input Map
 #######################################################################################
+
+#doto 115 civic dependency goverment screen added value GOVERMENT_SCREEN, REGULAR_CIVICS_SCREEN
 HandleInputMap = {  MAIN_INTERFACE : mainInterface,
 #					DOMESTIC_ADVISOR : domesticAdvisor,
 					RELIGION_SCREEN : religionScreen,
 					CORPORATION_SCREEN : corporationScreen,
 					CIVICS_SCREEN : civicScreen,
+					GOVERMENT_SCREEN : govermentScreen,
+					REGULAR_CIVICS_SCREEN : regularCivicScreen,
 					TECH_CHOOSER : techChooser,
 					FOREIGN_ADVISOR : foreignAdvisor,
 #					FINANCE_ADVISOR : financeAdvisor,

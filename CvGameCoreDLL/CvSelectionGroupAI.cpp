@@ -166,9 +166,6 @@ bool CvSelectionGroupAI::AI_update()
 			CvUnit* pHeadUnit = getHeadUnit();
 			if (pHeadUnit != NULL)
 			{	// <advc.001y>
-				//doto keldath enable it anyway
-				if (iAttempts == iMaxAttempts) // Don't spam the log </advc.004y>
-					GC.getLogger().logUnitStuck(*pHeadUnit); // advc.003t
 			#ifndef _DEBUG
 				if (iAttempts == iMaxAttempts) // Don't spam the log </advc.004y>
 					GC.getLogger().logUnitStuck(*pHeadUnit); // advc.003t
@@ -315,39 +312,13 @@ int CvSelectionGroupAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy)
 	(note: I would like to put this in CvSelectionGroupAI ... but - well -
 	I don't need to say it, right?)
 	advc.003u: I think CvUnitAI::AI_getGroup solves karadoc's problem; so - moved. */
-// MOD - START - Ranged Strike AI - added bool
-int CvSelectionGroupAI::AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialEnemy, bool RangedCombat)
+int CvSelectionGroupAI::AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialEnemy)
 {
 	PROFILE_FUNC();
 	int iOdds=-1;
-//keldath MOD - START - Ranged Strike AI 
-	CvUnitAI const* pAttacker = NULL;
-	CvUnitAI const* pAttackerNotRanged = NULL;
-	CvUnitAI const* pAttackerRanged = NULL;
-	if (!RangedCombat)
-	{
-		pAttackerNotRanged = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds);
-		if (pAttackerNotRanged == NULL)
-			return 0;
-	}
-	else
-	{
-		pAttackerRanged = AI_getBestGroupRangeAttacker(pPlot);
-		if (pAttackerRanged == NULL)
-		{
-			//doto 114 -> find the best ranged, if not, find the best none ranged
-			pAttackerRanged = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds);
-			if (pAttackerRanged == NULL)
-				return 0;
-		}
-	}
-	pAttacker = RangedCombat ? pAttackerRanged : pAttackerNotRanged;
-//keldath MOD - START - Ranged Strike AI 
-	
-	//org code advciv
-	//CvUnitAI const* pAttacker = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds);
-	//if (pAttacker == NULL)
-	//	return 0;
+	CvUnitAI const* pAttacker = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds);
+	if (pAttacker == NULL)
+		return 0;
 	CvPlot::DefenderFilters defFilters(getOwner(), pAttacker,
 			!bPotentialEnemy, bPotentialEnemy,
 			true, false); // advc.028, advc.089 (same as in CvUnitAI::AI_attackOdds)
@@ -381,7 +352,26 @@ int CvSelectionGroupAI::AI_getWeightedOdds(CvPlot const* pPlot, bool bPotentialE
 		iAdjustedOdds *= 2 + getNumUnits();
 		iAdjustedOdds /= 3 + std::min(iDefenders / 2, getNumUnits());
 	}
-
+//moved from after - getNumUnits() < 3 i think its better
+// DOTO-MOD rangedattack-keldath - START + ranged immunity - if only attacker is ranged - its no risk
+	bool bARanged = pAttacker->isRangeStrikeCapableK();
+	bool bDRanged = pDefender->isRangeStrikeCapableK();
+	bool bDRangedCap = pDefender->isRangeStrikeCapableK(true);
+	if (bARanged)
+	{
+		if (!bDRanged && !bDRangedCap) //regular unit that cannot harm the attacker ranged
+			return 99;
+		else if (!bDRanged && bDRangedCap) //if the unit cap is on the defender is not maxed, it can attack us back next turn
+			iAdjustedOdds += 30;
+		else if (bDRanged && (bARanged && bDRangedCap)) //if the defender is also ranged without cap maxed
+		{
+			iAdjustedOdds += std::min((100 * (pAttacker->currCombatStr() /
+				pAttacker->currCombatStr() + pDefender->currCombatStr())) / 100, 30);
+		}
+		else 
+			iAdjustedOdds += 20; //probabaly wont happen, the statements above should cover it
+	}
+// DOTO-MOD rangedattack-keldath - END + ranged immunity
 	iAdjustedOdds += iAttackOddsChange; // advc.114b
 	return range(iAdjustedOdds, 1, 99);
 }
@@ -429,13 +419,14 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot,
 		if (!bForce && !kLoopUnit.canMoveInto(*pPlot, true, bPotentialEnemy))
 			continue;
 
-//DOTO-MOD made it into a game option from xml. 
+//DOTO-MOD rangedattack-keldath + ranged immunity - made it into a game option from xml. 
+		bool bRanged = kLoopUnit.isRangeStrikeCapableK();
 		// BETTER_BTS_AI_MOD, Lead From Behind (UncutDragon), 02/21/10, jdog5000: START	
 		if (GC.getGame().isOption(GAMEOPTION_LEFT_FROM_BEHIND)
 		/*  GC.getDefineBOOL(CvGlobals::LFB_ENABLE)*/ &&
 			GC.getDefineBOOL(CvGlobals::LFB_USECOMBATODDS) &&
 			!bMaxSurvival
-			) // advc.048
+			&& !bRanged) // advc.048
 		{
 			kLoopUnit.LFBgetBetterAttacker(&pBestUnit, pPlot, bPotentialEnemy, iBestOdds,
 					iBestValue); // K-Mod.
@@ -445,6 +436,15 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot,
 			int iOdds = kLoopUnit.AI_attackOdds(pPlot, bPotentialEnemy);
 			int iValue = iOdds;
 			FAssert(iValue > 0);
+// DOTO-MOD rangedattack-keldath + ranged immunity  - START 
+			//add some extra value to ranged units.
+			if (bRanged) 
+			{
+				//base of 20
+				iValue *= 100 + (kLoopUnit.rangedStrike() + kLoopUnit.getLevel() + 10);
+				iValue /= 100;
+			} 
+// DOTO-MOD rangedattack-keldath + ranged immunity  - end 
 			if (kLoopUnit.collateralDamage() > 0 && /* advc.048: */ !bMaxSurvival)
 			{
 				int iPossibleTargets = std::min(
@@ -551,61 +551,6 @@ CvUnitAI* CvSelectionGroupAI::AI_getBestGroupSacrifice(const CvPlot* pPlot,
 	}
 	return pBestUnit;
 }
-
-// MOD - START - Ranged Strike AI
-CvUnitAI* CvSelectionGroupAI::AI_getBestGroupRangeAttacker(const CvPlot* pPlot) const
-{
-	int iBestValue = 0;
-	CvUnitAI* pBestUnit = NULL;
-
-	//CLLNode<IDInfo>* pUnitNode = headUnitNode();
-	CLLNode<IDInfo> const* pUnitNode = headUnitNode();
-
-	bool bIsHuman = (pUnitNode != NULL) ? GET_PLAYER(::getUnit(pUnitNode->m_data)->getOwner()).isHuman() : true;
-
-	while (pUnitNode != NULL)
-	{
-		//CvUnit* pLoopUnit = ::getUnit(pUnitNode->m_data);
-		//CvUnitAI& kLoopUnit = *::AI_getUnit(pUnitNode->m_data);
-		CvUnitAI* pLoopUnit = ::AI_getUnit(pUnitNode->m_data);
-		pUnitNode = nextUnitNode(pUnitNode);
-
-		if (pLoopUnit->canRangeStrikeAt(pLoopUnit->plot(), pPlot->getX(), pPlot->getY()))
-		{
-			CvUnit* pDefender = pLoopUnit->rangedStrikeTargetK(*pPlot);
-
-			FAssert(pDefender != NULL);
-			FAssert(pDefender->canDefend());
-
-			int iDamage = pLoopUnit->rangeCombatDamageK(pDefender, pLoopUnit);
-
-			int iUnitDamage = std::max(pDefender->getDamage(), std::min((pDefender->getDamage() + iDamage), pLoopUnit->airCombatLimit()));
-			int iValue = iUnitDamage;
-
-			if (pLoopUnit->collateralDamage() > 0)
-			{
-				int iPossibleTargets = std::min((pPlot->getNumVisibleEnemyDefenders(pLoopUnit) - 1), pLoopUnit->collateralDamageMaxUnits());
-
-				if (iPossibleTargets > 0)
-				{
-					iValue *= (100 + ((pLoopUnit->collateralDamage() * iPossibleTargets) / 5));
-					iValue /= 100;
-				}
-			}
-
-			// if non-human, prefer the last unit that has the best value (so as to avoid splitting the group)
-			if (iValue > iBestValue || (!bIsHuman && iValue > 0 && iValue == iBestValue))
-			{
-				iBestValue = iValue;
-				pBestUnit = pLoopUnit;
-			}
-		}
-	}
-
-	return pBestUnit;
-}
-// MOD - END - Ranged Strike AI
-
 
 /*	Returns ratio of strengths of stacks times 100
 	(so 100 is an even ratio, numbers over 100 mean that
@@ -716,6 +661,7 @@ int CvSelectionGroupAI::AI_sumStrength(const CvPlot* pAttackedPlot,
 		/*  <advc.159> Call AI_currEffectiveStr instead of currEffectiveStr.
 			Adjustments for first strikes and collateral damage moved into
 			that new function. */
+// DOTO-MOD rangedattack-keldath - START + ranged immunity - AI_currEffectiveStr have immunity code enrichment
 		int const iUnitStr = pUnit->AI_currEffectiveStr(pAttackedPlot, pUnit,
 				bCountCollateral, iBaseCollateral, bCheckCanAttack);
 		// </advc.159>
@@ -1204,6 +1150,12 @@ CvUnitAI* CvSelectionGroupAI::AI_ejectBestDefender(CvPlot* pDefendPlot)
 		iValue /= 2 + (pUnit->getLevel() *
 				// advc.mnai:
 				(pUnit->AI_getUnitAIType() == UNITAI_ATTACK_CITY ? 2 : 1));
+// DOTO-MOD ranged immunity - START --if the unit is ranged - prefer not to eject it
+		if (pUnit->isRangeStrikeCapableK())
+		{
+			iValue *= 100;
+			iValue /= 100 + pUnit->rangedStrike() + 35;
+		}
 		if (iValue > iBestUnitValue)
 		{
 			iBestUnitValue = iValue;

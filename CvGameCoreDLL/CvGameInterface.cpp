@@ -37,22 +37,6 @@ void CvGame::updateColoredPlots()
 	CvDLLEngineIFaceBase& kEngine = *gDLL->getEngineIFace();
 	CvDLLInterfaceIFaceBase& kUI = gDLL->UI();
 
-//doto city states color plots after game is loaded - start
-//i found that the updateColoredPlots is called 2 times on game load.
-// the second call, removed the coloring.
-//so i have made a cached field in the game file that counts .
-//it will get 2 updates and here the setUpdateCityStatesColoredPlots wont be called again after
-//the logic for this is so a loop on the entire map tiles will only be done twice on game load.
-//the field of m_pColorCityStates will be set to false on every game load in CvGame::onAllGameDataRead()
-//NOTE that i think the secind call is from python ->def updateColoredPlots(): in cvGameInterface.py.
-//i guess i could add a call for the setUpdateCityStatesColoredPlots fro there. but i already did it in this way so...
-	if (GC.getGame().getColorsCityStates() < 3)
-	{
-		setUpdateCityStatesColoredPlots();
-		GC.getGame().setColorsCityStates(1);
-	}
-//doto city states color plots after game is loaded - end
-
 	kEngine.clearColoredPlots(PLOT_LANDSCAPE_LAYER_BASE);
 	kEngine.clearAreaBorderPlots(AREA_BORDER_LAYER_CITY_RADIUS);
 	kEngine.clearAreaBorderPlots(AREA_BORDER_LAYER_RANGED);
@@ -168,19 +152,6 @@ void CvGame::updateColoredPlots()
 				kEngine.addColoredPlot(it->getX(), it->getY(), color,
 						PLOT_STYLE_CIRCLE, PLOT_LANDSCAPE_LAYER_BASE);
 			}
-//doto  added color to none own / allowed working tiles
-			NiColorA color2(GC.getInfo(GC.getColorType("RED")).getColor());
-			color2.a = 0.5f; // advc: Moved out of the loop below
-			for (CityPlotIter it(*pHeadSelectedCity); it.hasNext(); ++it)
-			{
-				CvPlot& kPlot = *it;
-				// && pPlot->getOwner() == getOwner()
-				if (!pHeadSelectedCity->canWork(kPlot) && kPlot.getWorkingCity() != pHeadSelectedCity)
-				{
-					kEngine.addColoredPlot(it->getX(), it->getY(), color2,
-						PLOT_STYLE_CIRCLE, PLOT_LANDSCAPE_LAYER_BASE);
-				}
-			}
 		}
 		else
 		{
@@ -230,9 +201,6 @@ void CvGame::updateColoredPlots()
 			}
 		}
 	}
-//MOD - START - Ranged Strike AI - DOTO
-//this blockwill replace the refrance to units with air range or air domain(original two blocks of code)
-
 	/*	advc.rstr: Merged air range with ranged strike code so that the maximal range
 		is highlighted also for range-strikers */
 	if (pHeadSelectedUnit->airRange() > 0)
@@ -248,11 +216,6 @@ void CvGame::updateColoredPlots()
 		if (iMaxAirRange > 0)
 		{
 			bool const bAir = (pHeadSelectedUnit->getDomainType() == DOMAIN_AIR);
-// MOD - START - Ranged Strike AI-keldath addition
-			bool const bLand = (pHeadSelectedUnit->getDomainType() == DOMAIN_LAND);
-			bool const bSea = (pHeadSelectedUnit->getDomainType() == DOMAIN_SEA);
-			char * color = "GREEN";
-// MOD - START - Ranged Strike AI-keldath addition			
 			for (PlotCircleIter it(*pHeadSelectedUnit, iMaxAirRange); it.hasNext(); ++it)
 			{
 				CvPlot const& kTargetPlot = *it;
@@ -263,41 +226,10 @@ void CvGame::updateColoredPlots()
 					&kTargetPlot, pHeadSelectedUnit->getTeam(), iMaxAirRange,
 					pHeadSelectedUnit->getFacingDirection(true))*/))
 				{
-// MOD - START - Ranged Strike AI-keldath addition keldath addition - i wanted different colors :)
-					if (bAir)
-					{
-						color = "YELLOW";
-					}
-					else if (bLand) 
-					{
-						color = "RED";
-					}
-					else if (bSea)
-					{
-						color = "BLUE";
-					}
-					//NiColorA color(GC.getInfo(GC.getColorType("YELLOW")).getColor());
-					//color.a = 0.5f;
-					NiColorA color(GC.getInfo(GC.getColorType(color)).getColor());
-					color.a = 0.7f;
-					
-					//kEngine.fillAreaBorderPlot(kTargetPlot.getX(), kTargetPlot.getY(),
-					//		color, AREA_BORDER_LAYER_RANGED);
-					
-					if (bAir) 
-					{
+					NiColorA color(GC.getInfo(GC.getColorType("YELLOW")).getColor());
+					color.a = 0.5f;
 					kEngine.fillAreaBorderPlot(kTargetPlot.getX(), kTargetPlot.getY(),
 							color, AREA_BORDER_LAYER_RANGED);
-					}	
-					else if (bLand)
-					{	kEngine.addColoredPlot(kTargetPlot.getX(), kTargetPlot.getY(), color,
-							PLOT_STYLE_TARGET, PLOT_LANDSCAPE_LAYER_BASE);	
-					}
-					else if (bSea)
-					{	kEngine.addColoredPlot(kTargetPlot.getX(), kTargetPlot.getY(), color,
-							PLOT_STYLE_TARGET, PLOT_LANDSCAPE_LAYER_BASE);	
-					}
-// MOD - START - Ranged Strike AI-keldath addition
 				}
 			}
 		}
@@ -1355,6 +1287,8 @@ bool CvGame::canDoControl(ControlTypes eControl) const
 	case CONTROL_RELIGION_SCREEN:
 	case CONTROL_CORPORATION_SCREEN:
 	case CONTROL_CIVICS_SCREEN:
+//doto 115 goverment screen
+	case CONTROL_GOVERMENT_SCREEN:
 	case CONTROL_FOREIGN_SCREEN:
 	case CONTROL_FINANCIAL_SCREEN:
 	case CONTROL_MILITARY_SCREEN:
@@ -2763,6 +2697,21 @@ EndTurnButtonStates CvGame::getEndTurnState() const
 	return END_TURN_GO;
 }
 
+/*	advc: Called once the EXE signals that graphics have been initialized
+	(w/e that means exactly) */
+void CvGame::onGraphicsInitialized()
+{
+	// advc.095:
+	setCityBarWidth(BUGOption::isEnabled("MainInterface__WideCityBars", false));
+	/*	<advc.001> After loading, the camera tries to center on some unit
+		(apparently; I don't know where that's implemented). If there is
+		none, it seems to center on some random(?) unrevealed tile. */
+	if (GET_PLAYER(getActivePlayer()).getNumUnits() == 0)
+		setUpdateTimer(UPDATE_LOOK_AT_STARTING_PLOT, 1);
+	// </advc.001>
+	GC.getPythonCaller()->callScreenFunction("updateCameraStartDistance"); // advc.004m
+}
+
 // advc.095:
 void CvGame::setCityBarWidth(bool bWide)
 {
@@ -2897,6 +2846,12 @@ void CvGame::handleDiplomacySetAIComment(DiploCommentTypes eComment) const
 	m_bShowingCurrentDeals = (eComment == GC.getAIDiploCommentType("CURRENT_DEALS"));
 }
 
+// advc.092c:
+void CvGame::setHelpTextAreaWidth(float fWidth)
+{
+	smc::BtS_EXE.setHelpTextAreaSize(fWidth);
+}
+
 // <advc.004x>
 void CvGame::setDawnOfManShown(bool b)
 {
@@ -2968,48 +2923,3 @@ void CvGame::onCityScreenChange()
 		}
 	} // </advc.092>
 }
-//doto city states color plots
-void CvGame::updateCityStatesColoredPlots(bool clearPlot, CvPlot const& kPlot, NiColorA &color) const
-{
-	CvDLLEngineIFaceBase& kEngine = *gDLL->getEngineIFace();
-	if (clearPlot)
-	{
-		//turn tiles to no color - for that any color will do - just the alpha needs to be 0
-		NiColorA color(GC.getInfo(GC.getColorType("WHITE")).getColor());
-		color.a = 0.0f; 
-
-		kEngine.fillAreaBorderPlot(kPlot.getX(), kPlot.getY(),
-			color, AREA_BORDER_CITY_STATE);
-		//kEngine.clearAreaBorderPlots(AREA_BORDER_CITY_STATE);
-		return;
-	}
-	//if (kPlot.isRevealed(getActiveTeam()))
-	kEngine.fillAreaBorderPlot(kPlot.getX(), kPlot.getY(),
-		color, AREA_BORDER_CITY_STATE);
-}
-void CvGame::setUpdateCityStatesColoredPlots()
-{
-	//Doto City State s start
-	//this will run for game load and color the plots with the city states border
-	// the code co exists with the one in the city cpp similar functionality
-	//i realise this will increace load time.
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		CvMap const& kMap = GC.getMap();
-		for (int iI = 0; iI < kMap.numPlots(); iI++)
-		{
-			CvPlot& kPlot = kMap.getPlotByIndex(iI);
-			PlayerTypes ePlayer = kPlot.getOwner();
-			if (ePlayer != NO_PLAYER)
-			{
-				CvPlayer& kPlayer = GET_PLAYER(ePlayer);
-				if (kPlayer.checkCityState(ePlayer))
-				{
-					NiColorA color = GC.getInfo(GC.getInfo(kPlayer.getPlayerColor()).getColorTypePrimary()).getColor();
-					GC.getGame().updateCityStatesColoredPlots(false, kPlot, color);
-				}
-			}
-		}
-	}
-}
-//doto city states

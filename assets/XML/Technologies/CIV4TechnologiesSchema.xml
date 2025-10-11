@@ -32,7 +32,7 @@
 	<ElementType name="iPower" content="textOnly" dt:type="int"/>
 	<ElementType name="bRepeat" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bTrade" content="textOnly" dt:type="boolean"/>
-	<!--  Advanced Diplomacy--> 
+	<!--  Advanced Diplomacy free trade zone--> 
 	<ElementType name="bFreeTradeAgreementTrading" content="textOnly" dt:type="boolean"/>	
 	<!--  Advanced Diplomacy--> 
 	<ElementType name="bDisable" content="textOnly" dt:type="boolean"/>
@@ -67,9 +67,8 @@
 	<ElementType name="DomainExtraMoves" content="eltOnly">
 		<element type="DomainExtraMove" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
-<!--kmod bugs mod addition -->
+	<!-- K-Mod start -->
 	<ElementType name="iCommerce" content="textOnly" dt:type="int"/>
-<!--KELDATH - I THINK THE LINES BELOW ARE NOT NEEDED - nEED TO TEST - ADVC 1.00 -->
 	<ElementType name="CommerceModifiers" content="eltOnly">
 		<element type="iCommerce" minOccurs="0" maxOccurs="*"/>
 	</ElementType>

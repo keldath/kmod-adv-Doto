@@ -392,9 +392,9 @@ bool KmodPathFinderLegacy::ProcessNode()
 						child_node = NULL;
 					}
 					else // </advc.pf>
-				{
-					open_list.push_back(child_node);
-					child_node->m_eFAStarListType = FASTARLIST_OPEN;
+					{
+						open_list.push_back(child_node);
+						child_node->m_eFAStarListType = FASTARLIST_OPEN;
 					}
 				}
 				else

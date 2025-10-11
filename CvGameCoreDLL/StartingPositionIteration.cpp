@@ -27,19 +27,6 @@ bool StartingPositionIteration::isDebug()
 	#endif
 }
 
-//FROM PREV ADVC - NEED TO TEST IN 099 IF I CAN REMOVE THIS
-//KELDATH - F1RPO FIXED A MEM LEAK  - VERY IMPORTAMT - SNAKY CONTINANTS CTD
-/*
-StartingPositionIteration::StartingPositionIteration() :
-	m_bRestrictedAreas(false), m_bNormalizationTargetReady(false),
-	m_pEval(NULL), m_pYieldValues(NULL), m_pYieldsPerArea(NULL),
-	m_pPathDists(NULL), m_pPotentialSites(NULL)
-{
-*/
-//keldath crash fix for starting positions	- see cvgame.cpp also 
-	//if (!GC.getDefineBOOL("ENABLE_STARTING_POSITION_ITERATION"))
-	//	return;
-//note that this might be due to my system...
 
 StartingPositionIteration::StartingPositionIteration() :
 	m_bRestrictedAreas(false), m_bScenario(false), m_bNormalizationTargetReady(false),

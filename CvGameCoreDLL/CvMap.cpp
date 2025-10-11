@@ -811,7 +811,7 @@ int CvMap::getMapFractalFlags() const
 }
 
 // Check plots for wetlands or seaWater. Returns true if found
-bool CvMap::findWater(CvPlot const* pPlot, int iRange, bool bFreshWater) // advc: const CvPlot*
+bool CvMap::findWater(CvPlot const* pPlot, int iRange, bool bFreshWater)
 {
 	PROFILE_FUNC();
 
@@ -1417,20 +1417,17 @@ byte const* CvMap::getReplayTexture() const
 void CvMap::calculateAreas()
 {
 	PROFILE("CvMap::calculateAreas"); // <advc.030>
-//mountain mod
-//added by f1 advc to allow peaks to seperate continents
-	if(!GC.getGame().isOption(GAMEOPTION_MOUNTAINS) && 
-		GC.getDefineBOOL(CvGlobals::PASSABLE_AREAS)) {
-			/*  Will recalculate from CvGame::setinitialItems once normalization is
-				through. But need preliminary areas because normalization is done
-				based on areas. Also, some scenarios don't call CvGame::
-				setInitialItems; these only get the initial calculation based on
-				land, sea and peaks (not ice). */
-			calculateAreas_dfs();
-			calculateReprAreas();
-			return;
-		} // </advc.030>
-	
+	if (GC.getDefineBOOL(CvGlobals::PASSABLE_AREAS))
+	{
+		/*  Will recalculate from CvGame::setinitialItems once normalization is
+			through. But need preliminary areas because normalization is done
+			based on areas. Also, some scenarios don't call CvGame::
+			setInitialItems; these only get the initial calculation based on
+			land, sea and peaks (not ice). */
+		calculateAreas_dfs();
+		calculateReprAreas();
+		return;
+	} // </advc.030>
 	for (int i = 0; i < numPlots(); i++)
 	{
 		CvPlot& kLoopPlot = getPlotByIndex(i);

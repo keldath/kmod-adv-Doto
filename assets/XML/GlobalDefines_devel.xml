@@ -15,7 +15,7 @@
 		 turn. Set to 0 or less to disable logging. -->
     <Define>
         <DefineName>REPORT_INTERVAL</DefineName>
-        <iDefineIntVal>1</iDefineIntVal>
+        <iDefineIntVal>0</iDefineIntVal>
     </Define>
 
 	<!-- [advc.104]
@@ -82,7 +82,7 @@
 		 CivilizationIV.ini doesn't matter for multiplayer.) -->
 	<Define>
 		<DefineName>ENABLE_DEBUG_TOOLS_MULTIPLAYER</DefineName>
-		<iDefineIntVal>1</iDefineIntVal>
+		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
 
 	<!-- [advc.007] If set to 1, the RandLog is named MPLogX.log,
@@ -94,7 +94,7 @@
 		 Windows process reserves that file first gets to write to it. -->
 	<Define>
 		<DefineName>PER_PLAYER_MESSAGE_CONTROL_LOG</DefineName>
-		<iDefineIntVal>1</iDefineIntVal>
+		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
 
 	<!-- advc.mapstat: If set to 1 and MessageLog=1 in My Games\
@@ -103,7 +103,7 @@
 		 no such log output is created. -->
 	<Define>
 		<DefineName>LOG_MAP_STATS</DefineName>
-		<iDefineIntVal>1</iDefineIntVal>
+		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
 
 	<!-- advc.tsl: Set this to a positive value to cause the map to be

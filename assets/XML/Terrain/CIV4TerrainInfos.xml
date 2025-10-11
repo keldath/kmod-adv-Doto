@@ -316,7 +316,7 @@
 			<HillsYieldChange/>
 			<bWater>0</bWater>
 			<bImpassable>0</bImpassable>
-			<bFound>1</bFound>
+			<bFound>0</bFound>
 			<bFoundCoast>0</bFoundCoast>
 			<bFoundFreshWater>0</bFoundFreshWater>
 			<iMovement>1</iMovement>
@@ -752,7 +752,7 @@
 			<HillsYieldChange/>
 			<bWater>0</bWater>
 			<bImpassable>0</bImpassable>
-			<bFound>1</bFound>
+			<bFound>0</bFound>
 			<bFoundCoast>0</bFoundCoast>
 			<bFoundFreshWater>0</bFoundFreshWater>
 			<iMovement>1</iMovement>

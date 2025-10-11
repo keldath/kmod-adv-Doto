@@ -4712,7 +4712,7 @@
 			<bShiftDown>0</bShiftDown>
 			<bCtrlDown>0</bCtrlDown>
 			<iHotKeyPriority>0</iHotKeyPriority>
-			<Button>Art/Interface/Buttons/Promotions/broken_combat.dds</Button>
+			<Button>Art/Interface/Buttons/Promotions/unblocade.dds</Button>
 		</PromotionInfo>
 	</PromotionInfos>
 </Civ4PromotionInfos>

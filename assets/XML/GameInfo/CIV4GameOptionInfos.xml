@@ -34,7 +34,7 @@
 			<Type>GAMEOPTION_NO_FLIPPING_AFTER_CONQUEST</Type>
 			<Description>TXT_KEY_GAME_OPTION_FLIPPING_AFTER_CONQUEST</Description>
 			<Help>TXT_KEY_GAME_OPTION_FLIPPING_AFTER_CONQUEST_HELP</Help>
-			<bDefault>1</bDefault>
+			<bDefault>0</bDefault>
 			<bVisible>1</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
@@ -217,13 +217,6 @@
 			<bVisible>0</bVisible>
 		</GameOptionInfo>
 		<GameOptionInfo>
-			<Type>GAMEOPTION_CITY_STATES</Type>
-			<Description>City States</Description>
-			<Help>Spawns City states(only on Ancient Era). for Tweaks --> GlobalDefinesAlt.xml</Help>
-			<bDefault>0</bDefault>
-			<bVisible>1</bVisible>
-		</GameOptionInfo>
-		<GameOptionInfo>
 			<Type>GAMEOPTION_BLOCADE_UNIT</Type>
 			<Description>TXT_KEY_GAME_OPTION_BLOCADE_UNIT</Description>
 			<Help>TXT_KEY_GAME_OPTION_BLOCADE_UNIT_HELP</Help>
@@ -401,6 +394,13 @@
             <bVisible>1</bVisible>
 		</GameOptionInfo>
         <GameOptionInfo>
+            <Type>GAMEOPTION_RANGED_IMMUNITY</Type>
+            <Description>Ranged Immunity</Description>
+            <Help>Ranged Units Attack will not sustain damage from target [to be used with retaliate-rand hit-rand dmd game options]</Help>
+            <bDefault>1</bDefault>
+            <bVisible>1</bVisible>
+		</GameOptionInfo>
+        <GameOptionInfo>
             <Type>GAMEOPTION_RANGED_RETALIATE</Type>
             <Description>Ranged Retaliate</Description>
             <Help>Ranged units can carry another attack if ther have movement</Help>
@@ -409,8 +409,8 @@
        	</GameOptionInfo>
         <GameOptionInfo>
             <Type>GAMEOPTION_NO_RANGED_COLLATERAL</Type>
-            <Description>No Ranged Collateral</Description>
-            <Help>Units with Range Strike will not be able to perform collateral attack - might be overpowerd</Help>
+            <Description>No Ranged Collateral Citites</Description>
+            <Help>Ranged units will not do collateral damage if the city has defense% (walls etc..)</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible> 	
       	</GameOptionInfo>
@@ -427,13 +427,6 @@
             <Help>Ranged units Attacks damage will be randomized</Help>
             <bDefault>0</bDefault>
             <bVisible>1</bVisible>
-		</GameOptionInfo>
-        <GameOptionInfo>
-            <Type>GAMEOPTION_SCENARIO_PLAY</Type>
-            <Description>Scenario Game Only</Description>
-            <Help>dev</Help>
-            <bDefault>0</bDefault>
-            <bVisible>0</bVisible>
 		</GameOptionInfo>
 	</GameOptionInfos>
 </Civ4GameOptionInfos>

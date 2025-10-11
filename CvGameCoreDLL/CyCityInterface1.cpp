@@ -191,7 +191,7 @@ void CyCityPythonInterface1(python::class_<CyCity>& x)
 		.def("getPopulationLimitChange", &CyCity::getPopulationLimitChange, "int () - PopulationLimitChange")
 		/* Population Limit ModComp - End */
 		.def("getRealPopulation", &CyCity::getRealPopulation, "int () - total city population in \"real\" numbers")
-		.def("getHighestPopulation", &CyCity::getHighestPopulation, "int () ")
+		.def("getHighestPopulation", &CyCity::getHighestPopulation, "int ()")
 		.def("setHighestPopulation", &CyCity::setHighestPopulation, "void (iNewValue)")
 		.def("getWorkingPopulation", &CyCity::getWorkingPopulation, "int () - # of citizens who are working")
 		.def("getSpecialistPopulation", &CyCity::getSpecialistPopulation, "int () - # of specialists")

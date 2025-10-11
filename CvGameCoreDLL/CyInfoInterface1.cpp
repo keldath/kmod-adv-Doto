@@ -38,9 +38,7 @@ void CyInfoPythonInterface1()
 		.def("getMissionType", &CvSpecialistInfo::getMissionType, "int ()")
 
 		.def("isVisible", &CvSpecialistInfo::isVisible, "bool ()")
-//doto city states - expose to python
-		.def("isCityStater", &CvSpecialistInfo::isCityStater, "bool ()")
-//doto city states - expose to python
+
 		.def("getYieldChange", &CvSpecialistInfo::getYieldChange, "int (int i)")
 		.def("getCommerceChange", &CvSpecialistInfo::getCommerceChange, "int (int i)")
 		.def("getExperience", &CvSpecialistInfo::getExperience, "int ()")
@@ -79,13 +77,6 @@ void CyInfoPythonInterface1()
 		.def("isTechTrading", &CvTechInfo::isTechTrading, "bool ()")
 		.def("isGoldTrading", &CvTechInfo::isGoldTrading, "bool ()")
 		.def("isOpenBordersTrading", &CvTechInfo::isOpenBordersTrading, "bool ()")
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-		.def("isFreeTradeAgreementTrading", &CvTechInfo::isFreeTradeAgreementTrading, "bool ()")
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 		.def("isDefensivePactTrading", &CvTechInfo::isDefensivePactTrading, "bool ()")
 		.def("isPermanentAllianceTrading", &CvTechInfo::isPermanentAllianceTrading, "bool ()")
 		.def("isVassalStateTrading", &CvTechInfo::isVassalStateTrading, "bool ()")
@@ -211,19 +202,7 @@ void CyInfoPythonInterface1()
 
 	python::class_<CvUnitInfo, boost::noncopyable, python::bases<CvInfoBase, CvScalableInfo> >("CvUnitInfo")
 
-/****************************************
- *  Archid Mod: 10 Jun 2012
- *  Functionality: Unit Civic Prereq - Archid
- *		Based on code by Afforess
- *	Source:
- *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
- *
- ****************************************/
-		.def("isPrereqOrCivics", &CvUnitInfo::isPrereqOrCivics, "bool (int i)")
-		.def("isPrereqAndCivics", &CvUnitInfo::isPrereqAndCivics, "bool (int i)")
-/**
- ** End: Unit Civic Prereq
- **/	.def("getAIWeight", &CvUnitInfo::getAIWeight, "int ()")
+		.def("getAIWeight", &CvUnitInfo::getAIWeight, "int ()")
 		.def("getProductionCost", &CvUnitInfo::getProductionCost, "int ()")
 		.def("getHurryCostModifier", &CvUnitInfo::getHurryCostModifier, "int ()")
 /************************************************************************************************/
@@ -434,7 +413,7 @@ void CyInfoPythonInterface1()
 
 	python::class_<CvCivicOptionInfo, boost::noncopyable, python::bases<CvInfoBase> >("CvCivicOptionInfo")
 		.def("getTraitNoUpkeep", &CvCivicOptionInfo::getTraitNoUpkeep, "bool (int i)")
-/* doto Civics  parent - start */	
+/* doto civic dependency - start */	
 		.def("getParentCivicOption", &CvCivicOptionInfo::getParentCivicOption, "int ()")
 /* doto Civics  parent - end */	
 		;
@@ -492,9 +471,10 @@ void CyInfoPythonInterface1()
 		.def("isNoForeignTrade", &CvCivicInfo::isNoForeignTrade, "bool ()")
 		.def("isNoCorporations", &CvCivicInfo::isNoCorporations, "bool ()")
 		.def("isNoForeignCorporations", &CvCivicInfo::isNoForeignCorporations, "bool ()")
-/* doto Civics  parent - start */	
+/* doto civic dependnecy - start */	
 		.def("getNumParentCivicsChildren", &CvCivicInfo::getNumParentCivicsChildren, "int ()")
-		.def("getParentCivicsChildren", &CvCivicInfo::getParentCivicsChildren, "CivicTypes (int i)")
+		// .def("getParentCivicsChildren", &CvCivicInfo::getParentCivicsChildren, "CivicTypes (int i)")
+		.def("getParentCivicsChildren", &CvCivicInfo::getParentCivicsChildren, "int ()")
 /* doto Civics  parent - end */	
 		.def("isStateReligion", &CvCivicInfo::isStateReligion, "bool ()")
 		.def("isNoNonStateReligionSpread", &CvCivicInfo::isNoNonStateReligionSpread, "bool ()")
@@ -673,11 +653,6 @@ void CyInfoPythonInterface1()
 		.def("getArtDefineTag", &CvBuildingInfo::getArtDefineTag, "string ()")
 		.def("getMovie", &CvBuildingInfo::getMovie, "string ()")
 		.def("getMovieDefineTag", &CvBuildingInfo::getMovieDefineTag, "string ()")
-		// davidlallen: building bonus yield, commerce start
-		.def("getBonusConsumed", &CvBuildingInfo::getBonusConsumed, "int ()")
-		.def("getCommerceProduced", &CvBuildingInfo::getCommerceProduced, "int (int i)")
-		.def("getYieldProduced", &CvBuildingInfo::getYieldProduced, "int (int i)")
-		// davidlallen: building bonus yield, commerce end
 
 
 		// Arrays

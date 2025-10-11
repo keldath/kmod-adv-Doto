@@ -102,8 +102,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>1</iGridX>
-			<iGridY>11</iGridY>
+			<iGridX>2</iGridX>
+			<iGridY>9</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -127,7 +127,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs/>
-			<AndPreReqs/>
+			<AndPreReqs>
+				<PrereqTech>TECH_HUNTING</PrereqTech>
+				<PrereqTech>TECH_MINING</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_MYSTICISM_QUOTE</Quote>
 			<Sound>AS2D_TECH_MYSTICISM</Sound>
 			<SoundMP>AS2D_TECH_MP_MYSTICISM</SoundMP>
@@ -173,8 +176,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>2</iGridX>
-			<iGridY>9</iGridY>
+			<iGridX>3</iGridX>
+			<iGridY>8</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -193,10 +196,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>7</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
+		<!-- 	<OrPreReqs>
 				<PrereqTech>TECH_MYSTICISM</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_MYSTICISM</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_MEDITATION_QUOTE</Quote>
 			<Sound>AS2D_TECH_MEDITATION</Sound>
 			<SoundMP>AS2D_TECH_MP_MEDITATION</SoundMP>
@@ -242,8 +247,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>2</iGridX>
-			<iGridY>11</iGridY>
+			<iGridX>3</iGridX>
+			<iGridY>6</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -258,10 +263,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>9</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
+			<!-- <OrPreReqs>
 				<PrereqTech>TECH_MYSTICISM</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_MYSTICISM</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_POLYTHEISM_QUOTE</Quote>
 			<Sound>AS2D_TECH_POLYTHEISM</Sound>
 			<SoundMP>AS2D_TECH_MP_POLYTHEISM</SoundMP>
@@ -307,8 +314,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>3</iGridX>
-			<iGridY>9</iGridY>
+			<iGridX>4</iGridX>
+			<iGridY>8</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -332,10 +339,13 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_MEDITATION</PrereqTech>
-				<PrereqTech>TECH_POLYTHEISM</PrereqTech>
+				<PrereqTech>TECH_POTTERY</PrereqTech>
 			</OrPreReqs>
-			<AndPreReqs/>
+			<AndPreReqs>
+				<PrereqTech>TECH_MONOTHEISM</PrereqTech>
+				<PrereqTech>TECH_POLYTHEISM</PrereqTech>
+				<PrereqTech>TECH_MEDITATION</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_PRIESTHOOD_QUOTE</Quote>
 			<Sound>AS2D_TECH_PRIESTHOOD</Sound>
 			<SoundMP>AS2D_TECH_MP_PRIESTHOOD</SoundMP>
@@ -382,7 +392,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>3</iGridX>
-			<iGridY>11</iGridY>
+			<iGridY>10</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -401,11 +411,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>8</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
+		<!-- 	<OrPreReqs>
 				<PrereqTech>TECH_POLYTHEISM</PrereqTech>
-			</OrPreReqs>
+			</OrPreReqs> -->
 			<AndPreReqs>
-				<PrereqTech>TECH_MASONRY</PrereqTech>
+				<PrereqTech>TECH_MYSTICISM</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_MONOTHEISM_QUOTE</Quote>
 			<Sound>AS2D_TECH_MONOTHEISM</Sound>
@@ -482,9 +492,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			</Flavors>
 			<OrPreReqs>
 				<PrereqTech>TECH_PRIESTHOOD</PrereqTech>
-				<PrereqTech>TECH_MONOTHEISM</PrereqTech>
+				<PrereqTech>TECH_METAL_CASTING</PrereqTech>
 			</OrPreReqs>
-			<AndPreReqs/>
+			<AndPreReqs>
+				<PrereqTech>TECH_PRIESTHOOD</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_MONARCHY_QUOTE</Quote>
 			<Sound>AS2D_TECH_MONARCHY</Sound>
 			<SoundMP>AS2D_TECH_MP_MONARCHY</SoundMP>
@@ -500,7 +512,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
 			<!-- advc.910: was 200 -->
-			<iCost>250</iCost>
+			<iCost>240</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_CLASSICAL</Era>
@@ -552,15 +564,82 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_AESTHETICS</PrereqTech>
+				<PrereqTech>TECH_ALPHABET</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_POLYTHEISM</PrereqTech>
+				<PrereqTech>TECH_AESTHETICS</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_LITERATURE_QUOTE</Quote>
 			<Sound>AS2D_TECH_LITERATURE</Sound>
 			<SoundMP>AS2D_TECH_MP_LITERATURE</SoundMP>
 			<Button>,Art/Interface/Buttons/TechTree/Literature.dds,Art/Interface/Buttons/TechTree_Atlas.dds,7,10</Button>
+		</TechInfo>
+        <TechInfo>
+			<Type>TECH_SYNCRETISM</Type>
+			<Description>Syncretism</Description>
+			<Civilopedia></Civilopedia>
+			<Help/>
+			<Strategy>TXT_KEY_TECH_SHAMANISM_STRATEGY</Strategy>
+			<Advisor>ADVISOR_RELIGION</Advisor>
+			<iAIWeight>0</iAIWeight>
+			<iAITradeModifier>0</iAITradeModifier>
+			<iCost>190</iCost>
+			<iAdvancedStartCost>100</iAdvancedStartCost>
+			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
+			<Era>ERA_MEDIEVAL</Era>
+			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
+			<iFeatureProductionModifier>0</iFeatureProductionModifier>
+			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<iTradeRoutes>0</iTradeRoutes>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iFirstFreeTechs>0</iFirstFreeTechs>
+			<iAsset>8</iAsset>
+			<iPower>0</iPower>
+			<bRepeat>0</bRepeat>
+			<bTrade>1</bTrade>
+			<bDisable>0</bDisable>
+			<bGoodyTech>0</bGoodyTech>
+			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
+			<bMapCentering>0</bMapCentering>
+			<bMapVisible>0</bMapVisible>
+			<bMapTrading>0</bMapTrading>
+			<bTechTrading>0</bTechTrading>
+			<bGoldTrading>0</bGoldTrading>
+			<bOpenBordersTrading>0</bOpenBordersTrading>
+			<bDefensivePactTrading>0</bDefensivePactTrading>
+			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
+			<bVassalTrading>0</bVassalTrading>
+			<bBridgeBuilding>0</bBridgeBuilding>
+			<bIrrigation>0</bIrrigation>
+			<bIgnoreIrrigation>0</bIgnoreIrrigation>
+			<bWaterWork>0</bWaterWork>
+			<iGridX>7</iGridX>
+			<iGridY>1</iGridY>
+			<DomainExtraMoves/>
+			<CommerceFlexible/>
+			<TerrainTrades/>
+			<bRiverTrade>0</bRiverTrade>
+			<Flavors>
+				<Flavor>
+					<FlavorType>FLAVOR_RELIGION</FlavorType>
+					<iFlavor>9</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_GROWTH</FlavorType>
+					<iFlavor>2</iFlavor>
+				</Flavor>
+			</Flavors>
+			<OrPreReqs>
+				<PrereqTech>TECH_MONARCHY</PrereqTech>
+			</OrPreReqs>
+			<AndPreReqs>
+				<PrereqTech>TECH_LITERATURE</PrereqTech>
+			</AndPreReqs>
+			<Quote>TXT_KEY_TECH_SHAMANISM_QUOTE</Quote>
+			<Sound>AS2D_TECH_MICROPROCESSORS</Sound>
+			<SoundMP/>
+			<Button>Art/Interface/Buttons/TechTree/Mysticism.dds</Button>
 		</TechInfo>
 		<TechInfo>
 			<Type>TECH_CODE_OF_LAWS</Type>
@@ -602,8 +681,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>7</iGridX>
-			<iGridY>8</iGridY>
+			<iGridX>6</iGridX>
+			<iGridY>9</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -630,12 +709,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>4</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
-				<PrereqTech>TECH_PRIESTHOOD</PrereqTech>
-				<PrereqTech>TECH_CURRENCY</PrereqTech>
-			</OrPreReqs>
+	<!-- 		<OrPreReqs>
+			</OrPreReqs> -->
 			<AndPreReqs>
-				<PrereqTech>TECH_WRITING</PrereqTech>
+				<PrereqTech>TECH_ALPHABET</PrereqTech>
+				<PrereqTech>TECH_MONARCHY</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_CODE_OF_LAWS_QUOTE</Quote>
 			<Sound>AS2D_TECH_CODE_OF_LAWS</Sound>
@@ -655,7 +733,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iCost>350</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_CLASSICAL</Era>
+			<Era>ERA_MEDIEVAL</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -684,7 +762,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>7</iGridX>
-			<iGridY>2</iGridY>
+			<iGridY>3</iGridY>
 			<DomainExtraMoves/>
 			<!-- advc.120g: Added the espionage row (no functional change) -->
 			<CommerceFlexible>
@@ -716,7 +794,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<OrPreReqs>
 				<PrereqTech>TECH_AESTHETICS</PrereqTech>
 			</OrPreReqs>
-			<AndPreReqs/>
+			<AndPreReqs>
+				<PrereqTech>TECH_LITERATURE</PrereqTech>
+				<PrereqTech>TECH_CALENDAR</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_DRAMA_QUOTE</Quote>
 			<Sound>AS2D_TECH_DRAMA</Sound>
 			<SoundMP>AS2D_TECH_MP_DRAMA</SoundMP>
@@ -736,7 +817,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iCost>820</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_MEDIEVAL</Era>
+			<Era>ERA_CLASSICAL</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -764,8 +845,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>7</iGridX>
-			<iGridY>10</iGridY>
+			<iGridX>6</iGridX>
+			<iGridY>11</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -785,11 +866,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_MONARCHY</PrereqTech>
+				<PrereqTech>TECH_METAL_CASTING</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_WRITING</PrereqTech>
-				<PrereqTech>TECH_MACHINERY</PrereqTech>
+				<PrereqTech>TECH_COMPASS</PrereqTech>
+				<PrereqTech>TECH_MONARCHY</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_FEUDALISM_QUOTE</Quote>
 			<Sound>AS2D_TECH_FEUDALISM</Sound>
@@ -836,8 +917,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>8</iGridX>
-			<iGridY>11</iGridY>
+			<iGridX>7</iGridX>
+			<iGridY>9</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -857,10 +938,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_MONOTHEISM</PrereqTech>
+				<PrereqTech>TECH_MONARCHY</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_WRITING</PrereqTech>
+				<PrereqTech>TECH_FEUDALISM</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_THEOLOGY_QUOTE</Quote>
 			<Sound>AS2D_TECH_THEOLOGY</Sound>
@@ -876,7 +957,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_CULTURE</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>600</iCost>
+			<iCost>550</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_MEDIEVAL</Era>
@@ -932,11 +1013,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_LITERATURE</PrereqTech>
-				<PrereqTech>TECH_DRAMA</PrereqTech>
+				<PrereqTech>TECH_MATHEMATICS</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_MATHEMATICS</PrereqTech>
+				<PrereqTech>TECH_SYNCRETISM</PrereqTech>
+				<PrereqTech>TECH_DRAMA</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_MUSIC_QUOTE</Quote>
 			<Sound>AS2D_TECH_MUSIC</Sound>
@@ -981,11 +1062,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
 			<bVassalTrading>0</bVassalTrading>
 			<bBridgeBuilding>0</bBridgeBuilding>
-			<bIrrigation>1</bIrrigation>
+			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>8</iGridX>
-			<iGridY>8</iGridY>
+			<iGridX>7</iGridX>
+			<iGridY>7</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -1020,12 +1101,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>4</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
-				<PrereqTech>TECH_CODE_OF_LAWS</PrereqTech>
-				<PrereqTech>TECH_FEUDALISM</PrereqTech>
-			</OrPreReqs>
+		<!-- 	<OrPreReqs>
+			</OrPreReqs> -->
 			<AndPreReqs>
-				<PrereqTech>TECH_MATHEMATICS</PrereqTech>
+				<PrereqTech>TECH_CURRENCY</PrereqTech>
+				<PrereqTech>TECH_CODE_OF_LAWS</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_CIVIL_SERVICE_QUOTE</Quote>
 			<Sound>AS2D_TECH_CIVIL_SERVICE</Sound>
@@ -1033,16 +1113,16 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Button>,Art/Interface/Buttons/TechTree/Civil Service.dds,Art/Interface/Buttons/TechTree_Atlas.dds,1,2</Button>
 		</TechInfo>
 		<TechInfo>
-			<Type>TECH_GUILDS</Type>
-			<Description>TXT_KEY_TECH_GUILDS</Description>
-			<Civilopedia>TXT_KEY_TECH_GUILDS_PEDIA</Civilopedia>
+			<Type>TECH_CHIVALRY</Type>
+			<Description>Chivalry</Description>
+			<Civilopedia>TXT_KEY_TECH_THEOLOGY_PEDIA</Civilopedia>
 			<Help/>
 			<Strategy>TXT_KEY_TECH_GUILDS_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<!-- advc.552: was 10 -->
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>1000</iCost>
+			<iCost>870</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_MEDIEVAL</Era>
@@ -1073,8 +1153,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>9</iGridX>
-			<iGridY>12</iGridY>
+			<iGridX>8</iGridX>
+			<iGridY>11</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -1098,10 +1178,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_MACHINERY</PrereqTech>
+				<PrereqTech>TECH_FEUDALISM</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_FEUDALISM</PrereqTech>
+			    <PrereqTech>TECH_MACHINERY</PrereqTech>
+			    <PrereqTech>TECH_THEOLOGY</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_GUILDS_QUOTE</Quote>
 			<Sound>AS2D_TECH_GUILDS</Sound>
@@ -1109,19 +1190,18 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Button>,Art/Interface/Buttons/TechTree/Guilds.dds,Art/Interface/Buttons/TechTree_Atlas.dds,4,4</Button>
 		</TechInfo>
 		<TechInfo>
-			<Type>TECH_DIVINE_RIGHT</Type>
-			<Description>TXT_KEY_TECH_DIVINE_RIGHT</Description>
-			<Civilopedia>TXT_KEY_TECH_DIVINE_RIGHT_PEDIA</Civilopedia>
+			<Type>TECH_GUILDS</Type>
+			<Description>TXT_KEY_TECH_GUILDS</Description>
+			<Civilopedia>TXT_KEY_TECH_GUILDS_PEDIA</Civilopedia>
 			<Help/>
-			<Strategy>TXT_KEY_TECH_DIVINE_RIGHT_STRATEGY</Strategy>
+			<Strategy>TXT_KEY_TECH_THEOLOGY_STRATEGY</Strategy>
 			<Advisor>ADVISOR_RELIGION</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<!-- advc.174: was 1200 -->
-			<iCost>700</iCost>
+			<iCost>750</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_MEDIEVAL</Era>
+			<Era>ERA_RENAISSANCE</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -1150,7 +1230,80 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>9</iGridX>
-			<iGridY>5</iGridY>
+			<iGridY>12</iGridY>
+			<DomainExtraMoves/>
+			<CommerceFlexible/>
+			<TerrainTrades/>
+			<bRiverTrade>0</bRiverTrade>
+			<Flavors>
+				<Flavor>
+					<FlavorType>FLAVOR_RELIGION</FlavorType>
+					<iFlavor>10</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_SCIENCE</FlavorType>
+					<iFlavor>2</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_CULTURE</FlavorType>
+					<iFlavor>6</iFlavor>
+				</Flavor>
+			</Flavors>
+			<OrPreReqs>
+				<PrereqTech>TECH_LITERATURE</PrereqTech>
+			</OrPreReqs>
+			<AndPreReqs>
+				<PrereqTech>TECH_CHIVALRY</PrereqTech>
+				<PrereqTech>TECH_ASTRONOMY</PrereqTech>
+			</AndPreReqs>
+			<Quote>TXT_KEY_TECH_THEOLOGY_QUOTE</Quote>
+			<Sound>AS2D_TECH_THEOLOGY</Sound>
+			<SoundMP>AS2D_TECH_MP_THEOLOGY</SoundMP>
+			<Button>,Art/Interface/Buttons/TechTree/Theology.dds,Art/Interface/Buttons/TechTree_Atlas.dds,5,12</Button>
+		</TechInfo>
+		<TechInfo>
+			<Type>TECH_DIVINE_RIGHT</Type>
+			<Description>TXT_KEY_TECH_DIVINE_RIGHT</Description>
+			<Civilopedia>TXT_KEY_TECH_DIVINE_RIGHT_PEDIA</Civilopedia>
+			<Help/>
+			<Strategy>TXT_KEY_TECH_DIVINE_RIGHT_STRATEGY</Strategy>
+			<Advisor>ADVISOR_RELIGION</Advisor>
+			<iAIWeight>0</iAIWeight>
+			<iAITradeModifier>0</iAITradeModifier>
+			<!-- advc.174: was 1200 -->
+			<iCost>650</iCost>
+			<iAdvancedStartCost>100</iAdvancedStartCost>
+			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
+			<Era>ERA_RENAISSANCE</Era>
+			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
+			<iFeatureProductionModifier>0</iFeatureProductionModifier>
+			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<iTradeRoutes>0</iTradeRoutes>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iFirstFreeTechs>0</iFirstFreeTechs>
+			<iAsset>24</iAsset>
+			<iPower>0</iPower>
+			<bRepeat>0</bRepeat>
+			<bTrade>1</bTrade>
+			<bDisable>0</bDisable>
+			<bGoodyTech>0</bGoodyTech>
+			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
+			<bMapCentering>0</bMapCentering>
+			<bMapVisible>0</bMapVisible>
+			<bMapTrading>0</bMapTrading>
+			<bTechTrading>0</bTechTrading>
+			<bGoldTrading>0</bGoldTrading>
+			<bOpenBordersTrading>0</bOpenBordersTrading>
+			<bDefensivePactTrading>0</bDefensivePactTrading>
+			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
+			<bVassalTrading>0</bVassalTrading>
+			<bBridgeBuilding>0</bBridgeBuilding>
+			<bIrrigation>0</bIrrigation>
+			<bIgnoreIrrigation>0</bIgnoreIrrigation>
+			<bWaterWork>0</bWaterWork>
+			<iGridX>9</iGridX>
+			<iGridY>3</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -1173,10 +1326,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>8</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs/>
-			<AndPreReqs>
+			<OrPreReqs>
 				<PrereqTech>TECH_THEOLOGY</PrereqTech>
-				<PrereqTech>TECH_MONARCHY</PrereqTech>
+			</OrPreReqs>
+			<AndPreReqs>
+				<PrereqTech>TECH_PHILOSOPHY</PrereqTech>
+				<PrereqTech>TECH_MUSIC</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_DIVINE_RIGHT_QUOTE</Quote>
 			<Sound>AS2D_TECH_DIVINE_RIGHT</Sound>
@@ -1227,7 +1382,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<!-- advc.500c -->
 			<bNoFearForSafety>1</bNoFearForSafety>
 			<iGridX>10</iGridX>
-			<iGridY>3</iGridY>
+			<iGridY>2</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -1255,11 +1410,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_DIVINE_RIGHT</PrereqTech>
-				<PrereqTech>TECH_PHILOSOPHY</PrereqTech>
+				<PrereqTech>TECH_MUSIC</PrereqTech>
+				<PrereqTech>TECH_CIVIL_SERVICE</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_CIVIL_SERVICE</PrereqTech>
+				<PrereqTech>TECH_DIVINE_RIGHT</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_NATIONALISM_QUOTE</Quote>
 			<Sound>AS2D_TECH_NATIONALISM</Sound>
@@ -1276,10 +1431,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iAIWeight>0</iAIWeight>
 			<!-- advc.552: Was 10; rather give this weight to Nationalism -->
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>2000</iCost>
+			<iCost>2100</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_RENAISSANCE</Era>
+			<Era>ERA_INDUSTRIAL</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -1307,8 +1462,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>11</iGridX>
-			<iGridY>3</iGridY>
+			<iGridX>12</iGridX>
+			<iGridY>4</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -1328,10 +1483,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_NATIONALISM</PrereqTech>
+				<PrereqTech>TECH_ENGINEERING</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_MUSIC</PrereqTech>
+				<PrereqTech>TECH_LIBERALISM</PrereqTech>
+				<PrereqTech>TECH_CONSTITUTION</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_MILITARY_TRADITION_QUOTE</Quote>
 			<Sound>AS2D_TECH_MILITARY_TRADITION</Sound>
@@ -1347,7 +1503,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_ECONOMY</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>2000</iCost>
+			<iCost>1900</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_RENAISSANCE</Era>
@@ -1404,10 +1560,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_NATIONALISM</PrereqTech>
+				<PrereqTech>TECH_EDUCATION</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_CODE_OF_LAWS</PrereqTech>
+				<PrereqTech>TECH_NATIONALISM</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_CONSTITUTION_QUOTE</Quote>
 			<Sound>AS2D_TECH_CONSTITUTION</Sound>
@@ -1456,7 +1612,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>11</iGridX>
-			<iGridY>8</iGridY>
+			<iGridY>4</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -1475,11 +1631,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>5</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
-				<PrereqTech>TECH_EDUCATION</PrereqTech>
-			</OrPreReqs>
+		<!-- 	<OrPreReqs>
+			</OrPreReqs> -->
 			<AndPreReqs>
-				<PrereqTech>TECH_PHILOSOPHY</PrereqTech>
+				<PrereqTech>TECH_NATIONALISM</PrereqTech>
+				<PrereqTech>TECH_PRINTING_PRESS</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_LIBERALISM_QUOTE</Quote>
 			<Sound>AS2D_TECH_LIBERALISM</Sound>
@@ -1498,7 +1654,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iCost>2800</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_RENAISSANCE</Era>
+			<Era>ERA_INDUSTRIAL</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -1543,10 +1699,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_CONSTITUTION</PrereqTech>
+				<PrereqTech>TECH_PRINTING_PRESS</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_PRINTING_PRESS</PrereqTech>
+				<PrereqTech>TECH_CONSTITUTION</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_DEMOCRACY_QUOTE</Quote>
 			<Sound>AS2D_TECH_DEMOCRACY</Sound>
@@ -1593,8 +1749,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>12</iGridX>
-			<iGridY>10</iGridY>
+			<iGridX>11</iGridX>
+			<iGridY>9</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -1618,10 +1774,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_ECONOMICS</PrereqTech>
+				<PrereqTech>TECH_CONSTITUTION</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_CONSTITUTION</PrereqTech>
+				<PrereqTech>TECH_ECONOMICS</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_CORPORATION_QUOTE</Quote>
 			<Sound>AS2D_TECH_CORPORATION</Sound>
@@ -1637,7 +1793,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>2400</iCost>
+			<iCost>2300</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_INDUSTRIAL</Era>
@@ -1663,6 +1819,86 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bOpenBordersTrading>0</bOpenBordersTrading>
 			<bDefensivePactTrading>0</bDefensivePactTrading>
 			<bPermanentAllianceTrading>1</bPermanentAllianceTrading>
+			<bVassalTrading>0</bVassalTrading>
+			<bBridgeBuilding>0</bBridgeBuilding>
+			<bIrrigation>0</bIrrigation>
+			<bIgnoreIrrigation>0</bIgnoreIrrigation>
+			<bWaterWork>0</bWaterWork>
+			<iGridX>14</iGridX>
+			<iGridY>6</iGridY>
+			<DomainExtraMoves/>
+			<CommerceFlexible/>
+			<TerrainTrades/>
+			<bRiverTrade>0</bRiverTrade>
+			<Flavors>
+				<Flavor>
+					<FlavorType>FLAVOR_MILITARY</FlavorType>
+					<iFlavor>4</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_PRODUCTION</FlavorType>
+					<iFlavor>6</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_GOLD</FlavorType>
+					<iFlavor>2</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_CULTURE</FlavorType>
+					<iFlavor>1</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_GROWTH</FlavorType>
+					<iFlavor>2</iFlavor>
+				</Flavor>
+			</Flavors>
+			<OrPreReqs>
+				<PrereqTech>TECH_NATIONALISM</PrereqTech>
+			</OrPreReqs>
+			<AndPreReqs>
+				<PrereqTech>TECH_UTOPIA</PrereqTech>
+				<PrereqTech>TECH_LABOR_UNIONS</PrereqTech>
+			</AndPreReqs>
+			<Quote>TXT_KEY_TECH_FASCISM_QUOTE</Quote>
+			<Sound>AS2D_TECH_FASCISM</Sound>
+			<SoundMP>AS2D_TECH_MP_FASCISM</SoundMP>
+			<Button>,Art/Interface/Buttons/TechTree/Fascism.dds,Art/Interface/Buttons/TechTree_Atlas.dds,8,3</Button>
+		</TechInfo>
+		<TechInfo>
+			<Type>TECH_SOCIOLOGY</Type>
+			<Description>Sociology</Description>
+			<Civilopedia>TXT_KEY_TECH_FASCISM_PEDIA</Civilopedia>
+			<Help/>
+			<Strategy>TXT_KEY_TECH_FASCISM_STRATEGY</Strategy>
+			<Advisor>ADVISOR_MILITARY</Advisor>
+			<iAIWeight>0</iAIWeight>
+			<iAITradeModifier>0</iAITradeModifier>
+			<iCost>2300</iCost>
+			<iAdvancedStartCost>100</iAdvancedStartCost>
+			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
+			<Era>ERA_INDUSTRIAL</Era>
+			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
+			<iFeatureProductionModifier>0</iFeatureProductionModifier>
+			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<iTradeRoutes>0</iTradeRoutes>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iFirstFreeTechs>0</iFirstFreeTechs>
+			<iAsset>40</iAsset>
+			<iPower>0</iPower>
+			<bRepeat>0</bRepeat>
+			<bTrade>1</bTrade>
+			<bDisable>0</bDisable>
+			<bGoodyTech>0</bGoodyTech>
+			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
+			<bMapCentering>0</bMapCentering>
+			<bMapVisible>0</bMapVisible>
+			<bMapTrading>0</bMapTrading>
+			<bTechTrading>0</bTechTrading>
+			<bGoldTrading>0</bGoldTrading>
+			<bOpenBordersTrading>0</bOpenBordersTrading>
+			<bDefensivePactTrading>0</bDefensivePactTrading>
+			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
 			<bVassalTrading>0</bVassalTrading>
 			<bBridgeBuilding>0</bBridgeBuilding>
 			<bIrrigation>0</bIrrigation>
@@ -1700,7 +1936,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				<PrereqTech>TECH_ASSEMBLY_LINE</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_NATIONALISM</PrereqTech>
+				<PrereqTech>TECH_FASCISM</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_FASCISM_QUOTE</Quote>
 			<Sound>AS2D_TECH_FASCISM</Sound>
@@ -1716,7 +1952,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_GROWTH</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>2800</iCost>
+			<iCost>2700</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_INDUSTRIAL</Era>
@@ -1747,8 +1983,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>14</iGridX>
-			<iGridY>7</iGridY>
+			<iGridX>13</iGridX>
+			<iGridY>5</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -1771,11 +2007,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>1</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
-				<PrereqTech>TECH_SCIENTIFIC_METHOD</PrereqTech>
-			</OrPreReqs>
+		<!-- 	<OrPreReqs>
+			</OrPreReqs> -->
 			<AndPreReqs>
-				<PrereqTech>TECH_LIBERALISM</PrereqTech>
+				<PrereqTech>TECH_DEMOCRACY</PrereqTech>
+				<PrereqTech>TECH_RAILROAD</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_UTOPIA_QUOTE</Quote>
 			<Sound>AS2D_TECH_UTOPIA</Sound>
@@ -1792,7 +2028,84 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
 			<!-- advc.910: was 3600 -->
-			<iCost>4000</iCost>
+			<iCost>3800</iCost>
+			<iAdvancedStartCost>100</iAdvancedStartCost>
+			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
+			<Era>ERA_MODERN</Era>
+			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
+			<iFeatureProductionModifier>0</iFeatureProductionModifier>
+			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<iTradeRoutes>0</iTradeRoutes>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iFirstFreeTechs>0</iFirstFreeTechs>
+			<iAsset>48</iAsset>
+			<iPower>0</iPower>
+			<bRepeat>0</bRepeat>
+			<bTrade>1</bTrade>
+			<bDisable>0</bDisable>
+			<bGoodyTech>0</bGoodyTech>
+			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
+			<bMapCentering>0</bMapCentering>
+			<bMapVisible>0</bMapVisible>
+			<bMapTrading>0</bMapTrading>
+			<bTechTrading>0</bTechTrading>
+			<bGoldTrading>0</bGoldTrading>
+			<bOpenBordersTrading>0</bOpenBordersTrading>
+			<bDefensivePactTrading>0</bDefensivePactTrading>
+			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
+			<bVassalTrading>0</bVassalTrading>
+			<bBridgeBuilding>0</bBridgeBuilding>
+			<bIrrigation>0</bIrrigation>
+			<bIgnoreIrrigation>0</bIgnoreIrrigation>
+			<bWaterWork>0</bWaterWork>
+			<iGridX>17</iGridX>
+			<iGridY>12</iGridY>
+			<DomainExtraMoves/>
+			<CommerceFlexible/>
+			<TerrainTrades/>
+			<bRiverTrade>0</bRiverTrade>
+			<Flavors>
+				<Flavor>
+					<FlavorType>FLAVOR_GOLD</FlavorType>
+					<iFlavor>2</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_SCIENCE</FlavorType>
+					<iFlavor>1</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_CULTURE</FlavorType>
+					<iFlavor>9</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_GROWTH</FlavorType>
+					<iFlavor>1</iFlavor>
+				</Flavor>
+			</Flavors>
+			<OrPreReqs>
+				<PrereqTech>TECH_ELECTRONICS</PrereqTech>
+			</OrPreReqs>
+			<AndPreReqs>
+				<PrereqTech>TECH_RADIO</PrereqTech>
+				<PrereqTech>TECH_MEDICINE</PrereqTech>
+			</AndPreReqs>
+			<Quote>TXT_KEY_TECH_MASS_MEDIA_QUOTE</Quote>
+			<Sound>AS2D_TECH_MASS_MEDIA</Sound>
+			<SoundMP>AS2D_TECH_MP_MASS_MEDIA</SoundMP>
+			<Button>,Art/Interface/Buttons/TechTree/MassMedia.dds,Art/Interface/Buttons/TechTree_Atlas.dds,2,5</Button>
+		</TechInfo>
+		<TechInfo>
+			<Type>TECH_ECOLOGY</Type>
+			<Description>TXT_KEY_TECH_ECOLOGY</Description>
+			<Civilopedia>TXT_KEY_TECH_ECOLOGY_PEDIA</Civilopedia>
+			<Help/>
+			<Strategy>TXT_KEY_TECH_ECOLOGY_STRATEGY</Strategy>
+			<Advisor>ADVISOR_GROWTH</Advisor>
+			<iAIWeight>0</iAIWeight>
+			<!-- advc.552: was 10 -->
+			<iAITradeModifier>0</iAITradeModifier>
+			<iCost>5200</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_MODERN</Era>
@@ -1831,80 +2144,6 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bRiverTrade>0</bRiverTrade>
 			<Flavors>
 				<Flavor>
-					<FlavorType>FLAVOR_GOLD</FlavorType>
-					<iFlavor>2</iFlavor>
-				</Flavor>
-				<Flavor>
-					<FlavorType>FLAVOR_SCIENCE</FlavorType>
-					<iFlavor>1</iFlavor>
-				</Flavor>
-				<Flavor>
-					<FlavorType>FLAVOR_CULTURE</FlavorType>
-					<iFlavor>9</iFlavor>
-				</Flavor>
-				<Flavor>
-					<FlavorType>FLAVOR_GROWTH</FlavorType>
-					<iFlavor>1</iFlavor>
-				</Flavor>
-			</Flavors>
-			<OrPreReqs>
-				<PrereqTech>TECH_RADIO</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
-			<Quote>TXT_KEY_TECH_MASS_MEDIA_QUOTE</Quote>
-			<Sound>AS2D_TECH_MASS_MEDIA</Sound>
-			<SoundMP>AS2D_TECH_MP_MASS_MEDIA</SoundMP>
-			<Button>,Art/Interface/Buttons/TechTree/MassMedia.dds,Art/Interface/Buttons/TechTree_Atlas.dds,2,5</Button>
-		</TechInfo>
-		<TechInfo>
-			<Type>TECH_ECOLOGY</Type>
-			<Description>TXT_KEY_TECH_ECOLOGY</Description>
-			<Civilopedia>TXT_KEY_TECH_ECOLOGY_PEDIA</Civilopedia>
-			<Help/>
-			<Strategy>TXT_KEY_TECH_ECOLOGY_STRATEGY</Strategy>
-			<Advisor>ADVISOR_GROWTH</Advisor>
-			<iAIWeight>0</iAIWeight>
-			<!-- advc.552: was 10 -->
-			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>5500</iCost>
-			<iAdvancedStartCost>100</iAdvancedStartCost>
-			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_MODERN</Era>
-			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
-			<iFeatureProductionModifier>0</iFeatureProductionModifier>
-			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
-			<iTradeRoutes>0</iTradeRoutes>
-			<iHealth>0</iHealth>
-			<iHappiness>0</iHappiness>
-			<iFirstFreeTechs>0</iFirstFreeTechs>
-			<iAsset>48</iAsset>
-			<iPower>0</iPower>
-			<bRepeat>0</bRepeat>
-			<bTrade>1</bTrade>
-			<bDisable>0</bDisable>
-			<bGoodyTech>0</bGoodyTech>
-			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
-			<bMapCentering>0</bMapCentering>
-			<bMapVisible>0</bMapVisible>
-			<bMapTrading>0</bMapTrading>
-			<bTechTrading>0</bTechTrading>
-			<bGoldTrading>0</bGoldTrading>
-			<bOpenBordersTrading>0</bOpenBordersTrading>
-			<bDefensivePactTrading>0</bDefensivePactTrading>
-			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
-			<bVassalTrading>0</bVassalTrading>
-			<bBridgeBuilding>0</bBridgeBuilding>
-			<bIrrigation>0</bIrrigation>
-			<bIgnoreIrrigation>0</bIgnoreIrrigation>
-			<bWaterWork>0</bWaterWork>
-			<iGridX>18</iGridX>
-			<iGridY>7</iGridY>
-			<DomainExtraMoves/>
-			<CommerceFlexible/>
-			<TerrainTrades/>
-			<bRiverTrade>0</bRiverTrade>
-			<Flavors>
-				<Flavor>
 					<FlavorType>FLAVOR_PRODUCTION</FlavorType>
 					<iFlavor>2</iFlavor>
 				</Flavor>
@@ -1918,11 +2157,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_PLASTICS</PrereqTech>
-				<PrereqTech>TECH_FISSION</PrereqTech>
+				<PrereqTech>TECH_BIOLOGY</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_BIOLOGY</PrereqTech>
+				<PrereqTech>TECH_PHARMACEUTICALS</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_ECOLOGY_QUOTE</Quote>
 			<Sound>AS2D_TECH_ECOLOGY</Sound>
@@ -1970,7 +2208,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>1</bWaterWork>
 			<iGridX>1</iGridX>
-			<iGridY>1</iGridY>
+			<iGridY>13</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -2187,7 +2425,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>2</iGridX>
-			<iGridY>3</iGridY>
+			<iGridY>1</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -2221,6 +2459,73 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Sound>AS2D_TECH_POTTERY</Sound>
 			<SoundMP>AS2D_TECH_MP_POTTERY</SoundMP>
 			<Button>,Art/Interface/Buttons/TechTree/Pottery.dds,Art/Interface/Buttons/TechTree_Atlas.dds,8,6</Button>
+		</TechInfo>
+		<TechInfo>
+			<Type>TECH_CEREMONY</Type>
+			<Description>Ceremonial Burial</Description>
+			<Civilopedia>TXT_KEY_TECH_AI_PEDIA</Civilopedia>
+			<Help/>
+			<Strategy>TXT_KEY_TECH_AI_STRATEGY</Strategy>
+			<Advisor>ADVISOR_SCIENCE</Advisor>
+			<iAIWeight>3</iAIWeight>
+			<iAITradeModifier>10</iAITradeModifier>
+			<iCost>82</iCost>
+			<iAdvancedStartCost>100</iAdvancedStartCost>
+			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
+			<Era>ERA_ANCIENT</Era>
+			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
+			<iFeatureProductionModifier>0</iFeatureProductionModifier>
+			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<iTradeRoutes>0</iTradeRoutes>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iFirstFreeTechs>0</iFirstFreeTechs>
+			<iAsset>10</iAsset>
+			<iPower>0</iPower>
+			<bRepeat>0</bRepeat>
+			<bTrade>1</bTrade>
+			<bDisable>0</bDisable>
+			<bGoodyTech>0</bGoodyTech>
+			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
+			<bMapCentering>0</bMapCentering>
+			<bMapVisible>0</bMapVisible>
+			<bMapTrading>0</bMapTrading>
+			<bTechTrading>0</bTechTrading>
+			<bGoldTrading>0</bGoldTrading>
+			<bOpenBordersTrading>0</bOpenBordersTrading>
+			<bDefensivePactTrading>0</bDefensivePactTrading>
+			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
+			<bVassalTrading>0</bVassalTrading>
+			<bBridgeBuilding>0</bBridgeBuilding>
+			<bIrrigation>0</bIrrigation>
+			<bIgnoreIrrigation>0</bIgnoreIrrigation>
+			<bWaterWork>0</bWaterWork>
+			<iGridX>3</iGridX>
+			<iGridY>2</iGridY>
+			<DomainExtraMoves/>
+			<CommerceFlexible/>
+			<TerrainTrades/>
+			<bRiverTrade>0</bRiverTrade>
+			<Flavors>
+				<Flavor>
+					<FlavorType>FLAVOR_RELIGION</FlavorType>
+					<iFlavor>10</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_CULTURE</FlavorType>
+					<iFlavor>4</iFlavor>
+				</Flavor>
+			</Flavors>
+			<!-- <OrPreReqs>
+				<PrereqTech>TECH_POTTERY</PrereqTech>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_POTTERY</PrereqTech>
+			</AndPreReqs>
+			<Quote>TXT_KEY_TECH_MANNED_FLIGHT_QUOTE</Quote>
+			<Sound>AS2D_TECH_MANNEDFLIGHT</Sound>
+			<SoundMP/>
+			<Button>,Art/Interface/Buttons/TechTree/Mysticism.dds,Art/Interface/Buttons/TechTree_Atlas.dds,4,11</Button>
 		</TechInfo>
 		<TechInfo>
 			<Type>TECH_AESTHETICS</Type>
@@ -2282,10 +2587,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>8</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
+			<!-- <OrPreReqs>
 				<PrereqTech>TECH_WRITING</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_WRITING</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_AESTHETICS_QUOTE</Quote>
 			<Sound>AS2D_TECH_AESTHETICS</Sound>
 			<SoundMP>SND_TECH_MP_AESTHETICS</SoundMP>
@@ -2335,7 +2642,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>2</iGridX>
-			<iGridY>1</iGridY>
+			<iGridY>14</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades>
@@ -2368,10 +2675,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>4</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
+		<!-- 	<OrPreReqs>
 				<PrereqTech>TECH_FISHING</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_FISHING</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_SAILING_QUOTE</Quote>
 			<Sound>AS2D_TECH_SAILING</Sound>
 			<SoundMP>AS2D_TECH_MP_SAILING</SoundMP>
@@ -2441,12 +2750,13 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>6</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
+		<!-- 	<OrPreReqs>
 				<PrereqTech>TECH_PRIESTHOOD</PrereqTech>
-				<PrereqTech>TECH_ANIMAL_HUSBANDRY</PrereqTech>
-				<PrereqTech>TECH_POTTERY</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
+				<PrereqTech>TECH_CEREMONY</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_WRITING_QUOTE</Quote>
 			<Sound>AS2D_TECH_WRITING</Sound>
 			<SoundMP>AS2D_TECH_MP_WRITING</SoundMP>
@@ -2516,10 +2826,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>10</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
+		<!-- 	<OrPreReqs>
 				<PrereqTech>TECH_WRITING</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_WRITING</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_MATHEMATICS_QUOTE</Quote>
 			<Sound>AS2D_TECH_MATHEMATICS</Sound>
 			<SoundMP>AS2D_TECH_MP_MATHEMATICS</SoundMP>
@@ -2591,10 +2903,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>4</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
+			<!-- <OrPreReqs>
 				<PrereqTech>TECH_WRITING</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_WRITING</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_ALPHABET_QUOTE</Quote>
 			<Sound>AS2D_TECH_ALPHABET</Sound>
 			<SoundMP>AS2D_TECH_MP_ALPHABET</SoundMP>
@@ -2670,10 +2984,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_MATHEMATICS</PrereqTech>
+				<PrereqTech>TECH_SAILING</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_SAILING</PrereqTech>
+				<PrereqTech>TECH_MATHEMATICS</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_CALENDAR_QUOTE</Quote>
 			<Sound>AS2D_TECH_CALENDAR</Sound>
@@ -2740,11 +3054,14 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>3</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
+		<!-- 	<OrPreReqs>
 				<PrereqTech>TECH_MATHEMATICS</PrereqTech>
 				<PrereqTech>TECH_ALPHABET</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_MATHEMATICS</PrereqTech>
+				<PrereqTech>TECH_ALPHABET</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_CURRENCY_QUOTE</Quote>
 			<Sound>AS2D_TECH_CURRENCY</Sound>
 			<SoundMP>AS2D_TECH_MP_CURRENCY</SoundMP>
@@ -2811,11 +3128,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
+				<PrereqTech>TECH_MEDITATION</PrereqTech>
 				<PrereqTech>TECH_CODE_OF_LAWS</PrereqTech>
-				<PrereqTech>TECH_DRAMA</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_MEDITATION</PrereqTech>
+				<PrereqTech>TECH_DRAMA</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_PHILOSOPHY_QUOTE</Quote>
 			<Sound>AS2D_TECH_PHILOSOPHY</Sound>
@@ -2863,7 +3180,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>9</iGridX>
+			<iGridX>8</iGridX>
 			<iGridY>8</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
@@ -2888,14 +3205,92 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
+				<PrereqTech>TECH_CODE_OF_LAWS</PrereqTech>
+			</OrPreReqs>
+			<AndPreReqs>
 				<PrereqTech>TECH_THEOLOGY</PrereqTech>
 				<PrereqTech>TECH_CIVIL_SERVICE</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_PAPER_QUOTE</Quote>
 			<Sound>AS2D_TECH_PAPER</Sound>
 			<SoundMP>AS2D_TECH_MP_PAPER</SoundMP>
 			<Button>,Art/Interface/Buttons/TechTree/Paper.dds,Art/Interface/Buttons/TechTree_Atlas.dds,3,6</Button>
+		</TechInfo>
+		<TechInfo>
+			<Type>TECH_INVENTION</Type>
+			<Description>Invention</Description>
+			<Civilopedia>TXT_KEY_TECH_PRINTING_PRESS_PEDIA</Civilopedia>
+			<Help/>
+			<Strategy>TXT_KEY_TECH_PRINTING_PRESS_STRATEGY</Strategy>
+			<Advisor>ADVISOR_SCIENCE</Advisor>
+			<iAIWeight>0</iAIWeight>
+			<iAITradeModifier>0</iAITradeModifier>
+			<iCost>560</iCost>
+			<iAdvancedStartCost>100</iAdvancedStartCost>
+			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
+			<Era>ERA_MEDIEVAL</Era>
+			<FirstFreeUnitClass>UNITCLASS_SCIENTIST</FirstFreeUnitClass>
+			<iFeatureProductionModifier>0</iFeatureProductionModifier>
+			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<iTradeRoutes>0</iTradeRoutes>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iFirstFreeTechs>0</iFirstFreeTechs>
+			<iAsset>25</iAsset>
+			<iPower>0</iPower>
+			<bRepeat>0</bRepeat>
+			<bTrade>1</bTrade>
+			<bDisable>0</bDisable>
+			<bGoodyTech>0</bGoodyTech>
+			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
+			<bMapCentering>0</bMapCentering>
+			<bMapVisible>0</bMapVisible>
+			<bMapTrading>0</bMapTrading>
+			<bTechTrading>0</bTechTrading>
+			<bGoldTrading>0</bGoldTrading>
+			<bOpenBordersTrading>0</bOpenBordersTrading>
+			<bDefensivePactTrading>0</bDefensivePactTrading>
+			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
+			<bVassalTrading>0</bVassalTrading>
+			<bBridgeBuilding>0</bBridgeBuilding>
+			<bIrrigation>1</bIrrigation>
+			<bIgnoreIrrigation>0</bIgnoreIrrigation>
+			<bWaterWork>0</bWaterWork>
+			<iGridX>8</iGridX>
+			<iGridY>6</iGridY>
+			<DomainExtraMoves/>
+			<CommerceFlexible/>
+			<TerrainTrades/>
+			<bRiverTrade>0</bRiverTrade>
+			<Flavors>
+				<Flavor>
+					<FlavorType>FLAVOR_RELIGION</FlavorType>
+					<iFlavor>3</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_GOLD</FlavorType>
+					<iFlavor>2</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_SCIENCE</FlavorType>
+					<iFlavor>9</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_CULTURE</FlavorType>
+					<iFlavor>6</iFlavor>
+				</Flavor>
+			</Flavors>
+			<!-- <OrPreReqs>
+				<PrereqTech>TECH_ENGINEERING</PrereqTech>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_CIVIL_SERVICE</PrereqTech>
+				<PrereqTech>TECH_ENGINEERING</PrereqTech>
+			</AndPreReqs>
+			<Quote>TXT_KEY_TECH_PRINTING_PRESS_QUOTE</Quote>
+			<Sound>AS2D_TECH_PRINTPRESS</Sound>
+			<SoundMP>AS2D_TECH_MP_PRINTPRESS</SoundMP>
+			<Button>,Art/Interface/Buttons/TechTree/Printing Press.dds,Art/Interface/Buttons/TechTree_Atlas.dds,6,11</Button>
 		</TechInfo>
 		<TechInfo>
 			<Type>TECH_BANKING</Type>
@@ -2907,10 +3302,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
 			<!-- advc.910: was 700 -->
-			<iCost>800</iCost>
+			<iCost>760</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_MEDIEVAL</Era>
+			<Era>ERA_RENAISSANCE</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -2940,8 +3335,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>10</iGridX>
-			<iGridY>13</iGridY>
+			<iGridX>9</iGridX>
+			<iGridY>10</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -2957,10 +3352,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_GUILDS</PrereqTech>
+				<PrereqTech>TECH_CURRENCY</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_CURRENCY</PrereqTech>
+				<PrereqTech>TECH_CHIVALRY</PrereqTech>
+				<PrereqTech>TECH_PAPER</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_BANKING_QUOTE</Quote>
 			<Sound>AS2D_TECH_BANKING</Sound>
@@ -3007,8 +3403,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>10</iGridX>
-			<iGridY>10</iGridY>
+			<iGridX>9</iGridX>
+			<iGridY>7</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -3027,10 +3423,14 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>4</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
+	<!-- 		<OrPreReqs>
 				<PrereqTech>TECH_PAPER</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+				<PrereqTech>TECH_PHILOSOPHY</PrereqTech>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_PHILOSOPHY</PrereqTech>
+				<PrereqTech>TECH_PAPER</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_EDUCATION_QUOTE</Quote>
 			<Sound>AS2D_TECH_EDUCATION</Sound>
 			<SoundMP>AS2D_TECH_MP_EDUCATION</SoundMP>
@@ -3045,7 +3445,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_SCIENCE</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>1600</iCost>
+			<iCost>1500</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_RENAISSANCE</Era>
@@ -3076,7 +3476,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>10</iGridX>
+			<iGridX>9</iGridX>
 			<iGridY>5</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
@@ -3101,11 +3501,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
+				<PrereqTech>TECH_MACHINERY</PrereqTech>
 				<PrereqTech>TECH_PAPER</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_MACHINERY</PrereqTech>
-				<PrereqTech>TECH_ALPHABET</PrereqTech>
+				<PrereqTech>TECH_INVENTION</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_PRINTING_PRESS_QUOTE</Quote>
 			<Sound>AS2D_TECH_PRINTPRESS</Sound>
@@ -3152,7 +3552,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>11</iGridX>
+			<iGridX>10</iGridX>
 			<iGridY>10</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
@@ -3176,11 +3576,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>3</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
-				<PrereqTech>TECH_EDUCATION</PrereqTech>
-			</OrPreReqs>
+	<!-- 		<OrPreReqs>
+				<PrereqTech></PrereqTech>
+			</OrPreReqs> -->
 			<AndPreReqs>
 				<PrereqTech>TECH_BANKING</PrereqTech>
+				<PrereqTech>TECH_EDUCATION</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_ECONOMICS_QUOTE</Quote>
 			<Sound>AS2D_TECH_ECONOMICS</Sound>
@@ -3196,10 +3597,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_GROWTH</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>2000</iCost>
+			<iCost>2200</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_RENAISSANCE</Era>
+			<Era>ERA_MEDIEVAL</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -3227,8 +3628,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>12</iGridX>
-			<iGridY>14</iGridY>
+			<iGridX>8</iGridX>
+			<iGridY>13</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades>
@@ -3253,10 +3654,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_OPTICS</PrereqTech>
+				<PrereqTech>TECH_WRITING</PrereqTech>
+				<PrereqTech>TECH_MATHEMATICS</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_CALENDAR</PrereqTech>
+				<PrereqTech>TECH_MACHINERY</PrereqTech>
+				<PrereqTech>TECH_OPTICS</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_ASTRONOMY_QUOTE</Quote>
 			<Sound>AS2D_TECH_ASTRONOMY</Sound>
@@ -3304,8 +3707,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>12</iGridX>
-			<iGridY>12</iGridY>
+			<iGridX>11</iGridX>
+			<iGridY>11</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -3321,10 +3724,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_GUNPOWDER</PrereqTech>
+				<PrereqTech>TECH_ENGINEERING</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_ENGINEERING</PrereqTech>
+				<PrereqTech>TECH_GUNPOWDER</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_CHEMISTRY_QUOTE</Quote>
 			<Sound>AS2D_TECH_CHEMISTRY</Sound>
@@ -3372,8 +3775,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>13</iGridX>
-			<iGridY>9</iGridY>
+			<iGridX>12</iGridX>
+			<iGridY>12</iGridY>
 			<DomainExtraMoves/>
 			<!-- K-Mod 1.45 (reverted by advc.200): -->
 			<!--CommerceModifiers>
@@ -3405,16 +3808,84 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_CHEMISTRY</PrereqTech>
-				<PrereqTech>TECH_ASTRONOMY</PrereqTech>
+				<PrereqTech>TECH_EDUCATION</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_PRINTING_PRESS</PrereqTech>
+				<PrereqTech>TECH_CHEMISTRY</PrereqTech>
+				<PrereqTech>TECH_STEEL</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_SCIENTIFIC_METHOD_QUOTE</Quote>
 			<Sound>AS2D_TECH_SCIMETHOD</Sound>
 			<SoundMP>AS2D_TECH_MP_SCIMETHOD</SoundMP>
 			<Button>,Art/Interface/Buttons/TechTree/Scientific Method.dds,Art/Interface/Buttons/TechTree_Atlas.dds,8,7</Button>
+		</TechInfo>
+		<TechInfo>
+			<Type>TECH_EXPLOSIVES</Type>
+			<Description>Explosives</Description>
+			<Civilopedia>TXT_KEY_TECH_EXPLOSIVES_PEDIA</Civilopedia>
+			<Help/>
+			<Strategy>TXT_KEY_TECH_EXPLOSIVES_STRATEGY</Strategy>
+			<Advisor>ADVISOR_MILITARY</Advisor>
+			<iAIWeight>0</iAIWeight>
+			<iAITradeModifier>0</iAITradeModifier>
+			<iCost>2050</iCost>
+			<iAdvancedStartCost>100</iAdvancedStartCost>
+			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
+			<Era>ERA_INDUSTRIAL</Era>
+			<FirstFreeUnitClass>UNITCLASS_SCIENTIST</FirstFreeUnitClass>
+			<iFeatureProductionModifier>0</iFeatureProductionModifier>
+			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<iTradeRoutes>0</iTradeRoutes>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iFirstFreeTechs>0</iFirstFreeTechs>
+			<iAsset>0</iAsset>
+			<iPower>0</iPower>
+			<bRepeat>0</bRepeat>
+			<bTrade>1</bTrade>
+			<bDisable>0</bDisable>
+			<bGoodyTech>0</bGoodyTech>
+			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
+			<bMapCentering>0</bMapCentering>
+			<bMapVisible>0</bMapVisible>
+			<bMapTrading>0</bMapTrading>
+			<bTechTrading>0</bTechTrading>
+			<bGoldTrading>0</bGoldTrading>
+			<bOpenBordersTrading>0</bOpenBordersTrading>
+			<bDefensivePactTrading>0</bDefensivePactTrading>
+			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
+			<bVassalTrading>0</bVassalTrading>
+			<bBridgeBuilding>0</bBridgeBuilding>
+			<bIrrigation>0</bIrrigation>
+			<bIgnoreIrrigation>0</bIgnoreIrrigation>
+			<bWaterWork>0</bWaterWork>
+			<iGridX>13</iGridX>
+			<iGridY>10</iGridY>
+			<DomainExtraMoves/>
+			<CommerceFlexible/>
+			<TerrainTrades/>
+			<bRiverTrade>0</bRiverTrade>
+			<Flavors>
+				<Flavor>
+					<FlavorType>FLAVOR_MILITARY</FlavorType>
+					<iFlavor>4</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_PRODUCTION</FlavorType>
+					<iFlavor>8</iFlavor>
+				</Flavor>
+			</Flavors>
+			<OrPreReqs>
+				<PrereqTech>TECH_CHEMISTRY</PrereqTech>
+			</OrPreReqs>
+			<AndPreReqs>
+				<PrereqTech>TECH_SCIENTIFIC_METHOD</PrereqTech>
+				<PrereqTech>TECH_RAILROAD</PrereqTech>
+			</AndPreReqs>
+			<Quote></Quote>
+			<Sound/>
+			<SoundMP/>
+			<Button>Art/Interface/Buttons/TechTree/explosives.dds</Button>
 		</TechInfo>
 		<TechInfo>
 			<Type>TECH_PHYSICS</Type>
@@ -3429,7 +3900,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_INDUSTRIAL</Era>
-			<FirstFreeUnitClass>UNITCLASS_SCIENTIST</FirstFreeUnitClass>
+			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
 			<iTradeRoutes>0</iTradeRoutes>
@@ -3477,10 +3948,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_SCIENTIFIC_METHOD</PrereqTech>
+				<PrereqTech>TECH_ASTRONOMY</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_ASTRONOMY</PrereqTech>
+				<PrereqTech>TECH_EXPLOSIVES</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_PHYSICS_QUOTE</Quote>
 			<Sound>AS2D_TECH_PHYSICS</Sound>
@@ -3549,10 +4020,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_SCIENTIFIC_METHOD</PrereqTech>
+				<PrereqTech>TECH_CHEMISTRY</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_CHEMISTRY</PrereqTech>
+				<PrereqTech>TECH_EXPLOSIVES</PrereqTech>
+				<PrereqTech>TECH_MILITARY_SCIENCE</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_BIOLOGY_QUOTE</Quote>
 			<Sound>AS2D_TECH_BIOLOGY</Sound>
@@ -3628,10 +4100,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_BIOLOGY</PrereqTech>
+				<PrereqTech>TECH_OPTICS</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_OPTICS</PrereqTech>
+				<PrereqTech>TECH_BIOLOGY</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_MEDICINE_QUOTE</Quote>
 			<Sound>AS2D_TECH_MEDICINE</Sound>
@@ -3703,10 +4175,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>2</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
+		<!-- 	<OrPreReqs>
 				<PrereqTech>TECH_PHYSICS</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_PHYSICS</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_ELECTRICITY_QUOTE</Quote>
 			<Sound>AS2D_TECH_ELECTRICITY</Sound>
 			<SoundMP>AS2D_TECH_MP_ELECTRICITY</SoundMP>
@@ -3721,7 +4195,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>3600</iCost>
+			<iCost>3400</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_INDUSTRIAL</Era>
@@ -3752,7 +4226,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>15</iGridX>
+			<iGridX>14</iGridX>
 			<iGridY>14</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
@@ -3773,9 +4247,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_RAILROAD</PrereqTech>
+				<PrereqTech>TECH_EXPLOSIVES</PrereqTech>
 			</OrPreReqs>
-			<AndPreReqs/>
+			<AndPreReqs>
+				<PrereqTech>TECH_MILITARY_SCIENCE</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_COMBUSTION_QUOTE</Quote>
 			<Sound>AS2D_TECH_COMBUSTION</Sound>
 			<SoundMP>AS2D_TECH_MP_COMBUSTION</SoundMP>
@@ -3790,10 +4266,83 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>10</iAITradeModifier>
+			<iCost>5000</iCost>
+			<iAdvancedStartCost>100</iAdvancedStartCost>
+			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
+			<Era>ERA_MODERN</Era>
+			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
+			<iFeatureProductionModifier>0</iFeatureProductionModifier>
+			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<iTradeRoutes>0</iTradeRoutes>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iFirstFreeTechs>0</iFirstFreeTechs>
+			<iAsset>40</iAsset>
+			<iPower>8</iPower>
+			<bRepeat>0</bRepeat>
+			<bTrade>1</bTrade>
+			<bDisable>0</bDisable>
+			<bGoodyTech>0</bGoodyTech>
+			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
+			<bMapCentering>0</bMapCentering>
+			<bMapVisible>0</bMapVisible>
+			<bMapTrading>0</bMapTrading>
+			<bTechTrading>0</bTechTrading>
+			<bGoldTrading>0</bGoldTrading>
+			<bOpenBordersTrading>0</bOpenBordersTrading>
+			<bDefensivePactTrading>0</bDefensivePactTrading>
+			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
+			<bVassalTrading>0</bVassalTrading>
+			<bBridgeBuilding>0</bBridgeBuilding>
+			<bIrrigation>0</bIrrigation>
+			<bIgnoreIrrigation>0</bIgnoreIrrigation>
+			<bWaterWork>0</bWaterWork>
+			<iGridX>17</iGridX>
+			<iGridY>7</iGridY>
+			<DomainExtraMoves/>
+			<CommerceFlexible/>
+			<TerrainTrades/>
+			<bRiverTrade>0</bRiverTrade>
+			<Flavors>
+				<Flavor>
+					<FlavorType>FLAVOR_MILITARY</FlavorType>
+					<iFlavor>1</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_PRODUCTION</FlavorType>
+					<iFlavor>3</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_SCIENCE</FlavorType>
+					<iFlavor>8</iFlavor>
+				</Flavor>
+			</Flavors>
+			<OrPreReqs>
+				<PrereqTech>TECH_UTOPIA</PrereqTech>
+				<PrereqTech>TECH_ELECTRICITY</PrereqTech>
+			</OrPreReqs>
+			<AndPreReqs>
+				<PrereqTech>TECH_ELECTRONICS</PrereqTech>
+				<PrereqTech>TECH_INDUSTRIALISM</PrereqTech>
+			</AndPreReqs>
+			<Quote>TXT_KEY_TECH_FISSION_QUOTE</Quote>
+			<Sound>AS2D_TECH_FISSION</Sound>
+			<SoundMP>AS2D_TECH_MP_FISSION</SoundMP>
+			<Button>,Art/Interface/Buttons/TechTree/Fission.dds,Art/Interface/Buttons/TechTree_Atlas.dds,3,10</Button>
+		</TechInfo>
+		<TechInfo>
+			<Type>TECH_NUCLEAR_POWER</Type>
+			<Description>Nuclear Power</Description>
+			<Civilopedia>TXT_KEY_TECH_FISSION_PEDIA</Civilopedia>
+			<Help/>
+			<Strategy>TXT_KEY_TECH_FISSION_STRATEGY</Strategy>
+			<Advisor>ADVISOR_MILITARY</Advisor>
+			<iAIWeight>0</iAIWeight>
+			<iAITradeModifier>10</iAITradeModifier>
 			<iCost>5500</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_INDUSTRIAL</Era>
+			<Era>ERA_MODERN</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -3821,7 +4370,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>16</iGridX>
+			<iGridX>18</iGridX>
 			<iGridY>7</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
@@ -3842,9 +4391,13 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_ELECTRICITY</PrereqTech>
+				<PrereqTech>TECH_MASS_MEDIA</PrereqTech>
+				<PrereqTech>TECH_COMPUTERS</PrereqTech>
 			</OrPreReqs>
-			<AndPreReqs/>
+			<AndPreReqs>
+				<PrereqTech>TECH_FISSION</PrereqTech>
+				<PrereqTech>TECH_PLASTICS</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_FISSION_QUOTE</Quote>
 			<Sound>AS2D_TECH_FISSION</Sound>
 			<SoundMP>AS2D_TECH_MP_FISSION</SoundMP>
@@ -3862,7 +4415,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iCost>5000</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_MODERN</Era>
+			<Era>ERA_INDUSTRIAL</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -3891,7 +4444,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>15</iGridX>
-			<iGridY>1</iGridY>
+			<iGridY>13</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -3918,9 +4471,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>3</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs/>
-			<AndPreReqs>
+			<OrPreReqs>
+				<PrereqTech>TECH_RAILROAD</PrereqTech>
 				<PrereqTech>TECH_PHYSICS</PrereqTech>
+			</OrPreReqs>
+			<AndPreReqs>
 				<PrereqTech>TECH_COMBUSTION</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_FLIGHT_QUOTE</Quote>
@@ -3930,7 +4485,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 		</TechInfo>
 		<TechInfo>
 			<Type>TECH_ADVANCED_FLIGHT</Type>
-			<Description>TXT_KEY_TECH_ADVANCED_FLIGHT</Description>
+			<Description>Aviation</Description>
 			<Civilopedia>TXT_KEY_TECH_ADVANCED_FLIGHT_PEDIA</Civilopedia>
 			<Help/>
 			<Strategy>TXT_KEY_TECH_ADVANCED_FLIGHT_STRATEGY</Strategy>
@@ -3970,8 +4525,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>18</iGridX>
-			<iGridY>1</iGridY>
+			<iGridX>19</iGridX>
+			<iGridY>2</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -4058,10 +4613,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_INDUSTRIALISM</PrereqTech>
+				<PrereqTech>TECH_COMBUSTION</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_COMBUSTION</PrereqTech>
+				<PrereqTech>TECH_INDUSTRIALISM</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_PLASTICS_QUOTE</Quote>
 			<Sound>AS2D_TECH_PLASTICS</Sound>
@@ -4109,8 +4664,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>18</iGridX>
-			<iGridY>5</iGridY>
+			<iGridX>20</iGridX>
+			<iGridY>9</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -4125,11 +4680,13 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>3</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
-				<PrereqTech>TECH_PLASTICS</PrereqTech>
-			</OrPreReqs>
+		 	<OrPreReqs>
+				<PrereqTech>TECH_SPACE_FLIGHT</PrereqTech>
+			</OrPreReqs> 
 			<AndPreReqs>
-				<PrereqTech>TECH_SATELLITES</PrereqTech>
+				<PrereqTech>TECH_ROBOTICS</PrereqTech>
+				<PrereqTech>TECH_GENETICS</PrereqTech>
+				<PrereqTech>TECH_FUSION</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_COMPOSITES_QUOTE</Quote>
 			<Sound>AS2D_TECH_COMPOSITES</Sound>
@@ -4149,7 +4706,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iCost>8000</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_FUTURE</Era>
+			<Era>ERA_MODERN</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -4177,8 +4734,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>19</iGridX>
-			<iGridY>1</iGridY>
+			<iGridX>20</iGridX>
+			<iGridY>4</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -4193,11 +4750,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>3</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
-				<PrereqTech>TECH_ADVANCED_FLIGHT</PrereqTech>
-			</OrPreReqs>
+	<!-- 		<OrPreReqs>
+			</OrPreReqs> -->
 			<AndPreReqs>
-				<PrereqTech>TECH_COMPOSITES</PrereqTech>
+				<PrereqTech>TECH_LASER</PrereqTech>
+				<PrereqTech>TECH_ADVANCED_FLIGHT</PrereqTech>
+				<PrereqTech>TECH_FUSION</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_STEALTH_QUOTE</Quote>
 			<Sound>AS2D_TECH_STEALTH</Sound>
@@ -4217,7 +4775,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iCost>7000</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_FUTURE</Era>
+			<Era>ERA_MODERN</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -4246,7 +4804,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>19</iGridX>
-			<iGridY>13</iGridY>
+			<iGridY>11</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -4266,10 +4824,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_SUPERCONDUCTORS</PrereqTech>
+				<PrereqTech>TECH_SPACE_FLIGHT</PrereqTech>
+				<PrereqTech>TECH_ECOLOGY</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_MEDICINE</PrereqTech>
+				<PrereqTech>TECH_FIBER_OPTICS</PrereqTech>
+				<PrereqTech>TECH_SUPERCONDUCTORS</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_GENETICS_QUOTE</Quote>
 			<Sound>AS2D_TECH_GENETICS</Sound>
@@ -4286,7 +4846,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iAIWeight>0</iAIWeight>
 			<!-- advc.552: was 10 -->
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>7500</iCost>
+			<iCost>7300</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_MODERN</Era>
@@ -4317,8 +4877,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>19</iGridX>
-			<iGridY>8</iGridY>
+			<iGridX>18</iGridX>
+			<iGridY>10</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -4333,11 +4893,13 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>9</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
-				<PrereqTech>TECH_COMPUTERS</PrereqTech>
-				<PrereqTech>TECH_LASER</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+			<!-- <OrPreReqs>
+				<PrereqTech>TECH_ECOLOGY</PrereqTech>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_ECOLOGY</PrereqTech>
+				<PrereqTech>TECH_MASS_MEDIA</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_FIBER_OPTICS_QUOTE</Quote>
 			<Sound>AS2D_TECH_FIBER_OPTICS</Sound>
 			<SoundMP>AS2D_TECH_MP_FIBER_OPTICS</SoundMP>
@@ -4355,7 +4917,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iCost>8000</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_FUTURE</Era>
+			<Era>ERA_MODERN</Era>
 			<FirstFreeUnitClass>UNITCLASS_ENGINEER</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -4383,8 +4945,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>20</iGridX>
-			<iGridY>8</iGridY>
+			<iGridX>19</iGridX>
+			<iGridY>7</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -4400,10 +4962,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_FIBER_OPTICS</PrereqTech>
+				<PrereqTech>TECH_COMPUTERS</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_FISSION</PrereqTech>
+				<PrereqTech>TECH_NUCLEAR_POWER</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_FUSION_QUOTE</Quote>
 			<Sound>AS2D_TECH_FUSION</Sound>
@@ -4526,7 +5088,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>1</iGridX>
-			<iGridY>14</iGridY>
+			<iGridY>11</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -4594,7 +5156,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>2</iGridX>
-			<iGridY>7</iGridY>
+			<iGridY>5</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -4613,10 +5175,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>2</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
+		<!-- 	<OrPreReqs>
 				<PrereqTech>TECH_HUNTING</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_HUNTING</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_ARCHERY_QUOTE</Quote>
 			<Sound>AS2D_TECH_ARCHERY</Sound>
 			<SoundMP>AS2D_TECH_MP_ARCHERY</SoundMP>
@@ -4663,7 +5227,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>2</iGridX>
-			<iGridY>13</iGridY>
+			<iGridY>11</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -4691,10 +5255,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_MINING</PrereqTech>
+				<PrereqTech>TECH_HUNTING</PrereqTech>
 				<PrereqTech>TECH_MYSTICISM</PrereqTech>
 			</OrPreReqs>
-			<AndPreReqs/>
+			<AndPreReqs>
+				<PrereqTech>TECH_MINING</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_MASONRY_QUOTE</Quote>
 			<Sound>AS2D_TECH_MASONRY</Sound>
 			<SoundMP>AS2D_TECH_MP_MASONRY</SoundMP>
@@ -4725,7 +5291,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bRepeat>0</bRepeat>
 			<bTrade>1</bTrade>
 <!-- advanced diplomacy city states-->
-			<bFreeTradeAgreementTrading>1</bFreeTradeAgreementTrading>
+			<!-- <bFreeTradeAgreementTrading>1</bFreeTradeAgreementTrading> -->
 			<bDisable>0</bDisable>
 			<bGoodyTech>1</bGoodyTech>
 			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
@@ -4743,7 +5309,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>2</iGridX>
-			<iGridY>5</iGridY>
+			<iGridY>3</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -4778,7 +5344,9 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				<PrereqTech>TECH_HUNTING</PrereqTech>
 				<PrereqTech>TECH_AGRICULTURE</PrereqTech>
 			</OrPreReqs>
-			<AndPreReqs/>
+			<AndPreReqs>
+				<PrereqTech>TECH_AGRICULTURE</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_ANIMAL_HUSBANDRY_QUOTE</Quote>
 			<Sound>AS2D_TECH_ANIMALHUSB</Sound>
 			<SoundMP>AS2D_TECH_MP_ANIMALHUSB</SoundMP>
@@ -4825,7 +5393,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>3</iGridX>
-			<iGridY>14</iGridY>
+			<iGridY>12</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -4848,10 +5416,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>1</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
-				<PrereqTech>TECH_MINING</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+		<!-- 	<OrPreReqs>
+				<PrereqTech>TECH_MASONRY</PrereqTech>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_MASONRY</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_BRONZE_WORKING_QUOTE</Quote>
 			<Sound>AS2D_TECH_BRONZEWORK</Sound>
 			<SoundMP>AS2D_TECH_MP_BRONZEWORK</SoundMP>
@@ -4872,7 +5442,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iCost>250</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_CLASSICAL</Era>
+			<Era>ERA_ANCIENT</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -4901,7 +5471,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>3</iGridX>
-			<iGridY>6</iGridY>
+			<iGridY>4</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -4928,10 +5498,13 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>5</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
+		<!-- 	<OrPreReqs>
 				<PrereqTech>TECH_ANIMAL_HUSBANDRY</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_ANIMAL_HUSBANDRY</PrereqTech>
+				<PrereqTech>TECH_ARCHERY</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_HORSEBACK_RIDING_QUOTE</Quote>
 			<Sound>AS2D_TECH_HORSERIDING</Sound>
 			<SoundMP>AS2D_TECH_MP_HORSERIDING</SoundMP>
@@ -4948,10 +5521,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iAIWeight>-30</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
 			<!-- advc.131b: was 200 -->
-			<iCost>210</iCost>
+			<iCost>200</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_CLASSICAL</Era>
+			<Era>ERA_ANCIENT</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -4961,80 +5534,6 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iFirstFreeTechs>0</iFirstFreeTechs>
 			<iAsset>16</iAsset>
 			<iPower>10</iPower>
-			<bRepeat>0</bRepeat>
-			<bTrade>1</bTrade>
-			<bDisable>0</bDisable>
-			<bGoodyTech>1</bGoodyTech>
-			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
-			<bMapCentering>0</bMapCentering>
-			<bMapVisible>0</bMapVisible>
-			<bMapTrading>0</bMapTrading>
-			<bTechTrading>0</bTechTrading>
-			<bGoldTrading>0</bGoldTrading>
-			<bOpenBordersTrading>0</bOpenBordersTrading>
-			<bDefensivePactTrading>0</bDefensivePactTrading>
-			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
-			<bVassalTrading>0</bVassalTrading>
-			<bBridgeBuilding>0</bBridgeBuilding>
-			<bIrrigation>0</bIrrigation>
-			<bIgnoreIrrigation>0</bIgnoreIrrigation>
-			<bWaterWork>0</bWaterWork>
-			<iGridX>4</iGridX>
-			<iGridY>14</iGridY>
-			<DomainExtraMoves/>
-			<CommerceFlexible/>
-			<TerrainTrades/>
-			<bRiverTrade>0</bRiverTrade>
-			<Flavors>
-				<Flavor>
-					<FlavorType>FLAVOR_MILITARY</FlavorType>
-					<iFlavor>7</iFlavor>
-				</Flavor>
-				<Flavor>
-					<FlavorType>FLAVOR_PRODUCTION</FlavorType>
-					<iFlavor>8</iFlavor>
-				</Flavor>
-				<Flavor>
-					<FlavorType>FLAVOR_SCIENCE</FlavorType>
-					<iFlavor>5</iFlavor>
-				</Flavor>
-				<Flavor>
-					<FlavorType>FLAVOR_GROWTH</FlavorType>
-					<iFlavor>6</iFlavor>
-				</Flavor>
-			</Flavors>
-			<OrPreReqs>
-				<PrereqTech>TECH_BRONZE_WORKING</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
-			<Quote>TXT_KEY_TECH_IRON_WORKING_QUOTE</Quote>
-			<Sound>AS2D_TECH_IRONWORK</Sound>
-			<SoundMP>AS2D_TECH_MP_IRONWORK</SoundMP>
-			<Button>,Art/Interface/Buttons/TechTree/Iron Working.dds,Art/Interface/Buttons/TechTree_Atlas.dds,5,10</Button>
-		</TechInfo>
-		<TechInfo>
-			<Type>TECH_METAL_CASTING</Type>
-			<Description>TXT_KEY_TECH_METAL_CASTING</Description>
-			<Civilopedia>TXT_KEY_TECH_METAL_CASTING_PEDIA</Civilopedia>
-			<Help/>
-			<Strategy>TXT_KEY_TECH_METAL_CASTING_STRATEGY</Strategy>
-			<Advisor>ADVISOR_MILITARY</Advisor>
-			<iAIWeight>0</iAIWeight>
-			<iAITradeModifier>0</iAITradeModifier>
-			<!-- advc.306: was 450 -->
-			<iCost>375</iCost>
-			<iAdvancedStartCost>100</iAdvancedStartCost>
-			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_CLASSICAL</Era>
-			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
-			<iFeatureProductionModifier>0</iFeatureProductionModifier>
-			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
-			<iTradeRoutes>0</iTradeRoutes>
-			<iHealth>0</iHealth>
-			<iHappiness>0</iHappiness>
-			<iFirstFreeTechs>0</iFirstFreeTechs>
-			<iAsset>16</iAsset>
-			<iPower>4</iPower>
 			<bRepeat>0</bRepeat>
 			<bTrade>1</bTrade>
 			<bDisable>0</bDisable>
@@ -5066,6 +5565,82 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 				<Flavor>
 					<FlavorType>FLAVOR_PRODUCTION</FlavorType>
+					<iFlavor>8</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_SCIENCE</FlavorType>
+					<iFlavor>5</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_GROWTH</FlavorType>
+					<iFlavor>6</iFlavor>
+				</Flavor>
+			</Flavors>
+			<!-- <OrPreReqs>
+				<PrereqTech>TECH_BRONZE_WORKING</PrereqTech>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_BRONZE_WORKING</PrereqTech>
+			</AndPreReqs>
+			<Quote>TXT_KEY_TECH_IRON_WORKING_QUOTE</Quote>
+			<Sound>AS2D_TECH_IRONWORK</Sound>
+			<SoundMP>AS2D_TECH_MP_IRONWORK</SoundMP>
+			<Button>,Art/Interface/Buttons/TechTree/Iron Working.dds,Art/Interface/Buttons/TechTree_Atlas.dds,5,10</Button>
+		</TechInfo>
+		<TechInfo>
+			<Type>TECH_METAL_CASTING</Type>
+			<Description>TXT_KEY_TECH_METAL_CASTING</Description>
+			<Civilopedia>TXT_KEY_TECH_METAL_CASTING_PEDIA</Civilopedia>
+			<Help/>
+			<Strategy>TXT_KEY_TECH_METAL_CASTING_STRATEGY</Strategy>
+			<Advisor>ADVISOR_MILITARY</Advisor>
+			<iAIWeight>0</iAIWeight>
+			<iAITradeModifier>0</iAITradeModifier>
+			<!-- advc.306: was 450 -->
+			<iCost>375</iCost>
+			<iAdvancedStartCost>100</iAdvancedStartCost>
+			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
+			<Era>ERA_ANCIENT</Era>
+			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
+			<iFeatureProductionModifier>0</iFeatureProductionModifier>
+			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<iTradeRoutes>0</iTradeRoutes>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iFirstFreeTechs>0</iFirstFreeTechs>
+			<iAsset>16</iAsset>
+			<iPower>4</iPower>
+			<bRepeat>0</bRepeat>
+			<bTrade>1</bTrade>
+			<bDisable>0</bDisable>
+			<bGoodyTech>1</bGoodyTech>
+			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
+			<bMapCentering>0</bMapCentering>
+			<bMapVisible>0</bMapVisible>
+			<bMapTrading>0</bMapTrading>
+			<bTechTrading>0</bTechTrading>
+			<bGoldTrading>0</bGoldTrading>
+			<bOpenBordersTrading>0</bOpenBordersTrading>
+			<bDefensivePactTrading>0</bDefensivePactTrading>
+			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
+			<bVassalTrading>0</bVassalTrading>
+			<bBridgeBuilding>0</bBridgeBuilding>
+			<bIrrigation>0</bIrrigation>
+			<bIgnoreIrrigation>0</bIgnoreIrrigation>
+			<bWaterWork>0</bWaterWork>
+			<iGridX>4</iGridX>
+			<iGridY>10</iGridY>
+			<DomainExtraMoves/>
+			<CommerceFlexible/>
+			<TerrainTrades/>
+			<bRiverTrade>0</bRiverTrade>
+			<Flavors>
+				<Flavor>
+					<FlavorType>FLAVOR_MILITARY</FlavorType>
+					<iFlavor>7</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_PRODUCTION</FlavorType>
 					<iFlavor>9</iFlavor>
 				</Flavor>
 				<Flavor>
@@ -5082,10 +5657,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_BRONZE_WORKING</PrereqTech>
+				<PrereqTech>TECH_POTTERY</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_POTTERY</PrereqTech>
+				<PrereqTech>TECH_BRONZE_WORKING</PrereqTech>
+				<PrereqTech>TECH_MONOTHEISM</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_METAL_CASTING_QUOTE</Quote>
 			<Sound>AS2D_TECH_METALCAST</Sound>
@@ -5133,7 +5709,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>5</iGridX>
-			<iGridY>14</iGridY>
+			<iGridY>13</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -5156,10 +5732,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>4</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
-				<PrereqTech>TECH_IRON_WORKING</PrereqTech>
-			</OrPreReqs>
+		<!-- 	<OrPreReqs>
+			</OrPreReqs> -->
 			<AndPreReqs>
+				<PrereqTech>TECH_IRON_WORKING</PrereqTech>
 				<PrereqTech>TECH_SAILING</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_COMPASS_QUOTE</Quote>
@@ -5240,10 +5816,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_MATHEMATICS</PrereqTech>
+				<PrereqTech>TECH_MASONRY</PrereqTech>
+				<PrereqTech>TECH_HORSEBACK_RIDING</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_MASONRY</PrereqTech>
+				<PrereqTech>TECH_MATHEMATICS</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_CONSTRUCTION_QUOTE</Quote>
 			<Sound>AS2D_TECH_CONSTRUCTION</Sound>
@@ -5260,7 +5837,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>10</iAITradeModifier>
 			<!-- advc.306: was 700 -->
-			<iCost>710</iCost>
+			<iCost>700</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_MEDIEVAL</Era>
@@ -5291,8 +5868,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>6</iGridX>
-			<iGridY>12</iGridY>
+			<iGridX>7</iGridX>
+			<iGridY>11</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -5318,7 +5895,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<OrPreReqs>
 				<PrereqTech>TECH_METAL_CASTING</PrereqTech>
 			</OrPreReqs>
-			<AndPreReqs/>
+			<AndPreReqs>
+				<PrereqTech>TECH_OPTICS</PrereqTech>
+				<PrereqTech>TECH_FEUDALISM</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_MACHINERY_QUOTE</Quote>
 			<Sound>AS2D_TECH_MACHINERY</Sound>
 			<SoundMP>AS2D_TECH_MP_MACHINERY</SoundMP>
@@ -5389,10 +5969,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_CONSTRUCTION</PrereqTech>
+				<PrereqTech>TECH_COMPASS</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_MACHINERY</PrereqTech>
+				<PrereqTech>TECH_CONSTRUCTION</PrereqTech>
+				<PrereqTech>TECH_CALENDAR</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_ENGINEERING_QUOTE</Quote>
 			<Sound>AS2D_TECH_ENGINEERING</Sound>
@@ -5412,7 +5993,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iCost>660</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_MEDIEVAL</Era>
+			<Era>ERA_CLASSICAL</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -5440,8 +6021,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>7</iGridX>
-			<iGridY>14</iGridY>
+			<iGridX>6</iGridX>
+			<iGridY>13</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -5465,10 +6046,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_COMPASS</PrereqTech>
+				<PrereqTech>TECH_MATHEMATICS</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_MACHINERY</PrereqTech>
+				<PrereqTech>TECH_COMPASS</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_OPTICS_QUOTE</Quote>
 			<Sound>AS2D_TECH_OPTICS</Sound>
@@ -5516,7 +6097,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>11</iGridX>
+			<iGridX>10</iGridX>
 			<iGridY>12</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
@@ -5537,10 +6118,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_GUILDS</PrereqTech>
-				<PrereqTech>TECH_EDUCATION</PrereqTech>
+				<PrereqTech>TECH_INVENTION</PrereqTech>
 			</OrPreReqs>
-			<AndPreReqs/>
+			<AndPreReqs>
+				<PrereqTech>TECH_GUILDS</PrereqTech>
+				<PrereqTech>TECH_BANKING</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_GUNPOWDER_QUOTE</Quote>
 			<Sound>AS2D_TECH_GUNPOWDER</Sound>
 			<SoundMP>AS2D_TECH_MP_GUNPOWDER</SoundMP>
@@ -5586,8 +6169,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>11</iGridX>
-			<iGridY>5</iGridY>
+			<iGridX>10</iGridX>
+			<iGridY>6</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -5611,10 +6194,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_PRINTING_PRESS</PrereqTech>
+				<PrereqTech>TECH_BANKING</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_BANKING</PrereqTech>
+				<PrereqTech>TECH_EDUCATION</PrereqTech>
+				<PrereqTech>TECH_PRINTING_PRESS</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_REPLACEABLE_PARTS_QUOTE</Quote>
 			<Sound>AS2D_TECH_REPLACE_PARTS</Sound>
@@ -5634,7 +6218,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iCost>2000</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_RENAISSANCE</Era>
+			<Era>ERA_INDUSTRIAL</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -5679,9 +6263,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_CHEMISTRY</PrereqTech>
+				<PrereqTech>TECH_EDUCATION</PrereqTech>
 			</OrPreReqs>
-			<AndPreReqs/>
+			<AndPreReqs>
+				<PrereqTech>TECH_SCIENTIFIC_METHOD</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_MILITARY_SCIENCE_QUOTE</Quote>
 			<Sound>AS2D_TECH_MILITARY_SCIENCE</Sound>
 			<SoundMP>AS2D_TECH_MP_MILITARY_SCIENCE</SoundMP>
@@ -5699,7 +6285,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iCost>2400</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_RENAISSANCE</Era>
+			<Era>ERA_INDUSTRIAL</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -5728,7 +6314,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>12</iGridX>
-			<iGridY>4</iGridY>
+			<iGridY>6</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -5748,10 +6334,84 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_REPLACEABLE_PARTS</PrereqTech>
+				<PrereqTech>TECH_GUNPOWDER</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_GUNPOWDER</PrereqTech>
+				<PrereqTech>TECH_LIBERALISM</PrereqTech>
+				<PrereqTech>TECH_STEAM_POWER</PrereqTech>
+			</AndPreReqs>
+			<Quote>TXT_KEY_TECH_RIFLING_QUOTE</Quote>
+			<Sound>AS2D_TECH_RIFLING</Sound>
+			<SoundMP>AS2D_TECH_MP_RIFLING</SoundMP>
+			<Button>,Art/Interface/Buttons/TechTree/Rifling.dds,Art/Interface/Buttons/TechTree_Atlas.dds,3,7</Button>
+		</TechInfo>
+		<TechInfo>
+			<Type>TECH_LABOR_UNIONS</Type>
+			<Description>Labor Unions</Description>
+			<Civilopedia>TXT_KEY_TECH_RIFLING_PEDIA</Civilopedia>
+			<Help/>
+			<Strategy>TXT_KEY_TECH_RIFLING_STRATEGY</Strategy>
+			<Advisor>ADVISOR_MILITARY</Advisor>
+			<iAIWeight>0</iAIWeight>
+			<iAITradeModifier>10</iAITradeModifier>
+			<iCost>2100</iCost>
+			<iAdvancedStartCost>100</iAdvancedStartCost>
+			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
+			<Era>ERA_INDUSTRIAL</Era>
+			<FirstFreeUnitClass>UNITCLASS_MERCHANT</FirstFreeUnitClass>
+			<iFeatureProductionModifier>0</iFeatureProductionModifier>
+			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<iTradeRoutes>0</iTradeRoutes>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iFirstFreeTechs>0</iFirstFreeTechs>
+			<iAsset>32</iAsset>
+			<iPower>12</iPower>
+			<bRepeat>0</bRepeat>
+			<bTrade>1</bTrade>
+			<bDisable>0</bDisable>
+			<bGoodyTech>0</bGoodyTech>
+			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
+			<bMapCentering>0</bMapCentering>
+			<bMapVisible>0</bMapVisible>
+			<bMapTrading>0</bMapTrading>
+			<bTechTrading>0</bTechTrading>
+			<bGoldTrading>0</bGoldTrading>
+			<bOpenBordersTrading>0</bOpenBordersTrading>
+			<bDefensivePactTrading>0</bDefensivePactTrading>
+			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
+			<bVassalTrading>0</bVassalTrading>
+			<bBridgeBuilding>0</bBridgeBuilding>
+			<bIrrigation>0</bIrrigation>
+			<bIgnoreIrrigation>0</bIgnoreIrrigation>
+			<bWaterWork>0</bWaterWork>
+			<iGridX>13</iGridX>
+			<iGridY>3</iGridY>
+			<DomainExtraMoves/>
+			<CommerceFlexible/>
+			<TerrainTrades/>
+			<bRiverTrade>0</bRiverTrade>
+			<Flavors>
+				<Flavor>
+					<FlavorType>FLAVOR_MILITARY</FlavorType>
+					<iFlavor>10</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_PRODUCTION</FlavorType>
+					<iFlavor>1</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_SCIENCE</FlavorType>
+					<iFlavor>1</iFlavor>
+				</Flavor>
+			</Flavors>
+			<OrPreReqs>
+				<PrereqTech>TECH_RIFLING</PrereqTech>
+				<PrereqTech>TECH_RAILROAD</PrereqTech>
+			</OrPreReqs>
+			<AndPreReqs>
+				<PrereqTech>TECH_DEMOCRACY</PrereqTech>
+				<PrereqTech>TECH_MILITARY_TRADITION</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_RIFLING_QUOTE</Quote>
 			<Sound>AS2D_TECH_RIFLING</Sound>
@@ -5767,10 +6427,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_ECONOMY</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>3200</iCost>
+			<iCost>3150</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_INDUSTRIAL</Era>
+			<Era>ERA_RENAISSANCE</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>50</iWorkerSpeedModifier>
@@ -5798,8 +6458,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>13</iGridX>
-			<iGridY>5</iGridY>
+			<iGridX>11</iGridX>
+			<iGridY>7</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -5827,11 +6487,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_REPLACEABLE_PARTS</PrereqTech>
+				<PrereqTech>TECH_ECONOMICS</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_CHEMISTRY</PrereqTech>
-				<PrereqTech>TECH_DEMOCRACY</PrereqTech>
+				<PrereqTech>TECH_REPLACEABLE_PARTS</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_STEAM_POWER_QUOTE</Quote>
 			<Sound>AS2D_TECH_STEAMPOWER</Sound>
@@ -5840,17 +6499,17 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 		</TechInfo>
 		<TechInfo>
 			<Type>TECH_STEEL</Type>
-			<Description>TXT_KEY_TECH_STEEL</Description>
+			<Description>Metallurgy</Description>
 			<Civilopedia>TXT_KEY_TECH_STEEL_PEDIA</Civilopedia>
 			<Help/>
 			<Strategy>TXT_KEY_TECH_STEEL_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>10</iAITradeModifier>
-			<iCost>2800</iCost>
+			<iCost>2700</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_INDUSTRIAL</Era>
+			<Era>ERA_RENAISSANCE</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -5878,8 +6537,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>13</iGridX>
-			<iGridY>14</iGridY>
+			<iGridX>11</iGridX>
+			<iGridY>13</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -5899,10 +6558,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_CHEMISTRY</PrereqTech>
+				<PrereqTech>TECH_EDUCATION</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_IRON_WORKING</PrereqTech>
+				<PrereqTech>TECH_GUNPOWDER</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_STEEL_QUOTE</Quote>
 			<Sound>AS2D_TECH_STEEL</Sound>
@@ -5918,7 +6577,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>10</iAITradeModifier>
-			<iCost>5000</iCost>
+			<iCost>4700</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_INDUSTRIAL</Era>
@@ -5950,7 +6609,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>14</iGridX>
-			<iGridY>5</iGridY>
+			<iGridY>3</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -5970,10 +6629,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_STEAM_POWER</PrereqTech>
+				<PrereqTech>TECH_RAILROAD</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_CORPORATION</PrereqTech>
+				<PrereqTech>TECH_LABOR_UNIONS</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_ASSEMBLY_LINE_QUOTE</Quote>
 			<Sound>AS2D_TECH_ASSEMBLINE</Sound>
@@ -5989,7 +6648,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_ECONOMY</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>10</iAITradeModifier>
-			<iCost>4500</iCost>
+			<iCost>4300</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_INDUSTRIAL</Era>
@@ -6020,8 +6679,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>14</iGridX>
-			<iGridY>14</iGridY>
+			<iGridX>12</iGridX>
+			<iGridY>8</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -6049,10 +6708,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_STEEL</PrereqTech>
+				<PrereqTech>TECH_STEAM_POWER</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_STEAM_POWER</PrereqTech>
+				<PrereqTech>TECH_CORPORATION</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_RAILROAD_QUOTE</Quote>
 			<Sound>AS2D_TECH_RAILROAD</Sound>
@@ -6061,14 +6720,14 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 		</TechInfo>
 		<TechInfo>
 			<Type>TECH_ARTILLERY</Type>
-			<Description>TXT_KEY_TECH_ARTILLERY</Description>
+			<Description>Balistics</Description>
 			<Civilopedia>TXT_KEY_TECH_ARTILLERY_PEDIA</Civilopedia>
 			<Help/>
 			<Strategy>TXT_KEY_TECH_ARTILLERY_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>10</iAITradeModifier>
-			<iCost>4000</iCost>
+			<iCost>3900</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_INDUSTRIAL</Era>
@@ -6116,11 +6775,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_RIFLING</PrereqTech>
+				<PrereqTech>TECH_EXPLOSIVES</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_PHYSICS</PrereqTech>
-				<PrereqTech>TECH_STEEL</PrereqTech>
+				<PrereqTech>TECH_ASSEMBLY_LINE</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_ARTILLERY_QUOTE</Quote>
 			<Sound>AS2D_TECH_ARTILLERY</Sound>
@@ -6136,10 +6794,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_ECONOMY</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>10</iAITradeModifier>
-			<iCost>6500</iCost>
+			<iCost>6650</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_INDUSTRIAL</Era>
+			<Era>ERA_MODERN</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -6192,10 +6850,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_ASSEMBLY_LINE</PrereqTech>
+				<PrereqTech>TECH_ELECTRICITY</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_ELECTRICITY</PrereqTech>
+				<PrereqTech>TECH_SOCIOLOGY</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_INDUSTRIALISM_QUOTE</Quote>
 			<Sound>AS2D_TECH_INDUSTRIALISM</Sound>
@@ -6212,6 +6870,155 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
 			<iCost>6000</iCost>
+			<iAdvancedStartCost>100</iAdvancedStartCost>
+			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
+			<Era>ERA_MODERN</Era>
+			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
+			<iFeatureProductionModifier>0</iFeatureProductionModifier>
+			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<iTradeRoutes>0</iTradeRoutes>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iFirstFreeTechs>0</iFirstFreeTechs>
+			<iAsset>48</iAsset>
+			<iPower>4</iPower>
+			<bRepeat>0</bRepeat>
+			<bTrade>1</bTrade>
+			<bDisable>0</bDisable>
+			<bGoodyTech>0</bGoodyTech>
+			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
+			<bMapCentering>0</bMapCentering>
+			<bMapVisible>0</bMapVisible>
+			<bMapTrading>0</bMapTrading>
+			<bTechTrading>0</bTechTrading>
+			<bGoldTrading>0</bGoldTrading>
+			<bOpenBordersTrading>0</bOpenBordersTrading>
+			<bDefensivePactTrading>0</bDefensivePactTrading>
+			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
+			<bVassalTrading>0</bVassalTrading>
+			<bBridgeBuilding>0</bBridgeBuilding>
+			<bIrrigation>0</bIrrigation>
+			<bIgnoreIrrigation>0</bIgnoreIrrigation>
+			<bWaterWork>0</bWaterWork>
+			<iGridX>16</iGridX>
+			<iGridY>13</iGridY>
+			<DomainExtraMoves/>
+			<CommerceFlexible/>
+			<TerrainTrades/>
+			<bRiverTrade>0</bRiverTrade>
+			<Flavors>
+				<Flavor>
+					<FlavorType>FLAVOR_MILITARY</FlavorType>
+					<iFlavor>5</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_SCIENCE</FlavorType>
+					<iFlavor>3</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_CULTURE</FlavorType>
+					<iFlavor>9</iFlavor>
+				</Flavor>
+			</Flavors>
+			<OrPreReqs>
+				<PrereqTech>TECH_UTOPIA</PrereqTech>
+			</OrPreReqs>
+			<AndPreReqs>
+				<PrereqTech>TECH_FLIGHT</PrereqTech>
+				<PrereqTech>TECH_ELECTRICITY</PrereqTech>
+			</AndPreReqs>
+			<Quote>TXT_KEY_TECH_RADIO_QUOTE</Quote>
+			<Sound>AS2D_TECH_RADIO</Sound>
+			<SoundMP>AS2D_TECH_MP_RADIO</SoundMP>
+			<Button>,Art/Interface/Buttons/TechTree/Radio.dds,Art/Interface/Buttons/TechTree_Atlas.dds,7,11</Button>
+		</TechInfo>
+		<TechInfo>
+			<Type>TECH_ELECTRONICS</Type>
+			<Description>Electronics</Description>
+			<Civilopedia>TXT_KEY_TECH_RADIO_PEDIA</Civilopedia>
+			<Help/>
+			<Strategy>TXT_KEY_TECH_RADIO_STRATEGY</Strategy>
+			<Advisor>ADVISOR_CULTURE</Advisor>
+			<iAIWeight>0</iAIWeight>
+			<iAITradeModifier>0</iAITradeModifier>
+			<iCost>4700</iCost>
+			<iAdvancedStartCost>100</iAdvancedStartCost>
+			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
+			<Era>ERA_MODERN</Era>
+			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
+			<iFeatureProductionModifier>0</iFeatureProductionModifier>
+			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<iTradeRoutes>0</iTradeRoutes>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iFirstFreeTechs>0</iFirstFreeTechs>
+			<iAsset>48</iAsset>
+			<iPower>4</iPower>
+			<bRepeat>0</bRepeat>
+			<bTrade>1</bTrade>
+			<bDisable>0</bDisable>
+			<bGoodyTech>0</bGoodyTech>
+			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
+			<bMapCentering>0</bMapCentering>
+			<bMapVisible>0</bMapVisible>
+			<bMapTrading>0</bMapTrading>
+			<bTechTrading>0</bTechTrading>
+			<bGoldTrading>0</bGoldTrading>
+			<bOpenBordersTrading>0</bOpenBordersTrading>
+			<bDefensivePactTrading>0</bDefensivePactTrading>
+			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
+			<bVassalTrading>0</bVassalTrading>
+			<bBridgeBuilding>0</bBridgeBuilding>
+			<bIrrigation>0</bIrrigation>
+			<bIgnoreIrrigation>0</bIgnoreIrrigation>
+			<bWaterWork>0</bWaterWork>
+			<iGridX>16</iGridX>
+			<iGridY>7</iGridY>
+			<DomainExtraMoves>
+				<DomainExtraMove>
+					<DomainType>DOMAIN_SEA</DomainType>
+					<iExtraMoves>1</iExtraMoves>
+				</DomainExtraMove>
+			</DomainExtraMoves>
+			<CommerceFlexible/>
+			<TerrainTrades/>
+			<bRiverTrade>0</bRiverTrade>
+			<Flavors>
+				<Flavor>
+					<FlavorType>FLAVOR_MILITARY</FlavorType>
+					<iFlavor>5</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_SCIENCE</FlavorType>
+					<iFlavor>3</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_CULTURE</FlavorType>
+					<iFlavor>9</iFlavor>
+				</Flavor>
+			</Flavors>
+			<OrPreReqs>
+				<PrereqTech>TECH_MEDICINE</PrereqTech>
+			</OrPreReqs>
+			<AndPreReqs>
+				<PrereqTech>TECH_ELECTRICITY</PrereqTech>
+				<PrereqTech>TECH_SOCIOLOGY</PrereqTech>
+			</AndPreReqs>
+			<Quote>TXT_KEY_TECH_RADIO_QUOTE</Quote>
+			<Sound>AS2D_TECH_RADIO</Sound>
+			<SoundMP>AS2D_TECH_MP_RADIO</SoundMP>
+			<Button>,Art/Interface/Buttons/TechTree/Radio.dds,Art/Interface/Buttons/TechTree_Atlas.dds,7,11</Button>
+		</TechInfo>
+		<TechInfo>
+			<Type>TECH_PHARMACEUTICALS</Type>
+			<Description>Pharmaceuticals</Description>
+			<Civilopedia></Civilopedia>
+			<Help/>
+			<Strategy>TXT_KEY_TECH_RADIO_STRATEGY</Strategy>
+			<Advisor>ADVISOR_CULTURE</Advisor>
+			<iAIWeight>0</iAIWeight>
+			<iAITradeModifier>0</iAITradeModifier>
+			<iCost>3900</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_MODERN</Era>
@@ -6263,9 +7070,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_ELECTRICITY</PrereqTech>
+				<PrereqTech>TECH_SOCIOLOGY</PrereqTech>
 			</OrPreReqs>
-			<AndPreReqs/>
+			<AndPreReqs>
+				<PrereqTech>TECH_MEDICINE</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_RADIO_QUOTE</Quote>
 			<Sound>AS2D_TECH_RADIO</Sound>
 			<SoundMP>AS2D_TECH_MP_RADIO</SoundMP>
@@ -6283,7 +7092,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<iCost>4000</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
-			<Era>ERA_MODERN</Era>
+			<Era>ERA_INDUSTRIAL</Era>
 			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
 			<iFeatureProductionModifier>0</iFeatureProductionModifier>
 			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
@@ -6311,14 +7120,9 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>16</iGridX>
-			<iGridY>13</iGridY>
-			<DomainExtraMoves>
-				<DomainExtraMove>
-					<DomainType>DOMAIN_SEA</DomainType>
-					<iExtraMoves>1</iExtraMoves>
-				</DomainExtraMove>
-			</DomainExtraMoves>
+			<iGridX>15</iGridX>
+			<iGridY>1</iGridY>
+			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
 			<bRiverTrade>0</bRiverTrade>
@@ -6337,10 +7141,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_ELECTRICITY</PrereqTech>
+				<PrereqTech>TECH_EXPLOSIVES</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_BIOLOGY</PrereqTech>
+				<PrereqTech>TECH_ASSEMBLY_LINE</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_REFRIGERATION_QUOTE</Quote>
 			<Sound>AS2D_TECH_REFRIGERATION</Sound>
@@ -6356,7 +7160,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_GROWTH</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>6500</iCost>
+			<iCost>5900</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_MODERN</Era>
@@ -6403,11 +7207,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>4</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
-				<PrereqTech>TECH_REFRIGERATION</PrereqTech>
+		<!-- 	<OrPreReqs>
+				<PrereqTech></PrereqTech>
+			</OrPreReqs> -->
+			<AndPreReqs>
 				<PrereqTech>TECH_COMPUTERS</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_SUPERCONDUCTOR_QUOTE</Quote>
 			<Sound>AS2D_TECH_SUPERCONDUCTOR</Sound>
 			<SoundMP>AS2D_TECH_MP_SUPERCONDUCTOR</SoundMP>
@@ -6422,7 +7227,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<Advisor>ADVISOR_SCIENCE</Advisor>
 			<iAIWeight>0</iAIWeight>
 			<iAITradeModifier>0</iAITradeModifier>
-			<iCost>6500</iCost>
+			<iCost>5500</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_MODERN</Era>
@@ -6454,7 +7259,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>17</iGridX>
-			<iGridY>11</iGridY>
+			<iGridY>14</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -6478,10 +7283,10 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_RADIO</PrereqTech>
+				<PrereqTech>TECH_PLASTICS</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_PLASTICS</PrereqTech>
+				<PrereqTech>TECH_RADIO</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_COMPUTERS_QUOTE</Quote>
 			<Sound>AS2D_TECH_COMPUTERS</Sound>
@@ -6528,8 +7333,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>18</iGridX>
-			<iGridY>3</iGridY>
+			<iGridX>19</iGridX>
+			<iGridY>5</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -6545,10 +7350,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_SATELLITES</PrereqTech>
+				<PrereqTech>TECH_PLASTICS</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_PLASTICS</PrereqTech>
+				<PrereqTech>TECH_SATELLITES</PrereqTech>
+				<PrereqTech>TECH_NUCLEAR_POWER</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_LASER_QUOTE</Quote>
 			<Sound>AS2D_TECH_LASER</Sound>
@@ -6612,11 +7418,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_FLIGHT</PrereqTech>
-				<PrereqTech>TECH_ARTILLERY</PrereqTech>
+				<PrereqTech>TECH_RIFLING</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_RIFLING</PrereqTech>
+				<PrereqTech>TECH_ARTILLERY</PrereqTech>
+				<PrereqTech>TECH_REFRIGERATION</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_ROCKETRY_QUOTE</Quote>
 			<Sound>AS2D_TECH_ROCKETRY</Sound>
@@ -6625,7 +7431,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 		</TechInfo>
 		<TechInfo>
 			<Type>TECH_SATELLITES</Type>
-			<Description>TXT_KEY_TECH_SATELLITES</Description>
+			<Description>Adv. Satellites</Description>
 			<Civilopedia>TXT_KEY_TECH_SATELLITES_PEDIA</Civilopedia>
 			<Help/>
 			<Strategy>TXT_KEY_TECH_SATELLITES_STRATEGY</Strategy>
@@ -6634,6 +7440,78 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<!-- advc.552: was 10 -->
 			<iAITradeModifier>0</iAITradeModifier>
 			<iCost>6000</iCost>
+			<iAdvancedStartCost>100</iAdvancedStartCost>
+			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
+			<Era>ERA_MODERN</Era>
+			<FirstFreeUnitClass>NONE</FirstFreeUnitClass>
+			<iFeatureProductionModifier>0</iFeatureProductionModifier>
+			<iWorkerSpeedModifier>0</iWorkerSpeedModifier>
+			<iTradeRoutes>0</iTradeRoutes>
+			<iHealth>0</iHealth>
+			<iHappiness>0</iHappiness>
+			<iFirstFreeTechs>0</iFirstFreeTechs>
+			<iAsset>48</iAsset>
+			<iPower>4</iPower>
+			<bRepeat>0</bRepeat>
+			<bTrade>1</bTrade>
+			<bDisable>0</bDisable>
+			<bGoodyTech>0</bGoodyTech>
+			<bExtraWaterSeeFrom>0</bExtraWaterSeeFrom>
+			<bMapCentering>0</bMapCentering>
+			<bMapVisible>1</bMapVisible>
+			<bMapTrading>0</bMapTrading>
+			<bTechTrading>0</bTechTrading>
+			<bGoldTrading>0</bGoldTrading>
+			<bOpenBordersTrading>0</bOpenBordersTrading>
+			<bDefensivePactTrading>0</bDefensivePactTrading>
+			<bPermanentAllianceTrading>0</bPermanentAllianceTrading>
+			<bVassalTrading>0</bVassalTrading>
+			<bBridgeBuilding>0</bBridgeBuilding>
+			<bIrrigation>0</bIrrigation>
+			<bIgnoreIrrigation>0</bIgnoreIrrigation>
+			<bWaterWork>0</bWaterWork>
+			<iGridX>18</iGridX>
+			<iGridY>3</iGridY>
+			<DomainExtraMoves/>
+			<CommerceFlexible/>
+			<TerrainTrades/>
+			<bRiverTrade>0</bRiverTrade>
+			<Flavors>
+				<Flavor>
+					<FlavorType>FLAVOR_MILITARY</FlavorType>
+					<iFlavor>3</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_GOLD</FlavorType>
+					<iFlavor>2</iFlavor>
+				</Flavor>
+				<Flavor>
+					<FlavorType>FLAVOR_SCIENCE</FlavorType>
+					<iFlavor>7</iFlavor>
+				</Flavor>
+			</Flavors>
+			<OrPreReqs>
+				<PrereqTech>TECH_INDUSTRIALISM</PrereqTech>
+			</OrPreReqs>
+			<AndPreReqs>
+				<PrereqTech>TECH_SPACE_FLIGHT</PrereqTech>
+			</AndPreReqs>
+			<Quote>TXT_KEY_TECH_SATELLITES_QUOTE</Quote>
+			<Sound>AS2D_TECH_SATELLITES</Sound>
+			<SoundMP>AS2D_TECH_MP_SATELLITES</SoundMP>
+			<Button>,Art/Interface/Buttons/TechTree/Satellites.dds,Art/Interface/Buttons/TechTree_Atlas.dds,7,7</Button>
+		</TechInfo>
+		<TechInfo>
+			<Type>TECH_SPACE_FLIGHT</Type>
+			<Description>Space Flight</Description>
+			<Civilopedia>TXT_KEY_TECH_SATELLITES_PEDIA</Civilopedia>
+			<Help/>
+			<Strategy>TXT_KEY_TECH_SATELLITES_STRATEGY</Strategy>
+			<Advisor>ADVISOR_MILITARY</Advisor>
+			<iAIWeight>0</iAIWeight>
+			<!-- advc.552: was 10 -->
+			<iAITradeModifier>0</iAITradeModifier>
+			<iCost>5000</iCost>
 			<iAdvancedStartCost>100</iAdvancedStartCost>
 			<iAdvancedStartCostIncrease>0</iAdvancedStartCostIncrease>
 			<Era>ERA_MODERN</Era>
@@ -6685,10 +7563,11 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 				</Flavor>
 			</Flavors>
 			<OrPreReqs>
-				<PrereqTech>TECH_ROCKETRY</PrereqTech>
+				<PrereqTech>TECH_REFRIGERATION</PrereqTech>
 			</OrPreReqs>
 			<AndPreReqs>
-				<PrereqTech>TECH_RADIO</PrereqTech>
+				<PrereqTech>TECH_INDUSTRIALISM</PrereqTech>
+				<PrereqTech>TECH_ROCKETRY</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_SATELLITES_QUOTE</Quote>
 			<Sound>AS2D_TECH_SATELLITES</Sound>
@@ -6737,7 +7616,7 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
 			<iGridX>19</iGridX>
-			<iGridY>11</iGridY>
+			<iGridY>9</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -6760,10 +7639,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>1</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
-				<PrereqTech>TECH_COMPUTERS</PrereqTech>
-			</OrPreReqs>
-			<AndPreReqs/>
+<!-- 			<OrPreReqs>
+			</OrPreReqs> -->
+			<AndPreReqs>
+				<PrereqTech>TECH_FIBER_OPTICS</PrereqTech>
+				<PrereqTech>TECH_NUCLEAR_POWER</PrereqTech>
+			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_ROBOTICS_QUOTE</Quote>
 			<Sound>AS2D_TECH_ROBOTICS</Sound>
 			<SoundMP>AS2D_TECH_MP_ROBOTICS</SoundMP>
@@ -7942,8 +8823,8 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 			<bIrrigation>0</bIrrigation>
 			<bIgnoreIrrigation>0</bIgnoreIrrigation>
 			<bWaterWork>0</bWaterWork>
-			<iGridX>20</iGridX>
-			<iGridY>13</iGridY>
+			<iGridX>21</iGridX>
+			<iGridY>7</iGridY>
 			<DomainExtraMoves/>
 			<CommerceFlexible/>
 			<TerrainTrades/>
@@ -7974,11 +8855,12 @@ TerrainTrades	 Allows trade across the specified terrain types. For example, Sai
 					<iFlavor>1</iFlavor>
 				</Flavor>
 			</Flavors>
-			<OrPreReqs>
+			<!-- <OrPreReqs>
 				<PrereqTech>TECH_GENETICS</PrereqTech>
-			</OrPreReqs>
+			</OrPreReqs> -->
 			<AndPreReqs>
 				<PrereqTech>TECH_STEALTH</PrereqTech>
+				<PrereqTech>TECH_COMPOSITES</PrereqTech>
 			</AndPreReqs>
 			<Quote>TXT_KEY_TECH_FUTURE_TECH_QUOTE</Quote>
 			<Sound>AS2D_TECH_FUTURE</Sound>

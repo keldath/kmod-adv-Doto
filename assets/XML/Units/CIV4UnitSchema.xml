@@ -273,20 +273,6 @@
 	<ElementType name="ForceBuildings" content="eltOnly">
 		<element type="ForceBuilding" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
-		<!-- Archid : Prereq civics -->
-	<ElementType name="CivicOption" content="textOnly"/>
-	<ElementType name="bPrereqCivic" content="textOnly" dt:type="boolean"/>
-	<ElementType name="PrereqCivic" content="eltOnly">
-		<element type="CivicOption"/>
-		<element type="bPrereqCivic"/>
-	</ElementType>
-	<ElementType name="PrereqOrCivics" content="eltOnly">
-		<element type="PrereqCivic" minOccurs="0" maxOccurs="*"/>
-	</ElementType>
-	<ElementType name="PrereqAndCivics" content="eltOnly">
-		<element type="PrereqCivic" minOccurs="0" maxOccurs="*"/>
-	</ElementType>
-	<!-- Archid : Prereq civics -->
 	<!-- RevDCM canTrain -->
 	<ElementType name="MaxStartEra" content="textOnly"/>
 	<ElementType name="ForceObsoleteTech" content="textOnly"/>
@@ -336,11 +322,6 @@
 	<ElementType name="PrereqBonuses" content="eltOnly">
 		<element type="BonusType" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
-<!-- shqype vicinity  
-	<ElementType name="VicinityBonusType" content="textOnly"/>
-	<ElementType name="PrereqVicinityBonuses" content="eltOnly">
-		<element type="VicinityBonusType" minOccurs="0" maxOccurs="*"/>
-	</ElementType>-->
 	<!-- advc.905b -->
 	<ElementType name="iExtraMoves" content="textOnly" dt:type="int"/>
 	<!-- advc.905b -->
@@ -669,10 +650,6 @@
 	    <element type="Buildings" minOccurs="0"/>
 		<!-- advc.003t: No longer has any effect, but still allowed. -->
 		<element type="ForceBuildings" minOccurs="0"/>
-<!-- Archid : Prereq civics -->
-		<element type="PrereqOrCivics" minOccurs="0"/> <!-- Archid : Prereq civics -->
-		<element type="PrereqAndCivics" minOccurs="0"/> <!-- Archid : Prereq civics -->
-<!-- Archid : Prereq civics -->
 		<!-- RevDCM canTrain -->
 		<element type="MaxStartEra" minOccurs="0"/>
 		<element type="ForceObsoleteTech" minOccurs="0"/>
@@ -693,9 +670,6 @@
 		<element type="TechTypes" minOccurs="0"/>
 		<element type="BonusType" minOccurs="0"/>
 		<element type="PrereqBonuses" minOccurs="0"/>
-		<!-- shqype vicinity
-		<element type="VicinityBonusType" minOccurs="0"/>
-		<element type="PrereqVicinityBonuses" minOccurs="0"/>-->
 		<!-- advc.905b -->
 		<element type="SpeedBonuses" minOccurs="0"/>
 		<element type="ProductionTraits" minOccurs="0"/>
@@ -709,7 +683,7 @@
 		<element type="iMoves" minOccurs="0"/>
 		<element type="bNoRevealMap" minOccurs="0"/>
 		<element type="iAirRange" minOccurs="0"/>
-<!-- //doto Range Strike -->
+<!-- doto Range Strike -->
 		<element type="iRangeStrike" minOccurs="0"/>
 		<element type="iAirUnitCap" minOccurs="0"/>
 		<element type="iDropRange" minOccurs="0"/>

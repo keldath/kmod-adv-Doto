@@ -406,11 +406,7 @@ public:
 //doto upgrade palace	
 	void upgradePalace(int iOldPopulation, int iNewValue);
 //doto upgrade palace	
-	void setPopulation(int iNewValue);																			// Exposed to Python
-//doto specialists instead of pop	start								
-	int popToSpecialists(int iOldPopulation, int m_iPopulation);																					// Exposed to Python
-	int popToSpecialists2(int iOldPopulation, int m_iPopulation);																					// Exposed to Python
-//doto specialists instead of pop	end
+	void setPopulation(int iNewValue);		
 //doto start units bonus cap	
 	void resetBonusCap();
 //doto end units bonus cap	
@@ -420,13 +416,7 @@ public:
 	int getPopulationLimitChange() const;														// Exposed to Python
 	void setPopulationLimitChange(int iNewValue);										// Exposed to Python
 	void changePopulationLimitChange(int iChange);										// Exposed to Python
-	/* Population Limit ModComp - End */
-//doto specialists instead of population	
-	int getFreeCivilianCount() const;															// Exposed to Python
-	void setFreeCivilianCount(int iNewValue);										// Exposed to Python
-	void changeFreeCivilianCount(int iChange);											// Exposed to Python
-//	void processFreeCivilianCount();														// Exposed to Python
-//doto specialists instead of population													// Exposed to Python
+	/* Population Limit ModComp - End */													// Exposed to Python
 	int getRealPopulation() const;																				// Exposed to Python
 	int getHighestPopulation() const { return m_iHighestPopulation; }											// Exposed to Python
 	void setHighestPopulation(int iNewValue);
@@ -794,8 +784,7 @@ public:
 	DllExport TeamTypes getTeam() const;																		// Exposed to Python
 	// <advc>
 	bool isActiveOwned() const { return (GC.getInitCore().getActivePlayer() == getOwner()); }
-	//doto fix for teams - reverse for advc 1.00 date 31.08.2021
-	//bool isActiveTeam() const { return (GC.getInitCore().getActiveTeam() == getTeam()); } // </advc>
+	bool isActiveTeam() const { return (GC.getInitCore().getActiveTeam() == getTeam()); } // </advc>
 	PlayerTypes getPreviousOwner() const { return m_ePreviousOwner; }											// Exposed to Python
 	void setPreviousOwner(PlayerTypes eNewValue);
 	PlayerTypes getOriginalOwner() const { return m_eOriginalOwner; }											// Exposed to Python
@@ -1363,9 +1352,9 @@ public:
 	bool isEventOccured(EventTypes eEvent) const;
 	void setEventOccured(EventTypes eEvent, bool bOccured);
 	void doPartisans(); // advc.003y
-//doto start governor based on platyping palace upgrade	
+//doto special events upgrade palace START
 	void doPalaceUpgrade();
-//doto End governor based on platyping palace upgrade
+//doto special events upgrade palace
 
 	int getBuildingYieldChange(BuildingClassTypes eBuildingClass, YieldTypes eYield) const						// Exposed to Python
 	{
@@ -1458,8 +1447,6 @@ protected:
 	/* DOTO- Population Limit ModComp - Beginning */
 	int m_iPopulationLimitChange;
 	/* DOTO Population Limit ModComp - End */
-//doto city states specialists instead of population
-	int m_iFreeCivilianCount;
 	int m_iHighestPopulation;
 	int m_iWorkingPopulation;
 	int m_iSpecialistPopulation;
@@ -1649,9 +1636,9 @@ protected:
 	EagerEnumMap<BuildingTypes,int,short,iBuildingOriginalTimeUnknown> m_aiBuildingOriginalTime;
 	EagerEnumMap<BuildingTypes,int,char> m_aiNumRealBuilding;
 	ArrayEnumMap<BuildingTypes,int,char> m_aiNumFreeBuilding;
-	//DOTO-prereqMust+tholish inactive buildings - this enum array will allow to keep track of shich buildings
-	//were set to inactive
+	//DOTO -tholish-Keldath inactive buildings
 	ArrayEnumMap<BuildingTypes, int, void*, true> m_aiBuildingeActive;
+	//DOTO -tholish-Keldath inactive buildings START
 	ListEnumMap<UnitTypes,int> m_aiUnitProduction;
 	ListEnumMap<UnitTypes,int,short> m_aiUnitProductionTime;
 	ArrayEnumMap<UnitTypes,int,short> m_aiGreatPeopleUnitRate;

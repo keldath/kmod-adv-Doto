@@ -649,9 +649,21 @@ bool CyPlayer::isCivic(int /*CivicTypes*/ eCivic)
 	return m_pPlayer ? m_pPlayer->isCivic((CivicTypes)eCivic) : false;
 }
 
-bool CyPlayer::canDoCivics(int /*CivicTypes*/ eCivic)
+//doto 115 goverment screen / civic dependency
+/*
+cvgovermentscreen sends a call from drawCivicOptionButtons which checks if to draw the civic buttons.
+i added the true , cvgovermentscreen_ignore_hide so the display of civics would display despite the
+getGovermentConversionCounter being 0. that is because if the counter is 0 it would show the civics as attainable,
+which is true, but its confusing cause it feels like player just havnt learnt them yet.
+*/
+bool CyPlayer::canDoCivics(int /*CivicTypes*/ eCivic, bool cvgovermentscreen_ignore_hide)
 {
-	return m_pPlayer ? m_pPlayer->canDoCivics((CivicTypes)eCivic) : false;
+	return m_pPlayer ? m_pPlayer->canDoCivics((CivicTypes)eCivic, cvgovermentscreen_ignore_hide) : false;
+}
+//doto 115 goverment screen FOR THE PYTHON SCREEN
+CivicTypes CyPlayer::getCivicParent(int eCivic)
+{
+	return m_pPlayer ? m_pPlayer->getCivicParent((CivicTypes)eCivic) : NO_CIVIC;
 }
 
 bool CyPlayer::canRevolution(/* <advc> */int) // (see declaration)
@@ -1058,6 +1070,13 @@ int CyPlayer::getAnarchyTurns()
 {
 	return m_pPlayer ? m_pPlayer->getAnarchyTurns() : -1;
 }
+
+//doto 115 goverment screen civic dpepndecy
+int CyPlayer::getGovermentConversionCounter(int eCivicOption)
+{
+	return m_pPlayer ? m_pPlayer->getGovermentConversionCounter((CivicOptionTypes)eCivicOption) : -1;
+}
+//doto 115 goverment screen
 
 bool CyPlayer::isAnarchy()
 {

@@ -122,20 +122,18 @@ class SevoPediaProject:
 		szSpecialText = CyGameTextMgr().getProjectHelp(self.iProject, True, None)[1:]
 		screen.addMultilineText(listName, szSpecialText, self.X_SPECIAL+5, self.Y_SPECIAL+30, self.W_SPECIAL-10, self.H_SPECIAL-35, WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_LEFT_JUSTIFY)
 ## Project Help Start ##
- 		gc = CyGlobalContext()
-
-		szSpecialText = ""
-		if self.iProject == gc.getInfoTypeForString("PROJECT_SILK_ROAD"): szSpecialText = CyTranslator().getText("TXT_KEY_PROJECT_SILK_ROAD_HELP",())
-		elif self.iProject == gc.getInfoTypeForString("PROJECT_THE_INTERNET"): szSpecialText = CyTranslator().getText("TXT_KEY_PROJECT_THE_INTERNET_HELP",())
-		szSpecialText += CyGameTextMgr().getProjectHelp(self.iProject, True, None)[1:]
+# 		gc = CyGlobalContext()
+#		szSpecialText = ""
+#		if self.iProject == gc.getInfoTypeForString("PROJECT_SILK_ROAD"): szSpecialText = CyTranslator().getText("TXT_KEY_PROJECT_SILK_ROAD_HELP",())
+#		elif self.iProject == gc.getInfoTypeForString("PROJECT_THE_INTERNET"): szSpecialText = CyTranslator().getText("TXT_KEY_PROJECT_THE_INTERNET_HELP",())
+#		szSpecialText += CyGameTextMgr().getProjectHelp(self.iProject, True, None)[1:]
 ## Project Help End ##
 ## Project Help Start ##
- 		gc = CyGlobalContext()
-
-		szSpecialText = ""
-		if self.iProject == gc.getInfoTypeForString("PROJECT_MAGELLAN_VOYAGE"): szSpecialText = CyTranslator().getText("TXT_KEY_PROJECT_MAGELLAN_VOYAGE_HELP",())
-		elif self.iProject == gc.getInfoTypeForString("PROJECT_THE_INTERNET"): szSpecialText = CyTranslator().getText("TXT_KEY_PROJECT_THE_INTERNET_HELP",())
-		szSpecialText += CyGameTextMgr().getProjectHelp(self.iProject, True, None)[1:]
+# 		gc = CyGlobalContext()
+#		szSpecialText = ""
+#		if self.iProject == gc.getInfoTypeForString("PROJECT_MAGELLAN_VOYAGE"): szSpecialText = CyTranslator().getText("TXT_KEY_PROJECT_MAGELLAN_VOYAGE_HELP",())
+#		elif self.iProject == gc.getInfoTypeForString("PROJECT_THE_INTERNET"): szSpecialText = CyTranslator().getText("TXT_KEY_PROJECT_THE_INTERNET_HELP",())
+#		szSpecialText += CyGameTextMgr().getProjectHelp(self.iProject, True, None)[1:]
 ## Project Help End ##
 
 

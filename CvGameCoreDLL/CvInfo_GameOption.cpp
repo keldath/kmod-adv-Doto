@@ -67,6 +67,7 @@ EraTypes CvEraInfo::m_eAIAgeOfPollution = ERA_NEVER;
 EraTypes CvEraInfo::m_eAIAgeOfFertility = ERA_NEVER;
 EraTypes CvEraInfo::m_eAIAgeOfGuns = ERA_NEVER;
 EraTypes CvEraInfo::m_eAIAtomicAge = ERA_NEVER;
+EraTypes CvEraInfo::m_eAIAgeOfProduction = ERA_NEVER;
 // </advc.erai>
 
 CvEraInfo::CvEraInfo() :
@@ -326,6 +327,11 @@ void CvEraInfo::allInfosRead()
 			kLoopEra.get(CvEraInfo::AIAtomicAge))
 		{
 			m_eAIAtomicAge = eLoopEra;
+		}
+		if (m_eAIAgeOfProduction == ERA_NEVER &&
+			kLoopEra.get(CvEraInfo::AIAgeOfProduction))
+		{
+			m_eAIAgeOfProduction = eLoopEra;
 		}
 	}
 }
@@ -1600,17 +1606,3 @@ CvWString CvSeaLevelInfo::getDescriptionInternal() const
 	}
 	return base_t::getDescriptionInternal();
 }
-/* doto - keldath - i left it - i remember some possible error.
-wchar const* CvSeaLevelInfo::getDescriptionInternal(uint uiForm) const
-{
-	// if(...) [no change]
-	{
-		CvWString szTag = m_szTextKey + L"_RECOMMEND";
-		wchar const* szText = gDLL->getText(szTag);
-		// If a text key with recommendation was found, show it.
-		if (std::wcscmp(szText, szTag.c_str()) != 0)
-			return szText;
-	}
-	return CvInfoBase::getDescriptionInternal(uiForm);
-}
-*/

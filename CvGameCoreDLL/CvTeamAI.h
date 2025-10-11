@@ -169,15 +169,6 @@ public:
 	int AI_openBordersTradeVal(TeamTypes eTeam) const;
 	DenialTypes AI_openBordersTrade(TeamTypes eWithTeam) const;
 
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	int AI_FreeTradeAgreementVal(TeamTypes eTeam) const;
-	DenialTypes AI_FreeTradeAgreement(TeamTypes eTeam) const;
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
-
 	int AI_defensivePactTradeVal(TeamTypes eTeam) const;
 	DenialTypes AI_defensivePactTrade(TeamTypes eWithsTeam) const;
 
@@ -236,19 +227,6 @@ public:
 	}
 	void AI_setOpenBordersCounter(TeamTypes eIndex, int iNewValue);
 	void AI_changeOpenBordersCounter(TeamTypes eIndex, int iChange);
-	
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	int AI_getFreeTradeAgreementCounter(TeamTypes eIndex) const
-	{
-		return m_aiFreeTradeAgreementCounter.get(eIndex);
-	}
-	void AI_setFreeTradeAgreementCounter(TeamTypes eIndex, int iNewValue);
-	void AI_changeFreeTradeAgreementCounter(TeamTypes eIndex, int iChange);
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 
 	int AI_getDefensivePactCounter(TeamTypes eIndex) const
 	{
@@ -386,13 +364,6 @@ protected:
 	ArrayEnumMap<TeamTypes,int,short> m_aiAtPeaceCounter;
 	ArrayEnumMap<TeamTypes,int,short> m_aiHasMetCounter;
 	ArrayEnumMap<TeamTypes,int,short> m_aiOpenBordersCounter;
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	ArrayEnumMap<TeamTypes, int, short> m_aiFreeTradeAgreementCounter;
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	ArrayEnumMap<TeamTypes,int,short> m_aiDefensivePactCounter;
 	ArrayEnumMap<TeamTypes,int,short> m_aiShareWarCounter;
 	ArrayEnumMap<TeamTypes,scaled> m_arWarSuccess; // advc.130r: was V=int
@@ -433,13 +404,6 @@ protected:
 	int AI_declareWarTradeValLegacy(TeamTypes eWarTeam, TeamTypes eTeam) const;
 	int AI_getOpenBordersAttitudeDivisor() const; // advc.130i
 	scaled AI_getOpenBordersCounterIncrement(TeamTypes eOther) const; // advc.130z
-/************************************************************************************************/
-/* START: Advanced Diplomacy         new to doto - matching the advc openborders code           */
-/************************************************************************************************/
-	int AI_getFreeTradeAgreementAttitudeDivisor() const; // advc.130i
-/************************************************************************************************/
-/* END: Advanced Diplomacy         new to doto - matching the advc openborders code           */
-/************************************************************************************************/
 	bool AI_isTerritoryAccessible(TeamTypes eOwner) const; // advc.124
 	bool AI_isTerritoryAccessible(CvPlot const& kPlot) const; // advc.124
 	bool AI_isPursuingCircumnavigation() const; // advc.136a

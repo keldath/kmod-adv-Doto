@@ -531,7 +531,7 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 		m_aiNonStateReligionYieldRateModifier[iI] = 0;
 		m_aiSpecialistExtraYield[iI] = 0;
 	}
-// < Civic Infos Plus Start >	
+// < Civic Infos Plus Start >
 	m_szScriptData = "";
 
 	m_aiSeaPlotYield.reset();
@@ -546,13 +546,6 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_aiCommerceRate.reset(); // advc.157
 	m_aiCommerceRateModifier.reset();
 	m_aiCapitalCommerceRateModifier.reset();
-/************************************************************************************************/
-/* START: Advanced Diplomacy     DOTO CITY STATEs												*/
-/************************************************************************************************/
-	m_aiCapitalCommerceRateFTModifier.reset();
-/************************************************************************************************/
-/* END: Advanced Diplomacy     DOTO CITY STATEs												*/
-/************************************************************************************************/
 // < Civic Infos Plus Start >
 	for (int iI = 0; iI < NUM_COMMERCE_TYPES; iI++)
 	{
@@ -602,6 +595,8 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	m_aiHurryCount.reset();
 	m_aiSpecialBuildingNotRequiredCount.reset();
 	m_aiHasCivicOptionCount.reset();
+//doto 115 goverment screen
+	m_aiGovermentConversionCounter.reset(); 
 	m_aiNoCivicUpkeepCount.reset();
 	m_aiHasReligionCount.reset();
 	m_aiHasCorporationCount.reset();
@@ -732,19 +727,6 @@ void CvPlayer::processTraits(int iChange)
 			continue;
 		CvTraitInfo const& kTrait = GC.getInfo(eTrait);
 
-/************************************************************************************************/
-/* START: Advanced Diplomacy   doto custom for city state trade agreement                       */
-/************************************************************************************************/
-		//DOTO CITY STATES ADVANCED DIPLOMACY custimization of effects 
-		//these traits will only be active when a free trade is signed.
-		//a city state will get commerce changes and a normal civ will get commerece modifier.
-		//CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
-		//if ((szText.find(L"Unique Trade") != std::string::npos))
-		if (kTrait.getFreeTradeValid() > 0)
-			continue;
-/************************************************************************************************/
-/* END: Advanced Diplomacy     doto custom for city state trade agreement                     */
-/************************************************************************************************/
 		changeExtraHealth(iChange * kTrait.getHealth());
 		changeExtraHappiness(iChange * kTrait.getHappiness());
 
@@ -1511,13 +1493,7 @@ CvPlot* CvPlayer::findStartingPlot(
 				pbAreaFoundByMapScript); // advc.027
 	}
 	// <advc.opt> Compute this upfront for kekm.35
-//doto city states - reduce tile calc for start location
-//this was a recommendation from f1rpo , default is 3, could be 2 also. org is 4.
-//seee more text in the globalalt xml file.
-	//int const iStartingRange = GC.getDefineINT("ADVANCED_START_SIGHT_RANGE");
-	int const iStartingRange = checkCityState(getID()) ? GC.getCS_START_SIGHT_RANGE() : GC.getDefineINT("ADVANCED_START_SIGHT_RANGE");
-//doto city states - reduce tile calc for start location
-
+	int const iStartingRange = GC.getDefineINT("ADVANCED_START_SIGHT_RANGE");
 	EagerEnumMap<PlotNumTypes,bool> abPlotTaken;
 	FOR_EACH_ENUM(PlotNum)
 	{
@@ -1658,7 +1634,6 @@ CvCity* CvPlayer::initCity(int iX, int iY, bool bBumpUnits, bool bUpdatePlotGrou
 	/*  advc.104: Moved out of CvCity::init so that the new city is
 		already fully initialized */
 	setFoundedFirstCity(true);
-
 	return pCity;
 }
 
@@ -1882,6 +1857,7 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 		aiBuildingHealthChange.set(eBuildingClass,
 				pOldCity->getBuildingHealthChange(eBuildingClass));
 	}
+
 	pOldCity->kill(false, /* advc.001: */ false); // Don't bump units yet
 	pOldCity = NULL; // advc: Mustn't be accessed past this point
 
@@ -2192,8 +2168,15 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bTrade, bool b
 	   AI player can get one more turn before being eliminated. Not normally a problem
 	   because there isn't much that a civ without cities can do, but I've had a
 	   case where a dead player arranged a vassal agreement. */
-	if(eOldOwner != NO_PLAYER)
-		GET_PLAYER(eOldOwner).verifyAlive(); // </advc.001>
+	if (eOldOwner != NO_PLAYER &&
+		/*	Handling human defeat during Auto Play at this point
+			can cause a crash when the Unit map layer is enabled */
+		!GET_PLAYER(eOldOwner).isHumanDisabled())
+	{
+		GET_PLAYER(eOldOwner).verifyAlive();
+	} // </advc.001>
+	// advc.001w: Ownership change could affect cached paths (unlikely?)
+	GET_TEAM(getTeam()).updateActivePaths();
 	// <advc.130w> Major power shift; good time to update expansionist hate.
 	for (PlayerAIIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
 	{
@@ -2327,11 +2310,11 @@ void CvPlayer::getCivilizationCityName(CvWString& szBuffer, CivilizationTypes eC
 }
 
 
-bool CvPlayer::isCityNameValid(CvWString& szName, bool bTestDestroyed) const
+bool CvPlayer::isCityNameValid(CvWString& szName, bool bTestPast) const
 {
-	if (bTestDestroyed)
+	if (bTestPast) // (advc.005c: renamed from "bTestDestroyed")
 	{
-		if (GC.getGame().isDestroyedCityName(szName))
+		if (GC.getGame().isPastCityName(szName))
 			return false;
 
 		for (PlayerIter<EVER_ALIVE> it; it.hasNext(); ++it)
@@ -3071,8 +3054,10 @@ void CvPlayer::doTurn()
 //doto 115 happiness golden age		
 		if (happyGoldenOption && !cultureGoldenOption || happyGoldenOption && cultureGoldenOption)
 		{
-			//add net happyness from each city to the progress.
-			updateNetNationHappiness(pLoopCity->getiHappiness(), pLoopCity->getUnHappyness());
+			//only start on the second era.
+			if (getCurrentEra() >= 2)
+				//add net happyness from each city to the progress.
+				updateNetNationHappiness(pLoopCity->getiHappiness(), pLoopCity->getUnHappyness());
 		}
 //doto 115 happiness golden age
 	}
@@ -3084,9 +3069,9 @@ void CvPlayer::doTurn()
 
 //doto 115 happiness golden age
 
-	if (happyGoldenOption && !cultureGoldenOption
+	if ((happyGoldenOption && !cultureGoldenOption
 		|| happyGoldenOption && cultureGoldenOption
-		)
+		) && (getCurrentEra() >= 2))
 	{
 		//first time calc
 		if (getHappinessGoldenAgeThresh() == 0)
@@ -3094,11 +3079,11 @@ void CvPlayer::doTurn()
 
 		if (getHappinessGoldenAgeProgress() >= getHappinessGoldenAgeThresh())
 		{
-			m_iHappinessGoldenAgeProgress -= getHappinessGoldenAgeThresh(); // reset the progress as we struck golden age.
-			FAssert(m_iHappinessGoldenAgeProgress >= 0);
+			m_iHappinessGoldenAgeProgress = 0; // reset the progress as we struck golden age.
+			//FAssert(m_iHappinessGoldenAgeProgress >= 0);
 			incrementHappinessGoldenAgeStarted();
 			m_iHappinessGoldenAgeThresh = calcHappinessGoldenAgeThreshold();
-			changeGoldenAgeTurns(getGoldenAgeLength());
+			changeGoldenAgeTurns(getGoldenAgeLength() + 5); //add 5 turns extra :)
 		}
 	}
 //doto 115 happiness golden age
@@ -3248,8 +3233,8 @@ void CvPlayer::doTurnUnits()
 	AI().AI_doTurnUnitsPost();
 }
 
-
-void CvPlayer::verifyCivics()
+/* doto civics dependency parent - start*/
+void CvPlayer::verifyCivics(CivicTypes specificParent)
 {
 	/*	advc.700, advc.912d: I don't think this is necessary, and it gets
 		in the way of R&F when playing w/o Slavery. */
@@ -3258,82 +3243,116 @@ void CvPlayer::verifyCivics()
 
 	FOR_EACH_ENUM(CivicOption)
 	{
-/* doto civics  parent - start*/
-//this function wont take effect casue in the python
-//the abiloty to choose a child that its parent is not highlighted is Blocked.
-//i wrote this fn just in case.
+/* doto civics dependency parent - start*/
+/*this section is taking care of changing children civics , after a parent civic has been chosen,
+yet its children were not, this makes sure there are no child civics selected which are not of their own parent.
+the choosing is automatically done unless child civic already chosen
+*/
 		CivicTypes eSelectedCivic = getCivics(eLoopCivicOption);
-		CvCivicInfo& kParentCivic = GC.getCivicInfo(eSelectedCivic); 
+		CivicTypes bCivic = NO_CIVIC;
+		//check if a specific civic was sent to handle
+		if (specificParent != NO_CIVIC && specificParent != eSelectedCivic)
+		{
+			if (GC.getCivicInfo(specificParent).getCivicOptionType() != eLoopCivicOption)
+				continue;
+			else if (specificParent != eSelectedCivic)
+				//if the parent aint selected, lets handle it here
+				//the rest of the fun will handle its unselected children
+				//to begin with this section is cause a child that is not of the selected parent was converted
+				//so the auto process manages the rest
+				setCivics(eLoopCivicOption, specificParent);
+				bCivic = specificParent;
+		}
+		else
+			bCivic = eSelectedCivic;
+		
+		FAssert(bCivic != NO_CIVIC);
+		CvCivicInfo& kParentCivic = GC.getCivicInfo(bCivic);
 		int parentNumChildren = kParentCivic.getNumParentCivicsChildren();
 		int whichCivicOption = GC.getInfo(eLoopCivicOption).getParentCivicOption();
-		if (whichCivicOption == 2) ///double check of the civic option
+		if (whichCivicOption == 2) //double check of the civic option whichCivicOption OR parentNumChildren > 0, same check
 		{
+			CvWString szBufferr3 = GC.getCivicInfo(eSelectedCivic).getDescription();
+
 			int civicType = isCivicParentOrChild(eSelectedCivic);
 			if (civicType == 2) //selected civic's civic option is of parent type - second check to verify its a parent
 			{
 				if (parentNumChildren > 0)
 				{
-					//the loop was added in order to handle each children civics
-					//separatly , cause the children are listed in the xml as a 
-					//list without civic option reffernce
-					for (int i = 0; i < GC.getNumCivicOptionInfos(); i++)
-					{
-						bool properChildisSelected = false;
-						CivicOptionTypes eCurrOption = CivicOptionTypes(i);
-						
-						//checks if at least one of the child civics of the parent
-						//is selected and can be selected
-						//if none is found for this civic option
-						//then we need to find the best one (below
-						for (int J = 0; J < parentNumChildren; J++)
-						{	
-							CivicTypes eChildCivic = kParentCivic.getParentCivicsChildren(J);
-							CvCivicInfo& kChildCivic = GC.getCivicInfo(eChildCivic);
-							if (eCurrOption != kChildCivic.getCivicOptionType())
-								continue;
-							if (getCivics(eCurrOption) == eChildCivic)
+					//checks if at least one of the child civics of the parent
+					//is selected and can be selected
+					//if none is found for this civic option ->properChildisSelected false
+					//then we need to find the best one automatically (below)
+					CivicMap m_aeAtLeastOneChildCivicSelectedPerOption;
+
+					for (int J = 0; J < parentNumChildren; J++)
+					{	
+						CivicTypes eChildCivic = kParentCivic.getParentCivicsChildren(J);
+						CvCivicInfo& kChildCivic = GC.getCivicInfo(eChildCivic);
+						CivicOptionTypes eChildCivicOption = kChildCivic.getCivicOptionType();
+
+						CvWString szBufferr2 = GC.getCivicInfo(eChildCivic).getDescription();
+						if (szBufferr2 == L"Sovereignty" || szBufferr2 == L"Tyranny")
+							int a = 0;
+
+						//lets see if the child options selected has one of the children
+						//this is to allow a hum,an player to pre select a child if it can do sp manually.
+						if (getCivics(eChildCivicOption) == eChildCivic)
+						{
+							//lets make sure if the child is already selected, it can be...
+							//ignore the convert cap per option, since this is a switch from the parent
+							if (canDoCivics(eChildCivic, true))
 							{
-								if (canDoCivics(eChildCivic))
-								{
-									properChildisSelected = true;
-									break;
-								}
+								m_aeAtLeastOneChildCivicSelectedPerOption.set(eChildCivicOption, eChildCivic);
 							}
 						}
-						//let find the best child
-						if (!properChildisSelected)
+					}
+
+					//let find the best child , since none of the children are selected
+					for (int i = 0; i < GC.getNumCivicOptionInfos(); i++)
+					{
+						CivicOptionTypes eCurrOption = CivicOptionTypes(i);
+						//if there is no selected child civic, then lest fid the best one of the children automantaclly
+						if (m_aeAtLeastOneChildCivicSelectedPerOption.get(eCurrOption) == NO_CIVIC)
 						{
 							int eBestChildCivicsValue = 0;
-							int eUpdatedNew = false;
 							CivicMap m_aeChildCivics;
-							
+
 							//for every civicoption - lets find the best child civic with the better value	
 							for (int ii = 0; ii < parentNumChildren; ii++)
 							{
 								CivicTypes eChildCivic = kParentCivic.getParentCivicsChildren(ii);
 								CvCivicInfo& kChildCivic = GC.getInfo(eChildCivic);
 								CivicOptionTypes eChildCivicOption = kChildCivic.getCivicOptionType();
-								//if the child is is not of the current civic option , pass the higher loop will handle
+
+								CvWString szString = GC.getCivicInfo(eChildCivic).getDescription();
+								if (szString == L"Sovereignty" || szString == L"Tyranny")
+									int a = 0;
+
+								//handle all the civic child only if they are of the current loop option
 								if (eCurrOption != eChildCivicOption)
 									continue;
-								//if the child cannot be chosen , pass
-								if (!canDoCivics(eChildCivic))
+								//if the child cannot be chosen , pass. ignmore the cap, is parent auto shift
+								if (!canDoCivics(eChildCivic, true))
 									continue;
 								//use the AI to evaluate the civic.
 								int childValue = AI().AI_civicValue(eChildCivic);
 								//get the highest valued
+
 								if (childValue > eBestChildCivicsValue)
 								{
-									//the loop might overwrite its own setCivics if a better child will be found	
-									//setCivics(GC.getInfo(eChildCivic).getCivicOptionType(), eChildCivic);
-									m_aeChildCivics.set(eCurrOption, eChildCivic);
-									eUpdatedNew = true;
+									//the loop might overwrite its own setCivics if a better child will be found, its easier per civic 
+									//instead of running a loop for every civicoption and save best civic
+									m_aeChildCivics.set(eChildCivicOption, eChildCivic);
+									eBestChildCivicsValue = childValue;
+									CvWString szBufferr4 = GC.getCivicInfo(eChildCivic).getDescription();
 								}
 							}
-							if (eUpdatedNew)
+
+							if (m_aeChildCivics.get(eCurrOption) != NO_CIVIC)
 							{
-								if (m_aeChildCivics.get(eCurrOption) != NO_CIVIC)
-									setCivics(eCurrOption, m_aeChildCivics.get(eCurrOption));
+								setCivics(eCurrOption, m_aeChildCivics.get(eCurrOption));
+								CvWString szBufferr5 = GC.getCivicInfo(m_aeChildCivics.get(eCurrOption)).getDescription();
 							}
 						}
 					}
@@ -3344,20 +3363,21 @@ void CvPlayer::verifyCivics()
 		//child civics are not processed directly -> the parent above does that
 		else if (whichCivicOption == 0)
 		{
-/* doto civics parent - end */
-		if (canDoCivics(eSelectedCivic))
-			continue; // verified
-
-		FOR_EACH_ENUM(Civic)
-		{
-			if (GC.getInfo(eLoopCivic).getCivicOptionType() == eLoopCivicOption &&
-				canDoCivics(eLoopCivic))
+/* doto civics dependency parent - end */
+			if (!canDoCivics(eSelectedCivic, true)) //ignore the cap - if its 0 and its selected, its fine
 			{
-					setCivics(eLoopCivicOption, eLoopCivic);
-					break;
+				//auto select a civic that can be chosen, if a civic that cannot be chosen is set (conditions changes and such
+				FOR_EACH_ENUM(Civic)
+				{
+					if (GC.getInfo(eLoopCivic).getCivicOptionType() == eLoopCivicOption && canDoCivics(eLoopCivic))
+					{
+						setCivics(eLoopCivicOption, eLoopCivic);
+						break;
+					}
+				}
 			}
 		}
-		}//doto civic parent
+//doto civic parent
 	}
 }
 
@@ -3682,37 +3702,6 @@ int CvPlayer::calculateScore(bool bFinal, bool bVictory) const
 			kGame.getMaxTech(), iSCORE_TECH_FACTOR, true, bFinal, bVictory);
 	int iWondersScore = kGame.getScoreComponent(getWondersScore(), kGame.getInitWonders(),
 			kGame.getMaxWonders(), iSCORE_WONDER_FACTOR, false, bFinal, bVictory);
-//doto city states
-//in order to keep track of scores for city states and to give them a boost
-//i devised this -> a city state will get a modifer of the number of cities of the player with the most cities
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		int maxNumCitiesPlayer = 1;
-		int minNumCitiesPlayer = 1;
-		for (PlayerIter<CIV_ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
-		{
-			PlayerTypes ePlayer = itPlayer->getID();
-			CvPlayer& kPlayer = GET_PLAYER(ePlayer);
-			if (checkCityState(ePlayer))
-				continue;
-			int tempNum = kPlayer.getNumCities();
-			if (tempNum > maxNumCitiesPlayer)
-			{
-				maxNumCitiesPlayer = tempNum;
-			}
-			if (tempNum > 1 && tempNum < maxNumCitiesPlayer)
-			{
-				if (tempNum < minNumCitiesPlayer)
-					minNumCitiesPlayer = tempNum;
-			}
-	}
-		if (checkCityState(getID()))
-		{
-			iLandScore += std::min(iLandScore * std::min((maxNumCitiesPlayer - minNumCitiesPlayer), 2),0) /*- iSCORE_POPULATION_FACTOR*/;
-			iPopulationScore += std::min(iPopulationScore * std::min((maxNumCitiesPlayer - minNumCitiesPlayer), 2), 0);
-		}
-	}
-//doto city states
 	int iTotal = iPopulationScore + iLandScore + iWondersScore + iTechScore;
 
 	GC.getPythonCaller()->doPlayerScore(getID(), bFinal, bVictory, iTotal); // </advc.003y>
@@ -4058,10 +4047,15 @@ void CvPlayer::handleDiploEvent(DiploEventTypes eDiploEvent, PlayerTypes ePlayer
 
 	case DIPLOEVENT_REVOLUTION:
 	{
+		//civic dependency excluding goverments from diplo change -> too much code
+		//doto civic dependents dont try to trade these civics. maybe in the future
+		CivicTypes eFavCivic = getFavoriteCivic();
+		if (GC.getInfo(GC.getInfo(eFavCivic).getCivicOptionType()).getParentCivicOption() > 0)
+			break;
+			
 		AI().AI_changeMemoryCount(ePlayer, MEMORY_ACCEPTED_CIVIC, 1);
 		CivicMap aeNewCivics;
 		GET_PLAYER(ePlayer).getCivics(aeNewCivics);
-		CivicTypes eFavCivic = getFavoriteCivic();
 		aeNewCivics.set(GC.getInfo(eFavCivic).getCivicOptionType(), eFavCivic);
 		GET_PLAYER(ePlayer).revolution(aeNewCivics, true);
 		break;
@@ -4209,17 +4203,6 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 	bool bValid = false; // advc.opt: TradeDenial check moved down
 	CvTeam const& kOurTeam = GET_TEAM(getTeam());
 	CvTeam const& kToTeam = GET_TEAM(eWhoTo);
-
-//doto city state - dont allow city states do some trades
-	bool meCityState = false;
-	bool himCityState = false;
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		meCityState = checkCityState(getID());
-		himCityState = checkCityState(eWhoTo);
-	}
-//doto city state - dont allow city statesdo some trades
-
 	switch (item.m_eItemType)
 	{
 	case TRADE_TECHNOLOGIES:
@@ -4261,10 +4244,6 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 			break;
 		}
 		bValid = canTradeCityTo(eWhoTo, *pCity); // advc.ctr;
-//doto city state - dont allow city states trade cities
-		if (meCityState || himCityState)
-			bValid = false;
-//doto city state - dont allow city states trade cities
 		break;
 	}
 	case TRADE_GOLD:
@@ -4283,11 +4262,7 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 		// advc.112: Make sure that only capitulation is possible between war enemies
 		if (!kToTeam.isAtWar(getTeam()))
 			bValid = true;
-//doto city state - dont allow city states to be a part of vassal
-		if (meCityState || himCityState)
-			bValid = false;
 		break;
-//doto city state - dont allow city states to be a part of vassal
 	case TRADE_SURRENDER:
 	{
 		bool bForce = (item.m_iData == 1); // Used by CvDeal::startTeamTrade
@@ -4370,13 +4345,6 @@ bool CvPlayer::canTradeItem(PlayerTypes eWhoTo, TradeData item, bool bTestDenial
 	}
 	// advc.opt: The rest is handled by canPossiblyTradeItem
 	case TRADE_OPEN_BORDERS:
-/************************************************************************************************/
-/* START: Advanced Diplomacy      adjusted for advc                                                              */
-/************************************************************************************************/
-	case TRADE_FREE_TRADE_ZONE:
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
 	case TRADE_DEFENSIVE_PACT:
 	case TRADE_PERMANENT_ALLIANCE:
 	case TRADE_PEACE_TREATY:
@@ -4453,34 +4421,6 @@ bool CvPlayer::canPossiblyTradeItem(PlayerTypes eWhoTo, TradeableItems eItemType
 		return (getTeam() != kToTeam.getID() && !kOurTeam.isAtWar(kToTeam.getID()) &&
 				!kOurTeam.isOpenBorders(kToTeam.getID()) &&
 				(kOurTeam.isOpenBordersTrading() || kToTeam.isOpenBordersTrading()));
-/************************************************************************************************/
-/* START: Advanced Diplomacy     adjuster for advc                                                               */
-/************************************************************************************************/
-	case TRADE_FREE_TRADE_ZONE:
-	{
-		/*CvPlayer& kOurPlayer = GET_PLAYER(getID());
-		CvPlayer& kthemPlayer = GET_PLAYER(eWhoTo);
-		CvCivilizationInfo & kOurCiv = GC.getCivilizationInfo(kOurPlayer.getCivilizationType());
-		CvCivilizationInfo & kThemCiv = GC.getCivilizationInfo(kthemPlayer.getCivilizationType());
-		bool isOurCityState = kOurCiv.getIsCityState() == 1;
-		bool isThemCityState = kThemCiv.getIsCityState() == 1;*/
-		
-		//atleast one of the traders gotta be a city state and not both
-		//if ((isOurCityState && isThemCityState) || (!isOurCityState && !isThemCityState))
-		//	return false;
-		//newer
-		if (!canPlayersSignFreeTradeAgreement(getID(), eWhoTo))
-			return false;
-		
-		return (getTeam() != kToTeam.getID() && !kOurTeam.isAtWar(kToTeam.getID()) &&
-			kOurTeam.canSignFreeTradeAgreement(kToTeam.getID()) &&
-			(kOurTeam.isFreeTradeAgreementTrading() || kToTeam.isFreeTradeAgreementTrading())
-			&& !kOurTeam.isFreeTradeAgreement(kToTeam.getID())
-			);
-	}
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
 	case TRADE_DEFENSIVE_PACT:
 		if (!kOurTeam.isAVassal() && !kToTeam.isAVassal() &&
 			getTeam() != kToTeam.getID() && //!kToTeam.isVassal(getTeam()) // advc: redundant
@@ -4518,13 +4458,6 @@ bool CvPlayer::canPossiblyTradeItem(PlayerTypes eWhoTo, TradeableItems eItemType
 		return (!kToTeam.isDisengage(getTeam()) &&
 				!kToTeam.isAtWar(getTeam()) &&
 				!kToTeam.isOpenBorders(getTeam()) &&
-/************************************************************************************************/
-/* START: Advanced Diplomacy     doto added                                                      */
-/************************************************************************************************/
-				!kToTeam.isFreeTradeAgreement(getTeam()) &&
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
 				!kToTeam.isVassal(getTeam()) &&
 				!kOurTeam.isVassal(kToTeam.getID()) &&
 				kToTeam.isHasMet(getTeam()));
@@ -4649,14 +4582,7 @@ DenialTypes CvPlayer::getTradeDenial(PlayerTypes eWhoTo, TradeData item) const
 
 	case TRADE_OPEN_BORDERS:
 		return kOurTeam.AI_openBordersTrade(TEAMID(eWhoTo));
-/*************************************************************************************************/
-/* START: Advanced Diplomacy      advc adjusted                                                  			 */
-/*************************************************************************************************/
-	case TRADE_FREE_TRADE_ZONE:
-		return kOurTeam.AI_FreeTradeAgreement(TEAMID(eWhoTo));
-/*************************************************************************************************/
-/* START: Advanced Diplomacy                                                        			 */
-/*************************************************************************************************/
+
 	case TRADE_DEFENSIVE_PACT:
 		// K-Mod
 		if (!isHuman() && kOurTeam.isHuman())
@@ -4952,18 +4878,6 @@ int CvPlayer::getNumGovernmentCenters() const
 
 bool CvPlayer::canRaze(CvCity const& kCity) const // advc: param was CvCity*
 {
-
-//doto city states will not be allowed to capture cities ever.
-//a city state player will always raze.
-//a conquered city will always be razed.
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		if (checkCityState(getID())
-			|| checkCityState(kCity.getOwner()))
-			return true;
-	}
-//doto city states
-		
 	if (!kCity.isAutoRaze())
 	{
 		if (GC.getGame().isOption(GAMEOPTION_NO_CITY_RAZING))
@@ -4971,19 +4885,15 @@ bool CvPlayer::canRaze(CvCity const& kCity) const // advc: param was CvCity*
 
 		if (kCity.getOwner() != getID())
 			return false;
-		//Keldath QA2
-		//f1rpo explain this replaces the lines below
-		//also added the option check.
 		/************************************************************************************************/
 		/* REVOLUTIONDCM_MOD                         02/17/10                           jdog5000        */
 		/*                                                                                              */
 		/*influence driven war                                                                                              */
 		/************************************************************************************************/
 		// Change for IDW, so AI may raze cities it captures
-		//keldath qa4 - error on  error C2664 : 'CvPlot::isCultureRangeCity' : cannot convert parameter 2 from 'const int' to 'CultureLevelTypes'
 		if (!GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR) || kCity.isEverOwned(getID()) || kCity.plot()->isCultureRangeCity(getID(), (CultureLevelTypes)std::max(0,GC.getNumCultureLevelInfos() - 1)))
-	//can also be this syntax using a small func added by f1rpo to cvinfo_city.h - keldath entry
-	//	if (!GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR) || kCity.isEverOwned(getID()) || kCity.getPlot().isCultureRangeCity(getID(), CvCultureLevelInfo::finalCultureLevel()))
+		//can also be this syntax using a small func added by f1rpo to cvinfo_city.h - keldath entry
+		//if (!GC.getGame().isOption(GAMEOPTION_INFLUENCE_DRIVEN_WAR) || kCity.isEverOwned(getID()) || kCity.getPlot().isCultureRangeCity(getID(), CvCultureLevelInfo::finalCultureLevel()))
 		{
 			if (kCity.calculateTeamCulturePercent(getTeam()) >= GC.getDefineINT("RAZING_CULTURAL_PERCENT_THRESHOLD"))
 			{
@@ -5062,7 +4972,7 @@ void CvPlayer::disband(CvCity& kCity) // advc: param was CvCity*
 {
 	if (getNumCities() == 1)
 		setFoundedFirstCity(false);
-	GC.getGame().addDestroyedCityName(kCity.getName());
+	GC.getGame().addPastCityName(kCity.getName());
 	kCity.kill(true);
 }
 
@@ -5673,22 +5583,6 @@ void CvPlayer::found(int iX, int iY)
 bool CvPlayer::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible, bool bIgnoreCost) const
 {
 	//PROFILE_FUNC(); // advc.003o
-	/****************************************
- *  Archid Mod: 10 Jun 2012
- *  Functionality: Unit Civic Prereq - Archid
- *		Based on code by Afforess
- *	Source:
- *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
- *
- ****************************************/
-	if (!hasValidCivics(eUnit))
-	{
-		return false;
-	}
-/**
- ** End: Unit Civic Prereq
- **/
-
 	UnitClassTypes const eUnitClass = GC.getInfo(eUnit).getUnitClassType();
 
 	/*	K-Mod note. This assert can fail if team games when checking whether this city can
@@ -5984,16 +5878,7 @@ bool CvPlayer::canCreate(ProjectTypes eProject, bool bContinue, bool bTestVisibl
 		return false;
 
 	if (GC.getInfo(eProject).getProductionCost() == -1)
-	{
 		return false;
-	}
-	// davidlallen: project civilization and free unit start
-	int eCiv = GC.getProjectInfo(eProject).getCivilization();
-	if ((eCiv != -1) && (eCiv != getCivilizationType()))
-	{
-		return false;
-	}
-	// davidlallen: project civilization and free unit end
 
 	if (!GET_TEAM(getTeam()).isHasTech(GC.getInfo(eProject).getTechPrereq()))
 		return false;
@@ -6756,14 +6641,6 @@ int CvPlayer::calculateUnitCost(int& iFreeUnits, int& iFreeMilitaryUnits, int& i
 	iFreeMilitaryUnits += (((getTotalPopulation() /* advc.004b: */ + iExtraPop) *
 			getFreeMilitaryUnitsPopulationPercent()) / 100);
 
-//doto city states - power up city states - free military units 3 times the TotalPopulatio.
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		if (checkCityState(getID()))
-			iFreeMilitaryUnits += getTotalPopulation() * GC.getFREE_UNITS_PER_STATE_MOD();
-	}	
-//doto city states 
-
 	/*if (!isHuman()) {
 		if (GET_TEAM(getTeam()).hasMetHuman()) {
 			iFreeUnits += getNumCities(); // XXX
@@ -6898,6 +6775,8 @@ int CvPlayer::calculateInflationRate() const
 	int iTurns = (kGame.getGameTurn() + kGame.getElapsedGameTurns()) / 2;
 	if (kGame.getMaxTurns() > 0)
 		iTurns = std::min(kGame.getMaxTurns(), iTurns);
+	// advc.084: In case that Time victory is disabled
+	else iTurns = std::min(kGame.getEstimateEndTurn(), iTurns);
 	iTurns += GC.getInfo(kGame.getGameSpeedType()).getInflationOffset();
 	if (iTurns <= 0)
 		return 0;
@@ -6956,16 +6835,7 @@ int CvPlayer::calculateResearchModifier(TechTypes eTech,  // <advc.910>
 	int iModifier = 100;
 	if (eTech == NO_TECH)
 		return iModifier;
-//kedlath - suggested by f1rpo :
-//Kind of redundant: AdvCiv has TECH_COST_NOTRADE_MODIFIER, which gets applied in CvTeam::getResearchCost. (Also only applies after era 0.)
-// ALN DuneWars Start
-	// this should have been done a long time ago
-	// since techs are passed around, the tech pace is quicker, lets clamp it a little
-/*	if (!GC.getGame().isOption(GAMEOPTION_NO_TECH_TRADING) && GC.getGame().getCurrentEra() > 0)
-	{
-		iModifier -= 10;
-	}
-*/// ALN End
+
 	// BETTER_BTS_AI_MOD, Tech Diffusion, 07/27/09, jdog5000: START
 /* Tech Diffusion  GAMEOPTION*/
 	//static bool const bTECH_DIFFUSION_ENABLE = GC.getDefineBOOL("TECH_DIFFUSION_ENABLE");
@@ -7022,14 +6892,6 @@ int CvPlayer::calculateResearchModifier(TechTypes eTech,  // <advc.910>
 		}
 	}
 	iModifier += iFromOtherKnown; // advc.910
-
-//doto city states - increase chances for tech diffusion to city state
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		if (checkCityState(getID()))
-			iModifier += GC.getCITY_STATE_TECH_DIFFUSION_MOD() * std::min(2, GC.getGame().getNumCivCities());
-	}
-//doto city states 
 
 	int iPossiblePaths = 0;
 	int iUnknownPaths = 0;
@@ -7295,6 +7157,9 @@ bool CvPlayer::canResearch(TechTypes eTech, bool bTrade,
 			return false;
 		}
 	}
+	// <advc.307> Don't allow Barbarians to innovate
+	if (isBarbarian() && GC.getGame().countKnownTechNumTeams(eTech) <= 0)
+		return false; // </advc.307>
 /*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave START ***/
 	if (bTrade)
 	{
@@ -7303,16 +7168,12 @@ bool CvPlayer::canResearch(TechTypes eTech, bool bTrade,
 			return false;
 		}
 	}
-	else
-	{
-	if (!canEverResearch(eTech))
-		return false;
-	}
+
 /*** HISTORY IN THE MAKING COMPONENT: MOCTEZUMA'S SECRET TECHNOLOGY 5 October 2007 by Grave END ***/
-/* duplicate...
+
 	if (!canEverResearch(eTech))
 		return false;
-*/
+
 	return true;
 }
 
@@ -7513,8 +7374,14 @@ bool CvPlayer::isCivic(CivicTypes eCivic) const
 	return false;
 }
 
-
-bool CvPlayer::canDoCivics(CivicTypes eCivic) const
+//doto 115 civic dependency goverment screen / civic parent child
+/*
+cvgovermentscreen sends a call from drawCivicOptionButtons which checks if to draw the civic buttons.
+i added the true , cvgovermentscreen_ignore_hide so the display of civics would display despite the 
+getGovermentConversionCounter being 0. that is because if the counter is 0 it would show the civics as attainable,
+which is true, but its confusing cause it feels like player just havnt learnt them yet.
+*/
+bool CvPlayer::canDoCivics(CivicTypes eCivic, bool cvgovermentscreen_ignore_hide) const
 {
 	PROFILE_FUNC();
 
@@ -7522,6 +7389,14 @@ bool CvPlayer::canDoCivics(CivicTypes eCivic) const
 		Circumvents second crash bug in simultaneous turns MP games */
 	if (eCivic == NO_CIVIC)
 		return true; // UNOFFICIAL_PATCH: END
+
+//doto 115 civic dependency goverment screen / civic parent child
+	if (GC.getInfo(GC.getInfo(eCivic).getCivicOptionType()).getParentCivicOption() > 0 && !cvgovermentscreen_ignore_hide)
+	{
+		if (getGovermentConversionCounter(GC.getInfo(eCivic).getCivicOptionType()) == 0)
+			return false;
+	}
+//doto 115 goverment screen / civic parent child
 
 	if (GC.getGame().isForceCivicOption(GC.getInfo(eCivic).getCivicOptionType()))
 		return GC.getGame().isForceCivic(eCivic);
@@ -7567,39 +7442,8 @@ bool CvPlayer::canDoAnyRevolution() const
 	return false;
 }
 
-/* doto Civics  parent - start - checks if a child can be selected 
-on the condition that the parent civic of that child is already selected*/
-bool CvPlayer::canDoChildCivic(CivicTypes eCivic) const
-{
-	if (GC.getInfo(GC.getInfo(eCivic).getCivicOptionType()).getParentCivicOption() != 1)
-		return true;
-	
-	for (int iI = 0; iI < GC.getNumCivicInfos(); ++iI)
-	{
-		CvCivicInfo& kParentCivic = GC.getCivicInfo((CivicTypes)iI);
-		int eIsParent = kParentCivic.getNumParentCivicsChildren();
-		if (eIsParent > 0)
-		{
-			//check if the selected civic in this parent civic option is the same as 
-			//this current parent.
-			CivicTypes eSelectedParentCivic = getCivics(kParentCivic.getCivicOptionType());
-			if (eSelectedParentCivic == (CivicTypes)iI)
-			{
-				for (int J = 0; J < eIsParent; J++)
-				{
-					//since the parent is selected -> check if the current civic that got sent
-					//is a child of the selected parent.
-					if (kParentCivic.getParentCivicsChildren(J) == eCivic)
-						return true;
-				}
-			}
-		
-		}
-	}
-	return false;
-}
-/* doto Civics  parent - end*/
-/* doto Civics  parent - start - same as can dochildcivic*/
+/* doto Civics dependency parent - start - same as can dochildcivic*/
+// TODO -> MOVE TO THE CIVIC CPP
 int CvPlayer::isCivicParentOrChild(CivicTypes eCivic) const
 {
 	for (int iI = 0; iI < GC.getNumCivicInfos(); ++iI)
@@ -7618,6 +7462,26 @@ int CvPlayer::isCivicParentOrChild(CivicTypes eCivic) const
 		}
 	}
 	return 0;//none
+}
+//very similar to the above
+// TODO -> MOVE TO THE CIVIC CPP - make sure to change in the python after not to use on active player?
+CivicTypes CvPlayer::getCivicParent(CivicTypes eCivic) const
+{
+	for (int iI = 0; iI < GC.getNumCivicInfos(); ++iI)
+	{
+		CvCivicInfo& kCivic = GC.getCivicInfo((CivicTypes)iI);
+		int eIsParent = kCivic.getNumParentCivicsChildren();
+		if (eIsParent > 0)
+		{
+			for (int J = 0; J < eIsParent; J++)
+			{
+				//if the sent civic exists as a child for any parent
+				if (kCivic.getParentCivicsChildren(J) == eCivic)
+					return (CivicTypes)iI; //child
+			}
+		}
+	}
+	return NO_CIVIC;
 }
 /* doto Civics  parent - End */
 
@@ -7818,18 +7682,10 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 {
 	if (eReligion == NO_RELIGION)
 		return;
-
-//doto city states - dont allow to form religion 
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		if (checkCityState(getID()))
-			return;
-	}
-//doto city states
 //david lalen forbiddan religion - dune wars start-checkif team has the tech fopr this religion
 //keldath fix - avoid player to found forbidden religion
-	CivilizationTypes eCiv = GET_PLAYER(getID()).getCivilizationType(); //used by city states also
-	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(eCiv); //used by city states also
+	CivilizationTypes eCiv = GET_PLAYER(getID()).getCivilizationType();
+	CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(eCiv); 
 	if (eCiv != NO_CIVILIZATION && kCivilization.isForbidden(eReligion)
 		&& GC.getGame().isOption(GAMEOPTION_FORBIDDEN_RELIGION))
 		return;
@@ -7850,7 +7706,6 @@ void CvPlayer::foundReligion(ReligionTypes eReligion, ReligionTypes eSlotReligio
 		return;
 	}
 //limited religion doto 	
-//doto city states
 
 	CvReligionInfo const& kSlotReligion = GC.getInfo(eSlotReligion);
 	CvGame& kGame = GC.getGame();
@@ -7955,14 +7810,6 @@ void CvPlayer::foundCorporation(CorporationTypes eCorporation)
 
 	if (GC.getGame().isCorporationFounded(eCorporation))
 		return;
-
-//doto - city states - dont allow city states to form a corp
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		if (checkCityState(getID()))
-			return;
-	}
-//doto city states
 
 	CvCorporationInfo const& kCorp = GC.getInfo(eCorporation);
 	bool const bStarting = (kCorp.getTechPrereq() == NO_TECH ||
@@ -8182,6 +8029,7 @@ void CvPlayer::killGoldenAgeUnits(CvUnit* pUnitAlive)
 	}
 }
 
+
 int CvPlayer::greatPeopleThreshold(bool bMilitary) const
 {
 	int iThreshold=-1;
@@ -8221,18 +8069,6 @@ int CvPlayer::greatPeopleThreshold(bool bMilitary) const
 
 int CvPlayer::specialistYield(SpecialistTypes eSpecialist, YieldTypes eYield) const
 {
-//doto city states specialists instead of population	
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-		GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1)
-	{
-		if (GC.getInfo(eSpecialist).isCityStater()
-			 && (checkCityState(getID())))
-		{
-			return GC.getInfo(eSpecialist).getYieldChange(eYield);
-		}
-	}
-//doto city states specialists instead of population	
-
 	return GC.getInfo(eSpecialist).getYieldChange(eYield) +
 			getSpecialistExtraYield(eSpecialist, eYield);
 }
@@ -8245,24 +8081,6 @@ int CvPlayer::specialistCommerce(SpecialistTypes eSpecialist, CommerceTypes eCom
 	/**																								**/
 	/**																								**/
 	/*************************************************************************************************/
-//<Original Code>	
-	//return (GC.getInfo(eSpecialist).getCommerceChange(eCommerce) + getSpecialistExtraCommerce(eCommerce));
-	//return (GC.getSpecialistInfo(eSpecialist).getCommerceChange(eCommerce) + getSpecialistExtraCommerce(eCommerce));
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) &&
-		GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1)
-	{
-		//SpecialistTypes eFarmer = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_FARMER", true);
-		//SpecialistTypes eMiner = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_MINER", true);
-		//SpecialistTypes eLabor = (SpecialistTypes)GC.getInfoTypeForString("SPECIALIST_LABORER", true);
-		if (GC.getInfo(eSpecialist).isCityStater()
-			//(eFarmer == eSpecialist || eMiner == eSpecialist || eLabor == eSpecialist)
-			 && (checkCityState(getID())))
-		{
-			return GC.getInfo(eSpecialist).getCommerceChange(eCommerce);
-		}
-	}
-	
-		
 	return (GC.getInfo(eSpecialist).getCommerceChange(eCommerce) 
 			+ getSpecialistExtraCommerce(eCommerce) 
 			+ getSpecialistCivicExtraCommerce (eSpecialist, eCommerce));
@@ -8309,7 +8127,7 @@ void CvPlayer::setStartingPlot(CvPlot* pNewValue, bool bUpdateStartDist)
 int CvPlayer::getBuildingYieldChange(BuildingTypes eIndex1, YieldTypes eYield) const
 {
 	FAssertMsg(eIndex1 >= 0, "eIndex1 is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
+//	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
 	FAssertMsg(eYield >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
 	FAssertMsg(eYield < NUM_YIELD_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
 	return m_ppaaiBuildingYieldChange[eIndex1][eYield];
@@ -8319,7 +8137,7 @@ int CvPlayer::getBuildingYieldChange(BuildingTypes eIndex1, YieldTypes eYield) c
 void CvPlayer::changeBuildingYieldChange(BuildingTypes eIndex1, YieldTypes eYield, int iChange)
 {
 	FAssertMsg(eIndex1 >= 0, "eIndex1 is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
+//	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
 	FAssertMsg(eYield >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
 	FAssertMsg(eYield < NUM_YIELD_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
 
@@ -8450,7 +8268,7 @@ void CvPlayer::changeNonStateReligionCommerceRateModifier(CommerceTypes eCommerc
 int CvPlayer::getBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes eCommerce) const
 {
 	FAssertMsg(eIndex1 >= 0, "eIndex1 is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
+//	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
 	FAssertMsg(eCommerce >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
 	FAssertMsg(eCommerce < NUM_COMMERCE_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
 	return m_ppaaiBuildingCommerceChange[eIndex1][eCommerce];
@@ -8461,7 +8279,7 @@ void CvPlayer::changeBuildingCommerceChange(BuildingTypes eIndex1, CommerceTypes
 {
 
 	FAssertMsg(eIndex1 >= 0, "eIndex1 is expected to be non-negative (invalid Index)");
-	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
+//	FAssertMsg(eIndex1 < GC.getNumBuildingInfos(), "eIndex1 is expected to be within maximum bounds (invalid Index)");
 	FAssertMsg(eCommerce >= 0, "eIndex2 is expected to be non-negative (invalid Index)");
 	FAssertMsg(eCommerce < NUM_COMMERCE_TYPES, "eIndex2 is expected to be within maximum bounds (invalid Index)");
 
@@ -9634,70 +9452,6 @@ void CvPlayer::setCapital(CvCity* pNewCapital)
 		pNewCapital->updateCommerce();
 		pNewCapital->setInfoDirty(true);
 	}
-//doto city states - add unique resource
-	addCityStateResource(pNewCapital, pOldCapital);
-}
-
-//doto city states - add artificial resources trade route
-// each civ in the game will get resource number (2)
-void CvPlayer::addCityStateResource(CvCity* pNewCapital, CvCity* pOldCapital, int rAmount) const
-{
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-		//done let normal civs get it.
-		if (!(checkCityState(getID())))
-			return;
-		
-		BonusTypes UniqueBonues = NO_BONUS;
-		CvWString civName = CvWString::format(L"%s", kCivilization.getDescription());
-		
-		if ((civName.find(L"Troy") != std::string::npos))
-			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_TROY_ROUTE");
-		else if ((civName.find(L"Kush") != std::string::npos))
-			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_KUSH_ROUTE");
-		else if ((civName.find(L"Zurich") != std::string::npos))
-			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_ZURICH_ROUTE");
-		else if ((civName.find(L"Vatican") != std::string::npos))
-			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_VATICAN_ROUTE");
-		else if ((civName.find(L"Tunis") != std::string::npos))
-			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_TUNIS_ROUTE");
-		else if ((civName.find(L"Tibet") != std::string::npos))
-			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_TIBET_ROUTE");
-		else if ((civName.find(L"Bavaria") != std::string::npos))
-			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_BAVARIA_ROUTE");
-		else if ((civName.find(L"Quebec") != std::string::npos))
-			UniqueBonues = (BonusTypes)GC.getInfoTypeForString("BONUS_QUEBEC_ROUTE");
-		else
-			UniqueBonues = NO_BONUS;
-
-		int howManyPlayers = 2; // (leave one for the city state)
-//limit 2 per city state - per player is not needed - added trade treaty diplomacy
-		/*for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
-		{
-			if (checkCityState(itPlayer->getID()))
-				continue;
-			else
-				howManyPlayers += 1;
-		}*/
-
-		// only city states will get the routes now.
-		int res_amount = howManyPlayers;
-		
-		if (pOldCapital != NULL || 
-			//this is suppose to clear the resource if the city state was taken by 
-			//a normal civ - or so i hope
-			pNewCapital == NULL && pOldCapital != NULL)
-		{
-			if (pOldCapital->getNumBonuses(UniqueBonues) > 0)
-				pOldCapital->changeFreeBonus(UniqueBonues, res_amount);
-		}
-		if (pNewCapital != NULL)
-		{
-			if (pNewCapital->getNumBonuses(UniqueBonues) < 1)
-				pNewCapital->changeFreeBonus(UniqueBonues, res_amount);
-		}
-	}
 }
 
 // <advc.127b>
@@ -10194,16 +9948,8 @@ void CvPlayer::setTurnActive(bool bNewValue, bool bDoTurn)
 
 			if (kGame.getElapsedGameTurns() > 0 && isAlive())
 			{
-				if (kGame.isMPOption(MPOPTION_SIMULTANEOUS_TURNS))
-				{
-//doto city states	-- seems that im mp game on the FIRST turn , there is an issue here.
-					//so if its as such skip the doturn here for these civs
-					if (!checkCityState(getID()))
+					if (kGame.isMPOption(MPOPTION_SIMULTANEOUS_TURNS))
 						doTurn();
-					else if (checkCityState(getID()) && kGame.getGameTurn() != 1)
-						doTurn();
-//doto city states
-				}
 				/*	K-Mod. Call CvTeam::doTurn at the start of this team's turn.
 					ie. when the leader's turn is activated.
 					Note: in simultaneous turns mode this is called by CvGame::doTurn,
@@ -10583,6 +10329,41 @@ void CvPlayer::setPersonalityType(LeaderHeadTypes eNewValue)
 	AI().AI_updatePersonality(); // advc.104
 }
 
+//doto 115 goverment screen civic dependency
+void CvPlayer::setGovermentConversionCounter(CivicOptionTypes eCivicOption, int iValue)
+{
+	m_aiGovermentConversionCounter.set(eCivicOption,
+			std::max(iValue, 0));
+}
+//each era allows different amouts of goverment conversions
+void CvPlayer::updateGovermentConversionCounter(CivicOptionTypes eCivicOption, EraTypes eNewValue, int reduceAfterConvert)
+{
+	if (eNewValue != NULL && eNewValue != NO_ERA)
+	{
+
+		FOR_EACH_ENUM(CivicOption)
+		{
+			int iCounter;
+			switch((int)eNewValue)
+			{
+			case 0: iCounter = 1; break;
+			case 1:
+			case 2:
+			case 3: iCounter = 2; break;
+			case 4:
+			case 5: iCounter = 3; break;
+			default: iCounter = 4;
+			}
+			setGovermentConversionCounter(eLoopCivicOption, iCounter);
+		}
+	}
+	else if (reduceAfterConvert != NULL)
+	{
+		changeGovermentConversionCounter(eCivicOption, reduceAfterConvert);
+	}	
+}
+
+//doto 115 goverment screen
 
 void CvPlayer::setCurrentEra(EraTypes eNewValue)
 {
@@ -10592,6 +10373,9 @@ void CvPlayer::setCurrentEra(EraTypes eNewValue)
 	EraTypes eOldEra = m_eCurrentEra;
 	m_eCurrentEra = eNewValue;
 	AI().AI_updateEraFactor(); // advc.erai
+//doto 115 civic dependency goverment screen civic dependency
+	updateGovermentConversionCounter(NO_CIVICOPTION, eNewValue, NULL);
+//doto 115 goverment screen
 
 	if (GC.getGame().getActiveTeam() != NO_TEAM)
 	{
@@ -11191,24 +10975,8 @@ void CvPlayer::changeCapitalCommerceRateModifier(CommerceTypes eCommerce, int iC
 		pCapital->AI_setAssignWorkDirty(true);
 	}
 }
-/************************************************************************************************/
-/* START: Advanced Diplomacy     DOTO CITY STATEs												*/
-/************************************************************************************************/
-void CvPlayer::changeCapitalCommerceRateFTModifier(CommerceTypes eCommerce, int iChange)
-{
-	if (iChange == 0)
-		return;
-	m_aiCapitalCommerceRateFTModifier.add(eCommerce, iChange);
-	CvCity* pCapital = getCapital();
-	if (pCapital != NULL)
-	{
-		pCapital->updateCommerce();
-		pCapital->AI_setAssignWorkDirty(true);
-	}
-}
-/************************************************************************************************/
-/* END: Advanced Diplomacy     DOTO CITY STATEs												*/
-/************************************************************************************************/
+
+
 void CvPlayer::changeStateReligionBuildingCommerce(CommerceTypes eCommerce, int iChange)
 {
 	if (iChange != 0)
@@ -11559,11 +11327,6 @@ bool CvPlayer::isUnitClassMaxedOut(UnitClassTypes eUnitClass, int iExtra) const
 
 void CvPlayer::changeUnitClassCount(UnitClassTypes eUnitClass, int iChange)
 {
-	//doto 112 addition - got an error on a death of a great general 
-	//seems the unit count was wrong?
-	if (getUnitClassCount(eUnitClass) == 0 && iChange < 0)
-		return;
-
 	m_aiUnitClassCount.add(eUnitClass, iChange);
 	FAssert(getUnitClassCount(eUnitClass) >= 0);
 }
@@ -11913,7 +11676,7 @@ int CvPlayer::getCivicUpkeep(CivicMap const* pCivics, bool bIgnoreAnarchy,
 	return iTotalUpkeep;
 }
 
-
+//doto 115 civic dependency gorement screen parent child civic
 void CvPlayer::setCivics(CivicOptionTypes eCivicOption, CivicTypes eNewValue)
 {
 	CivicTypes const eOldCivic = getCivics(eCivicOption);
@@ -11928,47 +11691,6 @@ void CvPlayer::setCivics(CivicOptionTypes eCivicOption, CivicTypes eNewValue)
 	if (getCivics(eCivicOption) != NO_CIVIC)
 		processCivics(getCivics(eCivicOption), 1);
 
-/****************************************
- *  Archid Mod: 10 Jun 2012
- *  Functionality: Unit Civic Prereq - Archid
- *		Based on code by Afforess
- *	Source:
- *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
- *
- ****************************************/
-	int iLoop;
-	CvWString szBuffer;
-/*
-		if (eNewValue != NO_CIVIC && eOldCivic != NO_CIVIC)
-		{
-			CvCivicInfo& kCivic = GC.getCivicInfo(getCivics(eCivicOption));
-			CvCivicInfo& kOldCivic = GC.getCivicInfo(eOldCivic);
-		}*/
-	//defined above keldath change
-	//	CvWString szBuffer;
-		for (CvUnit* pLoopUnit = firstUnit(&iLoop); NULL != pLoopUnit; pLoopUnit = nextUnit(&iLoop))
-		{
-			bool validCivics = hasValidCivics(pLoopUnit->getUnitType());
-			if (!validCivics && pLoopUnit->isCivicEnabled())
-			{
-				pLoopUnit->setCivicEnabled(false);
-				szBuffer = gDLL->getText("TXT_KEY_CIVIC_DISABLED_UNIT", pLoopUnit->getUnitType(), pLoopUnit->getNameKey());
-				//fix by f1 to kmod style -keldth
-				//gDLL->getInterfaceIFace()->addMessageExternal(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
-				gDLL->getInterfaceIFace()->addMessage (getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
-			}
-			else if (validCivics && !pLoopUnit->isCivicEnabled())
-			{
-				pLoopUnit->setCivicEnabled(true);
-				szBuffer = gDLL->getText("TXT_KEY_CIVIC_ENABLED_UNIT", pLoopUnit->getUnitType(), pLoopUnit->getNameKey());
-				//fix by f1 to kmod style -keldth
-				//gDLL->getInterfaceIFace()->addMessageExternal(getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
-				gDLL->getInterfaceIFace()->addMessage (getID(), false, GC.getEVENT_MESSAGE_TIME(), szBuffer, NULL, MESSAGE_TYPE_MINOR_EVENT, pLoopUnit->getUnitInfo().getButton(), (ColorTypes)GC.getInfoTypeForString("COLOR_WHITE"), pLoopUnit->getX(), pLoopUnit->getY(), true, true);
-			}
-		}
-/**
- ** End: Unit Civic Prereq
- **/	
 	CvGame& kGame = GC.getGame();
 	kGame.updateSecretaryGeneral();
 	kGame.AI_makeAssignWorkDirty();
@@ -12033,6 +11755,62 @@ void CvPlayer::setCivics(CivicOptionTypes eCivicOption, CivicTypes eNewValue)
 	}
 	/*	(advc.001: updateDiplomacyAttitude was called too early;
 		now handled by AI_updateAttitude. ) */
+
+//doto 115 civic dependency goverment screen / civic parent child
+//if a child parent - aka government civ was change, update the counter. if the parent is changed 
+// and this happens automatically, do not deduct the child civics caps
+	if (GC.getInfo(GC.getInfo(eNewValue).getCivicOptionType()).getParentCivicOption() > 0)
+	{
+		CivicTypes eParentCivic = getCivicParent(eNewValue);
+		CivicTypes ePrevParentCivic = getCivicParent(eOldCivic);
+		//doto debug
+		CvCivicInfo const& kCivic = GC.getInfo(eNewValue);
+
+		//handle children switches
+		if (eParentCivic != NO_CIVIC) //can do also .getParentCivicOption() == 1
+		{
+			CivicOptionTypes eParentCivicOption = GC.getInfo(eParentCivic).getCivicOptionType();
+			CivicTypes eSelectedCivicOfTheParentCivicOption = getCivics(eParentCivicOption);
+
+			/*
+				the cap for child civics must only be reduced when switching civics from within the parent it self
+				if the parent cap is 1 and the child is 0 and a convert is done to another parent
+				having 0 wont affect the parent change. the child would just be auto selected by the verify function.
+				had to keep this somehow
+			*/
+			bool set_return = false;
+
+			// i think this wont happen since the set civics already happens byt this bulk runs
+			//eSelectedCivicOfTheParentCivicOption != eParentCivic , maybe need to move it.
+			if (eSelectedCivicOfTheParentCivicOption != eParentCivic && eParentCivic != ePrevParentCivic)
+			{
+				//if a child was chosen, which its parent is NOT selected, 
+				//the verifyCivics will select the parent and other children excluding this current child which was already set within this function
+				verifyCivics(eParentCivic);
+				updateGovermentConversionCounter(GC.getCivicInfo(eParentCivic).getCivicOptionType(), NO_ERA, -1); //dont forget to reduce the cap for the parent
+				set_return = true;
+			}
+			//else if (GC.getInfo(GC.getInfo(eNewValue).getCivicOptionType()).getParentCivicOption() == 1 && eParentCivic == ePrevParentCivic)
+			//{
+			//	updateGovermentConversionCounter(GC.getCivicInfo(eNewValue).getCivicOptionType(), NO_ERA, -1); //dont forget to reduce the cap for the parent
+			//	set_return = true;
+			//}
+			else if (eSelectedCivicOfTheParentCivicOption == eParentCivic && eParentCivic == ePrevParentCivic)
+			{
+				//doto debug
+				//CvWString civicName = GC.getInfo(eParentCivic).getDescription();
+				//FAssertMsg(eParentCivic != ePrevParentCivic, "a child was changed without its parent");
+				updateGovermentConversionCounter(GC.getCivicInfo(eNewValue).getCivicOptionType(), NO_ERA, -1); //dont forget to reduce the cap for the parent
+				set_return = true;
+			}
+			if (set_return)
+				return;
+		}
+		//handle parents
+		updateGovermentConversionCounter(GC.getCivicInfo(eNewValue).getCivicOptionType(), NO_ERA, -1);
+		return;
+	}
+//doto 115 civic dependency goverment screen / civic parent child
 }
 
 
@@ -12055,7 +11833,7 @@ void CvPlayer::changeSpecialistExtraYield(SpecialistTypes eSpecialist, YieldType
 int CvPlayer::getSpecialistCivicExtraCommerce(SpecialistTypes eIndex1, CommerceTypes eIndex) const
 {
 	FAssertMsg(eIndex1 >= 0, "eIndex1 expected to be >= 0");
-	FAssertMsg(eIndex1 < GC.getNumSpecialistInfos(), "eIndex1 expected to be < GC.getNumSpecialistInfos()");
+//	FAssertMsg(eIndex1 < GC.getNumSpecialistInfos(), "eIndex1 expected to be < GC.getNumSpecialistInfos()");
 	FAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
 	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex expected to be < NUM_COMMERCE__TYPES");
 	return m_ppaaiSpecialistCivicExtraCommerce [eIndex1][eIndex];
@@ -12063,7 +11841,7 @@ int CvPlayer::getSpecialistCivicExtraCommerce(SpecialistTypes eIndex1, CommerceT
 void CvPlayer::changeSpecialistCivicExtraCommerce(SpecialistTypes eIndex1, CommerceTypes eIndex, int iChange)
 {
 	FAssertMsg(eIndex1 >= 0, "eIndex1 expected to be >= 0");
-	FAssertMsg(eIndex1 < GC.getNumSpecialistInfos(), "eIndex1 expected to be < GC.getNumSpecialistInfos()");
+//	FAssertMsg(eIndex1 < GC.getNumSpecialistInfos(), "eIndex1 expected to be < GC.getNumSpecialistInfos()");
 	FAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
 	FAssertMsg(eIndex < NUM_COMMERCE_TYPES, "eIndex expected to be < NUM_COMMERCE_TYPES");
 	if (iChange != 0)
@@ -13867,24 +13645,6 @@ int CvPlayer::getEspionageMissionCostModifier(EspionageMissionTypes eMission,
 	iModifier /= 100;
 	// K-Mod end
 
-/************************************************************************************************/
-/* Afforess	                  Start		 07/29/10                                               */
-/* Advanced Diplomacy    
-doto - nice feature - but disabled for doto.	other effects are inplace						*/
-/************************************************************************************************/
-	//if (pCity != NULL)
-	//{
-	//	if (GET_TEAM(getTeam()).isFreeTradeAgreement(kTargetTeam.getID()))
-	//	{
-	//		iModifier *= 100 - GC.getDefineINT("FREE_TRADE_AGREEMENT_ESPIONAGE_MISSION_COST_MODIFIER");
-	//		iModifier /= 100;
-	//	}
-	//}
-/************************************************************************************************/
-/* Advanced Diplomacy         END                                                               */
-/************************************************************************************************/
-
-
 	return iModifier;
 }
 
@@ -15528,85 +15288,70 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 	changeNoNonStateReligionSpreadCount((kCivic.isNoNonStateReligionSpread()) ? iChange : 0);
 	changeStateReligionHappiness(kCivic.getStateReligionHappiness() * iChange);
 	changeNonStateReligionHappiness(kCivic.getNonStateReligionHappiness() * iChange);
-	// < Civic Infos Plus Start >
-	changeStateReligionExtraHealth(kCivic.getStateReligionExtraHealth() * iChange);
-	changeNonStateReligionExtraHealth(kCivic.getNonStateReligionExtraHealth() * iChange);
-	// < Civic Infos Plus End   >
 	changeStateReligionUnitProductionModifier(kCivic.getStateReligionUnitProductionModifier() * iChange);
 	changeStateReligionBuildingProductionModifier(kCivic.getStateReligionBuildingProductionModifier() * iChange);
 	changeStateReligionFreeExperience(kCivic.getStateReligionFreeExperience() * iChange);
 	changeExpInBorderModifier(kCivic.getExpInBorderModifier() * iChange);
-//doto city states - specialists instead of pop
-// dont allow any bonuses that are not from the specialists own values.	
-	bool isCivilian = false;
-	if ((GC.getGame().isOption(GAMEOPTION_CITY_STATES)
-		&& GC.getDefineINT("SPECIALISTS_INSTEAD_OF_POPULATION") == 1 && checkCityState(getID())))
-	{
-		isCivilian = true;
-	}
-//doto city states specialists instead of pop
+	// < Civic Infos Plus Start >
+	changeStateReligionExtraHealth(kCivic.getStateReligionExtraHealth() * iChange);
+	changeNonStateReligionExtraHealth(kCivic.getNonStateReligionExtraHealth() * iChange);
+	// < Civic Infos Plus End   >
 	FOR_EACH_ENUM2(Yield, y)
 	{
-//DOTO- // < Civic Infos Plus Start >
+		changeYieldRateModifier(y, kCivic.getYieldModifier(y) * iChange);
+		changeCapitalYieldRateModifier(y, kCivic.getCapitalYieldModifier(y) * iChange);
+		changeTradeYieldModifier(y, kCivic.getTradeYieldModifier(y) * iChange);
+	// < Civic Infos Plus Start DOTO>
 		changeStateReligionYieldRateModifier(y, (kCivic.getStateReligionYieldModifier(y) * iChange));
 		changeNonStateReligionYieldRateModifier(y, (kCivic.getNonStateReligionYieldModifier(y) * iChange));
 		FOR_EACH_ENUM(Specialist)
 		{
-// doto city states
-//doto specialists instead of pop	
-//deny other bonuses from the civilians
-   			if (!isCivilian &&
-				//eFarmer != eLoopSpecialist && eMiner != eLoopSpecialist && eLabor != eLoopSpecialist
-				!GC.getInfo(eLoopSpecialist).isCityStater()
-				)
-			{
-   				changeSpecialistExtraYield(eLoopSpecialist, y, (kCivic.getSpecialistExtraYield(y) * iChange));
-			}
-	//doto specialists instead of pop
+   			changeSpecialistExtraYield(eLoopSpecialist, y, (kCivic.getSpecialistExtraYield(y) * iChange));
 		}
-//DOTO-	// < Civic Infos Plus End   >
-		changeYieldRateModifier(y, kCivic.getYieldModifier(y) * iChange);
-		changeCapitalYieldRateModifier(y, kCivic.getCapitalYieldModifier(y) * iChange);
-		changeTradeYieldModifier(y, kCivic.getTradeYieldModifier(y) * iChange);
+	// < Civic Infos Plus End  DOTO >
 	}
 	FOR_EACH_ENUM2(Commerce, c)
 	{
-//DOTO-	// < Civic Infos Plus Start >
-		changeStateReligionCommerceRateModifier(c, (kCivic.getStateReligionCommerceModifier(c) * iChange));
-		changeNonStateReligionCommerceRateModifier(c, (kCivic.getNonStateReligionCommerceModifier(c) * iChange));
-		// < Civic Infos Plus End   >
 		changeCommerceRateModifier(c, kCivic.getCommerceModifier(c) * iChange);
 		changeCapitalCommerceRateModifier(c, kCivic.getCapitalCommerceModifier(c) * iChange);
 		changeSpecialistExtraCommerce(c, kCivic.getSpecialistExtraCommerce(c) * iChange);
+		//< Civic Infos Plus Start DOTO>
+		changeStateReligionCommerceRateModifier(c, (kCivic.getStateReligionCommerceModifier(c) * iChange));
+		changeNonStateReligionCommerceRateModifier(c, (kCivic.getNonStateReligionCommerceModifier(c) * iChange));
+		// < Civic Infos Plus End  DOTO >
 	}
-	
-	CvCivilization const& kCiv = getCivilization(); // advc.003w
-	for (int i = 0; i < kCiv.getNumBuildings(); i++)
+// < Civic Infos Plus Start doto>
+	bool kCivicisAnyBuildingYieldChanges = kCivic.isAnyBuildingYieldChanges();
+	bool kCivicisAnyBuildingCommerceChanges = kCivic.isAnyBuildingCommerceChanges();
+	// <advc.003t>
+	if (kCivic.isAnyBuildingHappinessChanges() ||
+			kCivic.isAnyBuildingHealthChanges()
+			|| kCivicisAnyBuildingYieldChanges
+			|| kCivicisAnyBuildingCommerceChanges
+			) // </advc.003t>
+// < Civic Infos Plus End  doto >
 	{
-		// < Civic Infos Plus Start >
-		//doto 112 = consider adding this like in the advc code below : BuildingTypes eOurBuilding = kCiv.buildingAt(i);
-		if (kCivic.isAnyBuildingYieldChanges())
+		CvCivilization const& kCiv = getCivilization(); // advc.003w
+		for (int i = 0; i < kCiv.getNumBuildings(); i++)
 		{
-			for (int iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
+// < Civic Infos Plus Start >
+			if (kCivicisAnyBuildingYieldChanges)
 			{
-				changeBuildingYieldChange(((BuildingTypes)i), ((YieldTypes)iJ), 
-					(kCivic.getBuildingYieldChanges(i, iJ) * iChange));
+				for (int iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
+				{
+					changeBuildingYieldChange(((BuildingTypes)i), ((YieldTypes)iJ), 
+						(kCivic.getBuildingYieldChanges(i, iJ) * iChange));
+				}
 			}
-		}
-		if (kCivic.isAnyBuildingCommerceChanges())
-		{
-			for (int iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
+			if (kCivicisAnyBuildingCommerceChanges)
 			{
-				changeBuildingCommerceChange(((BuildingTypes)i), ((CommerceTypes)iJ), 
-					(kCivic.getBuildingCommerceChanges(i, iJ) * iChange));
+				for (int iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
+				{
+					changeBuildingCommerceChange(((BuildingTypes)i), ((CommerceTypes)iJ), 
+						(kCivic.getBuildingCommerceChanges(i, iJ) * iChange));
+				}
 			}
-		}
-		// < Civic Infos Plus End   >
-		// <advc.003t>
-		//doto 112 - keldath - moved code here, the buildings didnt work prior...
-		if (kCivic.isAnyBuildingHappinessChanges() ||
-			kCivic.isAnyBuildingHealthChanges()) // </advc.003t>
-		{
+// < Civic Infos Plus End   >
 			BuildingTypes eOurBuilding = kCiv.buildingAt(i);
 			BuildingClassTypes eLoopClass = kCiv.buildingClassAt(i);
 			changeExtraBuildingHappiness(eOurBuilding, kCivic.
@@ -15648,28 +15393,15 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 		//to eSpecialist , cause they are set to int.
 		//later on should update to proper data type like in advc and i can get the counter out...
 		int iI = 0;
-		//doto city states specialists instead of pop	
-		//deny other bonuses from the civilians
-		if (!isCivilian &&
-				!GC.getInfo(eLoopSpecialist).isCityStater()
-			)
+		for (int iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
 		{
-			for (int iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
-			{
-				changeSpecialistExtraYield((eLoopSpecialist), ((YieldTypes)iJ),
-					(kCivic.getSpecialistYieldChange(iI, iJ) * iChange));
-			}
+			changeSpecialistExtraYield((eLoopSpecialist), ((YieldTypes)iJ),
+				(kCivic.getSpecialistYieldChange(iI, iJ) * iChange));
 		}
-		//doto specialists instead of pop
-		if (!isCivilian &&
-				!GC.getInfo(eLoopSpecialist).isCityStater()
-			)
+		for (int iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
 		{
-			for (int iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
-			{
-				changeSpecialistCivicExtraCommerce((eLoopSpecialist), ((CommerceTypes)iJ),
-					(kCivic.getSpecialistCommerceChange(iI, iJ) * iChange));
-			}
+			changeSpecialistCivicExtraCommerce((eLoopSpecialist), ((CommerceTypes)iJ),
+				(kCivic.getSpecialistCommerceChange(iI, iJ) * iChange));
 		}
 
 		iI += 1; //see above
@@ -15695,48 +15427,6 @@ void CvPlayer::processCivics(CivicTypes eCivic, int iChange)
 					eLoopImprovement, eLoopYield) * iChange);
 		}
 	}
-//moved up
-	/*************************************************************************************************/
-	/**	CMEDIT: Civic Specialist Yield & Commerce Changes											**/
-	/**																								**/
-	/**																								**/
-	/*************************************************************************************************/	
-/*	for (int iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
-	{
-//doto city states specialists instead of pop	
-//deny other bonuses from the civilians
-		if (!isCivilian &&
-				//eFarmer != (SpecialistTypes)iI && eMiner != (SpecialistTypes)iI && eLabor != (SpecialistTypes)iI
-			!GC.getInfo((SpecialistTypes)iI).isCityStater()
-			)
-		{	
-			for (int iJ = 0; iJ < NUM_YIELD_TYPES; iJ++)
-			{
-				changeSpecialistExtraYield(((SpecialistTypes)iI), ((YieldTypes)iJ), 
-					(kCivic.getSpecialistYieldChange(iI, iJ) * iChange));
-			}
-		}
-	}
-
-	for (iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
-	{
-//doto specialists instead of pop
-		if (!isCivilian &&
-			//	eFarmer != (SpecialistTypes)iI && eMiner != (SpecialistTypes)iI && eLabor != (SpecialistTypes)iI
-			!GC.getInfo((SpecialistTypes)iI).isCityStater()
-			)
-		{	
-			for (int iJ = 0; iJ < NUM_COMMERCE_TYPES; iJ++)
-			{
-				changeSpecialistCivicExtraCommerce(((SpecialistTypes)iI), ((CommerceTypes)iJ), 
-					(kCivic.getSpecialistCommerceChange(iI, iJ) * iChange));
-			}
-		}
-	}
-*/
-	/*************************************************************************************************/
-	/**	CMEDIT: End																					**/
-	/*************************************************************************************************/
 }
 
 void CvPlayer::showMissedMessages()
@@ -15933,31 +15623,18 @@ void CvPlayer::read(FDataStreamBase* pStream)
 	updateTeamType(); //m_eTeamType not saved
 	updateHuman();
 
-	if (uiFlag >= 16)
-	{
-		m_aiSeaPlotYield.read(pStream);
-		m_aiYieldRateModifier.read(pStream);
-		m_aiCapitalYieldRateModifier.read(pStream);
+	m_aiSeaPlotYield.read(pStream);
+	m_aiYieldRateModifier.read(pStream);
+	m_aiCapitalYieldRateModifier.read(pStream);
 	// < Civic Infos Plus Start >
-    	pStream->Read(NUM_YIELD_TYPES, m_aiSpecialistExtraYield);
-    	pStream->Read(NUM_YIELD_TYPES, m_aiStateReligionYieldRateModifier);
-    	pStream->Read(NUM_YIELD_TYPES, m_aiNonStateReligionYieldRateModifier);
+    pStream->Read(NUM_YIELD_TYPES, m_aiSpecialistExtraYield);
+    pStream->Read(NUM_YIELD_TYPES, m_aiStateReligionYieldRateModifier);
+    pStream->Read(NUM_YIELD_TYPES, m_aiNonStateReligionYieldRateModifier);
     // < Civic Infos Plus End   >
-		m_aiExtraYieldThreshold.read(pStream);
-	}
-	else
-	{
-		m_aiSeaPlotYield.readArray<int>(pStream);
-		m_aiYieldRateModifier.readArray<int>(pStream);
-		m_aiCapitalYieldRateModifier.readArray<int>(pStream);
-		// < Civic Infos Plus Start >
-		//keldath advc 100 - since im not using advc method - duplicate the above
-    	pStream->Read(NUM_YIELD_TYPES, m_aiSpecialistExtraYield);
-    	pStream->Read(NUM_YIELD_TYPES, m_aiStateReligionYieldRateModifier);
-    	pStream->Read(NUM_YIELD_TYPES, m_aiNonStateReligionYieldRateModifier);
-    	// < Civic Infos Plus End   >
-		m_aiExtraYieldThreshold.readArray<int>(pStream);
-	}
+//doto 115 goverment screen civic parent child
+	m_aiGovermentConversionCounter.readArray<int>(pStream);
+//doto 115 goverment screen  civic parent child
+	m_aiExtraYieldThreshold.read(pStream);
 	// <advc.908a>
 	if (uiFlag >= 15)
 	{
@@ -15987,13 +15664,6 @@ void CvPlayer::read(FDataStreamBase* pStream)
 		else updateCommerceRates(); // </advc.157>
 		m_aiCommerceRateModifier.read(pStream);
 		m_aiCapitalCommerceRateModifier.read(pStream);
-/************************************************************************************************/
-/* START: Advanced Diplomacy     DOTO CITY STATEs												*/
-/************************************************************************************************/
-		m_aiCapitalCommerceRateFTModifier.read(pStream);
-/************************************************************************************************/
-/* END: Advanced Diplomacy     DOTO CITY STATEs												*/
-/************************************************************************************************/
 		// < Civic Infos Plus Start >
     	pStream->Read(NUM_COMMERCE_TYPES, m_aiStateReligionCommerceRateModifier);
     	pStream->Read(NUM_COMMERCE_TYPES, m_aiNonStateReligionCommerceRateModifier);
@@ -16014,13 +15684,6 @@ void CvPlayer::read(FDataStreamBase* pStream)
 		m_aiCommerceRateTimes100.readArray<int>(pStream);
 		m_aiCommerceRateModifier.readArray<int>(pStream);
 		m_aiCapitalCommerceRateModifier.readArray<int>(pStream);
-/************************************************************************************************/
-/* START: Advanced Diplomacy     DOTO CITY STATEs												*/
-/************************************************************************************************/
-		m_aiCapitalCommerceRateFTModifier.readArray<int>(pStream);
-/************************************************************************************************/
-/* END: Advanced Diplomacy     DOTO CITY STATEs												*/
-/************************************************************************************************/
 		// < Civic Infos Plus Start >
 		//keldath - not using advc method
     	pStream->Read(NUM_COMMERCE_TYPES, m_aiStateReligionCommerceRateModifier);
@@ -16664,6 +16327,8 @@ void CvPlayer::write(FDataStreamBase* pStream)
     pStream->Write(NUM_YIELD_TYPES, m_aiStateReligionYieldRateModifier);
     pStream->Write(NUM_YIELD_TYPES, m_aiNonStateReligionYieldRateModifier);
     // < Civic Infos Plus End   >
+//doto 115 civic dependency goverment screen / civic parent child
+	m_aiGovermentConversionCounter.writeArray<int>(pStream);
 	m_aiExtraYieldThreshold.write(pStream);
 	m_aiExtraYieldNaturalThreshold.write(pStream); // advc.908a
 	m_aiTradeYieldModifier.write(pStream);
@@ -16673,13 +16338,6 @@ void CvPlayer::write(FDataStreamBase* pStream)
 	m_aiCommerceRate.write(pStream); // advc.157
 	m_aiCommerceRateModifier.write(pStream);
 	m_aiCapitalCommerceRateModifier.write(pStream);
-/************************************************************************************************/
-/* START: Advanced Diplomacy     DOTO CITY STATEs												*/
-/************************************************************************************************/
-	m_aiCapitalCommerceRateFTModifier.write(pStream);
-/************************************************************************************************/
-/* END: Advanced Diplomacy     DOTO CITY STATEs												*/
-/************************************************************************************************/
 // < Civic Infos Plus Start >
     pStream->Write(NUM_COMMERCE_TYPES, m_aiStateReligionCommerceRateModifier);
     pStream->Write(NUM_COMMERCE_TYPES, m_aiNonStateReligionCommerceRateModifier);
@@ -19129,11 +18787,6 @@ bool CvPlayer::canSplitEmpire() const
 	if (GC.getGame().isOption(GAMEOPTION_NO_VASSAL_STATES))
 		return false;
 
-//doto city states - cant be vassal
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && checkCityState(getID()))
-		return false;
-//doto city states - cant be vassal
-
 	if (isAVassal())
 		return false;
 
@@ -19153,11 +18806,6 @@ bool CvPlayer::canSplitEmpire() const
 bool CvPlayer::canSplitArea(CvArea const& kArea) const // advc: was iAreaId
 {
 	PROFILE_FUNC(); // advc: Moved from CvPlayerAI::AI_doSplit
-
-//doto city states - cant be vassal
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES) && checkCityState(getID()))
-		return false;
-//doto city states - cant be vassal
 
 	if (!hasCapital())
 		return false;
@@ -20022,11 +19670,6 @@ bool CvPlayer::isFullMember(VoteSourceTypes eVoteSource) const
 	if (!isLoyalMember(eVoteSource))
 		return false;
 
-//doto city states - cant be vassal - dont let city state vote - i hope it works
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-		return false;
-//doto city states - cant be vassal - dont let city state vote - i hope it works
-
 	return isVotingMember(eVoteSource);
 }
 
@@ -20475,18 +20118,7 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 	PROFILE_FUNC(); // advc.opt (not frequently called)
 	TradeData item;
 	bool const bOtherHuman = GET_PLAYER(eOtherPlayer).isHuman(); // advc.opt
-/************************************************************************************************/
-/* START: Advanced Diplomacy         doto added                                                 */
-/************************************************************************************************/
-//doto city state - remove irrelevnt options.
-	bool meCityState = checkCityState(getID());
-	bool himCityState = checkCityState(eOtherPlayer);
-	//to be frank, the isFreeTradeValid covers the above, but it checks for the trait, so i decided to keep it below/
-	bool isFreeTradeValid = canPlayersSignFreeTradeAgreement(getID(), eOtherPlayer);
-//doto city state - remove irrelevnt options.
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
+
 	setTradeItem(&item, TRADE_GOLD);
 	if (canTradeItem(eOtherPlayer, item))
 		kOurInventory.insertAtEnd(item);
@@ -20499,27 +20131,9 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 	if (canTradeItem(eOtherPlayer, item))
 		kOurInventory.insertAtEnd(item);
 
-/************************************************************************************************/
-/* START: Advanced Diplomacy     added for doto                                                 */
-/************************************************************************************************/
-//doto city state 
-	if (!meCityState && !himCityState)
-	{
-		setTradeItem(&item, TRADE_VASSAL, 0);
-		if (canTradeItem(eOtherPlayer, item))
-			kOurInventory.insertAtEnd(item);
-	}
-//doto city state 
-	// Free Trade - only if one trader is a city state
-	if(isFreeTradeValid)
-	{
-		setTradeItem(&item, TRADE_FREE_TRADE_ZONE, 0);
-		if (canTradeItem(eOtherPlayer, item))
-			kOurInventory.insertAtEnd(item);
-	}
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
+	setTradeItem(&item, TRADE_VASSAL, 0);
+	if (canTradeItem(eOtherPlayer, item))
+		kOurInventory.insertAtEnd(item);
 
 	setTradeItem(&item, TRADE_OPEN_BORDERS);
 	if (canTradeItem(eOtherPlayer, item))
@@ -20616,15 +20230,6 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 
 		case TRADE_CITIES:
 		{
-/************************************************************************************************/
-/* START: Advanced Diplomacy     added for doto   dont even think about trading cities          */
-/************************************************************************************************/
-			//doto city state 
-			if (meCityState || himCityState)
-				break;
-/************************************************************************************************/
-/* END: Advanced Diplomacy     added for doto                                                 */
-/************************************************************************************************/
 			FOR_EACH_CITY(pLoopCity, *this)
 			{
 				//if (AI_cityTrade(pLoopCity, eOtherPlayer) != DENIAL_NEVER) // K-Mod
@@ -20673,6 +20278,11 @@ void CvPlayer::buildTradeTable(PlayerTypes eOtherPlayer, CLinkList<TradeData>& k
 		case TRADE_CIVIC:
 			FOR_EACH_ENUM(Civic)
 			{
+				//doto civic dependency excluding goverments from vote descisions -> too much code
+				//doto civic dependents dont try to trade these civics. maybe in the future
+				if (GC.getInfo(GC.getInfo(eLoopCivic).getCivicOptionType()).getParentCivicOption() > 0)
+					continue;
+				
 				setTradeItem(&item, TRADE_CIVIC, eLoopCivic);
 				if (canTradeItem(eOtherPlayer, item))
 				{	// <advc.074>
@@ -20922,15 +20532,6 @@ bool CvPlayer::getItemTradeString(PlayerTypes eRecipient, bool bOffer,
 		else szString = GC.getInfo((ReligionTypes)zTradeData.m_iData).getDescription();
 		szIcon = GC.getInfo((ReligionTypes)zTradeData.m_iData).getButton();
 		break; // <advc.034>
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
-	case TRADE_FREE_TRADE_ZONE:
-		szString = gDLL->getText("TXT_KEY_MISC_FREE_TRADE_ZONE");
-		break;
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
 	case TRADE_DISENGAGE:
 		szString.clear();
 		GAMETEXT.buildDisengageString(szString, getID(), eRecipient);
@@ -22261,62 +21862,15 @@ CvUnit* getUnitExternal(IDInfo unit)
 		return NULL;
 	return getUnit(unit);
 } // </advc.opt>
-/****************************************
- *  Archid Mod: 10 Jun 2012
- *  Functionality: Unit Civic Prereq - Archid
- *		Based on code by Afforess
- *	Source:
- *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
- *
- ****************************************/
-bool CvPlayer::hasValidCivics(UnitTypes eUnit) const
-{
-	int iI;
-	bool bValidOrCivic = false;
-	bool bNoReqOrCivic = true;
-	bool bValidAndCivic = true;
-	bool bReqAndCivic = true;
-	for (iI = 0; iI < GC.getNumCivicInfos(); iI++)
-	{
-		if (GC.getUnitInfo(eUnit).isPrereqOrCivics(iI))
-		{
-			bNoReqOrCivic = false;
-			if (isCivic(CivicTypes(iI)))
-			{
-				bValidOrCivic = true;
-			}
-		}
-		
-		if (GC.getUnitInfo(eUnit).isPrereqAndCivics(iI))
-		{
-			bReqAndCivic = true;
-			if (!isCivic(CivicTypes(iI)))
-			{
-				bValidAndCivic = false;
-			}
-		}
-	}
-	
-	if (!bNoReqOrCivic && !bValidOrCivic)
-	{
-		return false;
-	}
-
-	if (bReqAndCivic && !bValidAndCivic)
-	{
-		return false;
-	}
-	
-	return true;
-}
-/**
- ** End: Unit Civic Prereq
- **/
 
 //doto 115 happiness golden age
 void CvPlayer::updateNetNationHappiness(int iHappy, int iUnhappy)
 {
-	m_iHappinessGoldenAgeProgress += (iHappy - iUnhappy);
+	//if negetive dont deduct doto 115
+	if ((iHappy - iUnhappy)> 0)
+		m_iHappinessGoldenAgeProgress += (iHappy - iUnhappy);
+	if (m_iHappinessGoldenAgeProgress < 0)
+		m_iHappinessGoldenAgeProgress = 0;
 }
 
 int CvPlayer::calcHappinessGoldenAgeThreshold() const
@@ -22326,15 +21880,16 @@ int CvPlayer::calcHappinessGoldenAgeThreshold() const
 	iThreshold = (GC.getHAPPYNESS_GOLDEN_AGE_THRESHOLD() * std::max(0, (getHappinessGoldenAgesStarted())));
 
 	iThreshold *= GC.getGameSpeedInfo(GC.getGame().getGameSpeedType()).getGreatPeoplePercent();
-	//iThreshold /= 100;
-	//keldath doto 115 , reduce it a bit
-	iThreshold /= 150;
+	iThreshold /= 50;
 
 	iThreshold *= GC.getEraInfo(GC.getGame().getStartEra()).getGreatPeoplePercent();
 	iThreshold /= 100;
 
 	iThreshold *= GC.getWorldInfo(GC.getMap().getWorldSize()).getResearchPercent();
 	iThreshold /= 130; // research percent standard size
+
+	//each city will add +10 happyness requirement
+	iThreshold += (getNumCities() + 1) * 2;
 
 	return std::max(1, iThreshold);
 }
@@ -22404,7 +21959,7 @@ int CvPlayer::getCultureGoldenAgeThreshold() const
 	iThreshold *= GC.getGameSpeedInfo(GC.getGame().getGameSpeedType()).getGreatPeoplePercent();
 	//iThreshold /= 100;
 	//keldath doto 115 , reduce it a bit
-	iThreshold /= 150;
+	iThreshold /= 100;
 
 	iThreshold *= GC.getEraInfo(GC.getGame().getStartEra()).getGreatPeoplePercent();
 	iThreshold /= 100;
@@ -22414,150 +21969,3 @@ int CvPlayer::getCultureGoldenAgeThreshold() const
 
 	return std::max(1, iThreshold);
 }//KNOEDELend
-
-/************************************************************************************************/
-/* START: Advanced Diplomacy       doto added for city states                                   */
-/************************************************************************************************/
-//there are 2 versions here, one is for one player, the other is for 2.
-//since its going to be used with the teams.cpp, im thinking why waste a loop per player when i can run 1 loop for 2
-//so the canPlayersSignFreeTradeAgreement is for 2 known players and the checkCityState is teams.
-//same for the 
-bool CvPlayer::checkCityState(PlayerTypes ePlayer) const
-{
-	//FOR FUTURE CHANGE: GOTTA USE THE THIS POINTER! 
-	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-		return false;
-	CvPlayer& kPlayer = GET_PLAYER(ePlayer);
-	CivilizationTypes eCiv = kPlayer.getCivilizationType();
-	if (eCiv == NO_CIVILIZATION)
-		return false;
-	CvCivilizationInfo & kCivInfo = GC.getCivilizationInfo(eCiv);
-	return kCivInfo.getIsCityState() == 1;
-	
-	//if (isOurCityState)
-	//	return true;
-	//return false;
-}
-
-TraitTypes CvPlayer::getMemberUniqueTrait(PlayerTypes ePlayer) const
-{
-	CvPlayer& kPlayer = GET_PLAYER(ePlayer);
-	//TraitTypes csTrait = NO_TRAIT;
-
-	FOR_EACH_ENUM2(Trait, eTrait)
-	{
-		if(!kPlayer.hasTrait(eTrait))
-			continue;
-
-		CvTraitInfo& kTrait = GC.getInfo(eTrait);
-		//CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
-		//if ((szText.find(L"Unique Trade") != std::string::npos))
-		if (kTrait.getFreeTradeValid() > 0)
-		{
-			//if (csTrait == eTrait)
-			//{
-			//	return csTrait;
-			//	break;
-			//} removed doto 112c
-			return eTrait;
-			break;
-		}
-	}
-	return NO_TRAIT;
-}
-
-
-bool CvPlayer::canPlayersSignFreeTradeAgreement(PlayerTypes eFrom, PlayerTypes eTo) const
-{
-	//atleast one side gotta have the trait and atleast one side needs to be a city state
-	
-	CvPlayer& kOurPlayer = GET_PLAYER(eFrom);
-	CvPlayer& kthemPlayer = GET_PLAYER(eTo);
-	
-	bool isOurCityState = checkCityState(eFrom);
-	bool isThemCityState = checkCityState(eTo);
-	bool gotCStrait = false;
-
-	FOR_EACH_ENUM2(Trait, eTrait)
-	{
-		bool fromHasTrait = kOurPlayer.hasTrait(eTrait);
-		bool toHasTrait = kthemPlayer.hasTrait(eTrait);
-
-		if (!toHasTrait && !fromHasTrait)
-			continue;
-
-		CvTraitInfo& kTrait = GC.getInfo(eTrait);
-		//CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
-		//if ((szText.find(L"Unique Trade") != std::string::npos))
-		if (kTrait.getFreeTradeValid() > 0)
-		{
-			gotCStrait = true;
-		}
-	}
-	if (!gotCStrait)
-		return false;
-
-	if (isOurCityState && isThemCityState)
-		return false;
-
-	if ((isOurCityState || isThemCityState) && gotCStrait)
-		return true;
-
-	return false;
-}
-//these 2 functions handle 2 trading sides - its to reduce loops for some parts in the dll
-//when we need to get the info of 2 players unlike the twin functions above for the single passed player.
-// get the city state trait for the desired perks.
-// city states cannot trade between them selfs, so there should be just one fr two sides of traders.
-TraitTypes CvPlayer::getPlayersMinUniqueTrait(PlayerTypes eFrom, PlayerTypes eTo) const
-{	
-	CvPlayer& kOurPlayer = GET_PLAYER(eFrom);
-	CvPlayer& kthemPlayer = GET_PLAYER(eTo);
-	
-	//TraitTypes csTrait = NO_TRAIT;
-
-	FOR_EACH_ENUM2(Trait, eTrait)
-	{
-		bool fromHasTrait = kOurPlayer.hasTrait(eTrait);
-		bool toHasTrait = kthemPlayer.hasTrait(eTrait);
-
-		if (!toHasTrait && !fromHasTrait)
-			continue;
-
-		CvTraitInfo& kTrait = GC.getInfo(eTrait);
-		//CvWString szText = CvWString::format(L"%s", kTrait.getDescription());
-		//if ((szText.find(L"Unique Trade") != std::string::npos))
-		if(kTrait.getFreeTradeValid()> 0)
-		{
-			//if (csTrait == eTrait)
-			//{
-			//	return csTrait;
-			//	break;
-			//}fixed diti 112
-			return eTrait;
-		}
-	}
-	return NO_TRAIT;
-}
-
-void CvPlayer::csMemberUpdateFreeTradeTraits(TraitTypes eTrait, int iChange, PlayerTypes ePlayer) const
-{
-	//doto - not using the this pointer on all uses of this funcs.
-	//need to fix it....
-	
-	CvTraitInfo& kTrait = GC.getInfo(eTrait);
-	FAssert(kTrait.getFreeTradeValid() > 0);//it has to be there!
-	
-	FOR_EACH_ENUM(Commerce)
-	{
-		if (kTrait.getCommerceFRmodifier(eLoopCommerce) <= 0)//without it the last commerce entry will always define it - probabaly 0...
-			continue;
-
-		GET_PLAYER(ePlayer).changeCapitalCommerceRateFTModifier(eLoopCommerce,
-			((int)kTrait.getCommerceFRmodifier(eLoopCommerce) * iChange));
-	}
-}
-
-/************************************************************************************************/
-/* START: Advanced Diplomacy       doto added for city states                                   */
-/************************************************************************************************/

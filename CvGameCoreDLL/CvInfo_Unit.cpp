@@ -87,7 +87,6 @@ m_ePrereqCorporation(NO_CORPORATION),
 m_ePrereqBuilding(NO_BUILDING),
 m_ePrereqAndTech(NO_TECH),
 m_ePrereqAndBonus(NO_BONUS),
-//m_iPrereqVicinityBonus(NO_BONUS),  //Shqype Vicinity Bonus Add
 m_iGroupSize(0),
 m_iGroupDefinitions(0),
 m_iUnitMeleeWaveSize(0),
@@ -158,19 +157,6 @@ m_piFeaturePassableTech(NULL),
 m_pbGreatPeoples(NULL),
 m_pbBuildings(NULL),
 //m_pbForceBuildings(NULL), // advc.003t
-/****************************************
- *  Archid Mod: 10 Jun 2012
- *  Functionality: Unit Civic Prereq - Archid
- *		Based on code by Afforess
- *	Source:
- *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
- *
- ****************************************/
-m_pbPrereqOrCivics(NULL),
-m_pbPrereqAndCivics(NULL),
-/**
- ** End: Unit Civic Prereq
- **/
 /********************************************************************************/
 /**		REVDCM									2/16/10				phungus420	*/
 /**																				*/
@@ -200,7 +186,6 @@ m_pbForceObsoleteUnitClass(NULL),
 /********************************************************************************/
 m_pbTerrainImpassable(NULL),
 m_pbFeatureImpassable(NULL),
-//m_piPrereqOrVicinityBonuses(NULL),  //Shqype Vicinity Bonus Add
 m_piProductionTraits(NULL),
 m_piFlavorValue(NULL),
 m_piTerrainAttackModifier(NULL),
@@ -242,19 +227,6 @@ CvUnitInfo::~CvUnitInfo()
 	SAFE_DELETE_ARRAY(m_pbGreatPeoples);
 	SAFE_DELETE_ARRAY(m_pbBuildings);
 	//SAFE_DELETE_ARRAY(m_pbForceBuildings); // advc.003t
-/****************************************
- *  Archid Mod: 10 Jun 2012
- *  Functionality: Unit Civic Prereq - Archid
- *		Based on code by Afforess
- *	Source:
- *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
- *
- ****************************************/
-	SAFE_DELETE_ARRAY(m_pbPrereqOrCivics);
-	SAFE_DELETE_ARRAY(m_pbPrereqAndCivics);
-/**
- ** End: Unit Civic Prereq
- **/
 /********************************************************************************/
 /**		REVDCM									2/16/10				phungus420	*/
 /**																				*/
@@ -270,7 +242,6 @@ CvUnitInfo::~CvUnitInfo()
 /********************************************************************************/
 	SAFE_DELETE_ARRAY(m_pbTerrainImpassable);
 	SAFE_DELETE_ARRAY(m_pbFeatureImpassable);
-//	SAFE_DELETE_ARRAY(m_piPrereqOrVicinityBonuses);  //Shqype Vicinity Bonus Add
 	SAFE_DELETE_ARRAY(m_piProductionTraits);
 	SAFE_DELETE_ARRAY(m_piFlavorValue);
 	SAFE_DELETE_ARRAY(m_piTerrainAttackModifier);
@@ -293,39 +264,6 @@ CvUnitInfo::~CvUnitInfo()
 	SAFE_DELETE_ARRAY(m_paszUnitNames);
 }
 
-//keldath QA-DONE
-/****************************************
- *  Archid Mod: 10 Jun 2012
- *  Functionality: Unit Civic Prereq - Archid
- *		Based on code by Afforess
- *	Source:
- *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
- *
- ****************************************/
-bool CvUnitInfo::isPrereqOrCivics(int i) const
-{
-	FAssertMsg(i < GC.getNumCivicInfos(), "Index out of bounds");
-	FAssertMsg(i > -1, "Index out of bounds");
-	return m_pbPrereqOrCivics ? m_pbPrereqOrCivics[i] : false;
-}
-
-bool CvUnitInfo::isPrereqAndCivics(int i) const
-{
-	FAssertMsg(i < GC.getNumCivicInfos(), "Index out of bounds");
-	FAssertMsg(i > -1, "Index out of bounds");
-	return m_pbPrereqAndCivics ? m_pbPrereqAndCivics[i] : false;
-}
-
-//This is for the readpass3
-int CvUnitInfo::isPrereqOrCivicsVectorSize()					{return m_aszPrereqOrCivicsforPass3.size();}
-CvString CvUnitInfo::isPrereqOrCivicsNamesVectorElement(int i)	{return m_aszPrereqOrCivicsforPass3[i];}
-int CvUnitInfo::isPrereqOrCivicsValuesVectorElement(int i)		{return m_abPrereqOrCivicsforPass3[i];}
-int CvUnitInfo::isPrereqAndCivicsVectorSize()					{return m_aszPrereqAndCivicsforPass3.size();}
-CvString CvUnitInfo::isPrereqAndCivicsNamesVectorElement(int i)	{return m_aszPrereqAndCivicsforPass3[i];}
-int CvUnitInfo::isPrereqAndCivicsValuesVectorElement(int i)		{return m_abPrereqAndCivicsforPass3[i];}
-/**
- ** End: Unit Civic Prereq
- **/
 /************************************************************************************************/
 /* City Size Prerequisite - 3 Jan 2012     START                                OrionVeteran    */
 /************************************************************************************************/
@@ -336,7 +274,6 @@ int CvUnitInfo::getNumCitySizeUnitPrereq() const
 /************************************************************************************************/
 /* City Size Prerequisite                  END                                                  */
 /**********************/
-
 int CvUnitInfo::getAdvancedStartCost() const
 {
 	return m_iAdvancedStartCost;
@@ -497,12 +434,6 @@ bool CvUnitInfo::getForceObsoleteUnitClass(int i) const
 /********************************************************************************/
 /**		REVDCM									END								*/
 /********************************************************************************/
-//Shqype Vicinity Bonus Start
-/*int CvUnitInfo::getPrereqVicinityBonus() const			
-{
-	return m_iPrereqVicinityBonus;
-}*/
-//Shqype Vicinity Bonus End
 // <advc.003t> Calls from Python aren't going to respect the bounds
 int CvUnitInfo::py_getPrereqAndTechs(int i) const
 {
@@ -510,14 +441,6 @@ int CvUnitInfo::py_getPrereqAndTechs(int i) const
 		return NO_TECH;
 	return m_aePrereqAndTechs[i];
 }
-//Shqype Vicinity Bonus Start
-/*int CvUnitInfo::getPrereqOrVicinityBonuses(int i) const
-{
-	FAssertMsg(i < GC.getNUM_UNIT_PREREQ_OR_BONUSES(), "Index out of bounds");
-	FAssertMsg(i > -1, "Index out of bounds");
-	return m_piPrereqOrVicinityBonuses ? m_piPrereqOrVicinityBonuses[i] : -1;
-}*/
-//Shqype Vicinity Bonus End
 
 int CvUnitInfo::py_getPrereqOrBonuses(int i) const
 {
@@ -1041,8 +964,6 @@ void CvUnitInfo::read(FDataStreamBase* stream)
 	stream->Read((int*)&m_ePrereqBuilding);
 	stream->Read((int*)&m_ePrereqAndTech);
 	stream->Read((int*)&m_ePrereqAndBonus);
-//Shqype Vicinity Bonus Add	
-//	stream->Read(&m_iPrereqVicinityBonus);  //Shqype Vicinity Bonus Add
 	stream->Read(&m_iGroupSize);
 	stream->Read(&m_iGroupDefinitions);
 	stream->Read(&m_iUnitMeleeWaveSize);
@@ -1103,11 +1024,6 @@ void CvUnitInfo::read(FDataStreamBase* stream)
 		m_aePrereqAndTechs.resize(iPrereqAndTechs);
 		stream->Read(iPrereqAndTechs, (int*)&m_aePrereqAndTechs[0]);
 	}
-//Shqype Vicinity Bonus Start
-//	SAFE_DELETE_ARRAY(m_piPrereqOrVicinityBonuses);
-//	m_piPrereqOrVicinityBonuses = new int[GC.getNUM_UNIT_PREREQ_OR_BONUSES()];
-//	stream->Read(GC.getNUM_UNIT_PREREQ_OR_BONUSES(), m_piPrereqOrVicinityBonuses);
-//Shqype Vicinity Bonus End
 	int iPrereqOrBonuses;
 	stream->Read(&iPrereqOrBonuses);
 	if (iPrereqOrBonuses > 0)
@@ -1213,24 +1129,6 @@ void CvUnitInfo::read(FDataStreamBase* stream)
 	/*SAFE_DELETE_ARRAY(m_pbForceBuildings);
 	m_pbForceBuildings = new bool[GC.getNumBuildingInfos()];
 	stream->Read(GC.getNumBuildingInfos(), m_pbForceBuildings);*/
-/****************************************
- *  Archid Mod: 10 Jun 2012
- *  Functionality: Unit Civic Prereq - Archid
- *		Based on code by Afforess
- *	Source:
- *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
- *
- ****************************************/
-	SAFE_DELETE_ARRAY(m_pbPrereqOrCivics);
-	m_pbPrereqOrCivics = new bool[GC.getNumCivicInfos()];
-	stream->Read(GC.getNumCivicInfos(), m_pbPrereqOrCivics);
-	
-	SAFE_DELETE_ARRAY(m_pbPrereqAndCivics);
-	m_pbPrereqAndCivics = new bool[GC.getNumCivicInfos()];
-	stream->Read(GC.getNumCivicInfos(), m_pbPrereqAndCivics);
-/**
- ** End: Unit Civic Prereq
- **/
 /********************************************************************************/
 /**		REVDCM									2/16/10				phungus420	*/
 /**																				*/
@@ -1389,7 +1287,6 @@ void CvUnitInfo::write(FDataStreamBase* stream)
 	stream->Write(m_ePrereqBuilding);
 	stream->Write(m_ePrereqAndTech);
 	stream->Write(m_ePrereqAndBonus);
-//	stream->Write(m_iPrereqVicinityBonus);  //Shqype Vicinity Bonus Add
 	stream->Write(m_iGroupSize);
 	stream->Write(m_iGroupDefinitions);
 	stream->Write(m_iUnitMeleeWaveSize);
@@ -1453,8 +1350,6 @@ void CvUnitInfo::write(FDataStreamBase* stream)
 		if (iPrereqOrBonuses > 0)
 			stream->Write(iPrereqOrBonuses, (int*)&m_aePrereqOrBonuses[0]);
 	} // </advc.003t>  <advc.905b>
-//Shqype Vicinity Bonus Add	
-	//	stream->Write(GC.getNUM_UNIT_PREREQ_OR_BONUSES(), m_piPrereqOrVicinityBonuses);  //Shqype Vicinity Bonus Add
 	stream->Write(getNumSpeedBonuses());
 	for (int i = 0; i < getNumSpeedBonuses(); i++)
 	{
@@ -1490,19 +1385,7 @@ void CvUnitInfo::write(FDataStreamBase* stream)
 	stream->Write(GC.getNumSpecialistInfos(), m_pbGreatPeoples);
 	stream->Write(GC.getNumBuildingInfos(), m_pbBuildings);
 	//stream->Write(GC.getNumBuildingInfos(), m_pbForceBuildings); // advc.003t
-/****************************************
- *  Archid Mod: 10 Jun 2012
- *  Functionality: Unit Civic Prereq - Archid
- *		Based on code by Afforess
- *	Source:
- *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
- *
- ****************************************/
-	stream->Write(GC.getNumCivicInfos(), m_pbPrereqOrCivics);
-	stream->Write(GC.getNumCivicInfos(), m_pbPrereqAndCivics);
-/**
- ** End: Unit Civic Prereq
- **/
+
 /********************************************************************************/
 /**		REVDCM									2/16/10				phungus420	*/
 /**																				*/
@@ -1655,112 +1538,23 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 
 	pXML->SetVariableListTagPair(&m_pbBuildings, "Buildings", GC.getNumBuildingInfos());
 	//pXML->SetVariableListTagPair(&m_pbForceBuildings, "ForceBuildings", GC.getNumBuildingInfos()); // advc.003t
-{
-	CvString szTextVal; //readded by keldath - needed for the below - removed in 097
-/****************************************
- *  Archid Mod: 10 Jun 2012
- *  Functionality: Unit Civic Prereq - Archid
- *		Based on code by Afforess
- *	Source:
- *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
- *
- ****************************************/
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"PrereqOrCivics"))
-	{
-		if (pXML->SkipToNextVal())
-		{
-			int iNumSibs = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
-			bool bTemp = false;
-			if (iNumSibs > 0)
-			{
-				if (gDLL->getXMLIFace()->SetToChild(pXML->GetXML()))
-				{
-					for (int i=0;i<iNumSibs;i++)
-					{
-						if (pXML->GetChildXmlVal(szTextVal))
-						{
-                            m_aszPrereqOrCivicsforPass3.push_back(szTextVal);
-							//keldath qa3-done -it was &bTemp 
-                            pXML->GetNextXmlVal(bTemp);
-                            m_abPrereqOrCivicsforPass3.push_back(bTemp);
-							gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
-						}
-
-						if (!gDLL->getXMLIFace()->NextSibling(pXML->GetXML()))
-						{
-							break;
-						}
-					}
-
-					gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
-				}
-			}
-		}
-
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
-	}
-	
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"PrereqAndCivics"))
-	{
-		if (pXML->SkipToNextVal())
-		{
-			int iNumSibs = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
-			bool bTemp = false;
-			if (iNumSibs > 0)
-			{
-				if (gDLL->getXMLIFace()->SetToChild(pXML->GetXML()))
-				{
-					for (int i=0;i<iNumSibs;i++)
-					{
-						if (pXML->GetChildXmlVal(szTextVal))
-						{
-                            m_aszPrereqAndCivicsforPass3.push_back(szTextVal);
-							//keldath qa3 -it was &bTemp - whats the diff?
-                            pXML->GetNextXmlVal(bTemp);
-                            m_abPrereqAndCivicsforPass3.push_back(bTemp);
-							gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
-						}
-
-						if (!gDLL->getXMLIFace()->NextSibling(pXML->GetXML()))
-						{
-							break;
-						}
-					}
-
-					gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
-				}
-			}
-		}
-
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
-	}
-/**
- ** End: Unit Civic Prereq
- **/
-}
 /********************************************************************************/
 /**		REVDCM									2/16/10				phungus420	*/
 /**																				*/
 /**		CanTrain																*/
 /********************************************************************************/
-{
-	CvString szTextVal; //readded by keldath - needed for the below - removed in 097
-	pXML->GetChildXmlValByName(szTextVal, "MaxStartEra",
-		""); // f1rpo
+	CvString szTextVal;
+	pXML->GetChildXmlValByName(szTextVal, "MaxStartEra",""); // f1rpo
 	m_iMaxStartEra = pXML->FindInInfoClass(szTextVal);
 
-	pXML->GetChildXmlValByName(szTextVal, "ForceObsoleteTech",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "ForceObsoleteTech",""); // f1rpo
 	m_iForceObsoleteTech = pXML->FindInInfoClass(szTextVal);
 	
-	pXML->GetChildXmlValByName(&m_bStateReligion, "bStateReligion", false,
-		false); // f1rpo
-	pXML->GetChildXmlValByName(szTextVal, "PrereqGameOption",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(&m_bStateReligion, "bStateReligion", false, false); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "PrereqGameOption",""); // f1rpo
 	m_iPrereqGameOption = pXML->FindInInfoClass(szTextVal);
 
-	pXML->GetChildXmlValByName(szTextVal, "NotGameOption",
-		""); // f1rpo
+	pXML->GetChildXmlValByName(szTextVal, "NotGameOption",""); // f1rpo
 	m_iNotGameOption = pXML->FindInInfoClass(szTextVal);
 //civics is handles by archid mod code.
 //	pXML->SetVariableListTagPair(&m_pbPrereqOrCivics, "PrereqOrCivics", sizeof(GC.getCivicInfo((CivicTypes)0)), GC.getNumCivicInfos());
@@ -1791,7 +1585,6 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 
 	pXML->SetVariableListTagPair(&m_pbForceObsoleteUnitClass, "ForceObsoleteUnitClasses", 
 			/*sizeof(GC.getUnitClassInfo((UnitClassTypes)0)),*/ GC.getNumUnitClassInfos());
-}	
 /********************************************************************************/
 /**		REVDCM									END								*/
 /********************************************************************************/
@@ -1857,40 +1650,6 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 		}
 		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
 	}
-//Shqype Vicinity Bonus Start
-/*	pXML->GetChildXmlValByName(szTextVal, "VicinityBonusType");
-	m_iPrereqVicinityBonus = pXML->FindInInfoClass(szTextVal);
-
-	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(),"PrereqVicinityBonuses"))
-	{
-		if (pXML->SkipToNextVal())
-		{
-			iNumSibs = gDLL->getXMLIFace()->GetNumChildren(pXML->GetXML());
-			FAssertMsg((0 < GC.getNUM_UNIT_PREREQ_OR_BONUSES()),"Allocating zero or less memory in SetGlobalUnitInfo");
-			pXML->InitList(&m_piPrereqOrVicinityBonuses, GC.getNUM_UNIT_PREREQ_OR_BONUSES(), -1);
-
-			if (0 < iNumSibs)
-			{
-				if (pXML->GetChildXmlVal(szTextVal))
-				{
-					FAssertMsg((iNumSibs <= GC.getNUM_UNIT_PREREQ_OR_BONUSES()) , "There are more siblings than memory allocated for them in SetGlobalUnitInfo");
-					for (j=0;j<iNumSibs;j++)
-					{
-						m_piPrereqOrVicinityBonuses[j] = pXML->FindInInfoClass(szTextVal);
-						if (!pXML->GetNextXmlVal(szTextVal))
-						{
-							break;
-						}
-					}
-
-					gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
-				}
-			}
-		}
-
-		gDLL->getXMLIFace()->SetToParent(pXML->GetXML());
-	}*/
-//Shqype Vicinity Bonus End
 	// <advc.905b>
 	if (gDLL->getXMLIFace()->SetToChildByTagName(pXML->GetXML(), "SpeedBonuses"))
 	{
@@ -1975,7 +1734,6 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 	pXML->GetChildXmlValByName(&m_iCityDefenseModifier, "iCityDefense");
 	pXML->GetChildXmlValByName(&m_iAnimalCombatModifier, "iAnimalCombat");
 	// advc.315c:
-	// advc.315c: re added - aecondary valure - keldath
 	pXML->GetChildXmlValByName(&m_iBarbarianCombatModifier, "iBarbarianCombat", 0);
 	pXML->GetChildXmlValByName(&m_iHillsAttackModifier, "iHillsAttack");
 	pXML->GetChildXmlValByName(&m_iHillsDefenseModifier, "iHillsDefense");
@@ -2064,60 +1822,6 @@ bool CvUnitInfo::read(CvXMLLoadUtility* pXML)
 
 	return true;
 }
-
-/****************************************
- *  Archid Mod: 10 Jun 2012
- *  Functionality: Unit Civic Prereq - Archid
- *		Based on code by Afforess
- *	Source:
- *	  http://forums.civfanatics.com/downloads.php?do=file&id=15508
- *
- ****************************************/
-bool CvUnitInfo::readPass3()
-{
-	m_pbPrereqOrCivics = new bool[GC.getNumCivicInfos()];
-	for (int iI = 0; iI < GC.getNumCivicInfos(); iI++)
-	{
-		m_pbPrereqOrCivics[iI] = false;
-	}
-	if (!m_abPrereqOrCivicsforPass3.empty() && !m_aszPrereqOrCivicsforPass3.empty())
-	{
-		int iNumLoad = m_abPrereqOrCivicsforPass3.size();
-		for(int iI = 0; iI < iNumLoad; iI++)
-		{
-			//FAssertMsg(GC.getInfoTypeForString(m_aszPrereqOrCivicsforPass3[iI]) >= 0, "Warning, about to leak memory in CvBuildingInfo::readPass3");
-			int iTempIndex = GC.getInfoTypeForString(m_aszPrereqOrCivicsforPass3[iI]);
-			if (iTempIndex >= 0 && iTempIndex < GC.getNumCivicInfos())
-				m_pbPrereqOrCivics[iTempIndex] = m_abPrereqOrCivicsforPass3[iI];
-		}
-		m_aszPrereqOrCivicsforPass3.clear();
-		m_abPrereqOrCivicsforPass3.clear();
-	}
-	m_pbPrereqAndCivics = new bool[GC.getNumCivicInfos()];
-    for (int iI = 0; iI < GC.getNumCivicInfos(); iI++)
-	{
-        m_pbPrereqAndCivics[iI] = false;
-	}
-	if (!m_abPrereqAndCivicsforPass3.empty() && !m_aszPrereqAndCivicsforPass3.empty())
-	{
-		int iNumLoad = m_abPrereqAndCivicsforPass3.size();
-		for(int iI = 0; iI < iNumLoad; iI++)
-		{
-			//FAssertMsg(GC.getInfoTypeForString(m_aszPrereqAndCivicsforPass3[iI]) >= 0, "Warning, about to leak memory in CvBuildingInfo::readPass3");
-			int iTempIndex = GC.getInfoTypeForString(m_aszPrereqAndCivicsforPass3[iI]);
-			if (iTempIndex >= 0 && iTempIndex < GC.getNumCivicInfos())
-				m_pbPrereqAndCivics[iTempIndex] = m_abPrereqAndCivicsforPass3[iI];
-		}
-		m_aszPrereqAndCivicsforPass3.clear();
-		m_abPrereqAndCivicsforPass3.clear();
-	}
-	
-	return true;
-}
-
-/**
- ** End: Unit Civic Prereq
- **/
 
 const TCHAR* CvUnitArtStyleInfo::getEarlyArtDefineTag(int i, int j) const
 {

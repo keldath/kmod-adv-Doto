@@ -47,12 +47,6 @@ public:
 
 	void updateCulture(bool bBumpUnits, bool bUpdatePlotGroups);
 	void updateFog();
-//doto city states	start
-	int isPlotinCsVicinity(PlayerTypes eExpandingPlayer, int iMinRange, int iMaxRange);
-	int isInCSsafeRadious(PlayerTypes ePlayer, int iMinRange, int iMaxRange, CvPlot* toPlot);
-	bool canChangeCultureOnTile(PlayerTypes eExpandingPlayer);
-	void colorCsPlot(PlayerTypes eNewOwner, PlayerTypes eOldOwner);
-//doto city states	end	
 	void updateVisibility();
 	void updateSymbolDisplay();
 	void updateSymbolVisibility();
@@ -192,20 +186,6 @@ public:
 	CvUnit* getBestDefender(PlayerTypes eOwner, DefenderFilters& kFilters) const;
 	// </advc>
 	// BETTER_BTS_AI_MOD, Lead From Behind (UncutDragon), 02/21/10, jdog5000:
-// MOD - START - Ranged Strike AI	
-// i had to duplicate the function getBestDefender - see text in cvplot cpp.
-//i should try to use the advciv function ...but i got tired trying
-	CvUnit* getBestDefenderVsRanged(PlayerTypes eOwner, PlayerTypes eAttackingPlayer = NO_PLAYER, CvUnit const* pAttacker = NULL,
-			bool bTestEnemy = false, bool bTestPotentialEnemy = false,
-			bool bTestVisible = false, // advc.028
-			/*	advc: New params to allow hasDefender checks.
-				advc.089: bTestCanAttack = true by default. */
-			bool bTestCanAttack = true, bool bTestAny = false,
-			/*	(Ideally, this should be swapped with bTestVisible to stay closer
-				to the original code. bTestCanMove had been unused for a while.
-				Not going to change this now, too error-prone.) */
-			bool bTestCanMove = false) const;
-// MOD - END - Ranged Strike AI
 	bool hasDefender(bool bTestCanAttack, PlayerTypes eOwner,
 			PlayerTypes eAttackingPlayer = NO_PLAYER, const CvUnit* pAttacker = NULL,
 			bool bTestAtWar = false, bool bTestPotentialEnemy = false
@@ -221,7 +201,8 @@ public:
 			TeamTypes eAttacker = NO_TEAM, bool bHelp = false,
 			bool bGarrisonStrength = false) const; // advc.500b
 	int movementCost(CvUnit const& kUnit, CvPlot const& kFrom,										// Exposed to Python
-			bool bAssumeRevealed = true) const; // advc.001i
+			bool bAssumeRevealed = true, // advc.001i
+			bool bIgnoreRoutes = false) const; // advc.001t
 	// advc.enum: Still exposed to Python, obsolete within the DLL.
 	/*int getExtraMovePathCost() const;																// Exposed to Python
 	void changeExtraMovePathCost(int iChange);*/													// Exposed to Python
@@ -614,9 +595,6 @@ public:
 // < JCultureControl Mod Start >
 	PlayerTypes getImprovementOwner() const;               // Exposed to Python
 	void setImprovementOwner(PlayerTypes eNewValue);               // Exposed to Python
-//keldath QA-DONE answer:
-//this maked the definition in the cpp file not to be needed.
-//so i did mark it out.
 	int getCultureControl(PlayerTypes eIndex) const { return m_aiCultureControl.get(eIndex); }															// Exposed to Python
 	//int getCultureControl(PlayerTypes eIndex) const;             // Exposed to Python
 	int countTotalCultureControl() const;             // Exposed to Python
@@ -877,8 +855,6 @@ public:
 	int numAdjacentPlots() const { return m_iAdjPlots; }
 	// </advc.003s>
 
-//Shqype Vicinity Bonus Add
-//    bool isHasValidBonus() const;  
 	wchar const* debugStr() const; // advc.031c
 
 	void read(FDataStreamBase* pStream);

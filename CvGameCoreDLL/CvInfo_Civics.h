@@ -52,7 +52,7 @@ public: // The const functions are exposed to Python except those added by AdvCi
 	int getFreeSpecialist() const { return m_iFreeSpecialist; }
 	int getTradeRoutes() const { return m_iTradeRoutes; }
 	TechTypes getTechPrereq() const { return m_eTechPrereq; }
-/* doto Civics parent - Start */
+/* doto Civics dependency parent - Start */
 //this is a special trick to set the tech prereq of a child civic
 // to the tech of its parent -> if the tech of that child is NONE (NO_TECH)
 	void setTechPrereq(TechTypes eTech) { m_eTechPrereq = eTech; }
@@ -203,7 +203,7 @@ protected:
 	bool m_bMilitaryFoodProduction;
 	bool m_bBuildingOnlyHealthy;
 	bool m_bNoForeignTrade;
-	bool m_bNoCorporations;	
+	bool m_bNoCorporations;
 	bool m_bNoForeignCorporations;
 /* doto Civics  parent - Start */
 	std::vector<CivicTypes> m_aeParentCivicsChildren;

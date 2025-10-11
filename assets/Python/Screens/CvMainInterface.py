@@ -90,13 +90,6 @@ g_NumProcessInfos = 0
 g_NumActionInfos = 0
 g_eEndTurnButtonState = -1
 g_pSelectedUnit = 0
-# doto specialis instead of pop start
-# todo - there is a tag nog for citizens
-civilians = ['Farmer', 'Miner', 'Laborer'] # index aligned to below - should use dict...
-civiliansIdx = ['SPECIALIST_FARMER', 'SPECIALIST_MINER', 'SPECIALIST_LABORER']
-g_iFreeCivilians = 0
-# doto specialis instead of pop end
-
 g_szTimeText = ""
 gAlignedScoreboard = None # advc.085
 # BUG - NJAGC - start
@@ -343,7 +336,11 @@ class CvMainInterface:
 			lRect = gRect("DefaultHelpAreaMin")
 		else:
 			lRect = gRect("DefaultHelpArea")
-		# (Seems that the EXE ignores the fWidth and iMinWidth params. Sadly.)
+		# advc.092c: Since the EXE apparently ignores the iMinWidth param
+		# (as well as fWidth), let the DLL handle the matter - which it will do
+		# by hacking the EXE. And this hack needs to happen before creating the
+		# help text area.
+		gc.getGame().setHelpTextAreaWidth(lRect.width())
 		self.screen.setHelpTextArea(HLEN(350), FontTypes.SMALL_FONT,
 				lRect.x(), lRect.y(), -0.1,
 				False, "", True, False, CvUtil.FONT_LEFT_JUSTIFY, lRect.width())
@@ -852,6 +849,7 @@ class CvMainInterface:
 		self.m_iNumPlotListButtonsPerRow = (
 				(gRect("BottomButtonMaxSpace").width() - 2 * iPlotListUnitBtnSz) /
 				iPlotListUnitBtnSz)
+		# (Also used for the PLE Info Pane)
 		gSetRect("DefaultHelpArea", "Top",
 				HSPACE(7),
 				# (The center bottom panel doesn't fully scale up, so we shouldn't
@@ -861,9 +859,14 @@ class CvMainInterface:
 				# to maximize the amount of text we can display (while also having tall corners
 				# for the sake of a large minimap).
 				gRect("LowerLeftCornerBackgr").y(),
-				# Default area will actually ignore this, but it's relevant
-				# for the PLE Info Pane.
-				gRect("LowerLeftCorner").width() + HLEN(6), 0)
+				# The subtrahend should account for decorations on the corner panel;
+				# for visual alignment.
+				#gRect("LowerLeftCornerPanel").width() - 21,
+				max(280,
+				# The help text really doesn't use that much width; it's been kept short
+				# with the original width in mind. So ...
+				gRect("LowerLeftCornerPanel").width() - HLEN(0.12 * gRect("LowerLeftCornerPanel").width())),
+				0)
 		gSetRect("DefaultHelpAreaMin", "Top",
 				HSPACE(7),
 				# As in BtS; pretty arbitrary and overlaps the unit pane.
@@ -1283,10 +1286,8 @@ class CvMainInterface:
 
 		self.visibleSpecialists = []
 		for i in range(gc.getNumSpecialistInfos() - 1, -1, -1):
-			if (gc.getSpecialistInfo(i).isVisible() and
-# doto specialis instead of pop start - city state - do not display civiliazns
-				gc.getSpecialistInfo(i).getDescription() not in civilians):
-					self.visibleSpecialists.append(i)
+			if (gc.getSpecialistInfo(i).isVisible()):
+				self.visibleSpecialists.append(i)
 		# Lots of buttons on the right panel; need to be careful about scaling those up.
 		iCitizenBtnSize = BTNSZ(24, 0.3)
 		iAdjustBtnSize = (20 * iCitizenBtnSize) / 24
@@ -3767,17 +3768,14 @@ class CvMainInterface:
 		screen = self.screen
 		iFreeSpecialistCount = 0
 		for iSpecialist in range(gc.getNumSpecialistInfos()):
-		# doto specialis instead of pop start - city states
-			if gc.getSpecialistInfo(iSpecialist).getDescription() not in civilians:
-				iFreeSpecialistCount += pHeadSelectedCity.getFreeSpecialistCount(iSpecialist)
+			iFreeSpecialistCount += pHeadSelectedCity.getFreeSpecialistCount(iSpecialist)
 
 		iCount = 0
 		lFirstFreeSpecialist = gRect("FirstFreeSpecialist")
 		if iFreeSpecialistCount > MAX_CITIZEN_BUTTONS:
 			for iSpecialist in range(gc.getNumSpecialistInfos()):
 				if pHeadSelectedCity.getFreeSpecialistCount(iSpecialist) > 0:
-# doto specialis instead of pop start - city states	
-					if (iCount < MAX_CITIZEN_BUTTONS and gc.getSpecialistInfo(iSpecialist).getDescription() not in civilians):
+					if iCount < MAX_CITIZEN_BUTTONS:
 						szName = "FreeSpecialist" + str(iCount)
 						screen.setImageButton(szName,
 								gc.getSpecialistInfo(iSpecialist).getTexture(),
@@ -3791,8 +3789,7 @@ class CvMainInterface:
 		else:
 			for iSpecialist in range(gc.getNumSpecialistInfos()):
 				for j in range(pHeadSelectedCity.getFreeSpecialistCount(iSpecialist)):
-# doto specialis instead of pop start - city state					
-					if (iCount < MAX_CITIZEN_BUTTONS and gc.getSpecialistInfo(iSpecialist).getDescription() not in civilians):
+					if iCount < MAX_CITIZEN_BUTTONS:
 						szName = "FreeSpecialist" + str(iCount)
 						screen.setImageButton(szName,
 								gc.getSpecialistInfo(iSpecialist).getTexture(),
@@ -3917,9 +3914,7 @@ class CvMainInterface:
 
 		iFreeSpecialists = 0
 		for iSpecialist in range(gc.getNumSpecialistInfos()):
-# doto specialis instead of pop start - city states
-			if gc.getSpecialistInfo(iSpecialist).getDescription() not in civilians:	
-				iFreeSpecialists += pHeadSelectedCity.getFreeSpecialistCount(iSpecialist)
+			iFreeSpecialists += pHeadSelectedCity.getFreeSpecialistCount(iSpecialist)
 		if iFreeSpecialists > 0:
 			iStackWidth = min(gRect("StackerRows").width() / iFreeSpecialists,
 					MAX_SPECIALIST_BUTTON_SPACING)
@@ -3933,15 +3928,12 @@ class CvMainInterface:
 		iCount = 0
 		for iSpecialist in range(gc.getNumSpecialistInfos() - 1, -1, -1):
 			for j in range(pHeadSelectedCity.getFreeSpecialistCount(iSpecialist)):
-# doto specialis instead of pop start - city states			
-				if gc.getSpecialistInfo(iSpecialist).getDescription() not in civilians:	
-					szName = "Stacker_FreeSpecialist" + str(iCount)
-					gSetRectangle(szName, lFreeSpecialistButtons.next())
-					self.setImageButton(szName, gc.getSpecialistInfo(iSpecialist).getTexture(),
-							WidgetTypes.WIDGET_FREE_CITIZEN, iSpecialist, 1)
-					screen.show(szName)
-					iCount += 1
-# doto specialis instead of pop start - city states			
+				szName = "Stacker_FreeSpecialist" + str(iCount)
+				gSetRectangle(szName, lFreeSpecialistButtons.next())
+				self.setImageButton(szName, gc.getSpecialistInfo(iSpecialist).getTexture(),
+						WidgetTypes.WIDGET_FREE_CITIZEN, iSpecialist, 1)
+				screen.show(szName)
+				iCount += 1
 
 		iAngry = pHeadSelectedCity.angryPopulation(0)
 		if iAngry > 0:
@@ -3998,10 +3990,7 @@ class CvMainInterface:
 				#	gRect("GreatPeopleBar").height()#27  164  | 91-34=57  57-34=23  23-34=-11
 				#iYOffset = 282
 				lRect = lSpecialistButtons.next()
-# doto specialis instead of pop start -city states		
-				if (k >= pHeadSelectedCity.getSpecialistCount(iSpecialist) and
-					gc.getSpecialistInfo(iSpecialist).getDescription() not in civilians):
-# doto specialis instead of pop start -city states
+				if k >= pHeadSelectedCity.getSpecialistCount(iSpecialist):
 					szName = "IncrCitizenBanner" + szIndex
 					gSetRectangle(szName, lRect)
 					self.addCheckBox(szName,
@@ -4280,7 +4269,7 @@ class CvMainInterface:
 				else:
 					szText = localText.getText("TXT_KEY_HAPPY_GOLDEN_AGE", (CyGame().getSymbolID(FontSymbols.GOLDEN_AGE_CHAR), iHappyProgress, iHappyThreshold))
 				# screen.setLabel("GoldenAgeBar", "Background", szText, CvUtil.FONT_LEFT_JUSTIFY, int(screen.getYResolution() / 4), int(screen.getYResolution() / 4) - 20, -0.1, FontTypes.GAME_FONT, WidgetTypes.WIDGET_HELP_POPULATION, -1, -1)	
-				screen.setLabel("GoldenAgeBar", "Background", szText, CvUtil.FONT_LEFT_JUSTIFY, 10, int(screen.getYResolution() / 4) - 20, -0.1, FontTypes.GAME_FONT, WidgetTypes.WIDGET_HAPPYNESS_GOLDEN_AGE, -1, -1)			
+				screen.setLabel("GoldenAgeBar", "Background", szText, CvUtil.FONT_LEFT_JUSTIFY, 10, int(screen.getYResolution() / 5) - 20, -0.1, FontTypes.GAME_FONT, WidgetTypes.WIDGET_HAPPYNESS_GOLDEN_AGE, -1, -1)			
 				CvUtil.pyPrint("doto GoldenAgeBar show")
 				screen.show("GoldenAgeBar")
 			else:
@@ -4588,7 +4577,7 @@ class CvMainInterface:
 # doto units bonus cap
 		if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_UNITS_BONUS_CAP):
 			screen.hide("UnitsBonusesCap")
-# doto units bonus cap	
+# doto units bonus cap
 ## Happy Golden Age ##
 		if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_HAPPYNESS_GOLDEN_AGE):
 			screen.show("GoldenAgeBar")
@@ -4634,22 +4623,6 @@ class CvMainInterface:
 			screen.hide(szName)
 			szName = "BonusBack" + str(i)
 			screen.hide(szName)
-			
-# doto specialists instead of population - for city states - hide when out of the city 1/2
-# count how many specialists civilians are there and set the text for each count
-		global g_iFreeCivilians
-		i = 0
-		counter = 0
-		cityStateOption = gc.getGame().isOption(GameOptionTypes.GAMEOPTION_CITY_STATES)
-		if g_iFreeCivilians > 0 and cityStateOption:
-			for i in range(len(civiliansIdx)):
-				ecounter = 0
-				while ecounter < g_iFreeCivilians:
-					szName = "FreeCivilians" + str(counter) + str(ecounter)
-					screen.hide( szName )
-					ecounter += 1
-				counter += 1
-# doto specialists instead of population - for city states	1/2
 
 		# advc: Deal with the non-city branch first (to reduce indentation)
 		if not CyInterface().isCityScreenUp():
@@ -4715,45 +4688,8 @@ class CvMainInterface:
 
 		if (pHeadSelectedCity.isPower()):
 			szBuffer += u"%c" %(CyGame().getSymbolID(FontSymbols.POWER_CHAR))
-# doto specialists instead of population - for city states 2/2					
-# display the civilian count in the city name _ add the civilian icons on the mid top city window.
-		isCityState = gc.getCivilizationInfo(gc.getPlayer(pHeadSelectedCity.getOwner()).getCivilizationType()).getIsCityState() == 1
-		if isCityState and cityStateOption:
-			cnt1 = pHeadSelectedCity.getFreeSpecialistCount(gc.getInfoTypeForString(civiliansIdx[0]))
-			cnt2 = pHeadSelectedCity.getFreeSpecialistCount(gc.getInfoTypeForString(civiliansIdx[1]))
-			cnt3 = pHeadSelectedCity.getFreeSpecialistCount(gc.getInfoTypeForString(civiliansIdx[2]))
-			iCivilianCnt = cnt1 + cnt2 + cnt3
 
-			szBuffer += u"%s: %d -> Pop: %d" %(pHeadSelectedCity.getName(), (pHeadSelectedCity.getPopulation() + iCivilianCnt), pHeadSelectedCity.getPopulation())
-
-			counter = 0
-			cAmount = 0
-			prevTypeMax = 0
-			typeSpace = 0
-			for ic in range(len(civiliansIdx)):
-				eSpecialist = gc.getInfoTypeForString(civiliansIdx[ic])
-				cAmount = pHeadSelectedCity.getFreeSpecialistCount(eSpecialist)
-				ecounter = 0
-				prevTypeMax = (cAmount * 25) * counter
-				if (cAmount > 0):
-					while ecounter < cAmount:
-						szName = "FreeCivilians" + str(counter) + str(ecounter)
-						if ecounter == 0 and counter > 0:
-							typeSpace = prevTypeMax
-						screen.setImageButton( szName, gc.getSpecialistInfo(eSpecialist).getTexture(), screen.centerX(512) - 50 + typeSpace + (ecounter * 25), 150, 45, 55, WidgetTypes.WIDGET_FREE_CITIZEN, eSpecialist, 1 )	
-						ecounter += 1
-				counter += 1
-
-			g_iFreeCivilians = iCivilianCnt
-
-			szBuffer += u" + Civilians: %d" %(iCivilianCnt)
-		#screen.setImageButton( szName1, gc.getSpecialistInfo(iCivilian1).getTexture(), (screen.centerX(512)) - 40, 150, 35, 35, WidgetTypes.WIDGET_FREE_CITIZEN, iCivilian1, -1 )
-		#screen.setImageButton( szName2, gc.getSpecialistInfo(iCivilian2).getTexture(), (screen.centerX(512)) , 150, 35, 35, WidgetTypes.WIDGET_FREE_CITIZEN, iCivilian2, -1 )
-		#screen.setImageButton( szName3, gc.getSpecialistInfo(iCivilian3).getTexture(), (screen.centerX(512)) + 40 , 150, 35, 35, WidgetTypes.WIDGET_FREE_CITIZEN, iCivilian3, -1 )
-		
-		else:
-			szBuffer += u"%s: %d" %(pHeadSelectedCity.getName(), pHeadSelectedCity.getPopulation())
-# doto specialists instead of population - for city states 2/2
+		szBuffer += u"%s: %d" %(pHeadSelectedCity.getName(), pHeadSelectedCity.getPopulation())
 
 		if (pHeadSelectedCity.isOccupation()):
 			szBuffer += u" (%c:%d)" %(CyGame().getSymbolID(FontSymbols.OCCUPATION_CHAR),
@@ -5211,7 +5147,7 @@ class CvMainInterface:
 			screen.setLabel("UnitsBonusesCap", "Background", eCapText, CvUtil.FONT_LEFT_JUSTIFY, gRect("CityLeftPanelContents").width() + 18 ,int(screen.getYResolution() / 4) , -0.1,
 											 FontTypes.GAME_FONT, WidgetTypes.WIDGET_TRAIN_UNITS_CAP, -1, -1)
 			screen.show("UnitsBonusesCap")
-# doto units bonus cap			
+# doto units bonus cap
 ## Happy Golden Age ##
 		if gc.getGame().isOption(GameOptionTypes.GAMEOPTION_HAPPYNESS_GOLDEN_AGE):
 			screen.hide("GoldenAgeBar")
@@ -5321,11 +5257,6 @@ class CvMainInterface:
 					# K-Mod end
 					for iYield in range(YieldTypes.NUM_YIELD_TYPES):
 						iChange = gc.getBuildingInfo(iBuilding).getYieldChange(iYield)
-# doto davidlallen: building bonus yield, commerce start
-						iBonus = gc.getBuildingInfo(i).getBonusConsumed()
-						if iBonus != -1:
-							iYield += (gc.getBuildingInfo(i).getYieldProduced(j) * pHeadSelectedCity.getNumBonuses(iBonus) / 100)
-# davidlallen: building bonus yield, commerce end
 						iChange += (pHeadSelectedCity.getNumBuilding(iBuilding) *
 								pHeadSelectedCity.getBuildingYieldChange(
 								gc.getBuildingInfo(iBuilding).getBuildingClassType(), iYield))
@@ -5351,11 +5282,6 @@ class CvMainInterface:
 				# </advc.097>
 				for iCommerce in range(CommerceTypes.NUM_COMMERCE_TYPES):
 					iChange = pHeadSelectedCity.getBuildingCommerceByBuilding(iCommerce, iBuilding)
-					# doto davidlallen: building bonus yield, commerce start
-					iBonus = gc.getBuildingInfo(i).getBonusConsumed()
-					if iBonus != -1:
-						iCommerce += (gc.getBuildingInfo(i).getCommerceProduced(j) * pHeadSelectedCity.getNumBonuses(iBonus) / 100)
-					# davidlallen: building bonus yield, commerce end
 					iChange /= pHeadSelectedCity.getNumBuilding(iBuilding)
 					if iChange == 0:
 						continue
@@ -6434,17 +6360,6 @@ class CvMainInterface:
 		# <advc.004z>
 		if not bOnlyBackgr:
 			self.hideScoreStrings() # </advc.004z>
-			# keldath - this is 109+ but for now removed cause it creates a city screen delay.
-			# <advc.085> Clear the texts in case that we'll decide not to show them.
-			# (So that we won't need to check which texts to hide-unhide when only
-			# ScoreHelp is dirty.)
-			#for iPlayer in range(gc.getMAX_CIV_PLAYERS()):
-			#	for i in range(Scoreboard.NUM_PARTS):
-			#		sTextName = "ScoreText%d-%d" %(iPlayer, i)
-			#		screen.setText(sTextName, "Background", "",
-			#				CvUtil.FONT_RIGHT_JUSTIFY, 0, 0, 0, FontTypes.SMALL_FONT,
-			#				WidgetTypes.WIDGET_GENERAL, -1, -1)
-			# </advc.085>
 		screen.hide("ScoreBackground")
 		eUIVis = CyInterface().getShowInterface()
 		if (eUIVis == InterfaceVisibility.INTERFACE_HIDE_ALL or

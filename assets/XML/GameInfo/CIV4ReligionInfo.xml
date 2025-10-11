@@ -318,7 +318,7 @@ TGA - THE NUMBERS MUST BE DESC - OR ERROR
 			<Description>Shinto</Description>
 			<Adjective>Shinto</Adjective>
 			<Civilopedia>Shinto</Civilopedia>
-			<TechPrereq>TECH_LITERATURE</TechPrereq>
+			<TechPrereq>TECH_SYNCRETISM</TechPrereq>
 			<FreeUnitClass>UNITCLASS_SHINTO_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>	
 			<iSpreadFactor>100</iSpreadFactor>
@@ -414,7 +414,7 @@ TGA - THE NUMBERS MUST BE DESC - OR ERROR
 			<Description>Hellenism</Description>
 			<Adjective>Hellenism</Adjective>
 			<Civilopedia>Hellenism</Civilopedia>
-			<TechPrereq>TECH_PAPER</TechPrereq>			
+			<TechPrereq>TECH_CHIVALRY</TechPrereq>			
 			<FreeUnitClass>UNITCLASS_HELLENIC_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>
@@ -446,7 +446,7 @@ TGA - THE NUMBERS MUST BE DESC - OR ERROR
 			<Description>Amun Ra</Description>
 			<Adjective>Amun Ra</Adjective>
 			<Civilopedia>Anciant Religion of the Egyptians</Civilopedia>
-			<TechPrereq>TECH_POTTERY</TechPrereq>			
+			<TechPrereq>TECH_CEREMONY</TechPrereq>			
 			<FreeUnitClass>UNITCLASS_AMON_RA_MISSIONARY</FreeUnitClass>
 			<iFreeUnits>1</iFreeUnits>
 			<iSpreadFactor>100</iSpreadFactor>

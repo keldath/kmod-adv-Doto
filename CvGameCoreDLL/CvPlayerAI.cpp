@@ -286,32 +286,31 @@ void CvPlayerAI::AI_reset(bool bConstructor)
 	m_iAvailableIncome = 0; // K-Mod
 
 	m_aeAICitySites.clear();
-
-	FAssert(m_aiBonusValue == NULL);
-	m_aiBonusValue = new int[GC.getNumBonusInfos()];
-	m_aiBonusValueTrade = new int[GC.getNumBonusInfos()]; // advc.036
-	for (iI = 0; iI < GC.getNumBonusInfos(); iI++)
-	{
-		m_aiBonusValue[iI] = -1;
-		m_aiBonusValueTrade[iI] = -1; // advc.036
-	}
 	m_aeBestTechs.clear(); // advc.550g
-
-	FAssert(m_aiUnitClassWeights == NULL);
-	m_aiUnitClassWeights = new int[GC.getNumUnitClassInfos()];
-	for (iI = 0; iI < GC.getNumUnitClassInfos(); iI++)
-	{
-		m_aiUnitClassWeights[iI] = 0;
-	}
-
-	FAssert(m_aiUnitCombatWeights == NULL);
-	m_aiUnitCombatWeights = new int[GC.getNumUnitCombatInfos()];
-	for (iI = 0; iI < GC.getNumUnitCombatInfos(); iI++)
-	{
-		m_aiUnitCombatWeights[iI] = 0;
-	}
 	m_aiVictoryWeights.reset(); // advc.115f
-
+	if (!bConstructor) // advc.001
+	{
+		FAssert(m_aiBonusValue == NULL);
+		m_aiBonusValue = new int[GC.getNumBonusInfos()];
+		m_aiBonusValueTrade = new int[GC.getNumBonusInfos()]; // advc.036
+		for (iI = 0; iI < GC.getNumBonusInfos(); iI++)
+		{
+			m_aiBonusValue[iI] = -1;
+			m_aiBonusValueTrade[iI] = -1; // advc.036
+		}
+		FAssert(m_aiUnitClassWeights == NULL);
+		m_aiUnitClassWeights = new int[GC.getNumUnitClassInfos()];
+		for (iI = 0; iI < GC.getNumUnitClassInfos(); iI++)
+		{
+			m_aiUnitClassWeights[iI] = 0;
+		}
+		FAssert(m_aiUnitCombatWeights == NULL);
+		m_aiUnitCombatWeights = new int[GC.getNumUnitCombatInfos()];
+		for (iI = 0; iI < GC.getNumUnitCombatInfos(); iI++)
+		{
+			m_aiUnitCombatWeights[iI] = 0;
+		}
+	}
 	/*for (iI = 0; iI < MAX_PLAYERS; iI++) {
 		m_aiCloseBordersAttitude[iI] = 0;
 		if (!bConstructor && getID() != NO_PLAYER)
@@ -421,7 +420,9 @@ void CvPlayerAI::AI_doTurnPre()
 	AI_doResearch();
 	AI_doCommerce();
 	AI_doMilitary();
-	AI_doCivics();
+//doto civic dependency doto115
+	AI_DoAllCivics();
+//doto civic dependency doto115	
 	AI_doReligion();
 	AI_doCheckFinancialTrouble();
 }
@@ -1137,15 +1138,19 @@ int CvPlayerAI::AI_movementPriority(
 
 	if (pHeadUnit->getDomainType() != DOMAIN_LAND)
 	{
-		if (pHeadUnit->bombardRate() > 0)
+// DOTO-MOD -rangedattack-keldath START - ranged immunity
+		if (pHeadUnit->rangedStrike() > 0)
 			return 1;
+		if (pHeadUnit->bombardRate() > 0)
+			return 2;
 
 		if (pHeadUnit->hasCargo())
 		{
 			if (pHeadUnit->specialCargo() != NO_SPECIALUNIT)
-				return 2;
-			else return 3;
+				return 3;
+			else return 4;
 		}
+// DOTO-MOD -rangedattack-keldath end - ranged immunity
 
 		if (pHeadUnit->getDomainType() == DOMAIN_AIR)
 		{
@@ -1162,12 +1167,16 @@ int CvPlayerAI::AI_movementPriority(
 
 		if (pHeadUnit->canFight())
 		{
-			if (pHeadUnit->collateralDamage() > 0)
+// DOTO-MOD -rangedattack-keldath START - ranged immunity
+			if (pHeadUnit->rangedStrike() > 0)
 				return 6;
-			else return 7;
+			if (pHeadUnit->collateralDamage() > 0)
+				return 7;
+			else return 8;
 		}
 		else
-			return 8;
+			return 9;
+// DOTO-MOD -rangedattack-keldath START - ranged immunity
 	}
 
 	FAssert(pHeadUnit->getDomainType() == DOMAIN_LAND);
@@ -1182,16 +1191,16 @@ int CvPlayerAI::AI_movementPriority(
 	if (pHeadUnit->AI_getUnitAIType() == UNITAI_EXPLORE)
 		return 10;
 
-	if (pHeadUnit->bombardRate() > 0)
+// DOTO-MOD -rangedattack-keldath START - ranged immunity
+	if (pHeadUnit->rangedStrike() > 0)
 		return 11;
 
-// MOD - START - Ranged Strike AI
-	if (pHeadUnit->canRangeStrike())
+	if (pHeadUnit->bombardRate() > 0)
 		return 12;
 
 	if (pHeadUnit->collateralDamage() > 0)
 		return 13;
-// MOD - END - Ranged Strike AI
+// DOTO-MOD -rangedattack-keldath end - ranged immunity
 	if (kGroup.AI_isStranded())
 		return 505;
 
@@ -1285,18 +1294,14 @@ void CvPlayerAI::AI_unitUpdate()
 		{
 			CvSelectionGroupAI* pLoopSelectionGroup = AI_getSelectionGroup(pCurrUnitNode->m_data);
 			pCurrUnitNode = nextGroupCycleNode(pCurrUnitNode);
-//DODO 114 FIX - i spotted a null here on game load that crashed the game rarely
-//so added a fix
-			if (pLoopSelectionGroup != NULL)
+
+			if (pLoopSelectionGroup->AI_isForceSeparate())
 			{
-				if (pLoopSelectionGroup->AI_isForceSeparate())
+				if (pLoopSelectionGroup->isForceUpdate() ||
+					// do not split groups that are in the midst of attacking
+					!pLoopSelectionGroup->AI_isGroupAttack())
 				{
-					if (pLoopSelectionGroup->isForceUpdate() ||
-						// do not split groups that are in the midst of attacking
-						!pLoopSelectionGroup->AI_isGroupAttack())
-					{
-						pLoopSelectionGroup->AI_separate();	// pointers could become invalid...
-					}
+					pLoopSelectionGroup->AI_separate();	// pointers could become invalid...
 				}
 			}
 		}
@@ -1689,21 +1694,6 @@ void CvPlayerAI::AI_makeProductionDirty()
 void CvPlayerAI::AI_conquerCity(CvCityAI& kCity,  // advc.003u: param was CvCity*
 	bool bEverOwned) // advc.ctr: We already own it; but had we ever previously owned it?
 {
-	
-//doto city states will not be allowed to capture cities ever.
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		CvCivilizationInfo & kCivilization = GC.getCivilizationInfo(getCivilizationType());
-		if (kCivilization.getIsCityState() == 1)
-		{
-			// K-Mod moved the log message up - otherwise it will crash due to pCity being deleted!
-			logBBAI("    Player %d (%S) decides to raze city %S!!!", getID(), getCivilizationDescription(0), kCity.getName().GetCString());
-			kCity.doTask(TASK_RAZE);
-			return;
-		}
-	}
-//doto city states
-	
 	if (!canRaze(kCity))
 	{
 		keepCity(kCity);
@@ -1921,7 +1911,6 @@ void CvPlayerAI::AI_conquerCity(CvCityAI& kCity,  // advc.003u: param was CvCity
 			// <advc.116>
 			if (bFinancialTrouble)
 			{
-//ADVC - DOTO-keldath FOUDN ERROR in org code of duplicate distance calc.
 				iRazeValue += //std::max(0, (70 - 15 * pCity->getPopulation()));
 						kCity.calculateBaseMaintenanceTimes100() / 100;
 			}
@@ -2065,6 +2054,7 @@ void CvPlayerAI::AI_conquerCity(CvCityAI& kCity,  // advc.003u: param was CvCity
 		{
 			PlayerTypes const eLiberationPlayer = kCity.getLiberationPlayer(true);
 			if (eLiberationPlayer != NO_PLAYER &&
+				!GET_TEAM(getTeam()).isAtWar(TEAMID(eLiberationPlayer)) &&
 				/*	(Don't check trade denial b/c that includes conditions for refusal
 					by recipient. Recipient has no choice here.) */
 				canTradeItem(eLiberationPlayer, TradeData(TRADE_CITIES, kCity.getID())) /*&&
@@ -3618,10 +3608,11 @@ int CvPlayerAI::AI_countDangerousUnits(CvPlot const& kAttackerPlot, CvPlot const
 			return 0;
 	} // </advc.128>
 	int iR = 0;
+	int iDefenders = 0; // advc.107
 	TeamTypes const eOurMaster = GET_TEAM(eTeam).getMasterTeam(); // advc.opt
-	FOR_EACH_UNIT_IN(pLoopUnit, kAttackerPlot)
+	FOR_EACH_UNITAI_IN(pLoopUnit, kAttackerPlot)
 	{
-		CvUnit const& kUnit = *pLoopUnit;
+		CvUnitAI const& kUnit = *pLoopUnit;
 		// advc.opt: Team check changed to MasterTeam
 		if (GET_TEAM(kUnit.getOwner()).getMasterTeam() == eOurMaster)
 		{
@@ -3668,11 +3659,29 @@ int CvPlayerAI::AI_countDangerousUnits(CvPlot const& kAttackerPlot, CvPlot const
 						continue;
 				}
 			}
+			// <advc.107>
+			if (iLimit == 1) // shortcut
+				return 1;
+			if (kAttackerPlot.isCity() &&
+				kUnit.AI_getGroup()->AI_getMissionAIType() == MISSIONAI_GUARD_CITY &&
+				!kUnit.isHuman())
+			{
+				iDefenders++;
+			} // </advc.107>
 			iR++;
 			if (iR >= iLimit)
-				return iLimit;
+			{
+				iR = iLimit;
+				break;
+			}
 		}
 	}
+	// <advc.107>
+	if (iR > 1 && iDefenders > 0)
+	{
+		iR = std::max(1, iR - std::min(iDefenders,
+			kAttackerPlot.AI_getPlotCity()->AI_minDefenders()));
+	} // </advc.107>
 	return iR;
 }
 
@@ -4766,27 +4775,6 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 				iNewTrade, // k146: was 0
 				3*iNewTrade - iExistingTrade);
 	}
-/*************************************************************************************************/
-/* Advanced Diplomacy       START   CITY STATES                                               				 */
-/*************************************************************************************************/
-	//doto taken from the below open borders method i tried to devise some
-	//evaluator for cities, which will stregthen the value for this tech.
-	//i could use the static 200 the history rewrittem commented out though..
-	//let see how it goes...
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		if (kTech.isFreeTradeAgreementTrading())
-		{
-			if (iHasMetCount > 0)
-			{
-				iValue += getTotalPopulation()  * AI_cityStateEval();
-				//iValue += 200; //org
-			}
-		}
-	}
-/*************************************************************************************************/
-/* Advanced Diplomacy       end                                                  				 */
-/*************************************************************************************************/
 
 	if (kTech.isOpenBordersTrading())
 	{
@@ -4857,10 +4845,7 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 	}
 
 	if (kTech.isVassalStateTrading() &&
-		!GC.getGame().isOption(GAMEOPTION_NO_VASSAL_STATES)
-//doto city states - cant be vassal
-		&& !GC.getGame().isOption(GAMEOPTION_CITY_STATES)
-	)
+		!GC.getGame().isOption(GAMEOPTION_NO_VASSAL_STATES))
 	{
 		//iValue += 56;
 		iValue += 8 * iCityTarget; // k146: Replacing the above
@@ -4901,12 +4886,13 @@ int CvPlayerAI::AI_techValue(TechTypes eTech, int iPathLength, bool bFreeTech,
 	/*  K-Mod. A very rough estimate assuming each city has ~2 trade routes;
 		new local trade routes worth ~2 commerce, and foreign worth ~6. */
 	if (kTech.getTradeRoutes() != 0)
-	{
+	{	/*	advc (note): Could use the pIgnoreArea param to count intercontinental
+			partners separately, but 6c is already a high estimate. */
 		int iConnectedForeignCities = AI_countPotentialForeignTradeCities(
 				true, AI_getFlavorValue(FLAVOR_GOLD) == 0);
-		int iAddedCommerce = 2*iCityCount*kTech.getTradeRoutes() +
-				4*range(iConnectedForeignCities-2*iCityCount, 0,
-				iCityCount*kTech.getTradeRoutes()) +
+		int iAddedCommerce = 2 * iCityCount * kTech.getTradeRoutes() +
+				4 * range(iConnectedForeignCities - 2 * iCityCount, 0,
+				iCityCount * kTech.getTradeRoutes()) +
 				// <advc.131>
 				std::max(0, std::min(AI_getNumCitySites(), getNumCities())
 				// Up to one site already covered by iCityCount
@@ -6681,7 +6667,11 @@ int CvPlayerAI::AI_techUnitValue(TechTypes eTech, int iPathLength, bool& bEnable
 				iOffenceValue /= 3;
 			} // </advc.131>
 			// <k146>
+// DOTO-MOD -rangedattack-keldath START - ranged immunity
+				
 			iMilitaryValue += iOffenceValue + iDefenceValue;
+			if(kLoopUnit.getRangeStrike() > 0)
+				iMilitaryValue += 10;
 			if (kLoopUnit.getBombardRate() > 0 &&
 				!AI_isDoStrategy(AI_STRATEGY_ECONOMY_FOCUS))
 			{	// block moved from UNITAI_ATTACK_CITY:
@@ -7725,18 +7715,6 @@ void CvPlayerAI::AI_updateAttitude(PlayerTypes ePlayer, /* advc.130e: */ bool bU
 	iAttitude += AI_getFavoriteCivicAttitude(ePlayer);
 	iAttitude += AI_getTradeAttitude(ePlayer);
 	iAttitude += AI_getRivalTradeAttitude(ePlayer);
-/*************************************************************************************************/
-/*  Advanced Diplomacy       START     + history re addition                           			 */
-/*************************************************************************************************/
-	if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-	{
-		iAttitude += AI_getFreeTradeAgreementAttitude(ePlayer);
-		iAttitude += AI_getRivalTradeAgreementAttitude(ePlayer);
-	}
-/************************************************************************************************/
-/* Advanced Diplomacy         END                                                               */
-/************************************************************************************************/
-
 //dune wars - start hated civs
 	iAttitude += AI_getHatedCivicAttitude(ePlayer);
 	iAttitude += AI_getFavoriteCivilizationAttitude(ePlayer); 
@@ -8132,55 +8110,6 @@ int CvPlayerAI::AI_getOpenBordersAttitude(PlayerTypes ePlayer) const
 	return 0;
 }
 
-/*************************************************************************************************/
-/** Advanced Diplomacy       START  CITY STATES   advc - same as in open borders    						 */
-/*************************************************************************************************/
-
-int CvPlayerAI::AI_getFreeTradeAgreementAttitude(PlayerTypes ePlayer) const
-{
-	if (!atWar(getTeam(), TEAMID(ePlayer)))
-	{
-		if (GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeDivisor() != 0)
-		{
-			int iAttitudeChange = (GET_TEAM(getTeam()).AI_getFreeTradeAgreementCounter(TEAMID(ePlayer)) /
-				GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeDivisor());
-			return range(iAttitudeChange,
-				-(abs(GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeChangeLimit())),
-				abs(GC.getInfo(getPersonalityType()).getFreeTradeAgreementAttitudeChangeLimit()));
-		}
-	}
-	return 0;
-}
-
-//doto - added from HR mod - add rival attitude to others
-//note there is another code section where the attitude is added to rivels
-//i dont mind this to be ontop - these trades are strong...
-int CvPlayerAI::AI_getRivalTradeAgreementAttitude(PlayerTypes ePlayer) const
-{
-	int iAttitude = 0;
-
-	if (getTeam() == TEAMID(ePlayer) || GET_TEAM(getTeam()).isVassal(TEAMID(ePlayer)) ||
-			GET_TEAM(TEAMID(ePlayer)).isVassal(getTeam()))
-	{
-		return iAttitude;
-	}
-
-	if (!(GET_TEAM(getTeam()).isFreeTradeAgreement(TEAMID(ePlayer))))
-	{
-		//doto change to apply round just in case...
-		int couldBeFractionalIThink;
-		couldBeFractionalIThink = scaled((2 * GET_TEAM(TEAMID(ePlayer)).getHowManyTradeAgreements(TEAMID(ePlayer))) /
-			std::max(1, (GC.getGame().countCivTeamsAlive() - 2))).round();
-
-		iAttitude -= couldBeFractionalIThink;
-	}
-
-	return iAttitude;
-}
-
-/************************************************************************************************/
-/* Advanced Diplomacy                        END                                                */
-/************************************************************************************************/
 
 int CvPlayerAI::AI_getDefensivePactAttitude(PlayerTypes ePlayer) const
 {
@@ -8445,7 +8374,6 @@ int CvPlayerAI::AI_getShareWarAttitude(PlayerTypes ePlayer) const
 			// This divisor seems to produce roughly the result I have in mind
 			(fixp(3.1) * GC.getWAR_SUCCESS_CITY_CAPTURING() * iDiv)).round(), 0, iLimit);
 	return iR;
-	// </advc.130m>
 }
 
 
@@ -8546,13 +8474,7 @@ int CvPlayerAI::AI_peacetimeTradeValDivisor(bool bRival) const
 			MEMORY_EVENT_GOOD_TO_US) * (bRival ? -1 : 1), 1, 1000);
 }
 
-/************************************************************************************************/
-/* START: Advanced Diplomacy   new to doto advc added to match open borders   
-	CAN GO ABOUT THE CHANGES HERE in 2 ways either consider freetrade or open borders
-	or one on top of the other if any - i went wtih ontop.
-	2 aggrements on a rivel should raise the bar more i guess...
-*/
-/************************************************************************************************/
+
 int CvPlayerAI::AI_getRivalTradeAttitude(PlayerTypes ePlayer) const
 {
 	CvTeamAI const& kOurTeam = GET_TEAM(getTeam());
@@ -8583,33 +8505,6 @@ int CvPlayerAI::AI_getRivalTradeAttitude(PlayerTypes ePlayer) const
 				rDualDealCounter *= fixp(1.5);
 			}
 		}
-/************************************************************************************************/
-/* START: Advanced Diplomacy   new to doto advc added to match open borders  
-trade agreement with the enemy raises anger higher then open borders							*/
-/************************************************************************************************/
-		//decided to remove for now - the attitude have AI_getRivalTradeAgreementAttitude now 
-		//if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-		//{
-		//	bool tst = GET_TEAM(eTeam).isFreeTradeAgreement(eEnemy);
-		//	if (GET_TEAM(eTeam).isFreeTradeAgreement(eEnemy))
-		//	{
-		//		rDualDealCounter += std::min(20,
-		//			std::min(kOurTeam.AI_getHasMetCounter(eTeam),
-		//				GET_TEAM(eTeam).AI_getFreeTradeAgreementCounter(eEnemy)));
-		//		if (kOurTeam.isAtWar(eEnemy))
-		//		{	/*  Not happy that enemy units can move through the borders of
-		//				ePlayer and heal there, but only moderate increase b/c we
-		//				can't well afford to make further enemies when already in a war. */
-		//			rDualDealCounter *= fixp(2.0);
-		//		}
-		//	}
-		//}
-/************************************************************************************************/
-/* END: Advanced Diplomacy       
-add here an additional penalty to all met civs, i want the trade with a civ to take a price!
-*/
-/************************************************************************************************/
-
 		/*  Resource trades are handled by CvDeal::doTurn (I wrote the code below
 			before realizing that) */
 		/*rDualDealCounter += scaled::min(20,
@@ -8634,15 +8529,6 @@ add here an additional penalty to all met civs, i want the trade with a civ to t
 				iPotentialOB++;
 				if(it->isOpenBorders(eEnemy))
 					iActualOB++;
-/************************************************************************************************/
-/* START: Advanced Diplomacy   new to doto advc added to match open borders   
-edit - no need to add attitude effect when there is a true rical attitude from hr */
-/************************************************************************************************/
-			/*	if (it->isFreeTradeAgreement(eEnemy))
-					iActualOB++;*/
-/************************************************************************************************/
-/* END: Advanced Diplomacy   new to doto advc added to match open borders                     */
-/************************************************************************************************/
 			}
 			scaled rNonOBRatio(iPotentialOB - iActualOB, iPotentialOB);
 			rDualDealCounter = scaled::max(iCounterBound, rNonOBRatio);
@@ -8658,23 +8544,6 @@ edit - no need to add attitude effect when there is a true rical attitude from h
 				if (rFromVassal > 0)
 					rVassalDealCounter += rFromVassal;
 			}
-/************************************************************************************************/
-/* START: Advanced Diplomacy   new to doto advc added to match open borders  
-no need to involve free trade in rival trade attitude - there is a proper attitude from HR instead*/
-/************************************************************************************************/
-	/*		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-			{
-				if (it->isCapitulated() && it->getID() != getTeam() &&
-					it->isFreeTradeAgreement(eEnemy))
-				{
-					scaled rFromVassal(it->AI_getHasMetCounter(eEnemy), 2);
-					if (rFromVassal > 0)
-						rVassalDealCounter += rFromVassal;
-				}
-			}*/
-/************************************************************************************************/
-/* END: Advanced Diplomacy   new to doto advc added to match open borders                     */
-/************************************************************************************************/
 		}
 		rDualDealCounter += scaled::min(rVassalDealCounter, 10);
 		// </advc.130v>
@@ -9007,9 +8876,13 @@ PlayerVoteTypes CvPlayerAI::AI_diploVote(const VoteSelectionSubData& kVoteData,
 	{
 		if (isCivic(eLoopCivic))
 			continue;
-		/* doto Civics  parent - Start */
-		//keldath doto - consider make the loop calc ignore any child civics
-		/* doto Civics  parent - Start */
+		/* doto civic dependency - Start */
+		//excluding goverments from vote descisions -> too much code
+		//doto civic dependents dont try to trade these civics. maybe in the future
+		if (GC.getInfo(GC.getInfo(eLoopCivic).getCivicOptionType()).getParentCivicOption() > 0)
+			continue;
+		
+		/* doto civic dependency - Start */
 		CivicTypes eBestCivic = AI_bestCivic(GC.getInfo(eLoopCivic).getCivicOptionType());
 		if (eBestCivic == NO_CIVIC || eBestCivic == eLoopCivic)
 			continue;
@@ -9023,9 +8896,9 @@ PlayerVoteTypes CvPlayerAI::AI_diploVote(const VoteSelectionSubData& kVoteData,
 		}
 		//dune wars - hated civs					//a1021 end
 		
-		/*doto Civics  parent - Start */
-		//keldath doto - consider make the loop calc ignore any child civics
-		/* doto Civics  parent - Start */
+		/*doto civic dependency - Start */
+		//excluding goverments from vote descisions -> too much code
+		/* doto civic dependency - Start */
 		int iBestCivicValue = AI_civicValue(eBestCivic);
 		int iNewCivicValue = AI_civicValue(eLoopCivic);
 		// BETTER_BTS_AI_MOD, Diplomacy AI, 12/30/08, jdog5000: START
@@ -9808,15 +9681,6 @@ int CvPlayerAI::AI_dealVal(PlayerTypes eFromPlayer, CLinkList<TradeData> const& 
 		case TRADE_OPEN_BORDERS:
 			iValue += kOurTeam.AI_openBordersTradeVal(eFromTeam);
 			break;
-/************************************************************************************************/
-/* Advanced Diplomacy         START      CITY STATES                                                       */
-/************************************************************************************************/
-		case TRADE_FREE_TRADE_ZONE:
-			iValue += kOurTeam.AI_FreeTradeAgreementVal(eFromTeam);
-			break;
-/************************************************************************************************/
-/* Advanced Diplomacy         END                                                               */
-/************************************************************************************************/
 		case TRADE_DEFENSIVE_PACT:
 			iValue += kOurTeam.AI_defensivePactTradeVal(eFromTeam);
 			break;
@@ -9837,7 +9701,11 @@ int CvPlayerAI::AI_dealVal(PlayerTypes eFromPlayer, CLinkList<TradeData> const& 
 			iValue += AI_stopTradingTradeVal((TeamTypes)pItem->m_iData, eFromPlayer);
 			break;
 		case TRADE_CIVIC:
-			iValue += AI_civicTradeVal((CivicTypes)pItem->m_iData, eFromPlayer);
+			//doto civic dependency - dont try to trade these civics. maybe in the future
+			if (GC.getInfo(GC.getInfo((CivicTypes)pItem->m_iData).getCivicOptionType()).getParentCivicOption() < 1)
+			{
+				iValue += AI_civicTradeVal((CivicTypes)pItem->m_iData, eFromPlayer);
+			}
 			break;
 		case TRADE_RELIGION:
 			iValue += AI_religionTradeVal((ReligionTypes)pItem->m_iData, eFromPlayer);
@@ -11649,51 +11517,53 @@ int CvPlayerAI::AI_maxGoldPerTurnTrade(PlayerTypes ePlayer,
 	/*if (isHuman() || TEAMID(ePlayer) == getTeam())
 		iMaxGoldPerTurn = calculateGoldRate() + getGold() / GC.getPEACE_TREATY_LENGTH();*/ // BtS
 	// <advc.036>
-	if(isHuman())
-		return std::max(0, calculateGoldRate());
+	if (isHuman())
+	{	/*  BtS capped the return value at calculateGoldRate, so the getGold()
+			part had no effect. */
+		return std::max(0, std::max(calculateGoldRate(), std::min(999,
+				std::max(AI_getAvailableIncome() - calculateInflatedCosts() +
+				std::max(0, -getGoldPerTurn()),
+				getGold() / GC.getDefineINT(CvGlobals::PEACE_TREATY_LENGTH)))));
+	}
 	// Don't pay gold to our capitulated vassal
-	if(GET_TEAM(ePlayer).isVassal(getTeam()) && GET_TEAM(ePlayer).isCapitulated())
+	if (GET_TEAM(ePlayer).isVassal(getTeam()) && GET_TEAM(ePlayer).isCapitulated())
 		return 0;
-	/*  BtS caps the return value at calculateGoldRate, so the getGold()...
-		part had no effect. The AI shouldn't make assumptions about human
-		finances anyway. Let human use the gold slider to communicate how much
-		gpt the AI can ask for in trade proposals. */
-scaled rAvailable(
-	AI_getAvailableIncome() - getGoldPerTurn() - calculateInflatedCosts(), 3);
-// Included in AvailableIncome, but don't want to divide it by 3.
-rAvailable += getGoldPerTurn();
-scaled rGoldRate;
-{
-	rGoldRate = calculateGoldRate();
-	rGoldRate.decreaseTo(rGoldRate / 3 +
-		scaled(getGold(), GC.getDefineINT(CvGlobals::PEACE_TREATY_LENGTH)));
-	rGoldRate.increaseTo(0);
-}
-rAvailable.increaseTo(rGoldRate);
-// </advc.036>
-//rAvailable = calculateGoldRate(); // BtS
-// <advc.104w>
-if (getUWAI().isEnabled() && GET_TEAM(ePlayer).isAtWar(getTeam()))
-return rAvailable.toMultipleFloor(5); // </advc.104w>
-scaled rMaxGoldPerTurn;
-{
-	rMaxGoldPerTurn = getTotalPopulation();
-	rMaxGoldPerTurn *= 4; // advc.036
-	rMaxGoldPerTurn.mulDiv(GC.getInfo(getPersonalityType()).
-		getMaxGoldPerTurnTradePercent(), 100);
-	rMaxGoldPerTurn += std::min(0, getGoldPerTurnByPlayer(ePlayer));
-}
-// <advc.036>
-int iMax = AI_adjustTradeGoldToDiplo(rMaxGoldPerTurn.floor(), ePlayer);
-int iAvailable = rAvailable.floor();
-// <advc.133> Don't increase to 0 if we're interested in excess payments
-if (bCheckOverdraft)
-return std::min(iMax, iAvailable); // </advc.133>
-int iR = ::range(iMax, 0, iAvailable);
-// This will only be relevant in the late game
-if (iR > 10 * GC.getDefineINT(CvGlobals::DIPLOMACY_VALUE_REMAINDER))
-AI_roundTradeVal(iR);
-return iR; // </advc.036>
+	scaled rAvailable(
+			AI_getAvailableIncome() - getGoldPerTurn() - calculateInflatedCosts(), 3);
+	// Included in AvailableIncome, but don't want to divide it by 3.
+	rAvailable += getGoldPerTurn();
+	scaled rGoldRate;
+	{
+		rGoldRate = calculateGoldRate();
+		rGoldRate.decreaseTo(rGoldRate / 3 +
+				scaled(getGold(), GC.getDefineINT(CvGlobals::PEACE_TREATY_LENGTH)));
+		rGoldRate.increaseTo(0);
+	}
+	rAvailable.increaseTo(rGoldRate);
+	// </advc.036>
+	//rAvailable = calculateGoldRate(); // BtS
+	// <advc.104w>
+	if (getUWAI().isEnabled() && GET_TEAM(ePlayer).isAtWar(getTeam()))
+		return rAvailable.toMultipleFloor(5); // </advc.104w>
+	scaled rMaxGoldPerTurn;
+	{
+		rMaxGoldPerTurn = getTotalPopulation();
+		rMaxGoldPerTurn *= 4; // advc.036
+		rMaxGoldPerTurn.mulDiv(GC.getInfo(getPersonalityType()).
+				getMaxGoldPerTurnTradePercent(), 100);
+		rMaxGoldPerTurn += std::min(0, getGoldPerTurnByPlayer(ePlayer));
+	}
+	// <advc.036>
+	int iMax = AI_adjustTradeGoldToDiplo(rMaxGoldPerTurn.floor(), ePlayer);
+	int iAvailable = rAvailable.floor();
+	// <advc.133> Don't increase to 0 if we're interested in excess payments
+	if (bCheckOverdraft)
+		return std::min(iMax, iAvailable); // </advc.133>
+	int iR = ::range(iMax, 0, iAvailable);
+	// This will only be relevant in the late game
+	if (iR > 10 * GC.getDefineINT(CvGlobals::DIPLOMACY_VALUE_REMAINDER))
+		AI_roundTradeVal(iR);
+	return iR; // </advc.036>
 }
 
 
@@ -11736,7 +11606,7 @@ int CvPlayerAI::AI_bonuesCapValue(BonusTypes eBonus,  int value, int change) con
 		if eTotalPlayerBonus > 0 && (eTotalPlayerBonus - eCap) <= getNumCities() * 2
 		if eTotalPlayerBonus > 0 && (eTotalPlayerBonus - eAirCap) <= getNumCities() * 2
 		if eTotalPlayerBonus > 0 && (eTotalPlayerBonus - eSeaCap) <= getNumCities() * 2
-		s*/
+		*/
 	}
 	return value;
 	//doto units bonus cap
@@ -11764,16 +11634,29 @@ int CvPlayerAI::AI_bonusVal(BonusTypes eBonus, int iChange, bool bAssumeEnabled,
 			iSurplus += std::max(0, getNumTradeableBonuses(eLoopBonus) - 1);
 	}
 	iTradeVal = (4 / (scaled::max(1, std::max(iSurplus,
-		2 * (iBonusCount + iChange)))).sqrt()).round(); // </advc.036>
+			2 * (iBonusCount + iChange)))).sqrt()).round(); // </advc.036>
 	if (iChange == 0 || (iChange == 1 && iBonusCount == 0) ||
 		(iChange == -1 && iBonusCount == 1) ||
 		iChange + iBonusCount < 1
+		
+		//doto units bonus cap
+		/* value the bonus if we have cap peaked or we dont have a total cap for this bonus.
+			this means the bonus is valubale for us or so i hope*/
+		//||
+		//((GC.getGame().isOption(GAMEOPTION_UNITS_BONUS_CAP) && GC.getGame().getBonusThatArePrereqForUnits(eBonus) > 0)
+		//&& ((getNumUnitBonusCaps(eBonus) >= getTotalPlayerBonus(eBonus)) 
+		//	|| (getTotalPlayerBonus(eBonus) > 0 && (getTotalPlayerBonus(eBonus) - getNumUnitBonusCaps(eBonus)) <= getNumCities() * 2) //keep a buffer for the player to be able to build units
+		//	|| (getTotalPlayerBonus(eBonus) == 0 && iChange >= 1)
+			//|| getNumWars(true, true) > 0 maybe at war time bonus is higher?
+		//	))
+		//doto units bonus cap
+
 		) // advc.036: Cover all strange cases here
 	{
 		//This is assuming the none-to-one or one-to-none case.
 		iValue += AI_baseBonusVal(eBonus, /* advc.036: */ bTrade);
 		iValue += AI_corporationBonusVal(eBonus, /* advc.036: */ bTrade);
-		if (!bTrade)
+		if(!bTrade)
 			iValue = std::max(iValue, iTradeVal); // advc.036
 		// K-Mod.
 		if (!bAssumeEnabled)
@@ -11808,29 +11691,6 @@ int CvPlayerAI::AI_bonusVal(BonusTypes eBonus, int iChange, bool bAssumeEnabled,
 	iValue = std::max(iValue, iTradeVal);
 	return iValue;
 }
-
-/************************************************************************************************/
-/* START: Advanced Diplomacy     DOTO-MOSTLY FOR A CITY STATE                                   */
-/************************************************************************************************/
-
-int CvPlayerAI::AI_cityStateEval() const
-{
-	//doto - nayve this can be a cool way to value stuff for city state
-	//doto - used in advanced diplomacy now as well
-	//taken from AI_getExpansionistAttitude(
-	int iCivCities = GC.getGame().getNumCivCities() -
-		GET_TEAM(BARBARIAN_TEAM).getNumCities() ;
-	scaled rCitiesPerCiv = scaled::max(
-		GC.getInfo(GC.getMap().getWorldSize()).getTargetNumCities(),
-		scaled(iCivCities, GC.getGame().getCivTeamsEverAlive()));
-	scaled rEra = GC.AI_getGame().AI_getCurrEraFactor();
-	if (rEra <= 2)
-		rCitiesPerCiv.decreaseTo(3 * (1 + rEra));
-	return std::min(4, (rCitiesPerCiv).round()); 
-}
-/************************************************************************************************/
-/* START: Advanced Diplomacy                                                                    */
-/************************************************************************************************/
 
 /*	Value sans corporation
 	(K-Mod note: very vague units. roughly 4x gold / turn / city.) */
@@ -12007,7 +11867,7 @@ int CvPlayerAI::AI_baseBonusVal(BonusTypes eBonus, /* advc.036: */ bool bTrade) 
 		}
 		// <advc.036b> 
 		if (iBuildingsEnabled > 1)
-			rBuildingValue /= scaled(iBuildingsEnabled).pow(fixp(1/10.)); // </advc.036b>
+			rBuildingValue /= scaled(iBuildingsEnabled).pow(fixp(1/9.)); // </advc.036b>
 		rValue += rBuildingValue;
 	}
 	FOR_EACH_ENUM(Project)
@@ -12078,7 +11938,7 @@ int CvPlayerAI::AI_baseBonusUnitVal(BonusTypes eBonus, UnitTypes eUnit,
 				because including the effect from iOrBonusesWeHave was going to be
 				a big improvement. The only way I can think of working around this
 				is to add a 'bConstCache' argument to this function... */
-			bOrBonus = bOrBonus || ePrereqBonus == eBonus;
+			bOrBonus = (bOrBonus || ePrereqBonus == eBonus);
 		}
 		if (bOrBonus)
 		{	// 1: 1, 2: 2/3, 3: 1/2, ...
@@ -12136,11 +11996,16 @@ int CvPlayerAI::AI_baseBonusUnitVal(BonusTypes eBonus, UnitTypes eUnit,
 	// devalue units for which we already have a better replacement.
 	UnitAITypes const eDefaultAI = kUnit.getDefaultUnitAIType();
 	int iNewTypeValue = AI_unitValue(eUnit, eDefaultAI, NULL);
-	int iBestTypeValue = AI_bestAreaUnitAIValue(eDefaultAI, NULL);
+	UnitTypes eBestType = NO_UNIT; // advc.036
+	int iBestTypeValue = AI_bestAreaUnitAIValue(eDefaultAI, NULL,
+			&eBestType); // advc.036
 	if (iBestTypeValue > 0)
 	{
-		iValue = (iValue * std::max(0, std::min(
-				100, 120 * iNewTypeValue / iBestTypeValue - 20))) / 100;
+		int iRatio = (120 * iNewTypeValue) / iBestTypeValue;
+		// advc.036: Encourage a variety of unit combat types
+		if (GC.getInfo(eBestType).getUnitCombatType() == kUnit.getUnitCombatType())
+			iRatio -= 20;
+		iValue = (iValue * std::max(0, std::min(100, iRatio))) / 100;
 	}
 	/*	<advc.650> Having access to at least a few nukes is very valuable.
 		The XML power values can't capture that sufficiently. */
@@ -12239,14 +12104,13 @@ int CvPlayerAI::AI_baseBonusBuildingVal(BonusTypes eBonus, BuildingTypes eBuildi
 		where we will never be able to build. */
 	bool const bCanNeverBuild = (bHasTechForBuilding &&
 			!bCanConstruct && !bStateReligion);
-	// If we can never build this, it is worthless.
-	if (bCanNeverBuild)
+	if (bCanNeverBuild) // If we can never build this, it is worthless.
 		return 0;
-	// double value if we can build it right now
-	if (bCanConstruct)
+	if (bCanConstruct) // double value if we can build it right now
 		iValue *= 2;
-	// <advc.036> Don't trade for the bonus until we need it
-	if (bTrade && !bCanConstruct)
+	// <advc.036>
+	else iValue--;
+	if (bTrade && !bCanConstruct) // Don't trade for the bonus until we need it
 		return 0; // </advc.036>
 
 	// if non-limited water building, weight by coastal cities
@@ -13500,23 +13364,6 @@ int CvPlayerAI::AI_stopTradingTradeVal(TeamTypes eTradeTeam, PlayerTypes ePlayer
 
 	if (GET_TEAM(ePlayer).isDefensivePact(eTradeTeam))
 		iValue *= 3;
-/************************************************************************************************/
-/* Advanced Diplomacy    CITY STATES     START  rather simple - maybe look at the above openb fromadvc     */
-/************************************************************************************************/
-	//value this one higher to make opponents stop with a rival
-	//doto - add some more logic?
-	if (GET_TEAM(ePlayer).isFreeTradeAgreement(eTradeTeam))
-	{
-		if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-		{
-			iValue *= 3;
-			iValue *= 2;
-		}
-	}
-/************************************************************************************************/
-/* Advanced Diplomacy         END                                                               */
-/************************************************************************************************/
-
 	FOR_EACH_DEAL(pLoopDeal)
 	{
 		// <advc.001> BtS had only checked for ePlayer's team
@@ -13661,9 +13508,9 @@ int CvPlayerAI::AI_civicTradeVal(CivicTypes eCivic, PlayerTypes ePlayer) const
 	CivicTypes eBestCivic = kPlayer.AI_bestCivic(GC.getInfo(eCivic).getCivicOptionType());
 	if (eBestCivic != NO_CIVIC && eBestCivic != eCivic)
 	{
-		/* doto Civics parent - Start */
-		//keldath doto - consider make the loop calc ignore any child civics
-		/* doto Civics parent - Start */
+		/* doto civic dependency - Start */
+		//handled before this fn call
+		/* doto civic dependency - Start */
 		iValue += //std::max(0, // advc.132: Handle that below
 				2 * (kPlayer.AI_civicValue(eBestCivic) - kPlayer.AI_civicValue(eCivic))
 				/*	advc.132: AI_civicValue is at a scale of 1 commerce per turn.
@@ -14199,9 +14046,7 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		return 0;
 
 	int const iCombatValue = GC.AI_getGame().AI_combatValue(eUnit);
-// MOD - START - Ranged Strike AI - doto addition	
-	int const iCombatRangedValue = GC.AI_getGame().AI_combatRangedValue(eUnit);
-// MOD - START - Ranged Strike AI
+
 	int iValue = 1;
 
 	iValue += u.getAIWeight();
@@ -14229,21 +14074,18 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 
 		iValue += iCombatValue;
 		// advc.131: From MNAI. Divisor was 100; MNAI uses 25.
+//doto keldath rangedstrike + ranged immunity - dont add withdrawl rate to the calc
+		if (u.getRangeStrike() < 1)
 		iValue += (iCombatValue * u.getWithdrawalProbability()) / 50;
-		
-// MOD - START - Ranged Strike AI - doto give ranged some more value		
-		if (u.getDomainType() == DOMAIN_LAND && u.getAirCombat() > 0)
+//doto keldath rangedstrike + ranged immunity
+		if (u.getRangeStrike() > 0)
 		{
-			//based on air attack below. didnt add ait limit value cause its not a real limit - see info on the airlimit effect in 
-			//the ranged functions
-			//int iRangeValue = (iCombatRangedValue * (100 + 2 * u.getCollateralDamage()) *
-			//		u.getAirRange()) / 150;
-			//iValue += (iRangeValue * 10 / 100); //add 10% of the iRangeValue -> so ai wont buy only ranged.
-			iValue += (iCombatRangedValue * 25) / 100;
+			//iValue += ((iCombatValue * (125 - u.getCombatLimit())) / 100);
+			iValue += iCombatValue * 10 / 100;
 		}
-// MOD - START - Ranged Strike AI - doto give ranged some more value
-		
-		if (u.getCombatLimit() < 100)
+
+		//ranged are limited, we dont want reduction of value
+		if (u.getCombatLimit() < 100 && u.getRangeStrike() < 1) 
 			iValue -= (iCombatValue * (125 - u.getCombatLimit())) / 100;
 		// K-Mod
 		if (u.getMoves() > 1)
@@ -14271,10 +14113,14 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 			//iValue -= iTempValue / 2;
 			// disabled by K-Mod (how is drop range a disadvantage?)
 		}
-		if (u.isFirstStrikeImmune())
+//doto ranged immunity doto keldath rangedstrike 
+//first strikes are ignored for ranged immunity
+		if (u.isFirstStrikeImmune() && u.getRangeStrike() < 1)
 			iValue += (iTempValue * 8) / 100;
 		iValue += (iCombatValue * u.getCityAttackModifier()) / 75; // bbai (was 100).
 		// iValue += (iCombatValue * u.getCollateralDamage()) / 400; // (moved)
+//doto ranged immunity doto keldath rangedstrike - no withdrawl		
+		if (u.getRangeStrike() < 1)
 		iValue += (iCombatValue * u.getWithdrawalProbability()) / 150; // K-Mod (was 100)
 		// iValue += (iCombatValue * u.getMoves() * iFastMoverMultiplier) / 4;
 		// K-Mod
@@ -14284,7 +14130,11 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 			iValue += iCombatValue * iFastMoverMultiplier * u.getMoves() / 10;
 		}
 		// K-Mod end
-
+		//doto keldath rangedstrike + ranged immunity
+		if (u.getRangeStrike() > 0)
+		{
+			iValue += (iCombatValue * 10) / 100;
+		}
 
 		/* if (!AI_isDoStrategy(AI_STRATEGY_AIR_BLITZ)) {
 			int iBombardValue = u.getBombardRate() * 8;
@@ -14338,6 +14188,10 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 			}
 			iSiegeValue += iBombardValue;
 		}
+//doto keldath rangedstrike + ranged immunity - 
+//although ranged untis has combat limit, i didnt add a factor if ranged to this one.
+//this will mitigate the construction of ranged units by the ai
+//consider tweaking this.
 		if (u.getCombatLimit() < 100)
 		{
 			PROFILE("AI_unitValue, UNITAI_ATTACK_CITY combat limit adjustment");
@@ -14393,18 +14247,7 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 			iSiegeValue /= iAttackUnits + 2 * iLimitedUnits;
 		}
 		iValue += iSiegeValue;
-		
-// MOD - START - Ranged Strike AI - doto give ranged some more value		
-		if (u.getDomainType() == DOMAIN_LAND && u.getAirCombat() > 0)
-		{
-			//based on air attack below.
-			//int iRangeValue = ((iCombatRangedValue * (100 + u.getCollateralDamage()) *
-			//		u.getAirRange()) + u.getBombRate()) / 200;
-			//iValue += (iRangeValue * 10 / 100); //add 10% of the iRangeValue -> so ai wont buy only ranged.
-			iValue += (iCombatRangedValue * 10) / 75;
-		}
-// MOD - START - Ranged Strike AI - doto give ranged some more value
-		
+
 		break;
 	}
 
@@ -14525,16 +14368,11 @@ int CvPlayerAI::AI_unitValue(UnitTypes eUnit, UnitAITypes eUnitAI,
 		iValue += (iCombatValue * 2) / 3;
 		iValue += (iCombatValue * u.getCityDefenseModifier()) / 75;
 		// K-Mod. Value for collateral immunity
-// MOD - START - Ranged Strike AI - doto give ranged some more value		
-		if (u.getDomainType() == DOMAIN_LAND && u.getAirCombat() > 0)
+//doto  rangedstrike + ranged immunity
+		if (u.getRangeStrike() > 0)
 		{
-			//based on air attack below.
-			//int iRangeValue = (iCombatRangedValue * (100 + u.getCollateralDamage()) *
-			//		u.getAirRange()) / 200;
-			//iValue += (iRangeValue * 15 / 100); //add 15% of the iRangeValue -> so ai wont buy only ranged.
-			iValue += (iCombatRangedValue * 20) / 150;
+			iValue += iCombatValue * 10 / 100;
 		}
-// MOD - START - Ranged Strike AI - doto give ranged some more value
 		FOR_EACH_ENUM(UnitCombat)
 		{
 			if (u.getUnitCombatCollateralImmune(eLoopUnitCombat))
@@ -14942,7 +14780,7 @@ int CvPlayerAI::AI_countCargoSpace(UnitAITypes eUnitAI) const
 	and it gets called by several UnitAI members too. Probably no noticeable
 	difference in performance, but who knows. */
 int CvPlayerAI::AI_neededExplorers(CvArea const& kArea) const
-{	// Body moved into AI_neededExplorers_bulk
+{
 	std::map<int,int>::const_iterator itNeeded = m_neededExplorersByArea.find(
 			kArea.getID());
 	if (itNeeded == m_neededExplorersByArea.end())
@@ -15108,7 +14946,7 @@ int CvPlayerAI::AI_countOwnedBonuses(BonusTypes eBonus,
 	// K-Mod end
 	CvMap const& kMap = GC.getMap();
 	int iCount = 0;
-	/*	advc: Treat Adv. Start upfront - and don't double count city bonuses.
+	/*	advc: Treat Adv. Start upfront - and don't double-count city bonuses.
 		Comment from Kek-Mod: "This era seems like nonsense meant to
 		prevent counting all bonuses when the map is fully revealed."
 		(I guess it's mainly relevant for tech evaluation in Advanced Start.) */
@@ -15363,7 +15201,7 @@ int CvPlayerAI::AI_maxUnitCostPerMil(CvArea const* pArea, int iBuildProb) const
 	CvTeamAI const& kTeam = GET_TEAM(getTeam());
 
 	//if (GC.getGame().isOption(GAMEOPTION_ALWAYS_PEACE))
-	if (!kTeam.AI_isWarPossible()) // advc.001j
+	if (!kTeam.AI_isWarPossible()) // advc.001
 		return 20; // ??
 
 	if (iBuildProb < 0) // a rough estimate:
@@ -15567,9 +15405,6 @@ int CvPlayerAI::AI_nukeWeight() const
 
 // advc: K-Mod code cut from CvUnitAI::AI_nukeValue
 int CvPlayerAI::AI_nukePlotValue(CvPlot const& kPlot,
-//doto - i had a 
-//FAssert(bEnemy || p.getTeam() == getTeam()); // it is owned, and we aren't allowed to nuke neutrals; so it is either enemy or ours.
-//on the original fn of CvUnitAI::AI_nukeValue advc 100 moved it here but with values not assert
 	int iCivilianTargetWeight) const
 {
 	PROFILE_FUNC();
@@ -16008,7 +15843,7 @@ bool CvPlayerAI::AI_isTargetForMissionaries(PlayerTypes eTarget,
 		return false;
 	if(GET_TEAM(getTeam()).AI_isSneakAttackReady(kTarget.getTeam())) // advc
 		return false;
-	if(!GET_TEAM(kTarget.getTeam()).canPeacefullyEnter(getTeam())) // advc.001j
+	if(!GET_TEAM(kTarget.getTeam()).canPeacefullyEnter(getTeam())) // advc.001
 		return false;
 	if(kTarget.isNoNonStateReligionSpread() &&
 		kTarget.getStateReligion() != eReligion &&
@@ -17119,13 +16954,11 @@ CivicTypes CvPlayerAI::AI_bestCivic(CivicOptionTypes eCivicOption, int* piBestVa
 	{
 		if (GC.getInfo(eLoopCivic).getCivicOptionType() == eCivicOption)
 		{
-			/* doto Civics parent - Start
-			the force civics function sets child civics automatically
-			as for other functions, like trade or diplo
-			for now, my desicion is that it will ignore child civics*/
-			if (!canDoChildCivic(eLoopCivic))
-					continue;
-			/* doto Civics parent - Start */
+			//doto civic dependency JUST IN CASE, DEP CIVICS ARE DONE IN bestgroupcivic
+			CivicTypes eFavCivic = getFavoriteCivic();
+			if (GC.getInfo(GC.getInfo(eLoopCivic).getCivicOptionType()).getParentCivicOption() > 0)
+				continue;
+		
 			if (canDoCivics(eLoopCivic))
 			{
 				int iValue = AI_civicValue(eLoopCivic);
@@ -17141,166 +16974,7 @@ CivicTypes CvPlayerAI::AI_bestCivic(CivicOptionTypes eCivicOption, int* piBestVa
 		*piBestValue = iBestValue;
 	return eBestCivic;
 }
-/* doto civics  parent - start */
-CivicMap CvPlayerAI::forceChildCivics(CivicMap& ePreRevolutionMap) const
-{
-	PROFILE_FUNC();
-	
-	//doto - need to figure a way to combine this with AI_totalBestChildrenValue
-	// the problem is that every time we re evaluate the child civics.
-	// perhaps should be a cached map with the best childs at all times.
-	// should be easier
-	
-	FOR_EACH_ENUM(CivicOption)
-	{
-		//if the civic option is not a parent - pass -> we only process parents + their 
-		//childred as a group
-		if (GC.getInfo(eLoopCivicOption).getParentCivicOption() != 2)
-			continue;
-			
-		CivicTypes eParentCivic = ePreRevolutionMap.get(eLoopCivicOption); //get the civic for the itered c option	
-		CvCivicInfo& kParentCivic = GC.getCivicInfo(eParentCivic); 
-		int parentNumChildren = kParentCivic.getNumParentCivicsChildren();	
-		//int eBestChild = 0;
-		
-		if (parentNumChildren > 0)
-		{
-			int* m_atemp = new int[parentNumChildren];
-			for (int c = 0; c < parentNumChildren; c++)
-			{
-				//this loop spared the need of running AI_civicValue
-				// over and over for evey civic option below, since there are a few loops
-				m_atemp[c] = AI_civicValue(kParentCivic.getParentCivicsChildren(c), false);
-			}
-				
-			//for every civicoption - lets find the best child 
-			//civic with the better value - the civicoption loop
-			//is in place so the best child will be taken from all child list in the parent
-			//and each time a specific best children for a civic option will be chosen.
-			//this is because in the xml -> i ddint hard coded the civic option of children civics
-			//in addition this loop makes it so that if by mistake
-			//the children are not listed as civic 1 , civic2 of option 1 ...n and maybe
-			// civic 1 if option a civic 2 of option b civic 3 of option a....n 	
-			for (int i = 0; i < GC.getNumCivicOptionInfos(); i++)
-			{
-				CivicOptionTypes eLoopCivicOptionChild = (CivicOptionTypes)i;
-				// no point in wasting a loop for the parents civic option type
-				if (eLoopCivicOptionChild == kParentCivic.getCivicOptionType())
-					continue;
-				//if the civic is not a child civic option - pass...
-				if (GC.getInfo(eLoopCivicOptionChild).getParentCivicOption() != 1)
-					continue;
-					
-				int eTempBestCivicChildOption = 0;
-				for (int J = 0; J < parentNumChildren; J++)
-				{
-					CivicTypes eChildCivic = kParentCivic.getParentCivicsChildren(J);
-					if (!canDoCivics(eChildCivic))
-						continue;
-					if (GC.getInfo(eChildCivic).getCivicOptionType() == eLoopCivicOptionChild)
-					{
-						//if another civic child belongs to the same civic option 
-						if (m_atemp[J] > eTempBestCivicChildOption)
-						{
-							// save the value -> if there is more childs to this civic option
-							eTempBestCivicChildOption =	m_atemp[J];
-							ePreRevolutionMap.set(eLoopCivicOptionChild, eChildCivic);
-						}
-					}
-				}
-			}
-			SAFE_DELETE_ARRAY(m_atemp);
-		}
-	}
-	return 	ePreRevolutionMap;
-}
 
-int CvPlayerAI::AI_totalBestChildrenValue(CivicTypes eCivic) const
-{	
-	CvCivicInfo& kCivic = GC.getCivicInfo(eCivic);
-//	CvWString ecD = kCivic.getDescription();//test
-	//is this a parent?
-	int parentNumChildren = kCivic.getNumParentCivicsChildren();
-	
-	if (parentNumChildren > 0)
-	{
-		//if the parent cant be chosen....
-		if (!canDoCivics(eCivic))
-			return 0;
-		
-		int eBestChildCivicsValue = 0;
-		//for every civicoption - lets find the best child civic with the better value	
-		for (int i = 0; i < GC.getNumCivicOptionInfos(); i++)
-		{
-			CivicOptionTypes eLoopCivicOption = (CivicOptionTypes)i;
-			//if its the parent civic option, dont add its value (done in the hijacked civic value
-			if (eLoopCivicOption == kCivic.getCivicOptionType())
-				continue;
-			// process only children civic types
-			if (GC.getInfo(eLoopCivicOption).getParentCivicOption() != 1)
-				continue;
-			int eTempBestCivicChildOption = 0;
-			//EVERY CIVIC OPTION will keep the best child value in it
-			//this way, if there is more than 1 child dependant on the parent
-			// this loop will ppick the best child per civic option
-			for (int J = 0; J < parentNumChildren; J++)
-			{
-				CivicTypes eChildCivic = kCivic.getParentCivicsChildren(J);
-				//verify the child can be chosen
-//				CvWString ccD = GC.getInfo(eChildCivic).getDescription();//test
-				if (!canDoCivics(eChildCivic))
-					continue;
-				if (GC.getInfo(eChildCivic).getCivicOptionType() == eLoopCivicOption)
-				{
-					//if another civic child belongs to the same civic option 
-					int childValue = AI_civicValue(eChildCivic, false); //true so it wont me a reccursion loop
-					if (childValue > eTempBestCivicChildOption)
-					{
-						//the reason fro not adding but setting it (=) is cause the value
-						//should be for 1 child civic, the highest (which later will be added to the parent)
-						eTempBestCivicChildOption =	childValue;
-					}
-				}
-			}
-			// this will be the sum of all children civics of the given parent
-			// the value allows 1 child civic per civic option no matter how many children 
-			//exists that belong to the same civic option
-			eBestChildCivicsValue += eTempBestCivicChildOption;
-		}	
-		return eBestChildCivicsValue;
-	}
-	else
-		return 0;
-}
-
-/* doto Civics parent - start ) 
-	value the best child civics per civic option for a parent civic
- */
-int CvPlayerAI::AI_civicValueGroup(CivicTypes eCivic) const
-{
-	PROFILE_FUNC();
-
-	CvCivicInfo const& kCivic = GC.getInfo(eCivic);
-	//CvWString ecD = kCivic.getDescription();//test
-
-	/* doto Civics parent - if a parent, value it with its children ) */
-	if (GC.getInfo(kCivic.getCivicOptionType()).getParentCivicOption() == 2)
-			return AI_totalBestChildrenValue(eCivic);
-			
-	/* doto Civics parent - if a child civic is being exhamined
-	 then its parent civ must be selected. if not, no point in running 	AI_civicValue
-	 which is heavy on performance...
-	 a reminder -> the forcecivics function is the one that converts to un selected children 
-	 accorging to the new chosen parent civic.*/
-	if (GC.getInfo(kCivic.getCivicOptionType()).getParentCivicOption() == 1)
-	{
-		if (!canDoChildCivic(eCivic))
-			return -99999999;
-	}
-	//this means this is a normal civic		
-	return 0;
-}
-/* doto Civics parent - end ) */
 /*	The bulk of this function has been rewritten for K-Mod.
 	(some original code deleted, some edited by BBAI)
 	Note: the value is roughly in units of 1 commerce per turn.
@@ -17308,10 +16982,7 @@ int CvPlayerAI::AI_civicValueGroup(CivicTypes eCivic) const
 	perhaps even faster if it calculated effects on a city-by-city basis,
 	rather than averaging effects across all cities.
 	(certainly this would work better for happiness modifiers.) */
-/* doto Civics parent - start ) */
-int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
-//int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
-/* doto Civics parent - end ) */
+int CvPlayerAI::AI_civicValue(CivicTypes eCivic) const
 {
 	PROFILE_FUNC();
 
@@ -17319,24 +16990,6 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 		return 1;
 	if (isBarbarian())
 		return 1;
-/* doto Civics parent - start ) */
-//the default is to value groups if exists
-//only the fucntions that value the child civics will send 	iValueGroup = false
-//that is so there wont be an infinite loop cycle
-	int groupValue = 0;
-	if (iValueGroup)
-	{
-		int tmpGroupValue = AI_civicValueGroup(eCivic);
-		if (tmpGroupValue == -99999999)
-		{
-			// this is a child civic that cannot be chosen cause its parent is not chosen.
-			// child civics are chosen automatically by the force civic function
-			return 1; 
-		}
-		groupValue += tmpGroupValue;
-	}
-	
-/* doto Civics parent - end ) */
 
 	CvCivicInfo const& kCivic = GC.getInfo(eCivic);
 	CvTeamAI const& kTeam = GET_TEAM(getTeam()); // K-Mod
@@ -18631,7 +18284,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 		{
 			BuildingTypes eBuilding = kCiv.buildingAt(i);
 			BuildingClassTypes eBuildingClass = kCiv.buildingClassAt(i);
-//<!-- doto civic plus -->	start -> missing in the org code... doto112				
+//<!-- doto civic plus -->	start doto112				
 			//int iTempValue = 0;
 			
 		//	if (eBuilding == NO_BUILDING)
@@ -18726,7 +18379,7 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 		}
 	}
 	FOR_EACH_ENUM(Feature)
-		{
+	{
 		int iHappiness = kCivic.getFeatureHappinessChanges(eLoopFeature);
 		if (iHappiness != 0) // (time saving)
 			iValue += (iHappiness * AI_countCityFeatures(eLoopFeature) * 5);
@@ -18797,8 +18450,6 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 		int iMaxCultureChange = 0;
 		FOR_EACH_ENUM(Specialist)
 		{
-			//<!-- doto civic plus -->	start 
-			
 			if (!kCivic.isSpecialistValid(eLoopSpecialist))
 				continue;
 			// K-Mod todo: the current code sucks. Fix it.
@@ -18897,34 +18548,8 @@ int CvPlayerAI::AI_civicValue(CivicTypes eCivic, bool iValueGroup) const
 //dune wars - hated civs
 	/* if (AI_atVictoryStage(AI_VICTORY_CULTURE2) && kCivic.isNoNonStateReligionSpread())
 		iValue /= 10;*/ // what the lol...
-//<!-- doto civic plus -->	start ->add the child civc value if exists (if not its 0)	
-	//FAssert((iValue + groupValue) <= 1000);
-	//FAssert((iValue) <= 1000);
-/*
-	CvWString ccD = GC.getInfo(eCivic).getDescription();//test
-	if ((iValue + groupValue) > 1000)
-		t = 5;
-	CvWString ccDd = GC.getInfo(eCivic).getDescription();//test
-	//FAssert(false);
-	if (ccDd == L"Despotism")
-		t = 1;
-	if (ccDd == L"Hereditary Rule")
-		t = 1;
-	if (ccDd == L"Representation")
-		t = 1;
-	if (ccDd == L"Autocracy")
-		t = 1;
-	if (ccDd == L"Provincial")
-		t = 1;
-	if (ccDd == L"Totalitarianism")
-		t = 1;
-	if (ccDd == L"Electoral")
-		t = 1;
-	if (ccDd == L"Oligarchy")
-		t = 1;
-	*/
-	return iValue + groupValue;
-//<!-- doto civic plus -->	end 
+
+	return iValue;
 }
 
 /*	advc: K-Mod code cut from AI_civicValue (for advc.131).
@@ -19375,7 +19000,13 @@ int CvPlayerAI::AI_espionageVal(PlayerTypes eTargetPlayer,
 	}
 
 	if (bMalicious && GC.getInfo(eMission).getSwitchCivicCostFactor() > 0)
-		iValue += AI_civicTradeVal((CivicTypes)iData, eTargetPlayer);
+	{
+		//doto civic dependency dont try espionage on dependent civics -> maybe in the future, to much code
+		if (GC.getInfo(GC.getInfo((CivicTypes)iData).getCivicOptionType()).getParentCivicOption() < 1)
+		{
+			iValue += AI_civicTradeVal((CivicTypes)iData, eTargetPlayer);
+		}
+	}
 
 	if (bMalicious && GC.getInfo(eMission).getSwitchReligionCostFactor() > 0)
 	{	// <advc.132>
@@ -19902,7 +19533,7 @@ void CvPlayerAI::AI_setAttitudeExtra(PlayerTypes eIndex, int iNewValue)
 	int iChange = iNewValue - m_aiAttitudeExtra[eIndex]; // K-Mod
 	m_aiAttitudeExtra[eIndex] = iNewValue;
 	// K-Mod
-	if (iChange)
+	if (iChange != 0)
 		AI_changeCachedAttitude(eIndex, iChange);
 	// K-Mod end
 }
@@ -20244,6 +19875,11 @@ int CvPlayerAI::AI_calculateGoldenAgeValue(bool bConsiderRevolution) const
 		getCivics(aeBestCivics); // Start with copy of current civics
 		FOR_EACH_ENUM(CivicOption)
 		{
+			//doto civic dependency ignore these civics for golden. too much work
+			//excluding goverments from diplo change -> too much code
+			CivicTypes eFavCivic = getFavoriteCivic();
+			if (GC.getInfo(eLoopCivicOption).getParentCivicOption() > 0)
+				continue;
 			int iCurrentValue = AI_civicValue(aeBestCivics.get(eLoopCivicOption));
 			int iBestValue;
 			CivicTypes eNewCivic = AI_bestCivic(eLoopCivicOption, &iBestValue);
@@ -20431,13 +20067,6 @@ void CvPlayerAI::AI_doCounter()
 				// Limited decay while war ongoing
 				if((eMem == MEMORY_CANCELLED_OPEN_BORDERS ||
 					eMem == MEMORY_CANCELLED_DEFENSIVE_PACT ||
-/************************************************************************************************/
-/* START: Advanced Diplomacy     adjuster for advc   city states                                                            */
-/************************************************************************************************/
-					eMem == MEMORY_CANCELLED_FREE_TRADE_AGREEMENT  ||
-/************************************************************************************************/
-/* END: Advanced Diplomacy     adjuster for advc                                                               */
-/************************************************************************************************/
 					eMem == MEMORY_CANCELLED_VASSAL_AGREEMENT) &&
 					iCount <= 1)
 				{
@@ -20649,7 +20278,8 @@ void CvPlayerAI::AI_doCommerce()
 		}
 		if(iPartners > 0)
 		{
-			if (GC.getGame().isOption(GAMEOPTION_NO_TECH_BROKERING))
+			if (!GC.getGame().isOption(GAMEOPTION_NO_TECH_TRADING) &&
+				GC.getGame().isOption(GAMEOPTION_NO_TECH_BROKERING))
 			{
 				// Inspired by a change by Fuyu (in Better BUG AI?)
 				rPartnerScore *= fixp(0.77);
@@ -21170,8 +20800,13 @@ void CvPlayerAI::AI_doCommerce()
 /*	K-Mod. I've rewritten most of this function, based on edits from BBAI.
 	I don't know what's original bts code and what's not.
 	(the BBAI implementation had some bugs) */
-void CvPlayerAI::AI_doCivics()
+	
+//doto civic dependency doto115
+// func purpose is changed
+CivicMap CvPlayerAI::AI_doCivics()
 {
+/*doto civic dependency doto115 moved to a small func
+
 	FAssertMsg(!isHuman(), "isHuman did not return false as expected");
 
 	if (isBarbarian())
@@ -21180,27 +20815,31 @@ void CvPlayerAI::AI_doCivics()
 	if (AI_getCivicTimer() > 0)
 	{
 		AI_changeCivicTimer(-1);
-		/*	K-Mod. If its the last turn of a golden age,
+*/		/*	K-Mod. If its the last turn of a golden age,
 			consider switching civics anyway. */
+/*
 		if (getGoldenAgeTurns() != 1)
 			return;
 	}
 
 	if (!canDoAnyRevolution())
 		return;
-
+*/
 	// FAssert(AI_getCivicTimer() == 0); // Disabled by K-Mod
-
+	
 	CivicMap aeBestCivic;
 	getCivics(aeBestCivic);
 	EagerEnumMap<CivicOptionTypes,int> aiCurrentValue; // advc.enum
 	FOR_EACH_ENUM(CivicOption)
 	{
-		/* doto Civics parent - Start */
-		//keldath doto - consider make the loop calc ignore any child civics
-		/* doto Civics parent - Start */
-		aiCurrentValue.set(eLoopCivicOption,
-				AI_civicValue(aeBestCivic.get(eLoopCivicOption)));
+		//doto civic dependency doto115 - Start parents and children will be calculated differently
+		if (GC.getInfo(eLoopCivicOption).getParentCivicOption() < 1)
+			aiCurrentValue.set(eLoopCivicOption, AI_civicValue(aeBestCivic.get(eLoopCivicOption)));
+		//doto civic dependency doto115
+
+		//doto debug
+		if (eLoopCivicOption != NO_CIVICOPTION)
+			CvWString civicName = GC.getInfo(aeBestCivic.get(eLoopCivicOption)).getDescription();
 	}
 
 	int iAnarchyLength = 0;
@@ -21213,8 +20852,17 @@ void CvPlayerAI::AI_doCivics()
 		bWantSwitch = false;
 		FOR_EACH_ENUM(CivicOption)
 		{
+//doto civic dependency doto115 - Start parents and children will be calculated differently
+			if (GC.getInfo(eLoopCivicOption).getParentCivicOption() > 0)
+				continue;
+			
 			int iBestValue=-1;
 			CivicTypes const eNewCivic = AI_bestCivic(eLoopCivicOption, &iBestValue);
+
+//doto civic dependency doto115 can be null from cap era limit or not a normal civic
+			if (eNewCivic == NO_CIVIC)
+				continue;
+
 			/*  advc.001r: Same thing as under karadoc's "temporary switch" comment
 				in the loop below */
 			CivicTypes eOtherCivic = aeBestCivic.get(eLoopCivicOption);
@@ -21259,7 +20907,12 @@ void CvPlayerAI::AI_doCivics()
 	} while (bWillSwitch && bWantSwitch);
 	// Recheck, just in case we can switch another good civic without adding more anarchy.
 
-
+	//doto debug after
+	FOR_EACH_ENUM(CivicOption)
+	{
+		if (eLoopCivicOption != NO_CIVICOPTION)
+			CvWString civicName = GC.getInfo(aeBestCivic.get(eLoopCivicOption)).getDescription();
+	}
 	/*	finally, if our current research would give us a new civic,
 		consider waiting for that. */
 	if (iAnarchyLength > 0 && bWillSwitch)
@@ -21274,6 +20927,11 @@ void CvPlayerAI::AI_doCivics()
 				FOR_EACH_ENUM2(Civic, eCivic)
 				{
 					CvCivicInfo const& kCivic = GC.getInfo(eCivic);
+					
+					//doto civic dependency doto115 - Start parents and children will be calculated differently
+					if (GC.getInfo(kCivic.getCivicOptionType()).getParentCivicOption() > 0)
+						continue;
+					
 					if(kCivic.getTechPrereq() != eResearch || canDoCivics(eCivic))
 						continue;
 					CivicTypes eOtherCivic = aeBestCivic.get(kCivic.getCivicOptionType());
@@ -21291,7 +20949,10 @@ void CvPlayerAI::AI_doCivics()
 						{
 							if(gPlayerLogLevel > 0) logBBAI("    %S delays revolution to wait for %S (value: %d vs %d)", getCivilizationDescription(0), kCivic.getDescription(0), iValue, aiCurrentValue.get(kCivic.getCivicOptionType()));
 							AI_setCivicTimer(iResearchTurns*2/3);
-							return;
+							//doto civic dependency - retur the original the func is not void so returning the current
+							CivicMap aeCurrentCivic;
+							getCivics(aeCurrentCivic);
+							return aeCurrentCivic;
 						}
 					}
 					aeBestCivic.set(kCivic.getCivicOptionType(), eOtherCivic);
@@ -21303,21 +20964,520 @@ void CvPlayerAI::AI_doCivics()
 			if(getGold() < (iAnarchyLength + std::min(0, getStrikeTurns() - 1))
 				* -getGoldPerTurn())
 			{
-				return;
+				//doto civic dependency doto115
+				CivicMap aeCurrentCivic;
+				getCivics(aeCurrentCivic);
+				return aeCurrentCivic;
 			}
 		} // </advc.131>
 	}
-	/* doto Civics parent - Start */
-	// get the civics with forced children
-	//child civics come out as 0 - think if this is wise for the below tech thing.
-	aeBestCivic = forceChildCivics(aeBestCivic);
-	/* doto Civics parent - end */
-	if (canRevolution(aeBestCivic))
+
+	//doto debug
+	FOR_EACH_ENUM(CivicOption)
 	{
-		revolution(aeBestCivic);
+		if (eLoopCivicOption != NO_CIVICOPTION)
+			CvWString civicName = GC.getInfo(aeBestCivic.get(eLoopCivicOption)).getDescription();
+	}
+//doto civic dependency doto115
+	return aeBestCivic;
+//doto civic dependency doto115
+}
+
+//doto civic dependency doto115 -> this is derived off of : AI_doCivics
+//heavily modified . all the calculation will be done at a level of civic groups, parent + dependent civics.
+CivicMap CvPlayerAI::AI_doDependentCivics()
+{
+	//bool checks  -> code removed to anothe fuunc
+	// FAssert(AI_getCivicTimer() == 0); // Disabled by K-Mod
+
+	CivicMap aeBestCivic;
+	getCivics(aeBestCivic);
+	int aiCurrentGroupValue = 0;
+	CivicOptionTypes parentCivicOption = NO_CIVICOPTION;
+	FOR_EACH_ENUM(CivicOption)
+	{
+		/* doto Civics parent - ignore normal civics AND CHILDREN*/
+		//childrens value will be processed later in the function
+		if (GC.getInfo(eLoopCivicOption).getParentCivicOption() > 1)
+		{
+			//the value wont be per civic, but for the whole group (unlike ai_docivics())
+			//the iBestValue below is compared to this value , both must be the same - e.g group of the civics dependent and parent
+			aiCurrentGroupValue = aiCurrentGroupValue + AI_civicValue(aeBestCivic.get(eLoopCivicOption));
+			if (GC.getInfo(eLoopCivicOption).getParentCivicOption() == 2)
+				parentCivicOption = eLoopCivicOption; //later usage, safe loops
+		}
+		//doto debug before suggested changes
+		if (eLoopCivicOption != NO_CIVICOPTION)
+			CvWString civicName = GC.getInfo(aeBestCivic.get(eLoopCivicOption)).getDescription();
+	}
+	
+	int iAnarchyLength = 0;
+	bool bWillSwitch;
+	bool bWantSwitch;
+	bool bFirstPass = true;
+	do
+	{
+		bWillSwitch = false;
+		bWantSwitch = false;
+		
+		//find best parent and best of its childs	
+		int iBestGroupValue = -1;
+		CivicMap bestGroupCivic = AI_bestGroupCivics(parentCivicOption, &iBestGroupValue);
+		FOR_EACH_ENUM(CivicOption)
+		{
+			CivicTypes eNewCivic = bestGroupCivic.get(eLoopCivicOption);
+			if (GC.getInfo(eLoopCivicOption).getParentCivicOption() < 1)
+				continue;
+			if (eNewCivic == NO_CIVIC)
+				continue;
+
+			//doto debug before suggested changes
+			CvWString civicName = GC.getInfo(bestGroupCivic.get(eLoopCivicOption)).getDescription();
+
+			/*  advc.001r: Same thing as under karadoc's "temporary switch" comment
+				in the loop below */
+			CivicTypes eOtherCivic = aeBestCivic.get(eLoopCivicOption);
+			if (eOtherCivic == eNewCivic)
+				continue;
+			aeBestCivic.set(eLoopCivicOption, eNewCivic); // advc.001r
+			int iTestAnarchy = getCivicAnarchyLength(aeBestCivic);
+			aeBestCivic.set(eLoopCivicOption, eOtherCivic); // advc.001r
+			/*  using ~30 percent as a rough estimate of revolution cost, and
+				a low threshold regardless of anarchy just for a bit of inertia.
+				reduced threshold if we are already going to have a revolution. */
+			int iThreshold = 5;
+			if (iTestAnarchy > iAnarchyLength)
+			{
+				iThreshold = (!bFirstPass || bWantSwitch ? 20 : 30);
+				// <advc.132b>
+				TeamTypes eMaster = getMasterTeam();
+				if (getTeam() != eMaster && GET_TEAM(eMaster).isHuman())
+					iThreshold += 15;
+				// </advc.132b>
+			}
+			if (100*iBestGroupValue > (100 + /* advc.131: */ (iBestGroupValue >= 0 ? 1 : -1) *
+				iThreshold) * aiCurrentGroupValue)
+			{
+				FAssert(aeBestCivic.get(eLoopCivicOption) != NO_CIVIC);
+				if (gPlayerLogLevel > 0) logBBAI("    %S decides to switch to %S (value: %d vs %d%S)", getCivilizationDescription(0), GC.getInfo(eNewCivic).getDescription(0), iBestGroupValue, iBestGroupValue, bFirstPass?"" :", on recheck");
+				iAnarchyLength = iTestAnarchy;
+				aeBestCivic.set(eLoopCivicOption, eNewCivic);
+				aiCurrentGroupValue = iBestGroupValue;
+				bWillSwitch = true;
+			}
+			else
+			{
+				if (100 * iBestGroupValue > /* advc.131: */ (iBestGroupValue >= 0 ? 120 : 80)
+					* aiCurrentGroupValue)
+				{
+					bWantSwitch = true;
+				}
+			}
+		}
+		bFirstPass = false;
+	} while (bWillSwitch && bWantSwitch);
+	// Recheck, just in case we can switch another good civic without adding more anarchy.
+
+
+	//doto debug before suggested changes
+	FOR_EACH_ENUM(CivicOption)
+	{
+		if (eLoopCivicOption != NO_CIVICOPTION)
+			CvWString civicName = GC.getInfo(aeBestCivic.get(eLoopCivicOption)).getDescription();
+	}
+
+
+	/*	finally, if our current research would give us a new civic,
+		consider waiting for that. */
+	if (iAnarchyLength > 0 && bWillSwitch)
+	{
+		TechTypes const eResearch = getCurrentResearch();
+		if (eResearch != NO_TECH)
+		{	// <advc.004x>
+			int const iResearchTurns = getResearchTurnsLeft(eResearch, true);
+			if (iResearchTurns >= 0 && // </advc.004x>
+				iResearchTurns < 2 * CIVIC_CHANGE_DELAY / 3)
+			{
+				//doto civic dependency doto115
+				//origical check if a civic is being reseached,
+				//if so it will consider holding any revoluion to wait to get the tack
+
+				FOR_EACH_ENUM2(Civic, eCivic)
+				{
+
+					CvCivicInfo const& kCivic = GC.getInfo(eCivic);
+					/* doto Civics parent - only checking a parent here, after we will check for the children*/
+					if (GC.getInfo(kCivic.getCivicOptionType()).getParentCivicOption() != 2)
+						continue;
+
+					int iBestChildrenGroupValue = -1;//for later
+					CivicMap bestGroupCivic = AI_bestValueParentsChildCivics(eCivic, kCivic.getCivicOptionType(), &iBestChildrenGroupValue);
+
+					//doto debug, whos the best
+					FOR_EACH_ENUM(CivicOption)
+					{
+						if (eLoopCivicOption != NO_CIVICOPTION)
+							CvWString civicName = GC.getInfo(bestGroupCivic.get(eLoopCivicOption)).getDescription();
+					}
+
+
+					//doto civic dependency doto115;will check if there are parents or children is on the way.
+					//if the parent is not selected, we can ignore the cap.
+					/*
+						let see if we should wair to finish a reserach of a parent instead of converting now.
+						first we should see we arenot learning the tech the civic needs.
+						if we can do the civic now, so no need to wait
+						and if we cant do the civic now and we are not learning a tech that will reset the cap that is probabaly denieing the convert
+						we should not wait for the tech in these cases.
+						but,
+						the parent is not enough, before we can dismiss that we can do the parent, we need to make sure that we can convert to all the dependent children per dependent civics
+						the parent has.
+					*/
+					bool isThereCapLimitandtheresearchwontresetit = (getCurrentEra() < GC.getInfo(eResearch).getEra()) && (getGovermentConversionCounter(GC.getInfo(eCivic).getCivicOptionType()) == 0);
+					if (kCivic.getTechPrereq() != eResearch || canDoCivics(eCivic) || !canDoCivics(eCivic) && !isThereCapLimitandtheresearchwontresetit)
+					{
+						int countHowManyChildren = 0;
+						int countHowManyChildrenfitTheTest = 0;
+						FOR_EACH_ENUM(CivicOption)
+						{
+							bool canDoAtLeastOneChild = false;
+							if (GC.getInfo(eLoopCivicOption).getParentCivicOption() == 1)
+							{
+								countHowManyChildren = countHowManyChildren + 1;
+								CivicTypes eChildCivic = bestGroupCivic.get(eLoopCivicOption);
+								CvCivicInfo const& kChild = GC.getInfo(eChildCivic);
+								//if the current parent is selected, we mustnot ignore the cap
+								/*
+									 assuming that we can convert to the parent,
+									 lets see that its not worth while for us to wait for a tech that will aloow us to convert to atleast
+									 1 of the child civics.
+									 cause if the suggested best group has 1 child that we are now researching for his tech,
+									 we should wait for that tech.
+									 3 conditions:
+									 if we are not researching the childs tech, we can continue
+									 if we can do the child civic and we have enough cap and the child paraent is already selected
+									 if the parent is not selected and we can do the child civic regardless of the cap
+									 if we are not learning a tech that will reset the cap and we can do the civic where the parent is selected and we can ignore the cap
+									 if we cant do the civic and the the target parent is not selected (we dont care for a cap in that case
+									 then we can say we can shift to the child.
+								*/
+								bool isThereCapLimitandtheresearchwontresetit = getCurrentEra() < GC.getInfo(eResearch).getEra() && getGovermentConversionCounter(GC.getInfo(eChildCivic).getCivicOptionType()) == 0;
+								if (kChild.getTechPrereq() != eResearch || canDoCivics(eChildCivic) && eCivic == getCivics(kCivic.getCivicOptionType()) ||
+									canDoCivics(eChildCivic, true) && eCivic != getCivics(kCivic.getCivicOptionType())
+									|| !isThereCapLimitandtheresearchwontresetit && canDoCivics(eChildCivic, false) && eCivic == getCivics(kCivic.getCivicOptionType())
+									)
+								{
+									countHowManyChildrenfitTheTest = countHowManyChildrenfitTheTest + 1;
+								}
+							}
+						}
+						if (countHowManyChildren == countHowManyChildrenfitTheTest)
+							continue;
+					}
+
+					//lets see what is the current best parent civic to be selected (or already selected)
+					CivicMap eOtherGroupCivic;
+					FOR_EACH_ENUM(CivicOption)
+					{
+						if (GC.getInfo(eLoopCivicOption).getParentCivicOption() > 0)
+						{
+							eOtherGroupCivic.set(eLoopCivicOption, aeBestCivic.get(eLoopCivicOption));
+						}
+					}
+					// advciv comment -> temporary switch just to test the anarchy length
+					//in order to test the anarchy below, 
+					//this will see what the anarchy would be if we change to the parent and children group
+					//that we dont have the tech for.
+					aeBestCivic.set(kCivic.getCivicOptionType(), eCivic);
+					FOR_EACH_ENUM(CivicOption)
+					{
+						if (GC.getInfo(eLoopCivicOption).getParentCivicOption() == 1)
+						{
+							aeBestCivic.set(eLoopCivicOption, bestGroupCivic.get(eLoopCivicOption));
+						}
+					}
+
+					if (getCivicAnarchyLength(aeBestCivic) <= iAnarchyLength)
+					{
+						/*	if the anarchy length would be the same,
+							consider waiting for the new civic. */
+
+						int iNewPottentialtoWaitParentValue = AI_civicValue(eCivic);
+						iNewPottentialtoWaitParentValue = iNewPottentialtoWaitParentValue + iBestChildrenGroupValue;
+
+						if (100 * iNewPottentialtoWaitParentValue >
+							(102 + 2 * iResearchTurns) *
+							aiCurrentGroupValue &&
+							iNewPottentialtoWaitParentValue > 0) // advc.131: Better to be safe
+						{
+							if (gPlayerLogLevel > 0) logBBAI("    %S delays revolution to wait for %S (value: %d vs %d)", getCivilizationDescription(0), kCivic.getDescription(0), iNewPottentialtoWaitParentValue, aiCurrentGroupValue);
+							AI_setCivicTimer(iResearchTurns * 2 / 3);
+							CivicMap aeCurrentCivics;
+							getCivics(aeCurrentCivics);
+							return aeCurrentCivics;
+						}
+					}
+
+					//doto civic dependency doto115 - upate all new/smae civics.
+					aeBestCivic.set(kCivic.getCivicOptionType(), eOtherGroupCivic.get(kCivic.getCivicOptionType()));//parent found or org civicorg
+					FOR_EACH_ENUM(CivicOption)
+					{
+						if (GC.getInfo(eLoopCivicOption).getParentCivicOption() == 1)
+						{
+							aeBestCivic.set(eLoopCivicOption, eOtherGroupCivic.get(eLoopCivicOption));
+							//doto civic dependency doto115 add the 
+						}
+					}
+
+				}
+			}
+		} // <advc.131>
+		if(iAnarchyLength > 0)
+		{
+			if(getGold() < (iAnarchyLength + std::min(0, getStrikeTurns() - 1))
+				* -getGoldPerTurn())
+			{
+				CivicMap aeCurrentCivics;
+				getCivics(aeCurrentCivics);
+				return aeCurrentCivics;
+			}
+		} // </advc.131>
+	}
+
+
+	FOR_EACH_ENUM(CivicOption)
+	{
+		CvWString civicName = GC.getInfo(aeBestCivic.get(eLoopCivicOption)).getDescription();
+	}
+
+//doto civic dependency doto115
+	return aeBestCivic;
+}
+
+void  CvPlayerAI::AI_DoAllCivics()
+{
+	FAssertMsg(!isHuman(), "isHuman did not return false as expected");
+
+	if (isBarbarian())
+		return;
+
+	if (AI_getCivicTimer() > 0)
+	{
+		AI_changeCivicTimer(-1);
+		/*	K-Mod. If its the last turn of a golden age,
+			consider switching civics anyway. */
+		if (getGoldenAgeTurns() != 1)
+			return;
+	}
+
+	if (!canDoAnyRevolution())
+		return;
+	
+	AI_doRevolution(AI_doCivics(), AI_doDependentCivics());
+	return;
+}
+		
+void CvPlayerAI::AI_doRevolution(CivicMap aeNormalCivics, CivicMap aeDependentCivics)
+{
+	CivicMap aeAllBestCivics;
+	getCivics(aeAllBestCivics);
+	FOR_EACH_ENUM(CivicOption)
+	{
+		//doto debug
+		if (eLoopCivicOption != NO_CIVICOPTION)
+			CvWString civicName = GC.getInfo(aeDependentCivics.get(eLoopCivicOption)).getDescription();
+		
+		if (GC.getInfo(eLoopCivicOption).getParentCivicOption() > 0)
+			aeAllBestCivics.set(eLoopCivicOption, aeDependentCivics.get(eLoopCivicOption));
+		else if (GC.getInfo(eLoopCivicOption).getParentCivicOption() < 1)
+			aeAllBestCivics.set(eLoopCivicOption, aeNormalCivics.get(eLoopCivicOption));
+	}
+	if (canRevolution(aeAllBestCivics))
+	{
+		revolution(aeAllBestCivics);
 		AI_setCivicTimer(getMaxAnarchyTurns() != 0 ? CIVIC_CHANGE_DELAY :
 				GC.getDefineINT(CvGlobals::MIN_REVOLUTION_TURNS) * 2);
 	}
+}
+//doto civic dependency doto115
+CivicMap CvPlayerAI::AI_bestGroupCivics(CivicOptionTypes parentCivicOption, int* iBestGroupValue)
+{	
+	/*
+	 	this will calculate and find a group of civics:
+	 	the best scored->
+	 	parent + children civics
+	 	for a given parent , it will take the best available child for each civicoption
+	 	there can be 2 child civics of the same civicoption, so we keep the higher one.
+
+	*/
+	
+	//lets count how many civic parents are there.
+	int howManyParentCivics = 0;
+	int howManyCivics = GC.getNumCivicInfos();
+	int howManyCivicsOption = GC.getNumCivicOptionInfos();
+	int bestTotalGroupvalue = 0;
+	
+	//cache it in the file cache -> i think its better than passing maps around
+	CivicMap aeBestLoopGroupCivic;
+	getCivics(aeBestLoopGroupCivic);
+	CivicMap aeBestCurrentGroupCivic;
+	getCivics(aeBestCurrentGroupCivic);
+	
+	for (int ij = 0; ij < howManyCivics; ij++)
+	{
+		int currentTotalValue = 0;
+		CvCivicInfo const& kloopParentCivic = GC.getInfo((CivicTypes)ij);
+		
+		if (!canDoCivics((CivicTypes)ij))
+			continue;
+
+		aeBestLoopGroupCivic.set(parentCivicOption, (CivicTypes)ij); //add in the sent parent
+		int parentValue = AI_civicValue((CivicTypes)ij);//parent valu;e
+
+		if (kloopParentCivic.getCivicOptionType() == parentCivicOption)
+		{
+			int numOfChildrenForThisParent = kloopParentCivic.getNumParentCivicsChildren();
+			CivicTypes bestChildForThisOption = NO_CIVIC;
+			int bestValueForBestChildrenPerCivic = 0;
+			for (int o = 0; o < howManyCivicsOption; o++)
+			{
+				//o for option
+				int bestChildValuePerOption = 0;
+				for (int c = 0; c < numOfChildrenForThisParent; c++)
+				{
+					//c for child
+					CivicTypes eChildCivic = kloopParentCivic.getParentCivicsChildren(c);
+
+					//if the target parent is not selected, we can ignore the child cap limit
+					//but if the parent is selected, the cap kicks in and if its 0, we cant use this child.
+					bool isSeelectedCurrentParent = (CivicTypes)ij == getCivics(parentCivicOption);
+					if (!canDoCivics(eChildCivic, true) && !isSeelectedCurrentParent
+						|| (getGovermentConversionCounter(GC.getInfo(eChildCivic).getCivicOptionType()) == 0 && isSeelectedCurrentParent)
+							)
+					{
+						continue;
+					}
+
+					if ((CivicOptionTypes)o == GC.getInfo(eChildCivic).getCivicOptionType())
+					{
+						int cValue = AI_civicValue(eChildCivic);
+							if (cValue > bestChildValuePerOption)
+							{
+								bestChildValuePerOption = cValue;
+								aeBestLoopGroupCivic.set((CivicOptionTypes)o, eChildCivic);
+							}
+					}
+				}
+				bestValueForBestChildrenPerCivic = bestValueForBestChildrenPerCivic + bestChildValuePerOption;
+			}
+
+			currentTotalValue = bestValueForBestChildrenPerCivic + parentValue;
+
+			//need to make sure that the looped parent, got candidate children for all of the civicoptions
+			//he has. we wanna avoid having 1 child from parent a and one child from parent b.
+			//we need both children to be of parent a
+			//so isThereACivicOptionWithNoChildren will be true if at least one of the children of a the parent
+			//was found suitable in the previous step
+			bool isThereACivicOptionWithNoChildren = false;
+			for (int ii = 0; ii < numOfChildrenForThisParent; ii++)
+			{
+				CivicTypes eChild = kloopParentCivic.getParentCivicsChildren(ii);
+				if (eChild == aeBestLoopGroupCivic.get(GC.getInfo(eChild).getCivicOptionType()))
+				{
+					isThereACivicOptionWithNoChildren = true;
+				}
+			}
+			if (!isThereACivicOptionWithNoChildren)
+				continue; //an incomeplete group was found, pass.
+
+			if 	(currentTotalValue > bestTotalGroupvalue)
+			{
+				//we got a new group with a higher score. sp update the new high score and update the
+				// parent and children we wanna switch to
+				bestTotalGroupvalue = currentTotalValue;
+				for (int t = 0; t < howManyCivicsOption; t++)
+				{
+					aeBestCurrentGroupCivic.set((CivicOptionTypes)t, aeBestLoopGroupCivic.get((CivicOptionTypes)t));
+				}
+			}
+		}
+		else
+			continue;
+	}
+	
+	if (iBestGroupValue)
+		*iBestGroupValue = bestTotalGroupvalue;
+	return aeBestCurrentGroupCivic;
+}
+
+CivicMap CvPlayerAI::AI_bestValueParentsChildCivics(CivicTypes parentCivic, CivicOptionTypes parentOption, int* iBestChildrenGroupValue)
+{	
+	/*
+	 	this will calculate and find a group of civics:
+	 	the best scored->
+	 	parent + children civics
+	 	for a given parent , it will take the best available child for each civicoption
+	 	there can be 2 child civics of the same civicoption, so we keep the higher one.
+
+		note, there is no check to see if the children candocivics -> this is for the wair for reseach partof the ai_dodependentcivics
+	*/
+	
+	//lets count how many civic parents are there.
+	int howManyParentCivics = 0;
+	int howManyCivics = GC.getNumCivicInfos();
+	int howManyCivicsOption = GC.getNumCivicOptionInfos();
+	int bestTotalGroupvalue = 0;
+	
+	//cache it in the file cache -> i think its better than passing maps around
+	CivicMap aeBestChildrenForTheParentCivics;
+	getCivics(aeBestChildrenForTheParentCivics);
+	CvCivicInfo const& kParentCivic = GC.getInfo(parentCivic);
+	FAssert(GC.getInfo(kParentCivic.getCivicOptionType()).getParentCivicOption() == 2)//make sure...
+	int numOfChildrenForThisParent = kParentCivic.getNumParentCivicsChildren();
+	int bestValueForTheSpecificChildren = 0;
+	
+	FOR_EACH_ENUM(CivicOption)
+	{
+		if (eLoopCivicOption != NO_CIVICOPTION)
+			CvWString civicName = GC.getInfo(aeBestChildrenForTheParentCivics.get(eLoopCivicOption)).getDescription();
+	}
+
+	for (int o = 0; o < howManyCivicsOption; o++)
+	{
+		int bestChildValuePerOption = 0;
+		for (int c = 0; c < numOfChildrenForThisParent; c++)
+		{
+			//c for child
+			CivicTypes eChildCivic = kParentCivic.getParentCivicsChildren(c);
+			
+			//if the target parent is not selected, we can ignore the child cap limit
+			//but if the parent is selected, the cap kicks in and if its 0, we cant use this child.
+			//if (canDoCivics(eChildCivic, true) && parentCivic != getCivics(parentOption))
+			//	continue;
+			
+			if ((CivicOptionTypes)o == GC.getInfo(eChildCivic).getCivicOptionType())
+			{
+				int cValue = AI_civicValue(eChildCivic);
+				if (cValue > bestChildValuePerOption)
+				{
+					bestChildValuePerOption = cValue;
+					aeBestChildrenForTheParentCivics.set((CivicOptionTypes)o, eChildCivic);
+				}
+			}				
+		}
+		bestValueForTheSpecificChildren = bestValueForTheSpecificChildren + bestChildValuePerOption;
+	}
+	
+	if (iBestChildrenGroupValue)
+		*iBestChildrenGroupValue = bestValueForTheSpecificChildren;
+
+	FOR_EACH_ENUM(CivicOption)
+	{
+		if (eLoopCivicOption != NO_CIVICOPTION)
+			CvWString civicName = GC.getInfo(aeBestChildrenForTheParentCivics.get(eLoopCivicOption)).getDescription();
+	}
+
+	return aeBestChildrenForTheParentCivics;
 }
 
 void CvPlayerAI::AI_doReligion()
@@ -22179,46 +22339,7 @@ void CvPlayerAI::AI_doDiplo()
 						else kGame.implementDeal(getID(), ePlayer, weGive, theyGive);
 					}
 				}
-/************************************************************************************************/
-/* START: Advanced Diplomacy   -doto added    -needed for the ai to offer it      city states              */
-/************************************************************************************************/
-				if (GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-				{
-					if (canPlayersSignFreeTradeAgreement(getID(), ePlayer))
-					{
-						if (AI_getContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE) == 0 &&
-							SyncRandOneChanceIn(GC.getInfo(getPersonalityType()).
-								getContactRand(CONTACT_TRADE_FREE_TRADE_ZONE)))
-						{
-							
-							TradeData item(TRADE_FREE_TRADE_ZONE);
-							if (canTradeItem(ePlayer, item, true) &&
-								kPlayer.canTradeItem(getID(), item, true))
-							{
-								weGive.clear();
-								theyGive.clear();
-								weGive.insertAtEnd(item);
-								theyGive.insertAtEnd(item);
-								if (kPlayer.isHuman() && !abContacted[kPlayer.getTeam()])
-								{
-									AI_changeContactTimer(ePlayer, CONTACT_TRADE_FREE_TRADE_ZONE,
-										AI_getContactDelay(CONTACT_TRADE_FREE_TRADE_ZONE));
-									pDiplo = new CvDiploParameters(getID());
-									pDiplo->setDiploComment(GC.getAIDiploCommentType("OFFER_DEAL"));
-									pDiplo->setAIContact(true);
-									pDiplo->setOurOfferList(theyGive);
-									pDiplo->setTheirOfferList(weGive);
-									gDLL->beginDiplomacy(pDiplo, ePlayer);
-									abContacted[kPlayer.getTeam()] = true;
-								}
-								else kGame.implementDeal(getID(), ePlayer, weGive, theyGive);
-							}
-						}
-					}
-				}
-/************************************************************************************************/
-/* END: Advanced Diplomacy                                                                      */
-/************************************************************************************************/
+
 				if (AI_getContactTimer(ePlayer, CONTACT_DEFENSIVE_PACT) == 0)
 				{
 					scaled rContactProbMult = 1;
@@ -23125,6 +23246,11 @@ bool CvPlayerAI::AI_contactCivics(PlayerTypes eHuman)
 	if(AI_getContactTimer(eHuman, CONTACT_CIVIC_PRESSURE) > 0)
 		return false;
 	CivicTypes const eFavoriteCivic = getFavoriteCivic();
+	//doto civic dependency doto115 dont contact about dep civics
+	//excluding goverments from diplo change -> too much code
+	CivicTypes eFavCivic = getFavoriteCivic();
+	if (GC.getInfo(GC.getInfo(eFavoriteCivic).getCivicOptionType()).getParentCivicOption() > 0)
+		return false;
 	if(eFavoriteCivic == NO_CIVIC || !isCivic(eFavoriteCivic))
 		return false;
 	CvPlayer& kHuman = GET_PLAYER(eHuman);
@@ -25135,7 +25261,7 @@ int CvPlayerAI::AI_calculateCultureVictoryStage(
 				iWeight; // advc.115f
 
 		//if (kGame.isOption(GAMEOPTION_ALWAYS_PEACE))
-		if (!GET_TEAM(getTeam()).AI_isWarPossible()) // advc.001j
+		if (!GET_TEAM(getTeam()).AI_isWarPossible()) // advc.001
 			iValue += 30;
 
 		iValue += (kGame.isOption(GAMEOPTION_AGGRESSIVE_AI) ?
@@ -25475,17 +25601,18 @@ int CvPlayerAI::AI_calculateConquestVictoryStage() const
 	CvTeamAI const& kTeam = GET_TEAM(getTeam());
 	// check for validity of conquest victory
 	//if (kGame.isOption(GAMEOPTION_ALWAYS_PEACE)
-	if (!kTeam.AI_isWarPossible() || // advc.001j
+	if (!kTeam.AI_isWarPossible() || // advc.001
 		isAVassal())
 	{
 		return 0;
 	}
+	int iOtherVictoryWeight = 0; // advc.104c
 	// <advc.115f>
 	int iWeight = 0;
 	FOR_EACH_ENUM(Victory)
 	{
-		if (GC.getInfo(eLoopVictory).isConquest())
-			iWeight += AI_getVictoryWeight(eLoopVictory);
+		(GC.getInfo(eLoopVictory).isConquest() ? iWeight :
+				iOtherVictoryWeight) += AI_getVictoryWeight(eLoopVictory); // advc.104c
 	}
 	if (iWeight < 0)
 		return 0; // </advc.115f>
@@ -25501,7 +25628,6 @@ int CvPlayerAI::AI_calculateConquestVictoryStage() const
 	// first, gather some data.
 	int iDoWs = 0, iKnownCivs = 0, iRivalPop = 0, iStartCivs = 0,
 			iConqueredCivs = 0, iAttitudeWeight = 0;
-
 	for (PlayerAIIter<EVER_ALIVE,OTHER_KNOWN_TO> itPlayer(getTeam());
 		itPlayer.hasNext(); ++itPlayer)
 	{
@@ -25509,7 +25635,9 @@ int CvPlayerAI::AI_calculateConquestVictoryStage() const
 		CvTeamAI const& kLoopTeam = GET_TEAM(kLoopPlayer.getTeam());
 		if (!kLoopTeam.isMajorCiv())
 			continue;
-
+		/*	advc (note): Dead players retain this memory unless they get reused.
+			And also the has-met data checked by the loop header. Caveat: Accessing
+			such info at the level of teams may well fail. */
 		iDoWs += kLoopPlayer.AI_getMemoryCount(getID(), MEMORY_DECLARED_WAR);
 		/*  advc.130j: DoW memory counted times 3, but there's also decay now
 			and CvTeamAI::forgiveEnemies, so let's go with 2.5. */
@@ -25623,9 +25751,10 @@ int CvPlayerAI::AI_calculateConquestVictoryStage() const
 				!bManyOffshoreRivals && // advc.115
 				(bVeryStrong ||
 				(bWarmonger && bHateful && 2 * iConqueredCivs >= iKnownCivs)) &&
-				/*  advc.104c: The ==1 might be exploitable; by keeping some
+				/*  <advc.104c> The ==1 might be exploitable; by keeping some
 					insignificant civ in the game. Probably no problem. */
-				(iFriends == 0 || (iFriends == iRemaining && iFriends == 1)))
+				(iFriends == 0 || (iFriends == iRemaining && iFriends == 1)) ||
+				iOtherVictoryWeight <= 0) // </advc.104c>
 			{
 				/*	finally, before confirming level 4, check that there is
 					at least one team that we can declare war on. */
@@ -25661,7 +25790,7 @@ int CvPlayerAI::AI_calculateDominationVictoryStage() const
 	CvGame const& kGame = GC.getGame();
 	CvTeamAI const& kTeam = GET_TEAM(getTeam());
 	//if (kGame.isOption(GAMEOPTION_ALWAYS_PEACE))
-	if (!kTeam.AI_isWarPossible() || // advc.001j
+	if (!kTeam.AI_isWarPossible() || // advc.001
 		isAVassal())
 	{
 		return 0;
@@ -25683,7 +25812,17 @@ int CvPlayerAI::AI_calculateDominationVictoryStage() const
 	// <advc.104c>
 	int const iPopObjective = std::max(1, kGame.getAdjustedPopulationPercent(eDomination));
 	int const iLandObjective = std::max(1, kGame.getAdjustedLandPercent(eDomination));
+	int iNonMilitaryVictoryWeight = 0;
+	FOR_EACH_ENUM(Victory)
+	{
+		if (eLoopVictory != eDomination &&
+			!GC.getInfo(eLoopVictory).isConquest())
+		{
+			iNonMilitaryVictoryWeight += AI_getVictoryWeight(eLoopVictory);
+		}
+	}
 	bool bBlockedByFriends = false;
+	if (iNonMilitaryVictoryWeight > 0)
 	{
 		scaled rPopNonFriends;
 		scaled rLandNonFriends;
@@ -25710,7 +25849,7 @@ int CvPlayerAI::AI_calculateDominationVictoryStage() const
 	{
 		// <advc.115>
 		int iEverAlive = kGame.getCivPlayersEverAlive();
-		if(iPercentOfDomination > 87 - iEverAlive) // was 80 flat </advc.115>
+		if (iPercentOfDomination > 87 - iEverAlive) // was 80 flat </advc.115>
 			return 4;
 		if (iPercentOfDomination > /*50*/ 62 - iEverAlive) // advc.115
 			return 3;
@@ -25923,7 +26062,8 @@ void CvPlayerAI::AI_updateVictoryWeights()
 		if (abValid.get(eLoopVictory))
 		{
 			short iWeight = m_aiVictoryWeights.get(eLoopVictory);
-			iWeight = static_cast<short>(iWeight + (iDeadWeight * iWeight) / iValidWeight);
+			iWeight = safeIntCast<short>(
+					iWeight + (iDeadWeight * iWeight) / iValidWeight);
 			m_aiVictoryWeights.set(eLoopVictory, iWeight);
 		}
 	}
@@ -25962,7 +26102,7 @@ bool CvPlayerAI::AI_isVictoryValid(VictoryTypes eVictory, int& iWeight) const
 			return false;
 		}
 	}
-	if (GC.getInfo(eVictory).isConquest())
+	if (kVictory.isConquest())
 	{
 		iWeight = (bHuman ? iHumanWeight : kPersonality.getConquestVictoryWeight());
 		if (bCheckBBAIDefine &&
@@ -26405,7 +26545,7 @@ void CvPlayerAI::AI_updateStrategyHash()
 				for (PlayerIter<MAJOR_CIV,OTHER_KNOWN_TO> itOther(getTeam());
 					itOther.hasNext(); ++itOther)
 				{
-					if (kTeam.canPeacefullyEnter(itOther->getTeam())) // advc.001j
+					if (kTeam.canPeacefullyEnter(itOther->getTeam())) // advc.001
 					{
 						if (itOther->getStateReligion() == getStateReligion())
 							iMissionary += 10;
@@ -26802,7 +26942,7 @@ void CvPlayerAI::AI_updateStrategyHash()
 				iProductionValue += 3;
 			}
 		}
-		if (iProductionValue >= 10)
+		if (iProductionValue > 8) // advc.018: Threshold reduced by 1
 			m_eStrategyHash |= AI_STRATEGY_PRODUCTION;
 		log_strat2(AI_STRATEGY_PRODUCTION, iProductionValue)
 	} // K-Mod end
@@ -26923,7 +27063,7 @@ void CvPlayerAI::AI_updateStrategyHash()
 
 	//Turn off inappropriate strategies.
 	//if (kGame.isOption(GAMEOPTION_ALWAYS_PEACE))
-	if (!GET_TEAM(getTeam()).AI_isWarPossible()) // advc.001j
+	if (!GET_TEAM(getTeam()).AI_isWarPossible()) // advc.001
 	{
 		m_eStrategyHash &= ~AI_STRATEGY_DAGGER;
 		m_eStrategyHash &= ~AI_STRATEGY_CRUSH;
@@ -27941,7 +28081,7 @@ int CvPlayerAI::AI_getTotalFloatingDefenders(CvArea const& kArea) const
 // K-Mod. (very basic just as a starting point. I'll refine this later.)
 int CvPlayerAI::AI_getTotalAirDefendersNeeded() const
 {
-	int iNeeded = getNumCities() + 1;
+	int iNeeded = 1 + (3 * getNumCities()) / 4; // advc.airf: 3/4
 	//iNeeded = iNeeded + iNeeded*(getCurrentEra()+1) / std::max(1, GC.getNumEraInfos()*2);
 	// Todo. Adjust based on what other civs are doing.
 
@@ -27951,7 +28091,7 @@ int CvPlayerAI::AI_getTotalAirDefendersNeeded() const
 		iNeeded = iNeeded*3/2;
 
 	return iNeeded;
-} // K-Mod end
+}
 
 
 RouteTypes CvPlayerAI::AI_bestAdvancedStartRoute(CvPlot* pPlot, int* piYieldValue) const
@@ -28884,9 +29024,7 @@ void CvPlayerAI::AI_recalculateFoundValues(int iX, int iY, int iInnerRadius, int
 int CvPlayerAI::AI_getMinFoundValue() const
 {
 	PROFILE_FUNC();
-// Dune Wars MIN_FOUND_VALUE koma13 START
-//	int iValue = GC.getDefineINT("MIN_FOUND_VALUE");
-// Dune Wars MIN_FOUND_VALUE koma13 END
+
 	//int iValue = 600;
 	static int const iBBAI_MINIMUM_FOUND_VALUE = GC.getDefineINT("BBAI_MINIMUM_FOUND_VALUE"); // advc.opt
 	scaled rValue = iBBAI_MINIMUM_FOUND_VALUE; // K-Mod
@@ -29503,8 +29641,11 @@ void CvPlayerAI::AI_doEnemyUnitData()
 		if (m_aiUnitClassWeights[eLoopUnitClass] > 0)
 		{
 			UnitTypes eUnit = GC.getInfo(eLoopUnitClass).getDefaultUnit();
-			m_aiUnitCombatWeights[GC.getInfo(eUnit).getUnitCombatType()] +=
-					m_aiUnitClassWeights[eLoopUnitClass];
+			if (eUnit != NO_UNIT) // advc.003l
+			{
+				m_aiUnitCombatWeights[GC.getInfo(eUnit).getUnitCombatType()] +=
+						m_aiUnitClassWeights[eLoopUnitClass];
+			}
 		}
 	}
 	FOR_EACH_ENUM(UnitCombat)
@@ -29524,6 +29665,9 @@ int CvPlayerAI::AI_calculateUnitAIViability(UnitAITypes eUnitAI, DomainTypes eDo
 	FOR_EACH_ENUM(UnitClass)
 	{
 		UnitTypes eLoopUnit = GC.getInfo(eLoopUnitClass).getDefaultUnit();
+		// <advc.003l>
+		if (eLoopUnit == NO_UNIT)
+			continue; // </advc.003l>
 		// UNOFFICIAL_PATCH, 01/15/09, jdog5000 (Bugfix): was GC.getInfo(eLoopUnitClass)
 		CvUnitInfo const& kUnitInfo = GC.getInfo(eLoopUnit);
 		if (kUnitInfo.getDomainType() == eDomain)

@@ -46,9 +46,6 @@ CvGame::CvGame() :
 //doto units bonus cap	
 	m_aiBonusThatArePrereqForUnits = NULL;
 //doto units bonus cap
-//doto special events
-	m_aeSpecialEvents = new int[2]; // expected 2 events. gotta change it if im gonna add more exists in other places!
-//doto special events	
 	reset(NO_HANDICAP, true);
 }
 
@@ -175,9 +172,6 @@ void CvGame::init(HandicapTypes eHandicap)
 		if (GC.getInfo(eLoopSpecialBuilding).isValid())
 			makeSpecialBuildingValid(eLoopSpecialBuilding);
 	}
-//doto special events - find the special events
-	setSpecialEvents();
-//doto special events
 
 	AI().AI_init();
 
@@ -199,12 +193,7 @@ void CvGame::setInitialItems()
 		GC.getMap().plotByIndex(eLoopPlotNum)->setRiverID(-1); // </advc>
 	// <advc.030> Now that ice has been placed and normalization is through
 	if (GC.getDefineBOOL(CvGlobals::PASSABLE_AREAS))
-//added by f1 advc to allow peaks to seperate continents
-//Mountains mod
-	{
-		if(!isOption(GAMEOPTION_MOUNTAINS))
-			GC.getMap().recalculateAreas(false);
-	}
+		GC.getMap().recalculateAreas(false);
 	// </advc.030>
 	// <advc.tsl>
 	if (isOption(GAMEOPTION_TRUE_STARTS))
@@ -303,10 +292,6 @@ void CvGame::setInitialItems()
 	}
 
 //doto units bonus cap
-	
-//doto special events - find the special events
-	setSpecialEvents();
-//doto special events
 	for (PlayerAIIter<CIV_ALIVE> it; it.hasNext(); ++it)
 		it->AI_updateFoundValues();
 	// <advc.tsl>
@@ -393,9 +378,9 @@ void CvGame::regenerateMap(/* advc.tsl: */ bool bAutomated)
 	setStartTurnYear();
 	m_iElapsedGameTurns = 0;
 	// </advc.251>
-	/*	advc.001: Reset minutesPlayed to 0. Note: Would cause a (redundant)
-		autosave in CvGame::update if I hadn't added a re-gen check there. */
-	setTurnSlice(0);
+	/*	advc.001: Reset minutesPlayed to (almost) 0. All the way to 0 causes the EXE
+		to hang when regenerating via WIDGET_WB_REGENERATE_MAP (WorldBuilder). */
+	setTurnSlice(1);
 	CvEventReporter::getInstance().resetStatistics();
 	// <advc.tsl>
 	m_iMapRegens++;
@@ -439,7 +424,7 @@ void CvGame::regenerateMap(/* advc.tsl: */ bool bAutomated)
 	// <advc.004j>
 	if (bShowDawn)
 		showDawnOfMan(); // </advc.004j>
-	if (getActivePlayer()!= NO_PLAYER)
+	if (getActivePlayer() != NO_PLAYER)
 	{
 		CvPlot* pPlot = GET_PLAYER(getActivePlayer()).getStartingPlot();
 		if (pPlot != NULL)
@@ -476,7 +461,7 @@ void CvGame::showDawnOfMan()
 
 void CvGame::uninit()
 {
-	m_aszDestroyedCities.clear();
+	m_aszPastCities.clear();
 	m_aszGreatPeopleBorn.clear();
 
 	m_deals.uninit();
@@ -502,9 +487,6 @@ void CvGame::uninit()
 //doto units bonus cap	
 	SAFE_DELETE_ARRAY(m_aiBonusThatArePrereqForUnits);
 //doto units bonus cap
-//doto special events
-	SAFE_DELETE_ARRAY(m_aeSpecialEvents);
-//doto special events
 }
 
 // advc: Cut from CvGame::init
@@ -524,30 +506,24 @@ void CvGame::setStartTurnYear(int iTurn)
 		iStartTurn /= 100;
 		setGameTurn(iStartTurn);
 	}
-
 	setStartTurn(getGameTurn());
-
 	if (getMaxTurns() == 0 /* advc.250c: */ || iTurn > 0)
 	{
 		int iEstimateEndTurn = 0;
 		for (int i = 0; i < kSpeed.getNumTurnIncrements(); i++)
 			iEstimateEndTurn += kSpeed.getGameTurnInfo(i).iNumGameTurnsPerIncrement;
 		setEstimateEndTurn(iEstimateEndTurn);
-
 		if (getEstimateEndTurn() > getGameTurn())
 		{
-			bool bValid = false;
 			FOR_EACH_ENUM(Victory)
 			{
 				if (isVictoryValid(eLoopVictory) &&
 					GC.getInfo(eLoopVictory).isEndScore())
 				{
-					bValid = true;
+					setMaxTurns(getEstimateEndTurn() - getGameTurn());
 					break;
 				}
 			}
-			if (bValid)
-				setMaxTurns(getEstimateEndTurn() - getGameTurn());
 		}
 	}
 	else setEstimateEndTurn(getGameTurn() + getMaxTurns());
@@ -635,13 +611,6 @@ void CvGame::reset(HandicapTypes eHandicap, bool bConstructorCall)
 		m_aiBonusThatArePrereqForUnits[iI] = 0;
 	}
 //doto units bonus cap
-
-//doto special events -reset the list
-	numSpecialEvents = 2;
-	m_aeSpecialEvents = new int[2];
-//doto special events
-	setSpecialEvents();
-//doto special events
 	if (!bConstructorCall)
 	{
 		m_aeRankPlayer.reset();
@@ -697,9 +666,6 @@ void CvGame::reset(HandicapTypes eHandicap, bool bConstructorCall)
 	m_bFeignSP = false; // advc.135c
 	m_bDoMShown = false; // advc.004x
 	m_bFPTestDone = false; // advc.003g
-//doto city states color plots after game is loaded - start
-	m_pColorCityStates = 0;
-//doto city states color plots after game is loaded - end
 	// <advc.003r>
 	for (int i = 0; i < NUM_UPDATE_TIMER_TYPES; i++)
 		m_aiUpdateTimers[i] = -1; // </advc.003r>
@@ -1037,10 +1003,7 @@ void CvGame::initScenario()
 			ts.sanitize();
 	} // </advc.tsl>
 	// <advc.030>
-//Mountains Mod
-//added by f1 advc to allow peaks to seperate continents
-	if(GC.getDefineBOOL(CvGlobals::PASSABLE_AREAS) 
-		&& !isOption(GAMEOPTION_MOUNTAINS))
+	if (GC.getDefineBOOL(CvGlobals::PASSABLE_AREAS))
 	{
 		/*	recalculateAreas can't handle preplaced cities. Or perhaps it can
 			(Barbarian cities are fine in most cases), but there's going to
@@ -1273,18 +1236,6 @@ NormalizationTarget* CvGame::assignStartingPlots()
 		advc.027 (note): Would be better to do this _after_ normalization.
 		But that would require a NormalizationTarget member function for
 		updating the start values. */
-//keldath crash fix for starting positions	see startingpositioniteration.cpp also	
-/*		kel098-9 - see if we need this in 099
-		StartingPositionIteration spi;
-		if (GC.getDefineBOOL("ENABLE_STARTING_POSITION_ITERATION"))
-		{
-			pNormalizationTarget = spi.createNormalizationTarget();
-			// Reassigning the starting sites makes debugging harder
-			if (pNormalizationTarget != NULL && spi.isDebug())
-				return pNormalizationTarget; // </advc.027>
-		}
-*/
-//note that this might be due to my system...		
 	applyStartingLocHandicaps(pNormalizationTarget);
 	return (bScenario ? NULL : pNormalizationTarget); // advc.027
 }
@@ -3006,89 +2957,89 @@ void CvGame::update()
 
 // advc.256: Cut from update
 void CvGame::updateUnprofiled()
-	{
-		sendPlayerOptions();
+{
+	sendPlayerOptions();
 
-		// sample generic event
-		CyArgsList pyArgs;
-		pyArgs.add(getTurnSlice());
-		/*	advc.210: To prevent BUG alerts from being checked at the start of a
-			game turn. I've tried doing that through BugEventManager.py, but soon
-			gave up. Tagging advc.706 b/c it's especially important to supress
-			the update when R&F is enabled. */
-		if (!isInBetweenTurns())
-		{
-			CvEventReporter::getInstance().genericEvent("gameUpdate", pyArgs.makeFunctionArgs());
-			// <advc.003r>
-			for (int i = 0; i < NUM_UPDATE_TIMER_TYPES; i++)
-				handleUpdateTimer((UpdateTimerTypes)i); // </advc.003r>
-		}
-		if (getTurnSlice() == 0) // advc (note): Implies 0 elapsed game turns
-		{	// <advc.700> Delay initial auto-save until RiseFall is initialized
-			if (!isOption(GAMEOPTION_RISE_FALL) && // </advc.700>
-				m_iTurnLoadedFromSave != m_iElapsedGameTurns && // advc.044
-				// advc: Necessary now that re-gen resets turn slice
-				m_iMapRegens <= 0)
-			{
-				autoSave(true); // advc.106l
-			}
-		}
-		/*	<advc.004m> Slice 0 seems to be the earliest time when plot indicators
-			can be enabled w/o crashing. But it appears that, for some players,
-			the indicators do not actually appear then - race condition? Slice 1
-			doesn't seem to help either. Try 2? (It's a continuous count.) */
-		if (getTurnSlice() == 2 &&
-			// Leave it up to the savegame when loading an initial autosave
-			m_iTurnLoadedFromSave != m_iElapsedGameTurns)
-		{
-			if (BUGOption::isEnabled("MainInterface__StartWithResourceIcons", true))
-				gDLL->getEngineIFace()->setResourceLayer(true);
-		} // </advc.004m>
-		if (getNumGameTurnActive() == 0)
-		{
-			if (!isPbem() || !getPbemTurnSent())
-				doTurn();
-		}
-		updateScore();
-		updateWar();
-		updateMoves();
-		updateTimers();
-		updateTurnTimer();
-		AI().AI_updateAssignWork();
-		testAlive();
-		if (getAIAutoPlay() == 0 && !gDLL->GetAutorun() &&
-			getGameState() != GAMESTATE_EXTENDED)
-		{
-			if (countHumanPlayersAlive() == 0 &&
-				!isOption(GAMEOPTION_RISE_FALL)) // advc.707
-			{
-				setGameState(GAMESTATE_OVER);
-			}
-		}
-		changeTurnSlice(1);
-		/*	<advc.104l> Make sure that UI (specifically willing-to-talk indicator)
-			doesn't become outdated throughout a turn. Or at least not for long.
-			advc.085: Invalidating on every turn slice might slightly hurt
-			responsiveness when hovering over the scoreboard. (Not sure.) */
-		if (getTurnSlice() % 4 == 0)
-			AI().uwai().invalidateUICache(); // </advc.104l>
-		/*	<advc.004n> (Disassembly suggests that the EXE caches this info,
-			so this check is fast.) */
-		bool bCityScreenUp = gDLL->UI().isCityScreenUp();
-		if (bCityScreenUp != m_bCityScreenUp)
-		{
-			m_bCityScreenUp = bCityScreenUp;
-			onCityScreenChange();
-		} // </advc004n>
-		if (getActivePlayer() != NO_PLAYER && GET_PLAYER(getActivePlayer()).getAdvancedStartPoints() >= 0 &&
-			!gDLL->UI().isInAdvancedStart())
-		{
-			gDLL->UI().setInAdvancedStart(true);
-			gDLL->UI().setWorldBuilder(true);
-		} // <advc.705>
-		if (isOption(GAMEOPTION_RISE_FALL))
-			m_pRiseFall->restoreDiploText(); // </advc.705>
+	// sample generic event
+	CyArgsList pyArgs;
+	pyArgs.add(getTurnSlice());
+	/*	advc.210: To prevent BUG alerts from being checked at the start of a
+		game turn. I've tried doing that through BugEventManager.py, but soon
+		gave up. Tagging advc.706 b/c it's especially important to supress
+		the update when R&F is enabled. */
+	if (!isInBetweenTurns())
+	{
+		CvEventReporter::getInstance().genericEvent("gameUpdate", pyArgs.makeFunctionArgs());
+		// <advc.003r>
+		for (int i = 0; i < NUM_UPDATE_TIMER_TYPES; i++)
+			handleUpdateTimer((UpdateTimerTypes)i); // </advc.003r>
 	}
+	if (getTurnSlice() == 0) // advc (note): Implies 0 elapsed game turns
+	{	// <advc.700> Delay initial auto-save until RiseFall is initialized
+		if (!isOption(GAMEOPTION_RISE_FALL) && // </advc.700>
+			m_iTurnLoadedFromSave != m_iElapsedGameTurns) // advc.044
+		{	// Map regen should only reset TurnSlice to sth. greater than 0
+			FAssert(m_iMapRegens <= 0);
+			autoSave(true); // advc.106l
+		}
+	}
+	/*	<advc.004m> Slice 0 seems to be the earliest time when plot indicators
+		can be enabled w/o crashing. But it appears that, for some players,
+		the indicators do not actually appear then - race condition? Slice 1
+		doesn't seem to help either. 4 was maybe an improvement. Try 7?
+		(It's a continuous count.) At some point, the delay gets noticeable. */
+	if (getTurnSlice() == 7 &&
+		// Leave it up to the savegame when loading an initial autosave
+		m_iTurnLoadedFromSave != m_iElapsedGameTurns)
+	{
+		if (BUGOption::isEnabled("MainInterface__StartWithResourceIcons", true))
+			gDLL->getEngineIFace()->setResourceLayer(true);
+	} // </advc.004m>
+	if (getNumGameTurnActive() == 0)
+	{
+		if (!isPbem() || !getPbemTurnSent())
+			doTurn();
+	}
+	updateScore();
+	updateWar();
+	updateMoves();
+	updateTimers();
+	updateTurnTimer();
+	AI().AI_updateAssignWork();
+	testAlive();
+	if (getAIAutoPlay() == 0 && !gDLL->GetAutorun() &&
+		getGameState() != GAMESTATE_EXTENDED)
+	{
+		if (countHumanPlayersAlive() == 0 &&
+			!isOption(GAMEOPTION_RISE_FALL)) // advc.707
+		{
+			setGameState(GAMESTATE_OVER);
+		}
+	}
+	changeTurnSlice(1);
+	/*	<advc.104l> Make sure that UI (specifically willing-to-talk indicator)
+		doesn't become outdated throughout a turn. Or at least not for long.
+		advc.085: Invalidating on every turn slice might slightly hurt
+		responsiveness when hovering over the scoreboard. (Not sure.) */
+	if (getTurnSlice() % 4 == 0)
+		AI().uwai().invalidateUICache(); // </advc.104l>
+	/*	<advc.004n> (Disassembly suggests that the EXE caches this info,
+		so this check is fast.) */
+	bool bCityScreenUp = gDLL->UI().isCityScreenUp();
+	if (bCityScreenUp != m_bCityScreenUp)
+	{
+		m_bCityScreenUp = bCityScreenUp;
+		onCityScreenChange();
+	} // </advc004n>
+	if (getActivePlayer() != NO_PLAYER && GET_PLAYER(getActivePlayer()).getAdvancedStartPoints() >= 0 &&
+		!gDLL->UI().isInAdvancedStart())
+	{
+		gDLL->UI().setInAdvancedStart(true);
+		gDLL->UI().setWorldBuilder(true);
+	} // <advc.705>
+	if (isOption(GAMEOPTION_RISE_FALL))
+		m_pRiseFall->restoreDiploText(); // </advc.705>
+}
 
 
 void CvGame::updateScore(bool bForce)
@@ -5733,7 +5684,6 @@ bool CvGame::canConstruct(BuildingTypes eBuilding,
 	}
 	if (isBuildingClassMaxedOut(kBuilding.getBuildingClassType()))
 		return false;
-//DOTO-Keldath QA - this code should be above if(bTestVisible) or below?
 /************************************************************************************************/
 /* REVDCM                                 02/16/10                                phungus420    */
 /*                                                                                              */
@@ -5746,8 +5696,6 @@ bool CvGame::canConstruct(BuildingTypes eBuilding,
 	if (kBuilding.getPrereqGameOption() != NO_GAMEOPTION)
 	{
 		if (!(isOption((GameOptionTypes)kBuilding.getPrereqGameOption())))
-		// changed - suggested by f1
-		//if (!(GC.getGameINLINE().isOption((GameOptionTypes)GC.getBuildingInfo(eBuilding).getPrereqGameOption())))
 		{
 			return false;
 		}
@@ -5755,8 +5703,6 @@ bool CvGame::canConstruct(BuildingTypes eBuilding,
 	if (kBuilding.getNotGameOption() != NO_GAMEOPTION)
 	{
 		if (isOption((GameOptionTypes)kBuilding.getNotGameOption()))
-		// changed - suggested by f1
-		//if (GC.getGameINLINE().isOption((GameOptionTypes)GC.getBuildingInfo(eBuilding).getNotGameOption()))
 		{
 			return false;
 		}
@@ -6237,10 +6183,10 @@ void CvGame::setName(TCHAR const* szName)
 }
 
 
-bool CvGame::isDestroyedCityName(CvWString& szName) const
+bool CvGame::isPastCityName(CvWString& szName) const
 {
 	std::vector<CvWString>::const_iterator it;
-	for (it = m_aszDestroyedCities.begin(); it != m_aszDestroyedCities.end(); ++it)
+	for (it = m_aszPastCities.begin(); it != m_aszPastCities.end(); ++it)
 	{
 		if (*it == szName)
 			return true;
@@ -6249,9 +6195,9 @@ bool CvGame::isDestroyedCityName(CvWString& szName) const
 }
 
 
-void CvGame::addDestroyedCityName(CvWString const& szName)
+void CvGame::addPastCityName(CvWString const& szName)
 {
-	m_aszDestroyedCities.push_back(szName);
+	m_aszPastCities.push_back(szName);
 }
 
 
@@ -6411,12 +6357,6 @@ void CvGame::doTurn()
 		}
 	} // (Otherwise, autosave in CvPlayer::setTurnActive.)
 	// </advc.044>
-	//doto city states	- spawn the cities
-	if (getGameTurn() == 1 && !GC.getGame().isOption(GAMEOPTION_ADVANCED_START))
-	{
-		spawnCityState();
-	}
-	//doto city states	
 }
 
 // advc.106b:
@@ -7223,283 +7163,6 @@ void CvGame::createBarbarianCities()
 	createBarbarianCity(true, 50);
 }
 
-//doto city states start - based on createbarbariancity
-
-void CvGame::initFreeTechsEra(PlayerTypes ePlayer)
-{
-	AI().AI_updateVictoryWeights(); // advc.115f
-	CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)ePlayer);
-	CvTeam& kTeam = GET_TEAM(kPlayer.getTeam());
-	FOR_EACH_ENUM(Tech)
-	{
-		if (GC.getInfo(eLoopTech).getEra() < getStartEra()
-			// disabled by K-Mod. (moved & changed. See below)
-			/*|| GC.getInfo(getHandicapType()).isFreeTechs(eLoopTech)*/)
-		{
-			kTeam.setHasTech(eLoopTech, true, NO_PLAYER, false, false);
-		}
-		// advc.tsl: Free techs from other sources now handled by initFreeCivState
-		if (GC.getInfo(eLoopTech).getEra() > getStartEra())
-					continue; // </advc.126>
-		bool bValid = false; 
-		if (!kTeam.isHuman() && GC.getInfo(getHandicapType()).isAIFreeTechs(eLoopTech) &&
-			// advc.001: Barbarians receiving free AI tech might be a bug
-			!kTeam.isBarbarian() /* advc.250c: */ && !isOption(GAMEOPTION_ADVANCED_START))
-		{
-			bValid = true;
-		}
-		if (!bValid)
-		{
-			/*  <advc.250b>, advc.250c: Always grant civ-specific tech,
-				but not tech from handicap if in Advanced Start except to
-				human civs that don't actually start Advanced (SPaH option). */
-			if (GC.getInfo(kPlayer.getCivilizationType()).isCivilizationFreeTechs(eLoopTech))
-			{
-				bValid = true;
-			}
-			// K-Mod: Give techs based on player handicap, not game handicap.
-			if (GC.getInfo(kPlayer.getHandicapType()).isFreeTechs(eLoopTech) &&
-				(!isOption(GAMEOPTION_ADVANCED_START) ||
-				(isOption(GAMEOPTION_SPAH) && kTeam.isHuman()))) // </advc.250b>
-			{
-				bValid = true;
-			}
-		}
-		if (bValid) // (advc.051: Don't take away techs granted by scenario)
-		{
-			kTeam.setHasTech(eLoopTech, true, NO_PLAYER, false, false);
-			// (advc: Already handled by setHasTech)
-			/*if (GC.getInfo(eLoopTech).isMapVisible())
-				GC.getMap().setRevealedPlots(kTeam.getID(), true, true);*/
-		}
-	}
-}
-
-void CvGame::spawnCityState()
-{
-	if (!GC.getGame().isOption(GAMEOPTION_CITY_STATES))
-		return;
-	//will allow the city states, but will not spawn them...let ht player set them
-	if (GC.getDISPLAY_CITY_STATES_IN_CUSTOM_GAME() == 1)
-		return;
-	
-//spawn civs amount according to the world size - start
-	int numCitySpawn = 0;//default
-	int numCitySpawnT = GC.getSET_NUMBER_OF_CITY_STATES_SPAWN_TINY();
-	int numCitySpawnS = GC.getSET_NUMBER_OF_CITY_STATES_SPAWN_SMALL();
-	int numCitySpawnD = GC.getSET_NUMBER_OF_CITY_STATES_SPAWN_STANDARD();
-	int numCitySpawnL = GC.getSET_NUMBER_OF_CITY_STATES_SPAWN_LARGE();
-	int numCitySpawnH = GC.getSET_NUMBER_OF_CITY_STATES_SPAWN_HUGE();
-	int spawned = 0;
-
-	//CvWorldInfo const& kWorld = GC.getInfo(GC.getMap().getWorldSize());
-	WorldSizeTypes worldSize = GC.getMap().getWorldSize();
-	WorldSizeTypes whichSizeT = (WorldSizeTypes)GC.getInfoTypeForString("WORLDSIZE_TINY", true);
-	WorldSizeTypes whichSizeS = (WorldSizeTypes)GC.getInfoTypeForString("WORLDSIZE_SMALL", true);
-	WorldSizeTypes whichSizeD = (WorldSizeTypes)GC.getInfoTypeForString("WORLDSIZE_STANDARD", true);
-	WorldSizeTypes whichSizeL = (WorldSizeTypes)GC.getInfoTypeForString("WORLDSIZE_LARGE", true);
-	WorldSizeTypes whichSizeH = (WorldSizeTypes)GC.getInfoTypeForString("WORLDSIZE_HUGE", true);
-	
-	if (worldSize == whichSizeT)
-		numCitySpawn = numCitySpawnT;
-	else if (worldSize == whichSizeS)
-		numCitySpawn = numCitySpawnS;
-	else if (worldSize == whichSizeD)
-		numCitySpawn = numCitySpawnD;
-	else if (worldSize == whichSizeL)
-		numCitySpawn = numCitySpawnL;
-	else if (worldSize == whichSizeH)
-		numCitySpawn = numCitySpawnH;
-//world size end
-
-//-------------------- random city states code------start---------
-
-
-	std::vector<std::pair<int, CivilizationTypes> > aiePriority; //list for all civs
-	FOR_EACH_ENUM(Civilization)
-	{
-		if (GC.getInfo(eLoopCivilization).getIsCityState() == 1)
-			aiePriority.push_back(std::make_pair(SyncRandNum(MAX_SHORT), eLoopCivilization));//update a list with a new value
-	}
-	std::sort(aiePriority.begin(), aiePriority.end());
-	std::vector<int> rndStatesList;
-	for (int i = 0; i < std::min(numCitySpawn, (int)aiePriority.size()); i++)
-		rndStatesList.push_back(aiePriority[i].second);
-
-
-	//keldath code - usinf rand which is not good - use syncrand or maprand 
-	//create a list of random civs
-	//std::vector<int> onlyStateslist; //list to hold all the city states
-	//for (int r = 0; r < GC.getNumCivilizationInfos(); ++r)
-	//{
-	//	CivilizationTypes eCiv = (CivilizationTypes)r;
-	//	CvCivilizationInfo& kCivilization = GC.getCivilizationInfo(eCiv);
-	//	if (kCivilization.getIsCityState() == 1)
-	//		onlyStateslist.push_back(r); //insert value
-	//}
-	//std::vector<int> rndStatesList; //new list size based on how many city states are wanted
-	//int citySpawnCnt = 0;
-	// if  (!onlyStateslist.empty())
-	//		return;
-	//while (citySpawnCnt < numCitySpawn)
-	//{
-	//	int index = rand() % onlyStateslist.size(); // pick a random index - random city state
-	//	int value = onlyStateslist[index]; // a random value taken from that list
-	//	
-	//	//this is just a double check for no duplicate values.
-	//	if (!(std::find(rndStatesList.begin(), rndStatesList.end(), value) != rndStatesList.end()))
-	//	{
-	//		//remove item in the index from the list (a duplicate value wont get in) -1 is to reduce idx.
-	//		//the .begin marks the start of the list - seems like its required
-	//		onlyStateslist.erase(onlyStateslist.begin() + index - 1);
-	//		rndStatesList.push_back(value);
-	//		citySpawnCnt += 1;
-	//	}
-	//}
-//-------------------- random city states code------end---------	
-
-	//check all civ types, add only city states/
-	//run it on the vector from above
-	for (int j = 0; j < GC.getNumCivilizationInfos(); ++j)
-	{
-		//if all CS were spanwed - stop
-		if (spawned >= numCitySpawn)
-			break;
-
-		CivilizationTypes eCiv = (CivilizationTypes)j;
-		PlayerTypes cityStatePlayer = NO_PLAYER;
-		LeaderHeadTypes cSleader = NO_LEADER;
-		CvCivilizationInfo& kCivilization = GC.getCivilizationInfo(eCiv);
-		int leadersNum = kCivilization.getNumLeaders();
-
-		if (kCivilization.getIsCityState() != 1)
-			continue;
-
-		//using the random code above - if the city state in the loop iteration isnt in the list - skip it
-		//the city states are chosen in the random code.
-		if (!(std::find(rndStatesList.begin(), rndStatesList.end(), j) != rndStatesList.end()))
-		{
-			continue;
-		}
-		// maybe use this :
-		/*
-			for (PlayerIter<MAJOR_CIV> itPlayer; itPlayer.hasNext(); ++itPlayer)
-			{
-				if (!itPlayer->isCityState())
-					continue;
-				// ...
-			}
-		*/
-
-		//get an id for the civ, only if its not alive
-		for (int i = 0; i < MAX_CIV_PLAYERS; i++)
-		{
-			CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)i);
-			if (!kPlayer.isAlive() && !kPlayer.isBarbarian() 
-				&& !kPlayer.isMinorCiv() )
-			{
-				cityStatePlayer = (PlayerTypes)i;
-				break;
-			}
-		}
-		if (cityStatePlayer == NO_PLAYER)
-			continue;
-
-		//get a random leader for the chosen civ - code from spawnCiv the_J python based
-		//int rndLeader = SyncRandNum(leadersNum);
-		int LeaderCounter = 0;
-		for (int l = 0; l < GC.getNumLeaderHeadInfos(); ++l)
-		{
-			if (kCivilization.isLeaders(l))
-			{
-				if (leadersNum == 1)
-				{
-					cSleader = (LeaderHeadTypes)l;
-				}
-				else
-				{
-					if (LeaderCounter == leadersNum)
-					{
-						cSleader = (LeaderHeadTypes)l;
-						break;
-					}
-					LeaderCounter += 1;
-				}
-			}
-		}
-		if (cSleader == NO_LEADER)
-			continue;
-		/*{
-			for (int j = 0; j < kCivilization.getNumLeadersNames(); j++)
-			{
-				std::string szName = kCivilization.getLeadersNames(j);
-				const char* szBuffer = szName.c_str();
-				int name = GC.getInfoTypeForString(szBuffer, true);
-				CsLeader = (LeaderHeadTypes)name;
-				break;
-			}
-			cSCiv = eLoopCivilization;
-		}*/
-
-		//loop over the numer of city states to spawn
-		CvPlayerAI& kPlayer = GET_PLAYER(cityStatePlayer);
-		CvPlayer& kkPlayer = GET_PLAYER(cityStatePlayer);
-		//overwrite the prev same car =- this is another method fo playertype id - f1rpo suggested
-		//cityStatePlayer = (PlayerTypes)PlayerIter<MAJOR_CIV>::count();
-		//fixes to work in mp
-		kPlayer.setPersonalityType(cSleader);
-		addPlayer(cityStatePlayer, cSleader, eCiv);
-		kPlayer.setAlive(true);
-
-		initFreeTechsEra(cityStatePlayer);
-	//doto
-	//these are some fn that are used in the split empire function (removed all the fn that is split related.
-	// im not sure what and if all below are required.
-		GC.getInitCore().setLeaderName(cityStatePlayer, GC.getInfo(cSleader).getTextKeyWide());
-		kPlayer.AI_updateBonusValue();
-		updatePlotGroups();
-		
-		//using findStartingPlot as suggestted by f1rpo instead of the split empire code
-		CvPlot* pBestPlot = kPlayer.findStartingPlot();
-		kPlayer.setStartingPlot(pBestPlot/*, true */); // advc.opt
-		kkPlayer.initFreeUnits();
-
-		if (kPlayer.getStartingPlot() == NULL)
-		{
-			FErrorMsg("No starting plot found - killing added player");
-			kPlayer.setAlive(false);//keldath addition - maybe its wrong...but i though if i add, i should kill in this case
-			continue;
-		}
-		else
-		{
-
-			//FAssert(iBestValue > 0); // advc.300
-			kPlayer.initCity(pBestPlot->getX(), pBestPlot->getY(), true,true, 0);
-			logBBAI("A City State was created at plot %d, %d", pBestPlot->getX(), pBestPlot->getY()); // advc.300 (from MNAI)
-			//f1rpo said this better be after the init city
-			kPlayer.verifyAlive(); //doto - another unclear addition from keldath....
-			updateScore();
-			//kPlayer.AI_updateAttitude(); no need anymore- f1rpo did the AI_updateAttitudes
-			//update attitude of all ai after the added city - new fn from f1rpo 106
-			CvPlayerAI::AI_updateAttitudes(); // K-Mod
-			if (getUWAI().isEnabled())
-				getUWAI().processNewPlayerInGame(cityStatePlayer); // </advc.104r>
-			spawned += 1;
-		}
-	}
-	//add a pop to annouce city gen
-	for (int i = 0; i < MAX_CIV_PLAYERS; i++)
-	{
-		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)i);
-		if (kPlayer.isHuman() && spawned > 0)
-		{
-			CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_TEXT);
-			pInfo->setText(gDLL->getText("TXT_KEY_NUM_CITY_STATES_SPAWNED", spawned));
-			kPlayer.addPopup(pInfo);
-		}
-	}
-}
-//doto city states end
 
 void CvGame::createBarbarianCity(bool bSkipCivAreas, int iProbModifierPercent)
 {
@@ -8627,7 +8290,7 @@ bool CvGame::testVictory(VictoryTypes eVictory, TeamTypes eTeam, bool* pbEndScor
 		{
 			FOR_EACH_CITY(pCity, *itMember)
 			{
-				if (pCity->getCultureLevel() >= kVictory.getCityCulture())
+				if (pCity->getCultureLevel() >= culturalVictoryCultureLevel())
 					iCount++;
 			}
 		}
@@ -9412,9 +9075,6 @@ void CvGame::read(FDataStreamBase* pStream)
 //doto units bonus cap	
 	pStream->Read(GC.getNumBonusInfos(), m_aiBonusThatArePrereqForUnits);
 //doto units bonus cap	
-//doto special events
-	pStream->Read(2, m_aeSpecialEvents);
-//doto special events	
 	if (uiFlag < 1)
 	{
 		std::vector<int> aiEndTurnMessagesReceived(MAX_PLAYERS);
@@ -9510,12 +9170,12 @@ void CvGame::read(FDataStreamBase* pStream)
 		CvWString szBuffer;
 		uint iSize;
 
-		m_aszDestroyedCities.clear();
+		m_aszPastCities.clear();
 		pStream->Read(&iSize);
 		for (uint i = 0; i < iSize; i++)
 		{
 			pStream->ReadString(szBuffer);
-			m_aszDestroyedCities.push_back(szBuffer);
+			m_aszPastCities.push_back(szBuffer);
 		}
 
 		m_aszGreatPeopleBorn.clear();
@@ -9793,10 +9453,7 @@ void CvGame::write(FDataStreamBase* pStream)
 	pStream->WriteString(m_szScriptData);
 //doto units bonus cap	
 	pStream->Write(GC.getNumBonusInfos(), m_aiBonusThatArePrereqForUnits);
-//doto units bonus cap	
-//doto special events
-	pStream->Write(2, m_aeSpecialEvents);
-//doto special events
+//doto units bonus cap
 	m_aeRankPlayer.write(pStream);
 	m_aePlayerRank.write(pStream);
 	m_aiPlayerScore.write(pStream);
@@ -9821,8 +9478,8 @@ void CvGame::write(FDataStreamBase* pStream)
 	m_aeHeadquarters.write(pStream);
 	{
 		std::vector<CvWString>::iterator it;
-		pStream->Write(m_aszDestroyedCities.size());
-		for (it = m_aszDestroyedCities.begin(); it != m_aszDestroyedCities.end(); ++it)
+		pStream->Write(m_aszPastCities.size());
+		for (it = m_aszPastCities.begin(); it != m_aszPastCities.end(); ++it)
 		{
 			pStream->WriteString(*it);
 		}
@@ -10016,31 +9673,36 @@ void CvGame::onAllGameDataRead()
 		if (itActive->isTurnActive())
 			itActive->validateDiplomacy();
 	} // </advc.134a>
-
-//doto city states color plots after game is loaded - start
-//make sure that game load turns the cache field to false.
-//in the gameinterface the coloring will run only if its true.
-//see explanation in cvgameinterface in updatecolors fn.
-	setColorsCityStates(0);
-//doto city states color plots after game is loaded - end
-//doto special events - find the special events
-	setSpecialEvents();
-//doto special events - find the special events
-}
-
-/*	advc: Called once the EXE signals that graphics have been initialized
-	(w/e that means exactly) */
-void CvGame::onGraphicsInitialized()
-{
-	// advc.095:
-	setCityBarWidth(BUGOption::isEnabled("MainInterface__WideCityBars", false));
-	/*	<advc.001> After loading, the camera tries to center on some unit
-		(apparently; I don't know where that's implemented). If there is
-		none, it seems to center on some random(?) unrevealed tile. */
-	if (GET_PLAYER(getActivePlayer()).getNumUnits() == 0)
-		setUpdateTimer(UPDATE_LOOK_AT_STARTING_PLOT, 1);
-	// </advc.001>
-	GC.getPythonCaller()->callScreenFunction("updateCameraStartDistance"); // advc.004m
+//doto units bonus cap
+/*	
+	if (isOption(GAMEOPTION_UNITS_BONUS_CAP))
+	{
+		for (PlayerIter<ALIVE> itPlayer; itPlayer.hasNext(); ++itPlayer)
+		{
+			CvCivilization const& kCiv = itPlayer->getCivilization(); // advc.003w	
+			for (int j = 0; j < kCiv.getNumUnits(); j++)
+			{
+				UnitTypes eLoopUnit = kCiv.unitAt(j);
+				CvUnitInfo const& kUnit = GC.getInfo(eLoopUnit);
+				
+				BonusTypes ePrereqAndBonus = kUnit.getPrereqAndBonus();
+				if (ePrereqAndBonus != NO_BONUS)
+				{
+					m_aiBonusThatArePrereqForUnits[ePrereqAndBonus] = 1;
+				}	
+				for (int i = 0; i < kUnit.getNumPrereqOrBonuses(); i++)
+				{
+					BonusTypes const ePrereqOrBonus = kUnit.getPrereqOrBonuses(i);
+					if (ePrereqOrBonus == NO_BONUS)
+						continue;
+					m_aiBonusThatArePrereqForUnits[ePrereqOrBonus] = 1;
+					
+				}	
+			}	
+		}
+	}
+*/
+//doto units bonus cap
 }
 
 
@@ -10591,12 +10253,6 @@ int CvGame::getBonusThatArePrereqForUnits(BonusTypes eBonus) const
 	return m_aiBonusThatArePrereqForUnits[eBonus];
 }
 //doto units bonus cap
-//doto special events
-int CvGame::getSpecialEvents(int eIdx) const
-{
-	return m_aeSpecialEvents[eIdx];
-}
-//doto special events
 VoteTriggeredData* CvGame::getVoteTriggered(int iID) const
 {
 	return m_votesTriggered.getAt(iID);
@@ -11323,49 +10979,3 @@ std::set<int>& CvGame::getActivePlayerCycledGroups()
 {
 	return m_aiActivePlayerCycledGroups; // Was public; now protected.
 }
-//doto city states color plots after game is loaded - start
-//see explanation in cvgameinterface in updatecolors fn.
-void CvGame::setColorsCityStates(int iChange)
-{
-	m_pColorCityStates = m_pColorCityStates + iChange;
-}
-int CvGame::getColorsCityStates()
-{
-	return m_pColorCityStates;
-}
-//doto city states color plots after game is loaded - end
-
-void CvGame::setSpecialEvents()
-{
-	//doto special events - find the special events
-	int bPartisanFound = false;
-	int bPalaceFound = false;
-	int idx = 0; 
-	//set the index of the found event, its value will be the index of the wanted event in the global events
-	//list, which will then be used to trigger this event.
-	for (int actualEventIds = 0; actualEventIds < GC.getNumEventTriggerInfos(); ++actualEventIds)
-	{
-		CvEventTriggerInfo& kTrigger = GC.getEventTriggerInfo((EventTriggerTypes)actualEventIds);
-		CvString eventName = kTrigger.getType();
-		if (eventName == CvString(L"EVENTTRIGGER_PARTISANS"))
-		{
-			m_aeSpecialEvents[idx] = actualEventIds;
-			//set the event to active (its relevant mostly to partisans
-			m_abInactiveTriggers.set((EventTriggerTypes)actualEventIds, true);
-			numSpecialEvents += 1;
-			bPartisanFound = true;
-			idx++;
-		}
-		if (eventName == CvString(L"EVENTTRIGGER_PALACE_UPGRADE"))
-		{
-			m_aeSpecialEvents[idx] = actualEventIds;
-			//set the event to active (its relevant mostly to partisans
-			m_abInactiveTriggers.set((EventTriggerTypes)actualEventIds, true);
-			numSpecialEvents += 1;
-			bPalaceFound = true;
-			idx++;
-		}
-		if (bPalaceFound && bPartisanFound)
-			break;
-	} 
-}	
